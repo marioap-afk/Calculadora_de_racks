@@ -382,6 +382,113 @@ namespace RackCad.Tests
             Assert.DoesNotContain("\"DrawPallets\":[", json.Replace(" ", string.Empty));
         }
 
+        // ---- La ALTURA sigue siendo la autoridad por celda que ya existia -----------------------------------
+
+        [Fact]
+        public void ThePalletHeight_StaysOnTheExistingPerCellAuthority_NotOnANewOne()
+        {
+            var (state, inputs, assembler) = Editor(levels: 3);
+            // I-41 no crea una segunda autoridad de altura: se escribe donde siempre, en la celda de la matriz.
+            state.Structure.Fronts[0].Cells[0].PalletHeight = 40.0;
+            state.Structure.Fronts[0].Cells[1].PalletHeight = 55.0;
+            state.Structure.Fronts[0].Cells[2].PalletHeight = 70.0;
+
+            var system = Resolve(state, inputs, assembler);
+            var front = system.Structure.Fronts[0];
+
+            Assert.Equal(40.0, front.Levels[0].Pallet.Height, 6);
+            Assert.Equal(55.0, front.Levels[1].Pallet.Height, 6);
+            Assert.Equal(70.0, front.Levels[2].Pallet.Height, 6);
+            // Y la celda de I-41 NO guarda ninguna altura propia con la que pudiera discrepar.
+            Assert.DoesNotContain(
+                typeof(PushBackEditorCell).GetProperties(),
+                property => property.Name.Contains("Height") || property.Name.Contains("Alto"));
+        }
+
+        [Fact]
+        public void ApplyingByLevel_IsJustAMassEditScope_ForTheHeightThatAlreadyExisted()
+        {
+            var (state, inputs, assembler) = Editor(fronts: 3, levels: 2);
+            // El nivel 2 de los tres frentes toma la altura de la celda origen, por el alcance «Nivel» de siempre.
+            state.ToggleCell(0, 1, false);
+            var buffer = new PushBackEditorValues
+            {
+                Dynamic = new DynamicEditorValues
+                {
+                    PalletCount = state.Structure.Fronts[0].PalletCount,
+                    LoadLevels = state.Structure.Fronts[0].LoadLevels,
+                    PalletsDeep = state.Structure.Fronts[0].PalletsDeep,
+                    DepthStartPosition = state.Structure.Fronts[0].DepthStartPosition,
+                    FirstLevelHeight = state.Structure.Fronts[0].FirstLevelHeight,
+                    PalletFront = state.Structure.Fronts[0].Cells[1].PalletFront,
+                    PalletHeight = 66.0,
+                    PalletWeight = state.Structure.Fronts[0].Cells[1].PalletWeight,
+                    ClearHeight = state.Structure.Fronts[0].Cells[1].ClearHeight,
+                    InOutBeamCatalogId = state.Structure.Fronts[0].Cells[1].InOutBeamCatalogId,
+                    InOutBeamDepth = state.Structure.Fronts[0].Cells[1].InOutBeamDepth,
+                    IntermediateBeamCatalogId = state.Structure.Fronts[0].Cells[1].IntermediateBeamCatalogId,
+                    IntermediateBeamDepth = state.Structure.Fronts[0].Cells[1].IntermediateBeamDepth
+                },
+                HighEndBeamPeralte = state.Cell(0, 1).HighEndBeamPeralte
+            };
+
+            state.ApplyScope(buffer, DynamicRackCellScope.Level);
+            var system = Resolve(state, inputs, assembler);
+
+            Assert.Equal(66.0, system.Structure.Fronts[0].Levels[1].Pallet.Height, 6);
+            Assert.Equal(66.0, system.Structure.Fronts[1].Levels[1].Pallet.Height, 6);
+            Assert.Equal(66.0, system.Structure.Fronts[2].Levels[1].Pallet.Height, 6);
+            // El nivel 1 no se toco: «Nivel» es un alcance, no una propiedad del nivel.
+            Assert.NotEqual(66.0, system.Structure.Fronts[0].Levels[0].Pallet.Height);
+        }
+
+        [Fact]
+        public void ThePalletsFollowTheCellHeight_EvenWhenTheHeightsDifferAcrossFrontsAndLevels()
+        {
+            var (state, inputs, assembler) = Editor(fronts: 2, levels: 2, palletsDeep: 2);
+            state.Structure.Fronts[0].Cells[0].PalletHeight = 40.0;
+            state.Structure.Fronts[0].Cells[1].PalletHeight = 55.0;
+            state.Structure.Fronts[1].Cells[0].PalletHeight = 62.0;
+            state.Structure.Fronts[1].Cells[1].PalletHeight = 70.0;
+            state.ToggleCell(0, 0, false);
+            state.ApplyDrawPallet(true, DynamicRackCellScope.All);
+
+            var system = Resolve(state, inputs, assembler);
+
+            foreach (var (frontIndex, expected) in new[]
+                     {
+                         (0, new[] { 40.0, 55.0 }),
+                         (1, new[] { 62.0, 70.0 })
+                     })
+            {
+                var alturas = PushBackTarimaPlacement
+                    .Lateral(system, Catalog, system.Structure.Fronts[frontIndex])
+                    .Select(pallet => pallet.DynamicParameters[SelectiveRackDefaults.PalletAltoParam])
+                    .Distinct()
+                    .OrderBy(value => value)
+                    .ToArray();
+                Assert.Equal(expected, alturas);
+            }
+        }
+
+        // ---- Limitacion DECLARADA: el lateral no seccionado es una envolvente ------------------------------
+
+        [Fact]
+        public void TheWholeRackLateral_DrawsNoPallet_BecauseItIsAnEnvelopeNotACell()
+        {
+            var (state, inputs, assembler) = Editor(fronts: 2, levels: 2);
+            state.ToggleCell(0, 0, false);
+            state.ApplyDrawPallet(true, DynamicRackCellScope.All);
+
+            var system = Resolve(state, inputs, assembler);
+
+            // El lateral SIN corte ya era una envolvente antes de I-41 (sus largueros posteriores se colocan sobre la
+            // longitud total del rack, no sobre la de un frente), asi que no hay celda a la que preguntar. Las tarimas
+            // aparecen en los CORTES laterales, que si son por frente. Es una decision declarada, no un olvido.
+            Assert.Empty(Pallets(new PushBackSystemLateralBuilder().Build(system, Catalog)));
+            Assert.NotEmpty(Pallets(new PushBackSystemLateralBuilder().Build(system, Catalog, postIndex: 0)));
+        }
+
         // ---- Convive con el fondo por celda -----------------------------------------------------------------
 
         [Fact]

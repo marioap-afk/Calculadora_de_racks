@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
@@ -54,6 +55,31 @@ namespace RackCad.Application.Systems.PushBack
             return result;
         }
 
+        /// <summary>
+        /// La identidad de un frente A EFECTOS DE ESTE CORTE: dos frentes adyacentes solo se colapsan en uno si el
+        /// corte los dibujaria IGUAL.
+        /// <para>
+        /// Hasta I-40 bastaba con (StartX, EndX, LoadLevels): con un unico fondo por frente, esos tres datos
+        /// determinaban toda la geometria del corte. I-41 lo rompe — dos frentes pueden compartir envolvente y numero
+        /// de niveles y aun asi escalonar sus celdas de forma distinta, o pedir tarima uno si y otro no. Colapsarlos
+        /// dibujaria el segundo con la configuracion del primero, en silencio. Por eso la clave incorpora el fondo
+        /// EFECTIVO y el flag de tarima de cada nivel.
+        /// </para>
+        /// Un rack sin overrides ni tarimas produce la MISMA agrupacion que antes de I-41: los sufijos añadidos son
+        /// identicos en los frentes que ya se colapsaban.
+        /// </summary>
+        private static string SectionKey(PushBackSystem system, DynamicRackFront front)
+        {
+            var frontIndex = PushBackCellDepth.FrontIndexOf(system, front);
+            var levels = DynamicFrontActivation.EffectiveLoadLevels(front);
+            var cells = string.Join(
+                ",",
+                Enumerable.Range(0, levels).Select(level => string.Concat(
+                    system.EffectivePalletsDeepAt(frontIndex, level).ToString(CultureInfo.InvariantCulture),
+                    system.DrawPalletAt(frontIndex, level) ? "T" : "-")));
+            return string.Join("|", front.StartX, front.EndX, front.LoadLevels, cells);
+        }
+
         private HeaderRunPlan BuildCore(PushBackSystem system, RackCatalog catalog, int postIndex)
         {
             var structure = system?.Structure;
@@ -81,7 +107,7 @@ namespace RackCad.Application.Systems.PushBack
                 : structure.LoadBeamLevels.Count;
             IReadOnlyList<DynamicRackFront> fronts = sectioned
                 ? DynamicFrontGeometry.AdjacentFronts(structure, postIndex)
-                    .GroupBy(front => string.Join("|", front.StartX, front.EndX, front.LoadLevels))
+                    .GroupBy(front => SectionKey(system, front))
                     .Select(group => group.First())
                     .ToList()
                 : new List<DynamicRackFront> { null };

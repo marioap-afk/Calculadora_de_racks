@@ -218,6 +218,44 @@ namespace RackCad.Tests
             AssertStaggeredIntent(new PushBackResolver(Catalog).Resolve(reloaded.ToDomain()));
         }
 
+        // ---- RACKEDITAR: reabrir desde el SISTEMA resuelto embebido en el dibujo ----------------------------
+
+        [Fact]
+        public void ReopeningFromTheResolvedSystem_RecoversEveryCellValue()
+        {
+            var (design, _, _, assembler) = Staggered();
+            var resolver = assembler.Resolver;
+            var system = resolver.Resolve(design);
+
+            // RACKEDITAR reabre desde el sistema resuelto, no desde el diseno.
+            var reopened = new PushBackEditorState();
+            reopened.LoadFromSystem(system, resolver);
+
+            Assert.Equal(4, reopened.Structure.Fronts[0].PalletsDeep);   // el DEFAULT, no la envolvente (6)
+            Assert.Null(reopened.Cell(0, 0).PalletsDeepOverride);
+            Assert.Equal(6, reopened.Cell(0, 1).PalletsDeepOverride);
+            Assert.True(reopened.Cell(0, 1).DrawPallet);
+            Assert.Equal(2, reopened.Cell(1, 0).PalletsDeepOverride);
+            Assert.False(reopened.Cell(1, 0).DrawPallet);
+        }
+
+        [Fact]
+        public void ReopeningFromTheResolvedSystem_IsIdempotent()
+        {
+            var (design, _, inputs, assembler) = Staggered();
+            var resolver = assembler.Resolver;
+
+            var first = new PushBackEditorState();
+            first.LoadFromSystem(resolver.Resolve(design), resolver);
+            var second = new PushBackEditorState();
+            second.LoadFromSystem(resolver.Resolve(assembler.BuildDesign(first, inputs)), resolver);
+
+            Assert.Equal(first.Structure.Fronts[0].PalletsDeep, second.Structure.Fronts[0].PalletsDeep);
+            Assert.Equal(first.Cell(0, 1).PalletsDeepOverride, second.Cell(0, 1).PalletsDeepOverride);
+            Assert.Equal(first.Cell(1, 0).PalletsDeepOverride, second.Cell(1, 0).PalletsDeepOverride);
+            Assert.Equal(first.Cell(0, 1).DrawPallet, second.Cell(0, 1).DrawPallet);
+        }
+
         // ---- Plugin: servicios de dibujo, handler y comandos siguen siendo delgados -------------------------
 
         [Fact]

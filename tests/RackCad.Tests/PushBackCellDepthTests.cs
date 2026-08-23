@@ -309,6 +309,34 @@ namespace RackCad.Tests
             Assert.Equal(6, computation.System.Structure.Fronts[1].PalletsDeep);
         }
 
+        [Fact]
+        public void TwoAdjacentFrontsWithTheSameEnvelopeButDifferentStaggering_AreNotCollapsedIntoOne()
+        {
+            // El corte lateral colapsa frentes adyacentes que dibujaria IGUAL. Hasta I-40 (StartX, EndX, LoadLevels)
+            // bastaba; con fondos por celda, dos frentes pueden coincidir en los tres y aun asi escalonar distinto.
+            var (state, inputs, assembler) = Editor(fronts: 2, levels: 2, palletsDeep: 4);
+            Select(state, 0, 0);
+            state.ApplyPalletsDeep(2, DynamicRackCellScope.Cell);   // solo el frente 1 se escalona
+
+            var system = Resolve(state, inputs, assembler);
+            var front0 = system.Structure.Fronts[0];
+            var front1 = system.Structure.Fronts[1];
+
+            // Los dos comparten envolvente, tramo y numero de niveles: la clave ANTIGUA los habria fusionado.
+            Assert.Equal(front0.StartX, front1.StartX, 6);
+            Assert.Equal(front0.EndX, front1.EndX, 6);
+            Assert.Equal(front0.LoadLevels, front1.LoadLevels);
+            Assert.NotEqual(system.EffectivePalletsDeepAt(0, 0), system.EffectivePalletsDeepAt(1, 0));
+
+            // El corte en la frontera compartida dibuja las camas de AMBOS: tres longitudes en total
+            // (2 y 4 del frente escalonado, 4 del otro), no las dos de uno solo.
+            var corte = new PushBackSystemLateralBuilder().Build(system, Catalog, postIndex: 1);
+            var camas = corte.Headers.Where(header => header.Name.StartsWith("Cama push back", StringComparison.Ordinal)).ToList();
+            Assert.True(camas.Count >= 2, $"el corte debe conservar las camas de los dos frentes; encontro {camas.Count}");
+            Assert.Contains(camas, header => header.Name.Contains("F1", StringComparison.Ordinal));
+            Assert.Contains(camas, header => header.Name.Contains("F2", StringComparison.Ordinal));
+        }
+
         // ---- El BOM cotiza la cama de cada celda ------------------------------------------------------------
 
         [Fact]
