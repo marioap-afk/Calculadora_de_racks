@@ -140,24 +140,115 @@ namespace RackCad.Application.Systems.Shared
         /// flipped so a later recompute must preserve it instead of regenerating a standard one.
         /// </summary>
         public bool SetHeaderConfiguration(string moduleId, RackFrameConfiguration configuration)
+            => ApplyHeaderConfiguration(configuration, new[] { moduleId }).Applied;
+
+        /// <summary>
+        /// THE single conceptual operation behind both PBH-02 (apply to the selected cabecera or to all applicable
+        /// ones) and PBH-03 (reuse another cabecera's configuration): validate every target, then hand each one its
+        /// OWN independent canonical copy (I-40).
+        /// <para>
+        /// ATOMIC by construction: every target is checked BEFORE a single byte of the staged state moves, so a bad
+        /// target leaves the session exactly as it was — there is no partial application to undo. The staged state
+        /// is still just staged: only <see cref="Commit"/> hands it on, and <see cref="Cancel"/> throws the whole
+        /// operation away with everything else the user had pending.
+        /// </para>
+        /// <para>
+        /// Each target gets its OWN <see cref="RackFrameProjectStore.DeepCopy"/>, never a shared instance: editing
+        /// one destination afterwards can therefore never reach the source or another destination. That
+        /// independence is what makes PBH-03 a COPY and not a reference, and it is why nothing new is persisted —
+        /// the copy lands in the module intent the design already carries.
+        /// </para>
+        /// </summary>
+        /// <param name="configuration">The configuration to hand out. It is READ, never captured.</param>
+        /// <param name="targetModuleIds">The modules to write. Duplicates collapse; the order is preserved.</param>
+        public RackModuleHeaderApplyResult ApplyHeaderConfiguration(
+            RackFrameConfiguration configuration,
+            IEnumerable<string> targetModuleIds)
         {
             if (configuration == null)
             {
-                return false;
+                return RackModuleHeaderApplyResult.Rejected("No hay una configuracion de cabecera que aplicar.");
             }
 
-            var module = Find(moduleId);
-            if (module == null || !module.IsHeader)
+            var ids = (targetModuleIds ?? Enumerable.Empty<string>())
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+
+            if (ids.Count == 0)
             {
-                return false;
+                return RackModuleHeaderApplyResult.Rejected("No hay ninguna cabecera de destino.");
             }
 
-            module.HeaderConfiguration = clone.DeepCopy(configuration);
-            module.UseCalculatedHeaderConfiguration = false;
-            module.IsManualOverride = true;
-            restored.Remove(moduleId);   // editing it again is no longer a restore
-            return true;
+            // ---- Validate EVERY target first. Nothing below this block may fail. ----
+            var targets = new List<DynamicRackModuleDesign>(ids.Count);
+            foreach (var id in ids)
+            {
+                var module = Find(id);
+                if (module == null)
+                {
+                    return RackModuleHeaderApplyResult.Rejected(
+                        "El modulo " + id + " ya no existe en este rack: no se aplico nada.");
+                }
+
+                if (!module.IsHeader)
+                {
+                    return RackModuleHeaderApplyResult.Rejected(
+                        "El modulo " + id + " es un separador y no lleva cabecera: no se aplico nada.");
+                }
+
+                targets.Add(module);
+            }
+
+            // ---- Apply. ----
+            foreach (var module in targets)
+            {
+                module.HeaderConfiguration = clone.DeepCopy(configuration);
+                module.UseCalculatedHeaderConfiguration = false;
+                module.IsManualOverride = true;
+                restored.Remove(module.ModuleId);   // editing it again is no longer a restore
+            }
+
+            return RackModuleHeaderApplyResult.Success(targets.Select(module => module.ModuleId).ToList());
         }
+
+        /// <summary>
+        /// PBH-03: reuse the configuration of ANOTHER cabecera of this session on the given targets, as an
+        /// independent copy. The source is read through <see cref="HeaderConfigurationCopy"/> — which already
+        /// returns a copy — so the source module is never handed out and is never touched by a later edit of a
+        /// destination. Nothing is stored anywhere: there is no header library and no persistent reference.
+        /// </summary>
+        public RackModuleHeaderApplyResult CopyHeaderConfiguration(
+            string sourceModuleId,
+            IEnumerable<string> targetModuleIds)
+        {
+            var source = Find(sourceModuleId);
+            if (source == null)
+            {
+                return RackModuleHeaderApplyResult.Rejected(
+                    "La cabecera de origen ya no existe en este rack: no se aplico nada.");
+            }
+
+            if (!source.IsHeader)
+            {
+                return RackModuleHeaderApplyResult.Rejected(
+                    "El modulo de origen es un separador y no tiene cabecera que copiar: no se aplico nada.");
+            }
+
+            if (source.HeaderConfiguration == null)
+            {
+                return RackModuleHeaderApplyResult.Rejected(
+                    "La cabecera de origen todavia no tiene una configuracion que copiar: no se aplico nada.");
+            }
+
+            return ApplyHeaderConfiguration(source.HeaderConfiguration, targetModuleIds);
+        }
+
+        /// <summary>The ids of every staged HEADER module, in longitudinal order. The set a surface offers as
+        /// «origen» for PBH-03 and as the raw universe for PBH-02, before it removes the ones it knows are not
+        /// applicable (physical presence lives on a resolved system, not here).</summary>
+        public IReadOnlyList<string> HeaderModuleIds
+            => working.Where(module => module.IsHeader).Select(module => module.ModuleId).ToList();
 
         /// <summary>
         /// Stage the module back to a CALCULATED cabecera: the provenance returns to derived and the configuration
