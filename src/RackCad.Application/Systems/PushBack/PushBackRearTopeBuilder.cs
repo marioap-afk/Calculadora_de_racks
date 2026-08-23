@@ -207,7 +207,7 @@ namespace RackCad.Application.Systems.PushBack
 
             // PB-004 (I-32, regla del Owner tras el round 1): el larguero posterior vuelve a estar en su troquel, así
             // que la referencia del tope es directamente esa colocación — sin desplazamiento intermedio.
-            foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
+            foreach (var placement in PushBackPlacements.Resolve(system, front).Where(placement => placement.IsEntrance))
             {
                 var levelIndex = placement.LevelNumber - 1;
                 if (!rearTope.At(frontIndex, levelIndex))

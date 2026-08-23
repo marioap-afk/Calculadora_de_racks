@@ -105,26 +105,29 @@ namespace RackCad.Application.Systems.PushBack
             }
         }
 
-        /// <summary>One OPAQUE bed per lane and level (its rail/roller recipe is not exploded), length = the full structural span.</summary>
+        /// <summary>
+        /// One OPAQUE bed per lane and level (its rail/roller recipe is not exploded), length = the CELL's full
+        /// structural span. I-41 (PB-015): la longitud se pregunta POR CELDA, porque con fondos escalonados los
+        /// niveles de un mismo frente ya no comparten cama — cotizar la del frente entero facturaria riel que no
+        /// existe. Sin overrides todas las celdas de un frente responden lo mismo y el BOM sale identico al anterior.
+        /// </summary>
         private static void AddBeds(ICollection<BomComponent> components, PushBackSystem system)
         {
             var structure = system.Structure;
             var grouped = new Dictionary<double, int>();
             foreach (var front in structure.Fronts)
             {
-                var length = Round(PushBackFlowBedLateralBuilder.ResolveBedLength(system, front));
-                if (length <= 0.0)
+                var lanes = Math.Max(1, front.PalletCount);
+                for (var level = 0; level < DynamicFrontActivation.EffectiveLoadLevels(front); level++)
                 {
-                    continue;
-                }
+                    var length = Round(PushBackCellDepth.BedLength(system, front, level + 1));
+                    if (length <= 0.0)
+                    {
+                        continue;
+                    }
 
-                var perLane = Math.Max(1, front.PalletCount) * DynamicFrontActivation.EffectiveLoadLevels(front);
-                if (perLane <= 0)
-                {
-                    continue;
+                    grouped[length] = grouped.TryGetValue(length, out var current) ? current + lanes : lanes;
                 }
-
-                grouped[length] = grouped.TryGetValue(length, out var current) ? current + perLane : perLane;
             }
 
             foreach (var group in grouped.OrderBy(g => g.Key))

@@ -56,9 +56,19 @@ namespace RackCad.Application.Systems.PushBack
             PushBackSystem system,
             RackCatalog catalog,
             DynamicRackFront front = null)
+            => BuildLocalAssembly(system, catalog, ResolveBedLength(system, front));
+
+        /// <summary>
+        /// El mismo montaje para una LONGITUD de cama ya resuelta. I-41 (PB-015): con fondos distintos por nivel la
+        /// longitud deja de ser una propiedad del frente, asi que quien la conoce —la celda— la pasa hecha en vez de
+        /// obligar a este builder a volver a decidirla.
+        /// </summary>
+        public IReadOnlyList<HeaderBlockInstance> BuildLocalAssembly(
+            PushBackSystem system,
+            RackCatalog catalog,
+            double laneDepth)
         {
-            var laneDepth = ResolveBedLength(system, front);
-            if (laneDepth <= 0.0)
+            if (system == null || laneDepth <= 0.0)
             {
                 return new List<HeaderBlockInstance>();
             }
@@ -75,42 +85,74 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// The lateral Push Back bed as a grouped <see cref="HeaderGroup"/>: one shared nested definition (rigid-rotated
+        /// The lateral Push Back bed as grouped <see cref="HeaderGroup"/>s: one shared nested definition (rigid-rotated
         /// onto the Push Back bed axis at the low mate/angle) referenced once per level. Same ARRAY/shared-definition
         /// pattern as the dynamic bed, but the axis is the Push Back one (high mate = rear TROQUEL_REDONDO).
+        /// <para>
+        /// I-41 (PB-015): dos niveles solo pueden COMPARTIR una definicion anidada si su cama mide lo mismo, asi que
+        /// los niveles se agrupan por FONDO EFECTIVO y cada grupo aporta su propia definicion. Un rack sin overrides
+        /// tiene un unico fondo y por tanto un unico grupo — exactamente el plan de siempre, sin coste de rendimiento
+        /// nuevo; solo un rack escalonado paga una definicion por fondo distinto, que es el minimo posible.
+        /// </para>
         /// </summary>
-        public HeaderGroup BuildLateral(PushBackSystem system, RackCatalog catalog, DynamicRackFront front = null, int levelCount = int.MaxValue)
+        public IReadOnlyList<HeaderGroup> BuildLateralGroups(
+            PushBackSystem system, RackCatalog catalog, DynamicRackFront front = null, int levelCount = int.MaxValue)
         {
+            var result = new List<HeaderGroup>();
             var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front)
                 .Where(axis => axis.LevelNumber <= levelCount)
                 .ToList();
             if (axes.Count == 0)
             {
-                return null;
+                return result;
             }
-
-            // La cama se atornilla por su TROQUEL_IN sobre el TROQUEL_CAMA del larguero de entrada/salida: ese es
-            // el mate FÍSICO del extremo bajo, y por eso el pivote es RailLocalMate y no el origen del bloque.
-            // Que sobre riel antes de ese punto y que sobresalga por detrás del larguero posterior es lo esperado
-            // —su LONGITUD es el fondo estructural completo—, no una penetración que haya que recortar
-            // (aclaración final del Owner, I-32).
-            var localAssembly = BuildLocalAssembly(system, catalog, front);
-            if (localAssembly.Count == 0)
-            {
-                return null;
-            }
-
-            var firstAxis = axes[0];
-            var definitionInstances = localAssembly
-                .Select(instance => RigidClone(instance, firstAxis.RailLocalMate, firstAxis.ExitMate, firstAxis.RotationRadians, -firstAxis.ExitMate.Y))
-                .ToList();
-            var levelPlacements = axes
-                .Select(axis => new HeaderPlacement(0.0, mirrored: false, insertionY: axis.ExitMate.Y))
-                .ToList();
 
             var suffix = front == null ? string.Empty : " F" + (front.Index + 1);
-            return new HeaderGroup("Cama push back" + suffix, definitionInstances, levelPlacements);
+            var groups = axes
+                .GroupBy(axis => Math.Round(PushBackCellDepth.BedLength(system, front, axis.LevelNumber), 6))
+                .OrderBy(group => group.Key)
+                .ToList();
+
+            foreach (var group in groups)
+            {
+                // La cama se atornilla por su TROQUEL_IN sobre el TROQUEL_CAMA del larguero de entrada/salida: ese es
+                // el mate FÍSICO del extremo bajo, y por eso el pivote es RailLocalMate y no el origen del bloque.
+                // Que sobre riel antes de ese punto y que sobresalga por detrás del larguero posterior es lo esperado
+                // —su LONGITUD es el fondo estructural completo—, no una penetración que haya que recortar
+                // (aclaración final del Owner, I-32).
+                var localAssembly = BuildLocalAssembly(system, catalog, group.Key);
+                if (localAssembly.Count == 0)
+                {
+                    continue;
+                }
+
+                var groupAxes = group.OrderBy(axis => axis.LevelNumber).ToList();
+                var firstAxis = groupAxes[0];
+                var definitionInstances = localAssembly
+                    .Select(instance => RigidClone(instance, firstAxis.RailLocalMate, firstAxis.ExitMate, firstAxis.RotationRadians, -firstAxis.ExitMate.Y))
+                    .ToList();
+                var levelPlacements = groupAxes
+                    .Select(axis => new HeaderPlacement(0.0, mirrored: false, insertionY: axis.ExitMate.Y))
+                    .ToList();
+
+                // El nombre solo lleva el fondo cuando hay MAS DE UNO: con uno solo el grupo conserva su nombre
+                // historico y nada aguas abajo (bloques anidados, pruebas doradas) cambia.
+                var name = groups.Count > 1
+                    ? "Cama push back" + suffix + " D" + PushBackCellDepth.Effective(system, front, firstAxis.LevelNumber)
+                    : "Cama push back" + suffix;
+                result.Add(new HeaderGroup(name, definitionInstances, levelPlacements));
+            }
+
+            return result;
         }
+
+        /// <summary>
+        /// Fachada historica: la cama del frente cuando TODOS sus niveles comparten fondo. Devuelve el primer grupo, o
+        /// null si no hay ninguno. Se conserva porque es la firma que consumen las pruebas y los llamadores anteriores
+        /// a I-41; el lateral usa <see cref="BuildLateralGroups"/>, que es el que no pierde los fondos escalonados.
+        /// </summary>
+        public HeaderGroup BuildLateral(PushBackSystem system, RackCatalog catalog, DynamicRackFront front = null, int levelCount = int.MaxValue)
+            => BuildLateralGroups(system, catalog, front, levelCount).FirstOrDefault();
 
         private static HeaderBlockInstance RigidClone(
             HeaderBlockInstance source,

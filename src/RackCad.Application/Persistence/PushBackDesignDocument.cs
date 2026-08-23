@@ -50,6 +50,14 @@ namespace RackCad.Application.Persistence
 
         public static PushBackDesignDocument FromDomain(PushBackDesign design) => FromDomain(design, null);
 
+        /// <summary>Whether a front config carries anything worth writing (peraltes, default fondo, an override or a pallet).</summary>
+        private static bool HasContent(PushBackFrontConfig front)
+            => front != null
+               && (front.HighEndBeamPeraltes.Count > 0
+                   || front.DefaultPalletsDeep.HasValue
+                   || front.PalletsDeepOverrides.Any(value => value.HasValue)
+                   || front.DrawPallets.Any(value => value.GetValueOrDefault(false)));
+
         /// <summary>
         /// Maps a design to a document, INHERITING the persistence metadata of a previously loaded <paramref name="source"/>
         /// (its unknown fields + a non-downgraded schema version), so a Document→Domain→Document re-save preserves both.
@@ -80,12 +88,24 @@ namespace RackCad.Application.Persistence
                 ? null
                 : design.RearTope.PieceId.Trim();
 
-            if (design.Fronts != null && design.Fronts.Any(front => front != null && front.HighEndBeamPeraltes.Count > 0))
+            // I-41: la entrada por frente se escribe si aporta ALGO — peraltes, fondo por defecto, algun override de
+            // fondo o alguna tarima. Un rack anterior a I-41 sigue decidiendose solo por los peraltes, y los tres
+            // campos nuevos quedan ausentes del archivo.
+            if (design.Fronts != null && design.Fronts.Any(HasContent))
             {
                 document.Fronts = design.Fronts
                     .Select(front => new PushBackFrontDocument
                     {
-                        HighEndBeamPeraltes = front?.HighEndBeamPeraltes.ToList() ?? new List<double?>()
+                        HighEndBeamPeraltes = front?.HighEndBeamPeraltes.ToList() ?? new List<double?>(),
+                        DefaultPalletsDeep = front?.DefaultPalletsDeep,
+                        // Listas ausentes cuando no hay nada que decir: asi un rack sin overrides ni tarimas produce
+                        // exactamente el JSON que producian las versiones anteriores.
+                        PalletsDeepOverrides = front != null && front.PalletsDeepOverrides.Any(value => value.HasValue)
+                            ? front.PalletsDeepOverrides.ToList()
+                            : null,
+                        DrawPallets = front != null && front.DrawPallets.Any(value => value.GetValueOrDefault(false))
+                            ? front.DrawPallets.ToList()
+                            : null
                     })
                     .ToList();
             }
@@ -113,12 +133,30 @@ namespace RackCad.Application.Persistence
             {
                 foreach (var frontDocument in Fronts)
                 {
-                    var config = new PushBackFrontConfig();
+                    // I-41: los tres campos nuevos son nullable y su ausencia ES el fallback legacy — fondo por
+                    // defecto = el estructural (lo resuelve el resolver), sin overrides, y sin ninguna tarima.
+                    var config = new PushBackFrontConfig { DefaultPalletsDeep = frontDocument?.DefaultPalletsDeep };
                     if (frontDocument?.HighEndBeamPeraltes != null)
                     {
                         foreach (var peralte in frontDocument.HighEndBeamPeraltes)
                         {
                             config.HighEndBeamPeraltes.Add(peralte);
+                        }
+                    }
+
+                    if (frontDocument?.PalletsDeepOverrides != null)
+                    {
+                        foreach (var deep in frontDocument.PalletsDeepOverrides)
+                        {
+                            config.PalletsDeepOverrides.Add(deep);
+                        }
+                    }
+
+                    if (frontDocument?.DrawPallets != null)
+                    {
+                        foreach (var draw in frontDocument.DrawPallets)
+                        {
+                            config.DrawPallets.Add(draw);
                         }
                     }
 
@@ -143,10 +181,24 @@ namespace RackCad.Application.Persistence
         }
     }
 
-    /// <summary>Per-front Push Back document: the high-end (rear) beam peraltes by level (null = inherit the fallback).</summary>
+    /// <summary>
+    /// Per-front Push Back document: the high-end (rear) beam peraltes by level (null = inherit the fallback) and,
+    /// since I-41, the front's default fondo plus the per-level fondo override and pallet flag. The three I-41 fields
+    /// are nullable and ABSENT in every document written before the initiative; their absence is the legacy fallback
+    /// (default = the structural fondo, no override, no pallet), so an old rack loads and draws exactly as before.
+    /// </summary>
     public sealed class PushBackFrontDocument
     {
         public List<double?> HighEndBeamPeraltes { get; set; }
+
+        /// <summary>I-41 (PB-015): fondo POR DEFECTO del frente. Null = el fondo estructural (documento legacy).</summary>
+        public int? DefaultPalletsDeep { get; set; }
+
+        /// <summary>I-41 (PB-015): override de fondo por nivel. Null (lista o entrada) = hereda el default.</summary>
+        public List<int?> PalletsDeepOverrides { get; set; }
+
+        /// <summary>I-41 (PB-016): tarima por nivel. Null (lista o entrada) = false, el default legacy.</summary>
+        public List<bool?> DrawPallets { get; set; }
     }
 
     /// <summary>One (front, level) cell in a Push Back document (a rear-tope deactivation).</summary>

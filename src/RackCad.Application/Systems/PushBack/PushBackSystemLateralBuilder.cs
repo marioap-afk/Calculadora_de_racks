@@ -96,11 +96,13 @@ namespace RackCad.Application.Systems.PushBack
                 var bedLevels = sectioned
                     ? Math.Min(levelCount, DynamicFrontActivation.EffectiveLoadLevels(front))
                     : levelCount;
-                var bed = bedBuilder.BuildLateral(system, catalog, front, bedLevels);
-                if (bed != null)
-                {
-                    headers.Add(bed);
-                }
+                // I-41 (PB-015): una definicion anidada por FONDO EFECTIVO distinto. Sin overrides sale exactamente
+                // un grupo, que es la cama de siempre.
+                headers.AddRange(bedBuilder.BuildLateralGroups(system, catalog, front, bedLevels));
+
+                // I-41 (PB-016): las tarimas de este frente, solo en las celdas que las piden. Son VISUALES: no entran
+                // al BOM y no participan de ninguna cota.
+                loose.AddRange(PushBackTarimaPlacement.Lateral(system, catalog, front, bedLevels));
             }
 
             var intermediates = intermediateBuilder.Build(system, catalog, postIndex, levelCount);

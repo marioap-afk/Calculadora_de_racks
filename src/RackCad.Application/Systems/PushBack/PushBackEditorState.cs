@@ -305,6 +305,110 @@ namespace RackCad.Application.Systems.PushBack
             return written;
         }
 
+        // ---- I-41: fondo y tarima por celda (cada operacion escribe UNA sola propiedad) --------------------------
+
+        /// <summary>
+        /// I-41 (PB-015) — escribe el FONDO de las celdas del alcance, y NADA mas. <paramref name="palletsDeep"/> null
+        /// es la RESTAURACION: elimina el override y la celda vuelve a heredar el fondo por defecto de su frente.
+        /// <para>
+        /// Usa el MISMO <see cref="DynamicRackCellScopeResolver"/> y la MISMA seleccion multiple que los alcances que
+        /// ya existen; no hay un segundo modelo de seleccion. Lo que no comparte es el buffer de celda: pasar por
+        /// <see cref="PushBackEditorCell.Apply"/> arrastraria el resto de los campos de la celda origen, que es
+        /// exactamente lo que el contrato de I-41 prohibe.
+        /// </para>
+        /// Devuelve cuantas celdas se escribieron, para que el editor pueda informarlo.
+        /// </summary>
+        public int ApplyPalletsDeep(int? palletsDeep, DynamicRackCellScope scope)
+            => ForEachTarget(scope, cell => cell.PalletsDeepOverride =
+                palletsDeep.HasValue && palletsDeep.Value >= PushBackCellDepth.MinimumPalletsDeep
+                    ? palletsDeep
+                    : null);
+
+        /// <summary>
+        /// I-41 (PB-016) — escribe el flag de TARIMA de las celdas del alcance, y NADA mas. False es a la vez el valor
+        /// normal y la restauracion al default legacy, porque ese default ES false.
+        /// </summary>
+        public int ApplyDrawPallet(bool drawPallet, DynamicRackCellScope scope)
+            => ForEachTarget(scope, cell => cell.DrawPallet = drawPallet);
+
+        /// <summary>
+        /// Recorre las celdas del alcance resuelto y aplica <paramref name="write"/> a cada una. Es el unico camino por
+        /// el que I-41 escribe, de modo que las dos operaciones comparten resolucion de alcance, acotado y conteo.
+        /// </summary>
+        private int ForEachTarget(DynamicRackCellScope scope, Action<PushBackEditorCell> write)
+        {
+            var targets = DynamicRackCellScopeResolver.Targets(
+                structure.LevelCounts(),
+                structure.SelectedFrontIndex,
+                structure.SelectedLevelIndex,
+                scope,
+                structure.SelectedCells());
+
+            var written = 0;
+            foreach (var target in targets)
+            {
+                if (target.FrontIndex < 0 || target.FrontIndex >= pushFronts.Count)
+                {
+                    continue;
+                }
+
+                var front = pushFronts[target.FrontIndex];
+                if (target.LevelIndex < 0 || target.LevelIndex >= front.Cells.Count)
+                {
+                    continue;
+                }
+
+                write(front.Cells[target.LevelIndex]);
+                written++;
+            }
+
+            return written;
+        }
+
+        /// <summary>
+        /// I-41 (PB-015) — la ENVOLVENTE estructural de cada frente: el mayor fondo efectivo de sus niveles ACTIVOS.
+        /// Es lo que el ensamblador escribe en <c>DynamicRackFrontDesign.PalletsDeep</c>, de modo que la estructura
+        /// compartida se dimensiona por el nivel mas profundo y los demas terminan antes dentro de ella.
+        /// <para>
+        /// Esta es LA razon por la que I-40 sobrevive: mientras la envolvente no cambie, el layout de fondos es el
+        /// mismo, <c>MustRebuild</c> responde false, el recalculo copia el baseline y con el viajan intactos los
+        /// ModuleId, las cabeceras por linea y las alturas de poste derivado por linea.
+        /// </para>
+        /// </summary>
+        public int EnvelopePalletsDeep(int frontIndex)
+        {
+            if (frontIndex < 0 || frontIndex >= structure.Count)
+            {
+                return PushBackCellDepth.MinimumPalletsDeep;
+            }
+
+            var row = structure.Fronts[frontIndex];
+            var overrides = frontIndex < pushFronts.Count
+                ? pushFronts[frontIndex].Cells.Select(cell => cell.PalletsDeepOverride).ToList()
+                : new List<int?>();
+            return PushBackCellDepth.Envelope(
+                row.PalletsDeep,
+                overrides,
+                DynamicFrontActivation.EffectiveLoadLevels(row));
+        }
+
+        /// <summary>
+        /// Los frentes del diseno con la envolvente ya aplicada: la lista que construye
+        /// <see cref="DynamicFrontMatrix.BuildFrontDesigns"/> con <c>PalletsDeep</c> sustituido por
+        /// <see cref="EnvelopePalletsDeep"/>. El fondo POR DEFECTO del frente no se pierde: viaja aparte, en
+        /// <c>PushBackFrontConfig.DefaultPalletsDeep</c>, que es lo que hace reversible el round trip.
+        /// </summary>
+        public IReadOnlyList<DynamicRackFrontDesign> BuildEnvelopeFrontDesigns()
+        {
+            var designs = structure.BuildFrontDesigns();
+            for (var index = 0; index < designs.Count; index++)
+            {
+                designs[index].PalletsDeep = EnvelopePalletsDeep(index);
+            }
+
+            return designs;
+        }
+
         // ---- Rear tope (configured EXCLUSIVELY from Seguridad) ---------------------------------------------------
 
         /// <summary>

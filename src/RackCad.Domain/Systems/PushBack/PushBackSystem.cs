@@ -70,11 +70,86 @@ namespace RackCad.Domain.Systems.PushBack
 
             return PushBackDefaults.HighEndBeamDefaultPeralte;
         }
+
+        /// <summary>
+        /// I-41 (PB-015) — the EFFECTIVE fondo of the cell at (<paramref name="frontIndex"/>, <paramref name="level"/> —
+        /// 0-based): the number of pallet positions that cell occupies, already resolved by the single precedence rule
+        /// <c>override ?? default</c> and clamped to the front's envelope. Geometry, views and BOM read THIS, never the
+        /// front's structural <c>PalletsDeep</c> (which is only the envelope the structure is sized by).
+        /// <para>
+        /// Falls back to the front's structural depth when the cell was never resolved, so a caller never reads a hole
+        /// and a legacy rack answers exactly what it always answered.
+        /// </para>
+        /// </summary>
+        public int EffectivePalletsDeepAt(int frontIndex, int level)
+        {
+            if (frontIndex >= 0 && frontIndex < HighEndBeams.Count)
+            {
+                var deeps = HighEndBeams[frontIndex].PalletsDeep;
+                if (level >= 0 && level < deeps.Count && deeps[level] >= 2)
+                {
+                    return deeps[level];
+                }
+            }
+
+            var fronts = Structure?.Fronts;
+            if (fronts != null && frontIndex >= 0 && frontIndex < fronts.Count)
+            {
+                return System.Math.Max(2, fronts[frontIndex].PalletsDeep);
+            }
+
+            return 2;
+        }
+
+        /// <summary>
+        /// I-41 (PB-015) — the front's DEFAULT fondo, i.e. what a level of that front inherits when it carries no
+        /// override. Zero/absent falls back to the front's structural depth (a legacy rack, where the two coincide).
+        /// </summary>
+        public int DefaultPalletsDeepAt(int frontIndex)
+        {
+            if (frontIndex >= 0 && frontIndex < HighEndBeams.Count && HighEndBeams[frontIndex].DefaultPalletsDeep >= 2)
+            {
+                return HighEndBeams[frontIndex].DefaultPalletsDeep;
+            }
+
+            var fronts = Structure?.Fronts;
+            return fronts != null && frontIndex >= 0 && frontIndex < fronts.Count
+                ? System.Math.Max(2, fronts[frontIndex].PalletsDeep)
+                : 2;
+        }
+
+        /// <summary>
+        /// I-41 (PB-016) — whether the cell at (<paramref name="frontIndex"/>, <paramref name="level"/> — 0-based) draws
+        /// its pallet. Anything unresolved answers FALSE, which is the legacy Push Back drawing (no pallets at all).
+        /// </summary>
+        public bool DrawPalletAt(int frontIndex, int level)
+        {
+            if (frontIndex < 0 || frontIndex >= HighEndBeams.Count)
+            {
+                return false;
+            }
+
+            var flags = HighEndBeams[frontIndex].DrawPallets;
+            return level >= 0 && level < flags.Count && flags[level];
+        }
     }
 
-    /// <summary>Resolved Push Back high-end (rear) beam PERALTE by load level for one front (index 0 = level 1).</summary>
+    /// <summary>
+    /// Resolved Push Back per-front values by load level (index 0 = level 1): the high-end (rear) beam PERALTE, and —
+    /// I-41 — the EFFECTIVE fondo of each cell plus its pallet-drawing flag. The three lists stay aligned by level with
+    /// the front's effective load levels; <see cref="DefaultPalletsDeep"/> is the front-wide fondo a level inherits.
+    /// </summary>
     public sealed class PushBackResolvedFront
     {
         public IList<double> HighEndBeamPeraltes { get; } = new List<double>();
+
+        /// <summary>I-41 (PB-015): the front's DEFAULT fondo — what a level with no override inherits.</summary>
+        public int DefaultPalletsDeep { get; set; }
+
+        /// <summary>I-41 (PB-015): the EFFECTIVE fondo of each level, already resolved and clamped to the envelope.</summary>
+        public IList<int> PalletsDeep { get; } = new List<int>();
+
+        /// <summary>I-41 (PB-016): whether each level draws its pallet (false = the legacy Push Back drawing).</summary>
+        public IList<bool> DrawPallets { get; } = new List<bool>();
     }
 }

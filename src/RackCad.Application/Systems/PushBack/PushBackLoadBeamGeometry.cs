@@ -16,7 +16,8 @@ namespace RackCad.Application.Systems.PushBack
     /// deriva <see cref="PushBackElevations"/> desde el larguero posterior y la ajusta a su propio troquel (PB-004,
     /// I-32). El HIGH (right, rear) end carries <c>LARGUERO_ESCALON_TROQUEL_REDONDO</c> with the cell's own PERALTE
     /// (<see cref="PushBackSystem.HighEndBeamPeralteAt"/>) and the same transverse LONGITUD as the corresponding IN/OUT.
-    /// Both origins come from <see cref="DynamicLoadBeamGeometry.Placements"/>, whose Y is already snapped to the 2" troquel.
+    /// Both origins come from <see cref="PushBackPlacements.Resolve"/> — the dynamic placements with the REAR X already
+    /// resolved per cell (I-41/PB-015) — whose Y is already snapped to the 2" troquel.
     /// </summary>
     public static class PushBackLoadBeamGeometry
     {
@@ -121,7 +122,7 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             var elevations = LowBeamElevations(system, catalog, front);
-            foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => !placement.IsEntrance))
+            foreach (var placement in PushBackPlacements.Resolve(system, front).Where(placement => !placement.IsEntrance))
             {
                 var beamId = string.IsNullOrWhiteSpace(placement.BeamCatalogId)
                     ? DynamicRackDefaults.InOutBeamCatalogId
@@ -174,7 +175,7 @@ namespace RackCad.Application.Systems.PushBack
                 return result;
             }
 
-            foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
+            foreach (var placement in PushBackPlacements.Resolve(system, front).Where(placement => placement.IsEntrance))
             {
                 // PB-004: el posterior ES el ancla — se queda en el troquel que le dio el resolver, sin desplazamiento.
                 var origin = new Point2D(placement.X, placement.Y);

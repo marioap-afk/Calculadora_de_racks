@@ -49,6 +49,15 @@ namespace RackCad.Application.Systems.PushBack
                 {
                     foreach (var axis in axes)
                     {
+                        // I-41 (PB-015): un soporte que cae DETRAS del larguero posterior de esta celda no sostiene
+                        // nada — esa cama termina antes. Con fondos iguales por nivel ningun soporte queda fuera, asi
+                        // que un rack anterior a I-41 emite exactamente los mismos intermedios.
+                        if (front != null
+                            && support.PostAxisX >= PushBackCellDepth.RearX(system, front, axis.LevelNumber) - 1e-6)
+                        {
+                            continue;
+                        }
+
                         var beamId = postIndex >= 0
                             ? DynamicIntermediateBeamGeometry.BeamIdAtPost(structure, postIndex, axis.LevelNumber)
                             : structure.Fronts

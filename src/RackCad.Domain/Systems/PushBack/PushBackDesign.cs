@@ -49,7 +49,8 @@ namespace RackCad.Domain.Systems.PushBack
     }
 
     /// <summary>
-    /// Push-Back-specific editable intent for ONE front: the high-end (rear) beam PERALTE by load level (level 1 first).
+    /// Push-Back-specific editable intent for ONE front: the high-end (rear) beam PERALTE by load level (level 1 first),
+    /// plus I-41's per-cell fondo (default + override) and pallet-drawing flag.
     /// A missing/null/invalid entry falls back to the design's legacy rack-wide value and then to the explicit 3.5
     /// default. Aligned by index with the matching <see cref="DynamicRackFrontDesign"/> and its levels; it never adds a
     /// field to the dynamic types.
@@ -59,16 +60,57 @@ namespace RackCad.Domain.Systems.PushBack
         /// <summary>High-end (rear) beam PERALTE by load level (index 0 = level 1). Null = inherit the fallback.</summary>
         public IList<double?> HighEndBeamPeraltes { get; } = new List<double?>();
 
+        /// <summary>
+        /// I-41 (PB-015) — the front's DEFAULT fondo: the number of pallet positions a level of this front takes when
+        /// it carries no override of its own. It is stored SEPARATELY from the structural
+        /// <see cref="DynamicRackFrontDesign.PalletsDeep"/> because that one became the derived ENVELOPE (the deepest
+        /// active level), and an envelope cannot answer "what does a level inherit". Null = the structural value, which
+        /// is exactly what every document written before I-41 carries, so a legacy rack inherits what it always did.
+        /// </summary>
+        public int? DefaultPalletsDeep { get; set; }
+
+        /// <summary>
+        /// I-41 (PB-015) — fondo OVERRIDE by load level (index 0 = level 1). Null (or a missing entry) means the level
+        /// inherits <see cref="DefaultPalletsDeep"/>. That is the WHOLE precedence rule: override ?? default. There is
+        /// no third source and no silent clamp stored here — the resolver clamps against the front's envelope.
+        /// </summary>
+        public IList<int?> PalletsDeepOverrides { get; } = new List<int?>();
+
+        /// <summary>
+        /// I-41 (PB-016) — whether this cell draws its pallet, by load level (index 0 = level 1). Null (or a missing
+        /// entry) means FALSE: that is the legacy behaviour, because Push Back drew no pallet at all before I-41, and
+        /// it is what keeps an existing drawing byte-identical. Pallets are VISUAL only and never reach the BOM.
+        /// </summary>
+        public IList<bool?> DrawPallets { get; } = new List<bool?>();
+
         /// <summary>The stored peralte for <paramref name="level"/> (0-based), or null to inherit the fallback.</summary>
         public double? PeralteAt(int level)
             => level >= 0 && level < HighEndBeamPeraltes.Count ? HighEndBeamPeraltes[level] : null;
 
+        /// <summary>The stored fondo override for <paramref name="level"/> (0-based), or null to inherit the default.</summary>
+        public int? PalletsDeepOverrideAt(int level)
+            => level >= 0 && level < PalletsDeepOverrides.Count ? PalletsDeepOverrides[level] : null;
+
+        /// <summary>Whether <paramref name="level"/> (0-based) draws its pallet. A missing/null entry answers FALSE (legacy).</summary>
+        public bool DrawPalletAt(int level)
+            => level >= 0 && level < DrawPallets.Count && DrawPallets[level].GetValueOrDefault(false);
+
         public PushBackFrontConfig DeepCopy()
         {
-            var copy = new PushBackFrontConfig();
+            var copy = new PushBackFrontConfig { DefaultPalletsDeep = DefaultPalletsDeep };
             foreach (var peralte in HighEndBeamPeraltes)
             {
                 copy.HighEndBeamPeraltes.Add(peralte);
+            }
+
+            foreach (var deep in PalletsDeepOverrides)
+            {
+                copy.PalletsDeepOverrides.Add(deep);
+            }
+
+            foreach (var draw in DrawPallets)
+            {
+                copy.DrawPallets.Add(draw);
             }
 
             return copy;

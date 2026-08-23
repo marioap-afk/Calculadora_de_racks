@@ -49,13 +49,22 @@ namespace RackCad.Application.Systems.PushBack
                 RearTope = design.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig()
             };
 
-            // High-end (rear) beam peralte per front x level, aligned by index with the resolved fronts.
+            // High-end (rear) beam peralte per front x level, aligned by index with the resolved fronts. I-41 resolves
+            // the cell's EFFECTIVE fondo and its pallet flag in the SAME pass and onto the SAME per-front entry, so the
+            // three lists cannot drift apart by level.
             var allowed = AllowedHighEndPeraltes();
+            var designFronts = design.Structure?.Fronts;
             for (var frontIndex = 0; frontIndex < structure.Fronts.Count; frontIndex++)
             {
                 var front = structure.Fronts[frontIndex];
                 var frontConfig = design.FrontConfig(frontIndex);
-                var resolved = new PushBackResolvedFront();
+                // I-41 (PB-015): el fondo POR DEFECTO del frente. Un documento anterior a I-41 no lo trae, y entonces
+                // es el fondo estructural del frente — que en ese rack es exactamente lo que todos sus niveles usaban.
+                var structuralDeep = Math.Max(PushBackCellDepth.MinimumPalletsDeep, front.PalletsDeep);
+                var frontDefault = frontConfig?.DefaultPalletsDeep is int stored && stored >= PushBackCellDepth.MinimumPalletsDeep
+                    ? stored
+                    : DesignedDeep(designFronts, frontIndex, structuralDeep);
+                var resolved = new PushBackResolvedFront { DefaultPalletsDeep = frontDefault };
                 // A blank front carries no level, so it resolves no rear beam either (I-33). The entry stays in the
                 // list so HighEndBeams remains aligned by index with the resolved fronts.
                 var levels = DynamicFrontActivation.EffectiveLoadLevels(front);
@@ -63,6 +72,12 @@ namespace RackCad.Application.Systems.PushBack
                 {
                     resolved.HighEndBeamPeraltes.Add(
                         ResolvePeralte(frontConfig?.PeralteAt(level), design.LegacyHighEndBeamPeralte, allowed));
+
+                    // La precedencia vive en UNA funcion; aqui solo se acota contra la envolvente ya construida, que
+                    // es la profundidad estructural del frente. Nunca por debajo de 2.
+                    var effective = PushBackCellDepth.Effective(frontConfig?.PalletsDeepOverrideAt(level), frontDefault);
+                    resolved.PalletsDeep.Add(Math.Min(effective, structuralDeep));
+                    resolved.DrawPallets.Add(frontConfig?.DrawPalletAt(level) ?? false);
                 }
 
                 system.HighEndBeams.Add(resolved);
@@ -137,18 +152,63 @@ namespace RackCad.Application.Systems.PushBack
                 RearTope = system.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig()
             };
 
-            foreach (var resolvedFront in system.HighEndBeams)
+            for (var frontIndex = 0; frontIndex < system.HighEndBeams.Count; frontIndex++)
             {
-                var config = new PushBackFrontConfig();
+                var resolvedFront = system.HighEndBeams[frontIndex];
+                // I-41: el fondo por defecto del frente viaja EXPLICITO en el snapshot. Sin el, el round trip lo
+                // perderia: la estructura solo conserva la ENVOLVENTE, y una envolvente no sabe que heredaba cada
+                // nivel — un frente con default 3 y una celda en 5 volveria con default 5.
+                var config = new PushBackFrontConfig
+                {
+                    DefaultPalletsDeep = resolvedFront.DefaultPalletsDeep >= PushBackCellDepth.MinimumPalletsDeep
+                        ? resolvedFront.DefaultPalletsDeep
+                        : (int?)null
+                };
                 foreach (var peralte in resolvedFront.HighEndBeamPeraltes)
                 {
                     config.HighEndBeamPeraltes.Add(peralte);
+                }
+
+                for (var level = 0; level < resolvedFront.PalletsDeep.Count; level++)
+                {
+                    // Solo se re-escribe como override lo que DIFIERE del default: asi un rack sin overrides vuelve a
+                    // salir sin overrides, y no se fabrica intencion que el usuario nunca expreso.
+                    var effective = resolvedFront.PalletsDeep[level];
+                    config.PalletsDeepOverrides.Add(
+                        effective >= PushBackCellDepth.MinimumPalletsDeep && effective != resolvedFront.DefaultPalletsDeep
+                            ? effective
+                            : (int?)null);
+                }
+
+                for (var level = 0; level < resolvedFront.DrawPallets.Count; level++)
+                {
+                    // El default legacy es false, asi que solo el true se conserva como intencion.
+                    config.DrawPallets.Add(resolvedFront.DrawPallets[level] ? true : (bool?)null);
                 }
 
                 design.Fronts.Add(config);
             }
 
             return design;
+        }
+
+        /// <summary>
+        /// El fondo que el DISENO pidio para un frente, antes de que la envolvente lo reescribiera. Es el respaldo del
+        /// fondo por defecto cuando el documento no trae uno explicito: en un rack anterior a I-41 el disenno y la
+        /// envolvente coinciden, asi que responde exactamente lo de siempre.
+        /// </summary>
+        private static int DesignedDeep(IList<DynamicRackFrontDesign> designFronts, int frontIndex, int fallback)
+        {
+            if (designFronts != null && frontIndex >= 0 && frontIndex < designFronts.Count)
+            {
+                var requested = designFronts[frontIndex]?.PalletsDeep;
+                if (requested.HasValue && requested.Value >= PushBackCellDepth.MinimumPalletsDeep)
+                {
+                    return requested.Value;
+                }
+            }
+
+            return fallback;
         }
 
         /// <summary>
