@@ -36,6 +36,21 @@ namespace RackCad.Domain.Systems.Dynamic
         public double? SeparatorSpacingOverride { get; set; }
         public bool DerivedPostReinforced { get; set; } = true;
         public double? DerivedPostReinforcementHeight { get; set; }
+
+        /// <summary>
+        /// I-40 (Owner): ALTURA del poste derivado. Vacio = la altura de la cabecera, que es lo que el poste
+        /// derivado heredaba y sigue heredando cuando nadie la fija — un rack antiguo se comporta exactamente igual.
+        /// Es hermana de <see cref="DerivedPostReinforcementHeight"/> y vive en el mismo sitio: el poste derivado es
+        /// del RACK, no de una cabecera.
+        /// </summary>
+        public double? DerivedPostHeight { get; set; }
+
+        /// <summary>
+        /// I-40: configuraciones de cabecera por LINEA fisica (poste). Vacio = todas las lineas usan la
+        /// configuracion del modulo, que es lo que hace cualquier rack anterior. Solo Push Back las escribe.
+        /// </summary>
+        public List<DynamicHeaderLineOverride> HeaderLineOverrides { get; } = new List<DynamicHeaderLineOverride>();
+
         public double? ManualHeaderHeightOverride { get; set; }
 
         /// <summary>Drawing annotations shared by the linked lateral, frontal and planta views.</summary>

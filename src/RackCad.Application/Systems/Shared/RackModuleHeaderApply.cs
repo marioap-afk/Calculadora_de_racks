@@ -18,8 +18,15 @@ namespace RackCad.Application.Systems.Shared
     /// </summary>
     public enum RackModuleHeaderScope
     {
-        /// <summary>Only the module the user has selected.</summary>
+        /// <summary>Only the module the user has selected, on every line it materializes on.</summary>
         Module,
+
+        /// <summary>
+        /// Every cabecera of ONE physical LINE — the transverse post line the lateral view draws as a corte. It is
+        /// the scope the longitudinal module cannot express: a module IS every instance of that cabecera, so making
+        /// one line differ from another needs an address with the line in it (I-40, <c>DynamicHeaderLineOverride</c>).
+        /// </summary>
+        Line,
 
         /// <summary>Every cabecera of the rack. The CALLER removes the ones no cut draws before handing the
         /// targets over, because physical presence (I-33) only exists on a RESOLVED system and a staged session does

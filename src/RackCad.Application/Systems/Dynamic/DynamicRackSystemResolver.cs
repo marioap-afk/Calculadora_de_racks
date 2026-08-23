@@ -194,6 +194,22 @@ namespace RackCad.Application.Systems.Dynamic
             system.SeparatorSpacingOverride = design.SeparatorSpacingOverride;
             system.DerivedPostReinforced = design.DerivedPostReinforced;
             system.DerivedPostReinforcementHeight = design.DerivedPostReinforcementHeight;
+            system.DerivedPostHeight = design.DerivedPostHeight;
+
+            // I-40: los overrides por linea viajan con COPIA canonica, como cualquier cabecera que cruza un limite.
+            system.HeaderLineOverrides.Clear();
+            foreach (var line in design.HeaderLineOverrides)
+            {
+                if (line?.Header != null && !string.IsNullOrWhiteSpace(line.ModuleId))
+                {
+                    system.HeaderLineOverrides.Add(new DynamicHeaderLineOverride
+                    {
+                        PostIndex = line.PostIndex,
+                        ModuleId = line.ModuleId,
+                        Header = CloneHeader(line.Header)
+                    });
+                }
+            }
             system.ManualHeaderHeightOverride = design.ManualHeaderHeightOverride;
             system.NumberFronts = design.NumberFronts;
             system.NumberLevels = design.NumberLevels;
@@ -273,8 +289,24 @@ namespace RackCad.Application.Systems.Dynamic
                 SeparatorSpacingOverride = system.SeparatorSpacingOverride,
                 DerivedPostReinforced = system.DerivedPostReinforced,
                 DerivedPostReinforcementHeight = system.DerivedPostReinforcementHeight,
+                DerivedPostHeight = system.DerivedPostHeight,
                 ManualHeaderHeightOverride = system.ManualHeaderHeightOverride
             };
+
+            // I-40: el snapshot devuelve los overrides por linea con copia canonica, para que el diseño persistido
+            // exprese exactamente lo que el sistema resuelto dibuja.
+            foreach (var line in system.HeaderLineOverrides)
+            {
+                if (line?.Header != null && !string.IsNullOrWhiteSpace(line.ModuleId))
+                {
+                    design.HeaderLineOverrides.Add(new DynamicHeaderLineOverride
+                    {
+                        PostIndex = line.PostIndex,
+                        ModuleId = line.ModuleId,
+                        Header = CloneHeader(line.Header)
+                    });
+                }
+            }
 
             design.NumberFronts = system.NumberFronts;
             design.NumberLevels = system.NumberLevels;

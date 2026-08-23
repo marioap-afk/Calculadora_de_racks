@@ -206,6 +206,18 @@ namespace RackCad.Application.Systems.Dynamic
             int postIndex)
         {
             var configuration = module?.AssociatedFrameConfiguration;
+
+            // I-40 — la LINEA fisica manda sobre el modulo. Esta funcion es el UNICO sitio que decide que
+            // configuracion usa una cabecera en una linea, y la consumen la geometria lateral, el BOM y el preview,
+            // asi que el override llega a los tres por construccion (AGENTS: la regla vive en una sola funcion).
+            // Sin overrides —cualquier rack anterior, y todo el Dinamico— esta busqueda no encuentra nada y el
+            // comportamiento es identico al de siempre.
+            var line = LineOverride(system, module, postIndex);
+            if (line != null)
+            {
+                return line;
+            }
+
             if (configuration == null || !module.UseCalculatedHeaderConfiguration)
             {
                 return configuration;
@@ -224,6 +236,33 @@ namespace RackCad.Application.Systems.Dynamic
                 height,
                 module.Length,
                 system.PostPeralte);
+        }
+
+        /// <summary>
+        /// The per-LINE cabecera configuration of a module, or null when that line uses the module's own. Matching is
+        /// exact on <c>PostIndex</c> + <c>ModuleId</c>, the same identity the module reconciliation uses.
+        /// </summary>
+        public static RackFrameConfiguration LineOverride(
+            DynamicRackSystem system,
+            DynamicRackModule module,
+            int postIndex)
+        {
+            if (system == null || module == null || system.HeaderLineOverrides.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (var candidate in system.HeaderLineOverrides)
+            {
+                if (candidate?.Header != null
+                    && candidate.PostIndex == postIndex
+                    && string.Equals(candidate.ModuleId, module.ModuleId, StringComparison.Ordinal))
+                {
+                    return candidate.Header;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>Number of load levels visible at one post section: the tallest adjacent front owns the cut.</summary>

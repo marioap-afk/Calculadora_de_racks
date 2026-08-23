@@ -202,7 +202,7 @@ namespace RackCad.UI.Tests
                 {
                     var headers = HeaderIds(w);
                     Select(w, headers[0]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;   // Todas las cabeceras aplicables
+                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
 
                     w.HeaderConfiguratorPresenter = QuickConfigAt(187.0);
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
@@ -232,7 +232,7 @@ namespace RackCad.UI.Tests
                 {
                     var headers = HeaderIds(w);
                     Select(w, headers[0]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;
+                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
 
                     w.HeaderConfiguratorPresenter = QuickConfigAt(187.0);
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
@@ -260,7 +260,7 @@ namespace RackCad.UI.Tests
                 {
                     var headers = HeaderIds(w);
                     Select(w, headers[0]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;
+                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
 
                     w.HeaderConfiguratorPresenter = QuickConfigAt(187.0);
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
@@ -362,7 +362,7 @@ namespace RackCad.UI.Tests
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
 
                     Select(w, headers[1]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;
+                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
                     Combo(w, "CopyHeaderFromBox").SelectedIndex = 0;   // la primera de las OTRAS cabeceras
                     Click(Btn(w, "CopyHeaderFromButton"));
 

@@ -58,6 +58,21 @@ namespace RackCad.Domain.Systems.Dynamic
         /// <summary>Reinforcement length (in) for the derived post; null/&lt;=0 = full post height.</summary>
         public double? DerivedPostReinforcementHeight { get; set; }
 
+        /// <summary>
+        /// I-40 (Owner): ALTURA del poste derivado. Vacio = la altura de la cabecera, que es lo que el poste
+        /// derivado heredaba y sigue heredando cuando nadie la fija — un rack antiguo se comporta exactamente igual.
+        /// Es hermana de <see cref="DerivedPostReinforcementHeight"/> y vive en el mismo sitio: el poste derivado es
+        /// del RACK, no de una cabecera.
+        /// </summary>
+        public double? DerivedPostHeight { get; set; }
+
+        /// <summary>
+        /// I-40: configuraciones de cabecera por LINEA fisica (poste). Vacio = todas las lineas usan la
+        /// configuracion del modulo, que es lo que hace cualquier rack anterior. Solo Push Back las escribe.
+        /// </summary>
+        public List<DynamicHeaderLineOverride> HeaderLineOverrides { get; } = new List<DynamicHeaderLineOverride>();
+
+
         /// <summary>Optional manual header/tramo height (in) typed by the user; null = derived from the load levels.</summary>
         public double? ManualHeaderHeightOverride { get; set; }
 

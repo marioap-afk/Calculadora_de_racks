@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Shared;
@@ -33,6 +34,7 @@ namespace RackCad.Application.Systems.PushBack
         private readonly PushBackResolver pushResolver;
         private readonly PushBackSafetyAuthority safetyAuthority;
         private readonly RackModuleReconciliation reconciliation;
+        private readonly RackFrameProjectStore headerClone = new RackFrameProjectStore();
         private readonly PushBackSystemLateralBuilder lateralBuilder = new PushBackSystemLateralBuilder();
         private readonly PushBackSystemFrontalBuilder frontalBuilder = new PushBackSystemFrontalBuilder();
         private readonly PushBackSystemPlantaBuilder plantaBuilder = new PushBackSystemPlantaBuilder();
@@ -65,6 +67,12 @@ namespace RackCad.Application.Systems.PushBack
                 ? Array.Empty<DynamicRackModuleDesign>()
                 : RackModuleEditSession.Begin(baseline).Commit().Modules;
         }
+
+        /// <summary>The per-line configurations a baseline already carries, when there is no accepted edit.</summary>
+        private static IReadOnlyList<DynamicHeaderLineOverride> LineOverridesOf(DynamicRackSystem baseline)
+            => baseline == null
+                ? Array.Empty<DynamicHeaderLineOverride>()
+                : (IReadOnlyList<DynamicHeaderLineOverride>)baseline.HeaderLineOverrides;
 
         /// <summary>The resolver the editor shares for load/snapshot and peralte normalization (single implementation).</summary>
         public PushBackResolver Resolver => pushResolver;
@@ -196,6 +204,33 @@ namespace RackCad.Application.Systems.PushBack
                 ? Array.Empty<DynamicRackModuleDesign>()
                 : ModuleIntents(commit, baseline);
             state.LastModuleReconciliation = reconciliation.Reconcile(intents, system, restoredIds);
+
+            // I-40 — las configuraciones por LINEA. Se llevan igual que las de modulo: la ACEPTADA cuando la hay, y
+            // si no la que el baseline ya tenia, de modo que un recalculo disparado por cualquier otro control las
+            // conserva. Un «restaurar estandar» no lleva ninguna: eso es lo que lo hace un reset.
+            // Se descartan las que apunten a un modulo que el rack reconstruido ya no tiene como cabecera, por la
+            // misma razon por la que la reconciliacion descarta una personalizacion sin modulo.
+            system.HeaderLineOverrides.Clear();
+            if (!standardRestore)
+            {
+                var headerIds = new HashSet<string>(
+                    system.Modules.Where(module => module.IsHeader).Select(module => module.ModuleId),
+                    StringComparer.Ordinal);
+
+                var lines = commit?.LineOverrides ?? LineOverridesOf(baseline);
+                foreach (var line in lines)
+                {
+                    if (line?.Header != null && headerIds.Contains(line.ModuleId))
+                    {
+                        system.HeaderLineOverrides.Add(new DynamicHeaderLineOverride
+                        {
+                            PostIndex = line.PostIndex,
+                            ModuleId = line.ModuleId,
+                            Header = headerClone.DeepCopy(line.Header)
+                        });
+                    }
+                }
+            }
 
             var authorizedSafety = safetyAuthority.Authorize(editorInputs.SafetySelections);
             var sharedDesign = dynamicAssembler.BuildDesign(

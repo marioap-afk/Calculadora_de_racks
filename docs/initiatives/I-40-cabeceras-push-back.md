@@ -246,6 +246,78 @@ correcto genera**, asi que una cabecera coherente —calculada o personalizada�
 exactamente igual que antes. Cubierto por prueba propia, y por las suites del Dinamico, el Selectivo y
 Cantilever completas.
 
+## 4-quater. Cuarta entrega — poste derivado y linea de cabeceras
+
+La tercera validacion aprobo el ciclo (personalizar, Actualizar sin Confirmar, RACKEDITAR, copiar,
+aplicar, reabrir, Cancelar). Faltaban dos requisitos.
+
+### A. Altura del poste derivado
+
+**Que es.** El poste derivado nace de **dos separadores consecutivos**; no pertenece a ninguna
+cabecera. **Su altura nunca estuvo modelada**: `DynamicSystemLateralBuilder.AddDerivedPost` le pasaba
+`context.Height` —la altura de la CABECERA— al parametro dinamico `LONGITUD` de su bloque. La
+**HEREDABA** (caso b de la auditoria). Su **refuerzo** si era editable
+(`DerivedPostReinforcementHeight`), y esa asimetria es justo lo que el Owner reporto.
+
+**Solucion.** `DerivedPostHeight` (`double?`) como **hermano exacto** del de refuerzo: mismo tipo,
+mismo sitio (parametro global del rack, no de una cabecera), misma nulabilidad y mismo significado del
+vacio. Recorre `PushBackEditorInputs` → `PushBackAdvancedRackParameters` → `DynamicRackSystem` /
+`DynamicRackDesign` → documento → resolver → `LONGITUD` del bloque → BOM.
+
+**Compatibilidad.** Vacio = hereda la altura de la cabecera, que es exactamente el comportamiento
+historico; un documento anterior no lleva el campo y se comporta igual. Un cambio consecuente y
+declarado: el refuerzo «a toda la altura» ahora sigue la altura del **poste derivado** en vez de la de
+la cabecera — identico mientras nadie fije la altura del poste, que es lo unico que existia antes.
+
+### B. Linea de cabeceras
+
+**Los dos conceptos que I-40 confundia.** Un rack tiene dos cosas que se llaman «cabecera»:
+
+| | Que es | Donde vive |
+|---|---|---|
+| **Modulo longitudinal** | Una entrada de `Modules`: la secuencia de fondo cabecera/separador/cabecera, **compartida por todo el rack** | `DynamicRackModuleDesign` |
+| **Linea fisica** | La **linea transversal de postes** — la que el lateral dibuja como un **corte** | `postIndex`, `DynamicLateralCorte` |
+
+Cada modulo se materializa **una vez en cada linea que lo cubre**. Por eso **una**
+`DynamicRackModuleDesign` **ES todas las instancias** de esa cabecera, y por eso el modelo no podia
+expresar «esta linea distinta de aquella». La UI editaba solo el primer concepto.
+
+**Lo que YA existia y decidio la solucion.** `DynamicFrontGeometry.HeaderConfigurationAtPost(system,
+module, catalog, postIndex)` es **la unica funcion** que decide que configuracion usa una cabecera **en
+una linea**, y la consumen los **tres** interesados: la geometria lateral, el BOM y el preview del
+Dinamico. De hecho las cabeceras CALCULADAS ya variaban por linea ahi (se reconstruyen a la altura de
+ese poste). Solo faltaba poder decir lo mismo de una personalizada.
+
+**Solucion minima.** `DynamicHeaderLineOverride { PostIndex, ModuleId, Header }` — la configuracion de
+UN modulo en UNA linea, direccionada por el **mismo par** que esa funcion ya recibia. El override se
+consulta **dentro** de esa unica autoridad, de modo que geometria, BOM y preview lo obedecen por
+construccion (AGENTS: la regla vive en una sola funcion). No se duplican racks ni modulos, no se toca
+`DynamicSystemLateralBuilder`, y `ModuleId` y GUID no cambian.
+
+**Persistencia.** El formato **solo crece** con un arreglo opcional `HeaderLineOverrides`, ausente en
+todo documento anterior y ausente cuando esta vacio. Ausente significa lo de siempre: cada linea usa la
+configuracion del modulo. El **Dinamico nunca los escribe**, asi que su comportamiento es identico —
+comprobado por prueba propia y por las suites de Dynamic (205 + 41), Selective (324) y Cantilever (869).
+
+### Modelo de alcance final
+
+| Alcance | Que modifica |
+|---|---|
+| **Solo esta cabecera** | El **modulo** seleccionado, en todas sus lineas |
+| **Esta linea de cabeceras** | Todas las cabeceras de **esa linea**; ninguna otra linea se toca |
+| **Todas las cabeceras** | Todas, y **retira** las excepciones de linea para que el rack quede uniforme |
+
+Las tres validan todos los destinos antes de tocar nada, dan a cada destino su **propia copia**,
+recomputan **una sola vez** al Confirmar y se revierten enteras con Cancelar. «Copiar de» funciona con
+cualquiera de los tres.
+
+> **Decision que el Owner debe confirmar.** «Solo esta cabecera» se mantiene a nivel de **modulo** (la
+> cabecera en todas sus lineas) y no como (linea, modulo). Es lo que preserva **intacto** el ciclo que
+> la tercera validacion aprobo, que la seccion C del encargo pide no regresar: personalizar C1 y
+> Actualizar sigue cambiando esa cabecera en todos los cortes, como el Owner ya vio y aprobo. Si se
+> prefiere la lectura estricta —«unicamente la cabecera fisica seleccionada»— es un cambio de una linea
+> en el alcance `Module`, pero cambia el dibujo de un flujo ya validado y por eso no se hizo solo.
+
 ## 5. Checklist de validacion manual en AutoCAD 2025
 
 DLL a cargar con `NETLOAD` (el del worktree de la iniciativa, WORKFLOW seccion 6):
@@ -323,3 +395,15 @@ Cerrar AutoCAD antes de cualquier recompilacion del worktree.
    «Personalizada».
 6. Personalizar una cabecera, pulsar **Cancelar** y luego **Actualizar**: no debe quedar ninguna
    cabecera personalizada — la transaccion sigue siendo transaccion.
+
+## 8. Checklist de la cuarta entrega (8 pasos)
+
+1. Push Back con **dos frentes** (⇒ tres lineas de postes) y varias cabeceras.
+2. «Avanzado» → **«Altura del poste derivado»**: fijar un valor evidente y **Actualizar**. El poste
+   derivado del dibujo cambia de longitud; vaciar el campo lo devuelve a la altura de la cabecera.
+3. Seleccionar una cabecera, poner **«Aplicar a: Esta linea de cabeceras»** y elegir **Linea 1**.
+4. «Configurar cabecera...», cambiar alto y algo mas, cerrar y **Actualizar**.
+5. Comprobar en el dibujo que **el corte de la linea 1 cambio y el de la linea 2 no**.
+6. **RACKEDITAR**: las diferencias entre lineas siguen ahi, y la altura del poste derivado tambien.
+7. Cambiar a **«Todas las cabeceras»**, configurar y Confirmar: **las dos lineas** quedan iguales.
+8. Repetir una operacion por linea y pulsar **Cancelar**: no queda ninguna linea alterada.

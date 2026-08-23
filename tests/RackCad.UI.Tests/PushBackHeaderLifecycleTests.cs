@@ -226,7 +226,7 @@ namespace RackCad.UI.Tests
 
                 var b = Rackeditar(drawn);
                 Select(b, headers[1]);
-                Combo(b, "HeaderScopeBox").SelectedIndex = 1;   // Todas las cabeceras
+                Combo(b, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
                 Combo(b, "CopyHeaderFromBox").SelectedIndex = 0;
                 Click(Btn(b, "CopyHeaderFromButton"));
                 var again = Draw(b);

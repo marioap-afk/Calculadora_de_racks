@@ -18,11 +18,13 @@ namespace RackCad.Application.Systems.Shared
         internal RackModuleCommit(
             IReadOnlyList<DynamicRackModuleDesign> modules,
             IReadOnlyList<string> restoredModuleIds,
-            bool standardRestoreRequested)
+            bool standardRestoreRequested,
+            IReadOnlyList<DynamicHeaderLineOverride> lineOverrides)
         {
             Modules = modules;
             RestoredModuleIds = restoredModuleIds;
             StandardRestoreRequested = standardRestoreRequested;
+            LineOverrides = lineOverrides;
         }
 
         /// <summary>The accepted module intents, independent of the session's own copies.</summary>
@@ -34,6 +36,9 @@ namespace RackCad.Application.Systems.Shared
 
         /// <summary>The rack-wide "restaurar estándar": the caller passes it on as <c>forceRebuild</c>.</summary>
         public bool StandardRestoreRequested { get; }
+
+        /// <summary>I-40: the accepted per-LINE cabecera configurations, independent of the session's own copies.</summary>
+        public IReadOnlyList<DynamicHeaderLineOverride> LineOverrides { get; }
     }
 
     /// <summary>
@@ -67,17 +72,57 @@ namespace RackCad.Application.Systems.Shared
         private List<DynamicRackModuleDesign> working;
         private bool standardRestoreRequested;
 
+        /// <summary>I-40 — the per-LINE staged configurations, keyed by (line, module). Same transaction as the
+        /// intents: staged until <see cref="Commit"/>, thrown away entirely by <see cref="Cancel"/>.</summary>
+        private Dictionary<LineKey, RackFrameConfiguration> committedLines = new Dictionary<LineKey, RackFrameConfiguration>();
+        private Dictionary<LineKey, RackFrameConfiguration> workingLines = new Dictionary<LineKey, RackFrameConfiguration>();
+
         private RackModuleEditSession(IEnumerable<DynamicRackModuleDesign> baseline)
         {
             committed = baseline.Select(CopyIntent).ToList();
             working = committed.Select(CopyIntent).ToList();
         }
 
+        /// <summary>The identity of a physical cabecera: its LINE and its module.</summary>
+        private readonly struct LineKey : IEquatable<LineKey>
+        {
+            public LineKey(int postIndex, string moduleId)
+            {
+                PostIndex = postIndex;
+                ModuleId = moduleId ?? string.Empty;
+            }
+
+            public int PostIndex { get; }
+            public string ModuleId { get; }
+
+            public bool Equals(LineKey other)
+                => PostIndex == other.PostIndex && string.Equals(ModuleId, other.ModuleId, StringComparison.Ordinal);
+
+            public override bool Equals(object obj) => obj is LineKey other && Equals(other);
+
+            public override int GetHashCode() => (PostIndex * 397) ^ ModuleId.GetHashCode();
+        }
+
         /// <summary>Open a session over the modules of a resolved system. The system is READ, never captured.</summary>
         public static RackModuleEditSession Begin(DynamicRackSystem system)
         {
             if (system == null) throw new ArgumentNullException(nameof(system));
-            return new RackModuleEditSession(system.Modules.Where(module => module != null).Select(ToIntent));
+            var session = new RackModuleEditSession(
+                system.Modules.Where(module => module != null).Select(ToIntent));
+
+            // I-40: la sesion adopta tambien lo que el rack ya tiene por LINEA, para que reabrir muestre —y pueda
+            // seguir editando— la configuracion real de cada linea y no solo la del modulo.
+            foreach (var line in system.HeaderLineOverrides)
+            {
+                if (line?.Header != null && !string.IsNullOrWhiteSpace(line.ModuleId))
+                {
+                    var key = new LineKey(line.PostIndex, line.ModuleId);
+                    session.committedLines[key] = session.clone.DeepCopy(line.Header);
+                    session.workingLines[key] = session.clone.DeepCopy(line.Header);
+                }
+            }
+
+            return session;
         }
 
         /// <summary>Open a session over module intents (a loaded design). The inputs are READ, never captured.</summary>
@@ -97,7 +142,10 @@ namespace RackCad.Application.Systems.Shared
         /// only the intents would leave a confirmable action looking like nothing to confirm.
         /// </summary>
         public bool HasPendingChanges
-            => !AreEquivalent(committed, working) || restored.Count > 0 || standardRestoreRequested;
+            => !AreEquivalent(committed, working)
+               || !AreEquivalentLines(committedLines, workingLines)
+               || restored.Count > 0
+               || standardRestoreRequested;
 
         /// <summary>Modules restored individually since the last commit, in the order they were restored.</summary>
         public IReadOnlyList<string> RestoredModuleIds => restored.ToList();
@@ -251,6 +299,106 @@ namespace RackCad.Application.Systems.Shared
             => working.Where(module => module.IsHeader).Select(module => module.ModuleId).ToList();
 
         /// <summary>
+        /// I-40 — apply one configuration to a set of cabeceras OF ONE LINE. Same single operation as
+        /// <see cref="ApplyHeaderConfiguration"/>: validate every target first, then hand each one its OWN
+        /// independent canonical copy, so nothing is partially applied and no two destinations share an instance.
+        /// <para>
+        /// The difference is the ADDRESS. A module configuration is the cabecera on EVERY line; a line override is
+        /// the cabecera on ONE line, and it wins where it exists. That is the distinction the model could not
+        /// express before: one <c>DynamicRackModuleDesign</c> IS every instance of that cabecera.
+        /// </para>
+        /// </summary>
+        public RackModuleHeaderApplyResult ApplyHeaderConfigurationToLine(
+            RackFrameConfiguration configuration,
+            int postIndex,
+            IEnumerable<string> targetModuleIds)
+        {
+            if (configuration == null)
+            {
+                return RackModuleHeaderApplyResult.Rejected("No hay una configuracion de cabecera que aplicar.");
+            }
+
+            if (postIndex < 0)
+            {
+                return RackModuleHeaderApplyResult.Rejected("No hay una linea de cabeceras seleccionada.");
+            }
+
+            var ids = (targetModuleIds ?? Enumerable.Empty<string>())
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+
+            if (ids.Count == 0)
+            {
+                return RackModuleHeaderApplyResult.Rejected("No hay ninguna cabecera de destino en esta linea.");
+            }
+
+            // ---- Validate EVERY target first. Nothing below this block may fail. ----
+            foreach (var id in ids)
+            {
+                var module = Find(id);
+                if (module == null)
+                {
+                    return RackModuleHeaderApplyResult.Rejected(
+                        "El modulo " + id + " ya no existe en este rack: no se aplico nada.");
+                }
+
+                if (!module.IsHeader)
+                {
+                    return RackModuleHeaderApplyResult.Rejected(
+                        "El modulo " + id + " es un separador y no lleva cabecera: no se aplico nada.");
+                }
+            }
+
+            // ---- Apply: una copia INDEPENDIENTE por destino. ----
+            foreach (var id in ids)
+            {
+                workingLines[new LineKey(postIndex, id)] = clone.DeepCopy(configuration);
+            }
+
+            return RackModuleHeaderApplyResult.Success(ids);
+        }
+
+        /// <summary>
+        /// The configuration a cabecera uses ON ONE LINE, as an independent copy: the line override when that line
+        /// has one, otherwise the module's own. This is what an editor hands to the configurator and what «copiar
+        /// de» reads, so what the user sees is what that physical cabecera actually draws.
+        /// </summary>
+        public RackFrameConfiguration HeaderConfigurationCopy(string moduleId, int postIndex)
+        {
+            if (postIndex >= 0
+                && workingLines.TryGetValue(new LineKey(postIndex, moduleId), out var line)
+                && line != null)
+            {
+                return clone.DeepCopy(line);
+            }
+
+            return HeaderConfigurationCopy(moduleId);
+        }
+
+        /// <summary>True when this cabecera has its OWN configuration on this line.</summary>
+        public bool HasLineOverride(string moduleId, int postIndex)
+            => postIndex >= 0 && workingLines.ContainsKey(new LineKey(postIndex, moduleId));
+
+        /// <summary>The lines that carry at least one own cabecera, ascending.</summary>
+        public IReadOnlyList<int> OverriddenLines
+            => workingLines.Keys.Select(key => key.PostIndex).Distinct().OrderBy(line => line).ToList();
+
+        /// <summary>Drop the per-line configurations of these modules, so they go back to the module's own. Applying
+        /// to ALL cabeceras uses it: a rack made uniform again must not keep line exceptions alive.</summary>
+        public void ClearLineOverrides(IEnumerable<string> moduleIds)
+        {
+            var ids = new HashSet<string>(
+                (moduleIds ?? Enumerable.Empty<string>()).Where(id => !string.IsNullOrWhiteSpace(id)),
+                StringComparer.Ordinal);
+
+            foreach (var key in workingLines.Keys.Where(key => ids.Contains(key.ModuleId)).ToList())
+            {
+                workingLines.Remove(key);
+            }
+        }
+
+        /// <summary>
         /// The ids of the cabeceras that carry the USER'S OWN configuration, in longitudinal order — the only ones
         /// that can be an ORIGIN for PBH-03.
         /// <para>
@@ -335,6 +483,7 @@ namespace RackCad.Application.Systems.Shared
         public void Cancel()
         {
             working = committed.Select(CopyIntent).ToList();
+            workingLines = CopyLines(committedLines);
             standardRestoreRequested = false;
             restored.Clear();
         }
@@ -346,14 +495,60 @@ namespace RackCad.Application.Systems.Shared
         public RackModuleCommit Commit()
         {
             committed = working.Select(CopyIntent).ToList();
+            committedLines = CopyLines(workingLines);
             var result = new RackModuleCommit(
                 committed.Select(CopyIntent).ToList(),
                 restored.ToList(),
-                standardRestoreRequested);
+                standardRestoreRequested,
+                committedLines
+                    .OrderBy(entry => entry.Key.PostIndex)
+                    .ThenBy(entry => entry.Key.ModuleId, StringComparer.Ordinal)
+                    .Select(entry => new DynamicHeaderLineOverride
+                    {
+                        PostIndex = entry.Key.PostIndex,
+                        ModuleId = entry.Key.ModuleId,
+                        Header = clone.DeepCopy(entry.Value)
+                    })
+                    .ToList());
 
             standardRestoreRequested = false;
             restored.Clear();
             return result;
+        }
+
+        private Dictionary<LineKey, RackFrameConfiguration> CopyLines(
+            Dictionary<LineKey, RackFrameConfiguration> source)
+        {
+            var result = new Dictionary<LineKey, RackFrameConfiguration>();
+            foreach (var entry in source)
+            {
+                result[entry.Key] = clone.DeepCopy(entry.Value);
+            }
+
+            return result;
+        }
+
+        /// <summary>Whether two staged line states are the same EDIT, compared through the persisted shape exactly
+        /// like the intents are.</summary>
+        private bool AreEquivalentLines(
+            Dictionary<LineKey, RackFrameConfiguration> left,
+            Dictionary<LineKey, RackFrameConfiguration> right)
+        {
+            if (left.Count != right.Count)
+            {
+                return false;
+            }
+
+            foreach (var entry in left)
+            {
+                if (!right.TryGetValue(entry.Key, out var other)
+                    || !string.Equals(Persisted(entry.Value), Persisted(other), StringComparison.Ordinal))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private DynamicRackModuleDesign Find(string moduleId)

@@ -326,7 +326,7 @@ namespace RackCad.UI.Tests
 
                     // 2) Seleccionar Cabecera 2. 3) Copiar de Cabecera 1. 4) Alcance: todas.
                     Select(w, headers[1]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;
+                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
                     var sources = Combo(w, "CopyHeaderFromBox");
                     var index = sources.Items.Cast<string>()
                         .Select((label, i) => new { label, i })
@@ -375,7 +375,7 @@ namespace RackCad.UI.Tests
                     Click(Btn(w, "ConfirmModuleButton"));
 
                     Select(w, headers[1]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;
+                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
                     Combo(w, "CopyHeaderFromBox").SelectedIndex = 0;
                     Click(Btn(w, "CopyHeaderFromButton"));
                     Click(Btn(w, "CancelModuleButton"));
@@ -408,7 +408,9 @@ namespace RackCad.UI.Tests
                     var options = Combo(w, "HeaderScopeBox").Items.Cast<ComboBoxItem>()
                         .Select(item => (string)item.Content).ToList();
 
-                    Assert.Equal(new[] { "Solo esta cabecera", "Todas las cabeceras" }, options);
+                    Assert.Equal(
+                        new[] { "Solo esta cabecera", "Esta linea de cabeceras", "Todas las cabeceras" },
+                        options);
                     Assert.DoesNotContain(options, option => option.Contains("aplicable"));
                 }
                 finally { w.Close(); }
@@ -427,7 +429,7 @@ namespace RackCad.UI.Tests
                 {
                     var headers = HeaderIds(w);
                     Select(w, headers[0]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;
+                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
                     w.HeaderConfiguratorPresenter = QuickConfigAt(187.0);
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
 

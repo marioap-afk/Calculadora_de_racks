@@ -302,10 +302,19 @@ namespace RackCad.Application.Systems.Dynamic
             context.Levels = DynamicSeparatorGeometry.Levels(system, catalog, context.Height);
 
             context.ReinforceDerivedPost = system.DerivedPostReinforced;
+
+            // I-40 (Owner): la ALTURA del poste derivado. Vacia = la altura de la cabecera, que es lo que este poste
+            // heredaba antes de que existiera el campo: un rack sin el valor dibuja exactamente igual que siempre.
+            context.DerivedPostHeight =
+                system.DerivedPostHeight.HasValue && system.DerivedPostHeight.Value > 0.0
+                    ? system.DerivedPostHeight.Value
+                    : context.Height;
+            // Refuerzo vacio = TODA la altura del poste derivado, que es lo que "a toda la altura" significa. Cuando
+            // nadie fija la altura del poste, esa altura ES la de la cabecera, asi que el valor historico no cambia.
             context.DerivedReinforcementHeight =
                 system.DerivedPostReinforcementHeight.HasValue && system.DerivedPostReinforcementHeight.Value > 0.0
                     ? system.DerivedPostReinforcementHeight.Value
-                    : context.Height;
+                    : context.DerivedPostHeight;
             return context;
         }
 
@@ -396,7 +405,7 @@ namespace RackCad.Application.Systems.Dynamic
                 ConnectionAnchor = origin,
                 Insertion = origin
             };
-            post.DynamicParameters[SelectiveRackDefaults.LengthParam] = context.Height;
+            post.DynamicParameters[SelectiveRackDefaults.LengthParam] = context.DerivedPostHeight;
             instances.Add(post);
 
             // Optional reinforcement: a second post mated at FIN_POSTE (reinforced by default, full height).
@@ -457,6 +466,9 @@ namespace RackCad.Application.Systems.Dynamic
 
 
             public bool ReinforceDerivedPost { get; set; } = true;
+
+            /// <summary>I-40: LONGITUD efectiva del poste derivado; por defecto la altura de la cabecera.</summary>
+            public double DerivedPostHeight { get; set; }
             public double DerivedReinforcementHeight { get; set; }
         }
     }

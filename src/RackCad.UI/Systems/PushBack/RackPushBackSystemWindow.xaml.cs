@@ -249,6 +249,7 @@ namespace RackCad.UI.Systems.PushBack
                 advanced.ManualHeaderHeightOverride = inputs.ManualHeaderHeightOverride;
                 advanced.DerivedPostReinforced = inputs.DerivedPostReinforced;
                 advanced.DerivedPostReinforcementHeight = inputs.DerivedPostReinforcementHeight;
+                advanced.DerivedPostHeight = inputs.DerivedPostHeight;
                 advanced.SeparatorCountOverride = inputs.SeparatorCountOverride;
                 advanced.SeparatorSpacingOverride = inputs.SeparatorSpacingOverride;
 
@@ -470,6 +471,7 @@ namespace RackCad.UI.Systems.PushBack
                 // rebuilt from the new structure and the reconciliation report reaches the panel.
                 state.ClearModuleCommit();
                 RefreshModuleSelector();
+                RefreshHeaderLines();
 
                 SetStatus("Vista recalculada.", false);
             }
@@ -569,6 +571,7 @@ namespace RackCad.UI.Systems.PushBack
                 ManualHeaderHeightOverride = advanced.ManualHeaderHeightOverride,
                 DerivedPostReinforced = advanced.DerivedPostReinforced,
                 DerivedPostReinforcementHeight = advanced.DerivedPostReinforcementHeight,
+                DerivedPostHeight = advanced.DerivedPostHeight,
                 SeparatorCountOverride = advanced.SeparatorCountOverride,
                 SeparatorSpacingOverride = advanced.SeparatorSpacingOverride,
                 PostCatalogId = PostBox.SelectedId,
@@ -1094,6 +1097,7 @@ namespace RackCad.UI.Systems.PushBack
                 SetOptional(RackHeaderHeightBox, advanced.ManualHeaderHeightOverride);
                 DerivedPostReinforcedCheck.IsChecked = advanced.DerivedPostReinforced;
                 SetOptional(DerivedPostReinforcementHeightBox, advanced.DerivedPostReinforcementHeight);
+                SetOptional(DerivedPostHeightBox, advanced.DerivedPostHeight);
                 SetOptional(RackSeparatorCountBox, advanced.SeparatorCountOverride);
                 SetOptional(RackSeparatorSpacingBox, advanced.SeparatorSpacingOverride);
             }
@@ -1126,6 +1130,7 @@ namespace RackCad.UI.Systems.PushBack
             advanced.ManualHeaderHeightOverride = RackHeaderHeightBox.Value;
             advanced.DerivedPostReinforced = DerivedPostReinforcedCheck.IsChecked == true;
             advanced.DerivedPostReinforcementHeight = DerivedPostReinforcementHeightBox.Value;
+            advanced.DerivedPostHeight = DerivedPostHeightBox.Value;
             advanced.SeparatorCountOverride = RackSeparatorCountBox.Value.HasValue
                 ? (int?)(int)Math.Round(RackSeparatorCountBox.Value.Value)
                 : null;
@@ -1430,7 +1435,11 @@ namespace RackCad.UI.Systems.PushBack
             // la calculada ES lo correcto—; servirlo bajo la etiqueta «Personalizada» era entregar los datos
             // predeterminados y, al copiarla, propagarlos. El invariante de la sesion hace ese caso imposible, y si
             // aun asi ocurriera se bloquea con diagnostico en vez de degradar en silencio.
-            var copy = state.ModuleSession.HeaderConfigurationCopy(module.ModuleId);
+            // I-40: con alcance por LINEA se edita la cabecera FISICA de esa linea, asi que se abre sobre lo que esa
+            // linea dibuja hoy (su override si lo tiene, y si no la del modulo).
+            var copy = SelectedHeaderScope() == RackModuleHeaderScope.Line
+                ? state.ModuleSession.HeaderConfigurationCopy(module.ModuleId, SelectedHeaderLine())
+                : state.ModuleSession.HeaderConfigurationCopy(module.ModuleId);
             if (copy == null && module.HasCustomHeaderConfiguration)
             {
                 SetModuleStatus(
@@ -1503,6 +1512,7 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         private void StageHeaderConfiguration(RackModuleDescriptor module, RackFrameConfiguration configuration)
         {
+            var scope = SelectedHeaderScope();
             var targets = HeaderTargets(module, out var omitted);
             if (targets.Count == 0)
             {
@@ -1510,7 +1520,31 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var result = state.ModuleSession.ApplyHeaderConfiguration(configuration, targets);
+            RackModuleHeaderApplyResult result;
+            var line = -1;
+            if (scope == RackModuleHeaderScope.Line)
+            {
+                line = SelectedHeaderLine();
+                if (line < 0)
+                {
+                    SetModuleStatus("Elige la linea de cabeceras a la que quieres aplicar la configuracion.");
+                    return;
+                }
+
+                result = state.ModuleSession.ApplyHeaderConfigurationToLine(configuration, line, targets);
+            }
+            else
+            {
+                result = state.ModuleSession.ApplyHeaderConfiguration(configuration, targets);
+
+                // «Todas las cabeceras» deja el rack UNIFORME: si quedaran configuraciones por linea, seguirian
+                // ganando y el usuario veria cabeceras distintas justo despues de pedir que fueran todas iguales.
+                if (scope == RackModuleHeaderScope.AllHeaders)
+                {
+                    state.ModuleSession.ClearLineOverrides(targets);
+                }
+            }
+
             if (!result.Applied)
             {
                 SetModuleStatus(result.RejectionReason);
@@ -1529,7 +1563,7 @@ namespace RackCad.UI.Systems.PushBack
                 suppressSync = wasSuppressed;
             }
 
-            var message = DescribeApplied(result.AppliedModuleIds, omitted);
+            var message = DescribeApplied(result.AppliedModuleIds, omitted, line);
             RefreshModuleStatus();
             SetModuleStatus(message);
         }
@@ -1539,16 +1573,19 @@ namespace RackCad.UI.Systems.PushBack
         /// user counts them, never by module id— and how many were left out and why. Owner, ronda 2: the scope must
         /// not be something the user has to infer.
         /// </summary>
-        private string DescribeApplied(IReadOnlyList<string> appliedIds, int omitted)
+        private string DescribeApplied(IReadOnlyList<string> appliedIds, int omitted, int line)
         {
             var names = appliedIds.Select(ModuleDisplayName).ToList();
             var applied = string.Format(
                 CultureInfo.CurrentCulture,
                 names.Count == 1
-                    ? "Configuracion aplicada a {0} cabecera ({1})."
-                    : "Configuracion aplicada a {0} cabeceras ({1}).",
+                    ? "Configuracion aplicada a {0} cabecera ({1}){2}."
+                    : "Configuracion aplicada a {0} cabeceras ({1}){2}.",
                 names.Count,
-                string.Join(", ", names));
+                string.Join(", ", names),
+                line >= 0
+                    ? string.Format(CultureInfo.CurrentCulture, " de la linea {0}", line + 1)
+                    : string.Empty);
 
             if (omitted > 0)
             {
@@ -1573,9 +1610,17 @@ namespace RackCad.UI.Systems.PushBack
         private IReadOnlyList<string> HeaderTargets(RackModuleDescriptor selected, out int omitted)
         {
             omitted = 0;
-            if (SelectedHeaderScope() == RackModuleHeaderScope.Module)
+            var scope = SelectedHeaderScope();
+            if (scope == RackModuleHeaderScope.Module)
             {
                 return new List<string> { selected.ModuleId };
+            }
+
+            if (scope == RackModuleHeaderScope.Line)
+            {
+                // Las cabeceras que ESA linea cubre. Una linea no abarca todo el rack: su rango de fondo lo fija
+                // DynamicDepthGeometry.AtPost, la misma autoridad que usan el lateral y el BOM.
+                return HeaderModulesOnLine(SelectedHeaderLine());
             }
 
             var targets = new List<string>();
@@ -1594,15 +1639,101 @@ namespace RackCad.UI.Systems.PushBack
             return targets;
         }
 
+        /// <summary>The header modules a physical LINE covers, in longitudinal order. Empty when the line is not
+        /// part of the last valid computation.</summary>
+        private IReadOnlyList<string> HeaderModulesOnLine(int postIndex)
+        {
+            var structure = lastComputation?.System?.Structure;
+            if (structure == null || postIndex < 0)
+            {
+                return Array.Empty<string>();
+            }
+
+            var range = DynamicDepthGeometry.AtPost(structure, postIndex);
+            return DynamicDepthGeometry.ModulesInRange(structure, range)
+                .Where(module => module.IsHeader)
+                .Select(module => module.ModuleId)
+                .ToList();
+        }
+
         /// <summary>A cabecera is applicable when the last valid recompute drew it somewhere. Unknown modules (no
         /// computation yet) count as applicable: the session is the only truth available then.</summary>
         private bool IsApplicableHeader(RackModuleDescriptor module)
             => DescribeFromLastComputation(module.ModuleId)?.IsPhysicallyPresent ?? true;
 
         private RackModuleHeaderScope SelectedHeaderScope()
-            => HeaderScopeBox != null && HeaderScopeBox.SelectedIndex == 1
-                ? RackModuleHeaderScope.AllHeaders
-                : RackModuleHeaderScope.Module;
+        {
+            switch (HeaderScopeBox?.SelectedIndex)
+            {
+                case 1: return RackModuleHeaderScope.Line;
+                case 2: return RackModuleHeaderScope.AllHeaders;
+                default: return RackModuleHeaderScope.Module;
+            }
+        }
+
+        /// <summary>The physical line the user picked, or -1 when the scope does not address one.</summary>
+        private int SelectedHeaderLine()
+            => HeaderLineBox != null
+               && HeaderLineBox.SelectedIndex >= 0
+               && HeaderLineBox.SelectedIndex < headerLineIndexes.Count
+                ? headerLineIndexes[HeaderLineBox.SelectedIndex]
+                : -1;
+
+        private List<int> headerLineIndexes = new List<int>();
+
+        /// <summary>The line selector only means something for the LINE scope; elsewhere it says so.</summary>
+        private void HeaderScope_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            RefreshHeaderLines();
+        }
+
+        /// <summary>
+        /// Rebuild the line list from the lines the rack ACTUALLY has: the boundaries I-33 says exist, which are the
+        /// same ones the lateral draws as cortes. Reuses that authority instead of restating it.
+        /// </summary>
+        private void RefreshHeaderLines()
+        {
+            if (HeaderLineBox == null)
+            {
+                return;
+            }
+
+            var structure = lastComputation?.System?.Structure;
+            var lines = structure == null
+                ? new List<int>()
+                : DynamicFrontActivation.PresentBoundaries(structure).ToList();
+
+            var previous = SelectedHeaderLine();
+            var wasSuppressed = suppressSync;
+            suppressSync = true;
+            try
+            {
+                HeaderLineBox.ItemsSource = lines
+                    .Select(line => string.Format(CultureInfo.CurrentCulture, "Linea {0} (poste {0})", line + 1))
+                    .ToList();
+                headerLineIndexes = lines;
+
+                var index = lines.IndexOf(previous);
+                HeaderLineBox.SelectedIndex = index >= 0 ? index : (lines.Count > 0 ? 0 : -1);
+            }
+            finally
+            {
+                suppressSync = wasSuppressed;
+            }
+
+            var lineScope = SelectedHeaderScope() == RackModuleHeaderScope.Line;
+            SetBlankSensitive(
+                HeaderLineBox,
+                lineScope && headerLineIndexes.Count > 0,
+                lineScope
+                    ? "Este rack todavia no tiene lineas que editar."
+                    : "Elige «Esta linea de cabeceras» para escoger a que linea va la configuracion.");
+        }
 
         private string SelectedCopySourceId()
             => CopyHeaderFromBox != null

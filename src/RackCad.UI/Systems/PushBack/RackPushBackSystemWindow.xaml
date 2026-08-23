@@ -280,6 +280,15 @@
                                                Minimum="0" MinimumInclusive="False" ToolTipService.ShowOnDisabled="True"
                                                ToolTip="Altura manual de la cabecera. Vacio = la altura derivada de los niveles de carga." />
 
+                        <!-- I-40 (Owner): la ALTURA del poste derivado, junto a la de su refuerzo. Vacio = hereda la
+                             altura de la cabecera, que es lo que este poste ha hecho siempre. -->
+                        <TextBlock Text="Altura del poste derivado (in)" Style="{StaticResource FieldLabel}" />
+                        <controls:NumericField x:Name="DerivedPostHeightBox" LostFocus="AdvancedRackParameter_Changed"
+                                               Minimum="0" MinimumInclusive="False" ToolTipService.ShowOnDisabled="True"
+                                               ToolTip="Altura del poste derivado. Vacio = hereda la altura de la cabecera." />
+                        <TextBlock Text="Vacio = hereda la altura de la cabecera."
+                                   Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" Margin="0,2,0,0" />
+
                         <CheckBox x:Name="DerivedPostReinforcedCheck" Content="Reforzar poste derivado" Margin="0,8,0,0"
                                   Foreground="{DynamicResource ShellTextPrimaryBrush}"
                                   Click="AdvancedRackParameter_Changed" ToolTipService.ShowOnDisabled="True"
@@ -379,11 +388,23 @@
                                        Style="{StaticResource FieldLabel}" Margin="0,12,0,0" />
                             <TextBlock Text="Aplicar configuracion a:" Foreground="#7A8794" FontSize="9.5"
                                        TextWrapping="Wrap" Margin="0,0,0,2" />
-                            <ComboBox x:Name="HeaderScopeBox" SelectedIndex="0" ToolTipService.ShowOnDisabled="True"
+                            <ComboBox x:Name="HeaderScopeBox" SelectedIndex="0" SelectionChanged="HeaderScope_Changed"
+                                      ToolTipService.ShowOnDisabled="True"
                                       ToolTip="A cuantas cabeceras va la configuracion, tanto al configurarla como al copiarla. Si alguna no se dibuja en ningun corte, se omite y la linea de estado lo dice.">
                                 <ComboBoxItem Content="Solo esta cabecera" />
+                                <ComboBoxItem Content="Esta linea de cabeceras" />
                                 <ComboBoxItem Content="Todas las cabeceras" />
                             </ComboBox>
+
+                            <!-- I-40 (Owner): la LINEA de cabeceras. Un rack tiene DOS cosas que se llaman cabecera:
+                                 el MODULO longitudinal (la secuencia de fondo, compartida por todo el rack) y la LINEA
+                                 fisica —la linea transversal de postes que el lateral dibuja como un CORTE—. Cada
+                                 modulo se materializa una vez en cada linea que lo cubre, asi que «esta linea» y
+                                 «esta cabecera» no son lo mismo y el selector de modulo por si solo no basta. -->
+                            <TextBlock x:Name="HeaderLineLabel" Text="Linea de cabeceras (corte):"
+                                       Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" Margin="0,8,0,2" />
+                            <ComboBox x:Name="HeaderLineBox" ToolTipService.ShowOnDisabled="True"
+                                      ToolTip="La linea transversal de postes a la que va la configuracion. Es el corte que el lateral dibuja en ese poste." />
                         </StackPanel>
 
                         <WrapPanel Margin="0,10,0,0">

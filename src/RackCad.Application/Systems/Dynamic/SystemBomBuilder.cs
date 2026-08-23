@@ -209,7 +209,12 @@ namespace RackCad.Application.Systems.Dynamic
                     continue;
                 }
 
-                var primaryHeight = Round(DynamicFrontGeometry.PostHeight(system, postIndex));
+                // I-40 (Owner): la altura MANUAL del poste derivado manda sobre la derivada de la linea, igual que
+                // hace la del refuerzo. Vacia = la altura del poste en esa linea, que es el comportamiento historico.
+                var primaryHeight = Round(
+                    system.DerivedPostHeight.HasValue && system.DerivedPostHeight.Value > 0.0
+                        ? system.DerivedPostHeight.Value
+                        : DynamicFrontGeometry.PostHeight(system, postIndex));
                 var reinforcementHeight = system.DerivedPostReinforced
                     ? Round(system.DerivedPostReinforcementHeight.HasValue
                             && system.DerivedPostReinforcementHeight.Value > 0.0
