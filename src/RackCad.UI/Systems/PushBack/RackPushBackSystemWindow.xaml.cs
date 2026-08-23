@@ -320,6 +320,10 @@ namespace RackCad.UI.Systems.PushBack
                 RearPeralteBox.SelectedItem = RearPeraltes.FirstOrDefault(p => Math.Abs(p - push.HighEndBeamPeralte) < 1e-6);
                 if (RearPeralteBox.SelectedItem == null) RearPeralteBox.SelectedItem = PushBackDefaults.HighEndBeamDefaultPeralte;
 
+                // I-41: el fondo propio de la celda (vacio = hereda «Fondos frente») y su tarima.
+                CellFondoOverrideBox.SetNumber(push.PalletsDeepOverride);
+                CellDrawPalletCheck.IsChecked = push.DrawPallet;
+
                 ApplyBlankFrontEditability(front.IsActive);
             }
             finally
@@ -350,7 +354,11 @@ namespace RackCad.UI.Systems.PushBack
                      {
                          CellPalletFrontBox, CellPalletHeightBox, CellPalletWeightBox, CellClearBox,
                          CellBeamLengthOverrideBox, CellInOutBeamBox, CellInOutPeralteBox,
-                         CellIntermediateBeamBox, CellIntermediatePeralteBox, RearPeralteBox
+                         CellIntermediateBeamBox, CellIntermediatePeralteBox, RearPeralteBox,
+                         // I-41: el fondo propio y la tarima son propiedades de una CELDA, asi que siguen la misma
+                         // regla que las demas. La configuracion queda DORMIDA, no borrada: reactivar el frente la
+                         // devuelve intacta.
+                         CellFondoOverrideBox, CellDrawPalletCheck
                      })
             {
                 SetBlankSensitive(control, isActive, reason);
@@ -359,7 +367,11 @@ namespace RackCad.UI.Systems.PushBack
             // Alcances/aplicaciones ligados a CELDA. Los tres botones de datos del FRENTE quedan disponibles: copian
             // valores estructurales, que siguen siendo validos en un frente en blanco.
             foreach (var control in new Control[]
-                     { ApplyCellButton, ApplySelectedButton, ApplyLevelButton, ApplyFrontButton, ApplyAllButton })
+                     {
+                         ApplyCellButton, ApplySelectedButton, ApplyLevelButton, ApplyFrontButton, ApplyAllButton,
+                         CellPropertyScopeBox, ApplyCellFondoButton, RestoreCellFondoButton,
+                         ApplyCellPalletButton, RestoreCellPalletButton
+                     })
             {
                 SetBlankSensitive(control, isActive, reason);
             }
@@ -430,9 +442,18 @@ namespace RackCad.UI.Systems.PushBack
 
         private void RequestRecompute() => session.Recompute.Request();
 
+        /// <summary>
+        /// Cuantas veces ha corrido efectivamente el recalculo. Es el unico modo observable de comprobar que una
+        /// operacion masiva de I-41 produce UNA sola pasada y no una por celda; la puerta de coalescencia
+        /// (<see cref="RecomputeGate"/>) no publica ningun evento. Solo lectura, y no participa de ninguna regla.
+        /// </summary>
+        internal int RecomputePassesForTest { get; private set; }
+
         private void Recompute()
         {
             if (suppressSync) return;
+
+            RecomputePassesForTest++;
 
             // A control in error blocks the model rebuild: do NOT touch state/session/computation/baseline, keep the last
             // valid model as a preview reference only, and disable every action.
@@ -515,7 +536,7 @@ namespace RackCad.UI.Systems.PushBack
             FrontBox, DepthBox, PalletHeightBox, WeightBox, PalletsDeepBox, ToleranceBox, PostPeralteBox,
             BeamDepthBox, AnnotationScaleBox, FrontCountBox, PositionsBox, LevelsBox, FondosBox,
             DepthStartBox, FirstLevelHeightBox, CellPalletFrontBox, CellPalletHeightBox, CellPalletWeightBox,
-            CellClearBox, CellBeamLengthOverrideBox
+            CellClearBox, CellBeamLengthOverrideBox, CellFondoOverrideBox
         };
 
         /// <summary>Read the cell panel (shared + Push Back values) and apply it to the primary selected cell + its front.</summary>
@@ -973,6 +994,110 @@ namespace RackCad.UI.Systems.PushBack
                 finally
                 {
                     suppressSync = false;
+                }
+
+                RequestRecompute();
+            }
+        }
+
+        // ---- I-41: fondo y tarima por celda (PB-015 / PB-016) ----------------------------------------------------
+
+        /// <summary>
+        /// El alcance elegido en el desplegable propio de I-41. Son los CINCO de siempre
+        /// (<see cref="DynamicRackCellScope"/>); no hay un sexto ni un modelo de seleccion paralelo.
+        /// </summary>
+        private DynamicRackCellScope SelectedPropertyScope()
+            => (DynamicRackCellScope)Math.Min(
+                (int)DynamicRackCellScope.All,
+                Math.Max(0, CellPropertyScopeBox.SelectedIndex));
+
+        /// <summary>
+        /// El camino ordinario de edicion de las dos propiedades de I-41: escribir en el control y salir de el escribe
+        /// la CELDA primaria, igual que hace cualquier otro campo de la celda. Los botones de alcance son para ir mas
+        /// alla de esa celda; no son la unica forma de aplicar.
+        /// </summary>
+        private void CellFondo_Changed(object sender, RoutedEventArgs e)
+        {
+            if (suppressSync) return;
+            WriteCellProperties(DynamicRackCellScope.Cell, depth: true, pallet: false);
+        }
+
+        private void CellDrawPallet_Changed(object sender, RoutedEventArgs e)
+        {
+            if (suppressSync) return;
+            WriteCellProperties(DynamicRackCellScope.Cell, depth: false, pallet: true);
+        }
+
+        private void ApplyCellFondo_Click(object sender, RoutedEventArgs e)
+            => WriteCellProperties(SelectedPropertyScope(), depth: true, pallet: false);
+
+        private void ApplyCellPallet_Click(object sender, RoutedEventArgs e)
+            => WriteCellProperties(SelectedPropertyScope(), depth: false, pallet: true);
+
+        /// <summary>Restaurar el fondo = quitar el override; las celdas del alcance vuelven al default del frente.</summary>
+        private void RestoreCellFondo_Click(object sender, RoutedEventArgs e)
+        {
+            WithSuppressedSync(() => CellFondoOverrideBox.SetNumber(null));
+            WriteCellProperties(SelectedPropertyScope(), depth: true, pallet: false);
+        }
+
+        /// <summary>Restaurar la tarima = volver al default LEGACY, que es no dibujarla.</summary>
+        private void RestoreCellPallet_Click(object sender, RoutedEventArgs e)
+        {
+            WithSuppressedSync(() => CellDrawPalletCheck.IsChecked = false);
+            WriteCellProperties(SelectedPropertyScope(), depth: false, pallet: true);
+        }
+
+        /// <summary>
+        /// Escribe en el estado SOLO la(s) propiedad(es) pedida(s) sobre el alcance, y recalcula UNA sola vez — el
+        /// <see cref="RackEditorSession{TDesign,TSystem}.Recompute"/> queda diferido durante toda la operacion, asi que
+        /// una aplicacion masiva a 300 celdas produce un unico paso de recalculo, no 300.
+        /// </summary>
+        private void WriteCellProperties(DynamicRackCellScope scope, bool depth, bool pallet)
+        {
+            // Un campo en error NO escribe nada en el estado, pero SI pide recalculo: es esa pasada la que marca los
+            // controles, publica el motivo del bloqueo y deshabilita las acciones (contrato I-39). Salir en silencio
+            // dejaria la ventana diciendo que sus entradas siguen siendo validas con un campo marcado en rojo.
+            if (!AllFieldsValid(out _))
+            {
+                RequestRecompute();
+                return;
+            }
+
+            using (session.Recompute.Defer())
+            {
+                var written = 0;
+                if (depth)
+                {
+                    // Vacio = restaurar: sin override, la celda hereda el fondo del frente.
+                    var requested = CellFondoOverrideBox.Value;
+                    written = state.ApplyPalletsDeep(
+                        requested.HasValue ? (int?)(int)Math.Round(requested.Value) : null, scope);
+                }
+
+                if (pallet)
+                {
+                    written = state.ApplyDrawPallet(CellDrawPalletCheck.IsChecked == true, scope);
+                }
+
+                suppressSync = true;
+                try
+                {
+                    RenderPushBackMatrix();
+                    LoadSelectedFront();
+                }
+                finally
+                {
+                    suppressSync = false;
+                }
+
+                if (scope != DynamicRackCellScope.Cell)
+                {
+                    SetStatus(string.Format(
+                        CultureInfo.InvariantCulture,
+                        "{0} aplicado a {1} celda(s).",
+                        depth ? "Fondo" : "Tarima",
+                        written), false);
                 }
 
                 RequestRecompute();

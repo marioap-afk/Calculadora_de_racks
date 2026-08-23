@@ -50,12 +50,20 @@ namespace RackCad.UI.Systems.PushBack
                 : new DynamicEditorCell();
             var push = state.Cell(frontIndex, levelIndex);
 
+            // I-41: la tarjeta muestra el fondo EFECTIVO de la celda, no el del frente, porque desde I-41 pueden ser
+            // distintos y la tarjeta es donde el usuario lee lo que va a dibujarse. Un asterisco marca que esa celda
+            // lleva override propio, para distinguir «hereda 4» de «pidio 4».
+            var effective = PushBackCellDepth.Effective(cell != null ? push.PalletsDeepOverride : null, front.PalletsDeep);
+            var overridden = push.PalletsDeepOverride.HasValue ? "*" : string.Empty;
+
             return string.Format(
                 CultureInfo.InvariantCulture,
-                "×{0} · {1}F ini {2}\nIN/OUT {3:0.##}\" · Post {4:0.##}\"",
+                "×{0} · {1}F{2} ini {3}{4}\nIN/OUT {5:0.##}\" · Post {6:0.##}\"",
                 front.PalletCount,
-                front.PalletsDeep,
+                effective,
+                overridden,
                 front.DepthStartPosition,
+                push.DrawPallet ? " · tarima" : string.Empty,
                 cell.InOutBeamDepth,
                 push.HighEndBeamPeralte);
         }
