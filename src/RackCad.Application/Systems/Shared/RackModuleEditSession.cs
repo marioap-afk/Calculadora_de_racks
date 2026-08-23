@@ -376,6 +376,56 @@ namespace RackCad.Application.Systems.Shared
             return HeaderConfigurationCopy(moduleId);
         }
 
+        /// <summary>
+        /// The configuration to COPY from a cabecera the user picked as origin, resolved deterministically:
+        /// <list type="number">
+        /// <item>what it has on <paramref name="preferredLine"/>, the line the editor is addressing;</item>
+        /// <item>otherwise the module's own personalization, which applies to every line without one;</item>
+        /// <item>otherwise its personalization on the FIRST line that has one — the user asked to copy «that
+        /// cabecera's» configuration, and if it only exists on another line that is still the one they mean;</item>
+        /// <item>otherwise the module's configuration, which is what that cabecera draws anyway.</item>
+        /// </list>
+        /// Always an independent copy.
+        /// </summary>
+        public RackFrameConfiguration SourceConfigurationCopy(string moduleId, int preferredLine)
+        {
+            if (preferredLine >= 0
+                && workingLines.TryGetValue(new LineKey(preferredLine, moduleId), out var preferred)
+                && preferred != null)
+            {
+                return clone.DeepCopy(preferred);
+            }
+
+            var module = Find(moduleId);
+            if (module?.HeaderConfiguration != null && !module.UseCalculatedHeaderConfiguration)
+            {
+                return clone.DeepCopy(module.HeaderConfiguration);
+            }
+
+            var firstLine = workingLines.Keys
+                .Where(key => string.Equals(key.ModuleId, moduleId, StringComparison.Ordinal))
+                .OrderBy(key => key.PostIndex)
+                .Cast<LineKey?>()
+                .FirstOrDefault();
+
+            return firstLine.HasValue
+                ? clone.DeepCopy(workingLines[firstLine.Value])
+                : HeaderConfigurationCopy(moduleId);
+        }
+
+        /// <summary>True when this cabecera carries the user's own configuration on ANY line, or on the module
+        /// itself — the condition for offering it as an ORIGIN.</summary>
+        public bool HasAnyPersonalization(string moduleId)
+        {
+            var module = Find(moduleId);
+            if (module?.HeaderConfiguration != null && !module.UseCalculatedHeaderConfiguration)
+            {
+                return true;
+            }
+
+            return workingLines.Keys.Any(key => string.Equals(key.ModuleId, moduleId, StringComparison.Ordinal));
+        }
+
         /// <summary>True when this cabecera has its OWN configuration on this line.</summary>
         public bool HasLineOverride(string moduleId, int postIndex)
             => postIndex >= 0 && workingLines.ContainsKey(new LineKey(postIndex, moduleId));

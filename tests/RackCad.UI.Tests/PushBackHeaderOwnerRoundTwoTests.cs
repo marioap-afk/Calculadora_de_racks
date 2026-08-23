@@ -51,12 +51,12 @@ namespace RackCad.UI.Tests
             => Combo(w, "ModuleBox").SelectedIndex = w.EditorStateForTest.ModuleSession.Modules
                 .Select((m, i) => new { m.ModuleId, i }).First(x => x.ModuleId == moduleId).i;
 
+        // I-40 (decision final): la unidad es la cabecera FISICA (PostIndex, ModuleId).
         private static RackFrameConfiguration Staged(RackPushBackSystemWindow w, string moduleId)
-            => w.EditorStateForTest.ModuleSession.HeaderConfigurationCopy(moduleId);
+            => PushBackHeaderTestSupport.Staged(w, moduleId);
 
         private static RackFrameConfiguration Resolved(RackPushBackSystemWindow w, string moduleId)
-            => w.EditorStateForTest.WorkingBaseline.Structure.Modules
-                .First(m => m.ModuleId == moduleId).AssociatedFrameConfiguration;
+            => PushBackHeaderTestSupport.Drawn(w, moduleId);
 
         /// <summary>El gesto del modo rapido: cambiar el alto y «Aplicar». REGENERA la cabecera desde la plantilla.</summary>
         private static Action<RackFrameConfiguratorWindow> QuickConfigAt(double height)
@@ -178,8 +178,7 @@ namespace RackCad.UI.Tests
 
                     Assert.Equal(205.0, Resolved(w, id).Height, 4);
                     Assert.Equal(41.5, Resolved(w, id).PanelClear, 4);   // la primera personalizacion sigue viva
-                    Assert.False(w.EditorStateForTest.WorkingBaseline.Structure.Modules
-                        .First(m => m.ModuleId == id).UseCalculatedHeaderConfiguration);
+                    Assert.True(PushBackHeaderTestSupport.IsCustom(w, id));
                 }
                 finally { w.Close(); }
             });
@@ -340,8 +339,7 @@ namespace RackCad.UI.Tests
                     {
                         Assert.Equal(187.0, Resolved(w, id).Height, 4);
                         Assert.Equal(41.5, Resolved(w, id).PanelClear, 4);
-                        Assert.False(w.EditorStateForTest.WorkingBaseline.Structure.Modules
-                            .First(m => m.ModuleId == id).UseCalculatedHeaderConfiguration);
+                        Assert.True(PushBackHeaderTestSupport.IsCustom(w, id));
                     }
 
                     // Y al reabrir cada una, esos mismos valores.
@@ -381,12 +379,10 @@ namespace RackCad.UI.Tests
                     Click(Btn(w, "CancelModuleButton"));
 
                     // Solo la primera sigue personalizada: la operacion cancelada no dejo rastro.
-                    Assert.True(Staged(w, headers[0]) != null);
                     Assert.Equal(187.0, Staged(w, headers[0]).Height, 4);
                     for (var i = 1; i < headers.Length; i++)
                     {
-                        Assert.False(w.EditorStateForTest.ModuleSession.Modules
-                            .First(m => m.ModuleId == headers[i]).HasCustomHeaderConfiguration);
+                        Assert.False(PushBackHeaderTestSupport.IsCustom(w, headers[i]));
                     }
                 }
                 finally { w.Close(); }

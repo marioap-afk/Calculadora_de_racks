@@ -56,8 +56,9 @@ namespace RackCad.UI.Tests
             Combo(w, "ModuleBox").SelectedIndex = index;
         }
 
+        // I-40 (decision final): la unidad es la cabecera FISICA (PostIndex, ModuleId).
         private static RackFrameConfiguration Staged(RackPushBackSystemWindow w, string moduleId)
-            => w.EditorStateForTest.ModuleSession.HeaderConfigurationCopy(moduleId);
+            => PushBackHeaderTestSupport.Staged(w, moduleId);
 
         /// <summary>
         /// The REAL user gesture that the defect hid: the quick-configuration tab of the shared configurator, where
@@ -125,10 +126,8 @@ namespace RackCad.UI.Tests
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
                     Click(Btn(w, "ConfirmModuleButton"));
 
-                    var module = w.EditorStateForTest.WorkingBaseline.Structure.Modules
-                        .First(m => m.ModuleId == headerId);
-                    Assert.False(module.UseCalculatedHeaderConfiguration);
-                    Assert.Equal(187.0, module.AssociatedFrameConfiguration.Height, 4);
+                    Assert.True(PushBackHeaderTestSupport.IsCustom(w, headerId));
+                    Assert.Equal(187.0, PushBackHeaderTestSupport.Drawn(w, headerId).Height, 4);
                 }
                 finally { w.Close(); }
             });
@@ -183,9 +182,7 @@ namespace RackCad.UI.Tests
                     Assert.Equal(187.0, Staged(w, headers[0]).Height, 4);
                     foreach (var other in headers.Skip(1))
                     {
-                        Assert.False(
-                            w.EditorStateForTest.ModuleSession.Modules
-                                .First(m => m.ModuleId == other).HasCustomHeaderConfiguration);
+                        Assert.False(PushBackHeaderTestSupport.IsCustom(w, other));
                     }
                 }
                 finally { w.Close(); }
@@ -241,9 +238,8 @@ namespace RackCad.UI.Tests
                     Assert.False(w.EditorStateForTest.ModuleSession.HasPendingChanges);
                     foreach (var id in headers)
                     {
-                        var module = w.EditorStateForTest.WorkingBaseline.Structure.Modules.First(m => m.ModuleId == id);
-                        Assert.False(module.UseCalculatedHeaderConfiguration);
-                        Assert.Equal(187.0, module.AssociatedFrameConfiguration.Height, 4);
+                        Assert.True(PushBackHeaderTestSupport.IsCustom(w, id));
+                        Assert.Equal(187.0, PushBackHeaderTestSupport.Drawn(w, id).Height, 4);
                     }
                 }
                 finally { w.Close(); }
@@ -267,6 +263,7 @@ namespace RackCad.UI.Tests
                     Click(Btn(w, "CancelModuleButton"));
 
                     Assert.False(w.EditorStateForTest.ModuleSession.HasPendingChanges);
+                    Assert.Empty(w.EditorStateForTest.ModuleSession.OverriddenLines);
                     foreach (var module in w.EditorStateForTest.ModuleSession.Modules)
                     {
                         Assert.False(module.HasCustomHeaderConfiguration);

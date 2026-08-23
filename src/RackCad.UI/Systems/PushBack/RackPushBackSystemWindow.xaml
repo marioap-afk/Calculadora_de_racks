@@ -403,7 +403,8 @@
                                  «esta cabecera» no son lo mismo y el selector de modulo por si solo no basta. -->
                             <TextBlock x:Name="HeaderLineLabel" Text="Linea de cabeceras (corte):"
                                        Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" Margin="0,8,0,2" />
-                            <ComboBox x:Name="HeaderLineBox" ToolTipService.ShowOnDisabled="True"
+                            <ComboBox x:Name="HeaderLineBox" SelectionChanged="HeaderLine_Changed"
+                                      ToolTipService.ShowOnDisabled="True"
                                       ToolTip="La linea transversal de postes a la que va la configuracion. Es el corte que el lateral dibuja en ese poste." />
                         </StackPanel>
 

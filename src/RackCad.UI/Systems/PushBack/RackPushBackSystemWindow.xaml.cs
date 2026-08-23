@@ -1437,9 +1437,10 @@ namespace RackCad.UI.Systems.PushBack
             // aun asi ocurriera se bloquea con diagnostico en vez de degradar en silencio.
             // I-40: con alcance por LINEA se edita la cabecera FISICA de esa linea, asi que se abre sobre lo que esa
             // linea dibuja hoy (su override si lo tiene, y si no la del modulo).
-            var copy = SelectedHeaderScope() == RackModuleHeaderScope.Line
-                ? state.ModuleSession.HeaderConfigurationCopy(module.ModuleId, SelectedHeaderLine())
-                : state.ModuleSession.HeaderConfigurationCopy(module.ModuleId);
+            // Se abre sobre lo que esa cabecera FISICA dibuja hoy —su configuracion de linea si la tiene, y si no
+            // la del modulo—, sea cual sea el alcance: el ORIGEN es siempre la instancia que el usuario ve; lo que
+            // el alcance decide es el DESTINO.
+            var copy = state.ModuleSession.HeaderConfigurationCopy(module.ModuleId, SelectedHeaderLine());
             if (copy == null && module.HasCustomHeaderConfiguration)
             {
                 SetModuleStatus(
@@ -1456,9 +1457,14 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
+            // Ya personalizada = esta INSTANCIA fisica lo esta: por su propia configuracion de linea o por la del
+            // modulo. De eso depende que el configurador se abra para EDITAR en vez de para generar (ronda 2).
+            var alreadyCustom = state.ModuleSession.HasLineOverride(module.ModuleId, SelectedHeaderLine())
+                                || module.HasCustomHeaderConfiguration;
+
             var edited = HeaderConfiguratorDialog != null
                 ? HeaderConfiguratorDialog(copy)
-                : ShowHeaderConfigurator(copy, module.HasCustomHeaderConfiguration);
+                : ShowHeaderConfigurator(copy, alreadyCustom);
             if (edited == null)
             {
                 return;
@@ -1492,7 +1498,9 @@ namespace RackCad.UI.Systems.PushBack
             // NO fallback to the last resolved system here (Owner, ronda 2): that fallback would let «copiar mi
             // configuracion» hand out a recalculated cabecera. Only custom cabeceras are offered as origin, so a
             // null here means the list and the session disagree, and that is reported instead of guessed.
-            var source = state.ModuleSession.HeaderConfigurationCopy(sourceId);
+            // El origen es la configuracion REAL de esa cabecera en la linea seleccionada: si esa instancia tiene
+            // la suya, es esa; si no, la del modulo. Nunca una recalculada.
+            var source = state.ModuleSession.SourceConfigurationCopy(sourceId, SelectedHeaderLine());
             if (source == null)
             {
                 SetModuleStatus(
@@ -1520,9 +1528,24 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
+            // Owner (decision final de I-40): la unidad de edicion es la cabecera FISICA, identificada por
+            // (PostIndex, ModuleId). «Solo esta cabecera» y «Esta linea» se diferencian por CUANTAS instancias de esa
+            // linea reciben la configuracion, no por si la reciben por linea o por modulo; solo «Todas las cabeceras»
+            // escribe el modulo, que es lo que hace uniforme al rack entero.
             RackModuleHeaderApplyResult result;
             var line = -1;
-            if (scope == RackModuleHeaderScope.Line)
+            if (scope == RackModuleHeaderScope.AllHeaders)
+            {
+                result = state.ModuleSession.ApplyHeaderConfiguration(configuration, targets);
+
+                // Si quedaran configuraciones por linea seguirian ganando, y el usuario veria cabeceras distintas
+                // justo despues de pedir que todas fueran iguales.
+                if (result.Applied)
+                {
+                    state.ModuleSession.ClearLineOverrides(targets);
+                }
+            }
+            else
             {
                 line = SelectedHeaderLine();
                 if (line < 0)
@@ -1532,17 +1555,6 @@ namespace RackCad.UI.Systems.PushBack
                 }
 
                 result = state.ModuleSession.ApplyHeaderConfigurationToLine(configuration, line, targets);
-            }
-            else
-            {
-                result = state.ModuleSession.ApplyHeaderConfiguration(configuration, targets);
-
-                // «Todas las cabeceras» deja el rack UNIFORME: si quedaran configuraciones por linea, seguirian
-                // ganando y el usuario veria cabeceras distintas justo despues de pedir que fueran todas iguales.
-                if (scope == RackModuleHeaderScope.AllHeaders)
-                {
-                    state.ModuleSession.ClearLineOverrides(targets);
-                }
             }
 
             if (!result.Applied)
@@ -1690,6 +1702,18 @@ namespace RackCad.UI.Systems.PushBack
             }
 
             RefreshHeaderLines();
+            RefreshCopySources();   // el origen valido depende de la linea, y la linea del alcance
+        }
+
+        private void HeaderLine_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            RefreshCopySources();
+            RefreshModuleStatus();
         }
 
         /// <summary>
@@ -1726,13 +1750,15 @@ namespace RackCad.UI.Systems.PushBack
                 suppressSync = wasSuppressed;
             }
 
-            var lineScope = SelectedHeaderScope() == RackModuleHeaderScope.Line;
+            // La linea identifica la cabecera FISICA, asi que importa tanto para «Solo esta cabecera» como para
+            // «Esta linea». Solo el alcance global la ignora, porque ahi van todas.
+            var needsLine = SelectedHeaderScope() != RackModuleHeaderScope.AllHeaders;
             SetBlankSensitive(
                 HeaderLineBox,
-                lineScope && headerLineIndexes.Count > 0,
-                lineScope
+                needsLine && headerLineIndexes.Count > 0,
+                needsLine
                     ? "Este rack todavia no tiene lineas que editar."
-                    : "Elige «Esta linea de cabeceras» para escoger a que linea va la configuracion.");
+                    : "«Todas las cabeceras» alcanza a todas las lineas: no hay que elegir una.");
         }
 
         private string SelectedCopySourceId()
@@ -1764,9 +1790,11 @@ namespace RackCad.UI.Systems.PushBack
             var selected = SelectedModule();
             var previous = SelectedCopySourceId();
             var ordinals = KindOrdinals();
-            var custom = new HashSet<string>(state.ModuleSession.CustomHeaderModuleIds, StringComparer.Ordinal);
+            // Una cabecera es origen valido cuando tiene una personalizacion REAL: la del modulo, o la propia de
+            // ESTA linea. Con la unidad de edicion en la instancia fisica, lo segundo es lo habitual.
             var sources = state.ModuleSession.Modules
-                .Where(module => module.IsHeader && custom.Contains(module.ModuleId))
+                .Where(module => module.IsHeader
+                                 && state.ModuleSession.HasAnyPersonalization(module.ModuleId))
                 .Where(module => selected == null || module.ModuleId != selected.ModuleId)
                 .ToList();
 

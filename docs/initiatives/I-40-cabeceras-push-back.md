@@ -303,20 +303,36 @@ comprobado por prueba propia y por las suites de Dynamic (205 + 41), Selective (
 
 | Alcance | Que modifica |
 |---|---|
-| **Solo esta cabecera** | El **modulo** seleccionado, en todas sus lineas |
-| **Esta linea de cabeceras** | Todas las cabeceras de **esa linea**; ninguna otra linea se toca |
-| **Todas las cabeceras** | Todas, y **retira** las excepciones de linea para que el rack quede uniforme |
+| **Solo esta cabecera** | Una unica cabecera **FISICA**: el par `(PostIndex, ModuleId)` |
+| **Esta linea de cabeceras** | Todas las cabeceras de ese `PostIndex`; ninguna otra linea se toca |
+| **Todas las cabeceras** | Todas las cabeceras de todas las lineas, y **retira** las excepciones de linea |
 
 Las tres validan todos los destinos antes de tocar nada, dan a cada destino su **propia copia**,
 recomputan **una sola vez** al Confirmar y se revierten enteras con Cancelar. «Copiar de» funciona con
 cualquiera de los tres.
 
-> **Decision que el Owner debe confirmar.** «Solo esta cabecera» se mantiene a nivel de **modulo** (la
-> cabecera en todas sus lineas) y no como (linea, modulo). Es lo que preserva **intacto** el ciclo que
-> la tercera validacion aprobo, que la seccion C del encargo pide no regresar: personalizar C1 y
-> Actualizar sigue cambiando esa cabecera en todos los cortes, como el Owner ya vio y aprobo. Si se
-> prefiere la lectura estricta —«unicamente la cabecera fisica seleccionada»— es un cambio de una linea
-> en el alcance `Module`, pero cambia el dibujo de un flujo ya validado y por eso no se hizo solo.
+> **OWNER DECISION (definitiva).** La unidad de edicion de una cabecera es la **instancia FISICA**,
+> identificada por **`(PostIndex, ModuleId)`**, y la jerarquia funcional es
+>
+> ```
+> una cabecera fisica  ⊂  una linea fisica  ⊂  todo el rack
+> ```
+>
+> **«Solo esta cabecera» NO significa el modulo longitudinal en todas sus lineas.** Aquella lectura era
+> consecuencia de que el modelo no tenia dimension por linea; con `DynamicHeaderLineOverride` ya puede
+> representar la personalizacion de una unica instancia, asi que no se conserva por compatibilidad de
+> UI. El candidato `180aef3`, que la mantenia, quedo rechazado.
+>
+> Consecuencias en la superficie:
+> - el **selector de linea** es relevante para «Solo esta cabecera» **y** para «Esta linea»; solo el
+>   alcance global lo ignora, porque ahi van todas;
+> - la ventana dice siempre que combinacion va a modificar: **Cabecera** + **Linea** + **Aplicar a**;
+> - el **ORIGEN** de «Copiar de» es siempre la instancia que el usuario tiene delante —su configuracion
+>   de linea si la tiene, y si no la del modulo—; lo que el alcance decide es el **DESTINO**. Cuando el
+>   origen solo esta personalizado en OTRA linea, se copia esa (la primera), porque es la
+>   personalizacion que el usuario esta senalando;
+> - «ya personalizada» —lo que decide que el configurador se abra para EDITAR y no para generar— se
+>   evalua tambien sobre la instancia fisica.
 
 ## 5. Checklist de validacion manual en AutoCAD 2025
 
@@ -407,3 +423,17 @@ Cerrar AutoCAD antes de cualquier recompilacion del worktree.
 6. **RACKEDITAR**: las diferencias entre lineas siguen ahi, y la altura del poste derivado tambien.
 7. Cambiar a **«Todas las cabeceras»**, configurar y Confirmar: **las dos lineas** quedan iguales.
 8. Repetir una operacion por linea y pulsar **Cancelar**: no queda ninguna linea alterada.
+
+## 9. Checklist de la decision final (8 pasos)
+
+1. Push Back con **dos frentes** (⇒ tres lineas) y varias cabeceras. Elegir **Cabecera 1**.
+2. **Linea: Linea 1**, **Aplicar a: Solo esta cabecera**. Configurar un alto evidente y **Actualizar**.
+3. Comprobar en el dibujo que **solo el corte de la Linea 1** cambio: la **misma cabecera en la Linea 2
+   sigue igual**, y las demas cabeceras de la Linea 1 tambien.
+4. **RACKEDITAR**: la diferencia sigue ahi.
+5. Cambiar a **Esta linea de cabeceras** sobre la **Linea 2** y configurar: **todas** las cabeceras de
+   la Linea 2 cambian, y la Linea 1 no.
+6. Cambiar a **Todas las cabeceras** y configurar: **todas las lineas** quedan iguales, sin rastro de
+   las personalizaciones por linea anteriores.
+7. Volver a **Solo esta cabecera** sobre **(Linea 2, Cabecera 1)** y cambiarla: **solo esa** cambia.
+8. Repetir una operacion de una sola instancia y pulsar **Cancelar**: no queda ningun cambio.

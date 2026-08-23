@@ -211,10 +211,10 @@ namespace RackCad.UI.Tests
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
                     Click(Btn(w, "ConfirmModuleButton"));
 
-                    var applied = w.EditorStateForTest.WorkingBaseline.Structure.Modules
-                        .First(module => module.ModuleId == header.ModuleId);
-                    Assert.False(applied.UseCalculatedHeaderConfiguration);
-                    Assert.Equal(40.0, applied.AssociatedFrameConfiguration.PanelClear, 4);
+                    // I-40 (decision final del Owner): la unidad de edicion es la cabecera FISICA
+                    // (PostIndex, ModuleId), asi que lo aplicado se lee en la instancia de la linea editada.
+                    Assert.True(PushBackHeaderTestSupport.IsCustom(w, header.ModuleId));
+                    Assert.Equal(40.0, PushBackHeaderTestSupport.Drawn(w, header.ModuleId).PanelClear, 4);
                 }
                 finally { w.Close(); }
             });

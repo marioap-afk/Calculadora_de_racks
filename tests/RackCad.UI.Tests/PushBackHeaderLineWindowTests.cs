@@ -123,16 +123,25 @@ namespace RackCad.UI.Tests
             });
         }
 
-        /// <summary>Fuera del alcance por linea el selector no se usa, y dice por que.</summary>
+        /// <summary>
+        /// La LINEA identifica la cabecera fisica, asi que importa tanto para «Solo esta cabecera» como para «Esta
+        /// linea». Solo el alcance global la ignora, porque ahi van todas (decision final del Owner).
+        /// </summary>
         [Fact]
-        public void TheLineSelector_IsDisabledOutsideTheLineScope()
+        public void TheLineSelector_IsRelevantForBothInstanceScopes_AndOnlyIdleForTheGlobalOne()
         {
             StaTestRunner.Run(() =>
             {
                 var w = Fresh();
                 try
                 {
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 0;
+                    Combo(w, "HeaderScopeBox").SelectedIndex = 0;   // Solo esta cabecera
+                    Assert.True(Combo(w, "HeaderLineBox").IsEnabled);
+
+                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;   // Esta linea de cabeceras
+                    Assert.True(Combo(w, "HeaderLineBox").IsEnabled);
+
+                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
                     Assert.False(Combo(w, "HeaderLineBox").IsEnabled);
                 }
                 finally { w.Close(); }

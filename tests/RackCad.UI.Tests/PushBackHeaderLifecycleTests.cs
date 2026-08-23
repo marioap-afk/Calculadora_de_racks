@@ -66,8 +66,9 @@ namespace RackCad.UI.Tests
             => Combo(w, "ModuleBox").SelectedIndex = w.EditorStateForTest.ModuleSession.Modules
                 .Select((m, i) => new { m.ModuleId, i }).First(x => x.ModuleId == moduleId).i;
 
+        // I-40 (decision final): la unidad es la cabecera FISICA (PostIndex, ModuleId).
         private static RackFrameConfiguration Staged(RackPushBackSystemWindow w, string moduleId)
-            => w.EditorStateForTest.ModuleSession.HeaderConfigurationCopy(moduleId);
+            => PushBackHeaderTestSupport.Staged(w, moduleId);
 
         /// <summary>«Dibujar»: el mismo camino RequestDraw que usan Actualizar e Insertar. Cierra la ventana y deja
         /// el diseno que se embebe en el DWG.</summary>
@@ -130,9 +131,9 @@ namespace RackCad.UI.Tests
 
                 foreach (var id in headers.Take(2))
                 {
-                    var module = drawn.Structure.Modules.First(m => m.ModuleId == id);
-                    Assert.False(module.UseCalculatedHeaderConfiguration);
-                    AssertCustom(module.HeaderConfiguration, 187.0, 41.5, 33.0);
+                    // La personalizacion viaja como configuracion de la LINEA editada, que es la unidad de edicion.
+                    var line = drawn.Structure.HeaderLineOverrides.First(o => o.ModuleId == id);
+                    AssertCustom(line.Header, 187.0, 41.5, 33.0);
                 }
             });
         }
@@ -157,12 +158,9 @@ namespace RackCad.UI.Tests
                 var drawn = Draw(a);                       // la sesion A muere aqui
 
                 var b = Rackeditar(drawn);                 // sesion NUEVA, desde el DWG
-                var module = b.EditorStateForTest.ModuleSession.Modules.First(m => m.ModuleId == headers[0]);
-
-                Assert.True(module.HasCustomHeaderConfiguration);
-                Assert.False(module.UsesCalculatedHeaderConfiguration);
-                Assert.True(module.HasHeaderConfiguration);
+                Assert.True(PushBackHeaderTestSupport.IsCustom(b, headers[0]));
                 AssertCustom(Staged(b, headers[0]), 187.0, 41.5, 33.0);
+                AssertCustom(PushBackHeaderTestSupport.Drawn(b, headers[0]), 187.0, 41.5, 33.0);
 
                 // El configurador recibe esos mismos valores...
                 Select(b, headers[0]);
@@ -204,8 +202,7 @@ namespace RackCad.UI.Tests
                 var c = Rackeditar(secondDrawn);
                 foreach (var id in headers.Take(2))
                 {
-                    var module = c.EditorStateForTest.ModuleSession.Modules.First(m => m.ModuleId == id);
-                    Assert.False(module.UsesCalculatedHeaderConfiguration);
+                    Assert.True(PushBackHeaderTestSupport.IsCustom(c, id));
                     AssertCustom(Staged(c, id), 187.0, 41.5, 33.0);
                 }
             });
@@ -234,8 +231,7 @@ namespace RackCad.UI.Tests
                 var c = Rackeditar(again);
                 foreach (var id in HeaderIds(c))
                 {
-                    var module = c.EditorStateForTest.ModuleSession.Modules.First(m => m.ModuleId == id);
-                    Assert.False(module.UsesCalculatedHeaderConfiguration);
+                    Assert.True(PushBackHeaderTestSupport.IsCustom(c, id));
                     AssertCustom(Staged(c, id), 187.0, 41.5, 33.0);
                 }
             });
@@ -256,6 +252,7 @@ namespace RackCad.UI.Tests
 
                 var drawn = Draw(w);
 
+                Assert.Empty(drawn.Structure.HeaderLineOverrides);
                 foreach (var id in headers)
                 {
                     var module = drawn.Structure.Modules.First(m => m.ModuleId == id);
@@ -281,10 +278,7 @@ namespace RackCad.UI.Tests
                 Assert.Equal("rack-i40", b.RackId);
 
                 // El sistema resuelto que alimenta dibujo y BOM lleva la cabecera personalizada.
-                var resolved = b.EditorStateForTest.WorkingBaseline.Structure.Modules
-                    .First(m => m.ModuleId == headers[0]);
-                Assert.False(resolved.UseCalculatedHeaderConfiguration);
-                AssertCustom(resolved.AssociatedFrameConfiguration, 187.0, 41.5, 33.0);
+                AssertCustom(PushBackHeaderTestSupport.Drawn(b, headers[0]), 187.0, 41.5, 33.0);
             });
         }
     }
