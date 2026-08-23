@@ -51,6 +51,12 @@ namespace RackCad.Domain.Systems.Dynamic
         /// </summary>
         public List<DynamicHeaderLineOverride> HeaderLineOverrides { get; } = new List<DynamicHeaderLineOverride>();
 
+        /// <summary>
+        /// I-40: altura del poste derivado por LINEA fisica. Vacio = la linea usa la del rack. Solo Push Back las
+        /// escribe.
+        /// </summary>
+        public List<DynamicDerivedPostLineOverride> DerivedPostLineOverrides { get; } = new List<DynamicDerivedPostLineOverride>();
+
         public double? ManualHeaderHeightOverride { get; set; }
 
         /// <summary>Drawing annotations shared by the linked lateral, frontal and planta views.</summary>

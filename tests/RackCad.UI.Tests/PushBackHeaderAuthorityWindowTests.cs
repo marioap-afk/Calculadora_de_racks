@@ -163,7 +163,7 @@ namespace RackCad.UI.Tests
         // ===== PBH-02 — alcance ================================================================================
 
         [Fact]
-        public void PBH02_ThisHeader_IsTheDefaultScope_AndTouchesOnlyTheSelectedOne()
+        public void PBH02_TheDefaultDestination_IsTheSelectedHeaderOnItsOwnLine()
         {
             StaTestRunner.Run(() =>
             {
@@ -174,7 +174,10 @@ namespace RackCad.UI.Tests
                     Assert.True(headers.Length > 1, "el fixture necesita mas de una cabecera");
                     Select(w, headers[0]);
 
-                    Assert.Equal(0, Combo(w, "HeaderScopeBox").SelectedIndex);
+                    // I-40 (ronda 5): sin tocar nada, el destino por defecto es la cabecera seleccionada en su
+                    // propia linea — el caso mas frecuente listo, y los demas a un clic.
+                    Assert.Equal(1, ((ListBox)w.FindName("HeaderTargetsList")).SelectedItems.Count);
+                    Assert.Equal(1, ((ListBox)w.FindName("HeaderLinesList")).SelectedItems.Count);
 
                     w.HeaderConfiguratorPresenter = QuickConfigAt(187.0);
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
@@ -199,7 +202,7 @@ namespace RackCad.UI.Tests
                 {
                     var headers = HeaderIds(w);
                     Select(w, headers[0]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
+                    PushBackHeaderTestSupport.Target(w, HeaderIds(w), PushBackHeaderTestSupport.Lines(w));
 
                     w.HeaderConfiguratorPresenter = QuickConfigAt(187.0);
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
@@ -229,7 +232,7 @@ namespace RackCad.UI.Tests
                 {
                     var headers = HeaderIds(w);
                     Select(w, headers[0]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
+                    PushBackHeaderTestSupport.Target(w, HeaderIds(w), PushBackHeaderTestSupport.Lines(w));
 
                     w.HeaderConfiguratorPresenter = QuickConfigAt(187.0);
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
@@ -256,7 +259,7 @@ namespace RackCad.UI.Tests
                 {
                     var headers = HeaderIds(w);
                     Select(w, headers[0]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
+                    PushBackHeaderTestSupport.Target(w, HeaderIds(w), PushBackHeaderTestSupport.Lines(w));
 
                     w.HeaderConfiguratorPresenter = QuickConfigAt(187.0);
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
@@ -359,7 +362,7 @@ namespace RackCad.UI.Tests
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
 
                     Select(w, headers[1]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
+                    PushBackHeaderTestSupport.Target(w, HeaderIds(w), PushBackHeaderTestSupport.Lines(w));
                     Combo(w, "CopyHeaderFromBox").SelectedIndex = 0;   // la primera de las OTRAS cabeceras
                     Click(Btn(w, "CopyHeaderFromButton"));
 

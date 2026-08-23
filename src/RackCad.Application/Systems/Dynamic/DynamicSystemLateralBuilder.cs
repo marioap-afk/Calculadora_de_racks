@@ -74,7 +74,7 @@ namespace RackCad.Application.Systems.Dynamic
             var sectionRange = sectioned
                 ? DynamicDepthGeometry.AtPost(system, postIndex)
                 : new DynamicDepthRange(1, system.PalletsDeep);
-            var context = Resolve(system, catalog, sectionHeight);
+            var context = Resolve(system, catalog, sectionHeight, postIndex);
             var loose = new List<HeaderBlockInstance>();
 
             // Group identical headers so each distinct header becomes one shared block definition; record the
@@ -272,7 +272,7 @@ namespace RackCad.Application.Systems.Dynamic
             return string.Format(CultureInfo.InvariantCulture, "Cabecera F{0:0.##} A{1:0.##}", c.Depth, c.Height);
         }
 
-        private HeaderContext Resolve(DynamicRackSystem system, RackCatalog catalog, double height)
+        private HeaderContext Resolve(DynamicRackSystem system, RackCatalog catalog, double height, int postIndex)
         {
             var context = new HeaderContext
             {
@@ -303,12 +303,10 @@ namespace RackCad.Application.Systems.Dynamic
 
             context.ReinforceDerivedPost = system.DerivedPostReinforced;
 
-            // I-40 (Owner): la ALTURA del poste derivado. Vacia = la altura de la cabecera, que es lo que este poste
-            // heredaba antes de que existiera el campo: un rack sin el valor dibuja exactamente igual que siempre.
-            context.DerivedPostHeight =
-                system.DerivedPostHeight.HasValue && system.DerivedPostHeight.Value > 0.0
-                    ? system.DerivedPostHeight.Value
-                    : context.Height;
+            // I-40 (Owner): la ALTURA del poste derivado, resuelta por la autoridad unica: primero la de ESTA linea,
+            // luego la del rack, y si ninguna, la de la cabecera — que es lo que este poste heredaba antes de que el
+            // campo existiera, de modo que un rack sin valores dibuja exactamente igual que siempre.
+            context.DerivedPostHeight = DynamicFrontGeometry.DerivedPostHeightAtPost(system, postIndex, context.Height);
             // Refuerzo vacio = TODA la altura del poste derivado, que es lo que "a toda la altura" significa. Cuando
             // nadie fija la altura del poste, esa altura ES la de la cabecera, asi que el valor historico no cambia.
             context.DerivedReinforcementHeight =

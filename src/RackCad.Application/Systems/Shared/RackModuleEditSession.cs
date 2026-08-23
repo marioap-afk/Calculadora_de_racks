@@ -19,12 +19,14 @@ namespace RackCad.Application.Systems.Shared
             IReadOnlyList<DynamicRackModuleDesign> modules,
             IReadOnlyList<string> restoredModuleIds,
             bool standardRestoreRequested,
-            IReadOnlyList<DynamicHeaderLineOverride> lineOverrides)
+            IReadOnlyList<DynamicHeaderLineOverride> lineOverrides,
+            IReadOnlyList<DynamicDerivedPostLineOverride> derivedPostOverrides)
         {
             Modules = modules;
             RestoredModuleIds = restoredModuleIds;
             StandardRestoreRequested = standardRestoreRequested;
             LineOverrides = lineOverrides;
+            DerivedPostOverrides = derivedPostOverrides;
         }
 
         /// <summary>The accepted module intents, independent of the session's own copies.</summary>
@@ -39,6 +41,9 @@ namespace RackCad.Application.Systems.Shared
 
         /// <summary>I-40: the accepted per-LINE cabecera configurations, independent of the session's own copies.</summary>
         public IReadOnlyList<DynamicHeaderLineOverride> LineOverrides { get; }
+
+        /// <summary>I-40: the accepted per-LINE derived-post heights.</summary>
+        public IReadOnlyList<DynamicDerivedPostLineOverride> DerivedPostOverrides { get; }
     }
 
     /// <summary>
@@ -76,6 +81,10 @@ namespace RackCad.Application.Systems.Shared
         /// intents: staged until <see cref="Commit"/>, thrown away entirely by <see cref="Cancel"/>.</summary>
         private Dictionary<LineKey, RackFrameConfiguration> committedLines = new Dictionary<LineKey, RackFrameConfiguration>();
         private Dictionary<LineKey, RackFrameConfiguration> workingLines = new Dictionary<LineKey, RackFrameConfiguration>();
+
+        /// <summary>I-40 — the per-LINE derived-post heights, keyed by line. Same transaction as everything else.</summary>
+        private Dictionary<int, double> committedDerivedPosts = new Dictionary<int, double>();
+        private Dictionary<int, double> workingDerivedPosts = new Dictionary<int, double>();
 
         private RackModuleEditSession(IEnumerable<DynamicRackModuleDesign> baseline)
         {
@@ -122,6 +131,15 @@ namespace RackCad.Application.Systems.Shared
                 }
             }
 
+            foreach (var derived in system.DerivedPostLineOverrides)
+            {
+                if (derived != null && derived.Height > 0.0)
+                {
+                    session.committedDerivedPosts[derived.PostIndex] = derived.Height;
+                    session.workingDerivedPosts[derived.PostIndex] = derived.Height;
+                }
+            }
+
             return session;
         }
 
@@ -144,6 +162,7 @@ namespace RackCad.Application.Systems.Shared
         public bool HasPendingChanges
             => !AreEquivalent(committed, working)
                || !AreEquivalentLines(committedLines, workingLines)
+               || !AreEquivalentDerivedPosts(committedDerivedPosts, workingDerivedPosts)
                || restored.Count > 0
                || standardRestoreRequested;
 
@@ -360,6 +379,140 @@ namespace RackCad.Application.Systems.Shared
         }
 
         /// <summary>
+        /// I-40 (Owner, ronda 5) — THE operation: apply one configuration to the CARTESIAN PRODUCT of the chosen
+        /// cabeceras and the chosen lines.
+        /// <para>
+        /// The two axes are independent. «una cabecera», «varias» o «todas» on one side; «una linea», «varias» o
+        /// «todas» on the other; the destinations are every <c>(PostIndex, ModuleId)</c> pair of the product. The
+        /// three old scopes are just three points of that space, and keeping them as the DATA model is what made
+        /// «cambiar el alcance» do nothing at all.
+        /// </para>
+        /// <para>
+        /// ATOMIC: every module id and every line is validated, and the whole product is resolved, BEFORE a single
+        /// byte of staged state moves. Duplicates collapse. Each destination receives its own
+        /// <see cref="RackFrameProjectStore.DeepCopy"/>, so no two instances ever share one.
+        /// </para>
+        /// </summary>
+        public RackModuleHeaderApplyResult ApplyHeaderConfigurationToInstances(
+            RackFrameConfiguration configuration,
+            IEnumerable<string> moduleIds,
+            IEnumerable<int> postIndexes)
+        {
+            if (configuration == null)
+            {
+                return RackModuleHeaderApplyResult.Rejected("No hay una configuracion de cabecera que aplicar.");
+            }
+
+            var modules = (moduleIds ?? Enumerable.Empty<string>())
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+            var lines = (postIndexes ?? Enumerable.Empty<int>()).Distinct().OrderBy(line => line).ToList();
+
+            if (modules.Count == 0)
+            {
+                return RackModuleHeaderApplyResult.Rejected("No hay ninguna cabecera seleccionada como destino.");
+            }
+
+            if (lines.Count == 0)
+            {
+                return RackModuleHeaderApplyResult.Rejected("No hay ninguna linea seleccionada como destino.");
+            }
+
+            // ---- Validate BOTH axes first. Nothing below this block may fail. ----
+            foreach (var id in modules)
+            {
+                var module = Find(id);
+                if (module == null)
+                {
+                    return RackModuleHeaderApplyResult.Rejected(
+                        "El modulo " + id + " ya no existe en este rack: no se aplico nada.");
+                }
+
+                if (!module.IsHeader)
+                {
+                    return RackModuleHeaderApplyResult.Rejected(
+                        "El modulo " + id + " es un separador y no lleva cabecera: no se aplico nada.");
+                }
+            }
+
+            foreach (var line in lines)
+            {
+                if (line < 0)
+                {
+                    return RackModuleHeaderApplyResult.Rejected(
+                        "Hay una linea de destino invalida: no se aplico nada.");
+                }
+            }
+
+            // ---- Apply the whole product. ----
+            foreach (var line in lines)
+            {
+                foreach (var id in modules)
+                {
+                    workingLines[new LineKey(line, id)] = clone.DeepCopy(configuration);
+                }
+            }
+
+            return RackModuleHeaderApplyResult.Success(modules);
+        }
+
+        /// <summary>
+        /// I-40 (Owner, ronda 5) — the DERIVED POST height of the chosen lines. It is not addressed by
+        /// <c>ModuleId</c>: a derived post belongs to the LINE, born between two consecutive separators, so it gets
+        /// its own per-line staging and rides the same transaction. A null height clears the lines' own value and
+        /// returns them to the rack-wide one.
+        /// </summary>
+        public RackModuleHeaderApplyResult ApplyDerivedPostHeightToLines(
+            double? height,
+            IEnumerable<int> postIndexes)
+        {
+            var lines = (postIndexes ?? Enumerable.Empty<int>()).Distinct().OrderBy(line => line).ToList();
+            if (lines.Count == 0)
+            {
+                return RackModuleHeaderApplyResult.Rejected("No hay ninguna linea seleccionada como destino.");
+            }
+
+            if (height.HasValue && height.Value <= 0.0)
+            {
+                return RackModuleHeaderApplyResult.Rejected(
+                    "La altura del poste derivado debe ser mayor que cero. Vacia = la altura vigente del rack.");
+            }
+
+            foreach (var line in lines)
+            {
+                if (line < 0)
+                {
+                    return RackModuleHeaderApplyResult.Rejected(
+                        "Hay una linea de destino invalida: no se aplico nada.");
+                }
+            }
+
+            foreach (var line in lines)
+            {
+                if (height.HasValue)
+                {
+                    workingDerivedPosts[line] = height.Value;
+                }
+                else
+                {
+                    workingDerivedPosts.Remove(line);
+                }
+            }
+
+            return RackModuleHeaderApplyResult.Success(
+                lines.Select(line => line.ToString(System.Globalization.CultureInfo.InvariantCulture)).ToList());
+        }
+
+        /// <summary>The staged derived-post height of a line, or null when it uses the rack-wide one.</summary>
+        public double? DerivedPostHeightAt(int postIndex)
+            => workingDerivedPosts.TryGetValue(postIndex, out var height) ? height : (double?)null;
+
+        /// <summary>The lines that carry their own derived-post height, ascending.</summary>
+        public IReadOnlyList<int> DerivedPostLines
+            => workingDerivedPosts.Keys.OrderBy(line => line).ToList();
+
+        /// <summary>
         /// The configuration a cabecera uses ON ONE LINE, as an independent copy: the line override when that line
         /// has one, otherwise the module's own. This is what an editor hands to the configurator and what «copiar
         /// de» reads, so what the user sees is what that physical cabecera actually draws.
@@ -534,6 +687,7 @@ namespace RackCad.Application.Systems.Shared
         {
             working = committed.Select(CopyIntent).ToList();
             workingLines = CopyLines(committedLines);
+            workingDerivedPosts = new Dictionary<int, double>(committedDerivedPosts);
             standardRestoreRequested = false;
             restored.Clear();
         }
@@ -546,6 +700,7 @@ namespace RackCad.Application.Systems.Shared
         {
             committed = working.Select(CopyIntent).ToList();
             committedLines = CopyLines(workingLines);
+            committedDerivedPosts = new Dictionary<int, double>(workingDerivedPosts);
             var result = new RackModuleCommit(
                 committed.Select(CopyIntent).ToList(),
                 restored.ToList(),
@@ -558,6 +713,14 @@ namespace RackCad.Application.Systems.Shared
                         PostIndex = entry.Key.PostIndex,
                         ModuleId = entry.Key.ModuleId,
                         Header = clone.DeepCopy(entry.Value)
+                    })
+                    .ToList(),
+                committedDerivedPosts
+                    .OrderBy(entry => entry.Key)
+                    .Select(entry => new DynamicDerivedPostLineOverride
+                    {
+                        PostIndex = entry.Key,
+                        Height = entry.Value
                     })
                     .ToList());
 
@@ -577,6 +740,10 @@ namespace RackCad.Application.Systems.Shared
 
             return result;
         }
+
+        private static bool AreEquivalentDerivedPosts(Dictionary<int, double> left, Dictionary<int, double> right)
+            => left.Count == right.Count
+               && left.All(entry => right.TryGetValue(entry.Key, out var other) && other == entry.Value);
 
         /// <summary>Whether two staged line states are the same EDIT, compared through the persisted shape exactly
         /// like the intents are.</summary>

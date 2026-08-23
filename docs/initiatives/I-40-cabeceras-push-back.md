@@ -301,11 +301,17 @@ comprobado por prueba propia y por las suites de Dynamic (205 + 41), Selective (
 
 ### Modelo de alcance final
 
-| Alcance | Que modifica |
+**DestinationHeaders × DestinationLines.** Los destinos de una operacion son el PRODUCTO CARTESIANO de
+dos ejes INDEPENDIENTES:
+
+| Eje | Valores |
 |---|---|
-| **Solo esta cabecera** | Una unica cabecera **FISICA**: el par `(PostIndex, ModuleId)` |
-| **Esta linea de cabeceras** | Todas las cabeceras de ese `PostIndex`; ninguna otra linea se toca |
-| **Todas las cabeceras** | Todas las cabeceras de todas las lineas, y **retira** las excepciones de linea |
+| **Cabeceras destino** | una, varias o todas (lista de seleccion multiple) |
+| **Lineas destino** | una, varias o todas (lista de seleccion multiple) |
+
+Cada par `(PostIndex, ModuleId)` del producto es una cabecera FISICA y recibe su PROPIA copia. «Solo
+esta», «Esta linea» y «Todas» sobreviven unicamente como **atajos de seleccion** («Esta» / «Todas» en
+cada eje), nunca como modelo de datos.
 
 Las tres validan todos los destinos antes de tocar nada, dan a cada destino su **propia copia**,
 recomputan **una sola vez** al Confirmar y se revierten enteras con Cancelar. «Copiar de» funciona con
@@ -333,6 +339,45 @@ cualquiera de los tres.
 >   personalizacion que el usuario esta senalando;
 > - «ya personalizada» —lo que decide que el configurador se abra para EDITAR y no para generar— se
 >   evalua tambien sobre la instancia fisica.
+
+## 4-quinquies. Ronda 5 — el candidato `73325cf` fue RECHAZADO
+
+### Por que cambiar el alcance no hacia nada
+
+El alcance solo se evaluaba **dentro de `StageHeaderConfiguration`**, y esa funcion solo se llamaba
+cuando el configurador devolvia una configuracion NUEVA. Cambiar el alcance despues no era una
+operacion: no habia nada que lo leyera. De ahi el sintoma exacto del Owner — «hay que volver a abrir
+Configurar cabecera para que el nuevo alcance tenga efecto».
+
+**Correccion:** la configuracion ORIGEN se recuerda (`pendingHeaderConfiguration`) y **«Aplicar
+configuracion a la seleccion»** es una accion explicita que la reparte tantas veces como haga falta.
+Elegir destinos no modifica nada por si mismo; Confirmar confirma; Cancelar revierte.
+
+### Poste derivado POR LINEA
+
+El poste derivado nace entre dos separadores CONSECUTIVOS: pertenece a la **linea**, no a ningun
+modulo, asi que **no** se metio dentro de `DynamicHeaderLineOverride`. Estructura propia,
+`DynamicDerivedPostLineOverride { PostIndex, Height }`, con su lista persistida opcional. La autoridad
+unica es `DynamicFrontGeometry.DerivedPostHeightAtPost` —linea → rack → altura heredada de la
+cabecera—, y la leen la geometria lateral y el BOM. El valor global sigue como fallback.
+
+### Frontal y posterior — causa raiz
+
+`DynamicSystemFrontalBuilder` dibujaba el poste de cada linea con
+`DynamicFrontGeometry.PostHeight(system, postIndex)`, un valor **derivado** que ignora por completo la
+configuracion de la cabecera. Por eso personalizar una cabecera cambiaba el lateral y dejaba la
+frontal igual. Ahora la frontal lee `HeaderHeightAtPost`, que resuelve por
+**`HeaderConfigurationAtPost`** — la MISMA autoridad que consumen la geometria lateral y el BOM.
+
+### Protector lateral del ultimo corte — causa raiz
+
+La regla adaptativa da al primer poste una copia sin espejo y al ultimo una **espejada**, porque
+protegen **caras opuestas del pasillo**: ese espejo es **a lo ANCHO** del rack, y por eso la PLANTA lo
+dibuja bien. El corte LATERAL mira UNA linea de postes y su eje horizontal es el **FONDO**, asi que
+aplicar alli ese espejo volteaba la pieza sobre el fondo. En el lateral el volteo depende UNICAMENTE
+del extremo en que la copia se apoya (`mirrored = AtHighEnd`): con extremo alto (Dinamico) sale
+exactamente lo mismo que antes; en extremo bajo (Push Back) el ultimo corte deja de invertirse. La
+planta no se toco.
 
 ## 5. Checklist de validacion manual en AutoCAD 2025
 
@@ -437,3 +482,19 @@ Cerrar AutoCAD antes de cualquier recompilacion del worktree.
    las personalizaciones por linea anteriores.
 7. Volver a **Solo esta cabecera** sobre **(Linea 2, Cabecera 1)** y cambiarla: **solo esa** cambia.
 8. Repetir una operacion de una sola instancia y pulsar **Cancelar**: no queda ningun cambio.
+
+## 10. Checklist de la ronda 5 (8 pasos)
+
+1. Push Back con **tres frentes** (⇒ cuatro lineas) y varias cabeceras.
+2. Seleccionar **Cabecera 1**, destino **Cabecera 1 × Linea 1**, «Configurar cabecera...», cambiar el
+   alto y **Actualizar**. Solo esa instancia cambia — y la **frontal** cambia con el lateral.
+3. **SIN volver a configurar**: marcar **todas las lineas** y pulsar **«Aplicar configuracion a la
+   seleccion»**. La Cabecera 1 cambia en todos los cortes.
+4. Marcar **Cabeceras 1 y 3** × **Lineas 1 y 2** y aplicar: cambian exactamente esas cuatro.
+5. **Todas** × **Linea 2**: solo la Linea 2. **Todas** × **Todas**: el rack completo.
+6. Con **Lineas 1 y 2** marcadas, fijar **«Altura del poste derivado»** y aplicar: solo esos postes
+   derivados cambian.
+7. Generar **todos los cortes laterales**: el **ultimo** ya no dibuja el protector invertido, y la
+   **planta** sigue igual.
+8. **Actualizar → RACKEDITAR**: todo lo confirmado sobrevive. Repetir una operacion y **Cancelar**: no
+   queda nada.

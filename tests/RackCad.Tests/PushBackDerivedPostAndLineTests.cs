@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
@@ -450,6 +452,66 @@ namespace RackCad.Tests
             var rebuilt = assembler.Build(state, inputs);
 
             Assert.Empty(rebuilt.System.Structure.HeaderLineOverrides);
+        }
+
+
+        // ===== CASO 9 del Owner — el PROTECTOR del ULTIMO corte =================================================
+
+        /// <summary>
+        /// La regla ADAPTATIVA del protector lateral, que no cambia: el primer poste lleva una copia sin espejo y
+        /// el ultimo una ESPEJADA, y en un sistema de extremo bajo las dos van DELANTE. Ese espejo es a lo ANCHO
+        /// del rack —protegen caras opuestas del pasillo—, que es por lo que la PLANTA lo dibuja bien.
+        /// </summary>
+        [Fact]
+        public void Caso9_TheAdaptiveRule_MirrorsTheLastPostAcrossTheRackWidth()
+        {
+            // Sin eleccion explicita del usuario: la regla ADAPTATIVA, que es la que el Owner tenia delante.
+            var selection = new SelectiveSafetySelection { LowEndOnly = true, Side = SafetySide.None };
+
+            var first = DynamicLateralGuardPlan.CopiesAt(selection, 0, 3);
+            var last = DynamicLateralGuardPlan.CopiesAt(selection, 2, 3);
+
+            Assert.Single(first);
+            Assert.False(first[0].Mirrored);
+            Assert.False(first[0].AtHighEnd);
+
+            Assert.Single(last);
+            Assert.True(last[0].Mirrored);      // espejado a lo ANCHO del rack
+            Assert.False(last[0].AtHighEnd);    // y DELANTE, porque el sistema es de extremo bajo
+        }
+
+        /// <summary>
+        /// REGRESION del caso 9. El corte LATERAL mira UNA linea de postes: su eje horizontal es el FONDO, no el
+        /// ancho. Aplicar alli el espejo de la regla adaptativa volteaba la pieza sobre el fondo y la mandaba
+        /// mirando hacia dentro del rack — el protector invertido del ULTIMO corte que el Owner vio, con la planta
+        /// correcta. En el lateral el volteo depende UNICAMENTE del extremo en que la copia se apoya.
+        /// </summary>
+        [Fact]
+        public void Caso9_REGRESION_TheLateralTurnsTheWidthMirrorIntoAnEndBasedFlip()
+        {
+            var source = File.ReadAllText(Path.Combine(
+                SolutionRoot(), "src", "RackCad.Application", "Systems", "Dynamic", "DynamicSafetyLateralBuilder.cs"));
+
+            // La conversion explicita: en el lateral, mirrored = AtHighEnd. Con extremo alto (Dinamico) sale lo
+            // mismo que antes; en extremo bajo (Push Back) el ultimo corte deja de invertirse.
+            Assert.Contains(
+                "new SafetyEndCopy(copy.AtHighEnd, mirrored: copy.AtHighEnd)",
+                source);
+
+            // Y no queda ningun camino que pase el espejo de ancho literal al lateral.
+            Assert.DoesNotContain("guardCopies);", source);
+        }
+
+        private static string SolutionRoot()
+        {
+            var directory = new DirectoryInfo(AppContext.BaseDirectory);
+            while (directory != null && !File.Exists(Path.Combine(directory.FullName, "RackCad.sln")))
+            {
+                directory = directory.Parent;
+            }
+
+            Assert.NotNull(directory);
+            return directory.FullName;
         }
 
         private static string Signature(HeaderRunPlan plan)

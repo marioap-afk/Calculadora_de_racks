@@ -54,9 +54,20 @@ namespace RackCad.Application.Systems.Dynamic
 
             if (guardCopies.Count > 0)
             {
+                // I-40 (Owner, ronda 5) — el PROTECTOR del ULTIMO corte salia invertido.
+                //
+                // La regla adaptativa da al primer poste una copia sin espejo y al ultimo una ESPEJADA, porque los
+                // dos protegen caras OPUESTAS DEL PASILLO: ese espejo es a lo ancho del rack, y por eso la PLANTA
+                // —que ve el ancho— lo dibuja bien. El corte LATERAL mira una sola linea de postes: su eje horizontal
+                // es el FONDO, no el ancho, asi que aplicar ahi ese espejo volteaba la pieza sobre el fondo y la
+                // mandaba mirando hacia dentro del rack.
+                //
+                // En el lateral el volteo depende UNICAMENTE del extremo en que la copia se apoya. Con extremo alto
+                // (Dinamico) sale exactamente lo mismo que antes; en extremo bajo (Push Back) deja de invertirse.
                 AppendEndpointFamily(
                     result, laterales, left.PlateOrigin, right.PlateOrigin,
-                    sectionEnd - sectionStart, postIndex, guardCopies);
+                    sectionEnd - sectionStart, postIndex,
+                    guardCopies.Select(copy => new SafetyEndCopy(copy.AtHighEnd, mirrored: copy.AtHighEnd)).ToList());
             }
             else
             {

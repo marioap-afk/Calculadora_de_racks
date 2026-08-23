@@ -223,7 +223,7 @@ namespace RackCad.UI.Tests
 
                 var b = Rackeditar(drawn);
                 Select(b, headers[1]);
-                Combo(b, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
+                PushBackHeaderTestSupport.Target(b, HeaderIds(b), PushBackHeaderTestSupport.Lines(b));
                 Combo(b, "CopyHeaderFromBox").SelectedIndex = 0;
                 Click(Btn(b, "CopyHeaderFromButton"));
                 var again = Draw(b);

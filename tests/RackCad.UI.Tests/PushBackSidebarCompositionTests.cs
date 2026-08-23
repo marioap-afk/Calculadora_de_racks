@@ -151,8 +151,10 @@ namespace RackCad.UI.Tests
                     // BUTTON rows (front scopes, cell scopes and — since I-35 — the per-module confirm/cancel/restore
                     // row), exactly like the dynamic editor. The invariant is "a WrapPanel holds buttons, never
                     // fields"; the count is only a ceiling so a new one cannot slip in unnoticed.
+                    // I-40 (ronda 5): dos filas mas, las de los atajos «Esta»/«Todas» de los dos ejes de destino.
+                    // Siguen siendo filas de BOTONES, que es el invariante real; el techo solo evita que se cuele una.
                     var wrapPanels = Descendants(shell.SidebarScroll).OfType<WrapPanel>().ToList();
-                    Assert.True(wrapPanels.Count <= 3, $"the sidebar must not cram fields into WrapPanels; found {wrapPanels.Count}");
+                    Assert.True(wrapPanels.Count <= 5, $"the sidebar must not cram fields into WrapPanels; found {wrapPanels.Count}");
                     Assert.All(wrapPanels, panel => Assert.All(
                         panel.Children.OfType<FrameworkElement>(),
                         child => Assert.IsType<Button>(child)));

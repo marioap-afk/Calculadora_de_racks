@@ -91,13 +91,13 @@ namespace RackCad.UI.Tests
                 var w = Fresh();
                 try
                 {
-                    var options = Combo(w, "HeaderScopeBox").Items.Cast<ComboBoxItem>()
-                        .Select(item => (string)item.Content).ToList();
-
-                    Assert.Equal(
-                        new[] { "Solo esta cabecera", "Esta linea de cabeceras", "Todas las cabeceras" },
-                        options);
-                    Assert.DoesNotContain(options, option => option.Contains("aplicable"));
+                    // I-40 (ronda 5): dos ejes independientes con atajos, no un enum de alcance.
+                    Assert.NotNull(w.FindName("HeaderTargetsList"));
+                    Assert.NotNull(w.FindName("HeaderLinesList"));
+                    Assert.NotNull(w.FindName("HeaderTargetsThisButton"));
+                    Assert.NotNull(w.FindName("HeaderTargetsAllButton"));
+                    Assert.NotNull(w.FindName("HeaderLinesThisButton"));
+                    Assert.NotNull(w.FindName("HeaderLinesAllButton"));
                 }
                 finally { w.Close(); }
             });
@@ -112,37 +112,35 @@ namespace RackCad.UI.Tests
                 var w = Fresh();
                 try
                 {
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;   // Esta linea de cabeceras
-                    var lines = Combo(w, "HeaderLineBox").Items.Cast<string>().ToList();
+                    var lines = ((ListBox)w.FindName("HeaderLinesList")).ItemsSource.Cast<string>().ToList();
 
                     Assert.Equal(3, lines.Count);                  // dos frentes ⇒ tres lineas de postes
                     Assert.StartsWith("Linea 1", lines[0], StringComparison.Ordinal);
-                    Assert.True(Combo(w, "HeaderLineBox").IsEnabled);
+                    Assert.True(((ListBox)w.FindName("HeaderLinesList")).IsEnabled);
                 }
                 finally { w.Close(); }
             });
         }
 
-        /// <summary>
-        /// La LINEA identifica la cabecera fisica, asi que importa tanto para «Solo esta cabecera» como para «Esta
-        /// linea». Solo el alcance global la ignora, porque ahi van todas (decision final del Owner).
-        /// </summary>
+        /// <summary>Los atajos «Esta» y «Todas» solo SELECCIONAN: no modifican nada por si mismos.</summary>
         [Fact]
-        public void TheLineSelector_IsRelevantForBothInstanceScopes_AndOnlyIdleForTheGlobalOne()
+        public void ThePresets_OnlySelect_AndChangeNothingByThemselves()
         {
             StaTestRunner.Run(() =>
             {
                 var w = Fresh();
                 try
                 {
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 0;   // Solo esta cabecera
-                    Assert.True(Combo(w, "HeaderLineBox").IsEnabled);
+                    Click(Btn(w, "HeaderTargetsAllButton"));
+                    Click(Btn(w, "HeaderLinesAllButton"));
 
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;   // Esta linea de cabeceras
-                    Assert.True(Combo(w, "HeaderLineBox").IsEnabled);
+                    Assert.Equal(
+                        HeaderIds(w).Length,
+                        ((ListBox)w.FindName("HeaderTargetsList")).SelectedItems.Count);
+                    Assert.Equal(3, ((ListBox)w.FindName("HeaderLinesList")).SelectedItems.Count);
 
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
-                    Assert.False(Combo(w, "HeaderLineBox").IsEnabled);
+                    // Nada escenificado: elegir destinos no es una operacion.
+                    Assert.False(w.EditorStateForTest.ModuleSession.HasPendingChanges);
                 }
                 finally { w.Close(); }
             });
@@ -164,8 +162,7 @@ namespace RackCad.UI.Tests
                 Select(a, headers[0]);
 
                 // Linea A = linea 1 (poste 0).
-                Combo(a, "HeaderScopeBox").SelectedIndex = 1;
-                Combo(a, "HeaderLineBox").SelectedIndex = 0;
+                PushBackHeaderTestSupport.Target(a, HeaderIds(a), new[] { PushBackHeaderTestSupport.Lines(a)[0] });
                 a.HeaderConfiguratorPresenter = Customize(187.0, 41.5);
                 Click(Btn(a, "ConfigureModuleHeaderButton"));
 
@@ -193,7 +190,7 @@ namespace RackCad.UI.Tests
                     // Ahora TODAS: las dos lineas quedan iguales.
                     var headersB = HeaderIds(b);
                     Select(b, headersB[0]);
-                    Combo(b, "HeaderScopeBox").SelectedIndex = 2;
+                    PushBackHeaderTestSupport.Target(b, HeaderIds(b), PushBackHeaderTestSupport.Lines(b));
                     b.HeaderConfiguratorPresenter = Customize(203.0, 44.0);
                     Click(Btn(b, "ConfigureModuleHeaderButton"));
                     Click(Btn(b, "ConfirmModuleButton"));
@@ -228,8 +225,7 @@ namespace RackCad.UI.Tests
 
                     // Se copia a la LINEA 2 (poste 1).
                     Select(w, headers[1]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;
-                    Combo(w, "HeaderLineBox").SelectedIndex = 1;
+                    PushBackHeaderTestSupport.Target(w, HeaderIds(w), new[] { PushBackHeaderTestSupport.Lines(w)[1] });
                     Combo(w, "CopyHeaderFromBox").SelectedIndex = 0;
                     Click(Btn(w, "CopyHeaderFromButton"));
                     Click(Btn(w, "ConfirmModuleButton"));
@@ -254,8 +250,7 @@ namespace RackCad.UI.Tests
                 {
                     var headers = HeaderIds(w);
                     Select(w, headers[0]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 1;
-                    Combo(w, "HeaderLineBox").SelectedIndex = 0;
+                    PushBackHeaderTestSupport.Target(w, HeaderIds(w), new[] { PushBackHeaderTestSupport.Lines(w)[0] });
                     w.HeaderConfiguratorPresenter = Customize(187.0, 41.5);
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
                     Click(Btn(w, "CancelModuleButton"));

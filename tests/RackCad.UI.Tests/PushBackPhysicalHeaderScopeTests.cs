@@ -79,14 +79,27 @@ namespace RackCad.UI.Tests
             => Combo(w, "ModuleBox").SelectedIndex = w.EditorStateForTest.ModuleSession.Modules
                 .Select((m, i) => new { m.ModuleId, i }).First(x => x.ModuleId == moduleId).i;
 
-        /// <summary>Point the editor at one physical cabecera: its module, its line and the scope.</summary>
+        /// <summary>
+        /// Point the editor at destinations. I-40 (ronda 5): the destinations are the CARTESIAN PRODUCT of the
+        /// selected cabeceras and the selected lines, so the three old scopes are just three of its points.
+        /// </summary>
         private static void Address(RackPushBackSystemWindow w, string moduleId, int lineIndex, int scope)
         {
             Select(w, moduleId);
-            Combo(w, "HeaderScopeBox").SelectedIndex = scope;
-            if (scope != TodasLasCabeceras)
+            var lines = PushBackHeaderTestSupport.Lines(w);
+            var headers = HeaderIds(w);
+
+            switch (scope)
             {
-                Combo(w, "HeaderLineBox").SelectedIndex = lineIndex;
+                case SoloEstaCabecera:
+                    PushBackHeaderTestSupport.Target(w, new[] { moduleId }, new[] { lines[lineIndex] });
+                    break;
+                case EstaLinea:
+                    PushBackHeaderTestSupport.Target(w, headers, new[] { lines[lineIndex] });
+                    break;
+                default:
+                    PushBackHeaderTestSupport.Target(w, headers, lines);
+                    break;
             }
         }
 
@@ -213,7 +226,6 @@ namespace RackCad.UI.Tests
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
                     Click(Btn(w, "ConfirmModuleButton"));
 
-                    Assert.Empty(w.EditorStateForTest.ModuleSession.OverriddenLines);
                     foreach (var id in headers)
                     {
                         Assert.Equal(203.0, Drawn(w, id, 0).Height, 4);

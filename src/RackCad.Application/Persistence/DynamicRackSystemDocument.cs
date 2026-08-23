@@ -42,6 +42,10 @@ namespace RackCad.Application.Persistence
         /// con un arreglo opcional; nada existente cambia de forma ni de significado.
         /// </summary>
         public List<DynamicHeaderLineOverrideDocument> HeaderLineOverrides { get; set; }
+
+        /// <summary>I-40: alturas de poste derivado por linea. AUSENTE en todo documento anterior, y ausente
+        /// significa que cada linea usa la altura del rack, que es lo de siempre.</summary>
+        public List<DynamicDerivedPostLineOverrideDocument> DerivedPostLineOverrides { get; set; }
         public double? ManualHeaderHeightOverride { get; set; }
         public bool? NumberFronts { get; set; }
         public bool? NumberLevels { get; set; }
@@ -91,6 +95,7 @@ namespace RackCad.Application.Persistence
                 DerivedPostReinforcementHeight = system.DerivedPostReinforcementHeight,
                 DerivedPostHeight = system.DerivedPostHeight,
                 HeaderLineOverrides = DynamicHeaderLineOverrideDocument.From(system.HeaderLineOverrides),
+                DerivedPostLineOverrides = DynamicDerivedPostLineOverrideDocument.From(system.DerivedPostLineOverrides),
                 ManualHeaderHeightOverride = system.ManualHeaderHeightOverride,
                 NumberFronts = system.NumberFronts,
                 NumberLevels = system.NumberLevels,
@@ -138,6 +143,7 @@ namespace RackCad.Application.Persistence
                 DerivedPostReinforcementHeight = design.DerivedPostReinforcementHeight,
                 DerivedPostHeight = design.DerivedPostHeight,
                 HeaderLineOverrides = DynamicHeaderLineOverrideDocument.From(design.HeaderLineOverrides),
+                DerivedPostLineOverrides = DynamicDerivedPostLineOverrideDocument.From(design.DerivedPostLineOverrides),
                 ManualHeaderHeightOverride = design.ManualHeaderHeightOverride,
                 NumberFronts = design.NumberFronts,
                 NumberLevels = design.NumberLevels,
@@ -207,6 +213,14 @@ namespace RackCad.Application.Persistence
                 if (restored?.Header != null)
                 {
                     design.HeaderLineOverrides.Add(restored);
+                }
+            }
+
+            foreach (var derived in DerivedPostLineOverrides ?? Enumerable.Empty<DynamicDerivedPostLineOverrideDocument>())
+            {
+                if (derived != null && derived.Height > 0.0)
+                {
+                    design.DerivedPostLineOverrides.Add(derived.ToDomain());
                 }
             }
 
@@ -293,6 +307,14 @@ namespace RackCad.Application.Persistence
                 if (restored?.Header != null)
                 {
                     system.HeaderLineOverrides.Add(restored);
+                }
+            }
+
+            foreach (var derived in DerivedPostLineOverrides ?? Enumerable.Empty<DynamicDerivedPostLineOverrideDocument>())
+            {
+                if (derived != null && derived.Height > 0.0)
+                {
+                    system.DerivedPostLineOverrides.Add(derived.ToDomain());
                 }
             }
 
@@ -675,6 +697,35 @@ namespace RackCad.Application.Persistence
                         : DynamicRackDefaults.DefaultIntermediateBeamDepth
             };
         }
+    }
+
+    /// <summary>Persisted form of a per-LINE derived-post height (I-40).</summary>
+    public sealed class DynamicDerivedPostLineOverrideDocument
+    {
+        public int PostIndex { get; set; }
+        public double Height { get; set; }
+
+        public static List<DynamicDerivedPostLineOverrideDocument> From(
+            IEnumerable<DynamicDerivedPostLineOverride> overrides)
+        {
+            var result = new List<DynamicDerivedPostLineOverrideDocument>();
+            foreach (var item in overrides ?? Enumerable.Empty<DynamicDerivedPostLineOverride>())
+            {
+                if (item != null && item.Height > 0.0)
+                {
+                    result.Add(new DynamicDerivedPostLineOverrideDocument
+                    {
+                        PostIndex = item.PostIndex,
+                        Height = item.Height
+                    });
+                }
+            }
+
+            return result.Count == 0 ? null : result;
+        }
+
+        public DynamicDerivedPostLineOverride ToDomain()
+            => new DynamicDerivedPostLineOverride { PostIndex = PostIndex, Height = Height };
     }
 
     /// <summary>Persisted form of a per-LINE cabecera configuration (I-40).</summary>

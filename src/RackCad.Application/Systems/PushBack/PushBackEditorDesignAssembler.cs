@@ -68,6 +68,12 @@ namespace RackCad.Application.Systems.PushBack
                 : RackModuleEditSession.Begin(baseline).Commit().Modules;
         }
 
+        /// <summary>The per-line derived-post heights a baseline already carries, when there is no accepted edit.</summary>
+        private static IReadOnlyList<DynamicDerivedPostLineOverride> DerivedPostLinesOf(DynamicRackSystem baseline)
+            => baseline == null
+                ? Array.Empty<DynamicDerivedPostLineOverride>()
+                : (IReadOnlyList<DynamicDerivedPostLineOverride>)baseline.DerivedPostLineOverrides;
+
         /// <summary>The per-line configurations a baseline already carries, when there is no accepted edit.</summary>
         private static IReadOnlyList<DynamicHeaderLineOverride> LineOverridesOf(DynamicRackSystem baseline)
             => baseline == null
@@ -211,8 +217,21 @@ namespace RackCad.Application.Systems.PushBack
             // Se descartan las que apunten a un modulo que el rack reconstruido ya no tiene como cabecera, por la
             // misma razon por la que la reconciliacion descarta una personalizacion sin modulo.
             system.HeaderLineOverrides.Clear();
+            system.DerivedPostLineOverrides.Clear();
             if (!standardRestore)
             {
+                foreach (var derived in commit?.DerivedPostOverrides ?? DerivedPostLinesOf(baseline))
+                {
+                    if (derived != null && derived.Height > 0.0)
+                    {
+                        system.DerivedPostLineOverrides.Add(new DynamicDerivedPostLineOverride
+                        {
+                            PostIndex = derived.PostIndex,
+                            Height = derived.Height
+                        });
+                    }
+                }
+
                 var headerIds = new HashSet<string>(
                     system.Modules.Where(module => module.IsHeader).Select(module => module.ModuleId),
                     StringComparer.Ordinal);

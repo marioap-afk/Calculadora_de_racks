@@ -265,6 +265,73 @@ namespace RackCad.Application.Systems.Dynamic
             return null;
         }
 
+        /// <summary>
+        /// The LONGITUD the derived posts of one physical line take (I-40). The line's own value wins; otherwise the
+        /// rack-wide one; otherwise <paramref name="inheritedHeight"/>, which is the cabecera height the derived post
+        /// has always inherited. Single authority: the lateral geometry and the BOM both read it.
+        /// </summary>
+        public static double DerivedPostHeightAtPost(
+            DynamicRackSystem system,
+            int postIndex,
+            double inheritedHeight)
+        {
+            if (system != null)
+            {
+                foreach (var candidate in system.DerivedPostLineOverrides)
+                {
+                    if (candidate != null && candidate.PostIndex == postIndex && candidate.Height > 0.0)
+                    {
+                        return candidate.Height;
+                    }
+                }
+
+                if (system.DerivedPostHeight.HasValue && system.DerivedPostHeight.Value > 0.0)
+                {
+                    return system.DerivedPostHeight.Value;
+                }
+            }
+
+            return inheritedHeight;
+        }
+
+        /// <summary>
+        /// The height of the cabeceras of one physical LINE (I-40): the tallest configuration any of that line's
+        /// cabeceras actually uses, read through <see cref="HeaderConfigurationAtPost"/> — the SAME authority the
+        /// lateral geometry and the BOM consume. Falls back to <see cref="PostHeight"/> when the line has no
+        /// cabecera with a configuration.
+        /// <para>
+        /// This is what the FRONTAL and POSTERIOR views must draw. Before I-40 they used <see cref="PostHeight"/>
+        /// directly, a derived value that ignores the cabecera configuration entirely, so a custom cabecera changed
+        /// the lateral and left the frontal untouched.
+        /// </para>
+        /// </summary>
+        public static double HeaderHeightAtPost(DynamicRackSystem system, RackCatalog catalog, int postIndex)
+        {
+            var derived = PostHeight(system, postIndex);
+            if (system == null)
+            {
+                return derived;
+            }
+
+            var range = DynamicDepthGeometry.AtPost(system, postIndex);
+            var tallest = 0.0;
+            foreach (var module in system.Modules)
+            {
+                if (module == null || !module.IsHeader || !range.Contains(module.Index + 1))
+                {
+                    continue;
+                }
+
+                var configuration = HeaderConfigurationAtPost(system, module, catalog, postIndex);
+                if (configuration != null && configuration.Height > tallest)
+                {
+                    tallest = configuration.Height;
+                }
+            }
+
+            return tallest > 0.0 ? tallest : derived;
+        }
+
         /// <summary>Number of load levels visible at one post section: the tallest adjacent front owns the cut.</summary>
         public static int LoadLevelsAtPost(DynamicRackSystem system, int postIndex)
         {

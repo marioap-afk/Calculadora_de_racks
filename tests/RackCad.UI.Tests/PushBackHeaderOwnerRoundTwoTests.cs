@@ -325,7 +325,7 @@ namespace RackCad.UI.Tests
 
                     // 2) Seleccionar Cabecera 2. 3) Copiar de Cabecera 1. 4) Alcance: todas.
                     Select(w, headers[1]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
+                    PushBackHeaderTestSupport.Target(w, HeaderIds(w), PushBackHeaderTestSupport.Lines(w));
                     var sources = Combo(w, "CopyHeaderFromBox");
                     var index = sources.Items.Cast<string>()
                         .Select((label, i) => new { label, i })
@@ -373,7 +373,7 @@ namespace RackCad.UI.Tests
                     Click(Btn(w, "ConfirmModuleButton"));
 
                     Select(w, headers[1]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
+                    PushBackHeaderTestSupport.Target(w, HeaderIds(w), PushBackHeaderTestSupport.Lines(w));
                     Combo(w, "CopyHeaderFromBox").SelectedIndex = 0;
                     Click(Btn(w, "CopyHeaderFromButton"));
                     Click(Btn(w, "CancelModuleButton"));
@@ -401,13 +401,19 @@ namespace RackCad.UI.Tests
                 var w = Advanced();
                 try
                 {
-                    var options = Combo(w, "HeaderScopeBox").Items.Cast<ComboBoxItem>()
-                        .Select(item => (string)item.Content).ToList();
+                    // I-40 (ronda 5): el alcance dejo de ser un enum. Los destinos son DOS listas de seleccion
+                    // multiple —cabeceras y lineas— con sus atajos «Esta» / «Todas», y una accion explicita.
+                    Assert.NotNull(w.FindName("HeaderTargetsList"));
+                    Assert.NotNull(w.FindName("HeaderLinesList"));
+                    Assert.NotNull(w.FindName("ApplyHeaderSelectionButton"));
+                    Assert.Null(w.FindName("HeaderScopeBox"));
 
-                    Assert.Equal(
-                        new[] { "Solo esta cabecera", "Esta linea de cabeceras", "Todas las cabeceras" },
-                        options);
-                    Assert.DoesNotContain(options, option => option.Contains("aplicable"));
+                    var names = new[]
+                    {
+                        (string)((TextBlock)w.FindName("HeaderTargetsGroupTitle")).Text,
+                        (string)((TextBlock)w.FindName("HeaderLinesGroupTitle")).Text
+                    };
+                    Assert.DoesNotContain(names, name => name.Contains("aplicable"));
                 }
                 finally { w.Close(); }
             });
@@ -425,7 +431,7 @@ namespace RackCad.UI.Tests
                 {
                     var headers = HeaderIds(w);
                     Select(w, headers[0]);
-                    Combo(w, "HeaderScopeBox").SelectedIndex = 2;   // Todas las cabeceras
+                    PushBackHeaderTestSupport.Target(w, HeaderIds(w), PushBackHeaderTestSupport.Lines(w));
                     w.HeaderConfiguratorPresenter = QuickConfigAt(187.0);
                     Click(Btn(w, "ConfigureModuleHeaderButton"));
 
@@ -448,7 +454,7 @@ namespace RackCad.UI.Tests
                 var w = Advanced();
                 try
                 {
-                    foreach (var name in new[] { "HeaderConfigureGroupTitle", "HeaderReuseGroupTitle", "HeaderScopeGroupTitle" })
+                    foreach (var name in new[] { "HeaderConfigureGroupTitle", "HeaderReuseGroupTitle", "HeaderTargetsGroupTitle", "HeaderLinesGroupTitle" })
                     {
                         Assert.NotNull(w.FindName(name));
                     }

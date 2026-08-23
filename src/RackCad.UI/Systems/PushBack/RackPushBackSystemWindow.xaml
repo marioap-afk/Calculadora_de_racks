@@ -373,39 +373,69 @@
                                  longitudinal. La operacion es ATOMICA -valida todos los destinos antes de tocar nada-
                                  y cada destino recibe su PROPIA copia, asi que modificar una despues jamas alcanza a
                                  las otras. No hay biblioteca ni referencia persistente. -->
+                            <!-- ==================== ORIGEN Y DESTINOS (I-40, ronda 5 del Owner) ====================
+                                 El alcance dejo de ser un enum de tres opciones acopladas a «Configurar cabecera».
+                                 Ahora hay DOS EJES INDEPENDIENTES —CABECERAS destino y LINEAS destino— y los destinos
+                                 son su PRODUCTO CARTESIANO. Configurar produce la configuracion ORIGEN; «Aplicar
+                                 configuracion a la seleccion» la reparte. Elegir destinos no modifica nada por si
+                                 mismo, y no hay que volver a abrir el configurador para cambiar la seleccion. -->
                             <TextBlock x:Name="HeaderReuseGroupTitle" Text="Reutilizar"
                                        Style="{StaticResource FieldLabel}" Margin="0,12,0,0" />
                             <TextBlock Text="Copiar configuracion de:" Foreground="#7A8794" FontSize="9.5"
                                        TextWrapping="Wrap" Margin="0,0,0,2" />
                             <ComboBox x:Name="CopyHeaderFromBox" ToolTipService.ShowOnDisabled="True"
-                                      ToolTip="Otra cabecera PERSONALIZADA de este rack. Se copia su configuracion; no se guarda en ninguna biblioteca." />
-                            <Button x:Name="CopyHeaderFromButton" Content="Copiar"
-                                    Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" HorizontalAlignment="Left"
+                                      ToolTip="Otra cabecera PERSONALIZADA de este rack. Se toma su configuracion como origen; no se guarda en ninguna biblioteca." />
+                            <Button x:Name="CopyHeaderFromButton" Content="Tomar como origen"
+                                    Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" HorizontalAlignment="Left"
                                     Margin="0,6,0,0" Click="CopyHeaderFrom_Click" ToolTipService.ShowOnDisabled="True"
-                                    ToolTip="Copia esa configuracion al alcance elegido abajo. Cada destino recibe una copia independiente." />
+                                    ToolTip="Toma esa configuracion como origen y la aplica a la seleccion de destinos. Cada destino recibe una copia independiente." />
 
-                            <TextBlock x:Name="HeaderScopeGroupTitle" Text="Alcance"
+                            <TextBlock x:Name="HeaderTargetsGroupTitle" Text="Destino — cabeceras"
                                        Style="{StaticResource FieldLabel}" Margin="0,12,0,0" />
-                            <TextBlock Text="Aplicar configuracion a:" Foreground="#7A8794" FontSize="9.5"
-                                       TextWrapping="Wrap" Margin="0,0,0,2" />
-                            <ComboBox x:Name="HeaderScopeBox" SelectedIndex="0" SelectionChanged="HeaderScope_Changed"
-                                      ToolTipService.ShowOnDisabled="True"
-                                      ToolTip="A cuantas cabeceras va la configuracion, tanto al configurarla como al copiarla. Si alguna no se dibuja en ningun corte, se omite y la linea de estado lo dice.">
-                                <ComboBoxItem Content="Solo esta cabecera" />
-                                <ComboBoxItem Content="Esta linea de cabeceras" />
-                                <ComboBoxItem Content="Todas las cabeceras" />
-                            </ComboBox>
+                            <ListBox x:Name="HeaderTargetsList" SelectionMode="Extended" MaxHeight="110"
+                                     SelectionChanged="HeaderDestinations_Changed"
+                                     ToolTipService.ShowOnDisabled="True"
+                                     ToolTip="Las cabeceras que recibiran la configuracion. Se pueden elegir varias." />
+                            <WrapPanel Margin="0,4,0,0">
+                                <Button x:Name="HeaderTargetsThisButton" Content="Esta" MinWidth="64" Margin="0,0,6,0"
+                                        Style="{StaticResource SecondaryButtonStyle}" Click="HeaderTargetsThis_Click"
+                                        ToolTipService.ShowOnDisabled="True" ToolTip="Selecciona solo la cabecera del selector de modulo." />
+                                <Button x:Name="HeaderTargetsAllButton" Content="Todas" MinWidth="72"
+                                        Style="{StaticResource SecondaryButtonStyle}" Click="HeaderTargetsAll_Click"
+                                        ToolTipService.ShowOnDisabled="True" ToolTip="Selecciona todas las cabeceras del rack." />
+                            </WrapPanel>
 
-                            <!-- I-40 (Owner): la LINEA de cabeceras. Un rack tiene DOS cosas que se llaman cabecera:
-                                 el MODULO longitudinal (la secuencia de fondo, compartida por todo el rack) y la LINEA
-                                 fisica —la linea transversal de postes que el lateral dibuja como un CORTE—. Cada
-                                 modulo se materializa una vez en cada linea que lo cubre, asi que «esta linea» y
-                                 «esta cabecera» no son lo mismo y el selector de modulo por si solo no basta. -->
-                            <TextBlock x:Name="HeaderLineLabel" Text="Linea de cabeceras (corte):"
-                                       Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" Margin="0,8,0,2" />
-                            <ComboBox x:Name="HeaderLineBox" SelectionChanged="HeaderLine_Changed"
-                                      ToolTipService.ShowOnDisabled="True"
-                                      ToolTip="La linea transversal de postes a la que va la configuracion. Es el corte que el lateral dibuja en ese poste." />
+                            <TextBlock x:Name="HeaderLinesGroupTitle" Text="Destino — lineas"
+                                       Style="{StaticResource FieldLabel}" Margin="0,12,0,0" />
+                            <ListBox x:Name="HeaderLinesList" SelectionMode="Extended" MaxHeight="110"
+                                     SelectionChanged="HeaderDestinations_Changed"
+                                     ToolTipService.ShowOnDisabled="True"
+                                     ToolTip="Las lineas transversales de postes —los cortes— que recibiran la configuracion. Se pueden elegir varias." />
+                            <WrapPanel Margin="0,4,0,0">
+                                <Button x:Name="HeaderLinesThisButton" Content="Esta" MinWidth="64" Margin="0,0,6,0"
+                                        Style="{StaticResource SecondaryButtonStyle}" Click="HeaderLinesThis_Click"
+                                        ToolTipService.ShowOnDisabled="True" ToolTip="Selecciona solo la linea de origen." />
+                                <Button x:Name="HeaderLinesAllButton" Content="Todas" MinWidth="72"
+                                        Style="{StaticResource SecondaryButtonStyle}" Click="HeaderLinesAll_Click"
+                                        ToolTipService.ShowOnDisabled="True" ToolTip="Selecciona todas las lineas del rack." />
+                            </WrapPanel>
+
+                            <TextBlock x:Name="HeaderSourceText" TextWrapping="Wrap" FontSize="10" Margin="0,10,0,0"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            <Button x:Name="ApplyHeaderSelectionButton" Content="Aplicar configuracion a la seleccion"
+                                    Style="{StaticResource SecondaryButtonStyle}" MinWidth="240" HorizontalAlignment="Left"
+                                    Margin="0,6,0,0" Click="ApplyHeaderSelection_Click" ToolTipService.ShowOnDisabled="True"
+                                    ToolTip="Aplica la configuracion de origen a todas las combinaciones cabecera x linea seleccionadas. Queda pendiente de Confirmar." />
+
+                            <TextBlock Text="Altura del poste derivado en las lineas seleccionadas (in)"
+                                       Style="{StaticResource FieldLabel}" Margin="0,12,0,0" />
+                            <controls:NumericField x:Name="DerivedPostLineHeightBox" Minimum="0" MinimumInclusive="False"
+                                                   ToolTipService.ShowOnDisabled="True"
+                                                   ToolTip="Vacio = esas lineas vuelven a la altura del rack. El poste derivado pertenece a la LINEA, no a una cabecera." />
+                            <Button x:Name="ApplyDerivedPostLinesButton" Content="Aplicar a las lineas seleccionadas"
+                                    Style="{StaticResource SecondaryButtonStyle}" MinWidth="240" HorizontalAlignment="Left"
+                                    Margin="0,6,0,0" Click="ApplyDerivedPostLines_Click" ToolTipService.ShowOnDisabled="True"
+                                    ToolTip="Fija la altura del poste derivado en las lineas seleccionadas. Queda pendiente de Confirmar." />
                         </StackPanel>
 
                         <WrapPanel Margin="0,10,0,0">

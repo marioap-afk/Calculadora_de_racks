@@ -197,6 +197,19 @@ namespace RackCad.Application.Systems.Dynamic
             system.DerivedPostHeight = design.DerivedPostHeight;
 
             // I-40: los overrides por linea viajan con COPIA canonica, como cualquier cabecera que cruza un limite.
+            system.DerivedPostLineOverrides.Clear();
+            foreach (var derived in design.DerivedPostLineOverrides)
+            {
+                if (derived != null && derived.Height > 0.0)
+                {
+                    system.DerivedPostLineOverrides.Add(new DynamicDerivedPostLineOverride
+                    {
+                        PostIndex = derived.PostIndex,
+                        Height = derived.Height
+                    });
+                }
+            }
+
             system.HeaderLineOverrides.Clear();
             foreach (var line in design.HeaderLineOverrides)
             {
@@ -304,6 +317,18 @@ namespace RackCad.Application.Systems.Dynamic
                         PostIndex = line.PostIndex,
                         ModuleId = line.ModuleId,
                         Header = CloneHeader(line.Header)
+                    });
+                }
+            }
+
+            foreach (var derived in system.DerivedPostLineOverrides)
+            {
+                if (derived != null && derived.Height > 0.0)
+                {
+                    design.DerivedPostLineOverrides.Add(new DynamicDerivedPostLineOverride
+                    {
+                        PostIndex = derived.PostIndex,
+                        Height = derived.Height
                     });
                 }
             }

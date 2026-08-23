@@ -72,6 +72,12 @@ namespace RackCad.Domain.Systems.Dynamic
         /// </summary>
         public List<DynamicHeaderLineOverride> HeaderLineOverrides { get; } = new List<DynamicHeaderLineOverride>();
 
+        /// <summary>
+        /// I-40: altura del poste derivado por LINEA fisica. Vacio = la linea usa la del rack. Solo Push Back las
+        /// escribe.
+        /// </summary>
+        public List<DynamicDerivedPostLineOverride> DerivedPostLineOverrides { get; } = new List<DynamicDerivedPostLineOverride>();
+
 
         /// <summary>Optional manual header/tramo height (in) typed by the user; null = derived from the load levels.</summary>
         public double? ManualHeaderHeightOverride { get; set; }

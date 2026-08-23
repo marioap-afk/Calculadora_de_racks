@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.RackFrames;
 using RackCad.UI.Systems.PushBack;
@@ -13,19 +17,75 @@ namespace RackCad.UI.Tests
     /// </summary>
     internal static class PushBackHeaderTestSupport
     {
-        /// <summary>The physical LINE the window currently addresses (the one the line selector shows).</summary>
+        /// <summary>The lines the rack actually has, in the order the destination list offers them.</summary>
+        public static IReadOnlyList<int> Lines(RackPushBackSystemWindow w)
+        {
+            var structure = w.EditorStateForTest.WorkingBaseline?.Structure;
+            return structure == null
+                ? Array.Empty<int>()
+                : DynamicFrontActivation.PresentBoundaries(structure);
+        }
+
+        /// <summary>The header module ids, in the order the destination list offers them.</summary>
+        public static IReadOnlyList<string> Headers(RackPushBackSystemWindow w)
+            => w.EditorStateForTest.ModuleSession.Modules
+                .Where(module => module.IsHeader)
+                .Select(module => module.ModuleId)
+                .ToList();
+
+        /// <summary>The FIRST selected destination line — the one the ORIGIN instance sits on.</summary>
         public static int SelectedLine(RackPushBackSystemWindow w)
         {
-            var box = (ComboBox)w.FindName("HeaderLineBox");
-            var structure = w.EditorStateForTest.WorkingBaseline?.Structure;
-            if (box == null || structure == null || box.SelectedIndex < 0)
+            var box = (ListBox)w.FindName("HeaderLinesList");
+            var lines = Lines(w);
+            if (box == null || box.SelectedItems.Count == 0 || lines.Count == 0)
             {
-                return 0;
+                return lines.Count > 0 ? lines[0] : 0;
             }
 
-            var lines = DynamicFrontActivation.PresentBoundaries(structure);
-            return box.SelectedIndex < lines.Count ? lines[box.SelectedIndex] : 0;
+            var labels = box.ItemsSource.Cast<string>().ToList();
+            var index = labels.IndexOf((string)box.SelectedItems[0]);
+            return index >= 0 && index < lines.Count ? lines[index] : lines[0];
         }
+
+        /// <summary>Point the two destination axes at exactly these cabeceras and these lines (I-40, ronda 5).</summary>
+        public static void Target(
+            RackPushBackSystemWindow w,
+            IEnumerable<string> moduleIds,
+            IEnumerable<int> lines)
+        {
+            var headerBox = (ListBox)w.FindName("HeaderTargetsList");
+            var lineBox = (ListBox)w.FindName("HeaderLinesList");
+            var headerIds = Headers(w);
+            var lineIndexes = Lines(w);
+
+            var headerLabels = headerBox.ItemsSource.Cast<string>().ToList();
+            headerBox.SelectedItems.Clear();
+            foreach (var id in moduleIds)
+            {
+                var index = headerIds.ToList().IndexOf(id);
+                if (index >= 0 && index < headerLabels.Count)
+                {
+                    headerBox.SelectedItems.Add(headerLabels[index]);
+                }
+            }
+
+            var lineLabels = lineBox.ItemsSource.Cast<string>().ToList();
+            lineBox.SelectedItems.Clear();
+            foreach (var line in lines)
+            {
+                var index = lineIndexes.ToList().IndexOf(line);
+                if (index >= 0 && index < lineLabels.Count)
+                {
+                    lineBox.SelectedItems.Add(lineLabels[index]);
+                }
+            }
+        }
+
+        /// <summary>«Aplicar configuracion a la seleccion»: the explicit action, with no reconfiguring.</summary>
+        public static void ApplyToSelection(RackPushBackSystemWindow w)
+            => ((Button)w.FindName("ApplyHeaderSelectionButton"))
+                .RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
 
         /// <summary>What the session has STAGED for that physical cabecera: its own configuration when the line has
         /// one, otherwise the module's.</summary>
