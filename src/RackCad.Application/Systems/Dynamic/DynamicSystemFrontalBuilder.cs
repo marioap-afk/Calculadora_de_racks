@@ -78,13 +78,13 @@ namespace RackCad.Application.Systems.Dynamic
                     ConnectionAnchor = origin,
                     Insertion = origin
                 };
-                // I-40 (Owner, ronda 5) — DEFECTO GRAVE corregido. La frontal dibujaba el poste de cada linea a
-                // PostHeight, un valor DERIVADO que ignora por completo la configuracion de la cabecera, asi que
-                // personalizar una cabecera cambiaba el lateral y dejaba la frontal igual. Ahora las dos vistas leen
-                // la MISMA autoridad —HeaderConfigurationAtPost, via HeaderHeightAtPost—, de modo que una linea no
-                // puede dibujarse distinta segun por donde se la mire.
+                // I-40 (Owner) — esta vista es un CORTE, no una envolvente. La ronda 5 hizo que leyera la
+                // configuracion de la cabecera (antes usaba PostHeight, un derivado que la ignoraba), pero tomando
+                // la MAS ALTA de la linea; el Owner precisó que la frontal corta por la PRIMERA cabecera
+                // longitudinal y la posterior por la ULTIMA. `end` elige cual, `postIndex` elige de que linea es el
+                // poste: los dos ejes conviven sin colapsarse.
                 post.DynamicParameters[SelectiveRackDefaults.LengthParam] =
-                    DynamicFrontGeometry.HeaderHeightAtPost(system, catalog, postIndex);
+                    DynamicFrontGeometry.HeaderHeightAtPost(system, catalog, postIndex, end);
                 post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = postPeralte;
                 instances.Add(post);
 

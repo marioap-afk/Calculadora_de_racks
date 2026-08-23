@@ -351,15 +351,16 @@ namespace RackCad.UI.Tests
                     Click(Btn(w, "ConfirmModuleButton"));
 
                     var structure = w.EditorStateForTest.WorkingBaseline.Structure;
+                    // La vista es un CORTE: la frontal corta por la PRIMERA cabecera longitudinal (extremo bajo).
                     Assert.Equal(
                         251.0,
-                        RackCad.Application.Systems.Dynamic.DynamicFrontGeometry
-                            .HeaderHeightAtPost(structure, null, lines[0]),
+                        RackCad.Application.Systems.Dynamic.DynamicFrontGeometry.HeaderHeightAtPost(
+                            structure, null, lines[0], RackCad.Domain.Systems.Dynamic.DynamicRackEnd.Exit),
                         4);
                     Assert.NotEqual(
                         251.0,
-                        RackCad.Application.Systems.Dynamic.DynamicFrontGeometry
-                            .HeaderHeightAtPost(structure, null, lines[2]));
+                        RackCad.Application.Systems.Dynamic.DynamicFrontGeometry.HeaderHeightAtPost(
+                            structure, null, lines[2], RackCad.Domain.Systems.Dynamic.DynamicRackEnd.Exit));
                 }
                 finally { w.Close(); }
             });

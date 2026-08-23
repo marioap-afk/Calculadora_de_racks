@@ -295,41 +295,65 @@ namespace RackCad.Application.Systems.Dynamic
         }
 
         /// <summary>
-        /// The height of the cabeceras of one physical LINE (I-40): the tallest configuration any of that line's
-        /// cabeceras actually uses, read through <see cref="HeaderConfigurationAtPost"/> — the SAME authority the
-        /// lateral geometry and the BOM consume. Falls back to <see cref="PostHeight"/> when the line has no
-        /// cabecera with a configuration.
+        /// The cabecera one physical LINE presents to the FRONTAL or the REAR view (I-40, decision del Owner).
+        ///
         /// <para>
-        /// This is what the FRONTAL and POSTERIOR views must draw. Before I-40 they used <see cref="PostHeight"/>
-        /// directly, a derived value that ignores the cabecera configuration entirely, so a custom cabecera changed
-        /// the lateral and left the frontal untouched.
+        /// La frontal y la posterior son VISTAS DE CORTE, no envolventes: la frontal corta por la PRIMERA cabecera
+        /// longitudinal del rack —la del extremo bajo, la del pasillo— y la posterior por la ULTIMA. Mirando el rack
+        /// de frente se tiene delante esa cabecera y ninguna otra, asi que una cabecera mas alta en OTRA posicion
+        /// longitudinal no puede dominar la vista.
+        /// </para>
+        ///
+        /// <para>
+        /// Los dos ejes NO se mezclan: <paramref name="end"/> elige QUE cabecera se tiene delante (eje longitudinal)
+        /// y <paramref name="postIndex"/> elige de QUE linea es el poste que se dibuja (eje transversal). La
+        /// configuracion sale de <see cref="HeaderConfigurationAtPost"/>, la misma autoridad que gobiernan las
+        /// personalizaciones por linea y que consumen la geometria lateral y el BOM.
         /// </para>
         /// </summary>
-        public static double HeaderHeightAtPost(DynamicRackSystem system, RackCatalog catalog, int postIndex)
+        public static double HeaderHeightAtPost(
+            DynamicRackSystem system,
+            RackCatalog catalog,
+            int postIndex,
+            DynamicRackEnd end)
         {
-            var derived = PostHeight(system, postIndex);
+            var configuration = HeaderConfigurationAtCut(system, catalog, postIndex, end);
+            return configuration != null && configuration.Height > 0.0
+                ? configuration.Height
+                : PostHeight(system, postIndex);
+        }
+
+        /// <summary>
+        /// The configuration of the cabecera this CUT shows on that line: the FIRST header module of the line's
+        /// depth range for the low end (frontal), the LAST for the high end (posterior). Null when the line carries
+        /// no cabecera with a configuration.
+        /// </summary>
+        public static RackFrameConfiguration HeaderConfigurationAtCut(
+            DynamicRackSystem system,
+            RackCatalog catalog,
+            int postIndex,
+            DynamicRackEnd end)
+        {
             if (system == null)
             {
-                return derived;
+                return null;
             }
 
             var range = DynamicDepthGeometry.AtPost(system, postIndex);
-            var tallest = 0.0;
-            foreach (var module in system.Modules)
-            {
-                if (module == null || !module.IsHeader || !range.Contains(module.Index + 1))
-                {
-                    continue;
-                }
+            var headers = system.Modules
+                .Where(module => module != null && module.IsHeader && range.Contains(module.Index + 1))
+                .OrderBy(module => module.Index)
+                .ToList();
 
-                var configuration = HeaderConfigurationAtPost(system, module, catalog, postIndex);
-                if (configuration != null && configuration.Height > tallest)
-                {
-                    tallest = configuration.Height;
-                }
+            if (headers.Count == 0)
+            {
+                return null;
             }
 
-            return tallest > 0.0 ? tallest : derived;
+            // Exit = extremo BAJO (entrada/salida, el del pasillo) ⇒ la PRIMERA cabecera longitudinal.
+            // Entrance = extremo ALTO (posterior) ⇒ la ULTIMA.
+            var module = end == DynamicRackEnd.Entrance ? headers[headers.Count - 1] : headers[0];
+            return HeaderConfigurationAtPost(system, module, catalog, postIndex);
         }
 
         /// <summary>Number of load levels visible at one post section: the tallest adjacent front owns the cut.</summary>

@@ -369,6 +369,9 @@ configuracion de la cabecera. Por eso personalizar una cabecera cambiaba el late
 frontal igual. Ahora la frontal lee `HeaderHeightAtPost`, que resuelve por
 **`HeaderConfigurationAtPost`** — la MISMA autoridad que consumen la geometria lateral y el BOM.
 
+> ⚠ **Corregido en la ronda 6.** Aquella primera version de `HeaderHeightAtPost` tomaba la cabecera
+> **mas alta** de la linea (`Max`), es decir una **envolvente**. Ver 4-sexies.
+
 ### Protector lateral del ultimo corte — causa raiz
 
 La regla adaptativa da al primer poste una copia sin espejo y al ultimo una **espejada**, porque
@@ -378,6 +381,48 @@ aplicar alli ese espejo volteaba la pieza sobre el fondo. En el lateral el volte
 del extremo en que la copia se apoya (`mirrored = AtHighEnd`): con extremo alto (Dinamico) sale
 exactamente lo mismo que antes; en extremo bajo (Push Back) el ultimo corte deja de invertirse. La
 planta no se toco.
+
+## 4-sexies. Ronda 6 — OWNER DECISION: frontal y posterior son CORTES, no envolventes
+
+> **Frontal y Posterior son vistas de CORTE de la primera y la ultima linea fisica,
+> respectivamente; no son envolventes de altura.**
+
+### Causa raiz
+
+La ronda 5 arreglo que la frontal ignorase la configuracion de la cabecera, pero resolvio la altura
+con un **`Max()`** sobre todas las cabeceras de la linea:
+
+```csharp
+// ANTES (04f76cf) — envolvente
+foreach (var module in system.Modules) { ... if (configuration.Height > tallest) tallest = ...; }
+return tallest > 0.0 ? tallest : derived;
+```
+
+Con una cabecera intermedia de 200", la frontal y la posterior mostraban **200"** aunque la primera
+midiera 180" y la ultima 120". Una vista de corte no puede estar dominada por una pieza que esta en
+otra posicion longitudinal.
+
+### Correccion
+
+`HeaderHeightAtPost(system, catalog, postIndex, DynamicRackEnd end)` delega en
+**`HeaderConfigurationAtCut(system, catalog, postIndex, end)`**, que toma las cabeceras del rango de
+esa linea, las ordena por su indice longitudinal y elige:
+
+| Vista | `DynamicRackEnd` | Cabecera | `postIndex` |
+|---|---|---|---|
+| **FRONTAL** (entrada/salida, extremo bajo) | `Exit` | la **PRIMERA** del rango | el de **cada linea** que la vista dibuja |
+| **POSTERIOR** (extremo alto) | `Entrance` | la **ULTIMA** del rango | el de **cada linea** que la vista dibuja |
+
+La configuracion sale de **`HeaderConfigurationAtPost`**, la misma autoridad de siempre: no hay logica
+paralela y los overrides por linea siguen mandando.
+
+**Los dos ejes no se mezclan:** `end` elige QUE cabecera se tiene delante (eje longitudinal) y
+`postIndex` elige de QUE linea es el poste que se dibuja (eje transversal). En un rack con fondos
+distintos, cada linea acaba en SU propia cabecera, que es lo correcto.
+
+**Ningun `Max()` mas se toco:** el de `DynamicRackSystemResolver` (altura del rack) y los de las
+envolventes de nivel siguen intactos, porque ahi si se quiere el maximo. Tampoco cambiaron el BOM, la
+planta, el lateral, el protector del ultimo corte, el modelo ni el formato de alambre.
 
 ## 5. Checklist de validacion manual en AutoCAD 2025
 
@@ -498,3 +543,13 @@ Cerrar AutoCAD antes de cualquier recompilacion del worktree.
    **planta** sigue igual.
 8. **Actualizar → RACKEDITAR**: todo lo confirmado sobrevive. Repetir una operacion y **Cancelar**: no
    queda nada.
+
+## 11. Checklist de la ronda 6 (5 pasos)
+
+1. Push Back con **varias lineas** y al menos **tres cabeceras** longitudinales.
+2. Dejar la **primera** cabecera ALTA (p. ej. 180"), una **intermedia** MAS ALTA (200") y la **ultima**
+   BAJA (120"). **Actualizar**.
+3. Ver la **FRONTAL**: debe mostrar **180"**, nunca 200".
+4. Ver la **POSTERIOR**: debe mostrar **120"**, nunca 200".
+5. Cambiar SOLO la cabecera intermedia y **Actualizar**: cambian sus **cortes laterales** y **ni la
+   frontal ni la posterior** se mueven. La planta y el protector del ultimo corte siguen igual.
