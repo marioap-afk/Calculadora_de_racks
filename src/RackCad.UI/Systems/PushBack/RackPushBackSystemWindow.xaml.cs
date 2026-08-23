@@ -1177,7 +1177,10 @@ namespace RackCad.UI.Systems.PushBack
             suppressSync = true;
             try
             {
-                ModuleBox.ItemsSource = descriptors.Select(ModuleLabel).ToList();
+                var ordinals = KindOrdinals();
+                ModuleBox.ItemsSource = descriptors
+                    .Select(descriptor => ModuleLabel(descriptor, ordinals[descriptor.ModuleId]))
+                    .ToList();
                 moduleIds = descriptors.Select(descriptor => descriptor.ModuleId).ToList();
 
                 var index = selectedId == null ? -1 : moduleIds.IndexOf(selectedId);
@@ -1215,9 +1218,46 @@ namespace RackCad.UI.Systems.PushBack
                 : RackModuleDescriptor.Describe(lastComputation.System.Structure)
                     .FirstOrDefault(module => module.ModuleId == moduleId);
 
-        private static string ModuleLabel(RackModuleDescriptor module)
+        /// <summary>
+        /// The ordinal of each module WITHIN ITS KIND — cabeceras 1..n and separadores 1..m — which is how a user
+        /// counts them. The MODULE ordinal interleaves both, so the cabeceras of a real rack read 1, 3, 6, 8 and
+        /// «Cabecera 2» names nothing the user can find (Owner, ronda 2).
+        /// </summary>
+        private Dictionary<string, int> KindOrdinals()
         {
-            var kind = module.IsHeader ? "Cabecera" : "Separador";
+            var ordinals = new Dictionary<string, int>(StringComparer.Ordinal);
+            var headers = 0;
+            var separators = 0;
+            foreach (var module in state.ModuleSession.Modules)
+            {
+                ordinals[module.ModuleId] = module.IsHeader ? ++headers : ++separators;
+            }
+
+            return ordinals;
+        }
+
+        /// <summary>«Cabecera 2» / «Separador 1» — the module named as the user counts it.</summary>
+        private string ModuleDisplayName(string moduleId)
+        {
+            var module = state.ModuleSession.Modules.FirstOrDefault(candidate => candidate.ModuleId == moduleId);
+            if (module == null)
+            {
+                return moduleId;
+            }
+
+            KindOrdinals().TryGetValue(moduleId, out var ordinal);
+            return ModuleDisplayName(module, ordinal);
+        }
+
+        private static string ModuleDisplayName(RackModuleDescriptor module, int kindOrdinal)
+            => string.Format(
+                CultureInfo.CurrentCulture,
+                "{0} {1}",
+                module.IsHeader ? "Cabecera" : "Separador",
+                kindOrdinal);
+
+        private static string ModuleLabel(RackModuleDescriptor module, int kindOrdinal)
+        {
             var marks = new List<string>();
             if (module.IsManualOverride) marks.Add("medida propia");
             if (module.HasCustomHeaderConfiguration) marks.Add("cabecera propia");
@@ -1225,9 +1265,8 @@ namespace RackCad.UI.Systems.PushBack
 
             return string.Format(
                 CultureInfo.CurrentCulture,
-                "{0}. {1} · {2:0.##} in{3}",
-                module.Index + 1,
-                kind,
+                "{0} · {1:0.##} in{2}",
+                ModuleDisplayName(module, kindOrdinal),
                 module.Length,
                 marks.Count == 0 ? string.Empty : " · " + string.Join(", ", marks));
         }
@@ -1396,7 +1435,7 @@ namespace RackCad.UI.Systems.PushBack
 
             var edited = HeaderConfiguratorDialog != null
                 ? HeaderConfiguratorDialog(copy)
-                : ShowHeaderConfigurator(copy);
+                : ShowHeaderConfigurator(copy, module.HasCustomHeaderConfiguration);
             if (edited == null)
             {
                 return;
@@ -1426,13 +1465,16 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            // The source's EFFECTIVE configuration: what the session has staged for it, or —when it is still
-            // calculated and the session holds none— the one the last valid recompute produced.
-            var source = state.ModuleSession.HeaderConfigurationCopy(sourceId)
-                         ?? HeaderConfigurationFromLastComputation(sourceId);
+            // The source's REAL personalization, read from the session and from nowhere else. There is deliberately
+            // NO fallback to the last resolved system here (Owner, ronda 2): that fallback would let «copiar mi
+            // configuracion» hand out a recalculated cabecera. Only custom cabeceras are offered as origin, so a
+            // null here means the list and the session disagree, and that is reported instead of guessed.
+            var source = state.ModuleSession.HeaderConfigurationCopy(sourceId);
             if (source == null)
             {
-                SetModuleStatus("La cabecera de origen todavia no tiene una configuracion que copiar.");
+                SetModuleStatus(
+                    ModuleDisplayName(sourceId) + " ya no tiene una configuracion personalizada que copiar.");
+                RefreshCopySources();
                 return;
             }
 
@@ -1447,17 +1489,17 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         private void StageHeaderConfiguration(RackModuleDescriptor module, RackFrameConfiguration configuration)
         {
-            var targets = HeaderTargets(module);
+            var targets = HeaderTargets(module, out var omitted);
             if (targets.Count == 0)
             {
-                SetModuleStatus("No hay ninguna cabecera aplicable en este rack.");
+                SetModuleStatus("Ninguna cabecera de este rack puede recibir la configuracion ahora mismo.");
                 return;
             }
 
             var result = state.ModuleSession.ApplyHeaderConfiguration(configuration, targets);
             if (!result.Applied)
             {
-                SetModuleStatus(result.Describe());
+                SetModuleStatus(result.RejectionReason);
                 return;
             }
 
@@ -1473,28 +1515,69 @@ namespace RackCad.UI.Systems.PushBack
                 suppressSync = wasSuppressed;
             }
 
+            var message = DescribeApplied(result.AppliedModuleIds, omitted);
             RefreshModuleStatus();
-            SetModuleStatus(result.Describe());
+            SetModuleStatus(message);
         }
 
         /// <summary>
-        /// PBH-02 — the destinations the chosen «Aplicar a:» names. «Esta cabecera» is the selection alone; «Todas
-        /// las cabeceras aplicables» is every HEADER module that is drawn somewhere, which is the same gate the
-        /// per-module surface already enforces: a module whose posts I-33 suppressed is drawn nowhere and must not
-        /// be edited, so it is not a destination either.
+        /// What the operation just did, in the user's words: HOW MANY cabeceras changed, WHICH ones —named as the
+        /// user counts them, never by module id— and how many were left out and why. Owner, ronda 2: the scope must
+        /// not be something the user has to infer.
         /// </summary>
-        private IReadOnlyList<string> HeaderTargets(RackModuleDescriptor selected)
+        private string DescribeApplied(IReadOnlyList<string> appliedIds, int omitted)
         {
+            var names = appliedIds.Select(ModuleDisplayName).ToList();
+            var applied = string.Format(
+                CultureInfo.CurrentCulture,
+                names.Count == 1
+                    ? "Configuracion aplicada a {0} cabecera ({1})."
+                    : "Configuracion aplicada a {0} cabeceras ({1}).",
+                names.Count,
+                string.Join(", ", names));
+
+            if (omitted > 0)
+            {
+                applied += string.Format(
+                    CultureInfo.CurrentCulture,
+                    omitted == 1
+                        ? " Se omitio {0} porque ningun corte la dibuja: los frentes en blanco suprimieron sus postes."
+                        : " Se omitieron {0} porque ningun corte las dibuja: los frentes en blanco suprimieron sus postes.",
+                    omitted);
+            }
+
+            return applied + " Queda pendiente de Confirmar.";
+        }
+
+        /// <summary>
+        /// PBH-02 — the destinations «Aplicar a:» names. «Solo esta cabecera» is the selection alone; «Todas las
+        /// cabeceras» is every cabecera of the rack MINUS the ones no cut draws (I-33 suppressed their posts), the
+        /// same gate the per-module surface already enforces. Those are excluded INTERNALLY and counted in
+        /// <paramref name="omitted"/> so the status can explain them: the user is never asked to understand the
+        /// word «aplicable» (Owner, ronda 2).
+        /// </summary>
+        private IReadOnlyList<string> HeaderTargets(RackModuleDescriptor selected, out int omitted)
+        {
+            omitted = 0;
             if (SelectedHeaderScope() == RackModuleHeaderScope.Module)
             {
                 return new List<string> { selected.ModuleId };
             }
 
-            return state.ModuleSession.Modules
-                .Where(candidate => candidate.IsHeader)
-                .Where(candidate => candidate.ModuleId == selected.ModuleId || IsApplicableHeader(candidate))
-                .Select(candidate => candidate.ModuleId)
-                .ToList();
+            var targets = new List<string>();
+            foreach (var candidate in state.ModuleSession.Modules.Where(module => module.IsHeader))
+            {
+                if (candidate.ModuleId == selected.ModuleId || IsApplicableHeader(candidate))
+                {
+                    targets.Add(candidate.ModuleId);
+                }
+                else
+                {
+                    omitted++;
+                }
+            }
+
+            return targets;
         }
 
         /// <summary>A cabecera is applicable when the last valid recompute drew it somewhere. Unknown modules (no
@@ -1504,7 +1587,7 @@ namespace RackCad.UI.Systems.PushBack
 
         private RackModuleHeaderScope SelectedHeaderScope()
             => HeaderScopeBox != null && HeaderScopeBox.SelectedIndex == 1
-                ? RackModuleHeaderScope.AllApplicableHeaders
+                ? RackModuleHeaderScope.AllHeaders
                 : RackModuleHeaderScope.Module;
 
         private string SelectedCopySourceId()
@@ -1517,8 +1600,14 @@ namespace RackCad.UI.Systems.PushBack
         private List<string> copySourceIds = new List<string>();
 
         /// <summary>
-        /// Rebuild the «Copiar de:» list: every OTHER cabecera of the rack. A rack with a single cabecera has no
-        /// source, and the control says so instead of offering an empty list.
+        /// Rebuild the «Copiar configuracion de:» list: the other cabeceras that carry a REAL personalization.
+        /// <para>
+        /// Owner, ronda 2 (defecto 2), opcion A. Every cabecera holds a configuration, calculated ones included, so
+        /// listing all of them let an action the user reads as «copiar mi configuracion» hand out a STANDARD
+        /// cabecera without saying so — and applying that to every cabecera is exactly how the whole rack came back
+        /// predetermined. Only a personalization that exists can be an origin; with none, the control is disabled
+        /// and says why instead of quietly offering a surprise.
+        /// </para>
         /// </summary>
         private void RefreshCopySources()
         {
@@ -1529,8 +1618,10 @@ namespace RackCad.UI.Systems.PushBack
 
             var selected = SelectedModule();
             var previous = SelectedCopySourceId();
+            var ordinals = KindOrdinals();
+            var custom = new HashSet<string>(state.ModuleSession.CustomHeaderModuleIds, StringComparer.Ordinal);
             var sources = state.ModuleSession.Modules
-                .Where(module => module.IsHeader)
+                .Where(module => module.IsHeader && custom.Contains(module.ModuleId))
                 .Where(module => selected == null || module.ModuleId != selected.ModuleId)
                 .ToList();
 
@@ -1538,7 +1629,9 @@ namespace RackCad.UI.Systems.PushBack
             suppressSync = true;
             try
             {
-                CopyHeaderFromBox.ItemsSource = sources.Select(ModuleLabel).ToList();
+                CopyHeaderFromBox.ItemsSource = sources
+                    .Select(module => ModuleLabel(module, ordinals[module.ModuleId]))
+                    .ToList();
                 copySourceIds = sources.Select(module => module.ModuleId).ToList();
 
                 var index = previous == null ? -1 : copySourceIds.IndexOf(previous);
@@ -1549,14 +1642,10 @@ namespace RackCad.UI.Systems.PushBack
                 suppressSync = wasSuppressed;
             }
 
-            SetBlankSensitive(
-                CopyHeaderFromBox,
-                copySourceIds.Count > 0,
-                "Este rack no tiene otra cabecera de la que copiar.");
-            SetBlankSensitive(
-                CopyHeaderFromButton,
-                copySourceIds.Count > 0,
-                "Este rack no tiene otra cabecera de la que copiar.");
+            const string reason = "Todavia no hay otra cabecera personalizada de la que copiar: "
+                                  + "configura una primero con «Configurar cabecera...».";
+            SetBlankSensitive(CopyHeaderFromBox, copySourceIds.Count > 0, reason);
+            SetBlankSensitive(CopyHeaderFromButton, copySourceIds.Count > 0, reason);
         }
 
         /// <summary>
@@ -1578,9 +1667,19 @@ namespace RackCad.UI.Systems.PushBack
         /// it discarded the user's cabecera in silence.
         /// </para>
         /// </summary>
-        private RackFrameConfiguration ShowHeaderConfigurator(RackFrameConfiguration copy)
+        private RackFrameConfiguration ShowHeaderConfigurator(RackFrameConfiguration copy, bool alreadyCustom)
         {
             var window = new RackFrameConfiguratorWindow(copy) { Owner = this };
+
+            // REGRESION I-40 (ronda 2 del Owner): una cabecera YA personalizada se abre en el editor AVANZADO.
+            // El configurador siempre arranca en «Configuracion rapida», y en ese modo la unica forma de cambiar el
+            // alto es «Aplicar», que NO edita: RECONSTRUYE la cabecera desde la plantilla y conserva solo
+            // alto/fondo/poste/peralte/nombre. Sobre una cabecera calculada eso es exactamente lo que se quiere
+            // —generarla—, pero sobre una ya personalizada borra en silencio todo lo demas que el usuario habia
+            // confirmado, y por eso «la altura funcionaba» mientras la cabecera volvia a la predeterminada.
+            // Se elige el MODO desde aqui, con una propiedad publica del ViewModel: la ventana compartida no se toca.
+            window.ViewModel.IsAdvancedEditor = alreadyCustom;
+
             if (HeaderConfiguratorPresenter != null)
             {
                 HeaderConfiguratorPresenter(window);

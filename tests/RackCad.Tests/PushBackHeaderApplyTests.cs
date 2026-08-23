@@ -523,6 +523,104 @@ namespace RackCad.Tests
             Assert.Equal(Enumerable.Range(0, descriptors.Count), descriptors.Select(module => module.Index));
         }
 
+        // ===== Ronda 2 del Owner ===============================================================================
+
+        /// <summary>
+        /// REGRESION de la ronda 2 (defecto 2): solo las cabeceras con una personalizacion REAL pueden ser origen
+        /// de una copia. Toda cabecera lleva configuracion —tambien las calculadas—, asi que ofrecerlas todas
+        /// permite propagar el estandar mientras el usuario cree estar copiando lo suyo.
+        /// </summary>
+        [Fact]
+        public void RONDA2_CustomHeaderModuleIds_ListsOnlyRealPersonalizations()
+        {
+            var assembler = Assembler();
+            var state = Live(assembler, out _);
+            var headers = HeaderIds(state);
+
+            Assert.Empty(state.ModuleSession.CustomHeaderModuleIds);
+
+            state.ModuleSession.SetHeaderConfiguration(headers[0], CustomHeader(151.0, 41.5));
+            Assert.Equal(new[] { headers[0] }, state.ModuleSession.CustomHeaderModuleIds);
+
+            state.ModuleSession.SetHeaderConfiguration(headers[1], CustomHeader(163.0, 44.0));
+            Assert.Equal(new[] { headers[0], headers[1] }, state.ModuleSession.CustomHeaderModuleIds);
+
+            // Devolverla a calculada la retira del universo de origenes.
+            state.ModuleSession.ResetHeaderToCalculated(headers[0]);
+            Assert.Equal(new[] { headers[1] }, state.ModuleSession.CustomHeaderModuleIds);
+        }
+
+        /// <summary>
+        /// REGRESION de la ronda 2 (defecto 1, punto 8 del Owner): lo personalizado ANTES de guardar es identico a
+        /// lo personalizado DESPUES de cargar — no solo el alto, sino cada propiedad tocada — y la procedencia sigue
+        /// en «personalizada».
+        /// </summary>
+        [Fact]
+        public void RONDA2_TheWholeCustomConfiguration_IsIdenticalBeforeSavingAndAfterLoading()
+        {
+            var assembler = Assembler();
+            var state = Live(assembler, out var inputs);
+            var headerId = HeaderIds(state)[0];
+
+            var custom = CustomHeader(151.0, 41.5);
+            custom.Horizontals[0].Elevation = 33.0;
+            state.ModuleSession.SetHeaderConfiguration(headerId, custom);
+            state.CommitModuleEdits();
+
+            var design = assembler.BuildDesign(state, inputs);
+            var before = design.Structure.Modules.First(module => module.ModuleId == headerId).HeaderConfiguration;
+
+            var store = new RackProjectStore();
+            var reloaded = store.Deserialize(store.Serialize(RackProject.ForPushBack(design))).PushBackDesign;
+            var after = reloaded.Structure.Modules.First(module => module.ModuleId == headerId).HeaderConfiguration;
+
+            Assert.Equal(before.Height, after.Height, 4);
+            Assert.Equal(before.PanelClear, after.PanelClear, 4);
+            Assert.Equal(before.Depth, after.Depth, 4);
+            Assert.Equal(before.PostPeralte, after.PostPeralte, 4);
+            Assert.Equal(before.Horizontals.Count, after.Horizontals.Count);
+            Assert.Equal(33.0, after.Horizontals[0].Elevation, 4);
+            Assert.False(reloaded.Structure.Modules.First(module => module.ModuleId == headerId)
+                .UseCalculatedHeaderConfiguration);
+        }
+
+        /// <summary>
+        /// REGRESION de la ronda 2 (defecto 3): la secuencia EXACTA del reporte —personalizar la 1, copiarla a la 2,
+        /// aplicar a todas— deja a TODAS con la personalizacion, y sobrevive al round-trip. Ninguna vuelve a
+        /// calculada.
+        /// </summary>
+        [Fact]
+        public void RONDA2_TheOwnerSequence_SurvivesTheRoundTrip_WithNoHeaderBackToCalculated()
+        {
+            var assembler = Assembler();
+            var state = Live(assembler, out var inputs);
+            var headers = HeaderIds(state);
+
+            // 1) Cabecera 1 personalizada y confirmada.
+            state.ModuleSession.SetHeaderConfiguration(headers[0], CustomHeader(151.0, 41.5));
+            state.CommitModuleEdits();
+            assembler.AcceptComputation(state, assembler.Build(state, inputs));
+            state.ClearModuleCommit();
+
+            // 2-3) Copiar de la Cabecera 1 sobre TODAS las demas, y confirmar UNA vez.
+            var result = state.ModuleSession.CopyHeaderConfiguration(headers[0], headers.Skip(1).ToArray());
+            Assert.True(result.Applied, result.RejectionReason);
+            state.CommitModuleEdits();
+
+            var design = assembler.BuildDesign(state, inputs);
+            var store = new RackProjectStore();
+            var reloaded = store.Deserialize(store.Serialize(RackProject.ForPushBack(design))).PushBackDesign;
+            var resolved = new PushBackResolver(Catalog).Resolve(reloaded);
+
+            foreach (var id in headers)
+            {
+                var module = resolved.Structure.Modules.First(m => m.ModuleId == id);
+                Assert.False(module.UseCalculatedHeaderConfiguration);
+                Assert.Equal(151.0, module.AssociatedFrameConfiguration.Height, 4);
+                Assert.Equal(41.5, module.AssociatedFrameConfiguration.PanelClear, 4);
+            }
+        }
+
         /// <summary>El conjunto de cabeceras de la sesion es el universo del alcance «todas».</summary>
         [Fact]
         public void HeaderModuleIds_ListsEveryHeader_AndNoSeparator()

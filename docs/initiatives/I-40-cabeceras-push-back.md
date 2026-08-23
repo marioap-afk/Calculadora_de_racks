@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-40
 title: Edicion de cabeceras de Push Back
 type: feature
-status: implementing
+status: implementing   # ronda 2 del Owner corregida; esperando nueva validacion manual
 branch: feature/cabeceras-push-back
 base_branch: main
 priority:
@@ -39,7 +39,7 @@ automation:
 > | Rotulo del encargo | ID de I-40 | Que es |
 > |---|---|---|
 > | «PB-011» | **PBH-01** | La cabecera personalizada, incluida su ALTURA, es la autoridad efectiva |
-> | «PB-007» | **PBH-02** | Aplicar la configuracion a esta cabecera o a todas las aplicables |
+> | «PB-007» | **PBH-02** | Aplicar la configuracion a esta cabecera o a todas las cabeceras |
 > | «PB-006» | **PBH-03** | Reutilizar la configuracion de OTRA cabecera como COPIA independiente |
 
 ## 1. Causa raiz de PBH-01
@@ -90,8 +90,9 @@ configuracion efectiva -> deep-copy -> validar TODOS los destinos
   persistencia nueva: la copia viaja dentro del modulo que el diseno ya llevaba, y la prueba lo
   demuestra comparando el JSON serializado de un rack que llego por copia con el de un rack
   personalizado directamente — **identicos byte a byte**.
-- **PBH-02** ofrece «Esta cabecera» / «Todas las cabeceras aplicables». *Aplicables* excluye las
-  cabeceras que ningun corte dibuja: la misma compuerta de I-33 que la edicion por modulo ya aplicaba.
+- **PBH-02** ofrece «Solo esta cabecera» / «Todas las cabeceras». Las cabeceras que ningun corte
+  dibuja se excluyen POR DENTRO —la misma compuerta de I-33 que la edicion por modulo ya aplicaba— y la
+  linea de estado informa la omision (redaccion fijada en la ronda 2; ver 4-bis).
 - `SetHeaderConfiguration` pasa a ser el caso de un destino de esa misma operacion, con el mismo
   comportamiento observable de antes.
 
@@ -122,6 +123,56 @@ nueva ni logica de Push Back dentro del shell comun.
 El configurador compartido **no se modifica** (decision 5 del Owner en I-35): sigue sin
 Aceptar/Cancelar y sin `DialogResult`; Confirmar/Cancelar siguen viviendo en la sesion de Push Back.
 La guarda `Fact7` de I-35 sigue verde.
+
+## 4-bis. Ronda 2 del Owner — el candidato `e31902b` fue RECHAZADO
+
+El Owner observo: la altura cambiaba y la geometria era correcta, pero la cabecera **no quedaba
+conservada como personalizada**; al reabrir «Configurar cabecera...» aparecia la **predeterminada**, y
+copiar la Cabecera 1 y aplicar a todas dejaba **todas en predeterminada**.
+
+### La causa raiz REAL (medida, no supuesta)
+
+Se audito el ciclo completo de estado en sus doce puntos —tras `StageHeaderConfiguration`, tras
+`Commit`, `PendingModuleCommit`, ensamblador y reconciliacion, `design.Structure.Modules`, el
+`AssociatedFrameConfiguration` resuelto, `UseCalculatedHeaderConfiguration`, `Snapshot`,
+`AcceptComputation`, `ReseedModuleSession`, `HeaderConfigurationCopy` al reabrir, y la
+serializacion/deserializacion— **incluidos recalculos ajenos** (agregar un frente, cambiar niveles).
+**Ninguna frontera pierde nada**: en los doce puntos la cabecera llega completa con
+`UseCalculatedHeaderConfiguration = false`. Ese diagnostico esta fijado por pruebas.
+
+La perdida estaba **dentro del configurador compartido**, y es anterior a I-40:
+
+> `RackFrameConfiguratorViewModel.ApplySimpleConfiguration` —el boton «Aplicar» del modo
+> **«Configuracion rapida»**, que es el modo en el que el configurador **siempre** arranca— no edita la
+> cabecera: la **RECONSTRUYE desde la plantilla**. Conserva solo alto, fondo, poste, peralte y nombre;
+> `PanelClear`, horizontales, paneles, placas y excepciones vuelven al estandar.
+
+Medido: `PanelClear` 41.5 → 44, horizontales 5 → 6, elevacion 33 → 4, con el alto correcto en 187.
+De ahi exactamente los sintomas: **el alto funciona** (por eso la geometria cambiaba) y **todo lo demas
+queda predeterminado**. Y como la Cabecera 1 quedaba asi, copiarla propagaba una configuracion
+estandar a todas.
+
+Antes de I-40 esto era inocuo: ninguna cabecera de Push Back era personalizada, asi que no habia nada
+que reconstruir. La funcion nueva —seguir editando una cabecera propia— es la que lo vuelve destructivo.
+
+### Correcciones (todas del lado de Push Back; el configurador compartido NO se toca)
+
+| Defecto | Correccion |
+|---|---|
+| 1 | Una cabecera **ya personalizada** se reabre en el **editor avanzado** (`IsAdvancedEditor`, propiedad publica del ViewModel). Se EDITA de forma incremental en vez de ofrecer por delante un «Aplicar» que la regenera. Una cabecera **calculada** se sigue abriendo en modo rapido: ahi generar ES lo que se quiere |
+| 2 | Como **origen** de una copia solo se ofrecen cabeceras **personalizadas** (opcion A del Owner). Sin ninguna, el control se deshabilita y dice por que. El camino de copia **ya no tiene fallback** al ultimo sistema resuelto: no puede propagar una configuracion recalculada |
+| 3 | La secuencia exacta del reporte queda cubierta por una regresion extremo a extremo, incluida la reapertura de cada cabecera y el round-trip de persistencia |
+| 4 | «Solo esta cabecera» / «Todas las cabeceras» — sin el termino arquitectonico «aplicables». Las cabeceras que ningun corte dibuja (I-33) se excluyen **por dentro** y la linea de estado dice **cuantas** cambiaron, **cuales** y **cuantas se omitieron y por que**. La pantalla separa las tres operaciones: **Configuracion**, **Reutilizar**, **Alcance** |
+
+**Ademas**, las cabeceras se nombran como el usuario las cuenta —«Cabecera 1», «Cabecera 2»— y no por
+su posicion en la secuencia de modulos, que intercala separadores y hacia que las cabeceras de un rack
+real se llamaran 1, 3, 6 y 8.
+
+**Limitacion declarada, no resuelta.** Si el usuario cambia a «Configuracion rapida» dentro del
+configurador y pulsa «Aplicar» sobre una cabecera personalizada, la regeneracion desde la plantilla
+ocurre igual: es el comportamiento historico de una ventana **compartida** con el Dinamico y la
+cabecera independiente, y cambiarlo esta fuera del alcance de I-40. Lo que I-40 corrige es que ese ya
+no sea el camino que se le pone delante.
 
 ## 5. Checklist de validacion manual en AutoCAD 2025
 
@@ -167,3 +218,22 @@ Cerrar AutoCAD antes de cualquier recompilacion del worktree.
 15. **Cancelar** tras una aplicacion a todas: el rack vuelve a como estaba.
 16. El **GUID** del rack no cambia en ninguno de los pasos anteriores (`RACKEDITAR` lo sigue
     encontrando).
+
+## 6. Checklist REDUCIDO de la ronda 2 (repetir solo lo que fallo)
+
+1. Personalizar una cabecera (cambiar el alto) y **Confirmar**. La geometria cambia.
+2. **Volver a abrir «Configurar cabecera...» sobre esa misma cabecera**: debe abrir en **«Editor
+   avanzado»** y mostrar la configuracion personalizada, no la predeterminada.
+3. Cambiar ahi **otra** propiedad (p. ej. un panel o una horizontal) y Confirmar: el alto anterior
+   **sigue**. Se puede editar de forma incremental.
+4. Con solo esa cabecera personalizada, seleccionar otra: «Copiar configuracion de:» ofrece
+   **unicamente** «Cabecera 1». Con ninguna personalizada, el control esta **deshabilitado** y explica
+   por que.
+5. Copiar Cabecera 1 sobre la seleccionada con **«Solo esta cabecera»**: recibe los valores reales de
+   la 1.
+6. Repetir con **«Todas las cabeceras»** y Confirmar UNA vez: **todas** quedan con la configuracion de
+   la Cabecera 1, ninguna en predeterminada, y la linea de estado dice **cuantas** cambiaron.
+7. Reabrir cada cabecera: todas muestran esos mismos valores.
+8. Modificar una de ellas: las demas **no** cambian.
+9. Repetir la operacion multiple y **Cancelar**: ninguna cabecera queda alterada.
+10. Guardar, cerrar y reabrir el dibujo: todo lo anterior sigue igual y el **GUID** no cambio.

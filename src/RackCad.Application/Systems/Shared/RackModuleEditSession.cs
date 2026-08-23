@@ -251,6 +251,23 @@ namespace RackCad.Application.Systems.Shared
             => working.Where(module => module.IsHeader).Select(module => module.ModuleId).ToList();
 
         /// <summary>
+        /// The ids of the cabeceras that carry the USER'S OWN configuration, in longitudinal order — the only ones
+        /// that can be an ORIGIN for PBH-03.
+        /// <para>
+        /// Every cabecera holds a configuration, calculated ones included, so offering all of them as a source lets
+        /// «copiar mi configuracion» hand out a standard cabecera without saying so — the destructive surprise the
+        /// Owner hit in round 2. A source has to be a personalization that actually exists.
+        /// </para>
+        /// </summary>
+        public IReadOnlyList<string> CustomHeaderModuleIds
+            => working
+                .Where(module => module.IsHeader
+                                 && !module.UseCalculatedHeaderConfiguration
+                                 && module.HeaderConfiguration != null)
+                .Select(module => module.ModuleId)
+                .ToList();
+
+        /// <summary>
         /// Stage the module back to a CALCULATED cabecera: the provenance returns to derived and the configuration
         /// is dropped, so whoever resolves next builds the standard one at the current inputs. This touches the
         /// CONFIGURATION only and leaves a manual length in place — the full per-module reset is

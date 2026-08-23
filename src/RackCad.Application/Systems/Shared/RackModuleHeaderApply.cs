@@ -21,9 +21,11 @@ namespace RackCad.Application.Systems.Shared
         /// <summary>Only the module the user has selected.</summary>
         Module,
 
-        /// <summary>Every cabecera the caller declared applicable. The caller owns applicability because physical
-        /// presence (I-33) only exists on a RESOLVED system, which a staged session does not hold.</summary>
-        AllApplicableHeaders
+        /// <summary>Every cabecera of the rack. The CALLER removes the ones no cut draws before handing the
+        /// targets over, because physical presence (I-33) only exists on a RESOLVED system and a staged session does
+        /// not hold one — and it reports the omission, so the user never has to reason about which cabeceras are
+        /// "applicable" (Owner, ronda 2).</summary>
+        AllHeaders
     }
 
     /// <summary>

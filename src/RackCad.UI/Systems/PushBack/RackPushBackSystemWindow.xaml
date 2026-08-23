@@ -334,7 +334,8 @@
                                                ToolTip="Corrida longitudinal que ocupa este modulo. En una cabecera es su FONDO." />
 
                         <StackPanel x:Name="ModuleHeaderPanel" Margin="0,8,0,0">
-                            <TextBlock Text="Cabecera" Style="{StaticResource FieldLabel}" />
+                            <TextBlock x:Name="HeaderConfigureGroupTitle" Text="Configuracion"
+                                       Style="{StaticResource FieldLabel}" />
                             <RadioButton x:Name="ModuleCalculatedRadio" Content="Calculada" GroupName="PushBackModuleConfig"
                                          Foreground="{DynamicResource ShellTextPrimaryBrush}" Margin="0,2,0,0"
                                          Checked="ModuleCalculated_Checked" ToolTipService.ShowOnDisabled="True"
@@ -348,28 +349,41 @@
                                     Margin="0,6,0,0" Click="ConfigureModuleHeader_Click" ToolTipService.ShowOnDisabled="True"
                                     ToolTip="Abre el configurador sobre una COPIA. Al cerrarlo, el cambio queda pendiente de Confirmar." />
 
-                            <!-- ==================== ALCANCE Y COPIA DE CABECERA (I-40: PBH-02 y PBH-03) ====================
-                                 «Aplicar a:» gobierna A CUANTAS cabeceras va la configuracion, venga del configurador
-                                 (PBH-02) o de otra cabecera de este mismo rack (PBH-03). NO es un alcance por frente ni
-                                 por poste: los modulos siguen siendo UNA sola secuencia longitudinal, asi que los dos
-                                 unicos destinos que el modelo admite son esta cabecera o todas las aplicables. La
-                                 operacion es ATOMICA -valida todos los destinos antes de tocar nada- y cada destino
-                                 recibe su PROPIA copia, de modo que modificar una despues jamas alcanza a las otras.
-                                 No hay biblioteca ni referencia persistente: el origen es un modulo de este rack. -->
-                            <TextBlock Text="Aplicar a:" Style="{StaticResource FieldLabel}" Margin="0,10,0,0" />
-                            <ComboBox x:Name="HeaderScopeBox" SelectedIndex="0" ToolTipService.ShowOnDisabled="True"
-                                      ToolTip="A cuantas cabeceras va la configuracion. «Todas» excluye las que ningun corte dibuja.">
-                                <ComboBoxItem Content="Esta cabecera" />
-                                <ComboBoxItem Content="Todas las cabeceras aplicables" />
-                            </ComboBox>
+                            <!-- ==================== REUTILIZAR Y ALCANCE (I-40: PBH-03 y PBH-02) ====================
+                                 Tres operaciones DISTINTAS y visualmente separadas, en el orden en que se piensan:
+                                 CONFIGURACION (que cabecera quiero), REUTILIZAR (de donde la saco) y ALCANCE (a
+                                 cuantas va). Ronda 2 del Owner: el alcance se dice en palabras del usuario -«Solo esta
+                                 cabecera» / «Todas las cabeceras»-, nunca con el termino arquitectonico «aplicables»;
+                                 las cabeceras que ningun corte dibuja (I-33) se excluyen POR DENTRO y la linea de
+                                 estado explica cuantas cambiaron y cuantas se omitieron.
 
-                            <TextBlock Text="Copiar de:" Style="{StaticResource FieldLabel}" Margin="0,8,0,0" />
+                                 Como ORIGEN solo aparecen cabeceras PERSONALIZADAS: copiar una calculada seria
+                                 propagar el estandar mientras el usuario cree estar copiando lo suyo.
+
+                                 El alcance NO es por frente ni por poste: los modulos siguen siendo UNA sola secuencia
+                                 longitudinal. La operacion es ATOMICA -valida todos los destinos antes de tocar nada-
+                                 y cada destino recibe su PROPIA copia, asi que modificar una despues jamas alcanza a
+                                 las otras. No hay biblioteca ni referencia persistente. -->
+                            <TextBlock x:Name="HeaderReuseGroupTitle" Text="Reutilizar"
+                                       Style="{StaticResource FieldLabel}" Margin="0,12,0,0" />
+                            <TextBlock Text="Copiar configuracion de:" Foreground="#7A8794" FontSize="9.5"
+                                       TextWrapping="Wrap" Margin="0,0,0,2" />
                             <ComboBox x:Name="CopyHeaderFromBox" ToolTipService.ShowOnDisabled="True"
-                                      ToolTip="Otra cabecera de ESTE rack. Se copia su configuracion; no se guarda en ninguna biblioteca." />
-                            <Button x:Name="CopyHeaderFromButton" Content="Copiar configuracion"
-                                    Style="{StaticResource SecondaryButtonStyle}" MinWidth="180" HorizontalAlignment="Left"
+                                      ToolTip="Otra cabecera PERSONALIZADA de este rack. Se copia su configuracion; no se guarda en ninguna biblioteca." />
+                            <Button x:Name="CopyHeaderFromButton" Content="Copiar"
+                                    Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" HorizontalAlignment="Left"
                                     Margin="0,6,0,0" Click="CopyHeaderFrom_Click" ToolTipService.ShowOnDisabled="True"
-                                    ToolTip="Copia la configuracion de la cabecera de origen al alcance elegido. Cada destino recibe una copia independiente." />
+                                    ToolTip="Copia esa configuracion al alcance elegido abajo. Cada destino recibe una copia independiente." />
+
+                            <TextBlock x:Name="HeaderScopeGroupTitle" Text="Alcance"
+                                       Style="{StaticResource FieldLabel}" Margin="0,12,0,0" />
+                            <TextBlock Text="Aplicar configuracion a:" Foreground="#7A8794" FontSize="9.5"
+                                       TextWrapping="Wrap" Margin="0,0,0,2" />
+                            <ComboBox x:Name="HeaderScopeBox" SelectedIndex="0" ToolTipService.ShowOnDisabled="True"
+                                      ToolTip="A cuantas cabeceras va la configuracion, tanto al configurarla como al copiarla. Si alguna no se dibuja en ningun corte, se omite y la linea de estado lo dice.">
+                                <ComboBoxItem Content="Solo esta cabecera" />
+                                <ComboBoxItem Content="Todas las cabeceras" />
+                            </ComboBox>
                         </StackPanel>
 
                         <WrapPanel Margin="0,10,0,0">

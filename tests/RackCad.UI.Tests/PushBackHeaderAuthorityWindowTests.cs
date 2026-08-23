@@ -312,9 +312,12 @@ namespace RackCad.UI.Tests
             });
         }
 
-        /// <summary>El origen nunca es la cabecera seleccionada: copiarse a si misma no es una operacion.</summary>
+        /// <summary>
+        /// El origen nunca es la cabecera seleccionada —copiarse a si misma no es una operacion— y, desde la ronda 2
+        /// del Owner, tampoco una cabecera calculada: solo se ofrecen personalizaciones que existen.
+        /// </summary>
         [Fact]
-        public void PBH03_TheCopySourceList_ExcludesTheSelectedHeader()
+        public void PBH03_TheCopySourceList_ExcludesTheSelectedHeader_AndEveryCalculatedOne()
         {
             StaTestRunner.Run(() =>
             {
@@ -322,16 +325,22 @@ namespace RackCad.UI.Tests
                 try
                 {
                     var headers = HeaderIds(w);
-                    var allModules = w.EditorStateForTest.ModuleSession.Modules;
+                    Assert.True(headers.Length >= 3, "el fixture necesita al menos tres cabeceras");
 
-                    Select(w, headers[0]);
-                    var sources = Combo(w, "CopyHeaderFromBox");
-                    Assert.Equal(headers.Length - 1, sources.Items.Count);
-                    Assert.DoesNotContain(
-                        sources.Items.Cast<string>(),
-                        label => label.StartsWith(
-                            (allModules.First(m => m.ModuleId == headers[0]).Index + 1).ToString(CultureInfo.CurrentCulture) + ".",
-                            StringComparison.Ordinal));
+                    // Se personalizan DOS: la primera y la segunda.
+                    foreach (var id in headers.Take(2))
+                    {
+                        Select(w, id);
+                        w.HeaderConfiguratorPresenter = QuickConfigAt(187.0);
+                        Click(Btn(w, "ConfigureModuleHeaderButton"));
+                    }
+
+                    // Con la segunda seleccionada, el unico origen posible es la primera: la propia queda fuera y
+                    // las calculadas tambien.
+                    Select(w, headers[1]);
+                    var sources = Combo(w, "CopyHeaderFromBox").Items.Cast<string>().ToList();
+                    Assert.Single(sources);
+                    Assert.StartsWith("Cabecera 1", sources[0], StringComparison.Ordinal);
                 }
                 finally { w.Close(); }
             });
