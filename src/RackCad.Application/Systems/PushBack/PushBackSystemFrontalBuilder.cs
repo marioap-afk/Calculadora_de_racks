@@ -5,6 +5,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
 using RackCad.Application.Geometry;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
@@ -36,6 +37,27 @@ namespace RackCad.Application.Systems.PushBack
         private readonly DynamicSystemFrontalBuilder dynamicBuilder = new DynamicSystemFrontalBuilder();
 
         public HeaderRunPlan BuildPlan(PushBackSystem system, RackCatalog catalog, PushBackFrontalEnd end)
+            => BuildPlan(system, catalog, end, null, null);
+
+        /// <summary>
+        /// El mismo corte con dos inyecciones OPCIONALES que solo usa el rack compuesto de I-42 (con null en las dos
+        /// el comportamiento es exactamente el anterior a la iniciativa):
+        /// </summary>
+        /// <param name="elevationsOverride">
+        /// El contexto de elevaciones del corte BAJO. Un rack compuesto lo necesita porque la elevacion de una celda
+        /// corrida la gobierna el lado ALTO, no el lado por el que se carga.
+        /// </param>
+        /// <param name="includeCell">
+        /// Filtro (indiceDeFrente, nivel 0-based) de las celdas que este corte materializa. Un rack compuesto lo
+        /// necesita porque una celda corrida NO tiene larguero en la linea interior del lado bajo: la calle la
+        /// atraviesa. Dibujarlo seria inventar una pieza que no existe.
+        /// </param>
+        public HeaderRunPlan BuildPlan(
+            PushBackSystem system,
+            RackCatalog catalog,
+            PushBackFrontalEnd end,
+            RackLevelElevations elevationsOverride,
+            Func<int, int, bool> includeCell)
         {
             var structure = system?.Structure;
             if (structure == null)
@@ -49,9 +71,15 @@ namespace RackCad.Application.Systems.PushBack
                 // PB-004 (I-32): el builder compartido recibe el contexto de elevaciones y coloca los largueros
                 // IN/OUT YA en su elevación derivada, junto con el desviador bajo y las anotaciones. No hay
                 // reasiento posterior: antes esta vista movía las piezas después, localizándolas por coordenada.
+                var lowContext = elevationsOverride ?? PushBackElevations.Context(system, catalog);
                 var low = dynamicBuilder
-                    .Build(structure, catalog, DynamicRackEnd.Exit, PushBackElevations.Context(system, catalog))
+                    .Build(structure, catalog, DynamicRackEnd.Exit, lowContext)
                     .ToList();
+                if (includeCell != null)
+                {
+                    low = FilterCells(low, structure, catalog, lowContext, includeCell);
+                }
+
                 // I-41 (PB-016): las tarimas de las celdas que las piden, apoyadas sobre el contacto BAJO real de su
                 // cama. Sin ninguna celda marcada no se agrega nada y el corte es el de siempre.
                 low.AddRange(Tarimas(system, catalog, lowEnd: true));
@@ -90,6 +118,10 @@ namespace RackCad.Application.Systems.PushBack
                 if (PushBackPlanComposer.IsDynamicEndBeam(instance))
                 {
                     var (frontIndex, level) = LocateCell(structure, catalog, layout, instance);
+                    if (includeCell != null && level >= 0 && !includeCell(frontIndex, level))
+                    {
+                        continue;   // la celda no tiene larguero posterior en esta linea (I-42: la calle la atraviesa)
+                    }
 
                     // Swap the IN/OUT for the rear TROQUEL_REDONDO, keeping the transverse LONGITUD, at the same column.
                     // PB-004 (I-32, regla del Owner tras el round 1): el posterior es el ANCLA y se queda en su troquel,
@@ -199,6 +231,84 @@ namespace RackCad.Application.Systems.PushBack
             return result;
         }
 
+
+        /// <summary>
+        /// I-42 — deja pasar solo las celdas que <paramref name="includeCell"/> acepta. Los largueros del corte BAJO
+        /// se identifican por su COLUMNA (el frente) y por su elevacion contra la que el contexto acaba de imponer,
+        /// que es exactamente donde el builder compartido los acaba de colocar. Lo que no es larguero pasa siempre:
+        /// postes, placas y decoraciones son estructura y no pertenecen a una celda.
+        /// </summary>
+        private static List<HeaderBlockInstance> FilterCells(
+            List<HeaderBlockInstance> instances,
+            DynamicRackSystem structure,
+            RackCatalog catalog,
+            RackLevelElevations context,
+            Func<int, int, bool> includeCell)
+        {
+            var layout = DynamicFrontGeometry.Compute(structure, catalog);
+            var result = new List<HeaderBlockInstance>(instances.Count);
+            foreach (var instance in instances)
+            {
+                if (!PushBackPlanComposer.IsDynamicEndBeam(instance))
+                {
+                    result.Add(instance);
+                    continue;
+                }
+
+                var frontIndex = NearestColumn(structure, layout, instance.Insertion.X);
+                var level = NearestLowLevel(structure, context, frontIndex, instance.Insertion.Y);
+                if (level < 0 || includeCell(frontIndex, level))
+                {
+                    result.Add(instance);
+                }
+            }
+
+            return result;
+        }
+
+        private static int NearestColumn(DynamicRackSystem structure, DynamicFrontLayout layout, double x)
+        {
+            var best = -1;
+            var bestDistance = double.MaxValue;
+            var columns = Math.Min(layout.PostPositions.Count, layout.TroquelPositions.Count);
+            for (var index = 0; index < columns && index < structure.Fronts.Count; index++)
+            {
+                var distance = Math.Abs(layout.PostPositions[index] + layout.TroquelPositions[index] - x);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    best = index;
+                }
+            }
+
+            return best;
+        }
+
+        private static int NearestLowLevel(
+            DynamicRackSystem structure, RackLevelElevations context, int frontIndex, double y)
+        {
+            if (frontIndex < 0 || frontIndex >= structure.Fronts.Count)
+            {
+                return -1;
+            }
+
+            var front = structure.Fronts[frontIndex];
+            var levels = DynamicFrontGeometry.LoadBeamLevels(structure, front);
+            var best = -1;
+            var bestDistance = double.MaxValue;
+            for (var index = 0; index < levels.Count; index++)
+            {
+                var expected = context.OrPost(frontIndex, levels[index].LevelNumber, levels[index].ExitElevation);
+                var distance = Math.Abs(expected - y);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    best = index;
+                }
+            }
+
+            return bestDistance <= LevelMatchTolerance ? best : -1;
+        }
 
         private static HeaderBlockInstance CloneAt(HeaderBlockInstance source, string pieceId, string block)
         {

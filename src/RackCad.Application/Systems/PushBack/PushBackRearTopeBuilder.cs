@@ -174,11 +174,25 @@ namespace RackCad.Application.Systems.PushBack
             => SelectiveTopePlacement.SnapY(troquelMateY, largueroY, SelectiveRackDefaults.TroquelPaso) + ExtraRise;
 
         /// <summary>Rear topes in the LATERAL view (rise-and-snap above the rear beam of each active cell of the front).</summary>
-        public IReadOnlyList<HeaderBlockInstance> BuildLateral(PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front = null)
-            => Build(system, catalog, frontIndex, front, "LATERAL");
+        /// <param name="levels">
+        /// I-42 — los NIVELES a materializar, o null para todos (que es lo que hace cualquier llamador anterior a la
+        /// iniciativa). Un rack compuesto lo necesita porque un nivel puede pertenecer a una cama corrida y no a la de
+        /// este lado: sin el filtro, la celda emitiria dos veces la misma pieza fisica.
+        /// </param>
+        public IReadOnlyList<HeaderBlockInstance> BuildLateral(
+            PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front = null,
+            IReadOnlyCollection<int> levels = null)
+            => Build(system, catalog, frontIndex, front, "LATERAL", levels);
 
         /// <summary>Rear topes in <paramref name="view"/>. LATERAL/FRONTAL rise-and-snap; PLANTA keeps the frente Y.</summary>
-        public IReadOnlyList<HeaderBlockInstance> Build(PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front, string view)
+        /// <param name="levels">
+        /// I-42 — los NIVELES a materializar, o null para todos (que es lo que hace cualquier llamador anterior a la
+        /// iniciativa). Un rack compuesto lo necesita porque un nivel puede pertenecer a una cama corrida y no a la de
+        /// este lado: sin el filtro, la celda emitiria dos veces la misma pieza fisica.
+        /// </param>
+        public IReadOnlyList<HeaderBlockInstance> Build(
+            PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front, string view,
+            IReadOnlyCollection<int> levels = null)
         {
             var result = new List<HeaderBlockInstance>();
             var structure = system?.Structure;
@@ -207,7 +221,9 @@ namespace RackCad.Application.Systems.PushBack
 
             // PB-004 (I-32, regla del Owner tras el round 1): el larguero posterior vuelve a estar en su troquel, así
             // que la referencia del tope es directamente esa colocación — sin desplazamiento intermedio.
-            foreach (var placement in PushBackPlacements.Resolve(system, front).Where(placement => placement.IsEntrance))
+            foreach (var placement in PushBackPlacements.Resolve(system, front)
+                         .Where(placement => placement.IsEntrance)
+                         .Where(placement => levels == null || levels.Contains(placement.LevelNumber)))
             {
                 var levelIndex = placement.LevelNumber - 1;
                 if (!rearTope.At(frontIndex, levelIndex))

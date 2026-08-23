@@ -31,6 +31,14 @@ namespace RackCad.Application.Systems.PushBack
                 return new HeaderRunPlan(new List<HeaderGroup>(), new List<HeaderBlockInstance>());
             }
 
+            // I-42: un rack COMPUESTO tiene dos pasillos, asi que su planta no puede construirse cambiando «el
+            // larguero espejado» por un posterior: los dos extremos son pasillos. La compone PushBackCompositePlanta,
+            // estructura una vez + contenido por lado.
+            if (system.IsComposite)
+            {
+                return PushBackCompositePlanta.Build(system, catalog);
+            }
+
             var instances = dynamicBuilder.BuildPlan(structure, catalog).Flatten().Instances;
             var redondoId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
                 ? PushBackDefaults.HighEndBeamCatalogId

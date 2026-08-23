@@ -50,12 +50,23 @@ namespace RackCad.Application.Systems.PushBack
             var sideB = PushBackSideConfiguration.ForB(design);
             var layout = PushBackCompositeStructure.Layout(sideA, sideB, design.Composite);
 
-            var localA = ResolveSide(design, sideA, layout, PushBackSide.A, resolveSide);
-            var localB = ResolveSide(design, sideB, layout, PushBackSide.B, resolveSide);
+            var localA = ResolveSide(design, sideA, layout, PushBackSide.A, resolveSide, null);
+            var localB = ResolveSide(design, sideB, layout, PushBackSide.B, resolveSide, null);
 
             var compositeDesign = PushBackCompositeStructure.Compose(
                 design, sideA, sideB, layout, localA?.Structure, localB?.Structure);
             var structure = structureResolver.Resolve(compositeDesign).System;
+
+            // La ALTURA de poste es del RACK, no de un lado: hay una sola estructura y sus cabeceras miden lo mismo.
+            // Con niveles distintos entre lados, la demanda mayor la fija la estructura compuesta, asi que las dos
+            // sub-estructuras se vuelven a resolver con esa altura. Sin este paso, los cortes de un lado dibujarian
+            // postes mas cortos que los que el rack tiene realmente.
+            var sharedHeight = structure.Fronts.Count > 0 ? structure.Fronts.Max(front => front.Height) : (double?)null;
+            if (sharedHeight.HasValue && sharedHeight.Value > 0.0)
+            {
+                localA = ResolveSide(design, sideA, layout, PushBackSide.A, resolveSide, sharedHeight);
+                localB = ResolveSide(design, sideB, layout, PushBackSide.B, resolveSide, sharedHeight);
+            }
 
             var composite = new PushBackCompositeSystem
             {
@@ -86,7 +97,8 @@ namespace RackCad.Application.Systems.PushBack
             PushBackSideConfiguration side,
             PushBackCompositeLayout layout,
             PushBackSide which,
-            Func<PushBackDesign, PushBackSystem> resolveSide)
+            Func<PushBackDesign, PushBackSystem> resolveSide,
+            double? sharedHeight)
         {
             if (!side.IsPresent)
             {
@@ -99,6 +111,10 @@ namespace RackCad.Application.Systems.PushBack
                 Structure = PushBackCompositeStructure.SideStructuralDesign(design, side, modules),
                 LegacyHighEndBeamPeralte = side.LegacyHighEndBeamPeralte
             };
+            if (sharedHeight.HasValue)
+            {
+                localDesign.Structure.ManualHeaderHeightOverride = sharedHeight;
+            }
 
             // La configuracion Push Back del lado viaja SOLO para las ranuras presentes, en el mismo orden en que
             // SideStructuralDesign las apilo: asi el resolver de un lado sigue siendo el de siempre. La rejilla de

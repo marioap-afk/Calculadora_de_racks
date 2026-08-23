@@ -80,6 +80,76 @@ namespace RackCad.Application.Systems.PushBack
             return string.Join("|", front.StartX, front.EndX, front.LoadLevels, cells);
         }
 
+        /// <summary>
+        /// I-42 — el lateral de un rack COMPUESTO. La regla arquitectonica se ve entera aqui: la ESTRUCTURA se
+        /// dibuja UNA sola vez, desde el sistema compuesto (cabeceras, separadores —el central incluido—, postes
+        /// derivados, placas, cotas y etiquetas), y encima se monta el CONTENIDO cama a cama, cada una construida en
+        /// su marco y llevada al rack con una sola reflexion rigida. No se dibuja un rack A y otro B superpuestos.
+        ///
+        /// <para>
+        /// El contexto de elevaciones que reciben las decoraciones compartidas es el del lado A, el de REFERENCIA:
+        /// una sola tabla frente-&gt;nivel-&gt;elevacion no puede describir dos pasillos a la vez, y las elevaciones
+        /// propias del lado B ya viajan con sus propias piezas. Limitacion declarada, no un descuido.
+        /// </para>
+        /// </summary>
+        private HeaderRunPlan BuildComposite(PushBackSystem system, RackCatalog catalog, int postIndex, bool sectioned)
+        {
+            var structure = system.Structure;
+            var reference = system.Composite.SideA?.Local;
+            var elevations = reference != null ? PushBackElevations.Context(reference, catalog) : null;
+            var basePlan = sectioned
+                ? dynamicBuilder.Build(structure, catalog, postIndex, elevations)
+                : dynamicBuilder.Build(structure, catalog, elevations);
+
+            var headers = PushBackPlanComposer.StructuralHeaderGroups(basePlan);
+            var loose = PushBackPlanComposer.StructuralLoose(basePlan);
+
+            var runs = PushBackRuns.Resolve(system);
+            var slots = CompositeSlots(system, structure, postIndex, sectioned);
+            var levelCap = sectioned ? DynamicFrontGeometry.LoadLevelsAtPost(structure, postIndex) : int.MaxValue;
+            var content = PushBackCompositeContent.Lateral(system, catalog, runs, slot => slots.Contains(slot), levelCap);
+            headers.AddRange(content.Headers);
+            loose.AddRange(content.Loose);
+
+            var intermediates = intermediateBuilder.Build(system, catalog, postIndex, levelCap);
+            headers.AddRange(intermediates.Headers);
+            loose.AddRange(intermediates.LooseInstances);
+
+            // Etiquetas A/B: informacion grafica del plano, por el pipeline de anotaciones que ya existe. Nunca al BOM.
+            loose.AddRange(PushBackSideAnnotations.Lateral(system));
+
+            return new HeaderRunPlan(headers, loose);
+        }
+
+        /// <summary>
+        /// Las ranuras que este lateral materializa. Un corte por poste dibuja las ranuras adyacentes a ese poste; el
+        /// lateral NO seccionado dibuja la ENVOLVENTE, que es la ranura de mayor tramo longitudinal (la mas
+        /// profunda), igual que un rack de un solo sentido dibuja la del rack entero.
+        /// </summary>
+        private static HashSet<int> CompositeSlots(
+            PushBackSystem system, DynamicRackSystem structure, int postIndex, bool sectioned)
+        {
+            if (sectioned)
+            {
+                return new HashSet<int>(
+                    DynamicFrontGeometry.AdjacentFronts(structure, postIndex).Select(front => front.Index));
+            }
+
+            var envelope = -1;
+            var best = double.MinValue;
+            foreach (var front in structure.Fronts)
+            {
+                var span = front.EndX - front.StartX;
+                if (span > best)
+                {
+                    best = span;
+                    envelope = front.Index;
+                }
+            }
+
+            return envelope >= 0 ? new HashSet<int> { envelope } : new HashSet<int>();
+        }
+
         private HeaderRunPlan BuildCore(PushBackSystem system, RackCatalog catalog, int postIndex)
         {
             var structure = system?.Structure;
@@ -89,6 +159,10 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             var sectioned = postIndex >= 0;
+            if (system.IsComposite)
+            {
+                return BuildComposite(system, catalog, postIndex, sectioned);
+            }
 
             // El contexto de elevaciones se construye UNA vez y viaja al builder compartido, que lo usa para el
             // desviador bajo y para las cotas y etiquetas. Los largueros y la cama lo resuelven por su cuenta desde

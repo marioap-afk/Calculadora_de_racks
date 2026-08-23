@@ -112,7 +112,14 @@ namespace RackCad.Application.Systems.PushBack
         /// pendiente nominal desde el contacto posterior y ajusta el resultado al troquel válido más cercano. Los dos
         /// extremos quedan atornillados y la cama se traza entre los dos contactos reales.
         /// </summary>
-        public static IReadOnlyList<HeaderBlockInstance> LowBeams(PushBackSystem system, RackCatalog catalog, DynamicRackFront front = null)
+        /// <param name="levels">
+        /// I-42 — los NIVELES a materializar, o null para todos (que es lo que hace cualquier llamador anterior a la
+        /// iniciativa). Un rack compuesto lo necesita porque un nivel puede pertenecer a una cama corrida y no a la de
+        /// este lado: sin el filtro, la celda emitiria dos veces la misma pieza fisica.
+        /// </param>
+        public static IReadOnlyList<HeaderBlockInstance> LowBeams(
+            PushBackSystem system, RackCatalog catalog, DynamicRackFront front = null,
+            IReadOnlyCollection<int> levels = null)
         {
             var result = new List<HeaderBlockInstance>();
             var structure = system?.Structure;
@@ -122,7 +129,9 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             var elevations = LowBeamElevations(system, catalog, front);
-            foreach (var placement in PushBackPlacements.Resolve(system, front).Where(placement => !placement.IsEntrance))
+            foreach (var placement in PushBackPlacements.Resolve(system, front)
+                         .Where(placement => !placement.IsEntrance)
+                         .Where(placement => levels == null || levels.Contains(placement.LevelNumber)))
             {
                 var beamId = string.IsNullOrWhiteSpace(placement.BeamCatalogId)
                     ? DynamicRackDefaults.InOutBeamCatalogId
@@ -157,7 +166,14 @@ namespace RackCad.Application.Systems.PushBack
         /// lo demás (PB-004, I-32). Su contacto con la cama lo elige la geometría entre las dos aristas medidas
         /// (<see cref="RearBeamTangencyPointWorld"/>), no un lado fijo del catálogo.
         /// </summary>
-        public static IReadOnlyList<HeaderBlockInstance> HighBeams(PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front = null)
+        /// <param name="levels">
+        /// I-42 — los NIVELES a materializar, o null para todos (que es lo que hace cualquier llamador anterior a la
+        /// iniciativa). Un rack compuesto lo necesita porque un nivel puede pertenecer a una cama corrida y no a la de
+        /// este lado: sin el filtro, la celda emitiria dos veces la misma pieza fisica.
+        /// </param>
+        public static IReadOnlyList<HeaderBlockInstance> HighBeams(
+            PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front = null,
+            IReadOnlyCollection<int> levels = null)
         {
             var result = new List<HeaderBlockInstance>();
             var structure = system?.Structure;
@@ -175,7 +191,9 @@ namespace RackCad.Application.Systems.PushBack
                 return result;
             }
 
-            foreach (var placement in PushBackPlacements.Resolve(system, front).Where(placement => placement.IsEntrance))
+            foreach (var placement in PushBackPlacements.Resolve(system, front)
+                         .Where(placement => placement.IsEntrance)
+                         .Where(placement => levels == null || levels.Contains(placement.LevelNumber)))
             {
                 // PB-004: el posterior ES el ancla — se queda en el troquel que le dio el resolver, sin desplazamiento.
                 var origin = new Point2D(placement.X, placement.Y);

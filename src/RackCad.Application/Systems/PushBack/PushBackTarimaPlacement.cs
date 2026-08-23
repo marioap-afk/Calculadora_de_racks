@@ -106,8 +106,14 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>Las tarimas de un frente en el corte LATERAL: una por posicion de fondo de cada celda que las pide.</summary>
+        /// <param name="levels">
+        /// I-42 — los NIVELES a materializar, o null para todos (que es lo que hace cualquier llamador anterior a la
+        /// iniciativa). Un rack compuesto lo necesita porque un nivel puede pertenecer a una cama corrida y no a la de
+        /// este lado: sin el filtro, la celda emitiria dos veces la misma pieza fisica.
+        /// </param>
         public static IReadOnlyList<HeaderBlockInstance> Lateral(
-            PushBackSystem system, RackCatalog catalog, DynamicRackFront front, int levelCount = int.MaxValue)
+            PushBackSystem system, RackCatalog catalog, DynamicRackFront front, int levelCount = int.MaxValue,
+            IReadOnlyCollection<int> levels = null)
         {
             var result = new List<HeaderBlockInstance>();
             var structure = system?.Structure;
@@ -133,7 +139,8 @@ namespace RackCad.Application.Systems.PushBack
             var supportLocalY = SupportLocalY(catalog);
 
             foreach (var axis in PushBackFlowBedGeometry.Resolve(system, catalog, front)
-                         .Where(candidate => candidate.LevelNumber <= levelCount))
+                         .Where(candidate => candidate.LevelNumber <= levelCount)
+                         .Where(candidate => levels == null || levels.Contains(candidate.LevelNumber)))
             {
                 var level = axis.LevelNumber - 1;
                 if (!system.DrawPalletAt(frontIndex, level))
