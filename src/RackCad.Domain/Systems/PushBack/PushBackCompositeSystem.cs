@@ -56,6 +56,33 @@ namespace RackCad.Domain.Systems.PushBack
         /// <summary>X del extremo INTERIOR del lado: su linea de postes terminal, la que mira al gap.</summary>
         public double InnerX { get; set; }
 
+        /// <summary>
+        /// El sistema Push Back del lado EN SU MARCO LOCAL: su sub-estructura arranca en 0 por su extremo exterior y
+        /// su flujo avanza hacia +X. Es lo que permite que TODA la fisica ya validada de Push Back —elevaciones,
+        /// rotacion de la cama, tangencias, tope posterior— se reutilice tal cual para los dos lados: el lado B no
+        /// tiene reglas propias, tiene un marco propio. El paso a mundo es una REFLEXION rigida del conjunto (la
+        /// cama y todo lo que va montado sobre ella comparten esa misma transformacion), no un espejo de decoracion.
+        /// </summary>
+        public PushBackSystem Local { get; set; }
+
+        /// <summary>
+        /// Indice del frente dentro de <see cref="Local"/> para cada ranura transversal, o -1 si la ranura no existe
+        /// en este lado. Es el puente entre la numeracion COMPARTIDA de ranuras y la local del lado.
+        /// </summary>
+        public IList<int> LocalIndexBySlot { get; } = new List<int>();
+
+        /// <summary>El frente LOCAL de una ranura, o null si la ranura no existe en este lado.</summary>
+        public DynamicRackFront LocalFront(int frontIndex)
+        {
+            if (frontIndex < 0 || frontIndex >= LocalIndexBySlot.Count || Local?.Structure == null)
+            {
+                return null;
+            }
+
+            var index = LocalIndexBySlot[frontIndex];
+            return index >= 0 && index < Local.Structure.Fronts.Count ? Local.Structure.Fronts[index] : null;
+        }
+
         /// <summary>La proyeccion de la ranura <paramref name="frontIndex"/> en este lado, o null si no existe.</summary>
         public DynamicRackFront Front(int frontIndex)
             => frontIndex >= 0 && frontIndex < Fronts.Count ? Fronts[frontIndex] : null;

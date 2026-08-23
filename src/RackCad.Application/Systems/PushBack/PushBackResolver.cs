@@ -40,6 +40,49 @@ namespace RackCad.Application.Systems.PushBack
                 throw new ArgumentNullException(nameof(design));
             }
 
+            // I-42: un rack de UN solo sentido no pasa por la composicion. El camino de abajo es exactamente el que
+            // existia antes de la iniciativa, asi que un documento legacy resuelve el mismo sistema hasta el bit.
+            if (design.IsComposite)
+            {
+                return ResolveComposite(design);
+            }
+
+            return ResolveSingleSided(design);
+        }
+
+        /// <summary>
+        /// El Push Back COMPUESTO: una sola estructura fisica (A + hueco + B invertido) sobre la que se montan los
+        /// dos lados. El contenido de cada lado se resuelve por el MISMO camino de un sentido — en su marco local —
+        /// de modo que no existe una segunda fisica para el lado nuevo.
+        /// </summary>
+        private PushBackSystem ResolveComposite(PushBackDesign design)
+        {
+            var resolution = new PushBackCompositeResolver(catalog).Resolve(design, ResolveSingleSided);
+            var structure = resolution.Structure;
+            var composite = resolution.Composite;
+
+            var system = new PushBackSystem
+            {
+                Structure = structure,
+                HighEndBeamCatalogId = PushBackDefaults.HighEndBeamCatalogId,
+                RearTope = design.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig(),
+                Composite = composite
+            };
+
+            // El lado A NO tiene una segunda autoridad: HighEndBeams contiene LAS MISMAS instancias que la vista del
+            // lado, y la rejilla de topes es EL MISMO objeto. Editar una es editar la otra, por construccion.
+            composite.SideA.RearTope = system.RearTope;
+            foreach (var resolved in composite.SideA.ResolvedFronts)
+            {
+                system.HighEndBeams.Add(resolved);
+            }
+
+            ApplySafety(system, structure);
+            return system;
+        }
+
+        private PushBackSystem ResolveSingleSided(PushBackDesign design)
+        {
             var structure = structureResolver.Resolve(design.Structure ?? new DynamicRackDesign()).System;
 
             var system = new PushBackSystem
@@ -83,12 +126,24 @@ namespace RackCad.Application.Systems.PushBack
                 system.HighEndBeams.Add(resolved);
             }
 
-            // Safety authority: Push Back admits every applicable family EXCEPT entrance guides (removed), and normal
-            // safety only at the LOW (entrance/exit) end — never the rear. Each authorized selection is restricted to the
-            // low end (Left = the exit end in the dynamic builders) so a "Both" selection materializes once, on the low
-            // side, in every view and in the BOM. The GUIA-free, low-only set is exposed on the Push Back system AND
-            // written back onto the shared structure, so the dynamic builders — used later as a BLACK BOX — never emit a
-            // guide, and never emit rear-end safety.
+            ApplySafety(system, structure);
+            return system;
+        }
+
+        /// <summary>
+        /// Safety authority: Push Back admits every applicable family EXCEPT entrance guides (removed), and normal
+        /// safety only at the LOW (entrance/exit) end — never the rear. Each authorized selection is restricted to the
+        /// low end (Left = the exit end in the dynamic builders) so a "Both" selection materializes once, on the low
+        /// side, in every view and in the BOM. The GUIA-free, low-only set is exposed on the Push Back system AND
+        /// written back onto the shared structure, so the dynamic builders — used later as a BLACK BOX — never emit a
+        /// guide, and never emit rear-end safety.
+        /// <para>
+        /// I-42: la seguridad es del RACK, no de un lado. Se autoriza UNA vez sobre la estructura compartida, asi que
+        /// una bota o un protector nunca se cuenta dos veces por el hecho de que el rack tenga dos sentidos.
+        /// </para>
+        /// </summary>
+        private void ApplySafety(PushBackSystem system, DynamicRackSystem structure)
+        {
             var authorized = safety.Authorize(structure.SafetySelections);
             foreach (var selection in authorized)
             {
@@ -100,8 +155,6 @@ namespace RackCad.Application.Systems.PushBack
             {
                 structure.SafetySelections.Add(selection.DeepCopy());
             }
-
-            return system;
         }
 
         /// <summary>
