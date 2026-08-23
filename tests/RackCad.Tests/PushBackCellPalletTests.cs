@@ -130,11 +130,15 @@ namespace RackCad.Tests
             // Una tarima por POSICION de fondo de esa celda, y ninguna de los otros dos niveles.
             Assert.Equal(4, pallets.Count);
             Assert.All(pallets, pallet => Assert.Equal(SelectiveRackDefaults.PalletPieceId, pallet.PieceId));
-            // Todas pertenecen al nivel 2: cada una se apoya en la linea de origen de ESA cama y de ninguna otra.
+            // Todas pertenecen al nivel 2: cada una se apoya en la superficie de RODILLOS de ESA cama y de ninguna
+            // otra. (La referencia NO es la linea del origen del riel — ahi es donde se atornilla, no donde descansa
+            // la carga; ver PushBackTarimaPlacementTests tras la validacion manual del Owner.)
             var axis = PushBackFlowBedGeometry.Resolve(system, Catalog, system.Structure.Fronts[0])
                 .Single(candidate => candidate.LevelNumber == 2);
-            Assert.All(pallets, pallet =>
-                Assert.Equal(axis.RailOriginYAt(pallet.Insertion.X), pallet.Insertion.Y, 6));
+            var supportLocalY = PushBackTarimaPlacement.SupportLocalY(Catalog);
+            Assert.All(pallets, pallet => Assert.Equal(
+                PushBackTarimaPlacement.SupportYAt(axis, supportLocalY, pallet.Insertion.X),
+                pallet.Insertion.Y, 6));
         }
 
         // ---- La tarima se coloca segun frente, nivel, FONDO EFECTIVO y ALTURA -------------------------------
@@ -151,11 +155,14 @@ namespace RackCad.Tests
             var front = system.Structure.Fronts[0];
 
             // Cada tarima cabalga la pendiente de SU cama, asi que la Y no es constante dentro de un nivel: se
-            // asigna al eje cuya linea de origen pasa por ella.
+            // asigna al eje cuya superficie de apoyo (la de los rodillos) pasa por ella.
             var axes = PushBackFlowBedGeometry.Resolve(system, Catalog, front).ToList();
+            var supportLocalY = PushBackTarimaPlacement.SupportLocalY(Catalog);
             var byLevel = LateralPallets(system)
                 .GroupBy(pallet => axes
-                    .OrderBy(axis => Math.Abs(axis.RailOriginYAt(pallet.Insertion.X) - pallet.Insertion.Y))
+                    .OrderBy(axis => Math.Abs(
+                        PushBackTarimaPlacement.SupportYAt(axis, supportLocalY, pallet.Insertion.X)
+                        - pallet.Insertion.Y))
                     .First().LevelNumber)
                 .OrderBy(group => group.Key)
                 .ToList();

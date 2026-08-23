@@ -159,10 +159,12 @@ namespace RackCad.Application.Systems.PushBack
 
             var layout = DynamicFrontGeometry.Compute(structure, catalog);
             var columns = Math.Min(layout.PostPositions.Count, layout.TroquelPositions.Count);
+            var supportLocalY = PushBackTarimaPlacement.SupportLocalY(catalog);
             for (var frontIndex = 0; frontIndex < structure.Fronts.Count && frontIndex < columns; frontIndex++)
             {
                 var front = structure.Fronts[frontIndex];
                 var elevations = PushBackElevations.Resolve(system, catalog, front);
+                var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
                 var anchorX = layout.PostPositions[frontIndex] + layout.TroquelPositions[frontIndex];
                 for (var level = 0; level < DynamicFrontActivation.EffectiveLoadLevels(front); level++)
                 {
@@ -171,13 +173,24 @@ namespace RackCad.Application.Systems.PushBack
                         continue;
                     }
 
+                    // La carga descansa sobre los RODILLOS, no sobre el contacto del larguero con el riel. La altura
+                    // de apoyo se pide a la MISMA autoridad que la coloca en el lateral, evaluada en el extremo que
+                    // este corte muestra, para que las tres vistas no puedan discrepar.
+                    var axis = axes.FirstOrDefault(candidate => candidate.LevelNumber == level + 1);
+                    if (axis.LevelNumber != level + 1)
+                    {
+                        continue;   // sin eje de cama no hay superficie de apoyo, y no se inventa una
+                    }
+
+                    var endX = lowEnd ? elevation.LowContact.X : elevation.RearContact.X;
                     var cell = DynamicRackLevelGeometry.At(structure, front, level + 1);
                     result.AddRange(PushBackTarimaPlacement.FrontalRow(
                         catalog,
                         Math.Max(1, front.PalletCount),
                         anchorX,
                         PushBackLoadBeamGeometry.CellBeamLength(structure, front, level + 1),
-                        lowEnd ? elevation.LowContact.Y : elevation.RearContact.Y,
+                        cell?.Bfr ?? 0.0,
+                        PushBackTarimaPlacement.SupportYAt(axis, supportLocalY, endX),
                         cell?.Pallet?.Front ?? 0.0,
                         cell?.Pallet?.Height ?? 0.0));
                 }
