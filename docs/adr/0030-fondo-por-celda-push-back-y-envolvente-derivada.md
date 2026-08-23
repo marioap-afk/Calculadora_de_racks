@@ -1,9 +1,16 @@
 # ADR-0030: El fondo de Push Back es de la CELDA; el del frente pasa a ser una envolvente derivada
 
-- **Estado:** propuesto
-- **Fecha:** 2026-08-23
-- **Decisores:** dueño del repo (pendiente de aceptar); Claude (redacción)
+- **Estado:** **aceptado**
+- **Fecha:** 2026-08-23 (propuesto) · 2026-08-23 (aceptado)
+- **Decisores:** dueño del repo (**acepta**); Claude (redacción)
 - **Iniciativa relacionada:** I-41 — Configuración por celda de Push Back (`feature/push-back-cell-configuration`), IDs internos PB-015 y PB-016
+
+> **Aceptación del dueño (2026-08-23).** El dueño acepta esta decisión **con el modelo tal como quedó
+> implementado**, tras validar manualmente en AutoCAD 2025 el DLL construido exactamente desde
+> `c41aee1b8bcbfc0d6fed7a38b8c4767538648cd2`. La aceptación incluye **expresamente la limitación
+> documentada** en Consecuencias: el corte lateral NO seccionado no dibuja tarimas, por ser una
+> envolvente y no una celda. A partir de aquí el contenido de este ADR es **inmutable** (adr/README.md):
+> solo pueden cambiar su Estado y sus enlaces.
 
 ## Contexto
 
@@ -103,5 +110,26 @@ En consecuencia:
 - I-18 (Push Back), I-33 (frente en blanco), I-35 (módulos longitudinales), I-40 (cabeceras por línea).
 - [ADR-0011](0011-parametros-dinamicos-con-patron-array.md) — patrón ARRAY de definiciones compartidas.
 - `src/RackCad.Application/Systems/PushBack/PushBackCellDepth.cs` — la regla de precedencia, en un solo sitio.
+- `src/RackCad.Application/Systems/PushBack/PushBackTarimaPlacement.cs` — dónde se apoya y cómo se
+  orienta la tarima (`Y de apoyo = origen del rodillo + radio del rodillo`).
 - `tests/RackCad.Tests/PushBackCellDepthTests.cs`, `PushBackCellPalletTests.cs`,
-  `PushBackCellConfigurationCharacterizationTests.cs`, `PushBackCellConfigurationDeliveryTests.cs`.
+  `PushBackCellConfigurationCharacterizationTests.cs`, `PushBackCellConfigurationDeliveryTests.cs`,
+  `PushBackTarimaPlacementTests.cs`.
+
+## Notas posteriores
+
+**2026-08-23 — corrección de la representación visual de la tarima (PB-016), previa a la aceptación.**
+La validación manual del Owner encontró dos defectos **solo de dibujo**, que no alteran esta decisión y
+se corrigieron antes de aceptarla:
+
+1. en el corte **lateral** las tarimas se veían escalonadas —cada una horizontal a una altura distinta—
+   y se apoyaban en la línea del ORIGEN del bloque de la cama, que es donde se atornilla el riel. Ahora
+   se construyen en el sistema LOCAL de la cama sobre la superficie de los RODILLOS
+   (`origen del rodillo + radio`) y se llevan a mundo con la MISMA transformación rígida del montaje de
+   riel y rodillos, llevando su rotación: tangencia y pendiente salen por construcción;
+2. en los cortes **frontal y posterior** la tarima se repartía con huecos iguales a lo largo del
+   larguero, y las calles reales miden BFR con la holgura del larguero repartida a los dos extremos.
+   Ahora cada tarima va centrada en su calle, y su altura es la misma superficie de apoyo del lateral
+   evaluada en el extremo que ese corte muestra.
+
+Ninguna de las dos tocó persistencia, BOM, fondos por celda ni los alcances.
