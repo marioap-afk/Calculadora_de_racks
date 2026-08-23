@@ -361,6 +361,15 @@ namespace RackCad.Application.Systems.Shared
                 ? null
                 : working.FirstOrDefault(module => string.Equals(module.ModuleId, moduleId, StringComparison.Ordinal));
 
+        /// <summary>
+        /// THE INVARIANT of this session (I-40, ronda 3): a module that declares a CUSTOM cabecera must carry one.
+        /// «Personalizada» with no configuration is the hybrid state that made the editor label a header custom
+        /// while the configurator showed the standard values — and made a copy of it propagate the standard. A
+        /// module with no configuration is CALCULATED, whatever its source claimed.
+        /// </summary>
+        private static bool ResolveProvenance(bool useCalculated, RackFrameConfiguration configuration)
+            => useCalculated || configuration == null;
+
         private static DynamicRackModuleDesign ToIntent(DynamicRackModule module)
             => new DynamicRackModuleDesign
             {
@@ -369,7 +378,8 @@ namespace RackCad.Application.Systems.Shared
                 Length = module.Length,
                 IsCalculated = module.IsCalculated,
                 IsManualOverride = module.IsManualOverride,
-                UseCalculatedHeaderConfiguration = module.UseCalculatedHeaderConfiguration,
+                UseCalculatedHeaderConfiguration = ResolveProvenance(
+                    module.UseCalculatedHeaderConfiguration, module.AssociatedFrameConfiguration),
                 HeaderConfiguration = module.AssociatedFrameConfiguration,
                 Notes = module.Notes
             };
@@ -382,7 +392,8 @@ namespace RackCad.Application.Systems.Shared
                 Length = source.Length,
                 IsCalculated = source.IsCalculated,
                 IsManualOverride = source.IsManualOverride,
-                UseCalculatedHeaderConfiguration = source.UseCalculatedHeaderConfiguration,
+                UseCalculatedHeaderConfiguration = ResolveProvenance(
+                    source.UseCalculatedHeaderConfiguration, source.HeaderConfiguration),
                 HeaderConfiguration = clone.DeepCopy(source.HeaderConfiguration),
                 Notes = source.Notes
             };

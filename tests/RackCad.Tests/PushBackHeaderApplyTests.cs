@@ -8,6 +8,7 @@ using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
+using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Shared;
 using Xunit;
 
@@ -618,6 +619,114 @@ namespace RackCad.Tests
                 Assert.False(module.UseCalculatedHeaderConfiguration);
                 Assert.Equal(151.0, module.AssociatedFrameConfiguration.Height, 4);
                 Assert.Equal(41.5, module.AssociatedFrameConfiguration.PanelClear, 4);
+            }
+        }
+
+        // ===== Ronda 3 del Owner — «Personalizada» + configuracion predeterminada no puede existir ==============
+
+        /// <summary>
+        /// REGRESION de la ronda 3, el estado HIBRIDO exacto que el Owner vio: una cabecera marcada
+        /// **personalizada** cuya configuracion es la **predeterminada**.
+        /// <para>
+        /// Contra el candidato <c>3669adc</c>, un diseno con <c>UseCalculatedHeaderConfiguration = false</c> y
+        /// <c>HeaderConfiguration = null</c> resolvia a una cabecera ESTANDAR construida por la fabrica **mientras
+        /// conservaba la procedencia personalizada**: el editor la etiquetaba «Personalizada» y el configurador
+        /// recibia los datos predeterminados. La bandera debe describir la configuracion que realmente quedo
+        /// instalada, asi que si no hay personalizacion la procedencia es CALCULADA.
+        /// </para>
+        /// </summary>
+        [Fact]
+        public void RONDA3_REGRESION_ProvenanceNeverSurvivesWithoutItsConfiguration_InTheResolver()
+        {
+            var assembler = Assembler();
+            var state = new PushBackEditorState();
+            var inputs = Inputs();
+            var design = assembler.BuildDesign(state, inputs);
+            var headerId = design.Structure.Modules.First(module => module.IsHeader).ModuleId;
+
+            // El estado imposible, fabricado a mano: procedencia personalizada SIN configuracion.
+            var broken = design.Structure.Modules.First(module => module.ModuleId == headerId);
+            broken.UseCalculatedHeaderConfiguration = false;
+            broken.HeaderConfiguration = null;
+
+            var resolved = new PushBackResolver(Catalog).Resolve(design);
+            var module = resolved.Structure.Modules.First(m => m.ModuleId == headerId);
+
+            // El resolver construyo la cabecera CALCULADA, asi que eso es lo que la procedencia debe decir.
+            Assert.NotNull(module.AssociatedFrameConfiguration);
+            Assert.True(module.UseCalculatedHeaderConfiguration);
+
+            // Y por tanto el editor NO la presenta como personalizada.
+            var session = RackModuleEditSession.Begin(resolved.Structure);
+            var descriptor = session.Modules.First(m => m.ModuleId == headerId);
+            Assert.False(descriptor.HasCustomHeaderConfiguration);
+        }
+
+        /// <summary>El mismo estado imposible, saneado tambien en el limite de PERSISTENCIA: un documento con
+        /// procedencia personalizada y sin cabecera guardada se lee como calculado.</summary>
+        [Fact]
+        public void RONDA3_REGRESION_ThePersistenceBoundary_RepairsProvenanceWithoutAConfiguration()
+        {
+            var document = new DynamicRackModuleDocument
+            {
+                ModuleId = "M1",
+                Kind = DynamicRackModuleKind.HeaderStart,
+                Length = 48.0,
+                UseCalculatedHeaderConfiguration = false,
+                Header = null
+            };
+
+            Assert.True(document.ToDesign().UseCalculatedHeaderConfiguration);
+            Assert.True(document.ToDomain().UseCalculatedHeaderConfiguration);
+        }
+
+        /// <summary>Y en el limite de la SESION: una intencion incoherente entra saneada, nunca como hibrido.</summary>
+        [Fact]
+        public void RONDA3_REGRESION_TheSessionBoundary_RepairsProvenanceWithoutAConfiguration()
+        {
+            var session = RackModuleEditSession.Begin(new[]
+            {
+                new DynamicRackModuleDesign
+                {
+                    ModuleId = "M1",
+                    Kind = DynamicRackModuleKind.HeaderStart,
+                    Length = 48.0,
+                    UseCalculatedHeaderConfiguration = false,
+                    HeaderConfiguration = null
+                }
+            });
+
+            var descriptor = session.Modules.Single();
+            Assert.True(descriptor.UsesCalculatedHeaderConfiguration);
+            Assert.False(descriptor.HasCustomHeaderConfiguration);
+            Assert.Empty(session.CustomHeaderModuleIds);
+        }
+
+        /// <summary>
+        /// El saneamiento NO cambia el Dinamico ni ningun otro consumidor: una cabecera personalizada COHERENTE
+        /// —la unica que los productores correctos generan— atraviesa el resolver exactamente igual que antes.
+        /// </summary>
+        [Fact]
+        public void RONDA3_TheRepair_LeavesEveryCoherentHeaderUntouched()
+        {
+            var assembler = Assembler();
+            var state = Live(assembler, out var inputs);
+            var headerId = HeaderIds(state)[0];
+
+            state.ModuleSession.SetHeaderConfiguration(headerId, CustomHeader(151.0, 41.5));
+            state.CommitModuleEdits();
+            var design = assembler.BuildDesign(state, inputs);
+            var resolved = new PushBackResolver(Catalog).Resolve(design);
+
+            var module = resolved.Structure.Modules.First(m => m.ModuleId == headerId);
+            Assert.False(module.UseCalculatedHeaderConfiguration);
+            Assert.Equal(151.0, module.AssociatedFrameConfiguration.Height, 4);
+
+            // Y una cabecera calculada sigue siendo calculada.
+            foreach (var other in resolved.Structure.Modules.Where(m => m.IsHeader && m.ModuleId != headerId))
+            {
+                Assert.True(other.UseCalculatedHeaderConfiguration);
+                Assert.NotNull(other.AssociatedFrameConfiguration);
             }
         }
 

@@ -697,7 +697,10 @@ namespace RackCad.Application.Persistence
                 // Legacy documents had no provenance flag, and an advanced cabecera edit did not necessarily set
                 // IsManualOverride. Preserve every persisted header as custom; the user can explicitly restore the
                 // calculated preset. Separators have no Header and keep the harmless calculated default.
-                UseCalculatedHeaderConfiguration = UseCalculatedHeaderConfiguration ?? (Header == null),
+                // I-40 (ronda 3): SIN cabecera guardada la procedencia es CALCULADA, aunque el documento diga lo
+                // contrario. «Personalizada» sin configuracion es el estado hibrido que hacia que el editor mostrase
+                // los datos predeterminados bajo la etiqueta «Personalizada»; se repara al leer, no en la UI.
+                UseCalculatedHeaderConfiguration = Header == null || (UseCalculatedHeaderConfiguration ?? false),
                 Notes = Notes,
                 AssociatedFrameConfiguration = Header?.ToConfiguration()
             };
@@ -712,7 +715,8 @@ namespace RackCad.Application.Persistence
                 Length = Length,
                 IsCalculated = IsCalculated,
                 IsManualOverride = IsManualOverride,
-                UseCalculatedHeaderConfiguration = UseCalculatedHeaderConfiguration ?? (Header == null),
+                // Misma reparacion que ToDomain (I-40, ronda 3): sin cabecera guardada, procedencia calculada.
+                UseCalculatedHeaderConfiguration = Header == null || (UseCalculatedHeaderConfiguration ?? false),
                 Notes = Notes,
                 HeaderConfiguration = Header?.ToConfiguration()
             };

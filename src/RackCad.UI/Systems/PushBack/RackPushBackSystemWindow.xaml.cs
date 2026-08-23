@@ -1425,8 +1425,22 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var copy = state.ModuleSession.HeaderConfigurationCopy(module.ModuleId)
-                       ?? HeaderConfigurationFromLastComputation(module.ModuleId);
+            // I-40 (ronda 3): para una cabecera declarada PERSONALIZADA la unica fuente valida es su propia
+            // configuracion. El fallback al ultimo sistema resuelto solo puede servir a una cabecera CALCULADA —ahi
+            // la calculada ES lo correcto—; servirlo bajo la etiqueta «Personalizada» era entregar los datos
+            // predeterminados y, al copiarla, propagarlos. El invariante de la sesion hace ese caso imposible, y si
+            // aun asi ocurriera se bloquea con diagnostico en vez de degradar en silencio.
+            var copy = state.ModuleSession.HeaderConfigurationCopy(module.ModuleId);
+            if (copy == null && module.HasCustomHeaderConfiguration)
+            {
+                SetModuleStatus(
+                    ModuleDisplayName(module.ModuleId) + " figura como personalizada pero su configuracion no esta "
+                    + "disponible: no se abre el configurador para no reemplazarla por la predeterminada. "
+                    + "Usa «Restaurar modulo» para devolverla al calculo y configurarla de nuevo.");
+                return;
+            }
+
+            copy = copy ?? HeaderConfigurationFromLastComputation(module.ModuleId);
             if (copy == null)
             {
                 SetModuleStatus("Esta cabecera todavia no tiene una configuracion que editar.");
@@ -2076,6 +2090,20 @@ namespace RackCad.UI.Systems.PushBack
             {
                 SetStatus("Solo un sistema abierto con RACKEDITAR puede actualizarse en sitio.", true);
                 return;
+            }
+
+            // I-40 (ronda 3) — LA PERDIDA REAL. Dibujar recalculaba SIN confirmar la sesion de modulos, asi que
+            // toda edicion escenificada —una cabecera personalizada, una copia a otras cabeceras— se descartaba en
+            // silencio y el rack se dibujaba Y SE EMBEBIA con la cabecera estandar. Medido: la sesion tenia 187/41.5
+            // y el diseno dibujado salia con 192/44 y procedencia calculada, de modo que el siguiente RACKEDITAR ya
+            // no podia recuperar nada.
+            //
+            // Pulsar Actualizar o Insertar es aplicar lo que el panel muestra: se confirma primero. La transaccion
+            // de I-35 no se debilita —«Cancelar» sigue siendo el UNICO descarte—, deja de haber un camino que
+            // descarta sin decirlo.
+            if (state.ModuleSession.HasPendingChanges)
+            {
+                state.CommitModuleEdits();
             }
 
             RequestRecompute(); // synchronous validate + build

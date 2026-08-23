@@ -161,8 +161,17 @@ namespace RackCad.Application.Systems.Dynamic
 
                     if (module.IsHeader)
                     {
-                        module.AssociatedFrameConfiguration = moduleDesign.UseCalculatedHeaderConfiguration
-                            || moduleDesign.HeaderConfiguration == null
+                        // I-40 (ronda 3): la PROCEDENCIA describe la configuracion que realmente queda instalada.
+                        // Una intencion puede llegar marcada como personalizada SIN configuracion —un documento de
+                        // una version anterior, o un productor con un defecto—; en ese caso aqui se construye la
+                        // CALCULADA, y decir «personalizada» sobre ella es exactamente el estado hibrido que el
+                        // Owner vio: el editor la etiquetaba «Personalizada» y el configurador mostraba los datos
+                        // predeterminados. Se sanea en el limite canonico, no en la UI.
+                        var useCalculated = moduleDesign.UseCalculatedHeaderConfiguration
+                                            || moduleDesign.HeaderConfiguration == null;
+
+                        module.UseCalculatedHeaderConfiguration = useCalculated;
+                        module.AssociatedFrameConfiguration = useCalculated
                             ? builder.BuildHeaderConfiguration(
                                 RackFrameTemplateCatalog.Default,
                                 postId,

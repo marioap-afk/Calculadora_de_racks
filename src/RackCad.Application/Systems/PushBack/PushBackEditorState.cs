@@ -72,6 +72,31 @@ namespace RackCad.Application.Systems.PushBack
             ReseedModuleSession();
         }
 
+        /// <summary>
+        /// Adopt the baseline of a rack that is being LOADED (a new design, or an existing one reopened with
+        /// RACKEDITAR). Unlike <see cref="SetWorkingBaseline"/> this ALWAYS discards the current module session.
+        /// <para>
+        /// I-40 (ronda 3) — la primera divergencia real del caso del Owner. La ventana crea una sesion nada mas
+        /// abrirse (su constructor llama a <c>LoadNew</c>), asi que al cargar un rack existente ya habia una sesion
+        /// viva sobre el rack ESTANDAR. <see cref="ReseedModuleSession"/> la conservaba porque la firma —ids y
+        /// clases de modulo— coincidia, y coincide casi siempre: dos racks del mismo tamaño tienen los mismos
+        /// modulos. El editor quedaba mostrando las cabeceras CALCULADAS del rack anterior mientras la geometria
+        /// usaba las personalizadas del rack cargado: «Personalizada» con los datos predeterminados.
+        /// </para>
+        /// <para>
+        /// La firma solo distingue racks dentro de UN mismo rack en recalculo, que es para lo que existe. Cargar
+        /// otro diseño no es un recalculo: la sesion anterior no describe nada de este rack y se tira entera.
+        /// </para>
+        /// </summary>
+        public void AdoptLoadedBaseline(PushBackSystem baseline)
+        {
+            workingBaseline = baseline;
+            moduleSession = null;
+            moduleCommit = null;
+            moduleSignature = SignatureOf(baseline?.Structure);
+            LastModuleReconciliation = null;
+        }
+
         // ---- Longitudinal modules (I-35) --------------------------------------------------------------------------
 
         private RackModuleEditSession moduleSession;

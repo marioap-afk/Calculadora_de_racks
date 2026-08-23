@@ -137,8 +137,14 @@ Se audito el ciclo completo de estado en sus doce puntos —tras `StageHeaderCon
 `AssociatedFrameConfiguration` resuelto, `UseCalculatedHeaderConfiguration`, `Snapshot`,
 `AcceptComputation`, `ReseedModuleSession`, `HeaderConfigurationCopy` al reabrir, y la
 serializacion/deserializacion— **incluidos recalculos ajenos** (agregar un frente, cambiar niveles).
-**Ninguna frontera pierde nada**: en los doce puntos la cabecera llega completa con
-`UseCalculatedHeaderConfiguration = false`. Ese diagnostico esta fijado por pruebas.
+En los doce puntos —**dentro de una misma sesion y pulsando «Confirmar»**— la cabecera llega completa
+con `UseCalculatedHeaderConfiguration = false`.
+
+> ⚠ **CORREGIDO en la ronda 3.** La conclusion que esta seccion saco de ahi —«ninguna frontera pierde
+> nada»— era **falsa como afirmacion general**, y la validacion del Owner lo demostro. Lo unico que
+> aquella auditoria probo es que el ciclo NO pierde nada **cuando se pulsa «Confirmar» y la sesion sigue
+> viva**. El ciclo real del Owner es otro: pulsar **Actualizar** (que dibuja) y volver a entrar con
+> **RACKEDITAR** (que construye una ventana nueva). Ver la seccion 4-ter.
 
 La perdida estaba **dentro del configurador compartido**, y es anterior a I-40:
 
@@ -173,6 +179,72 @@ configurador y pulsa «Aplicar» sobre una cabecera personalizada, la regeneraci
 ocurre igual: es el comportamiento historico de una ventana **compartida** con el Dinamico y la
 cabecera independiente, y cambiarlo esta fuera del alcance de I-40. Lo que I-40 corrige es que ese ya
 no sea el camino que se le pone delante.
+
+## 4-ter. Ronda 3 del Owner — el candidato `3669adc` fue RECHAZADO
+
+### Por que las pruebas de la ronda 2 daban un falso verde
+
+Todas mantenian **viva la misma `RackModuleEditSession`** y pulsaban **«Confirmar»** antes de mirar el
+resultado. Ese es justamente el unico camino que ya funcionaba. El ciclo del Owner no estaba cubierto
+por ninguna prueba:
+
+| Lo que probaba la ronda 2 | Lo que hace el Owner |
+|---|---|
+| «Confirmar» del panel de modulos | **«Actualizar»**, el boton que dibuja |
+| La misma ventana, la misma sesion | **RACKEDITAR**: una ventana NUEVA sobre el diseño embebido en el DWG |
+
+### Las dos fronteras reales
+
+**Frontera 1 — dibujar descartaba lo escenificado.** `RequestDraw` (Actualizar e Insertar) llamaba a
+`RequestRecompute()` **sin confirmar** la sesion de modulos. Toda edicion escenificada —una cabecera
+personalizada, una copia a otras cabeceras— se descartaba en silencio y el rack se dibujaba **y se
+embebia** con la cabecera estandar. Medido: la sesion tenia `H=187 PC=41.5` y el diseño dibujado salia
+con `H=192 PC=44` y procedencia calculada. A partir de ahi no habia nada que recuperar.
+
+**Frontera 2 — la sesion sobrevivia a la carga de OTRO rack.** Es la **primera divergencia** entre
+procedencia y configuracion, y la que produce el sintoma exacto del caso B. Registro de la Cabecera 1
+justo despues de dibujar:
+
+| Punto | `UseCalculatedHeaderConfiguration` | `Height` |
+|---|---|---|
+| diseño dibujado | `false` | **187** |
+| diseño persistido (JSON del DWG) | `false` | **187** |
+| `WorkingBaseline` de la ventana nueva | `false` | **187** |
+| **sesion de modulos de la ventana nueva** | **`true`** | **192** ← divergencia |
+
+La causa: el **constructor** de `RackPushBackSystemWindow` llama a `LoadNew()`, asi que **ya hay una
+sesion viva sobre el rack ESTANDAR** cuando `LoadExisting` carga el rack del dibujo.
+`ReseedModuleSession` la **conservaba** porque la *firma* —ids y clases de modulo— coincidia, y
+coincide casi siempre: dos racks del mismo tamaño tienen los mismos modulos. El editor quedaba
+mostrando las cabeceras **calculadas del rack anterior** mientras la geometria usaba las
+**personalizadas del rack cargado**.
+
+La firma solo sirve para distinguir estados **de un mismo rack en recalculo**, que es para lo que se
+escribio. **Cargar otro diseño no es un recalculo.**
+
+### Correccion definitiva
+
+| Frontera | Correccion |
+|---|---|
+| Dibujar | `RequestDraw` **confirma** la sesion antes de recalcular. Pulsar Actualizar o Insertar es aplicar lo que el panel muestra. La transaccion no se debilita: **«Cancelar» sigue siendo el UNICO descarte**; deja de haber un camino que descarta sin decirlo |
+| Cargar | `PushBackEditorState.AdoptLoadedBaseline` — los dos caminos de carga (`LoadNew` y `LoadFromDesign`) **tiran la sesion entera**, nunca la reutilizan por coincidencia de firma |
+| Resolver | Si no hay configuracion que instalar, el resolver construye la **calculada** y **lo dice**: `UseCalculatedHeaderConfiguration = true`. La bandera describe la configuracion que realmente quedo instalada |
+| Persistencia | `ToDomain`/`ToDesign`: sin cabecera guardada, la procedencia es calculada aunque el documento diga lo contrario. Repara documentos escritos por los candidatos rechazados |
+| Sesion | `RackModuleEditSession` sanea toda intencion que entre: sin configuracion, procedencia calculada |
+| Configurador | Para una cabecera declarada personalizada **no existe fallback**. Si su configuracion faltara, se **bloquea con diagnostico** en vez de abrir sobre la predeterminada |
+
+### Por que ya no puede existir «Personalizada + configuracion predeterminada»
+
+El estado hibrido —`UseCalculatedHeaderConfiguration == false` con configuracion nula— se repara en
+los **tres limites canonicos** por los que puede entrar (resolver, persistencia y sesion), no en la UI.
+Como el descriptor deriva «personalizada» de *tener configuracion propia* **y** de la procedencia, y
+esas dos ya no pueden contradecirse, la etiqueta y los datos son la misma verdad. El fallback de WPF
+que podia disfrazar el hibrido queda ademas retirado.
+
+**Impacto en otros consumidores:** el saneamiento solo actua sobre un estado que **ningun productor
+correcto genera**, asi que una cabecera coherente —calculada o personalizada— atraviesa el resolver
+exactamente igual que antes. Cubierto por prueba propia, y por las suites del Dinamico, el Selectivo y
+Cantilever completas.
 
 ## 5. Checklist de validacion manual en AutoCAD 2025
 
@@ -237,3 +309,17 @@ Cerrar AutoCAD antes de cualquier recompilacion del worktree.
 8. Modificar una de ellas: las demas **no** cambian.
 9. Repetir la operacion multiple y **Cancelar**: ninguna cabecera queda alterada.
 10. Guardar, cerrar y reabrir el dibujo: todo lo anterior sigue igual y el **GUID** no cambio.
+
+## 7. Checklist de la ronda 3 (6 pasos, solo este defecto)
+
+1. Personalizar la **Cabecera 1** (alto evidente) y pulsar **Actualizar** — **sin** pulsar «Confirmar»
+   antes. La geometria debe reflejar el cambio.
+2. Ejecutar **RACKEDITAR** sobre ese rack y abrir **«Configurar cabecera...»** en la Cabecera 1: deben
+   aparecer **sus valores personalizados**, no los predeterminados.
+3. Seleccionar la **Cabecera 2** y copiar desde la Cabecera 1: la 2 recibe **esos** valores.
+4. Poner el alcance en **«Todas las cabeceras»**, copiar y pulsar **Actualizar**: ninguna vuelve a la
+   forma predeterminada.
+5. **RACKEDITAR** de nuevo: todas las cabeceras siguen mostrando esos mismos valores y siguen marcadas
+   «Personalizada».
+6. Personalizar una cabecera, pulsar **Cancelar** y luego **Actualizar**: no debe quedar ninguna
+   cabecera personalizada — la transaccion sigue siendo transaccion.
