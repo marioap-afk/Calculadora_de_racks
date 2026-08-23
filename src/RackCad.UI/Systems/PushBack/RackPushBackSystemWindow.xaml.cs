@@ -1259,6 +1259,7 @@ namespace RackCad.UI.Systems.PushBack
                     ModuleInfoText.Text = "Sin modulos todavia: recalcula el sistema para poder editarlos.";
                     ModuleLengthBox.SetNumber(0.0);
                     SetModuleSensitive(false, "Todavia no hay una estructura valida que editar.");
+                    RefreshCopySources();
                     ModuleStatusText.Text = string.Empty;
                     return;
                 }
@@ -1301,6 +1302,7 @@ namespace RackCad.UI.Systems.PushBack
                     SetModuleSensitive(true, null);
                 }
 
+                RefreshCopySources();
                 RefreshModuleStatus();
             }
             finally
@@ -1316,7 +1318,8 @@ namespace RackCad.UI.Systems.PushBack
             foreach (var control in new Control[]
                      {
                          ModuleLengthBox, ModuleCalculatedRadio, ModuleCustomRadio,
-                         ConfigureModuleHeaderButton, RestoreModuleButton
+                         ConfigureModuleHeaderButton, RestoreModuleButton,
+                         HeaderScopeBox, CopyHeaderFromBox, CopyHeaderFromButton
                      })
             {
                 SetBlankSensitive(control, enabled, reason);
@@ -1399,7 +1402,64 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            state.ModuleSession.SetHeaderConfiguration(module.ModuleId, edited);
+            StageHeaderConfiguration(module, edited);
+        }
+
+        /// <summary>
+        /// PBH-03: reuse the configuration of ANOTHER cabecera of this session on the current targets, as an
+        /// INDEPENDENT copy. Nothing is stored: the source is a module of this rack, not a library entry, and the
+        /// copy lands in the module intent the design already carries.
+        /// </summary>
+        private void CopyHeaderFrom_Click(object sender, RoutedEventArgs e)
+        {
+            var module = SelectedModule();
+            if (module == null || !module.IsHeader)
+            {
+                SetModuleStatus("Selecciona una cabecera de destino.");
+                return;
+            }
+
+            var sourceId = SelectedCopySourceId();
+            if (sourceId == null)
+            {
+                SetModuleStatus("Elige la cabecera de origen que quieres copiar.");
+                return;
+            }
+
+            // The source's EFFECTIVE configuration: what the session has staged for it, or —when it is still
+            // calculated and the session holds none— the one the last valid recompute produced.
+            var source = state.ModuleSession.HeaderConfigurationCopy(sourceId)
+                         ?? HeaderConfigurationFromLastComputation(sourceId);
+            if (source == null)
+            {
+                SetModuleStatus("La cabecera de origen todavia no tiene una configuracion que copiar.");
+                return;
+            }
+
+            StageHeaderConfiguration(module, source);
+        }
+
+        /// <summary>
+        /// The ONE staging path both PBH-02 and PBH-03 take: resolve the targets from the chosen scope, hand them
+        /// to the session's atomic apply, and report. A rejection leaves the staged state untouched, so there is
+        /// never a partial application to explain. Confirmar is what recomputes — ONCE, for however many cabeceras
+        /// the operation touched.
+        /// </summary>
+        private void StageHeaderConfiguration(RackModuleDescriptor module, RackFrameConfiguration configuration)
+        {
+            var targets = HeaderTargets(module);
+            if (targets.Count == 0)
+            {
+                SetModuleStatus("No hay ninguna cabecera aplicable en este rack.");
+                return;
+            }
+
+            var result = state.ModuleSession.ApplyHeaderConfiguration(configuration, targets);
+            if (!result.Applied)
+            {
+                SetModuleStatus(result.Describe());
+                return;
+            }
 
             var wasSuppressed = suppressSync;
             suppressSync = true;
@@ -1414,13 +1474,123 @@ namespace RackCad.UI.Systems.PushBack
             }
 
             RefreshModuleStatus();
+            SetModuleStatus(result.Describe());
         }
 
+        /// <summary>
+        /// PBH-02 — the destinations the chosen «Aplicar a:» names. «Esta cabecera» is the selection alone; «Todas
+        /// las cabeceras aplicables» is every HEADER module that is drawn somewhere, which is the same gate the
+        /// per-module surface already enforces: a module whose posts I-33 suppressed is drawn nowhere and must not
+        /// be edited, so it is not a destination either.
+        /// </summary>
+        private IReadOnlyList<string> HeaderTargets(RackModuleDescriptor selected)
+        {
+            if (SelectedHeaderScope() == RackModuleHeaderScope.Module)
+            {
+                return new List<string> { selected.ModuleId };
+            }
+
+            return state.ModuleSession.Modules
+                .Where(candidate => candidate.IsHeader)
+                .Where(candidate => candidate.ModuleId == selected.ModuleId || IsApplicableHeader(candidate))
+                .Select(candidate => candidate.ModuleId)
+                .ToList();
+        }
+
+        /// <summary>A cabecera is applicable when the last valid recompute drew it somewhere. Unknown modules (no
+        /// computation yet) count as applicable: the session is the only truth available then.</summary>
+        private bool IsApplicableHeader(RackModuleDescriptor module)
+            => DescribeFromLastComputation(module.ModuleId)?.IsPhysicallyPresent ?? true;
+
+        private RackModuleHeaderScope SelectedHeaderScope()
+            => HeaderScopeBox != null && HeaderScopeBox.SelectedIndex == 1
+                ? RackModuleHeaderScope.AllApplicableHeaders
+                : RackModuleHeaderScope.Module;
+
+        private string SelectedCopySourceId()
+            => CopyHeaderFromBox != null
+               && CopyHeaderFromBox.SelectedIndex >= 0
+               && CopyHeaderFromBox.SelectedIndex < copySourceIds.Count
+                ? copySourceIds[CopyHeaderFromBox.SelectedIndex]
+                : null;
+
+        private List<string> copySourceIds = new List<string>();
+
+        /// <summary>
+        /// Rebuild the «Copiar de:» list: every OTHER cabecera of the rack. A rack with a single cabecera has no
+        /// source, and the control says so instead of offering an empty list.
+        /// </summary>
+        private void RefreshCopySources()
+        {
+            if (CopyHeaderFromBox == null)
+            {
+                return;
+            }
+
+            var selected = SelectedModule();
+            var previous = SelectedCopySourceId();
+            var sources = state.ModuleSession.Modules
+                .Where(module => module.IsHeader)
+                .Where(module => selected == null || module.ModuleId != selected.ModuleId)
+                .ToList();
+
+            var wasSuppressed = suppressSync;
+            suppressSync = true;
+            try
+            {
+                CopyHeaderFromBox.ItemsSource = sources.Select(ModuleLabel).ToList();
+                copySourceIds = sources.Select(module => module.ModuleId).ToList();
+
+                var index = previous == null ? -1 : copySourceIds.IndexOf(previous);
+                CopyHeaderFromBox.SelectedIndex = index >= 0 ? index : (copySourceIds.Count > 0 ? 0 : -1);
+            }
+            finally
+            {
+                suppressSync = wasSuppressed;
+            }
+
+            SetBlankSensitive(
+                CopyHeaderFromBox,
+                copySourceIds.Count > 0,
+                "Este rack no tiene otra cabecera de la que copiar.");
+            SetBlankSensitive(
+                CopyHeaderFromButton,
+                copySourceIds.Count > 0,
+                "Este rack no tiene otra cabecera de la que copiar.");
+        }
+
+        /// <summary>
+        /// Test seam: how the configurator window is SHOWN. Production shows it modally; a test drives the REAL
+        /// window and its REAL ViewModel without a modal loop. The read-back below is NOT part of the seam, so a
+        /// test exercises the same statement production does — that is the whole point (I-40, PBH-01).
+        /// </summary>
+        internal Action<RackFrameConfiguratorWindow> HeaderConfiguratorPresenter { get; set; }
+
+        /// <summary>
+        /// Open the shared configurator on <paramref name="copy"/> and return the configuration that is ACTUALLY
+        /// effective when it closes.
+        /// <para>
+        /// REGRESION I-40 (PBH-01): it must be read off the window, never assumed to be the instance handed in.
+        /// <c>RackFrameConfiguratorViewModel</c> REPLACES its <c>Configuration</c> with a fresh clone on three
+        /// paths — «Aplicar» de la configuracion rapida (<c>ApplySimpleConfiguration</c>, que es exactamente donde
+        /// el usuario fija una ALTURA propia), «Restaurar estandar» y abrir un proyecto— so after any of them the
+        /// instance we handed in is a STALE object and every edit of that session lives in another one. Returning
+        /// it discarded the user's cabecera in silence.
+        /// </para>
+        /// </summary>
         private RackFrameConfiguration ShowHeaderConfigurator(RackFrameConfiguration copy)
         {
             var window = new RackFrameConfiguratorWindow(copy) { Owner = this };
-            window.ShowDialog();
-            return copy;   // the configurator edits the copy in place; accepting or discarding it happens here
+            if (HeaderConfiguratorPresenter != null)
+            {
+                HeaderConfiguratorPresenter(window);
+            }
+            else
+            {
+                window.ShowDialog();
+            }
+
+            return window.Configuration ?? copy;
         }
 
         private RackFrameConfiguration HeaderConfigurationFromLastComputation(string moduleId)

@@ -347,6 +347,29 @@
                                     Style="{StaticResource SecondaryButtonStyle}" MinWidth="180" HorizontalAlignment="Left"
                                     Margin="0,6,0,0" Click="ConfigureModuleHeader_Click" ToolTipService.ShowOnDisabled="True"
                                     ToolTip="Abre el configurador sobre una COPIA. Al cerrarlo, el cambio queda pendiente de Confirmar." />
+
+                            <!-- ==================== ALCANCE Y COPIA DE CABECERA (I-40: PBH-02 y PBH-03) ====================
+                                 «Aplicar a:» gobierna A CUANTAS cabeceras va la configuracion, venga del configurador
+                                 (PBH-02) o de otra cabecera de este mismo rack (PBH-03). NO es un alcance por frente ni
+                                 por poste: los modulos siguen siendo UNA sola secuencia longitudinal, asi que los dos
+                                 unicos destinos que el modelo admite son esta cabecera o todas las aplicables. La
+                                 operacion es ATOMICA -valida todos los destinos antes de tocar nada- y cada destino
+                                 recibe su PROPIA copia, de modo que modificar una despues jamas alcanza a las otras.
+                                 No hay biblioteca ni referencia persistente: el origen es un modulo de este rack. -->
+                            <TextBlock Text="Aplicar a:" Style="{StaticResource FieldLabel}" Margin="0,10,0,0" />
+                            <ComboBox x:Name="HeaderScopeBox" SelectedIndex="0" ToolTipService.ShowOnDisabled="True"
+                                      ToolTip="A cuantas cabeceras va la configuracion. «Todas» excluye las que ningun corte dibuja.">
+                                <ComboBoxItem Content="Esta cabecera" />
+                                <ComboBoxItem Content="Todas las cabeceras aplicables" />
+                            </ComboBox>
+
+                            <TextBlock Text="Copiar de:" Style="{StaticResource FieldLabel}" Margin="0,8,0,0" />
+                            <ComboBox x:Name="CopyHeaderFromBox" ToolTipService.ShowOnDisabled="True"
+                                      ToolTip="Otra cabecera de ESTE rack. Se copia su configuracion; no se guarda en ninguna biblioteca." />
+                            <Button x:Name="CopyHeaderFromButton" Content="Copiar configuracion"
+                                    Style="{StaticResource SecondaryButtonStyle}" MinWidth="180" HorizontalAlignment="Left"
+                                    Margin="0,6,0,0" Click="CopyHeaderFrom_Click" ToolTipService.ShowOnDisabled="True"
+                                    ToolTip="Copia la configuracion de la cabecera de origen al alcance elegido. Cada destino recibe una copia independiente." />
                         </StackPanel>
 
                         <WrapPanel Margin="0,10,0,0">
