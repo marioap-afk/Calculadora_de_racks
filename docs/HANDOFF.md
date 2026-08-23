@@ -1129,10 +1129,10 @@ veredicto.
 
 ### I-40 está INTEGRADA y CERRADA. No hay iniciativa en curso.
 
-**I-40 — Edición de cabeceras de Push Back quedó integrada el 2026-08-23** con merge `--no-ff` (su SHA
-lo registra el commit de cierre en `main`, como en I-39D), sobre el candidato funcional
-**`b43fcb433eb717ad5484b67f400fb5b77bc03826`**, con **validación manual del Owner APROBADA** en
-AutoCAD 2025 y CI verde en los cuatro jobs. `origin/main`
+**I-40 — Edición de cabeceras de Push Back quedó integrada el 2026-08-23** con merge `--no-ff`
+**`bf327b353fc181d3ca5192641c54b9abf96ea39d`** (padres `8a54a4d` y `2673aab`), sobre el candidato
+funcional **`b43fcb433eb717ad5484b67f400fb5b77bc03826`**, con **validación manual del Owner APROBADA**
+en AutoCAD 2025 y CI verde en los cuatro jobs. `origin/main`
 **no avanzó** desde la base `8a54a4d`: **sin rebase final**, así que la validación corresponde
 exactamente al contenido integrado.
 
@@ -1947,7 +1947,9 @@ la Fase 5, depende de todas).
 
 - candidato **funcional** aprobado por el Owner: `b43fcb433eb717ad5484b67f400fb5b77bc03826`
   (CI run `32621965348`, **success** en los cuatro jobs: Tests, Build UI, UI Tests y Build Plugin). El
-  SHA final de rama difiere del aprobado **solo en documentación de cierre**;
+  SHA final de rama, `2673aab`, difiere del aprobado **solo en documentación de cierre**, y su propio CI
+  (run `32622721354`) también quedó **success** en los cuatro jobs;
+- **merge `--no-ff`**: `bf327b353fc181d3ca5192641c54b9abf96ea39d`, padres `8a54a4d` y `2673aab`;
 - `origin/main` **no avanzó** desde la base `8a54a4d`: **sin rebase final**, de modo que la validación
   manual corresponde exactamente al contenido integrado;
 - **validación manual del Owner en AutoCAD 2025: APROBADA**, sobre personalización de cabeceras,
