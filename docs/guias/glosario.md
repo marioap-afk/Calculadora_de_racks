@@ -15,7 +15,7 @@ C#, el texto conserva primero la palabra usada por ingeniería de racks.
 | Larguero | Miembro horizontal que soporta tarimas entre postes |
 | Ménsula | Conector del larguero al poste; forma parte de su receta física |
 | Placa base | Pieza en la base del poste; puede derivar o sobrescribir su peralte |
-| Tarima | Pallet o carga de referencia usada para derivar claros, alturas y cantidad de apoyos |
+| Tarima | Pallet o carga de referencia usada para derivar claros, alturas y cantidad de apoyos. Cuando se DIBUJA es solo referencia visual y nunca entra al BOM: en el Selectivo se activa para todo el rack, y en Push Back por CELDA (I-41/PB-016), con el valor por omisión «sin tarima» |
 | Parrilla / deck | Superficie colocada sobre largueros; su conteo se deriva por tarima |
 | Separador | Pieza física que mantiene distancia entre fondos o entre elementos definidos por catálogo |
 | Bota | Protector de la base del poste |
@@ -34,6 +34,9 @@ C#, el texto conserva primero la palabra usada por ingeniería de racks.
 | Tramo | Subdivisión de un frente, especialmente en “medio frente” |
 | Nivel | Elevación de carga dentro de un frente |
 | Celda | Intersección frente × nivel en un diseño |
+| Fondo efectivo | El fondo que una CELDA de Push Back usa realmente (I-41/PB-015): su fondo propio si lo tiene, y si no el fondo por defecto de su frente. Lo consumen la cama, la pendiente, las elevaciones, las vistas y el BOM |
+| Fondo por defecto (del frente) | El fondo que heredan las celdas de un frente Push Back sin fondo propio. Es lo que se escribe en «Fondos frente» y se persiste aparte de la envolvente |
+| Envolvente (de fondo) | La extensión longitudinal de un frente Push Back: el mayor fondo efectivo de sus niveles activos. Es DERIVADA — dimensiona la estructura compartida, no es la autoridad de producto ([ADR-0030](../adr/0030-fondo-por-celda-push-back-y-envolvente-derivada.md)) |
 | Claro | Separación libre calculada alrededor o encima de una carga |
 | Fondo de tarima | Profundidad física de la carga |
 | Fondo de cabecera | Profundidad del marco; puede derivarse del fondo de tarima con una tolerancia |

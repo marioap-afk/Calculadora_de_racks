@@ -138,6 +138,22 @@ cotas y tarimas. Para dinámico, cubre fondos/niveles variables, IN/OUT, interme
 y sus cuatro clases de vista. Para cama standalone, comprueba riel, rodillos, frenos, tope y el tipo
 seleccionado.
 
+Para **Push Back**, además de lo del dinámico, cubre la configuración por celda (I-41):
+
+- un **fondo distinto por celda** dentro de un mismo frente: cada nivel debe terminar en su propio
+  larguero posterior, con su propia cama y su propia pendiente, y la estructura del frente (cabeceras,
+  separadores y postes derivados) debe dimensionarse por el nivel MÁS PROFUNDO;
+- **restaurar el fondo** de una celda: vuelve a heredar el «Fondos frente» y la envolvente baja con él;
+- los cinco alcances (`Celda / Selección / Nivel / Frente / Todo`) de «Aplicar fondo» y «Aplicar
+  tarima»: deben cambiar SOLO esa propiedad, sin tocar claro, largo ni largueros de las demás celdas;
+- **tarimas por celda**: aparecen en los cortes laterales y en los dos cortes frontales, siguen la
+  altura de su celda, y **no aparecen en el BOM** (compruébalo con `RACKBOMTOTAL`). El lateral NO
+  seccionado no las dibuja: es una envolvente, no una celda;
+- **regresión de I-40**: con un rack que tenga cabeceras personalizadas por línea, cambiar un fondo
+  INTERNO (sin mover el más profundo) no debe perder ninguna de esas cabeceras;
+- **legacy**: un rack Push Back dibujado antes de I-41 debe reabrirse y redibujarse EXACTAMENTE igual —
+  todos sus niveles al mismo fondo y sin ninguna tarima.
+
 ## 6. Criterios de aprobación
 
 Una validación manual se aprueba solo si:
