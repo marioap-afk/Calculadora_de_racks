@@ -114,6 +114,37 @@ namespace RackCad.Tests
             Assert.Equal(4, system.DefaultPalletsDeepAt(0));
         }
 
+        [Fact]
+        public void AnOverrideDeeperThanTheStructure_IsClampedToTheFrontsEnvelope()
+        {
+            // Un documento incoherente —un override mas profundo que la estructura que lo sostiene— no puede colgar
+            // un larguero en el aire: el resolver lo acota a la envolvente que el frente REALMENTE tiene.
+            var design = new PushBackDesign
+            {
+                Structure = new DynamicRackDesign
+                {
+                    Pallet = new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
+                    PalletsDeep = 4,
+                    LoadLevels = 2,
+                    FirstLevelHeight = 6.0,
+                    BeamDepth = 4.0
+                }
+            };
+            var config = new PushBackFrontConfig { DefaultPalletsDeep = 4 };
+            config.PalletsDeepOverrides.Add(99);
+            config.PalletsDeepOverrides.Add(null);
+            design.Fronts.Add(config);
+
+            var system = new PushBackResolver(Catalog).Resolve(design);
+
+            Assert.Equal(4, system.EffectivePalletsDeepAt(0, 0));
+            Assert.Equal(4, system.EffectivePalletsDeepAt(0, 1));
+            // Y su larguero posterior sigue apoyado en el ultimo modulo del frente, no fuera del rack.
+            Assert.Equal(
+                system.Structure.Fronts[0].EndX,
+                PushBackCellDepth.RearX(system, system.Structure.Fronts[0], 1), 6);
+        }
+
         // ---- La geometria consume el fondo EFECTIVO ---------------------------------------------------------
 
         [Fact]
@@ -203,6 +234,79 @@ namespace RackCad.Tests
 
             Assert.True(staggeredCount < deepCount,
                 $"con un nivel corto deberia haber MENOS intermedios: {staggeredCount} vs {deepCount}");
+        }
+
+        // ---- Geometria escalonada con VARIOS frentes y niveles, en las cuatro vistas ------------------------
+
+        [Fact]
+        public void SeveralFrontsAndLevels_EachCellKeepsItsOwnRearXAndBedLength()
+        {
+            var (state, inputs, assembler) = Editor(fronts: 3, levels: 3, palletsDeep: 5);
+            // Un escalonado distinto en cada frente.
+            Select(state, 0, 0); state.ApplyPalletsDeep(2, DynamicRackCellScope.Cell);
+            Select(state, 1, 1); state.ApplyPalletsDeep(3, DynamicRackCellScope.Cell);
+            Select(state, 2, 2); state.ApplyPalletsDeep(7, DynamicRackCellScope.Cell);
+
+            var system = Resolve(state, inputs, assembler);
+
+            Assert.Equal(new[] { 2, 5, 5 }, Enumerable.Range(0, 3).Select(l => system.EffectivePalletsDeepAt(0, l)).ToArray());
+            Assert.Equal(new[] { 5, 3, 5 }, Enumerable.Range(0, 3).Select(l => system.EffectivePalletsDeepAt(1, l)).ToArray());
+            Assert.Equal(new[] { 5, 5, 7 }, Enumerable.Range(0, 3).Select(l => system.EffectivePalletsDeepAt(2, l)).ToArray());
+
+            // Envolventes: solo el tercer frente crece.
+            Assert.Equal(5, system.Structure.Fronts[0].PalletsDeep);
+            Assert.Equal(5, system.Structure.Fronts[1].PalletsDeep);
+            Assert.Equal(7, system.Structure.Fronts[2].PalletsDeep);
+
+            // Y cada celda coloca su posterior donde su fondo dice, nunca donde lo dice el frente.
+            for (var frontIndex = 0; frontIndex < 3; frontIndex++)
+            {
+                var front = system.Structure.Fronts[frontIndex];
+                for (var level = 1; level <= 3; level++)
+                {
+                    var expectedDeep = system.EffectivePalletsDeepAt(frontIndex, level - 1);
+                    var rearX = PushBackCellDepth.RearX(system, front, level);
+                    var bed = PushBackCellDepth.BedLength(system, front, level);
+                    Assert.Equal(rearX - front.StartX, bed, 6);
+                    Assert.True(bed > 0.0);
+                    if (expectedDeep == front.PalletsDeep)
+                    {
+                        Assert.Equal(front.EndX, rearX, 6);   // el nivel mas profundo llega al final del frente
+                    }
+                    else
+                    {
+                        Assert.True(rearX < front.EndX, $"F{frontIndex + 1} N{level} deberia terminar antes");
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public void TheFourViews_AllBuildWithStaggeredDepths_AndTheRearCutShowsEveryCell()
+        {
+            var (state, inputs, assembler) = Editor(fronts: 2, levels: 3, palletsDeep: 4);
+            Select(state, 0, 0); state.ApplyPalletsDeep(2, DynamicRackCellScope.Cell);
+            Select(state, 1, 2); state.ApplyPalletsDeep(6, DynamicRackCellScope.Cell);
+
+            var computation = assembler.Build(state, inputs);
+            Assert.True(computation.IsValid, computation.Error);
+
+            // Las cuatro vistas se construyen y ninguna queda vacia.
+            Assert.NotEmpty(computation.LateralPlan.Flatten().Instances);
+            Assert.NotEmpty(computation.FrontalEntradaSalida.Flatten().Instances);
+            Assert.NotEmpty(computation.FrontalPosterior.Flatten().Instances);
+            Assert.NotEmpty(computation.PlantaPlan.Flatten().Instances);
+            Assert.NotEmpty(computation.LateralCortes);
+
+            // El corte POSTERIOR es un CORTE (I-40): muestra el larguero redondo de CADA celda, no una envolvente.
+            var redondos = computation.FrontalPosterior.Flatten().Instances
+                .Count(instance => string.Equals(instance.PieceId, PushBackDefaults.HighEndBeamCatalogId,
+                    StringComparison.OrdinalIgnoreCase));
+            Assert.Equal(6, redondos);   // 2 frentes x 3 niveles
+
+            // La PLANTA colapsa los niveles, asi que su linea posterior es la ENVOLVENTE del frente.
+            Assert.Equal(4, computation.System.Structure.Fronts[0].PalletsDeep);
+            Assert.Equal(6, computation.System.Structure.Fronts[1].PalletsDeep);
         }
 
         // ---- El BOM cotiza la cama de cada celda ------------------------------------------------------------
