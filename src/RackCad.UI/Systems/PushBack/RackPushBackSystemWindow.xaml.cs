@@ -351,7 +351,8 @@ namespace RackCad.UI.Systems.PushBack
                 if (RearPeralteBox.SelectedItem == null) RearPeralteBox.SelectedItem = PushBackDefaults.HighEndBeamDefaultPeralte;
 
                 // I-41: el fondo propio de la celda (vacio = hereda «Fondos frente») y su tarima.
-                CellFondoOverrideBox.SetNumber(push.PalletsDeepOverride);
+                // I-42: si la celda es una cama CORRIDA, el campo edita el fondo propio de esa cama.
+                LoadCellFondoField(push);
                 CellDrawPalletCheck.IsChecked = push.DrawPallet;
 
                 ApplyBlankFrontEditability(front.IsActive);
@@ -1105,10 +1106,22 @@ namespace RackCad.UI.Systems.PushBack
                 var written = 0;
                 if (depth)
                 {
-                    // Vacio = restaurar: sin override, la celda hereda el fondo del frente.
+                    // Vacio = restaurar: sin override, la celda hereda su default.
                     var requested = CellFondoOverrideBox.Value;
-                    written = state.ApplyPalletsDeep(
-                        requested.HasValue ? (int?)(int)Math.Round(requested.Value) : null, scope);
+                    var value = requested.HasValue ? (int?)(int)Math.Round(requested.Value) : null;
+
+                    // I-42: el campo escribe la autoridad de la celda SELECCIONADA. En una cama corrida esa
+                    // autoridad es el fondo propio de la corrida, no el de A ni el de B: escribir ahi los fondos de
+                    // un lado seria editar una configuracion dormante y dejar la cama como estaba.
+                    if (EditsCorridaDepth())
+                    {
+                        written = composite.ApplyCorridaDepth(value, scope);
+                        ReportCorridaScope(scope, written);
+                    }
+                    else
+                    {
+                        written = state.ApplyPalletsDeep(value, scope);
+                    }
                 }
 
                 if (pallet)
@@ -1127,7 +1140,7 @@ namespace RackCad.UI.Systems.PushBack
                     suppressSync = false;
                 }
 
-                if (scope != DynamicRackCellScope.Cell)
+                if (scope != DynamicRackCellScope.Cell && !(depth && EditsCorridaDepth()))
                 {
                     SetStatus(string.Format(
                         CultureInfo.InvariantCulture,

@@ -423,7 +423,8 @@ namespace RackCad.Application.Persistence
                         Frente = cell.Frente,
                         Level = cell.Level,
                         Topology = cell.Topology.ToString(),
-                        Direction = cell.Direction.ToString()
+                        Direction = cell.Direction.ToString(),
+                        CorridaDepth = cell.CorridaDepth
                     })
                     .ToList();
             }
@@ -465,7 +466,8 @@ namespace RackCad.Application.Persistence
                         Frente = cell.Frente,
                         Level = cell.Level,
                         Topology = ParseTopology(cell.Topology, composite.DefaultTopology),
-                        Direction = ParseDirection(cell.Direction, composite.DefaultDirection)
+                        Direction = ParseDirection(cell.Direction, composite.DefaultDirection),
+                        CorridaDepth = cell.CorridaDepth
                     });
                 }
             }
@@ -491,6 +493,12 @@ namespace RackCad.Application.Persistence
         public int Level { get; set; }
         public string Topology { get; set; }
         public string Direction { get; set; }
+
+        /// <summary>
+        /// I-42 — fondo propio de la cama corrida. Ausente = hereda el fondo por defecto de una corrida, que es lo
+        /// que trae todo documento anterior a esta autoridad.
+        /// </summary>
+        public int? CorridaDepth { get; set; }
     }
 
     /// <summary>One (front, level) cell in a Push Back document (a rear-tope deactivation).</summary>

@@ -119,9 +119,10 @@ namespace RackCad.Tests
         [Fact]
         public void ACorrida_TakesOnlyItsDemand_InsideTheSameStructure()
         {
-            // Estructura 5 + 8. La celda pide 5 + 5 = 10 fondos: la cama es mas corta que el rack.
+            // Estructura 5 + 8. La celda DECLARA 10 fondos propios: ni 5, ni 8, ni 13. La cama es mas corta
+            // que el rack y las dos estructuras siguen intactas.
             var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8);
-            design.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);
+            design.Composite.SetCorridaDepth(0, 0, 10);
 
             var system = Resolve(design);
             var cell = system.Composite.Cell(0, 1);
@@ -143,21 +144,25 @@ namespace RackCad.Tests
             var full = Resolve(Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8));
 
             var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8);
-            design.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);
+            design.Composite.SetCorridaDepth(0, 0, 10);
             var shorter = Resolve(design);
 
+            // El fondo de la corrida es una autoridad de CAMA, no de estructura: no mueve ninguna de las dos.
             Assert.Equal(full.Composite.SideA.ProposedStructure, shorter.Composite.SideA.ProposedStructure);
-            Assert.Equal(5, shorter.Composite.SideA.ProposedStructure);
-            // B baja su propuesta porque su CELDA pide menos, pero la estructura se sigue derivando de la demanda,
-            // no de la cama: con otro nivel exigiendo 8, la estructura vuelve a 8 y la corrida sigue corta.
-            var withDeepLevel = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8, levelsA: 2, levelsB: 2);
-            withDeepLevel.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);    // nivel 1 corto
-            withDeepLevel.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(null); // nivel 2 completo
-            var mixed = Resolve(withDeepLevel);
+            Assert.Equal(full.Composite.SideB.ProposedStructure, shorter.Composite.SideB.ProposedStructure);
+            Assert.Equal(5, shorter.Composite.SideA.EffectiveStructure);
+            Assert.Equal(8, shorter.Composite.SideB.EffectiveStructure);
 
-            Assert.Equal(8, mixed.Composite.SideB.EffectiveStructure);
-            Assert.True(mixed.Composite.Cell(0, 1).Beds[0].RequiredBedLength
-                        < mixed.Composite.Cell(0, 2).Beds[0].RequiredBedLength);
+            // Y dos niveles con fondos de corrida distintos conviven sobre esa MISMA estructura.
+            var mixed = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8, levelsA: 2, levelsB: 2);
+            mixed.Composite.SetCorridaDepth(0, 0, 10);   // nivel 1: corrida corta
+            mixed.Composite.SetCorridaDepth(0, 1, 13);   // nivel 2: corrida completa
+            var system = Resolve(mixed);
+
+            Assert.Equal(5, system.Composite.SideA.EffectiveStructure);
+            Assert.Equal(8, system.Composite.SideB.EffectiveStructure);
+            Assert.True(system.Composite.Cell(0, 1).Beds[0].RequiredBedLength
+                        < system.Composite.Cell(0, 2).Beds[0].RequiredBedLength);
         }
 
         [Fact]
@@ -167,7 +172,7 @@ namespace RackCad.Tests
             {
                 var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8);
                 design.Composite.DefaultDirection = direction;
-                design.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);
+                design.Composite.SetCorridaDepth(0, 0, 10);
 
                 var system = Resolve(design);
                 var total = system.Structure.TotalLength;
@@ -194,7 +199,7 @@ namespace RackCad.Tests
         public void ACorridaBed_IsQuotedAtItsOwnLength_NotAtTheRackLength()
         {
             var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8);
-            design.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);
+            design.Composite.SetCorridaDepth(0, 0, 10);
 
             var system = Resolve(design);
             var bed = PushBackBomBuilder.Build(system, Catalog).Components
@@ -216,15 +221,16 @@ namespace RackCad.Tests
         /// </para>
         /// </summary>
         [Fact]
-        public void APositiveGap_RescuesABedThatDoesNotFit_WithoutChangingItsDemandOrItsLength()
+        public void APositiveGap_RescuesABedThatDoesNotFit_WithoutChangingItsDemand()
         {
             PushBackDesign WithGap(double gap)
             {
-                // Estructura fija por lados y demanda fija de la celda: 8 + 5 fondos sobre una estructura que solo
-                // ofrece 5 + 4 posiciones.
+                // Estructura fija por lados y demanda fija de la celda: 13 fondos declarados sobre una estructura
+                // que solo ofrece 5 + 4 posiciones.
                 var design = Design(PushBackCellTopology.Corrida, deepA: 8, deepB: 5, levelsA: 1, levelsB: 1);
                 design.Composite.StructureOverrideA = 5;
                 design.Composite.StructureOverrideB = 4;
+                design.Composite.SetCorridaDepth(0, 0, 13);
                 design.Composite.Gap = gap;
                 return design;
             }
@@ -244,7 +250,8 @@ namespace RackCad.Tests
             var loose = Resolve(WithGap(gap));
             var looseBed = loose.Composite.Cell(0, 1).Beds.Single();
 
-            // 1) La DEMANDA no cambia: ni los fondos ni la longitud que exigen.
+            // 1) La DEMANDA no cambia: ni los fondos ni la longitud MINIMA que exigen. (La longitud FISICA si puede
+            //    moverse: la cama apoya donde la estructura le da apoyo, y el hueco cambia la estructura.)
             Assert.Equal(tightBed.DemandPositions, looseBed.DemandPositions);
             Assert.Equal(tightBed.RequiredBedLength, looseBed.RequiredBedLength, 6);
 
@@ -261,13 +268,18 @@ namespace RackCad.Tests
             Assert.Equal(tight.Composite.SideB.EffectiveStructure, loose.Composite.SideB.EffectiveStructure);
         }
 
+        /// <summary>
+        /// El hueco no toca la DEMANDA. La longitud FISICA si puede moverse, y debe: para alcanzar su decimo fondo
+        /// la cama tiene que cruzar el hueco, asi que el apoyo valido queda mas lejos. Lo que NUNCA ocurre es que la
+        /// cama quede flotando entre dos apoyos.
+        /// </summary>
         [Fact]
-        public void ChangingOnlyTheGap_DoesNotChangeThePhysicalBedLength()
+        public void ChangingOnlyTheGap_DoesNotChangeTheDemand_AndTheBedStaysOnARealSupport()
         {
             PushBackDesign WithGap(double gap)
             {
                 var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8, levelsA: 1, levelsB: 1);
-                design.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);   // demanda 5 + 5 = 10 fondos
+                design.Composite.SetCorridaDepth(0, 0, 10);   // AUTORIDAD PROPIA: 10 fondos, no 5 + 8
                 design.Composite.Gap = gap;
                 return design;
             }
@@ -275,35 +287,53 @@ namespace RackCad.Tests
             var tight = Resolve(WithGap(0.0));
             var loose = Resolve(WithGap(18.0));
 
-            var tightAxis = PushBackRunGeometry.Axes(PushBackRuns.Resolve(tight), Catalog).Single();
-            var looseAxis = PushBackRunGeometry.Axes(PushBackRuns.Resolve(loose), Catalog).Single();
             var tightBed = tight.Composite.Cell(0, 1).Beds.Single();
             var looseBed = loose.Composite.Cell(0, 1).Beds.Single();
 
-            // La cama de 10 fondos NO se alarga solo porque el hueco crecio: su longitud ES la de su demanda.
-            Assert.Equal(tightAxis.Length, looseAxis.Length, 6);
-            Assert.Equal(tightBed.RequiredBedLength, tightAxis.Length, 6);
-            Assert.Equal(looseBed.RequiredBedLength, looseAxis.Length, 6);
+            // 1) La demanda —fondos y longitud minima— es identica.
+            Assert.Equal(10, tightBed.DemandPositions);
             Assert.Equal(tightBed.DemandPositions, looseBed.DemandPositions);
+            Assert.Equal(tightBed.RequiredBedLength, looseBed.RequiredBedLength, 6);
 
-            // Y el rack SI es 18" mas largo, porque el hueco es estructura.
+            // 2) La estructura SI crece, y con ella lo disponible.
             Assert.Equal(tight.Structure.TotalLength + 18.0, loose.Structure.TotalLength, 6);
             Assert.Equal(tightBed.AvailableBedSpan + 18.0, looseBed.AvailableBedSpan, 6);
+
+            // 3) En los dos casos: Required <= Resolved <= Available, la cama dibujada mide lo resuelto, y ese
+            //    extremo bajo cae sobre una linea de modulo real — nunca en un punto intermedio.
+            foreach (var (system, bed) in new[] { (tight, tightBed), (loose, looseBed) })
+            {
+                var axis = PushBackRunGeometry.Axes(PushBackRuns.Resolve(system), Catalog).Single();
+                Assert.True(bed.RequiredBedLength <= bed.ResolvedBedLength + PushBackBedSpan.Tolerance);
+                Assert.True(bed.ResolvedBedLength <= bed.AvailableBedSpan + PushBackBedSpan.Tolerance);
+                Assert.Equal(bed.ResolvedBedLength, axis.Length, 6);
+                Assert.Contains(
+                    system.Structure.Modules,
+                    module => Math.Abs((system.Structure.TotalLength - module.StartX) - axis.Length) < 1e-6);
+            }
         }
 
         [Fact]
-        public void TheBomOfAPartialCorrida_FollowsItsOwnLength_NotTheGap()
+        public void TheBomOfAPartialCorrida_QuotesItsResolvedLength()
         {
-            double BedLength(double gap)
+            (double Bom, double Resolved, double Total) Quote(double gap)
             {
                 var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8, levelsA: 1, levelsB: 1);
-                design.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);
+                design.Composite.SetCorridaDepth(0, 0, 10);
                 design.Composite.Gap = gap;
-                return PushBackBomBuilder.Build(Resolve(design), Catalog).Components
+                var system = Resolve(design);
+                var bom = PushBackBomBuilder.Build(system, Catalog).Components
                     .Single(component => component.Category == SystemBomBuilder.Cama).Length;
+                return (bom, system.Composite.Cell(0, 1).Beds.Single().ResolvedBedLength, system.Structure.TotalLength);
             }
 
-            Assert.Equal(BedLength(0.0), BedLength(24.0), 4);
+            foreach (var gap in new[] { 0.0, 24.0 })
+            {
+                var quote = Quote(gap);
+                // Se cotiza el riel que se FABRICA: el resuelto. Ni el minimo teorico, ni el rack entero.
+                Assert.Equal(quote.Resolved, quote.Bom, 4);
+                Assert.True(quote.Bom < quote.Total - 1.0);
+            }
         }
 
         [Fact]
@@ -333,7 +363,7 @@ namespace RackCad.Tests
         public void AShorterCorrida_DoesNotMaterializeASecondStructure()
         {
             var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8);
-            design.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);
+            design.Composite.SetCorridaDepth(0, 0, 10);
             var system = Resolve(design);
 
             var instances = Lateral(system).Instances;
@@ -355,7 +385,7 @@ namespace RackCad.Tests
         public void TheCorridaBom_HasTheSameStructureAsTheSameRackWithoutCorridas()
         {
             var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8);
-            design.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);
+            design.Composite.SetCorridaDepth(0, 0, 10);
 
             string Structural(BillOfMaterials bom) => string.Join(
                 ";",
@@ -428,7 +458,7 @@ namespace RackCad.Tests
         public void AShorterCorrida_HasNoIntermediatesOutsideItsRealBed()
         {
             var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8);
-            design.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);
+            design.Composite.SetCorridaDepth(0, 0, 10);
             var system = Resolve(design);
 
             var axis = PushBackRunGeometry.Axes(PushBackRuns.Resolve(system), Catalog).Single();

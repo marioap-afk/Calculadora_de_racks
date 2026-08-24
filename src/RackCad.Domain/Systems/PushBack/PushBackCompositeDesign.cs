@@ -82,24 +82,60 @@ namespace RackCad.Domain.Systems.PushBack
             => CellAt(front, level)?.Direction ?? DefaultDirection;
 
         /// <summary>
+        /// I-42 — el FONDO PROPIO de la cama corrida de una celda, o null si nunca se fijo.
+        ///
+        /// <para>
+        /// Es una AUTORIDAD PROPIA, no la suma de los fondos de A y B: una corrida de 10 fondos es una cama con
+        /// demanda de 10, y eso no obliga a repartir 5 y 5 entre los dos lados ni convierte una estructura 5 + 8 en
+        /// una demanda de 13. Los fondos de A y de B siguen existiendo, intactos y DORMANTES, y reaparecen en cuanto
+        /// la celda deja de ser corrida.
+        /// </para>
+        /// </summary>
+        public int? CorridaDepthAt(int front, int level) => CellAt(front, level)?.CorridaDepth;
+
+        /// <summary>
+        /// Fija el fondo propio de la cama corrida de una celda. Null lo retira, de modo que la celda vuelve a
+        /// heredar el fondo por defecto de una corrida (la capacidad de la estructura).
+        /// </summary>
+        public void SetCorridaDepth(int front, int level, int? depth)
+        {
+            var existing = CellAt(front, level);
+            if (existing == null)
+            {
+                if (!depth.HasValue)
+                {
+                    return;
+                }
+
+                Topologies.Add(new PushBackTopologyCell
+                {
+                    Frente = front,
+                    Level = level,
+                    Topology = DefaultTopology,
+                    Direction = DefaultDirection,
+                    CorridaDepth = depth
+                });
+                return;
+            }
+
+            existing.CorridaDepth = depth;
+            Prune(existing);
+        }
+
+        /// <summary>
         /// Fija topologia y sentido de una celda. Escribir el valor por defecto BORRA la entrada, para que el archivo
         /// no acumule intencion que el usuario no expreso.
         /// </summary>
         public void SetCell(int front, int level, PushBackCellTopology topology, PushBackRunDirection direction)
         {
             var existing = CellAt(front, level);
-            if (topology == DefaultTopology && direction == DefaultDirection)
-            {
-                if (existing != null)
-                {
-                    Topologies.Remove(existing);
-                }
-
-                return;
-            }
-
             if (existing == null)
             {
+                if (topology == DefaultTopology && direction == DefaultDirection)
+                {
+                    return;
+                }
+
                 Topologies.Add(new PushBackTopologyCell
                 {
                     Frente = front, Level = level, Topology = topology, Direction = direction
@@ -109,6 +145,22 @@ namespace RackCad.Domain.Systems.PushBack
 
             existing.Topology = topology;
             existing.Direction = direction;
+            Prune(existing);
+        }
+
+        /// <summary>
+        /// Retira una entrada que ya no dice nada: topologia y sentido por defecto y sin fondo propio de corrida.
+        /// El fondo de corrida MANTIENE viva la entrada aunque la topologia vuelva al default — es configuracion
+        /// dormante, y perderla obligaria al usuario a volver a escribirla al reactivar la corrida.
+        /// </summary>
+        private void Prune(PushBackTopologyCell cell)
+        {
+            if (cell.Topology == DefaultTopology
+                && cell.Direction == DefaultDirection
+                && !cell.CorridaDepth.HasValue)
+            {
+                Topologies.Remove(cell);
+            }
         }
 
         public PushBackCompositeDesign DeepCopy()
@@ -134,7 +186,11 @@ namespace RackCad.Domain.Systems.PushBack
                 {
                     copy.Topologies.Add(new PushBackTopologyCell
                     {
-                        Frente = cell.Frente, Level = cell.Level, Topology = cell.Topology, Direction = cell.Direction
+                        Frente = cell.Frente,
+                        Level = cell.Level,
+                        Topology = cell.Topology,
+                        Direction = cell.Direction,
+                        CorridaDepth = cell.CorridaDepth
                     });
                 }
             }
@@ -150,5 +206,11 @@ namespace RackCad.Domain.Systems.PushBack
         public int Level { get; set; }
         public PushBackCellTopology Topology { get; set; }
         public PushBackRunDirection Direction { get; set; }
+
+        /// <summary>
+        /// I-42 — el fondo PROPIO de la cama corrida de esta celda. Null = hereda el fondo por defecto de una
+        /// corrida. Sobrevive a un cambio de topologia: es configuracion dormante, como los fondos de A y de B.
+        /// </summary>
+        public int? CorridaDepth { get; set; }
     }
 }

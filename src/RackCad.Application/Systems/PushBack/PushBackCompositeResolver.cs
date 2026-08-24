@@ -271,6 +271,9 @@ namespace RackCad.Application.Systems.PushBack
             DynamicRackSystem structure,
             PushBackCompositeSystem composite)
         {
+            // Perezoso: solo se construye si hay alguna corrida en sentido B->A.
+            DynamicRackSystem mirrored = null;
+
             var intent = design.Composite ?? new PushBackCompositeDesign();
             var slots = structure?.Fronts.Count ?? 0;
             var total = structure?.TotalLength ?? 0.0;
@@ -314,7 +317,17 @@ namespace RackCad.Application.Systems.PushBack
                             cell.Beds.Add(SideBed(sideB, localB, slot, level, PushBackSide.B));
                             break;
                         case PushBackCellTopology.Corrida:
-                            cell.Beds.Add(CorridaBed(sideA, sideB, layout, slot, level, cell.Direction, structure, total));
+                            // El marco IMPORTA: una corrida B->A se resuelve en el marco espejado, que es el mismo
+                            // en el que la dibuja PushBackRuns. Medirla en el marco del rack la mediria desde el
+                            // extremo contrario y daria otra longitud que la dibujada.
+                            if (mirrored == null)
+                            {
+                                mirrored = PushBackMirror.Structure(structure);
+                            }
+
+                            cell.Beds.Add(CorridaBed(
+                                intent, layout, slot, level, cell.Direction,
+                                cell.Direction == PushBackRunDirection.AToB ? structure : mirrored));
                             break;
                     }
 
@@ -340,46 +353,66 @@ namespace RackCad.Application.Systems.PushBack
                 RequiredBedLength = PushBackBedSpan.Required(local?.Structure, deep),
                 AvailableBedSpan = PushBackBedSpan.Available(local?.Structure, side.SlotStructure(slot))
             };
+            // Una cama de un solo lado apoya en el arranque de su frente, que es su ancla y un apoyo real: su span
+            // resuelto ES el que exige su demanda. La regla de I-41 no cambia.
+            bed.ResolvedBedLength = bed.RequiredBedLength;
             bed.DisabledReason = PushBackBedSpan.DisabledReason(
                 bed.RequiredBedLength, bed.AvailableBedSpan, which, slot, level + 1);
             return bed;
         }
 
         /// <summary>
-        /// La cama CORRIDA: UNA sola pieza anclada en el extremo ALTO que se desarrolla hacia el BAJO exactamente lo
-        /// que su demanda exige.
+        /// La cama CORRIDA: UNA sola pieza anclada en el extremo ALTO que apoya en el primer soporte fisico valido
+        /// hacia el bajo capaz de satisfacer su demanda.
         ///
         /// <para>
-        /// Su longitud fisica NO es la del rack: la estructura sobrante puede existir porque OTROS niveles o frentes
-        /// la necesitan, y una corrida corta simplemente no la usa. La demanda son los fondos que los dos lados
-        /// declaran para esa celda —medidos SIN el hueco, que es estructura—; la capacidad, la profundidad completa
-        /// que la estructura pone a disposicion, hueco INCLUIDO. Por eso un hueco mayor puede volver valida una cama
-        /// sin alargarla ni cambiar su demanda.
+        /// Su fondo es una AUTORIDAD PROPIA por celda, no la suma de los fondos de A y de B: una corrida de 10
+        /// fondos es una cama con demanda de 10, y eso no obliga a repartir 5 y 5 entre los lados ni convierte una
+        /// estructura 5 + 8 en una demanda de 13. Los fondos de los dos lados siguen ahi, dormantes.
+        /// </para>
+        /// <para>
+        /// Sin fondo propio hereda el de una corrida por defecto: la CAPACIDAD de la estructura en fondos, es decir
+        /// «la calle atraviesa el rack». Es un default derivado, igual que en I-41 el fondo del frente lo es de la
+        /// celda; la autoridad sigue siendo el valor propio.
         /// </para>
         /// </summary>
         private static PushBackCellBed CorridaBed(
-            PushBackSideConfiguration sideA,
-            PushBackSideConfiguration sideB,
+            PushBackCompositeDesign intent,
             PushBackCompositeLayout layout,
             int slot,
             int level,
             PushBackRunDirection direction,
-            DynamicRackSystem structure,
-            double total)
+            DynamicRackSystem structure)
         {
             var forward = direction == PushBackRunDirection.AToB;
-            var demand = sideA.EffectiveDeep(slot, level) + sideB.EffectiveDeep(slot, level);
+            var demand = CorridaDemand(intent, layout, slot, level);
+            var span = PushBackBedSpan.ResolveSpan(structure, demand);
             var bed = new PushBackCellBed
             {
                 LowSide = forward ? PushBackSide.A : PushBackSide.B,
                 HighSide = forward ? PushBackSide.B : PushBackSide.A,
                 DemandPositions = demand,
-                RequiredBedLength = PushBackBedSpan.DemandLength(structure, demand, PushBackBedAnchor.High),
-                AvailableBedSpan = total
+                RequiredBedLength = span.RequiredLength,
+                ResolvedBedLength = span.ResolvedLength,
+                AvailableBedSpan = span.AvailableLength
             };
             bed.DisabledReason = PushBackBedSpan.DisabledReason(
                 bed.RequiredBedLength, bed.AvailableBedSpan, bed.LowSide, slot, level + 1);
             return bed;
+        }
+
+        /// <summary>
+        /// La DEMANDA en fondos de una celda corrida: su fondo propio si lo tiene, y si no la capacidad de la
+        /// estructura. Es la unica funcion que responde a esa pregunta.
+        /// </summary>
+        public static int CorridaDemand(
+            PushBackCompositeDesign intent, PushBackCompositeLayout layout, int slot, int level)
+        {
+            // La MISMA regla de precedencia de I-41 —valor propio si lo hay, si no el default, y nunca por debajo del
+            // minimo fisico—, reutilizada tal cual. Lo unico distinto es cual es el default: para una corrida es la
+            // capacidad de la estructura, no el fondo del frente.
+            return PushBackCellDepth.Effective(
+                intent?.CorridaDepthAt(slot, level), layout.PositionsA + layout.PositionsB);
         }
 
         /// <summary>

@@ -98,7 +98,7 @@ namespace RackCad.Tests
         // ---- Corrida: UNA cama fisica -------------------------------------------------------------------------
 
         [Fact]
-        public void Corrida_IsOnePhysicalBed_WhoseLengthIsItsDemand()
+        public void Corrida_IsOnePhysicalBed_RestingOnARealSupport()
         {
             var design = Design(PushBackCellTopology.Corrida, PushBackRunDirection.AToB, levelsA: 1, levelsB: 1, gap: 8.0);
             var system = new PushBackResolver(Catalog).Resolve(design);
@@ -111,11 +111,14 @@ namespace RackCad.Tests
             Assert.Equal(PushBackSide.B, run.HighSide);
 
             var axis = Assert.Single(axes);
-            // UNA sola longitud fisica: la que EXIGE su demanda. El hueco es estructura, no demanda, asi que la cama
-            // no lo incluye en su longitud — solo lo atraviesa.
-            var cell = system.Composite.Cell(0, 1);
-            Assert.Equal(cell.Beds[0].RequiredBedLength, axis.Length, 6);
-            Assert.Equal(system.Structure.TotalLength - 8.0, axis.Length, 6);
+            var bed = system.Composite.Cell(0, 1).Beds.Single();
+
+            // La cama apoya en un soporte fisico real y mide lo que ese apoyo da: Required <= Resolved <= Available.
+            Assert.True(bed.RequiredBedLength <= bed.ResolvedBedLength + PushBackBedSpan.Tolerance);
+            Assert.True(bed.ResolvedBedLength <= bed.AvailableBedSpan + PushBackBedSpan.Tolerance);
+            Assert.Equal(bed.ResolvedBedLength, axis.Length, 6);
+            // Sin fondo propio, una corrida hereda la capacidad de la estructura: atraviesa el rack entero.
+            Assert.Equal(system.Structure.TotalLength, axis.Length, 6);
             Assert.True(axis.FlowsForward);
         }
 
@@ -243,21 +246,21 @@ namespace RackCad.Tests
         [Fact]
         public void ACorridaBeyondTheAvailableLength_IsBlocked_UntilTheStructureOrTheGapProvidesIt()
         {
-            // A pide 8 y B pide 5, pero la estructura de A se limita a 6 por override manual.
-            var design = Design(PushBackCellTopology.Corrida, PushBackRunDirection.AToB, deepA: 8, deepB: 5, levelsA: 1, levelsB: 1);
-            design.Composite.StructureOverrideA = 6;
+            // La celda pide 16 fondos sobre una estructura que solo ofrece 5 + 4.
+            var design = Design(PushBackCellTopology.Corrida, PushBackRunDirection.AToB, deepA: 5, deepB: 4, levelsA: 1, levelsB: 1);
+            design.Composite.SetCorridaDepth(0, 0, 16);
             var tight = new PushBackResolver(Catalog).Resolve(design);
-            Assert.False(tight.Composite.Cell(0, 1).IsValid);
+            var tightBed = tight.Composite.Cell(0, 1).Beds.Single();
+            Assert.False(tightBed.IsValid);
+            Assert.Equal(16, tightBed.DemandPositions);
 
             // Mas ESTRUCTURA la vuelve valida...
-            design.Composite.StructureOverrideA = 8;
+            design.Composite.StructureOverrideB = 11;
             Assert.True(new PushBackResolver(Catalog).Resolve(design).Composite.Cell(0, 1).IsValid);
 
             // ...y el HUECO tambien, porque pertenece a la estructura y aporta longitud disponible.
-            design.Composite.StructureOverrideA = 6;
-            var missing = tight.Composite.Cell(0, 1).Beds.Single().RequiredBedLength
-                          - tight.Composite.Cell(0, 1).Beds.Single().AvailableBedSpan;
-            design.Composite.Gap = missing + 4.0;
+            design.Composite.StructureOverrideB = null;
+            design.Composite.Gap = tightBed.RequiredBedLength - tightBed.AvailableBedSpan + 4.0;
             Assert.True(new PushBackResolver(Catalog).Resolve(design).Composite.Cell(0, 1).IsValid);
         }
 

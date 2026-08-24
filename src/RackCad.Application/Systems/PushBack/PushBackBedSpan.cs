@@ -139,36 +139,89 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// Cuantos MODULOS ocupa, desde el extremo alto, una cama de <paramref name="positions"/> fondos. Incluye el
-        /// hueco que atraviese, que suma longitud pero no aloja tarima.
+        /// El SPAN FISICO resuelto de una cama: donde apoya realmente, cuanto mide y cuanto ofrece la estructura.
+        /// Es la UNICA autoridad de colocacion — nadie recorta ni desplaza despues por su cuenta.
         /// </summary>
-        public static int ModulesForLastPositions(DynamicRackSystem frame, int positions)
+        public readonly struct PushBackResolvedSpan
         {
-            var modules = frame?.Modules.ToList() ?? new List<DynamicRackModule>();
-            var covered = 0;
-            var used = 0;
-            for (var index = modules.Count - 1; index >= 0 && covered < positions; index--)
+            public PushBackResolvedSpan(
+                int demandPositions, double required, double resolved, double available, int startPosition, bool fits)
             {
-                used++;
-                if (modules[index].Kind != DynamicRackModuleKind.Gap)
-                {
-                    covered++;
-                }
+                DemandPositions = demandPositions;
+                RequiredLength = required;
+                ResolvedLength = resolved;
+                AvailableLength = available;
+                StartPosition = startPosition;
+                Fits = fits;
             }
 
-            return used;
+            /// <summary>Los fondos que la cama declara. Es su DEMANDA, y no se deriva de ninguna estructura.</summary>
+            public int DemandPositions { get; }
+
+            /// <summary>Longitud MINIMA que exige esa demanda con la regla fisica vigente.</summary>
+            public double RequiredLength { get; }
+
+            /// <summary>
+            /// Longitud FISICA realmente utilizada: la del primer apoyo valido, desde el ancla ALTA hacia el bajo,
+            /// cuya distancia satisface la demanda. Ni una longitud flotante entre dos apoyos, ni todo el espacio
+            /// disponible si con menos basta.
+            /// </summary>
+            public double ResolvedLength { get; }
+
+            /// <summary>Longitud MAXIMA que la estructura efectiva pone a disposicion de esa cama.</summary>
+            public double AvailableLength { get; }
+
+            /// <summary>Posicion (1-based) del modulo donde apoya el extremo BAJO. Es un apoyo real, no un punto.</summary>
+            public int StartPosition { get; }
+
+            /// <summary>True cuando existe un apoyo que satisface la demanda.</summary>
+            public bool Fits { get; }
         }
 
         /// <summary>
-        /// La PRIMERA posicion (1-based) que ocupa una cama anclada en el extremo ALTO y de
-        /// <paramref name="positions"/> fondos de demanda. Acotada a 1: una demanda mayor que la secuencia no
-        /// desplaza el arranque fuera del rack — se declara imposible, que es otra cosa.
+        /// LA autoridad de colocacion de una cama anclada en el extremo ALTO de <paramref name="frame"/>.
+        ///
+        /// <para>
+        /// Resuelve la cadena completa en un solo sitio: la demanda da la longitud MINIMA
+        /// (<see cref="DemandLength"/>); despues se recorre la estructura desde el ancla alta hacia el bajo y se
+        /// toma el PRIMER apoyo fisico cuya distancia satisface esa longitud. Los apoyos son las lineas de modulo
+        /// —las mismas sobre las que el Push Back de un sentido ya coloca su larguero bajo—, asi que no se inventa
+        /// ningun concepto de apoyo nuevo.
+        /// </para>
+        /// <para>
+        /// Se cumple siempre <c>Required &lt;= Resolved &lt;= Available</c>: no se trunca la cama, no se la obliga a
+        /// medir exactamente el minimo si el siguiente apoyo valido queda mas lejos, y no se la estira hasta todo el
+        /// espacio disponible si con menos basta.
+        /// </para>
+        /// <para>
+        /// Cuando ni el apoyo mas lejano alcanza, la cama NO cabe: se devuelve el span completo —el maximo real, para
+        /// que el dibujo siga apoyado en la estructura— con <c>Fits = false</c>, y el diagnostico dice cuanto falta.
+        /// </para>
         /// </summary>
-        public static int FirstPositionOfLast(DynamicRackSystem frame, int positions)
+        public static PushBackResolvedSpan ResolveSpan(DynamicRackSystem frame, int demandPositions)
         {
-            var total = frame?.Modules.Count ?? 0;
-            var used = ModulesForLastPositions(frame, positions);
-            return Math.Max(1, total - used + 1);
+            var modules = frame?.Modules.ToList() ?? new List<DynamicRackModule>();
+            var required = DemandLength(frame, demandPositions, PushBackBedAnchor.High);
+            if (modules.Count == 0)
+            {
+                return new PushBackResolvedSpan(demandPositions, required, 0.0, 0.0, 1, required <= Tolerance);
+            }
+
+            var high = modules[modules.Count - 1].EndX;
+            var available = high - modules[0].StartX;
+
+            // Se recorre desde el ancla ALTA hacia el bajo: el primer apoyo que satisface la demanda es el que manda.
+            for (var index = modules.Count - 1; index >= 0; index--)
+            {
+                var span = high - modules[index].StartX;
+                if (span >= required - Tolerance)
+                {
+                    return new PushBackResolvedSpan(demandPositions, required, span, available, index + 1, true);
+                }
+            }
+
+            // Ni el apoyo mas lejano alcanza: la cama no cabe. Se apoya en el extremo y se declara lo que falta.
+            return new PushBackResolvedSpan(demandPositions, required, available, available, 1, false);
         }
 
         /// <summary>True cuando la celda cabe fisicamente. Nunca corrige: solo responde.</summary>

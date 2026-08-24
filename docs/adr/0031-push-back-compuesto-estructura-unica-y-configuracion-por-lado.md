@@ -55,22 +55,52 @@ pendiente sobre la retícula de troqueles).
    override y volver a la propuesta *actual*. Una estructura insuficiente **no se corrige en silencio**: se
    respeta, y las celdas que no caben se declaran imposibles con su motivo.
 
-6. **`RequiredBedLength`, `AvailableBedSpan` y `PhysicalBedLength` pertenecen a autoridades distintas.**
+6. **`RequiredBedLength`, `ResolvedBedLength` y `AvailableBedSpan` pertenecen a autoridades distintas.**
 
    - `RequiredBedLength` es lo que exige la **DEMANDA** de almacenamiento: cuánta longitud necesitan esos fondos
      con la receta normal. Se mide **sólo** sobre los módulos que alojan tarima, y por tanto **no** depende del
      hueco, ni de la longitud total del rack, ni de la estructura sobrante, ni del ajuste manual vigente.
    - `AvailableBedSpan` es lo que ofrece la **ESTRUCTURA** física efectiva: el tramo realmente utilizable por esa
      cama. **El hueco pertenece a la estructura**, así que suma longitud disponible.
-   - `PhysicalBedLength = RequiredBedLength`, **nunca** `AvailableBedSpan` ni la longitud total del rack: una cama
-     no se estira hasta la capacidad disponible, y tampoco se recorta contra ella cuando no cabe.
+   - `ResolvedBedLength` es la longitud **FÍSICA** que la cama utiliza de verdad: la del **primer apoyo válido**,
+     recorriendo desde su ancla ALTA hacia la baja, cuya distancia satisface la demanda. Es la que se dibuja y la
+     que se cotiza.
 
-   La única regla de validez es `RequiredBedLength <= AvailableBedSpan`. De la separación se sigue lo que el
-   contrato exige: **un hueco positivo puede volver válida una cama que sin él no cabe**, porque aumenta lo
-   disponible sin tocar lo exigido ni alargar la cama. El hueco **no** es una posición de tarima, **no** suma un
-   fondo ficticio y **no** aumenta `DemandPositions`: sólo aporta la longitud física que faltaba. Mezclar las dos
+   Se cumple siempre `RequiredBedLength <= ResolvedBedLength <= AvailableBedSpan`, y la regla de validez es
+   `RequiredBedLength <= AvailableBedSpan`.
+
+   La relación **no** es `ResolvedBedLength = RequiredBedLength`. Esa igualdad —que esta ADR sostuvo en una
+   redacción anterior— obligaba a colocar el extremo bajo de la cama restando una longitud continua, y eso la
+   dejaba **flotando entre dos apoyos**: era la causa del defecto por el que una corrida parecía arrancar en el
+   segundo fondo. Una cama descansa sobre estructura, no sobre una coordenada calculada. Por eso `ResolvedBedLength`
+   **puede** cambiar con el hueco: si para alcanzar su último fondo la cama tiene que cruzarlo, el apoyo válido
+   queda más lejos, y ésa es su longitud real. Lo que el hueco no cambia nunca es la **demanda**.
+
+   De la separación se sigue lo que el contrato exige: **un hueco positivo puede volver válida una cama que sin él
+   no cabe**, porque aumenta lo disponible sin tocar lo exigido. El hueco **no** es una posición de tarima, **no**
+   suma un fondo ficticio y **no** aumenta `DemandPositions`: sólo aporta longitud física. Mezclar las dos
    magnitudes —sumar el hueco también a la demanda— las reacopla y hace que el hueco no pueda rescatar nada por
    construcción; ésa es exactamente la regresión que la autoridad única existe para impedir.
+
+6-bis. **El fondo de una cama CORRIDA es una autoridad PROPIA por celda, no la suma de los fondos de A y de B.**
+
+   Una corrida de 10 fondos es una cama con demanda de 10. No obliga a repartir 5 y 5 entre los lados, y sobre una
+   estructura 5 + 8 **no** produce una demanda de 13. `demand = fondo(A) + fondo(B)` sería una tercera autoridad
+   derivada de dos que gobiernan otra cosa —la estructura de cada lado— y por eso está prohibida.
+
+   Sin fondo propio, la corrida hereda un **default derivado**: la capacidad en fondos de la estructura, es decir
+   «la calle atraviesa el rack». Es un default, exactamente como en I-41 el fondo del frente lo es de la celda; en
+   cuanto se escribe un valor propio, manda ése.
+
+   Los fondos de A y de B **no se borran** al volver corrida una celda: quedan **dormantes** y vuelven a gobernar
+   en cuanto deja de serlo. Los tres valores conviven, y cambiar de topología es por tanto **reversible**. En el
+   editor es el **mismo** campo, con los **mismos** cinco alcances, el que cambia de autoridad según la topología de
+   la celda seleccionada; la etiqueta lo dice («Fondo de cama corrida») para que no haya forma de escribir un número
+   creyendo que significa otra cosa. Un alcance que mezcla celdas corridas con celdas que no lo son escribe **sólo**
+   en las corridas y lo declara.
+
+   La persistencia es **aditiva y anulable**: un documento que nunca usó la autoridad no escribe el campo y se lee
+   exactamente igual que antes.
 
    No se trunca la cama, no se aumentan los fondos y no se inventa estructura. Ninguna suma de fondos se codifica.
 
@@ -99,7 +129,8 @@ pendiente sobre la retícula de troqueles).
 
 9. **En una corrida gobierna el lado ALTO, y es también su ancla FÍSICA.** Su larguero posterior es el ancla de
    elevación, exactamente como en I-32, y además el extremo desde el que la cama se desarrolla: desde el ALTO hacia
-   el BAJO, exactamente `RequiredBedLength`. Una corrida **puede** atravesar parte del lado alto, el hueco y parte
+   el BAJO, hasta el primer apoyo válido que satisface su demanda. Una corrida **puede** atravesar parte del lado
+   alto, el hueco y parte
    del bajo **sin llegar al extremo exterior del lado bajo**; y cuando cruza el hueco lo **atraviesa** sin gastar en
    él longitud de demanda. La estructura sobrante no se destruye ni se reduce: puede existir porque otros niveles o
    frentes la necesitan, y ése es justamente el caso de los frentes largos que gobiernan la estructura mientras
@@ -179,12 +210,13 @@ pendiente sobre la retícula de troqueles).
   - una ranura ausente en un lado que quede en una posición **interior** deja en el corte frontal de ese lado la
     línea de postes de su frontera, por la regla de I-33 que conserva los bordes exteriores de un frente en blanco.
     Las ausencias del final sí se retiran, que es el caso habitual (`A=3`, `B=4`);
-  - una corrida que **cruza el hueco** apoya su extremo bajo tantas pulgadas dentro del lado bajo como mida el
-    hueco, porque su longitud es la de su demanda y el hueco no consume demanda. Es consecuencia directa de
-    `PhysicalBedLength = RequiredBedLength`, y se declara para que se vea en la validación en AutoCAD;
-  - una celda bloqueada **se sigue dibujando** en la vista previa, con su cama sobresaliendo de la estructura: ver
-    cuánto le falta es más útil que verla recortada a un tamaño que nadie pidió. El editor la declara y no deja
-    insertar a ciegas.
+  - una corrida que **cruza el hueco** lo atraviesa sin gastar demanda en él, pero su longitud FÍSICA sí lo
+    incluye: para llegar a su último fondo tiene que salvarlo. Su extremo bajo apoya, como siempre, en una línea de
+    módulo real, nunca en un punto intermedio; se declara para que se vea en la validación en AutoCAD;
+  - una celda bloqueada **se sigue dibujando** en la vista previa, apoyada en el tramo más largo que la estructura
+    ofrece —`ResolvedBedLength = AvailableBedSpan`— porque `Resolved <= Available` no admite excepciones: una cama
+    volando fuera de la estructura no descansaría en nada. Lo que le falta lo dice el **diagnóstico**, con su
+    dirección y su medida, y el editor no deja insertar a ciegas.
 
 ## Referencias
 

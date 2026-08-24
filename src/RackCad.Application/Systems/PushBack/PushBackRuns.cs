@@ -235,14 +235,14 @@ namespace RackCad.Application.Systems.PushBack
             // El marco en el que el flujo avanza hacia +X: el del rack si va A->B, el espejado si va B->A.
             var frame = forward ? Clone(structure) : PushBackMirror.Structure(structure);
             var totalModules = frame.Modules.Count;
-            // La demanda viene en FONDOS; el rango del frente se cuenta en MODULOS, y el hueco es un modulo que la
-            // cama atraviesa sin alojar tarima. Confundirlos dejaria la cama un modulo corta en todo rack con hueco.
-            var modules = Math.Min(
-                totalModules,
-                Math.Max(
-                    PushBackCellDepth.MinimumPalletsDeep,
-                    PushBackBedSpan.ModulesForLastPositions(frame, demand)));
-            var start = Math.Max(1, totalModules - modules + 1);
+
+            // UNA sola autoridad de colocacion. Antes habia dos —primero se elegian modulos discretos y despues se
+            // sobrescribia StartX con una longitud continua—, y esa doble correccion era lo que dejaba la cama
+            // desplazada una posicion hacia adentro. Ahora el span lo resuelve PushBackBedSpan y aqui solo se
+            // materializa: el rango del frente ES el span, y nadie lo retoca despues.
+            var span = PushBackBedSpan.ResolveSpan(frame, demand);
+            var start = Math.Max(1, Math.Min(span.StartPosition, totalModules));
+            var modules = totalModules - start + 1;
 
             var corrida = new PushBackSystem
             {
@@ -254,8 +254,8 @@ namespace RackCad.Application.Systems.PushBack
             for (var slot = 0; slot < frame.Fronts.Count; slot++)
             {
                 var front = frame.Fronts[slot];
-                // La calle corrida arranca donde su demanda lo pide y acaba SIEMPRE en el extremo alto: ese es su
-                // ancla. Su longitud fisica es la de su demanda, no la del rack.
+                // La calle corrida acaba SIEMPRE en el extremo alto —ese es su ancla— y arranca en el apoyo que el
+                // span resolvio. Su longitud fisica es la de ese apoyo, nunca la del rack entero.
                 front.DepthStartPosition = start;
                 front.PalletsDeep = modules;
 
@@ -304,24 +304,9 @@ namespace RackCad.Application.Systems.PushBack
                 corrida.HighEndBeams.Add(resolved);
             }
 
+            // Las coordenadas salen del RANGO, como en cualquier frente del rack: el extremo bajo cae sobre la linea
+            // de modulo que el span resolvio, que es un apoyo fisico real. No se retoca ninguna X despues.
             DynamicDepthGeometry.ResolveCoordinates(frame);
-
-            // La cama mide EXACTAMENTE lo que su demanda exige y se desarrolla desde el extremo ALTO hacia el bajo.
-            // El extremo alto es el final del rango (el ancla); el bajo se deriva restando esa longitud. Asi
-            // PhysicalBedLength == RequiredBedLength y cambiar el hueco NO alarga la cama: el hueco solo aporta
-            // longitud DISPONIBLE, que es lo que puede volverla valida.
-            var required = PushBackBedSpan.DemandLength(frame, demand, PushBackBedAnchor.High);
-            if (required > 0.0)
-            {
-                foreach (var front in frame.Fronts)
-                {
-                    // SIN excepciones: la cama mide su demanda tambien cuando NO cabe. Recortarla contra el espacio
-                    // disponible seria truncarla en silencio y ademas ocultaria cuanto le falta — justo lo que el
-                    // diagnostico tiene que poder decir.
-                    front.StartX = front.EndX - required;
-                }
-            }
-
             return corrida;
         }
 

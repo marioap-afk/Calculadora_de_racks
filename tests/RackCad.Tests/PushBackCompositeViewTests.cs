@@ -234,6 +234,71 @@ namespace RackCad.Tests
             Assert.Contains(inOut, beam => beam.Insertion.X > total / 2.0);
         }
 
+        /// <summary>
+        /// BUG I-42 (ronda 4): la planta compuesta salia SIN un solo larguero intermedio. Se retiraban con el resto
+        /// de piezas del dinamico y nadie los reponia. Aqui se exige que aparezcan en las cuatro topologias.
+        /// </summary>
+        [Theory]
+        [InlineData(PushBackCellTopology.SoloA)]
+        [InlineData(PushBackCellTopology.SoloB)]
+        [InlineData(PushBackCellTopology.Encontradas)]
+        [InlineData(PushBackCellTopology.Corrida)]
+        public void ThePlanta_DrawsIntermediateBeams_InEveryTopology(PushBackCellTopology topology)
+        {
+            var system = Resolve(Design(topology, levelsA: 2, levelsB: 2));
+            var intermediates = new PushBackSystemPlantaBuilder().Build(system, Catalog)
+                .Where(PushBackPlanComposer.IsDynamicIntermediate)
+                .ToList();
+
+            Assert.NotEmpty(intermediates);
+        }
+
+        [Fact]
+        public void ThePlantaIntermediates_FollowEachBed_NotTheWholeStructure()
+        {
+            // Encontradas: cada cama apoya en SU lado, asi que hay intermedios en las dos mitades...
+            var encontradas = Resolve(Design(PushBackCellTopology.Encontradas, levelsA: 1, levelsB: 1));
+            var total = encontradas.Structure.TotalLength;
+            var both = new PushBackSystemPlantaBuilder().Build(encontradas, Catalog)
+                .Where(PushBackPlanComposer.IsDynamicIntermediate)
+                .ToList();
+            Assert.Contains(both, beam => beam.Insertion.X < total / 2.0);
+            Assert.Contains(both, beam => beam.Insertion.X > total / 2.0);
+
+            // ...mientras que con una sola cama en A no hay apoyos al otro lado de la interfaz.
+            var soloA = Resolve(Design(PushBackCellTopology.SoloA, levelsA: 1, levelsB: 1));
+            var onlyA = new PushBackSystemPlantaBuilder().Build(soloA, Catalog)
+                .Where(PushBackPlanComposer.IsDynamicIntermediate)
+                .ToList();
+            Assert.NotEmpty(onlyA);
+            Assert.All(onlyA, beam => Assert.True(beam.Insertion.X < soloA.Structure.TotalLength / 2.0));
+        }
+
+        /// <summary>
+        /// Una corrida CORTA solo apoya en el tramo que ocupa: la planta no debe inventar intermedios en la
+        /// estructura sobrante, ni dejar de proyectarlos en la parte que pisa el otro lado.
+        /// </summary>
+        [Fact]
+        public void ThePlantaIntermediates_OfAShortCorrida_CoverOnlyItsRun()
+        {
+            var design = Design(PushBackCellTopology.Corrida, levelsA: 1, levelsB: 1);
+            design.Composite.SetCorridaDepth(0, 0, 5);   // 5 de los 8 fondos que ofrece la estructura
+            var system = Resolve(design);
+
+            var bed = system.Composite.Cell(0, 1).Beds.Single();
+            var lowX = system.Structure.TotalLength - bed.ResolvedBedLength;
+
+            var intermediates = new PushBackSystemPlantaBuilder().Build(system, Catalog)
+                .Where(PushBackPlanComposer.IsDynamicIntermediate)
+                .ToList();
+
+            Assert.NotEmpty(intermediates);
+            // Ninguno por delante del extremo bajo de la cama: ese tramo de estructura no lo usa nadie.
+            Assert.All(intermediates, beam => Assert.True(beam.Insertion.X > lowX - 1e-6));
+            // Y si cruza la interfaz, hay apoyos al otro lado de ella.
+            Assert.Contains(intermediates, beam => beam.Insertion.X > system.Structure.TotalLength / 2.0);
+        }
+
         // ---- Tarimas -----------------------------------------------------------------------------------------
 
         [Fact]

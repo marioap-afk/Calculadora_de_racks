@@ -238,16 +238,8 @@ namespace RackCad.Application.Systems.PushBack
         public int ApplyTopology(
             PushBackCellTopology topology, PushBackRunDirection direction, DynamicRackCellScope scope)
         {
-            var matrix = Active.Structure;
-            var targets = DynamicRackCellScopeResolver.Targets(
-                matrix.LevelCounts(),
-                matrix.SelectedFrontIndex,
-                matrix.SelectedLevelIndex,
-                scope,
-                matrix.SelectedCells());
-
             var written = 0;
-            foreach (var target in targets)
+            foreach (var target in Targets(scope))
             {
                 SetCell(target.FrontIndex, target.LevelIndex, topology, direction);
                 written++;
@@ -260,18 +252,13 @@ namespace RackCad.Application.Systems.PushBack
         public void SetCell(int slot, int level, PushBackCellTopology topology, PushBackRunDirection direction)
         {
             var existing = Stored(slot, level);
-            if (topology == DefaultTopology && direction == DefaultDirection)
-            {
-                if (existing != null)
-                {
-                    topologies.Remove(existing);
-                }
-
-                return;
-            }
-
             if (existing == null)
             {
+                if (topology == DefaultTopology && direction == DefaultDirection)
+                {
+                    return;
+                }
+
                 topologies.Add(new PushBackTopologyCell
                 {
                     Frente = slot, Level = level, Topology = topology, Direction = direction
@@ -281,6 +268,121 @@ namespace RackCad.Application.Systems.PushBack
 
             existing.Topology = topology;
             existing.Direction = direction;
+            Prune(existing);
+        }
+
+        // ---- I-42: el FONDO PROPIO de la cama corrida -----------------------------------------------------------
+
+        /// <summary>
+        /// El fondo propio de la cama corrida de una celda, o null si hereda el de una corrida por defecto.
+        ///
+        /// <para>
+        /// Es una autoridad DISTINTA del fondo de A y del de B: cambiarla no toca ninguno de los dos, y cambiar
+        /// cualquiera de los dos no la toca a ella. Los tres conviven, y el que gobierna depende de la topologia
+        /// vigente de la celda — por eso cambiar de topologia es reversible y no pierde nada.
+        /// </para>
+        /// </summary>
+        public int? CorridaDepthAt(int slot, int level) => Stored(slot, level)?.CorridaDepth;
+
+        /// <summary>Escribe el fondo propio de la cama corrida de una celda. Null lo retira.</summary>
+        public void SetCorridaDepth(int slot, int level, int? depth)
+        {
+            var existing = Stored(slot, level);
+            if (existing == null)
+            {
+                if (!depth.HasValue)
+                {
+                    return;
+                }
+
+                topologies.Add(new PushBackTopologyCell
+                {
+                    Frente = slot,
+                    Level = level,
+                    Topology = DefaultTopology,
+                    Direction = DefaultDirection,
+                    CorridaDepth = depth
+                });
+                return;
+            }
+
+            existing.CorridaDepth = depth;
+            Prune(existing);
+        }
+
+        /// <summary>
+        /// Escribe el fondo de la cama corrida sobre el ALCANCE, con el MISMO resolutor de alcances y la MISMA
+        /// seleccion multiple que el resto del editor. Solo escribe donde hay una corrida: en una celda que no lo es
+        /// el valor no significaria nada, y escribirlo en silencio seria inventar configuracion. Devuelve cuantas
+        /// celdas se escribieron; el llamante compara con <see cref="CorridaTargets"/> para decir lo que quedo fuera.
+        /// </summary>
+        public int ApplyCorridaDepth(int? depth, DynamicRackCellScope scope)
+        {
+            var written = 0;
+            foreach (var target in Targets(scope))
+            {
+                if (TopologyAt(target.FrontIndex, target.LevelIndex) != PushBackCellTopology.Corrida)
+                {
+                    continue;
+                }
+
+                SetCorridaDepth(target.FrontIndex, target.LevelIndex, depth);
+                written++;
+            }
+
+            return written;
+        }
+
+        /// <summary>Cuantas celdas del alcance son corridas y cuantas hay en total. Para explicar, no para decidir.</summary>
+        public (int Corridas, int Total) CorridaTargets(DynamicRackCellScope scope)
+        {
+            var total = 0;
+            var corridas = 0;
+            foreach (var target in Targets(scope))
+            {
+                total++;
+                if (TopologyAt(target.FrontIndex, target.LevelIndex) == PushBackCellTopology.Corrida)
+                {
+                    corridas++;
+                }
+            }
+
+            return (corridas, total);
+        }
+
+        /// <summary>
+        /// True cuando el alcance mezcla celdas corridas con celdas que no lo son. El campo de fondo significa una
+        /// cosa distinta en cada una, asi que la ventana lo dice en vez de aplicar una de las dos a ciegas.
+        /// </summary>
+        public bool ScopeMixesCorrida(DynamicRackCellScope scope)
+        {
+            var targets = CorridaTargets(scope);
+            return targets.Corridas > 0 && targets.Corridas < targets.Total;
+        }
+
+        private IReadOnlyList<DynamicRackCellAddress> Targets(DynamicRackCellScope scope)
+        {
+            var matrix = Active.Structure;
+            return DynamicRackCellScopeResolver.Targets(
+                matrix.LevelCounts(),
+                matrix.SelectedFrontIndex,
+                matrix.SelectedLevelIndex,
+                scope,
+                matrix.SelectedCells());
+        }
+
+        /// <summary>
+        /// Retira una entrada que ya no dice nada. El fondo de corrida MANTIENE viva la entrada aunque la topologia
+        /// vuelva al default: es configuracion dormante, y perderla obligaria a volver a escribirla.
+        /// </summary>
+        private void Prune(PushBackTopologyCell cell)
+        {
+            if (cell.Topology == DefaultTopology
+                && cell.Direction == DefaultDirection
+                && !cell.CorridaDepth.HasValue)
+            {
+                topologies.Remove(cell);
+            }
         }
 
         private PushBackTopologyCell Stored(int slot, int level)
@@ -305,7 +407,8 @@ namespace RackCad.Application.Systems.PushBack
             {
                 composite.Topologies.Add(new PushBackTopologyCell
                 {
-                    Frente = cell.Frente, Level = cell.Level, Topology = cell.Topology, Direction = cell.Direction
+                    Frente = cell.Frente, Level = cell.Level, Topology = cell.Topology, Direction = cell.Direction,
+                    CorridaDepth = cell.CorridaDepth
                 });
             }
 
@@ -339,7 +442,8 @@ namespace RackCad.Application.Systems.PushBack
                 {
                     topologies.Add(new PushBackTopologyCell
                     {
-                        Frente = cell.Frente, Level = cell.Level, Topology = cell.Topology, Direction = cell.Direction
+                        Frente = cell.Frente, Level = cell.Level, Topology = cell.Topology, Direction = cell.Direction,
+                    CorridaDepth = cell.CorridaDepth
                     });
                 }
             }
@@ -434,7 +538,8 @@ namespace RackCad.Application.Systems.PushBack
                 DefaultDirection,
                 topologies.Select(cell => new PushBackTopologyCell
                 {
-                    Frente = cell.Frente, Level = cell.Level, Topology = cell.Topology, Direction = cell.Direction
+                    Frente = cell.Frente, Level = cell.Level, Topology = cell.Topology, Direction = cell.Direction,
+                    CorridaDepth = cell.CorridaDepth
                 }).ToList(),
                 presentA.ToList(),
                 presentB.ToList());
@@ -462,7 +567,8 @@ namespace RackCad.Application.Systems.PushBack
             {
                 topologies.Add(new PushBackTopologyCell
                 {
-                    Frente = cell.Frente, Level = cell.Level, Topology = cell.Topology, Direction = cell.Direction
+                    Frente = cell.Frente, Level = cell.Level, Topology = cell.Topology, Direction = cell.Direction,
+                    CorridaDepth = cell.CorridaDepth
                 });
             }
 

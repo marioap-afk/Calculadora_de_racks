@@ -44,17 +44,19 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void ACorridaBed_IsQuotedAtItsRequiredLength_NotAtTheRackLength()
+        public void ACorridaBed_IsQuotedAtItsResolvedLength_NotAtTheRackLength()
         {
-            var system = new PushBackResolver(Catalog).Resolve(Design(PushBackCellTopology.Corrida, gap: 10.0));
+            var design = Design(PushBackCellTopology.Corrida, gap: 10.0);
+            design.Composite.SetCorridaDepth(0, 0, 4);   // una corrida corta dentro de una estructura 4 + 4
+            var system = new PushBackResolver(Catalog).Resolve(design);
             var bed = PushBackBomBuilder.Build(system, Catalog).Components
                 .Single(component => component.Category == SystemBomBuilder.Cama);
 
-            // Se cotiza lo que la cama MIDE, que es lo que su demanda exige. El hueco es estructura: la cama lo
-            // atraviesa, pero no se factura riel por el.
-            var required = system.Composite.Cell(0, 1).Beds[0].RequiredBedLength;
-            Assert.Equal(required, bed.Length, 4);
-            Assert.Equal(system.Structure.TotalLength - 10.0, bed.Length, 4);
+            // Se cotiza la longitud FISICA resuelta —la del apoyo en el que la cama descansa—, no el minimo teorico
+            // ni el rack entero.
+            var resolved = system.Composite.Cell(0, 1).Beds.Single().ResolvedBedLength;
+            Assert.Equal(resolved, bed.Length, 4);
+            Assert.True(bed.Length < system.Structure.TotalLength - 1.0);
         }
 
         [Fact]

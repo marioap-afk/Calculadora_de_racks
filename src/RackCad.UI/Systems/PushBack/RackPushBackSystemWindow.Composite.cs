@@ -161,6 +161,18 @@ namespace RackCad.UI.Systems.PushBack
                 written = composite.ApplyTopology(topology, direction, scope);
             }
 
+            // I-42: cambiar la topologia cambia QUE autoridad edita el campo de fondo, asi que el panel de la celda
+            // se recarga en el acto. Sin esto el usuario veria la etiqueta anterior sobre el valor nuevo.
+            suppressSync = true;
+            try
+            {
+                LoadSelectedFront();
+            }
+            finally
+            {
+                suppressSync = false;
+            }
+
             SetStatus(
                 written > 0
                     ? "Topología aplicada a " + written + (written == 1 ? " celda." : " celdas.")
@@ -206,6 +218,118 @@ namespace RackCad.UI.Systems.PushBack
             // Restaurar es exactamente eliminar el override: el lado vuelve a seguir la propuesta derivada ACTUAL.
             composite.RestoreStructure(composite.ActiveSide);
             RequestRecompute();
+        }
+
+        // ---- I-42: el fondo propio de la cama CORRIDA ---------------------------------------------------------
+
+        private const string CellFondoLabelText = "Fondo celda";
+        private const string CorridaFondoLabelText = "Fondo de cama corrida";
+
+        private const string CellFondoTip =
+            "Fondo propio de esta celda. Vacío = hereda el «Fondos frente».";
+
+        private const string CorridaFondoTip =
+            "Fondo TOTAL de la cama corrida de esta celda: los fondos que la calle aloja de extremo a extremo. "
+            + "Es su propia autoridad — no es el fondo de A, ni el de B, ni su suma —, y los fondos de los dos lados "
+            + "se conservan intactos para cuando la celda deje de ser corrida. Vacío = la calle atraviesa el rack.";
+
+        private const string RestoreCellFondoTip =
+            "Elimina el fondo propio: las celdas del alcance vuelven a heredar el del frente.";
+
+        private const string RestoreCorridaFondoTip =
+            "Elimina el fondo propio de la cama corrida: las celdas corridas del alcance vuelven a atravesar el rack "
+            + "entero. Los fondos de A y de B no se tocan.";
+
+        /// <summary>
+        /// True cuando el campo de fondo edita la cama CORRIDA de la celda seleccionada en vez del fondo de la celda
+        /// del lado activo. Es la topologia de esa celda la que lo decide, no un modo aparte de la ventana.
+        /// </summary>
+        private bool EditsCorridaDepth()
+        {
+            if (!composite.SideBPresent)
+            {
+                return false;
+            }
+
+            var matrix = composite.Active.Structure;
+            return composite.TopologyAt(matrix.SelectedFrontIndex, matrix.SelectedLevelIndex)
+                   == PushBackCellTopology.Corrida;
+        }
+
+        /// <summary>
+        /// Carga el campo de fondo con la autoridad que corresponde a la celda seleccionada, y dice cual es: la
+        /// etiqueta y el tooltip cambian con ella, para que no haya forma de escribir un numero creyendo que
+        /// significa otra cosa.
+        /// </summary>
+        private void LoadCellFondoField(PushBackEditorCell push)
+        {
+            if (EditsCorridaDepth())
+            {
+                var matrix = composite.Active.Structure;
+                CellFondoLabel.Text = CorridaFondoLabelText;
+                SetLiveToolTip(CellFondoOverrideBox, CorridaFondoTip);
+                SetLiveToolTip(RestoreCellFondoButton, RestoreCorridaFondoTip);
+                CellFondoOverrideBox.SetNumber(
+                    composite.CorridaDepthAt(matrix.SelectedFrontIndex, matrix.SelectedLevelIndex));
+                return;
+            }
+
+            CellFondoLabel.Text = CellFondoLabelText;
+            SetLiveToolTip(CellFondoOverrideBox, CellFondoTip);
+            SetLiveToolTip(RestoreCellFondoButton, RestoreCellFondoTip);
+            CellFondoOverrideBox.SetNumber(push.PalletsDeepOverride);
+        }
+
+        /// <summary>
+        /// Cambia el tooltip VIGENTE de un control sin pelearse con I-33: la explicacion de «frente en blanco»
+        /// guarda el tooltip original para restaurarlo, asi que ese guardado tambien tiene que actualizarse. Sin
+        /// esto, la siguiente recarga devolveria el texto viejo sobre el campo ya reapuntado.
+        /// </summary>
+        private void SetLiveToolTip(Control control, object tip)
+        {
+            if (control == null)
+            {
+                return;
+            }
+
+            if (blankToolTips.ContainsKey(control))
+            {
+                blankToolTips[control] = tip;
+            }
+
+            if (control.IsEnabled)
+            {
+                control.ToolTip = tip;
+            }
+        }
+
+        /// <summary>
+        /// Dice QUE se escribio y QUE quedo fuera. Un alcance puede mezclar celdas corridas con celdas que no lo son:
+        /// el fondo de una corrida no significa nada en las segundas, asi que no se escribe en ellas — y se dice,
+        /// en lugar de dejar creer que la operacion alcanzo a todas.
+        /// </summary>
+        private void ReportCorridaScope(DynamicRackCellScope scope, int written)
+        {
+            var targets = composite.CorridaTargets(scope);
+            if (written == 0)
+            {
+                SetStatus("Ninguna celda corrida en el alcance: el fondo de cama corrida no se aplicó.", true);
+                return;
+            }
+
+            if (targets.Corridas < targets.Total)
+            {
+                SetStatus(
+                    "Fondo de cama corrida aplicado a " + written + " de " + targets.Total
+                    + " celdas del alcance; las demás no son corridas y conservan su fondo por lado.",
+                    false);
+                return;
+            }
+
+            if (scope != DynamicRackCellScope.Cell)
+            {
+                SetStatus("Fondo de cama corrida aplicado a " + written + " celda(s).", false);
+            }
         }
 
         // ---- Lectura del sistema resuelto ---------------------------------------------------------------------

@@ -350,7 +350,11 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Fondo celda" Style="{StaticResource FieldLabel}" />
+                                    <!-- I-42: la etiqueta y el significado del campo cambian cuando la celda
+                                         seleccionada es una CAMA CORRIDA: entonces edita el fondo PROPIO de esa cama,
+                                         que no es el de A, ni el de B, ni su suma. Es el MISMO control, con los
+                                         MISMOS cinco alcances; lo que cambia es a que autoridad escribe. -->
+                                    <TextBlock x:Name="CellFondoLabel" Text="Fondo celda" Style="{StaticResource FieldLabel}" />
                                     <controls:NumericField x:Name="CellFondoOverrideBox" LostFocus="CellFondo_Changed"
                                                            IsOptional="True" IntegerOnly="True" Minimum="2"
                                                            ToolTipService.ShowOnDisabled="True"

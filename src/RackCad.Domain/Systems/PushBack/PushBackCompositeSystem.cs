@@ -110,14 +110,24 @@ namespace RackCad.Domain.Systems.PushBack
         /// <summary>Lado del extremo ALTO (donde va el tope). Coincide con el bajo salvo en una corrida.</summary>
         public PushBackSide HighSide { get; set; }
 
-        /// <summary>Posiciones de fondo que la cama ocupa fisicamente.</summary>
+        /// <summary>Fondos que la cama DECLARA. Es su demanda, y no se deriva de ninguna estructura.</summary>
         public int DemandPositions { get; set; }
 
         /// <summary>
-        /// Longitud FISICA de esta cama: la que exige su demanda de fondos. Es tambien su longitud real —una cama no
-        /// se estira hasta la capacidad disponible— y por tanto la que se cotiza.
+        /// Longitud MINIMA que exige la demanda de esta cama con la regla fisica vigente. No depende del hueco, ni
+        /// de la longitud total del rack, ni de la estructura sobrante, ni del ajuste manual vigente.
         /// </summary>
         public double RequiredBedLength { get; set; }
+
+        /// <summary>
+        /// Longitud FISICA realmente utilizada por la cama: el primer apoyo valido, desde su ancla ALTA hacia el
+        /// bajo, cuya distancia satisface la demanda. Es la que se dibuja y la que se cotiza.
+        /// <para>
+        /// Se cumple <c>RequiredBedLength &lt;= ResolvedBedLength &lt;= AvailableBedSpan</c>: ni una longitud
+        /// flotante entre dos apoyos, ni todo el espacio disponible cuando con menos basta.
+        /// </para>
+        /// </summary>
+        public double ResolvedBedLength { get; set; }
 
         /// <summary>
         /// Longitud fisicamente DISPONIBLE entre los apoyos de la estructura efectiva para esta cama. Es CAPACIDAD

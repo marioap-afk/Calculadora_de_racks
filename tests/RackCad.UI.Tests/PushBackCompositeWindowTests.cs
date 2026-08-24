@@ -206,6 +206,120 @@ namespace RackCad.UI.Tests
             Assert.True(ok);
         }
 
+        /// <summary>
+        /// I-42 (ronda 4) — el campo de fondo por celda CAMBIA DE AUTORIDAD cuando la celda es una cama corrida: su
+        /// etiqueta lo dice y lo que escribe es el fondo propio de la corrida, no el de A ni el de B.
+        /// </summary>
+        [Fact]
+        public void TheDepthField_EditsTheCorridaDepth_WhenTheCellIsACorrida()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                var label = (TextBlock)w.FindName("CellFondoLabel");
+
+                // Un rack de un sentido: el campo sigue siendo el fondo de la celda, como en I-41.
+                var legacyLabel = label.Text;
+
+                Check(w, "SideBPresentCheck").IsChecked = true;
+                Combo(w, "CellTopologyBox").SelectedIndex = 3;    // Corrida
+                Combo(w, "RunDirectionBox").SelectedIndex = 0;    // A -> B
+                Combo(w, "TopologyScopeBox").SelectedIndex = 4;   // Todo
+                Click(Btn(w, "ApplyTopologyButton"));
+
+                var corridaLabel = label.Text;
+
+                // Escribir en el campo y salir de el escribe la autoridad de la CORRIDA.
+                var field = Field(w, "CellFondoOverrideBox");
+                var deepABefore = w.CompositeState.SideA.Cell(0, 0).PalletsDeepOverride;
+                field.SetNumber(6);
+                LoseFocus(field);
+
+                var wroteCorrida = w.CompositeState.CorridaDepthAt(0, 0) == 6;
+                var leftSidesAlone = w.CompositeState.SideA.Cell(0, 0).PalletsDeepOverride == deepABefore;
+                var reachedTheSystem = w.LastComputation.System.Composite.Cell(0, 1).Beds
+                    .Single().DemandPositions == 6;
+
+                return legacyLabel == "Fondo celda"
+                       && corridaLabel == "Fondo de cama corrida"
+                       && wroteCorrida
+                       && leftSidesAlone
+                       && reachedTheSystem;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// El tooltip del campo tiene que seguir a su autoridad tambien despues de la logica de «frente en blanco»
+        /// de I-33, que guarda y restaura tooltips. Antes ese guardado devolvia el texto viejo sobre el campo ya
+        /// reapuntado, y el usuario leia una explicacion que no correspondia a lo que iba a escribir.
+        /// </summary>
+        [Fact]
+        public void TheDepthFieldToolTip_FollowsItsAuthority_ThroughReloads()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                var field = Field(w, "CellFondoOverrideBox");
+
+                Check(w, "SideBPresentCheck").IsChecked = true;
+                Combo(w, "TopologyScopeBox").SelectedIndex = 4;   // Todo
+                Combo(w, "CellTopologyBox").SelectedIndex = 3;    // Corrida
+                Click(Btn(w, "ApplyTopologyButton"));
+
+                var corridaTip = field.ToolTip as string;
+
+                // Una recarga cualquiera del panel no puede devolver el texto anterior.
+                field.SetNumber(6);
+                LoseFocus(field);
+                var afterReload = field.ToolTip as string;
+
+                Combo(w, "CellTopologyBox").SelectedIndex = 2;    // Encontradas
+                Click(Btn(w, "ApplyTopologyButton"));
+                var cellTip = field.ToolTip as string;
+
+                return corridaTip != null
+                       && corridaTip.Contains("cama corrida")
+                       && afterReload == corridaTip
+                       && cellTip != null
+                       && cellTip.Contains("Fondos frente")
+                       && cellTip != corridaTip;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>Volver la celda a encontradas devuelve el campo —y su etiqueta— al fondo por lado de I-41.</summary>
+        [Fact]
+        public void TheDepthField_ReturnsToTheCellDepth_WhenTheCellStopsBeingACorrida()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                var label = (TextBlock)w.FindName("CellFondoLabel");
+
+                Check(w, "SideBPresentCheck").IsChecked = true;
+                Combo(w, "TopologyScopeBox").SelectedIndex = 4;   // Todo
+                Combo(w, "CellTopologyBox").SelectedIndex = 3;    // Corrida
+                Click(Btn(w, "ApplyTopologyButton"));
+
+                var field = Field(w, "CellFondoOverrideBox");
+                field.SetNumber(6);
+                LoseFocus(field);
+
+                Combo(w, "CellTopologyBox").SelectedIndex = 2;    // Encontradas
+                Click(Btn(w, "ApplyTopologyButton"));
+
+                // El fondo de la corrida NO se borra: queda dormante, listo para cuando vuelva a serlo.
+                return label.Text == "Fondo celda"
+                       && w.CompositeState.CorridaDepthAt(0, 0) == 6
+                       && w.LastComputation.System.Composite.Cell(0, 1).Beds.Count == 2;
+            });
+
+            Assert.True(ok);
+        }
+
         [Fact]
         public void TheStructureOverride_AppliesAndRestores()
         {

@@ -172,6 +172,16 @@ Y, desde I-42, el **Push Back compuesto (lado A / lado B)**:
 - **corrida**: UNA sola cama que atraviesa A + hueco + B, con una sola pendiente continua y como mucho UN
   tope, en su extremo alto. Cámbiale el sentido (A→B y B→A) y comprueba que el extremo ALTO se mueve
   físicamente al otro lado y que el tope lo sigue;
+- **fondo de la cama corrida**: con la celda en corrida, el campo de fondo pasa a llamarse «Fondo de cama
+  corrida» y edita la profundidad TOTAL de esa cama. Sobre una estructura 5 + 8, escribir **10** debe dar
+  una cama de 10 fondos —ni 13, ni 5, ni 8— sin mover ninguna de las dos estructuras. Devuelve la celda a
+  encontradas: las dos camas por lado deben reaparecer intactas, y al volver a corrida el 10 sigue escrito;
+- **dónde APOYA la cama**: su extremo bajo debe caer siempre sobre una línea de módulo. Una corrida que
+  atraviesa el rack arranca en el PRIMER fondo (con hueco 0 y con hueco positivo); una corrida corta
+  arranca en el apoyo que le corresponde, nunca a media posición;
+- **largueros intermedios en PLANTA**: deben existir en las cuatro topologías. Con una corrida corta, deben
+  cubrir todo su recorrido —incluida la parte que pisa el otro lado— y ninguno por delante de su extremo
+  bajo;
 - **gap**: llévalo de 0 a un valor positivo y comprueba que el rack se ALARGA esa misma medida y que las
   dos líneas de postes de la interfaz siguen existiendo también con 0;
 - **separador central**: con hueco positivo aparece UNA sola pieza —la misma que usa el rack— y se cuenta
@@ -185,8 +195,9 @@ Y, desde I-42, el **Push Back compuesto (lado A / lado B)**:
   una celda corrida NO debe mostrar larguero posterior en la línea interior de su lado BAJO;
 - **planta y laterales**: llevan las etiquetas **A** y **B** y muestran un larguero de entrada/salida en
   los DOS pasillos;
-- **BOM**: la estructura NO se duplica por tener dos lados; una corrida cuenta UNA cama a la longitud del
-  rack entero y dos encontradas cuentan DOS;
+- **BOM**: la estructura NO se duplica por tener dos lados; una corrida cuenta UNA cama, a la longitud
+  FÍSICA que se dibuja —la de su apoyo, que con fondo propio es menor que el rack—, y dos encontradas
+  cuentan DOS;
 - **round trip**: guarda, cierra, reabre con `RACKEDITAR` y comprueba que topología, sentido, hueco,
   separador, estructura manual y las dos configuraciones vuelven idénticas; `RACKDUPLICAR` produce una
   copia independiente;
