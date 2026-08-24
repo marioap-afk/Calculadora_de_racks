@@ -76,6 +76,13 @@ namespace RackCad.UI.Systems.PushBack
 
             // Retirar el lado B NO borra su configuracion: queda dormante y reaparece intacta al volver a declararlo.
             composite.SetSideBPresent(SideBPresentCheck.IsChecked == true);
+            if (composite.SideBPresent && composite.SideB.Structure.Count == 0)
+            {
+                // Primera vez que se declara: el lado B nace con las MISMAS ranuras que A, que es la retícula
+                // transversal compartida. Sin esto llegaria al resolver sin ninguna bahia.
+                composite.SideB.LoadNew();
+                composite.SideB.SetFrontCount(Math.Max(1, composite.SideA.Structure.Count));
+            }
             if (!composite.SideBPresent)
             {
                 SideSelectorBox.SelectedIndex = 0;

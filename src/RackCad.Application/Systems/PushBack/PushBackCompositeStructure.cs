@@ -382,9 +382,11 @@ namespace RackCad.Application.Systems.PushBack
         /// </list>
         /// </para>
         /// <para>
-        /// La LONGITUD siempre es la calculada: la de un extremo cambia cuando la estructura crece —deja de llevar la
-        /// holgura de extremo— y arrastrar la vieja dejaria la secuencia sin cerrar. Lo que se conserva es la
-        /// IDENTIDAD y la configuracion, que es lo que I-40 direcciona.
+        /// La LONGITUD es la calculada, salvo que el modulo llevara una longitud MANUAL de I-35: la de un extremo
+        /// cambia cuando la estructura crece —deja de llevar la holgura de extremo— y arrastrar la vieja dejaria la
+        /// secuencia sin cerrar, pero una medida que el usuario escribio sobre una pieza que sigue existiendo es
+        /// intencion suya y se conserva. Lo demas que se conserva es la IDENTIDAD y la configuracion, que es lo que
+        /// I-40 direcciona.
         /// </para>
         /// </summary>
         public static IReadOnlyList<DynamicRackModuleDesign> Reconcile(
@@ -411,6 +413,14 @@ namespace RackCad.Application.Systems.PushBack
                 calculated.IsCalculated = previous.IsCalculated;
                 calculated.IsManualOverride = previous.IsManualOverride;
                 calculated.Notes = previous.Notes;
+                if (previous.IsManualOverride && previous.Length > 0.0)
+                {
+                    // Una longitud MANUAL de I-35 es intencion del usuario sobre una pieza que sigue existiendo:
+                    // devolverla a la calculada seria deshacer su edicion sin decirlo, y ademas dejaria el modulo
+                    // marcado como manual mintiendo sobre su medida.
+                    calculated.Length = previous.Length;
+                }
+
                 result.Add(calculated);
             }
 

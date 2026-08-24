@@ -8,6 +8,7 @@ using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.Systems.PushBack
 {
@@ -47,10 +48,15 @@ namespace RackCad.Application.Systems.PushBack
             if (system.IsComposite)
             {
                 var runs = PushBackRuns.Resolve(system);
+                // Los INTERMEDIOS tambien pertenecen a una cama: se retiran del BOM compartido y se vuelven a contar
+                // por cama, con el MISMO builder que los dibuja. Contarlos sobre la estructura compuesta daria una
+                // cantidad que no corresponde a ninguna pieza del plano.
+                components.RemoveAll(component => component.Category == SystemBomBuilder.IntermediateBeam);
                 AddRunEndBeams(components, system, catalog, runs, SystemBomBuilder.InOutBeam, isHighEnd: false);
                 AddRunEndBeams(components, system, catalog, runs, HighEndBeam, isHighEnd: true);
                 AddRunBeds(components, runs);
                 AddRunRearTopes(components, system, catalog, runs);
+                AddRunIntermediates(components, catalog, runs);
                 return new BillOfMaterials(components);
             }
 
@@ -217,6 +223,37 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             EmitBeams(components, catalog, grouped, category);
+        }
+
+        /// <summary>
+        /// I-42 — los largueros INTERMEDIOS por cama fisica, contados con el MISMO builder que los dibuja. Es la
+        /// unica forma de que la cantidad del BOM y la del plano no puedan divergir: se cuentan las piezas que se
+        /// materializan, no una regla paralela sobre la estructura.
+        /// </summary>
+        private static void AddRunIntermediates(
+            ICollection<BomComponent> components, RackCatalog catalog, PushBackRunSet runs)
+        {
+            var builder = new PushBackIntermediateBeamLateralBuilder();
+            var grouped = new Dictionary<(string BeamId, double Length, double Peralte), int>();
+            foreach (var batch in PushBackCompositeContent.Batches(runs, null))
+            {
+                var front = batch.Front;
+                if (front == null)
+                {
+                    continue;
+                }
+
+                foreach (var instance in builder.BuildFor(batch.Source, catalog, front, batch.Levels))
+                {
+                    var peralte = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.PeralteParam, out var value)
+                        ? value
+                        : DynamicRackDefaults.DefaultIntermediateBeamDepth;
+                    var key = (instance.PieceId, Round(front.BeamLength), Round(peralte));
+                    grouped[key] = grouped.TryGetValue(key, out var current) ? current + 1 : 1;
+                }
+            }
+
+            EmitBeams(components, catalog, grouped, SystemBomBuilder.IntermediateBeam);
         }
 
         /// <summary>

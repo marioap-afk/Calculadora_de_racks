@@ -52,22 +52,51 @@ Selectivo, Cantilever, Cama independiente, multirrack, formulas, guardas trasera
 biblioteca nueva de cabeceras. [ADR-0017](../adr/0017-validacion-cargas-diferida-ram-elements.md) sigue
 vigente.
 
-## 4. Limitaciones DECLARADAS (no son descuidos)
+## 4. Ronda de correccion (el candidato `6c9f778` fue RECHAZADO)
 
-1. **No pueden coexistir una ranura presente solo en A y otra presente solo en B.** La reticula de
-   profundidad compartida exige que los rangos de los frentes aniden; se reporta con un error explicito.
-2. **Las cotas y etiquetas de nivel del corte lateral siguen las elevaciones del lado A**, el de
-   referencia: una sola tabla frente/nivel/elevacion no puede describir dos pasillos.
-3. **La planta colapsa los niveles**, asi que una ranura cuyos niveles fueran *todos* corridos seguiria
-   mostrando los largueros posteriores de la interfaz.
-4. **El separador central exige hueco mayor que cero**; con hueco 0 se avisa y no se coloca.
-5. **Mover la envolvente de un lado reconstruye la secuencia de modulos** y pierde personalizaciones de
-   modulo — mismo comportamiento que ya tenia un rack de un sentido.
+El Coordinador y las pruebas manuales preliminares del Owner rechazaron el primer candidato. Lo corregido:
 
-Las cuatro primeras estan anotadas tambien en [ideas-futuras](../ideas-futuras.md) con por que cada una
-necesitaria su propia iniciativa.
+1. **Solo-A + solo-B en la MISMA estructura.** La limitacion desaparecio: el contrato de profundidad admite ahora
+   un modo NO ANIDADO explicito que solo enciende el compositor del Push Back compuesto y que nunca se persiste.
+   `F1` compartida, `F2` solo A, `F3` solo B y `F4` compartida conviven sobre una sola estructura.
+2. **Cotas y etiquetas del lateral por LADO**, con la geometria real de cada uno. Ninguna cota afirma ya una
+   elevacion de A sobre una pieza de B. Los textos y las cotas ya no se voltean al reflejarse.
+3. **Planta**: proyecta la union de piezas fisicas REALES. Una ranura con todos sus niveles corridos ya no dibuja
+   los largueros de interfaz que no existen; basta con que un nivel no lo sea para que aparezcan.
+4. **Ninguna entrada invalida se corrige en silencio**: un hueco negativo se conserva y bloquea; un ajuste manual
+   de estructura invalido NO equivale a restaurar — restaurar es su propio boton.
+5. **I-40 sobrevive a la recomposicion**: los modulos se reconcilian fisicamente por posicion contada desde el
+   extremo exterior del lado, conservando `ModuleId`, configuracion personalizada y longitud manual.
+6. **Largueros intermedios**: pertenecen a la CAMA, se construyen en su marco y viajan con su transformacion. El
+   BOM los cuenta con el MISMO builder que los dibuja.
+7. **UI**: la seccion compuesta se COLAPSA con el rack de un solo sentido.
+8. **Falso error de capacidad 4+8**: la capacidad se mide por CAMA FISICA. La causa era que «encontradas»
+   comparaba la demanda de una cama contra el espacio de la otra.
+9. **La corrida NO ocupa todo el sistema**: `PhysicalBedLength = RequiredBedLength`, anclada en el extremo ALTO.
+10. **Una corrida corta no crea otra estructura**: el sistema sintetico es una receta geometrica y no materializa
+    ni un poste.
 
-## 5. Checklist de validacion manual en AutoCAD 2025
+Ademas, la propia bateria de pruebas de esta ronda destapo **dos defectos mas**, corregidos aqui: el ajuste manual
+de estructura no llegaba a la profundidad de las ranuras (el rack crecia pero perdia las personalizaciones de
+I-40), y la demanda de una corrida se contaba en modulos en vez de en fondos (un rack con hueco parecia tener una
+posicion mas).
+
+## 5. Limitaciones DECLARADAS (no son descuidos)
+
+1. **El separador central exige hueco mayor que cero**; con hueco 0 se avisa y no se coloca.
+2. **Una ranura presente en LOS DOS lados tiene estructura a lo largo de toda la profundidad**: su fondo por lado
+   gobierna donde acaban sus CAMAS, no donde acaban sus marcos — la misma regla de I-41.
+3. **Un ajuste manual de estructura se aplica a todas las ranuras de ese lado.** Sin ajuste manual cada ranura
+   conserva su envolvente, asi que frentes cortos y largos conviven igual que en I-41.
+4. **Una ranura ausente en una posicion INTERIOR** deja en el corte frontal de ese lado la linea de postes de su
+   frontera (regla de I-33 sobre frentes en blanco). Las ausencias del final si se retiran — el caso habitual.
+5. **El hueco anade longitud pero no capacidad de tarimas**: no rescata una demanda que excede los fondos
+   disponibles. Lo que la rescata es mas estructura. **Punto a confirmar por el Owner**: el contrato original de
+   I-42 sugeria lo contrario, y la correccion del modelo de la corrida lo hace fisicamente imposible.
+
+Las dos ultimas estan anotadas tambien en [ideas-futuras](../ideas-futuras.md).
+
+## 6. Checklist de validacion manual en AutoCAD 2025
 
 DLL a cargar con `NETLOAD` (construido desde el HEAD candidato, con AutoCAD cerrado):
 
@@ -75,72 +104,90 @@ DLL a cargar con `NETLOAD` (construido desde el HEAD candidato, con AutoCAD cerr
 C:\Users\alejandra-mendoza\.claude\worktrees\feature-push-back-compuesto\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll
 ```
 
-### 5.1 Legacy — lo primero, y es la condicion de todo lo demas
+### 6.1 Legacy — lo primero, y es la condicion de todo lo demas
 
 1. Abre un rack Push Back dibujado **antes** de I-42 con `RACKEDITAR`. Debe abrirse como de un solo
-   sentido, con «Rack de dos sentidos» **apagado** y toda la seccion compuesta deshabilitada, sin pedir
-   ninguna reconfiguracion.
+   sentido, con «Rack de dos sentidos» **apagado** y la seccion compuesta COLAPSADA (no ocupa espacio en la
+   barra lateral), sin pedir ninguna reconfiguracion.
 2. Pulsa **Actualizar** sin tocar nada. El dibujo debe quedar **identico**: mismos largueros, mismas
    camas, mismos topes, mismo BOM.
 
-### 5.2 Declarar el lado B y la estructura compartida
+### 6.2 LO QUE FALLO EN LA RONDA ANTERIOR — revisar esto primero
 
-3. Rack nuevo. Enciende «Rack de dos sentidos (lado B)». Aparece la segunda mitad **sobre la misma
-   estructura**: el lado A no se mueve de sitio ni cambia de altura.
-4. Con el **selector de lado** cambia a «Lado B» y vuelve a «Lado A». La matriz Frente x Nivel, la celda
+3. **4 fondos en A y 8 en B, encontradas.** NO debe aparecer ningun error de capacidad. Compruebalo tambien con
+   8/5, 3/9 y 8/4, y en las cuatro topologias.
+4. **Largueros intermedios.** En un lateral con varios niveles: cada cama debe llevar TODOS sus intermedios, a la
+   elevacion de SU cama y siguiendo SU pendiente. Ninguno fuera del vano real de su cama, ninguno cruzado a la
+   cama contraria, y `RACKBOMTOTAL` debe cotizar exactamente los que se dibujan.
+5. **Corrida corta.** Estructura 5 + 8 con una corrida de 10 fondos: UNA cama, anclada en el extremo ALTO, mas
+   corta que el rack, y la estructura sigue siendo 5 + 8. No debe aparecer ninguna segunda estructura ni un
+   segundo juego de postes, cabeceras o placas.
+6. **Cotas y etiquetas del lateral.** Con niveles y elevaciones distintas en A y en B, ninguna cota ni etiqueta
+   puede afirmar un valor de A sobre una pieza de B. Los textos deben leerse bien en los dos lados.
+7. **Planta con todos los niveles corridos.** No debe dibujar los largueros posteriores de la interfaz. Cambia UN
+   nivel a encontradas y deben aparecer.
+8. **UI con el compuesto apagado.** La seccion A/B no debe ocupar espacio: el editor debe verse como el de antes
+   de I-42.
+9. **`F1` compartida, `F2` solo A, `F3` solo B, `F4` compartida.** Debe construirse en UNA sola estructura.
+
+### 6.3 Declarar el lado B y la estructura compartida
+
+11. Rack nuevo. Enciende «Rack de dos sentidos (lado B)». Aparece la seccion compuesta y la segunda mitad
+    **sobre la misma estructura**: el lado A no se mueve de sitio ni cambia de altura.
+12. Con el **selector de lado** cambia a «Lado B» y vuelve a «Lado A». La matriz Frente x Nivel, la celda
    seleccionada y los cinco alcances trabajan sobre el lado elegido, y al volver la configuracion y la
    seleccion del otro lado siguen **intactas**.
-5. Pon **3 frentes en A y 4 en B**. La cuarta ranura debe existir **solo** en la mitad de B, y las lineas
+13. Pon **3 frentes en A y 4 en B**. La cuarta ranura debe existir **solo** en la mitad de B, y las lineas
    de postes y el BFR deben ser **unicos** para los dos lados.
-6. Pon **2 niveles en A y 5 en B**. Los postes se dimensionan por la mayor demanda y cada lado dibuja
+14. Pon **2 niveles en A y 5 en B**. Los postes se dimensionan por la mayor demanda y cada lado dibuja
    **sus** elevaciones.
 
-### 5.3 Topologia por celda
+### 6.4 Topologia por celda
 
-7. En un mismo frente: nivel 1 **corrida**, nivel 2 **encontradas**, nivel 3 **solo A**, nivel 4 **solo
+15. En un mismo frente: nivel 1 **corrida**, nivel 2 **encontradas**, nivel 3 **solo A**, nivel 4 **solo
    B**. Los cuatro deben coexistir.
-8. **Encontradas**: DOS camas fisicas, con pendientes opuestas y los extremos ALTOS enfrentados en el
+16. **Encontradas**: DOS camas fisicas, con pendientes opuestas y los extremos ALTOS enfrentados en el
    centro. Desde **Seguridad**, prueba tope ninguno / solo A / solo B / ambos.
-9. **Corrida**: UNA sola cama que atraviesa A + hueco + B, con **una** pendiente continua y como mucho
+17. **Corrida**: UNA sola cama que atraviesa A + hueco + B, con **una** pendiente continua y como mucho
    **UN** tope, en su extremo alto.
-10. Cambia el sentido de la corrida (**A→B** y **B→A**). El extremo ALTO debe moverse **fisicamente** al
+18. Cambia el sentido de la corrida (**A→B** y **B→A**). El extremo ALTO debe moverse **fisicamente** al
     otro lado y el tope debe seguirlo. No es un espejo grafico.
-11. Vuelve la celda a **encontradas**. La elevacion propia del lado que estaba bajo debe **reaparecer**:
+19. Vuelve la celda a **encontradas**. La elevacion propia del lado que estaba bajo debe **reaparecer**:
     no se perdio mientras hubo corrida.
 
-### 5.4 Interfaz central
+### 6.5 Interfaz central
 
-12. **Hueco**: llevalo de 0 a un valor positivo. El rack debe **alargarse exactamente esa medida**. Con
+20. **Hueco**: llevalo de 0 a un valor positivo. El rack debe **alargarse exactamente esa medida**. Con
     hueco 0, las **dos** lineas de postes de la interfaz deben seguir existiendo.
-13. **Separador central** con hueco positivo: aparece **UNA** sola pieza —la misma que ya usa el rack— y
+21. **Separador central** con hueco positivo: aparece **UNA** sola pieza —la misma que ya usa el rack— y
     `RACKBOMTOTAL` la cuenta **una vez**. Con hueco 0 se avisa y no se coloca.
 
-### 5.5 Estructura efectiva por lado
+### 6.6 Estructura efectiva por lado
 
-14. Sube la **estructura del lado activo** por encima de la propuesta y pulsa «Aplicar estructura»: el
+22. Sube la **estructura del lado activo** por encima de la propuesta y pulsa «Aplicar estructura»: el
     rack crece por ese lado.
-15. Bajala **por debajo** de la propuesta: NO debe corregirse sola. Debe avisarse, y las celdas que ya no
+23. Bajala **por debajo** de la propuesta: NO debe corregirse sola. Debe avisarse, y las celdas que ya no
     caben deben quedar **bloqueadas con su motivo**.
-16. «Restaurar estructura»: vuelve a la propuesta **actual**.
+24. «Restaurar estructura»: vuelve a la propuesta **actual**.
 
-### 5.6 Fondos, tarimas y vistas
+### 6.7 Fondos, tarimas y vistas
 
-17. Fondos y tarimas **por celda en los dos lados**: son independientes; cada tarima sigue la pendiente de
+25. Fondos y tarimas **por celda en los dos lados**: son independientes; cada tarima sigue la pendiente de
     **su** cama y **ninguna** aparece en el BOM.
-18. **Cuatro cortes frontales** (entrada/salida y posterior de cada lado): insertalos y actualizalos. Una
+26. **Cuatro cortes frontales** (entrada/salida y posterior de cada lado): insertalos y actualizalos. Una
     celda **corrida** NO debe mostrar larguero posterior en la linea interior de su lado BAJO.
-19. **Planta y laterales**: llevan las etiquetas **A** y **B**, y la planta muestra un larguero de
+27. **Planta y laterales**: llevan las etiquetas **A** y **B**, y la planta muestra un larguero de
     entrada/salida en los **dos** pasillos.
 
-### 5.7 BOM y round trip
+### 6.8 BOM y round trip
 
-20. `RACKBOMTOTAL`: la estructura **no** se duplica por tener dos lados; una corrida cuenta **UNA** cama a
+28. `RACKBOMTOTAL`: la estructura **no** se duplica por tener dos lados; una corrida cuenta **UNA** cama a
     la longitud del rack entero y dos encontradas cuentan **DOS**.
-21. Guarda, cierra y reabre con `RACKEDITAR`: topologia, sentido, hueco, separador, estructura manual y
+29. Guarda, cierra y reabre con `RACKEDITAR`: topologia, sentido, hueco, separador, estructura manual y
     las dos configuraciones vuelven **identicas**, con el **mismo GUID**.
-22. `RACKDUPLICAR`: produce una copia **independiente**.
+30. `RACKDUPLICAR`: produce una copia **independiente**.
 
-## 6. Criterio de aprobacion
+## 7. Criterio de aprobacion
 
 El veredicto del Owner en AutoCAD 2025 es el gate: CI verde es necesario y **no** suficiente, porque las
 pruebas no ven los bloques DWG reales. Si se aprueba, ADR-0031 pasa a `aceptado` con el modelo

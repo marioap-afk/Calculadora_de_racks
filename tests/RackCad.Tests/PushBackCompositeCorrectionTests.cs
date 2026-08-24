@@ -56,7 +56,7 @@ namespace RackCad.Tests
             Assert.True(fromA.RequiredBedLength <= fromA.AvailableBedSpan + PushBackBedSpan.Tolerance);
             Assert.True(fromB.RequiredBedLength <= fromB.AvailableBedSpan + PushBackBedSpan.Tolerance);
             Assert.True(fromB.RequiredBedLength > fromA.AvailableBedSpan);   // el cruce que producia el falso error
-            Assert.Empty(PushBackCompositeDiagnostics.Evaluate(system).Where(d => d.IsBlocking));
+            Assert.DoesNotContain(PushBackCompositeDiagnostics.Evaluate(system), d => d.IsBlocking);
         }
 
         [Theory]
@@ -615,8 +615,8 @@ namespace RackCad.Tests
 
             // Ranuras 0 y 3: encontradas (dos camas). Ranura 1: solo A. Ranura 2: solo B.
             Assert.Equal(2, runs.Runs.Count(run => run.Slot == 0));
-            Assert.Single(runs.Runs.Where(run => run.Slot == 1));
-            Assert.Single(runs.Runs.Where(run => run.Slot == 2));
+            Assert.Single(runs.Runs, run => run.Slot == 1);
+            Assert.Single(runs.Runs, run => run.Slot == 2);
             Assert.Equal(2, runs.Runs.Count(run => run.Slot == 3));
             Assert.Equal(PushBackSide.A, runs.Runs.Single(run => run.Slot == 1).LowSide);
             Assert.Equal(PushBackSide.B, runs.Runs.Single(run => run.Slot == 2).LowSide);

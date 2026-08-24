@@ -55,12 +55,22 @@ pendiente sobre la retícula de troqueles).
    override y volver a la propuesta *actual*. Una estructura insuficiente **no se corrige en silencio**: se
    respeta, y las celdas que no caben se declaran imposibles con su motivo.
 
-6. **`RequiredBedLength` y `AvailableBedSpan` son dos magnitudes distintas.** La primera es la longitud mínima
-   que exige la demanda de fondos; la segunda, la longitud físicamente disponible entre los apoyos de la
-   estructura efectiva. La única regla de validez es `RequiredBedLength <= AvailableBedSpan`. No se trunca la
-   cama, no se aumentan los fondos y no se inventa estructura. Ninguna suma de fondos se codifica: un hueco
-   positivo aumenta el span disponible sin aumentar la demanda, y por eso puede volver válida una cama corrida
-   que sin él no cabría.
+6. **`RequiredBedLength`, `AvailableBedSpan` y `PhysicalBedLength`.** `RequiredBedLength` es la longitud física
+   que exige la demanda de fondos de **esa** cama; `AvailableBedSpan` es la **capacidad máxima** que la estructura
+   efectiva pone a su disposición. La única regla de validez es `RequiredBedLength <= AvailableBedSpan`, y
+
+   ```
+   PhysicalBedLength = RequiredBedLength
+   ```
+
+   **nunca** `AvailableBedSpan` ni la longitud total del rack: una cama no se estira hasta la capacidad disponible.
+   No se trunca la cama, no se aumentan los fondos y no se inventa estructura. Ninguna suma de fondos se codifica.
+   El hueco añade **longitud** (la cama lo atraviesa) pero **no añade fondos**: no puede rescatar una demanda que
+   excede las posiciones disponibles, y no lo hace en silencio — lo que la rescata es más estructura.
+
+   **La capacidad se mide POR CAMA FÍSICA, no por celda.** Dos camas encontradas son dos piezas independientes, cada
+   una medida contra su propia estructura. Medir la demanda de una contra el espacio de la otra producía errores de
+   capacidad inexistentes.
 
 7. **La topología es POR CELDA (ranura × nivel), no global ni por frente.** Cuatro modos físicos: `Solo A` y
    `Solo B` (una cama), `Encontradas` (**dos** camas independientes, con sus extremos altos enfrentados y topes
@@ -73,22 +83,49 @@ pendiente sobre la retícula de troqueles).
    el conjunto completo (riel, rodillos, tope de cama, tarima, largueros e intermedios) se lleva al rack con
    **una sola reflexión rígida**. La reflexión niega la rotación y conmuta el espejo en X, y **no toca las
    elevaciones**: el eje es vertical, así que el extremo alto sigue siendo el alto. Cambiar el sentido de una
-   corrida cambia **físicamente** qué extremo es alto; no es un espejo gráfico.
+   corrida cambia **físicamente** qué extremo es alto; no es un espejo gráfico. Una **anotación o una cota no son
+   piezas**: sólo se traslada su posición, porque reflejarlas las dejaría escritas del revés.
 
-9. **En una corrida gobierna el lado ALTO.** Su larguero posterior es el ancla, exactamente como en I-32. La
-   elevación propia del lado bajo **no se borra**: queda dormante mientras esa topología la sustituye y vuelve
-   a gobernar en cuanto la celda deja de ser corrida.
+8-bis. **Un larguero intermedio pertenece a una CAMA, no a la estructura.** Sostiene su riel, sigue su pendiente y
+   vive en su marco, así que se construye por cama y viaja con su misma transformación. Resolverlos una sola vez
+   sobre la estructura compuesta daba ejes que no son los de ninguna cama real. El BOM los cuenta con el **mismo**
+   builder que los dibuja, de modo que la cantidad cotizada y la dibujada no pueden divergir.
+
+9. **En una corrida gobierna el lado ALTO, y es también su ancla FÍSICA.** Su larguero posterior es el ancla de
+   elevación, exactamente como en I-32, y además el extremo desde el que la cama se desarrolla: desde el ALTO hacia
+   el BAJO, exactamente `RequiredBedLength`. Una corrida **puede** atravesar parte del lado alto, el hueco y parte
+   del bajo **sin llegar al extremo exterior del lado bajo**. La estructura sobrante no se destruye ni se reduce:
+   puede existir porque otros niveles o frentes la necesitan, y ése es justamente el caso de los frentes largos que
+   gobiernan la estructura mientras otros reutilizan sólo una parte. La elevación propia del lado bajo **no se
+   borra**: queda dormante mientras esa topología la sustituye y vuelve a gobernar en cuanto la celda deja de ser
+   corrida.
+
+9-bis. **El sistema sintético de una corrida es una RECETA, no un rack.** No materializa postes, cabeceras, placas
+   ni separadores, no aparece en ninguna vista como estructura y no aporta una sola línea al BOM estructural. Sirve
+   únicamente para que la física ya validada de un sentido resuelva el contenido de esa cama.
 
 10. **El BOM cuenta piezas físicas del plan, no celdas de una rejilla.** La estructura sale **una vez** del BOM
     compartido; el contenido de almacenamiento se cuenta por **ejecución física de cama**. Dos encontradas son
-    dos camas, dos largueros bajos, dos altos y hasta dos topes; una corrida es una cama —a la longitud del
-    rack entero—, un larguero bajo, uno alto y como mucho un tope. **No se genera A + B para deduplicar
-    después**: el plan ya es correcto.
+    dos camas, dos largueros bajos, dos altos y hasta dos topes; una corrida es una cama —**a SU longitud
+    requerida**, no a la del rack—, un larguero bajo, uno alto y como mucho un tope. **No se genera A + B para
+    deduplicar después**: el plan ya es correcto.
 
 11. **La UI es un selector de lado sobre la matriz que ya existe.** No hay matriz tridimensional, no hay un
     segundo modelo de selección y los cinco alcances (`Cell/Selected/Level/Front/All`) se reutilizan **dentro
     del lado activo**. Cambiar de lado, retirar el lado B o cambiar la topología **no destruye configuración**:
-    la del lado que deja de dibujar queda dormante y reaparece intacta.
+    la del lado que deja de dibujar queda dormante y reaparece intacta. Con el rack de un solo sentido la sección
+    compuesta se **colapsa**, no se queda deshabilitada ocupando la barra lateral.
+
+11-bis. **Ninguna entrada inválida se corrige en silencio.** Un hueco negativo se conserva tal cual y bloquea con su
+    motivo; un ajuste manual de estructura por debajo del mínimo físico **no** se convierte en «sin ajuste», porque
+    eso significa RESTAURAR y restaurar sólo ocurre por acción explícita del usuario. Una intención inválida no se
+    resuelve: se declara.
+
+11-ter. **Los módulos supervivientes conservan su identidad.** Cuando la estructura de un lado crece o encoge, cada
+    pieza que sigue existiendo en la misma posición contada desde el extremo exterior del lado —y con el mismo
+    carácter físico— conserva su `ModuleId`, su configuración personalizada y su longitud manual, y con ellos los
+    `HeaderLineOverrides` de I-40 que la apuntan. Una pieza nueva nace calculada; una que desapareció no deja
+    rastro y su override **no** se traslada a otra.
 
 12. **Las etiquetas A/B son información gráfica del plano.** Se emiten por el pipeline de anotaciones que ya
     existe (mismo rol, misma escala, misma capa) en planta y en los cortes laterales, y **nunca** entran al BOM.
@@ -102,9 +139,12 @@ pendiente sobre la retícula de troqueles).
   pero obliga a migrar todo documento existente y a mantener dos formas del mismo rack durante la migración.
   Se prefirió el modelo aditivo, donde el lado A *es* el legacy y `SideB`/`Composite` son nulos en todo
   documento anterior.
-- **Extender la retícula de profundidad compartida para admitir rangos no anidados** — habría permitido que
-  coexistieran una ranura presente solo en A y otra presente solo en B, pero toca el contrato del sistema
-  Dinámico, que I-40 e I-41 mantuvieron intacto a propósito. Se prefirió declarar la limitación (ver abajo).
+- **Declarar como limitación que no coexistan una ranura solo-A y otra solo-B** — se descartó: contradice el
+  contrato de I-42, donde `F1` compartida, `F2` solo A, `F3` solo B y `F4` compartida deben convivir en una sola
+  estructura. Lo adoptado es un **modo explícito** de la autoridad de profundidad (`DynamicDepthNesting.NotRequired`)
+  que sólo enciende el compositor del Push Back compuesto, que es intención **derivada** y **nunca se persiste**, y
+  que deja intacto el contrato del sistema Dinámico: allí el anidamiento se sigue exigiendo igual.
+
 - **Reescribir la geometría de la cama para admitir un sentido negativo** — habría duplicado la física de
   elevaciones, rotación y tangencias de I-32 en un segundo camino que podría divergir. La reflexión rígida
   reutiliza el camino ya validado por el Owner.
@@ -122,20 +162,19 @@ pendiente sobre la retícula de troqueles).
   - la capacidad geométrica deja de ser un conteo de fondos y pasa a ser una comparación de longitudes reales,
     de modo que el hueco y el ajuste manual de estructura tienen efecto físico verificable.
 - Negativas / costos aceptados:
-  - **no pueden coexistir** una ranura presente solo en el lado A y otra presente solo en el lado B: la
-    retícula de profundidad compartida exige que los rangos de los frentes aniden. Se reporta con un error
-    explícito en vez de producir una estructura incoherente;
-  - las decoraciones compartidas del corte lateral (cotas y etiquetas de nivel) siguen el contexto de
-    elevaciones del **lado A**, el de referencia: una sola tabla frente/nivel/elevación no puede describir dos
-    pasillos a la vez;
-  - la **planta colapsa los niveles**, así que una ranura cuyos niveles fueran *todos* camas corridas seguiría
-    mostrando los largueros posteriores de la interfaz;
   - el separador central exige hueco mayor que cero; con hueco 0 se declara ausente en vez de dibujar una pieza
     de longitud nula;
-  - cuando la demanda mueve la envolvente de un lado, la secuencia de módulos almacenada deja de describir esa
-    estructura y se reconstruye por defecto, con la consiguiente pérdida de personalizaciones de módulo — es el
-    mismo comportamiento que ya tenía un rack de un sentido al cambiar su envolvente, ahora también aplicable
-    al compuesto.
+  - una ranura presente en **los dos** lados tiene estructura a lo largo de toda la profundidad: su fondo por lado
+    gobierna dónde acaban sus **camas**, no dónde acaban sus marcos. Es la misma regla con la que I-41 hace que un
+    nivel más corto termine antes dentro de la estructura de su frente;
+  - un **ajuste manual** de estructura se aplica a todas las ranuras de ese lado (el usuario ha declarado cuánto
+    mide el lado). Sin ajuste manual cada ranura conserva su propia envolvente, de modo que frentes cortos y largos
+    conviven igual que en I-41;
+  - una ranura ausente en un lado que quede en una posición **interior** deja en el corte frontal de ese lado la
+    línea de postes de su frontera, por la regla de I-33 que conserva los bordes exteriores de un frente en blanco.
+    Las ausencias del final sí se retiran, que es el caso habitual (`A=3`, `B=4`);
+  - el hueco añade longitud pero **no** capacidad de tarimas: no rescata una demanda que excede los fondos
+    disponibles. Lo que la rescata es más estructura.
 
 ## Referencias
 

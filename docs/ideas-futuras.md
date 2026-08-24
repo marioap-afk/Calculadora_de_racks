@@ -655,22 +655,17 @@ Ninguno bloqueó I-37A: se rodearon dentro del namespace Cantilever, sin tocar I
    autorización expresa.
 
 
+
 ## I-42 — Push Back compuesto: hallazgos fuera de alcance
 
-1. **La retícula de profundidad compartida exige que los rangos de los frentes ANIDEN.** Por eso un rack
-   compuesto no admite a la vez una ranura presente solo en el lado A y otra presente solo en el lado B: la
-   primera empieza en la posición 1 y la segunda acaba en la última, así que ninguna contiene a la otra. I-42
-   lo reporta con un error explícito. Levantarlo exige tocar `DynamicDepthGeometry`, que es contrato del
-   sistema **Dinámico** — el mismo que I-40 e I-41 dejaron intacto a propósito—, y por tanto necesita su propia
-   iniciativa y autorización expresa.
-2. **Las decoraciones compartidas del corte lateral (cotas y etiquetas de nivel) siguen el contexto de
-   elevaciones del lado A.** `RackLevelElevations` es una tabla `frente → nivel → elevación` y no puede
-   describir dos pasillos a la vez. Un lateral que cotee los dos lados exige extender ese contrato neutral, que
-   también consume el Dinámico.
-3. **La planta colapsa los niveles.** Una ranura cuyos niveles fueran *todos* camas corridas seguiría mostrando
-   los largueros posteriores de la interfaz, porque la planta no tiene nivel al que preguntar. Resolverlo
-   pediría una planta con conciencia de nivel, que es un cambio de producto, no un arreglo.
-4. **La secuencia de módulos almacenada se reconstruye cuando la envolvente de un lado se mueve**, con la
-   consiguiente pérdida de personalizaciones de módulo. Es el mismo comportamiento que ya tenía un rack de un
-   sentido; una reconciliación por identidad que sobreviva a un cambio de envolvente sería una mejora
-   transversal a I-40, no una corrección de I-42.
+> Los cuatro hallazgos que esta sección listaba tras la primera entrega —rangos no anidados, cotas del lateral,
+> planta con todos los niveles corridos y reconstrucción de módulos— **quedaron corregidos** en la ronda de
+> corrección de I-42 y ya no son deuda. Lo que queda:
+
+1. **Una ranura ausente en una posición INTERIOR** deja, en el corte frontal de ese lado, la línea de postes de su
+   frontera: la regla de I-33 conserva siempre los bordes exteriores de un frente en blanco. Las ausencias del final
+   sí se retiran, que es el caso habitual (`A=3`, `B=4`). Resolver también el caso interior exige distinguir
+   «ausente» de «en blanco» dentro de `DynamicFrontActivation`, que es contrato del sistema **Dinámico**.
+2. **El hueco no aporta capacidad de tarimas.** Es físicamente correcto —un hueco no aloja carga— pero conviene
+   confirmarlo con el dueño, porque el contrato original de I-42 sugería que un hueco positivo podía volver válida
+   una cama que no cabía. Bajo el modelo corregido, lo que la vuelve válida es más estructura.

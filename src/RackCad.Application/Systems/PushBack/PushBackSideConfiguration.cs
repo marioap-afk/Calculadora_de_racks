@@ -255,6 +255,14 @@ namespace RackCad.Application.Systems.PushBack
                 result.configs.AddRange(side.FrontConfigs);
             }
 
+            // Un lado DECLARADO pero sin ninguna bahia no existe fisicamente: tratarlo como presente produciria una
+            // sub-estructura enteramente en blanco, que el resolver compartido rechaza con razon. Se lee como
+            // ausente, y su declaracion queda dormante hasta que tenga al menos una ranura.
+            if (result.fronts.All(front => front == null))
+            {
+                result.IsPresent = false;
+            }
+
             return result;
         }
 
