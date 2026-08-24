@@ -154,6 +154,45 @@ Para **Push Back**, además de lo del dinámico, cubre la configuración por cel
 - **legacy**: un rack Push Back dibujado antes de I-41 debe reabrirse y redibujarse EXACTAMENTE igual —
   todos sus niveles al mismo fondo y sin ninguna tarima.
 
+Y, desde I-42, el **Push Back compuesto (lado A / lado B)**:
+
+- **declarar el lado B**: con «Rack de dos sentidos» apagado el rack es el de siempre y toda la sección
+  compuesta está deshabilitada; al encenderlo aparece la segunda mitad sobre la MISMA estructura, sin que
+  el lado A cambie de sitio ni de altura;
+- **selector de lado**: la matriz Frente x Nivel, la celda seleccionada y los cinco alcances pasan a
+  trabajar sobre el lado elegido; al volver al otro, su selección y su configuración siguen intactas;
+- **A = 3 y B = 4**: la cuarta ranura existe solo en B, su estructura vive solo en la mitad de B y la
+  retícula transversal (líneas de postes y BFR) es una sola para los dos lados;
+- **niveles y elevaciones independientes**: con 2 niveles en A y 5 en B, los postes se dimensionan por la
+  mayor demanda y cada lado dibuja SUS elevaciones;
+- **topologías distintas entre niveles del mismo frente**: nivel 1 corrida, nivel 2 encontradas, nivel 3
+  solo A y nivel 4 solo B deben coexistir en el mismo frente;
+- **encontradas**: DOS camas físicas con pendientes opuestas y sus extremos altos enfrentados en el
+  centro, cada una con su propio tope (ninguno / A / B / ambos desde Seguridad);
+- **corrida**: UNA sola cama que atraviesa A + hueco + B, con una sola pendiente continua y como mucho UN
+  tope, en su extremo alto. Cámbiale el sentido (A→B y B→A) y comprueba que el extremo ALTO se mueve
+  físicamente al otro lado y que el tope lo sigue;
+- **gap**: llévalo de 0 a un valor positivo y comprueba que el rack se ALARGA esa misma medida y que las
+  dos líneas de postes de la interfaz siguen existiendo también con 0;
+- **separador central**: con hueco positivo aparece UNA sola pieza —la misma que usa el rack— y se cuenta
+  una vez en `RACKBOMTOTAL`; con hueco 0 se avisa y no se coloca;
+- **estructura efectiva por lado**: sube la estructura del lado activo por encima de la propuesta y
+  comprueba que el rack crece; bájala por debajo y comprueba que NO se corrige sola, que se avisa y que
+  las celdas que no caben quedan bloqueadas con su motivo; «Restaurar estructura» vuelve a la propuesta;
+- **fondos y tarimas por celda en los DOS lados**: son independientes; las tarimas siguen la pendiente de
+  SU cama y siguen fuera del BOM;
+- **cortes frontales**: los cuatro (entrada/salida y posterior de cada lado) se insertan y se actualizan;
+  una celda corrida NO debe mostrar larguero posterior en la línea interior de su lado BAJO;
+- **planta y laterales**: llevan las etiquetas **A** y **B** y muestran un larguero de entrada/salida en
+  los DOS pasillos;
+- **BOM**: la estructura NO se duplica por tener dos lados; una corrida cuenta UNA cama a la longitud del
+  rack entero y dos encontradas cuentan DOS;
+- **round trip**: guarda, cierra, reabre con `RACKEDITAR` y comprueba que topología, sentido, hueco,
+  separador, estructura manual y las dos configuraciones vuelven idénticas; `RACKDUPLICAR` produce una
+  copia independiente;
+- **legacy**: un rack Push Back dibujado antes de I-42 debe reabrirse como de un solo sentido, sin pedir
+  ninguna reconfiguración, y redibujarse EXACTAMENTE igual.
+
 ## 6. Criterios de aprobación
 
 Una validación manual se aprueba solo si:

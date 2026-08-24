@@ -654,3 +654,23 @@ Ninguno bloqueó I-37A: se rodearon dentro del namespace Cantilever, sin tocar I
    subiniciativa de vistas **debe** calcularlo por su cuenta y **no** tocar I-36 para arreglarlo sin
    autorización expresa.
 
+
+## I-42 — Push Back compuesto: hallazgos fuera de alcance
+
+1. **La retícula de profundidad compartida exige que los rangos de los frentes ANIDEN.** Por eso un rack
+   compuesto no admite a la vez una ranura presente solo en el lado A y otra presente solo en el lado B: la
+   primera empieza en la posición 1 y la segunda acaba en la última, así que ninguna contiene a la otra. I-42
+   lo reporta con un error explícito. Levantarlo exige tocar `DynamicDepthGeometry`, que es contrato del
+   sistema **Dinámico** — el mismo que I-40 e I-41 dejaron intacto a propósito—, y por tanto necesita su propia
+   iniciativa y autorización expresa.
+2. **Las decoraciones compartidas del corte lateral (cotas y etiquetas de nivel) siguen el contexto de
+   elevaciones del lado A.** `RackLevelElevations` es una tabla `frente → nivel → elevación` y no puede
+   describir dos pasillos a la vez. Un lateral que cotee los dos lados exige extender ese contrato neutral, que
+   también consume el Dinámico.
+3. **La planta colapsa los niveles.** Una ranura cuyos niveles fueran *todos* camas corridas seguiría mostrando
+   los largueros posteriores de la interfaz, porque la planta no tiene nivel al que preguntar. Resolverlo
+   pediría una planta con conciencia de nivel, que es un cambio de producto, no un arreglo.
+4. **La secuencia de módulos almacenada se reconstruye cuando la envolvente de un lado se mueve**, con la
+   consiguiente pérdida de personalizaciones de módulo. Es el mismo comportamiento que ya tenía un rack de un
+   sentido; una reconciliación por identidad que sobreviva a un cambio de envolvente sería una mejora
+   transversal a I-40, no una corrección de I-42.
