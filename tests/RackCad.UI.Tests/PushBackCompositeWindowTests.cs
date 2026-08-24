@@ -31,18 +31,20 @@ namespace RackCad.UI.Tests
         private static void LoseFocus(FrameworkElement element)
             => element.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, element));
 
+        private static StackPanel Section(RackPushBackSystemWindow w) => (StackPanel)w.FindName("CompositeSection");
+
         [Fact]
-        public void ANewRack_OpensAsSingleSided_WithTheCompositeControlsDisabled()
+        public void ANewRack_OpensAsSingleSided_WithTheCompositeSectionCollapsed()
         {
             var ok = StaTestRunner.Run(() =>
             {
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                // COLAPSADA, no solo deshabilitada: con un rack de un sentido no debe ocupar espacio en la barra.
                 return !w.CompositeState.SideBPresent
                        && w.CompositeState.ActiveSide == PushBackSide.A
                        && Check(w, "SideBPresentCheck").IsChecked != true
-                       && !Combo(w, "SideSelectorBox").IsEnabled
-                       && !Field(w, "GapBox").IsEnabled
-                       && !Btn(w, "ApplyTopologyButton").IsEnabled
+                       && Section(w).Visibility == Visibility.Collapsed
+                       && Check(w, "SideBPresentCheck").Visibility == Visibility.Visible
                        && w.LastComputation.IsValid
                        && !w.LastComputation.System.IsComposite;
             });
@@ -51,7 +53,7 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void DeclaringSideB_EnablesTheSection_AndProducesACompositeSystem()
+        public void DeclaringSideB_ShowsTheSection_AndProducesACompositeSystem()
         {
             var ok = StaTestRunner.Run(() =>
             {
@@ -59,11 +61,63 @@ namespace RackCad.UI.Tests
                 Check(w, "SideBPresentCheck").IsChecked = true;
 
                 return w.CompositeState.SideBPresent
+                       && Section(w).Visibility == Visibility.Visible
                        && Combo(w, "SideSelectorBox").IsEnabled
                        && Field(w, "GapBox").IsEnabled
                        && Btn(w, "ApplyTopologyButton").IsEnabled
                        && w.LastComputation.IsValid
                        && w.LastComputation.System.IsComposite;
+            });
+
+            Assert.True(ok);
+        }
+
+        [Fact]
+        public void TogglingTheCompositeOff_CollapsesTheSection_AndKeepsSideBDormant()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                Check(w, "SideBPresentCheck").IsChecked = true;
+                Combo(w, "SideSelectorBox").SelectedIndex = 1;
+                w.CompositeState.SideB.SetFrontCount(3);
+                Field(w, "GapBox").SetNumber(14.0);
+                LoseFocus(Field(w, "GapBox"));
+
+                Check(w, "SideBPresentCheck").IsChecked = false;
+                var collapsed = Section(w).Visibility == Visibility.Collapsed
+                                && !w.LastComputation.System.IsComposite;
+
+                Check(w, "SideBPresentCheck").IsChecked = true;
+                // Todo reaparece intacto: la configuracion del lado B quedo dormante, no se destruyo.
+                return collapsed
+                       && Section(w).Visibility == Visibility.Visible
+                       && w.CompositeState.SideB.Structure.Count == 3
+                       && Math.Abs(w.CompositeState.Gap - 14.0) < 1e-6
+                       && w.LastComputation.System.IsComposite;
+            });
+
+            Assert.True(ok);
+        }
+
+        [Fact]
+        public void ApplyingAnEmptyStructureField_IsNotARestore()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                Check(w, "SideBPresentCheck").IsChecked = true;
+                Field(w, "StructureOverrideBox").SetNumber(9.0);
+                Click(Btn(w, "ApplyStructureButton"));
+                var applied = w.CompositeState.StructureOverrideA;
+
+                // Vaciar el campo y pulsar «Aplicar» NO restaura: restaurar es su propio boton.
+                Field(w, "StructureOverrideBox").SetNumber(null);
+                Click(Btn(w, "ApplyStructureButton"));
+                var afterEmptyApply = w.CompositeState.StructureOverrideA;
+
+                Click(Btn(w, "RestoreStructureButton"));
+                return applied == 9 && afterEmptyApply == 9 && w.CompositeState.StructureOverrideA == null;
             });
 
             Assert.True(ok);

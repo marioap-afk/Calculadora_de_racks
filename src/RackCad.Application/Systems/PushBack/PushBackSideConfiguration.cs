@@ -171,9 +171,18 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// La profundidad ESTRUCTURAL de una ranura: su envolvente acotada por la estructura efectiva del lado. Un
-        /// frente mas corto sigue siendo mas corto (asi conviven frentes cortos y largos sobre la misma estructura);
-        /// uno mas largo que la estructura efectiva no la extiende — sus celdas quedan sin apoyo y se declaran.
+        /// La profundidad ESTRUCTURAL de una ranura.
+        ///
+        /// <para>
+        /// SIN override manual es su propia ENVOLVENTE: asi conviven frentes cortos y largos sobre la misma
+        /// estructura, que es lo que I-41 ya hacia y no se toca.
+        /// </para>
+        /// <para>
+        /// CON override manual es la estructura efectiva del lado, para todas sus ranuras. El usuario ha declarado
+        /// explicitamente cuanto mide ese lado, y esa declaracion es la que se construye: si fuera mayor que la
+        /// envolvente y no se aplicara, el rack no creceria y el ajuste manual no cambiaria ninguna capacidad; si
+        /// fuera menor, las celdas que no quepan se declaran imposibles en vez de recortarse.
+        /// </para>
         /// </summary>
         public int SlotStructure(int slot)
         {
@@ -182,7 +191,9 @@ namespace RackCad.Application.Systems.PushBack
                 return 0;
             }
 
-            return Math.Max(PushBackCellDepth.MinimumPalletsDeep, Math.Min(Envelope(slot), EffectiveStructure()));
+            return Math.Max(
+                PushBackCellDepth.MinimumPalletsDeep,
+                HasValidStructureOverride ? EffectiveStructure() : Envelope(slot));
         }
 
         /// <summary>La lectura del lado A: los campos legacy del diseno, sin traduccion ni copia intermedia.</summary>
