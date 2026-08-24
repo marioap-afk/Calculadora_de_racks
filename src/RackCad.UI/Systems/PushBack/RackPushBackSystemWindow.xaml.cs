@@ -2358,8 +2358,12 @@ namespace RackCad.UI.Systems.PushBack
         {
             switch (ViewBox.SelectedIndex)
             {
-                case 1: return (RackEmbedDocument.ViewFrontal, (int)PushBackFrontalEnd.EntradaSalida);
-                case 2: return (RackEmbedDocument.ViewFrontal, (int)PushBackFrontalEnd.Posterior);
+                // I-42: un corte frontal es de UN lado, asi que su SECCION lleva tambien el lado activo. Un rack de
+                // un solo sentido codifica 0 y 1, exactamente lo que escribieron todas las versiones anteriores.
+                case 1: return (RackEmbedDocument.ViewFrontal, PushBackSystemFrontalBuilder.EncodeSection(
+                    PushBackFrontalEnd.EntradaSalida, composite.ActiveSide));
+                case 2: return (RackEmbedDocument.ViewFrontal, PushBackSystemFrontalBuilder.EncodeSection(
+                    PushBackFrontalEnd.Posterior, composite.ActiveSide));
                 case 3: return (RackEmbedDocument.ViewPlanta, -1);
                 default: return (RackEmbedDocument.ViewLateral, Math.Max(0, LateralSectionBox.SelectedIndex));
             }

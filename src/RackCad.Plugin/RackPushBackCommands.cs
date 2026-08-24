@@ -104,15 +104,16 @@ namespace RackCad.Plugin
             }
             else if (string.Equals(view, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase))
             {
-                // An unknown frontal section is NOT silently coerced into another end.
-                if (section != (int)PushBackFrontalEnd.EntradaSalida && section != (int)PushBackFrontalEnd.Posterior)
+                // An unknown frontal section is NOT silently coerced into another end. I-42 amplia el rango a
+                // cuatro: los dos cortes de cada lado. 0 y 1 siguen significando exactamente lo de siempre.
+                if (!PushBackSystemFrontalBuilder.IsValidSection(section))
                 {
                     editor.WriteMessage("\nRackCad: seccion frontal Push Back desconocida (" + section.ToString(CultureInfo.InvariantCulture) + "); no se dibuja.");
                     return;
                 }
 
-                var end = section == (int)PushBackFrontalEnd.Posterior ? PushBackFrontalEnd.Posterior : PushBackFrontalEnd.EntradaSalida;
-                result = new PushBackFrontalDrawService().DrawAndPlace(document, system, end, payload, rackName);
+                var frontal = PushBackSystemFrontalBuilder.DecodeSection(section);
+                result = new PushBackFrontalDrawService().DrawAndPlace(document, system, frontal.End, payload, rackName, frontal.Side);
             }
             else if (string.Equals(view, RackEmbedDocument.ViewLateral, StringComparison.OrdinalIgnoreCase))
             {
@@ -251,12 +252,20 @@ namespace RackCad.Plugin
                 }
                 else if (IsPushBackFrontal(viewBlock.Embed))
                 {
-                    var end = viewBlock.Embed.Section == (int)PushBackFrontalEnd.Posterior ? PushBackFrontalEnd.Posterior : PushBackFrontalEnd.EntradaSalida;
-                    var payload = BuildPushBackPayload(design, id, name, RackEmbedDocument.ViewFrontal, (int)end, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
-                    result = new PushBackFrontalDrawService().RedrawInPlace(document, viewBlock.BlockId, system, end, payload, regen: false);
+                    var frontal = PushBackSystemFrontalBuilder.DecodeSection(viewBlock.Embed.Section);
+                    var end = frontal.End;
+                    // I-42: la seccion se RE-ESCRIBE tal cual venia (corte + lado), no como el ordinal del corte:
+                    // en un rack compuesto perder el lado mandaria los dos cortes de B al descriptor de A.
+                    var payload = BuildPushBackPayload(design, id, name, RackEmbedDocument.ViewFrontal, viewBlock.Embed.Section, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
+                    result = new PushBackFrontalDrawService().RedrawInPlace(document, viewBlock.BlockId, system, end, payload, regen: false, side: frontal.Side);
                     if (result != null && result.Success)
                     {
                         var suffix = end == PushBackFrontalEnd.Posterior ? " - frontal posterior" : " - frontal entrada-salida";
+                        if (system != null && system.IsComposite)
+                        {
+                            suffix += frontal.Side == PushBackSide.B ? " B" : " A";
+                        }
+
                         RackBlockRenamer.SyncName(document, viewBlock.BlockId, baseName == null ? null : baseName + suffix);
                         if (end == PushBackFrontalEnd.Posterior)
                         {
@@ -429,8 +438,7 @@ namespace RackCad.Plugin
 
             if (string.Equals(embed.View, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase))
             {
-                return embed.Section == (int)PushBackFrontalEnd.EntradaSalida
-                    || embed.Section == (int)PushBackFrontalEnd.Posterior;
+                return PushBackSystemFrontalBuilder.IsValidSection(embed.Section);
             }
 
             if (string.Equals(embed.View, RackEmbedDocument.ViewLateral, StringComparison.OrdinalIgnoreCase))

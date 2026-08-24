@@ -23,14 +23,15 @@ namespace RackCad.Plugin.Systems.PushBack
             PushBackSystem system,
             PushBackFrontalEnd end,
             string payloadJson = null,
-            string rackName = null)
+            string rackName = null,
+            PushBackSide side = PushBackSide.A)
             => ViewBlockDraw.DrawAndPlace(
                 document,
                 system != null,
                 "No hay sistema Push Back para dibujar.",
                 drawer,
-                catalog => builder.BuildPlan(system, catalog, end),
-                () => BlockName(system, rackName, end),
+                catalog => builder.BuildPlan(system, catalog, end, side),
+                () => BlockName(system, rackName, end, side),
                 payloadJson);
 
         public HeaderPlacementResult RedrawInPlace(
@@ -39,20 +40,31 @@ namespace RackCad.Plugin.Systems.PushBack
             PushBackSystem system,
             PushBackFrontalEnd end,
             string payloadJson,
-            bool regen = true)
+            bool regen = true,
+            PushBackSide side = PushBackSide.A)
             => ViewBlockDraw.RedrawInPlace(
                 document,
                 blockId,
                 system != null && !blockId.IsNull,
                 "No hay sistema Push Back para actualizar.",
                 drawer,
-                catalog => builder.BuildPlan(system, catalog, end),
+                catalog => builder.BuildPlan(system, catalog, end, side),
                 payloadJson,
                 regen);
 
-        internal static string BlockName(PushBackSystem system, string rackName, PushBackFrontalEnd end)
+        /// <summary>
+        /// I-42: el nombre del bloque lleva el LADO cuando el rack tiene dos, para que los cuatro cortes frontales de
+        /// un mismo rack no colisionen en el mismo nombre. Un rack de un solo sentido conserva el nombre historico.
+        /// </summary>
+        internal static string BlockName(
+            PushBackSystem system, string rackName, PushBackFrontalEnd end, PushBackSide side = PushBackSide.A)
         {
             var suffix = end == PushBackFrontalEnd.Posterior ? "frontal posterior" : "frontal entrada-salida";
+            if (system != null && system.IsComposite)
+            {
+                suffix += side == PushBackSide.B ? " B" : " A";
+            }
+
             if (!string.IsNullOrWhiteSpace(rackName))
             {
                 return rackName.Trim() + " - " + suffix;

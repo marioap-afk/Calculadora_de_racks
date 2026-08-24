@@ -37,7 +37,41 @@ namespace RackCad.Application.Systems.PushBack
         private readonly DynamicSystemFrontalBuilder dynamicBuilder = new DynamicSystemFrontalBuilder();
 
         public HeaderRunPlan BuildPlan(PushBackSystem system, RackCatalog catalog, PushBackFrontalEnd end)
-            => BuildPlan(system, catalog, end, null, null);
+            => BuildPlan(system, catalog, end, PushBackSide.A);
+
+        /// <summary>
+        /// I-42 — el corte frontal de UN lado. Un corte frontal mira a uno de los dos pasillos, asi que en un rack
+        /// compuesto hay cuatro secciones utiles. Un rack de un solo sentido ignora el parametro: solo tiene lado A.
+        /// </summary>
+        public HeaderRunPlan BuildPlan(
+            PushBackSystem system, RackCatalog catalog, PushBackFrontalEnd end, PushBackSide side)
+            => system != null && system.IsComposite
+                ? PushBackCompositeFrontal.Build(system, catalog, end, side)
+                : BuildPlan(system, catalog, end, null, null);
+
+        /// <summary>
+        /// La SECCION con la que el envoltorio del DWG direcciona un corte frontal. Un rack de un solo sentido usa 0
+        /// y 1, que es exactamente lo que escribieron todas las versiones anteriores; el lado B anade 2 y 3. Por eso
+        /// un documento antiguo sigue apuntando al mismo corte sin migrar nada.
+        /// </summary>
+        public static int EncodeSection(PushBackFrontalEnd end, PushBackSide side)
+            => (int)end + (side == PushBackSide.B ? 2 : 0);
+
+        /// <summary>El corte y el lado que una seccion direcciona. Una seccion fuera de rango cae en el corte bajo de A.</summary>
+        public static (PushBackFrontalEnd End, PushBackSide Side) DecodeSection(int section)
+        {
+            if (section < 0 || section > 3)
+            {
+                return (PushBackFrontalEnd.EntradaSalida, PushBackSide.A);
+            }
+
+            return (
+                (section % 2) == 1 ? PushBackFrontalEnd.Posterior : PushBackFrontalEnd.EntradaSalida,
+                section >= 2 ? PushBackSide.B : PushBackSide.A);
+        }
+
+        /// <summary>Si la seccion direcciona un corte frontal valido.</summary>
+        public static bool IsValidSection(int section) => section >= 0 && section <= 3;
 
         /// <summary>
         /// El mismo corte con dos inyecciones OPCIONALES que solo usa el rack compuesto de I-42 (con null en las dos

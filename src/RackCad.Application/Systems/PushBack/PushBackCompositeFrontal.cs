@@ -46,6 +46,8 @@ namespace RackCad.Application.Systems.PushBack
                 ? LowContext(local, catalog, view, runs, side)
                 : null;
 
+            // Se llama a la SOBRECARGA con inyecciones sobre el sistema LOCAL del lado, que no es compuesto: asi no
+            // hay recursion y el corte lo construye el mismo builder de un solo sentido.
             return new PushBackSystemFrontalBuilder().BuildPlan(
                 local,
                 catalog,
