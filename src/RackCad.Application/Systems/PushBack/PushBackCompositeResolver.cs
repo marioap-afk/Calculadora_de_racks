@@ -352,7 +352,9 @@ namespace RackCad.Application.Systems.PushBack
         /// <para>
         /// Su longitud fisica NO es la del rack: la estructura sobrante puede existir porque OTROS niveles o frentes
         /// la necesitan, y una corrida corta simplemente no la usa. La demanda son los fondos que los dos lados
-        /// declaran para esa celda; la capacidad, la profundidad completa que la estructura pone a disposicion.
+        /// declaran para esa celda —medidos SIN el hueco, que es estructura—; la capacidad, la profundidad completa
+        /// que la estructura pone a disposicion, hueco INCLUIDO. Por eso un hueco mayor puede volver valida una cama
+        /// sin alargarla ni cambiar su demanda.
         /// </para>
         /// </summary>
         private static PushBackCellBed CorridaBed(
@@ -372,7 +374,7 @@ namespace RackCad.Application.Systems.PushBack
                 LowSide = forward ? PushBackSide.A : PushBackSide.B,
                 HighSide = forward ? PushBackSide.B : PushBackSide.A,
                 DemandPositions = demand,
-                RequiredBedLength = PushBackBedSpan.SpanOfLastPositions(structure, demand),
+                RequiredBedLength = PushBackBedSpan.DemandLength(structure, demand, PushBackBedAnchor.High),
                 AvailableBedSpan = total
             };
             bed.DisabledReason = PushBackBedSpan.DisabledReason(

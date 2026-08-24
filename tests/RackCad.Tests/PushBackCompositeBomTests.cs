@@ -44,13 +44,17 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void ACorridaBed_IsQuotedAtTheWholeRackLength()
+        public void ACorridaBed_IsQuotedAtItsRequiredLength_NotAtTheRackLength()
         {
             var system = new PushBackResolver(Catalog).Resolve(Design(PushBackCellTopology.Corrida, gap: 10.0));
             var bed = PushBackBomBuilder.Build(system, Catalog).Components
                 .Single(component => component.Category == SystemBomBuilder.Cama);
 
-            Assert.Equal(system.Structure.TotalLength, bed.Length, 4);
+            // Se cotiza lo que la cama MIDE, que es lo que su demanda exige. El hueco es estructura: la cama lo
+            // atraviesa, pero no se factura riel por el.
+            var required = system.Composite.Cell(0, 1).Beds[0].RequiredBedLength;
+            Assert.Equal(required, bed.Length, 4);
+            Assert.Equal(system.Structure.TotalLength - 10.0, bed.Length, 4);
         }
 
         [Fact]

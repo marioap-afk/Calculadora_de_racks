@@ -98,7 +98,7 @@ namespace RackCad.Tests
         // ---- Corrida: UNA cama fisica -------------------------------------------------------------------------
 
         [Fact]
-        public void Corrida_IsOnePhysicalBed_CrossingTheWholeRack()
+        public void Corrida_IsOnePhysicalBed_WhoseLengthIsItsDemand()
         {
             var design = Design(PushBackCellTopology.Corrida, PushBackRunDirection.AToB, levelsA: 1, levelsB: 1, gap: 8.0);
             var system = new PushBackResolver(Catalog).Resolve(design);
@@ -111,8 +111,11 @@ namespace RackCad.Tests
             Assert.Equal(PushBackSide.B, run.HighSide);
 
             var axis = Assert.Single(axes);
-            // Una sola longitud fisica: la del rack entero, hueco incluido.
-            Assert.Equal(system.Structure.TotalLength, axis.Length, 6);
+            // UNA sola longitud fisica: la que EXIGE su demanda. El hueco es estructura, no demanda, asi que la cama
+            // no lo incluye en su longitud — solo lo atraviesa.
+            var cell = system.Composite.Cell(0, 1);
+            Assert.Equal(cell.Beds[0].RequiredBedLength, axis.Length, 6);
+            Assert.Equal(system.Structure.TotalLength - 8.0, axis.Length, 6);
             Assert.True(axis.FlowsForward);
         }
 
@@ -238,26 +241,24 @@ namespace RackCad.Tests
         // ---- Capacidad geometrica real ------------------------------------------------------------------------
 
         [Fact]
-        public void ACorridaBeyondTheAvailablePositions_IsBlocked_AndMoreGapDoesNotRescueIt()
+        public void ACorridaBeyondTheAvailableLength_IsBlocked_UntilTheStructureOrTheGapProvidesIt()
         {
             // A pide 8 y B pide 5, pero la estructura de A se limita a 6 por override manual.
             var design = Design(PushBackCellTopology.Corrida, PushBackRunDirection.AToB, deepA: 8, deepB: 5, levelsA: 1, levelsB: 1);
             design.Composite.StructureOverrideA = 6;
             var tight = new PushBackResolver(Catalog).Resolve(design);
-            var tightCell = tight.Composite.Cell(0, 1);
-            Assert.False(tightCell.IsValid);
+            Assert.False(tight.Composite.Cell(0, 1).IsValid);
 
-            // El hueco anade LONGITUD, pero no anade posiciones de tarima: no puede rescatar una demanda que excede
-            // los fondos disponibles, y no lo hace en silencio.
-            design.Composite.Gap = 60.0;
-            var loose = new PushBackResolver(Catalog).Resolve(design);
-            Assert.False(loose.Composite.Cell(0, 1).IsValid);
-
-            // Lo que si la vuelve valida es ESTRUCTURA: la demanda cabe en cuanto los fondos existen.
-            design.Composite.Gap = 0.0;
+            // Mas ESTRUCTURA la vuelve valida...
             design.Composite.StructureOverrideA = 8;
-            var widened = new PushBackResolver(Catalog).Resolve(design);
-            Assert.True(widened.Composite.Cell(0, 1).IsValid);
+            Assert.True(new PushBackResolver(Catalog).Resolve(design).Composite.Cell(0, 1).IsValid);
+
+            // ...y el HUECO tambien, porque pertenece a la estructura y aporta longitud disponible.
+            design.Composite.StructureOverrideA = 6;
+            var missing = tight.Composite.Cell(0, 1).Beds.Single().RequiredBedLength
+                          - tight.Composite.Cell(0, 1).Beds.Single().AvailableBedSpan;
+            design.Composite.Gap = missing + 4.0;
+            Assert.True(new PushBackResolver(Catalog).Resolve(design).Composite.Cell(0, 1).IsValid);
         }
 
         [Fact]

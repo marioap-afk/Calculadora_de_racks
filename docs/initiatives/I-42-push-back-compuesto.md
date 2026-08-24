@@ -81,6 +81,35 @@ de estructura no llegaba a la profundidad de las ranuras (el rack crecia pero pe
 I-40), y la demanda de una corrida se contaba en modulos en vez de en fondos (un rack con hueco parecia tener una
 posicion mas).
 
+## 4-bis. Segunda ronda de correccion (el candidato `e90442a` fue RECHAZADO)
+
+Un solo blocker de contrato: la conclusion «el hueco no aporta capacidad» era **incorrecta**. El hueco pertenece a
+la ESTRUCTURA, no a la demanda, asi que un hueco positivo **si** puede volver valida una cama que sin el no cabe.
+La causa era que la longitud EXIGIDA se media sobre los modulos reales incluyendo el del hueco: al crecer el hueco
+crecian a la vez lo exigido y lo disponible, y por construccion nunca rescataba nada.
+
+Corregido con **una sola autoridad de demanda** (`PushBackBedSpan.DemandLength`) que suma unicamente los modulos
+que ALOJAN TARIMA y atraviesa el hueco sin exigirlo. Ahora:
+
+```
+RequiredBedLength   = demanda        (no ve el hueco, ni el total, ni la estructura sobrante)
+AvailableBedSpan    = estructura     (SI incluye el hueco)
+PhysicalBedLength   = RequiredBedLength
+valido              <=>  Required <= Available
+```
+
+Evidencia numerica (estructura A=5 / B=4 por ajuste manual, demanda corrida 8+5 = 13 fondos):
+
+| | Demand | Required | Available | Valida | PhysicalBedLength |
+|---|---|---|---|---|---|
+| Gap = 0" | 13 | 648" | 456" | **no** | 648" |
+| Gap = 198" | 13 | 648" | 654" | **si** | 648" |
+
+`delta Required = 0"` · `delta Available = 198"` (exactamente el hueco) · `delta PhysicalBedLength = 0"`.
+
+Ademas se retiro el ultimo recorte silencioso: una cama que no cabe conserva su longitud exigida en vez de
+recortarse contra el espacio disponible, de modo que el diagnostico puede decir cuanto le falta.
+
 ## 5. Limitaciones DECLARADAS (no son descuidos)
 
 1. **El separador central exige hueco mayor que cero**; con hueco 0 se avisa y no se coloca.
@@ -90,11 +119,10 @@ posicion mas).
    conserva su envolvente, asi que frentes cortos y largos conviven igual que en I-41.
 4. **Una ranura ausente en una posicion INTERIOR** deja en el corte frontal de ese lado la linea de postes de su
    frontera (regla de I-33 sobre frentes en blanco). Las ausencias del final si se retiran — el caso habitual.
-5. **El hueco anade longitud pero no capacidad de tarimas**: no rescata una demanda que excede los fondos
-   disponibles. Lo que la rescata es mas estructura. **Punto a confirmar por el Owner**: el contrato original de
-   I-42 sugeria lo contrario, y la correccion del modelo de la corrida lo hace fisicamente imposible.
-
-Las dos ultimas estan anotadas tambien en [ideas-futuras](../ideas-futuras.md).
+   Se validara visualmente: es estructura fisica compartida.
+5. **Una corrida que cruza el hueco** apoya su extremo bajo tantas pulgadas dentro del lado bajo como mida el
+   hueco, porque su longitud es la de su demanda y el hueco no consume demanda. Consecuencia directa de
+   `PhysicalBedLength = RequiredBedLength`; **conviene mirarla en AutoCAD**.
 
 ## 6. Checklist de validacion manual en AutoCAD 2025
 
@@ -129,6 +157,10 @@ C:\Users\alejandra-mendoza\.claude\worktrees\feature-push-back-compuesto\src\Rac
 8. **UI con el compuesto apagado.** La seccion A/B no debe ocupar espacio: el editor debe verse como el de antes
    de I-42.
 9. **`F1` compartida, `F2` solo A, `F3` solo B, `F4` compartida.** Debe construirse en UNA sola estructura.
+10. **El HUECO como capacidad.** Con una estructura manual corta (por ejemplo A=5 / B=4) y una corrida que pida
+    mas fondos de los que caben, la celda debe quedar bloqueada con hueco 0. Sube el hueco lo suficiente y debe
+    volverse valida **sin que la cama se alargue**: solo crece el rack. Comprueba tambien que la cama no encoge ni
+    se estira al mover el hueco cuando ya era valida.
 
 ### 6.3 Declarar el lado B y la estructura compartida
 

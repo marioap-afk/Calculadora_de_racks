@@ -656,16 +656,15 @@ Ninguno bloqueó I-37A: se rodearon dentro del namespace Cantilever, sin tocar I
 
 
 
+
 ## I-42 — Push Back compuesto: hallazgos fuera de alcance
 
-> Los cuatro hallazgos que esta sección listaba tras la primera entrega —rangos no anidados, cotas del lateral,
-> planta con todos los niveles corridos y reconstrucción de módulos— **quedaron corregidos** en la ronda de
-> corrección de I-42 y ya no son deuda. Lo que queda:
+> Los hallazgos que esta sección listaba tras las dos primeras entregas —rangos no anidados, cotas del lateral,
+> planta con todos los niveles corridos, reconstrucción de módulos y la capacidad geométrica del hueco— **quedaron
+> corregidos** en las rondas de corrección de I-42 y ya no son deuda. Lo que queda:
 
 1. **Una ranura ausente en una posición INTERIOR** deja, en el corte frontal de ese lado, la línea de postes de su
    frontera: la regla de I-33 conserva siempre los bordes exteriores de un frente en blanco. Las ausencias del final
    sí se retiran, que es el caso habitual (`A=3`, `B=4`). Resolver también el caso interior exige distinguir
-   «ausente» de «en blanco» dentro de `DynamicFrontActivation`, que es contrato del sistema **Dinámico**.
-2. **El hueco no aporta capacidad de tarimas.** Es físicamente correcto —un hueco no aloja carga— pero conviene
-   confirmarlo con el dueño, porque el contrato original de I-42 sugería que un hueco positivo podía volver válida
-   una cama que no cabía. Bajo el modelo corregido, lo que la vuelve válida es más estructura.
+   «ausente» de «en blanco» dentro de `DynamicFrontActivation`, que es contrato del sistema **Dinámico**. Se
+   validará visualmente con el dueño: es estructura física compartida, no un defecto de I-42.

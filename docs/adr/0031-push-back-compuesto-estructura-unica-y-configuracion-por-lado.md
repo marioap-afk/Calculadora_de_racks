@@ -55,22 +55,28 @@ pendiente sobre la retícula de troqueles).
    override y volver a la propuesta *actual*. Una estructura insuficiente **no se corrige en silencio**: se
    respeta, y las celdas que no caben se declaran imposibles con su motivo.
 
-6. **`RequiredBedLength`, `AvailableBedSpan` y `PhysicalBedLength`.** `RequiredBedLength` es la longitud física
-   que exige la demanda de fondos de **esa** cama; `AvailableBedSpan` es la **capacidad máxima** que la estructura
-   efectiva pone a su disposición. La única regla de validez es `RequiredBedLength <= AvailableBedSpan`, y
+6. **`RequiredBedLength`, `AvailableBedSpan` y `PhysicalBedLength` pertenecen a autoridades distintas.**
 
-   ```
-   PhysicalBedLength = RequiredBedLength
-   ```
+   - `RequiredBedLength` es lo que exige la **DEMANDA** de almacenamiento: cuánta longitud necesitan esos fondos
+     con la receta normal. Se mide **sólo** sobre los módulos que alojan tarima, y por tanto **no** depende del
+     hueco, ni de la longitud total del rack, ni de la estructura sobrante, ni del ajuste manual vigente.
+   - `AvailableBedSpan` es lo que ofrece la **ESTRUCTURA** física efectiva: el tramo realmente utilizable por esa
+     cama. **El hueco pertenece a la estructura**, así que suma longitud disponible.
+   - `PhysicalBedLength = RequiredBedLength`, **nunca** `AvailableBedSpan` ni la longitud total del rack: una cama
+     no se estira hasta la capacidad disponible, y tampoco se recorta contra ella cuando no cabe.
 
-   **nunca** `AvailableBedSpan` ni la longitud total del rack: una cama no se estira hasta la capacidad disponible.
+   La única regla de validez es `RequiredBedLength <= AvailableBedSpan`. De la separación se sigue lo que el
+   contrato exige: **un hueco positivo puede volver válida una cama que sin él no cabe**, porque aumenta lo
+   disponible sin tocar lo exigido ni alargar la cama. El hueco **no** es una posición de tarima, **no** suma un
+   fondo ficticio y **no** aumenta `DemandPositions`: sólo aporta la longitud física que faltaba. Mezclar las dos
+   magnitudes —sumar el hueco también a la demanda— las reacopla y hace que el hueco no pueda rescatar nada por
+   construcción; ésa es exactamente la regresión que la autoridad única existe para impedir.
+
    No se trunca la cama, no se aumentan los fondos y no se inventa estructura. Ninguna suma de fondos se codifica.
-   El hueco añade **longitud** (la cama lo atraviesa) pero **no añade fondos**: no puede rescatar una demanda que
-   excede las posiciones disponibles, y no lo hace en silencio — lo que la rescata es más estructura.
 
-   **La capacidad se mide POR CAMA FÍSICA, no por celda.** Dos camas encontradas son dos piezas independientes, cada
-   una medida contra su propia estructura. Medir la demanda de una contra el espacio de la otra producía errores de
-   capacidad inexistentes.
+   **La capacidad se mide POR CAMA FÍSICA, no por celda.** Dos camas encontradas son dos piezas independientes,
+   cada una medida contra su propia estructura. Medir la demanda de una contra el espacio de la otra producía
+   errores de capacidad inexistentes.
 
 7. **La topología es POR CELDA (ranura × nivel), no global ni por frente.** Cuatro modos físicos: `Solo A` y
    `Solo B` (una cama), `Encontradas` (**dos** camas independientes, con sus extremos altos enfrentados y topes
@@ -94,11 +100,11 @@ pendiente sobre la retícula de troqueles).
 9. **En una corrida gobierna el lado ALTO, y es también su ancla FÍSICA.** Su larguero posterior es el ancla de
    elevación, exactamente como en I-32, y además el extremo desde el que la cama se desarrolla: desde el ALTO hacia
    el BAJO, exactamente `RequiredBedLength`. Una corrida **puede** atravesar parte del lado alto, el hueco y parte
-   del bajo **sin llegar al extremo exterior del lado bajo**. La estructura sobrante no se destruye ni se reduce:
-   puede existir porque otros niveles o frentes la necesitan, y ése es justamente el caso de los frentes largos que
-   gobiernan la estructura mientras otros reutilizan sólo una parte. La elevación propia del lado bajo **no se
-   borra**: queda dormante mientras esa topología la sustituye y vuelve a gobernar en cuanto la celda deja de ser
-   corrida.
+   del bajo **sin llegar al extremo exterior del lado bajo**; y cuando cruza el hueco lo **atraviesa** sin gastar en
+   él longitud de demanda. La estructura sobrante no se destruye ni se reduce: puede existir porque otros niveles o
+   frentes la necesitan, y ése es justamente el caso de los frentes largos que gobiernan la estructura mientras
+   otros reutilizan sólo una parte. La elevación propia del lado bajo **no se borra**: queda dormante mientras esa
+   topología la sustituye y vuelve a gobernar en cuanto la celda deja de ser corrida.
 
 9-bis. **El sistema sintético de una corrida es una RECETA, no un rack.** No materializa postes, cabeceras, placas
    ni separadores, no aparece en ninguna vista como estructura y no aporta una sola línea al BOM estructural. Sirve
@@ -173,8 +179,12 @@ pendiente sobre la retícula de troqueles).
   - una ranura ausente en un lado que quede en una posición **interior** deja en el corte frontal de ese lado la
     línea de postes de su frontera, por la regla de I-33 que conserva los bordes exteriores de un frente en blanco.
     Las ausencias del final sí se retiran, que es el caso habitual (`A=3`, `B=4`);
-  - el hueco añade longitud pero **no** capacidad de tarimas: no rescata una demanda que excede los fondos
-    disponibles. Lo que la rescata es más estructura.
+  - una corrida que **cruza el hueco** apoya su extremo bajo tantas pulgadas dentro del lado bajo como mida el
+    hueco, porque su longitud es la de su demanda y el hueco no consume demanda. Es consecuencia directa de
+    `PhysicalBedLength = RequiredBedLength`, y se declara para que se vea en la validación en AutoCAD;
+  - una celda bloqueada **se sigue dibujando** en la vista previa, con su cama sobresaliendo de la estructura: ver
+    cuánto le falta es más útil que verla recortada a un tamaño que nadie pidió. El editor la declara y no deja
+    insertar a ciegas.
 
 ## Referencias
 

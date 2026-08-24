@@ -7,24 +7,43 @@ using RackCad.Domain.Systems.PushBack;
 namespace RackCad.Application.Systems.PushBack
 {
     /// <summary>
-    /// I-42 — LA autoridad de la capacidad geometrica de una cama. Separa explicitamente dos magnitudes que hasta
-    /// ahora se confundian en una sola (el fondo del frente):
+    /// I-42 — LA autoridad de la capacidad geometrica de una cama. Separa DOS magnitudes que pertenecen a
+    /// AUTORIDADES DISTINTAS, y esa separacion es el contrato:
     ///
     /// <list type="bullet">
-    /// <item><b>RequiredBedLength</b> — la longitud MINIMA que exige la demanda de fondos de la celda. Se mide sobre
-    /// la secuencia REAL de modulos, no como una suma rigida de fondos: el primer modulo lleva su holgura de extremo
-    /// y los demas la profundidad de tarima, y eso ya no se vuelve a derivar en ningun otro sitio.</item>
-    /// <item><b>AvailableBedSpan</b> — la longitud FISICAMENTE disponible entre los apoyos de la estructura efectiva.
-    /// Un gap positivo la aumenta de verdad; un override manual de estructura tambien.</item>
+    /// <item><b>RequiredBedLength</b> — lo que exige la DEMANDA de almacenamiento: cuanta longitud necesitan esos
+    /// fondos con la receta normal. Se mide sobre los modulos que ALOJAN TARIMA y <b>solo</b> sobre ellos. No
+    /// depende del hueco, ni de la longitud total del rack, ni de la estructura sobrante, ni del ajuste manual
+    /// vigente.</item>
+    /// <item><b>AvailableBedSpan</b> — lo que ofrece la ESTRUCTURA fisica efectiva: el tramo realmente utilizable
+    /// por esa cama. El HUECO pertenece a la estructura, asi que suma longitud disponible.</item>
     /// </list>
     ///
     /// <para>
-    /// La unica regla de validez es <c>RequiredBedLength &lt;= AvailableBedSpan</c>. No se trunca la cama, no se
-    /// aumentan los fondos y no se inventa estructura: una celda que no cabe se declara imposible y se dice por que.
-    /// Y no se codifica ninguna suma de fondos concreta — el caso «8 + 5» no es «13»: es una longitud contra otra, y
-    /// por eso un gap puede volver valida una cama que sin el no cabria.
+    /// La unica regla de validez es <c>RequiredBedLength &lt;= AvailableBedSpan</c>, y de la separacion se sigue lo
+    /// que el contrato exige: <b>un hueco positivo puede volver valida una cama que sin el no cabe</b>, porque
+    /// aumenta lo disponible sin tocar lo exigido. El hueco NO es una posicion de tarima, NO suma un fondo ficticio
+    /// y NO aumenta la demanda: solo aporta la longitud fisica que a la cama le faltaba.
+    /// </para>
+    /// <para>
+    /// Mezclar las dos —sumar el hueco tambien a la demanda— vuelve a acoplarlas y hace que el hueco no pueda
+    /// rescatar nada por construccion. Ese fue el defecto que esta autoridad existe para impedir.
+    /// </para>
+    /// <para>
+    /// No se trunca la cama, no se aumentan los fondos y no se inventa estructura: una celda que no cabe se declara
+    /// imposible y se dice por que. Y no se codifica ninguna suma de fondos concreta.
     /// </para>
     /// </summary>
+    /// <summary>El extremo por el que una cama esta anclada, y desde el que se mide su demanda.</summary>
+    public enum PushBackBedAnchor
+    {
+        /// <summary>El extremo EXTERIOR de su lado (el pasillo). Es el ancla de una cama de un solo lado.</summary>
+        Outer = 0,
+
+        /// <summary>El extremo ALTO de la secuencia. Es el ancla de una cama CORRIDA.</summary>
+        High = 1
+    }
+
     public static class PushBackBedSpan
     {
         /// <summary>Tolerancia de comparacion (in). Por debajo de una milesima de pulgada no hay diferencia fisica.</summary>
@@ -60,10 +79,11 @@ namespace RackCad.Application.Systems.PushBack
 
         /// <summary>
         /// La longitud EXIGIDA por la demanda de una celda de un lado: sus fondos efectivos medidos desde el extremo
-        /// exterior de ese lado.
+        /// exterior de ese lado, que es donde esa cama esta anclada. Delega en <see cref="DemandLength"/>: la regla
+        /// de la demanda vive en UN solo sitio y solo cambia por que extremo se recorre.
         /// </summary>
         public static double Required(DynamicRackSystem local, int effectiveDeep)
-            => SpanOfFirstPositions(local, effectiveDeep);
+            => DemandLength(local, effectiveDeep, PushBackBedAnchor.Outer);
 
         /// <summary>
         /// La longitud DISPONIBLE de una ranura en un lado: lo que da su estructura efectiva desde el extremo
@@ -74,12 +94,20 @@ namespace RackCad.Application.Systems.PushBack
             => SpanOfFirstPositions(local, slotStructure);
 
         /// <summary>
-        /// La longitud de las <paramref name="positions"/> ULTIMAS posiciones de una secuencia, medida sobre sus
-        /// modulos reales. Es lo que mide una cama CORRIDA: su ancla es el extremo ALTO —el ultimo de la secuencia en
-        /// su marco— y desde ahi se desarrolla hacia el bajo exactamente lo que su demanda exige, sin obligacion de
-        /// llegar al extremo exterior contrario.
+        /// LA regla de la DEMANDA: cuanta longitud exigen <paramref name="positions"/> fondos sobre una secuencia,
+        /// recorrida desde el extremo en el que esa cama esta ANCLADA.
+        ///
+        /// <para>
+        /// Suma unicamente la longitud de los modulos que ALOJAN TARIMA. El HUECO se atraviesa pero <b>no</b> se
+        /// suma: pertenece a la ESTRUCTURA, no a lo que la carga necesita. Gracias a eso cambiar el hueco no mueve
+        /// esta longitud, y un hueco positivo puede volver valida una cama aumentando solo lo DISPONIBLE.
+        /// </para>
+        /// <para>
+        /// Una demanda que rebasa la secuencia se extrapola con la profundidad de tarima: es la unica forma de decir
+        /// CUANTO le falta sin inventarle estructura al rack.
+        /// </para>
         /// </summary>
-        public static double SpanOfLastPositions(DynamicRackSystem frame, int positions)
+        public static double DemandLength(DynamicRackSystem frame, int positions, PushBackBedAnchor anchor)
         {
             if (frame == null || positions <= 0)
             {
@@ -89,22 +117,20 @@ namespace RackCad.Application.Systems.PushBack
             var modules = frame.Modules.ToList();
             var span = 0.0;
             var covered = 0;
-            var index = modules.Count - 1;
-            for (; index >= 0 && covered < positions; index--)
+            for (var step = 0; step < modules.Count && covered < positions; step++)
             {
-                span += modules[index].Length;
-                // El HUECO se ATRAVIESA pero no aloja tarima: suma longitud a la cama y no cuenta como fondo. Contar
-                // modulos en vez de fondos haria que un rack con hueco pareciera tener una posicion mas.
-                if (modules[index].Kind != DynamicRackModuleKind.Gap)
+                var module = modules[anchor == PushBackBedAnchor.Outer ? step : modules.Count - 1 - step];
+                if (module.Kind == DynamicRackModuleKind.Gap)
                 {
-                    covered++;
+                    continue;   // el hueco es ESTRUCTURA: se atraviesa, no se exige
                 }
+
+                span += module.Length;
+                covered++;
             }
 
             if (covered < positions)
             {
-                // La demanda rebasa lo que la secuencia ofrece: se extrapola para poder decir CUANTO falta, sin
-                // inventarle estructura al rack.
                 var palletDepth = Math.Max(0.0, frame.Pallet?.Depth ?? 0.0);
                 span += (positions - covered) * palletDepth;
             }

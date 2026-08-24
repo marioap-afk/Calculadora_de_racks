@@ -14,7 +14,11 @@ namespace RackCad.Application.Systems.PushBack
         /// <summary>El resultado es utilizable pero hay algo que el usuario tiene que ver.</summary>
         Warning = 1,
 
-        /// <summary>La celda no es construible. No se dibuja y no se cuenta.</summary>
+        /// <summary>
+        /// La celda no es construible. El editor lo declara y no deja insertar a ciegas; la vista previa SI la
+        /// dibuja —con la cama sobresaliendo de la estructura— porque ver cuanto le falta es mas util que verla
+        /// recortada a un tamano que nadie pidio.
+        /// </summary>
         Blocking = 2
     }
 

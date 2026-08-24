@@ -305,6 +305,23 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             DynamicDepthGeometry.ResolveCoordinates(frame);
+
+            // La cama mide EXACTAMENTE lo que su demanda exige y se desarrolla desde el extremo ALTO hacia el bajo.
+            // El extremo alto es el final del rango (el ancla); el bajo se deriva restando esa longitud. Asi
+            // PhysicalBedLength == RequiredBedLength y cambiar el hueco NO alarga la cama: el hueco solo aporta
+            // longitud DISPONIBLE, que es lo que puede volverla valida.
+            var required = PushBackBedSpan.DemandLength(frame, demand, PushBackBedAnchor.High);
+            if (required > 0.0)
+            {
+                foreach (var front in frame.Fronts)
+                {
+                    // SIN excepciones: la cama mide su demanda tambien cuando NO cabe. Recortarla contra el espacio
+                    // disponible seria truncarla en silencio y ademas ocultaria cuanto le falta — justo lo que el
+                    // diagnostico tiene que poder decir.
+                    front.StartX = front.EndX - required;
+                }
+            }
+
             return corrida;
         }
 

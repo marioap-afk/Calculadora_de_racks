@@ -204,6 +204,129 @@ namespace RackCad.Tests
             Assert.Equal(1, bed.Quantity);
         }
 
+        // ================= CONTRATO: el GAP pertenece a la ESTRUCTURA ===========================================
+
+        /// <summary>
+        /// PRUEBA VINCULANTE del contrato de capacidad: el HUECO pertenece a la ESTRUCTURA, asi que aumenta lo
+        /// DISPONIBLE sin tocar lo EXIGIDO, y por eso puede volver valida una cama que sin el no cabe.
+        ///
+        /// <para>
+        /// Misma demanda y misma estructura por lados en los dos escenarios; lo unico que cambia es el hueco. No se
+        /// comprueba ningun conteo de fondos: se comparan LONGITUDES FISICAS.
+        /// </para>
+        /// </summary>
+        [Fact]
+        public void APositiveGap_RescuesABedThatDoesNotFit_WithoutChangingItsDemandOrItsLength()
+        {
+            PushBackDesign WithGap(double gap)
+            {
+                // Estructura fija por lados y demanda fija de la celda: 8 + 5 fondos sobre una estructura que solo
+                // ofrece 5 + 4 posiciones.
+                var design = Design(PushBackCellTopology.Corrida, deepA: 8, deepB: 5, levelsA: 1, levelsB: 1);
+                design.Composite.StructureOverrideA = 5;
+                design.Composite.StructureOverrideB = 4;
+                design.Composite.Gap = gap;
+                return design;
+            }
+
+            var tight = Resolve(WithGap(0.0));
+            var tightBed = tight.Composite.Cell(0, 1).Beds.Single();
+
+            // Sin hueco NO cabe: la demanda excede lo que la estructura ofrece.
+            Assert.False(tightBed.IsValid);
+            Assert.True(tightBed.RequiredBedLength > tightBed.AvailableBedSpan);
+
+            // Lo que le falta, exactamente, y un poco mas para que quepa con holgura.
+            var missing = tightBed.RequiredBedLength - tightBed.AvailableBedSpan;
+            Assert.True(missing > 0.0);
+            var gap = missing + 6.0;
+
+            var loose = Resolve(WithGap(gap));
+            var looseBed = loose.Composite.Cell(0, 1).Beds.Single();
+
+            // 1) La DEMANDA no cambia: ni los fondos ni la longitud que exigen.
+            Assert.Equal(tightBed.DemandPositions, looseBed.DemandPositions);
+            Assert.Equal(tightBed.RequiredBedLength, looseBed.RequiredBedLength, 6);
+
+            // 2) Lo DISPONIBLE crece exactamente el incremento fisico del hueco.
+            Assert.Equal(tightBed.AvailableBedSpan + gap, looseBed.AvailableBedSpan, 6);
+
+            // 3) El estado cambia: invalida -> valida.
+            Assert.True(looseBed.IsValid);
+            Assert.True(looseBed.RequiredBedLength <= looseBed.AvailableBedSpan + PushBackBedSpan.Tolerance);
+            Assert.DoesNotContain(PushBackCompositeDiagnostics.Evaluate(loose), d => d.IsBlocking);
+
+            // 4) Y la estructura por lados es la MISMA en los dos escenarios: solo cambio el hueco.
+            Assert.Equal(tight.Composite.SideA.EffectiveStructure, loose.Composite.SideA.EffectiveStructure);
+            Assert.Equal(tight.Composite.SideB.EffectiveStructure, loose.Composite.SideB.EffectiveStructure);
+        }
+
+        [Fact]
+        public void ChangingOnlyTheGap_DoesNotChangeThePhysicalBedLength()
+        {
+            PushBackDesign WithGap(double gap)
+            {
+                var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8, levelsA: 1, levelsB: 1);
+                design.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);   // demanda 5 + 5 = 10 fondos
+                design.Composite.Gap = gap;
+                return design;
+            }
+
+            var tight = Resolve(WithGap(0.0));
+            var loose = Resolve(WithGap(18.0));
+
+            var tightAxis = PushBackRunGeometry.Axes(PushBackRuns.Resolve(tight), Catalog).Single();
+            var looseAxis = PushBackRunGeometry.Axes(PushBackRuns.Resolve(loose), Catalog).Single();
+            var tightBed = tight.Composite.Cell(0, 1).Beds.Single();
+            var looseBed = loose.Composite.Cell(0, 1).Beds.Single();
+
+            // La cama de 10 fondos NO se alarga solo porque el hueco crecio: su longitud ES la de su demanda.
+            Assert.Equal(tightAxis.Length, looseAxis.Length, 6);
+            Assert.Equal(tightBed.RequiredBedLength, tightAxis.Length, 6);
+            Assert.Equal(looseBed.RequiredBedLength, looseAxis.Length, 6);
+            Assert.Equal(tightBed.DemandPositions, looseBed.DemandPositions);
+
+            // Y el rack SI es 18" mas largo, porque el hueco es estructura.
+            Assert.Equal(tight.Structure.TotalLength + 18.0, loose.Structure.TotalLength, 6);
+            Assert.Equal(tightBed.AvailableBedSpan + 18.0, looseBed.AvailableBedSpan, 6);
+        }
+
+        [Fact]
+        public void TheBomOfAPartialCorrida_FollowsItsOwnLength_NotTheGap()
+        {
+            double BedLength(double gap)
+            {
+                var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 8, levelsA: 1, levelsB: 1);
+                design.SideB.FrontConfigs[0].PalletsDeepOverrides.Add(5);
+                design.Composite.Gap = gap;
+                return PushBackBomBuilder.Build(Resolve(design), Catalog).Components
+                    .Single(component => component.Category == SystemBomBuilder.Cama).Length;
+            }
+
+            Assert.Equal(BedLength(0.0), BedLength(24.0), 4);
+        }
+
+        [Fact]
+        public void ASideBed_IsNeverAffectedByTheGap()
+        {
+            // Una cama de un solo lado no atraviesa la interfaz: ni su demanda ni su capacidad ven el hueco.
+            PushBackSystem WithGap(double gap)
+            {
+                var design = Design(PushBackCellTopology.Encontradas, deepA: 5, deepB: 8, levelsA: 1, levelsB: 1);
+                design.Composite.Gap = gap;
+                return Resolve(design);
+            }
+
+            var tight = WithGap(0.0).Composite.Cell(0, 1);
+            var loose = WithGap(20.0).Composite.Cell(0, 1);
+
+            foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
+            {
+                Assert.Equal(tight.BedFrom(side).RequiredBedLength, loose.BedFrom(side).RequiredBedLength, 6);
+                Assert.Equal(tight.BedFrom(side).AvailableBedSpan, loose.BedFrom(side).AvailableBedSpan, 6);
+            }
+        }
+
         // ================= 10. Una corrida corta NO crea otra estructura ========================================
 
         [Fact]
