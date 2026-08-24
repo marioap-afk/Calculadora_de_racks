@@ -332,13 +332,39 @@ namespace RackCad.Application.Systems.PushBack
         {
             try
             {
-                var design = BuildDesign(state, inputs, forceRebuild);
+                return BuildFrom(BuildDesign(state, inputs, forceRebuild));
+            }
+            catch (Exception ex)
+            {
+                return PushBackEditorComputation.Failure(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Resuelve un diseno YA armado y construye el BOM y las vistas. Existe para que el editor COMPUESTO de I-42
+        /// —que arma su diseno con <see cref="PushBackCompositeEditorAssembler"/>— comparta EXACTAMENTE este camino, y
+        /// no acabe con un segundo constructor de vistas que pueda divergir del de un solo sentido.
+        /// </summary>
+        /// <param name="frontalSide">
+        /// I-42: el lado cuyos dos cortes frontales se construyen. Un corte frontal es de UN lado —mira a uno de los
+        /// dos pasillos—, asi que en un rack compuesto sigue al selector de lado del editor. En un rack de un solo
+        /// sentido el parametro no cambia nada.
+        /// </param>
+        public PushBackEditorComputation BuildFrom(
+            PushBackDesign design, PushBackSide frontalSide = PushBackSide.A)
+        {
+            try
+            {
                 var system = pushResolver.Resolve(design);
                 var bom = PushBackBomBuilder.Build(system, catalog);
                 var lateral = lateralBuilder.Build(system, catalog);
                 var cortes = lateralBuilder.Cortes(system, catalog); // the per-post lateral sections, computed once here
-                var entradaSalida = frontalBuilder.BuildPlan(system, catalog, PushBackFrontalEnd.EntradaSalida);
-                var posterior = frontalBuilder.BuildPlan(system, catalog, PushBackFrontalEnd.Posterior);
+                var entradaSalida = system.IsComposite
+                    ? PushBackCompositeFrontal.Build(system, catalog, PushBackFrontalEnd.EntradaSalida, frontalSide)
+                    : frontalBuilder.BuildPlan(system, catalog, PushBackFrontalEnd.EntradaSalida);
+                var posterior = system.IsComposite
+                    ? PushBackCompositeFrontal.Build(system, catalog, PushBackFrontalEnd.Posterior, frontalSide)
+                    : frontalBuilder.BuildPlan(system, catalog, PushBackFrontalEnd.Posterior);
                 var planta = plantaBuilder.BuildPlan(system, catalog);
                 return PushBackEditorComputation.Success(design, system, bom, lateral, entradaSalida, posterior, planta, cortes);
             }

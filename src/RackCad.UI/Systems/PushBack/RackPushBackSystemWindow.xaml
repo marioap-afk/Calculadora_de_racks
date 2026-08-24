@@ -95,6 +95,94 @@
                     <TextBlock Text="Poste" Style="{StaticResource FieldLabel}" />
                     <controls:CatalogCombo x:Name="PostBox" DisplayMemberPath="DisplayName" SelectionChanged="Combo_Changed" />
 
+                    <!-- ==================== I-42 · PUSH BACK COMPUESTO (LADO A / LADO B) ====================
+                         El rack pasa a tener DOS lados sobre UNA sola estructura fisica. Aqui vive todo lo que I-42
+                         anade: declarar el lado B, elegir el lado ACTIVO (la matriz de abajo y los cinco alcances
+                         trabajan sobre el, sin duplicar ni un control), el hueco de la interfaz con su separador
+                         central, la topologia de cada celda con su sentido y la estructura efectiva de cada lado con
+                         su restauracion. Retirar el lado B no borra su configuracion: queda dormante. -->
+                    <TextBlock Text="Push Back compuesto (A/B)" Style="{StaticResource SectionTitle}" />
+                    <CheckBox x:Name="SideBPresentCheck" Content="Rack de dos sentidos (lado B)" Margin="0,0,0,4"
+                              Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                              Checked="SideBPresent_Changed" Unchecked="SideBPresent_Changed"
+                              ToolTipService.ShowOnDisabled="True"
+                              ToolTip="Anade el lado B sobre la MISMA estructura fisica. Retirarlo no borra su configuraci&#243;n." />
+                    <TextBlock Text="Lado activo" Style="{StaticResource FieldLabel}" />
+                    <ComboBox x:Name="SideSelectorBox" SelectionChanged="SideSelector_Changed"
+                              ToolTipService.ShowOnDisabled="True"
+                              ToolTip="La matriz Frente x Nivel, la celda seleccionada y los cinco alcances trabajan sobre este lado." />
+                    <Grid Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Hueco (in)" Style="{StaticResource FieldLabel}" />
+                            <controls:NumericField x:Name="GapBox" LostFocus="Gap_Changed" Minimum="0"
+                                                   ToolTipService.ShowOnDisabled="True"
+                                                   ToolTip="Separaci&#243;n F&#205;SICA entre la l&#237;nea terminal de A y la inicial de B. Puede ser 0: los dos extremos f&#237;sicos siguen existiendo." />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                            <CheckBox x:Name="CentralSeparatorCheck" Content="Separador central" Margin="0,0,0,4"
+                                      Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                      Checked="CentralSeparator_Changed" Unchecked="CentralSeparator_Changed"
+                                      ToolTipService.ShowOnDisabled="True"
+                                      ToolTip="Coloca en el hueco el separador de cabecera que YA usa el rack. Necesita hueco mayor que cero." />
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="Topolog&#237;a de la celda" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <ComboBox x:Name="CellTopologyBox"
+                                      ToolTipService.ShowOnDisabled="True"
+                                      ToolTip="Solo A / Solo B = una cama. Encontradas = DOS camas independientes. Corrida = UNA cama que atraviesa A + hueco + B." />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <ComboBox x:Name="RunDirectionBox"
+                                      ToolTipService.ShowOnDisabled="True"
+                                      ToolTip="Sentido de la cama corrida. Cambia f&#237;sicamente qu&#233; extremo es ALTO, no solo el dibujo." />
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Text="Alcance:" Style="{StaticResource FieldLabel}" Margin="0,6,0,2" />
+                    <ComboBox x:Name="TopologyScopeBox" SelectedIndex="0"
+                              ToolTipService.ShowOnDisabled="True"
+                              ToolTip="Los MISMOS cinco alcances del editor. &#171;Selecci&#243;n&#187; usa las celdas marcadas con Ctrl + clic.">
+                        <ComboBoxItem Content="Celda" />
+                        <ComboBoxItem Content="Selecci&#243;n" />
+                        <ComboBoxItem Content="Nivel" />
+                        <ComboBoxItem Content="Frente" />
+                        <ComboBoxItem Content="Todo" />
+                    </ComboBox>
+                    <WrapPanel Margin="0,6,0,0">
+                        <Button x:Name="ApplyTopologyButton" Content="Aplicar topolog&#237;a"
+                                Style="{StaticResource SecondaryButtonStyle}" MinWidth="126" Margin="0,0,6,6"
+                                Click="ApplyTopology_Click"
+                                ToolTip="Escribe SOLO la topolog&#237;a y el sentido en las celdas del alcance." />
+                    </WrapPanel>
+
+                    <TextBlock Text="Estructura del lado activo" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
+                    <controls:NumericField x:Name="StructureOverrideBox" IsOptional="True" IntegerOnly="True" Minimum="2"
+                                           ToolTipService.ShowOnDisabled="True"
+                                           ToolTip="Fondos de estructura del lado activo. Vac&#237;o = seguir la propuesta derivada de la demanda de sus celdas." />
+                    <WrapPanel Margin="0,6,0,0">
+                        <Button x:Name="ApplyStructureButton" Content="Aplicar estructura"
+                                Style="{StaticResource SecondaryButtonStyle}" MinWidth="128" Margin="0,0,6,6"
+                                Click="ApplyStructure_Click" />
+                        <Button x:Name="RestoreStructureButton" Content="Restaurar estructura"
+                                Style="{StaticResource SecondaryButtonStyle}" MinWidth="140" Margin="0,0,6,6"
+                                Click="RestoreStructure_Click"
+                                ToolTip="Elimina el ajuste manual: el lado vuelve a seguir la propuesta ACTUAL." />
+                    </WrapPanel>
+                    <TextBlock x:Name="CompositeStructureText" Text="Estructura: &#8212;"
+                               Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />
+
                     <!-- PB-013 (I-32): Fondo and Unidad are RACK-WIDE and stay editable here. Frente, Alto and Peso
                          belong to the CELL, so this panel only MIRRORS the selected one: they used to be editable and
                          changed nothing, because the cell always wins. -->

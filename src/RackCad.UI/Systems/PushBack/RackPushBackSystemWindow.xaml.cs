@@ -45,8 +45,22 @@ namespace RackCad.UI.Systems.PushBack
         private static readonly string[] ViewOptions = { "Lateral", "Frontal entrada/salida", "Frontal posterior", "Planta" };
 
         private readonly RackCatalog catalog;
-        private readonly PushBackEditorState state = new PushBackEditorState();
+
+        /// <summary>
+        /// I-42 — el estado COMPUESTO. Contiene los dos lados; el de la izquierda (A) es exactamente el mismo
+        /// <see cref="PushBackEditorState"/> que esta ventana conducia antes de la iniciativa. Toda la ventana lee
+        /// <see cref="state"/>, que es el lado ACTIVO, asi que el selector de lado hace que la matriz, la celda
+        /// seleccionada y los cinco alcances trabajen sobre el lado que el usuario esta mirando, sin duplicar ni un
+        /// control.
+        /// </summary>
+        private readonly PushBackCompositeEditorState composite =
+            new PushBackCompositeEditorState(new PushBackEditorState(), new PushBackEditorState());
+
+        private readonly PushBackCompositeEditorAssembler compositeAssembler;
         private readonly PushBackEditorDesignAssembler assembler;
+
+        /// <summary>El estado del lado ACTIVO. Un rack de un solo sentido responde siempre el lado A, el de siempre.</summary>
+        private PushBackEditorState state => composite.Active;
         private readonly RackEditorSession<PushBackDesign, PushBackSystem> session;
         private readonly List<SelectiveSafetySelection> safetySelections = new List<SelectiveSafetySelection>();
         private readonly bool canInsertInAutoCad;
@@ -102,6 +116,7 @@ namespace RackCad.UI.Systems.PushBack
             session = new RackEditorSession<PushBackDesign, PushBackSystem>(recompute: Recompute, newIdFactory: newIdFactory);
             catalog = session.Catalog;
             assembler = new PushBackEditorDesignAssembler(catalog);
+            compositeAssembler = new PushBackCompositeEditorAssembler(catalog);
 
             WeightUnitBox.ItemsSource = new[] { "kg", "lb" };
             WeightUnitBox.SelectedIndex = 0;
@@ -113,6 +128,7 @@ namespace RackCad.UI.Systems.PushBack
             PostBox.SetCatalogEntries(catalog?.PostProfiles, catalog?.Defaults?.Post);
             CellInOutBeamBox.ItemsSource = InOutBeamOptions();
             CellIntermediateBeamBox.ItemsSource = IntermediateBeamOptions();
+            InitializeCompositeSection();
 
             LoadNew();
         }
@@ -189,6 +205,10 @@ namespace RackCad.UI.Systems.PushBack
         /// standard modular baseline. No identity is forced until insert; only "Insertar" is offered (no "Actualizar").</summary>
         public void LoadNew()
         {
+            // I-42: un rack nuevo nace de UN solo sentido, como siempre. El lado B se declara despues, si se quiere.
+            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
+            composite.SetSideBPresent(false);
+            composite.LoadComposite(null);
             var inputs = state.LoadNew();
             sourceProject = null;
             isEditingExisting = false;
@@ -210,7 +230,12 @@ namespace RackCad.UI.Systems.PushBack
         public void LoadDesignForNew(PushBackDesign design, string rackName, RackProject sourceProject = null)
         {
             if (design == null) return;
+            // I-42: primero el lado A, por el camino de siempre, y luego la parte compuesta. Un documento
+            // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
+            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
+            composite.SetSideBPresent(false);
             var inputs = state.LoadFromDesign(design, assembler.Resolver);
+            LoadCompositeFromDesign(design);
             this.sourceProject = sourceProject;
             isEditingExisting = false;
             session.Identity.Adopt(null, rackName); // no id -> a fresh GUID is minted on insert
@@ -222,7 +247,12 @@ namespace RackCad.UI.Systems.PushBack
         public void LoadExisting(PushBackDesign design, string rackId, string rackName, RackProject sourceProject = null)
         {
             if (design == null) return;
+            // I-42: primero el lado A, por el camino de siempre, y luego la parte compuesta. Un documento
+            // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
+            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
+            composite.SetSideBPresent(false);
             var inputs = state.LoadFromDesign(design, assembler.Resolver);
+            LoadCompositeFromDesign(design);
             this.sourceProject = sourceProject;
             isEditingExisting = true;
             session.Identity.Adopt(rackId, rackName);
@@ -469,7 +499,12 @@ namespace RackCad.UI.Systems.PushBack
 
             CommitCurrentCell();
 
-            var computation = assembler.Build(state, ReadInputs());
+            // I-42: con lado B el diseno lo arma el ensamblador COMPUESTO, que COMPONE al de un sentido; sin lado B
+            // el camino es literalmente el de antes de la iniciativa. Las vistas se construyen SIEMPRE por el mismo
+            // BuildFrom, asi que no puede aparecer un segundo constructor de vistas que diverja.
+            var computation = composite.SideBPresent
+                ? assembler.BuildFrom(compositeAssembler.BuildDesign(composite, ReadInputs()), composite.ActiveSide)
+                : assembler.Build(state, ReadInputs());
             if (computation.IsValid)
             {
                 session.SetModel(computation.Design, computation.System);
@@ -494,7 +529,8 @@ namespace RackCad.UI.Systems.PushBack
                 RefreshModuleSelector();
                 RefreshHeaderDestinations();
 
-                SetStatus("Vista recalculada.", false);
+                RefreshCompositePanel(computation.System);
+                SetStatus(CompositeStatusOr("Vista recalculada."), CompositeHasBlocking(computation.System));
             }
             else
             {

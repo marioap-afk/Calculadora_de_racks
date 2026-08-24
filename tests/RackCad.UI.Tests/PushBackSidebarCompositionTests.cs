@@ -154,9 +154,11 @@ namespace RackCad.UI.Tests
                     // I-40 (ronda 5): dos filas mas, las de los atajos «Esta»/«Todas» de los dos ejes de destino.
                     // I-41: una fila mas, la de fondo/tarima por celda (aplicar y restaurar cada una). Tiene botones
                     // propios porque sus alcances escriben UNA sola propiedad, no el buffer completo de la celda.
+                    // I-42: dos filas mas, las de la seccion compuesta A/B — «Aplicar topologia» y el par
+                    // «Aplicar/Restaurar estructura». Tambien son filas de BOTONES y ninguna lleva campos.
                     // Siguen siendo filas de BOTONES, que es el invariante real; el techo solo evita que se cuele una.
                     var wrapPanels = Descendants(shell.SidebarScroll).OfType<WrapPanel>().ToList();
-                    Assert.True(wrapPanels.Count <= 6, $"the sidebar must not cram fields into WrapPanels; found {wrapPanels.Count}");
+                    Assert.True(wrapPanels.Count <= 8, $"the sidebar must not cram fields into WrapPanels; found {wrapPanels.Count}");
                     Assert.All(wrapPanels, panel => Assert.All(
                         panel.Children.OfType<FrameworkElement>(),
                         child => Assert.IsType<Button>(child)));
