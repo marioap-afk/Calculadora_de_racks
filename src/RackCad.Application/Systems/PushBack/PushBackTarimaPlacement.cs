@@ -165,10 +165,20 @@ namespace RackCad.Application.Systems.PushBack
                     continue;
                 }
 
-                var gap = Math.Max(0.0, (laneDepth - positions * fondo) / (positions + 1));
+                // I-42: un HUECO que la cama atraviesa NO es una posicion de almacenamiento. El reparto se hace
+                // sobre la longitud de ALMACENAMIENTO —la cama menos sus huecos— y despues cada tarima se empuja por
+                // los huecos que queden antes de ella. Sin huecos (todo rack de un sentido, y todo rack anterior a
+                // I-42) la lista viene vacia y el reparto es EXACTAMENTE el de I-41.
+                var bedGaps = PushBackCellDepth.GapsWithin(system, front, axis.LevelNumber);
+                var gapTotal = bedGaps.Sum(entry => entry.Length);
+                var storageDepth = Math.Max(0.0, laneDepth - gapTotal);
+                var gap = Math.Max(0.0, (storageDepth - positions * fondo) / (positions + 1));
                 for (var position = 0; position < positions; position++)
                 {
                     var localLeft = gap * (position + 1) + fondo * position;
+                    localLeft += bedGaps
+                        .Where(entry => entry.StorageOffset <= localLeft + 1e-6)
+                        .Sum(entry => entry.Length);
                     // La instancia se arma con la regla compartida en el sistema LOCAL, y solo despues se lleva a
                     // mundo con la colocacion rigida de la cama. Asi la tarima hereda tangencia y pendiente por
                     // construccion, en vez de recalcularlas.

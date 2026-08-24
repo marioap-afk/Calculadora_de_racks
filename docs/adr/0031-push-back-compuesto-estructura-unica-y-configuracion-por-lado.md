@@ -82,6 +82,22 @@ pendiente sobre la retícula de troqueles).
    magnitudes —sumar el hueco también a la demanda— las reacopla y hace que el hueco no pueda rescatar nada por
    construcción; ésa es exactamente la regresión que la autoridad única existe para impedir.
 
+5-bis. **La retícula transversal es del RACK, y la asimetría A/B se expresa con PRESENCIA.**
+
+   Las dos mitades comparten las mismas líneas de postes: el número de frentes es del rack, no de un lado, y crece
+   y decrece en los dos a la vez. Que una ranura exista sólo en un lado —el caso `A = 3` y `B = 4`— es
+   **presencia**, una propiedad por ranura y por lado, no un conteo distinto en cada matriz.
+
+   Sin esta regla, crecer el rack desde un lado dejaba el otro atrás **en silencio**: el primer frente tenía las dos
+   mitades y los demás sólo una. La retícula se iguala también al volver de un archivo o al re-declarar un lado
+   dormante, y siempre **creciendo**: las ranuras que un lado no tenía nacen ausentes en él, nunca se recortan las
+   del otro. Retirar una ranura que quedaría sin ningún lado, o la última de un lado, se **rehúsa y se explica**.
+
+5-ter. **La topología POR DEFECTO depende de cuántos sentidos tiene el rack.** Uno de un sentido es `SoloA`; uno de
+   dos, `Encontradas`. Es la misma regla al cargar y al declarar el lado B — sin re-evaluarla al declararlo, un rack
+   nuevo se quedaba en `SoloA` y el lado B aportaba estructura y **ni una sola cama**. Una elección explícita
+   distinta (una corrida, `SoloB`) no la pisa nadie: no es el default de ningún modo.
+
 6-bis. **El fondo de una cama CORRIDA es una autoridad PROPIA por celda, no la suma de los fondos de A y de B.**
 
    Una corrida de 10 fondos es una cama con demanda de 10. No obliga a repartir 5 y 5 entre los lados, y sobre una
@@ -101,6 +117,24 @@ pendiente sobre la retícula de troqueles).
 
    La persistencia es **aditiva y anulable**: un documento que nunca usó la autoridad no escribe el campo y se lee
    exactamente igual que antes.
+
+6-ter. **`CorridaDepth` son FONDOS; el rango del frente son MÓDULOS. No son la misma magnitud.**
+
+   Un hueco es un módulo que la cama **atraviesa sin almacenar nada**. El rango físico de una corrida que lo cruza
+   tiene por tanto **un módulo más** que su demanda, y esa diferencia no puede colarse de vuelta a la demanda:
+   escribir el conteo de módulos donde I-41 espera posiciones de carga repartía **una tarima de más** a lo largo del
+   riel y desplazaba todas las posiciones — el defecto que se ve como «la cama está en el fondo equivocado».
+
+   Se separan tres cosas, cada una con su autoridad:
+
+   - `CorridaDepth` → `DemandPositions` (fondos declarados);
+   - `DemandPositions` → `RequiredBedLength` (longitud mínima);
+   - estructura + `Required` → `ResolvedSpan` (apoyo bajo, apoyo alto, longitud física y módulos atravesados).
+
+   El fondo EFECTIVO de la celda —lo que I-41 y la cama consumen— es siempre la **demanda**. El reparto de tarimas se
+   hace sobre la longitud de **almacenamiento** (la cama menos sus huecos) y cada tarima se empuja por los huecos que
+   queden antes de ella, de modo que ninguna cae dentro de un hueco. Una estructura **sin** huecos —todo rack de un
+   sentido, y todo rack anterior a I-42— produce una lista de huecos vacía y el reparto es literalmente el de I-41.
 
    No se trunca la cama, no se aumentan los fondos y no se inventa estructura. Ninguna suma de fondos se codifica.
 
@@ -136,6 +170,13 @@ pendiente sobre la retícula de troqueles).
    frentes la necesitan, y ése es justamente el caso de los frentes largos que gobiernan la estructura mientras
    otros reutilizan sólo una parte. La elevación propia del lado bajo **no se borra**: queda dormante mientras esa
    topología la sustituye y vuelve a gobernar en cuanto la celda deja de ser corrida.
+
+8-bis. **Los TOPES de los dos lados son visibles y editables sin salir del panel compuesto.** La autoridad no
+   cambia —sigue siendo el `PushBackRearTopeConfig` de cada lado y sus celdas apagadas—; lo que se añade es la
+   superficie: `Tope lado A` y `Tope lado B` con los MISMOS cinco alcances. Un tope vive en el extremo ALTO de una
+   cama, así que la **topología** decide cuál puede materializarse: dos con camas encontradas, y uno solo con una
+   sola cama (el del lado alto, que en una corrida es el del sentido). La casilla del lado que hoy no aplica se
+   deshabilita **con su motivo** y conserva lo elegido: la intención queda dormante y vuelve intacta.
 
 9-bis. **El sistema sintético de una corrida es una RECETA, no un rack.** No materializa postes, cabeceras, placas
    ni separadores, no aparece en ninguna vista como estructura y no aporta una sola línea al BOM estructural. Sirve
@@ -213,6 +254,14 @@ pendiente sobre la retícula de troqueles).
   - una corrida que **cruza el hueco** lo atraviesa sin gastar demanda en él, pero su longitud FÍSICA sí lo
     incluye: para llegar a su último fondo tiene que salvarlo. Su extremo bajo apoya, como siempre, en una línea de
     módulo real, nunca en un punto intermedio; se declara para que se vea en la validación en AutoCAD;
+  - la **planta proyecta todos los frentes**: los intermedios se reponen por cama y en el marco de cada una, y dos
+    frentes físicamente distintos nunca se deduplican entre sí — la planta colapsa NIVELES, no FRENTES;
+  - **una estructura más larga que una cama es normal y no deja piezas huérfanas**: la estructura efectiva puede
+    tener 8 fondos mientras una celda usa 4, y en el tramo sobrante esa cama no pone riel, rodillo, intermedio ni
+    tarima. Otro nivel del MISMO rack puede usar los 8 a la vez: la estructura es capacidad, no longitud obligatoria;
+  - un rack compuesto se **reabre cargando el lado A contra su propio diseño**, no contra la estructura compartida:
+    el estado del editor se reconstruye desde el sistema resuelto, y el resuelto de un rack compuesto lleva rangos no
+    anidados que no son los de ningún lado;
   - una celda bloqueada **se sigue dibujando** en la vista previa, apoyada en el tramo más largo que la estructura
     ofrece —`ResolvedBedLength = AvailableBedSpan`— porque `Resolved <= Available` no admite excepciones: una cama
     volando fuera de la estructura no descansaría en nada. Lo que le falta lo dice el **diagnóstico**, con su

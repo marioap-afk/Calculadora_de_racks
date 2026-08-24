@@ -161,8 +161,16 @@ Y, desde I-42, el **Push Back compuesto (lado A / lado B)**:
   el lado A cambie de sitio ni de altura;
 - **selector de lado**: la matriz Frente x Nivel, la celda seleccionada y los cinco alcances pasan a
   trabajar sobre el lado elegido; al volver al otro, su selección y su configuración siguen intactas;
-- **A = 3 y B = 4**: la cuarta ranura existe solo en B, su estructura vive solo en la mitad de B y la
-  retícula transversal (líneas de postes y BFR) es una sola para los dos lados;
+- **el número de frentes es del RACK**: subirlo crece los DOS lados a la vez. Con 4 frentes y 3 niveles
+  aplicados a todo, los CUATRO frentes deben traer sus camas en los tres niveles y en los dos lados —
+  ninguno puede quedarse sólo con cabeceras y postes;
+- **A = 3 y B = 4**: se declara con «La ranura existe en este lado» en el frente que sobra. La cuarta
+  ranura existe solo en B, su estructura vive solo en la mitad de B y la retícula transversal (líneas de
+  postes y BFR) es una sola para los dos lados. Quitar una ranura que quedaría sin ningún lado, o la
+  última de un lado, debe rehusarse y explicarse;
+- **topes por lado**: «Tope lado A» y «Tope lado B» deciden las cuatro combinaciones (ninguno / A / B /
+  ambos) con los mismos cinco alcances. Con una sola cama, la casilla del lado que no tiene extremo alto
+  queda deshabilitada con su motivo y conserva lo elegido — al volver a encontradas reaparece;
 - **niveles y elevaciones independientes**: con 2 niveles en A y 5 en B, los postes se dimensionan por la
   mayor demanda y cada lado dibuja SUS elevaciones;
 - **topologías distintas entre niveles del mismo frente**: nivel 1 corrida, nivel 2 encontradas, nivel 3
@@ -179,9 +187,15 @@ Y, desde I-42, el **Push Back compuesto (lado A / lado B)**:
 - **dónde APOYA la cama**: su extremo bajo debe caer siempre sobre una línea de módulo. Una corrida que
   atraviesa el rack arranca en el PRIMER fondo (con hueco 0 y con hueco positivo); una corrida corta
   arranca en el apoyo que le corresponde, nunca a media posición;
-- **largueros intermedios en PLANTA**: deben existir en las cuatro topologías. Con una corrida corta, deben
-  cubrir todo su recorrido —incluida la parte que pisa el otro lado— y ninguno por delante de su extremo
-  bajo;
+- **largueros intermedios en PLANTA**: deben existir en las cuatro topologías **y en TODOS los frentes**,
+  no sólo en el primero. Con una corrida corta, deben cubrir todo su recorrido —incluida la parte que pisa
+  el otro lado— y ninguno por delante de su extremo bajo;
+- **cada corte lateral**: recórrelos todos. Cada uno trae los niveles y los largueros de los frentes que
+  tiene al lado; ninguno puede quedarse sólo con la estructura;
+- **una estructura más larga que la cama**: sube la estructura del lado a 8 fondos y deja una celda en 4.
+  Esa cama ocupa 4 y en el tramo sobrante NO hay riel, rodillo, intermedio ni tarima; otro nivel del mismo
+  rack puede usar los 8 a la vez. La estructura es capacidad, no longitud obligatoria;
+- **ninguna tarima dentro del hueco**: una corrida que lo cruza lo atraviesa, pero no almacena en él;
 - **gap**: llévalo de 0 a un valor positivo y comprueba que el rack se ALARGA esa misma medida y que las
   dos líneas de postes de la interfaz siguen existiendo también con 0;
 - **separador central**: con hueco positivo aparece UNA sola pieza —la misma que usa el rack— y se cuenta

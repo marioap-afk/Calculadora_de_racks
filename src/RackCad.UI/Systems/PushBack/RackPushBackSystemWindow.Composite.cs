@@ -76,12 +76,21 @@ namespace RackCad.UI.Systems.PushBack
 
             // Retirar el lado B NO borra su configuracion: queda dormante y reaparece intacta al volver a declararlo.
             composite.SetSideBPresent(SideBPresentCheck.IsChecked == true);
-            if (composite.SideBPresent && composite.SideB.Structure.Count == 0)
+            if (composite.SideBPresent)
             {
-                // Primera vez que se declara: el lado B nace con las MISMAS ranuras que A, que es la retícula
-                // transversal compartida. Sin esto llegaria al resolver sin ninguna bahia.
-                composite.SideB.LoadNew();
-                composite.SideB.SetFrontCount(Math.Max(1, composite.SideA.Structure.Count));
+                if (composite.SideB.Structure.Count == 0)
+                {
+                    // Primera vez que se declara: el lado B nace vacio, y nace con las MISMAS ranuras que A —la
+                    // retícula transversal compartida—, todas presentes.
+                    composite.SideB.LoadNew();
+                    composite.SetSlotCount(Math.Max(1, composite.SideA.Structure.Count));
+                }
+                else
+                {
+                    // Un lado B que vuelve de estar DORMANTE conserva lo suyo: la retícula se iguala creciendo, nunca
+                    // recortando, y las ranuras que un lado no tenia nacen AUSENTES en el en vez de inventarse.
+                    composite.AlignSlotGrid();
+                }
             }
             if (!composite.SideBPresent)
             {
@@ -332,6 +341,147 @@ namespace RackCad.UI.Systems.PushBack
             }
         }
 
+        // ---- I-42: presencia de la ranura en el lado activo ----------------------------------------------------
+
+        /// <summary>
+        /// Declara o retira la ranura SELECCIONADA en el lado activo. Retirarla nunca destruye su configuracion: queda
+        /// dormante y vuelve intacta. Una operacion ilegal —dejar la ranura sin ningun lado, o el lado sin ninguna
+        /// ranura— no se aplica y se explica; la casilla vuelve a su estado real en vez de mentir.
+        /// </summary>
+        private void SlotPresent_Changed(object sender, RoutedEventArgs e)
+        {
+            if (suppressSync || !composite.SideBPresent)
+            {
+                return;
+            }
+
+            var slot = composite.Active.Structure.SelectedFrontIndex;
+            var wanted = SlotPresentCheck.IsChecked == true;
+            if (wanted == composite.IsSlotPresent(composite.ActiveSide, slot))
+            {
+                return;
+            }
+
+            if (!wanted)
+            {
+                var why = composite.WhySlotCannotBeRemoved(composite.ActiveSide, slot);
+                if (why != null)
+                {
+                    SetStatus(why, true);
+                    suppressSync = true;
+                    try
+                    {
+                        SlotPresentCheck.IsChecked = true;
+                    }
+                    finally
+                    {
+                        suppressSync = false;
+                    }
+
+                    return;
+                }
+            }
+
+            composite.SetSlotPresent(composite.ActiveSide, slot, wanted);
+            RequestRecompute();
+        }
+
+        // ---- I-42: los topes de los DOS lados --------------------------------------------------------------------
+
+        private void ApplyTopes_Click(object sender, RoutedEventArgs e)
+        {
+            if (!composite.SideBPresent)
+            {
+                return;
+            }
+
+            var scope = CompositeScope(TopeScopeBox.SelectedIndex);
+            int writtenA;
+            int writtenB;
+            using (session.Recompute.Defer())
+            {
+                writtenA = composite.ApplyRearTope(PushBackSide.A, TopeSideACheck.IsChecked == true, scope);
+                writtenB = composite.ApplyRearTope(PushBackSide.B, TopeSideBCheck.IsChecked == true, scope);
+            }
+
+            SetStatus(
+                writtenA + writtenB > 0
+                    ? "Topes aplicados: " + writtenA + " celda(s) en A y " + writtenB + " en B."
+                    : "Ninguna celda en el alcance.",
+                writtenA + writtenB == 0);
+            RequestRecompute();
+        }
+
+        /// <summary>
+        /// Refleja en el panel compuesto lo que la CELDA seleccionada tiene ahora: si su ranura existe en este lado y
+        /// que topes lleva. La aplicabilidad fisica de cada tope la decide la topologia, asi que la casilla del lado
+        /// que hoy no puede materializar ninguno se deshabilita CON SU MOTIVO — pero conserva y sigue mostrando la
+        /// intencion almacenada, que es la que vuelve a mandar en cuanto la topologia la admite.
+        /// </summary>
+        private void LoadCompositeCellPanel()
+        {
+            if (SlotPresentCheck == null || !composite.SideBPresent)
+            {
+                return;
+            }
+
+            var matrix = composite.Active.Structure;
+            var slot = matrix.SelectedFrontIndex;
+            var level = matrix.SelectedLevelIndex;
+
+            var wasSuppressed = suppressSync;
+            suppressSync = true;
+            try
+            {
+                SlotPresentCheck.IsChecked = composite.IsSlotPresent(composite.ActiveSide, slot);
+                SlotPresentText.Text = "Frente " + (slot + 1) + " · lado "
+                    + (composite.ActiveSide == PushBackSide.A ? "A" : "B") + ".";
+
+                TopeSideACheck.IsChecked = composite.RearTopeAt(PushBackSide.A, slot, level);
+                TopeSideBCheck.IsChecked = composite.RearTopeAt(PushBackSide.B, slot, level);
+
+                var applicability = composite.TopeApplicability(slot, level);
+                SetTopeSensitive(TopeSideACheck, applicability.A, PushBackSide.A);
+                SetTopeSensitive(TopeSideBCheck, applicability.B, PushBackSide.B);
+                TopeApplicabilityText.Text = Describe(applicability);
+            }
+            finally
+            {
+                suppressSync = wasSuppressed;
+            }
+        }
+
+        private void SetTopeSensitive(CheckBox box, bool applicable, PushBackSide side)
+        {
+            box.IsEnabled = applicable;
+            ToolTipService.SetShowOnDisabled(box, true);
+            box.ToolTip = applicable
+                ? "Tope posterior de la cama del lado " + (side == PushBackSide.A ? "A" : "B") + " en esta celda."
+                : "Esta celda no tiene ningun extremo alto en el lado " + (side == PushBackSide.A ? "A" : "B")
+                  + ", asi que ahi no puede haber tope. Lo que ya estuviera elegido se conserva y vuelve en cuanto la "
+                  + "topologia lo admita.";
+        }
+
+        private static string Describe((bool A, bool B) applicability)
+        {
+            if (applicability.A && applicability.B)
+            {
+                return "Dos camas encontradas: cada lado admite su propio tope.";
+            }
+
+            if (applicability.A)
+            {
+                return "Solo el lado A tiene extremo alto en esta celda.";
+            }
+
+            if (applicability.B)
+            {
+                return "Solo el lado B tiene extremo alto en esta celda.";
+            }
+
+            return "Esta celda no existe en ningun lado.";
+        }
+
         // ---- Lectura del sistema resuelto ---------------------------------------------------------------------
 
         /// <summary>Refleja en el panel lo que el resolver acaba de decidir: propuesta, estructura efectiva y hueco.</summary>
@@ -439,6 +589,10 @@ namespace RackCad.UI.Systems.PushBack
 
                 composite.SideB.LoadFromDesign(sideDesign, assembler.Resolver);
             }
+
+            // La retícula transversal es del RACK tambien al VOLVER de un archivo: un diseño cuyo lado B tenga mas o
+            // menos ranuras que el A se iguala creciendo, sin recortar ninguno y sin inventar presencia.
+            composite.AlignSlotGrid();
 
             UpdateCompositeEnabled();
         }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
@@ -158,7 +159,17 @@ namespace RackCad.UI.Tests
                 var backToA = w.CompositeState.ActiveSide == PushBackSide.A && !w.LastComputation.System.IsComposite;
 
                 Check(w, "SideBPresentCheck").IsChecked = true;
-                return backToA && w.CompositeState.SideB.Structure.Count == 3;
+
+                // I-42 (ronda Owner): la retícula transversal es del RACK, asi que al volver se IGUALA — creciendo,
+                // nunca recortando: el lado B conserva sus tres ranuras y el lado A, que solo tenia una, recibe las
+                // otras dos como AUSENTES. Nada se destruye y nada se inventa.
+                return backToA
+                       && w.CompositeState.SideB.Structure.Count == 3
+                       && w.CompositeState.SideA.Structure.Count == 3
+                       && w.CompositeState.IsSlotPresent(PushBackSide.A, 0)
+                       && !w.CompositeState.IsSlotPresent(PushBackSide.A, 1)
+                       && !w.CompositeState.IsSlotPresent(PushBackSide.A, 2)
+                       && w.CompositeState.IsSlotPresent(PushBackSide.B, 2);
             });
 
             Assert.True(ok);
@@ -320,6 +331,312 @@ namespace RackCad.UI.Tests
             Assert.True(ok);
         }
 
+        // ================= MULTIFRENTE / MULTINIVEL desde la VENTANA REAL ======================================
+
+        private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
+
+        /// <summary>
+        /// La operacion exacta del dueño: N frentes y N niveles, aplicados a TODO. La retícula es del RACK, asi que
+        /// los dos lados crecen a la vez. Antes crecia solo el lado activo, y el resultado era un rack cuyo primer
+        /// frente tenia las dos mitades y los demas solo una.
+        /// </summary>
+        private static RackPushBackSystemWindow MultiFront(int fronts = 4, int levels = 3)
+        {
+            var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+            Check(w, "SideBPresentCheck").IsChecked = true;
+
+            var frontCount = Field(w, "FrontCountBox");
+            frontCount.SetNumber(fronts);
+            LoseFocus(frontCount);
+
+            foreach (var side in new[] { 0, 1 })
+            {
+                Combo(w, "SideSelectorBox").SelectedIndex = side;
+                var levelBox = Field(w, "LevelsBox");
+                levelBox.SetNumber(levels);
+                LoseFocus(levelBox);
+                Click(Btn(w, "ApplyAllButton"));
+            }
+
+            Combo(w, "SideSelectorBox").SelectedIndex = 0;
+            return w;
+        }
+
+        [Fact]
+        public void FourFrontsAndThreeLevels_ReachTheDrawing_InEveryFront()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront();
+                var state = w.CompositeState;
+
+                // Los DOS lados crecieron: la retícula es una sola.
+                if (state.SideA.Structure.Count != 4 || state.SideB.Structure.Count != 4)
+                {
+                    return false;
+                }
+
+                for (var front = 0; front < 4; front++)
+                {
+                    if (state.SideA.Structure.Fronts[front].LoadLevels != 3) return false;
+                    if (state.SideB.Structure.Fronts[front].LoadLevels != 3) return false;
+                }
+
+                var system = w.LastComputation.System;
+                var runs = PushBackRuns.Resolve(system);
+
+                // 4 frentes x 3 niveles x 2 camas encontradas: cada frente aporta SEIS, ninguno cero.
+                for (var front = 0; front < 4; front++)
+                {
+                    if (runs.Runs.Count(run => run.Slot == front) != 6) return false;
+                    for (var level = 1; level <= 3; level++)
+                    {
+                        var cell = system.Composite.Cell(front, level);
+                        if (cell == null || cell.Beds.Count != 2) return false;
+                    }
+                }
+
+                return runs.Runs.Count == 24 && w.LastComputation.IsValid;
+            });
+
+            Assert.True(ok);
+        }
+
+        // ================= El FONDO de UNA celda ================================================================
+
+        /// <summary>
+        /// El alcance «Celda» escribe UNA celda. Se comprueban las DOCE, no solo la elegida: una prueba que solo
+        /// mirara la celda escrita pasaria igual si el editor las hubiera escrito todas.
+        /// </summary>
+        [Fact]
+        public void TheCellScope_ChangesExactlyOneCell_AndTheDrawingFollows()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront();
+                Combo(w, "SelectedFrontBox").SelectedIndex = 1;      // F2
+                Combo(w, "SelectedLevelBox").SelectedIndex = 1;      // L2
+                Combo(w, "CellPropertyScopeBox").SelectedIndex = 0;  // Celda
+
+                var field = Field(w, "CellFondoOverrideBox");
+                field.SetNumber(3);
+                LoseFocus(field);
+
+                var state = w.CompositeState;
+                for (var front = 0; front < 4; front++)
+                {
+                    for (var level = 0; level < 3; level++)
+                    {
+                        var expected = front == 1 && level == 1 ? (int?)3 : null;
+                        if (state.SideA.Cell(front, level).PalletsDeepOverride != expected) return false;
+                        if (state.SideB.Cell(front, level).PalletsDeepOverride != null) return false;
+                    }
+                }
+
+                // Y el DIBUJO lo refleja: una sola cama mas corta entre las veinticuatro.
+                var system = w.LastComputation.System;
+                var shortBeds = 0;
+                for (var front = 0; front < 4; front++)
+                {
+                    for (var level = 1; level <= 3; level++)
+                    {
+                        if (system.Composite.Cell(front, level).BedFrom(PushBackSide.A).DemandPositions == 3)
+                        {
+                            shortBeds++;
+                        }
+                    }
+                }
+
+                return shortBeds == 1;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>Los cinco alcances, cada uno escribiendo EXACTAMENTE su conjunto.</summary>
+        [Fact]
+        public void TheFiveDepthScopes_WriteExactlyTheirTargets()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                bool Matches(RackPushBackSystemWindow window, Func<int, int, bool> expected)
+                {
+                    for (var front = 0; front < 4; front++)
+                    {
+                        for (var level = 0; level < 3; level++)
+                        {
+                            var has = window.CompositeState.SideA.Cell(front, level).PalletsDeepOverride == 3;
+                            if (has != expected(front, level)) return false;
+                        }
+                    }
+
+                    return true;
+                }
+
+                void Write(RackPushBackSystemWindow window, int scope)
+                {
+                    Combo(window, "CellPropertyScopeBox").SelectedIndex = scope;
+                    var box = Field(window, "CellFondoOverrideBox");
+                    box.SetNumber(3);
+                    LoseFocus(box);
+                    Click(Btn(window, "ApplyCellFondoButton"));
+                }
+
+                // Nivel: ese nivel en todos los frentes.
+                var byLevel = MultiFront();
+                Combo(byLevel, "SelectedFrontBox").SelectedIndex = 1;
+                Combo(byLevel, "SelectedLevelBox").SelectedIndex = 2;
+                Write(byLevel, 2);
+                if (!Matches(byLevel, (f, l) => l == 2)) return false;
+
+                // Frente: todos los niveles del frente seleccionado.
+                var byFront = MultiFront();
+                Combo(byFront, "SelectedFrontBox").SelectedIndex = 2;
+                Combo(byFront, "SelectedLevelBox").SelectedIndex = 0;
+                Write(byFront, 3);
+                if (!Matches(byFront, (f, l) => f == 2)) return false;
+
+                // Todo.
+                var all = MultiFront();
+                Write(all, 4);
+                if (!Matches(all, (f, l) => true)) return false;
+
+                // Y restaurar respeta el MISMO alcance: vacia solo el frente seleccionado.
+                Combo(all, "SelectedFrontBox").SelectedIndex = 0;
+                Combo(all, "CellPropertyScopeBox").SelectedIndex = 3;
+                Click(Btn(all, "RestoreCellFondoButton"));
+                return Matches(all, (f, l) => f != 0);
+            });
+
+            Assert.True(ok);
+        }
+
+        // ================= TOPES A / B desde la ventana =========================================================
+
+        /// <summary>
+        /// Las cuatro combinaciones de tope se deciden EN LA VENTANA, sin deducir nada del modo activo. Es el
+        /// requisito que el dueño no encontro.
+        /// </summary>
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(true, true)]
+        public void TheTwoTopeChecks_DecideEachSide(bool topeA, bool topeB)
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                Combo(w, "CellTopologyBox").SelectedIndex = 2;    // Encontradas
+                Combo(w, "TopologyScopeBox").SelectedIndex = 4;
+                Click(Btn(w, "ApplyTopologyButton"));
+
+                Check(w, "TopeSideACheck").IsChecked = topeA;
+                Check(w, "TopeSideBCheck").IsChecked = topeB;
+                Combo(w, "TopeScopeBox").SelectedIndex = 4;       // Todo
+                Click(Btn(w, "ApplyTopesButton"));
+
+                var state = w.CompositeState;
+                for (var front = 0; front < 2; front++)
+                {
+                    for (var level = 0; level < 2; level++)
+                    {
+                        if (state.RearTopeAt(PushBackSide.A, front, level) != topeA) return false;
+                        if (state.RearTopeAt(PushBackSide.B, front, level) != topeB) return false;
+                    }
+                }
+
+                var runs = PushBackRuns.Resolve(w.LastComputation.System);
+                var expected = runs.Runs.Count(run => run.HighSide == PushBackSide.A ? topeA : topeB);
+                var quoted = PushBackBomBuilder.Build(w.LastComputation.System, Catalog).Components
+                    .Where(component => component.Category == PushBackBomBuilder.RearTope)
+                    .Sum(component => component.Quantity);
+
+                return quoted == expected;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// Una celda con UNA sola cama solo tiene un extremo alto, asi que la casilla del otro lado se deshabilita
+        /// CON SU MOTIVO — y lo que ya estuviera elegido se conserva.
+        /// </summary>
+        [Fact]
+        public void TheTopeChecks_DisableTheSideThatCannotCarryOne()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                Check(w, "TopeSideACheck").IsChecked = true;
+                Check(w, "TopeSideBCheck").IsChecked = true;
+                Combo(w, "TopeScopeBox").SelectedIndex = 4;
+                Click(Btn(w, "ApplyTopesButton"));
+
+                Combo(w, "CellTopologyBox").SelectedIndex = 3;    // Corrida
+                Combo(w, "RunDirectionBox").SelectedIndex = 0;    // A -> B
+                Combo(w, "TopologyScopeBox").SelectedIndex = 4;
+                Click(Btn(w, "ApplyTopologyButton"));
+
+                var a = Check(w, "TopeSideACheck");
+                var b = Check(w, "TopeSideBCheck");
+
+                // El alto es B: A no puede llevar tope, pero su eleccion sigue viva y marcada.
+                return !a.IsEnabled
+                       && b.IsEnabled
+                       && a.IsChecked == true
+                       && w.CompositeState.RearTopeAt(PushBackSide.A, 0, 0)
+                       && ((string)a.ToolTip).Contains("no puede haber tope");
+            });
+
+            Assert.True(ok);
+        }
+
+        // ================= PRESENCIA de la ranura ===============================================================
+
+        /// <summary>A = 3 y B = 4 se declara con la casilla de presencia, sobre UNA sola retícula.</summary>
+        [Fact]
+        public void ThePresenceCheck_DeclaresAnAsymmetricRack()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 4, levels: 2);
+                Combo(w, "SelectedFrontBox").SelectedIndex = 3;
+                Check(w, "SlotPresentCheck").IsChecked = false;
+
+                var state = w.CompositeState;
+                if (state.IsSlotPresent(PushBackSide.A, 3) || !state.IsSlotPresent(PushBackSide.B, 3))
+                {
+                    return false;
+                }
+
+                var system = w.LastComputation.System;
+                // UNA sola estructura de cuatro ranuras; la cuarta solo existe en B.
+                return system.Structure.Fronts.Count == 4
+                       && system.Composite.Cell(3, 1).Topology == PushBackCellTopology.SoloB
+                       && system.Composite.Cell(2, 1).Topology == PushBackCellTopology.Encontradas;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>Retirar la ultima ranura de un lado se REHUSA y se explica; la casilla no miente.</summary>
+        [Fact]
+        public void ThePresenceCheck_RefusesToLeaveASideWithoutSlots()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 1, levels: 2);
+                Combo(w, "SelectedFrontBox").SelectedIndex = 0;
+                Check(w, "SlotPresentCheck").IsChecked = false;
+
+                return w.CompositeState.IsSlotPresent(PushBackSide.A, 0)
+                       && Check(w, "SlotPresentCheck").IsChecked == true;
+            });
+
+            Assert.True(ok);
+        }
+
         [Fact]
         public void TheStructureOverride_AppliesAndRestores()
         {
@@ -339,6 +656,63 @@ namespace RackCad.UI.Tests
                 return overridden == proposed + 3
                        && restored.EffectiveStructure == restored.ProposedStructure
                        && !restored.StructureOverride.HasValue;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// RACKEDITAR sobre un rack COMPLETO de esta ronda: cuatro ranuras con una ausente en A, topes distintos por
+        /// lado y un fondo de cama corrida. Todo tiene que volver por la ventana tal como salio.
+        /// </summary>
+        [Fact]
+        public void AFullCompositeRack_ReopensWithItsPresenceTopesAndCorridaDepth()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var source = MultiFront(fronts: 4, levels: 2);
+
+                // Asimetria: la cuarta ranura solo existe en B.
+                Combo(source, "SelectedFrontBox").SelectedIndex = 3;
+                Check(source, "SlotPresentCheck").IsChecked = false;
+
+                // Topes: solo A.
+                Check(source, "TopeSideACheck").IsChecked = true;
+                Check(source, "TopeSideBCheck").IsChecked = false;
+                Combo(source, "TopeScopeBox").SelectedIndex = 4;
+                Click(Btn(source, "ApplyTopesButton"));
+
+                // Y una corrida con fondo propio en el primer frente.
+                Combo(source, "SelectedFrontBox").SelectedIndex = 0;
+                Combo(source, "SelectedLevelBox").SelectedIndex = 0;
+                Combo(source, "CellTopologyBox").SelectedIndex = 3;
+                Combo(source, "TopologyScopeBox").SelectedIndex = 0;
+                Click(Btn(source, "ApplyTopologyButton"));
+                var depth = Field(source, "CellFondoOverrideBox");
+                depth.SetNumber(4);
+                LoseFocus(depth);
+
+                var design = source.LastComputation.Design;
+                var before = source.LastComputation.System;
+
+                var reopened = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                reopened.LoadExisting(design, Guid.NewGuid().ToString(), "PB compuesto");
+
+                var state = reopened.CompositeState;
+                if (state.IsSlotPresent(PushBackSide.A, 3)) return false;
+                if (!state.IsSlotPresent(PushBackSide.B, 3)) return false;
+                if (!state.RearTopeAt(PushBackSide.A, 0, 0)) return false;
+                if (state.RearTopeAt(PushBackSide.B, 0, 0)) return false;
+                if (state.CorridaDepthAt(0, 0) != 4) return false;
+
+                var after = reopened.LastComputation.System;
+                if (Math.Abs(after.Structure.TotalLength - before.Structure.TotalLength) > 1e-6) return false;
+
+                var beforeRuns = PushBackRuns.Resolve(before).Runs.Count;
+                var afterRuns = PushBackRuns.Resolve(after).Runs.Count;
+                return beforeRuns == afterRuns
+                       && after.Composite.Cell(3, 1).Topology == PushBackCellTopology.SoloB
+                       && after.Composite.Cell(0, 1).Beds.Single().DemandPositions == 4;
             });
 
             Assert.True(ok);

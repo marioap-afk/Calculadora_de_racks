@@ -234,7 +234,7 @@ namespace RackCad.UI.Systems.PushBack
             // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
             composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
             composite.SetSideBPresent(false);
-            var inputs = state.LoadFromDesign(design, assembler.Resolver);
+            var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
             LoadCompositeFromDesign(design);
             this.sourceProject = sourceProject;
             isEditingExisting = false;
@@ -251,12 +251,50 @@ namespace RackCad.UI.Systems.PushBack
             // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
             composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
             composite.SetSideBPresent(false);
-            var inputs = state.LoadFromDesign(design, assembler.Resolver);
+            var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
             LoadCompositeFromDesign(design);
             this.sourceProject = sourceProject;
             isEditingExisting = true;
             session.Identity.Adopt(rackId, rackName);
             LoadFromModel(inputs, rackName);
+        }
+
+        /// <summary>
+        /// El diseño del lado A SOLO, sin la parte compuesta.
+        ///
+        /// <para>
+        /// El estado del editor se reconstruye desde el sistema RESUELTO, y el de un rack compuesto es la estructura
+        /// COMPARTIDA —A + hueco + B—: cargar el lado A contra ella le metia en su matriz los rangos del rack entero,
+        /// que no estan anidados, y el siguiente recalculo se caia con «los frentes con el menor numero de fondos
+        /// deben compartir la misma posicion inicial». El lado A se carga contra SU propio diseño, exactamente como
+        /// ya se hacia con el lado B; la parte compuesta se recupera despues, en su propio estado.
+        /// </para>
+        /// <para>
+        /// Un documento anterior a I-42 no trae parte compuesta, asi que devuelve el MISMO objeto y su carga es
+        /// literalmente la de siempre. La copia comparte las referencias del diseño: solo se retiran SideB y
+        /// Composite, y nada de lo que se comparte se muta en este camino.
+        /// </para>
+        /// </summary>
+        private static PushBackDesign SideAOnly(PushBackDesign design)
+        {
+            if (design == null || !design.IsComposite)
+            {
+                return design;
+            }
+
+            var copy = new PushBackDesign
+            {
+                Structure = design.Structure,
+                LegacyHighEndBeamPeralte = design.LegacyHighEndBeamPeralte,
+                RearTope = design.RearTope
+            };
+
+            foreach (var front in design.Fronts)
+            {
+                copy.Fronts.Add(front);
+            }
+
+            return copy;
         }
 
         private void LoadFromModel(PushBackEditorInputs inputs, string rackName)
@@ -354,6 +392,9 @@ namespace RackCad.UI.Systems.PushBack
                 // I-42: si la celda es una cama CORRIDA, el campo edita el fondo propio de esa cama.
                 LoadCellFondoField(push);
                 CellDrawPalletCheck.IsChecked = push.DrawPallet;
+
+                // I-42: presencia de la ranura y los topes de los DOS lados, para la MISMA celda seleccionada.
+                LoadCompositeCellPanel();
 
                 ApplyBlankFrontEditability(front.IsActive);
             }
@@ -872,7 +913,10 @@ namespace RackCad.UI.Systems.PushBack
             var requested = IntVal(FrontCountBox, state.Structure.Count);
             if (requested >= 1 && requested != state.Structure.Count)
             {
-                MutateStructure(() => state.SetFrontCount(requested));
+                // I-42: la retícula transversal es UNA. El numero de frentes es del RACK, no del lado activo, asi
+                // que crece y decrece en los dos a la vez; la asimetria A/B se expresa con PRESENCIA por ranura.
+                // Cuando el rack es de un solo sentido esto es literalmente lo de siempre.
+                MutateStructure(() => composite.SetSlotCount(requested));
             }
         }
 

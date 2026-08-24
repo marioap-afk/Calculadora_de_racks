@@ -287,7 +287,7 @@ namespace RackCad.Application.Systems.PushBack
                 var resolved = new PushBackResolvedFront
                 {
                     IsPresent = highFront != null,
-                    DefaultPalletsDeep = modules
+                    DefaultPalletsDeep = demand
                 };
                 var highResolved = highSide?.Resolved(slot);
                 for (var level = 0; level < levels; level++)
@@ -296,8 +296,12 @@ namespace RackCad.Application.Systems.PushBack
                         highResolved != null && level < highResolved.HighEndBeamPeraltes.Count
                             ? highResolved.HighEndBeamPeraltes[level]
                             : PushBackDefaults.HighEndBeamDefaultPeralte);
-                    // La cama corrida ocupa exactamente su demanda dentro del rango que acaba de fijarse.
-                    resolved.PalletsDeep.Add(modules);
+                    // El FONDO de la celda es su DEMANDA en posiciones de tarima, NO los modulos que su rango
+                    // atraviesa: un hueco es un modulo que la cama cruza sin almacenar nada. Escribir aqui el conteo
+                    // de modulos metia el hueco de vuelta en la demanda por la puerta de atras y repartia una tarima
+                    // de mas a lo largo del riel, desplazando TODAS las posiciones — el defecto que el dueño ve como
+                    // «la cama esta en el fondo equivocado».
+                    resolved.PalletsDeep.Add(demand);
                     resolved.DrawPallets.Add(DrawsPallet(composite, slot, level));
                 }
 

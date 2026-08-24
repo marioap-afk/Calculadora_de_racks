@@ -85,6 +85,56 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
+        /// La misma pregunta que <see cref="EndPosition(DynamicRackFront, int)"/>, pero contra la SECUENCIA REAL de
+        /// modulos: cuenta <paramref name="effectiveDeep"/> posiciones que ALOJAN TARIMA y devuelve la posicion del
+        /// modulo en el que cae la ultima.
+        ///
+        /// <para>
+        /// I-42 — un rack compuesto puede tener un HUECO dentro del rango de un frente, y el hueco no es un fondo: la
+        /// cama lo atraviesa sin almacenar nada en el. Contar posiciones sin distinguirlo dejaba el larguero
+        /// posterior de una corrida un modulo por delante de su ancla. En una estructura SIN huecos —cualquier rack
+        /// anterior a I-42, y todo rack de un solo sentido— esta funcion devuelve exactamente lo mismo que la
+        /// aritmetica de siempre, asi que no cambia ni un dibujo existente.
+        /// </para>
+        /// </summary>
+        public static int EndPosition(DynamicRackSystem structure, DynamicRackFront front, int effectiveDeep)
+        {
+            var plain = EndPosition(front, effectiveDeep);
+            if (structure == null || front == null)
+            {
+                return plain;
+            }
+
+            var start = Math.Max(1, front.DepthStartPosition);
+            var last = start + Math.Max(MinimumPalletsDeep, front.PalletsDeep) - 1;
+            var wanted = Math.Max(MinimumPalletsDeep, effectiveDeep);
+
+            var covered = 0;
+            for (var position = start; position <= last; position++)
+            {
+                var module = structure.Modules.FirstOrDefault(m => m != null && m.Index + 1 == position);
+                if (module == null)
+                {
+                    continue;
+                }
+
+                if (module.Kind != DynamicRackModuleKind.Gap)
+                {
+                    covered++;
+                }
+
+                if (covered >= wanted)
+                {
+                    return position;
+                }
+            }
+
+            // La demanda excede lo que el rango ofrece: la celda acaba donde acaba su rango. Quien decide que eso es
+            // un bloqueo es el diagnostico, no esta funcion.
+            return last;
+        }
+
+        /// <summary>
         /// El fondo EFECTIVO ya resuelto de una celda, leido del sistema. <paramref name="levelNumber"/> es 1-based
         /// (como en las colocaciones y en los ejes de cama). Un frente nulo responde por el rack entero, que es la
         /// referencia del lateral no seccionado.
@@ -117,7 +167,7 @@ namespace RackCad.Application.Systems.PushBack
                 return front?.EndX ?? structure?.TotalLength ?? 0.0;
             }
 
-            var position = EndPosition(front, Effective(system, front, levelNumber));
+            var position = EndPosition(structure, front, Effective(system, front, levelNumber));
             var module = structure.Modules.FirstOrDefault(m => m != null && m.Index + 1 == position);
             return module?.EndX ?? front.EndX;
         }
@@ -142,6 +192,72 @@ namespace RackCad.Application.Systems.PushBack
 
             var span = RearX(system, front, levelNumber) - front.StartX;
             return span > 0.0 ? span : 0.0;
+        }
+
+        /// <summary>
+        /// Un HUECO dentro del tramo de una cama, expresado en el espacio de ALMACENAMIENTO: la distancia desde el
+        /// arranque de la cama descontando los huecos anteriores, y lo que ese hueco mide.
+        /// </summary>
+        public readonly struct PushBackBedGap
+        {
+            public PushBackBedGap(double storageOffset, double length)
+            {
+                StorageOffset = storageOffset;
+                Length = length;
+            }
+
+            /// <summary>Distancia desde el arranque de la cama, ya sin los huecos anteriores.</summary>
+            public double StorageOffset { get; }
+
+            /// <summary>Longitud fisica del hueco.</summary>
+            public double Length { get; }
+        }
+
+        /// <summary>
+        /// Los HUECOS que la cama de una celda atraviesa, en orden. Es lo que separa la longitud FISICA de la cama de
+        /// su longitud de ALMACENAMIENTO: por un hueco pasan los rieles, pero no se guarda nada en el.
+        ///
+        /// <para>
+        /// Una estructura sin huecos —cualquier rack de un solo sentido, y todo rack anterior a I-42— devuelve una
+        /// lista vacia, de modo que quien la consume se comporta exactamente igual que antes.
+        /// </para>
+        /// </summary>
+        public static IReadOnlyList<PushBackBedGap> GapsWithin(
+            PushBackSystem system, DynamicRackFront front, int levelNumber)
+        {
+            var result = new List<PushBackBedGap>();
+            var structure = system?.Structure;
+            if (structure == null || front == null)
+            {
+                return result;
+            }
+
+            var start = Math.Max(1, front.DepthStartPosition);
+            var end = EndPosition(structure, front, Effective(system, front, levelNumber));
+            var storage = 0.0;
+            for (var position = start; position <= end; position++)
+            {
+                var module = structure.Modules.FirstOrDefault(m => m != null && m.Index + 1 == position);
+                if (module == null)
+                {
+                    continue;
+                }
+
+                var length = module.EndX - module.StartX;
+                if (module.Kind == DynamicRackModuleKind.Gap)
+                {
+                    if (length > 0.0)
+                    {
+                        result.Add(new PushBackBedGap(storage, length));
+                    }
+
+                    continue;
+                }
+
+                storage += length;
+            }
+
+            return result;
         }
 
         /// <summary>El indice del frente dentro de la estructura, por identidad y con respaldo en <c>Index</c>.</summary>

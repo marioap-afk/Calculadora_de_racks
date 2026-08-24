@@ -104,6 +104,22 @@ namespace RackCad.Application.Systems.PushBack
             {
                 ActiveSide = PushBackSide.A;
             }
+
+            // La topologia POR DEFECTO depende de cuantos sentidos tiene el rack, y esa es la misma regla que ya
+            // aplica al cargar: un rack de un sentido es Solo A, y uno de dos son camas encontradas. Sin volver a
+            // evaluarla aqui, un rack NUEVO al que se le declara el lado B se quedaba en Solo A: B aportaba
+            // estructura y ni una sola cama, que es exactamente el «solo quedan las cabeceras» que el dueño vio.
+            //
+            // Solo se cambia el default de CADA MODO por el del otro. Una eleccion explicita distinta —una corrida,
+            // por ejemplo, o Solo B— se respeta: no es el default de nadie, asi que nadie la pisa.
+            if (present && DefaultTopology == PushBackCellTopology.SoloA)
+            {
+                DefaultTopology = PushBackCellTopology.Encontradas;
+            }
+            else if (!present && DefaultTopology == PushBackCellTopology.Encontradas)
+            {
+                DefaultTopology = PushBackCellTopology.SoloA;
+            }
         }
 
         /// <summary>Si la ranura existe en el lado. Una ranura ausente no aporta celda, cama, larguero ni tope.</summary>
@@ -141,6 +157,107 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             list[slot] = present;
+        }
+
+        /// <summary>
+        /// Retirar una ranura solo es legal si sigue existiendo EN ALGUN SITIO: una ranura ausente en los dos lados
+        /// no es una ranura, es una linea de postes sin nada, y un lado sin ninguna ranura no es un lado. Devuelve
+        /// null cuando la operacion es legal, y el motivo cuando no lo es. No corrige nada: responde.
+        /// </summary>
+        public string WhySlotCannotBeRemoved(PushBackSide side, int slot)
+        {
+            if (slot < 0 || slot >= SlotCount)
+            {
+                return "Esa ranura no existe.";
+            }
+
+            var other = side == PushBackSide.A ? PushBackSide.B : PushBackSide.A;
+            if (!SideBPresent)
+            {
+                return "El rack es de un solo sentido: retirar una ranura equivale a quitar un frente.";
+            }
+
+            if (!IsSlotPresent(other, slot))
+            {
+                return "La ranura " + (slot + 1) + " solo existe en este lado: retirarla la dejaria sin ningun lado. "
+                       + "Declarala en el otro lado primero, o reduce el numero de frentes.";
+            }
+
+            var remaining = 0;
+            for (var index = 0; index < SlotCount; index++)
+            {
+                if (index != slot && IsSlotPresent(side, index))
+                {
+                    remaining++;
+                }
+            }
+
+            return remaining > 0
+                ? null
+                : "Es la ultima ranura de este lado: un lado sin ranuras no existe. Apaga «Rack de dos sentidos» "
+                  + "si lo que quieres es un rack de un solo sentido.";
+        }
+
+        /// <summary>
+        /// El numero de ranuras transversales del RACK. La retícula es UNA —los dos lados comparten las mismas
+        /// lineas de postes—, asi que el conteo es del rack y no de un lado: crecer por un lado y no por el otro
+        /// dejaba media estructura sin contenido a partir de la primera ranura, que es exactamente lo que el dueño
+        /// vio. La asimetria A/B se expresa con PRESENCIA (<see cref="SetSlotPresent"/>), que es su autoridad.
+        /// </summary>
+        public void SetSlotCount(int requested)
+        {
+            var count = Math.Max(1, requested);
+            SideA.SetFrontCount(count);
+            if (SideBPresent)
+            {
+                SideB.SetFrontCount(count);
+            }
+
+            // Una ranura nueva nace PRESENTE en los dos lados; retirarla es una decision explicita.
+            Trim(presentA, count);
+            Trim(presentB, count);
+        }
+
+        /// <summary>
+        /// Iguala la retícula de los dos lados SIN destruir nada: crece hasta el mayor de los dos y declara AUSENTES
+        /// las ranuras que el lado corto no tenia. Es lo que hace falta cuando un lado B dormante —o uno cargado de
+        /// un diseño— vuelve con mas o menos ranuras que el rack: recortarlo perderia su configuracion, y darle las
+        /// ranuras del otro como presentes inventaria bahias que nadie pidio.
+        /// </summary>
+        public void AlignSlotGrid()
+        {
+            if (!SideBPresent)
+            {
+                return;
+            }
+
+            var beforeA = SideA.Structure.Count;
+            var beforeB = SideB.Structure.Count;
+            var count = Math.Max(1, Math.Max(beforeA, beforeB));
+
+            SideA.SetFrontCount(count);
+            SideB.SetFrontCount(count);
+
+            for (var slot = beforeA; slot < count; slot++)
+            {
+                SetSlotPresent(PushBackSide.A, slot, false);
+            }
+
+            for (var slot = beforeB; slot < count; slot++)
+            {
+                SetSlotPresent(PushBackSide.B, slot, false);
+            }
+
+            Trim(presentA, count);
+            Trim(presentB, count);
+        }
+
+        private static void Trim(List<bool> list, int count)
+        {
+            while (list.Count > count)
+            {
+                list.RemoveAt(list.Count - 1);
+            }
         }
 
         // ---- Interfaz central --------------------------------------------------------------------------------
@@ -388,6 +505,86 @@ namespace RackCad.Application.Systems.PushBack
         private PushBackTopologyCell Stored(int slot, int level)
             => topologies.FirstOrDefault(cell => cell != null && cell.Frente == slot && cell.Level == level);
 
+        // ---- I-42: los TOPES de los dos lados, visibles y editables por celda ----------------------------------
+
+        /// <summary>
+        /// Que topes puede MATERIALIZAR fisicamente una celda, segun su topologia. No decide lo que el usuario quiso:
+        /// dice lo que el rack puede construir, que es otra cosa. La intencion del lado que no aplica queda DORMANTE
+        /// y vuelve intacta en cuanto la topologia la admite otra vez.
+        ///
+        /// <para>
+        /// Un tope vive en el extremo ALTO de una cama. Con camas encontradas hay DOS extremos altos —uno por lado— y
+        /// por tanto dos topes independientes. Con una sola cama solo hay UNO, y esta en el lado alto de esa cama:
+        /// en Solo A es A, en Solo B es B, y en una corrida es el lado hacia el que fluye.
+        /// </para>
+        /// </summary>
+        public (bool A, bool B) TopeApplicability(int slot, int level)
+        {
+            var hasA = IsSlotPresent(PushBackSide.A, slot) && level < LevelsOf(PushBackSide.A, slot);
+            var hasB = IsSlotPresent(PushBackSide.B, slot) && level < LevelsOf(PushBackSide.B, slot);
+            if (!hasA && !hasB)
+            {
+                return (false, false);
+            }
+
+            switch (Degrade(TopologyAt(slot, level), hasA, hasB))
+            {
+                case PushBackCellTopology.SoloA:
+                    return (true, false);
+                case PushBackCellTopology.SoloB:
+                    return (false, true);
+                case PushBackCellTopology.Corrida:
+                    return DirectionAt(slot, level) == PushBackRunDirection.AToB ? (false, true) : (true, false);
+                default:
+                    return (hasA, hasB);
+            }
+        }
+
+        /// <summary>La topologia que una celda puede REALMENTE tener con los lados que existen en ella.</summary>
+        private static PushBackCellTopology Degrade(PushBackCellTopology requested, bool hasA, bool hasB)
+        {
+            if (hasA && hasB)
+            {
+                return requested;
+            }
+
+            return hasA ? PushBackCellTopology.SoloA : PushBackCellTopology.SoloB;
+        }
+
+        private int LevelsOf(PushBackSide side, int slot)
+        {
+            var matrix = Of(side).Structure;
+            return slot >= 0 && slot < matrix.Count ? Math.Max(1, matrix.Fronts[slot].LoadLevels) : 0;
+        }
+
+        /// <summary>La INTENCION de tope de una celda en un lado. Es lo almacenado, se materialice o no.</summary>
+        public bool RearTopeAt(PushBackSide side, int slot, int level) => Of(side).Cell(slot, level).RearTopeEnabled;
+
+        /// <summary>
+        /// Escribe la intencion de tope de un lado sobre el ALCANCE, con el mismo resolutor de alcances y la misma
+        /// seleccion multiple que el resto del editor. Escribe la INTENCION incluso donde la topologia no la
+        /// materializa hoy: es exactamente lo que la mantiene viva para cuando vuelva a aplicar. Devuelve cuantas
+        /// celdas se escribieron.
+        /// </summary>
+        public int ApplyRearTope(PushBackSide side, bool enabled, DynamicRackCellScope scope)
+        {
+            var target = Of(side);
+            var written = 0;
+            foreach (var address in Targets(scope))
+            {
+                if (address.FrontIndex >= target.Structure.Count
+                    || address.LevelIndex >= LevelsOf(side, address.FrontIndex))
+                {
+                    continue;
+                }
+
+                target.Cell(address.FrontIndex, address.LevelIndex).RearTopeEnabled = enabled;
+                written++;
+            }
+
+            return written;
+        }
+
         // ---- Proyeccion al dominio ----------------------------------------------------------------------------
 
         /// <summary>La intencion de interfaz que el ensamblador escribe en el diseno.</summary>
@@ -436,6 +633,15 @@ namespace RackCad.Application.Systems.PushBack
             StructureOverrideB = composite.StructureOverrideB;
             DefaultTopology = composite.DefaultTopology;
             DefaultDirection = composite.DefaultDirection;
+
+            // La PRESENCIA del lado A vuelve del archivo. El diseño DECLARA las ranuras ausentes en vez de borrarlas
+            // —borrarlas desplazaria los indices—, asi que aqui hay que volver a leerlas: sin esto, un rack asimetrico
+            // «A = 3 y B = 4» se reabria con las cuatro ranuras en los dos lados.
+            presentA.Clear();
+            foreach (var slot in composite.AbsentSlotsA)
+            {
+                SetSlotPresent(PushBackSide.A, slot, false);
+            }
             foreach (var cell in composite.Topologies)
             {
                 if (cell != null)
