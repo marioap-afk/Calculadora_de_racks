@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
 
@@ -11,8 +12,8 @@ namespace RackCad.Application.Systems.PushBack
     ///
     /// <para>
     /// Es la unidad de propiedad fisica del contenido de almacenamiento: una cama, un larguero bajo, un larguero
-    /// alto y, como mucho, un tope. Dos camas encontradas son DOS ejecuciones; una cama corrida es UNA, aunque
-    /// atraviese los dos lados. Por eso el BOM no necesita deduplicar nada: cuenta ejecuciones.
+    /// alto, sus intermedios y, como mucho, un tope. Dos camas encontradas son DOS ejecuciones; una cama corrida es
+    /// UNA, aunque atraviese los dos lados. Por eso el BOM no necesita deduplicar nada: cuenta ejecuciones.
     /// </para>
     /// </summary>
     public sealed class PushBackRun
@@ -43,8 +44,11 @@ namespace RackCad.Application.Systems.PushBack
         /// <summary>True cuando el resultado hay que REFLEJARLO para llevarlo a coordenadas de rack.</summary>
         public bool Reflected { get; set; }
 
-        /// <summary>La celda compuesta resuelta a la que pertenece (capacidad geometrica y motivo de bloqueo).</summary>
+        /// <summary>La celda compuesta resuelta a la que pertenece.</summary>
         public PushBackResolvedCell Cell { get; set; }
+
+        /// <summary>La cama fisica concreta (su demanda, su capacidad y su motivo de bloqueo si lo tiene).</summary>
+        public PushBackCellBed Bed { get; set; }
 
         /// <summary>El frente dentro del sistema fuente, o null si no existe.</summary>
         public DynamicRackFront Front()
@@ -56,7 +60,7 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>True cuando la cama es construible (su demanda cabe en la estructura efectiva).</summary>
-        public bool IsValid => Cell == null || Cell.IsValid;
+        public bool IsValid => Bed == null || Bed.IsValid;
     }
 
     /// <summary>
@@ -70,32 +74,24 @@ namespace RackCad.Application.Systems.PushBack
     /// <item><b>Solo B</b> — una cama en el marco local de B, REFLEJADA al mundo.</item>
     /// <item><b>Encontradas</b> — DOS camas: la de A en identidad y la de B reflejada. Sus extremos ALTOS se miran
     /// en el centro y cada una admite su propio tope.</item>
-    /// <item><b>Corrida</b> — UNA cama sobre un sistema sintetico que atraviesa A + hueco + B, en identidad si va
+    /// <item><b>Corrida</b> — UNA cama sobre un sistema sintetico que ATRAVIESA la interfaz, en identidad si va
     /// A-&gt;B y reflejada si va B-&gt;A. Una sola longitud, una sola pendiente, un solo eje y un solo tope.</item>
     /// </list>
     /// </para>
     /// <para>
-    /// El sistema sintetico de la corrida es un <see cref="PushBackSystem"/> corriente: por eso su cama, sus
-    /// elevaciones, su rotacion y su tope los resuelve el MISMO codigo ya validado de un Push Back de un sentido, y
-    /// no existe una segunda fisica para el caso nuevo.
+    /// El sistema sintetico de la corrida es una RECETA geometrica, no un rack: no materializa postes, cabeceras,
+    /// placas ni separadores, no aparece en ninguna vista como estructura y no aporta ni una linea al BOM
+    /// estructural. Solo sirve para que la cama, sus elevaciones, su rotacion, sus intermedios y su tope los resuelva
+    /// el MISMO codigo ya validado de un Push Back de un sentido.
     /// </para>
     /// </summary>
     public sealed class PushBackRunSet
     {
-        public PushBackRunSet(
-            PushBackSystem corridaForward, PushBackSystem corridaBackward, double mirrorAxis, IReadOnlyList<PushBackRun> runs)
+        public PushBackRunSet(double mirrorAxis, IReadOnlyList<PushBackRun> runs)
         {
-            CorridaForward = corridaForward;
-            CorridaBackward = corridaBackward;
             MirrorAxis = mirrorAxis;
             Runs = runs ?? new List<PushBackRun>();
         }
-
-        /// <summary>Sistema sintetico de las corridas A-&gt;B (marco identidad), o null si ninguna celda lo pide.</summary>
-        public PushBackSystem CorridaForward { get; }
-
-        /// <summary>Sistema sintetico de las corridas B-&gt;A (marco espejado), o null si ninguna celda lo pide.</summary>
-        public PushBackSystem CorridaBackward { get; }
 
         /// <summary>El eje de reflexion: la longitud total del rack.</summary>
         public double MirrorAxis { get; }
@@ -115,54 +111,41 @@ namespace RackCad.Application.Systems.PushBack
             var composite = system?.Composite;
             if (composite == null)
             {
-                return new PushBackRunSet(null, null, 0.0, runs);
+                return new PushBackRunSet(0.0, runs);
             }
 
             var axis = PushBackMirror.AxisOf(system.Structure);
-            var needsForward = composite.Cells.Any(cell =>
-                cell.Topology == PushBackCellTopology.Corrida && cell.Direction == PushBackRunDirection.AToB);
-            var needsBackward = composite.Cells.Any(cell =>
-                cell.Topology == PushBackCellTopology.Corrida && cell.Direction == PushBackRunDirection.BToA);
-
-            var forward = needsForward ? BuildCorrida(system, PushBackRunDirection.AToB) : null;
-            var backward = needsBackward ? BuildCorrida(system, PushBackRunDirection.BToA) : null;
+            // Un sistema sintetico por (sentido, DEMANDA): las corridas que piden la misma profundidad comparten
+            // receta, asi que un rack normal construye una o dos y no una por celda.
+            var corridas = new Dictionary<(PushBackRunDirection Direction, int Demand), PushBackSystem>();
 
             foreach (var cell in composite.Cells)
             {
-                switch (cell.Topology)
+                foreach (var bed in cell.Beds)
                 {
-                    case PushBackCellTopology.SoloA:
-                        AddSideRun(runs, system, cell, PushBackSide.A);
-                        break;
-                    case PushBackCellTopology.SoloB:
-                        AddSideRun(runs, system, cell, PushBackSide.B);
-                        break;
-                    case PushBackCellTopology.Encontradas:
-                        AddSideRun(runs, system, cell, PushBackSide.A);
-                        AddSideRun(runs, system, cell, PushBackSide.B);
-                        break;
-                    case PushBackCellTopology.Corrida:
-                        AddCorridaRun(runs, system, cell, cell.Direction == PushBackRunDirection.AToB ? forward : backward);
-                        break;
+                    if (bed == null)
+                    {
+                        continue;
+                    }
+
+                    if (cell.Topology == PushBackCellTopology.Corrida)
+                    {
+                        AddCorridaRun(runs, system, cell, bed, corridas);
+                        continue;
+                    }
+
+                    AddSideRun(runs, system, cell, bed);
                 }
             }
 
-            return new PushBackRunSet(forward, backward, axis, runs);
+            return new PushBackRunSet(axis, runs);
         }
 
         private static void AddSideRun(
-            List<PushBackRun> runs, PushBackSystem system, PushBackResolvedCell cell, PushBackSide side)
+            List<PushBackRun> runs, PushBackSystem system, PushBackResolvedCell cell, PushBackCellBed bed)
         {
-            var view = system.Composite.Of(side);
-            if (view == null || !view.IsPresent || view.Local == null)
-            {
-                return;
-            }
-
-            var localIndex = cell.FrontIndex >= 0 && cell.FrontIndex < view.LocalIndexBySlot.Count
-                ? view.LocalIndexBySlot[cell.FrontIndex]
-                : -1;
-            if (localIndex < 0)
+            var view = system.Composite.Of(bed.LowSide);
+            if (view == null || !view.IsPresent || view.Local == null || view.Front(cell.FrontIndex) == null)
             {
                 return;
             }
@@ -172,49 +155,73 @@ namespace RackCad.Application.Systems.PushBack
                 Slot = cell.FrontIndex,
                 Level = cell.LevelNumber,
                 Topology = cell.Topology,
-                LowSide = side,
-                HighSide = side,
+                LowSide = bed.LowSide,
+                HighSide = bed.HighSide,
                 Source = view.Local,
-                SourceFrontIndex = localIndex,
+                SourceFrontIndex = cell.FrontIndex,
                 SourceLevel = cell.LevelNumber,
-                Reflected = side == PushBackSide.B,
-                Cell = cell
+                Reflected = bed.LowSide == PushBackSide.B,
+                Cell = cell,
+                Bed = bed
             });
         }
 
         private static void AddCorridaRun(
-            List<PushBackRun> runs, PushBackSystem system, PushBackResolvedCell cell, PushBackSystem corrida)
+            List<PushBackRun> runs,
+            PushBackSystem system,
+            PushBackResolvedCell cell,
+            PushBackCellBed bed,
+            IDictionary<(PushBackRunDirection Direction, int Demand), PushBackSystem> corridas)
         {
+            var forward = bed.HighSide == PushBackSide.B;
+            var direction = forward ? PushBackRunDirection.AToB : PushBackRunDirection.BToA;
+            var demand = Math.Max(PushBackCellDepth.MinimumPalletsDeep, bed.DemandPositions);
+            var key = (direction, demand);
+            if (!corridas.TryGetValue(key, out var corrida))
+            {
+                corrida = BuildCorrida(system, direction, demand);
+                corridas[key] = corrida;
+            }
+
             if (corrida == null)
             {
                 return;
             }
 
-            var forward = cell.Direction == PushBackRunDirection.AToB;
             runs.Add(new PushBackRun
             {
                 Slot = cell.FrontIndex,
                 Level = cell.LevelNumber,
                 Topology = cell.Topology,
-                LowSide = forward ? PushBackSide.A : PushBackSide.B,
-                HighSide = forward ? PushBackSide.B : PushBackSide.A,
+                LowSide = bed.LowSide,
+                HighSide = bed.HighSide,
                 Source = corrida,
                 SourceFrontIndex = cell.FrontIndex,
                 SourceLevel = cell.LevelNumber,
                 // A->B fluye hacia +X en coordenadas de rack: marco identidad. B->A fluye hacia -X, asi que se
                 // resuelve en el marco espejado y el resultado se refleja de vuelta.
                 Reflected = !forward,
-                Cell = cell
+                Cell = cell,
+                Bed = bed
             });
         }
 
         /// <summary>
-        /// El sistema SINTETICO de las corridas en un sentido: cada ranura pasa a ser UNA calle que atraviesa todo el
-        /// rack, con las elevaciones y los peraltes del lado ALTO — que es el que gobierna, porque su larguero es el
-        /// ancla. La elevacion propia del lado BAJO no se toca ni se borra: sigue almacenada en su lado y vuelve a
-        /// gobernar en cuanto la celda deje de ser corrida.
+        /// La RECETA de las corridas de un sentido y una demanda: cada ranura pasa a ser UNA calle anclada en el
+        /// extremo ALTO que ocupa exactamente <paramref name="demand"/> posiciones hacia el bajo.
+        ///
+        /// <para>
+        /// La estructura sobrante NO se toca: puede existir porque otros niveles o frentes la necesitan, y una
+        /// corrida corta simplemente no la usa. Nada de lo que hay aqui materializa estructura — postes, cabeceras,
+        /// placas y separadores siguen viniendo UNA sola vez del rack.
+        /// </para>
+        /// <para>
+        /// Las elevaciones y los peraltes son los del lado ALTO, cuyo larguero posterior es el ancla. La elevacion
+        /// propia del lado BAJO no se toca ni se borra: sigue almacenada en su lado y vuelve a gobernar en cuanto la
+        /// celda deje de ser corrida.
+        /// </para>
         /// </summary>
-        public static PushBackSystem BuildCorrida(PushBackSystem system, PushBackRunDirection direction)
+        public static PushBackSystem BuildCorrida(PushBackSystem system, PushBackRunDirection direction, int demand)
         {
             var composite = system?.Composite;
             var structure = system?.Structure;
@@ -226,8 +233,16 @@ namespace RackCad.Application.Systems.PushBack
             var forward = direction == PushBackRunDirection.AToB;
             var highSide = forward ? composite.SideB : composite.SideA;
             // El marco en el que el flujo avanza hacia +X: el del rack si va A->B, el espejado si va B->A.
-            var frame = forward ? CloneStructure(structure) : PushBackMirror.Structure(structure);
-            var totalPositions = frame.Modules.Count;
+            var frame = forward ? Clone(structure) : PushBackMirror.Structure(structure);
+            var totalModules = frame.Modules.Count;
+            // La demanda viene en FONDOS; el rango del frente se cuenta en MODULOS, y el hueco es un modulo que la
+            // cama atraviesa sin alojar tarima. Confundirlos dejaria la cama un modulo corta en todo rack con hueco.
+            var modules = Math.Min(
+                totalModules,
+                Math.Max(
+                    PushBackCellDepth.MinimumPalletsDeep,
+                    PushBackBedSpan.ModulesForLastPositions(frame, demand)));
+            var start = Math.Max(1, totalModules - modules + 1);
 
             var corrida = new PushBackSystem
             {
@@ -239,19 +254,17 @@ namespace RackCad.Application.Systems.PushBack
             for (var slot = 0; slot < frame.Fronts.Count; slot++)
             {
                 var front = frame.Fronts[slot];
-                // La calle corrida ocupa TODA la secuencia: una sola longitud fisica, sin fondo intermedio.
-                front.DepthStartPosition = 1;
-                front.PalletsDeep = totalPositions;
-                front.StartX = 0.0;
-                front.EndX = frame.TotalLength;
+                // La calle corrida arranca donde su demanda lo pide y acaba SIEMPRE en el extremo alto: ese es su
+                // ancla. Su longitud fisica es la de su demanda, no la del rack.
+                front.DepthStartPosition = start;
+                front.PalletsDeep = modules;
 
                 var highFront = highSide?.LocalFront(slot);
-                var levels = highFront != null
-                    ? RackCad.Application.Systems.Dynamic.DynamicFrontActivation.EffectiveLoadLevels(highFront)
-                    : 0;
+                var levels = highFront != null ? DynamicFrontActivation.EffectiveLoadLevels(highFront) : 0;
                 if (highFront != null)
                 {
                     // Las ELEVACIONES son las del lado ALTO: su larguero posterior es el ancla de la corrida.
+                    front.IsActive = highFront.IsActive;
                     front.LoadLevels = highFront.LoadLevels;
                     front.FirstLevelHeight = highFront.FirstLevelHeight;
                     front.LoadBeamLevels.Clear();
@@ -266,11 +279,15 @@ namespace RackCad.Application.Systems.PushBack
                         front.Levels.Add(level);
                     }
                 }
+                else
+                {
+                    front.IsActive = false;
+                }
 
                 var resolved = new PushBackResolvedFront
                 {
                     IsPresent = highFront != null,
-                    DefaultPalletsDeep = totalPositions
+                    DefaultPalletsDeep = modules
                 };
                 var highResolved = highSide?.Resolved(slot);
                 for (var level = 0; level < levels; level++)
@@ -279,14 +296,15 @@ namespace RackCad.Application.Systems.PushBack
                         highResolved != null && level < highResolved.HighEndBeamPeraltes.Count
                             ? highResolved.HighEndBeamPeraltes[level]
                             : PushBackDefaults.HighEndBeamDefaultPeralte);
-                    // La cama corrida NO se trunca: su fondo fisico es la secuencia completa.
-                    resolved.PalletsDeep.Add(totalPositions);
+                    // La cama corrida ocupa exactamente su demanda dentro del rango que acaba de fijarse.
+                    resolved.PalletsDeep.Add(modules);
                     resolved.DrawPallets.Add(DrawsPallet(composite, slot, level));
                 }
 
                 corrida.HighEndBeams.Add(resolved);
             }
 
+            DynamicDepthGeometry.ResolveCoordinates(frame);
             return corrida;
         }
 
@@ -304,10 +322,10 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// Copia superficial de la estructura para el marco identidad: la corrida re-escribe los rangos de los
+        /// Copia independiente de la estructura para el marco identidad: la corrida re-escribe los rangos de los
         /// frentes, y hacerlo sobre la estructura compartida corromperia la que dibuja el rack.
         /// </summary>
-        private static DynamicRackSystem CloneStructure(DynamicRackSystem source)
+        private static DynamicRackSystem Clone(DynamicRackSystem source)
             => PushBackMirror.Structure(PushBackMirror.Structure(source));
     }
 }

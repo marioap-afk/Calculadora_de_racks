@@ -46,7 +46,20 @@ namespace RackCad.Application.Systems.PushBack
         /// <summary>Primera posicion (1-based) del lado B.</summary>
         public int FirstPositionB => PositionsA + (HasGap ? 1 : 0) + 1;
 
-        /// <summary>El rango de posiciones que una ranura ocupa, segun en que lados exista.</summary>
+        /// <summary>
+        /// El rango de posiciones que una ranura ocupa segun en que lados exista.
+        ///
+        /// <para>
+        /// Una ranura presente en LOS DOS lados es una bahia continua que atraviesa el rack, asi que su estructura
+        /// recorre toda la profundidad: su fondo por lado gobierna donde acaban sus CAMAS, no donde acaban sus
+        /// marcos, exactamente como en I-41 un nivel mas corto termina antes dentro de la estructura de su frente.
+        /// </para>
+        /// <para>
+        /// Una ranura presente en un solo lado ocupa unicamente la mitad de ese lado. Es el caso que obliga a admitir
+        /// rangos NO ANIDADOS: una solo-A empieza en 1 y una solo-B acaba en la ultima posicion, y ninguna contiene
+        /// a la otra.
+        /// </para>
+        /// </summary>
         public (int Start, int Count) SlotRange(int structureA, int structureB)
         {
             var hasA = structureA > 0;
@@ -58,12 +71,12 @@ namespace RackCad.Application.Systems.PushBack
 
             if (hasA)
             {
-                return (1, Math.Min(structureA, PositionsA));
+                return (1, Math.Max(PushBackCellDepth.MinimumPalletsDeep, Math.Min(structureA, PositionsA)));
             }
 
             if (hasB)
             {
-                var count = Math.Min(structureB, PositionsB);
+                var count = Math.Max(PushBackCellDepth.MinimumPalletsDeep, Math.Min(structureB, PositionsB));
                 return (TotalPositions - count + 1, count);
             }
 
@@ -87,9 +100,9 @@ namespace RackCad.Application.Systems.PushBack
     /// incluso con hueco 0: ninguna cabecera se fusiona con la otra.
     /// </para>
     /// <para>
-    /// La retícula TRANSVERSAL si es compartida: cada ranura toma la mayor demanda aplicable de los dos lados
-    /// (calles, ancho de larguero y niveles), de modo que las lineas fisicas de postes y el BFR son unicos y ni una
-    /// cabecera se cuenta dos veces.
+    /// La retícula TRANSVERSAL si es compartida: TODA ranura existe en las dos sub-estructuras —las que no pertenecen
+    /// a un lado viajan alli como frente EN BLANCO (I-33)—, de modo que las columnas de postes y el BFR son unicos y
+    /// los indices de ranura significan lo mismo en los dos lados y en el compuesto.
     /// </para>
     /// </summary>
     public static class PushBackCompositeStructure
@@ -119,13 +132,16 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// El diseno estructural de UN lado en su MARCO LOCAL: sus ranuras presentes, cada una con la profundidad
-        /// estructural que le corresponde, arrancando todas en la posicion 1. Es lo que se le entrega al resolver
-        /// dinamico para obtener la sub-estructura del lado, de modo que ni una regla de cabeceras, separadores o
-        /// postes derivados se reescribe aqui.
+        /// El diseno estructural de UN lado en su MARCO LOCAL, con TODAS las ranuras transversales del rack: las que
+        /// no pertenecen a este lado viajan como frentes EN BLANCO. Eso es lo que hace que la retícula transversal
+        /// sea UNA sola y que el indice de ranura signifique lo mismo en A, en B y en la estructura compuesta — sin
+        /// el, una ranura ausente desplazaria todas las columnas siguientes de ese lado.
         /// </summary>
         public static DynamicRackDesign SideStructuralDesign(
-            PushBackDesign design, PushBackSideConfiguration side, IReadOnlyList<DynamicRackModuleDesign> modules)
+            PushBackDesign design,
+            PushBackSideConfiguration side,
+            PushBackSideConfiguration other,
+            IReadOnlyList<DynamicRackModuleDesign> modules)
         {
             var shared = design?.Structure ?? new DynamicRackDesign();
             var local = CopySharedStructuralIntent(shared);
@@ -133,18 +149,45 @@ namespace RackCad.Application.Systems.PushBack
             local.FirstLevelHeight = side.FirstLevelHeight;
             local.PalletsDeep = Math.Max(PushBackCellDepth.MinimumPalletsDeep, side.EffectiveStructure());
 
-            for (var slot = 0; slot < side.SlotCount; slot++)
+            var slots = Math.Max(side.SlotCount, other?.SlotCount ?? 0);
+            var absent = new List<bool>();
+            for (var slot = 0; slot < slots; slot++)
             {
                 var front = side.Front(slot);
-                if (front == null)
+                if (front != null)
+                {
+                    var copy = PushBackSideDesign.CopyFront(front);
+                    copy.DepthStartPosition = 1;
+                    copy.PalletsDeep = side.SlotStructure(slot);
+                    local.Fronts.Add(copy);
+                    absent.Add(false);
+                    continue;
+                }
+
+                // La ranura no existe en este lado: viaja EN BLANCO para conservar la columna. Su claro lo aporta el
+                // lado que si la tiene, porque el BFR es una propiedad fisica compartida.
+                var reference = other?.Front(slot);
+                if (reference == null)
                 {
                     continue;
                 }
 
-                var copy = PushBackSideDesign.CopyFront(front);
-                copy.DepthStartPosition = 1;
-                copy.PalletsDeep = side.SlotStructure(slot);
-                local.Fronts.Add(copy);
+                var blank = PushBackSideDesign.CopyFront(reference);
+                blank.IsActive = false;
+                blank.DepthStartPosition = 1;
+                blank.PalletsDeep = local.PalletsDeep;
+                local.Fronts.Add(blank);
+                absent.Add(true);
+            }
+
+            // Las ranuras ausentes del FINAL se retiran: son el borde del rack en este lado, y dejarlas en blanco
+            // dibujaria alli una linea de postes que no existe (la regla de I-33 conserva siempre los dos bordes
+            // exteriores). Quitarlas por el final no mueve ninguna columna, porque la retícula se acumula desde 0;
+            // por eso las ausencias INTERIORES si se conservan en blanco — retirarlas desplazaria las siguientes.
+            while (local.Fronts.Count > 1 && absent.Count == local.Fronts.Count && absent[absent.Count - 1])
+            {
+                local.Fronts.RemoveAt(local.Fronts.Count - 1);
+                absent.RemoveAt(absent.Count - 1);
             }
 
             if (local.Fronts.Count == 0)
@@ -187,10 +230,11 @@ namespace RackCad.Application.Systems.PushBack
             composite.FirstLevelHeight = sideB.IsPresent
                 ? Math.Min(sideA.FirstLevelHeight, sideB.FirstLevelHeight)
                 : sideA.FirstLevelHeight;
+            // I-42: una ranura solo-A y otra solo-B no anidan, y las dos son fisicamente reales sobre esta unica
+            // estructura. La intencion es DERIVADA (se construye aqui) y nunca se persiste.
+            composite.AllowsNonNestedDepthRanges = true;
 
             var slots = Math.Max(sideA.SlotCount, sideB.SlotCount);
-            var hasAOnly = false;
-            var hasBOnly = false;
             for (var slot = 0; slot < slots; slot++)
             {
                 var structureA = sideA.HasSlot(slot) ? sideA.SlotStructure(slot) : 0;
@@ -200,11 +244,9 @@ namespace RackCad.Application.Systems.PushBack
                     continue;
                 }
 
-                hasAOnly |= structureA > 0 && structureB <= 0;
-                hasBOnly |= structureB > 0 && structureA <= 0;
-
                 var range = layout.SlotRange(structureA, structureB);
                 var reference = sideA.Front(slot) ?? sideB.Front(slot);
+                var levels = Math.Max(sideA.Levels(slot), sideB.Levels(slot));
                 composite.Fronts.Add(new DynamicRackFrontDesign
                 {
                     // Una ranura esta ACTIVA si lo esta en cualquiera de los dos lados: su estructura existe igual.
@@ -213,9 +255,7 @@ namespace RackCad.Application.Systems.PushBack
                     PalletCount = Math.Max(
                         sideA.Front(slot)?.PalletCount ?? 0,
                         Math.Max(1, sideB.Front(slot)?.PalletCount ?? 0)),
-                    LoadLevels = Math.Max(sideA.Levels(slot), sideB.Levels(slot)) is var levels && levels > 0
-                        ? levels
-                        : (int?)null,
+                    LoadLevels = levels > 0 ? levels : (int?)null,
                     PalletsDeep = range.Count,
                     DepthStartPosition = range.Start,
                     BeamLengthOverride = MaxOverride(
@@ -224,18 +264,7 @@ namespace RackCad.Application.Systems.PushBack
                 });
             }
 
-            if (hasAOnly && hasBOnly)
-            {
-                // LIMITACION DECLARADA: la retícula de profundidad compartida exige que los rangos de los frentes
-                // aniden. Una ranura solo-A empieza en la posicion 1 y una solo-B acaba en la ultima, asi que
-                // ninguna contiene a la otra. Se reporta en vez de producir una estructura incoherente en silencio.
-                throw new ArgumentException(
-                    "Push Back compuesto: no pueden coexistir una ranura presente solo en el lado A y otra presente "
-                    + "solo en el lado B. La retícula de profundidad compartida exige que los rangos de los frentes "
-                    + "aniden entre si.");
-            }
-
-            foreach (var module in ComposeModules(design, layout, localA, localB))
+            foreach (var module in ComposeModules(layout, localA, localB))
             {
                 composite.Modules.Add(module);
             }
@@ -249,7 +278,7 @@ namespace RackCad.Application.Systems.PushBack
         /// cabeceras por linea despues de una recomposicion.
         /// </summary>
         public static IReadOnlyList<DynamicRackModuleDesign> ComposeModules(
-            PushBackDesign design, PushBackCompositeLayout layout, DynamicRackSystem localA, DynamicRackSystem localB)
+            PushBackCompositeLayout layout, DynamicRackSystem localA, DynamicRackSystem localB)
         {
             var result = new List<DynamicRackModuleDesign>();
             foreach (var module in localA?.Modules ?? new List<DynamicRackModule>())
@@ -281,24 +310,52 @@ namespace RackCad.Application.Systems.PushBack
             return result;
         }
 
-        /// <summary>Los modulos ALMACENADOS que corresponden a un lado, extraidos de la secuencia compartida.</summary>
+        /// <summary>
+        /// Los modulos ALMACENADOS que corresponden a un lado, extraidos de la secuencia compartida por su IDENTIDAD
+        /// y no por un conteo.
+        ///
+        /// <para>
+        /// Esta es la reconciliacion fisica que conserva I-40 cuando la estructura crece o encoge. Un modulo
+        /// SOBREVIVIENTE es el que sigue existiendo en la misma posicion contada DESDE EL EXTREMO EXTERIOR del lado
+        /// —que es lo que no se mueve— y con el mismo caracter fisico (cabecera frente a separador). Ese conserva su
+        /// ModuleId y su configuracion personalizada, y con ellos los <c>HeaderLineOverrides</c> que lo apuntan. Un
+        /// modulo NUEVO no hereda nada; uno que dejo de existir simplemente desaparece, y no se intenta trasladar su
+        /// override a otra pieza.
+        /// </para>
+        /// </summary>
         public static IReadOnlyList<DynamicRackModuleDesign> StoredSideModules(
             PushBackDesign design, PushBackCompositeLayout layout, PushBackSide side)
         {
-            var stored = design?.Structure?.Modules?.ToList() ?? new List<DynamicRackModuleDesign>();
-            if (stored.Count != layout.TotalPositions)
+            var stored = design?.Structure?.Modules?.Where(module => module != null).ToList()
+                         ?? new List<DynamicRackModuleDesign>();
+            if (stored.Count == 0)
             {
-                // La secuencia almacenada no describe ESTA estructura (cambio la demanda o el override): se
-                // reconstruye por defecto en vez de reinterpretar posiciones que ya no significan lo mismo.
                 return null;
+            }
+
+            var isComposite = stored.Any(module =>
+                string.Equals(module.ModuleId, GapModuleId, StringComparison.Ordinal)
+                || (module.ModuleId ?? string.Empty).StartsWith(SideBModulePrefix, StringComparison.Ordinal));
+
+            if (!isComposite)
+            {
+                // Secuencia de un rack de un solo sentido: pertenece integramente al lado A. El lado B todavia no
+                // tiene modulos almacenados y arranca de la receta estandar.
+                return side == PushBackSide.A ? stored.Select(ToDesign).ToList() : null;
             }
 
             if (side == PushBackSide.A)
             {
-                return stored.Take(layout.PositionsA).ToList();
+                return stored
+                    .TakeWhile(module => !string.Equals(module.ModuleId, GapModuleId, StringComparison.Ordinal)
+                        && !(module.ModuleId ?? string.Empty).StartsWith(SideBModulePrefix, StringComparison.Ordinal))
+                    .Select(ToDesign)
+                    .ToList();
             }
 
-            var tail = stored.Skip(layout.FirstPositionB - 1).ToList();
+            var tail = stored
+                .Where(module => (module.ModuleId ?? string.Empty).StartsWith(SideBModulePrefix, StringComparison.Ordinal))
+                .ToList();
             tail.Reverse();
             return tail
                 .Select(module =>
@@ -308,6 +365,56 @@ namespace RackCad.Application.Systems.PushBack
                     return copy;
                 })
                 .ToList();
+        }
+
+        /// <summary>
+        /// La secuencia de UN lado, de exactamente <paramref name="positions"/> modulos, reconciliando la almacenada
+        /// contra la receta estandar de esa profundidad.
+        ///
+        /// <para>
+        /// Regla, por posicion contada desde el extremo exterior del lado (el que no se mueve):
+        /// <list type="bullet">
+        /// <item>si la posicion existe en las dos y su CARACTER fisico coincide (cabecera / separador), sobrevive:
+        /// conserva ModuleId, configuracion personalizada y su procedencia;</item>
+        /// <item>si cambia de caracter, deja de ser la misma pieza: se toma la calculada;</item>
+        /// <item>si la posicion es nueva, se toma la calculada;</item>
+        /// <item>si la posicion desaparecio, desaparece.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// La LONGITUD siempre es la calculada: la de un extremo cambia cuando la estructura crece —deja de llevar la
+        /// holgura de extremo— y arrastrar la vieja dejaria la secuencia sin cerrar. Lo que se conserva es la
+        /// IDENTIDAD y la configuracion, que es lo que I-40 direcciona.
+        /// </para>
+        /// </summary>
+        public static IReadOnlyList<DynamicRackModuleDesign> Reconcile(
+            IReadOnlyList<DynamicRackModuleDesign> stored,
+            IReadOnlyList<DynamicRackModule> standard)
+        {
+            var result = new List<DynamicRackModuleDesign>();
+            var reference = standard ?? (IReadOnlyList<DynamicRackModule>)Array.Empty<DynamicRackModule>();
+            for (var index = 0; index < reference.Count; index++)
+            {
+                var calculated = ToDesign(reference[index], reference[index].ModuleId);
+                var previous = stored != null && index < stored.Count ? stored[index] : null;
+                if (previous == null || previous.IsHeader != calculated.IsHeader)
+                {
+                    result.Add(calculated);
+                    continue;
+                }
+
+                calculated.ModuleId = string.IsNullOrWhiteSpace(previous.ModuleId)
+                    ? calculated.ModuleId
+                    : previous.ModuleId;
+                calculated.UseCalculatedHeaderConfiguration = previous.UseCalculatedHeaderConfiguration;
+                calculated.HeaderConfiguration = previous.HeaderConfiguration;
+                calculated.IsCalculated = previous.IsCalculated;
+                calculated.IsManualOverride = previous.IsManualOverride;
+                calculated.Notes = previous.Notes;
+                result.Add(calculated);
+            }
+
+            return result;
         }
 
         /// <summary>Devuelve el ModuleId local de B a partir del compartido.</summary>

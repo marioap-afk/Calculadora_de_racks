@@ -68,6 +68,12 @@ namespace RackCad.Application.Systems.PushBack
 
         /// <summary>Se pidio separador central sin hueco donde ponerlo.</summary>
         public const string CentralSeparatorWithoutGap = "PB42_CENTRAL_SEPARATOR_WITHOUT_GAP";
+
+        /// <summary>El hueco declarado no es una longitud fisica valida (negativo o no finito).</summary>
+        public const string GapInvalid = "PB42_GAP_INVALID";
+
+        /// <summary>El override manual de estructura no es un valor construible. NO equivale a restaurar.</summary>
+        public const string StructureOverrideInvalid = "PB42_STRUCTURE_OVERRIDE_INVALID";
     }
 
     /// <summary>
@@ -77,6 +83,58 @@ namespace RackCad.Application.Systems.PushBack
     /// </summary>
     public static class PushBackCompositeDiagnostics
     {
+        /// <summary>
+        /// Los diagnosticos de una INTENCION, antes de resolver nada. Existen porque una entrada invalida no puede
+        /// convertirse en silencio en otro valor: el editor la conserva, la declara y bloquea.
+        /// </summary>
+        public static IReadOnlyList<PushBackCompositeDiagnostic> EvaluateIntent(
+            double gap, bool centralSeparator, int? overrideA, int? overrideB)
+        {
+            var result = new List<PushBackCompositeDiagnostic>();
+            if (double.IsNaN(gap) || double.IsInfinity(gap) || gap < 0.0)
+            {
+                result.Add(new PushBackCompositeDiagnostic(
+                    PushBackCompositeSeverity.Blocking,
+                    PushBackCompositeCodes.GapInvalid,
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        "El hueco ({0:0.##}\") no es una separacion fisica valida: debe ser cero o positivo. "
+                        + "Corrigelo; no se interpreta como otro valor.",
+                        gap)));
+            }
+            else if (centralSeparator && gap <= 0.0)
+            {
+                result.Add(new PushBackCompositeDiagnostic(
+                    PushBackCompositeSeverity.Blocking,
+                    PushBackCompositeCodes.CentralSeparatorWithoutGap,
+                    "El separador central necesita un hueco mayor que cero: sin el no hay donde colocarlo."));
+            }
+
+            AppendInvalidOverride(result, overrideA, "A");
+            AppendInvalidOverride(result, overrideB, "B");
+            return result;
+        }
+
+        private static void AppendInvalidOverride(
+            ICollection<PushBackCompositeDiagnostic> target, int? value, string label)
+        {
+            if (!value.HasValue || value.Value >= PushBackCellDepth.MinimumPalletsDeep)
+            {
+                return;
+            }
+
+            target.Add(new PushBackCompositeDiagnostic(
+                PushBackCompositeSeverity.Blocking,
+                PushBackCompositeCodes.StructureOverrideInvalid,
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    "Lado {0}: la estructura manual ({1}) no es construible; el minimo fisico es {2} fondos. "
+                    + "Corrige el valor o pulsa «Restaurar estructura» para volver a la propuesta.",
+                    label,
+                    value.Value,
+                    PushBackCellDepth.MinimumPalletsDeep)));
+        }
+
         public static IReadOnlyList<PushBackCompositeDiagnostic> Evaluate(PushBackSystem system)
         {
             var result = new List<PushBackCompositeDiagnostic>();
@@ -89,12 +147,6 @@ namespace RackCad.Application.Systems.PushBack
             AppendStructure(result, composite.SideA, "A");
             AppendStructure(result, composite.SideB, "B");
 
-            if ((system.Composite.CentralSeparator == false) && composite.Gap <= 0.0)
-            {
-                // Nada que decir: sin hueco y sin separador el rack esta bien. El aviso solo aparece cuando el
-                // usuario PIDIO separador y no hay hueco, y eso lo detecta el editor antes de resolver.
-            }
-
             foreach (var cell in composite.Cells)
             {
                 if (cell == null || cell.IsValid)
@@ -102,15 +154,12 @@ namespace RackCad.Application.Systems.PushBack
                     continue;
                 }
 
+                // El motivo ya nombra el LADO, el frente, el nivel y las dos magnitudes reales: lo escribe la
+                // autoridad de capacidad, que es quien las midio. Aqui no se vuelve a redactar.
                 result.Add(new PushBackCompositeDiagnostic(
                     PushBackCompositeSeverity.Blocking,
                     PushBackCompositeCodes.CellDoesNotFit,
-                    string.Format(
-                        CultureInfo.CurrentCulture,
-                        "Frente {0}, nivel {1}: {2}",
-                        cell.FrontIndex + 1,
-                        cell.LevelNumber,
-                        cell.DisabledReason),
+                    cell.DisabledReason,
                     cell.FrontIndex,
                     cell.LevelNumber));
             }
@@ -128,6 +177,23 @@ namespace RackCad.Application.Systems.PushBack
         {
             if (side == null || !side.IsPresent || !side.StructureOverride.HasValue)
             {
+                return;
+            }
+
+            if (side.StructureOverride.Value < PushBackCellDepth.MinimumPalletsDeep)
+            {
+                // Un valor manual INVALIDO no es «sin override»: eso es null, y solo lo escribe una restauracion
+                // explicita. Se conserva la intencion y se bloquea, en vez de resolverla como otro valor.
+                target.Add(new PushBackCompositeDiagnostic(
+                    PushBackCompositeSeverity.Blocking,
+                    PushBackCompositeCodes.StructureOverrideInvalid,
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        "Lado {0}: la estructura manual ({1}) no es construible; el minimo fisico es {2} fondos. "
+                        + "Corrige el valor o pulsa «Restaurar estructura» para volver a la propuesta.",
+                        label,
+                        side.StructureOverride.Value,
+                        PushBackCellDepth.MinimumPalletsDeep)));
                 return;
             }
 

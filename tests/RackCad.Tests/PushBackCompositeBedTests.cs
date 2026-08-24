@@ -238,22 +238,26 @@ namespace RackCad.Tests
         // ---- Capacidad geometrica real ------------------------------------------------------------------------
 
         [Fact]
-        public void AGap_CanMakeADemandingCorridaFit()
+        public void ACorridaBeyondTheAvailablePositions_IsBlocked_AndMoreGapDoesNotRescueIt()
         {
-            // A pide 8 y B pide 5, pero la estructura de cada lado se limita por override.
+            // A pide 8 y B pide 5, pero la estructura de A se limita a 6 por override manual.
             var design = Design(PushBackCellTopology.Corrida, PushBackRunDirection.AToB, deepA: 8, deepB: 5, levelsA: 1, levelsB: 1);
-            design.Composite.StructureOverrideA = 6;   // la estructura de A se queda corta para su fondo de 8
+            design.Composite.StructureOverrideA = 6;
             var tight = new PushBackResolver(Catalog).Resolve(design);
             var tightCell = tight.Composite.Cell(0, 1);
             Assert.False(tightCell.IsValid);
 
-            // El hueco anade longitud fisica REAL entre los apoyos, y con suficiente hueco la cama cabe.
-            design.Composite.Gap = tightCell.RequiredBedLength - tightCell.AvailableBedSpan + 1.0;
+            // El hueco anade LONGITUD, pero no anade posiciones de tarima: no puede rescatar una demanda que excede
+            // los fondos disponibles, y no lo hace en silencio.
+            design.Composite.Gap = 60.0;
             var loose = new PushBackResolver(Catalog).Resolve(design);
+            Assert.False(loose.Composite.Cell(0, 1).IsValid);
 
-            Assert.True(loose.Composite.Cell(0, 1).IsValid);
-            Assert.True(loose.Composite.Cell(0, 1).AvailableBedSpan > tightCell.AvailableBedSpan);
-            Assert.Equal(tightCell.RequiredBedLength, loose.Composite.Cell(0, 1).RequiredBedLength, 6);
+            // Lo que si la vuelve valida es ESTRUCTURA: la demanda cabe en cuanto los fondos existen.
+            design.Composite.Gap = 0.0;
+            design.Composite.StructureOverrideA = 8;
+            var widened = new PushBackResolver(Catalog).Resolve(design);
+            Assert.True(widened.Composite.Cell(0, 1).IsValid);
         }
 
         [Fact]

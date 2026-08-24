@@ -107,6 +107,10 @@
                               Checked="SideBPresent_Changed" Unchecked="SideBPresent_Changed"
                               ToolTipService.ShowOnDisabled="True"
                               ToolTip="Anade el lado B sobre la MISMA estructura fisica. Retirarlo no borra su configuraci&#243;n." />
+                    <!-- Toda la configuracion EXCLUSIVA del compuesto vive dentro de este contenedor. Con el rack de
+                         un solo sentido se COLAPSA (no solo se deshabilita), asi que no ocupa espacio ni satura la
+                         barra lateral: el editor legacy queda exactamente como estaba antes de I-42. -->
+                    <StackPanel x:Name="CompositeSection" Visibility="Collapsed">
                     <TextBlock Text="Lado activo" Style="{StaticResource FieldLabel}" />
                     <ComboBox x:Name="SideSelectorBox" SelectionChanged="SideSelector_Changed"
                               ToolTipService.ShowOnDisabled="True"
@@ -182,6 +186,7 @@
                     </WrapPanel>
                     <TextBlock x:Name="CompositeStructureText" Text="Estructura: &#8212;"
                                Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />
+                    </StackPanel>
 
                     <!-- PB-013 (I-32): Fondo and Unidad are RACK-WIDE and stay editable here. Frente, Alto and Peso
                          belong to the CELL, so this panel only MIRRORS the selected one: they used to be editable and

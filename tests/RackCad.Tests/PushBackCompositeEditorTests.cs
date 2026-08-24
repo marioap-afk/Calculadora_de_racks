@@ -150,8 +150,12 @@ namespace RackCad.Tests
         public void TheGapAndTheCentralSeparator_TravelToTheDesign()
         {
             var state = State();
+            // Una entrada INVALIDA se conserva tal cual y se declara: convertirla en silencio a otro valor es lo que
+            // hace que el rack acabe siendo distinto del que se pidio.
             state.SetGap(-5.0);
-            Assert.Equal(0.0, state.Gap, 6);
+            Assert.Equal(-5.0, state.Gap, 6);
+            Assert.False(state.GapIsValid);
+            Assert.True(state.HasBlockingIntent());
 
             state.SetGap(12.0);
             state.SetCentralSeparator(true);

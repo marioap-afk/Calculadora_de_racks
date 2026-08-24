@@ -7,6 +7,7 @@ using RackCad.Application.Drawing;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.Application.Systems.PushBack
 {
@@ -95,11 +96,13 @@ namespace RackCad.Application.Systems.PushBack
         private HeaderRunPlan BuildComposite(PushBackSystem system, RackCatalog catalog, int postIndex, bool sectioned)
         {
             var structure = system.Structure;
-            var reference = system.Composite.SideA?.Local;
-            var elevations = reference != null ? PushBackElevations.Context(reference, catalog) : null;
+            // La ESTRUCTURA se dibuja SIN decoraciones: una sola tabla frente/nivel/elevacion no puede describir dos
+            // pasillos, asi que las cotas y las etiquetas de nivel se emiten despues, una vez POR LADO y con la
+            // geometria real de ese lado. Ninguna cota puede afirmar una elevacion de A sobre una pieza de B.
+            var bare = WithoutDecorations(structure);
             var basePlan = sectioned
-                ? dynamicBuilder.Build(structure, catalog, postIndex, elevations)
-                : dynamicBuilder.Build(structure, catalog, elevations);
+                ? dynamicBuilder.Build(bare, catalog, postIndex, null)
+                : dynamicBuilder.Build(bare, catalog, null);
 
             var headers = PushBackPlanComposer.StructuralHeaderGroups(basePlan);
             var loose = PushBackPlanComposer.StructuralLoose(basePlan);
@@ -107,18 +110,79 @@ namespace RackCad.Application.Systems.PushBack
             var runs = PushBackRuns.Resolve(system);
             var slots = CompositeSlots(system, structure, postIndex, sectioned);
             var levelCap = sectioned ? DynamicFrontGeometry.LoadLevelsAtPost(structure, postIndex) : int.MaxValue;
-            var content = PushBackCompositeContent.Lateral(system, catalog, runs, slot => slots.Contains(slot), levelCap);
+            var content = PushBackCompositeContent.Lateral(
+                system, catalog, runs, slot => slots.Contains(slot), levelCap, postIndex);
             headers.AddRange(content.Headers);
             loose.AddRange(content.Loose);
 
-            var intermediates = intermediateBuilder.Build(system, catalog, postIndex, levelCap);
-            headers.AddRange(intermediates.Headers);
-            loose.AddRange(intermediates.LooseInstances);
+            // Las decoraciones de CADA lado, con SUS elevaciones, por el pipeline de anotaciones que ya existe.
+            loose.AddRange(SideDecorations(system, catalog, postIndex, sectioned));
 
-            // Etiquetas A/B: informacion grafica del plano, por el pipeline de anotaciones que ya existe. Nunca al BOM.
+            // Etiquetas A/B: informacion grafica del plano, por el mismo pipeline. Nunca al BOM.
             loose.AddRange(PushBackSideAnnotations.Lateral(system));
 
             return new HeaderRunPlan(headers, loose);
+        }
+
+        /// <summary>
+        /// Las cotas y las etiquetas de nivel de los DOS lados, cada una calculada sobre la sub-estructura del lado
+        /// que representa y llevada al rack con la misma reflexion rigida que su contenido. El nombre del rack lo
+        /// emite solo el lado A: es del rack, no de un lado, y duplicarlo escribiria dos veces el mismo texto.
+        /// </summary>
+        private static IReadOnlyList<HeaderBlockInstance> SideDecorations(
+            PushBackSystem system, RackCatalog catalog, int postIndex, bool sectioned)
+        {
+            var result = new List<HeaderBlockInstance>();
+            var composite = system.Composite;
+            var axis = PushBackMirror.AxisOf(system.Structure);
+            foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
+            {
+                var view = composite.Of(side);
+                var local = view?.Local?.Structure;
+                if (view == null || !view.IsPresent || local == null)
+                {
+                    continue;
+                }
+
+                var decorated = new List<HeaderBlockInstance>();
+                var source = side == PushBackSide.B ? WithoutRackName(local) : local;
+                DynamicViewDecorations.AppendLateral(
+                    decorated,
+                    source,
+                    sectionHeight: sectioned ? DynamicFrontGeometry.PostHeight(local, postIndex) : (double?)null,
+                    levelCount: sectioned
+                        ? DynamicFrontGeometry.LoadLevelsAtPost(local, postIndex)
+                        : int.MaxValue,
+                    sectionStartX: 0.0,
+                    sectionEndX: null,
+                    postIndex: sectioned ? postIndex : -1,
+                    elevations: PushBackElevations.Context(view.Local, catalog));
+
+                result.AddRange(side == PushBackSide.B
+                    ? PushBackMirror.Instances(decorated, axis)
+                    : decorated);
+            }
+
+            return result;
+        }
+
+        /// <summary>Copia de la estructura sin cotas ni etiquetas: las emite despues cada lado con su geometria.</summary>
+        private static DynamicRackSystem WithoutDecorations(DynamicRackSystem source)
+        {
+            var copy = PushBackMirror.Structure(PushBackMirror.Structure(source));
+            copy.Dimensions = DimensionDetail.None;
+            copy.NumberFronts = false;
+            copy.NumberLevels = false;
+            copy.DrawRackName = false;
+            return copy;
+        }
+
+        /// <summary>Copia de una sub-estructura sin el nombre del rack: solo el lado de referencia lo escribe.</summary>
+        private static DynamicRackSystem WithoutRackName(DynamicRackSystem source)
+        {
+            var copy = PushBackMirror.Structure(PushBackMirror.Structure(source));
+            copy.DrawRackName = false;
+            return copy;
         }
 
         /// <summary>

@@ -144,6 +144,18 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
+        /// True cuando el override almacenado es un valor MANUAL VALIDO. Un valor por debajo del minimo fisico no es
+        /// «sin override» —eso es null, y solo lo escribe una restauracion explicita—: es una entrada invalida, y el
+        /// editor la bloquea con su diagnostico en vez de resolverla como otro valor.
+        /// </summary>
+        public bool HasValidStructureOverride
+            => StructureOverride.HasValue && StructureOverride.Value >= PushBackCellDepth.MinimumPalletsDeep;
+
+        /// <summary>True cuando hay un override almacenado que NO es un valor construible.</summary>
+        public bool HasInvalidStructureOverride
+            => StructureOverride.HasValue && StructureOverride.Value < PushBackCellDepth.MinimumPalletsDeep;
+
+        /// <summary>
         /// La estructura EFECTIVA del lado: el override manual si lo hay, y si no la propuesta. El override
         /// SUSTITUYE a la propuesta, no la acota: por eso un override menor deja celdas fisicamente imposibles, que
         /// se reportan como tales en vez de recortarse en silencio.
@@ -155,9 +167,7 @@ namespace RackCad.Application.Systems.PushBack
                 return 0;
             }
 
-            return StructureOverride.HasValue && StructureOverride.Value >= PushBackCellDepth.MinimumPalletsDeep
-                ? StructureOverride.Value
-                : ProposedStructure();
+            return HasValidStructureOverride ? StructureOverride.Value : ProposedStructure();
         }
 
         /// <summary>
@@ -201,10 +211,14 @@ namespace RackCad.Application.Systems.PushBack
                 });
             }
 
-            result.fronts.AddRange(designFronts);
+            var composite = design?.Composite;
             for (var slot = 0; slot < designFronts.Count; slot++)
             {
-                result.configs.Add(design?.FrontConfig(slot));
+                // I-42: una ranura declarada ausente en A no se BORRA de la lista —eso desplazaria los indices de
+                // las siguientes— sino que se lee como nula. Su configuracion sigue ahi, dormante.
+                var absent = composite != null && composite.IsSlotAbsentInA(slot);
+                result.fronts.Add(absent ? null : designFronts[slot]);
+                result.configs.Add(absent ? null : design?.FrontConfig(slot));
             }
 
             return result;

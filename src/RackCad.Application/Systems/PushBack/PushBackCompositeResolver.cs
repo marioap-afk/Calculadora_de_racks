@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
@@ -14,11 +15,11 @@ namespace RackCad.Application.Systems.PushBack
     /// <list type="number">
     /// <item>la lectura uniforme de los dos lados (<see cref="PushBackSideConfiguration"/>) y, con ella, la
     /// estructura PROPUESTA y la EFECTIVA de cada uno;</item>
-    /// <item>la sub-estructura de cada lado en su MARCO LOCAL, delegando integramente en el resolver dinamico: ni
-    /// una regla de cabeceras, separadores, postes derivados o alturas se reescribe;</item>
-    /// <item>la ESTRUCTURA FISICA UNICA (A + hueco + B invertido) sobre una sola retícula transversal;</item>
-    /// <item>la rejilla de celdas con su topologia, su sentido y las dos magnitudes que deciden si son
-    /// construibles.</item>
+    /// <item>la sub-estructura de cada lado en su MARCO LOCAL, delegando integramente en el resolver dinamico. Toda
+    /// ranura del rack existe en las dos sub-estructuras —la que no pertenece a un lado va EN BLANCO—, asi que la
+    /// retícula transversal es UNA sola y el indice de ranura significa lo mismo en todas partes;</item>
+    /// <item>la ESTRUCTURA FISICA UNICA (A + hueco + B invertido) sobre esa retícula;</item>
+    /// <item>la rejilla de celdas, con sus CAMAS fisicas y la capacidad de cada una medida por separado.</item>
     /// </list>
     ///
     /// <para>
@@ -29,13 +30,21 @@ namespace RackCad.Application.Systems.PushBack
     /// </summary>
     public sealed class PushBackCompositeResolver
     {
+        /// <summary>
+        /// Altura de referencia de la receta estandar usada SOLO para reconciliar modulos. No llega al dibujo: el
+        /// resolver reconstruye la configuracion calculada de cada cabecera con la altura real del rack.
+        /// </summary>
+        private const double StandardReferenceHeight = 100.0;
+
         private readonly RackCatalog catalog;
         private readonly DynamicRackSystemResolver structureResolver;
+        private readonly DynamicRackSystemBuilder structureBuilder;
 
         public PushBackCompositeResolver(RackCatalog catalog)
         {
             this.catalog = catalog ?? new RackCatalog();
             structureResolver = new DynamicRackSystemResolver(this.catalog);
+            structureBuilder = new DynamicRackSystemBuilder(this.catalog);
         }
 
         /// <summary>
@@ -50,8 +59,8 @@ namespace RackCad.Application.Systems.PushBack
             var sideB = PushBackSideConfiguration.ForB(design);
             var layout = PushBackCompositeStructure.Layout(sideA, sideB, design.Composite);
 
-            var localA = ResolveSide(design, sideA, layout, PushBackSide.A, resolveSide, null);
-            var localB = ResolveSide(design, sideB, layout, PushBackSide.B, resolveSide, null);
+            var localA = ResolveSide(design, sideA, sideB, layout, PushBackSide.A, resolveSide, null);
+            var localB = ResolveSide(design, sideB, sideA, layout, PushBackSide.B, resolveSide, null);
 
             var compositeDesign = PushBackCompositeStructure.Compose(
                 design, sideA, sideB, layout, localA?.Structure, localB?.Structure);
@@ -64,8 +73,8 @@ namespace RackCad.Application.Systems.PushBack
             var sharedHeight = structure.Fronts.Count > 0 ? structure.Fronts.Max(front => front.Height) : (double?)null;
             if (sharedHeight.HasValue && sharedHeight.Value > 0.0)
             {
-                localA = ResolveSide(design, sideA, layout, PushBackSide.A, resolveSide, sharedHeight);
-                localB = ResolveSide(design, sideB, layout, PushBackSide.B, resolveSide, sharedHeight);
+                localA = ResolveSide(design, sideA, sideB, layout, PushBackSide.A, resolveSide, sharedHeight);
+                localB = ResolveSide(design, sideB, sideA, layout, PushBackSide.B, resolveSide, sharedHeight);
             }
 
             var composite = new PushBackCompositeSystem
@@ -95,6 +104,7 @@ namespace RackCad.Application.Systems.PushBack
         private PushBackSystem ResolveSide(
             PushBackDesign design,
             PushBackSideConfiguration side,
+            PushBackSideConfiguration other,
             PushBackCompositeLayout layout,
             PushBackSide which,
             Func<PushBackDesign, PushBackSystem> resolveSide,
@@ -105,60 +115,74 @@ namespace RackCad.Application.Systems.PushBack
                 return null;
             }
 
-            var modules = PushBackCompositeStructure.StoredSideModules(design, layout, which);
+            var modules = ReconcileSideModules(design, layout, which);
             var localDesign = new PushBackDesign
             {
-                Structure = PushBackCompositeStructure.SideStructuralDesign(design, side, modules),
-                LegacyHighEndBeamPeralte = side.LegacyHighEndBeamPeralte
+                Structure = PushBackCompositeStructure.SideStructuralDesign(design, side, other, modules),
+                LegacyHighEndBeamPeralte = side.LegacyHighEndBeamPeralte,
+                RearTope = side.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig()
             };
             if (sharedHeight.HasValue)
             {
                 localDesign.Structure.ManualHeaderHeightOverride = sharedHeight;
             }
 
-            // La configuracion Push Back del lado viaja SOLO para las ranuras presentes, en el mismo orden en que
-            // SideStructuralDesign las apilo: asi el resolver de un lado sigue siendo el de siempre. La rejilla de
-            // topes se RE-INDEXA a la vez, porque esta escrita en ranuras compartidas y el sistema local numera solo
-            // las presentes: sin ese puente, un rack con una ranura ausente desactivaria el tope equivocado.
-            var localIndexBySlot = new Dictionary<int, int>();
-            for (var slot = 0; slot < side.SlotCount; slot++)
+            // La configuracion Push Back del lado viaja por RANURA, alineada con los frentes que
+            // SideStructuralDesign acaba de apilar — que son TODOS, con los ausentes en blanco. Por eso el indice de
+            // ranura ES el indice local, y la rejilla de topes no necesita ninguna traduccion.
+            for (var slot = 0; slot < localDesign.Structure.Fronts.Count; slot++)
             {
-                if (side.Front(slot) == null)
-                {
-                    continue;
-                }
-
-                localIndexBySlot[slot] = localDesign.Fronts.Count;
                 localDesign.Fronts.Add(side.Config(slot)?.DeepCopy() ?? new PushBackFrontConfig());
             }
 
-            localDesign.RearTope = ReindexTope(side.RearTope, localIndexBySlot);
             return resolveSide(localDesign);
         }
 
         /// <summary>
-        /// La rejilla de topes de un lado, re-escrita de ranuras COMPARTIDAS a indices del sistema LOCAL. Una
-        /// desactivacion de una ranura que no existe en el lado se descarta: no tiene tope al que apagar, y
-        /// arrastrarla movería la desactivacion a otra ranura.
+        /// Los modulos de un lado, RECONCILIADOS fisicamente contra la receta estandar de su profundidad efectiva.
+        ///
+        /// <para>
+        /// Es lo que conserva I-40 cuando la estructura crece o encoge. La regla anterior —«si el conteo no coincide,
+        /// reconstruir todo»— tiraba toda cabecera personalizada en cuanto se movia un fondo. Aqui una pieza que
+        /// sigue existiendo en la misma posicion contada desde el extremo exterior del lado, y con el mismo caracter
+        /// fisico, conserva su ModuleId y su configuracion; una pieza nueva nace calculada; una que desaparecio no
+        /// deja rastro.
+        /// </para>
         /// </summary>
-        private static PushBackRearTopeConfig ReindexTope(
-            PushBackRearTopeConfig source, IReadOnlyDictionary<int, int> localIndexBySlot)
+        private IReadOnlyList<DynamicRackModuleDesign> ReconcileSideModules(
+            PushBackDesign design, PushBackCompositeLayout layout, PushBackSide which)
         {
-            var result = new PushBackRearTopeConfig
+            var positions = which == PushBackSide.A ? layout.PositionsA : layout.PositionsB;
+            if (positions < PushBackCellDepth.MinimumPalletsDeep)
             {
-                Saque = source?.Saque ?? PushBackDefaults.RearTopeSaque,
-                PieceId = source?.PieceId
-            };
-
-            foreach (var cell in source?.OffCells ?? new List<RackCad.Domain.Systems.Selective.SelectiveGridCell>())
-            {
-                if (cell != null && localIndexBySlot.TryGetValue(cell.Frente, out var local))
-                {
-                    result.Disable(local, cell.Level);
-                }
+                return null;
             }
 
-            return result;
+            var stored = PushBackCompositeStructure.StoredSideModules(design, layout, which);
+            if (stored != null && stored.Count == positions)
+            {
+                return stored;   // nada se movio: la secuencia almacenada describe esta estructura tal cual
+            }
+
+            var pallet = design?.Structure?.Pallet;
+            if (pallet == null || pallet.Depth <= 0.0)
+            {
+                return null;
+            }
+
+            // La RECETA estandar de esa profundidad, construida por el builder dinamico: el patron de cabeceras y
+            // separadores no se reescribe aqui, se le pregunta.
+            var standard = structureBuilder.BuildDefault(
+                pallet,
+                positions,
+                RackFrameTemplateCatalog.Default,
+                string.IsNullOrWhiteSpace(design.Structure.HeaderPostCatalogId)
+                    ? catalog.Defaults?.Post
+                    : design.Structure.HeaderPostCatalogId,
+                StandardReferenceHeight,
+                design.Structure.PostPeralte);
+
+            return PushBackCompositeStructure.Reconcile(stored, standard.Modules.ToList());
         }
 
         private static PushBackSideSystem BuildSide(
@@ -182,21 +206,18 @@ namespace RackCad.Application.Systems.PushBack
             };
 
             var total = structure?.TotalLength ?? 0.0;
-            var localIndex = 0;
             var slots = Math.Max(configuration.SlotCount, structure?.Fronts.Count ?? 0);
             for (var slot = 0; slot < slots; slot++)
             {
+                // Toda ranura existe en la sub-estructura del lado (las ausentes, en blanco), asi que el indice local
+                // ES el de la ranura: el puente que antes hacia falta construir ya no existe.
                 var present = side.IsPresent && configuration.Front(slot) != null;
-                side.LocalIndexBySlot.Add(present ? localIndex : -1);
-                var localFront = present && local?.Structure != null && localIndex < local.Structure.Fronts.Count
-                    ? local.Structure.Fronts[localIndex]
+                side.LocalIndexBySlot.Add(slot);
+                var localFront = local?.Structure != null && slot < local.Structure.Fronts.Count
+                    ? local.Structure.Fronts[slot]
                     : null;
-                side.Fronts.Add(localFront);
-                side.ResolvedFronts.Add(BuildResolvedFront(local, present ? localIndex : -1, present));
-                if (present)
-                {
-                    localIndex++;
-                }
+                side.Fronts.Add(present ? localFront : null);
+                side.ResolvedFronts.Add(BuildResolvedFront(local, slot, present));
             }
 
             // El extremo EXTERIOR de A es el origen; el de B, el final del rack. El INTERIOR de cada lado es su
@@ -236,9 +257,9 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// La rejilla de celdas: topologia y sentido por (ranura, nivel), con las dos magnitudes de capacidad ya
-        /// medidas. Una topologia que pide un lado que no existe en esa celda se DEGRADA de forma explicita y
-        /// declarada (no en silencio) al unico lado disponible, o se marca imposible si no hay ninguno.
+        /// La rejilla de celdas: topologia, sentido y las CAMAS fisicas de cada una, con la capacidad de cada cama
+        /// medida por separado. Una topologia que pide un lado que no existe en esa celda se DEGRADA de forma
+        /// explicita al unico lado disponible; la intencion almacenada no se toca y reaparece intacta.
         /// </summary>
         private static void BuildCells(
             PushBackDesign design,
@@ -252,6 +273,7 @@ namespace RackCad.Application.Systems.PushBack
         {
             var intent = design.Composite ?? new PushBackCompositeDesign();
             var slots = structure?.Fronts.Count ?? 0;
+            var total = structure?.TotalLength ?? 0.0;
             for (var slot = 0; slot < slots; slot++)
             {
                 var levelsA = sideA.Levels(slot);
@@ -261,14 +283,12 @@ namespace RackCad.Application.Systems.PushBack
                 {
                     var hasA = level < levelsA;
                     var hasB = level < levelsB;
-                    var topology = Degrade(intent.TopologyAt(slot, level), hasA, hasB);
-                    var direction = intent.DirectionAt(slot, level);
                     var cell = new PushBackResolvedCell
                     {
                         FrontIndex = slot,
                         LevelNumber = level + 1,
-                        Topology = topology,
-                        Direction = direction
+                        Topology = Degrade(intent.TopologyAt(slot, level), hasA, hasB),
+                        Direction = intent.DirectionAt(slot, level)
                     };
 
                     if (!hasA && !hasB)
@@ -278,46 +298,86 @@ namespace RackCad.Application.Systems.PushBack
                         continue;
                     }
 
-                    var requiredA = hasA
-                        ? PushBackBedSpan.Required(localA?.Structure, sideA.EffectiveDeep(slot, level))
-                        : 0.0;
-                    var requiredB = hasB
-                        ? PushBackBedSpan.Required(localB?.Structure, sideB.EffectiveDeep(slot, level))
-                        : 0.0;
-                    var availableA = hasA
-                        ? PushBackBedSpan.Available(localA?.Structure, sideA.SlotStructure(slot))
-                        : 0.0;
-                    var availableB = hasB
-                        ? PushBackBedSpan.Available(localB?.Structure, sideB.SlotStructure(slot))
-                        : 0.0;
-
-                    switch (topology)
+                    switch (cell.Topology)
                     {
                         case PushBackCellTopology.SoloA:
-                            cell.RequiredBedLength = requiredA;
-                            cell.AvailableBedSpan = availableA;
+                            cell.Beds.Add(SideBed(sideA, localA, slot, level, PushBackSide.A));
                             break;
                         case PushBackCellTopology.SoloB:
-                            cell.RequiredBedLength = requiredB;
-                            cell.AvailableBedSpan = availableB;
+                            cell.Beds.Add(SideBed(sideB, localB, slot, level, PushBackSide.B));
                             break;
                         case PushBackCellTopology.Encontradas:
-                            // Dos camas fisicas: la limitante es la que peor lo tiene.
-                            cell.RequiredBedLength = Math.Max(requiredA, requiredB);
-                            cell.AvailableBedSpan = Math.Min(availableA, availableB);
+                            // DOS camas fisicas INDEPENDIENTES: cada una se mide contra SU propia estructura. Medir
+                            // la demanda de una contra el espacio de la otra inventaba errores de capacidad — es lo
+                            // que hacia que un rack de 4 fondos en A y 8 en B se declarara imposible.
+                            cell.Beds.Add(SideBed(sideA, localA, slot, level, PushBackSide.A));
+                            cell.Beds.Add(SideBed(sideB, localB, slot, level, PushBackSide.B));
                             break;
                         case PushBackCellTopology.Corrida:
-                            // UNA cama que atraviesa A + hueco + B. La demanda son los fondos de los dos lados; el
-                            // hueco NO es demanda pero SI es longitud disponible, y por eso puede volverla valida.
-                            cell.RequiredBedLength = requiredA + requiredB;
-                            cell.AvailableBedSpan = availableA + layout.Gap + availableB;
+                            cell.Beds.Add(CorridaBed(sideA, sideB, layout, slot, level, cell.Direction, structure, total));
                             break;
                     }
 
-                    cell.DisabledReason = PushBackBedSpan.DisabledReason(cell.RequiredBedLength, cell.AvailableBedSpan);
+                    cell.DisabledReason = cell.Beds
+                        .Where(bed => bed != null && !bed.IsValid)
+                        .Select(bed => bed.DisabledReason)
+                        .FirstOrDefault();
                     composite.Cells.Add(cell);
                 }
             }
+        }
+
+        /// <summary>Una cama de UN lado: su demanda contra la estructura de ESE lado, nunca contra la del otro.</summary>
+        private static PushBackCellBed SideBed(
+            PushBackSideConfiguration side, PushBackSystem local, int slot, int level, PushBackSide which)
+        {
+            var deep = side.EffectiveDeep(slot, level);
+            var bed = new PushBackCellBed
+            {
+                LowSide = which,
+                HighSide = which,
+                DemandPositions = deep,
+                RequiredBedLength = PushBackBedSpan.Required(local?.Structure, deep),
+                AvailableBedSpan = PushBackBedSpan.Available(local?.Structure, side.SlotStructure(slot))
+            };
+            bed.DisabledReason = PushBackBedSpan.DisabledReason(
+                bed.RequiredBedLength, bed.AvailableBedSpan, which, slot, level + 1);
+            return bed;
+        }
+
+        /// <summary>
+        /// La cama CORRIDA: UNA sola pieza anclada en el extremo ALTO que se desarrolla hacia el BAJO exactamente lo
+        /// que su demanda exige.
+        ///
+        /// <para>
+        /// Su longitud fisica NO es la del rack: la estructura sobrante puede existir porque OTROS niveles o frentes
+        /// la necesitan, y una corrida corta simplemente no la usa. La demanda son los fondos que los dos lados
+        /// declaran para esa celda; la capacidad, la profundidad completa que la estructura pone a disposicion.
+        /// </para>
+        /// </summary>
+        private static PushBackCellBed CorridaBed(
+            PushBackSideConfiguration sideA,
+            PushBackSideConfiguration sideB,
+            PushBackCompositeLayout layout,
+            int slot,
+            int level,
+            PushBackRunDirection direction,
+            DynamicRackSystem structure,
+            double total)
+        {
+            var forward = direction == PushBackRunDirection.AToB;
+            var demand = sideA.EffectiveDeep(slot, level) + sideB.EffectiveDeep(slot, level);
+            var bed = new PushBackCellBed
+            {
+                LowSide = forward ? PushBackSide.A : PushBackSide.B,
+                HighSide = forward ? PushBackSide.B : PushBackSide.A,
+                DemandPositions = demand,
+                RequiredBedLength = PushBackBedSpan.SpanOfLastPositions(structure, demand),
+                AvailableBedSpan = total
+            };
+            bed.DisabledReason = PushBackBedSpan.DisabledReason(
+                bed.RequiredBedLength, bed.AvailableBedSpan, bed.LowSide, slot, level + 1);
+            return bed;
         }
 
         /// <summary>

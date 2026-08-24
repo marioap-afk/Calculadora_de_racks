@@ -34,6 +34,16 @@ namespace RackCad.Domain.Systems.PushBack
         public int? StructureOverrideB { get; set; }
 
         /// <summary>
+        /// I-42 — las ranuras transversales que NO existen en el lado A. El lado B expresa su ausencia con una
+        /// entrada nula en su propia lista; el lado A no puede, porque sus frentes son los del diseno legacy y
+        /// quitarlos desplazaria los indices de las ranuras siguientes. Su configuracion queda DORMANTE.
+        /// </summary>
+        public IList<int> AbsentSlotsA { get; } = new List<int>();
+
+        /// <summary>True cuando la ranura no existe en el lado A.</summary>
+        public bool IsSlotAbsentInA(int slot) => AbsentSlotsA.Contains(slot);
+
+        /// <summary>
         /// Topologia por celda. Solo se persisten las celdas que se APARTAN del valor por defecto
         /// (<see cref="DefaultTopology"/>), igual que <see cref="PushBackRearTopeConfig.OffCells"/> solo persiste
         /// desactivaciones: una lista positiva completa nunca llega al archivo.
@@ -112,6 +122,11 @@ namespace RackCad.Domain.Systems.PushBack
                 DefaultTopology = DefaultTopology,
                 DefaultDirection = DefaultDirection
             };
+
+            foreach (var slot in AbsentSlotsA)
+            {
+                copy.AbsentSlotsA.Add(slot);
+            }
 
             foreach (var cell in Topologies)
             {

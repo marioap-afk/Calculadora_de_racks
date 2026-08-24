@@ -44,7 +44,12 @@ namespace RackCad.Application.Systems.Dynamic
             Validate(design);
 
             var frontDesigns = design.Fronts.Where(front => front != null).ToList();
-            var depthLayout = DynamicDepthGeometry.Resolve(frontDesigns, design.PalletsDeep);
+            var depthLayout = DynamicDepthGeometry.Resolve(
+                frontDesigns,
+                design.PalletsDeep,
+                design.AllowsNonNestedDepthRanges
+                    ? DynamicDepthNesting.NotRequired
+                    : DynamicDepthNesting.Required);
             var inOutBeamId = string.IsNullOrWhiteSpace(design.InOutBeamCatalogId)
                 ? DynamicRackDefaults.InOutBeamCatalogId
                 : design.InOutBeamCatalogId;

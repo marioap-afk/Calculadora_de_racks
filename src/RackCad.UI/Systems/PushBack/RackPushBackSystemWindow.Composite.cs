@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,20 +53,16 @@ namespace RackCad.UI.Systems.PushBack
             UpdateCompositeEnabled();
         }
 
-        /// <summary>Los controles que solo tienen sentido con dos lados se apagan cuando el rack tiene uno.</summary>
+        /// <summary>
+        /// La configuracion exclusiva del compuesto se COLAPSA cuando el rack es de un solo sentido: no ocupa
+        /// espacio ni satura la barra lateral, y el editor legacy queda igual que antes de I-42. Deshabilitarla sin
+        /// ocultarla dejaba media pantalla de controles muertos en el caso mas comun.
+        /// </summary>
         private void UpdateCompositeEnabled()
         {
             var present = composite.SideBPresent;
-            SideSelectorBox.IsEnabled = present;
-            GapBox.IsEnabled = present;
-            CentralSeparatorCheck.IsEnabled = present;
-            CellTopologyBox.IsEnabled = present;
-            RunDirectionBox.IsEnabled = present;
-            TopologyScopeBox.IsEnabled = present;
-            ApplyTopologyButton.IsEnabled = present;
-            StructureOverrideBox.IsEnabled = present;
-            ApplyStructureButton.IsEnabled = present;
-            RestoreStructureButton.IsEnabled = present;
+            CompositeSection.Visibility = present ? Visibility.Visible : Visibility.Collapsed;
+            CompositeSection.IsEnabled = present;
         }
 
         // ---- Lado activo y presencia --------------------------------------------------------------------------
@@ -116,7 +113,14 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            composite.SetGap(GapBox.Value ?? 0.0);
+            // Un campo en error no escribe nada: convertirlo en 0 seria corregir la entrada en silencio, que es
+            // exactamente lo que no puede pasar. El control ya muestra su propio motivo.
+            if (GapBox.HasError || !GapBox.Value.HasValue)
+            {
+                return;
+            }
+
+            composite.SetGap(GapBox.Value.Value);
             RequestRecompute();
         }
 
@@ -175,7 +179,18 @@ namespace RackCad.UI.Systems.PushBack
 
         private void ApplyStructure_Click(object sender, RoutedEventArgs e)
         {
-            composite.SetStructureOverride(composite.ActiveSide, StructureOverrideBox.Value.HasValue ? (int?)StructureOverrideBox.Value.Value : null);
+            // Un campo VACIO o en error no es una restauracion: restaurar tiene su propio boton y es una accion
+            // explicita del usuario. Aplicar sin valor no toca el override almacenado.
+            if (StructureOverrideBox.HasError || !StructureOverrideBox.Value.HasValue)
+            {
+                SetStatus(
+                    "Escribe los fondos de estructura del lado activo, o pulsa Restaurar estructura para volver a "
+                    + "la propuesta.",
+                    true);
+                return;
+            }
+
+            composite.SetStructureOverride(composite.ActiveSide, (int)StructureOverrideBox.Value.Value);
             RequestRecompute();
         }
 
@@ -220,15 +235,19 @@ namespace RackCad.UI.Systems.PushBack
             }
         }
 
+        /// <summary>
+        /// Los diagnosticos vigentes: los de la INTENCION (entradas invalidas, que se conservan y se declaran sin
+        /// convertirse en otro valor) y los del sistema ya resuelto. Una sola lista, con su severidad.
+        /// </summary>
+        private IReadOnlyList<PushBackCompositeDiagnostic> CompositeDiagnostics()
+            => composite.IntentDiagnostics()
+                .Concat(PushBackCompositeDiagnostics.Evaluate(lastCompositeSystem))
+                .ToList();
+
         /// <summary>El mensaje de estado: el primer diagnostico que importe, o el texto normal del recalculo.</summary>
         private string CompositeStatusOr(string fallback)
         {
-            if (composite.CentralSeparatorWithoutGap)
-            {
-                return "El separador central necesita un hueco mayor que cero: sin él no se coloca.";
-            }
-
-            var diagnostics = PushBackCompositeDiagnostics.Evaluate(lastCompositeSystem);
+            var diagnostics = CompositeDiagnostics();
             var blocking = diagnostics.FirstOrDefault(diagnostic => diagnostic.IsBlocking);
             if (blocking != null)
             {
@@ -243,8 +262,7 @@ namespace RackCad.UI.Systems.PushBack
         private bool CompositeHasBlocking(PushBackSystem system)
         {
             lastCompositeSystem = system;
-            return composite.CentralSeparatorWithoutGap
-                   || PushBackCompositeDiagnostics.Evaluate(system).Any(diagnostic => diagnostic.IsBlocking);
+            return CompositeDiagnostics().Any(diagnostic => diagnostic.IsBlocking);
         }
 
         /// <summary>El ultimo sistema resuelto, para que el estado pueda releer sus diagnosticos sin recomputar.</summary>

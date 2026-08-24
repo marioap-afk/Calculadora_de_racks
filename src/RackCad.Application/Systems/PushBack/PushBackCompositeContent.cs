@@ -40,7 +40,8 @@ namespace RackCad.Application.Systems.PushBack
             RackCatalog catalog,
             PushBackRunSet runs,
             Func<int, bool> includeSlot,
-            int levelCap = int.MaxValue)
+            int levelCap = int.MaxValue,
+            int postIndex = -1)
         {
             var result = new PushBackCompositeContentResult();
             if (system == null || runs == null)
@@ -50,6 +51,7 @@ namespace RackCad.Application.Systems.PushBack
 
             var bedBuilder = new PushBackFlowBedLateralBuilder();
             var topeBuilder = new PushBackRearTopeBuilder();
+            var intermediateBuilder = new PushBackIntermediateBeamLateralBuilder();
 
             foreach (var batch in Batches(runs, includeSlot, levelCap))
             {
@@ -61,6 +63,10 @@ namespace RackCad.Application.Systems.PushBack
                 loose.AddRange(PushBackLoadBeamGeometry.HighBeams(source, catalog, batch.FrontIndex, front, levels));
                 loose.AddRange(topeBuilder.BuildLateral(source, catalog, batch.FrontIndex, front, levels));
                 loose.AddRange(PushBackTarimaPlacement.Lateral(source, catalog, front, int.MaxValue, levels));
+                // I-42: los INTERMEDIOS pertenecen a la cama —sostienen su riel y siguen su pendiente—, asi que se
+                // construyen en el marco de la cama y viajan con ella. Resolverlos una vez sobre la estructura
+                // compartida daba ejes que no son los de ninguna cama real.
+                loose.AddRange(intermediateBuilder.BuildFor(source, catalog, front, levels, postIndex));
                 var groups = bedBuilder.BuildLateralGroups(source, catalog, front, int.MaxValue, levels);
 
                 if (batch.Reflected)

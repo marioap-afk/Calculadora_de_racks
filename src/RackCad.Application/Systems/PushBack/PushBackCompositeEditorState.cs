@@ -145,35 +145,62 @@ namespace RackCad.Application.Systems.PushBack
 
         // ---- Interfaz central --------------------------------------------------------------------------------
 
-        /// <summary>Fija el hueco. Es una longitud fisica real; un valor negativo se lee como cero.</summary>
-        public void SetGap(double gap) => Gap = gap > 0.0 ? gap : 0.0;
+        /// <summary>
+        /// Fija el hueco CONSERVANDO lo que el usuario escribio. Un valor negativo NO se convierte en cero: se guarda
+        /// tal cual y el editor lo bloquea con su diagnostico. Corregir una entrada invalida en silencio es
+        /// exactamente lo que hace que un rack acabe siendo distinto del que se pidio.
+        /// </summary>
+        public void SetGap(double gap) => Gap = gap;
+
+        /// <summary>True cuando el hueco almacenado es una separacion fisica valida.</summary>
+        public bool GapIsValid => !double.IsNaN(Gap) && !double.IsInfinity(Gap) && Gap >= 0.0;
 
         /// <summary>Fija el separador central. Solo se materializa si hay hueco donde ponerlo.</summary>
         public void SetCentralSeparator(bool value) => CentralSeparator = value;
 
         /// <summary>True cuando se pidio separador central y no hay hueco: el editor lo avisa antes de resolver.</summary>
-        public bool CentralSeparatorWithoutGap => CentralSeparator && Gap <= 0.0;
+        public bool CentralSeparatorWithoutGap => CentralSeparator && GapIsValid && Gap <= 0.0;
 
         // ---- Estructura efectiva por lado --------------------------------------------------------------------
 
         /// <summary>
-        /// Fija el override manual de la estructura de un lado. Null es la RESTAURACION: el lado vuelve a seguir la
-        /// propuesta derivada ACTUAL, no la que hubiera cuando se escribio el override.
+        /// Fija el override manual de la estructura de un lado, CONSERVANDO el valor tal cual se escribio.
+        ///
+        /// <para>
+        /// Un valor por debajo del minimo fisico NO se convierte en null: null significa RESTAURAR, y restaurar solo
+        /// ocurre por accion explicita del usuario (<see cref="RestoreStructure"/>). Confundir «valor invalido» con
+        /// «restaurar» tiraba el ajuste manual sin decir nada.
+        /// </para>
         /// </summary>
         public void SetStructureOverride(PushBackSide side, int? positions)
         {
-            var value = positions.HasValue && positions.Value >= PushBackCellDepth.MinimumPalletsDeep
-                ? positions
-                : null;
             if (side == PushBackSide.A)
             {
-                StructureOverrideA = value;
+                StructureOverrideA = positions;
             }
             else
             {
-                StructureOverrideB = value;
+                StructureOverrideB = positions;
             }
         }
+
+        /// <summary>True cuando el override almacenado de ese lado existe y NO es construible.</summary>
+        public bool StructureOverrideIsInvalid(PushBackSide side)
+        {
+            var value = StructureOverride(side);
+            return value.HasValue && value.Value < PushBackCellDepth.MinimumPalletsDeep;
+        }
+
+        /// <summary>
+        /// Los diagnosticos de la INTENCION actual, antes de resolver: hueco invalido, separador sin hueco y
+        /// overrides manuales no construibles. Es lo que el editor consulta para bloquear sin corregir nada.
+        /// </summary>
+        public IReadOnlyList<PushBackCompositeDiagnostic> IntentDiagnostics()
+            => PushBackCompositeDiagnostics.EvaluateIntent(
+                Gap, CentralSeparator, StructureOverrideA, StructureOverrideB);
+
+        /// <summary>True cuando la intencion actual tiene algo que impide resolver.</summary>
+        public bool HasBlockingIntent() => IntentDiagnostics().Any(diagnostic => diagnostic.IsBlocking);
 
         /// <summary>Restaurar la estructura de un lado es exactamente eliminar su override manual.</summary>
         public void RestoreStructure(PushBackSide side) => SetStructureOverride(side, null);
@@ -300,7 +327,7 @@ namespace RackCad.Application.Systems.PushBack
                 return;
             }
 
-            Gap = composite.Gap > 0.0 ? composite.Gap : 0.0;
+            Gap = composite.Gap;
             CentralSeparator = composite.CentralSeparator;
             StructureOverrideA = composite.StructureOverrideA;
             StructureOverrideB = composite.StructureOverrideB;

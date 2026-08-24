@@ -389,6 +389,9 @@ namespace RackCad.Application.Persistence
         public string DefaultDirection { get; set; }
         public List<PushBackTopologyCellDocument> Topologies { get; set; }
 
+        /// <summary>I-42: ranuras transversales que no existen en el lado A. Ausente = todas existen.</summary>
+        public List<int> AbsentSlotsA { get; set; }
+
         public static PushBackCompositeDocument From(PushBackCompositeDesign composite)
         {
             if (composite == null)
@@ -405,6 +408,11 @@ namespace RackCad.Application.Persistence
                 DefaultTopology = composite.DefaultTopology.ToString(),
                 DefaultDirection = composite.DefaultDirection.ToString()
             };
+
+            if (composite.AbsentSlotsA.Count > 0)
+            {
+                document.AbsentSlotsA = composite.AbsentSlotsA.ToList();
+            }
 
             if (composite.Topologies.Any(cell => cell != null))
             {
@@ -434,6 +442,14 @@ namespace RackCad.Application.Persistence
                 DefaultTopology = ParseTopology(DefaultTopology, PushBackCellTopology.Encontradas),
                 DefaultDirection = ParseDirection(DefaultDirection, PushBackRunDirection.AToB)
             };
+
+            if (AbsentSlotsA != null)
+            {
+                foreach (var slot in AbsentSlotsA)
+                {
+                    composite.AbsentSlotsA.Add(slot);
+                }
+            }
 
             if (Topologies != null)
             {

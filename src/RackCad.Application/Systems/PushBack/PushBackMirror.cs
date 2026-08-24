@@ -30,7 +30,16 @@ namespace RackCad.Application.Systems.PushBack
         /// <summary>La X reflejada respecto del eje.</summary>
         public static double X(double axis, double x) => axis - x;
 
-        /// <summary>Una instancia reflejada respecto del eje vertical <paramref name="axis"/>.</summary>
+        /// <summary>
+        /// Una instancia reflejada respecto del eje vertical <paramref name="axis"/>.
+        ///
+        /// <para>
+        /// Una pieza FISICA se refleja de verdad: X reflejada, rotacion NEGADA y espejo en X conmutado. Una
+        /// ANOTACION o una COTA no son piezas: solo se traslada su POSICION. Reflejar un texto lo dejaria escrito
+        /// del reves, y negar la rotacion de una cota horizontal la volteria sin necesidad. En una cota VERTICAL si
+        /// se invierte el signo del desplazamiento, porque su linea de cota vive al otro lado tras el espejo.
+        /// </para>
+        /// </summary>
         public static HeaderBlockInstance Instance(HeaderBlockInstance source, double axis)
         {
             if (source == null)
@@ -38,6 +47,9 @@ namespace RackCad.Application.Systems.PushBack
                 return null;
             }
 
+            var isText = source.Role == HeaderBlockRole.Annotation || source.Role == HeaderBlockRole.Dimension;
+            var vertical = System.Math.Abs(source.ConnectionAnchor.X - source.Insertion.X)
+                           < System.Math.Abs(source.ConnectionAnchor.Y - source.Insertion.Y);
             var clone = new HeaderBlockInstance
             {
                 Role = source.Role,
@@ -46,12 +58,14 @@ namespace RackCad.Application.Systems.PushBack
                 View = source.View,
                 Insertion = new Point2D(X(axis, source.Insertion.X), source.Insertion.Y),
                 ConnectionAnchor = new Point2D(X(axis, source.ConnectionAnchor.X), source.ConnectionAnchor.Y),
-                RotationRadians = -source.RotationRadians,
-                MirroredX = !source.MirroredX,
+                RotationRadians = isText ? source.RotationRadians : -source.RotationRadians,
+                MirroredX = isText ? source.MirroredX : !source.MirroredX,
                 MirroredY = source.MirroredY,
                 Text = source.Text,
                 TextHeight = source.TextHeight,
-                DimensionOffset = source.DimensionOffset,
+                DimensionOffset = source.Role == HeaderBlockRole.Dimension && vertical
+                    ? -source.DimensionOffset
+                    : source.DimensionOffset,
                 DimensionStyleName = source.DimensionStyleName
             };
 
@@ -107,7 +121,14 @@ namespace RackCad.Application.Systems.PushBack
         /// La retícula TRANSVERSAL no se toca: la reflexion es en el eje de la profundidad.
         /// </para>
         /// </summary>
-        public static DynamicRackSystem Structure(DynamicRackSystem source)
+        public static DynamicRackSystem Structure(DynamicRackSystem source) => Structure(source, null);
+
+        /// <summary>
+        /// La misma reflexion, con la opcion de re-declarar que ranuras estan ACTIVAS. Se usa para proyectar un lado
+        /// sobre la retícula compartida: una ranura que no existe en ese lado viaja como frente EN BLANCO (I-33), de
+        /// modo que conserva su claro —y con el la retícula transversal, que es unica— sin aportar ninguna carga.
+        /// </summary>
+        public static DynamicRackSystem Structure(DynamicRackSystem source, Func<int, bool> isActive)
         {
             if (source == null)
             {
@@ -188,7 +209,7 @@ namespace RackCad.Application.Systems.PushBack
                 var copy = new DynamicRackFront
                 {
                     Index = front.Index,
-                    IsActive = front.IsActive,
+                    IsActive = isActive == null ? front.IsActive : isActive(front.Index),
                     PalletCount = front.PalletCount,
                     LoadLevels = front.LoadLevels,
                     PalletsDeep = front.PalletsDeep,
@@ -230,6 +251,14 @@ namespace RackCad.Application.Systems.PushBack
 
             return mirrored;
         }
+
+        /// <summary>
+        /// Copia INDEPENDIENTE (sin reflejar) de una estructura, opcionalmente re-declarando que ranuras estan
+        /// activas. Se apoya en la reflexion aplicada dos veces, que es la identidad, para no mantener un segundo
+        /// clonador que pueda olvidarse un campo.
+        /// </summary>
+        public static DynamicRackSystem Clone(DynamicRackSystem source, Func<int, bool> isActive = null)
+            => Structure(Structure(source), isActive);
 
         /// <summary>El eje de reflexion de un rack: su longitud total, de modo que 0 y la longitud se intercambian.</summary>
         public static double AxisOf(DynamicRackSystem structure) => structure?.TotalLength ?? 0.0;

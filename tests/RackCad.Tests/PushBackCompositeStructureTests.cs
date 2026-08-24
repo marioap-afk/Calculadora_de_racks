@@ -238,16 +238,60 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void ASlotOnlyInA_AndASlotOnlyInB_IsADeclaredLimitation()
+        public void ASlotOnlyInA_AndASlotOnlyInB_CoexistInOneStructure()
         {
-            var design = Composite(slotsA: 2, slotsB: 2);
-            design.SideB.Fronts[0] = null;        // ranura 0: solo A
-            design.SideB.FrontConfigs[0] = null;
-            design.Structure.Fronts.RemoveAt(1);  // ranura 1: solo B
-            design.Fronts.RemoveAt(1);
+            // F1 compartida, F2 solo A, F3 solo B, F4 compartida — los cuatro sobre UNA estructura fisica.
+            var design = Composite(slotsA: 4, slotsB: 4, deepA: 5, deepB: 4);
+            design.SideB.Fronts[1] = null;            // ranura 1: solo A
+            design.SideB.FrontConfigs[1] = null;
+            design.Composite.AbsentSlotsA.Add(2);     // ranura 2: solo B (su config queda dormante en A)
 
-            var error = Assert.Throws<ArgumentException>(() => new PushBackResolver(Catalog).Resolve(design));
-            Assert.Contains("solo en el lado A", error.Message);
+            var system = new PushBackResolver(Catalog).Resolve(design);
+            var composite = system.Composite;
+
+            Assert.Equal(4, system.Structure.Fronts.Count);
+            Assert.NotNull(composite.SideA.Front(0));
+            Assert.NotNull(composite.SideB.Front(0));
+            Assert.NotNull(composite.SideA.Front(1));
+            Assert.Null(composite.SideB.Front(1));
+            Assert.Null(composite.SideA.Front(2));
+            Assert.NotNull(composite.SideB.Front(2));
+            Assert.NotNull(composite.SideA.Front(3));
+            Assert.NotNull(composite.SideB.Front(3));
+
+            // Los rangos NO anidan y las dos ranuras exclusivas viven cada una en su mitad.
+            var total = system.Structure.TotalLength;
+            var onlyA = system.Structure.Fronts[1];
+            var onlyB = system.Structure.Fronts[2];
+            Assert.Equal(1, onlyA.DepthStartPosition);
+            Assert.True(onlyA.EndX < total - 1e-6);
+            Assert.True(onlyB.DepthStartPosition > 1);
+            Assert.Equal(total, onlyB.EndX, 6);
+            Assert.True(onlyB.StartX > onlyA.EndX - 1e-6);
+        }
+
+        [Fact]
+        public void MixedExclusiveSlots_KeepOneStructure_WithUniqueModuleIdentity()
+        {
+            var design = Composite(slotsA: 4, slotsB: 4, deepA: 5, deepB: 4, gap: 6.0);
+            design.SideB.Fronts[1] = null;
+            design.SideB.FrontConfigs[1] = null;
+            design.Composite.AbsentSlotsA.Add(2);
+
+            var system = new PushBackResolver(Catalog).Resolve(design);
+            var ids = system.Structure.Modules.Select(module => module.ModuleId).ToList();
+
+            // UNA sola secuencia contigua de modulos, con identidad unica: no hay dos estructuras.
+            Assert.Equal(ids.Count, ids.Distinct(StringComparer.Ordinal).Count());
+            for (var index = 1; index < system.Structure.Modules.Count; index++)
+            {
+                Assert.Equal(system.Structure.Modules[index - 1].EndX, system.Structure.Modules[index].StartX, 9);
+            }
+
+            // Y ni una cama de la ranura solo-A en la mitad de B, ni al reves.
+            var runs = PushBackRuns.Resolve(system);
+            Assert.All(runs.Runs.Where(run => run.Slot == 1), run => Assert.Equal(PushBackSide.A, run.LowSide));
+            Assert.All(runs.Runs.Where(run => run.Slot == 2), run => Assert.Equal(PushBackSide.B, run.LowSide));
         }
 
         // ---- Ni un poste, cabecera o placa duplicados --------------------------------------------------------

@@ -20,10 +20,11 @@ namespace RackCad.Application.Systems.PushBack
     /// lado B. Ningun poste, cabecera ni placa se dibuja dos veces por el hecho de que el rack tenga dos sentidos.
     /// </para>
     /// <para>
-    /// LIMITACION DECLARADA: la planta colapsa los niveles, asi que una ranura en la que TODOS los niveles fueran
-    /// camas corridas seguiria mostrando los largueros posteriores de la interfaz. En cuanto un solo nivel de esa
-    /// ranura no sea corrido, esos largueros existen de verdad. Se declara en vez de resolverse con una regla que la
-    /// planta no puede sostener (no tiene nivel al que preguntar).
+    /// La planta colapsa los niveles, pero proyecta la UNION DE PIEZAS FISICAS REALES: pregunta a
+    /// <see cref="PushBackRuns"/> que ranuras tienen de verdad una cama que descarga en cada pasillo y cuales tienen
+    /// de verdad un larguero posterior en cada interfaz. Una ranura cuyos niveles sean TODOS camas corridas no
+    /// dibuja larguero posterior en la interfaz de su lado bajo, porque alli no hay ninguno; basta con que UN nivel
+    /// lo requiera para que aparezca. No se inventan piezas por el hecho de que la planta no tenga selector de nivel.
     /// </para>
     /// </summary>
     public static class PushBackCompositePlanta
@@ -45,9 +46,10 @@ namespace RackCad.Application.Systems.PushBack
                 .Where(instance => !PushBackPlanComposer.IsDynamicSpecific(instance))
                 .ToList();
 
-            // 2) El contenido de cada lado, en su marco, reflejado el del lado B.
-            AppendSide(result, system, catalog, composite.SideA, reflected: false, mirrorAxis: 0.0);
-            AppendSide(result, system, catalog, composite.SideB, reflected: true,
+            // 2) El contenido de cada lado, en su marco, reflejado el del lado B — y SOLO las piezas que existen.
+            var runs = PushBackRuns.Resolve(system);
+            AppendSide(result, system, catalog, composite.SideA, runs, PushBackSide.A, reflected: false, mirrorAxis: 0.0);
+            AppendSide(result, system, catalog, composite.SideB, runs, PushBackSide.B, reflected: true,
                 mirrorAxis: PushBackMirror.AxisOf(structure));
 
             // 3) Las etiquetas A/B, por el pipeline de anotaciones que ya existe. Nunca al BOM.
@@ -57,19 +59,23 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// El contenido de un lado: su larguero IN/OUT del pasillo, su larguero posterior de troquel redondo y su
-        /// tope. Se toma de la planta LOCAL del lado —el mismo builder de un Push Back de un sentido— y se descartan
-        /// sus piezas estructurales, que ya vienen del sistema compuesto.
+        /// El contenido de un lado: su larguero IN/OUT del pasillo y su larguero posterior de troquel redondo con su
+        /// tope. Se toma de la planta LOCAL del lado —el mismo builder de un Push Back de un sentido— en DOS pasadas,
+        /// cada una sobre una copia de la sub-estructura donde solo estan activas las ranuras que realmente tienen
+        /// esa pieza. Asi la planta proyecta la union de piezas fisicas reales sin necesitar un selector de nivel que
+        /// no tiene, y sin identificar piezas por coordenada.
         /// </summary>
         private static void AppendSide(
             List<HeaderBlockInstance> target,
             PushBackSystem system,
             RackCatalog catalog,
             PushBackSideSystem side,
+            PushBackRunSet runs,
+            PushBackSide which,
             bool reflected,
             double mirrorAxis)
         {
-            if (side == null || !side.IsPresent || side.Local == null)
+            if (side == null || !side.IsPresent || side.Local?.Structure == null)
             {
                 return;
             }
@@ -77,28 +83,48 @@ namespace RackCad.Application.Systems.PushBack
             var highId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
                 ? PushBackDefaults.HighEndBeamCatalogId
                 : system.HighEndBeamCatalogId;
-            var inOutId = string.IsNullOrWhiteSpace(side.Local.Structure?.InOutBeamCatalogId)
+            var inOutId = string.IsNullOrWhiteSpace(side.Local.Structure.InOutBeamCatalogId)
                 ? DynamicRackDefaults.InOutBeamCatalogId
                 : side.Local.Structure.InOutBeamCatalogId;
 
-            var content = new PushBackSystemPlantaBuilder()
-                .BuildPlan(side.Local, catalog)
-                .Flatten()
-                .Instances
-                .Where(instance => IsLoadPiece(instance, inOutId, highId))
-                .ToList();
+            var lowSlots = new HashSet<int>(runs.Runs.Where(run => run.LowSide == which).Select(run => run.Slot));
+            var highSlots = new HashSet<int>(runs.Runs.Where(run => run.HighSide == which).Select(run => run.Slot));
+
+            var content = new List<HeaderBlockInstance>();
+            content.AddRange(Pieces(side.Local, catalog, lowSlots)
+                .Where(instance => string.Equals(instance.PieceId, inOutId, StringComparison.OrdinalIgnoreCase)));
+            content.AddRange(Pieces(side.Local, catalog, highSlots)
+                .Where(instance => instance.Role == HeaderBlockRole.Tope
+                    || string.Equals(instance.PieceId, highId, StringComparison.OrdinalIgnoreCase)));
 
             target.AddRange(reflected ? PushBackMirror.Instances(content, mirrorAxis) : content);
         }
 
         /// <summary>
-        /// Lo que pertenece a una CALLE y no a la estructura: el larguero de entrada/salida, el posterior de troquel
-        /// redondo y el tope. Se identifica por PieceId/Role, nunca por nombre de grupo.
+        /// La planta de un lado con SOLO las ranuras indicadas activas. Las demas viajan en blanco (I-33), asi que no
+        /// aportan larguero, tope ni cama — la regla ya existe y no hace falta una segunda.
         /// </summary>
-        private static bool IsLoadPiece(HeaderBlockInstance instance, string inOutId, string highId)
-            => instance != null
-               && (instance.Role == HeaderBlockRole.Tope
-                   || string.Equals(instance.PieceId, inOutId, StringComparison.OrdinalIgnoreCase)
-                   || string.Equals(instance.PieceId, highId, StringComparison.OrdinalIgnoreCase));
+        private static IReadOnlyList<HeaderBlockInstance> Pieces(
+            PushBackSystem local, RackCatalog catalog, ICollection<int> slots)
+        {
+            if (slots.Count == 0)
+            {
+                return new List<HeaderBlockInstance>();
+            }
+
+            var restricted = new PushBackSystem
+            {
+                Structure = PushBackMirror.Clone(local.Structure, slot => slots.Contains(slot)),
+                HighEndBeamCatalogId = local.HighEndBeamCatalogId,
+                RearTope = local.RearTope
+            };
+            foreach (var resolved in local.HighEndBeams)
+            {
+                restricted.HighEndBeams.Add(resolved);
+            }
+
+            return new PushBackSystemPlantaBuilder().BuildPlan(restricted, catalog).Flatten().Instances;
+        }
+
     }
 }

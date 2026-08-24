@@ -81,11 +81,38 @@ namespace RackCad.Application.Systems.Dynamic
         }
     }
 
+    /// <summary>
+    /// Si los rangos de profundidad de los frentes deben ANIDAR unos en otros.
+    /// </summary>
+    public enum DynamicDepthNesting
+    {
+        /// <summary>
+        /// Contrato historico del sistema Dinamico: todo frente contiene el rango del frente con menos fondos. Es lo
+        /// que sostiene su patron de cabeceras y separadores, y NO se relaja para el.
+        /// </summary>
+        Required = 0,
+
+        /// <summary>
+        /// I-42 — el Push Back COMPUESTO. Con dos lados enfrentados una ranura puede vivir solo en la mitad de A
+        /// (rango pegado al arranque) y otra solo en la mitad de B (rango pegado al final): ninguna contiene a la
+        /// otra y las dos son fisicamente reales sobre UNA sola estructura. Solo se relaja el ANIDAMIENTO; el resto
+        /// de invariantes —minimo de dos fondos, posicion inicial valida y que alguna ranura arranque en 1— siguen
+        /// exigiendose igual.
+        /// </summary>
+        NotRequired = 1
+    }
+
     public static class DynamicDepthGeometry
     {
         public static DynamicDepthLayout Resolve(
             IEnumerable<DynamicRackFrontDesign> fronts,
             int legacyPalletsDeep)
+            => Resolve(fronts, legacyPalletsDeep, DynamicDepthNesting.Required);
+
+        public static DynamicDepthLayout Resolve(
+            IEnumerable<DynamicRackFrontDesign> fronts,
+            int legacyPalletsDeep,
+            DynamicDepthNesting nesting)
         {
             var source = fronts?.Where(front => front != null).ToList()
                          ?? new List<DynamicRackFrontDesign>();
@@ -116,14 +143,28 @@ namespace RackCad.Application.Systems.Dynamic
             var minimum = ranges.Min(range => range.PalletsDeep);
             var baseRanges = ranges.Where(range => range.PalletsDeep == minimum).ToList();
             var baseRange = baseRanges[0];
-            if (baseRanges.Any(range => range.StartPosition != baseRange.StartPosition))
+            if (nesting == DynamicDepthNesting.Required)
             {
-                throw new ArgumentException("Los frentes con el menor número de fondos deben compartir la misma posición inicial.");
-            }
+                if (baseRanges.Any(range => range.StartPosition != baseRange.StartPosition))
+                {
+                    throw new ArgumentException("Los frentes con el menor número de fondos deben compartir la misma posición inicial.");
+                }
 
-            if (ranges.Any(range => !range.Contains(baseRange)))
+                if (ranges.Any(range => !range.Contains(baseRange)))
+                {
+                    throw new ArgumentException("Cada frente debe contener la estructura completa del frente con menos fondos.");
+                }
+            }
+            else
             {
-                throw new ArgumentException("Cada frente debe contener la estructura completa del frente con menos fondos.");
+                // I-42: sin anidamiento el rango BASE deja de poder describir un patron comun, asi que se toma el
+                // rango que arranca en la posicion 1 y llega mas lejos — el que gobierna el patron de cabeceras del
+                // arranque. Es metadato (BaseDepthStartPosition/BasePalletsDeep): ninguna geometria lo consume.
+                baseRange = ranges
+                    .Where(range => range.StartPosition == 1)
+                    .OrderByDescending(range => range.PalletsDeep)
+                    .DefaultIfEmpty(baseRange)
+                    .First();
             }
 
             return new DynamicDepthLayout(
@@ -133,6 +174,9 @@ namespace RackCad.Application.Systems.Dynamic
         }
 
         public static DynamicDepthLayout Resolve(DynamicRackSystem system)
+            => Resolve(system, DynamicDepthNesting.Required);
+
+        public static DynamicDepthLayout Resolve(DynamicRackSystem system, DynamicDepthNesting nesting)
         {
             if (system == null)
             {
@@ -144,7 +188,7 @@ namespace RackCad.Application.Systems.Dynamic
                 PalletsDeep = front?.PalletsDeep > 0 ? front.PalletsDeep : system.PalletsDeep,
                 DepthStartPosition = front?.DepthStartPosition > 0 ? front.DepthStartPosition : 1
             });
-            return Resolve(designs, system.PalletsDeep);
+            return Resolve(designs, system.PalletsDeep, nesting);
         }
 
         public static DynamicDepthRange AtPost(DynamicRackSystem system, int postIndex)

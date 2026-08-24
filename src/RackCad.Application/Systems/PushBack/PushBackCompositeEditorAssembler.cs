@@ -44,24 +44,20 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             var design = assembler.BuildDesign(state.SideA, inputs, forceRebuild);
+            design.SideB = state.BuildSideB();
+            design.Composite = state.BuildComposite();
 
-            // Las ranuras que el usuario retiro del lado A dejan de aportar estructura y celdas en ese lado. Se
-            // retiran del diseno POR EL FINAL para no desplazar los indices de las que quedan.
-            foreach (var slot in state.AbsentSlotsOfA().OrderByDescending(index => index))
+            // Las ranuras que el usuario retiro del lado A se DECLARAN ausentes; no se borran de la lista. Borrarlas
+            // desplazaria los indices de todas las siguientes —y con ellos la topologia, los topes y la
+            // correspondencia con el lado B—, ademas de destruir su configuracion, que debe quedar dormante.
+            foreach (var slot in state.AbsentSlotsOfA())
             {
-                if (slot < design.Structure.Fronts.Count)
+                if (!design.Composite.AbsentSlotsA.Contains(slot))
                 {
-                    design.Structure.Fronts.RemoveAt(slot);
-                }
-
-                if (slot < design.Fronts.Count)
-                {
-                    design.Fronts.RemoveAt(slot);
+                    design.Composite.AbsentSlotsA.Add(slot);
                 }
             }
 
-            design.SideB = state.BuildSideB();
-            design.Composite = state.BuildComposite();
             return design;
         }
 
@@ -72,12 +68,20 @@ namespace RackCad.Application.Systems.PushBack
         public PushBackCompositeComputation Build(
             PushBackCompositeEditorState state, PushBackEditorInputs inputs, RackCatalog catalog, bool forceRebuild = false)
         {
+            // Una INTENCION invalida no se resuelve: se declara. Resolverla obligaria a interpretar el valor como
+            // otro, que es justo lo que no puede pasar.
+            var intent = state?.IntentDiagnostics() ?? new List<PushBackCompositeDiagnostic>();
+            if (intent.Any(diagnostic => diagnostic.IsBlocking))
+            {
+                return new PushBackCompositeComputation(null, null, intent, intent.First().Message);
+            }
+
             try
             {
                 var design = BuildDesign(state, inputs, forceRebuild);
                 var system = new PushBackResolver(catalog ?? new RackCatalog()).Resolve(design);
                 return new PushBackCompositeComputation(
-                    design, system, PushBackCompositeDiagnostics.Evaluate(system), null);
+                    design, system, PushBackCompositeDiagnostics.Evaluate(system).Concat(intent).ToList(), null);
             }
             catch (Exception error)
             {

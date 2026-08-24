@@ -93,8 +93,47 @@ namespace RackCad.Domain.Systems.PushBack
     }
 
     /// <summary>
-    /// I-42 — una CELDA compuesta resuelta: la ranura transversal x nivel con su topologia, su sentido y las dos
-    /// magnitudes que deciden si es fisicamente posible.
+    /// I-42 — UNA CAMA FISICA de una celda, con las dos magnitudes que deciden si es construible.
+    ///
+    /// <para>
+    /// Existe porque una celda puede contener MAS DE UNA cama: «encontradas» son dos camas independientes, cada una
+    /// con su propia demanda y su propia estructura disponible. Medirlas juntas —comparando la demanda de una contra
+    /// el espacio de la otra— produce errores de capacidad que no existen, y es exactamente lo que hacia falta
+    /// corregir: con A de 4 fondos y B de 8, la cama de B pedia su longitud y se comparaba contra la estructura de A.
+    /// </para>
+    /// </summary>
+    public sealed class PushBackCellBed
+    {
+        /// <summary>Lado del extremo BAJO (por donde se carga).</summary>
+        public PushBackSide LowSide { get; set; }
+
+        /// <summary>Lado del extremo ALTO (donde va el tope). Coincide con el bajo salvo en una corrida.</summary>
+        public PushBackSide HighSide { get; set; }
+
+        /// <summary>Posiciones de fondo que la cama ocupa fisicamente.</summary>
+        public int DemandPositions { get; set; }
+
+        /// <summary>
+        /// Longitud FISICA de esta cama: la que exige su demanda de fondos. Es tambien su longitud real —una cama no
+        /// se estira hasta la capacidad disponible— y por tanto la que se cotiza.
+        /// </summary>
+        public double RequiredBedLength { get; set; }
+
+        /// <summary>
+        /// Longitud fisicamente DISPONIBLE entre los apoyos de la estructura efectiva para esta cama. Es CAPACIDAD
+        /// MAXIMA, no longitud obligatoria.
+        /// </summary>
+        public double AvailableBedSpan { get; set; }
+
+        /// <summary>Razon por la que la cama no es construible, o null si lo es.</summary>
+        public string DisabledReason { get; set; }
+
+        public bool IsValid => string.IsNullOrEmpty(DisabledReason);
+    }
+
+    /// <summary>
+    /// I-42 — una CELDA compuesta resuelta: la ranura transversal x nivel con su topologia, su sentido y las camas
+    /// fisicas que contiene.
     /// </summary>
     public sealed class PushBackResolvedCell
     {
@@ -109,18 +148,62 @@ namespace RackCad.Domain.Systems.PushBack
         public PushBackRunDirection Direction { get; set; }
 
         /// <summary>
-        /// Longitud MINIMA que la demanda de fondos exige a la cama de esta celda. Para una corrida incluye el gap,
-        /// porque la cama lo atraviesa fisicamente.
+        /// Las camas FISICAS de la celda: una en solo A / solo B / corrida, DOS en encontradas. Cada una lleva su
+        /// propia capacidad, porque cada una es una pieza distinta.
         /// </summary>
-        public double RequiredBedLength { get; set; }
+        public IList<PushBackCellBed> Beds { get; } = new List<PushBackCellBed>();
 
-        /// <summary>
-        /// Longitud fisicamente DISPONIBLE entre los apoyos de la estructura efectiva para esta celda. Un gap mayor
-        /// la aumenta de verdad: por eso un gap puede volver valida una cama que sin el no cabria.
-        /// </summary>
-        public double AvailableBedSpan { get; set; }
+        /// <summary>La cama cuyo extremo BAJO esta en el lado indicado, o null.</summary>
+        public PushBackCellBed BedFrom(PushBackSide side)
+        {
+            foreach (var bed in Beds)
+            {
+                if (bed != null && bed.LowSide == side)
+                {
+                    return bed;
+                }
+            }
 
-        /// <summary>Razon por la que la celda no es construible, o null si lo es. Nunca se corrige en silencio.</summary>
+            return null;
+        }
+
+        /// <summary>La mayor demanda de las camas de la celda (lectura para la UI).</summary>
+        public double RequiredBedLength
+        {
+            get
+            {
+                var value = 0.0;
+                foreach (var bed in Beds)
+                {
+                    if (bed != null && bed.RequiredBedLength > value)
+                    {
+                        value = bed.RequiredBedLength;
+                    }
+                }
+
+                return value;
+            }
+        }
+
+        /// <summary>La capacidad de la cama mas exigida (lectura para la UI).</summary>
+        public double AvailableBedSpan
+        {
+            get
+            {
+                PushBackCellBed worst = null;
+                foreach (var bed in Beds)
+                {
+                    if (bed != null && (worst == null || bed.RequiredBedLength > worst.RequiredBedLength))
+                    {
+                        worst = bed;
+                    }
+                }
+
+                return worst?.AvailableBedSpan ?? 0.0;
+            }
+        }
+
+        /// <summary>Razon por la que la celda no es construible, o null. Nunca se corrige en silencio.</summary>
         public string DisabledReason { get; set; }
 
         public bool IsValid => string.IsNullOrEmpty(DisabledReason);
