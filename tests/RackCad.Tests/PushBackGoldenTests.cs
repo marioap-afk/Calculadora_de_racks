@@ -180,9 +180,48 @@ namespace RackCad.Tests
             //  * bom: la LONGITUD de la cama sigue siendo el fondo estructural completo, y los conteos no cambian.
             //
             // Anteriores: lateral/lateral-corte0 A7040D72..., frontal-entrada C124825D...
-            ["lateral"] = "1808DB213A973A87B6B4C1E463A00EB7A3A7F5E47224334F620267C0477AC9C9",
-            ["lateral-corte0"] = "1808DB213A973A87B6B4C1E463A00EB7A3A7F5E47224334F620267C0477AC9C9",
-            ["frontal-entrada"] = "2B993BAA64C6157CB2C724CF2C3D0B172FEEFBA5BC9961F70F8317CD4986DADF",
+            //
+            // DECISIÓN FINAL DEL DUEÑO (2026-08) — se INVIERTE la autoridad vertical: manda el extremo BAJO.
+            //
+            // La regla anterior fijaba el larguero POSTERIOR en la elevación del resolver y ELEGÍA el de entrada
+            // sobre la retícula. Consecuencia física que el dueño rechazó en AutoCAD: el larguero por el que se
+            // carga NO quedaba a la altura pedida —subía o bajaba según el fondo de la cama—, de modo que «Alto 1er
+            // nivel» dejaba de significar nada. Ahora el BAJO es el ancla y conserva EXACTAMENTE su troquel; el
+            // POSTERIOR se deriva y se elige sobre la retícula.
+            //
+            // EVIDENCIA MEDIDA sobre este mismo escenario (inserciones, en pulgadas):
+            //
+            //             ANTES (alto fijo)          AHORA (bajo fijo)         resolver
+            //   F0 N1     low 12.6053  high 16.6053  low  6.6053  high 10.6053  exit  6.6053  entrance 16.6053
+            //   F0 N2     low 84.6053  high 88.6053  low 78.6053  high 82.6053  exit 78.6053  entrance 88.6053
+            //   F1 N1     low 12.6053  high 12.6053  low  6.6053  high  6.6053  exit  6.6053  entrance 12.6053
+            //   F1 N2     low 84.6053  high 84.6053  low 78.6053  high 78.6053  exit 78.6053  entrance 84.6053
+            //
+            // Tres lecturas de esa tabla, y son las que justifican los pines:
+            //  * el larguero BAJO vuelve EXACTAMENTE a la elevación de salida del resolver —la altura pedida—, en los
+            //    dos frentes y en los dos niveles. Antes estaba 6" por encima;
+            //  * la PENDIENTE de cada cama NO cambia: 0.034398 en el frente 0 y 0.040668 en el frente 1, idénticas
+            //    antes y después. La celda entera baja 6.0000"; la cama no se reinclina. Es la comprobación de que
+            //    esto invierte el ancla y no toca el criterio de selección;
+            //  * el frente 1, más corto, tiene su alto en el MISMO troquel que su bajo: la subida la aporta la
+            //    geometría del larguero posterior, no un salto de troquel. Nada que ver con «no sube».
+            //
+            // Se mueven CUATRO pines y cada uno por su pieza:
+            //  * lateral / lateral-corte0: bajan los dos largueros de extremo, la cama, sus rodillos, los apoyos
+            //    intermedios y el tope posterior, que cuelga del larguero alto;
+            //  * frontal-entrada: el mismo larguero bajo, dibujado en su corte. Vuelve a C652265C…, el valor que
+            //    tenía cuando ese larguero estaba en la elevación del resolver — la comprobación más limpia de que
+            //    el ancla regresó a su sitio;
+            //  * frontal-posterior: el larguero alto y su tope. ESTE pin es además un ARREGLO: hasta ahora el corte
+            //    posterior leía la elevación del resolver directamente, así que era una SEGUNDA autoridad vertical
+            //    para la misma pieza física. Ahora consume el mismo contexto de elevaciones que el lateral.
+            // planta (sin elevaciones) y bom (mismas piezas, mismas longitudes) quedan INTACTOS, y eso acota el
+            // cambio a lo que el dueño decidió.
+            //
+            // Anteriores: lateral/lateral-corte0 1808DB21…, frontal-entrada 2B993BAA…, frontal-posterior 55AF6395…
+            ["lateral"] = "1272488BEA9F301DD3134D8951D259198B8ED8FC56483BF3177D0F14A0416EB3",
+            ["lateral-corte0"] = "1272488BEA9F301DD3134D8951D259198B8ED8FC56483BF3177D0F14A0416EB3",
+            ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
             // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of
             // the plan, not from the rear beam's insertion (which is what kept it on the larguero troquel). Exactly the
@@ -190,7 +229,7 @@ namespace RackCad.Tests
             // the approved rise-and-snap +4" on that same column) and planta (both coordinates coincide, no elevation).
             // LATERAL is byte-identical and the BOM is unchanged — the correction touches only those two views.
             // Previous: frontal-posterior 5553A6C1…, planta 666BBD2B…
-            ["frontal-posterior"] = "55AF63952A2C5DB36BEA5FA6818E55EAE09658314A9D4A95FFE070080CDF5211",
+            ["frontal-posterior"] = "234EDFA63829C7EA5895AAC48FD38AE9C29CB57C8D340A90407E2F6D439501BF",
             ["planta"] = "4797ED85A9F9344C900BD5C6A882A6BE33DA8AA2DCD1AF837C28604A18DA4C64",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front

@@ -116,13 +116,15 @@ namespace RackCad.Application.Systems.Dynamic
                 {
                     var configuration = DynamicRackLevelGeometry.At(system, front, level.LevelNumber);
                     var beamId = configuration.InOutBeamCatalogId;
-                    // El larguero bajo se coloca YA en su elevación definitiva: se pregunta por FRENTE, que es a
-                    // quien pertenece la pieza. Antes Push Back lo movía después, localizándolo por coordenada; ese
-                    // segundo reasiento desaparece y con él el riesgo de aplicarlo dos veces o de no encontrarlo
-                    // (PB-004, I-32). El extremo ALTO es el ancla y no admite override.
-                    var y = end == DynamicRackEnd.Entrance
-                        ? level.EntranceElevation
-                        : elevations.OrFront(front.Index, level.LevelNumber, level.ExitElevation);
+                    // El larguero se coloca YA en su elevación definitiva: se pregunta por FRENTE, que es a quien
+                    // pertenece la pieza. Antes Push Back lo movía después, localizándolo por coordenada; ese segundo
+                    // reasiento desaparece y con él el riesgo de aplicarlo dos veces o de no encontrarlo (PB-004).
+                    // El override vale en LOS DOS extremos: el contexto describe uno u otro y quien lo pasa sabe
+                    // cuál. Sin contexto —el Dinámico, siempre— se usa la elevación del resolver y nada cambia.
+                    var y = elevations.OrFront(
+                        front.Index,
+                        level.LevelNumber,
+                        end == DynamicRackEnd.Entrance ? level.EntranceElevation : level.ExitElevation);
                     var at = new Point2D(beamX, y);
                     var beam = new HeaderBlockInstance
                     {

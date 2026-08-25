@@ -88,12 +88,30 @@ namespace RackCad.Tests
         }
 
         /// <summary>Las elevaciones de la ENVOLVENTE: el sistema entero, sin elegir ningún frente.</summary>
+        /// <summary>
+        /// Las elevaciones del extremo DERIVADO en el ámbito de la ENVOLVENTE (el rack entero, sin frente).
+        ///
+        /// <para>
+        /// Desde la decisión final del dueño la autoridad vertical es el larguero de ENTRADA, que conserva la
+        /// elevación de su nivel y por tanto NO depende de la profundidad. Lo que sí depende de ella —y por tanto lo
+        /// que distingue la envolvente de la proyección— es el extremo POSTERIOR: se deriva de la pendiente sobre la
+        /// longitud real de la cama. Por eso estas dos consultas miran ahora ese extremo; con el bajo ya no
+        /// discriminarían nada, que es exactamente lo que la nueva regla garantiza.
+        /// </para>
+        /// </summary>
         private static IReadOnlyDictionary<int, double> EnvelopeElevations(PushBackSystem system, RackCatalog catalog)
-            => PushBackElevations.LowInsertions(system, catalog, null);
+            => PushBackElevations.HighInsertions(system, catalog, null);
 
         /// <summary>Las elevaciones del frente que originó <c>system.LoadBeamLevels</c>.</summary>
         private static IReadOnlyDictionary<int, double> ProjectionElevations(PushBackSystem system, RackCatalog catalog)
-            => PushBackElevations.LowInsertions(system, catalog, system.Structure.Fronts[ProjectedFront(system)]);
+            => PushBackElevations.HighInsertions(system, catalog, system.Structure.Fronts[ProjectedFront(system)]);
+
+        /// <summary>
+        /// Las elevaciones del larguero de ENTRADA. Son las MISMAS en los dos ámbitos —el bajo es el ancla y no
+        /// depende de la profundidad—, y de ellas cuelgan el desviador superior y las cotas.
+        /// </summary>
+        private static IReadOnlyDictionary<int, double> LowElevations(PushBackSystem system, RackCatalog catalog)
+            => PushBackElevations.LowInsertions(system, catalog, null);
 
         private static int ProjectedFront(PushBackSystem system)
             => system.Structure.Fronts
@@ -167,7 +185,7 @@ namespace RackCad.Tests
         // ---------------------------------------------------------------------------------------------------
 
         [Fact]
-        public void TheWholeLateralLowBeam_UsesTheEnvelopeElevation()
+        public void TheWholeLateralHighBeam_UsesTheEnvelopeElevation()
         {
             var catalog = Catalog;
             var system = Envelope(catalog);
@@ -176,7 +194,7 @@ namespace RackCad.Tests
 
             var drawn = Of(
                 new PushBackSystemLateralBuilder().Build(system, catalog).Flatten().Instances,
-                DynamicRackDefaults.InOutBeamCatalogId)
+                PushBackDefaults.HighEndBeamCatalogId)
                 .Select(beam => Math.Round(beam.Insertion.Y, 6))
                 .Distinct()
                 .OrderBy(y => y)
@@ -192,11 +210,12 @@ namespace RackCad.Tests
         // ---------------------------------------------------------------------------------------------------
 
         [Fact]
-        public void TheWholeLateralUpperDesviador_HangsFromTheEnvelopeLowBeam()
+        public void TheWholeLateralUpperDesviador_HangsFromTheLowBeam()
         {
             var catalog = Catalog;
             var system = Envelope(catalog);
-            var envelope = EnvelopeElevations(system, catalog);
+            // El desviador cuelga del larguero de ENTRADA, que es el ancla: la misma elevacion en los dos ambitos.
+            var envelope = LowElevations(system, catalog);
 
             var drawn = Of(
                 new PushBackSystemLateralBuilder().Build(system, catalog).Flatten().Instances,
@@ -224,7 +243,8 @@ namespace RackCad.Tests
         {
             var catalog = Catalog;
             var system = Envelope(catalog);
-            var envelope = EnvelopeElevations(system, catalog);
+            // Las cotas y las etiquetas acompañan al larguero de ENTRADA, que es el ancla vertical.
+            var envelope = LowElevations(system, catalog);
 
             var instances = new PushBackSystemLateralBuilder().Build(system, catalog).Flatten().Instances;
             var expected = system.Structure.LoadBeamLevels
@@ -307,12 +327,20 @@ namespace RackCad.Tests
         /// es exactamente la lista del frente proyectado. Aquí las dos difieren, así que la prueba lo distingue.
         /// </summary>
         [Fact]
-        public void TheGlobalFrontal_StillReadsTheProjection_NotTheEnvelope()
+        public void TheGlobalFrontal_ReadsTheLowAnchorElevations()
         {
             var catalog = Catalog;
             var system = Envelope(catalog);
-            var projection = ProjectionElevations(system, catalog);
-            var envelope = EnvelopeElevations(system, catalog);
+
+            // El corte frontal de ENTRADA muestra el extremo BAJO, que es el ancla vertical: su elevacion es la del
+            // nivel y NO depende del ambito, asi que envolvente y proyeccion coinciden ahi. Lo que las distingue es
+            // el extremo alto, y de eso responden las pruebas de arriba.
+            var projection = PushBackElevations.LowInsertions(
+                system, catalog, system.Structure.Fronts[ProjectedFront(system)]);
+            var envelope = LowElevations(system, catalog);
+            Assert.Equal(
+                envelope.Values.Select(y => Math.Round(y, 6)).OrderBy(y => y).ToList(),
+                projection.Values.Select(y => Math.Round(y, 6)).OrderBy(y => y).ToList());
 
             var instances = new PushBackSystemFrontalBuilder()
                 .BuildPlan(system, catalog, PushBackFrontalEnd.EntradaSalida).Flatten().Instances;
@@ -334,7 +362,11 @@ namespace RackCad.Tests
 
             Assert.NotEmpty(expected);
             Assert.Equal(expected, labels);
-            Assert.NotEqual(
+
+            // Y coinciden con la envolvente: es la GARANTIA de la nueva regla, no una coincidencia. El ancla vertical
+            // no depende del ambito, asi que el corte frontal no puede mostrar una altura de entrada distinta segun
+            // desde donde se pregunte.
+            Assert.Equal(
                 envelope.Values.Select(y => Math.Round(y, 6)).OrderBy(y => y).ToList(),
                 labels);
         }

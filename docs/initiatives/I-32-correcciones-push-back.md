@@ -102,7 +102,7 @@ Una corrida, un commit atomico por hallazgo o por par de hallazgos que comparten
 
 | ID | Hallazgo | Correccion |
 |---|---|---|
-| PB-004 | La pendiente subia 11.2" en 204"; y la primera correccion saco al larguero posterior de su troquel (rechazada en la validacion round 1) | Regla vigente: el 7/16" por pie es un OBJETIVO NOMINAL. El POSTERIOR es el ancla y conserva su troquel; el de ENTRADA/SALIDA se deriva de el y se ajusta al suyo (`PushBackTroquelGrid`); la cama une los dos contactos reales y la pendiente final es la resultante |
+| PB-004 | La pendiente subia 11.2" en 204"; y la primera correccion saco al larguero posterior de su troquel (rechazada en la validacion round 1) | El 7/16" por pie es un OBJETIVO NOMINAL, y los dos extremos caen sobre troqueles validos (`PushBackTroquelGrid`); la cama une los dos contactos reales y la pendiente final es la resultante. **La eleccion de QUE extremo es el ancla quedo supersedida en 2026-08: es el BAJO** (ver el aviso de la seccion de geometria de la cama) |
 | PB-012 | "Alto 1er nivel" abria en 6" | `PushBackDefaults.DefaultFirstLevelHeight` = 4", aplicado SOLO en `LoadNew()` |
 | PB-013 | Tarima general modificable pero inerte | Fondo y Unidad globales; Frente/Alto/Peso espejo de la celda, no editables |
 | PB-002 | El desviador mostraba menos niveles en un poste, y la celda apagada no llegaba a todas las vistas | `DynamicFrontGeometry.LoadLevelsPerPost` (maximo de frentes adyacentes) **+** `SelectiveDesviadorPlan.CellKey`: la off-cell es POSTE x NIVEL y la leen igual el lateral, los dos frontales, la planta y el BOM |
@@ -197,13 +197,24 @@ El bloque de la cama define **dos rectas paralelas** —la de su `TROQUEL_IN` y 
 separadas por la componente perpendicular del mate local. Comparten rotacion y pendiente, pero no son la
 misma recta.
 
+> **SUPERSEDIDA EN PARTE — la AUTORIDAD VERTICAL de PB-004 (2026-08, I-42).** El dueño invirtio la regla:
+> el ancla vertical de una cama Push Back es su extremo **BAJO**, no el alto. Lo que sigue escrito abajo
+> —«el POSTERIOR es el ancla y el bajo se elige»— fue cierto hasta esa decision y se conserva como
+> historia; **el contrato vigente es el de [ADR-0031](../adr/0031-push-back-compuesto-estructura-unica-y-configuracion-por-lado.md) §9**.
+>
+> Lo que NO cambio: la geometria asimetrica de la cama (dos rectas paralelas), la rotacion unica, el mate
+> bajo, la `LONGITUD` full-span, el BOM y el tope posterior. El criterio de seleccion tampoco: sigue siendo
+> «menor error de pendiente contra 7/192 sobre la reticula». Lo unico que cambia es **cual de los dos
+> extremos se elige y cual se conserva**. Motivo: con el alto anclado, cambiar el fondo de la cama movia el
+> larguero de ENTRADA y «Alto 1er nivel» dejaba de significar nada.
+
 | Aspecto | Regla |
 |---|---|
 | **Entrada/Salida** | mate `LARGUERO_IN_OUT.TROQUEL_CAMA` ↔ `RIEL_DE_CINTA_CALIBRE_12.TROQUEL_IN` |
 | **Posterior e intermedios** | tangentes a la **linea del ORIGEN** |
 | **Rotacion** | una sola `RotationRadians`, resuelta por `PushBackBedRotation` |
-| **Larguero posterior** | ANCLA: fijo en su troquel |
-| **Larguero bajo** | elegido **globalmente** por menor error contra 7/192, sobre la reticula de 2" |
+| ~~**Larguero posterior**~~ | ~~ANCLA: fijo en su troquel~~ — **supersedida**: el ancla es el BAJO |
+| ~~**Larguero bajo**~~ | ~~elegido globalmente por menor error contra 7/192~~ — **supersedida**: el elegido es el POSTERIOR, con ese mismo criterio |
 | **`LONGITUD`** | **fondo estructural completo**; el riel puede sobresalir por detras |
 
 **Conservado sin cambios:** el mate bajo, el ancla posterior, la longitud full-span, el BOM, el tope

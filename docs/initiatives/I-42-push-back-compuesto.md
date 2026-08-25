@@ -435,27 +435,53 @@ pruebas comparan GEOMETRIA FISICA, no JSON: un documento historico —Push Back 
 la misma elevacion, y la migracion se hace midiendo la elevacion ya resuelta y re-expresandola, sin restar ninguna
 constante. Y el marcador sobrevive al SNAPSHOT, que es lo que hace que `RACKEDITAR` no mueva un rack nuevo.
 
-### PENDIENTE — la inversion vertical (error 6)
+### CERRADO — error 6, la inversion vertical, con los desempates que faltaban
 
-La decision del dueño retira «verticalmente gobierna el ALTO» y la sustituye por «el BAJO fija la elevacion y el
-ALTO se deriva». La implementacion vigente hace lo contrario, y **no en el compositor de la corrida sino en la
-regla de I-32**: `PushBackElevations.Resolve` conserva el troquel del larguero POSTERIOR y ELIGE el de entrada con
-`ChooseLowTroquel(...)`, partiendo de `rearContact.Y − nominalRise`.
+El dueño retiro «verticalmente gobierna el ALTO» y fijo los dos desempates que no tenian equivalente. La regla
+vigente, en `PushBackElevations`, es UNA y va en un solo sentido:
 
-Invertirla exige elegir el troquel del ALTO partiendo del bajo, y ahi sus tres desempates **no son simetricos**:
+1. el larguero de ENTRADA es el ANCLA: conserva EXACTAMENTE el troquel que su nivel le dio desde el datum del
+   producto, y no se mueve para mejorar la pendiente;
+2. el POSTERIOR se DERIVA: se enumeran los troqueles de la reticula y gana (a) el de menor error de pendiente
+   contra 7/192; (b) a igualdad, el mas cercano al ALTO teorico (`contacto bajo + subida nominal sobre la
+   longitud real de la cama`); (c) a igualdad, el de menor elevacion.
 
-1. error de pendiente — simetrico, se conserva;
-2. posicion teorica continua (`PushBackBedRotation.TheoreticalExitY`) — no existe su equivalente para el alto;
-3. distancia al resultado de la regla PRE-I-32 (`legacyInsertion`) — no tiene equivalente para el alto.
+El tercer desempate anterior —la cercania al resultado PRE-I-32— pertenecia a la seleccion del BAJO y se
+RETIRA con ella. `PushBackBedRotation.TheoreticalExitY`, que solo servia a aquel criterio, se elimina; no queda
+ninguna ruta viva que fije el alto o elija el bajo.
 
-Ademas el cambio afecta a TODO rack Push Back, no solo al compuesto. Se intento y se REVIRTIO al comprobar que
-dejaba dos autoridades verticales en desacuerdo (el compositor anclando abajo y `PushBackElevations` arriba), que es
-la clase de defecto que esta iniciativa lleva varias rondas persiguiendo. Hace falta que el dueño defina los dos
-desempates que faltan; con eso la inversion es mecanica.
+**Evidencia medida** sobre el escenario de los goldens (inserciones, pulgadas):
+
+| celda | ANTES low | ANTES high | AHORA low | AHORA high | pendiente | resolver exit |
+|---|---|---|---|---|---|---|
+| F0 N1 | 12.6053 | 16.6053 | 6.6053 | 10.6053 | 0.034398 (igual) | 6.6053 |
+| F0 N2 | 84.6053 | 88.6053 | 78.6053 | 82.6053 | 0.034398 (igual) | 78.6053 |
+| F1 N1 | 12.6053 | 12.6053 | 6.6053 | 6.6053 | 0.040668 (igual) | 6.6053 |
+| F1 N2 | 84.6053 | 84.6053 | 78.6053 | 78.6053 | 0.040668 (igual) | 78.6053 |
+
+El larguero bajo vuelve EXACTAMENTE a la altura pedida —antes estaba 6" por encima— y **la pendiente de cada
+cama no cambia**: la celda entera baja, la cama no se reinclina. Es la comprobacion de que se invirtio el ancla
+y no se toco el criterio de seleccion.
+
+**Un arreglo que salio con la inversion.** El corte frontal POSTERIOR leia `EntranceElevation` del resolver
+compartido, asi que era una SEGUNDA autoridad vertical: el mismo larguero fisico salia en dos troqueles segun
+la vista. Ahora consume `PushBackElevations.HighContext`, igual que el bajo consume el suyo, y el override de
+elevaciones vale en LOS DOS extremos del builder compartido (sin contexto —el Dinamico, siempre— nada cambia).
+`LocateCell` tambien busca contra esa misma elevacion: si no, no encontraba la celda y se perdian en silencio
+el tope posterior y el filtro de celdas de una corrida.
+
+**Pruebas.** `PushBackVerticalAuthorityTests` compara PIEZAS DIBUJADAS: el larguero alto sale a la misma
+elevacion en el lateral y en el frontal posterior, el bajo tambien, el bajo se queda en la altura pedida sea
+cual sea el fondo, y el alto se separa de la del resolver en cuanto el fondo lo pide.
+`PushBackHighTieBreakTests` —que SUSTITUYE a `PushBackLegacyTieBreakTests`— re-enumera la reticula por su
+cuenta con un rango mucho mas ancho y comprueba que el elegido es el optimo GLOBAL y que los tres desempates
+resuelven en el orden del dueño. Cuatro goldens se mueven (los dos laterales y los dos frontales); planta y
+BOM quedan intactos, y eso acota el cambio.
 
 ### SIGUEN ABIERTOS
 
-Errores 4 (envolvente de cabeceras por linea fisica), 5 (orientacion del larguero ALTO) y 10 (UX y planta de topes).
+Errores 4 (envolvente de cabeceras por linea fisica), 5 (orientacion del larguero ALTO) y 10 (UX y planta de
+topes).
 
 ## 5. Limitaciones DECLARADAS (no son descuidos)
 

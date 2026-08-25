@@ -42,9 +42,7 @@ namespace RackCad.Application.Systems.PushBack
 
             var runs = PushBackRuns.Resolve(system);
             var allowed = AllowedCells(view, runs, side, end);
-            var context = end == PushBackFrontalEnd.EntradaSalida
-                ? LowContext(local, catalog, view, runs, side)
-                : null;
+            var context = EndContext(local, catalog, view, runs, side, end);
 
             // Se llama a la SOBRECARGA con inyecciones sobre el sistema LOCAL del lado, que no es compuesto: asi no
             // hay recursion y el corte lo construye el mismo builder de un solo sentido.
@@ -83,13 +81,24 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// El contexto de elevaciones del corte BAJO: para cada celda, la elevacion de la cama REAL que descarga en
-        /// este pasillo. Con topologias por lado coincide con la del propio lado; con una corrida es la que impone el
-        /// lado ALTO, que es la unica correcta porque la cama es una sola.
+        /// El contexto de elevaciones del corte: para cada celda, la elevacion que tiene en la cama REAL, medida en
+        /// el extremo que este corte muestra. Con topologias por lado coincide con la del propio lado; con una
+        /// corrida sale de la cama compartida, que es la unica correcta porque la cama es una sola.
+        ///
+        /// <para>
+        /// Los DOS extremos necesitan contexto. El bajo porque su elevacion puede venir del otro lado; el alto
+        /// porque desde la decision final del dueño se DERIVA del bajo y ya no coincide con la del resolver.
+        /// </para>
         /// </summary>
-        private static RackLevelElevations LowContext(
-            PushBackSystem local, RackCatalog catalog, PushBackSideSystem view, PushBackRunSet runs, PushBackSide side)
+        private static RackLevelElevations EndContext(
+            PushBackSystem local,
+            RackCatalog catalog,
+            PushBackSideSystem view,
+            PushBackRunSet runs,
+            PushBackSide side,
+            PushBackFrontalEnd end)
         {
+            var low = end == PushBackFrontalEnd.EntradaSalida;
             var fronts = local.Structure?.Fronts;
             if (fronts == null || fronts.Count == 0)
             {
@@ -101,14 +110,16 @@ namespace RackCad.Application.Systems.PushBack
             {
                 var front = fronts[index];
                 var elevations = new Dictionary<int, double>();
-                foreach (var run in runs.Runs.Where(candidate => candidate.LowSide == side))
+                foreach (var run in runs.Runs.Where(candidate => (low ? candidate.LowSide : candidate.HighSide) == side))
                 {
                     if (LocalIndex(view, run.Slot) != index)
                     {
                         continue;
                     }
 
-                    var source = PushBackElevations.LowInsertions(run.Source, catalog, run.Front());
+                    var source = low
+                        ? PushBackElevations.LowInsertions(run.Source, catalog, run.Front())
+                        : PushBackElevations.HighInsertions(run.Source, catalog, run.Front());
                     if (source.TryGetValue(run.SourceLevel, out var insertion))
                     {
                         elevations[run.Level] = insertion;

@@ -155,17 +155,29 @@ namespace RackCad.Tests
             Assert.Equal(0, lowFrontAtPost1.Index);
             Assert.NotEqual(lowFrontAtPost1.Index, PostWinner(system, 1));
 
-            // Y ninguna derivada coincide con la elevación del resolver, que es lo que los consumidores leen hoy.
+            // Decision final del dueño: el extremo BAJO es el ANCLA, asi que la derivada CoINCIDE con la elevacion
+            // de salida del resolver — y eso es justo lo que hay que garantizar. Lo que sigue discriminando entre
+            // ambitos es el extremo ALTO, que se deriva de la longitud de cada cama.
             foreach (var front in system.Structure.Fronts)
             {
                 var derived = Derived(system, catalog, front.Index);
                 foreach (var level in front.LoadBeamLevels)
                 {
                     Assert.True(
-                        Math.Abs(derived[level.LevelNumber] - level.ExitElevation) > 1e-6,
-                        $"frente {front.Index} nivel {level.LevelNumber}: la derivada coincide con ExitElevation");
+                        Math.Abs(derived[level.LevelNumber] - level.ExitElevation) <= 1e-6,
+                        $"frente {front.Index} nivel {level.LevelNumber}: el ancla bajo tiene que ser la del resolver");
                 }
             }
+
+            var highs = system.Structure.Fronts
+                .Select(front => string.Join(
+                    ",",
+                    PushBackElevations.HighInsertions(system, catalog, front)
+                        .OrderBy(entry => entry.Key)
+                        .Select(entry => Math.Round(entry.Value, 6))))
+                .Distinct()
+                .ToList();
+            Assert.True(highs.Count > 1, "el fixture jagged tiene que discriminar por el extremo alto");
         }
 
 

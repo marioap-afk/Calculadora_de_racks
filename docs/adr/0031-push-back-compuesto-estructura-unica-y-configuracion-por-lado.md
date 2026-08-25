@@ -204,8 +204,19 @@ pendiente sobre la retícula de troqueles).
      demanda. **Implementado y probado.**
    - **Verticalmente** manda también el BAJO: «Alto 1er nivel» fija la elevación del larguero de entrada, y el ALTO
      se **deriva** de esa altura más la pendiente sobre la longitud real de la cama, resuelta contra los troqueles.
-     Cambiar de topología no puede mover el larguero de entrada. **PENDIENTE**: la implementación vigente sigue
-     anclando en el alto (`PushBackElevations.ChooseLowTroquel`), ver §Pendientes.
+     Ni la topología ni el fondo pueden mover el larguero de entrada. **Implementado y probado.**
+
+     Esto **supersede** la redacción de I-32/PB-004, que hacía del ALTO la autoridad vertical. El criterio de
+     selección NO cambia —menor error de pendiente contra 7/192 sobre la retícula de 2"—; cambia cuál de los dos
+     extremos se conserva y cuál se elige. Los desempates, en orden: (a) menor error de pendiente; (b) el más
+     cercano al ALTO teórico (`contacto bajo + subida nominal sobre la longitud real de la cama`); (c) el de menor
+     elevación. El tercer desempate de la regla anterior —la cercanía al resultado PRE-I-32— pertenecía a la
+     selección del BAJO, no tiene equivalente para el alto y queda **retirado**.
+
+     La autoridad es UNA: `PushBackElevations`. El corte lateral, los dos cortes frontales, la cama, los apoyos
+     intermedios, el desviador y el tope posterior leen de ahí. Leer `EntranceElevation` del resolver compartido
+     para dibujar el larguero alto sería una **segunda** autoridad vertical, y era el defecto real: la misma pieza
+     física salía en dos troqueles distintos según la vista.
 
    Anclar longitudinalmente en el alto —como hizo una redacción anterior— dejaba la cama arrancando **dentro** del
    rack, con el pasillo delante inaccesible. Es un defecto físico, no una preferencia de dibujo.

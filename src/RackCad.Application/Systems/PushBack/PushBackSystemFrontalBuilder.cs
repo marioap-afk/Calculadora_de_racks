@@ -78,8 +78,9 @@ namespace RackCad.Application.Systems.PushBack
         /// el comportamiento es exactamente el anterior a la iniciativa):
         /// </summary>
         /// <param name="elevationsOverride">
-        /// El contexto de elevaciones del corte BAJO. Un rack compuesto lo necesita porque la elevacion de una celda
-        /// corrida la gobierna el lado ALTO, no el lado por el que se carga.
+        /// El contexto de elevaciones del extremo que este corte dibuja. Un rack compuesto lo necesita porque la
+        /// elevacion de una celda corrida la gobierna la cama REAL, que puede pertenecer al otro lado. Con null se
+        /// usa el contexto del propio sistema, que es lo que hace un Push Back de un solo sentido.
         /// </param>
         /// <param name="includeCell">
         /// Filtro (indiceDeFrente, nivel 0-based) de las celdas que este corte materializa. Un rack compuesto lo
@@ -120,8 +121,11 @@ namespace RackCad.Application.Systems.PushBack
                 return HeaderInstanceGrouper.Group(low, "PB_FRONTAL_ENTRADA_SALIDA");
             }
 
-            // El corte POSTERIOR no lleva override: su larguero es el ancla y conserva la elevación del resolver.
-            var entrance = dynamicBuilder.Build(structure, catalog, DynamicRackEnd.Entrance);
+            // El corte POSTERIOR tambien lleva contexto. Desde la decision final del dueño su larguero ya no es
+            // el ancla: se DERIVA del bajo, asi que leer la elevacion del resolver aqui lo dibujaria en un troquel
+            // distinto del que ocupa en el lateral — dos autoridades verticales para la MISMA pieza fisica.
+            var highContext = elevationsOverride ?? PushBackElevations.HighContext(system, catalog);
+            var entrance = dynamicBuilder.Build(structure, catalog, DynamicRackEnd.Entrance, highContext);
             var layout = DynamicFrontGeometry.Compute(structure, catalog);
             var redondoId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
                 ? PushBackDefaults.HighEndBeamCatalogId
@@ -151,7 +155,7 @@ namespace RackCad.Application.Systems.PushBack
 
                 if (PushBackPlanComposer.IsDynamicEndBeam(instance))
                 {
-                    var (frontIndex, level) = LocateCell(structure, catalog, layout, instance);
+                    var (frontIndex, level) = LocateCell(structure, catalog, layout, instance, highContext);
                     if (includeCell != null && level >= 0 && !includeCell(frontIndex, level))
                     {
                         continue;   // la celda no tiene larguero posterior en esta linea (I-42: la calle la atraviesa)
@@ -382,7 +386,11 @@ namespace RackCad.Application.Systems.PushBack
         /// después (PB-004, I-32), y buscar por coordenada una pieza ya movida era precisamente el riesgo.
         /// </summary>
         private static (int FrontIndex, int Level) LocateCell(
-            DynamicRackSystem system, RackCatalog catalog, DynamicFrontLayout layout, HeaderBlockInstance beam)
+            DynamicRackSystem system,
+            RackCatalog catalog,
+            DynamicFrontLayout layout,
+            HeaderBlockInstance beam,
+            RackLevelElevations elevations)
         {
             var frontIndex = -1;
             var bestX = double.MaxValue;
@@ -409,7 +417,14 @@ namespace RackCad.Application.Systems.PushBack
             var bestY = double.MaxValue;
             for (var index = 0; index < frontLevels.Count; index++)
             {
-                var distance = Math.Abs(frontLevels[index].EntranceElevation - beam.Insertion.Y);
+                // Se busca contra la MISMA elevacion con la que la pieza se coloco. Desde la decision final del
+                // dueño el larguero alto se DERIVA, asi que comparar contra la del resolver no encontraria ninguna
+                // celda: ni tope, ni filtro de celdas, y en silencio.
+                var levelY = elevations.OrFront(
+                    system.Fronts[frontIndex].Index,
+                    frontLevels[index].LevelNumber,
+                    frontLevels[index].EntranceElevation);
+                var distance = Math.Abs(levelY - beam.Insertion.Y);
                 if (distance < bestY)
                 {
                     bestY = distance;

@@ -45,9 +45,9 @@ namespace RackCad.Application.Systems.Dynamic
             var textHeight = SelectiveAnnotations.TextHeightFor(scale);
             var height = DynamicFrontGeometry.Height(system);
             var levelYs = system.LoadBeamLevels
-                .Select(level => end == DynamicRackEnd.Entrance
-                    ? level.EntranceElevation
-                    : elevations.OrProjectedSystem(level.LevelNumber, level.ExitElevation))
+                .Select(level => elevations.OrProjectedSystem(
+                    level.LevelNumber,
+                    end == DynamicRackEnd.Entrance ? level.EntranceElevation : level.ExitElevation))
                 .ToList();
 
             AppendFrontalDimensions(target, system, layout, view, height, levelYs, textHeight, scale, catalog);

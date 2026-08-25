@@ -422,13 +422,13 @@ namespace RackCad.Application.Systems.Dynamic
 
                     var level = system.LoadBeamLevels[levelIndex];
 
-                    // El desviador cuelga del larguero de SU extremo. El BAJO admite override —es el que Push Back
-                    // deriva— y se pregunta POR POSTE, porque este bucle recorre postes y en un rack jagged cada uno
-                    // puede tener frentes distintos a los lados. El ALTO no: su larguero es el ancla y conserva la
-                    // elevación del resolver (PB-004, I-32).
-                    var beamY = end == DynamicRackEnd.Entrance
-                        ? level.EntranceElevation
-                        : elevations.OrPost(postIndex, level.LevelNumber, level.ExitElevation);
+                    // El desviador cuelga del larguero de SU extremo, y sigue al override de ese extremo — sea el
+                    // bajo o el alto. Se pregunta POR POSTE porque este bucle recorre postes y en un rack jagged cada
+                    // uno puede tener frentes distintos a los lados (PB-004).
+                    var beamY = elevations.OrPost(
+                        postIndex,
+                        level.LevelNumber,
+                        end == DynamicRackEnd.Entrance ? level.EntranceElevation : level.ExitElevation);
                     var y = levelIndex == 0 ? troquel.Y + firstHeight : beamY - SelectiveDesviadorPlan.BeamYOffset;
                     target.Add(Piece(
                         selection.ElementId,

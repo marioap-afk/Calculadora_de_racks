@@ -191,12 +191,19 @@ namespace RackCad.Application.Systems.PushBack
                 return result;
             }
 
+            // El posterior es el extremo DERIVADO: su troquel lo elige la autoridad de elevaciones a partir del
+            // larguero de entrada, que es el ancla. Leerlo de otro sitio dejaria la cama y su larguero alto en
+            // troqueles distintos.
+            var highInsertions = PushBackElevations.HighInsertions(system, catalog, front);
+
             foreach (var placement in PushBackPlacements.Resolve(system, front)
                          .Where(placement => placement.IsEntrance)
                          .Where(placement => levels == null || levels.Contains(placement.LevelNumber)))
             {
-                // PB-004: el posterior ES el ancla — se queda en el troquel que le dio el resolver, sin desplazamiento.
-                var origin = new Point2D(placement.X, placement.Y);
+                var y = highInsertions.TryGetValue(placement.LevelNumber, out var resolved)
+                    ? resolved
+                    : placement.Y;
+                var origin = new Point2D(placement.X, y);
                 var instance = new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Beam,

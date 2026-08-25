@@ -48,9 +48,14 @@ namespace RackCad.Tests
         // ---- (1) La seleccion del troquel bajo minimiza el error de PENDIENTE ----
 
         /// <summary>
-        /// Aclaracion final del Owner (I-32): el criterio de seleccion ya NO es «ajustar la subida nominal medida
-        /// sobre la longitud comercial», sino <b>minimizar el error de pendiente contra 7/192</b> sobre la reticula
-        /// de 2". La longitud comercial sigue siendo la del riel dibujado y la del BOM, pero no elige el troquel.
+        /// El criterio de seleccion es <b>minimizar el error de pendiente contra 7/192</b> sobre la reticula de 2".
+        /// La longitud comercial sigue siendo la del riel dibujado y la del BOM, pero no elige el troquel.
+        ///
+        /// <para>
+        /// Lo que se elige, desde la decision final del dueño, es el troquel del larguero <b>POSTERIOR</b>: el bajo
+        /// es el ancla y no se mueve. Por eso la perturbacion de esta prueba se aplica al posterior — perturbar el
+        /// bajo comprobaria una regla que ya no existe.
+        /// </para>
         /// </summary>
         [Theory]
         [MemberData(nameof(Fondos))]
@@ -67,18 +72,29 @@ namespace RackCad.Tests
             foreach (var cell in PushBackElevations.Resolve(system, catalog, front).Values)
             {
                 var chosen = PushBackBedRotation.SlopeError(cell.RotationRadians);
+                var exitMate = new Point2D(cell.LowContact.X, cell.LowInsertion + lowMate.Value.Y);
+
+                // Se perturba la INSERCION, que es el grado de libertad real, y el contacto se vuelve a derivar con
+                // la MISMA geometria: un contacto inventado a mano puede no corresponder a ningun troquel fisico.
                 foreach (var delta in new[] { -4.0, -2.0, 2.0, 4.0 })
                 {
-                    var exitMate = new Point2D(cell.LowContact.X, cell.LowInsertion + delta + lowMate.Value.Y);
-                    if (exitMate.Y >= cell.RearContact.Y)
+                    var rearContact = PushBackLoadBeamGeometry.RearBeamTangencyPointWorld(
+                        catalog,
+                        PushBackDefaults.HighEndBeamCatalogId,
+                        cell.RearContact.X,
+                        cell.RearInsertion + delta,
+                        false);
+                    if (!rearContact.HasValue || rearContact.Value.Y <= exitMate.Y)
                     {
-                        continue;
+                        continue;   // sin subida no hay cama
                     }
 
-                    var rotation = PushBackBedRotation.Solve(exitMate, cell.RearContact, railMate);
+                    var rotation = PushBackBedRotation.Solve(exitMate, rearContact.Value, railMate);
                     if (rotation.HasValue)
                     {
-                        Assert.True(PushBackBedRotation.SlopeError(rotation.Value) >= chosen - 1e-12);
+                        Assert.True(
+                            PushBackBedRotation.SlopeError(rotation.Value) >= chosen - 1e-12,
+                            "hay un troquel posterior con menos error de pendiente que el elegido");
                     }
                 }
             }
