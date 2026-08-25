@@ -621,10 +621,48 @@ namespace RackCad.UI.Systems.PushBack
         private void CommitCurrentCell()
         {
             if (state.Structure.Count == 0) return;
-            state.CommitEditorValues(ReadCellValues());
+            ForEachEditedSide(side => side.CommitEditorValues(ReadCellValues(side)));
         }
 
-        private PushBackEditorValues ReadCellValues()
+        /// <summary>
+        /// Ejecuta una escritura sobre los lados que la seleccion de edicion alcanza: uno, o los DOS cuando el
+        /// usuario eligio «Ambos». Es el UNICO sitio donde «Ambos» se materializa, asi que ningun campo puede
+        /// quedarse a medias ni inventarse una regla propia.
+        ///
+        /// <para>
+        /// Antes de escribir en el otro lado se le lleva la MISMA seleccion de celda: si no, «esta celda» significaria
+        /// dos cosas distintas y un alcance escribiria donde nadie pidio.
+        /// </para>
+        /// </summary>
+        private void ForEachEditedSide(Action<PushBackEditorState> write)
+        {
+            if (composite.ActiveSelection == PushBackSideSelection.Both)
+            {
+                composite.MirrorSelection();
+            }
+
+            foreach (var side in composite.EditTargets())
+            {
+                if (side.Structure.Count > 0)
+                {
+                    write(side);
+                }
+            }
+        }
+
+        private PushBackEditorValues ReadCellValues() => ReadCellValues(state);
+
+        /// <summary>
+        /// Lee el panel de la celda contra UN lado concreto.
+        ///
+        /// <para>
+        /// El lado importa porque un campo VACIO no significa «cero»: significa «deja este valor como esta», y ese
+        /// valor es el del lado que se escribe. Con «Ambos» y un campo en estado MIXTO —A y B tienen valores
+        /// distintos— es exactamente lo que hace falta: si el usuario no escribe nada, cada lado conserva el suyo,
+        /// en vez de que el de A pise silenciosamente al de B.
+        /// </para>
+        /// </summary>
+        private PushBackEditorValues ReadCellValues(PushBackEditorState state)
         {
             var frontIndex = Math.Max(0, Math.Min(state.Structure.SelectedFrontIndex, state.Structure.Count - 1));
             var front = state.Structure.Fronts[frontIndex];
@@ -941,7 +979,9 @@ namespace RackCad.UI.Systems.PushBack
             }
 
             var applied = false;
-            MutateStructure(() => applied = state.SetActive(index, isActive));
+            // «En blanco» (I-33) es del frente de UN lado; con «Ambos» se aplica a los dos, que es lo que el usuario
+            // acaba de pedir al elegir esa seleccion.
+            MutateStructure(() => ForEachEditedSide(side => applied = side.SetActive(index, isActive)));
             if (!applied)
             {
                 SetStatus("Al menos un frente debe permanecer activo.", true);
@@ -959,13 +999,20 @@ namespace RackCad.UI.Systems.PushBack
                 false);
         }
 
-        private void AddFront_Click(object sender, RoutedEventArgs e) => MutateStructure(() => state.SetFrontCount(state.Structure.Count + 1));
+        // I-42: añadir o quitar un frente cambia la RETICULA, que es del rack: los dos lados crecen y decrecen a la
+        // vez, igual que al escribir el numero en el campo. La asimetria se declara con la presencia por frente.
+        private void AddFront_Click(object sender, RoutedEventArgs e)
+            => MutateStructure(() => composite.SetSlotCount(state.Structure.Count + 1));
 
-        private void RemoveFront_Click(object sender, RoutedEventArgs e) => MutateStructure(() => state.SetFrontCount(Math.Max(1, state.Structure.Count - 1)));
+        private void RemoveFront_Click(object sender, RoutedEventArgs e)
+            => MutateStructure(() => composite.SetSlotCount(Math.Max(1, state.Structure.Count - 1)));
 
-        private void AddLevel_Click(object sender, RoutedEventArgs e) => MutateStructure(() => state.AdjustLevels(state.Structure.SelectedFrontIndex, 1));
+        // Los NIVELES son de un lado, asi que siguen la seleccion de edicion: con «Ambos» suben o bajan en los dos.
+        private void AddLevel_Click(object sender, RoutedEventArgs e)
+            => MutateStructure(() => ForEachEditedSide(side => side.AdjustLevels(side.Structure.SelectedFrontIndex, 1)));
 
-        private void RemoveLevel_Click(object sender, RoutedEventArgs e) => MutateStructure(() => state.AdjustLevels(state.Structure.SelectedFrontIndex, -1));
+        private void RemoveLevel_Click(object sender, RoutedEventArgs e)
+            => MutateStructure(() => ForEachEditedSide(side => side.AdjustLevels(side.Structure.SelectedFrontIndex, -1)));
 
         private void SelectedFront_Changed(object sender, SelectionChangedEventArgs e)
         {
@@ -1065,7 +1112,7 @@ namespace RackCad.UI.Systems.PushBack
             if (!AllFieldsValid(out var error)) { SetStatus(error, true); return; }
             using (session.Recompute.Defer())
             {
-                state.ApplyScope(ReadCellValues(), scope);
+                ForEachEditedSide(side => side.ApplyScope(ReadCellValues(side), scope));
                 suppressSync = true;
                 try
                 {
@@ -1159,18 +1206,24 @@ namespace RackCad.UI.Systems.PushBack
                     // un lado seria editar una configuracion dormante y dejar la cama como estaba.
                     if (EditsCorridaDepth())
                     {
+                        // El fondo de una corrida es de la CELDA compuesta, no de un lado: «Ambos» no lo duplica.
                         written = composite.ApplyCorridaDepth(value, scope);
                         ReportCorridaScope(scope, written);
                     }
                     else
                     {
-                        written = state.ApplyPalletsDeep(value, scope);
+                        var count = 0;
+                        ForEachEditedSide(side => count = side.ApplyPalletsDeep(value, scope));
+                        written = count;
                     }
                 }
 
                 if (pallet)
                 {
-                    written = state.ApplyDrawPallet(CellDrawPalletCheck.IsChecked == true, scope);
+                    var draw = CellDrawPalletCheck.IsChecked == true;
+                    var count = 0;
+                    ForEachEditedSide(side => count = side.ApplyDrawPallet(draw, scope));
+                    written = count;
                 }
 
                 suppressSync = true;
@@ -1222,7 +1275,8 @@ namespace RackCad.UI.Systems.PushBack
             if (!AllFieldsValid(out var error)) { SetStatus(error, true); return; }
             using (session.Recompute.Defer())
             {
-                state.Structure.ApplyFrontValuesTo(ReadCellValues().Dynamic, targets);
+                var frontTargets = targets.ToList();
+                ForEachEditedSide(side => side.Structure.ApplyFrontValuesTo(ReadCellValues(side).Dynamic, frontTargets));
                 suppressSync = true;
                 try
                 {
@@ -2418,9 +2472,9 @@ namespace RackCad.UI.Systems.PushBack
                 // I-42: un corte frontal es de UN lado, asi que su SECCION lleva tambien el lado activo. Un rack de
                 // un solo sentido codifica 0 y 1, exactamente lo que escribieron todas las versiones anteriores.
                 case 1: return (RackEmbedDocument.ViewFrontal, PushBackSystemFrontalBuilder.EncodeSection(
-                    PushBackFrontalEnd.EntradaSalida, composite.ActiveSide));
+                    PushBackFrontalEnd.EntradaSalida, frontalSide));
                 case 2: return (RackEmbedDocument.ViewFrontal, PushBackSystemFrontalBuilder.EncodeSection(
-                    PushBackFrontalEnd.Posterior, composite.ActiveSide));
+                    PushBackFrontalEnd.Posterior, frontalSide));
                 case 3: return (RackEmbedDocument.ViewPlanta, -1);
                 default: return (RackEmbedDocument.ViewLateral, Math.Max(0, LateralSectionBox.SelectedIndex));
             }
@@ -2536,9 +2590,37 @@ namespace RackCad.UI.Systems.PushBack
         // contract stays the single source — and then inserts through the very same path as "Insertar vista actual".
         private void InsertLateral_Click(object sender, RoutedEventArgs e) => InsertViewAt(0);
 
-        private void InsertFrontalEntrada_Click(object sender, RoutedEventArgs e) => InsertViewAt(1);
+        /// <summary>
+        /// I-42 — el lado que el CORTE FRONTAL muestra. Es una eleccion del boton que se pulsa, no el «lado activo»
+        /// de la edicion: el usuario tiene que poder pedir el corte de B mientras edita A, y el dibujo insertado no
+        /// puede depender de un modo que no se ve en la barra de vistas.
+        /// </summary>
+        private PushBackSide frontalSide = PushBackSide.A;
 
-        private void InsertFrontalPosterior_Click(object sender, RoutedEventArgs e) => InsertViewAt(2);
+        /// <summary>El lado del ultimo corte frontal pedido (seam de prueba).</summary>
+        internal PushBackSide FrontalSideForTest => frontalSide;
+
+        private void InsertFrontalEntrada_Click(object sender, RoutedEventArgs e)
+            => InsertViewAt(1);
+
+        private void InsertFrontalPosterior_Click(object sender, RoutedEventArgs e)
+            => InsertViewAt(2);
+
+        /// <summary>
+        /// El lado de los CORTES FRONTALES lo declara su propio selector, no el lado que se este editando: el usuario
+        /// tiene que poder pedir el corte de B mientras configura A, y el dibujo insertado no puede depender de un
+        /// modo que no se ve en la barra de vistas.
+        /// </summary>
+        private void FrontalSide_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            frontalSide = FrontalSideBox.SelectedIndex == 1 ? PushBackSide.B : PushBackSide.A;
+            RenderPreview();
+        }
 
         private void InsertPlanta_Click(object sender, RoutedEventArgs e) => InsertViewAt(3);
 

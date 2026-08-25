@@ -38,6 +38,7 @@ namespace RackCad.Tests
             PushBackRunDirection direction = PushBackRunDirection.AToB)
         {
             var state = new PushBackCompositeEditorState();
+            state.SideA.LoadNew();   // como la ventana: los dos lados nacen con los defaults del producto
             state.SetSideBPresent(true);
             state.SideB.LoadNew();
             state.SetSlotCount(2);

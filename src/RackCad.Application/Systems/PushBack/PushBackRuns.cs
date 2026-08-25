@@ -236,13 +236,11 @@ namespace RackCad.Application.Systems.PushBack
             var frame = forward ? Clone(structure) : PushBackMirror.Structure(structure);
             var totalModules = frame.Modules.Count;
 
-            // UNA sola autoridad de colocacion. Antes habia dos —primero se elegian modulos discretos y despues se
-            // sobrescribia StartX con una longitud continua—, y esa doble correccion era lo que dejaba la cama
-            // desplazada una posicion hacia adentro. Ahora el span lo resuelve PushBackBedSpan y aqui solo se
-            // materializa: el rango del frente ES el span, y nadie lo retoca despues.
+            // UNA sola autoridad de colocacion, y anclada en el extremo BAJO. El rango del frente ES el span que
+            // resuelve PushBackBedSpan, y nadie lo retoca despues: ni una resta continua, ni un recorte posterior.
             var span = PushBackBedSpan.ResolveSpan(frame, demand);
-            var start = Math.Max(1, Math.Min(span.StartPosition, totalModules));
-            var modules = totalModules - start + 1;
+            var start = 1;
+            var modules = Math.Max(1, Math.Min(span.EndPosition, totalModules));
 
             var corrida = new PushBackSystem
             {
@@ -254,8 +252,9 @@ namespace RackCad.Application.Systems.PushBack
             for (var slot = 0; slot < frame.Fronts.Count; slot++)
             {
                 var front = frame.Fronts[slot];
-                // La calle corrida acaba SIEMPRE en el extremo alto —ese es su ancla— y arranca en el apoyo que el
-                // span resolvio. Su longitud fisica es la de ese apoyo, nunca la del rack entero.
+                // La calle corrida ARRANCA siempre en el extremo bajo —el poste exterior del lado por el que se
+                // carga, que es su ancla longitudinal— y acaba en el apoyo que el span resolvio. Su longitud fisica
+                // es la de ese apoyo, nunca la del rack entero.
                 front.DepthStartPosition = start;
                 front.PalletsDeep = modules;
 
@@ -308,8 +307,8 @@ namespace RackCad.Application.Systems.PushBack
                 corrida.HighEndBeams.Add(resolved);
             }
 
-            // Las coordenadas salen del RANGO, como en cualquier frente del rack: el extremo bajo cae sobre la linea
-            // de modulo que el span resolvio, que es un apoyo fisico real. No se retoca ninguna X despues.
+            // Las coordenadas salen del RANGO, como en cualquier frente del rack: el extremo bajo cae en la linea de
+            // postes exterior y el alto sobre el apoyo que el span resolvio. No se retoca ninguna X despues.
             DynamicDepthGeometry.ResolveCoordinates(frame);
             return corrida;
         }

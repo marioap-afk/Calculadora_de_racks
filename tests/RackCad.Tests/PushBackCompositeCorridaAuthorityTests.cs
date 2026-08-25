@@ -131,7 +131,7 @@ namespace RackCad.Tests
         // ---- R5: Required <= Resolved <= Available -------------------------------------------------------------
 
         /// <summary>
-        /// R5 — la cama toma el PRIMER apoyo valido desde el extremo ALTO hacia el bajo. No mide el minimo teorico si
+        /// R5 — la cama toma el PRIMER apoyo valido desde el extremo BAJO hacia el alto. No mide el minimo teorico si
         /// ese punto no es un apoyo, y no se estira hasta todo lo disponible si con menos basta.
         /// </summary>
         [Theory]
@@ -139,7 +139,7 @@ namespace RackCad.Tests
         [InlineData(5)]
         [InlineData(10)]
         [InlineData(13)]
-        public void TheBed_TakesTheFirstValidSupport_FromHighTowardsLow(int depth)
+        public void TheBed_TakesTheFirstValidSupport_FromLowTowardsHigh(int depth)
         {
             var design = Design(deepA: 5, deepB: 8);
             design.Composite.SetCorridaDepth(0, 0, depth);
@@ -153,14 +153,15 @@ namespace RackCad.Tests
                 bed.ResolvedBedLength <= bed.AvailableBedSpan + PushBackBedSpan.Tolerance,
                 "Resolved nunca puede exceder lo que la estructura ofrece");
 
-            // El extremo bajo cae sobre una linea de modulo: un apoyo fisico real de la estructura.
-            var lowX = system.Structure.TotalLength - bed.ResolvedBedLength;
-            Assert.Contains(system.Structure.Modules, module => Math.Abs(module.StartX - lowX) < 1e-6);
+            // El extremo ALTO cae sobre una linea de modulo: un apoyo fisico real. El BAJO esta en la orilla.
+            var lowX = system.Structure.Modules[0].StartX;
+            var highX = lowX + bed.ResolvedBedLength;
+            Assert.Contains(system.Structure.Modules, module => Math.Abs(module.EndX - highX) < 1e-6);
 
-            // Y es el PRIMERO que sirve: el apoyo inmediatamente mas cercano al alto ya no alcanzaria.
+            // Y es el PRIMERO que sirve: el apoyo inmediatamente anterior ya no alcanzaria.
             var nearer = system.Structure.Modules
-                .Where(module => module.StartX > lowX + 1e-6)
-                .Select(module => system.Structure.TotalLength - module.StartX)
+                .Where(module => module.EndX < highX - 1e-6)
+                .Select(module => module.EndX - lowX)
                 .DefaultIfEmpty(-1.0)
                 .Max();
             if (nearer > 0.0)
@@ -236,15 +237,15 @@ namespace RackCad.Tests
             var frame = direction == PushBackRunDirection.AToB
                 ? system.Structure
                 : PushBackMirror.Structure(system.Structure);
-            var lowInFrame = total - bed.ResolvedBedLength;
-            var support = frame.Modules.Single(module => Math.Abs(module.StartX - lowInFrame) < 1e-6);
+            var highInFrame = frame.Modules[0].StartX + bed.ResolvedBedLength;
+            var support = frame.Modules.Single(module => Math.Abs(module.EndX - highInFrame) < 1e-6);
 
-            // Y el contacto de la cama cae DENTRO de ese fondo, no flotando en cualquier punto intermedio.
-            var lowContactInFrame = direction == PushBackRunDirection.AToB
-                ? axis.LowContact.X
-                : total - axis.LowContact.X;
-            Assert.True(lowContactInFrame >= support.StartX - 1e-6);
-            Assert.True(lowContactInFrame <= support.EndX + 1e-6);
+            // El contacto ALTO cae DENTRO de ese fondo, no flotando en cualquier punto intermedio.
+            var highContactInFrame = direction == PushBackRunDirection.AToB
+                ? axis.HighContact.X
+                : total - axis.HighContact.X;
+            Assert.True(highContactInFrame >= support.StartX - 1e-6);
+            Assert.True(highContactInFrame <= support.EndX + 1e-6);
             Assert.True(bed.ResolvedBedLength < total - 1.0);
 
             // Y lo DIBUJADO mide lo resuelto: el BOM y el dibujo no pueden divergir por el sentido.

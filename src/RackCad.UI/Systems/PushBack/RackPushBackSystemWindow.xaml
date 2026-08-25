@@ -140,11 +140,11 @@
                          decrece en los DOS lados a la vez. Lo que expresa la asimetria A=3 / B=4 es la PRESENCIA de
                          cada ranura en cada lado, y para eso hace falta poder decirlo: sin este control el usuario no
                          tenia ninguna forma de declararla, y crecer por un lado dejaba el otro atras en silencio. -->
-                    <CheckBox x:Name="SlotPresentCheck" Content="La ranura existe en este lado" Margin="0,8,0,0"
+                    <CheckBox x:Name="SlotPresentCheck" Content="Frente presente en este lado" Margin="0,8,0,0"
                               Foreground="{DynamicResource ShellTextPrimaryBrush}"
                               Checked="SlotPresent_Changed" Unchecked="SlotPresent_Changed"
                               ToolTipService.ShowOnDisabled="True"
-                              ToolTip="Aplica al frente seleccionado. Desmarcarla retira esa ranura de este lado &#8212; su configuraci&#243;n queda dormante y vuelve intacta al declararla otra vez. Es lo que expresa &#171;A = 3 y B = 4&#187;." />
+                              ToolTip="Desactívalo cuando este frente físico sólo existe en el lado opuesto. La retícula del rack se conserva para que A y B puedan tener distinta cantidad de frentes, y la configuración del frente retirado queda guardada por si vuelve." />
                     <TextBlock x:Name="SlotPresentText" Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />
 
                     <TextBlock Text="Topolog&#237;a de la celda" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
@@ -221,20 +221,46 @@
                     </WrapPanel>
                     <TextBlock x:Name="TopeApplicabilityText" Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />
 
-                    <TextBlock Text="Estructura del lado activo" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
+                    <!-- I-42 (ronda Owner): esto NO es «otro fondo». El fondo de almacenamiento es de la celda y del
+                         frente («Fondos frente» y «Fondo celda»); esto es hasta donde llega la ESTRUCTURA longitudinal
+                         del lado, que normalmente se deriva de la demanda de sus celdas y solo se fija a mano cuando
+                         se quiere estructura de sobra. Por eso se ven la propuesta y la efectiva, y el campo se llama
+                         ajuste manual: para que no parezcan dos campos que hacen lo mismo. -->
+                    <TextBlock Text="Estructura longitudinal del lado" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                    <TextBlock Text="Hasta d&#243;nde llega la estructura de este lado. NO es el fondo de almacenamiento: ese se edita arriba, en &#171;Fondos frente&#187; y &#171;Fondo celda&#187;."
+                               Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" Margin="0,0,0,4" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Propuesta (autom&#225;tica)" Style="{StaticResource FieldLabel}" />
+                            <TextBlock x:Name="StructureProposedText" Text="&#8212;"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" Margin="0,0,0,4" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Efectiva (la que se dibuja)" Style="{StaticResource FieldLabel}" />
+                            <TextBlock x:Name="StructureEffectiveText" Text="&#8212;"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" Margin="0,0,0,4" />
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Text="Ajuste manual (fondos)" Style="{StaticResource FieldLabel}" />
                     <controls:NumericField x:Name="StructureOverrideBox" IsOptional="True" IntegerOnly="True" Minimum="2"
                                            ToolTipService.ShowOnDisabled="True"
-                                           ToolTip="Fondos de estructura del lado activo. Vac&#237;o = seguir la propuesta derivada de la demanda de sus celdas." />
+                                           ToolTip="Fuerza hasta d&#243;nde llega la estructura de este lado. Vac&#237;o = seguir la propuesta autom&#225;tica. No cambia el fondo de ninguna celda ni de ning&#250;n frente." />
                     <WrapPanel Margin="0,6,0,0">
-                        <Button x:Name="ApplyStructureButton" Content="Aplicar estructura"
-                                Style="{StaticResource SecondaryButtonStyle}" MinWidth="128" Margin="0,0,6,6"
-                                Click="ApplyStructure_Click" />
-                        <Button x:Name="RestoreStructureButton" Content="Restaurar estructura"
-                                Style="{StaticResource SecondaryButtonStyle}" MinWidth="140" Margin="0,0,6,6"
+                        <Button x:Name="ApplyStructureButton" Content="Aplicar ajuste"
+                                Style="{StaticResource SecondaryButtonStyle}" MinWidth="118" Margin="0,0,6,6"
+                                Click="ApplyStructure_Click"
+                                ToolTip="Fija el ajuste manual de este lado." />
+                        <Button x:Name="RestoreStructureButton" Content="Volver a autom&#225;tico"
+                                Style="{StaticResource SecondaryButtonStyle}" MinWidth="148" Margin="0,0,6,6"
                                 Click="RestoreStructure_Click"
                                 ToolTip="Elimina el ajuste manual: el lado vuelve a seguir la propuesta ACTUAL." />
                     </WrapPanel>
-                    <TextBlock x:Name="CompositeStructureText" Text="Estructura: &#8212;"
+                    <TextBlock x:Name="CompositeStructureText" Text=""
                                Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />
                     </StackPanel>
 
@@ -294,7 +320,7 @@
                                     <TextBlock Text="Posiciones" Style="{StaticResource FieldLabel}" />
                                     <controls:NumericField x:Name="PositionsBox" LostFocus="Input_Changed"
                                                            IntegerOnly="True" Minimum="1" />
-                                    <TextBlock Text="Fondos frente" Style="{StaticResource FieldLabel}" />
+                                    <TextBlock x:Name="FondosFrenteLabel" Text="Fondos frente" Style="{StaticResource FieldLabel}" />
                                     <controls:NumericField x:Name="FondosBox" LostFocus="Input_Changed"
                                                            IntegerOnly="True" Minimum="2" />
                                     <TextBlock Text="Alto 1er nivel" Style="{StaticResource FieldLabel}" />
@@ -756,6 +782,15 @@
                         ToolTipService.ShowOnDisabled="True" Click="InsertFrontalEntrada_Click" ToolTip="Inserta el corte frontal del extremo bajo." />
                 <Button x:Name="InsertFrontalPosteriorButton" Content="Frontal posterior" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,6,4"
                         ToolTipService.ShowOnDisabled="True" Click="InsertFrontalPosterior_Click" ToolTip="Inserta el corte frontal del extremo alto." />
+                <!-- I-42: en un rack de DOS sentidos «entrada/salida» y «posterior» no dicen de que lado son. Este
+                     selector aparece solo con el compuesto encendido y CALIFICA a los dos botones de al lado, de modo
+                     que los cuatro cortes —entrada/salida y posterior de cada lado— son pedibles y visibles sin
+                     conocer ningun modo interno. Con el compuesto apagado no existe y la barra es la de siempre.
+                     Cuatro botones no caben: la barra de acciones ya lleva doce y se recortarian. -->
+                <ComboBox x:Name="FrontalSideBox" Width="104" Margin="0,0,6,4" Visibility="Collapsed"
+                          SelectionChanged="FrontalSide_Changed"
+                          ToolTipService.ShowOnDisabled="True"
+                          ToolTip="De qu&#233; lado son los dos cortes frontales de al lado. Es independiente del lado que se est&#233; editando." />
                 <Button x:Name="InsertPlantaButton" Content="Planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="86" Margin="0,0,14,4"
                         ToolTipService.ShowOnDisabled="True" Click="InsertPlanta_Click" ToolTip="Inserta la vista en planta." />
                 <Button x:Name="InsertButton" Content="Insertar vista actual" Style="{StaticResource PrimaryButtonStyle}" MinWidth="150" Margin="0,0,0,4"

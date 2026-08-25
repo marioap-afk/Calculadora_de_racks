@@ -139,12 +139,14 @@ namespace RackCad.Application.Systems.PushBack
         /// guide, and never emit rear-end safety.
         /// <para>
         /// I-42: la seguridad es del RACK, no de un lado. Se autoriza UNA vez sobre la estructura compartida, asi que
-        /// una bota o un protector nunca se cuenta dos veces por el hecho de que el rack tenga dos sentidos.
+        /// una bota o un protector nunca se cuenta dos veces por el hecho de que el rack tenga dos sentidos. Lo que
+        /// SI cambia con el rack es CUANTOS pasillos tiene: un compuesto con camas en las dos mitades tiene dos
+        /// extremos bajos, y los dos llevan su seguridad. No hay que pedirla a mano para el segundo lado.
         /// </para>
         /// </summary>
         private void ApplySafety(PushBackSystem system, DynamicRackSystem structure)
         {
-            var authorized = safety.Authorize(structure.SafetySelections);
+            var authorized = safety.Authorize(structure.SafetySelections, AislesOf(system));
             foreach (var selection in authorized)
             {
                 system.SafetySelections.Add(selection);
@@ -156,6 +158,21 @@ namespace RackCad.Application.Systems.PushBack
                 structure.SafetySelections.Add(selection.DeepCopy());
             }
         }
+
+        /// <summary>
+        /// Los PASILLOS de carga del rack. Un rack COMPUESTO tiene dos por construccion —una cara de carga en cada
+        /// extremo longitudinal—, y los dos son extremos BAJOS: no hay ningun extremo alto donde la seguridad
+        /// estorbe. Uno de un sentido tiene uno solo, y su comportamiento no cambia en nada.
+        ///
+        /// <para>
+        /// Es del RACK, no de las camas: la seguridad protege el PASILLO. Que hoy una mitad no tenga ninguna cama no
+        /// retira su cara de carga ni la pone a salvo de un montacargas.
+        /// </para>
+        /// </summary>
+        internal static PushBackSafetyAisles AislesOf(PushBackSystem system)
+            => system?.Composite != null && (system.Composite.SideB?.IsPresent ?? false)
+                ? PushBackSafetyAisles.Both
+                : PushBackSafetyAisles.NearOnly;
 
         /// <summary>
         /// Captures the editable intent of a resolved Push Back system back into a <see cref="PushBackDesign"/>, with

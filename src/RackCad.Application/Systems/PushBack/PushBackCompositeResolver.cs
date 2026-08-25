@@ -4,6 +4,7 @@ using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
 
@@ -59,23 +60,21 @@ namespace RackCad.Application.Systems.PushBack
             var sideB = PushBackSideConfiguration.ForB(design);
             var layout = PushBackCompositeStructure.Layout(sideA, sideB, design.Composite);
 
-            var localA = ResolveSide(design, sideA, sideB, layout, PushBackSide.A, resolveSide, null);
-            var localB = ResolveSide(design, sideB, sideA, layout, PushBackSide.B, resolveSide, null);
+            var localA = ResolveSide(design, sideA, sideB, layout, PushBackSide.A, resolveSide);
+            var localB = ResolveSide(design, sideB, sideA, layout, PushBackSide.B, resolveSide);
 
             var compositeDesign = PushBackCompositeStructure.Compose(
                 design, sideA, sideB, layout, localA?.Structure, localB?.Structure);
             var structure = structureResolver.Resolve(compositeDesign).System;
 
-            // La ALTURA de poste es del RACK, no de un lado: hay una sola estructura y sus cabeceras miden lo mismo.
-            // Con niveles distintos entre lados, la demanda mayor la fija la estructura compuesta, asi que las dos
-            // sub-estructuras se vuelven a resolver con esa altura. Sin este paso, los cortes de un lado dibujarian
-            // postes mas cortos que los que el rack tiene realmente.
-            var sharedHeight = structure.Fronts.Count > 0 ? structure.Fronts.Max(front => front.Height) : (double?)null;
-            if (sharedHeight.HasValue && sharedHeight.Value > 0.0)
-            {
-                localA = ResolveSide(design, sideA, sideB, layout, PushBackSide.A, resolveSide, sharedHeight);
-                localB = ResolveSide(design, sideB, sideA, layout, PushBackSide.B, resolveSide, sharedHeight);
-            }
+            // La ALTURA es de cada LADO, no del rack (decision fisica del dueño, validada a mano). Los dos lados
+            // comparten la retícula TRANSVERSAL —las lineas de postes, el ancho, el BFR— pero cada uno es una
+            // estructura LONGITUDINAL propia: con 4 niveles en A y 2 en B, las cabeceras de A miden lo que A pide y
+            // las de B lo que pide B, y las dos lineas de la interfaz pueden tener alturas distintas.
+            //
+            // Antes se resolvian los dos lados otra vez con max(alturaA, alturaB) y esa altura llegaba a TODAS las
+            // cabeceras: subir un nivel en A estiraba los postes de B, que es exactamente lo que el dueño rechazo.
+            AdoptSideHeaderConfigurations(structure, localA, localB);
 
             var composite = new PushBackCompositeSystem
             {
@@ -107,8 +106,7 @@ namespace RackCad.Application.Systems.PushBack
             PushBackSideConfiguration other,
             PushBackCompositeLayout layout,
             PushBackSide which,
-            Func<PushBackDesign, PushBackSystem> resolveSide,
-            double? sharedHeight)
+            Func<PushBackDesign, PushBackSystem> resolveSide)
         {
             if (!side.IsPresent)
             {
@@ -122,11 +120,6 @@ namespace RackCad.Application.Systems.PushBack
                 LegacyHighEndBeamPeralte = side.LegacyHighEndBeamPeralte,
                 RearTope = side.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig()
             };
-            if (sharedHeight.HasValue)
-            {
-                localDesign.Structure.ManualHeaderHeightOverride = sharedHeight;
-            }
-
             // La configuracion Push Back del lado viaja por RANURA, alineada con los frentes que
             // SideStructuralDesign acaba de apilar — que son TODOS, con los ausentes en blanco. Por eso el indice de
             // ranura ES el indice local, y la rejilla de topes no necesita ninguna traduccion.
@@ -136,6 +129,68 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             return resolveSide(localDesign);
+        }
+
+        /// <summary>
+        /// La estructura compuesta ADOPTA, para cada cabecera, la configuracion que su LADO ya resolvio.
+        ///
+        /// <para>
+        /// Una cabecera es una pieza LONGITUDINAL: pertenece a un lado, no al rack. Su altura, su celosia y sus
+        /// personalizaciones de I-40 salen de la sub-estructura de ESE lado, resuelta con SUS niveles. La compuesta
+        /// solo aporta la retícula transversal —donde caen las lineas de postes y cuanto miden los largueros—, que si
+        /// es compartida.
+        /// </para>
+        /// <para>
+        /// El emparejamiento es por <c>ModuleId</c>, la misma identidad con la que I-40 localiza sus cabeceras por
+        /// linea, asi que una personalizacion de A no puede aterrizar en B ni al reves. El hueco no pertenece a
+        /// ningun lado y se queda como esta.
+        /// </para>
+        /// </summary>
+        private static void AdoptSideHeaderConfigurations(
+            DynamicRackSystem structure, PushBackSystem localA, PushBackSystem localB)
+        {
+            if (structure == null)
+            {
+                return;
+            }
+
+            var fromA = ConfigurationsById(localA, null);
+            var fromB = ConfigurationsById(localB, PushBackCompositeStructure.SideBModulePrefix);
+
+            foreach (var module in structure.Modules)
+            {
+                if (module == null || !module.IsHeader || string.IsNullOrEmpty(module.ModuleId))
+                {
+                    continue;
+                }
+
+                var source = fromB.TryGetValue(module.ModuleId, out var configurationB)
+                    ? configurationB
+                    : fromA.TryGetValue(module.ModuleId, out var configurationA) ? configurationA : null;
+                if (source != null)
+                {
+                    module.AssociatedFrameConfiguration = source;
+                }
+            }
+        }
+
+        /// <summary>Las configuraciones de cabecera de un lado, indexadas por el ModuleId con el que viajan a la compuesta.</summary>
+        private static Dictionary<string, RackFrameConfiguration> ConfigurationsById(
+            PushBackSystem local, string prefix)
+        {
+            var result = new Dictionary<string, RackFrameConfiguration>(StringComparer.Ordinal);
+            foreach (var module in local?.Structure?.Modules ?? new List<DynamicRackModule>())
+            {
+                if (module == null || !module.IsHeader || module.AssociatedFrameConfiguration == null
+                    || string.IsNullOrEmpty(module.ModuleId))
+                {
+                    continue;
+                }
+
+                result[(prefix ?? string.Empty) + module.ModuleId] = module.AssociatedFrameConfiguration;
+            }
+
+            return result;
         }
 
         /// <summary>

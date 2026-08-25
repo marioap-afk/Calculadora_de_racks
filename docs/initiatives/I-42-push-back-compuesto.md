@@ -248,6 +248,72 @@ y su dormancia; y en la ventana real se comprueba que el alcance «Celda» cambi
 los cinco alcances escriben exactamente su conjunto, y que un rack completo se reabre con su presencia, sus topes y
 su fondo de corrida.
 
+## 4-quinquies. Segunda validacion del dueño: RECHAZADA (candidato `67a24d0`)
+
+Multifrente, multinivel, planta e intermedios quedaron validados. Lo que fallo:
+
+### 1. La cama corrida estaba anclada al extremo EQUIVOCADO (decision fisica)
+
+El dueño lo dijo sin ambiguedad: el extremo BAJO —por donde se carga y se descarga— queda SIEMPRE en el poste
+exterior, y el que se mete hacia dentro al pedir menos fondo es el ALTO. El candidato hacia lo contrario: dejaba el
+alto pegado a la orilla y metia el bajo, con el pasillo delante inaccesible.
+
+Se invirtio la autoridad de colocacion: `PushBackBedSpan.ResolveSpan` recorre desde el ancla BAJA hacia la alta y
+devuelve la posicion del ALTO. Y se separo explicitamente lo que se estaba mezclando:
+
+```
+LONGITUDINAL:  manda el BAJO   (fija el origen exterior; el alto se resuelve por demanda)
+VERTICAL:      manda el ALTO   (fija elevacion y troquel, I-32; el bajo se deriva por la pendiente)
+```
+
+La prueba vinculante compara el mate BAJO de la corrida con el de un Push Back de UN SENTIDO —el oraculo del
+producto— en coordenadas reales, no «esta dentro del primer modulo»: detecta un desplazamiento de un fondo entero.
+
+### 2. Subir niveles en A elevaba el lado B
+
+La ronda anterior resolvia los dos lados otra vez con `max(alturaA, alturaB)` y esa altura llegaba a TODAS las
+cabeceras. Retirado. Los dos lados comparten la retícula TRANSVERSAL —lineas de postes, ancho, BFR— pero cada uno es
+una estructura LONGITUDINAL propia: la compuesta ADOPTA, cabecera por cabecera y por `ModuleId`, la configuracion
+que su lado ya resolvio. Con 4 niveles en A y 2 en B, las dos lineas de la interfaz miden distinto, que es lo que
+fisicamente son: dos piezas.
+
+### 3. La seguridad no llegaba al segundo pasillo
+
+Un rack compuesto son dos Push Back opuestos: los DOS extremos son cara de carga y ninguno es un extremo alto donde
+la seguridad estorbe. Ahora un rack compuesto la coloca en los dos por defecto, sin pedirla. La autoridad no cambia
+—sigue siendo la unica que deduplica y excluye GUIA/PARRILLA/TOPE—; lo que declara el rack es en cuantos extremos se
+materializa. El tope posterior es otra cosa y sigue siendo por lado, con el default del PRODUCTO para un lado nuevo.
+
+### 4. Los cortes frontales no decian de que lado eran
+
+«Frontal entrada/salida» y «Frontal posterior» solo son inequivocos en un rack de un sentido. Con el compuesto
+encendido aparece un selector propio —«Frontal de A» / «Frontal de B»— que califica a los dos botones: los cuatro
+cortes son pedibles y su lado es EXPLICITO. Antes el lado salia del «lado activo» de la EDICION, que es un modo que
+no se ve en la barra de vistas. (Cuatro botones no caben: la barra ya lleva doce y se recortarian, lo que su propia
+prueba de tamaño detecta.)
+
+### 5. «Fondo» y «estructura» parecian dos campos que hacen lo mismo
+
+Eran dos autoridades distintas presentadas como equivalentes. Ahora la seccion de estructura se llama «Estructura
+longitudinal del lado», muestra la PROPUESTA automatica y la EFECTIVA, y su campo se llama «ajuste manual» con la
+advertencia de que NO es el fondo de almacenamiento. «Fondos frente» dice de que lado es cuando hay dos.
+
+### 6. «Ambos lados», y «la ranura existe en este lado»
+
+El selector de lado gana «Ambos lados»: una operacion de EDICION que escribe la misma intencion en A y en B —no un
+tercer lado; no existe en el dominio, en el archivo ni en el dibujo—. Lo que por definicion es de un lado (la
+presencia de un frente, el ajuste de estructura) se deshabilita con su motivo, y un campo con valores distintos entre
+lados se muestra VACIO: escribir uno lo aplica a los dos, dejarlo vacio conserva el de cada lado.
+
+La casilla de presencia pasa a llamarse «Frente presente en este lado», con la explicacion de para que sirve. La
+palabra «ranura» desaparece de la interfaz.
+
+### Lo que destapo la auditoria de esta ronda
+
+Tres controles se saltaban las reglas que la ronda acababa de establecer: «+ frente» y «- frente» crecian solo el
+lado activo (la retícula es del RACK), y «+ nivel» / «- nivel» y «En blanco» no seguian la seleccion de edicion.
+Corregidos y con prueba.
+
 ## 5. Limitaciones DECLARADAS (no son descuidos)
 
 1. **El separador central exige hueco mayor que cero**; con hueco 0 se avisa y no se coloca.
@@ -282,112 +348,135 @@ C:\Users\alejandra-mendoza\.claude\worktrees\feature-push-back-compuesto\src\Rac
 2. Pulsa **Actualizar** sin tocar nada. El dibujo debe quedar **identico**: mismos largueros, mismas
    camas, mismos topes, mismo BOM.
 
-### 6.2 LO QUE EL DUEÑO ENCONTRO EN AUTOCAD — revisar esto ANTES QUE NADA
+### 6.2 LO QUE EL DUEÑO ENCONTRO EN LA SEGUNDA VALIDACION — revisar esto ANTES QUE NADA
 
-3. **4 frentes x 3 niveles, los dos lados.** Pon «Frentes» = 4 y aplica 3 niveles a TODO. Los CUATRO frentes deben
+3. **Corrida corta: el BAJO fijo, el ALTO movil.** Pon una corrida con menos fondo del disponible. Su extremo de
+   carga tiene que quedar pegado al poste EXTERIOR; el que se mete hacia dentro es el otro.
+4. **Corrida 6 / 8 / 10 en el mismo rack.** El extremo bajo no se mueve entre las tres; el alto si, y hacia fuera.
+   Compruebalo tambien en el otro sentido.
+5. **Lado A: cambiar el fondo base del frente funciona.** Y solo toca al lado A.
+6. **Lado B: lo mismo, independiente.**
+7. **Ambos lados:** aplica los mismos niveles y fondos a A y B en UNA sola accion. Con valores distintos entre lados,
+   el campo aparece VACIO —ni el de A ni el de B— y escribir uno lo aplica a los dos.
+8. **Ya no hay campos duplicados de fondo contra estructura.** «Fondos frente» es almacenamiento; «Estructura
+   longitudinal del lado» muestra propuesta, efectiva y ajuste manual. Comprueba que se entiende cual es cual.
+9. **Rack compuesto nuevo: seguridad en LOS DOS pasillos**, sin activarla a mano, y los dos topes posteriores
+   encendidos.
+10. **Topes: ninguno / A / B / ambos.**
+11. **Frontal de A — entrada/salida**, con el selector de lado de la barra de vistas.
+12. **Frontal de A — posterior.**
+13. **Frontal de B — entrada/salida.**
+14. **Frontal de B — posterior.** Los cuatro tienen que ser cuatro dibujos distintos.
+15. **A = 4 niveles y B = 2:** el lado B NO crece con A. Las dos lineas de la interfaz pueden medir distinto.
+16. **Cambiar solo A a 5 niveles:** ni una pieza de B se mueve.
+17. **A = 3 y B = 4** con «Frente presente en este lado». Confirma que la UX se entiende.
+
+### 6.2-bis Lo que fallo en la PRIMERA validacion — sigue en revision
+
+18. **4 frentes x 3 niveles, los dos lados.** Pon «Frentes» = 4 y aplica 3 niveles a TODO. Los CUATRO frentes deben
    traer sus camas en los tres niveles, en los dos lados. Ni uno puede quedarse solo con cabeceras y postes.
-4. **PLANTA: largueros intermedios en F1, F2, F3 y F4.** Compruebalo en las cuatro topologias.
-5. **Cada corte lateral.** Recorre todos: cada uno debe traer los niveles y los largueros de los frentes que tiene
+19. **PLANTA: largueros intermedios en F1, F2, F3 y F4.** Compruebalo en las cuatro topologias.
+20. **Cada corte lateral.** Recorre todos: cada uno debe traer los niveles y los largueros de los frentes que tiene
    al lado, no solo la estructura.
-6. **Fondo de UNA celda.** Selecciona F2 / nivel 2, alcance «Celda», cambia el fondo. SOLO esa cama cambia; las
+21. **Fondo de UNA celda.** Selecciona F2 / nivel 2, alcance «Celda», cambia el fondo. SOLO esa cama cambia; las
    otras once siguen igual. Repitelo con «Nivel», «Frente» y «Todo», y con «Restaurar fondo».
-7. **Corrida 10 dentro de 5 + 8.** La cama debe alojar 10 fondos, apoyar en una linea de modulo real y NO arrancar
+22. **Corrida 10 dentro de 5 + 8.** La cama debe alojar 10 fondos, apoyar en una linea de modulo real y NO arrancar
    desplazada hacia dentro. Con hueco, ninguna tarima puede caer dentro del hueco.
-8. **Topes: ninguno / solo A / solo B / ambos**, desde «Tope posterior por lado». Con una sola cama, la casilla del
+23. **Topes: ninguno / solo A / solo B / ambos**, desde «Tope posterior por lado». Con una sola cama, la casilla del
    lado que no tiene extremo alto debe estar deshabilitada y explicar por que — sin perder lo elegido.
-9. **Estructura 8 con cama 4.** Sube la estructura del lado a 8 y deja una celda en 4: esa cama solo ocupa 4 fondos
+24. **Estructura 8 con cama 4.** Sube la estructura del lado a 8 y deja una celda en 4: esa cama solo ocupa 4 fondos
    y en el tramo sobrante NO hay riel, rodillo, intermedio ni tarima. Otro nivel puede usar los 8 a la vez.
-10. **A = 3 y B = 4.** Con 4 frentes, desmarca «La ranura existe en este lado» en el cuarto frente del lado A. La
+25. **A = 3 y B = 4.** Con 4 frentes, desmarca «La ranura existe en este lado» en el cuarto frente del lado A. La
     cuarta ranura debe quedar solo en B, sobre UNA sola estructura. Intenta quitarla tambien de B: debe rehusarse.
 
 ### 6.2-bis Lo que fallo en rondas anteriores — sigue en revision
 
-11. **Corrida de 10 sobre una estructura 5 + 8.** Enciende el lado B, pon la celda en **corrida** y escribe **10**
+26. **Corrida de 10 sobre una estructura 5 + 8.** Enciende el lado B, pon la celda en **corrida** y escribe **10**
    en «Fondo de cama corrida». La cama debe alojar **10** fondos, no 13. La estructura debe seguir siendo **5 en A
    y 8 en B**: ni un poste de mas. Vuelve la celda a **encontradas** y las dos camas por lado deben reaparecer
    intactas; vuelve a **corrida** y el 10 debe seguir escrito.
-12. **La corrida NO arranca en el segundo fondo.** Con una corrida que atraviesa el rack, su extremo bajo debe
+27. **La corrida NO arranca en el segundo fondo.** Con una corrida que atraviesa el rack, su extremo bajo debe
    apoyar en la **primera** linea de modulo. Repitelo con hueco 0 y con hueco positivo: el arranque no se mueve.
    Con una corrida CORTA, su extremo bajo debe caer sobre una linea de modulo — nunca a media posicion.
-13. **La PLANTA dibuja largueros intermedios.** Comprueba las cuatro topologias. Con una corrida corta, los
+28. **La PLANTA dibuja largueros intermedios.** Comprueba las cuatro topologias. Con una corrida corta, los
    intermedios deben cubrir todo su recorrido (incluida la parte que pisa el otro lado) y ninguno delante de su
    extremo bajo.
-14. **El HUECO.** Con una estructura manual corta y una corrida que no quepa, la celda debe quedar bloqueada con
+29. **El HUECO.** Con una estructura manual corta y una corrida que no quepa, la celda debe quedar bloqueada con
    hueco 0 y volverse valida al subirlo. La **demanda** en fondos no cambia; la longitud fisica de la cama **si**
    puede crecer si tiene que cruzar el hueco para alcanzar su ultimo fondo.
 
 ### 6.2-bis Lo que fallo en rondas previas — sigue en revision
 
-15. **4 fondos en A y 8 en B, encontradas.** NO debe aparecer ningun error de capacidad. Compruebalo tambien con
+30. **4 fondos en A y 8 en B, encontradas.** NO debe aparecer ningun error de capacidad. Compruebalo tambien con
    8/5, 3/9 y 8/4, y en las cuatro topologias.
-16. **Largueros intermedios.** En un lateral con varios niveles: cada cama debe llevar TODOS sus intermedios, a la
+31. **Largueros intermedios.** En un lateral con varios niveles: cada cama debe llevar TODOS sus intermedios, a la
    elevacion de SU cama y siguiendo SU pendiente. Ninguno fuera del vano real de su cama, ninguno cruzado a la
    cama contraria, y `RACKBOMTOTAL` debe cotizar exactamente los que se dibujan.
-17. **Una corrida corta no crea otra estructura.** Con el caso del punto 3 en pantalla: no debe aparecer ninguna
+32. **Una corrida corta no crea otra estructura.** Con el caso del punto 3 en pantalla: no debe aparecer ninguna
    segunda estructura, ni un segundo juego de postes, cabeceras o placas.
-18. **Cotas y etiquetas del lateral.** Con niveles y elevaciones distintas en A y en B, ninguna cota ni etiqueta
+33. **Cotas y etiquetas del lateral.** Con niveles y elevaciones distintas en A y en B, ninguna cota ni etiqueta
    puede afirmar un valor de A sobre una pieza de B. Los textos deben leerse bien en los dos lados.
-19. **Planta con todos los niveles corridos.** No debe dibujar los largueros posteriores de la interfaz. Cambia UN
+34. **Planta con todos los niveles corridos.** No debe dibujar los largueros posteriores de la interfaz. Cambia UN
    nivel a encontradas y deben aparecer.
-20. **UI con el compuesto apagado.** La seccion A/B no debe ocupar espacio: el editor debe verse como el de antes
+35. **UI con el compuesto apagado.** La seccion A/B no debe ocupar espacio: el editor debe verse como el de antes
    de I-42.
-21. **`F1` compartida, `F2` solo A, `F3` solo B, `F4` compartida.** Debe construirse en UNA sola estructura.
+36. **`F1` compartida, `F2` solo A, `F3` solo B, `F4` compartida.** Debe construirse en UNA sola estructura.
 ### 6.3 Declarar el lado B y la estructura compartida
 
-22. Rack nuevo. Enciende «Rack de dos sentidos (lado B)». Aparece la seccion compuesta y la segunda mitad
+37. Rack nuevo. Enciende «Rack de dos sentidos (lado B)». Aparece la seccion compuesta y la segunda mitad
     **sobre la misma estructura**: el lado A no se mueve de sitio ni cambia de altura.
-23. Con el **selector de lado** cambia a «Lado B» y vuelve a «Lado A». La matriz Frente x Nivel, la celda
+38. Con el **selector de lado** cambia a «Lado B» y vuelve a «Lado A». La matriz Frente x Nivel, la celda
    seleccionada y los cinco alcances trabajan sobre el lado elegido, y al volver la configuracion y la
    seleccion del otro lado siguen **intactas**.
-24. Pon **3 frentes en A y 4 en B**. La cuarta ranura debe existir **solo** en la mitad de B, y las lineas
+39. Pon **3 frentes en A y 4 en B**. La cuarta ranura debe existir **solo** en la mitad de B, y las lineas
    de postes y el BFR deben ser **unicos** para los dos lados.
-25. Pon **2 niveles en A y 5 en B**. Los postes se dimensionan por la mayor demanda y cada lado dibuja
+40. Pon **2 niveles en A y 5 en B**. Los postes se dimensionan por la mayor demanda y cada lado dibuja
    **sus** elevaciones.
 
 ### 6.4 Topologia por celda
 
-26. En un mismo frente: nivel 1 **corrida**, nivel 2 **encontradas**, nivel 3 **solo A**, nivel 4 **solo
+41. En un mismo frente: nivel 1 **corrida**, nivel 2 **encontradas**, nivel 3 **solo A**, nivel 4 **solo
    B**. Los cuatro deben coexistir.
-27. **Encontradas**: DOS camas fisicas, con pendientes opuestas y los extremos ALTOS enfrentados en el
+42. **Encontradas**: DOS camas fisicas, con pendientes opuestas y los extremos ALTOS enfrentados en el
    centro. Desde **Seguridad**, prueba tope ninguno / solo A / solo B / ambos.
-28. **Corrida**: UNA sola cama que atraviesa A + hueco + B, con **una** pendiente continua y como mucho
+43. **Corrida**: UNA sola cama que atraviesa A + hueco + B, con **una** pendiente continua y como mucho
    **UN** tope, en su extremo alto.
-29. Cambia el sentido de la corrida (**A→B** y **B→A**). El extremo ALTO debe moverse **fisicamente** al
+44. Cambia el sentido de la corrida (**A→B** y **B→A**). El extremo ALTO debe moverse **fisicamente** al
     otro lado y el tope debe seguirlo. No es un espejo grafico.
-30. Vuelve la celda a **encontradas**. La elevacion propia del lado que estaba bajo debe **reaparecer**:
+45. Vuelve la celda a **encontradas**. La elevacion propia del lado que estaba bajo debe **reaparecer**:
     no se perdio mientras hubo corrida.
 
 ### 6.5 Interfaz central
 
-31. **Hueco**: llevalo de 0 a un valor positivo. El rack debe **alargarse exactamente esa medida**. Con
+46. **Hueco**: llevalo de 0 a un valor positivo. El rack debe **alargarse exactamente esa medida**. Con
     hueco 0, las **dos** lineas de postes de la interfaz deben seguir existiendo.
-32. **Separador central** con hueco positivo: aparece **UNA** sola pieza —la misma que ya usa el rack— y
+47. **Separador central** con hueco positivo: aparece **UNA** sola pieza —la misma que ya usa el rack— y
     `RACKBOMTOTAL` la cuenta **una vez**. Con hueco 0 se avisa y no se coloca.
 
 ### 6.6 Estructura efectiva por lado
 
-33. Sube la **estructura del lado activo** por encima de la propuesta y pulsa «Aplicar estructura»: el
+48. Sube la **estructura del lado activo** por encima de la propuesta y pulsa «Aplicar estructura»: el
     rack crece por ese lado.
-34. Bajala **por debajo** de la propuesta: NO debe corregirse sola. Debe avisarse, y las celdas que ya no
+49. Bajala **por debajo** de la propuesta: NO debe corregirse sola. Debe avisarse, y las celdas que ya no
     caben deben quedar **bloqueadas con su motivo**.
-35. «Restaurar estructura»: vuelve a la propuesta **actual**.
+50. «Restaurar estructura»: vuelve a la propuesta **actual**.
 
 ### 6.7 Fondos, tarimas y vistas
 
-36. Fondos y tarimas **por celda en los dos lados**: son independientes; cada tarima sigue la pendiente de
+51. Fondos y tarimas **por celda en los dos lados**: son independientes; cada tarima sigue la pendiente de
     **su** cama y **ninguna** aparece en el BOM.
-37. **Cuatro cortes frontales** (entrada/salida y posterior de cada lado): insertalos y actualizalos. Una
+52. **Cuatro cortes frontales** (entrada/salida y posterior de cada lado): insertalos y actualizalos. Una
     celda **corrida** NO debe mostrar larguero posterior en la linea interior de su lado BAJO.
-38. **Planta y laterales**: llevan las etiquetas **A** y **B**, y la planta muestra un larguero de
+53. **Planta y laterales**: llevan las etiquetas **A** y **B**, y la planta muestra un larguero de
     entrada/salida en los **dos** pasillos.
 
 ### 6.8 BOM y round trip
 
-39. `RACKBOMTOTAL`: la estructura **no** se duplica por tener dos lados; una corrida cuenta **UNA** cama a
+54. `RACKBOMTOTAL`: la estructura **no** se duplica por tener dos lados; una corrida cuenta **UNA** cama a
     la longitud del rack entero y dos encontradas cuentan **DOS**.
-40. Guarda, cierra y reabre con `RACKEDITAR`: topologia, sentido, hueco, separador, estructura manual y
+55. Guarda, cierra y reabre con `RACKEDITAR`: topologia, sentido, hueco, separador, estructura manual y
     las dos configuraciones vuelven **identicas**, con el **mismo GUID**.
-41. `RACKDUPLICAR`: produce una copia **independiente**.
+56. `RACKDUPLICAR`: produce una copia **independiente**.
 
 ## 7. Criterio de aprobacion
 

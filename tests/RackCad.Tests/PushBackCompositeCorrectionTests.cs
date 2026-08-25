@@ -166,7 +166,7 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void AShorterCorrida_AnchorsAtTheHighEnd_InBothDirections()
+        public void AShorterCorrida_AnchorsAtTheLowEnd_InBothDirections()
         {
             foreach (var direction in new[] { PushBackRunDirection.AToB, PushBackRunDirection.BToA })
             {
@@ -178,18 +178,20 @@ namespace RackCad.Tests
                 var total = system.Structure.TotalLength;
                 var axis = PushBackRunGeometry.Axes(PushBackRuns.Resolve(system), Catalog).Single();
 
+                // El extremo BAJO —por donde se carga y se descarga— queda pegado al poste EXTERIOR de su lado. El
+                // que se mete hacia dentro cuando la cama pide menos fondo del disponible es el ALTO.
                 if (direction == PushBackRunDirection.AToB)
                 {
-                    // ALTO en el exterior de B: el ancla esta pegada al final del rack.
-                    Assert.True(axis.HighContact.X > total * 0.8);
-                    Assert.True(axis.LowContact.X > 1.0);   // NO llega al extremo exterior de A
+                    Assert.True(axis.LowContact.X < total * 0.15, "el bajo tiene que estar en la orilla de A");
+                    Assert.True(axis.HighContact.X < total - 1.0, "el alto tiene que haberse metido hacia dentro");
                 }
                 else
                 {
-                    Assert.True(axis.HighContact.X < total * 0.2);
-                    Assert.True(axis.LowContact.X < total - 1.0);
+                    Assert.True(axis.LowContact.X > total * 0.85, "el bajo tiene que estar en la orilla de B");
+                    Assert.True(axis.HighContact.X > 1.0, "el alto tiene que haberse metido hacia dentro");
                 }
 
+                // La pendiente no cambia: el alto sigue siendo el extremo elevado.
                 Assert.True(axis.HighContact.Y > axis.LowContact.Y);
                 Assert.True(axis.Length < total - 1.0);
             }

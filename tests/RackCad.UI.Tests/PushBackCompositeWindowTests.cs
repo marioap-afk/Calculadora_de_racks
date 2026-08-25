@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -632,6 +633,350 @@ namespace RackCad.UI.Tests
 
                 return w.CompositeState.IsSlotPresent(PushBackSide.A, 0)
                        && Check(w, "SlotPresentCheck").IsChecked == true;
+            });
+
+            Assert.True(ok);
+        }
+
+        // ================= T: la UX de LADO A / LADO B / AMBOS ==================================================
+
+        private static int Levels(RackPushBackSystemWindow w, PushBackSide side, int front)
+            => w.CompositeState.Of(side).Structure.Fronts[front].LoadLevels;
+
+        private static int FrontDepth(RackPushBackSystemWindow w, PushBackSide side, int front)
+            => w.CompositeState.Of(side).Structure.Fronts[front].PalletsDeep;
+
+        private static void WriteFrontFields(RackPushBackSystemWindow w, int? levels = null, int? depth = null)
+        {
+            if (levels.HasValue)
+            {
+                var box = Field(w, "LevelsBox");
+                box.SetNumber(levels.Value);
+                LoseFocus(box);
+            }
+
+            if (depth.HasValue)
+            {
+                var box = Field(w, "FondosBox");
+                box.SetNumber(depth.Value);
+                LoseFocus(box);
+            }
+
+            Click(Btn(w, "ApplyFrontButton"));
+        }
+
+        /// <summary>El selector ofrece los TRES: lado A, lado B y ambos. «Ambos» es edicion, no un tercer lado.</summary>
+        [Fact]
+        public void TheSideSelector_OffersBothSidesAndBoth()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                var selector = Combo(w, "SideSelectorBox");
+                var items = ((IEnumerable<string>)selector.ItemsSource).ToList();
+
+                selector.SelectedIndex = 2;
+                var both = w.CompositeState.ActiveSelection == PushBackSideSelection.Both
+                           && w.CompositeState.ActiveSide == PushBackSide.A;
+
+                selector.SelectedIndex = 1;
+                var onlyB = w.CompositeState.ActiveSelection == PushBackSideSelection.B
+                            && w.CompositeState.ActiveSide == PushBackSide.B;
+
+                return items.Count == 3 && both && onlyB;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>Con un lado seleccionado, los campos del frente escriben SOLO en ese lado.</summary>
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public void EditingOneSide_LeavesTheOtherUntouched(int sideIndex)
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                Combo(w, "SideSelectorBox").SelectedIndex = sideIndex;
+
+                var edited = sideIndex == 1 ? PushBackSide.B : PushBackSide.A;
+                var other = sideIndex == 1 ? PushBackSide.A : PushBackSide.B;
+                var beforeOther = Levels(w, other, 0);
+
+                WriteFrontFields(w, levels: 4);
+
+                return Levels(w, edited, 0) == 4 && Levels(w, other, 0) == beforeOther;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>Con «Ambos», la MISMA intencion se escribe en A y en B en una sola accion.</summary>
+        [Fact]
+        public void EditingBoth_WritesTheSameIntentOnBothSides()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                Combo(w, "SideSelectorBox").SelectedIndex = 2;   // Ambos
+
+                WriteFrontFields(w, levels: 4, depth: 5);
+
+                return Levels(w, PushBackSide.A, 0) == 4
+                       && Levels(w, PushBackSide.B, 0) == 4
+                       && FrontDepth(w, PushBackSide.A, 0) == 5
+                       && FrontDepth(w, PushBackSide.B, 0) == 5;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// Con «Ambos» y valores DISTINTOS, el campo no miente: se muestra vacio. Escribir uno lo aplica a los dos, y
+        /// dejarlo vacio conserva el de cada lado.
+        /// </summary>
+        [Fact]
+        public void WithBothSelected_ADifferingField_ShowsBlank_AndWritingItAppliesToBoth()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 3);
+
+                // A = 3 niveles, B = 4.
+                Combo(w, "SideSelectorBox").SelectedIndex = 1;
+                WriteFrontFields(w, levels: 4);
+                Combo(w, "SideSelectorBox").SelectedIndex = 0;
+
+                if (Levels(w, PushBackSide.A, 0) != 3 || Levels(w, PushBackSide.B, 0) != 4) return false;
+
+                // Ambos: el campo de niveles queda VACIO, ni 3 ni 4.
+                Combo(w, "SideSelectorBox").SelectedIndex = 2;
+                var levelBox = Field(w, "LevelsBox");
+                if (!string.IsNullOrEmpty(levelBox.Text)) return false;
+                if (levelBox.HasError) return false;   // vacio legitimo, no un error que bloquee la edicion
+
+                // Vacio = cada lado conserva el suyo.
+                Click(Btn(w, "ApplyFrontButton"));
+                if (Levels(w, PushBackSide.A, 0) != 3 || Levels(w, PushBackSide.B, 0) != 4) return false;
+
+                // Y escribir 5 lo aplica a los DOS.
+                WriteFrontFields(w, levels: 5);
+                return Levels(w, PushBackSide.A, 0) == 5 && Levels(w, PushBackSide.B, 0) == 5;
+            });
+
+            Assert.True(ok);
+        }
+
+        // ================= H: fondo del frente y ajuste de estructura son DOS autoridades =======================
+
+        /// <summary>
+        /// «Fondos frente» es el fondo BASE de almacenamiento de ese frente, por lado. El «ajuste manual» de la
+        /// seccion de estructura es hasta donde llega la estructura del lado. Son dos cosas distintas y ninguna
+        /// escribe en la otra: es justo la confusion que el dueño reporto.
+        /// </summary>
+        [Fact]
+        public void TheFrontDepth_AndTheStructureOverride_AreTwoSeparateAuthorities()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+
+                // 1) Fijar el ajuste manual de estructura NO cambia el fondo base de ningun frente.
+                var depthBefore = FrontDepth(w, PushBackSide.A, 0);
+                var overrideBox = Field(w, "StructureOverrideBox");
+                overrideBox.SetNumber(9);
+                LoseFocus(overrideBox);
+                Click(Btn(w, "ApplyStructureButton"));
+
+                if (w.CompositeState.StructureOverride(PushBackSide.A) != 9) return false;
+                if (FrontDepth(w, PushBackSide.A, 0) != depthBefore) return false;
+
+                // 2) Y cambiar el fondo base NO crea ni mueve el ajuste manual.
+                WriteFrontFields(w, depth: 4);
+                if (FrontDepth(w, PushBackSide.A, 0) != 4) return false;
+                if (w.CompositeState.StructureOverride(PushBackSide.A) != 9) return false;
+
+                // 3) Volver a automatico retira SOLO el ajuste.
+                Click(Btn(w, "RestoreStructureButton"));
+                return w.CompositeState.StructureOverride(PushBackSide.A) == null
+                       && FrontDepth(w, PushBackSide.A, 0) == 4;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>El fondo base es POR LADO: cambiarlo en A no toca el de B.</summary>
+        [Fact]
+        public void TheFrontDepth_IsPerSide()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+
+                Combo(w, "SideSelectorBox").SelectedIndex = 0;
+                WriteFrontFields(w, depth: 5);
+                Combo(w, "SideSelectorBox").SelectedIndex = 1;
+                WriteFrontFields(w, depth: 7);
+
+                return FrontDepth(w, PushBackSide.A, 0) == 5 && FrontDepth(w, PushBackSide.B, 0) == 7;
+            });
+
+            Assert.True(ok);
+        }
+
+        // ================= La seccion compuesta y las vistas ====================================================
+
+        /// <summary>
+        /// Con «Ambos», los controles que por definicion son de UN lado —la presencia del frente y el ajuste de
+        /// estructura— se deshabilitan CON SU MOTIVO, en vez de escribir en A a escondidas.
+        /// </summary>
+        [Fact]
+        public void WithBothSelected_ThePerSideControls_AreDisabledWithAReason()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                var presence = Check(w, "SlotPresentCheck");
+                var structure = Field(w, "StructureOverrideBox");
+
+                if (!presence.IsEnabled || !structure.IsEnabled) return false;
+
+                Combo(w, "SideSelectorBox").SelectedIndex = 2;   // Ambos
+                if (presence.IsEnabled || structure.IsEnabled) return false;
+                if (!((string)presence.ToolTip).Contains("Lado A")) return false;
+
+                // Y al volver a un lado concreto se recuperan.
+                Combo(w, "SideSelectorBox").SelectedIndex = 1;
+                return presence.IsEnabled && structure.IsEnabled;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// Añadir un frente con el boton hace lo mismo que escribir el numero: crece la RETICULA, no un lado. Antes
+        /// crecia solo el lado activo y el rack acababa a medias.
+        /// </summary>
+        [Fact]
+        public void TheAddFrontButton_GrowsTheGrid_NotOneSide()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                Combo(w, "SideSelectorBox").SelectedIndex = 1;   // editando B
+                Click(Btn(w, "AddFrontButton"));
+
+                return w.CompositeState.SideA.Structure.Count == 3
+                       && w.CompositeState.SideB.Structure.Count == 3;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>Con el compuesto APAGADO, ningun control exclusivo de A/B ocupa la pantalla.</summary>
+        [Fact]
+        public void WithTheCompositeOff_TheSideOnlyControls_AreHidden()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+
+                var hiddenBefore = Section(w).Visibility == Visibility.Collapsed
+                                   && Combo(w, "FrontalSideBox").Visibility == Visibility.Collapsed;
+
+                Check(w, "SideBPresentCheck").IsChecked = true;
+                var shownAfter = Section(w).Visibility == Visibility.Visible
+                                 && Combo(w, "FrontalSideBox").Visibility == Visibility.Visible;
+
+                Check(w, "SideBPresentCheck").IsChecked = false;
+                var hiddenAgain = Section(w).Visibility == Visibility.Collapsed
+                                  && Combo(w, "FrontalSideBox").Visibility == Visibility.Collapsed;
+
+                return hiddenBefore && shownAfter && hiddenAgain;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// Los CUATRO cortes frontales son pedibles y su lado es EXPLICITO: lo dice su propio selector, no el lado
+        /// que se este editando. Se comprueba que el lado del corte NO sigue al de la edicion.
+        /// </summary>
+        [Fact]
+        public void TheFourFrontalCuts_AreRequestableWithAnExplicitSide()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+
+                // Editando el lado B, pero pidiendo el corte de A: el corte NO sigue a la edicion.
+                Combo(w, "SideSelectorBox").SelectedIndex = 1;
+                Combo(w, "FrontalSideBox").SelectedIndex = 0;
+                if (w.FrontalSideForTest != PushBackSide.A) return false;
+
+                Combo(w, "FrontalSideBox").SelectedIndex = 1;
+                if (w.FrontalSideForTest != PushBackSide.B) return false;
+
+                // Y las cuatro secciones existen y son distintas entre si.
+                var sections = new[]
+                {
+                    PushBackSystemFrontalBuilder.EncodeSection(PushBackFrontalEnd.EntradaSalida, PushBackSide.A),
+                    PushBackSystemFrontalBuilder.EncodeSection(PushBackFrontalEnd.Posterior, PushBackSide.A),
+                    PushBackSystemFrontalBuilder.EncodeSection(PushBackFrontalEnd.EntradaSalida, PushBackSide.B),
+                    PushBackSystemFrontalBuilder.EncodeSection(PushBackFrontalEnd.Posterior, PushBackSide.B)
+                };
+
+                return sections.Distinct().Count() == 4
+                       && sections.All(PushBackSystemFrontalBuilder.IsValidSection);
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>La casilla de presencia se llama como el dueño la entiende y explica para que sirve.</summary>
+        [Fact]
+        public void ThePresenceCheck_IsNamedInProductLanguage()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                var box = Check(w, "SlotPresentCheck");
+                var label = box.Content as string;
+                var tip = box.ToolTip as string;
+
+                return label == "Frente presente en este lado"
+                       && tip != null
+                       && tip.Contains("lado opuesto")
+                       && !label.Contains("ranura");
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// La seccion de estructura muestra la PROPUESTA y la EFECTIVA, para que no parezca «otro fondo». Es la
+        /// duplicidad conceptual que el dueño reporto.
+        /// </summary>
+        [Fact]
+        public void TheStructureSection_ShowsProposedAndEffective()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                var proposed = (TextBlock)w.FindName("StructureProposedText");
+                var effective = (TextBlock)w.FindName("StructureEffectiveText");
+
+                if (proposed.Text == "—" || effective.Text == "—") return false;
+
+                var box = Field(w, "StructureOverrideBox");
+                box.SetNumber(9);
+                LoseFocus(box);
+                Click(Btn(w, "ApplyStructureButton"));
+
+                // La efectiva sigue al ajuste; la propuesta sigue siendo la derivada de la demanda.
+                return effective.Text.StartsWith("9", StringComparison.Ordinal)
+                       && !proposed.Text.StartsWith("9", StringComparison.Ordinal);
             });
 
             Assert.True(ok);

@@ -180,6 +180,20 @@ Y, desde I-42, el **Push Back compuesto (lado A / lado B)**:
 - **corrida**: UNA sola cama que atraviesa A + hueco + B, con una sola pendiente continua y como mucho UN
   tope, en su extremo alto. Cámbiale el sentido (A→B y B→A) y comprueba que el extremo ALTO se mueve
   físicamente al otro lado y que el tope lo sigue;
+- **el extremo BAJO de una corrida no se mueve**: por donde se carga queda pegado al poste EXTERIOR de su
+  lado. Al reducir su fondo, el que se mete hacia dentro es el ALTO. Compruébalo con 6, 8 y 10 fondos en el
+  mismo rack, y en los dos sentidos;
+- **alturas por lado**: con 4 niveles en A y 2 en B, las cabeceras de B NO se estiran hasta la altura de A, y
+  las dos líneas de la interfaz —terminal de A e inicial de B— pueden medir distinto. Cambia solo los niveles
+  de A y comprueba que ninguna pieza de B se mueve;
+- **seguridad en los DOS pasillos**: un rack compuesto nuevo la trae en A y en B sin activarla a mano;
+- **los cuatro cortes frontales**: con el compuesto encendido, el selector de la barra de vistas dice de qué
+  lado es el corte. Entrada/salida y posterior de cada lado son cuatro dibujos distintos;
+- **«Ambos lados»**: aplica los mismos niveles y fondos a A y B en una sola acción. Con valores distintos entre
+  lados el campo aparece VACÍO —ni el de A ni el de B—, y escribir uno lo aplica a los dos. Lo que es de un
+  lado por definición (presencia del frente, ajuste de estructura) queda deshabilitado con su motivo;
+- **fondo contra estructura**: «Fondos frente» es almacenamiento; «Estructura longitudinal del lado» es hasta
+  dónde llega el acero, con propuesta, efectiva y ajuste manual. Cambiar una NO cambia la otra;
 - **fondo de la cama corrida**: con la celda en corrida, el campo de fondo pasa a llamarse «Fondo de cama
   corrida» y edita la profundidad TOTAL de esa cama. Sobre una estructura 5 + 8, escribir **10** debe dar
   una cama de 10 fondos —ni 13, ni 5, ni 8— sin mover ninguna de las dos estructuras. Devuelve la celda a

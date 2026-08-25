@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.Systems.PushBack;
+using RackCad.UI.Controls;
 
 namespace RackCad.UI.Systems.PushBack
 {
@@ -43,7 +44,9 @@ namespace RackCad.UI.Systems.PushBack
         /// <summary>Rellena los desplegables de la seccion compuesta. Se llama una vez, al construir la ventana.</summary>
         private void InitializeCompositeSection()
         {
-            SideSelectorBox.ItemsSource = new[] { "Lado A", "Lado B" };
+            // I-42 (ronda Owner): «Ambos» es una operacion de EDICION —escribe la misma intencion en los dos lados—,
+            // no un tercer lado. No existe en el dominio, en el archivo ni en el dibujo.
+            SideSelectorBox.ItemsSource = new[] { "Lado A", "Lado B", "Ambos lados" };
             SideSelectorBox.SelectedIndex = 0;
             CellTopologyBox.ItemsSource = new[] { "Solo A", "Solo B", "Encontradas", "Corrida" };
             CellTopologyBox.SelectedIndex = 2;
@@ -63,6 +66,33 @@ namespace RackCad.UI.Systems.PushBack
             var present = composite.SideBPresent;
             CompositeSection.Visibility = present ? Visibility.Visible : Visibility.Collapsed;
             CompositeSection.IsEnabled = present;
+            UpdateFrontalButtons(present);
+        }
+
+        /// <summary>
+        /// Los CORTES FRONTALES de un rack compuesto son cuatro: entrada/salida y posterior de cada lado. Con el
+        /// compuesto apagado hay dos y se llaman como siempre; al encenderlo, los dos de siempre pasan a decir «A» y
+        /// aparecen los dos de B. Ni un boton ambiguo, ni seis botones donde bastan cuatro.
+        /// </summary>
+        private void UpdateFrontalButtons(bool composed)
+        {
+            if (FrontalSideBox == null)
+            {
+                return;
+            }
+
+            if (FrontalSideBox.ItemsSource == null)
+            {
+                FrontalSideBox.ItemsSource = new[] { "Frontal de A", "Frontal de B" };
+                FrontalSideBox.SelectedIndex = 0;
+            }
+
+            FrontalSideBox.Visibility = composed ? Visibility.Visible : Visibility.Collapsed;
+            if (!composed)
+            {
+                frontalSide = PushBackSide.A;
+                FrontalSideBox.SelectedIndex = 0;
+            }
         }
 
         // ---- Lado activo y presencia --------------------------------------------------------------------------
@@ -108,15 +138,31 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var side = SideSelectorBox.SelectedIndex == 1 ? PushBackSide.B : PushBackSide.A;
-            if (side == composite.ActiveSide)
+            var selection = SideSelectorBox.SelectedIndex == 2
+                ? PushBackSideSelection.Both
+                : SideSelectorBox.SelectedIndex == 1 ? PushBackSideSelection.B : PushBackSideSelection.A;
+            if (selection == composite.ActiveSelection)
             {
                 return;
             }
 
             // Cambiar de lado no toca nada: la configuracion del lado que se abandona queda intacta con su seleccion.
-            composite.SetActiveSide(side);
-            SideSelectorBox.SelectedIndex = composite.ActiveSide == PushBackSide.B ? 1 : 0;
+            composite.SetActiveSelection(selection);
+            SideSelectorBox.SelectedIndex = (int)composite.ActiveSelection;
+
+            // El panel de la celda pertenece al lado que se acaba de elegir: se recarga en el acto, incluido el
+            // estado MIXTO de «Ambos». Sin esto la ventana mostraria los valores del lado anterior.
+            suppressSync = true;
+            try
+            {
+                RenderPushBackMatrix();
+                LoadSelectedFront();
+            }
+            finally
+            {
+                suppressSync = false;
+            }
+
             RequestRecompute();
         }
 
@@ -341,6 +387,86 @@ namespace RackCad.UI.Systems.PushBack
             }
         }
 
+        /// <summary>Como se llama la seleccion de edicion vigente, para decirlo en las etiquetas.</summary>
+        private string SideLabel()
+        {
+            switch (composite.ActiveSelection)
+            {
+                case PushBackSideSelection.B: return "lado B";
+                case PushBackSideSelection.Both: return "ambos lados";
+                default: return "lado A";
+            }
+        }
+
+        // ---- I-42: el estado MIXTO de «Ambos lados» -------------------------------------------------------------
+
+        private readonly Dictionary<NumericField, bool> mixedOptional = new Dictionary<NumericField, bool>();
+
+        /// <summary>
+        /// Con «Ambos lados» seleccionado, un campo cuyo valor DIFIERE entre A y B se muestra VACIO.
+        ///
+        /// <para>
+        /// No se elige el de A ni el de B: mentir sobre cual es el valor vigente es peor que no decirlo. Vacio
+        /// significa «cada lado conserva el suyo» —<see cref="ReadCellValues(PushBackEditorState)"/> resuelve el
+        /// hueco contra el lado que escribe—, y en cuanto el usuario escribe un numero ese numero se aplica a los
+        /// dos. El campo se vuelve opcional mientras dura el estado mixto para que un hueco legitimo no se marque
+        /// como error y bloquee el resto de la edicion.
+        /// </para>
+        /// </summary>
+        private void ApplyMixedSideState()
+        {
+            if (SlotPresentCheck == null)
+            {
+                return;
+            }
+
+            var mixed = composite.ActiveSelection == PushBackSideSelection.Both && composite.SideBPresent;
+            var a = SideFront(PushBackSide.A);
+            var b = SideFront(PushBackSide.B);
+
+            SetMixed(PositionsBox, mixed && a?.PalletCount != b?.PalletCount);
+            SetMixed(LevelsBox, mixed && a?.LoadLevels != b?.LoadLevels);
+            SetMixed(FondosBox, mixed && a?.PalletsDeep != b?.PalletsDeep);
+            SetMixed(DepthStartBox, mixed && a?.DepthStartPosition != b?.DepthStartPosition);
+            SetMixed(
+                FirstLevelHeightBox,
+                mixed && Math.Abs((a?.FirstLevelHeight ?? 0.0) - (b?.FirstLevelHeight ?? 0.0)) > 1e-6);
+        }
+
+        /// <summary>El frente SELECCIONADO de un lado, o null si ese lado no lo tiene.</summary>
+        private DynamicEditorFront SideFront(PushBackSide side)
+        {
+            var matrix = composite.Of(side).Structure;
+            var index = composite.Active.Structure.SelectedFrontIndex;
+            return index >= 0 && index < matrix.Count ? matrix.Fronts[index] : null;
+        }
+
+        /// <summary>Pone o quita el estado mixto de un campo, conservando su caracter opcional original.</summary>
+        private void SetMixed(NumericField field, bool mixed)
+        {
+            if (field == null)
+            {
+                return;
+            }
+
+            if (!mixedOptional.ContainsKey(field))
+            {
+                mixedOptional[field] = field.IsOptional;
+            }
+
+            if (mixed)
+            {
+                field.IsOptional = true;
+                field.SetNumber(null);
+                ToolTipService.SetShowOnDisabled(field, true);
+                field.ToolTip = "Los dos lados tienen valores distintos. Escribe uno para aplicarlo a A y a B; "
+                                + "dejalo vacio y cada lado conserva el suyo.";
+                return;
+            }
+
+            field.IsOptional = mixedOptional[field];
+        }
+
         // ---- I-42: presencia de la ranura en el lado activo ----------------------------------------------------
 
         /// <summary>
@@ -437,8 +563,19 @@ namespace RackCad.UI.Systems.PushBack
                 SlotPresentText.Text = "Frente " + (slot + 1) + " · lado "
                     + (composite.ActiveSide == PushBackSide.A ? "A" : "B") + ".";
 
+                // La PRESENCIA y el AJUSTE de estructura son de UN lado por definicion: aplicarlos «a los dos» no
+                // significa nada —la asimetria es justo lo que expresan—, asi que con «Ambos» se deshabilitan y se
+                // dice por que, en vez de escribir en A a escondidas.
+                var perSide = composite.ActiveSelection != PushBackSideSelection.Both;
+                SetPerSideSensitive(SlotPresentCheck, perSide);
+                SetPerSideSensitive(StructureOverrideBox, perSide);
+                SetPerSideSensitive(ApplyStructureButton, perSide);
+                SetPerSideSensitive(RestoreStructureButton, perSide);
+
                 TopeSideACheck.IsChecked = composite.RearTopeAt(PushBackSide.A, slot, level);
                 TopeSideBCheck.IsChecked = composite.RearTopeAt(PushBackSide.B, slot, level);
+
+                ApplyMixedSideState();
 
                 var applicability = composite.TopeApplicability(slot, level);
                 SetTopeSensitive(TopeSideACheck, applicability.A, PushBackSide.A);
@@ -448,6 +585,26 @@ namespace RackCad.UI.Systems.PushBack
             finally
             {
                 suppressSync = wasSuppressed;
+            }
+        }
+
+        /// <summary>
+        /// Habilita un control que solo tiene sentido con UN lado elegido. Con «Ambos» se deshabilita CON SU MOTIVO:
+        /// es informacion, no un control muerto.
+        /// </summary>
+        private void SetPerSideSensitive(Control control, bool perSide)
+        {
+            if (control == null)
+            {
+                return;
+            }
+
+            control.IsEnabled = perSide;
+            ToolTipService.SetShowOnDisabled(control, true);
+            if (!perSide)
+            {
+                control.ToolTip = "Esto es de UN lado —es lo que expresa que A y B sean distintos—, asi que hay que "
+                                  + "elegir «Lado A» o «Lado B» para editarlo.";
             }
         }
 
@@ -492,22 +649,32 @@ namespace RackCad.UI.Systems.PushBack
             try
             {
                 SideBPresentCheck.IsChecked = composite.SideBPresent;
-                SideSelectorBox.SelectedIndex = composite.ActiveSide == PushBackSide.B ? 1 : 0;
+                SideSelectorBox.SelectedIndex = (int)composite.ActiveSelection;
                 GapBox.SetNumber(composite.Gap);
                 CentralSeparatorCheck.IsChecked = composite.CentralSeparator;
                 var stored = composite.StructureOverride(composite.ActiveSide);
                 StructureOverrideBox.SetNumber(stored.HasValue ? (double?)stored.Value : null);
 
+                // «Fondos frente» es de un LADO cuando hay dos: decirlo evita que parezca el mismo campo que el
+                // ajuste manual de estructura, que es lo que confundio al dueño.
+                FondosFrenteLabel.Text = composite.SideBPresent
+                    ? "Fondos frente (" + SideLabel() + ")"
+                    : "Fondos frente";
+
                 var side = system?.Composite?.Of(composite.ActiveSide);
-                CompositeStructureText.Text = side == null || !side.IsPresent
-                    ? "Estructura: —"
-                    : string.Format(
-                        System.Globalization.CultureInfo.CurrentCulture,
-                        "Estructura del lado {0}: propuesta {1}, efectiva {2}{3}.",
-                        composite.ActiveSide == PushBackSide.B ? "B" : "A",
-                        side.ProposedStructure,
-                        side.EffectiveStructure,
-                        side.StructureOverride.HasValue ? " (manual)" : " (automática)");
+                var present = side != null && side.IsPresent;
+                StructureProposedText.Text = present
+                    ? side.ProposedStructure.ToString(System.Globalization.CultureInfo.CurrentCulture) + " fondos"
+                    : "—";
+                StructureEffectiveText.Text = present
+                    ? side.EffectiveStructure.ToString(System.Globalization.CultureInfo.CurrentCulture) + " fondos"
+                    : "—";
+                CompositeStructureText.Text = !present
+                    ? string.Empty
+                    : side.StructureOverride.HasValue
+                        ? "Lado " + (composite.ActiveSide == PushBackSide.B ? "B" : "A") + ": ajuste MANUAL vigente."
+                        : "Lado " + (composite.ActiveSide == PushBackSide.B ? "B" : "A")
+                          + ": sigue la propuesta automática.";
             }
             finally
             {

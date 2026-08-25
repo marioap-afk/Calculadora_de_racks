@@ -276,7 +276,7 @@ namespace RackCad.Tests
 
         /// <summary>
         /// Una corrida CORTA solo apoya en el tramo que ocupa: la planta no debe inventar intermedios en la
-        /// estructura sobrante, ni dejar de proyectarlos en la parte que pisa el otro lado.
+        /// estructura sobrante. Con el ancla en el extremo BAJO, ese tramo sobrante esta DETRAS del alto.
         /// </summary>
         [Fact]
         public void ThePlantaIntermediates_OfAShortCorrida_CoverOnlyItsRun()
@@ -286,17 +286,19 @@ namespace RackCad.Tests
             var system = Resolve(design);
 
             var bed = system.Composite.Cell(0, 1).Beds.Single();
-            var lowX = system.Structure.TotalLength - bed.ResolvedBedLength;
+            var lowX = system.Structure.Modules[0].StartX;
+            var highX = lowX + bed.ResolvedBedLength;
+            Assert.True(highX < system.Structure.TotalLength - 1.0, "la cama corta no puede llegar al final");
 
             var intermediates = new PushBackSystemPlantaBuilder().Build(system, Catalog)
                 .Where(PushBackPlanComposer.IsDynamicIntermediate)
                 .ToList();
 
             Assert.NotEmpty(intermediates);
-            // Ninguno por delante del extremo bajo de la cama: ese tramo de estructura no lo usa nadie.
+            // Ninguno mas alla del extremo alto: ese tramo de estructura no lo usa esta cama.
+            Assert.All(intermediates, beam => Assert.True(beam.Insertion.X < highX + 1e-6));
+            // Y ninguno por delante del bajo, que esta en la orilla.
             Assert.All(intermediates, beam => Assert.True(beam.Insertion.X > lowX - 1e-6));
-            // Y si cruza la interfaz, hay apoyos al otro lado de ella.
-            Assert.Contains(intermediates, beam => beam.Insertion.X > system.Structure.TotalLength / 2.0);
         }
 
         // ---- Tarimas -----------------------------------------------------------------------------------------

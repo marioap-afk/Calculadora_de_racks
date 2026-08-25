@@ -161,10 +161,45 @@ pendiente sobre la retícula de troqueles).
    sobre la estructura compuesta daba ejes que no son los de ninguna cama real. El BOM los cuenta con el **mismo**
    builder que los dibuja, de modo que la cantidad cotizada y la dibujada no pueden divergir.
 
-9. **En una corrida gobierna el lado ALTO, y es también su ancla FÍSICA.** Su larguero posterior es el ancla de
-   elevación, exactamente como en I-32, y además el extremo desde el que la cama se desarrolla: desde el ALTO hacia
-   el BAJO, hasta el primer apoyo válido que satisface su demanda. Una corrida **puede** atravesar parte del lado
-   alto, el hueco y parte
+8-ter. **Los dos lados comparten la retícula TRANSVERSAL, no la ALTURA.**
+
+   Comparten dónde caen las líneas de postes, el ancho y el BFR: eso es la retícula, y es una sola. No comparten
+   cuántos niveles tienen, ni a qué elevación, ni por tanto cuánto miden sus cabeceras. Una cabecera es una pieza
+   **longitudinal** y pertenece a un lado: su altura, su celosía y sus personalizaciones de I-40 salen de la
+   sub-estructura de **ese** lado, resuelta con **sus** niveles.
+
+   Con 4 niveles en A y 2 en B, las cabeceras de A miden lo que A pide y las de B lo que pide B, y las **dos** líneas
+   de la interfaz —la terminal de A y la inicial de B— pueden medir distinto: son dos piezas. Subir un nivel en A no
+   puede mover ni una pieza de B.
+
+   Una autoridad global de altura del tipo `max(alturaA, alturaB)` aplicada a todas las cabeceras está **prohibida**:
+   estiraba los postes de B por lo que pedía A. La compuesta ADOPTA, cabecera por cabecera y por `ModuleId`, la
+   configuración que su lado ya resolvió.
+
+8-quater. **Un rack compuesto tiene DOS pasillos de carga, y los dos llevan su seguridad por defecto.**
+
+   Físicamente son dos Push Back opuestos: los dos extremos longitudinales son caras de carga y ninguno es un extremo
+   alto donde la seguridad estorbe. La autoridad no cambia —sigue siendo la única `PushBackSafetyAuthority`, que
+   deduplica y excluye GUIA/PARRILLA/TOPE—; lo que el rack declara es en **cuántos extremos** se materializa. No hay
+   que pedirla a mano para el segundo lado, y un rack de un sentido no cambia en nada.
+
+   El tope posterior es otra cosa: vive en el extremo ALTO y su autoridad es **por lado**. Un lado nuevo nace con el
+   default del PRODUCTO, nunca con una copia de lo que el usuario ya hubiera personalizado en el otro.
+
+9. **En una corrida, el ancla VERTICAL es el ALTO y la LONGITUDINAL es el BAJO.** Son dos preguntas distintas y las
+   dos siguen siendo ciertas:
+
+   - **Verticalmente** manda el ALTO: su larguero posterior fija la elevación y el troquel, exactamente como en
+     I-32, y el bajo se deriva por la pendiente.
+   - **Longitudinalmente** manda el BAJO: el extremo por donde se carga y se descarga queda **siempre** anclado al
+     poste exterior de su lado, y el ALTO es el que se desplaza hacia dentro cuando la cama pide menos fondo que la
+     estructura disponible. Se recorre desde el bajo hacia el alto y se toma el primer apoyo físico que satisface la
+     demanda.
+
+   Anclar longitudinalmente en el alto —como hizo una redacción anterior— dejaba la cama arrancando **dentro** del
+   rack, con el pasillo delante inaccesible. Es un defecto físico, no una preferencia de dibujo.
+
+   Una corrida **puede** atravesar parte del lado alto, el hueco y parte
    del bajo **sin llegar al extremo exterior del lado bajo**; y cuando cruza el hueco lo **atraviesa** sin gastar en
    él longitud de demanda. La estructura sobrante no se destruye ni se reduce: puede existir porque otros niveles o
    frentes la necesitan, y ése es justamente el caso de los frentes largos que gobiernan la estructura mientras
@@ -252,8 +287,16 @@ pendiente sobre la retícula de troqueles).
     línea de postes de su frontera, por la regla de I-33 que conserva los bordes exteriores de un frente en blanco.
     Las ausencias del final sí se retiran, que es el caso habitual (`A=3`, `B=4`);
   - una corrida que **cruza el hueco** lo atraviesa sin gastar demanda en él, pero su longitud FÍSICA sí lo
-    incluye: para llegar a su último fondo tiene que salvarlo. Su extremo bajo apoya, como siempre, en una línea de
-    módulo real, nunca en un punto intermedio; se declara para que se vea en la validación en AutoCAD;
+    incluye: para llegar a su último fondo tiene que salvarlo. Su extremo bajo está en el poste exterior y el alto
+    apoya en una línea de módulo real, nunca en un punto intermedio;
+  - la **selección de edición** puede ser «ambos lados». Es una operación del editor, **no** un tercer lado: no
+    existe en el dominio, en el archivo ni en el dibujo, y no posee ninguna pieza. Escribe la misma intención en A y
+    en B; lo que por definición es de un lado —la presencia de un frente, el ajuste manual de estructura— se
+    deshabilita con su motivo en vez de aplicarse a ciegas, y un campo cuyo valor difiera entre los lados se muestra
+    **vacío** en lugar de mentir eligiendo uno de los dos;
+  - el **fondo de almacenamiento** y la **estructura longitudinal** son dos autoridades distintas y se presentan
+    como tales: el fondo base del frente y el fondo por celda dicen cuánto se almacena; la estructura dice hasta
+    dónde llega el acero, con su propuesta automática, su efectiva y su ajuste manual. Ninguna escribe en la otra;
   - la **planta proyecta todos los frentes**: los intermedios se reponen por cama y en el marco de cada una, y dos
     frentes físicamente distintos nunca se deduplican entre sí — la planta colapsa NIVELES, no FRENTES;
   - **una estructura más larga que una cama es normal y no deja piezas huérfanas**: la estructura efectiva puede

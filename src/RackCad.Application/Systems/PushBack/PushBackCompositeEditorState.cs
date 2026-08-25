@@ -21,6 +21,17 @@ namespace RackCad.Application.Systems.PushBack
     /// la del lado que deja de dibujar queda DORMANTE en su propio estado y reaparece intacta.
     /// </para>
     /// </summary>
+    /// <summary>
+    /// Que lados alcanza una edicion. NO es un lado fisico: <see cref="Both"/> es una operacion del editor y no
+    /// existe en el dominio, en el archivo ni en el dibujo.
+    /// </summary>
+    public enum PushBackSideSelection
+    {
+        A = 0,
+        B = 1,
+        Both = 2
+    }
+
     public sealed class PushBackCompositeEditorState
     {
         private readonly List<PushBackTopologyCell> topologies = new List<PushBackTopologyCell>();
@@ -46,6 +57,75 @@ namespace RackCad.Application.Systems.PushBack
 
         /// <summary>El lado que la matriz esta editando ahora mismo.</summary>
         public PushBackSide ActiveSide { get; private set; } = PushBackSide.A;
+
+        /// <summary>
+        /// Que lados alcanza una edicion: uno, el otro, o LOS DOS.
+        ///
+        /// <para>
+        /// «Ambos» es una operacion de EDICION, no un tercer lado: no existe en el dominio ni en el archivo, no posee
+        /// ninguna pieza y no aparece en el dibujo. Solo dice que una misma intencion —niveles, fondo base, alto del
+        /// primer nivel, fondo por celda, tarima— se escribe en A y en B a la vez, que es como el dueño configura un
+        /// rack simetrico sin repetirlo todo dos veces.
+        /// </para>
+        /// </summary>
+        public PushBackSideSelection ActiveSelection { get; private set; } = PushBackSideSelection.A;
+
+        /// <summary>Los estados que una edicion debe alcanzar con la seleccion vigente.</summary>
+        public IReadOnlyList<PushBackEditorState> EditTargets()
+        {
+            if (ActiveSelection != PushBackSideSelection.Both || !SideBPresent)
+            {
+                return new[] { Active };
+            }
+
+            return new[] { SideA, SideB };
+        }
+
+        /// <summary>Los LADOS que una edicion alcanza, en el mismo orden que <see cref="EditTargets"/>.</summary>
+        public IReadOnlyList<PushBackSide> EditSides()
+            => ActiveSelection == PushBackSideSelection.Both && SideBPresent
+                ? new[] { PushBackSide.A, PushBackSide.B }
+                : new[] { ActiveSide };
+
+        /// <summary>
+        /// Fija la seleccion de edicion. Con «Ambos», la matriz sigue siendo la del lado A —hace falta UNA para
+        /// seleccionar celdas— y el lado B recibe la MISMA seleccion, de modo que un alcance significa lo mismo en
+        /// los dos. Sin lado B declarado, «Ambos» no existe y se cae al lado A.
+        /// </summary>
+        public void SetActiveSelection(PushBackSideSelection selection)
+        {
+            if (!SideBPresent)
+            {
+                ActiveSelection = PushBackSideSelection.A;
+                ActiveSide = PushBackSide.A;
+                return;
+            }
+
+            ActiveSelection = selection;
+            ActiveSide = selection == PushBackSideSelection.B ? PushBackSide.B : PushBackSide.A;
+            if (selection == PushBackSideSelection.Both)
+            {
+                MirrorSelection();
+            }
+        }
+
+        /// <summary>
+        /// Lleva la seleccion de celda del lado activo al otro, acotada a lo que ese otro lado tiene. Es lo que hace
+        /// que «esta celda» signifique lo mismo en los dos cuando se editan a la vez.
+        /// </summary>
+        public void MirrorSelection()
+        {
+            var source = Active.Structure;
+            var target = (ActiveSide == PushBackSide.A ? SideB : SideA).Structure;
+            if (target.Count == 0)
+            {
+                return;
+            }
+
+            var front = Math.Max(0, Math.Min(source.SelectedFrontIndex, target.Count - 1));
+            var level = Math.Max(0, Math.Min(source.SelectedLevelIndex, Math.Max(1, target.Fronts[front].LoadLevels) - 1));
+            target.ToggleCell(front, level, extendSelection: false);
+        }
 
         /// <summary>Si el rack tiene lado B. False = Push Back de un solo sentido, el legacy.</summary>
         public bool SideBPresent { get; private set; }
@@ -100,9 +180,10 @@ namespace RackCad.Application.Systems.PushBack
         public void SetSideBPresent(bool present)
         {
             SideBPresent = present;
-            if (!present && ActiveSide == PushBackSide.B)
+            if (!present)
             {
                 ActiveSide = PushBackSide.A;
+                ActiveSelection = PushBackSideSelection.A;
             }
 
             // La topologia POR DEFECTO depende de cuantos sentidos tiene el rack, y esa es la misma regla que ya

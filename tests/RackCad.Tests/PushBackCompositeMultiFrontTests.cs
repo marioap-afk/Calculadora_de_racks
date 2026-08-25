@@ -45,6 +45,7 @@ namespace RackCad.Tests
             PushBackRunDirection direction = PushBackRunDirection.AToB)
         {
             var state = new PushBackCompositeEditorState();
+            state.SideA.LoadNew();   // como la ventana: los dos lados nacen con los defaults del producto
             state.SetSideBPresent(true);
             state.SideB.LoadNew();
             state.SetSlotCount(Fronts);
@@ -379,7 +380,7 @@ namespace RackCad.Tests
                     + " rieles, encontrados " + rails);
 
                 // Y la estructura tambien esta: un corte no es solo camas.
-                Assert.True(instances.Any(instance => instance.Role == HeaderBlockRole.Post));
+                Assert.Contains(instances, instance => instance.Role == HeaderBlockRole.Post);
             }
         }
 
@@ -393,6 +394,12 @@ namespace RackCad.Tests
             => PushBackRunGeometry.Axes(PushBackRuns.Resolve(system), Catalog)
                 .Single(axis => axis.Slot == slot && axis.Level == level)
                 .LowContact.X;
+
+        /// <summary>El contacto ALTO de una cama: el extremo que se MUEVE al cambiar la demanda.</summary>
+        private static double HighContactOf(PushBackSystem system, int slot, int level)
+            => PushBackRunGeometry.Axes(PushBackRuns.Resolve(system), Catalog)
+                .Single(axis => axis.Slot == slot && axis.Level == level)
+                .HighContact.X;
 
         /// <summary>
         /// LA prueba que el dueño necesita: una cama CORRIDA apoya su extremo bajo con EXACTAMENTE la misma regla
@@ -416,36 +423,32 @@ namespace RackCad.Tests
         }
 
         /// <summary>
-        /// Y una corrida CORTA apoya en su linea de modulo con el MISMO desfase: el punto de acoplamiento del
-        /// larguero es una constante del producto, no algo que se recalcule por celda. Un desplazamiento de un fondo
-        /// entero cambiaria este desfase en la longitud de un modulo.
+        /// DECISION FISICA DEL DUEÑO: acortar una corrida NO mueve su extremo bajo. El bajo —por donde se carga y se
+        /// descarga— queda anclado al poste exterior; el que se mete hacia dentro es el ALTO. Anclar al reves dejaba
+        /// la cama arrancando dentro del rack, con el pasillo delante inaccesible.
         /// </summary>
         [Fact]
-        public void AShortCorrida_KeepsTheSameMateOffset_AsAFullOne()
+        public void ShorteningACorrida_MovesTheHighEnd_AndNeverTheLow()
         {
             var full = State(PushBackCellTopology.Corrida);
             var fullSystem = Build(full).System;
-            var fullOffset = LowContactOf(fullSystem, 0, 1) - fullSystem.Structure.Modules[0].StartX;
+            var capacity = fullSystem.Composite.Cell(0, 1).Beds.Single().DemandPositions;
 
             var shortState = State(PushBackCellTopology.Corrida);
-            var capacity = Build(shortState).System.Composite.Cell(0, 1).Beds.Single().DemandPositions;
             shortState.SetCorridaDepth(0, 0, capacity - 3);
-
             var shortSystem = Build(shortState).System;
             var shortBed = shortSystem.Composite.Cell(0, 1).Beds.Single();
             Assert.Equal(capacity - 3, shortBed.DemandPositions);
 
-            var lowX = shortSystem.Structure.TotalLength - shortBed.ResolvedBedLength;
-            var support = shortSystem.Structure.Modules
-                .Where(module => Math.Abs(module.StartX - lowX) < 1e-6)
-                .ToList();
-            Assert.NotEmpty(support);
+            // 1) El BAJO no se mueve: misma coordenada fisica, al modulo exterior.
+            Assert.Equal(LowContactOf(fullSystem, 0, 1), LowContactOf(shortSystem, 0, 1), 6);
 
-            var shortOffset = LowContactOf(shortSystem, 0, 1) - lowX;
-            Assert.Equal(fullOffset, shortOffset, 6);
+            // 2) El ALTO si: se ha metido hacia dentro.
+            Assert.True(HighContactOf(shortSystem, 0, 1) < HighContactOf(fullSystem, 0, 1) - 1.0);
 
-            // Y la cama corta NO arranca donde la completa: si lo hiciera, el fondo propio no estaria haciendo nada.
-            Assert.True(LowContactOf(shortSystem, 0, 1) > LowContactOf(fullSystem, 0, 1) + 1.0);
+            // 3) Y apoya en una linea de modulo real, no en un punto intermedio.
+            var highX = shortSystem.Structure.Modules[0].StartX + shortBed.ResolvedBedLength;
+            Assert.Contains(shortSystem.Structure.Modules, module => Math.Abs(module.EndX - highX) < 1e-6);
         }
 
         /// <summary>

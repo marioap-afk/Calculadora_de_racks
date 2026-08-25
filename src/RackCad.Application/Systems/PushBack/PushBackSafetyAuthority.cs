@@ -19,6 +19,18 @@ namespace RackCad.Application.Systems.PushBack
     /// a view or the BOM (PB-VAL-06): it is stripped at build, exactly as GUIA already was — no destructive migration. The
     /// input collection and its selections are never mutated.
     /// </summary>
+    /// <summary>
+    /// Cuantos PASILLOS de carga tiene un Push Back, que es lo que decide donde va su seguridad.
+    /// </summary>
+    public enum PushBackSafetyAisles
+    {
+        /// <summary>Uno solo, en el extremo bajo. Es todo rack de un sentido, y el comportamiento de siempre.</summary>
+        NearOnly = 0,
+
+        /// <summary>Los DOS extremos son cara de carga: todo rack compuesto.</summary>
+        Both = 1
+    }
+
     public sealed class PushBackSafetyAuthority
     {
         private readonly RackCatalog catalog;
@@ -65,6 +77,20 @@ namespace RackCad.Application.Systems.PushBack
         /// low end. Independent of the source (the input collection and its selections are never mutated).
         /// </summary>
         public IReadOnlyList<SelectiveSafetySelection> Authorize(IEnumerable<SelectiveSafetySelection> source)
+            => Authorize(source, PushBackSafetyAisles.NearOnly);
+
+        /// <summary>
+        /// La misma autorizacion, declarando CUANTOS PASILLOS tiene el rack.
+        ///
+        /// <para>
+        /// I-42 — un Push Back compuesto tiene DOS pasillos de carga, uno por lado, y los dos son extremos BAJOS: no
+        /// hay ningun extremo alto donde la seguridad estorbe. Por eso un rack de dos sentidos coloca su seguridad
+        /// en los dos, exactamente como lo harian dos Push Back opuestos. Un rack de un sentido sigue teniendo un
+        /// solo pasillo y su comportamiento no cambia en nada.
+        /// </para>
+        /// </summary>
+        public IReadOnlyList<SelectiveSafetySelection> Authorize(
+            IEnumerable<SelectiveSafetySelection> source, PushBackSafetyAisles aisles)
         {
             var result = new List<SelectiveSafetySelection>();
             foreach (var selection in source ?? Enumerable.Empty<SelectiveSafetySelection>())
@@ -75,11 +101,40 @@ namespace RackCad.Application.Systems.PushBack
                 }
 
                 var copy = selection.DeepCopy();
-                RestrictToLowEnd(copy);
+                RestrictToAisles(copy, aisles);
                 result.Add(copy);
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Restringe una seleccion a los pasillos que el rack REALMENTE tiene. Muta la COPIA, nunca el origen.
+        ///
+        /// <para>
+        /// <see cref="PushBackSafetyAisles.NearOnly"/> es la regla de siempre —un solo pasillo, el del extremo bajo—
+        /// y deja el comportamiento legacy intacto. <c>Both</c> es la de I-42: las dos caras de un rack compuesto.
+        /// </para>
+        /// </summary>
+        public static void RestrictToAisles(SelectiveSafetySelection selection, PushBackSafetyAisles aisles)
+        {
+            if (selection == null)
+            {
+                return;
+            }
+
+            switch (aisles)
+            {
+                case PushBackSafetyAisles.Both:
+                    // Los DOS extremos son pasillos: la pieza se materializa en ambos, cada una con su orientacion.
+                    selection.Side = SafetySide.Both;
+                    selection.LowEndOnly = false;
+                    return;
+
+                default:
+                    RestrictToLowEnd(selection);
+                    return;
+            }
         }
 
         /// <summary>
