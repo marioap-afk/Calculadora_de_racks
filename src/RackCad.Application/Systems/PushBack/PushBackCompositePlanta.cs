@@ -47,11 +47,9 @@ namespace RackCad.Application.Systems.PushBack
                 .Where(instance => !PushBackPlanComposer.IsDynamicSpecific(instance))
                 .ToList();
 
-            // 2) El contenido de cada lado, en su marco, reflejado el del lado B — y SOLO las piezas que existen.
+            // 2) El contenido de almacenamiento, CAMA A CAMA, en el marco de cada una.
             var runs = PushBackRuns.Resolve(system);
-            AppendSide(result, system, catalog, composite.SideA, runs, PushBackSide.A, reflected: false, mirrorAxis: 0.0);
-            AppendSide(result, system, catalog, composite.SideB, runs, PushBackSide.B, reflected: true,
-                mirrorAxis: PushBackMirror.AxisOf(structure));
+            AppendBeds(result, catalog, runs);
 
             // 3) Los INTERMEDIOS. Pertenecen a la CAMA, no a la estructura, asi que el paso 1 los retira con el
             //    resto de piezas del dinamico y aqui se reponen POR CAMA, en el marco de cada una. Sin este paso la
@@ -65,45 +63,51 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// El contenido de un lado: su larguero IN/OUT del pasillo y su larguero posterior de troquel redondo con su
-        /// tope. Se toma de la planta LOCAL del lado —el mismo builder de un Push Back de un sentido— en DOS pasadas,
-        /// cada una sobre una copia de la sub-estructura donde solo estan activas las ranuras que realmente tienen
-        /// esa pieza. Asi la planta proyecta la union de piezas fisicas reales sin necesitar un selector de nivel que
-        /// no tiene, y sin identificar piezas por coordenada.
+        /// El contenido de almacenamiento de la planta, resuelto POR CAMA: su larguero bajo, su larguero alto de
+        /// troquel redondo y el tope de ese larguero alto.
+        ///
+        /// <para>
+        /// La autoridad es la CAMA, no el lado. Antes se pedian las piezas altas a la planta LOCAL del lado que
+        /// posee el extremo alto, y en una CORRIDA eso es falso: el larguero alto de una corrida no esta en la
+        /// linea posterior de ese lado sino en el extremo opuesto del rack, al final del recorrido. La planta lo
+        /// dibujaba en la INTERFAZ —y con la orientacion del otro marco—, de modo que contradecia al corte lateral,
+        /// que si lo resuelve por cama. El tope, que cuelga de ese larguero, se iba con el.
+        /// </para>
+        /// <para>
+        /// Ahora cada cama se construye con el MISMO builder de un Push Back de un sentido, en SU marco —el local
+        /// del lado o el sintetico de la corrida— y viaja al mundo con UNA sola reflexion rigida, exactamente igual
+        /// que en el lateral. Las camas de una misma ranura que comparten marco se agrupan: la planta colapsa los
+        /// niveles y proyectarian lo mismo.
+        /// </para>
         /// </summary>
-        private static void AppendSide(
-            List<HeaderBlockInstance> target,
-            PushBackSystem system,
-            RackCatalog catalog,
-            PushBackSideSystem side,
-            PushBackRunSet runs,
-            PushBackSide which,
-            bool reflected,
-            double mirrorAxis)
+        private static void AppendBeds(
+            List<HeaderBlockInstance> target, RackCatalog catalog, PushBackRunSet runs)
         {
-            if (side == null || !side.IsPresent || side.Local?.Structure == null)
+            foreach (var batch in PushBackCompositeContent.Batches(runs, includeSlot: null))
             {
-                return;
+                var source = batch.Source;
+                if (source?.Structure == null)
+                {
+                    continue;
+                }
+
+                var highId = string.IsNullOrWhiteSpace(source.HighEndBeamCatalogId)
+                    ? PushBackDefaults.HighEndBeamCatalogId
+                    : source.HighEndBeamCatalogId;
+                var inOutId = string.IsNullOrWhiteSpace(source.Structure.InOutBeamCatalogId)
+                    ? DynamicRackDefaults.InOutBeamCatalogId
+                    : source.Structure.InOutBeamCatalogId;
+
+                var content = Pieces(source, catalog, batch.FrontIndex)
+                    .Where(instance => instance.Role == HeaderBlockRole.Tope
+                        || string.Equals(instance.PieceId, inOutId, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(instance.PieceId, highId, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                target.AddRange(batch.Reflected
+                    ? PushBackMirror.Instances(content, runs.MirrorAxis)
+                    : content);
             }
-
-            var highId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
-                ? PushBackDefaults.HighEndBeamCatalogId
-                : system.HighEndBeamCatalogId;
-            var inOutId = string.IsNullOrWhiteSpace(side.Local.Structure.InOutBeamCatalogId)
-                ? DynamicRackDefaults.InOutBeamCatalogId
-                : side.Local.Structure.InOutBeamCatalogId;
-
-            var lowSlots = new HashSet<int>(runs.Runs.Where(run => run.LowSide == which).Select(run => run.Slot));
-            var highSlots = new HashSet<int>(runs.Runs.Where(run => run.HighSide == which).Select(run => run.Slot));
-
-            var content = new List<HeaderBlockInstance>();
-            content.AddRange(Pieces(side.Local, catalog, lowSlots)
-                .Where(instance => string.Equals(instance.PieceId, inOutId, StringComparison.OrdinalIgnoreCase)));
-            content.AddRange(Pieces(side.Local, catalog, highSlots)
-                .Where(instance => instance.Role == HeaderBlockRole.Tope
-                    || string.Equals(instance.PieceId, highId, StringComparison.OrdinalIgnoreCase)));
-
-            target.AddRange(reflected ? PushBackMirror.Instances(content, mirrorAxis) : content);
         }
 
         /// <summary>
@@ -173,24 +177,19 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// La planta de un lado con SOLO las ranuras indicadas activas. Las demas viajan en blanco (I-33), asi que no
+        /// La planta del marco de una cama con SOLO su ranura activa. Las demas viajan en blanco (I-33), asi que no
         /// aportan larguero, tope ni cama — la regla ya existe y no hace falta una segunda.
         /// </summary>
         private static IReadOnlyList<HeaderBlockInstance> Pieces(
-            PushBackSystem local, RackCatalog catalog, ICollection<int> slots)
+            PushBackSystem source, RackCatalog catalog, int slot)
         {
-            if (slots.Count == 0)
-            {
-                return new List<HeaderBlockInstance>();
-            }
-
             var restricted = new PushBackSystem
             {
-                Structure = PushBackMirror.Clone(local.Structure, slot => slots.Contains(slot)),
-                HighEndBeamCatalogId = local.HighEndBeamCatalogId,
-                RearTope = local.RearTope
+                Structure = PushBackMirror.Clone(source.Structure, index => index == slot),
+                HighEndBeamCatalogId = source.HighEndBeamCatalogId,
+                RearTope = source.RearTope
             };
-            foreach (var resolved in local.HighEndBeams)
+            foreach (var resolved in source.HighEndBeams)
             {
                 restricted.HighEndBeams.Add(resolved);
             }

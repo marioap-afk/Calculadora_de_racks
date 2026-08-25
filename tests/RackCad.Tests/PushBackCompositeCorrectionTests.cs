@@ -603,12 +603,30 @@ namespace RackCad.Tests
         {
             var design = Design(PushBackCellTopology.Corrida, deepA: 5, deepB: 5, levelsA: 2, levelsB: 2);
             design.Composite.SetCell(0, 1, PushBackCellTopology.Encontradas, PushBackRunDirection.AToB);
+            var system = Resolve(design);
 
-            var rears = new PushBackSystemPlantaBuilder().Build(Resolve(design), Catalog)
-                .Count(instance => string.Equals(
-                    instance.PieceId, PushBackDefaults.HighEndBeamCatalogId, StringComparison.OrdinalIgnoreCase));
+            var rears = new PushBackSystemPlantaBuilder().Build(system, Catalog)
+                .Where(instance => string.Equals(
+                    instance.PieceId, PushBackDefaults.HighEndBeamCatalogId, StringComparison.OrdinalIgnoreCase))
+                .Select(instance => Math.Round(instance.Insertion.X, 4))
+                .OrderBy(x => x)
+                .ToList();
 
-            Assert.Equal(2, rears);
+            // TRES largueros posteriores, y se comprueban por POSICION porque el conteo solo no distingue el
+            // defecto: el nivel ENCONTRADAS aporta dos —uno por lado, en la interfaz— y el nivel CORRIDO aporta el
+            // suyo en el extremo ALTO de su recorrido, que es el otro extremo del rack. La planta dibujaba los tres
+            // en la interfaz, asi que dos coincidian y parecian uno.
+            var interfaceX = Math.Round(system.Composite.Of(PushBackSide.A).Local.Structure.TotalLength, 4);
+            var runHighX = Math.Round(
+                PushBackRunGeometry.Axes(PushBackRuns.Resolve(system), Catalog)
+                    .First(axis => axis.Level == 1)
+                    .HighContact.X,
+                0);
+
+            Assert.Equal(3, rears.Count);
+            Assert.Equal(2, rears.Count(x => Math.Abs(x - interfaceX) < 1e-6));
+            Assert.Single(rears, x => Math.Abs(x - runHighX) < 1.0);
+            Assert.True(runHighX > interfaceX + 1.0, "la corrida A->B acaba MAS ALLA de la interfaz");
         }
 
         // ================= 4. Entradas invalidas =================================================================

@@ -478,10 +478,55 @@ cuenta con un rango mucho mas ancho y comprueba que el elegido es el optimo GLOB
 resuelven en el orden del dueño. Cuatro goldens se mueven (los dos laterales y los dos frontales); planta y
 BOM quedan intactos, y eso acota el cambio.
 
+### CERRADOS — errores 5 y 10 (geometria): el marco de la CAMA es la autoridad
+
+Los dos tenian la MISMA causa raiz, y se encontro midiendo, no leyendo: la planta pedia las piezas del extremo
+ALTO a la planta LOCAL del lado que posee ese extremo. En una CORRIDA eso es falso — el larguero alto de una
+corrida no esta en la linea posterior de ese lado, sino al final del recorrido, en el otro extremo del rack—, y
+ademas llegaba con la orientacion del marco contrario.
+
+**Medido antes del arreglo**, en un rack de dos ranuras y 792" de largo:
+
+| topologia | extremo ALTO real de la cama | larguero en PLANTA | mano |
+|---|---|---|---|
+| Corrida A→B | X = 791.8 | X = **396** (la interfaz) | **False**, deberia ser True |
+| Corrida B→A | X = 0.2 | X = **396** (la interfaz) | **True**, deberia ser False |
+| Solo A / Solo B / Encontradas | interfaz | interfaz ✔ | ✔ |
+
+El corte LATERAL, que si resuelve por cama, decia lo correcto en los cinco casos: las dos vistas se
+contradecian, y el tope —que cuelga de ese larguero— se iba con el.
+
+**La correccion.** La planta compuesta ya no compone «por lado» sino **por CAMA**: usa los mismos lotes de
+`PushBackCompositeContent.Batches` que el lateral, construye cada cama con el builder de un Push Back de un
+sentido EN SU MARCO —el local del lado o el sintetico de la corrida— y la lleva al mundo con UNA sola reflexion
+rigida. No hay ninguna regla nueva de orientacion: la mano sale de la reflexion, como en el lateral.
+
+**Consecuencia sobre la orientacion (error 5).** La mano del larguero ALTO ya no puede venir del lado, del
+indice del frente ni de «es el ultimo modulo»: la impone el SENTIDO FISICO del flujo. Una cama que avanza hacia
++X lleva su bajo sin espejo y su alto espejado; una reflejada, lo contrario.
+
+**Pruebas** (`PushBackRunFrameTests`, 51 casos). Se comparan PIEZAS DIBUJADAS contra el eje que publica
+`PushBackRunGeometry`:
+
+- en el extremo de cada cama hay un larguero con la mano que su sentido impone, y no hay ningun larguero de
+  extremo que no acabe en una cama — se comprueba por EXISTENCIA, no emparejando por cercania, porque con camas
+  encontradas los dos largueros altos caen en la misma linea de la interfaz;
+- planta y lateral coinciden pieza a pieza en X y en mano;
+- en planta, todo larguero alto y todo tope pertenecen al extremo alto de una cama real;
+- una ranura con un nivel corrido y otro encontradas tiene TRES largueros altos en tres sitios, no dos: es el
+  caso donde contar piezas no distinguia el defecto porque dos coincidian;
+- el BOM cuenta UN tope por cama con intencion activa en su lado alto — ni uno mas;
+- y los casos ESPECIALES que el dueño enumero: frente corto contra largo, hueco que la cama atraviesa, ranura
+  presente en un solo lado, en las cuatro topologias y en los dos sentidos.
+
+Gotcha util: el lateral GENERAL dibuja la envolvente del rack, no la cama de cada ranura, asi que con ranuras
+heterogeneas hay que mirar los CORTES por poste. Y ninguna vista tiene relacion 1:1 con el BOM — el lateral
+general colapsa ranuras, los cortes muestran cada frente en los dos que lo flanquean y la planta colapsa
+niveles—, asi que el conteo se contrasta contra las camas, no contra un dibujo.
+
 ### SIGUEN ABIERTOS
 
-Errores 4 (envolvente de cabeceras por linea fisica), 5 (orientacion del larguero ALTO) y 10 (UX y planta de
-topes).
+Error 4 (envolvente de cabeceras por linea fisica) y la parte de UX del error 10.
 
 ## 5. Limitaciones DECLARADAS (no son descuidos)
 
