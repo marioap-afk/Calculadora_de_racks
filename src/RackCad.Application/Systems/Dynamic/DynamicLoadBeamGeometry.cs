@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Shared;
 
@@ -75,7 +76,8 @@ namespace RackCad.Application.Systems.Dynamic
             double beamDepth,
             double slope,
             double troquelGridBase = double.NaN,
-            double troquelPitch = 0.0)
+            double troquelPitch = 0.0,
+            RackFirstLevelDatumMode datum = RackFirstLevelDatumMode.LegacyAbsolute)
         {
             var result = new List<DynamicLoadBeamLevel>();
             if (pallet == null || loadLevels < 1 || beamDepth <= 0.0)
@@ -83,10 +85,12 @@ namespace RackCad.Application.Systems.Dynamic
                 return result;
             }
 
+            var first = RackFirstLevelDatum.RawElevation(
+                firstLevelHeight, datum, troquelGridBase, troquelPitch);
             var step = beamDepth + pallet.Height + DynamicHeaderHeightCalculator.ClearAllowance;
             for (var index = 0; index < loadLevels; index++)
             {
-                var rawExit = firstLevelHeight + index * step;
+                var rawExit = first + index * step;
                 var exit = SnapToNearestTroquel(rawExit, troquelGridBase, troquelPitch);
                 var entrance = SnapToNearestTroquel(
                     rawExit + Math.Max(0.0, slope),
@@ -99,12 +103,17 @@ namespace RackCad.Application.Systems.Dynamic
         }
 
         /// <summary>Resolves elevations when pallet height, clear and beam depth vary by level.</summary>
+        /// <param name="datum">
+        /// I-42 — desde donde se mide <paramref name="firstLevelHeight"/>. Por omision, la lectura HISTORICA: el
+        /// numero es una elevacion absoluta. Ningun llamador que no lo pase cambia de comportamiento.
+        /// </param>
         public static IReadOnlyList<DynamicLoadBeamLevel> ResolveLevels(
             IReadOnlyList<DynamicRackLevel> configurations,
             double firstLevelHeight,
             double slope,
             double troquelGridBase = double.NaN,
-            double troquelPitch = 0.0)
+            double troquelPitch = 0.0,
+            RackFirstLevelDatumMode datum = RackFirstLevelDatumMode.LegacyAbsolute)
         {
             var result = new List<DynamicLoadBeamLevel>();
             if (configurations == null || configurations.Count == 0)
@@ -112,7 +121,8 @@ namespace RackCad.Application.Systems.Dynamic
                 return result;
             }
 
-            var rawExit = Math.Max(0.0, firstLevelHeight);
+            var rawExit = RackFirstLevelDatum.RawElevation(
+                firstLevelHeight, datum, troquelGridBase, troquelPitch);
             foreach (var configuration in configurations.OrderBy(level => level.LevelNumber))
             {
                 var exit = SnapToNearestTroquel(rawExit, troquelGridBase, troquelPitch);

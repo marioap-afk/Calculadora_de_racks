@@ -14,6 +14,13 @@ namespace RackCad.Domain.Systems.Dynamic
     public sealed class DynamicRackSystem
     {
         public RackSystemKind Kind { get; set; } = RackSystemKind.PalletFlow;
+
+        /// <summary>
+        /// I-42 — desde donde se midio «Alto 1er nivel» en este rack. Viaja del diseño al sistema y del sistema al
+        /// snapshot para que RACKEDITAR no pierda el datum: sin esto, editar un rack nuevo lo releeria con la
+        /// semantica historica y lo moveria.
+        /// </summary>
+        public int? FirstLevelDatum { get; set; }
         public PalletSpecification Pallet { get; set; } = new PalletSpecification();
         /// <summary>Number of longitudinal positions in the complete shared envelope.</summary>
         public int PalletsDeep { get; set; }

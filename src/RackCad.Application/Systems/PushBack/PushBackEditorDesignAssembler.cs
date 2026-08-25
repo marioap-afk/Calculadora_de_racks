@@ -270,6 +270,10 @@ namespace RackCad.Application.Systems.PushBack
                 editorInputs.Annotations ?? new DynamicAnnotationOptions(),
                 authorizedSafety);
 
+            // I-42 — el datum de «Alto 1er nivel» es del RACK y viaja con el diseño: un rack nuevo trae el del
+            // producto, y uno cargado el que su documento declare (ausente = historico).
+            sharedDesign.FirstLevelDatum = editorInputs.FirstLevelDatum;
+
             var design = new PushBackDesign
             {
                 Structure = sharedDesign,

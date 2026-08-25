@@ -4,6 +4,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Selective;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
@@ -74,6 +75,12 @@ namespace RackCad.Application.Systems.Dynamic
                 {
                     [SelectiveRackDefaults.PeralteParam] = postPeralte
                 }).Y;
+            // I-42 — desde donde se mide «Alto 1er nivel». Es del DOCUMENTO: ausente = lectura historica, y por eso
+            // ningun archivo anterior cambia de geometria. Lo consumen por igual el Dinamico y el Push Back, que es
+            // el unico sitio donde esto se decide.
+            var datum = design.FirstLevelDatum == (int)RackFirstLevelDatumMode.LowestUsablePunch
+                ? RackFirstLevelDatumMode.LowestUsablePunch
+                : RackFirstLevelDatumMode.LegacyAbsolute;
             var palletTolerance = design.PalletTolerance > 0.0
                 ? design.PalletTolerance
                 : DynamicRackDefaults.DefaultPalletTolerance;
@@ -99,7 +106,8 @@ namespace RackCad.Application.Systems.Dynamic
                     front.FirstLevelHeight,
                     DynamicHeaderHeightCalculator.CalculateSlope(frontDepth),
                     troquelGridBase,
-                    SelectiveRackDefaults.TroquelPaso);
+                    SelectiveRackDefaults.TroquelPaso,
+                    datum);
                 foreach (var level in levels)
                 {
                     front.LoadBeamLevels.Add(level);
@@ -236,6 +244,9 @@ namespace RackCad.Application.Systems.Dynamic
             system.Dimensions = design.Dimensions;
             system.DimensionStyle = design.DimensionStyle;
             system.PalletTolerance = palletTolerance;
+            // I-42 — el datum viaja al sistema resuelto para que el snapshot lo devuelva: sin esto, RACKEDITAR
+            // releeria un rack nuevo con la semantica historica y lo moveria.
+            system.FirstLevelDatum = design.FirstLevelDatum;
             system.InOutBeamCatalogId = inOutBeamId;
             system.InOutBeamDepth = beamDepth;
             foreach (var peralte in DynamicIntermediateBeamGeometry.ResolvePeraltes(
@@ -295,6 +306,7 @@ namespace RackCad.Application.Systems.Dynamic
                 PalletsDeep = system.PalletsDeep,
                 LoadLevels = loadLevels,
                 FirstLevelHeight = firstLevelHeight,
+                FirstLevelDatum = system.FirstLevelDatum,
                 BeamDepth = system.InOutBeamDepth > 0.0 ? system.InOutBeamDepth : beamDepth,
                 InOutBeamCatalogId = string.IsNullOrWhiteSpace(system.InOutBeamCatalogId)
                     ? DynamicRackDefaults.InOutBeamCatalogId

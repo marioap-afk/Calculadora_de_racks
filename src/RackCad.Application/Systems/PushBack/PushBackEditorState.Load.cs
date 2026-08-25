@@ -129,6 +129,9 @@ namespace RackCad.Application.Systems.PushBack
         /// safety, so the window can repopulate its shared panels. Independent copies; the design is not mutated.</summary>
         private static PushBackEditorInputs RecoverInputs(PushBackDesign design, PushBackSystem system)
         {
+            // I-42 — el datum de «Alto 1er nivel» sale del DOCUMENTO, no del default de un rack nuevo: un archivo
+            // anterior no lo trae y se lee con la semantica historica, asi que reabre en la MISMA geometria fisica.
+
             var s = design.Structure ?? new DynamicRackDesign();
             var inputs = new PushBackEditorInputs
             {
@@ -161,6 +164,7 @@ namespace RackCad.Application.Systems.PushBack
                 }
             }
 
+            inputs.FirstLevelDatum = design?.Structure?.FirstLevelDatum;
             return inputs;
         }
 

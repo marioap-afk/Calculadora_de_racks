@@ -195,15 +195,17 @@ pendiente sobre la retícula de troqueles).
    El tope posterior es otra cosa: vive en el extremo ALTO y su autoridad es **por lado**. Un lado nuevo nace con el
    default del PRODUCTO, nunca con una copia de lo que el usuario ya hubiera personalizado en el otro.
 
-9. **En una corrida, el ancla VERTICAL es el ALTO y la LONGITUDINAL es el BAJO.** Son dos preguntas distintas y las
-   dos siguen siendo ciertas:
+9. **El ancla de una cama es su extremo BAJO, en las DOS direcciones** (decisión del dueño; retira la redacción
+   anterior, que hacía del ALTO la autoridad vertical):
 
-   - **Verticalmente** manda el ALTO: su larguero posterior fija la elevación y el troquel, exactamente como en
-     I-32, y el bajo se deriva por la pendiente.
    - **Longitudinalmente** manda el BAJO: el extremo por donde se carga y se descarga queda **siempre** anclado al
      poste exterior de su lado, y el ALTO es el que se desplaza hacia dentro cuando la cama pide menos fondo que la
      estructura disponible. Se recorre desde el bajo hacia el alto y se toma el primer apoyo físico que satisface la
-     demanda.
+     demanda. **Implementado y probado.**
+   - **Verticalmente** manda también el BAJO: «Alto 1er nivel» fija la elevación del larguero de entrada, y el ALTO
+     se **deriva** de esa altura más la pendiente sobre la longitud real de la cama, resuelta contra los troqueles.
+     Cambiar de topología no puede mover el larguero de entrada. **PENDIENTE**: la implementación vigente sigue
+     anclando en el alto (`PushBackElevations.ChooseLowTroquel`), ver §Pendientes.
 
    Anclar longitudinalmente en el alto —como hizo una redacción anterior— dejaba la cama arrancando **dentro** del
    rack, con el pasillo delante inaccesible. Es un defecto físico, no una preferencia de dibujo.
@@ -295,6 +297,21 @@ pendiente sobre la retícula de troqueles).
   - una ranura ausente en un lado que quede en una posición **interior** deja en el corte frontal de ese lado la
     línea de postes de su frontera, por la regla de I-33 que conserva los bordes exteriores de un frente en blanco.
     Las ausencias del final sí se retiran, que es el caso habitual (`A=3`, `B=4`);
+  - **«Alto 1er nivel» se mide desde el TROQUEL UTILIZABLE MÁS BAJO del poste**, que es el cero real del producto:
+    `0"` pone el larguero exactamente en ese troquel y cualquier otro valor es un **offset** sobre él, resuelto
+    después contra la retícula. La lectura anterior trataba el número como una elevación **absoluta** ajustada al
+    troquel *más cercano*: `0` no significaba nada físico y, con un poste cuya retícula empezara más arriba, podía
+    caer por debajo del piso.
+
+    El datum sale de la **geometría del poste** —su mate `TROQUEL_LARGUERO` y el paso de troquel—, nunca de una
+    constante: cada perfil puede tener el suyo. La autoridad es neutral y **compartida** (`RackFirstLevelDatum`)
+    porque el dato de usuario es literalmente el mismo en el **Dinámico** y en el **Push Back**, y los dos lo
+    resuelven en el mismo sitio (`DynamicRackSystemResolver`). No se toca ningún sistema que hable de otra cosa.
+
+    La compatibilidad es **aditiva**: el documento declara su datum (`FirstLevelDatum`), y **ausente = lectura
+    histórica**. Ningún archivo existente se reinterpreta ni se mueve, y la migración no resta ninguna constante —
+    mide la elevación física ya resuelta y la re-expresa desde el nuevo datum. El marcador viaja también al sistema
+    resuelto y al snapshot, para que `RACKEDITAR` no lo pierda;
   - una corrida que **cruza el hueco** lo atraviesa sin gastar demanda en él, pero su longitud FÍSICA sí lo
     incluye: para llegar a su último fondo tiene que salvarlo. Su extremo bajo está en el poste exterior y el alto
     apoya en una línea de módulo real, nunca en un punto intermedio;

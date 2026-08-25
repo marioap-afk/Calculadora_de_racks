@@ -398,6 +398,65 @@ Lo que hace falta decidir:
 Errores 4 (envolvente de cabeceras por linea fisica), 5 (orientacion del larguero ALTO) y 10 (UX y planta de topes).
 Siguen abiertos y sin tocar.
 
+## 4-septies. Decisiones cerradas del dueño: datum de «Alto 1er nivel»
+
+### CERRADO — el datum, y es COMPARTIDO con el Dinamico
+
+**Caracterizacion (lo que se pidio en Q).** La altura del primer nivel la decide un solo sitio:
+`DynamicRackSystemResolver`, que lo usan por igual el DINAMICO y el PUSH BACK —el Push Back compone al dinamico—, y
+que llama a `DynamicLoadBeamGeometry.ResolveLevels`. La retícula sale del catalogo:
+
+```
+gridBase = Y del mate TROQUEL_LARGUERO del poste, vista FRONTAL, resuelta con su peralte
+paso     = SelectiveRackDefaults.TroquelPaso
+```
+
+Medido con el catalogo vigente y el poste por defecto: `gridBase = 0.6053"`, `paso = 2"`, es decir troqueles en
+0.6053, 2.6053, 4.6053… El valor NO sale de ninguna constante y **cada perfil puede tener el suyo**.
+
+**El defecto.** La regla historica trataba el numero como una elevacion ABSOLUTA y la ajustaba al troquel MAS
+CERCANO (`SnapToNearestTroquel`). Consecuencias: «0» no significa nada fisico —da «el troquel mas proximo al cero
+absoluto»— y con un poste cuya retícula empiece mas arriba puede caer POR DEBAJO del piso. El «4"» observado es el
+sintoma de esa arbitrariedad, no una regla de negocio.
+
+**La correccion.** Nueva autoridad NEUTRAL `RackFirstLevelDatum` (Application/Systems/Shared):
+
+- `LowestUsablePunch(gridBase, paso)` — el primer troquel que no queda bajo el piso;
+- `RawElevation(valor, datum, gridBase, paso)` — desde donde se cuenta;
+- `ToLowestPunchOffset(elevacionFisica, gridBase, paso)` — la conversion inversa, para migrar sin mover.
+
+`ResolveLevels` recibe el datum (por omision, el historico: **ningun llamador que no lo pase cambia**). El
+DINAMICO queda incluido porque el dato de usuario es el mismo y lo resuelve el mismo sitio — no son dos offsets
+especiales, es una autoridad.
+
+**Compatibilidad.** `FirstLevelDatum` es aditivo y anulable en el diseño, en el documento (`WhenWritingNull`), en el
+sistema resuelto y en el snapshot. Ausente = lectura historica. Un rack NUEVO nace con el datum del producto. Las
+pruebas comparan GEOMETRIA FISICA, no JSON: un documento historico —Push Back o Dinamico— reabre con el larguero en
+la misma elevacion, y la migracion se hace midiendo la elevacion ya resuelta y re-expresandola, sin restar ninguna
+constante. Y el marcador sobrevive al SNAPSHOT, que es lo que hace que `RACKEDITAR` no mueva un rack nuevo.
+
+### PENDIENTE — la inversion vertical (error 6)
+
+La decision del dueño retira «verticalmente gobierna el ALTO» y la sustituye por «el BAJO fija la elevacion y el
+ALTO se deriva». La implementacion vigente hace lo contrario, y **no en el compositor de la corrida sino en la
+regla de I-32**: `PushBackElevations.Resolve` conserva el troquel del larguero POSTERIOR y ELIGE el de entrada con
+`ChooseLowTroquel(...)`, partiendo de `rearContact.Y − nominalRise`.
+
+Invertirla exige elegir el troquel del ALTO partiendo del bajo, y ahi sus tres desempates **no son simetricos**:
+
+1. error de pendiente — simetrico, se conserva;
+2. posicion teorica continua (`PushBackBedRotation.TheoreticalExitY`) — no existe su equivalente para el alto;
+3. distancia al resultado de la regla PRE-I-32 (`legacyInsertion`) — no tiene equivalente para el alto.
+
+Ademas el cambio afecta a TODO rack Push Back, no solo al compuesto. Se intento y se REVIRTIO al comprobar que
+dejaba dos autoridades verticales en desacuerdo (el compositor anclando abajo y `PushBackElevations` arriba), que es
+la clase de defecto que esta iniciativa lleva varias rondas persiguiendo. Hace falta que el dueño defina los dos
+desempates que faltan; con eso la inversion es mecanica.
+
+### SIGUEN ABIERTOS
+
+Errores 4 (envolvente de cabeceras por linea fisica), 5 (orientacion del larguero ALTO) y 10 (UX y planta de topes).
+
 ## 5. Limitaciones DECLARADAS (no son descuidos)
 
 1. **El separador central exige hueco mayor que cero**; con hueco 0 se avisa y no se coloca.
