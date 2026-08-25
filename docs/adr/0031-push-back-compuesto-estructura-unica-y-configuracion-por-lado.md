@@ -183,6 +183,15 @@ pendiente sobre la retícula de troqueles).
    deduplica y excluye GUIA/PARRILLA/TOPE—; lo que el rack declara es en **cuántos extremos** se materializa. No hay
    que pedirla a mano para el segundo lado, y un rack de un sentido no cambia en nada.
 
+   **«Dos pasillos» viaja en su propio eje** (`BothEndsAreLoadFaces`), derivado y no persistido como `LowEndOnly`.
+   No puede expresarse escribiendo `Side`: la **pertenencia** (qué postes llevan la pieza), la **orientación** y el
+   **extremo** son tres ejes distintos, y las reglas ADAPTATIVAS de cada familia —la del protector lateral, por
+   ejemplo, que sólo lo pone en las dos líneas de orilla— únicamente se aplican cuando el usuario no ha elegido
+   lado. Fijar el lado las apaga: el protector aparecía entonces en **todos** los postes y por duplicado.
+
+   Consecuencia: dos pasillos significa que **cada cara de carga recibe el conjunto que tendría un Push Back normal**,
+   no que toda línea transversal reciba protectores.
+
    El tope posterior es otra cosa: vive en el extremo ALTO y su autoridad es **por lado**. Un lado nuevo nace con el
    default del PRODUCTO, nunca con una copia de lo que el usuario ya hubiera personalizado en el otro.
 

@@ -60,6 +60,39 @@ namespace RackCad.Application.Systems.Selective
             }
 
             var lowEndOnly = selection.LowEndOnly;
+
+            // I-42: un sistema con cara de carga en los DOS extremos (un Push Back compuesto) materializa cada
+            // orientacion elegida en LOS DOS: son dos pasillos, y lo que protege a uno no protege al otro. La
+            // PERTENENCIA —que postes llevan la pieza— no se toca: sigue siendo la del usuario o la adaptativa.
+            if (selection.BothEndsAreLoadFaces)
+            {
+                switch (side)
+                {
+                    case SafetySide.Left:
+                        return new[]
+                        {
+                            new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                            new SafetyEndCopy(atHighEnd: true, mirrored: false),
+                        };
+
+                    case SafetySide.Right:
+                        return new[]
+                        {
+                            new SafetyEndCopy(atHighEnd: false, mirrored: true),
+                            new SafetyEndCopy(atHighEnd: true, mirrored: true),
+                        };
+
+                    default:   // Both
+                        return new[]
+                        {
+                            new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                            new SafetyEndCopy(atHighEnd: false, mirrored: true),
+                            new SafetyEndCopy(atHighEnd: true, mirrored: false),
+                            new SafetyEndCopy(atHighEnd: true, mirrored: true),
+                        };
+                }
+            }
+
             switch (side)
             {
                 case SafetySide.Left:

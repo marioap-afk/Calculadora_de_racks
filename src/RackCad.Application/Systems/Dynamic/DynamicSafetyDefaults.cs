@@ -122,23 +122,49 @@ namespace RackCad.Application.Systems.Dynamic
             // espejada se queda delante en vez de desaparecer.
             var atFarEnd = !selection.LowEndOnly;
 
+            // I-42 — un Push Back COMPUESTO tiene cara de carga en los DOS extremos: son dos pasillos, y cada uno
+            // necesita su par de protectores. La PERTENENCIA no cambia —siguen siendo las dos lineas de orilla, y
+            // ningun poste interior—: lo que se duplica es la CARA, no el numero de postes. Convertir «dos pasillos»
+            // en «protector en cada poste» es exactamente el defecto que el dueño vio.
+            var bothFaces = selection.BothEndsAreLoadFaces;
+
             if (postCount <= 1)
             {
-                return new[]
-                {
-                    new SafetyEndCopy(atHighEnd: false, mirrored: false),
-                    new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true),
-                };
+                return bothFaces
+                    ? new[]
+                    {
+                        new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                        new SafetyEndCopy(atHighEnd: false, mirrored: true),
+                        new SafetyEndCopy(atHighEnd: true, mirrored: false),
+                        new SafetyEndCopy(atHighEnd: true, mirrored: true),
+                    }
+                    : new[]
+                    {
+                        new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                        new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true),
+                    };
             }
 
             if (postIndex == 0)
             {
-                return new[] { new SafetyEndCopy(atHighEnd: false, mirrored: false) };
+                return bothFaces
+                    ? new[]
+                    {
+                        new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                        new SafetyEndCopy(atHighEnd: true, mirrored: false),
+                    }
+                    : new[] { new SafetyEndCopy(atHighEnd: false, mirrored: false) };
             }
 
             if (postIndex == postCount - 1)
             {
-                return new[] { new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true) };
+                return bothFaces
+                    ? new[]
+                    {
+                        new SafetyEndCopy(atHighEnd: false, mirrored: true),
+                        new SafetyEndCopy(atHighEnd: true, mirrored: true),
+                    }
+                    : new[] { new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true) };
             }
 
             return new SafetyEndCopy[0];

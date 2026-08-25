@@ -123,18 +123,15 @@ namespace RackCad.Application.Systems.PushBack
                 return;
             }
 
-            switch (aisles)
-            {
-                case PushBackSafetyAisles.Both:
-                    // Los DOS extremos son pasillos: la pieza se materializa en ambos, cada una con su orientacion.
-                    selection.Side = SafetySide.Both;
-                    selection.LowEndOnly = false;
-                    return;
-
-                default:
-                    RestrictToLowEnd(selection);
-                    return;
-            }
+            // La restriccion de extremo bajo se aplica SIEMPRE: es la regla de Push Back y es la que conserva la
+            // pertenencia y la orientacion de cada familia. Lo unico que añade un rack compuesto es que su extremo
+            // lejano TAMBIEN es un pasillo, y eso viaja en su propio eje.
+            //
+            // NO se toca Side. Escribir el lado para decir «dos pasillos» apagaba las reglas adaptativas —que solo
+            // valen cuando el usuario no ha elegido lado— y el protector lateral acababa en TODOS los postes y por
+            // duplicado. Pertenencia, orientacion y extremo son tres ejes y ninguno puede hablar por otro.
+            RestrictToLowEnd(selection);
+            selection.BothEndsAreLoadFaces = aisles == PushBackSafetyAisles.Both;
         }
 
         /// <summary>

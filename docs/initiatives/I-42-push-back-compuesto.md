@@ -314,6 +314,90 @@ Tres controles se saltaban las reglas que la ronda acababa de establecer: «+ fr
 lado activo (la retícula es del RACK), y «+ nivel» / «- nivel» y «En blanco» no seguian la seleccion de edicion.
 Corregidos y con prueba.
 
+## 4-sexies. Tercera validacion del dueño: RECHAZADA (candidato `d6e6372`)
+
+El dueño reporto diez puntos. Dos se corrigieron con causa raiz identificada, tres NO son reproducibles desde el
+modelo ni desde la ventana (y quedan documentados con lo que se midio), y dos exigen una decision del dueño antes de
+tocar nada. Los tres restantes no se alcanzaron en esta corrida.
+
+### CORREGIDOS
+
+**Errores 2 y 3 — seguridad duplicada y protectores en todos los postes. MISMA causa raiz.**
+
+La ronda anterior expreso «dos pasillos» escribiendo `Side = Both` en cada seleccion de seguridad. Eso APAGA las
+reglas ADAPTATIVAS de cada familia, que solo se aplican cuando el usuario NO ha elegido lado
+(`DynamicLateralGuardPlan.SideAt` y `CopiesAt` empiezan comprobando `Side != None || PostSides.Any()`). El protector
+lateral, que legacy pone SOLO en las dos lineas de orilla, pasaba a colocarse en TODAS —y con dos copias— porque
+`SideForPost` cae en `Side` para todo poste sin entrada propia.
+
+Corregido donde estaba el error de modelado: **pertenencia, orientacion y extremo son tres ejes y ninguno puede
+hablar por otro**. «Dos caras de carga» viaja ahora en su propio eje, `BothEndsAreLoadFaces` —derivado y no
+persistido, como `LowEndOnly`—, y `Side` no se toca. La pertenencia vuelve a ser la del usuario o la adaptativa.
+
+Pruebas: los protectores caen EXACTAMENTE en las dos lineas de orilla y en ninguna interior (por coordenada Y, no
+por conteo); ninguna pieza de seguridad se materializa dos veces en el mismo sitio con la misma identidad y
+orientacion, en las cuatro topologias; y el BOM del protector coincide con lo materializado.
+
+### NO REPRODUCIBLES — se midio y no se encontro el defecto
+
+**Error 1 — misma configuracion A/B, distinta altura en el lateral.** Con A y B identicos (1, 2, 3 y 4 niveles), las
+elevaciones de cama de los dos lados son IGUALES hasta la ultima milesima, en el lateral general y en los cortes. Con
+A=3/B=2 y A=4/B=2, el lateral y el frontal de CADA lado coinciden en numero de niveles y en separaciones. No se
+encontro ninguna divergencia entre builders. Queda una bateria vinculante que la detectaria si apareciera.
+
+**Error 8 — «Frente seleccionado» muestra los defaults de A.** Con A y B deliberadamente distintos en los cinco
+campos (posiciones, niveles, fondo, fondo inicial, alto del primer nivel), el panel muestra los del lado elegido,
+campo por campo, y volver al otro no deja valores rancios. Queda prueba de ventana campo por campo.
+
+**Error 9 — cambiar un lado hace crecer el otro.** Subir NIVELES en A cambia solo la altura de A (120 → 264, B en
+120); subir su FONDO cambia solo su propuesta, su estructura efectiva y su longitud (4/204 → 8/396, B en 4/204); un
+ajuste manual en A no toca B. Y al reves. Queda prueba vinculante de las cuatro magnitudes.
+
+Si el dueño puede indicar la configuracion y los pasos exactos con los que los vio, se reproducen y se corrigen.
+
+### ESCALADOS — decisiones que no me corresponden
+
+**Error 6 — la corrida «baja» el larguero.** REPRODUCIDO y medido. Con «Alto 1er nivel» = 10 y dos niveles:
+
+```
+encontradas   L1  bajo = 18.48   alto = 31.42
+corrida A->B  L1  bajo =  4.48   alto = 31.42
+```
+
+El extremo ALTO conserva exactamente su elevacion —la autoridad vertical sigue siendo el alto, como manda el
+contrato vigente—. El BAJO cae 14" porque la cama corrida es el doble de larga y la MISMA pendiente sobre el doble
+de recorrido baja el doble. No hay ningun offset añadido: es la consecuencia geometrica de la pendiente.
+
+Decidir que el extremo BAJO conserve la elevacion configurada obligaria a subir el ALTO (a ~44" en el ejemplo) y
+CONTRADICE el contrato aceptado «en una corrida gobierna verticalmente el lado ALTO» (ADR-0031 §9, I-32). Es una
+decision fisica nueva y se escala en vez de elegirla por mi cuenta.
+
+**Error 7 — «Alto 1er nivel» y el cero real.** Hoy el valor se AJUSTA AL TROQUEL MAS CERCANO a esa altura absoluta:
+
+```
+troquelGridBase = Y del punto de conexion larguero-poste (PostBeamPoint, FRONTAL)
+exit            = gridBase + round((firstLevelHeight - gridBase) / paso) * paso
+```
+
+De modo que `0` no significa «el troquel utilizable mas bajo» sino «el troquel mas cercano al cero absoluto», que
+puede caer por debajo. Corregirlo a la semantica que el dueño pide —offset sobre el troquel utilizable mas bajo—
+cambia el significado de TODOS los valores almacenados: un documento con 4 se reabriria 4" mas arriba.
+
+La seccion I del contrato pide detenerse si no hay forma inequivoca de distinguir documento legacy de documento
+nuevo sin una decision de esquema. **No la hay**: ni `PushBackDesignDocument` ni `DynamicRackSystemDocument` llevan
+version ni marcador de datum. Ademas la autoridad es COMPARTIDA con Selectivo y Dinamico
+(`DynamicLoadBeamGeometry.ResolveLevels`), asi que el cambio no es de Push Back.
+
+Lo que hace falta decidir:
+1. si el datum nuevo es exactamente `troquelGridBase` o el primer troquel por encima de la placa;
+2. si el cambio aplica a los tres sistemas o solo a Push Back;
+3. el marcador de esquema aditivo (`FirstLevelDatum`, ausente = legacy) que permita reabrir lo viejo sin moverlo.
+
+### NO ALCANZADOS en esta corrida
+
+Errores 4 (envolvente de cabeceras por linea fisica), 5 (orientacion del larguero ALTO) y 10 (UX y planta de topes).
+Siguen abiertos y sin tocar.
+
 ## 5. Limitaciones DECLARADAS (no son descuidos)
 
 1. **El separador central exige hueco mayor que cero**; con hueco 0 se avisa y no se coloca.

@@ -156,6 +156,23 @@ namespace RackCad.Domain.Systems.Selective
         public bool LowEndOnly { get; set; }
 
         /// <summary>
+        /// I-42 — el sistema tiene cara de carga en los DOS extremos longitudinales (un Push Back compuesto son dos
+        /// Push Back opuestos). False es el comportamiento historico de todos los sistemas.
+        ///
+        /// <para>
+        /// Es un eje PROPIO, y tiene que serlo. Expresar «dos pasillos» escribiendo <see cref="Side"/> destruiria la
+        /// PERTENENCIA: las reglas adaptativas —la del protector lateral, por ejemplo— solo se aplican cuando el
+        /// usuario no ha elegido lado, asi que fijar el lado las apaga y la pieza aparece en TODOS los postes, dos
+        /// veces. Pertenencia, orientacion y extremo son tres cosas distintas y ninguna puede usarse para decir otra.
+        /// </para>
+        /// <para>
+        /// Como <see cref="LowEndOnly"/>, es DERIVADO y no se persiste: la autoridad de Push Back lo vuelve a imponer
+        /// en cada limite que posee, asi que ningun documento puede traerlo rancio y ningun DTO cambia.
+        /// </para>
+        /// </summary>
+        public bool BothEndsAreLoadFaces { get; set; }
+
+        /// <summary>
         /// PB-002 (I-32) — the DESVIADOR off-cells of this selection are keyed by <b>POST</b>, not by front.
         ///
         /// A rack of N fronts has N+1 posts and the desviador grid has one column per POST, so a post index cannot be
@@ -275,6 +292,7 @@ namespace RackCad.Domain.Systems.Selective
                 Quantity = Quantity,
                 Side = Side,
                 LowEndOnly = LowEndOnly,
+                BothEndsAreLoadFaces = BothEndsAreLoadFaces,
                 DesviadorCellsAreByPost = DesviadorCellsAreByPost,
                 Tope = Tope.DeepCopy(),
                 Desviador = Desviador.DeepCopy(),

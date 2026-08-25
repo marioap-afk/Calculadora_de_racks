@@ -874,6 +874,93 @@ namespace RackCad.UI.Tests
             Assert.True(ok);
         }
 
+        /// <summary>
+        /// PRUEBA VINCULANTE (J). «Frente seleccionado» muestra los datos del lado ELEGIDO, campo por campo. El
+        /// fixture pone A y B deliberadamente distintos en TODOS los valores, asi que un solo campo que se lea del
+        /// lado equivocado falla.
+        /// </summary>
+        [Fact]
+        public void TheSelectedFrontPanel_ShowsTheChosenSide_FieldByField()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+
+                // A y B distintos en los cinco campos del frente.
+                Write(w, 0, positions: 2, levels: 3, depth: 5, start: 1, first: 8);
+                Write(w, 1, positions: 3, levels: 2, depth: 7, start: 1, first: 12);
+
+                // Con A elegido, el panel es el de A...
+                Combo(w, "SideSelectorBox").SelectedIndex = 0;
+                if (!Shows(w, positions: 2, levels: 3, depth: 5, first: 8)) return false;
+
+                // ...y con B elegido, el de B. Ni un campo se queda con el valor del otro.
+                Combo(w, "SideSelectorBox").SelectedIndex = 1;
+                if (!Shows(w, positions: 3, levels: 2, depth: 7, first: 12)) return false;
+
+                // Y volver a A lo devuelve intacto: no hay valores rancios de la visita anterior.
+                Combo(w, "SideSelectorBox").SelectedIndex = 0;
+                return Shows(w, positions: 2, levels: 3, depth: 5, first: 8);
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// Y el ESTADO recibe lo que el panel dice: editar con B elegido escribe en B, y el lado A no se entera. Es
+        /// la otra mitad del contrato — leer de un lado y escribir en otro es lo que corrompe los datos.
+        /// </summary>
+        [Fact]
+        public void EditingWithSideBSelected_WritesOnlySideB()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                Write(w, 0, positions: 2, levels: 3, depth: 5, start: 1, first: 8);
+                Write(w, 1, positions: 3, levels: 2, depth: 7, start: 1, first: 12);
+
+                var state = w.CompositeState;
+                var a = state.SideA.Structure.Fronts[0];
+                var b = state.SideB.Structure.Fronts[0];
+
+                return a.PalletCount == 2 && a.LoadLevels == 3 && a.PalletsDeep == 5
+                       && Math.Abs(a.FirstLevelHeight - 8.0) < 1e-6
+                       && b.PalletCount == 3 && b.LoadLevels == 2 && b.PalletsDeep == 7
+                       && Math.Abs(b.FirstLevelHeight - 12.0) < 1e-6;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>Escribe los cinco campos del frente en el lado indicado y los aplica a todos sus frentes.</summary>
+        private static void Write(
+            RackPushBackSystemWindow w, int sideIndex, int positions, int levels, int depth, int start, double first)
+        {
+            Combo(w, "SideSelectorBox").SelectedIndex = sideIndex;
+            Set(w, "PositionsBox", positions);
+            Set(w, "LevelsBox", levels);
+            Set(w, "FondosBox", depth);
+            Set(w, "DepthStartBox", start);
+            Set(w, "FirstLevelHeightBox", first);
+            Click(Btn(w, "ApplyAllButton"));
+        }
+
+        private static void Set(RackPushBackSystemWindow w, string name, double value)
+        {
+            var box = Field(w, name);
+            box.SetNumber(value);
+            LoseFocus(box);
+        }
+
+        /// <summary>Lo que el panel MUESTRA ahora mismo, campo por campo.</summary>
+        private static bool Shows(
+            RackPushBackSystemWindow w, int positions, int levels, int depth, double first)
+            => Field(w, "PositionsBox").Value == positions
+               && Field(w, "LevelsBox").Value == levels
+               && Field(w, "FondosBox").Value == depth
+               && Field(w, "FirstLevelHeightBox").Value.HasValue
+               && Math.Abs(Field(w, "FirstLevelHeightBox").Value.Value - first) < 1e-6;
+
         /// <summary>Con el compuesto APAGADO, ningun control exclusivo de A/B ocupa la pantalla.</summary>
         [Fact]
         public void WithTheCompositeOff_TheSideOnlyControls_AreHidden()
