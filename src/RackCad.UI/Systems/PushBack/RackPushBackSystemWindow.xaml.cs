@@ -981,10 +981,20 @@ namespace RackCad.UI.Systems.PushBack
             var applied = false;
             // «En blanco» (I-33) es del frente de UN lado; con «Ambos» se aplica a los dos, que es lo que el usuario
             // acaba de pedir al elegir esa seleccion.
-            MutateStructure(() => ForEachEditedSide(side => applied = side.SetActive(index, isActive)));
+            //
+            // I-42 (ronda post-82e918b): pasa por el estado COMPUESTO porque la guarda «al menos un frente activo»
+            // es del RACK, no de cada lado. En un rack compuesto el lado B puede quedarse entero en blanco —es la
+            // capacidad declarada y todavia sin usar— mientras el lado A lo sostenga; solo quien conoce los dos
+            // lados puede conceder esa excepcion. Y como la presencia por lado se DERIVA de esta misma casilla,
+            // esta es la unica autoridad visible para el caso.
+            MutateStructure(() => ForEachEditedSide(side =>
+                applied |= composite.SetSlotPresent(
+                    ReferenceEquals(side, composite.SideB) ? PushBackSide.B : PushBackSide.A, index, isActive)));
             if (!applied)
             {
-                SetStatus("Al menos un frente debe permanecer activo.", true);
+                SetStatus(
+                    "Al menos un frente del rack debe permanecer activo.",
+                    true);
                 RenderPushBackMatrix();
                 return;
             }

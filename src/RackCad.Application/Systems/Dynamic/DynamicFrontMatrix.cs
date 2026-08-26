@@ -178,7 +178,20 @@ namespace RackCad.Application.Systems.Dynamic
         /// The result is always a valid, non-empty selection.
         /// </para>
         /// </summary>
-        public bool SetActive(int index, bool isActive)
+        public bool SetActive(int index, bool isActive) => SetActive(index, isActive, allowAllBlank: false);
+
+        /// <summary>
+        /// La misma operacion con la excepcion de I-42: <paramref name="allowAllBlank"/> permite dejar esta matriz
+        /// ENTERA en blanco.
+        ///
+        /// <para>
+        /// La guarda «al menos un frente activo» protege al RACK de quedarse vacio, y en un rack de un solo sentido
+        /// esa matriz ES el rack. En uno COMPUESTO no: el lado B puede quedarse sin ningun frente —es la capacidad
+        /// declarada y todavia sin usar— mientras el lado A sostiene el rack. Quien conoce a los dos lados es el
+        /// estado compuesto, y es el unico que pasa la excepcion.
+        /// </para>
+        /// </summary>
+        public bool SetActive(int index, bool isActive, bool allowAllBlank)
         {
             if (index < 0 || index >= fronts.Count)
             {
@@ -187,7 +200,8 @@ namespace RackCad.Application.Systems.Dynamic
 
             // Refusing must change NOTHING — not even the selection — so the editor can simply re-render to undo the
             // click that was rejected.
-            if (!isActive && !fronts.Where((_, position) => position != index).Any(front => front.IsActive))
+            if (!isActive && !allowAllBlank
+                && !fronts.Where((_, position) => position != index).Any(front => front.IsActive))
             {
                 return false;
             }

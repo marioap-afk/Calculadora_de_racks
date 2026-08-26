@@ -144,16 +144,13 @@
                         </StackPanel>
                     </Grid>
 
-                    <!-- I-42 (ronda Owner): la retícula transversal es del RACK, asi que «Frentes» de arriba crece y
-                         decrece en los DOS lados a la vez. Lo que expresa la asimetria A=3 / B=4 es la PRESENCIA de
-                         cada ranura en cada lado, y para eso hace falta poder decirlo: sin este control el usuario no
-                         tenia ninguna forma de declararla, y crecer por un lado dejaba el otro atras en silencio. -->
-                    <CheckBox x:Name="SlotPresentCheck" Content="Frente presente en este lado" Margin="0,8,0,0"
-                              Foreground="{DynamicResource ShellTextPrimaryBrush}"
-                              Checked="SlotPresent_Changed" Unchecked="SlotPresent_Changed"
-                              ToolTipService.ShowOnDisabled="True"
-                              ToolTip="Desactívalo cuando este frente físico sólo existe en el lado opuesto. La retícula del rack se conserva para que A y B puedan tener distinta cantidad de frentes, y la configuración del frente retirado queda guardada por si vuelve." />
-                    <TextBlock x:Name="SlotPresentText" Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />
+                    <!-- I-42 (ronda post-82e918b): aqui vivia «Frente presente en este lado», y competia con «En
+                         blanco» por la MISMA decision — uno quitaba cabeceras donde no debia y el otro no. Ahora la
+                         autoridad visible es una sola: la casilla «En blanco» de la cabecera de cada columna de la
+                         matriz, que ya existia (I-33) y funciona igual en un rack de un sentido y en uno compuesto.
+                         La presencia por lado se DERIVA de ella. -->
+                    <TextBlock x:Name="SlotPresentText" Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap"
+                               Margin="0,8,0,0" />
 
                     <TextBlock Text="Topolog&#237;a de la celda" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
                     <Grid>

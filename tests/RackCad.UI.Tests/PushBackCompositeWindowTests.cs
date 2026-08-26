@@ -35,6 +35,29 @@ namespace RackCad.UI.Tests
 
         private static StackPanel Section(RackPushBackSystemWindow w) => (StackPanel)w.FindName("CompositeSection");
 
+        /// <summary>
+        /// La casilla «En blanco» de la columna <paramref name="front"/> de la matriz: desde I-42 (ronda
+        /// post-82e918b) es la UNICA autoridad visible para retirar un frente de un lado. Actua sobre el lado que
+        /// se este editando, asi que el selector de lado decide a quien afecta.
+        /// </summary>
+        private static CheckBox Blank(RackPushBackSystemWindow w, int front)
+        {
+            var boxes = EditorWindowTestSupport.FindAll<CheckBox>(w)
+                .Where(box => box.Content as string == "En blanco")
+                .ToList();
+            return front >= 0 && front < boxes.Count ? boxes[front] : null;
+        }
+
+        /// <summary>Declara o retira un frente en el lado que se este editando, con el control real.</summary>
+        private static void SetBlank(RackPushBackSystemWindow w, int front, bool blank)
+        {
+            var box = Blank(w, front);
+            if (box != null)
+            {
+                box.IsChecked = blank;
+            }
+        }
+
         [Fact]
         public void ANewRack_OpensAsSingleSided_WithTheCompositeSectionCollapsed()
         {
@@ -405,9 +428,12 @@ namespace RackCad.UI.Tests
         /// </summary>
         private static void DeclareSideBOnEveryFront(RackPushBackSystemWindow w, int fronts)
         {
-            for (var front = 0; front < Math.Max(fronts, w.CompositeState.SlotCount); front++)
+            // Se escribe la intencion DIRECTAMENTE sobre la matriz del lado B: pasar por el control movería la celda
+            // seleccionada, y para un caso cuyo asunto no es la presencia eso cambiaria lo que se esta midiendo.
+            var matrix = w.CompositeState.Of(PushBackSide.B).Structure;
+            for (var front = 0; front < Math.Min(Math.Max(fronts, w.CompositeState.SlotCount), matrix.Count); front++)
             {
-                w.CompositeState.SetSlotPresent(PushBackSide.B, front, true);
+                matrix.Fronts[front].IsActive = true;
             }
 
             // El modelo cambio por fuera de la ventana, asi que hay que pedirle que recalcule: se hace con el mismo
@@ -601,9 +627,9 @@ namespace RackCad.UI.Tests
                     if (Combo(w, "SelectedFrontBox").SelectedIndex != front) return false;
                     if (w.CompositeState.Active.Structure.SelectedFrontIndex != front) return false;
 
-                    var box = Check(w, "SlotPresentCheck");
-                    if (!box.IsEnabled) return false;
-                    box.IsChecked = true;
+                    var box = Blank(w, front);
+                    if (box == null || !box.IsEnabled) return false;
+                    box.IsChecked = false;   // «En blanco» DESMARCADO = el frente existe en este lado
 
                     // Se declaro ESE frente, y solo hasta ese: los siguientes siguen sin lado B.
                     for (var other = 0; other < 4; other++)
@@ -631,13 +657,13 @@ namespace RackCad.UI.Tests
                 Combo(w, "SideSelectorBox").SelectedIndex = 1;
 
                 Combo(w, "SelectedFrontBox").SelectedIndex = 1;
-                Check(w, "SlotPresentCheck").IsChecked = false;
+                SetBlank(w, 1, true);
                 var removed = !w.CompositeState.IsSlotPresent(PushBackSide.B, 1)
                               && w.CompositeState.IsSlotPresent(PushBackSide.B, 0)
                               && w.CompositeState.IsSlotPresent(PushBackSide.B, 2)
                               && w.CompositeState.IsSlotPresent(PushBackSide.B, 3);
 
-                Check(w, "SlotPresentCheck").IsChecked = true;
+                SetBlank(w, 1, false);
                 return removed
                        && w.CompositeState.IsSlotPresent(PushBackSide.B, 1)
                        && w.LastComputation.IsValid;
@@ -916,15 +942,19 @@ namespace RackCad.UI.Tests
 
         // ================= PRESENCIA de la ranura ===============================================================
 
-        /// <summary>A = 3 y B = 4 se declara con la casilla de presencia, sobre UNA sola retícula.</summary>
+        /// <summary>
+        /// A = 3 y B = 4 se declara con «En blanco» sobre UNA sola retícula: el cuarto frente queda en blanco en el
+        /// lado A y sigue existiendo en el B. Es la unica autoridad visible desde la ronda post-82e918b.
+        /// </summary>
         [Fact]
-        public void ThePresenceCheck_DeclaresAnAsymmetricRack()
+        public void TheBlankCheck_DeclaresAnAsymmetricRack()
         {
             var ok = StaTestRunner.Run(() =>
             {
                 var w = MultiFront(fronts: 4, levels: 2);
+                Combo(w, "SideSelectorBox").SelectedIndex = 0;   // el lado A es el que pierde el frente
                 Combo(w, "SelectedFrontBox").SelectedIndex = 3;
-                Check(w, "SlotPresentCheck").IsChecked = false;
+                SetBlank(w, 3, true);
 
                 var state = w.CompositeState;
                 if (state.IsSlotPresent(PushBackSide.A, 3) || !state.IsSlotPresent(PushBackSide.B, 3))
@@ -942,18 +972,30 @@ namespace RackCad.UI.Tests
             Assert.True(ok);
         }
 
-        /// <summary>Retirar la ultima ranura de un lado se REHUSA y se explica; la casilla no miente.</summary>
+        /// <summary>
+        /// Un lado puede quedarse ENTERO en blanco mientras el otro sostenga el rack —es la capacidad declarada y
+        /// sin usar—, pero dejar el rack sin ningun frente se REHUSA y la casilla vuelve a su estado real.
+        /// </summary>
         [Fact]
-        public void ThePresenceCheck_RefusesToLeaveASideWithoutSlots()
+        public void TheBlankCheck_RefusesToLeaveTheWholeRackBlank()
         {
             var ok = StaTestRunner.Run(() =>
             {
                 var w = MultiFront(fronts: 1, levels: 2);
-                Combo(w, "SelectedFrontBox").SelectedIndex = 0;
-                Check(w, "SlotPresentCheck").IsChecked = false;
 
-                return w.CompositeState.IsSlotPresent(PushBackSide.A, 0)
-                       && Check(w, "SlotPresentCheck").IsChecked == true;
+                // El lado B entero en blanco: legal, el lado A sostiene el rack.
+                Combo(w, "SideSelectorBox").SelectedIndex = 1;
+                SetBlank(w, 0, true);
+                var sideBBlank = !w.CompositeState.IsSlotPresent(PushBackSide.B, 0)
+                                 && w.CompositeState.IsSlotPresent(PushBackSide.A, 0);
+
+                // Y ahora tambien el lado A: eso dejaria el rack vacio y se rehusa.
+                Combo(w, "SideSelectorBox").SelectedIndex = 0;
+                SetBlank(w, 0, true);
+
+                return sideBBlank
+                       && w.CompositeState.IsSlotPresent(PushBackSide.A, 0)
+                       && Blank(w, 0).IsChecked != true;
             });
 
             Assert.True(ok);
@@ -1158,7 +1200,7 @@ namespace RackCad.UI.Tests
             var ok = StaTestRunner.Run(() =>
             {
                 var w = MultiFront(fronts: 2, levels: 2);
-                var presence = Check(w, "SlotPresentCheck");
+                var presence = Field(w, "StructureOverrideBox");
                 var structure = Field(w, "StructureOverrideBox");
 
                 if (!presence.IsEnabled || !structure.IsEnabled) return false;
@@ -1346,19 +1388,22 @@ namespace RackCad.UI.Tests
 
         /// <summary>La casilla de presencia se llama como el dueño la entiende y explica para que sirve.</summary>
         [Fact]
-        public void ThePresenceCheck_IsNamedInProductLanguage()
+        public void TheBlankCheck_IsNamedInProductLanguage()
         {
             var ok = StaTestRunner.Run(() =>
             {
                 var w = MultiFront(fronts: 2, levels: 2);
-                var box = Check(w, "SlotPresentCheck");
+                var box = Blank(w, 0);
                 var label = box.Content as string;
                 var tip = box.ToolTip as string;
 
-                return label == "Frente presente en este lado"
+                // Una sola autoridad visible, y en lenguaje de producto: «En blanco». El control que competia con
+                // ella —«Frente presente en este lado»— ya no existe.
+                return label == "En blanco"
                        && tip != null
-                       && tip.Contains("lado opuesto")
-                       && !label.Contains("ranura");
+                       && tip.Contains("claro")
+                       && !label.Contains("ranura")
+                       && w.FindName("SlotPresentCheck") == null;
             });
 
             Assert.True(ok);
@@ -1431,7 +1476,7 @@ namespace RackCad.UI.Tests
 
                 // Asimetria: la cuarta ranura solo existe en B.
                 Combo(source, "SelectedFrontBox").SelectedIndex = 3;
-                Check(source, "SlotPresentCheck").IsChecked = false;
+                SetBlank(source, source.CompositeState.SlotCount - 1, true);
 
                 // Topes: solo A.
                 Check(source, "TopeSideACheck").IsChecked = true;

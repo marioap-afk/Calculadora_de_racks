@@ -716,6 +716,90 @@ los CONTROLES REALES: declarar B frente a frente, quitarlo y reponerlo en uno in
 mueve el cursor, y el ritmo de la barra. Las fixtures que quieren el rack compuesto entero ahora lo declaran
 frente a frente, que es el contrato nuevo.
 
+## 4-decies. Validacion del dueño post-82e918b: RECHAZADA — los ocho hallazgos
+
+Cada uno se REPRODUJO antes de tocar nada.
+
+### 1. Los topes en PLANTA solo salian en el primer frente
+
+En PLANTA la X corre con la profundidad y la Y con la retícula transversal, asi que un frente se identifica por su
+**Y**. Se buscaba «el frente cuyo `EndX` esta mas cerca» y, como TODOS los frentes comparten profundidad, eso
+devolvia siempre el mismo. En un rack compuesto —donde cada cama se dibuja sobre una copia con una sola ranura
+activa— caia en un frente EN BLANCO, que no tiene niveles efectivos, y no emitia tope.
+
+Medido con 4 frentes: **1 tope en planta; ahora 4** (y 8 con camas encontradas). De paso, el larguero posterior de
+cada frente recupera SU peralte: antes todos heredaban el del primero.
+
+### 7. Doble larguero en poste reforzado — estaba en el camino LEGACY
+
+No era el compuesto: en un rack de un solo sentido, los cortes interiores dibujaban el larguero de entrada DOS
+veces en el mismo punto, porque dos frentes contiguos que arrancan en la misma posicion lo proyectan uno encima
+del otro. Un corte es una PROYECCION y dibuja cada cosa una vez. La deduplicacion que el compositor ya tenia se
+subio a `PushBackPlanComposer` y ahora la usan los dos caminos con la MISMA clave fisica.
+
+### 3. El desviador — solo en el pasillo por el que se carga
+
+Un desviador guia la tarima AL ENTRAR, asi que vive en el extremo por el que se CARGA; y cual es ese extremo lo
+dicen las CAMAS, no la presencia de un lado.
+
+| topologia | antes | ahora |
+|---|---|---|
+| Solo A | X=0 | X=0 |
+| Encontradas | X=0 (el lado B se quedaba sin el) | X=0 y X=792 |
+| Corrida A→B | X=0 | X=0 |
+| Corrida B→A | **X=0 — el extremo ALTO** | X=792, su extremo bajo |
+
+El pasillo se declara **por LINEA**, asi que un rack compuesto PARCIAL no lo reparte a las lineas de los frentes
+que siguen siendo de un solo sentido.
+
+### 5. Las defensas del otro lado
+
+La defensa de montacargas solo salia en el pasillo de A. El extremo lejano de una linea con segunda cara de carga
+recupera su longitud automatica, asi que el otro pasillo lleva la suya. Sin segunda cara —cualquier rack de un
+sentido— la regla es la de PB-009 y no cambia nada.
+
+### 6. La orientacion de las botas
+
+La copia de la cara LEJANA repetia la mano de la cercana. Los dos pasillos miran en sentidos opuestos: la pieza
+que protege uno esta girada respecto de la que protege el otro. Ahora la copia lejana es la IMAGEN ESPEJO, en
+botas y en protectores.
+
+### 2 y 4. El tope y su autoridad
+
+La regla vertical que el dueño describe —«X troqueles arriba del larguero de salida»— **ya existia y es unica**:
+`PushBackRearTopeBuilder.ElevationY` = rise-and-snap canonico + DOS troqueles. Lo que estaba mal era la
+REFERENCIA: el lateral media desde la elevacion que el resolver compartido dio al nivel, no desde la DERIVADA del
+larguero alto. El tope flotaba sobre un larguero que ya no esta ahi y ademas discrepaba del corte frontal, que si
+consumia la derivada. Otro resto de la inversion vertical.
+
+### 8. «En blanco» es la unica autoridad visible
+
+Convivian dos controles para la MISMA decision: «En blanco» (I-33) y «Frente presente en este lado». Uno quitaba
+cabeceras donde no debia y el otro no, y el segundo solo se comportaba bien con el lado activo en «Ambos».
+
+Ahora la intencion es una: un frente EN BLANCO conserva su claro y su estructura y no lleva ninguna carga en ese
+lado, que es exactamente lo que significa «este frente no tiene lado B». **La presencia por lado se DERIVA de
+ella** y el checkbox duplicado se retiro de la ventana. Tres consecuencias:
+
+- funciona con cualquier lado activo, no solo con «Ambos»;
+- un lado puede quedarse ENTERO en blanco mientras el otro sostenga el rack —es la capacidad declarada y sin
+  usar—, pero dejar el RACK entero en blanco se rehusa: la guarda es del rack, no de cada lado;
+- una ranura en blanco en los DOS lados sigue existiendo como frente en blanco. Antes se saltaba, y eso encogia la
+  retícula transversal y corria todos los frentes siguientes — justo lo que «en blanco» promete no hacer.
+
+### Goldens
+
+Tres pines, con evidencia y acotados: **planta** (el peralte del larguero posterior del frente 1 pasa de 5" a
+3.5", que es el suyo) y los **dos laterales** (los topes bajan 6" hasta su larguero real, de 16.6053/88.6053 a
+10.6053/82.6053 en el frente 0). El frontal posterior y el BOM quedan intactos.
+
+### Pruebas
+
+`PushBackTopePlantaAndDiverterTests` (18) y `PushBackBlankFrontAuthorityTests` (9), mas la migracion de las
+pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de la planta se cuentan POR BANDA
+TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
+pasillos.
+
 ## 4-octies. Auditoria adversarial final (seccion T)
 
 Despues de cerrar 4, 5, 6 y 10 se recorrio el checklist del dueño buscando lo que quedara vivo. **Se encontraron

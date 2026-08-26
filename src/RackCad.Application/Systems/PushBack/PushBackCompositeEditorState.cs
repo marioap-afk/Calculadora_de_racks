@@ -35,8 +35,12 @@ namespace RackCad.Application.Systems.PushBack
     public sealed class PushBackCompositeEditorState
     {
         private readonly List<PushBackTopologyCell> topologies = new List<PushBackTopologyCell>();
-        private readonly List<bool> presentA = new List<bool>();
-        private readonly List<bool> presentB = new List<bool>();
+        /// <summary>
+        /// Si el lado B se declaro alguna vez. Distingue un lado RECIEN CREADO —que nace entero en blanco— de uno
+        /// DORMANTE, que vuelve con lo que el usuario le dejo. No es presencia: la presencia se deriva de «En
+        /// blanco».
+        /// </summary>
+        private bool sideBEverDeclared;
 
         public PushBackCompositeEditorState()
             : this(new PushBackEditorState(), new PushBackEditorState())
@@ -243,11 +247,10 @@ namespace RackCad.Application.Systems.PushBack
         /// </summary>
         private void DeclareSideBCapability()
         {
-            // «Nunca configurado» se reconoce por la lista de PRESENCIA, que solo escribe quien declara una ranura.
-            // El estado del lado B nace con un frente por construccion, asi que contarlos no distingue un lado
-            // recien creado de uno dormante — y confundirlos dejaba la primera ranura presente sin que nadie la
-            // hubiera declarado.
-            var dormant = presentB.Count > 0;
+            // «Nunca configurado» lo dice una marca propia: el estado del lado B nace con un frente por
+            // construccion, asi que contarlos no distingue un lado recien creado de uno dormante.
+            var dormant = sideBEverDeclared;
+            sideBEverDeclared = true;
             if (!dormant)
             {
                 SideB.LoadNew();
@@ -260,9 +263,13 @@ namespace RackCad.Application.Systems.PushBack
                 return;   // vuelve de estar dormante: su presencia es la que el usuario dejo
             }
 
-            for (var slot = 0; slot < SlotCount; slot++)
+            // El lado B nace ENTERO en blanco: la capacidad esta declarada y todavia no la usa ningun frente.
+            // Se escribe directo sobre la matriz porque la guarda de «al menos un frente activo» es del rack, y el
+            // rack lo sostiene el lado A.
+            var matrix = SideB.Structure;
+            for (var slot = 0; slot < matrix.Count; slot++)
             {
-                SetSlotPresent(PushBackSide.B, slot, false);
+                matrix.Fronts[slot].IsActive = false;
             }
         }
 
@@ -295,41 +302,64 @@ namespace RackCad.Application.Systems.PushBack
             }
         }
 
-        /// <summary>Si la ranura existe en el lado. Una ranura ausente no aporta celda, cama, larguero ni tope.</summary>
+        /// <summary>
+        /// Si la ranura existe en el lado. Una ranura ausente no aporta celda, cama, larguero ni tope.
+        ///
+        /// <para>
+        /// I-42 (ronda post-82e918b) — es DERIVADA de «En blanco», que es la unica intencion visible. Un frente en
+        /// blanco (I-33) conserva su claro y su estructura pero no lleva ninguna carga, que es exactamente lo que
+        /// significa «este frente no tiene lado B». Antes existian dos controles para la misma decision —«En
+        /// blanco» y «Frente presente en este lado»— y competian: uno quitaba cabeceras donde no debia y el otro
+        /// no. Ahora hay una sola autoridad y la presencia se lee de ella.
+        /// </para>
+        /// </summary>
         public bool IsSlotPresent(PushBackSide side, int slot)
         {
-            var list = side == PushBackSide.A ? presentA : presentB;
             if (side == PushBackSide.B && !SideBPresent)
             {
                 return false;
             }
 
-            if (slot < 0 || slot >= Of(side).Structure.Count)
-            {
-                return false;
-            }
-
-            return slot >= list.Count || list[slot];
+            var matrix = Of(side).Structure;
+            return slot >= 0 && slot < matrix.Count && matrix.IsActive(slot);
         }
 
         /// <summary>
         /// Declara o retira una ranura de un lado. Es lo que expresa el caso «A=3 y B=4»: la cuarta ranura existe
         /// solo en B. La configuracion de la ranura retirada queda DORMANTE en su lado.
         /// </summary>
-        public void SetSlotPresent(PushBackSide side, int slot, bool present)
+        public bool SetSlotPresent(PushBackSide side, int slot, bool present)
         {
-            if (slot < 0)
+            if (slot < 0 || slot >= Of(side).Structure.Count)
             {
-                return;
+                return false;
             }
 
-            var list = side == PushBackSide.A ? presentA : presentB;
-            while (list.Count <= slot)
+            // Escribe la UNICA intencion: «En blanco». La presencia por lado no tiene almacenamiento propio.
+            // El lado B puede quedarse ENTERO en blanco —capacidad declarada y sin usar— mientras A sostenga el
+            // rack; esa excepcion solo la puede conceder quien conoce los dos lados.
+            return Of(side).SetActive(slot, present, allowAllBlank: OtherSideHasAnyFront(side));
+        }
+
+        /// <summary>Si el OTRO lado sostiene el rack por si solo: entonces este puede quedarse sin frentes.</summary>
+        private bool OtherSideHasAnyFront(PushBackSide side)
+        {
+            var other = side == PushBackSide.A ? PushBackSide.B : PushBackSide.A;
+            if (other == PushBackSide.B && !SideBPresent)
             {
-                list.Add(true);
+                return false;
             }
 
-            list[slot] = present;
+            var matrix = Of(other).Structure;
+            for (var slot = 0; slot < matrix.Count; slot++)
+            {
+                if (matrix.IsActive(slot))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -386,9 +416,6 @@ namespace RackCad.Application.Systems.PushBack
                 SideB.SetFrontCount(count);
             }
 
-            // Una ranura nueva nace PRESENTE en los dos lados; retirarla es una decision explicita.
-            Trim(presentA, count);
-            Trim(presentB, count);
         }
 
         /// <summary>
@@ -419,17 +446,6 @@ namespace RackCad.Application.Systems.PushBack
             for (var slot = beforeB; slot < count; slot++)
             {
                 SetSlotPresent(PushBackSide.B, slot, false);
-            }
-
-            Trim(presentA, count);
-            Trim(presentB, count);
-        }
-
-        private static void Trim(List<bool> list, int count)
-        {
-            while (list.Count > count)
-            {
-                list.RemoveAt(list.Count - 1);
             }
         }
 
@@ -857,7 +873,6 @@ namespace RackCad.Application.Systems.PushBack
             // La PRESENCIA del lado A vuelve del archivo. El diseño DECLARA las ranuras ausentes en vez de borrarlas
             // —borrarlas desplazaria los indices—, asi que aqui hay que volver a leerlas: sin esto, un rack asimetrico
             // «A = 3 y B = 4» se reabria con las cuatro ranuras en los dos lados.
-            presentA.Clear();
             foreach (var slot in composite.AbsentSlotsA)
             {
                 SetSlotPresent(PushBackSide.A, slot, false);
@@ -985,8 +1000,7 @@ namespace RackCad.Application.Systems.PushBack
                     Frente = cell.Frente, Level = cell.Level, Topology = cell.Topology, Direction = cell.Direction,
                     CorridaDepth = cell.CorridaDepth
                 }).ToList(),
-                presentA.ToList(),
-                presentB.ToList());
+                sideBEverDeclared);
 
         /// <summary>Restaura el estado completo desde una copia.</summary>
         public void Restore(PushBackCompositeEditorSnapshot snapshot)
@@ -1016,10 +1030,7 @@ namespace RackCad.Application.Systems.PushBack
                 });
             }
 
-            presentA.Clear();
-            presentA.AddRange(snapshot.PresentA);
-            presentB.Clear();
-            presentB.AddRange(snapshot.PresentB);
+            sideBEverDeclared = snapshot.SideBEverDeclared;
         }
     }
 
@@ -1038,8 +1049,7 @@ namespace RackCad.Application.Systems.PushBack
             PushBackCellTopology defaultTopology,
             PushBackRunDirection defaultDirection,
             IReadOnlyList<PushBackTopologyCell> topologies,
-            IReadOnlyList<bool> presentA,
-            IReadOnlyList<bool> presentB)
+            bool sideBEverDeclared)
         {
             SideA = sideA;
             SideB = sideB;
@@ -1052,8 +1062,7 @@ namespace RackCad.Application.Systems.PushBack
             DefaultTopology = defaultTopology;
             DefaultDirection = defaultDirection;
             Topologies = topologies ?? new List<PushBackTopologyCell>();
-            PresentA = presentA ?? new List<bool>();
-            PresentB = presentB ?? new List<bool>();
+            SideBEverDeclared = sideBEverDeclared;
         }
 
         public PushBackEditorSnapshot SideA { get; }
@@ -1067,7 +1076,7 @@ namespace RackCad.Application.Systems.PushBack
         public PushBackCellTopology DefaultTopology { get; }
         public PushBackRunDirection DefaultDirection { get; }
         public IReadOnlyList<PushBackTopologyCell> Topologies { get; }
-        public IReadOnlyList<bool> PresentA { get; }
-        public IReadOnlyList<bool> PresentB { get; }
+        /// <summary>Si el lado B se declaro alguna vez: distingue un lado recien creado de uno dormante.</summary>
+        public bool SideBEverDeclared { get; }
     }
 }

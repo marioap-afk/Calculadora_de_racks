@@ -224,9 +224,12 @@ namespace RackCad.Application.Systems.PushBack
         /// active front; the parallel Push Back cells are re-synced but never trimmed, so the blank front's rear
         /// peraltes and tope flags stay DORMANT and come back intact when it is reactivated. Returns the verdict.
         /// </summary>
-        public bool SetActive(int index, bool isActive)
+        public bool SetActive(int index, bool isActive) => SetActive(index, isActive, allowAllBlank: false);
+
+        /// <summary>La misma operacion, admitiendo dejar el lado entero en blanco (I-42, solo el rack compuesto).</summary>
+        public bool SetActive(int index, bool isActive, bool allowAllBlank)
         {
-            var applied = structure.SetActive(index, isActive);
+            var applied = structure.SetActive(index, isActive, allowAllBlank);
             if (applied)
             {
                 SyncPushConfig();

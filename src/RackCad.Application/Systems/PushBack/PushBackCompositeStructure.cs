@@ -239,9 +239,17 @@ namespace RackCad.Application.Systems.PushBack
             {
                 var structureA = sideA.HasSlot(slot) ? sideA.SlotStructure(slot) : 0;
                 var structureB = sideB.HasSlot(slot) ? sideB.SlotStructure(slot) : 0;
-                if (structureA <= 0 && structureB <= 0)
+                var blankOnBothSides = structureA <= 0 && structureB <= 0;
+                if (blankOnBothSides)
                 {
-                    continue;
+                    // I-33 (y I-42, ronda post-82e918b): una ranura EN BLANCO en los dos lados sigue existiendo
+                    // fisicamente — conserva su claro y desplaza a las de atras—, asi que NO se salta: se emite como
+                    // frente en blanco. Saltarla encogia la retícula transversal y corria todos los frentes
+                    // siguientes, que es justo lo que «en blanco» promete no hacer.
+                    structureA = Math.Max(PushBackCellDepth.MinimumPalletsDeep, sideA.SlotStructure(slot));
+                    structureB = sideB.IsPresent
+                        ? Math.Max(PushBackCellDepth.MinimumPalletsDeep, sideB.SlotStructure(slot))
+                        : 0;
                 }
 
                 var range = layout.SlotRange(structureA, structureB);
@@ -250,7 +258,8 @@ namespace RackCad.Application.Systems.PushBack
                 var front = new DynamicRackFrontDesign
                 {
                     // Una ranura esta ACTIVA si lo esta en cualquiera de los dos lados: su estructura existe igual.
-                    IsActive = (sideA.Front(slot)?.IsActive ?? false) || (sideB.Front(slot)?.IsActive ?? false),
+                    IsActive = !blankOnBothSides
+                        && ((sideA.Front(slot)?.IsActive ?? false) || (sideB.Front(slot)?.IsActive ?? false)),
                     // La mayor demanda aplicable gobierna la envolvente compartida: calles, ancho y niveles.
                     PalletCount = Math.Max(
                         sideA.Front(slot)?.PalletCount ?? 0,

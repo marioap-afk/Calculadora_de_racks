@@ -270,7 +270,12 @@ namespace RackCad.Application.Systems.PushBack
         /// with the post's real peralte. Owner decision (2026-07-24): the lateral measures from TROQUEL_SEPARADOR, the
         /// frontal from TROQUEL_TOPE — never from TROQUEL_LARGUERO, and never from another view's row.
         /// </summary>
-        private static double PostTroquelGridBase(DynamicRackSystem structure, RackCatalog catalog, string view)
+        /// <summary>
+        /// La retícula de troqueles del POSTE en una vista de elevacion: la base sobre la que el tope se ajusta.
+        /// Publica porque es parte del contrato vertical del tope y las pruebas lo comprueban contra ella, no contra
+        /// una copia — una segunda base seria una segunda autoridad.
+        /// </summary>
+        public static double PostTroquelGridBase(DynamicRackSystem structure, RackCatalog catalog, string view)
         {
             var postId = DynamicFrontGeometry.PostId(structure, catalog);
             var postPeralte = DynamicFrontGeometry.PostPeralte(structure, catalog, postId);

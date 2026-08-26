@@ -402,7 +402,7 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         private void ApplyMixedSideState()
         {
-            if (SlotPresentCheck == null)
+            if (SlotPresentText == null)
             {
                 return;
             }
@@ -456,49 +456,6 @@ namespace RackCad.UI.Systems.PushBack
 
         // ---- I-42: presencia de la ranura en el lado activo ----------------------------------------------------
 
-        /// <summary>
-        /// Declara o retira la ranura SELECCIONADA en el lado activo. Retirarla nunca destruye su configuracion: queda
-        /// dormante y vuelve intacta. Una operacion ilegal —dejar la ranura sin ningun lado, o el lado sin ninguna
-        /// ranura— no se aplica y se explica; la casilla vuelve a su estado real en vez de mentir.
-        /// </summary>
-        private void SlotPresent_Changed(object sender, RoutedEventArgs e)
-        {
-            if (suppressSync || !composite.SideBPresent)
-            {
-                return;
-            }
-
-            var slot = composite.Active.Structure.SelectedFrontIndex;
-            var wanted = SlotPresentCheck.IsChecked == true;
-            if (wanted == composite.IsSlotPresent(composite.ActiveSide, slot))
-            {
-                return;
-            }
-
-            if (!wanted)
-            {
-                var why = composite.WhySlotCannotBeRemoved(composite.ActiveSide, slot);
-                if (why != null)
-                {
-                    SetStatus(why, true);
-                    suppressSync = true;
-                    try
-                    {
-                        SlotPresentCheck.IsChecked = true;
-                    }
-                    finally
-                    {
-                        suppressSync = false;
-                    }
-
-                    return;
-                }
-            }
-
-            composite.SetSlotPresent(composite.ActiveSide, slot, wanted);
-            RequestRecompute();
-        }
-
         // ---- I-42: los topes de los DOS lados --------------------------------------------------------------------
 
         private void ApplyTopes_Click(object sender, RoutedEventArgs e)
@@ -533,7 +490,7 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         private void LoadCompositeCellPanel()
         {
-            if (SlotPresentCheck == null || !composite.SideBPresent)
+            if (SlotPresentText == null || !composite.SideBPresent)
             {
                 return;
             }
@@ -546,15 +503,19 @@ namespace RackCad.UI.Systems.PushBack
             suppressSync = true;
             try
             {
-                SlotPresentCheck.IsChecked = composite.IsSlotPresent(composite.ActiveSide, slot);
+                // La PRESENCIA por lado es derivada: se informa, no se edita aqui. La decision se toma con la
+                // casilla «En blanco» de la cabecera de la columna, que es la unica autoridad visible.
+                var present = composite.IsSlotPresent(composite.ActiveSide, slot);
                 SlotPresentText.Text = "Frente " + (slot + 1) + " · lado "
-                    + (composite.ActiveSide == PushBackSide.A ? "A" : "B") + ".";
+                    + (composite.ActiveSide == PushBackSide.A ? "A" : "B") + ": "
+                    + (present
+                        ? "presente. Marca «En blanco» en su columna para retirarlo de este lado."
+                        : "EN BLANCO. Conserva su claro y su estructura, y no lleva ninguna carga en este lado.");
 
                 // La PRESENCIA y el AJUSTE de estructura son de UN lado por definicion: aplicarlos «a los dos» no
                 // significa nada —la asimetria es justo lo que expresan—, asi que con «Ambos» se deshabilitan y se
                 // dice por que, en vez de escribir en A a escondidas.
                 var perSide = composite.ActiveSelection != PushBackSideSelection.Both;
-                SetPerSideSensitive(SlotPresentCheck, perSide);
                 SetPerSideSensitive(StructureOverrideBox, perSide);
                 SetPerSideSensitive(ApplyStructureButton, perSide);
                 SetPerSideSensitive(RestoreStructureButton, perSide);
