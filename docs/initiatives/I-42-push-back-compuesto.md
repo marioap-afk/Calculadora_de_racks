@@ -698,6 +698,53 @@ C:\Users\alejandra-mendoza\.claude\worktrees\feature-push-back-compuesto\src\Rac
 2. Pulsa **Actualizar** sin tocar nada. El dibujo debe quedar **identico**: mismos largueros, mismas
    camas, mismos topes, mismo BOM.
 
+### 6.1-bis LOS CUATRO ERRORES DE ESTA RONDA — mirar esto ANTES QUE NADA
+
+Son los puntos que este candidato dice haber cerrado. Cada uno se ve en el dibujo, sin abrir el modelo.
+
+**Error 6 — la altura la manda el extremo BAJO.**
+
+3. Pon «Alto 1er nivel» en un valor concreto (por ejemplo 10"). En el corte lateral, el larguero de
+   ENTRADA/SALIDA tiene que quedar a esa altura, ajustado a su troquel — **la misma con cualquier fondo**.
+4. Cambia el FONDO de la celda (4 → 6 → 8 → 10). El larguero de entrada **no se mueve ni una vez**. El que sube
+   es el POSTERIOR, y sube mas cuanto mas larga es la cama.
+5. Cambia la TOPOLOGIA de una celda entre encontradas y corrida. El larguero de entrada **sigue donde estaba**:
+   antes se hundia hasta 14" al pasar a corrida, y eso era el defecto.
+6. La CAMA sigue apoyada en sus dos largueros y la pendiente sigue siendo la de siempre: la celda entera baja,
+   la cama no se reinclina.
+
+**Error 5 — la orientacion del larguero ALTO.**
+
+7. Con camas ENCONTRADAS, los dos largueros posteriores se miran en el centro: la mano de uno es la contraria
+   del otro.
+8. Con una CORRIDA A→B y luego B→A, el larguero alto cambia de extremo **y de mano**. Comparalo con un Push Back
+   de un solo sentido del mismo fondo: tiene que ser la misma pieza, girada.
+9. Frentes de fondos distintos y una ranura presente en un solo lado: ningun larguero alto queda del reves.
+
+**Error 10 — los topes.**
+
+10. En PLANTA, el tope de una CORRIDA aparece **al final del recorrido de la calle**, en la orilla opuesta a su
+    pasillo de carga — no en el centro del rack. Ese era el defecto: se dibujaba en la interfaz.
+11. El tope de la planta y el del corte lateral estan en la MISMA columna. Antes discrepaban.
+12. En el panel de topes, marca A y B, pon la celda en corrida A→B: la casilla de A se deshabilita y **sigue
+    marcada**, y el texto dice que solo B es efectivo y donde va a caer la pieza. Cambia a B→A: se invierte, y
+    **ninguna de las dos marcas se pierde**.
+13. Los cinco alcances (celda, seleccion, nivel, frente, todo) escriben lo que dicen.
+14. El BOM cuenta exactamente los topes que ves dibujados, ni uno mas.
+
+**Error 4 — cabeceras por linea.**
+
+15. Rack de un solo sentido con frentes de fondos **5, 8, 6 y 9**. La linea EXTERIOR del frente de 5 termina
+    donde termina ese frente; la que separa 5 y 8 llega hasta 8; la que separa 6 y 9, hasta 9. Ningun frente
+    lejano alarga una linea.
+16. Rack COMPUESTO con la ranura 1 a fondo 5 y las demas a 8, en los dos lados. La linea exterior de la ranura
+    corta **pierde las cabeceras** de las posiciones que ninguna de sus camas alcanza. Antes llegaban hasta el
+    final.
+17. Una ranura con una celda CORRIDA conserva la profundidad entera: su cama cruza y necesita apoyos en todo el
+    recorrido.
+18. Con separador central, sigue apareciendo donde los dos lados llegan a la interfaz.
+19. El BOM de cabeceras baja exactamente lo que la planta dejo de dibujar.
+
 ### 6.2 LO QUE EL DUEÑO ENCONTRO EN LA SEGUNDA VALIDACION — revisar esto ANTES QUE NADA
 
 3. **Corrida corta: el BAJO fijo, el ALTO movil.** Pon una corrida con menos fondo del disponible. Su extremo de
