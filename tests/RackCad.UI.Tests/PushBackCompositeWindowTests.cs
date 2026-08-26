@@ -587,7 +587,166 @@ namespace RackCad.UI.Tests
                        && b.IsEnabled
                        && a.IsChecked == true
                        && w.CompositeState.RearTopeAt(PushBackSide.A, 0, 0)
-                       && ((string)a.ToolTip).Contains("no puede haber tope");
+                       && ((string)a.ToolTip).Contains("INTENCION GUARDADA");
+            });
+
+            Assert.True(ok);
+        }
+
+        // ================= ERROR 10: intencion, aplicabilidad y DONDE cae la pieza ==============================
+
+        /// <summary>
+        /// La casilla dice INTENCION y el tooltip separa los dos hechos: si hoy es EFECTIVA, y si no, por que. Son
+        /// cosas distintas y confundirlas era la mitad del error 10.
+        /// </summary>
+        [Fact]
+        public void TheTopeTooltips_SeparateIntentFromEffectiveness()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                Combo(w, "CellTopologyBox").SelectedIndex = 2;    // Encontradas
+                Combo(w, "TopologyScopeBox").SelectedIndex = 4;
+                Click(Btn(w, "ApplyTopologyButton"));
+
+                var encontradasA = (string)Check(w, "TopeSideACheck").ToolTip;
+                var encontradasB = (string)Check(w, "TopeSideBCheck").ToolTip;
+
+                Combo(w, "CellTopologyBox").SelectedIndex = 3;    // Corrida
+                Combo(w, "RunDirectionBox").SelectedIndex = 0;    // A -> B
+                Click(Btn(w, "ApplyTopologyButton"));
+
+                var corridaA = (string)Check(w, "TopeSideACheck").ToolTip;
+                var corridaB = (string)Check(w, "TopeSideBCheck").ToolTip;
+
+                return encontradasA.Contains("EFECTIVO")
+                       && encontradasB.Contains("EFECTIVO")
+                       && corridaA.Contains("INTENCION GUARDADA")
+                       && corridaA.Contains("corrida")
+                       && corridaB.Contains("EFECTIVO");
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// El texto contextual permite PREDECIR la planta sin conocer la implementacion: dice que topologia tiene la
+        /// celda, que lado es efectivo y DONDE cae la pieza. Con camas encontradas topan en el centro; una corrida
+        /// topa al final de su recorrido, en la orilla opuesta a su pasillo de carga.
+        /// </summary>
+        [Fact]
+        public void TheTopeText_SaysWhereThePieceWillLand()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                var text = (TextBlock)w.FindName("TopeApplicabilityText");
+
+                Combo(w, "CellTopologyBox").SelectedIndex = 2;    // Encontradas
+                Combo(w, "TopologyScopeBox").SelectedIndex = 4;
+                Click(Btn(w, "ApplyTopologyButton"));
+                var encontradas = text.Text;
+
+                Combo(w, "CellTopologyBox").SelectedIndex = 3;    // Corrida
+                Combo(w, "RunDirectionBox").SelectedIndex = 0;    // A -> B
+                Click(Btn(w, "ApplyTopologyButton"));
+                var aToB = text.Text;
+
+                Combo(w, "RunDirectionBox").SelectedIndex = 1;    // B -> A
+                Click(Btn(w, "ApplyTopologyButton"));
+                var bToA = text.Text;
+
+                return encontradas.Contains("INDEPENDIENTES")
+                       && encontradas.Contains("INTERIOR")
+                       && aToB.Contains("A->B") && aToB.Contains("EFECTIVO") && aToB.Contains("EXTERIOR")
+                       && bToA.Contains("B->A") && bToA.Contains("EXTERIOR")
+                       && aToB != bToA;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// Cambiar el SENTIDO mueve la efectividad de un lado al otro sin borrar ninguna intencion: las dos siguen
+        /// marcadas y las dos siguen guardadas. Es la pregunta 7 del dueno.
+        /// </summary>
+        [Fact]
+        public void ChangingTheDirection_MovesEffectiveness_WithoutErasingIntent()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                Check(w, "TopeSideACheck").IsChecked = true;
+                Check(w, "TopeSideBCheck").IsChecked = true;
+                Combo(w, "TopeScopeBox").SelectedIndex = 4;
+                Click(Btn(w, "ApplyTopesButton"));
+
+                Combo(w, "CellTopologyBox").SelectedIndex = 3;    // Corrida
+                Combo(w, "TopologyScopeBox").SelectedIndex = 4;
+                Combo(w, "RunDirectionBox").SelectedIndex = 0;    // A -> B
+                Click(Btn(w, "ApplyTopologyButton"));
+                var aEffectiveFirst = Check(w, "TopeSideACheck").IsEnabled;
+                var bEffectiveFirst = Check(w, "TopeSideBCheck").IsEnabled;
+
+                Combo(w, "RunDirectionBox").SelectedIndex = 1;    // B -> A
+                Click(Btn(w, "ApplyTopologyButton"));
+
+                var state = w.CompositeState;
+                return !aEffectiveFirst && bEffectiveFirst
+                       && Check(w, "TopeSideACheck").IsEnabled
+                       && !Check(w, "TopeSideBCheck").IsEnabled
+                       // Y NINGUNA intencion se perdio por el camino.
+                       && state.RearTopeAt(PushBackSide.A, 0, 0)
+                       && state.RearTopeAt(PushBackSide.B, 0, 0)
+                       && Check(w, "TopeSideACheck").IsChecked == true
+                       && Check(w, "TopeSideBCheck").IsChecked == true;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// Los CINCO alcances de topes escriben exactamente lo que dicen: celda, seleccion, nivel, frente y todo.
+        /// Es la pregunta 3 del dueno, sobre los controles reales.
+        /// </summary>
+        [Theory]
+        [InlineData(0, 1)]   // Celda
+        [InlineData(2, 3)]   // Nivel: las 3 ranuras de ese nivel
+        [InlineData(3, 2)]   // Frente: los 2 niveles de esa ranura
+        [InlineData(4, 6)]   // Todo
+        public void TheFiveTopeScopes_WriteExactlyWhatTheySay(int scopeIndex, int expected)
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 3, levels: 2);
+                Combo(w, "CellTopologyBox").SelectedIndex = 2;    // Encontradas: las dos casillas aplican
+                Combo(w, "TopologyScopeBox").SelectedIndex = 4;
+                Click(Btn(w, "ApplyTopologyButton"));
+
+                // Se parte de TODO apagado para que el conteo sea el de lo escrito ahora.
+                Check(w, "TopeSideACheck").IsChecked = false;
+                Check(w, "TopeSideBCheck").IsChecked = false;
+                Combo(w, "TopeScopeBox").SelectedIndex = 4;
+                Click(Btn(w, "ApplyTopesButton"));
+
+                Check(w, "TopeSideACheck").IsChecked = true;
+                Combo(w, "TopeScopeBox").SelectedIndex = scopeIndex;
+                Click(Btn(w, "ApplyTopesButton"));
+
+                var state = w.CompositeState;
+                var written = 0;
+                for (var front = 0; front < 3; front++)
+                {
+                    for (var level = 0; level < 2; level++)
+                    {
+                        if (state.RearTopeAt(PushBackSide.A, front, level))
+                        {
+                            written++;
+                        }
+                    }
+                }
+
+                return written == expected;
             });
 
             Assert.True(ok);

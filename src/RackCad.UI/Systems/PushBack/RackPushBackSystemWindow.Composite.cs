@@ -577,10 +577,10 @@ namespace RackCad.UI.Systems.PushBack
 
                 ApplyMixedSideState();
 
-                var applicability = composite.TopeApplicability(slot, level);
-                SetTopeSensitive(TopeSideACheck, applicability.A, PushBackSide.A);
-                SetTopeSensitive(TopeSideBCheck, applicability.B, PushBackSide.B);
-                TopeApplicabilityText.Text = Describe(applicability);
+                var surface = composite.TopeSurface(slot, level);
+                SetTopeSensitive(TopeSideACheck, surface, PushBackSide.A);
+                SetTopeSensitive(TopeSideBCheck, surface, PushBackSide.B);
+                TopeApplicabilityText.Text = Describe(surface);
             }
             finally
             {
@@ -608,35 +608,77 @@ namespace RackCad.UI.Systems.PushBack
             }
         }
 
-        private void SetTopeSensitive(CheckBox box, bool applicable, PushBackSide side)
+        /// <summary>
+        /// La casilla de un lado siempre muestra la INTENCION guardada. Se deshabilita cuando esa intencion no es
+        /// EFECTIVA hoy, y el tooltip dice las dos cosas por separado: que la intencion sigue viva y por que la
+        /// topologia no la materializa. Son dos hechos distintos y confundirlos era la mitad del error 10.
+        /// </summary>
+        private void SetTopeSensitive(CheckBox box, PushBackTopeSurface surface, PushBackSide side)
         {
+            var label = side == PushBackSide.A ? "A" : "B";
+            var applicable = surface.AppliesTo(side);
             box.IsEnabled = applicable;
             ToolTipService.SetShowOnDisabled(box, true);
             box.ToolTip = applicable
-                ? "Tope posterior de la cama del lado " + (side == PushBackSide.A ? "A" : "B") + " en esta celda."
-                : "Esta celda no tiene ningun extremo alto en el lado " + (side == PushBackSide.A ? "A" : "B")
-                  + ", asi que ahi no puede haber tope. Lo que ya estuviera elegido se conserva y vuelve en cuanto la "
-                  + "topologia lo admita.";
+                ? "EFECTIVO: el lado " + label + " tiene extremo alto en esta celda, y el tope se coloca "
+                  + Where(surface) + "."
+                : "INTENCION GUARDADA, hoy no efectiva: " + Why(surface) + ", asi que en el lado " + label
+                  + " no hay extremo alto donde ponerlo. Lo elegido se conserva y vuelve en cuanto la topologia lo "
+                  + "admita.";
         }
 
-        private static string Describe((bool A, bool B) applicability)
+        /// <summary>Donde aterriza fisicamente el tope, en terminos que el usuario ve en la planta.</summary>
+        private static string Where(PushBackTopeSurface surface)
+            => surface.AtInterface
+                ? "en la linea INTERIOR, la del centro del rack"
+                : "en la linea EXTERIOR del lado alto, al final del recorrido de la calle";
+
+        /// <summary>Por que una celda no admite tope en un lado.</summary>
+        private static string Why(PushBackTopeSurface surface)
         {
-            if (applicability.A && applicability.B)
+            switch (surface.Topology)
             {
-                return "Dos camas encontradas: cada lado admite su propio tope.";
+                case PushBackCellTopology.Corrida:
+                    return "es una corrida "
+                        + (surface.Direction == PushBackRunDirection.AToB ? "A->B" : "B->A")
+                        + " —UNA sola cama que cruza el rack, con un solo extremo alto—";
+                case PushBackCellTopology.SoloA:
+                    return "la celda solo carga por el lado A";
+                case PushBackCellTopology.SoloB:
+                    return "la celda solo carga por el lado B";
+                default:
+                    return "la celda no existe en ese lado";
+            }
+        }
+
+        /// <summary>
+        /// El texto contextual del panel. Dice TRES cosas, que son las tres que el dueño pidio poder predecir sin
+        /// conocer la implementacion: que topologia tiene la celda de verdad, que lado es EFECTIVO y cual queda como
+        /// intencion dormante, y DONDE va a aparecer la pieza en la planta.
+        /// </summary>
+        private static string Describe(PushBackTopeSurface surface)
+        {
+            if (!surface.Exists)
+            {
+                return "Esta celda no existe en ningun lado: no hay tope que decidir.";
             }
 
-            if (applicability.A)
+            if (surface.IsIndependentPair)
             {
-                return "Solo el lado A tiene extremo alto en esta celda.";
+                return "Encontradas: A y B son camas INDEPENDIENTES y cada una admite su propio tope. Los dos van "
+                       + Where(surface) + ".";
             }
 
-            if (applicability.B)
-            {
-                return "Solo el lado B tiene extremo alto en esta celda.";
-            }
+            var effective = surface.AppliesToA ? "A" : "B";
+            var dormant = surface.AppliesToA ? "B" : "A";
+            var head = surface.Topology == PushBackCellTopology.Corrida
+                ? "Corrida " + (surface.Direction == PushBackRunDirection.AToB ? "A->B" : "B->A")
+                  + ": UNA sola cama cruza el rack"
+                : "Solo " + effective + ": una sola cama";
 
-            return "Esta celda no existe en ningun lado.";
+            return head + ", asi que solo el lado " + effective + " es EFECTIVO y su tope va " + Where(surface)
+                   + ". Lo que el lado " + dormant + " tenga elegido se CONSERVA como intencion y vuelve a mandar en "
+                   + "cuanto la topologia lo admita.";
         }
 
         // ---- Lectura del sistema resuelto ---------------------------------------------------------------------

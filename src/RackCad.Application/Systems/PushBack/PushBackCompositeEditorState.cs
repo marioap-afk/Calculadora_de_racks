@@ -601,23 +601,46 @@ namespace RackCad.Application.Systems.PushBack
         /// </summary>
         public (bool A, bool B) TopeApplicability(int slot, int level)
         {
+            var surface = TopeSurface(slot, level);
+            return (surface.AppliesToA, surface.AppliesToB);
+        }
+
+        /// <summary>
+        /// ERROR 10 (I-42) — todo lo que la UI necesita para que el usuario PREDIGA el resultado en planta sin
+        /// conocer la implementacion: la topologia que la celda tiene de verdad, que lado es efectivo, cual queda
+        /// como intencion dormante y DONDE aterriza fisicamente el tope.
+        ///
+        /// <para>
+        /// Las tres cosas son distintas y la superficie las separa a proposito. La INTENCION es lo que el usuario
+        /// guardo por lado (<see cref="RearTopeAt"/>) y no se borra nunca. La APLICABILIDAD es lo que la topologia
+        /// admite hoy. Y la MATERIALIZACION es la pieza, que solo existe donde las dos coinciden.
+        /// </para>
+        /// </summary>
+        public PushBackTopeSurface TopeSurface(int slot, int level)
+        {
             var hasA = IsSlotPresent(PushBackSide.A, slot) && level < LevelsOf(PushBackSide.A, slot);
             var hasB = IsSlotPresent(PushBackSide.B, slot) && level < LevelsOf(PushBackSide.B, slot);
             if (!hasA && !hasB)
             {
-                return (false, false);
+                return default;
             }
 
-            switch (Degrade(TopologyAt(slot, level), hasA, hasB))
+            var topology = Degrade(TopologyAt(slot, level), hasA, hasB);
+            var direction = DirectionAt(slot, level);
+            switch (topology)
             {
                 case PushBackCellTopology.SoloA:
-                    return (true, false);
+                    // Una cama de un lado descarga en SU pasillo, asi que su extremo alto mira al centro del rack.
+                    return new PushBackTopeSurface(topology, direction, true, false, atInterface: true);
                 case PushBackCellTopology.SoloB:
-                    return (false, true);
+                    return new PushBackTopeSurface(topology, direction, false, true, atInterface: true);
                 case PushBackCellTopology.Corrida:
-                    return DirectionAt(slot, level) == PushBackRunDirection.AToB ? (false, true) : (true, false);
+                    // La corrida cruza el rack: su unico extremo alto es el EXTERIOR del lado hacia el que fluye.
+                    return direction == PushBackRunDirection.AToB
+                        ? new PushBackTopeSurface(topology, direction, false, true, atInterface: false)
+                        : new PushBackTopeSurface(topology, direction, true, false, atInterface: false);
                 default:
-                    return (hasA, hasB);
+                    return new PushBackTopeSurface(topology, direction, hasA, hasB, atInterface: true);
             }
         }
 

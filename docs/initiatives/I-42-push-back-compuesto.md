@@ -573,9 +573,47 @@ remoto que no alarga ninguna; el defecto compuesto medido en la linea exterior; 
 dos lados llegan a la interfaz; la corrida que conserva toda la profundidad; el BOM que deja de cotizar lo que la
 planta deja de dibujar; y las dos de identidad de I-40.
 
-### SIGUE ABIERTA
+### CERRADO — error 10 (UX): intencion, aplicabilidad y materializacion son TRES cosas
 
-La parte de UX del error 10.
+El modelo ya era correcto —`PushBackRearTopeConfig` por lado con sus `OffCells`, y no se creo ninguna autoridad
+nueva—, pero la superficie no separaba los tres hechos ni decia DONDE iba a aparecer la pieza.
+
+**La superficie es ahora un tipo NEUTRAL en Application**, `PushBackTopeSurface`, que devuelve
+`PushBackCompositeEditorState.TopeSurface(ranura, nivel)`: la topologia que la celda tiene de verdad (ya
+degradada por presencia), el sentido efectivo, que lado es EFECTIVO y si el extremo alto cae en la linea
+INTERIOR o en la EXTERIOR. Calcularla dentro del code-behind habria sido una segunda autoridad, que es de donde
+salio este error.
+
+Las diez preguntas del dueño:
+
+| # | Pregunta | Respuesta |
+|---|---|---|
+| 1 | que casilla es intencion y cual efectividad | la casilla es INTENCION y no se borra; el tooltip dice si hoy es EFECTIVA y, si no, por que |
+| 2 | se entiende donde acabara el tope | si: el texto y el tooltip dicen «linea INTERIOR, la del centro» o «linea EXTERIOR del lado alto, al final del recorrido» |
+| 3 | los cinco alcances afectan lo esperado | probado sobre los controles reales: celda 1, nivel 3, frente 2, todo 6 |
+| 4 | encontradas = dos decisiones independientes | si, y el texto lo dice con esas palabras |
+| 5 | SoloA/SoloB deshabilitan el lado no aplicable | si, con su motivo, conservando la intencion |
+| 6 | corrida muestra solo el HIGH aplicable | si, y ademas dice en que sentido y donde acaba |
+| 7 | cambiar sentido mueve efectividad sin borrar intencion | probado: la efectividad salta A↔B y las dos intenciones siguen guardadas y marcadas |
+| 8 | planta coloca el tope en el HIGH real | corregido — ver el error 5/10 geometrico |
+| 9 | el espejo de B es correcto | corregido — misma correccion |
+| 10 | el BOM cuenta lo materializado | si: un tope por cama con intencion activa en su lado alto |
+
+**Seccion N — una autoridad para todas las salidas.** Lateral, planta, frontal y BOM leen la misma cama: el
+lateral y la planta por lote de `PushBackCompositeContent.Batches`, el frontal por el contexto de elevaciones y
+el BOM por `PushBackRuns`. No queda ningun builder que calcule su propia X de tope.
+
+**Seccion P — la seguridad no se movio.** El error 10 toca zona vecina, asi que hay regresion explicita: editar
+topes no mueve ni una pieza de seguridad (firma completa de la planta antes y despues) y ninguna seleccion
+adquiere `Side = Both`. Los seis controles de `PushBackCompositeSafetyOwnershipTests` siguen verdes.
+
+**Seccion Q — error 1 revalidado tras la inversion vertical.** Con A y B identicos las camas de los dos lados
+quedan a la MISMA altura hasta la ultima milesima; en cuanto se cambia el «Alto 1er nivel» de B, dejan de
+coincidir. La primera afirmacion no pasa por casualidad.
+
+**Pruebas**: `PushBackTopeSurfaceTests` (14) sobre el modelo puro, incluida la que comprueba que lo que la
+superficie PROMETE es donde la cama acaba de verdad; y siete pruebas WPF nuevas sobre los controles reales de la
+ventana.
 
 ## 5. Limitaciones DECLARADAS (no son descuidos)
 

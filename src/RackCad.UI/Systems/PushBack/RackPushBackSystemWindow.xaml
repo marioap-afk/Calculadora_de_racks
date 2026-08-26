@@ -187,7 +187,7 @@
                          usuario no tenia forma de ver «A si / B no» ni de decidirlo sin deducir el modo de la ventana.
                          La autoridad NO cambia: sigue siendo el RearTope de cada lado (PushBackRearTopeConfig y sus
                          OffCells). Esto es una superficie, no un segundo modelo. -->
-                    <TextBlock Text="Tope posterior por lado" Style="{StaticResource FieldLabel}" Margin="0,10,0,2" />
+                    <TextBlock Text="Tope posterior &#8212; extremo ALTO de cada cama" Style="{StaticResource FieldLabel}" Margin="0,10,0,2" />
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
