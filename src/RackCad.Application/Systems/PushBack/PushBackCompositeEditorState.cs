@@ -101,12 +101,18 @@ namespace RackCad.Application.Systems.PushBack
                 return;
             }
 
+            // I-42 (ronda post-5a73b92) — LA CELDA SELECCIONADA ES DEL RACK, no del lado.
+            //
+            // Cada lado guarda su propia matriz, y con ella su propia celda primaria. Al cambiar de lado el cursor
+            // saltaba a la celda que ESE lado tenia seleccionada la ultima vez —normalmente la 1—, asi que el
+            // usuario elegia el frente 3 mirando el rack, cambiaba al lado B para declararlo y la casilla de
+            // presencia escribia en el frente 1. Eso es lo que hacia parecer que «solo F1 puede hacerse compuesto».
+            //
+            // La celda es una posicion FISICA del rack: el frente y el nivel existen en los dos lados. Se lleva al
+            // lado que se va a editar ANTES de cambiar, acotada a lo que ese lado tiene.
+            MirrorSelection();
             ActiveSelection = selection;
             ActiveSide = selection == PushBackSideSelection.B ? PushBackSide.B : PushBackSide.A;
-            if (selection == PushBackSideSelection.Both)
-            {
-                MirrorSelection();
-            }
         }
 
         /// <summary>
@@ -179,11 +185,17 @@ namespace RackCad.Application.Systems.PushBack
         /// </summary>
         public void SetSideBPresent(bool present)
         {
+            var declaring = present && !SideBPresent;
             SideBPresent = present;
             if (!present)
             {
                 ActiveSide = PushBackSide.A;
                 ActiveSelection = PushBackSideSelection.A;
+            }
+
+            if (declaring)
+            {
+                DeclareSideBCapability();
             }
 
             // La topologia POR DEFECTO depende de cuantos sentidos tiene el rack, y esa es la misma regla que ya
@@ -200,6 +212,86 @@ namespace RackCad.Application.Systems.PushBack
             else if (!present && DefaultTopology == PushBackCellTopology.Encontradas)
             {
                 DefaultTopology = PushBackCellTopology.SoloA;
+            }
+        }
+
+        /// <summary>
+        /// I-42 (ronda post-5a73b92) — lo que ocurre al declarar la CAPACIDAD del lado B, y solo eso.
+        ///
+        /// <para>
+        /// Declarar el lado B NO es declarar su presencia en ningun frente. Son tres estados distintos y esta
+        /// iniciativa los separa: <b>capacidad del rack</b> («existe el lado B como posibilidad»),
+        /// <b>presencia en el frente</b> («este frente tiene fisicamente lado B») y <b>topologia de la celda</b>
+        /// (Solo A / Solo B / Encontradas / Corrida). Antes activar el modo compuesto mutaba todos los frentes de A
+        /// a la vez: es la regresion que el dueño vio.
+        /// </para>
+        /// <para>
+        /// Se hace AQUI y no en la ventana para que el modelo no dependa del orden en que se toquen los controles.
+        /// Tres cosas, en este orden:
+        /// </para>
+        /// <list type="number">
+        /// <item>un lado B que nunca existio se INICIALIZA con los defaults del producto, los mismos que uso el
+        /// lado A. Sin esto B nacia con el default del Dinamico y los dos lados arrancaban en troqueles distintos
+        /// con la misma intencion a la vista;</item>
+        /// <item>la retícula transversal se iguala: es UNA sola y los indices de ranura significan lo mismo;</item>
+        /// <item>el lado B nace AUSENTE en todas las ranuras. La presencia la declara el usuario, frente a frente.</item>
+        /// </list>
+        /// <para>
+        /// Un lado B que vuelve de estar DORMANTE conserva su presencia y su configuracion: retirar el lado nunca
+        /// destruyo nada, y volver a declararlo tampoco.
+        /// </para>
+        /// </summary>
+        private void DeclareSideBCapability()
+        {
+            // «Nunca configurado» se reconoce por la lista de PRESENCIA, que solo escribe quien declara una ranura.
+            // El estado del lado B nace con un frente por construccion, asi que contarlos no distingue un lado
+            // recien creado de uno dormante — y confundirlos dejaba la primera ranura presente sin que nadie la
+            // hubiera declarado.
+            var dormant = presentB.Count > 0;
+            if (!dormant)
+            {
+                SideB.LoadNew();
+            }
+
+            AlignSlotGrid();
+            AlignSideBFirstLevel();
+            if (dormant)
+            {
+                return;   // vuelve de estar dormante: su presencia es la que el usuario dejo
+            }
+
+            for (var slot = 0; slot < SlotCount; slot++)
+            {
+                SetSlotPresent(PushBackSide.B, slot, false);
+            }
+        }
+
+        /// <summary>
+        /// El lado B arranca con la MISMA intencion de «Alto 1er nivel» que el lado A.
+        ///
+        /// <para>
+        /// No es una copia de la configuracion de A —ni celdas, ni overrides, ni niveles—: es la unica magnitud
+        /// donde dos convenciones distintas producen una sorpresa FISICA. Con la misma intencion a la vista, los
+        /// dos lados tienen que arrancar en el mismo troquel; que uno venga de un documento existente y el otro se
+        /// acabe de crear no autoriza medio paso de diferencia.
+        /// </para>
+        /// </summary>
+        private void AlignSideBFirstLevel()
+        {
+            var reference = SideA.Structure.Count > 0
+                ? SideA.Structure.Fronts[0].FirstLevelHeight
+                : (double?)null;
+            if (!reference.HasValue)
+            {
+                return;
+            }
+
+            for (var slot = 0; slot < SideB.Structure.Count; slot++)
+            {
+                var own = slot < SideA.Structure.Count
+                    ? SideA.Structure.Fronts[slot].FirstLevelHeight
+                    : reference.Value;
+                SideB.Structure.Fronts[slot].FirstLevelHeight = own;
             }
         }
 
@@ -416,8 +508,32 @@ namespace RackCad.Application.Systems.PushBack
             DefaultDirection = direction;
         }
 
-        /// <summary>La topologia efectiva de una celda: su entrada si la hay, y si no el default del rack.</summary>
+        /// <summary>
+        /// La topologia EFECTIVA de una celda: la que el rack puede construir de verdad con los lados que esa celda
+        /// tiene.
+        ///
+        /// <para>
+        /// I-42 (ronda post-5a73b92): activar el modo compuesto es una CAPACIDAD del rack, no un permiso para mutar
+        /// cada celda. Un frente sin lado B sigue siendo Solo A por mucho que el default del rack sea «encontradas»,
+        /// y esta es la respuesta que ve toda la ventana. La INTENCION guardada no se toca —vive en
+        /// <see cref="StoredTopologyAt"/> y vuelve a mandar en cuanto el frente reciba su lado B—, exactamente como
+        /// la intencion de tope.
+        /// </para>
+        /// </summary>
         public PushBackCellTopology TopologyAt(int slot, int level)
+        {
+            var hasA = IsSlotPresent(PushBackSide.A, slot) && level < LevelsOf(PushBackSide.A, slot);
+            var hasB = IsSlotPresent(PushBackSide.B, slot) && level < LevelsOf(PushBackSide.B, slot);
+            return hasA || hasB
+                ? Degrade(StoredTopologyAt(slot, level), hasA, hasB)
+                : StoredTopologyAt(slot, level);
+        }
+
+        /// <summary>
+        /// La topologia GUARDADA de una celda: su entrada si la hay, y si no el default del rack. Es la INTENCION,
+        /// se pueda construir hoy o no, y es lo que se persiste.
+        /// </summary>
+        public PushBackCellTopology StoredTopologyAt(int slot, int level)
             => Stored(slot, level)?.Topology ?? DefaultTopology;
 
         /// <summary>El sentido efectivo de una celda corrida.</summary>
@@ -763,6 +879,24 @@ namespace RackCad.Application.Systems.PushBack
         public PushBackSideDesign BuildSideB()
         {
             if (!SideBPresent)
+            {
+                return null;
+            }
+
+            // I-42 (ronda post-5a73b92) — CAPACIDAD sin PRESENCIA no es un lado.
+            //
+            // Mientras el usuario no declare el lado B en ningun frente, el rack es fisicamente el de un solo
+            // sentido: misma longitud, mismas cabeceras, misma seguridad, mismo BOM. Devolver un lado «presente» y
+            // vacio lo alargaba y le añadia una segunda cara de carga por una capacidad que todavia no tiene
+            // ninguna cama. La capacidad sigue declarada en el editor —la seccion compuesta permanece abierta— y en
+            // cuanto un frente reciba su lado B el rack pasa a compuesto.
+            var declared = false;
+            for (var slot = 0; slot < SlotCount && !declared; slot++)
+            {
+                declared = IsSlotPresent(PushBackSide.B, slot);
+            }
+
+            if (!declared)
             {
                 return null;
             }

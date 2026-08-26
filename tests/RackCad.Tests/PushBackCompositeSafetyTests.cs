@@ -53,6 +53,13 @@ namespace RackCad.Tests
                 state.SideB.LoadNew();
                 state.SetSlotCount(2);
                 state.SetDefaults(topology, PushBackRunDirection.AToB);
+                // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+                // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+                for (var declared = 0; declared < state.SlotCount; declared++)
+                {
+                    state.SetSlotPresent(PushBackSide.B, declared, true);
+                }
+
             }
 
             return state;
@@ -167,6 +174,13 @@ namespace RackCad.Tests
             state.SetSideBPresent(true);
             state.SideB.LoadNew();
             state.SetSlotCount(2);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
 
             Assert.True(state.RearTopeAt(PushBackSide.B, 0, 0), "B nace con el default del producto, no con lo de A");
             Assert.False(state.RearTopeAt(PushBackSide.A, 0, 0), "y lo de A se conserva tal cual");

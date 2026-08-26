@@ -64,7 +64,7 @@ namespace RackCad.Application.Systems.Selective
             // I-42: un sistema con cara de carga en los DOS extremos (un Push Back compuesto) materializa cada
             // orientacion elegida en LOS DOS: son dos pasillos, y lo que protege a uno no protege al otro. La
             // PERTENENCIA —que postes llevan la pieza— no se toca: sigue siendo la del usuario o la adaptativa.
-            if (selection.BothEndsAreLoadFaces)
+            if (selection.HasSecondLoadFaceAt(postIndex))
             {
                 switch (side)
                 {

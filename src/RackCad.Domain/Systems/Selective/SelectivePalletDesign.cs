@@ -173,6 +173,27 @@ namespace RackCad.Domain.Systems.Selective
         public bool BothEndsAreLoadFaces { get; set; }
 
         /// <summary>
+        /// I-42 (ronda post-5a73b92) — las LINEAS de postes que de verdad tienen esa segunda cara de carga.
+        ///
+        /// <para>
+        /// VACIA significa «todas», que es el comportamiento anterior y el de cualquier sistema que no la rellene.
+        /// Existe porque un rack compuesto PARCIAL tiene la segunda cara solo donde hay lado B: convertir todas las
+        /// lineas del rack en caras de carga porque UN frente sea compuesto ponia botas y protectores en frentes que
+        /// siguen siendo de un solo sentido. Es DERIVADA y no se persiste, igual que
+        /// <see cref="BothEndsAreLoadFaces"/> y que <c>LowEndOnly</c>.
+        /// </para>
+        /// </summary>
+        public IList<int> SecondLoadFacePosts { get; } = new List<int>();
+
+        /// <summary>
+        /// Si la LINEA indicada tiene la segunda cara de carga. Es la pregunta que hacen las reglas de copias: la
+        /// pertenencia sigue siendo la del usuario o la adaptativa, y esto solo decide cuantas CARAS materializa.
+        /// </summary>
+        public bool HasSecondLoadFaceAt(int postIndex)
+            => BothEndsAreLoadFaces
+               && (SecondLoadFacePosts.Count == 0 || SecondLoadFacePosts.Contains(postIndex));
+
+        /// <summary>
         /// PB-002 (I-32) — the DESVIADOR off-cells of this selection are keyed by <b>POST</b>, not by front.
         ///
         /// A rack of N fronts has N+1 posts and the desviador grid has one column per POST, so a post index cannot be
@@ -300,6 +321,11 @@ namespace RackCad.Domain.Systems.Selective
                 Guia = Guia.DeepCopy(),
                 Parrilla = Parrilla.DeepCopy()
             };
+
+            foreach (var post in SecondLoadFacePosts)
+            {
+                copy.SecondLoadFacePosts.Add(post);
+            }
 
             foreach (var post in PostSides)
             {

@@ -641,6 +641,13 @@ namespace RackCad.Tests
             state.SetSideBPresent(true);
             state.SideB.SetFrontCount(1);
             state.SetGap(gap);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
 
             Assert.Equal(gap, state.Gap, 6);
             Assert.False(state.GapIsValid);
@@ -665,6 +672,13 @@ namespace RackCad.Tests
             state.SideB.SetFrontCount(1);
 
             state.SetStructureOverride(PushBackSide.A, positions);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
             Assert.Equal(positions, state.StructureOverrideA);          // se conserva, no se vuelve null
             Assert.True(state.StructureOverrideIsInvalid(PushBackSide.A));
             Assert.True(state.HasBlockingIntent());
@@ -687,6 +701,13 @@ namespace RackCad.Tests
             state.SetSideBPresent(true);
             state.SideB.SetFrontCount(1);
             state.SetGap(10.0);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
             var snapshot = state.Snapshot();
 
             state.SetGap(-3.0);

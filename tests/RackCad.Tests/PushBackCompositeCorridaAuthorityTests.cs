@@ -326,6 +326,13 @@ namespace RackCad.Tests
             state.SetDefaults(PushBackCellTopology.Corrida, PushBackRunDirection.AToB);
             state.SideA.SetFrontCount(2);
             state.SideB.SetFrontCount(2);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
             state.SideA.Structure.AdjustLevels(0, 2 - state.SideA.Structure.Fronts[0].LoadLevels);
             state.SideA.Structure.AdjustLevels(1, 2 - state.SideA.Structure.Fronts[1].LoadLevels);
             state.SideA.Structure.ToggleCell(0, 0, extendSelection: false);
@@ -352,6 +359,13 @@ namespace RackCad.Tests
             state.SetDefaults(PushBackCellTopology.Encontradas, PushBackRunDirection.AToB);
             state.SideA.SetFrontCount(2);
             state.SideB.SetFrontCount(2);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
             state.SideA.Structure.AdjustLevels(0, 2 - state.SideA.Structure.Fronts[0].LoadLevels);
             state.SideA.Structure.AdjustLevels(1, 2 - state.SideA.Structure.Fronts[1].LoadLevels);
 

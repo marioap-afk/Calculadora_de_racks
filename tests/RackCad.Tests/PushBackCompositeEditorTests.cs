@@ -32,6 +32,13 @@ namespace RackCad.Tests
             if (sideB)
             {
                 state.SideB.SetFrontCount(frontsB);
+
+                // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente. Este fixture
+                // quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+                for (var declared = 0; declared < state.SlotCount; declared++)
+                {
+                    state.SetSlotPresent(PushBackSide.B, declared, true);
+                }
             }
 
             return state;
@@ -75,6 +82,13 @@ namespace RackCad.Tests
             state.SetSideBPresent(false);
             Assert.Equal(PushBackSide.A, state.ActiveSide);
             state.SetSideBPresent(true);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
 
             Assert.Equal(3, state.SideB.Structure.Count);
             Assert.Equal(levels, state.SideB.Structure.Fronts[0].LoadLevels);

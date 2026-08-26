@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
@@ -53,6 +54,19 @@ namespace RackCad.Application.Systems.PushBack
             var topeBuilder = new PushBackRearTopeBuilder();
             var intermediateBuilder = new PushBackIntermediateBeamLateralBuilder();
 
+            // I-42 (ronda post-5a73b92) — un corte LATERAL es una PROYECCION, y una proyeccion dibuja cada cosa una
+            // vez.
+            //
+            // El corte muestra todos los frentes que su linea sostiene, y frentes contiguos con la misma
+            // configuracion proyectan sus largueros y sus apoyos EXACTAMENTE encima unos de otros. El builder de un
+            // solo sentido ya lo sabia y deduplicaba dentro de su llamada; el compositor construye una vez POR CAMA,
+            // asi que cada cama volvia a emitir lo que ya estaba dibujado y el corte salia con todo duplicado y
+            // superpuesto — dos largueros donde hay uno. Se deduplica AQUI, ya en coordenadas de rack (despues de la
+            // reflexion), que es donde dos piezas son o no son la misma: identidad, posicion, mano y rotacion.
+            //
+            // No afecta al BOM, que cuenta CAMAS y no instancias de una vista.
+            var intermediates = new HashSet<string>(StringComparer.Ordinal);
+
             foreach (var batch in Batches(runs, includeSlot, levelCap))
             {
                 var source = batch.Source;
@@ -69,21 +83,57 @@ namespace RackCad.Application.Systems.PushBack
                 loose.AddRange(intermediateBuilder.BuildFor(source, catalog, front, levels, postIndex));
                 var groups = bedBuilder.BuildLateralGroups(source, catalog, front, int.MaxValue, levels);
 
-                if (batch.Reflected)
+                var placed = batch.Reflected
+                    ? PushBackMirror.Instances(loose, runs.MirrorAxis)
+                    : loose;
+                foreach (var instance in placed)
                 {
-                    result.Loose.AddRange(PushBackMirror.Instances(loose, runs.MirrorAxis));
-                    result.Headers.AddRange(groups.Select(group =>
-                        PushBackMirror.Group(group, runs.MirrorAxis, " B")));
+                    if (!intermediates.Add(IntermediateKey(instance)))
+                    {
+                        continue;   // la misma pieza fisica, ya emitida por otra cama de este corte
+                    }
+
+                    result.Loose.Add(instance);
                 }
-                else
+
+                var placedGroups = batch.Reflected
+                    ? groups.Select(group => PushBackMirror.Group(group, runs.MirrorAxis, " B"))
+                    : groups;
+                foreach (var group in placedGroups)
                 {
-                    result.Loose.AddRange(loose);
-                    result.Headers.AddRange(groups);
+                    // La CAMA viaja como grupo (patron ARRAY), y dos camas identicas de frentes contiguos se
+                    // proyectan una encima de otra igual que sus largueros. Se compara por su DEFINICION y sus
+                    // COLOCACIONES, que es lo que el dibujo acaba materializando.
+                    if (intermediates.Add(GroupKey(group)))
+                    {
+                        result.Headers.Add(group);
+                    }
                 }
             }
 
             return result;
         }
+
+        /// <summary>La identidad FISICA de un GRUPO: su definicion anidada y donde se coloca.</summary>
+        private static string GroupKey(HeaderGroup group)
+            => "GRUPO|" + string.Join(
+                ";",
+                group.Instances.Select(IntermediateKey).Concat(
+                    group.Placements.Select(placement => string.Join(
+                        "|",
+                        placement.InsertionX.ToString("0.####", CultureInfo.InvariantCulture),
+                        placement.InsertionY.ToString("0.####", CultureInfo.InvariantCulture),
+                        placement.Mirrored))));
+
+        /// <summary>La identidad FISICA de una pieza en el rack: que es, donde esta, con que mano y que rotacion.</summary>
+        private static string IntermediateKey(HeaderBlockInstance instance)
+            => string.Join(
+                "|",
+                instance.PieceId,
+                instance.Insertion.X.ToString("0.####", CultureInfo.InvariantCulture),
+                instance.Insertion.Y.ToString("0.####", CultureInfo.InvariantCulture),
+                instance.MirroredX,
+                instance.RotationRadians.ToString("0.######", CultureInfo.InvariantCulture));
 
         /// <summary>
         /// Las camas agrupadas por (marco, frente): una llamada por grupo en vez de una por nivel, para no perder el

@@ -147,8 +147,14 @@ namespace RackCad.Application.Systems.PushBack
         private void ApplySafety(PushBackSystem system, DynamicRackSystem structure)
         {
             var authorized = safety.Authorize(structure.SafetySelections, AislesOf(system));
+            var secondFaceLines = SecondLoadFaceLines(system);
             foreach (var selection in authorized)
             {
+                foreach (var line in secondFaceLines)
+                {
+                    selection.SecondLoadFacePosts.Add(line);
+                }
+
                 system.SafetySelections.Add(selection);
             }
 
@@ -173,6 +179,58 @@ namespace RackCad.Application.Systems.PushBack
             => system?.Composite != null && (system.Composite.SideB?.IsPresent ?? false)
                 ? PushBackSafetyAisles.Both
                 : PushBackSafetyAisles.NearOnly;
+
+        /// <summary>
+        /// I-42 (ronda post-5a73b92) — las LINEAS de postes que de verdad tienen la segunda cara de carga.
+        ///
+        /// <para>
+        /// Declarar el lado B es una CAPACIDAD del rack; tener lado B es una propiedad de cada FRENTE. Una linea
+        /// solo adquiere la segunda cara si alguno de los frentes que sostiene —el de su izquierda o el de su
+        /// derecha— existe fisicamente en el lado B. Antes bastaba con que el rack fuera compuesto, asi que
+        /// declarar B en UN frente ponia botas y protectores en las lineas de todos los demas, que siguen siendo de
+        /// un solo sentido: es la regresion que el dueño vio.
+        /// </para>
+        /// <para>
+        /// Lista VACIA significa «todas las lineas», que es lo que responde un rack no compuesto y lo que deja el
+        /// comportamiento anterior intacto donde no hay nada que acotar.
+        /// </para>
+        /// </summary>
+        internal static IReadOnlyList<int> SecondLoadFaceLines(PushBackSystem system)
+        {
+            var composite = system?.Composite;
+            var fronts = system?.Structure?.Fronts;
+            if (composite == null || fronts == null || !(composite.SideB?.IsPresent ?? false))
+            {
+                return Array.Empty<int>();
+            }
+
+            var withB = new HashSet<int>();
+            for (var slot = 0; slot < fronts.Count; slot++)
+            {
+                if (composite.SideB.Resolved(slot)?.IsPresent ?? false)
+                {
+                    withB.Add(slot);
+                }
+            }
+
+            if (withB.Count == 0)
+            {
+                // Capacidad declarada y ningun frente con lado B: no hay segunda cara en ninguna linea. Se devuelve
+                // una linea IMPOSIBLE en vez de la lista vacia, que significaria «todas».
+                return new[] { -1 };
+            }
+
+            var lines = new List<int>();
+            for (var post = 0; post <= fronts.Count; post++)
+            {
+                if (withB.Contains(post - 1) || withB.Contains(post))
+                {
+                    lines.Add(post);
+                }
+            }
+
+            return lines;
+        }
 
         /// <summary>
         /// Captures the editable intent of a resolved Push Back system back into a <see cref="PushBackDesign"/>, with

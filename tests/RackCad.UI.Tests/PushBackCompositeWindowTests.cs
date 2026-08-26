@@ -62,11 +62,18 @@ namespace RackCad.UI.Tests
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
                 Check(w, "SideBPresentCheck").IsChecked = true;
 
-                return w.CompositeState.SideBPresent
+                // La CAPACIDAD abre la seccion, pero por si sola NO convierte el rack: mientras ningun frente tenga
+                // lado B el rack sigue siendo, fisicamente, el de un solo sentido. En cuanto se declara en uno, si.
+                var capability = w.CompositeState.SideBPresent
                        && Section(w).Visibility == Visibility.Visible
                        && Combo(w, "SideSelectorBox").IsEnabled
                        && Field(w, "GapBox").IsEnabled
                        && Btn(w, "ApplyTopologyButton").IsEnabled
+                       && w.LastComputation.IsValid
+                       && !w.LastComputation.System.IsComposite;
+
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
+                return capability
                        && w.LastComputation.IsValid
                        && w.LastComputation.System.IsComposite;
             });
@@ -81,6 +88,8 @@ namespace RackCad.UI.Tests
             {
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 Combo(w, "SideSelectorBox").SelectedIndex = 1;
                 w.CompositeState.SideB.SetFrontCount(3);
                 Field(w, "GapBox").SetNumber(14.0);
@@ -91,6 +100,8 @@ namespace RackCad.UI.Tests
                                 && !w.LastComputation.System.IsComposite;
 
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 // Todo reaparece intacto: la configuracion del lado B quedo dormante, no se destruyo.
                 return collapsed
                        && Section(w).Visibility == Visibility.Visible
@@ -109,6 +120,8 @@ namespace RackCad.UI.Tests
             {
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 Field(w, "StructureOverrideBox").SetNumber(9.0);
                 Click(Btn(w, "ApplyStructureButton"));
                 var applied = w.CompositeState.StructureOverrideA;
@@ -132,6 +145,8 @@ namespace RackCad.UI.Tests
             {
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 var sideA = w.State;
 
                 Combo(w, "SideSelectorBox").SelectedIndex = 1;
@@ -153,6 +168,8 @@ namespace RackCad.UI.Tests
             {
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 Combo(w, "SideSelectorBox").SelectedIndex = 1;
                 w.CompositeState.SideB.SetFrontCount(3);
 
@@ -160,6 +177,8 @@ namespace RackCad.UI.Tests
                 var backToA = w.CompositeState.ActiveSide == PushBackSide.A && !w.LastComputation.System.IsComposite;
 
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
 
                 // I-42 (ronda Owner): la retícula transversal es del RACK, asi que al volver se IGUALA — creciendo,
                 // nunca recortando: el lado B conserva sus tres ranuras y el lado A, que solo tenia una, recibe las
@@ -183,6 +202,8 @@ namespace RackCad.UI.Tests
             {
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 var before = w.LastComputation.System.Structure.TotalLength;
 
                 Field(w, "GapBox").SetNumber(12.0);
@@ -204,6 +225,8 @@ namespace RackCad.UI.Tests
             {
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 Combo(w, "CellTopologyBox").SelectedIndex = 3;    // Corrida
                 Combo(w, "RunDirectionBox").SelectedIndex = 0;    // A -> B
                 Combo(w, "TopologyScopeBox").SelectedIndex = 4;   // Todo
@@ -234,6 +257,8 @@ namespace RackCad.UI.Tests
                 var legacyLabel = label.Text;
 
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 Combo(w, "CellTopologyBox").SelectedIndex = 3;    // Corrida
                 Combo(w, "RunDirectionBox").SelectedIndex = 0;    // A -> B
                 Combo(w, "TopologyScopeBox").SelectedIndex = 4;   // Todo
@@ -276,6 +301,8 @@ namespace RackCad.UI.Tests
                 var field = Field(w, "CellFondoOverrideBox");
 
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 Combo(w, "TopologyScopeBox").SelectedIndex = 4;   // Todo
                 Combo(w, "CellTopologyBox").SelectedIndex = 3;    // Corrida
                 Click(Btn(w, "ApplyTopologyButton"));
@@ -312,6 +339,8 @@ namespace RackCad.UI.Tests
                 var label = (TextBlock)w.FindName("CellFondoLabel");
 
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 Combo(w, "TopologyScopeBox").SelectedIndex = 4;   // Todo
                 Combo(w, "CellTopologyBox").SelectedIndex = 3;    // Corrida
                 Click(Btn(w, "ApplyTopologyButton"));
@@ -345,6 +374,8 @@ namespace RackCad.UI.Tests
         {
             var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
             Check(w, "SideBPresentCheck").IsChecked = true;
+            // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+            DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
 
             var frontCount = Field(w, "FrontCountBox");
             frontCount.SetNumber(fronts);
@@ -359,8 +390,31 @@ namespace RackCad.UI.Tests
                 Click(Btn(w, "ApplyAllButton"));
             }
 
+            // I-42 (ronda post-5a73b92): declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun
+            // frente. Este fixture quiere el rack compuesto entero, asi que lo declara frente a frente CON LOS
+            // CONTROLES REALES — que es ademas la operacion que el dueño no podia hacer.
+            DeclareSideBOnEveryFront(w, fronts);
             Combo(w, "SideSelectorBox").SelectedIndex = 0;
             return w;
+        }
+
+        /// <summary>
+        /// Declara el lado B en todos los frentes SIN tocar el selector de lado ni la celda seleccionada: para un
+        /// caso cuyo asunto no es la presencia, mover el cursor o el lado activo cambiaria lo que se esta midiendo.
+        /// La operacion CON LOS CONTROLES REALES la ejercita <c>SideB_CanBeDeclaredFrontByFront_FromTheWindow</c>.
+        /// </summary>
+        private static void DeclareSideBOnEveryFront(RackPushBackSystemWindow w, int fronts)
+        {
+            for (var front = 0; front < Math.Max(fronts, w.CompositeState.SlotCount); front++)
+            {
+                w.CompositeState.SetSlotPresent(PushBackSide.B, front, true);
+            }
+
+            // El modelo cambio por fuera de la ventana, asi que hay que pedirle que recalcule: se hace con el mismo
+            // control real que usa el usuario, reescribiendo el hueco con su propio valor.
+            var gap = Field(w, "GapBox");
+            gap.SetNumber(w.CompositeState.Gap);
+            LoseFocus(gap);
         }
 
         [Fact]
@@ -507,6 +561,114 @@ namespace RackCad.UI.Tests
                 Combo(all, "CellPropertyScopeBox").SelectedIndex = 3;
                 Click(Btn(all, "RestoreCellFondoButton"));
                 return Matches(all, (f, l) => f != 0);
+            });
+
+            Assert.True(ok);
+        }
+
+        // ================= PRESENCIA DE B, FRENTE A FRENTE, CON LOS CONTROLES REALES ============================
+
+        /// <summary>
+        /// EL BLOQUEO DE ESTA RONDA. El dueño no podía declarar el lado B más que en el primer frente: al cambiar
+        /// el selector de lado, el cursor de celda saltaba a la celda que ESE lado tenía seleccionada —la 1—, así que
+        /// la casilla de presencia escribía siempre en la ranura 0.
+        ///
+        /// <para>
+        /// Se reproduce la operación EXACTA: elegir el frente mirando el rack (lado A), cambiar al lado B y declarar.
+        /// Cuatro frentes, uno por uno. No vale probar el estado directamente: el defecto vivía en el paso entre los
+        /// dos controles.
+        /// </para>
+        /// </summary>
+        [Fact]
+        public void SideB_CanBeDeclaredFrontByFront_FromTheWindow()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                var frontCount = Field(w, "FrontCountBox");
+                frontCount.SetNumber(4);
+                LoseFocus(frontCount);
+                Check(w, "SideBPresentCheck").IsChecked = true;
+
+                for (var front = 0; front < 4; front++)
+                {
+                    // El usuario elige el frente MIRANDO EL RACK, que es el lado A.
+                    Combo(w, "SideSelectorBox").SelectedIndex = 0;
+                    Combo(w, "SelectedFrontBox").SelectedIndex = front;
+
+                    // Y despues cambia al lado B para declararlo. El cursor tiene que seguirle.
+                    Combo(w, "SideSelectorBox").SelectedIndex = 1;
+                    if (Combo(w, "SelectedFrontBox").SelectedIndex != front) return false;
+                    if (w.CompositeState.Active.Structure.SelectedFrontIndex != front) return false;
+
+                    var box = Check(w, "SlotPresentCheck");
+                    if (!box.IsEnabled) return false;
+                    box.IsChecked = true;
+
+                    // Se declaro ESE frente, y solo hasta ese: los siguientes siguen sin lado B.
+                    for (var other = 0; other < 4; other++)
+                    {
+                        if (w.CompositeState.IsSlotPresent(PushBackSide.B, other) != (other <= front)) return false;
+                    }
+                }
+
+                return w.LastComputation.IsValid && w.LastComputation.System.IsComposite;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// Y se puede QUITAR de un frente intermedio y volver a ponerlo, sin tocar a los demas: presencia NO
+        /// CONTIGUA, que es lo que el contrato de I-42 permite y lo que el dueño pidio poder hacer.
+        /// </summary>
+        [Fact]
+        public void SideB_CanBeRemovedAndRestored_OnAnIntermediateFront()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 4, levels: 2);
+                Combo(w, "SideSelectorBox").SelectedIndex = 1;
+
+                Combo(w, "SelectedFrontBox").SelectedIndex = 1;
+                Check(w, "SlotPresentCheck").IsChecked = false;
+                var removed = !w.CompositeState.IsSlotPresent(PushBackSide.B, 1)
+                              && w.CompositeState.IsSlotPresent(PushBackSide.B, 0)
+                              && w.CompositeState.IsSlotPresent(PushBackSide.B, 2)
+                              && w.CompositeState.IsSlotPresent(PushBackSide.B, 3);
+
+                Check(w, "SlotPresentCheck").IsChecked = true;
+                return removed
+                       && w.CompositeState.IsSlotPresent(PushBackSide.B, 1)
+                       && w.LastComputation.IsValid;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>
+        /// Cambiar de lado NO mueve el cursor: la celda seleccionada es una posicion FISICA del rack y existe en los
+        /// dos lados. Es la causa raiz del bloqueo, aislada.
+        /// </summary>
+        [Fact]
+        public void SwitchingSides_KeepsTheSelectedCell()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 4, levels: 3);
+                Combo(w, "SideSelectorBox").SelectedIndex = 0;
+                Combo(w, "SelectedFrontBox").SelectedIndex = 2;
+                Combo(w, "SelectedLevelBox").SelectedIndex = 1;
+
+                Combo(w, "SideSelectorBox").SelectedIndex = 1;
+                var kept = w.CompositeState.Active.Structure.SelectedFrontIndex == 2
+                           && w.CompositeState.Active.Structure.SelectedLevelIndex == 1
+                           && Combo(w, "SelectedFrontBox").SelectedIndex == 2;
+
+                Combo(w, "SideSelectorBox").SelectedIndex = 0;
+                return kept
+                       && w.CompositeState.Active.Structure.SelectedFrontIndex == 2
+                       && w.CompositeState.Active.Structure.SelectedLevelIndex == 1;
             });
 
             Assert.True(ok);
@@ -1132,6 +1294,8 @@ namespace RackCad.UI.Tests
                                    && Combo(w, "FrontalSideBox").Visibility == Visibility.Collapsed;
 
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 var shownAfter = Section(w).Visibility == Visibility.Visible
                                  && Combo(w, "FrontalSideBox").Visibility == Visibility.Visible;
 
@@ -1235,6 +1399,8 @@ namespace RackCad.UI.Tests
             {
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
                 Check(w, "SideBPresentCheck").IsChecked = true;
+                // I-42: la CAPACIDAD ya no declara PRESENCIA; este caso quiere el rack compuesto entero.
+                DeclareSideBOnEveryFront(w, w.CompositeState.SlotCount);
                 var proposed = w.LastComputation.System.Composite.SideA.ProposedStructure;
 
                 Field(w, "StructureOverrideBox").SetNumber(proposed + 3);

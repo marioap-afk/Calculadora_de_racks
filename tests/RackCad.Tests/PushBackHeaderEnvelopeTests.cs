@@ -133,6 +133,13 @@ namespace RackCad.Tests
             state.SetSlotCount(deepsA.Length);
             state.SetGap(gap);
             state.SetDefaults(topology, PushBackRunDirection.AToB);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
             for (var slot = 0; slot < deepsA.Length; slot++)
             {
                 state.SideA.Structure.Fronts[slot].PalletsDeep = deepsA[slot];

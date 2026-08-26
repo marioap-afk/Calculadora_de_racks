@@ -126,7 +126,9 @@ namespace RackCad.Application.Systems.Dynamic
             // necesita su par de protectores. La PERTENENCIA no cambia —siguen siendo las dos lineas de orilla, y
             // ningun poste interior—: lo que se duplica es la CARA, no el numero de postes. Convertir «dos pasillos»
             // en «protector en cada poste» es exactamente el defecto que el dueño vio.
-            var bothFaces = selection.BothEndsAreLoadFaces;
+            // I-42: la segunda cara se pregunta POR LINEA. Un rack compuesto PARCIAL la tiene solo donde hay
+            // lado B; las lineas de los frentes que siguen siendo de un solo sentido conservan su regla legacy.
+            var bothFaces = selection.HasSecondLoadFaceAt(postIndex);
 
             if (postCount <= 1)
             {

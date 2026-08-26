@@ -42,6 +42,13 @@ namespace RackCad.Tests
             state.SideB.LoadNew();
             state.SetSlotCount(slots);
             state.SetDefaults(topology, direction);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
             foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
             {
                 var matrix = state.Of(side).Structure;

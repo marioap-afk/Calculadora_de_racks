@@ -104,24 +104,11 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            // Retirar el lado B NO borra su configuracion: queda dormante y reaparece intacta al volver a declararlo.
+            // Retirar el lado B NO borra su configuracion: queda dormante y reaparece intacta al volver a
+            // declararlo. Y DECLARARLO es solo declarar la CAPACIDAD: el modelo inicializa el lado, iguala la
+            // retícula y lo deja AUSENTE en todos los frentes, que el usuario declara uno por uno. La ventana ya no
+            // decide nada de esto — hacerlo aqui ataba el resultado al orden en que se tocaran los controles.
             composite.SetSideBPresent(SideBPresentCheck.IsChecked == true);
-            if (composite.SideBPresent)
-            {
-                if (composite.SideB.Structure.Count == 0)
-                {
-                    // Primera vez que se declara: el lado B nace vacio, y nace con las MISMAS ranuras que A —la
-                    // retícula transversal compartida—, todas presentes.
-                    composite.SideB.LoadNew();
-                    composite.SetSlotCount(Math.Max(1, composite.SideA.Structure.Count));
-                }
-                else
-                {
-                    // Un lado B que vuelve de estar DORMANTE conserva lo suyo: la retícula se iguala creciendo, nunca
-                    // recortando, y las ranuras que un lado no tenia nacen AUSENTES en el en vez de inventarse.
-                    composite.AlignSlotGrid();
-                }
-            }
             if (!composite.SideBPresent)
             {
                 SideSelectorBox.SelectedIndex = 0;

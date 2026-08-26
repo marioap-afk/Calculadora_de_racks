@@ -204,6 +204,13 @@ namespace RackCad.Tests
             state.SetSideBPresent(true);
             state.SideB.SetFrontCount(2);
             state.SetDefaults(PushBackCellTopology.Encontradas, PushBackRunDirection.AToB);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
 
             for (var round = 0; round < 10; round++)
             {

@@ -50,6 +50,13 @@ namespace RackCad.Tests
             state.SideB.LoadNew();
             state.SetSlotCount(Fronts);
             state.SetDefaults(topology, direction);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
 
             foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
             {
@@ -317,6 +324,13 @@ namespace RackCad.Tests
             Assert.Equal(PushBackCellTopology.SoloA, state.DefaultTopology);
 
             state.SetSideBPresent(true);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
             Assert.Equal(PushBackCellTopology.Encontradas, state.DefaultTopology);
 
             state.SideB.LoadNew();
@@ -342,9 +356,23 @@ namespace RackCad.Tests
             var state = new PushBackCompositeEditorState();
             state.SetSideBPresent(true);
             state.SetDefaults(PushBackCellTopology.Corrida, PushBackRunDirection.BToA);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
 
             state.SetSideBPresent(false);
             state.SetSideBPresent(true);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
 
             Assert.Equal(PushBackCellTopology.Corrida, state.DefaultTopology);
             Assert.Equal(PushBackRunDirection.BToA, state.DefaultDirection);
@@ -371,13 +399,33 @@ namespace RackCad.Tests
             for (var post = 0; post <= Fronts; post++)
             {
                 var instances = builder.Build(system, Catalog, post).Flatten().Instances;
-                var rails = instances.Count(instance => instance.Role == HeaderBlockRole.Rail);
-                var adjacent = post == 0 || post == Fronts ? 1 : 2;
+                var rails = instances.Where(instance => instance.Role == HeaderBlockRole.Rail).ToList();
+
+                // Un corte es una PROYECCION: dos frentes contiguos con la misma configuracion dibujan sus camas
+                // EXACTAMENTE una encima de otra, asi que lo que se exige es que esten TODAS las camas distintas de
+                // los frentes adyacentes — no un conteo de instancias, que solo mediria cuantas veces se repite la
+                // misma linea. Antes se dibujaban duplicadas y superpuestas (I-42, ronda post-5a73b92).
+                var expected = PushBackRunGeometry.Axes(PushBackRuns.Resolve(system), Catalog)
+                    .Where(axis => axis.Slot == post - 1 || axis.Slot == post)
+                    .Select(axis => Math.Round(axis.LowContact.Y, 3))
+                    .Distinct()
+                    .ToList();
+                var drawn = rails.Select(instance => Math.Round(instance.Insertion.Y, 3)).Distinct().ToList();
+                var places = rails
+                    .Select(instance => FormattableString.Invariant(
+                        $"{instance.Insertion.X:0.###}|{instance.Insertion.Y:0.###}|{instance.MirroredX}"))
+                    .Distinct()
+                    .Count();
 
                 Assert.True(
-                    rails == bedsPerFront * adjacent,
-                    "corte " + post + " (" + topology + "): esperados " + (bedsPerFront * adjacent)
-                    + " rieles, encontrados " + rails);
+                    rails.Count >= bedsPerFront,
+                    "corte " + post + " (" + topology + "): solo " + rails.Count + " rieles");
+                Assert.True(
+                    rails.Count == places,
+                    "corte " + post + " (" + topology + "): hay rieles DUPLICADOS y superpuestos");
+                Assert.True(
+                    expected.All(y => drawn.Any(other => Math.Abs(other - y) < 12.0)),
+                    "corte " + post + " (" + topology + "): falta la cama de algun frente adyacente");
 
                 // Y la estructura tambien esta: un corte no es solo camas.
                 Assert.Contains(instances, instance => instance.Role == HeaderBlockRole.Post);
@@ -613,6 +661,13 @@ namespace RackCad.Tests
             state.SideB.LoadNew();
 
             state.SetSlotCount(4);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
 
             Assert.Equal(4, state.SideA.Structure.Count);
             Assert.Equal(4, state.SideB.Structure.Count);
@@ -664,6 +719,13 @@ namespace RackCad.Tests
             reopened.SetSideBPresent(true);
             reopened.SideB.LoadNew();
             reopened.SetSlotCount(Fronts);
+            // I-42: declarar la CAPACIDAD del lado B ya no lo declara PRESENTE en ningun frente.
+            // Este fixture quiere el rack compuesto ENTERO, asi que lo declara frente a frente.
+            for (var declared = 0; declared < reopened.SlotCount; declared++)
+            {
+                reopened.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
             reopened.LoadComposite(design.Composite);
 
             Assert.False(reopened.IsSlotPresent(PushBackSide.A, 3));
