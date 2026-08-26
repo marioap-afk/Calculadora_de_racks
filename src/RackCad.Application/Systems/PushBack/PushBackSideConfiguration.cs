@@ -26,6 +26,7 @@ namespace RackCad.Application.Systems.PushBack
     public sealed class PushBackSideConfiguration
     {
         private readonly List<DynamicRackFrontDesign> fronts = new List<DynamicRackFrontDesign>();
+        private readonly List<DynamicRackFrontDesign> stored = new List<DynamicRackFrontDesign>();
         private readonly List<PushBackFrontConfig> configs = new List<PushBackFrontConfig>();
 
         private PushBackSideConfiguration(PushBackSide side)
@@ -59,6 +60,24 @@ namespace RackCad.Application.Systems.PushBack
         /// <summary>El frente de la ranura en este lado, o null si la ranura no existe aqui.</summary>
         public DynamicRackFrontDesign Front(int slot)
             => slot >= 0 && slot < fronts.Count ? fronts[slot] : null;
+
+        /// <summary>
+        /// I-42 (correccion aislada 2) — la DECLARACION FISICA de la ranura en este lado, tenga almacenamiento o no.
+        ///
+        /// <para>
+        /// «En blanco» significa que ese lado no almacena ahi, no que la bahia deje de existir ni que encoja: su
+        /// ancho, su claro y su posicion son propiedades del RACK y las siguientes ranuras no se mueven. Por eso hay
+        /// dos preguntas distintas y dos lecturas distintas: <see cref="Front"/> responde «¿hay almacenamiento?» y
+        /// esta responde «¿que declara fisicamente esta ranura?».
+        /// </para>
+        /// <para>
+        /// El lado A siempre la tiene, porque su ausencia se declara aparte y su frente sigue en el diseno. El lado
+        /// B expresa la ausencia con una entrada NULA en su propia lista, asi que de una ranura suya en blanco no
+        /// queda declaracion fisica que recuperar: ahi devuelve null y el ancho lo aporta el otro lado.
+        /// </para>
+        /// </summary>
+        public DynamicRackFrontDesign StoredFront(int slot)
+            => slot >= 0 && slot < stored.Count ? stored[slot] : null;
 
         /// <summary>La configuracion Push Back de la ranura, o null.</summary>
         public PushBackFrontConfig Config(int slot)
@@ -229,6 +248,9 @@ namespace RackCad.Application.Systems.PushBack
                 // las siguientes— sino que se lee como nula. Su configuracion sigue ahi, dormante.
                 var absent = composite != null && composite.IsSlotAbsentInA(slot);
                 result.fronts.Add(absent ? null : designFronts[slot]);
+                // La declaracion fisica de la ranura sobrevive a la ausencia: es lo que impide que poner un frente
+                // en blanco encoja su bahia y desplace a todas las siguientes.
+                result.stored.Add(designFronts[slot]);
                 result.configs.Add(absent ? null : design?.FrontConfig(slot));
             }
 
@@ -252,6 +274,7 @@ namespace RackCad.Application.Systems.PushBack
             if (side != null)
             {
                 result.fronts.AddRange(side.Fronts);
+                result.stored.AddRange(side.Fronts);
                 result.configs.AddRange(side.FrontConfigs);
             }
 

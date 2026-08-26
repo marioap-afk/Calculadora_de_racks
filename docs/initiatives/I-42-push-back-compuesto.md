@@ -800,6 +800,94 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-terdecies. Correccion aislada 2: «EN BLANCO» conserva la RANURA FISICA
+
+### La decision
+
+Una ranura EN BLANCO existe fisicamente en la retícula; lo que no existe es el ALMACENAMIENTO de ese lado en ella.
+No borra el slot, no compacta indices, no mueve los frentes posteriores y no retira la estructura.
+
+Son TRES preguntas distintas y no un solo booleano:
+
+1. la RANURA fisica — la posicion transversal del rack;
+2. el ALMACENAMIENTO de un lado en esa ranura;
+3. la NECESIDAD de una LINEA de cabecera — si sostiene algo a izquierda o a derecha.
+
+### La causa raiz
+
+`PushBackCompositeStructure.SideStructuralDesign` **saltaba** con `continue` toda ranura sin frente en ninguno de
+los dos lados, mientras `Compose` la conservaba. Resultado: retícula compuesta de N frentes y sub-estructura local
+de N-1. Y como el puente ranura → indice local es la IDENTIDAD —lo dice el propio comentario del resolver—, cada
+ranura posterior al blanco leia la configuracion de la SIGUIENTE y la ultima se quedaba sin ninguna.
+
+Medido con 3 ranuras y la primera en blanco en los dos lados, antes de tocar nada:
+
+```
+A: localFronts=2  map=[0,1,2]  fronts=[-,F,-]
+runs: [s1/n1 A->A] [s1/n1 B->B] [s1/n2 A->A] [s1/n2 B->B]      <- la ranura 2 no tiene ninguna
+```
+
+La ranura 1 recibia la estructura de la 2 y la 2 desaparecia entera. Es exactamente lo que el dueño vio como
+«poner F1 en blanco borra tambien F3». El mismo defecto con la ranura del MEDIO en blanco (perdia la 3) y con dos
+blancos seguidos en un rack de 4 (perdia la 4).
+
+### La estrategia: PRESERVAR LOS SLOTS
+
+De las dos opciones, la preferida: **la sub-estructura de cada lado conserva TODOS los slots fisicos**, con una
+representacion en blanco, igual que `Compose`. Asi `localIndex == slot` es cierto POR CONSTRUCCION y no hace falta
+volver real el mapa ni repartir `-1` por los consumidores. No se mezcla con la otra estrategia: no queda ninguna
+compactacion implicita.
+
+Y una segunda lectura, porque la ranura fisica y el almacenamiento son preguntas distintas:
+`PushBackSideConfiguration.StoredFront(slot)` devuelve la DECLARACION FISICA de la ranura tenga o no
+almacenamiento, y de ella salen el ancho de la bahia y el override de larguero en `Compose`. Sin eso, marcar una
+ranura en blanco encogia su bahia a una calle y corria todas las lineas posteriores — medido: con la ranura 0 a
+dos calles, las lineas pasaban de `0, 97.49, 150.99, 204.48` a `0, 53.49, 106.99, 160.48`.
+
+### Lineas de cabecera
+
+`NeedsHeaderLine` ya existe y no hacia falta inventarla: es `DynamicFrontActivation.BoundaryExists`, que se
+pregunta por CONTINUIDAD —los dos bordes exteriores siempre existen; una linea interior existe si alguno de sus
+dos claros esta activo— sobre la retícula COMPUESTA, cuyo `IsActive` es la UNION de los dos lados. De ahi salen
+las tres reglas sin ningun caso especial: `A|B|A` conserva todas sus lineas, `A|B|B|A` no tiene la de en medio, y
+una ranura en blanco solo en A conserva la suya porque B almacena ahi.
+
+### Medido, antes y despues
+
+| escenario | ranuras | lineas presentes | camas | antes |
+|---|---|---|---|---|
+| F1 en blanco (A+B) | 3 | 0,1,2,3 | ranuras 1 y 2 completas | **la ranura 2 perdia todas** |
+| F2 en blanco (A+B) | 3 | 0,1,2,3 | ranuras 0 y 2 completas | **la ranura 2 perdia todas** |
+| F3 en blanco (A+B) | 3 | 0,1,2,3 | ranuras 0 y 1 completas | igual |
+| F2+F3 en blanco (A+B) | 4 | 0,1,**3**,4 | ranuras 0 y 3 completas | **la ranura 3 perdia todas** |
+| en blanco solo en A | 3 | 0,1,2,3 | la ranura conserva las camas de B | igual |
+| en blanco solo en B | 3 | 0,1,2,3 | la ranura conserva las camas de A | igual |
+| en blanco en A+B | 3 | todas | hueco fisico, sin camas | igual |
+| patron no contiguo (F2 y F4 de 5) | 5 | todas | ranuras 0, 2 y 4 completas | **la 4 perdia todas** |
+
+Las posiciones de las lineas, los indices de ranura, la longitud del rack y los `ModuleId` de I-40 son IDENTICOS
+al mismo rack sin el blanco en los ocho escenarios.
+
+### Un defecto NUEVO, medido y NO corregido
+
+Una ranura cuyo ancho lo declara **solo el lado B** pierde ese ancho al ponerla en blanco EN B: sus lineas pasan
+de `0, 97.49, 150.99, 204.48` a `0, 53.49, 106.99, 160.48`. El caso simetrico —ancho solo en A, en blanco en A—
+**si** queda corregido.
+
+La razon es que los dos lados representan la ausencia de forma distinta: A la declara aparte (`AbsentSlotsA`) y
+conserva su frente en el diseno, mientras B la expresa con una entrada NULA en su propia lista, de modo que de una
+ranura suya en blanco no queda declaracion fisica que recuperar. Hacerlo simetrico es cambiar la forma persistida
+del lado B, que es justo el area del fallo de resurreccion de presencia de B que el encargo manda no abrir en esta
+corrida. Queda REPORTADO, sin tocar.
+
+### Pruebas
+
+`PushBackBlankSlotIdentityTests` (11), con aserciones POR RANURA contra el mismo rack sin el blanco: ranuras,
+posiciones de linea, lineas presentes, camas por ranura, identidad `run.Slot == run.SourceFrontIndex`, celdas sin
+camas en las ranuras en blanco, `ModuleId` estables y el patron no contiguo sobreviviendo a guardar y reabrir.
+**Seis de las once fallan sin la correccion.** Ningun golden se movio: la retícula no cambia donde no habia
+defecto.
+
 ## 4-duodecies. Correccion aislada 1B: la FRONTAL coincide con la LATERAL
 
 ### La regla

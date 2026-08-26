@@ -164,12 +164,24 @@ namespace RackCad.Application.Systems.PushBack
                     continue;
                 }
 
-                // La ranura no existe en este lado: viaja EN BLANCO para conservar la columna. Su claro lo aporta el
-                // lado que si la tiene, porque el BFR es una propiedad fisica compartida.
-                var reference = other?.Front(slot);
+                // La ranura no ALMACENA en este lado: viaja EN BLANCO para conservar la columna. Su claro lo aporta
+                // la declaracion fisica que haya —la propia si sobrevive, la del otro lado si no—, porque el BFR es
+                // una propiedad fisica compartida.
+                //
+                // I-42 (correccion aislada 2) — NINGUNA ranura se salta, ni siquiera la que esta en blanco en los
+                // DOS lados. Saltarla compactaba esta sub-estructura: la retícula compuesta tenia N frentes y la
+                // local N-1, y como el puente ranura->indice local es la IDENTIDAD, cada ranura posterior al blanco
+                // leia la configuracion de la siguiente y la ultima se quedaba sin ninguna. Ese era el defecto que
+                // el dueño vio como «poner F1 en blanco borra tambien F3».
+                var reference = side.StoredFront(slot) ?? other?.StoredFront(slot) ?? other?.Front(slot);
                 if (reference == null)
                 {
-                    continue;
+                    reference = new DynamicRackFrontDesign
+                    {
+                        PalletCount = DynamicRackDefaults.DefaultPalletsWide,
+                        PalletsDeep = local.PalletsDeep,
+                        DepthStartPosition = 1
+                    };
                 }
 
                 var blank = PushBackSideDesign.CopyFront(reference);
@@ -253,7 +265,13 @@ namespace RackCad.Application.Systems.PushBack
                 }
 
                 var range = layout.SlotRange(structureA, structureB);
-                var reference = sideA.Front(slot) ?? sideB.Front(slot);
+                // La GEOMETRIA de la bahia —su ancho, su claro y con ellos la posicion de todas las ranuras que
+                // siguen— es una propiedad del rack, no del almacenamiento: se lee de la DECLARACION FISICA de cada
+                // lado, que sobrevive a poner la ranura en blanco. Leerla de los frentes con almacenamiento hacia
+                // que marcar «en blanco» encogiera la bahia a una calle y corriera todas las lineas posteriores.
+                var storedA = sideA.StoredFront(slot);
+                var storedB = sideB.StoredFront(slot);
+                var reference = sideA.Front(slot) ?? sideB.Front(slot) ?? storedA ?? storedB;
                 var levels = Math.Max(sideA.Levels(slot), sideB.Levels(slot));
                 var front = new DynamicRackFrontDesign
                 {
@@ -262,13 +280,12 @@ namespace RackCad.Application.Systems.PushBack
                         && ((sideA.Front(slot)?.IsActive ?? false) || (sideB.Front(slot)?.IsActive ?? false)),
                     // La mayor demanda aplicable gobierna la envolvente compartida: calles, ancho y niveles.
                     PalletCount = Math.Max(
-                        sideA.Front(slot)?.PalletCount ?? 0,
-                        Math.Max(1, sideB.Front(slot)?.PalletCount ?? 0)),
+                        storedA?.PalletCount ?? 0,
+                        Math.Max(1, storedB?.PalletCount ?? 0)),
                     LoadLevels = levels > 0 ? levels : (int?)null,
                     PalletsDeep = range.Count,
                     DepthStartPosition = range.Start,
-                    BeamLengthOverride = MaxOverride(
-                        sideA.Front(slot)?.BeamLengthOverride, sideB.Front(slot)?.BeamLengthOverride),
+                    BeamLengthOverride = MaxOverride(storedA?.BeamLengthOverride, storedB?.BeamLengthOverride),
                     FirstLevelHeight = reference?.FirstLevelHeight
                 };
 
