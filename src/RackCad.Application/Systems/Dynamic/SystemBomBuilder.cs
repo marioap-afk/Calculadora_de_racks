@@ -45,7 +45,7 @@ namespace RackCad.Application.Systems.Dynamic
                     continue;
                 }
 
-                var range = DynamicDepthGeometry.AtPost(system, postIndex);
+                var range = DynamicDepthGeometry.CoverageAtPost(system, postIndex);
                 foreach (var module in system.Modules.Where(module => range.Contains(module.Index + 1)
                              && module.IsHeader
                              && module.AssociatedFrameConfiguration != null))
@@ -98,7 +98,7 @@ namespace RackCad.Application.Systems.Dynamic
                     DynamicFrontGeometry.PostHeight(system, postIndex)).Count;
                 foreach (var module in modules)
                 {
-                    if (!DynamicDepthGeometry.AtPost(system, postIndex).Contains(module.Index + 1))
+                    if (!DynamicDepthGeometry.CoverageAtPost(system, postIndex).Contains(module.Index + 1))
                     {
                         continue;
                     }
@@ -220,7 +220,7 @@ namespace RackCad.Application.Systems.Dynamic
                         ? system.DerivedPostReinforcementHeight.Value
                         : primaryHeight)
                     : 0.0;
-                var range = DynamicDepthGeometry.AtPost(system, postIndex);
+                var range = DynamicDepthGeometry.CoverageAtPost(system, postIndex);
                 var derivedCount = offsets.Count(offset =>
                 {
                     var boundary = system.Modules

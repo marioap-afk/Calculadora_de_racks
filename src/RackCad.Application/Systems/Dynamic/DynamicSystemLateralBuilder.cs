@@ -71,9 +71,15 @@ namespace RackCad.Application.Systems.Dynamic
             var sectionHeight = sectioned
                 ? DynamicFrontGeometry.PostHeight(system, postIndex)
                 : DynamicFrontGeometry.Height(system);
-            var sectionRange = sectioned
-                ? DynamicDepthGeometry.AtPost(system, postIndex)
-                : new DynamicDepthRange(1, system.PalletsDeep);
+            // Un CORTE dibuja la estructura de SU linea, asi que respeta su cobertura: si un frente compuesto no
+            // usa una parte de la profundidad, alli no hay cabecera que dibujar (I-42, error 4). El lateral general
+            // sigue siendo la envolvente del rack entero.
+            var sectionCoverage = sectioned
+                ? DynamicDepthGeometry.CoverageAtPost(system, postIndex)
+                : new DynamicDepthCoverage(new[] { new DynamicDepthRange(1, system.PalletsDeep) });
+            var sectionRange = new DynamicDepthRange(
+                sectionCoverage.StartPosition,
+                sectionCoverage.EndPosition - sectionCoverage.StartPosition + 1);
             var context = Resolve(system, catalog, sectionHeight, postIndex);
             var loose = new List<HeaderBlockInstance>();
 
@@ -84,7 +90,7 @@ namespace RackCad.Application.Systems.Dynamic
             var order = new List<string>();
             var headerOrdinal = 0;
 
-            foreach (var module in DynamicDepthGeometry.ModulesInRange(system, sectionRange))
+            foreach (var module in DynamicDepthGeometry.ModulesInCoverage(system, sectionCoverage))
             {
                 if (module.IsHeader && module.AssociatedFrameConfiguration != null)
                 {
@@ -134,7 +140,7 @@ namespace RackCad.Application.Systems.Dynamic
             {
                 AddDerivedPost(loose, context, offset, context.ReinforceDerivedPost);
             }
-            foreach (var offset in DynamicDepthGeometry.BoundaryPostOffsets(system, sectionRange))
+            foreach (var offset in DynamicDepthGeometry.BoundaryPostOffsets(system, sectionCoverage))
             {
                 AddDerivedPost(loose, context, offset, reinforced: false);
             }

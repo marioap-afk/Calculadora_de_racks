@@ -65,7 +65,7 @@ namespace RackCad.Application.Systems.Dynamic
                 var beamLength = design.BeamLengthOverride.HasValue && design.BeamLengthOverride.Value > 0.0
                     ? design.BeamLengthOverride.Value
                     : AutoBeamLength(palletFront, count, tolerance);
-                result.Add(new DynamicRackFront
+                var resolved = new DynamicRackFront
                 {
                     Index = index,
                     IsActive = design.IsActive,
@@ -82,7 +82,16 @@ namespace RackCad.Application.Systems.Dynamic
                     Bfr = Bfr(palletFront),
                     BeamLength = beamLength,
                     BeamLengthOverride = design.BeamLengthOverride
-                });
+                };
+
+                // I-42: los TRAMOS viajan verbatim. Sin ellos el frente ocupa su rango continuo de siempre, que es
+                // lo que hace cualquier diseño anterior a la iniciativa.
+                foreach (var segment in design.DepthSegments)
+                {
+                    resolved.DepthSegments.Add(segment);
+                }
+
+                result.Add(resolved);
             }
 
             return result;
@@ -339,7 +348,7 @@ namespace RackCad.Application.Systems.Dynamic
                 return null;
             }
 
-            var range = DynamicDepthGeometry.AtPost(system, postIndex);
+            var range = DynamicDepthGeometry.CoverageAtPost(system, postIndex);
             var headers = system.Modules
                 .Where(module => module != null && module.IsHeader && range.Contains(module.Index + 1))
                 .OrderBy(module => module.Index)

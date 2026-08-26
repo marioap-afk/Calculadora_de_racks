@@ -524,9 +524,58 @@ heterogeneas hay que mirar los CORTES por poste. Y ninguna vista tiene relacion 
 general colapsa ranuras, los cortes muestran cada frente en los dos que lo flanquean y la planta colapsa
 niveles—, asi que el conteo se contrasta contra las camas, no contra un dibujo.
 
-### SIGUEN ABIERTOS
+### CERRADO — error 4: la envolvente se resuelve POR LINEA FISICA TRANSVERSAL
 
-Error 4 (envolvente de cabeceras por linea fisica) y la parte de UX del error 10.
+**La regla del dueño**: `RequiredHeaderEnvelope(linea) = la maxima envolvente que exigen los frentes FISICAMENTE
+ADYACENTES a esa linea`. Ni el maximo del rack, ni un frente arbitrario, ni un frente remoto que la linea no
+sostiene. Una linea INTERMEDIA si se extiende aunque uno de sus dos frentes sea corto, porque sostiene tambien al
+otro.
+
+**Lo primero fue MEDIR, y el rack de un solo sentido ya cumplia.** Con frentes 5/8/6/9 las cinco lineas caen
+exactamente donde manda la regla (posiciones 5, 8, 8, 9, 9), y la linea exterior del frente de 5 no se alarga
+porque exista otro de 9. `DynamicDepthGeometry.AtPost` ya unia los rangos de los frentes adyacentes y la planta,
+el BOM y los cortes ya lo consumian. Eso no se toca; ahora queda FIJADO por pruebas.
+
+**El defecto estaba en el COMPUESTO.** `PushBackCompositeLayout.SlotRange` daba la profundidad ENTERA a toda
+ranura presente en los dos lados. Medido en un rack de 17 posiciones con A=[5,8,6] y B=[8,8,8], las cuatro lineas
+declaraban `1..17` y la planta ponia postes en TODAS las posiciones de cada linea — incluidas las que ninguna de
+las dos camas de esa ranura alcanza. Es literalmente «se extienden cabeceras segun los frentes grandes incluso
+donde fisicamente no son necesarias».
+
+**La correccion.** Una ranura declara sus TRAMOS de profundidad (`DepthSegments`): lo que demanda su lado A,
+pegado al arranque, y lo que demanda su lado B, pegado al final. La cobertura de una linea es la UNION de los
+tramos de sus frentes adyacentes, y los materializadores preguntan «esta ESTA posicion cubierta» en vez de «entre
+que dos». El rango continuo del frente NO cambia —su claro, su ancho y sus coordenadas siguen siendo los de
+antes—; lo que cambia es donde existe su estructura.
+
+Tres casos NO declaran tramos, y en ellos nada cambia:
+
+- una ranura de un solo lado, cuyo rango ya era exacto;
+- una ranura con alguna celda CORRIDA: su cama atraviesa la interfaz y necesita apoyos en todo el recorrido;
+- una ranura cuyos dos lados llegan a la interfaz: los tramos se juntan a traves de ella, que es lo que sostiene
+  el separador central.
+
+Y los tramos de una cobertura se FUSIONAN cuando se tocan o se solapan. Sin eso, dos frentes adyacentes que
+comparten profundidad producian dos tramos identicos y un poste de frontera se contaba dos veces; el rack de un
+sentido lo detecto de inmediato.
+
+**Resultado medido** (misma configuracion): la linea exterior de la ranura de fondo 5 pierde los postes de las
+posiciones 6, 7 y 8, y la de la ranura de fondo 6 pierde el de la 8. Las lineas intermedias, que sostienen
+tambien a la ranura profunda, no pierden ninguno.
+
+**SECCION K — la identidad de I-40 se conserva.** No se toco ningun `ModuleId`, `HeaderConfiguration`,
+`HeaderLineOverride` ni `DerivedPostLineOverride`: solo cambia QUE modulos materializa cada linea. Hay prueba de
+que la secuencia de `ModuleId` y de `Kind` es identica antes y despues de acortar una ranura, y de que un
+`HeaderLineOverride` puesto sobre una linea sigue aplicandose despues del recorte.
+
+**Pruebas** (`PushBackHeaderEnvelopeTests`): el ejemplo literal del dueño (5/8/6/9) linea a linea; un frente
+remoto que no alarga ninguna; el defecto compuesto medido en la linea exterior; la cobertura continua cuando los
+dos lados llegan a la interfaz; la corrida que conserva toda la profundidad; el BOM que deja de cotizar lo que la
+planta deja de dibujar; y las dos de identidad de I-40.
+
+### SIGUE ABIERTA
+
+La parte de UX del error 10.
 
 ## 5. Limitaciones DECLARADAS (no son descuidos)
 

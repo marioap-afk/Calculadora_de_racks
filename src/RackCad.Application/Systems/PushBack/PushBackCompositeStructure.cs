@@ -247,7 +247,7 @@ namespace RackCad.Application.Systems.PushBack
                 var range = layout.SlotRange(structureA, structureB);
                 var reference = sideA.Front(slot) ?? sideB.Front(slot);
                 var levels = Math.Max(sideA.Levels(slot), sideB.Levels(slot));
-                composite.Fronts.Add(new DynamicRackFrontDesign
+                var front = new DynamicRackFrontDesign
                 {
                     // Una ranura esta ACTIVA si lo esta en cualquiera de los dos lados: su estructura existe igual.
                     IsActive = (sideA.Front(slot)?.IsActive ?? false) || (sideB.Front(slot)?.IsActive ?? false),
@@ -261,7 +261,14 @@ namespace RackCad.Application.Systems.PushBack
                     BeamLengthOverride = MaxOverride(
                         sideA.Front(slot)?.BeamLengthOverride, sideB.Front(slot)?.BeamLengthOverride),
                     FirstLevelHeight = reference?.FirstLevelHeight
-                });
+                };
+
+                foreach (var segment in SlotSegments(design, layout, sideA, sideB, slot, structureA, structureB))
+                {
+                    front.DepthSegments.Add(segment);
+                }
+
+                composite.Fronts.Add(front);
             }
 
             foreach (var module in ComposeModules(layout, localA, localB))
@@ -270,6 +277,73 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             return composite;
+        }
+
+        /// <summary>
+        /// ERROR 4 (I-42) — los TRAMOS de profundidad que una ranura ocupa DE VERDAD.
+        ///
+        /// <para>
+        /// Una ranura presente en los dos lados sigue siendo UNA bahia que atraviesa el rack —su rango continuo no
+        /// cambia, y con el su claro, su ancho y sus coordenadas—, pero su ESTRUCTURA solo tiene que existir donde
+        /// alguna de sus camas la usa: pegada al arranque hasta donde llega la demanda de A, y pegada al final hasta
+        /// donde llega la de B. La profundidad intermedia que ninguno de los dos alcanza no lleva cabecera. Antes
+        /// toda ranura de dos lados reclamaba la profundidad entera, de modo que una ranura corta se extendia hasta
+        /// donde llegaba la mas larga del rack: las «cabeceras de mas» que reporto el dueño.
+        /// </para>
+        /// <para>
+        /// Dos excepciones, y las dos son fisicas:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>una ranura de un solo lado ya ocupa un rango exacto: no declara tramos;</item>
+        /// <item>una ranura con alguna celda CORRIDA atraviesa la interfaz, asi que su cama necesita apoyos en TODA
+        /// la profundidad y tampoco declara tramos.</item>
+        /// </list>
+        /// <para>
+        /// Una lista VACIA significa «un solo tramo, el rango de siempre»: es la respuesta cuando la cobertura ya
+        /// coincide con el rango, y es lo que hace que nada cambie donde no habia defecto.
+        /// </para>
+        /// </summary>
+        public static IReadOnlyList<DynamicDepthSegment> SlotSegments(
+            PushBackDesign design,
+            PushBackCompositeLayout layout,
+            PushBackSideConfiguration sideA,
+            PushBackSideConfiguration sideB,
+            int slot,
+            int structureA,
+            int structureB)
+        {
+            var none = Array.Empty<DynamicDepthSegment>();
+            if (layout == null || structureA <= 0 || structureB <= 0)
+            {
+                return none;
+            }
+
+            var levels = Math.Max(sideA?.Levels(slot) ?? 0, sideB?.Levels(slot) ?? 0);
+            for (var level = 0; level < levels; level++)
+            {
+                if (design?.Composite?.TopologyAt(slot, level) == PushBackCellTopology.Corrida)
+                {
+                    return none;   // la cama cruza: la estructura tiene que acompañarla de extremo a extremo
+                }
+            }
+
+            var countA = Math.Max(
+                PushBackCellDepth.MinimumPalletsDeep, Math.Min(structureA, layout.PositionsA));
+            var countB = Math.Max(
+                PushBackCellDepth.MinimumPalletsDeep, Math.Min(structureB, layout.PositionsB));
+            var startB = layout.TotalPositions - countB + 1;
+            if (countA >= layout.PositionsA && countB >= layout.PositionsB)
+            {
+                // Los dos lados llegan a la interfaz: los tramos se juntan a traves de ella y la cobertura ES el
+                // rango continuo. La posicion de interfaz queda dentro, que es lo que sostiene el separador central.
+                return none;
+            }
+
+            return new[]
+            {
+                new DynamicDepthSegment(1, countA),
+                new DynamicDepthSegment(startB, countB)
+            };
         }
 
         /// <summary>

@@ -237,6 +237,15 @@ namespace RackCad.Application.Systems.PushBack
                     copy.Levels.Add(level);
                 }
 
+                // Los TRAMOS de profundidad son geometria, asi que se reflejan como el rango: la ultima posicion
+                // pasa a ser la primera. Sin esto una estructura reflejada declararia sus tramos en el marco del
+                // que viene y la cobertura por linea saldria al reves.
+                foreach (var segment in front.DepthSegments)
+                {
+                    copy.DepthSegments.Add(new DynamicDepthSegment(
+                        total - segment.EndPosition + 1, segment.Positions));
+                }
+
                 mirrored.Fronts.Add(copy);
             }
 

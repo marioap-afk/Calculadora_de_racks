@@ -3,6 +3,35 @@ using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.Domain.Systems.Dynamic
 {
+    /// <summary>
+    /// I-42 — un TRAMO de profundidad ocupado por un frente, en posiciones 1-based de la secuencia compartida.
+    ///
+    /// <para>
+    /// Existe porque un frente de un rack COMPUESTO no ocupa un rango continuo: su lado A vive pegado al arranque y
+    /// su lado B al final, y entre los dos puede quedar profundidad que ese frente NO usa. Un rack de un solo
+    /// sentido tiene siempre un unico tramo, que es su rango de siempre.
+    /// </para>
+    /// </summary>
+    public readonly struct DynamicDepthSegment
+    {
+        public DynamicDepthSegment(int startPosition, int positions)
+        {
+            StartPosition = startPosition;
+            Positions = positions;
+        }
+
+        /// <summary>Primera posicion (1-based) del tramo.</summary>
+        public int StartPosition { get; }
+
+        /// <summary>Cuantas posiciones ocupa.</summary>
+        public int Positions { get; }
+
+        /// <summary>Ultima posicion (1-based) del tramo.</summary>
+        public int EndPosition => StartPosition + Positions - 1;
+
+        public bool Contains(int position) => position >= StartPosition && position <= EndPosition;
+    }
+
     /// <summary>Editable transverse intent for one dynamic rack front.</summary>
     public sealed class DynamicRackFrontDesign
     {
@@ -38,6 +67,19 @@ namespace RackCad.Domain.Systems.Dynamic
 
         /// <summary>Editable cell values, level 1 first. Missing entries inherit the rack-wide legacy fields.</summary>
         public IList<DynamicRackLevelDesign> Levels { get; } = new List<DynamicRackLevelDesign>();
+
+        /// <summary>
+        /// I-42 — los TRAMOS de profundidad que este frente ocupa realmente. VACIA es lo normal y significa «un solo
+        /// tramo, el de <see cref="DepthStartPosition"/> y <see cref="PalletsDeep"/>»: todo diseño anterior a la
+        /// iniciativa y todo rack de un solo sentido se comportan exactamente igual que antes.
+        ///
+        /// <para>
+        /// Es DERIVADA y no se persiste: la construye el compositor del rack compuesto a partir de la demanda de
+        /// cada lado y de la topologia de sus celdas. Reconstruirla en cada resolucion es lo que evita que un
+        /// documento guardado tenga que entenderla.
+        /// </para>
+        /// </summary>
+        public IList<DynamicDepthSegment> DepthSegments { get; } = new List<DynamicDepthSegment>();
     }
 
     /// <summary>Resolved transverse width of one front; drawing and BOM consume this same result.</summary>
@@ -74,6 +116,13 @@ namespace RackCad.Domain.Systems.Dynamic
 
         /// <summary>Resolved commercial post height required by this front's own load levels.</summary>
         public double Height { get; set; }
+
+        /// <summary>
+        /// I-42 — los TRAMOS de profundidad que este frente ocupa realmente (ver
+        /// <see cref="DynamicRackFrontDesign.DepthSegments"/>). Vacia = un solo tramo continuo, que es el caso de
+        /// todo rack de un solo sentido.
+        /// </summary>
+        public IList<DynamicDepthSegment> DepthSegments { get; } = new List<DynamicDepthSegment>();
 
         /// <summary>Resolved end-beam elevations for this front's own depth and slope.</summary>
         public IList<DynamicLoadBeamLevel> LoadBeamLevels { get; } = new List<DynamicLoadBeamLevel>();

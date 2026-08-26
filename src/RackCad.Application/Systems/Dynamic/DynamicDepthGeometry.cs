@@ -26,6 +26,77 @@ namespace RackCad.Application.Systems.Dynamic
     }
 
     /// <summary>
+    /// I-42 — lo que una linea fisica transversal cubre a lo largo de la profundidad: uno o varios tramos.
+    ///
+    /// <para>
+    /// Un rack de un solo sentido tiene siempre UN tramo y esto se comporta igual que el rango de siempre. Un rack
+    /// compuesto puede tener dos —el de cada lado— con profundidad sin usar en medio, y por eso la pregunta que
+    /// responden los materializadores no es «entre que dos posiciones» sino «esta ESTA posicion cubierta».
+    /// </para>
+    /// </summary>
+    public sealed class DynamicDepthCoverage
+    {
+        private readonly IReadOnlyList<DynamicDepthRange> segments;
+
+        public DynamicDepthCoverage(IReadOnlyList<DynamicDepthRange> segments)
+        {
+            this.segments = Normalize(segments);
+        }
+
+        /// <summary>
+        /// Los tramos se FUSIONAN cuando se solapan o se tocan, de modo que la cobertura queda en tramos minimos y
+        /// disjuntos. Sin esto un poste de frontera se contaria una vez por frente adyacente en vez de una vez por
+        /// tramo: dos frentes que comparten la misma profundidad son UNA sola linea continua, no dos.
+        /// </summary>
+        private static IReadOnlyList<DynamicDepthRange> Normalize(IReadOnlyList<DynamicDepthRange> source)
+        {
+            var ordered = (source ?? Array.Empty<DynamicDepthRange>())
+                .Where(segment => segment.PalletsDeep > 0)
+                .OrderBy(segment => segment.StartPosition)
+                .ThenBy(segment => segment.EndPosition)
+                .ToList();
+
+            var result = new List<DynamicDepthRange>();
+            foreach (var segment in ordered)
+            {
+                if (result.Count == 0)
+                {
+                    result.Add(segment);
+                    continue;
+                }
+
+                var last = result[result.Count - 1];
+                if (segment.StartPosition > last.EndPosition + 1)
+                {
+                    result.Add(segment);
+                    continue;
+                }
+
+                var end = Math.Max(last.EndPosition, segment.EndPosition);
+                result[result.Count - 1] = new DynamicDepthRange(
+                    last.StartPosition, end - last.StartPosition + 1);
+            }
+
+            return result;
+        }
+
+        /// <summary>Los tramos cubiertos, tal cual los declararon los frentes.</summary>
+        public IReadOnlyList<DynamicDepthRange> Segments => segments;
+
+        /// <summary>True si la cobertura no tiene ningun tramo.</summary>
+        public bool IsEmpty => segments.Count == 0;
+
+        /// <summary>La primera posicion cubierta.</summary>
+        public int StartPosition => segments.Count == 0 ? 1 : segments.Min(segment => segment.StartPosition);
+
+        /// <summary>La ultima posicion cubierta.</summary>
+        public int EndPosition => segments.Count == 0 ? 0 : segments.Max(segment => segment.EndPosition);
+
+        /// <summary>Si una posicion concreta esta cubierta por alguno de los tramos.</summary>
+        public bool Contains(int position) => segments.Any(segment => segment.Contains(position));
+    }
+
+    /// <summary>
     /// Shared pallet-flow depth contract. The shortest front owns the two +6 in end allowances and the standard
     /// header/separator pattern. Every longer front must contain that base range and only extends the pattern; its
     /// own first/last position therefore may remain a separator.
@@ -193,15 +264,59 @@ namespace RackCad.Application.Systems.Dynamic
 
         public static DynamicDepthRange AtPost(DynamicRackSystem system, int postIndex)
         {
+            var coverage = CoverageAtPost(system, postIndex);
+            return new DynamicDepthRange(
+                coverage.StartPosition, coverage.EndPosition - coverage.StartPosition + 1);
+        }
+
+        /// <summary>
+        /// Los TRAMOS de profundidad que un frente ocupa realmente. Sin tramos declarados es su rango continuo de
+        /// siempre, que es el caso de todo rack de un solo sentido.
+        /// </summary>
+        public static IReadOnlyList<DynamicDepthRange> SegmentsOf(DynamicRackFront front)
+        {
+            if (front == null)
+            {
+                return Array.Empty<DynamicDepthRange>();
+            }
+
+            if (front.DepthSegments.Count == 0)
+            {
+                return new[] { new DynamicDepthRange(front.DepthStartPosition, front.PalletsDeep) };
+            }
+
+            return front.DepthSegments
+                .Where(segment => segment.Positions > 0)
+                .Select(segment => new DynamicDepthRange(segment.StartPosition, segment.Positions))
+                .ToList();
+        }
+
+        /// <summary>
+        /// ERROR 4 (I-42) — la ENVOLVENTE LONGITUDINAL que una LINEA FISICA TRANSVERSAL tiene que sostener: la union
+        /// de lo que demandan los frentes FISICAMENTE ADYACENTES a esa linea, y nada mas.
+        ///
+        /// <para>
+        /// La linea exterior de un frente corto termina donde termina ESE frente; una linea intermedia se extiende
+        /// hasta donde llegue el mas profundo de los dos frentes que separa. Un frente remoto no la alarga: la
+        /// envolvente no es el maximo del rack.
+        /// </para>
+        /// <para>
+        /// Devuelve una COBERTURA y no un rango porque en un rack compuesto no tiene por que ser continua: un frente
+        /// presente en los dos lados demanda profundidad pegada al arranque y pegada al final, y entre las dos puede
+        /// quedar estructura que ese frente no usa. Con un solo tramo —todo rack de un sentido— la cobertura es
+        /// exactamente el rango de siempre.
+        /// </para>
+        /// </summary>
+        public static DynamicDepthCoverage CoverageAtPost(DynamicRackSystem system, int postIndex)
+        {
             var adjacent = DynamicFrontGeometry.AdjacentFronts(system, postIndex);
             if (adjacent.Count == 0)
             {
-                return new DynamicDepthRange(1, Math.Max(0, system?.PalletsDeep ?? 0));
+                return new DynamicDepthCoverage(
+                    new[] { new DynamicDepthRange(1, Math.Max(0, system?.PalletsDeep ?? 0)) });
             }
 
-            var start = adjacent.Min(front => front.DepthStartPosition);
-            var end = adjacent.Max(front => front.DepthStartPosition + front.PalletsDeep - 1);
-            return new DynamicDepthRange(start, end - start + 1);
+            return new DynamicDepthCoverage(adjacent.SelectMany(SegmentsOf).ToList());
         }
 
         public static IReadOnlyList<DynamicRackModule> ModulesInRange(
@@ -210,10 +325,46 @@ namespace RackCad.Application.Systems.Dynamic
             => system?.Modules.Where(module => range.Contains(module.Index + 1)).ToList()
                ?? (IReadOnlyList<DynamicRackModule>)Array.Empty<DynamicRackModule>();
 
+        /// <summary>Los modulos que una COBERTURA alcanza, en orden. Un tramo sin usar no aporta ninguno.</summary>
+        public static IReadOnlyList<DynamicRackModule> ModulesInCoverage(
+            DynamicRackSystem system,
+            DynamicDepthCoverage coverage)
+            => system != null && coverage != null
+                ? system.Modules.Where(module => coverage.Contains(module.Index + 1)).ToList()
+                : (IReadOnlyList<DynamicRackModule>)Array.Empty<DynamicRackModule>();
+
         /// <summary>
         /// A front range may begin or end in a separator. That does not turn the module into a header, but the
         /// separator still needs a physical endpoint post on that transverse line.
         /// </summary>
+        /// <summary>
+        /// Los postes de frontera de una COBERTURA: los de cada uno de sus tramos. Un rack compuesto tiene dos
+        /// tramos por linea y por tanto puede necesitar cuatro fronteras, no dos.
+        /// </summary>
+        public static IReadOnlyList<double> BoundaryPostOffsets(
+            DynamicRackSystem system,
+            DynamicDepthCoverage coverage)
+        {
+            var result = new List<double>();
+            if (system == null || coverage == null)
+            {
+                return result;
+            }
+
+            foreach (var segment in coverage.Segments)
+            {
+                foreach (var offset in BoundaryPostOffsets(system, segment))
+                {
+                    if (!result.Any(existing => Math.Abs(existing - offset) <= 1e-6))
+                    {
+                        result.Add(offset);
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public static IReadOnlyList<double> BoundaryPostOffsets(
             DynamicRackSystem system,
             DynamicDepthRange range)

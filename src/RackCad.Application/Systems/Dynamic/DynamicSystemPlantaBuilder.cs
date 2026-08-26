@@ -57,7 +57,7 @@ namespace RackCad.Application.Systems.Dynamic
                     .Select((y, postIndex) => new { Y = y, PostIndex = postIndex })
                     // I-33 (Owner): la cabecera no se coloca en una frontera que no existe.
                     .Where(item => DynamicFrontActivation.BoundaryExists(system, item.PostIndex))
-                    .Where(item => DynamicDepthGeometry.AtPost(system, item.PostIndex).Contains(module.Index + 1))
+                    .Where(item => DynamicDepthGeometry.CoverageAtPost(system, item.PostIndex).Contains(module.Index + 1))
                     .Select(item => new HeaderPlacement(insertionX, mirrored, item.Y))
                     .ToList();
                 if (placements.Count > 0)
@@ -113,13 +113,13 @@ namespace RackCad.Application.Systems.Dynamic
                 {
                     // I-33 (Owner): sin frontera física no hay separador que anclar en esa línea de postes.
                     if (!DynamicFrontActivation.BoundaryExists(system, postIndex)
-                        || !DynamicDepthGeometry.AtPost(system, postIndex).Contains(module.Index + 1))
+                        || !DynamicDepthGeometry.CoverageAtPost(system, postIndex).Contains(module.Index + 1))
                     {
                         continue;
                     }
 
                     var postY = postYs[postIndex];
-                    var anchorX = module.Index + 1 == DynamicDepthGeometry.AtPost(system, postIndex).StartPosition
+                    var anchorX = module.Index + 1 == DynamicDepthGeometry.CoverageAtPost(system, postIndex).StartPosition
                         ? module.StartX + troquel.X
                         : module.StartX - troquel.X;
                     var anchor = new Point2D(anchorX, postY + troquel.Y);
@@ -165,7 +165,7 @@ namespace RackCad.Application.Systems.Dynamic
                         continue;
                     }
 
-                    var range = DynamicDepthGeometry.AtPost(system, postIndex);
+                    var range = DynamicDepthGeometry.CoverageAtPost(system, postIndex);
                     var boundaryPosition = system.Modules
                         .Where(module => module.EndX <= boundary + 1e-6)
                         .Select(module => module.Index + 1)
@@ -200,7 +200,7 @@ namespace RackCad.Application.Systems.Dynamic
                     continue;
                 }
 
-                var range = DynamicDepthGeometry.AtPost(system, postIndex);
+                var range = DynamicDepthGeometry.CoverageAtPost(system, postIndex);
                 foreach (var offset in DynamicDepthGeometry.BoundaryPostOffsets(system, range))
                 {
                     AddPost(result, postId, postBlock, plateId, plateBlock, plateMate,
