@@ -66,23 +66,27 @@ namespace RackCad.Application.Systems.Selective
             // PERTENENCIA —que postes llevan la pieza— no se toca: sigue siendo la del usuario o la adaptativa.
             if (selection.HasSecondLoadFaceAt(postIndex))
             {
+                // La copia de la cara LEJANA es la IMAGEN ESPEJO de la cercana. Los dos pasillos de un rack
+                // compuesto miran en sentidos opuestos: la bota que protege uno esta girada respecto de la que
+                // protege el otro. Repetir la mano dejaba la del fondo del reves, que es la orientacion que el
+                // dueño rechazo. Con un solo pasillo esto no se ejecuta y nada cambia.
                 switch (side)
                 {
                     case SafetySide.Left:
                         return new[]
                         {
                             new SafetyEndCopy(atHighEnd: false, mirrored: false),
-                            new SafetyEndCopy(atHighEnd: true, mirrored: false),
+                            new SafetyEndCopy(atHighEnd: true, mirrored: true),
                         };
 
                     case SafetySide.Right:
                         return new[]
                         {
                             new SafetyEndCopy(atHighEnd: false, mirrored: true),
-                            new SafetyEndCopy(atHighEnd: true, mirrored: true),
+                            new SafetyEndCopy(atHighEnd: true, mirrored: false),
                         };
 
-                    default:   // Both
+                    default:   // Both: las dos caras en los dos extremos, y el espejo ya esta en el par
                         return new[]
                         {
                             new SafetyEndCopy(atHighEnd: false, mirrored: false),

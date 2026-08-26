@@ -219,8 +219,13 @@ namespace RackCad.Application.Systems.PushBack
             var separator = PostAnchorLocal(
                 catalog, postId, DynamicFrontGeometry.PostPeralte(structure, catalog, postId), view);
 
-            // PB-004 (I-32, regla del Owner tras el round 1): el larguero posterior vuelve a estar en su troquel, así
-            // que la referencia del tope es directamente esa colocación — sin desplazamiento intermedio.
+            // El tope cuelga de SU larguero alto, asi que su referencia es la elevacion DERIVADA de ese larguero —
+            // la que publica PushBackElevations— y no la que el resolver compartido le dio al nivel. Desde la
+            // inversion vertical de I-42 las dos ya no coinciden: medir desde la del resolver dejaba el tope a la
+            // altura de un larguero que no esta ahi, y ademas discrepando del corte frontal, que si consume la
+            // derivada. Sin entrada para el nivel se conserva la colocacion, que es lo que hace un rack sin camas.
+            var highInsertions = PushBackElevations.HighInsertions(system, catalog, front);
+
             foreach (var placement in PushBackPlacements.Resolve(system, front)
                          .Where(placement => placement.IsEntrance)
                          .Where(placement => levels == null || levels.Contains(placement.LevelNumber)))
@@ -239,9 +244,12 @@ namespace RackCad.Application.Systems.PushBack
                 // The stop sits on the POST's separator axis. The post shares the rear beam's column, so the mirror that
                 // transforms the local point is the placement's; PLANTA also takes the separator's own depth offset.
                 var x = placement.X + (placement.MirroredX ? -separator.Value.X : separator.Value.X);
+                var beamY = highInsertions.TryGetValue(placement.LevelNumber, out var resolved)
+                    ? resolved
+                    : placement.Y;
                 var y = keepFrenteY
                     ? placement.Y + separator.Value.Y
-                    : ElevationY(troquelMateY, placement.Y);
+                    : ElevationY(troquelMateY, beamY);
                 // Commercial LONGITUD = the corresponding transverse beam length (per front x level) + the allowance.
                 var baseLength = front != null
                     ? PushBackLoadBeamGeometry.CellBeamLength(structure, front, placement.LevelNumber)

@@ -285,12 +285,17 @@ namespace RackCad.Application.Systems.Dynamic
                         : high.OrSystemEnvelope(rightLoad.LevelNumber, rightLoad.EntranceElevation))
                       - SelectiveDesviadorPlan.BeamYOffset;
 
-                if (selection.Side == SafetySide.Left || selection.Side == SafetySide.Both)
+                // El pasillo se pregunta POR LINEA: en un rack compuesto PARCIAL solo algunas lineas tienen cama
+                // cargando por el extremo lejano, y un desviador guia la tarima AL ENTRAR — donde no se carga, no va.
+                // SideForPost cae en el lado general cuando la linea no tiene entrada propia, asi que un rack de un
+                // solo sentido responde exactamente lo de siempre.
+                var aisle = selection.SideForPost(postIndex);
+                if (aisle == SafetySide.Left || aisle == SafetySide.Both)
                 {
                     target.Add(Piece(selection.ElementId, block, new Point2D(startX, leftY), mirrored: false, longitud));
                 }
 
-                if (selection.Side == SafetySide.Right || selection.Side == SafetySide.Both)
+                if (aisle == SafetySide.Right || aisle == SafetySide.Both)
                 {
                     target.Add(Piece(selection.ElementId, block, new Point2D(endX, rightY), mirrored: true, longitud));
                 }

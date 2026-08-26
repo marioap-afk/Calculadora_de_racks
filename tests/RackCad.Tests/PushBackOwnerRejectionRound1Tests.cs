@@ -86,12 +86,10 @@ namespace RackCad.Tests
             var topes = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);
             Assert.NotEmpty(topes);
 
-            // PB-004 (I-32, regla del Owner tras el round 1): el larguero posterior vuelve a estar EN SU TROQUEL, asi
-            // que la referencia del tope es su colocacion cruda. PB-VAL-03 (+4" sobre el snap canonico) sigue intacto.
-            var beams = DynamicLoadBeamGeometry.Placements(system.Structure, front)
-                .Where(p => p.IsEntrance)
-                .Select(p => p.Y)
-                .ToList();
+            // PB-VAL-03 (+4" sobre el snap canonico) sigue intacto. Lo que cambia (I-42, ronda post-82e918b) es la
+            // REFERENCIA: el tope cuelga de su larguero alto, y desde la inversion vertical ese larguero esta en la
+            // elevacion DERIVADA. La correccion medida por el dueño se sigue comprobando aqui, sobre ella.
+            var beams = PushBackElevations.HighInsertions(system, catalog, front).Values.ToList();
             foreach (var tope in topes)
             {
                 var source = beams.Select(y => (double?)y).FirstOrDefault(y =>

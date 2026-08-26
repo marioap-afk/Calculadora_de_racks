@@ -68,7 +68,7 @@ namespace RackCad.Application.Systems.PushBack
 
                 // The HIGH (rear) IN/OUT beam becomes a TROQUEL_REDONDO with the ENVELOPING rear peralte (planta collapses
                 // the levels); add a rear tope if that front has any active cell.
-                var frontIndex = NearestHighFront(structure, instance.Insertion.X);
+                var frontIndex = PlantaFront(structure, catalog, instance.Insertion.Y);
                 var redondo = CloneAt(instance, redondoId, redondoBlock);
                 redondo.DynamicParameters[SelectiveRackDefaults.PeralteParam] = PushBackHighEndBeamGeometry.PlantaPeralte(system, frontIndex);
                 result.Add(redondo);
@@ -126,14 +126,35 @@ namespace RackCad.Application.Systems.PushBack
             return clone;
         }
 
-        /// <summary>The front whose EndX is nearest to a high (rear) planta beam's X (it sits at front.EndX − troquel).</summary>
-        private static int NearestHighFront(DynamicRackSystem system, double x)
+        /// <summary>
+        /// El FRENTE al que pertenece una pieza de la planta, identificado por su posicion TRANSVERSAL.
+        ///
+        /// <para>
+        /// En PLANTA la X corre con la profundidad y la Y con la retícula transversal, asi que un frente se
+        /// reconoce por su Y — la linea de postes entre la que vive—, nunca por la X. Antes se buscaba «el frente
+        /// cuyo EndX esta mas cerca», y como TODOS los frentes comparten la profundidad eso devolvia siempre el
+        /// mismo: el tope de una celda se decidia leyendo la configuracion de OTRO frente, y en un rack compuesto
+        /// —donde cada cama se dibuja sobre una copia con una sola ranura activa— caia en un frente EN BLANCO, que
+        /// no tiene niveles efectivos. Resultado: el tope solo aparecia en el primer frente.
+        /// </para>
+        /// </summary>
+        private static int PlantaFront(DynamicRackSystem system, RackCatalog catalog, double y)
         {
+            var layout = DynamicFrontGeometry.Compute(system, catalog);
+            var posts = layout?.PostPositions;
+            if (posts == null || posts.Count < 2)
+            {
+                return 0;
+            }
+
+            // Un frente vive ENTRE dos lineas de postes: se elige aquel cuyo intervalo contiene la Y, y si la pieza
+            // cae justo sobre una linea, el frente cuyo centro queda mas cerca.
             var best = 0;
             var bestDistance = double.MaxValue;
-            for (var index = 0; index < system.Fronts.Count; index++)
+            for (var index = 0; index + 1 < posts.Count && index < system.Fronts.Count; index++)
             {
-                var distance = Math.Abs(system.Fronts[index].EndX - x);
+                var centre = (posts[index] + posts[index + 1]) / 2.0;
+                var distance = Math.Abs(centre - y);
                 if (distance < bestDistance)
                 {
                     bestDistance = distance;

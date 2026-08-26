@@ -147,13 +147,16 @@ namespace RackCad.Application.Systems.Dynamic
                     };
             }
 
+            // La copia de la cara LEJANA es la IMAGEN ESPEJO de la cercana: los dos pasillos miran en sentidos
+            // opuestos, asi que la pieza que protege uno esta girada respecto de la que protege el otro. Antes las
+            // dos salian con la misma mano y la del fondo quedaba del reves — la orientacion que el dueño rechazo.
             if (postIndex == 0)
             {
                 return bothFaces
                     ? new[]
                     {
                         new SafetyEndCopy(atHighEnd: false, mirrored: false),
-                        new SafetyEndCopy(atHighEnd: true, mirrored: false),
+                        new SafetyEndCopy(atHighEnd: true, mirrored: true),
                     }
                     : new[] { new SafetyEndCopy(atHighEnd: false, mirrored: false) };
             }
@@ -164,7 +167,7 @@ namespace RackCad.Application.Systems.Dynamic
                     ? new[]
                     {
                         new SafetyEndCopy(atHighEnd: false, mirrored: true),
-                        new SafetyEndCopy(atHighEnd: true, mirrored: true),
+                        new SafetyEndCopy(atHighEnd: true, mirrored: false),
                     }
                     : new[] { new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true) };
             }

@@ -213,15 +213,13 @@ namespace RackCad.Tests
             var topes = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);
             Assert.Equal(Math.Max(1, front.LoadLevels) - 1, topes.Count);   // OffCells still removes its cell
 
-            // PB-VAL-03 stays approved: the elevation is the canonical rise-and-snap plus exactly 4".
-            // PB-004 (I-32, regla del Owner tras el round 1): el posterior es el ANCLA y no se mueve de su troquel, asi
-            // que la referencia vuelve a ser su colocacion cruda. La regla del tope —sube sobre el larguero posterior,
-            // ajusta a la retícula del poste, +4"— no cambia.
-            Assert.Equal(4.0, PushBackRearTopeBuilder.ExtraRise, 9);
-            var rearBeams = DynamicLoadBeamGeometry.Placements(system.Structure, front)
-                .Where(p => p.IsEntrance)
-                .Select(p => p.Y)
-                .ToList();
+            // PB-VAL-03 sigue aprobada: la elevacion es el rise-and-snap canonico mas exactamente 4", que son DOS
+            // troqueles. Lo que cambia (I-42, ronda post-82e918b) es la REFERENCIA: el tope cuelga de su larguero
+            // alto, y desde la inversion vertical ese larguero esta en la elevacion DERIVADA, no en la que el
+            // resolver compartido le dio al nivel. Medir desde la del resolver lo dejaba flotando sobre un larguero
+            // que ya no esta ahi, y ademas discrepando del corte frontal.
+            Assert.Equal(2.0 * SelectiveRackDefaults.TroquelPaso, PushBackRearTopeBuilder.ExtraRise, 9);
+            var rearBeams = PushBackElevations.HighInsertions(system, catalog, front).Values.ToList();
             var gridBase = PostGridBase(system, catalog);
             Assert.All(topes, tope => Assert.Contains(
                 rearBeams, y => Math.Abs(PushBackRearTopeBuilder.ElevationY(gridBase, y) - tope.Insertion.Y) < 1e-9));

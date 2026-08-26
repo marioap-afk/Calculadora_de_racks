@@ -219,8 +219,21 @@ namespace RackCad.Tests
             // cambio a lo que el dueño decidió.
             //
             // Anteriores: lateral/lateral-corte0 1808DB21…, frontal-entrada 2B993BAA…, frontal-posterior 55AF6395…
-            ["lateral"] = "1272488BEA9F301DD3134D8951D259198B8ED8FC56483BF3177D0F14A0416EB3",
-            ["lateral-corte0"] = "1272488BEA9F301DD3134D8951D259198B8ED8FC56483BF3177D0F14A0416EB3",
+            // I-42 (ronda post-82e918b) — el TOPE cuelga de su larguero alto, y desde la inversion vertical ese
+            // larguero esta en la elevacion DERIVADA. El tope seguia midiendose desde la que el resolver compartido
+            // le dio al nivel, asi que quedaba flotando sobre un larguero que ya no esta ahi — y discrepando del
+            // corte frontal, que si consumia la derivada.
+            //
+            // Medido en este escenario: los largueros altos estan en 10.6053/82.6053 (frente 0) y 6.6053/78.6053
+            // (frente 1), mientras el resolver decia 16.6053/88.6053 y 12.6053/84.6053. Los topes bajan esos 6" y
+            // se apoyan donde toca. La REGLA no cambia: sigue siendo el rise-and-snap canonico mas DOS troqueles
+            // (PB-VAL-03), y sigue viviendo en un solo sitio (PushBackRearTopeBuilder.ElevationY).
+            //
+            // Solo se mueven los dos pines LATERALES: el frontal posterior ya media desde la derivada, la planta no
+            // lleva elevacion y el BOM cuenta las mismas piezas con las mismas longitudes.
+            // Anteriores: lateral/lateral-corte0 1272488B...
+            ["lateral"] = "523862527623A874B333E201A8CADF0774610E39CD496E352BF8A9B594760B69",
+            ["lateral-corte0"] = "523862527623A874B333E201A8CADF0774610E39CD496E352BF8A9B594760B69",
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
             // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of
@@ -230,7 +243,18 @@ namespace RackCad.Tests
             // LATERAL is byte-identical and the BOM is unchanged — the correction touches only those two views.
             // Previous: frontal-posterior 5553A6C1…, planta 666BBD2B…
             ["frontal-posterior"] = "234EDFA63829C7EA5895AAC48FD38AE9C29CB57C8D340A90407E2F6D439501BF",
-            ["planta"] = "4797ED85A9F9344C900BD5C6A882A6BE33DA8AA2DCD1AF837C28604A18DA4C64",
+            // I-42 (ronda post-82e918b) — en PLANTA un frente se identifica por su posicion TRANSVERSAL, no por la
+            // X de profundidad. Se buscaba «el frente cuyo EndX esta mas cerca» y, como los dos frentes de este
+            // escenario ACABAN en la misma posicion, devolvia siempre el frente 0: el larguero posterior del frente
+            // 1 salia con el PERALTE del frente 0 (5") en vez del suyo (3.5"), y su tope se decidia leyendo la
+            // configuracion del otro frente. En un rack compuesto el mismo defecto dejaba el tope solo en el primer
+            // frente, que es lo que el dueño reporto.
+            //
+            // Medido en este escenario: el larguero posterior de Y=54.24 pasa de PERALTE 5 a PERALTE 3.5, que es el
+            // suyo. Los dos topes siguen apareciendo y en la misma columna. Solo se mueve el pin de PLANTA: la X de
+            // profundidad no cambia, asi que el lateral, los dos frontales y el BOM quedan INTACTOS.
+            // Anterior: planta 4797ED85...
+            ["planta"] = "02EE98BAC846356957D892BB23E0A8B4AE31C849A6FA1370DDF22A849CB90D69",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front
             // length). Previous BOM hash: 139C18EFDD0BCF1DBC9CABB867E3C40499B2BD264E1BED4F4CBC7DCEE74C57AC.

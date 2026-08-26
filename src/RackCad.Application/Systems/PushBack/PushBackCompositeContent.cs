@@ -88,7 +88,7 @@ namespace RackCad.Application.Systems.PushBack
                     : loose;
                 foreach (var instance in placed)
                 {
-                    if (!intermediates.Add(IntermediateKey(instance)))
+                    if (!intermediates.Add(PushBackPlanComposer.PhysicalKey(instance)))
                     {
                         continue;   // la misma pieza fisica, ya emitida por otra cama de este corte
                     }
@@ -104,7 +104,7 @@ namespace RackCad.Application.Systems.PushBack
                     // La CAMA viaja como grupo (patron ARRAY), y dos camas identicas de frentes contiguos se
                     // proyectan una encima de otra igual que sus largueros. Se compara por su DEFINICION y sus
                     // COLOCACIONES, que es lo que el dibujo acaba materializando.
-                    if (intermediates.Add(GroupKey(group)))
+                    if (intermediates.Add(PushBackPlanComposer.PhysicalKey(group)))
                     {
                         result.Headers.Add(group);
                     }
@@ -113,27 +113,6 @@ namespace RackCad.Application.Systems.PushBack
 
             return result;
         }
-
-        /// <summary>La identidad FISICA de un GRUPO: su definicion anidada y donde se coloca.</summary>
-        private static string GroupKey(HeaderGroup group)
-            => "GRUPO|" + string.Join(
-                ";",
-                group.Instances.Select(IntermediateKey).Concat(
-                    group.Placements.Select(placement => string.Join(
-                        "|",
-                        placement.InsertionX.ToString("0.####", CultureInfo.InvariantCulture),
-                        placement.InsertionY.ToString("0.####", CultureInfo.InvariantCulture),
-                        placement.Mirrored))));
-
-        /// <summary>La identidad FISICA de una pieza en el rack: que es, donde esta, con que mano y que rotacion.</summary>
-        private static string IntermediateKey(HeaderBlockInstance instance)
-            => string.Join(
-                "|",
-                instance.PieceId,
-                instance.Insertion.X.ToString("0.####", CultureInfo.InvariantCulture),
-                instance.Insertion.Y.ToString("0.####", CultureInfo.InvariantCulture),
-                instance.MirroredX,
-                instance.RotationRadians.ToString("0.######", CultureInfo.InvariantCulture));
 
         /// <summary>
         /// Las camas agrupadas por (marco, frente): una llamada por grupo en vez de una por nivel, para no perder el

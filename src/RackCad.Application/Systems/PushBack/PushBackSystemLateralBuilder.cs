@@ -273,7 +273,10 @@ namespace RackCad.Application.Systems.PushBack
             headers.AddRange(intermediates.Headers);
             loose.AddRange(intermediates.LooseInstances);
 
-            return new HeaderRunPlan(headers, loose);
+            // Un corte es una PROYECCION: dos frentes contiguos que arrancan en la misma posicion proyectan su
+            // larguero de entrada uno EXACTAMENTE encima del otro, y dibujar los dos deja bloques superpuestos —el
+            // «doble larguero» que el dueño ve—. La misma regla que ya usa el compositor del rack compuesto.
+            return PushBackPlanComposer.DeduplicateProjection(headers, loose);
         }
     }
 }

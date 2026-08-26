@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
@@ -148,11 +149,19 @@ namespace RackCad.Application.Systems.PushBack
         {
             var authorized = safety.Authorize(structure.SafetySelections, AislesOf(system));
             var secondFaceLines = SecondLoadFaceLines(system);
+            var aisles = LoadingAisles(system, catalog);
+            var desviador = SelectiveSafetyFamilies.SelectedOfType(
+                authorized, catalog?.SafetyElements, SelectiveSafetyDefaults.DesviadorType);
             foreach (var selection in authorized)
             {
                 foreach (var line in secondFaceLines)
                 {
                     selection.SecondLoadFacePosts.Add(line);
+                }
+
+                if (ReferenceEquals(selection, desviador))
+                {
+                    ApplyLoadingAisles(selection, aisles);
                 }
 
                 system.SafetySelections.Add(selection);
@@ -230,6 +239,81 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             return lines;
+        }
+
+        /// <summary>
+        /// I-42 (ronda post-82e918b) — POR QUE EXTREMOS SE CARGA el rack, medido sobre las camas.
+        ///
+        /// <para>
+        /// Un DESVIADOR guia la tarima al entrar, asi que vive en el extremo por el que se CARGA y en ningun otro.
+        /// Cual es ese extremo no lo dice la presencia de un lado: lo dicen las camas. En un rack compuesto con
+        /// camas encontradas se carga por los DOS; en uno de corrida A→B solo por el arranque, aunque el lado B
+        /// exista; y en una corrida B→A solo por el final. Antes se colapsaba siempre al arranque, asi que el lado
+        /// B se quedaba sin desviador y una corrida B→A lo recibia en su extremo ALTO — justo donde no va.
+        /// </para>
+        /// </summary>
+        internal static IReadOnlyDictionary<int, SafetySide> LoadingAisles(
+            PushBackSystem system, RackCatalog catalog)
+        {
+            var result = new Dictionary<int, SafetySide>();
+            var fronts = system?.Structure?.Fronts;
+            if (system?.Composite == null || fronts == null)
+            {
+                return result;   // un solo sentido: el lado general de siempre, sin ninguna entrada por linea
+            }
+
+            var total = system.Structure.TotalLength;
+            var startSlots = new HashSet<int>();
+            var endSlots = new HashSet<int>();
+            foreach (var axis in PushBackRunGeometry.Axes(PushBackRuns.Resolve(system), catalog))
+            {
+                var atStart = Math.Abs(axis.LowContact.X) <= Math.Abs(axis.LowContact.X - total);
+                (atStart ? startSlots : endSlots).Add(axis.Slot);
+            }
+
+            for (var post = 0; post <= fronts.Count; post++)
+            {
+                var start = startSlots.Contains(post - 1) || startSlots.Contains(post);
+                var end = endSlots.Contains(post - 1) || endSlots.Contains(post);
+                result[post] = start && end
+                    ? SafetySide.Both
+                    : end ? SafetySide.Right : SafetySide.Left;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Escribe en la seleccion del DESVIADOR por que extremos se carga.
+        ///
+        /// <para>
+        /// Es la unica familia cuyo <see cref="SelectiveSafetySelection.Side"/> significa literalmente «que pasillo»:
+        /// el builder lateral lo lee solo para elegir entre el arranque y el final del corte. En las demas familias
+        /// el lado es PERTENENCIA —que postes llevan la pieza— y escribirlo apaga sus reglas adaptativas, que es el
+        /// defecto que el dueño ya rechazo; por eso esto no las toca.
+        /// </para>
+        /// </summary>
+        private static void ApplyLoadingAisles(
+            SelectiveSafetySelection selection, IReadOnlyDictionary<int, SafetySide> aisles)
+        {
+            if (selection == null || aisles == null || aisles.Count == 0)
+            {
+                return;
+            }
+
+            // Se escribe POR LINEA y se deja el lado general intacto: una linea sin entrada propia —cualquier rack
+            // de un solo sentido— sigue respondiendo lo que respondia.
+            foreach (var pair in aisles)
+            {
+                var stored = selection.PostSides.FirstOrDefault(entry => entry.PostIndex == pair.Key);
+                if (stored != null)
+                {
+                    stored.Side = pair.Value;
+                    continue;
+                }
+
+                selection.PostSides.Add(new SafetyPostSide { PostIndex = pair.Key, Side = pair.Value });
+            }
         }
 
         /// <summary>

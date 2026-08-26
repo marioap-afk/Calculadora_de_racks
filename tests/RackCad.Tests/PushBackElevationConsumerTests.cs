@@ -248,7 +248,12 @@ namespace RackCad.Tests
             }
 
             Assert.NotEmpty(expected);
-            Assert.Equal(expected.OrderBy(y => y).ToList(), Ys(drawn).Skip(1).ToList());
+            // Se comparan las elevaciones DISTINTAS: un corte es una proyeccion y dibuja cada pieza una vez, asi
+            // que dos desviadores que caen en la misma elevacion son UNO. Comparar la lista con repeticiones medía
+            // cuantas veces se dibujaba lo mismo, que es justo lo que se corrigio (I-42, ronda post-82e918b).
+            Assert.Equal(
+                expected.Distinct().OrderBy(y => y).ToList(),
+                Ys(drawn).Skip(1).Distinct().ToList());
         }
 
         // ---------------------------------------------------------------------------------------------------
