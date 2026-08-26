@@ -106,10 +106,19 @@ namespace RackCad.Tests
 
             state.SetSlotPresent(PushBackSide.B, 2, false);
             Assert.False(state.IsSlotPresent(PushBackSide.B, 2));
-            Assert.Null(state.BuildSideB().Fronts[2]);
+
+            // I-42 (correccion aislada 2B): la ranura EN BLANCO ya no viaja como entrada nula. Su frente va
+            // COMPLETO —esa es la declaracion fisica que hay que conservar— y lo que dice que no almacena es la
+            // lista AbsentSlotsB, igual que en el lado A. Escribir null se llevaba por delante su ancho y su BFR.
+            var sideB = state.BuildSideB();
+            Assert.NotNull(sideB.Fronts[2]);
+            Assert.False(sideB.Fronts[2].IsActive);
+            Assert.Contains(2, state.AbsentSlotsOfB());
+            Assert.Equal(dormant, sideB.Fronts[2].LoadLevels);   // y sus niveles siguen ahi, dormidos
 
             state.SetSlotPresent(PushBackSide.B, 2, true);
             Assert.Equal(dormant, state.SideB.Structure.Fronts[2].LoadLevels);
+            Assert.DoesNotContain(2, state.AbsentSlotsOfB());
         }
 
         [Fact]

@@ -1446,6 +1446,65 @@ namespace RackCad.UI.Tests
                 ? 0
                 : plan.Flatten().Instances.Count(i => i.Role == RackCad.Application.Drawing.HeaderBlockRole.Beam);
 
+        /// <summary>
+        /// I-42 (correccion aislada 2B) — RACKEDITAR: reabrir un rack guardado conserva las ranuras EN BLANCO del
+        /// lado B, con su ancho, y no resucita su almacenamiento.
+        ///
+        /// <para>
+        /// La presencia del lado B se aplicaba ANTES de <c>LoadFromDesign</c>, que rehace la matriz entera desde el
+        /// diseño resuelto: al volver de un archivo, las ranuras que el usuario habia dejado en blanco volvian
+        /// activas y con un ancho por defecto. Ahora la presencia se aplica DESPUES, y el frente del blanco viaja
+        /// completo.
+        /// </para>
+        /// </summary>
+        [Fact]
+        public void BlankB_RackEditarPreservesBlankState()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 3, levels: 2);
+
+                // La ranura 1 declara calles de mas SOLO en B, y se pone EN BLANCO en B.
+                w.CompositeState.Of(PushBackSide.B).Structure.AdjustPositions(1, 1);
+                if (!w.CompositeState.SetSlotPresent(PushBackSide.B, 1, false)) return false;
+
+                var design = new PushBackCompositeEditorAssembler(RackCad.Application.Catalogs.JsonRackCatalogProvider
+                    .FromBaseDirectory().Load())
+                    .BuildDesign(w.CompositeState, PushBackEditorInputs.NewDesign());
+                if (!design.Composite.AbsentSlotsB.Contains(1)) return false;
+
+                // RACKEDITAR sobre ese mismo diseño, en una ventana NUEVA.
+                var reopened = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                reopened.LoadExisting(design, "GUID-I42-2B", "PB compuesto");
+
+                // La ranura sigue en blanco en B, y sólo esa; el ancho declarado no se perdio.
+                var kept = reopened.CompositeState.SlotCount == 3
+                           && !reopened.CompositeState.IsSlotPresent(PushBackSide.B, 1)
+                           && reopened.CompositeState.IsSlotPresent(PushBackSide.B, 0)
+                           && reopened.CompositeState.IsSlotPresent(PushBackSide.B, 2)
+                           && reopened.CompositeState.IsSlotPresent(PushBackSide.A, 1)
+                           && reopened.CompositeState.Of(PushBackSide.B).Structure.Fronts[1].PalletCount
+                              == w.CompositeState.Of(PushBackSide.B).Structure.Fronts[1].PalletCount;
+
+                // Y un documento ANTERIOR —entrada nula, sin la declaracion nueva— tampoco resucita. Era el orden:
+                // la presencia se aplicaba antes de reconstruir la matriz, asi que el relleno la devolvia activa.
+                design.SideB.Fronts[1] = null;
+                design.SideB.FrontConfigs[1] = null;
+                design.Composite.AbsentSlotsB.Clear();
+
+                var legacy = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                legacy.LoadExisting(design, "GUID-I42-2B-LEGACY", "PB compuesto");
+
+                return kept
+                       && legacy.CompositeState.SlotCount == 3
+                       && !legacy.CompositeState.IsSlotPresent(PushBackSide.B, 1)
+                       && legacy.CompositeState.IsSlotPresent(PushBackSide.B, 0)
+                       && legacy.CompositeState.IsSlotPresent(PushBackSide.B, 2);
+            });
+
+            Assert.True(ok);
+        }
+
         /// <summary>La casilla de presencia se llama como el dueño la entiende y explica para que sirve.</summary>
         [Fact]
         public void TheBlankCheck_IsNamedInProductLanguage()

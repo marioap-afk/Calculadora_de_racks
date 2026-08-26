@@ -800,6 +800,80 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-quaterdecies. Correccion aislada 2B: la declaracion fisica del lado B sobrevive a «En blanco»
+
+### Lo que quedaba abierto
+
+La correccion 2 dejo los dos lados con la MISMA regla pero con datos asimetricos. El lado A declara su ausencia
+aparte (`AbsentSlotsA`) y conserva su frente en el diseno, asi que su declaracion fisica sobrevive. El lado B la
+expresaba con una entrada NULA en su propia lista, de modo que una ranura cuyo ancho declaraba solo B lo perdia al
+ponerla en blanco: las lineas pasaban de `0, 97.49, 150.99, 204.48` a `0, 53.49, 106.99, 160.48` y todo lo que
+venia detras se movia. Dos semanticas incompatibles para la misma decision del dueño.
+
+### El esquema elegido: ADITIVO y simetrico
+
+`PushBackCompositeDesign.AbsentSlotsB`, hermana exacta de `AbsentSlotsA`, con su campo homonimo en el documento.
+El frente de una ranura EN BLANCO del lado B viaja **completo** —con su `IsActive` en false— y quien dice que no
+almacena es la lista. Nada mas cambia de forma.
+
+Compatibilidad, sin migracion destructiva:
+
+| documento | `SideB.Fronts[slot]` | `AbsentSlotsB` | se lee como |
+|---|---|---|---|
+| anterior, ranura con almacenamiento | frente | ausente | almacena — igual que siempre |
+| anterior, ranura en blanco | **null** | ausente | no almacena, y **no se le inventa** declaracion fisica |
+| nuevo, ranura en blanco | frente completo | contiene la ranura | no almacena, y conserva ancho, BFR y override |
+
+El campo se OMITE del JSON cuando esta vacio, asi que un rack sin ninguna ranura en blanco escribe exactamente el
+mismo archivo que antes.
+
+### El orden del round-trip
+
+`LoadCompositeFromDesign` aplicaba la presencia del lado B **antes** de `LoadFromDesign`, que rehace la matriz
+entera desde el diseno resuelto — y para una ranura en blanco fabricaba un relleno `PalletCount = 1` sin
+`IsActive`. Al reabrir un rack guardado, las ranuras que el usuario habia dejado en blanco volvian ACTIVAS y con
+un ancho por defecto. Ahora el frente viaja completo, el relleno legacy nace inactivo y la presencia se aplica
+DESPUES de reconstruir la matriz. Medido: sin ese cambio, reabrir un documento de forma anterior resucita la
+ranura; con el, no.
+
+### Auditoria de las dos semanticas
+
+| | ANTES | DESPUES |
+|---|---|---|
+| lado A, blanco | frente en el diseno + `AbsentSlotsA` | igual |
+| lado B, blanco | **entrada nula** (pierde la declaracion fisica) | frente en el diseno + `AbsentSlotsB` |
+| declaracion fisica | `StoredFront(slot)` — solo la tenia A | `StoredFront(slot)` — la tienen los dos |
+| almacenamiento activo | `Front(slot)` | igual |
+| persistencia | `AbsentSlotsA` | `AbsentSlotsA` + `AbsentSlotsB`, aditivo |
+
+No quedan dos semanticas: la entrada nula solo sobrevive como LECTURA de documentos anteriores, y ya no se
+escribe.
+
+### Medido
+
+| caso | ancho antes | ancho en blanco | ancho al reactivar | almacenamiento |
+|---|---|---|---|---|
+| ancho solo en B | 97.49 | 97.49 (antes **53.49**) | 97.49 | B a 0, A intacto |
+| override de larguero solo en B | 111 | 111 (antes se perdia) | 111 | B a 0 |
+| blanco interior en B | lineas y ranuras posteriores identicas | — | — | solo esa ranura |
+| patron no contiguo en B | identico tras guardar y abrir | — | — | ranuras 1 y 3 sin B |
+| round-trip | identico | — | — | sin resurreccion |
+| RACKEDITAR | identico, tambien con un documento anterior | — | — | sin resurreccion |
+
+### Pruebas
+
+`PushBackBlankSideBDeclarationTests` (9) y `BlankB_RackEditarPreservesBlankState` en la ventana real, que ademas
+degrada el diseno a la forma anterior para comprobar los dos caminos. **Cinco de las nueve fallan** si se
+reinstaura la entrada nula, y la de RACKEDITAR falla si se reinstaura el orden anterior. Las 11 de la correccion
+2 siguen verdes.
+
+Se ACTUALIZO una prueba de contrato: `ASlotCanBeRetiredFromOneSide_AndItsConfigurationStaysDormant` afirmaba que
+el frente en blanco de B viajaba como null. Es justo lo que esta corrida cambia, asi que ahora afirma lo que la
+prueba queria decir: el frente viaja completo e INACTIVO, la ranura esta declarada en `AbsentSlotsB` y sus
+niveles siguen dormidos.
+
+**Ningun golden se movio.** La UX no cambia: sigue habiendo una sola casilla, «En blanco».
+
 ## 4-terdecies. Correccion aislada 2: «EN BLANCO» conserva la RANURA FISICA
 
 ### La decision

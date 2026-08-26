@@ -730,21 +730,39 @@ namespace RackCad.UI.Systems.PushBack
                     RearTope = design.SideB.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig()
                 };
 
+                // I-42 (correccion aislada 2B) — el diseno del lado B se arma con sus frentes TAL CUAL vienen: los
+                // de una ranura en blanco viajan completos desde que su ausencia se declara aparte, asi que aqui ya
+                // no hay que fabricar un relleno que borraba el ancho. Solo un documento ANTERIOR trae la entrada
+                // nula, y para ese —y solo para ese— se conserva el relleno, sin inventar nada que no guardara.
+                var blank = new List<int>();
                 for (var slot = 0; slot < design.SideB.Fronts.Count; slot++)
                 {
                     var front = design.SideB.Fronts[slot];
-                    composite.SetSlotPresent(PushBackSide.B, slot, front != null);
+                    if (front == null || design.Composite != null && design.Composite.IsSlotAbsentInB(slot))
+                    {
+                        blank.Add(slot);
+                    }
+
                     sideDesign.Structure.Fronts.Add(front ?? new RackCad.Domain.Systems.Dynamic.DynamicRackFrontDesign
                     {
                         PalletCount = 1,
                         LoadLevels = design.SideB.LoadLevels,
                         PalletsDeep = 2,
-                        DepthStartPosition = 1
+                        DepthStartPosition = 1,
+                        IsActive = false
                     });
                     sideDesign.Fronts.Add(design.SideB.FrontConfig(slot) ?? new PushBackFrontConfig());
                 }
 
                 composite.SideB.LoadFromDesign(sideDesign, assembler.Resolver);
+
+                // La PRESENCIA se aplica DESPUES de reconstruir la matriz. Aplicarla antes no servia de nada:
+                // LoadFromDesign rehace la matriz entera desde el diseno resuelto, asi que al reabrir un rack
+                // guardado el lado B resucitaba en las ranuras que el usuario habia dejado en blanco.
+                foreach (var slot in blank)
+                {
+                    composite.SetSlotPresent(PushBackSide.B, slot, false);
+                }
             }
 
             // La retícula transversal es del RACK tambien al VOLVER de un archivo: un diseño cuyo lado B tenga mas o

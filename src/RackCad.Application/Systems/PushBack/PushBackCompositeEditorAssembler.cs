@@ -58,6 +58,16 @@ namespace RackCad.Application.Systems.PushBack
                 }
             }
 
+            // El lado B declara las suyas por el MISMO camino: su frente viaja completo y aqui se dice cuales no
+            // almacenan. Antes lo decia una entrada nula, que se llevaba por delante la declaracion fisica.
+            foreach (var slot in state.AbsentSlotsOfB())
+            {
+                if (!design.Composite.AbsentSlotsB.Contains(slot))
+                {
+                    design.Composite.AbsentSlotsB.Add(slot);
+                }
+            }
+
             return design;
         }
 

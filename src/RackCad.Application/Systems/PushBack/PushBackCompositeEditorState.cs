@@ -877,6 +877,11 @@ namespace RackCad.Application.Systems.PushBack
             {
                 SetSlotPresent(PushBackSide.A, slot, false);
             }
+
+            foreach (var slot in composite.AbsentSlotsB)
+            {
+                SetSlotPresent(PushBackSide.B, slot, false);
+            }
             foreach (var cell in composite.Topologies)
             {
                 if (cell != null)
@@ -931,15 +936,10 @@ namespace RackCad.Application.Systems.PushBack
             var fronts = SideB.BuildEnvelopeFrontDesigns();
             for (var slot = 0; slot < fronts.Count; slot++)
             {
-                // Una ranura ausente viaja como entrada NULA: es lo que dice «esta ranura no existe en este lado»
-                // sin destruir la configuracion que el lado guarda para ella.
-                if (!IsSlotPresent(PushBackSide.B, slot))
-                {
-                    side.Fronts.Add(null);
-                    side.FrontConfigs.Add(null);
-                    continue;
-                }
-
+                // I-42 (correccion aislada 2B) — una ranura EN BLANCO viaja COMPLETA y se declara aparte, en
+                // AbsentSlotsB, exactamente como el lado A. Escribirla como entrada nula perdia su declaracion
+                // fisica —ancho, BFR, override de larguero—, asi que ponerla en blanco encogia la bahia y movia
+                // todas las lineas posteriores. Ahora solo queda DORMANTE, y al quitar el blanco reaparece.
                 side.Fronts.Add(fronts[slot]);
                 var levels = Math.Max(1, matrix.Fronts[slot].LoadLevels);
                 var config = new PushBackFrontConfig
@@ -966,12 +966,17 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>Las ranuras del lado A que el ensamblador debe RETIRAR del diseno legacy por estar ausentes.</summary>
-        public IReadOnlyList<int> AbsentSlotsOfA()
+        public IReadOnlyList<int> AbsentSlotsOfA() => AbsentSlotsOf(PushBackSide.A, SideA.Structure.Count);
+
+        /// <summary>Las ranuras EN BLANCO del lado B: la misma declaracion, para el mismo fin.</summary>
+        public IReadOnlyList<int> AbsentSlotsOfB() => AbsentSlotsOf(PushBackSide.B, SideB.Structure.Count);
+
+        private IReadOnlyList<int> AbsentSlotsOf(PushBackSide side, int slots)
         {
             var result = new List<int>();
-            for (var slot = 0; slot < SideA.Structure.Count; slot++)
+            for (var slot = 0; slot < slots; slot++)
             {
-                if (!IsSlotPresent(PushBackSide.A, slot))
+                if (!IsSlotPresent(side, slot))
                 {
                     result.Add(slot);
                 }

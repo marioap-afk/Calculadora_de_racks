@@ -273,9 +273,19 @@ namespace RackCad.Application.Systems.PushBack
 
             if (side != null)
             {
-                result.fronts.AddRange(side.Fronts);
-                result.stored.AddRange(side.Fronts);
-                result.configs.AddRange(side.FrontConfigs);
+                var composite = design?.Composite;
+                for (var slot = 0; slot < side.Fronts.Count; slot++)
+                {
+                    // La ausencia se DECLARA aparte, igual que en el lado A. La entrada nula sigue significando
+                    // ausencia —es como la escribian los documentos anteriores— pero ya no es la unica forma: un
+                    // documento nuevo trae el frente COMPLETO y la ranura declarada, de modo que su declaracion
+                    // fisica sobrevive a estar en blanco en vez de perderse.
+                    var front = side.Fronts[slot];
+                    var absent = front == null || (composite != null && composite.IsSlotAbsentInB(slot));
+                    result.fronts.Add(absent ? null : front);
+                    result.stored.Add(front);
+                    result.configs.Add(absent ? null : side.FrontConfig(slot));
+                }
             }
 
             // Un lado DECLARADO pero sin ninguna bahia no existe fisicamente: tratarlo como presente produciria una

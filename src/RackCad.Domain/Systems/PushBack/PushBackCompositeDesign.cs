@@ -44,6 +44,26 @@ namespace RackCad.Domain.Systems.PushBack
         public bool IsSlotAbsentInA(int slot) => AbsentSlotsA.Contains(slot);
 
         /// <summary>
+        /// I-42 (correccion aislada 2B) — las ranuras transversales sin ALMACENAMIENTO en el lado B.
+        ///
+        /// <para>
+        /// Es la misma declaracion que <see cref="AbsentSlotsA"/> y por la misma razon: «en blanco» apaga el
+        /// almacenamiento de un lado, no destruye la ranura. Hasta aqui el lado B expresaba su ausencia con una
+        /// entrada NULA en su propia lista de frentes, de modo que al ponerla en blanco perdia tambien su
+        /// DECLARACION FISICA —ancho, BFR, override de larguero— y las lineas posteriores se movian. Con la
+        /// declaracion aparte, el frente de B viaja completo y solo queda DORMANTE.
+        /// </para>
+        /// <para>
+        /// El cambio es ADITIVO: un documento anterior no la trae, y ahi una entrada nula sigue significando
+        /// exactamente lo que significaba. No se inventa configuracion fisica que nunca se guardo.
+        /// </para>
+        /// </summary>
+        public IList<int> AbsentSlotsB { get; } = new List<int>();
+
+        /// <summary>True cuando la ranura no almacena en el lado B.</summary>
+        public bool IsSlotAbsentInB(int slot) => AbsentSlotsB.Contains(slot);
+
+        /// <summary>
         /// Topologia por celda. Solo se persisten las celdas que se APARTAN del valor por defecto
         /// (<see cref="DefaultTopology"/>), igual que <see cref="PushBackRearTopeConfig.OffCells"/> solo persiste
         /// desactivaciones: una lista positiva completa nunca llega al archivo.
@@ -178,6 +198,11 @@ namespace RackCad.Domain.Systems.PushBack
             foreach (var slot in AbsentSlotsA)
             {
                 copy.AbsentSlotsA.Add(slot);
+            }
+
+            foreach (var slot in AbsentSlotsB)
+            {
+                copy.AbsentSlotsB.Add(slot);
             }
 
             foreach (var cell in Topologies)

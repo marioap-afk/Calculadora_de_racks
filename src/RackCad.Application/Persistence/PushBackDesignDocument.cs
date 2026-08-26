@@ -392,6 +392,13 @@ namespace RackCad.Application.Persistence
         /// <summary>I-42: ranuras transversales que no existen en el lado A. Ausente = todas existen.</summary>
         public List<int> AbsentSlotsA { get; set; }
 
+        /// <summary>
+        /// I-42 (correccion aislada 2B): ranuras sin ALMACENAMIENTO en el lado B. Campo ADITIVO: un documento que no
+        /// lo trae conserva su lectura anterior —la entrada nula de <c>SideB.Fronts</c> sigue siendo la ausencia— y
+        /// no se le inventa una declaracion fisica que nunca guardo.
+        /// </summary>
+        public List<int> AbsentSlotsB { get; set; }
+
         public static PushBackCompositeDocument From(PushBackCompositeDesign composite)
         {
             if (composite == null)
@@ -412,6 +419,11 @@ namespace RackCad.Application.Persistence
             if (composite.AbsentSlotsA.Count > 0)
             {
                 document.AbsentSlotsA = composite.AbsentSlotsA.ToList();
+            }
+
+            if (composite.AbsentSlotsB.Count > 0)
+            {
+                document.AbsentSlotsB = composite.AbsentSlotsB.ToList();
             }
 
             if (composite.Topologies.Any(cell => cell != null))
@@ -449,6 +461,14 @@ namespace RackCad.Application.Persistence
                 foreach (var slot in AbsentSlotsA)
                 {
                     composite.AbsentSlotsA.Add(slot);
+                }
+            }
+
+            if (AbsentSlotsB != null)
+            {
+                foreach (var slot in AbsentSlotsB)
+                {
+                    composite.AbsentSlotsB.Add(slot);
                 }
             }
 
