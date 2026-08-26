@@ -800,6 +800,83 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-duodecies. Correccion aislada 1B: la FRONTAL coincide con la LATERAL
+
+### La regla
+
+El lateral es el oraculo: el dueño lo valido. La frontal no vuelve a resolver la fisica. Para una misma
+`PushBackRun`, el corte lateral, el frontal de entrada/salida y el frontal posterior son solo tres PROYECCIONES de
+la misma cama: el mismo LOW, el mismo HIGH, los mismos largueros, los mismos elementos aplicables.
+
+### Lo medido antes de tocar nada
+
+Reproducido por el camino real —`PushBackCompositeEditorAssembler` → `PushBackRuns` → los tres builders— con los
+dos lados a alturas deliberadamente distintas (A = 4", B = 18") para que leer el lado equivocado se viera en la Z.
+
+Las **elevaciones** de los largueros ya coincidian en las tres vistas, en las diez topologias probadas: corrida
+A→B y B→A, un nivel y varios, niveles asimetricos por lado, calle, corrida corta, ranuras mixtas y direcciones
+opuestas en la misma linea. Ese no era el defecto.
+
+Lo que NO coincidia:
+
+| pieza / vista | lateral (oraculo) | frontal ANTES | frontal AHORA |
+|---|---|---|---|
+| DESVIADOR, pasillo B de una corrida A→B | ninguno | **6 piezas** en Z = 18.6053 y 84.6053 | ninguno |
+| DESVIADOR, pasillo A de una corrida B→A | ninguno | **6 piezas** en Z = 4.6053 y 70.6053 | ninguno |
+| DESVIADOR por nivel, N1 A→B / N2 B→A | cada nivel en su pasillo | los dos niveles en los dos pasillos | cada nivel en su pasillo |
+| plan que el panel muestra en «posterior de B» | corte posterior | **corte de entrada/salida** | corte posterior |
+| lado de los cortes construidos | — | el lado que se esta EDITANDO | el lado del selector de VISTA |
+
+### Las tres causas
+
+**1. La seguridad se saltaba el filtro de celdas entero.** `FilterCells` solo filtraba los largueros IN/OUT; todo
+lo demas pasaba tal cual. El desviador se emite por POSTE sobre el sistema LOCAL de cada lado, asi que el pasillo
+alto de una corrida —que no carga nada— dibujaba desviadores a la altura de SUS propios niveles. Es el mismo
+defecto que la correccion 1 quito del lateral, vivo en la otra vista: un desviador en el pasillo alto es
+literalmente inventar un segundo LOW.
+
+La correccion pasa la PERTENENCIA al punto de emision. `AppendFrontal` acepta un predicado OPCIONAL
+`(poste, nivel)` que el Push Back compuesto deriva del MISMO conjunto de camas que gobierna los largueros; un
+poste es la frontera de hasta dos claros, asi que lleva desviador si cualquiera de los dos tiene cama en ese
+nivel — la misma adyacencia con la que el builder compartido ya decide su existencia y sus niveles. Sin predicado
+—cualquier rack de un solo sentido— el corte es byte-identico al de siempre. **No se decide por cercania**: la
+identidad viene del run, no de una X.
+
+**2. La seccion frontal se comparaba sin decodificar.** El panel elegia el plan con
+`section == (int)PushBackFrontalEnd.Posterior`. La seccion lleva EXTREMO y LADO desde I-42: la 3 —posterior de
+B— no es 1, asi que caia en el corte de entrada/salida. Solo acertaba en el lado A. Ahora se decodifica.
+
+**3. Los cortes frontales se construian para el lado que se esta EDITANDO.** `BuildFrom` recibia
+`composite.ActiveSide` mientras el rotulo y la seccion usaban el selector de vista: con «Editando A» y «Frontal de
+B» el panel mostraba el pasillo de A llamandolo B. Y cambiar el selector solo repintaba, sin reconstruir, de modo
+que el plan seguia siendo el del lado anterior hasta que otra edicion forzara un recalculo. El corte frontal es
+una VISTA: sigue a su selector.
+
+### Auditoria de consumidores del desviador, actualizada
+
+| consumidor | autoridad hoy | estado |
+|---|---|---|
+| dominio / intencion | la del usuario | correcta, intacta |
+| LATERAL compuesto | run → LowEnd | corregido en la correccion 1 |
+| LATERAL de un solo sentido | builder dinamico | correcto: ahi izquierda si es el extremo bajo |
+| **FRONTAL compuesto** | **pertenencia derivada de las camas** | **CORREGIDO en esta corrida** |
+| PLANTA | clasificacion por LINEA (`LoadingAisles`) | **PENDIENTE** — por linea, no por cama |
+| BOM | `SystemBomBuilder` compartido | **PENDIENTE** — otra autoridad |
+
+Las dos pendientes exigen tocar `SelectiveSafetyEnds` / `SystemBomBuilder`, compartidos con el Selectivo y el
+Dinamico, y siguen fuera del alcance declarado.
+
+### Pruebas
+
+`PushBackFrontalMatchesLateralTests` (16) recorre CADA cama y afirma, contra el lateral que el dueño valido, la Z
+baja y la alta, la COLUMNA de su ranura —calculada con la misma formula con la que el builder la coloca, no
+buscada por proximidad—, el `PieceId`, el peralte del lado que corresponde, que el lado contrario no inventa un
+segundo extremo y que no sobra ningun larguero que ninguna cama pida. Los diez casos obligatorios estan cubiertos.
+`TheFrontalCuts_FollowTheViewSelector_NotTheEditedSide` fija el seam de la ventana con los controles reales.
+
+**Ningun golden se movio**: la geometria de los largueros no cambia en ninguna vista; lo que desaparece son
+desviadores que ninguna cama pedia.
+
 ## 4-undecies. Correccion aislada 1: el DESVIADOR, con el LOW del run como unica autoridad
 
 ### El contrato

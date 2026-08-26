@@ -108,7 +108,7 @@ namespace RackCad.Application.Systems.PushBack
                 // reasiento posterior: antes esta vista movía las piezas después, localizándolas por coordenada.
                 var lowContext = elevationsOverride ?? PushBackElevations.Context(system, catalog);
                 var low = dynamicBuilder
-                    .Build(structure, catalog, DynamicRackEnd.Exit, lowContext)
+                    .Build(structure, catalog, DynamicRackEnd.Exit, lowContext, OwnsDesviador(structure, includeCell))
                     .ToList();
                 if (includeCell != null)
                 {
@@ -269,6 +269,38 @@ namespace RackCad.Application.Systems.PushBack
             return result;
         }
 
+
+        /// <summary>
+        /// I-42 — de que celdas es el DESVIADOR de este corte, en terminos de (poste, nivel).
+        ///
+        /// <para>
+        /// Un desviador guia la tarima al ENTRAR: existe donde este corte tiene una cama que se carga por el. La
+        /// pertenencia sale del MISMO conjunto de camas que gobierna los largueros —<paramref name="includeCell"/>,
+        /// que el compuesto deriva de <c>PushBackRuns</c>—, no de una lectura por coordenada. Un poste es la
+        /// FRONTERA de hasta dos claros, asi que lleva desviador si CUALQUIERA de los dos tiene cama en ese nivel:
+        /// es la misma adyacencia con la que el builder compartido decide sus niveles y su existencia.
+        /// </para>
+        /// <para>
+        /// Sin filtro —cualquier rack de un solo sentido— devuelve null y el corte es exactamente el de siempre.
+        /// Antes la SEGURIDAD se saltaba el filtro entera, de modo que el pasillo de un lado sin cama —el lado alto
+        /// de una corrida— dibujaba desviadores a la altura de SUS propios niveles, contradiciendo al lateral.
+        /// </para>
+        /// </summary>
+        private static Func<int, int, bool> OwnsDesviador(DynamicRackSystem structure, Func<int, int, bool> includeCell)
+        {
+            if (includeCell == null)
+            {
+                return null;
+            }
+
+            var fronts = structure?.Fronts?.Count ?? 0;
+            return (postIndex, levelIndex) =>
+            {
+                var left = postIndex - 1;
+                return (left >= 0 && left < fronts && includeCell(left, levelIndex))
+                    || (postIndex >= 0 && postIndex < fronts && includeCell(postIndex, levelIndex));
+            };
+        }
 
         /// <summary>
         /// I-42 — deja pasar solo las celdas que <paramref name="includeCell"/> acepta. Los largueros del corte BAJO

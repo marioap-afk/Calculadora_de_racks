@@ -25,7 +25,8 @@ namespace RackCad.Application.Systems.Dynamic
             DynamicFrontLayout layout,
             string plateId,
             DynamicRackEnd end,
-            RackLevelElevations elevations = null)
+            RackLevelElevations elevations = null,
+            Func<int, int, bool> ownsDesviador = null)
         {
             if (target == null || system == null || catalog == null || layout?.PostPositions == null)
             {
@@ -84,7 +85,7 @@ namespace RackCad.Application.Systems.Dynamic
                 }
             }
 
-            AppendFrontalDesviadores(target, system, catalog, layout, end, elevations);
+            AppendFrontalDesviadores(target, system, catalog, layout, end, elevations, ownsDesviador);
             AppendFrontalDefensas(target, system, catalog, layout, plateId, end);
             AppendFrontalGuias(target, system, catalog, layout, end);
         }
@@ -363,7 +364,8 @@ namespace RackCad.Application.Systems.Dynamic
             RackCatalog catalog,
             DynamicFrontLayout layout,
             DynamicRackEnd end,
-            RackLevelElevations elevations)
+            RackLevelElevations elevations,
+            Func<int, int, bool> ownsDesviador)
         {
             var selection = SelectiveSafetyFamilies.SelectedOfType(
                 system.SafetySelections, catalog.SafetyElements, SelectiveSafetyDefaults.DesviadorType);
@@ -416,6 +418,14 @@ namespace RackCad.Application.Systems.Dynamic
                 for (var levelIndex = 0; levelIndex < levelsAtPost && levelIndex < system.LoadBeamLevels.Count; levelIndex++)
                 {
                     if (off.Contains((cellKey, levelIndex)))
+                    {
+                        continue;
+                    }
+
+                    // I-42 — un desviador guia la tarima al ENTRAR, asi que solo existe donde este corte tiene una
+                    // cama que se carga por el. Un rack de un solo sentido no pasa predicado y no cambia nada; un
+                    // compuesto lo deriva de sus CAMAS, que es la misma autoridad que gobierna el lateral.
+                    if (ownsDesviador != null && !ownsDesviador(postIndex, levelIndex))
                     {
                         continue;
                     }

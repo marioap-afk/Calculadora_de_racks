@@ -545,7 +545,10 @@ namespace RackCad.UI.Systems.PushBack
             // el camino es literalmente el de antes de la iniciativa. Las vistas se construyen SIEMPRE por el mismo
             // BuildFrom, asi que no puede aparecer un segundo constructor de vistas que diverja.
             var computation = composite.SideBPresent
-                ? assembler.BuildFrom(compositeAssembler.BuildDesign(composite, ReadInputs()), composite.ActiveSide)
+                // I-42: los dos cortes frontales se construyen para el lado que el SELECTOR DE VISTA pide. El lado
+                // ACTIVO es el que se esta editando y no tiene por que ser el que se mira: con «Editando A» y
+                // «Frontal de B» el panel construia el corte de A y lo rotulaba como de B.
+                ? assembler.BuildFrom(compositeAssembler.BuildDesign(composite, ReadInputs()), frontalSide)
                 : assembler.Build(state, ReadInputs());
             if (computation.IsValid)
             {
@@ -2563,7 +2566,12 @@ namespace RackCad.UI.Systems.PushBack
             if (string.Equals(view, RackEmbedDocument.ViewPlanta, StringComparison.OrdinalIgnoreCase)) return lastComputation.PlantaPlan;
             if (string.Equals(view, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase))
             {
-                return section == (int)PushBackFrontalEnd.Posterior ? lastComputation.FrontalPosterior : lastComputation.FrontalEntradaSalida;
+                // I-42: la seccion frontal lleva EXTREMO y LADO, asi que hay que DECODIFICARLA. Compararla contra
+                // (int)Posterior solo acertaba en el lado A: la seccion 3 —posterior de B— caia en el corte de
+                // entrada/salida y el panel mostraba el pasillo de carga donde el usuario pidio el fondo.
+                return PushBackSystemFrontalBuilder.DecodeSection(section).End == PushBackFrontalEnd.Posterior
+                    ? lastComputation.FrontalPosterior
+                    : lastComputation.FrontalEntradaSalida;
             }
 
             // Lateral: the SELECTED corte's plan (the assembler already computed every corte), not the full lateral.
@@ -2581,7 +2589,9 @@ namespace RackCad.UI.Systems.PushBack
             if (string.Equals(view, RackEmbedDocument.ViewPlanta, StringComparison.OrdinalIgnoreCase)) return "Planta";
             if (string.Equals(view, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase))
             {
-                return section == (int)PushBackFrontalEnd.Posterior ? "Frontal posterior" : "Frontal entrada/salida";
+                var frontal = PushBackSystemFrontalBuilder.DecodeSection(section);
+                var label = frontal.End == PushBackFrontalEnd.Posterior ? "Frontal posterior" : "Frontal entrada/salida";
+                return section >= 2 ? label + " (lado " + (frontal.Side == PushBackSide.B ? "B" : "A") + ")" : label;
             }
 
             return "Lateral (corte " + (section + 1).ToString(CultureInfo.InvariantCulture) + ")";
@@ -2629,6 +2639,9 @@ namespace RackCad.UI.Systems.PushBack
             }
 
             frontalSide = FrontalSideBox.SelectedIndex == 1 ? PushBackSide.B : PushBackSide.A;
+            // Los cortes frontales YA construidos son los del lado anterior: repintar sin reconstruir dejaba el
+            // panel mostrando el otro pasillo hasta que cualquier otra edicion forzara un recalculo.
+            RequestRecompute();
             RenderPreview();
         }
 

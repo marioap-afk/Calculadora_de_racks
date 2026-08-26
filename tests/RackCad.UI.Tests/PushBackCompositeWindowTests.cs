@@ -1386,6 +1386,66 @@ namespace RackCad.UI.Tests
             Assert.True(ok);
         }
 
+        /// <summary>
+        /// I-42 (correccion aislada 1B) — el contenido de los cortes frontales sigue al selector de VISTA, no al
+        /// lado que se esta EDITANDO, y cambiar ese selector RECONSTRUYE los dos cortes.
+        ///
+        /// <para>
+        /// La ventana construia los frontales con el lado ACTIVO de la edicion mientras rotulaba y direccionaba la
+        /// seccion con el del selector: con «Editando A» y «Frontal de B» el panel mostraba el pasillo de A. Y
+        /// cambiar el selector solo repintaba, de modo que el plan seguia siendo el del lado anterior hasta que
+        /// cualquier otra edicion forzara un recalculo.
+        /// </para>
+        /// </summary>
+        [Fact]
+        public void TheFrontalCuts_FollowTheViewSelector_NotTheEditedSide()
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+
+                // Una CORRIDA A->B: carga por A y descarga en B, asi que los dos cortes de cada lado son distintos
+                // y confundirlos se ve. Se declara sobre el estado y se recalcula con los controles reales.
+                w.CompositeState.SetDefaults(PushBackCellTopology.Corrida, PushBackRunDirection.AToB);
+                Combo(w, "SideSelectorBox").SelectedIndex = 0;
+
+                // El propio selector de vista es el que RECONSTRUYE: se pasa por B y se vuelve a A sin tocar nada
+                // mas, y con eso basta para que el panel tenga los cortes de A con la topologia recien declarada.
+                Combo(w, "FrontalSideBox").SelectedIndex = 1;
+                Combo(w, "FrontalSideBox").SelectedIndex = 0;
+
+                var entradaA = Beams(w.LastComputation?.FrontalEntradaSalida);
+                var posteriorA = Beams(w.LastComputation?.FrontalPosterior);
+
+                // El corte de A es el de ENTRADA de la corrida; su posterior esta vacio, porque el extremo alto
+                // esta en el otro pasillo.
+                if (entradaA == 0 || posteriorA != 0) return false;
+
+                // Ahora se EDITA A y se pide el frontal de B: el contenido tiene que cambiar de lado sin tocar la
+                // edicion, y sin ninguna otra accion que el propio selector.
+                Combo(w, "FrontalSideBox").SelectedIndex = 1;
+                if (w.CompositeState.ActiveSide != PushBackSide.A) return false;
+                if (w.FrontalSideForTest != PushBackSide.B) return false;
+
+                var entradaB = Beams(w.LastComputation?.FrontalEntradaSalida);
+                var posteriorB = Beams(w.LastComputation?.FrontalPosterior);
+                if (entradaB != 0 || posteriorB == 0) return false;
+
+                // Y la SECCION del posterior de B direcciona el corte posterior, no el de entrada.
+                var section = PushBackSystemFrontalBuilder.EncodeSection(PushBackFrontalEnd.Posterior, PushBackSide.B);
+                return PushBackSystemFrontalBuilder.DecodeSection(section).End == PushBackFrontalEnd.Posterior
+                       && PushBackSystemFrontalBuilder.DecodeSection(section).Side == PushBackSide.B;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>Los largueros de un plan de corte, que es lo que distingue un pasillo que carga de uno que no.</summary>
+        private static int Beams(RackCad.Application.Drawing.HeaderRunPlan plan)
+            => plan == null
+                ? 0
+                : plan.Flatten().Instances.Count(i => i.Role == RackCad.Application.Drawing.HeaderBlockRole.Beam);
+
         /// <summary>La casilla de presencia se llama como el dueño la entiende y explica para que sirve.</summary>
         [Fact]
         public void TheBlankCheck_IsNamedInProductLanguage()

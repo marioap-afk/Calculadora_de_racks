@@ -36,7 +36,8 @@ namespace RackCad.Application.Systems.Dynamic
             DynamicRackSystem system,
             RackCatalog catalog,
             DynamicRackEnd end,
-            RackLevelElevations elevations = null)
+            RackLevelElevations elevations = null,
+            Func<int, int, bool> ownsDesviador = null)
         {
             var instances = new List<HeaderBlockInstance>();
             if (system == null || system.Fronts.Count == 0 || system.LoadBeamLevels.Count == 0)
@@ -141,7 +142,7 @@ namespace RackCad.Application.Systems.Dynamic
                 }
             }
 
-            safetyBuilder.AppendFrontal(instances, system, catalog, layout, plateId, end, elevations);
+            safetyBuilder.AppendFrontal(instances, system, catalog, layout, plateId, end, elevations, ownsDesviador);
             DynamicViewDecorations.AppendFrontal(instances, system, layout, end, catalog, elevations);
 
             return instances;
