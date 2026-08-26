@@ -615,6 +615,107 @@ coincidir. La primera afirmacion no pasa por casualidad.
 superficie PROMETE es donde la cama acaba de verdad; y siete pruebas WPF nuevas sobre los controles reales de la
 ventana.
 
+## 4-nonies. Validacion del dueño post-5a73b92: RECHAZADA — los siete hallazgos
+
+El dueño convirtio un rack de CUATRO frentes a compuesto, declaro el lado B en uno solo y encontro siete cosas.
+Cada una se REPRODUJO antes de tocar nada.
+
+### BLOQUEO — la celda seleccionada era del LADO, no del RACK (hallazgo 4)
+
+Reproducido con los controles reales. El usuario elige el frente mirando el rack (lado A), cambia al lado B para
+declararlo, y el selector vuelve a 0:
+
+```
+A: combo=1 selA=1  ->  quiere F1: combo=0 selB=0  ->  escribio en: 0
+A: combo=2 selA=2  ->  quiere F2: combo=0 selB=0  ->  escribio en: 0
+A: combo=3 selA=3  ->  quiere F3: combo=0 selB=0  ->  escribio en: 0
+```
+
+Cada lado guardaba su propia celda primaria, asi que la casilla de presencia escribia SIEMPRE en la ranura 0 —
+«aparentemente solo F1 puede hacerse compuesto». La celda es una posicion FISICA del rack y existe en los dos
+lados: ahora se lleva al lado que se va a editar ANTES de cambiar. Medido despues: `0,1` → `0,1,2` → `0,1,2,3`.
+
+### CAPACIDAD, PRESENCIA y TOPOLOGIA son tres estados (hallazgo 1)
+
+| estado | de quien es | que declara |
+|---|---|---|
+| CAPACIDAD | del rack | «existe el lado B como posibilidad» |
+| PRESENCIA | de cada frente | «este frente tiene fisicamente lado B» |
+| TOPOLOGIA | de cada celda | Solo A / Solo B / Encontradas / Corrida |
+
+Tres correcciones, una por eje:
+
+- **Activar la capacidad ya no declara presencia.** El modelo inicializa el lado, iguala la retícula y lo deja
+  AUSENTE en todos los frentes. Y mientras ningun frente lo tenga, el rack **no es compuesto**: sigue siendo
+  fisicamente el de un solo sentido, misma longitud y mismo BOM.
+- **La topologia efectiva es por frente.** El default del rack pasaba a «encontradas» y toda celda sin entrada
+  propia lo heredaba, tuviera lado B o no. `TopologyAt` devuelve ahora la que la celda puede construir de verdad;
+  la intencion guardada vive en `StoredTopologyAt` y vuelve a mandar en cuanto el frente reciba su lado B.
+- **La segunda cara de carga es por LINEA.** `BothEndsAreLoadFaces` era un bool del rack: una cara B que existe
+  solo en F1 convertia en cara de carga las lineas de todos los demas frentes, y ahi aparecian las botas y los
+  protectores que el dueño vio «invertidos». Ahora la seleccion declara `SecondLoadFacePosts` —las lineas cuyos
+  frentes adyacentes tienen lado B— y las demas conservan su regla adaptativa legacy.
+
+### EL DATUM DE LOS DOS LADOS (hallazgo 2)
+
+Medido: con la misma intencion a la vista, el lado A arrancaba en 4" y el B en 6" —dos defaults distintos— y sus
+camas quedaban un troquel entero aparte (`lowZ` 6.4836 contra 8.4836). Al crear el lado B ahora parte de la MISMA
+intencion de «Alto 1er nivel» que el lado A; no se copia nada mas. Medido despues: los dos en 4" y `lowZ` 6.4836
+en los tres niveles.
+
+### FRONTAL B CONTRA LATERAL B (hallazgo 3)
+
+Medido con los dos lados deliberadamente DISTINTOS (A=4", B=18"): el corte frontal de cada lado coincide
+exactamente con las elevaciones de sus camas, y el lateral tambien. No habia una segunda autoridad: lo que el
+dueño vio era el sintoma del hallazgo 2, con el lado B entero un troquel mas arriba. Queda fijado con pruebas
+geometricas del lado B en concreto, porque las simetricas A/B no recorrian esa ruta.
+
+### LA DUPLICACION DE LOS CORTES (hallazgos 5 e I)
+
+Un corte lateral es una PROYECCION y dibuja cada cosa UNA vez. El compositor construye por CAMA, asi que dos
+frentes contiguos con la misma configuracion emitian sus largueros, sus apoyos y sus camas superpuestos:
+
+```
+linea 2: antes(un sentido) 696/696 distintas    despues(compuesto) 1317/696
+linea 3: antes             696/696              despues            1317/696
+linea 4: antes             696/696              despues             696/696   (una sola ranura adyacente)
+```
+
+Dos piezas identicas una encima de otra se ven como una pieza «con dos manos» y como «dos largueros en el poste
+reforzado». Se deduplica por identidad fisica —pieza, posicion, mano y rotacion— ya en coordenadas de rack. No
+afecta al BOM, que cuenta camas.
+
+**Y la mano del larguero alto ya era correcta.** Medida contra la regla del dueño —el escalon apunta al CENTRO de
+la cabecera a la que se conecta— en las cuatro topologias, los dos sentidos y con frentes cortos contra largos:
+correcta en todos los casos. La cabecera es el MODULO en el que la cama termina (el que acaba en esa linea si
+avanza hacia +X, el que empieza en ella si avanza hacia −X); elegirla por proximidad es lo que la hacia parecer
+invertida, porque en la interfaz terminan DOS cabeceras, una por lado.
+
+### LA CORRIDA SE ANCLABA EN EL LADO EQUIVOCADO (hallazgo 7)
+
+Reproducido con A=10" y B=30": la cama corrida se anclaba en **30.6053** —la altura del lado B— aunque carga por
+el pasillo de A, y su desviador se quedaba en 76.6053 siguiendo los niveles de A, veintiseis pulgadas por debajo
+de su propia cama.
+
+`BuildCorrida` tomaba las elevaciones del lado ALTO, que era la regla correcta **mientras mandaba el alto**. La
+decision final del dueño invirtio la autoridad vertical y esto se quedo atras. Ahora las elevaciones son las del
+lado BAJO —el pasillo por el que se carga—; los PERALTES del larguero posterior siguen siendo los del alto,
+porque esa pieza esta fisicamente alli. Medido despues: `lowZ` 10.6053, y el desviador a 6" bajo su cama.
+
+### LA BARRA DE ACCIONES (hallazgo 6)
+
+Convivian TRES separaciones escritas a mano boton por boton (6, 8 y 14) y anchos minimos sueltos (74, 86, 158…).
+Ahora hay dos tokens de ritmo —separacion entre acciones hermanas y separacion de cambio de grupo— y todos los
+anchos son multiplos del paso de 8. El selector de lado frontal ya no fija alto propio: comparte linea con los
+botones. Es composicion local; el shell no se toca.
+
+### Pruebas
+
+`PushBackPartialCompositeTests` (14) y `PushBackHighEndHandTests` (34) sobre el modelo, mas seis pruebas WPF con
+los CONTROLES REALES: declarar B frente a frente, quitarlo y reponerlo en uno intermedio, que cambiar de lado no
+mueve el cursor, y el ritmo de la barra. Las fixtures que quieren el rack compuesto entero ahora lo declaran
+frente a frente, que es el contrato nuevo.
+
 ## 4-octies. Auditoria adversarial final (seccion T)
 
 Despues de cerrar 4, 5, 6 y 10 se recorrio el checklist del dueño buscando lo que quedara vivo. **Se encontraron

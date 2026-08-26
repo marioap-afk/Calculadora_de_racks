@@ -12,6 +12,14 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- I-42 (ronda post-5a73b92) — el RITMO de la barra de acciones, en dos tokens y no en margenes
+                 sueltos. Antes convivian tres separaciones distintas (6, 8 y 14) escritas a mano en cada boton, y
+                 la barra se veia desalineada. Son locales a esta ventana a proposito: la correccion es de
+                 composicion, no del shell. -->
+            <Thickness x:Key="ActionGap">0,0,6,4</Thickness>
+            <Thickness x:Key="ActionGroupGap">0,0,16,4</Thickness>
+            <Thickness x:Key="ActionLast">0,0,0,4</Thickness>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -761,44 +769,45 @@
              motivos de indisponibilidad) los fija el code-behind por x:Name; ToolTipService.ShowOnDisabled los muestra
              cuando la acción está deshabilitada. -->
         <shell:RackEditorVisualShell.LeadingActions>
-            <Button x:Name="RestoreButton" Content="Restaurar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Margin="0,0,8,4"
+            <Button x:Name="RestoreButton" Content="Restaurar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="{StaticResource ActionLast}"
                     ToolTipService.ShowOnDisabled="True" Click="Restore_Click" ToolTip="Vuelve a los valores calculados del sistema." />
         </shell:RackEditorVisualShell.LeadingActions>
         <shell:RackEditorVisualShell.SecondaryActions>
-            <StackPanel Orientation="Horizontal">
-                <Button x:Name="BomButton" Content="BOM" Style="{StaticResource SecondaryButtonStyle}" MinWidth="74" Margin="0,0,6,4"
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                <Button x:Name="BomButton" Content="BOM" Style="{StaticResource SecondaryButtonStyle}" MinWidth="72" Margin="{StaticResource ActionGap}"
                         ToolTipService.ShowOnDisabled="True" Click="Bom_Click" ToolTip="Lista de materiales del sistema actual." />
-                <Button x:Name="SaveLibraryButton" Content="Guardar en biblioteca" Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" Margin="0,0,0,4"
+                <Button x:Name="SaveLibraryButton" Content="Guardar en biblioteca" Style="{StaticResource SecondaryButtonStyle}" MinWidth="152" Margin="{StaticResource ActionLast}"
                         ToolTipService.ShowOnDisabled="True" Click="SaveLibrary_Click" ToolTip="Guarda este diseño Push Back en la biblioteca." />
             </StackPanel>
         </shell:RackEditorVisualShell.SecondaryActions>
         <shell:RackEditorVisualShell.PrimaryActions>
-            <StackPanel Orientation="Horizontal">
-                <Button x:Name="UpdateButton" Content="Actualizar" Style="{StaticResource PrimaryButtonStyle}" MinWidth="100" Margin="0,0,14,4"
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                <Button x:Name="UpdateButton" Content="Actualizar" Style="{StaticResource PrimaryButtonStyle}" MinWidth="104" Margin="{StaticResource ActionGroupGap}"
                         ToolTipService.ShowOnDisabled="True" Click="Update_Click" ToolTip="Redibuja en sitio todas las vistas ligadas de este rack." />
-                <Button x:Name="InsertLateralButton" Content="Insertar lateral" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,6,4"
+                <Button x:Name="InsertLateralButton" Content="Insertar lateral" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="{StaticResource ActionGap}"
                         ToolTipService.ShowOnDisabled="True" Click="InsertLateral_Click" ToolTip="Inserta el corte lateral seleccionado." />
-                <Button x:Name="InsertFrontalEntradaButton" Content="Frontal entrada/salida" Style="{StaticResource SecondaryButtonStyle}" MinWidth="158" Margin="0,0,6,4"
+                <Button x:Name="InsertFrontalEntradaButton" Content="Frontal entrada/salida" Style="{StaticResource SecondaryButtonStyle}" MinWidth="160" Margin="{StaticResource ActionGap}"
                         ToolTipService.ShowOnDisabled="True" Click="InsertFrontalEntrada_Click" ToolTip="Inserta el corte frontal del extremo bajo." />
-                <Button x:Name="InsertFrontalPosteriorButton" Content="Frontal posterior" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,6,4"
+                <Button x:Name="InsertFrontalPosteriorButton" Content="Frontal posterior" Style="{StaticResource SecondaryButtonStyle}" MinWidth="128" Margin="{StaticResource ActionGap}"
                         ToolTipService.ShowOnDisabled="True" Click="InsertFrontalPosterior_Click" ToolTip="Inserta el corte frontal del extremo alto." />
                 <!-- I-42: en un rack de DOS sentidos «entrada/salida» y «posterior» no dicen de que lado son. Este
                      selector aparece solo con el compuesto encendido y CALIFICA a los dos botones de al lado, de modo
                      que los cuatro cortes —entrada/salida y posterior de cada lado— son pedibles y visibles sin
                      conocer ningun modo interno. Con el compuesto apagado no existe y la barra es la de siempre.
                      Cuatro botones no caben: la barra de acciones ya lleva doce y se recortarian. -->
-                <ComboBox x:Name="FrontalSideBox" Width="104" Margin="0,0,6,4" Visibility="Collapsed"
+                <ComboBox x:Name="FrontalSideBox" Width="104" VerticalContentAlignment="Center"
+                          Margin="{StaticResource ActionGap}" Visibility="Collapsed"
                           SelectionChanged="FrontalSide_Changed"
                           ToolTipService.ShowOnDisabled="True"
                           ToolTip="De qu&#233; lado son los dos cortes frontales de al lado. Es independiente del lado que se est&#233; editando." />
-                <Button x:Name="InsertPlantaButton" Content="Planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="86" Margin="0,0,14,4"
+                <Button x:Name="InsertPlantaButton" Content="Planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="{StaticResource ActionGroupGap}"
                         ToolTipService.ShowOnDisabled="True" Click="InsertPlanta_Click" ToolTip="Inserta la vista en planta." />
-                <Button x:Name="InsertButton" Content="Insertar vista actual" Style="{StaticResource PrimaryButtonStyle}" MinWidth="150" Margin="0,0,0,4"
+                <Button x:Name="InsertButton" Content="Insertar vista actual" Style="{StaticResource PrimaryButtonStyle}" MinWidth="152" Margin="{StaticResource ActionLast}"
                         ToolTipService.ShowOnDisabled="True" Click="Insert_Click" ToolTip="Inserta la vista seleccionada en el previsualizador." />
             </StackPanel>
         </shell:RackEditorVisualShell.PrimaryActions>
         <shell:RackEditorVisualShell.TrailingActions>
-            <Button x:Name="CloseButton" Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Margin="0,0,0,4" IsCancel="True" Click="Close_Click" />
+            <Button x:Name="CloseButton" Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="{StaticResource ActionLast}" IsCancel="True" Click="Close_Click" />
         </shell:RackEditorVisualShell.TrailingActions>
     </shell:RackEditorVisualShell>
 </Window>

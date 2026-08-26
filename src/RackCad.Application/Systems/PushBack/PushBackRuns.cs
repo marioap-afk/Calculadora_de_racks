@@ -216,9 +216,12 @@ namespace RackCad.Application.Systems.PushBack
         /// placas y separadores siguen viniendo UNA sola vez del rack.
         /// </para>
         /// <para>
-        /// Las elevaciones y los peraltes son los del lado ALTO, cuyo larguero posterior es el ancla. La elevacion
-        /// propia del lado BAJO no se toca ni se borra: sigue almacenada en su lado y vuelve a gobernar en cuanto la
-        /// celda deje de ser corrida.
+        /// Las ELEVACIONES son las del lado BAJO —el pasillo por el que se carga—, porque desde la decision final
+        /// del dueño el ancla vertical de una cama es su extremo bajo. Antes se tomaban del lado ALTO, que era la
+        /// regla correcta cuando mandaba el alto: con los dos lados a alturas distintas, la cama corrida quedaba a
+        /// la altura del lado contrario al que la carga y su desviador, que sigue los niveles del lado bajo, se
+        /// quedaba muy por debajo de ella. Los PERALTES del larguero posterior siguen siendo los del lado ALTO: esa
+        /// pieza esta fisicamente alli. La configuracion propia de cada lado no se toca ni se borra.
         /// </para>
         /// </summary>
         public static PushBackSystem BuildCorrida(PushBackSystem system, PushBackRunDirection direction, int demand)
@@ -232,6 +235,7 @@ namespace RackCad.Application.Systems.PushBack
 
             var forward = direction == PushBackRunDirection.AToB;
             var highSide = forward ? composite.SideB : composite.SideA;
+            var lowSide = forward ? composite.SideA : composite.SideB;
             // El marco en el que el flujo avanza hacia +X: el del rack si va A->B, el espejado si va B->A.
             var frame = forward ? Clone(structure) : PushBackMirror.Structure(structure);
             var totalModules = frame.Modules.Count;
@@ -259,21 +263,27 @@ namespace RackCad.Application.Systems.PushBack
                 front.PalletsDeep = modules;
 
                 var highFront = highSide?.LocalFront(slot);
+                // El marco de la corrida esta REFLEJADO cuando va B->A, asi que el frente del lado bajo hay que
+                // pedirlo por su ranura, no por el indice local del marco.
+                var lowFront = lowSide?.LocalFront(slot);
                 var levels = highFront != null ? DynamicFrontActivation.EffectiveLoadLevels(highFront) : 0;
                 if (highFront != null)
                 {
-                    // Las ELEVACIONES son las del lado ALTO: su larguero posterior es el ancla de la corrida.
+                    // Las ELEVACIONES son las del lado BAJO: es el pasillo por el que se carga y, desde la decision
+                    // final del dueño, el extremo bajo es el ancla vertical de la cama. Si ese lado no tuviera
+                    // frente —no puede, porque es el que carga— se conserva el del alto antes que inventar uno.
+                    var elevations = lowFront ?? highFront;
                     front.IsActive = highFront.IsActive;
-                    front.LoadLevels = highFront.LoadLevels;
-                    front.FirstLevelHeight = highFront.FirstLevelHeight;
+                    front.LoadLevels = elevations.LoadLevels;
+                    front.FirstLevelHeight = elevations.FirstLevelHeight;
                     front.LoadBeamLevels.Clear();
-                    foreach (var level in highFront.LoadBeamLevels)
+                    foreach (var level in elevations.LoadBeamLevels)
                     {
                         front.LoadBeamLevels.Add(level);
                     }
 
                     front.Levels.Clear();
-                    foreach (var level in highFront.Levels)
+                    foreach (var level in elevations.Levels)
                     {
                         front.Levels.Add(level);
                     }
