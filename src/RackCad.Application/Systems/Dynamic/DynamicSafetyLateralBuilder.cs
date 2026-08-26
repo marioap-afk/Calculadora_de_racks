@@ -261,9 +261,10 @@ namespace RackCad.Application.Systems.Dynamic
                 var leftLoad = leftLevels[Math.Min(level, leftLevels.Count - 1)];
                 var rightLoad = rightLevels[Math.Min(level, rightLevels.Count - 1)];
 
-                // El desviador cuelga del larguero de SU extremo. El BAJO admite override —es el que Push Back
-                // deriva— y el ALTO no: su larguero es el ancla y conserva la elevación del resolver (PB-004, I-32).
-                // El primer nivel tampoco: mide desde el troquel del poste.
+                // El desviador cuelga del larguero de SU extremo, y CADA extremo consulta su propio contexto: el
+                // bajo el principal y el alto el acompañante (HighEnd). Desde la inversion vertical de I-42 los dos
+                // se derivan, asi que leer la elevacion del resolver para el alto lo dejaria colgando de un larguero
+                // que ya no esta ahi. El primer nivel no consulta ninguno: mide desde el troquel del poste.
                 //
                 // Qué ámbito se consulta lo decide si este corte pertenece a un frente. SECCIONADO por poste: la
                 // columna baja pertenece al frente adyacente de menor StartX, así que se pregunta POR FRENTE. SIN
@@ -275,7 +276,14 @@ namespace RackCad.Application.Systems.Dynamic
                         ? elevations.OrFront(leftFront.Index, leftLoad.LevelNumber, leftLoad.ExitElevation)
                         : elevations.OrSystemEnvelope(leftLoad.LevelNumber, leftLoad.ExitElevation))
                       - SelectiveDesviadorPlan.BeamYOffset;
-                var rightY = level == 0 ? firstRightY : rightLoad.EntranceElevation - SelectiveDesviadorPlan.BeamYOffset;
+                var rightFront = fronts.OrderByDescending(front => front.EndX).FirstOrDefault();
+                var high = elevations?.HighEnd;
+                var rightY = level == 0
+                    ? firstRightY
+                    : (rightFront != null
+                        ? high.OrFront(rightFront.Index, rightLoad.LevelNumber, rightLoad.EntranceElevation)
+                        : high.OrSystemEnvelope(rightLoad.LevelNumber, rightLoad.EntranceElevation))
+                      - SelectiveDesviadorPlan.BeamYOffset;
 
                 if (selection.Side == SafetySide.Left || selection.Side == SafetySide.Both)
                 {

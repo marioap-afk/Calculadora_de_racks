@@ -615,6 +615,55 @@ coincidir. La primera afirmacion no pasa por casualidad.
 superficie PROMETE es donde la cama acaba de verdad; y siete pruebas WPF nuevas sobre los controles reales de la
 ventana.
 
+## 4-octies. Auditoria adversarial final (seccion T)
+
+Despues de cerrar 4, 5, 6 y 10 se recorrio el checklist del dueño buscando lo que quedara vivo. **Se encontraron
+dos cosas, y las dos se corrigieron**; el resto se declara medido.
+
+### ENCONTRADO 1 — el desviador del extremo ALTO seguia leyendo la elevacion del resolver
+
+`DynamicSafetyLateralBuilder` dibuja los DOS extremos en UNA sola pasada, asi que es el unico sitio donde una
+vista necesita las dos elevaciones a la vez. El desviador de la izquierda ya consultaba el contexto; el de la
+derecha usaba `rightLoad.EntranceElevation` — correcto mientras el alto era el ancla, y falso desde la
+inversion. Se quedaba colgando de un larguero que ya no esta ahi.
+
+**La correccion**: el contexto de elevaciones lleva ahora un ACOMPAÑANTE del extremo alto
+(`RackLevelElevations.HighEnd`), que `PushBackElevations.Context` rellena. Ningun sistema con una sola elevacion
+por nivel —el Dinamico— lo rellena, y sin el nada cambia. La prueba es falsable a proposito: comprueba que el
+desviador cae en la elevacion DERIVADA **y** que esa elevacion NO es la del resolver.
+
+### ENCONTRADO 2 — el `LocateCell` del corte posterior
+
+Ya descrito con el error 6: buscaba la celda comparando contra la elevacion del resolver, asi que tras la
+inversion no encontraba ninguna y se perdian EN SILENCIO el tope posterior y el filtro de celdas de una corrida.
+
+### DECLARADO — el rack nunca se queda corto
+
+La altura de cabecera y la longitud del poste se calculan con la elevacion del RESOLVER, y I-32 fijo que la
+correccion de pendiente NO las mueve. Con la inversion el larguero alto BAJA, asi que la pregunta es si alguna
+vez SUBE por encima de aquella elevacion — porque entonces el poste se quedaria corto. **Medido en 108
+combinaciones** de fondo (2..12), niveles (1, 2, 4) y altura inicial (4, 6, 12, 30): nunca. El peor caso deja el
+alto derivado 4" por DEBAJO. Queda fijado como prueba.
+
+### RECORRIDO Y MEDIDO, sin hallazgos
+
+| Area | Que se busco | Resultado |
+|---|---|---|
+| ELEVACIONES | `ChooseLowTroquel`, `legacyInsertion`, `TheoreticalExitY` | no existen; se eliminaron con la politica |
+| ELEVACIONES | quien lee `EntranceElevation` en Push Back | solo como FALLBACK de `LocateCell`, que es su contrato |
+| ELEVACIONES | autoridad duplicada | los 10 consumidores de `PushBackElevations` pasan por `Resolve`/`Context` |
+| ELEVACIONES | datum y migracion | `RackFirstLevelDatum` intacto; sus 26 pruebas verdes |
+| GEOMETRIA | mates bajo/alto, hueco, espejos, camas parciales | 24 escenarios especiales en `PushBackRunFrameTests` |
+| ESTRUCTURA | fuga de un frente remoto | prueba explicita con 5/5/9 |
+| ESTRUCTURA | identidad por linea | `ModuleId` y `Kind` identicos tras acortar; override de I-40 sigue aplicando |
+| ESTRUCTURA | round trip | la cobertura se RECONSTRUYE al reabrir (los tramos son derivados y no se persisten) |
+| TOPES | intencion / aplicabilidad / materializacion | tres conceptos separados, con prueba de que la promesa coincide con el dibujo |
+| TOPES | divergencia planta / lateral / BOM | planta y lateral coinciden pieza a pieza; el BOM cuenta camas |
+| SEGURIDAD | regresion de 91fc259 | editar topes no mueve ni una pieza; ninguna seleccion adquiere `Side = Both` |
+| UI | lado A/B/Ambos, primer nivel, frente seleccionado | las pruebas de las rondas anteriores siguen verdes |
+| PERSISTENCIA | forma en disco | `DepthSegments` vive en el DISEÑO, que nunca se serializa: el DTO del documento no cambia |
+| PUSH BACK | GUIA | sigue sin admitir ninguna, como desde I-18 |
+
 ## 5. Limitaciones DECLARADAS (no son descuidos)
 
 1. **El separador central exige hueco mayor que cero**; con hueco 0 se avisa y no se coloca.

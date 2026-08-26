@@ -89,6 +89,28 @@ namespace RackCad.Application.Systems.Shared
         }
 
         /// <summary>
+        /// El contexto del OTRO extremo, cuando el sistema que lo construyo tiene dos elevaciones por nivel.
+        ///
+        /// <para>
+        /// Casi todas las vistas se dibujan por EXTREMO —el llamador ya sabe cual y pasa el contexto que toca—, pero
+        /// el corte LATERAL dibuja los dos a la vez: el desviador de la izquierda cuelga del larguero bajo y el de
+        /// la derecha del alto. Sin este acompañante ese segundo desviador tendria que leer la elevacion del
+        /// resolver, que desde la inversion vertical de I-42 ya no es la del larguero alto.
+        /// </para>
+        /// <para>
+        /// Null es lo normal: un sistema con una sola elevacion por nivel —el Dinamico— no lo rellena y nada cambia.
+        /// </para>
+        /// </summary>
+        public RackLevelElevations HighEnd { get; private set; }
+
+        /// <summary>
+        /// El MISMO contexto con su acompañante del extremo alto. Devuelve una instancia nueva: el contexto es
+        /// inmutable para quien lo consume.
+        /// </summary>
+        public RackLevelElevations WithHighEnd(RackLevelElevations highEnd)
+            => new RackLevelElevations(byFront, winnerByPost, envelope, projectedFront) { HighEnd = highEnd };
+
+        /// <summary>
         /// Construye el contexto a partir de las elevaciones de cada frente. Un rack de N frentes tiene N+1 postes:
         /// el poste <c>i</c> ve los frentes <c>i-1</c> e <c>i</c>, recortados a los extremos. Los ganadores por
         /// poste y el de la proyección se resuelven AQUÍ, una sola vez, para que ninguna consulta pueda derivar en

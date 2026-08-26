@@ -321,7 +321,9 @@ namespace RackCad.Application.Systems.PushBack
         /// override» y se quedan con la elevación del resolver.
         /// </summary>
         public static RackLevelElevations Context(PushBackSystem system, RackCatalog catalog)
-            => BuildContext(system, catalog, low: true);
+            // Se entrega con su ACOMPAÑANTE del extremo alto: el corte lateral dibuja los dos extremos en una sola
+            // pasada y necesita los dos, y desde la inversion vertical los dos se derivan.
+            => BuildContext(system, catalog, low: true)?.WithHighEnd(HighContext(system, catalog));
 
         /// <summary>
         /// El mismo contexto para el extremo ALTO. Existe porque desde la decisión final del dueño el larguero

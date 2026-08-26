@@ -234,6 +234,92 @@ namespace RackCad.Tests
             Assert.True(Headers(shortSlot) < Headers(fullSlot), "y cotizarlos de menos");
         }
 
+        /// <summary>
+        /// La cobertura sobrevive al ROUND TRIP. Los tramos son DERIVADOS y no se persisten —el documento no tiene
+        /// que entenderlos—, asi que lo que se comprueba es que se RECONSTRUYEN al reabrir: si no, el rack volveria
+        /// a abrirse con las cabeceras de mas.
+        /// </summary>
+        [Fact]
+        public void TheCoverage_IsRebuiltAfterARoundTrip()
+        {
+            var design = PushBackCompositeStructureTests.Composite(
+                slotsA: 3, slotsB: 3, deepA: 8, deepB: 8, levelsA: 2, levelsB: 2);
+            design.Structure.Fronts[0].PalletsDeep = 5;
+            design.Fronts[0].DefaultPalletsDeep = 5;
+
+            var before = new PushBackResolver(Catalog).Resolve(design);
+            var json = System.Text.Json.JsonSerializer.Serialize(PushBackDesignDocument.FromDomain(design));
+            var restored = System.Text.Json.JsonSerializer
+                .Deserialize<PushBackDesignDocument>(json).ToDomain();
+            var after = new PushBackResolver(Catalog).Resolve(restored);
+
+            string Signature(PushBackSystem system) => string.Join(
+                "|",
+                Enumerable.Range(0, system.Structure.Fronts.Count + 1)
+                    .Select(line => DynamicDepthGeometry.CoverageAtPost(system.Structure, line))
+                    .Select(coverage => string.Join(
+                        ",", coverage.Segments.Select(s => s.StartPosition + ".." + s.EndPosition))));
+
+            Assert.NotEmpty(before.Structure.Fronts[0].DepthSegments);
+            Assert.Equal(Signature(before), Signature(after));
+            Assert.Equal(
+                PostsOnLine(before, 0).ToList(),
+                PostsOnLine(after, 0).ToList());
+        }
+
+        /// <summary>
+        /// PROPIEDAD DE SEGURIDAD tras la inversion vertical: el larguero ALTO derivado NUNCA queda por ENCIMA de la
+        /// elevacion que el resolver le habia dado. La altura de cabecera y la longitud del poste se calculan con la
+        /// del resolver (I-32 fijo que la correccion de pendiente NO las mueve), asi que esta desigualdad es lo que
+        /// garantiza que el rack no se quede corto. Medido en 108 combinaciones de fondo, niveles y altura inicial.
+        /// </summary>
+        [Fact]
+        public void TheDerivedHighBeam_NeverRisesAboveTheResolverElevation()
+        {
+            var catalog = Catalog;
+            var compared = 0;
+            foreach (var deep in new[] { 2, 3, 4, 5, 6, 7, 8, 10, 12 })
+            {
+                foreach (var levels in new[] { 1, 2, 4 })
+                {
+                    foreach (var first in new[] { 4.0, 6.0, 12.0, 30.0 })
+                    {
+                        var design = new PushBackDesign
+                        {
+                            Structure = new DynamicRackDesign
+                            {
+                                Pallet = new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
+                                PalletsDeep = deep,
+                                LoadLevels = levels,
+                                FirstLevelHeight = first,
+                                BeamDepth = 4.0
+                            }
+                        };
+                        design.Structure.Fronts.Add(new DynamicRackFrontDesign
+                        {
+                            PalletCount = 1, LoadLevels = levels, PalletsDeep = deep, DepthStartPosition = 1
+                        });
+                        design.Fronts.Add(new PushBackFrontConfig());
+
+                        var system = new PushBackResolver(catalog).Resolve(design);
+                        var front = system.Structure.Fronts[0];
+                        var high = PushBackElevations.HighInsertions(system, catalog, front);
+                        foreach (var level in DynamicFrontGeometry.LoadBeamLevels(system.Structure, front))
+                        {
+                            compared++;
+                            Assert.True(
+                                high[level.LevelNumber] <= level.EntranceElevation + 1e-9,
+                                $"fondo {deep}, {levels} niveles, alto {first}: el alto derivado "
+                                    + $"({high[level.LevelNumber]:0.####}) supera al del resolver "
+                                    + $"({level.EntranceElevation:0.####})");
+                        }
+                    }
+                }
+            }
+
+            Assert.True(compared > 100);
+        }
+
         // ===================== I-40: la identidad por línea sobrevive =========================================
 
         /// <summary>

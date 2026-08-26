@@ -234,6 +234,53 @@ namespace RackCad.Tests
             Assert.Equal(expected, upper);
         }
 
+        /// <summary>
+        /// El desviador del extremo ALTO cuelga del larguero ALTO — el DERIVADO, no el del resolver.
+        ///
+        /// <para>
+        /// El corte lateral dibuja los DOS extremos en una sola pasada, asi que es el unico sitio donde una vista
+        /// necesita las dos elevaciones a la vez. Antes de la inversion vertical el alto era el ancla y leer la
+        /// elevacion del resolver era correcto; despues ya no, y este desviador se quedaba colgando de un larguero
+        /// que ya no esta ahi. La segunda afirmacion es la que hace la prueba falsable: las dos elevaciones son de
+        /// verdad distintas en este escenario.
+        /// </para>
+        /// </summary>
+        [Fact]
+        public void TheWholeLateralHighDesviador_HangsFromTheDerivedHighBeam()
+        {
+            var catalog = Catalog;
+            var system = Envelope(catalog);
+            // La copia del extremo ALTO: la del BAJO ya la fija la prueba anterior.
+            var selection = system.Structure.SafetySelections.First(
+                item => string.Equals(item.ElementId, DesviadorId(catalog), StringComparison.Ordinal));
+            selection.Side = SafetySide.Right;
+
+            var envelope = EnvelopeElevations(system, catalog);
+            var drawn = Of(
+                new PushBackSystemLateralBuilder().Build(system, catalog).Flatten().Instances,
+                DesviadorId(catalog));
+            Assert.NotEmpty(drawn);
+
+            // El nivel 1 conserva su contrato selectivo (primer troquel + altura) y se descarta por ser el mas bajo.
+            var upper = drawn.Select(i => Math.Round(i.Insertion.Y, 6)).OrderBy(y => y).Skip(1).ToList();
+            var expected = system.Structure.LoadBeamLevels
+                .Where(level => level.LevelNumber > 1 && envelope.ContainsKey(level.LevelNumber))
+                .Select(level => Math.Round(envelope[level.LevelNumber] - Offset, 6))
+                .OrderBy(y => y)
+                .ToList();
+
+            Assert.NotEmpty(expected);
+            Assert.Equal(expected, upper);
+
+            // Y NO son las del resolver: si coincidieran, la prueba no distinguiria el defecto.
+            var resolver = system.Structure.LoadBeamLevels
+                .Where(level => level.LevelNumber > 1 && envelope.ContainsKey(level.LevelNumber))
+                .Select(level => Math.Round(level.EntranceElevation - Offset, 6))
+                .OrderBy(y => y)
+                .ToList();
+            Assert.NotEqual(resolver, upper);
+        }
+
         // ---------------------------------------------------------------------------------------------------
         // 3. Sus cotas y etiquetas tienen que coincidir con el larguero que acompañan
         // ---------------------------------------------------------------------------------------------------
