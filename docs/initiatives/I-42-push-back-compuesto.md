@@ -800,6 +800,66 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-undecies. Correccion aislada 1: el DESVIADOR, con el LOW del run como unica autoridad
+
+### El contrato
+
+`Diverter(run) = LowEnd(run)`. Un desviador guia la tarima al ENTRAR, asi que pertenece siempre al extremo por el
+que se carga ESA cama. No depende del lado A/B, ni de izquierda/derecha en coordenadas de rack, ni del extremo
+alto, ni de la elevacion que el resolver compartido le dio al nivel.
+
+### La causa raiz
+
+El contenido compuesto se construye por camas —`PushBackRuns` → `PushBackCompositeContent`— pero el DESVIADOR
+habia quedado fuera de ese pipeline: el corte lateral compuesto lo heredaba del builder dinamico, que conserva la
+regla de un rack de un solo sentido, **izquierda = extremo bajo, derecha = extremo alto**. En un rack compuesto
+eso es falso: el lado B tiene su entrada a la DERECHA. El lado A acertaba por coincidencia.
+
+Ademas, una clasificacion por LINEA no puede expresar que en la MISMA linea el nivel 1 corra A→B y el nivel 2
+B→A. La cama si tiene esa granularidad.
+
+### Medido antes y despues
+
+| caso | LOW esperado | desviador ANTES | desviador AHORA |
+|---|---|---|---|
+| Solo A | X=0, Z=70.6053 | (0, 70.6053) ✔ | (0, 70.6053) |
+| Solo B | X=792, Z=70.6053 | (792, **100.6053**) ✘ | (792, 70.6053) |
+| Encontradas A | X=0, Z=70.6053 | (0, 70.6053) ✔ | (0, 70.6053) |
+| Encontradas B | X=792, Z=70.6053 | (792, **100.6053**) ✘ | (792, 70.6053) |
+| Corrida A→B | X=0 unicamente | (0, 70.6053) ✔ | (0, 70.6053) |
+| Corrida B→A | X=792 unicamente | (**0**, 70.6053) ✘ | (792, 70.6053) |
+| N1 A→B / N2 B→A | 2 piezas: (0, N1) y (792, N2) | **4 piezas**, dos por extremo ✘ | 2 piezas, cada nivel en su extremo |
+| A=4" / B=18" | B nivel 2 en Z=84.6053 | (792, **100.6053**) ✘ | (792, 84.6053) |
+
+El ultimo caso es tambien el de la seccion 7 del encargo: el corte FRONTAL de B ya decia 84.6053, asi que el
+lateral y el frontal discrepaban. Ahora coinciden.
+
+### La correccion
+
+`PushBackDiverterPlan` construye el desviador **en el marco de la cama**, donde el flujo avanza siempre hacia +X
+y por tanto el extremo bajo es el arranque del frente. Toma la Z de `PushBackElevations.LowInsertions` del sistema
+de esa cama, y el primer nivel conserva su contrato Selectivo (mide desde el troquel del poste). La posicion y la
+mano en el mundo las pone la MISMA reflexion rigida que ya mueve el riel, los rodillos, los largueros y el tope.
+
+`PushBackCompositeContent.Lateral` lo emite por lote, y el corte lateral compuesto RETIRA los desviadores del
+plan dinamico base para que no queden dos autoridades. **`PushBackElevations` no se toco.** Un rack de un solo
+sentido no pasa por aqui y su comportamiento es identico.
+
+### Auditoria de consumidores del desviador
+
+| consumidor | autoridad hoy | estado |
+|---|---|---|
+| dominio / intencion (`SelectiveSafetySelection`, off-cells) | la del usuario | correcta, no se toca |
+| LATERAL compuesto | **run → LowEnd → `PushBackElevations` del lado** | CORREGIDO en esta corrida |
+| LATERAL de un solo sentido | builder dinamico (legacy) | correcto: ahi izquierda SI es el extremo bajo |
+| FRONTAL por lado | sistema LOCAL del lado + contexto de elevaciones bajo | ya era correcto; comprobado contra el lateral |
+| PLANTA | clasificacion por LINEA (`LoadingAisles`) | **PENDIENTE**: aproximacion por linea, no por cama |
+| BOM | `SystemBomBuilder` compartido, por seleccion y postes | **PENDIENTE**: otra autoridad, ronda Safety/BOM |
+
+Las dos filas pendientes exigen tocar `SelectiveSafetyEnds` / `SystemBomBuilder`, que es infraestructura
+compartida con el Selectivo y el Dinamico. Por instruccion expresa del encargo **no se tocan en esta corrida** y
+quedan reportadas para la ronda de Safety/BOM.
+
 ## 4-octies. Auditoria adversarial final (seccion T)
 
 Despues de cerrar 4, 5, 6 y 10 se recorrio el checklist del dueño buscando lo que quedara vivo. **Se encontraron

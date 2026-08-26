@@ -81,6 +81,12 @@ namespace RackCad.Application.Systems.PushBack
                 // construyen en el marco de la cama y viajan con ella. Resolverlos una vez sobre la estructura
                 // compartida daba ejes que no son los de ninguna cama real.
                 loose.AddRange(intermediateBuilder.BuildFor(source, catalog, front, levels, postIndex));
+                // I-42: el DESVIADOR es de la CAMA y vive en su extremo BAJO. Se construye aqui, en el marco de la
+                // cama, para que la reflexion rigida le ponga la posicion y la mano del mundo — igual que al riel,
+                // los rodillos y el tope. Antes lo heredaba del builder dinamico, que conserva la regla de un rack
+                // de un sentido («izquierda = bajo») y en compuesto deja el lado B a la elevacion del extremo
+                // contrario.
+                loose.AddRange(PushBackDiverterPlan.Lateral(source, catalog, front, levels, postIndex));
                 var groups = bedBuilder.BuildLateralGroups(source, catalog, front, int.MaxValue, levels);
 
                 var placed = batch.Reflected

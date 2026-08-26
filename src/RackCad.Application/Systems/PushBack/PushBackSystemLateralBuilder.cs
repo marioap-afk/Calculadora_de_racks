@@ -105,7 +105,12 @@ namespace RackCad.Application.Systems.PushBack
                 : dynamicBuilder.Build(bare, catalog, null);
 
             var headers = PushBackPlanComposer.StructuralHeaderGroups(basePlan);
-            var loose = PushBackPlanComposer.StructuralLoose(basePlan);
+            // El DESVIADOR de un rack compuesto lo aporta CADA CAMA, en su marco (PushBackDiverterPlan): el builder
+            // dinamico conserva la regla de un rack de un solo sentido —izquierda = extremo bajo— y en compuesto el
+            // lado B tiene su extremo bajo a la derecha. Se retira aqui para que no haya dos autoridades.
+            var loose = PushBackPlanComposer.StructuralLoose(basePlan)
+                .Where(instance => !PushBackDiverterPlan.IsDiverter(instance, catalog))
+                .ToList();
 
             var runs = PushBackRuns.Resolve(system);
             var slots = CompositeSlots(system, structure, postIndex, sectioned);

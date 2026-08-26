@@ -376,22 +376,30 @@ namespace RackCad.Tests
         // ---------------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// El extremo POSTERIOR se mide desde <c>EntranceElevation</c> y ahí se queda.
+        /// EN EL DINÁMICO, el extremo POSTERIOR del desviador se mide desde <c>EntranceElevation</c> y ahí se queda.
         ///
-        /// En Push Back esa copia no llega a dibujarse —el resolver colapsa el lado del desviador al extremo bajo
-        /// (PB-003), así que un <c>Both</c> se convierte en <c>Left</c>—, de modo que el centinela vive donde la
-        /// rama SÍ se ejecuta: el mismo builder lateral compartido, invocado por el Dinámico. Es la rama que el
-        /// override no debe tocar, y en el Dinámico se ve.
+        /// <para>
+        /// Este centinela es del DINÁMICO y solo del Dinámico. Es la rama del builder lateral compartido que el
+        /// override de elevaciones no debe tocar, y ahí sigue valiendo.
+        /// </para>
+        /// <para>
+        /// NO es el contrato del Push Back COMPUESTO. Desde I-42 (corrección aislada del desviador) un rack
+        /// compuesto no toma sus desviadores de esta rama: los construye por CAMA, en el extremo BAJO de cada una
+        /// (<c>PushBackDiverterPlan</c>), porque «izquierda = extremo bajo» es falso en cuanto el lado B tiene su
+        /// entrada a la derecha. Un Push Back de un solo sentido sí sigue pasando por aquí, y por eso se comprueba
+        /// también que su lado se colapsa al extremo bajo.
+        /// </para>
         /// </summary>
         [Fact]
-        public void TheRearEndDesviador_StillHangsFromTheEntranceElevation()
+        public void InTheDynamic_TheRearEndDesviador_StillHangsFromTheEntranceElevation()
         {
             var catalog = Catalog;
             var id = DesviadorId(catalog);
             var pushBack = Jagged(catalog, SafetySide.Both);
 
-            // Push Back: el lado se colapsó y no hay copia posterior. Se afirma explícitamente para que, si algún
-            // día dejara de colapsarse, esta prueba lo diga en vez de callarlo.
+            // Push Back de UN SOLO SENTIDO: el lado se colapsa al extremo bajo y no hay copia posterior. Se afirma
+            // para que, si algún día dejara de colapsarse, esta prueba lo diga en vez de callarlo. El rack
+            // COMPUESTO no depende de esto: sus desviadores los pone la cama.
             Assert.All(
                 pushBack.SafetySelections.Where(s => string.Equals(s.ElementId, id, StringComparison.OrdinalIgnoreCase)),
                 selection => Assert.Equal(SafetySide.Left, selection.Side));
