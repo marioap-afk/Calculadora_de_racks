@@ -584,6 +584,12 @@ namespace RackCad.Application.Systems.PushBack
                 InOutBeamCatalogId = shared.InOutBeamCatalogId,
                 HeaderPostCatalogId = shared.HeaderPostCatalogId,
                 PostPeralte = shared.PostPeralte,
+                // I-42 (correccion aislada 3) — el DATUM viaja con la intencion estructural compartida. Omitirlo
+                // dejaba la sub-estructura de cada lado y la compuesta leyendo «Alto 1er nivel» con la semantica
+                // HISTORICA, de modo que declarar el lado B movia el primer nivel del lado A —medido: de 8.6053 a
+                // 6.6053 con Alto = 7— sin que nadie lo pidiera. Aqui solo se TRANSPORTA: convertir es trabajo de
+                // la frontera de carga, y de una sola.
+                FirstLevelDatum = shared.FirstLevelDatum,
                 SeparatorCountOverride = shared.SeparatorCountOverride,
                 SeparatorSpacingOverride = shared.SeparatorSpacingOverride,
                 DerivedPostReinforced = shared.DerivedPostReinforced,

@@ -1505,6 +1505,65 @@ namespace RackCad.UI.Tests
             Assert.True(ok);
         }
 
+        /// <summary>
+        /// I-42 (correccion aislada 3) — RACKEDITAR de un rack COMPUESTO conserva el troquel de los dos lados.
+        ///
+        /// <para>
+        /// El diseño con el que la ventana reconstruye el lado B se arma aqui, y no llevaba el DATUM del documento:
+        /// la matriz de B volvia leyendo «Alto 1er nivel» con la semantica historica mientras la estructura
+        /// compuesta usaba la del documento, asi que los dos lados podian acabar en troqueles distintos.
+        /// </para>
+        /// </summary>
+        [Theory]
+        [InlineData(5.0)]
+        [InlineData(7.0)]
+        public void RackEditar_CompositeKeepsBothSidesOnTheSamePunch(double first)
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var w = MultiFront(fronts: 2, levels: 2);
+                foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
+                {
+                    var matrix = w.CompositeState.Of(side).Structure;
+                    for (var index = 0; index < matrix.Count; index++)
+                    {
+                        matrix.Fronts[index].FirstLevelHeight = first;
+                    }
+                }
+
+                var design = new PushBackCompositeEditorAssembler(Catalog)
+                    .BuildDesign(w.CompositeState, PushBackEditorInputs.NewDesign());
+                var before = new PushBackResolver(Catalog).Resolve(design);
+
+                var reopened = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                reopened.LoadExisting(design, "GUID-I42-DATUM-AB", "PB compuesto");
+
+                var after = reopened.LastComputation?.System;
+                if (after == null || !reopened.LastComputation.IsValid) return false;
+
+                // El mismo troquel en el rack, y los dos lados alineados entre si.
+                var lowBefore = Low(before);
+                var lowAfter = Low(after);
+                var localA = Low(after.Composite.Of(PushBackSide.A).Local);
+                var localB = Low(after.Composite.Of(PushBackSide.B).Local);
+
+                return Math.Abs(lowBefore - lowAfter) < 1e-6
+                       && Math.Abs(localA - localB) < 1e-6
+                       && Math.Abs(localA - lowAfter) < 1e-6;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>La elevacion FISICA del primer larguero de entrada del frente 0.</summary>
+        private static double Low(PushBackSystem system)
+        {
+            var levels = system?.Structure?.Fronts?.FirstOrDefault()?.LoadBeamLevels;
+            return levels == null || levels.Count == 0
+                ? double.NaN
+                : Math.Round(levels.OrderBy(level => level.LevelNumber).First().ExitElevation, 4);
+        }
+
         /// <summary>La casilla de presencia se llama como el dueño la entiende y explica para que sirve.</summary>
         [Fact]
         public void TheBlankCheck_IsNamedInProductLanguage()

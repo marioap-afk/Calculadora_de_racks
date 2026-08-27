@@ -72,11 +72,30 @@ namespace RackCad.Tests
                 }
             };
 
+            // La GEOMETRIA con la que ese documento se guardo: es lo que hay que conservar.
+            var before = new PushBackResolver(catalog).Resolve(design);
+            var physical = before.Structure.Fronts[0].LoadBeamLevels
+                .OrderBy(level => level.LevelNumber).First().ExitElevation;
+
             var state = new PushBackEditorState();
-            state.LoadFromDesign(design, new PushBackResolver(catalog));
+            var inputs = state.LoadFromDesign(design, new PushBackResolver(catalog));
 
             Assert.NotEmpty(state.Structure.Fronts);
-            Assert.All(state.Structure.Fronts, front => Assert.Equal(9.0, front.FirstLevelHeight, 9));
+
+            // I-42 (correccion aislada 3): este documento no trae marcador de datum, asi que la carga lo re-expresa
+            // UNA vez sobre el troquel utilizable mas bajo. El NUMERO cambia —se midio la retícula real, no se resto
+            // ninguna constante— y la GEOMETRIA no: es exactamente lo que el dueño pidio comprobar, el troquel y no
+            // el contenido del cuadro. Lo que la prueba defiende sigue en pie: cargar NO es un diseño nuevo, asi que
+            // el valor no cae al 4" del rack nuevo.
+            Assert.All(
+                state.Structure.Fronts,
+                front => Assert.NotEqual(PushBackDefaults.DefaultFirstLevelHeight, front.FirstLevelHeight, 9));
+
+            var after = new PushBackEditorDesignAssembler(catalog).Build(state, inputs).System;
+            Assert.Equal(
+                physical,
+                after.Structure.Fronts[0].LoadBeamLevels.OrderBy(level => level.LevelNumber).First().ExitElevation,
+                9);
         }
 
         // ---- Isolation: the dynamic system keeps its own default ----

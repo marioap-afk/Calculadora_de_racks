@@ -800,6 +800,90 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-sexdecies. Correccion aislada 3: el DATUM de «Alto 1er nivel» se transporta, no se re-decide
+
+### Las dos perdidas de autoridad, medidas
+
+Retícula real del poste: base 0.6053", paso 2", troquel utilizable mas bajo 0.6053".
+
+**A — la estructura compuesta perdia el datum.** `CopySharedStructuralIntent` copiaba pallet, peraltes, poste,
+separadores, cabecera, anotaciones… y NO `FirstLevelDatum`. La sub-estructura de cada lado y la compuesta leian
+«Alto 1er nivel» con la semantica HISTORICA:
+
+| Alto 1er nivel | solo A | al declarar B |
+|---|---|---|
+| 7" | LOW = 8.6053 | LOW = **6.6053** |
+| 5" | LOW = 6.6053 | LOW = **4.6053** |
+
+Declarar el lado B bajaba el primer nivel del lado A **un troquel entero**, sin que nadie lo pidiera.
+
+**B — la ventana FABRICABA el datum.** `ReadInputs` construye unos inputs NUEVOS en cada recalculo, y sus valores
+por defecto imponian el datum del PRODUCTO. Un documento guardado con la semantica historica y Alto = 5 pasaba de
+LOW 4.6053 a **6.6053** al recalcular.
+
+Los valores son IMPARES a proposito: con valores pares las dos lecturas caen en el mismo troquel y el defecto no
+se ve.
+
+### Lo corregido
+
+1. `CopySharedStructuralIntent` TRANSPORTA el datum. Solo eso: no convierte.
+2. La ventana lo guarda en un campo al cargar y lo devuelve en `ReadInputs`. Deja de ser autoridad.
+3. El diseno con el que la ventana reconstruye el lado B lleva el datum del documento; sin el, la matriz de B
+   volvia con la semantica historica mientras la compuesta usaba la del documento.
+4. **UNA sola conversion**, en `PushBackEditorState.LoadFromDesign`: un documento SIN marcador se re-expresa sobre
+   el datum del producto MIDIENDO su geometria ya resuelta —`RackFirstLevelDatum.ToLowestPunchOffset` sobre la
+   retícula real— y no se mueve ni una milesima. No se resta ninguna constante.
+
+`PushBackElevations` no se toco. La fisica del HIGH tampoco: pendiente, `HighInsertion`, tie-break, orientacion,
+`CorridaDepth` y `ResolveSpan` siguen igual, y ninguna prueba de HIGH cambio.
+
+### Auditoria de autoridades
+
+| SEAM | DATUM QUE ENTRA | DATUM QUE SALE | CONVERSION |
+|---|---|---|---|
+| Persistence (`PushBackDesignDocument`) | campo del archivo (ausente = historico) | el mismo | ninguna |
+| `LoadExisting` / `LoadDesignForNew` | el del diseno | el mismo | ninguna |
+| **`PushBackEditorState.LoadFromDesign`** | el del diseno | `LowestUsablePunch` | **LA UNICA** — legacy re-expresado midiendo su troquel |
+| Window state (`firstLevelDatum`) | el que la carga devolvio | el mismo | ninguna |
+| `ReadInputs` | el campo de la ventana | el mismo | ninguna (antes: FABRICABA) |
+| `PushBackEditorDesignAssembler` | `inputs.FirstLevelDatum` | `design.Structure.FirstLevelDatum` | ninguna |
+| `CopySharedStructuralIntent` | el del diseno compartido | el mismo | ninguna (antes: LO PERDIA) |
+| Composite structure (`Compose` / `SideStructuralDesign`) | el copiado | el mismo | ninguna |
+| `DynamicRackSystemResolver` | `design.FirstLevelDatum` | lo aplica y lo copia al sistema | ninguna |
+| `PushBackElevations` | las elevaciones ya resueltas | las mismas | ninguna |
+
+Una sola conversion, en una frontera identificada. Todo lo demas, TRANSPORTE.
+
+### Medido, antes y despues
+
+| CASO | LOW ANTES | LOW TRAS RECALCULAR | LOW TRAS GUARDAR/ABRIR |
+|---|---|---|---|
+| nuevo, Alto = 0 | 0.6053 | 0.6053 | 0.6053 |
+| nuevo, Alto = 5 | 6.6053 | 6.6053 | 6.6053 |
+| nuevo, Alto = 7 | 8.6053 | 8.6053 | 8.6053 |
+| legacy, Alto = 5 | 4.6053 | 4.6053 (guarda 4, datum nuevo) | 4.6053 |
+| legacy, Alto = 7 | 6.6053 | 6.6053 (guarda 6, datum nuevo) | 6.6053 |
+| A antes de declarar B (Alto = 7) | 8.6053 | — | — |
+| A despues de declarar B | 8.6053 (antes **6.6053**) | 8.6053 | 8.6053 |
+| B con la misma intencion visible | 8.6053, mismo troquel que A | — | — |
+| Dinamico legacy | su geometria historica, sin cambio | — | — |
+
+### Pruebas
+
+`PushBackFirstLevelDatumTransportTests` (29 casos) y dos de ventana:
+`Window_Recompute_DoesNotMoveALegacyRacksFirstLevel` y `RackEditar_CompositeKeepsBothSidesOnTheSamePunch`.
+Afirman marcador, numero persistido, **indice de troquel** —comprobando ademas que la elevacion cae EN la
+retícula—, LOW, LOW del lateral, LOW del frontal, alineacion A/B y round-trip. Ocho de las 29 y las dos de ventana
+fallan sin la correccion.
+
+Se ACTUALIZO una prueba de contrato: `LoadedDesign_KeepsItsOwnFirstLevelHeight_NotTheNewRackDefault` afirmaba que
+un documento legacy con Alto = 9 vuelve mostrando 9. Con la conversion vuelve mostrando 8, porque 9 se ajustaba al
+troquel 8.6053 y ese troquel medido desde el utilizable mas bajo son 8". Lo que la prueba defiende —cargar NO es
+un diseno nuevo, el valor no cae al 4" del rack nuevo— sigue en pie, y ahora ademas afirma la GEOMETRIA, que es lo
+que el encargo pide comparar.
+
+**Ningun golden se movio.**
+
 ## 4-quindecies. Correccion aislada 2C: un corte FRONTAL proyecta solo las lineas de SU lado
 
 ### El contrato

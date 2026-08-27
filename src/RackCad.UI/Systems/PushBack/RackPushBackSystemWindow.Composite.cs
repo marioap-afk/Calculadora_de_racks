@@ -724,7 +724,10 @@ namespace RackCad.UI.Systems.PushBack
                         FirstLevelHeight = design.SideB.FirstLevelHeight,
                         BeamDepth = design.Structure?.BeamDepth ?? 6.0,
                         HeaderPostCatalogId = design.Structure?.HeaderPostCatalogId,
-                        PostPeralte = design.Structure?.PostPeralte ?? 0.0
+                        PostPeralte = design.Structure?.PostPeralte ?? 0.0,
+                        // I-42: el lado B se reconstruye con el MISMO datum del documento. Sin el, su matriz volvia
+                        // con la semantica historica mientras la estructura compuesta usaba la del documento.
+                        FirstLevelDatum = design.Structure?.FirstLevelDatum
                     },
                     LegacyHighEndBeamPeralte = design.SideB.LegacyHighEndBeamPeralte,
                     RearTope = design.SideB.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig()

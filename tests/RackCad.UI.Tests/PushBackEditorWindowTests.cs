@@ -27,6 +27,65 @@ namespace RackCad.UI.Tests
     /// </summary>
     public sealed class PushBackEditorWindowTests
     {
+        /// <summary>
+        /// I-42 (correccion aislada 3) — la VENTANA no es autoridad de datum: lo lee, lo conserva y lo devuelve.
+        ///
+        /// <para>
+        /// <c>ReadInputs</c> construye unos inputs NUEVOS en cada recalculo, y sus valores por defecto imponian el
+        /// datum del PRODUCTO a un documento guardado con la semantica historica. Medido: un rack legacy con «Alto
+        /// 1er nivel» = 5 saltaba de 4.6053 a 6.6053 —un troquel entero— sin que nadie tocara nada.
+        /// </para>
+        /// </summary>
+        [Theory]
+        [InlineData(5.0)]
+        [InlineData(7.0)]
+        public void Window_Recompute_DoesNotMoveALegacyRacksFirstLevel(double first)
+        {
+            var ok = StaTestRunner.Run(() =>
+            {
+                var catalog = RackCad.Application.Catalogs.JsonRackCatalogProvider.FromBaseDirectory().Load();
+
+                // Un documento ANTERIOR: sin marcador de datum.
+                var design = SampleDesign(2, 2);
+                design.Structure.FirstLevelHeight = first;
+                foreach (var front in design.Structure.Fronts)
+                {
+                    front.FirstLevelHeight = first;
+                }
+
+                design.Structure.FirstLevelDatum = null;
+                var before = LowBeam(new PushBackResolver(catalog).Resolve(design));
+
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                w.LoadExisting(design, "GUID-I42-DATUM", "PB legacy");
+
+                // La ventana adopta el datum que la carga resolvio; no lo fabrica en cada recalculo.
+                var adopted = w.FirstLevelDatumForTest;
+                var after = LowBeam(w.LastComputation?.System);
+
+                return w.LastComputation != null
+                       && w.LastComputation.IsValid
+                       && adopted.HasValue
+                       && Math.Abs(before - after) < 1e-6;
+            });
+
+            Assert.True(ok);
+        }
+
+        /// <summary>La elevacion FISICA del primer larguero de entrada del frente 0.</summary>
+        private static double LowBeam(PushBackSystem system)
+        {
+            if (system?.Structure == null || system.Structure.Fronts.Count == 0)
+            {
+                return double.NaN;
+            }
+
+            var levels = system.Structure.Fronts[0].LoadBeamLevels;
+            return levels == null || levels.Count == 0
+                ? double.NaN
+                : Math.Round(levels.OrderBy(level => level.LevelNumber).First().ExitElevation, 4);
+        }
+
         // ---- Fixtures + helpers ----------------------------------------------------------------------------------
 
         private static PushBackDesign SampleDesign(int front0Levels = 3, int front1Levels = 2)

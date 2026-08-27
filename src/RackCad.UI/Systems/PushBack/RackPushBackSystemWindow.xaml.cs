@@ -297,12 +297,23 @@ namespace RackCad.UI.Systems.PushBack
             return copy;
         }
 
+        /// <summary>
+        /// I-42 — desde donde se mide «Alto 1er nivel» en el rack ABIERTO. Un rack nuevo nace con el datum del
+        /// producto; uno cargado conserva el que la carga recupero —y, si venia sin marcador, el que esa unica
+        /// frontera le asigno al re-expresarlo sin moverlo. La ventana solo lo guarda y lo devuelve.
+        /// </summary>
+        private int? firstLevelDatum = (int)RackCad.Application.Systems.Shared.RackFirstLevelDatumMode.LowestUsablePunch;
+
+        /// <summary>El datum vigente (seam de prueba).</summary>
+        internal int? FirstLevelDatumForTest => firstLevelDatum;
+
         private void LoadFromModel(PushBackEditorInputs inputs, string rackName)
         {
             suppressSync = true;
             try
             {
                 NameBox.Text = rackName ?? string.Empty;
+                firstLevelDatum = inputs.FirstLevelDatum;
                 var pallet = inputs.Pallet ?? new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");
                 generalPallet = pallet;
                 DepthBox.SetNumber(pallet.Depth);
@@ -706,6 +717,12 @@ namespace RackCad.UI.Systems.PushBack
                     generalPallet.Front, Val(DepthBox, generalPallet.Depth), generalPallet.Height,
                     generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
                 PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
+
+                // I-42 (correccion aislada 3) — el datum de «Alto 1er nivel» se TRANSPORTA, no se fabrica. Este
+                // metodo construye unos inputs NUEVOS en cada recalculo, y sus valores por defecto imponian el datum
+                // del PRODUCTO a un documento que se guardo con la semantica historica: medido, un rack legacy con
+                // Alto = 5 saltaba de 4.6053 a 6.6053 al recalcular. La ventana no es autoridad de datum.
+                FirstLevelDatum = firstLevelDatum,
 
                 // I-35 (Owner round 2): the four advanced RACK-WIDE scopes travel verbatim from their carrier.
                 ManualHeaderHeightOverride = advanced.ManualHeaderHeightOverride,

@@ -34,6 +34,10 @@ namespace RackCad.Application.Systems.PushBack
             safety = new PushBackSafetyAuthority(this.catalog);
         }
 
+        /// <summary>El catalogo con el que este resolver mide. Lo necesita la frontera de carga para re-expresar
+        /// un documento sin marcador de datum sobre la MISMA retícula de troqueles, sin medirla por su cuenta.</summary>
+        public RackCatalog Catalog => catalog;
+
         public PushBackSystem Resolve(PushBackDesign design)
         {
             if (design == null)
