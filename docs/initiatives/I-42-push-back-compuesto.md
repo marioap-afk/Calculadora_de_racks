@@ -800,6 +800,89 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-septendecies. Correccion aislada 4: el TOPE es del extremo ALTO de su cama
+
+### Lo que ya estaba bien
+
+Medido antes de tocar nada, en las cinco topologias: el LATERAL, los dos FRONTALES y el BOM ya seguian las camas.
+Una corrida A→B pone su unico tope en X≈791 y solo aparece en el frontal posterior de B; una B→A en X≈0.88 y solo
+en el de A; unas encontradas ponen dos, en 395.12 y 396.88. `PushBackRearTopeBuilder.ElevationY` no se toco.
+
+### Los dos defectos, medidos
+
+**1 — La PLANTA volvia a decidir la aplicabilidad.** El builder de un solo sentido pregunta «¿ALGUN nivel de este
+frente tiene tope?» con un `Any` sobre TODOS los niveles, y la planta compuesta lo invoca por LOTE de camas. Un
+lote no cubre todos los niveles del frente: los que pertenecen a otra topologia quedan fuera, pero su intencion
+seguia contando.
+
+Caso medido — ranura con el nivel 1 CORRIDO A→B (su alto esta en B, al final del rack) y el nivel 2 SOLO-A con su
+tope APAGADO:
+
+| vista | ANTES | AHORA |
+|---|---|---|
+| LATERAL | 791.12 | 791.12 |
+| FRONTAL posterior de B | 791-equivalente | igual |
+| FRONTAL posterior de A | vacio | vacio |
+| BOM | 2 topes | 2 topes |
+| **PLANTA** | 791.12 **y 395.12** (dos topes fantasma en la interfaz) | 791.12 |
+
+Los dos topes de mas los pedia la intencion DORMANTE que el lado A guarda para el nivel corrido, que no es una
+cama suya. Ninguna otra vista los dibujaba.
+
+**2 — El BOM tomaba la VARIANTE del rack, no de la cama.** La aplicabilidad ya se preguntaba por cama
+(`run.Source.RearTope`), pero el `PieceId` salia de `system.RearTope`, que en un compuesto es la configuracion de
+un solo lado. Con topes distintos en A y en B:
+
+| | ANTES | AHORA |
+|---|---|---|
+| dibujos | `LARGUERO_ESCALON_TOPE_DE_3` en A, `POSTE_3_1_5_8_TOPE` en B | igual |
+| BOM | `LARGUERO_ESCALON_TOPE_DE_3` **x8** | `LARGUERO_ESCALON_TOPE_DE_3` x4 + `POSTE_3_1_5_8_TOPE` x4 |
+
+### Las correcciones
+
+Ninguna autoridad nueva. Se ACOTA la entrada y se pregunta a la cama:
+
+- `PushBackCompositePlanta` construye cada lote con la intencion de tope **acotada a las camas de ese lote**: los
+  niveles que el lote no materializa viajan apagados con el mecanismo de siempre —las celdas OFF—, y la decision
+  la sigue tomando el mismo builder.
+- `PushBackBomBuilder.AddRunRearTopes` agrupa por `(pieza de la cama, longitud)`: la variante sale de
+  `run.Source.RearTope`, la misma que ya decidia si el tope existe.
+
+### Auditoria de autoridades
+
+| CONSUMIDOR | AUTORIDAD ANTES | AUTORIDAD DESPUES |
+|---|---|---|
+| intencion | configuracion por lado (dormante incluida) | la misma |
+| run | `PushBackRuns` → `HighSide` / `HighSupport` | la misma |
+| LATERAL | la cama, en su marco | la misma |
+| FRONTAL | la cama, en el corte del lado alto | la misma |
+| **PLANTA** | `Any` sobre todos los niveles del lado | **las camas del lote** |
+| **BOM (aplicabilidad)** | la cama | la misma |
+| **BOM (variante)** | `system.RearTope` (sesgada a un lado) | **`run.Source.RearTope`** |
+
+Ninguna vista vuelve a decidir aplicabilidad.
+
+### Un defecto NUEVO, medido y NO corregido
+
+Una corrida CORTA —cuyo extremo alto cae DENTRO de la estructura, no en una linea de postes— recibe en PLANTA una
+X distinta de la del lateral: **lateral 101.125, planta 102.875**, con el contacto alto en 101.845. El lateral lo
+pone del lado por el que llega la tarima; la planta, al otro lado del larguero.
+
+La causa es que en planta el punto de anclaje se busca en el POSTE MAS CERCANO
+(`PushBackRearTopeBuilder.PostMateWorld`), y el extremo alto de una corrida corta no cae en ninguna linea de
+postes. Corregirlo toca esa funcion, que comparten las TRES vistas y tambien un rack de un solo sentido — fuera
+del alcance declarado de esta corrida. Queda REPORTADO, con su medida y su causa. La aplicabilidad, la pieza, el
+conteo, el lateral y el frontal de esa misma corrida corta SI son correctos.
+
+### Pruebas
+
+`PushBackRearTopeRunAuthorityTests` (24 casos). Derivan lo esperado de CADA cama con la misma autoridad que coloca
+la pieza —el builder en el marco de la cama, mas la reflexion rigida— y exigen correspondencia **1:1** en lateral,
+frontal, planta y BOM: existencia, lado alto, X, Z, ranura, nivel y `PieceId`. Cubren las quince situaciones del
+encargo. Dos de los 24 fallan sin la correccion.
+
+**Ningun golden se movio.**
+
 ## 4-sexdecies. Correccion aislada 3: el DATUM de «Alto 1er nivel» se transporta, no se re-decide
 
 ### Las dos perdidas de autoridad, medidas

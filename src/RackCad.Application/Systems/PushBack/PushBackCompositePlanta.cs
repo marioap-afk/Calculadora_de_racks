@@ -98,7 +98,7 @@ namespace RackCad.Application.Systems.PushBack
                     ? DynamicRackDefaults.InOutBeamCatalogId
                     : source.Structure.InOutBeamCatalogId;
 
-                var content = Pieces(source, catalog, batch.FrontIndex)
+                var content = Pieces(source, catalog, batch.FrontIndex, batch)
                     .Where(instance => instance.Role == HeaderBlockRole.Tope
                         || string.Equals(instance.PieceId, inOutId, StringComparison.OrdinalIgnoreCase)
                         || string.Equals(instance.PieceId, highId, StringComparison.OrdinalIgnoreCase))
@@ -177,17 +177,61 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
+        /// I-42 (correccion aislada 4) — la intencion de tope ACOTADA a las camas de este lote.
+        ///
+        /// <para>
+        /// El tope trasero pertenece al extremo ALTO de una cama fisica, asi que la planta no puede preguntar «¿algun
+        /// nivel de este lado tiene tope?»: tiene que preguntar «¿alguna de las camas que ESTE lote materializa lo
+        /// tiene?». La planta colapsa los niveles, y el builder de un solo sentido resuelve esa pregunta con un
+        /// <c>Any</c> sobre TODOS los niveles del frente — incluidos los que en este marco no son camas.
+        /// </para>
+        /// <para>
+        /// Medido: con el nivel 1 de una ranura corrido A-&gt;B (su alto esta en B, al final del rack) y el nivel 2
+        /// solo-A con su tope APAGADO, la planta dibujaba igualmente un tope en la interfaz — lo pedia la intencion
+        /// DORMANTE que el lado A guarda para el nivel corrido, que no es una cama suya. El lateral y el BOM ya no lo
+        /// dibujaban, asi que las vistas se contradecian.
+        /// </para>
+        /// <para>
+        /// No hay autoridad nueva: se ACOTA la entrada. Los niveles que este lote no materializa viajan apagados con
+        /// el mismo mecanismo de siempre —las celdas OFF—, y la decision la sigue tomando el mismo builder.
+        /// </para>
+        /// </summary>
+        private static PushBackRearTopeConfig TopeOfBatch(PushBackSystem source, PushBackRunBatch batch)
+        {
+            var original = source.RearTope ?? new PushBackRearTopeConfig();
+            if (batch?.Runs == null || batch.Runs.Count == 0)
+            {
+                return original;
+            }
+
+            var owned = new HashSet<(int Front, int Level)>(
+                batch.Runs.Select(run => (run.SourceFrontIndex, run.SourceLevel - 1)));
+            var restricted = original.DeepCopy();
+            var front = batch.Front;
+            var levels = front != null ? DynamicFrontActivation.EffectiveLoadLevels(front) : 0;
+            for (var level = 0; level < levels; level++)
+            {
+                if (!owned.Contains((batch.FrontIndex, level)))
+                {
+                    restricted.Disable(batch.FrontIndex, level);
+                }
+            }
+
+            return restricted;
+        }
+
+        /// <summary>
         /// La planta del marco de una cama con SOLO su ranura activa. Las demas viajan en blanco (I-33), asi que no
         /// aportan larguero, tope ni cama — la regla ya existe y no hace falta una segunda.
         /// </summary>
         private static IReadOnlyList<HeaderBlockInstance> Pieces(
-            PushBackSystem source, RackCatalog catalog, int slot)
+            PushBackSystem source, RackCatalog catalog, int slot, PushBackRunBatch batch)
         {
             var restricted = new PushBackSystem
             {
                 Structure = PushBackMirror.Clone(source.Structure, index => index == slot),
                 HighEndBeamCatalogId = source.HighEndBeamCatalogId,
-                RearTope = source.RearTope
+                RearTope = TopeOfBatch(source, batch)
             };
             foreach (var resolved in source.HighEndBeams)
             {

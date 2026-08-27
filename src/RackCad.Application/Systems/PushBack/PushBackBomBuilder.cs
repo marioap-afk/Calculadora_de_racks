@@ -151,12 +151,12 @@ namespace RackCad.Application.Systems.PushBack
         private static void AddRunRearTopes(
             ICollection<BomComponent> components, PushBackSystem system, RackCatalog catalog, PushBackRunSet runs)
         {
-            var reference = system.RearTope ?? new PushBackRearTopeConfig();
-            var topeId = PushBackRearTopeBuilder.ResolvePieceId(catalog, reference);
-            var label = catalog?.SafetyElements?.FirstOrDefault(entry =>
-                string.Equals(entry?.Id, topeId, StringComparison.OrdinalIgnoreCase))?.Label ?? topeId;
-
-            var grouped = new Dictionary<double, int>();
+            // I-42 (correccion aislada 4) — la VARIANTE tambien sale de la cama, no del rack. Se tomaba de
+            // system.RearTope, que en un compuesto es la configuracion de un solo lado: con topes distintos en A y en
+            // B —medido: LARGUERO_ESCALON_TOPE_DE_3 y POSTE_3_1_5_8_TOPE— los dibujos ponian cada uno el suyo y el
+            // BOM contaba los ocho como si fueran del primero. La aplicabilidad ya se preguntaba por cama; ahora la
+            // pieza tambien.
+            var grouped = new Dictionary<(string PieceId, double Length), int>();
             foreach (var run in runs.Runs)
             {
                 var front = run.Front();
@@ -175,10 +175,20 @@ namespace RackCad.Application.Systems.PushBack
                 var length = Round(
                     PushBackLoadBeamGeometry.CellBeamLength(source, front, run.SourceLevel)
                     + SelectiveTopePlacement.LengthAllowance);
-                grouped[length] = grouped.TryGetValue(length, out var current) ? current + 1 : 1;
+                var key = (PushBackRearTopeBuilder.ResolvePieceId(catalog, tope), length);
+                grouped[key] = grouped.TryGetValue(key, out var current) ? current + 1 : 1;
             }
 
-            EmitTopes(components, grouped, topeId, label);
+            foreach (var piece in grouped.GroupBy(entry => entry.Key.PieceId).OrderBy(group => group.Key))
+            {
+                var label = catalog?.SafetyElements?.FirstOrDefault(entry =>
+                    string.Equals(entry?.Id, piece.Key, StringComparison.OrdinalIgnoreCase))?.Label ?? piece.Key;
+                EmitTopes(
+                    components,
+                    piece.ToDictionary(entry => entry.Key.Length, entry => entry.Value),
+                    piece.Key,
+                    label);
+            }
         }
 
         /// <summary>
