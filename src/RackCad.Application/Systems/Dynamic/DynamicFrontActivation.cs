@@ -114,6 +114,38 @@ namespace RackCad.Application.Systems.Dynamic
         public static bool BoundaryExists(DynamicRackSystem system, int postIndex)
             => BoundaryExists(FrontActivation(system), postIndex);
 
+        /// <summary>
+        /// I-42 — la MISMA regla de continuidad, evaluada sobre UN LADO: si esa linea sostiene algo DE ESE LADO.
+        ///
+        /// <para>
+        /// Es <see cref="BoundaryExists"/> sin la excepcion de los bordes exteriores, y por una razon fisica: los
+        /// bordes que siempre existen son los del RACK, no los de un lado. En un rack compuesto la estructura global
+        /// es la UNION de lo que necesitan A y B, pero un corte FRONTAL es de un lado: si la primera ranura esta en
+        /// blanco en A y solo B almacena ahi, la linea exterior existe en el rack —y la planta la dibuja— pero el
+        /// corte de A no la posee y no debe proyectarla.
+        /// </para>
+        /// <para>
+        /// No es una regla fisica nueva: la continuidad se sigue leyendo de los claros adyacentes. Solo cambia SOBRE
+        /// QUE activacion se evalua.
+        /// </para>
+        /// </summary>
+        public static bool BoundaryBelongsTo(IReadOnlyList<bool> frontIsActive, int postIndex)
+        {
+            var fronts = frontIsActive ?? Array.Empty<bool>();
+            if (postIndex < 0 || postIndex > fronts.Count)
+            {
+                return false;
+            }
+
+            var left = postIndex - 1 >= 0 && postIndex - 1 < fronts.Count && fronts[postIndex - 1];
+            var right = postIndex < fronts.Count && fronts[postIndex];
+            return left || right;
+        }
+
+        /// <summary>La misma pregunta sobre la sub-estructura resuelta de un lado.</summary>
+        public static bool BoundaryBelongsTo(DynamicRackSystem system, int postIndex)
+            => BoundaryBelongsTo(FrontActivation(system), postIndex);
+
         /// <summary>The Activo/En blanco state of every resolved front, in front order.</summary>
         public static IReadOnlyList<bool> FrontActivation(DynamicRackSystem system)
             => (system?.Fronts ?? (IList<DynamicRackFront>)Array.Empty<DynamicRackFront>())

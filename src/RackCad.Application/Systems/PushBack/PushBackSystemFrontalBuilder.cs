@@ -108,7 +108,13 @@ namespace RackCad.Application.Systems.PushBack
                 // reasiento posterior: antes esta vista movía las piezas después, localizándolas por coordenada.
                 var lowContext = elevationsOverride ?? PushBackElevations.Context(system, catalog);
                 var low = dynamicBuilder
-                    .Build(structure, catalog, DynamicRackEnd.Exit, lowContext, OwnsDesviador(structure, includeCell))
+                    .Build(
+                        structure,
+                        catalog,
+                        DynamicRackEnd.Exit,
+                        lowContext,
+                        OwnsDesviador(structure, includeCell),
+                        OwnsBoundary(structure, includeCell))
                     .ToList();
                 if (includeCell != null)
                 {
@@ -125,7 +131,14 @@ namespace RackCad.Application.Systems.PushBack
             // el ancla: se DERIVA del bajo, asi que leer la elevacion del resolver aqui lo dibujaria en un troquel
             // distinto del que ocupa en el lateral — dos autoridades verticales para la MISMA pieza fisica.
             var highContext = elevationsOverride ?? PushBackElevations.HighContext(system, catalog);
-            var entrance = dynamicBuilder.Build(structure, catalog, DynamicRackEnd.Entrance, highContext);
+            // El corte POSTERIOR sigue la MISMA regla de pertenencia de linea: tambien es de un lado.
+            var entrance = dynamicBuilder.Build(
+                structure,
+                catalog,
+                DynamicRackEnd.Entrance,
+                highContext,
+                ownsDesviador: null,
+                ownsBoundary: OwnsBoundary(structure, includeCell));
             var layout = DynamicFrontGeometry.Compute(structure, catalog);
             var redondoId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
                 ? PushBackDefaults.HighEndBeamCatalogId
@@ -269,6 +282,34 @@ namespace RackCad.Application.Systems.PushBack
             return result;
         }
 
+
+        /// <summary>
+        /// I-42 (correccion aislada 2C) — que LINEAS de cabecera pertenecen al lado que este corte representa.
+        ///
+        /// <para>
+        /// La estructura fisica global es la UNION de lo que necesitan los dos lados, y la PLANTA la dibuja entera
+        /// porque representa el rack. Un corte FRONTAL no: es de un lado. Si la primera ranura esta en blanco en A y
+        /// solo B almacena ahi, la linea exterior existe en el rack pero el corte de A no la posee y dibujarla es
+        /// inventar estructura propia.
+        /// </para>
+        /// <para>
+        /// La regla no es nueva: es la MISMA continuidad de <c>BoundaryExists</c> —una linea sostiene algo si tiene
+        /// un claro activo a izquierda o a derecha— evaluada sobre la activacion del LADO, que es exactamente lo que
+        /// lleva su sub-estructura. Lo unico que decae es la excepcion de los bordes exteriores, y con razon: esos
+        /// bordes siempre existen para el RACK, no para un lado. Sin filtro —cualquier rack de un solo sentido— se
+        /// devuelve null y el corte es el de siempre.
+        /// </para>
+        /// </summary>
+        private static Func<int, bool> OwnsBoundary(DynamicRackSystem structure, Func<int, int, bool> includeCell)
+        {
+            if (includeCell == null)
+            {
+                return null;
+            }
+
+            var activation = DynamicFrontActivation.FrontActivation(structure);
+            return postIndex => DynamicFrontActivation.BoundaryBelongsTo(activation, postIndex);
+        }
 
         /// <summary>
         /// I-42 — de que celdas es el DESVIADOR de este corte, en terminos de (poste, nivel).

@@ -26,7 +26,8 @@ namespace RackCad.Application.Systems.Dynamic
             string plateId,
             DynamicRackEnd end,
             RackLevelElevations elevations = null,
-            Func<int, int, bool> ownsDesviador = null)
+            Func<int, int, bool> ownsDesviador = null,
+            Func<int, bool> ownsBoundary = null)
         {
             if (target == null || system == null || catalog == null || layout?.PostPositions == null)
             {
@@ -47,6 +48,13 @@ namespace RackCad.Application.Systems.Dynamic
                 // I-33 (Owner): la seguridad indexada por POSTE se atornilla a esa frontera; si no existe, no se
                 // coloca. La celda guardada NO se mueve a otro poste: queda dormida y vuelve al reactivar un frente.
                 if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
+                // I-42: un corte frontal es de UN LADO, y lo que se atornilla a una linea que solo el otro
+                // lado necesita no le pertenece. Sin filtro no cambia nada.
+                if (ownsBoundary != null && !ownsBoundary(postIndex))
                 {
                     continue;
                 }
@@ -85,9 +93,9 @@ namespace RackCad.Application.Systems.Dynamic
                 }
             }
 
-            AppendFrontalDesviadores(target, system, catalog, layout, end, elevations, ownsDesviador);
-            AppendFrontalDefensas(target, system, catalog, layout, plateId, end);
-            AppendFrontalGuias(target, system, catalog, layout, end);
+            AppendFrontalDesviadores(target, system, catalog, layout, end, elevations, ownsDesviador, ownsBoundary);
+            AppendFrontalDefensas(target, system, catalog, layout, plateId, end, ownsBoundary);
+            AppendFrontalGuias(target, system, catalog, layout, end, ownsBoundary);
         }
 
         public void AppendPlanta(
@@ -149,7 +157,8 @@ namespace RackCad.Application.Systems.Dynamic
             RackCatalog catalog,
             DynamicFrontLayout layout,
             string plateId,
-            DynamicRackEnd end)
+            DynamicRackEnd end,
+            Func<int, bool> ownsBoundary)
         {
             var selection = SelectiveSafetyFamilies.SelectedOfType(
                 system.SafetySelections, catalog.SafetyElements, SelectiveSafetyDefaults.DefensaType);
@@ -180,6 +189,13 @@ namespace RackCad.Application.Systems.Dynamic
                     continue;
                 }
 
+                // I-42: un corte frontal es de UN LADO, y lo que se atornilla a una linea que solo el otro
+                // lado necesita no le pertenece. Sin filtro no cambia nada.
+                if (ownsBoundary != null && !ownsBoundary(postIndex))
+                {
+                    continue;
+                }
+
                 var setting = DynamicForkliftDefensePlan.ForSelection(selection, postIndex, postCount);
                 var draws = end == DynamicRackEnd.Exit ? setting.DrawsExit : setting.DrawsEntrance;
                 if (!draws)
@@ -206,7 +222,8 @@ namespace RackCad.Application.Systems.Dynamic
             DynamicRackSystem system,
             RackCatalog catalog,
             DynamicFrontLayout layout,
-            DynamicRackEnd end)
+            DynamicRackEnd end,
+            Func<int, bool> ownsBoundary)
         {
             if (end != DynamicRackEnd.Entrance)
             {
@@ -230,6 +247,12 @@ namespace RackCad.Application.Systems.Dynamic
             foreach (var placement in DynamicEntranceGuidePlan.Build(system, selection))
             {
                 if (placement.PostIndex < 0 || placement.PostIndex >= layout.PostPositions.Count)
+                {
+                    continue;
+                }
+
+                // I-42: la guia tambien vive sobre una LINEA. Sin filtro no cambia nada (y Push Back no lleva guias).
+                if (ownsBoundary != null && !ownsBoundary(placement.PostIndex))
                 {
                     continue;
                 }
@@ -365,7 +388,8 @@ namespace RackCad.Application.Systems.Dynamic
             DynamicFrontLayout layout,
             DynamicRackEnd end,
             RackLevelElevations elevations,
-            Func<int, int, bool> ownsDesviador)
+            Func<int, int, bool> ownsDesviador,
+            Func<int, bool> ownsBoundary)
         {
             var selection = SelectiveSafetyFamilies.SelectedOfType(
                 system.SafetySelections, catalog.SafetyElements, SelectiveSafetyDefaults.DesviadorType);
@@ -402,6 +426,13 @@ namespace RackCad.Application.Systems.Dynamic
                 // I-33 (Owner): la seguridad indexada por POSTE se atornilla a esa frontera; si no existe, no se
                 // coloca. La celda guardada NO se mueve a otro poste: queda dormida y vuelve al reactivar un frente.
                 if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
+                // I-42: un corte frontal es de UN LADO, y lo que se atornilla a una linea que solo el otro
+                // lado necesita no le pertenece. Sin filtro no cambia nada.
+                if (ownsBoundary != null && !ownsBoundary(postIndex))
                 {
                     continue;
                 }

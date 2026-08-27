@@ -800,6 +800,74 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-quindecies. Correccion aislada 2C: un corte FRONTAL proyecta solo las lineas de SU lado
+
+### El contrato
+
+La estructura fisica global es la UNION de lo que necesitan los dos lados:
+
+```
+GlobalHeaderLineExists(line) = NeedsA(line) || NeedsB(line)
+```
+
+y la PLANTA la dibuja entera, porque representa el rack. Un corte FRONTAL no: es de un lado.
+
+```
+FrontalA muestra line = NeedsA(line)
+FrontalB muestra line = NeedsB(line)
+```
+
+### Lo que el dueño vio
+
+Ranura 1 en blanco en A, con almacenamiento en B. La linea exterior de esa ranura existe en el rack porque B la
+necesita —y la planta la dibujaba bien—, pero el corte frontal de A la dibujaba tambien, sin poseerla.
+
+| vista | lineas ANTES | lineas AHORA |
+|---|---|---|
+| estructura global | 0, 1, 2, 3 | 0, 1, 2, 3 |
+| PLANTA | 0, 1, 2, 3 | 0, 1, 2, 3 |
+| FRONTAL de B | 0, 1, 2, 3 | 0, 1, 2, 3 |
+| **FRONTAL de A** | **0**, 1, 2, 3 | 1, 2, 3 |
+
+### La causa y la correccion
+
+El corte de un lado se construye sobre la sub-estructura de ESE lado, pero decidia sus lineas con
+`BoundaryExists`, que lleva una excepcion: «los bordes exteriores del rack existen siempre». Es cierta para el
+RACK y falsa para un lado. Con la primera ranura en blanco en A, el borde 0 pasaba esa excepcion y el corte de A
+lo dibujaba aunque no tuviera ni un claro suyo al lado.
+
+`DynamicFrontActivation.BoundaryBelongsTo` es la MISMA continuidad —una linea sostiene algo si tiene un claro
+activo a izquierda o a derecha— sin esa excepcion, evaluada sobre la activacion del lado. El corte frontal
+compuesto la inyecta como filtro OPCIONAL, igual que el desviador en la correccion 1B: sin filtro —cualquier rack
+de un solo sentido— el corte es exactamente el de siempre y los dos bordes del rack siguen existiendo aunque su
+primera ranura este en blanco.
+
+El filtro alcanza a lo que va ATORNILLADO a esa linea —poste, placa, botas, protectores, defensas, desviador—,
+porque una linea que no se dibuja no puede llevar nada encima. **Solo es proyeccion**: no cambia `Compose`, ni el
+`BoundaryExists` global, ni la retícula, ni los modulos, ni el BOM, ni el lateral, ni la planta.
+
+### Medido
+
+| CASO | GLOBAL | FRONTAL A | FRONTAL B | PLANTA |
+|---|---|---|---|---|
+| A en blanco / B activo (ranura 1 de 3) | 0,1,2,3 | **1,2,3** | 0,1,2,3 | 0,1,2,3 |
+| B en blanco / A activo (ranura 1 de 3) | 0,1,2,3 | 0,1,2,3 | **1,2,3** | 0,1,2,3 |
+| blanco interior aislado, solo A | 0,1,2,3 | 0,1,2,3 | 0,1,2,3 | 0,1,2,3 |
+| dos blancos seguidos, solo A (de 4) | 0,1,2,3,4 | **0,1,3,4** | 0,1,2,3,4 | 0,1,2,3,4 |
+| en blanco en A y en B | 0,1,2,3 | **1,2,3** | **1,2,3** | 0,1,2,3 |
+
+El corte POSTERIOR sigue la misma regla, comprobado lado por lado.
+
+### Pruebas
+
+`PushBackFrontalHeaderOwnershipTests` (9), que afirman el ÍNDICE de cada linea —identificado con la formula del
+propio layout, no por cercania—, la vista, el lado y el conteo exacto, mas los `ModuleId` y la longitud del rack
+para fijar que la fisica global no se movio. **Cuatro de las nueve fallan** sin la correccion; las otras cinco ya
+eran correctas, incluida la de los dos blancos seguidos —ahi la regla de continuidad ya acertaba— y la de un rack
+de un solo sentido, que conserva sus dos bordes.
+
+**Ningun golden se movio.**
+
 ## 4-quaterdecies. Correccion aislada 2B: la declaracion fisica del lado B sobrevive a «En blanco»
 
 ### Lo que quedaba abierto

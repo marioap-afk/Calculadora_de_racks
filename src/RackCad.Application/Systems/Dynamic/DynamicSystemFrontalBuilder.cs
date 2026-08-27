@@ -37,7 +37,8 @@ namespace RackCad.Application.Systems.Dynamic
             RackCatalog catalog,
             DynamicRackEnd end,
             RackLevelElevations elevations = null,
-            Func<int, int, bool> ownsDesviador = null)
+            Func<int, int, bool> ownsDesviador = null,
+            Func<int, bool> ownsBoundary = null)
         {
             var instances = new List<HeaderBlockInstance>();
             if (system == null || system.Fronts.Count == 0 || system.LoadBeamLevels.Count == 0)
@@ -64,6 +65,13 @@ namespace RackCad.Application.Systems.Dynamic
                 // I-33 (Owner): la frontera compartida por dos frentes EN BLANCO no tiene poste ni placa. Se omite el
                 // ENSAMBLE, no la coordenada: el resto de las fronteras conserva su X exacta.
                 if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
+                // I-42: un corte frontal es de UN LADO. La linea que solo el otro lado necesita existe en el rack
+                // —y la planta la dibuja— pero este corte no la posee. Sin filtro no cambia nada.
+                if (ownsBoundary != null && !ownsBoundary(postIndex))
                 {
                     continue;
                 }
@@ -142,7 +150,8 @@ namespace RackCad.Application.Systems.Dynamic
                 }
             }
 
-            safetyBuilder.AppendFrontal(instances, system, catalog, layout, plateId, end, elevations, ownsDesviador);
+            safetyBuilder.AppendFrontal(
+                instances, system, catalog, layout, plateId, end, elevations, ownsDesviador, ownsBoundary);
             DynamicViewDecorations.AppendFrontal(instances, system, layout, end, catalog, elevations);
 
             return instances;
