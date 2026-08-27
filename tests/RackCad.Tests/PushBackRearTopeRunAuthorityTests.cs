@@ -609,10 +609,84 @@ namespace RackCad.Tests
             Assert.Single(interior);
             Assert.Contains(Lateral(system), tope => Math.Abs(tope.X - interior[0].X) < Eps);
 
-            AssertTopesMatchTheRuns("corrida corta en la ranura 1", system, checkPlantaX: false);
+            AssertTopesMatchTheRuns("corrida corta en la ranura 1", system);
         }
 
 
+
+        // ---- 4B: la X de la planta la manda el larguero alto de la cama ------------------------------------------
+
+        /// <summary>
+        /// EL DEFECTO DE LA CORRIDA CORTA. Su extremo alto cae DENTRO de la estructura, no en una línea de postes, y
+        /// la planta buscaba ahí su anclaje en el POSTE MÁS CERCANO: ponía el tope al otro lado del larguero.
+        ///
+        /// <para>
+        /// Medido en el HEAD anterior: contacto alto en X = 101.845, lateral 101.125, planta 102.875. Los valores no
+        /// se codifican — se derivan de la geometría del propio fixture — pero son los que la corrida midió.
+        /// </para>
+        /// </summary>
+        [Theory]
+        [InlineData(PushBackRunDirection.AToB)]
+        [InlineData(PushBackRunDirection.BToA)]
+        public void ShortRun_PlantaRearTopeUsesTheRunsHighPlacement(PushBackRunDirection direction)
+        {
+            var state = State(slots: 3);
+            state.SetDefaults(PushBackCellTopology.Corrida, direction);
+            state.SetCorridaDepth(1, 1, 2);
+            var system = Build(state);
+
+            var runs = PushBackRuns.Resolve(system);
+            var total = system.Structure.TotalLength;
+
+            // La cama CORTA: su contacto alto no está en ninguno de los dos extremos del rack.
+            var shortRun = runs.Runs.Single(run =>
+            {
+                var axis = PushBackRunGeometry.Axis(run, Catalog, runs.MirrorAxis);
+                return axis.HasValue
+                    && Math.Min(axis.Value.HighContact.X, total - axis.Value.HighContact.X) > 5.0;
+            });
+            var shortAxis = PushBackRunGeometry.Axis(shortRun, Catalog, runs.MirrorAxis).Value;
+
+            // El tope que ESA cama pide, derivado de ella con la autoridad que lo coloca.
+            var expected = ExpectedTopes(system)
+                .Single(entry => entry.Run.Slot == shortRun.Slot && entry.Run.Level == shortRun.Level);
+            Assert.True(
+                Math.Abs(expected.X - shortAxis.HighContact.X) < 2.0,
+                $"el tope de la cama corta debe quedar junto a su contacto alto ({shortAxis.HighContact.X:0.###})");
+
+            // El lateral lo dibuja ahí, y la PLANTA tiene que decir lo mismo en el eje longitudinal.
+            Assert.Contains(Lateral(system), tope => Math.Abs(tope.X - expected.X) < Eps);
+            Assert.Contains(Planta(system), tope => Math.Abs(tope.X - expected.X) < Eps);
+
+            // Y no queda ninguno al OTRO lado del larguero, que es donde caía cuando la X la mandaba el poste.
+            var mirrored = 2.0 * shortAxis.HighContact.X - expected.X;
+            Assert.DoesNotContain(Planta(system), tope => Math.Abs(tope.X - mirrored) < Eps);
+        }
+
+        /// <summary>
+        /// Un Push Back de UN SOLO SENTIDO no cambia: su extremo alto sí coincide con la línea de postes trasera, y
+        /// la planta sigue poniendo el tope exactamente donde el lateral.
+        /// </summary>
+        [Fact]
+        public void LegacyRearTopePlacement_IsUnchanged()
+        {
+            var state = new PushBackEditorState();
+            state.LoadNew();
+            state.Structure.SetFrontCount(2);
+            for (var index = 0; index < state.Structure.Count; index++)
+            {
+                state.Structure.AdjustLevels(index, 2 - state.Structure.Fronts[index].LoadLevels);
+            }
+
+            var system = new PushBackEditorDesignAssembler(Catalog).Build(state, Inputs()).System;
+            Assert.NotNull(system);
+
+            var lateralX = Lateral(system).Select(tope => tope.X).Distinct().OrderBy(x => x).ToList();
+            var plantaX = Planta(system).Select(tope => tope.X).Distinct().OrderBy(x => x).ToList();
+
+            Assert.NotEmpty(lateralX);
+            Assert.Equal(lateralX, plantaX);
+        }
 
         // ---- 15: persistencia -------------------------------------------------------------------------------------
 

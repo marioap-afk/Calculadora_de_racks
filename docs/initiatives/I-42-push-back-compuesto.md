@@ -800,6 +800,77 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-duodevicies. Correccion aislada 4B: en PLANTA la profundidad del tope la manda su larguero
+
+### El defecto
+
+Una corrida CORTA acaba DENTRO de la estructura: su extremo alto no cae en ninguna linea de postes. Medido en el
+HEAD anterior, con el contacto alto en X = 101.845:
+
+| vista | X del tope |
+|---|---|
+| LATERAL | 101.125 — del lado por el que llega la tarima |
+| FRONTAL | correcto |
+| **PLANTA** | **102.875** — al otro lado del larguero |
+
+Aplicabilidad, pieza y conteo eran correctos. Solo la posicion longitudinal en planta estaba mal.
+
+### La causa, y quien usa que
+
+`PushBackRearTopeBuilder.PostMateWorld` busca el anclaje en el POSTE MAS CERCANO. Tiene exactamente DOS
+llamadores de produccion:
+
+| llamador | eje que resuelve | veredicto |
+|---|---|---|
+| `PushBackSystemFrontalBuilder` | en FRONTAL la X corre con la retícula TRANSVERSAL, y ahi el poste ES la linea | correcto, no se toca |
+| `PushBackSystemPlantaBuilder` | en PLANTA la X corre con la PROFUNDIDAD | **la Y si, la X no** |
+
+En planta los dos ejes no tienen la misma autoridad: la **Y** es transversal y la manda el poste; la **X** es
+profundidad y la manda el LARGUERO ALTO de la cama. Cuando el extremo alto coincide con el poste del borde —lo
+normal— las dos coinciden y nadie lo nota. Una corrida corta lo separa.
+
+### La correccion
+
+En la planta, la X del tope se mide desde la insercion del larguero alto que se acaba de colocar, con el MISMO
+punto medido del poste y el MISMO signo de espejo que ya se usaban:
+
+```
+depth = largueroAlto.X + (espejado ? -anclaje.X : anclaje.X)
+```
+
+No se resta ninguna constante: solo cambia DESDE DONDE se mide. La Y sigue saliendo del mate del poste, que ahi
+es exacto. `PostMateWorld` conserva su semantica y el frontal no cambia.
+
+### Medido
+
+| CASO | contacto alto | LATERAL | PLANTA antes | PLANTA ahora | delta |
+|---|---|---|---|---|---|
+| corrida corta A→B | 101.845 | 101.125 | **102.875** | 101.125 | 0 |
+| corrida corta B→A | simetrico | igual al lateral | al otro lado | igual al lateral | 0 |
+| corrida con el alto SOBRE el poste | 791.845 | 791.125 | 791.125 | 791.125 | 0 |
+| encontradas | 395.85 / 396.15 | 395.12 / 396.88 | igual | igual | 0 |
+| solo A / solo B | 395.85 / 396.15 | 395.12 / 396.88 | igual | igual | 0 |
+| con calle y multifrente | por cama | por cama | igual | igual | 0 |
+
+### Auditoria
+
+| VISTA | AUTORIDAD DE LA X | RESULTADO EN LA CAMA CORTA |
+|---|---|---|
+| LATERAL | colocacion del larguero alto de la cama | 101.125 |
+| FRONTAL A/B | poste (ahi la X es transversal) | correcto, sin cambio |
+| PLANTA | **larguero alto de la cama** (antes: poste mas cercano) | 101.125 |
+| BOM | sin geometria | sin cambio |
+
+### Pruebas
+
+`ShortRun_PlantaRearTopeUsesTheRunsHighPlacement` en los dos sentidos —identifica la cama corta por su contacto
+alto, no por cercania, y exige que la planta coincida con el lateral y que NO quede nada al otro lado del
+larguero— y `LegacyRearTopePlacement_IsUnchanged` para un rack de un solo sentido. Ademas, la comprobacion 1:1 de
+la ronda 4 vuelve a exigir la X de la planta en TODOS los casos, incluida la corrida corta, que estaba exceptuada.
+Tres de los 27 fallan sin la correccion.
+
+**Ningun golden se movio.**
+
 ## 4-septendecies. Correccion aislada 4: el TOPE es del extremo ALTO de su cama
 
 ### Lo que ya estaba bien

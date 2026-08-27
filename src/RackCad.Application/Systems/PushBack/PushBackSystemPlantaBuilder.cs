@@ -80,19 +80,32 @@ namespace RackCad.Application.Systems.PushBack
                 if (!string.IsNullOrWhiteSpace(topeBlock) && anyActive)
                 {
                     // Owner clarification (2026-07-25): the tope block mates by its ORIGIN, so its insertion must land
-                    // EXACTLY on the post's TROQUEL_TOPE in this view. Planta has no elevation, so both coordinates
-                    // coincide. This used to take the BEAM's insertion, which is why the stop stayed on the larguero
-                    // troquel. No fallback: without the measured point (or without a post in the plan) no stop is drawn.
+                    // EXACTLY on the post's TROQUEL_TOPE in this view. No fallback: without the measured point (or
+                    // without a post in the plan) no stop is drawn.
+                    //
+                    // I-42 (correccion aislada 4B) — los DOS ejes de la planta no tienen la misma autoridad. La Y
+                    // corre con la retícula transversal y es del POSTE: ahi el mate del poste es exacto. La X corre
+                    // con la PROFUNDIDAD, y esa la manda el LARGUERO ALTO de la cama, no el poste mas cercano: el
+                    // extremo alto de una cama no tiene por que caer en una linea de postes. Medido: con el contacto
+                    // alto de una corrida CORTA en X = 101.845, el lateral pone el tope en 101.125 —del lado por el
+                    // que llega la tarima— y la planta lo ponia en 102.875, al otro lado del larguero, porque tomaba
+                    // la X del poste del borde. El poste es una CONSECUENCIA cuando coincide, nunca la autoridad.
+                    //
+                    // El desplazamiento fisico es el MISMO que ya se usaba —el punto medido del poste, con el signo
+                    // del espejo de la pieza—: no se resta ninguna constante, solo cambia desde donde se mide.
                     var mate = PushBackRearTopeBuilder.PostMateWorld(
                         catalog, postId, postPeralte, View, instances, instance.Insertion);
-                    if (mate.HasValue)
+                    var anchor = PushBackRearTopeBuilder.PostAnchorLocal(catalog, postId, postPeralte, View);
+                    if (mate.HasValue && anchor.HasValue)
                     {
                         double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
                             ? beamLength + SelectiveTopePlacement.LengthAllowance
                             : (double?)null;
+                        var depth = instance.Insertion.X
+                                    + (instance.MirroredX ? -anchor.Value.X : anchor.Value.X);
                         result.Add(SelectiveTopePlacement.Tope(
                             topePieceId, topeBlock, View,
-                            mate.Value.X, mate.Value.Y, saque, longitud,
+                            depth, mate.Value.Y, saque, longitud,
                             mirroredX: PushBackRearTopeBuilder.Mirrored(View, instance.MirroredX)));
                     }
                 }
