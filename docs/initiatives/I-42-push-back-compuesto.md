@@ -800,90 +800,118 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
-## 4-undevicies. Correccion aislada 5: la MANO del larguero alto y su tope sale del extremo de la cabecera
+## 4-undevicies. Correcciones aisladas 5B y 5C: la mano del larguero ALTO es la de un INTERMEDIO en esa posicion
 
-### La regla, cerrada por el dueño
+### La regla, cerrada por el dueño (SUSTITUYE a la de la ronda 5)
 
-No depende de si la linea es la interfaz, un borde exterior o una corrida corta. **Si la cama termina en el ULTIMO
-poste de la cabecera, el larguero de salida y el tope conservan su orientacion normal; si termina en el PRIMER
-poste o en un poste interior o suelto, los dos se invierten.** Van SIEMPRE juntos: es una sola decision. Y sale
-del extremo fisico de la cabecera, no del lado A/B ni de donde caiga en el rack.
+El dueño **retiro** la regla de la ronda 5 —«ultimo poste, orientacion normal; primer poste o poste interior,
+invertido»— y la sustituyo por esta:
+
+> El larguero HIGH / de salida debe tener EXACTAMENTE LA MISMA ORIENTACION QUE TENDRIA UN LARGUERO INTERMEDIO
+> COLOCADO EN ESA MISMA POSICION FISICA. No inventar una regla nueva para el HIGH. El programa YA orienta
+> correctamente los largueros intermedios. REUTILIZAR ESA AUTORIDAD.
+
+La ronda 5C añade la otra mitad: esa mano se decide UNA vez y la PLANTA la **transporta**. Ninguna vista la
+recalcula.
+
+Y una separacion que el dueño cerro explicitamente: **la mano del tope sale de su larguero, pero su POSICION es la
+que quedo validada en la ronda 4B**. Corregir la orientacion no puede mover la pieza.
 
 ### Lo que habia, medido
 
-La mano la fijaba `DynamicLoadBeamGeometry.Placements`: en el marco de una cama, bajo sin espejo y alto con
-espejo. El compuesto la volteaba con su reflexion rigida. El resultado era uniforme —el escalon apuntaba hacia
-afuera de su propia cama— pero **no miraba la cabecera**:
+La mano del alto la fijaba `DynamicLoadBeamGeometry.Placements`, que en el marco de una cama es un «alto SIEMPRE
+espejado» — una constante, no una lectura de la estructura. Reproducido en la estructura de OCHO fondos que el dueño
+uso, con una cama por nivel de 3 a 8 fondos (`PushBackHighEndHandTests.DepthLadder`):
 
-| caso | HIGH (X de mundo) | extremo de cabecera | antes | segun la regla |
-|---|---|---|---|---|
-| Solo A | 396 de 792 | interior | invertido | invertido ✔ |
-| Solo B | 396 de 792 | interior | **normal** | invertido ✘ |
-| Encontradas B | 396 de 792 | interior | **normal** | invertido ✘ |
-| Corrida A→B | 792 | **ultimo** | **invertido** | normal ✘ |
-| Corrida B→A | 0 | **primero** | **normal** | invertido ✘ |
-| Corrida corta | 101.85 | interior | invertido | invertido ✔ |
-| Un solo sentido | 396 = total | **ultimo** | **invertido** | normal ✘ |
+| cama | frontera (X) | modulo que TERMINA ahi | un intermedio iria | el alto iba | ¿coincide? |
+|---|---|---|---|---|---|
+| 3 fondos | 150 | cabecera | espejado | espejado | si |
+| 4 fondos | 198 | vano | normal | **espejado** | **no** |
+| 5 fondos | 246 | vano | normal | **espejado** | **no** |
+| 6 fondos | 294 | cabecera | espejado | espejado | si |
+| 7 fondos | 342 | vano | normal | **espejado** | **no** |
+| 8 fondos | 396 | cabecera (extremo) | espejado | espejado | si |
 
-Cinco de siete estaban al reves. En unas encontradas los dos largueros altos caian en la MISMA linea con manos
-OPUESTAS, porque la decidia la cama y no la cabecera.
+Tres de seis mal, y las tres son las que acaban en un VANO: es el patron que el dueño reporto. En su rack tambien
+salia mal la cama de 8 fondos, lo que solo puede ocurrir si el ultimo modulo de SU estructura es un vano — el
+reparto cabecera/vano depende del rack, la regla no.
 
 ### La correccion
 
-`PushBackHighEndHand`: una sola pregunta —`AtLastPost(structure, x)`— y una sola respuesta para las dos piezas. El
-tope va con la mano contraria a la de su larguero, que es la relacion que ya existia en las tres vistas; lo que
-cambia es CUANDO se invierte el par.
+1. **La autoridad se EXTRAE, no se duplica.** `DynamicIntermediateBeamGeometry` ya decidia la mano de sus apoyos con
+   `previous.IsHeader`. Eso pasa a ser `HandAtBoundary(modulo que termina ahi)` y se expone
+   `HandAtDepthX(estructura, x)`, que responde por posicion fisica. El builder de intermedios sigue llamandola: una
+   sola decision, dos consumidores. **No hay ninguna regla nueva en el Push Back.**
+2. **El larguero alto la consume** en `PushBackLoadBeamGeometry.HighBeams`, al CREAR la pieza. Sin frontera en esa X
+   la autoridad no opina y la pieza conserva lo que traia.
+3. **5C — la planta transporta.** `PushBackSystemPlantaBuilder` sustituia el larguero conservando el espejo del
+   builder dinamico, que nunca pasaba por la autoridad. Medido en una corrida CORTA: el lateral ponia su alto en
+   X=102 sin espejo —la frontera es un vano— y la planta lo ponia espejado. Ahora la planta lee la misma respuesta.
+4. **El tope hereda.** `PushBackRearTopeBuilder.Mirrored` era una CONSTANTE en las elevaciones, asi que el tope no
+   seguia a su larguero. Pasa a ser una sola relacion —el tope va con la mano contraria a la de SU alto— en las
+   vistas de PROFUNDIDAD. El corte FRONTAL no: ahi la X corre con la retícula transversal y el espejo de una pieza
+   no habla del escalon, que se ve de canto; conserva la orientacion que el dueño valido.
+5. **La deduplicacion de proyeccion distingue camas.** Dos camas ENCONTRADAS topan en la misma frontera y, desde que
+   la mano sale de la POSICION y ya no del sentido, sus dos largueros altos coinciden tambien en el espejo. Una
+   clave que solo mirara posicion, pieza y espejo los habria colapsado en uno. La clave incluye ahora el MARCO de la
+   cama (sistema fuente + reflejada), que es lo que las distingue — **sin** introducir una regla de mano distinta
+   para A y para B, que es justo lo que el dueño prohibio.
 
-Se resuelve sobre la X de MUNDO, a la salida del lateral y de la planta, que son las vistas que muestran la
-profundidad. El corte FRONTAL mira la retícula transversal y su espejo significa otra cosa: no se recalcula ahi.
-Ninguna vista decide por su cuenta — la planta y el lateral dan la misma respuesta por construccion.
+### Posicion y orientacion son dos autoridades (decision del dueño)
 
-Las POSICIONES no se tocan: esta corrida solo cambia el espejo. Las rondas 4 y 4B —aplicabilidad, X/Z y BOM del
-tope— quedan intactas, y el BOM no depende de la mano (misma pieza, mismas cantidades).
+La mano se aplica al CREAR la instancia del larguero, no en su colocacion. La POSICION del tope se sigue derivando
+de la mano que trae la colocacion —la que la ronda 4B cerro y el dueño valido—, asi que un cambio de espejo del alto
+**no puede** volver a desplazar el tope. Todas las pruebas de posicion de la ronda 4B siguen verdes con sus X
+esperadas SIN modificar.
 
 ### Auditoria
 
-| VISTA | AUTORIDAD DE LA MANO ANTES | DESPUES |
-|---|---|---|
-| LATERAL | sentido del flujo de la cama | **extremo de la cabecera** |
-| PLANTA | la del lateral, transformada | **extremo de la cabecera** (misma respuesta) |
-| FRONTAL | retícula transversal | sin cambio |
-| BOM | sin geometria | sin cambio |
-
-### Goldens: tres pines movidos, con evidencia por primitiva
-
-El escenario mide 300" y su extremo alto cae en X = 300, el ULTIMO poste, asi que pasa a orientacion normal.
-Cambia SOLO el flag de espejo de siete primitivas; ni una X, ni una Y, ni una pieza, ni el BOM:
-
-| vista | pieza | antes | ahora |
+| VISTA | AUTORIDAD DE LA MANO DEL ALTO | ANTES | DESPUES |
 |---|---|---|---|
-| LATERAL | larguero alto X=300 Y=10.6053 | espejado | normal |
-| LATERAL | larguero alto X=300 Y=82.6053 | espejado | normal |
-| LATERAL | tope X=299.125 Y=94.1563 | normal | espejado |
-| PLANTA | larguero alto X=300 Y=0.75 | espejado | normal |
-| PLANTA | larguero alto X=300 Y=54.244 | espejado | normal |
-| PLANTA | tope X=299.125 Y=1.5 | normal | espejado |
-| PLANTA | tope X=299.125 Y=54.994 | normal | espejado |
+| LATERAL | geometria dinamica en el marco de la cama | «siempre espejado» | **la del intermedio en esa X** |
+| PLANTA | el espejo del larguero dinamico sustituido | podia discrepar del lateral | **transporta la del lateral** |
+| FRONTAL | retícula transversal | sin cambio | sin cambio |
+| BOM | sin geometria | sin cambio | sin cambio |
 
-Los dos frontales y el BOM quedan intactos, y sus pines no se tocan.
+### Goldens: dos pines movidos, con evidencia por primitiva
 
-### Dos pruebas de contrato ACTUALIZADAS
+La frontera alta del escenario dorado esta en X=300, donde TERMINA una cabecera, asi que un intermedio ahi va
+espejado. Los siete flags que la ronda 5 habia volteado vuelven, uno por uno, al valor que el dueño validó en la
+ronda 4B, y los dos pines regresan EXACTAMENTE a los hashes que tenian entonces (`52386252…` y `02EE98BA…`) — la
+comprobacion mas limpia de que la regla retirada era la anomalia:
 
-Las dos fijaban la regla anterior y el dueño la ha sustituido:
+| vista | pieza | ronda 5 | ahora |
+|---|---|---|---|
+| LATERAL | larguero alto X=300 Y=10.6053 | normal | espejado |
+| LATERAL | larguero alto X=300 Y=82.6053 | normal | espejado |
+| LATERAL | tope X=299.125 Y=94.1563 | espejado | normal |
+| PLANTA | larguero alto X=300 Y=0.75 | normal | espejado |
+| PLANTA | larguero alto X=300 Y=54.244 | normal | espejado |
+| PLANTA | tope X=299.125 Y=1.5 | espejado | normal |
+| PLANTA | tope X=299.125 Y=54.994 | espejado | normal |
 
-- `PushBackRunFrameTests` afirmaba «la mano del larguero ALTO sale del sentido del flujo». Ahora afirma la regla
-  del extremo de cabecera. El larguero BAJO no entra en esta corrida y conserva la suya.
-- `PushBackPartialCompositeTests.PartialComposite_F1Only_PreservesTheOtherFrontsExactly` exigia que las lineas de
-  los frentes sin lado B quedaran identicas «incluida la mano». Convertir el rack DUPLICA su profundidad, asi que
-  lo que era el ultimo poste (396 de 396) pasa a ser interior (396 de 792) y esas dos piezas se invierten con
-  razon. La prueba compara ahora posicion, pieza y rotacion —y la mano de todo lo demas— y ademas afirma la regla
-  sobre el rack ya convertido.
+Siete primitivas y en las siete cambia SOLO el espejo: ni una X, ni una Y, ni un anclaje, ni una rotacion, ni una
+pieza, ni una cantidad. Los dos frontales y el BOM quedan intactos y sus pines no se tocan.
+
+### Pruebas de contrato ACTUALIZADAS
+
+- `PushBackRunFrameTests` y `PushBackPartialCompositeTests` afirmaban que la mano del ALTO sale del SENTIDO del
+  flujo. Ahora la piden a la autoridad del intermedio; el larguero BAJO no entra en esta correccion y conserva la
+  suya.
+- `PushBackRearTopeAnchorTests` fijaba la mano del tope como una CONSTANTE en las elevaciones. Esa parte del
+  contrato queda **explicitamente sustituida** por decision del dueño: el tope sigue a su larguero. En el marco
+  identidad —donde el alto iba siempre espejado— las dos formulas dan el mismo valor, que es por lo que aquel
+  escenario quedaba bien; lo que cambia es que ahora el tope SIGUE a su larguero en vez de ser una constante.
 
 ### Pruebas nuevas
 
-`PushBackHighEndHandTests` (22 casos): la regla en las cinco topologias, linea interior y exterior, las dos
-corridas, corrida corta, calle, multifrente, blanco anterior, rack de un solo sentido, que el lateral y la planta
-no discrepan y que el BOM no cambia. **Quince de los 22 fallan** sin la correccion.
+`PushBackHighEndHandTests` (15 casos): la tabla de 3 a 8 fondos contra los apoyos INTERMEDIOS que el programa coloca
+de verdad —no contra una regla reescrita en la prueba—, la coherencia lateral/planta en las cinco topologias, las
+dos camas fisicas de unas encontradas tras la deduplicacion, el BOM invariante, y la prueba fuerte de la corrida
+corta, que exige a la vez: la mano del intermedio, planta = lateral, el tope contrario a su larguero y **la X del
+tope en 101.125, la que cerro la ronda 4B**.
+
+Anulando la autoridad, cinco de los 15 fallan — incluidas exactamente las camas de 4, 5 y 7 fondos.
 
 ## 4-duodevicies. Correccion aislada 4B: en PLANTA la profundidad del tope la manda su larguero
 

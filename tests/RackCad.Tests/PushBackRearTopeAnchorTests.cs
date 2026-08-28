@@ -167,18 +167,26 @@ namespace RackCad.Tests
         [Fact]
         public void ElevationOrientation_IsInvertedWithRespectTo10d8eeb()
         {
-            // 10d8eeb drew the elevations MIRRORED and the Owner measured the stop upside down; it is now unmirrored,
-            // and still never reads the rear beam's own mirror.
-            Assert.False(PushBackRearTopeBuilder.ElevationMirrored);
+            // 10d8eeb dibujaba las elevaciones ESPEJADAS y el dueño midio el tope al reves; desde entonces iba sin
+            // espejo. I-42 (correccion aislada 5B) SUSTITUYE esa parte del contrato: el tope va con la mano
+            // CONTRARIA a la de su larguero alto, en TODAS las vistas. En el marco identidad —donde el alto iba
+            // siempre espejado— las dos formulas dan el mismo valor, que es por lo que 10d8eeb quedaba bien; lo que
+            // cambia es que ahora el tope SIGUE a su larguero en vez de ser una constante.
+            //
+            // El valor de 10d8eeb se conserva donde el alto va espejado, que es lo que aquel escenario media.
             Assert.False(PushBackRearTopeBuilder.Mirrored("LATERAL", beamMirroredX: true));
-            Assert.False(PushBackRearTopeBuilder.Mirrored("LATERAL", beamMirroredX: false));
-            Assert.False(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: true));
-            Assert.False(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: false));
+            Assert.True(PushBackRearTopeBuilder.Mirrored("LATERAL", beamMirroredX: false));
 
-            // PLANTA: the Owner measured the block inverted there too, so its orientation is now the INVERSE of the
-            // beam's plan mirror.
+            // La PLANTA usa exactamente la misma relacion: son vistas de PROFUNDIDAD, donde esa mano se ve.
             Assert.False(PushBackRearTopeBuilder.Mirrored("PLANTA", beamMirroredX: true));
             Assert.True(PushBackRearTopeBuilder.Mirrored("PLANTA", beamMirroredX: false));
+
+            // El corte FRONTAL no: ahi la X corre con la reticula TRANSVERSAL y el espejo de una pieza no habla del
+            // escalon del larguero, que se ve de canto. Su orientacion es la que el dueño valido y esta correccion
+            // no la toca — sigue siendo constante.
+            Assert.False(PushBackRearTopeBuilder.ElevationMirrored);
+            Assert.False(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: true));
+            Assert.False(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: false));
         }
 
         [Fact]
@@ -187,6 +195,16 @@ namespace RackCad.Tests
             var catalog = Catalog;
             var system = System(catalog);
             var front = system.Structure.Fronts[0];
+
+            // I-42 (correccion aislada 5B): el tope va con la mano CONTRARIA a la de su larguero alto. En este
+            // escenario ese larguero acaba en una CABECERA, asi que va espejado y el tope sin espejo — el mismo
+            // resultado que esta prueba fijaba, ahora derivado de su larguero y no de una constante.
+            var beams = new PushBackSystemLateralBuilder().Build(system, catalog, 0).Flatten().Instances
+                .Where(i => i.Role == HeaderBlockRole.Beam
+                    && string.Equals(i.PieceId, PushBackDefaults.HighEndBeamCatalogId, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            Assert.NotEmpty(beams);
+            Assert.All(beams, beam => Assert.True(beam.MirroredX));
 
             var lateral = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);
             Assert.NotEmpty(lateral);

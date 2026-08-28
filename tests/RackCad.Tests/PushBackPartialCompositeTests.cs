@@ -5,6 +5,7 @@ using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
@@ -213,18 +214,28 @@ namespace RackCad.Tests
                 Assert.Equal(reference[line], LineSignature(after, line, HighEndHand.Ignore));
             }
 
-            // I-42 (correccion aislada 5) — la mano del larguero ALTO y de su tope SI cambia, y debe cambiar:
-            // convertir el rack DUPLICA su profundidad, asi que lo que era el ULTIMO poste (X = 396 de 396) pasa a
-            // ser un poste INTERIOR (X = 396 de 792) y la pieza se invierte. No es una regresion: es la regla del
-            // dueño aplicandose a una cabecera que ha cambiado. Lo demas de esas lineas queda identico.
-            foreach (var line in untouched)
+            // I-42 (correccion aislada 5B) — la mano del larguero ALTO y de su tope puede cambiar al convertir el
+            // rack, y es correcto: la decide un larguero INTERMEDIO en esa misma posicion fisica, y convertir el rack
+            // cambia la secuencia de modulos. Lo que se exige es que siga a esa autoridad, no que se congele.
+            var resolved = PushBackRuns.Resolve(after);
+            foreach (var run in resolved.Runs)
             {
-                foreach (var piece in new PushBackSystemLateralBuilder().Build(after, Catalog, line).Flatten().Instances
-                             .Where(i => i.Role == HeaderBlockRole.Tope || IsHighBeam(after, i)))
+                var hand = DynamicIntermediateBeamGeometry.HandAtDepthX(
+                    run.Source.Structure, PushBackCellDepth.RearX(run.Source, run.Front(), run.SourceLevel));
+                if (!hand.HasValue)
                 {
-                    var normal = PushBackHighEndHand.AtLastPost(after.Structure, piece.Insertion.X);
-                    Assert.Equal(piece.Role == HeaderBlockRole.Tope ? normal : !normal, piece.MirroredX);
+                    continue;   // apoyo que no es frontera de modulo: la pieza conserva la mano que traia
                 }
+
+                var expected = run.Reflected ? !hand.Value : hand.Value;
+                var axis = PushBackRunGeometry.Axis(run, Catalog, resolved.MirrorAxis);
+                Assert.True(
+                    new PushBackSystemLateralBuilder().Build(after, Catalog).Flatten().Instances
+                        .Where(i => IsHighBeam(after, i))
+                        .Any(i => axis.HasValue
+                                  && Math.Abs(i.Insertion.X - axis.Value.HighContact.X) < 12.0
+                                  && i.MirroredX == expected),
+                    $"la cama s{run.Slot}/n{run.Level} no lleva la mano del intermedio");
             }
         }
 

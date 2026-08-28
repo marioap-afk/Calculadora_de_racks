@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
 using RackCad.Domain.Systems.PushBack;
@@ -89,14 +90,25 @@ namespace RackCad.Application.Systems.PushBack
                 loose.AddRange(PushBackDiverterPlan.Lateral(source, catalog, front, levels, postIndex));
                 var groups = bedBuilder.BuildLateralGroups(source, catalog, front, int.MaxValue, levels);
 
+                // I-42 (correccion aislada 5B) - el MARCO de la cama: su sistema fuente y si viaja reflejada. Dos
+                // frentes contiguos del mismo lado lo comparten -y por tanto se deduplican-; dos camas encontradas
+                // no, porque son dos piezas fisicas distintas.
+                var bed = RuntimeHelpers.GetHashCode(source).ToString(CultureInfo.InvariantCulture)
+                          + "/" + batch.Reflected + "|";
                 var placed = batch.Reflected
                     ? PushBackMirror.Instances(loose, runs.MirrorAxis)
                     : loose;
+                // La identidad de la CAMA entra en la deduplicacion. Un corte proyecta cada pieza una vez, y dos
+                // frentes contiguos del MISMO marco superponen las suyas: eso se sigue deduplicando. Pero dos camas
+                // ENCONTRADAS topan en la misma frontera y, desde que la mano sale de la POSICION y ya no del
+                // sentido, sus dos largueros altos coinciden tambien en el espejo: una clave que solo mirara
+                // posicion, pieza y espejo los colapsaria en uno. Encontradas son DOS camas, dos largueros altos y
+                // dos topes, y lo que los distingue es su marco - no hace falta ninguna regla de mano nueva.
                 foreach (var instance in placed)
                 {
-                    if (!intermediates.Add(PushBackPlanComposer.PhysicalKey(instance)))
+                    if (!intermediates.Add(bed + PushBackPlanComposer.PhysicalKey(instance)))
                     {
-                        continue;   // la misma pieza fisica, ya emitida por otra cama de este corte
+                        continue;   // la misma pieza fisica, ya emitida por otra cama de ESTE MISMO marco
                     }
 
                     result.Loose.Add(instance);
@@ -110,7 +122,7 @@ namespace RackCad.Application.Systems.PushBack
                     // La CAMA viaja como grupo (patron ARRAY), y dos camas identicas de frentes contiguos se
                     // proyectan una encima de otra igual que sus largueros. Se compara por su DEFINICION y sus
                     // COLOCACIONES, que es lo que el dibujo acaba materializando.
-                    if (intermediates.Add(PushBackPlanComposer.PhysicalKey(group)))
+                    if (intermediates.Add(bed + PushBackPlanComposer.PhysicalKey(group)))
                     {
                         result.Headers.Add(group);
                     }

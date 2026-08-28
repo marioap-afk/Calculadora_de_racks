@@ -59,8 +59,6 @@ namespace RackCad.Application.Systems.PushBack
             // 4) Las etiquetas A/B, por el pipeline de anotaciones que ya existe. Nunca al BOM.
             result.AddRange(PushBackSideAnnotations.Planta(system));
 
-            // I-42 (correccion aislada 5) — la mano se decide sobre el MUNDO, despues de reflejar cada cama.
-            PushBackHighEndHand.Apply(result, system, structure);
             return HeaderInstanceGrouper.Group(result, "PB_PLANTA_PIEZA");
         }
 

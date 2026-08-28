@@ -212,7 +212,19 @@ namespace RackCad.Application.Systems.PushBack
                     View = PushBackDefaults.HighEndBeamView,
                     Insertion = origin,
                     ConnectionAnchor = origin,
-                    MirroredX = placement.MirroredX
+                    // I-42 (correccion aislada 5B) — LA MANO del larguero de salida es la que tendria un larguero
+                    // INTERMEDIO en esa misma posicion fisica: la decide el modulo que TERMINA en esa frontera. No
+                    // hay regla propia; se consume la del intermedio, que ya existe y el dueño valida.
+                    //
+                    // Antes salia de la geometria dinamica, que en el marco de una cama fija «alto siempre
+                    // espejado». Medido en una estructura de 8 fondos con camas de 3 a 8: coincidia con el
+                    // intermedio solo en 3 y en 6, y discrepaba en 4, 5, 7 y 8 — el patron que el dueño reporto.
+                    //
+                    // Se aplica AQUI, al crear la pieza, y no en la colocacion: la POSICION del tope se deriva de la
+                    // mano que la colocacion trae, y esa quedo cerrada en la ronda 4B. Mano y posicion son dos
+                    // autoridades separadas.
+                    MirroredX = DynamicIntermediateBeamGeometry.HandAtDepthX(structure, placement.X)
+                                ?? placement.MirroredX
                 };
                 instance.DynamicParameters[SelectiveRackDefaults.PeralteParam] =
                     system.HighEndBeamPeralteAt(frontIndex, placement.LevelNumber - 1);

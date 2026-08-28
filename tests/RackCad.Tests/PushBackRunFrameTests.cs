@@ -4,6 +4,7 @@ using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Shared;
@@ -160,11 +161,11 @@ namespace RackCad.Tests
                     Of(lateral, InOut).Any(i => Math.Abs(i.Insertion.X - axis.LowContact.X) < 12.0
                         && i.MirroredX == !axis.FlowsForward),
                     $"{topology}/{direction} s{slots} {deepA}/{deepB} gap{gap}: falta el larguero BAJO orientado");
-                // I-42 (correccion aislada 5): la mano del larguero ALTO ya no sale del sentido del flujo sino del
-                // EXTREMO de la cabecera que lo recibe (ultimo poste = orientacion normal).
+                // I-42 (correccion aislada 5B): la mano del larguero ALTO es la que tendria un INTERMEDIO en esa
+                // misma posicion fisica. Se pide a la autoridad del intermedio; aqui no se reproduce.
                 Assert.True(
                     Of(lateral, Redondo).Any(i => Math.Abs(i.Insertion.X - axis.HighContact.X) < 12.0
-                        && i.MirroredX == !PushBackHighEndHand.AtLastPost(system.Structure, i.Insertion.X)),
+                        && i.MirroredX == (ExpectedIntermediateHand(system, axis) ?? i.MirroredX)),
                     $"{topology}/{direction} s{slots} {deepA}/{deepB} gap{gap}: falta el larguero ALTO orientado");
             }
 
@@ -190,6 +191,32 @@ namespace RackCad.Tests
             => source.Where(i => string.Equals(i.PieceId, pieceId, StringComparison.OrdinalIgnoreCase));
 
         // ===================== ERROR 5: la orientación sale del marco de la cama ==============================
+
+        /// <summary>
+        /// La mano que un larguero INTERMEDIO tendria en el apoyo donde acaba esta cama, pedida a la MISMA autoridad
+        /// que coloca los intermedios y llevada al mundo con la misma reflexion rigida de la cama. Camas ENCONTRADAS
+        /// comparten ranura y nivel, asi que la cama de este eje es la que lo PRODUCE. Null cuando el apoyo no cae en
+        /// ninguna frontera de modulo: ahi la autoridad no opina y la pieza conserva la suya.
+        /// </summary>
+        private static bool? ExpectedIntermediateHand(PushBackSystem system, PushBackRunAxis axis)
+        {
+            var resolved = PushBackRuns.Resolve(system);
+            var run = resolved.Runs.FirstOrDefault(candidate =>
+            {
+                var other = PushBackRunGeometry.Axis(candidate, Catalog, resolved.MirrorAxis);
+                return other.HasValue
+                       && Math.Abs(other.Value.HighContact.X - axis.HighContact.X) < 1e-6
+                       && Math.Abs(other.Value.LowContact.X - axis.LowContact.X) < 1e-6;
+            });
+            if (run == null)
+            {
+                return null;
+            }
+
+            var hand = DynamicIntermediateBeamGeometry.HandAtDepthX(
+                run.Source.Structure, PushBackCellDepth.RearX(run.Source, run.Front(), run.SourceLevel));
+            return hand.HasValue ? (run.Reflected ? !hand.Value : hand.Value) : (bool?)null;
+        }
 
         /// <summary>
         /// Los DOS largueros de extremo de una cama salen de SU marco, así que su mano la decide el SENTIDO FÍSICO
@@ -229,14 +256,13 @@ namespace RackCad.Tests
                     lows.Any(i => Math.Abs(i.Insertion.X - axis.LowContact.X) < 12.0
                         && i.MirroredX == !axis.FlowsForward),
                     $"{topology}/{direction}: sin larguero BAJO con la mano de su sentido en X={axis.LowContact.X:0.###}");
-                // I-42 (correccion aislada 5) — EL ALTO YA NO SIGUE AL SENTIDO. Su mano la decide el EXTREMO fisico
-                // de la cabecera que lo recibe: ultimo poste, orientacion normal; primer poste o poste interior,
-                // invertido. Es la decision del dueño, y sustituye a la regla de un rack de un solo sentido que esta
-                // prueba fijaba. El larguero BAJO no entra en esa correccion y conserva la suya.
+                // I-42 (correccion aislada 5B) — EL ALTO YA NO SIGUE AL SENTIDO. Lleva la orientacion que tendria un
+                // larguero INTERMEDIO en esa misma posicion fisica, que sustituye a la regla de un rack de un solo
+                // sentido que esta prueba fijaba. El larguero BAJO no entra y conserva la suya.
                 Assert.True(
                     highs.Any(i => Math.Abs(i.Insertion.X - axis.HighContact.X) < 12.0
-                        && i.MirroredX == !PushBackHighEndHand.AtLastPost(system.Structure, i.Insertion.X)),
-                    $"{topology}/{direction}: sin larguero ALTO con la mano de su extremo de cabecera en X={axis.HighContact.X:0.###}");
+                        && i.MirroredX == (ExpectedIntermediateHand(system, axis) ?? i.MirroredX)),
+                    $"{topology}/{direction}: sin larguero ALTO con la mano del intermedio en X={axis.HighContact.X:0.###}");
             }
 
             // Y nada fuera de los extremos de alguna cama: si sobra un larguero, alguien lo colocó por estructura.

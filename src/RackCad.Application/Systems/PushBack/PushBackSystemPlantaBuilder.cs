@@ -70,6 +70,14 @@ namespace RackCad.Application.Systems.PushBack
                 // the levels); add a rear tope if that front has any active cell.
                 var frontIndex = PlantaFront(structure, catalog, instance.Insertion.Y);
                 var redondo = CloneAt(instance, redondoId, redondoBlock);
+                // I-42 (correccion aislada 5C) — la MANO del larguero alto ya esta decidida; aqui solo se TRANSPORTA.
+                //
+                // Esta vista no la pedia: sustituia el larguero del builder dinamico conservando SU espejo, que en
+                // el marco de una cama es un «alto siempre espejado» fijo y nunca paso por la autoridad. Medido en
+                // una corrida CORTA: el lateral ponia su alto en X=102 sin espejo —la frontera es un vano— y la
+                // planta lo ponia espejado.
+                redondo.MirroredX = DynamicIntermediateBeamGeometry.HandAtDepthX(structure, instance.Insertion.X)
+                                    ?? instance.MirroredX;
                 redondo.DynamicParameters[SelectiveRackDefaults.PeralteParam] = PushBackHighEndBeamGeometry.PlantaPeralte(system, frontIndex);
                 result.Add(redondo);
 
@@ -101,18 +109,19 @@ namespace RackCad.Application.Systems.PushBack
                         double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
                             ? beamLength + SelectiveTopePlacement.LengthAllowance
                             : (double?)null;
+                        // La POSICION del tope usa la mano del larguero DINAMICO, que no cambia: es la que la
+                        // ronda 4B cerro. La ORIENTACION, mas abajo, sale del larguero ya corregido.
                         var depth = instance.Insertion.X
                                     + (instance.MirroredX ? -anchor.Value.X : anchor.Value.X);
                         result.Add(SelectiveTopePlacement.Tope(
                             topePieceId, topeBlock, View,
                             depth, mate.Value.Y, saque, longitud,
-                            mirroredX: PushBackRearTopeBuilder.Mirrored(View, instance.MirroredX)));
+                            // El tope sigue la mano de SU larguero, ya transportada: no tiene autoridad propia.
+                            mirroredX: PushBackRearTopeBuilder.Mirrored(View, redondo.MirroredX)));
                     }
                 }
             }
 
-            // I-42 (correccion aislada 5) — la misma mano que en el lateral: es la MISMA pieza fisica.
-            PushBackHighEndHand.Apply(result, system, structure);
             return HeaderInstanceGrouper.Group(result, "PB_PLANTA_PIEZA");
         }
 

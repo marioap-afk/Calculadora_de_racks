@@ -66,8 +66,28 @@ namespace RackCad.Application.Systems.PushBack
         /// The rule never reads the rear BEAM's mirror for the elevations: a beam's mirror orients a BEAM profile, not
         /// the tope's step.
         /// </summary>
+        /// <summary>
+        /// La mano del TOPE: siempre la CONTRARIA a la de su larguero alto, en cualquier vista. El bloque se monta
+        /// asi contra el escalon, y por eso los dos se invierten juntos.
+        ///
+        /// <para>
+        /// I-42 (correccion aislada 5B): en las vistas de elevacion esto era una CONSTANTE, asi que el tope no
+        /// seguia a su larguero cuando la mano de este cambiaba. En el marco identidad las dos expresiones dan el
+        /// mismo valor —por eso nadie lo notaba—, pero en cuanto el larguero deja de ir siempre espejado la
+        /// constante se queda atras. Ahora hay una sola relacion, y el tope hereda lo que decida el larguero.
+        /// </para>
+        /// </summary>
         public static bool Mirrored(string view, bool beamMirroredX)
-            => IsPlanta(view) ? !beamMirroredX : ElevationMirrored;
+            => IsFrontal(view) ? ElevationMirrored : !beamMirroredX;
+
+        /// <summary>
+        /// El corte FRONTAL mira la retícula TRANSVERSAL: ahi el espejo de una pieza no habla del escalon del
+        /// larguero alto —que se ve de canto— sino del eje de la linea. Su orientacion es la que el dueño valido y
+        /// no la toca esta correccion; la relacion «el tope va contrario a su larguero» gobierna las vistas de
+        /// PROFUNDIDAD, que son donde esa mano se ve.
+        /// </summary>
+        private static bool IsFrontal(string view)
+            => string.Equals(view, "FRONTAL", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>The rear tope's mirror in the elevation views. Owner decision (2026-07-24): the inverse of 10d8eeb.</summary>
         public const bool ElevationMirrored = false;
@@ -243,7 +263,14 @@ namespace RackCad.Application.Systems.PushBack
 
                 // The stop sits on the POST's separator axis. The post shares the rear beam's column, so the mirror that
                 // transforms the local point is the placement's; PLANTA also takes the separator's own depth offset.
+                //
+                // I-42 (correccion aislada 5C) — la POSICION usa la mano de la COLOCACION, que no cambia: es la que
+                // la ronda 4B cerro y valido. La ORIENTACION es otra autoridad y sale del larguero alto real. Si la
+                // posicion siguiera a la orientacion, corregir la mano moveria el tope, y eso es justo lo que no
+                // puede pasar.
                 var x = placement.X + (placement.MirroredX ? -separator.Value.X : separator.Value.X);
+                var beamMirrored = DynamicIntermediateBeamGeometry.HandAtDepthX(structure, placement.X)
+                                   ?? placement.MirroredX;
                 var beamY = highInsertions.TryGetValue(placement.LevelNumber, out var resolved)
                     ? resolved
                     : placement.Y;
@@ -259,7 +286,7 @@ namespace RackCad.Application.Systems.PushBack
                     : (double?)null;
                 result.Add(SelectiveTopePlacement.Tope(
                     pieceId, block, view, x, y, saque, longitud,
-                    mirroredX: Mirrored(view, placement.MirroredX)));
+                    mirroredX: Mirrored(view, beamMirrored)));
             }
 
             return result;
