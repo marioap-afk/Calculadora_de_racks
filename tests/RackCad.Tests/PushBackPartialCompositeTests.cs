@@ -63,13 +63,44 @@ namespace RackCad.Tests
         /// mano. Es lo que el dueño mira en AutoCAD.
         /// </summary>
         private static string LineSignature(PushBackSystem system, int line)
+            => LineSignature(system, line, HighEndHand.Include);
+
+        private static string LineSignature(PushBackSystem system, int line, HighEndHand hand)
             => string.Join(
                 "\n",
                 new PushBackSystemLateralBuilder().Build(system, Catalog, line).Flatten().Instances
                     .Where(i => i.Role != HeaderBlockRole.Annotation && i.Role != HeaderBlockRole.Dimension)
                     .Select(i => FormattableString.Invariant(
-                        $"{i.Role}|{i.PieceId}|{i.Insertion.X:0.####}|{i.Insertion.Y:0.####}|{i.MirroredX}|{i.RotationRadians:0.####}"))
+                        $"{i.Role}|{i.PieceId}|{i.Insertion.X:0.####}|{i.Insertion.Y:0.####}|{Hand(system, i, hand)}|{i.RotationRadians:0.####}"))
                     .OrderBy(x => x, StringComparer.Ordinal));
+
+        /// <summary>
+        /// La mano que entra en la firma. Con <see cref="HighEndHand.Ignore"/> la del larguero ALTO y la de su
+        /// tope se omiten: son las dos unicas piezas cuya orientacion depende del EXTREMO de cabecera, que cambia
+        /// legitimamente cuando el rack cambia de profundidad. La de cualquier otra pieza sigue comparandose.
+        /// </summary>
+        private static string Hand(PushBackSystem system, HeaderBlockInstance instance, HighEndHand hand)
+            => hand == HighEndHand.Ignore
+               && (instance.Role == HeaderBlockRole.Tope || IsHighBeam(system, instance))
+                ? "-"
+                : instance.MirroredX.ToString();
+
+        /// <summary>Si la instancia es el larguero ALTO del sistema.</summary>
+        private static bool IsHighBeam(PushBackSystem system, HeaderBlockInstance instance)
+            => instance.Role == HeaderBlockRole.Beam
+               && string.Equals(
+                   instance.PieceId,
+                   string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
+                       ? PushBackDefaults.HighEndBeamCatalogId
+                       : system.HighEndBeamCatalogId,
+                   StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>Si la firma incluye la mano del larguero alto y su tope.</summary>
+        private enum HighEndHand
+        {
+            Include,
+            Ignore
+        }
 
         // ===================== capacidad ≠ presencia ==========================================================
 
@@ -169,7 +200,8 @@ namespace RackCad.Tests
             var state = SingleSided();
             var before = Build(state);
             var untouched = new[] { 3, 4 };   // las líneas que solo sostienen a F3 y F4
-            var reference = untouched.ToDictionary(line => line, line => LineSignature(before, line));
+            var reference = untouched.ToDictionary(
+                line => line, line => LineSignature(before, line, HighEndHand.Ignore));
 
             state.SetSideBPresent(true);
             state.SetSlotPresent(PushBackSide.B, 0, true);
@@ -178,7 +210,21 @@ namespace RackCad.Tests
             Assert.True(after.IsComposite);
             foreach (var line in untouched)
             {
-                Assert.Equal(reference[line], LineSignature(after, line));
+                Assert.Equal(reference[line], LineSignature(after, line, HighEndHand.Ignore));
+            }
+
+            // I-42 (correccion aislada 5) — la mano del larguero ALTO y de su tope SI cambia, y debe cambiar:
+            // convertir el rack DUPLICA su profundidad, asi que lo que era el ULTIMO poste (X = 396 de 396) pasa a
+            // ser un poste INTERIOR (X = 396 de 792) y la pieza se invierte. No es una regresion: es la regla del
+            // dueño aplicandose a una cabecera que ha cambiado. Lo demas de esas lineas queda identico.
+            foreach (var line in untouched)
+            {
+                foreach (var piece in new PushBackSystemLateralBuilder().Build(after, Catalog, line).Flatten().Instances
+                             .Where(i => i.Role == HeaderBlockRole.Tope || IsHighBeam(after, i)))
+                {
+                    var normal = PushBackHighEndHand.AtLastPost(after.Structure, piece.Insertion.X);
+                    Assert.Equal(piece.Role == HeaderBlockRole.Tope ? normal : !normal, piece.MirroredX);
+                }
             }
         }
 

@@ -800,6 +800,91 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-undevicies. Correccion aislada 5: la MANO del larguero alto y su tope sale del extremo de la cabecera
+
+### La regla, cerrada por el dueño
+
+No depende de si la linea es la interfaz, un borde exterior o una corrida corta. **Si la cama termina en el ULTIMO
+poste de la cabecera, el larguero de salida y el tope conservan su orientacion normal; si termina en el PRIMER
+poste o en un poste interior o suelto, los dos se invierten.** Van SIEMPRE juntos: es una sola decision. Y sale
+del extremo fisico de la cabecera, no del lado A/B ni de donde caiga en el rack.
+
+### Lo que habia, medido
+
+La mano la fijaba `DynamicLoadBeamGeometry.Placements`: en el marco de una cama, bajo sin espejo y alto con
+espejo. El compuesto la volteaba con su reflexion rigida. El resultado era uniforme —el escalon apuntaba hacia
+afuera de su propia cama— pero **no miraba la cabecera**:
+
+| caso | HIGH (X de mundo) | extremo de cabecera | antes | segun la regla |
+|---|---|---|---|---|
+| Solo A | 396 de 792 | interior | invertido | invertido ✔ |
+| Solo B | 396 de 792 | interior | **normal** | invertido ✘ |
+| Encontradas B | 396 de 792 | interior | **normal** | invertido ✘ |
+| Corrida A→B | 792 | **ultimo** | **invertido** | normal ✘ |
+| Corrida B→A | 0 | **primero** | **normal** | invertido ✘ |
+| Corrida corta | 101.85 | interior | invertido | invertido ✔ |
+| Un solo sentido | 396 = total | **ultimo** | **invertido** | normal ✘ |
+
+Cinco de siete estaban al reves. En unas encontradas los dos largueros altos caian en la MISMA linea con manos
+OPUESTAS, porque la decidia la cama y no la cabecera.
+
+### La correccion
+
+`PushBackHighEndHand`: una sola pregunta —`AtLastPost(structure, x)`— y una sola respuesta para las dos piezas. El
+tope va con la mano contraria a la de su larguero, que es la relacion que ya existia en las tres vistas; lo que
+cambia es CUANDO se invierte el par.
+
+Se resuelve sobre la X de MUNDO, a la salida del lateral y de la planta, que son las vistas que muestran la
+profundidad. El corte FRONTAL mira la retícula transversal y su espejo significa otra cosa: no se recalcula ahi.
+Ninguna vista decide por su cuenta — la planta y el lateral dan la misma respuesta por construccion.
+
+Las POSICIONES no se tocan: esta corrida solo cambia el espejo. Las rondas 4 y 4B —aplicabilidad, X/Z y BOM del
+tope— quedan intactas, y el BOM no depende de la mano (misma pieza, mismas cantidades).
+
+### Auditoria
+
+| VISTA | AUTORIDAD DE LA MANO ANTES | DESPUES |
+|---|---|---|
+| LATERAL | sentido del flujo de la cama | **extremo de la cabecera** |
+| PLANTA | la del lateral, transformada | **extremo de la cabecera** (misma respuesta) |
+| FRONTAL | retícula transversal | sin cambio |
+| BOM | sin geometria | sin cambio |
+
+### Goldens: tres pines movidos, con evidencia por primitiva
+
+El escenario mide 300" y su extremo alto cae en X = 300, el ULTIMO poste, asi que pasa a orientacion normal.
+Cambia SOLO el flag de espejo de siete primitivas; ni una X, ni una Y, ni una pieza, ni el BOM:
+
+| vista | pieza | antes | ahora |
+|---|---|---|---|
+| LATERAL | larguero alto X=300 Y=10.6053 | espejado | normal |
+| LATERAL | larguero alto X=300 Y=82.6053 | espejado | normal |
+| LATERAL | tope X=299.125 Y=94.1563 | normal | espejado |
+| PLANTA | larguero alto X=300 Y=0.75 | espejado | normal |
+| PLANTA | larguero alto X=300 Y=54.244 | espejado | normal |
+| PLANTA | tope X=299.125 Y=1.5 | normal | espejado |
+| PLANTA | tope X=299.125 Y=54.994 | normal | espejado |
+
+Los dos frontales y el BOM quedan intactos, y sus pines no se tocan.
+
+### Dos pruebas de contrato ACTUALIZADAS
+
+Las dos fijaban la regla anterior y el dueño la ha sustituido:
+
+- `PushBackRunFrameTests` afirmaba «la mano del larguero ALTO sale del sentido del flujo». Ahora afirma la regla
+  del extremo de cabecera. El larguero BAJO no entra en esta corrida y conserva la suya.
+- `PushBackPartialCompositeTests.PartialComposite_F1Only_PreservesTheOtherFrontsExactly` exigia que las lineas de
+  los frentes sin lado B quedaran identicas «incluida la mano». Convertir el rack DUPLICA su profundidad, asi que
+  lo que era el ultimo poste (396 de 396) pasa a ser interior (396 de 792) y esas dos piezas se invierten con
+  razon. La prueba compara ahora posicion, pieza y rotacion —y la mano de todo lo demas— y ademas afirma la regla
+  sobre el rack ya convertido.
+
+### Pruebas nuevas
+
+`PushBackHighEndHandTests` (22 casos): la regla en las cinco topologias, linea interior y exterior, las dos
+corridas, corrida corta, calle, multifrente, blanco anterior, rack de un solo sentido, que el lateral y la planta
+no discrepan y que el BOM no cambia. **Quince de los 22 fallan** sin la correccion.
+
 ## 4-duodevicies. Correccion aislada 4B: en PLANTA la profundidad del tope la manda su larguero
 
 ### El defecto

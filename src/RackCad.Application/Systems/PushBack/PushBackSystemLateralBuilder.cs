@@ -227,6 +227,23 @@ namespace RackCad.Application.Systems.PushBack
                 return new HeaderRunPlan(new List<HeaderGroup>(), new List<HeaderBlockInstance>());
             }
 
+            // I-42 (correccion aislada 5) — la MANO del larguero alto y de su tope la decide el extremo fisico de la
+            // cabecera que recibe ese extremo, y eso solo se sabe en coordenadas de MUNDO. Se resuelve aqui, a la
+            // salida, para que los dos caminos —compuesto y de un solo sentido— den la misma respuesta.
+            return WithHighEndHand(BuildLateralPlan(system, catalog, postIndex), system, structure);
+        }
+
+        /// <summary>Fija la mano del larguero alto y su tope sobre el plan ya montado en coordenadas de mundo.</summary>
+        private static HeaderRunPlan WithHighEndHand(
+            HeaderRunPlan plan, PushBackSystem system, DynamicRackSystem structure)
+        {
+            PushBackHighEndHand.Apply(plan.Flatten().Instances, system, structure);
+            return plan;
+        }
+
+        private HeaderRunPlan BuildLateralPlan(PushBackSystem system, RackCatalog catalog, int postIndex)
+        {
+            var structure = system.Structure;
             var sectioned = postIndex >= 0;
             if (system.IsComposite)
             {

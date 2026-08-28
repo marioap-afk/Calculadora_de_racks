@@ -160,9 +160,11 @@ namespace RackCad.Tests
                     Of(lateral, InOut).Any(i => Math.Abs(i.Insertion.X - axis.LowContact.X) < 12.0
                         && i.MirroredX == !axis.FlowsForward),
                     $"{topology}/{direction} s{slots} {deepA}/{deepB} gap{gap}: falta el larguero BAJO orientado");
+                // I-42 (correccion aislada 5): la mano del larguero ALTO ya no sale del sentido del flujo sino del
+                // EXTREMO de la cabecera que lo recibe (ultimo poste = orientacion normal).
                 Assert.True(
                     Of(lateral, Redondo).Any(i => Math.Abs(i.Insertion.X - axis.HighContact.X) < 12.0
-                        && i.MirroredX == axis.FlowsForward),
+                        && i.MirroredX == !PushBackHighEndHand.AtLastPost(system.Structure, i.Insertion.X)),
                     $"{topology}/{direction} s{slots} {deepA}/{deepB} gap{gap}: falta el larguero ALTO orientado");
             }
 
@@ -227,10 +229,14 @@ namespace RackCad.Tests
                     lows.Any(i => Math.Abs(i.Insertion.X - axis.LowContact.X) < 12.0
                         && i.MirroredX == !axis.FlowsForward),
                     $"{topology}/{direction}: sin larguero BAJO con la mano de su sentido en X={axis.LowContact.X:0.###}");
+                // I-42 (correccion aislada 5) — EL ALTO YA NO SIGUE AL SENTIDO. Su mano la decide el EXTREMO fisico
+                // de la cabecera que lo recibe: ultimo poste, orientacion normal; primer poste o poste interior,
+                // invertido. Es la decision del dueño, y sustituye a la regla de un rack de un solo sentido que esta
+                // prueba fijaba. El larguero BAJO no entra en esa correccion y conserva la suya.
                 Assert.True(
                     highs.Any(i => Math.Abs(i.Insertion.X - axis.HighContact.X) < 12.0
-                        && i.MirroredX == axis.FlowsForward),
-                    $"{topology}/{direction}: sin larguero ALTO con la mano de su sentido en X={axis.HighContact.X:0.###}");
+                        && i.MirroredX == !PushBackHighEndHand.AtLastPost(system.Structure, i.Insertion.X)),
+                    $"{topology}/{direction}: sin larguero ALTO con la mano de su extremo de cabecera en X={axis.HighContact.X:0.###}");
             }
 
             // Y nada fuera de los extremos de alguna cama: si sobra un larguero, alguien lo colocó por estructura.

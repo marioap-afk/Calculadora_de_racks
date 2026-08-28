@@ -111,6 +111,8 @@ namespace RackCad.Application.Systems.PushBack
                 }
             }
 
+            // I-42 (correccion aislada 5) — la misma mano que en el lateral: es la MISMA pieza fisica.
+            PushBackHighEndHand.Apply(result, system, structure);
             return HeaderInstanceGrouper.Group(result, "PB_PLANTA_PIEZA");
         }
 

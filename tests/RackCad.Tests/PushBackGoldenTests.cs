@@ -67,6 +67,9 @@ namespace RackCad.Tests
         private static string Sha(string content)
             => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(content)));
 
+        internal static RackCatalog CatalogForDiff => Catalog;
+        internal static PushBackSystem ScenarioForDiff(RackCatalog catalog) => Scenario(catalog);
+
         private static Dictionary<string, string> Signatures()
         {
             var catalog = Catalog;
@@ -232,8 +235,8 @@ namespace RackCad.Tests
             // Solo se mueven los dos pines LATERALES: el frontal posterior ya media desde la derivada, la planta no
             // lleva elevacion y el BOM cuenta las mismas piezas con las mismas longitudes.
             // Anteriores: lateral/lateral-corte0 1272488B...
-            ["lateral"] = "523862527623A874B333E201A8CADF0774610E39CD496E352BF8A9B594760B69",
-            ["lateral-corte0"] = "523862527623A874B333E201A8CADF0774610E39CD496E352BF8A9B594760B69",
+            ["lateral"] = "DC546899445B03263E942003D4012C5A733AA03839EF991F4951C2701C762712",
+            ["lateral-corte0"] = "DC546899445B03263E942003D4012C5A733AA03839EF991F4951C2701C762712",
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
             // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of
@@ -254,10 +257,26 @@ namespace RackCad.Tests
             // suyo. Los dos topes siguen apareciendo y en la misma columna. Solo se mueve el pin de PLANTA: la X de
             // profundidad no cambia, asi que el lateral, los dos frontales y el BOM quedan INTACTOS.
             // Anterior: planta 4797ED85...
-            ["planta"] = "02EE98BAC846356957D892BB23E0A8B4AE31C849A6FA1370DDF22A849CB90D69",
+            ["planta"] = "E2A173A88FC06D5EFBF1700FC7ACDE1BAA29FF65D41D908A5024259D92D66B71",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front
             // length). Previous BOM hash: 139C18EFDD0BCF1DBC9CABB867E3C40499B2BD264E1BED4F4CBC7DCEE74C57AC.
+            // I-42 (correccion aislada 5) — LA MANO del larguero ALTO y de su tope la decide el EXTREMO FISICO de
+            // la cabecera que recibe ese extremo (regla del dueño): ultimo poste, orientacion normal; primer poste o
+            // poste interior, los dos invertidos. Antes salia del SENTIDO del flujo, que es la regla de un rack de
+            // un solo sentido y no mira la cabecera.
+            //
+            // Este escenario mide 300" y su extremo alto cae en X=300, el ULTIMO poste, asi que pasa a orientacion
+            // normal. Medido, y NADA mas cambia — ni una X, ni una Y, ni una pieza, ni el BOM:
+            //   LATERAL  larguero alto X=300 Y=10.6053   mirrored True -> False
+            //   LATERAL  larguero alto X=300 Y=82.6053   mirrored True -> False
+            //   LATERAL  tope          X=299.125 Y=94.1563 mirrored False -> True
+            //   PLANTA   larguero alto X=300 Y=0.75      mirrored True -> False
+            //   PLANTA   larguero alto X=300 Y=54.244    mirrored True -> False
+            //   PLANTA   tope          X=299.125 Y=1.5   mirrored False -> True
+            //   PLANTA   tope          X=299.125 Y=54.994 mirrored False -> True
+            // Los dos frontales quedan INTACTOS: su espejo es el de la retícula transversal y no es esta pregunta.
+            // Anterior: lateral y lateral-corte0 52386252..., planta 02EE98BA...
             ["bom"] = "057C6D2D30548D4F8FE65F1DA38678D0588792C2A65B43CD23CE4F8B7ECC59A3"
         };
 
