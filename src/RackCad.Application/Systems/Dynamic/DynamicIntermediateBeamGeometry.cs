@@ -10,14 +10,28 @@ namespace RackCad.Application.Systems.Dynamic
     /// <summary>One logical internal post that receives exactly one intermediate support beam.</summary>
     public readonly struct DynamicIntermediateBeamSupport
     {
-        public DynamicIntermediateBeamSupport(double postAxisX, bool mirrored)
+        public DynamicIntermediateBeamSupport(double postAxisX, bool mirrored, double boundaryX)
         {
             PostAxisX = postAxisX;
             Mirrored = mirrored;
+            BoundaryX = boundaryX;
         }
 
+        /// <summary>Donde se DIBUJA el apoyo: el eje del poste, que en uno derivado y reforzado no es su frontera.</summary>
         public double PostAxisX { get; }
+
         public bool Mirrored { get; }
+
+        /// <summary>
+        /// La FRONTERA DE MODULOS a la que pertenece este apoyo — su identidad fisica.
+        ///
+        /// <para>
+        /// En un poste derivado y REFORZADO el eje dibujado no cae en la frontera: FIN_POSTE es la interfaz donde
+        /// acaba el perfil primario y empieza el refuerzo, asi que el primario arranca una <c>finPoste.X</c> antes.
+        /// Preguntar «¿este apoyo esta dentro de la cama?» por el eje dibujado da la respuesta equivocada justo ahi.
+        /// </para>
+        /// </summary>
+        public double BoundaryX { get; }
     }
 
     /// <summary>
@@ -229,7 +243,7 @@ namespace RackCad.Application.Systems.Dynamic
                         system.DerivedPostReinforced,
                         finPoste).PrimaryOrigin.X
                     : current.StartX;
-                result.Add(new DynamicIntermediateBeamSupport(postAxisX, mirrored));
+                result.Add(new DynamicIntermediateBeamSupport(postAxisX, mirrored, current.StartX));
             }
 
             return result;

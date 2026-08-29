@@ -374,24 +374,36 @@ namespace RackCad.Tests
                 }
             }
 
-            // (4) LA POSICIÓN NO SE MUEVE. Estas X son las que la ronda 4B midió y el dueño validó: la corrida corta
-            // acaba en X=101.845 y su tope queda en 101.125, en el lateral y en la planta.
+            // (4) EL CONTACTO FÍSICO NO SE MUEVE. La ronda 4B cerró dónde toca este tope; la 5D corrigió que ese
+            // contacto se conserve al espejar el bloque —la inserción compensa el cambio de lado— y el lateral y la
+            // planta siguen diciendo lo mismo. La comprobación es sobre el CONTACTO, no sobre la inserción, que es
+            // justo la distinción que el dueño cerró.
             var shortHigh = runs
                 .Select(entry => entry.Axis.Value.HighContact.X)
                 .Where(value => value > 5.0 && value < system.Structure.TotalLength - 5.0)
                 .Distinct()
                 .ToList();
             Assert.NotEmpty(shortHigh);
+            var anchorLocal = PushBackRearTopeBuilder
+                .PostAnchorLocal(Catalog, DynamicFrontGeometry.PostId(system.Structure, Catalog),
+                    DynamicFrontGeometry.PostPeralte(system.Structure, Catalog,
+                        DynamicFrontGeometry.PostId(system.Structure, Catalog)), "LATERAL")
+                .Value.X;
             foreach (var x in shortHigh)
             {
-                var lateralX = Topes(lateral).Select(tope => tope.Insertion.X)
-                    .Where(value => Math.Abs(value - x) < 12.0).Distinct().ToList();
-                var plantaX = Topes(planta).Select(tope => tope.Insertion.X)
-                    .Where(value => Math.Abs(value - x) < 12.0).Distinct().ToList();
-                Assert.Single(lateralX);
-                Assert.Single(plantaX);
-                Assert.Equal(lateralX[0], plantaX[0], 6);
-                Assert.Equal(101.125, lateralX[0], 3);
+                var lateralContact = Topes(lateral)
+                    .Where(tope => Math.Abs(tope.Insertion.X - x) < 12.0)
+                    .Select(tope => Math.Round(tope.Insertion.X + (tope.MirroredX ? -anchorLocal : anchorLocal), 6))
+                    .Distinct().ToList();
+                var plantaContact = Topes(planta)
+                    .Where(tope => Math.Abs(tope.Insertion.X - x) < 12.0)
+                    .Select(tope => Math.Round(tope.Insertion.X + (tope.MirroredX ? -anchorLocal : anchorLocal), 6))
+                    .Distinct().ToList();
+                Assert.Single(lateralContact);
+                Assert.Single(plantaContact);
+                Assert.Equal(lateralContact[0], plantaContact[0], 6);
+                // Y ese contacto es la columna del larguero alto: X = 102 en esta corrida corta.
+                Assert.Equal(102.0, lateralContact[0], 3);
             }
         }
 

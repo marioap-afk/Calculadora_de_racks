@@ -109,15 +109,17 @@ namespace RackCad.Application.Systems.PushBack
                         double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
                             ? beamLength + SelectiveTopePlacement.LengthAllowance
                             : (double?)null;
-                        // La POSICION del tope usa la mano del larguero DINAMICO, que no cambia: es la que la
-                        // ronda 4B cerro. La ORIENTACION, mas abajo, sale del larguero ya corregido.
-                        var depth = instance.Insertion.X
-                                    + (instance.MirroredX ? -anchor.Value.X : anchor.Value.X);
+                        // El tope sigue la mano de SU larguero, ya transportada: no tiene autoridad propia.
+                        var topeMirrored = PushBackRearTopeBuilder.Mirrored(View, redondo.MirroredX);
+                        // I-42 (correccion aislada 5D) — la MEDIDA sigue saliendo del larguero alto (ronda 4B), pero
+                        // el SIGNO del desplazamiento lo pone el espejo DEL TOPE, igual que en el lateral y que en el
+                        // Selectivo. Con el signo de la otra pieza, un tope espejado quedaba 1.75" del lado contrario.
+                        var depth = PushBackRearTopeBuilder.AnchorX(
+                            instance.Insertion.X, anchor.Value.X, topeMirrored);
                         result.Add(SelectiveTopePlacement.Tope(
                             topePieceId, topeBlock, View,
                             depth, mate.Value.Y, saque, longitud,
-                            // El tope sigue la mano de SU larguero, ya transportada: no tiene autoridad propia.
-                            mirroredX: PushBackRearTopeBuilder.Mirrored(View, redondo.MirroredX)));
+                            mirroredX: topeMirrored));
                     }
                 }
             }

@@ -800,6 +800,114 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-vicies. Correccion aislada 5D: anclaje del tope al espejar, y el poste reforzado no duplica el apoyo
+
+Dos defectos INDEPENDIENTES de la validacion del dueño. Cada uno tiene su causa, su correccion y su evidencia; no
+se usa uno para tapar el otro. La regla de orientacion de 5B/5C queda cerrada y no se reabre.
+
+---
+
+### DEFECTO A — el tope espejado quedaba 1.75" desplazado
+
+La orientacion era correcta. Lo que estaba mal era DONDE se dibujaba el bloque al cambiar de mano.
+
+**Causa.** El tope mata por su ORIGEN sobre un punto medido del poste, y ese punto es un SEMIANCHO: se mide hacia el
+lado al que mira la pieza. El SELECTIVO ya lo resuelve asi desde siempre (`SelectiveLateralBuilder`:
+`mateX = AtFront ? postX + troquel.X : postX - troquel.X`, y esos dos casos son exactamente los que llevan
+`Mirror = true` y `Mirror = false`). El Push Back, en cambio, tomaba el signo del espejo de la **COLOCACION**, que en
+el marco de una cama es una constante. Mientras el tope tambien iba siempre sin espejo las dos expresiones coincidian
+—por eso la ronda 4B quedo bien—; desde 5B el tope puede ir espejado, y entonces el bloque se dibujaba con su origen
+del lado contrario: desplazado DOS veces el punto medido, `2 x 0.875" = 1.75"`.
+
+**El 1.75" no se hardcodea.** No aparece ninguna constante nueva: es el mismo desplazamiento de siempre —el punto
+medido del poste, leido del catalogo— con el signo que le corresponde. La autoridad reutilizada es
+`PushBackRearTopeBuilder.AnchorX(columnX, anchorLocalX, topeMirrored)`, y la usan el corte lateral y la planta.
+
+**Medido** sobre la escalera de ocho fondos, que mezcla las dos manos en un mismo rack (punto medido = 0.875"):
+
+| vista | cama | HIGH X | mano HIGH | tope insercion | mano tope | contacto ANTES | esperado | error |
+|---|---|---|---|---|---|---|---|---|
+| LATERAL | 3 fondos | 150 | espejado | 149.125 | normal | 150 | 150 | 0 |
+| LATERAL | **4 fondos** | 198 | normal | **197.125** | espejado | **196.25** | 198 | **-1.75** |
+| LATERAL | **5 fondos** | 246 | normal | **245.125** | espejado | **244.25** | 246 | **-1.75** |
+| LATERAL | 6 fondos | 294 | espejado | 293.125 | normal | 294 | 294 | 0 |
+| LATERAL | **7 fondos** | 342 | normal | **341.125** | espejado | **340.25** | 342 | **-1.75** |
+| LATERAL | 8 fondos | 396 | espejado | 395.125 | normal | 396 | 396 | 0 |
+
+DESPUES el error es 0 en las seis. Las tres camas de mano espejada mueven su INSERCION (197.125 -> 198.875,
+245.125 -> 246.875, 341.125 -> 342.875) precisamente para que el CONTACTO no se mueva; las tres de mano normal no
+cambian ni un milesimo, que es la ronda 4B intacta.
+
+**Lo que NO cambio:** la regla de mano del HIGH, la mano del tope, la posicion semantica de 4B, X/Z del HIGH, la
+profundidad, la aplicabilidad, el PieceId y el BOM.
+
+---
+
+### DEFECTO B — dos largueros en un poste REFORZADO
+
+**Causa, y no es una deduplicacion.** En un poste derivado y reforzado, `FIN_POSTE` es la interfaz donde acaba el
+perfil primario y empieza el refuerzo, asi que el apoyo se DIBUJA una `finPoste.X` antes de su frontera de modulos.
+El filtro de aplicabilidad —«¿este apoyo cae dentro de esta cama?»— comparaba la X **dibujada** contra el larguero
+alto, de modo que el apoyo de la frontera donde ACABA la cama se colaba por delante. Dos piezas para un solo apoyo
+fisico.
+
+La correccion no toca el refuerzo ni deduplica por posicion: el apoyo lleva ahora su **FRONTERA**
+(`DynamicIntermediateBeamSupport.BoundaryX`), que es su identidad fisica, y el filtro pregunta por ella. Un refuerzo
+cambia el POSTE; no añade un segundo apoyo funcional a la cama.
+
+**Las dos primitivas, medidas** (escalera de ocho fondos, cama de 4 fondos, unico limite vano-vano del rack):
+
+| pieza | procedencia | insercion | frontera a la que sirve | veredicto |
+|---|---|---|---|---|
+| `LARGUERO_ESCALON_TROQUEL_REDONDO` | `PushBackLoadBeamGeometry.HighBeams` | 198 | 198 | el ALTO de la cama, correcto |
+| `LARGUERO_ESCALON_INFINITO` | `PushBackIntermediateBeamLateralBuilder` | **195** | **198** | **duplicado: la misma frontera** |
+
+Conteo por cama, con y sin refuerzo:
+
+| cama | ANTES reforzado | ANTES sin refuerzo | AHORA reforzado | AHORA sin refuerzo |
+|---|---|---|---|---|
+| 3 fondos | 2 | 2 | 2 | 2 |
+| **4 fondos** | **4** | **3** | **3** | **3** |
+| 5 fondos | 4 | 4 | 4 | 4 |
+| 6 fondos | 5 | 5 | 5 | 5 |
+| 7 fondos | 6 | 6 | 6 | 6 |
+| 8 fondos | 7 | 7 | 7 | 7 |
+
+La comprobacion mas limpia: el numero de largueros funcionales de una cama ya NO depende del refuerzo. Y el apoyo de
+195 no se ha borrado — la cama de 5 fondos, que pasa de largo por esa frontera, lo conserva.
+
+**No se deduplica a ciegas.** Unas camas ENCONTRADAS siguen conservando sus DOS largueros altos y sus DOS topes: son
+dos camas distintas aunque topen en la misma frontera. La decision de la ronda 5B se mantiene.
+
+---
+
+### Goldens
+
+**Ninguno se movio.** El escenario dorado tiene su tope sin espejo —su frontera alta es el final de una cabecera— y
+no tiene ningun limite vano-vano donde acabe una cama, asi que ninguno de los dos defectos lo alcanza. Los seis pines
+quedan byte a byte donde estaban.
+
+### BOM
+
+Sin cambio, antes y despues, con refuerzo y sin el (escalera de ocho fondos): 42 intermedios, 6 topes, 6 IN/OUT y 6
+altos. Encontradas sigue comprando 4 topes y 4 largueros altos con dos niveles — dos camas, dos piezas.
+
+**Observacion REPORTADA, no arreglada aqui:** el BOM de un rack de un solo sentido cuenta 42 intermedios —siete
+fronteras por seis niveles— mientras el dibujo pone 27, porque ahi el conteo sigue siendo el del Dinamico y no aplica
+el fondo POR CELDA. Es una brecha anterior a esta ronda, ajena al poste reforzado —no cambia con el refuerzo— y de la
+familia de I-41, no de I-42.
+
+### Pruebas
+
+- `PushBackRearTopeContactPointTests` (9 casos), con `MirroringRearTope_PreservesPhysicalContactPoint` sobre mano
+  normal, mano invertida, corrida corta, solo A, solo B, encontradas y las dos corridas. Comparan el CONTACTO
+  FISICO, no la insercion.
+- `PushBackReinforcedPostBeamTests` (7 casos): 1 bajo / N intermedios / 1 alto por cama, con y sin refuerzo; el caso
+  medido; la independencia del refuerzo; encontradas intactas; y los conteos del BOM.
+
+Anulando el signo del anclaje fallan 5 pruebas, todas de tope. Anulando la frontera del apoyo fallan 3, todas de
+poste reforzado. Los dos defectos tienen evidencia separada.
+
 ## 4-undevicies. Correcciones aisladas 5B y 5C: la mano del larguero ALTO es la de un INTERMEDIO en esa posicion
 
 ### La regla, cerrada por el dueño (SUSTITUYE a la de la ronda 5)

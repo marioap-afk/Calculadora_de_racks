@@ -100,10 +100,16 @@ namespace RackCad.Application.Systems.PushBack
                     // nada — esa cama termina antes. I-42 anade la otra mitad de la misma regla: un soporte que cae
                     // POR DELANTE del larguero bajo tampoco sostiene nada, porque una cama corrida corta no llega
                     // hasta el extremo exterior del lado bajo.
+                    //
+                    // I-42 (correccion aislada 5D) — la pregunta se hace sobre la FRONTERA del apoyo, no sobre donde
+                    // se dibuja. En un poste derivado y REFORZADO el eje dibujado cae una FIN_POSTE antes de su
+                    // frontera, asi que el apoyo de la frontera donde ACABA la cama se colaba por delante del
+                    // larguero alto: dos largueros dibujados para un solo apoyo fisico. Un refuerzo cambia el
+                    // POSTE; no anade un segundo apoyo funcional a la cama.
                     if (front != null)
                     {
                         var rearX = PushBackCellDepth.RearX(system, front, axis.LevelNumber);
-                        if (support.PostAxisX >= rearX - 1e-6 || support.PostAxisX <= front.StartX + 1e-6)
+                        if (support.BoundaryX >= rearX - 1e-6 || support.BoundaryX <= front.StartX + 1e-6)
                         {
                             continue;
                         }

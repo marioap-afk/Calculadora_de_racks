@@ -60,13 +60,6 @@ namespace RackCad.Application.Systems.PushBack
         public static bool IsPlanta(string view) => string.Equals(view, "PLANTA", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Owner decision (2026-07-24) — the rear tope's facing, INVERTED with respect to 10d8eeb, where the Owner
-        /// measured it upside down on the drawing. In the elevation views it is drawn UNMIRRORED; PLANTA is a top view
-        /// where the tope lies ALONG the beam, so there it keeps the beam's plan orientation (unchanged and approved).
-        /// The rule never reads the rear BEAM's mirror for the elevations: a beam's mirror orients a BEAM profile, not
-        /// the tope's step.
-        /// </summary>
-        /// <summary>
         /// La mano del TOPE: siempre la CONTRARIA a la de su larguero alto, en cualquier vista. El bloque se monta
         /// asi contra el escalon, y por eso los dos se invierten juntos.
         ///
@@ -91,6 +84,32 @@ namespace RackCad.Application.Systems.PushBack
 
         /// <summary>The rear tope's mirror in the elevation views. Owner decision (2026-07-24): the inverse of 10d8eeb.</summary>
         public const bool ElevationMirrored = false;
+
+        /// <summary>
+        /// LA X DE MUNDO DEL TOPE: su ORIGEN —con el que mata— sobre el punto medido del poste, y el signo de ese
+        /// desplazamiento lo pone el espejo DEL TOPE, no el de ninguna otra pieza.
+        ///
+        /// <para>
+        /// Es el contrato que el SELECTIVO ya aplica y el dueño valida desde siempre
+        /// (<c>SelectiveLateralBuilder</c>: <c>mateX = AtFront ? postX + troquel.X : postX - troquel.X</c>, y esos dos
+        /// casos son exactamente los que llevan <c>Mirror = true</c> y <c>Mirror = false</c>). El punto medido es un
+        /// SEMIANCHO del poste: se mide hacia el lado al que mira la pieza, asi que espejar la pieza cambia el lado.
+        /// </para>
+        /// <para>
+        /// I-42 (correccion aislada 5D): el Push Back tomaba el signo del espejo de la COLOCACION, que en el marco de
+        /// una cama es una constante. Mientras el tope tambien iba siempre sin espejo las dos coincidian; desde 5B el
+        /// tope puede ir espejado y entonces el bloque quedaba dibujado con su origen del lado contrario — desplazado
+        /// exactamente DOS veces el punto medido (2 x 0.875" = 1.75"), que es lo que el dueño midio en AutoCAD. No es
+        /// una constante nueva: es el mismo desplazamiento de siempre, con el signo que le corresponde.
+        /// </para>
+        /// <para>
+        /// El PUNTO FISICO DE CONTACTO queda fijo: espejar el tope ya no lo mueve, porque la X compensa el cambio de
+        /// lado. La posicion semantica cerrada en la ronda 4B se conserva intacta alli donde el tope va sin espejo,
+        /// que es lo que aquella ronda midio.
+        /// </para>
+        /// </summary>
+        public static double AnchorX(double columnX, double anchorLocalX, bool topeMirrored)
+            => columnX + (topeMirrored ? anchorLocalX : -anchorLocalX);
 
         /// <summary>
         /// Owner decision (2026-07-24) — the rear tope's world ANCHOR: the vertical axis of the POST's
@@ -261,16 +280,15 @@ namespace RackCad.Application.Systems.PushBack
                     continue;   // no measured TROQUEL_SEPARADOR: no anchor, and never a raw-placement fallback
                 }
 
-                // The stop sits on the POST's separator axis. The post shares the rear beam's column, so the mirror that
-                // transforms the local point is the placement's; PLANTA also takes the separator's own depth offset.
+                // The stop sits on the POST's separator axis. The post shares the rear beam's column.
                 //
-                // I-42 (correccion aislada 5C) — la POSICION usa la mano de la COLOCACION, que no cambia: es la que
-                // la ronda 4B cerro y valido. La ORIENTACION es otra autoridad y sale del larguero alto real. Si la
-                // posicion siguiera a la orientacion, corregir la mano moveria el tope, y eso es justo lo que no
-                // puede pasar.
-                var x = placement.X + (placement.MirroredX ? -separator.Value.X : separator.Value.X);
+                // I-42 (correccion aislada 5D) — el signo del desplazamiento lo pone el espejo DEL TOPE, que es el
+                // contrato del Selectivo (ver AnchorX). Antes lo ponia el de la COLOCACION —una constante en el marco
+                // de una cama—, asi que un tope espejado quedaba 1.75" del lado contrario.
                 var beamMirrored = DynamicIntermediateBeamGeometry.HandAtDepthX(structure, placement.X)
                                    ?? placement.MirroredX;
+                var mirrored = Mirrored(view, beamMirrored);
+                var x = AnchorX(placement.X, separator.Value.X, mirrored);
                 var beamY = highInsertions.TryGetValue(placement.LevelNumber, out var resolved)
                     ? resolved
                     : placement.Y;
@@ -285,8 +303,7 @@ namespace RackCad.Application.Systems.PushBack
                     ? baseLength + SelectiveTopePlacement.LengthAllowance
                     : (double?)null;
                 result.Add(SelectiveTopePlacement.Tope(
-                    pieceId, block, view, x, y, saque, longitud,
-                    mirroredX: Mirrored(view, beamMirrored)));
+                    pieceId, block, view, x, y, saque, longitud, mirroredX: mirrored));
             }
 
             return result;
