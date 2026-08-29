@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Shared;
+using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
 
 namespace RackCad.Application.Systems.PushBack
@@ -51,7 +53,8 @@ namespace RackCad.Application.Systems.PushBack
                 catalog,
                 end,
                 context,
-                (frontIndex, level) => allowed.Contains((frontIndex, level)));
+                (frontIndex, level) => allowed.Contains((frontIndex, level)),
+                HeaderHeightAtLocalPost(system, local, catalog, view, end));
         }
 
         /// <summary>
@@ -134,6 +137,63 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             return RackLevelElevations.From(byFront, systemEnvelope: null);
+        }
+
+        /// <summary>
+        /// I-42 (ronda 6B) — LA ALTURA DE LA LINEA FISICA, para el corte de un lado.
+        ///
+        /// <para>
+        /// Este corte se construye sobre el sistema LOCAL del lado, que es un modelo de trabajo: sus frentes tienen
+        /// sus propias alturas resueltas. Pero el poste que dibuja es la MISMA pieza fisica que el lateral dibuja y
+        /// que el BOM compra, y esa pertenece a la estructura COMPUESTA. Con dos autoridades para la misma pieza el
+        /// dueño medía una altura en el lateral y otra en la frontal.
+        /// </para>
+        /// <para>
+        /// Aqui no se ajusta nada: se traduce la linea local a su linea COMPUESTA y se pregunta a la MISMA funcion
+        /// que ya responde en el lateral y en el BOM. Sin lado presente —o sin traduccion— se devuelve 0 y quien
+        /// llama conserva la altura local, que es el comportamiento anterior.
+        /// </para>
+        /// </summary>
+        private static Func<int, double> HeaderHeightAtLocalPost(
+            PushBackSystem composite, PushBackSystem local, RackCatalog catalog,
+            PushBackSideSystem view, PushBackFrontalEnd end)
+        {
+            var localLines = local?.Structure?.Fronts?.Count ?? 0;
+            var compositeLineByLocalLine = new int[localLines + 1];
+            for (var index = 0; index < compositeLineByLocalLine.Length; index++)
+            {
+                compositeLineByLocalLine[index] = -1;
+            }
+
+            // Una ranura presente aporta DOS lineas: la de su izquierda y la de su derecha. En indices compuestos
+            // son `slot` y `slot + 1`; en locales, `k` y `k + 1`.
+            for (var slot = 0; slot < view.LocalIndexBySlot.Count; slot++)
+            {
+                var k = view.LocalIndexBySlot[slot];
+                if (k < 0 || k + 1 >= compositeLineByLocalLine.Length)
+                {
+                    continue;
+                }
+
+                compositeLineByLocalLine[k] = slot;
+                compositeLineByLocalLine[k + 1] = slot + 1;
+            }
+
+            var compositeEnd = end == PushBackFrontalEnd.Posterior
+                ? DynamicRackEnd.Entrance
+                : DynamicRackEnd.Exit;
+            return postIndex =>
+            {
+                if (postIndex < 0 || postIndex >= compositeLineByLocalLine.Length)
+                {
+                    return 0.0;
+                }
+
+                var line = compositeLineByLocalLine[postIndex];
+                return line < 0
+                    ? 0.0
+                    : DynamicFrontGeometry.HeaderHeightAtPost(composite.Structure, catalog, line, compositeEnd);
+            };
         }
 
         private static int LocalIndex(PushBackSideSystem view, int slot)

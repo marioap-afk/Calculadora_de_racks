@@ -87,12 +87,18 @@ namespace RackCad.Application.Systems.PushBack
         /// necesita porque una celda corrida NO tiene larguero en la linea interior del lado bajo: la calle la
         /// atraviesa. Dibujarlo seria inventar una pieza que no existe.
         /// </param>
+        /// <param name="headerHeightAtPost">
+        /// I-42 (ronda 6B) — la altura de la cabecera de cada linea, resuelta sobre la estructura COMPUESTA. Un
+        /// rack compuesto construye este corte sobre el sistema local del lado, y el poste que ahi se dibuja es la
+        /// MISMA pieza fisica que el lateral dibuja y que el BOM compra. Con <c>null</c> nada cambia.
+        /// </param>
         public HeaderRunPlan BuildPlan(
             PushBackSystem system,
             RackCatalog catalog,
             PushBackFrontalEnd end,
             RackLevelElevations elevationsOverride,
-            Func<int, int, bool> includeCell)
+            Func<int, int, bool> includeCell,
+            Func<int, double> headerHeightAtPost = null)
         {
             var structure = system?.Structure;
             if (structure == null)
@@ -114,7 +120,8 @@ namespace RackCad.Application.Systems.PushBack
                         DynamicRackEnd.Exit,
                         lowContext,
                         OwnsDesviador(structure, includeCell),
-                        OwnsBoundary(structure, includeCell))
+                        OwnsBoundary(structure, includeCell),
+                        headerHeightAtPost)
                     .ToList();
                 if (includeCell != null)
                 {
@@ -138,7 +145,8 @@ namespace RackCad.Application.Systems.PushBack
                 DynamicRackEnd.Entrance,
                 highContext,
                 ownsDesviador: null,
-                ownsBoundary: OwnsBoundary(structure, includeCell));
+                ownsBoundary: OwnsBoundary(structure, includeCell),
+                headerHeightAtPost: headerHeightAtPost);
             var layout = DynamicFrontGeometry.Compute(structure, catalog);
             var redondoId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
                 ? PushBackDefaults.HighEndBeamCatalogId

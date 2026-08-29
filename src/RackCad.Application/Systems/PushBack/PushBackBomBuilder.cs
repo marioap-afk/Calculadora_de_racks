@@ -60,10 +60,17 @@ namespace RackCad.Application.Systems.PushBack
                 return new BillOfMaterials(components);
             }
 
+            // I-42 (ronda 6A) — los INTERMEDIOS se cuentan con el MISMO builder que los dibuja, tambien en un
+            // rack de un solo sentido. El BOM compartido los contaba sobre la ESTRUCTURA —fronteras x niveles— y no
+            // aplicaba el fondo EFECTIVO por celda que I-41 introdujo: una escalera de 3 a 8 fondos facturaba 42
+            // piezas para un plano de 27. Un rack sin fondos por celda cuenta exactamente lo mismo que antes,
+            // porque entonces cada nivel recorre TODAS las fronteras de su frente.
+            components.RemoveAll(component => component.Category == SystemBomBuilder.IntermediateBeam);
             AddEndBeams(components, system, catalog, SystemBomBuilder.InOutBeam, isHighEnd: false);
             AddEndBeams(components, system, catalog, HighEndBeam, isHighEnd: true);
             AddBeds(components, system);
             AddRearTopes(components, system, catalog);
+            AddFrontIntermediates(components, system, catalog);
 
             return new BillOfMaterials(components);
         }
@@ -242,23 +249,46 @@ namespace RackCad.Application.Systems.PushBack
         /// </summary>
         private static void AddRunIntermediates(
             ICollection<BomComponent> components, RackCatalog catalog, PushBackRunSet runs)
+            => EmitIntermediates(
+                components,
+                catalog,
+                PushBackCompositeContent.Batches(runs, null)
+                    .Where(batch => batch.Front != null)
+                    .Select(batch => (batch.Source, batch.Front, (IReadOnlyCollection<int>)batch.Levels)));
+
+        /// <summary>
+        /// I-42 (ronda 6A) — los intermedios de un rack de UN SOLO SENTIDO: cada frente con TODOS sus niveles. La
+        /// enumeracion es lo unico que cambia respecto del compuesto; el conteo es el mismo y vive en un solo sitio.
+        /// </summary>
+        private static void AddFrontIntermediates(
+            ICollection<BomComponent> components, PushBackSystem system, RackCatalog catalog)
+            => EmitIntermediates(
+                components,
+                catalog,
+                (system.Structure?.Fronts ?? new List<DynamicRackFront>())
+                    .Where(front => front != null)
+                    .Select(front => (system, front, (IReadOnlyCollection<int>)null)));
+
+        /// <summary>
+        /// LA CUENTA DE INTERMEDIOS, unica para las dos rutas: se materializan las piezas con el MISMO builder que
+        /// las dibuja y se agrupan. Es la unica forma de que la cantidad del BOM y la del plano no puedan divergir —
+        /// se cuentan las piezas que existen, no una regla paralela sobre la estructura.
+        /// </summary>
+        private static void EmitIntermediates(
+            ICollection<BomComponent> components,
+            RackCatalog catalog,
+            IEnumerable<(PushBackSystem Source, DynamicRackFront Front, IReadOnlyCollection<int> Levels)> beds)
         {
             var builder = new PushBackIntermediateBeamLateralBuilder();
             var grouped = new Dictionary<(string BeamId, double Length, double Peralte), int>();
-            foreach (var batch in PushBackCompositeContent.Batches(runs, null))
+            foreach (var bed in beds)
             {
-                var front = batch.Front;
-                if (front == null)
-                {
-                    continue;
-                }
-
-                foreach (var instance in builder.BuildFor(batch.Source, catalog, front, batch.Levels))
+                foreach (var instance in builder.BuildFor(bed.Source, catalog, bed.Front, bed.Levels))
                 {
                     var peralte = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.PeralteParam, out var value)
                         ? value
                         : DynamicRackDefaults.DefaultIntermediateBeamDepth;
-                    var key = (instance.PieceId, Round(front.BeamLength), Round(peralte));
+                    var key = (instance.PieceId, Round(bed.Front.BeamLength), Round(peralte));
                     grouped[key] = grouped.TryGetValue(key, out var current) ? current + 1 : 1;
                 }
             }

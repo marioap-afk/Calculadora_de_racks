@@ -800,6 +800,126 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-unetvicies. Ronda 6: el BOM cuenta piezas fisicas, y una linea tiene UNA altura
+
+Dos familias, dos defectos independientes, cada uno con su reproduccion y su evidencia. Ninguna decision cerrada de
+las rondas 1 a 5D se toca.
+
+---
+
+### 6A — el BOM facturaba 42 largueros intermedios para un plano de 27
+
+**Reproduccion.** Rack Push Back de UN SOLO SENTIDO, un frente de ocho fondos con seis niveles y una cama por
+nivel de 3 a 8 fondos (I-41, fondo por celda):
+
+| nivel | fondo efectivo | X del alto | fronteras que la cama recorre | dibujados |
+|---|---|---|---|---|
+| 1 | 3 | 150 | 54, 102 | 2 |
+| 2 | 4 | 198 | 54, 102, 150 | 3 |
+| 3 | 5 | 246 | 54, 102, 150, 195 | 4 |
+| 4 | 6 | 294 | 54, 102, 150, 195, 246 | 5 |
+| 5 | 7 | 342 | 54, 102, 150, 195, 246, 294 | 6 |
+| 6 | 8 | 396 | las siete | 7 |
+
+**Dibujado 27. Facturado 42.**
+
+**Causa.** `PushBackBomBuilder` tenia DOS caminos. El compuesto ya contaba los intermedios con el MISMO builder que
+los dibuja (`PushBackIntermediateBeamLateralBuilder.BuildFor`). El de un solo sentido conservaba la cuenta heredada
+del Dinamico —`SystemBomBuilder`: `Supports(front).Count x niveles`, es decir TODAS las fronteras de la estructura
+por cada nivel— que es anterior a I-41 y no pregunta por el fondo EFECTIVO de la celda: 7 x 6 = 42.
+
+**Correccion.** Una sola cuenta, `EmitIntermediates`, que materializa las piezas con el builder del dibujo y las
+agrupa. Las dos rutas solo se diferencian en QUE camas enumeran —las del compuesto por lote de cama, las del rack de
+un solo sentido por frente con todos sus niveles—; el conteo vive en un unico sitio. **Un rack sin fondos por celda
+cuenta exactamente lo mismo que antes**, porque entonces cada nivel recorre todas las fronteras de su frente: por eso
+ningun golden se movio.
+
+**AFTER: dibujo 27, BOM 27.** Y `ResolvedPhysicalBedLength` no se toca: la cama, el bajo y el alto conservan sus
+autoridades.
+
+**Encontradas NO se sobrecorrige:** siguen comprando el doble de altos, topes e intermedios que una cama sola,
+porque son dos camas. La cuenta no deduplica por posicion en ningun momento.
+
+### 6A — seguridad: auditado, sin defecto que corregir
+
+La cadena de seguridad ya cumple lo que esta ronda exige, y ahora esta fijado por pruebas:
+
+- el BOM de seguridad se construye desde las piezas DIBUJADAS (planta + los dos cortes frontales), no desde una regla
+  paralela, asi que dibujo y BOM no pueden divergir;
+- `Side` sigue siendo PERTENENCIA en bota, protector y defensa, y solo el DESVIADOR —la unica familia donde el lado
+  significa literalmente «que pasillo»— recibe `Both`. **Dos caras de carga no se traduce a `Side = Both`**;
+- un rack parcialmente compuesto conserva la seguridad de las zonas no compuestas: con lado B en una sola ranura, la
+  seguridad es un subconjunto estricto de la del rack con B en las tres, y no aparece ninguna pieza nueva;
+- un blanco conserva su ranura fisica y su reticula de seguridad sin crear almacenamiento.
+
+---
+
+### 6B — la altura de cabecera no coincidia entre el lateral y las frontales
+
+**Reproduccion.** Rack COMPUESTO, dos ranuras, dos niveles por lado, cinco fondos por lado:
+
+| linea | corte LATERAL | frontal ENTRADA | frontal POSTERIOR | BOM (longitud de cabecera) |
+|---|---|---|---|---|
+| L0 | **132** | **120** | **120** | 132 |
+| L1 | **132** | **120** | **120** | 132 |
+| L2 | **132** | **120** | **120** | 132 |
+
+Un pie comercial de diferencia en la MISMA pieza. Con tres niveles en el lado A: 204 en el lateral y 192 en la
+frontal. En un rack de un solo sentido las dos vistas ya coincidian — el defecto es exclusivamente del compuesto.
+
+**Que vista estaba equivocada, decidido por evidencia y no por criterio.** El BOM compra el poste de **132**, el
+mismo que dibuja el lateral. La frontal era la unica en desacuerdo con la pieza que se fabrica.
+
+**Causa.** `PushBackCompositeFrontal.Build` construye el corte sobre el sistema **LOCAL del lado**, que es un modelo
+de trabajo con sus propias alturas resueltas, y el poste tomaba de ahi su `LONGITUD`. Pero ese poste es la MISMA
+pieza fisica que el lateral dibuja y que el BOM compra, y esa pertenece a la estructura **COMPUESTA**. Dos modelos
+respondiendo por la misma pieza.
+
+**Correccion.** El corte frontal recibe la altura de la LINEA FISICA, resuelta sobre la estructura compuesta por la
+MISMA funcion que ya responde en el lateral y en el BOM (`DynamicFrontGeometry.HeaderHeightAtPost`). Se traduce la
+linea local a su linea compuesta y se pregunta; no se ajusta nada graficamente. Con `null` —un rack de un solo
+sentido, o el Dinamico— el comportamiento es exactamente el anterior.
+
+**AFTER: las tres vistas y el BOM dicen 132** (204 con el lado de tres niveles), en las doce topologias probadas.
+
+**Envolvente LOCAL, sin fuga remota.** Medido sobre un rack de fondos 5/8/6/9: las lineas valen 120, 120, 120, 132,
+132 — solo las dos que TOCAN el frente de nueve fondos suben. Quitando ese frente, las lineas 0 a 2 miden
+exactamente lo mismo: un frente profundo remoto no sube una cabecera ajena. Y con el lado A en blanco en una ranura,
+subir A a tres niveles no mueve la altura de la linea que A no carga.
+
+**I-40 intacto.** Un override manual de altura sobrevive a la resolucion compuesta y lo consumen las dos vistas;
+Restore lo elimina y devuelve la PROPUESTA ACTUAL, no el valor que el override tenia.
+
+---
+
+### Goldens
+
+**Ninguno se movio, ni en 6A ni en 6B.** El escenario dorado no tiene fondos por celda —cada nivel recorre todas las
+fronteras de su frente, asi que su cuenta de intermedios ya era la fisica— y no es compuesto, asi que su frontal ya
+leia la unica estructura que tiene.
+
+### Pruebas
+
+- `PushBackPhysicalBomAndSafetyTests` (26 casos): BOM de intermedios = apoyos fisicos en diez racks, el corte por
+  fondo de celda, la independencia del refuerzo, encontradas con sus dos juegos, y las cuatro de seguridad
+  (pertenencia, blanco, dos caras != `Side.Both`, dibujo = BOM).
+- `PushBackHeaderHeightAuthorityTests` (32 casos): la misma cabecera fisica en todas las vistas sobre doce
+  topologias, el BOM = altura resuelta, la envolvente local, la no-fuga remota, A/B independientes, la pieza
+  compartida, blancos, dos blancos consecutivos, override y Restore.
+
+Anulando la cuenta compartida fallan 3 pruebas, todas de intermedios. Anulando la altura de linea fallan 10, todas
+de cabecera compuesta. Los dos defectos tienen evidencia separada.
+
+### Declarado, NO resuelto en esta ronda
+
+La altura de una linea compuesta se deriva de la `EntranceElevation` del frente COMPUESTO, que abarca la profundidad
+de los dos lados. En una topologia de camas ENCONTRADAS esa profundidad no corresponde a ninguna cama real —son dos
+camas de cinco fondos, no una de diez—, de modo que el valor resultante puede ser un pie comercial mas alto de lo
+que la geometria dibujada necesita (el larguero mas alto medido esta en Y = 78.6 y la cabecera resuelve 132). Esta
+ronda hace que **todas las vistas y el BOM digan lo mismo**, que es el defecto reportado; **si esa altura comun debe
+seguir saliendo de la profundidad compuesta o de la demanda real de cada cama es una decision FISICA del dueño**, y
+no se toma aqui.
+
 ## 4-vicies. Correccion aislada 5D: anclaje del tope al espejar, y el poste reforzado no duplica el apoyo
 
 Dos defectos INDEPENDIENTES de la validacion del dueño. Cada uno tiene su causa, su correccion y su evidencia; no

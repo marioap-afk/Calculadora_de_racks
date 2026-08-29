@@ -32,13 +32,21 @@ namespace RackCad.Application.Systems.Dynamic
         /// coloca directamente en la elevación derivada de SU frente, sin reasientos posteriores. Con <c>null</c>
         /// el plan es byte-idéntico al de siempre.
         /// </param>
+        /// <param name="headerHeightAtPost">
+        /// I-42 (ronda 6B) — la ALTURA de la cabecera de cada linea, cuando quien llama la resuelve sobre OTRO
+        /// modelo. Un rack compuesto la necesita porque su corte frontal se construye sobre el sistema LOCAL del
+        /// lado —un modelo de trabajo— mientras la pieza que se fabrica y que el lateral dibuja pertenece a la
+        /// estructura COMPUESTA. Con <c>null</c> la altura sale de este mismo sistema, que es lo que hace el
+        /// Dinamico y cualquier Push Back de un solo sentido.
+        /// </param>
         public IReadOnlyList<HeaderBlockInstance> Build(
             DynamicRackSystem system,
             RackCatalog catalog,
             DynamicRackEnd end,
             RackLevelElevations elevations = null,
             Func<int, int, bool> ownsDesviador = null,
-            Func<int, bool> ownsBoundary = null)
+            Func<int, bool> ownsBoundary = null,
+            Func<int, double> headerHeightAtPost = null)
         {
             var instances = new List<HeaderBlockInstance>();
             if (system == null || system.Fronts.Count == 0 || system.LoadBeamLevels.Count == 0)
@@ -92,8 +100,15 @@ namespace RackCad.Application.Systems.Dynamic
                 // la MAS ALTA de la linea; el Owner precisó que la frontal corta por la PRIMERA cabecera
                 // longitudinal y la posterior por la ULTIMA. `end` elige cual, `postIndex` elige de que linea es el
                 // poste: los dos ejes conviven sin colapsarse.
-                post.DynamicParameters[SelectiveRackDefaults.LengthParam] =
-                    DynamicFrontGeometry.HeaderHeightAtPost(system, catalog, postIndex, end);
+                // I-42 (ronda 6B) — UNA linea fisica, UNA altura. Cuando quien llama la resuelve sobre el modelo
+                // que manda —la estructura compuesta— se consume esa; si no, la de este sistema. Nunca se ajusta
+                // graficamente: es la misma propiedad, leida de la autoridad correcta.
+                var resolvedHeight = headerHeightAtPost != null
+                    ? headerHeightAtPost(postIndex)
+                    : 0.0;
+                post.DynamicParameters[SelectiveRackDefaults.LengthParam] = resolvedHeight > 0.0
+                    ? resolvedHeight
+                    : DynamicFrontGeometry.HeaderHeightAtPost(system, catalog, postIndex, end);
                 post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = postPeralte;
                 instances.Add(post);
 

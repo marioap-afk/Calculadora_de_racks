@@ -264,10 +264,10 @@ namespace RackCad.Tests
         /// lo que hace que un cambio silencioso de cantidades no pase.
         ///
         /// <para>
-        /// OBSERVACIÓN REPORTADA, NO ARREGLADA AQUÍ: el BOM de un rack de UN SOLO SENTIDO cuenta 42 intermedios
-        /// —siete fronteras por seis niveles— mientras el dibujo pone 27, porque ahí el conteo sigue siendo el del
-        /// Dinámico y no aplica el fondo POR CELDA. Es una brecha anterior a esta ronda, ajena al poste reforzado
-        /// —no cambia con el refuerzo— y de la familia de I-41, no de I-42. Se deja declarada.
+        /// La ronda 6A CERRÓ la brecha que esta prueba declaraba: el BOM contaba 42 intermedios —siete fronteras por
+        /// seis niveles, la regla heredada del Dinámico— mientras el dibujo ponía 27, porque no aplicaba el fondo
+        /// POR CELDA de I-41. Ahora las dos cuentas salen del MISMO builder y valen 27. La cantidad sigue sin
+        /// depender del refuerzo, que es lo que esta prueba fija.
         /// </para>
         /// </summary>
         [Fact]
@@ -279,7 +279,7 @@ namespace RackCad.Tests
                 int Quantity(string category)
                     => bom.Components.Where(component => component.Category == category).Sum(component => component.Quantity);
 
-                Assert.Equal(42, Quantity(SystemBomBuilder.IntermediateBeam));
+                Assert.Equal(27, Quantity(SystemBomBuilder.IntermediateBeam));   // 2+3+4+5+6+7, el plano exacto
                 Assert.Equal(6, Quantity(PushBackBomBuilder.RearTope));
                 Assert.Equal(6, Quantity(SystemBomBuilder.InOutBeam));
                 Assert.Equal(6, Quantity(PushBackBomBuilder.HighEndBeam));
