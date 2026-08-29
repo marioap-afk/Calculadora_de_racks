@@ -83,6 +83,13 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             ApplySafety(system, structure);
+            // I-42 (ronda 6C) — LA ALTURA DE CABECERA se recalcula sobre las CAMAS REALES. Hasta aqui salia de la
+            // profundidad SINTETICA de la estructura compuesta (A + hueco + B invertido), que ninguna cama recorre:
+            // en camas encontradas hay dos camas de cinco fondos, no una de once. Se hace AQUI, al final, porque
+            // las camas solo existen cuando el sistema esta montado; y se escribe en el MISMO sitio del que ya leen
+            // el corte lateral, los dos frontales y el BOM (ronda 6B), asi que sigue habiendo UNA sola autoridad.
+            // Un override manual manda y no se toca.
+            PushBackHeaderHeight.Apply(system, catalog, design.Structure?.ManualHeaderHeightOverride);
             return system;
         }
 

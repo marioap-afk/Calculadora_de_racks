@@ -800,6 +800,96 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-duoetvicies. Ronda 6C: la altura de cabecera sale de las CAMAS REALES
+
+La ronda 6B dejo UNA sola autoridad, consumida por el corte lateral, los dos frontales y el BOM. Esa conquista se
+conserva intacta. Lo que 6C corrige es el **input** de esa autoridad.
+
+### La causa
+
+La estructura de un rack compuesto es una sola: A + hueco + B invertido. Sus frentes se resuelven con esa
+profundidad **SINTETICA**, y el resolver dinamico deriva de ella la elevacion de entrada del ultimo nivel, que es la
+que gobierna la altura de la cabecera. **Ninguna cama recorre esa profundidad.** En unas encontradas de 5+5 fondos
+hay dos camas de cinco, no una de once.
+
+Medido, sobre unas encontradas de dos ranuras y dos niveles por lado:
+
+| | frente | entrada nivel alto | teorico | comercial |
+|---|---|---|---|---|
+| rack SIMPLE de 5 fondos | deep=5 | 86.6053 | 114.6053 | **120** |
+| estructura COMPUESTA | deep=11 | **96.6053** | 124.6053 | **132** |
+
+Diez pulgadas de entrada que ninguna cama pide, y con ellas un pie comercial de poste. El larguero alto que las dos
+camas dibujan de verdad esta en Y = 78.6053, el mismo que en el rack simple.
+
+### La correccion
+
+**La regla de cabecera NO cambia.** Sigue siendo la de `DynamicHeaderHeightCalculator`: entrada del ultimo nivel,
+mas el peralte de su larguero, mas un tercio del espacio libre, redondeado al pie comercial. Lo unico que cambia es
+de donde sale la elevacion.
+
+`PushBackHeaderHeight` resuelve la demanda **por cama**: aplica esa misma funcion al frente de la cama —en su propio
+marco, con su propia profundidad— y toma el maximo de las camas que usan cada frente. Una cama de mas se traduce en
+una demanda de mas; una cama que no existe no aporta ninguna.
+
+Con una salvaguarda: si el larguero ALTO que la cama dibuja de verdad queda por encima de la entrada que su frente
+resolvio, manda el larguero. Son dos elevaciones de la MISMA pieza fisica y la cabecera tiene que contener la mas
+alta. En un rack de un solo sentido la entrada resuelta es siempre la mayor, asi que la salvaguarda no cambia nada.
+
+Se escribe en `front.Height` de la estructura compuesta — **el mismo sitio** del que la ronda 6B hizo leer a las
+tres vistas y al BOM. Sigue habiendo una sola autoridad; solo se corrigio lo que responde.
+
+### Encontradas frente a corrida, sin preguntar por topologia
+
+La regla pregunta por CAMA, asi que la distincion sale sola:
+
+- unas **encontradas** son dos camas independientes: cada una aporta su demanda y gana el maximo, nunca la suma;
+- una **corrida** si atraviesa fisicamente los dos lados, y su demanda sale de su propia cama, la que de verdad
+  recorre esa longitud.
+
+### Medido, por escenario
+
+| caso | ANTES | AHORA | por que |
+|---|---|---|---|
+| A) simple 1 frente d5 | 120 | **120** | sin cambio |
+| A2) simple 2 frentes d5/d5 | 120 | **120** | sin cambio |
+| K) simple 5/8/6/9 | 120/120/120/132/132 | **igual** | sin cambio; envolvente local intacta |
+| B) compuesto solo A | 132 | **120** | sus camas son de cinco fondos |
+| C) compuesto solo B | 132 | **120** | idem |
+| D) encontradas d5/d5 | 132 | **120** | dos camas de cinco, no una de once |
+| E) encontradas d8/d4 | 132 | **120** | manda la cama de 8, no la suma 8+4 |
+| F) encontradas niveles 3/2 | 204 | **192** | manda la cama de tres niveles |
+| G) corrida A→B | 132 | **120** | su cama real, no la profundidad sintetica |
+| H) corrida B→A | 132 | **120** | idem |
+| J) blank A en la ranura 0 | 132 y 120 | **120** | el blanco no aporta demanda |
+
+En todos ellos el corte lateral, los dos cortes frontales y el BOM siguen coincidiendo, ahora en el valor
+fisicamente correcto.
+
+### Blancos y overrides
+
+Una ranura en blanco por los dos lados no tiene camas, asi que su frente no aporta demanda: su `Height` queda en 0 y
+la linea contigua toma la del frente que si carga —`DynamicFrontGeometry.PostHeight` ya hacia ese maximo por linea—.
+La ranura sigue existiendo y su linea se sigue dibujando.
+
+I-40 intacto: un override manual manda sobre la propuesta derivada, y Restore lo borra y devuelve la propuesta
+**ACTUAL**, recalculada sobre las camas de ahora. Medido: con override 156" y anadiendo despues un tercer nivel al
+lado A, Restore devuelve 192 —no 120 ni 156—.
+
+### Goldens
+
+**Ninguno se movio.** El escenario dorado es de un solo sentido, y esta correccion solo alcanza al camino compuesto.
+
+### 6A intacto
+
+Dibujo 27 / BOM 27 y las cuatro pruebas de seguridad siguen verdes, sin tocar codigo de seguridad.
+
+### Pruebas
+
+`PushBackPhysicalHeaderHeightTests` (19 casos): encontradas sin suma, profundidades distintas, niveles distintos,
+lado en blanco, corrida con su propia cama, no-fuga remota, rack simple sin cambio, las cuatro consumidoras de
+acuerdo en diez topologias, override y Restore. Anulando la nueva resolucion fallan 15.
+
 ## 4-unetvicies. Ronda 6: el BOM cuenta piezas fisicas, y una linea tiene UNA altura
 
 Dos familias, dos defectos independientes, cada uno con su reproduccion y su evidencia. Ninguna decision cerrada de
