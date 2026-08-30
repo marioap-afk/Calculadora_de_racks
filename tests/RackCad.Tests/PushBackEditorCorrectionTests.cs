@@ -126,21 +126,16 @@ namespace RackCad.Tests
             var comp = Assembler().Build(state, inputs);
             Assert.True(comp.IsValid, comp.Error);
 
-            // I-42 (ronda 6E) SUSTITUYE la parte que exigia Side == Left: el lado elegido por el usuario ya no se
-            // colapsa —hacerlo igualaba Izquierda, Derecha y Ambas—. Lo que esta prueba fija de verdad es que el
-            // extremo queda restringido (LowEndOnly), que la GUIA se retira y que la copia es independiente del
-            // origen, y las tres cosas siguen ahi.
+            // Design.Structure.SafetySelections: GUIA-free, Side.Left, independent from the source.
             Assert.DoesNotContain(comp.Design.Structure.SafetySelections, s => s.ElementId == "GUIA_ENTRADA");
             var designBota = comp.Design.Structure.SafetySelections.Single(s => s.ElementId == "PROTECTOR_BOTA_H_3_16_18");
-            Assert.Equal(SafetySide.Both, designBota.Side);
-            Assert.True(designBota.LowEndOnly);
+            Assert.Equal(SafetySide.Left, designBota.Side);
             Assert.NotSame(bota, designBota);
 
             // System.SafetySelections: same guarantees.
             Assert.DoesNotContain(comp.System.SafetySelections, s => s.ElementId == "GUIA_ENTRADA");
             var systemBota = comp.System.SafetySelections.Single(s => s.ElementId == "PROTECTOR_BOTA_H_3_16_18");
-            Assert.Equal(SafetySide.Both, systemBota.Side);
-            Assert.True(systemBota.LowEndOnly);
+            Assert.Equal(SafetySide.Left, systemBota.Side);
             Assert.NotSame(bota, systemBota);
 
             // The source selection is untouched (deep copies were used).

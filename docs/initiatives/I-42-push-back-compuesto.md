@@ -800,99 +800,100 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
-## 4-quateretvicies. Ronda 6E: el selector de protectores de bota vuelve a significar algo
+## 4-quateretvicies. Ronda 6E (RECHAZADA) y ronda 6F: la bota va donde hay una cara de ATAQUE
 
-El selector ofrece **Ninguno / Izquierda / Derecha / Ambas** y las cuatro opciones producian la MISMA pieza. Medido
-antes de tocar codigo, en los ocho escenarios probados: `Izquierda == Derecha == Ambas`.
+### 6E: rechazada funcionalmente por el dueño, y retirada
 
-### Causa, en dos eslabones
+La ronda 6E leyo el defecto «Izquierda produce lo mismo que Ambas» como un problema de SEMANTICA DEL SELECTOR y lo
+corrigio haciendo que `Ambas = Izquierda ∪ Derecha`, lo que en la practica ponia **dos copias espejadas en la misma
+posicion**. El dueño confirmo que eso NO resuelve el problema fisico: la bota no es una eleccion de mano, es una
+proteccion de POSTE contra el impacto del montacargas, y el montacargas ataca por la cara de CARGA.
 
-1. `PushBackSafetyAuthority.RestrictToLowEnd` escribia `Side = Left` sobre cualquier `Both` o `Right` «para imponer
-   el extremo bajo». El extremo ya lo impone `LowEndOnly`, que `SelectiveSafetyEnds` lee sin tocar la orientacion:
-   ese colapso solo borraba la eleccion del usuario. Pertenencia, orientacion y extremo son tres ejes, y esto
-   mezclaba dos.
-2. Con un solo pasillo, `SelectiveSafetyEnds.CopiesForPost` devolvia para **Ambas** una sola copia — la misma que
-   Izquierda. Un poste tiene sus DOS caras aunque se cargue por un solo extremo.
+Retirado por completo del codigo:
 
-Comprobado por medicion: quitando solo el primer eslabon, `Derecha` ya se separa de `Izquierda` y en un rack
-compuesto `Ambas` pasa a valer 4 = 2 + 2; con el segundo, tambien cuadra en un rack de un solo pasillo.
+- `PushBackSafetyAuthority`: el parametro `keepChosenSide`, su reenvio por `RestrictToAisles` y el
+  `Defaults()` que forzaba `Left`;
+- `SelectiveSafetyEnds.CopiesForPost`: el `Ambas` que devolvia dos copias con un solo pasillo;
+- los cuatro contratos de prueba que 6E habia reescrito, que vuelven a su forma anterior;
+- los **cuatro pines dorados**, que vuelven a los de la ronda 6D. El BOM de botas del escenario dorado vuelve de
+  **6 a 3**: aquel 3 → 6 salia unicamente de duplicar cada bota sobre si misma y no estaba aprobado.
 
-### La correccion, acotada a la familia que lo necesita
+Se conserva, en cambio, la parte de 6E que sigue siendo cierta y util: la bateria de escenarios con blancos y
+compuestos parciales, reescrita en la ronda 6F sobre el contrato fisico correcto.
 
-El colapso del lado **deja de aplicarse solo a la BOTA**. Las demas familias lo conservan: el desviador, la defensa
-y el protector lateral leen `Side` por su cuenta y con otro significado, y su geometria esta validada por el dueño
-desde la ronda 1. Quitarlo para todas movia 14 pruebas, entre ellas PB-VAL-04 y el desviador — medido y descartado.
+**Registrado como deuda separada, fuera de I-42:** el selector Izquierda / Derecha / Ambas de los protectores de
+bota no modela las caras fisicas que hay que proteger, y ese defecto existe tambien fuera del Push Back compuesto.
+No se rediseña aqui.
 
-Y el **DEFECTO de un rack nuevo sigue siendo Izquierda**, que es exactamente lo que se dibujaba antes: el `Ambas`
-que siembra el Dinamico se declara ahora en `PushBackSafetyAuthority.Defaults`, donde vive el arranque de un rack,
-en vez de imponerse sobre cualquier eleccion. Ningun documento existente cambia por si solo.
+### 6F: la regla fisica
 
-### Medido, por escenario
+Una bota protege el poste del impacto del montacargas, y el montacargas ataca por la cara de CARGA — en un Push
+Back, la del extremo BAJO. La cara ALTA suele dar a muro, columna o espacio no operativo. Un rack COMPUESTO tiene
+DOS caras de ataque, una por lado, en los dos exteriores.
 
-En los ocho —simple, solo A, solo B, encontradas, corrida, blank A, blank B, dos blancos y parcial compuesto—:
+### El defecto, reproducido
 
-| | ANTES | AHORA |
-|---|---|---|
-| Ninguno | ∅ | ∅ |
-| Izquierda | n | n |
-| Derecha | n, **identico a Izquierda** | n, **la otra cara** |
-| Ambas | n, **identico a Izquierda** | **2n = Izquierda ∪ Derecha** |
-| `Left == Both` | **si** | **no** |
-| `Right == Both` | **si** | **no** |
-| `Both == Left ∪ Right` | trivialmente (todos iguales) | **si, y los dos conjuntos son disjuntos** |
+Las dos copias de una linea se atornillan a los extremos de su COBERTURA de profundidad. Eso vale mientras esos
+extremos SEAN caras de ataque. Con frentes en blanco —una columna de nave— la cobertura de esa linea se acorta y su
+extremo pasa a caer en la interfaz entre los dos lados.
 
-Ejemplo del rack simple de dos frentes: Izquierda 1, Derecha 1 (espejada, misma posicion), Ambas 2. En un compuesto
-de dos ranuras: 2, 2 y 4.
+Medido, compuesto de tres ranuras con **las dos primeras de A en blanco**:
 
-### Blancos
-
-Se conserva la regla fisica que la ronda 6D cerro para la defensa: **ninguna bota cae en la interfaz** entre los dos
-lados. Un blanco puede QUITAR una bota, nunca moverla: cada una que sobrevive esta exactamente donde estaba, con la
-MISMA mano, y ninguna es de la eleccion contraria. La retícula no se compacta.
-
-### Goldens: cuatro pines, con evidencia por primitiva
-
-El escenario dorado declara su bota con `Side = Both`, asi que cada una gana su cara espejada. **No se movio ni una
-coordenada**: cada pieza nueva esta exactamente donde ya habia una, con el espejo contrario.
-
-| vista | pieza | ANTES | AHORA |
+| linea | cobertura | ANTES | AHORA |
 |---|---|---|---|
-| LATERAL | bota X=0 Y=−0.1875 | 1 | + su copia espejada |
-| PLANTA | bota X=−0.3897 Y=0 | 1 | + su copia espejada |
-| PLANTA | bota X=−0.3897 Y=53.494 | 1 | + su copia espejada |
-| PLANTA | bota X=143.6103 Y=106.988 | 1 | + su copia espejada |
-| BOM | `Seguridad PROTECTOR_BOTA_H_3_16_18` | 3 | **6** |
+| Y=53.494 | [396, 792] | **X=395.61 — contra la columna** y X=792.39 | solo X=792.39 |
+| Y=106.988 | [0, 792] | X=−0.39 y X=792.39 | igual |
 
-Los dos frontales quedan INTACTOS. El BOM sube exactamente las tres piezas que la planta añade: dibujo y BOM
-cambian juntos, pieza a pieza.
+Es la MISMA familia del error de la defensa de montacargas que la ronda 6D cerro, y se corrige con la MISMA
+declaracion fisica: la estructura ya declara su tramo interior, y una bota no se materializa en una cara que caiga
+ahi. **Un blanco QUITA la necesidad; no muda la pieza a otro borde.**
 
-### Contratos SUSTITUIDOS
+La correccion vive en el primero de los tres ejes: `SelectiveSafetyPlacement.AppendAtPost` admite un filtro de
+PERTENENCIA —«¿existe esta cara?»— que no toca ni la posicion ni la orientacion. Con `null` todas las caras aplican,
+que es lo que hace el Dinamico.
 
-Tres pruebas exigian el colapso para una seleccion `Both` explicita:
+### Medido, los ocho escenarios
 
-- `PushBackSafetyBomTests.Safety_BothSelection_...` y `PushBackEditorCorrectionTests.Safety_EntranceBoth_...`
-  afirmaban `Side == Left` tras resolver. Ahora afirman que el lado elegido se CONSERVA y que el extremo lo impone
-  `LowEndOnly`, que es lo que esas pruebas median de verdad.
-- `PushBackSafetyPerPostTests.Bom_CountsTheChosenPostsOnly` contaba 1 pieza por poste con `Ambas`. Ahora cuenta 2 —
-  las dos caras— y se añade el caso de una sola cara, que sigue contando 1. La PERTENENCIA no cambia.
+| caso | ANTES | AHORA |
+|---|---|---|
+| A) simple, 3 frentes | 2 botas en X=−0.39 | **igual** |
+| B) compuesto completo | 4: dos en cada exterior | **igual** |
+| **C) blanks A 0,1 (columna)** | **4, una en X=395.61 (INTERIOR)** | **3, ninguna interior** |
+| C2) blank A 0 | 4, todas exteriores | igual |
+| D) blanks B 0,1 | 3, todas exteriores | igual |
+| E) blanks A+B 0,1 | 2 | igual |
+| F) parcial compuesto | 3 | igual |
+| G) corrida | 4 | igual |
+
+**Solo cambia el caso que el dueño reporto.** El rack simple no cambia; el compuesto completo protege sus dos
+exteriores con posiciones FISICAMENTE DISTINTAS, sin duplicar por espejo sobre la misma cara.
+
+### BOM
+
+El BOM de botas es el numero de protecciones materializadas, y sigue al dibujo: 3 en el caso C (antes 4, con una
+imposible). **Ningun golden se movio** en 6F —el escenario dorado es de un solo sentido y no declara interior— y el
+BOM de botas del dorado vuelve a **3**, el valor anterior a la 6E rechazada.
+
+### Lo que no se toco
+
+Alturas A/B (6D-A), defensa de montacargas (6D-B), cabeceras (6B/6C), intermedios 27/27 (6A), y todo lo cerrado en
+las rondas 1 a 5D.
 
 ### Pruebas
 
-`PushBackBootSelectorTests` (80 casos): el contrato completo del selector en los nueve escenarios, la union exacta y
-disjunta, izquierda ≠ derecha, los blancos (sin interior, sin cambio de mano, sin compactar), el parcial compuesto,
-dibujo = BOM con cualquier opcion, y el defecto de un rack nuevo. Reponiendo el colapso del lado fallan 55;
-reponiendo el colapso de `Ambas` con un solo pasillo fallan 6.
-
-### 6D intacto
-
-Alturas A/B independientes y la defensa de montacargas sin saltar a la interfaz: sin cambios.
+`PushBackBootLowFaceTests` (40 casos): la cara de ataque como unica ubicacion valida en los ocho escenarios, las dos
+caras distintas del compuesto, la ausencia de duplicados por espejo, el caso del dueño con su blanco, los simetricos
+de A y B, el blanco doble, el parcial, el rack simple sin cambio, dibujo = BOM, y **dos regresiones explicitas**: la
+defensa de 6D y los 27/27 de 6A. Anulando el filtro de cara fallan 3, todas del caso con blancos.
 
 ### PENDIENTES REGISTRADOS (siguen sin corregir)
 
-- **UI / ActiveSide:** control independiente `Defensa A si/no`, `Defensa B si/no`.
-- **View hygiene:** el lateral de una seccion dibuja la letra de un lado que no existe funcionalmente.
-- **View hygiene / frontales:** una corrida full-span debe mostrar en la cara de salida el HIGH y el tope con
-  semantica de vista posterior (simetrico B→A).
+- **P1 — UI / ActiveSide:** control de proteccion/defensa por cara o lado, semanticamente correcto.
+- **P2 — Safety general:** revision global de la semantica de Izquierda / Derecha / Ambas para las botas, fuera del
+  contrato especifico de I-42.
+- **P3 — View hygiene:** el lateral de una seccion dibuja la letra de un lado que no existe funcionalmente.
+- **P4 — Frontales:** una corrida full-span debe mostrar en la cara de salida el HIGH y el tope con semantica de
+  vista posterior.
 
 ## 4-teretvicies. Ronda 6D: A y B con alturas independientes, y la defensa solo en una cara de carga
 

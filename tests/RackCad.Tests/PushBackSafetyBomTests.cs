@@ -65,13 +65,9 @@ namespace RackCad.Tests
 
             var system = new PushBackResolver(catalog).Resolve(design);
 
-            // I-42 (ronda 6E) SUSTITUYE la parte de este contrato que exigia Side == Left. El resolver colapsaba el
-            // lado elegido «para imponer el extremo bajo», y con ello las tres opciones del selector de botas daban
-            // la misma pieza. El EXTREMO lo impone LowEndOnly —que es lo que esta prueba mide de verdad, y sigue
-            // midiendo abajo—; el LADO es la eleccion del usuario y se conserva.
+            // The resolver restricts the authorized selection to the low (Left/exit) end.
             var bota = Assert.Single(system.SafetySelections, s => s.ElementId == Bota);
-            Assert.Equal(SafetySide.Both, bota.Side);
-            Assert.True(bota.LowEndOnly);
+            Assert.Equal(SafetySide.Left, bota.Side);
 
             var frontal = new PushBackSystemFrontalBuilder();
             var entrada = frontal.BuildPlan(system, catalog, PushBackFrontalEnd.EntradaSalida).Flatten().Instances;

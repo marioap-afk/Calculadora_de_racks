@@ -235,8 +235,8 @@ namespace RackCad.Tests
             // Solo se mueven los dos pines LATERALES: el frontal posterior ya media desde la derivada, la planta no
             // lleva elevacion y el BOM cuenta las mismas piezas con las mismas longitudes.
             // Anteriores: lateral/lateral-corte0 1272488B...
-            ["lateral"] = "2F183C691E33A4DE9ACE6076A1D8991E494E3B5215FB802669D3477210AA1390",
-            ["lateral-corte0"] = "2F183C691E33A4DE9ACE6076A1D8991E494E3B5215FB802669D3477210AA1390",
+            ["lateral"] = "523862527623A874B333E201A8CADF0774610E39CD496E352BF8A9B594760B69",
+            ["lateral-corte0"] = "523862527623A874B333E201A8CADF0774610E39CD496E352BF8A9B594760B69",
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
             // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of
@@ -257,7 +257,7 @@ namespace RackCad.Tests
             // suyo. Los dos topes siguen apareciendo y en la misma columna. Solo se mueve el pin de PLANTA: la X de
             // profundidad no cambia, asi que el lateral, los dos frontales y el BOM quedan INTACTOS.
             // Anterior: planta 4797ED85...
-            ["planta"] = "15C5D9D82BDD42490F11FB88025946580913F52D9FAE025F3683E328DB20AF81",
+            ["planta"] = "02EE98BAC846356957D892BB23E0A8B4AE31C849A6FA1370DDF22A849CB90D69",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front
             // length). Previous BOM hash: 139C18EFDD0BCF1DBC9CABB867E3C40499B2BD264E1BED4F4CBC7DCEE74C57AC.
@@ -283,24 +283,7 @@ namespace RackCad.Tests
             // posicion y orientacion del tope son dos autoridades separadas, por decision del dueño. Los dos
             // frontales quedan INTACTOS: su espejo es el de la retícula transversal y no es esta pregunta.
             // Anterior (ronda 5, retirada): lateral y lateral-corte0 DC546899..., planta E2A173A8...
-            // I-42 (ronda 6E) — el selector de PROTECTORES DE BOTA vuelve a significar algo. La autorizacion de Push
-            // Back colapsaba el lado elegido en «Izquierda» para imponer el extremo bajo, y con ello Izquierda,
-            // Derecha y Ambas producian EXACTAMENTE la misma pieza. El extremo lo impone LowEndOnly, que no toca la
-            // orientacion; y AMBAS son las dos caras del mismo poste, no una sola.
-            //
-            // Este escenario declara su bota con Side = Both, asi que cada una gana su cara espejada. Medido, y no
-            // se movio ni una coordenada: cada pieza nueva esta EXACTAMENTE donde ya habia una, con el espejo
-            // contrario.
-            //   LATERAL  bota X=0        Y=-0.1875   se añade la copia espejada
-            //   PLANTA   bota X=-0.3897  Y=0         se añade la copia espejada
-            //   PLANTA   bota X=-0.3897  Y=53.494    se añade la copia espejada
-            //   PLANTA   bota X=143.6103 Y=106.988   se añade la copia espejada
-            //   BOM      Seguridad PROTECTOR_BOTA_H_3_16_18: 3 -> 6, las tres piezas de planta que se añaden
-            // frontal-entrada y frontal-posterior quedan INTACTOS. El DEFECTO de un rack nuevo sigue siendo
-            // Izquierda —se declara ahora en PushBackSafetyAuthority.Defaults— asi que ningun rack existente cambia
-            // por si solo: solo cambia el que elige Derecha o Ambas, que es lo que el dueño pidio.
-            // Anteriores: lateral y lateral-corte0 52386252..., planta 02EE98BA..., bom 057C6D2D...
-            ["bom"] = "B8A8682C914856B4DD346D68E84651DA73A4A9180504032F81485D685071734D"
+            ["bom"] = "057C6D2D30548D4F8FE65F1DA38678D0588792C2A65B43CD23CE4F8B7ECC59A3"
         };
 
 

@@ -140,9 +140,22 @@ namespace RackCad.Application.Systems.Dynamic
                 }
                 else
                 {
+                    // I-42 (ronda 6F) — una BOTA protege el poste del impacto del montacargas, y el montacargas
+                    // ataca por la cara de CARGA. Las dos copias de esta linea se atornillan a los extremos de su
+                    // cobertura de profundidad, y eso vale mientras esos extremos SEAN caras de ataque.
+                    //
+                    // Con frentes en blanco —una columna de nave, por ejemplo— la cobertura de una linea se acorta y
+                    // su extremo pasa a caer en la interfaz entre los dos lados: contra la columna, sin pasillo por
+                    // el que entre nadie. Medido: con las dos primeras ranuras de A en blanco aparecia una bota en
+                    // X=395.61, junto a la interfaz, mientras la de B seguia bien en su pasillo.
+                    //
+                    // Un blanco QUITA la necesidad; no muda la pieza a otro borde. Es la misma regla fisica que la
+                    // ronda 6D cerro para la defensa de montacargas, sobre la misma declaracion de la estructura: el
+                    // Dinamico no declara interior y dibuja exactamente igual que siempre.
                     SelectiveSafetyPlacement.AppendAtPost(
                         target, catalog, view, boots, at, plateId, postIndex,
-                        mirrorAxisX: (rangeStart + rangeEnd) / 2.0);
+                        mirrorAxisX: (rangeStart + rangeEnd) / 2.0,
+                        faceApplies: atHighEnd => !system.IsInteriorFace(atHighEnd ? rangeEnd : rangeStart));
                 }
             }
 

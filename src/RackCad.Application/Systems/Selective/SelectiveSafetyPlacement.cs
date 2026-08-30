@@ -159,11 +159,17 @@ namespace RackCad.Application.Systems.Selective
         /// <paramref name="mirrorAxisX"/> is the reflection line for the mirrored (Right) copy: null flips about the
         /// block origin in place (frontal); a value reflects position + orientation about that X (planta/lateral).
         /// <paramref name="longitud"/>, when set, becomes the piece's LONGITUD dynamic param (the LATERAL spans the fondo).</summary>
+        /// <param name="faceApplies">
+        /// I-42 (ronda 6F) — si la CARA a la que iria una copia existe fisicamente. Recibe el extremo de esa copia
+        /// (<c>true</c> = el lejano) y responde si ahi hay una cara a la que atornillarse. Es PERTENENCIA, el primero
+        /// de los tres ejes: no toca ni la posicion ni la orientacion, solo decide si la pieza llega a existir. Con
+        /// <c>null</c> todas las caras aplican, que es el comportamiento de siempre.
+        /// </param>
         public static void AppendAtPost(
             ICollection<HeaderBlockInstance> target, RackCatalog catalog, string view,
             IReadOnlyList<SafetyElement> elements,
             Point2D postOrigin, string plateId, int postIndex, double? mirrorAxisX = null, double? longitud = null,
-            bool mirrorYInPlace = false, SafetySide? sideOverride = null)
+            bool mirrorYInPlace = false, SafetySide? sideOverride = null, Func<bool, bool> faceApplies = null)
         {
             if (elements == null || elements.Count == 0)
             {
@@ -196,6 +202,11 @@ namespace RackCad.Application.Systems.Selective
                 // perdía la orientación: un Right acababa dibujado como un Left, o desaparecía del corte.
                 foreach (var copy in Copies(element.Selection, postIndex, sideOverride, mirrorYInPlace))
                 {
+                    if (faceApplies != null && !faceApplies(copy.AtHighEnd))
+                    {
+                        continue;   // esa cara no existe: la pieza no se muda, simplemente no hay
+                    }
+
                     target.Add(Piece(
                         element.PieceId, element.Block, view,
                         copy.AtHighEnd ? mirroredAt : at,
