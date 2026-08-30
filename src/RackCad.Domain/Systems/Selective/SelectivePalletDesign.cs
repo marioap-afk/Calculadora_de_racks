@@ -186,102 +186,141 @@ namespace RackCad.Domain.Systems.Selective
         /// <c>Derecha</c> la posterior, que es exactamente lo que esas etiquetas querian decir.
         /// </para>
         /// </summary>
-        public BootPlacement BootPlacementAt(int postIndex)
+        public BootPlacement BootPlacementAt(int postIndex) => PlacementAt(Bota, postIndex);
+
+        /// <summary>La colocacion efectiva del LADO B en ese poste. Un rack de un solo lado no la usa.</summary>
+        public BootPlacement BootPlacementAtSideB(int postIndex) => PlacementAt(BotaB, postIndex);
+
+        /// <summary>
+        /// I-42 (S1E) — LAS CARAS FISICAS que hay que proteger en ese poste: la union de lo que piden los dos
+        /// lados, DEDUPLICADA.
+        ///
+        /// <para>
+        /// Es el punto donde el lado deja de importar y empieza la geometria. «Entrada/Salida» se lee dentro del
+        /// lado: la de A es la cara CERCANA del rack y la de B la LEJANA, y sus posteriores son las contrarias. Dos
+        /// intenciones distintas pueden nombrar la misma cara fisica —la posterior de A y la entrada de B— y eso es
+        /// UNA pieza, no dos.
+        /// </para>
+        /// <para>
+        /// Esta es la UNICA resolucion de pertenencia: la planta, los cortes y el BOM la consumen, ninguno la
+        /// vuelve a calcular en su propio marco.
+        /// </para>
+        /// </summary>
+        public BootFaces BootFacesAt(int postIndex)
         {
-            var own = Bota.At(postIndex);
-            if (own.HasValue)
-            {
-                return own.Value;
-            }
-
-            // Legacy: un poste con entrada propia en la matriz historica es tan EXPLICITO como el de arriba —nadie
-            // lo colapsa, igual que en ChosenSide—, asi que se resuelve con el, antes que ninguna regla general.
-            foreach (var over in PostSides)
-            {
-                if (over != null && over.PostIndex == postIndex)
-                {
-                    return BootPlacements.From(over.Side);
-                }
-            }
-
-            return WithoutBlankFaces(Inherited(), postIndex);
+            var a = PlacementAt(Bota, postIndex);
+            var b = PlacementAt(BotaB, postIndex);
+            return new BootFaces(
+                near: BootPlacements.IncludesEntryExit(a) || BootPlacements.IncludesRear(b),
+                far: BootPlacements.IncludesRear(a) || BootPlacements.IncludesEntryExit(b));
         }
 
         /// <summary>
-        /// Lo que un poste sin decision propia HEREDA: la general si alguien la eligio y, si no, el automatico que
-        /// el sistema resolvio para este rack.
-        ///
-        /// <para>
-        /// El AUTOMATICO solo entra donde nadie expreso nada. El unico valor que significa «no lo he tocado» es el
-        /// que siembra un rack nuevo —«Ambas»—: un «Ninguno» o un lado concreto SI son una decision, y la decision
-        /// manda. Una eleccion hecha con la UI nueva ya se resolvio en <c>Bota.Placement</c>.
-        /// </para>
+        /// La resolucion de UN lado, con la precedencia del contrato: decision propia del poste, blanco de ese
+        /// lado, general de ese lado. Lo unico que se añade aqui es lo que la configuracion de un lado no puede
+        /// saber por si sola: la MATRIZ HISTORICA por poste y la intencion global de un documento anterior.
         /// </summary>
-        private BootPlacement Inherited()
+        private BootPlacement PlacementAt(SelectiveBotaConfig config, int postIndex)
         {
-            if (Bota.Placement.HasValue)
+            var sideA = ReferenceEquals(config, Bota);
+            if (config == null)
             {
-                return Bota.Placement.Value;
+                return BootPlacement.None;
+            }
+
+            if (config.HasOwnAt(postIndex))
+            {
+                return config.At(postIndex).Value;
+            }
+
+            if (sideA)
+            {
+                // Legacy: un poste con entrada propia en la matriz historica es tan EXPLICITO como el de arriba
+                // —nadie lo colapsa, igual que en ChosenSide—, y esa matriz es del lado unico/A.
+                foreach (var over in PostSides)
+                {
+                    if (over != null && over.PostIndex == postIndex)
+                    {
+                        return BootPlacements.From(over.Side);
+                    }
+                }
+            }
+
+            if (config.IsBlankAt(postIndex))
+            {
+                return BootPlacement.None;
+            }
+
+            if (config.Placement.HasValue)
+            {
+                return config.Placement.Value;
+            }
+
+            return sideA ? InheritedSideA(config) : InheritedSideB(config);
+        }
+
+        /// <summary>
+        /// Lo que hereda el lado A (o el unico lado): el automatico del sistema, salvo que el documento traiga una
+        /// intencion GLOBAL anterior a S1E —el lado historico—, que es una decision del usuario y manda. El unico
+        /// valor que significa «no lo he tocado» es el que siembra un rack nuevo, «Ambas».
+        /// </summary>
+        private BootPlacement InheritedSideA(SelectiveBotaConfig config)
+        {
+            if (BootSidesDeclared)
+            {
+                return config.Automatic ?? BootPlacement.None;
             }
 
             var legacy = AuthoredSide ?? Side;
-            return legacy == SafetySide.Both && AutomaticBootPlacement.HasValue
-                ? AutomaticBootPlacement.Value
+            return legacy == SafetySide.Both
+                ? config.Automatic ?? BootPlacements.From(legacy)
                 : BootPlacements.From(legacy);
         }
 
         /// <summary>
-        /// I-42 (S1D) — lo heredado SIN las caras que un blanco dejo sin pasillo. Quita una cara sin tocar la otra:
-        /// un blanco en A convierte «Ambas» en «Posterior» —la de B, que sigue cargando por su pasillo—, no en
-        /// «ninguna». Sin blancos declarados devuelve exactamente lo heredado.
+        /// Lo que hereda el lado B: su automatico. Con una intencion GLOBAL anterior a S1E el lado B no hereda
+        /// nada —esa intencion ya se resolvio entera sobre el lado A, que es como se dibujaba—, asi que un
+        /// documento antiguo produce exactamente las mismas piezas que producia.
         /// </summary>
-        private BootPlacement WithoutBlankFaces(BootPlacement inherited, int postIndex)
-            => BlankBootFaces.Count == 0
-                ? inherited
-                : BootPlacements.Of(
-                    BootPlacements.IncludesEntryExit(inherited) && !IsBlankBootFace(postIndex, atHighEnd: false),
-                    BootPlacements.IncludesRear(inherited) && !IsBlankBootFace(postIndex, atHighEnd: true));
+        private BootPlacement InheritedSideB(SelectiveBotaConfig config)
+            => !BootSidesDeclared && HasGlobalLegacyIntent
+                ? BootPlacement.None
+                : config.Automatic ?? BootPlacement.None;
+
+        /// <summary>True cuando el documento trae la unica configuracion global que existia antes de S1E.</summary>
+        private bool HasGlobalLegacyIntent
+            => Bota.Placement.HasValue || (AuthoredSide ?? Side) != SafetySide.Both;
+
+
 
         /// <summary>
-        /// I-42 (S1B) — la colocacion que el SISTEMA resuelve cuando nadie ha elegido: entrada/salida si el rack
-        /// tiene un solo pasillo, las dos caras si tiene dos. Es DERIVADA y no se persiste, como
-        /// <see cref="LowEndOnly"/>: la impone la autoridad del sistema en cada resolucion.
-        /// </summary>
-        public BootPlacement? AutomaticBootPlacement { get; set; }
-
-        /// <summary>
-        /// I-42 (S1D, contrato del dueño) — las CARAS que un frente en blanco dejo sin pasillo: por poste Y POR
-        /// LADO, nunca por linea entera.
+        /// I-42 (S1E, contrato del dueño) — LA CONFIGURACION DE BOTAS DEL LADO B de un rack compuesto.
         ///
         /// <para>
-        /// Un blanco pertenece a UN lado. Que el lado A no tenga almacenamiento en una linea no dice nada del lado
-        /// B, que puede seguir cargando por su propio pasillo en esa misma linea: por eso el blanco retira SU cara
-        /// —la de su lado y solo esa— y el defecto del otro lado se resuelve como siempre. La ronda S1C apagaba la
-        /// linea entera, que es la autoridad demasiado gruesa que esta declaracion sustituye.
+        /// Un Push Back compuesto tiene DOS lados fisicos, y cada uno tiene su propia intencion: su general y sus
+        /// postes. <see cref="Bota"/> es la del lado A —y la unica de un rack de un solo sentido, que es como se
+        /// guardo siempre—; esta es la de B. VACIA —todo documento anterior y todo sistema de un solo lado—
+        /// significa «B no pide nada», y entonces el rack dibuja exactamente lo que dibujaba.
         /// </para>
         /// <para>
-        /// Solo afecta al DEFECTO: un poste con eleccion PROPIA se resuelve antes de llegar aqui, porque el poste
-        /// fisico sigue existiendo y puede necesitar proteccion. Es DERIVADA y no se persiste, como
-        /// <see cref="SecondLoadFacePosts"/>: la autoridad del sistema la vuelve a imponer en cada resolucion, asi
-        /// que al quitar el blanco esa cara recupera sola lo que herede. VACIA —todo sistema que no la declare y
-        /// todo documento anterior— significa «ningun blanco».
+        /// LADO y CARA son ejes distintos: «Entrada/Salida» se lee DENTRO del lado —la de A es la cara cercana del
+        /// rack y la de B la lejana—, asi que ninguna vista tiene que reinterpretar la eleccion en su marco. La
+        /// conversion a caras fisicas se hace UNA vez, en <see cref="BootFacesAt"/>.
         /// </para>
         /// </summary>
-        public IList<BootBlankFace> BlankBootFaces { get; } = new List<BootBlankFace>();
+        public SelectiveBotaConfig BotaB { get; set; } = new SelectiveBotaConfig();
 
-        /// <summary>True cuando ESA cara de ESE poste quedo sin pasillo por un frente en blanco de su lado.</summary>
-        public bool IsBlankBootFace(int postIndex, bool atHighEnd)
-        {
-            foreach (var face in BlankBootFaces)
-            {
-                if (face != null && face.PostIndex == postIndex && face.AtHighEnd == atHighEnd)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+        /// <summary>
+        /// I-42 (S1E) — true cuando la intencion de botas de este documento esta declarada POR LADO.
+        ///
+        /// <para>
+        /// Es el discriminante entre las dos eras, y hace falta porque significan cosas distintas: en un documento
+        /// ANTERIOR hay una sola configuracion, que era del rack entero y se resolvia como la del lado A —el lado B
+        /// no pedia nada—; en uno de S1E cada lado tiene la suya, y una general vacia significa «este lado hereda su
+        /// automatico», no «este lado no existe». Sin el, abrir un documento antiguo cambiaria lo que dibuja.
+        /// </para>
+        /// </summary>
+        public bool BootSidesDeclared { get; set; }
 
         /// <summary>
         /// I-42 (S1D, contrato del dueño) — True cuando ALGO de esta seleccion pide una pieza: el lado general, la
@@ -308,26 +347,16 @@ namespace RackCad.Domain.Systems.Selective
                 }
             }
 
-            if ((Bota.Placement ?? BootPlacement.None) != BootPlacement.None)
-            {
-                return true;
-            }
-
-            foreach (var post in Bota.Posts)
-            {
-                if (post != null && post.Placement != BootPlacement.None)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return Bota.AsksForSomething() || BotaB.AsksForSomething();
         }
 
-        /// <summary>True cuando ESE poste tiene una decision propia de bota (propia o en la matriz historica).</summary>
+        /// <summary>
+        /// True cuando ESE poste tiene una decision propia de bota en CUALQUIERA de los dos lados (o en la matriz
+        /// historica). Es lo que permite que una eleccion del usuario se coloque aunque el automatico no la pusiera.
+        /// </summary>
         public bool HasOwnBootPlacement(int postIndex)
         {
-            if (Bota.At(postIndex).HasValue)
+            if (Bota.HasOwnAt(postIndex) || BotaB.HasOwnAt(postIndex))
             {
                 return true;
             }
@@ -534,11 +563,12 @@ namespace RackCad.Domain.Systems.Selective
                 Side = Side,
                 LowEndOnly = LowEndOnly,
                 AuthoredSide = AuthoredSide,
-                AutomaticBootPlacement = AutomaticBootPlacement,
                 BothEndsAreLoadFaces = BothEndsAreLoadFaces,
                 NearFace = NearFace,
                 FarFace = FarFace,
                 DesviadorCellsAreByPost = DesviadorCellsAreByPost,
+                BotaB = BotaB.DeepCopy(),
+                BootSidesDeclared = BootSidesDeclared,
                 Tope = Tope.DeepCopy(),
                 Desviador = Desviador.DeepCopy(),
                 Defensa = Defensa.DeepCopy(),
@@ -550,15 +580,6 @@ namespace RackCad.Domain.Systems.Selective
             foreach (var post in SecondLoadFacePosts)
             {
                 copy.SecondLoadFacePosts.Add(post);
-            }
-
-            foreach (var face in BlankBootFaces)
-            {
-                if (face != null)
-                {
-                    copy.BlankBootFaces.Add(
-                        new BootBlankFace { PostIndex = face.PostIndex, AtHighEnd = face.AtHighEnd });
-                }
             }
 
             foreach (var post in PostSides)

@@ -68,7 +68,6 @@ namespace RackCad.Domain.Systems.Selective
         public static bool IncludesEntryExit(BootPlacement placement)
             => placement == BootPlacement.EntryExit || placement == BootPlacement.Both;
 
-        /// <summary>Si esa colocacion incluye la cara posterior.</summary>
         /// <summary>
         /// I-42 (S1D) — la colocacion que ocupa EXACTAMENTE las caras indicadas. Es la operacion inversa de
         /// <see cref="IncludesEntryExit"/>/<see cref="IncludesRear"/>, y la que permite quitar UNA cara sin tocar la
@@ -79,23 +78,38 @@ namespace RackCad.Domain.Systems.Selective
                 ? (rear ? BootPlacement.Both : BootPlacement.EntryExit)
                 : (rear ? BootPlacement.Rear : BootPlacement.None);
 
+        /// <summary>Si esa colocacion incluye la cara posterior.</summary>
         public static bool IncludesRear(BootPlacement placement)
             => placement == BootPlacement.Rear || placement == BootPlacement.Both;
     }
 
-    /// <summary>La colocacion elegida para UN poste. Su ausencia en la lista significa «por defecto».</summary>
     /// <summary>
-    /// I-42 (S1D) — una CARA que un frente en blanco dejo sin pasillo: el poste y cual de sus dos caras. Es la
-    /// unidad de la declaracion, y por eso el blanco de un lado no puede apagar la bota del otro.
+    /// I-42 (S1E) — LAS DOS CARAS FISICAS de una linea de postes: la cercana y la lejana del rack.
+    ///
+    /// <para>
+    /// Es el resultado de la resolucion, ya sin lados: dos intenciones distintas —la entrada/salida de B y la
+    /// posterior de A, por ejemplo— nombran la MISMA cara fisica y producen UNA sola pieza. LADO y CARA son ejes
+    /// distintos, y este tipo es el punto donde el primero deja de importar.
+    /// </para>
     /// </summary>
-    public sealed class BootBlankFace
+    public readonly struct BootFaces
     {
-        public int PostIndex { get; set; }
+        public BootFaces(bool near, bool far)
+        {
+            Near = near;
+            Far = far;
+        }
 
-        /// <summary>True = la cara LEJANA de la linea, que en un compuesto es la del lado B.</summary>
-        public bool AtHighEnd { get; set; }
+        /// <summary>La cara CERCANA del rack, que es el pasillo del lado A.</summary>
+        public bool Near { get; }
+
+        /// <summary>La cara LEJANA, que en un rack compuesto es el pasillo del lado B.</summary>
+        public bool Far { get; }
+
+        public bool Any => Near || Far;
     }
 
+    /// <summary>La colocacion elegida para UN poste. Su ausencia en la lista significa «por defecto».</summary>
     public sealed class BootPostPlacement
     {
         public int PostIndex { get; set; }
@@ -124,6 +138,88 @@ namespace RackCad.Domain.Systems.Selective
         /// <summary>Los postes con decision propia. Un poste ausente hereda la general.</summary>
         public IList<BootPostPlacement> Posts { get; } = new List<BootPostPlacement>();
 
+        /// <summary>
+        /// I-42 (S1E) — la colocacion que el SISTEMA resuelve para ESTE LADO cuando nadie ha elegido: su pasillo.
+        /// Es DERIVADA y no se persiste: la autoridad del sistema la impone en cada resolucion.
+        /// </summary>
+        public BootPlacement? Automatic { get; set; }
+
+        /// <summary>
+        /// I-42 (S1E) — los postes donde ESTE LADO no tiene almacenamiento, y por tanto su automatico no coloca
+        /// nada. Es DERIVADA como <see cref="Automatic"/>, y es del LADO: el blanco de A no apaga las botas de B.
+        /// Nunca bloquea una decision propia — esa se resuelve antes.
+        /// </summary>
+        public IList<int> BlankPosts { get; } = new List<int>();
+
+        /// <summary>True cuando ESE poste no tiene almacenamiento de este lado.</summary>
+        public bool IsBlankAt(int postIndex)
+        {
+            foreach (var post in BlankPosts)
+            {
+                if (post == postIndex)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// I-42 (S1E) — LA COLOCACION EFECTIVA de este lado en un poste, con la precedencia del contrato:
+        ///
+        /// <list type="number">
+        /// <item>la decision PROPIA del poste, que gana siempre;</item>
+        /// <item>el BLANCO de este lado, que apaga su automatico ahi;</item>
+        /// <item>la general de este lado, y si nadie la eligio, su automatico.</item>
+        /// </list>
+        /// </summary>
+        public BootPlacement PlacementAt(int postIndex)
+        {
+            var own = At(postIndex);
+            if (own.HasValue)
+            {
+                return own.Value;
+            }
+
+            if (IsBlankAt(postIndex))
+            {
+                return BootPlacement.None;
+            }
+
+            return Inherited();
+        }
+
+        /// <summary>Lo que hereda un poste sin decision propia: la general, o el automatico del sistema.</summary>
+        public BootPlacement Inherited()
+            => Placement ?? Automatic ?? BootPlacement.None;
+
+        /// <summary>True cuando ESE poste tiene decision propia en este lado.</summary>
+        public bool HasOwnAt(int postIndex) => At(postIndex).HasValue;
+
+        /// <summary>
+        /// True cuando este lado pide ALGO: lo que hereda —su general, o el automatico del sistema si nadie
+        /// eligio— o la decision de algun poste. Una general en «Ninguno» es el DEFECTO de los postes que heredan,
+        /// no un interruptor: un poste con decision propia sigue pidiendo.
+        /// </summary>
+        public bool AsksForSomething()
+        {
+            if (Inherited() != BootPlacement.None)
+            {
+                return true;
+            }
+
+            foreach (var post in Posts)
+            {
+                if (post != null && post.Placement != BootPlacement.None)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>La decision propia de un poste, o NULL si hereda.</summary>
         public BootPlacement? At(int postIndex)
         {
@@ -140,13 +236,18 @@ namespace RackCad.Domain.Systems.Selective
 
         public SelectiveBotaConfig DeepCopy()
         {
-            var copy = new SelectiveBotaConfig { Placement = Placement };
+            var copy = new SelectiveBotaConfig { Placement = Placement, Automatic = Automatic };
             foreach (var post in Posts)
             {
                 if (post != null)
                 {
                     copy.Posts.Add(new BootPostPlacement { PostIndex = post.PostIndex, Placement = post.Placement });
                 }
+            }
+
+            foreach (var post in BlankPosts)
+            {
+                copy.BlankPosts.Add(post);
             }
 
             return copy;

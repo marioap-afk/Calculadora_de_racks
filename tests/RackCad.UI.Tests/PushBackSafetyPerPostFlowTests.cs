@@ -111,7 +111,15 @@ namespace RackCad.UI.Tests
                     if (boot == null) return;
 
                     w.State.SetFrontCount(3);
-                    w.SafetyDialog = _ => new[] { WithPosts(boot.Id, (1, SafetySide.Both), (2, SafetySide.Both)) };
+                    // I-42 (S1E) — RETARGETEADO: los postes SIN decision propia heredan el automatico del lado, asi
+                    // que para leer «solo los elegidos» hay que decir que los demas no llevan. Es la general en
+                    // «Ninguno», que desde S1D no apaga la familia: los postes elegidos siguen materializando.
+                    w.SafetyDialog = _ =>
+                    {
+                        // La general la decide la SECCION del lado, que es la superficie real desde S1E.
+                        w.BootSectionForTest.ModeBox.SelectedIndex = (int)BootPlacement.None;
+                        return new[] { WithPosts(boot.Id, (1, SafetySide.Both), (2, SafetySide.Both)) };
+                    };
                     EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
 
                     var design = w.LastComputation?.Design;
@@ -208,7 +216,11 @@ namespace RackCad.UI.Tests
                     if (boot == null) return;
 
                     w.State.SetFrontCount(2);
-                    w.SafetyDialog = _ => new[] { WithPosts(boot.Id, (1, SafetySide.Right)) };
+                    w.SafetyDialog = _ =>
+                    {
+                        w.BootSectionForTest.ModeBox.SelectedIndex = (int)BootPlacement.None;   // los demas, sin bota
+                        return new[] { WithPosts(boot.Id, (1, SafetySide.Right)) };
+                    };
                     EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
 
                     var system = w.LastComputation?.System;
@@ -221,16 +233,31 @@ namespace RackCad.UI.Tests
                         .BuildPlan(system, w.Session.Catalog, PushBackFrontalEnd.EntradaSalida).Flatten().Instances
                         .Count(i => string.Equals(i.PieceId, boot.Id, StringComparison.OrdinalIgnoreCase));
 
-                    // I-42 (S1): nada atras — y tampoco delante. En un Push Back de un solo sentido el extremo
-                    // LEJANO esta contra muro, asi que «Derecha» no pide proteger nada: no se muda la bota al
-                    // pasillo, simplemente no hay ninguna. Antes las tres opciones daban la MISMA bota baja.
-                    Assert.Equal(0, rear);
+                    // RETARGETEADO EN S1E. La ronda S1 suponia que el extremo lejano de un rack de un sentido esta
+                    // contra muro y que «Posterior» no pedia nada; el dueño lo rechazo en S1B —detras puede haber un
+                    // pasillo de transito—, asi que esa eleccion SI se materializa. Lo que S1E añade es que el corte
+                    // que la muestra es el que coincide con su plano: el POSTERIOR, no el bajo.
+                    Assert.Equal(1, rear);
                     Assert.Equal(0, low);
 
                     // Y una eleccion que SI pide el pasillo la coloca, en ese mismo poste: la pertenencia por poste
-                    // sigue mandando.
-                    w.SafetyDialog = _ => new[] { WithPosts(boot.Id, (1, SafetySide.Left)) };
+                    // sigue mandando. Desde S1E se elige en la rejilla POR POSTE de la seccion de su lado, que es la
+                    // superficie real — inyectar una matriz historica ya no representa lo que hace el usuario.
+                    w.BootPerPostWindowDialog = window =>
+                    {
+                        window.SetForTest(1, BootPlacement.EntryExit);
+                        window.BuildResultForTest();
+                        return true;
+                    };
+                    w.SafetyDialog = _ =>
+                    {
+                        w.BootSectionForTest.ModeBox.SelectedIndex = (int)BootPlacement.None;
+                        w.BootSectionForTest.Button.RaiseEvent(
+                            new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+                        return new[] { WithPosts(boot.Id) };
+                    };
                     EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+                    w.BootPerPostWindowDialog = null;
                     var chosen = new PushBackSystemFrontalBuilder()
                         .BuildPlan(w.LastComputation.System, w.Session.Catalog, PushBackFrontalEnd.EntradaSalida)
                         .Flatten().Instances

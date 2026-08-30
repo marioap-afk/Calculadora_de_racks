@@ -800,6 +800,78 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 5-pre-septies. Ronda S1E: las botas se configuran POR LADO, y hay UNA sola autoridad fisica
+
+S1D dejo cerrada la precedencia y el alcance del blanco, y con ello quedo a la vista la ambiguedad de fondo: habia
+UNA sola configuracion de botas para un rack que tiene DOS lados fisicos. «Entrada/Salida» no significa lo mismo
+para A que para B, asi que cada consumidor la leia en su marco. Medido antes de tocar codigo, en un compuesto SIN
+blancos:
+
+| general | planta | corte A | corte B | BOM |
+|---|---|---|---|---|
+| Entrada/Salida | 5, todas en el pasillo de A | 5 | **5 mas, que en planta no existen** | 5 |
+| Posterior | 5, todas en el pasillo de B | 0 | **0 — ninguna vista las muestra** | 5 |
+| Ambas | 10 | 5 | 5 | 10 |
+
+No era un defecto de las vistas: era que la intencion no alcanzaba a decir lo que el rack necesita saber.
+
+### El contrato
+
+Cada lado tiene su configuracion —general y postes— y las palabras se leen DENTRO del lado: la entrada/salida de A
+es la cara cercana del rack y la de B la lejana; sus posteriores son las contrarias. LADO y CARA son ejes
+distintos, y dos intenciones pueden nombrar la misma cara fisica —la posterior de A y la entrada de B— y eso es UNA
+pieza, no dos.
+
+```
+A = Entrada/Salida, B = Ninguno   -> solo el pasillo de A
+A = Ninguno, B = Entrada/Salida   -> solo el de B
+A = Entrada/Salida, B = igual     -> los dos
+A = Ambas, B = Ambas              -> las dos caras fisicas, sin duplicar
+```
+
+La precedencia de S1D se conserva entera, ahora por lado: **decision propia del poste > blanco de ese lado >
+general de ese lado**. La general «Ninguno» sigue siendo un DEFECTO y no un interruptor, y el blanco de un lado
+sigue sin tocar al contrario.
+
+### Una sola resolucion, tres consumidores
+
+La pertenencia se resuelve UNA vez —`BootFacesAt`, que convierte las dos intenciones en las dos caras fisicas de la
+linea— y se proyecta a piezas con identidad (lado, cara, poste, ancla y mano) en `PushBackBootPlan`. La planta, los
+cuatro cortes y el BOM consumen esa resolucion: un corte solo decide si una pieza cae en su plano y donde anclarla.
+
+Eso cierra el hallazgo de arriba, y cierra ademas dos huecos que venian de antes: el corte lateral resolvia las
+botas por el lado historico y dibujaba las dos puntas dijera lo que dijera la eleccion, y una bota posterior de un
+rack de un sentido no aparecia en NINGUN corte —ahora aparece en el posterior, que es el que coincide con su plano—.
+
+### La superficie
+
+En «Elementos de seguridad», la fila global ambigua se sustituye por una seccion POR LADO, con el mismo patron que
+el dueño ya valido para los topes y la defensa: titulo, ubicacion y «Por poste…». Un rack de un solo sentido tiene
+UNA seccion y sin etiqueta — no se le inventa un lado B. La fila conserva el TIPO, que sigue siendo comun a la
+familia (no habia evidencia para separarlo).
+
+La casilla muestra lo que ese lado hace hoy —su eleccion o su automatico—, pero mostrar no es elegir: mientras
+nadie la toque, el lado sigue heredando su automatico.
+
+### Legacy
+
+Un documento anterior trae una sola configuracion. Se resuelve ENTERA sobre el lado A —que es exactamente como se
+dibujaba— y el lado B no pide nada; el discriminante es un campo nuevo, aditivo y nulo por omision, que declara que
+el documento habla por lado. La matriz historica por poste se sigue respetando, y ademas se MUESTRA en la seccion
+del lado unico/A, para que no quede una segunda autoridad invisible: al aceptar viaja ya como decision de ese lado.
+El lado historico sigue significando lo que significaba para el protector lateral y para el desviador.
+
+### Alcance
+
+Cinco contratos de prueba retargeteados: cuatro del blanco de S1D —la eleccion es del lado A, asi que para leerla
+sola se silencia B, que en el automatico conserva su bota— y el «nada atras» de S1, cuya premisa —el extremo lejano
+esta contra muro— el dueño ya habia retirado en S1B. Ningun golden tocado. Retirado como superseded: la declaracion
+de caras en blanco de S1D y su reflexion, el automatico global, y dos seams de prueba de la fila global.
+
+### PENDIENTE
+
+Ninguno funcional conocido dentro del alcance de esta ronda.
+
 ## 5-pre-sexies. Ronda S1D: el blanco es de UN LADO, y la general es un DEFECTO
 
 S1C acerto en el concepto —donde hay un blanco el automatico no coloca nada— y se equivoco en el ALCANCE: apagaba la

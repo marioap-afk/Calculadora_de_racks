@@ -16,13 +16,17 @@ using Xunit;
 namespace RackCad.UI.Tests
 {
     /// <summary>
-    /// I-42 (S1B) — LOS PROTECTORES DE BOTA POR LA RUTA REAL: la ventana «Elementos de seguridad», su selector
-    /// general, su editor por poste, aceptar, resolver, dibujo y BOM.
+    /// I-42 (S1E) — LOS PROTECTORES DE BOTA POR LA RUTA REAL: la ventana «Elementos de seguridad», la SECCION DE
+    /// SU LADO, su editor por poste, aceptar, resolver, dibujo y BOM.
     ///
     /// <para>
     /// El contrato del dueño en la superficie que el usuario tiene delante: <b>Ninguno · Entrada/Salida · Posterior
     /// · Ambas</b>, y en el editor por poste ademas <b>(por defecto)</b>. Ni «Izquierda» ni «Derecha» aparecen ya
     /// para esta familia — nombraban una orientacion, no la ubicacion que hay que proteger.
+    /// </para>
+    /// <para>
+    /// Desde S1E cada LADO tiene su seccion, con su general y sus postes. Estas pruebas recorren la del lado A —la
+    /// unica de un rack de un solo sentido— y <see cref="PushBackBootSidesUiFlowTests"/> recorre las dos.
     /// </para>
     /// </summary>
     public sealed class PushBackBootUiFlowTests
@@ -113,17 +117,20 @@ namespace RackCad.UI.Tests
                     variant.SelectedIndex = 1;
                 }
 
-                general?.Invoke(BootCombo(dialog));
+                // I-42 (S1E) — la ubicacion se elige en la SECCION del lado, no en la fila: la fila solo aporta
+                // el tipo. La seccion vive en la ventana anfitriona, ya construida cuando el dialogo se muestra.
+                general?.Invoke(w.BootSectionForTest.ModeBox);
                 if (perPost != null)
                 {
-                    dialog.PerPostDialog = window =>
+                    w.BootPerPostWindowDialog = window =>
                     {
                         perPost(window);
                         window.BuildResultForTest();
                         return true;
                     };
-                    dialog.BootPerPostButtonForTest?.RaiseEvent(
+                    w.BootSectionForTest.Button.RaiseEvent(
                         new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+                    w.BootPerPostWindowDialog = null;
                 }
 
                 dialog.BuildResultForTest();
@@ -133,10 +140,6 @@ namespace RackCad.UI.Tests
             EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
             w.SafetyWindowDialog = null;
         }
-
-        /// <summary>El selector general de la bota dentro de la ventana real.</summary>
-        private static ComboBox BootCombo(SelectiveSafetyWindow dialog)
-            => dialog.BootSideComboForTest;
 
         // ==================================================================== la superficie
 

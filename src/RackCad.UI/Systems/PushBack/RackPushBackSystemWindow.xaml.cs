@@ -2399,6 +2399,23 @@ namespace RackCad.UI.Systems.PushBack
             // esta familia ya no viaja en ella —la deciden las secciones—, asi que su id se conserva aqui. Es el
             // portador de la intencion POR POSTE cuando los dos lados quedan en «Ninguno».
             var defenseCarrierId = DefenseSelection(safetySelections)?.ElementId;
+
+            // I-42 (S1E, decision del dueño) — LAS BOTAS se organizan como los topes y la defensa: una seccion por
+            // lado. En un compuesto «Entrada/Salida» no significa lo mismo para A que para B —cada uno tiene SU
+            // pasillo—, asi que una fila global no podia expresar la intencion y cada vista acababa leyendola en su
+            // propio marco. Un rack de un solo sentido conserva una sola seccion, sin etiqueta.
+            var bootSectionA = BuildBootSection(PushBackSide.A, composite.SideBPresent ? "A" : null, postCount);
+            BootSectionForTest = bootSectionA;
+            composed.Children.Add(bootSectionA.View);
+
+            PushBackBootSection bootSectionB = null;
+            if (composite.SideBPresent)
+            {
+                bootSectionB = BuildBootSection(PushBackSide.B, "B", postCount);
+                composed.Children.Add(bootSectionB.View);
+            }
+
+            BootSectionBForTest = bootSectionB;
             var defenseSectionA = BuildDefenseSection(PushBackSide.A, composite.SideBPresent ? "A" : null, postCount);
             DefenseSectionForTest = defenseSectionA;
             composed.Children.Add(defenseSectionA.View);
@@ -2463,6 +2480,10 @@ namespace RackCad.UI.Systems.PushBack
                 // deja el otro exactamente como estaba.
                 ApplyDefenseSections(defenseSectionA, defenseSectionB, defenseCarrierId);
 
+                // I-42 (S1E): y cada seccion de botas escribe la configuracion de SU lado, entera. Editar A no
+                // puede tocar B ni al reves, que es lo que las dos secciones vienen a garantizar.
+                ApplyBootSections(bootSectionA, bootSectionB);
+
                 // Cada seccion aplica a SU lado: editar el tope de A no toca el de B, que es el contrato de
                 // StopA/StopB que las rondas anteriores cerraron.
                 if (composite.SideBPresent)
@@ -2477,6 +2498,98 @@ namespace RackCad.UI.Systems.PushBack
 
                 RequestRecompute();
             }
+        }
+
+        /// <summary>I-42 (S1E) — la seccion de botas del lado A del ultimo Seguridad abierto (seam de prueba).</summary>
+        internal PushBackBootSection BootSectionForTest { get; private set; }
+
+        /// <summary>La del lado B, o null en un rack de un solo sentido (seam de prueba).</summary>
+        internal PushBackBootSection BootSectionBForTest { get; private set; }
+
+        /// <summary>
+        /// La seccion de botas de un lado, sembrada con la configuracion que ESE lado tiene ahora. Un rack de un
+        /// solo sentido usa la configuracion de siempre (la del lado A), sin etiqueta.
+        /// </summary>
+        private PushBackBootSection BuildBootSection(PushBackSide side, string sideLabel, int postCount)
+        {
+            // Se siembra con la seleccion RESUELTA cuando la hay: es la que trae el automatico del sistema, y por
+            // tanto la que sabe que hace hoy este lado. La del diseño solo guarda lo que alguien eligio.
+            var selection = BootSelection(LastComputation?.System?.Structure?.SafetySelections)
+                            ?? BootSelection(safetySelections);
+            var config = selection == null
+                ? null
+                : (side == PushBackSide.B ? selection.BotaB : selection.Bota);
+            return new PushBackBootSection(
+                side, sideLabel, config, postCount, OpenBootPerPostDialog,
+                side == PushBackSide.A ? selection?.PostSides : null);
+        }
+
+        /// <summary>La seleccion de la familia BOTA dentro de <paramref name="selections"/>, o null.</summary>
+        private SelectiveSafetySelection BootSelection(IEnumerable<SelectiveSafetySelection> selections)
+            => RackCad.Application.Systems.Selective.SelectiveSafetyFamilies.SelectedOfType(
+                selections, catalog?.SafetyElements, SelectiveSafetyDefaults.BotaType);
+
+        /// <summary>Seam de prueba: sustituye SOLO el ShowDialog de la rejilla por poste de botas.</summary>
+        internal Func<SafetyPerPostWindow, bool?> BootPerPostWindowDialog;
+
+        /// <summary>
+        /// La rejilla por poste real. Es la MISMA superficie por poste que ya existia —cinco opciones, con «(por
+        /// defecto)» como herencia—, abierta para el lado que la seccion declara. Los ordinales de la colocacion y
+        /// del lado historico coinciden, asi que la traduccion de ida y vuelta es exacta.
+        /// </summary>
+        private IReadOnlyList<BootPostPlacement> OpenBootPerPostDialog(PushBackBootSection section)
+        {
+            var current = section.Posts
+                .Select(post => new SafetyPostSide
+                {
+                    PostIndex = post.PostIndex,
+                    Side = BootPlacements.To(post.Placement),
+                })
+                .ToList();
+            var dialog = new SafetyPerPostWindow(
+                PushBackBootSection.Heading(section.SideLabel),
+                section.PostCount,
+                BootPlacements.To(section.Placement),
+                current,
+                PushBackBootSection.ModeLabels) { Owner = this };
+            var accepted = BootPerPostWindowDialog != null ? BootPerPostWindowDialog(dialog) : dialog.ShowDialog();
+            if (accepted != true)
+            {
+                return null;
+            }
+
+            return dialog.Result
+                .Select(post => new BootPostPlacement
+                {
+                    PostIndex = post.PostIndex,
+                    Placement = BootPlacements.From(post.Side),
+                })
+                .ToList();
+        }
+
+        /// <summary>
+        /// Escribe lo que decidio cada seccion sobre la seleccion de botas. Cada lado sustituye SU configuracion
+        /// entera —general y postes—, y no toca la del otro. Un rack de un solo sentido escribe solo la del lado A
+        /// y deja la de B vacia, que es lo que significa «B no pide nada».
+        /// </summary>
+        private void ApplyBootSections(PushBackBootSection sideA, PushBackBootSection sideB)
+        {
+            var selection = BootSelection(safetySelections);
+            if (selection == null)
+            {
+                return;   // el usuario no eligio tipo de bota: no hay nada que configurar
+            }
+
+            if (sideA != null)
+            {
+                selection.Bota = sideA.ToConfig();
+            }
+
+            selection.BotaB = sideB != null ? sideB.ToConfig() : new SelectiveBotaConfig();
+
+            // Desde aqui el documento declara su intencion POR LADO: una general vacia significa «este lado hereda
+            // su automatico», no «este lado no pide nada», que es lo que significaba antes de S1E.
+            selection.BootSidesDeclared = true;
         }
 
         /// <summary>I-42 (ronda 7D) — la seccion de defensa del lado A del ultimo Seguridad abierto (seam de prueba).</summary>
@@ -2680,7 +2793,7 @@ namespace RackCad.UI.Systems.PushBack
                 elements, safetySelections, postCount,
                 levelsPerFrente: levels, fondoCount: 1, parrillaPlan: null, catalog: catalog, resolvedSystem: null,
                 fallbackLevelsArePerPost: true,
-                introduction: "Push Back admite botas, protectores laterales, desviadores y defensa de montacargas en el extremo de entrada/salida (el extremo bajo). La defensa y los topes se configuran en las secciones de arriba, cada lado por separado. El lado posterior viene apagado y no usa guías.",
+                introduction: "Push Back admite botas, protectores laterales, desviadores y defensa de montacargas en el extremo de entrada/salida (el extremo bajo). Las botas, la defensa y los topes se configuran en las secciones de arriba, cada lado por separado. El lado posterior viene apagado y no usa guías.",
                 includeDefensa: false, includeGuia: false, useDynamicSafetyDefaults: true,
                 extraSection: extraSection,
                 desviadorLevelsPerPost: DesviadorLevelsPerPost(),
@@ -2690,7 +2803,10 @@ namespace RackCad.UI.Systems.PushBack
                 showDesviadorSide: false,
                 // PB-008/009/010: the two ends of the defence are named for what Push Back really has, the rear one is
                 // off by default, and each end can follow the automatic 12"/36" that recomputes with the front count.
-                defensaLowEndOnly: true)
+                defensaLowEndOnly: true,
+                // I-42 (S1E): la UBICACION de la bota se decide en las secciones por lado de arriba; la fila
+                // conserva solo el TIPO.
+                bootModeInSections: true)
             {
                 Owner = this
             };

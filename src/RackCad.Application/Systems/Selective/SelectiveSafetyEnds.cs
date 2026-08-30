@@ -139,14 +139,17 @@ namespace RackCad.Application.Systems.Selective
                 return None;
             }
 
-            var placement = selection.BootPlacementAt(postIndex);
+            // I-42 (S1E) — la PERTENENCIA la resuelve el dominio, UNA vez y para los dos lados: aqui solo se
+            // convierte en copias. Dos intenciones que nombran la misma cara fisica —la posterior de A y la entrada
+            // de B— son UNA pieza, y por eso se pregunta por caras y no por lados.
+            var faces = selection.BootFacesAt(postIndex);
             var copies = new List<SafetyEndCopy>(2);
-            if (BootPlacements.IncludesEntryExit(placement))
+            if (faces.Near)
             {
                 copies.Add(new SafetyEndCopy(atHighEnd: false, mirrored: Mirror(farEnd: false)));
             }
 
-            if (BootPlacements.IncludesRear(placement))
+            if (faces.Far)
             {
                 copies.Add(new SafetyEndCopy(atHighEnd: true, mirrored: Mirror(farEnd: true)));
             }

@@ -332,6 +332,21 @@ namespace RackCad.Application.Persistence
 
         public List<BootPostDocument> BotaPosts { get; set; }
 
+        /// <summary>
+        /// I-42 (S1E) — BOTA del LADO B de un rack compuesto: su propia colocacion general y sus propios postes.
+        /// Aditivo y nulo por omision: un documento anterior no los trae, y entonces su unica configuracion se lee
+        /// como la del lado A —que es como se dibujaba— y el lado B no pide nada.
+        /// </summary>
+        public int? BotaBPlacement { get; set; }
+
+        public List<BootPostDocument> BotaBPosts { get; set; }
+
+        /// <summary>
+        /// I-42 (S1E) — true cuando este documento declara las botas POR LADO. Ausente = documento anterior, cuya
+        /// unica configuracion se lee como la del lado A y deja el lado B sin pedir nada, que es como se dibujaba.
+        /// </summary>
+        public bool? BotaSidesDeclared { get; set; }
+
         /// <summary>Shared explicit mapping used by every rack system that composes the safety subsystem. The wire
         /// format is a FLAT record (unchanged, and shared with the dynamic path); each family flattens its own DTO
         /// (I-22, E7 — <see cref="TopeSelectionDocument"/> and siblings) into these flat properties and reads it back
@@ -353,13 +368,22 @@ namespace RackCad.Application.Persistence
             GuiaSelectionDocument.From(selection.Guia).WriteInto(document);
             ParrillaSelectionDocument.From(selection.Parrilla).WriteInto(document);
             document.BotaPlacement = selection.Bota.Placement.HasValue ? (int)selection.Bota.Placement.Value : (int?)null;
-            document.BotaPosts = selection.Bota.Posts.Count == 0
-                ? null
-                : selection.Bota.Posts.Where(post => post != null)
-                    .Select(post => new BootPostDocument { PostIndex = post.PostIndex, Placement = (int)post.Placement })
-                    .ToList();
+            document.BotaPosts = BootPosts(selection.Bota);
+            document.BotaBPlacement = selection.BotaB.Placement.HasValue
+                ? (int)selection.BotaB.Placement.Value
+                : (int?)null;
+            document.BotaBPosts = BootPosts(selection.BotaB);
+            document.BotaSidesDeclared = selection.BootSidesDeclared ? true : (bool?)null;
             return document;
         }
+
+        /// <summary>Los postes con decision propia de un lado, o NULL cuando no hay ninguno.</summary>
+        private static List<BootPostDocument> BootPosts(SelectiveBotaConfig config)
+            => config == null || config.Posts.Count == 0
+                ? null
+                : config.Posts.Where(post => post != null)
+                    .Select(post => new BootPostDocument { PostIndex = post.PostIndex, Placement = (int)post.Placement })
+                    .ToList();
 
         /// <summary>Version-tolerant domain mapping. Each family reconstructs its own config subtype from its DTO, with
         /// the exact legacy fallback for a missing field (I-22, E7).</summary>
@@ -391,17 +415,16 @@ namespace RackCad.Application.Persistence
                 selection.Bota.Placement = (BootPlacement)BotaPlacement.Value;
             }
 
-            foreach (var post in BotaPosts ?? Enumerable.Empty<BootPostDocument>())
+            BootPostDocumentMapping.Read(BotaPosts, selection.Bota);
+
+            // I-42 (S1E): y la del lado B, si el documento la trae. Ausente = documento anterior a S1E.
+            if (BotaBPlacement.HasValue && Enum.IsDefined(typeof(BootPlacement), BotaBPlacement.Value))
             {
-                if (post != null && post.PostIndex >= 0 && Enum.IsDefined(typeof(BootPlacement), post.Placement))
-                {
-                    selection.Bota.Posts.Add(new BootPostPlacement
-                    {
-                        PostIndex = post.PostIndex,
-                        Placement = (BootPlacement)post.Placement,
-                    });
-                }
+                selection.BotaB.Placement = (BootPlacement)BotaBPlacement.Value;
             }
+
+            BootPostDocumentMapping.Read(BotaBPosts, selection.BotaB);
+            selection.BootSidesDeclared = BotaSidesDeclared ?? false;
 
             return selection;
         }
@@ -409,6 +432,25 @@ namespace RackCad.Application.Persistence
     }
 
     /// <summary>I-42 (S1B) — la colocacion de bota que UN poste declara por su cuenta.</summary>
+    public static class BootPostDocumentMapping
+    {
+        /// <summary>Vuelca los postes de un lado en su configuracion, ignorando lo que no sea un valor valido.</summary>
+        public static void Read(IEnumerable<BootPostDocument> posts, SelectiveBotaConfig config)
+        {
+            foreach (var post in posts ?? Enumerable.Empty<BootPostDocument>())
+            {
+                if (post != null && post.PostIndex >= 0 && Enum.IsDefined(typeof(BootPlacement), post.Placement))
+                {
+                    config.Posts.Add(new BootPostPlacement
+                    {
+                        PostIndex = post.PostIndex,
+                        Placement = (BootPlacement)post.Placement,
+                    });
+                }
+            }
+        }
+    }
+
     public sealed class BootPostDocument
     {
         public int PostIndex { get; set; }

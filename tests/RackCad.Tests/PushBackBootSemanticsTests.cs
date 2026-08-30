@@ -96,6 +96,40 @@ namespace RackCad.Tests
             return new PushBackResolver(Catalog).Resolve(design);
         }
 
+        /// <summary>
+        /// El mismo rack declarando la intencion de los DOS lados. Silenciar el lado B —«Ninguno» explicito— es lo
+        /// que permite mirar una linea y ver SOLO lo que el lado A decidio, que es lo que estas pruebas afirman.
+        /// </summary>
+        private static PushBackSystem ResolveSides(
+            PushBackCompositeEditorState state,
+            BootPlacement? generalA,
+            BootPlacement? generalB,
+            params (int Post, BootPlacement Placement)[] perPostA)
+        {
+            var design = new PushBackCompositeEditorAssembler(Catalog).Build(state, Inputs(), Catalog).Design;
+            design.Structure.SafetySelections.Clear();
+
+            var selection = new SelectiveSafetySelection { ElementId = BootId, Quantity = 1 };
+            if (generalA.HasValue)
+            {
+                selection.Bota.Placement = generalA.Value;
+                selection.Side = BootPlacements.To(generalA.Value);
+            }
+
+            if (generalB.HasValue)
+            {
+                selection.BotaB.Placement = generalB.Value;
+            }
+
+            foreach (var (post, placement) in perPostA)
+            {
+                selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = post, Placement = placement });
+            }
+
+            design.Structure.SafetySelections.Add(selection);
+            return new PushBackResolver(Catalog).Resolve(design);
+        }
+
         private static IReadOnlyList<HeaderBlockInstance> Boots(PushBackSystem system)
         {
             var id = BootId;
@@ -368,9 +402,9 @@ namespace RackCad.Tests
         }
 
         /// <summary>
-        /// Pero NO deshabilita la configuracion manual. RETARGETEADO EN S1D: en esa linea el automatico conserva la
-        /// bota del lado que SIGUE cargando —el blanco es de A, no de B—, y una eleccion EXPLICITA la sustituye por
-        /// exactamente lo que pide, incluida la de entrada sobre el poste que el blanco dejo expuesto.
+        /// Pero NO deshabilita la configuracion manual. RETARGETEADO EN S1E: la eleccion es del LADO A, asi que
+        /// para leerla sola se silencia el lado B —que en el automatico conserva su bota en esa misma linea—. Lo
+        /// que el lado A pide se coloca entero, incluida la cara que el blanco dejo expuesta.
         /// </summary>
         [Theory]
         [InlineData(BootPlacement.EntryExit, 1)]
@@ -380,9 +414,9 @@ namespace RackCad.Tests
         public void Blank_DoesNotDisableBootOverride(BootPlacement placement, int expected)
         {
             var line = BlankedLine();
-            Assert.Single(LineBoots(Resolve(Blanked(), general: null), line));
+            Assert.Empty(LineBoots(ResolveSides(Blanked(), null, BootPlacement.None), line));
 
-            var overridden = Resolve(Blanked(), general: null, (2, placement));
+            var overridden = ResolveSides(Blanked(), null, BootPlacement.None, (2, placement));
             Assert.Equal(expected, LineBoots(overridden, line).Count);
             Assert.Equal(Boots(overridden).Count, BootsInBom(overridden));
         }
@@ -398,26 +432,22 @@ namespace RackCad.Tests
             return Lines(full).Single(y => !LineBoots(full, y).SequenceEqual(LineBoots(blanked, y)));
         }
 
-        /// <summary>Y una eleccion explicita de entrada/salida ahi coloca su bota, no la del otro extremo.</summary>
+        /// <summary>Y una eleccion explicita de entrada/salida ahi coloca su bota, en el pasillo de SU lado.</summary>
         [Fact]
         public void Blank_ExplicitEntryExit_CanMaterialize()
         {
             var line = BlankedLine();
-            var automatic = Resolve(Blanked(), general: null);
-            var overridden = Resolve(Blanked(), general: null, (2, BootPlacement.EntryExit));
+            var overridden = ResolveSides(Blanked(), null, BootPlacement.None, (2, BootPlacement.EntryExit));
 
-            var before = LineBoots(automatic, line);
-            var after = LineBoots(overridden, line);
-
-            Assert.Single(after);
-            Assert.NotEqual(before[0], after[0]);   // la ubicacion cambio: es la que se pidio
-            Assert.True(after[0] < overridden.Structure.TotalLength / 2.0);
+            Assert.Empty(LineBoots(ResolveSides(Blanked(), null, BootPlacement.None), line));
+            Assert.Single(LineBoots(overridden, line));
+            Assert.True(LineBoots(overridden, line)[0] < overridden.Structure.TotalLength / 2.0);
         }
 
         [Fact]
         public void Blank_ExplicitNone_MaterializesNone()
             => Assert.Empty(LineBoots(
-                Resolve(Blanked(), general: null, (2, BootPlacement.None)), BlankedLine()));
+                ResolveSides(Blanked(), null, BootPlacement.None, (2, BootPlacement.None)), BlankedLine()));
 
         /// <summary>Y la bota configurada a mano se queda en SU linea: ninguna otra se mueve ni desaparece.</summary>
         [Fact]
@@ -436,8 +466,8 @@ namespace RackCad.Tests
         }
 
         /// <summary>
-        /// Ni cruza al otro lado: pedir la de entrada en esa linea coloca la de entrada y retira lo que esa linea
-        /// heredaba, sin tocar ninguna otra. Es la forma original de S1B, que S1D restablece.
+        /// Ni cruza al otro lado: pedir la entrada del lado A en esa linea coloca la de A y no mueve ninguna de B.
+        /// RETARGETEADO EN S1E, que es cuando esa independencia empieza a existir de verdad.
         /// </summary>
         [Fact]
         public void Blank_BootDoesNotCrossSide()
@@ -445,7 +475,7 @@ namespace RackCad.Tests
             var automatic = Resolve(Blanked(), general: null);
             var overridden = Resolve(Blanked(), general: null, (2, BootPlacement.EntryExit));
 
-            Assert.Equal(FarBoots(automatic) - 1, FarBoots(overridden));   // solo la de ESA linea, que se pidio de entrada
+            Assert.Equal(FarBoots(automatic), FarBoots(overridden));
             Assert.Equal(NearBoots(automatic) + 1, NearBoots(overridden));
         }
 
@@ -559,23 +589,28 @@ namespace RackCad.Tests
             var line = BlankedLine();
             var post = PostOfLine(blanked, line);
 
-            Assert.True(selection.IsBlankBootFace(post, atHighEnd: false));    // la cara de A
-            Assert.False(selection.IsBlankBootFace(post, atHighEnd: true));    // la de B, no
-            Assert.False(selection.IsBlankBootFace(post - 1, atHighEnd: false));
+            Assert.True(selection.Bota.IsBlankAt(post));        // el lado A, sin almacenamiento ahi
+            Assert.False(selection.BotaB.IsBlankAt(post));      // el lado B, intacto
+            Assert.False(selection.Bota.IsBlankAt(post - 1));
 
             var other = Resolve(BlankedB(), general: null).Structure.SafetySelections.Single(IsBootSelection);
-            Assert.False(other.IsBlankBootFace(post, atHighEnd: false));
-            Assert.True(other.IsBlankBootFace(post, atHighEnd: true));
+            Assert.False(other.Bota.IsBlankAt(post));
+            Assert.True(other.BotaB.IsBlankAt(post));
         }
 
-        /// <summary>Y un override en el lado en blanco no toca al contrario, ni al reves.</summary>
+        /// <summary>
+        /// Y un override en el lado en blanco no toca al contrario. RETARGETEADO EN S1E: pedir la entrada de A en
+        /// esa linea AÑADE la de A y deja intacta la de B, que antes desaparecia porque la eleccion se leia como si
+        /// fuera de toda la linea.
+        /// </summary>
         [Fact]
         public void BlankA_ExplicitOverride_DoesNotChangeB()
         {
             var automatic = Resolve(Blanked(), general: null);
             var overridden = Resolve(Blanked(), general: null, (2, BootPlacement.EntryExit));
 
-            Assert.Equal(FarBoots(automatic) - 1, FarBoots(overridden));   // solo la que esa linea heredaba
+            Assert.Equal(FarBoots(automatic), FarBoots(overridden));       // el pasillo de B, intacto
+            Assert.Equal(NearBoots(automatic) + 1, NearBoots(overridden)); // y el de A gana la que se pidio
             foreach (var other in Lines(automatic).Where(y => Math.Abs(y - BlankedLine()) > 0.01))
             {
                 Assert.Equal(LineBoots(automatic, other), LineBoots(overridden, other));
@@ -881,14 +916,14 @@ namespace RackCad.Tests
             var selection = new SelectiveSafetySelection { ElementId = BootId, Quantity = 1 };
             selection.Bota.Placement = BootPlacement.EntryExit;
             selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = 4, Placement = BootPlacement.None });
-            selection.BlankBootFaces.Add(new BootBlankFace { PostIndex = 2, AtHighEnd = false });   // resuelto en esta sesion
+            selection.Bota.BlankPosts.Add(2);   // lo que el sistema resolvio en esta sesion
 
             var restored = SafetySelectionDocument.From(selection).ToDomain();
 
             Assert.Equal(BootPlacement.EntryExit, restored.Bota.Placement);
             Assert.False(restored.HasOwnBootPlacement(2));                  // P2 sigue en «por defecto»
             Assert.Equal(BootPlacement.None, restored.Bota.At(4));          // P4 sigue en «Ninguno» explicito
-            Assert.Empty(restored.BlankBootFaces);                          // derivado: no se persiste
+            Assert.Empty(restored.Bota.BlankPosts);                         // derivado: no se persiste
             Assert.Equal(BootPlacement.EntryExit, restored.BootPlacementAt(2));
         }
 
@@ -1040,16 +1075,16 @@ namespace RackCad.Tests
         {
             var chosen = new SelectiveSafetySelection { ElementId = BootId };
             chosen.Bota.Placement = BootPlacement.Rear;
-            chosen.AutomaticBootPlacement = BootPlacement.EntryExit;
+            chosen.Bota.Automatic = BootPlacement.EntryExit;
             Assert.Equal(BootPlacement.Rear, chosen.BootPlacementAt(0));
 
             var perPost = new SelectiveSafetySelection { ElementId = BootId };
             perPost.Bota.Posts.Add(new BootPostPlacement { PostIndex = 0, Placement = BootPlacement.Both });
-            perPost.AutomaticBootPlacement = BootPlacement.EntryExit;
+            perPost.Bota.Automatic = BootPlacement.EntryExit;
             Assert.Equal(BootPlacement.Both, perPost.BootPlacementAt(0));
 
             var untouched = new SelectiveSafetySelection { ElementId = BootId, Side = SafetySide.Both };
-            untouched.AutomaticBootPlacement = BootPlacement.EntryExit;
+            untouched.Bota.Automatic = BootPlacement.EntryExit;
             Assert.Equal(BootPlacement.EntryExit, untouched.BootPlacementAt(0));
 
             // Sin automatico —Selectivo, Dinamico— manda el lado historico.
@@ -1141,12 +1176,15 @@ namespace RackCad.Tests
 
             Assert.Equal(BootPlacement.Both, selection.BootPlacementAt(2));
 
-            selection.BlankBootFaces.Add(new BootBlankFace { PostIndex = 2, AtHighEnd = false });
-            Assert.Equal(BootPlacement.Rear, selection.BootPlacementAt(2));   // solo cae la cara de A
+            selection.Bota.BlankPosts.Add(2);
+            Assert.Equal(BootPlacement.None, selection.BootPlacementAt(2));   // el lado A no tiene nada ahi
             Assert.Equal(BootPlacement.Both, selection.BootPlacementAt(1));   // otra linea: intacta
 
-            selection.BlankBootFaces.Add(new BootBlankFace { PostIndex = 2, AtHighEnd = true });
-            Assert.Equal(BootPlacement.None, selection.BootPlacementAt(2));   // las dos caras: ahi si, ninguna
+            // …y el lado B de esa misma linea sigue resolviendose solo, con su propia configuracion.
+            selection.BotaB.Placement = BootPlacement.EntryExit;
+            Assert.Equal(BootPlacement.EntryExit, selection.BootPlacementAtSideB(2));
+            Assert.True(selection.BootFacesAt(2).Far);
+            Assert.False(selection.BootFacesAt(2).Near);
         }
 
         /// <summary>
@@ -1158,8 +1196,7 @@ namespace RackCad.Tests
         {
             var selection = new SelectiveSafetySelection { ElementId = BootId };
             selection.Bota.Placement = BootPlacement.Both;
-            selection.BlankBootFaces.Add(new BootBlankFace { PostIndex = 2, AtHighEnd = false });
-            selection.BlankBootFaces.Add(new BootBlankFace { PostIndex = 2, AtHighEnd = true });
+            selection.Bota.BlankPosts.Add(2);
 
             foreach (var chosen in new[]
                      { BootPlacement.None, BootPlacement.EntryExit, BootPlacement.Rear, BootPlacement.Both })

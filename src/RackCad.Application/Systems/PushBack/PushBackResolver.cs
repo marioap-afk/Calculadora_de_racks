@@ -100,17 +100,12 @@ namespace RackCad.Application.Systems.PushBack
             structure.InteriorFaceStartX = Math.Min(composite.GapStartX, composite.GapEndX);
             structure.InteriorFaceEndX = Math.Max(composite.GapStartX, composite.GapEndX);
 
-            // I-42 (S1D) — y con la interfaz ya declarada se sabe QUE CARAS quedaron sin pasillo, que es lo que
-            // apaga el automatico de la bota ahi — la del lado en blanco, no la del contrario. Va despues, no antes,
-            // porque la pregunta es sobre la estructura terminada; y sobre todas las copias de la seleccion —la del
-            // sistema, la de la estructura y la de cada lado—, que es de donde leen la planta, los cuatro cortes
-            // frontales y el BOM.
-            var blankFaces = safety.BlankFaces(structure);
-            safety.DeclareBlankFaces(blankFaces, system.SafetySelections);
-            safety.DeclareBlankFaces(blankFaces, structure.SafetySelections);
-            safety.DeclareBlankFaces(blankFaces, composite.SideA?.Local?.Structure?.SafetySelections);
-            safety.DeclareBlankFaces(
-                safety.Reflected(blankFaces), composite.SideB?.Local?.Structure?.SafetySelections);
+            // I-42 (S1E) — y con la interfaz ya declarada se sabe QUE POSTES quedo sin almacenamiento cada
+            // LADO, que es lo que apaga SU automatico ahi. Va despues, no antes, porque la pregunta es sobre la
+            // estructura terminada. Los sistemas locales de cada lado NO la reciben: desde S1E ninguna vista
+            // resuelve pertenencia de botas por su cuenta, asi que no hay nada que reflejar.
+            safety.DeclareBlankPosts(structure, system.SafetySelections);
+            safety.DeclareBlankPosts(structure, structure.SafetySelections);
 
             return system;
         }
@@ -165,6 +160,12 @@ namespace RackCad.Application.Systems.PushBack
             // Un rack de un solo sentido tiene una sola cara de carga; la lejana no existe y hereda, que es lo que
             // hacia siempre.
             ApplySafety(system, structure, design.DefensePieceId, sideBPieceId: null);
+
+            // I-42 (S1E) — y por el MISMO camino que el compuesto: el unico lado declara sus postes en blanco. Un
+            // rack de un sentido no declara interfaz, asi que casi siempre no habra ninguno; se hace igual para que
+            // la resolucion sea la misma en los dos caminos.
+            safety.DeclareBlankPosts(structure, system.SafetySelections);
+            safety.DeclareBlankPosts(structure, structure.SafetySelections);
             return system;
         }
 

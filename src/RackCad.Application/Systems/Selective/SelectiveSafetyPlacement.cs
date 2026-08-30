@@ -161,17 +161,16 @@ namespace RackCad.Application.Systems.Selective
         /// <paramref name="mirrorAxisX"/> is the reflection line for the mirrored (Right) copy: null flips about the
         /// block origin in place (frontal); a value reflects position + orientation about that X (planta/lateral).
         /// <paramref name="longitud"/>, when set, becomes the piece's LONGITUD dynamic param (the LATERAL spans the fondo).</summary>
-        /// <param name="faceApplies">
-        /// I-42 (ronda 6F) — si la CARA a la que iria una copia existe fisicamente. Recibe el extremo de esa copia
-        /// (<c>true</c> = el lejano) y responde si ahi hay una cara a la que atornillarse. Es PERTENENCIA, el primero
-        /// de los tres ejes: no toca ni la posicion ni la orientacion, solo decide si la pieza llega a existir. Con
-        /// <c>null</c> todas las caras aplican, que es el comportamiento de siempre.
+        /// <param name="physicalFaces">
+        /// I-42 (S1E) — true para la familia BOTA, cuya pertenencia se resuelve por UBICACION FISICA (y por lado en
+        /// un rack compuesto) y no por el lado historico. La resolucion ya viene hecha del dominio: esta vista no
+        /// vuelve a decidir quien lleva pieza, solo donde se ancla y como se orienta.
         /// </param>
         public static void AppendAtPost(
             ICollection<HeaderBlockInstance> target, RackCatalog catalog, string view,
             IReadOnlyList<SafetyElement> elements,
             Point2D postOrigin, string plateId, int postIndex, double? mirrorAxisX = null, double? longitud = null,
-            bool mirrorYInPlace = false, SafetySide? sideOverride = null, Func<bool, bool> faceApplies = null,
+            bool mirrorYInPlace = false, SafetySide? sideOverride = null,
             bool physicalFaces = false)
         {
             if (elements == null || elements.Count == 0)
@@ -203,22 +202,9 @@ namespace RackCad.Application.Systems.Selective
                 //
                 // La versión anterior colapsaba los dos ejes en un solo SafetySide, y al imponer el extremo bajo
                 // perdía la orientación: un Right acababa dibujado como un Left, o desaparecía del corte.
-                // I-42 (S1B, contrato del dueño) — un frente EN BLANCO decide el AUTOMATICO, no la capacidad de
-                // configurar. Si el usuario pidio EXPLICITAMENTE una bota en ese poste, se coloca: el poste fisico
-                // sigue ahi y puede necesitar proteccion aunque no haya almacenamiento. Lo que el blanco nunca hace
-                // —ni antes ni ahora— es MOVER la pieza a otro poste, a la interfaz ni al otro lado.
-                var authored = physicalFaces
-                    && !sideOverride.HasValue
-                    && (element.Selection?.HasOwnBootPlacement(postIndex) ?? false);
-
                 foreach (var copy in Copies(
                     element.Selection, postIndex, sideOverride, mirrorYInPlace, physicalFaces))
                 {
-                    if (!authored && faceApplies != null && !faceApplies(copy.AtHighEnd))
-                    {
-                        continue;   // esa cara no existe y nadie la pidio: la pieza no se muda, simplemente no hay
-                    }
-
                     target.Add(Piece(
                         element.PieceId, element.Block, view,
                         copy.AtHighEnd ? mirroredAt : at,

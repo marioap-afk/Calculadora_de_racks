@@ -54,6 +54,14 @@ namespace RackCad.UI
         private readonly bool showDesviadorSide;
 
         /// <summary>
+        /// I-42 (S1E, contrato del dueño) — true cuando la UBICACION de la bota se decide en SECCIONES POR LADO
+        /// (Push Back) y no en esta fila. La fila conserva el TIPO, que es comun a la familia; lo que desaparece es
+        /// la eleccion global ambigua: en un rack compuesto «Entrada/Salida» no significa lo mismo para A que para
+        /// B, y una sola fila no puede decir las dos cosas.
+        /// </summary>
+        private readonly bool bootModeInSections;
+
+        /// <summary>
         /// PB-002 (I-32) — an OPT-IN, already-per-POST level count for the desviador grid. Null (Selectivo, Dinámico)
         /// keeps the historical path byte for byte. Push Back passes it because it has no resolved
         /// <see cref="SelectiveRackSystem"/>, so the grid used to fall back to a per-FRONT list read with a per-POST
@@ -141,10 +149,11 @@ namespace RackCad.UI
         /// is the historical behaviour of the Selectivo and of the Dinámico; Push Back passes false explicitly
         /// (PB-003: its safety lives only at the low end, so naming a face the user cannot choose is pure noise).
         /// </param>
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false, bool showDesviadorSide = true)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false, bool showDesviadorSide = true, bool bootModeInSections = false)
         {
             this.allowBlankFrontColumns = allowBlankFrontColumns;
             this.showDesviadorSide = showDesviadorSide;
+            this.bootModeInSections = bootModeInSections;
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
@@ -450,7 +459,7 @@ namespace RackCad.UI
                         row.PostSides = existing?.PostSides?.Where(p => p != null).Select(p => new SafetyPostSide { PostIndex = p.PostIndex, Side = p.Side }).ToList()
                                         ?? new List<SafetyPostSide>();
 
-                        if (isBota)
+                        if (isBota && !bootModeInSections)
                         {
                             var combo = new ComboBox
                             {
@@ -466,6 +475,15 @@ namespace RackCad.UI
                             Grid.SetColumn(combo, 1);
                             grid.Children.Add(combo);
                             row.Side = combo;
+                        }
+
+                        // I-42 (S1E) — con las secciones por lado, la fila de la BOTA conserva SOLO el tipo: la
+                        // ubicacion y los postes se deciden ahi, cada lado por separado.
+                        if (isBota && bootModeInSections)
+                        {
+                            list.Children.Add(grid);
+                            rows.Add(row);
+                            continue;
                         }
 
                         var perPost = new Button
@@ -627,14 +645,6 @@ namespace RackCad.UI
         /// <summary>El selector de VARIANTE de la fila de BOTA (seam de prueba); null si la familia no es exclusiva.</summary>
         internal ComboBox BootVariantComboForTest
             => rows.FirstOrDefault(row => row.IsBota)?.Variant;
-
-        /// <summary>El selector general de la fila de BOTA (seam de prueba); null si no se ofrece.</summary>
-        internal ComboBox BootSideComboForTest
-            => rows.FirstOrDefault(row => row.IsBota)?.Side;
-
-        /// <summary>El boton «Por poste…» de la fila de BOTA (seam de prueba).</summary>
-        internal Button BootPerPostButtonForTest
-            => rows.FirstOrDefault(row => row.IsBota)?.PerPost;
 
         /// <summary>El boton de la fila de DEFENSA (seam de prueba); null si no se ofrece.</summary>
         internal Button DefensaButtonForTest
@@ -901,6 +911,20 @@ namespace RackCad.UI
                         result.Add(selection);
                     }
 
+                    continue;
+                }
+
+                if (row.IsBota && bootModeInSections)
+                {
+                    // I-42 (S1E) — la fila solo aporta el TIPO: la ubicacion y los postes los escriben las
+                    // secciones por lado del anfitrion. La seleccion viaja vacia y por eso no dibuja nada por si
+                    // sola; si nadie pide una bota, la familia no llega al plano, como siempre.
+                    result.Add(new SelectiveSafetySelection
+                    {
+                        ElementId = elementId,
+                        Side = SafetySide.None,
+                        Quantity = 1,
+                    });
                     continue;
                 }
 

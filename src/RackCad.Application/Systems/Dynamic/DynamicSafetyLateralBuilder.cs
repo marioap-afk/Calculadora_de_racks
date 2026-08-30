@@ -72,8 +72,17 @@ namespace RackCad.Application.Systems.Dynamic
             else
             {
                 var botas = SelectiveSafetyPlacement.EnabledOfType(
-                    system.SafetySelections, catalog, View, SelectiveSafetyPlacement.BotaType);
-                AppendEndpointFamily(result, botas, left.PlateOrigin, right.PlateOrigin, null, postIndex);
+                    system.SafetySelections, catalog, View, SelectiveSafetyPlacement.BotaType,
+                    allowEmptySide: true);
+                foreach (var bota in botas)
+                {
+                    // I-42 (S1E) — el lateral lee la MISMA pertenencia que la planta, los cortes y el BOM: las
+                    // CARAS FISICAS que el dominio resolvio para ese poste. Antes preguntaba por el lado historico
+                    // y dibujaba las dos puntas dijera lo que dijera la eleccion.
+                    AppendEndpointFamily(
+                        result, new[] { bota }, left.PlateOrigin, right.PlateOrigin, null, postIndex,
+                        SelectiveSafetyEnds.BootCopiesForPost(bota.Selection, postIndex));
+                }
             }
 
             AppendDesviadores(

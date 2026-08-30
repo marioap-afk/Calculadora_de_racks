@@ -45,9 +45,81 @@ namespace RackCad.Application.Systems.PushBack
         /// </summary>
         public HeaderRunPlan BuildPlan(
             PushBackSystem system, RackCatalog catalog, PushBackFrontalEnd end, PushBackSide side)
-            => system != null && system.IsComposite
-                ? PushBackCompositeFrontal.Build(system, catalog, end, side)
-                : BuildPlan(system, catalog, end, null, null);
+            => WithResolvedBoots(
+                system != null && system.IsComposite
+                    ? PushBackCompositeFrontal.Build(system, catalog, end, side)
+                    : BuildPlan(system, catalog, end, null, null),
+                system, catalog, end, side);
+
+        /// <summary>
+        /// I-42 (S1E, contrato del dueño) — LAS BOTAS DE ESTE CORTE, tomadas de la resolucion fisica del rack.
+        ///
+        /// <para>
+        /// Un corte no vuelve a resolver la intencion del usuario: pregunta que botas FISICAS caen en su plano y las
+        /// ancla en su marco. Antes cada corte la resolvia por su cuenta sobre el sistema local de su lado —que en
+        /// el lado B es una copia espejo—, asi que una misma eleccion producia piezas distintas en la planta, en el
+        /// corte de A y en el de B. Las que trajera el builder compuesto se retiran: la autoridad es una sola.
+        /// </para>
+        /// </summary>
+        private static HeaderRunPlan WithResolvedBoots(
+            HeaderRunPlan plan, PushBackSystem system, RackCatalog catalog,
+            PushBackFrontalEnd end, PushBackSide side)
+        {
+            if (plan == null || system?.Structure == null || catalog == null)
+            {
+                return plan;
+            }
+
+            var bootIds = new HashSet<string>(
+                (catalog.SafetyElements ?? new List<SafetyElementCatalogEntry>())
+                    .Where(entry => entry != null
+                                    && SelectiveSafetyDefaults.IsType(entry.Type, SelectiveSafetyDefaults.BotaType))
+                    .Select(entry => entry.Id),
+                StringComparer.OrdinalIgnoreCase);
+            if (bootIds.Count == 0)
+            {
+                return plan;
+            }
+
+            bool IsBoot(HeaderBlockInstance instance)
+                => instance != null && !string.IsNullOrWhiteSpace(instance.PieceId) && bootIds.Contains(instance.PieceId);
+
+            var groups = plan.Headers
+                .Select(group => group?.Instances == null || !group.Instances.Any(IsBoot)
+                    ? group
+                    : new HeaderGroup(group.Name, group.Instances.Where(i => !IsBoot(i)).ToList(), group.Placements))
+                .Where(group => group != null && (group.Instances == null || group.Instances.Count > 0))
+                .ToList();
+            var loose = plan.LooseInstances.Where(instance => !IsBoot(instance)).ToList();
+
+            var plateId = DynamicFrontGeometry.PlateId(system.Structure, catalog);
+            var plateMate = string.IsNullOrWhiteSpace(plateId)
+                ? new Point2D(0.0, 0.0)
+                : CatalogLookup.Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, View);
+            foreach (var boot in PushBackBootPlan.AtCut(system, catalog, end, side))
+            {
+                var block = CatalogLookup.Block(catalog, boot.PieceId, View);
+                if (string.IsNullOrWhiteSpace(block))
+                {
+                    continue;
+                }
+
+                var at = new Point2D(boot.LineX - plateMate.X, -plateMate.Y);
+                loose.Add(new HeaderBlockInstance
+                {
+                    Role = HeaderBlockRole.Safety,
+                    PieceId = boot.PieceId,
+                    BlockName = block,
+                    View = View,
+                    Insertion = at,
+                    ConnectionAnchor = at,
+                    MirroredX = boot.Mirrored,
+                    MirroredY = false,
+                });
+            }
+
+            return new HeaderRunPlan(groups, loose);
+        }
 
         /// <summary>
         /// La SECCION con la que el envoltorio del DWG direcciona un corte frontal. Un rack de un solo sentido usa 0
