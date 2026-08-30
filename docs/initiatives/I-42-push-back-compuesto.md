@@ -800,6 +800,114 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-septvicies. Ronda 7D: la defensa se edita POR LADO, como los topes
+
+La Owner Validation de 7C confirmo los topes —el blanco de un lado ya no contamina el otro, «Ninguno» existe— y
+confirmo que el ON/OFF por poste atraviesa la ruta completa. Pero seguia aplicandose siempre al lado A, y el dueño
+fijo el contrato de UI que faltaba: **la defensa debe trabajar como los topes**, con una superficie por lado dentro
+de «Elementos de seguridad», y la ventana principal fuera de la decision.
+
+### Donde se perdia el lado: en ninguna frontera
+
+La auditoria no encontro ningun sitio donde el lado se cayera de camino al dibujo. Encontro algo mas simple: **el
+lado no estaba expresado en ninguna parte de la UI.** Medido en un compuesto de tres ranuras:
+
+| lo que ofrecia Seguridad | |
+|---|---|
+| superficies de defensa | UNA, la fila de la familia |
+| columnas de su rejilla | «Entrada/Salida» y «Posterior» — el vocabulario de un rack de un solo sentido |
+| lo que movia la columna baja | `-4.75\|53.494`, la cara del lado A |
+| lo que movia la columna alta | nada: se pintaba con la regla de un rack de un sentido, salia apagada aunque el lado B si llevara defensa, y la casilla ya marcada no disparaba ningun evento |
+| lo que decidia el lado activo de la ventana principal | nada — abrir desde A o desde B daba secciones y dibujo identicos |
+
+Es decir: la unica columna operable era la del lado A, y el lado B no tenia donde editarse. Por eso toda decision
+acababa en A.
+
+### La identidad: lado + linea fisica, sin almacen nuevo
+
+La ronda 6D ya habia establecido que la seguridad es del RACK y que un compuesto tiene DOS pasillos, uno en cada
+extremo de la cobertura de cada linea; el constructor coloca el del cercano con `ExitLength` y el del lejano con
+`EntranceLength`. **El registro por poste ya distinguia las dos caras, con un campo independiente para cada una.** Lo
+que faltaba era NOMBRARLAS por lado. `PushBackDefenseSides` es donde eso esta escrito, una sola vez:
+
+- el lado **A** ataca por el extremo **cercano**; el lado **B**, por el **lejano**;
+- `LengthOf` / `AutoOf` / `Set` leen y escriben la cara de un lado y **nunca** tocan la otra;
+- `Merge` funde lo que decidio una superficie sobre la cara de su lado, dejando la del otro exactamente como estaba.
+
+No hay codificacion: ni desplazamientos de indice, ni signos, ni coordenadas redondeadas, ni GUIDs. Es la misma
+pareja de campos que el dibujo lee, con el nombre fisico que le corresponde en un rack compuesto.
+
+### La aplicabilidad deja de estar escondida en el bucle que dibuja
+
+`DynamicDefenseFaces` extrae —sin cambiarla— la regla de 6D: una cara existe si la linea existe y ese extremo mira a
+un pasillo y no al interior del rack. La consumen el constructor de planta **y** la UI, asi que la rejilla no puede
+volver a pintar «apagado» donde el rack si lleva defensa. Es neutral: un rack dinamico no declara ningun tramo
+interior y responde que si, igual que antes.
+
+Sobre lo que la estructura resuelta todavia no conoce, la aplicabilidad es **fail-open**: deshabilitar una fila por
+una lectura vieja le quitaria al usuario una decision que el rack si admite, y la fisica vuelve a filtrar al dibujar.
+
+### La UX, con el patron de los topes
+
+En un compuesto «Elementos de seguridad» ofrece ahora, en este orden:
+
+```
+Defensa de montacargas — lado A     [Configurar…]
+Defensa de montacargas — lado B     [Configurar…]
+Topes posteriores — lado A          [Configurar…]
+Topes posteriores — lado B          [Configurar…]
+```
+
+Cada seccion tiene su titulo, su estado legible, su **copia de trabajo** y su boton, y aplica a SU lado al aceptar.
+La rejilla que abre recibe la cara **explicitamente** —nombre, extremo y en que lineas existe— y muestra una sola
+columna, la de ese lado; un poste sin cara de ataque ahi aparece deshabilitado y dice por que. La fila de la familia
+deja de llevar boton por poste: la decision se toma en un solo sitio, como el dueño exigio para los topes en 7B.
+
+Un rack de UN SOLO SENTIDO ofrece **una** seccion, sin etiqueta de lado, y conserva la rejilla historica de los dos
+extremos: PB-009 dejo el posterior apagado por defecto pero nunca prohibido, y esta ronda no viene a quitar esa
+capacidad.
+
+### Medido por la ruta real
+
+Con las ventanas reales —Push Back → Seguridad → rejilla de cada seccion → aceptar → commit → resolve → dibujo:
+
+| | linea 1 | linea 2 | linea 3 | linea 4 |
+|---|---|---|---|---|
+| pedido en el lado A | ON | OFF | ON | OFF |
+| pedido en el lado B | OFF | ON | OFF | ON |
+| registros | `P0[A=auto B=0]` | `P1[A=0 B=auto]` | `P2[A=auto B=0]` | `P3[A=0 B=auto]` |
+| dibujado | `-4.75\|0` | `796.75\|53.494` | `-4.75\|106.988` | `796.75\|160.482` |
+
+Cuatro piezas, las cuatro pedidas, ninguna mas. BOM = dibujo. Abrir Seguridad con el lado activo en A o en B da
+secciones, registros y dibujo identicos.
+
+Un frente en blanco en A retira la cara de A en esa linea y **no** toca la de B; la intencion guardada no se mueve
+de linea ni cambia de lado. Cancelar no persiste ninguna de las dos secciones; aceptar persiste las dos. Guardar y
+recuperar devuelve los registros campo por campo. Al encoger el rack, las lineas que conservan identidad conservan
+su intencion **por lado**, la retirada no deja fantasma y una nueva nace con el automatico.
+
+### Lo que NO cambio
+
+Ninguna primitiva ni regla fisica: la regla de 6D es la misma expresion, movida a un sitio donde la UI tambien puede
+leerla. **Ningun golden se movio.** Intactos: R1, R2 (los blancos conservan su ranura y la reticula no se compacta),
+R3, R4/R5 (topes por run, StopA/StopB, HIGH, orientacion, anclaje, poste reforzado), R6 (27/27, alturas A/B,
+cabeceras, botas), los contratos utiles de R7, y todo lo que 7B/7C dejaron en los topes —incluidos el blanco acotado
+al lado y «Ninguno»—, con pruebas de regresion propias.
+
+Las doce pruebas E2E de 7C conducian la superficie retirada; su INTENCION se conserva entera, reescrita sobre la
+seccion, que es lo que el usuario tiene delante.
+
+### PENDIENTES REGISTRADOS
+
+- **S1 — Safety general:** semantica global de Izquierda / Derecha / Ambas para las botas.
+- **V1 — View hygiene:** el lateral de una seccion dibuja la letra de un lado que no existe funcionalmente.
+- **V2 — Frontales:** una corrida full-span debe mostrar en la cara de salida el HIGH y el tope con semantica de
+  vista posterior.
+- **V3 — Planta / view hygiene:** auditoria de nearest-Y, deduplicacion y fail-open.
+
+El pendiente que 7C registro sobre la columna del extremo alto queda **CERRADO**: con una seccion por lado, la
+rejilla de cada lado representa su propia cara y su propia aplicabilidad.
+
 ## 4-sextvicies. Ronda 7C: los tres defectos de la Owner Validation de 7B
 
 La ronda 7B tenia CI verde y su reorganizacion funcionaba, pero la Owner Validation encontro TRES defectos. Ninguno

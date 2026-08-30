@@ -35,6 +35,12 @@ namespace RackCad.UI.Tests
     /// (la ventana real) → su rejilla por poste (la real) → Aceptar → commit → resolve → primitiva y BOM. Lo unico
     /// que se sustituye es el <c>ShowDialog</c>, que una prueba no puede ejecutar.
     /// </para>
+    ///
+    /// <para>
+    /// <b>Ronda 7D.</b> La superficie cambio: la configuracion por poste ya no cuelga de la fila de la familia sino
+    /// de una SECCION POR LADO, como los topes. Los contratos de esta clase no cambian —siguen siendo los mismos
+    /// hechos sobre el mismo mecanismo— y se conducen ahora por esa seccion, que es la que el usuario tiene delante.
+    /// </para>
     /// </summary>
     public sealed class PushBackDefensePerPostEndToEndTests
     {
@@ -66,12 +72,23 @@ namespace RackCad.UI.Tests
         }
 
         /// <summary>
-        /// EL GESTO DEL USUARIO, entero: abre «Elementos de seguridad», entra en la rejilla por poste, hace
-        /// <paramref name="gesture"/> sobre sus controles reales y acepta las dos ventanas.
+        /// EL GESTO DEL USUARIO, entero: abre «Elementos de seguridad», entra en la rejilla por poste de la seccion
+        /// del lado A —la unica en un rack de un solo sentido— hace <paramref name="gesture"/> sobre sus controles
+        /// reales y acepta las dos ventanas.
         /// </summary>
         private static void ThroughTheRealWindows(
             RackPushBackSystemWindow w, Action<SafetyDefensaGridWindow> gesture, bool accept = true)
         {
+            w.DefenseDialog = section =>
+            {
+                var grid = new SafetyDefensaGridWindow(
+                    "Defensa de montacargas", section.PostCount, section.Posts,
+                    lowEndOnly: true, autoPerEnd: true, face: section.Face());
+                gesture?.Invoke(grid);
+                grid.BuildResultForTest();
+                return grid.Accepted ? grid.Result : null;
+            };
+
             w.SafetyWindowDialog = dialog =>
             {
                 dialog.WindowStartupLocation = WindowStartupLocation.Manual;
@@ -80,20 +97,14 @@ namespace RackCad.UI.Tests
                 dialog.Top = -10000;
                 dialog.Show();
                 dialog.UpdateLayout();
-                dialog.DefensaDialog = grid =>
-                {
-                    gesture?.Invoke(grid);
-                    grid.BuildResultForTest();
-                    return true;
-                };
-
-                dialog.DefensaButtonForTest?.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                w.DefenseSectionForTest?.Configure();
                 dialog.BuildResultForTest();
                 dialog.Close();
                 return accept;
             };
             EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
             w.SafetyWindowDialog = null;
+            w.DefenseDialog = null;
         }
 
         /// <summary>Las defensas que el dibujo materializa, como «X|Y» ordenadas.</summary>
@@ -172,8 +183,9 @@ namespace RackCad.UI.Tests
                             selection.ElementId, StoredDefense(w).ElementId, StringComparison.OrdinalIgnoreCase));
                     var record = Assert.Single(inDesign.DefensaPosts);
                     Assert.Equal(1, record.PostIndex);
-                    Assert.Equal(0.0, record.ExitLength, 9);   // apagado = longitud cero, explicita
-                    Assert.False(record.ExitAuto);
+                    Assert.Equal(0.0, PushBackDefenseSides.LengthOf(record, PushBackSide.A), 9);   // apagado = cero
+                    Assert.False(PushBackDefenseSides.AutoOf(record, PushBackSide.A));
+                    Assert.True(PushBackDefenseSides.AutoOf(record, PushBackSide.B));   // el otro lado, intacto
                 }
                 finally { w.Close(); }
             });
@@ -235,6 +247,7 @@ namespace RackCad.UI.Tests
 
                     ThroughTheRealWindows(w, grid => grid.ExitCheckForTest(1).IsChecked = false);
 
+                    Assert.True(Defenses(w).Count < before);   // el gesto cambio algo, y la comparacion no es vacia
                     Assert.Equal(before - Defenses(w).Count, bomBefore - DefensesInBom(w));
                     Assert.Equal(Defenses(w).Count, DefensesInBom(w));
                 }
@@ -278,7 +291,7 @@ namespace RackCad.UI.Tests
 
                     var record = Assert.Single(StoredDefense(w).DefensaPosts);
                     Assert.Equal(1, record.PostIndex);
-                    Assert.Equal(0.0, record.ExitLength, 9);
+                    Assert.Equal(0.0, PushBackDefenseSides.LengthOf(record, PushBackSide.A), 9);
                 }
                 finally { w.Close(); }
             });
@@ -323,8 +336,8 @@ namespace RackCad.UI.Tests
                     var record = Assert.Single(selection.DefensaPosts);
 
                     Assert.Equal(1, record.PostIndex);
-                    Assert.Equal(0.0, record.ExitLength, 9);
-                    Assert.False(record.ExitAuto);
+                    Assert.Equal(0.0, PushBackDefenseSides.LengthOf(record, PushBackSide.A), 9);
+                    Assert.False(PushBackDefenseSides.AutoOf(record, PushBackSide.A));
                 }
                 finally { w.Close(); }
             });
@@ -350,7 +363,8 @@ namespace RackCad.UI.Tests
                     w.CompositeState.SetSlotPresent(PushBackSide.A, 0, false);
 
                     var record = Assert.Single(StoredDefense(w).DefensaPosts);
-                    Assert.Equal(2, record.PostIndex);              // el indice fisico no se compacta
+                    Assert.Equal(2, record.PostIndex);                 // el indice fisico no se compacta
+                    Assert.Equal(0.0, PushBackDefenseSides.LengthOf(record, PushBackSide.A), 9);
                     Assert.Equal(defendedLines, Lines(Defenses(w)));   // y la linea sin defensa sigue siendo la misma
                 }
                 finally { w.Close(); }
@@ -404,6 +418,9 @@ namespace RackCad.UI.Tests
                 try
                 {
                     var before = Baseline(w);
+
+                    // En un rack de un solo sentido la seccion ES toda la defensa y abre la rejilla historica de
+                    // los dos extremos, que es lo que conserva la capacidad de PB-009.
                     ThroughTheRealWindows(w, grid => grid.EntranceCheckForTest(1).IsChecked = true);
                     var added = Defenses(w).Except(before).ToList();
 

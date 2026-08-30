@@ -376,9 +376,8 @@ namespace RackCad.Application.Systems.Dynamic
                 }
 
                 var setting = DynamicForkliftDefensePlan.ForSelection(selection, postIndex, postCount);
-                var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
-                var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
-                var rangeEnd = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? system.TotalLength;
+                var rangeStart = DynamicDefenseFaces.NearX(system, postIndex);
+                var rangeEnd = DynamicDefenseFaces.FarX(system, postIndex);
                 var y = layout.PostPositions[postIndex] + offset.Y;
 
                 // I-42 (ronda 6D) — una defensa protege una CARA DE CARGA: el extremo de la profundidad por donde
@@ -390,13 +389,15 @@ namespace RackCad.Application.Systems.Dynamic
                 //
                 // La estructura declara ese tramo interior; el Dinamico no declara ninguno y dibuja igual que
                 // siempre.
-                if (setting.DrawsExit && !system.IsInteriorFace(rangeStart))
+                // I-42 (ronda 7D): la MISMA pregunta la hace ahora la rejilla por poste, para que no pueda pintar
+                // «apagado» donde el rack si lleva defensa. La regla no cambia, solo dejo de estar solo aqui.
+                if (setting.DrawsExit && DynamicDefenseFaces.HasFace(system, postIndex, farEnd: false))
                 {
                     target.Add(Piece(selection.ElementId, block, view,
                         new Point2D(rangeStart + offset.X, y), false, false, setting.ExitLength));
                 }
 
-                if (setting.DrawsEntrance && !system.IsInteriorFace(rangeEnd))
+                if (setting.DrawsEntrance && DynamicDefenseFaces.HasFace(system, postIndex, farEnd: true))
                 {
                     target.Add(Piece(selection.ElementId, block, view,
                         new Point2D(rangeEnd - offset.X, y), true, false, setting.EntranceLength));

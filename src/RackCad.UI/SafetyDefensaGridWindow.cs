@@ -27,6 +27,15 @@ namespace RackCad.UI
         private readonly string lowEndName;
         private readonly string highEndName;
 
+        /// <summary>
+        /// I-42 (ronda 7D) — la CARA que esta rejilla edita, cuando edita una sola. NULL es el dialogo historico de
+        /// dos extremos, que es el que siguen abriendo el Selectivo, el Dinamico y un Push Back de un solo sentido.
+        /// </summary>
+        private readonly SafetyDefenseFace face;
+
+        /// <summary>Los registros con los que se abrio: en modo de una cara, la OTRA cara se conserva de aqui.</summary>
+        private readonly IReadOnlyList<SafetyPostDefense> incoming;
+
         private const string AutoTooltip =
             "Sigue la regla (12\" en poste de orilla, 36\" en intermedio) y se recalcula al agregar o quitar frentes.";
 
@@ -55,16 +64,22 @@ namespace RackCad.UI
             int postCount,
             IEnumerable<SafetyPostDefense> current,
             bool lowEndOnly = false,
-            bool autoPerEnd = false)
+            bool autoPerEnd = false,
+            SafetyDefenseFace face = null)
         {
             this.postCount = Math.Max(1, postCount);
             this.lowEndOnly = lowEndOnly;
             this.autoPerEnd = autoPerEnd;
+            this.face = face;
+            this.incoming = (current ?? Enumerable.Empty<SafetyPostDefense>())
+                .Where(value => value != null).ToList();
             var lowLabel = lowEndOnly ? "Entrada/Salida" : "Salida";
             var highLabel = lowEndOnly ? "Posterior" : "Entrada";
             lowEndName = lowLabel.ToLowerInvariant();
             highEndName = highLabel.ToLowerInvariant();
-            Title = "Defensa de montacargas por poste";
+            Title = face == null
+                ? "Defensa de montacargas por poste"
+                : "Defensa de montacargas por poste — " + face.Label;
             Width = autoPerEnd ? 780 : 670;
             Height = 580;
             MinWidth = 600;
@@ -122,7 +137,17 @@ namespace RackCad.UI
             });
             content.Children.Add(new TextBlock
             {
-                Text = "Cada extremo es independiente: puedes activar " + lowLabel + ", " + highLabel
+                // I-42 (ronda 7D): con una cara declarada la rejilla habla de ESA cara y de nada mas. Sin ella, el
+                // texto historico de los dos extremos, palabra por palabra.
+                Text = face != null
+                    ? "Esta rejilla decide la defensa de " + face.Label
+                      + ", poste por poste. La otra cara del rack tiene su propia rejilla y no se toca desde aqui."
+                      + " Un poste sin cara de ataque en este lado aparece deshabilitado."
+                      + (autoPerEnd
+                         ? " Marca «Auto» para que ese poste siga la regla de 12\" en orillas y 36\" en intermedios"
+                           + " y se recalcule al agregar o quitar frentes."
+                         : string.Empty)
+                    : "Cada extremo es independiente: puedes activar " + lowLabel + ", " + highLabel
                        + ", ambos o ninguno y asignar una LONGITUD distinta a cada lado."
                        + (lowEndOnly
                           ? " El automático de 12\" en orillas y 36\" en postes intermedios aplica solo a "
@@ -134,6 +159,19 @@ namespace RackCad.UI
                 TextWrapping = TextWrapping.Wrap,
                 Margin = new Thickness(0, 3, 0, 10)
             });
+
+            if (face != null)
+            {
+                content.Children.Add(BuildFaceTable());
+                content.Children.Add(new TextBlock { Height = 0 });
+                root.Children.Add(new ScrollViewer
+                {
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                    Content = content
+                });
+                Content = root;
+                return;
+            }
 
             var table = new Grid();
             table.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -327,6 +365,217 @@ namespace RackCad.UI
                 ? defaults.ExitLength
                 : (defaults.EntranceLength > 0.0 ? defaults.EntranceLength : DynamicForkliftDefensePlan.EdgeLength);
 
+        /// <summary>
+        /// I-42 (ronda 7D) — la rejilla de UNA cara: una fila por linea transversal y una sola pareja de columnas,
+        /// la de esta cara. Un poste donde la cara no existe se muestra deshabilitado y dice por que, en vez de
+        /// ofrecer una casilla que no puede materializar nada.
+        /// </summary>
+        private Grid BuildFaceTable()
+        {
+            var table = new Grid();
+            table.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            table.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(80) });
+            table.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(115) });
+            if (autoPerEnd)
+            {
+                table.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(52) });
+            }
+
+            AddHeader(table, "Poste", 0);
+            AddHeader(table, face.Label, 1);
+            AddHeader(table, "Longitud", 2);
+            if (autoPerEnd)
+            {
+                AddHeader(table, "Auto", 3);
+            }
+
+            for (var postIndex = 0; postIndex < postCount; postIndex++)
+            {
+                table.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                var applies = face.AppliesAt(postIndex);
+                var stored = incoming.FirstOrDefault(value => value.PostIndex == postIndex);
+
+                // La cara lejana solo tiene longitud automatica donde ES cara de carga: se resuelve con la misma
+                // aplicabilidad que declara la seccion, que es la que usa el dibujo.
+                var setting = DynamicForkliftDefensePlan.At(
+                    incoming, postIndex, postCount, lowEndOnly, secondLoadFace: applies);
+                var defaults = DynamicForkliftDefensePlan.At(
+                    null, postIndex, postCount, lowEndOnly, secondLoadFace: applies);
+                var drawn = face.IsFarEnd ? setting.DrawsEntrance : setting.DrawsExit;
+                var length = face.IsFarEnd ? setting.EntranceLength : setting.ExitLength;
+                var defaultLength = face.IsFarEnd ? defaults.EntranceLength : defaults.ExitLength;
+                if (defaultLength <= 0.0)
+                {
+                    defaultLength = defaults.ExitLength > 0.0
+                        ? defaults.ExitLength
+                        : DynamicForkliftDefensePlan.EdgeLength;
+                }
+
+                var autoNow = stored == null
+                    || (face.IsFarEnd ? stored.EntranceAuto : stored.ExitAuto);
+
+                var label = new TextBlock
+                {
+                    Text = "Poste " + (postIndex + 1).ToString(CultureInfo.InvariantCulture)
+                           + (postIndex == 0 || postIndex == postCount - 1 ? " (orilla)" : " (intermedio)")
+                           + (applies ? string.Empty : " — sin cara de ataque en este lado"),
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(2, 5, 8, 5)
+                };
+
+                var check = new CheckBox
+                {
+                    IsChecked = applies && drawn,
+                    IsEnabled = applies,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                var lengthBox = new TextBox
+                {
+                    Text = (drawn && length > 0.0 ? length : defaultLength)
+                        .ToString("0.##", CultureInfo.InvariantCulture),
+                    Margin = new Thickness(2, 3, 8, 3),
+                    IsEnabled = applies && check.IsChecked == true && !autoNow
+                };
+                CheckBox auto = null;
+                if (autoPerEnd)
+                {
+                    auto = new CheckBox
+                    {
+                        IsChecked = autoNow,
+                        IsEnabled = applies,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        ToolTip = AutoTooltip
+                    };
+                    auto.Checked += (_, __) =>
+                    {
+                        lengthBox.IsEnabled = false;
+                        lengthBox.Text = defaultLength.ToString("0.##", CultureInfo.InvariantCulture);
+                    };
+                    auto.Unchecked += (_, __) => lengthBox.IsEnabled = check.IsChecked == true;
+                }
+
+                // La CASILLA es el ON/OFF y saca a este poste del automatico, igual que en el dialogo de dos
+                // extremos desde la ronda 7C.
+                check.Checked += (_, __) =>
+                {
+                    if (auto != null) { auto.IsChecked = false; }
+                    if (!UiSupport.TryNum(lengthBox.Text, out var typed) || typed <= 0.0)
+                    {
+                        lengthBox.Text = defaultLength.ToString("0.##", CultureInfo.InvariantCulture);
+                    }
+
+                    lengthBox.IsEnabled = true;
+                };
+                check.Unchecked += (_, __) =>
+                {
+                    if (auto != null) { auto.IsChecked = false; }
+                    lengthBox.IsEnabled = false;
+                };
+
+                Grid.SetRow(label, postIndex + 1);
+                Grid.SetColumn(label, 0);
+                Grid.SetRow(check, postIndex + 1);
+                Grid.SetColumn(check, 1);
+                Grid.SetRow(lengthBox, postIndex + 1);
+                Grid.SetColumn(lengthBox, 2);
+                table.Children.Add(label);
+                table.Children.Add(check);
+                table.Children.Add(lengthBox);
+                if (auto != null)
+                {
+                    Grid.SetRow(auto, postIndex + 1);
+                    Grid.SetColumn(auto, 3);
+                    table.Children.Add(auto);
+                }
+
+                rows.Add(new Row(postIndex, check, lengthBox, null, null, auto, null, applies && drawn, false));
+            }
+
+            return table;
+        }
+
+        /// <summary>El OK del modo de UNA cara: escribe SOLO su extremo y conserva el otro tal cual.</summary>
+        private void BuildFaceResult()
+        {
+            var result = CopyRecords(incoming);
+
+            // Una linea que ya no existe no deja fantasma: el dialogo historico tampoco la conserva, porque
+            // reconstruye su resultado desde las filas que tiene. La identidad de las que SIGUEN existiendo no se
+            // toca — no se compacta ningun indice.
+            result.RemoveAll(record => record.PostIndex < 0 || record.PostIndex >= postCount);
+
+            foreach (var row in rows)
+            {
+                if (row.Exit.IsEnabled == false)
+                {
+                    continue;   // sin cara de ataque: esta linea no decide nada en este lado
+                }
+
+                var auto = row.ExitAuto?.IsChecked == true && (row.Exit.IsChecked == true) == row.ExitWasDrawn;
+                var on = row.Exit.IsChecked == true;
+                var length = 0.0;
+                if (!auto && on && (!UiSupport.TryNum(row.ExitLength.Text, out length) || length <= 0.0))
+                {
+                    error.Text = "La longitud de " + face.Label.ToLowerInvariant() + " del poste "
+                                 + (row.PostIndex + 1).ToString(CultureInfo.InvariantCulture)
+                                 + " debe ser mayor que cero.";
+                    return;
+                }
+
+                var record = result.FirstOrDefault(value => value.PostIndex == row.PostIndex);
+                if (record == null)
+                {
+                    record = new SafetyPostDefense
+                    {
+                        PostIndex = row.PostIndex,
+                        ExitAuto = true,
+                        EntranceAuto = true
+                    };
+                    result.Add(record);
+                }
+
+                SetEnd(record, face.IsFarEnd, auto ? 0.0 : (on ? length : 0.0), auto);
+            }
+
+            result.RemoveAll(record => record.ExitAuto && record.EntranceAuto);
+            Result = result.OrderBy(record => record.PostIndex).ToList();
+            Accepted = true;
+        }
+
+        /// <summary>True cuando el OK termino sin diagnostico (seam de prueba del modo de una cara).</summary>
+        internal bool Accepted { get; private set; }
+
+        /// <summary>Copia de los registros por poste: el resultado nunca comparte objetos con la entrada.</summary>
+        private static List<SafetyPostDefense> CopyRecords(IEnumerable<SafetyPostDefense> records)
+            => (records ?? Enumerable.Empty<SafetyPostDefense>())
+                .Where(record => record != null)
+                .Select(record => new SafetyPostDefense
+                {
+                    PostIndex = record.PostIndex,
+                    ExitLength = record.ExitLength,
+                    EntranceLength = record.EntranceLength,
+                    ExitAuto = record.ExitAuto,
+                    EntranceAuto = record.EntranceAuto
+                })
+                .ToList();
+
+        /// <summary>Escribe UN extremo del registro y deja el otro exactamente como estaba.</summary>
+        private static void SetEnd(SafetyPostDefense record, bool farEnd, double length, bool auto)
+        {
+            if (farEnd)
+            {
+                record.EntranceLength = length;
+                record.EntranceAuto = auto;
+            }
+            else
+            {
+                record.ExitLength = length;
+                record.ExitAuto = auto;
+            }
+        }
+
         private static void AddHeader(Grid table, string text, int column)
         {
             if (table.RowDefinitions.Count == 0)
@@ -369,6 +618,18 @@ namespace RackCad.UI
             // I-39D: el diagnostico se limpia al REVALIDAR. Antes se escribia y no se borraba nunca, asi que un
             // aviso corregido seguia en pantalla acusando a un poste que ya estaba bien.
             error.Text = string.Empty;
+            Accepted = false;
+
+            if (face != null)
+            {
+                BuildFaceResult();
+                if (Accepted && e != null)
+                {
+                    DialogResult = true;
+                }
+
+                return;
+            }
 
             var result = new List<SafetyPostDefense>();
             foreach (var row in rows)
@@ -437,6 +698,7 @@ namespace RackCad.UI
             }
 
             Result = result;
+            Accepted = true;
             if (e != null)
             {
                 DialogResult = true;

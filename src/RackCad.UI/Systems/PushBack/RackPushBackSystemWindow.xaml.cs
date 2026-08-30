@@ -1338,6 +1338,12 @@ namespace RackCad.UI.Systems.PushBack
         internal Func<PushBackRearTopeConfig, IReadOnlyList<int>, SafetyTopeGridWindow.TopeResult> RearTopeDialog;
 
         /// <summary>
+        /// I-42 (ronda 7D) — seam de prueba de la rejilla POR POSTE de un lado. Recibe la seccion, que es quien
+        /// declara el lado y la aplicabilidad; devolver NULL es cancelar.
+        /// </summary>
+        internal Func<PushBackDefenseSection, IReadOnlyList<SafetyPostDefense>> DefenseDialog;
+
+        /// <summary>
         /// PB-002 (I-32) — the desviador grid's level count PER POST: the canonical "tallest adjacent front owns the
         /// cut" rule of <see cref="DynamicFrontGeometry"/>, the very rule the drawing uses. The dialog used to receive a
         /// per-FRONT list and index it by post, so the last post (and every interior one next to a taller front) offered
@@ -2379,6 +2385,25 @@ namespace RackCad.UI.Systems.PushBack
             // ahora la intencion de seguridad se decide en un solo sitio. Un rack de un solo sentido construye
             // exactamente una seccion sin etiqueta, como siempre.
             var composed = new StackPanel();
+
+            // I-42 (ronda 7D, decision del dueño) — LA DEFENSA se organiza como los topes: una seccion POR LADO,
+            // dentro de esta misma ventana. Antes la unica superficie hablaba de «entrada/salida» y «posterior»,
+            // el vocabulario de un rack de un solo sentido, y el lado B no tenia donde editarse: toda decision
+            // acababa aplicandose al lado A. La ventana principal no participa — abrir Seguridad con el lado
+            // activo en A o en B ofrece exactamente lo mismo.
+            var defenseSectionA = BuildDefenseSection(PushBackSide.A, composite.SideBPresent ? "A" : null, postCount);
+            DefenseSectionForTest = defenseSectionA;
+            composed.Children.Add(defenseSectionA.View);
+
+            PushBackDefenseSection defenseSectionB = null;
+            if (composite.SideBPresent)
+            {
+                defenseSectionB = BuildDefenseSection(PushBackSide.B, "B", postCount);
+                composed.Children.Add(defenseSectionB.View);
+            }
+
+            DefenseSectionBForTest = defenseSectionB;
+
             var topeSection = new PushBackRearTopeSection(
                 composite.SideBPresent ? composite.Of(PushBackSide.A).RearTopeConfig() : state.RearTopeConfig(),
                 // I-42 (ronda 7C, defecto del dueño) — CADA seccion abre su rejilla con los niveles de SU lado. Antes
@@ -2425,6 +2450,11 @@ namespace RackCad.UI.Systems.PushBack
                     safetySelections.Add(selection);
                 }
 
+                // I-42 (ronda 7D): cada seccion de defensa funde SU cara sobre los registros por poste. A/Pn y
+                // B/Pn comparten la linea y son dos intenciones distintas, asi que la fusion escribe un extremo y
+                // deja el otro exactamente como estaba.
+                ApplyDefenseSections(defenseSectionA, defenseSectionB);
+
                 // Cada seccion aplica a SU lado: editar el tope de A no toca el de B, que es el contrato de
                 // StopA/StopB que las rondas anteriores cerraron.
                 if (composite.SideBPresent)
@@ -2438,6 +2468,105 @@ namespace RackCad.UI.Systems.PushBack
                 }
 
                 RequestRecompute();
+            }
+        }
+
+        /// <summary>I-42 (ronda 7D) — la seccion de defensa del lado A del ultimo Seguridad abierto (seam de prueba).</summary>
+        internal PushBackDefenseSection DefenseSectionForTest { get; private set; }
+
+        /// <summary>La del lado B, o null en un rack de un solo sentido (seam de prueba).</summary>
+        internal PushBackDefenseSection DefenseSectionBForTest { get; private set; }
+
+        /// <summary>
+        /// La seccion de defensa de un lado, con la aplicabilidad REAL de ese lado y los registros por poste que el
+        /// rack tiene ahora. La aplicabilidad la decide la fisica (<see cref="PushBackDefenseSides.FacesOf"/>), no
+        /// la seccion: un frente en blanco quita la cara de ataque de SU lado y no toca la del otro.
+        /// </summary>
+        private PushBackDefenseSection BuildDefenseSection(PushBackSide side, string sideLabel, int postCount)
+            => new PushBackDefenseSection(
+                side,
+                sideLabel,
+                DefensePostsNow(),
+                postCount,
+                PushBackDefenseSides.FacesOf(LastComputation?.System?.Structure, postCount, side),
+                OpenDefenseDialog);
+
+        /// <summary>Los registros POR POSTE que la familia DEFENSA tiene ahora, o una lista vacia si no hay ninguna.</summary>
+        private IReadOnlyList<SafetyPostDefense> DefensePostsNow()
+            => DefenseSelection(safetySelections)?.DefensaPosts?.ToList() ?? new List<SafetyPostDefense>();
+
+        /// <summary>La seleccion de la familia DEFENSA dentro de <paramref name="selections"/>, o null.</summary>
+        private SelectiveSafetySelection DefenseSelection(IEnumerable<SelectiveSafetySelection> selections)
+            => RackCad.Application.Systems.Selective.SelectiveSafetyFamilies.SelectedOfType(
+                selections, catalog?.SafetyElements, SelectiveSafetyDefaults.DefensaType);
+
+        /// <summary>Abre la rejilla POR POSTE de la cara que declara <paramref name="section"/>; NULL si se cancela.</summary>
+        private IReadOnlyList<SafetyPostDefense> OpenDefenseDialog(PushBackDefenseSection section)
+            => DefenseDialog != null ? DefenseDialog(section) : ShowDefenseDialog(section);
+
+        /// <summary>Muestra la rejilla real por poste, con la CARA declarada explicitamente.</summary>
+        private IReadOnlyList<SafetyPostDefense> ShowDefenseDialog(PushBackDefenseSection section)
+        {
+            var element = DefenseSelection(safetySelections);
+            var label = catalog?.SafetyElements?.FirstOrDefault(entry =>
+                string.Equals(entry?.Id, element?.ElementId, StringComparison.OrdinalIgnoreCase))?.Label;
+            var dialog = new SafetyDefensaGridWindow(
+                label ?? PushBackDefenseSection.HeadingText,
+                section.PostCount,
+                section.Posts,
+                lowEndOnly: true,
+                autoPerEnd: true,
+                face: section.Face())
+            {
+                Owner = this
+            };
+            return dialog.ShowDialog() == true ? dialog.Result : null;
+        }
+
+        /// <summary>
+        /// Funde lo que cada seccion decidio sobre los registros por poste de la familia DEFENSA. Si la familia no
+        /// esta seleccionada no hay donde escribir, y las decisiones se descartan con ella.
+        /// </summary>
+        private void ApplyDefenseSections(PushBackDefenseSection sideA, PushBackDefenseSection sideB)
+        {
+            var selection = DefenseSelection(safetySelections);
+            if (selection == null)
+            {
+                return;
+            }
+
+            // Un rack de un solo sentido tiene UNA seccion que decide los dos extremos: su lista sustituye. Un
+            // compuesto tiene dos, y cada una funde SOLO su cara sobre la del otro lado.
+            if (sideA != null && sideA.OwnsBothEnds && sideB == null)
+            {
+                Write(selection, PushBackDefenseSides.Copy(sideA.Posts));
+                return;
+            }
+
+            var merged = PushBackDefenseSides.Copy(selection.DefensaPosts);
+            if (sideA != null)
+            {
+                merged = PushBackDefenseSides.Merge(merged, sideA.Posts, PushBackSide.A);
+            }
+
+            if (sideB != null)
+            {
+                merged = PushBackDefenseSides.Merge(merged, sideB.Posts, PushBackSide.B);
+            }
+
+            // Reconciliacion: una linea que el rack ya no tiene no deja intencion fantasma. Las que conservan su
+            // identidad conservan su intencion, de cada lado; una nueva nace con el automatico.
+            var lines = sideA?.PostCount ?? sideB?.PostCount ?? 0;
+            merged.RemoveAll(record => record.PostIndex < 0 || record.PostIndex >= lines);
+            Write(selection, merged);
+        }
+
+        private static void Write(SelectiveSafetySelection selection, IEnumerable<SafetyPostDefense> records)
+        {
+            selection.DefensaPosts.Clear();
+            foreach (var record in records)
+            {
+                selection.DefensaPosts.Add(record);
             }
         }
 
@@ -2481,7 +2610,9 @@ namespace RackCad.UI.Systems.PushBack
                 showDesviadorSide: false,
                 // PB-008/009/010: the two ends of the defence are named for what Push Back really has, the rear one is
                 // off by default, and each end can follow the automatic 12"/36" that recomputes with the front count.
-                defensaLowEndOnly: true)
+                defensaLowEndOnly: true,
+                // I-42 (ronda 7D): la configuracion por poste vive en las secciones de arriba, una por lado.
+                defensaPerPostElsewhere: true)
             {
                 Owner = this
             };
