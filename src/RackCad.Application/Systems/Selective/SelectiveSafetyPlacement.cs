@@ -201,12 +201,20 @@ namespace RackCad.Application.Systems.Selective
                 //
                 // La versión anterior colapsaba los dos ejes en un solo SafetySide, y al imponer el extremo bajo
                 // perdía la orientación: un Right acababa dibujado como un Left, o desaparecía del corte.
+                // I-42 (S1B, contrato del dueño) — un frente EN BLANCO decide el AUTOMATICO, no la capacidad de
+                // configurar. Si el usuario pidio EXPLICITAMENTE una bota en ese poste, se coloca: el poste fisico
+                // sigue ahi y puede necesitar proteccion aunque no haya almacenamiento. Lo que el blanco nunca hace
+                // —ni antes ni ahora— es MOVER la pieza a otro poste, a la interfaz ni al otro lado.
+                var authored = physicalFaces
+                    && !sideOverride.HasValue
+                    && (element.Selection?.HasOwnBootPlacement(postIndex) ?? false);
+
                 foreach (var copy in Copies(
                     element.Selection, postIndex, sideOverride, mirrorYInPlace, physicalFaces))
                 {
-                    if (faceApplies != null && !faceApplies(copy.AtHighEnd))
+                    if (!authored && faceApplies != null && !faceApplies(copy.AtHighEnd))
                     {
-                        continue;   // esa cara no existe: la pieza no se muda, simplemente no hay
+                        continue;   // esa cara no existe y nadie la pidio: la pieza no se muda, simplemente no hay
                     }
 
                     target.Add(Piece(

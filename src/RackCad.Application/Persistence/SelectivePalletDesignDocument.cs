@@ -323,6 +323,15 @@ namespace RackCad.Application.Persistence
         public int? ParrillaCantidad { get; set; }
         public List<GridCellDocument> ParrillaOffCells { get; set; }
 
+        /// <summary>
+        /// I-42 (S1B) — BOTA: la colocacion general elegida (nulo = la resuelve el sistema) y los postes con
+        /// decision propia. Aditivo: un documento anterior no los trae y se lee por su <see cref="Side"/> historico,
+        /// cuya intencion es la misma (Izquierda = entrada/salida, Derecha = posterior).
+        /// </summary>
+        public int? BotaPlacement { get; set; }
+
+        public List<BootPostDocument> BotaPosts { get; set; }
+
         /// <summary>Shared explicit mapping used by every rack system that composes the safety subsystem. The wire
         /// format is a FLAT record (unchanged, and shared with the dynamic path); each family flattens its own DTO
         /// (I-22, E7 — <see cref="TopeSelectionDocument"/> and siblings) into these flat properties and reads it back
@@ -343,6 +352,12 @@ namespace RackCad.Application.Persistence
             DefensaSelectionDocument.From(selection.Defensa).WriteInto(document);
             GuiaSelectionDocument.From(selection.Guia).WriteInto(document);
             ParrillaSelectionDocument.From(selection.Parrilla).WriteInto(document);
+            document.BotaPlacement = selection.Bota.Placement.HasValue ? (int)selection.Bota.Placement.Value : (int?)null;
+            document.BotaPosts = selection.Bota.Posts.Count == 0
+                ? null
+                : selection.Bota.Posts.Where(post => post != null)
+                    .Select(post => new BootPostDocument { PostIndex = post.PostIndex, Placement = (int)post.Placement })
+                    .ToList();
             return document;
         }
 
@@ -370,9 +385,35 @@ namespace RackCad.Application.Persistence
                 }
             }
 
+            // I-42 (S1B): la colocacion de la bota. Ausente = documento anterior, que se lee por su lado historico.
+            if (BotaPlacement.HasValue && Enum.IsDefined(typeof(BootPlacement), BotaPlacement.Value))
+            {
+                selection.Bota.Placement = (BootPlacement)BotaPlacement.Value;
+            }
+
+            foreach (var post in BotaPosts ?? Enumerable.Empty<BootPostDocument>())
+            {
+                if (post != null && post.PostIndex >= 0 && Enum.IsDefined(typeof(BootPlacement), post.Placement))
+                {
+                    selection.Bota.Posts.Add(new BootPostPlacement
+                    {
+                        PostIndex = post.PostIndex,
+                        Placement = (BootPlacement)post.Placement,
+                    });
+                }
+            }
+
             return selection;
         }
 
+    }
+
+    /// <summary>I-42 (S1B) — la colocacion de bota que UN poste declara por su cuenta.</summary>
+    public sealed class BootPostDocument
+    {
+        public int PostIndex { get; set; }
+
+        public int Placement { get; set; }
     }
 
     /// <summary>A serialized (frente, level) cell — a tope cell that is turned off.</summary>

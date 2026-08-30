@@ -170,6 +170,76 @@ namespace RackCad.Domain.Systems.Selective
         /// </summary>
         public SafetySide? AuthoredSide { get; set; }
 
+        /// <summary>
+        /// I-42 (S1B) — LA COLOCACION EFECTIVA de la bota en un poste.
+        ///
+        /// <para>
+        /// Tres niveles, en este orden: la decision PROPIA del poste; la GENERAL, si alguien la eligio; y si nadie
+        /// eligio nada, la que el sistema haya resuelto para este rack —<see cref="AutomaticBootPlacement"/>—, que
+        /// es lo que hace un rack recien abierto y lo que trae todo documento anterior.
+        /// </para>
+        /// <para>
+        /// El fallback final es el lado historico: <c>Izquierda</c> es la cara de entrada/salida y <c>Derecha</c> la
+        /// posterior, que es exactamente lo que esas etiquetas querian decir.
+        /// </para>
+        /// </summary>
+        public BootPlacement BootPlacementAt(int postIndex)
+        {
+            var own = Bota.At(postIndex);
+            if (own.HasValue)
+            {
+                return own.Value;
+            }
+
+            if (Bota.Placement.HasValue)
+            {
+                return Bota.Placement.Value;
+            }
+
+            // Legacy: un poste con entrada propia en la matriz historica sigue mandando sobre el lado general.
+            foreach (var over in PostSides)
+            {
+                if (over != null && over.PostIndex == postIndex)
+                {
+                    return BootPlacements.From(over.Side);
+                }
+            }
+
+            // El AUTOMATICO solo entra donde nadie expreso nada. El unico valor que significa «no lo he tocado» es
+            // el que siembra un rack nuevo —«Ambas»—: un «Ninguno» o un lado concreto SI son una decision, y la
+            // decision manda. Una eleccion hecha con la UI nueva ya se resolvio arriba, en Bota.Placement.
+            var legacy = AuthoredSide ?? Side;
+            return legacy == SafetySide.Both && AutomaticBootPlacement.HasValue
+                ? AutomaticBootPlacement.Value
+                : BootPlacements.From(legacy);
+        }
+
+        /// <summary>
+        /// I-42 (S1B) — la colocacion que el SISTEMA resuelve cuando nadie ha elegido: entrada/salida si el rack
+        /// tiene un solo pasillo, las dos caras si tiene dos. Es DERIVADA y no se persiste, como
+        /// <see cref="LowEndOnly"/>: la impone la autoridad del sistema en cada resolucion.
+        /// </summary>
+        public BootPlacement? AutomaticBootPlacement { get; set; }
+
+        /// <summary>True cuando ESE poste tiene una decision propia de bota (propia o en la matriz historica).</summary>
+        public bool HasOwnBootPlacement(int postIndex)
+        {
+            if (Bota.At(postIndex).HasValue)
+            {
+                return true;
+            }
+
+            foreach (var over in PostSides)
+            {
+                if (over != null && over.PostIndex == postIndex)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>El lado que el usuario eligio, o el vigente si el sistema no lo restringio.</summary>
         public SafetySide ChosenSide(int postIndex)
         {
@@ -270,6 +340,7 @@ namespace RackCad.Domain.Systems.Selective
         private SelectiveDefensaConfig defensa = new SelectiveDefensaConfig();
         private SelectiveGuiaConfig guia = new SelectiveGuiaConfig();
         private SelectiveParrillaConfig parrilla = new SelectiveParrillaConfig();
+        private SelectiveBotaConfig bota = new SelectiveBotaConfig();
 
         /// <summary>TOPE (larguero tope) configuration. Never null.</summary>
         public SelectiveTopeConfig Tope { get => tope; set => tope = value ?? new SelectiveTopeConfig(); }
@@ -285,6 +356,9 @@ namespace RackCad.Domain.Systems.Selective
 
         /// <summary>PARRILLA (deck) configuration. Never null.</summary>
         public SelectiveParrillaConfig Parrilla { get => parrilla; set => parrilla = value ?? new SelectiveParrillaConfig(); }
+
+        /// <summary>I-42 (S1B) — la configuracion de la familia BOTA: su colocacion general y sus overrides por poste.</summary>
+        public SelectiveBotaConfig Bota { get => bota; set => bota = value ?? new SelectiveBotaConfig(); }
 
         // ---- Flat accessors delegating to the per-family configs (compatibility surface for existing consumers) ----
 
@@ -357,6 +431,7 @@ namespace RackCad.Domain.Systems.Selective
                 Side = Side,
                 LowEndOnly = LowEndOnly,
                 AuthoredSide = AuthoredSide,
+                AutomaticBootPlacement = AutomaticBootPlacement,
                 BothEndsAreLoadFaces = BothEndsAreLoadFaces,
                 NearFace = NearFace,
                 FarFace = FarFace,
@@ -365,7 +440,8 @@ namespace RackCad.Domain.Systems.Selective
                 Desviador = Desviador.DeepCopy(),
                 Defensa = Defensa.DeepCopy(),
                 Guia = Guia.DeepCopy(),
-                Parrilla = Parrilla.DeepCopy()
+                Parrilla = Parrilla.DeepCopy(),
+                Bota = Bota.DeepCopy()
             };
 
             foreach (var post in SecondLoadFacePosts)

@@ -13,26 +13,27 @@ using Xunit;
 namespace RackCad.Tests
 {
     /// <summary>
-    /// I-42 (S1) — LOS PROTECTORES DE BOTA: Ninguno / Izquierda / Derecha / Ambas.
+    /// I-42 (S1B, contrato final del dueño) — LOS PROTECTORES DE BOTA:
+    /// <b>Ninguno · Entrada/Salida · Posterior · Ambas</b>, tambien POR POSTE.
     ///
     /// <para>
-    /// <b>El defecto, medido.</b> Una bota protege el POSTE del golpe del montacargas, y el montacargas ataca por un
-    /// pasillo. Pero el lado no elegia pasillos: en un Push Back la autoridad colapsaba la eleccion a
-    /// <c>Izquierda</c> antes de que nadie la leyera, asi que <b>las tres opciones daban exactamente la misma
-    /// bota</b> —3 piezas en la misma cara, con el mismo BOM— y en un compuesto las tres daban las dos caras. El
-    /// selector era inerte. Ademas, la autoridad compartida emitia para <c>Ambas</c> con dos caras de carga CUATRO
-    /// copias sobre DOS sitios: dos piezas dibujadas y contadas sobre el mismo poste.
+    /// <b>Lo que la ronda S1 se equivoco en suponer.</b> Que la bota protege solo la cara desde la que se carga. No:
+    /// la bota protege el POSTE de un impacto, y detras de un rack que no esta contra muro puede haber un pasillo de
+    /// transito. La cara POSTERIOR es configurable aunque nunca se opere producto desde ella, asi que la restriccion
+    /// «posterior solo si es cara de carga» queda RETIRADA.
     /// </para>
     ///
     /// <para>
-    /// <b>El contrato.</b> El lado elige UBICACIONES FISICAS: <c>Izquierda</c> el extremo cercano, <c>Derecha</c> el
-    /// lejano, <c>Ambas</c> los dos. Cada ubicacion aparece UNA vez y solo existe donde ese extremo es una CARA DE
-    /// ATAQUE — un extremo contra muro no se protege. La ORIENTACION la decide la cara, nunca la eleccion.
+    /// <b>El contrato.</b> La eleccion nombra UBICACIONES FISICAS: <c>Entrada/Salida</c> la cara del frente
+    /// operativo, <c>Posterior</c> la opuesta, <c>Ambas</c> las dos —una vez cada una—, <c>Ninguno</c> ninguna. La
+    /// ORIENTACION la decide la ubicacion, nunca la eleccion. Y «por defecto» no es una quinta ubicacion: es la
+    /// ausencia de decision propia, que hereda la general.
     /// </para>
     ///
     /// <para>
-    /// <b>Contenido.</b> Es una regla de ESTA familia. El PROTECTOR LATERAL lee Izquierda/Derecha como orientacion
-    /// en su sitio (contrato validado en I-32) y el DESVIADOR sigue en el extremo bajo (R1): ninguno cambia.
+    /// <b>Contenido.</b> Es una semantica PROPIA de esta familia (<see cref="BootPlacement"/>). El PROTECTOR LATERAL
+    /// sigue leyendo Izquierda/Derecha como orientacion en su sitio (I-32) y el DESVIADOR sigue en el extremo bajo
+    /// (R1): ninguno cambia.
     /// </para>
     /// </summary>
     public class PushBackBootSemanticsTests
@@ -68,33 +69,30 @@ namespace RackCad.Tests
             return state;
         }
 
+        /// <summary>Resuelve el rack con una seleccion de bota: general y, si se pide, overrides por poste.</summary>
         private static PushBackSystem Resolve(
-            PushBackCompositeEditorState state, SafetySide side, params (int Post, SafetySide Side)[] perPost)
+            PushBackCompositeEditorState state,
+            BootPlacement? general,
+            params (int Post, BootPlacement Placement)[] perPost)
         {
             var design = new PushBackCompositeEditorAssembler(Catalog).Build(state, Inputs(), Catalog).Design;
             design.Structure.SafetySelections.Clear();
-            if (side != SafetySide.None || perPost.Length > 0)
-            {
-                var selection = new SelectiveSafetySelection { ElementId = BootId, Quantity = 1, Side = side };
-                foreach (var (post, postSide) in perPost)
-                {
-                    selection.PostSides.Add(new SafetyPostSide { PostIndex = post, Side = postSide });
-                }
 
-                design.Structure.SafetySelections.Add(selection);
+            var selection = new SelectiveSafetySelection { ElementId = BootId, Quantity = 1 };
+            if (general.HasValue)
+            {
+                selection.Bota.Placement = general.Value;
+                selection.Side = BootPlacements.To(general.Value);
             }
 
+            foreach (var (post, placement) in perPost)
+            {
+                selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = post, Placement = placement });
+            }
+
+            design.Structure.SafetySelections.Add(selection);
             return new PushBackResolver(Catalog).Resolve(design);
         }
-
-        /// <summary>Las UBICACIONES fisicas donde hay bota, sin repetir.</summary>
-        private static IReadOnlyList<string> Locations(PushBackSystem system)
-            => Boots(system)
-                .Select(instance => FormattableString.Invariant(
-                    $"{instance.Insertion.X:0.##}|{instance.Insertion.Y:0.##}"))
-                .Distinct()
-                .OrderBy(value => value, StringComparer.Ordinal)
-                .ToList();
 
         private static IReadOnlyList<HeaderBlockInstance> Boots(PushBackSystem system)
         {
@@ -104,6 +102,14 @@ namespace RackCad.Tests
                 .ToList();
         }
 
+        private static IReadOnlyList<string> Locations(PushBackSystem system)
+            => Boots(system)
+                .Select(instance => FormattableString.Invariant(
+                    $"{instance.Insertion.X:0.##}|{instance.Insertion.Y:0.##}"))
+                .Distinct()
+                .OrderBy(value => value, StringComparer.Ordinal)
+                .ToList();
+
         private static int BootsInBom(PushBackSystem system)
         {
             var id = BootId;
@@ -112,271 +118,440 @@ namespace RackCad.Tests
                 .Sum(line => line.Quantity);
         }
 
-        /// <summary>La X del pasillo de cada lado, para saber en cual cae una bota.</summary>
-        private static double Near(PushBackSystem system) => 0.0;
+        /// <summary>Las botas de una linea concreta (su Y), en orden de X.</summary>
+        private static IReadOnlyList<double> LineBoots(PushBackSystem system, double y)
+            => Boots(system)
+                .Where(instance => Math.Abs(instance.Insertion.Y - y) < 0.01)
+                .Select(instance => Math.Round(instance.Insertion.X, 2))
+                .OrderBy(value => value)
+                .ToList();
 
-        private static double Far(PushBackSystem system) => system.Structure.TotalLength;
+        private static IReadOnlyList<double> Lines(PushBackSystem system)
+            => Boots(system).Select(instance => Math.Round(instance.Insertion.Y, 2)).Distinct().OrderBy(y => y).ToList();
 
-        private static int At(PushBackSystem system, bool farEnd)
-        {
-            var middle = system.Structure.TotalLength / 2.0;
-            return Boots(system).Count(instance =>
-                farEnd ? instance.Insertion.X >= middle : instance.Insertion.X < middle);
-        }
-
-        // ==================================================================== el contrato
+        // ==================================================================== semantica
 
         [Fact]
-        public void BootSelection_None_HasNoPhysicalBoots()
+        public void BootMode_None_ProducesNone()
         {
             foreach (var composite in new[] { false, true })
             {
-                var system = Resolve(State(2, composite), SafetySide.None);
+                var system = Resolve(State(2, composite), BootPlacement.None);
                 Assert.Empty(Boots(system));
                 Assert.Equal(0, BootsInBom(system));
             }
         }
 
+        [Fact]
+        public void BootMode_EntryExit_ProducesEntryExitLocation()
+        {
+            var system = Resolve(State(2, composite: false), BootPlacement.EntryExit);
+            var middle = system.Structure.TotalLength / 2.0;
+
+            Assert.NotEmpty(Boots(system));
+            Assert.All(Boots(system), boot => Assert.True(boot.Insertion.X < middle));
+        }
+
         /// <summary>
-        /// Izquierda y Derecha son UBICACIONES DISTINTAS, no la misma con otro espejo: en un compuesto cada una
-        /// protege un pasillo, y sus conjuntos fisicos no se solapan en ninguna pieza.
+        /// La POSTERIOR se materializa aunque no sea cara de carga: detras puede haber un pasillo de transito. Es
+        /// exactamente lo que la ronda S1 prohibia y el dueño rechazo.
         /// </summary>
         [Fact]
-        public void BootSelection_Left_MapsToPhysicalLocationsNotMirrorOnly()
+        public void BootMode_Rear_ProducesRearLocation()
         {
-            var system = Resolve(State(2, composite: true), SafetySide.Left);
+            var system = Resolve(State(2, composite: false), BootPlacement.Rear);
+            var middle = system.Structure.TotalLength / 2.0;
 
-            Assert.NotEmpty(Locations(system));
-            Assert.Equal(Boots(system).Count, Locations(system).Count);   // ni una repetida
-            Assert.True(At(system, farEnd: false) > 0);
-            Assert.Equal(0, At(system, farEnd: true));
+            Assert.NotEmpty(Boots(system));
+            Assert.All(Boots(system), boot => Assert.True(boot.Insertion.X > middle));
         }
 
         [Fact]
-        public void BootSelection_Right_MapsToPhysicalLocationsNotMirrorOnly()
+        public void BootMode_Both_ProducesTwoDistinctLocations()
         {
-            var system = Resolve(State(2, composite: true), SafetySide.Right);
+            var state = State(2, composite: false);
+            var entry = Locations(Resolve(state, BootPlacement.EntryExit));
+            var rear = Locations(Resolve(state, BootPlacement.Rear));
+            var both = Locations(Resolve(state, BootPlacement.Both));
 
-            Assert.NotEmpty(Locations(system));
-            Assert.Equal(Boots(system).Count, Locations(system).Count);
-            Assert.Equal(0, At(system, farEnd: false));
-            Assert.True(At(system, farEnd: true) > 0);
+            Assert.NotEmpty(entry);
+            Assert.NotEmpty(rear);
+            Assert.Empty(entry.Intersect(rear));
+            Assert.Equal(entry.Concat(rear).OrderBy(value => value, StringComparer.Ordinal), both);
         }
 
-        /// <summary>Y sus conjuntos son DISJUNTOS: ninguna ubicacion aparece en los dos.</summary>
-        [Fact]
-        public void BootSelection_LeftAndRight_AreDisjointPhysicalSets()
-        {
-            var left = Locations(Resolve(State(2, composite: true), SafetySide.Left));
-            var right = Locations(Resolve(State(2, composite: true), SafetySide.Right));
-
-            Assert.NotEmpty(left);
-            Assert.NotEmpty(right);
-            Assert.Empty(left.Intersect(right));
-        }
-
-        /// <summary>Ambas es la UNION fisica de las dos, sin duplicar ninguna ubicacion.</summary>
-        [Fact]
-        public void BootSelection_Both_IsPhysicalUnionWithoutDuplicateLocation()
-        {
-            var state = State(2, composite: true);
-            var left = Locations(Resolve(state, SafetySide.Left));
-            var right = Locations(Resolve(state, SafetySide.Right));
-            var both = Resolve(state, SafetySide.Both);
-
-            Assert.Equal(
-                left.Concat(right).OrderBy(value => value, StringComparer.Ordinal),
-                Locations(both));
-            Assert.Equal(left.Count + right.Count, Boots(both).Count);   // una pieza por ubicacion
-            Assert.Equal(Boots(both).Count, Locations(both).Count);
-        }
-
-        /// <summary>Ninguna opcion pone DOS botas sobre el mismo poste y cara solo por espejar una.</summary>
         [Theory]
-        [InlineData(SafetySide.Left)]
-        [InlineData(SafetySide.Right)]
-        [InlineData(SafetySide.Both)]
-        public void BootSelection_DoesNotDuplicateSamePhysicalPostByMirror(SafetySide side)
+        [InlineData(BootPlacement.EntryExit)]
+        [InlineData(BootPlacement.Rear)]
+        [InlineData(BootPlacement.Both)]
+        public void BootMode_Both_DoesNotDuplicateSameLocation(BootPlacement placement)
         {
             foreach (var composite in new[] { false, true })
             {
-                var system = Resolve(State(2, composite), side);
+                var system = Resolve(State(2, composite), placement);
                 Assert.Equal(Locations(system).Count, Boots(system).Count);
             }
         }
 
-        /// <summary>
-        /// La ORIENTACION no define la pertenencia: la copia del pasillo lejano es la imagen espejo de la del
-        /// cercano, y eso es consecuencia de QUE cara protege — no una segunda pieza.
-        /// </summary>
+        /// <summary>La orientacion se DERIVA de la ubicacion: la posterior es la imagen espejo de la de entrada.</summary>
         [Fact]
-        public void BootOrientation_DoesNotDefinePhysicalMembership()
+        public void BootMode_OrientationIsDerivedFromPhysicalLocation()
         {
             Assert.False(SelectiveSafetyEnds.Mirror(farEnd: false));
             Assert.True(SelectiveSafetyEnds.Mirror(farEnd: true));
 
-            var system = Resolve(State(2, composite: true), SafetySide.Both);
+            var system = Resolve(State(2, composite: false), BootPlacement.Both);
             var middle = system.Structure.TotalLength / 2.0;
-
-            Assert.All(Boots(system), boot => Assert.Equal(boot.Insertion.X >= middle, boot.MirroredX));
+            Assert.All(Boots(system), boot => Assert.Equal(boot.Insertion.X > middle, boot.MirroredX));
         }
-
-        // ==================================================================== caras de ataque
 
         /// <summary>
-        /// Un Push Back de un solo sentido tiene UNA cara de ataque: su pasillo. «Derecha» pide el extremo lejano,
-        /// que esta contra muro, asi que no coloca nada — y no muda la bota al pasillo, que es lo que hacia antes.
+        /// Y NO depende de si esa cara carga producto: en un Push Back de un solo sentido —cuyo extremo lejano no
+        /// es cara de carga— «Posterior» sigue colocando su bota.
         /// </summary>
         [Fact]
-        public void PushBackBoot_UsesApplicableLowAttackFaces()
+        public void BootMode_DoesNotDependOnLoadFaceApplicability()
         {
-            var state = State(2, composite: false);
+            var selection = new SelectiveSafetySelection { ElementId = BootId, LowEndOnly = true };
+            selection.Bota.Placement = BootPlacement.Rear;
 
-            Assert.NotEmpty(Boots(Resolve(state, SafetySide.Left)));
-            Assert.Empty(Boots(Resolve(state, SafetySide.Right)));
-            Assert.Equal(
-                Locations(Resolve(state, SafetySide.Left)),
-                Locations(Resolve(state, SafetySide.Both)));
-        }
+            var copy = Assert.Single(SelectiveSafetyEnds.BootCopiesForPost(selection, 0));
+            Assert.True(copy.AtHighEnd);
 
-        /// <summary>Un compuesto SI tiene dos caras de ataque, y las dos pueden llevar bota.</summary>
-        [Fact]
-        public void CompositeBoots_CanExistOnBothDistinctLowFaces()
-        {
-            var system = Resolve(State(2, composite: true), SafetySide.Both);
-
-            Assert.True(At(system, farEnd: false) > 0);
-            Assert.True(At(system, farEnd: true) > 0);
-            Assert.Equal(Boots(system).Count, At(system, farEnd: false) + At(system, farEnd: true));
-        }
-
-        /// <summary>El DEFECTO de un rack nuevo es «Ambas», asi que un compuesto nace con los dos pasillos protegidos.</summary>
-        [Fact]
-        public void ANewRack_DefaultsToBothAttackFaces()
-        {
-            var defaults = new PushBackSafetyAuthority(Catalog).Defaults();
-            var boot = defaults.First(selection =>
-                string.Equals(selection.ElementId, BootId, StringComparison.OrdinalIgnoreCase));
-
-            Assert.Equal(SafetySide.Both, boot.AuthoredSide);
-        }
-
-        // ==================================================================== blanks
-
-        /// <summary>Un blanco quita la NECESIDAD: la bota desaparece y no se muda a ningun otro sitio.</summary>
-        [Fact]
-        public void BlankLowFace_RemovesBootWithoutRelocation()
-        {
-            var full = Resolve(State(3, composite: true), SafetySide.Both);
-            var blanked = State(3, composite: true);
-            blanked.SetSlotPresent(PushBackSide.A, 0, false);
-            blanked.SetSlotPresent(PushBackSide.A, 1, false);
-            var system = Resolve(blanked, SafetySide.Both);
-
-            var before = Locations(full);
-            var after = Locations(system);
-
-            Assert.True(after.Count < before.Count, "el blanco quita al menos una bota");
-            Assert.All(after, location => Assert.Contains(location, before));   // ninguna ubicacion NUEVA
-        }
-
-        [Fact]
-        public void BlankBoot_DoesNotMoveToInteriorOrOppositeSide()
-        {
-            var blanked = State(3, composite: true);
-            blanked.SetSlotPresent(PushBackSide.A, 0, false);
-            blanked.SetSlotPresent(PushBackSide.A, 1, false);
-            var system = Resolve(blanked, SafetySide.Both);
-
-            var interiorLow = system.Composite.SideA.InnerX;
-            var interiorHigh = system.Composite.SideB.InnerX;
-
-            Assert.All(Boots(system), boot =>
-            {
-                Assert.True(Math.Abs(boot.Insertion.X - interiorLow) > 1.0, "ninguna bota en la interfaz");
-                Assert.True(Math.Abs(boot.Insertion.X - interiorHigh) > 1.0, "ninguna bota en la interfaz");
-            });
+            var system = Resolve(State(2, composite: false), BootPlacement.Rear);
+            Assert.NotEmpty(Boots(system));
         }
 
         // ==================================================================== por poste
 
-        /// <summary>La eleccion POR POSTE manda sobre la general y no se contagia a los demas.</summary>
         [Fact]
-        public void BootPerPostOverride_RemainsScoped()
+        public void BootPost_Default_InheritsGeneralMode()
         {
-            var state = State(2, composite: true);
-            var system = Resolve(state, SafetySide.Both, (1, SafetySide.None));
-            var all = Resolve(state, SafetySide.Both);
+            var selection = new SelectiveSafetySelection { ElementId = BootId };
+            selection.Bota.Placement = BootPlacement.Rear;
 
-            var lines = Boots(all).Select(boot => Math.Round(boot.Insertion.Y, 3)).Distinct().OrderBy(y => y).ToList();
-            var kept = Boots(system).Select(boot => Math.Round(boot.Insertion.Y, 3)).Distinct().OrderBy(y => y).ToList();
-
-            Assert.Equal(lines.Count - 1, kept.Count);          // exactamente una linea sin bota
-            Assert.All(kept, y => Assert.Contains(y, lines));   // y ninguna se movio
+            Assert.Equal(BootPlacement.Rear, selection.BootPlacementAt(0));
+            Assert.False(selection.HasOwnBootPlacement(0));
         }
 
-        /// <summary>Una entrada por poste NUNCA la colapsa la autoridad: es del usuario, y se lee literal.</summary>
-        [Fact]
-        public void BootPerPostOverride_IsNeverCollapsedByTheAuthority()
+        [Theory]
+        [InlineData(BootPlacement.None)]
+        [InlineData(BootPlacement.EntryExit)]
+        [InlineData(BootPlacement.Rear)]
+        [InlineData(BootPlacement.Both)]
+        public void BootPost_Override_BeatsTheGeneralMode(BootPlacement own)
         {
-            var selection = new SelectiveSafetySelection { ElementId = BootId, Side = SafetySide.Both };
-            selection.PostSides.Add(new SafetyPostSide { PostIndex = 0, Side = SafetySide.Right });
-            PushBackSafetyAuthority.RestrictToLowEnd(selection);
+            var selection = new SelectiveSafetySelection { ElementId = BootId };
+            selection.Bota.Placement = BootPlacement.EntryExit;
+            selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = 1, Placement = own });
 
-            Assert.Equal(SafetySide.Right, selection.ChosenSide(0));
-            Assert.Equal(SafetySide.Both, selection.ChosenSide(1));   // el general conserva la eleccion
+            Assert.Equal(own, selection.BootPlacementAt(1));
+            Assert.Equal(BootPlacement.EntryExit, selection.BootPlacementAt(0));
+            Assert.True(selection.HasOwnBootPlacement(1));
+        }
+
+        /// <summary>El patron exacto del contrato del dueño, materializado.</summary>
+        [Fact]
+        public void BootPost_TheOwnerPattern_MaterializesExactly()
+        {
+            var system = Resolve(
+                State(3, composite: false),
+                BootPlacement.EntryExit,
+                (1, BootPlacement.Rear),
+                (2, BootPlacement.Both),
+                (3, BootPlacement.None));
+
+            var middle = system.Structure.TotalLength / 2.0;
+            var lines = Lines(system);
+            var all = Boots(system);
+
+            // Poste 1 hereda entrada/salida; 2 posterior; 3 las dos; 4 ninguna.
+            Assert.Equal(3, lines.Count);   // la linea 4 se queda sin ninguna
+            Assert.Single(all.Where(b => Math.Abs(b.Insertion.Y - lines[0]) < 0.01));
+            Assert.All(all.Where(b => Math.Abs(b.Insertion.Y - lines[0]) < 0.01),
+                b => Assert.True(b.Insertion.X < middle));
+            Assert.Single(all.Where(b => Math.Abs(b.Insertion.Y - lines[1]) < 0.01));
+            Assert.All(all.Where(b => Math.Abs(b.Insertion.Y - lines[1]) < 0.01),
+                b => Assert.True(b.Insertion.X > middle));
+            Assert.Equal(2, all.Count(b => Math.Abs(b.Insertion.Y - lines[2]) < 0.01));
+        }
+
+        /// <summary>Cambiar la general mueve SOLO los postes «por defecto»; los explicitos no se enteran.</summary>
+        [Fact]
+        public void ChangingGeneral_OnlyChangesDefaultPosts()
+        {
+            var selection = new SelectiveSafetySelection { ElementId = BootId };
+            selection.Bota.Placement = BootPlacement.EntryExit;
+            selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = 1, Placement = BootPlacement.Rear });
+            selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = 2, Placement = BootPlacement.Both });
+            selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = 3, Placement = BootPlacement.None });
+
+            Assert.Equal(BootPlacement.EntryExit, selection.BootPlacementAt(0));
+
+            selection.Bota.Placement = BootPlacement.Rear;
+
+            Assert.Equal(BootPlacement.Rear, selection.BootPlacementAt(0));      // el «por defecto» sigue la general
+            Assert.Equal(BootPlacement.Rear, selection.BootPlacementAt(1));      // explicito, coincide por casualidad
+            Assert.Equal(BootPlacement.Both, selection.BootPlacementAt(2));      // explicito, intacto
+            Assert.Equal(BootPlacement.None, selection.BootPlacementAt(3));      // explicito, intacto
+
+            selection.Bota.Placement = BootPlacement.EntryExit;
+            Assert.Equal(BootPlacement.EntryExit, selection.BootPlacementAt(0));
+            Assert.Equal(BootPlacement.Both, selection.BootPlacementAt(2));
+        }
+
+        [Fact]
+        public void BootPost_OverridesRemainStable_AcrossDeepCopy()
+        {
+            var selection = new SelectiveSafetySelection { ElementId = BootId };
+            selection.Bota.Placement = BootPlacement.Both;
+            selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = 2, Placement = BootPlacement.Rear });
+
+            var copy = selection.DeepCopy();
+
+            Assert.Equal(BootPlacement.Both, copy.Bota.Placement);
+            Assert.Equal(BootPlacement.Rear, copy.BootPlacementAt(2));
+            Assert.NotSame(selection.Bota, copy.Bota);
+        }
+
+        // ==================================================================== blanks
+
+        /// <summary>Un rack con dos frentes en blanco, como la columna de nave del dueño.</summary>
+        private static PushBackCompositeEditorState Blanked()
+        {
+            var state = State(4, composite: true);
+            state.SetSlotPresent(PushBackSide.A, 1, false);
+            state.SetSlotPresent(PushBackSide.A, 2, false);
+            return state;
+        }
+
+        /// <summary>Por DEFECTO un blanco no inventa botas: es el automatico, y no hay razon para protegerlo.</summary>
+        [Fact]
+        public void Blank_DefaultBoot_CanResolveNone()
+        {
+            var full = Resolve(State(4, composite: true), general: null);
+            var blanked = Resolve(Blanked(), general: null);
+
+            Assert.True(Boots(blanked).Count < Boots(full).Count);
+            Assert.All(Locations(blanked), location => Assert.Contains(location, Locations(full)));
+        }
+
+        /// <summary>
+        /// Pero NO deshabilita la configuracion manual. En la linea que el blanco dejo sin cara de entrada, el
+        /// automatico solo pone la posterior; una eleccion EXPLICITA coloca exactamente lo que pide — incluida la
+        /// de entrada, sobre el poste que el blanco dejo expuesto.
+        /// </summary>
+        [Theory]
+        [InlineData(BootPlacement.EntryExit, 1)]
+        [InlineData(BootPlacement.Rear, 1)]
+        [InlineData(BootPlacement.Both, 2)]
+        [InlineData(BootPlacement.None, 0)]
+        public void Blank_DoesNotDisableBootOverride(BootPlacement placement, int expected)
+        {
+            var automatic = Resolve(Blanked(), general: null);
+            var line = BlankedLine(automatic);
+
+            // El automatico de esa linea: solo la posterior, porque su cara de entrada cae en la interfaz.
+            Assert.Single(LineBoots(automatic, line));
+
+            var overridden = Resolve(Blanked(), general: null, (2, placement));
+            Assert.Equal(expected, LineBoots(overridden, line).Count);
+            Assert.Equal(Boots(overridden).Count, BootsInBom(overridden));
+        }
+
+        /// <summary>La linea que el blanco dejo con una sola bota automatica.</summary>
+        private static double BlankedLine(PushBackSystem automatic)
+            => Boots(automatic)
+                .GroupBy(boot => Math.Round(boot.Insertion.Y, 2))
+                .First(group => group.Count() == 1)
+                .Key;
+
+        /// <summary>Y una eleccion explicita de entrada/salida ahi coloca su bota, no la del otro extremo.</summary>
+        [Fact]
+        public void Blank_ExplicitEntryExit_CanMaterialize()
+        {
+            var automatic = Resolve(Blanked(), general: null);
+            var line = BlankedLine(automatic);
+            var overridden = Resolve(Blanked(), general: null, (2, BootPlacement.EntryExit));
+
+            var before = LineBoots(automatic, line);
+            var after = LineBoots(overridden, line);
+
+            Assert.Single(after);
+            Assert.NotEqual(before[0], after[0]);   // la ubicacion cambio: es la que se pidio
+        }
+
+        [Fact]
+        public void Blank_ExplicitNone_MaterializesNone()
+        {
+            var automatic = Resolve(Blanked(), general: null);
+            var line = BlankedLine(automatic);
+
+            Assert.Empty(LineBoots(Resolve(Blanked(), general: null, (2, BootPlacement.None)), line));
+        }
+
+        /// <summary>Y la bota configurada a mano se queda en SU linea: ninguna otra se mueve ni desaparece.</summary>
+        [Fact]
+        public void Blank_BootDoesNotRelocate()
+        {
+            var automatic = Resolve(Blanked(), general: null);
+            var line = BlankedLine(automatic);
+            var overridden = Resolve(Blanked(), general: null, (2, BootPlacement.Both));
+
+            foreach (var other in Lines(automatic).Where(y => Math.Abs(y - line) > 0.01))
+            {
+                Assert.Equal(LineBoots(automatic, other), LineBoots(overridden, other));
+            }
+
+            Assert.Equal(2, LineBoots(overridden, line).Count);
+        }
+
+        /// <summary>Ni cruza al otro lado: el lado B conserva exactamente sus botas.</summary>
+        [Fact]
+        public void Blank_BootDoesNotCrossSide()
+        {
+            var automatic = Resolve(Blanked(), general: null);
+            var overridden = Resolve(Blanked(), general: null, (2, BootPlacement.EntryExit));
+            var middle = automatic.Structure.TotalLength / 2.0;
+
+            var farBefore = Boots(automatic).Count(boot => boot.Insertion.X > middle);
+            var farAfter = Boots(overridden).Count(boot => boot.Insertion.X > middle);
+
+            Assert.Equal(farBefore - 1, farAfter);   // solo la de ESA linea, que se pidio de entrada
+        }
+
+        // ==================================================================== simple / compuesto
+
+        /// <summary>Sin eleccion, un rack de UN pasillo protege su frente operativo. Es el comportamiento historico.</summary>
+        [Fact]
+        public void Simple_DefaultIsEntryExit()
+        {
+            var system = Resolve(State(2, composite: false), general: null);
+            var middle = system.Structure.TotalLength / 2.0;
+
+            Assert.NotEmpty(Boots(system));
+            Assert.All(Boots(system), boot => Assert.True(boot.Insertion.X < middle));
+        }
+
+        /// <summary>Y uno de DOS pasillos protege los dos, sin pedirlo (R6).</summary>
+        [Fact]
+        public void Composite_DefaultProtectsBothAisles()
+        {
+            var system = Resolve(State(2, composite: true), general: null);
+            var middle = system.Structure.TotalLength / 2.0;
+
+            Assert.Contains(Boots(system), boot => boot.Insertion.X < middle);
+            Assert.Contains(Boots(system), boot => boot.Insertion.X > middle);
+        }
+
+        [Fact]
+        public void Simple_RearAndBoth_AreAllowed()
+        {
+            var state = State(2, composite: false);
+            Assert.NotEmpty(Boots(Resolve(state, BootPlacement.Rear)));
+            Assert.Equal(
+                Boots(Resolve(state, BootPlacement.EntryExit)).Count + Boots(Resolve(state, BootPlacement.Rear)).Count,
+                Boots(Resolve(state, BootPlacement.Both)).Count);
+        }
+
+        /// <summary>La colocacion NO codifica el lado: es la cara longitudinal, y vale igual en simple y compuesto.</summary>
+        [Fact]
+        public void Composite_BootModeDoesNotEncodeSide()
+        {
+            var simple = Resolve(State(2, composite: false), BootPlacement.EntryExit);
+            var composite = Resolve(State(2, composite: true), BootPlacement.EntryExit);
+            var simpleMiddle = simple.Structure.TotalLength / 2.0;
+            var compositeMiddle = composite.Structure.TotalLength / 2.0;
+
+            Assert.All(Boots(simple), boot => Assert.True(boot.Insertion.X < simpleMiddle));
+            Assert.All(Boots(composite), boot => Assert.True(boot.Insertion.X < compositeMiddle));
         }
 
         // ==================================================================== dibujo == BOM
 
         [Theory]
-        [InlineData(SafetySide.None)]
-        [InlineData(SafetySide.Left)]
-        [InlineData(SafetySide.Right)]
-        [InlineData(SafetySide.Both)]
-        public void BootDraw_EqualsBom(SafetySide side)
+        [InlineData(null)]
+        [InlineData(BootPlacement.None)]
+        [InlineData(BootPlacement.EntryExit)]
+        [InlineData(BootPlacement.Rear)]
+        [InlineData(BootPlacement.Both)]
+        public void BootDraw_EqualsBom(BootPlacement? placement)
         {
             foreach (var composite in new[] { false, true })
             {
-                var system = Resolve(State(2, composite), side);
+                var system = Resolve(State(2, composite), placement);
                 Assert.Equal(Boots(system).Count, BootsInBom(system));
             }
         }
 
-        // ==================================================================== regresiones de otros sistemas
+        // ==================================================================== legacy
 
-        /// <summary>
-        /// SELECTIVO y DINAMICO cargan por los DOS extremos, asi que los dos son caras de ataque y el contrato
-        /// historico se cumple sin cambiar nada: Izquierda el cercano, Derecha el lejano, Ambas los dos.
-        /// </summary>
-        [Fact]
-        public void SelectiveAndDynamicBootRegression_BothEndsRemainAttackFaces()
+        [Theory]
+        [InlineData(SafetySide.None, BootPlacement.None)]
+        [InlineData(SafetySide.Left, BootPlacement.EntryExit)]
+        [InlineData(SafetySide.Right, BootPlacement.Rear)]
+        [InlineData(SafetySide.Both, BootPlacement.Both)]
+        public void LegacyBoot_MapsByIntention(SafetySide side, BootPlacement expected)
         {
-            foreach (var side in new[] { SafetySide.Left, SafetySide.Right, SafetySide.Both })
-            {
-                var selection = new SelectiveSafetySelection { ElementId = BootId, Side = side };
-                var copies = SelectiveSafetyEnds.BootCopiesForPost(selection, 0);
-
-                var expected = side == SafetySide.Both ? 2 : 1;
-                Assert.Equal(expected, copies.Count);
-                Assert.Equal(expected, copies.Select(copy => copy.AtHighEnd).Distinct().Count());
-                Assert.Equal(side != SafetySide.Right, copies.Any(copy => !copy.AtHighEnd));
-                Assert.Equal(side != SafetySide.Left, copies.Any(copy => copy.AtHighEnd));
-            }
+            Assert.Equal(expected, BootPlacements.From(side));
+            Assert.Equal(side, BootPlacements.To(expected));
         }
 
         /// <summary>
-        /// El PROTECTOR LATERAL conserva su contrato de I-32 —Izquierda/Derecha es orientacion en su sitio y un
-        /// Derecha en Push Back se queda delante, espejado—: esta ronda no lo toca.
+        /// Un documento anterior no trae colocacion propia: se lee por su LADO historico, con la intencion que esas
+        /// etiquetas tenian. Y una entrada por poste historica sigue mandando sobre la general.
         /// </summary>
+        [Fact]
+        public void LegacySelection_ReadsItsHistoricSide()
+        {
+            var selection = new SelectiveSafetySelection { ElementId = BootId, Side = SafetySide.Right };
+            selection.PostSides.Add(new SafetyPostSide { PostIndex = 1, Side = SafetySide.Both });
+
+            Assert.Null(selection.Bota.Placement);
+            Assert.Equal(BootPlacement.Rear, selection.BootPlacementAt(0));
+            Assert.Equal(BootPlacement.Both, selection.BootPlacementAt(1));
+            Assert.True(selection.HasOwnBootPlacement(1));
+        }
+
+        /// <summary>
+        /// Y el AUTOMATICO solo entra cuando nadie ha elegido nada: un lado historico explicito lo desplaza.
+        /// </summary>
+        /// <summary>
+        /// El AUTOMATICO solo lo fija la autoridad del SISTEMA —y solo Push Back lo hace—, y cede ante una eleccion
+        /// EXPLICITA. Un Selectivo o un Dinamico nunca lo tienen, asi que su lado historico sigue mandando.
+        /// </summary>
+        [Fact]
+        public void AutomaticPlacement_YieldsToAnExplicitChoice()
+        {
+            var chosen = new SelectiveSafetySelection { ElementId = BootId };
+            chosen.Bota.Placement = BootPlacement.Rear;
+            chosen.AutomaticBootPlacement = BootPlacement.EntryExit;
+            Assert.Equal(BootPlacement.Rear, chosen.BootPlacementAt(0));
+
+            var perPost = new SelectiveSafetySelection { ElementId = BootId };
+            perPost.Bota.Posts.Add(new BootPostPlacement { PostIndex = 0, Placement = BootPlacement.Both });
+            perPost.AutomaticBootPlacement = BootPlacement.EntryExit;
+            Assert.Equal(BootPlacement.Both, perPost.BootPlacementAt(0));
+
+            var untouched = new SelectiveSafetySelection { ElementId = BootId, Side = SafetySide.Both };
+            untouched.AutomaticBootPlacement = BootPlacement.EntryExit;
+            Assert.Equal(BootPlacement.EntryExit, untouched.BootPlacementAt(0));
+
+            // Sin automatico —Selectivo, Dinamico— manda el lado historico.
+            var selective = new SelectiveSafetySelection { ElementId = BootId, Side = SafetySide.Right };
+            Assert.Equal(BootPlacement.Rear, selective.BootPlacementAt(0));
+        }
+
+        // ==================================================================== otras familias
+
+        /// <summary>El PROTECTOR LATERAL conserva su contrato de I-32: esta ronda no lo toca.</summary>
         [Fact]
         public void LateralGuardRegression_KeepsItsOwnContract()
         {
             var selection = new SelectiveSafetySelection { ElementId = "GUARD", Side = SafetySide.Right };
             selection.LowEndOnly = true;
 
-            var copies = SelectiveSafetyEnds.CopiesForPost(selection, 0);
-            var copy = Assert.Single(copies);
+            var copy = Assert.Single(SelectiveSafetyEnds.CopiesForPost(selection, 0));
 
             Assert.False(copy.AtHighEnd);   // delante
             Assert.True(copy.Mirrored);     // y espejado, que es su orientacion elegida
@@ -384,38 +559,29 @@ namespace RackCad.Tests
 
         // ==================================================================== bite tests
 
-        /// <summary>
-        /// BITE — la PERTENENCIA. Si la regla de ubicaciones se rompiera y las tres opciones volvieran a dar el
-        /// mismo conjunto, esto lo dice; y no depende de ningun espejo.
-        /// </summary>
+        /// <summary>BITE — el MAPPING de ubicaciones. Romperlo cambia que caras se ocupan, y nada mas.</summary>
         [Fact]
-        public void Bite_Membership_ThreeOptionsProduceThreeDifferentPhysicalSets()
+        public void Bite_Mapping_EntryExitAndRearAreDifferentFaces()
         {
-            var state = State(2, composite: true);
-            var none = Locations(Resolve(state, SafetySide.None));
-            var left = Locations(Resolve(state, SafetySide.Left));
-            var right = Locations(Resolve(state, SafetySide.Right));
-            var both = Locations(Resolve(state, SafetySide.Both));
+            var entry = new SelectiveSafetySelection { ElementId = BootId };
+            entry.Bota.Placement = BootPlacement.EntryExit;
+            var rear = new SelectiveSafetySelection { ElementId = BootId };
+            rear.Bota.Placement = BootPlacement.Rear;
 
-            Assert.Empty(none);
-            Assert.NotEqual(left, right);
-            Assert.NotEqual(left, both);
-            Assert.NotEqual(right, both);
+            Assert.False(Assert.Single(SelectiveSafetyEnds.BootCopiesForPost(entry, 0)).AtHighEnd);
+            Assert.True(Assert.Single(SelectiveSafetyEnds.BootCopiesForPost(rear, 0)).AtHighEnd);
         }
 
-        /// <summary>
-        /// BITE — la ORIENTACION. Depende SOLO de la cara, asi que romperla mueve espejos y no ubicaciones: el
-        /// conjunto fisico de cada opcion sigue siendo el mismo.
-        /// </summary>
+        /// <summary>BITE — la ORIENTACION. Es funcion SOLO de la cara: romperla no mueve ninguna ubicacion.</summary>
         [Fact]
         public void Bite_Orientation_IsAFunctionOfTheFaceAlone()
         {
-            Assert.Equal(SelectiveSafetyEnds.Mirror(farEnd: false), SelectiveSafetyEnds.Mirror(farEnd: false));
             Assert.NotEqual(SelectiveSafetyEnds.Mirror(farEnd: false), SelectiveSafetyEnds.Mirror(farEnd: true));
 
-            foreach (var side in new[] { SafetySide.Left, SafetySide.Right, SafetySide.Both })
+            foreach (var placement in new[] { BootPlacement.EntryExit, BootPlacement.Rear, BootPlacement.Both })
             {
-                var selection = new SelectiveSafetySelection { ElementId = BootId, Side = side };
+                var selection = new SelectiveSafetySelection { ElementId = BootId };
+                selection.Bota.Placement = placement;
                 foreach (var copy in SelectiveSafetyEnds.BootCopiesForPost(selection, 0))
                 {
                     Assert.Equal(SelectiveSafetyEnds.Mirror(copy.AtHighEnd), copy.Mirrored);
@@ -423,58 +589,27 @@ namespace RackCad.Tests
             }
         }
 
-        /// <summary>
-        /// BITE — la APLICABILIDAD. Es la unica que decide si un extremo puede llevar bota, y romperla solo afecta
-        /// a los casos donde ese extremo no es cara de ataque.
-        /// </summary>
+        /// <summary>BITE — el DEFAULT del blanco. Solo gobierna lo que nadie eligio.</summary>
         [Fact]
-        public void Bite_Applicability_OnlyGovernsTheFarEnd()
+        public void Bite_BlankDefault_OnlyGovernsWhatNobodyChose()
         {
-            var open = new SelectiveSafetySelection { ElementId = BootId };
-            Assert.True(SelectiveSafetyEnds.IsAttackFace(open, 0, farEnd: false));
-            Assert.True(SelectiveSafetyEnds.IsAttackFace(open, 0, farEnd: true));
+            var selection = new SelectiveSafetySelection { ElementId = BootId };
+            Assert.False(selection.HasOwnBootPlacement(2));
 
-            var lowOnly = new SelectiveSafetySelection { ElementId = BootId, LowEndOnly = true };
-            Assert.True(SelectiveSafetyEnds.IsAttackFace(lowOnly, 0, farEnd: false));
-            Assert.False(SelectiveSafetyEnds.IsAttackFace(lowOnly, 0, farEnd: true));
-
-            var composite = new SelectiveSafetySelection { ElementId = BootId, LowEndOnly = true };
-            composite.BothEndsAreLoadFaces = true;
-            Assert.True(SelectiveSafetyEnds.IsAttackFace(composite, 0, farEnd: true));
+            selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = 2, Placement = BootPlacement.Rear });
+            Assert.True(selection.HasOwnBootPlacement(2));
+            Assert.False(selection.HasOwnBootPlacement(1));
         }
 
-        // ==================================================================== legacy
-
-        /// <summary>
-        /// LEGACY — el lado elegido sobrevive a la restriccion del sistema. La autoridad sigue colapsando el lado
-        /// GENERAL para las familias que lo leen como extremo, pero la eleccion original queda registrada y es la
-        /// que lee la bota: sin ella, las tres opciones volverian a ser la misma.
-        /// </summary>
-        [Theory]
-        [InlineData(SafetySide.Left)]
-        [InlineData(SafetySide.Right)]
-        [InlineData(SafetySide.Both)]
-        public void LegacyBootSelection_RoundTrips(SafetySide side)
-        {
-            var selection = new SelectiveSafetySelection { ElementId = BootId, Side = side };
-            PushBackSafetyAuthority.RestrictToLowEnd(selection);
-
-            Assert.Equal(side, selection.AuthoredSide);
-            Assert.Equal(side, selection.ChosenSide(0));
-            Assert.Equal(side, selection.DeepCopy().AuthoredSide);
-        }
-
-        /// <summary>
-        /// Y una seleccion que NUNCA paso por una autoridad restrictiva —todo Selectivo, todo Dinamico y todo
-        /// documento anterior— se lee por su lado de siempre: el campo nuevo es aditivo y NULL no cambia nada.
-        /// </summary>
+        /// <summary>BITE — el OVERRIDE en blanco. Es lo unico que decide si el filtro de cara se salta.</summary>
         [Fact]
-        public void LegacySelectionWithoutAuthoredSide_ReadsItsOwnSide()
+        public void Bite_BlankOverride_IsWhatBypassesTheAutomaticFilter()
         {
-            var selection = new SelectiveSafetySelection { ElementId = BootId, Side = SafetySide.Right };
+            var automatic = Resolve(Blanked(), general: null);
+            var line = BlankedLine(automatic);
 
-            Assert.Null(selection.AuthoredSide);
-            Assert.Equal(SafetySide.Right, selection.ChosenSide(0));
+            Assert.Single(LineBoots(automatic, line));
+            Assert.Equal(2, LineBoots(Resolve(Blanked(), general: null, (2, BootPlacement.Both)), line).Count);
         }
     }
 }

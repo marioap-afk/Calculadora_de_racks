@@ -22,6 +22,14 @@ namespace RackCad.UI
     {
         private static readonly string[] SideLabels = { "Ninguno", "Izquierda", "Derecha", "Ambas" };
 
+        /// <summary>
+        /// I-42 (S1B, contrato del dueño) — las opciones de la BOTA nombran UBICACIONES FISICAS. Una bota protege
+        /// el POSTE de un impacto, y eso no depende de por donde se cargue: la cara posterior puede necesitar
+        /// proteccion aunque nunca se opere desde ahi. Comparten los ordinales de <see cref="SafetySide"/>, que es
+        /// como se guardaron siempre, asi que un documento anterior conserva su intencion sin migrar nada.
+        /// </summary>
+        private static readonly string[] BootLabels = { "Ninguno", "Entrada/Salida", "Posterior", "Ambas" };
+
         private readonly List<Row> rows = new List<Row>();
         private readonly TextBlock error;
         private readonly int postCount;
@@ -444,9 +452,17 @@ namespace RackCad.UI
 
                         if (isBota)
                         {
-                            var combo = new ComboBox { VerticalAlignment = VerticalAlignment.Center, ToolTip = "Lado general de la bota (Ninguno = no lleva). Se puede afinar por poste." };
-                            foreach (var side in SideLabels) combo.Items.Add(side);
-                            combo.SelectedIndex = existing != null ? (int)existing.Side : (int)SafetySide.None;
+                            var combo = new ComboBox
+                            {
+                                VerticalAlignment = VerticalAlignment.Center,
+                                ToolTip = "Dónde va la bota: Entrada/Salida es la cara del frente operativo y Posterior"
+                                          + " la opuesta —que puede necesitar protección aunque no se cargue por ella,"
+                                          + " por ejemplo si detrás hay un pasillo de tránsito—. Se puede afinar por poste.",
+                            };
+                            foreach (var label in BootLabels) combo.Items.Add(label);
+                            combo.SelectedIndex = existing != null
+                                ? (int)BootPlacements.To(existing.Bota.Placement ?? BootPlacements.From(existing.Side))
+                                : (int)SafetySide.None;
                             Grid.SetColumn(combo, 1);
                             grid.Children.Add(combo);
                             row.Side = combo;
@@ -461,7 +477,8 @@ namespace RackCad.UI
                             VerticalAlignment = VerticalAlignment.Center,
                             ToolTip = isLateral
                                 ? "Elige en qué postes va el protector lateral y de qué lado queda la GUÍA de canal (Izquierda/Derecha = guía a un lado o al otro; Ambos = guía en los dos lados, para un frente-puente). Por defecto: primer y último frente, con la guía en lados opuestos. Reemplaza las botas de ese frente."
-                                : "Elige por poste cuáles llevan bota y en qué lado (los no personalizados usan el lado general)."
+                                : "Elige por poste dónde va la bota: entrada/salida, posterior, ambas o ninguna."
+                                  + " Los postes «(por defecto)» siguen la selección general."
                         };
                         perPost.Click += (s, e) => EditPerPost(row);
                         Grid.SetColumn(perPost, isBota ? 2 : 1);
@@ -531,8 +548,11 @@ namespace RackCad.UI
                 current = OrillaDefaults(postCount);
             }
 
-            var dialog = new SafetyPerPostWindow(SelectedElementLabel(row), postCount, defaultSide, current) { Owner = this };
-            if (dialog.ShowDialog() != true)
+            var dialog = new SafetyPerPostWindow(
+                SelectedElementLabel(row), postCount, defaultSide, current,
+                row.IsBota ? BootLabels : SideLabels) { Owner = this };
+            var accepted = PerPostDialog != null ? PerPostDialog(dialog) : dialog.ShowDialog();
+            if (accepted != true)
             {
                 return;
             }
@@ -597,6 +617,24 @@ namespace RackCad.UI
         /// prueba recorre el camino completo —esta ventana, su rejilla, su OnOk— y no una maqueta.
         /// </summary>
         internal Func<SafetyDefensaGridWindow, bool?> DefensaDialog;
+
+        /// <summary>
+        /// I-42 (S1B) — seam de prueba del editor POR POSTE. Sustituye UNICAMENTE el <c>ShowDialog</c>: la ventana
+        /// que recibe es la real, con sus opciones y sus combos.
+        /// </summary>
+        internal Func<SafetyPerPostWindow, bool?> PerPostDialog;
+
+        /// <summary>El selector de VARIANTE de la fila de BOTA (seam de prueba); null si la familia no es exclusiva.</summary>
+        internal ComboBox BootVariantComboForTest
+            => rows.FirstOrDefault(row => row.IsBota)?.Variant;
+
+        /// <summary>El selector general de la fila de BOTA (seam de prueba); null si no se ofrece.</summary>
+        internal ComboBox BootSideComboForTest
+            => rows.FirstOrDefault(row => row.IsBota)?.Side;
+
+        /// <summary>El boton «Por poste…» de la fila de BOTA (seam de prueba).</summary>
+        internal Button BootPerPostButtonForTest
+            => rows.FirstOrDefault(row => row.IsBota)?.PerPost;
 
         /// <summary>El boton de la fila de DEFENSA (seam de prueba); null si no se ofrece.</summary>
         internal Button DefensaButtonForTest
@@ -885,6 +923,25 @@ namespace RackCad.UI
                         if (post != null && post.PostIndex >= 0) selection.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });
                     }
 
+                    // I-42 (S1B): la BOTA guarda su decision como UBICACION, que es lo que el usuario acaba de
+                    // elegir. El lado se sigue escribiendo con la misma correspondencia de siempre, asi que el
+                    // documento lo entiende cualquier consumidor anterior.
+                    if (row.IsBota)
+                    {
+                        selection.Bota.Placement = BootPlacements.From(side);
+                        foreach (var post in overrides)
+                        {
+                            if (post != null && post.PostIndex >= 0)
+                            {
+                                selection.Bota.Posts.Add(new BootPostPlacement
+                                {
+                                    PostIndex = post.PostIndex,
+                                    Placement = BootPlacements.From(post.Side),
+                                });
+                            }
+                        }
+                    }
+
                     result.Add(selection);
                     continue;
                 }
@@ -924,15 +981,43 @@ namespace RackCad.UI
     public sealed class SafetyPerPostWindow : Window
     {
         // Index 0 = "(por defecto)" (no override); 1..4 map to SafetySide None/Left/Right/Both (side = index-1).
-        private static readonly string[] Options = { "(por defecto)", "Ninguno", "Izquierda", "Derecha", "Ambas" };
+        private static readonly string[] SideOptions = { "Ninguno", "Izquierda", "Derecha", "Ambas" };
+
+        private readonly string[] options;
 
         private readonly List<ComboBox> combos = new List<ComboBox>();
 
         public IReadOnlyList<SafetyPostSide> Result { get; private set; } = new List<SafetyPostSide>();
 
-        public SafetyPerPostWindow(string elementLabel, int postCount, SafetySide defaultSide, IEnumerable<SafetyPostSide> current)
+        /// <summary>Las opciones que esta ventana ofrece, en orden (seam de prueba).</summary>
+        internal IReadOnlyList<string> OptionsForTest => options;
+
+        /// <summary>Elige la colocacion de un poste como lo haria el usuario (seam de prueba).</summary>
+        internal void SetForTest(int postIndex, BootPlacement placement)
+        {
+            if (postIndex >= 0 && postIndex < combos.Count)
+            {
+                combos[postIndex].SelectedIndex = (int)BootPlacements.To(placement) + 1;
+            }
+        }
+
+        /// <summary>Runs the real OK path without a modal window (test seam).</summary>
+        internal void BuildResultForTest() => OnOk(modal: false);
+
+        /// <param name="optionLabels">
+        /// I-42 (S1B) — los cuatro valores con el nombre que su FAMILIA les da: la bota los llama por la ubicacion
+        /// que ocupan (Entrada/Salida, Posterior) y el protector lateral por la orientacion de su guia
+        /// (Izquierda, Derecha). Los ordinales son los mismos; lo que cambia es lo que significan.
+        /// </param>
+        public SafetyPerPostWindow(
+            string elementLabel, int postCount, SafetySide defaultSide, IEnumerable<SafetyPostSide> current,
+            IReadOnlyList<string> optionLabels = null)
         {
             postCount = Math.Max(1, postCount);
+            var labels = optionLabels != null && optionLabels.Count == SideOptions.Length
+                ? optionLabels
+                : SideOptions;
+            options = new[] { "(por defecto)" }.Concat(labels).ToArray();
             var byPost = new Dictionary<int, SafetySide>();
             foreach (var post in current ?? Enumerable.Empty<SafetyPostSide>())
             {
@@ -954,7 +1039,7 @@ namespace RackCad.UI
             // A bota has a general side, so "(por defecto)" means "use it"; a lateral has none, so it means "no lleva".
             var perDefault = defaultSide == SafetySide.None
                 ? "\"(por defecto)\" = no lleva."
-                : "\"(por defecto)\" usa el lado general (" + SideName(defaultSide) + ").";
+                : "\"(por defecto)\" usa la selección general (" + labels[(int)defaultSide - 1] + ").";
             var intro = new TextBlock
             {
                 Text = (string.IsNullOrWhiteSpace(elementLabel) ? "Lado por poste" : elementLabel) + " — lado por poste. " + perDefault,
@@ -990,7 +1075,7 @@ namespace RackCad.UI
                 grid.Children.Add(label);
 
                 var combo = new ComboBox { VerticalAlignment = VerticalAlignment.Center };
-                foreach (var option in Options) combo.Items.Add(option);
+                foreach (var option in options) combo.Items.Add(option);
                 combo.SelectedIndex = byPost.TryGetValue(i, out var side) ? (int)side + 1 : 0;
                 Grid.SetColumn(combo, 1);
                 grid.Children.Add(combo);
@@ -1014,7 +1099,7 @@ namespace RackCad.UI
             }
         }
 
-        private void OnOk()
+        private void OnOk(bool modal = true)
         {
             var result = new List<SafetyPostSide>();
             for (var i = 0; i < combos.Count; i++)
@@ -1027,7 +1112,10 @@ namespace RackCad.UI
             }
 
             Result = result;
-            DialogResult = true;
+            if (modal)
+            {
+                DialogResult = true;
+            }
         }
     }
 }

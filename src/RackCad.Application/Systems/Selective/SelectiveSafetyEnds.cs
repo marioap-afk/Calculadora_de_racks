@@ -118,42 +118,35 @@ namespace RackCad.Application.Systems.Selective
         }
 
         /// <summary>
-        /// I-42 (S1) — LAS COPIAS DE UNA BOTA: un conjunto de UBICACIONES FISICAS, una por cara de ataque elegida.
+        /// I-42 (S1B, contrato del dueño) — LAS COPIAS DE UNA BOTA: un conjunto de UBICACIONES FISICAS.
         ///
         /// <para>
-        /// Una bota protege el POSTE del golpe del montacargas, y el montacargas ataca por un pasillo. Por eso el
-        /// lado elige UBICACIONES —<c>Izquierda</c> el extremo cercano, <c>Derecha</c> el lejano, <c>Ambas</c> los
-        /// dos— y no orientaciones: cada ubicacion aparece UNA sola vez, y solo si ese extremo es de verdad una cara
-        /// de ataque. Un extremo contra muro no se protege.
+        /// Una bota protege el POSTE de un impacto, y eso NO depende de por donde se cargue: la cara POSTERIOR
+        /// puede necesitar proteccion aunque nunca se opere desde ahi —detras puede haber un pasillo de transito—.
+        /// Por eso la colocacion no se filtra por «cara de carga»: <c>Entrada/Salida</c> pone una pieza delante,
+        /// <c>Posterior</c> una detras, <c>Ambas</c> las dos, cada UBICACION una sola vez.
         /// </para>
         /// <para>
-        /// La ORIENTACION la decide la cara, nunca la eleccion: los dos pasillos de una linea miran en sentidos
-        /// opuestos, asi que la pieza del lejano es la imagen espejo de la del cercano. Cambiar la orientacion no
-        /// puede crear ni mover una proteccion — que es el eje que la ronda 6E confundio.
-        /// </para>
-        /// <para>
-        /// Es una regla PROPIA de esta familia. El PROTECTOR LATERAL lee Izquierda/Derecha como orientacion en su
-        /// sitio (contrato validado en I-32) y sigue resolviendose con <see cref="CopiesForPost"/>, intacto.
+        /// La ORIENTACION la decide la cara, nunca la eleccion. Es una regla PROPIA de esta familia: el PROTECTOR
+        /// LATERAL lee Izquierda/Derecha como orientacion en su sitio (I-32) y sigue en <see cref="CopiesForPost"/>.
         /// </para>
         /// </summary>
         public static IReadOnlyList<SafetyEndCopy> BootCopiesForPost(
             SelectiveSafetySelection selection, int postIndex)
         {
-            var side = selection?.ChosenSide(postIndex) ?? SafetySide.None;
-            if (side == SafetySide.None)
+            if (selection == null)
             {
                 return None;
             }
 
+            var placement = selection.BootPlacementAt(postIndex);
             var copies = new List<SafetyEndCopy>(2);
-            if ((side == SafetySide.Left || side == SafetySide.Both)
-                && IsAttackFace(selection, postIndex, farEnd: false))
+            if (BootPlacements.IncludesEntryExit(placement))
             {
                 copies.Add(new SafetyEndCopy(atHighEnd: false, mirrored: Mirror(farEnd: false)));
             }
 
-            if ((side == SafetySide.Right || side == SafetySide.Both)
-                && IsAttackFace(selection, postIndex, farEnd: true))
+            if (BootPlacements.IncludesRear(placement))
             {
                 copies.Add(new SafetyEndCopy(atHighEnd: true, mirrored: Mirror(farEnd: true)));
             }
@@ -162,24 +155,11 @@ namespace RackCad.Application.Systems.Selective
         }
 
         /// <summary>
-        /// I-42 (S1) — LA ORIENTACION de una bota, decidida por la CARA que protege y por nada mas. Los dos
-        /// pasillos de una linea miran en sentidos opuestos, asi que la pieza del lejano es la imagen espejo de la
-        /// del cercano. Es un eje SEPARADO de la pertenencia: cambiarlo no crea ni mueve ninguna proteccion.
+        /// I-42 (S1B) — LA ORIENTACION de una bota, decidida por la CARA que ocupa y por nada mas. Las dos caras de
+        /// una linea miran en sentidos opuestos, asi que la pieza posterior es la imagen espejo de la de entrada.
+        /// Es un eje SEPARADO de la pertenencia: cambiarlo no crea ni mueve ninguna proteccion.
         /// </summary>
         public static bool Mirror(bool farEnd) => farEnd;
-
-        /// <summary>
-        /// Si ese extremo de la linea es una CARA DE ATAQUE: si hay un pasillo por el que entre el montacargas.
-        ///
-        /// <para>
-        /// El CERCANO siempre lo es — es el pasillo de carga de cualquier sistema. El LEJANO lo es en los sistemas
-        /// que cargan por los dos extremos (Selectivo, Dinamico) y en un Push Back COMPUESTO, donde la segunda cara
-        /// se declara POR LINEA. En un Push Back de un solo sentido su extremo lejano esta contra muro.
-        /// </para>
-        /// </summary>
-        public static bool IsAttackFace(SelectiveSafetySelection selection, int postIndex, bool farEnd)
-            => !farEnd
-               || (selection != null && (!selection.LowEndOnly || selection.HasSecondLoadFaceAt(postIndex)));
 
         /// <summary>True cuando la pieza de ese poste se dibuja en el extremo pedido.</summary>
         public static bool DrawsAt(SelectiveSafetySelection selection, int postIndex, bool highEnd)

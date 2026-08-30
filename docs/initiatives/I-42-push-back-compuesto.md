@@ -800,6 +800,78 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 5-pre-quater. Ronda S1B: la bota se coloca por UBICACION — entrada/salida, posterior, ambas
+
+La ronda S1 acerto en separar pertenencia de orientacion, pero se equivoco en una premisa que el dueño corrigio:
+**una bota no protege solo la cara desde la que se carga**. Protege el POSTE de un impacto, y detras de un rack que
+no esta contra muro puede haber un pasillo de transito. La restriccion «posterior solo si es cara de carga» queda
+RETIRADA, y con ella la unica parte de S1 que el dueño rechazo.
+
+### El contrato final
+
+| opcion | ubicacion fisica |
+|---|---|
+| Ninguno | ninguna |
+| Entrada/Salida | la cara del frente operativo |
+| Posterior | la cara opuesta — **configurable aunque no se cargue por ella** |
+| Ambas | las dos, una vez cada una |
+
+Las etiquetas «Izquierda» y «Derecha» desaparecen de esta familia: nombraban una orientacion, no la ubicacion que
+hay que proteger. La ORIENTACION la sigue decidiendo la ubicacion —la posterior es la imagen espejo de la de
+entrada— y nunca la eleccion.
+
+### Por poste, con «(por defecto)»
+
+El selector general fija el defecto del rack; cada poste puede tener el suyo. «Por defecto» no es una quinta
+ubicacion: es la ausencia de decision propia. Cambiar la general mueve SOLO los postes que la heredan.
+
+```
+General = Entrada/Salida
+  P1 (por defecto) -> Entrada/Salida        P3 Ambas     -> las dos
+  P2 Posterior     -> Posterior             P4 Ninguno   -> ninguna
+```
+
+### El blanco decide el DEFECTO, no la capacidad
+
+Aclaracion del dueño y correccion propia de esta ronda: un frente en blanco puede dejar de justificar una bota
+—y el automatico resuelve «ninguna» ahi, que es la regla de la ronda 6F—, pero **no impide configurarla**: el poste
+fisico sigue existiendo y puede necesitar proteccion. Medido en la linea que un blanco dejo sin cara de entrada:
+
+| eleccion en ese poste | botas en su linea |
+|---|---|
+| (por defecto) | 1 — solo la posterior, que es lo que el automatico deja |
+| Entrada/Salida | 1 — la de entrada, sobre el poste que el blanco dejo expuesto |
+| Posterior | 1 |
+| Ambas | 2 |
+| Ninguno | 0 |
+
+Y nunca se muda: las demas lineas conservan exactamente sus botas, y el lado contrario tambien.
+
+### Contencion y legacy
+
+`BootPlacement` es un tipo PROPIO de esta familia. `SafetySide` sigue significando lo que significaba para el
+PROTECTOR LATERAL —orientacion de su guia en su sitio (I-32)— y para el DESVIADOR (R1): ninguno cambia. La
+correspondencia legacy es 1:1 y por ordinal —Izquierda→Entrada/Salida, Derecha→Posterior, Ambas→Ambas,
+Ninguno→Ninguno—, asi que un documento anterior conserva su intencion sin migrar nada, y la persistencia nueva es
+aditiva y nula por omision.
+
+El AUTOMATICO —lo que el sistema resuelve cuando nadie ha elegido— lo fija la autoridad de Push Back segun los
+pasillos que el rack tiene: **uno** protege su frente operativo, **dos** protegen los dos. Cede ante cualquier
+eleccion, incluida un «Ninguno» explicito.
+
+### Lo que cambia y lo que no
+
+Los DEFECTOS no se mueven: un rack simple sigue protegiendo su frente, uno compuesto sus dos pasillos (R6). Lo que
+antes era imposible —pedir la posterior, o afinar por poste con esa semantica— ahora significa algo. Dibujo = BOM en
+todos los casos: cada ubicacion materializada es UNA pieza, y espejar nunca añade otra.
+
+Dos contratos de prueba se retargetearon, los dos por la misma razon y declarada: un «Ambas» por poste son ahora
+DOS piezas, porque son dos ubicaciones fisicas, no una pieza espejada.
+
+### PENDIENTE
+
+Ninguno funcional conocido.
+
 ## 5-pre-ter. Ronda 8C (S1): los protectores de bota eligen UBICACIONES, no espejos
 
 Ultima deuda funcional de I-42, registrada desde la ronda 6F. Una bota protege el POSTE del golpe del montacargas, y

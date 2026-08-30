@@ -123,7 +123,9 @@ namespace RackCad.UI.Tests
                     var quantity = PushBackBomBuilder.Build(w.LastComputation.System, w.Session.Catalog).Components
                         .Where(c => string.Equals(c.ProfileId, boot.Id, StringComparison.OrdinalIgnoreCase))
                         .Sum(c => c.Quantity);
-                    Assert.Equal(2, quantity);   // dos postes elegidos, dos botas
+                    // I-42 (S1B): «Ambas» son DOS ubicaciones fisicas por poste —entrada/salida y posterior—, y cada
+                    // una es una pieza. Dos postes con Ambas son cuatro botas; con una sola ubicacion serian dos.
+                    Assert.Equal(4, quantity);
                 }
                 finally { w.Close(); }
             });

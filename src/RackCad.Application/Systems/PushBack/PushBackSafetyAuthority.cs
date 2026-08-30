@@ -102,10 +102,29 @@ namespace RackCad.Application.Systems.PushBack
 
                 var copy = selection.DeepCopy();
                 RestrictToAisles(copy, aisles);
+
+                // I-42 (S1B) — el AUTOMATICO de la bota lo decide el rack: un solo pasillo protege su frente
+                // operativo; dos pasillos protegen los dos. Es el DEFECTO, no una imposicion: una eleccion
+                // explicita del usuario manda siempre y puede pedir la posterior aunque no se cargue por ella.
+                if (IsBoot(copy))
+                {
+                    copy.AutomaticBootPlacement = aisles == PushBackSafetyAisles.Both
+                        ? BootPlacement.Both
+                        : BootPlacement.EntryExit;
+                }
+
                 result.Add(copy);
             }
 
             return result;
+        }
+
+        /// <summary>Si la seleccion es de la familia BOTA, segun el catalogo de este rack.</summary>
+        private bool IsBoot(SelectiveSafetySelection selection)
+        {
+            var element = catalog?.SafetyElements?.FirstOrDefault(entry =>
+                entry != null && string.Equals(entry.Id, selection?.ElementId, StringComparison.OrdinalIgnoreCase));
+            return element != null && SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.BotaType);
         }
 
         /// <summary>
