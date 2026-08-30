@@ -101,7 +101,7 @@ namespace RackCad.Application.Systems.PushBack
                 }
 
                 var copy = selection.DeepCopy();
-                RestrictToAisles(copy, aisles);
+                RestrictToAisles(copy, aisles, keepChosenSide: IsFamily(selection, SelectiveSafetyDefaults.BotaType));
                 result.Add(copy);
             }
 
@@ -116,7 +116,13 @@ namespace RackCad.Application.Systems.PushBack
         /// y deja el comportamiento legacy intacto. <c>Both</c> es la de I-42: las dos caras de un rack compuesto.
         /// </para>
         /// </summary>
-        public static void RestrictToAisles(SelectiveSafetySelection selection, PushBackSafetyAisles aisles)
+        /// <param name="keepChosenSide">
+        /// I-42 (ronda 6E): si el LADO elegido por el usuario debe conservarse. Lo pide la familia cuyo lado es
+        /// ORIENTACION —el protector de bota, cuyo selector ofrece Ninguno/Izquierda/Derecha/Ambas—, no la que lo
+        /// usa como «que pasillo». Sin el, el comportamiento es exactamente el anterior.
+        /// </param>
+        public static void RestrictToAisles(
+            SelectiveSafetySelection selection, PushBackSafetyAisles aisles, bool keepChosenSide = false)
         {
             if (selection == null)
             {
@@ -130,7 +136,7 @@ namespace RackCad.Application.Systems.PushBack
             // NO se toca Side. Escribir el lado para decir «dos pasillos» apagaba las reglas adaptativas —que solo
             // valen cuando el usuario no ha elegido lado— y el protector lateral acababa en TODOS los postes y por
             // duplicado. Pertenencia, orientacion y extremo son tres ejes y ninguno puede hablar por otro.
-            RestrictToLowEnd(selection);
+            RestrictToLowEnd(selection, keepChosenSide);
             selection.BothEndsAreLoadFaces = aisles == PushBackSafetyAisles.Both;
         }
 
@@ -142,7 +148,26 @@ namespace RackCad.Application.Systems.PushBack
         /// the shared defaults are never mutated (<see cref="DynamicSafetyDefaults.Build"/> mints fresh selections and
         /// <see cref="Authorize"/> deep-copies them again).
         /// </summary>
-        public IReadOnlyList<SelectiveSafetySelection> Defaults() => Authorize(DynamicSafetyDefaults.Build(catalog));
+        public IReadOnlyList<SelectiveSafetySelection> Defaults()
+        {
+            var defaults = Authorize(DynamicSafetyDefaults.Build(catalog));
+
+            // I-42 (ronda 6E) — el DEFECTO de la bota en Push Back sigue siendo IZQUIERDA, que es exactamente lo que
+            // un rack nuevo dibujaba antes de esta ronda: la autorizacion colapsaba el «Ambas» que siembra el
+            // Dinamico. Ahora ese colapso ya no se aplica a esta familia —para que el selector funcione— asi que el
+            // valor por defecto se declara AQUI, donde vive el arranque de un rack nuevo, en vez de imponerse a
+            // cualquier eleccion del usuario. Un rack existente y uno nuevo dibujan igual que siempre; lo que cambia
+            // es que elegir Derecha o Ambas ahora significa algo.
+            foreach (var selection in defaults)
+            {
+                if (IsFamily(selection, SelectiveSafetyDefaults.BotaType) && selection.Side == SafetySide.Both)
+                {
+                    selection.Side = SafetySide.Left;
+                }
+            }
+
+            return defaults;
+        }
 
         /// <summary>
         /// Restrict a safety selection to the LOW (entrance/exit) end only. Mutates the passed COPY, never the source.
@@ -154,14 +179,23 @@ namespace RackCad.Application.Systems.PushBack
         /// <see cref="SelectiveSafetyEnds.EndsForPost"/>, que lee la marca <see cref="SelectiveSafetySelection.LowEndOnly"/>
         /// de abajo. Aquí solo se colapsa el lado GENERAL (el valor por defecto de los postes sin entrada propia).
         /// </summary>
-        public static void RestrictToLowEnd(SelectiveSafetySelection selection)
+        public static void RestrictToLowEnd(SelectiveSafetySelection selection, bool keepChosenSide = false)
         {
             if (selection == null)
             {
                 return;
             }
 
-            if (selection.Side == SafetySide.Both || selection.Side == SafetySide.Right)
+            // I-42 (ronda 6E) — el colapso del LADO deja de aplicarse a la familia que lo usa como ORIENTACION.
+            //
+            // Escribir Left sobre Both y Right «para imponer el extremo bajo» borraba la eleccion del usuario: en un
+            // Push Back las tres opciones del selector de BOTAS producian exactamente la misma pieza. Para esa
+            // familia el extremo ya lo impone LowEndOnly, mas abajo, que SelectiveSafetyEnds lee sin tocar la
+            // orientacion — pertenencia, orientacion y extremo son tres ejes.
+            //
+            // Las demas familias conservan el colapso: el desviador, la defensa y el protector lateral leen Side por
+            // su cuenta y con otro significado, y su geometria esta validada por el dueño desde la ronda 1.
+            if (!keepChosenSide && (selection.Side == SafetySide.Both || selection.Side == SafetySide.Right))
             {
                 selection.Side = SafetySide.Left;
             }

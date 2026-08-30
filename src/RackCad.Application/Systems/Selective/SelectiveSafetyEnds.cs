@@ -107,8 +107,17 @@ namespace RackCad.Application.Systems.Selective
                     return new[] { new SafetyEndCopy(atHighEnd: !lowEndOnly, mirrored: true) };
 
                 default:   // Both
+                    // I-42 (ronda 6E) — AMBAS es la union de Izquierda y Derecha, tambien con un solo pasillo. Con
+                    // LowEndOnly esto devolvia UNA copia, la misma que Izquierda, asi que las dos opciones del
+                    // selector daban la misma pieza. Un poste tiene sus dos caras aunque solo se cargue por un
+                    // extremo: Izquierda pone la de una mano, Derecha la de la otra, y Ambas las dos. El extremo
+                    // sigue siendo uno solo, que es lo que LowEndOnly impone.
                     return lowEndOnly
-                        ? new[] { new SafetyEndCopy(atHighEnd: false, mirrored: false) }
+                        ? new[]
+                        {
+                            new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                            new SafetyEndCopy(atHighEnd: false, mirrored: true),
+                        }
                         : new[]
                         {
                             new SafetyEndCopy(atHighEnd: false, mirrored: false),

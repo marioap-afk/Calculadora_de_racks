@@ -123,7 +123,10 @@ namespace RackCad.UI.Tests
                     var quantity = PushBackBomBuilder.Build(w.LastComputation.System, w.Session.Catalog).Components
                         .Where(c => string.Equals(c.ProfileId, boot.Id, StringComparison.OrdinalIgnoreCase))
                         .Sum(c => c.Quantity);
-                    Assert.Equal(2, quantity);   // dos postes elegidos, dos botas
+                    // I-42 (ronda 6E): AMBAS son las dos caras del poste, asi que dos postes elegidos compran
+                    // CUATRO botas. Antes el lado se colapsaba en Izquierda y las tres opciones del selector daban
+                    // lo mismo. La PERTENENCIA —que postes lleva— es lo que esta prueba fija, y no cambia.
+                    Assert.Equal(4, quantity);   // dos postes elegidos x dos caras
                 }
                 finally { w.Close(); }
             });

@@ -800,6 +800,100 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-quateretvicies. Ronda 6E: el selector de protectores de bota vuelve a significar algo
+
+El selector ofrece **Ninguno / Izquierda / Derecha / Ambas** y las cuatro opciones producian la MISMA pieza. Medido
+antes de tocar codigo, en los ocho escenarios probados: `Izquierda == Derecha == Ambas`.
+
+### Causa, en dos eslabones
+
+1. `PushBackSafetyAuthority.RestrictToLowEnd` escribia `Side = Left` sobre cualquier `Both` o `Right` «para imponer
+   el extremo bajo». El extremo ya lo impone `LowEndOnly`, que `SelectiveSafetyEnds` lee sin tocar la orientacion:
+   ese colapso solo borraba la eleccion del usuario. Pertenencia, orientacion y extremo son tres ejes, y esto
+   mezclaba dos.
+2. Con un solo pasillo, `SelectiveSafetyEnds.CopiesForPost` devolvia para **Ambas** una sola copia — la misma que
+   Izquierda. Un poste tiene sus DOS caras aunque se cargue por un solo extremo.
+
+Comprobado por medicion: quitando solo el primer eslabon, `Derecha` ya se separa de `Izquierda` y en un rack
+compuesto `Ambas` pasa a valer 4 = 2 + 2; con el segundo, tambien cuadra en un rack de un solo pasillo.
+
+### La correccion, acotada a la familia que lo necesita
+
+El colapso del lado **deja de aplicarse solo a la BOTA**. Las demas familias lo conservan: el desviador, la defensa
+y el protector lateral leen `Side` por su cuenta y con otro significado, y su geometria esta validada por el dueño
+desde la ronda 1. Quitarlo para todas movia 14 pruebas, entre ellas PB-VAL-04 y el desviador — medido y descartado.
+
+Y el **DEFECTO de un rack nuevo sigue siendo Izquierda**, que es exactamente lo que se dibujaba antes: el `Ambas`
+que siembra el Dinamico se declara ahora en `PushBackSafetyAuthority.Defaults`, donde vive el arranque de un rack,
+en vez de imponerse sobre cualquier eleccion. Ningun documento existente cambia por si solo.
+
+### Medido, por escenario
+
+En los ocho —simple, solo A, solo B, encontradas, corrida, blank A, blank B, dos blancos y parcial compuesto—:
+
+| | ANTES | AHORA |
+|---|---|---|
+| Ninguno | ∅ | ∅ |
+| Izquierda | n | n |
+| Derecha | n, **identico a Izquierda** | n, **la otra cara** |
+| Ambas | n, **identico a Izquierda** | **2n = Izquierda ∪ Derecha** |
+| `Left == Both` | **si** | **no** |
+| `Right == Both` | **si** | **no** |
+| `Both == Left ∪ Right` | trivialmente (todos iguales) | **si, y los dos conjuntos son disjuntos** |
+
+Ejemplo del rack simple de dos frentes: Izquierda 1, Derecha 1 (espejada, misma posicion), Ambas 2. En un compuesto
+de dos ranuras: 2, 2 y 4.
+
+### Blancos
+
+Se conserva la regla fisica que la ronda 6D cerro para la defensa: **ninguna bota cae en la interfaz** entre los dos
+lados. Un blanco puede QUITAR una bota, nunca moverla: cada una que sobrevive esta exactamente donde estaba, con la
+MISMA mano, y ninguna es de la eleccion contraria. La retícula no se compacta.
+
+### Goldens: cuatro pines, con evidencia por primitiva
+
+El escenario dorado declara su bota con `Side = Both`, asi que cada una gana su cara espejada. **No se movio ni una
+coordenada**: cada pieza nueva esta exactamente donde ya habia una, con el espejo contrario.
+
+| vista | pieza | ANTES | AHORA |
+|---|---|---|---|
+| LATERAL | bota X=0 Y=−0.1875 | 1 | + su copia espejada |
+| PLANTA | bota X=−0.3897 Y=0 | 1 | + su copia espejada |
+| PLANTA | bota X=−0.3897 Y=53.494 | 1 | + su copia espejada |
+| PLANTA | bota X=143.6103 Y=106.988 | 1 | + su copia espejada |
+| BOM | `Seguridad PROTECTOR_BOTA_H_3_16_18` | 3 | **6** |
+
+Los dos frontales quedan INTACTOS. El BOM sube exactamente las tres piezas que la planta añade: dibujo y BOM
+cambian juntos, pieza a pieza.
+
+### Contratos SUSTITUIDOS
+
+Tres pruebas exigian el colapso para una seleccion `Both` explicita:
+
+- `PushBackSafetyBomTests.Safety_BothSelection_...` y `PushBackEditorCorrectionTests.Safety_EntranceBoth_...`
+  afirmaban `Side == Left` tras resolver. Ahora afirman que el lado elegido se CONSERVA y que el extremo lo impone
+  `LowEndOnly`, que es lo que esas pruebas median de verdad.
+- `PushBackSafetyPerPostTests.Bom_CountsTheChosenPostsOnly` contaba 1 pieza por poste con `Ambas`. Ahora cuenta 2 —
+  las dos caras— y se añade el caso de una sola cara, que sigue contando 1. La PERTENENCIA no cambia.
+
+### Pruebas
+
+`PushBackBootSelectorTests` (80 casos): el contrato completo del selector en los nueve escenarios, la union exacta y
+disjunta, izquierda ≠ derecha, los blancos (sin interior, sin cambio de mano, sin compactar), el parcial compuesto,
+dibujo = BOM con cualquier opcion, y el defecto de un rack nuevo. Reponiendo el colapso del lado fallan 55;
+reponiendo el colapso de `Ambas` con un solo pasillo fallan 6.
+
+### 6D intacto
+
+Alturas A/B independientes y la defensa de montacargas sin saltar a la interfaz: sin cambios.
+
+### PENDIENTES REGISTRADOS (siguen sin corregir)
+
+- **UI / ActiveSide:** control independiente `Defensa A si/no`, `Defensa B si/no`.
+- **View hygiene:** el lateral de una seccion dibuja la letra de un lado que no existe funcionalmente.
+- **View hygiene / frontales:** una corrida full-span debe mostrar en la cara de salida el HIGH y el tope con
+  semantica de vista posterior (simetrico B→A).
+
 ## 4-teretvicies. Ronda 6D: A y B con alturas independientes, y la defensa solo en una cara de carga
 
 Cierre de la fase 6. Dos defectos de la validacion del dueño, independientes. Se conservan 6A (BOM = piezas

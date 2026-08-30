@@ -208,8 +208,15 @@ namespace RackCad.Tests
                     .Sum(c => c.Quantity);
             }
 
-            Assert.Equal(1, Quantity((1, SafetySide.Both)));
-            Assert.Equal(2, Quantity((1, SafetySide.Both), (2, SafetySide.Both)));
+            // I-42 (ronda 6E): AMBAS son las dos caras del poste, asi que cuenta DOS piezas por poste elegido.
+            // Antes colapsaba en Izquierda y contaba una, con lo que las tres opciones del selector daban lo mismo.
+            // La PERTENENCIA —que postes llevan la pieza— no cambia, que es lo que esta prueba fija.
+            Assert.Equal(2, Quantity((1, SafetySide.Both)));
+            Assert.Equal(4, Quantity((1, SafetySide.Both), (2, SafetySide.Both)));
+
+            // Y con una sola cara sigue siendo una por poste: la cuenta acompaña a la eleccion.
+            Assert.Equal(1, Quantity((1, SafetySide.Left)));
+            Assert.Equal(2, Quantity((1, SafetySide.Left), (2, SafetySide.Right)));
         }
 
         [Fact]
