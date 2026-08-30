@@ -156,6 +156,35 @@ namespace RackCad.Domain.Systems.Selective
         public bool LowEndOnly { get; set; }
 
         /// <summary>
+        /// I-42 (S1) — el lado que el USUARIO eligio, antes de que la restriccion de extremo de un sistema lo
+        /// colapse. Es DERIVADO y no se persiste, como <see cref="LowEndOnly"/>: lo rellena la autoridad del
+        /// sistema en el mismo sitio donde impone su restriccion, y NULL —todo sistema que no restrinja nada—
+        /// significa «el de <see cref="Side"/>», que es lo que se leia siempre.
+        ///
+        /// <para>
+        /// Existe porque el colapso destruye informacion que UNA familia si necesita: el PROTECTOR LATERAL lee
+        /// Izquierda/Derecha como ORIENTACION en su sitio (contrato validado en I-32) y le basta el lado colapsado,
+        /// pero la BOTA lo lee como UBICACION FISICA —que cara de ataque proteger— y con el colapso las tres
+        /// opciones daban exactamente lo mismo.
+        /// </para>
+        /// </summary>
+        public SafetySide? AuthoredSide { get; set; }
+
+        /// <summary>El lado que el usuario eligio, o el vigente si el sistema no lo restringio.</summary>
+        public SafetySide ChosenSide(int postIndex)
+        {
+            foreach (var over in PostSides)
+            {
+                if (over != null && over.PostIndex == postIndex)
+                {
+                    return over.Side;   // una entrada POR POSTE es siempre del usuario: nadie la colapsa
+                }
+            }
+
+            return AuthoredSide ?? Side;
+        }
+
+        /// <summary>
         /// I-42 (ronda 7E) — la pieza de la cara CERCANA de cada linea, cuando el sistema declara una por extremo.
         /// NULL —el valor de todo sistema que no la rellene y de todo documento anterior— significa «la de
         /// <see cref="ElementId"/>», que es el comportamiento historico.
@@ -327,6 +356,7 @@ namespace RackCad.Domain.Systems.Selective
                 Quantity = Quantity,
                 Side = Side,
                 LowEndOnly = LowEndOnly,
+                AuthoredSide = AuthoredSide,
                 BothEndsAreLoadFaces = BothEndsAreLoadFaces,
                 NearFace = NearFace,
                 FarFace = FarFace,

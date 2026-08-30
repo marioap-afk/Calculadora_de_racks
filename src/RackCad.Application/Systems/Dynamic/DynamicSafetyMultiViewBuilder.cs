@@ -155,7 +155,8 @@ namespace RackCad.Application.Systems.Dynamic
                     SelectiveSafetyPlacement.AppendAtPost(
                         target, catalog, view, boots, at, plateId, postIndex,
                         mirrorAxisX: (rangeStart + rangeEnd) / 2.0,
-                        faceApplies: atHighEnd => !system.IsInteriorFace(atHighEnd ? rangeEnd : rangeStart));
+                        faceApplies: atHighEnd => !system.IsInteriorFace(atHighEnd ? rangeEnd : rangeStart),
+                        physicalFaces: true);
                 }
             }
 
@@ -584,11 +585,14 @@ namespace RackCad.Application.Systems.Dynamic
             }
         }
 
-        /// <summary>La copia de ese poste que va en ese corte, con su orientación — o null si no lleva ninguna.</summary>
+        /// <summary>
+        /// La copia de ese poste que va en ese corte, con su orientación — o null si no lleva ninguna.
+        /// I-42 (S1): es la BOTA, asi que su pertenencia son UBICACIONES FISICAS y no orientaciones.
+        /// </summary>
         private static SafetyEndCopy? CopyAtEnd(SelectiveSafetySelection selection, int postIndex, DynamicRackEnd end)
         {
             var highEnd = end == DynamicRackEnd.Entrance;
-            foreach (var copy in SelectiveSafetyEnds.CopiesForPost(selection, postIndex))
+            foreach (var copy in SelectiveSafetyEnds.BootCopiesForPost(selection, postIndex))
             {
                 if (copy.AtHighEnd == highEnd)
                 {

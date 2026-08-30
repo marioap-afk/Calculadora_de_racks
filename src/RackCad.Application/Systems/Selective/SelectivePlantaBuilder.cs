@@ -102,7 +102,9 @@ namespace RackCad.Application.Systems.Selective
                     }
                     else
                     {
-                        SelectiveSafetyPlacement.AppendAtPost(loose, catalog, PlantaView, botas, at, defaultPlateId, i, frenteCenterX);
+                        SelectiveSafetyPlacement.AppendAtPost(
+                            loose, catalog, PlantaView, botas, at, defaultPlateId, i, frenteCenterX,
+                            physicalFaces: true);
                     }
                 }
 

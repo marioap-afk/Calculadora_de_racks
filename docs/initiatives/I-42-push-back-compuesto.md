@@ -800,6 +800,89 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 5-pre-ter. Ronda 8C (S1): los protectores de bota eligen UBICACIONES, no espejos
+
+Ultima deuda funcional de I-42, registrada desde la ronda 6F. Una bota protege el POSTE del golpe del montacargas, y
+el montacargas ataca por un PASILLO: la pregunta que el selector debe responder es **que cara de ataque proteger**.
+
+### La causa, medida
+
+Dos defectos, en dos capas distintas:
+
+1. **La eleccion del usuario nunca llegaba.** `PushBackSafetyAuthority.RestrictToLowEnd` colapsaba el lado general a
+   `Izquierda` antes de que nadie lo leyera. Resultado medido en un rack de dos ranuras:
+
+   | | ANTES Izquierda | ANTES Derecha | ANTES Ambas |
+   |---|---|---|---|
+   | Push Back simple | 3 botas · BOM 3 | **3 · 3 (identico)** | **3 · 3 (identico)** |
+   | Push Back compuesto | 6 · 6 | **6 · 6 (identico)** | **6 · 6 (identico)** |
+
+   El selector era **inerte**: las tres opciones daban exactamente la misma bota.
+
+2. **`Ambas` duplicaba ubicaciones.** Con dos caras de carga, la autoridad compartida emitia CUATRO copias sobre DOS
+   sitios — dos piezas dibujadas y contadas sobre el mismo poste. No se veia porque el colapso impedia llegar ahi,
+   pero estaba en la autoridad.
+
+La raiz es la de siempre en esta iniciativa: **un solo eje diciendo dos cosas**. `SafetySide` mezclaba PERTENENCIA
+(que ubicacion se protege) con ORIENTACION (como va la pieza), y al restringir el extremo se perdia la primera.
+
+### El contrato
+
+| opcion | ubicaciones fisicas |
+|---|---|
+| Ninguno | ninguna |
+| Izquierda | el extremo CERCANO |
+| Derecha | el extremo LEJANO |
+| Ambas | los dos, **una vez cada uno** |
+
+Y una ubicacion **solo existe donde ese extremo es una CARA DE ATAQUE**: el cercano siempre lo es; el lejano lo es en
+Selectivo y Dinamico —que cargan por los dos extremos— y en un Push Back COMPUESTO, donde se declara POR LINEA. El
+extremo lejano de un Push Back de un solo sentido esta contra muro y no se protege.
+
+La **ORIENTACION** es un eje aparte y la decide la cara (`SelectiveSafetyEnds.Mirror`): los dos pasillos miran en
+sentidos opuestos, asi que la pieza del lejano es la imagen espejo de la del cercano. Cambiarla no crea ni mueve
+ninguna proteccion — que es exactamente lo que la ronda 6E confundio.
+
+### Medido, despues
+
+| | Izquierda | Derecha | Ambas |
+|---|---|---|---|
+| Push Back simple | 3 · BOM 3 | **0 · 0** (muro) | 3 · 3 |
+| Push Back compuesto | **3 · 3** (pasillo A) | **3 · 3** (pasillo B) | **6 · 6** (union) |
+
+Tres conjuntos fisicos DISTINTOS y disjuntos, `Ambas` es su union exacta, y ninguna opcion pone dos botas sobre el
+mismo poste. Dibujo = BOM en las cuatro. Un blanco sigue quitando la necesidad sin mudar nada: ninguna ubicacion
+NUEVA aparece, y ninguna cae en la interfaz.
+
+### Contencion: cada familia con su contrato
+
+La bota NO es la unica familia que lee ese lado, y las otras tienen contratos validados que esta ronda **no toca**:
+
+| familia | lee Izquierda/Derecha como | ronda |
+|---|---|---|
+| **bota** | UBICACION fisica (cara de ataque) | S1, esta ronda |
+| **protector lateral** | ORIENTACION en su sitio | I-32, intacto |
+| **desviador** | siempre en el extremo bajo | R1, intacto |
+
+Por eso el colapso del lado general se CONSERVA —las otras dos familias lo necesitan— y lo que se añade es la
+eleccion original (`AuthoredSide`), derivada y no persistida como `LowEndOnly`, que solo lee la bota. Una entrada POR
+POSTE nunca se colapsa: es del usuario y se lee literal.
+
+**La suite completa paso sin tocar una sola prueba existente** (4014 nucleo · 974 UI), salvo una que afirmaba
+literalmente el defecto —«un Derecha explicito aterriza en el extremo bajo»— y ahora afirma que no coloca nada donde
+no hay pasillo, y que una eleccion que si pide el pasillo lo sigue colocando en su poste.
+
+### LEGACY
+
+El campo nuevo es ADITIVO y nulo por omision: toda seleccion que no pase por una autoridad restrictiva —Selectivo,
+Dinamico, y todo documento anterior— se lee por su lado de siempre. Los DEFECTOS no cambian: un rack nuevo abre en
+`Ambas`, asi que un Push Back simple sigue protegiendo su pasillo y un compuesto los dos, sin pedirlo (R6). Lo unico
+que cambia es lo que antes era imposible: una eleccion explicita de `Izquierda` o `Derecha` ahora significa algo.
+
+### PENDIENTE
+
+Ninguno registrado. S1 queda cerrado.
+
 ## 5-pre-bis. Ronda 8B: un corte muestra EL APOYO que coincide con su plano
 
 La Owner Validation confirmo V1 —las etiquetas laterales— y rechazo V2. La ronda 8 habia concluido que la

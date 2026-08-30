@@ -161,6 +161,12 @@ namespace RackCad.Application.Systems.PushBack
                 return;
             }
 
+            // I-42 (S1) — la eleccion del usuario se CONSERVA antes de colapsar el lado general. El colapso
+            // sigue siendo necesario para las familias que leen el lado como orientacion o como extremo —el
+            // protector lateral y el desviador, los dos con contrato validado—, pero destruia la unica informacion
+            // que la BOTA necesita: QUE CARA DE ATAQUE proteger. Con el lado colapsado, sus tres opciones daban
+            // exactamente la misma bota.
+            selection.AuthoredSide = selection.AuthoredSide ?? selection.Side;
             if (selection.Side == SafetySide.Both || selection.Side == SafetySide.Right)
             {
                 selection.Side = SafetySide.Left;

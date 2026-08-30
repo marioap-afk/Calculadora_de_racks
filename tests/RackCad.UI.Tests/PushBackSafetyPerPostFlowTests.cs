@@ -219,8 +219,21 @@ namespace RackCad.UI.Tests
                         .BuildPlan(system, w.Session.Catalog, PushBackFrontalEnd.EntradaSalida).Flatten().Instances
                         .Count(i => string.Equals(i.PieceId, boot.Id, StringComparison.OrdinalIgnoreCase));
 
-                    Assert.Equal(0, rear);   // nada atrás...
-                    Assert.Equal(1, low);    // ...y la elección del usuario aterriza en el extremo bajo
+                    // I-42 (S1): nada atras — y tampoco delante. En un Push Back de un solo sentido el extremo
+                    // LEJANO esta contra muro, asi que «Derecha» no pide proteger nada: no se muda la bota al
+                    // pasillo, simplemente no hay ninguna. Antes las tres opciones daban la MISMA bota baja.
+                    Assert.Equal(0, rear);
+                    Assert.Equal(0, low);
+
+                    // Y una eleccion que SI pide el pasillo la coloca, en ese mismo poste: la pertenencia por poste
+                    // sigue mandando.
+                    w.SafetyDialog = _ => new[] { WithPosts(boot.Id, (1, SafetySide.Left)) };
+                    EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+                    var chosen = new PushBackSystemFrontalBuilder()
+                        .BuildPlan(w.LastComputation.System, w.Session.Catalog, PushBackFrontalEnd.EntradaSalida)
+                        .Flatten().Instances
+                        .Count(i => string.Equals(i.PieceId, boot.Id, StringComparison.OrdinalIgnoreCase));
+                    Assert.Equal(1, chosen);
                 }
                 finally { w.Close(); }
             });

@@ -183,7 +183,9 @@ namespace RackCad.Application.Systems.Selective
                 }
                 else
                 {
-                    SelectiveSafetyPlacement.AppendAtPost(extras, catalog, LateralView, botas, corteFront, defaultPlateId, i, backmostDepth / 2.0);
+                    SelectiveSafetyPlacement.AppendAtPost(
+                        extras, catalog, LateralView, botas, corteFront, defaultPlateId, i, backmostDepth / 2.0,
+                        physicalFaces: true);
                 }
 
                 // Annotations once, from the primary (anchor) fondo's levels + its height.

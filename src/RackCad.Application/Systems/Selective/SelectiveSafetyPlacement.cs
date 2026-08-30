@@ -169,7 +169,8 @@ namespace RackCad.Application.Systems.Selective
             ICollection<HeaderBlockInstance> target, RackCatalog catalog, string view,
             IReadOnlyList<SafetyElement> elements,
             Point2D postOrigin, string plateId, int postIndex, double? mirrorAxisX = null, double? longitud = null,
-            bool mirrorYInPlace = false, SafetySide? sideOverride = null, Func<bool, bool> faceApplies = null)
+            bool mirrorYInPlace = false, SafetySide? sideOverride = null, Func<bool, bool> faceApplies = null,
+            bool physicalFaces = false)
         {
             if (elements == null || elements.Count == 0)
             {
@@ -200,7 +201,8 @@ namespace RackCad.Application.Systems.Selective
                 //
                 // La versión anterior colapsaba los dos ejes en un solo SafetySide, y al imponer el extremo bajo
                 // perdía la orientación: un Right acababa dibujado como un Left, o desaparecía del corte.
-                foreach (var copy in Copies(element.Selection, postIndex, sideOverride, mirrorYInPlace))
+                foreach (var copy in Copies(
+                    element.Selection, postIndex, sideOverride, mirrorYInPlace, physicalFaces))
                 {
                     if (faceApplies != null && !faceApplies(copy.AtHighEnd))
                     {
@@ -231,11 +233,20 @@ namespace RackCad.Application.Systems.Selective
         /// regla adaptativa de los protectores), y se lee literal como orientación + extremo.
         /// </summary>
         private static IReadOnlyList<SafetyEndCopy> Copies(
-            SelectiveSafetySelection selection, int postIndex, SafetySide? sideOverride, bool orientationOnly)
+            SelectiveSafetySelection selection, int postIndex, SafetySide? sideOverride, bool orientationOnly,
+            bool physicalFaces = false)
         {
             if (sideOverride.HasValue)
             {
                 return Literal(sideOverride.Value);
+            }
+
+            // I-42 (S1): la BOTA elige UBICACIONES FISICAS —que cara de ataque proteger—, tambien en las vistas de
+            // profundidad, donde no hay una segunda cara del mismo sitio que orientar. El resto de las familias
+            // conserva su lectura de siempre.
+            if (physicalFaces)
+            {
+                return SelectiveSafetyEnds.BootCopiesForPost(selection, postIndex);
             }
 
             return orientationOnly
