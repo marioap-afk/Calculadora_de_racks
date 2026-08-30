@@ -4,6 +4,7 @@ using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.Systems.PushBack
@@ -117,6 +118,86 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// I-42 (S1C, contrato del dueño) — declara en que LINEAS el automatico de la bota no coloca nada porque el
+        /// rack esta EN BLANCO ahi.
+        ///
+        /// <para>
+        /// Es la MISMA condicion fisica que la ronda 6D declaro para la defensa y la 6F para la bota: la cobertura
+        /// de esa linea se acorta hasta la INTERFAZ entre los dos lados, que no es una cara de carga sino el otro
+        /// lado. La correccion de esta ronda es que eso apaga el automatico de la linea ENTERA: retirar solo la
+        /// cara que falta dejaba la otra en pie, y un blanco acababa eligiendo «posterior» sin que nadie lo pidiera.
+        /// </para>
+        /// <para>
+        /// Se declara AQUI, en la unica autoridad de seguridad del sistema, para que la planta, los dos frontales y
+        /// el BOM lean todos la misma resolucion. No decide nada sobre los postes que el usuario configuro: esos se
+        /// resuelven antes, en <see cref="SelectiveSafetySelection.BootPlacementAt"/>. Es DERIVADA y se vuelve a
+        /// imponer entera en cada resolucion, asi que al quitar el blanco la linea recupera sola lo que herede.
+        /// </para>
+        /// </summary>
+        public void DeclareBlankLines(
+            IReadOnlyCollection<int> blankLines, IEnumerable<SelectiveSafetySelection> selections)
+        {
+            foreach (var selection in selections ?? Enumerable.Empty<SelectiveSafetySelection>())
+            {
+                if (selection == null || !IsBoot(selection))
+                {
+                    continue;
+                }
+
+                selection.PostsWithoutAutomaticBoot.Clear();
+                foreach (var line in blankLines ?? (IReadOnlyCollection<int>)Array.Empty<int>())
+                {
+                    selection.PostsWithoutAutomaticBoot.Add(line);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Las LINEAS que un frente en blanco dejo sin pasillo propio, medidas UNA vez sobre la estructura completa.
+        /// Es la unica medicion: los cortes de cada lado la reciben ya hecha, porque desde el lado que sigue lleno
+        /// el blanco del contrario no se ve —y es justo esa linea la que hay que apagar—.
+        /// </summary>
+        public IReadOnlyCollection<int> BlankLines(DynamicRackSystem structure)
+        {
+            var lines = new List<int>();
+            var layout = structure == null ? null : DynamicFrontGeometry.Compute(structure, catalog);
+            if (layout?.PostPositions == null)
+            {
+                return lines;
+            }
+
+            for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
+            {
+                if (IsBlankLine(structure, postIndex))
+                {
+                    lines.Add(postIndex);
+                }
+            }
+
+            return lines;
+        }
+
+        /// <summary>
+        /// True cuando la cobertura de esa linea llega a la INTERFAZ entre los dos lados, que es lo que deja un
+        /// frente en blanco. Se mide sobre los MISMOS extremos de profundidad que usa la planta para colocar las
+        /// dos copias, asi que la declaracion y el dibujo no pueden discrepar.
+        /// </summary>
+        private static bool IsBlankLine(DynamicRackSystem structure, int postIndex)
+        {
+            if (!DynamicFrontActivation.BoundaryExists(structure, postIndex))
+            {
+                return false;   // la frontera no existe: no hay nada que declarar, ya no se coloca nada (I-33)
+            }
+
+            var depthRange = DynamicDepthGeometry.AtPost(structure, postIndex);
+            var rangeStart = structure.Modules
+                .FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
+            var rangeEnd = structure.Modules
+                .FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? structure.TotalLength;
+            return structure.IsInteriorFace(rangeStart) || structure.IsInteriorFace(rangeEnd);
         }
 
         /// <summary>Si la seleccion es de la familia BOTA, segun el catalogo de este rack.</summary>

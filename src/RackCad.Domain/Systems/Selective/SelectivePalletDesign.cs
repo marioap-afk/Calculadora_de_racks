@@ -191,18 +191,28 @@ namespace RackCad.Domain.Systems.Selective
                 return own.Value;
             }
 
-            if (Bota.Placement.HasValue)
-            {
-                return Bota.Placement.Value;
-            }
-
-            // Legacy: un poste con entrada propia en la matriz historica sigue mandando sobre el lado general.
+            // Legacy: un poste con entrada propia en la matriz historica es tan EXPLICITO como el de arriba —nadie
+            // lo colapsa, igual que en ChosenSide—, asi que se resuelve con el, antes que ninguna regla general.
             foreach (var over in PostSides)
             {
                 if (over != null && over.PostIndex == postIndex)
                 {
                     return BootPlacements.From(over.Side);
                 }
+            }
+
+            // I-42 (S1C, contrato del dueño) — donde el rack esta EN BLANCO el automatico no coloca nada, y eso
+            // vale sea cual sea la general: el blanco decide el DEFECTO, no la capacidad. Va DESPUES de las
+            // decisiones por poste —que se respetan siempre— y ANTES de la general, que es una regla del rack y no
+            // una decision sobre este poste. Vacia —todo sistema que no la declare— significa «ningun blanco».
+            if (PostsWithoutAutomaticBoot.Contains(postIndex))
+            {
+                return BootPlacement.None;
+            }
+
+            if (Bota.Placement.HasValue)
+            {
+                return Bota.Placement.Value;
             }
 
             // El AUTOMATICO solo entra donde nadie expreso nada. El unico valor que significa «no lo he tocado» es
@@ -220,6 +230,26 @@ namespace RackCad.Domain.Systems.Selective
         /// <see cref="LowEndOnly"/>: la impone la autoridad del sistema en cada resolucion.
         /// </summary>
         public BootPlacement? AutomaticBootPlacement { get; set; }
+
+        /// <summary>
+        /// I-42 (S1C, contrato del dueño) — las LINEAS de postes donde el automatico de la bota no coloca nada
+        /// porque el rack esta en blanco ahi.
+        ///
+        /// <para>
+        /// Un frente en blanco QUITA la razon de proteger esa linea, asi que el defecto de ese poste es «ninguna»
+        /// aunque la general diga otra cosa. Lo que NO hace —y es la correccion de esta ronda— es dejar la mitad
+        /// que sobrevive: antes el filtro de caras retiraba la que caia en la interfaz y la otra se quedaba, de
+        /// modo que un blanco acababa eligiendo «posterior» sin que nadie lo pidiera.
+        /// </para>
+        /// <para>
+        /// Nunca bloquea una decision: un poste con eleccion PROPIA se resuelve antes de llegar aqui, porque el
+        /// poste fisico sigue existiendo y puede necesitar proteccion. Es DERIVADA y no se persiste, como
+        /// <see cref="SecondLoadFacePosts"/>: la autoridad del sistema la vuelve a imponer en cada resolucion, asi
+        /// que al quitar el blanco la linea recupera sola lo que la general diga. VACIA —todo sistema que no la
+        /// declare y todo documento anterior— significa «ningun blanco».
+        /// </para>
+        /// </summary>
+        public IList<int> PostsWithoutAutomaticBoot { get; } = new List<int>();
 
         /// <summary>True cuando ESE poste tiene una decision propia de bota (propia o en la matriz historica).</summary>
         public bool HasOwnBootPlacement(int postIndex)
@@ -447,6 +477,11 @@ namespace RackCad.Domain.Systems.Selective
             foreach (var post in SecondLoadFacePosts)
             {
                 copy.SecondLoadFacePosts.Add(post);
+            }
+
+            foreach (var post in PostsWithoutAutomaticBoot)
+            {
+                copy.PostsWithoutAutomaticBoot.Add(post);
             }
 
             foreach (var post in PostSides)

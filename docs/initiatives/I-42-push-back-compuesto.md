@@ -800,6 +800,70 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 5-pre-quinquies. Ronda S1C: en una linea EN BLANCO el defecto de la bota es «ninguna»
+
+S1B dejaba una bota posterior en la linea que un frente en blanco deja sin pasillo propio. El dueño lo rechazo, y
+tenia razon en algo mas fuerte que el resultado: **eso no era una decision de nadie**. La colocacion automatica pedia
+las dos caras, el filtro de caras retiraba la que caia en la INTERFAZ entre los dos lados, y la otra se quedaba en
+pie. Un blanco acababa eligiendo «posterior» sin que nadie lo pidiera — un residuo, no una regla.
+
+### Lo unico que cambia
+
+```
+Efectiva(poste) = eleccion PROPIA del poste            (si la hay: manda siempre)
+                | NINGUNA                              (si esa linea esta en blanco)
+                | general
+                | automatico del sistema
+```
+
+El blanco decide el DEFECTO, nunca la capacidad. Va despues de las decisiones por poste —que se respetan enteras— y
+antes de la general, porque la general es una regla del rack y no una decision sobre ese poste. De ahi que sea
+«ninguna» sea cual sea la general:
+
+| general | linea en blanco, poste en «por defecto» |
+|---|---|
+| Entrada/Salida | ninguna |
+| Posterior | ninguna |
+| Ambas | ninguna |
+| Ninguno | ninguna |
+
+Y las cuatro elecciones explicitas se materializan EXACTAMENTE como en S1B, que el dueño no reabrio: Entrada/Salida
+una, Posterior una, Ambas dos, Ninguno cero — sobre el poste fisico, que sigue ahi y puede necesitar proteccion.
+
+### Una sola medicion, todos los consumidores
+
+La linea en blanco se mide UNA vez, sobre la estructura terminada y en la misma autoridad de seguridad del sistema:
+es aquella cuya cobertura de profundidad llega a la interfaz entre los dos lados —la misma condicion fisica que la
+ronda 6D declaro para la defensa y la 6F para la bota—. La declaracion viaja con la seleccion, asi que la planta, los
+cuatro cortes frontales y el BOM leen la MISMA resolucion.
+
+Eso obliga a repartirla tambien a los sistemas locales de cada lado: **desde el lado que sigue lleno el blanco del
+contrario no se ve**, y es justo esa linea la que hay que apagar. Sin ese reparto la planta quitaba la bota y el
+corte del lado B seguia dibujandola.
+
+### Intencion contra resolucion
+
+Nada de esto se escribe. `PostsWithoutAutomaticBoot` es DERIVADA como `LowEndOnly`, se vuelve a imponer entera en
+cada resolucion y no llega al documento: un poste en «por defecto» sigue en «por defecto» tras guardar y RACKEDITAR
+—nunca se degrada a un «Ninguno» explicito—, y al quitar el blanco esa linea recupera sola lo que herede. Un
+override explicito, al reves, sobrevive dormido al blanco y sigue intacto al salir.
+
+### Consecuencia declarada
+
+En un rack compuesto la linea afectada pierde tambien la bota del lado que NO esta en blanco (antes se quedaba: es
+la pieza `792.39|53.494` del caso del dueño). Es lo que el contrato pide —la linea entera— y se recupera pidiendola
+por poste. Queda REGISTRADO, no improvisado.
+
+### Alcance
+
+Un contrato de prueba retargeteado con justificacion pieza a pieza (`BlankLowFace_RemovesBootWithoutRelocation`, de
+la ronda 6F) y cinco de S1B reapuntados al nuevo defecto. Ningun golden tocado, ningun BOM ajeno movido, la UI sin
+cambios: S1C es RESOLUCION, no interfaz.
+
+### PENDIENTE
+
+Ninguno funcional conocido.
+
 ## 5-pre-quater. Ronda S1B: la bota se coloca por UBICACION — entrada/salida, posterior, ambas
 
 La ronda S1 acerto en separar pertenencia de orientacion, pero se equivoco en una premisa que el dueño corrigio:

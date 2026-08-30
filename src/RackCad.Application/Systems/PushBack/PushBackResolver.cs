@@ -99,6 +99,19 @@ namespace RackCad.Application.Systems.PushBack
             // cara posterior del contrario. Es una propiedad de la estructura, no una regla de dibujo.
             structure.InteriorFaceStartX = Math.Min(composite.GapStartX, composite.GapEndX);
             structure.InteriorFaceEndX = Math.Max(composite.GapStartX, composite.GapEndX);
+
+            // I-42 (S1C) — y con la interfaz ya declarada se sabe QUE LINEAS quedaron en blanco, que es lo que
+            // apaga el automatico de la bota ahi. Va despues, no antes, porque la pregunta es sobre la estructura
+            // terminada; y sobre las dos copias de la seleccion, la del sistema y la de la estructura, que es de
+            // donde leen la planta, los dos frontales y el BOM.
+            var blankLines = safety.BlankLines(structure);
+            safety.DeclareBlankLines(blankLines, system.SafetySelections);
+            safety.DeclareBlankLines(blankLines, structure.SafetySelections);
+            foreach (var view in new[] { composite.SideA, composite.SideB })
+            {
+                safety.DeclareBlankLines(blankLines, view?.Local?.Structure?.SafetySelections);
+            }
+
             return system;
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
+using RackCad.Application.Persistence;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.PushBack;
@@ -337,9 +338,9 @@ namespace RackCad.Tests
         }
 
         /// <summary>
-        /// Pero NO deshabilita la configuracion manual. En la linea que el blanco dejo sin cara de entrada, el
-        /// automatico solo pone la posterior; una eleccion EXPLICITA coloca exactamente lo que pide — incluida la
-        /// de entrada, sobre el poste que el blanco dejo expuesto.
+        /// Pero NO deshabilita la configuracion manual. RETARGETEADO EN S1C: el automatico de esa linea ya no deja
+        /// nada —antes conservaba la posterior, que era la mitad que el filtro de caras no retiraba—, y una eleccion
+        /// EXPLICITA sigue colocando exactamente lo que pide, incluida la de entrada sobre el poste expuesto.
         /// </summary>
         [Theory]
         [InlineData(BootPlacement.EntryExit, 1)]
@@ -348,54 +349,49 @@ namespace RackCad.Tests
         [InlineData(BootPlacement.None, 0)]
         public void Blank_DoesNotDisableBootOverride(BootPlacement placement, int expected)
         {
-            var automatic = Resolve(Blanked(), general: null);
-            var line = BlankedLine(automatic);
-
-            // El automatico de esa linea: solo la posterior, porque su cara de entrada cae en la interfaz.
-            Assert.Single(LineBoots(automatic, line));
+            var line = BlankedLine();
+            Assert.Empty(LineBoots(Resolve(Blanked(), general: null), line));
 
             var overridden = Resolve(Blanked(), general: null, (2, placement));
             Assert.Equal(expected, LineBoots(overridden, line).Count);
             Assert.Equal(Boots(overridden).Count, BootsInBom(overridden));
         }
 
-        /// <summary>La linea que el blanco dejo con una sola bota automatica.</summary>
-        private static double BlankedLine(PushBackSystem automatic)
-            => Boots(automatic)
-                .GroupBy(boot => Math.Round(boot.Insertion.Y, 2))
-                .First(group => group.Count() == 1)
-                .Key;
+        /// <summary>
+        /// La LINEA que el blanco dejo sin pasillo propio. Se identifica por diferencia con el rack COMPLETO —es la
+        /// unica que el automatico ya no protege—, no por cuantas botas le quedan: desde S1C no le queda ninguna.
+        /// </summary>
+        private static double BlankedLine()
+            => Lines(Resolve(State(4, composite: true), general: null))
+                .Except(Lines(Resolve(Blanked(), general: null)))
+                .Single();
 
-        /// <summary>Y una eleccion explicita de entrada/salida ahi coloca su bota, no la del otro extremo.</summary>
+        /// <summary>
+        /// Y una eleccion explicita de entrada/salida ahi coloca su bota. RETARGETEADO EN S1C: la comparacion ya no
+        /// es «cambio de ubicacion» sino «aparece donde no habia nada», porque el automatico de esa linea es vacio.
+        /// </summary>
         [Fact]
         public void Blank_ExplicitEntryExit_CanMaterialize()
         {
-            var automatic = Resolve(Blanked(), general: null);
-            var line = BlankedLine(automatic);
+            var line = BlankedLine();
             var overridden = Resolve(Blanked(), general: null, (2, BootPlacement.EntryExit));
 
-            var before = LineBoots(automatic, line);
-            var after = LineBoots(overridden, line);
-
-            Assert.Single(after);
-            Assert.NotEqual(before[0], after[0]);   // la ubicacion cambio: es la que se pidio
+            Assert.Empty(LineBoots(Resolve(Blanked(), general: null), line));
+            Assert.Single(LineBoots(overridden, line));
+            Assert.True(LineBoots(overridden, line)[0] < overridden.Structure.TotalLength / 2.0);
         }
 
         [Fact]
         public void Blank_ExplicitNone_MaterializesNone()
-        {
-            var automatic = Resolve(Blanked(), general: null);
-            var line = BlankedLine(automatic);
-
-            Assert.Empty(LineBoots(Resolve(Blanked(), general: null, (2, BootPlacement.None)), line));
-        }
+            => Assert.Empty(LineBoots(
+                Resolve(Blanked(), general: null, (2, BootPlacement.None)), BlankedLine()));
 
         /// <summary>Y la bota configurada a mano se queda en SU linea: ninguna otra se mueve ni desaparece.</summary>
         [Fact]
         public void Blank_BootDoesNotRelocate()
         {
             var automatic = Resolve(Blanked(), general: null);
-            var line = BlankedLine(automatic);
+            var line = BlankedLine();
             var overridden = Resolve(Blanked(), general: null, (2, BootPlacement.Both));
 
             foreach (var other in Lines(automatic).Where(y => Math.Abs(y - line) > 0.01))
@@ -406,7 +402,10 @@ namespace RackCad.Tests
             Assert.Equal(2, LineBoots(overridden, line).Count);
         }
 
-        /// <summary>Ni cruza al otro lado: el lado B conserva exactamente sus botas.</summary>
+        /// <summary>
+        /// Ni cruza al otro lado: el lado B conserva exactamente sus botas. RETARGETEADO EN S1C: pedir la de entrada
+        /// en la linea en blanco AÑADE esa —antes ademas retiraba la posterior que el automatico dejaba ahi—.
+        /// </summary>
         [Fact]
         public void Blank_BootDoesNotCrossSide()
         {
@@ -414,11 +413,190 @@ namespace RackCad.Tests
             var overridden = Resolve(Blanked(), general: null, (2, BootPlacement.EntryExit));
             var middle = automatic.Structure.TotalLength / 2.0;
 
-            var farBefore = Boots(automatic).Count(boot => boot.Insertion.X > middle);
-            var farAfter = Boots(overridden).Count(boot => boot.Insertion.X > middle);
-
-            Assert.Equal(farBefore - 1, farAfter);   // solo la de ESA linea, que se pidio de entrada
+            Assert.Equal(
+                Boots(automatic).Count(boot => boot.Insertion.X > middle),
+                Boots(overridden).Count(boot => boot.Insertion.X > middle));
+            Assert.Equal(
+                Boots(automatic).Count(boot => boot.Insertion.X < middle) + 1,
+                Boots(overridden).Count(boot => boot.Insertion.X < middle));
         }
+
+        // ==================================================================== S1C: el blanco resuelve a NINGUNO
+
+        /// <summary>
+        /// I-42 (S1C, contrato del dueño) — EL DEFECTO DE UNA LINEA EN BLANCO ES «NINGUNA».
+        ///
+        /// <para>
+        /// S1B dejaba ahi una bota posterior. No era una decision: era el residuo del filtro de caras, que retiraba
+        /// la cara que el blanco se llevo y conservaba la otra. Un blanco quita la razon de proteger esa linea
+        /// ENTERA, asi que el automatico no coloca nada — y sigue sin bloquear nada: una eleccion propia manda.
+        /// </para>
+        /// </summary>
+        [Fact]
+        public void Blank_DefaultBoot_ResolvesNone()
+            => Assert.Empty(LineBoots(Resolve(Blanked(), general: null), BlankedLine()));
+
+        [Fact]
+        public void Blank_DefaultBoot_IsNone_ForGeneralEntryExit()
+            => Assert.Empty(LineBoots(Resolve(Blanked(), BootPlacement.EntryExit), BlankedLine()));
+
+        /// <summary>La general POSTERIOR tampoco se cuela: el blanco decide el defecto de esa linea, sea cual sea.</summary>
+        [Fact]
+        public void Blank_DefaultBoot_IsNone_ForGeneralRear()
+            => Assert.Empty(LineBoots(Resolve(Blanked(), BootPlacement.Rear), BlankedLine()));
+
+        [Fact]
+        public void Blank_DefaultBoot_IsNone_ForGeneralBoth()
+            => Assert.Empty(LineBoots(Resolve(Blanked(), BootPlacement.Both), BlankedLine()));
+
+        [Fact]
+        public void Blank_DefaultBoot_IsNone_ForGeneralNone()
+            => Assert.Empty(LineBoots(Resolve(Blanked(), BootPlacement.None), BlankedLine()));
+
+        /// <summary>Y las cuatro elecciones explicitas materializan EXACTAMENTE lo de S1B, que el dueño no reabrio.</summary>
+        [Fact]
+        public void Blank_ExplicitEntryExit_StillMaterializes()
+        {
+            var system = Resolve(Blanked(), BootPlacement.EntryExit, (2, BootPlacement.EntryExit));
+            var boots = LineBoots(system, BlankedLine());
+
+            Assert.Single(boots);
+            Assert.True(boots[0] < system.Structure.TotalLength / 2.0);
+        }
+
+        [Fact]
+        public void Blank_ExplicitRear_StillMaterializes()
+        {
+            var system = Resolve(Blanked(), BootPlacement.EntryExit, (2, BootPlacement.Rear));
+            var boots = LineBoots(system, BlankedLine());
+
+            Assert.Single(boots);
+            Assert.True(boots[0] > system.Structure.TotalLength / 2.0);
+        }
+
+        [Fact]
+        public void Blank_ExplicitBoth_StillMaterializesTwo()
+        {
+            var system = Resolve(Blanked(), BootPlacement.EntryExit, (2, BootPlacement.Both));
+            var boots = LineBoots(system, BlankedLine());
+            var middle = system.Structure.TotalLength / 2.0;
+
+            Assert.Equal(2, boots.Count);
+            Assert.Single(boots, x => x < middle);
+            Assert.Single(boots, x => x > middle);
+        }
+
+        [Fact]
+        public void Blank_ExplicitNone_StillMaterializesNone()
+            => Assert.Empty(LineBoots(
+                Resolve(Blanked(), BootPlacement.EntryExit, (2, BootPlacement.None)), BlankedLine()));
+
+        /// <summary>
+        /// El blanco afecta la RESOLUCION, no la intencion: el poste sigue en «por defecto» —sin entrada propia y
+        /// sin general reescrita—, que es lo que le permite volver solo cuando el blanco se quita.
+        /// </summary>
+        [Fact]
+        public void Blank_DefaultIntent_IsNotRewrittenToExplicitNone()
+        {
+            var system = Resolve(Blanked(), BootPlacement.EntryExit);
+            var selection = system.Structure.SafetySelections.Single(IsBootSelection);
+
+            Assert.False(selection.HasOwnBootPlacement(2));
+            Assert.Empty(selection.Bota.Posts);
+            Assert.Equal(BootPlacement.EntryExit, selection.Bota.Placement);
+            Assert.Equal(BootPlacement.None, selection.BootPlacementAt(2));   // efectivo, mientras siga en blanco
+        }
+
+        /// <summary>Y al quitar el blanco esa linea recupera SOLA lo que la general diga.</summary>
+        [Fact]
+        public void LeavingBlank_RestoresInheritedGeneralMode()
+        {
+            var line = BlankedLine();
+
+            Assert.Empty(LineBoots(Resolve(Blanked(), BootPlacement.EntryExit), line));
+
+            var full = Resolve(State(4, composite: true), BootPlacement.EntryExit);
+            Assert.Single(LineBoots(full, line));
+            Assert.True(LineBoots(full, line)[0] < full.Structure.TotalLength / 2.0);
+        }
+
+        /// <summary>Un override explicito no se pierde ni se degrada a defecto al entrar y salir del blanco.</summary>
+        [Fact]
+        public void Blank_ExplicitOverride_SurvivesLeavingBlank()
+        {
+            var line = BlankedLine();
+            var blanked = Resolve(Blanked(), BootPlacement.EntryExit, (2, BootPlacement.Rear));
+            var full = Resolve(State(4, composite: true), BootPlacement.EntryExit, (2, BootPlacement.Rear));
+
+            Assert.Equal(LineBoots(blanked, line), LineBoots(full, line));
+            Assert.Single(LineBoots(full, line));
+            Assert.True(LineBoots(full, line)[0] > full.Structure.TotalLength / 2.0);
+        }
+
+        /// <summary>El defecto del blanco no muda nada: las demas lineas conservan sus botas exactamente.</summary>
+        [Fact]
+        public void Blank_Default_DoesNotRelocate()
+        {
+            var blanked = Resolve(Blanked(), general: null);
+            var full = Resolve(State(4, composite: true), general: null);
+            var line = BlankedLine();
+
+            foreach (var other in Lines(full).Where(y => Math.Abs(y - line) > 0.01))
+            {
+                Assert.Equal(LineBoots(full, other), LineBoots(blanked, other));
+            }
+        }
+
+        /// <summary>Ni cruza al otro lado: cada mitad pierde SU bota de esa linea y ninguna otra se mueve.</summary>
+        [Fact]
+        public void Blank_Default_DoesNotCrossSide()
+        {
+            var blanked = Resolve(Blanked(), general: null);
+            var full = Resolve(State(4, composite: true), general: null);
+            var middle = full.Structure.TotalLength / 2.0;
+
+            Assert.Equal(
+                Boots(full).Count(boot => boot.Insertion.X > middle) - 1,
+                Boots(blanked).Count(boot => boot.Insertion.X > middle));
+            Assert.Equal(
+                Boots(full).Count(boot => boot.Insertion.X < middle) - 1,
+                Boots(blanked).Count(boot => boot.Insertion.X < middle));
+        }
+
+        [Fact]
+        public void Blank_Default_DrawEqualsBom()
+        {
+            foreach (var general in new BootPlacement?[]
+                     { null, BootPlacement.EntryExit, BootPlacement.Rear, BootPlacement.Both, BootPlacement.None })
+            {
+                var system = Resolve(Blanked(), general);
+                Assert.Equal(Boots(system).Count, BootsInBom(system));
+            }
+        }
+
+        /// <summary>
+        /// RACKEDITAR: «por defecto» y «Ninguno» son cosas distintas y el documento las distingue. Nada de lo que
+        /// S1C resuelve se escribe: el blanco no deja rastro persistido.
+        /// </summary>
+        [Fact]
+        public void RackEditar_PreservesDefaultVsExplicitNone()
+        {
+            var selection = new SelectiveSafetySelection { ElementId = BootId, Quantity = 1 };
+            selection.Bota.Placement = BootPlacement.EntryExit;
+            selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = 4, Placement = BootPlacement.None });
+            selection.PostsWithoutAutomaticBoot.Add(2);   // lo que el sistema resolvio en esta sesion
+
+            var restored = SafetySelectionDocument.From(selection).ToDomain();
+
+            Assert.Equal(BootPlacement.EntryExit, restored.Bota.Placement);
+            Assert.False(restored.HasOwnBootPlacement(2));                  // P2 sigue en «por defecto»
+            Assert.Equal(BootPlacement.None, restored.Bota.At(4));          // P4 sigue en «Ninguno» explicito
+            Assert.Empty(restored.PostsWithoutAutomaticBoot);               // derivado: no se persiste
+            Assert.Equal(BootPlacement.EntryExit, restored.BootPlacementAt(2));
+        }
+
+        private static bool IsBootSelection(SelectiveSafetySelection selection)
+            => string.Equals(selection?.ElementId, BootId, StringComparison.OrdinalIgnoreCase);
 
         // ==================================================================== simple / compuesto
 
@@ -601,15 +779,40 @@ namespace RackCad.Tests
             Assert.False(selection.HasOwnBootPlacement(1));
         }
 
-        /// <summary>BITE — el OVERRIDE en blanco. Es lo unico que decide si el filtro de cara se salta.</summary>
+        /// <summary>BITE — el OVERRIDE en blanco. Es lo unico que coloca una bota en una linea en blanco.</summary>
         [Fact]
         public void Bite_BlankOverride_IsWhatBypassesTheAutomaticFilter()
         {
-            var automatic = Resolve(Blanked(), general: null);
-            var line = BlankedLine(automatic);
+            var line = BlankedLine();
 
-            Assert.Single(LineBoots(automatic, line));
+            Assert.Empty(LineBoots(Resolve(Blanked(), general: null), line));
             Assert.Equal(2, LineBoots(Resolve(Blanked(), general: null, (2, BootPlacement.Both)), line).Count);
+        }
+
+        /// <summary>
+        /// BITE (S1C) — LA DECLARACION DEL BLANCO es lo unico que silencia el automatico, y silencia SOLO eso.
+        /// Anularla devuelve la linea a lo que herede; no toca ninguna de las cuatro elecciones explicitas ni
+        /// ninguna otra linea.
+        /// </summary>
+        [Fact]
+        public void Bite_BlankDeclaration_OnlySilencesTheAutomatic()
+        {
+            var selection = new SelectiveSafetySelection { ElementId = BootId };
+            selection.Bota.Placement = BootPlacement.Both;
+
+            Assert.Equal(BootPlacement.Both, selection.BootPlacementAt(2));
+
+            selection.PostsWithoutAutomaticBoot.Add(2);
+            Assert.Equal(BootPlacement.None, selection.BootPlacementAt(2));
+            Assert.Equal(BootPlacement.Both, selection.BootPlacementAt(1));   // otra linea: intacta
+
+            foreach (var chosen in new[]
+                     { BootPlacement.None, BootPlacement.EntryExit, BootPlacement.Rear, BootPlacement.Both })
+            {
+                selection.Bota.Posts.Clear();
+                selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = 2, Placement = chosen });
+                Assert.Equal(chosen, selection.BootPlacementAt(2));           // la decision propia manda
+            }
         }
     }
 }
