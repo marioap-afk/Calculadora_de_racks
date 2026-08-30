@@ -179,7 +179,14 @@ namespace RackCad.Application.Systems.PushBack
                 compositeLineByLocalLine[k + 1] = slot + 1;
             }
 
-            var compositeEnd = end == PushBackFrontalEnd.Posterior
+            // I-42 (ronda 6D) — el corte es de UN LADO, y ese lado ocupa solo su tramo de la profundidad. Se
+            // pregunta DENTRO de ese tramo: sobre el rack entero, el extremo posterior de A caeria en la cabecera
+            // del otro lado. Y el mapeo extremo->cabecera se invierte en B, porque su marco entra al reves: su
+            // pasillo esta contra el extremo lejano del rack.
+            var minX = Math.Min(view.OuterX, view.InnerX);
+            var maxX = Math.Max(view.OuterX, view.InnerX);
+            var lowFirst = view.OuterX <= view.InnerX;
+            var compositeEnd = (end == PushBackFrontalEnd.Posterior) == lowFirst
                 ? DynamicRackEnd.Entrance
                 : DynamicRackEnd.Exit;
             return postIndex =>
@@ -192,7 +199,8 @@ namespace RackCad.Application.Systems.PushBack
                 var line = compositeLineByLocalLine[postIndex];
                 return line < 0
                     ? 0.0
-                    : DynamicFrontGeometry.HeaderHeightAtPost(composite.Structure, catalog, line, compositeEnd);
+                    : DynamicFrontGeometry.HeaderHeightAtPost(
+                        composite.Structure, catalog, line, compositeEnd, minX, maxX);
             };
         }
 

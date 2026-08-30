@@ -204,6 +204,34 @@ namespace RackCad.Application.Systems.Dynamic
         }
 
         /// <summary>
+        /// I-42 (ronda 6D) — LA ALTURA DE UNA LINEA EN UNA POSICION DE PROFUNDIDAD. Una cabecera vive en una linea
+        /// transversal Y en una posicion longitudinal, y en un Push Back compuesto esa segunda coordenada decide a
+        /// que lado sirve: la primera mitad de la profundidad es de A y la segunda de B, con demandas
+        /// independientes. Sin zonas declaradas —el Dinamico, y todo rack de un solo sentido— responde exactamente
+        /// <see cref="PostHeight"/>, que es lo que se hacia antes de esta ronda.
+        /// </summary>
+        public static double PostHeightAt(DynamicRackSystem system, int postIndex, double x)
+        {
+            if (system != null && postIndex >= 0)
+            {
+                foreach (var zone in system.HeaderHeightZones)
+                {
+                    if (zone == null || x < zone.StartX - 1e-6 || x > zone.EndX + 1e-6)
+                    {
+                        continue;
+                    }
+
+                    if (postIndex < zone.HeightByLine.Count && zone.HeightByLine[postIndex] > 0.0)
+                    {
+                        return zone.HeightByLine[postIndex];
+                    }
+                }
+            }
+
+            return PostHeight(system, postIndex);
+        }
+
+        /// <summary>
         /// Resolves the header configuration physically present at one transverse post line. Calculated headers
         /// inherit the tallest adjacent front; manually edited headers remain authoritative. Lateral drawing and
         /// BOM consume this same rule so a tall front changes only its two adjacent header sections and quantities.
@@ -232,7 +260,9 @@ namespace RackCad.Application.Systems.Dynamic
                 return configuration;
             }
 
-            var height = PostHeight(system, postIndex);
+            // I-42 (ronda 6D): la altura se pregunta en la POSICION de esta cabecera, no solo en su linea. En un
+            // rack de un solo sentido las dos preguntas dan lo mismo.
+            var height = PostHeightAt(system, postIndex, 0.5 * (module.StartX + module.EndX));
             if (height <= 0.0)
             {
                 return configuration;
@@ -325,11 +355,31 @@ namespace RackCad.Application.Systems.Dynamic
             RackCatalog catalog,
             int postIndex,
             DynamicRackEnd end)
+            => HeaderHeightAtPost(system, catalog, postIndex, end, double.NegativeInfinity, double.PositiveInfinity);
+
+        /// <summary>
+        /// I-42 (ronda 6D) — el mismo corte, restringido a un TRAMO de profundidad. Un rack compuesto lo necesita
+        /// porque su frontal es de UN LADO, y ese lado ocupa solo la mitad de la profundidad: buscar la cabecera del
+        /// extremo sobre el rack entero devolveria la del otro lado. Con el tramo abierto —el valor por defecto— el
+        /// comportamiento es exactamente el anterior.
+        /// </summary>
+        public static double HeaderHeightAtPost(
+            DynamicRackSystem system,
+            RackCatalog catalog,
+            int postIndex,
+            DynamicRackEnd end,
+            double minX,
+            double maxX)
         {
-            var configuration = HeaderConfigurationAtCut(system, catalog, postIndex, end);
-            return configuration != null && configuration.Height > 0.0
-                ? configuration.Height
-                : PostHeight(system, postIndex);
+            var configuration = HeaderConfigurationAtCut(system, catalog, postIndex, end, minX, maxX);
+            if (configuration != null && configuration.Height > 0.0)
+            {
+                return configuration.Height;
+            }
+
+            return double.IsInfinity(minX) || double.IsInfinity(maxX)
+                ? PostHeight(system, postIndex)
+                : PostHeightAt(system, postIndex, 0.5 * (minX + maxX));
         }
 
         /// <summary>
@@ -342,6 +392,17 @@ namespace RackCad.Application.Systems.Dynamic
             RackCatalog catalog,
             int postIndex,
             DynamicRackEnd end)
+            => HeaderConfigurationAtCut(
+                system, catalog, postIndex, end, double.NegativeInfinity, double.PositiveInfinity);
+
+        /// <summary>El mismo corte, limitado a las cabeceras cuyo centro cae en <c>[minX, maxX]</c> (I-42, 6D).</summary>
+        public static RackFrameConfiguration HeaderConfigurationAtCut(
+            DynamicRackSystem system,
+            RackCatalog catalog,
+            int postIndex,
+            DynamicRackEnd end,
+            double minX,
+            double maxX)
         {
             if (system == null)
             {
@@ -351,6 +412,11 @@ namespace RackCad.Application.Systems.Dynamic
             var range = DynamicDepthGeometry.CoverageAtPost(system, postIndex);
             var headers = system.Modules
                 .Where(module => module != null && module.IsHeader && range.Contains(module.Index + 1))
+                .Where(module =>
+                {
+                    var centre = 0.5 * (module.StartX + module.EndX);
+                    return centre >= minX - 1e-6 && centre <= maxX + 1e-6;
+                })
                 .OrderBy(module => module.Index)
                 .ToList();
 

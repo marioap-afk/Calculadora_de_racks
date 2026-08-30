@@ -800,6 +800,123 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-teretvicies. Ronda 6D: A y B con alturas independientes, y la defensa solo en una cara de carga
+
+Cierre de la fase 6. Dos defectos de la validacion del dueño, independientes. Se conservan 6A (BOM = piezas
+fisicas), 6B (una pieza, una altura en todas las vistas) y 6C (la demanda sale de las camas reales).
+
+---
+
+### 6D-A — la altura de A se imponia a B
+
+**Reproduccion.** Compuesto de dos ranuras, lado A con CUATRO niveles y lado B con TRES. Demanda fisica de cada
+cama: A = 264", B = 192". Los DOCE postes del corte lateral —los seis de A y los seis de B— salian a **264"**, y
+los dos frontales y el BOM tambien.
+
+**Causa: granularidad, no formula.** 6C ya resolvia la demanda por cama, pero la escribia en `front.Height`, que es
+una propiedad de la LINEA transversal. Una cabecera, sin embargo, vive en una linea **y** en una posicion
+longitudinal, y esa segunda coordenada decide a que lado sirve: en la estructura compuesta —A + hueco + B
+invertido— la primera mitad de la profundidad es de A y la segunda de B. Colapsar las dos en un maximo por linea es
+lo que alargaba los postes de B.
+
+**Correccion.** `PushBackHeaderHeight.Zones` resuelve la demanda **por lado y por linea** —una cama aporta a la
+linea de su izquierda y a la de su derecha, y al lado o LADOS a los que pertenece— y la publica como TRAMOS DE
+PROFUNDIDAD (`DynamicHeaderHeightZone`), que el compuesto escribe en la estructura. `DynamicFrontGeometry.PostHeightAt`
+responde en la posicion en que se pregunta; sin zonas declaradas responde `PostHeight`, que es lo que hacia antes,
+y por eso el Dinamico y todo Push Back de un solo sentido dibujan igual.
+
+Los tramos de cada lado ya los publicaba el compuesto: su extremo EXTERIOR (su pasillo) y su INTERIOR (la linea que
+mira al hueco). No se parte por la mitad: con profundidades distintas la mitad no cae donde acaba A.
+
+Consumidores actualizados, todos por la MISMA funcion: la cabecera (`HeaderConfigurationAtPost`), sus separadores y
+sus postes derivados (el corte lateral resuelve un contexto por tramo), el corte frontal de cada lado —que ahora
+pregunta DENTRO de su tramo, porque sobre el rack entero el extremo posterior de A caia en la cabecera del otro
+lado— y el BOM, que ya consumia la misma funcion.
+
+**Medido:**
+
+| caso | ANTES (A y B) | AHORA A | AHORA B |
+|---|---|---|---|
+| A=4 niveles / B=3 | 264 / 264 | **264** | **192** |
+| A=3 / B=2 | 192 / 192 | **192** | **120** |
+| A=2 / B=4 | 264 / 264 | **120** | **264** |
+| A profundo bajo (d8, 2 niv) / B corto alto (d4, 4 niv) | 264 / 264 | **120** | **264** |
+| corrida A→B | 120 / 120 | **120** | **120** |
+
+Cada altura es exactamente la que un rack SIMPLE de esos niveles y ese fondo resuelve. Y una CORRIDA sigue dando el
+mismo valor en los dos tramos: es una pieza compartida de verdad. La regla no inventa diferencias, solo deja de
+imponerlas.
+
+**Envolvente local y 6B intactos:** un frente profundo remoto sigue sin subir una cabecera ajena, y la misma pieza
+fisica —la de un lado— mide lo mismo en su lateral y en sus dos frontales.
+
+**I-40:** un override manual manda sobre los dos lados —es del rack— y Restore devuelve la propuesta ACTUAL de cada
+uno: 264 para A y 192 para B.
+
+---
+
+### 6D-B — con un blanco, la defensa saltaba a la cara posterior del lado contrario
+
+**Reproduccion.** Compuesto de tres ranuras, encontradas. Sin blancos las defensas estan en X = −4.75 (el pasillo
+de A, cuatro) y X = 508.75 (el de B, cuatro). Poniendo el lado A EN BLANCO en la ranura 0:
+
+| | ANTES | AHORA |
+|---|---|---|
+| pasillo de A (X = −4.75) | 3 (pierde la de su ranura en blanco) | 3 |
+| pasillo de B (X = 508.75) | 4 | 4 |
+| **interior del rack (X = 247.25)** | **1 — contra la cara posterior del lado contrario** | **ninguna** |
+
+**Causa.** `AppendPlantaDefensas` coloca la defensa en los extremos de la COBERTURA de profundidad de su linea. Eso
+es correcto mientras esos extremos sean caras de carga. Un lado en blanco acorta la cobertura de su linea, y su
+extremo pasa a caer en la interfaz con el otro lado: dentro del rack, sin pasillo al que mirar.
+
+**Correccion.** La estructura declara su TRAMO INTERIOR —el hueco entre los dos lados—, y una defensa no se
+materializa en un extremo que caiga ahi. El Dinamico no declara ninguno y dibuja exactamente igual que siempre. No
+se toca la reticula: un blanco conserva su ranura, y cada defensa que sobrevive esta donde estaba —el blanco QUITA,
+nunca MUEVE.
+
+**No se añadio ningun control por lado.** La intencion de defensa sigue siendo global, tal como el dueño pidio para
+esta ronda.
+
+**BOM de seguridad:** dibujo y BOM siguen coincidiendo pieza a pieza. La unica diferencia es la defensa que nunca
+debio existir, que desaparece de los dos a la vez.
+
+---
+
+### Goldens
+
+**Ninguno se movio.** El escenario dorado es de un solo sentido: no declara zonas ni tramo interior, asi que
+ninguna de las dos correcciones lo alcanza.
+
+### 6A intacto
+
+Dibujo 27 / BOM 27, fijado tambien en las pruebas de esta ronda.
+
+### Contratos SUSTITUIDOS
+
+Dos ayudantes de prueba de 6B y 6C exigian **una sola altura por corte**, que es justo lo que el contrato del dueño
+sustituye. Ahora leen la altura DENTRO del tramo de un lado, y `SharedPhysicalHeader_UsesRequiredLocalEnvelope` y
+`DifferentSideLevels_UseMaxPhysicalRequirementAtSharedLine` afirman que cada lado recoge SU demanda en vez de un
+maximo comun. La linea INTERIOR se excluye de la ventana de lectura: ahi los dos lados tienen su propio poste, uno
+contra otro.
+
+### Pruebas
+
+`PushBackSideIndependentHeightTests` (35 casos): las alturas independientes en los dos sentidos, profundidad y
+altura como ejes distintos, la coherencia por lado en las diez topologias, la pieza realmente compartida, el rack
+simple sin cambio, override y Restore, y las cuatro de seguridad con blancos. Anulando las zonas fallan 6 pruebas
+de altura; anulando la regla de cara de carga fallan 3 de seguridad. Evidencia separada.
+
+### PENDIENTES REGISTRADOS (fuera de 6D, no corregidos)
+
+- **UI / ActiveSide — U1:** control independiente de defensa por lado (`Defensa A si/no`, `Defensa B si/no`) en
+  lugar de «ambos o ninguno». El dueño lo pidio explicitamente; esta ronda solo garantiza que la intencion actual no
+  se materialice en un borde absurdo.
+- **View hygiene — V1:** el lateral de una seccion donde un lado no existe funcionalmente dibuja la letra de ese
+  lado. La etiqueta debe depender de la presencia funcional real de la seccion.
+- **View hygiene / frontales — V2:** una corrida que llega hasta la cara opuesta debe representar en esa frontal el
+  extremo HIGH —larguero alto y tope— con semantica de vista posterior. Simetrico para B→A.
+
 ## 4-duoetvicies. Ronda 6C: la altura de cabecera sale de las CAMAS REALES
 
 La ronda 6B dejo UNA sola autoridad, consumida por el corte lateral, los dos frontales y el BOM. Esa conquista se

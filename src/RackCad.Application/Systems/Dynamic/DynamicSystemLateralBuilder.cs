@@ -83,6 +83,33 @@ namespace RackCad.Application.Systems.Dynamic
             var context = Resolve(system, catalog, sectionHeight, postIndex);
             var loose = new List<HeaderBlockInstance>();
 
+            // I-42 (ronda 6D) — el contexto de altura POR TRAMO DE PROFUNDIDAD. Separadores y postes derivados
+            // cuelgan de la altura de la cabecera que tienen al lado, y en un rack compuesto esa altura cambia a la
+            // mitad de la profundidad: la primera mitad es del lado A y la segunda del B. Sin zonas declaradas hay
+            // un solo contexto y es el de siempre, asi que el Dinamico no cambia ni un bit.
+            var contextsByHeight = new Dictionary<double, HeaderContext> { [context.Height] = context };
+            HeaderContext ContextAt(double x)
+            {
+                if (!sectioned || system.HeaderHeightZones.Count == 0)
+                {
+                    return context;
+                }
+
+                var height = DynamicFrontGeometry.PostHeightAt(system, postIndex, x);
+                if (height <= 0.0 || Math.Abs(height - context.Height) < 1e-6)
+                {
+                    return context;
+                }
+
+                if (!contextsByHeight.TryGetValue(height, out var zoned))
+                {
+                    zoned = Resolve(system, catalog, height, postIndex);
+                    contextsByHeight[height] = zoned;
+                }
+
+                return zoned;
+            }
+
             // Group identical headers so each distinct header becomes one shared block definition; record the
             // placements (with a mirror flag) where each is used. Consecutive headers alternate (mirror) so the
             // celosía direction alternates along the line.
@@ -120,10 +147,11 @@ namespace RackCad.Application.Systems.Dynamic
                 }
                 else if (module.Kind == DynamicRackModuleKind.Separator && module.Length > 0.0 && context.SeparatorBlock != null)
                 {
-                    foreach (var level in context.Levels)
+                    var separatorContext = ContextAt(0.5 * (module.StartX + module.EndX));
+                    foreach (var level in separatorContext.Levels)
                     {
                         loose.Add(MakeSeparator(
-                            context,
+                            separatorContext,
                             module.StartX,
                             module.Length,
                             level,
@@ -138,11 +166,11 @@ namespace RackCad.Application.Systems.Dynamic
             var rangeEndX = system.Modules.FirstOrDefault(module => module.Index + 1 == sectionRange.EndPosition)?.EndX ?? system.TotalLength;
             foreach (var offset in system.GetDerivedPostOffsets().Where(offset => offset > rangeStartX && offset < rangeEndX))
             {
-                AddDerivedPost(loose, context, offset, context.ReinforceDerivedPost);
+                AddDerivedPost(loose, ContextAt(offset), offset, context.ReinforceDerivedPost);
             }
             foreach (var offset in DynamicDepthGeometry.BoundaryPostOffsets(system, sectionCoverage))
             {
-                AddDerivedPost(loose, context, offset, reinforced: false);
+                AddDerivedPost(loose, ContextAt(offset), offset, reinforced: false);
             }
 
             var intermediateBeams = intermediateBeamBuilder.Build(system, catalog, postIndex, levelCount);

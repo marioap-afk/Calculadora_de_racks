@@ -108,6 +108,90 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
+        /// I-42 (ronda 6D) — LA DEMANDA POR LADO Y POR LINEA. Una cabecera vive en una linea transversal Y en una
+        /// posicion longitudinal, y esa segunda coordenada decide a que lado sirve: la primera mitad de la
+        /// profundidad es de A y la segunda de B. Sus demandas son INDEPENDIENTES — subir los niveles de A no puede
+        /// alargar un poste que pertenece solo a B.
+        ///
+        /// <para>
+        /// Una cama contribuye a la linea de su izquierda y a la de su derecha, y al lado o LADOS a los que
+        /// pertenece: una cama por lado aporta al suyo, una CORRIDA aporta a los dos porque fisicamente los
+        /// atraviesa. Por eso la regla no pregunta por topologia.
+        /// </para>
+        /// </summary>
+        public static IReadOnlyList<DynamicHeaderHeightZone> Zones(PushBackSystem system, RackCatalog catalog)
+        {
+            var result = new List<DynamicHeaderHeightZone>();
+            var structure = system?.Structure;
+            if (structure?.Fronts == null || !system.IsComposite)
+            {
+                return result;
+            }
+
+            var runs = PushBackRuns.Resolve(system);
+            var lines = structure.Fronts.Count + 1;
+            var bySide = new Dictionary<PushBackSide, double[]>
+            {
+                [PushBackSide.A] = new double[lines],
+                [PushBackSide.B] = new double[lines]
+            };
+
+            foreach (var run in runs.Runs)
+            {
+                var requirement = Requirement(run, catalog);
+                foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
+                {
+                    if (run.LowSide != side && run.HighSide != side)
+                    {
+                        continue;
+                    }
+
+                    foreach (var line in new[] { run.Slot, run.Slot + 1 })
+                    {
+                        if (line >= 0 && line < lines)
+                        {
+                            bySide[side][line] = Math.Max(bySide[side][line], requirement);
+                        }
+                    }
+                }
+            }
+
+            // El TRAMO de cada lado ya lo publica el compuesto: su extremo EXTERIOR (su pasillo) y su extremo
+            // INTERIOR (la linea que mira al hueco). Entre los dos queda el hueco, que no es de nadie. No se parte
+            // por la mitad: con profundidades distintas la mitad no cae donde acaba A.
+            foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
+            {
+                var view = system.Composite?.Of(side);
+                if (view == null || !view.IsPresent)
+                {
+                    continue;
+                }
+
+                var zone = NewZone(
+                    Math.Min(view.OuterX, view.InnerX),
+                    Math.Max(view.OuterX, view.InnerX),
+                    bySide[side]);
+                if (zone.EndX > zone.StartX)
+                {
+                    result.Add(zone);
+                }
+            }
+
+            return result;
+        }
+
+        private static DynamicHeaderHeightZone NewZone(double startX, double endX, IReadOnlyList<double> heights)
+        {
+            var zone = new DynamicHeaderHeightZone { StartX = startX, EndX = endX };
+            foreach (var height in heights)
+            {
+                zone.HeightByLine.Add(height);
+            }
+
+            return zone;
+        }
+
+        /// <summary>
         /// Escribe la demanda fisica en los frentes de la estructura compuesta, que es de donde la leen —por LINEA—
         /// el corte lateral, los dos cortes frontales y el BOM desde la ronda 6B. Una sola autoridad, un solo sitio.
         ///
@@ -132,6 +216,15 @@ namespace RackCad.Application.Systems.PushBack
                 {
                     front.Height = required[index];
                 }
+            }
+
+            // I-42 (ronda 6D): y la demanda POR LADO, en zonas de profundidad. `front.Height` sigue siendo la
+            // envolvente de la linea —la respuesta cuando no se sabe en que posicion se pregunta—; la zona es la
+            // respuesta precisa, y es la que consumen la cabecera, sus separadores, sus postes derivados y el BOM.
+            system.Structure.HeaderHeightZones.Clear();
+            foreach (var zone in Zones(system, catalog))
+            {
+                system.Structure.HeaderHeightZones.Add(zone);
             }
         }
     }

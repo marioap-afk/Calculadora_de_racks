@@ -186,6 +186,35 @@ namespace RackCad.Application.Systems.PushBack
                 mirrored.DerivedPostLineOverrides.Add(line);
             }
 
+            // I-42 (ronda 6D): el tramo interior tambien es de PROFUNDIDAD, asi que viaja reflejado.
+            if (source.InteriorFaceStartX.HasValue && source.InteriorFaceEndX.HasValue)
+            {
+                mirrored.InteriorFaceStartX = source.TotalLength - source.InteriorFaceEndX.Value;
+                mirrored.InteriorFaceEndX = source.TotalLength - source.InteriorFaceStartX.Value;
+            }
+
+            // I-42 (ronda 6D): las zonas de altura viajan con la reflexion, porque son TRAMOS DE PROFUNDIDAD. Sus
+            // alturas por linea no se tocan: una reflexion en profundidad no reordena la retícula transversal.
+            foreach (var zone in source.HeaderHeightZones)
+            {
+                if (zone == null)
+                {
+                    continue;
+                }
+
+                var copy = new DynamicHeaderHeightZone
+                {
+                    StartX = source.TotalLength - zone.EndX,
+                    EndX = source.TotalLength - zone.StartX
+                };
+                foreach (var height in zone.HeightByLine)
+                {
+                    copy.HeightByLine.Add(height);
+                }
+
+                mirrored.HeaderHeightZones.Add(copy);
+            }
+
             var total = source.Modules.Count;
             foreach (var module in Enumerable.Reverse(source.Modules.ToList()))
             {

@@ -90,6 +90,12 @@ namespace RackCad.Application.Systems.PushBack
             // el corte lateral, los dos frontales y el BOM (ronda 6B), asi que sigue habiendo UNA sola autoridad.
             // Un override manual manda y no se toca.
             PushBackHeaderHeight.Apply(system, catalog, design.Structure?.ManualHeaderHeightOverride);
+
+            // I-42 (ronda 6D) — la INTERFAZ entre los dos lados no es una cara de carga: no hay pasillo ahi, hay el
+            // otro lado. Declararlo es lo que impide que una ranura en blanco mande la defensa de un lado contra la
+            // cara posterior del contrario. Es una propiedad de la estructura, no una regla de dibujo.
+            structure.InteriorFaceStartX = Math.Min(composite.GapStartX, composite.GapEndX);
+            structure.InteriorFaceEndX = Math.Max(composite.GapStartX, composite.GapEndX);
             return system;
         }
 

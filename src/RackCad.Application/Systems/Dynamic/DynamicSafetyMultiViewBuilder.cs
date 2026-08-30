@@ -367,13 +367,23 @@ namespace RackCad.Application.Systems.Dynamic
                 var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
                 var rangeEnd = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? system.TotalLength;
                 var y = layout.PostPositions[postIndex] + offset.Y;
-                if (setting.DrawsExit)
+
+                // I-42 (ronda 6D) — una defensa protege una CARA DE CARGA: el extremo de la profundidad por donde
+                // entra el montacargas. Se coloca en los extremos de la cobertura de esta linea, y eso basta
+                // mientras esos extremos SEAN caras. En un Push Back compuesto no siempre lo son: un lado EN BLANCO
+                // acorta la cobertura de su linea, y su extremo pasa a caer en la interfaz con el otro lado —dentro
+                // del rack, sin pasillo al que mirar—. Medido: con el lado A en blanco en la primera ranura,
+                // aparecia una defensa en X=247.25, contra la cara posterior del lado contrario.
+                //
+                // La estructura declara ese tramo interior; el Dinamico no declara ninguno y dibuja igual que
+                // siempre.
+                if (setting.DrawsExit && !system.IsInteriorFace(rangeStart))
                 {
                     target.Add(Piece(selection.ElementId, block, view,
                         new Point2D(rangeStart + offset.X, y), false, false, setting.ExitLength));
                 }
 
-                if (setting.DrawsEntrance)
+                if (setting.DrawsEntrance && !system.IsInteriorFace(rangeEnd))
                 {
                     target.Add(Piece(selection.ElementId, block, view,
                         new Point2D(rangeEnd - offset.X, y), true, false, setting.EntranceLength));

@@ -112,15 +112,62 @@ namespace RackCad.Tests
 
         // ---- lecturas -----------------------------------------------------------------------------------------
 
-        private static double LateralHeight(PushBackSystem system, int line)
+        /// <summary>
+        /// La altura que el CORTE LATERAL dibuja en una linea fisica, DENTRO del tramo de profundidad de un lado.
+        ///
+        /// <para>
+        /// I-42 (ronda 6D) SUSTITUYE la version anterior de este ayudante, que exigia una sola altura por corte. Una
+        /// linea atraviesa los dos lados y sus demandas son INDEPENDIENTES: el corte dibuja las cabeceras de A a la
+        /// altura de A y las de B a la de B. Lo que sigue siendo cierto —y lo que se comprueba— es que la MISMA
+        /// pieza fisica mide lo mismo en todas las vistas.
+        /// </para>
+        /// </summary>
+        private static double LateralHeight(PushBackSystem system, int line, PushBackSide side = PushBackSide.A)
         {
+            var view = system.IsComposite ? system.Composite?.Of(side) : null;
+            var minX = view == null ? double.NegativeInfinity : Math.Min(view.OuterX, view.InnerX);
+            var maxX = view == null ? double.PositiveInfinity : Math.Max(view.OuterX, view.InnerX);
+            // En la linea INTERIOR los dos lados tienen su propio poste, uno contra otro: se excluye de la ventana
+            // para que la lectura de un lado no recoja el del otro.
+            var inner = view?.InnerX;
             var heights = new PushBackSystemLateralBuilder().Build(system, Catalog, line).Flatten().Instances
                 .Where(instance => instance.Role == HeaderBlockRole.Post)
+                .Where(instance => instance.Insertion.X >= minX - 1e-6 && instance.Insertion.X <= maxX + 1e-6)
+                .Where(instance => !inner.HasValue || Math.Abs(instance.Insertion.X - inner.Value) > 1e-6)
                 .Select(instance => Math.Round(
                     instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var value) ? value : -1.0, 3))
                 .Distinct().ToList();
             Assert.Single(heights);
             return heights[0];
+        }
+
+        /// <summary>
+        /// Las alturas que un corte dibuja en una linea, sin distinguir lado: vacio si esa linea no lleva ninguna
+        /// cabecera. Un lado EN BLANCO en una ranura no tiene pieza en su linea exterior, y preguntar por la altura
+        /// de ese lado ahi no significa nada.
+        /// </summary>
+        private static IReadOnlyList<double> LateralHeights(PushBackSystem system, int line)
+            => new PushBackSystemLateralBuilder().Build(system, Catalog, line).Flatten().Instances
+                .Where(instance => instance.Role == HeaderBlockRole.Post)
+                .Select(instance => Math.Round(
+                    instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var value) ? value : -1.0, 3))
+                .Distinct().OrderBy(value => value).ToList();
+
+        /// <summary>La altura de un lado en una linea, o null si ese lado no tiene cabecera ahi.</summary>
+        private static double? LateralHeightOrNull(PushBackSystem system, int line, PushBackSide side)
+        {
+            var view = system.IsComposite ? system.Composite?.Of(side) : null;
+            var minX = view == null ? double.NegativeInfinity : Math.Min(view.OuterX, view.InnerX);
+            var maxX = view == null ? double.PositiveInfinity : Math.Max(view.OuterX, view.InnerX);
+            var inner = view?.InnerX;
+            var heights = new PushBackSystemLateralBuilder().Build(system, Catalog, line).Flatten().Instances
+                .Where(instance => instance.Role == HeaderBlockRole.Post)
+                .Where(instance => instance.Insertion.X >= minX - 1e-6 && instance.Insertion.X <= maxX + 1e-6)
+                .Where(instance => !inner.HasValue || Math.Abs(instance.Insertion.X - inner.Value) > 1e-6)
+                .Select(instance => Math.Round(
+                    instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var value) ? value : -1.0, 3))
+                .Distinct().ToList();
+            return heights.Count == 1 ? heights[0] : (double?)null;
         }
 
         private static IReadOnlyList<double> BomHeaderLengths(PushBackSystem system)
@@ -183,10 +230,14 @@ namespace RackCad.Tests
         {
             var system = Composite(PushBackCellTopology.Encontradas, PushBackRunDirection.AToB, 2, levelsA: 3);
 
-            Assert.Equal(192.0, LateralHeight(system, 1), 6);
-            Assert.Equal(LateralHeight(SingleSided(3, 5), 0), LateralHeight(system, 1), 6);
-            Assert.Equal(PhysicalRequirement(system), LateralHeight(system, 1), 6);
-            Assert.Equal(204.0, SyntheticHeight(system), 6);   // lo que se resolvía antes
+            // I-42 (ronda 6D) SUSTITUYE la version anterior, que exigia un solo valor —el maximo— para toda la
+            // linea: A y B tienen alturas independientes. Cada lado recoge SU demanda fisica.
+            Assert.Equal(192.0, LateralHeight(system, 1, PushBackSide.A), 6);
+            Assert.Equal(120.0, LateralHeight(system, 1, PushBackSide.B), 6);
+            Assert.Equal(LateralHeight(SingleSided(3, 5), 0), LateralHeight(system, 1, PushBackSide.A), 6);
+            Assert.Equal(LateralHeight(SingleSided(2, 5), 0), LateralHeight(system, 1, PushBackSide.B), 6);
+            Assert.Equal(PhysicalRequirement(system), LateralHeight(system, 1, PushBackSide.A), 6);
+            Assert.Equal(204.0, SyntheticHeight(system), 6);   // lo que se resolvía antes de 6C
         }
 
         /// <summary>
@@ -199,15 +250,17 @@ namespace RackCad.Tests
             var tallBlank = Composite(PushBackCellTopology.Encontradas, PushBackRunDirection.AToB, 3, levelsA: 3, blankSlotA: 0);
             var plainBlank = Composite(PushBackCellTopology.Encontradas, PushBackRunDirection.AToB, 3, levelsA: 2, blankSlotA: 0);
 
-            // La línea 0 no la carga el lado A (su ranura está en blanco): su altura no cambia con los niveles de A.
-            Assert.Equal(LateralHeight(plainBlank, 0), LateralHeight(tallBlank, 0), 6);
+            // La línea 0 no la carga el lado A (su ranura está en blanco): ahi no tiene cabecera, y lo que se
+            // dibuja no puede moverse por subir A.
+            Assert.Null(LateralHeightOrNull(tallBlank, 0, PushBackSide.A));
+            Assert.Equal(LateralHeights(plainBlank, 0), LateralHeights(tallBlank, 0));
 
             // Y una ranura en blanco por los DOS lados no aporta demanda propia: su línea vive de la vecina.
             var bothBlank = Composite(PushBackCellTopology.Encontradas, PushBackRunDirection.AToB, 3, blankSlotA: 0, blankSlotB: 0);
             Assert.Equal(3, bothBlank.Structure.Fronts.Count);           // la ranura sigue existiendo
             Assert.Equal(0.0, bothBlank.Structure.Fronts[0].Height, 6);  // pero sin demanda propia
-            Assert.True(LateralHeight(bothBlank, 0) > 0.0);              // y su línea se dibuja igual
-            Assert.Equal(LateralHeight(bothBlank, 1), LateralHeight(bothBlank, 0), 6);
+            Assert.NotEmpty(LateralHeights(bothBlank, 0));               // y su línea se dibuja igual
+            Assert.Equal(LateralHeights(bothBlank, 1), LateralHeights(bothBlank, 0));
         }
 
         /// <summary>
@@ -302,10 +355,18 @@ namespace RackCad.Tests
         public void AllViewsAndBom_ConsumeSameResolvedPhysicalHeaderHeight(string label)
         {
             var system = Scenario(label);
+            var sides = system.IsComposite
+                ? new[] { PushBackSide.A, PushBackSide.B }
+                : new[] { PushBackSide.A };
             var lines = Enumerable.Range(0, system.Structure.Fronts.Count + 1)
                 .Where(line => DynamicFrontActivation.BoundaryExists(system.Structure, line))
                 .ToList();
-            var drawn = lines.Select(line => LateralHeight(system, line)).Distinct().OrderBy(value => value).ToList();
+            var drawn = lines
+                .SelectMany(line => sides
+                    .Select(side => LateralHeightOrNull(system, line, side))
+                    .Where(height => height.HasValue)
+                    .Select(height => height.Value))
+                .Distinct().OrderBy(value => value).ToList();
 
             Assert.NotEmpty(drawn);
             Assert.Equal(drawn, BomHeaderLengths(system));
