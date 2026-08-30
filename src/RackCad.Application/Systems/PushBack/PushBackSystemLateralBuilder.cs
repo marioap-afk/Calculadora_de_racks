@@ -124,7 +124,9 @@ namespace RackCad.Application.Systems.PushBack
             loose.AddRange(SideDecorations(system, catalog, postIndex, sectioned));
 
             // Etiquetas A/B: informacion grafica del plano, por el mismo pipeline. Nunca al BOM.
-            loose.AddRange(PushBackSideAnnotations.Lateral(system));
+            // I-42 (ronda 8, V1): se rotulan los lados que ALMACENAN en las ranuras que este corte muestra — las
+            // mismas que gobiernan su contenido—, no los que el rack declara en alguna otra parte.
+            loose.AddRange(PushBackSideAnnotations.Lateral(system, slots.Contains));
 
             return new HeaderRunPlan(headers, loose);
         }

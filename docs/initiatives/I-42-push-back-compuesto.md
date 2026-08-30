@@ -800,6 +800,98 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 5-pre. Ronda 8: higiene de vista (V1, V2, V3)
+
+Las vistas son CONSUMIDORAS del modelo fisico. No vuelven a decidir que run existe, que lado existe, que extremo es
+alto o bajo, ni que tope aplica: preguntan que elementos fisicos intersectan su proyeccion y los representan. Esta
+ronda cierra los tres pendientes de higiene que quedaban registrados.
+
+### V1 — la letra de un lado que ahi no almacena
+
+**Reproducido.** Un compuesto de cuatro ranuras con A en blanco en la 2, B en blanco en la 3 y los dos en blanco en
+la 4. Todos los cortes laterales —incluido el de la ranura sin ningun lado— salian rotulados «A» y «B».
+
+**Causa.** `PushBackSideAnnotations` rotulaba todo lado DECLARADO (`PushBackSideSystem.IsPresent`), que es una
+propiedad del RACK: dice que ese lado existe en alguna parte. Y la funcion nunca recibia QUE ranuras muestra el
+corte, asi que no podia distinguir. Tres conceptos distintos se habian colapsado en uno:
+
+| concepto | quien lo declara | que autoriza |
+|---|---|---|
+| la ranura fisica existe | la reticula transversal (ronda 2) | postes, placas, cabeceras |
+| el lado esta declarado | `IsPresent` | que el rack sea compuesto |
+| ese lado ALMACENA aqui | los niveles efectivos de su frente en esa ranura | **la letra** |
+
+**Correccion.** `PushBackFunctionalSides` responde la tercera pregunta, reutilizando la autoridad de blanco que ya
+usan el resolver, el BOM y el resto de los constructores —la regla no se duplica—, y el lateral le pasa las mismas
+ranuras que gobiernan su contenido.
+
+| corte | ranuras que muestra | A almacena | B almacena | antes | ahora |
+|---|---|---|---|---|---|
+| poste 1 | 1 | si | si | A,B | A,B |
+| poste 2 | 1,2 | si (1) | si (1,2) | A,B | A,B |
+| poste 3 | 2,3 | si (3) | si (2) | A,B | A,B |
+| poste 4 | 3,4 | si (3) | no | A,B | **A** |
+| poste 5 | 4 | no | no | A,B | **(ninguna)** |
+
+La planta sigue la misma regla sobre el rack entero. **La geometria no se toca**: postes, placas, cabeceras, camas,
+largueros y topes son la misma pieza en la misma posicion — la correccion solo quita o pone una anotacion, y las
+anotaciones nunca entran al BOM.
+
+### V2 — la cara de salida de una corrida
+
+**Auditado y medido.** El contrato ya se cumple, y la ronda lo fija con pruebas en vez de reescribirlo. La autoridad
+no es el lado ni el sentido: es que extremo del run cae en cada cara, que es lo que `PushBackCompositeFrontal`
+pregunta (`LowSide == side` para el corte de entrada, `HighSide == side` para el de salida).
+
+| escenario | A entrada | A salida | B entrada | B salida |
+|---|---|---|---|---|
+| corrida A→B full-span | IN/OUT x6 | — | — | **REDONDO x6 + TOPE x6** |
+| corrida B→A full-span | — | **REDONDO x6 + TOPE x6** | IN/OUT x6 | — |
+| corrida A→B corta | IN/OUT x6 | — | — | REDONDO x6 + TOPE x6 |
+| corrida A→B, tope «Ninguno» en B | IN/OUT x6 | — | — | **REDONDO x6, sin tope** |
+| encontradas | IN/OUT x6 | REDONDO+TOPE x6 | IN/OUT x6 | REDONDO+TOPE x6 |
+
+La cara de salida NO se trata como otra entrada: el lado alto no proyecta ningun IN/OUT y el lado bajo no proyecta
+ningun REDONDO. Una corrida corta no inventa nada en el exterior opuesto: su alto sigue perteneciendo a su lado
+alto, con las mismas piezas. Y la frontal de salida **no recalcula** mano ni ancla: proyecta las que las rondas 5B y
+5D fijaron, comprobado contra esas mismas autoridades.
+
+**Encontradas no son corrida:** son dos runs, con dos altos y dos topes, y ninguno se colapsa por proyeccion — el
+mismo rack en corrida tiene exactamente la mitad de topes.
+
+### V3 — auditoria de proyeccion
+
+**NEAREST.** Dos usos con riesgo semantico, los dos clasificados:
+
+| uso | que resuelve | veredicto |
+|---|---|---|
+| `NearestColumn` (corte bajo) | la columna transversal de un larguero | **legitimo**: las columnas teselan el eje, la mas cercana es la unica posible y una instancia ya dibujada no lleva mas identidad |
+| `NearestLowLevel` (corte bajo) | el nivel de un larguero | legitimo, y ya exigia coincidir dentro de tolerancia |
+| `PostMateWorld` (tope) | el POSTE que sirve de ancla | riesgoso pero **Owner-validado** (rondas 4B/5/5D) y fail-CLOSED: sin poste no coloca nada. La ronda 8 no lo toca (§10) y añade guardias de coherencia planta/lateral |
+
+**DEDUP.** No hay ninguna deduplicacion por coordenada en el pipeline de vistas Push Back. Las dos agrupaciones que
+existen usan IDENTIDAD SEMANTICA —`(Source, SourceFrontIndex, Reflected)` y niveles distintos dentro del grupo—, asi
+que dos camas fisicas distintas no pueden fundirse aunque se proyecten encima. Fijado por prueba.
+
+**FAIL-OPEN.** Uno encontrado, en el filtro por celda del corte bajo: un larguero que no se puede atribuir a ninguna
+celda se CONSERVA. Se mantiene el comportamiento —dejarlo caer borraria geometria legitima por un fallo de
+correspondencia, que es peor— pero deja de ser una via silenciosa: la identificacion se extrae a `IdentifyCell`, con
+un resultado explicito, y `UnidentifiedEndBeams` la hace medible. Una prueba de guardia comprueba que en el rack
+compuesto —el unico que filtra por celda— no se ejerce nunca, en las tres topologias y con un blanco de por medio.
+
+**PREVIEW.** El preview del editor y el dibujo final salen del MISMO ensamblador de vistas sobre el mismo diseño; se
+comprueba pieza a pieza sobre el corte de salida.
+
+### Lo que NO cambio
+
+**Ningun golden se movio, y ninguna primitiva fisica cambio.** El unico delta observable de la ronda son las letras
+A/B que dejan de afirmar un almacenamiento inexistente. BOM sin cambios: las anotaciones no entran, y V2 y V3 no
+alteran ningun inventario. Intactos R1–R7E completos.
+
+### PENDIENTE
+
+- **S1 — Safety general:** semantica global de Izquierda / Derecha / Ambas para las botas. Sigue separada.
+
 ## 4-octvicies. Ronda 7E: el TIPO de defensa vive en la seccion de su lado
 
 La Owner Validation de 7D confirmo las secciones por lado, la configuracion por poste, la independencia A/B y que los

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using RackCad.Application.Drawing;
 using RackCad.Application.Geometry;
 using RackCad.Application.Systems.Dynamic;
@@ -29,10 +31,19 @@ namespace RackCad.Application.Systems.PushBack
         public static string Text(PushBackSide side) => side == PushBackSide.A ? "A" : "B";
 
         /// <summary>
-        /// Las etiquetas del corte LATERAL: una en el extremo exterior de cada lado presente, a la altura del suelo
-        /// y por debajo de la estructura, para no pisar la geometria.
+        /// Las etiquetas del corte LATERAL: una en el extremo exterior de cada lado con ALMACENAMIENTO en las
+        /// ranuras que este corte muestra, a la altura del suelo y por debajo de la estructura.
+        ///
+        /// <para>
+        /// I-42 (ronda 8, V1) — antes se rotulaba todo lado DECLARADO. Eso es una propiedad del RACK, no de la
+        /// seccion: un corte cuya unica ranura tiene el lado A en blanco salia igualmente con una «A», afirmando un
+        /// almacenamiento que ahi no existe. La reticula fisica sigue completa —postes, placas y cabeceras no se
+        /// mueven—; lo que la letra representa es el ALMACENAMIENTO de ese lado en lo que se esta mostrando.
+        /// </para>
         /// </summary>
-        public static IReadOnlyList<HeaderBlockInstance> Lateral(PushBackSystem system, double sectionHeight = 0.0)
+        /// <param name="shows">Que ranuras materializa este corte. NULL = el rack entero.</param>
+        public static IReadOnlyList<HeaderBlockInstance> Lateral(
+            PushBackSystem system, Func<int, bool> shows = null, double sectionHeight = 0.0)
         {
             var result = new List<HeaderBlockInstance>();
             var composite = system?.Composite;
@@ -45,14 +56,16 @@ namespace RackCad.Application.Systems.PushBack
             var height = SelectiveAnnotations.TextHeightFor(scale);
             var y = -(height + SelectiveAnnotations.Margin * scale);
 
-            Append(result, PushBackSide.A, composite.SideA, "LATERAL", y, height);
-            Append(result, PushBackSide.B, composite.SideB, "LATERAL", y, height);
+            var functional = PushBackFunctionalSides.In(system, shows);
+            Append(result, PushBackSide.A, composite.SideA, "LATERAL", y, height, functional);
+            Append(result, PushBackSide.B, composite.SideB, "LATERAL", y, height, functional);
             return result;
         }
 
         /// <summary>
-        /// Las etiquetas de PLANTA: una por lado presente, en su extremo exterior, desplazadas hacia el pasillo de
-        /// ese lado. Es la vista donde mas falta hacen, porque en planta los dos sentidos comparten la misma calle.
+        /// Las etiquetas de PLANTA: una por lado con almacenamiento, en su extremo exterior, desplazadas hacia el
+        /// pasillo de ese lado. Es la vista donde mas falta hacen, porque en planta los dos sentidos comparten la
+        /// misma calle. La planta muestra el rack entero, asi que basta con que el lado almacene en alguna ranura.
         /// </summary>
         public static IReadOnlyList<HeaderBlockInstance> Planta(PushBackSystem system, double transverseY = 0.0)
         {
@@ -67,8 +80,9 @@ namespace RackCad.Application.Systems.PushBack
             var height = SelectiveAnnotations.TextHeightFor(scale);
             var y = transverseY - (height + SelectiveAnnotations.Margin * scale);
 
-            Append(result, PushBackSide.A, composite.SideA, "PLANTA", y, height);
-            Append(result, PushBackSide.B, composite.SideB, "PLANTA", y, height);
+            var functional = PushBackFunctionalSides.In(system, shows: null);
+            Append(result, PushBackSide.A, composite.SideA, "PLANTA", y, height, functional);
+            Append(result, PushBackSide.B, composite.SideB, "PLANTA", y, height, functional);
             return result;
         }
 
@@ -78,9 +92,11 @@ namespace RackCad.Application.Systems.PushBack
             PushBackSideSystem view,
             string viewName,
             double y,
-            double height)
+            double height,
+            IReadOnlyList<PushBackSide> functional)
         {
-            if (view == null || !view.IsPresent)
+            // La letra la autoriza el ALMACENAMIENTO de ese lado en lo que la vista muestra, no su declaracion.
+            if (view == null || functional == null || !functional.Contains(side))
             {
                 return;
             }

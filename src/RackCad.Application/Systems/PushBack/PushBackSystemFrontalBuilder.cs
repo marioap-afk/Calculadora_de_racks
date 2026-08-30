@@ -374,15 +374,64 @@ namespace RackCad.Application.Systems.PushBack
                     continue;
                 }
 
-                var frontIndex = NearestColumn(structure, layout, instance.Insertion.X);
-                var level = NearestLowLevel(structure, context, frontIndex, instance.Insertion.Y);
-                if (level < 0 || includeCell(frontIndex, level))
+                var match = IdentifyCell(structure, layout, context, instance);
+
+                // I-42 (ronda 8, V3) — FAIL-OPEN DECLARADO. Un larguero que no se puede atribuir a ninguna celda se
+                // CONSERVA: es el comportamiento historico, y dejarlo caer borraria geometria legitima por un fallo
+                // de correspondencia. No es una via silenciosa: <see cref="UnidentifiedEndBeams"/> la expone, y una
+                // prueba de guardia comprueba que en el rack compuesto no se ejerce nunca.
+                if (!match.Identified || includeCell(match.FrontIndex, match.Level))
                 {
                     result.Add(instance);
                 }
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// I-42 (ronda 8, V3) — LA CELDA de un larguero del corte bajo, o «no identificada».
+        ///
+        /// <para>
+        /// La COLUMNA se resuelve por cercania y eso es legitimo: las columnas transversales teselan el eje, asi que
+        /// la mas cercana es la unica posible y no hay identidad mejor disponible en una instancia ya dibujada. El
+        /// NIVEL si exige coincidir con una elevacion esperada dentro de tolerancia; sin coincidencia no se inventa
+        /// ninguna.
+        /// </para>
+        /// </summary>
+        internal static FrontalCellMatch IdentifyCell(
+            DynamicRackSystem structure,
+            DynamicFrontLayout layout,
+            RackLevelElevations context,
+            HeaderBlockInstance instance)
+        {
+            var frontIndex = NearestColumn(structure, layout, instance.Insertion.X);
+            var level = NearestLowLevel(structure, context, frontIndex, instance.Insertion.Y);
+            return level < 0
+                ? FrontalCellMatch.None
+                : new FrontalCellMatch(frontIndex, level);
+        }
+
+        /// <summary>
+        /// Cuantos largueros de <paramref name="instances"/> NO se pueden atribuir a una celda. Es el seam que hace
+        /// medible el fail-open de <see cref="FilterCells"/>: una prueba de guardia lo mantiene en cero para el rack
+        /// compuesto, que es el unico que filtra por celda.
+        /// </summary>
+        internal static int UnidentifiedEndBeams(
+            DynamicRackSystem structure,
+            RackCatalog catalog,
+            RackLevelElevations context,
+            IEnumerable<HeaderBlockInstance> instances)
+        {
+            if (structure == null || instances == null)
+            {
+                return 0;
+            }
+
+            var layout = DynamicFrontGeometry.Compute(structure, catalog);
+            return instances
+                .Where(PushBackPlanComposer.IsDynamicEndBeam)
+                .Count(instance => !IdentifyCell(structure, layout, context, instance).Identified);
         }
 
         private static int NearestColumn(DynamicRackSystem structure, DynamicFrontLayout layout, double x)
@@ -427,6 +476,25 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             return bestDistance <= LevelMatchTolerance ? best : -1;
+        }
+
+        /// <summary>La celda a la que pertenece un larguero del corte, o <see cref="None"/> si no se pudo atribuir.</summary>
+        internal readonly struct FrontalCellMatch
+        {
+            public FrontalCellMatch(int frontIndex, int level)
+            {
+                Identified = true;
+                FrontIndex = frontIndex;
+                Level = level;
+            }
+
+            public static FrontalCellMatch None => default;
+
+            public bool Identified { get; }
+
+            public int FrontIndex { get; }
+
+            public int Level { get; }
         }
 
         private static HeaderBlockInstance CloneAt(HeaderBlockInstance source, string pieceId, string block)
