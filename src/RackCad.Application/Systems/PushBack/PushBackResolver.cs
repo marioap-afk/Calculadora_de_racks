@@ -100,17 +100,17 @@ namespace RackCad.Application.Systems.PushBack
             structure.InteriorFaceStartX = Math.Min(composite.GapStartX, composite.GapEndX);
             structure.InteriorFaceEndX = Math.Max(composite.GapStartX, composite.GapEndX);
 
-            // I-42 (S1C) — y con la interfaz ya declarada se sabe QUE LINEAS quedaron en blanco, que es lo que
-            // apaga el automatico de la bota ahi. Va despues, no antes, porque la pregunta es sobre la estructura
-            // terminada; y sobre las dos copias de la seleccion, la del sistema y la de la estructura, que es de
-            // donde leen la planta, los dos frontales y el BOM.
-            var blankLines = safety.BlankLines(structure);
-            safety.DeclareBlankLines(blankLines, system.SafetySelections);
-            safety.DeclareBlankLines(blankLines, structure.SafetySelections);
-            foreach (var view in new[] { composite.SideA, composite.SideB })
-            {
-                safety.DeclareBlankLines(blankLines, view?.Local?.Structure?.SafetySelections);
-            }
+            // I-42 (S1D) — y con la interfaz ya declarada se sabe QUE CARAS quedaron sin pasillo, que es lo que
+            // apaga el automatico de la bota ahi — la del lado en blanco, no la del contrario. Va despues, no antes,
+            // porque la pregunta es sobre la estructura terminada; y sobre todas las copias de la seleccion —la del
+            // sistema, la de la estructura y la de cada lado—, que es de donde leen la planta, los cuatro cortes
+            // frontales y el BOM.
+            var blankFaces = safety.BlankFaces(structure);
+            safety.DeclareBlankFaces(blankFaces, system.SafetySelections);
+            safety.DeclareBlankFaces(blankFaces, structure.SafetySelections);
+            safety.DeclareBlankFaces(blankFaces, composite.SideA?.Local?.Structure?.SafetySelections);
+            safety.DeclareBlankFaces(
+                safety.Reflected(blankFaces), composite.SideB?.Local?.Structure?.SafetySelections);
 
             return system;
         }

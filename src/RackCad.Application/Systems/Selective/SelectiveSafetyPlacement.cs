@@ -132,8 +132,10 @@ namespace RackCad.Application.Systems.Selective
             }
 
             // Drawn if the default side draws OR some post overrides to a drawn side.
-            var drawsSomewhere = selection.Side != SafetySide.None
-                || selection.PostSides.Any(p => p != null && p.Side != SafetySide.None);
+            // I-42 (S1D, contrato del dueño) — «algun poste» incluye la decision de BOTA de ese poste, que vive en
+            // su propia configuracion. Sin eso la general «Ninguno» actuaba como interruptor de la familia y se
+            // llevaba por delante los postes que el usuario SI habia configurado: la general es un DEFECTO.
+            var drawsSomewhere = selection.DrawsSomewhere();
             if (!drawsSomewhere && !allowEmptySide)
             {
                 return result;

@@ -5,6 +5,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.Systems.PushBack
@@ -121,24 +122,23 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// I-42 (S1C, contrato del dueño) — declara en que LINEAS el automatico de la bota no coloca nada porque el
-        /// rack esta EN BLANCO ahi.
+        /// I-42 (S1D, contrato del dueño) — declara QUE CARAS dejo sin pasillo un frente en blanco: por poste y POR
+        /// LADO.
         ///
         /// <para>
-        /// Es la MISMA condicion fisica que la ronda 6D declaro para la defensa y la 6F para la bota: la cobertura
-        /// de esa linea se acorta hasta la INTERFAZ entre los dos lados, que no es una cara de carga sino el otro
-        /// lado. La correccion de esta ronda es que eso apaga el automatico de la linea ENTERA: retirar solo la
-        /// cara que falta dejaba la otra en pie, y un blanco acababa eligiendo «posterior» sin que nadie lo pidiera.
+        /// Un blanco pertenece a un lado. Que A no tenga almacenamiento en una linea no dice nada de B, que puede
+        /// seguir cargando por su pasillo en esa misma linea, asi que el blanco retira SU cara y solo esa. La ronda
+        /// S1C apagaba la linea entera: correcto para el lado en blanco, equivocado para el contrario.
         /// </para>
         /// <para>
-        /// Se declara AQUI, en la unica autoridad de seguridad del sistema, para que la planta, los dos frontales y
-        /// el BOM lean todos la misma resolucion. No decide nada sobre los postes que el usuario configuro: esos se
-        /// resuelven antes, en <see cref="SelectiveSafetySelection.BootPlacementAt"/>. Es DERIVADA y se vuelve a
-        /// imponer entera en cada resolucion, asi que al quitar el blanco la linea recupera sola lo que herede.
+        /// No hay una segunda semantica de blanco para la bota: la pregunta se la hace a
+        /// <see cref="PushBackDefenseSides.HasFace"/>, la MISMA autoridad que ya distingue A de B por ranura para la
+        /// defensa (ronda 6D) y que el dibujo consulta al colocar. Se declara aqui, en la unica autoridad de
+        /// seguridad del sistema, para que la planta, los cuatro cortes frontales y el BOM lean la misma resolucion.
         /// </para>
         /// </summary>
-        public void DeclareBlankLines(
-            IReadOnlyCollection<int> blankLines, IEnumerable<SelectiveSafetySelection> selections)
+        public void DeclareBlankFaces(
+            IReadOnlyCollection<BootBlankFace> faces, IEnumerable<SelectiveSafetySelection> selections)
         {
             foreach (var selection in selections ?? Enumerable.Empty<SelectiveSafetySelection>())
             {
@@ -147,57 +147,59 @@ namespace RackCad.Application.Systems.PushBack
                     continue;
                 }
 
-                selection.PostsWithoutAutomaticBoot.Clear();
-                foreach (var line in blankLines ?? (IReadOnlyCollection<int>)Array.Empty<int>())
+                selection.BlankBootFaces.Clear();
+                foreach (var face in faces ?? (IReadOnlyCollection<BootBlankFace>)Array.Empty<BootBlankFace>())
                 {
-                    selection.PostsWithoutAutomaticBoot.Add(line);
+                    selection.BlankBootFaces.Add(
+                        new BootBlankFace { PostIndex = face.PostIndex, AtHighEnd = face.AtHighEnd });
                 }
             }
         }
 
         /// <summary>
-        /// Las LINEAS que un frente en blanco dejo sin pasillo propio, medidas UNA vez sobre la estructura completa.
-        /// Es la unica medicion: los cortes de cada lado la reciben ya hecha, porque desde el lado que sigue lleno
-        /// el blanco del contrario no se ve —y es justo esa linea la que hay que apagar—.
+        /// La MISMA declaracion vista desde un sistema local REFLEJADO. El lado B se dibuja sobre una copia espejo
+        /// —su pasillo es el extremo lejano del rack, pero el cercano de su propio corte—, asi que la cara viaja
+        /// reflejada igual que la geometria: sin esto el corte de B apagaria la linea equivocada.
         /// </summary>
-        public IReadOnlyCollection<int> BlankLines(DynamicRackSystem structure)
+        public IReadOnlyCollection<BootBlankFace> Reflected(IReadOnlyCollection<BootBlankFace> faces)
+            => (faces ?? (IReadOnlyCollection<BootBlankFace>)Array.Empty<BootBlankFace>())
+                .Select(face => new BootBlankFace { PostIndex = face.PostIndex, AtHighEnd = !face.AtHighEnd })
+                .ToList();
+
+        /// <summary>
+        /// Las CARAS que un frente en blanco dejo sin pasillo, medidas UNA vez sobre la estructura terminada. Los
+        /// cortes de cada lado la reciben ya hecha: desde el lado que sigue lleno el blanco del contrario no se ve.
+        /// </summary>
+        public IReadOnlyCollection<BootBlankFace> BlankFaces(DynamicRackSystem structure)
         {
-            var lines = new List<int>();
+            var faces = new List<BootBlankFace>();
             var layout = structure == null ? null : DynamicFrontGeometry.Compute(structure, catalog);
             if (layout?.PostPositions == null)
             {
-                return lines;
+                return faces;
             }
 
             for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
             {
-                if (IsBlankLine(structure, postIndex))
+                if (!DynamicFrontActivation.BoundaryExists(structure, postIndex))
                 {
-                    lines.Add(postIndex);
+                    continue;   // la frontera no existe: no hay nada que declarar, ya no se coloca nada (I-33)
+                }
+
+                foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
+                {
+                    if (!PushBackDefenseSides.HasFace(structure, postIndex, side))
+                    {
+                        faces.Add(new BootBlankFace
+                        {
+                            PostIndex = postIndex,
+                            AtHighEnd = PushBackDefenseSides.IsFarEnd(side),
+                        });
+                    }
                 }
             }
 
-            return lines;
-        }
-
-        /// <summary>
-        /// True cuando la cobertura de esa linea llega a la INTERFAZ entre los dos lados, que es lo que deja un
-        /// frente en blanco. Se mide sobre los MISMOS extremos de profundidad que usa la planta para colocar las
-        /// dos copias, asi que la declaracion y el dibujo no pueden discrepar.
-        /// </summary>
-        private static bool IsBlankLine(DynamicRackSystem structure, int postIndex)
-        {
-            if (!DynamicFrontActivation.BoundaryExists(structure, postIndex))
-            {
-                return false;   // la frontera no existe: no hay nada que declarar, ya no se coloca nada (I-33)
-            }
-
-            var depthRange = DynamicDepthGeometry.AtPost(structure, postIndex);
-            var rangeStart = structure.Modules
-                .FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
-            var rangeEnd = structure.Modules
-                .FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? structure.TotalLength;
-            return structure.IsInteriorFace(rangeStart) || structure.IsInteriorFace(rangeEnd);
+            return faces;
         }
 
         /// <summary>Si la seleccion es de la familia BOTA, segun el catalogo de este rack.</summary>

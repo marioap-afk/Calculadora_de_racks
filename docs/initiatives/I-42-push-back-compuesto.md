@@ -800,6 +800,78 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 5-pre-sexies. Ronda S1D: el blanco es de UN LADO, y la general es un DEFECTO
+
+S1C acerto en el concepto —donde hay un blanco el automatico no coloca nada— y se equivoco en el ALCANCE: apagaba la
+linea transversal entera. Un blanco pertenece a un lado. Que A no tenga almacenamiento en una linea no dice nada de B,
+que puede seguir cargando por su propio pasillo ahi mismo. Medido antes de tocar codigo, con A en blanco en la linea
+Y=106.99: `faceA=False`, `faceB=True`, y sin embargo la linea entera se quedaba sin botas.
+
+El mismo caso dejo al descubierto un defecto historico: la general «Ninguno» se comportaba como un INTERRUPTOR DE LA
+FAMILIA. Con ella puesta, un poste con eleccion propia —«Posterior», «Ambas»— no dibujaba nada, ni en simple, ni en
+compuesto, ni con blanco.
+
+### La precedencia, que es el contrato
+
+```
+1. la decision PROPIA del poste      -> gana siempre
+2. el BLANCO de su lado              -> retira SU cara de lo que ese poste HEREDE
+3. la general                        -> el defecto de quien no eligio nada
+```
+
+Ni el blanco ni la general pueden bloquear una decision explicita: el poste fisico sigue ahi y puede necesitar
+proteccion. Y el blanco quita UNA cara sin tocar la otra —«Ambas» menos la cara de A es «Posterior», no «ninguna»—,
+que es la diferencia entre el alcance por lado y el de S1C.
+
+### Una autoridad, no una segunda semantica
+
+La pregunta «¿esta cara esta en blanco?» se la hace `PushBackDefenseSides.HasFace`, la MISMA autoridad que ya
+distingue A de B por ranura para la defensa (ronda 6D) y que el dibujo consulta al colocar. La declaracion resultante
+viaja con la seleccion a la planta, a los cuatro cortes y al BOM.
+
+Con un matiz que el lado B obliga: su corte se dibuja sobre una copia ESPEJO —su pasillo es el extremo lejano del
+rack pero el cercano de su propio corte—, asi que la declaracion viaja reflejada igual que la geometria. Sin eso el
+corte de B apagaba la linea equivocada.
+
+### Medido, antes y despues
+
+| caso (linea Y=106.99) | antes | despues |
+|---|---|---|
+| A en blanco, B activo | ninguna | la de B, en X=792.39 |
+| B en blanco, A activo | ninguna | la de A, en X=-0.39 |
+| los dos en blanco | ninguna | ninguna (ahi la frontera ya no existe: I-33) |
+| general «Ninguno» + poste «Posterior» | nada | 1 bota posterior |
+| general «Ninguno» + poste «Ambas» | nada | 2 botas |
+| general «Ninguno» + poste heredando | nada | nada |
+
+Dibujo = BOM en todos. En la planta, los cortes y el BOM: con A en blanco, el pasillo de A pierde su bota de esa
+linea y el de B conserva la suya (4 y 5 respectivamente, frente a 5 y 5 del rack completo).
+
+### Intencion contra resolucion
+
+Sigue sin escribirse nada: la declaracion es derivada, no se persiste, y la general «Ninguno» no convierte en
+«Ninguno explicito» a ningun poste que herede. Guardar y RACKEDITAR devuelve los cinco postes tal cual —heredando,
+entrada/salida, posterior, ambas, ninguno—, y al quitar el blanco la cara recupera sola lo que herede.
+
+### Alcance
+
+Dos contratos de prueba retargeteados: `BlankLowFace_RemovesBootWithoutRelocation` VUELVE a su forma original de la
+ronda 6F (la bota de B sobrevive), y los tres `Blank_DefaultBoot_IsNone_ForGeneral*` pasan a exigir lo que de verdad
+dice el contrato —que la cara EN BLANCO no lleve nada, no que la linea quede vacia—. Ningun golden tocado, ninguna
+etiqueta ni layout de la UI tocados, ninguna geometria ni orientacion tocadas.
+
+### REGISTRADO, NO IMPROVISADO
+
+Con una general explicita, cada corte frontal la interpreta EN SU PROPIO MARCO: el corte de B dibuja su entrada
+cuando la general dice «Entrada/Salida», aunque la planta y el BOM resuelvan esa eleccion como la cara cercana del
+rack (medido: planta 5 / corte A 5 / corte B 5, cuando el corte de B deberia mostrar 0). Es anterior a S1B —no
+depende de la declaracion de blancos, y se observa igual en un rack sin ningun blanco—, no lo toca esta ronda y
+queda declarado para la ronda exploratoria final.
+
+### PENDIENTE
+
+Ninguno funcional conocido dentro del alcance de esta ronda.
+
 ## 5-pre-quinquies. Ronda S1C: en una linea EN BLANCO el defecto de la bota es «ninguna»
 
 S1B dejaba una bota posterior en la linea que un frente en blanco deja sin pasillo propio. El dueño lo rechazo, y

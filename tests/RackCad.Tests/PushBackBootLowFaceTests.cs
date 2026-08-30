@@ -220,18 +220,14 @@ namespace RackCad.Tests
 
         /// <summary>
         /// EL CASO DEL DUEÑO. Con las dos primeras ranuras de A en blanco —la columna de nave—, la linea que queda
-        /// entre ellas se queda SIN BOTA AUTOMATICA, y ninguna se muda al borde disponible mas cercano.
+        /// entre ellas pierde su cara de ataque de A: su bota desaparece, y NO se muda al borde disponible mas
+        /// cercano. La del lado B, cuya cara si existe, sigue exactamente donde estaba.
         ///
         /// <para>
-        /// RETARGETEADO EN S1C, por decision explicita del dueño. La ronda 6F retiraba solo la cara que el blanco se
-        /// llevaba —la de A, en X=-0.39— y conservaba la de B en X=792.39. Eso no era una decision de nadie: era la
-        /// mitad que el filtro de caras no alcanzaba, y hacia que un blanco acabara eligiendo «posterior» por su
-        /// cuenta. El contrato final es que un blanco apaga el AUTOMATICO de esa linea entera.
-        /// </para>
-        /// <para>
-        /// Pieza por pieza en esta linea (Y=53.494): <c>-0.39</c> ANTES no estaba y AHORA tampoco —lo unico que la
-        /// ronda 6F ya corregia—; <c>792.39</c> ANTES estaba y AHORA no. El resto del rack no se toca, y la de B se
-        /// recupera pidiendola: el blanco decide el defecto, nunca la capacidad de configurar (S1C, §6).
+        /// S1C retargeteo esta prueba a «caen las dos» y el dueño lo rechazo: el blanco pertenece a UN lado y no
+        /// puede apagar el pasillo del contrario. S1D la devuelve a su forma original —que es la correcta— y la
+        /// sostiene ahora sobre una declaracion por lado, no sobre un filtro de caras. Pieza por pieza en la linea
+        /// Y=53.494: <c>-0.39</c> (la de A, en blanco) no esta; <c>792.39</c> (la de B, que sigue cargando) si.
         /// </para>
         /// </summary>
         [Fact]
@@ -242,13 +238,11 @@ namespace RackCad.Tests
 
             // Cada bota que sobrevive existia ya, en la MISMA posicion y con la misma mano…
             Assert.All(Boots(blanked), boot => Assert.Contains(boot, Boots(full)));
-            // …y hay dos menos: las dos de la linea que el blanco dejo sin pasillo propio.
-            Assert.Equal(Boots(full).Count - 2, Boots(blanked).Count);
+            // …y hay una menos: la de la cara que dejo de existir.
+            Assert.Equal(Boots(full).Count - 1, Boots(blanked).Count);
+            // La que desaparecio es la del pasillo de A en esa linea; la de B sigue ahi.
             Assert.DoesNotContain(Boots(blanked), boot => boot.StartsWith("-0.39|53.494", StringComparison.Ordinal));
-            Assert.DoesNotContain(Boots(blanked), boot => boot.StartsWith("792.39|53.494", StringComparison.Ordinal));
-            // Y las de las demas lineas siguen intactas, las dos mitades.
-            Assert.Contains(Boots(blanked), boot => boot.StartsWith("-0.39|", StringComparison.Ordinal));
-            Assert.Contains(Boots(blanked), boot => boot.StartsWith("792.39|", StringComparison.Ordinal));
+            Assert.Contains(Boots(blanked), boot => boot.StartsWith("792.39|53.494", StringComparison.Ordinal));
         }
 
         /// <summary>Un blanco en A no crea una bota en el extremo ALTO de A ni en la interfaz.</summary>

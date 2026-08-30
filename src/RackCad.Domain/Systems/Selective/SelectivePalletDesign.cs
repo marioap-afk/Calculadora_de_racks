@@ -171,16 +171,19 @@ namespace RackCad.Domain.Systems.Selective
         public SafetySide? AuthoredSide { get; set; }
 
         /// <summary>
-        /// I-42 (S1B) — LA COLOCACION EFECTIVA de la bota en un poste.
+        /// I-42 (S1D, contrato del dueño) — LA COLOCACION EFECTIVA de la bota en un poste, con la precedencia final:
+        ///
+        /// <list type="number">
+        /// <item>la decision PROPIA del poste, que gana siempre;</item>
+        /// <item>el BLANCO, que retira la cara de su lado de lo que ese poste HEREDE;</item>
+        /// <item>lo heredado: la general si alguien la eligio, y si no el automatico del sistema.</item>
+        /// </list>
         ///
         /// <para>
-        /// Tres niveles, en este orden: la decision PROPIA del poste; la GENERAL, si alguien la eligio; y si nadie
-        /// eligio nada, la que el sistema haya resuelto para este rack —<see cref="AutomaticBootPlacement"/>—, que
-        /// es lo que hace un rack recien abierto y lo que trae todo documento anterior.
-        /// </para>
-        /// <para>
-        /// El fallback final es el lado historico: <c>Izquierda</c> es la cara de entrada/salida y <c>Derecha</c> la
-        /// posterior, que es exactamente lo que esas etiquetas querian decir.
+        /// El orden importa y es el contrato: ni el blanco ni la general pueden bloquear una decision explicita
+        /// —el poste fisico existe y puede necesitar proteccion—, y la general es un DEFECTO, nunca un interruptor
+        /// de la familia. El fallback final es el lado historico: <c>Izquierda</c> es la cara de entrada/salida y
+        /// <c>Derecha</c> la posterior, que es exactamente lo que esas etiquetas querian decir.
         /// </para>
         /// </summary>
         public BootPlacement BootPlacementAt(int postIndex)
@@ -201,28 +204,43 @@ namespace RackCad.Domain.Systems.Selective
                 }
             }
 
-            // I-42 (S1C, contrato del dueño) — donde el rack esta EN BLANCO el automatico no coloca nada, y eso
-            // vale sea cual sea la general: el blanco decide el DEFECTO, no la capacidad. Va DESPUES de las
-            // decisiones por poste —que se respetan siempre— y ANTES de la general, que es una regla del rack y no
-            // una decision sobre este poste. Vacia —todo sistema que no la declare— significa «ningun blanco».
-            if (PostsWithoutAutomaticBoot.Contains(postIndex))
-            {
-                return BootPlacement.None;
-            }
+            return WithoutBlankFaces(Inherited(), postIndex);
+        }
 
+        /// <summary>
+        /// Lo que un poste sin decision propia HEREDA: la general si alguien la eligio y, si no, el automatico que
+        /// el sistema resolvio para este rack.
+        ///
+        /// <para>
+        /// El AUTOMATICO solo entra donde nadie expreso nada. El unico valor que significa «no lo he tocado» es el
+        /// que siembra un rack nuevo —«Ambas»—: un «Ninguno» o un lado concreto SI son una decision, y la decision
+        /// manda. Una eleccion hecha con la UI nueva ya se resolvio en <c>Bota.Placement</c>.
+        /// </para>
+        /// </summary>
+        private BootPlacement Inherited()
+        {
             if (Bota.Placement.HasValue)
             {
                 return Bota.Placement.Value;
             }
 
-            // El AUTOMATICO solo entra donde nadie expreso nada. El unico valor que significa «no lo he tocado» es
-            // el que siembra un rack nuevo —«Ambas»—: un «Ninguno» o un lado concreto SI son una decision, y la
-            // decision manda. Una eleccion hecha con la UI nueva ya se resolvio arriba, en Bota.Placement.
             var legacy = AuthoredSide ?? Side;
             return legacy == SafetySide.Both && AutomaticBootPlacement.HasValue
                 ? AutomaticBootPlacement.Value
                 : BootPlacements.From(legacy);
         }
+
+        /// <summary>
+        /// I-42 (S1D) — lo heredado SIN las caras que un blanco dejo sin pasillo. Quita una cara sin tocar la otra:
+        /// un blanco en A convierte «Ambas» en «Posterior» —la de B, que sigue cargando por su pasillo—, no en
+        /// «ninguna». Sin blancos declarados devuelve exactamente lo heredado.
+        /// </summary>
+        private BootPlacement WithoutBlankFaces(BootPlacement inherited, int postIndex)
+            => BlankBootFaces.Count == 0
+                ? inherited
+                : BootPlacements.Of(
+                    BootPlacements.IncludesEntryExit(inherited) && !IsBlankBootFace(postIndex, atHighEnd: false),
+                    BootPlacements.IncludesRear(inherited) && !IsBlankBootFace(postIndex, atHighEnd: true));
 
         /// <summary>
         /// I-42 (S1B) — la colocacion que el SISTEMA resuelve cuando nadie ha elegido: entrada/salida si el rack
@@ -232,24 +250,79 @@ namespace RackCad.Domain.Systems.Selective
         public BootPlacement? AutomaticBootPlacement { get; set; }
 
         /// <summary>
-        /// I-42 (S1C, contrato del dueño) — las LINEAS de postes donde el automatico de la bota no coloca nada
-        /// porque el rack esta en blanco ahi.
+        /// I-42 (S1D, contrato del dueño) — las CARAS que un frente en blanco dejo sin pasillo: por poste Y POR
+        /// LADO, nunca por linea entera.
         ///
         /// <para>
-        /// Un frente en blanco QUITA la razon de proteger esa linea, asi que el defecto de ese poste es «ninguna»
-        /// aunque la general diga otra cosa. Lo que NO hace —y es la correccion de esta ronda— es dejar la mitad
-        /// que sobrevive: antes el filtro de caras retiraba la que caia en la interfaz y la otra se quedaba, de
-        /// modo que un blanco acababa eligiendo «posterior» sin que nadie lo pidiera.
+        /// Un blanco pertenece a UN lado. Que el lado A no tenga almacenamiento en una linea no dice nada del lado
+        /// B, que puede seguir cargando por su propio pasillo en esa misma linea: por eso el blanco retira SU cara
+        /// —la de su lado y solo esa— y el defecto del otro lado se resuelve como siempre. La ronda S1C apagaba la
+        /// linea entera, que es la autoridad demasiado gruesa que esta declaracion sustituye.
         /// </para>
         /// <para>
-        /// Nunca bloquea una decision: un poste con eleccion PROPIA se resuelve antes de llegar aqui, porque el
-        /// poste fisico sigue existiendo y puede necesitar proteccion. Es DERIVADA y no se persiste, como
+        /// Solo afecta al DEFECTO: un poste con eleccion PROPIA se resuelve antes de llegar aqui, porque el poste
+        /// fisico sigue existiendo y puede necesitar proteccion. Es DERIVADA y no se persiste, como
         /// <see cref="SecondLoadFacePosts"/>: la autoridad del sistema la vuelve a imponer en cada resolucion, asi
-        /// que al quitar el blanco la linea recupera sola lo que la general diga. VACIA —todo sistema que no la
-        /// declare y todo documento anterior— significa «ningun blanco».
+        /// que al quitar el blanco esa cara recupera sola lo que herede. VACIA —todo sistema que no la declare y
+        /// todo documento anterior— significa «ningun blanco».
         /// </para>
         /// </summary>
-        public IList<int> PostsWithoutAutomaticBoot { get; } = new List<int>();
+        public IList<BootBlankFace> BlankBootFaces { get; } = new List<BootBlankFace>();
+
+        /// <summary>True cuando ESA cara de ESE poste quedo sin pasillo por un frente en blanco de su lado.</summary>
+        public bool IsBlankBootFace(int postIndex, bool atHighEnd)
+        {
+            foreach (var face in BlankBootFaces)
+            {
+                if (face != null && face.PostIndex == postIndex && face.AtHighEnd == atHighEnd)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// I-42 (S1D, contrato del dueño) — True cuando ALGO de esta seleccion pide una pieza: el lado general, la
+        /// matriz historica por poste o la decision de bota de algun poste.
+        ///
+        /// <para>
+        /// El selector general es un DEFECTO, no un interruptor de la familia: con la general en «Ninguno» un poste
+        /// con eleccion propia sigue llevando su bota, y es esta pregunta la que lo mantiene vivo hasta que la
+        /// resolucion por poste decide. Con nadie pidiendo nada la familia no llega al dibujo, como siempre.
+        /// </para>
+        /// </summary>
+        public bool DrawsSomewhere()
+        {
+            if (Side != SafetySide.None)
+            {
+                return true;
+            }
+
+            foreach (var over in PostSides)
+            {
+                if (over != null && over.Side != SafetySide.None)
+                {
+                    return true;
+                }
+            }
+
+            if ((Bota.Placement ?? BootPlacement.None) != BootPlacement.None)
+            {
+                return true;
+            }
+
+            foreach (var post in Bota.Posts)
+            {
+                if (post != null && post.Placement != BootPlacement.None)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         /// <summary>True cuando ESE poste tiene una decision propia de bota (propia o en la matriz historica).</summary>
         public bool HasOwnBootPlacement(int postIndex)
@@ -479,9 +552,13 @@ namespace RackCad.Domain.Systems.Selective
                 copy.SecondLoadFacePosts.Add(post);
             }
 
-            foreach (var post in PostsWithoutAutomaticBoot)
+            foreach (var face in BlankBootFaces)
             {
-                copy.PostsWithoutAutomaticBoot.Add(post);
+                if (face != null)
+                {
+                    copy.BlankBootFaces.Add(
+                        new BootBlankFace { PostIndex = face.PostIndex, AtHighEnd = face.AtHighEnd });
+                }
             }
 
             foreach (var post in PostSides)

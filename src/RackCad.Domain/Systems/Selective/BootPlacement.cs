@@ -69,11 +69,33 @@ namespace RackCad.Domain.Systems.Selective
             => placement == BootPlacement.EntryExit || placement == BootPlacement.Both;
 
         /// <summary>Si esa colocacion incluye la cara posterior.</summary>
+        /// <summary>
+        /// I-42 (S1D) — la colocacion que ocupa EXACTAMENTE las caras indicadas. Es la operacion inversa de
+        /// <see cref="IncludesEntryExit"/>/<see cref="IncludesRear"/>, y la que permite quitar UNA cara sin tocar la
+        /// otra: «Ambas» sin su cara de entrada es «Posterior», no «ninguna».
+        /// </summary>
+        public static BootPlacement Of(bool entryExit, bool rear)
+            => entryExit
+                ? (rear ? BootPlacement.Both : BootPlacement.EntryExit)
+                : (rear ? BootPlacement.Rear : BootPlacement.None);
+
         public static bool IncludesRear(BootPlacement placement)
             => placement == BootPlacement.Rear || placement == BootPlacement.Both;
     }
 
     /// <summary>La colocacion elegida para UN poste. Su ausencia en la lista significa «por defecto».</summary>
+    /// <summary>
+    /// I-42 (S1D) — una CARA que un frente en blanco dejo sin pasillo: el poste y cual de sus dos caras. Es la
+    /// unidad de la declaracion, y por eso el blanco de un lado no puede apagar la bota del otro.
+    /// </summary>
+    public sealed class BootBlankFace
+    {
+        public int PostIndex { get; set; }
+
+        /// <summary>True = la cara LEJANA de la linea, que en un compuesto es la del lado B.</summary>
+        public bool AtHighEnd { get; set; }
+    }
+
     public sealed class BootPostPlacement
     {
         public int PostIndex { get; set; }
