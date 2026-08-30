@@ -144,6 +144,23 @@
                         </StackPanel>
                     </Grid>
 
+                    <!-- I-42 (ronda 7): la DEFENSA DE MONTACARGAS por lado. Un rack compuesto tiene dos pasillos y
+                         cada uno se decide por separado. Es INTENCION: donde puede materializarse lo sigue
+                         decidiendo la fisica (solo en una cara de ataque real, nunca en la interfaz). -->
+                    <TextBlock Text="Defensa de montacargas" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="DefenseSideACheck" Content="Lado A" Margin="0,0,16,4"
+                                  Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                  Checked="DefenseSide_Changed" Unchecked="DefenseSide_Changed"
+                                  ToolTipService.ShowOnDisabled="True"
+                                  ToolTip="Defensa en el pasillo del lado A. Solo se dibuja donde exista una cara de carga real." />
+                        <CheckBox x:Name="DefenseSideBCheck" Content="Lado B" Margin="0,0,0,4"
+                                  Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                  Checked="DefenseSide_Changed" Unchecked="DefenseSide_Changed"
+                                  ToolTipService.ShowOnDisabled="True"
+                                  ToolTip="Defensa en el pasillo del lado B. Solo se dibuja donde exista una cara de carga real." />
+                    </StackPanel>
+
                     <!-- I-42 (ronda post-82e918b): aqui vivia «Frente presente en este lado», y competia con «En
                          blanco» por la MISMA decision — uno quitaba cabeceras donde no debia y el otro no. Ahora la
                          autoridad visible es una sola: la casilla «En blanco» de la cabecera de cada columna de la

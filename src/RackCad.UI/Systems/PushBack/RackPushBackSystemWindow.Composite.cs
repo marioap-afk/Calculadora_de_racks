@@ -184,6 +184,24 @@ namespace RackCad.UI.Systems.PushBack
             RequestRecompute();
         }
 
+        /// <summary>
+        /// I-42 (ronda 7) — la DEFENSA por lado. Cada casilla escribe SU lado y no toca el otro: son dos
+        /// intenciones independientes. La primera vez declara las dos, tomando para la que no se toco lo que el rack
+        /// dibuja hoy, para que el documento no quede a medias.
+        /// </summary>
+        private void DefenseSide_Changed(object sender, RoutedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            var side = ReferenceEquals(sender, DefenseSideBCheck) ? PushBackSide.B : PushBackSide.A;
+            var box = side == PushBackSide.B ? DefenseSideBCheck : DefenseSideACheck;
+            composite.SetDefenseSide(side, box.IsChecked == true);
+            RequestRecompute();
+        }
+
         // ---- Topologia por celda ------------------------------------------------------------------------------
 
         private void ApplyTopology_Click(object sender, RoutedEventArgs e)
@@ -642,6 +660,13 @@ namespace RackCad.UI.Systems.PushBack
                 SideSelectorBox.SelectedIndex = (int)composite.ActiveSelection;
                 GapBox.SetNumber(composite.Gap);
                 CentralSeparatorCheck.IsChecked = composite.CentralSeparator;
+
+                // I-42 (ronda 7): sin intencion declarada, las dos casillas muestran lo que el rack dibuja hoy —la
+                // seleccion global— y no escriben nada hasta que el usuario las toca. El lado B solo se ofrece
+                // cuando el rack lo tiene.
+                DefenseSideACheck.IsChecked = composite.DefenseSide(PushBackSide.A);
+                DefenseSideBCheck.IsChecked = composite.SideBPresent && composite.DefenseSide(PushBackSide.B);
+                DefenseSideBCheck.IsEnabled = composite.SideBPresent;
                 var stored = composite.StructureOverride(composite.ActiveSide);
                 StructureOverrideBox.SetNumber(stored.HasValue ? (double?)stored.Value : null);
 

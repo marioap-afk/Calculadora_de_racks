@@ -390,13 +390,16 @@ namespace RackCad.Application.Systems.Dynamic
                 //
                 // La estructura declara ese tramo interior; el Dinamico no declara ninguno y dibuja igual que
                 // siempre.
-                if (setting.DrawsExit && !system.IsInteriorFace(rangeStart))
+                // I-42 (ronda 7) — dos filtros SEPARADOS y en este orden: la INTENCION del usuario sobre esa cara
+                // (AcceptsDefenseAt) y la FISICA de que la cara exista (IsInteriorFace, ronda 6D). Una intencion
+                // sobre una cara inexistente no dibuja nada y no se traslada a ninguna otra.
+                if (setting.DrawsExit && system.AcceptsDefenseAt(atEnd: false) && !system.IsInteriorFace(rangeStart))
                 {
                     target.Add(Piece(selection.ElementId, block, view,
                         new Point2D(rangeStart + offset.X, y), false, false, setting.ExitLength));
                 }
 
-                if (setting.DrawsEntrance && !system.IsInteriorFace(rangeEnd))
+                if (setting.DrawsEntrance && system.AcceptsDefenseAt(atEnd: true) && !system.IsInteriorFace(rangeEnd))
                 {
                     target.Add(Piece(selection.ElementId, block, view,
                         new Point2D(rangeEnd - offset.X, y), true, false, setting.EntranceLength));
