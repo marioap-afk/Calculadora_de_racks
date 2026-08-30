@@ -82,7 +82,7 @@ namespace RackCad.UI.Tests
 
                     // Drive the REAL button: the handler reads the dialog's RESULT, authorizes it and recomputes.
                     w.SafetyDialog = _ => chosen;
-                    w.RearTopeDialog = _ => null;   // leave the tope untouched in this test
+                    w.RearTopeDialog = (_, __) => null;   // leave the tope untouched in this test
                     EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
 
                     // The window's stored selections are now exactly the authorized chosen ones...
@@ -132,7 +132,7 @@ namespace RackCad.UI.Tests
                     }
 
                     w.SafetyDialog = _ => excluded;
-                    w.RearTopeDialog = _ => null;
+                    w.RearTopeDialog = (_, __) => null;
                     EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
 
                     // The authority stripped every one of them on the real path.
@@ -165,7 +165,7 @@ namespace RackCad.UI.Tests
 
                     var topeDialogOpened = false;
                     w.SafetyDialog = _ => null;                     // cancelled
-                    w.RearTopeDialog = _ => { topeDialogOpened = true; return null; };
+                    w.RearTopeDialog = (_, __) => { topeDialogOpened = true; return null; };
                     EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
 
                     Assert.False(topeDialogOpened, "cancelling safety must abandon the whole Seguridad step");
@@ -195,7 +195,7 @@ namespace RackCad.UI.Tests
                     var offBefore = w.State.RearTopeConfig().OffCells.Count;
 
                     w.SafetyDialog = _ => new[] { new SelectiveSafetySelection { ElementId = bota.Id, Quantity = 3 } };
-                    w.RearTopeDialog = _ => null;                   // only the TOPE dialog is cancelled
+                    w.RearTopeDialog = (_, __) => null;                   // only the TOPE dialog is cancelled
                     EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
 
                     // The safety the user accepted survives...
@@ -224,7 +224,7 @@ namespace RackCad.UI.Tests
 
                     // Owner decision (2026-07-24, final): the tope grid opens ONLY from its own visible button inside
                     // the safety dialog. The safety seam stands in for the user pressing that button and then Aceptar.
-                    w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult
+                    w.RearTopeDialog = (_, __) => new SafetyTopeGridWindow.TopeResult
                     {
                         Saque = 4.75,
                         OffCells = { new SelectiveGridCell { Frente = 0, Level = 0 } }

@@ -1335,7 +1335,7 @@ namespace RackCad.UI.Systems.PushBack
         /// Test seam for the REAR-TOPE dialog: given the projected config, returns the dialog's result, or NULL when it
         /// was cancelled. Default = show the real shared <see cref="SafetyTopeGridWindow"/>.
         /// </summary>
-        internal Func<PushBackRearTopeConfig, SafetyTopeGridWindow.TopeResult> RearTopeDialog;
+        internal Func<PushBackRearTopeConfig, IReadOnlyList<int>, SafetyTopeGridWindow.TopeResult> RearTopeDialog;
 
         /// <summary>
         /// PB-002 (I-32) — the desviador grid's level count PER POST: the canonical "tallest adjacent front owns the
@@ -2381,7 +2381,10 @@ namespace RackCad.UI.Systems.PushBack
             var composed = new StackPanel();
             var topeSection = new PushBackRearTopeSection(
                 composite.SideBPresent ? composite.Of(PushBackSide.A).RearTopeConfig() : state.RearTopeConfig(),
-                OpenRearTopeDialog,
+                // I-42 (ronda 7C, defecto del dueño) — CADA seccion abre su rejilla con los niveles de SU lado. Antes
+                // las dos leian el lado ACTIVO, asi que un frente en blanco en A salia tambien en blanco en B aunque
+                // B existiera: el blanco de un lado es del lado, no del rack.
+                config => OpenRearTopeDialog(PushBackSide.A, config),
                 catalog,
                 composite.SideBPresent ? "A" : null);
             RearTopeSectionForTest = topeSection;
@@ -2391,7 +2394,10 @@ namespace RackCad.UI.Systems.PushBack
             if (composite.SideBPresent)
             {
                 topeSectionB = new PushBackRearTopeSection(
-                    composite.Of(PushBackSide.B).RearTopeConfig(), OpenRearTopeDialog, catalog, "B");
+                    composite.Of(PushBackSide.B).RearTopeConfig(),
+                    config => OpenRearTopeDialog(PushBackSide.B, config),
+                    catalog,
+                    "B");
                 composed.Children.Add(topeSectionB.View);
             }
 
@@ -2442,13 +2448,19 @@ namespace RackCad.UI.Systems.PushBack
         internal PushBackRearTopeSection RearTopeSectionBForTest { get; private set; }
 
         /// <summary>Opens the shared tope grid for <paramref name="config"/>; NULL when cancelled.</summary>
-        private SafetyTopeGridWindow.TopeResult OpenRearTopeDialog(PushBackRearTopeConfig config)
-            => RearTopeDialog != null
-                ? RearTopeDialog(config)
-                : ShowRearTopeDialog(
-                    config,
-                    PushBackRearTopeDialogAdapter.LevelsPerFrente(
-                        state.Structure.EffectiveLevelCounts(), allowBlankFronts: true));
+        private SafetyTopeGridWindow.TopeResult OpenRearTopeDialog(PushBackSide side, PushBackRearTopeConfig config)
+        {
+            var levels = RearTopeLevels(side);
+            return RearTopeDialog != null ? RearTopeDialog(config, levels) : ShowRearTopeDialog(config, levels);
+        }
+
+        /// <summary>
+        /// Los niveles por frente con los que se abre la rejilla del tope de <paramref name="side"/> — los de ESE
+        /// lado, incluidos sus ceros. Un frente en blanco en A no tiene por que estarlo en B, y al reves.
+        /// </summary>
+        internal IReadOnlyList<int> RearTopeLevels(PushBackSide side)
+            => PushBackRearTopeDialogAdapter.LevelsPerFrente(
+                composite.Of(side).Structure.EffectiveLevelCounts(), allowBlankFronts: true);
 
         /// <summary>Shows the real shared safety dialog; NULL when the user cancelled.</summary>
         private IReadOnlyList<SelectiveSafetySelection> ShowSafetyDialog(
@@ -2473,8 +2485,17 @@ namespace RackCad.UI.Systems.PushBack
             {
                 Owner = this
             };
-            return dialog.ShowDialog() == true ? dialog.Result : null;
+            var accepted = SafetyWindowDialog != null ? SafetyWindowDialog(dialog) : dialog.ShowDialog();
+            return accepted == true ? dialog.Result : null;
         }
+
+        /// <summary>
+        /// I-42 (ronda 7C) — seam de prueba de «Elementos de seguridad». Sustituye UNICAMENTE el <c>ShowDialog</c>:
+        /// la ventana que recibe es la REAL, construida con los mismos argumentos que ve el usuario. Con el, una
+        /// prueba recorre la ruta entera —esta ventana, la rejilla por poste, el commit, el resolve y el dibujo—
+        /// en vez de sustituir la ventana por un delegado, que es justo lo que ocultaba el defecto.
+        /// </summary>
+        internal Func<SelectiveSafetyWindow, bool?> SafetyWindowDialog;
 
         /// <summary>Shows the real shared tope-grid dialog; NULL when the user cancelled.</summary>
         private SafetyTopeGridWindow.TopeResult ShowRearTopeDialog(PushBackRearTopeConfig config, IReadOnlyList<int> levels)

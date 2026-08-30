@@ -240,10 +240,44 @@ namespace RackCad.UI
                     entranceAuto.Unchecked += (_, __) => entranceLength.IsEnabled = entrance.IsChecked == true;
                 }
 
-                exit.Checked += (_, __) => exitLength.IsEnabled = exitAuto?.IsChecked != true;
-                exit.Unchecked += (_, __) => exitLength.IsEnabled = false;
-                entrance.Checked += (_, __) => entranceLength.IsEnabled = entranceAuto?.IsChecked != true;
-                entrance.Unchecked += (_, __) => entranceLength.IsEnabled = false;
+                // I-42 (ronda 7C, defecto del dueño) — LA CASILLA ES EL ON/OFF, y tocarla saca a ese extremo del
+                // automatico. Antes no: la casilla solo habilitaba el cuadro de longitud, el «Auto» seguia marcado y
+                // el resultado se descartaba entero mas abajo, asi que apagar un poste desde la ventana real no
+                // cambiaba nada en el rack. Que el «Auto» se desmarque solo deja la decision A LA VISTA en el mismo
+                // gesto; quien la escribe es OnOk, que no depende de este manejador.
+                exit.Checked += (_, __) =>
+                {
+                    if (exitAuto != null) { exitAuto.IsChecked = false; }
+                    if (!UiSupport.TryNum(exitLength.Text, out var typed) || typed <= 0.0)
+                    {
+                        // Encender un extremo cuyo automatico es CERO —el lado alto de un Push Back— dejaba un cero
+                        // en el cuadro y la unica respuesta posible era el error de validacion. Se propone la
+                        // longitud que la regla da para este poste, que es la que el usuario venia a poner.
+                        exitLength.Text = SeedLength(defaults).ToString("0.##", CultureInfo.InvariantCulture);
+                    }
+
+                    exitLength.IsEnabled = true;
+                };
+                exit.Unchecked += (_, __) =>
+                {
+                    if (exitAuto != null) { exitAuto.IsChecked = false; }
+                    exitLength.IsEnabled = false;
+                };
+                entrance.Checked += (_, __) =>
+                {
+                    if (entranceAuto != null) { entranceAuto.IsChecked = false; }
+                    if (!UiSupport.TryNum(entranceLength.Text, out var typed) || typed <= 0.0)
+                    {
+                        entranceLength.Text = SeedLength(defaults).ToString("0.##", CultureInfo.InvariantCulture);
+                    }
+
+                    entranceLength.IsEnabled = true;
+                };
+                entrance.Unchecked += (_, __) =>
+                {
+                    if (entranceAuto != null) { entranceAuto.IsChecked = false; }
+                    entranceLength.IsEnabled = false;
+                };
 
                 Grid.SetRow(label, postIndex + 1);
                 Grid.SetColumn(label, 0);
@@ -270,7 +304,8 @@ namespace RackCad.UI
                     table.Children.Add(entranceAuto);
                 }
 
-                rows.Add(new Row(postIndex, exit, exitLength, entrance, entranceLength, exitAuto, entranceAuto));
+                rows.Add(new Row(postIndex, exit, exitLength, entrance, entranceLength, exitAuto, entranceAuto,
+                    setting.DrawsExit, setting.DrawsEntrance));
             }
 
             content.Children.Add(table);
@@ -281,6 +316,16 @@ namespace RackCad.UI
             });
             Content = root;
         }
+
+        /// <summary>
+        /// La longitud que se propone al ENCENDER un extremo que estaba apagado: la que la regla da para ese poste
+        /// (12" en orilla, 36" en intermedio). En el extremo alto de un Push Back el automatico es cero —esa es la
+        /// regla PB-009—, asi que se toma la del extremo bajo, que es la misma regla por poste.
+        /// </summary>
+        private static double SeedLength(DynamicForkliftDefenseSetting defaults)
+            => defaults.ExitLength > 0.0
+                ? defaults.ExitLength
+                : (defaults.EntranceLength > 0.0 ? defaults.EntranceLength : DynamicForkliftDefensePlan.EdgeLength);
 
         private static void AddHeader(Grid table, string text, int column)
         {
@@ -303,6 +348,22 @@ namespace RackCad.UI
         /// <summary>Runs the real OK path without a modal window (test seam; the tests cannot set DialogResult).</summary>
         internal void BuildResultForTest() => OnOk(this, null);
 
+        /// <summary>
+        /// I-42 (ronda 7C) — la casilla ON/OFF del extremo BAJO de un poste (seam de prueba). La rejilla se
+        /// construye en codigo y sus controles no llevan x:Name, asi que una prueba que quiera hacer EL GESTO DEL
+        /// USUARIO —marcar o desmarcar esa casilla, con sus manejadores reales— necesita llegar a ella.
+        /// </summary>
+        internal CheckBox ExitCheckForTest(int postIndex) => rows[postIndex].Exit;
+
+        /// <summary>La casilla ON/OFF del extremo ALTO de un poste (seam de prueba).</summary>
+        internal CheckBox EntranceCheckForTest(int postIndex) => rows[postIndex].Entrance;
+
+        /// <summary>La casilla «Auto» del extremo BAJO, o null cuando la rejilla no las ofrece (seam de prueba).</summary>
+        internal CheckBox ExitAutoForTest(int postIndex) => rows[postIndex].ExitAuto;
+
+        /// <summary>La casilla «Auto» del extremo ALTO, o null cuando la rejilla no las ofrece (seam de prueba).</summary>
+        internal CheckBox EntranceAutoForTest(int postIndex) => rows[postIndex].EntranceAuto;
+
         private void OnOk(object sender, RoutedEventArgs e)
         {
             // I-39D: el diagnostico se limpia al REVALIDAR. Antes se escribia y no se borraba nunca, asi que un
@@ -313,8 +374,14 @@ namespace RackCad.UI
             foreach (var row in rows)
             {
                 var defaultSetting = DynamicForkliftDefensePlan.At(null, row.PostIndex, postCount, lowEndOnly);
-                var exitAuto = row.ExitAuto?.IsChecked == true;
-                var entranceAuto = row.EntranceAuto?.IsChecked == true;
+                // I-42 (ronda 7C) — un extremo cuya CASILLA cambio respecto de lo que la fila mostro ya no es
+                // automatico, marque lo que marque «Auto»: el usuario acaba de decidir ese extremo. Sin esto, una
+                // fila automatica cuyo ON/OFF se apagaba seguia siendo «todo automatico», se descartaba aqui mismo
+                // y el rack no cambiaba — que es exactamente el defecto que el dueño reporto.
+                var exitToggled = (row.Exit.IsChecked == true) != row.ExitWasDrawn;
+                var entranceToggled = (row.Entrance.IsChecked == true) != row.EntranceWasDrawn;
+                var exitAuto = row.ExitAuto?.IsChecked == true && !exitToggled;
+                var entranceAuto = row.EntranceAuto?.IsChecked == true && !entranceToggled;
                 if (exitAuto && entranceAuto)
                 {
                     continue;   // fully automatic == no record; the plan computes both ends from the current rack
@@ -385,8 +452,12 @@ namespace RackCad.UI
                 CheckBox entrance,
                 TextBox entranceLength,
                 CheckBox exitAuto = null,
-                CheckBox entranceAuto = null)
+                CheckBox entranceAuto = null,
+                bool exitWasDrawn = false,
+                bool entranceWasDrawn = false)
             {
+                ExitWasDrawn = exitWasDrawn;
+                EntranceWasDrawn = entranceWasDrawn;
                 PostIndex = postIndex;
                 Exit = exit;
                 ExitLength = exitLength;
@@ -403,6 +474,12 @@ namespace RackCad.UI
             public TextBox EntranceLength { get; }
             public CheckBox ExitAuto { get; }
             public CheckBox EntranceAuto { get; }
+
+            /// <summary>Lo que la fila MOSTRO al abrirse. Comparar contra esto es lo que distingue «el usuario tocó
+            /// la casilla» de «la fila esta como la pinto la regla», sin adivinar por el numero.</summary>
+            public bool ExitWasDrawn { get; }
+
+            public bool EntranceWasDrawn { get; }
         }
     }
 }

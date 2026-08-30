@@ -183,7 +183,7 @@ namespace RackCad.UI
 
             var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 12, 0, 0) };
             var ok = new Button { Style = TryFindResource("PrimaryButtonStyle") as Style, Content = "Aceptar", Padding = new Thickness(16, 3, 16, 3), IsDefault = true, Margin = new Thickness(0, 0, 8, 0) };
-            ok.Click += (s, e) => OnOk();
+            ok.Click += (s, e) => OnOk(modal: true);
             var cancel = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Cancelar", Padding = new Thickness(10, 3, 10, 3), IsCancel = true };
             buttons.Children.Add(ok);
             buttons.Children.Add(cancel);
@@ -591,12 +591,27 @@ namespace RackCad.UI
         private static string GuiaLabel(Row row)
             => row.GuiaConfigured ? "Configurada ✓…" : "Todos los niveles…";
 
+        /// <summary>
+        /// I-42 (ronda 7C) — seam de prueba de la rejilla POR POSTE. Sustituye UNICAMENTE el <c>ShowDialog</c>: la
+        /// ventana que recibe es la real, ya construida con los mismos argumentos que ve el usuario, asi que una
+        /// prueba recorre el camino completo —esta ventana, su rejilla, su OnOk— y no una maqueta.
+        /// </summary>
+        internal Func<SafetyDefensaGridWindow, bool?> DefensaDialog;
+
+        /// <summary>El boton de la fila de DEFENSA (seam de prueba); null si no se ofrece.</summary>
+        internal Button DefensaButtonForTest
+            => rows.Select(row => row.DefensaButton).FirstOrDefault(button => button != null);
+
+        /// <summary>Runs the real OK path without a modal window (test seam; a test cannot set DialogResult).</summary>
+        internal void BuildResultForTest() => OnOk(modal: false);
+
         private void EditDefensa(Row row)
         {
             var dialog = new SafetyDefensaGridWindow(
                 SelectedElementLabel(row), postCount, row.DefensaPosts,
                 lowEndOnly: defensaLowEndOnly, autoPerEnd: defensaLowEndOnly) { Owner = this };
-            if (dialog.ShowDialog() != true)
+            var accepted = DefensaDialog != null ? DefensaDialog(dialog) : dialog.ShowDialog();
+            if (accepted != true)
             {
                 return;
             }
@@ -711,7 +726,7 @@ namespace RackCad.UI
             }
         }
 
-        private void OnOk()
+        private void OnOk(bool modal)
         {
             var result = new List<SelectiveSafetySelection>();
             foreach (var row in rows)
@@ -893,7 +908,12 @@ namespace RackCad.UI
             }
 
             Result = result;
-            DialogResult = true;
+            // I-42 (ronda 7C): una prueba no puede fijar DialogResult sin ShowDialog, y el resto del OnOk —el
+            // que arma Result— es justo el que hay que recorrer de verdad.
+            if (modal)
+            {
+                DialogResult = true;
+            }
         }
     }
 

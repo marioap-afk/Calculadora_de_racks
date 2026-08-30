@@ -270,7 +270,7 @@ namespace RackCad.Application.Systems.PushBack
                          .Where(placement => levels == null || levels.Contains(placement.LevelNumber)))
             {
                 var levelIndex = placement.LevelNumber - 1;
-                if (!rearTope.At(frontIndex, levelIndex))
+                if (!rearTope.Draws(frontIndex, levelIndex))
                 {
                     continue; // this cell's rear tope is deactivated
                 }

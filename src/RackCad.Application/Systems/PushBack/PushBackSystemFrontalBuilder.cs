@@ -193,7 +193,7 @@ namespace RackCad.Application.Systems.PushBack
                     result.Add(redondo);
 
                     // Rear tope only for a MATCHED, active cell, placed by the canonical Selective rule (rise + snap).
-                    if (!string.IsNullOrWhiteSpace(topeBlock) && level >= 0 && rearTope.At(frontIndex, level)
+                    if (!string.IsNullOrWhiteSpace(topeBlock) && level >= 0 && rearTope.Draws(frontIndex, level)
                         && topeAnchor.HasValue)
                     {
                         // Owner clarification (2026-07-25): the tope block mates by its ORIGIN, so its insertion sits on

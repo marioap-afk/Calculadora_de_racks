@@ -174,7 +174,7 @@ namespace RackCad.Application.Systems.PushBack
                 }
 
                 var tope = run.Source.RearTope ?? new PushBackRearTopeConfig();
-                if (!tope.At(run.SourceFrontIndex, run.SourceLevel - 1))
+                if (!tope.Draws(run.SourceFrontIndex, run.SourceLevel - 1))
                 {
                     continue;
                 }
@@ -382,7 +382,7 @@ namespace RackCad.Application.Systems.PushBack
                 var front = structure.Fronts[frontIndex];
                 for (var level = 0; level < DynamicFrontActivation.EffectiveLoadLevels(front); level++)
                 {
-                    if (!rearTope.At(frontIndex, level))
+                    if (!rearTope.Draws(frontIndex, level))
                     {
                         continue;
                     }

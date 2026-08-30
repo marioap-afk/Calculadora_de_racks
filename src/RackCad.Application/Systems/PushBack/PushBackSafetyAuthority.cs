@@ -174,21 +174,20 @@ namespace RackCad.Application.Systems.PushBack
             // the BOM, and the lateral guard's adaptive rule put a guard on the last post's far face.
             //
             // It is a DEFAULT, not a prohibition: an end the user explicitly set is honoured, which is why the stored
-            // entrance lengths are no longer wiped. What IS cleared is the AUTO flag of that end — an automatic far end
-            // has no meaning here and would resolve back to 12/36.
+            // entrance lengths are no longer wiped.
             selection.LowEndOnly = true;
 
             // PB-002 (I-32): the desviador grid Push Back shows has one column per POST, so its off-cells are keyed by
             // post. Marking the selection is what makes the frontal, the planta and the BOM read the same cell the
             // lateral does — before this they collapsed the last two columns with a Math.Min onto the last front.
             selection.DesviadorCellsAreByPost = true;
-            foreach (var post in selection.DefensaPosts)
-            {
-                if (post != null)
-                {
-                    post.EntranceAuto = false;
-                }
-            }
+
+            // I-42 (ronda 7C) — el extremo LEJANO conserva su marca de automatico. Aqui se le borraba, porque
+            // «un extremo lejano automatico no significa nada y volveria a 12/36»: eso era cierto antes de que
+            // PB-009 llegara al plan, pero hoy <see cref="DynamicForkliftDefensePlan"/> ya resuelve el automatico
+            // lejano a CERO en cuanto la seleccion lleva LowEndOnly, asi que borrarlo no defiende de nada — y en un
+            // rack COMPUESTO, donde ese extremo es un pasillo de verdad (6D), lo convertia en un cero explicito.
+            // El efecto se veia al apagar un poste y volver a encenderlo: la cara lejana no volvia.
         }
     }
 }

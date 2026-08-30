@@ -150,7 +150,7 @@ namespace RackCad.UI.Tests
                 var w = Shown();
                 try
                 {
-                    w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult
+                    w.RearTopeDialog = (_, __) => new SafetyTopeGridWindow.TopeResult
                     {
                         Saque = 4.0,
                         OffCells = { new SelectiveGridCell { Frente = 0, Level = 0 } }
@@ -187,7 +187,7 @@ namespace RackCad.UI.Tests
                 try
                 {
                     var topeDialogOpened = 0;
-                    w.RearTopeDialog = _ => { topeDialogOpened++; return null; };
+                    w.RearTopeDialog = (_, __) => { topeDialogOpened++; return null; };
                     w.SafetyDialog = _ => Array.Empty<SelectiveSafetySelection>();   // accepted, button never pressed
 
                     EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
@@ -211,7 +211,7 @@ namespace RackCad.UI.Tests
                     var offBefore = w.State.RearTopeConfig().OffCells.Count;
 
                     // Even if the user edited the stop in the section, cancelling the MAIN dialog discards it.
-                    w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult
+                    w.RearTopeDialog = (_, __) => new SafetyTopeGridWindow.TopeResult
                     {
                         Saque = 9.0,
                         OffCells = { new SelectiveGridCell { Frente = 0, Level = 0 } }
@@ -303,7 +303,7 @@ namespace RackCad.UI.Tests
                     var saqueB = w.CompositeState.Of(PushBackSide.B).RearTopeSaque;
 
                     // Solo la seccion de A abre su rejilla y cambia su SAQUE.
-                    w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult { Saque = 7.0 };
+                    w.RearTopeDialog = (_, __) => new SafetyTopeGridWindow.TopeResult { Saque = 7.0 };
                     w.SafetyDialog = selections =>
                     {
                         w.RearTopeSectionForTest.Configure();
@@ -329,7 +329,7 @@ namespace RackCad.UI.Tests
                 {
                     var saqueA = w.CompositeState.Of(PushBackSide.A).RearTopeSaque;
 
-                    w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult { Saque = 5.0 };
+                    w.RearTopeDialog = (_, __) => new SafetyTopeGridWindow.TopeResult { Saque = 5.0 };
                     w.SafetyDialog = selections =>
                     {
                         w.RearTopeSectionBForTest.Configure();
@@ -356,7 +356,7 @@ namespace RackCad.UI.Tests
                     var saqueA = w.CompositeState.Of(PushBackSide.A).RearTopeSaque;
                     var saqueB = w.CompositeState.Of(PushBackSide.B).RearTopeSaque;
 
-                    w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult { Saque = 11.0 };
+                    w.RearTopeDialog = (_, __) => new SafetyTopeGridWindow.TopeResult { Saque = 11.0 };
                     w.SafetyDialog = _ =>
                     {
                         w.RearTopeSectionForTest.Configure();
@@ -381,7 +381,7 @@ namespace RackCad.UI.Tests
                 var w = Composite();
                 try
                 {
-                    w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult { Saque = 8.0 };
+                    w.RearTopeDialog = (_, __) => new SafetyTopeGridWindow.TopeResult { Saque = 8.0 };
                     w.SafetyDialog = selections =>
                     {
                         w.RearTopeSectionForTest.Configure();

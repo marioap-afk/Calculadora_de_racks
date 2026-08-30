@@ -800,6 +800,113 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-sextvicies. Ronda 7C: los tres defectos de la Owner Validation de 7B
+
+La ronda 7B tenia CI verde y su reorganizacion funcionaba, pero la Owner Validation encontro TRES defectos. Ninguno
+se ha corregido a ojo: de cada uno se reprodujo el sintoma, se midio la causa por la ruta real y se corrigio ahi.
+
+### Defecto 1 — un blanco de un lado ponia en blanco el otro
+
+**Sintoma.** Con un frente EN BLANCO en el lado A, ese mismo frente salia en blanco tambien en la seccion del lado B
+dentro de «Elementos de seguridad», aunque B existiera fisicamente ahi.
+
+**Causa, medida.** Las dos secciones abrian su rejilla con la MISMA lista de niveles, la del lado ACTIVO:
+
+| lado | `EffectiveLevelCounts` | lo que recibia su rejilla (antes) |
+|---|---|---|
+| A (activo, F2 en blanco) | `[3,0,3]` | `[3,0,3]` |
+| B (los tres frentes) | `[3,3,3]` | `[3,0,3]` ← el blanco de A |
+
+**Correccion.** Cada seccion abre con los niveles de SU lado (`RearTopeLevels(side)`), y el seam de prueba lleva esa
+lista para que una prueba vea exactamente lo que recibe la rejilla real. Ahora A recibe `[3,0,3]` y B `[3,3,3]`.
+Cambiar el lado activo no cambia ninguna de las dos: el activo es contexto, no autoridad. Y el blanco no compacta el
+indice del frente fisico —las dos rejillas siguen teniendo tres columnas—, asi que las dos hablan del mismo rack.
+
+### Defecto 2 — cambiar el ON/OFF por poste no cambiaba nada (BLOQUEANTE)
+
+**Sintoma.** Apagar o encender un poste desde la rejilla real no producia ningun cambio en el rack. El dueño rechazo
+de antemano cualquier prueba de nivel bajo como evidencia: el contrato por poste de 7B pasaba, luego el fallo estaba
+en el CABLEADO.
+
+**Traza, frontera por frontera.** Se recorrio el dato con la ventana real, no con delegados:
+
+| frontera | esperado | observado (antes) |
+|---|---|---|
+| rejilla: la fila del poste | casilla ON, «Auto» ON | igual |
+| gesto: apagar la casilla | el extremo pasa a ser del usuario | «Auto» sigue ON |
+| `SafetyDefensaGridWindow.OnOk` | escribe un registro | **descarta la fila entera** |
+| `SelectiveSafetyWindow.Result` | lleva el registro | sin registro |
+| `safetySelections` / diseño | idem | sin registro |
+| dibujo y BOM | una defensa menos | **identicos** |
+
+La causa es la tercera fila: una fila SIN registro nace automatica en los dos extremos, y `OnOk` descartaba toda fila
+con los dos «Auto» marcados —«todo automatico = ningun registro»— sin mirar la casilla. La casilla era un adorno.
+
+**Correccion.** La CASILLA es el ON/OFF y manda sobre «Auto»: un extremo cuya casilla cambio respecto de lo que la
+fila mostro deja de ser automatico, y se escribe. Apagado = longitud CERO explicita. Tocarla desmarca «Auto» en el
+acto, para que la decision se vea; y encender un extremo cuyo automatico era cero propone la longitud que la regla da
+para ese poste, en vez de dejar un cero que solo podia terminar en el error de validacion.
+
+**Medido por la ruta real**, con una linea base que recorre la misma ruta sin tocar nada:
+
+| paso | defensas en planta |
+|---|---|
+| linea base | 8 |
+| apagar el extremo bajo del poste 2 | 7 — falta exactamente `-4.75\|53.494` |
+| volver a encenderlo | 8 — identidad |
+
+Dibujo y BOM se mueven igual. Y la casilla aparece apagada al reabrir la rejilla: la decision existe tambien en la
+pantalla, no solo en el modelo.
+
+**Un segundo hallazgo, dentro del mismo defecto.** Al hacerlo visible salio a la luz que el viaje de ida y vuelta
+PERDIA la cara lejana: `PushBackSafetyAuthority.RestrictToLowEnd` borraba la marca de automatico del extremo lejano
+de todo registro. Se justificaba en que «un automatico lejano volveria a 12/36», y eso dejo de ser cierto en cuanto
+PB-009 llego al plan: hoy `DynamicForkliftDefensePlan` ya resuelve ese automatico a CERO por la marca `LowEndOnly`.
+Borrarlo no defendia de nada, y en un rack COMPUESTO —donde ese extremo es un pasillo de verdad (ronda 6D)— lo
+convertia en un cero explicito que ya no volvia. El borrado se retira; la defensa que imitaba la sigue dando la
+regla. Un rack de un solo sentido no cambia en nada, y un extremo lejano fijado A MANO se sigue honrando.
+
+### Defecto 3 — no existia «Ninguno»
+
+**Sintoma.** La unica forma de quitar el tope era apagar celda por celda, y despues no habia manera de leer la
+decision: la ausencia se confundia con «todavia no lo he tocado».
+
+**Correccion.** «Ninguno» es ahora una opcion EXPLICITA del mismo selector de tipo, siguiendo el patron visual que ya
+existia. Es del OBJETIVO de su seccion —en un compuesto hay una por lado, asi que elegirlo en A no dice nada de B—,
+se persiste como cualquier id y sobrevive a RACKEDITAR. La seccion lo DICE en su estado, sin abrir la rejilla.
+
+Los dos alcances conviven y ninguno pisa al otro: «Ninguno» resume el objetivo, la rejilla decide celda a celda. Por
+eso NO borra la mascara por celda, y volver a elegir una pieza devuelve exactamente las celdas que habia.
+
+La pregunta fisica pasa a ser `PushBackRearTopeConfig.Draws(frente, nivel)` = la mascara MAS la decision de objetivo,
+y la consumen los cinco sitios que materializan el tope —lateral, frontal, planta y las dos ramas del BOM—, para que
+dibujo y lista no puedan discrepar. El EDITOR sigue leyendo `At`, que es lo que hace la decision reversible.
+
+### Las pruebas recorren la ruta REAL
+
+El dueño rechazo la evidencia de nivel bajo, asi que las pruebas de la defensa conducen la ventana Push Back → la
+ventana real «Elementos de seguridad» → su rejilla real por poste → Aceptar → commit → resolve → primitiva y BOM. Lo
+unico que se sustituye es el `ShowDialog`, que una prueba no puede ejecutar: las ventanas y sus controles son los
+mismos que ve el usuario.
+
+### Lo que NO cambio
+
+Ningun golden se movio. Intactas: la fisica del tope (rondas 4B, 5 y 5D), StopA/StopB independientes, las alturas
+A/B (6D), las cabeceras, las botas (6F), 27/27 (6A), I-40 e I-41. La suite de nucleo pasa entera y la de UI tambien.
+
+### PENDIENTES REGISTRADOS
+
+- **S1 — Safety general:** semantica global de Izquierda / Derecha / Ambas para las botas.
+- **V1 — View hygiene:** el lateral de una seccion dibuja la letra de un lado que no existe funcionalmente.
+- **V2 — Frontales:** una corrida full-span debe mostrar en la cara de salida el HIGH y el tope con semantica de
+  vista posterior.
+- **V3 — Planta / view hygiene:** auditoria de nearest-Y, deduplicacion y fail-open.
+- **NUEVO — la rejilla por poste y la segunda cara de carga:** en un rack compuesto, la columna del extremo ALTO se
+  pinta con la regla de un rack de un solo sentido, asi que muestra «apagado» en una linea cuyo pasillo lejano SI
+  lleva defensa. No pierde geometria —esta ronda cerro esa via—, pero la columna no dice toda la verdad. Requiere
+  llevar la segunda cara de carga por poste hasta la rejilla, que es un cambio de la semantica cerrada en 6D y no
+  esta autorizado en esta ronda.
+
 ## 4-quinquetvicies. Ronda 7 (auditoria conservada, diseño RECHAZADO) y ronda 7B: seguridad en su ventana
 
 ### Lo que la ronda 7 dejo, y lo que el dueño rechazo
