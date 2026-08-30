@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
+using RackCad.Application.Geometry;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
@@ -26,9 +27,61 @@ namespace RackCad.Application.Systems.PushBack
         private readonly PushBackIntermediateBeamLateralBuilder intermediateBuilder = new PushBackIntermediateBeamLateralBuilder();
         private readonly PushBackRearTopeBuilder rearTopeBuilder = new PushBackRearTopeBuilder();
 
-        public HeaderRunPlan Build(PushBackSystem system, RackCatalog catalog) => BuildCore(system, catalog, -1);
+        public HeaderRunPlan Build(PushBackSystem system, RackCatalog catalog)
+            => WithResolvedBoots(BuildCore(system, catalog, -1), system, catalog, -1);
 
-        public HeaderRunPlan Build(PushBackSystem system, RackCatalog catalog, int postIndex) => BuildCore(system, catalog, postIndex);
+        public HeaderRunPlan Build(PushBackSystem system, RackCatalog catalog, int postIndex)
+            => WithResolvedBoots(BuildCore(system, catalog, postIndex), system, catalog, postIndex);
+
+        /// <summary>
+        /// I-42 (S1F) — LAS BOTAS DEL CORTE LATERAL, por la MISMA autoridad que la planta, los cortes frontales y
+        /// el BOM. Este corte mira la profundidad, asi que las cuatro caras de un rack compuesto caen en cuatro X
+        /// distintas; antes preguntaba por el extremo de la linea y solo sabia dibujar dos.
+        ///
+        /// <para>
+        /// La ALTURA y la vista son las que el pipeline compartido ya usaba: se toma de las piezas que se retiran,
+        /// que es lo unico que esta vista aporta y esta autoridad no conoce. Sin ninguna que retirar tampoco hay
+        /// ninguna que reponer.
+        /// </para>
+        /// </summary>
+        private const string LateralView = "LATERAL";
+
+        private static HeaderRunPlan WithResolvedBoots(
+            HeaderRunPlan plan, PushBackSystem system, RackCatalog catalog, int postIndex)
+        {
+            if (plan == null || system?.Structure == null || catalog == null)
+            {
+                return plan;
+            }
+
+            var drawn = plan.Flatten().Instances.Where(i => PushBackBootPlan.IsBoot(i, catalog)).ToList();
+            if (drawn.Count == 0)
+            {
+                return plan;
+            }
+
+            var stripped = PushBackBootPlan.Without(plan, catalog);
+            var loose = stripped.LooseInstances.ToList();
+            var y = drawn[0].Insertion.Y;
+
+            // Este corte COLAPSA el ancho: todas las lineas de postes se proyectan una sobre otra, asi que un plano
+            // de cara se dibuja UNA vez —como la planta colapsa los niveles—. Es una proyeccion de la vista, no una
+            // fusion de identidades: la planta y el BOM siguen contando cada pieza.
+            // Un corte POR LINEA muestra solo las de SU linea; el general las de todas, colapsadas por plano.
+            foreach (var plane in PushBackBootPlan.Resolve(system, catalog)
+                         .Where(boot => postIndex < 0 || boot.PostIndex == postIndex)
+                         .GroupBy(boot => (boot.PieceId, Math.Round(boot.FaceX, 4), boot.Mirrored))
+                         .Select(group => group.First()))
+            {
+                var block = CatalogLookup.Block(catalog, plane.PieceId, LateralView);
+                if (!string.IsNullOrWhiteSpace(block))
+                {
+                    loose.Add(PushBackBootPlan.Instance(plane, block, LateralView, new Point2D(plane.FaceX, y)));
+                }
+            }
+
+            return new HeaderRunPlan(stripped.Headers, loose);
+        }
 
         /// <summary>The lateral section at each transverse post, following the dynamic Cortes contract.</summary>
         public IReadOnlyList<DynamicLateralCorte> Cortes(PushBackSystem system, RackCatalog catalog)

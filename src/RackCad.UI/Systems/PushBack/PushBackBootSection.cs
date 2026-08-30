@@ -48,6 +48,11 @@ namespace RackCad.UI.Systems.PushBack
 
         /// <param name="side">El lado cuyos postes configura esta seccion.</param>
         /// <param name="sideLabel">La etiqueta del lado, o null en un rack de un solo sentido.</param>
+        /// <param name="automatic">
+        /// Lo que este lado hace cuando nadie ha elegido y el rack todavia no lo ha resuelto —la primera vez que se
+        /// abre la ventana, cuando aun no hay ninguna seleccion de bota—. Si la casilla mostrara otra cosa, elegir
+        /// justo lo que se ve no se registraria como decision y el rack dibujaria algo distinto de lo mostrado.
+        /// </param>
         /// <param name="current">La configuracion de ESE lado; la seccion trabaja sobre una COPIA.</param>
         /// <param name="legacyPosts">
         /// La MATRIZ HISTORICA por poste de un documento anterior a S1B, que guardaba la decision como lado. Se
@@ -60,7 +65,8 @@ namespace RackCad.UI.Systems.PushBack
             SelectiveBotaConfig current,
             int postCount,
             Func<PushBackBootSection, IReadOnlyList<BootPostPlacement>> openDialog,
-            IEnumerable<SafetyPostSide> legacyPosts = null)
+            IEnumerable<SafetyPostSide> legacyPosts = null,
+            BootPlacement automatic = BootPlacement.EntryExit)
         {
             Side = side;
             SideLabel = sideLabel;
@@ -74,7 +80,7 @@ namespace RackCad.UI.Systems.PushBack
             // «mostrar» no es «elegir»: mientras el usuario no la toque, el lado sigue heredando su automatico y no
             // se congela una decision que nadie tomo.
             Explicit = source.Placement.HasValue;
-            Placement = source.Placement ?? source.Automatic ?? BootPlacement.None;
+            Placement = source.Placement ?? source.Automatic ?? automatic;
             Posts = source.Posts
                 .Where(post => post != null && post.PostIndex >= 0 && post.PostIndex < PostCount)
                 .Select(post => new BootPostPlacement { PostIndex = post.PostIndex, Placement = post.Placement })

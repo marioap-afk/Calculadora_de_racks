@@ -800,6 +800,76 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 5-pre-octies. Ronda S1F: la identidad de una bota es LADO x CARA x LINEA
+
+S1E puso la intencion por lado y la autoridad unica, y se equivoco en una frase que el dueño corrigio: «la posterior
+de A y la entrada de B nombran la misma cara fisica». No lo son. Un rack compuesto tiene CUATRO caras identificables
+por linea de postes:
+
+```
+   exterior A        interior A   |   interior B        exterior B
+        |                 |       |        |                 |
+        |------- lado A --|  hueco |--- lado B --------------|
+   Entrada/Salida A   Posterior A   Posterior B   Entrada/Salida B
+```
+
+A termina en SU linea y B empieza en la suya. Con hueco CERO las dos interiores se tocan y siguen siendo dos piezas:
+el LADO rompe el empate de coordenadas, que es la regla que la ronda 6D ya cerro para la interfaz.
+
+### El error, medido
+
+La conversion de (lado, cara) a un unico eje global cercano/lejano ocurria ANTES de tener geometria, y ahi se perdian
+dos identidades. En un compuesto sin blancos:
+
+| eleccion | antes | ahora |
+|---|---|---|
+| A = Posterior | X=792.39 — **el pasillo de B** | X=396.39 — el interior de A |
+| B = Posterior | X=-0.39 — **el pasillo de A** | X=395.61 — el interior de B |
+| A = Ambas y B = Ambas | 2 piezas por linea | **4**, una por cara |
+
+Con hueco 12 las dos interiores caen en 396 y 408, separadas por el hueco; con hueco 0 caen en el mismo plano y
+siguen siendo dos piezas, dos identidades y dos anclas (396.39 y 395.61, cada una mirando hacia su lado).
+
+### El orden
+
+```
+intencion (lado + poste + cara) -> identidad fisica -> ancla -> transformacion de vista
+```
+
+Nunca al reves. La reflexion del lado B transforma coordenadas y mano; no toca la identidad. `ResolvedBoot` la lleva
+entera —lado, cara, linea, plano, ancla y mano— y los consumidores solo preguntan.
+
+### Los consumidores
+
+La PLANTA coloca cada pieza en la cara que protege. Los CUATRO CORTES se identifican por su lado y su extremo y se
+quedan con las piezas cuya identidad coincide: exterior A, interior A, interior B y exterior B, cada una en el suyo
+y en ninguno de los otros tres. El BOM cuenta por IDENTIDAD, nunca por posicion, asi que con hueco cero no se pierde
+ninguna. El LATERAL, que colapsa el ancho, dibuja un plano de cara UNA vez —como la planta colapsa los niveles—, y un
+corte por linea muestra solo la suya.
+
+### Lo que no cambia
+
+La configuracion por lado, la precedencia (decision propia > blanco > general), el blanco por lado, la general
+«Ninguno» que no apaga la familia, la UI, la persistencia y el fallback legacy: intactos. No hizo falta ningun campo
+nuevo — S1E ya guardaba la intencion de cada lado, y el defecto estaba en la resolucion fisica.
+
+### Alcance
+
+Un golden movido: `lateral`, y por UNA pieza —la bota de la linea que empieza mas al fondo se dibuja en su propio
+plano (X=144) en vez de en el arranque de la seccion (X=0), que es donde la planta ya la ponia—. Planta, los dos
+frontales, el corte por linea y el BOM: idénticos. Tres contratos de prueba retargeteados: dos del blanco —«Ambas»
+en A son ahora sus dos caras, y la del lado B sigue ahi— y el de S1E que afirmaba el colapso rechazado.
+
+### Un hallazgo, registrado
+
+La casilla de una seccion mostraba «Ninguno» la PRIMERA vez que se abria la ventana —cuando aun no hay ninguna
+seleccion de bota— mientras el rack dibujaba su automatico. Elegir justo lo que se veia no quedaba registrado, y el
+resultado no coincidia con lo mostrado. Ahora la casilla muestra el automatico real de un lado que existe.
+
+### PENDIENTE
+
+Ninguno funcional conocido dentro del alcance de esta ronda.
+
 ## 5-pre-septies. Ronda S1E: las botas se configuran POR LADO, y hay UNA sola autoridad fisica
 
 S1D dejo cerrada la precedencia y el alcance del blanco, y con ello quedo a la vista la ambiguedad de fondo: habia

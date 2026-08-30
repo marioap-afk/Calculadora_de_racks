@@ -39,6 +39,17 @@ namespace RackCad.UI.Tests
             {
                 ((CheckBox)w.FindName("SideBPresentCheck")).IsChecked = true;
                 w.UpdateLayout();
+
+                // Un rack COMPUESTO de verdad: el lado B declarado Y con almacenamiento en cada frente. Sin esto el
+                // lado B no existe fisicamente y no puede llevar botas, por mucho que su seccion se ofrezca.
+                var matrix = w.CompositeState.Of(PushBackSide.B).Structure;
+                for (var front = 0; front < Math.Min(w.CompositeState.SlotCount, matrix.Count); front++)
+                {
+                    matrix.Fronts[front].IsActive = true;
+                }
+
+                w.State.SetFrontCount(fronts);   // el modelo cambio por fuera: se pide recalcular
+                w.UpdateLayout();
             }
 
             return w;

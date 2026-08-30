@@ -2521,7 +2521,10 @@ namespace RackCad.UI.Systems.PushBack
                 : (side == PushBackSide.B ? selection.BotaB : selection.Bota);
             return new PushBackBootSection(
                 side, sideLabel, config, postCount, OpenBootPerPostDialog,
-                side == PushBackSide.A ? selection?.PostSides : null);
+                side == PushBackSide.A ? selection?.PostSides : null,
+                // El automatico de un lado que EXISTE es proteger su pasillo; la seccion solo se construye para los
+                // lados que existen, asi que es lo que la casilla debe mostrar mientras nadie elija.
+                automatic: BootPlacement.EntryExit);
         }
 
         /// <summary>La seleccion de la familia BOTA dentro de <paramref name="selections"/>, o null.</summary>

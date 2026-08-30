@@ -462,7 +462,9 @@ namespace RackCad.Tests
                 Assert.Equal(LineBoots(automatic, other), LineBoots(overridden, other));
             }
 
-            Assert.Equal(2, LineBoots(overridden, line).Count);
+            // RETARGETEADO EN S1F: «Ambas» en el lado A son sus DOS caras —exterior e interior—, y son distintas de
+            // la del lado B, que en esa linea conserva su automatico. Tres piezas, tres identidades.
+            Assert.Equal(3, LineBoots(overridden, line).Count);
         }
 
         /// <summary>
@@ -1161,7 +1163,9 @@ namespace RackCad.Tests
             var line = BlankedLine();
 
             Assert.Single(LineBoots(Resolve(Blanked(), general: null), line));
-            Assert.Equal(2, LineBoots(Resolve(Blanked(), general: null, (2, BootPlacement.Both)), line).Count);
+
+            // RETARGETEADO EN S1F: las dos caras del lado A mas la del lado B, que sigue ahi.
+            Assert.Equal(3, LineBoots(Resolve(Blanked(), general: null, (2, BootPlacement.Both)), line).Count);
         }
 
         /// <summary>

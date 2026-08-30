@@ -41,6 +41,12 @@ namespace RackCad.Application.Systems.PushBack
                 .Select(Clone)
                 .ToList();
 
+            // I-42 (S1F) — LAS BOTAS las cuenta la resolucion fisica del rack, la misma que las dibuja. El BOM
+            // compartido las deducia de la planta con el modelo de dos extremos, que no sabe nombrar las dos caras
+            // interiores de un compuesto; y contarlas por coordenada fundiria dos piezas de lados distintos en
+            // cuanto el hueco es cero.
+            ReplaceBoots(components, system, catalog);
+
             // I-42: un rack COMPUESTO cuenta EJECUCIONES fisicas de cama, no celdas de una rejilla. Dos camas
             // encontradas son dos; una cama corrida es UNA, aunque atraviese los dos lados. La estructura ya viene
             // del BOM compartido de arriba —cabeceras, separadores (el central incluido, una sola vez), postes
@@ -434,5 +440,58 @@ namespace RackCad.Application.Systems.PushBack
             };
 
         private static double Round(double value) => Math.Round(value, 4);
+
+        /// <summary>
+        /// Sustituye las botas del BOM compartido por las de <see cref="PushBackBootPlan"/>: las mismas piezas
+        /// fisicas que el dibujo, contadas por IDENTIDAD —lado, cara y linea— y nunca por posicion.
+        /// </summary>
+        private static void ReplaceBoots(
+            ICollection<BomComponent> components, PushBackSystem system, RackCatalog catalog)
+        {
+            var bootIds = new HashSet<string>(
+                (catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>())
+                    .Where(entry => entry != null
+                                    && SelectiveSafetyDefaults.IsType(entry.Type, SelectiveSafetyDefaults.BotaType))
+                    .Select(entry => entry.Id),
+                StringComparer.OrdinalIgnoreCase);
+            if (bootIds.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var stale in components
+                         .Where(component => component?.ProfileId != null && bootIds.Contains(component.ProfileId))
+                         .ToList())
+            {
+                components.Remove(stale);
+            }
+
+            foreach (var group in PushBackBootPlan.Resolve(system, catalog)
+                         .GroupBy(boot => boot.PieceId, StringComparer.OrdinalIgnoreCase)
+                         .OrderBy(group => group.Key, StringComparer.Ordinal))
+            {
+                var label = catalog?.SafetyElements?.FirstOrDefault(entry =>
+                    string.Equals(entry?.Id, group.Key, StringComparison.OrdinalIgnoreCase))?.Label ?? group.Key;
+                components.Add(new BomComponent
+                {
+                    Category = SelectiveBomBuilder.Safety,
+                    ProfileId = group.Key,
+                    Description = label,
+                    Length = 0.0,
+                    Quantity = group.Count(),
+                    Pieces = new List<BomLine>
+                    {
+                        new BomLine
+                        {
+                            Category = SelectiveBomBuilder.Safety,
+                            ProfileId = group.Key,
+                            Description = label,
+                            Length = 0.0,
+                            Quantity = 1,
+                        },
+                    },
+                });
+            }
+        }
     }
 }

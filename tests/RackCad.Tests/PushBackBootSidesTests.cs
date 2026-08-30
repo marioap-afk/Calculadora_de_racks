@@ -18,8 +18,9 @@ namespace RackCad.Tests
     ///
     /// <para>
     /// Un Push Back compuesto tiene dos lados fisicos y cada uno tiene su propia intencion: su general y sus postes.
-    /// Las palabras se leen DENTRO del lado —la entrada/salida de A es la cara cercana del rack y la de B la
-    /// lejana—, asi que ninguna vista tiene que reinterpretar la eleccion en su marco.
+    /// Las palabras se leen DENTRO del lado —la entrada/salida de cada uno es SU pasillo y su posterior SU cara
+    /// interior—, asi que ninguna vista tiene que reinterpretar la eleccion en su marco. La identidad fisica que
+    /// resulta de esa lectura la cierra <see cref="PushBackBootIdentityTests"/> (S1F).
     /// </para>
     /// <para>
     /// <b>Lo que S1E corrige.</b> Con una sola configuracion global, «Entrada/Salida» significaba una cosa en la
@@ -212,23 +213,24 @@ namespace RackCad.Tests
         }
 
         /// <summary>
-        /// LADO y CARA son ejes distintos. La entrada de A y la posterior de B nombran la MISMA cara fisica —y son
-        /// UNA pieza—; la entrada de A y la de B nombran caras opuestas.
+        /// LADO y CARA son ejes distintos, y cada par nombra una cara fisica PROPIA. RETARGETEADO EN S1F: la version
+        /// de S1E afirmaba que la entrada de A y la posterior de B eran la misma pieza —la conversion a un eje
+        /// global cercano/lejano—, y el dueño lo rechazo: la posterior de B es SU cara interior, no el exterior de A.
         /// </summary>
         [Fact]
         public void BootConfig_SideAndFaceAreIndependentAxes()
         {
-            var same = new SelectiveSafetySelection { ElementId = BootId, BootSidesDeclared = true };
-            same.Bota.Placement = BootPlacement.EntryExit;
-            same.BotaB.Placement = BootPlacement.Rear;
-            Assert.True(same.BootFacesAt(0).Near);
-            Assert.False(same.BootFacesAt(0).Far);   // las dos piden la MISMA cara: una sola pieza
+            var system = Resolve(
+                State(4, true), SideIntent.Of(BootPlacement.EntryExit), SideIntent.Of(BootPlacement.Rear));
+            var line = Physical(system).Where(boot => boot.PostIndex == 1).ToList();
 
-            var opposite = new SelectiveSafetySelection { ElementId = BootId, BootSidesDeclared = true };
-            opposite.Bota.Placement = BootPlacement.EntryExit;
-            opposite.BotaB.Placement = BootPlacement.EntryExit;
-            Assert.True(opposite.BootFacesAt(0).Near);
-            Assert.True(opposite.BootFacesAt(0).Far);
+            Assert.Equal(2, line.Count);
+            Assert.Equal(2, line.Select(boot => boot.Identity).Distinct().Count());
+            Assert.Equal(0.0, line.Single(b => b.Side == PushBackSide.A).FaceX, 3);
+            Assert.Equal(
+                system.Structure.InteriorFaceEndX.Value,
+                line.Single(b => b.Side == PushBackSide.B).FaceX,
+                3);
         }
 
         [Fact]
@@ -278,9 +280,15 @@ namespace RackCad.Tests
         {
             var system = Resolve(State(4, true), SideIntent.Of(BootPlacement.Rear), SideIntent.Of(BootPlacement.None));
 
+            // RETARGETEADO EN S1F: la posterior de A es su cara INTERIOR, la que da a la interfaz — no el extremo
+            // lejano del rack, que es el pasillo de B.
             Assert.NotEmpty(Boots(system));
-            Assert.Equal(0, NearBoots(system));
-            Assert.All(Physical(system), boot => Assert.True(boot.AtHighEnd));
+            Assert.All(Physical(system), boot =>
+            {
+                Assert.Equal(PushBackSide.A, boot.Side);
+                Assert.Equal(BootFace.Rear, boot.Face);
+                Assert.Equal(system.Structure.InteriorFaceStartX.Value, boot.FaceX, 3);
+            });
         }
 
         [Fact]
@@ -308,9 +316,14 @@ namespace RackCad.Tests
         {
             var system = Resolve(State(4, true), SideIntent.Of(BootPlacement.None), SideIntent.Of(BootPlacement.Rear));
 
+            // RETARGETEADO EN S1F: la posterior de B es SU cara interior, no el extremo cercano del rack.
             Assert.NotEmpty(Boots(system));
-            Assert.Equal(0, FarBoots(system));   // la posterior de B es la cara CERCANA del rack
-            Assert.All(Physical(system), boot => Assert.False(boot.AtHighEnd));
+            Assert.All(Physical(system), boot =>
+            {
+                Assert.Equal(PushBackSide.B, boot.Side);
+                Assert.Equal(BootFace.Rear, boot.Face);
+                Assert.Equal(system.Structure.InteriorFaceEndX.Value, boot.FaceX, 3);
+            });
         }
 
         [Fact]
@@ -555,7 +568,7 @@ namespace RackCad.Tests
             {
                 Assert.Equal(PushBackSide.B, boot.Side);
                 Assert.Equal(BootFace.EntryExit, boot.Face);
-                Assert.True(boot.AtHighEnd);   // el pasillo de B es el extremo LEJANO del rack
+                Assert.Equal(system.Structure.TotalLength, boot.FaceX, 3);   // el pasillo de B, su exterior
             });
 
             Assert.Empty(Cut(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.A));

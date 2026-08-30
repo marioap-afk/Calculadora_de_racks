@@ -235,7 +235,16 @@ namespace RackCad.Tests
             // Solo se mueven los dos pines LATERALES: el frontal posterior ya media desde la derivada, la planta no
             // lleva elevacion y el BOM cuenta las mismas piezas con las mismas longitudes.
             // Anteriores: lateral/lateral-corte0 1272488B...
-            ["lateral"] = "523862527623A874B333E201A8CADF0774610E39CD496E352BF8A9B594760B69",
+            //
+            // I-42 (S1F) — se mueve UN pin, «lateral», y por UNA pieza. Este escenario tiene dos frentes con
+            // profundidades distintas (DepthStartPosition 1 y 4), asi que la linea 2 empieza en X=144 y no en 0.
+            // Su BOTA se dibujaba en X=0 —el corte general las llevaba todas al extremo de la seccion— y ahora se
+            // dibuja en el plano de la cara que protege, X=144, que es donde la planta ya la ponia (X=143.61 con la
+            // placa descontada). Pieza a pieza: `PROTECTOR_BOTA|0|False` se conserva (lineas 0 y 1, colapsadas en un
+            // plano) y se AÑADE `PROTECTOR_BOTA|144|False`. Ningun otro pin se mueve: planta, los dos frontales, el
+            // corte por linea y el BOM cuentan y colocan exactamente lo mismo.
+            // Anterior (S1E): lateral 52386252...
+            ["lateral"] = "C52D1D24364D1B61F749B14ACA72EED5F37CD6FE5D417BF3C69C4045E253C4A5",
             ["lateral-corte0"] = "523862527623A874B333E201A8CADF0774610E39CD496E352BF8A9B594760B69",
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's

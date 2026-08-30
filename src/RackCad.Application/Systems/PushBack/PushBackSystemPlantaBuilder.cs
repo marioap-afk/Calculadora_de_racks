@@ -24,6 +24,36 @@ namespace RackCad.Application.Systems.PushBack
         private readonly DynamicSystemPlantaBuilder dynamicBuilder = new DynamicSystemPlantaBuilder();
 
         public HeaderRunPlan BuildPlan(PushBackSystem system, RackCatalog catalog)
+            => WithResolvedBoots(BuildStructure(system, catalog), system, catalog);
+
+        /// <summary>
+        /// I-42 (S1F) — LAS BOTAS DE LA PLANTA, tomadas de la resolucion fisica del rack: cada una en la cara que
+        /// protege —exterior o interior de SU lado— y con su mano. La planta no vuelve a decidir quien lleva pieza
+        /// ni deduplica por coordenada: dos caras interiores que se tocan siguen siendo dos piezas.
+        /// </summary>
+        private static HeaderRunPlan WithResolvedBoots(
+            HeaderRunPlan plan, PushBackSystem system, RackCatalog catalog)
+        {
+            if (plan == null || system?.Structure == null || catalog == null)
+            {
+                return plan;
+            }
+
+            var stripped = PushBackBootPlan.Without(plan, catalog);
+            var loose = stripped.LooseInstances.ToList();
+            foreach (var boot in PushBackBootPlan.Resolve(system, catalog))
+            {
+                var block = CatalogLookup.Block(catalog, boot.PieceId, View);
+                if (!string.IsNullOrWhiteSpace(block))
+                {
+                    loose.Add(PushBackBootPlan.Instance(boot, block, View, boot.PlantaAt));
+                }
+            }
+
+            return new HeaderRunPlan(stripped.Headers, loose);
+        }
+
+        private HeaderRunPlan BuildStructure(PushBackSystem system, RackCatalog catalog)
         {
             var structure = system?.Structure;
             if (structure == null)
