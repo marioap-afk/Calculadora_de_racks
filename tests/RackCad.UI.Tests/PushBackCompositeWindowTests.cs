@@ -1293,6 +1293,13 @@ namespace RackCad.UI.Tests
         /// cualquier otra edicion forzara un recalculo.
         /// </para>
         /// </summary>
+        /// <summary>Un corte que solo ATRAVIESA la cama no lleva ningun extremo: ni bajo, ni alto.</summary>
+        private static bool OnlyIntermediates(RackCad.Application.Drawing.HeaderRunPlan plan)
+            => plan != null && plan.Flatten().Instances
+                .Where(instance => instance.Role == RackCad.Application.Drawing.HeaderBlockRole.Beam)
+                .All(instance => !instance.PieceId.Contains("IN_OUT", StringComparison.Ordinal)
+                                 && !instance.PieceId.Contains("REDONDO", StringComparison.Ordinal));
+
         [Fact]
         public void TheFrontalCuts_FollowTheViewSelector_NotTheEditedSide()
         {
@@ -1313,9 +1320,11 @@ namespace RackCad.UI.Tests
                 var entradaA = Beams(w.LastComputation?.FrontalEntradaSalida);
                 var posteriorA = Beams(w.LastComputation?.FrontalPosterior);
 
-                // El corte de A es el de ENTRADA de la corrida; su posterior esta vacio, porque el extremo alto
-                // esta en el otro pasillo.
-                if (entradaA == 0 || posteriorA != 0) return false;
+                // I-42 (ronda 8B): el pasillo de A es donde la corrida EMPIEZA, asi que su corte de entrada lleva
+                // los largueros bajos; su linea interior solo lleva el apoyo INTERMEDIO de la cama que la atraviesa
+                // —ningun extremo—, porque la cama ni empieza ni termina ahi.
+                if (entradaA == 0) return false;
+                if (!OnlyIntermediates(w.LastComputation?.FrontalPosterior)) return false;
 
                 // Ahora se EDITA A y se pide el frontal de B: el contenido tiene que cambiar de lado sin tocar la
                 // edicion, y sin ninguna otra accion que el propio selector.
@@ -1324,8 +1333,8 @@ namespace RackCad.UI.Tests
                 if (w.FrontalSideForTest != PushBackSide.B) return false;
 
                 var entradaB = Beams(w.LastComputation?.FrontalEntradaSalida);
-                var posteriorB = Beams(w.LastComputation?.FrontalPosterior);
-                if (entradaB != 0 || posteriorB == 0) return false;
+                if (entradaB == 0) return false;                                     // ahi TERMINA la corrida
+                if (!OnlyIntermediates(w.LastComputation?.FrontalPosterior)) return false;
 
                 // Y la SECCION del posterior de B direcciona el corte posterior, no el de entrada.
                 var section = PushBackSystemFrontalBuilder.EncodeSection(PushBackFrontalEnd.Posterior, PushBackSide.B);

@@ -19,8 +19,10 @@ namespace RackCad.Tests
     /// muestra. Antes se rotulaba todo lado DECLARADO —una propiedad del rack entero—, asi que un corte cuya unica
     /// ranura tenia el lado en blanco salia igualmente rotulado.</para>
     ///
-    /// <para><b>V2.</b> En una corrida, la cara de SALIDA proyecta el extremo ALTO —larguero y tope— y la de ENTRADA
-    /// el bajo, y la regla la decide el extremo del run que cae en cada cara, no el lado ni el sentido.</para>
+    /// <para><b>V2.</b> En una corrida, la cara de SALIDA proyecta el extremo ALTO —larguero y tope— y la de
+    /// ENTRADA el bajo. <b>La ronda 8B corrigio CUAL es cada cara:</b> no la decide el nombre de la vista sino el
+    /// apoyo que coincide con su plano (<see cref="PushBackRunSupports"/>), asi que una corrida A→B termina en la
+    /// cara EXTERIOR de B —su pasillo— y las dos lineas interiores llevan su apoyo INTERMEDIO.</para>
     ///
     /// <para><b>V3.</b> Las correspondencias por proximidad y los caminos de fallo quedan acotados y medidos.</para>
     /// </summary>
@@ -205,10 +207,10 @@ namespace RackCad.Tests
                 Assert.Equal(PushBackSide.B, run.HighSide);
             });
 
-            var exit = Cut(system, PushBackFrontalEnd.Posterior, PushBackSide.B);
-            Assert.Equal(6, Count(exit, HeaderBlockRole.Beam));
-            Assert.All(exit.Where(i => i.Role == HeaderBlockRole.Beam), beam =>
-                Assert.Contains("REDONDO", beam.PieceId, StringComparison.Ordinal));
+            // I-42 (ronda 8B): la corrida TERMINA en el pasillo de B, asi que su alto esta en la cara exterior.
+            var exit = Cut(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.B);
+            Assert.Equal(6, exit.Count(i => i.Role == HeaderBlockRole.Beam
+                && i.PieceId.Contains("REDONDO", StringComparison.Ordinal)));
         }
 
         [Fact]
@@ -216,7 +218,10 @@ namespace RackCad.Tests
         {
             var system = Resolve(State(2, PushBackCellTopology.Corrida, PushBackRunDirection.AToB));
 
-            Assert.Equal(6, Count(Cut(system, PushBackFrontalEnd.Posterior, PushBackSide.B), HeaderBlockRole.Tope));
+            Assert.Equal(6, Count(
+                Cut(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.B), HeaderBlockRole.Tope));
+            Assert.Equal(0, Count(
+                Cut(system, PushBackFrontalEnd.Posterior, PushBackSide.B), HeaderBlockRole.Tope));
         }
 
         [Fact]
@@ -230,8 +235,9 @@ namespace RackCad.Tests
                 Assert.Equal(PushBackSide.A, run.HighSide);
             });
 
-            var exit = Cut(system, PushBackFrontalEnd.Posterior, PushBackSide.A);
-            Assert.Equal(6, Count(exit, HeaderBlockRole.Beam));
+            var exit = Cut(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.A);
+            Assert.Equal(6, exit.Count(i => i.Role == HeaderBlockRole.Beam
+                && i.PieceId.Contains("REDONDO", StringComparison.Ordinal)));
         }
 
         [Fact]
@@ -239,7 +245,8 @@ namespace RackCad.Tests
         {
             var system = Resolve(State(2, PushBackCellTopology.Corrida, PushBackRunDirection.BToA));
 
-            Assert.Equal(6, Count(Cut(system, PushBackFrontalEnd.Posterior, PushBackSide.A), HeaderBlockRole.Tope));
+            Assert.Equal(6, Count(
+                Cut(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.A), HeaderBlockRole.Tope));
         }
 
         /// <summary>Y la cara de ENTRADA proyecta el bajo, nunca el alto: es la otra mitad del contrato.</summary>
@@ -258,20 +265,35 @@ namespace RackCad.Tests
         }
 
         /// <summary>
-        /// El lado que NO posee un extremo del run no proyecta nada de ese run: ni el bajo del lado alto, ni el alto
-        /// del lado bajo. Es lo que impide tratar la cara de salida como «otra entrada».
+        /// I-42 (ronda 8B) — CADA PLANO MUESTRA SU APOYO. En una corrida, la cara de entrada del lado ALTO ya no
+        /// esta vacia: ahi TERMINA la cama, asi que lleva su larguero alto. Lo que ninguna cara muestra es un
+        /// extremo que no le corresponde — ni un bajo en el lado alto, ni un alto en el bajo.
         /// </summary>
         [Theory]
         [InlineData(PushBackRunDirection.AToB)]
         [InlineData(PushBackRunDirection.BToA)]
-        public void Corrida_TheOppositeCutsCarryNoBeams(PushBackRunDirection direction)
+        public void Corrida_EachCutShowsOnlyItsOwnSupport(PushBackRunDirection direction)
         {
             var system = Resolve(State(2, PushBackCellTopology.Corrida, direction));
             var lowSide = direction == PushBackRunDirection.AToB ? PushBackSide.A : PushBackSide.B;
             var highSide = direction == PushBackRunDirection.AToB ? PushBackSide.B : PushBackSide.A;
 
-            Assert.Equal(0, Count(Cut(system, PushBackFrontalEnd.Posterior, lowSide), HeaderBlockRole.Beam));
-            Assert.Equal(0, Count(Cut(system, PushBackFrontalEnd.EntradaSalida, highSide), HeaderBlockRole.Beam));
+            // El pasillo del lado bajo: solo bajos. El del alto: solo altos.
+            Assert.All(
+                Cut(system, PushBackFrontalEnd.EntradaSalida, lowSide).Where(i => i.Role == HeaderBlockRole.Beam),
+                beam => Assert.Contains("IN_OUT", beam.PieceId, StringComparison.Ordinal));
+            Assert.All(
+                Cut(system, PushBackFrontalEnd.EntradaSalida, highSide).Where(i => i.Role == HeaderBlockRole.Beam),
+                beam => Assert.Contains("REDONDO", beam.PieceId, StringComparison.Ordinal));
+
+            // Y las dos lineas interiores no muestran NINGUN extremo: solo el apoyo intermedio.
+            foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
+            {
+                Assert.DoesNotContain(
+                    Cut(system, PushBackFrontalEnd.Posterior, side).Where(i => i.Role == HeaderBlockRole.Beam),
+                    beam => beam.PieceId.Contains("IN_OUT", StringComparison.Ordinal)
+                            || beam.PieceId.Contains("REDONDO", StringComparison.Ordinal));
+            }
         }
 
         /// <summary>
@@ -281,13 +303,42 @@ namespace RackCad.Tests
         [Fact]
         public void ShortCorrida_DoesNotInventHighAtOppositeExterior()
         {
+            // Una corrida con fondo PROPIO menor que la capacidad: su alto queda dentro del rack.
             var state = State(2, PushBackCellTopology.Corrida, PushBackRunDirection.AToB);
-            state.SetStructureOverride(PushBackSide.B, state.SideB.Structure.Count + 3);
+            state.SetCorridaDepth(0, 0, PushBackCellDepth.MinimumPalletsDeep);
             var system = Resolve(state);
 
-            Assert.Equal(0, Count(Cut(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.B), HeaderBlockRole.Beam));
-            Assert.Equal(0, Count(Cut(system, PushBackFrontalEnd.Posterior, PushBackSide.A), HeaderBlockRole.Beam));
-            Assert.Equal(6, Count(Cut(system, PushBackFrontalEnd.Posterior, PushBackSide.B), HeaderBlockRole.Beam));
+            // La cama no llega al EXTERIOR de B: ese plano no muestra su alto, y ninguno lo inventa. Donde si
+            // aparece —si algun plano coincide con el— lo dice la autoridad de corte, no el nombre de la vista.
+            var runs = PushBackRuns.Resolve(system);
+            var corrida = runs.Runs.First(run =>
+                run.Topology == PushBackCellTopology.Corrida && run.Slot == 0 && run.Level == 1);
+
+            Assert.NotEqual(
+                PushBackSupportRole.High,
+                PushBackRunSupports.At(system, runs, corrida, PushBackSide.B, PushBackFrontalEnd.EntradaSalida));
+
+            // Y el lado BAJO tampoco lo muestra en ninguno de sus dos planos.
+            foreach (var end in new[] { PushBackFrontalEnd.EntradaSalida, PushBackFrontalEnd.Posterior })
+            {
+                Assert.NotEqual(
+                    PushBackSupportRole.High,
+                    PushBackRunSupports.At(system, runs, corrida, PushBackSide.A, end));
+            }
+
+            // Nada se inventa: cada corte dibuja EXACTAMENTE tantos largueros altos como camas terminan en el.
+            foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
+            {
+                foreach (var end in new[] { PushBackFrontalEnd.EntradaSalida, PushBackFrontalEnd.Posterior })
+                {
+                    var expected = runs.Runs.Count(run =>
+                        PushBackRunSupports.At(system, runs, run, side, end) == PushBackSupportRole.High);
+                    var drawn = Cut(system, end, side).Count(instance =>
+                        instance.Role == HeaderBlockRole.Beam
+                        && instance.PieceId.Contains("REDONDO", StringComparison.Ordinal));
+                    Assert.Equal(expected, drawn);
+                }
+            }
         }
 
         /// <summary>Con el tope en «Ninguno» la cara de salida conserva el ALTO y pierde SOLO el tope.</summary>
@@ -311,8 +362,9 @@ namespace RackCad.Tests
         public void ExitFrontal_UsesExistingHighPhysicalHand()
         {
             var system = Resolve(State(2, PushBackCellTopology.Corrida, PushBackRunDirection.AToB));
-            var exit = Cut(system, PushBackFrontalEnd.Posterior, PushBackSide.B)
-                .Where(instance => instance.Role == HeaderBlockRole.Beam)
+            var exit = Cut(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.B)
+                .Where(instance => instance.Role == HeaderBlockRole.Beam
+                    && instance.PieceId.Contains("REDONDO", StringComparison.Ordinal))
                 .ToList();
 
             Assert.NotEmpty(exit);
@@ -325,7 +377,7 @@ namespace RackCad.Tests
         public void ExitFrontal_UsesExistingTopeAnchor()
         {
             var system = Resolve(State(2, PushBackCellTopology.Corrida, PushBackRunDirection.AToB));
-            var exit = Cut(system, PushBackFrontalEnd.Posterior, PushBackSide.B);
+            var exit = Cut(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.B);
             var topes = exit.Where(instance => instance.Role == HeaderBlockRole.Tope).ToList();
 
             Assert.NotEmpty(topes);

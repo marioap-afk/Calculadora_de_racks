@@ -141,10 +141,32 @@ namespace RackCad.Tests
             return pieces.Distinct().ToList();
         }
 
+        /// <summary>
+        /// Los topes que los cortes frontales de un lado muestran. I-42 (ronda 8B): el tope va donde la cama
+        /// TERMINA, y ese plano puede ser la cara interior de ese lado o su cara exterior —una corrida acaba en el
+        /// pasillo del lado contrario al que carga—. Se preguntan los dos cortes de ese lado, que es lo que el
+        /// usuario tiene delante.
+        /// </summary>
+        /// <summary>Si alguno de los dos cortes de ese lado coincide con el extremo ALTO de la cama.</summary>
+        private static bool CutShowsHigh(
+            PushBackSystem system, PushBackRunSet runs, PushBackRun run, PushBackSide side)
+            => PushBackRunSupports.At(system, runs, run, side, PushBackFrontalEnd.EntradaSalida)
+                   == PushBackSupportRole.High
+               || PushBackRunSupports.At(system, runs, run, side, PushBackFrontalEnd.Posterior)
+                   == PushBackSupportRole.High;
+
         private static IReadOnlyList<(double X, double Y, string PieceId)> Frontal(
             PushBackSystem system, PushBackSide side)
-            => Topes(new PushBackSystemFrontalBuilder()
-                .BuildPlan(system, Catalog, PushBackFrontalEnd.Posterior, side));
+        {
+            var builder = new PushBackSystemFrontalBuilder();
+            var result = new List<(double X, double Y, string PieceId)>();
+            foreach (var end in new[] { PushBackFrontalEnd.EntradaSalida, PushBackFrontalEnd.Posterior })
+            {
+                result.AddRange(Topes(builder.BuildPlan(system, Catalog, end, side)));
+            }
+
+            return result;
+        }
 
         private static IReadOnlyList<(double X, double Y, string PieceId)> Planta(PushBackSystem system)
             => Topes(new PushBackSystemPlantaBuilder().BuildPlan(system, Catalog));
@@ -185,8 +207,12 @@ namespace RackCad.Tests
             // 2) FRONTAL — sólo en el corte del lado que posee el extremo ALTO, y con las mismas elevaciones.
             foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
             {
+                // I-42 (ronda 8B): un corte frontal solo puede mostrar el tope de una cama cuyo extremo ALTO cae en
+                // uno de sus dos planos. Una cama que termina DENTRO del rack —una corrida corta— no aparece en
+                // ninguno, y no debe inventarse: el lateral y la planta, que si tienen profundidad, ya la muestran.
+                var runs = PushBackRuns.Resolve(system);
                 var wanted = expected
-                    .Where(e => e.Run.HighSide == side)
+                    .Where(e => e.Run.HighSide == side && CutShowsHigh(system, runs, e.Run, side))
                     .Select(e => (e.Z, e.PieceId))
                     .Distinct()
                     .OrderBy(t => t.Z).ThenBy(t => t.PieceId)

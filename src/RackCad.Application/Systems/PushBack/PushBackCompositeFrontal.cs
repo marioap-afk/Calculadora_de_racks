@@ -32,6 +32,22 @@ namespace RackCad.Application.Systems.PushBack
     /// </summary>
     public static class PushBackCompositeFrontal
     {
+        /// <summary>
+        /// I-42 (ronda 8B) — UN CORTE ES UN PLANO FISICO, y lo que muestra es EL APOYO de cada cama que coincide con
+        /// el: su extremo BAJO, un apoyo INTERMEDIO, su extremo ALTO, o nada.
+        ///
+        /// <para>
+        /// La vista ya no infiere el papel de su nombre. «Frontal» y «Posterior» dicen DONDE esta el plano; el papel
+        /// lo decide <see cref="PushBackRunSupports"/> por cama. De ahi se sigue todo lo que el dueño pidio: la cara
+        /// exterior del lado alto de una corrida muestra su ALTO —y su tope—, las dos lineas interiores muestran los
+        /// INTERMEDIOS de la corrida que las atraviesa, y una cama que termina antes de una linea no aparece en ella.
+        /// </para>
+        /// <para>
+        /// El corte se arma en TRES pasadas sobre el mismo builder de un solo sentido, una por papel, con las celdas
+        /// que a cada uno le corresponden. El marco —postes, placas, cotas— lo aporta la primera; de las otras se
+        /// toman solo sus piezas, para no dibujarlo tres veces.
+        /// </para>
+        /// </summary>
         public static HeaderRunPlan Build(
             PushBackSystem system, RackCatalog catalog, PushBackFrontalEnd end, PushBackSide side)
         {
@@ -43,18 +59,111 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             var runs = PushBackRuns.Resolve(system);
-            var allowed = AllowedCells(view, runs, side, end);
-            var context = EndContext(local, catalog, view, runs, side, end);
+            var byRole = CellsByRole(system, runs, view, side, end);
+            var builder = new PushBackSystemFrontalBuilder();
+            var headerHeight = HeaderHeightAtLocalPost(system, local, catalog, view, end);
 
-            // Se llama a la SOBRECARGA con inyecciones sobre el sistema LOCAL del lado, que no es compuesto: asi no
-            // hay recursion y el corte lo construye el mismo builder de un solo sentido.
-            return new PushBackSystemFrontalBuilder().BuildPlan(
-                local,
-                catalog,
-                end,
-                context,
-                (frontIndex, level) => allowed.Contains((frontIndex, level)),
-                HeaderHeightAtLocalPost(system, local, catalog, view, end));
+            // El BAJO lleva el marco del corte; los otros dos papeles aportan solo sus piezas.
+            var low = builder.BuildPlan(
+                local, catalog, PushBackFrontalEnd.EntradaSalida,
+                EndContext(local, catalog, view, runs, side, PushBackFrontalEnd.EntradaSalida,
+                    byRole[PushBackSupportRole.Low]),
+                Only(byRole[PushBackSupportRole.Low]), headerHeight);
+
+            var high = builder.BuildPlan(
+                local, catalog, PushBackFrontalEnd.Posterior,
+                EndContext(local, catalog, view, runs, side, PushBackFrontalEnd.Posterior,
+                    byRole[PushBackSupportRole.High]),
+                Only(byRole[PushBackSupportRole.High]), headerHeight);
+
+            var middle = builder.BuildIntermediatePlan(
+                local, catalog,
+                IntermediateContext(system, local, catalog, view, runs, side, end,
+                    byRole[PushBackSupportRole.Intermediate]),
+                Only(byRole[PushBackSupportRole.Intermediate]), headerHeight);
+
+            // La SEGURIDAD pertenece al pasillo: solo la lleva la cara exterior de un lado, que es donde hay
+            // pasillo que proteger. La linea interior no lleva ninguna, como siempre.
+            var frameKeeps = end == PushBackFrontalEnd.EntradaSalida
+                ? (Func<HeaderBlockInstance, bool>)(_ => true)
+                : instance => !PushBackPlanComposer.IsSafetyPiece(instance);
+
+            var groups = low.Headers
+                .Select(group => Filter(group, frameKeeps))
+                .Where(group => group != null)
+                .ToList();
+            var loose = low.LooseInstances.Where(frameKeeps).ToList();
+            foreach (var plan in new[] { high, middle })
+            {
+                groups.AddRange(plan.Headers.Where(HoldsPieces));
+                loose.AddRange(plan.LooseInstances.Where(IsPiece));
+            }
+
+            return new HeaderRunPlan(groups, loose);
+        }
+
+        /// <summary>El mismo grupo sin las instancias que <paramref name="keeps"/> rechaza, o null si queda vacio.</summary>
+        private static HeaderGroup Filter(HeaderGroup group, Func<HeaderBlockInstance, bool> keeps)
+        {
+            if (group?.Instances == null)
+            {
+                return group;
+            }
+
+            var kept = group.Instances.Where(keeps).ToList();
+            return kept.Count == group.Instances.Count
+                ? group
+                : (kept.Count == 0 ? null : new HeaderGroup(group.Name, kept, group.Placements));
+        }
+
+        /// <summary>Un grupo aporta piezas del corte (no marco) cuando alguna de sus instancias lo es.</summary>
+        private static bool HoldsPieces(HeaderGroup group)
+            => group?.Instances != null && group.Instances.Any(IsPiece);
+
+        /// <summary>Las piezas que un papel aporta: sus largueros y sus topes. El marco lo pone la primera pasada.</summary>
+        private static bool IsPiece(HeaderBlockInstance instance)
+            => instance != null
+               && (instance.Role == HeaderBlockRole.Beam
+                   || instance.Role == HeaderBlockRole.Tope
+                   || instance.Role == HeaderBlockRole.Pallet);
+
+        private static Func<int, int, bool> Only(HashSet<(int Front, int Level)> cells)
+            => (frontIndex, level) => cells.Contains((frontIndex, level));
+
+        /// <summary>
+        /// Las celdas de este corte AGRUPADAS POR PAPEL, en indices LOCALES del lado. Es la unica traduccion entre
+        /// la autoridad de corte y el builder.
+        /// </summary>
+        private static Dictionary<PushBackSupportRole, HashSet<(int Front, int Level)>> CellsByRole(
+            PushBackSystem system,
+            PushBackRunSet runs,
+            PushBackSideSystem view,
+            PushBackSide side,
+            PushBackFrontalEnd end)
+        {
+            var byRole = new Dictionary<PushBackSupportRole, HashSet<(int Front, int Level)>>
+            {
+                [PushBackSupportRole.Low] = new HashSet<(int, int)>(),
+                [PushBackSupportRole.Intermediate] = new HashSet<(int, int)>(),
+                [PushBackSupportRole.High] = new HashSet<(int, int)>(),
+            };
+
+            foreach (var run in runs.Runs)
+            {
+                var role = PushBackRunSupports.At(system, runs, run, side, end);
+                if (role == PushBackSupportRole.None)
+                {
+                    continue;
+                }
+
+                var local = LocalIndex(view, run.Slot);
+                if (local >= 0)
+                {
+                    byRole[role].Add((local, run.Level - 1));
+                }
+            }
+
+            return byRole;
         }
 
         /// <summary>
@@ -99,7 +208,8 @@ namespace RackCad.Application.Systems.PushBack
             PushBackSideSystem view,
             PushBackRunSet runs,
             PushBackSide side,
-            PushBackFrontalEnd end)
+            PushBackFrontalEnd end,
+            HashSet<(int Front, int Level)> cells = null)
         {
             var low = end == PushBackFrontalEnd.EntradaSalida;
             var fronts = local.Structure?.Fronts;
@@ -116,6 +226,14 @@ namespace RackCad.Application.Systems.PushBack
                 foreach (var run in runs.Runs.Where(candidate => (low ? candidate.LowSide : candidate.HighSide) == side))
                 {
                     if (LocalIndex(view, run.Slot) != index)
+                    {
+                        continue;
+                    }
+
+                    // I-42 (ronda 8B): la elevacion se arma SOLO para las celdas que este papel materializa. Sin
+                    // acotarlo, el corte bajo de un lado seguiria proponiendo la elevacion de una cama que en este
+                    // plano no tiene su bajo.
+                    if (cells != null && !cells.Contains((index, run.Level - 1)))
                     {
                         continue;
                     }
@@ -137,6 +255,91 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             return RackLevelElevations.From(byFront, systemEnvelope: null);
+        }
+
+        /// <summary>
+        /// I-42 (ronda 8B) — LA ELEVACION DE UN APOYO INTERMEDIO.
+        ///
+        /// <para>
+        /// La cama es una rampa RECTA entre sus dos extremos, y las elevaciones de esos extremos ya las dan las dos
+        /// autoridades que los cortes usan (<see cref="PushBackElevations.LowInsertions"/> y
+        /// <see cref="PushBackElevations.HighInsertions"/>). La de un punto intermedio es, por tanto, la
+        /// interpolacion entre ellas en la X de este plano — no una tercera regla de elevacion, sino la recta que
+        /// las dos definen.
+        /// </para>
+        /// </summary>
+        private static RackLevelElevations IntermediateContext(
+            PushBackSystem system,
+            PushBackSystem local,
+            RackCatalog catalog,
+            PushBackSideSystem view,
+            PushBackRunSet runs,
+            PushBackSide side,
+            PushBackFrontalEnd end,
+            HashSet<(int Front, int Level)> cells)
+        {
+            var fronts = local.Structure?.Fronts;
+            if (fronts == null || fronts.Count == 0 || cells.Count == 0)
+            {
+                return null;
+            }
+
+            var cutX = PushBackRunSupports.CutX(system, side, end);
+            var byFront = new List<RackFrontLevelElevations>();
+            for (var index = 0; index < fronts.Count; index++)
+            {
+                var front = fronts[index];
+                var elevations = new Dictionary<int, double>();
+                foreach (var run in runs.Runs)
+                {
+                    if (LocalIndex(view, run.Slot) != index || !cells.Contains((index, run.Level - 1)))
+                    {
+                        continue;
+                    }
+
+                    var elevation = InterpolatedElevation(runs, run, catalog, cutX);
+                    if (elevation.HasValue)
+                    {
+                        elevations[run.Level] = elevation.Value;
+                    }
+                }
+
+                byFront.Add(new RackFrontLevelElevations(
+                    front.Index,
+                    DynamicFrontActivation.EffectiveLoadLevels(front),
+                    front.EndX - front.StartX,
+                    elevations));
+            }
+
+            return RackLevelElevations.From(byFront, systemEnvelope: null);
+        }
+
+        /// <summary>La elevacion de la cama en la X del corte, sobre la recta que unen sus dos extremos.</summary>
+        private static double? InterpolatedElevation(
+            PushBackRunSet runs, PushBackRun run, RackCatalog catalog, double? cutX)
+        {
+            var boundaries = PushBackRunSupports.BoundariesOf(runs, run);
+            if (!cutX.HasValue || boundaries == null)
+            {
+                return null;
+            }
+
+            var lowSource = PushBackElevations.LowInsertions(run.Source, catalog, run.Front());
+            var highSource = PushBackElevations.HighInsertions(run.Source, catalog, run.Front());
+            if (!lowSource.TryGetValue(run.SourceLevel, out var lowY)
+                || !highSource.TryGetValue(run.SourceLevel, out var highY))
+            {
+                return null;   // sin los dos extremos medidos no hay recta: no se materializa nada
+            }
+
+            var (lowX, highX) = boundaries.Value;
+            var span = highX - lowX;
+            if (Math.Abs(span) <= PushBackRunSupports.Tolerance)
+            {
+                return lowY;
+            }
+
+            return lowY + (highY - lowY) * ((cutX.Value - lowX) / span);
         }
 
         /// <summary>

@@ -800,6 +800,85 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 5-pre-bis. Ronda 8B: un corte muestra EL APOYO que coincide con su plano
+
+La Owner Validation confirmo V1 —las etiquetas laterales— y rechazo V2. La ronda 8 habia concluido que la
+asignacion de los cortes ya era correcta; el dueño reprodujo el caso que demuestra lo contrario y fijo el contrato.
+
+### La causa: la vista inferia el papel de su NOMBRE
+
+«Frontal» y «Posterior» dicen DONDE esta el plano de corte, no que papel tiene la pieza que aparece alli. El
+pipeline los usaba como si fueran roles: `Posterior(lado)` = «el extremo alto de ese lado», `EntradaSalida(lado)` =
+«su extremo bajo». De ahi salian los tres errores, medidos en el escenario del dueño —compuesto A+B, un frente en
+blanco en A, nivel 1 en corrida A→B:
+
+| corte | la cama corrida ahi… | ANTES | AHORA |
+|---|---|---|---|
+| Frontal A | empieza | BAJO ✓ | BAJO |
+| Posterior A | solo pasa | **nada** | **INTERMEDIO** |
+| Posterior B | solo pasa | **ALTO + TOPE** | **INTERMEDIO** |
+| Frontal B | termina | **nada** | **ALTO + TOPE** |
+| Posterior A, nivel 3 corto | ya termino antes | **ALTO + TOPE** | **nada** |
+
+Medido pieza a pieza sobre el mismo diseño: `Posterior A` pasa de `REDONDO x5 + TOPE x5` a
+`INFINITO x1 + REDONDO x5 + TOPE x5`; `Frontal B` de `IN_OUT x8` a `IN_OUT x8 + REDONDO x1 + TOPE x1`;
+`Posterior B` de `REDONDO x9 + TOPE x9` a `INFINITO x1 + REDONDO x8 + TOPE x8`.
+
+### La autoridad: `SupportAtCut`
+
+`PushBackRunSupports` responde, para cada cama y cada plano, cual de sus apoyos coincide:
+
+| relacion del corte con la cama | resultado |
+|---|---|
+| antes de su bajo | NADA |
+| en su bajo | BAJO |
+| entre apoyos, dentro de su tramo | INTERMEDIO |
+| en su alto | ALTO |
+| despues de su alto | NADA |
+
+No es una regla nueva: es la que el constructor del larguero intermedio ya aplicaba en el lateral —una cama ocupa
+desde el arranque de su frente hasta la X de su larguero posterior (`PushBackCellDepth.RearX`)— dicha una sola vez y
+consultable por las cuatro vistas. **Un plano no muestra un larguero porque la cama pase cerca: tiene que haber un
+apoyo fisico en esa frontera.**
+
+La identidad manda sobre la coordenada. Cuando el hueco es CERO las dos lineas interiores comparten X y siguen
+siendo dos lineas fisicas distintas: quien desempata es el LADO al que pertenece el extremo, no el numero. Una
+corrida las atraviesa las dos, y las dos muestran su apoyo intermedio. La tolerancia solo compara coordenadas que ya
+denotan la misma frontera; nunca elige que apoyo es.
+
+### El corte se arma por PAPEL, no por nombre
+
+`PushBackCompositeFrontal` construye cada corte en TRES pasadas sobre el mismo builder de un solo sentido, una por
+papel, con las celdas que a cada uno le corresponden. El marco lo aporta la primera; de las otras se toman solo sus
+piezas. La SEGURIDAD sigue siendo del pasillo: solo la lleva la cara exterior.
+
+El apoyo intermedio se materializa con el larguero intermedio de esa frontera —su pieza y su peralte, por las
+autoridades que ya existen— y **nunca** con un tope: el tope pertenece al alto y solo al alto, asi que
+`TopeAt(...)` exige `SupportAtCut == HIGH` y no hace ninguna busqueda propia. De ahi se siguen solos los tres casos
+del dueño: nivel 3 corto sin apoyo → sin tope; nivel 1 en la linea interior → intermedio, sin tope; nivel 1 en la
+cara exterior de B → alto, con tope.
+
+Su ELEVACION es la interpolacion entre las de sus dos extremos, que las dos autoridades de corte ya dan: la cama es
+una rampa recta, asi que un punto intermedio esta sobre la recta que las une. No es una tercera regla de elevacion.
+
+### Lo que NO cambio
+
+La fisica no se recalcula: ni la mano del alto, ni su posicion, ni el ancla del tope, ni la aplicabilidad. La ronda
+solo decide QUE APOYO proyecta cada plano. **El inventario no se mueve**: las piezas fisicas ya existian y el BOM es
+el mismo. Intactos R1–R7E, V1 y V3 de la ronda 8.
+
+### Contratos de prueba retargeteados
+
+Treinta y dos pruebas afirmaban el corte SUPERSEDIDO —«el alto esta en el posterior de su lado»—. Su INTENCION se
+conserva entera y ahora consultan la autoridad en vez de fijar el corte: la agreement frontal/lateral pregunta en
+que corte termina la cama, la de topes pregunta si algun plano coincide con su alto, y las de la ronda 8 pasan a
+afirmar el contrato nuevo. Una cama que termina DENTRO del rack no aparece en ningun frontal — y eso tambien se
+afirma: cada corte dibuja exactamente tantos largueros altos como camas terminan en el.
+
+### PENDIENTE
+
+- **S1 — Safety general:** semantica global de Izquierda / Derecha / Ambas para las botas.
+
 ## 5-pre. Ronda 8: higiene de vista (V1, V2, V3)
 
 Las vistas son CONSUMIDORAS del modelo fisico. No vuelven a decidir que run existe, que lado existe, que extremo es

@@ -173,9 +173,15 @@ namespace RackCad.Tests
             bool IsRearBeam(HeaderBlockInstance instance)
                 => string.Equals(instance.PieceId, PushBackDefaults.HighEndBeamCatalogId, StringComparison.OrdinalIgnoreCase);
 
-            // La calle atraviesa la interfaz: el lado BAJO no tiene alli larguero posterior; el ALTO si.
+            // La calle atraviesa la interfaz: NINGUNO de los dos lados tiene alli su larguero posterior. I-42
+            // (ronda 8B): en esas dos lineas la cama solo PASA, asi que lo que muestran es su apoyo INTERMEDIO, y
+            // el larguero alto esta donde la cama de verdad termina — la cara exterior del lado alto.
             Assert.DoesNotContain(lowRear, IsRearBeam);
-            Assert.Contains(highRear, IsRearBeam);
+            Assert.DoesNotContain(highRear, IsRearBeam);
+            Assert.Contains(
+                PushBackCompositeFrontal
+                    .Build(system, Catalog, PushBackFrontalEnd.EntradaSalida, PushBackSide.B).Flatten().Instances,
+                IsRearBeam);
         }
 
         [Fact]

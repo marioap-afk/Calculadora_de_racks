@@ -150,6 +150,23 @@ namespace RackCad.Tests
         /// ranura, con la pieza y el peralte que le tocan; el lado contrario no inventa un segundo extremo; y no
         /// sobra ningún larguero que ninguna cama pida.
         /// </summary>
+        /// <summary>
+        /// I-42 (ronda 8B) — EL CORTE donde la cama termina, preguntado a la autoridad de corte. Una corrida acaba
+        /// en la cara EXTERIOR de su lado alto; una cama propia, en la interior de su lado.
+        /// </summary>
+        private static PushBackFrontalEnd? HighCutOf(PushBackSystem system, PushBackRunSet runs, PushBackRun run)
+        {
+            foreach (var end in new[] { PushBackFrontalEnd.Posterior, PushBackFrontalEnd.EntradaSalida })
+            {
+                if (PushBackRunSupports.At(system, runs, run, run.HighSide, end) == PushBackSupportRole.High)
+                {
+                    return end;
+                }
+            }
+
+            return null;   // la cama termina dentro del rack: ningun plano de corte coincide con su alto
+        }
+
         private static void AssertProjectionsAgree(string label, PushBackSystem system)
         {
             var runs = PushBackRuns.Resolve(system);
@@ -167,6 +184,7 @@ namespace RackCad.Tests
 
             var expectedLow = new HashSet<(PushBackSide, double, double)>();
             var expectedHigh = new HashSet<(PushBackSide, double, double)>();
+            var expectedHighCuts = new HashSet<(PushBackFrontalEnd, PushBackSide, double, double)>();
 
             foreach (var run in runs.Runs)
             {
@@ -195,21 +213,41 @@ namespace RackCad.Tests
                 Assert.Equal(system.Composite.Of(run.LowSide).Local.Structure.InOutBeamDepth, lowPiece.Peralte, 6);
                 expectedLow.Add((run.LowSide, lowColumn, lowZ));
 
-                // 3) El FRONTAL posterior del lado ALTO, igual, con el peralte del larguero alto de ESE lado.
+                // 3) El FRONTAL del corte donde la cama TERMINA, con el peralte del larguero alto de ese lado.
+                // I-42 (ronda 8B): cual es ese corte lo dice la autoridad de corte, no el nombre de la vista — una
+                // corrida termina en la cara EXTERIOR de su lado alto, y una cama propia en la interior.
                 var highLocal = LocalIndex(system, run.HighSide, run.Slot);
                 Assert.True(highLocal >= 0, $"{id}: el lado alto no tiene esta ranura");
                 var highColumn = Column(system.Composite.Of(run.HighSide).Local, highLocal);
-                var highPiece = frontal[(PushBackFrontalEnd.Posterior, run.HighSide)]
-                    .FirstOrDefault(p => Math.Abs(p.X - highColumn) < Eps && Math.Abs(p.Y - highZ) < Eps);
-                Assert.True(
-                    highPiece != null,
-                    $"{id}: el frontal posterior de {run.HighSide} no lo muestra en ({highColumn:0.##}, {highZ:0.####})");
-                Assert.Equal(PushBackTestBeams.Redondo, highPiece.PieceId);
-                Assert.Equal(
-                    system.Composite.Of(run.HighSide).Local.HighEndBeamPeralteAt(highLocal, run.Level - 1),
-                    highPiece.Peralte,
-                    6);
-                expectedHigh.Add((run.HighSide, highColumn, highZ));
+                // I-42 (ronda 8B): el alto solo se proyecta en el corte que COINCIDE con el. Una cama que termina
+                // dentro del rack —una corrida corta— no tiene su alto en ninguno de los cuatro planos, y ninguno
+                // debe inventarlo: el lateral, que si tiene profundidad, ya lo mostro arriba.
+                var highEnd = HighCutOf(system, runs, run);
+                if (highEnd.HasValue)
+                {
+                    var highPiece = frontal[(highEnd.Value, run.HighSide)]
+                        .FirstOrDefault(p => Math.Abs(p.X - highColumn) < Eps && Math.Abs(p.Y - highZ) < Eps);
+                    Assert.True(
+                        highPiece != null,
+                        $"{id}: el frontal {highEnd} de {run.HighSide} no lo muestra en ({highColumn:0.##}, {highZ:0.####})");
+                    Assert.Equal(PushBackTestBeams.Redondo, highPiece.PieceId);
+                    Assert.Equal(
+                        system.Composite.Of(run.HighSide).Local.HighEndBeamPeralteAt(highLocal, run.Level - 1),
+                        highPiece.Peralte,
+                        6);
+                    expectedHigh.Add((run.HighSide, highColumn, highZ));
+                    expectedHighCuts.Add((highEnd.Value, run.HighSide, highColumn, highZ));
+                }
+                else
+                {
+                    foreach (var end in new[] { PushBackFrontalEnd.EntradaSalida, PushBackFrontalEnd.Posterior })
+                    {
+                        Assert.DoesNotContain(
+                            frontal[(end, run.HighSide)],
+                            p => p.PieceId == PushBackTestBeams.Redondo
+                                 && Math.Abs(p.X - highColumn) < Eps && Math.Abs(p.Y - highZ) < Eps);
+                    }
+                }
 
                 // 4) El otro lado NO inventa un segundo extremo para esta cama.
                 if (run.LowSide != run.HighSide)
@@ -230,12 +268,15 @@ namespace RackCad.Tests
                         $"{label}: el frontal de entrada de {side} muestra un larguero en ({piece.X:0.##}, {piece.Y:0.####}) que ninguna cama pide");
                 }
 
-                foreach (var piece in frontal[(PushBackFrontalEnd.Posterior, side)]
-                    .Where(p => p.PieceId == PushBackTestBeams.Redondo))
+                foreach (var end in new[] { PushBackFrontalEnd.EntradaSalida, PushBackFrontalEnd.Posterior })
                 {
-                    Assert.True(
-                        expectedHigh.Contains((side, piece.X, piece.Y)),
-                        $"{label}: el frontal posterior de {side} muestra un larguero en ({piece.X:0.##}, {piece.Y:0.####}) que ninguna cama pide");
+                    foreach (var piece in frontal[(end, side)]
+                        .Where(p => p.PieceId == PushBackTestBeams.Redondo))
+                    {
+                        Assert.True(
+                            expectedHighCuts.Contains((end, side, piece.X, piece.Y)),
+                            $"{label}: el frontal {end} de {side} muestra un larguero alto en ({piece.X:0.##}, {piece.Y:0.####}) que ninguna cama pide");
+                    }
                 }
             }
         }
@@ -379,12 +420,24 @@ namespace RackCad.Tests
                 }
             }
 
-            // Una corrida A→B carga por A y descarga en B: el corte de entrada de B y el posterior de A están
-            // VACÍOS de largueros, y no al revés.
-            Assert.NotEmpty(Frontal(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.A));
-            Assert.Empty(Frontal(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.B));
-            Assert.Empty(Frontal(system, PushBackFrontalEnd.Posterior, PushBackSide.A));
-            Assert.NotEmpty(Frontal(system, PushBackFrontalEnd.Posterior, PushBackSide.B));
+            // Una corrida A→B carga por A y TERMINA en el pasillo de B. I-42 (ronda 8B): cada corte muestra el
+            // apoyo que coincide con SU plano, asi que el bajo esta en la cara exterior de A, el alto en la de B, y
+            // las dos lineas interiores llevan el apoyo INTERMEDIO de la cama que las atraviesa.
+            var entradaA = Frontal(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.A);
+            var entradaB = Frontal(system, PushBackFrontalEnd.EntradaSalida, PushBackSide.B);
+            var posteriorA = Frontal(system, PushBackFrontalEnd.Posterior, PushBackSide.A);
+            var posteriorB = Frontal(system, PushBackFrontalEnd.Posterior, PushBackSide.B);
+
+            Assert.All(entradaA, piece => Assert.Equal(PushBackTestBeams.InOut, piece.PieceId));
+            Assert.All(entradaB, piece => Assert.Equal(PushBackTestBeams.Redondo, piece.PieceId));
+            Assert.NotEmpty(entradaA);
+            Assert.NotEmpty(entradaB);
+
+            // Y ninguna de las dos caras interiores muestra un extremo: solo apoyos intermedios.
+            Assert.DoesNotContain(posteriorA, piece => piece.PieceId == PushBackTestBeams.InOut
+                || piece.PieceId == PushBackTestBeams.Redondo);
+            Assert.DoesNotContain(posteriorB, piece => piece.PieceId == PushBackTestBeams.InOut
+                || piece.PieceId == PushBackTestBeams.Redondo);
         }
 
         // ---- el DESVIADOR: la misma cama en las dos vistas ------------------------------------------------------

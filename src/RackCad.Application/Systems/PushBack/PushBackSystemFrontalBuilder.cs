@@ -390,6 +390,83 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
+        /// I-42 (ronda 8B) — EL CORTE DE UN APOYO INTERMEDIO: la cama solo ATRAVIESA este plano. Se dibuja
+        /// exactamente el larguero intermedio de esa frontera, con su propia pieza y su propio peralte, y nada mas:
+        /// ni bajo, ni alto, ni tope. El tope pertenece al alto y solo al alto.
+        ///
+        /// <para>
+        /// Reutiliza el mismo recorrido que el corte posterior —el marco, las columnas y la LONGITUD transversal
+        /// salen del builder dinamico— y solo SUSTITUYE la pieza, igual que el posterior sustituye el IN/OUT por el
+        /// larguero redondo. No se fabrica ninguna geometria nueva.
+        /// </para>
+        /// </summary>
+        internal HeaderRunPlan BuildIntermediatePlan(
+            PushBackSystem system,
+            RackCatalog catalog,
+            RackLevelElevations context,
+            Func<int, int, bool> includeCell,
+            Func<int, double> headerHeightAtPost)
+        {
+            var structure = system?.Structure;
+            if (structure == null)
+            {
+                return new HeaderRunPlan(new List<HeaderGroup>(), new List<HeaderBlockInstance>());
+            }
+
+            var instances = dynamicBuilder.Build(
+                structure,
+                catalog,
+                DynamicRackEnd.Entrance,
+                context,
+                ownsDesviador: null,
+                ownsBoundary: OwnsBoundary(structure, includeCell),
+                headerHeightAtPost: headerHeightAtPost);
+            var layout = DynamicFrontGeometry.Compute(structure, catalog);
+
+            var result = new List<HeaderBlockInstance>();
+            foreach (var instance in instances)
+            {
+                if (PushBackPlanComposer.IsSafetyPiece(instance))
+                {
+                    continue;
+                }
+
+                if (!PushBackPlanComposer.IsDynamicEndBeam(instance))
+                {
+                    result.Add(instance);   // marco: postes, placas y decoraciones
+                    continue;
+                }
+
+                var (frontIndex, level) = LocateCell(structure, catalog, layout, instance, context);
+                if (includeCell != null && level >= 0 && !includeCell(frontIndex, level))
+                {
+                    continue;
+                }
+
+                var front = frontIndex >= 0 && frontIndex < structure.Fronts.Count ? structure.Fronts[frontIndex] : null;
+                var beamId = front != null && level >= 0
+                    ? DynamicIntermediateBeamGeometry.BeamIdAt(front, level + 1)
+                    : DynamicRackDefaults.IntermediateBeamCatalogId;
+                var block = CatalogLookup.Block(catalog, beamId, View);
+                if (string.IsNullOrWhiteSpace(block))
+                {
+                    continue;   // sin bloque medido no se materializa nada: nunca un sustituto silencioso
+                }
+
+                var beam = CloneAt(instance, beamId, block);
+                if (front != null && level >= 0)
+                {
+                    beam.DynamicParameters[SelectiveRackDefaults.PeralteParam] =
+                        DynamicIntermediateBeamGeometry.PeralteAt(front, level + 1);
+                }
+
+                result.Add(beam);
+            }
+
+            return HeaderInstanceGrouper.Group(result, "PB_FRONTAL_INTERMEDIO");
+        }
+
+        /// <summary>
         /// I-42 (ronda 8, V3) — LA CELDA de un larguero del corte bajo, o «no identificada».
         ///
         /// <para>
