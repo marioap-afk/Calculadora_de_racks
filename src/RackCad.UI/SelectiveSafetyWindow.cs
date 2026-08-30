@@ -45,9 +45,6 @@ namespace RackCad.UI
         /// </summary>
         private readonly bool showDesviadorSide;
 
-        /// <summary>I-42 (ronda 7D): la configuracion por poste de la defensa vive en una seccion propia por lado.</summary>
-        private readonly bool defensaPerPostElsewhere;
-
         /// <summary>
         /// PB-002 (I-32) — an OPT-IN, already-per-POST level count for the desviador grid. Null (Selectivo, Dinámico)
         /// keeps the historical path byte for byte. Push Back passes it because it has no resolved
@@ -136,11 +133,10 @@ namespace RackCad.UI
         /// is the historical behaviour of the Selectivo and of the Dinámico; Push Back passes false explicitly
         /// (PB-003: its safety lives only at the low end, so naming a face the user cannot choose is pure noise).
         /// </param>
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false, bool showDesviadorSide = true, bool defensaPerPostElsewhere = false)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false, bool showDesviadorSide = true)
         {
             this.allowBlankFrontColumns = allowBlankFrontColumns;
             this.showDesviadorSide = showDesviadorSide;
-            this.defensaPerPostElsewhere = defensaPerPostElsewhere;
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
@@ -403,25 +399,20 @@ namespace RackCad.UI
                                 }).ToList() ?? new List<SafetyPostDefense>();
                         }
 
-                        // I-42 (ronda 7D): con la superficie por lado, esta fila deja de editar los postes. Los
-                        // registros que trae siguen viajando intactos: quien los cambia es la seccion de su lado.
-                        if (!defensaPerPostElsewhere)
+                        var button = new Button
                         {
-                            var button = new Button
-                            {
-                                Style = TryFindResource("SecondaryButtonStyle") as Style,
-                                Content = DefensaLabel(row),
-                                Padding = new Thickness(10, 3, 10, 3),
-                                VerticalAlignment = VerticalAlignment.Center,
-                                ToolTip = defensaLowEndOnly
-                                    ? "Defensa de montacargas: se coloca en el extremo de entrada/salida, con LONGITUD por poste y recálculo automático 12\"/36\"."
-                                    : "Defensa de montacargas: elige Salida y Entrada por poste, con una LONGITUD independiente en cada extremo."
-                            };
-                            button.Click += (s, e) => EditDefensa(row);
-                            Grid.SetColumn(button, 1);
-                            grid.Children.Add(button);
-                            row.DefensaButton = button;
-                        }
+                            Style = TryFindResource("SecondaryButtonStyle") as Style,
+                            Content = DefensaLabel(row),
+                            Padding = new Thickness(10, 3, 10, 3),
+                            VerticalAlignment = VerticalAlignment.Center,
+                            ToolTip = defensaLowEndOnly
+                                ? "Defensa de montacargas: se coloca en el extremo de entrada/salida, con LONGITUD por poste y recálculo automático 12\"/36\"."
+                                : "Defensa de montacargas: elige Salida y Entrada por poste, con una LONGITUD independiente en cada extremo."
+                        };
+                        button.Click += (s, e) => EditDefensa(row);
+                        Grid.SetColumn(button, 1);
+                        grid.Children.Add(button);
+                        row.DefensaButton = button;
                     }
                     else if (isGuia)
                     {
@@ -836,13 +827,9 @@ namespace RackCad.UI
                         }
                     }
 
-                    // I-42 (ronda 7D): cuando los postes se deciden en su propia seccion, esta ventana no es
-                    // quien para descartar la familia — todavia no ha visto lo que esas secciones van a fundir, y
-                    // ademas su regla no conoce la segunda cara de carga de un compuesto.
-                    var drawsSomewhere = defensaPerPostElsewhere
-                        || Enumerable.Range(0, postCount)
-                            .Select(post => DynamicForkliftDefensePlan.ForSelection(selection, post, postCount))
-                            .Any(setting => setting.DrawsExit || setting.DrawsEntrance);
+                    var drawsSomewhere = Enumerable.Range(0, postCount)
+                        .Select(post => DynamicForkliftDefensePlan.ForSelection(selection, post, postCount))
+                        .Any(setting => setting.DrawsExit || setting.DrawsEntrance);
                     if (drawsSomewhere)
                     {
                         result.Add(selection);

@@ -800,6 +800,96 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 4-octvicies. Ronda 7E: el TIPO de defensa vive en la seccion de su lado
+
+La Owner Validation de 7D confirmo las secciones por lado, la configuracion por poste, la independencia A/B y que los
+blancos no contaminan el lado contrario. Quedaba un problema de contrato: las secciones configuraban POSTES, pero el
+TIPO de defensa seguia eligiendose en una fila general al fondo de la ventana. Una misma decision partida en dos
+sitios y, en un compuesto, una sola para los dos pasillos.
+
+El dueño fijo el contrato final: **cada seccion contiene su tipo, su «Ninguno» y su configuracion por poste**, como
+las de topes; y el tipo es INDEPENDIENTE POR LADO, con el modelo preparado para mas de un tipo futuro.
+
+### La identidad del tipo: la CARA lo declara
+
+La ronda 7D ya habia establecido que un compuesto tiene dos pasillos —el extremo cercano y el lejano de la cobertura
+de cada linea— y que el lado A ataca por uno y el B por el otro. Lo que faltaba era que cada pasillo pudiera decir
+QUE pieza usa. `SafetyFacePiece` lo expresa con tres estados y solo tres:
+
+| estado | significado |
+|---|---|
+| la cara no declara nada (null) | usa el `ElementId` de la seleccion — el comportamiento historico y el de todo documento anterior |
+| `None` | esa cara no lleva ninguna pieza |
+| una pieza | esa cara lleva esa |
+
+Es DERIVADA y no se persiste, exactamente como `LowEndOnly` y `BothEndsAreLoadFaces`: quien la persiste es el diseno
+de cada lado (`PushBackDesign.DefensePieceId` y `PushBackSideDesign.DefensePieceId`), y la autoridad del sistema la
+vuelve a imponer en cada limite que posee, asi que ningun documento puede traerla rancia.
+
+`«Ninguno»` NUNCA es una pieza: no hay `PieceId = NINGUNO` en el BOM, ni bloque ficticio, ni primitiva vacia. Se
+traduce a «esa cara no resuelve ningun id», y los tres constructores —lateral, frontal y planta, que es la que
+alimenta el BOM— se detienen ahi. Ese `«(ninguno)»` es ademas UN solo valor, compartido con el tope de la ronda 7C:
+son dos lecturas de la misma decision sobre familias distintas, y es un valor persistido, asi que dos constantes
+iguales acabarian separandose.
+
+### Cuatro ejes, separados
+
+| eje | quien decide |
+|---|---|
+| **TIPO** del lado | el selector de su seccion |
+| **INTENCION** por poste | la rejilla de su seccion |
+| **APLICABILIDAD** | la fisica: ¿existe esa cara de ataque? (`DynamicDefenseFaces`, ronda 7D) |
+| **COLOCACION** | la geometria |
+
+Y la regla: hay pieza en `(lado, linea)` **si y solo si** el tipo del lado no es «Ninguno», su intencion por poste lo
+pide y la cara existe.
+
+### La configuracion queda DORMIDA, no se destruye
+
+Cambiar el tipo no toca la rejilla por poste: son dos ejes. Poner un lado en «Ninguno» deja de materializar, y
+volver a elegir una pieza devuelve exactamente los postes que habia — incluso con los DOS lados en «Ninguno», donde
+la familia se conserva solo como portadora de esa intencion y no dibuja ni cuenta nada.
+
+### La fila general se retira para Push Back
+
+No basta con ocultarla: la familia DEFENSA sale de la lista que la ventana ofrece, y las secciones pasan a ser
+quienes traen la seleccion a existencia. Mientras algun lado tenga pieza, la familia existe; si los dos dicen
+«Ninguno» y nadie ha decidido postes, no existe. Los demas sistemas que usan esa fila no cambian en nada: el
+contenido de la lista lo decide cada ventana.
+
+### Medido
+
+| escenario | dibujo | BOM |
+|---|---|---|
+| A = Ninguno, B = Defensa | solo las caras de B | igual al dibujo |
+| A = Defensa, B = Ninguno | solo las caras de A | igual al dibujo |
+| ambos Defensa | cada lado con SU patron por poste (7D intacto) | igual al dibujo |
+| ambos Ninguno | ninguna | 0, y ninguna linea con id `(ninguno)` |
+
+Un frente en blanco sigue quitando APLICABILIDAD sin mover nada: la linea afectada pierde la cara de SU lado, la
+apagada a mano sigue apagada, y el otro lado conserva las suyas. Cancelar no persiste ni el tipo ni los postes;
+aceptar persiste los dos. Guardar y recuperar devuelve los tipos de A y de B por separado, en los dos sentidos.
+Abrir Seguridad con el lado activo en A o en B da lo mismo.
+
+**LEGACY:** un rack que nunca eligio tipo dibuja exactamente lo que dibujaba, y su seccion abre en la pieza que ya
+usaba —no en «Ninguno»—: la ausencia de eleccion no es una eleccion. En cuanto el usuario acepta con la nueva UI, el
+tipo queda explicito por lado.
+
+### Lo que NO cambio
+
+Ninguna regla fisica ni ninguna posicion. **Ningun golden se movio.** Intactos R1–R6, los contratos utiles de R7, y
+todo 7B/7C/7D —incluidos el blanco de topes acotado al lado, el «Ninguno» de topes y los patrones opuestos por
+poste—, con pruebas de regresion propias. El flag `defensaPerPostElsewhere` que la ronda 7D habia introducido queda
+retirado: era un paso intermedio que esta ronda supera al sacar la familia entera de la lista.
+
+### PENDIENTES REGISTRADOS
+
+- **S1 — Safety general:** semantica global de Izquierda / Derecha / Ambas para las botas.
+- **V1 — View hygiene:** el lateral de una seccion dibuja la letra de un lado que no existe funcionalmente.
+- **V2 — Frontales:** una corrida full-span debe mostrar en la cara de salida el HIGH y el tope con semantica de
+  vista posterior.
+- **V3 — Planta / view hygiene:** auditoria de nearest-Y, deduplicacion y fail-open.
+
 ## 4-septvicies. Ronda 7D: la defensa se edita POR LADO, como los topes
 
 La Owner Validation de 7C confirmo los topes —el blanco de un lado ya no contamina el otro, «Ninguno» existe— y

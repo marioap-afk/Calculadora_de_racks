@@ -31,7 +31,7 @@ namespace RackCad.Domain.Systems.PushBack
         ///
         /// Los parentesis lo mantienen fuera del espacio de ids del catalogo, que no los usa.
         /// </summary>
-        public const string NonePieceId = "(ninguno)";
+        public const string NonePieceId = PushBackDefaults.NonePieceId;
 
         /// <summary>True cuando el usuario eligio «Ninguno» para este objetivo.</summary>
         public bool IsNone => !string.IsNullOrWhiteSpace(PieceId)

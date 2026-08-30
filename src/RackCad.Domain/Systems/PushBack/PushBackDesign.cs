@@ -41,6 +41,13 @@ namespace RackCad.Domain.Systems.PushBack
         public PushBackRearTopeConfig RearTope { get; set; } = new PushBackRearTopeConfig();
 
         /// <summary>
+        /// I-42 (ronda 7E) — el TIPO de defensa de montacargas del lado A (y de un rack de un solo sentido). Ver
+        /// <see cref="PushBackSideDesign.DefensePieceId"/>: NULL es el comportamiento historico y es lo que trae
+        /// todo documento anterior a esta ronda.
+        /// </summary>
+        public string DefensePieceId { get; set; }
+
+        /// <summary>
         /// I-42 — la configuracion funcional del lado B. NULL es el rack de un solo sentido: exactamente lo que
         /// carga cualquier documento anterior a I-42, y por eso ese rack se comporta igual sin migrar nada. Cuando
         /// existe, <see cref="Structure"/> y <see cref="Fronts"/> siguen siendo la configuracion del lado A y la

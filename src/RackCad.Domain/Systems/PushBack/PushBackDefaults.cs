@@ -36,6 +36,14 @@ namespace RackCad.Domain.Systems.PushBack
         public const double RearTopeSaque = SelectiveSafetyDefaults.TopeSaque;
 
         /// <summary>
+        /// I-42 — «NINGUNO»: el valor EXPLICITO de un id de pieza que dice que ese objetivo no lleva ninguna. Lo
+        /// comparten el tope posterior (ronda 7C) y la defensa de montacargas (ronda 7E), porque es la misma
+        /// decision leida sobre dos familias, y porque es un valor PERSISTIDO: dos constantes iguales terminarian
+        /// separandose. Los parentesis lo mantienen fuera del espacio de ids del catalogo, que no los usa.
+        /// </summary>
+        public const string NonePieceId = "(ninguno)";
+
+        /// <summary>
         /// PB-012 (I-32) — first-level elevation (in) a BRAND-NEW Push Back rack opens with. Push Back loads at floor
         /// level, so its first beam sits lower than the dynamic system's
         /// <see cref="DynamicRackDefaults.DefaultFirstLevelHeight"/> (6"), which stays untouched for that system.

@@ -930,7 +930,8 @@ namespace RackCad.Application.Systems.PushBack
                     ? matrix.Fronts[0].FirstLevelHeight
                     : PushBackDefaults.DefaultFirstLevelHeight,
                 LegacyHighEndBeamPeralte = PushBackDefaults.HighEndBeamDefaultPeralte,
-                RearTope = SideB.RearTopeConfig()
+                RearTope = SideB.RearTopeConfig(),
+                DefensePieceId = SideB.DefensePieceId
             };
 
             var fronts = SideB.BuildEnvelopeFrontDesigns();

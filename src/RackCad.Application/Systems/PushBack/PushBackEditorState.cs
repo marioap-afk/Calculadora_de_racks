@@ -54,6 +54,14 @@ namespace RackCad.Application.Systems.PushBack
         /// </summary>
         public string RearTopePieceId { get; set; }
 
+        /// <summary>
+        /// I-42 (ronda 7E) — el TIPO de defensa de montacargas de este lado: un id de catalogo,
+        /// <see cref="PushBackDefaults.NonePieceId"/> para «ninguno», o NULL para el comportamiento historico. Es un
+        /// eje distinto de la intencion POR POSTE, que sigue viviendo en la seleccion de seguridad: el tipo dice QUE
+        /// pieza usa el pasillo, y la rejilla en QUE lineas se pone.
+        /// </summary>
+        public string DefensePieceId { get; set; }
+
         private PushBackSystem workingBaseline;
 
         /// <summary>The last accepted resolved system whose MODULAR structure — custom cabeceras and manual fondos — the next
@@ -472,6 +480,7 @@ namespace RackCad.Application.Systems.PushBack
                 pushFronts.Select(front => front.Clone()).ToList(),
                 RearTopeSaque,
                 RearTopePieceId,
+                DefensePieceId,
                 structure.SelectedFrontIndex,
                 structure.SelectedLevelIndex,
                 structure.SelectedCells());
@@ -490,6 +499,7 @@ namespace RackCad.Application.Systems.PushBack
             pushFronts.AddRange(snapshot.PushFronts.Select(front => front.Clone()));
             RearTopeSaque = snapshot.RearTopeSaque;
             RearTopePieceId = snapshot.RearTopePieceId;
+            DefensePieceId = snapshot.DefensePieceId;
             SyncPushConfig();
             RestoreSelection(snapshot.SelectedFrontIndex, snapshot.SelectedLevelIndex, snapshot.SelectedCells);
         }
@@ -583,6 +593,7 @@ namespace RackCad.Application.Systems.PushBack
             IReadOnlyList<PushBackEditorFront> pushFronts,
             double rearTopeSaque,
             string rearTopePieceId,
+            string defensePieceId,
             int selectedFrontIndex,
             int selectedLevelIndex,
             IReadOnlyList<DynamicRackCellAddress> selectedCells)
@@ -591,6 +602,7 @@ namespace RackCad.Application.Systems.PushBack
             PushFronts = pushFronts ?? new List<PushBackEditorFront>();
             RearTopeSaque = rearTopeSaque;
             RearTopePieceId = rearTopePieceId;
+            DefensePieceId = defensePieceId;
             SelectedFrontIndex = selectedFrontIndex;
             SelectedLevelIndex = selectedLevelIndex;
             SelectedCells = selectedCells ?? new List<DynamicRackCellAddress>();
@@ -600,6 +612,9 @@ namespace RackCad.Application.Systems.PushBack
         public IReadOnlyList<PushBackEditorFront> PushFronts { get; }
         public double RearTopeSaque { get; }
         public string RearTopePieceId { get; }
+
+        /// <summary>I-42 (ronda 7E) — el tipo de defensa del lado en el momento de la instantanea.</summary>
+        public string DefensePieceId { get; }
         public int SelectedFrontIndex { get; }
         public int SelectedLevelIndex { get; }
         public IReadOnlyList<DynamicRackCellAddress> SelectedCells { get; }

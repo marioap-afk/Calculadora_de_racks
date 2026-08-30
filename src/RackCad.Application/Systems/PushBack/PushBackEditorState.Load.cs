@@ -39,6 +39,7 @@ namespace RackCad.Application.Systems.PushBack
             pushFronts.Clear();
             RearTopeSaque = PushBackDefaults.RearTopeSaque;
             RearTopePieceId = null;   // PB-005: a new rack starts on the default variant, never on the previous rack's
+            DefensePieceId = null;    // I-42 (7E): y sobre la defensa historica, no sobre la del rack anterior
             AdoptLoadedBaseline(null);   // new design: rebuild from a standard structure, drop any loaded baseline
                                          // AND the module session of whatever rack was open before (I-40, ronda 3)
             SyncPushConfig();
@@ -144,6 +145,7 @@ namespace RackCad.Application.Systems.PushBack
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
             RearTopeSaque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
             RearTopePieceId = rearTope.PieceId;
+            DefensePieceId = system.DefensePieceId;
 
             pushFronts.Clear();
             for (var frontIndex = 0; frontIndex < structure.Count; frontIndex++)

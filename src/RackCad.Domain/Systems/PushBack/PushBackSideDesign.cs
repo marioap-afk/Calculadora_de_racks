@@ -47,6 +47,14 @@ namespace RackCad.Domain.Systems.PushBack
         /// <summary>Rejilla de topes posteriores del lado: activa por defecto, solo se persisten desactivaciones.</summary>
         public PushBackRearTopeConfig RearTope { get; set; } = new PushBackRearTopeConfig();
 
+        /// <summary>
+        /// I-42 (ronda 7E) — el TIPO de defensa de montacargas de ESTE lado: un id de catalogo,
+        /// <see cref="PushBackDefaults.NonePieceId"/> para «ninguno», o NULL para el comportamiento historico (la
+        /// pieza que la seleccion de seguridad del rack ya traia). Un lado es un pasillo propio y elige la suya; hoy
+        /// el catalogo ofrece una sola, y el contrato no supone que vaya a seguir siendo asi.
+        /// </summary>
+        public string DefensePieceId { get; set; }
+
         /// <summary>La configuracion Push Back de la ranura <paramref name="frontIndex"/>, o null si no hay ninguna.</summary>
         public PushBackFrontConfig FrontConfig(int frontIndex)
             => frontIndex >= 0 && frontIndex < FrontConfigs.Count ? FrontConfigs[frontIndex] : null;
@@ -63,7 +71,8 @@ namespace RackCad.Domain.Systems.PushBack
                 LoadLevels = LoadLevels,
                 FirstLevelHeight = FirstLevelHeight,
                 LegacyHighEndBeamPeralte = LegacyHighEndBeamPeralte,
-                RearTope = RearTope?.DeepCopy() ?? new PushBackRearTopeConfig()
+                RearTope = RearTope?.DeepCopy() ?? new PushBackRearTopeConfig(),
+                DefensePieceId = DefensePieceId
             };
 
             foreach (var front in Fronts)

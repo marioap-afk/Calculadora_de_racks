@@ -278,7 +278,8 @@ namespace RackCad.Application.Systems.PushBack
             {
                 Structure = sharedDesign,
                 LegacyHighEndBeamPeralte = PushBackDefaults.HighEndBeamDefaultPeralte,
-                RearTope = new PushBackRearTopeConfig { Saque = state.RearTopeSaque, PieceId = state.RearTopePieceId }
+                RearTope = new PushBackRearTopeConfig { Saque = state.RearTopeSaque, PieceId = state.RearTopePieceId },
+                DefensePieceId = state.DefensePieceId
             };
 
             // I-41 (PB-015): la ENVOLVENTE mandada a la estructura compartida. El diseno se arma desde el matrix, que

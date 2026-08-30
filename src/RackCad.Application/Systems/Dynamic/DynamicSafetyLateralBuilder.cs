@@ -108,31 +108,38 @@ namespace RackCad.Application.Systems.Dynamic
                 return;
             }
 
-            var block = CatalogLookup.Block(catalog, selection.ElementId, View);
-            if (string.IsNullOrWhiteSpace(block))
+            // I-42 (ronda 7E): cada extremo del corte lateral lleva la pieza que SU cara declara, y puede no llevar
+            // ninguna. Sin caras declaradas los dos resuelven a la de la seleccion, como siempre.
+            var nearId = DynamicDefenseFaces.ElementIdFor(selection, farEnd: false);
+            var farId = DynamicDefenseFaces.ElementIdFor(selection, farEnd: true);
+            var nearBlock = string.IsNullOrWhiteSpace(nearId) ? null : CatalogLookup.Block(catalog, nearId, View);
+            var farBlock = string.IsNullOrWhiteSpace(farId) ? null : CatalogLookup.Block(catalog, farId, View);
+            if (string.IsNullOrWhiteSpace(nearBlock) && string.IsNullOrWhiteSpace(farBlock))
             {
                 return;
             }
 
             var setting = DynamicForkliftDefensePlan.ForSelection(
                 selection, postIndex, Math.Max(1, system.Fronts.Count + 1));
-            var offset = CatalogLookup.Local(
-                catalog, selection.ElementId, DynamicForkliftDefensePlan.PostOriginPoint, View);
-            if (setting.DrawsExit)
+            if (setting.DrawsExit && !string.IsNullOrWhiteSpace(nearBlock))
             {
+                var offset = CatalogLookup.Local(
+                    catalog, nearId, DynamicForkliftDefensePlan.PostOriginPoint, View);
                 target.Add(Piece(
-                    selection.ElementId,
-                    block,
+                    nearId,
+                    nearBlock,
                     new Point2D(left.PostOrigin.X + offset.X, left.PlateOrigin.Y + offset.Y),
                     mirrored: false,
                     setting.ExitLength));
             }
 
-            if (setting.DrawsEntrance)
+            if (setting.DrawsEntrance && !string.IsNullOrWhiteSpace(farBlock))
             {
+                var offset = CatalogLookup.Local(
+                    catalog, farId, DynamicForkliftDefensePlan.PostOriginPoint, View);
                 target.Add(Piece(
-                    selection.ElementId,
-                    block,
+                    farId,
+                    farBlock,
                     new Point2D(right.PostOrigin.X - offset.X, right.PlateOrigin.Y + offset.Y),
                     mirrored: true,
                     setting.EntranceLength));

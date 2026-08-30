@@ -176,7 +176,11 @@ namespace RackCad.UI.Systems.PushBack
                     && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.ParrillaType)
                     // Owner decision (2026-07-24): the TOPE belongs to the HIGH end and is owned by the rear-tope
                     // config, so it is never offered as ordinary low-end safety (PushBackSafetyAuthority refuses it too).
-                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.TopeType))
+                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.TopeType)
+                    // I-42 (ronda 7E, decision del dueño): la DEFENSA se elige en su seccion, con su «Ninguno» y
+                    // por lado. Dejarla tambien en la lista general seria dos sitios para la misma decision, que es
+                    // exactamente lo que la ronda 7B corrigio para los topes.
+                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.DefensaType))
                 .ToList();
 
         /// <summary>The library project a "Guardar en biblioteca" would write (the active Push Back payload + the opened
@@ -2391,6 +2395,10 @@ namespace RackCad.UI.Systems.PushBack
             // el vocabulario de un rack de un solo sentido, y el lado B no tenia donde editarse: toda decision
             // acababa aplicandose al lado A. La ventana principal no participa — abrir Seguridad con el lado
             // activo en A o en B ofrece exactamente lo mismo.
+            // La familia DEFENSA se lee ANTES de abrir: al aceptar, la ventana reemplaza la lista de selecciones y
+            // esta familia ya no viaja en ella —la deciden las secciones—, asi que su id se conserva aqui. Es el
+            // portador de la intencion POR POSTE cuando los dos lados quedan en «Ninguno».
+            var defenseCarrierId = DefenseSelection(safetySelections)?.ElementId;
             var defenseSectionA = BuildDefenseSection(PushBackSide.A, composite.SideBPresent ? "A" : null, postCount);
             DefenseSectionForTest = defenseSectionA;
             composed.Children.Add(defenseSectionA.View);
@@ -2453,7 +2461,7 @@ namespace RackCad.UI.Systems.PushBack
                 // I-42 (ronda 7D): cada seccion de defensa funde SU cara sobre los registros por poste. A/Pn y
                 // B/Pn comparten la linea y son dos intenciones distintas, asi que la fusion escribe un extremo y
                 // deja el otro exactamente como estaba.
-                ApplyDefenseSections(defenseSectionA, defenseSectionB);
+                ApplyDefenseSections(defenseSectionA, defenseSectionB, defenseCarrierId);
 
                 // Cada seccion aplica a SU lado: editar el tope de A no toca el de B, que es el contrato de
                 // StopA/StopB que las rondas anteriores cerraron.
@@ -2489,7 +2497,25 @@ namespace RackCad.UI.Systems.PushBack
                 DefensePostsNow(),
                 postCount,
                 PushBackDefenseSides.FacesOf(LastComputation?.System?.Structure, postCount, side),
-                OpenDefenseDialog);
+                OpenDefenseDialog,
+                DefenseVariants(),
+                DefensePieceIdOf(side));
+
+        /// <summary>Las variantes de DEFENSA que el catalogo declara. Hoy una; el contrato no supone que siga siendo asi.</summary>
+        private IReadOnlyList<SafetyElementCatalogEntry> DefenseVariants()
+            => RackCad.Application.Systems.Selective.SelectiveSafetyFamilies.VariantsOfType(
+                catalog?.SafetyElements, SelectiveSafetyDefaults.DefensaType);
+
+        /// <summary>
+        /// El tipo de defensa de un lado: el que ese lado guarda, o —si nunca se eligio— la pieza que la seleccion
+        /// de seguridad del rack ya traia. Un documento anterior a esta ronda abre asi en la pieza que dibujaba, y
+        /// no en «Ninguno»: la ausencia de eleccion no es una eleccion.
+        /// </summary>
+        private string DefensePieceIdOf(PushBackSide side)
+        {
+            var stored = composite.Of(side).DefensePieceId;
+            return string.IsNullOrWhiteSpace(stored) ? DefenseSelection(safetySelections)?.ElementId : stored;
+        }
 
         /// <summary>Los registros POR POSTE que la familia DEFENSA tiene ahora, o una lista vacia si no hay ninguna.</summary>
         private IReadOnlyList<SafetyPostDefense> DefensePostsNow()
@@ -2527,9 +2553,23 @@ namespace RackCad.UI.Systems.PushBack
         /// Funde lo que cada seccion decidio sobre los registros por poste de la familia DEFENSA. Si la familia no
         /// esta seleccionada no hay donde escribir, y las decisiones se descartan con ella.
         /// </summary>
-        private void ApplyDefenseSections(PushBackDefenseSection sideA, PushBackDefenseSection sideB)
+        private void ApplyDefenseSections(
+            PushBackDefenseSection sideA, PushBackDefenseSection sideB, string carrierId)
         {
-            var selection = DefenseSelection(safetySelections);
+            // I-42 (ronda 7E): el TIPO de cada lado se guarda en SU estado. Es un eje distinto de la intencion por
+            // poste, que sigue en la seleccion de seguridad: cambiar el tipo —incluso a «Ninguno»— no la destruye,
+            // asi que volver a una pieza recupera exactamente los postes que habia.
+            if (sideA != null)
+            {
+                composite.Of(PushBackSide.A).DefensePieceId = sideA.PieceId;
+            }
+
+            if (sideB != null)
+            {
+                composite.Of(PushBackSide.B).DefensePieceId = sideB.PieceId;
+            }
+
+            var selection = EnsureDefenseSelection(sideA, sideB, carrierId);
             if (selection == null)
             {
                 return;
@@ -2559,6 +2599,46 @@ namespace RackCad.UI.Systems.PushBack
             var lines = sideA?.PostCount ?? sideB?.PostCount ?? 0;
             merged.RemoveAll(record => record.PostIndex < 0 || record.PostIndex >= lines);
             Write(selection, merged);
+        }
+
+        /// <summary>
+        /// La seleccion de la familia DEFENSA, creandola si hace falta. Con la fila general retirada, las secciones
+        /// son quienes la traen a existencia: mientras algun lado tenga una pieza, la familia existe; si los dos
+        /// dicen «Ninguno», no hay familia y no hay ni bloque ni linea de BOM —«Ninguno» nunca es una pieza.
+        /// </summary>
+        private SelectiveSafetySelection EnsureDefenseSelection(
+            PushBackDefenseSection sideA, PushBackDefenseSection sideB, string carrierId)
+        {
+            var existing = DefenseSelection(safetySelections);
+            var chosen = new[] { sideA, sideB }
+                .Where(section => section != null && !section.IsNone)
+                .Select(section => section.PieceId)
+                .FirstOrDefault(id => !string.IsNullOrWhiteSpace(id));
+
+            if (string.IsNullOrWhiteSpace(chosen))
+            {
+                // Los DOS lados en «Ninguno». La familia se conserva SOLO como portadora de la intencion POR POSTE,
+                // que es un eje distinto del tipo y no se destruye al apagarlo: sus dos caras resuelven a «ninguna
+                // pieza», asi que no se dibuja ni se cuenta nada, y volver a elegir una devuelve la rejilla entera.
+                // Sin postes decididos no hay nada que conservar y no se inventa ninguna familia.
+                var hasIntent = (sideA?.Posts?.Count ?? 0) > 0 || (sideB?.Posts?.Count ?? 0) > 0;
+                if (!hasIntent || string.IsNullOrWhiteSpace(carrierId))
+                {
+                    return null;
+                }
+
+                chosen = carrierId;
+            }
+
+            if (existing == null)
+            {
+                existing = new SelectiveSafetySelection { Quantity = 1, Side = SafetySide.None };
+                safetySelections.Add(existing);
+            }
+
+            existing.ElementId = chosen;
+            PushBackSafetyAuthority.RestrictToLowEnd(existing);
+            return existing;
         }
 
         private static void Write(SelectiveSafetySelection selection, IEnumerable<SafetyPostDefense> records)
@@ -2600,8 +2680,8 @@ namespace RackCad.UI.Systems.PushBack
                 elements, safetySelections, postCount,
                 levelsPerFrente: levels, fondoCount: 1, parrillaPlan: null, catalog: catalog, resolvedSystem: null,
                 fallbackLevelsArePerPost: true,
-                introduction: "Push Back admite botas, protectores laterales, desviadores y defensa de montacargas en el extremo de entrada/salida (el extremo bajo). El lado posterior viene apagado y no usa guías.",
-                includeDefensa: true, includeGuia: false, useDynamicSafetyDefaults: true,
+                introduction: "Push Back admite botas, protectores laterales, desviadores y defensa de montacargas en el extremo de entrada/salida (el extremo bajo). La defensa y los topes se configuran en las secciones de arriba, cada lado por separado. El lado posterior viene apagado y no usa guías.",
+                includeDefensa: false, includeGuia: false, useDynamicSafetyDefaults: true,
                 extraSection: extraSection,
                 desviadorLevelsPerPost: DesviadorLevelsPerPost(),
                 allowBlankFrontColumns: true,
@@ -2610,9 +2690,7 @@ namespace RackCad.UI.Systems.PushBack
                 showDesviadorSide: false,
                 // PB-008/009/010: the two ends of the defence are named for what Push Back really has, the rear one is
                 // off by default, and each end can follow the automatic 12"/36" that recomputes with the front count.
-                defensaLowEndOnly: true,
-                // I-42 (ronda 7D): la configuracion por poste vive en las secciones de arriba, una por lado.
-                defensaPerPostElsewhere: true)
+                defensaLowEndOnly: true)
             {
                 Owner = this
             };

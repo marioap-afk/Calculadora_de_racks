@@ -115,6 +115,81 @@ namespace RackCad.Tests
             Assert.Equal(36.0, PushBackDefenseSides.Resolved(setting, PushBackSide.B), 9);
         }
 
+        // ==================== I-42 (ronda 7E): el TIPO, por lado ====================
+
+        /// <summary>
+        /// El contrato admite UN TIPO DISTINTO POR LADO. Hoy el catalogo ofrece una sola defensa, y por eso esta
+        /// prueba usa dos ids de prueba: lo que fija es que el modelo no supone que solo haya uno.
+        /// </summary>
+        [Fact]
+        public void TheTwoFaces_CanCarryDifferentPieces()
+        {
+            var selection = new SelectiveSafetySelection { ElementId = "DEFENSA_HISTORICA" };
+            PushBackDefenseSides.DeclareFaces(selection, "DEFENSA_X", "DEFENSA_Y");
+
+            Assert.Equal("DEFENSA_X", selection.ElementIdForFace(farEnd: false));
+            Assert.Equal("DEFENSA_Y", selection.ElementIdForFace(farEnd: true));
+        }
+
+        /// <summary>Una cara sin declarar HEREDA la pieza de la seleccion: el comportamiento historico, intacto.</summary>
+        [Fact]
+        public void AnUndeclaredFace_InheritsTheSelectionPiece()
+        {
+            var selection = new SelectiveSafetySelection { ElementId = "DEFENSA_HISTORICA" };
+
+            Assert.Equal("DEFENSA_HISTORICA", selection.ElementIdForFace(farEnd: false));
+            Assert.Equal("DEFENSA_HISTORICA", selection.ElementIdForFace(farEnd: true));
+
+            // Y declarar NULL —«este lado nunca eligio»— sigue siendo heredar, no apagar.
+            PushBackDefenseSides.DeclareFaces(selection, null, null);
+            Assert.Equal("DEFENSA_HISTORICA", selection.ElementIdForFace(farEnd: false));
+            Assert.Equal("DEFENSA_HISTORICA", selection.ElementIdForFace(farEnd: true));
+        }
+
+        /// <summary>«Ninguno» NO es una pieza: esa cara no resuelve ningun id, asi que no hay bloque ni BOM.</summary>
+        [Fact]
+        public void ANoneFace_ResolvesToNoPieceAtAll()
+        {
+            var selection = new SelectiveSafetySelection { ElementId = "DEFENSA_HISTORICA" };
+            PushBackDefenseSides.DeclareFaces(selection, PushBackDefaults.NonePieceId, "DEFENSA_Y");
+
+            Assert.Null(selection.ElementIdForFace(farEnd: false));
+            Assert.Equal("DEFENSA_Y", selection.ElementIdForFace(farEnd: true));
+            Assert.NotEqual(PushBackDefaults.NonePieceId, selection.ElementIdForFace(farEnd: false));
+        }
+
+        [Fact]
+        public void BothNone_ResolveToNoPiece()
+        {
+            var selection = new SelectiveSafetySelection { ElementId = "DEFENSA_HISTORICA" };
+            PushBackDefenseSides.DeclareFaces(selection, PushBackDefaults.NonePieceId, PushBackDefaults.NonePieceId);
+
+            Assert.Null(selection.ElementIdForFace(farEnd: false));
+            Assert.Null(selection.ElementIdForFace(farEnd: true));
+        }
+
+        [Fact]
+        public void IsNone_RecognisesTheSentinel_AndNothingElse()
+        {
+            Assert.True(PushBackDefenseSides.IsNone(PushBackDefaults.NonePieceId));
+            Assert.True(PushBackDefenseSides.IsNone(" (NINGUNO) "));
+            Assert.False(PushBackDefenseSides.IsNone(null));
+            Assert.False(PushBackDefenseSides.IsNone("DEFENSA_MONTACARGAS"));
+        }
+
+        /// <summary>Las caras viajan en la copia profunda: si no, el resolver las perderia al cruzar a la estructura.</summary>
+        [Fact]
+        public void TheDeclaredFaces_SurviveDeepCopy()
+        {
+            var selection = new SelectiveSafetySelection { ElementId = "DEFENSA_HISTORICA" };
+            PushBackDefenseSides.DeclareFaces(selection, PushBackDefaults.NonePieceId, "DEFENSA_Y");
+
+            var copy = selection.DeepCopy();
+
+            Assert.Null(copy.ElementIdForFace(farEnd: false));
+            Assert.Equal("DEFENSA_Y", copy.ElementIdForFace(farEnd: true));
+        }
+
         /// <summary>
         /// Sin estructura resuelta la aplicabilidad es FAIL-OPEN: una superficie de edicion no deshabilita una fila
         /// por una lectura que todavia no existe. La fisica vuelve a filtrar al dibujar.

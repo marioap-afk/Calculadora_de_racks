@@ -698,7 +698,9 @@ namespace RackCad.UI.Systems.PushBack
                         FirstLevelDatum = design.Structure?.FirstLevelDatum
                     },
                     LegacyHighEndBeamPeralte = design.SideB.LegacyHighEndBeamPeralte,
-                    RearTope = design.SideB.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig()
+                    RearTope = design.SideB.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig(),
+                    // I-42 (ronda 7E): el TIPO de defensa del lado B vuelve con el lado B.
+                    DefensePieceId = design.SideB.DefensePieceId
                 };
 
                 // I-42 (correccion aislada 2B) — el diseno del lado B se arma con sus frentes TAL CUAL vienen: los

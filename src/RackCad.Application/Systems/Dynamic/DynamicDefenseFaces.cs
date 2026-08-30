@@ -1,5 +1,6 @@
 using System.Linq;
 using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.Systems.Dynamic
 {
@@ -21,6 +22,14 @@ namespace RackCad.Application.Systems.Dynamic
     /// </summary>
     public static class DynamicDefenseFaces
     {
+        /// <summary>
+        /// I-42 (ronda 7E) — la PIEZA que materializa una cara, o NULL cuando esa cara no lleva ninguna. Es la unica
+        /// lectura que los constructores necesitan hacer, y la hacen los tres —lateral, frontal y planta, que es la
+        /// que alimenta el BOM—, asi que no pueden discrepar sobre que pieza lleva cada pasillo.
+        /// </summary>
+        public static string ElementIdFor(SelectiveSafetySelection selection, bool farEnd)
+            => selection?.ElementIdForFace(farEnd);
+
         /// <summary>La X de mundo donde empieza la cobertura de la linea: su cara CERCANA.</summary>
         public static double NearX(DynamicRackSystem system, int postIndex)
         {

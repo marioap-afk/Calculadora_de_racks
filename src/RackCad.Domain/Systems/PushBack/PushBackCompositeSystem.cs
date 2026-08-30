@@ -32,6 +32,9 @@ namespace RackCad.Domain.Systems.PushBack
         /// <summary>Rejilla de topes del lado (activa por defecto).</summary>
         public PushBackRearTopeConfig RearTope { get; set; } = new PushBackRearTopeConfig();
 
+        /// <summary>I-42 (ronda 7E) — el tipo de defensa resuelto de este lado.</summary>
+        public string DefensePieceId { get; set; }
+
         /// <summary>
         /// Estructura PROPUESTA: las posiciones de fondo que la demanda de las celdas de este lado exige como minimo.
         /// Es derivada — se recalcula siempre — y nunca es autoridad inmutable.

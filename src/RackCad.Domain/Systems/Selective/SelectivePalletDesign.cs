@@ -156,6 +156,20 @@ namespace RackCad.Domain.Systems.Selective
         public bool LowEndOnly { get; set; }
 
         /// <summary>
+        /// I-42 (ronda 7E) — la pieza de la cara CERCANA de cada linea, cuando el sistema declara una por extremo.
+        /// NULL —el valor de todo sistema que no la rellene y de todo documento anterior— significa «la de
+        /// <see cref="ElementId"/>», que es el comportamiento historico.
+        /// </summary>
+        public SafetyFacePiece NearFace { get; set; }
+
+        /// <summary>La pieza de la cara LEJANA. Ver <see cref="NearFace"/>.</summary>
+        public SafetyFacePiece FarFace { get; set; }
+
+        /// <summary>El id que materializa una cara, o NULL cuando esa cara no lleva ninguna pieza.</summary>
+        public string ElementIdForFace(bool farEnd)
+            => SafetyFacePiece.Resolve(farEnd ? FarFace : NearFace, ElementId);
+
+        /// <summary>
         /// I-42 — el sistema tiene cara de carga en los DOS extremos longitudinales (un Push Back compuesto son dos
         /// Push Back opuestos). False es el comportamiento historico de todos los sistemas.
         ///
@@ -314,6 +328,8 @@ namespace RackCad.Domain.Systems.Selective
                 Side = Side,
                 LowEndOnly = LowEndOnly,
                 BothEndsAreLoadFaces = BothEndsAreLoadFaces,
+                NearFace = NearFace,
+                FarFace = FarFace,
                 DesviadorCellsAreByPost = DesviadorCellsAreByPost,
                 Tope = Tope.DeepCopy(),
                 Desviador = Desviador.DeepCopy(),

@@ -5,10 +5,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
+using RackCad.UI.Controls;
 
 namespace RackCad.UI.Systems.PushBack
 {
@@ -47,9 +49,12 @@ namespace RackCad.UI.Systems.PushBack
             IEnumerable<SafetyPostDefense> current,
             int postCount,
             IReadOnlyList<bool> faces,
-            Func<PushBackDefenseSection, IReadOnlyList<SafetyPostDefense>> openDialog)
+            Func<PushBackDefenseSection, IReadOnlyList<SafetyPostDefense>> openDialog,
+            IReadOnlyList<SafetyElementCatalogEntry> variants = null,
+            string pieceId = null)
         {
             Side = side;
+            PieceId = pieceId;
             SideLabel = sideLabel;
             PostCount = Math.Max(1, postCount);
             Faces = faces ?? Enumerable.Repeat(true, PostCount).ToList();
@@ -78,6 +83,28 @@ namespace RackCad.UI.Systems.PushBack
                 Margin = new Thickness(0, 0, 0, 4),
             };
 
+            // I-42 (ronda 7E, decision del dueño) — EL TIPO DE DEFENSA VIVE AQUI, con su «Ninguno», siguiendo el
+            // patron que los topes ya usaban. Antes se elegia en una fila global al fondo de la ventana mientras los
+            // postes se configuraban arriba: una misma decision partida en dos sitios, y en un compuesto ademas una
+            // sola para los dos pasillos. El tipo es de ESTE lado y no dice nada del otro.
+            PieceBox = new CatalogCombo
+            {
+                Name = PieceBoxName,
+                Margin = new Thickness(0, 0, 0, 6),
+                ToolTip = "Tipo de defensa de montacargas de este lado. La lista viene del catálogo;"
+                          + " «Ninguno» significa que este lado no lleva defensas.",
+            };
+            PieceBox.SetCatalogEntries(
+                variants ?? new List<SafetyElementCatalogEntry>(),
+                IsNone ? PushBackDefaults.NonePieceId : PieceId,
+                placeholder: new CatalogOption(PushBackDefaults.NonePieceId, NoneOptionText));
+            PieceId = PieceBox.SelectedId;
+            PieceBox.SelectionChanged += (_, __) =>
+            {
+                PieceId = PieceBox.SelectedId;
+                status.Text = StatusText();
+            };
+
             Button = new Button
             {
                 Name = ConfigureButtonName,
@@ -89,6 +116,13 @@ namespace RackCad.UI.Systems.PushBack
 
             var panel = new StackPanel { Margin = new Thickness(0, 0, 0, 12) };
             panel.Children.Add(heading);
+            panel.Children.Add(new TextBlock
+            {
+                Text = PieceLabelText,
+                FontSize = 11,
+                Margin = new Thickness(0, 2, 0, 2),
+            });
+            panel.Children.Add(PieceBox);
             panel.Children.Add(status);
             panel.Children.Add(Button);
             View = panel;
@@ -101,6 +135,30 @@ namespace RackCad.UI.Systems.PushBack
 
         /// <summary>x:Name-equivalent of the button, so a test can find it inside the composed dialog.</summary>
         public const string ConfigureButtonName = "DefenseConfigureButton";
+
+        /// <summary>Label above this side's defence-type selector.</summary>
+        public const string PieceLabelText = "Tipo de defensa";
+
+        /// <summary>x:Name-equivalent of the type selector.</summary>
+        public const string PieceBoxName = "DefensePieceBox";
+
+        /// <summary>I-42 (ronda 7E) — el texto de la opcion «sin defensa» dentro del selector de tipo.</summary>
+        public const string NoneOptionText = "Ninguno";
+
+        /// <summary>Lo que la seccion muestra cuando el lado quedo sin defensa.</summary>
+        public const string NoneStatusText = "Sin defensa de montacargas en este lado";
+
+        /// <summary>El selector de tipo de este lado.</summary>
+        public CatalogCombo PieceBox { get; }
+
+        /// <summary>
+        /// El TIPO elegido para este lado: un id de catalogo, <see cref="PushBackDefaults.NonePieceId"/> o NULL
+        /// (el comportamiento historico, que es lo que trae un documento anterior a esta ronda).
+        /// </summary>
+        public string PieceId { get; private set; }
+
+        /// <summary>True cuando este lado quedo explicitamente sin defensa.</summary>
+        public bool IsNone => PushBackDefenseSides.IsNone(PieceId);
 
         public static string Heading(string sideLabel)
             => string.IsNullOrEmpty(sideLabel) ? HeadingText : HeadingText + " — lado " + sideLabel;
@@ -161,9 +219,17 @@ namespace RackCad.UI.Systems.PushBack
             status.Text = StatusText();
         }
 
-        /// <summary>El estado legible sin abrir la rejilla: cuantas lineas llevan defensa en ESTE lado.</summary>
+        /// <summary>
+        /// El estado legible sin abrir la rejilla: cuantas lineas llevan defensa en ESTE lado. Con el tipo en
+        /// «Ninguno» lo dice y no finge un recuento: la intencion por poste sigue guardada, pero hoy no materializa.
+        /// </summary>
         public string StatusText()
         {
+            if (IsNone)
+            {
+                return NoneStatusText;
+            }
+
             var applicable = Enumerable.Range(0, PostCount).Count(post => post >= Faces.Count || Faces[post]);
             if (applicable == 0)
             {

@@ -181,14 +181,17 @@ namespace RackCad.Application.Systems.Dynamic
             }
 
             const string view = "FRONTAL";
-            var block = CatalogLookup.Block(catalog, selection.ElementId, view);
+
+            // I-42 (ronda 7E): un corte frontal mira UN extremo, asi que lleva la pieza que ESA cara declara.
+            var elementId = DynamicDefenseFaces.ElementIdFor(selection, farEnd: end == DynamicRackEnd.Entrance);
+            var block = string.IsNullOrWhiteSpace(elementId) ? null : CatalogLookup.Block(catalog, elementId, view);
             if (string.IsNullOrWhiteSpace(block))
             {
                 return;
             }
 
             var offset = CatalogLookup.Local(
-                catalog, selection.ElementId, DynamicForkliftDefensePlan.PostOriginPoint, view);
+                catalog, elementId, DynamicForkliftDefensePlan.PostOriginPoint, view);
             var plateMate = string.IsNullOrWhiteSpace(plateId)
                 ? new Point2D(0.0, 0.0)
                 : CatalogLookup.Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
@@ -218,7 +221,7 @@ namespace RackCad.Application.Systems.Dynamic
 
                 var direction = end == DynamicRackEnd.Exit ? 1.0 : -1.0;
                 target.Add(Piece(
-                    selection.ElementId,
+                    elementId,
                     block,
                     view,
                     new Point2D(
@@ -357,14 +360,25 @@ namespace RackCad.Application.Systems.Dynamic
             }
 
             const string view = "PLANTA";
-            var block = CatalogLookup.Block(catalog, selection.ElementId, view);
-            if (string.IsNullOrWhiteSpace(block))
+
+            // I-42 (ronda 7E): cada CARA lleva la pieza que su lado eligio, y puede no llevar ninguna. Sin caras
+            // declaradas —todo sistema que no las rellene, todo documento anterior— las dos resuelven a la de la
+            // seleccion, que es exactamente lo que se hacia antes.
+            var nearId = DynamicDefenseFaces.ElementIdFor(selection, farEnd: false);
+            var farId = DynamicDefenseFaces.ElementIdFor(selection, farEnd: true);
+            var nearBlock = string.IsNullOrWhiteSpace(nearId) ? null : CatalogLookup.Block(catalog, nearId, view);
+            var farBlock = string.IsNullOrWhiteSpace(farId) ? null : CatalogLookup.Block(catalog, farId, view);
+            if (string.IsNullOrWhiteSpace(nearBlock) && string.IsNullOrWhiteSpace(farBlock))
             {
                 return;
             }
 
-            var offset = CatalogLookup.Local(
-                catalog, selection.ElementId, DynamicForkliftDefensePlan.PostOriginPoint, view);
+            var nearOffset = string.IsNullOrWhiteSpace(nearId)
+                ? new Point2D(0.0, 0.0)
+                : CatalogLookup.Local(catalog, nearId, DynamicForkliftDefensePlan.PostOriginPoint, view);
+            var farOffset = string.IsNullOrWhiteSpace(farId)
+                ? new Point2D(0.0, 0.0)
+                : CatalogLookup.Local(catalog, farId, DynamicForkliftDefensePlan.PostOriginPoint, view);
             var postCount = layout.PostPositions.Count;
             for (var postIndex = 0; postIndex < postCount; postIndex++)
             {
@@ -378,7 +392,6 @@ namespace RackCad.Application.Systems.Dynamic
                 var setting = DynamicForkliftDefensePlan.ForSelection(selection, postIndex, postCount);
                 var rangeStart = DynamicDefenseFaces.NearX(system, postIndex);
                 var rangeEnd = DynamicDefenseFaces.FarX(system, postIndex);
-                var y = layout.PostPositions[postIndex] + offset.Y;
 
                 // I-42 (ronda 6D) — una defensa protege una CARA DE CARGA: el extremo de la profundidad por donde
                 // entra el montacargas. Se coloca en los extremos de la cobertura de esta linea, y eso basta
@@ -391,16 +404,20 @@ namespace RackCad.Application.Systems.Dynamic
                 // siempre.
                 // I-42 (ronda 7D): la MISMA pregunta la hace ahora la rejilla por poste, para que no pueda pintar
                 // «apagado» donde el rack si lleva defensa. La regla no cambia, solo dejo de estar solo aqui.
-                if (setting.DrawsExit && DynamicDefenseFaces.HasFace(system, postIndex, farEnd: false))
+                if (setting.DrawsExit && !string.IsNullOrWhiteSpace(nearBlock)
+                    && DynamicDefenseFaces.HasFace(system, postIndex, farEnd: false))
                 {
-                    target.Add(Piece(selection.ElementId, block, view,
-                        new Point2D(rangeStart + offset.X, y), false, false, setting.ExitLength));
+                    target.Add(Piece(nearId, nearBlock, view,
+                        new Point2D(rangeStart + nearOffset.X, layout.PostPositions[postIndex] + nearOffset.Y),
+                        false, false, setting.ExitLength));
                 }
 
-                if (setting.DrawsEntrance && DynamicDefenseFaces.HasFace(system, postIndex, farEnd: true))
+                if (setting.DrawsEntrance && !string.IsNullOrWhiteSpace(farBlock)
+                    && DynamicDefenseFaces.HasFace(system, postIndex, farEnd: true))
                 {
-                    target.Add(Piece(selection.ElementId, block, view,
-                        new Point2D(rangeEnd - offset.X, y), true, false, setting.EntranceLength));
+                    target.Add(Piece(farId, farBlock, view,
+                        new Point2D(rangeEnd - farOffset.X, layout.PostPositions[postIndex] + farOffset.Y),
+                        true, false, setting.EntranceLength));
                 }
             }
         }

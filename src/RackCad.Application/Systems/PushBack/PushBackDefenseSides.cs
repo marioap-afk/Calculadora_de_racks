@@ -34,6 +34,38 @@ namespace RackCad.Application.Systems.PushBack
         /// <summary>El lado A ataca por el extremo CERCANO de la cobertura; el lado B por el LEJANO.</summary>
         public static bool IsFarEnd(PushBackSide side) => side == PushBackSide.B;
 
+        /// <summary>«Ninguno»: ese lado no materializa defensa, decida lo que decida su rejilla por poste.</summary>
+        public static bool IsNone(string pieceId)
+            => !string.IsNullOrWhiteSpace(pieceId)
+               && string.Equals(pieceId.Trim(), PushBackDefaults.NonePieceId, StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// I-42 (ronda 7E) — LA CARA que un lado declara, lista para que la lea el dibujo. Tres estados y solo tres:
+        /// NULL en el diseno = heredar la pieza de la seleccion (todo documento anterior a esta ronda, y todo rack
+        /// que nunca haya tocado el selector); «Ninguno» = esa cara no lleva pieza; cualquier otro id = esa pieza.
+        /// </summary>
+        public static SafetyFacePiece FaceOf(string pieceId)
+        {
+            if (string.IsNullOrWhiteSpace(pieceId))
+            {
+                return null;   // heredado: el comportamiento historico, sin conversion automatica de nada
+            }
+
+            return IsNone(pieceId) ? SafetyFacePiece.None : SafetyFacePiece.Of(pieceId);
+        }
+
+        /// <summary>Declara en <paramref name="selection"/> el tipo que cada lado eligio. Null-safe en los dos lados.</summary>
+        public static void DeclareFaces(SelectiveSafetySelection selection, string sideAPieceId, string sideBPieceId)
+        {
+            if (selection == null)
+            {
+                return;
+            }
+
+            selection.NearFace = FaceOf(sideAPieceId);
+            selection.FarFace = FaceOf(sideBPieceId);
+        }
+
         /// <summary>La longitud almacenada para la cara de <paramref name="side"/> (0 = esa cara no lleva defensa).</summary>
         public static double LengthOf(SafetyPostDefense record, PushBackSide side)
             => record == null ? 0.0 : (IsFarEnd(side) ? record.EntranceLength : record.ExitLength);

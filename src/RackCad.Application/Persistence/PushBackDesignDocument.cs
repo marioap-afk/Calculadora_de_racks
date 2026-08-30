@@ -41,6 +41,14 @@ namespace RackCad.Application.Persistence
         /// </summary>
         public string RearTopePieceId { get; set; }
 
+        /// <summary>
+        /// I-42 (ronda 7E) — el TIPO de defensa de montacargas de este lado: un id de catalogo,
+        /// <see cref="PushBackDefaults.NonePieceId"/> para «ninguno», o NULL para el comportamiento historico. Es un
+        /// eje distinto de la intencion POR POSTE, que sigue viviendo en la seleccion de seguridad: el tipo dice QUE
+        /// pieza usa el pasillo, y la rejilla en QUE lineas se pone.
+        /// </summary>
+        public string DefensePieceId { get; set; }
+
         /// <summary>Rear-tope DEACTIVATIONS only (front, level). Active-by-default is implicit: an absent cell is active.</summary>
         public List<PushBackCellDocument> RearTopeOffCells { get; set; }
 
@@ -103,6 +111,9 @@ namespace RackCad.Application.Persistence
                 : (double?)null;
             // PB-005: only a real choice is written. A blank id stays absent from the file, so a rack that never chose
             // a variant is byte-identical to what previous builds wrote.
+            document.DefensePieceId = string.IsNullOrWhiteSpace(design.DefensePieceId)
+                ? null
+                : design.DefensePieceId.Trim();
             document.RearTopePieceId = string.IsNullOrWhiteSpace(design.RearTope?.PieceId)
                 ? null
                 : design.RearTope.PieceId.Trim();
@@ -191,6 +202,7 @@ namespace RackCad.Application.Persistence
 
             design.RearTope.Saque = RearTopeSaque ?? PushBackDefaults.RearTopeSaque;
             design.RearTope.PieceId = string.IsNullOrWhiteSpace(RearTopePieceId) ? null : RearTopePieceId.Trim();
+            design.DefensePieceId = string.IsNullOrWhiteSpace(DefensePieceId) ? null : DefensePieceId.Trim();
             if (RearTopeOffCells != null)
             {
                 foreach (var cell in RearTopeOffCells)
@@ -247,6 +259,10 @@ namespace RackCad.Application.Persistence
 
         public double? RearTopeSaque { get; set; }
         public string RearTopePieceId { get; set; }
+
+        /// <summary>I-42 (ronda 7E) — el tipo de defensa de ESTE lado. NULL = comportamiento historico.</summary>
+        public string DefensePieceId { get; set; }
+
         public List<PushBackCellDocument> RearTopeOffCells { get; set; }
 
         public static PushBackSideDocument From(PushBackSideDesign side)
@@ -267,7 +283,8 @@ namespace RackCad.Application.Persistence
                 RearTopeSaque = side.RearTope != null && side.RearTope.Saque > 0.0
                     ? side.RearTope.Saque
                     : (double?)null,
-                RearTopePieceId = string.IsNullOrWhiteSpace(side.RearTope?.PieceId) ? null : side.RearTope.PieceId.Trim()
+                RearTopePieceId = string.IsNullOrWhiteSpace(side.RearTope?.PieceId) ? null : side.RearTope.PieceId.Trim(),
+                DefensePieceId = string.IsNullOrWhiteSpace(side.DefensePieceId) ? null : side.DefensePieceId.Trim()
             };
 
             if (side.Fronts.Count > 0)
@@ -359,6 +376,7 @@ namespace RackCad.Application.Persistence
 
             side.RearTope.Saque = RearTopeSaque ?? PushBackDefaults.RearTopeSaque;
             side.RearTope.PieceId = string.IsNullOrWhiteSpace(RearTopePieceId) ? null : RearTopePieceId.Trim();
+            side.DefensePieceId = string.IsNullOrWhiteSpace(DefensePieceId) ? null : DefensePieceId.Trim();
             if (RearTopeOffCells != null)
             {
                 foreach (var cell in RearTopeOffCells)

@@ -26,6 +26,9 @@ namespace RackCad.Domain.Systems.PushBack
         /// <summary>Resolved rear pallet-stop configuration (active by default; drawing and BOM consume an independent copy).</summary>
         public PushBackRearTopeConfig RearTope { get; set; } = new PushBackRearTopeConfig();
 
+        /// <summary>I-42 (ronda 7E) — el tipo de defensa resuelto del lado A. Ver <see cref="PushBackDesign.DefensePieceId"/>.</summary>
+        public string DefensePieceId { get; set; }
+
         /// <summary>
         /// Resolved entrance-side safety selections. GUIA (entrance guides) are EXCLUDED — Push Back has no entrance
         /// guides, so a guide never reaches the plan, the BOM or a snapshot. Drawing/BOM consume independent copies.

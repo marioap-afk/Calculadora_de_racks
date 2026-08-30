@@ -82,7 +82,10 @@ namespace RackCad.Application.Systems.PushBack
                 system.HighEndBeams.Add(resolved);
             }
 
-            ApplySafety(system, structure);
+            system.DefensePieceId = design.DefensePieceId;
+            composite.SideA.DefensePieceId = design.DefensePieceId;
+            composite.SideB.DefensePieceId = design.SideB?.DefensePieceId;
+            ApplySafety(system, structure, design.DefensePieceId, design.SideB?.DefensePieceId);
             // I-42 (ronda 6C) — LA ALTURA DE CABECERA se recalcula sobre las CAMAS REALES. Hasta aqui salia de la
             // profundidad SINTETICA de la estructura compuesta (A + hueco + B invertido), que ninguna cama recorre:
             // en camas encontradas hay dos camas de cinco fondos, no una de once. Se hace AQUI, al final, porque
@@ -144,7 +147,11 @@ namespace RackCad.Application.Systems.PushBack
                 system.HighEndBeams.Add(resolved);
             }
 
-            ApplySafety(system, structure);
+            system.DefensePieceId = design.DefensePieceId;
+
+            // Un rack de un solo sentido tiene una sola cara de carga; la lejana no existe y hereda, que es lo que
+            // hacia siempre.
+            ApplySafety(system, structure, design.DefensePieceId, sideBPieceId: null);
             return system;
         }
 
@@ -162,9 +169,12 @@ namespace RackCad.Application.Systems.PushBack
         /// extremos bajos, y los dos llevan su seguridad. No hay que pedirla a mano para el segundo lado.
         /// </para>
         /// </summary>
-        private void ApplySafety(PushBackSystem system, DynamicRackSystem structure)
+        private void ApplySafety(
+            PushBackSystem system, DynamicRackSystem structure, string sideAPieceId, string sideBPieceId)
         {
             var authorized = safety.Authorize(structure.SafetySelections, AislesOf(system));
+            var defense = SelectiveSafetyFamilies.SelectedOfType(
+                authorized, catalog?.SafetyElements, SelectiveSafetyDefaults.DefensaType);
             var secondFaceLines = SecondLoadFaceLines(system);
             var aisles = LoadingAisles(system, catalog);
             var desviador = SelectiveSafetyFamilies.SelectedOfType(
@@ -179,6 +189,15 @@ namespace RackCad.Application.Systems.PushBack
                 if (ReferenceEquals(selection, desviador))
                 {
                     ApplyLoadingAisles(selection, aisles);
+                }
+
+                // I-42 (ronda 7E) — cada PASILLO lleva el tipo de defensa que su lado eligio. Es una declaracion
+                // DERIVADA, como LowEndOnly: la persiste el diseno de cada lado y la autoridad la vuelve a imponer
+                // aqui, asi que ningun documento puede traerla rancia. Sin eleccion —todo documento anterior— las
+                // dos caras heredan la pieza de la seleccion y el rack dibuja exactamente lo que dibujaba.
+                if (ReferenceEquals(selection, defense))
+                {
+                    PushBackDefenseSides.DeclareFaces(selection, sideAPieceId, sideBPieceId);
                 }
 
                 system.SafetySelections.Add(selection);
