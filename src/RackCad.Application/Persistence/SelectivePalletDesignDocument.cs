@@ -347,6 +347,15 @@ namespace RackCad.Application.Persistence
         /// </summary>
         public bool? BotaSidesDeclared { get; set; }
 
+        /// <summary>
+        /// I-42 (S1G) — el TIPO de pieza de cada lado. Ausente = ese lado nunca lo eligio y hereda el del documento
+        /// (<see cref="ElementId"/>), que es como se guardaba antes: un documento anterior abre con la misma pieza
+        /// en los dos lados y dibuja exactamente lo que dibujaba.
+        /// </summary>
+        public string BotaPieceId { get; set; }
+
+        public string BotaBPieceId { get; set; }
+
         /// <summary>Shared explicit mapping used by every rack system that composes the safety subsystem. The wire
         /// format is a FLAT record (unchanged, and shared with the dynamic path); each family flattens its own DTO
         /// (I-22, E7 — <see cref="TopeSelectionDocument"/> and siblings) into these flat properties and reads it back
@@ -374,6 +383,8 @@ namespace RackCad.Application.Persistence
                 : (int?)null;
             document.BotaBPosts = BootPosts(selection.BotaB);
             document.BotaSidesDeclared = selection.BootSidesDeclared ? true : (bool?)null;
+            document.BotaPieceId = selection.Bota.PieceId;
+            document.BotaBPieceId = selection.BotaB.PieceId;
             return document;
         }
 
@@ -425,6 +436,8 @@ namespace RackCad.Application.Persistence
 
             BootPostDocumentMapping.Read(BotaBPosts, selection.BotaB);
             selection.BootSidesDeclared = BotaSidesDeclared ?? false;
+            selection.Bota.PieceId = BotaPieceId;
+            selection.BotaB.PieceId = BotaBPieceId;
 
             return selection;
         }

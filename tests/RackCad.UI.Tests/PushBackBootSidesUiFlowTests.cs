@@ -6,6 +6,9 @@ using System.Windows.Controls;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
+using RackCad.Application.Catalogs;
+using RackCad.UI;
+using RackCad.UI.Controls;
 using RackCad.UI.Systems.PushBack;
 using Xunit;
 
@@ -93,7 +96,8 @@ namespace RackCad.UI.Tests
         private static void Through(
             RackPushBackSystemWindow w,
             Action<PushBackBootSection, PushBackBootSection> gesture,
-            bool accept = true)
+            bool accept = true,
+            Action<SelectiveSafetyWindow> dialogCheck = null)
         {
             w.SafetyWindowDialog = dialog =>
             {
@@ -104,12 +108,7 @@ namespace RackCad.UI.Tests
                 dialog.Show();
                 dialog.UpdateLayout();
 
-                var variant = dialog.BootVariantComboForTest;
-                if (variant != null && variant.SelectedIndex <= 0 && variant.Items.Count > 1)
-                {
-                    variant.SelectedIndex = 1;
-                }
-
+                dialogCheck?.Invoke(dialog);
                 gesture?.Invoke(w.BootSectionForTest, w.BootSectionBForTest);
                 dialog.BuildResultForTest();
                 dialog.Close();
@@ -117,6 +116,342 @@ namespace RackCad.UI.Tests
             };
             EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
             w.SafetyWindowDialog = null;
+        }
+
+        /// <summary>Los ids de las variantes de BOTA del catalogo.</summary>
+        private static IReadOnlyList<string> BootVariants(RackPushBackSystemWindow w)
+            => w.Session.Catalog.SafetyElements
+                .Where(entry => SelectiveSafetyDefaults.IsType(entry.Type, SelectiveSafetyDefaults.BotaType))
+                .Select(entry => entry.Id)
+                .OrderBy(id => id, StringComparer.Ordinal)
+                .ToList();
+
+        private static int Of(RackPushBackSystemWindow w, PushBackSide side)
+            => PushBackBootPlan.Resolve(w.LastComputation.System, w.Session.Catalog).Count(boot => boot.Side == side);
+
+        private static IReadOnlyList<ResolvedBoot> Physical(RackPushBackSystemWindow w)
+            => PushBackBootPlan.Resolve(w.LastComputation.System, w.Session.Catalog);
+
+        // ==================================================================== §30 la superficie por lado
+
+        /// <summary>Un rack compuesto ofrece la seccion del lado A…</summary>
+        [Fact]
+        public void PushBackComposite_ShowsBootSectionA()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown(composite: true);
+                try
+                {
+                    Through(w, (a, _) =>
+                    {
+                        Assert.NotNull(a);
+                        Assert.Equal(PushBackSide.A, a.Side);
+                        Assert.Equal("A", a.SideLabel);
+                    }, accept: false);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>…y la del lado B, con sus propios controles.</summary>
+        [Fact]
+        public void PushBackComposite_ShowsBootSectionB()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown(composite: true);
+                try
+                {
+                    Through(w, (a, b) =>
+                    {
+                        Assert.NotNull(b);
+                        Assert.Equal(PushBackSide.B, b.Side);
+                        Assert.NotSame(a.PieceBox, b.PieceBox);
+                        Assert.NotSame(a.ModeBox, b.ModeBox);
+                        Assert.NotSame(a.Button, b.Button);
+                    }, accept: false);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>Y NO existe una tercera fila global de botas: seria una autoridad por encima de los dos lados.</summary>
+        [Fact]
+        public void PushBackComposite_DoesNotShowGenericBootRow()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown(composite: true);
+                try
+                {
+                    Through(w, (_, __) => { }, accept: false, dialogCheck: dialog =>
+                        Assert.Null(dialog.BootVariantComboForTest));
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        [Fact]
+        public void PushBackSimple_ShowsSingleBootSection()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown(composite: false);
+                try
+                {
+                    Through(w, (a, b) =>
+                    {
+                        Assert.NotNull(a);
+                        Assert.Null(b);
+                    }, accept: false);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        [Fact]
+        public void PushBackSimple_DoesNotShowGenericBootRow()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown(composite: false);
+                try
+                {
+                    Through(w, (_, __) => { }, accept: false, dialogCheck: dialog =>
+                        Assert.Null(dialog.BootVariantComboForTest));
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>Cada seccion es autosuficiente: tipo, ubicacion y postes.</summary>
+        [Fact]
+        public void BootSectionA_HasTypePlacementAndPerPost()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown(composite: true);
+                try
+                {
+                    Through(w, (a, _) =>
+                    {
+                        Assert.NotNull(a.PieceBox);
+                        Assert.NotNull(a.ModeBox);
+                        Assert.NotNull(a.Button);
+                        Assert.Contains(
+                            PushBackDefaults.NonePieceId,
+                            a.PieceBox.Items.OfType<CatalogOption>().Select(option => option.Id));
+                        Assert.NotEqual(PushBackDefaults.NonePieceId, a.PieceBox.SelectedId);
+                    }, accept: false);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        [Fact]
+        public void BootSectionB_HasTypePlacementAndPerPost()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown(composite: true);
+                try
+                {
+                    Through(w, (_, b) =>
+                    {
+                        Assert.NotNull(b.PieceBox);
+                        Assert.NotNull(b.ModeBox);
+                        Assert.NotNull(b.Button);
+                        Assert.Contains(
+                            PushBackDefaults.NonePieceId,
+                            b.PieceBox.Items.OfType<CatalogOption>().Select(option => option.Id));
+                    }, accept: false);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>Cambiar el TIPO de A no toca nada de B…</summary>
+        [Fact]
+        public void ChangingBootTypeA_DoesNotChangeB()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown(composite: true);
+                try
+                {
+                    Through(w, (a, b) =>
+                    {
+                        a.ModeBox.SelectedIndex = (int)BootPlacement.EntryExit;
+                        b.ModeBox.SelectedIndex = (int)BootPlacement.Rear;
+                    });
+                    var farBefore = Of(w, PushBackSide.B);
+
+                    Through(w, (a, _) => a.PieceBox.SelectedId = PushBackDefaults.NonePieceId);
+
+                    Assert.Equal(0, Of(w, PushBackSide.A));
+                    Assert.Equal(farBefore, Of(w, PushBackSide.B));
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>…y al reves.</summary>
+        [Fact]
+        public void ChangingBootTypeB_DoesNotChangeA()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown(composite: true);
+                try
+                {
+                    Through(w, (a, b) =>
+                    {
+                        a.ModeBox.SelectedIndex = (int)BootPlacement.EntryExit;
+                        b.ModeBox.SelectedIndex = (int)BootPlacement.Rear;
+                    });
+                    var nearBefore = Of(w, PushBackSide.A);
+
+                    Through(w, (_, b) => b.PieceBox.SelectedId = PushBackDefaults.NonePieceId);
+
+                    Assert.Equal(0, Of(w, PushBackSide.B));
+                    Assert.Equal(nearBefore, Of(w, PushBackSide.A));
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        // ==================================================================== §24 el recorrido completo
+
+        /// <summary>
+        /// EL RECORRIDO DEL DUEÑO: A con pieza y entrada/salida, B sin pieza pero con su posterior ya elegida.
+        /// Solo dibuja A. Al dar pieza a B aparece SU posterior sin volver a configurarla; al quitarsela a A
+        /// desaparece la de A y B queda intacto; y al devolversela, A vuelve como estaba.
+        /// </summary>
+        [Fact]
+        public void DormantSide_ComesBackExactlyWhenItsTypeReturns()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown(composite: true);
+                try
+                {
+                    var piece = BootVariants(w)[0];
+
+                    Through(w, (a, b) =>
+                    {
+                        a.PieceBox.SelectedId = piece;
+                        a.ModeBox.SelectedIndex = (int)BootPlacement.EntryExit;
+                        b.PieceBox.SelectedId = PushBackDefaults.NonePieceId;
+                        b.ModeBox.SelectedIndex = (int)BootPlacement.Rear;
+                    });
+
+                    var onlyA = Of(w, PushBackSide.A);
+                    Assert.True(onlyA > 0);
+                    Assert.Equal(0, Of(w, PushBackSide.B));
+
+                    // Solo el TIPO de B: su posterior estaba dormida y vuelve sola.
+                    Through(w, (_, b) => b.PieceBox.SelectedId = piece);
+                    Assert.Equal(onlyA, Of(w, PushBackSide.A));
+                    var rearB = Physical(w).Where(boot => boot.Side == PushBackSide.B).ToList();
+                    Assert.NotEmpty(rearB);
+                    Assert.All(rearB, boot => Assert.Equal(BootFace.Rear, boot.Face));
+
+                    // Ahora se apaga A: B no se entera.
+                    Through(w, (a, _) => a.PieceBox.SelectedId = PushBackDefaults.NonePieceId);
+                    Assert.Equal(0, Of(w, PushBackSide.A));
+                    Assert.Equal(rearB.Count, Of(w, PushBackSide.B));
+
+                    // Y al devolverle la pieza, A recupera su entrada/salida sin reconfigurarla.
+                    Through(w, (a, _) => a.PieceBox.SelectedId = piece);
+                    Assert.Equal(onlyA, Of(w, PushBackSide.A));
+                    Assert.All(
+                        Physical(w).Where(boot => boot.Side == PushBackSide.A),
+                        boot => Assert.Equal(BootFace.EntryExit, boot.Face));
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>Y los postes configurados con el tipo en «Ninguno» tambien vuelven.</summary>
+        [Fact]
+        public void DormantPerPost_ComesBackWhenTheTypeReturns()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown(composite: true);
+                try
+                {
+                    var piece = BootVariants(w)[0];
+
+                    Through(w, (a, b) =>
+                    {
+                        a.PieceBox.SelectedId = PushBackDefaults.NonePieceId;
+                        a.ModeBox.SelectedIndex = (int)BootPlacement.None;
+                        b.PieceBox.SelectedId = PushBackDefaults.NonePieceId;
+                        b.ModeBox.SelectedIndex = (int)BootPlacement.None;
+
+                        w.BootPerPostWindowDialog = window =>
+                        {
+                            window.SetForTest(2, BootPlacement.Rear);
+                            window.BuildResultForTest();
+                            return true;
+                        };
+                        a.Button.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+                        w.BootPerPostWindowDialog = null;
+                    });
+
+                    Assert.Empty(Physical(w));   // sin pieza no materializa…
+
+                    Through(w, (a, _) => a.PieceBox.SelectedId = piece);
+
+                    var boots = Physical(w);     // …y la intencion seguia ahi
+                    Assert.Single(boots);
+                    Assert.Equal(2, boots[0].PostIndex);
+                    Assert.Equal(BootFace.Rear, boots[0].Face);
+                    Assert.Equal(PushBackSide.A, boots[0].Side);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        // ==================================================================== §31 los otros sistemas
+
+        /// <summary>El Selectivo conserva su fila generica de botas: es su superficie historica.</summary>
+        [Fact]
+        public void Selective_GenericBootRowRegression()
+            => AssertGenericBootRowSurvives();
+
+        /// <summary>Y el Dinamico igual — la fila solo desaparece donde su lugar lo ocupan las secciones por lado.</summary>
+        [Fact]
+        public void Dynamic_GenericBootRowRegression()
+            => AssertGenericBootRowSurvives();
+
+        private static void AssertGenericBootRowSurvives()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var catalog = RackCad.Application.Catalogs.JsonRackCatalogProvider.FromBaseDirectory().Load();
+                var dialog = new SelectiveSafetyWindow(
+                    catalog.SafetyElements,
+                    new List<SelectiveSafetySelection>(),
+                    postCount: 3,
+                    catalog: catalog)
+                {
+                    WindowStartupLocation = WindowStartupLocation.Manual,
+                    ShowInTaskbar = false,
+                    Left = -10000,
+                    Top = -10000,
+                };
+                try
+                {
+                    dialog.Show();
+                    dialog.UpdateLayout();
+
+                    Assert.NotNull(dialog.BootVariantComboForTest);
+                }
+                finally { dialog.Close(); }
+            });
         }
 
         // ==================================================================== la superficie

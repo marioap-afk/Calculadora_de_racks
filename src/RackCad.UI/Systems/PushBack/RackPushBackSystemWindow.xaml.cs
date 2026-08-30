@@ -2524,8 +2524,15 @@ namespace RackCad.UI.Systems.PushBack
                 side == PushBackSide.A ? selection?.PostSides : null,
                 // El automatico de un lado que EXISTE es proteger su pasillo; la seccion solo se construye para los
                 // lados que existen, asi que es lo que la casilla debe mostrar mientras nadie elija.
-                automatic: BootPlacement.EntryExit);
+                automatic: BootPlacement.EntryExit,
+                variants: BootVariants(),
+                pieceId: selection?.BootPieceOf(config));
         }
+
+        /// <summary>Las variantes de BOTA que el catalogo declara. Hoy una; el contrato no supone que siga siendo asi.</summary>
+        private IReadOnlyList<SafetyElementCatalogEntry> BootVariants()
+            => RackCad.Application.Systems.Selective.SelectiveSafetyFamilies.VariantsOfType(
+                catalog?.SafetyElements, SelectiveSafetyDefaults.BotaType);
 
         /// <summary>La seleccion de la familia BOTA dentro de <paramref name="selections"/>, o null.</summary>
         private SelectiveSafetySelection BootSelection(IEnumerable<SelectiveSafetySelection> selections)
@@ -2577,10 +2584,30 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         private void ApplyBootSections(PushBackBootSection sideA, PushBackBootSection sideB)
         {
+            var carrier = BootCarrierId(sideA, sideB);
+            if (carrier == null)
+            {
+                return;   // el catalogo no declara ninguna bota: no hay nada que configurar
+            }
+
+            // I-42 (S1G) — la familia ya no viaja en la lista que devuelve el dialogo: la deciden estas secciones.
+            // Si no hay seleccion, se crea; su ElementId es solo el PORTADOR de la familia —el tipo efectivo lo pone
+            // cada lado—, y se mantiene apuntando a una pieza real para que la configuracion dormida sobreviva
+            // aunque los dos lados esten en «Ninguno».
             var selection = BootSelection(safetySelections);
             if (selection == null)
             {
-                return;   // el usuario no eligio tipo de bota: no hay nada que configurar
+                selection = new SelectiveSafetySelection
+                {
+                    ElementId = carrier,
+                    Quantity = 1,
+                    Side = SafetySide.None,
+                };
+                safetySelections.Add(selection);
+            }
+            else
+            {
+                selection.ElementId = carrier;
             }
 
             if (sideA != null)
@@ -2593,6 +2620,24 @@ namespace RackCad.UI.Systems.PushBack
             // Desde aqui el documento declara su intencion POR LADO: una general vacia significa «este lado hereda
             // su automatico», no «este lado no pide nada», que es lo que significaba antes de S1E.
             selection.BootSidesDeclared = true;
+        }
+
+        /// <summary>
+        /// El PORTADOR de la familia: la primera pieza real que algun lado eligio y, si ninguno eligio ninguna, la
+        /// primera variante del catalogo. No es el tipo de nadie —cada lado guarda el suyo—: solo mantiene la
+        /// familia identificable para que su configuracion dormida siga existiendo.
+        /// </summary>
+        private string BootCarrierId(PushBackBootSection sideA, PushBackBootSection sideB)
+        {
+            foreach (var section in new[] { sideA, sideB })
+            {
+                if (section != null && !section.IsNone && !string.IsNullOrWhiteSpace(section.PieceId))
+                {
+                    return section.PieceId;
+                }
+            }
+
+            return BootVariants().FirstOrDefault()?.Id ?? BootSelection(safetySelections)?.ElementId;
         }
 
         /// <summary>I-42 (ronda 7D) — la seccion de defensa del lado A del ultimo Seguridad abierto (seam de prueba).</summary>
@@ -2809,7 +2854,7 @@ namespace RackCad.UI.Systems.PushBack
                 defensaLowEndOnly: true,
                 // I-42 (S1E): la UBICACION de la bota se decide en las secciones por lado de arriba; la fila
                 // conserva solo el TIPO.
-                bootModeInSections: true)
+                bootFamilyInSections: true)
             {
                 Owner = this
             };

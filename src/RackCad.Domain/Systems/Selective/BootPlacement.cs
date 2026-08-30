@@ -132,6 +132,19 @@ namespace RackCad.Domain.Systems.Selective
     /// </summary>
     public sealed class SelectiveBotaConfig
     {
+        /// <summary>
+        /// I-42 (S1G, contrato del dueño) — EL TIPO DE PIEZA de este lado: un id del catalogo, el id de «ninguno»
+        /// —este lado no lleva bota— o NULL, que significa «nadie lo ha elegido aqui» y hereda el tipo del
+        /// documento, que es como se guardaba antes de esta ronda.
+        ///
+        /// <para>
+        /// Es un eje DISTINTO de <see cref="Placement"/>: «sin pieza» no es «sin ubicacion». Poner el tipo en
+        /// «Ninguno» no borra la ubicacion ni los postes —la intencion queda DORMIDA— y volver a elegir una pieza la
+        /// recupera entera. Y es de ESTE lado: el tipo de A no dice nada del de B.
+        /// </para>
+        /// </summary>
+        public string PieceId { get; set; }
+
         /// <summary>La colocacion general elegida, o NULL si nadie ha elegido y la resuelve el sistema.</summary>
         public BootPlacement? Placement { get; set; }
 
@@ -236,7 +249,12 @@ namespace RackCad.Domain.Systems.Selective
 
         public SelectiveBotaConfig DeepCopy()
         {
-            var copy = new SelectiveBotaConfig { Placement = Placement, Automatic = Automatic };
+            var copy = new SelectiveBotaConfig
+            {
+                PieceId = PieceId,
+                Placement = Placement,
+                Automatic = Automatic,
+            };
             foreach (var post in Posts)
             {
                 if (post != null)

@@ -5,8 +5,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RackCad.Application.Catalogs;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
+using RackCad.UI.Controls;
 
 namespace RackCad.UI.Systems.PushBack
 {
@@ -43,6 +45,18 @@ namespace RackCad.UI.Systems.PushBack
 
         public const string ModeLabelText = "Ubicación";
 
+        /// <summary>Etiqueta del selector de tipo de ESTE lado.</summary>
+        public const string PieceLabelText = "Tipo de protector";
+
+        /// <summary>x:Name-equivalente del selector de tipo.</summary>
+        public const string PieceBoxName = "BootPieceBox";
+
+        /// <summary>El texto de la opcion «sin bota» dentro del selector de tipo.</summary>
+        public const string NoneOptionText = "Ninguno";
+
+        /// <summary>Lo que la seccion muestra cuando el lado quedo sin pieza.</summary>
+        public const string NoneStatusText = "Sin protectores de bota en este lado";
+
         private readonly TextBlock status;
         private readonly Func<PushBackBootSection, IReadOnlyList<BootPostPlacement>> openDialog;
 
@@ -66,7 +80,9 @@ namespace RackCad.UI.Systems.PushBack
             int postCount,
             Func<PushBackBootSection, IReadOnlyList<BootPostPlacement>> openDialog,
             IEnumerable<SafetyPostSide> legacyPosts = null,
-            BootPlacement automatic = BootPlacement.EntryExit)
+            BootPlacement automatic = BootPlacement.EntryExit,
+            IReadOnlyList<SafetyElementCatalogEntry> variants = null,
+            string pieceId = null)
         {
             Side = side;
             SideLabel = sideLabel;
@@ -151,8 +167,40 @@ namespace RackCad.UI.Systems.PushBack
             };
             Button.Click += (_, __) => Configure();
 
+            // I-42 (S1G, decision del dueño) — EL TIPO VIVE AQUI, con su «Ninguno», igual que en la seccion de
+            // defensa. Antes se elegia en una fila global al fondo de la ventana mientras la ubicacion y los postes
+            // se decidian arriba: una tercera autoridad que gobernaba los dos lados desde abajo.
+            PieceId = pieceId;
+            PieceBox = new CatalogCombo
+            {
+                Name = PieceBoxName,
+                Margin = new Thickness(0, 0, 0, 6),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                MinWidth = 220,
+                ToolTip = "Tipo de protector de bota de este lado. «Ninguno» significa que este lado no lleva"
+                          + " ninguno; la ubicación y los postes que ya tengas se conservan y vuelven al elegir"
+                          + " otra vez una pieza.",
+            };
+            PieceBox.SetCatalogEntries(
+                variants ?? new List<SafetyElementCatalogEntry>(),
+                IsNone ? PushBackDefaults.NonePieceId : PieceId,
+                placeholder: new CatalogOption(PushBackDefaults.NonePieceId, NoneOptionText));
+            PieceId = PieceBox.SelectedId;
+            PieceBox.SelectionChanged += (_, __) =>
+            {
+                PieceId = PieceBox.SelectedId;
+                status.Text = StatusText();
+            };
+
             var panel = new StackPanel { Margin = new Thickness(0, 0, 0, 12) };
             panel.Children.Add(heading);
+            panel.Children.Add(new TextBlock
+            {
+                Text = PieceLabelText,
+                FontSize = 11,
+                Margin = new Thickness(0, 2, 0, 2),
+            });
+            panel.Children.Add(PieceBox);
             panel.Children.Add(new TextBlock
             {
                 Text = ModeLabelText,
@@ -175,6 +223,20 @@ namespace RackCad.UI.Systems.PushBack
         public string SideLabel { get; }
 
         public int PostCount { get; }
+
+        /// <summary>El selector de tipo de este lado.</summary>
+        public CatalogCombo PieceBox { get; }
+
+        /// <summary>
+        /// El TIPO elegido para este lado: un id de catalogo, <see cref="PushBackDefaults.NonePieceId"/> o NULL —el
+        /// comportamiento historico, que hereda el tipo del documento—.
+        /// </summary>
+        public string PieceId { get; private set; }
+
+        /// <summary>True cuando este lado quedo explicitamente sin pieza.</summary>
+        public bool IsNone => !string.IsNullOrWhiteSpace(PieceId)
+                              && string.Equals(
+                                  PieceId.Trim(), PushBackDefaults.NonePieceId, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>La eleccion GENERAL de este lado: el defecto de los postes que heredan.</summary>
         public BootPlacement Placement { get; private set; }
@@ -199,6 +261,7 @@ namespace RackCad.UI.Systems.PushBack
         {
             var config = new SelectiveBotaConfig
             {
+                PieceId = PieceId,
                 Placement = Explicit ? Placement : (BootPlacement?)null,
             };
             foreach (var post in Posts)
@@ -232,6 +295,15 @@ namespace RackCad.UI.Systems.PushBack
         /// <summary>El estado legible sin abrir la rejilla: que hace este lado y cuantos postes deciden por su cuenta.</summary>
         public string StatusText()
         {
+            if (IsNone)
+            {
+                // La intencion NO se borra: se dice que hoy no materializa y se conserva para cuando vuelva a haber
+                // pieza. Es el mismo trato que la seccion de defensa da a su «Ninguno».
+                return Posts.Count == 0
+                    ? NoneStatusText
+                    : NoneStatusText + " · " + Posts.Count + " poste(s) configurado(s), en espera";
+            }
+
             var general = Placement == BootPlacement.None
                 ? "Sin botas por defecto en este lado"
                 : "Por defecto: " + ModeLabels[(int)Placement];

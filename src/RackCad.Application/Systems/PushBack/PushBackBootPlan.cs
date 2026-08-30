@@ -136,17 +136,25 @@ namespace RackCad.Application.Systems.PushBack
 
                 foreach (var side in sides)
                 {
+                    // I-42 (S1G) — cada lado materializa SU tipo. «Ninguno» no dibuja nada de ese lado y no toca ni
+                    // su ubicacion ni sus postes: la intencion queda dormida y vuelve entera al reelegir una pieza.
+                    var piece = PieceOf(element.Selection, side);
+                    if (string.IsNullOrWhiteSpace(piece) || PushBackDefenseSides.IsNone(piece))
+                    {
+                        continue;
+                    }
+
                     var placement = side == PushBackSide.A
                         ? element.Selection.BootPlacementAt(postIndex)
                         : element.Selection.BootPlacementAtSideB(postIndex);
                     if (BootPlacements.IncludesEntryExit(placement))
                     {
-                        result.Add(Piece(element, structure, layout, plateMate, postIndex, side, BootFace.EntryExit));
+                        result.Add(Piece(piece, structure, layout, plateMate, postIndex, side, BootFace.EntryExit));
                     }
 
                     if (BootPlacements.IncludesRear(placement))
                     {
-                        result.Add(Piece(element, structure, layout, plateMate, postIndex, side, BootFace.Rear));
+                        result.Add(Piece(piece, structure, layout, plateMate, postIndex, side, BootFace.Rear));
                     }
                 }
             }
@@ -214,8 +222,12 @@ namespace RackCad.Application.Systems.PushBack
                 MirroredY = false,
             };
 
+        /// <summary>El tipo de pieza que ese lado materializa: el suyo, o el del documento si nunca se eligio.</summary>
+        public static string PieceOf(SelectiveSafetySelection selection, PushBackSide side)
+            => selection?.BootPieceOf(side == PushBackSide.A ? selection.Bota : selection.BotaB);
+
         private static ResolvedBoot Piece(
-            SelectiveSafetyPlacement.SafetyElement element,
+            string pieceId,
             DynamicRackSystem structure,
             DynamicFrontLayout layout,
             Point2D plateMate,
@@ -234,7 +246,7 @@ namespace RackCad.Application.Systems.PushBack
                 PostIndex = postIndex,
                 FaceX = faceX,
                 Mirrored = mirrored,
-                PieceId = element.PieceId,
+                PieceId = pieceId,
                 PlantaAt = new Point2D(
                     mirrored ? faceX + plateMate.X : faceX - plateMate.X,
                     layout.PostPositions[postIndex] - plateMate.Y),

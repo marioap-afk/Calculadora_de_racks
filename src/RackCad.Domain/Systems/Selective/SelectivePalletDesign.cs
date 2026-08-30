@@ -192,6 +192,14 @@ namespace RackCad.Domain.Systems.Selective
         public BootPlacement BootPlacementAtSideB(int postIndex) => PlacementAt(BotaB, postIndex);
 
         /// <summary>
+        /// I-42 (S1G) — EL TIPO DE PIEZA que un lado materializa: el que ESE lado eligio o, si nunca se eligio ahi,
+        /// el del documento —<see cref="ElementId"/>—, que es el unico que existia antes de esta ronda. Devuelve el
+        /// id de «ninguno» tal cual: quien materializa decide que hacer con el, y la intencion sigue guardada.
+        /// </summary>
+        public string BootPieceOf(SelectiveBotaConfig config)
+            => config == null || string.IsNullOrWhiteSpace(config.PieceId) ? ElementId : config.PieceId;
+
+        /// <summary>
         /// I-42 (S1E) — LAS CARAS FISICAS que hay que proteger en ese poste: la union de lo que piden los dos
         /// lados, DEDUPLICADA.
         ///

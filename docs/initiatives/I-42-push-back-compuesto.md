@@ -800,6 +800,70 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
+## 5-pre-nonies. Ronda S1G: el TIPO de bota es de cada lado, y «Ninguno» es un tipo
+
+S1F cerro la identidad fisica y el dueño valido que todo lo funcional de las botas ya trabajaba bien, salvo una
+cosa: la ventana seguia mostrando TRES conceptos —seccion del lado A, seccion del lado B y, al fondo, una fila
+global «Protectores de bota (base de poste)» con el tipo—. Es el mismo defecto que las defensas ya habian tenido:
+una tercera autoridad gobernando los dos lados desde abajo.
+
+### El contrato
+
+Cada lado posee su configuracion ENTERA:
+
+```
+Protectores de bota — lado A        Protectores de bota — lado B
+  Tipo de protector                   Tipo de protector
+  Ubicacion                           Ubicacion
+  Por poste…                          Por poste…
+```
+
+Un rack de un solo sentido conserva UNA seccion, sin etiqueta. La fila global desaparece de Push Back — y solo de
+Push Back: el Selectivo y el Dinamico la conservan, porque ahi sigue siendo su superficie.
+
+### TIPO y UBICACION son ejes distintos
+
+«Sin pieza» no es «sin ubicacion». Poner el tipo en «Ninguno» deja el lado sin botas y **no borra nada**: la
+ubicacion y los postes quedan DORMIDOS y vuelven enteros al elegir otra vez una pieza. La diferencia queda probada
+en las dos direcciones:
+
+| tipo | ubicacion | poste | resultado |
+|---|---|---|---|
+| pieza | Ninguno | P2 = Posterior | 1 bota posterior en P2 |
+| Ninguno | Ninguno | P2 = Posterior | ninguna — y P2 sigue guardado |
+| Ninguno | Ambas | — | ninguna — y «Ambas» sigue guardada |
+
+Y los dos lados son independientes: quitarle la pieza a A no toca ni el tipo, ni la ubicacion, ni los postes de B.
+Nada obliga ya a que A y B compartan tipo — pueden ser piezas distintas del catalogo.
+
+### Como materializa
+
+`PushBackBootPlan` pregunta el tipo DE ESE LADO antes de resolver sus caras: si es «Ninguno», ese lado no aporta
+ninguna pieza fisica y el otro se resuelve igual que siempre. La geometria de S1F no se toca —las cuatro caras, el
+hueco cero, la reflexion—, y la planta, los cortes, el lateral y el BOM siguen consumiendo el mismo conjunto.
+
+### El portador
+
+La seleccion de seguridad conserva un `ElementId`, pero desde S1G es solo el PORTADOR de la familia: mantiene la
+configuracion identificable —y por tanto viva— aunque los dos lados esten en «Ninguno». El tipo efectivo lo pone
+cada lado, y un lado que nunca eligio hereda el del documento, que es como se guardaba antes.
+
+### Legacy
+
+Un documento anterior a S1G trae un solo tipo: los lados que existen lo heredan y el rack dibuja exactamente lo que
+dibujaba. Los campos nuevos son aditivos y nulos por omision. Al guardar desde la ventana nueva, cada lado persiste
+el suyo.
+
+### Alcance
+
+Ningun golden tocado: con la misma pieza en los dos lados el conjunto fisico es identico al de S1F. Ningun contrato
+de prueba retargeteado. Retirada la fila generica de botas en Push Back —y solo ahi—, con su regresion explicita
+para los otros sistemas.
+
+### PENDIENTE
+
+Ninguno funcional conocido dentro del alcance de esta ronda.
+
 ## 5-pre-octies. Ronda S1F: la identidad de una bota es LADO x CARA x LINEA
 
 S1E puso la intencion por lado y la autoridad unica, y se equivoco en una frase que el dueño corrigio: «la posterior
