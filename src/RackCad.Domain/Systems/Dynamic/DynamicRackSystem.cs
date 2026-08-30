@@ -103,26 +103,6 @@ namespace RackCad.Domain.Systems.Dynamic
         public double? InteriorFaceEndX { get; set; }
 
         /// <summary>
-        /// I-42 (ronda 7) — si la cara de ataque del ARRANQUE de la profundidad lleva defensa de montacargas. Null =
-        /// el documento no declara intencion por cara y manda la seleccion global, que es lo que hace el Dinamico y
-        /// cualquier Push Back de un solo sentido.
-        ///
-        /// <para>
-        /// Es INTENCION del usuario. Que esa cara EXISTA lo decide la fisica (<see cref="IsInteriorFace"/>), y los
-        /// dos filtros se aplican por separado: una intencion sobre una cara que no existe no dibuja nada, y no se
-        /// traslada a ninguna otra.
-        /// </para>
-        /// </summary>
-        public bool? DefenseIntentAtStart { get; set; }
-
-        /// <summary>La misma intencion para la cara del FINAL de la profundidad.</summary>
-        public bool? DefenseIntentAtEnd { get; set; }
-
-        /// <summary>Si la cara de <paramref name="atEnd"/> acepta defensa. Sin declaracion, todas la aceptan.</summary>
-        public bool AcceptsDefenseAt(bool atEnd)
-            => (atEnd ? DefenseIntentAtEnd : DefenseIntentAtStart) ?? true;
-
-        /// <summary>
         /// Si <paramref name="x"/> cae en el interior declarado, donde no hay cara de carga a la que proteger. Sin
         /// declaracion responde siempre false, que deja el comportamiento anterior intacto.
         /// </summary>

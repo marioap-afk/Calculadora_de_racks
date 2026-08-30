@@ -25,8 +25,10 @@ namespace RackCad.Tests
     /// documento reproduce exactamente lo que se guardó.
     /// </para>
     /// <para>
-    /// Y añade la capacidad que el dueño pidió: la DEFENSA DE MONTACARGAS por lado. Es INTENCIÓN; dónde puede
-    /// materializarse lo sigue decidiendo la física cerrada en las rondas 6D y 6F, y los dos ejes no se mezclan.
+    /// La ronda 7 añadió aquí una intención de defensa POR LADO. El dueño la rechazó: la granularidad correcta es el
+    /// POSTE FÍSICO, y ya existía —<c>SafetyPostDefense.PostIndex</c>, editable desde «Elementos de seguridad»—. Ese
+    /// contrato se retiró y las pruebas de la defensa viven ahora en
+    /// <see cref="PushBackDefensePerPostTests"/>, sobre el mecanismo que el producto ya tenía.
     /// </para>
     /// </summary>
     public class PushBackCompositeEditingContractTests
@@ -91,7 +93,7 @@ namespace RackCad.Tests
             {
                 FormattableString.Invariant($"gap={state.Gap:0.####}")
                     + $"|sep={state.CentralSeparator}|ovA={state.StructureOverrideA}|ovB={state.StructureOverrideB}"
-                    + $"|defA={state.DefenseSideA}|defB={state.DefenseSideB}|topo={state.DefaultTopology}|dir={state.DefaultDirection}"
+                    + $"|topo={state.DefaultTopology}|dir={state.DefaultDirection}"
                     + $"|bPresent={state.SideBPresent}|slots={state.SlotCount}"
             };
 
@@ -397,111 +399,7 @@ namespace RackCad.Tests
                 new PushBackResolver(Catalog).Resolve(reloaded).Structure.TotalLength, 6);
         }
 
-        // ======================================================================================================
-        // DEFENSA A/B — intencion independiente
-        // ======================================================================================================
-
-        private static PushBackSystem WithDefense(bool? a, bool? b, IReadOnlyCollection<int> blanksA = null)
-        {
-            var state = State(blanksA: blanksA);
-            if (a.HasValue) { state.SetDefenseSide(PushBackSide.A, a.Value); }
-            if (b.HasValue) { state.SetDefenseSide(PushBackSide.B, b.Value); }
-            return Build(state);
-        }
-
-        [Fact]
-        public void DefenseIntent_AOnly()
-        {
-            var system = WithDefense(true, false);
-            var total = system.Structure.TotalLength;
-
-            Assert.NotEmpty(Defenses(system));
-            Assert.All(Defenses(system), defense => Assert.True(defense.X <= 0.0 + 1e-6,
-                $"defensa en X={defense.X:0.###}: con B apagado solo debe haber pasillo A"));
-            Assert.DoesNotContain(Defenses(system), defense => defense.X >= total - 1e-6);
-        }
-
-        [Fact]
-        public void DefenseIntent_BOnly()
-        {
-            var system = WithDefense(false, true);
-            var total = system.Structure.TotalLength;
-
-            Assert.NotEmpty(Defenses(system));
-            Assert.All(Defenses(system), defense => Assert.True(defense.X >= total - 1e-6,
-                $"defensa en X={defense.X:0.###}: con A apagado solo debe haber pasillo B"));
-        }
-
-        [Fact]
-        public void DefenseIntent_Both()
-        {
-            var system = WithDefense(true, true);
-            var total = system.Structure.TotalLength;
-
-            Assert.Contains(Defenses(system), defense => defense.X <= 0.0 + 1e-6);
-            Assert.Contains(Defenses(system), defense => defense.X >= total - 1e-6);
-            // Y es exactamente lo que dibuja un rack sin intencion declarada: encender los dos no añade nada.
-            Assert.Equal(Defenses(WithDefense(null, null)), Defenses(system));
-        }
-
-        [Fact]
-        public void DefenseIntent_None()
-        {
-            Assert.Empty(Defenses(WithDefense(false, false)));
-            Assert.Equal(0, BomDefenses(WithDefense(false, false)));
-        }
-
-        /// <summary>
-        /// La INTENCION no se traslada: con A encendido y su cara en blanco en una zona, ahi no aparece nada, y
-        /// desde luego no en el lado contrario ni en la interfaz.
-        /// </summary>
-        [Fact]
-        public void DefenseIntent_DoesNotRelocateAcrossBlank()
-        {
-            var system = WithDefense(true, false, blanksA: new[] { 0, 1 });
-            var total = system.Structure.TotalLength;
-            var composite = system.Composite;
-
-            Assert.All(Defenses(system), defense =>
-            {
-                Assert.True(defense.X <= 0.0 + 1e-6, $"defensa en X={defense.X:0.###}: B esta apagado");
-                Assert.False(Math.Abs(defense.X - composite.GapStartX) <= 12.0, "defensa en la interfaz");
-            });
-            Assert.DoesNotContain(Defenses(system), defense => defense.X >= total - 1e-6);
-        }
-
-        [Theory]
-        [InlineData(true, true)]
-        [InlineData(true, false)]
-        [InlineData(false, true)]
-        [InlineData(false, false)]
-        public void DefenseDraw_EqualsBom(bool a, bool b)
-        {
-            var system = WithDefense(a, b);
-            Assert.Equal(Defenses(system).Count, BomDefenses(system));
-        }
-
-        /// <summary>
-        /// Un documento ANTERIOR a esta capacidad no declara intencion, y dibuja exactamente lo que dibujaba: la
-        /// seleccion global manda. No se reinterpreta en silencio.
-        /// </summary>
-        [Fact]
-        public void LegacyDefenseDocument_PreservesPhysicalBehavior()
-        {
-            var state = State();
-            var design = Design(state);
-            Assert.Null(design.Composite.DefenseSideA);
-            Assert.Null(design.Composite.DefenseSideB);
-
-            var document = PushBackDesignDocument.FromDomain(design);
-            Assert.Null(document.Composite.DefenseSideA);   // nada nuevo llega al archivo
-            Assert.Null(document.Composite.DefenseSideB);
-
-            var legacy = new PushBackResolver(Catalog).Resolve(RoundTrip(design));
-            Assert.Equal(Defenses(Build(state)), Defenses(legacy));
-        }
-
-        /// <summary>Y una vez declarada, la intencion sobrevive al guardado y a RACKEDITAR.</summary>
+        /// <summary>El estado compuesto de edición sobrevive al guardado y a RACKEDITAR.</summary>
         [Fact]
         public void RackEditar_RoundTripsCompositeUiState()
         {
@@ -512,14 +410,9 @@ namespace RackCad.Tests
             state.Of(PushBackSide.A).AdjustLevels(1, 1);
             state.Of(PushBackSide.B).ToggleCell(1, 0, false);
             state.Of(PushBackSide.B).ApplyPalletsDeep(3, DynamicRackCellScope.Cell);
-            state.SetDefenseSide(PushBackSide.A, true);
-            state.SetDefenseSide(PushBackSide.B, false);
-
             var design = Design(state);
             var reloaded = RoundTrip(design);
 
-            Assert.Equal(true, reloaded.Composite.DefenseSideA);
-            Assert.Equal(false, reloaded.Composite.DefenseSideB);
             Assert.Equal(24.0, reloaded.Composite.Gap, 6);
             Assert.True(reloaded.Composite.CentralSeparator);
             Assert.Equal(14, reloaded.Composite.StructureOverrideB);
@@ -527,7 +420,7 @@ namespace RackCad.Tests
             // Y el sistema reconstruido dibuja lo mismo que el original.
             var before = Build(state);
             var after = new PushBackResolver(Catalog).Resolve(reloaded);
-            Assert.Equal(Defenses(before), Defenses(after));
+            Assert.Equal(Defenses(before), Defenses(after));   // la seguridad reconstruida es la misma
             Assert.Equal(before.Structure.TotalLength, after.Structure.TotalLength, 6);
             Assert.Equal(
                 before.Structure.Modules.Select(module => module.ModuleId).ToList(),
@@ -539,8 +432,6 @@ namespace RackCad.Tests
         public void AbsentB_DoesNotResurrect()
         {
             var state = State(blanksB: new[] { 0, 1 });
-            state.SetDefenseSide(PushBackSide.A, true);
-
             var reloaded = RoundTrip(Design(state));
 
             Assert.Contains(0, reloaded.Composite.AbsentSlotsB);
@@ -559,7 +450,7 @@ namespace RackCad.Tests
         [Fact]
         public void PhysicalContractsFromEarlierRounds_AreUntouched()
         {
-            var system = WithDefense(true, false);
+            var system = Build(State());
             var catalog = Catalog;
             var bootId = catalog.SafetyElements
                 .First(entry => SelectiveSafetyDefaults.IsType(entry.Type, SelectiveSafetyDefaults.BotaType)).Id;
@@ -572,12 +463,7 @@ namespace RackCad.Tests
                 .Sum(component => component.Quantity);
 
             Assert.Equal(drawnBoots, bomBoots);
-
-            // Las botas no dependen de la intencion de defensa: son otra familia.
-            Assert.Equal(drawnBoots, new PushBackSystemPlantaBuilder().BuildPlan(WithDefense(false, false), catalog)
-                .Flatten().Instances
-                .Count(instance => instance.Role == HeaderBlockRole.Safety
-                    && string.Equals(instance.PieceId, bootId, StringComparison.OrdinalIgnoreCase)));
+            Assert.True(drawnBoots > 0);
         }
     }
 }

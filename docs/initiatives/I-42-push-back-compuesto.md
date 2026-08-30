@@ -800,92 +800,82 @@ pruebas de ventana a la casilla «En blanco». Nada de `NotEmpty`: los topes de 
 TRANSVERSAL de cada frente, el desviador por extremo de pasillo y la seguridad comparando las manos de los dos
 pasillos.
 
-## 4-quinquetvicies. Ronda 7: ActiveSide es CONTEXTO, y la defensa de montacargas se decide por lado
+## 4-quinquetvicies. Ronda 7 (auditoria conservada, diseño RECHAZADO) y ronda 7B: seguridad en su ventana
 
-El modelo fisico quedo cerrado en las rondas 1 a 6F. Esta cierra la capa de EDICION y añade la capacidad que el
-dueño pidio.
+### Lo que la ronda 7 dejo, y lo que el dueño rechazo
 
-### Auditoria de `ActiveSide`
+**Se conserva** su auditoria de `ActiveSide`: 43 usos en el arbol —los de Cantilever son de otro sistema— y ninguna
+autoridad fantasma. Ningun consumidor fisico resuelve nada mirando `ActiveSide`; es contexto de seleccion
+(`ActiveSide`, `SetActiveSide`, `MirrorSelection`), lectura del submodelo (`Active`, `Of(side)`,
+`EditTargets`/`EditSides`) y baseline (`Snapshot`/`Restore`). Lo que faltaba era el CONTRATO, y las 18 pruebas de
+`PushBackCompositeEditingContractTests` lo fijan: cambiar de lado es una identidad, editar A no toca B, el hueco SI
+es compartido, `ModuleId` y el override de cabecera sobreviven, los Restore estan acotados, un blanco en un lado no
+deshabilita el otro, Snapshot/Restore es transaccional cruzando un cambio de lado, Accept persiste los dos lados y
+el lado B ausente no resucita.
 
-43 usos en el arbol; los de Cantilever (`ActiveSides` de brazos) son de otro sistema. Los del Push Back, clasificados:
+**Se retira** su diseño de defensa: `DefenseSideA` / `DefenseSideB` como dos interruptores por LADO. El dueño lo
+rechazo porque dentro de un mismo lado puede querer P1 si, P2 no, P3 si — el lado es contexto, no la identidad de la
+intencion. Retirado por completo: los dos `bool?` del dominio y del DTO, el estado del editor, la traduccion del
+resolver, el filtro del dibujo, la reflexion y las dos casillas de la ventana principal. Como 7fcfed9 nunca se
+integro ni se valido, no se arrastra una abstraccion rechazada por compatibilidad.
 
-| uso | clasificacion | veredicto |
+### 7B, hallazgo de la auditoria: las dos capacidades YA EXISTIAN
+
+Antes de diseñar nada se audito la ventana «Elementos de seguridad» (`SelectiveSafetyWindow`), y resulto que el
+producto ya tenia lo que el dueño pedia:
+
+| capacidad | donde vive | estado |
 |---|---|---|
-| `ActiveSide` (propiedad), `SetActiveSide` | A — contexto de seleccion | legitimo; documenta que no toca ninguna configuracion |
-| `Active`, `Of(side)` | B — lectura del submodelo | legitimo; `Of` es acceso por identidad |
-| `EditTargets` / `EditSides` | B — devuelven el CONJUNTO explicito de lados | legitimo |
-| `MirrorSelection` | A — lleva la celda SELECCIONADA al otro lado | legitimo: la seleccion es UI, y la celda es una posicion FISICA del rack |
-| `Snapshot` / `Restore` | E — baseline | legitimo: viaja como dato, no decide nada |
-| ventana: `StructureOverride`, `RestoreStructure`, etiquetas | C/UI — escriben el lado que el usuario edita | legitimo: el scope es explicito |
+| defensa POR POSTE | `SelectiveSafetySelection.DefensaPosts` (`SafetyPostDefense` por poste) con su editor `SafetyDefensaGridWindow` — «Defensa de montacargas por poste» | ya existia; ahora fijado por contrato |
+| identidad estable del poste | `SafetyPostDefense.PostIndex` = la LINEA transversal fisica | ya existia; estable porque un blanco no compacta la reticula (ronda 2) |
+| tope en Elementos de seguridad | `PushBackRearTopeSection` — «Topes posteriores», con su copia de trabajo | ya existia desde 2026-07-24 |
 
-**No se encontro ninguna autoridad fantasma**: ningun consumidor fisico resuelve nada mirando `ActiveSide`. Lo que
-faltaba era el CONTRATO que lo fija, y ahora existe: cambiar A → B → A sin editar es una identidad, comprobada sobre
-una firma semantica del estado completo y sobre el sistema resuelto.
+Lo que si habia que corregir era una **duplicacion**: la ventana principal llevaba una segunda superficie para el
+tope (`TopeSideACheck`, `TopeSideBCheck`, alcance y «Aplicar topes»), añadida en una ronda anterior porque la
+ventana de seguridad solo alcanzaba al LADO ACTIVO. Una decision con dos sitios donde tomarla acaba divergiendo.
 
-### Defensa de montacargas por lado
+### La correccion
 
-**Contrato de estado.** `PushBackCompositeDesign.DefenseSideA` / `DefenseSideB`, dos `bool?`. NULL = el documento no
-declara intencion por lado y manda la seleccion GLOBAL de seguridad. Tocar una casilla declara las DOS —la otra
-toma lo que el rack dibuja hoy— para que el documento no quede a medias.
+1. **La ventana principal deja de editar el tope.** Se retiran los cinco controles y su codigo. La fisica no se toca:
+   sigue siendo el `RearTope` de cada lado y sus `OffCells`.
+2. **La ventana de seguridad edita los DOS lados.** En un rack compuesto ofrece UNA seccion por lado —«Topes
+   posteriores — lado A» y «— lado B»—, cada una con su copia de trabajo y su boton «Configurar…», y aplica cada una
+   a SU lado al aceptar. Un rack de un solo sentido construye exactamente una seccion sin etiqueta, como siempre: era
+   la unica capacidad que le faltaba a esta ventana, y con ella la duplicacion deja de hacer falta.
+3. **La defensa por poste queda fijada por contrato** sobre el mecanismo existente, sin tocarlo.
 
-**Tres ejes separados**, que es lo que el dueño pidio explicitamente:
+### Defensa por poste: el contrato, medido
 
-| eje | quien decide | donde vive |
-|---|---|---|
-| INTENCION | el usuario, por lado | `DefenseSideA` / `DefenseSideB` |
-| APLICABILIDAD | la fisica: ¿existe una cara de ataque? | `IsInteriorFace` (ronda 6D) |
-| COLOCACION | la linea/poste fisico | `AppendPlantaDefensas`, sin cambios |
+La intencion de un poste es su entrada en `DefensaPosts`, y el ON/OFF de cada cara es su LONGITUD: cero = esa cara
+no lleva defensa. Un poste SIN entrada sigue la regla automatica de 12"/36", que es el comportamiento legacy.
 
-El resolver traduce la intencion por LADO a la cara de profundidad que ese lado ocupa —el pasillo de A es su
-extremo exterior, el de B el suyo— una sola vez, para que el dibujo y el BOM no tengan que saber de lados. La
-estructura lo publica como `DefenseIntentAtStart` / `DefenseIntentAtEnd`, neutral: el Dinamico no declara ninguna y
-dibuja igual que siempre. La reflexion las intercambia, porque son caras.
-
-**Medido:**
-
-| intencion | defensas dibujadas |
+| caso | resultado |
 |---|---|
-| A=ON, B=OFF | solo el pasillo de A |
-| A=OFF, B=ON | solo el pasillo de B |
-| A=ON, B=ON | las dos — identico a un rack sin intencion declarada |
-| A=OFF, B=OFF | ninguna |
-| A=ON con su cara en blanco en esa zona | **nada ahi**, y NADA en el lado contrario ni en la interfaz |
+| P0 y P2 encendidos | defensa exactamente en las lineas 0 y 2 |
+| P1 y P3 encendidos | exactamente en 1 y 3, y en ninguna otra |
+| tocar P1 | no toca P2 |
+| con un blanco delante | la linea conserva su indice: la intencion no se mueve |
+| cambiar de lado activo | no toca ninguna intencion |
+| cambiar el hueco | tampoco |
+| guardar y RACKEDITAR | vuelven las cinco entradas, con su ON/OFF |
+| intencion sobre una cara que no aplica | no crea pieza, y no salta a otro poste ni a la interfaz |
+| documento LEGACY sin entradas | dibuja exactamente lo que dibujaba |
+| poste que deja de existir | no deja defensa fantasma; uno nuevo toma el defecto automatico |
 
-La intencion NO se traslada: sigue siendo A=true aunque en esa zona no produzca pieza. Dibujo y BOM coinciden en las
-cuatro combinaciones.
+Dibujo = BOM en las cuatro combinaciones probadas.
 
-**Persistencia y legacy.** El DTO lleva los dos `bool?` como campos aditivos. Un documento anterior no los trae, no
-los escribe al guardar y dibuja EXACTAMENTE lo que dibujaba — comprobado comparando las defensas del sistema
-original con las del reconstruido. Una vez declarada, la intencion sobrevive al guardado y a RACKEDITAR.
+### Lo que NO cambio
 
-**UI.** Dos casillas —«Lado A» y «Lado B»— en el panel de interfaz de la ventana Push Back, sobre el mismo shell y
-el mismo patron que el resto (I-39). Cada una escribe SU lado. La de B se deshabilita cuando el rack no tiene lado
-B. No se creo ningun framework paralelo ni nomenclatura nueva.
+Ninguna primitiva de dibujo: el movimiento del tope es de EDICION. Sin editar nada, el plano es identico antes y
+despues de abrir y cancelar la ventana de seguridad. **Ningun golden se movio.** Intactos: la fisica del tope
+(rondas 4B, 5 y 5D), StopA/StopB independientes, alturas A/B, cabeceras, botas (6F), 27/27 (6A), I-40 e I-41.
 
-### Lo que las pruebas encontraron: la capa ya era correcta
+### Contratos de prueba sustituidos
 
-Las 24 pruebas de aislamiento, baseline, Restore, scopes, blancos y Preview **pasaron a la primera**. Eso no es un
-descuido: es el hallazgo. La capa de estado de I-20/I-21, endurecida en las rondas 2 a 6, ya separaba los dos lados;
-lo que faltaba era el contrato que lo fija por escrito. Ahora existe:
-
-- cambiar de lado no muta el modelo ni el sistema resuelto;
-- editar A no cambia B y al reves, comprobado sobre la firma de cada lado;
-- el hueco SI es compartido y cambia los dos: la prueba distingue compartido de independiente;
-- `ModuleId` y el override de cabecera sobreviven al cambio de lado;
-- `Restore` de celda, de nivel y de estructura estan acotados a su lado y devuelven la propuesta ACTUAL;
-- un blanco en A no deshabilita B ni al reves; un override imposible en A no impide editar B;
-- Snapshot/Restore es transaccional, tambien cruzando un cambio de lado con Preview de por medio;
-- Accept persiste las ediciones de LOS DOS lados;
-- el lado B ausente no resucita por recargar ni por declarar intencion de defensa.
-
-### Goldens
-
-**Ninguno se movio.** El cambio es aditivo y con las dos intenciones sin declarar el dibujo es el de siempre.
-
-### Lo que NO se toco
-
-Alturas A/B, cabeceras, HIGH, topes, poste reforzado, diverter, FirstLevelDatum, botas (6F), 27/27 (6A), I-40 e
-I-41. La semantica global de Izquierda/Derecha/Ambas de las botas sigue siendo deuda separada y no se rediseña.
+Seis pruebas de UI conducian la superficie retirada de la ventana principal. Su INTENCION —las cuatro combinaciones
+por lado, los cinco alcances, la aplicabilidad por celda— se conserva, reescrita sobre la autoridad que la ventana
+de seguridad usa (`ApplyRearTope` / `RearTopeAt` / `TopeSurface`), y se añade
+`MainWindow_DoesNotOwnRearTopeEditor`, que comprueba que los cinco controles ya no existen.
 
 ### PENDIENTES REGISTRADOS
 
@@ -893,7 +883,7 @@ I-41. La semantica global de Izquierda/Derecha/Ambas de las botas sigue siendo d
 - **V1 — View hygiene:** el lateral de una seccion dibuja la letra de un lado que no existe funcionalmente.
 - **V2 — Frontales:** una corrida full-span debe mostrar en la cara de salida el HIGH y el tope con semantica de
   vista posterior.
-- **V3 — Planta / view hygiene:** auditoria de nearest-Y, deduplicacion y fail-open en las proyecciones.
+- **V3 — Planta / view hygiene:** auditoria de nearest-Y, deduplicacion y fail-open.
 
 ## 4-quateretvicies. Ronda 6E (RECHAZADA) y ronda 6F: la bota va donde hay una cara de ATAQUE
 

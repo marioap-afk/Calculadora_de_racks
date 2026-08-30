@@ -80,8 +80,6 @@ namespace RackCad.Application.Systems.PushBack
             {
                 Gap = layout.Gap,
                 CentralSeparator = layout.CentralSeparator,
-                DefenseSideA = design.Composite?.DefenseSideA,
-                DefenseSideB = design.Composite?.DefenseSideB,
                 GapPosition = layout.GapPosition
             };
 

@@ -2374,14 +2374,34 @@ namespace RackCad.UI.Systems.PushBack
             // The rear stop is edited INSIDE this same dialog, as its own visible section (Owner decision 2026-07-24).
             // The section works on a COPY, so nothing is committed until the main dialog is accepted, and its grid opens
             // ONLY from its own "Configurar…" button — never automatically afterwards.
-            var topeSection = new PushBackRearTopeSection(state.RearTopeConfig(), OpenRearTopeDialog, catalog);
+            // I-42 (ronda 7B) — un rack COMPUESTO tiene un tope por lado, y los DOS se editan aqui. Antes esta
+            // ventana solo llegaba al lado activo, y por eso existia una segunda superficie en la ventana principal:
+            // ahora la intencion de seguridad se decide en un solo sitio. Un rack de un solo sentido construye
+            // exactamente una seccion sin etiqueta, como siempre.
+            var composed = new StackPanel();
+            var topeSection = new PushBackRearTopeSection(
+                composite.SideBPresent ? composite.Of(PushBackSide.A).RearTopeConfig() : state.RearTopeConfig(),
+                OpenRearTopeDialog,
+                catalog,
+                composite.SideBPresent ? "A" : null);
             RearTopeSectionForTest = topeSection;
+            composed.Children.Add(topeSection.View);
+
+            PushBackRearTopeSection topeSectionB = null;
+            if (composite.SideBPresent)
+            {
+                topeSectionB = new PushBackRearTopeSection(
+                    composite.Of(PushBackSide.B).RearTopeConfig(), OpenRearTopeDialog, catalog, "B");
+                composed.Children.Add(topeSectionB.View);
+            }
+
+            RearTopeSectionBForTest = topeSectionB;
 
             // CANCELLING the safety dialog abandons the WHOLE Seguridad step: neither the safety list nor the rear-tope
             // config is touched, and nothing is recomputed.
             var chosen = SafetyDialog != null
                 ? SafetyDialog(safetySelections)
-                : ShowSafetyDialog(elements, levels, postCount, topeSection.View);
+                : ShowSafetyDialog(elements, levels, postCount, composed);
             if (chosen == null)
             {
                 return;
@@ -2399,13 +2419,27 @@ namespace RackCad.UI.Systems.PushBack
                     safetySelections.Add(selection);
                 }
 
-                state.LoadRearTopeConfig(topeSection.Config);
+                // Cada seccion aplica a SU lado: editar el tope de A no toca el de B, que es el contrato de
+                // StopA/StopB que las rondas anteriores cerraron.
+                if (composite.SideBPresent)
+                {
+                    composite.Of(PushBackSide.A).LoadRearTopeConfig(topeSection.Config);
+                    composite.Of(PushBackSide.B).LoadRearTopeConfig(topeSectionB.Config);
+                }
+                else
+                {
+                    state.LoadRearTopeConfig(topeSection.Config);
+                }
+
                 RequestRecompute();
             }
         }
 
-        /// <summary>The tope section of the last opened Seguridad dialog (test seam).</summary>
+        /// <summary>The tope section of the last opened Seguridad dialog (test seam). In a composite, side A's.</summary>
         internal PushBackRearTopeSection RearTopeSectionForTest { get; private set; }
+
+        /// <summary>I-42 (ronda 7B) — side B's tope section, or null in a single-sided rack (test seam).</summary>
+        internal PushBackRearTopeSection RearTopeSectionBForTest { get; private set; }
 
         /// <summary>Opens the shared tope grid for <paramref name="config"/>; NULL when cancelled.</summary>
         private SafetyTopeGridWindow.TopeResult OpenRearTopeDialog(PushBackRearTopeConfig config)

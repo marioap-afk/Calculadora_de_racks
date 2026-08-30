@@ -144,23 +144,6 @@
                         </StackPanel>
                     </Grid>
 
-                    <!-- I-42 (ronda 7): la DEFENSA DE MONTACARGAS por lado. Un rack compuesto tiene dos pasillos y
-                         cada uno se decide por separado. Es INTENCION: donde puede materializarse lo sigue
-                         decidiendo la fisica (solo en una cara de ataque real, nunca en la interfaz). -->
-                    <TextBlock Text="Defensa de montacargas" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox x:Name="DefenseSideACheck" Content="Lado A" Margin="0,0,16,4"
-                                  Foreground="{DynamicResource ShellTextPrimaryBrush}"
-                                  Checked="DefenseSide_Changed" Unchecked="DefenseSide_Changed"
-                                  ToolTipService.ShowOnDisabled="True"
-                                  ToolTip="Defensa en el pasillo del lado A. Solo se dibuja donde exista una cara de carga real." />
-                        <CheckBox x:Name="DefenseSideBCheck" Content="Lado B" Margin="0,0,0,4"
-                                  Foreground="{DynamicResource ShellTextPrimaryBrush}"
-                                  Checked="DefenseSide_Changed" Unchecked="DefenseSide_Changed"
-                                  ToolTipService.ShowOnDisabled="True"
-                                  ToolTip="Defensa en el pasillo del lado B. Solo se dibuja donde exista una cara de carga real." />
-                    </StackPanel>
-
                     <!-- I-42 (ronda post-82e918b): aqui vivia «Frente presente en este lado», y competia con «En
                          blanco» por la MISMA decision — uno quitaba cabeceras donde no debia y el otro no. Ahora la
                          autoridad visible es una sola: la casilla «En blanco» de la cabecera de cada columna de la
@@ -204,44 +187,10 @@
                                 ToolTip="Escribe SOLO la topolog&#237;a y el sentido en las celdas del alcance." />
                     </WrapPanel>
 
-                    <!-- I-42 (ronda Owner): los TOPES de los dos lados, visibles a la vez y editables sin salir de
-                         aqui. Antes solo se llegaba a ellos desde Seguridad, que trabaja sobre el LADO ACTIVO, y el
-                         usuario no tenia forma de ver «A si / B no» ni de decidirlo sin deducir el modo de la ventana.
-                         La autoridad NO cambia: sigue siendo el RearTope de cada lado (PushBackRearTopeConfig y sus
-                         OffCells). Esto es una superficie, no un segundo modelo. -->
-                    <TextBlock Text="Tope posterior &#8212; extremo ALTO de cada cama" Style="{StaticResource FieldLabel}" Margin="0,10,0,2" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <CheckBox x:Name="TopeSideACheck" Grid.Column="0" Content="Tope lado A"
-                                  Foreground="{DynamicResource ShellTextPrimaryBrush}"
-                                  ToolTipService.ShowOnDisabled="True"
-                                  ToolTip="Tope posterior de la cama del lado A en esta celda." />
-                        <CheckBox x:Name="TopeSideBCheck" Grid.Column="2" Content="Tope lado B"
-                                  Foreground="{DynamicResource ShellTextPrimaryBrush}"
-                                  ToolTipService.ShowOnDisabled="True"
-                                  ToolTip="Tope posterior de la cama del lado B en esta celda." />
-                    </Grid>
-                    <TextBlock Text="Alcance:" Style="{StaticResource FieldLabel}" Margin="0,6,0,2" />
-                    <ComboBox x:Name="TopeScopeBox" SelectedIndex="0"
-                              ToolTipService.ShowOnDisabled="True"
-                              ToolTip="Los MISMOS cinco alcances del editor.">
-                        <ComboBoxItem Content="Celda" />
-                        <ComboBoxItem Content="Selecci&#243;n" />
-                        <ComboBoxItem Content="Nivel" />
-                        <ComboBoxItem Content="Frente" />
-                        <ComboBoxItem Content="Todo" />
-                    </ComboBox>
-                    <WrapPanel Margin="0,6,0,0">
-                        <Button x:Name="ApplyTopesButton" Content="Aplicar topes"
-                                Style="{StaticResource SecondaryButtonStyle}" MinWidth="112" Margin="0,0,6,6"
-                                Click="ApplyTopes_Click"
-                                ToolTip="Escribe SOLO los dos topes en las celdas del alcance." />
-                    </WrapPanel>
-                    <TextBlock x:Name="TopeApplicabilityText" Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />
+                    <!-- I-42 (ronda 7B, decision del dueño): el TOPE POSTERIOR se edita SOLO en Elementos de
+                         seguridad, que es donde vive el resto de la intencion de seguridad. Aqui habia una segunda
+                         superficie para lo mismo, y una decision con dos sitios donde tomarla acaba divergiendo. La
+                         fisica no cambia en nada: sigue siendo el RearTope de cada lado y sus OffCells. -->
 
                     <!-- I-42 (ronda Owner): esto NO es «otro fondo». El fondo de almacenamiento es de la celda y del
                          frente («Fondos frente» y «Fondo celda»); esto es hasta donde llega la ESTRUCTURA longitudinal

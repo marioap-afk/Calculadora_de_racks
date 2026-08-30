@@ -184,24 +184,6 @@ namespace RackCad.UI.Systems.PushBack
             RequestRecompute();
         }
 
-        /// <summary>
-        /// I-42 (ronda 7) — la DEFENSA por lado. Cada casilla escribe SU lado y no toca el otro: son dos
-        /// intenciones independientes. La primera vez declara las dos, tomando para la que no se toco lo que el rack
-        /// dibuja hoy, para que el documento no quede a medias.
-        /// </summary>
-        private void DefenseSide_Changed(object sender, RoutedEventArgs e)
-        {
-            if (suppressSync)
-            {
-                return;
-            }
-
-            var side = ReferenceEquals(sender, DefenseSideBCheck) ? PushBackSide.B : PushBackSide.A;
-            var box = side == PushBackSide.B ? DefenseSideBCheck : DefenseSideACheck;
-            composite.SetDefenseSide(side, box.IsChecked == true);
-            RequestRecompute();
-        }
-
         // ---- Topologia por celda ------------------------------------------------------------------------------
 
         private void ApplyTopology_Click(object sender, RoutedEventArgs e)
@@ -476,30 +458,6 @@ namespace RackCad.UI.Systems.PushBack
 
         // ---- I-42: los topes de los DOS lados --------------------------------------------------------------------
 
-        private void ApplyTopes_Click(object sender, RoutedEventArgs e)
-        {
-            if (!composite.SideBPresent)
-            {
-                return;
-            }
-
-            var scope = CompositeScope(TopeScopeBox.SelectedIndex);
-            int writtenA;
-            int writtenB;
-            using (session.Recompute.Defer())
-            {
-                writtenA = composite.ApplyRearTope(PushBackSide.A, TopeSideACheck.IsChecked == true, scope);
-                writtenB = composite.ApplyRearTope(PushBackSide.B, TopeSideBCheck.IsChecked == true, scope);
-            }
-
-            SetStatus(
-                writtenA + writtenB > 0
-                    ? "Topes aplicados: " + writtenA + " celda(s) en A y " + writtenB + " en B."
-                    : "Ninguna celda en el alcance.",
-                writtenA + writtenB == 0);
-            RequestRecompute();
-        }
-
         /// <summary>
         /// Refleja en el panel compuesto lo que la CELDA seleccionada tiene ahora: si su ranura existe en este lado y
         /// que topes lleva. La aplicabilidad fisica de cada tope la decide la topologia, asi que la casilla del lado
@@ -538,15 +496,7 @@ namespace RackCad.UI.Systems.PushBack
                 SetPerSideSensitive(ApplyStructureButton, perSide);
                 SetPerSideSensitive(RestoreStructureButton, perSide);
 
-                TopeSideACheck.IsChecked = composite.RearTopeAt(PushBackSide.A, slot, level);
-                TopeSideBCheck.IsChecked = composite.RearTopeAt(PushBackSide.B, slot, level);
-
                 ApplyMixedSideState();
-
-                var surface = composite.TopeSurface(slot, level);
-                SetTopeSensitive(TopeSideACheck, surface, PushBackSide.A);
-                SetTopeSensitive(TopeSideBCheck, surface, PushBackSide.B);
-                TopeApplicabilityText.Text = Describe(surface);
             }
             finally
             {
@@ -660,13 +610,6 @@ namespace RackCad.UI.Systems.PushBack
                 SideSelectorBox.SelectedIndex = (int)composite.ActiveSelection;
                 GapBox.SetNumber(composite.Gap);
                 CentralSeparatorCheck.IsChecked = composite.CentralSeparator;
-
-                // I-42 (ronda 7): sin intencion declarada, las dos casillas muestran lo que el rack dibuja hoy —la
-                // seleccion global— y no escriben nada hasta que el usuario las toca. El lado B solo se ofrece
-                // cuando el rack lo tiene.
-                DefenseSideACheck.IsChecked = composite.DefenseSide(PushBackSide.A);
-                DefenseSideBCheck.IsChecked = composite.SideBPresent && composite.DefenseSide(PushBackSide.B);
-                DefenseSideBCheck.IsEnabled = composite.SideBPresent;
                 var stored = composite.StructureOverride(composite.ActiveSide);
                 StructureOverrideBox.SetNumber(stored.HasValue ? (double?)stored.Value : null);
 

@@ -232,12 +232,6 @@ namespace RackCad.Domain.Systems.PushBack
         /// <summary>Si el hueco lleva el separador central. Pertenece a la interfaz y se cuenta UNA sola vez.</summary>
         public bool CentralSeparator { get; set; }
 
-        /// <summary>I-42 (ronda 7) — la intencion de defensa del lado A, o null si el documento no la declara.</summary>
-        public bool? DefenseSideA { get; set; }
-
-        /// <summary>La intencion de defensa del lado B.</summary>
-        public bool? DefenseSideB { get; set; }
-
         /// <summary>X donde acaba la estructura de A (su linea de postes terminal).</summary>
         public double GapStartX { get; set; }
 

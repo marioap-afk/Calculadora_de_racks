@@ -186,11 +186,6 @@ namespace RackCad.Application.Systems.PushBack
                 mirrored.DerivedPostLineOverrides.Add(line);
             }
 
-            // I-42 (ronda 7): la intencion de defensa es POR CARA, y una reflexion en profundidad intercambia las
-            // dos caras. Viaja con ellas.
-            mirrored.DefenseIntentAtStart = source.DefenseIntentAtEnd;
-            mirrored.DefenseIntentAtEnd = source.DefenseIntentAtStart;
-
             // I-42 (ronda 6D): el tramo interior tambien es de PROFUNDIDAD, asi que viaja reflejado.
             if (source.InteriorFaceStartX.HasValue && source.InteriorFaceEndX.HasValue)
             {

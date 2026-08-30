@@ -231,5 +231,208 @@ namespace RackCad.UI.Tests
                 finally { w.Close(); }
             });
         }
+
+        // ---- I-42 (ronda 7B): un rack COMPUESTO edita AQUI los topes de LOS DOS lados -------------------------
+
+        /// <summary>Declara el lado B para que la ventana tenga los dos topes que ofrecer.</summary>
+        private static RackPushBackSystemWindow Composite()
+        {
+            var w = Shown();
+            w.CompositeState.SetSideBPresent(true);
+            for (var slot = 0; slot < w.CompositeState.SlotCount; slot++)
+            {
+                w.CompositeState.SetSlotPresent(PushBackSide.B, slot, true);
+            }
+
+            return w;
+        }
+
+        /// <summary>
+        /// I-42 (ronda 7B, decision del dueño) — el tope se edita SOLO aqui, y en un rack compuesto la ventana
+        /// ofrece UNA seccion POR LADO. Era la unica capacidad que le faltaba, y por la que existia una segunda
+        /// superficie en la ventana principal: ahora la decision se toma en un solo sitio.
+        /// </summary>
+        [Fact]
+        public void RearTope_IsEditedFromSafetyWindow_WithOneSectionPerSide()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Composite();
+                try
+                {
+                    w.SafetyDialog = _ => null;   // se cancela: solo interesa QUE se ofrece
+                    EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+
+                    Assert.NotNull(w.RearTopeSectionForTest);
+                    Assert.NotNull(w.RearTopeSectionBForTest);
+                    Assert.NotSame(w.RearTopeSectionForTest, w.RearTopeSectionBForTest);
+                    Assert.NotSame(w.RearTopeSectionForTest.Config, w.RearTopeSectionBForTest.Config);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>Un rack de un solo sentido sigue ofreciendo UNA seccion, sin etiqueta: nada cambia para el.</summary>
+        [Fact]
+        public void SingleSidedRack_StillOffersOneSection()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown();
+                try
+                {
+                    w.SafetyDialog = _ => null;
+                    EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+
+                    Assert.NotNull(w.RearTopeSectionForTest);
+                    Assert.Null(w.RearTopeSectionBForTest);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>Editar el tope de A no toca el de B: es el contrato StopA/StopB de las rondas anteriores.</summary>
+        [Fact]
+        public void EditingStopA_DoesNotChangeStopB()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Composite();
+                try
+                {
+                    var saqueB = w.CompositeState.Of(PushBackSide.B).RearTopeSaque;
+
+                    // Solo la seccion de A abre su rejilla y cambia su SAQUE.
+                    w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult { Saque = 7.0 };
+                    w.SafetyDialog = selections =>
+                    {
+                        w.RearTopeSectionForTest.Configure();
+                        return selections.ToList();   // aceptado
+                    };
+                    EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+
+                    Assert.Equal(7.0, w.CompositeState.Of(PushBackSide.A).RearTopeSaque, 9);
+                    Assert.Equal(saqueB, w.CompositeState.Of(PushBackSide.B).RearTopeSaque, 9);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>Y al reves: editar el de B no toca el de A.</summary>
+        [Fact]
+        public void EditingStopB_DoesNotChangeStopA()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Composite();
+                try
+                {
+                    var saqueA = w.CompositeState.Of(PushBackSide.A).RearTopeSaque;
+
+                    w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult { Saque = 5.0 };
+                    w.SafetyDialog = selections =>
+                    {
+                        w.RearTopeSectionBForTest.Configure();
+                        return selections.ToList();
+                    };
+                    EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+
+                    Assert.Equal(5.0, w.CompositeState.Of(PushBackSide.B).RearTopeSaque, 9);
+                    Assert.Equal(saqueA, w.CompositeState.Of(PushBackSide.A).RearTopeSaque, 9);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>Cancelar la ventana no persiste NINGUNO de los dos topes.</summary>
+        [Fact]
+        public void RearTope_CancelIsTransactional_ForBothSides()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Composite();
+                try
+                {
+                    var saqueA = w.CompositeState.Of(PushBackSide.A).RearTopeSaque;
+                    var saqueB = w.CompositeState.Of(PushBackSide.B).RearTopeSaque;
+
+                    w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult { Saque = 11.0 };
+                    w.SafetyDialog = _ =>
+                    {
+                        w.RearTopeSectionForTest.Configure();
+                        w.RearTopeSectionBForTest.Configure();
+                        return null;   // cancelado
+                    };
+                    EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+
+                    Assert.Equal(saqueA, w.CompositeState.Of(PushBackSide.A).RearTopeSaque, 9);
+                    Assert.Equal(saqueB, w.CompositeState.Of(PushBackSide.B).RearTopeSaque, 9);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>Y aceptarla persiste los DOS.</summary>
+        [Fact]
+        public void RearTope_AcceptPersists_ForBothSides()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Composite();
+                try
+                {
+                    w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult { Saque = 8.0 };
+                    w.SafetyDialog = selections =>
+                    {
+                        w.RearTopeSectionForTest.Configure();
+                        w.RearTopeSectionBForTest.Configure();
+                        return selections.ToList();
+                    };
+                    EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+
+                    Assert.Equal(8.0, w.CompositeState.Of(PushBackSide.A).RearTopeSaque, 9);
+                    Assert.Equal(8.0, w.CompositeState.Of(PushBackSide.B).RearTopeSaque, 9);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>
+        /// MOVER el control no cambia la geometria ni el BOM: la fisica del tope es la de las rondas 4B, 5 y 5D y
+        /// esta ronda no la toca. Sin editar nada, el dibujo es identico antes y despues de abrir y cancelar.
+        /// </summary>
+        [Fact]
+        public void MovingControl_DoesNotChangeTopeGeometryOrBom()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Composite();
+                try
+                {
+                    var before = Topes(w);
+                    w.SafetyDialog = _ => null;
+                    EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
+
+                    Assert.Equal(before, Topes(w));
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        private static IReadOnlyList<string> Topes(RackPushBackSystemWindow w)
+        {
+            var system = w.LastComputation?.System;
+            if (system == null)
+            {
+                return new List<string>();
+            }
+
+            return new PushBackSystemPlantaBuilder().BuildPlan(system, w.Session.Catalog).Flatten().Instances
+                .Where(instance => instance.Role == RackCad.Application.Drawing.HeaderBlockRole.Tope)
+                .Select(instance => FormattableString.Invariant(
+                    $"{instance.PieceId}|{instance.Insertion.X:0.###}|{instance.Insertion.Y:0.###}|{instance.MirroredX}"))
+                .OrderBy(value => value, StringComparer.Ordinal)
+                .ToList();
+        }
     }
 }

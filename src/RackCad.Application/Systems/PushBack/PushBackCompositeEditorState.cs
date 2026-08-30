@@ -146,15 +146,6 @@ namespace RackCad.Application.Systems.PushBack
         /// <summary>Si el hueco lleva el separador central (la MISMA pieza del rack).</summary>
         public bool CentralSeparator { get; private set; }
 
-        /// <summary>
-        /// I-42 (ronda 7) — la INTENCION de defensa de montacargas de cada lado. Null = este rack no la declara y
-        /// manda la seleccion global de seguridad, que es lo que hace cualquier documento anterior.
-        /// </summary>
-        public bool? DefenseSideA { get; private set; }
-
-        /// <summary>La misma intencion para el lado B.</summary>
-        public bool? DefenseSideB { get; private set; }
-
         /// <summary>Override manual de la estructura del lado A, o null si sigue la propuesta.</summary>
         public int? StructureOverrideA { get; private set; }
 
@@ -472,44 +463,6 @@ namespace RackCad.Application.Systems.PushBack
 
         /// <summary>Fija el separador central. Solo se materializa si hay hueco donde ponerlo.</summary>
         public void SetCentralSeparator(bool value) => CentralSeparator = value;
-
-        /// <summary>
-        /// Declara la defensa de un LADO. La primera vez declara los DOS —el otro conserva lo que hoy dibuja— para
-        /// que el documento no quede a medias: o los dos lados tienen intencion o ninguno.
-        ///
-        /// <para>
-        /// Escribir el lado A NO toca el lado B, y al reves: son intenciones independientes, que es justo lo que el
-        /// dueño pidio. Un rack sin lado B declarado no admite intencion para B.
-        /// </para>
-        /// </summary>
-        public void SetDefenseSide(PushBackSide side, bool enabled, bool globalDefault = true)
-        {
-            if (side == PushBackSide.B && !SideBPresent)
-            {
-                return;
-            }
-
-            if (side == PushBackSide.A)
-            {
-                DefenseSideA = enabled;
-                DefenseSideB = DefenseSideB ?? globalDefault;
-                return;
-            }
-
-            DefenseSideB = enabled;
-            DefenseSideA = DefenseSideA ?? globalDefault;
-        }
-
-        /// <summary>La intencion vigente de un lado, o <paramref name="globalDefault"/> si el rack no la declara.</summary>
-        public bool DefenseSide(PushBackSide side, bool globalDefault = true)
-            => (side == PushBackSide.A ? DefenseSideA : DefenseSideB) ?? globalDefault;
-
-        /// <summary>Retira la intencion por lado: el rack vuelve a seguir la seleccion global.</summary>
-        public void RestoreDefenseSides()
-        {
-            DefenseSideA = null;
-            DefenseSideB = null;
-        }
 
         /// <summary>True cuando se pidio separador central y no hay hueco: el editor lo avisa antes de resolver.</summary>
         public bool CentralSeparatorWithoutGap => CentralSeparator && GapIsValid && Gap <= 0.0;
@@ -879,8 +832,6 @@ namespace RackCad.Application.Systems.PushBack
                 CentralSeparator = CentralSeparator,
                 StructureOverrideA = StructureOverrideA,
                 StructureOverrideB = StructureOverrideB,
-                DefenseSideA = DefenseSideA,
-                DefenseSideB = DefenseSideB,
                 DefaultTopology = DefaultTopology,
                 DefaultDirection = DefaultDirection
             };
@@ -907,8 +858,6 @@ namespace RackCad.Application.Systems.PushBack
                 CentralSeparator = false;
                 StructureOverrideA = null;
                 StructureOverrideB = null;
-                DefenseSideA = null;
-                DefenseSideB = null;
                 DefaultTopology = SideBPresent ? PushBackCellTopology.Encontradas : PushBackCellTopology.SoloA;
                 DefaultDirection = PushBackRunDirection.AToB;
                 return;
@@ -918,8 +867,6 @@ namespace RackCad.Application.Systems.PushBack
             CentralSeparator = composite.CentralSeparator;
             StructureOverrideA = composite.StructureOverrideA;
             StructureOverrideB = composite.StructureOverrideB;
-            DefenseSideA = composite.DefenseSideA;
-            DefenseSideB = composite.DefenseSideB;
             DefaultTopology = composite.DefaultTopology;
             DefaultDirection = composite.DefaultDirection;
 
@@ -1051,8 +998,6 @@ namespace RackCad.Application.Systems.PushBack
                 CentralSeparator,
                 StructureOverrideA,
                 StructureOverrideB,
-                DefenseSideA,
-                DefenseSideB,
                 DefaultTopology,
                 DefaultDirection,
                 topologies.Select(cell => new PushBackTopologyCell
@@ -1078,8 +1023,6 @@ namespace RackCad.Application.Systems.PushBack
             CentralSeparator = snapshot.CentralSeparator;
             StructureOverrideA = snapshot.StructureOverrideA;
             StructureOverrideB = snapshot.StructureOverrideB;
-            DefenseSideA = snapshot.DefenseSideA;
-            DefenseSideB = snapshot.DefenseSideB;
             DefaultTopology = snapshot.DefaultTopology;
             DefaultDirection = snapshot.DefaultDirection;
             topologies.Clear();
@@ -1108,8 +1051,6 @@ namespace RackCad.Application.Systems.PushBack
             bool centralSeparator,
             int? structureOverrideA,
             int? structureOverrideB,
-            bool? defenseSideA,
-            bool? defenseSideB,
             PushBackCellTopology defaultTopology,
             PushBackRunDirection defaultDirection,
             IReadOnlyList<PushBackTopologyCell> topologies,
@@ -1123,8 +1064,6 @@ namespace RackCad.Application.Systems.PushBack
             CentralSeparator = centralSeparator;
             StructureOverrideA = structureOverrideA;
             StructureOverrideB = structureOverrideB;
-            DefenseSideA = defenseSideA;
-            DefenseSideB = defenseSideB;
             DefaultTopology = defaultTopology;
             DefaultDirection = defaultDirection;
             Topologies = topologies ?? new List<PushBackTopologyCell>();
@@ -1139,8 +1078,6 @@ namespace RackCad.Application.Systems.PushBack
         public bool CentralSeparator { get; }
         public int? StructureOverrideA { get; }
         public int? StructureOverrideB { get; }
-        public bool? DefenseSideA { get; }
-        public bool? DefenseSideB { get; }
         public PushBackCellTopology DefaultTopology { get; }
         public PushBackRunDirection DefaultDirection { get; }
         public IReadOnlyList<PushBackTopologyCell> Topologies { get; }

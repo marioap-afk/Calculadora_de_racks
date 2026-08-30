@@ -96,16 +96,6 @@ namespace RackCad.Application.Systems.PushBack
             // cara posterior del contrario. Es una propiedad de la estructura, no una regla de dibujo.
             structure.InteriorFaceStartX = Math.Min(composite.GapStartX, composite.GapEndX);
             structure.InteriorFaceEndX = Math.Max(composite.GapStartX, composite.GapEndX);
-
-            // I-42 (ronda 7) — la INTENCION de defensa de cada lado, llevada a la cara de profundidad que ese lado
-            // ocupa: el pasillo de A es su extremo EXTERIOR y el de B el suyo. Se traduce aqui, una sola vez, para
-            // que el dibujo y el BOM no tengan que saber nada de lados.
-            //
-            // Null en las dos = el documento no declara intencion por lado y manda la seleccion GLOBAL de
-            // seguridad: un rack anterior a esta ronda dibuja exactamente lo que dibujaba.
-            var startIsA = composite.SideA.OuterX <= composite.SideB.OuterX;
-            structure.DefenseIntentAtStart = startIsA ? composite.DefenseSideA : composite.DefenseSideB;
-            structure.DefenseIntentAtEnd = startIsA ? composite.DefenseSideB : composite.DefenseSideA;
             return system;
         }
 

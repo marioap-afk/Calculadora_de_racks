@@ -25,28 +25,6 @@ namespace RackCad.Domain.Systems.PushBack
         public bool CentralSeparator { get; set; }
 
         /// <summary>
-        /// I-42 (ronda 7) — la INTENCION del usuario sobre la defensa de montacargas del lado A.
-        ///
-        /// <para>
-        /// Un rack compuesto tiene DOS pasillos y el dueño necesita decidirlos por separado: puede querer defensa en
-        /// A y no en B, o al reves. Un solo interruptor global no puede expresarlo.
-        /// </para>
-        /// <para>
-        /// NULL significa «este documento no declara intencion por lado», y entonces manda la seleccion GLOBAL de
-        /// seguridad, exactamente como antes de esta ronda: un documento anterior dibuja lo que siempre dibujo. En
-        /// cuanto el usuario toca el control, los dos lados quedan declarados.
-        /// </para>
-        /// <para>
-        /// Es INTENCION, no geometria: donde puede materializarse una defensa lo sigue decidiendo la fisica cerrada
-        /// en la ronda 6D —solo en una cara de ataque real, nunca en la interfaz—. Los dos ejes no se mezclan.
-        /// </para>
-        /// </summary>
-        public bool? DefenseSideA { get; set; }
-
-        /// <summary>La misma intencion para el lado B. Hermana de <see cref="DefenseSideA"/>: las dos o ninguna.</summary>
-        public bool? DefenseSideB { get; set; }
-
-        /// <summary>
         /// Override MANUAL de la estructura del lado A, en posiciones de fondo. Null = seguir la propuesta derivada
         /// ACTUAL, que es justo lo que significa «restaurar estructura».
         /// </summary>
@@ -211,8 +189,6 @@ namespace RackCad.Domain.Systems.PushBack
             {
                 Gap = Gap,
                 CentralSeparator = CentralSeparator,
-                DefenseSideA = DefenseSideA,
-                DefenseSideB = DefenseSideB,
                 StructureOverrideA = StructureOverrideA,
                 StructureOverrideB = StructureOverrideB,
                 DefaultTopology = DefaultTopology,

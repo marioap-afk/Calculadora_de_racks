@@ -383,15 +383,6 @@ namespace RackCad.Application.Persistence
     {
         public double? Gap { get; set; }
         public bool? CentralSeparator { get; set; }
-
-        /// <summary>
-        /// I-42 (ronda 7) — la intencion de defensa de montacargas por lado. Ausente (null) en todo documento
-        /// anterior, y ahi significa «sigue la seleccion global», que es lo que ese documento dibujaba.
-        /// </summary>
-        public bool? DefenseSideA { get; set; }
-
-        /// <summary>La misma intencion para el lado B.</summary>
-        public bool? DefenseSideB { get; set; }
         public int? StructureOverrideA { get; set; }
         public int? StructureOverrideB { get; set; }
         public string DefaultTopology { get; set; }
@@ -419,8 +410,6 @@ namespace RackCad.Application.Persistence
             {
                 Gap = composite.Gap > 0.0 ? composite.Gap : (double?)null,
                 CentralSeparator = composite.CentralSeparator ? true : (bool?)null,
-                DefenseSideA = composite.DefenseSideA,
-                DefenseSideB = composite.DefenseSideB,
                 StructureOverrideA = composite.StructureOverrideA,
                 StructureOverrideB = composite.StructureOverrideB,
                 DefaultTopology = composite.DefaultTopology.ToString(),
@@ -461,8 +450,6 @@ namespace RackCad.Application.Persistence
             {
                 Gap = Gap.HasValue && Gap.Value > 0.0 ? Gap.Value : 0.0,
                 CentralSeparator = CentralSeparator ?? false,
-                DefenseSideA = DefenseSideA,
-                DefenseSideB = DefenseSideB,
                 StructureOverrideA = StructureOverrideA,
                 StructureOverrideB = StructureOverrideB,
                 DefaultTopology = ParseTopology(DefaultTopology, PushBackCellTopology.Encontradas),

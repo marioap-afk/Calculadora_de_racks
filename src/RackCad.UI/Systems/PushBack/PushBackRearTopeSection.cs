@@ -28,10 +28,17 @@ namespace RackCad.UI.Systems.PushBack
         private readonly TextBlock status;
         private readonly Func<PushBackRearTopeConfig, SafetyTopeGridWindow.TopeResult> openDialog;
 
+        /// <param name="sideLabel">
+        /// I-42 (ronda 7B) — el lado al que pertenece esta seccion, o null en un rack de un solo sentido, que es
+        /// como se construia hasta ahora. Un rack COMPUESTO tiene un tope por lado y los dos se editan aqui, uno al
+        /// lado del otro: era la unica capacidad que la ventana de seguridad no cubria, y por la que existia una
+        /// segunda superficie en la ventana principal.
+        /// </param>
         public PushBackRearTopeSection(
             PushBackRearTopeConfig current,
             Func<PushBackRearTopeConfig, SafetyTopeGridWindow.TopeResult> openDialog,
-            RackCatalog catalog = null)
+            RackCatalog catalog = null,
+            string sideLabel = null)
         {
             this.openDialog = openDialog ?? throw new ArgumentNullException(nameof(openDialog));
 
@@ -40,7 +47,7 @@ namespace RackCad.UI.Systems.PushBack
 
             var heading = new TextBlock
             {
-                Text = HeadingText,
+                Text = string.IsNullOrEmpty(sideLabel) ? HeadingText : HeadingText + " — lado " + sideLabel,
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 0, 0, 2),
             };
