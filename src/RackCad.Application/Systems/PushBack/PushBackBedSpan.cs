@@ -120,9 +120,9 @@ namespace RackCad.Application.Systems.PushBack
             for (var step = 0; step < modules.Count && covered < positions; step++)
             {
                 var module = modules[anchor == PushBackBedAnchor.Outer ? step : modules.Count - 1 - step];
-                if (module.Kind == DynamicRackModuleKind.Gap)
+                if (!PushBackCompositeStructure.IsStoragePosition(module))
                 {
-                    continue;   // el hueco es ESTRUCTURA: se atraviesa, no se exige
+                    continue;   // la interfaz es ESTRUCTURA —con separador o sin el—: se atraviesa, no se exige
                 }
 
                 span += module.Length;

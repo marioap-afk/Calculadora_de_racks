@@ -118,7 +118,7 @@ namespace RackCad.Application.Systems.PushBack
                     continue;
                 }
 
-                if (module.Kind != DynamicRackModuleKind.Gap)
+                if (PushBackCompositeStructure.IsStoragePosition(module))
                 {
                     covered++;
                 }
@@ -244,8 +244,10 @@ namespace RackCad.Application.Systems.PushBack
                 }
 
                 var length = module.EndX - module.StartX;
-                if (module.Kind == DynamicRackModuleKind.Gap)
+                if (!PushBackCompositeStructure.IsStoragePosition(module))
                 {
+                    // La interfaz se ATRAVIESA: aporta longitud fisica a la cama y no una posicion de tarima. Con
+                    // separador central sigue siendo interfaz — la pieza esta ahi, pero no almacena.
                     if (length > 0.0)
                     {
                         result.Add(new PushBackBedGap(storage, length));

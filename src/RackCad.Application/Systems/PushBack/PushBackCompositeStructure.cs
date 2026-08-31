@@ -423,6 +423,29 @@ namespace RackCad.Application.Systems.PushBack
         /// override a otra pieza.
         /// </para>
         /// </summary>
+        /// <summary>
+        /// I-42 (A1B/B7) — EL MODULO DE LA INTERFAZ: el hueco entre las dos mitades, lleve separador central o no.
+        /// Se identifica por su id, que es quien lo emite y no cambia con lo que se dibuje ahi.
+        /// </summary>
+        public static bool IsInterfaceModule(DynamicRackModule module)
+            => module != null && string.Equals(module.ModuleId, GapModuleId, StringComparison.Ordinal);
+
+        /// <summary>
+        /// I-42 (A1B/B7, contrato del dueño) — SI ESE MODULO ALOJA TARIMA, que es lo unico que decide si consume
+        /// fondo, si suma demanda y si mueve el extremo alto de una cama.
+        ///
+        /// <para>
+        /// El HUECO nunca aloja, y el SEPARADOR CENTRAL tampoco: vive fisicamente en el hueco, es una pieza del
+        /// rack, pero no es una posicion de almacenamiento. Antes se decidia por la negativa —«todo lo que no sea
+        /// hueco»— y el separador central, que se emite con el tipo Separador porque en el Dinamico ese tipo SI es
+        /// una bahia de tarima, se comia una posicion: la cama quedaba corta y el alto terminaba un modulo antes.
+        /// </para>
+        /// </summary>
+        public static bool IsStoragePosition(DynamicRackModule module)
+            => module != null
+               && module.Kind != DynamicRackModuleKind.Gap
+               && !IsInterfaceModule(module);
+
         public static IReadOnlyList<DynamicRackModuleDesign> StoredSideModules(
             PushBackDesign design, PushBackCompositeLayout layout, PushBackSide side)
         {

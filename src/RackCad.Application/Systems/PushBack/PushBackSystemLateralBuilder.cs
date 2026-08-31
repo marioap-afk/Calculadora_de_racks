@@ -263,10 +263,21 @@ namespace RackCad.Application.Systems.PushBack
                     DynamicFrontGeometry.AdjacentFronts(structure, postIndex).Select(front => front.Index));
             }
 
+            // I-42 (A1B/H17) — la envolvente sale de lo que el rack REALMENTE tiene. Antes era el mayor tramo de
+            // cualquier ranura, asi que una ranura profunda EN BLANCO por los dos lados —sin cama, sin
+            // almacenamiento— gobernaba este corte y se dibujaba estructura sin contenido, mientras la ranura
+            // activa menos profunda no salia. Las camas fisicas son la autoridad; sin ninguna, el criterio de
+            // siempre.
+            var withContent = new HashSet<int>(PushBackRuns.Resolve(system).Runs.Select(run => run.Slot));
             var envelope = -1;
             var best = double.MinValue;
             foreach (var front in structure.Fronts)
             {
+                if (withContent.Count > 0 && !withContent.Contains(front.Index))
+                {
+                    continue;
+                }
+
                 var span = front.EndX - front.StartX;
                 if (span > best)
                 {

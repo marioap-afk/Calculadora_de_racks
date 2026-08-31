@@ -92,10 +92,6 @@ namespace RackCad.Application.Systems.Dynamic
                     continue;
                 }
 
-                var levelCount = DynamicSeparatorGeometry.Levels(
-                    system,
-                    catalog,
-                    DynamicFrontGeometry.PostHeight(system, postIndex)).Count;
                 foreach (var module in modules)
                 {
                     if (!DynamicDepthGeometry.CoverageAtPost(system, postIndex).Contains(module.Index + 1))
@@ -103,6 +99,15 @@ namespace RackCad.Application.Systems.Dynamic
                         continue;
                     }
 
+                    // I-42 (A1B/H2) — la altura es la de ESTA linea EN ESTA PROFUNDIDAD, la misma autoridad que
+                    // usan el corte lateral y las cabeceras. Con una altura por poste —el maximo de sus frentes
+                    // adyacentes— un rack compuesto con lados de distinta altura compraba filas de separador de la
+                    // zona alta tambien en la zona baja. Sin zonas declaradas responde exactamente lo de antes.
+                    var levelCount = DynamicSeparatorGeometry.Levels(
+                        system,
+                        catalog,
+                        DynamicFrontGeometry.PostHeightAt(
+                            system, postIndex, 0.5 * (module.StartX + module.EndX))).Count;
                     var length = Round(module.Length);
                     quantities[length] = quantities.TryGetValue(length, out var current)
                         ? current + levelCount
