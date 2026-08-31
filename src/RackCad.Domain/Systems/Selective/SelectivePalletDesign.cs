@@ -380,6 +380,19 @@ namespace RackCad.Domain.Systems.Selective
             return false;
         }
 
+        /// <summary>
+        /// I-42 (A1/H8) — las entradas de <see cref="PostSides"/> que escribio una regla DERIVADA —los pasillos de
+        /// carga que el rack tiene ahora—, con el valor que el usuario tenia ahi antes.
+        ///
+        /// <para>
+        /// `PostSides` guarda intencion del usuario Y la lee el dibujo, asi que una regla derivada que escribe ahi
+        /// deja rastro persistido: al degradar un compuesto a un solo sentido quedaba un «Derecha» rancio que
+        /// mandaba el desviador al extremo alto. Esta lista es DERIVADA y no se persiste; la persistencia la usa
+        /// para guardar lo que el usuario habia decidido.
+        /// </para>
+        /// </summary>
+        public IList<DerivedAisleEntry> DerivedAisles { get; } = new List<DerivedAisleEntry>();
+
         /// <summary>El lado que el usuario eligio, o el vigente si el sistema no lo restringio.</summary>
         public SafetySide ChosenSide(int postIndex)
         {
@@ -598,8 +611,31 @@ namespace RackCad.Domain.Systems.Selective
                 }
             }
 
+            foreach (var derived in DerivedAisles)
+            {
+                if (derived != null)
+                {
+                    copy.DerivedAisles.Add(new DerivedAisleEntry
+                    {
+                        PostIndex = derived.PostIndex,
+                        Authored = derived.Authored,
+                    });
+                }
+            }
+
             return copy;
         }
+    }
+
+    /// <summary>
+    /// I-42 (A1/H8) — una entrada por poste que escribio una regla DERIVADA, con el valor AUTORADO que sustituyo
+    /// (NULL = ahi no habia ninguna entrada del usuario).
+    /// </summary>
+    public sealed class DerivedAisleEntry
+    {
+        public int PostIndex { get; set; }
+
+        public SafetySide? Authored { get; set; }
     }
 
     /// <summary>A per-post side override for a safety selection.</summary>

@@ -353,9 +353,19 @@ namespace RackCad.Application.Systems.PushBack
 
             // Se escribe POR LINEA y se deja el lado general intacto: una linea sin entrada propia —cualquier rack
             // de un solo sentido— sigue respondiendo lo que respondia.
+            //
+            // I-42 (A1/H8) — y se DECLARA que esa entrada es derivada, guardando lo que el usuario tenia ahi. Sin
+            // esa declaracion el derivado se persistia como intencion: al degradar el rack a un solo sentido
+            // quedaba un lado rancio que mandaba el desviador al extremo alto.
             foreach (var pair in aisles)
             {
                 var stored = selection.PostSides.FirstOrDefault(entry => entry.PostIndex == pair.Key);
+                selection.DerivedAisles.Add(new DerivedAisleEntry
+                {
+                    PostIndex = pair.Key,
+                    Authored = stored?.Side,
+                });
+
                 if (stored != null)
                 {
                     stored.Side = pair.Value;

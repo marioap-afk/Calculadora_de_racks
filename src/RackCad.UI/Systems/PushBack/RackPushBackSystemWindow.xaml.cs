@@ -290,7 +290,12 @@ namespace RackCad.UI.Systems.PushBack
             {
                 Structure = design.Structure,
                 LegacyHighEndBeamPeralte = design.LegacyHighEndBeamPeralte,
-                RearTope = design.RearTope
+                RearTope = design.RearTope,
+
+                // I-42 (A1/B4) — el TIPO DE DEFENSA del lado A viaja en esta copia. Sin el, reabrir un rack
+                // compuesto le devolvia al lado A la pieza heredada: un «Ninguno» explicito resucitaba y una pieza
+                // distinta se perdia, mientras el lado B —que si lo recuperaba— quedaba bien.
+                DefensePieceId = design.DefensePieceId,
             };
 
             foreach (var front in design.Fronts)

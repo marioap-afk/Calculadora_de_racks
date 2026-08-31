@@ -356,6 +356,26 @@ namespace RackCad.Application.Persistence
 
         public string BotaBPieceId { get; set; }
 
+        /// <summary>
+        /// I-42 (A1/B1) — el lado que el USUARIO eligio, antes de que la restriccion de extremo de un sistema lo
+        /// colapse. Ausente = documento anterior, que se lee por <see cref="Side"/> como siempre.
+        ///
+        /// <para>
+        /// Sin el, un rack compuesto guardado SIN abrir «Elementos de seguridad» persistia el lado ya colapsado
+        /// —«Izquierda»— y al reabrirlo parecia un documento antiguo con una decision global explicita: el lado B
+        /// perdia su configuracion automatica y sus botas desaparecian del dibujo y del BOM.
+        /// </para>
+        /// </summary>
+        public int? AuthoredSide { get; set; }
+
+        /// <summary>
+        /// I-42 (A1/H8) — los postes cuya entrada en <see cref="PostSides"/> la escribio una regla DERIVADA (los
+        /// pasillos de carga que el rack tiene ahora), con el valor que el usuario tenia ahi. No se persiste el
+        /// derivado: se persiste lo que el usuario habia decidido, para que degradar un compuesto a un solo sentido
+        /// no deje un lado rancio que mueva el desviador al extremo alto.
+        /// </summary>
+        public List<PostSideDocument> DerivedAisles { get; set; }
+
         /// <summary>Shared explicit mapping used by every rack system that composes the safety subsystem. The wire
         /// format is a FLAT record (unchanged, and shared with the dynamic path); each family flattens its own DTO
         /// (I-22, E7 — <see cref="TopeSelectionDocument"/> and siblings) into these flat properties and reads it back
@@ -367,8 +387,8 @@ namespace RackCad.Application.Persistence
                 ElementId = selection.ElementId,
                 Quantity = selection.Quantity,
                 Side = (int)selection.Side,
-                PostSides = selection.PostSides.Where(p => p != null)
-                    .Select(p => new PostSideDocument { PostIndex = p.PostIndex, Side = (int)p.Side }).ToList()
+                AuthoredSide = selection.AuthoredSide.HasValue ? (int)selection.AuthoredSide.Value : (int?)null,
+                PostSides = AuthoredPostSides(selection)
             };
 
             TopeSelectionDocument.From(selection.Tope).WriteInto(document);
@@ -388,6 +408,36 @@ namespace RackCad.Application.Persistence
             return document;
         }
 
+        /// <summary>
+        /// La matriz por poste TAL Y COMO EL USUARIO LA DEJO: las entradas que una regla derivada escribio se
+        /// devuelven a su valor autorado, y las que esa regla creo no se guardan.
+        /// </summary>
+        private static List<PostSideDocument> AuthoredPostSides(SelectiveSafetySelection selection)
+        {
+            var derived = selection.DerivedAisles.Where(entry => entry != null).ToList();
+            var result = new List<PostSideDocument>();
+            foreach (var post in selection.PostSides.Where(entry => entry != null))
+            {
+                var overwritten = derived.FirstOrDefault(entry => entry.PostIndex == post.PostIndex);
+                if (overwritten == null)
+                {
+                    result.Add(new PostSideDocument { PostIndex = post.PostIndex, Side = (int)post.Side });
+                    continue;
+                }
+
+                if (overwritten.Authored.HasValue)
+                {
+                    result.Add(new PostSideDocument
+                    {
+                        PostIndex = post.PostIndex,
+                        Side = (int)overwritten.Authored.Value,
+                    });
+                }
+            }
+
+            return result;
+        }
+
         /// <summary>Los postes con decision propia de un lado, o NULL cuando no hay ninguno.</summary>
         private static List<BootPostDocument> BootPosts(SelectiveBotaConfig config)
             => config == null || config.Posts.Count == 0
@@ -405,6 +455,9 @@ namespace RackCad.Application.Persistence
                 ElementId = ElementId,
                 Quantity = Quantity,
                 Side = SafetyDocumentMapping.ToSafetySide(Side),
+                AuthoredSide = AuthoredSide.HasValue
+                    ? SafetyDocumentMapping.ToSafetySide(AuthoredSide.Value)
+                    : (SafetySide?)null,
                 Tope = TopeSelectionDocument.ReadFrom(this).ToDomain(),
                 Desviador = DesviadorSelectionDocument.ReadFrom(this).ToDomain(),
                 Defensa = DefensaSelectionDocument.ReadFrom(this).ToDomain(),
