@@ -30,28 +30,49 @@ namespace RackCad.Application.Systems.Dynamic
         public static string ElementIdFor(SelectiveSafetySelection selection, bool farEnd)
             => selection?.ElementIdForFace(farEnd);
 
-        /// <summary>La X de mundo donde empieza la cobertura de la linea: su cara CERCANA.</summary>
+        /// <summary>
+        /// La X de mundo donde empieza la cobertura de ALMACENAMIENTO de la linea: su cara CERCANA.
+        ///
+        /// <para>
+        /// I-42 (A1B-D5): se mide sobre <see cref="DynamicDepthGeometry.StorageCoverageAtPost"/>, no sobre la
+        /// cobertura estructural. Una cara de ataque protege ALMACENAMIENTO, y un frente en blanco conserva su
+        /// estructura sin almacenar nada.
+        /// </para>
+        /// </summary>
         public static double NearX(DynamicRackSystem system, int postIndex)
         {
-            var range = DynamicDepthGeometry.AtPost(system, postIndex);
+            var range = DynamicDepthGeometry.StorageAtPost(system, postIndex);
             return system.Modules.FirstOrDefault(module => module.Index + 1 == range.StartPosition)?.StartX ?? 0.0;
         }
 
-        /// <summary>La X de mundo donde termina la cobertura de la linea: su cara LEJANA.</summary>
+        /// <summary>La X de mundo donde termina la cobertura de ALMACENAMIENTO de la linea: su cara LEJANA.</summary>
         public static double FarX(DynamicRackSystem system, int postIndex)
         {
-            var range = DynamicDepthGeometry.AtPost(system, postIndex);
+            var range = DynamicDepthGeometry.StorageAtPost(system, postIndex);
             return system.Modules.FirstOrDefault(module => module.Index + 1 == range.EndPosition)?.EndX
                    ?? system.TotalLength;
         }
 
         /// <summary>
-        /// Si la cara indicada de esa linea es de verdad una cara de ataque: la linea existe y ese extremo mira a un
-        /// pasillo, no al interior del rack.
+        /// Si la cara indicada de esa linea es de verdad una cara de ataque: la linea existe, ALMACENA algo por su
+        /// lado, y ese extremo mira a un pasillo y no al interior del rack.
+        ///
+        /// <para>
+        /// I-42 (A1B-D5, contrato del dueño): la continuidad ESTRUCTURAL no es cobertura de almacenamiento. Una
+        /// linea puede existir —y su poste, y su placa— porque una ranura en blanco conserva su claro, y aun asi no
+        /// tener nada que proteger. Antes esa estructura se leia como si almacenara, y de ahi salian una bota
+        /// automatica y una defensa automatica del lado equivocado.
+        /// </para>
         /// </summary>
         public static bool HasFace(DynamicRackSystem system, int postIndex, bool farEnd)
         {
             if (system == null || !DynamicFrontActivation.BoundaryExists(system, postIndex))
+            {
+                return false;
+            }
+
+            // Hay poste, pero no hay almacenamiento en ninguno de sus claros: no hay cara que proteger.
+            if (DynamicDepthGeometry.StorageCoverageAtPost(system, postIndex).IsEmpty)
             {
                 return false;
             }

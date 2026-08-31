@@ -319,6 +319,52 @@ namespace RackCad.Application.Systems.Dynamic
             return new DynamicDepthCoverage(adjacent.SelectMany(SegmentsOf).ToList());
         }
 
+        /// <summary>
+        /// I-42 (A1B-D5, contrato del dueño) — LA COBERTURA DE ALMACENAMIENTO de una linea: lo que declaran los
+        /// frentes adyacentes que DE VERDAD ALMACENAN, y nada mas.
+        ///
+        /// <para>
+        /// No sustituye a <see cref="CoverageAtPost"/>, que responde otra pregunta: que tiene que SOSTENER esa linea.
+        /// Las dos son ciertas a la vez y son distintas — una ranura en blanco en los dos lados conserva su claro y
+        /// su columna, asi que la linea sigue teniendo continuidad ESTRUCTURAL, pero no hay ahi ninguna posicion de
+        /// almacenamiento que proteger.
+        /// </para>
+        /// <para>
+        /// <b>Lo que corrige.</b> La applicabilidad automatica de la seguridad preguntaba por la cobertura
+        /// estructural, que incluye a los frentes en blanco. Medido en un rack de 4 ranuras con la 1 en blanco en los
+        /// DOS lados: en sus dos fronteras la cobertura estructural era 1-4 + 8-9 —el tramo 8-9 lo aportaba el frente
+        /// en blanco— y de ahi salia una cara del lado que no almacena ahi, con su bota automatica y, en el caso
+        /// simetrico, su defensa automatica. La cobertura de almacenamiento de esas mismas lineas es solo 1-4.
+        /// </para>
+        /// </summary>
+        public static DynamicDepthCoverage StorageCoverageAtPost(DynamicRackSystem system, int postIndex)
+        {
+            var adjacent = DynamicFrontGeometry.AdjacentFronts(system, postIndex);
+            if (adjacent.Count == 0)
+            {
+                // Sin frentes declarados no hay nada que decidir: se conserva el rango historico del rack, que es lo
+                // que responde <see cref="CoverageAtPost"/> en ese mismo caso.
+                return new DynamicDepthCoverage(
+                    new[] { new DynamicDepthRange(1, Math.Max(0, system?.PalletsDeep ?? 0)) });
+            }
+
+            // Un frente EN BLANCO conserva su estructura pero no almacena: su tramo no es cobertura de almacenamiento.
+            var storing = adjacent
+                .Where(front => DynamicFrontActivation.EffectiveLoadLevels(front) > 0)
+                .ToList();
+            return new DynamicDepthCoverage(storing.SelectMany(SegmentsOf).ToList());
+        }
+
+        /// <summary>El rango envolvente de la cobertura de ALMACENAMIENTO de una linea (vacio si no almacena nada).</summary>
+        public static DynamicDepthRange StorageAtPost(DynamicRackSystem system, int postIndex)
+        {
+            var coverage = StorageCoverageAtPost(system, postIndex);
+            return coverage.IsEmpty
+                ? new DynamicDepthRange(1, 0)
+                : new DynamicDepthRange(
+                    coverage.StartPosition, coverage.EndPosition - coverage.StartPosition + 1);
+        }
+
         public static IReadOnlyList<DynamicRackModule> ModulesInRange(
             DynamicRackSystem system,
             DynamicDepthRange range)
