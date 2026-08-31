@@ -548,13 +548,13 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// I-42 (ronda 8, V3) — LA CELDA de un larguero del corte bajo, o «no identificada».
+        /// I-42 (ronda 8, V3; identidad canonica en A1B-D4) — LA CELDA de un larguero del corte bajo, o «no
+        /// identificada».
         ///
         /// <para>
-        /// La COLUMNA se resuelve por cercania y eso es legitimo: las columnas transversales teselan el eje, asi que
-        /// la mas cercana es la unica posible y no hay identidad mejor disponible en una instancia ya dibujada. El
-        /// NIVEL si exige coincidir con una elevacion esperada dentro de tolerancia; sin coincidencia no se inventa
-        /// ninguna.
+        /// Se pregunta a <see cref="DynamicEndBeamIdentity"/>, la MISMA autoridad con la que la pieza se coloco: su
+        /// columna y la elevacion resuelta DE SU FRENTE. Ya no hay «la mas cercana» —ni en la columna ni en el
+        /// nivel—: una pieza que no coincide con ninguna identidad no se atribuye.
         /// </para>
         /// </summary>
         internal static FrontalCellMatch IdentifyCell(
@@ -563,11 +563,11 @@ namespace RackCad.Application.Systems.PushBack
             RackLevelElevations context,
             HeaderBlockInstance instance)
         {
-            var frontIndex = NearestColumn(structure, layout, instance.Insertion.X);
-            var level = NearestLowLevel(structure, context, frontIndex, instance.Insertion.Y);
-            return level < 0
-                ? FrontalCellMatch.None
-                : new FrontalCellMatch(frontIndex, level);
+            var key = DynamicEndBeamIdentity.Match(
+                structure, layout, context, instance.Insertion, DynamicRackEnd.Exit);
+            return key.Matched
+                ? new FrontalCellMatch(key.FrontPosition, key.LevelIndex)
+                : FrontalCellMatch.None;
         }
 
         /// <summary>
@@ -590,50 +590,6 @@ namespace RackCad.Application.Systems.PushBack
             return instances
                 .Where(PushBackPlanComposer.IsDynamicEndBeam)
                 .Count(instance => !IdentifyCell(structure, layout, context, instance).Identified);
-        }
-
-        private static int NearestColumn(DynamicRackSystem structure, DynamicFrontLayout layout, double x)
-        {
-            var best = -1;
-            var bestDistance = double.MaxValue;
-            var columns = Math.Min(layout.PostPositions.Count, layout.TroquelPositions.Count);
-            for (var index = 0; index < columns && index < structure.Fronts.Count; index++)
-            {
-                var distance = Math.Abs(layout.PostPositions[index] + layout.TroquelPositions[index] - x);
-                if (distance < bestDistance)
-                {
-                    bestDistance = distance;
-                    best = index;
-                }
-            }
-
-            return best;
-        }
-
-        private static int NearestLowLevel(
-            DynamicRackSystem structure, RackLevelElevations context, int frontIndex, double y)
-        {
-            if (frontIndex < 0 || frontIndex >= structure.Fronts.Count)
-            {
-                return -1;
-            }
-
-            var front = structure.Fronts[frontIndex];
-            var levels = DynamicFrontGeometry.LoadBeamLevels(structure, front);
-            var best = -1;
-            var bestDistance = double.MaxValue;
-            for (var index = 0; index < levels.Count; index++)
-            {
-                var expected = context.OrPost(frontIndex, levels[index].LevelNumber, levels[index].ExitElevation);
-                var distance = Math.Abs(expected - y);
-                if (distance < bestDistance)
-                {
-                    bestDistance = distance;
-                    best = index;
-                }
-            }
-
-            return bestDistance <= LevelMatchTolerance ? best : -1;
         }
 
         /// <summary>La celda a la que pertenece un larguero del corte, o <see cref="None"/> si no se pudo atribuir.</summary>
@@ -699,47 +655,19 @@ namespace RackCad.Application.Systems.PushBack
             HeaderBlockInstance beam,
             RackLevelElevations elevations)
         {
-            var frontIndex = -1;
-            var bestX = double.MaxValue;
-            for (var index = 0; index < Math.Min(layout.PostPositions.Count, layout.TroquelPositions.Count) && index < system.Fronts.Count; index++)
+            // I-42 (A1B-D4): la MISMA autoridad de identidad que coloco la pieza. La columna se compara exacta y la
+            // elevacion es la resuelta DE SU FRENTE — desde la decision final del dueño el larguero alto se DERIVA,
+            // asi que comparar contra la del resolver no encontraria ninguna celda, ni tope, y en silencio.
+            var key = DynamicEndBeamIdentity.Match(
+                system, layout, elevations, beam.Insertion, DynamicRackEnd.Entrance);
+            if (key.Matched)
             {
-                var columnX = layout.PostPositions[index] + layout.TroquelPositions[index];
-                var distance = Math.Abs(columnX - beam.Insertion.X);
-                if (distance < bestX)
-                {
-                    bestX = distance;
-                    frontIndex = index;
-                }
+                return (key.FrontPosition, key.LevelIndex);
             }
 
-            if (frontIndex < 0)
-            {
-                return (-1, -1);
-            }
-
-            // Use the identified FRONT'S OWN levels — a front may have a different FirstLevelHeight, level count or
-            // vertical configuration than the global projection.
-            var frontLevels = DynamicFrontGeometry.LoadBeamLevels(system, system.Fronts[frontIndex]);
-            var level = -1;
-            var bestY = double.MaxValue;
-            for (var index = 0; index < frontLevels.Count; index++)
-            {
-                // Se busca contra la MISMA elevacion con la que la pieza se coloco. Desde la decision final del
-                // dueño el larguero alto se DERIVA, asi que comparar contra la del resolver no encontraria ninguna
-                // celda: ni tope, ni filtro de celdas, y en silencio.
-                var levelY = elevations.OrFront(
-                    system.Fronts[frontIndex].Index,
-                    frontLevels[index].LevelNumber,
-                    frontLevels[index].EntranceElevation);
-                var distance = Math.Abs(levelY - beam.Insertion.Y);
-                if (distance < bestY)
-                {
-                    bestY = distance;
-                    level = index;
-                }
-            }
-
-            return level >= 0 && bestY <= LevelMatchTolerance ? (frontIndex, level) : (frontIndex, -1);
+            // Sin identidad completa se conserva la COLUMNA, que es lo que esta ruta hacia antes, y el nivel queda
+            // sin resolver: el llamador ya distingue ese caso y no inventa ni peralte ni tope.
+            return (DynamicEndBeamIdentity.ColumnOf(system, layout, beam.Insertion.X), -1);
         }
     }
 }

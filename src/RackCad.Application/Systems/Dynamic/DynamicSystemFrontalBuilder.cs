@@ -135,9 +135,10 @@ namespace RackCad.Application.Systems.Dynamic
             for (var index = 0; index < system.Fronts.Count; index++)
             {
                 var front = system.Fronts[index];
-                var beamX = layout.PostPositions[index] + layout.TroquelPositions[index];
-                foreach (var level in DynamicFrontGeometry.LoadBeamLevels(system, front))
+                var levels = DynamicFrontGeometry.LoadBeamLevels(system, front);
+                for (var levelIndex = 0; levelIndex < levels.Count; levelIndex++)
                 {
+                    var level = levels[levelIndex];
                     var configuration = DynamicRackLevelGeometry.At(system, front, level.LevelNumber);
                     var beamId = configuration.InOutBeamCatalogId;
                     // El larguero se coloca YA en su elevación definitiva: se pregunta por FRENTE, que es a quien
@@ -145,11 +146,11 @@ namespace RackCad.Application.Systems.Dynamic
                     // reasiento desaparece y con él el riesgo de aplicarlo dos veces o de no encontrarlo (PB-004).
                     // El override vale en LOS DOS extremos: el contexto describe uno u otro y quien lo pasa sabe
                     // cuál. Sin contexto —el Dinámico, siempre— se usa la elevación del resolver y nada cambia.
-                    var y = elevations.OrFront(
-                        front.Index,
-                        level.LevelNumber,
-                        end == DynamicRackEnd.Entrance ? level.EntranceElevation : level.ExitElevation);
-                    var at = new Point2D(beamX, y);
+                    //
+                    // I-42 (A1B-D4): la columna y la elevación son la IDENTIDAD de la pieza, y quien la busca
+                    // despues pregunta a la misma autoridad. No hay dos formulas.
+                    var key = DynamicEndBeamIdentity.KeyOf(layout, elevations, front, index, level, levelIndex, end);
+                    var at = new Point2D(key.ColumnX, key.Elevation);
                     var beam = new HeaderBlockInstance
                     {
                         Role = HeaderBlockRole.Beam,
