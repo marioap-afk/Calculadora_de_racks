@@ -232,6 +232,44 @@ namespace RackCad.Application.Systems.Dynamic
         }
 
         /// <summary>
+        /// I-42 (A1B-D6, contrato del dueño) — LA ALTURA FINAL DE UNA POSICION DE PROFUNDIDAD, sin linea: la
+        /// envolvente de la zona que cubre esa X.
+        ///
+        /// <para>
+        /// Es la respuesta que necesita una vista que NO representa una linea concreta —el lateral general, que es
+        /// la envolvente del rack—. No es el maximo global: una zona de un lado no hereda la demanda del otro, asi
+        /// que la mitad de B sigue siendo baja aunque A sea alto. Sin zonas declaradas —el Dinamico y todo rack de
+        /// un solo sentido— responde <see cref="Height"/>, que es lo que esas vistas usaban.
+        /// </para>
+        /// </summary>
+        public static double HeightAt(DynamicRackSystem system, double x)
+        {
+            if (system != null)
+            {
+                foreach (var zone in system.HeaderHeightZones)
+                {
+                    if (zone == null || x < zone.StartX - 1e-6 || x > zone.EndX + 1e-6)
+                    {
+                        continue;
+                    }
+
+                    var height = 0.0;
+                    foreach (var line in zone.HeightByLine)
+                    {
+                        height = Math.Max(height, line);
+                    }
+
+                    if (height > 0.0)
+                    {
+                        return height;
+                    }
+                }
+            }
+
+            return Height(system);
+        }
+
+        /// <summary>
         /// Resolves the header configuration physically present at one transverse post line. Calculated headers
         /// inherit the tallest adjacent front; manually edited headers remain authoritative. Lateral drawing and
         /// BOM consume this same rule so a tall front changes only its two adjacent header sections and quantities.

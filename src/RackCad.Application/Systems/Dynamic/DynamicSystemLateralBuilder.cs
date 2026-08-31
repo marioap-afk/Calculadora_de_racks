@@ -90,12 +90,17 @@ namespace RackCad.Application.Systems.Dynamic
             var contextsByHeight = new Dictionary<double, HeaderContext> { [context.Height] = context };
             HeaderContext ContextAt(double x)
             {
-                if (!sectioned || system.HeaderHeightZones.Count == 0)
+                if (system.HeaderHeightZones.Count == 0)
                 {
                     return context;
                 }
 
-                var height = DynamicFrontGeometry.PostHeightAt(system, postIndex, x);
+                // I-42 (A1B-D6): el lateral GENERAL tampoco puede usar una altura aplanada. No representa una linea,
+                // asi que su altura en una profundidad es la ENVOLVENTE de esa zona; un corte si tiene linea y
+                // pregunta por ella. Las dos leen la misma autoridad, y sin zonas ninguna de las dos cambia.
+                var height = sectioned
+                    ? DynamicFrontGeometry.PostHeightAt(system, postIndex, x)
+                    : DynamicFrontGeometry.HeightAt(system, x);
                 if (height <= 0.0 || Math.Abs(height - context.Height) < 1e-6)
                 {
                     return context;
