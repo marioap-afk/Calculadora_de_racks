@@ -613,7 +613,11 @@ namespace RackCad.UI.Systems.PushBack
                 RefreshHeaderDestinations();
 
                 RefreshCompositePanel(computation.System);
-                SetStatus(CompositeStatusOr("Vista recalculada."), CompositeHasBlocking(computation.System));
+
+                // I-42 (A1/H11) — un diagnostico BLOQUEANTE no es solo un color: el rack no puede salir al plano ni
+                // al BOM. Se resuelve UNA vez, aqui, y lo consumen todas las acciones.
+                outputIsBlocked = CompositeHasBlocking(computation.System);
+                SetStatus(CompositeStatusOr("Vista recalculada."), outputIsBlocked);
             }
             else
             {
@@ -3287,11 +3291,22 @@ namespace RackCad.UI.Systems.PushBack
 
         // ---- Small helpers -------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// I-42 (A1/H11) — true cuando el ultimo sistema resuelto tiene un diagnostico BLOQUEANTE. Un rack asi no
+        /// sale: ni al plano ni al BOM. Es una sola compuerta, resuelta al recomputar y consumida por todas las
+        /// acciones; el editor sigue abierto y el diagnostico visible para poder corregirlo.
+        /// </summary>
+        private bool outputIsBlocked;
+
+        /// <summary>La compuerta de salida (seam de prueba).</summary>
+        internal bool OutputIsBlockedForTest => outputIsBlocked;
+
         private void UpdateButtons()
         {
-            InsertButton.IsEnabled = canInsertInAutoCad && currentInputsAreValid;
-            UpdateButton.IsEnabled = canInsertInAutoCad && currentInputsAreValid && isEditingExisting;
-            BomButton.IsEnabled = currentInputsAreValid;
+            var canOutput = currentInputsAreValid && !outputIsBlocked;
+            InsertButton.IsEnabled = canInsertInAutoCad && canOutput;
+            UpdateButton.IsEnabled = canInsertInAutoCad && canOutput && isEditingExisting;
+            BomButton.IsEnabled = canOutput;
             SaveLibraryButton.IsEnabled = currentInputsAreValid;
             if (!canInsertInAutoCad)
             {
@@ -3300,7 +3315,11 @@ namespace RackCad.UI.Systems.PushBack
             }
             else
             {
-                InsertButton.ToolTip = currentInputsAreValid ? "Inserta la vista seleccionada enlazada al sistema." : "Corrige los campos numéricos marcados.";
+                InsertButton.ToolTip = outputIsBlocked
+                    ? "Corrige el diagnóstico bloqueante: el rack no puede dibujarse ni cotizarse así."
+                    : currentInputsAreValid
+                        ? "Inserta la vista seleccionada enlazada al sistema."
+                        : "Corrige los campos numéricos marcados.";
                 UpdateButton.ToolTip = isEditingExisting
                     ? "Redibuja en sitio todas las vistas del sistema."
                     : "Disponible solo para un sistema abierto con RACKEDITAR.";

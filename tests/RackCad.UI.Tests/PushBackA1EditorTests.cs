@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
@@ -135,6 +136,43 @@ namespace RackCad.UI.Tests
                     Assert.True(w.CompositeState.SideBPresent);
                     Assert.NotNull(w.LastComputation?.System);
                     Assert.True(w.LastComputation.System.IsComposite);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>
+        /// H11 — un diagnostico BLOQUEANTE no es solo un color: el rack no sale al plano ni al BOM. El editor sigue
+        /// abierto y el diagnostico visible; al corregir la geometria las acciones vuelven.
+        /// </summary>
+        [Fact]
+        public void BlockingDiagnostic_PreventsInsertUpdateAndBom()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown();
+                try
+                {
+                    w.LoadExisting(CompositeDesign(DefenseId, DefenseId), "GUID-A1-H11", "PB");
+                    Assert.False(w.OutputIsBlockedForTest);
+                    Assert.True(((Button)w.FindName("BomButton")).IsEnabled);
+
+                    // Una celda que no cabe en la estructura que se le impuso: bloqueante, y el sistema resuelve.
+                    w.CompositeState.Of(PushBackSide.A).ApplyPalletsDeep(8, DynamicRackCellScope.All);
+                    w.CompositeState.SetStructureOverride(PushBackSide.A, 3);
+                    EditorWindowTestSupport.SetNumberAndCommit(w, "GapBox", w.CompositeState.Gap);
+
+                    Assert.True(w.OutputIsBlockedForTest);
+                    Assert.False(((Button)w.FindName("BomButton")).IsEnabled);
+                    Assert.False(((Button)w.FindName("InsertButton")).IsEnabled);
+                    Assert.False(((Button)w.FindName("UpdateButton")).IsEnabled);
+
+                    // Y al retirar el override la geometria vuelve a caber: las acciones se habilitan solas.
+                    w.CompositeState.SetStructureOverride(PushBackSide.A, null);
+                    EditorWindowTestSupport.SetNumberAndCommit(w, "GapBox", w.CompositeState.Gap);
+
+                    Assert.False(w.OutputIsBlockedForTest);
+                    Assert.True(((Button)w.FindName("BomButton")).IsEnabled);
                 }
                 finally { w.Close(); }
             });
