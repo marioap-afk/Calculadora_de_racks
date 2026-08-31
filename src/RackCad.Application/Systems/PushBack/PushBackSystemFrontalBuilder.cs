@@ -45,11 +45,48 @@ namespace RackCad.Application.Systems.PushBack
         /// </summary>
         public HeaderRunPlan BuildPlan(
             PushBackSystem system, RackCatalog catalog, PushBackFrontalEnd end, PushBackSide side)
-            => WithResolvedBoots(
-                system != null && system.IsComposite
-                    ? PushBackCompositeFrontal.Build(system, catalog, end, side)
-                    : BuildPlan(system, catalog, end, null, null),
+            => WithResolvedDefense(
+                WithResolvedBoots(
+                    system != null && system.IsComposite
+                        ? PushBackCompositeFrontal.Build(system, catalog, end, side)
+                        : BuildPlan(system, catalog, end, null, null),
+                    system, catalog, end, side),
                 system, catalog, end, side);
+
+        /// <summary>
+        /// I-42 (A1B-D2, contrato del dueño) — LA DEFENSA DE ESTE CORTE, tomada de la resolucion fisica del rack.
+        ///
+        /// <para>
+        /// Un corte compuesto se arma sobre el sistema LOCAL de su lado, y ese local no lleva declaradas las caras:
+        /// al preguntar por su pieza caia al id general de la seleccion, asi que el corte de entrada de B dibujaba
+        /// defensa aunque el tipo de B fuera «Ninguno» —y al reves—. La pertenencia y el tipo los decide ahora
+        /// <see cref="PushBackDefensePlan"/>, una sola vez, sobre el rack entero; el corte solo proyecta las piezas
+        /// de su Side × PhysicalPost. Un rack de un solo sentido resuelve el mismo conjunto que ya dibujaba.
+        /// </para>
+        /// </summary>
+        private static HeaderRunPlan WithResolvedDefense(
+            HeaderRunPlan plan, PushBackSystem system, RackCatalog catalog,
+            PushBackFrontalEnd end, PushBackSide side)
+        {
+            if (plan == null || system?.Structure == null || catalog == null)
+            {
+                return plan;
+            }
+
+            var stripped = PushBackDefensePlan.Without(plan, catalog);
+            var loose = stripped.LooseInstances.ToList();
+            var plateId = DynamicFrontGeometry.PlateId(system.Structure, catalog);
+            foreach (var defense in PushBackDefensePlan.AtCut(system, catalog, end, side))
+            {
+                var instance = PushBackDefensePlan.Instance(defense, catalog, plateId, side);
+                if (instance != null)
+                {
+                    loose.Add(instance);
+                }
+            }
+
+            return new HeaderRunPlan(stripped.Headers.ToList(), loose);
+        }
 
         /// <summary>
         /// I-42 (S1F, contrato del dueño) — LAS BOTAS DE ESTE CORTE, tomadas de la resolucion fisica del rack.
