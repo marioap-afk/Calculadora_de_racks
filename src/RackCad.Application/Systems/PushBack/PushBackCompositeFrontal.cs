@@ -88,16 +88,24 @@ namespace RackCad.Application.Systems.PushBack
                 ? (Func<HeaderBlockInstance, bool>)(_ => true)
                 : instance => !PushBackPlanComposer.IsSafetyPiece(instance);
 
-            var groups = low.Headers
+            // I-42 (A1B-D3): el marco local trae las tarimas que emitio su propia pasada. Se retiran enteras: la
+            // pertenencia de una tarima a este plano la decide la cama fisica, no el lado que la construye.
+            var frame = PushBackPalletProjection.Without(low);
+            var groups = frame.Headers
                 .Select(group => Filter(group, frameKeeps))
                 .Where(group => group != null)
                 .ToList();
-            var loose = low.LooseInstances.Where(frameKeeps).ToList();
+            var loose = frame.LooseInstances.Where(frameKeeps).ToList();
             foreach (var plan in new[] { high, middle })
             {
                 groups.AddRange(plan.Headers.Where(HoldsPieces));
                 loose.AddRange(plan.LooseInstances.Where(IsPiece));
             }
+
+            // Y las tarimas que este plano SI materializa: una fila por cama con apoyo aqui, con la altura de apoyo
+            // de esa cama medida en este plano.
+            loose.AddRange(PushBackPalletProjection.Instances(
+                PushBackPalletProjection.Resolve(system, catalog, side, end), catalog));
 
             return new HeaderRunPlan(groups, loose);
         }
@@ -120,12 +128,20 @@ namespace RackCad.Application.Systems.PushBack
         private static bool HoldsPieces(HeaderGroup group)
             => group?.Instances != null && group.Instances.Any(IsPiece);
 
-        /// <summary>Las piezas que un papel aporta: sus largueros y sus topes. El marco lo pone la primera pasada.</summary>
+        /// <summary>
+        /// Las piezas que un papel aporta: sus largueros y sus topes. El marco lo pone la primera pasada.
+        ///
+        /// <para>
+        /// I-42 (A1B-D3): las TARIMAS ya no viajan aqui. Cada pasada las emitia recorriendo otra vez las celdas del
+        /// sistema local, de modo que un corte acumulaba la fila del extremo bajo y la del posterior de todas las
+        /// celdas del lado, existiera o no una cama con apoyo en ese plano. Ahora las resuelve
+        /// <see cref="PushBackPalletProjection"/> una sola vez, desde la cama fisica.
+        /// </para>
+        /// </summary>
         private static bool IsPiece(HeaderBlockInstance instance)
             => instance != null
                && (instance.Role == HeaderBlockRole.Beam
-                   || instance.Role == HeaderBlockRole.Tope
-                   || instance.Role == HeaderBlockRole.Pallet);
+                   || instance.Role == HeaderBlockRole.Tope);
 
         private static Func<int, int, bool> Only(HashSet<(int Front, int Level)> cells)
             => (frontIndex, level) => cells.Contains((frontIndex, level));
