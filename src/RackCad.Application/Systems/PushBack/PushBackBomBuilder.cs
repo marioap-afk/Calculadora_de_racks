@@ -47,6 +47,11 @@ namespace RackCad.Application.Systems.PushBack
             // cuanto el hueco es cero.
             ReplaceBoots(components, system, catalog);
 
+            // I-42 (A1B-D1) — y los DESVIADORES los cuenta la resolucion fisica por CAMA. El BOM compartido los
+            // enumeraba recorriendo los dos cortes frontales de la estructura compuesta, sin preguntar que pasillos
+            // existen: con un solo pasillo —solo A, solo B o corrida— cobraba el doble.
+            ReplaceDiverters(components, system, catalog);
+
             // I-42: un rack COMPUESTO cuenta EJECUCIONES fisicas de cama, no celdas de una rejilla. Dos camas
             // encontradas son dos; una cama corrida es UNA, aunque atraviese los dos lados. La estructura ya viene
             // del BOM compartido de arriba —cabeceras, separadores (el central incluido, una sola vez), postes
@@ -440,6 +445,61 @@ namespace RackCad.Application.Systems.PushBack
             };
 
         private static double Round(double value) => Math.Round(value, 4);
+
+        /// <summary>
+        /// Sustituye los desviadores del BOM compartido por los de <see cref="PushBackDiverterPlan"/>: las mismas
+        /// piezas fisicas que el dibujo, contadas por IDENTIDAD —linea, nivel y pasillo— y nunca recorriendo cortes.
+        /// </summary>
+        private static void ReplaceDiverters(
+            ICollection<BomComponent> components, PushBackSystem system, RackCatalog catalog)
+        {
+            var diverterIds = new HashSet<string>(
+                (catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>())
+                    .Where(entry => entry != null
+                                    && SelectiveSafetyDefaults.IsType(entry.Type, SelectiveSafetyDefaults.DesviadorType))
+                    .Select(entry => entry.Id),
+                StringComparer.OrdinalIgnoreCase);
+            if (diverterIds.Count == 0)
+            {
+                return;
+            }
+
+            var stale = components
+                .Where(component => component?.ProfileId != null && diverterIds.Contains(component.ProfileId))
+                .ToList();
+            var length = stale.Select(component => component.Length).DefaultIfEmpty(0.0).First();
+            foreach (var component in stale)
+            {
+                components.Remove(component);
+            }
+
+            foreach (var group in PushBackDiverterPlan.Resolve(system, catalog)
+                         .GroupBy(diverter => diverter.PieceId, StringComparer.OrdinalIgnoreCase)
+                         .OrderBy(group => group.Key, StringComparer.Ordinal))
+            {
+                var label = catalog?.SafetyElements?.FirstOrDefault(entry =>
+                    string.Equals(entry?.Id, group.Key, StringComparison.OrdinalIgnoreCase))?.Label ?? group.Key;
+                components.Add(new BomComponent
+                {
+                    Category = SelectiveBomBuilder.Safety,
+                    ProfileId = group.Key,
+                    Description = label,
+                    Length = length,
+                    Quantity = group.Count(),
+                    Pieces = new List<BomLine>
+                    {
+                        new BomLine
+                        {
+                            Category = SelectiveBomBuilder.Safety,
+                            ProfileId = group.Key,
+                            Description = label,
+                            Length = length,
+                            Quantity = 1,
+                        },
+                    },
+                });
+            }
+        }
 
         /// <summary>
         /// Sustituye las botas del BOM compartido por las de <see cref="PushBackBootPlan"/>: las mismas piezas
