@@ -8,6 +8,7 @@ using RackCad.Application.Geometry;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.Application.Systems.PushBack
@@ -54,15 +55,18 @@ namespace RackCad.Application.Systems.PushBack
                 return plan;
             }
 
-            var drawn = plan.Flatten().Instances.Where(i => PushBackBootPlan.IsBoot(i, catalog)).ToList();
-            if (drawn.Count == 0)
-            {
-                return plan;
-            }
-
             var stripped = PushBackBootPlan.Without(plan, catalog);
             var loose = stripped.LooseInstances.ToList();
-            var y = drawn[0].Insertion.Y;
+
+            // I-42 (A1/H6) — la ALTURA sale de la PLACA, como en todas las vistas, no de una pieza que el pipeline
+            // compartido hubiera dibujado. Antes se tomaba de la primera que hubiera y, si no habia ninguna —el
+            // poste 0 sin bota, por ejemplo—, la familia entera desaparecia de este corte mientras la planta, los
+            // cortes frontales y el BOM si la tenian.
+            var plateId = DynamicFrontGeometry.PlateId(system.Structure, catalog);
+            var plateMate = string.IsNullOrWhiteSpace(plateId)
+                ? new Point2D(0.0, 0.0)
+                : CatalogLookup.Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, LateralView);
+            var y = -plateMate.Y;
 
             // Este corte COLAPSA el ancho: todas las lineas de postes se proyectan una sobre otra, asi que un plano
             // de cara se dibuja UNA vez —como la planta colapsa los niveles—. Es una proyeccion de la vista, no una

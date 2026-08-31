@@ -564,12 +564,30 @@ namespace RackCad.UI.Systems.PushBack
             // I-42: con lado B el diseno lo arma el ensamblador COMPUESTO, que COMPONE al de un sentido; sin lado B
             // el camino es literalmente el de antes de la iniciativa. Las vistas se construyen SIEMPRE por el mismo
             // BuildFrom, asi que no puede aparecer un segundo constructor de vistas que diverja.
-            var computation = composite.SideBPresent
-                // I-42: los dos cortes frontales se construyen para el lado que el SELECTOR DE VISTA pide. El lado
-                // ACTIVO es el que se esta editando y no tiene por que ser el que se mira: con «Editando A» y
-                // «Frontal de B» el panel construia el corte de A y lo rotulaba como de B.
-                ? assembler.BuildFrom(compositeAssembler.BuildDesign(composite, ReadInputs()), frontalSide)
-                : assembler.Build(state, ReadInputs());
+            // I-42 (A1/H12) — un estado de editor invalido se DECLARA, no tumba la ventana. El armado del diseño
+            // compuesto se evaluaba como argumento, fuera de cualquier try: una validacion que lanzara —el refuerzo
+            // contra el poste, por ejemplo— escapaba como excepcion WPF no capturada dentro de AutoCAD. El camino de
+            // un solo sentido ya devolvia una computacion invalida; ahora los dos se comportan igual.
+            PushBackEditorComputation computation;
+            try
+            {
+                computation = composite.SideBPresent
+                    // I-42: los dos cortes frontales se construyen para el lado que el SELECTOR DE VISTA pide. El
+                    // lado ACTIVO es el que se esta editando y no tiene por que ser el que se mira: con «Editando A»
+                    // y «Frontal de B» el panel construia el corte de A y lo rotulaba como de B.
+                    ? assembler.BuildFrom(compositeAssembler.BuildDesign(composite, ReadInputs()), frontalSide)
+                    : assembler.Build(state, ReadInputs());
+            }
+            catch (Exception error)
+            {
+                currentInputsAreValid = false;   // se conserva el ultimo modelo valido, solo como referencia
+                SetStatus("No se pudo generar el sistema: " + error.Message, true);
+                RenderPreview();
+                UpdateGuid();
+                UpdateButtons();
+                return;
+            }
+
             if (computation.IsValid)
             {
                 session.SetModel(computation.Design, computation.System);
@@ -3119,7 +3137,15 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var inputs = state.LoadFromDesign(lastComputation.Design, assembler.Resolver);
+            // I-42 (A1/B5) — restaurar reconstruye el rack por el MISMO camino que abrirlo: el lado A contra su
+            // propio diseño y la parte compuesta en su propio estado. Cargar el diseño compuesto entero en el
+            // estado del lado activo le metia el hueco y los modulos del otro lado dentro de su matriz —casi el
+            // doble de profundidad, `B:*` dentro de A y la configuracion de B destruida—.
+            var design = lastComputation.Design;
+            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
+            composite.SetSideBPresent(false);
+            var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
+            LoadCompositeFromDesign(design);
             LoadFromModel(inputs, NameBox.Text);
             SetStatus("Valores restaurados al último sistema válido.", false);
         }

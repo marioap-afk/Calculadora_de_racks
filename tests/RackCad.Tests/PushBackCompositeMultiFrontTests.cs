@@ -336,6 +336,14 @@ namespace RackCad.Tests
             state.SideB.LoadNew();
             state.SetSlotCount(Fronts);
 
+            // I-42 (A1/H5) — ampliar la rejilla no declara almacenamiento en el otro lado: las ranuras NUEVAS nacen
+            // ausentes en el lado que no las pidio. Este fixture quiere el rack compuesto entero, asi que declara
+            // tambien las que acaba de crear — que es la misma decision explicita que hizo con las primeras.
+            for (var declared = 0; declared < state.SlotCount; declared++)
+            {
+                state.SetSlotPresent(PushBackSide.B, declared, true);
+            }
+
             var system = Build(state).System;
             for (var front = 0; front < Fronts; front++)
             {

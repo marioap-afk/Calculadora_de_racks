@@ -410,12 +410,25 @@ namespace RackCad.Application.Systems.PushBack
         public void SetSlotCount(int requested)
         {
             var count = Math.Max(1, requested);
+            var beforeA = SideA.Structure.Count;
+            var beforeB = SideB.Structure.Count;
+
             SideA.SetFrontCount(count);
             if (SideBPresent)
             {
                 SideB.SetFrontCount(count);
             }
 
+            // I-42 (A1/H5) — la RETICULA es compartida; el ALMACENAMIENTO no. Anadir un frente en un lado amplia la
+            // rejilla de los dos —tienen que compartir posiciones— pero solo declara bahia en el lado que lo pidio:
+            // el otro recibe la ranura AUSENTE. Antes las ranuras nuevas nacian activas en los dos, asi que crecer
+            // por A convertia el lado B en almacenamiento sin que nadie lo decidiera.
+            var dormant = ActiveSide == PushBackSide.B ? PushBackSide.A : PushBackSide.B;
+            var before = dormant == PushBackSide.A ? beforeA : beforeB;
+            for (var slot = before; slot < count; slot++)
+            {
+                SetSlotPresent(dormant, slot, false);
+            }
         }
 
         /// <summary>

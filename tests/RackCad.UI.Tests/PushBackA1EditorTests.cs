@@ -91,6 +91,68 @@ namespace RackCad.UI.Tests
             });
         }
 
+        /// <summary>
+        /// B5 — RESTAURAR reconstruye el rack por el mismo camino que abrirlo. Antes cargaba el diseño compuesto
+        /// ENTERO —A + hueco + B— dentro del estado del lado activo: la profundidad casi se duplicaba, aparecian
+        /// modulos del otro lado dentro de A y la configuracion de B se perdia.
+        /// </summary>
+        [Fact]
+        public void CompositeRestore_PreservesAAndB()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown();
+                try
+                {
+                    w.LoadExisting(CompositeDesign(DefenseId, PushBackDefaults.NonePieceId), "GUID-A1-B5", "PB");
+                    var before = Snapshot(w);
+
+                    EditorWindowTestSupport.ClickNamed(w, "RestoreButton");
+
+                    Assert.Equal(before, Snapshot(w));
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>Y en particular no mete el hueco ni los modulos del lado B dentro de la matriz del lado A.</summary>
+        [Fact]
+        public void CompositeRestore_DoesNotLoadGapOrBSideIntoA()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = Shown();
+                try
+                {
+                    w.LoadExisting(CompositeDesign(DefenseId, DefenseId), "GUID-A1-B5B", "PB");
+                    var depthA = w.CompositeState.Of(PushBackSide.A).Structure.Count;
+                    var slots = w.CompositeState.SlotCount;
+
+                    EditorWindowTestSupport.ClickNamed(w, "RestoreButton");
+
+                    Assert.Equal(depthA, w.CompositeState.Of(PushBackSide.A).Structure.Count);
+                    Assert.Equal(slots, w.CompositeState.SlotCount);
+                    Assert.True(w.CompositeState.SideBPresent);
+                    Assert.NotNull(w.LastComputation?.System);
+                    Assert.True(w.LastComputation.System.IsComposite);
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        /// <summary>Lo que un restaurar no puede cambiar: la separacion A/B y lo que cada lado tiene.</summary>
+        private static string Snapshot(RackPushBackSystemWindow w)
+            => string.Join("|", new[]
+            {
+                "B=" + w.CompositeState.SideBPresent,
+                "slots=" + w.CompositeState.SlotCount,
+                "A=" + w.CompositeState.Of(PushBackSide.A).Structure.Count,
+                "B=" + w.CompositeState.Of(PushBackSide.B).Structure.Count,
+                "defA=" + w.CompositeState.Of(PushBackSide.A).DefensePieceId,
+                "defB=" + w.CompositeState.Of(PushBackSide.B).DefensePieceId,
+                "gap=" + w.CompositeState.Gap.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture),
+            });
+
         /// <summary>Y al reves: A con pieza y B sin ella.</summary>
         [Fact]
         public void DefenseTypeB_RackEditarRoundTripsThroughLoadExisting()
