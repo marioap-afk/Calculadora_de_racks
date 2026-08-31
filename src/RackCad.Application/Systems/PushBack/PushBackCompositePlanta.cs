@@ -83,6 +83,7 @@ namespace RackCad.Application.Systems.PushBack
         private static void AppendBeds(
             List<HeaderBlockInstance> target, RackCatalog catalog, PushBackRunSet runs)
         {
+            var added = new HashSet<string>(StringComparer.Ordinal);
             foreach (var batch in PushBackCompositeContent.Batches(runs, includeSlot: null))
             {
                 var source = batch.Source;
@@ -104,10 +105,56 @@ namespace RackCad.Application.Systems.PushBack
                         || string.Equals(instance.PieceId, highId, StringComparison.OrdinalIgnoreCase))
                     .ToList();
 
-                target.AddRange(batch.Reflected
+                var placed = batch.Reflected
                     ? PushBackMirror.Instances(content, runs.MirrorAxis)
-                    : content);
+                    : content;
+
+                // La PLANTA colapsa la elevacion: un rack de tres niveles dibuja UN larguero de entrada en su linea,
+                // no tres. Ese colapso lo hacia el builder de un solo sentido DENTRO de cada lote, asi que una ranura
+                // cuyos niveles caen en lotes distintos —un nivel Solo A y otro CORRIDO, que se resuelven en marcos
+                // distintos— dibujaba el mismo simbolo dos veces, superpuesto. Aqui se aplica la MISMA convencion
+                // entre lotes.
+                foreach (var instance in placed)
+                {
+                    if (added.Add(BedBeamIdentity(instance, batch, inOutId)))
+                    {
+                        target.Add(instance);
+                    }
+                }
             }
+        }
+
+        /// <summary>
+        /// I-42 (A1B-D7, contrato del dueño) — LA IDENTIDAD FISICA DE UN LARGUERO DE CAMA EN LA PLANTA.
+        ///
+        /// <para>
+        /// Responde «¿estas dos representaciones son la MISMA pieza en el dibujo?», no «¿caen en el mismo punto?».
+        /// Son dos ejes:
+        /// <list type="bullet">
+        /// <item>la <b>posicion fisica</b> —pieza, punto, mano y rotacion—, que es
+        /// <see cref="PushBackPlanComposer.PhysicalKey(HeaderBlockInstance)"/>, el mismo helper que ya usa el corte
+        /// lateral para esta misma pregunta;</item>
+        /// <item>el <b>lado al que pertenece</b>: el larguero de entrada es del pasillo por el que se CARGA la cama y
+        /// el posterior —con su tope— del extremo por el que TERMINA. Sin este eje, dos camas ENCONTRADAS que se
+        /// topan en la interfaz con hueco cero proyectan sus dos largueros altos en el mismo punto y una clave de
+        /// pura coordenada los fundiria en uno. Son dos piezas.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// El NIVEL no entra a proposito: la planta colapsa la elevacion. Dos largueros de niveles distintos son dos
+        /// piezas fisicas —y el BOM las cuenta como dos, porque cuenta CAMAS y no instancias de una vista—, pero la
+        /// planta dibuja un solo simbolo en su posicion, que es lo que ya hacia dentro de un lote.
+        /// </para>
+        /// </summary>
+        private static string BedBeamIdentity(
+            HeaderBlockInstance instance, PushBackRunBatch batch, string inOutId)
+        {
+            var run = batch.Runs != null && batch.Runs.Count > 0 ? batch.Runs[0] : null;
+            var low = string.Equals(instance.PieceId, inOutId, StringComparison.OrdinalIgnoreCase);
+            var side = run == null
+                ? PushBackSide.A
+                : low ? run.LowSide : run.HighSide;
+            return PushBackPlanComposer.PhysicalKey(instance) + "|" + side;
         }
 
         /// <summary>
