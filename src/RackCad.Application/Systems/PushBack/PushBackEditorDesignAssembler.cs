@@ -364,12 +364,20 @@ namespace RackCad.Application.Systems.PushBack
                 var bom = PushBackBomBuilder.Build(system, catalog);
                 var lateral = lateralBuilder.Build(system, catalog);
                 var cortes = lateralBuilder.Cortes(system, catalog); // the per-post lateral sections, computed once here
-                var entradaSalida = system.IsComposite
-                    ? PushBackCompositeFrontal.Build(system, catalog, PushBackFrontalEnd.EntradaSalida, frontalSide)
-                    : frontalBuilder.BuildPlan(system, catalog, PushBackFrontalEnd.EntradaSalida);
-                var posterior = system.IsComposite
-                    ? PushBackCompositeFrontal.Build(system, catalog, PushBackFrontalEnd.Posterior, frontalSide)
-                    : frontalBuilder.BuildPlan(system, catalog, PushBackFrontalEnd.Posterior);
+                // I-42 (A3-PREVIEW, contrato del dueño) — LA VISTA PREVIA CONSUME EL MISMO CONSTRUCTOR QUE EL
+                // DIBUJO. Los dos cortes compuestos se armaban aqui llamando a PushBackCompositeFrontal.Build
+                // DIRECTAMENTE, es decir saltandose el envoltorio del constructor final, que es quien retira la
+                // seguridad local del marco copiado y proyecta la FISICA del lado y el extremo pedidos
+                // (PushBackDefensePlan / PushBackBootPlan). El resultado era una vista previa que enseñaba piezas
+                // que el rack insertado no dibuja: medido, con la defensa de A declarada y la de B en «Ninguno», el
+                // corte de entrada de B mostraba las tres defensas de A y el dibujo final ninguna; con las botas de
+                // A en «Entrada/Salida» y las de B en «Posterior», la vista previa de B las ponia en su entrada y el
+                // dibujo en su posterior. El envoltorio decide tambien el caso de un solo sentido, asi que aqui ya
+                // no queda ninguna bifurcacion que pueda divergir.
+                var entradaSalida = frontalBuilder.BuildPlan(
+                    system, catalog, PushBackFrontalEnd.EntradaSalida, frontalSide);
+                var posterior = frontalBuilder.BuildPlan(
+                    system, catalog, PushBackFrontalEnd.Posterior, frontalSide);
                 var planta = plantaBuilder.BuildPlan(system, catalog);
                 return PushBackEditorComputation.Success(design, system, bom, lateral, entradaSalida, posterior, planta, cortes);
             }
