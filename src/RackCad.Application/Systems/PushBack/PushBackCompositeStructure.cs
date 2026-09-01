@@ -233,7 +233,13 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             front.PalletCount = SharedPalletCount(sideA, sideB, slot);
-            front.BeamLengthOverride = SharedBeamLengthOverride(shared, sideA, sideB, slot);
+            var envelope = SharedBeamLengthOverride(shared, sideA, sideB, slot);
+            front.BeamLengthOverride = envelope;
+
+            // I-42 (A4-GRID): la envolvente viaja TAMBIEN como suelo fisico. Como override de frente no alcanzaba a
+            // los niveles que tienen el suyo propio —la celda manda sobre el frente—, y un lado con todos sus
+            // niveles personalizados se quedaba fuera de la reticula compartida.
+            front.SharedBeamLengthFloor = envelope;
         }
 
         /// <summary>

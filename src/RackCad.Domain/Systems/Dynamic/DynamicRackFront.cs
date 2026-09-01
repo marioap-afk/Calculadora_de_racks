@@ -47,6 +47,19 @@ namespace RackCad.Domain.Systems.Dynamic
         /// <summary>Number of pallet-flow lanes placed side by side in this front.</summary>
         public int PalletCount { get; set; } = 1;
 
+        /// <summary>
+        /// I-42 (A4-GRID) — EL SUELO FISICO de la bahia: lo que la reticula COMPARTIDA de un rack compuesto exige
+        /// que mida, venga la demanda del lado que venga.
+        ///
+        /// <para>
+        /// Es intencion DERIVADA —la construye el compositor del Push Back a partir de la demanda de los dos
+        /// lados— y NUNCA se persiste: un documento no la trae, el sistema Dinamico jamas la enciende y por tanto
+        /// ningun rack existente cambia de comportamiento. No es un override authored: no sustituye ni pisa el
+        /// override de una celda ni el de un frente, solo impide que la bahia mida MENOS que la reticula del rack.
+        /// </para>
+        /// </summary>
+        public double? SharedBeamLengthFloor { get; set; }
+
         /// <summary>Optional number of load levels in this front; null keeps the design-wide legacy value.</summary>
         public int? LoadLevels { get; set; }
 

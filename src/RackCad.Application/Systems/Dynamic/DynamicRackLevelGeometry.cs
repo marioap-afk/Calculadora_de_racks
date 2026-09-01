@@ -247,15 +247,26 @@ namespace RackCad.Application.Systems.Dynamic
             DynamicRackLevelDesign level,
             int palletCount)
         {
+            // I-42 (A4-GRID, contrato del dueño) — el SUELO fisico de la bahia entra en la demanda de CADA nivel.
+            //
+            // El override de una celda es intencion LOCAL de ese nivel, no un limite superior del rack: si todos
+            // los niveles resueltos de un lado lo tienen, ese lado dejaba de ver la envolvente compartida —que
+            // viajaba como override de FRENTE, y la celda tiene precedencia sobre el frente— y su marco local se
+            // quedaba con el mayor de sus celdas. Medido: con A en 90"/95" y B pidiendo 125", la compuesta ponia su
+            // segunda columna en 128.494 y el marco de A en 98.494. El suelo no sustituye a nadie: solo impide que
+            // la bahia mida menos que la reticula del rack, y el valor authored de la celda no se toca.
+            var floor = PositiveNullable(frontDesign?.SharedBeamLengthFloor) ?? 0.0;
             var manual = ManualBeamLength(level, frontDesign);
             if (manual.HasValue)
             {
-                return manual.Value;
+                return Math.Max(floor, manual.Value);
             }
 
             var palletFront = Positive(level?.PalletFront, design?.Pallet?.Front ?? 0.0);
-            return DynamicFrontGeometry.AutoBeamLength(
-                palletFront, Math.Max(1, palletCount), design?.PalletTolerance ?? 0.0);
+            return Math.Max(
+                floor,
+                DynamicFrontGeometry.AutoBeamLength(
+                    palletFront, Math.Max(1, palletCount), design?.PalletTolerance ?? 0.0));
         }
 
         /// <summary>
