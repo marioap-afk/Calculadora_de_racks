@@ -85,6 +85,30 @@ namespace RackCad.Plugin
                 }
 
                 var catalog = LateralHeaderDrawService.LoadCatalog();
+
+                // I-42 (A1C/H11, contrato del dueño) — un diseño BLOQUEADO no entra al listado, y no se calla.
+                //
+                // El editor ya impide insertar, actualizar y cotizar un rack cuyo diagnostico es bloqueante; este
+                // comando recorria los mismos diseños sin ese filtro y cotizaba, por ejemplo, un rack cuya cama pide
+                // mas longitud de la que su estructura tiene. Se aborta el TOTAL —igual que cuando un kind no tiene
+                // handler— porque un total al que le falta un rack no puede parecer completo, y se nombra cada rack
+                // con el motivo que redacto su propia autoridad de diagnosticos.
+                var blocked = new List<KeyValuePair<string, string>>();
+                for (var i = 0; i < placed.Count; i++)
+                {
+                    var reason = handlers[i].OutputBlockedReason(placed[i].Embed, catalog);
+                    if (!string.IsNullOrWhiteSpace(reason))
+                    {
+                        blocked.Add(new KeyValuePair<string, string>(placed[i].Embed.Name, reason));
+                    }
+                }
+
+                if (blocked.Count > 0)
+                {
+                    editor.WriteMessage("\n" + RackBomOutputGate.DescribeBlocked(blocked));
+                    return;
+                }
+
                 var racks = new List<ConsolidatedRackBom>();
                 for (var i = 0; i < placed.Count; i++)
                 {
@@ -92,7 +116,10 @@ namespace RackCad.Plugin
                     var bom = BuildRackBom(handlers[i], aggregate.Embed, catalog);
                     if (bom == null)
                     {
-                        continue; // handler present but the payload is unreadable/unusable — best-effort skip, not fatal
+                        // Payload ilegible: se salta, pero NUNCA en silencio — el listado que sale es mas corto y
+                        // el usuario tiene que saber cual falta (I-42/H11).
+                        editor.WriteMessage("\n" + RackBomOutputGate.DescribeUnreadable(aggregate.Embed.Name));
+                        continue;
                     }
 
                     racks.Add(new ConsolidatedRackBom

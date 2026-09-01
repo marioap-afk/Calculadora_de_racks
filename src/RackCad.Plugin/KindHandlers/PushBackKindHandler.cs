@@ -34,6 +34,29 @@ namespace RackCad.Plugin.KindHandlers
             return PushBackBomBuilder.Build(system, catalog);
         }
 
+        /// <summary>
+        /// I-42 (A1C/H11) — el motivo por el que este Push Back no puede cotizarse, si lo hay. Lo decide
+        /// <see cref="RackBomOutputGate"/> sobre los MISMOS diagnosticos que bloquean los botones del editor.
+        /// </summary>
+        public string OutputBlockedReason(RackEmbedDocument embed, RackCatalog catalog)
+        {
+            try
+            {
+                var project = new RackProjectStore().Deserialize(embed?.Design);
+                if (project?.PushBackDesign == null)
+                {
+                    return null;   // ilegible: lo reporta el camino del BOM, no esta puerta
+                }
+
+                var system = new PushBackResolver(catalog).Resolve(project.PushBackDesign);
+                return RackBomOutputGate.For(system).Reason;
+            }
+            catch (System.Exception)
+            {
+                return null;   // ilegible: mismo criterio
+            }
+        }
+
         public string RestampDesign(string designJson, string newId, string copyName) => designJson;
     }
 }

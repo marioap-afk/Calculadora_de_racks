@@ -35,6 +35,17 @@ namespace RackCad.Plugin.KindHandlers
         /// (a visible error), so it never reaches this method.</summary>
         BillOfMaterials BuildBom(RackEmbedDocument embed, RackCatalog catalog);
 
+        /// <summary>
+        /// I-42 (A1C/H11) — el motivo por el que este rack NO puede producir salida final, o <c>null</c> si puede.
+        ///
+        /// <para>
+        /// No es una regla nueva ni una segunda validacion: cada handler pregunta a la MISMA autoridad de
+        /// diagnosticos que usa su editor. Un kind sin diagnosticos propios responde siempre <c>null</c>, que es
+        /// exactamente lo que hacia antes.
+        /// </para>
+        /// </summary>
+        string OutputBlockedReason(RackEmbedDocument embed, RackCatalog catalog);
+
         /// <summary>Re-stamp the kind-specific inner identity of an INDEPENDENT copy's design (selective: Id+Name;
         /// cabecera: Header.Name). Kinds with no inner identity of their own (dynamic, cama) return
         /// <paramref name="designJson"/> untouched.</summary>
