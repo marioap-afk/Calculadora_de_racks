@@ -3210,6 +3210,13 @@ namespace RackCad.UI.Systems.PushBack
                 return; // never fall back to the previous valid model
             }
 
+            // I-42 (A3-GATE) — el recalculo de ARRIBA acaba de confirmar la edicion escenificada y de rehacer el
+            // sistema: el veredicto de salida que vale es el de AHORA, no el que habia cuando el usuario pulso.
+            if (OutputBlockedAfterRecompute("Corrige los datos: no se puede dibujar un modelo bloqueado."))
+            {
+                return;
+            }
+
             session.Identity.SetName(NameBox.Text?.Trim());
             session.SetModel(lastComputation.Design, lastComputation.System);
             if (updateOnly)
@@ -3277,6 +3284,12 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
+            // I-42 (A3-GATE): el BOM es una salida mas y corre la misma carrera que Insertar/Actualizar.
+            if (OutputBlockedAfterRecompute("Corrige los datos: no se puede listar un modelo bloqueado."))
+            {
+                return;
+            }
+
             new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog();
         }
 
@@ -3319,6 +3332,40 @@ namespace RackCad.UI.Systems.PushBack
 
         /// <summary>La compuerta de salida (seam de prueba).</summary>
         internal bool OutputIsBlockedForTest => outputIsBlocked;
+
+        /// <summary>
+        /// I-42 (A3-GATE) — LA RELECTURA DE LA AUTORIDAD DE SALIDA DESPUES DEL RECALCULO DEL CLICK.
+        ///
+        /// <para>
+        /// <b>El defecto.</b> Insertar, Actualizar y el BOM confirman la edicion escenificada y recalculan DENTRO
+        /// del click; ese recalculo vuelve a decidir <c>outputIsBlocked</c>. Pero los tres solo miraban despues
+        /// <c>currentInputsAreValid</c>, que habla de las ENTRADAS —«12 fondos» es un numero perfectamente valido—,
+        /// nunca del sistema RESUELTO. Un diseno que pasa a Bloqueante justo en ese recalculo se dibujaba y se
+        /// embebia igual: medido, con la estructura del lado A congelada en 8 fondos y «Fondos = 12» tecleado sin
+        /// salir del campo, el estado antes del click era valido y no bloqueado, y despues del click el diagnostico
+        /// decia «la cama necesita 588" y la estructura efectiva solo ofrece 396"» mientras la peticion de dibujo
+        /// ya habia salido. El boton deshabilitado no protegia nada: se deshabilita con el veredicto ANTERIOR.
+        /// </para>
+        ///
+        /// <para>
+        /// <b>La correccion.</b> No hay regla nueva. Se vuelve a consultar LA MISMA autoridad —<c>outputIsBlocked</c>,
+        /// que fija <see cref="Recompute"/> desde <c>CompositeHasBlocking</c>— en el orden que le da sentido:
+        /// confirmar la intencion, recalcular, comprobar las entradas y, por ultimo, comprobar la salida. El motivo
+        /// que se muestra es el DIAGNOSTICO REAL del sistema recien resuelto; el texto de reserva solo cubre el caso
+        /// imposible de un bloqueo sin diagnostico. La ventana no se cierra y la edicion escenificada se conserva:
+        /// el usuario ve por que no salio y puede corregirlo sin volver a teclearlo.
+        /// </para>
+        /// </summary>
+        private bool OutputBlockedAfterRecompute(string fallback)
+        {
+            if (!outputIsBlocked)
+            {
+                return false;
+            }
+
+            SetStatus(CompositeStatusOr(fallback), true);
+            return true;
+        }
 
         private void UpdateButtons()
         {
