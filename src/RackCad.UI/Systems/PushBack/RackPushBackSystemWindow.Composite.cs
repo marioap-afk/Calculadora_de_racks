@@ -391,6 +391,22 @@ namespace RackCad.UI.Systems.PushBack
         private readonly Dictionary<NumericField, bool> mixedOptional = new Dictionary<NumericField, bool>();
 
         /// <summary>
+        /// I-42 (A3-CELL) — los campos que AHORA MISMO estan mostrando estado mixto.
+        ///
+        /// <para>
+        /// No es un dirty tracking nuevo: es la MISMA decision que toma <see cref="ApplyMixedSideState"/> en cada
+        /// pasada, anotada para que la lectura pueda distinguir los dos huecos que en un campo OPCIONAL se ven
+        /// exactamente igual — el hueco que pinta el estado mixto («cada lado conserva el suyo») y el hueco que el
+        /// usuario deja a proposito («sin override»). En los campos obligatorios esa ambiguedad no existe, y por eso
+        /// hasta ahora no hizo falta.
+        /// </para>
+        /// </summary>
+        private readonly HashSet<NumericField> mixedNow = new HashSet<NumericField>();
+
+        /// <summary>¿Este campo esta pintando ahora un estado mixto?</summary>
+        private bool IsMixed(NumericField field) => field != null && mixedNow.Contains(field);
+
+        /// <summary>
         /// Con «Ambos lados» seleccionado, un campo cuyo valor DIFIERE entre A y B se muestra VACIO.
         ///
         /// <para>
@@ -535,6 +551,7 @@ namespace RackCad.UI.Systems.PushBack
 
             if (mixed)
             {
+                mixedNow.Add(field);
                 field.IsOptional = true;
                 field.SetNumber(null);
                 ToolTipService.SetShowOnDisabled(field, true);
@@ -543,6 +560,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
+            mixedNow.Remove(field);
             field.IsOptional = mixedOptional[field];
         }
 

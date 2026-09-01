@@ -749,7 +749,7 @@ namespace RackCad.UI.Systems.PushBack
                     ClearHeight = Val(CellClearBox, cell.ClearHeight),
                     InOutBeamCatalogId = CellInOutBeamBox.SelectedValue as string ?? cell.InOutBeamCatalogId,
                     InOutBeamDepth = SelectedPeralte(CellInOutPeralteBox, cell.InOutBeamDepth),
-                    BeamLengthOverride = CellBeamLengthOverrideBox.Value, // null when blank (optional override)
+                    BeamLengthOverride = OptionalVal(CellBeamLengthOverrideBox, cell.BeamLengthOverride),
                     IntermediateBeamCatalogId = CellIntermediateBeamBox.SelectedValue as string ?? cell.IntermediateBeamCatalogId,
                     IntermediateBeamDepth = SelectedPeralte(CellIntermediatePeralteBox, cell.IntermediateBeamDepth)
                 },
@@ -3439,6 +3439,38 @@ namespace RackCad.UI.Systems.PushBack
         private static double SelectedPeralte(ComboBox combo, double fallback) => combo?.SelectedItem is double value ? value : fallback;
 
         private static double Val(NumericField field, double fallback) => field.Value ?? fallback;
+
+        /// <summary>
+        /// I-42 (A3-CELL, contrato del dueño) — LA LECTURA POR LADO DE UN OVERRIDE OPCIONAL.
+        ///
+        /// <para>
+        /// <b>El defecto.</b> Los demas campos de la celda ya caian al valor DEL LADO que se escribe cuando el
+        /// control esta vacio (<see cref="Val"/>), que es lo que hace que «Ambos» con valores distintos no pise a
+        /// nadie. «Largo manual» se leia crudo —<c>CellBeamLengthOverrideBox.Value</c>—, asi que el hueco que pinta
+        /// el estado mixto viajaba como <c>null</c> A LOS DOS LADOS. Medido: con A = 100 y B sin override, elegir
+        /// «Ambos lados» sin tocar el campo dejaba A = null y B = null; con A = 100 y B = 120, los dos en null.
+        /// </para>
+        ///
+        /// <para>
+        /// <b>Por que este campo y no los otros.</b> Es el unico campo de la celda que es opcional POR NATURALEZA:
+        /// en el resto un hueco nunca es authored y por eso bastaba con caer al valor del lado. Aqui el hueco
+        /// significa dos cosas distintas, y la que vale la dice el estado del control, no el valor:
+        /// </para>
+        ///
+        /// <list type="bullet">
+        /// <item><b>Vacio por MIXTO</b> —A y B difieren y el panel lo esta diciendo— - cada lado conserva el suyo.</item>
+        /// <item><b>Vacio a proposito</b> —el campo no esta mixto— - sin override, tal cual, y se escribe en los
+        /// lados que el alcance alcance. El borrado explicito de un valor comun sigue borrando en los dos.</item>
+        /// </list>
+        ///
+        /// <para>
+        /// <c>null</c> NO es cero, ni el valor del otro lado, ni el ancho compartido que resuelve la reticula de
+        /// A3-G1/G2: es «sin override authored». Que la geometria derivada comparta una envolvente entre A y B no
+        /// autoriza a materializarla como intencion de nadie.
+        /// </para>
+        /// </summary>
+        private double? OptionalVal(NumericField field, double? sideValue)
+            => field.Value ?? (IsMixed(field) ? sideValue : null);
 
         private static int IntVal(NumericField field, int fallback) => field.Value.HasValue ? (int)Math.Round(field.Value.Value) : fallback;
     }
