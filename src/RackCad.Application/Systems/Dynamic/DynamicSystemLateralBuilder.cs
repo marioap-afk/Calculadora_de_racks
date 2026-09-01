@@ -126,9 +126,14 @@ namespace RackCad.Application.Systems.Dynamic
             {
                 if (module.IsHeader && module.AssociatedFrameConfiguration != null)
                 {
+                    // I-42 (A3-H3R): las DOS vistas preguntan por la configuracion EFECTIVA de la cabecera; lo
+                    // unico que cambia es la pregunta de altura —la linea en el corte, la envolvente de la zona en
+                    // el general—. Tomar aqui el objeto asociado tal cual dibujaba la altura que tenia ANTES de que
+                    // se resolviera la demanda por zona, de modo que la misma cabecera fisica salia con una altura
+                    // en el lateral general y con otra en su corte y en el BOM.
                     var configuration = sectioned
                         ? DynamicFrontGeometry.HeaderConfigurationAtPost(system, module, catalog, postIndex)
-                        : module.AssociatedFrameConfiguration;
+                        : DynamicFrontGeometry.HeaderConfigurationAt(system, module, catalog);
 
                     // Build the header and key the group on the resulting geometry, so two headers share a
                     // definition only when their drawing is truly identical (any edit separates them).

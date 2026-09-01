@@ -300,7 +300,59 @@ namespace RackCad.Application.Systems.Dynamic
 
             // I-42 (ronda 6D): la altura se pregunta en la POSICION de esta cabecera, no solo en su linea. En un
             // rack de un solo sentido las dos preguntas dan lo mismo.
-            var height = PostHeightAt(system, postIndex, 0.5 * (module.StartX + module.EndX));
+            return WithZoneHeight(
+                system, module, catalog, configuration,
+                PostHeightAt(system, postIndex, 0.5 * (module.StartX + module.EndX)));
+        }
+
+        /// <summary>
+        /// I-42 (A3-H3R, contrato del dueño) — LA CONFIGURACION EFECTIVA DE UNA CABECERA EN LA VISTA QUE NO
+        /// REPRESENTA UNA LINEA: el lateral GENERAL, que es la envolvente del rack.
+        ///
+        /// <para>
+        /// <b>El defecto.</b> El lateral seccionado y el BOM piden su configuracion a
+        /// <see cref="HeaderConfigurationAtPost"/>, que reconstruye la altura de una cabecera CALCULADA sobre la
+        /// autoridad de zonas. El lateral general se quedaba con <c>module.AssociatedFrameConfiguration</c> tal cual,
+        /// y ese objeto se asocio ANTES de que <c>PushBackHeaderHeight.Apply</c> resolviera la demanda por zona: la
+        /// misma cabecera fisica salia con dos alturas segun la vista. Medido en un compuesto con camas CORRIDAS —A
+        /// de tres niveles y B de uno—, la corrida atraviesa los dos lados y sube la zona de B a 192", y mientras el
+        /// corte y el BOM daban «Cabecera F54 A192» para las cuatro, el lateral general dibujaba dos de ellas con
+        /// «A48», la altura que el lado B tenia por su cuenta antes de que la cama corrida existiera.
+        /// </para>
+        ///
+        /// <para>
+        /// <b>La correccion.</b> La misma regla, con la pregunta de altura que corresponde a esta vista
+        /// —<see cref="HeightAt"/>, la envolvente de la zona en esa X, no un maximo global—. Se pregunta por la
+        /// POSICION porque el general no tiene linea; un rack de un solo sentido no declara zonas y responde
+        /// exactamente lo de siempre.
+        /// </para>
+        /// </summary>
+        public static RackFrameConfiguration HeaderConfigurationAt(
+            DynamicRackSystem system, DynamicRackModule module, RackCatalog catalog)
+        {
+            var configuration = module?.AssociatedFrameConfiguration;
+            if (configuration == null || !module.UseCalculatedHeaderConfiguration)
+            {
+                // Una cabecera PERSONALIZADA manda, aqui igual que en la linea: su altura es intencion, no derivada.
+                return configuration;
+            }
+
+            return WithZoneHeight(
+                system, module, catalog, configuration,
+                HeightAt(system, 0.5 * (module.StartX + module.EndX)));
+        }
+
+        /// <summary>
+        /// La configuracion CALCULADA de una cabecera con la altura fisica que le toca. Es la unica formula, la
+        /// comparten la vista por linea y la general, y no toca el objeto authored: devuelve uno nuevo.
+        /// </summary>
+        private static RackFrameConfiguration WithZoneHeight(
+            DynamicRackSystem system,
+            DynamicRackModule module,
+            RackCatalog catalog,
+            RackFrameConfiguration configuration,
+            double height)
+        {
             if (height <= 0.0)
             {
                 return configuration;
