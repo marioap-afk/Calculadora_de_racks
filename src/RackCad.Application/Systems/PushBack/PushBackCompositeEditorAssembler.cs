@@ -43,6 +43,10 @@ namespace RackCad.Application.Systems.PushBack
                 throw new ArgumentNullException(nameof(state));
             }
 
+            // I-42 (A6-TAIL-TX): cada armado abre su PROPIO intento de consumo. Lo que una computacion anterior
+            // dejara marcado no puede consumir la cola de esta, ni al reves.
+            state.BeginDormantTailConsumptionAttempt();
+
             // La compositividad EFECTIVA se decide ANTES de armar: es la que dice que secuencia se entrega y sobre
             // cual informa la reconciliacion. Se calcula con la misma pregunta que hara el resolver.
             var sideB = state.BuildSideB();
@@ -144,7 +148,8 @@ namespace RackCad.Application.Systems.PushBack
 
                 if (tailLines.Count > 0)
                 {
-                    state.ParkDormantTail(state.DormantCompositeTail.ToList(), tailLines);
+                    // Solo se aparcan las lineas que ESTE diseño traia; las ya aparcadas no se tocan.
+                    state.ParkDormantTail(null, tailLines);
                 }
 
                 return;

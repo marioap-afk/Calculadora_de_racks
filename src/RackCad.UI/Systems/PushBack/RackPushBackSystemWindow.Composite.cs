@@ -794,6 +794,11 @@ namespace RackCad.UI.Systems.PushBack
             // sus configuraciones por linea— se aparca al cargar. El lado A se cargo con SU cabeza, y el primer
             // recalculo compuesto devuelve la cola a su sitio: es el mismo mecanismo con el que un lado B dormido
             // vuelve intacto, no un segundo camino de carga.
+            // I-42 (A6-TAIL-TX): CARGAR un rack es un borrado EXPLICITO de lo que hubiera dormido: la cola aparcada
+            // pertenece al rack que estaba abierto, y arrastrarla al siguiente resucitaria la mitad B de otro. Es la
+            // unica accion que borra; un aparcado con fuente vacia no borra nada.
+            composite.ClearDormantTail();
+
             var structure = design?.Structure;
             if (structure != null)
             {

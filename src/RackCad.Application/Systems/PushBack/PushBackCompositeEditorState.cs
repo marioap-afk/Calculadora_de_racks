@@ -60,14 +60,39 @@ namespace RackCad.Application.Systems.PushBack
         /// <summary>Las configuraciones por LINEA de la cola dormida, con su misma vigencia.</summary>
         public List<DynamicHeaderLineOverride> DormantTailLineOverrides { get; } = new List<DynamicHeaderLineOverride>();
 
-        /// <summary>Aparca la cola compuesta: sustituye lo que hubiera, porque siempre es la ultima vigente.</summary>
+        /// <summary>
+        /// Aparca una cola compuesta NUEVA: sustituye la que hubiera, porque la ultima aparcada es la vigente.
+        ///
+        /// <para>
+        /// I-42 (A6-TAIL-TX): aparcar es una accion con contenido. Una fuente VACIA no aparca nada y no borra lo
+        /// aparcado —dormir no es borrar, y una carga que no trae cola no puede llevarse por delante la intencion
+        /// que el usuario dejo—; para eso esta <see cref="ClearDormantTail"/>, que es el borrado explicito. Y
+        /// aparcar invalida cualquier candidatura de consumo pendiente: lo que se aparca ahora no puede consumirlo
+        /// un armado anterior.
+        /// </para>
+        /// </summary>
         public void ParkDormantTail(
             IEnumerable<DynamicRackModuleDesign> modules, IEnumerable<DynamicHeaderLineOverride> lineOverrides)
         {
-            DormantCompositeTail.Clear();
-            DormantCompositeTail.AddRange(modules ?? Enumerable.Empty<DynamicRackModuleDesign>());
-            DormantTailLineOverrides.Clear();
-            DormantTailLineOverrides.AddRange(lineOverrides ?? Enumerable.Empty<DynamicHeaderLineOverride>());
+            var incoming = (modules ?? Enumerable.Empty<DynamicRackModuleDesign>()).ToList();
+            var incomingLines = (lineOverrides ?? Enumerable.Empty<DynamicHeaderLineOverride>()).ToList();
+            dormantTailConsumed = false;
+            if (incoming.Count == 0 && incomingLines.Count == 0)
+            {
+                return;
+            }
+
+            if (incoming.Count > 0)
+            {
+                DormantCompositeTail.Clear();
+                DormantCompositeTail.AddRange(incoming);
+            }
+
+            if (incomingLines.Count > 0)
+            {
+                DormantTailLineOverrides.Clear();
+                DormantTailLineOverrides.AddRange(incomingLines);
+            }
         }
 
         /// <summary>Retira la cola aparcada. Es la mutacion FINAL; el armado no la ejecuta.</summary>
@@ -90,6 +115,20 @@ namespace RackCad.Application.Systems.PushBack
         /// </summary>
         public void MarkDormantTailConsumed() => dormantTailConsumed = DormantCompositeTail.Count > 0
             || DormantTailLineOverrides.Count > 0;
+
+        /// <summary>
+        /// I-42 (A6-TAIL-TX, contrato del dueño) — CADA ARMADO EMPIEZA SIN CANDIDATURA.
+        ///
+        /// <para>
+        /// Una computacion solo puede consumir la cola que ELLA MISMA leyo. La marca era global y sobrevivia de un
+        /// armado al siguiente: medido, un despertar que fallaba la dejaba encendida y el siguiente recalculo
+        /// VALIDO —uno de un solo sentido, que ni siquiera mira la cola— la confirmaba al aceptar, borrando la
+        /// intencion aparcada; al volver a declarar el lado B, su mitad regresaba estandar y su override de linea
+        /// habia desaparecido. Empezar cada armado sin candidatura es lo que impide que una marca rancia consuma
+        /// algo que no leyo.
+        /// </para>
+        /// </summary>
+        public void BeginDormantTailConsumptionAttempt() => dormantTailConsumed = false;
 
         /// <summary>Confirma el consumo de la cola: solo lo llama quien ADOPTA una computacion valida.</summary>
         public void CommitDormantTailConsumption()
