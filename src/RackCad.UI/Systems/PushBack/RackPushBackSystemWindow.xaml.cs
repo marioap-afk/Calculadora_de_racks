@@ -203,9 +203,13 @@ namespace RackCad.UI.Systems.PushBack
                 .ToList();
 
         /// <summary>The library project a "Guardar en biblioteca" would write (the active Push Back payload + the opened
-        /// project's I-11 metadata), or NULL when the CURRENT controls are invalid — a stale model is never saved.</summary>
+        /// project's I-11 metadata), or NULL when the CURRENT controls are invalid — a stale model is never saved.
+        /// <para>
+        /// I-42 (A3-GATE-LIBRARY): tambien null cuando la salida esta BLOQUEADA, que es la otra mitad de la misma
+        /// compuerta. Este seam dice lo que el guardado escribiria, asi que no puede responder con una regla propia.
+        /// </para></summary>
         internal RackProject BuildLibraryProjectForTest()
-            => !currentInputsAreValid || lastComputation?.Design == null
+            => !currentInputsAreValid || outputIsBlocked || lastComputation?.Design == null
                 ? null
                 : RackProject.ForPushBack(lastComputation.Design).WithSourceMetadataFrom(sourceProject);
 
@@ -3299,6 +3303,14 @@ namespace RackCad.UI.Systems.PushBack
             if (!currentInputsAreValid || lastComputation?.Design == null)
             {
                 SetStatus("Corrige los datos: no se puede guardar un modelo inválido.", true);
+                return;
+            }
+
+            // I-42 (A3-GATE-LIBRARY): guardar en la biblioteca es una salida PERSISTENTE y corre la misma carrera
+            // que Insertar, Actualizar y el BOM — el click confirma la edicion escenificada y recalcula—, asi que
+            // consulta la MISMA compuerta despues del recalculo. Un modelo bloqueado no se archiva.
+            if (OutputBlockedAfterRecompute("Corrige los datos: no se puede guardar un modelo bloqueado."))
+            {
                 return;
             }
 
