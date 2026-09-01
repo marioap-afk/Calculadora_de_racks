@@ -214,10 +214,13 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             var stored = PushBackCompositeStructure.StoredSideModules(design, layout, which);
-            if (stored != null && stored.Count == positions)
-            {
-                return stored;   // nada se movio: la secuencia almacenada describe esta estructura tal cual
-            }
+
+            // I-42 (A4-MOD-LIFECYCLE) — el ATAJO «tantos modulos como posiciones ⇒ la almacenada vale tal cual» era
+            // otra autoridad por CUENTA: devolvia la secuencia guardada sin preguntarle a la receta estandar, asi
+            // que un modulo que acababa de ser RESTAURADO —ya sin override manual— conservaba la longitud que el
+            // usuario habia puesto y el restore individual de la mitad B no hacia nada. La reconciliacion, que es
+            // la autoridad, ya distingue lo que se conserva (identidad, configuracion, longitudes MANUALES) de lo
+            // que se recalcula, asi que se le pregunta siempre; para una secuencia estable responde lo mismo.
 
             var pallet = design?.Structure?.Pallet;
             if (pallet == null || pallet.Depth <= 0.0)

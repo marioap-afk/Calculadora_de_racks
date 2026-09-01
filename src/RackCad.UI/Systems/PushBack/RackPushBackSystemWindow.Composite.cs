@@ -789,6 +789,21 @@ namespace RackCad.UI.Systems.PushBack
         {
             composite.SetSideBPresent(design != null && design.IsComposite);
             composite.LoadComposite(design?.Composite);
+
+            // I-42 (A4-MOD-LIFECYCLE / N-1): la COLA persistida —el hueco y la mitad B con sus personalizaciones y
+            // sus configuraciones por linea— se aparca al cargar. El lado A se cargo con SU cabeza, y el primer
+            // recalculo compuesto devuelve la cola a su sitio: es el mismo mecanismo con el que un lado B dormido
+            // vuelve intacto, no un segundo camino de carga.
+            var structure = design?.Structure;
+            if (structure != null)
+            {
+                composite.ParkDormantTail(
+                    structure.Modules.Where(module => module != null
+                        && PushBackCompositeStructure.IsCompositeTailId(module.ModuleId)),
+                    structure.HeaderLineOverrides.Where(line => line != null
+                        && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId)));
+            }
+
             if (design?.SideB != null && design.SideB.IsPresent)
             {
                 // El lado B se recupera en su propio estado, por el MISMO camino de carga que el lado A.

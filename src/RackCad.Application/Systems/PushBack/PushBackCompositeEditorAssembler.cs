@@ -43,8 +43,22 @@ namespace RackCad.Application.Systems.PushBack
                 throw new ArgumentNullException(nameof(state));
             }
 
-            var design = assembler.BuildDesign(state.SideA, inputs, forceRebuild);
-            design.SideB = state.BuildSideB();
+            // La compositividad EFECTIVA se decide ANTES de armar: es la que dice que secuencia se entrega y sobre
+            // cual informa la reconciliacion. Se calcula con la misma pregunta que hara el resolver.
+            var sideB = state.BuildSideB();
+            var effectivelyComposite = sideB != null && sideB.IsPresent;
+            if (!effectivelyComposite)
+            {
+                ParkTailOf(state);
+            }
+
+            var design = assembler.BuildDesign(
+                state.SideA,
+                inputs,
+                forceRebuild,
+                effectivelyComposite,
+                effectivelyComposite ? state.DormantCompositeTail.ToList() : null);
+            design.SideB = sideB;
             design.Composite = state.BuildComposite();
 
             // Las ranuras que el usuario retiro del lado A se DECLARAN ausentes; no se borran de la lista. Borrarlas
@@ -68,7 +82,107 @@ namespace RackCad.Application.Systems.PushBack
                 }
             }
 
+            ApplyEffectiveCompositeness(state, design);
             return design;
+        }
+
+        /// <summary>
+        /// I-42 (A4-MOD-LIFECYCLE, contrato del dueño) — LA SECUENCIA QUE SE ENTREGA ES LA DEL RACK QUE SE RESUELVE
+        /// AHORA.
+        ///
+        /// <para>
+        /// <b>Tres cosas distintas.</b> La CAPACIDAD compuesta —el editor conoce el lado B y guarda su intencion
+        /// dormida—, el diseño EFECTIVAMENTE compuesto —el que ahora mismo tiene dos lados— y la SECUENCIA
+        /// persistida —<c>M* + GAP + B:*</c>—. La unica pregunta que decide por que camino se resuelve un diseño es
+        /// <see cref="PushBackDesign.IsComposite"/>, la misma que usa el resolver; ni el selector de lado, ni el
+        /// numero de modulos, ni haber tenido lado B alguna vez.
+        /// </para>
+        ///
+        /// <para>
+        /// <b>El defecto.</b> Cuando el rack dejaba de ser efectivamente compuesto —se retira el lado B, o se queda
+        /// sin ninguna ranura efectiva, que no es lo mismo— la secuencia COMPUESTA seguia viajando en el diseño y
+        /// llegaba al resolver de un solo sentido. Alli la guarda «los modulos deben ser tantos como posiciones»
+        /// actuaba de segunda autoridad accidental y reconstruia todo: medido, la personalizacion del lado A se
+        /// perdia en ese mismo recalculo (M2 volvia de 30" a 48"), el informe declaraba «conservados» modulos que el
+        /// diseño resuelto ya no tenia, y al reactivar el lado B su mitad volvia estandar.
+        /// </para>
+        ///
+        /// <para>
+        /// <b>La correccion.</b> La cola —hueco y mitad B— se APARCA en el estado compuesto y se retira de la
+        /// secuencia entregada; cuando el rack vuelve a tener dos lados, se devuelve. Dormir deja de destruir: lo
+        /// que cambia es lo que se resuelve, no lo que el usuario declaro.
+        /// </para>
+        /// </summary>
+        private static void ApplyEffectiveCompositeness(PushBackCompositeEditorState state, PushBackDesign design)
+        {
+            var modules = design?.Structure?.Modules;
+            if (modules == null)
+            {
+                return;
+            }
+
+            var lines = design.Structure.HeaderLineOverrides;
+            if (!design.IsComposite)
+            {
+                // La secuencia entregada ya es la del lado A: aqui solo se retira lo que hubiera quedado y se
+                // aparcan las configuraciones por linea de la cola, que viajan con ella.
+                foreach (var module in modules
+                    .Where(module => module != null
+                        && PushBackCompositeStructure.IsCompositeTailId(module.ModuleId))
+                    .ToList())
+                {
+                    modules.Remove(module);
+                }
+
+                var tailLines = lines
+                    .Where(line => line != null && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId))
+                    .ToList();
+                foreach (var line in tailLines)
+                {
+                    lines.Remove(line);
+                }
+
+                if (tailLines.Count > 0)
+                {
+                    state.ParkDormantTail(state.DormantCompositeTail.ToList(), tailLines);
+                }
+
+                return;
+            }
+
+            // Vuelve a haber dos lados: los modulos de la cola ya volvieron con el armado; aqui vuelven sus
+            // configuraciones por LINEA, que viajan con ella y con su misma vigencia.
+            foreach (var line in state.DormantTailLineOverrides)
+            {
+                if (!lines.Any(existing => existing != null
+                    && existing.PostIndex == line.PostIndex
+                    && string.Equals(existing.ModuleId, line.ModuleId, StringComparison.Ordinal)))
+                {
+                    lines.Add(line);
+                }
+            }
+
+            state.ClearDormantTail();
+        }
+
+        /// <summary>
+        /// Aparca la COLA vigente —la del baseline del rack, que es donde vive la secuencia— antes de armar un
+        /// diseño de un solo sentido. Si no hay cola que aparcar, la aparcada anterior se conserva: dormir dos
+        /// veces seguidas no puede borrar lo que la primera guardo.
+        /// </summary>
+        private static void ParkTailOf(PushBackCompositeEditorState state)
+        {
+            var baseline = state.SideA?.WorkingBaseline?.Structure;
+            var tail = PushBackCompositeStructure.CompositeTail(baseline);
+            if (tail.Count == 0)
+            {
+                return;
+            }
+
+            var lines = baseline.HeaderLineOverrides
+                .Where(line => line != null && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId))
+                .ToList();
+            state.ParkDormantTail(tail.Select(PushBackCompositeStructure.ToTailDesign).ToList(), lines);
         }
 
         /// <summary>

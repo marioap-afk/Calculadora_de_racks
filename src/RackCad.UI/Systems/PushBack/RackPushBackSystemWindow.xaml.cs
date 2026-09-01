@@ -311,7 +311,13 @@ namespace RackCad.UI.Systems.PushBack
 
             var copy = new PushBackDesign
             {
-                Structure = design.Structure,
+                // I-42 (A4-MOD-LIFECYCLE / N-1): la estructura que recibe el lado A es la SUYA. La secuencia
+                // persistida de un rack compuesto es la del RACK —M* + hueco + B:*—, y entregarla entera a la carga
+                // del lado A la llevaba al resolver de un solo sentido: alli los modulos no cuadraban con las
+                // posiciones y se reconstruia la receta estandar, de modo que reabrir con RACKEDITAR devolvia un
+                // rack sin ninguna de las personalizaciones guardadas. La cola —hueco y mitad B— se recupera por su
+                // propio camino, en el estado compuesto.
+                Structure = PushBackCompositeStructure.SideAStructure(design.Structure),
                 LegacyHighEndBeamPeralte = design.LegacyHighEndBeamPeralte,
                 RearTope = design.RearTope,
 

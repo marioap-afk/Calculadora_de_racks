@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
 
 namespace RackCad.Application.Systems.PushBack
@@ -41,6 +42,40 @@ namespace RackCad.Application.Systems.PushBack
         /// blanco».
         /// </summary>
         private bool sideBEverDeclared;
+
+        /// <summary>
+        /// I-42 (A4-MOD-LIFECYCLE, contrato del dueño) — LA COLA COMPUESTA DORMIDA: el hueco y los modulos de la
+        /// mitad B, aparcados mientras el rack se resuelve por el camino de UN SOLO LADO.
+        ///
+        /// <para>
+        /// Retirar el lado B —o dejarlo sin ninguna ranura efectiva— cambia lo que se resuelve AHORA, no lo que el
+        /// usuario declaro. La secuencia que se entrega al resolver pasa a ser la del lado A, y la cola se guarda
+        /// aqui con sus personalizaciones y sus configuraciones por linea, para volver intacta en cuanto el rack
+        /// vuelva a tener dos lados. Es estado de SESION —dormir no persiste, esa es la deuda H14— y no participa
+        /// de ninguna decision fisica mientras duerme.
+        /// </para>
+        /// </summary>
+        public List<DynamicRackModuleDesign> DormantCompositeTail { get; } = new List<DynamicRackModuleDesign>();
+
+        /// <summary>Las configuraciones por LINEA de la cola dormida, con su misma vigencia.</summary>
+        public List<DynamicHeaderLineOverride> DormantTailLineOverrides { get; } = new List<DynamicHeaderLineOverride>();
+
+        /// <summary>Aparca la cola compuesta: sustituye lo que hubiera, porque siempre es la ultima vigente.</summary>
+        public void ParkDormantTail(
+            IEnumerable<DynamicRackModuleDesign> modules, IEnumerable<DynamicHeaderLineOverride> lineOverrides)
+        {
+            DormantCompositeTail.Clear();
+            DormantCompositeTail.AddRange(modules ?? Enumerable.Empty<DynamicRackModuleDesign>());
+            DormantTailLineOverrides.Clear();
+            DormantTailLineOverrides.AddRange(lineOverrides ?? Enumerable.Empty<DynamicHeaderLineOverride>());
+        }
+
+        /// <summary>Retira la cola aparcada: se consume cuando el rack vuelve a ser compuesto.</summary>
+        public void ClearDormantTail()
+        {
+            DormantCompositeTail.Clear();
+            DormantTailLineOverrides.Clear();
+        }
 
         public PushBackCompositeEditorState()
             : this(new PushBackEditorState(), new PushBackEditorState())

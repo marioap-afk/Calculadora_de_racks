@@ -119,6 +119,31 @@ namespace RackCad.Application.Systems.PushBack
         /// OffCells (only deactivations) and the authorized safety are then added. The result is canonical by itself.
         /// </summary>
         public PushBackDesign BuildDesign(PushBackEditorState state, PushBackEditorInputs inputs, bool forceRebuild)
+            => BuildDesign(state, inputs, forceRebuild, effectivelyComposite: true);
+
+        /// <summary>
+        /// I-42 (A4-MOD-LIFECYCLE) — <paramref name="effectivelyComposite"/> dice si el diseño que se esta armando
+        /// tendra DOS lados fisicos. No es el selector de lado, ni haber tenido lado B alguna vez, ni el numero de
+        /// modulos: es la misma pregunta que decide por que camino lo resuelve el resolver. Un rack que ahora mismo
+        /// es de un solo sentido recibe SU secuencia —sin hueco ni mitad B—, y la reconciliacion informa sobre esa
+        /// secuencia y no sobre una que no se va a resolver.
+        /// </summary>
+        public PushBackDesign BuildDesign(
+            PushBackEditorState state, PushBackEditorInputs inputs, bool forceRebuild, bool effectivelyComposite)
+            => BuildDesign(state, inputs, forceRebuild, effectivelyComposite, null);
+
+        /// <summary>
+        /// I-42 (A4-MOD-LIFECYCLE) — <paramref name="dormantTail"/> es la cola que el estado compuesto tenia
+        /// APARCADA: el hueco y la mitad B de un rack que vuelve a tener dos lados, o la que un documento traia al
+        /// reabrirlo. Entra ANTES de reconciliar, que es lo que hace que el informe hable de la secuencia real y no
+        /// declare perdido lo que esta volviendo.
+        /// </summary>
+        public PushBackDesign BuildDesign(
+            PushBackEditorState state,
+            PushBackEditorInputs inputs,
+            bool forceRebuild,
+            bool effectivelyComposite,
+            IReadOnlyList<DynamicRackModuleDesign> dormantTail)
         {
             if (state == null) throw new ArgumentNullException(nameof(state));
             var editorInputs = inputs ?? PushBackEditorInputs.NewDesign();
@@ -198,8 +223,33 @@ namespace RackCad.Application.Systems.PushBack
                 // topologia de A reportaba GAP y B:* como eliminados y se llevaba por delante lo que el usuario
                 // habia personalizado en la mitad B, que no habia cambiado. El resolver compuesto reparte despues
                 // esta secuencia por lado, exactamente como hace al reabrir un rack guardado.
-                foreach (var module in PushBackCompositeStructure.CompositeTail(baseline))
+                // I-42 (A4-MOD-LIFECYCLE): un «restaurar estandar» NO lleva cola —es un reset del rack entero, y la
+                // cola es justamente el vehiculo por el que las personalizaciones de la mitad B sobrevivirian—, y un
+                // restore INDIVIDUAL devuelve su modulo a calculado en vez de volver a copiarlo personalizado.
+                var tail = standardRestore || !effectivelyComposite
+                    ? Array.Empty<DynamicRackModule>()
+                    : PushBackCompositeStructure.CompositeTail(baseline);
+                var restored = new HashSet<string>(restoredIds, StringComparer.Ordinal);
+                foreach (var module in tail)
                 {
+                    if (restored.Contains(module.ModuleId))
+                    {
+                        // Sin marca manual: la restaurada es, por definicion, la CALCULADA de su posicion, y esa la
+                        // pone la receta estandar del lado cuando el resolver reparte la secuencia. La longitud que
+                        // se copia aqui es solo un valor de transito —la reconciliacion la sustituye—, y se prefiere
+                        // la del baseline antes que un cero, que ninguna estructura admite.
+                        system.Modules.Add(new DynamicRackModule
+                        {
+                            ModuleId = module.ModuleId,
+                            Kind = module.Kind,
+                            Length = module.Length,
+                            IsCalculated = true,
+                            IsManualOverride = false,
+                            UseCalculatedHeaderConfiguration = true,
+                        });
+                        continue;
+                    }
+
                     // COPIA: el baseline no se toca. La reconciliacion escribe sobre los modulos que reciba, y el
                     // baseline solo lo adelanta AcceptComputation.
                     system.Modules.Add(new DynamicRackModule
@@ -215,12 +265,30 @@ namespace RackCad.Application.Systems.PushBack
                     });
                 }
 
+                AttachDormantTail(system, effectivelyComposite, dormantTail, standardRestore);
                 system.RecalculatePositions();
             }
             else
             {
                 system = CopyStructureSystem(baseline);
                 dynamicAssembler.UpdateHeaderHeightInPlace(system, headerHeight, postId);
+
+                // I-42 (A4-MOD-LIFECYCLE): si el rack ya no tiene dos lados, la copia se queda con su CABEZA. La
+                // cola no se destruye —el estado compuesto la aparca— pero no viaja a un diseño que se va a
+                // resolver por el camino de un solo sentido.
+                if (!effectivelyComposite)
+                {
+                    foreach (var module in PushBackCompositeStructure.CompositeTail(system).ToList())
+                    {
+                        system.Modules.Remove(module);
+                    }
+
+                    system.RecalculatePositions();
+                }
+                else if (AttachDormantTail(system, true, dormantTail, standardRestore))
+                {
+                    system.RecalculatePositions();
+                }
             }
 
             builder.ApplyPostPeralte(system, postPeralte);
@@ -241,9 +309,19 @@ namespace RackCad.Application.Systems.PushBack
             // Back — that pair carries the fondo only and re-stamps every restored header as calculated — WITHOUT
             // touching it, because it is also the dynamic editor's and I-35 must not change the Dinámico.
             // A rack-wide "restaurar estándar" carries nothing: that is what makes it a reset.
+            // I-42 (A4-MOD-LIFECYCLE): la reconciliacion informa sobre la secuencia que se resuelve. Con el rack en
+            // un solo sentido, las intenciones de la cola no son ni conservadas ni perdidas: estan DORMIDAS, y
+            // declararlas de cualquiera de las dos formas seria mentir sobre lo que le pasa al rack.
             var intents = standardRestore
                 ? Array.Empty<DynamicRackModuleDesign>()
                 : ModuleIntents(commit, baseline);
+            if (!effectivelyComposite)
+            {
+                intents = intents
+                    .Where(intent => intent != null
+                        && !PushBackCompositeStructure.IsCompositeTailId(intent.ModuleId))
+                    .ToList();
+            }
             state.LastModuleReconciliation = reconciliation.Reconcile(intents, system, restoredIds);
 
             // I-40 — las configuraciones por LINEA. Se llevan igual que las de modulo: la ACEPTADA cuando la hay, y
@@ -436,7 +514,60 @@ namespace RackCad.Application.Systems.PushBack
                 .FirstOrDefault(module => module != null && module.IsHeader
                     && module.AssociatedFrameConfiguration?.LeftPost != null)?
                 .AssociatedFrameConfiguration.LeftPost.PostCatalogId;
-            return dynamicResolver.Resolve(dynamicResolver.Snapshot(system, loadLevels, firstLevel, beamDepth, postId)).System;
+            var snapshot = dynamicResolver.Snapshot(system, loadLevels, firstLevel, beamDepth, postId);
+
+            // I-42 (A4-MOD-LIFECYCLE / N-2) — LA COPIA CONSERVA LA IDENTIDAD COMPUESTA. Que los rangos de
+            // profundidad puedan NO anidar es una propiedad DERIVADA de que la secuencia sea la del rack compuesto
+            // —una ranura solo-A y otra solo-B son fisicamente reales sobre la misma estructura—, y el snapshot no
+            // la conocia: copiar una estructura compuesta escalonada y volver a resolverla reventaba con «cada
+            // frente debe contener la estructura completa del frente con menos fondos», medido sobre frentes
+            // pos[1..6] y pos[16..17]. No es una bandera nueva ni un dato persistido: se vuelve a derivar de la
+            // MISMA identidad que ya distingue la secuencia del rack.
+            snapshot.AllowsNonNestedDepthRanges =
+                PushBackCompositeStructure.IsCompositeSequence(system?.Modules);
+            return dynamicResolver.Resolve(snapshot).System;
+        }
+
+        /// <summary>
+        /// Devuelve la cola APARCADA a la secuencia cuando el rack vuelve a tener dos lados y la que hay no la
+        /// trae. Un «restaurar estandar» no despierta nada: un reset es un reset.
+        /// </summary>
+        private bool AttachDormantTail(
+            DynamicRackSystem system,
+            bool effectivelyComposite,
+            IReadOnlyList<DynamicRackModuleDesign> dormantTail,
+            bool standardRestore)
+        {
+            if (!effectivelyComposite
+                || standardRestore
+                || dormantTail == null
+                || dormantTail.Count == 0
+                || PushBackCompositeStructure.IsCompositeSequence(system.Modules))
+            {
+                return false;
+            }
+
+            foreach (var module in dormantTail)
+            {
+                if (module == null)
+                {
+                    continue;
+                }
+
+                system.Modules.Add(new DynamicRackModule
+                {
+                    ModuleId = module.ModuleId,
+                    Kind = module.Kind,
+                    Length = module.Length,
+                    IsCalculated = module.IsCalculated,
+                    IsManualOverride = module.IsManualOverride,
+                    UseCalculatedHeaderConfiguration = module.UseCalculatedHeaderConfiguration,
+                    AssociatedFrameConfiguration = headerClone.DeepCopy(module.HeaderConfiguration),
+                    Notes = module.Notes
+                });
+            }
+
+            return true;
         }
 
         private static PalletSpecification ClonePallet(PalletSpecification pallet)

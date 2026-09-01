@@ -699,6 +699,82 @@ namespace RackCad.Application.Systems.PushBack
                 .ToList();
         }
 
+        /// <summary>
+        /// I-42 (A4-MOD-LIFECYCLE) — LA CABEZA de una secuencia: los modulos del lado A, hasta el hueco. Es el
+        /// complemento exacto de <see cref="CompositeTail"/>, y es la secuencia que corresponde a un rack que AHORA
+        /// mismo se resuelve por el camino de un solo sentido.
+        /// </summary>
+        public static IReadOnlyList<DynamicRackModule> SideAHead(DynamicRackSystem system)
+        {
+            var modules = system?.Modules;
+            if (modules == null)
+            {
+                return Array.Empty<DynamicRackModule>();
+            }
+
+            return modules
+                .TakeWhile(module => module != null
+                    && !string.Equals(module.ModuleId, GapModuleId, StringComparison.Ordinal)
+                    && !(module.ModuleId ?? string.Empty).StartsWith(SideBModulePrefix, StringComparison.Ordinal))
+                .ToList();
+        }
+
+        /// <summary>
+        /// I-42 (A4-MOD-LIFECYCLE / N-1, contrato del dueño) — LA ESTRUCTURA DEL LADO A a partir de la secuencia
+        /// PERSISTIDA del rack: la misma intencion compartida, con la CABEZA de la secuencia y las configuraciones
+        /// por linea que son suyas.
+        ///
+        /// <para>
+        /// Una secuencia que no es compuesta se devuelve TAL CUAL —el mismo objeto—, asi que un documento anterior
+        /// a esta iniciativa se carga exactamente como siempre. Con una compuesta, entregar la secuencia entera a
+        /// la carga del lado A la llevaba al resolver de un solo sentido, donde los modulos no cuadran con las
+        /// posiciones y se reconstruye la receta estandar: reabrir devolvia el rack sin sus personalizaciones.
+        /// </para>
+        /// </summary>
+        public static DynamicRackDesign SideAStructure(DynamicRackDesign structure)
+        {
+            if (structure == null || !structure.Modules.Any(module => module != null && IsCompositeTailId(module.ModuleId)))
+            {
+                return structure;
+            }
+
+            var copy = CopySharedStructuralIntent(structure);
+            copy.PalletsDeep = structure.PalletsDeep;
+            copy.LoadLevels = structure.LoadLevels;
+            copy.FirstLevelHeight = structure.FirstLevelHeight;
+            copy.HeaderLineOverrides.Clear();
+            foreach (var line in structure.HeaderLineOverrides)
+            {
+                if (line != null && !IsCompositeTailId(line.ModuleId))
+                {
+                    copy.HeaderLineOverrides.Add(line);
+                }
+            }
+
+            foreach (var module in structure.Modules)
+            {
+                if (module != null && !IsCompositeTailId(module.ModuleId))
+                {
+                    copy.Modules.Add(module);
+                }
+            }
+
+            foreach (var front in structure.Fronts)
+            {
+                copy.Fronts.Add(front);
+            }
+
+            return copy;
+        }
+
+        /// <summary>La intencion persistible de un modulo de la cola, para aparcarla mientras el lado duerme.</summary>
+        public static DynamicRackModuleDesign ToTailDesign(DynamicRackModule module) => ToDesign(module, module?.ModuleId);
+
+        /// <summary>¿Este ModuleId pertenece a la COLA compuesta —el hueco o la mitad B—?</summary>
+        public static bool IsCompositeTailId(string moduleId)
+            => string.Equals(moduleId, GapModuleId, StringComparison.Ordinal)
+               || (moduleId ?? string.Empty).StartsWith(SideBModulePrefix, StringComparison.Ordinal);
+
         /// <summary>Devuelve el ModuleId local de B a partir del compartido.</summary>
         public static string StripSideB(string moduleId)
             => !string.IsNullOrEmpty(moduleId) && moduleId.StartsWith(SideBModulePrefix, StringComparison.Ordinal)
