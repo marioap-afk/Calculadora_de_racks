@@ -132,6 +132,58 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
+        /// I-42 (A3-G1, contrato del dueño) — LAS CALLES de una bahia fisica: el ancho transversal lo declaran los
+        /// DOS lados y la bahia es UNA, asi que gobierna la mayor demanda. Es la regla que <see cref="Compose"/> ya
+        /// aplicaba a la estructura compuesta, dicha una sola vez para que los marcos locales usen exactamente esta.
+        /// </summary>
+        public static int SharedPalletCount(
+            PushBackSideConfiguration sideA, PushBackSideConfiguration sideB, int slot)
+        {
+            var storedA = sideA?.StoredFront(slot);
+            var storedB = sideB?.StoredFront(slot);
+            return Math.Max(storedA?.PalletCount ?? 0, Math.Max(1, storedB?.PalletCount ?? 0));
+        }
+
+        /// <summary>
+        /// I-42 (A3-G1, contrato del dueño) — EL ANCHO MANUAL de una bahia fisica. Mismo razonamiento: un larguero
+        /// mas largo declarado por un lado ensancha la BAHIA, no «su mitad», porque la bahia no tiene mitades. Con
+        /// los dos lados sin override responde null y el ancho lo calcula la regla automatica de siempre.
+        /// </summary>
+        public static double? SharedBeamLengthOverride(
+            PushBackSideConfiguration sideA, PushBackSideConfiguration sideB, int slot)
+            => MaxOverride(sideA?.StoredFront(slot)?.BeamLengthOverride, sideB?.StoredFront(slot)?.BeamLengthOverride);
+
+        /// <summary>
+        /// I-42 (A3-G1) — impone en un frente del marco LOCAL el ancho transversal compartido de su ranura.
+        ///
+        /// <para>
+        /// <b>Lo que corrige.</b> Un lado copiaba su propio <c>BeamLengthOverride</c> y su propio
+        /// <c>PalletCount</c> al marco local, asi que una misma bahia media una cosa vista desde A y otra vista
+        /// desde B. Medido con override 100 en A y 120 en B: la compuesta ponia su segunda linea en 123.49, el marco
+        /// de A en 103.49 y el de B en 123.49 — tres geometrias para una sola retícula—, y los cortes heredaban la
+        /// local mientras las botas y las defensas se anclan al frame COMPUESTO.
+        /// </para>
+        /// <para>
+        /// Solo se armoniza lo TRANSVERSAL. Niveles, elevaciones, fondos, tarimas y estructura longitudinal siguen
+        /// siendo de cada lado: el compuesto no es un rack simetrico.
+        /// </para>
+        /// </summary>
+        private static void ApplySharedTransverse(
+            DynamicRackFrontDesign front,
+            PushBackSideConfiguration sideA,
+            PushBackSideConfiguration sideB,
+            int slot)
+        {
+            if (front == null)
+            {
+                return;
+            }
+
+            front.PalletCount = SharedPalletCount(sideA, sideB, slot);
+            front.BeamLengthOverride = SharedBeamLengthOverride(sideA, sideB, slot);
+        }
+
+        /// <summary>
         /// El diseno estructural de UN lado en su MARCO LOCAL, con TODAS las ranuras transversales del rack: las que
         /// no pertenecen a este lado viajan como frentes EN BLANCO. Eso es lo que hace que la retícula transversal
         /// sea UNA sola y que el indice de ranura signifique lo mismo en A, en B y en la estructura compuesta — sin
@@ -143,6 +195,10 @@ namespace RackCad.Application.Systems.PushBack
             PushBackSideConfiguration other,
             IReadOnlyList<DynamicRackModuleDesign> modules)
         {
+            // El ancho de una bahia lo declaran los dos lados, asi que la envolvente compartida se pregunta SIEMPRE
+            // en el orden fisico A/B, se este construyendo el marco que se este construyendo.
+            var sideA = side != null && side.Side == PushBackSide.A ? side : other;
+            var sideB = side != null && side.Side == PushBackSide.B ? side : other;
             var shared = design?.Structure ?? new DynamicRackDesign();
             var local = CopySharedStructuralIntent(shared);
             local.LoadLevels = Math.Max(1, side.LoadLevels);
@@ -159,6 +215,9 @@ namespace RackCad.Application.Systems.PushBack
                     var copy = PushBackSideDesign.CopyFront(front);
                     copy.DepthStartPosition = 1;
                     copy.PalletsDeep = side.SlotStructure(slot);
+                    // I-42 (A3-G1): la retícula transversal es UNA. El marco local dibuja el contenido de este lado
+                    // sobre las columnas del rack, no sobre unas propias.
+                    ApplySharedTransverse(copy, sideA, sideB, slot);
                     local.Fronts.Add(copy);
                     absent.Add(false);
                     continue;
@@ -188,6 +247,8 @@ namespace RackCad.Application.Systems.PushBack
                 blank.IsActive = false;
                 blank.DepthStartPosition = 1;
                 blank.PalletsDeep = local.PalletsDeep;
+                // Una ranura en blanco conserva su claro: tambien el del RACK, no el que declarase un solo lado.
+                ApplySharedTransverse(blank, sideA, sideB, slot);
                 local.Fronts.Add(blank);
                 absent.Add(true);
             }
@@ -278,14 +339,14 @@ namespace RackCad.Application.Systems.PushBack
                     // Una ranura esta ACTIVA si lo esta en cualquiera de los dos lados: su estructura existe igual.
                     IsActive = !blankOnBothSides
                         && ((sideA.Front(slot)?.IsActive ?? false) || (sideB.Front(slot)?.IsActive ?? false)),
-                    // La mayor demanda aplicable gobierna la envolvente compartida: calles, ancho y niveles.
-                    PalletCount = Math.Max(
-                        storedA?.PalletCount ?? 0,
-                        Math.Max(1, storedB?.PalletCount ?? 0)),
+                    // La mayor demanda aplicable gobierna la envolvente compartida: calles, ancho y niveles. La
+                    // regla vive en SharedPalletCount/SharedBeamLengthOverride, que es la que usan tambien los
+                    // marcos locales: una sola retícula transversal (I-42/A3-G1).
+                    PalletCount = SharedPalletCount(sideA, sideB, slot),
                     LoadLevels = levels > 0 ? levels : (int?)null,
                     PalletsDeep = range.Count,
                     DepthStartPosition = range.Start,
-                    BeamLengthOverride = MaxOverride(storedA?.BeamLengthOverride, storedB?.BeamLengthOverride),
+                    BeamLengthOverride = SharedBeamLengthOverride(sideA, sideB, slot),
                     FirstLevelHeight = reference?.FirstLevelHeight
                 };
 
