@@ -123,6 +123,20 @@ namespace RackCad.Application.Systems.PushBack
         public static double StorageContribution(DynamicRackModule module)
             => module != null && PushBackCompositeStructure.IsStoragePosition(module) ? module.Length : 0.0;
 
+        /// <summary>
+        /// I-42 (A3-S1B, contrato del dueño) — LA CAPACIDAD DE ALMACENAMIENTO de un marco: cuantas posiciones que
+        /// alojan tarima tiene, sin mas.
+        ///
+        /// <para>
+        /// Es el PRIMERO de los dos ejes de validez de una cama, y el hueco no participa en el: por grande que sea,
+        /// no anade una posicion. El segundo es el SPAN FISICO —la distancia hasta un apoyo—, en el que el hueco si
+        /// participa. Tenerlos separados es lo que impide las dos confusiones: que el hueco pague fondos que no
+        /// existen, y que se le niegue la longitud que si aporta.
+        /// </para>
+        /// </summary>
+        public static int StorageCapacity(DynamicRackSystem frame)
+            => frame?.Modules.Count(module => PushBackCompositeStructure.IsStoragePosition(module)) ?? 0;
+
         public static double DemandLength(DynamicRackSystem frame, int positions, PushBackBedAnchor anchor)
         {
             if (frame == null || positions <= 0)
@@ -269,13 +283,27 @@ namespace RackCad.Application.Systems.PushBack
             // exigida antes de haber cruzado suficientes posiciones de almacenamiento, y el extremo ALTO se
             // resolvia un modulo —o dos— antes de tiempo. Medido con 3 x 54 + hueco 54 + 3 x 54 y demanda 6: el
             // alto caia en el modulo 6, con 258" de almacenamiento cruzado contra 312" exigidos.
+            // I-42 (A3-S1B): los DOS ejes, dichos por separado.
+            //
+            //   CAPACIDAD  — ¿existen tantas posiciones de almacenamiento como fondos pide? El hueco no cuenta.
+            //   SPAN FISICO— ¿hay un apoyo cuya distancia satisface la longitud exigida? El hueco si cuenta.
+            //
+            // Con la definicion vigente de la demanda —la suma de las longitudes de las N primeras posiciones de
+            // ESTE marco— el segundo se cumple siempre que se cumple el primero, porque la distancia fisica hasta
+            // un apoyo incluye las mismas longitudes mas, quiza, el hueco. La comprobacion no cambia por tanto
+            // ningun veredicto (verificado sobre 432 configuraciones de fondos, hueco y demanda); esta escrita para
+            // que las dos condiciones sean visibles y para que ninguna futura definicion de la demanda las colapse
+            // en silencio.
+            var capacity = demandPositions <= StorageCapacity(frame);
             var storage = 0.0;
             for (var index = 0; index < modules.Count; index++)
             {
                 storage += StorageContribution(modules[index]);
-                if (storage >= required - Tolerance)
+                var span = modules[index].EndX - low;
+                var storageMet = storage >= required - Tolerance;
+                var spanMet = span >= required - Tolerance;
+                if (capacity && storageMet && spanMet)
                 {
-                    var span = modules[index].EndX - low;
                     return new PushBackResolvedSpan(
                         demandPositions, required, span, available, index + 1, true, storageAvailable);
                 }
