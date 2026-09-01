@@ -70,12 +70,42 @@ namespace RackCad.Application.Systems.PushBack
             DormantTailLineOverrides.AddRange(lineOverrides ?? Enumerable.Empty<DynamicHeaderLineOverride>());
         }
 
-        /// <summary>Retira la cola aparcada: se consume cuando el rack vuelve a ser compuesto.</summary>
+        /// <summary>Retira la cola aparcada. Es la mutacion FINAL; el armado no la ejecuta.</summary>
         public void ClearDormantTail()
         {
             DormantCompositeTail.Clear();
             DormantTailLineOverrides.Clear();
+            dormantTailConsumed = false;
         }
+
+        /// <summary>
+        /// I-42 (A5-WIRE / A4V-2, contrato del dueño) — LA COLA SE LEE AL ARMAR Y SE CONSUME AL ACEPTAR.
+        ///
+        /// <para>
+        /// La unidad transaccional de un recalculo no es el armado: es armar, resolver y ADOPTAR. Borrar la cola en
+        /// cuanto se usaba dejaba un hueco real —un recalculo que falla despues del armado no se acepta, pero la
+        /// cola ya estaba borrada— y el siguiente recalculo valido devolvia la mitad B estandar, con la intencion
+        /// del usuario perdida sin decirlo. El armado solo MARCA; quien acepta, confirma.
+        /// </para>
+        /// </summary>
+        public void MarkDormantTailConsumed() => dormantTailConsumed = DormantCompositeTail.Count > 0
+            || DormantTailLineOverrides.Count > 0;
+
+        /// <summary>Confirma el consumo de la cola: solo lo llama quien ADOPTA una computacion valida.</summary>
+        public void CommitDormantTailConsumption()
+        {
+            if (!dormantTailConsumed)
+            {
+                return;
+            }
+
+            ClearDormantTail();
+        }
+
+        /// <summary>Si el ultimo armado uso la cola y todavia no se ha confirmado (seam de prueba).</summary>
+        public bool DormantTailConsumptionPending => dormantTailConsumed;
+
+        private bool dormantTailConsumed;
 
         public PushBackCompositeEditorState()
             : this(new PushBackEditorState(), new PushBackEditorState())

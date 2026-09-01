@@ -162,7 +162,9 @@ namespace RackCad.Application.Systems.PushBack
                 }
             }
 
-            state.ClearDormantTail();
+            // I-42 (A5-WIRE / A4V-2): armar solo MARCA el consumo. La cola se retira cuando la computacion que la
+            // desperto se acepta; un recalculo que falle despues de esto la deja intacta para el siguiente intento.
+            state.MarkDormantTailConsumed();
         }
 
         /// <summary>

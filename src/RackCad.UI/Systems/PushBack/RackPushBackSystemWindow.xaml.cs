@@ -600,12 +600,20 @@ namespace RackCad.UI.Systems.PushBack
             PushBackEditorComputation computation;
             try
             {
-                computation = composite.SideBPresent
-                    // I-42: los dos cortes frontales se construyen para el lado que el SELECTOR DE VISTA pide. El
-                    // lado ACTIVO es el que se esta editando y no tiene por que ser el que se mira: con «Editando A»
-                    // y «Frontal de B» el panel construia el corte de A y lo rotulaba como de B.
-                    ? assembler.BuildFrom(compositeAssembler.BuildDesign(composite, ReadInputs()), frontalSide)
-                    : assembler.Build(state, ReadInputs());
+                // I-42 (A5-WIRE / A4V-1, contrato del dueño) — LA VENTANA NO DECIDE SI EL RACK ES COMPUESTO.
+                //
+                // Habia aqui un ternario sobre la casilla «Lado B»: con ella marcada armaba el ensamblador
+                // compuesto y sin ella el de un solo sentido, saltandose la autoridad de ciclo de vida —la
+                // compositividad EFECTIVA, el aparcado de la cola y el filtrado del diseño—. Medido por la ventana
+                // real: al desmarcar la casilla, «M2» del lado A volvia de 30" a 48", la cola no se aparcaba, el
+                // informe declaraba conservados el hueco y «B:M2» que el diseño ya no tenia, y al volver a marcarla
+                // la mitad B regresaba estandar con su override de linea perdido.
+                //
+                // El ensamblador compuesto ya sabe responder las dos cosas —un rack de dos lados y uno que ahora
+                // mismo es de un solo sentido—, asi que la ventana solo aporta estado. Los dos cortes frontales se
+                // siguen construyendo para el lado que pide el SELECTOR DE VISTA.
+                computation = assembler.BuildFrom(
+                    compositeAssembler.BuildDesign(composite, ReadInputs()), frontalSide);
             }
             catch (Exception error)
             {
@@ -621,6 +629,10 @@ namespace RackCad.UI.Systems.PushBack
             {
                 session.SetModel(computation.Design, computation.System);
                 assembler.AcceptComputation(moduleOwner, computation); // advance the opaque baseline (never mutated by the window)
+
+                // I-42 (A5-WIRE / A4V-2): la computacion se ADOPTO, asi que la cola que este armado desperto ya
+                // esta en el rack y puede retirarse. Un recalculo que no llega hasta aqui la deja intacta.
+                composite.CommitDormantTailConsumption();
                 lastComputation = computation;
                 hasValidModel = true;
                 currentInputsAreValid = true;
