@@ -178,14 +178,44 @@ namespace RackCad.Application.Systems.PushBack
             var restoredIds = commit?.RestoredModuleIds ?? (IReadOnlyList<string>)Array.Empty<string>();
             var standardRestore = forceRebuild || (commit?.StandardRestoreRequested ?? false);
 
+            // I-42 (A3-MOD): la pregunta «¿hay que reconstruir la secuencia?» es sobre la FORMA del lado que este
+            // ensamblador arma —el A—, y en un rack compuesto la secuencia del baseline es la del RACK: A + hueco +
+            // B invertido. Compararla contra el layout de profundidad de A daba siempre distinto (17 modulos contra
+            // 8, base 17 contra 8), asi que todo recalculo de un compuesto reconstruia desde cero.
+            var rebuildShape = state.WorkingBaseline?.Composite?.Of(PushBackSide.A)?.Local?.Structure ?? baseline;
             var mustRebuild = standardRestore
                               || restoredIds.Count > 0
-                              || DynamicEditorDesignAssembler.MustRebuild(baseline, pallet, depthLayout);
+                              || DynamicEditorDesignAssembler.MustRebuild(rebuildShape, pallet, depthLayout);
 
             DynamicRackSystem system;
             if (mustRebuild)
             {
                 system = builder.BuildDefault(pallet, depthLayout, RackFrameTemplateCatalog.Default, postId, headerHeight, postPeralte);
+
+                // I-42 (A3-MOD): la reconstruccion es del lado A, pero la SECUENCIA es la del rack. La cola del
+                // baseline —el hueco y los modulos del lado B— se reanexa antes de reconciliar para que la
+                // comparacion se haga contra la secuencia canonica y no contra media: sin esto, un cambio de
+                // topologia de A reportaba GAP y B:* como eliminados y se llevaba por delante lo que el usuario
+                // habia personalizado en la mitad B, que no habia cambiado. El resolver compuesto reparte despues
+                // esta secuencia por lado, exactamente como hace al reabrir un rack guardado.
+                foreach (var module in PushBackCompositeStructure.CompositeTail(baseline))
+                {
+                    // COPIA: el baseline no se toca. La reconciliacion escribe sobre los modulos que reciba, y el
+                    // baseline solo lo adelanta AcceptComputation.
+                    system.Modules.Add(new DynamicRackModule
+                    {
+                        ModuleId = module.ModuleId,
+                        Kind = module.Kind,
+                        Length = module.Length,
+                        IsCalculated = module.IsCalculated,
+                        IsManualOverride = module.IsManualOverride,
+                        UseCalculatedHeaderConfiguration = module.UseCalculatedHeaderConfiguration,
+                        AssociatedFrameConfiguration = headerClone.DeepCopy(module.AssociatedFrameConfiguration),
+                        Notes = module.Notes
+                    });
+                }
+
+                system.RecalculatePositions();
             }
             else
             {

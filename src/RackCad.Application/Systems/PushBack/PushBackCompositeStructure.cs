@@ -664,6 +664,41 @@ namespace RackCad.Application.Systems.PushBack
             return result;
         }
 
+        /// <summary>
+        /// I-42 (A3-MOD, contrato del dueño) — ¿esta secuencia es la del RACK COMPUESTO? Lo dice su identidad: el
+        /// hueco y el prefijo del lado B, que es la misma marca que ya usan la particion por lado y la composicion.
+        /// </summary>
+        public static bool IsCompositeSequence(IEnumerable<DynamicRackModule> modules)
+            => modules != null && modules.Any(module => module != null
+                && (string.Equals(module.ModuleId, GapModuleId, StringComparison.Ordinal)
+                    || (module.ModuleId ?? string.Empty).StartsWith(SideBModulePrefix, StringComparison.Ordinal)));
+
+        /// <summary>
+        /// I-42 (A3-MOD, contrato del dueño) — LA COLA COMPUESTA de una secuencia: el hueco y los modulos del lado
+        /// B, en su orden, tal y como viven en el rack.
+        ///
+        /// <para>
+        /// Una secuencia de un rack de un solo sentido no tiene cola y devuelve la lista vacia. La cola se DEVUELVE
+        /// tal cual —los mismos objetos—: quien la reanexa decide si la clona, y sus coordenadas las vuelve a
+        /// calcular el sistema al que se anaden.
+        /// </para>
+        /// </summary>
+        public static IReadOnlyList<DynamicRackModule> CompositeTail(DynamicRackSystem system)
+        {
+            var modules = system?.Modules;
+            if (modules == null || !IsCompositeSequence(modules))
+            {
+                return Array.Empty<DynamicRackModule>();
+            }
+
+            return modules
+                .SkipWhile(module => module != null
+                    && !string.Equals(module.ModuleId, GapModuleId, StringComparison.Ordinal)
+                    && !(module.ModuleId ?? string.Empty).StartsWith(SideBModulePrefix, StringComparison.Ordinal))
+                .Where(module => module != null)
+                .ToList();
+        }
+
         /// <summary>Devuelve el ModuleId local de B a partir del compartido.</summary>
         public static string StripSideB(string moduleId)
             => !string.IsNullOrEmpty(moduleId) && moduleId.StartsWith(SideBModulePrefix, StringComparison.Ordinal)
