@@ -243,8 +243,13 @@ namespace RackCad.Tests
 
         // ---- Capacidad geometrica real ------------------------------------------------------------------------
 
+        /// <summary>
+        /// I-42 (A3-S1): una corrida que pide mas fondos de los que la estructura tiene se bloquea, y solo mas
+        /// ESTRUCTURA la vuelve valida. El HUECO no: aporta longitud fisica, no posiciones de almacenamiento.
+        /// Antes esta prueba afirmaba que el hueco tambien la rescataba, que es el defecto que A3-S1 cierra.
+        /// </summary>
         [Fact]
-        public void ACorridaBeyondTheAvailableLength_IsBlocked_UntilTheStructureOrTheGapProvidesIt()
+        public void ACorridaBeyondTheAvailableLength_IsBlocked_UntilTheStructureProvidesIt_AndNotTheGap()
         {
             // La celda pide 16 fondos sobre una estructura que solo ofrece 5 + 4.
             var design = Design(PushBackCellTopology.Corrida, PushBackRunDirection.AToB, deepA: 5, deepB: 4, levelsA: 1, levelsB: 1);
@@ -258,10 +263,13 @@ namespace RackCad.Tests
             design.Composite.StructureOverrideB = 11;
             Assert.True(new PushBackResolver(Catalog).Resolve(design).Composite.Cell(0, 1).IsValid);
 
-            // ...y el HUECO tambien, porque pertenece a la estructura y aporta longitud disponible.
+            // ...pero el HUECO no, por grande que sea: no aloja tarima, asi que no puede pagar los fondos que
+            // faltan. Lo unico que crece es la longitud fisica disponible.
             design.Composite.StructureOverrideB = null;
             design.Composite.Gap = tightBed.RequiredBedLength - tightBed.AvailableBedSpan + 4.0;
-            Assert.True(new PushBackResolver(Catalog).Resolve(design).Composite.Cell(0, 1).IsValid);
+            var withGap = new PushBackResolver(Catalog).Resolve(design).Composite.Cell(0, 1);
+            Assert.False(withGap.IsValid);
+            Assert.Equal(16, withGap.Beds.Single().DemandPositions);
         }
 
         [Fact]

@@ -451,8 +451,10 @@ namespace RackCad.Application.Systems.PushBack
                 ResolvedBedLength = span.ResolvedLength,
                 AvailableBedSpan = span.AvailableLength
             };
-            bed.DisabledReason = PushBackBedSpan.DisabledReason(
-                bed.RequiredBedLength, bed.AvailableBedSpan, bed.LowSide, slot, level + 1);
+            // I-42 (A3-S1): la validez de una CORRIDA la decide su colocacion —si existe un apoyo que recorre
+            // suficientes posiciones de almacenamiento—, no la distancia fisica disponible. El hueco alarga esa
+            // distancia y no puede sustituir una posicion que no existe.
+            bed.DisabledReason = PushBackBedSpan.DisabledReason(span, bed.LowSide, slot, level + 1);
             return bed;
         }
 

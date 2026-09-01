@@ -214,16 +214,23 @@ namespace RackCad.Tests
         // ================= CONTRATO: el GAP pertenece a la ESTRUCTURA ===========================================
 
         /// <summary>
-        /// PRUEBA VINCULANTE del contrato de capacidad: el HUECO pertenece a la ESTRUCTURA, asi que aumenta lo
-        /// DISPONIBLE sin tocar lo EXIGIDO, y por eso puede volver valida una cama que sin el no cabe.
+        /// PRUEBA VINCULANTE del contrato de capacidad (I-42/A3-S1): el HUECO pertenece a la ESTRUCTURA y aumenta
+        /// la longitud fisica DISPONIBLE sin tocar lo EXIGIDO — pero NO puede sustituir posiciones de
+        /// ALMACENAMIENTO que la estructura no tiene.
         ///
         /// <para>
-        /// Misma demanda y misma estructura por lados en los dos escenarios; lo unico que cambia es el hueco. No se
-        /// comprueba ningun conteo de fondos: se comparan LONGITUDES FISICAS.
+        /// Esta prueba afirmaba lo contrario: que un hueco suficientemente grande volvia valida una cama de 13
+        /// fondos sobre una estructura de 5 + 4 posiciones. Eso era medir la demanda contra una distancia fisica
+        /// que incluye el hueco, y es justo el defecto que A3-S1 cierra: el hueco no aloja tarima, asi que no puede
+        /// pagar los cuatro fondos que faltan.
+        /// </para>
+        /// <para>
+        /// Lo que sigue siendo cierto —y se comprueba— es que el hueco no cambia la demanda y si aumenta lo
+        /// disponible. Lo que cambia es la conclusion: eso no la vuelve valida.
         /// </para>
         /// </summary>
         [Fact]
-        public void APositiveGap_RescuesABedThatDoesNotFit_WithoutChangingItsDemand()
+        public void APositiveGap_DoesNotRescueABedThatLacksStoragePositions_AndDoesNotChangeItsDemand()
         {
             PushBackDesign WithGap(double gap)
             {
@@ -260,10 +267,11 @@ namespace RackCad.Tests
             // 2) Lo DISPONIBLE crece exactamente el incremento fisico del hueco.
             Assert.Equal(tightBed.AvailableBedSpan + gap, looseBed.AvailableBedSpan, 6);
 
-            // 3) El estado cambia: invalida -> valida.
-            Assert.True(looseBed.IsValid);
+            // 3) Y sin embargo SIGUE SIN CABER: los 13 fondos necesitan 13 posiciones de almacenamiento y la
+            //    estructura solo tiene 9. El hueco alarga la distancia fisica, no la capacidad de almacenar.
+            Assert.False(looseBed.IsValid);
             Assert.True(looseBed.RequiredBedLength <= looseBed.AvailableBedSpan + PushBackBedSpan.Tolerance);
-            Assert.DoesNotContain(PushBackCompositeDiagnostics.Evaluate(loose), d => d.IsBlocking);
+            Assert.Contains(PushBackCompositeDiagnostics.Evaluate(loose), d => d.IsBlocking);
 
             // 4) Y la estructura por lados es la MISMA en los dos escenarios: solo cambio el hueco.
             Assert.Equal(tight.Composite.SideA.EffectiveStructure, loose.Composite.SideA.EffectiveStructure);

@@ -20,14 +20,16 @@ namespace RackCad.Application.Systems.PushBack
     /// </list>
     ///
     /// <para>
-    /// La unica regla de validez es <c>RequiredBedLength &lt;= AvailableBedSpan</c>, y de la separacion se sigue lo
-    /// que el contrato exige: <b>un hueco positivo puede volver valida una cama que sin el no cabe</b>, porque
-    /// aumenta lo disponible sin tocar lo exigido. El hueco NO es una posicion de tarima, NO suma un fondo ficticio
-    /// y NO aumenta la demanda: solo aporta la longitud fisica que a la cama le faltaba.
+    /// I-42 (A3-S1) — LA VALIDEZ SE MIDE EN ALMACENAMIENTO, NO EN DISTANCIA. El hueco NO es una posicion de tarima,
+    /// NO suma un fondo ficticio y NO aumenta la demanda; tampoco puede SUSTITUIR una posicion que no existe. Una
+    /// cama cabe cuando hay un apoyo que recorre suficientes posiciones de ALMACENAMIENTO
+    /// (<see cref="ResolveSpan"/>), y lo que el hueco aporta es longitud fisica: alarga la distancia entre el bajo
+    /// y ese apoyo, no la capacidad de almacenar.
     /// </para>
     /// <para>
-    /// Mezclar las dos —sumar el hueco tambien a la demanda— vuelve a acoplarlas y hace que el hueco no pueda
-    /// rescatar nada por construccion. Ese fue el defecto que esta autoridad existe para impedir.
+    /// Sumar el hueco a la demanda las volveria a acoplar; compararlo contra la demanda —que es lo que hacia la
+    /// colocacion— dejaba que un hueco grande pagara fondos inexistentes. Las dos cosas son el defecto que esta
+    /// autoridad existe para impedir, y por eso lleva DOS cuentas separadas.
     /// </para>
     /// <para>
     /// No se trunca la cama, no se aumentan los fondos y no se inventa estructura: una celda que no cabe se declara
@@ -107,6 +109,20 @@ namespace RackCad.Application.Systems.PushBack
         /// CUANTO le falta sin inventarle estructura al rack.
         /// </para>
         /// </summary>
+        /// <summary>
+        /// I-42 (A3-S1, contrato del dueño) — LO QUE UN MODULO APORTA A LA DEMANDA DE ALMACENAMIENTO: su longitud
+        /// si aloja tarima, y CERO si no.
+        ///
+        /// <para>
+        /// El hueco —con separador central o sin el— es ESTRUCTURA: se atraviesa, no se almacena en el. Esta es la
+        /// unica funcion que lo dice, y la usan por igual la regla de la demanda
+        /// (<see cref="DemandLength"/>) y la de colocacion (<see cref="ResolveSpan"/>), que antes acumulaban cosas
+        /// distintas.
+        /// </para>
+        /// </summary>
+        public static double StorageContribution(DynamicRackModule module)
+            => module != null && PushBackCompositeStructure.IsStoragePosition(module) ? module.Length : 0.0;
+
         public static double DemandLength(DynamicRackSystem frame, int positions, PushBackBedAnchor anchor)
         {
             if (frame == null || positions <= 0)
@@ -120,12 +136,13 @@ namespace RackCad.Application.Systems.PushBack
             for (var step = 0; step < modules.Count && covered < positions; step++)
             {
                 var module = modules[anchor == PushBackBedAnchor.Outer ? step : modules.Count - 1 - step];
-                if (!PushBackCompositeStructure.IsStoragePosition(module))
+                var contribution = StorageContribution(module);
+                if (contribution <= 0.0)
                 {
                     continue;   // la interfaz es ESTRUCTURA —con separador o sin el—: se atraviesa, no se exige
                 }
 
-                span += module.Length;
+                span += contribution;
                 covered++;
             }
 
@@ -145,7 +162,8 @@ namespace RackCad.Application.Systems.PushBack
         public readonly struct PushBackResolvedSpan
         {
             public PushBackResolvedSpan(
-                int demandPositions, double required, double resolved, double available, int endPosition, bool fits)
+                int demandPositions, double required, double resolved, double available, int endPosition, bool fits,
+                double storageAvailable = 0.0)
             {
                 DemandPositions = demandPositions;
                 RequiredLength = required;
@@ -153,6 +171,7 @@ namespace RackCad.Application.Systems.PushBack
                 AvailableLength = available;
                 EndPosition = endPosition;
                 Fits = fits;
+                StorageAvailableLength = storageAvailable;
             }
 
             /// <summary>Los fondos que la cama declara. Es su DEMANDA, y no se deriva de ninguna estructura.</summary>
@@ -181,7 +200,17 @@ namespace RackCad.Application.Systems.PushBack
             /// </summary>
             public int EndPosition { get; }
 
-            /// <summary>True cuando existe un apoyo que satisface la demanda.</summary>
+            /// <summary>
+            /// I-42 (A3-S1) — la longitud de ALMACENAMIENTO que la estructura ofrece de verdad: la suma de sus
+            /// posiciones que alojan tarima. El hueco no entra, asi que es la magnitud con la que se compara una
+            /// demanda que no cabe: es la que le falta, no la distancia fisica.
+            /// </summary>
+            public double StorageAvailableLength { get; }
+
+            /// <summary>
+            /// True cuando existe un apoyo cuya distancia recorre suficientes POSICIONES DE ALMACENAMIENTO para la
+            /// demanda. Un hueco grande no lo vuelve true: aumenta la distancia fisica, no lo almacenable.
+            /// </summary>
             public bool Fits { get; }
         }
 
@@ -226,23 +255,67 @@ namespace RackCad.Application.Systems.PushBack
 
             var low = modules[0].StartX;
             var available = modules[modules.Count - 1].EndX - low;
+            var storageAvailable = modules.Sum(StorageContribution);
 
-            // Se recorre desde el ancla BAJA hacia la alta: el primer apoyo que satisface la demanda es el que manda.
+            // Se recorre desde el ancla BAJA hacia la alta llevando DOS cuentas distintas, porque son dos
+            // magnitudes distintas (I-42/A3-S1):
+            //
+            //   - la ALMACENADA, que es la que se compara contra la demanda: solo suman los modulos que alojan
+            //     tarima, con la MISMA contribucion que usa DemandLength;
+            //   - la FISICA, que es la distancia real desde el ancla baja hasta ese apoyo, y que si incluye el
+            //     hueco porque el hueco es estructura y la cama lo atraviesa.
+            //
+            // Compararlas entre si era el defecto: con un hueco grande, la distancia fisica alcanzaba la longitud
+            // exigida antes de haber cruzado suficientes posiciones de almacenamiento, y el extremo ALTO se
+            // resolvia un modulo —o dos— antes de tiempo. Medido con 3 x 54 + hueco 54 + 3 x 54 y demanda 6: el
+            // alto caia en el modulo 6, con 258" de almacenamiento cruzado contra 312" exigidos.
+            var storage = 0.0;
             for (var index = 0; index < modules.Count; index++)
             {
-                var span = modules[index].EndX - low;
-                if (span >= required - Tolerance)
+                storage += StorageContribution(modules[index]);
+                if (storage >= required - Tolerance)
                 {
-                    return new PushBackResolvedSpan(demandPositions, required, span, available, index + 1, true);
+                    var span = modules[index].EndX - low;
+                    return new PushBackResolvedSpan(
+                        demandPositions, required, span, available, index + 1, true, storageAvailable);
                 }
             }
 
             // Ni el apoyo mas lejano alcanza: la cama no cabe. Se apoya en el extremo y se declara lo que falta.
-            return new PushBackResolvedSpan(demandPositions, required, available, available, modules.Count, false);
+            return new PushBackResolvedSpan(
+                demandPositions, required, available, available, modules.Count, false, storageAvailable);
         }
 
         /// <summary>True cuando la celda cabe fisicamente. Nunca corrige: solo responde.</summary>
         public static bool Fits(double required, double available) => required <= available + Tolerance;
+
+        /// <summary>
+        /// I-42 (A3-S1, contrato del dueño) — EL MOTIVO de una cama COLOCADA con <see cref="ResolveSpan"/>: no cabe
+        /// cuando no hay ningun apoyo que recorra suficientes posiciones de ALMACENAMIENTO.
+        ///
+        /// <para>
+        /// Un hueco aumenta la distancia fisica disponible y por eso puede rescatar a una cama a la que solo le
+        /// faltaba longitud; lo que no puede es sustituir una posicion de almacenamiento que no existe. Comparar la
+        /// demanda contra la distancia fisica —hueco incluido— dejaba pasar exactamente eso: una corrida de 7
+        /// fondos sobre 6 posiciones reales se declaraba valida porque el hueco de 108" completaba los 360" que la
+        /// demanda pedia. El motivo nombra por eso el almacenamiento que la estructura ofrece, que es lo que falta.
+        /// </para>
+        /// </summary>
+        public static string DisabledReason(
+            PushBackResolvedSpan span, PushBackSide side, int frontIndex, int levelNumber)
+            => span.Fits
+                ? null
+                : string.Format(
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    "Lado {0}, frente {1}, nivel {2}: la cama necesita {3:0.##}\" de almacenamiento y la estructura "
+                    + "efectiva solo ofrece {4:0.##}\" ({5:0.##}\" fisicos, hueco incluido). Aumenta la estructura "
+                    + "de ese lado o reduce el fondo de la celda.",
+                    side == PushBackSide.B ? "B" : "A",
+                    frontIndex + 1,
+                    levelNumber,
+                    span.RequiredLength,
+                    span.StorageAvailableLength,
+                    span.AvailableLength);
 
         /// <summary>
         /// El motivo, en el idioma del usuario, por el que una cama no cabe. Null cuando cabe. Declara el LADO, el
