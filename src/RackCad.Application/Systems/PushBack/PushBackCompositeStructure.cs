@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
 
@@ -145,13 +146,64 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         /// <summary>
-        /// I-42 (A3-G1, contrato del dueño) — EL ANCHO MANUAL de una bahia fisica. Mismo razonamiento: un larguero
-        /// mas largo declarado por un lado ensancha la BAHIA, no «su mitad», porque la bahia no tiene mitades. Con
-        /// los dos lados sin override responde null y el ancho lo calcula la regla automatica de siempre.
+        /// I-42 (A3-G1 y A3-G2, contrato del dueño) — EL ANCHO de una bahia fisica: la mayor demanda transversal de
+        /// los dos lados. Un larguero mas largo declarado por un lado ensancha la BAHIA, no «su mitad», porque la
+        /// bahia no tiene mitades.
+        ///
+        /// <para>
+        /// A3-G1 armonizo lo que se declara en el FRENTE. Pero el ancho tambien lo puede subir una CELDA —su propio
+        /// override de larguero, o un frente de tarima mayor que ensancha su calle—, y esa capa se resolvia dentro
+        /// de cada marco por separado. Medido: con un override por celda de 150" solo en el lado A, la compuesta
+        /// ponia su segunda linea en 53.49 y el marco local de A en 153.49; con un frente de tarima de 60" solo en
+        /// A, 53.49 contra 71.49.
+        /// </para>
+        /// <para>
+        /// La demanda de cada nivel la responde <see cref="DynamicRackLevelGeometry.EffectiveBeamLengthDemand"/>,
+        /// la MISMA funcion que usa el resolver: aqui no se repite ninguna aritmetica ni ninguna precedencia. Lo que
+        /// se comparte es la geometria fisica DERIVADA; la intencion de cada lado —su override de celda, su frente
+        /// de tarima— no se copia ni se toca.
+        /// </para>
         /// </summary>
         public static double? SharedBeamLengthOverride(
-            PushBackSideConfiguration sideA, PushBackSideConfiguration sideB, int slot)
-            => MaxOverride(sideA?.StoredFront(slot)?.BeamLengthOverride, sideB?.StoredFront(slot)?.BeamLengthOverride);
+            DynamicRackDesign shared,
+            PushBackSideConfiguration sideA,
+            PushBackSideConfiguration sideB,
+            int slot)
+        {
+            var manual = MaxOverride(
+                sideA?.StoredFront(slot)?.BeamLengthOverride, sideB?.StoredFront(slot)?.BeamLengthOverride);
+            var demand = Math.Max(
+                SideDemand(shared, sideA, sideB, sideA, slot), SideDemand(shared, sideA, sideB, sideB, slot));
+            if (demand <= 0.0)
+            {
+                return manual;   // sin demanda medible, la regla automatica de siempre
+            }
+
+            return manual.HasValue ? Math.Max(manual.Value, demand) : demand;
+        }
+
+        /// <summary>
+        /// La demanda transversal que UN lado impone a una bahia: la mayor de sus niveles, medida con las calles
+        /// COMPARTIDAS —las calles ya son del rack (A3-G1), asi que el ancho automatico se calcula sobre ellas—.
+        /// Una ranura en blanco conserva su declaracion fisica y sigue contando: el claro es del rack (H4).
+        /// </summary>
+        private static double SideDemand(
+            DynamicRackDesign shared,
+            PushBackSideConfiguration sideA,
+            PushBackSideConfiguration sideB,
+            PushBackSideConfiguration side,
+            int slot)
+        {
+            var front = side?.StoredFront(slot);
+            if (front == null || shared?.Pallet == null)
+            {
+                return 0.0;
+            }
+
+            var levels = Math.Max(1, front.LoadLevels ?? side.LoadLevels);
+            return DynamicRackLevelGeometry.EffectiveBeamLengthDemand(
+                shared, front, levels, SharedPalletCount(sideA, sideB, slot));
+        }
 
         /// <summary>
         /// I-42 (A3-G1) — impone en un frente del marco LOCAL el ancho transversal compartido de su ranura.
@@ -169,6 +221,7 @@ namespace RackCad.Application.Systems.PushBack
         /// </para>
         /// </summary>
         private static void ApplySharedTransverse(
+            DynamicRackDesign shared,
             DynamicRackFrontDesign front,
             PushBackSideConfiguration sideA,
             PushBackSideConfiguration sideB,
@@ -180,7 +233,7 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             front.PalletCount = SharedPalletCount(sideA, sideB, slot);
-            front.BeamLengthOverride = SharedBeamLengthOverride(sideA, sideB, slot);
+            front.BeamLengthOverride = SharedBeamLengthOverride(shared, sideA, sideB, slot);
         }
 
         /// <summary>
@@ -217,7 +270,7 @@ namespace RackCad.Application.Systems.PushBack
                     copy.PalletsDeep = side.SlotStructure(slot);
                     // I-42 (A3-G1): la retícula transversal es UNA. El marco local dibuja el contenido de este lado
                     // sobre las columnas del rack, no sobre unas propias.
-                    ApplySharedTransverse(copy, sideA, sideB, slot);
+                    ApplySharedTransverse(shared, copy, sideA, sideB, slot);
                     local.Fronts.Add(copy);
                     absent.Add(false);
                     continue;
@@ -248,7 +301,7 @@ namespace RackCad.Application.Systems.PushBack
                 blank.DepthStartPosition = 1;
                 blank.PalletsDeep = local.PalletsDeep;
                 // Una ranura en blanco conserva su claro: tambien el del RACK, no el que declarase un solo lado.
-                ApplySharedTransverse(blank, sideA, sideB, slot);
+                ApplySharedTransverse(shared, blank, sideA, sideB, slot);
                 local.Fronts.Add(blank);
                 absent.Add(true);
             }
@@ -346,7 +399,7 @@ namespace RackCad.Application.Systems.PushBack
                     LoadLevels = levels > 0 ? levels : (int?)null,
                     PalletsDeep = range.Count,
                     DepthStartPosition = range.Start,
-                    BeamLengthOverride = SharedBeamLengthOverride(sideA, sideB, slot),
+                    BeamLengthOverride = SharedBeamLengthOverride(shared, sideA, sideB, slot),
                     FirstLevelHeight = reference?.FirstLevelHeight
                 };
 
