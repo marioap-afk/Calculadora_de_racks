@@ -257,11 +257,19 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             AlignSlotGrid();
-            AlignSideBFirstLevel();
             if (dormant)
             {
-                return;   // vuelve de estar dormante: su presencia es la que el usuario dejo
+                // I-42 (A3-NP1, contrato del dueño) — DORMIR NO ES BORRAR. La igualacion del «Alto 1er nivel» es
+                // una regla de NACIMIENTO —los dos lados tienen que arrancar en el mismo troquel cuando el lado B
+                // se crea a partir de A—, no una sincronizacion permanente. Corria antes de esta guarda, asi que
+                // reactivar un lado B ya configurado le escribia el valor de A encima: medido, con A = 6" y B = 14"
+                // authored, apagar el lado B conservaba sus 14" —tambien a traves de dos recalculos— y volver a
+                // declararlo lo dejaba en 6", con la intencion del usuario perdida sin decirlo. La retícula
+                // transversal SI se iguala siempre: es una sola y sus indices significan lo mismo en los dos lados.
+                return;   // vuelve de estar dormante: su presencia y su configuracion son las que el usuario dejo
             }
+
+            AlignSideBFirstLevel();
 
             // El lado B nace ENTERO en blanco: la capacidad esta declarada y todavia no la usa ningun frente.
             // Se escribe directo sobre la matriz porque la guarda de «al menos un frente activo» es del rack, y el
