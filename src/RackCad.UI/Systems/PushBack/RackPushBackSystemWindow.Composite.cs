@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.Systems.PushBack;
@@ -418,6 +419,97 @@ namespace RackCad.UI.Systems.PushBack
             SetMixed(
                 FirstLevelHeightBox,
                 mixed && Math.Abs((a?.FirstLevelHeight ?? 0.0) - (b?.FirstLevelHeight ?? 0.0)) > 1e-6);
+
+            // I-42 (A1C/H10, contrato del dueño) — MOSTRAR NO ES ESCRIBIR, y la celda tambien.
+            //
+            // El panel se rellena con los valores del lado que se esta mirando, y en «Ambos» la escritura lee esos
+            // mismos controles contra CADA lado: un campo con numero se aplica a los dos. Los cinco campos de arriba
+            // ya se vaciaban cuando A y B diferian, pero los de la CELDA no, asi que bastaba con SELECCIONAR
+            // «Ambos» —sin tocar nada— para que el alto, el peso y la altura libre de A pisaran los de B. Medido:
+            // B pasaba de 72/1500/9 a 60/1000/6 sin ninguna edicion.
+            //
+            // La regla no cambia: vacio significa «cada lado conserva el suyo», y lo resuelve
+            // ReadCellValues(lado) como siempre. Lo unico que se amplia es a que campos alcanza.
+            var cellA = SideCell(PushBackSide.A);
+            var cellB = SideCell(PushBackSide.B);
+            SetMixed(CellPalletFrontBox, mixed && Differs(cellA?.PalletFront, cellB?.PalletFront));
+            SetMixed(CellPalletHeightBox, mixed && Differs(cellA?.PalletHeight, cellB?.PalletHeight));
+            SetMixed(CellPalletWeightBox, mixed && Differs(cellA?.PalletWeight, cellB?.PalletWeight));
+            SetMixed(CellClearBox, mixed && Differs(cellA?.ClearHeight, cellB?.ClearHeight));
+            SetMixed(
+                CellBeamLengthOverrideBox,
+                mixed && Differs(cellA?.BeamLengthOverride, cellB?.BeamLengthOverride));
+
+            // Un desplegable expresa el hueco sin seleccion, y ReadCellValues cae al valor del lado exactamente
+            // igual que con un campo numerico vacio.
+            SetMixedSelection(
+                CellInOutBeamBox,
+                mixed && !string.Equals(cellA?.InOutBeamCatalogId, cellB?.InOutBeamCatalogId, StringComparison.OrdinalIgnoreCase));
+            SetMixedSelection(CellInOutPeralteBox, mixed && Differs(cellA?.InOutBeamDepth, cellB?.InOutBeamDepth));
+            SetMixedSelection(
+                CellIntermediateBeamBox,
+                mixed && !string.Equals(cellA?.IntermediateBeamCatalogId, cellB?.IntermediateBeamCatalogId, StringComparison.OrdinalIgnoreCase));
+            SetMixedSelection(
+                CellIntermediatePeralteBox,
+                mixed && Differs(cellA?.IntermediateBeamDepth, cellB?.IntermediateBeamDepth));
+
+            var pushA = SidePushCell(PushBackSide.A);
+            var pushB = SidePushCell(PushBackSide.B);
+            SetMixedSelection(RearPeralteBox, mixed && Differs(pushA?.HighEndBeamPeralte, pushB?.HighEndBeamPeralte));
+            SetMixed(
+                CellFondoOverrideBox,
+                mixed && pushA?.PalletsDeepOverride != pushB?.PalletsDeepOverride);
+        }
+
+        /// <summary>Dos medidas opcionales difieren cuando una existe y la otra no, o cuando no coinciden.</summary>
+        private static bool Differs(double? left, double? right)
+            => left.HasValue != right.HasValue
+               || (left.HasValue && Math.Abs(left.Value - right.Value) > 1e-6);
+
+        /// <summary>La CELDA seleccionada de un lado, o null si ese lado no la tiene.</summary>
+        private DynamicEditorCell SideCell(PushBackSide side)
+        {
+            var front = SideFront(side);
+            if (front == null || front.Cells.Count == 0)
+            {
+                return null;
+            }
+
+            var level = Math.Max(0, Math.Min(composite.Active.Structure.SelectedLevelIndex, front.Cells.Count - 1));
+            return front.Cells[level];
+        }
+
+        /// <summary>La celda PUSH BACK seleccionada de un lado (peralte posterior y fondo propio), o null.</summary>
+        private PushBackEditorCell SidePushCell(PushBackSide side)
+        {
+            var state = composite.Of(side);
+            var matrix = state.Structure;
+            var frontIndex = composite.Active.Structure.SelectedFrontIndex;
+            if (frontIndex < 0 || frontIndex >= matrix.Count)
+            {
+                return null;
+            }
+
+            var levels = Math.Max(1, matrix.Fronts[frontIndex].LoadLevels);
+            var level = Math.Max(0, Math.Min(composite.Active.Structure.SelectedLevelIndex, levels - 1));
+            return state.Cell(frontIndex, level);
+        }
+
+        /// <summary>
+        /// Pone o quita el estado mixto de un DESPLEGABLE: sin seleccion mientras los dos lados difieran, con el
+        /// mismo significado que un campo vacio —«cada lado conserva el suyo»— y el mismo aviso.
+        /// </summary>
+        private void SetMixedSelection(Selector combo, bool mixed)
+        {
+            if (combo == null || !mixed)
+            {
+                return;
+            }
+
+            combo.SelectedIndex = -1;
+            ToolTipService.SetShowOnDisabled(combo, true);
+            combo.ToolTip = "Los dos lados tienen valores distintos. Elige uno para aplicarlo a A y a B; "
+                            + "dejalo sin elegir y cada lado conserva el suyo.";
         }
 
         /// <summary>El frente SELECCIONADO de un lado, o null si ese lado no lo tiene.</summary>

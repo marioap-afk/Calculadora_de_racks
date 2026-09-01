@@ -61,6 +61,25 @@ namespace RackCad.UI.Systems.PushBack
 
         /// <summary>El estado del lado ACTIVO. Un rack de un solo sentido responde siempre el lado A, el de siempre.</summary>
         private PushBackEditorState state => composite.Active;
+
+        /// <summary>
+        /// I-42 (A1C/H9, contrato del dueño) — EL ESTADO QUE POSEE LOS MODULOS LONGITUDINALES DEL RACK.
+        ///
+        /// <para>
+        /// Los modulos —y con ellos las cabeceras personalizadas de I-40, sus overrides por linea y la altura de sus
+        /// postes derivados— son del RACK, no de un lado: un rack compuesto tiene UNA secuencia longitudinal (A, el
+        /// hueco y B invertido) y el ensamblador la lee siempre del lado A, que es la raiz del diseño.
+        /// </para>
+        /// <para>
+        /// <b>Lo que corrige.</b> El panel de modulos trabajaba sobre <c>state</c>, es decir sobre el lado ACTIVO, y
+        /// el lado activo es CONTEXTO DE INTERFAZ, no autoridad. Medido: con el lado B seleccionado, alargar un
+        /// modulo de 48" a 55" dejaba el commit en el estado de B —<c>commit en A=False, commit en B=True</c>— y el
+        /// ensamblador, que solo lee el de A, lo ignoraba: tras recalcular el modulo seguia midiendo 48". Ademas la
+        /// linea de modulos del rack entero se copiaba como baseline del lado que estuviera activo, asi que acababa
+        /// DUPLICADA en los dos estados.
+        /// </para>
+        /// </summary>
+        private PushBackEditorState moduleOwner => composite.SideA;
         private readonly RackEditorSession<PushBackDesign, PushBackSystem> session;
         private readonly List<SelectiveSafetySelection> safetySelections = new List<SelectiveSafetySelection>();
         private readonly bool canInsertInAutoCad;
@@ -591,7 +610,7 @@ namespace RackCad.UI.Systems.PushBack
             if (computation.IsValid)
             {
                 session.SetModel(computation.Design, computation.System);
-                assembler.AcceptComputation(state, computation); // advance the opaque baseline (never mutated by the window)
+                assembler.AcceptComputation(moduleOwner, computation); // advance the opaque baseline (never mutated by the window)
                 lastComputation = computation;
                 hasValidModel = true;
                 currentInputsAreValid = true;
@@ -608,7 +627,7 @@ namespace RackCad.UI.Systems.PushBack
                 // I-35: the accepted module edit has landed on the new baseline, so it must not be re-applied by an
                 // unrelated recompute (an individual restore would otherwise fire again and again). The module list is
                 // rebuilt from the new structure and the reconciliation report reaches the panel.
-                state.ClearModuleCommit();
+                moduleOwner.ClearModuleCommit();
                 RefreshModuleSelector();
                 RefreshHeaderDestinations();
 
@@ -1515,7 +1534,7 @@ namespace RackCad.UI.Systems.PushBack
             }
 
             var selectedId = SelectedModuleId();
-            var descriptors = state.ModuleSession.Modules;
+            var descriptors = moduleOwner.ModuleSession.Modules;
 
             var wasSuppressed = suppressSync;
             suppressSync = true;
@@ -1550,7 +1569,7 @@ namespace RackCad.UI.Systems.PushBack
             var id = SelectedModuleId();
             return id == null
                 ? null
-                : state.ModuleSession.Modules.FirstOrDefault(module => module.ModuleId == id)
+                : moduleOwner.ModuleSession.Modules.FirstOrDefault(module => module.ModuleId == id)
                   ?? DescribeFromLastComputation(id);
         }
 
@@ -1572,7 +1591,7 @@ namespace RackCad.UI.Systems.PushBack
             var ordinals = new Dictionary<string, int>(StringComparer.Ordinal);
             var headers = 0;
             var separators = 0;
-            foreach (var module in state.ModuleSession.Modules)
+            foreach (var module in moduleOwner.ModuleSession.Modules)
             {
                 ordinals[module.ModuleId] = module.IsHeader ? ++headers : ++separators;
             }
@@ -1583,7 +1602,7 @@ namespace RackCad.UI.Systems.PushBack
         /// <summary>«Cabecera 2» / «Separador 1» — the module named as the user counts it.</summary>
         private string ModuleDisplayName(string moduleId)
         {
-            var module = state.ModuleSession.Modules.FirstOrDefault(candidate => candidate.ModuleId == moduleId);
+            var module = moduleOwner.ModuleSession.Modules.FirstOrDefault(candidate => candidate.ModuleId == moduleId);
             if (module == null)
             {
                 return moduleId;
@@ -1738,7 +1757,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            state.ModuleSession.SetLength(module.ModuleId, length);
+            moduleOwner.ModuleSession.SetLength(module.ModuleId, length);
             RefreshModuleStatus();
         }
 
@@ -1755,7 +1774,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            state.ModuleSession.ResetHeaderToCalculated(module.ModuleId);
+            moduleOwner.ModuleSession.ResetHeaderToCalculated(module.ModuleId);
             RefreshModuleStatus();
         }
 
@@ -1783,7 +1802,7 @@ namespace RackCad.UI.Systems.PushBack
             // Se abre sobre lo que esa cabecera FISICA dibuja hoy —su configuracion de linea si la tiene, y si no
             // la del modulo—, sea cual sea el alcance: el ORIGEN es siempre la instancia que el usuario ve; lo que
             // el alcance decide es el DESTINO.
-            var copy = state.ModuleSession.HeaderConfigurationCopy(module.ModuleId, SourceLine());
+            var copy = moduleOwner.ModuleSession.HeaderConfigurationCopy(module.ModuleId, SourceLine());
             if (copy == null && module.HasCustomHeaderConfiguration)
             {
                 SetModuleStatus(
@@ -1802,7 +1821,7 @@ namespace RackCad.UI.Systems.PushBack
 
             // Ya personalizada = esta INSTANCIA fisica lo esta: por su propia configuracion de linea o por la del
             // modulo. De eso depende que el configurador se abra para EDITAR en vez de para generar (ronda 2).
-            var alreadyCustom = state.ModuleSession.HasLineOverride(module.ModuleId, SourceLine())
+            var alreadyCustom = moduleOwner.ModuleSession.HasLineOverride(module.ModuleId, SourceLine())
                                 || module.HasCustomHeaderConfiguration;
 
             var edited = HeaderConfiguratorDialog != null
@@ -1843,7 +1862,7 @@ namespace RackCad.UI.Systems.PushBack
             // null here means the list and the session disagree, and that is reported instead of guessed.
             // El origen es la configuracion REAL de esa cabecera en la linea seleccionada: si esa instancia tiene
             // la suya, es esa; si no, la del modulo. Nunca una recalculada.
-            var source = state.ModuleSession.SourceConfigurationCopy(sourceId, SourceLine());
+            var source = moduleOwner.ModuleSession.SourceConfigurationCopy(sourceId, SourceLine());
             if (source == null)
             {
                 SetModuleStatus(
@@ -1915,7 +1934,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var result = state.ModuleSession.ApplyHeaderConfigurationToInstances(
+            var result = moduleOwner.ModuleSession.ApplyHeaderConfigurationToInstances(
                 pendingHeaderConfiguration, modules, lines);
             if (!result.Applied)
             {
@@ -1961,7 +1980,7 @@ namespace RackCad.UI.Systems.PushBack
             }
 
             var height = DerivedPostLineHeightBox.Value;
-            var result = state.ModuleSession.ApplyDerivedPostHeightToLines(height, lines);
+            var result = moduleOwner.ModuleSession.ApplyDerivedPostHeightToLines(height, lines);
             if (!result.Applied)
             {
                 SetModuleStatus(result.RejectionReason);
@@ -2052,7 +2071,7 @@ namespace RackCad.UI.Systems.PushBack
             var previousLines = SelectedTargetLines().ToList();
 
             var ordinals = KindOrdinals();
-            var headers = state.ModuleSession.Modules.Where(module => module.IsHeader).ToList();
+            var headers = moduleOwner.ModuleSession.Modules.Where(module => module.IsHeader).ToList();
             var structure = lastComputation?.System?.Structure;
             var lines = structure == null
                 ? new List<int>()
@@ -2243,9 +2262,9 @@ namespace RackCad.UI.Systems.PushBack
             var ordinals = KindOrdinals();
             // Una cabecera es origen valido cuando tiene una personalizacion REAL: la del modulo, o la propia de
             // ESTA linea. Con la unidad de edicion en la instancia fisica, lo segundo es lo habitual.
-            var sources = state.ModuleSession.Modules
+            var sources = moduleOwner.ModuleSession.Modules
                 .Where(module => module.IsHeader
-                                 && state.ModuleSession.HasAnyPersonalization(module.ModuleId))
+                                 && moduleOwner.ModuleSession.HasAnyPersonalization(module.ModuleId))
                 .Where(module => selected == null || module.ModuleId != selected.ModuleId)
                 .ToList();
 
@@ -2323,25 +2342,25 @@ namespace RackCad.UI.Systems.PushBack
 
         private void ConfirmModule_Click(object sender, RoutedEventArgs e)
         {
-            if (!state.ModuleSession.HasPendingChanges)
+            if (!moduleOwner.ModuleSession.HasPendingChanges)
             {
                 SetModuleStatus("No hay cambios de modulo pendientes.");
                 return;
             }
 
-            state.CommitModuleEdits();
+            moduleOwner.CommitModuleEdits();
             RequestRecompute();
         }
 
         private void CancelModule_Click(object sender, RoutedEventArgs e)
         {
-            if (!state.ModuleSession.HasPendingChanges)
+            if (!moduleOwner.ModuleSession.HasPendingChanges)
             {
                 SetModuleStatus("No hay cambios de modulo pendientes.");
                 return;
             }
 
-            state.CancelModuleEdits();
+            moduleOwner.CancelModuleEdits();
             LoadSelectedModule();
             SetModuleStatus("Cambios de modulo descartados.");
         }
@@ -2354,7 +2373,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            state.ModuleSession.RestoreModule(module.ModuleId);
+            moduleOwner.ModuleSession.RestoreModule(module.ModuleId);
             LoadSelectedModule();
             SetModuleStatus("Modulo " + module.ModuleId + " marcado para restaurar. Confirma para aplicarlo.");
         }
@@ -2366,7 +2385,7 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         private void RestoreAllModules_Click(object sender, RoutedEventArgs e)
         {
-            state.ModuleSession.RequestStandardRestore();
+            moduleOwner.ModuleSession.RequestStandardRestore();
             SetModuleStatus("Estructura estandar marcada para restaurar. Confirma para aplicarla.");
         }
 
@@ -2379,14 +2398,14 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var pending = state.ModuleSession.HasPendingChanges;
+            var pending = moduleOwner.ModuleSession.HasPendingChanges;
             ConfirmModuleButton.IsEnabled = pending;
             CancelModuleButton.IsEnabled = pending;
 
             var parts = new List<string>();
             if (pending) parts.Add("Cambios pendientes: confirma o cancela.");
 
-            var reconciliation = state.LastModuleReconciliation?.Describe();
+            var reconciliation = moduleOwner.LastModuleReconciliation?.Describe();
             if (!string.IsNullOrEmpty(reconciliation)) parts.Add("Ultimo recalculo — " + reconciliation + ".");
 
             ModuleStatusText.Text = string.Join(" ", parts);
@@ -3179,9 +3198,9 @@ namespace RackCad.UI.Systems.PushBack
             // Pulsar Actualizar o Insertar es aplicar lo que el panel muestra: se confirma primero. La transaccion
             // de I-35 no se debilita —«Cancelar» sigue siendo el UNICO descarte—, deja de haber un camino que
             // descarta sin decirlo.
-            if (state.ModuleSession.HasPendingChanges)
+            if (moduleOwner.ModuleSession.HasPendingChanges)
             {
-                state.CommitModuleEdits();
+                moduleOwner.CommitModuleEdits();
             }
 
             RequestRecompute(); // synchronous validate + build
@@ -3244,7 +3263,7 @@ namespace RackCad.UI.Systems.PushBack
         /// pertenece a un AMBITO y que «no aplicable» es un valor legitimo.</para>
         /// </summary>
         internal EditorPendingWork PendingWork() => EditorPendingWork.When(
-            state.ModuleSession != null && state.ModuleSession.HasPendingChanges,
+            moduleOwner.ModuleSession != null && moduleOwner.ModuleSession.HasPendingChanges,
             "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
 
         // ---- BOM + library ---------------------------------------------------------------------------------------
