@@ -633,6 +633,7 @@ namespace RackCad.UI.Systems.Selective
             using (DeferRecompute())
             {
                 SaveWorkingToSelected(); // the state writes the OTHER fondos' stored matrices
+                FrontApplyLog.Add("Piso:" + scope);
                 var result = state.ApplyFloorBeamToTargets(scope, bay, value);
                 if (scope == SelectiveFrontApplyScope.All) RenderMatrix(); // every checkbox of the fondo may have moved
                 Recompute();
@@ -762,7 +763,7 @@ namespace RackCad.UI.Systems.Selective
             var floorAll = SmallButton("⇊");
             floorAll.ToolTip = "Aplicar este «Piso» a TODOS los frentes de los fondos destino.";
             floorAll.Margin = new Thickness(4, 3, 0, 0);
-            floorAll.Click += (s, e) => SetFloor(bay, floor.IsChecked == true, SelectiveFrontApplyScope.All);
+            WireScopeButton(floorAll, () => SetFloor(bay, floor.IsChecked == true, SelectiveFrontApplyScope.All));
             floorRow.Children.Add(floorAll);
             panel.Children.Add(floorRow);
 
@@ -789,7 +790,7 @@ namespace RackCad.UI.Systems.Selective
             var riseAll = SmallButton("⇊");
             riseAll.ToolTip = "Aplicar esta elevación a TODOS los frentes de los fondos destino.";
             riseAll.Margin = new Thickness(4, 0, 0, 0);
-            riseAll.Click += (s, e) => SetFloorBeamRise(bay, riseBox.Text, SelectiveFrontApplyScope.All);
+            WireScopeButton(riseAll, () => SetFloorBeamRise(bay, riseBox.Text, SelectiveFrontApplyScope.All));
             riseRow.Children.Add(riseAll);
             panel.Children.Add(riseRow);
 
@@ -811,7 +812,7 @@ namespace RackCad.UI.Systems.Selective
             var heightAll = SmallButton("⇊");
             heightAll.ToolTip = "Aplicar esta altura a TODOS los frentes de los fondos destino (vacío = restablecer a automático).";
             heightAll.Margin = new Thickness(4, 0, 0, 0);
-            heightAll.Click += (s, e) => SetBayHeight(bay, heightBox.Text, SelectiveFrontApplyScope.All);
+            WireScopeButton(heightAll, () => SetBayHeight(bay, heightBox.Text, SelectiveFrontApplyScope.All));
             heightRow.Children.Add(heightAll);
             panel.Children.Add(heightRow);
 
@@ -872,6 +873,7 @@ namespace RackCad.UI.Systems.Selective
             {
                 // The fondo boxes must be committed first: the state writes the OTHER fondos' stored matrices.
                 SaveWorkingToSelected();
+                FrontApplyLog.Add("Elevacion:" + scope);
                 var result = state.ApplyFloorBeamRiseToTargets(scope, bay, value);
                 RenderMatrix();
                 Recompute();
@@ -897,6 +899,7 @@ namespace RackCad.UI.Systems.Selective
             using (DeferRecompute())
             {
                 SaveWorkingToSelected();
+                FrontApplyLog.Add("Alto:" + scope);
                 var result = state.ApplyBayHeightToTargets(scope, bay, value);
                 RenderMatrix();
                 Recompute();
@@ -1314,6 +1317,32 @@ namespace RackCad.UI.Systems.Selective
                 Recompute();
                 pendingWarning = result.Describe(reset: true);
             }
+        }
+
+        /// <summary>
+        /// Wire a compact "apply to every frente" button so a REAL mouse click performs exactly ONE operation.
+        /// <para>
+        /// WPF moves focus to a Button on <c>MouseLeftButtonDown</c>, which makes the TextBox next to it raise
+        /// <c>LostFocus</c> BEFORE the button's <c>Click</c>. Left alone, one gesture would run the Front commit and
+        /// then the All one — two mutations of the model, and the first of them rebuilds the matrix and destroys the
+        /// very button the click is travelling to. So the gesture is consumed one step earlier, on
+        /// <c>PreviewMouseLeftButtonDown</c>: the handler runs the All operation and marks the event handled, which
+        /// stops <c>ButtonBase</c> from taking focus at all. No focus change, no LostFocus, no Front commit.
+        /// </para>
+        /// <para>
+        /// There is no flag anywhere: the decision is the event itself, so a cancelled or redirected gesture leaves
+        /// nothing behind. The <c>Click</c> handler stays for keyboard and programmatic activation, where focus has
+        /// already moved deliberately and the ordinary commit is the correct behaviour.
+        /// </para>
+        /// </summary>
+        private static void WireScopeButton(Button button, Action apply)
+        {
+            button.PreviewMouseLeftButtonDown += (s, e) =>
+            {
+                e.Handled = true; // consume the gesture before ButtonBase focuses the button
+                apply();
+            };
+            button.Click += (s, e) => apply();
         }
 
         private static Button SmallButton(string text) => new Button
@@ -1948,6 +1977,11 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>How many times the REAL recompute pipeline ran. A test seam (I-43, InternalsVisibleTo): it is how
         /// the promise "one bulk apply, one recompute, however many fondos" is checked rather than asserted.</summary>
         internal int RecomputeCount { get; private set; }
+
+        /// <summary>Every frente-wide Application operation this window issued, as <c>"property:scope"</c>. A test seam
+        /// (I-43, InternalsVisibleTo): a recompute counter alone cannot tell one operation from two that coalesced, and
+        /// what the gesture contract forbids is the second MUTATION, not the second redraw.</summary>
+        internal List<string> FrontApplyLog { get; } = new List<string>();
 
         /// <summary>The editor state — a test seam (I-43, InternalsVisibleTo), matching the one the safety grids expose.</summary>
         internal SelectiveEditorState EditorState => state;
