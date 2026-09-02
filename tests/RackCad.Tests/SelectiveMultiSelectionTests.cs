@@ -138,31 +138,44 @@ namespace RackCad.Tests
         // ---- Normalization on a topology / fondo change ----
 
         [Fact]
-        public void ShrinkingTheMatrix_PrunesPositionsThatNoLongerExist_AndKeepsTheRest()
+        public void ShrinkingTheMatrix_KeepsTheSurvivingPositions_AndNeverCreatesANewOne()
         {
             var state = FourSquare();
             state.SelectCell(0, 0, extend: false);
-            state.SelectCell(2, 2, extend: true);
+            state.SelectCell(2, 2, extend: true); // primary is (2,2)
 
-            state.ResizeBays(2); // frente 2 disappears; the primary (2,2) is clamped into the surviving grid
+            state.ResizeBays(2); // frente 2 disappears, taking the primary with it
 
-            // (0,0) still exists and survives; the vanished (2,2) is gone. The clamped primary joins the selection
-            // rather than dragging the cell editor onto another cell the user never pointed at.
-            Assert.Equal(new[] { (0, 0), (1, 2) }, Positions(state));
-            Assert.Equal((1, 2), (state.SelBay, state.SelLevel));
-            Assert.True(state.IsSelected(state.SelBay, state.SelLevel));
+            // (0,0) survives and is the WHOLE selection. The clamped primary is NOT added: it is a cell the user never
+            // marked, and selecting it would silently widen the next bulk edit.
+            Assert.Equal(new[] { (0, 0) }, Positions(state));
+            Assert.Equal((0, 0), (state.SelBay, state.SelLevel));
         }
 
         [Fact]
-        public void WhenEveryPositionDisappears_TheSelectionReseatsOnThePrimary_NeverEmpty()
+        public void WhenThePrimaryVanishes_ItReseatsOnASurvivor_WithoutAddingAThirdPosition()
+        {
+            var state = FourSquare();
+            state.SelectCell(0, 1, extend: false);
+            state.SelectCell(1, 0, extend: true);
+            state.SelectCell(2, 2, extend: true); // primary is (2,2), which is about to disappear
+
+            state.ResizeBays(2);
+
+            Assert.Equal(new[] { (0, 1), (1, 0) }, Positions(state)); // both survivors, and only them
+            Assert.Equal((0, 1), (state.SelBay, state.SelLevel));    // deterministic: the first in canonical order
+        }
+
+        [Fact]
+        public void OnlyWhenNothingSurvives_DoesTheClampedPrimaryBecomeTheSelection()
         {
             var state = FourSquare();
             state.SelectCell(2, 2, extend: false);
 
-            state.ResizeBays(1); // only frente 0 survives; the primary is clamped into it
+            state.ResizeBays(1); // the single selected position is gone; the primary is clamped into frente 0
 
-            Assert.Equal(1, state.SelectedCount);
-            Assert.Equal(new[] { (state.SelBay, state.SelLevel) }, Positions(state));
+            Assert.Equal((0, 2), (state.SelBay, state.SelLevel));
+            Assert.Equal(new[] { (0, 2) }, Positions(state)); // fallback, so the selection is never empty
         }
 
         [Fact]
@@ -176,11 +189,44 @@ namespace RackCad.Tests
             state.SelectFondo(1);
             state.LoadFondo(1);
 
-            // (0,0) exists in the corner fondo and survives; (2,2) does not and is pruned. The primary, clamped into
-            // the smaller matrix, is part of the selection so the cell editor always has a cell.
-            Assert.Equal(new[] { (0, 0), (0, 1) }, Positions(state));
-            Assert.True(state.IsSelected(state.SelBay, state.SelLevel));
-            Assert.DoesNotContain((2, 2), Positions(state));
+            // Same rule as a shrink: the survivor is the whole selection and the primary re-seats onto it.
+            Assert.Equal(new[] { (0, 0) }, Positions(state));
+            Assert.Equal((0, 0), (state.SelBay, state.SelLevel));
+        }
+
+        // ---- Legacy primary vs real multi-selection ----
+
+        [Fact]
+        public void ALegacyPrimaryAssignment_StillClampsExactlyAsItAlwaysDid()
+        {
+            // SelBay/SelLevel assigned directly is the imperative "the primary is now this cell". It cannot maintain
+            // the selection invariant, so it MEANS a single-cell selection — and the historical clamp still governs
+            // where the primary lands, instead of the surviving selection dragging it elsewhere.
+            var state = FourSquare();
+            state.SelectCell(0, 0, extend: false);
+            state.SelectCell(1, 1, extend: true);
+
+            state.SelBay = 9;
+            state.SelLevel = 9;
+            state.ClampSelection();
+
+            Assert.Equal((2, 2), (state.SelBay, state.SelLevel)); // clamped to the last frente / last level
+            Assert.Equal(new[] { (2, 2) }, Positions(state));     // the statement collapses the selection onto it
+        }
+
+        [Fact]
+        public void TheLegacyFlagIsConsumed_SoTheNextNormalizeUsesTheSharedRuleAgain()
+        {
+            var state = FourSquare();
+            state.SelBay = 9;
+            state.ClampSelection();          // legacy statement: selection is {(2,0)}
+            Assert.Equal(new[] { (2, 0) }, Positions(state));
+
+            state.SelectCell(0, 0, extend: true); // back to the multi-selection path
+            state.ResizeBays(2);                  // frente 2 disappears
+
+            Assert.Equal(new[] { (0, 0) }, Positions(state)); // survivor kept, nothing invented
+            Assert.Equal((0, 0), (state.SelBay, state.SelLevel));
         }
 
         [Fact]

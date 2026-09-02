@@ -49,11 +49,46 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>Per-post PERALTE override; 0 = inherit the global. One entry per post, parallel to <see cref="PostCabeceras"/>.</summary>
         public List<double> PostPeraltes { get; } = new List<double>();
 
-        /// <summary>Selected bay (frente) index in the working matrix.</summary>
-        public int SelBay { get; set; }
+        private int selBay;
+        private int selLevel;
 
-        /// <summary>Selected level index in the working matrix.</summary>
-        public int SelLevel { get; set; }
+        /// <summary>
+        /// True when the primary was moved through the LEGACY imperative path (<see cref="SelBay"/>/<see cref="SelLevel"/>
+        /// assigned directly) and <see cref="NormalizeSelection"/> has not reconciled it yet.
+        /// <para>
+        /// This flag is how the two ways of moving the primary coexist. <see cref="SelectCell"/> maintains the
+        /// invariant "the primary belongs to the selection" itself, so normalization may treat the selection as the
+        /// authority. A direct assignment cannot maintain it — it knows nothing about the set — and it MEANS something
+        /// different: "the primary is now this cell", which is a single-cell selection. Without the distinction one of
+        /// the two has to lose: either the historical clamp stops holding, or normalization invents a selected
+        /// position the user never marked.
+        /// </para>
+        /// </summary>
+        private bool primaryAssignedDirectly;
+
+        /// <summary>Selected bay (frente) index in the working matrix. Assigning it is the LEGACY imperative move of
+        /// the primary: the next <see cref="ClampSelection"/> clamps it as it always has, and the selection collapses
+        /// onto it.</summary>
+        public int SelBay
+        {
+            get => selBay;
+            set
+            {
+                selBay = value;
+                primaryAssignedDirectly = true;
+            }
+        }
+
+        /// <summary>Selected level index in the working matrix. Same legacy semantics as <see cref="SelBay"/>.</summary>
+        public int SelLevel
+        {
+            get => selLevel;
+            set
+            {
+                selLevel = value;
+                primaryAssignedDirectly = true;
+            }
+        }
 
         /// <summary>
         /// The multi-selection of the VISIBLE matrix (I-43), as positions — never cells. It is ONE set for the editor,
@@ -91,10 +126,12 @@ namespace RackCad.Application.Systems.Selective
                 BaySegments.Add(new List<SelectiveSegment>());
             }
 
-            SelBay = 0;
-            SelLevel = 0;
             // A full reset of the matrix resets the selection too: keeping positions from the matrix that just
-            // disappeared would leave stale coordinates that no ClampSelection call is coming to prune (I-43).
+            // disappeared would leave stale coordinates that no ClampSelection call is coming to prune (I-43). It
+            // writes the fields, not the legacy setters: this path establishes the invariant by itself.
+            selBay = 0;
+            selLevel = 0;
+            primaryAssignedDirectly = false;
             selectedPositions.Clear();
             if (Bays.Count > 0 && Bays[0].Count > 0) selectedPositions.Add(new SelectiveMatrixPosition(0, 0));
         }
@@ -309,9 +346,11 @@ namespace RackCad.Application.Systems.Selective
         /// multi-selection, which is pruned and re-seated by <see cref="NormalizeSelection"/>.</summary>
         public void ClampSelection()
         {
-            SelBay = Math.Min(Math.Max(0, SelBay), Bays.Count - 1);
-            var levelCount = SelBay >= 0 && SelBay < Bays.Count ? Bays[SelBay].Count : 1;
-            SelLevel = Math.Min(Math.Max(0, SelLevel), levelCount - 1);
+            // The fields, not the setters: clamping is the state repairing itself, not a caller moving the primary,
+            // so it must not look like the legacy imperative path to NormalizeSelection.
+            selBay = Math.Min(Math.Max(0, selBay), Bays.Count - 1);
+            var levelCount = selBay >= 0 && selBay < Bays.Count ? Bays[selBay].Count : 1;
+            selLevel = Math.Min(Math.Max(0, selLevel), levelCount - 1);
             NormalizeSelection();
         }
 
@@ -345,12 +384,15 @@ namespace RackCad.Application.Systems.Selective
             var position = new SelectiveMatrixPosition(bay, level);
             if (!PositionExists(position)) return;
 
+            // Every branch writes the fields and clears the legacy flag: this path keeps "the primary belongs to the
+            // selection" true on its own, so normalization must apply the shared (dinamico) rule to it.
+            primaryAssignedDirectly = false;
             if (!extend)
             {
                 selectedPositions.Clear();
                 selectedPositions.Add(position);
-                SelBay = bay;
-                SelLevel = level;
+                selBay = bay;
+                selLevel = level;
                 return;
             }
 
@@ -358,26 +400,31 @@ namespace RackCad.Application.Systems.Selective
             {
                 if (selectedPositions.Count == 1) return; // never leave the selection empty
                 selectedPositions.Remove(position);
-                if (SelBay == bay && SelLevel == level) SeatPrimaryOnFirstSelected();
+                if (selBay == bay && selLevel == level) SeatPrimaryOnFirstSelected();
                 return;
             }
 
             selectedPositions.Add(position);
-            SelBay = bay;
-            SelLevel = level;
+            selBay = bay;
+            selLevel = level;
         }
 
         /// <summary>
-        /// Prune the positions the working matrix no longer has, and make sure the primary is inside the selection.
-        /// Called on every structural change (resize, add/remove level, fondo switch) through
-        /// <see cref="ClampSelection"/>: whatever still exists survives, whatever does not is dropped.
+        /// Prune the positions the working matrix no longer has and leave a coherent, non-empty selection with the
+        /// primary inside it. Called on every structural change (resize, add/remove level, fondo switch) through
+        /// <see cref="ClampSelection"/>.
         /// <para>
-        /// When the primary itself vanished, <see cref="ClampSelection"/> has ALREADY moved it to the nearest valid
-        /// cell, and that clamped primary wins: it is added to the selection rather than the primary being re-seated
-        /// onto some other selected cell. The cell editor is bound to the primary, so moving it somewhere the user did
-        /// not point would silently retarget the editor — and it would also change the clamping the editor has always
-        /// done. A deliberate Ctrl+click that removes the primary is the one case that re-seats, in
-        /// <see cref="SelectCell"/>.
+        /// For a selection built with <see cref="SelectCell"/> this is the rule <c>DynamicFrontMatrix</c> follows:
+        /// every SURVIVING position is kept, the primary is kept if it is still one of them, and otherwise the primary
+        /// re-seats onto a surviving position. It never ADDS a position: the clamped primary is not a cell the user
+        /// marked, and turning it into a selected one would silently widen the next bulk edit. Only when nothing
+        /// survives does the clamped primary become the selection, so the set is never empty.
+        /// </para>
+        /// <para>
+        /// A primary moved through the LEGACY imperative path is the exception, and it is not one: assigning
+        /// <see cref="SelBay"/>/<see cref="SelLevel"/> directly says "the primary is now this cell", which is a
+        /// single-cell selection. That statement wins over the surviving set — otherwise the historical clamp would
+        /// stop holding — and the flag is consumed here, so the state returns to the shared rule immediately after.
         /// </para>
         /// </summary>
         public void NormalizeSelection()
@@ -385,8 +432,18 @@ namespace RackCad.Application.Systems.Selective
             selectedPositions.RemoveWhere(position => !PositionExists(position));
             if (Bays.Count == 0) return; // no cell to select; ClampSelection already parked the primary
 
-            var primary = new SelectiveMatrixPosition(SelBay, SelLevel);
-            if (PositionExists(primary)) selectedPositions.Add(primary); // also what keeps the set non-empty
+            var primary = new SelectiveMatrixPosition(selBay, selLevel);
+            if (primaryAssignedDirectly)
+            {
+                primaryAssignedDirectly = false;
+                selectedPositions.Clear();
+                if (PositionExists(primary)) selectedPositions.Add(primary);
+                return;
+            }
+
+            if (selectedPositions.Contains(primary)) return;                 // the primary survived: nothing to do
+            if (selectedPositions.Count > 0) { SeatPrimaryOnFirstSelected(); return; } // re-seat, never add
+            if (PositionExists(primary)) selectedPositions.Add(primary);     // nothing survived: the clamped primary
         }
 
         /// <summary>Move the primary onto the FIRST selected position in canonical order — deterministic, unlike
@@ -394,8 +451,8 @@ namespace RackCad.Application.Systems.Selective
         private void SeatPrimaryOnFirstSelected()
         {
             var first = selectedPositions.OrderBy(position => position).First();
-            SelBay = first.FrontIndex;
-            SelLevel = first.LevelIndex;
+            selBay = first.FrontIndex;
+            selLevel = first.LevelIndex;
         }
 
         // ---- Target fondos (I-43) ----
