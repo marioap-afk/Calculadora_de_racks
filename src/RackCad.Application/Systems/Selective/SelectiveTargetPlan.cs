@@ -5,35 +5,6 @@ using System.Linq;
 
 namespace RackCad.Application.Systems.Selective
 {
-    /// <summary>Why an EXPLICITLY named cell produced no target (I-43). Only cells the caller spelled out are
-    /// reported: a frente that is simply shorter than the anchor level under a Nivel scope is the ordinary ragged
-    /// rule, not an omission, and reporting it would drown the real ones.</summary>
-    public enum SelectiveTargetOmissionReason
-    {
-        /// <summary>Its fondo is not a fondo of this rack.</summary>
-        FondoOutOfRange,
-
-        /// <summary>Its fondo exists but was not among the target fondos of this operation.</summary>
-        FondoNotTargeted,
-
-        /// <summary>Its fondo is targeted, but that frente or that level does not exist there.</summary>
-        CellOutOfRange
-    }
-
-    /// <summary>One explicitly named cell that produced no target, and why.</summary>
-    public readonly struct SelectiveTargetOmission
-    {
-        public SelectiveTargetOmission(SelectiveCellAddress address, SelectiveTargetOmissionReason reason)
-        {
-            Address = address;
-            Reason = reason;
-        }
-
-        public SelectiveCellAddress Address { get; }
-
-        public SelectiveTargetOmissionReason Reason { get; }
-    }
-
     /// <summary>
     /// The COMPLETE result of resolving <c>fondos objetivo x alcance interno</c> into selective cells (I-43): every
     /// address the operation will touch, the fondos it reaches, and everything it had to leave out.
@@ -55,7 +26,7 @@ namespace RackCad.Application.Systems.Selective
             bool anchorMissing,
             IReadOnlyList<SelectiveCellAddress> targets,
             IReadOnlyList<int> omittedFondos,
-            IReadOnlyList<SelectiveTargetOmission> omittedCells)
+            IReadOnlyList<SelectiveCellAddress> omittedCells)
         {
             Scope = scope;
             Anchor = anchor;
@@ -87,8 +58,19 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>Requested target fondos this rack does not have, ascending. Omitted, never created.</summary>
         public IReadOnlyList<int> OmittedFondos { get; }
 
-        /// <summary>Explicitly named cells that produced no target, with the reason (scope <c>Selected</c> only).</summary>
-        public IReadOnlyList<SelectiveTargetOmission> OmittedCells { get; }
+        /// <summary>
+        /// The projected INSTANCES that found no cell: for scope <c>Selected</c>, each
+        /// <c>(fondo objetivo, posicion seleccionada)</c> pair whose coordinates do not exist in that fondo. There is
+        /// one entry per fondo, not one per position, because a position that exists in fondo 1 and not in fondo 3 is
+        /// applied once and omitted once — omitting only that instance is the whole point of a projection.
+        /// <para>
+        /// A single reason covers every entry — that coordinate does not exist in that fondo — so none is stored. The
+        /// other four scopes derive their coordinates from the topology itself and can never name a missing cell, so
+        /// this list is empty for them; a frente merely shorter than the anchor level is the ordinary ragged rule and
+        /// not an omission.
+        /// </para>
+        /// </summary>
+        public IReadOnlyList<SelectiveCellAddress> OmittedCells { get; }
 
         public int Count => Targets.Count;
 
@@ -129,14 +111,15 @@ namespace RackCad.Application.Systems.Selective
             {
                 text += string.Format(
                     CultureInfo.CurrentCulture,
-                    OmittedCells.Count == 1 ? " Se omitio {0} celda seleccionada." : " Se omitieron {0} celdas seleccionadas.",
+                    OmittedCells.Count == 1
+                        ? " Se omitio 1 posicion que no existe en su fondo destino."
+                        : " Se omitieron {0} posiciones que no existen en su fondo destino.",
                     OmittedCells.Count);
             }
 
             return text;
         }
 
-        internal static readonly IReadOnlyList<SelectiveCellAddress> NoTargets = Array.Empty<SelectiveCellAddress>();
-        internal static readonly IReadOnlyList<SelectiveTargetOmission> NoOmittedCells = Array.Empty<SelectiveTargetOmission>();
+        internal static readonly IReadOnlyList<SelectiveCellAddress> NoCells = Array.Empty<SelectiveCellAddress>();
     }
 }

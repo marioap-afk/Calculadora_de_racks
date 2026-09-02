@@ -8,10 +8,11 @@ namespace RackCad.Application.Systems.Selective
     /// <para>
     /// The two axes are INDEPENDENT and that independence is the whole contract. The set of target fondos decides
     /// WHERE the operation lands; the <see cref="SelectiveApplyScope"/> decides WHICH frente/nivel coordinates it
-    /// covers inside each of them. The anchor's own fondo is never compared against anything: it only lends its
-    /// frente and nivel coordinates, so an operation anchored in fondo 0 and aimed at fondos 1 and 3 writes in 1 and
-    /// 3 and nowhere else. There is no scope value that means "el fondo actual" and no fondo that is implicitly
-    /// included — a fondo is reached because the caller named it.
+    /// covers inside each of them. Neither the anchor nor the selection carries a fondo of its own into the answer:
+    /// both are read as coordinates of the VISIBLE matrix and projected onto every target fondo, so an operation set
+    /// up while looking at fondo 0 and aimed at fondos 1 and 3 writes in 1 and 3 and nowhere else. There is no scope
+    /// value that means "el fondo actual" and no fondo that is implicitly included — a fondo is reached because the
+    /// caller named it.
     /// </para>
     /// <para>
     /// Four properties hold for every call, and are what the tests pin:
@@ -41,7 +42,7 @@ namespace RackCad.Application.Systems.Selective
             SelectiveFondoTargets fondos,
             SelectiveApplyScope scope,
             SelectiveCellAddress anchor,
-            IEnumerable<SelectiveCellAddress> selected = null)
+            IEnumerable<SelectiveMatrixPosition> selected = null)
         {
             topology = topology ?? SelectiveTopology.Empty;
             fondos = fondos ?? SelectiveFondoTargets.None;
@@ -70,7 +71,7 @@ namespace RackCad.Application.Systems.Selective
             {
                 return new SelectiveTargetPlan(
                     scope, anchor, anchorMissing: true,
-                    SelectiveTargetPlan.NoTargets, omittedFondos, SelectiveTargetPlan.NoOmittedCells);
+                    SelectiveTargetPlan.NoCells, omittedFondos, SelectiveTargetPlan.NoCells);
             }
 
             // Walking fondo -> frente -> nivel ascending is what makes the result canonical without a sort, and the
@@ -100,54 +101,47 @@ namespace RackCad.Application.Systems.Selective
 
             return new SelectiveTargetPlan(
                 scope, anchor, anchorMissing: false,
-                targets, omittedFondos, SelectiveTargetPlan.NoOmittedCells);
+                targets, omittedFondos, SelectiveTargetPlan.NoCells);
         }
 
         /// <summary>
-        /// <c>Selected</c> is the only scope whose addresses are given rather than derived, and it obeys the SAME
-        /// product rule as the other four: a named cell is a target only if its fondo was targeted and the cell
-        /// exists. Exempting it would make the fondo axis mean one thing for four scopes and another for the fifth,
-        /// which is precisely the divergence the future multi-selection must not inherit. Each rejection is reported
-        /// with its reason; the survivors come out sorted, because the given set has no order of its own.
+        /// <c>Selected</c> is the only scope whose coordinates are given rather than derived, and it obeys the SAME
+        /// product rule as the other four: the caller picks positions of the VISIBLE matrix and this projects each of
+        /// them onto EVERY target fondo. A selection has no fondo of its own to honour — it is a
+        /// <see cref="SelectiveMatrixPosition"/>, not a cell — so nothing here compares a selection against
+        /// <paramref name="targetFondos"/> and nothing accumulates a selection per fondo. That is the same shape
+        /// Dinamico/Push Back already give their multi-selection.
+        /// <para>
+        /// A position that does not exist in one target fondo omits ONLY that instance: the same position still
+        /// applies in every other fondo where it does exist, and the missing one is reported. Sorting the
+        /// deduplicated positions once and then walking the (already ascending) fondos outermost yields the canonical
+        /// order without a final sort — the given set has no order of its own, so this is what makes the answer
+        /// reproducible.
+        /// </para>
         /// </summary>
         private static SelectiveTargetPlan ResolveSelected(
             SelectiveTopology topology,
             IReadOnlyList<int> targetFondos,
             SelectiveCellAddress anchor,
-            IEnumerable<SelectiveCellAddress> selected,
+            IEnumerable<SelectiveMatrixPosition> selected,
             IReadOnlyList<int> omittedFondos)
         {
+            var positions = (selected ?? Enumerable.Empty<SelectiveMatrixPosition>())
+                .Distinct()
+                .OrderBy(position => position)
+                .ToList();
+
             var targets = new List<SelectiveCellAddress>();
-            var omittedCells = new List<SelectiveTargetOmission>();
-            var seen = new HashSet<SelectiveCellAddress>();
-
-            foreach (var address in selected ?? Enumerable.Empty<SelectiveCellAddress>())
+            var omittedCells = new List<SelectiveCellAddress>();
+            foreach (var fondo in targetFondos)
             {
-                if (!seen.Add(address))
+                foreach (var position in positions)
                 {
-                    continue;
-                }
-
-                if (!topology.HasFondo(address.FondoIndex))
-                {
-                    omittedCells.Add(new SelectiveTargetOmission(address, SelectiveTargetOmissionReason.FondoOutOfRange));
-                }
-                else if (!targetFondos.Contains(address.FondoIndex))
-                {
-                    omittedCells.Add(new SelectiveTargetOmission(address, SelectiveTargetOmissionReason.FondoNotTargeted));
-                }
-                else if (!topology.HasCell(address))
-                {
-                    omittedCells.Add(new SelectiveTargetOmission(address, SelectiveTargetOmissionReason.CellOutOfRange));
-                }
-                else
-                {
-                    targets.Add(address);
+                    var address = position.InFondo(fondo);
+                    (topology.HasCell(address) ? targets : omittedCells).Add(address);
                 }
             }
 
-            targets.Sort();
-            omittedCells.Sort((left, right) => left.Address.CompareTo(right.Address));
             return new SelectiveTargetPlan(
                 SelectiveApplyScope.Selected, anchor, anchorMissing: false,
                 targets, omittedFondos, omittedCells);

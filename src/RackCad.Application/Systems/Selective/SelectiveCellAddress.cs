@@ -36,6 +36,11 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>The level index inside that frente; 0 is the lowest editable level of the column.</summary>
         public int LevelIndex { get; }
 
+        /// <summary>This cell's coordinates in the visible matrix, with the fondo dropped — the inverse of
+        /// <see cref="SelectiveMatrixPosition.InFondo"/>. It is how an anchor lends its coordinates to other fondos
+        /// without lending its own fondo with them.</summary>
+        public SelectiveMatrixPosition Position => new SelectiveMatrixPosition(FrontIndex, LevelIndex);
+
         public bool Equals(SelectiveCellAddress other)
             => FondoIndex == other.FondoIndex && FrontIndex == other.FrontIndex && LevelIndex == other.LevelIndex;
 

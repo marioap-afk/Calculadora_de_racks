@@ -32,10 +32,13 @@ namespace RackCad.Application.Systems.Selective
         All,
 
         /// <summary>
-        /// Exactly the cells the caller names, and nothing else — the scope that needs no anchor because every address
-        /// is explicit. I-43 only founds the CONTRACT: <see cref="SelectiveTargetResolver"/> resolves it, and
-        /// <see cref="SelectiveEditorState.ApplyScope"/> (the single-fondo legacy path, which has no multi-selection)
-        /// REFUSES it out loud instead of quietly applying to nothing. No editor produces it yet.
+        /// Exactly the positions the caller marks on the VISIBLE matrix — the scope that needs no anchor because
+        /// every coordinate is explicit. A selection is a set of <see cref="SelectiveMatrixPosition"/>
+        /// (frente x nivel) and carries NO fondo of its own: like every other scope, it is projected onto each target
+        /// fondo, so the fondo axis keeps meaning the same thing for all five. I-43 only founds the CONTRACT:
+        /// <see cref="SelectiveTargetResolver"/> resolves it, and <see cref="SelectiveEditorState.ApplyScope"/> (the
+        /// single-fondo legacy path, which has no multi-selection) REFUSES it out loud instead of quietly applying to
+        /// nothing. No editor produces it yet.
         /// </summary>
         Selected
     }

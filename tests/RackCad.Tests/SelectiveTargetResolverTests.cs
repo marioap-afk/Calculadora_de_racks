@@ -35,6 +35,10 @@ namespace RackCad.Tests
         private static SelectiveCellAddress At(int fondo, int front, int level)
             => new SelectiveCellAddress(fondo, front, level);
 
+        /// <summary>A position of the VISIBLE matrix — what a selection is made of. It carries no fondo.</summary>
+        private static SelectiveMatrixPosition Pos(int front, int level)
+            => new SelectiveMatrixPosition(front, level);
+
         private static (int Fondo, int Front, int Level)[] Tuples(SelectiveTargetPlan plan)
             => plan.Targets.Select(t => (t.FondoIndex, t.FrontIndex, t.LevelIndex)).ToArray();
 
@@ -155,16 +159,47 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void SelectedCells_OutsideTheTargetFondos_AreOmittedNotApplied()
+        public void SelectedPositions_AreProjectedOntoEveryTargetFondo()
         {
+            // The mandatory example: three positions marked on the visible matrix, aimed at fondos 1 and 3. Each
+            // position resolves ONCE PER TARGET FONDO — the selection is a set of coordinates, not a set of cells.
             var plan = SelectiveTargetResolver.Resolve(
-                FourSquareFondos(), SelectiveFondoTargets.Of(1), SelectiveApplyScope.Selected, At(0, 0, 0),
-                new[] { At(1, 0, 0), At(2, 0, 0) });
+                FourSquareFondos(), SelectiveFondoTargets.Of(1, 3), SelectiveApplyScope.Selected, At(0, 0, 0),
+                new[] { Pos(0, 0), Pos(2, 0), Pos(1, 1) });
 
-            Assert.Equal(new[] { (1, 0, 0) }, Tuples(plan));
-            var omitted = Assert.Single(plan.OmittedCells);
-            Assert.Equal(At(2, 0, 0), omitted.Address);
-            Assert.Equal(SelectiveTargetOmissionReason.FondoNotTargeted, omitted.Reason);
+            Assert.Equal(
+                new[] { (1, 0, 0), (1, 1, 1), (1, 2, 0), (3, 0, 0), (3, 1, 1), (3, 2, 0) },
+                Tuples(plan));
+            Assert.Equal(new[] { 1, 3 }, plan.Fondos);
+            Assert.Empty(plan.OmittedCells);
+        }
+
+        [Fact]
+        public void ASelectionMadeWhileLookingAtFondo0_DoesNotTouchFondo0WhenItIsNotATarget()
+        {
+            // Where the selection was PICKED is irrelevant: only the target set decides where it lands. Fondo 0 and
+            // fondo 2 exist and hold those very coordinates, and neither may receive anything.
+            var plan = SelectiveTargetResolver.Resolve(
+                FourSquareFondos(), SelectiveFondoTargets.Of(1, 3), SelectiveApplyScope.Selected, At(0, 1, 1),
+                new[] { Pos(0, 0), Pos(1, 1) });
+
+            Assert.DoesNotContain(plan.Targets, target => target.FondoIndex == 0 || target.FondoIndex == 2);
+            Assert.DoesNotContain(plan.OmittedCells, cell => cell.FondoIndex == 0 || cell.FondoIndex == 2);
+            Assert.Equal(4, plan.Count); // 2 positions x 2 fondos
+        }
+
+        [Fact]
+        public void ASelectionNeverAccumulatesPerFondo_TheSameSetResolvesTheSameWhicheverFondoIsBeingEdited()
+        {
+            // The anchor is the only thing that says which fondo is on screen, and Selected ignores it entirely.
+            var topology = FourSquareFondos();
+            var targets = SelectiveFondoTargets.Of(1, 3);
+            var positions = new[] { Pos(0, 0), Pos(2, 2) };
+
+            var fromFondo0 = SelectiveTargetResolver.Resolve(topology, targets, SelectiveApplyScope.Selected, At(0, 0, 0), positions);
+            var fromFondo2 = SelectiveTargetResolver.Resolve(topology, targets, SelectiveApplyScope.Selected, At(2, 1, 1), positions);
+
+            Assert.Equal(Tuples(fromFondo0), Tuples(fromFondo2));
         }
 
         // ---- The inner axis: Cell / Level (Row) / Front (Column) / All ----
@@ -285,13 +320,17 @@ namespace RackCad.Tests
         {
             var topology = FourSquareFondos();
             var targets = SelectiveFondoTargets.Of(0, 1);
-            var scrambled = new[] { At(1, 2, 0), At(0, 0, 2), At(1, 2, 0), At(0, 0, 0) };
+            var scrambled = new[] { Pos(2, 0), Pos(0, 2), Pos(2, 0), Pos(0, 0) };
             var reversed = scrambled.Reverse().ToArray();
 
             var first = SelectiveTargetResolver.Resolve(topology, targets, SelectiveApplyScope.Selected, At(0, 0, 0), scrambled);
             var second = SelectiveTargetResolver.Resolve(topology, targets, SelectiveApplyScope.Selected, At(0, 0, 0), reversed);
 
-            Assert.Equal(new[] { (0, 0, 0), (0, 0, 2), (1, 2, 0) }, Tuples(first));
+            // Three distinct positions x two fondos, in canonical order, with the duplicate collapsed once — not once
+            // per fondo.
+            Assert.Equal(
+                new[] { (0, 0, 0), (0, 0, 2), (0, 2, 0), (1, 0, 0), (1, 0, 2), (1, 2, 0) },
+                Tuples(first));
             Assert.Equal(Tuples(first), Tuples(second));
         }
 
@@ -320,10 +359,11 @@ namespace RackCad.Tests
                      })
             {
                 var plan = SelectiveTargetResolver.Resolve(
-                    FourSquareFondos(), SelectiveFondoTargets.None, scope, At(0, 0, 0), new[] { At(0, 0, 0) });
+                    FourSquareFondos(), SelectiveFondoTargets.None, scope, At(0, 0, 0), new[] { Pos(0, 0) });
 
                 Assert.True(plan.IsEmpty);
                 Assert.Empty(plan.Fondos);
+                Assert.Empty(plan.OmittedCells); // no target fondo means nothing to project onto, not a failed projection
             }
         }
 
@@ -371,29 +411,57 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void InvalidSelectedAddresses_AreOmittedWithTheirReason()
+        public void DivergentTopologies_TheSamePositionAppliesInOneTargetAndIsOmittedInAnother()
         {
+            // Position (frente 1, nivel 0) exists in fondo 0 and NOT in fondo 2, whose frente 1 is empty. Only that
+            // INSTANCE is dropped: the position still applies in fondo 0, and (frente 0, nivel 2) applies in both.
             var plan = SelectiveTargetResolver.Resolve(
-                DivergentFondos(), SelectiveFondoTargets.Of(0, 1, 2), SelectiveApplyScope.Selected, At(0, 0, 0),
-                new[]
-                {
-                    At(0, 0, 0),   // valid
-                    At(9, 0, 0),   // fondo does not exist
-                    At(3, 0, 0),   // fondo exists but was not targeted
-                    At(2, 1, 0),   // targeted fondo, but that frente is empty
-                    At(1, 0, 5)    // targeted fondo, but that level does not exist
-                });
+                DivergentFondos(), SelectiveFondoTargets.Of(0, 2), SelectiveApplyScope.Selected, At(0, 0, 0),
+                new[] { Pos(0, 2), Pos(1, 0) });
 
-            Assert.Equal(new[] { (0, 0, 0) }, Tuples(plan));
+            Assert.Equal(new[] { (0, 0, 2), (0, 1, 0), (2, 0, 2) }, Tuples(plan));
+            Assert.Equal(new[] { At(2, 1, 0) }, plan.OmittedCells);
+            Assert.Equal(new[] { 0, 2 }, plan.Fondos);
+        }
+
+        [Fact]
+        public void SelectedPositionsThatExistNowhere_AreOmittedPerInstance_NeverClampedNorCreated()
+        {
+            // Nivel 9 and nivel 5 exist in no frente of fondo 0, and frente 9 exists in no fondo at all. Nothing is
+            // pulled down to the top level, nothing is pushed to the last frente, and no cell is invented.
+            var plan = SelectiveTargetResolver.Resolve(
+                DivergentFondos(), SelectiveFondoTargets.Of(0, 2), SelectiveApplyScope.Selected, At(0, 0, 0),
+                new[] { Pos(0, 9), Pos(2, 5), Pos(9, 0) });
+
+            Assert.True(plan.IsEmpty);
             Assert.Equal(
-                new[]
-                {
-                    (At(1, 0, 5), SelectiveTargetOmissionReason.CellOutOfRange),
-                    (At(2, 1, 0), SelectiveTargetOmissionReason.CellOutOfRange),
-                    (At(3, 0, 0), SelectiveTargetOmissionReason.FondoNotTargeted),
-                    (At(9, 0, 0), SelectiveTargetOmissionReason.FondoOutOfRange)
-                },
-                plan.OmittedCells.Select(o => (o.Address, o.Reason)).ToArray());
+                new[] { At(0, 0, 9), At(0, 2, 5), At(0, 9, 0), At(2, 0, 9), At(2, 2, 5), At(2, 9, 0) },
+                plan.OmittedCells);
+
+            // Every omitted entry keeps the coordinates that were REQUESTED: none was moved to a valid neighbour.
+            var requested = new[] { Pos(0, 9), Pos(2, 5), Pos(9, 0) };
+            Assert.All(plan.OmittedCells, cell => Assert.Contains(cell.Position, requested));
+        }
+
+        [Fact]
+        public void AnEmptySelection_ReachesNothingAndOmitsNothing()
+        {
+            var topology = FourSquareFondos();
+            var targets = SelectiveFondoTargets.Of(1, 3);
+
+            var empty = SelectiveTargetResolver.Resolve(
+                topology, targets, SelectiveApplyScope.Selected, At(0, 0, 0), new SelectiveMatrixPosition[0]);
+            var missing = SelectiveTargetResolver.Resolve(
+                topology, targets, SelectiveApplyScope.Selected, At(0, 0, 0));
+
+            foreach (var plan in new[] { empty, missing })
+            {
+                Assert.True(plan.IsEmpty);
+                Assert.Empty(plan.Fondos);
+                Assert.Empty(plan.OmittedCells);
+                Assert.Empty(plan.OmittedFondos);
+                Assert.False(plan.AnchorMissing);
+            }
         }
 
         // ---- The plan is complete BEFORE anything mutates ----
