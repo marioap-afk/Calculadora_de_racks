@@ -90,6 +90,10 @@ namespace RackCad.UI.Tests
 
             Assert.True(r.present);
             Assert.NotEmpty(expected);
+
+            // I-42 (ronda 7C): el selector ofrece las variantes del catalogo Y «Ninguno», que es la forma EXPLICITA
+            // de decir que este objetivo no lleva tope. Sigue abriendo en la pieza resuelta, no en «Ninguno».
+            expected.Insert(0, PushBackRearTopeConfig.NonePieceId);
             Assert.Equal(expected.OrderBy(id => id), r.ids.OrderBy(id => id));   // the SET is the catalog's, order is the combo's
             Assert.Equal(PushBackRearTopeBuilder.TopePieceId, r.selected);
         }

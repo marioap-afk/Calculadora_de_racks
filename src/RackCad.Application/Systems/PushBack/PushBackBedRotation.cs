@@ -75,17 +75,6 @@ namespace RackCad.Application.Systems.PushBack
             return Math.Asin(railLocalMate.Y / distance) - Math.Atan2(-ey, ex);
         }
 
-        /// <summary>
-        /// La Y del contacto bajo que daría la pendiente objetivo EXACTA, sin retícula: la posición teórica continua
-        /// contra la que se mide el desempate. Se despeja <c>E.Y</c> de la misma ecuación con <c>θ = atan(7/192)</c>.
-        /// </summary>
-        public static double TheoreticalExitY(double rearContactX, double rearContactY, double exitMateX, double railLocalMateY)
-        {
-            var theta = Math.Atan(TargetSlope);
-            var ex = rearContactX - exitMateX;
-            return rearContactY - (ex * Math.Tan(theta) - railLocalMateY / Math.Cos(theta));
-        }
-
         /// <summary>Dónde aterriza el ORIGEN local del bloque cuando su mate se atornilla sobre el contacto bajo.</summary>
         public static Point2D OriginFor(Point2D exitMate, Point2D railLocalMate, double rotationRadians)
         {

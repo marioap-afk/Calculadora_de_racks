@@ -26,11 +26,115 @@ namespace RackCad.Domain.Systems.PushBack
         /// <summary>Resolved rear pallet-stop configuration (active by default; drawing and BOM consume an independent copy).</summary>
         public PushBackRearTopeConfig RearTope { get; set; } = new PushBackRearTopeConfig();
 
+        /// <summary>I-42 (ronda 7E) — el tipo de defensa resuelto del lado A. Ver <see cref="PushBackDesign.DefensePieceId"/>.</summary>
+        public string DefensePieceId { get; set; }
+
         /// <summary>
         /// Resolved entrance-side safety selections. GUIA (entrance guides) are EXCLUDED — Push Back has no entrance
         /// guides, so a guide never reaches the plan, the BOM or a snapshot. Drawing/BOM consume independent copies.
         /// </summary>
         public IList<SelectiveSafetySelection> SafetySelections { get; } = new List<SelectiveSafetySelection>();
+
+        /// <summary>
+        /// I-42 — la parte COMPUESTA del rack: los dos lados, la interfaz central (gap y separador) y la rejilla de
+        /// celdas con su topologia. NULL es el rack de un solo sentido, que es lo que resuelve cualquier documento
+        /// anterior a I-42; en ese caso <see cref="HighEndBeams"/> y <see cref="RearTope"/> siguen siendo, como
+        /// siempre, la configuracion del unico lado.
+        /// </summary>
+        public PushBackCompositeSystem Composite { get; set; }
+
+        /// <summary>True cuando el rack tiene DOS lados fisicos resueltos.</summary>
+        public bool IsComposite => Composite != null && Composite.SideB != null && Composite.SideB.IsPresent;
+
+        /// <summary>
+        /// Los valores Push Back resueltos de un lado. El lado A responde SIEMPRE <see cref="HighEndBeams"/> — la
+        /// misma lista, no una copia—, de modo que no puede existir una segunda autoridad para el lado que ya tenia
+        /// el rack antes de I-42.
+        /// </summary>
+        public IList<PushBackResolvedFront> ResolvedFronts(PushBackSide side)
+            => side == PushBackSide.A
+                ? HighEndBeams
+                : Composite?.SideB?.ResolvedFronts ?? new List<PushBackResolvedFront>();
+
+        /// <summary>La rejilla de topes de un lado. El lado A responde la del rack, que es la de siempre.</summary>
+        public PushBackRearTopeConfig RearTopeOf(PushBackSide side)
+            => side == PushBackSide.A
+                ? RearTope
+                : Composite?.SideB?.RearTope ?? new PushBackRearTopeConfig();
+
+        /// <summary>La proyeccion de una ranura transversal en un lado, o null si esa ranura no existe alli.</summary>
+        public DynamicRackFront FrontOf(PushBackSide side, int frontIndex)
+        {
+            if (Composite != null)
+            {
+                return Composite.Of(side).Front(frontIndex);
+            }
+
+            var fronts = Structure?.Fronts;
+            return side == PushBackSide.A && fronts != null && frontIndex >= 0 && frontIndex < fronts.Count
+                ? fronts[frontIndex]
+                : null;
+        }
+
+        /// <summary>
+        /// I-42 — el fondo EFECTIVO de la celda de un LADO. Es la misma regla de I-41 (ADR-0030), ahora aplicada
+        /// dentro de cada lado: <c>override de la celda ?? fondo por defecto del frente</c>. El lado A responde
+        /// exactamente lo que respondia antes de I-42.
+        /// </summary>
+        public int EffectivePalletsDeepAt(PushBackSide side, int frontIndex, int level)
+        {
+            if (side == PushBackSide.A && Composite == null)
+            {
+                return EffectivePalletsDeepAt(frontIndex, level);
+            }
+
+            var resolved = Composite?.Of(side)?.Resolved(frontIndex);
+            if (resolved != null && level >= 0 && level < resolved.PalletsDeep.Count && resolved.PalletsDeep[level] >= 2)
+            {
+                return resolved.PalletsDeep[level];
+            }
+
+            var front = FrontOf(side, frontIndex);
+            return front != null ? System.Math.Max(2, front.PalletsDeep) : 2;
+        }
+
+        /// <summary>I-42 — si la celda de un LADO dibuja su tarima (I-41/PB-016). Fuera del BOM, como siempre.</summary>
+        public bool DrawPalletAt(PushBackSide side, int frontIndex, int level)
+        {
+            if (side == PushBackSide.A && Composite == null)
+            {
+                return DrawPalletAt(frontIndex, level);
+            }
+
+            var resolved = Composite?.Of(side)?.Resolved(frontIndex);
+            return resolved != null && level >= 0 && level < resolved.DrawPallets.Count && resolved.DrawPallets[level];
+        }
+
+        /// <summary>I-42 — el peralte del larguero posterior de la celda de un LADO.</summary>
+        public double HighEndBeamPeralteAt(PushBackSide side, int frontIndex, int level)
+        {
+            if (side == PushBackSide.A && Composite == null)
+            {
+                return HighEndBeamPeralteAt(frontIndex, level);
+            }
+
+            var resolved = Composite?.Of(side)?.Resolved(frontIndex);
+            if (resolved != null)
+            {
+                var peraltes = resolved.HighEndBeamPeraltes;
+                if (level >= 0 && level < peraltes.Count)
+                {
+                    return peraltes[level];
+                }
+
+                if (peraltes.Count > 0)
+                {
+                    return peraltes[peraltes.Count - 1];
+                }
+            }
+
+            return PushBackDefaults.HighEndBeamDefaultPeralte;
+        }
 
         /// <summary>Client-facing rack name (supplied by the DWG envelope at drawing time); mirrors the structure's name.</summary>
         public string Name
@@ -141,6 +245,13 @@ namespace RackCad.Domain.Systems.PushBack
     /// </summary>
     public sealed class PushBackResolvedFront
     {
+        /// <summary>
+        /// I-42 — si la ranura transversal existe en el lado al que pertenece esta entrada. False es el caso
+        /// «A=3 y B=4»: la cuarta ranura de A no aporta celda, cama, larguero ni tope. Un rack de un solo sentido
+        /// resuelve SIEMPRE true, que es lo que era implicito antes de I-42.
+        /// </summary>
+        public bool IsPresent { get; set; } = true;
+
         public IList<double> HighEndBeamPeraltes { get; } = new List<double>();
 
         /// <summary>I-41 (PB-015): the front's DEFAULT fondo — what a level with no override inherits.</summary>

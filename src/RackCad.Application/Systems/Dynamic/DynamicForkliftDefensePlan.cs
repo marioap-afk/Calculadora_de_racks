@@ -39,6 +39,20 @@ namespace RackCad.Application.Systems.Dynamic
             int postIndex,
             int postCount,
             bool lowEndOnly)
+            => At(overrides, postIndex, postCount, lowEndOnly, secondLoadFace: false);
+
+        /// <summary>
+        /// La misma regla con el eje de I-42: <paramref name="secondLoadFace"/> declara que ESTA linea tiene tambien
+        /// cara de carga en el extremo lejano (un rack compuesto). Con el, el extremo lejano recupera su longitud
+        /// automatica: es un pasillo, y un pasillo lleva su defensa. Sin el —cualquier rack de un solo sentido— la
+        /// regla es exactamente la de PB-009 y nada cambia.
+        /// </summary>
+        public static DynamicForkliftDefenseSetting At(
+            IEnumerable<SafetyPostDefense> overrides,
+            int postIndex,
+            int postCount,
+            bool lowEndOnly,
+            bool secondLoadFace)
         {
             postCount = Math.Max(1, postCount);
             if (postIndex < 0 || postIndex >= postCount)
@@ -49,7 +63,7 @@ namespace RackCad.Application.Systems.Dynamic
             var automatic = postIndex == 0 || postIndex == postCount - 1
                 ? EdgeLength
                 : IntermediateLength;
-            var automaticEntrance = lowEndOnly ? 0.0 : automatic;
+            var automaticEntrance = lowEndOnly && !secondLoadFace ? 0.0 : automatic;
 
             foreach (var over in overrides ?? Array.Empty<SafetyPostDefense>())
             {
@@ -73,7 +87,12 @@ namespace RackCad.Application.Systems.Dynamic
             SelectiveSafetySelection selection,
             int postIndex,
             int postCount)
-            => At(selection?.DefensaPosts, postIndex, postCount, selection?.LowEndOnly ?? false);
+            => At(
+                selection?.DefensaPosts,
+                postIndex,
+                postCount,
+                selection?.LowEndOnly ?? false,
+                selection?.HasSecondLoadFaceAt(postIndex) ?? false);
     }
 
     public readonly struct DynamicForkliftDefenseSetting

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
@@ -37,6 +39,7 @@ namespace RackCad.Application.Systems.PushBack
             pushFronts.Clear();
             RearTopeSaque = PushBackDefaults.RearTopeSaque;
             RearTopePieceId = null;   // PB-005: a new rack starts on the default variant, never on the previous rack's
+            DefensePieceId = null;    // I-42 (7E): y sobre la defensa historica, no sobre la del rack anterior
             AdoptLoadedBaseline(null);   // new design: rebuild from a standard structure, drop any loaded baseline
                                          // AND the module session of whatever rack was open before (I-40, ronda 3)
             SyncPushConfig();
@@ -64,7 +67,60 @@ namespace RackCad.Application.Systems.PushBack
             // predeterminada sobre una cabecera personalizada.
             AdoptLoadedBaseline(system);   // a fresh resolve: an independent deep baseline the recompute preserves
             RebuildFromResolved(system);
-            return RecoverInputs(design, system);
+            var inputs = RecoverInputs(design, system);
+            MigrateFirstLevelDatum(system, resolver.Catalog, inputs);
+            return inputs;
+        }
+
+        /// <summary>
+        /// I-42 (correccion aislada 3) — LA UNICA conversion de datum del producto, y esta es su frontera.
+        ///
+        /// <para>
+        /// Un documento SIN el marcador guarda «Alto 1er nivel» con la semantica historica —una elevacion absoluta
+        /// que se ajusta al troquel mas cercano—, y con ella se acaba de resolver. Aqui se re-expresa ese numero
+        /// sobre el datum del producto MIDIENDO la geometria que ya tiene: cada frente pasa a guardar su distancia
+        /// al troquel utilizable mas bajo. No se resta ninguna constante y no se mueve ni una milesima — la
+        /// elevacion resuelta ya esta EN la retícula, y el troquel utilizable mas bajo tambien, asi que volver a
+        /// medir desde el uno hasta la otra devuelve exactamente el mismo troquel.
+        /// </para>
+        /// <para>
+        /// A partir de aqui el datum solo se TRANSPORTA: ni la ventana, ni el ensamblador, ni la estructura
+        /// compuesta vuelven a decidirlo. Un documento que ya trae el marcador no pasa por aqui.
+        /// </para>
+        /// </summary>
+        private void MigrateFirstLevelDatum(
+            PushBackSystem system, RackCatalog catalog, PushBackEditorInputs inputs)
+        {
+            if (inputs == null
+                || inputs.FirstLevelDatum == (int)RackFirstLevelDatumMode.LowestUsablePunch
+                || system?.Structure == null
+                || catalog == null)
+            {
+                return;
+            }
+
+            var gridBase = PushBackTroquelGrid.Base(system.Structure, catalog);
+            var pitch = SelectiveRackDefaults.TroquelPaso;
+            if (pitch <= 0.0)
+            {
+                return;   // sin retícula medida no hay a que re-expresar: se conserva la lectura historica
+            }
+
+            var fronts = system.Structure.Fronts;
+            for (var index = 0; index < fronts.Count && index < structure.Count; index++)
+            {
+                var levels = fronts[index].LoadBeamLevels;
+                if (levels == null || levels.Count == 0)
+                {
+                    continue;
+                }
+
+                var physical = levels.OrderBy(level => level.LevelNumber).First().ExitElevation;
+                structure.Fronts[index].FirstLevelHeight =
+                    RackFirstLevelDatum.ToLowestPunchOffset(physical, gridBase, pitch);
+            }
+
+            inputs.FirstLevelDatum = (int)RackFirstLevelDatumMode.LowestUsablePunch;
         }
 
         /// <summary>
@@ -89,6 +145,7 @@ namespace RackCad.Application.Systems.PushBack
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
             RearTopeSaque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
             RearTopePieceId = rearTope.PieceId;
+            DefensePieceId = system.DefensePieceId;
 
             pushFronts.Clear();
             for (var frontIndex = 0; frontIndex < structure.Count; frontIndex++)
@@ -129,6 +186,9 @@ namespace RackCad.Application.Systems.PushBack
         /// safety, so the window can repopulate its shared panels. Independent copies; the design is not mutated.</summary>
         private static PushBackEditorInputs RecoverInputs(PushBackDesign design, PushBackSystem system)
         {
+            // I-42 — el datum de «Alto 1er nivel» sale del DOCUMENTO, no del default de un rack nuevo: un archivo
+            // anterior no lo trae y se lee con la semantica historica, asi que reabre en la MISMA geometria fisica.
+
             var s = design.Structure ?? new DynamicRackDesign();
             var inputs = new PushBackEditorInputs
             {
@@ -161,6 +221,7 @@ namespace RackCad.Application.Systems.PushBack
                 }
             }
 
+            inputs.FirstLevelDatum = design?.Structure?.FirstLevelDatum;
             return inputs;
         }
 

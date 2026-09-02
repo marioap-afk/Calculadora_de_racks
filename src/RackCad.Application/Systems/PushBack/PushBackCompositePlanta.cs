@@ -1,0 +1,292 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using RackCad.Application.Catalogs;
+using RackCad.Application.Drawing;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+
+namespace RackCad.Application.Systems.PushBack
+{
+    /// <summary>
+    /// I-42 — la PLANTA de un rack compuesto. Es la vista donde los dos sentidos comparten la misma calle, asi que es
+    /// la que mas necesita distinguirlos.
+    ///
+    /// <para>
+    /// Se compone como el lateral: la ESTRUCTURA se dibuja UNA vez, desde el sistema compuesto (cabeceras,
+    /// separadores —el central incluido—, postes derivados, placas y seguridad), y encima se monta el contenido de
+    /// cada lado, tomado de su planta local y llevado al rack con la MISMA reflexion rigida que usa todo lo demas del
+    /// lado B. Ningun poste, cabecera ni placa se dibuja dos veces por el hecho de que el rack tenga dos sentidos.
+    /// </para>
+    /// <para>
+    /// La planta colapsa los niveles, pero proyecta la UNION DE PIEZAS FISICAS REALES: pregunta a
+    /// <see cref="PushBackRuns"/> que ranuras tienen de verdad una cama que descarga en cada pasillo y cuales tienen
+    /// de verdad un larguero posterior en cada interfaz. Una ranura cuyos niveles sean TODOS camas corridas no
+    /// dibuja larguero posterior en la interfaz de su lado bajo, porque alli no hay ninguno; basta con que UN nivel
+    /// lo requiera para que aparezca. No se inventan piezas por el hecho de que la planta no tenga selector de nivel.
+    /// </para>
+    /// </summary>
+    public static class PushBackCompositePlanta
+    {
+        public static HeaderRunPlan Build(PushBackSystem system, RackCatalog catalog)
+        {
+            var structure = system?.Structure;
+            var composite = system?.Composite;
+            if (structure == null || composite == null)
+            {
+                return new HeaderRunPlan(new List<HeaderGroup>(), new List<HeaderBlockInstance>());
+            }
+
+            // 1) La estructura, una sola vez. Se retiran los largueros de extremo del dinamico: los aporta cada lado.
+            var result = new DynamicSystemPlantaBuilder()
+                .BuildPlan(structure, catalog)
+                .Flatten()
+                .Instances
+                .Where(instance => !PushBackPlanComposer.IsDynamicSpecific(instance))
+                .ToList();
+
+            // 2) El contenido de almacenamiento, CAMA A CAMA, en el marco de cada una.
+            var runs = PushBackRuns.Resolve(system);
+            AppendBeds(result, catalog, runs);
+
+            // 3) Los INTERMEDIOS. Pertenecen a la CAMA, no a la estructura, asi que el paso 1 los retira con el
+            //    resto de piezas del dinamico y aqui se reponen POR CAMA, en el marco de cada una. Sin este paso la
+            //    planta de un rack compuesto salia sin un solo intermedio.
+            AppendIntermediates(result, catalog, runs);
+
+            // 4) Las etiquetas A/B, por el pipeline de anotaciones que ya existe. Nunca al BOM.
+            result.AddRange(PushBackSideAnnotations.Planta(system));
+
+            return HeaderInstanceGrouper.Group(result, "PB_PLANTA_PIEZA");
+        }
+
+        /// <summary>
+        /// El contenido de almacenamiento de la planta, resuelto POR CAMA: su larguero bajo, su larguero alto de
+        /// troquel redondo y el tope de ese larguero alto.
+        ///
+        /// <para>
+        /// La autoridad es la CAMA, no el lado. Antes se pedian las piezas altas a la planta LOCAL del lado que
+        /// posee el extremo alto, y en una CORRIDA eso es falso: el larguero alto de una corrida no esta en la
+        /// linea posterior de ese lado sino en el extremo opuesto del rack, al final del recorrido. La planta lo
+        /// dibujaba en la INTERFAZ —y con la orientacion del otro marco—, de modo que contradecia al corte lateral,
+        /// que si lo resuelve por cama. El tope, que cuelga de ese larguero, se iba con el.
+        /// </para>
+        /// <para>
+        /// Ahora cada cama se construye con el MISMO builder de un Push Back de un sentido, en SU marco —el local
+        /// del lado o el sintetico de la corrida— y viaja al mundo con UNA sola reflexion rigida, exactamente igual
+        /// que en el lateral. Las camas de una misma ranura que comparten marco se agrupan: la planta colapsa los
+        /// niveles y proyectarian lo mismo.
+        /// </para>
+        /// </summary>
+        private static void AppendBeds(
+            List<HeaderBlockInstance> target, RackCatalog catalog, PushBackRunSet runs)
+        {
+            var added = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var batch in PushBackCompositeContent.Batches(runs, includeSlot: null))
+            {
+                var source = batch.Source;
+                if (source?.Structure == null)
+                {
+                    continue;
+                }
+
+                var highId = string.IsNullOrWhiteSpace(source.HighEndBeamCatalogId)
+                    ? PushBackDefaults.HighEndBeamCatalogId
+                    : source.HighEndBeamCatalogId;
+                var inOutId = string.IsNullOrWhiteSpace(source.Structure.InOutBeamCatalogId)
+                    ? DynamicRackDefaults.InOutBeamCatalogId
+                    : source.Structure.InOutBeamCatalogId;
+
+                var content = Pieces(source, catalog, batch.FrontIndex, batch)
+                    .Where(instance => instance.Role == HeaderBlockRole.Tope
+                        || string.Equals(instance.PieceId, inOutId, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(instance.PieceId, highId, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                var placed = batch.Reflected
+                    ? PushBackMirror.Instances(content, runs.MirrorAxis)
+                    : content;
+
+                // La PLANTA colapsa la elevacion: un rack de tres niveles dibuja UN larguero de entrada en su linea,
+                // no tres. Ese colapso lo hacia el builder de un solo sentido DENTRO de cada lote, asi que una ranura
+                // cuyos niveles caen en lotes distintos —un nivel Solo A y otro CORRIDO, que se resuelven en marcos
+                // distintos— dibujaba el mismo simbolo dos veces, superpuesto. Aqui se aplica la MISMA convencion
+                // entre lotes.
+                foreach (var instance in placed)
+                {
+                    if (added.Add(BedBeamIdentity(instance, batch, inOutId)))
+                    {
+                        target.Add(instance);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// I-42 (A1B-D7, contrato del dueño) — LA IDENTIDAD FISICA DE UN LARGUERO DE CAMA EN LA PLANTA.
+        ///
+        /// <para>
+        /// Responde «¿estas dos representaciones son la MISMA pieza en el dibujo?», no «¿caen en el mismo punto?».
+        /// Son dos ejes:
+        /// <list type="bullet">
+        /// <item>la <b>posicion fisica</b> —pieza, punto, mano y rotacion—, que es
+        /// <see cref="PushBackPlanComposer.PhysicalKey(HeaderBlockInstance)"/>, el mismo helper que ya usa el corte
+        /// lateral para esta misma pregunta;</item>
+        /// <item>el <b>lado al que pertenece</b>: el larguero de entrada es del pasillo por el que se CARGA la cama y
+        /// el posterior —con su tope— del extremo por el que TERMINA. Sin este eje, dos camas ENCONTRADAS que se
+        /// topan en la interfaz con hueco cero proyectan sus dos largueros altos en el mismo punto y una clave de
+        /// pura coordenada los fundiria en uno. Son dos piezas.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// El NIVEL no entra a proposito: la planta colapsa la elevacion. Dos largueros de niveles distintos son dos
+        /// piezas fisicas —y el BOM las cuenta como dos, porque cuenta CAMAS y no instancias de una vista—, pero la
+        /// planta dibuja un solo simbolo en su posicion, que es lo que ya hacia dentro de un lote.
+        /// </para>
+        /// </summary>
+        private static string BedBeamIdentity(
+            HeaderBlockInstance instance, PushBackRunBatch batch, string inOutId)
+        {
+            var run = batch.Runs != null && batch.Runs.Count > 0 ? batch.Runs[0] : null;
+            var low = string.Equals(instance.PieceId, inOutId, StringComparison.OrdinalIgnoreCase);
+            var side = run == null
+                ? PushBackSide.A
+                : low ? run.LowSide : run.HighSide;
+            return PushBackPlanComposer.PhysicalKey(instance) + "|" + side;
+        }
+
+        /// <summary>
+        /// Los LARGUEROS INTERMEDIOS de la planta, uno por cama y no uno por estructura.
+        ///
+        /// <para>
+        /// La planta colapsa los niveles, asi que lo que proyecta es la UNION de los apoyos que usan las camas de esa
+        /// ranura. Cada cama los resuelve en SU marco —el local del lado, o el sintetico de la corrida, que atraviesa
+        /// la interfaz— con el mismo builder dinamico de siempre, y el resultado se refleja igual que el resto del
+        /// contenido de esa cama. Por eso una corrida corta obtiene intermedios en TODO su recorrido, incluida la
+        /// parte que pisa el otro lado, y no obtiene ninguno en el tramo de estructura que no usa.
+        /// </para>
+        /// <para>
+        /// Se deduplica por pieza y posicion: dos camas encontradas comparten ranura, y si alguna vez coincidieran en
+        /// un apoyo seria el MISMO larguero, no dos.
+        /// </para>
+        /// </summary>
+        private static void AppendIntermediates(
+            List<HeaderBlockInstance> target, RackCatalog catalog, PushBackRunSet runs)
+        {
+            var added = new HashSet<string>();
+
+            // La planta colapsa los niveles, asi que dos camas de la misma ranura que compartan marco proyectan lo
+            // MISMO: se agrupan y se construye una sola vez. Sin esto un rack de muchos niveles reconstruiria la
+            // planta de un lado una vez por celda.
+            var batches = runs.Runs
+                .Where(run => run?.Source?.Structure != null)
+                .GroupBy(run => (run.Source, run.SourceFrontIndex, run.Reflected))
+                .Select(group => group.First());
+
+            foreach (var run in batches)
+            {
+                var structure = run.Source.Structure;
+                if (structure == null || run.SourceFrontIndex < 0 || run.SourceFrontIndex >= structure.Fronts.Count)
+                {
+                    continue;
+                }
+
+                var slot = run.SourceFrontIndex;
+                var restricted = PushBackMirror.Clone(structure, index => index == slot);
+                var pieces = new DynamicSystemPlantaBuilder()
+                    .BuildPlan(restricted, catalog)
+                    .Flatten()
+                    .Instances
+                    .Where(PushBackPlanComposer.IsDynamicIntermediate)
+                    .ToList();
+                if (pieces.Count == 0)
+                {
+                    continue;
+                }
+
+                var placed = run.Reflected ? PushBackMirror.Instances(pieces, runs.MirrorAxis) : pieces;
+                foreach (var instance in placed)
+                {
+                    var key = string.Join(
+                        "|",
+                        instance.PieceId,
+                        instance.Insertion.X.ToString("0.####", CultureInfo.InvariantCulture),
+                        instance.Insertion.Y.ToString("0.####", CultureInfo.InvariantCulture),
+                        instance.MirroredX);
+                    if (added.Add(key))
+                    {
+                        target.Add(instance);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// I-42 (correccion aislada 4) — la intencion de tope ACOTADA a las camas de este lote.
+        ///
+        /// <para>
+        /// El tope trasero pertenece al extremo ALTO de una cama fisica, asi que la planta no puede preguntar «¿algun
+        /// nivel de este lado tiene tope?»: tiene que preguntar «¿alguna de las camas que ESTE lote materializa lo
+        /// tiene?». La planta colapsa los niveles, y el builder de un solo sentido resuelve esa pregunta con un
+        /// <c>Any</c> sobre TODOS los niveles del frente — incluidos los que en este marco no son camas.
+        /// </para>
+        /// <para>
+        /// Medido: con el nivel 1 de una ranura corrido A-&gt;B (su alto esta en B, al final del rack) y el nivel 2
+        /// solo-A con su tope APAGADO, la planta dibujaba igualmente un tope en la interfaz — lo pedia la intencion
+        /// DORMANTE que el lado A guarda para el nivel corrido, que no es una cama suya. El lateral y el BOM ya no lo
+        /// dibujaban, asi que las vistas se contradecian.
+        /// </para>
+        /// <para>
+        /// No hay autoridad nueva: se ACOTA la entrada. Los niveles que este lote no materializa viajan apagados con
+        /// el mismo mecanismo de siempre —las celdas OFF—, y la decision la sigue tomando el mismo builder.
+        /// </para>
+        /// </summary>
+        private static PushBackRearTopeConfig TopeOfBatch(PushBackSystem source, PushBackRunBatch batch)
+        {
+            var original = source.RearTope ?? new PushBackRearTopeConfig();
+            if (batch?.Runs == null || batch.Runs.Count == 0)
+            {
+                return original;
+            }
+
+            var owned = new HashSet<(int Front, int Level)>(
+                batch.Runs.Select(run => (run.SourceFrontIndex, run.SourceLevel - 1)));
+            var restricted = original.DeepCopy();
+            var front = batch.Front;
+            var levels = front != null ? DynamicFrontActivation.EffectiveLoadLevels(front) : 0;
+            for (var level = 0; level < levels; level++)
+            {
+                if (!owned.Contains((batch.FrontIndex, level)))
+                {
+                    restricted.Disable(batch.FrontIndex, level);
+                }
+            }
+
+            return restricted;
+        }
+
+        /// <summary>
+        /// La planta del marco de una cama con SOLO su ranura activa. Las demas viajan en blanco (I-33), asi que no
+        /// aportan larguero, tope ni cama — la regla ya existe y no hace falta una segunda.
+        /// </summary>
+        private static IReadOnlyList<HeaderBlockInstance> Pieces(
+            PushBackSystem source, RackCatalog catalog, int slot, PushBackRunBatch batch)
+        {
+            var restricted = new PushBackSystem
+            {
+                Structure = PushBackMirror.Clone(source.Structure, index => index == slot),
+                HighEndBeamCatalogId = source.HighEndBeamCatalogId,
+                RearTope = TopeOfBatch(source, batch)
+            };
+            foreach (var resolved in source.HighEndBeams)
+            {
+                restricted.HighEndBeams.Add(resolved);
+            }
+
+            return new PushBackSystemPlantaBuilder().BuildPlan(restricted, catalog).Flatten().Instances;
+        }
+
+    }
+}

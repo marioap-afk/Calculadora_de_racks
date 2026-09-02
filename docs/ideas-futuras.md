@@ -654,3 +654,25 @@ Ninguno bloqueó I-37A: se rodearon dentro del namespace Cantilever, sin tocar I
    subiniciativa de vistas **debe** calcularlo por su cuenta y **no** tocar I-36 para arreglarlo sin
    autorización expresa.
 
+
+
+
+## I-42 — Push Back compuesto: hallazgos fuera de alcance
+
+> Los hallazgos que esta sección listaba tras las dos primeras entregas —rangos no anidados, cotas del lateral,
+> planta con todos los niveles corridos, reconstrucción de módulos y la capacidad geométrica del hueco— **quedaron
+> corregidos** en las rondas de corrección de I-42 y ya no son deuda. Lo que queda:
+
+1. **Una ranura ausente en una posición INTERIOR** deja, en el corte frontal de ese lado, la línea de postes de su
+   frontera: la regla de I-33 conserva siempre los bordes exteriores de un frente en blanco. Las ausencias del final
+   sí se retiran, que es el caso habitual (`A=3`, `B=4`). Resolver también el caso interior exige distinguir
+   «ausente» de «en blanco» dentro de `DynamicFrontActivation`, que es contrato del sistema **Dinámico**. Se
+   validará visualmente con el dueño: es estructura física compartida, no un defecto de I-42.
+
+2. **Una entrada de topología creada SOLO para guardar el fondo de una cama corrida fija la topología por defecto
+   vigente en ese momento.** `PushBackCompositeDesign.SetCorridaDepth` crea la entrada con
+   `Topology = DefaultTopology`, de modo que si más adelante cambiara el default del rack esa celda se quedaría
+   anclada al anterior. Hoy no hay ningún camino de producción que cambie el default —el editor lo deja fijo en
+   *encontradas* / `A→B` y sólo la API lo permite—, así que no es un defecto observable. Resolverlo bien pide una
+   topología **anulable** en la celda (el documento ya la guarda como texto y cae al default cuando no la reconoce),
+   y eso toca los cuatro límites de persistencia: es una migración, no un ajuste.

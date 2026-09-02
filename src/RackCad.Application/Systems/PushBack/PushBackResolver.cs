@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
@@ -33,6 +34,10 @@ namespace RackCad.Application.Systems.PushBack
             safety = new PushBackSafetyAuthority(this.catalog);
         }
 
+        /// <summary>El catalogo con el que este resolver mide. Lo necesita la frontera de carga para re-expresar
+        /// un documento sin marcador de datum sobre la MISMA retícula de troqueles, sin medirla por su cuenta.</summary>
+        public RackCatalog Catalog => catalog;
+
         public PushBackSystem Resolve(PushBackDesign design)
         {
             if (design == null)
@@ -40,6 +45,73 @@ namespace RackCad.Application.Systems.PushBack
                 throw new ArgumentNullException(nameof(design));
             }
 
+            // I-42: un rack de UN solo sentido no pasa por la composicion. El camino de abajo es exactamente el que
+            // existia antes de la iniciativa, asi que un documento legacy resuelve el mismo sistema hasta el bit.
+            if (design.IsComposite)
+            {
+                return ResolveComposite(design);
+            }
+
+            return ResolveSingleSided(design);
+        }
+
+        /// <summary>
+        /// El Push Back COMPUESTO: una sola estructura fisica (A + hueco + B invertido) sobre la que se montan los
+        /// dos lados. El contenido de cada lado se resuelve por el MISMO camino de un sentido — en su marco local —
+        /// de modo que no existe una segunda fisica para el lado nuevo.
+        /// </summary>
+        private PushBackSystem ResolveComposite(PushBackDesign design)
+        {
+            var resolution = new PushBackCompositeResolver(catalog).Resolve(design, ResolveSingleSided);
+            var structure = resolution.Structure;
+            var composite = resolution.Composite;
+
+            var system = new PushBackSystem
+            {
+                Structure = structure,
+                HighEndBeamCatalogId = PushBackDefaults.HighEndBeamCatalogId,
+                RearTope = design.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig(),
+                Composite = composite
+            };
+
+            // El lado A NO tiene una segunda autoridad: HighEndBeams contiene LAS MISMAS instancias que la vista del
+            // lado, y la rejilla de topes es EL MISMO objeto. Editar una es editar la otra, por construccion.
+            composite.SideA.RearTope = system.RearTope;
+            foreach (var resolved in composite.SideA.ResolvedFronts)
+            {
+                system.HighEndBeams.Add(resolved);
+            }
+
+            system.DefensePieceId = design.DefensePieceId;
+            composite.SideA.DefensePieceId = design.DefensePieceId;
+            composite.SideB.DefensePieceId = design.SideB?.DefensePieceId;
+            ApplySafety(system, structure, design.DefensePieceId, design.SideB?.DefensePieceId);
+            // I-42 (ronda 6C) — LA ALTURA DE CABECERA se recalcula sobre las CAMAS REALES. Hasta aqui salia de la
+            // profundidad SINTETICA de la estructura compuesta (A + hueco + B invertido), que ninguna cama recorre:
+            // en camas encontradas hay dos camas de cinco fondos, no una de once. Se hace AQUI, al final, porque
+            // las camas solo existen cuando el sistema esta montado; y se escribe en el MISMO sitio del que ya leen
+            // el corte lateral, los dos frontales y el BOM (ronda 6B), asi que sigue habiendo UNA sola autoridad.
+            // Un override manual manda y no se toca.
+            PushBackHeaderHeight.Apply(system, catalog, design.Structure?.ManualHeaderHeightOverride);
+
+            // I-42 (ronda 6D) — la INTERFAZ entre los dos lados no es una cara de carga: no hay pasillo ahi, hay el
+            // otro lado. Declararlo es lo que impide que una ranura en blanco mande la defensa de un lado contra la
+            // cara posterior del contrario. Es una propiedad de la estructura, no una regla de dibujo.
+            structure.InteriorFaceStartX = Math.Min(composite.GapStartX, composite.GapEndX);
+            structure.InteriorFaceEndX = Math.Max(composite.GapStartX, composite.GapEndX);
+
+            // I-42 (S1E) — y con la interfaz ya declarada se sabe QUE POSTES quedo sin almacenamiento cada
+            // LADO, que es lo que apaga SU automatico ahi. Va despues, no antes, porque la pregunta es sobre la
+            // estructura terminada. Los sistemas locales de cada lado NO la reciben: desde S1E ninguna vista
+            // resuelve pertenencia de botas por su cuenta, asi que no hay nada que reflejar.
+            safety.DeclareBlankPosts(structure, system.SafetySelections);
+            safety.DeclareBlankPosts(structure, structure.SafetySelections);
+
+            return system;
+        }
+
+        private PushBackSystem ResolveSingleSided(PushBackDesign design)
+        {
             var structure = structureResolver.Resolve(design.Structure ?? new DynamicRackDesign()).System;
 
             var system = new PushBackSystem
@@ -83,15 +155,65 @@ namespace RackCad.Application.Systems.PushBack
                 system.HighEndBeams.Add(resolved);
             }
 
-            // Safety authority: Push Back admits every applicable family EXCEPT entrance guides (removed), and normal
-            // safety only at the LOW (entrance/exit) end — never the rear. Each authorized selection is restricted to the
-            // low end (Left = the exit end in the dynamic builders) so a "Both" selection materializes once, on the low
-            // side, in every view and in the BOM. The GUIA-free, low-only set is exposed on the Push Back system AND
-            // written back onto the shared structure, so the dynamic builders — used later as a BLACK BOX — never emit a
-            // guide, and never emit rear-end safety.
-            var authorized = safety.Authorize(structure.SafetySelections);
+            system.DefensePieceId = design.DefensePieceId;
+
+            // Un rack de un solo sentido tiene una sola cara de carga; la lejana no existe y hereda, que es lo que
+            // hacia siempre.
+            ApplySafety(system, structure, design.DefensePieceId, sideBPieceId: null);
+
+            // I-42 (S1E) — y por el MISMO camino que el compuesto: el unico lado declara sus postes en blanco. Un
+            // rack de un sentido no declara interfaz, asi que casi siempre no habra ninguno; se hace igual para que
+            // la resolucion sea la misma en los dos caminos.
+            safety.DeclareBlankPosts(structure, system.SafetySelections);
+            safety.DeclareBlankPosts(structure, structure.SafetySelections);
+            return system;
+        }
+
+        /// <summary>
+        /// Safety authority: Push Back admits every applicable family EXCEPT entrance guides (removed), and normal
+        /// safety only at the LOW (entrance/exit) end — never the rear. Each authorized selection is restricted to the
+        /// low end (Left = the exit end in the dynamic builders) so a "Both" selection materializes once, on the low
+        /// side, in every view and in the BOM. The GUIA-free, low-only set is exposed on the Push Back system AND
+        /// written back onto the shared structure, so the dynamic builders — used later as a BLACK BOX — never emit a
+        /// guide, and never emit rear-end safety.
+        /// <para>
+        /// I-42: la seguridad es del RACK, no de un lado. Se autoriza UNA vez sobre la estructura compartida, asi que
+        /// una bota o un protector nunca se cuenta dos veces por el hecho de que el rack tenga dos sentidos. Lo que
+        /// SI cambia con el rack es CUANTOS pasillos tiene: un compuesto con camas en las dos mitades tiene dos
+        /// extremos bajos, y los dos llevan su seguridad. No hay que pedirla a mano para el segundo lado.
+        /// </para>
+        /// </summary>
+        private void ApplySafety(
+            PushBackSystem system, DynamicRackSystem structure, string sideAPieceId, string sideBPieceId)
+        {
+            var authorized = safety.Authorize(structure.SafetySelections, AislesOf(system));
+            var defense = SelectiveSafetyFamilies.SelectedOfType(
+                authorized, catalog?.SafetyElements, SelectiveSafetyDefaults.DefensaType);
+            var secondFaceLines = SecondLoadFaceLines(system);
+            var aisles = LoadingAisles(system, catalog);
+            var desviador = SelectiveSafetyFamilies.SelectedOfType(
+                authorized, catalog?.SafetyElements, SelectiveSafetyDefaults.DesviadorType);
             foreach (var selection in authorized)
             {
+                foreach (var line in secondFaceLines)
+                {
+                    selection.SecondLoadFacePosts.Add(line);
+                }
+
+                if (ReferenceEquals(selection, desviador))
+                {
+                    ApplyLoadingAisles(selection, aisles);
+                }
+
+                // I-42 (ronda 7E) — cada PASILLO lleva el tipo de defensa que su lado eligio. Es una declaracion
+                // DERIVADA, como LowEndOnly: la persiste el diseno de cada lado y la autoridad la vuelve a imponer
+                // aqui, asi que ningun documento puede traerla rancia. Sin eleccion —todo documento anterior— las
+                // dos caras heredan la pieza de la seleccion y el rack dibuja exactamente lo que dibujaba.
+                if (ReferenceEquals(selection, defense))
+                {
+                    PushBackDefenseSides.DeclareFaces(selection, sideAPieceId, sideBPieceId);
+                }
+
                 system.SafetySelections.Add(selection);
             }
 
@@ -100,8 +222,158 @@ namespace RackCad.Application.Systems.PushBack
             {
                 structure.SafetySelections.Add(selection.DeepCopy());
             }
+        }
 
-            return system;
+        /// <summary>
+        /// Los PASILLOS de carga del rack. Un rack COMPUESTO tiene dos por construccion —una cara de carga en cada
+        /// extremo longitudinal—, y los dos son extremos BAJOS: no hay ningun extremo alto donde la seguridad
+        /// estorbe. Uno de un sentido tiene uno solo, y su comportamiento no cambia en nada.
+        ///
+        /// <para>
+        /// Es del RACK, no de las camas: la seguridad protege el PASILLO. Que hoy una mitad no tenga ninguna cama no
+        /// retira su cara de carga ni la pone a salvo de un montacargas.
+        /// </para>
+        /// </summary>
+        internal static PushBackSafetyAisles AislesOf(PushBackSystem system)
+            => system?.Composite != null && (system.Composite.SideB?.IsPresent ?? false)
+                ? PushBackSafetyAisles.Both
+                : PushBackSafetyAisles.NearOnly;
+
+        /// <summary>
+        /// I-42 (ronda post-5a73b92) — las LINEAS de postes que de verdad tienen la segunda cara de carga.
+        ///
+        /// <para>
+        /// Declarar el lado B es una CAPACIDAD del rack; tener lado B es una propiedad de cada FRENTE. Una linea
+        /// solo adquiere la segunda cara si alguno de los frentes que sostiene —el de su izquierda o el de su
+        /// derecha— existe fisicamente en el lado B. Antes bastaba con que el rack fuera compuesto, asi que
+        /// declarar B en UN frente ponia botas y protectores en las lineas de todos los demas, que siguen siendo de
+        /// un solo sentido: es la regresion que el dueño vio.
+        /// </para>
+        /// <para>
+        /// Lista VACIA significa «todas las lineas», que es lo que responde un rack no compuesto y lo que deja el
+        /// comportamiento anterior intacto donde no hay nada que acotar.
+        /// </para>
+        /// </summary>
+        internal static IReadOnlyList<int> SecondLoadFaceLines(PushBackSystem system)
+        {
+            var composite = system?.Composite;
+            var fronts = system?.Structure?.Fronts;
+            if (composite == null || fronts == null || !(composite.SideB?.IsPresent ?? false))
+            {
+                return Array.Empty<int>();
+            }
+
+            var withB = new HashSet<int>();
+            for (var slot = 0; slot < fronts.Count; slot++)
+            {
+                if (composite.SideB.Resolved(slot)?.IsPresent ?? false)
+                {
+                    withB.Add(slot);
+                }
+            }
+
+            if (withB.Count == 0)
+            {
+                // Capacidad declarada y ningun frente con lado B: no hay segunda cara en ninguna linea. Se devuelve
+                // una linea IMPOSIBLE en vez de la lista vacia, que significaria «todas».
+                return new[] { -1 };
+            }
+
+            var lines = new List<int>();
+            for (var post = 0; post <= fronts.Count; post++)
+            {
+                if (withB.Contains(post - 1) || withB.Contains(post))
+                {
+                    lines.Add(post);
+                }
+            }
+
+            return lines;
+        }
+
+        /// <summary>
+        /// I-42 (ronda post-82e918b) — POR QUE EXTREMOS SE CARGA el rack, medido sobre las camas.
+        ///
+        /// <para>
+        /// Un DESVIADOR guia la tarima al entrar, asi que vive en el extremo por el que se CARGA y en ningun otro.
+        /// Cual es ese extremo no lo dice la presencia de un lado: lo dicen las camas. En un rack compuesto con
+        /// camas encontradas se carga por los DOS; en uno de corrida A→B solo por el arranque, aunque el lado B
+        /// exista; y en una corrida B→A solo por el final. Antes se colapsaba siempre al arranque, asi que el lado
+        /// B se quedaba sin desviador y una corrida B→A lo recibia en su extremo ALTO — justo donde no va.
+        /// </para>
+        /// </summary>
+        internal static IReadOnlyDictionary<int, SafetySide> LoadingAisles(
+            PushBackSystem system, RackCatalog catalog)
+        {
+            var result = new Dictionary<int, SafetySide>();
+            var fronts = system?.Structure?.Fronts;
+            if (system?.Composite == null || fronts == null)
+            {
+                return result;   // un solo sentido: el lado general de siempre, sin ninguna entrada por linea
+            }
+
+            var total = system.Structure.TotalLength;
+            var startSlots = new HashSet<int>();
+            var endSlots = new HashSet<int>();
+            foreach (var axis in PushBackRunGeometry.Axes(PushBackRuns.Resolve(system), catalog))
+            {
+                var atStart = Math.Abs(axis.LowContact.X) <= Math.Abs(axis.LowContact.X - total);
+                (atStart ? startSlots : endSlots).Add(axis.Slot);
+            }
+
+            for (var post = 0; post <= fronts.Count; post++)
+            {
+                var start = startSlots.Contains(post - 1) || startSlots.Contains(post);
+                var end = endSlots.Contains(post - 1) || endSlots.Contains(post);
+                result[post] = start && end
+                    ? SafetySide.Both
+                    : end ? SafetySide.Right : SafetySide.Left;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Escribe en la seleccion del DESVIADOR por que extremos se carga.
+        ///
+        /// <para>
+        /// Es la unica familia cuyo <see cref="SelectiveSafetySelection.Side"/> significa literalmente «que pasillo»:
+        /// el builder lateral lo lee solo para elegir entre el arranque y el final del corte. En las demas familias
+        /// el lado es PERTENENCIA —que postes llevan la pieza— y escribirlo apaga sus reglas adaptativas, que es el
+        /// defecto que el dueño ya rechazo; por eso esto no las toca.
+        /// </para>
+        /// </summary>
+        private static void ApplyLoadingAisles(
+            SelectiveSafetySelection selection, IReadOnlyDictionary<int, SafetySide> aisles)
+        {
+            if (selection == null || aisles == null || aisles.Count == 0)
+            {
+                return;
+            }
+
+            // Se escribe POR LINEA y se deja el lado general intacto: una linea sin entrada propia —cualquier rack
+            // de un solo sentido— sigue respondiendo lo que respondia.
+            //
+            // I-42 (A1/H8) — y se DECLARA que esa entrada es derivada, guardando lo que el usuario tenia ahi. Sin
+            // esa declaracion el derivado se persistia como intencion: al degradar el rack a un solo sentido
+            // quedaba un lado rancio que mandaba el desviador al extremo alto.
+            foreach (var pair in aisles)
+            {
+                var stored = selection.PostSides.FirstOrDefault(entry => entry.PostIndex == pair.Key);
+                selection.DerivedAisles.Add(new DerivedAisleEntry
+                {
+                    PostIndex = pair.Key,
+                    Authored = stored?.Side,
+                });
+
+                if (stored != null)
+                {
+                    stored.Side = pair.Value;
+                    continue;
+                }
+
+                selection.PostSides.Add(new SafetyPostSide { PostIndex = pair.Key, Side = pair.Value });
+            }
         }
 
         /// <summary>

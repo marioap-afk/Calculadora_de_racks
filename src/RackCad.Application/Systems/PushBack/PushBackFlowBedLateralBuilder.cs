@@ -95,12 +95,19 @@ namespace RackCad.Application.Systems.PushBack
         /// nuevo; solo un rack escalonado paga una definicion por fondo distinto, que es el minimo posible.
         /// </para>
         /// </summary>
+        /// <param name="levels">
+        /// I-42 — los NIVELES a materializar, o null para todos (que es lo que hace cualquier llamador anterior a la
+        /// iniciativa). Un rack compuesto lo necesita porque un nivel puede pertenecer a una cama corrida y no a la de
+        /// este lado: sin el filtro, la celda emitiria dos veces la misma pieza fisica.
+        /// </param>
         public IReadOnlyList<HeaderGroup> BuildLateralGroups(
-            PushBackSystem system, RackCatalog catalog, DynamicRackFront front = null, int levelCount = int.MaxValue)
+            PushBackSystem system, RackCatalog catalog, DynamicRackFront front = null, int levelCount = int.MaxValue,
+            IReadOnlyCollection<int> levels = null)
         {
             var result = new List<HeaderGroup>();
             var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front)
                 .Where(axis => axis.LevelNumber <= levelCount)
+                .Where(axis => levels == null || levels.Contains(axis.LevelNumber))
                 .ToList();
             if (axes.Count == 0)
             {

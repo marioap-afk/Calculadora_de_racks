@@ -326,7 +326,7 @@ namespace RackCad.Tests
 
         [Theory]
         [MemberData(nameof(Fondos))]
-        public void BothEndBeamsStayOnValidTroqueles_AndTheRearKeepsItsAnchor(int palletsDeep)
+        public void BothEndBeamsStayOnValidTroqueles_AndTheLowKeepsItsAnchor(int palletsDeep)
         {
             var catalog = Catalog;
             var system = System(catalog, palletsDeep);
@@ -339,9 +339,10 @@ namespace RackCad.Tests
                 Assert.Equal(PushBackTroquelGrid.Snap(cell.LowInsertion, grid), cell.LowInsertion, 9);
                 Assert.Equal(PushBackTroquelGrid.Snap(cell.RearInsertion, grid), cell.RearInsertion, 9);
 
-                // El posterior es el ANCLA: conserva EXACTAMENTE la elevacion que le dio el resolver.
-                var rear = placements.First(p => p.LevelNumber == cell.LevelNumber && p.IsEntrance);
-                Assert.Equal(rear.Y, cell.RearInsertion, 9);
+                // El de ENTRADA es el ANCLA: conserva EXACTAMENTE la elevacion que le dio el resolver. El posterior
+                // se DERIVA, asi que puede no coincidir con la que el resolver compartido le habia calculado.
+                var low = placements.First(p => p.LevelNumber == cell.LevelNumber && !p.IsEntrance);
+                Assert.Equal(low.Y, cell.LowInsertion, 9);
             }
         }
 

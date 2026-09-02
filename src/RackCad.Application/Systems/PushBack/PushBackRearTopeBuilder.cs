@@ -60,17 +60,56 @@ namespace RackCad.Application.Systems.PushBack
         public static bool IsPlanta(string view) => string.Equals(view, "PLANTA", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Owner decision (2026-07-24) — the rear tope's facing, INVERTED with respect to 10d8eeb, where the Owner
-        /// measured it upside down on the drawing. In the elevation views it is drawn UNMIRRORED; PLANTA is a top view
-        /// where the tope lies ALONG the beam, so there it keeps the beam's plan orientation (unchanged and approved).
-        /// The rule never reads the rear BEAM's mirror for the elevations: a beam's mirror orients a BEAM profile, not
-        /// the tope's step.
+        /// La mano del TOPE: siempre la CONTRARIA a la de su larguero alto, en cualquier vista. El bloque se monta
+        /// asi contra el escalon, y por eso los dos se invierten juntos.
+        ///
+        /// <para>
+        /// I-42 (correccion aislada 5B): en las vistas de elevacion esto era una CONSTANTE, asi que el tope no
+        /// seguia a su larguero cuando la mano de este cambiaba. En el marco identidad las dos expresiones dan el
+        /// mismo valor —por eso nadie lo notaba—, pero en cuanto el larguero deja de ir siempre espejado la
+        /// constante se queda atras. Ahora hay una sola relacion, y el tope hereda lo que decida el larguero.
+        /// </para>
         /// </summary>
         public static bool Mirrored(string view, bool beamMirroredX)
-            => IsPlanta(view) ? !beamMirroredX : ElevationMirrored;
+            => IsFrontal(view) ? ElevationMirrored : !beamMirroredX;
+
+        /// <summary>
+        /// El corte FRONTAL mira la retícula TRANSVERSAL: ahi el espejo de una pieza no habla del escalon del
+        /// larguero alto —que se ve de canto— sino del eje de la linea. Su orientacion es la que el dueño valido y
+        /// no la toca esta correccion; la relacion «el tope va contrario a su larguero» gobierna las vistas de
+        /// PROFUNDIDAD, que son donde esa mano se ve.
+        /// </summary>
+        private static bool IsFrontal(string view)
+            => string.Equals(view, "FRONTAL", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>The rear tope's mirror in the elevation views. Owner decision (2026-07-24): the inverse of 10d8eeb.</summary>
         public const bool ElevationMirrored = false;
+
+        /// <summary>
+        /// LA X DE MUNDO DEL TOPE: su ORIGEN —con el que mata— sobre el punto medido del poste, y el signo de ese
+        /// desplazamiento lo pone el espejo DEL TOPE, no el de ninguna otra pieza.
+        ///
+        /// <para>
+        /// Es el contrato que el SELECTIVO ya aplica y el dueño valida desde siempre
+        /// (<c>SelectiveLateralBuilder</c>: <c>mateX = AtFront ? postX + troquel.X : postX - troquel.X</c>, y esos dos
+        /// casos son exactamente los que llevan <c>Mirror = true</c> y <c>Mirror = false</c>). El punto medido es un
+        /// SEMIANCHO del poste: se mide hacia el lado al que mira la pieza, asi que espejar la pieza cambia el lado.
+        /// </para>
+        /// <para>
+        /// I-42 (correccion aislada 5D): el Push Back tomaba el signo del espejo de la COLOCACION, que en el marco de
+        /// una cama es una constante. Mientras el tope tambien iba siempre sin espejo las dos coincidian; desde 5B el
+        /// tope puede ir espejado y entonces el bloque quedaba dibujado con su origen del lado contrario — desplazado
+        /// exactamente DOS veces el punto medido (2 x 0.875" = 1.75"), que es lo que el dueño midio en AutoCAD. No es
+        /// una constante nueva: es el mismo desplazamiento de siempre, con el signo que le corresponde.
+        /// </para>
+        /// <para>
+        /// El PUNTO FISICO DE CONTACTO queda fijo: espejar el tope ya no lo mueve, porque la X compensa el cambio de
+        /// lado. La posicion semantica cerrada en la ronda 4B se conserva intacta alli donde el tope va sin espejo,
+        /// que es lo que aquella ronda midio.
+        /// </para>
+        /// </summary>
+        public static double AnchorX(double columnX, double anchorLocalX, bool topeMirrored)
+            => columnX + (topeMirrored ? anchorLocalX : -anchorLocalX);
 
         /// <summary>
         /// Owner decision (2026-07-24) — the rear tope's world ANCHOR: the vertical axis of the POST's
@@ -174,11 +213,25 @@ namespace RackCad.Application.Systems.PushBack
             => SelectiveTopePlacement.SnapY(troquelMateY, largueroY, SelectiveRackDefaults.TroquelPaso) + ExtraRise;
 
         /// <summary>Rear topes in the LATERAL view (rise-and-snap above the rear beam of each active cell of the front).</summary>
-        public IReadOnlyList<HeaderBlockInstance> BuildLateral(PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front = null)
-            => Build(system, catalog, frontIndex, front, "LATERAL");
+        /// <param name="levels">
+        /// I-42 — los NIVELES a materializar, o null para todos (que es lo que hace cualquier llamador anterior a la
+        /// iniciativa). Un rack compuesto lo necesita porque un nivel puede pertenecer a una cama corrida y no a la de
+        /// este lado: sin el filtro, la celda emitiria dos veces la misma pieza fisica.
+        /// </param>
+        public IReadOnlyList<HeaderBlockInstance> BuildLateral(
+            PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front = null,
+            IReadOnlyCollection<int> levels = null)
+            => Build(system, catalog, frontIndex, front, "LATERAL", levels);
 
         /// <summary>Rear topes in <paramref name="view"/>. LATERAL/FRONTAL rise-and-snap; PLANTA keeps the frente Y.</summary>
-        public IReadOnlyList<HeaderBlockInstance> Build(PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front, string view)
+        /// <param name="levels">
+        /// I-42 — los NIVELES a materializar, o null para todos (que es lo que hace cualquier llamador anterior a la
+        /// iniciativa). Un rack compuesto lo necesita porque un nivel puede pertenecer a una cama corrida y no a la de
+        /// este lado: sin el filtro, la celda emitiria dos veces la misma pieza fisica.
+        /// </param>
+        public IReadOnlyList<HeaderBlockInstance> Build(
+            PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front, string view,
+            IReadOnlyCollection<int> levels = null)
         {
             var result = new List<HeaderBlockInstance>();
             var structure = system?.Structure;
@@ -205,12 +258,19 @@ namespace RackCad.Application.Systems.PushBack
             var separator = PostAnchorLocal(
                 catalog, postId, DynamicFrontGeometry.PostPeralte(structure, catalog, postId), view);
 
-            // PB-004 (I-32, regla del Owner tras el round 1): el larguero posterior vuelve a estar en su troquel, así
-            // que la referencia del tope es directamente esa colocación — sin desplazamiento intermedio.
-            foreach (var placement in PushBackPlacements.Resolve(system, front).Where(placement => placement.IsEntrance))
+            // El tope cuelga de SU larguero alto, asi que su referencia es la elevacion DERIVADA de ese larguero —
+            // la que publica PushBackElevations— y no la que el resolver compartido le dio al nivel. Desde la
+            // inversion vertical de I-42 las dos ya no coinciden: medir desde la del resolver dejaba el tope a la
+            // altura de un larguero que no esta ahi, y ademas discrepando del corte frontal, que si consume la
+            // derivada. Sin entrada para el nivel se conserva la colocacion, que es lo que hace un rack sin camas.
+            var highInsertions = PushBackElevations.HighInsertions(system, catalog, front);
+
+            foreach (var placement in PushBackPlacements.Resolve(system, front)
+                         .Where(placement => placement.IsEntrance)
+                         .Where(placement => levels == null || levels.Contains(placement.LevelNumber)))
             {
                 var levelIndex = placement.LevelNumber - 1;
-                if (!rearTope.At(frontIndex, levelIndex))
+                if (!rearTope.Draws(frontIndex, levelIndex))
                 {
                     continue; // this cell's rear tope is deactivated
                 }
@@ -220,12 +280,21 @@ namespace RackCad.Application.Systems.PushBack
                     continue;   // no measured TROQUEL_SEPARADOR: no anchor, and never a raw-placement fallback
                 }
 
-                // The stop sits on the POST's separator axis. The post shares the rear beam's column, so the mirror that
-                // transforms the local point is the placement's; PLANTA also takes the separator's own depth offset.
-                var x = placement.X + (placement.MirroredX ? -separator.Value.X : separator.Value.X);
+                // The stop sits on the POST's separator axis. The post shares the rear beam's column.
+                //
+                // I-42 (correccion aislada 5D) — el signo del desplazamiento lo pone el espejo DEL TOPE, que es el
+                // contrato del Selectivo (ver AnchorX). Antes lo ponia el de la COLOCACION —una constante en el marco
+                // de una cama—, asi que un tope espejado quedaba 1.75" del lado contrario.
+                var beamMirrored = DynamicIntermediateBeamGeometry.HandAtDepthX(structure, placement.X)
+                                   ?? placement.MirroredX;
+                var mirrored = Mirrored(view, beamMirrored);
+                var x = AnchorX(placement.X, separator.Value.X, mirrored);
+                var beamY = highInsertions.TryGetValue(placement.LevelNumber, out var resolved)
+                    ? resolved
+                    : placement.Y;
                 var y = keepFrenteY
                     ? placement.Y + separator.Value.Y
-                    : ElevationY(troquelMateY, placement.Y);
+                    : ElevationY(troquelMateY, beamY);
                 // Commercial LONGITUD = the corresponding transverse beam length (per front x level) + the allowance.
                 var baseLength = front != null
                     ? PushBackLoadBeamGeometry.CellBeamLength(structure, front, placement.LevelNumber)
@@ -234,8 +303,7 @@ namespace RackCad.Application.Systems.PushBack
                     ? baseLength + SelectiveTopePlacement.LengthAllowance
                     : (double?)null;
                 result.Add(SelectiveTopePlacement.Tope(
-                    pieceId, block, view, x, y, saque, longitud,
-                    mirroredX: Mirrored(view, placement.MirroredX)));
+                    pieceId, block, view, x, y, saque, longitud, mirroredX: mirrored));
             }
 
             return result;
@@ -246,7 +314,12 @@ namespace RackCad.Application.Systems.PushBack
         /// with the post's real peralte. Owner decision (2026-07-24): the lateral measures from TROQUEL_SEPARADOR, the
         /// frontal from TROQUEL_TOPE — never from TROQUEL_LARGUERO, and never from another view's row.
         /// </summary>
-        private static double PostTroquelGridBase(DynamicRackSystem structure, RackCatalog catalog, string view)
+        /// <summary>
+        /// La retícula de troqueles del POSTE en una vista de elevacion: la base sobre la que el tope se ajusta.
+        /// Publica porque es parte del contrato vertical del tope y las pruebas lo comprueban contra ella, no contra
+        /// una copia — una segunda base seria una segunda autoridad.
+        /// </summary>
+        public static double PostTroquelGridBase(DynamicRackSystem structure, RackCatalog catalog, string view)
         {
             var postId = DynamicFrontGeometry.PostId(structure, catalog);
             var postPeralte = DynamicFrontGeometry.PostPeralte(structure, catalog, postId);

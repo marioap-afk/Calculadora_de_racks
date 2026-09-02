@@ -21,6 +21,14 @@ namespace RackCad.Application.Persistence
         public int PalletsDeep { get; set; }
         public int? LoadLevels { get; set; }
         public double? FirstLevelHeight { get; set; }
+
+        /// <summary>
+        /// I-42 — desde donde se mide <see cref="FirstLevelHeight"/>. ADITIVO y ANULABLE: ausente significa la
+        /// lectura HISTORICA, que es lo que trae todo documento anterior, asi que ninguno cambia de geometria. Solo
+        /// un documento guardado con la semantica nueva lo escribe.
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? FirstLevelDatum { get; set; }
         public double? BeamDepth { get; set; }
         public List<double> IntermediateBeamDepths { get; set; }
         public double? PalletTolerance { get; set; }
@@ -131,6 +139,7 @@ namespace RackCad.Application.Persistence
                 PalletsDeep = design.PalletsDeep,
                 LoadLevels = design.LoadLevels,
                 FirstLevelHeight = design.FirstLevelHeight,
+                FirstLevelDatum = design.FirstLevelDatum,
                 BeamDepth = design.BeamDepth,
                 IntermediateBeamDepths = design.IntermediateBeamDepths.Where(value => value > 0.0).ToList(),
                 PalletTolerance = design.PalletTolerance,
@@ -185,6 +194,7 @@ namespace RackCad.Application.Persistence
                 PalletsDeep = PalletsDeep,
                 LoadLevels = LoadLevels ?? DynamicRackDefaults.DefaultLoadLevels,
                 FirstLevelHeight = FirstLevelHeight ?? DynamicRackDefaults.DefaultFirstLevelHeight,
+                FirstLevelDatum = FirstLevelDatum,
                 BeamDepth = BeamDepth ?? DynamicRackDefaults.LegacyDefaultBeamDepth,
                 PalletTolerance = PalletTolerance ?? DynamicRackDefaults.DefaultPalletTolerance,
                 InOutBeamCatalogId = string.IsNullOrWhiteSpace(InOutBeamCatalogId)

@@ -4,6 +4,8 @@ using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.Systems.PushBack
@@ -19,6 +21,18 @@ namespace RackCad.Application.Systems.PushBack
     /// a view or the BOM (PB-VAL-06): it is stripped at build, exactly as GUIA already was — no destructive migration. The
     /// input collection and its selections are never mutated.
     /// </summary>
+    /// <summary>
+    /// Cuantos PASILLOS de carga tiene un Push Back, que es lo que decide donde va su seguridad.
+    /// </summary>
+    public enum PushBackSafetyAisles
+    {
+        /// <summary>Uno solo, en el extremo bajo. Es todo rack de un sentido, y el comportamiento de siempre.</summary>
+        NearOnly = 0,
+
+        /// <summary>Los DOS extremos son cara de carga: todo rack compuesto.</summary>
+        Both = 1
+    }
+
     public sealed class PushBackSafetyAuthority
     {
         private readonly RackCatalog catalog;
@@ -65,6 +79,20 @@ namespace RackCad.Application.Systems.PushBack
         /// low end. Independent of the source (the input collection and its selections are never mutated).
         /// </summary>
         public IReadOnlyList<SelectiveSafetySelection> Authorize(IEnumerable<SelectiveSafetySelection> source)
+            => Authorize(source, PushBackSafetyAisles.NearOnly);
+
+        /// <summary>
+        /// La misma autorizacion, declarando CUANTOS PASILLOS tiene el rack.
+        ///
+        /// <para>
+        /// I-42 — un Push Back compuesto tiene DOS pasillos de carga, uno por lado, y los dos son extremos BAJOS: no
+        /// hay ningun extremo alto donde la seguridad estorbe. Por eso un rack de dos sentidos coloca su seguridad
+        /// en los dos, exactamente como lo harian dos Push Back opuestos. Un rack de un sentido sigue teniendo un
+        /// solo pasillo y su comportamiento no cambia en nada.
+        /// </para>
+        /// </summary>
+        public IReadOnlyList<SelectiveSafetySelection> Authorize(
+            IEnumerable<SelectiveSafetySelection> source, PushBackSafetyAisles aisles)
         {
             var result = new List<SelectiveSafetySelection>();
             foreach (var selection in source ?? Enumerable.Empty<SelectiveSafetySelection>())
@@ -75,11 +103,117 @@ namespace RackCad.Application.Systems.PushBack
                 }
 
                 var copy = selection.DeepCopy();
-                RestrictToLowEnd(copy);
+                RestrictToAisles(copy, aisles);
+
+                // I-42 (S1E) — el AUTOMATICO de la bota lo decide el rack, POR LADO: cada lado protege SU
+                // pasillo de entrada/salida. Es el DEFECTO, no una imposicion — una eleccion explicita manda
+                // siempre—, y el lado B solo lo recibe cuando existe: un rack de un sentido no tiene lado B.
+                if (IsBoot(copy))
+                {
+                    copy.Bota.Automatic = BootPlacement.EntryExit;
+                    copy.BotaB.Automatic = aisles == PushBackSafetyAisles.Both
+                        ? BootPlacement.EntryExit
+                        : (BootPlacement?)null;
+                }
+
                 result.Add(copy);
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// I-42 (S1E, contrato del dueño) — declara, PARA CADA LADO, en que postes ese lado no tiene almacenamiento
+        /// y por tanto su automatico no coloca nada.
+        ///
+        /// <para>
+        /// Un blanco pertenece a un lado. Que A no tenga almacenamiento en una linea no dice nada de B, que puede
+        /// seguir cargando por su pasillo ahi mismo, asi que cada configuracion recibe SUS postes en blanco y el
+        /// otro lado se resuelve como siempre. No hay una segunda semantica de blanco: la pregunta se la hace a
+        /// <see cref="PushBackDefenseSides.HasFace"/>, la misma autoridad que ya distingue A de B por ranura para la
+        /// defensa (ronda 6D).
+        /// </para>
+        /// <para>
+        /// Es DERIVADA: se vuelve a imponer entera en cada resolucion, asi que al quitar el blanco ese lado
+        /// recupera solo lo que herede y ninguna decision del usuario se reescribe.
+        /// </para>
+        /// </summary>
+        public void DeclareBlankPosts(DynamicRackSystem structure, IEnumerable<SelectiveSafetySelection> selections)
+        {
+            var boots = (selections ?? Enumerable.Empty<SelectiveSafetySelection>())
+                .Where(selection => selection != null && IsBoot(selection))
+                .ToList();
+            if (boots.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var boot in boots)
+            {
+                boot.Bota.BlankPosts.Clear();
+                boot.BotaB.BlankPosts.Clear();
+            }
+
+            var layout = structure == null ? null : DynamicFrontGeometry.Compute(structure, catalog);
+            if (layout?.PostPositions == null)
+            {
+                return;
+            }
+
+            for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
+            {
+                if (!DynamicFrontActivation.BoundaryExists(structure, postIndex))
+                {
+                    continue;   // la frontera no existe: no hay nada que declarar, ya no se coloca nada (I-33)
+                }
+
+                foreach (var boot in boots)
+                {
+                    if (!PushBackDefenseSides.HasFace(structure, postIndex, PushBackSide.A))
+                    {
+                        boot.Bota.BlankPosts.Add(postIndex);
+                    }
+
+                    if (!PushBackDefenseSides.HasFace(structure, postIndex, PushBackSide.B))
+                    {
+                        boot.BotaB.BlankPosts.Add(postIndex);
+                    }
+                }
+            }
+        }
+
+        /// <summary>Si la seleccion es de la familia BOTA, segun el catalogo de este rack.</summary>
+        private bool IsBoot(SelectiveSafetySelection selection)
+        {
+            var element = catalog?.SafetyElements?.FirstOrDefault(entry =>
+                entry != null && string.Equals(entry.Id, selection?.ElementId, StringComparison.OrdinalIgnoreCase));
+            return element != null && SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.BotaType);
+        }
+
+        /// <summary>
+        /// Restringe una seleccion a los pasillos que el rack REALMENTE tiene. Muta la COPIA, nunca el origen.
+        ///
+        /// <para>
+        /// <see cref="PushBackSafetyAisles.NearOnly"/> es la regla de siempre —un solo pasillo, el del extremo bajo—
+        /// y deja el comportamiento legacy intacto. <c>Both</c> es la de I-42: las dos caras de un rack compuesto.
+        /// </para>
+        /// </summary>
+        public static void RestrictToAisles(SelectiveSafetySelection selection, PushBackSafetyAisles aisles)
+        {
+            if (selection == null)
+            {
+                return;
+            }
+
+            // La restriccion de extremo bajo se aplica SIEMPRE: es la regla de Push Back y es la que conserva la
+            // pertenencia y la orientacion de cada familia. Lo unico que añade un rack compuesto es que su extremo
+            // lejano TAMBIEN es un pasillo, y eso viaja en su propio eje.
+            //
+            // NO se toca Side. Escribir el lado para decir «dos pasillos» apagaba las reglas adaptativas —que solo
+            // valen cuando el usuario no ha elegido lado— y el protector lateral acababa en TODOS los postes y por
+            // duplicado. Pertenencia, orientacion y extremo son tres ejes y ninguno puede hablar por otro.
+            RestrictToLowEnd(selection);
+            selection.BothEndsAreLoadFaces = aisles == PushBackSafetyAisles.Both;
         }
 
         /// <summary>
@@ -109,6 +243,12 @@ namespace RackCad.Application.Systems.PushBack
                 return;
             }
 
+            // I-42 (S1) — la eleccion del usuario se CONSERVA antes de colapsar el lado general. El colapso
+            // sigue siendo necesario para las familias que leen el lado como orientacion o como extremo —el
+            // protector lateral y el desviador, los dos con contrato validado—, pero destruia la unica informacion
+            // que la BOTA necesita: QUE CARA DE ATAQUE proteger. Con el lado colapsado, sus tres opciones daban
+            // exactamente la misma bota.
+            selection.AuthoredSide = selection.AuthoredSide ?? selection.Side;
             if (selection.Side == SafetySide.Both || selection.Side == SafetySide.Right)
             {
                 selection.Side = SafetySide.Left;
@@ -122,21 +262,20 @@ namespace RackCad.Application.Systems.PushBack
             // the BOM, and the lateral guard's adaptive rule put a guard on the last post's far face.
             //
             // It is a DEFAULT, not a prohibition: an end the user explicitly set is honoured, which is why the stored
-            // entrance lengths are no longer wiped. What IS cleared is the AUTO flag of that end — an automatic far end
-            // has no meaning here and would resolve back to 12/36.
+            // entrance lengths are no longer wiped.
             selection.LowEndOnly = true;
 
             // PB-002 (I-32): the desviador grid Push Back shows has one column per POST, so its off-cells are keyed by
             // post. Marking the selection is what makes the frontal, the planta and the BOM read the same cell the
             // lateral does — before this they collapsed the last two columns with a Math.Min onto the last front.
             selection.DesviadorCellsAreByPost = true;
-            foreach (var post in selection.DefensaPosts)
-            {
-                if (post != null)
-                {
-                    post.EntranceAuto = false;
-                }
-            }
+
+            // I-42 (ronda 7C) — el extremo LEJANO conserva su marca de automatico. Aqui se le borraba, porque
+            // «un extremo lejano automatico no significa nada y volveria a 12/36»: eso era cierto antes de que
+            // PB-009 llegara al plan, pero hoy <see cref="DynamicForkliftDefensePlan"/> ya resuelve el automatico
+            // lejano a CERO en cuanto la seleccion lleva LowEndOnly, asi que borrarlo no defiende de nada — y en un
+            // rack COMPUESTO, donde ese extremo es un pasillo de verdad (6D), lo convertia en un cero explicito.
+            // El efecto se veia al apagar un poste y volver a encenderlo: la cara lejana no volvia.
         }
     }
 }

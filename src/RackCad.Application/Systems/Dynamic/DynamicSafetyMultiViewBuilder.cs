@@ -25,7 +25,9 @@ namespace RackCad.Application.Systems.Dynamic
             DynamicFrontLayout layout,
             string plateId,
             DynamicRackEnd end,
-            RackLevelElevations elevations = null)
+            RackLevelElevations elevations = null,
+            Func<int, int, bool> ownsDesviador = null,
+            Func<int, bool> ownsBoundary = null)
         {
             if (target == null || system == null || catalog == null || layout?.PostPositions == null)
             {
@@ -46,6 +48,13 @@ namespace RackCad.Application.Systems.Dynamic
                 // I-33 (Owner): la seguridad indexada por POSTE se atornilla a esa frontera; si no existe, no se
                 // coloca. La celda guardada NO se mueve a otro poste: queda dormida y vuelve al reactivar un frente.
                 if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
+                // I-42: un corte frontal es de UN LADO, y lo que se atornilla a una linea que solo el otro
+                // lado necesita no le pertenece. Sin filtro no cambia nada.
+                if (ownsBoundary != null && !ownsBoundary(postIndex))
                 {
                     continue;
                 }
@@ -84,9 +93,9 @@ namespace RackCad.Application.Systems.Dynamic
                 }
             }
 
-            AppendFrontalDesviadores(target, system, catalog, layout, end, elevations);
-            AppendFrontalDefensas(target, system, catalog, layout, plateId, end);
-            AppendFrontalGuias(target, system, catalog, layout, end);
+            AppendFrontalDesviadores(target, system, catalog, layout, end, elevations, ownsDesviador, ownsBoundary);
+            AppendFrontalDefensas(target, system, catalog, layout, plateId, end, ownsBoundary);
+            AppendFrontalGuias(target, system, catalog, layout, end, ownsBoundary);
         }
 
         public void AppendPlanta(
@@ -131,9 +140,14 @@ namespace RackCad.Application.Systems.Dynamic
                 }
                 else
                 {
+                    // I-42 (S1E) — la PERTENENCIA de una bota ya viene resuelta del dominio: que caras fisicas
+                    // hay que proteger en esta linea, con los dos lados y sus blancos ya tenidos en cuenta. Esta
+                    // vista solo la ancla y la orienta; no vuelve a decidir quien lleva pieza, que es lo que hacia
+                    // el filtro de caras de la ronda 6F y lo que permitia que cada vista respondiera distinto.
                     SelectiveSafetyPlacement.AppendAtPost(
                         target, catalog, view, boots, at, plateId, postIndex,
-                        mirrorAxisX: (rangeStart + rangeEnd) / 2.0);
+                        mirrorAxisX: (rangeStart + rangeEnd) / 2.0,
+                        physicalFaces: true);
                 }
             }
 
@@ -148,7 +162,8 @@ namespace RackCad.Application.Systems.Dynamic
             RackCatalog catalog,
             DynamicFrontLayout layout,
             string plateId,
-            DynamicRackEnd end)
+            DynamicRackEnd end,
+            Func<int, bool> ownsBoundary)
         {
             var selection = SelectiveSafetyFamilies.SelectedOfType(
                 system.SafetySelections, catalog.SafetyElements, SelectiveSafetyDefaults.DefensaType);
@@ -158,14 +173,17 @@ namespace RackCad.Application.Systems.Dynamic
             }
 
             const string view = "FRONTAL";
-            var block = CatalogLookup.Block(catalog, selection.ElementId, view);
+
+            // I-42 (ronda 7E): un corte frontal mira UN extremo, asi que lleva la pieza que ESA cara declara.
+            var elementId = DynamicDefenseFaces.ElementIdFor(selection, farEnd: end == DynamicRackEnd.Entrance);
+            var block = string.IsNullOrWhiteSpace(elementId) ? null : CatalogLookup.Block(catalog, elementId, view);
             if (string.IsNullOrWhiteSpace(block))
             {
                 return;
             }
 
             var offset = CatalogLookup.Local(
-                catalog, selection.ElementId, DynamicForkliftDefensePlan.PostOriginPoint, view);
+                catalog, elementId, DynamicForkliftDefensePlan.PostOriginPoint, view);
             var plateMate = string.IsNullOrWhiteSpace(plateId)
                 ? new Point2D(0.0, 0.0)
                 : CatalogLookup.Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
@@ -179,6 +197,13 @@ namespace RackCad.Application.Systems.Dynamic
                     continue;
                 }
 
+                // I-42: un corte frontal es de UN LADO, y lo que se atornilla a una linea que solo el otro
+                // lado necesita no le pertenece. Sin filtro no cambia nada.
+                if (ownsBoundary != null && !ownsBoundary(postIndex))
+                {
+                    continue;
+                }
+
                 var setting = DynamicForkliftDefensePlan.ForSelection(selection, postIndex, postCount);
                 var draws = end == DynamicRackEnd.Exit ? setting.DrawsExit : setting.DrawsEntrance;
                 if (!draws)
@@ -188,7 +213,7 @@ namespace RackCad.Application.Systems.Dynamic
 
                 var direction = end == DynamicRackEnd.Exit ? 1.0 : -1.0;
                 target.Add(Piece(
-                    selection.ElementId,
+                    elementId,
                     block,
                     view,
                     new Point2D(
@@ -205,7 +230,8 @@ namespace RackCad.Application.Systems.Dynamic
             DynamicRackSystem system,
             RackCatalog catalog,
             DynamicFrontLayout layout,
-            DynamicRackEnd end)
+            DynamicRackEnd end,
+            Func<int, bool> ownsBoundary)
         {
             if (end != DynamicRackEnd.Entrance)
             {
@@ -229,6 +255,12 @@ namespace RackCad.Application.Systems.Dynamic
             foreach (var placement in DynamicEntranceGuidePlan.Build(system, selection))
             {
                 if (placement.PostIndex < 0 || placement.PostIndex >= layout.PostPositions.Count)
+                {
+                    continue;
+                }
+
+                // I-42: la guia tambien vive sobre una LINEA. Sin filtro no cambia nada (y Push Back no lleva guias).
+                if (ownsBoundary != null && !ownsBoundary(placement.PostIndex))
                 {
                     continue;
                 }
@@ -320,14 +352,25 @@ namespace RackCad.Application.Systems.Dynamic
             }
 
             const string view = "PLANTA";
-            var block = CatalogLookup.Block(catalog, selection.ElementId, view);
-            if (string.IsNullOrWhiteSpace(block))
+
+            // I-42 (ronda 7E): cada CARA lleva la pieza que su lado eligio, y puede no llevar ninguna. Sin caras
+            // declaradas —todo sistema que no las rellene, todo documento anterior— las dos resuelven a la de la
+            // seleccion, que es exactamente lo que se hacia antes.
+            var nearId = DynamicDefenseFaces.ElementIdFor(selection, farEnd: false);
+            var farId = DynamicDefenseFaces.ElementIdFor(selection, farEnd: true);
+            var nearBlock = string.IsNullOrWhiteSpace(nearId) ? null : CatalogLookup.Block(catalog, nearId, view);
+            var farBlock = string.IsNullOrWhiteSpace(farId) ? null : CatalogLookup.Block(catalog, farId, view);
+            if (string.IsNullOrWhiteSpace(nearBlock) && string.IsNullOrWhiteSpace(farBlock))
             {
                 return;
             }
 
-            var offset = CatalogLookup.Local(
-                catalog, selection.ElementId, DynamicForkliftDefensePlan.PostOriginPoint, view);
+            var nearOffset = string.IsNullOrWhiteSpace(nearId)
+                ? new Point2D(0.0, 0.0)
+                : CatalogLookup.Local(catalog, nearId, DynamicForkliftDefensePlan.PostOriginPoint, view);
+            var farOffset = string.IsNullOrWhiteSpace(farId)
+                ? new Point2D(0.0, 0.0)
+                : CatalogLookup.Local(catalog, farId, DynamicForkliftDefensePlan.PostOriginPoint, view);
             var postCount = layout.PostPositions.Count;
             for (var postIndex = 0; postIndex < postCount; postIndex++)
             {
@@ -339,20 +382,34 @@ namespace RackCad.Application.Systems.Dynamic
                 }
 
                 var setting = DynamicForkliftDefensePlan.ForSelection(selection, postIndex, postCount);
-                var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
-                var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
-                var rangeEnd = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? system.TotalLength;
-                var y = layout.PostPositions[postIndex] + offset.Y;
-                if (setting.DrawsExit)
+                var rangeStart = DynamicDefenseFaces.NearX(system, postIndex);
+                var rangeEnd = DynamicDefenseFaces.FarX(system, postIndex);
+
+                // I-42 (ronda 6D) — una defensa protege una CARA DE CARGA: el extremo de la profundidad por donde
+                // entra el montacargas. Se coloca en los extremos de la cobertura de esta linea, y eso basta
+                // mientras esos extremos SEAN caras. En un Push Back compuesto no siempre lo son: un lado EN BLANCO
+                // acorta la cobertura de su linea, y su extremo pasa a caer en la interfaz con el otro lado —dentro
+                // del rack, sin pasillo al que mirar—. Medido: con el lado A en blanco en la primera ranura,
+                // aparecia una defensa en X=247.25, contra la cara posterior del lado contrario.
+                //
+                // La estructura declara ese tramo interior; el Dinamico no declara ninguno y dibuja igual que
+                // siempre.
+                // I-42 (ronda 7D): la MISMA pregunta la hace ahora la rejilla por poste, para que no pueda pintar
+                // «apagado» donde el rack si lleva defensa. La regla no cambia, solo dejo de estar solo aqui.
+                if (setting.DrawsExit && !string.IsNullOrWhiteSpace(nearBlock)
+                    && DynamicDefenseFaces.HasFace(system, postIndex, farEnd: false))
                 {
-                    target.Add(Piece(selection.ElementId, block, view,
-                        new Point2D(rangeStart + offset.X, y), false, false, setting.ExitLength));
+                    target.Add(Piece(nearId, nearBlock, view,
+                        new Point2D(rangeStart + nearOffset.X, layout.PostPositions[postIndex] + nearOffset.Y),
+                        false, false, setting.ExitLength));
                 }
 
-                if (setting.DrawsEntrance)
+                if (setting.DrawsEntrance && !string.IsNullOrWhiteSpace(farBlock)
+                    && DynamicDefenseFaces.HasFace(system, postIndex, farEnd: true))
                 {
-                    target.Add(Piece(selection.ElementId, block, view,
-                        new Point2D(rangeEnd - offset.X, y), true, false, setting.EntranceLength));
+                    target.Add(Piece(farId, farBlock, view,
+                        new Point2D(rangeEnd - farOffset.X, layout.PostPositions[postIndex] + farOffset.Y),
+                        true, false, setting.EntranceLength));
                 }
             }
         }
@@ -363,7 +420,9 @@ namespace RackCad.Application.Systems.Dynamic
             RackCatalog catalog,
             DynamicFrontLayout layout,
             DynamicRackEnd end,
-            RackLevelElevations elevations)
+            RackLevelElevations elevations,
+            Func<int, int, bool> ownsDesviador,
+            Func<int, bool> ownsBoundary)
         {
             var selection = SelectiveSafetyFamilies.SelectedOfType(
                 system.SafetySelections, catalog.SafetyElements, SelectiveSafetyDefaults.DesviadorType);
@@ -404,6 +463,13 @@ namespace RackCad.Application.Systems.Dynamic
                     continue;
                 }
 
+                // I-42: un corte frontal es de UN LADO, y lo que se atornilla a una linea que solo el otro
+                // lado necesita no le pertenece. Sin filtro no cambia nada.
+                if (ownsBoundary != null && !ownsBoundary(postIndex))
+                {
+                    continue;
+                }
+
                 if (!DrawsAtEnd(selection, postIndex, end))
                 {
                     continue;
@@ -420,15 +486,23 @@ namespace RackCad.Application.Systems.Dynamic
                         continue;
                     }
 
+                    // I-42 — un desviador guia la tarima al ENTRAR, asi que solo existe donde este corte tiene una
+                    // cama que se carga por el. Un rack de un solo sentido no pasa predicado y no cambia nada; un
+                    // compuesto lo deriva de sus CAMAS, que es la misma autoridad que gobierna el lateral.
+                    if (ownsDesviador != null && !ownsDesviador(postIndex, levelIndex))
+                    {
+                        continue;
+                    }
+
                     var level = system.LoadBeamLevels[levelIndex];
 
-                    // El desviador cuelga del larguero de SU extremo. El BAJO admite override —es el que Push Back
-                    // deriva— y se pregunta POR POSTE, porque este bucle recorre postes y en un rack jagged cada uno
-                    // puede tener frentes distintos a los lados. El ALTO no: su larguero es el ancla y conserva la
-                    // elevación del resolver (PB-004, I-32).
-                    var beamY = end == DynamicRackEnd.Entrance
-                        ? level.EntranceElevation
-                        : elevations.OrPost(postIndex, level.LevelNumber, level.ExitElevation);
+                    // El desviador cuelga del larguero de SU extremo, y sigue al override de ese extremo — sea el
+                    // bajo o el alto. Se pregunta POR POSTE porque este bucle recorre postes y en un rack jagged cada
+                    // uno puede tener frentes distintos a los lados (PB-004).
+                    var beamY = elevations.OrPost(
+                        postIndex,
+                        level.LevelNumber,
+                        end == DynamicRackEnd.Entrance ? level.EntranceElevation : level.ExitElevation);
                     var y = levelIndex == 0 ? troquel.Y + firstHeight : beamY - SelectiveDesviadorPlan.BeamYOffset;
                     target.Add(Piece(
                         selection.ElementId,
@@ -502,11 +576,14 @@ namespace RackCad.Application.Systems.Dynamic
             }
         }
 
-        /// <summary>La copia de ese poste que va en ese corte, con su orientación — o null si no lleva ninguna.</summary>
+        /// <summary>
+        /// La copia de ese poste que va en ese corte, con su orientación — o null si no lleva ninguna.
+        /// I-42 (S1): es la BOTA, asi que su pertenencia son UBICACIONES FISICAS y no orientaciones.
+        /// </summary>
         private static SafetyEndCopy? CopyAtEnd(SelectiveSafetySelection selection, int postIndex, DynamicRackEnd end)
         {
             var highEnd = end == DynamicRackEnd.Entrance;
-            foreach (var copy in SelectiveSafetyEnds.CopiesForPost(selection, postIndex))
+            foreach (var copy in SelectiveSafetyEnds.BootCopiesForPost(selection, postIndex))
             {
                 if (copy.AtHighEnd == highEnd)
                 {

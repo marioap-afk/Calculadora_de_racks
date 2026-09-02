@@ -54,6 +54,14 @@ namespace RackCad.Application.Systems.PushBack
         /// </summary>
         public string RearTopePieceId { get; set; }
 
+        /// <summary>
+        /// I-42 (ronda 7E) — el TIPO de defensa de montacargas de este lado: un id de catalogo,
+        /// <see cref="PushBackDefaults.NonePieceId"/> para «ninguno», o NULL para el comportamiento historico. Es un
+        /// eje distinto de la intencion POR POSTE, que sigue viviendo en la seleccion de seguridad: el tipo dice QUE
+        /// pieza usa el pasillo, y la rejilla en QUE lineas se pone.
+        /// </summary>
+        public string DefensePieceId { get; set; }
+
         private PushBackSystem workingBaseline;
 
         /// <summary>The last accepted resolved system whose MODULAR structure — custom cabeceras and manual fondos — the next
@@ -224,9 +232,12 @@ namespace RackCad.Application.Systems.PushBack
         /// active front; the parallel Push Back cells are re-synced but never trimmed, so the blank front's rear
         /// peraltes and tope flags stay DORMANT and come back intact when it is reactivated. Returns the verdict.
         /// </summary>
-        public bool SetActive(int index, bool isActive)
+        public bool SetActive(int index, bool isActive) => SetActive(index, isActive, allowAllBlank: false);
+
+        /// <summary>La misma operacion, admitiendo dejar el lado entero en blanco (I-42, solo el rack compuesto).</summary>
+        public bool SetActive(int index, bool isActive, bool allowAllBlank)
         {
-            var applied = structure.SetActive(index, isActive);
+            var applied = structure.SetActive(index, isActive, allowAllBlank);
             if (applied)
             {
                 SyncPushConfig();
@@ -469,6 +480,7 @@ namespace RackCad.Application.Systems.PushBack
                 pushFronts.Select(front => front.Clone()).ToList(),
                 RearTopeSaque,
                 RearTopePieceId,
+                DefensePieceId,
                 structure.SelectedFrontIndex,
                 structure.SelectedLevelIndex,
                 structure.SelectedCells());
@@ -487,6 +499,7 @@ namespace RackCad.Application.Systems.PushBack
             pushFronts.AddRange(snapshot.PushFronts.Select(front => front.Clone()));
             RearTopeSaque = snapshot.RearTopeSaque;
             RearTopePieceId = snapshot.RearTopePieceId;
+            DefensePieceId = snapshot.DefensePieceId;
             SyncPushConfig();
             RestoreSelection(snapshot.SelectedFrontIndex, snapshot.SelectedLevelIndex, snapshot.SelectedCells);
         }
@@ -580,6 +593,7 @@ namespace RackCad.Application.Systems.PushBack
             IReadOnlyList<PushBackEditorFront> pushFronts,
             double rearTopeSaque,
             string rearTopePieceId,
+            string defensePieceId,
             int selectedFrontIndex,
             int selectedLevelIndex,
             IReadOnlyList<DynamicRackCellAddress> selectedCells)
@@ -588,6 +602,7 @@ namespace RackCad.Application.Systems.PushBack
             PushFronts = pushFronts ?? new List<PushBackEditorFront>();
             RearTopeSaque = rearTopeSaque;
             RearTopePieceId = rearTopePieceId;
+            DefensePieceId = defensePieceId;
             SelectedFrontIndex = selectedFrontIndex;
             SelectedLevelIndex = selectedLevelIndex;
             SelectedCells = selectedCells ?? new List<DynamicRackCellAddress>();
@@ -597,6 +612,9 @@ namespace RackCad.Application.Systems.PushBack
         public IReadOnlyList<PushBackEditorFront> PushFronts { get; }
         public double RearTopeSaque { get; }
         public string RearTopePieceId { get; }
+
+        /// <summary>I-42 (ronda 7E) — el tipo de defensa del lado en el momento de la instantanea.</summary>
+        public string DefensePieceId { get; }
         public int SelectedFrontIndex { get; }
         public int SelectedLevelIndex { get; }
         public IReadOnlyList<DynamicRackCellAddress> SelectedCells { get; }

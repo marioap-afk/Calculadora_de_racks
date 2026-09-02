@@ -4,9 +4,12 @@ using System.Globalization;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
+using RackCad.Application.Geometry;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.Application.Systems.PushBack
 {
@@ -25,9 +28,64 @@ namespace RackCad.Application.Systems.PushBack
         private readonly PushBackIntermediateBeamLateralBuilder intermediateBuilder = new PushBackIntermediateBeamLateralBuilder();
         private readonly PushBackRearTopeBuilder rearTopeBuilder = new PushBackRearTopeBuilder();
 
-        public HeaderRunPlan Build(PushBackSystem system, RackCatalog catalog) => BuildCore(system, catalog, -1);
+        public HeaderRunPlan Build(PushBackSystem system, RackCatalog catalog)
+            => WithResolvedBoots(BuildCore(system, catalog, -1), system, catalog, -1);
 
-        public HeaderRunPlan Build(PushBackSystem system, RackCatalog catalog, int postIndex) => BuildCore(system, catalog, postIndex);
+        public HeaderRunPlan Build(PushBackSystem system, RackCatalog catalog, int postIndex)
+            => WithResolvedBoots(BuildCore(system, catalog, postIndex), system, catalog, postIndex);
+
+        /// <summary>
+        /// I-42 (S1F) — LAS BOTAS DEL CORTE LATERAL, por la MISMA autoridad que la planta, los cortes frontales y
+        /// el BOM. Este corte mira la profundidad, asi que las cuatro caras de un rack compuesto caen en cuatro X
+        /// distintas; antes preguntaba por el extremo de la linea y solo sabia dibujar dos.
+        ///
+        /// <para>
+        /// La ALTURA y la vista son las que el pipeline compartido ya usaba: se toma de las piezas que se retiran,
+        /// que es lo unico que esta vista aporta y esta autoridad no conoce. Sin ninguna que retirar tampoco hay
+        /// ninguna que reponer.
+        /// </para>
+        /// </summary>
+        private const string LateralView = "LATERAL";
+
+        private static HeaderRunPlan WithResolvedBoots(
+            HeaderRunPlan plan, PushBackSystem system, RackCatalog catalog, int postIndex)
+        {
+            if (plan == null || system?.Structure == null || catalog == null)
+            {
+                return plan;
+            }
+
+            var stripped = PushBackBootPlan.Without(plan, catalog);
+            var loose = stripped.LooseInstances.ToList();
+
+            // I-42 (A1/H6) — la ALTURA sale de la PLACA, como en todas las vistas, no de una pieza que el pipeline
+            // compartido hubiera dibujado. Antes se tomaba de la primera que hubiera y, si no habia ninguna —el
+            // poste 0 sin bota, por ejemplo—, la familia entera desaparecia de este corte mientras la planta, los
+            // cortes frontales y el BOM si la tenian.
+            var plateId = DynamicFrontGeometry.PlateId(system.Structure, catalog);
+            var plateMate = string.IsNullOrWhiteSpace(plateId)
+                ? new Point2D(0.0, 0.0)
+                : CatalogLookup.Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, LateralView);
+            var y = -plateMate.Y;
+
+            // Este corte COLAPSA el ancho: todas las lineas de postes se proyectan una sobre otra, asi que un plano
+            // de cara se dibuja UNA vez —como la planta colapsa los niveles—. Es una proyeccion de la vista, no una
+            // fusion de identidades: la planta y el BOM siguen contando cada pieza.
+            // Un corte POR LINEA muestra solo las de SU linea; el general las de todas, colapsadas por plano.
+            foreach (var plane in PushBackBootPlan.Resolve(system, catalog)
+                         .Where(boot => postIndex < 0 || boot.PostIndex == postIndex)
+                         .GroupBy(boot => (boot.PieceId, Math.Round(boot.FaceX, 4), boot.Mirrored))
+                         .Select(group => group.First()))
+            {
+                var block = CatalogLookup.Block(catalog, plane.PieceId, LateralView);
+                if (!string.IsNullOrWhiteSpace(block))
+                {
+                    loose.Add(PushBackBootPlan.Instance(plane, block, LateralView, new Point2D(plane.FaceX, y)));
+                }
+            }
+
+            return new HeaderRunPlan(stripped.Headers, loose);
+        }
 
         /// <summary>The lateral section at each transverse post, following the dynamic Cortes contract.</summary>
         public IReadOnlyList<DynamicLateralCorte> Cortes(PushBackSystem system, RackCatalog catalog)
@@ -80,6 +138,157 @@ namespace RackCad.Application.Systems.PushBack
             return string.Join("|", front.StartX, front.EndX, front.LoadLevels, cells);
         }
 
+        /// <summary>
+        /// I-42 — el lateral de un rack COMPUESTO. La regla arquitectonica se ve entera aqui: la ESTRUCTURA se
+        /// dibuja UNA sola vez, desde el sistema compuesto (cabeceras, separadores —el central incluido—, postes
+        /// derivados, placas, cotas y etiquetas), y encima se monta el CONTENIDO cama a cama, cada una construida en
+        /// su marco y llevada al rack con una sola reflexion rigida. No se dibuja un rack A y otro B superpuestos.
+        ///
+        /// <para>
+        /// El contexto de elevaciones que reciben las decoraciones compartidas es el del lado A, el de REFERENCIA:
+        /// una sola tabla frente-&gt;nivel-&gt;elevacion no puede describir dos pasillos a la vez, y las elevaciones
+        /// propias del lado B ya viajan con sus propias piezas. Limitacion declarada, no un descuido.
+        /// </para>
+        /// </summary>
+        private HeaderRunPlan BuildComposite(PushBackSystem system, RackCatalog catalog, int postIndex, bool sectioned)
+        {
+            var structure = system.Structure;
+            // La ESTRUCTURA se dibuja SIN decoraciones: una sola tabla frente/nivel/elevacion no puede describir dos
+            // pasillos, asi que las cotas y las etiquetas de nivel se emiten despues, una vez POR LADO y con la
+            // geometria real de ese lado. Ninguna cota puede afirmar una elevacion de A sobre una pieza de B.
+            var bare = WithoutDecorations(structure);
+            var basePlan = sectioned
+                ? dynamicBuilder.Build(bare, catalog, postIndex, null)
+                : dynamicBuilder.Build(bare, catalog, null);
+
+            var headers = PushBackPlanComposer.StructuralHeaderGroups(basePlan);
+            // El DESVIADOR de un rack compuesto lo aporta CADA CAMA, en su marco (PushBackDiverterPlan): el builder
+            // dinamico conserva la regla de un rack de un solo sentido —izquierda = extremo bajo— y en compuesto el
+            // lado B tiene su extremo bajo a la derecha. Se retira aqui para que no haya dos autoridades.
+            var loose = PushBackPlanComposer.StructuralLoose(basePlan)
+                .Where(instance => !PushBackDiverterPlan.IsDiverter(instance, catalog))
+                .ToList();
+
+            var runs = PushBackRuns.Resolve(system);
+            var slots = CompositeSlots(system, structure, postIndex, sectioned);
+            var levelCap = sectioned ? DynamicFrontGeometry.LoadLevelsAtPost(structure, postIndex) : int.MaxValue;
+            var content = PushBackCompositeContent.Lateral(
+                system, catalog, runs, slot => slots.Contains(slot), levelCap, postIndex);
+            headers.AddRange(content.Headers);
+            loose.AddRange(content.Loose);
+
+            // Las decoraciones de CADA lado, con SUS elevaciones, por el pipeline de anotaciones que ya existe.
+            loose.AddRange(SideDecorations(system, catalog, postIndex, sectioned));
+
+            // Etiquetas A/B: informacion grafica del plano, por el mismo pipeline. Nunca al BOM.
+            // I-42 (ronda 8, V1): se rotulan los lados que ALMACENAN en las ranuras que este corte muestra — las
+            // mismas que gobiernan su contenido—, no los que el rack declara en alguna otra parte.
+            loose.AddRange(PushBackSideAnnotations.Lateral(system, slots.Contains));
+
+            return new HeaderRunPlan(headers, loose);
+        }
+
+        /// <summary>
+        /// Las cotas y las etiquetas de nivel de los DOS lados, cada una calculada sobre la sub-estructura del lado
+        /// que representa y llevada al rack con la misma reflexion rigida que su contenido. El nombre del rack lo
+        /// emite solo el lado A: es del rack, no de un lado, y duplicarlo escribiria dos veces el mismo texto.
+        /// </summary>
+        private static IReadOnlyList<HeaderBlockInstance> SideDecorations(
+            PushBackSystem system, RackCatalog catalog, int postIndex, bool sectioned)
+        {
+            var result = new List<HeaderBlockInstance>();
+            var composite = system.Composite;
+            var axis = PushBackMirror.AxisOf(system.Structure);
+            foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
+            {
+                var view = composite.Of(side);
+                var local = view?.Local?.Structure;
+                if (view == null || !view.IsPresent || local == null)
+                {
+                    continue;
+                }
+
+                var decorated = new List<HeaderBlockInstance>();
+                var source = side == PushBackSide.B ? WithoutRackName(local) : local;
+                DynamicViewDecorations.AppendLateral(
+                    decorated,
+                    source,
+                    sectionHeight: sectioned ? DynamicFrontGeometry.PostHeight(local, postIndex) : (double?)null,
+                    levelCount: sectioned
+                        ? DynamicFrontGeometry.LoadLevelsAtPost(local, postIndex)
+                        : int.MaxValue,
+                    sectionStartX: 0.0,
+                    sectionEndX: null,
+                    postIndex: sectioned ? postIndex : -1,
+                    elevations: PushBackElevations.Context(view.Local, catalog));
+
+                result.AddRange(side == PushBackSide.B
+                    ? PushBackMirror.Instances(decorated, axis)
+                    : decorated);
+            }
+
+            return result;
+        }
+
+        /// <summary>Copia de la estructura sin cotas ni etiquetas: las emite despues cada lado con su geometria.</summary>
+        private static DynamicRackSystem WithoutDecorations(DynamicRackSystem source)
+        {
+            var copy = PushBackMirror.Structure(PushBackMirror.Structure(source));
+            copy.Dimensions = DimensionDetail.None;
+            copy.NumberFronts = false;
+            copy.NumberLevels = false;
+            copy.DrawRackName = false;
+            return copy;
+        }
+
+        /// <summary>Copia de una sub-estructura sin el nombre del rack: solo el lado de referencia lo escribe.</summary>
+        private static DynamicRackSystem WithoutRackName(DynamicRackSystem source)
+        {
+            var copy = PushBackMirror.Structure(PushBackMirror.Structure(source));
+            copy.DrawRackName = false;
+            return copy;
+        }
+
+        /// <summary>
+        /// Las ranuras que este lateral materializa. Un corte por poste dibuja las ranuras adyacentes a ese poste; el
+        /// lateral NO seccionado dibuja la ENVOLVENTE, que es la ranura de mayor tramo longitudinal (la mas
+        /// profunda), igual que un rack de un solo sentido dibuja la del rack entero.
+        /// </summary>
+        private static HashSet<int> CompositeSlots(
+            PushBackSystem system, DynamicRackSystem structure, int postIndex, bool sectioned)
+        {
+            if (sectioned)
+            {
+                return new HashSet<int>(
+                    DynamicFrontGeometry.AdjacentFronts(structure, postIndex).Select(front => front.Index));
+            }
+
+            // I-42 (A1B/H17) — la envolvente sale de lo que el rack REALMENTE tiene. Antes era el mayor tramo de
+            // cualquier ranura, asi que una ranura profunda EN BLANCO por los dos lados —sin cama, sin
+            // almacenamiento— gobernaba este corte y se dibujaba estructura sin contenido, mientras la ranura
+            // activa menos profunda no salia. Las camas fisicas son la autoridad; sin ninguna, el criterio de
+            // siempre.
+            var withContent = new HashSet<int>(PushBackRuns.Resolve(system).Runs.Select(run => run.Slot));
+            var envelope = -1;
+            var best = double.MinValue;
+            foreach (var front in structure.Fronts)
+            {
+                if (withContent.Count > 0 && !withContent.Contains(front.Index))
+                {
+                    continue;
+                }
+
+                var span = front.EndX - front.StartX;
+                if (span > best)
+                {
+                    best = span;
+                    envelope = front.Index;
+                }
+            }
+
+            return envelope >= 0 ? new HashSet<int> { envelope } : new HashSet<int>();
+        }
+
         private HeaderRunPlan BuildCore(PushBackSystem system, RackCatalog catalog, int postIndex)
         {
             var structure = system?.Structure;
@@ -89,6 +298,10 @@ namespace RackCad.Application.Systems.PushBack
             }
 
             var sectioned = postIndex >= 0;
+            if (system.IsComposite)
+            {
+                return BuildComposite(system, catalog, postIndex, sectioned);
+            }
 
             // El contexto de elevaciones se construye UNA vez y viaja al builder compartido, que lo usa para el
             // desviador bajo y para las cotas y etiquetas. Los largueros y la cama lo resuelven por su cuenta desde
@@ -135,7 +348,10 @@ namespace RackCad.Application.Systems.PushBack
             headers.AddRange(intermediates.Headers);
             loose.AddRange(intermediates.LooseInstances);
 
-            return new HeaderRunPlan(headers, loose);
+            // Un corte es una PROYECCION: dos frentes contiguos que arrancan en la misma posicion proyectan su
+            // larguero de entrada uno EXACTAMENTE encima del otro, y dibujar los dos deja bloques superpuestos —el
+            // «doble larguero» que el dueño ve—. La misma regla que ya usa el compositor del rack compuesto.
+            return PushBackPlanComposer.DeduplicateProjection(headers, loose);
         }
     }
 }

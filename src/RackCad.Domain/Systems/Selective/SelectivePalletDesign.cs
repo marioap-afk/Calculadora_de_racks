@@ -156,6 +156,310 @@ namespace RackCad.Domain.Systems.Selective
         public bool LowEndOnly { get; set; }
 
         /// <summary>
+        /// I-42 (S1) — el lado que el USUARIO eligio, antes de que la restriccion de extremo de un sistema lo
+        /// colapse. Es DERIVADO y no se persiste, como <see cref="LowEndOnly"/>: lo rellena la autoridad del
+        /// sistema en el mismo sitio donde impone su restriccion, y NULL —todo sistema que no restrinja nada—
+        /// significa «el de <see cref="Side"/>», que es lo que se leia siempre.
+        ///
+        /// <para>
+        /// Existe porque el colapso destruye informacion que UNA familia si necesita: el PROTECTOR LATERAL lee
+        /// Izquierda/Derecha como ORIENTACION en su sitio (contrato validado en I-32) y le basta el lado colapsado,
+        /// pero la BOTA lo lee como UBICACION FISICA —que cara de ataque proteger— y con el colapso las tres
+        /// opciones daban exactamente lo mismo.
+        /// </para>
+        /// </summary>
+        public SafetySide? AuthoredSide { get; set; }
+
+        /// <summary>
+        /// I-42 (S1D, contrato del dueño) — LA COLOCACION EFECTIVA de la bota en un poste, con la precedencia final:
+        ///
+        /// <list type="number">
+        /// <item>la decision PROPIA del poste, que gana siempre;</item>
+        /// <item>el BLANCO, que retira la cara de su lado de lo que ese poste HEREDE;</item>
+        /// <item>lo heredado: la general si alguien la eligio, y si no el automatico del sistema.</item>
+        /// </list>
+        ///
+        /// <para>
+        /// El orden importa y es el contrato: ni el blanco ni la general pueden bloquear una decision explicita
+        /// —el poste fisico existe y puede necesitar proteccion—, y la general es un DEFECTO, nunca un interruptor
+        /// de la familia. El fallback final es el lado historico: <c>Izquierda</c> es la cara de entrada/salida y
+        /// <c>Derecha</c> la posterior, que es exactamente lo que esas etiquetas querian decir.
+        /// </para>
+        /// </summary>
+        public BootPlacement BootPlacementAt(int postIndex) => PlacementAt(Bota, postIndex);
+
+        /// <summary>La colocacion efectiva del LADO B en ese poste. Un rack de un solo lado no la usa.</summary>
+        public BootPlacement BootPlacementAtSideB(int postIndex) => PlacementAt(BotaB, postIndex);
+
+        /// <summary>
+        /// I-42 (S1G) — EL TIPO DE PIEZA que un lado materializa: el que ESE lado eligio o, si nunca se eligio ahi,
+        /// el del documento —<see cref="ElementId"/>—, que es el unico que existia antes de esta ronda. Devuelve el
+        /// id de «ninguno» tal cual: quien materializa decide que hacer con el, y la intencion sigue guardada.
+        /// </summary>
+        public string BootPieceOf(SelectiveBotaConfig config)
+            => config == null || string.IsNullOrWhiteSpace(config.PieceId) ? ElementId : config.PieceId;
+
+        /// <summary>
+        /// I-42 (S1E) — LAS CARAS FISICAS que hay que proteger en ese poste: la union de lo que piden los dos
+        /// lados, DEDUPLICADA.
+        ///
+        /// <para>
+        /// Es el punto donde el lado deja de importar y empieza la geometria. «Entrada/Salida» se lee dentro del
+        /// lado: la de A es la cara CERCANA del rack y la de B la LEJANA, y sus posteriores son las contrarias. Dos
+        /// intenciones distintas pueden nombrar la misma cara fisica —la posterior de A y la entrada de B— y eso es
+        /// UNA pieza, no dos.
+        /// </para>
+        /// <para>
+        /// Esta es la UNICA resolucion de pertenencia: la planta, los cortes y el BOM la consumen, ninguno la
+        /// vuelve a calcular en su propio marco.
+        /// </para>
+        /// </summary>
+        public BootFaces BootFacesAt(int postIndex)
+        {
+            var a = PlacementAt(Bota, postIndex);
+            var b = PlacementAt(BotaB, postIndex);
+            return new BootFaces(
+                near: BootPlacements.IncludesEntryExit(a) || BootPlacements.IncludesRear(b),
+                far: BootPlacements.IncludesRear(a) || BootPlacements.IncludesEntryExit(b));
+        }
+
+        /// <summary>
+        /// La resolucion de UN lado, con la precedencia del contrato: decision propia del poste, blanco de ese
+        /// lado, general de ese lado. Lo unico que se añade aqui es lo que la configuracion de un lado no puede
+        /// saber por si sola: la MATRIZ HISTORICA por poste y la intencion global de un documento anterior.
+        /// </summary>
+        private BootPlacement PlacementAt(SelectiveBotaConfig config, int postIndex)
+        {
+            var sideA = ReferenceEquals(config, Bota);
+            if (config == null)
+            {
+                return BootPlacement.None;
+            }
+
+            if (config.HasOwnAt(postIndex))
+            {
+                return config.At(postIndex).Value;
+            }
+
+            if (sideA)
+            {
+                // Legacy: un poste con entrada propia en la matriz historica es tan EXPLICITO como el de arriba
+                // —nadie lo colapsa, igual que en ChosenSide—, y esa matriz es del lado unico/A.
+                foreach (var over in PostSides)
+                {
+                    if (over != null && over.PostIndex == postIndex)
+                    {
+                        return BootPlacements.From(over.Side);
+                    }
+                }
+            }
+
+            if (config.IsBlankAt(postIndex))
+            {
+                return BootPlacement.None;
+            }
+
+            if (config.Placement.HasValue)
+            {
+                return config.Placement.Value;
+            }
+
+            return sideA ? InheritedSideA(config) : InheritedSideB(config);
+        }
+
+        /// <summary>
+        /// Lo que hereda el lado A (o el unico lado): el automatico del sistema, salvo que el documento traiga una
+        /// intencion GLOBAL anterior a S1E —el lado historico—, que es una decision del usuario y manda. El unico
+        /// valor que significa «no lo he tocado» es el que siembra un rack nuevo, «Ambas».
+        /// </summary>
+        private BootPlacement InheritedSideA(SelectiveBotaConfig config)
+        {
+            if (BootSidesDeclared)
+            {
+                return config.Automatic ?? BootPlacement.None;
+            }
+
+            var legacy = AuthoredSide ?? Side;
+            return legacy == SafetySide.Both
+                ? config.Automatic ?? BootPlacements.From(legacy)
+                : BootPlacements.From(legacy);
+        }
+
+        /// <summary>
+        /// Lo que hereda el lado B: su automatico. Con una intencion GLOBAL anterior a S1E el lado B no hereda
+        /// nada —esa intencion ya se resolvio entera sobre el lado A, que es como se dibujaba—, asi que un
+        /// documento antiguo produce exactamente las mismas piezas que producia.
+        /// </summary>
+        private BootPlacement InheritedSideB(SelectiveBotaConfig config)
+            => !BootSidesDeclared && HasGlobalLegacyIntent
+                ? BootPlacement.None
+                : config.Automatic ?? BootPlacement.None;
+
+        /// <summary>True cuando el documento trae la unica configuracion global que existia antes de S1E.</summary>
+        private bool HasGlobalLegacyIntent
+            => Bota.Placement.HasValue || (AuthoredSide ?? Side) != SafetySide.Both;
+
+
+
+        /// <summary>
+        /// I-42 (S1E, contrato del dueño) — LA CONFIGURACION DE BOTAS DEL LADO B de un rack compuesto.
+        ///
+        /// <para>
+        /// Un Push Back compuesto tiene DOS lados fisicos, y cada uno tiene su propia intencion: su general y sus
+        /// postes. <see cref="Bota"/> es la del lado A —y la unica de un rack de un solo sentido, que es como se
+        /// guardo siempre—; esta es la de B. VACIA —todo documento anterior y todo sistema de un solo lado—
+        /// significa «B no pide nada», y entonces el rack dibuja exactamente lo que dibujaba.
+        /// </para>
+        /// <para>
+        /// LADO y CARA son ejes distintos: «Entrada/Salida» se lee DENTRO del lado —la de A es la cara cercana del
+        /// rack y la de B la lejana—, asi que ninguna vista tiene que reinterpretar la eleccion en su marco. La
+        /// conversion a caras fisicas se hace UNA vez, en <see cref="BootFacesAt"/>.
+        /// </para>
+        /// </summary>
+        public SelectiveBotaConfig BotaB { get; set; } = new SelectiveBotaConfig();
+
+        /// <summary>
+        /// I-42 (S1E) — true cuando la intencion de botas de este documento esta declarada POR LADO.
+        ///
+        /// <para>
+        /// Es el discriminante entre las dos eras, y hace falta porque significan cosas distintas: en un documento
+        /// ANTERIOR hay una sola configuracion, que era del rack entero y se resolvia como la del lado A —el lado B
+        /// no pedia nada—; en uno de S1E cada lado tiene la suya, y una general vacia significa «este lado hereda su
+        /// automatico», no «este lado no existe». Sin el, abrir un documento antiguo cambiaria lo que dibuja.
+        /// </para>
+        /// </summary>
+        public bool BootSidesDeclared { get; set; }
+
+        /// <summary>
+        /// I-42 (S1D, contrato del dueño) — True cuando ALGO de esta seleccion pide una pieza: el lado general, la
+        /// matriz historica por poste o la decision de bota de algun poste.
+        ///
+        /// <para>
+        /// El selector general es un DEFECTO, no un interruptor de la familia: con la general en «Ninguno» un poste
+        /// con eleccion propia sigue llevando su bota, y es esta pregunta la que lo mantiene vivo hasta que la
+        /// resolucion por poste decide. Con nadie pidiendo nada la familia no llega al dibujo, como siempre.
+        /// </para>
+        /// </summary>
+        public bool DrawsSomewhere()
+        {
+            if (Side != SafetySide.None)
+            {
+                return true;
+            }
+
+            foreach (var over in PostSides)
+            {
+                if (over != null && over.Side != SafetySide.None)
+                {
+                    return true;
+                }
+            }
+
+            return Bota.AsksForSomething() || BotaB.AsksForSomething();
+        }
+
+        /// <summary>
+        /// True cuando ESE poste tiene una decision propia de bota en CUALQUIERA de los dos lados (o en la matriz
+        /// historica). Es lo que permite que una eleccion del usuario se coloque aunque el automatico no la pusiera.
+        /// </summary>
+        public bool HasOwnBootPlacement(int postIndex)
+        {
+            if (Bota.HasOwnAt(postIndex) || BotaB.HasOwnAt(postIndex))
+            {
+                return true;
+            }
+
+            foreach (var over in PostSides)
+            {
+                if (over != null && over.PostIndex == postIndex)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// I-42 (A1/H8) — las entradas de <see cref="PostSides"/> que escribio una regla DERIVADA —los pasillos de
+        /// carga que el rack tiene ahora—, con el valor que el usuario tenia ahi antes.
+        ///
+        /// <para>
+        /// `PostSides` guarda intencion del usuario Y la lee el dibujo, asi que una regla derivada que escribe ahi
+        /// deja rastro persistido: al degradar un compuesto a un solo sentido quedaba un «Derecha» rancio que
+        /// mandaba el desviador al extremo alto. Esta lista es DERIVADA y no se persiste; la persistencia la usa
+        /// para guardar lo que el usuario habia decidido.
+        /// </para>
+        /// </summary>
+        public IList<DerivedAisleEntry> DerivedAisles { get; } = new List<DerivedAisleEntry>();
+
+        /// <summary>El lado que el usuario eligio, o el vigente si el sistema no lo restringio.</summary>
+        public SafetySide ChosenSide(int postIndex)
+        {
+            foreach (var over in PostSides)
+            {
+                if (over != null && over.PostIndex == postIndex)
+                {
+                    return over.Side;   // una entrada POR POSTE es siempre del usuario: nadie la colapsa
+                }
+            }
+
+            return AuthoredSide ?? Side;
+        }
+
+        /// <summary>
+        /// I-42 (ronda 7E) — la pieza de la cara CERCANA de cada linea, cuando el sistema declara una por extremo.
+        /// NULL —el valor de todo sistema que no la rellene y de todo documento anterior— significa «la de
+        /// <see cref="ElementId"/>», que es el comportamiento historico.
+        /// </summary>
+        public SafetyFacePiece NearFace { get; set; }
+
+        /// <summary>La pieza de la cara LEJANA. Ver <see cref="NearFace"/>.</summary>
+        public SafetyFacePiece FarFace { get; set; }
+
+        /// <summary>El id que materializa una cara, o NULL cuando esa cara no lleva ninguna pieza.</summary>
+        public string ElementIdForFace(bool farEnd)
+            => SafetyFacePiece.Resolve(farEnd ? FarFace : NearFace, ElementId);
+
+        /// <summary>
+        /// I-42 — el sistema tiene cara de carga en los DOS extremos longitudinales (un Push Back compuesto son dos
+        /// Push Back opuestos). False es el comportamiento historico de todos los sistemas.
+        ///
+        /// <para>
+        /// Es un eje PROPIO, y tiene que serlo. Expresar «dos pasillos» escribiendo <see cref="Side"/> destruiria la
+        /// PERTENENCIA: las reglas adaptativas —la del protector lateral, por ejemplo— solo se aplican cuando el
+        /// usuario no ha elegido lado, asi que fijar el lado las apaga y la pieza aparece en TODOS los postes, dos
+        /// veces. Pertenencia, orientacion y extremo son tres cosas distintas y ninguna puede usarse para decir otra.
+        /// </para>
+        /// <para>
+        /// Como <see cref="LowEndOnly"/>, es DERIVADO y no se persiste: la autoridad de Push Back lo vuelve a imponer
+        /// en cada limite que posee, asi que ningun documento puede traerlo rancio y ningun DTO cambia.
+        /// </para>
+        /// </summary>
+        public bool BothEndsAreLoadFaces { get; set; }
+
+        /// <summary>
+        /// I-42 (ronda post-5a73b92) — las LINEAS de postes que de verdad tienen esa segunda cara de carga.
+        ///
+        /// <para>
+        /// VACIA significa «todas», que es el comportamiento anterior y el de cualquier sistema que no la rellene.
+        /// Existe porque un rack compuesto PARCIAL tiene la segunda cara solo donde hay lado B: convertir todas las
+        /// lineas del rack en caras de carga porque UN frente sea compuesto ponia botas y protectores en frentes que
+        /// siguen siendo de un solo sentido. Es DERIVADA y no se persiste, igual que
+        /// <see cref="BothEndsAreLoadFaces"/> y que <c>LowEndOnly</c>.
+        /// </para>
+        /// </summary>
+        public IList<int> SecondLoadFacePosts { get; } = new List<int>();
+
+        /// <summary>
+        /// Si la LINEA indicada tiene la segunda cara de carga. Es la pregunta que hacen las reglas de copias: la
+        /// pertenencia sigue siendo la del usuario o la adaptativa, y esto solo decide cuantas CARAS materializa.
+        /// </summary>
+        public bool HasSecondLoadFaceAt(int postIndex)
+            => BothEndsAreLoadFaces
+               && (SecondLoadFacePosts.Count == 0 || SecondLoadFacePosts.Contains(postIndex));
+
+        /// <summary>
         /// PB-002 (I-32) — the DESVIADOR off-cells of this selection are keyed by <b>POST</b>, not by front.
         ///
         /// A rack of N fronts has N+1 posts and the desviador grid has one column per POST, so a post index cannot be
@@ -189,6 +493,7 @@ namespace RackCad.Domain.Systems.Selective
         private SelectiveDefensaConfig defensa = new SelectiveDefensaConfig();
         private SelectiveGuiaConfig guia = new SelectiveGuiaConfig();
         private SelectiveParrillaConfig parrilla = new SelectiveParrillaConfig();
+        private SelectiveBotaConfig bota = new SelectiveBotaConfig();
 
         /// <summary>TOPE (larguero tope) configuration. Never null.</summary>
         public SelectiveTopeConfig Tope { get => tope; set => tope = value ?? new SelectiveTopeConfig(); }
@@ -204,6 +509,9 @@ namespace RackCad.Domain.Systems.Selective
 
         /// <summary>PARRILLA (deck) configuration. Never null.</summary>
         public SelectiveParrillaConfig Parrilla { get => parrilla; set => parrilla = value ?? new SelectiveParrillaConfig(); }
+
+        /// <summary>I-42 (S1B) — la configuracion de la familia BOTA: su colocacion general y sus overrides por poste.</summary>
+        public SelectiveBotaConfig Bota { get => bota; set => bota = value ?? new SelectiveBotaConfig(); }
 
         // ---- Flat accessors delegating to the per-family configs (compatibility surface for existing consumers) ----
 
@@ -275,13 +583,25 @@ namespace RackCad.Domain.Systems.Selective
                 Quantity = Quantity,
                 Side = Side,
                 LowEndOnly = LowEndOnly,
+                AuthoredSide = AuthoredSide,
+                BothEndsAreLoadFaces = BothEndsAreLoadFaces,
+                NearFace = NearFace,
+                FarFace = FarFace,
                 DesviadorCellsAreByPost = DesviadorCellsAreByPost,
+                BotaB = BotaB.DeepCopy(),
+                BootSidesDeclared = BootSidesDeclared,
                 Tope = Tope.DeepCopy(),
                 Desviador = Desviador.DeepCopy(),
                 Defensa = Defensa.DeepCopy(),
                 Guia = Guia.DeepCopy(),
-                Parrilla = Parrilla.DeepCopy()
+                Parrilla = Parrilla.DeepCopy(),
+                Bota = Bota.DeepCopy()
             };
+
+            foreach (var post in SecondLoadFacePosts)
+            {
+                copy.SecondLoadFacePosts.Add(post);
+            }
 
             foreach (var post in PostSides)
             {
@@ -291,8 +611,31 @@ namespace RackCad.Domain.Systems.Selective
                 }
             }
 
+            foreach (var derived in DerivedAisles)
+            {
+                if (derived != null)
+                {
+                    copy.DerivedAisles.Add(new DerivedAisleEntry
+                    {
+                        PostIndex = derived.PostIndex,
+                        Authored = derived.Authored,
+                    });
+                }
+            }
+
             return copy;
         }
+    }
+
+    /// <summary>
+    /// I-42 (A1/H8) — una entrada por poste que escribio una regla DERIVADA, con el valor AUTORADO que sustituyo
+    /// (NULL = ahi no habia ninguna entrada del usuario).
+    /// </summary>
+    public sealed class DerivedAisleEntry
+    {
+        public int PostIndex { get; set; }
+
+        public SafetySide? Authored { get; set; }
     }
 
     /// <summary>A per-post side override for a safety selection.</summary>

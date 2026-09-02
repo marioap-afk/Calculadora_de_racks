@@ -12,6 +12,14 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- I-42 (ronda post-5a73b92) — el RITMO de la barra de acciones, en dos tokens y no en margenes
+                 sueltos. Antes convivian tres separaciones distintas (6, 8 y 14) escritas a mano en cada boton, y
+                 la barra se veia desalineada. Son locales a esta ventana a proposito: la correccion es de
+                 composicion, no del shell. -->
+            <Thickness x:Key="ActionGap">0,0,6,4</Thickness>
+            <Thickness x:Key="ActionGroupGap">0,0,16,4</Thickness>
+            <Thickness x:Key="ActionLast">0,0,0,4</Thickness>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -95,6 +103,138 @@
                     <TextBlock Text="Poste" Style="{StaticResource FieldLabel}" />
                     <controls:CatalogCombo x:Name="PostBox" DisplayMemberPath="DisplayName" SelectionChanged="Combo_Changed" />
 
+                    <!-- ==================== I-42 · PUSH BACK COMPUESTO (LADO A / LADO B) ====================
+                         El rack pasa a tener DOS lados sobre UNA sola estructura fisica. Aqui vive todo lo que I-42
+                         anade: declarar el lado B, elegir el lado ACTIVO (la matriz de abajo y los cinco alcances
+                         trabajan sobre el, sin duplicar ni un control), el hueco de la interfaz con su separador
+                         central, la topologia de cada celda con su sentido y la estructura efectiva de cada lado con
+                         su restauracion. Retirar el lado B no borra su configuracion: queda dormante. -->
+                    <TextBlock Text="Push Back compuesto (A/B)" Style="{StaticResource SectionTitle}" />
+                    <CheckBox x:Name="SideBPresentCheck" Content="Rack de dos sentidos (lado B)" Margin="0,0,0,4"
+                              Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                              Checked="SideBPresent_Changed" Unchecked="SideBPresent_Changed"
+                              ToolTipService.ShowOnDisabled="True"
+                              ToolTip="Anade el lado B sobre la MISMA estructura fisica. Retirarlo no borra su configuraci&#243;n." />
+                    <!-- Toda la configuracion EXCLUSIVA del compuesto vive dentro de este contenedor. Con el rack de
+                         un solo sentido se COLAPSA (no solo se deshabilita), asi que no ocupa espacio ni satura la
+                         barra lateral: el editor legacy queda exactamente como estaba antes de I-42. -->
+                    <StackPanel x:Name="CompositeSection" Visibility="Collapsed">
+                    <TextBlock Text="Lado activo" Style="{StaticResource FieldLabel}" />
+                    <ComboBox x:Name="SideSelectorBox" SelectionChanged="SideSelector_Changed"
+                              ToolTipService.ShowOnDisabled="True"
+                              ToolTip="La matriz Frente x Nivel, la celda seleccionada y los cinco alcances trabajan sobre este lado." />
+                    <Grid Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Hueco (in)" Style="{StaticResource FieldLabel}" />
+                            <controls:NumericField x:Name="GapBox" LostFocus="Gap_Changed" Minimum="0"
+                                                   ToolTipService.ShowOnDisabled="True"
+                                                   ToolTip="Separaci&#243;n F&#205;SICA entre la l&#237;nea terminal de A y la inicial de B. Puede ser 0: los dos extremos f&#237;sicos siguen existiendo." />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                            <CheckBox x:Name="CentralSeparatorCheck" Content="Separador central" Margin="0,0,0,4"
+                                      Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                      Checked="CentralSeparator_Changed" Unchecked="CentralSeparator_Changed"
+                                      ToolTipService.ShowOnDisabled="True"
+                                      ToolTip="Coloca en el hueco el separador de cabecera que YA usa el rack. Necesita hueco mayor que cero." />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- I-42 (ronda post-82e918b): aqui vivia «Frente presente en este lado», y competia con «En
+                         blanco» por la MISMA decision — uno quitaba cabeceras donde no debia y el otro no. Ahora la
+                         autoridad visible es una sola: la casilla «En blanco» de la cabecera de cada columna de la
+                         matriz, que ya existia (I-33) y funciona igual en un rack de un sentido y en uno compuesto.
+                         La presencia por lado se DERIVA de ella. -->
+                    <TextBlock x:Name="SlotPresentText" Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap"
+                               Margin="0,8,0,0" />
+
+                    <TextBlock Text="Topolog&#237;a de la celda" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <ComboBox x:Name="CellTopologyBox"
+                                      ToolTipService.ShowOnDisabled="True"
+                                      ToolTip="Solo A / Solo B = una cama. Encontradas = DOS camas independientes. Corrida = UNA cama que atraviesa A + hueco + B." />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <ComboBox x:Name="RunDirectionBox"
+                                      ToolTipService.ShowOnDisabled="True"
+                                      ToolTip="Sentido de la cama corrida. Cambia f&#237;sicamente qu&#233; extremo es ALTO, no solo el dibujo." />
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Text="Alcance:" Style="{StaticResource FieldLabel}" Margin="0,6,0,2" />
+                    <ComboBox x:Name="TopologyScopeBox" SelectedIndex="0"
+                              ToolTipService.ShowOnDisabled="True"
+                              ToolTip="Los MISMOS cinco alcances del editor. &#171;Selecci&#243;n&#187; usa las celdas marcadas con Ctrl + clic.">
+                        <ComboBoxItem Content="Celda" />
+                        <ComboBoxItem Content="Selecci&#243;n" />
+                        <ComboBoxItem Content="Nivel" />
+                        <ComboBoxItem Content="Frente" />
+                        <ComboBoxItem Content="Todo" />
+                    </ComboBox>
+                    <WrapPanel Margin="0,6,0,0">
+                        <Button x:Name="ApplyTopologyButton" Content="Aplicar topolog&#237;a"
+                                Style="{StaticResource SecondaryButtonStyle}" MinWidth="126" Margin="0,0,6,6"
+                                Click="ApplyTopology_Click"
+                                ToolTip="Escribe SOLO la topolog&#237;a y el sentido en las celdas del alcance." />
+                    </WrapPanel>
+
+                    <!-- I-42 (ronda 7B, decision del dueño): el TOPE POSTERIOR se edita SOLO en Elementos de
+                         seguridad, que es donde vive el resto de la intencion de seguridad. Aqui habia una segunda
+                         superficie para lo mismo, y una decision con dos sitios donde tomarla acaba divergiendo. La
+                         fisica no cambia en nada: sigue siendo el RearTope de cada lado y sus OffCells. -->
+
+                    <!-- I-42 (ronda Owner): esto NO es «otro fondo». El fondo de almacenamiento es de la celda y del
+                         frente («Fondos frente» y «Fondo celda»); esto es hasta donde llega la ESTRUCTURA longitudinal
+                         del lado, que normalmente se deriva de la demanda de sus celdas y solo se fija a mano cuando
+                         se quiere estructura de sobra. Por eso se ven la propuesta y la efectiva, y el campo se llama
+                         ajuste manual: para que no parezcan dos campos que hacen lo mismo. -->
+                    <TextBlock Text="Estructura longitudinal del lado" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                    <TextBlock Text="Hasta d&#243;nde llega la estructura de este lado. NO es el fondo de almacenamiento: ese se edita arriba, en &#171;Fondos frente&#187; y &#171;Fondo celda&#187;."
+                               Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" Margin="0,0,0,4" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Propuesta (autom&#225;tica)" Style="{StaticResource FieldLabel}" />
+                            <TextBlock x:Name="StructureProposedText" Text="&#8212;"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" Margin="0,0,0,4" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Efectiva (la que se dibuja)" Style="{StaticResource FieldLabel}" />
+                            <TextBlock x:Name="StructureEffectiveText" Text="&#8212;"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" Margin="0,0,0,4" />
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Text="Ajuste manual (fondos)" Style="{StaticResource FieldLabel}" />
+                    <controls:NumericField x:Name="StructureOverrideBox" IsOptional="True" IntegerOnly="True" Minimum="2"
+                                           ToolTipService.ShowOnDisabled="True"
+                                           ToolTip="Fuerza hasta d&#243;nde llega la estructura de este lado. Vac&#237;o = seguir la propuesta autom&#225;tica. No cambia el fondo de ninguna celda ni de ning&#250;n frente." />
+                    <WrapPanel Margin="0,6,0,0">
+                        <Button x:Name="ApplyStructureButton" Content="Aplicar ajuste"
+                                Style="{StaticResource SecondaryButtonStyle}" MinWidth="118" Margin="0,0,6,6"
+                                Click="ApplyStructure_Click"
+                                ToolTip="Fija el ajuste manual de este lado." />
+                        <Button x:Name="RestoreStructureButton" Content="Volver a autom&#225;tico"
+                                Style="{StaticResource SecondaryButtonStyle}" MinWidth="148" Margin="0,0,6,6"
+                                Click="RestoreStructure_Click"
+                                ToolTip="Elimina el ajuste manual: el lado vuelve a seguir la propuesta ACTUAL." />
+                    </WrapPanel>
+                    <TextBlock x:Name="CompositeStructureText" Text=""
+                               Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />
+                    </StackPanel>
+
                     <!-- PB-013 (I-32): Fondo and Unidad are RACK-WIDE and stay editable here. Frente, Alto and Peso
                          belong to the CELL, so this panel only MIRRORS the selected one: they used to be editable and
                          changed nothing, because the cell always wins. -->
@@ -151,7 +291,7 @@
                                     <TextBlock Text="Posiciones" Style="{StaticResource FieldLabel}" />
                                     <controls:NumericField x:Name="PositionsBox" LostFocus="Input_Changed"
                                                            IntegerOnly="True" Minimum="1" />
-                                    <TextBlock Text="Fondos frente" Style="{StaticResource FieldLabel}" />
+                                    <TextBlock x:Name="FondosFrenteLabel" Text="Fondos frente" Style="{StaticResource FieldLabel}" />
                                     <controls:NumericField x:Name="FondosBox" LostFocus="Input_Changed"
                                                            IntegerOnly="True" Minimum="2" />
                                     <TextBlock Text="Alto 1er nivel" Style="{StaticResource FieldLabel}" />
@@ -257,7 +397,11 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Fondo celda" Style="{StaticResource FieldLabel}" />
+                                    <!-- I-42: la etiqueta y el significado del campo cambian cuando la celda
+                                         seleccionada es una CAMA CORRIDA: entonces edita el fondo PROPIO de esa cama,
+                                         que no es el de A, ni el de B, ni su suma. Es el MISMO control, con los
+                                         MISMOS cinco alcances; lo que cambia es a que autoridad escribe. -->
+                                    <TextBlock x:Name="CellFondoLabel" Text="Fondo celda" Style="{StaticResource FieldLabel}" />
                                     <controls:NumericField x:Name="CellFondoOverrideBox" LostFocus="CellFondo_Changed"
                                                            IsOptional="True" IntegerOnly="True" Minimum="2"
                                                            ToolTipService.ShowOnDisabled="True"
@@ -588,35 +732,45 @@
              motivos de indisponibilidad) los fija el code-behind por x:Name; ToolTipService.ShowOnDisabled los muestra
              cuando la acción está deshabilitada. -->
         <shell:RackEditorVisualShell.LeadingActions>
-            <Button x:Name="RestoreButton" Content="Restaurar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Margin="0,0,8,4"
+            <Button x:Name="RestoreButton" Content="Restaurar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="{StaticResource ActionLast}"
                     ToolTipService.ShowOnDisabled="True" Click="Restore_Click" ToolTip="Vuelve a los valores calculados del sistema." />
         </shell:RackEditorVisualShell.LeadingActions>
         <shell:RackEditorVisualShell.SecondaryActions>
-            <StackPanel Orientation="Horizontal">
-                <Button x:Name="BomButton" Content="BOM" Style="{StaticResource SecondaryButtonStyle}" MinWidth="74" Margin="0,0,6,4"
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                <Button x:Name="BomButton" Content="BOM" Style="{StaticResource SecondaryButtonStyle}" MinWidth="72" Margin="{StaticResource ActionGap}"
                         ToolTipService.ShowOnDisabled="True" Click="Bom_Click" ToolTip="Lista de materiales del sistema actual." />
-                <Button x:Name="SaveLibraryButton" Content="Guardar en biblioteca" Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" Margin="0,0,0,4"
+                <Button x:Name="SaveLibraryButton" Content="Guardar en biblioteca" Style="{StaticResource SecondaryButtonStyle}" MinWidth="152" Margin="{StaticResource ActionLast}"
                         ToolTipService.ShowOnDisabled="True" Click="SaveLibrary_Click" ToolTip="Guarda este diseño Push Back en la biblioteca." />
             </StackPanel>
         </shell:RackEditorVisualShell.SecondaryActions>
         <shell:RackEditorVisualShell.PrimaryActions>
-            <StackPanel Orientation="Horizontal">
-                <Button x:Name="UpdateButton" Content="Actualizar" Style="{StaticResource PrimaryButtonStyle}" MinWidth="100" Margin="0,0,14,4"
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                <Button x:Name="UpdateButton" Content="Actualizar" Style="{StaticResource PrimaryButtonStyle}" MinWidth="104" Margin="{StaticResource ActionGroupGap}"
                         ToolTipService.ShowOnDisabled="True" Click="Update_Click" ToolTip="Redibuja en sitio todas las vistas ligadas de este rack." />
-                <Button x:Name="InsertLateralButton" Content="Insertar lateral" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,6,4"
+                <Button x:Name="InsertLateralButton" Content="Insertar lateral" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="{StaticResource ActionGap}"
                         ToolTipService.ShowOnDisabled="True" Click="InsertLateral_Click" ToolTip="Inserta el corte lateral seleccionado." />
-                <Button x:Name="InsertFrontalEntradaButton" Content="Frontal entrada/salida" Style="{StaticResource SecondaryButtonStyle}" MinWidth="158" Margin="0,0,6,4"
+                <Button x:Name="InsertFrontalEntradaButton" Content="Frontal entrada/salida" Style="{StaticResource SecondaryButtonStyle}" MinWidth="160" Margin="{StaticResource ActionGap}"
                         ToolTipService.ShowOnDisabled="True" Click="InsertFrontalEntrada_Click" ToolTip="Inserta el corte frontal del extremo bajo." />
-                <Button x:Name="InsertFrontalPosteriorButton" Content="Frontal posterior" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,6,4"
+                <Button x:Name="InsertFrontalPosteriorButton" Content="Frontal posterior" Style="{StaticResource SecondaryButtonStyle}" MinWidth="128" Margin="{StaticResource ActionGap}"
                         ToolTipService.ShowOnDisabled="True" Click="InsertFrontalPosterior_Click" ToolTip="Inserta el corte frontal del extremo alto." />
-                <Button x:Name="InsertPlantaButton" Content="Planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="86" Margin="0,0,14,4"
+                <!-- I-42: en un rack de DOS sentidos «entrada/salida» y «posterior» no dicen de que lado son. Este
+                     selector aparece solo con el compuesto encendido y CALIFICA a los dos botones de al lado, de modo
+                     que los cuatro cortes —entrada/salida y posterior de cada lado— son pedibles y visibles sin
+                     conocer ningun modo interno. Con el compuesto apagado no existe y la barra es la de siempre.
+                     Cuatro botones no caben: la barra de acciones ya lleva doce y se recortarian. -->
+                <ComboBox x:Name="FrontalSideBox" Width="104" VerticalContentAlignment="Center"
+                          Margin="{StaticResource ActionGap}" Visibility="Collapsed"
+                          SelectionChanged="FrontalSide_Changed"
+                          ToolTipService.ShowOnDisabled="True"
+                          ToolTip="De qu&#233; lado son los dos cortes frontales de al lado. Es independiente del lado que se est&#233; editando." />
+                <Button x:Name="InsertPlantaButton" Content="Planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="{StaticResource ActionGroupGap}"
                         ToolTipService.ShowOnDisabled="True" Click="InsertPlanta_Click" ToolTip="Inserta la vista en planta." />
-                <Button x:Name="InsertButton" Content="Insertar vista actual" Style="{StaticResource PrimaryButtonStyle}" MinWidth="150" Margin="0,0,0,4"
+                <Button x:Name="InsertButton" Content="Insertar vista actual" Style="{StaticResource PrimaryButtonStyle}" MinWidth="152" Margin="{StaticResource ActionLast}"
                         ToolTipService.ShowOnDisabled="True" Click="Insert_Click" ToolTip="Inserta la vista seleccionada en el previsualizador." />
             </StackPanel>
         </shell:RackEditorVisualShell.PrimaryActions>
         <shell:RackEditorVisualShell.TrailingActions>
-            <Button x:Name="CloseButton" Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Margin="0,0,0,4" IsCancel="True" Click="Close_Click" />
+            <Button x:Name="CloseButton" Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="{StaticResource ActionLast}" IsCancel="True" Click="Close_Click" />
         </shell:RackEditorVisualShell.TrailingActions>
     </shell:RackEditorVisualShell>
 </Window>

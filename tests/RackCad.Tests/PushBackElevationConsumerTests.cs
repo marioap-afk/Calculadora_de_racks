@@ -155,17 +155,29 @@ namespace RackCad.Tests
             Assert.Equal(0, lowFrontAtPost1.Index);
             Assert.NotEqual(lowFrontAtPost1.Index, PostWinner(system, 1));
 
-            // Y ninguna derivada coincide con la elevación del resolver, que es lo que los consumidores leen hoy.
+            // Decision final del dueño: el extremo BAJO es el ANCLA, asi que la derivada CoINCIDE con la elevacion
+            // de salida del resolver — y eso es justo lo que hay que garantizar. Lo que sigue discriminando entre
+            // ambitos es el extremo ALTO, que se deriva de la longitud de cada cama.
             foreach (var front in system.Structure.Fronts)
             {
                 var derived = Derived(system, catalog, front.Index);
                 foreach (var level in front.LoadBeamLevels)
                 {
                     Assert.True(
-                        Math.Abs(derived[level.LevelNumber] - level.ExitElevation) > 1e-6,
-                        $"frente {front.Index} nivel {level.LevelNumber}: la derivada coincide con ExitElevation");
+                        Math.Abs(derived[level.LevelNumber] - level.ExitElevation) <= 1e-6,
+                        $"frente {front.Index} nivel {level.LevelNumber}: el ancla bajo tiene que ser la del resolver");
                 }
             }
+
+            var highs = system.Structure.Fronts
+                .Select(front => string.Join(
+                    ",",
+                    PushBackElevations.HighInsertions(system, catalog, front)
+                        .OrderBy(entry => entry.Key)
+                        .Select(entry => Math.Round(entry.Value, 6))))
+                .Distinct()
+                .ToList();
+            Assert.True(highs.Count > 1, "el fixture jagged tiene que discriminar por el extremo alto");
         }
 
 
@@ -236,7 +248,12 @@ namespace RackCad.Tests
             }
 
             Assert.NotEmpty(expected);
-            Assert.Equal(expected.OrderBy(y => y).ToList(), Ys(drawn).Skip(1).ToList());
+            // Se comparan las elevaciones DISTINTAS: un corte es una proyeccion y dibuja cada pieza una vez, asi
+            // que dos desviadores que caen en la misma elevacion son UNO. Comparar la lista con repeticiones medía
+            // cuantas veces se dibujaba lo mismo, que es justo lo que se corrigio (I-42, ronda post-82e918b).
+            Assert.Equal(
+                expected.Distinct().OrderBy(y => y).ToList(),
+                Ys(drawn).Skip(1).Distinct().ToList());
         }
 
         // ---------------------------------------------------------------------------------------------------
@@ -359,22 +376,30 @@ namespace RackCad.Tests
         // ---------------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// El extremo POSTERIOR se mide desde <c>EntranceElevation</c> y ahí se queda.
+        /// EN EL DINÁMICO, el extremo POSTERIOR del desviador se mide desde <c>EntranceElevation</c> y ahí se queda.
         ///
-        /// En Push Back esa copia no llega a dibujarse —el resolver colapsa el lado del desviador al extremo bajo
-        /// (PB-003), así que un <c>Both</c> se convierte en <c>Left</c>—, de modo que el centinela vive donde la
-        /// rama SÍ se ejecuta: el mismo builder lateral compartido, invocado por el Dinámico. Es la rama que el
-        /// override no debe tocar, y en el Dinámico se ve.
+        /// <para>
+        /// Este centinela es del DINÁMICO y solo del Dinámico. Es la rama del builder lateral compartido que el
+        /// override de elevaciones no debe tocar, y ahí sigue valiendo.
+        /// </para>
+        /// <para>
+        /// NO es el contrato del Push Back COMPUESTO. Desde I-42 (corrección aislada del desviador) un rack
+        /// compuesto no toma sus desviadores de esta rama: los construye por CAMA, en el extremo BAJO de cada una
+        /// (<c>PushBackDiverterPlan</c>), porque «izquierda = extremo bajo» es falso en cuanto el lado B tiene su
+        /// entrada a la derecha. Un Push Back de un solo sentido sí sigue pasando por aquí, y por eso se comprueba
+        /// también que su lado se colapsa al extremo bajo.
+        /// </para>
         /// </summary>
         [Fact]
-        public void TheRearEndDesviador_StillHangsFromTheEntranceElevation()
+        public void InTheDynamic_TheRearEndDesviador_StillHangsFromTheEntranceElevation()
         {
             var catalog = Catalog;
             var id = DesviadorId(catalog);
             var pushBack = Jagged(catalog, SafetySide.Both);
 
-            // Push Back: el lado se colapsó y no hay copia posterior. Se afirma explícitamente para que, si algún
-            // día dejara de colapsarse, esta prueba lo diga en vez de callarlo.
+            // Push Back de UN SOLO SENTIDO: el lado se colapsa al extremo bajo y no hay copia posterior. Se afirma
+            // para que, si algún día dejara de colapsarse, esta prueba lo diga en vez de callarlo. El rack
+            // COMPUESTO no depende de esto: sus desviadores los pone la cama.
             Assert.All(
                 pushBack.SafetySelections.Where(s => string.Equals(s.ElementId, id, StringComparison.OrdinalIgnoreCase)),
                 selection => Assert.Equal(SafetySide.Left, selection.Side));

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
@@ -20,6 +21,14 @@ namespace RackCad.Application.Systems.PushBack
         public string PostCatalogId { get; set; }
         public double PostPeralte { get; set; }
         public double PalletTolerance { get; set; } = DynamicRackDefaults.DefaultPalletTolerance;
+
+        /// <summary>
+        /// I-42 — desde donde se mide «Alto 1er nivel» en ESTE rack. Un rack NUEVO nace con el datum del producto
+        /// —el troquel utilizable mas bajo—; uno CARGADO conserva el que traiga su documento, que para todo archivo
+        /// anterior es la lectura historica. Asi ninguna geometria existente se mueve y toda geometria nueva usa el
+        /// cero real.
+        /// </summary>
+        public int? FirstLevelDatum { get; set; } = (int)RackFirstLevelDatumMode.LowestUsablePunch;
         public double BeamDepth { get; set; } = DynamicRackDefaults.DefaultBeamDepth;
         public DynamicAnnotationOptions Annotations { get; set; } = new DynamicAnnotationOptions();
 

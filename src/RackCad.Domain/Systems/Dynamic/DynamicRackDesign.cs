@@ -15,6 +15,14 @@ namespace RackCad.Domain.Systems.Dynamic
         public PalletSpecification Pallet { get; set; } = new PalletSpecification();
         public int PalletsDeep { get; set; }
         public int LoadLevels { get; set; } = DynamicRackDefaults.DefaultLoadLevels;
+        /// <summary>
+        /// I-42 — desde DONDE se mide <see cref="FirstLevelHeight"/>. Null = la lectura HISTORICA (elevacion
+        /// absoluta ajustada al troquel mas cercano), que es lo que guarda todo documento anterior; por eso ninguno
+        /// cambia de geometria al abrirse. Un documento nuevo declara el datum del PRODUCTO: el troquel utilizable
+        /// mas bajo del poste.
+        /// </summary>
+        public int? FirstLevelDatum { get; set; }
+
         public double FirstLevelHeight { get; set; } = DynamicRackDefaults.DefaultFirstLevelHeight;
         public double BeamDepth { get; set; } = DynamicRackDefaults.DefaultBeamDepth;
 
@@ -85,6 +93,14 @@ namespace RackCad.Domain.Systems.Dynamic
         /// design makes re-resolution deterministic while leaving StartX/EndX exclusively on the resolved system.
         /// </summary>
         public IList<DynamicRackModuleDesign> Modules { get; } = new List<DynamicRackModuleDesign>();
+
+        /// <summary>
+        /// I-42 — permite que los rangos de profundidad de los frentes NO aniden. Es una intencion DERIVADA que
+        /// construye el compositor del Push Back compuesto (donde una ranura puede vivir solo en la mitad de A y otra
+        /// solo en la de B) y que NUNCA se persiste: un documento no la trae y por tanto ningun rack existente cambia
+        /// de comportamiento. El sistema Dinamico jamas la enciende.
+        /// </summary>
+        public bool AllowsNonNestedDepthRanges { get; set; }
     }
 
     /// <summary>Editable intent for one longitudinal module; calculated X coordinates deliberately do not live here.</summary>
@@ -111,3 +127,4 @@ namespace RackCad.Domain.Systems.Dynamic
             || Kind == DynamicRackModuleKind.HeaderEnd;
     }
 }
+

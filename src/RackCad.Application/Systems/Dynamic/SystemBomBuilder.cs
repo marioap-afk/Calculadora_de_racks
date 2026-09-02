@@ -45,7 +45,7 @@ namespace RackCad.Application.Systems.Dynamic
                     continue;
                 }
 
-                var range = DynamicDepthGeometry.AtPost(system, postIndex);
+                var range = DynamicDepthGeometry.CoverageAtPost(system, postIndex);
                 foreach (var module in system.Modules.Where(module => range.Contains(module.Index + 1)
                              && module.IsHeader
                              && module.AssociatedFrameConfiguration != null))
@@ -92,17 +92,22 @@ namespace RackCad.Application.Systems.Dynamic
                     continue;
                 }
 
-                var levelCount = DynamicSeparatorGeometry.Levels(
-                    system,
-                    catalog,
-                    DynamicFrontGeometry.PostHeight(system, postIndex)).Count;
                 foreach (var module in modules)
                 {
-                    if (!DynamicDepthGeometry.AtPost(system, postIndex).Contains(module.Index + 1))
+                    if (!DynamicDepthGeometry.CoverageAtPost(system, postIndex).Contains(module.Index + 1))
                     {
                         continue;
                     }
 
+                    // I-42 (A1B/H2) — la altura es la de ESTA linea EN ESTA PROFUNDIDAD, la misma autoridad que
+                    // usan el corte lateral y las cabeceras. Con una altura por poste —el maximo de sus frentes
+                    // adyacentes— un rack compuesto con lados de distinta altura compraba filas de separador de la
+                    // zona alta tambien en la zona baja. Sin zonas declaradas responde exactamente lo de antes.
+                    var levelCount = DynamicSeparatorGeometry.Levels(
+                        system,
+                        catalog,
+                        DynamicFrontGeometry.PostHeightAt(
+                            system, postIndex, 0.5 * (module.StartX + module.EndX))).Count;
                     var length = Round(module.Length);
                     quantities[length] = quantities.TryGetValue(length, out var current)
                         ? current + levelCount
@@ -212,39 +217,48 @@ namespace RackCad.Application.Systems.Dynamic
                 // I-40 (Owner): la altura del poste derivado por la autoridad unica —la de ESTA linea, luego la del
                 // rack, y si ninguna la del poste en esa linea, que es el comportamiento historico—. El BOM y la
                 // geometria leen exactamente la misma funcion.
-                var primaryHeight = Round(DynamicFrontGeometry.DerivedPostHeightAtPost(
-                    system, postIndex, DynamicFrontGeometry.PostHeight(system, postIndex)));
-                var reinforcementHeight = system.DerivedPostReinforced
+                //
+                // I-42 (A1B-D6): y se pregunta EN LA PROFUNDIDAD de cada poste derivado, no en la linea aplanada.
+                // Un poste derivado vive en una X concreta, y en un rack compuesto esa X decide a que lado sirve:
+                // con la altura por linea, los de la mitad baja se cotizaban con la altura de la mitad alta —el
+                // dibujo los mostraba cortos y el BOM los compraba largos—. Sin zonas declaradas la respuesta es
+                // exactamente la de antes.
+                double HeightOf(double x) => Round(DynamicFrontGeometry.DerivedPostHeightAtPost(
+                    system, postIndex, DynamicFrontGeometry.PostHeightAt(system, postIndex, x)));
+
+                double ReinforcementOf(double primary) => system.DerivedPostReinforced
                     ? Round(system.DerivedPostReinforcementHeight.HasValue
                             && system.DerivedPostReinforcementHeight.Value > 0.0
                         ? system.DerivedPostReinforcementHeight.Value
-                        : primaryHeight)
+                        : primary)
                     : 0.0;
-                var range = DynamicDepthGeometry.AtPost(system, postIndex);
-                var derivedCount = offsets.Count(offset =>
+
+                var range = DynamicDepthGeometry.CoverageAtPost(system, postIndex);
+                foreach (var offset in offsets)
                 {
                     var boundary = system.Modules
                         .Where(module => module.EndX <= offset + 1e-6)
                         .Select(module => module.Index + 1)
                         .DefaultIfEmpty(0)
                         .Max();
-                    return range.Contains(boundary) && range.Contains(boundary + 1);
-                });
-                if (derivedCount > 0)
-                {
-                    var reinforcedKey = (primaryHeight, reinforcementHeight);
+                    if (!range.Contains(boundary) || !range.Contains(boundary + 1))
+                    {
+                        continue;
+                    }
+
+                    var primary = HeightOf(offset);
+                    var reinforcedKey = (primary, ReinforcementOf(primary));
                     grouped[reinforcedKey] = grouped.TryGetValue(reinforcedKey, out var current)
-                        ? current + derivedCount
-                        : derivedCount;
+                        ? current + 1
+                        : 1;
                 }
 
-                var boundaryCount = DynamicDepthGeometry.BoundaryPostOffsets(system, range).Count;
-                if (boundaryCount > 0)
+                foreach (var offset in DynamicDepthGeometry.BoundaryPostOffsets(system, range))
                 {
-                    var boundaryKey = (primaryHeight, Reinforcement: 0.0);
+                    var boundaryKey = (HeightOf(offset), Reinforcement: 0.0);
                     grouped[boundaryKey] = grouped.TryGetValue(boundaryKey, out var current)
-                        ? current + boundaryCount
-                        : boundaryCount;
+                        ? current + 1
+                        : 1;
                 }
             }
 

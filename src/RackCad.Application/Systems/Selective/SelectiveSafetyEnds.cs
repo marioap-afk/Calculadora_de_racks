@@ -60,6 +60,43 @@ namespace RackCad.Application.Systems.Selective
             }
 
             var lowEndOnly = selection.LowEndOnly;
+
+            // I-42: un sistema con cara de carga en los DOS extremos (un Push Back compuesto) materializa cada
+            // orientacion elegida en LOS DOS: son dos pasillos, y lo que protege a uno no protege al otro. La
+            // PERTENENCIA —que postes llevan la pieza— no se toca: sigue siendo la del usuario o la adaptativa.
+            if (selection.HasSecondLoadFaceAt(postIndex))
+            {
+                // La copia de la cara LEJANA es la IMAGEN ESPEJO de la cercana. Los dos pasillos de un rack
+                // compuesto miran en sentidos opuestos: la bota que protege uno esta girada respecto de la que
+                // protege el otro. Repetir la mano dejaba la del fondo del reves, que es la orientacion que el
+                // dueño rechazo. Con un solo pasillo esto no se ejecuta y nada cambia.
+                switch (side)
+                {
+                    case SafetySide.Left:
+                        return new[]
+                        {
+                            new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                            new SafetyEndCopy(atHighEnd: true, mirrored: true),
+                        };
+
+                    case SafetySide.Right:
+                        return new[]
+                        {
+                            new SafetyEndCopy(atHighEnd: false, mirrored: true),
+                            new SafetyEndCopy(atHighEnd: true, mirrored: false),
+                        };
+
+                    default:   // Both: las dos caras en los dos extremos, y el espejo ya esta en el par
+                        return new[]
+                        {
+                            new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                            new SafetyEndCopy(atHighEnd: false, mirrored: true),
+                            new SafetyEndCopy(atHighEnd: true, mirrored: false),
+                            new SafetyEndCopy(atHighEnd: true, mirrored: true),
+                        };
+                }
+            }
+
             switch (side)
             {
                 case SafetySide.Left:
@@ -79,6 +116,53 @@ namespace RackCad.Application.Systems.Selective
                         };
             }
         }
+
+        /// <summary>
+        /// I-42 (S1B, contrato del dueño) — LAS COPIAS DE UNA BOTA: un conjunto de UBICACIONES FISICAS.
+        ///
+        /// <para>
+        /// Una bota protege el POSTE de un impacto, y eso NO depende de por donde se cargue: la cara POSTERIOR
+        /// puede necesitar proteccion aunque nunca se opere desde ahi —detras puede haber un pasillo de transito—.
+        /// Por eso la colocacion no se filtra por «cara de carga»: <c>Entrada/Salida</c> pone una pieza delante,
+        /// <c>Posterior</c> una detras, <c>Ambas</c> las dos, cada UBICACION una sola vez.
+        /// </para>
+        /// <para>
+        /// La ORIENTACION la decide la cara, nunca la eleccion. Es una regla PROPIA de esta familia: el PROTECTOR
+        /// LATERAL lee Izquierda/Derecha como orientacion en su sitio (I-32) y sigue en <see cref="CopiesForPost"/>.
+        /// </para>
+        /// </summary>
+        public static IReadOnlyList<SafetyEndCopy> BootCopiesForPost(
+            SelectiveSafetySelection selection, int postIndex)
+        {
+            if (selection == null)
+            {
+                return None;
+            }
+
+            // I-42 (S1E) — la PERTENENCIA la resuelve el dominio, UNA vez y para los dos lados: aqui solo se
+            // convierte en copias. Dos intenciones que nombran la misma cara fisica —la posterior de A y la entrada
+            // de B— son UNA pieza, y por eso se pregunta por caras y no por lados.
+            var faces = selection.BootFacesAt(postIndex);
+            var copies = new List<SafetyEndCopy>(2);
+            if (faces.Near)
+            {
+                copies.Add(new SafetyEndCopy(atHighEnd: false, mirrored: Mirror(farEnd: false)));
+            }
+
+            if (faces.Far)
+            {
+                copies.Add(new SafetyEndCopy(atHighEnd: true, mirrored: Mirror(farEnd: true)));
+            }
+
+            return copies.Count == 0 ? None : copies;
+        }
+
+        /// <summary>
+        /// I-42 (S1B) — LA ORIENTACION de una bota, decidida por la CARA que ocupa y por nada mas. Las dos caras de
+        /// una linea miran en sentidos opuestos, asi que la pieza posterior es la imagen espejo de la de entrada.
+        /// Es un eje SEPARADO de la pertenencia: cambiarlo no crea ni mueve ninguna proteccion.
+        /// </summary>
+        public static bool Mirror(bool farEnd) => farEnd;
 
         /// <summary>True cuando la pieza de ese poste se dibuja en el extremo pedido.</summary>
         public static bool DrawsAt(SelectiveSafetySelection selection, int postIndex, bool highEnd)

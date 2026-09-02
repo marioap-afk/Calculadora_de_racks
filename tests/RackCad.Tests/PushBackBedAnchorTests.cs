@@ -95,20 +95,23 @@ namespace RackCad.Tests
         /// <summary>El posterior conserva EXACTAMENTE la elevación que el resolver ya había ajustado: es el ancla.</summary>
         [Theory]
         [MemberData(nameof(Spans))]
-        public void TheRearBeam_KeepsItsResolvedTroquelElevation(int palletsDeep)
+        public void TheLowBeam_KeepsItsResolvedTroquelElevation(int palletsDeep)
         {
             var catalog = Catalog;
             var system = System(catalog, palletsDeep);
             var front = system.Structure.Fronts[0];
 
+            // DECISION FINAL DEL DUEÑO: el ancla vertical es el larguero de ENTRADA. Conserva EXACTAMENTE la
+            // elevacion que su nivel le dio —la que el resolver ajusto al troquel desde el datum del producto— y no
+            // se mueve para mejorar la pendiente. Antes esta prueba fijaba lo contrario sobre el posterior.
             var levels = DynamicFrontGeometry.LoadBeamLevels(system.Structure, front);
-            var high = PushBackLoadBeamGeometry.HighBeams(system, catalog, 0, front).OrderBy(b => b.Insertion.Y).ToList();
-            var expected = levels.OrderBy(l => l.LevelNumber).Select(l => l.EntranceElevation).ToList();
+            var low = PushBackLoadBeamGeometry.LowBeams(system, catalog, front).OrderBy(b => b.Insertion.Y).ToList();
+            var expected = levels.OrderBy(l => l.LevelNumber).Select(l => l.ExitElevation).ToList();
 
-            Assert.Equal(expected.Count, high.Count);
+            Assert.Equal(expected.Count, low.Count);
             for (var i = 0; i < expected.Count; i++)
             {
-                Assert.Equal(expected[i], high[i].Insertion.Y, 9);
+                Assert.Equal(expected[i], low[i].Insertion.Y, 9);
             }
         }
 
@@ -117,10 +120,9 @@ namespace RackCad.Tests
         /// <summary>
         /// El larguero bajo se elige sobre la RETICULA, y el criterio es la PENDIENTE.
         ///
-        /// Aclaracion final del Owner (I-32): antes esta prueba fijaba «derivar la subida nominal desde el contacto
-        /// posterior y ajustar al troquel». Ese criterio quedo sustituido por «elegir el troquel cuya rotacion
-        /// acerque mas la pendiente a 7/192». Lo que NO cambia, y se sigue comprobando aqui, es que el resultado es
-        /// siempre un troquel valido y que el posterior conserva el suyo.
+        /// Decision FINAL del dueño: el que se elige sobre la retícula es el troquel del larguero POSTERIOR, con el
+        /// criterio de acercar la pendiente a 7/192. El de entrada es el ANCLA y conserva el suyo. Lo que no cambia
+        /// es que los dos extremos caen siempre sobre troqueles validos.
         /// </summary>
         [Theory]
         [MemberData(nameof(Spans))]

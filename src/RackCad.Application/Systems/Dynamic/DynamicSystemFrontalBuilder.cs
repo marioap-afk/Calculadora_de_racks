@@ -32,11 +32,21 @@ namespace RackCad.Application.Systems.Dynamic
         /// coloca directamente en la elevación derivada de SU frente, sin reasientos posteriores. Con <c>null</c>
         /// el plan es byte-idéntico al de siempre.
         /// </param>
+        /// <param name="headerHeightAtPost">
+        /// I-42 (ronda 6B) — la ALTURA de la cabecera de cada linea, cuando quien llama la resuelve sobre OTRO
+        /// modelo. Un rack compuesto la necesita porque su corte frontal se construye sobre el sistema LOCAL del
+        /// lado —un modelo de trabajo— mientras la pieza que se fabrica y que el lateral dibuja pertenece a la
+        /// estructura COMPUESTA. Con <c>null</c> la altura sale de este mismo sistema, que es lo que hace el
+        /// Dinamico y cualquier Push Back de un solo sentido.
+        /// </param>
         public IReadOnlyList<HeaderBlockInstance> Build(
             DynamicRackSystem system,
             RackCatalog catalog,
             DynamicRackEnd end,
-            RackLevelElevations elevations = null)
+            RackLevelElevations elevations = null,
+            Func<int, int, bool> ownsDesviador = null,
+            Func<int, bool> ownsBoundary = null,
+            Func<int, double> headerHeightAtPost = null)
         {
             var instances = new List<HeaderBlockInstance>();
             if (system == null || system.Fronts.Count == 0 || system.LoadBeamLevels.Count == 0)
@@ -67,6 +77,13 @@ namespace RackCad.Application.Systems.Dynamic
                     continue;
                 }
 
+                // I-42: un corte frontal es de UN LADO. La linea que solo el otro lado necesita existe en el rack
+                // —y la planta la dibuja— pero este corte no la posee. Sin filtro no cambia nada.
+                if (ownsBoundary != null && !ownsBoundary(postIndex))
+                {
+                    continue;
+                }
+
                 var x = layout.PostPositions[postIndex];
                 var origin = new Point2D(x, 0.0);
                 var post = new HeaderBlockInstance
@@ -83,8 +100,15 @@ namespace RackCad.Application.Systems.Dynamic
                 // la MAS ALTA de la linea; el Owner precisó que la frontal corta por la PRIMERA cabecera
                 // longitudinal y la posterior por la ULTIMA. `end` elige cual, `postIndex` elige de que linea es el
                 // poste: los dos ejes conviven sin colapsarse.
-                post.DynamicParameters[SelectiveRackDefaults.LengthParam] =
-                    DynamicFrontGeometry.HeaderHeightAtPost(system, catalog, postIndex, end);
+                // I-42 (ronda 6B) — UNA linea fisica, UNA altura. Cuando quien llama la resuelve sobre el modelo
+                // que manda —la estructura compuesta— se consume esa; si no, la de este sistema. Nunca se ajusta
+                // graficamente: es la misma propiedad, leida de la autoridad correcta.
+                var resolvedHeight = headerHeightAtPost != null
+                    ? headerHeightAtPost(postIndex)
+                    : 0.0;
+                post.DynamicParameters[SelectiveRackDefaults.LengthParam] = resolvedHeight > 0.0
+                    ? resolvedHeight
+                    : DynamicFrontGeometry.HeaderHeightAtPost(system, catalog, postIndex, end);
                 post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = postPeralte;
                 instances.Add(post);
 
@@ -111,19 +135,22 @@ namespace RackCad.Application.Systems.Dynamic
             for (var index = 0; index < system.Fronts.Count; index++)
             {
                 var front = system.Fronts[index];
-                var beamX = layout.PostPositions[index] + layout.TroquelPositions[index];
-                foreach (var level in DynamicFrontGeometry.LoadBeamLevels(system, front))
+                var levels = DynamicFrontGeometry.LoadBeamLevels(system, front);
+                for (var levelIndex = 0; levelIndex < levels.Count; levelIndex++)
                 {
+                    var level = levels[levelIndex];
                     var configuration = DynamicRackLevelGeometry.At(system, front, level.LevelNumber);
                     var beamId = configuration.InOutBeamCatalogId;
-                    // El larguero bajo se coloca YA en su elevación definitiva: se pregunta por FRENTE, que es a
-                    // quien pertenece la pieza. Antes Push Back lo movía después, localizándolo por coordenada; ese
-                    // segundo reasiento desaparece y con él el riesgo de aplicarlo dos veces o de no encontrarlo
-                    // (PB-004, I-32). El extremo ALTO es el ancla y no admite override.
-                    var y = end == DynamicRackEnd.Entrance
-                        ? level.EntranceElevation
-                        : elevations.OrFront(front.Index, level.LevelNumber, level.ExitElevation);
-                    var at = new Point2D(beamX, y);
+                    // El larguero se coloca YA en su elevación definitiva: se pregunta por FRENTE, que es a quien
+                    // pertenece la pieza. Antes Push Back lo movía después, localizándolo por coordenada; ese segundo
+                    // reasiento desaparece y con él el riesgo de aplicarlo dos veces o de no encontrarlo (PB-004).
+                    // El override vale en LOS DOS extremos: el contexto describe uno u otro y quien lo pasa sabe
+                    // cuál. Sin contexto —el Dinámico, siempre— se usa la elevación del resolver y nada cambia.
+                    //
+                    // I-42 (A1B-D4): la columna y la elevación son la IDENTIDAD de la pieza, y quien la busca
+                    // despues pregunta a la misma autoridad. No hay dos formulas.
+                    var key = DynamicEndBeamIdentity.KeyOf(layout, elevations, front, index, level, levelIndex, end);
+                    var at = new Point2D(key.ColumnX, key.Elevation);
                     var beam = new HeaderBlockInstance
                     {
                         Role = HeaderBlockRole.Beam,
@@ -139,7 +166,8 @@ namespace RackCad.Application.Systems.Dynamic
                 }
             }
 
-            safetyBuilder.AppendFrontal(instances, system, catalog, layout, plateId, end, elevations);
+            safetyBuilder.AppendFrontal(
+                instances, system, catalog, layout, plateId, end, elevations, ownsDesviador, ownsBoundary);
             DynamicViewDecorations.AppendFrontal(instances, system, layout, end, catalog, elevations);
 
             return instances;

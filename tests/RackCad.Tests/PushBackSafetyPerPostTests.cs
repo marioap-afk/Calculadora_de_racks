@@ -208,8 +208,12 @@ namespace RackCad.Tests
                     .Sum(c => c.Quantity);
             }
 
-            Assert.Equal(1, Quantity((1, SafetySide.Both)));
-            Assert.Equal(2, Quantity((1, SafetySide.Both), (2, SafetySide.Both)));
+            // I-42 (S1B): la eleccion de la BOTA nombra UBICACIONES. «Entrada/Salida» —el Izquierda historico— es
+            // UNA por poste; «Ambas» son DOS, porque son dos ubicaciones fisicas distintas y cada una es una pieza.
+            Assert.Equal(1, Quantity((1, SafetySide.Left)));
+            Assert.Equal(2, Quantity((1, SafetySide.Left), (2, SafetySide.Left)));
+            Assert.Equal(2, Quantity((1, SafetySide.Both)));
+            Assert.Equal(4, Quantity((1, SafetySide.Both), (2, SafetySide.Both)));
         }
 
         [Fact]

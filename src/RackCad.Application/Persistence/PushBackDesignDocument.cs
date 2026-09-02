@@ -41,8 +41,35 @@ namespace RackCad.Application.Persistence
         /// </summary>
         public string RearTopePieceId { get; set; }
 
+        /// <summary>
+        /// I-42 (ronda 7E) — el TIPO de defensa de montacargas de este lado: un id de catalogo,
+        /// <see cref="PushBackDefaults.NonePieceId"/> para «ninguno», o NULL para el comportamiento historico. Es un
+        /// eje distinto de la intencion POR POSTE, que sigue viviendo en la seleccion de seguridad: el tipo dice QUE
+        /// pieza usa el pasillo, y la rejilla en QUE lineas se pone.
+        /// </summary>
+        public string DefensePieceId { get; set; }
+
         /// <summary>Rear-tope DEACTIVATIONS only (front, level). Active-by-default is implicit: an absent cell is active.</summary>
         public List<PushBackCellDocument> RearTopeOffCells { get; set; }
+
+        /// <summary>
+        /// I-42 — la configuracion funcional del LADO B. NULL es el rack de un solo sentido: todo documento anterior
+        /// a I-42 lo trae ausente y por eso carga y dibuja exactamente igual, sin pedir reconfiguracion.
+        /// <para>
+        /// Se OMITE del JSON cuando es nula: sin eso, un rack anterior a I-42 empezaria a escribir un campo nuevo y
+        /// su archivo dejaria de ser byte-identico al que producian las versiones anteriores.
+        /// </para>
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public PushBackSideDocument SideB { get; set; }
+
+        /// <summary>
+        /// I-42 — la intencion de la INTERFAZ: gap, separador central, topologia por celda y overrides de estructura
+        /// por lado. NULL es el legacy (gap 0, sin separador, un solo lado activo y sin override).
+        /// <para>Se OMITE del JSON cuando es nula, por la misma razon que <see cref="SideB"/>.</para>
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public PushBackCompositeDocument Composite { get; set; }
 
         /// <summary>JSON fields this build does not know about, preserved verbatim across a load/save (I-11, D3).</summary>
         [JsonExtensionData]
@@ -84,6 +111,9 @@ namespace RackCad.Application.Persistence
                 : (double?)null;
             // PB-005: only a real choice is written. A blank id stays absent from the file, so a rack that never chose
             // a variant is byte-identical to what previous builds wrote.
+            document.DefensePieceId = string.IsNullOrWhiteSpace(design.DefensePieceId)
+                ? null
+                : design.DefensePieceId.Trim();
             document.RearTopePieceId = string.IsNullOrWhiteSpace(design.RearTope?.PieceId)
                 ? null
                 : design.RearTope.PieceId.Trim();
@@ -109,6 +139,9 @@ namespace RackCad.Application.Persistence
                     })
                     .ToList();
             }
+
+            document.SideB = PushBackSideDocument.From(design.SideB);
+            document.Composite = PushBackCompositeDocument.From(design.Composite);
 
             if (design.RearTope != null && design.RearTope.OffCells.Count > 0)
             {
@@ -164,8 +197,12 @@ namespace RackCad.Application.Persistence
                 }
             }
 
+            design.SideB = SideB?.ToDomain();
+            design.Composite = Composite?.ToDomain();
+
             design.RearTope.Saque = RearTopeSaque ?? PushBackDefaults.RearTopeSaque;
             design.RearTope.PieceId = string.IsNullOrWhiteSpace(RearTopePieceId) ? null : RearTopePieceId.Trim();
+            design.DefensePieceId = string.IsNullOrWhiteSpace(DefensePieceId) ? null : DefensePieceId.Trim();
             if (RearTopeOffCells != null)
             {
                 foreach (var cell in RearTopeOffCells)
@@ -199,6 +236,307 @@ namespace RackCad.Application.Persistence
 
         /// <summary>I-41 (PB-016): tarima por nivel. Null (lista o entrada) = false, el default legacy.</summary>
         public List<bool?> DrawPallets { get; set; }
+    }
+
+    /// <summary>
+    /// I-42 - documento del LADO B: solo su configuracion FUNCIONAL. La estructura fisica (postes, cabeceras,
+    /// separadores, postes derivados, overrides de linea de I-40, anotaciones y seguridad) NO se repite aqui: es
+    /// propiedad unica del rack y viaja en <see cref="PushBackDesignDocument.Structure"/>. Repetirla haria posible
+    /// que el archivo describiera dos estructuras distintas para un mismo rack fisico.
+    /// </summary>
+    public sealed class PushBackSideDocument
+    {
+        public bool? IsPresent { get; set; }
+        public int? LoadLevels { get; set; }
+        public double? FirstLevelHeight { get; set; }
+        public double? LegacyHighEndBeamPeralte { get; set; }
+
+        /// <summary>Frentes del lado por ranura transversal. Una entrada NULA = la ranura no existe en este lado.</summary>
+        public List<DynamicRackFrontDocument> Fronts { get; set; }
+
+        /// <summary>Configuracion Push Back por ranura (peralte posterior, fondo por celda, tarima).</summary>
+        public List<PushBackFrontDocument> FrontConfigs { get; set; }
+
+        public double? RearTopeSaque { get; set; }
+        public string RearTopePieceId { get; set; }
+
+        /// <summary>I-42 (ronda 7E) — el tipo de defensa de ESTE lado. NULL = comportamiento historico.</summary>
+        public string DefensePieceId { get; set; }
+
+        public List<PushBackCellDocument> RearTopeOffCells { get; set; }
+
+        public static PushBackSideDocument From(PushBackSideDesign side)
+        {
+            if (side == null)
+            {
+                return null;
+            }
+
+            var document = new PushBackSideDocument
+            {
+                IsPresent = side.IsPresent,
+                LoadLevels = side.LoadLevels,
+                FirstLevelHeight = side.FirstLevelHeight,
+                LegacyHighEndBeamPeralte = side.LegacyHighEndBeamPeralte > 0.0
+                    ? side.LegacyHighEndBeamPeralte
+                    : (double?)null,
+                RearTopeSaque = side.RearTope != null && side.RearTope.Saque > 0.0
+                    ? side.RearTope.Saque
+                    : (double?)null,
+                RearTopePieceId = string.IsNullOrWhiteSpace(side.RearTope?.PieceId) ? null : side.RearTope.PieceId.Trim(),
+                DefensePieceId = string.IsNullOrWhiteSpace(side.DefensePieceId) ? null : side.DefensePieceId.Trim()
+            };
+
+            if (side.Fronts.Count > 0)
+            {
+                // La entrada nula se CONSERVA: es la que dice "esta ranura no existe en este lado", y perderla
+                // desalinearia las ranuras al recargar.
+                document.Fronts = side.Fronts
+                    .Select(front => front == null ? null : DynamicRackFrontDocument.From(front))
+                    .ToList();
+            }
+
+            if (side.FrontConfigs.Any(config => config != null))
+            {
+                document.FrontConfigs = side.FrontConfigs
+                    .Select(config => config == null
+                        ? null
+                        : new PushBackFrontDocument
+                        {
+                            HighEndBeamPeraltes = config.HighEndBeamPeraltes.ToList(),
+                            DefaultPalletsDeep = config.DefaultPalletsDeep,
+                            PalletsDeepOverrides = config.PalletsDeepOverrides.Any(value => value.HasValue)
+                                ? config.PalletsDeepOverrides.ToList()
+                                : null,
+                            DrawPallets = config.DrawPallets.Any(value => value.GetValueOrDefault(false))
+                                ? config.DrawPallets.ToList()
+                                : null
+                        })
+                    .ToList();
+            }
+
+            if (side.RearTope != null && side.RearTope.OffCells.Count > 0)
+            {
+                document.RearTopeOffCells = side.RearTope.OffCells
+                    .Where(cell => cell != null)
+                    .Select(cell => new PushBackCellDocument { Frente = cell.Frente, Level = cell.Level })
+                    .ToList();
+            }
+
+            return document;
+        }
+
+        public PushBackSideDesign ToDomain()
+        {
+            var side = new PushBackSideDesign
+            {
+                IsPresent = IsPresent ?? true,
+                LoadLevels = LoadLevels ?? DynamicRackDefaults.DefaultLoadLevels,
+                FirstLevelHeight = FirstLevelHeight ?? PushBackDefaults.DefaultFirstLevelHeight,
+                LegacyHighEndBeamPeralte = LegacyHighEndBeamPeralte ?? PushBackDefaults.HighEndBeamDefaultPeralte
+            };
+
+            if (Fronts != null)
+            {
+                foreach (var front in Fronts)
+                {
+                    side.Fronts.Add(front?.ToDesign(side.LoadLevels, DynamicRackDefaults.DefaultPalletsDeep));
+                }
+            }
+
+            if (FrontConfigs != null)
+            {
+                foreach (var config in FrontConfigs)
+                {
+                    if (config == null)
+                    {
+                        side.FrontConfigs.Add(null);
+                        continue;
+                    }
+
+                    var restored = new PushBackFrontConfig { DefaultPalletsDeep = config.DefaultPalletsDeep };
+                    foreach (var peralte in config.HighEndBeamPeraltes ?? new List<double?>())
+                    {
+                        restored.HighEndBeamPeraltes.Add(peralte);
+                    }
+
+                    foreach (var deep in config.PalletsDeepOverrides ?? new List<int?>())
+                    {
+                        restored.PalletsDeepOverrides.Add(deep);
+                    }
+
+                    foreach (var draw in config.DrawPallets ?? new List<bool?>())
+                    {
+                        restored.DrawPallets.Add(draw);
+                    }
+
+                    side.FrontConfigs.Add(restored);
+                }
+            }
+
+            side.RearTope.Saque = RearTopeSaque ?? PushBackDefaults.RearTopeSaque;
+            side.RearTope.PieceId = string.IsNullOrWhiteSpace(RearTopePieceId) ? null : RearTopePieceId.Trim();
+            side.DefensePieceId = string.IsNullOrWhiteSpace(DefensePieceId) ? null : DefensePieceId.Trim();
+            if (RearTopeOffCells != null)
+            {
+                foreach (var cell in RearTopeOffCells)
+                {
+                    if (cell != null)
+                    {
+                        side.RearTope.OffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
+                    }
+                }
+            }
+
+            return side;
+        }
+    }
+
+    /// <summary>
+    /// I-42 - documento de la INTERFAZ compuesta: gap, separador central, overrides de estructura por lado y las
+    /// celdas cuya topologia se APARTA del valor por defecto. Como en el tope posterior, solo se escribe la
+    /// excepcion: una rejilla positiva completa nunca llega al archivo.
+    /// </summary>
+    public sealed class PushBackCompositeDocument
+    {
+        public double? Gap { get; set; }
+        public bool? CentralSeparator { get; set; }
+        public int? StructureOverrideA { get; set; }
+        public int? StructureOverrideB { get; set; }
+        public string DefaultTopology { get; set; }
+        public string DefaultDirection { get; set; }
+        public List<PushBackTopologyCellDocument> Topologies { get; set; }
+
+        /// <summary>I-42: ranuras transversales que no existen en el lado A. Ausente = todas existen.</summary>
+        public List<int> AbsentSlotsA { get; set; }
+
+        /// <summary>
+        /// I-42 (correccion aislada 2B): ranuras sin ALMACENAMIENTO en el lado B. Campo ADITIVO: un documento que no
+        /// lo trae conserva su lectura anterior —la entrada nula de <c>SideB.Fronts</c> sigue siendo la ausencia— y
+        /// no se le inventa una declaracion fisica que nunca guardo.
+        /// </summary>
+        public List<int> AbsentSlotsB { get; set; }
+
+        public static PushBackCompositeDocument From(PushBackCompositeDesign composite)
+        {
+            if (composite == null)
+            {
+                return null;
+            }
+
+            var document = new PushBackCompositeDocument
+            {
+                Gap = composite.Gap > 0.0 ? composite.Gap : (double?)null,
+                CentralSeparator = composite.CentralSeparator ? true : (bool?)null,
+                StructureOverrideA = composite.StructureOverrideA,
+                StructureOverrideB = composite.StructureOverrideB,
+                DefaultTopology = composite.DefaultTopology.ToString(),
+                DefaultDirection = composite.DefaultDirection.ToString()
+            };
+
+            if (composite.AbsentSlotsA.Count > 0)
+            {
+                document.AbsentSlotsA = composite.AbsentSlotsA.ToList();
+            }
+
+            if (composite.AbsentSlotsB.Count > 0)
+            {
+                document.AbsentSlotsB = composite.AbsentSlotsB.ToList();
+            }
+
+            if (composite.Topologies.Any(cell => cell != null))
+            {
+                document.Topologies = composite.Topologies
+                    .Where(cell => cell != null)
+                    .Select(cell => new PushBackTopologyCellDocument
+                    {
+                        Frente = cell.Frente,
+                        Level = cell.Level,
+                        Topology = cell.Topology.ToString(),
+                        Direction = cell.Direction.ToString(),
+                        CorridaDepth = cell.CorridaDepth
+                    })
+                    .ToList();
+            }
+
+            return document;
+        }
+
+        public PushBackCompositeDesign ToDomain()
+        {
+            var composite = new PushBackCompositeDesign
+            {
+                Gap = Gap.HasValue && Gap.Value > 0.0 ? Gap.Value : 0.0,
+                CentralSeparator = CentralSeparator ?? false,
+                StructureOverrideA = StructureOverrideA,
+                StructureOverrideB = StructureOverrideB,
+                DefaultTopology = ParseTopology(DefaultTopology, PushBackCellTopology.Encontradas),
+                DefaultDirection = ParseDirection(DefaultDirection, PushBackRunDirection.AToB)
+            };
+
+            if (AbsentSlotsA != null)
+            {
+                foreach (var slot in AbsentSlotsA)
+                {
+                    composite.AbsentSlotsA.Add(slot);
+                }
+            }
+
+            if (AbsentSlotsB != null)
+            {
+                foreach (var slot in AbsentSlotsB)
+                {
+                    composite.AbsentSlotsB.Add(slot);
+                }
+            }
+
+            if (Topologies != null)
+            {
+                foreach (var cell in Topologies)
+                {
+                    if (cell == null)
+                    {
+                        continue;
+                    }
+
+                    composite.Topologies.Add(new PushBackTopologyCell
+                    {
+                        Frente = cell.Frente,
+                        Level = cell.Level,
+                        Topology = ParseTopology(cell.Topology, composite.DefaultTopology),
+                        Direction = ParseDirection(cell.Direction, composite.DefaultDirection),
+                        CorridaDepth = cell.CorridaDepth
+                    });
+                }
+            }
+
+            return composite;
+        }
+
+        /// <summary>
+        /// Un nombre desconocido -de una version futura o de un archivo tocado a mano- NO aborta la carga: cae al
+        /// valor por defecto declarado. La alternativa seria dejar el rack sin abrir por una celda.
+        /// </summary>
+        private static PushBackCellTopology ParseTopology(string value, PushBackCellTopology fallback)
+            => System.Enum.TryParse(value, ignoreCase: true, out PushBackCellTopology parsed) ? parsed : fallback;
+
+        private static PushBackRunDirection ParseDirection(string value, PushBackRunDirection fallback)
+            => System.Enum.TryParse(value, ignoreCase: true, out PushBackRunDirection parsed) ? parsed : fallback;
+    }
+
+    /// <summary>I-42 - una celda (ranura, nivel) con topologia y sentido explicitos.</summary>
+    public sealed class PushBackTopologyCellDocument
+    {
+        public int Frente { get; set; }
+        public int Level { get; set; }
+        public string Topology { get; set; }
+        public string Direction { get; set; }
+
+        /// <summary>
+        /// I-42 — fondo propio de la cama corrida. Ausente = hereda el fondo por defecto de una corrida, que es lo
+        /// que trae todo documento anterior a esta autoridad.
+        /// </summary>
+        public int? CorridaDepth { get; set; }
     }
 
     /// <summary>One (front, level) cell in a Push Back document (a rear-tope deactivation).</summary>

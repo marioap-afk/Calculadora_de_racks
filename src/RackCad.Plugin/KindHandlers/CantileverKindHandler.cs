@@ -59,6 +59,9 @@ namespace RackCad.Plugin.KindHandlers
         /// views — so a copy that kept it would be a second line claiming to be the first. The envelope GUID is
         /// re-stamped by <c>RackEnvelopeRestamp</c>; this is the inner half of the same move.
         /// </summary>
+        /// <summary>El cantilever no publica diagnosticos bloqueantes propios: su salida no se filtra aqui (I-42/H11).</summary>
+        public string OutputBlockedReason(RackEmbedDocument embed, RackCatalog catalog) => null;
+
         public string RestampDesign(string designJson, string newId, string copyName)
         {
             var store = new RackProjectStore();

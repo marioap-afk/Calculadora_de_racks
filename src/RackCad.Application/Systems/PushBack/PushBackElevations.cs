@@ -29,10 +29,16 @@ namespace RackCad.Application.Systems.PushBack
 
         public int LevelNumber { get; }
 
-        /// <summary>Elevación de inserción del larguero de ENTRADA/SALIDA: derivada del posterior y ajustada a troquel.</summary>
+        /// <summary>
+        /// Elevación de inserción del larguero de ENTRADA/SALIDA: el ANCLA, tal como la resolvió el nivel desde el
+        /// datum del producto. No se corrige.
+        /// </summary>
         public double LowInsertion { get; }
 
-        /// <summary>Elevación de inserción del larguero POSTERIOR: el ancla, tal como la ajustó el resolver.</summary>
+        /// <summary>
+        /// Elevación de inserción del larguero POSTERIOR: DERIVADA del ancla baja y resuelta sobre la retícula de
+        /// troqueles.
+        /// </summary>
         public double RearInsertion { get; }
 
         /// <summary>Contacto físico del larguero bajo con la cama (su <c>TROQUEL_CAMA</c> transformado).</summary>
@@ -72,13 +78,15 @@ namespace RackCad.Application.Systems.PushBack
     /// parámetro opcional.</item>
     /// </list>
     ///
-    /// El extremo POSTERIOR no pasa por aquí en ninguna vista: su larguero es el ancla y conserva la elevación del
-    /// resolver, así que lo que cuelgue de él la sigue leyendo de ahí.
-    ///
-    /// La regla vigente (aclaración final del Owner):
+    /// La regla vigente es la decisión FINAL del dueño, y <b>retira</b> la de I-32 («verticalmente gobierna el
+    /// ALTO»). Hay UNA sola política, en un solo sentido:
     /// <list type="number">
-    /// <item>el larguero POSTERIOR es el ANCLA y <b>no se mueve</b>: conserva el troquel que ya le ajustó el
-    /// resolver compartido;</item>
+    /// <item>el larguero de ENTRADA —el BAJO— es el ANCLA y <b>no se mueve</b>: conserva exactamente el troquel que
+    /// su nivel le dio, medido desde el datum del producto. Es la altura que el usuario pidió, y ni la topología ni
+    /// el fondo de la cama pueden hundirla;</item>
+    /// <item>el larguero POSTERIOR se <b>DERIVA</b>: se enumeran los troqueles de la retícula y se elige el que
+    /// mejor cumple, en este orden — (a) menor error de pendiente contra 7/192, (b) más cercano al ALTO teórico
+    /// (<c>bajo + subida nominal sobre la longitud real de la cama</c>), (c) el de menor elevación;</item>
     /// <item>su CONTACTO es la arista que <see cref="PushBackLoadBeamGeometry.RearBeamTangencyPointWorld"/> elige por
     /// geometría —la de mayor X en mundo—, nunca un lado fijo del catálogo: con el bloque espejado la arista buena es
     /// la otra;</item>
@@ -87,13 +95,17 @@ namespace RackCad.Application.Systems.PushBack
     /// bloque. Las dos rectas son paralelas y están separadas por la componente perpendicular del mate;</item>
     /// <item>la ROTACIÓN que concilia las dos la resuelve <see cref="PushBackBedRotation"/>, y es una sola para todo
     /// el bloque;</item>
-    /// <item>el troquel del larguero BAJO se elige <b>minimizando el error de pendiente contra 7/192</b> sobre TODO
-    /// el rango válido de la retícula de 2", de modo que el mínimo es global;</item>
     /// <item>los DOS largueros de extremo quedan sobre troqueles válidos de esa misma retícula
     /// (<see cref="PushBackTroquelGrid"/>).</item>
     /// </list>
     /// La pendiente final es la RESULTANTE de esa selección, no el objetivo nominal: 7/192 es el objetivo al que se
     /// acerca lo más posible, no un valor que se imponga sacando un larguero de su troquel.
+    ///
+    /// <para>
+    /// No queda viva ninguna ruta que fije el ALTO o elija el BAJO. Quien quiera la elevación del larguero posterior
+    /// pregunta por <see cref="HighInsertions"/>; leer <c>EntranceElevation</c> del resolver para dibujarlo sería
+    /// una SEGUNDA autoridad vertical, que es justo lo que esta regla elimina.
+    /// </para>
     ///
     /// No toca <see cref="DynamicLoadBeamLevel"/> ni el sistema Dinámico: los builders compartidos reciben estas
     /// elevaciones por un parámetro OPCIONAL cuyo valor por defecto (null) deja su comportamiento intacto, y el
@@ -142,14 +154,6 @@ namespace RackCad.Application.Systems.PushBack
                 // subida nominal por frente desempataría contra una longitud que ese nivel no tiene.
                 var nominalRise = PushBackBedSlope.Rise(PushBackCellDepth.BedLength(system, front, level));
 
-                // El contacto posterior lo elige la GEOMETRÍA entre las dos aristas medidas del bloque.
-                var rearContact = PushBackLoadBeamGeometry.RearBeamTangencyPointWorld(
-                    catalog, rearBeamId, rear.X, rear.Y, rear.MirroredX);
-                if (!rearContact.HasValue)
-                {
-                    continue;   // sin arista medida no hay contacto: no se inventa uno
-                }
-
                 var lowBeamId = string.IsNullOrWhiteSpace(low.BeamCatalogId)
                     ? DynamicRackDefaults.InOutBeamCatalogId
                     : low.BeamCatalogId;
@@ -159,61 +163,59 @@ namespace RackCad.Application.Systems.PushBack
                     continue;
                 }
 
-                var lowContactX = PushBackLoadBeamGeometry
-                    .BedTangencyPointWorld(lowMate.Value, low.X, 0.0, low.MirroredX).X;
-                // El resultado EXACTO de la regla anterior para esta celda: tercer desempate.
-                var legacyInsertion = PushBackTroquelGrid.Snap(
-                    rearContact.Value.Y - nominalRise - lowMate.Value.Y, gridBase);
-                var chosen = ChooseLowTroquel(
-                    rearContact.Value, lowContactX, lowMate.Value.Y, railLocalMate, gridBase, legacyInsertion);
+                // El larguero BAJO es el ANCLA: conserva EXACTAMENTE la elevacion que el nivel le dio (su troquel
+                // resuelto, medido desde el datum del producto). No se mueve para mejorar la pendiente.
+                var lowInsertion = low.Y;
+                var lowContact = PushBackLoadBeamGeometry.BedTangencyPointWorld(
+                    lowMate.Value, low.X, lowInsertion, low.MirroredX);
+                var exitMate = new Point2D(lowContact.X, lowInsertion + lowMate.Value.Y);
+
+                // El ALTO se DERIVA: la subida nominal sobre la longitud real da el objetivo teorico, y de ahi se
+                // elige el troquel fisicamente valido con el criterio del dueño.
+                var chosen = ChooseHighTroquel(
+                    catalog, rearBeamId, exitMate, lowContact.Y + nominalRise,
+                    rear.X, rear.MirroredX, railLocalMate, gridBase);
                 if (!chosen.HasValue)
                 {
                     continue;
                 }
 
-                var lowInsertion = chosen.Value.Insertion;
-                var lowContact = PushBackLoadBeamGeometry.BedTangencyPointWorld(
-                    lowMate.Value, low.X, lowInsertion, low.MirroredX);
-
                 result[level] = new PushBackCellElevation(
-                    level, lowInsertion, rear.Y, lowContact, rearContact.Value, chosen.Value.Rotation);
+                    level, lowInsertion, chosen.Value.Insertion, lowContact, chosen.Value.Contact,
+                    chosen.Value.Rotation);
             }
 
             return result;
         }
 
         /// <summary>
-        /// Elige el troquel del larguero de ENTRADA/SALIDA (aclaración final del Owner, I-32).
+        /// Elige el troquel del larguero POSTERIOR (decision final del dueño: la autoridad vertical es el BAJO).
         ///
-        /// El larguero POSTERIOR es el ancla y no se mueve: conserva su troquel resuelto. Lo que se elige es la
-        /// posición del BAJO, y el criterio ya no es «ajustar una subida nominal» sino <b>minimizar el error de
-        /// PENDIENTE contra el objetivo de 7/192</b>, sobre las posiciones válidas de la retícula de 2".
-        ///
-        /// Se recorre TODO el rango físicamente válido —desde el primer troquel de la retícula hasta que la subida
-        /// se anula—, no una ventana alrededor de una estimación: así el mínimo es GLOBAL y no depende de dónde se
-        /// empiece a buscar. El error es monótono a cada lado del cruce con el objetivo, así que el barrido completo
-        /// encuentra el óptimo y no un mínimo local.
-        ///
-        /// <b>Desempate</b>, en este orden exacto:
+        /// <para>
+        /// El larguero de entrada es el ancla y NO se mueve: conserva el troquel que su nivel le dio. Lo que se
+        /// elige es el ALTO, enumerando los troqueles fisicamente validos por encima del bajo —sin ellos no hay
+        /// subida y por tanto no hay cama— y quedandose con el que mejor cumple, en este orden:
+        /// </para>
         /// <list type="number">
-        /// <item>menor error de pendiente;</item>
-        /// <item>a igualdad, el candidato más cercano a la posición teórica CONTINUA —la que daría exactamente
-        /// 7/192 si la retícula no existiera—;</item>
-        /// <item>a igualdad, el más cercano al resultado <b>real</b> de la regla anterior —ajustar la subida
-        /// nominal medida sobre la longitud comercial—, que llega calculado en <paramref name="legacyInsertion"/>,
-        /// para que la decisión sea estable y no salte entre dos troqueles equivalentes;</item>
-        /// <item>a igualdad, el más bajo, que hace la elección determinista.</item>
+        /// <item>MENOR error respecto de la pendiente nominal;</item>
+        /// <item>si empatan, el mas cercano al ALTO teorico (<c>bajo + subida nominal</c>);</item>
+        /// <item>si siguen empatando, el de MENOR elevacion.</item>
         /// </list>
+        /// <para>
+        /// La regla anterior hacia lo contrario —fijaba el alto y elegia el bajo— y por eso una cama mas larga
+        /// hundia su larguero de entrada por debajo de la altura que el usuario habia pedido. Su tercer desempate
+        /// era la cercania al resultado PRE-I-32; pertenecia a aquella autoridad y desaparece con ella.
+        /// </para>
         /// </summary>
-        /// <param name="legacyInsertion">
-        /// El resultado real de la regla anterior para esta celda, calculado por el llamador — que es quien tiene el
-        /// sistema y el frente— como <c>Snap(rearContact.Y − Rise(ResolveBedLength) − lowMateLocalY)</c>. No se
-        /// reconstruye aquí desde la posición teórica asimétrica: esa es OTRA cantidad, y usarla dejaría el tercer
-        /// desempate sin contenido propio.
-        /// </param>
-        private static (double Insertion, double Rotation)? ChooseLowTroquel(
-            Point2D rearContact, double lowContactX, double lowMateLocalY, Point2D railLocalMate, double gridBase,
-            double legacyInsertion)
+        private static (double Insertion, double Rotation, Point2D Contact)? ChooseHighTroquel(
+            RackCatalog catalog,
+            string rearBeamId,
+            Point2D exitMate,
+            double theoreticalHighY,
+            double rearX,
+            bool rearMirroredX,
+            Point2D railLocalMate,
+            double gridBase)
         {
             var pitch = SelectiveRackDefaults.TroquelPaso;
             if (pitch <= 0.0)
@@ -221,45 +223,60 @@ namespace RackCad.Application.Systems.PushBack
                 return null;
             }
 
-            // Segundo desempate: la posición teórica CONTINUA de la geometría asimétrica.
-            var theoretical = PushBackBedRotation.TheoreticalExitY(
-                rearContact.X, rearContact.Y, lowContactX, railLocalMate.Y) - lowMateLocalY;
-
-            (double Insertion, double Rotation)? best = null;
+            (double Insertion, double Rotation, Point2D Contact)? best = null;
             var bestError = double.MaxValue;
             var bestToTheoretical = double.MaxValue;
-            var bestToLegacy = double.MaxValue;
 
-            for (var insertion = PushBackTroquelGrid.Snap(gridBase, gridBase); ; insertion += pitch)
+            // El CONTACTO del larguero posterior no está a la altura de su inserción: la arista la elige la geometría
+            // del bloque y queda desplazada una cantidad FIJA (el bloque solo se traslada verticalmente). Se mide esa
+            // separación una vez —no se estima— para que el barrido arranque en el primer troquel que puede llegar a
+            // tener subida, sea cual sea el perfil del catálogo. Empezar en el troquel más próximo al mate de salida
+            // dejaría fuera candidatos válidos que están por debajo de él.
+            var probe = PushBackLoadBeamGeometry.RearBeamTangencyPointWorld(
+                catalog, rearBeamId, rearX, gridBase, rearMirroredX);
+            if (!probe.HasValue)
             {
-                var exitMate = new Point2D(lowContactX, insertion + lowMateLocalY);
-                if (exitMate.Y >= rearContact.Y)
+                return null;   // sin arista medida no hay contacto: no se inventa uno
+            }
+
+            var contactOffset = probe.Value.Y - gridBase;
+            var first = PushBackTroquelGrid.Snap(exitMate.Y - contactOffset, gridBase) - pitch;
+            var ceiling = theoreticalHighY - contactOffset
+                + Math.Max(4.0 * pitch, Math.Abs(theoreticalHighY - exitMate.Y));
+
+            for (var insertion = first; insertion <= ceiling + pitch; insertion += pitch)
+            {
+                var contact = PushBackLoadBeamGeometry.RearBeamTangencyPointWorld(
+                    catalog, rearBeamId, rearX, insertion, rearMirroredX);
+                if (!contact.HasValue)
                 {
-                    break;   // sin subida no hay cama
+                    return null;   // sin arista medida no hay contacto: no se inventa uno
                 }
 
-                var rotation = PushBackBedRotation.Solve(exitMate, rearContact, railLocalMate);
+                if (contact.Value.Y <= exitMate.Y)
+                {
+                    continue;   // sin subida no hay cama
+                }
+
+                var rotation = PushBackBedRotation.Solve(exitMate, contact.Value, railLocalMate);
                 if (!rotation.HasValue)
                 {
                     continue;
                 }
 
                 var error = PushBackBedRotation.SlopeError(rotation.Value);
-                var toTheoretical = Math.Abs(insertion - theoretical);
-                var toLegacy = Math.Abs(insertion - legacyInsertion);
+                var toTheoretical = Math.Abs(contact.Value.Y - theoreticalHighY);
 
+                // Tercer desempate —el ALTO de MENOR elevacion— sale gratis: se enumera de abajo arriba y solo se
+                // reemplaza al mejorar ESTRICTAMENTE, asi que ante un empate perfecto gana el primero, que es el mas bajo.
                 var better = error < bestError - 1e-12
-                    || (Math.Abs(error - bestError) <= 1e-12
-                        && (toTheoretical < bestToTheoretical - 1e-12
-                            || (Math.Abs(toTheoretical - bestToTheoretical) <= 1e-12
-                                && toLegacy < bestToLegacy - 1e-12)));
+                    || (Math.Abs(error - bestError) <= 1e-12 && toTheoretical < bestToTheoretical - 1e-12);
 
                 if (best == null || better)
                 {
-                    best = (insertion, rotation.Value);
+                    best = (insertion, rotation.Value, contact.Value);
                     bestError = error;
                     bestToTheoretical = toTheoretical;
-                    bestToLegacy = toLegacy;
                 }
             }
 
@@ -274,6 +291,16 @@ namespace RackCad.Application.Systems.PushBack
             PushBackSystem system, RackCatalog catalog, DynamicRackFront front)
             => Resolve(system, catalog, front)
                 .ToDictionary(entry => entry.Key, entry => entry.Value.LowInsertion);
+
+        /// <summary>
+        /// Las inserciones del larguero POSTERIOR por nivel. Desde la decision final del dueño es el extremo que se
+        /// DERIVA, asi que su colocacion tiene que leerse de aqui: si el dibujo siguiera usando la elevacion del
+        /// resolver compartido, la cama y su larguero alto quedarian en troqueles distintos.
+        /// </summary>
+        public static IReadOnlyDictionary<int, double> HighInsertions(
+            PushBackSystem system, RackCatalog catalog, DynamicRackFront front)
+            => Resolve(system, catalog, front)
+                .ToDictionary(entry => entry.Key, entry => entry.Value.RearInsertion);
 
         /// <summary>
         /// El CONTEXTO que consumen las vistas compartidas: las elevaciones bajas de cada frente, envueltas en un
@@ -294,12 +321,29 @@ namespace RackCad.Application.Systems.PushBack
         /// override» y se quedan con la elevación del resolver.
         /// </summary>
         public static RackLevelElevations Context(PushBackSystem system, RackCatalog catalog)
+            // Se entrega con su ACOMPAÑANTE del extremo alto: el corte lateral dibuja los dos extremos en una sola
+            // pasada y necesita los dos, y desde la inversion vertical los dos se derivan.
+            => BuildContext(system, catalog, low: true)?.WithHighEnd(HighContext(system, catalog));
+
+        /// <summary>
+        /// El mismo contexto para el extremo ALTO. Existe porque desde la decisión final del dueño el larguero
+        /// posterior ya NO es el ancla: se DERIVA, y por tanto su elevación tampoco se puede leer del resolver
+        /// compartido. El corte frontal posterior lo consume igual que el bajo consume <see cref="Context"/>, de
+        /// modo que la misma pieza física sale a la misma altura en el lateral y en el frontal.
+        /// </summary>
+        public static RackLevelElevations HighContext(PushBackSystem system, RackCatalog catalog)
+            => BuildContext(system, catalog, low: false);
+
+        private static RackLevelElevations BuildContext(PushBackSystem system, RackCatalog catalog, bool low)
         {
             var fronts = system?.Structure?.Fronts;
             if (fronts == null)
             {
                 return null;
             }
+
+            IReadOnlyDictionary<int, double> At(DynamicRackFront front)
+                => low ? LowInsertions(system, catalog, front) : HighInsertions(system, catalog, front);
 
             return RackLevelElevations.From(
                 fronts
@@ -310,8 +354,8 @@ namespace RackCad.Application.Systems.PushBack
                         // EFFECTIVE count — zero — instead of claiming levels that nothing places (I-33).
                         DynamicFrontActivation.EffectiveLoadLevels(front),
                         front.EndX - front.StartX,
-                        LowInsertions(system, catalog, front))),
-                systemEnvelope: LowInsertions(system, catalog, null));
+                        At(front))),
+                systemEnvelope: At(null));
         }
     }
 }

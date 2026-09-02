@@ -213,12 +213,18 @@ namespace RackCad.Tests
             Assert.True(kindCheck >= 0 && kindCheck < firstRedraw, "envelope kind check must precede geometry");
             Assert.True(descriptorCall >= 0 && descriptorCall < firstRedraw, "view descriptor check must precede geometry");
 
-            // the descriptor helper covers all three views + both frontal ends + the section rule
+            // the descriptor helper covers all three views + the section rule
             Assert.Contains("RackEmbedDocument.ViewPlanta", Commands);
             Assert.Contains("RackEmbedDocument.ViewFrontal", Commands);
             Assert.Contains("RackEmbedDocument.ViewLateral", Commands);
-            Assert.Contains("PushBackFrontalEnd.EntradaSalida", Commands);
-            Assert.Contains("PushBackFrontalEnd.Posterior", Commands);
+
+            // I-42: la regla de la SECCION frontal deja de ser una comparacion literal contra los dos ordinales y pasa
+            // a delegarse en la autoridad compartida (0 y 1 = los dos cortes del lado A, 2 y 3 = los del lado B). Se
+            // exige la delegacion, que es MAS fuerte: asi el comando y el editor no pueden discrepar sobre que
+            // secciones existen, cosa que dos listas de literales si permitian.
+            Assert.Contains("PushBackSystemFrontalBuilder.IsValidSection(", Commands);
+            Assert.Contains("PushBackSystemFrontalBuilder.DecodeSection(", Commands);
+            Assert.DoesNotContain("section != (int)PushBackFrontalEnd", Commands);
         }
 
         [Fact]

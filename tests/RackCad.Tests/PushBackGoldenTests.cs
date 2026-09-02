@@ -67,6 +67,9 @@ namespace RackCad.Tests
         private static string Sha(string content)
             => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(content)));
 
+        internal static RackCatalog CatalogForDiff => Catalog;
+        internal static PushBackSystem ScenarioForDiff(RackCatalog catalog) => Scenario(catalog);
+
         private static Dictionary<string, string> Signatures()
         {
             var catalog = Catalog;
@@ -180,9 +183,70 @@ namespace RackCad.Tests
             //  * bom: la LONGITUD de la cama sigue siendo el fondo estructural completo, y los conteos no cambian.
             //
             // Anteriores: lateral/lateral-corte0 A7040D72..., frontal-entrada C124825D...
-            ["lateral"] = "1808DB213A973A87B6B4C1E463A00EB7A3A7F5E47224334F620267C0477AC9C9",
-            ["lateral-corte0"] = "1808DB213A973A87B6B4C1E463A00EB7A3A7F5E47224334F620267C0477AC9C9",
-            ["frontal-entrada"] = "2B993BAA64C6157CB2C724CF2C3D0B172FEEFBA5BC9961F70F8317CD4986DADF",
+            //
+            // DECISIÓN FINAL DEL DUEÑO (2026-08) — se INVIERTE la autoridad vertical: manda el extremo BAJO.
+            //
+            // La regla anterior fijaba el larguero POSTERIOR en la elevación del resolver y ELEGÍA el de entrada
+            // sobre la retícula. Consecuencia física que el dueño rechazó en AutoCAD: el larguero por el que se
+            // carga NO quedaba a la altura pedida —subía o bajaba según el fondo de la cama—, de modo que «Alto 1er
+            // nivel» dejaba de significar nada. Ahora el BAJO es el ancla y conserva EXACTAMENTE su troquel; el
+            // POSTERIOR se deriva y se elige sobre la retícula.
+            //
+            // EVIDENCIA MEDIDA sobre este mismo escenario (inserciones, en pulgadas):
+            //
+            //             ANTES (alto fijo)          AHORA (bajo fijo)         resolver
+            //   F0 N1     low 12.6053  high 16.6053  low  6.6053  high 10.6053  exit  6.6053  entrance 16.6053
+            //   F0 N2     low 84.6053  high 88.6053  low 78.6053  high 82.6053  exit 78.6053  entrance 88.6053
+            //   F1 N1     low 12.6053  high 12.6053  low  6.6053  high  6.6053  exit  6.6053  entrance 12.6053
+            //   F1 N2     low 84.6053  high 84.6053  low 78.6053  high 78.6053  exit 78.6053  entrance 84.6053
+            //
+            // Tres lecturas de esa tabla, y son las que justifican los pines:
+            //  * el larguero BAJO vuelve EXACTAMENTE a la elevación de salida del resolver —la altura pedida—, en los
+            //    dos frentes y en los dos niveles. Antes estaba 6" por encima;
+            //  * la PENDIENTE de cada cama NO cambia: 0.034398 en el frente 0 y 0.040668 en el frente 1, idénticas
+            //    antes y después. La celda entera baja 6.0000"; la cama no se reinclina. Es la comprobación de que
+            //    esto invierte el ancla y no toca el criterio de selección;
+            //  * el frente 1, más corto, tiene su alto en el MISMO troquel que su bajo: la subida la aporta la
+            //    geometría del larguero posterior, no un salto de troquel. Nada que ver con «no sube».
+            //
+            // Se mueven CUATRO pines y cada uno por su pieza:
+            //  * lateral / lateral-corte0: bajan los dos largueros de extremo, la cama, sus rodillos, los apoyos
+            //    intermedios y el tope posterior, que cuelga del larguero alto;
+            //  * frontal-entrada: el mismo larguero bajo, dibujado en su corte. Vuelve a C652265C…, el valor que
+            //    tenía cuando ese larguero estaba en la elevación del resolver — la comprobación más limpia de que
+            //    el ancla regresó a su sitio;
+            //  * frontal-posterior: el larguero alto y su tope. ESTE pin es además un ARREGLO: hasta ahora el corte
+            //    posterior leía la elevación del resolver directamente, así que era una SEGUNDA autoridad vertical
+            //    para la misma pieza física. Ahora consume el mismo contexto de elevaciones que el lateral.
+            // planta (sin elevaciones) y bom (mismas piezas, mismas longitudes) quedan INTACTOS, y eso acota el
+            // cambio a lo que el dueño decidió.
+            //
+            // Anteriores: lateral/lateral-corte0 1808DB21…, frontal-entrada 2B993BAA…, frontal-posterior 55AF6395…
+            // I-42 (ronda post-82e918b) — el TOPE cuelga de su larguero alto, y desde la inversion vertical ese
+            // larguero esta en la elevacion DERIVADA. El tope seguia midiendose desde la que el resolver compartido
+            // le dio al nivel, asi que quedaba flotando sobre un larguero que ya no esta ahi — y discrepando del
+            // corte frontal, que si consumia la derivada.
+            //
+            // Medido en este escenario: los largueros altos estan en 10.6053/82.6053 (frente 0) y 6.6053/78.6053
+            // (frente 1), mientras el resolver decia 16.6053/88.6053 y 12.6053/84.6053. Los topes bajan esos 6" y
+            // se apoyan donde toca. La REGLA no cambia: sigue siendo el rise-and-snap canonico mas DOS troqueles
+            // (PB-VAL-03), y sigue viviendo en un solo sitio (PushBackRearTopeBuilder.ElevationY).
+            //
+            // Solo se mueven los dos pines LATERALES: el frontal posterior ya media desde la derivada, la planta no
+            // lleva elevacion y el BOM cuenta las mismas piezas con las mismas longitudes.
+            // Anteriores: lateral/lateral-corte0 1272488B...
+            //
+            // I-42 (S1F) — se mueve UN pin, «lateral», y por UNA pieza. Este escenario tiene dos frentes con
+            // profundidades distintas (DepthStartPosition 1 y 4), asi que la linea 2 empieza en X=144 y no en 0.
+            // Su BOTA se dibujaba en X=0 —el corte general las llevaba todas al extremo de la seccion— y ahora se
+            // dibuja en el plano de la cara que protege, X=144, que es donde la planta ya la ponia (X=143.61 con la
+            // placa descontada). Pieza a pieza: `PROTECTOR_BOTA|0|False` se conserva (lineas 0 y 1, colapsadas en un
+            // plano) y se AÑADE `PROTECTOR_BOTA|144|False`. Ningun otro pin se mueve: planta, los dos frontales, el
+            // corte por linea y el BOM cuentan y colocan exactamente lo mismo.
+            // Anterior (S1E): lateral 52386252...
+            ["lateral"] = "C52D1D24364D1B61F749B14ACA72EED5F37CD6FE5D417BF3C69C4045E253C4A5",
+            ["lateral-corte0"] = "523862527623A874B333E201A8CADF0774610E39CD496E352BF8A9B594760B69",
+            ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
             // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of
             // the plan, not from the rear beam's insertion (which is what kept it on the larguero troquel). Exactly the
@@ -190,11 +254,44 @@ namespace RackCad.Tests
             // the approved rise-and-snap +4" on that same column) and planta (both coordinates coincide, no elevation).
             // LATERAL is byte-identical and the BOM is unchanged — the correction touches only those two views.
             // Previous: frontal-posterior 5553A6C1…, planta 666BBD2B…
-            ["frontal-posterior"] = "55AF63952A2C5DB36BEA5FA6818E55EAE09658314A9D4A95FFE070080CDF5211",
-            ["planta"] = "4797ED85A9F9344C900BD5C6A882A6BE33DA8AA2DCD1AF837C28604A18DA4C64",
+            ["frontal-posterior"] = "234EDFA63829C7EA5895AAC48FD38AE9C29CB57C8D340A90407E2F6D439501BF",
+            // I-42 (ronda post-82e918b) — en PLANTA un frente se identifica por su posicion TRANSVERSAL, no por la
+            // X de profundidad. Se buscaba «el frente cuyo EndX esta mas cerca» y, como los dos frentes de este
+            // escenario ACABAN en la misma posicion, devolvia siempre el frente 0: el larguero posterior del frente
+            // 1 salia con el PERALTE del frente 0 (5") en vez del suyo (3.5"), y su tope se decidia leyendo la
+            // configuracion del otro frente. En un rack compuesto el mismo defecto dejaba el tope solo en el primer
+            // frente, que es lo que el dueño reporto.
+            //
+            // Medido en este escenario: el larguero posterior de Y=54.24 pasa de PERALTE 5 a PERALTE 3.5, que es el
+            // suyo. Los dos topes siguen apareciendo y en la misma columna. Solo se mueve el pin de PLANTA: la X de
+            // profundidad no cambia, asi que el lateral, los dos frontales y el BOM quedan INTACTOS.
+            // Anterior: planta 4797ED85...
+            ["planta"] = "02EE98BAC846356957D892BB23E0A8B4AE31C849A6FA1370DDF22A849CB90D69",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front
             // length). Previous BOM hash: 139C18EFDD0BCF1DBC9CABB867E3C40499B2BD264E1BED4F4CBC7DCEE74C57AC.
+            // I-42 (correccion aislada 5B/5C) — el dueño RETIRO la regla de la ronda 5 («ultimo poste / primer poste
+            // / poste interior») y la SUSTITUYO por esta: el larguero de salida debe llevar EXACTAMENTE la
+            // orientacion que tendria un larguero INTERMEDIO colocado en esa misma posicion fisica. No es una regla
+            // nueva — el programa ya orienta bien los intermedios y ahora el alto CONSUME esa misma autoridad.
+            //
+            // Consecuencia sobre este escenario: su frontera alta esta en X=300, que es donde TERMINA una CABECERA, y
+            // un intermedio apoyado ahi va espejado. Los siete flags que la ronda 5 habia volteado vuelven, uno por
+            // uno, al valor que el dueño valido en la ronda 4B — y los dos pines regresan EXACTAMENTE a los hashes
+            // que tenian entonces, que es la comprobacion mas limpia de que la regla retirada era la anomalia:
+            //   LATERAL  larguero alto X=300 Y=10.6053     mirrored False -> True
+            //   LATERAL  larguero alto X=300 Y=82.6053     mirrored False -> True
+            //   LATERAL  tope          X=299.125 Y=94.1563 mirrored True  -> False
+            //   PLANTA   larguero alto X=300 Y=0.75        mirrored False -> True
+            //   PLANTA   larguero alto X=300 Y=54.244      mirrored False -> True
+            //   PLANTA   tope          X=299.125 Y=1.5     mirrored True  -> False
+            //   PLANTA   tope          X=299.125 Y=54.994  mirrored True  -> False
+            //
+            // Siete primitivas, y en las siete cambia SOLO el espejo: ni una X, ni una Y, ni un anclaje, ni una
+            // rotacion, ni una pieza, ni una cantidad. Las X de los topes son las de la ronda 4B y no se mueven —
+            // posicion y orientacion del tope son dos autoridades separadas, por decision del dueño. Los dos
+            // frontales quedan INTACTOS: su espejo es el de la retícula transversal y no es esta pregunta.
+            // Anterior (ronda 5, retirada): lateral y lateral-corte0 DC546899..., planta E2A173A8...
             ["bom"] = "057C6D2D30548D4F8FE65F1DA38678D0588792C2A65B43CD23CE4F8B7ECC59A3"
         };
 

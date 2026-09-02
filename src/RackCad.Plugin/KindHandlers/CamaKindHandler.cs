@@ -31,6 +31,9 @@ namespace RackCad.Plugin.KindHandlers
             return FlowBedBomBuilder.Build(instances, catalog);
         }
 
+        /// <summary>La cama no publica diagnosticos bloqueantes propios: su salida no se filtra aqui (I-42/H11).</summary>
+        public string OutputBlockedReason(RackEmbedDocument embed, RackCatalog catalog) => null;
+
         public string RestampDesign(string designJson, string newId, string copyName) => designJson;
     }
 }

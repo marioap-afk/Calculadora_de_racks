@@ -14,6 +14,13 @@ namespace RackCad.Domain.Systems.Dynamic
     public sealed class DynamicRackSystem
     {
         public RackSystemKind Kind { get; set; } = RackSystemKind.PalletFlow;
+
+        /// <summary>
+        /// I-42 — desde donde se midio «Alto 1er nivel» en este rack. Viaja del diseño al sistema y del sistema al
+        /// snapshot para que RACKEDITAR no pierda el datum: sin esto, editar un rack nuevo lo releeria con la
+        /// semantica historica y lo moveria.
+        /// </summary>
+        public int? FirstLevelDatum { get; set; }
         public PalletSpecification Pallet { get; set; } = new PalletSpecification();
         /// <summary>Number of longitudinal positions in the complete shared envelope.</summary>
         public int PalletsDeep { get; set; }
@@ -77,6 +84,33 @@ namespace RackCad.Domain.Systems.Dynamic
         /// escribe.
         /// </summary>
         public List<DynamicDerivedPostLineOverride> DerivedPostLineOverrides { get; } = new List<DynamicDerivedPostLineOverride>();
+
+        /// <summary>
+        /// I-42 (ronda 6D): tramos de PROFUNDIDAD con su propia altura de cabecera por linea. Vacio = la altura sale
+        /// de la linea, que es lo que hace el Dinamico y cualquier Push Back de un solo sentido. Solo el Push Back
+        /// COMPUESTO los escribe, porque solo ahi una misma linea atraviesa dos zonas con demandas independientes.
+        /// </summary>
+        public List<DynamicHeaderHeightZone> HeaderHeightZones { get; } = new List<DynamicHeaderHeightZone>();
+
+        /// <summary>
+        /// I-42 (ronda 6D): arranque del tramo de profundidad que NO es cara de carga — el interior del rack. Null =
+        /// toda la profundidad puede serlo, que es lo que ocurre en el Dinamico y en cualquier Push Back de un solo
+        /// sentido. Solo el Push Back COMPUESTO lo declara: entre sus dos lados no hay pasillo, hay la interfaz.
+        /// </summary>
+        public double? InteriorFaceStartX { get; set; }
+
+        /// <summary>Final de ese tramo. Hermano de <see cref="InteriorFaceStartX"/>: los dos o ninguno.</summary>
+        public double? InteriorFaceEndX { get; set; }
+
+        /// <summary>
+        /// Si <paramref name="x"/> cae en el interior declarado, donde no hay cara de carga a la que proteger. Sin
+        /// declaracion responde siempre false, que deja el comportamiento anterior intacto.
+        /// </summary>
+        public bool IsInteriorFace(double x)
+            => InteriorFaceStartX.HasValue
+               && InteriorFaceEndX.HasValue
+               && x >= InteriorFaceStartX.Value - 1e-6
+               && x <= InteriorFaceEndX.Value + 1e-6;
 
 
         /// <summary>Optional manual header/tramo height (in) typed by the user; null = derived from the load levels.</summary>

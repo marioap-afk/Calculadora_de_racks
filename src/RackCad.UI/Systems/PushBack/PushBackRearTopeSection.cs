@@ -28,10 +28,17 @@ namespace RackCad.UI.Systems.PushBack
         private readonly TextBlock status;
         private readonly Func<PushBackRearTopeConfig, SafetyTopeGridWindow.TopeResult> openDialog;
 
+        /// <param name="sideLabel">
+        /// I-42 (ronda 7B) — el lado al que pertenece esta seccion, o null en un rack de un solo sentido, que es
+        /// como se construia hasta ahora. Un rack COMPUESTO tiene un tope por lado y los dos se editan aqui, uno al
+        /// lado del otro: era la unica capacidad que la ventana de seguridad no cubria, y por la que existia una
+        /// segunda superficie en la ventana principal.
+        /// </param>
         public PushBackRearTopeSection(
             PushBackRearTopeConfig current,
             Func<PushBackRearTopeConfig, SafetyTopeGridWindow.TopeResult> openDialog,
-            RackCatalog catalog = null)
+            RackCatalog catalog = null,
+            string sideLabel = null)
         {
             this.openDialog = openDialog ?? throw new ArgumentNullException(nameof(openDialog));
 
@@ -40,7 +47,7 @@ namespace RackCad.UI.Systems.PushBack
 
             var heading = new TextBlock
             {
-                Text = HeadingText,
+                Text = string.IsNullOrEmpty(sideLabel) ? HeadingText : HeadingText + " — lado " + sideLabel,
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 0, 0, 2),
             };
@@ -74,13 +81,25 @@ namespace RackCad.UI.Systems.PushBack
                 Margin = new Thickness(0, 0, 0, 6),
                 ToolTip = "Tipo de tope posterior. La lista viene del catálogo de elementos de seguridad.",
             };
-            PieceBox.SetCatalogEntries(variants, PushBackRearTopeBuilder.ResolvePieceId(catalog, Config));
-            PieceBox.SelectionChanged += (_, __) => Config.PieceId = PieceBox.SelectedId;
+            // I-42 (ronda 7C, defecto del dueño) — «NINGUNO» es una opcion EXPLICITA del mismo selector, no la
+            // ausencia de eleccion. Es del OBJETIVO de esta seccion: en un compuesto hay una seccion por lado, asi
+            // que elegirlo en A no dice nada de B. Viaja en la copia de trabajo como el resto y se persiste como
+            // cualquier id, de modo que sobrevive a guardar y a RACKEDITAR. Apagar celda por celda sigue estando:
+            // esto no lo sustituye, lo resume — y no borra esa mascara, asi que volver a una pieza la devuelve.
+            PieceBox.SetCatalogEntries(
+                variants,
+                Config.IsNone ? PushBackRearTopeConfig.NonePieceId : PushBackRearTopeBuilder.ResolvePieceId(catalog, Config),
+                placeholder: new CatalogOption(PushBackRearTopeConfig.NonePieceId, NoneOptionText));
+            PieceBox.SelectionChanged += (_, __) =>
+            {
+                Config.PieceId = PieceBox.SelectedId;
+                status.Text = StatusText(Config);
+            };
 
             var panel = new StackPanel { Margin = new Thickness(0, 0, 0, 12) };
             panel.Children.Add(heading);
             panel.Children.Add(status);
-            if (variants.Count > 0)
+            if (variants.Count > 0 || Config.IsNone)
             {
                 panel.Children.Add(new TextBlock
                 {
@@ -102,6 +121,12 @@ namespace RackCad.UI.Systems.PushBack
 
         /// <summary>Label above the stop-type selector.</summary>
         public const string PieceLabelText = "Tipo de tope";
+
+        /// <summary>I-42 (ronda 7C) — el texto de la opcion «sin tope» dentro del selector de tipo.</summary>
+        public const string NoneOptionText = "Ninguno";
+
+        /// <summary>Lo que la seccion muestra cuando el objetivo quedo sin tope.</summary>
+        public const string NoneStatusText = "Sin tope posterior en este objetivo";
 
         /// <summary>x:Name-equivalent of the stop-type combo, so a test can find it inside the composed dialog.</summary>
         public const string PieceBoxName = "RearTopePieceBox";
@@ -140,6 +165,11 @@ namespace RackCad.UI.Systems.PushBack
         /// <summary>The human-readable state: the SAQUE and how many cells are deactivated.</summary>
         public static string StatusText(PushBackRearTopeConfig config)
         {
+            if (config != null && config.IsNone)
+            {
+                return NoneStatusText;
+            }
+
             var saque = PushBackRearTopeDialogAdapter.Saque(config);
             var off = config?.OffCells?.Count ?? 0;
             return off == 0

@@ -72,8 +72,17 @@ namespace RackCad.Application.Systems.Dynamic
             else
             {
                 var botas = SelectiveSafetyPlacement.EnabledOfType(
-                    system.SafetySelections, catalog, View, SelectiveSafetyPlacement.BotaType);
-                AppendEndpointFamily(result, botas, left.PlateOrigin, right.PlateOrigin, null, postIndex);
+                    system.SafetySelections, catalog, View, SelectiveSafetyPlacement.BotaType,
+                    allowEmptySide: true);
+                foreach (var bota in botas)
+                {
+                    // I-42 (S1E) — el lateral lee la MISMA pertenencia que la planta, los cortes y el BOM: las
+                    // CARAS FISICAS que el dominio resolvio para ese poste. Antes preguntaba por el lado historico
+                    // y dibujaba las dos puntas dijera lo que dijera la eleccion.
+                    AppendEndpointFamily(
+                        result, new[] { bota }, left.PlateOrigin, right.PlateOrigin, null, postIndex,
+                        SelectiveSafetyEnds.BootCopiesForPost(bota.Selection, postIndex));
+                }
             }
 
             AppendDesviadores(
@@ -108,31 +117,38 @@ namespace RackCad.Application.Systems.Dynamic
                 return;
             }
 
-            var block = CatalogLookup.Block(catalog, selection.ElementId, View);
-            if (string.IsNullOrWhiteSpace(block))
+            // I-42 (ronda 7E): cada extremo del corte lateral lleva la pieza que SU cara declara, y puede no llevar
+            // ninguna. Sin caras declaradas los dos resuelven a la de la seleccion, como siempre.
+            var nearId = DynamicDefenseFaces.ElementIdFor(selection, farEnd: false);
+            var farId = DynamicDefenseFaces.ElementIdFor(selection, farEnd: true);
+            var nearBlock = string.IsNullOrWhiteSpace(nearId) ? null : CatalogLookup.Block(catalog, nearId, View);
+            var farBlock = string.IsNullOrWhiteSpace(farId) ? null : CatalogLookup.Block(catalog, farId, View);
+            if (string.IsNullOrWhiteSpace(nearBlock) && string.IsNullOrWhiteSpace(farBlock))
             {
                 return;
             }
 
             var setting = DynamicForkliftDefensePlan.ForSelection(
                 selection, postIndex, Math.Max(1, system.Fronts.Count + 1));
-            var offset = CatalogLookup.Local(
-                catalog, selection.ElementId, DynamicForkliftDefensePlan.PostOriginPoint, View);
-            if (setting.DrawsExit)
+            if (setting.DrawsExit && !string.IsNullOrWhiteSpace(nearBlock))
             {
+                var offset = CatalogLookup.Local(
+                    catalog, nearId, DynamicForkliftDefensePlan.PostOriginPoint, View);
                 target.Add(Piece(
-                    selection.ElementId,
-                    block,
+                    nearId,
+                    nearBlock,
                     new Point2D(left.PostOrigin.X + offset.X, left.PlateOrigin.Y + offset.Y),
                     mirrored: false,
                     setting.ExitLength));
             }
 
-            if (setting.DrawsEntrance)
+            if (setting.DrawsEntrance && !string.IsNullOrWhiteSpace(farBlock))
             {
+                var offset = CatalogLookup.Local(
+                    catalog, farId, DynamicForkliftDefensePlan.PostOriginPoint, View);
                 target.Add(Piece(
-                    selection.ElementId,
-                    block,
+                    farId,
+                    farBlock,
                     new Point2D(right.PostOrigin.X - offset.X, right.PlateOrigin.Y + offset.Y),
                     mirrored: true,
                     setting.EntranceLength));
@@ -261,9 +277,10 @@ namespace RackCad.Application.Systems.Dynamic
                 var leftLoad = leftLevels[Math.Min(level, leftLevels.Count - 1)];
                 var rightLoad = rightLevels[Math.Min(level, rightLevels.Count - 1)];
 
-                // El desviador cuelga del larguero de SU extremo. El BAJO admite override —es el que Push Back
-                // deriva— y el ALTO no: su larguero es el ancla y conserva la elevación del resolver (PB-004, I-32).
-                // El primer nivel tampoco: mide desde el troquel del poste.
+                // El desviador cuelga del larguero de SU extremo, y CADA extremo consulta su propio contexto: el
+                // bajo el principal y el alto el acompañante (HighEnd). Desde la inversion vertical de I-42 los dos
+                // se derivan, asi que leer la elevacion del resolver para el alto lo dejaria colgando de un larguero
+                // que ya no esta ahi. El primer nivel no consulta ninguno: mide desde el troquel del poste.
                 //
                 // Qué ámbito se consulta lo decide si este corte pertenece a un frente. SECCIONADO por poste: la
                 // columna baja pertenece al frente adyacente de menor StartX, así que se pregunta POR FRENTE. SIN
@@ -275,14 +292,26 @@ namespace RackCad.Application.Systems.Dynamic
                         ? elevations.OrFront(leftFront.Index, leftLoad.LevelNumber, leftLoad.ExitElevation)
                         : elevations.OrSystemEnvelope(leftLoad.LevelNumber, leftLoad.ExitElevation))
                       - SelectiveDesviadorPlan.BeamYOffset;
-                var rightY = level == 0 ? firstRightY : rightLoad.EntranceElevation - SelectiveDesviadorPlan.BeamYOffset;
+                var rightFront = fronts.OrderByDescending(front => front.EndX).FirstOrDefault();
+                var high = elevations?.HighEnd;
+                var rightY = level == 0
+                    ? firstRightY
+                    : (rightFront != null
+                        ? high.OrFront(rightFront.Index, rightLoad.LevelNumber, rightLoad.EntranceElevation)
+                        : high.OrSystemEnvelope(rightLoad.LevelNumber, rightLoad.EntranceElevation))
+                      - SelectiveDesviadorPlan.BeamYOffset;
 
-                if (selection.Side == SafetySide.Left || selection.Side == SafetySide.Both)
+                // El pasillo se pregunta POR LINEA: en un rack compuesto PARCIAL solo algunas lineas tienen cama
+                // cargando por el extremo lejano, y un desviador guia la tarima AL ENTRAR — donde no se carga, no va.
+                // SideForPost cae en el lado general cuando la linea no tiene entrada propia, asi que un rack de un
+                // solo sentido responde exactamente lo de siempre.
+                var aisle = selection.SideForPost(postIndex);
+                if (aisle == SafetySide.Left || aisle == SafetySide.Both)
                 {
                     target.Add(Piece(selection.ElementId, block, new Point2D(startX, leftY), mirrored: false, longitud));
                 }
 
-                if (selection.Side == SafetySide.Right || selection.Side == SafetySide.Both)
+                if (aisle == SafetySide.Right || aisle == SafetySide.Both)
                 {
                     target.Add(Piece(selection.ElementId, block, new Point2D(endX, rightY), mirrored: true, longitud));
                 }

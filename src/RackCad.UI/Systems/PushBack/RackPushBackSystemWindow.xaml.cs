@@ -45,8 +45,41 @@ namespace RackCad.UI.Systems.PushBack
         private static readonly string[] ViewOptions = { "Lateral", "Frontal entrada/salida", "Frontal posterior", "Planta" };
 
         private readonly RackCatalog catalog;
-        private readonly PushBackEditorState state = new PushBackEditorState();
+
+        /// <summary>
+        /// I-42 — el estado COMPUESTO. Contiene los dos lados; el de la izquierda (A) es exactamente el mismo
+        /// <see cref="PushBackEditorState"/> que esta ventana conducia antes de la iniciativa. Toda la ventana lee
+        /// <see cref="state"/>, que es el lado ACTIVO, asi que el selector de lado hace que la matriz, la celda
+        /// seleccionada y los cinco alcances trabajen sobre el lado que el usuario esta mirando, sin duplicar ni un
+        /// control.
+        /// </summary>
+        private readonly PushBackCompositeEditorState composite =
+            new PushBackCompositeEditorState(new PushBackEditorState(), new PushBackEditorState());
+
+        private readonly PushBackCompositeEditorAssembler compositeAssembler;
         private readonly PushBackEditorDesignAssembler assembler;
+
+        /// <summary>El estado del lado ACTIVO. Un rack de un solo sentido responde siempre el lado A, el de siempre.</summary>
+        private PushBackEditorState state => composite.Active;
+
+        /// <summary>
+        /// I-42 (A1C/H9, contrato del dueño) — EL ESTADO QUE POSEE LOS MODULOS LONGITUDINALES DEL RACK.
+        ///
+        /// <para>
+        /// Los modulos —y con ellos las cabeceras personalizadas de I-40, sus overrides por linea y la altura de sus
+        /// postes derivados— son del RACK, no de un lado: un rack compuesto tiene UNA secuencia longitudinal (A, el
+        /// hueco y B invertido) y el ensamblador la lee siempre del lado A, que es la raiz del diseño.
+        /// </para>
+        /// <para>
+        /// <b>Lo que corrige.</b> El panel de modulos trabajaba sobre <c>state</c>, es decir sobre el lado ACTIVO, y
+        /// el lado activo es CONTEXTO DE INTERFAZ, no autoridad. Medido: con el lado B seleccionado, alargar un
+        /// modulo de 48" a 55" dejaba el commit en el estado de B —<c>commit en A=False, commit en B=True</c>— y el
+        /// ensamblador, que solo lee el de A, lo ignoraba: tras recalcular el modulo seguia midiendo 48". Ademas la
+        /// linea de modulos del rack entero se copiaba como baseline del lado que estuviera activo, asi que acababa
+        /// DUPLICADA en los dos estados.
+        /// </para>
+        /// </summary>
+        private PushBackEditorState moduleOwner => composite.SideA;
         private readonly RackEditorSession<PushBackDesign, PushBackSystem> session;
         private readonly List<SelectiveSafetySelection> safetySelections = new List<SelectiveSafetySelection>();
         private readonly bool canInsertInAutoCad;
@@ -102,6 +135,7 @@ namespace RackCad.UI.Systems.PushBack
             session = new RackEditorSession<PushBackDesign, PushBackSystem>(recompute: Recompute, newIdFactory: newIdFactory);
             catalog = session.Catalog;
             assembler = new PushBackEditorDesignAssembler(catalog);
+            compositeAssembler = new PushBackCompositeEditorAssembler(catalog);
 
             WeightUnitBox.ItemsSource = new[] { "kg", "lb" };
             WeightUnitBox.SelectedIndex = 0;
@@ -113,6 +147,7 @@ namespace RackCad.UI.Systems.PushBack
             PostBox.SetCatalogEntries(catalog?.PostProfiles, catalog?.Defaults?.Post);
             CellInOutBeamBox.ItemsSource = InOutBeamOptions();
             CellIntermediateBeamBox.ItemsSource = IntermediateBeamOptions();
+            InitializeCompositeSection();
 
             LoadNew();
         }
@@ -160,13 +195,21 @@ namespace RackCad.UI.Systems.PushBack
                     && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.ParrillaType)
                     // Owner decision (2026-07-24): the TOPE belongs to the HIGH end and is owned by the rear-tope
                     // config, so it is never offered as ordinary low-end safety (PushBackSafetyAuthority refuses it too).
-                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.TopeType))
+                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.TopeType)
+                    // I-42 (ronda 7E, decision del dueño): la DEFENSA se elige en su seccion, con su «Ninguno» y
+                    // por lado. Dejarla tambien en la lista general seria dos sitios para la misma decision, que es
+                    // exactamente lo que la ronda 7B corrigio para los topes.
+                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.DefensaType))
                 .ToList();
 
         /// <summary>The library project a "Guardar en biblioteca" would write (the active Push Back payload + the opened
-        /// project's I-11 metadata), or NULL when the CURRENT controls are invalid — a stale model is never saved.</summary>
+        /// project's I-11 metadata), or NULL when the CURRENT controls are invalid — a stale model is never saved.
+        /// <para>
+        /// I-42 (A3-GATE-LIBRARY): tambien null cuando la salida esta BLOQUEADA, que es la otra mitad de la misma
+        /// compuerta. Este seam dice lo que el guardado escribiria, asi que no puede responder con una regla propia.
+        /// </para></summary>
         internal RackProject BuildLibraryProjectForTest()
-            => !currentInputsAreValid || lastComputation?.Design == null
+            => !currentInputsAreValid || outputIsBlocked || lastComputation?.Design == null
                 ? null
                 : RackProject.ForPushBack(lastComputation.Design).WithSourceMetadataFrom(sourceProject);
 
@@ -189,6 +232,10 @@ namespace RackCad.UI.Systems.PushBack
         /// standard modular baseline. No identity is forced until insert; only "Insertar" is offered (no "Actualizar").</summary>
         public void LoadNew()
         {
+            // I-42: un rack nuevo nace de UN solo sentido, como siempre. El lado B se declara despues, si se quiere.
+            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
+            composite.SetSideBPresent(false);
+            composite.LoadComposite(null);
             var inputs = state.LoadNew();
             sourceProject = null;
             isEditingExisting = false;
@@ -210,7 +257,12 @@ namespace RackCad.UI.Systems.PushBack
         public void LoadDesignForNew(PushBackDesign design, string rackName, RackProject sourceProject = null)
         {
             if (design == null) return;
-            var inputs = state.LoadFromDesign(design, assembler.Resolver);
+            // I-42: primero el lado A, por el camino de siempre, y luego la parte compuesta. Un documento
+            // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
+            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
+            composite.SetSideBPresent(false);
+            var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
+            LoadCompositeFromDesign(design);
             this.sourceProject = sourceProject;
             isEditingExisting = false;
             session.Identity.Adopt(null, rackName); // no id -> a fresh GUID is minted on insert
@@ -222,12 +274,76 @@ namespace RackCad.UI.Systems.PushBack
         public void LoadExisting(PushBackDesign design, string rackId, string rackName, RackProject sourceProject = null)
         {
             if (design == null) return;
-            var inputs = state.LoadFromDesign(design, assembler.Resolver);
+            // I-42: primero el lado A, por el camino de siempre, y luego la parte compuesta. Un documento
+            // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
+            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
+            composite.SetSideBPresent(false);
+            var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
+            LoadCompositeFromDesign(design);
             this.sourceProject = sourceProject;
             isEditingExisting = true;
             session.Identity.Adopt(rackId, rackName);
             LoadFromModel(inputs, rackName);
         }
+
+        /// <summary>
+        /// El diseño del lado A SOLO, sin la parte compuesta.
+        ///
+        /// <para>
+        /// El estado del editor se reconstruye desde el sistema RESUELTO, y el de un rack compuesto es la estructura
+        /// COMPARTIDA —A + hueco + B—: cargar el lado A contra ella le metia en su matriz los rangos del rack entero,
+        /// que no estan anidados, y el siguiente recalculo se caia con «los frentes con el menor numero de fondos
+        /// deben compartir la misma posicion inicial». El lado A se carga contra SU propio diseño, exactamente como
+        /// ya se hacia con el lado B; la parte compuesta se recupera despues, en su propio estado.
+        /// </para>
+        /// <para>
+        /// Un documento anterior a I-42 no trae parte compuesta, asi que devuelve el MISMO objeto y su carga es
+        /// literalmente la de siempre. La copia comparte las referencias del diseño: solo se retiran SideB y
+        /// Composite, y nada de lo que se comparte se muta en este camino.
+        /// </para>
+        /// </summary>
+        private static PushBackDesign SideAOnly(PushBackDesign design)
+        {
+            if (design == null || !design.IsComposite)
+            {
+                return design;
+            }
+
+            var copy = new PushBackDesign
+            {
+                // I-42 (A4-MOD-LIFECYCLE / N-1): la estructura que recibe el lado A es la SUYA. La secuencia
+                // persistida de un rack compuesto es la del RACK —M* + hueco + B:*—, y entregarla entera a la carga
+                // del lado A la llevaba al resolver de un solo sentido: alli los modulos no cuadraban con las
+                // posiciones y se reconstruia la receta estandar, de modo que reabrir con RACKEDITAR devolvia un
+                // rack sin ninguna de las personalizaciones guardadas. La cola —hueco y mitad B— se recupera por su
+                // propio camino, en el estado compuesto.
+                Structure = PushBackCompositeStructure.SideAStructure(design.Structure),
+                LegacyHighEndBeamPeralte = design.LegacyHighEndBeamPeralte,
+                RearTope = design.RearTope,
+
+                // I-42 (A1/B4) — el TIPO DE DEFENSA del lado A viaja en esta copia. Sin el, reabrir un rack
+                // compuesto le devolvia al lado A la pieza heredada: un «Ninguno» explicito resucitaba y una pieza
+                // distinta se perdia, mientras el lado B —que si lo recuperaba— quedaba bien.
+                DefensePieceId = design.DefensePieceId,
+            };
+
+            foreach (var front in design.Fronts)
+            {
+                copy.Fronts.Add(front);
+            }
+
+            return copy;
+        }
+
+        /// <summary>
+        /// I-42 — desde donde se mide «Alto 1er nivel» en el rack ABIERTO. Un rack nuevo nace con el datum del
+        /// producto; uno cargado conserva el que la carga recupero —y, si venia sin marcador, el que esa unica
+        /// frontera le asigno al re-expresarlo sin moverlo. La ventana solo lo guarda y lo devuelve.
+        /// </summary>
+        private int? firstLevelDatum = (int)RackCad.Application.Systems.Shared.RackFirstLevelDatumMode.LowestUsablePunch;
+
+        /// <summary>El datum vigente (seam de prueba).</summary>
+        internal int? FirstLevelDatumForTest => firstLevelDatum;
 
         private void LoadFromModel(PushBackEditorInputs inputs, string rackName)
         {
@@ -235,6 +351,7 @@ namespace RackCad.UI.Systems.PushBack
             try
             {
                 NameBox.Text = rackName ?? string.Empty;
+                firstLevelDatum = inputs.FirstLevelDatum;
                 var pallet = inputs.Pallet ?? new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");
                 generalPallet = pallet;
                 DepthBox.SetNumber(pallet.Depth);
@@ -321,8 +438,12 @@ namespace RackCad.UI.Systems.PushBack
                 if (RearPeralteBox.SelectedItem == null) RearPeralteBox.SelectedItem = PushBackDefaults.HighEndBeamDefaultPeralte;
 
                 // I-41: el fondo propio de la celda (vacio = hereda «Fondos frente») y su tarima.
-                CellFondoOverrideBox.SetNumber(push.PalletsDeepOverride);
+                // I-42: si la celda es una cama CORRIDA, el campo edita el fondo propio de esa cama.
+                LoadCellFondoField(push);
                 CellDrawPalletCheck.IsChecked = push.DrawPallet;
+
+                // I-42: presencia de la ranura y los topes de los DOS lados, para la MISMA celda seleccionada.
+                LoadCompositeCellPanel();
 
                 ApplyBlankFrontEditability(front.IsActive);
             }
@@ -469,11 +590,49 @@ namespace RackCad.UI.Systems.PushBack
 
             CommitCurrentCell();
 
-            var computation = assembler.Build(state, ReadInputs());
+            // I-42: con lado B el diseno lo arma el ensamblador COMPUESTO, que COMPONE al de un sentido; sin lado B
+            // el camino es literalmente el de antes de la iniciativa. Las vistas se construyen SIEMPRE por el mismo
+            // BuildFrom, asi que no puede aparecer un segundo constructor de vistas que diverja.
+            // I-42 (A1/H12) — un estado de editor invalido se DECLARA, no tumba la ventana. El armado del diseño
+            // compuesto se evaluaba como argumento, fuera de cualquier try: una validacion que lanzara —el refuerzo
+            // contra el poste, por ejemplo— escapaba como excepcion WPF no capturada dentro de AutoCAD. El camino de
+            // un solo sentido ya devolvia una computacion invalida; ahora los dos se comportan igual.
+            PushBackEditorComputation computation;
+            try
+            {
+                // I-42 (A5-WIRE / A4V-1, contrato del dueño) — LA VENTANA NO DECIDE SI EL RACK ES COMPUESTO.
+                //
+                // Habia aqui un ternario sobre la casilla «Lado B»: con ella marcada armaba el ensamblador
+                // compuesto y sin ella el de un solo sentido, saltandose la autoridad de ciclo de vida —la
+                // compositividad EFECTIVA, el aparcado de la cola y el filtrado del diseño—. Medido por la ventana
+                // real: al desmarcar la casilla, «M2» del lado A volvia de 30" a 48", la cola no se aparcaba, el
+                // informe declaraba conservados el hueco y «B:M2» que el diseño ya no tenia, y al volver a marcarla
+                // la mitad B regresaba estandar con su override de linea perdido.
+                //
+                // El ensamblador compuesto ya sabe responder las dos cosas —un rack de dos lados y uno que ahora
+                // mismo es de un solo sentido—, asi que la ventana solo aporta estado. Los dos cortes frontales se
+                // siguen construyendo para el lado que pide el SELECTOR DE VISTA.
+                computation = assembler.BuildFrom(
+                    compositeAssembler.BuildDesign(composite, ReadInputs()), frontalSide);
+            }
+            catch (Exception error)
+            {
+                currentInputsAreValid = false;   // se conserva el ultimo modelo valido, solo como referencia
+                SetStatus("No se pudo generar el sistema: " + error.Message, true);
+                RenderPreview();
+                UpdateGuid();
+                UpdateButtons();
+                return;
+            }
+
             if (computation.IsValid)
             {
                 session.SetModel(computation.Design, computation.System);
-                assembler.AcceptComputation(state, computation); // advance the opaque baseline (never mutated by the window)
+                assembler.AcceptComputation(moduleOwner, computation); // advance the opaque baseline (never mutated by the window)
+
+                // I-42 (A5-WIRE / A4V-2): la computacion se ADOPTO, asi que la cola que este armado desperto ya
+                // esta en el rack y puede retirarse. Un recalculo que no llega hasta aqui la deja intacta.
+                composite.CommitDormantTailConsumption();
                 lastComputation = computation;
                 hasValidModel = true;
                 currentInputsAreValid = true;
@@ -490,11 +649,16 @@ namespace RackCad.UI.Systems.PushBack
                 // I-35: the accepted module edit has landed on the new baseline, so it must not be re-applied by an
                 // unrelated recompute (an individual restore would otherwise fire again and again). The module list is
                 // rebuilt from the new structure and the reconciliation report reaches the panel.
-                state.ClearModuleCommit();
+                moduleOwner.ClearModuleCommit();
                 RefreshModuleSelector();
                 RefreshHeaderDestinations();
 
-                SetStatus("Vista recalculada.", false);
+                RefreshCompositePanel(computation.System);
+
+                // I-42 (A1/H11) — un diagnostico BLOQUEANTE no es solo un color: el rack no puede salir al plano ni
+                // al BOM. Se resuelve UNA vez, aqui, y lo consumen todas las acciones.
+                outputIsBlocked = CompositeHasBlocking(computation.System);
+                SetStatus(CompositeStatusOr("Vista recalculada."), outputIsBlocked);
             }
             else
             {
@@ -543,10 +707,48 @@ namespace RackCad.UI.Systems.PushBack
         private void CommitCurrentCell()
         {
             if (state.Structure.Count == 0) return;
-            state.CommitEditorValues(ReadCellValues());
+            ForEachEditedSide(side => side.CommitEditorValues(ReadCellValues(side)));
         }
 
-        private PushBackEditorValues ReadCellValues()
+        /// <summary>
+        /// Ejecuta una escritura sobre los lados que la seleccion de edicion alcanza: uno, o los DOS cuando el
+        /// usuario eligio «Ambos». Es el UNICO sitio donde «Ambos» se materializa, asi que ningun campo puede
+        /// quedarse a medias ni inventarse una regla propia.
+        ///
+        /// <para>
+        /// Antes de escribir en el otro lado se le lleva la MISMA seleccion de celda: si no, «esta celda» significaria
+        /// dos cosas distintas y un alcance escribiria donde nadie pidio.
+        /// </para>
+        /// </summary>
+        private void ForEachEditedSide(Action<PushBackEditorState> write)
+        {
+            if (composite.ActiveSelection == PushBackSideSelection.Both)
+            {
+                composite.MirrorSelection();
+            }
+
+            foreach (var side in composite.EditTargets())
+            {
+                if (side.Structure.Count > 0)
+                {
+                    write(side);
+                }
+            }
+        }
+
+        private PushBackEditorValues ReadCellValues() => ReadCellValues(state);
+
+        /// <summary>
+        /// Lee el panel de la celda contra UN lado concreto.
+        ///
+        /// <para>
+        /// El lado importa porque un campo VACIO no significa «cero»: significa «deja este valor como esta», y ese
+        /// valor es el del lado que se escribe. Con «Ambos» y un campo en estado MIXTO —A y B tienen valores
+        /// distintos— es exactamente lo que hace falta: si el usuario no escribe nada, cada lado conserva el suyo,
+        /// en vez de que el de A pise silenciosamente al de B.
+        /// </para>
+        /// </summary>
+        private PushBackEditorValues ReadCellValues(PushBackEditorState state)
         {
             var frontIndex = Math.Max(0, Math.Min(state.Structure.SelectedFrontIndex, state.Structure.Count - 1));
             var front = state.Structure.Fronts[frontIndex];
@@ -569,7 +771,7 @@ namespace RackCad.UI.Systems.PushBack
                     ClearHeight = Val(CellClearBox, cell.ClearHeight),
                     InOutBeamCatalogId = CellInOutBeamBox.SelectedValue as string ?? cell.InOutBeamCatalogId,
                     InOutBeamDepth = SelectedPeralte(CellInOutPeralteBox, cell.InOutBeamDepth),
-                    BeamLengthOverride = CellBeamLengthOverrideBox.Value, // null when blank (optional override)
+                    BeamLengthOverride = OptionalVal(CellBeamLengthOverrideBox, cell.BeamLengthOverride),
                     IntermediateBeamCatalogId = CellIntermediateBeamBox.SelectedValue as string ?? cell.IntermediateBeamCatalogId,
                     IntermediateBeamDepth = SelectedPeralte(CellIntermediatePeralteBox, cell.IntermediateBeamDepth)
                 },
@@ -587,6 +789,12 @@ namespace RackCad.UI.Systems.PushBack
                     generalPallet.Front, Val(DepthBox, generalPallet.Depth), generalPallet.Height,
                     generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
                 PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
+
+                // I-42 (correccion aislada 3) — el datum de «Alto 1er nivel» se TRANSPORTA, no se fabrica. Este
+                // metodo construye unos inputs NUEVOS en cada recalculo, y sus valores por defecto imponian el datum
+                // del PRODUCTO a un documento que se guardo con la semantica historica: medido, un rack legacy con
+                // Alto = 5 saltaba de 4.6053 a 6.6053 al recalcular. La ventana no es autoridad de datum.
+                FirstLevelDatum = firstLevelDatum,
 
                 // I-35 (Owner round 2): the four advanced RACK-WIDE scopes travel verbatim from their carrier.
                 ManualHeaderHeightOverride = advanced.ManualHeaderHeightOverride,
@@ -835,7 +1043,10 @@ namespace RackCad.UI.Systems.PushBack
             var requested = IntVal(FrontCountBox, state.Structure.Count);
             if (requested >= 1 && requested != state.Structure.Count)
             {
-                MutateStructure(() => state.SetFrontCount(requested));
+                // I-42: la retícula transversal es UNA. El numero de frentes es del RACK, no del lado activo, asi
+                // que crece y decrece en los dos a la vez; la asimetria A/B se expresa con PRESENCIA por ranura.
+                // Cuando el rack es de un solo sentido esto es literalmente lo de siempre.
+                MutateStructure(() => composite.SetSlotCount(requested));
             }
         }
 
@@ -860,10 +1071,22 @@ namespace RackCad.UI.Systems.PushBack
             }
 
             var applied = false;
-            MutateStructure(() => applied = state.SetActive(index, isActive));
+            // «En blanco» (I-33) es del frente de UN lado; con «Ambos» se aplica a los dos, que es lo que el usuario
+            // acaba de pedir al elegir esa seleccion.
+            //
+            // I-42 (ronda post-82e918b): pasa por el estado COMPUESTO porque la guarda «al menos un frente activo»
+            // es del RACK, no de cada lado. En un rack compuesto el lado B puede quedarse entero en blanco —es la
+            // capacidad declarada y todavia sin usar— mientras el lado A lo sostenga; solo quien conoce los dos
+            // lados puede conceder esa excepcion. Y como la presencia por lado se DERIVA de esta misma casilla,
+            // esta es la unica autoridad visible para el caso.
+            MutateStructure(() => ForEachEditedSide(side =>
+                applied |= composite.SetSlotPresent(
+                    ReferenceEquals(side, composite.SideB) ? PushBackSide.B : PushBackSide.A, index, isActive)));
             if (!applied)
             {
-                SetStatus("Al menos un frente debe permanecer activo.", true);
+                SetStatus(
+                    "Al menos un frente del rack debe permanecer activo.",
+                    true);
                 RenderPushBackMatrix();
                 return;
             }
@@ -878,13 +1101,20 @@ namespace RackCad.UI.Systems.PushBack
                 false);
         }
 
-        private void AddFront_Click(object sender, RoutedEventArgs e) => MutateStructure(() => state.SetFrontCount(state.Structure.Count + 1));
+        // I-42: añadir o quitar un frente cambia la RETICULA, que es del rack: los dos lados crecen y decrecen a la
+        // vez, igual que al escribir el numero en el campo. La asimetria se declara con la presencia por frente.
+        private void AddFront_Click(object sender, RoutedEventArgs e)
+            => MutateStructure(() => composite.SetSlotCount(state.Structure.Count + 1));
 
-        private void RemoveFront_Click(object sender, RoutedEventArgs e) => MutateStructure(() => state.SetFrontCount(Math.Max(1, state.Structure.Count - 1)));
+        private void RemoveFront_Click(object sender, RoutedEventArgs e)
+            => MutateStructure(() => composite.SetSlotCount(Math.Max(1, state.Structure.Count - 1)));
 
-        private void AddLevel_Click(object sender, RoutedEventArgs e) => MutateStructure(() => state.AdjustLevels(state.Structure.SelectedFrontIndex, 1));
+        // Los NIVELES son de un lado, asi que siguen la seleccion de edicion: con «Ambos» suben o bajan en los dos.
+        private void AddLevel_Click(object sender, RoutedEventArgs e)
+            => MutateStructure(() => ForEachEditedSide(side => side.AdjustLevels(side.Structure.SelectedFrontIndex, 1)));
 
-        private void RemoveLevel_Click(object sender, RoutedEventArgs e) => MutateStructure(() => state.AdjustLevels(state.Structure.SelectedFrontIndex, -1));
+        private void RemoveLevel_Click(object sender, RoutedEventArgs e)
+            => MutateStructure(() => ForEachEditedSide(side => side.AdjustLevels(side.Structure.SelectedFrontIndex, -1)));
 
         private void SelectedFront_Changed(object sender, SelectionChangedEventArgs e)
         {
@@ -984,7 +1214,7 @@ namespace RackCad.UI.Systems.PushBack
             if (!AllFieldsValid(out var error)) { SetStatus(error, true); return; }
             using (session.Recompute.Defer())
             {
-                state.ApplyScope(ReadCellValues(), scope);
+                ForEachEditedSide(side => side.ApplyScope(ReadCellValues(side), scope));
                 suppressSync = true;
                 try
                 {
@@ -1069,15 +1299,33 @@ namespace RackCad.UI.Systems.PushBack
                 var written = 0;
                 if (depth)
                 {
-                    // Vacio = restaurar: sin override, la celda hereda el fondo del frente.
+                    // Vacio = restaurar: sin override, la celda hereda su default.
                     var requested = CellFondoOverrideBox.Value;
-                    written = state.ApplyPalletsDeep(
-                        requested.HasValue ? (int?)(int)Math.Round(requested.Value) : null, scope);
+                    var value = requested.HasValue ? (int?)(int)Math.Round(requested.Value) : null;
+
+                    // I-42: el campo escribe la autoridad de la celda SELECCIONADA. En una cama corrida esa
+                    // autoridad es el fondo propio de la corrida, no el de A ni el de B: escribir ahi los fondos de
+                    // un lado seria editar una configuracion dormante y dejar la cama como estaba.
+                    if (EditsCorridaDepth())
+                    {
+                        // El fondo de una corrida es de la CELDA compuesta, no de un lado: «Ambos» no lo duplica.
+                        written = composite.ApplyCorridaDepth(value, scope);
+                        ReportCorridaScope(scope, written);
+                    }
+                    else
+                    {
+                        var count = 0;
+                        ForEachEditedSide(side => count = side.ApplyPalletsDeep(value, scope));
+                        written = count;
+                    }
                 }
 
                 if (pallet)
                 {
-                    written = state.ApplyDrawPallet(CellDrawPalletCheck.IsChecked == true, scope);
+                    var draw = CellDrawPalletCheck.IsChecked == true;
+                    var count = 0;
+                    ForEachEditedSide(side => count = side.ApplyDrawPallet(draw, scope));
+                    written = count;
                 }
 
                 suppressSync = true;
@@ -1091,7 +1339,7 @@ namespace RackCad.UI.Systems.PushBack
                     suppressSync = false;
                 }
 
-                if (scope != DynamicRackCellScope.Cell)
+                if (scope != DynamicRackCellScope.Cell && !(depth && EditsCorridaDepth()))
                 {
                     SetStatus(string.Format(
                         CultureInfo.InvariantCulture,
@@ -1129,7 +1377,8 @@ namespace RackCad.UI.Systems.PushBack
             if (!AllFieldsValid(out var error)) { SetStatus(error, true); return; }
             using (session.Recompute.Defer())
             {
-                state.Structure.ApplyFrontValuesTo(ReadCellValues().Dynamic, targets);
+                var frontTargets = targets.ToList();
+                ForEachEditedSide(side => side.Structure.ApplyFrontValuesTo(ReadCellValues(side).Dynamic, frontTargets));
                 suppressSync = true;
                 try
                 {
@@ -1158,7 +1407,13 @@ namespace RackCad.UI.Systems.PushBack
         /// Test seam for the REAR-TOPE dialog: given the projected config, returns the dialog's result, or NULL when it
         /// was cancelled. Default = show the real shared <see cref="SafetyTopeGridWindow"/>.
         /// </summary>
-        internal Func<PushBackRearTopeConfig, SafetyTopeGridWindow.TopeResult> RearTopeDialog;
+        internal Func<PushBackRearTopeConfig, IReadOnlyList<int>, SafetyTopeGridWindow.TopeResult> RearTopeDialog;
+
+        /// <summary>
+        /// I-42 (ronda 7D) — seam de prueba de la rejilla POR POSTE de un lado. Recibe la seccion, que es quien
+        /// declara el lado y la aplicabilidad; devolver NULL es cancelar.
+        /// </summary>
+        internal Func<PushBackDefenseSection, IReadOnlyList<SafetyPostDefense>> DefenseDialog;
 
         /// <summary>
         /// PB-002 (I-32) — the desviador grid's level count PER POST: the canonical "tallest adjacent front owns the
@@ -1301,7 +1556,7 @@ namespace RackCad.UI.Systems.PushBack
             }
 
             var selectedId = SelectedModuleId();
-            var descriptors = state.ModuleSession.Modules;
+            var descriptors = moduleOwner.ModuleSession.Modules;
 
             var wasSuppressed = suppressSync;
             suppressSync = true;
@@ -1336,7 +1591,7 @@ namespace RackCad.UI.Systems.PushBack
             var id = SelectedModuleId();
             return id == null
                 ? null
-                : state.ModuleSession.Modules.FirstOrDefault(module => module.ModuleId == id)
+                : moduleOwner.ModuleSession.Modules.FirstOrDefault(module => module.ModuleId == id)
                   ?? DescribeFromLastComputation(id);
         }
 
@@ -1358,7 +1613,7 @@ namespace RackCad.UI.Systems.PushBack
             var ordinals = new Dictionary<string, int>(StringComparer.Ordinal);
             var headers = 0;
             var separators = 0;
-            foreach (var module in state.ModuleSession.Modules)
+            foreach (var module in moduleOwner.ModuleSession.Modules)
             {
                 ordinals[module.ModuleId] = module.IsHeader ? ++headers : ++separators;
             }
@@ -1369,7 +1624,7 @@ namespace RackCad.UI.Systems.PushBack
         /// <summary>«Cabecera 2» / «Separador 1» — the module named as the user counts it.</summary>
         private string ModuleDisplayName(string moduleId)
         {
-            var module = state.ModuleSession.Modules.FirstOrDefault(candidate => candidate.ModuleId == moduleId);
+            var module = moduleOwner.ModuleSession.Modules.FirstOrDefault(candidate => candidate.ModuleId == moduleId);
             if (module == null)
             {
                 return moduleId;
@@ -1524,7 +1779,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            state.ModuleSession.SetLength(module.ModuleId, length);
+            moduleOwner.ModuleSession.SetLength(module.ModuleId, length);
             RefreshModuleStatus();
         }
 
@@ -1541,7 +1796,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            state.ModuleSession.ResetHeaderToCalculated(module.ModuleId);
+            moduleOwner.ModuleSession.ResetHeaderToCalculated(module.ModuleId);
             RefreshModuleStatus();
         }
 
@@ -1569,7 +1824,7 @@ namespace RackCad.UI.Systems.PushBack
             // Se abre sobre lo que esa cabecera FISICA dibuja hoy —su configuracion de linea si la tiene, y si no
             // la del modulo—, sea cual sea el alcance: el ORIGEN es siempre la instancia que el usuario ve; lo que
             // el alcance decide es el DESTINO.
-            var copy = state.ModuleSession.HeaderConfigurationCopy(module.ModuleId, SourceLine());
+            var copy = moduleOwner.ModuleSession.HeaderConfigurationCopy(module.ModuleId, SourceLine());
             if (copy == null && module.HasCustomHeaderConfiguration)
             {
                 SetModuleStatus(
@@ -1588,7 +1843,7 @@ namespace RackCad.UI.Systems.PushBack
 
             // Ya personalizada = esta INSTANCIA fisica lo esta: por su propia configuracion de linea o por la del
             // modulo. De eso depende que el configurador se abra para EDITAR en vez de para generar (ronda 2).
-            var alreadyCustom = state.ModuleSession.HasLineOverride(module.ModuleId, SourceLine())
+            var alreadyCustom = moduleOwner.ModuleSession.HasLineOverride(module.ModuleId, SourceLine())
                                 || module.HasCustomHeaderConfiguration;
 
             var edited = HeaderConfiguratorDialog != null
@@ -1629,7 +1884,7 @@ namespace RackCad.UI.Systems.PushBack
             // null here means the list and the session disagree, and that is reported instead of guessed.
             // El origen es la configuracion REAL de esa cabecera en la linea seleccionada: si esa instancia tiene
             // la suya, es esa; si no, la del modulo. Nunca una recalculada.
-            var source = state.ModuleSession.SourceConfigurationCopy(sourceId, SourceLine());
+            var source = moduleOwner.ModuleSession.SourceConfigurationCopy(sourceId, SourceLine());
             if (source == null)
             {
                 SetModuleStatus(
@@ -1701,7 +1956,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var result = state.ModuleSession.ApplyHeaderConfigurationToInstances(
+            var result = moduleOwner.ModuleSession.ApplyHeaderConfigurationToInstances(
                 pendingHeaderConfiguration, modules, lines);
             if (!result.Applied)
             {
@@ -1747,7 +2002,7 @@ namespace RackCad.UI.Systems.PushBack
             }
 
             var height = DerivedPostLineHeightBox.Value;
-            var result = state.ModuleSession.ApplyDerivedPostHeightToLines(height, lines);
+            var result = moduleOwner.ModuleSession.ApplyDerivedPostHeightToLines(height, lines);
             if (!result.Applied)
             {
                 SetModuleStatus(result.RejectionReason);
@@ -1838,7 +2093,7 @@ namespace RackCad.UI.Systems.PushBack
             var previousLines = SelectedTargetLines().ToList();
 
             var ordinals = KindOrdinals();
-            var headers = state.ModuleSession.Modules.Where(module => module.IsHeader).ToList();
+            var headers = moduleOwner.ModuleSession.Modules.Where(module => module.IsHeader).ToList();
             var structure = lastComputation?.System?.Structure;
             var lines = structure == null
                 ? new List<int>()
@@ -2029,9 +2284,9 @@ namespace RackCad.UI.Systems.PushBack
             var ordinals = KindOrdinals();
             // Una cabecera es origen valido cuando tiene una personalizacion REAL: la del modulo, o la propia de
             // ESTA linea. Con la unidad de edicion en la instancia fisica, lo segundo es lo habitual.
-            var sources = state.ModuleSession.Modules
+            var sources = moduleOwner.ModuleSession.Modules
                 .Where(module => module.IsHeader
-                                 && state.ModuleSession.HasAnyPersonalization(module.ModuleId))
+                                 && moduleOwner.ModuleSession.HasAnyPersonalization(module.ModuleId))
                 .Where(module => selected == null || module.ModuleId != selected.ModuleId)
                 .ToList();
 
@@ -2109,25 +2364,25 @@ namespace RackCad.UI.Systems.PushBack
 
         private void ConfirmModule_Click(object sender, RoutedEventArgs e)
         {
-            if (!state.ModuleSession.HasPendingChanges)
+            if (!moduleOwner.ModuleSession.HasPendingChanges)
             {
                 SetModuleStatus("No hay cambios de modulo pendientes.");
                 return;
             }
 
-            state.CommitModuleEdits();
+            moduleOwner.CommitModuleEdits();
             RequestRecompute();
         }
 
         private void CancelModule_Click(object sender, RoutedEventArgs e)
         {
-            if (!state.ModuleSession.HasPendingChanges)
+            if (!moduleOwner.ModuleSession.HasPendingChanges)
             {
                 SetModuleStatus("No hay cambios de modulo pendientes.");
                 return;
             }
 
-            state.CancelModuleEdits();
+            moduleOwner.CancelModuleEdits();
             LoadSelectedModule();
             SetModuleStatus("Cambios de modulo descartados.");
         }
@@ -2140,7 +2395,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            state.ModuleSession.RestoreModule(module.ModuleId);
+            moduleOwner.ModuleSession.RestoreModule(module.ModuleId);
             LoadSelectedModule();
             SetModuleStatus("Modulo " + module.ModuleId + " marcado para restaurar. Confirma para aplicarlo.");
         }
@@ -2152,7 +2407,7 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         private void RestoreAllModules_Click(object sender, RoutedEventArgs e)
         {
-            state.ModuleSession.RequestStandardRestore();
+            moduleOwner.ModuleSession.RequestStandardRestore();
             SetModuleStatus("Estructura estandar marcada para restaurar. Confirma para aplicarla.");
         }
 
@@ -2165,14 +2420,14 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var pending = state.ModuleSession.HasPendingChanges;
+            var pending = moduleOwner.ModuleSession.HasPendingChanges;
             ConfirmModuleButton.IsEnabled = pending;
             CancelModuleButton.IsEnabled = pending;
 
             var parts = new List<string>();
             if (pending) parts.Add("Cambios pendientes: confirma o cancela.");
 
-            var reconciliation = state.LastModuleReconciliation?.Describe();
+            var reconciliation = moduleOwner.LastModuleReconciliation?.Describe();
             if (!string.IsNullOrEmpty(reconciliation)) parts.Add("Ultimo recalculo — " + reconciliation + ".");
 
             ModuleStatusText.Text = string.Join(" ", parts);
@@ -2197,14 +2452,80 @@ namespace RackCad.UI.Systems.PushBack
             // The rear stop is edited INSIDE this same dialog, as its own visible section (Owner decision 2026-07-24).
             // The section works on a COPY, so nothing is committed until the main dialog is accepted, and its grid opens
             // ONLY from its own "Configurar…" button — never automatically afterwards.
-            var topeSection = new PushBackRearTopeSection(state.RearTopeConfig(), OpenRearTopeDialog, catalog);
+            // I-42 (ronda 7B) — un rack COMPUESTO tiene un tope por lado, y los DOS se editan aqui. Antes esta
+            // ventana solo llegaba al lado activo, y por eso existia una segunda superficie en la ventana principal:
+            // ahora la intencion de seguridad se decide en un solo sitio. Un rack de un solo sentido construye
+            // exactamente una seccion sin etiqueta, como siempre.
+            var composed = new StackPanel();
+
+            // I-42 (ronda 7D, decision del dueño) — LA DEFENSA se organiza como los topes: una seccion POR LADO,
+            // dentro de esta misma ventana. Antes la unica superficie hablaba de «entrada/salida» y «posterior»,
+            // el vocabulario de un rack de un solo sentido, y el lado B no tenia donde editarse: toda decision
+            // acababa aplicandose al lado A. La ventana principal no participa — abrir Seguridad con el lado
+            // activo en A o en B ofrece exactamente lo mismo.
+            // La familia DEFENSA se lee ANTES de abrir: al aceptar, la ventana reemplaza la lista de selecciones y
+            // esta familia ya no viaja en ella —la deciden las secciones—, asi que su id se conserva aqui. Es el
+            // portador de la intencion POR POSTE cuando los dos lados quedan en «Ninguno».
+            var defenseCarrierId = DefenseSelection(safetySelections)?.ElementId;
+
+            // I-42 (S1E, decision del dueño) — LAS BOTAS se organizan como los topes y la defensa: una seccion por
+            // lado. En un compuesto «Entrada/Salida» no significa lo mismo para A que para B —cada uno tiene SU
+            // pasillo—, asi que una fila global no podia expresar la intencion y cada vista acababa leyendola en su
+            // propio marco. Un rack de un solo sentido conserva una sola seccion, sin etiqueta.
+            var bootSectionA = BuildBootSection(PushBackSide.A, composite.SideBPresent ? "A" : null, postCount);
+            BootSectionForTest = bootSectionA;
+            composed.Children.Add(bootSectionA.View);
+
+            PushBackBootSection bootSectionB = null;
+            if (composite.SideBPresent)
+            {
+                bootSectionB = BuildBootSection(PushBackSide.B, "B", postCount);
+                composed.Children.Add(bootSectionB.View);
+            }
+
+            BootSectionBForTest = bootSectionB;
+            var defenseSectionA = BuildDefenseSection(PushBackSide.A, composite.SideBPresent ? "A" : null, postCount);
+            DefenseSectionForTest = defenseSectionA;
+            composed.Children.Add(defenseSectionA.View);
+
+            PushBackDefenseSection defenseSectionB = null;
+            if (composite.SideBPresent)
+            {
+                defenseSectionB = BuildDefenseSection(PushBackSide.B, "B", postCount);
+                composed.Children.Add(defenseSectionB.View);
+            }
+
+            DefenseSectionBForTest = defenseSectionB;
+
+            var topeSection = new PushBackRearTopeSection(
+                composite.SideBPresent ? composite.Of(PushBackSide.A).RearTopeConfig() : state.RearTopeConfig(),
+                // I-42 (ronda 7C, defecto del dueño) — CADA seccion abre su rejilla con los niveles de SU lado. Antes
+                // las dos leian el lado ACTIVO, asi que un frente en blanco en A salia tambien en blanco en B aunque
+                // B existiera: el blanco de un lado es del lado, no del rack.
+                config => OpenRearTopeDialog(PushBackSide.A, config),
+                catalog,
+                composite.SideBPresent ? "A" : null);
             RearTopeSectionForTest = topeSection;
+            composed.Children.Add(topeSection.View);
+
+            PushBackRearTopeSection topeSectionB = null;
+            if (composite.SideBPresent)
+            {
+                topeSectionB = new PushBackRearTopeSection(
+                    composite.Of(PushBackSide.B).RearTopeConfig(),
+                    config => OpenRearTopeDialog(PushBackSide.B, config),
+                    catalog,
+                    "B");
+                composed.Children.Add(topeSectionB.View);
+            }
+
+            RearTopeSectionBForTest = topeSectionB;
 
             // CANCELLING the safety dialog abandons the WHOLE Seguridad step: neither the safety list nor the rear-tope
             // config is touched, and nothing is recomputed.
             var chosen = SafetyDialog != null
                 ? SafetyDialog(safetySelections)
-                : ShowSafetyDialog(elements, levels, postCount, topeSection.View);
+                : ShowSafetyDialog(elements, levels, postCount, composed);
             if (chosen == null)
             {
                 return;
@@ -2222,22 +2543,362 @@ namespace RackCad.UI.Systems.PushBack
                     safetySelections.Add(selection);
                 }
 
-                state.LoadRearTopeConfig(topeSection.Config);
+                // I-42 (ronda 7D): cada seccion de defensa funde SU cara sobre los registros por poste. A/Pn y
+                // B/Pn comparten la linea y son dos intenciones distintas, asi que la fusion escribe un extremo y
+                // deja el otro exactamente como estaba.
+                ApplyDefenseSections(defenseSectionA, defenseSectionB, defenseCarrierId);
+
+                // I-42 (S1E): y cada seccion de botas escribe la configuracion de SU lado, entera. Editar A no
+                // puede tocar B ni al reves, que es lo que las dos secciones vienen a garantizar.
+                ApplyBootSections(bootSectionA, bootSectionB);
+
+                // Cada seccion aplica a SU lado: editar el tope de A no toca el de B, que es el contrato de
+                // StopA/StopB que las rondas anteriores cerraron.
+                if (composite.SideBPresent)
+                {
+                    composite.Of(PushBackSide.A).LoadRearTopeConfig(topeSection.Config);
+                    composite.Of(PushBackSide.B).LoadRearTopeConfig(topeSectionB.Config);
+                }
+                else
+                {
+                    state.LoadRearTopeConfig(topeSection.Config);
+                }
+
                 RequestRecompute();
             }
         }
 
-        /// <summary>The tope section of the last opened Seguridad dialog (test seam).</summary>
+        /// <summary>I-42 (S1E) — la seccion de botas del lado A del ultimo Seguridad abierto (seam de prueba).</summary>
+        internal PushBackBootSection BootSectionForTest { get; private set; }
+
+        /// <summary>La del lado B, o null en un rack de un solo sentido (seam de prueba).</summary>
+        internal PushBackBootSection BootSectionBForTest { get; private set; }
+
+        /// <summary>
+        /// La seccion de botas de un lado, sembrada con la configuracion que ESE lado tiene ahora. Un rack de un
+        /// solo sentido usa la configuracion de siempre (la del lado A), sin etiqueta.
+        /// </summary>
+        private PushBackBootSection BuildBootSection(PushBackSide side, string sideLabel, int postCount)
+        {
+            // Se siembra con la seleccion RESUELTA cuando la hay: es la que trae el automatico del sistema, y por
+            // tanto la que sabe que hace hoy este lado. La del diseño solo guarda lo que alguien eligio.
+            var selection = BootSelection(LastComputation?.System?.Structure?.SafetySelections)
+                            ?? BootSelection(safetySelections);
+            var config = selection == null
+                ? null
+                : (side == PushBackSide.B ? selection.BotaB : selection.Bota);
+            return new PushBackBootSection(
+                side, sideLabel, config, postCount, OpenBootPerPostDialog,
+                side == PushBackSide.A ? selection?.PostSides : null,
+                // El automatico de un lado que EXISTE es proteger su pasillo; la seccion solo se construye para los
+                // lados que existen, asi que es lo que la casilla debe mostrar mientras nadie elija.
+                automatic: BootPlacement.EntryExit,
+                variants: BootVariants(),
+                pieceId: selection?.BootPieceOf(config));
+        }
+
+        /// <summary>Las variantes de BOTA que el catalogo declara. Hoy una; el contrato no supone que siga siendo asi.</summary>
+        private IReadOnlyList<SafetyElementCatalogEntry> BootVariants()
+            => RackCad.Application.Systems.Selective.SelectiveSafetyFamilies.VariantsOfType(
+                catalog?.SafetyElements, SelectiveSafetyDefaults.BotaType);
+
+        /// <summary>La seleccion de la familia BOTA dentro de <paramref name="selections"/>, o null.</summary>
+        private SelectiveSafetySelection BootSelection(IEnumerable<SelectiveSafetySelection> selections)
+            => RackCad.Application.Systems.Selective.SelectiveSafetyFamilies.SelectedOfType(
+                selections, catalog?.SafetyElements, SelectiveSafetyDefaults.BotaType);
+
+        /// <summary>Seam de prueba: sustituye SOLO el ShowDialog de la rejilla por poste de botas.</summary>
+        internal Func<SafetyPerPostWindow, bool?> BootPerPostWindowDialog;
+
+        /// <summary>
+        /// La rejilla por poste real. Es la MISMA superficie por poste que ya existia —cinco opciones, con «(por
+        /// defecto)» como herencia—, abierta para el lado que la seccion declara. Los ordinales de la colocacion y
+        /// del lado historico coinciden, asi que la traduccion de ida y vuelta es exacta.
+        /// </summary>
+        private IReadOnlyList<BootPostPlacement> OpenBootPerPostDialog(PushBackBootSection section)
+        {
+            var current = section.Posts
+                .Select(post => new SafetyPostSide
+                {
+                    PostIndex = post.PostIndex,
+                    Side = BootPlacements.To(post.Placement),
+                })
+                .ToList();
+            var dialog = new SafetyPerPostWindow(
+                PushBackBootSection.Heading(section.SideLabel),
+                section.PostCount,
+                BootPlacements.To(section.Placement),
+                current,
+                PushBackBootSection.ModeLabels) { Owner = this };
+            var accepted = BootPerPostWindowDialog != null ? BootPerPostWindowDialog(dialog) : dialog.ShowDialog();
+            if (accepted != true)
+            {
+                return null;
+            }
+
+            return dialog.Result
+                .Select(post => new BootPostPlacement
+                {
+                    PostIndex = post.PostIndex,
+                    Placement = BootPlacements.From(post.Side),
+                })
+                .ToList();
+        }
+
+        /// <summary>
+        /// Escribe lo que decidio cada seccion sobre la seleccion de botas. Cada lado sustituye SU configuracion
+        /// entera —general y postes—, y no toca la del otro. Un rack de un solo sentido escribe solo la del lado A
+        /// y deja la de B vacia, que es lo que significa «B no pide nada».
+        /// </summary>
+        private void ApplyBootSections(PushBackBootSection sideA, PushBackBootSection sideB)
+        {
+            var carrier = BootCarrierId(sideA, sideB);
+            if (carrier == null)
+            {
+                return;   // el catalogo no declara ninguna bota: no hay nada que configurar
+            }
+
+            // I-42 (S1G) — la familia ya no viaja en la lista que devuelve el dialogo: la deciden estas secciones.
+            // Si no hay seleccion, se crea; su ElementId es solo el PORTADOR de la familia —el tipo efectivo lo pone
+            // cada lado—, y se mantiene apuntando a una pieza real para que la configuracion dormida sobreviva
+            // aunque los dos lados esten en «Ninguno».
+            var selection = BootSelection(safetySelections);
+            if (selection == null)
+            {
+                selection = new SelectiveSafetySelection
+                {
+                    ElementId = carrier,
+                    Quantity = 1,
+                    Side = SafetySide.None,
+                };
+                safetySelections.Add(selection);
+            }
+            else
+            {
+                selection.ElementId = carrier;
+            }
+
+            if (sideA != null)
+            {
+                selection.Bota = sideA.ToConfig();
+            }
+
+            selection.BotaB = sideB != null ? sideB.ToConfig() : new SelectiveBotaConfig();
+
+            // Desde aqui el documento declara su intencion POR LADO: una general vacia significa «este lado hereda
+            // su automatico», no «este lado no pide nada», que es lo que significaba antes de S1E.
+            selection.BootSidesDeclared = true;
+        }
+
+        /// <summary>
+        /// El PORTADOR de la familia: la primera pieza real que algun lado eligio y, si ninguno eligio ninguna, la
+        /// primera variante del catalogo. No es el tipo de nadie —cada lado guarda el suyo—: solo mantiene la
+        /// familia identificable para que su configuracion dormida siga existiendo.
+        /// </summary>
+        private string BootCarrierId(PushBackBootSection sideA, PushBackBootSection sideB)
+        {
+            foreach (var section in new[] { sideA, sideB })
+            {
+                if (section != null && !section.IsNone && !string.IsNullOrWhiteSpace(section.PieceId))
+                {
+                    return section.PieceId;
+                }
+            }
+
+            return BootVariants().FirstOrDefault()?.Id ?? BootSelection(safetySelections)?.ElementId;
+        }
+
+        /// <summary>I-42 (ronda 7D) — la seccion de defensa del lado A del ultimo Seguridad abierto (seam de prueba).</summary>
+        internal PushBackDefenseSection DefenseSectionForTest { get; private set; }
+
+        /// <summary>La del lado B, o null en un rack de un solo sentido (seam de prueba).</summary>
+        internal PushBackDefenseSection DefenseSectionBForTest { get; private set; }
+
+        /// <summary>
+        /// La seccion de defensa de un lado, con la aplicabilidad REAL de ese lado y los registros por poste que el
+        /// rack tiene ahora. La aplicabilidad la decide la fisica (<see cref="PushBackDefenseSides.FacesOf"/>), no
+        /// la seccion: un frente en blanco quita la cara de ataque de SU lado y no toca la del otro.
+        /// </summary>
+        private PushBackDefenseSection BuildDefenseSection(PushBackSide side, string sideLabel, int postCount)
+            => new PushBackDefenseSection(
+                side,
+                sideLabel,
+                DefensePostsNow(),
+                postCount,
+                PushBackDefenseSides.FacesOf(LastComputation?.System?.Structure, postCount, side),
+                OpenDefenseDialog,
+                DefenseVariants(),
+                DefensePieceIdOf(side));
+
+        /// <summary>Las variantes de DEFENSA que el catalogo declara. Hoy una; el contrato no supone que siga siendo asi.</summary>
+        private IReadOnlyList<SafetyElementCatalogEntry> DefenseVariants()
+            => RackCad.Application.Systems.Selective.SelectiveSafetyFamilies.VariantsOfType(
+                catalog?.SafetyElements, SelectiveSafetyDefaults.DefensaType);
+
+        /// <summary>
+        /// El tipo de defensa de un lado: el que ese lado guarda, o —si nunca se eligio— la pieza que la seleccion
+        /// de seguridad del rack ya traia. Un documento anterior a esta ronda abre asi en la pieza que dibujaba, y
+        /// no en «Ninguno»: la ausencia de eleccion no es una eleccion.
+        /// </summary>
+        private string DefensePieceIdOf(PushBackSide side)
+        {
+            var stored = composite.Of(side).DefensePieceId;
+            return string.IsNullOrWhiteSpace(stored) ? DefenseSelection(safetySelections)?.ElementId : stored;
+        }
+
+        /// <summary>Los registros POR POSTE que la familia DEFENSA tiene ahora, o una lista vacia si no hay ninguna.</summary>
+        private IReadOnlyList<SafetyPostDefense> DefensePostsNow()
+            => DefenseSelection(safetySelections)?.DefensaPosts?.ToList() ?? new List<SafetyPostDefense>();
+
+        /// <summary>La seleccion de la familia DEFENSA dentro de <paramref name="selections"/>, o null.</summary>
+        private SelectiveSafetySelection DefenseSelection(IEnumerable<SelectiveSafetySelection> selections)
+            => RackCad.Application.Systems.Selective.SelectiveSafetyFamilies.SelectedOfType(
+                selections, catalog?.SafetyElements, SelectiveSafetyDefaults.DefensaType);
+
+        /// <summary>Abre la rejilla POR POSTE de la cara que declara <paramref name="section"/>; NULL si se cancela.</summary>
+        private IReadOnlyList<SafetyPostDefense> OpenDefenseDialog(PushBackDefenseSection section)
+            => DefenseDialog != null ? DefenseDialog(section) : ShowDefenseDialog(section);
+
+        /// <summary>Muestra la rejilla real por poste, con la CARA declarada explicitamente.</summary>
+        private IReadOnlyList<SafetyPostDefense> ShowDefenseDialog(PushBackDefenseSection section)
+        {
+            var element = DefenseSelection(safetySelections);
+            var label = catalog?.SafetyElements?.FirstOrDefault(entry =>
+                string.Equals(entry?.Id, element?.ElementId, StringComparison.OrdinalIgnoreCase))?.Label;
+            var dialog = new SafetyDefensaGridWindow(
+                label ?? PushBackDefenseSection.HeadingText,
+                section.PostCount,
+                section.Posts,
+                lowEndOnly: true,
+                autoPerEnd: true,
+                face: section.Face())
+            {
+                Owner = this
+            };
+            return dialog.ShowDialog() == true ? dialog.Result : null;
+        }
+
+        /// <summary>
+        /// Funde lo que cada seccion decidio sobre los registros por poste de la familia DEFENSA. Si la familia no
+        /// esta seleccionada no hay donde escribir, y las decisiones se descartan con ella.
+        /// </summary>
+        private void ApplyDefenseSections(
+            PushBackDefenseSection sideA, PushBackDefenseSection sideB, string carrierId)
+        {
+            // I-42 (ronda 7E): el TIPO de cada lado se guarda en SU estado. Es un eje distinto de la intencion por
+            // poste, que sigue en la seleccion de seguridad: cambiar el tipo —incluso a «Ninguno»— no la destruye,
+            // asi que volver a una pieza recupera exactamente los postes que habia.
+            if (sideA != null)
+            {
+                composite.Of(PushBackSide.A).DefensePieceId = sideA.PieceId;
+            }
+
+            if (sideB != null)
+            {
+                composite.Of(PushBackSide.B).DefensePieceId = sideB.PieceId;
+            }
+
+            var selection = EnsureDefenseSelection(sideA, sideB, carrierId);
+            if (selection == null)
+            {
+                return;
+            }
+
+            // Un rack de un solo sentido tiene UNA seccion que decide los dos extremos: su lista sustituye. Un
+            // compuesto tiene dos, y cada una funde SOLO su cara sobre la del otro lado.
+            if (sideA != null && sideA.OwnsBothEnds && sideB == null)
+            {
+                Write(selection, PushBackDefenseSides.Copy(sideA.Posts));
+                return;
+            }
+
+            var merged = PushBackDefenseSides.Copy(selection.DefensaPosts);
+            if (sideA != null)
+            {
+                merged = PushBackDefenseSides.Merge(merged, sideA.Posts, PushBackSide.A);
+            }
+
+            if (sideB != null)
+            {
+                merged = PushBackDefenseSides.Merge(merged, sideB.Posts, PushBackSide.B);
+            }
+
+            // Reconciliacion: una linea que el rack ya no tiene no deja intencion fantasma. Las que conservan su
+            // identidad conservan su intencion, de cada lado; una nueva nace con el automatico.
+            var lines = sideA?.PostCount ?? sideB?.PostCount ?? 0;
+            merged.RemoveAll(record => record.PostIndex < 0 || record.PostIndex >= lines);
+            Write(selection, merged);
+        }
+
+        /// <summary>
+        /// La seleccion de la familia DEFENSA, creandola si hace falta. Con la fila general retirada, las secciones
+        /// son quienes la traen a existencia: mientras algun lado tenga una pieza, la familia existe; si los dos
+        /// dicen «Ninguno», no hay familia y no hay ni bloque ni linea de BOM —«Ninguno» nunca es una pieza.
+        /// </summary>
+        private SelectiveSafetySelection EnsureDefenseSelection(
+            PushBackDefenseSection sideA, PushBackDefenseSection sideB, string carrierId)
+        {
+            var existing = DefenseSelection(safetySelections);
+            var chosen = new[] { sideA, sideB }
+                .Where(section => section != null && !section.IsNone)
+                .Select(section => section.PieceId)
+                .FirstOrDefault(id => !string.IsNullOrWhiteSpace(id));
+
+            if (string.IsNullOrWhiteSpace(chosen))
+            {
+                // Los DOS lados en «Ninguno». La familia se conserva SOLO como portadora de la intencion POR POSTE,
+                // que es un eje distinto del tipo y no se destruye al apagarlo: sus dos caras resuelven a «ninguna
+                // pieza», asi que no se dibuja ni se cuenta nada, y volver a elegir una devuelve la rejilla entera.
+                // Sin postes decididos no hay nada que conservar y no se inventa ninguna familia.
+                var hasIntent = (sideA?.Posts?.Count ?? 0) > 0 || (sideB?.Posts?.Count ?? 0) > 0;
+                if (!hasIntent || string.IsNullOrWhiteSpace(carrierId))
+                {
+                    return null;
+                }
+
+                chosen = carrierId;
+            }
+
+            if (existing == null)
+            {
+                existing = new SelectiveSafetySelection { Quantity = 1, Side = SafetySide.None };
+                safetySelections.Add(existing);
+            }
+
+            existing.ElementId = chosen;
+            PushBackSafetyAuthority.RestrictToLowEnd(existing);
+            return existing;
+        }
+
+        private static void Write(SelectiveSafetySelection selection, IEnumerable<SafetyPostDefense> records)
+        {
+            selection.DefensaPosts.Clear();
+            foreach (var record in records)
+            {
+                selection.DefensaPosts.Add(record);
+            }
+        }
+
+        /// <summary>The tope section of the last opened Seguridad dialog (test seam). In a composite, side A's.</summary>
         internal PushBackRearTopeSection RearTopeSectionForTest { get; private set; }
 
+        /// <summary>I-42 (ronda 7B) — side B's tope section, or null in a single-sided rack (test seam).</summary>
+        internal PushBackRearTopeSection RearTopeSectionBForTest { get; private set; }
+
         /// <summary>Opens the shared tope grid for <paramref name="config"/>; NULL when cancelled.</summary>
-        private SafetyTopeGridWindow.TopeResult OpenRearTopeDialog(PushBackRearTopeConfig config)
-            => RearTopeDialog != null
-                ? RearTopeDialog(config)
-                : ShowRearTopeDialog(
-                    config,
-                    PushBackRearTopeDialogAdapter.LevelsPerFrente(
-                        state.Structure.EffectiveLevelCounts(), allowBlankFronts: true));
+        private SafetyTopeGridWindow.TopeResult OpenRearTopeDialog(PushBackSide side, PushBackRearTopeConfig config)
+        {
+            var levels = RearTopeLevels(side);
+            return RearTopeDialog != null ? RearTopeDialog(config, levels) : ShowRearTopeDialog(config, levels);
+        }
+
+        /// <summary>
+        /// Los niveles por frente con los que se abre la rejilla del tope de <paramref name="side"/> — los de ESE
+        /// lado, incluidos sus ceros. Un frente en blanco en A no tiene por que estarlo en B, y al reves.
+        /// </summary>
+        internal IReadOnlyList<int> RearTopeLevels(PushBackSide side)
+            => PushBackRearTopeDialogAdapter.LevelsPerFrente(
+                composite.Of(side).Structure.EffectiveLevelCounts(), allowBlankFronts: true);
 
         /// <summary>Shows the real shared safety dialog; NULL when the user cancelled.</summary>
         private IReadOnlyList<SelectiveSafetySelection> ShowSafetyDialog(
@@ -2248,8 +2909,8 @@ namespace RackCad.UI.Systems.PushBack
                 elements, safetySelections, postCount,
                 levelsPerFrente: levels, fondoCount: 1, parrillaPlan: null, catalog: catalog, resolvedSystem: null,
                 fallbackLevelsArePerPost: true,
-                introduction: "Push Back admite botas, protectores laterales, desviadores y defensa de montacargas en el extremo de entrada/salida (el extremo bajo). El lado posterior viene apagado y no usa guías.",
-                includeDefensa: true, includeGuia: false, useDynamicSafetyDefaults: true,
+                introduction: "Push Back admite botas, protectores laterales, desviadores y defensa de montacargas en el extremo de entrada/salida (el extremo bajo). Las botas, la defensa y los topes se configuran en las secciones de arriba, cada lado por separado. El lado posterior viene apagado y no usa guías.",
+                includeDefensa: false, includeGuia: false, useDynamicSafetyDefaults: true,
                 extraSection: extraSection,
                 desviadorLevelsPerPost: DesviadorLevelsPerPost(),
                 allowBlankFrontColumns: true,
@@ -2258,12 +2919,24 @@ namespace RackCad.UI.Systems.PushBack
                 showDesviadorSide: false,
                 // PB-008/009/010: the two ends of the defence are named for what Push Back really has, the rear one is
                 // off by default, and each end can follow the automatic 12"/36" that recomputes with the front count.
-                defensaLowEndOnly: true)
+                defensaLowEndOnly: true,
+                // I-42 (S1E): la UBICACION de la bota se decide en las secciones por lado de arriba; la fila
+                // conserva solo el TIPO.
+                bootFamilyInSections: true)
             {
                 Owner = this
             };
-            return dialog.ShowDialog() == true ? dialog.Result : null;
+            var accepted = SafetyWindowDialog != null ? SafetyWindowDialog(dialog) : dialog.ShowDialog();
+            return accepted == true ? dialog.Result : null;
         }
+
+        /// <summary>
+        /// I-42 (ronda 7C) — seam de prueba de «Elementos de seguridad». Sustituye UNICAMENTE el <c>ShowDialog</c>:
+        /// la ventana que recibe es la REAL, construida con los mismos argumentos que ve el usuario. Con el, una
+        /// prueba recorre la ruta entera —esta ventana, la rejilla por poste, el commit, el resolve y el dibujo—
+        /// en vez de sustituir la ventana por un delegado, que es justo lo que ocultaba el defecto.
+        /// </summary>
+        internal Func<SelectiveSafetyWindow, bool?> SafetyWindowDialog;
 
         /// <summary>Shows the real shared tope-grid dialog; NULL when the user cancelled.</summary>
         private SafetyTopeGridWindow.TopeResult ShowRearTopeDialog(PushBackRearTopeConfig config, IReadOnlyList<int> levels)
@@ -2322,8 +2995,12 @@ namespace RackCad.UI.Systems.PushBack
         {
             switch (ViewBox.SelectedIndex)
             {
-                case 1: return (RackEmbedDocument.ViewFrontal, (int)PushBackFrontalEnd.EntradaSalida);
-                case 2: return (RackEmbedDocument.ViewFrontal, (int)PushBackFrontalEnd.Posterior);
+                // I-42: un corte frontal es de UN lado, asi que su SECCION lleva tambien el lado activo. Un rack de
+                // un solo sentido codifica 0 y 1, exactamente lo que escribieron todas las versiones anteriores.
+                case 1: return (RackEmbedDocument.ViewFrontal, PushBackSystemFrontalBuilder.EncodeSection(
+                    PushBackFrontalEnd.EntradaSalida, frontalSide));
+                case 2: return (RackEmbedDocument.ViewFrontal, PushBackSystemFrontalBuilder.EncodeSection(
+                    PushBackFrontalEnd.Posterior, frontalSide));
                 case 3: return (RackEmbedDocument.ViewPlanta, -1);
                 default: return (RackEmbedDocument.ViewLateral, Math.Max(0, LateralSectionBox.SelectedIndex));
             }
@@ -2402,7 +3079,12 @@ namespace RackCad.UI.Systems.PushBack
             if (string.Equals(view, RackEmbedDocument.ViewPlanta, StringComparison.OrdinalIgnoreCase)) return lastComputation.PlantaPlan;
             if (string.Equals(view, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase))
             {
-                return section == (int)PushBackFrontalEnd.Posterior ? lastComputation.FrontalPosterior : lastComputation.FrontalEntradaSalida;
+                // I-42: la seccion frontal lleva EXTREMO y LADO, asi que hay que DECODIFICARLA. Compararla contra
+                // (int)Posterior solo acertaba en el lado A: la seccion 3 —posterior de B— caia en el corte de
+                // entrada/salida y el panel mostraba el pasillo de carga donde el usuario pidio el fondo.
+                return PushBackSystemFrontalBuilder.DecodeSection(section).End == PushBackFrontalEnd.Posterior
+                    ? lastComputation.FrontalPosterior
+                    : lastComputation.FrontalEntradaSalida;
             }
 
             // Lateral: the SELECTED corte's plan (the assembler already computed every corte), not the full lateral.
@@ -2420,7 +3102,9 @@ namespace RackCad.UI.Systems.PushBack
             if (string.Equals(view, RackEmbedDocument.ViewPlanta, StringComparison.OrdinalIgnoreCase)) return "Planta";
             if (string.Equals(view, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase))
             {
-                return section == (int)PushBackFrontalEnd.Posterior ? "Frontal posterior" : "Frontal entrada/salida";
+                var frontal = PushBackSystemFrontalBuilder.DecodeSection(section);
+                var label = frontal.End == PushBackFrontalEnd.Posterior ? "Frontal posterior" : "Frontal entrada/salida";
+                return section >= 2 ? label + " (lado " + (frontal.Side == PushBackSide.B ? "B" : "A") + ")" : label;
             }
 
             return "Lateral (corte " + (section + 1).ToString(CultureInfo.InvariantCulture) + ")";
@@ -2439,9 +3123,40 @@ namespace RackCad.UI.Systems.PushBack
         // contract stays the single source — and then inserts through the very same path as "Insertar vista actual".
         private void InsertLateral_Click(object sender, RoutedEventArgs e) => InsertViewAt(0);
 
-        private void InsertFrontalEntrada_Click(object sender, RoutedEventArgs e) => InsertViewAt(1);
+        /// <summary>
+        /// I-42 — el lado que el CORTE FRONTAL muestra. Es una eleccion del boton que se pulsa, no el «lado activo»
+        /// de la edicion: el usuario tiene que poder pedir el corte de B mientras edita A, y el dibujo insertado no
+        /// puede depender de un modo que no se ve en la barra de vistas.
+        /// </summary>
+        private PushBackSide frontalSide = PushBackSide.A;
 
-        private void InsertFrontalPosterior_Click(object sender, RoutedEventArgs e) => InsertViewAt(2);
+        /// <summary>El lado del ultimo corte frontal pedido (seam de prueba).</summary>
+        internal PushBackSide FrontalSideForTest => frontalSide;
+
+        private void InsertFrontalEntrada_Click(object sender, RoutedEventArgs e)
+            => InsertViewAt(1);
+
+        private void InsertFrontalPosterior_Click(object sender, RoutedEventArgs e)
+            => InsertViewAt(2);
+
+        /// <summary>
+        /// El lado de los CORTES FRONTALES lo declara su propio selector, no el lado que se este editando: el usuario
+        /// tiene que poder pedir el corte de B mientras configura A, y el dibujo insertado no puede depender de un
+        /// modo que no se ve en la barra de vistas.
+        /// </summary>
+        private void FrontalSide_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            frontalSide = FrontalSideBox.SelectedIndex == 1 ? PushBackSide.B : PushBackSide.A;
+            // Los cortes frontales YA construidos son los del lado anterior: repintar sin reconstruir dejaba el
+            // panel mostrando el otro pasillo hasta que cualquier otra edicion forzara un recalculo.
+            RequestRecompute();
+            RenderPreview();
+        }
 
         private void InsertPlanta_Click(object sender, RoutedEventArgs e) => InsertViewAt(3);
 
@@ -2467,7 +3182,19 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var inputs = state.LoadFromDesign(lastComputation.Design, assembler.Resolver);
+            // I-42 (A1/B5) — restaurar reconstruye el rack por el MISMO camino que abrirlo: el lado A contra su
+            // propio diseño y la parte compuesta en su propio estado. Cargar el diseño compuesto entero en el
+            // estado del lado activo le metia el hueco y los modulos del otro lado dentro de su matriz —casi el
+            // doble de profundidad, `B:*` dentro de A y la configuracion de B destruida—.
+            var design = lastComputation.Design;
+            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
+            composite.SetSideBPresent(false);
+            var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
+
+            // I-42 (A7 / A6V-1, decision del dueño): restaurar actua sobre el sistema EFECTIVO. Con el lado B
+            // dormido su intencion no forma parte de ese sistema, asi que ni se restaura ni se borra; con el lado B
+            // activo el rack efectivo lo incluye y el reset le alcanza como a cualquier otra parte.
+            LoadCompositeFromDesign(design, preserveDormantIntent: true);
             LoadFromModel(inputs, NameBox.Text);
             SetStatus("Valores restaurados al último sistema válido.", false);
         }
@@ -2497,9 +3224,9 @@ namespace RackCad.UI.Systems.PushBack
             // Pulsar Actualizar o Insertar es aplicar lo que el panel muestra: se confirma primero. La transaccion
             // de I-35 no se debilita —«Cancelar» sigue siendo el UNICO descarte—, deja de haber un camino que
             // descarta sin decirlo.
-            if (state.ModuleSession.HasPendingChanges)
+            if (moduleOwner.ModuleSession.HasPendingChanges)
             {
-                state.CommitModuleEdits();
+                moduleOwner.CommitModuleEdits();
             }
 
             RequestRecompute(); // synchronous validate + build
@@ -2507,6 +3234,13 @@ namespace RackCad.UI.Systems.PushBack
             {
                 SetStatus("Corrige los datos: no se puede insertar un modelo inválido.", true);
                 return; // never fall back to the previous valid model
+            }
+
+            // I-42 (A3-GATE) — el recalculo de ARRIBA acaba de confirmar la edicion escenificada y de rehacer el
+            // sistema: el veredicto de salida que vale es el de AHORA, no el que habia cuando el usuario pulso.
+            if (OutputBlockedAfterRecompute("Corrige los datos: no se puede dibujar un modelo bloqueado."))
+            {
+                return;
             }
 
             session.Identity.SetName(NameBox.Text?.Trim());
@@ -2562,7 +3296,7 @@ namespace RackCad.UI.Systems.PushBack
         /// pertenece a un AMBITO y que «no aplicable» es un valor legitimo.</para>
         /// </summary>
         internal EditorPendingWork PendingWork() => EditorPendingWork.When(
-            state.ModuleSession != null && state.ModuleSession.HasPendingChanges,
+            moduleOwner.ModuleSession != null && moduleOwner.ModuleSession.HasPendingChanges,
             "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
 
         // ---- BOM + library ---------------------------------------------------------------------------------------
@@ -2576,6 +3310,12 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
+            // I-42 (A3-GATE): el BOM es una salida mas y corre la misma carrera que Insertar/Actualizar.
+            if (OutputBlockedAfterRecompute("Corrige los datos: no se puede listar un modelo bloqueado."))
+            {
+                return;
+            }
+
             new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog();
         }
 
@@ -2585,6 +3325,14 @@ namespace RackCad.UI.Systems.PushBack
             if (!currentInputsAreValid || lastComputation?.Design == null)
             {
                 SetStatus("Corrige los datos: no se puede guardar un modelo inválido.", true);
+                return;
+            }
+
+            // I-42 (A3-GATE-LIBRARY): guardar en la biblioteca es una salida PERSISTENTE y corre la misma carrera
+            // que Insertar, Actualizar y el BOM — el click confirma la edicion escenificada y recalcula—, asi que
+            // consulta la MISMA compuerta despues del recalculo. Un modelo bloqueado no se archiva.
+            if (OutputBlockedAfterRecompute("Corrige los datos: no se puede guardar un modelo bloqueado."))
+            {
                 return;
             }
 
@@ -2609,11 +3357,56 @@ namespace RackCad.UI.Systems.PushBack
 
         // ---- Small helpers -------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// I-42 (A1/H11) — true cuando el ultimo sistema resuelto tiene un diagnostico BLOQUEANTE. Un rack asi no
+        /// sale: ni al plano ni al BOM. Es una sola compuerta, resuelta al recomputar y consumida por todas las
+        /// acciones; el editor sigue abierto y el diagnostico visible para poder corregirlo.
+        /// </summary>
+        private bool outputIsBlocked;
+
+        /// <summary>La compuerta de salida (seam de prueba).</summary>
+        internal bool OutputIsBlockedForTest => outputIsBlocked;
+
+        /// <summary>
+        /// I-42 (A3-GATE) — LA RELECTURA DE LA AUTORIDAD DE SALIDA DESPUES DEL RECALCULO DEL CLICK.
+        ///
+        /// <para>
+        /// <b>El defecto.</b> Insertar, Actualizar y el BOM confirman la edicion escenificada y recalculan DENTRO
+        /// del click; ese recalculo vuelve a decidir <c>outputIsBlocked</c>. Pero los tres solo miraban despues
+        /// <c>currentInputsAreValid</c>, que habla de las ENTRADAS —«12 fondos» es un numero perfectamente valido—,
+        /// nunca del sistema RESUELTO. Un diseno que pasa a Bloqueante justo en ese recalculo se dibujaba y se
+        /// embebia igual: medido, con la estructura del lado A congelada en 8 fondos y «Fondos = 12» tecleado sin
+        /// salir del campo, el estado antes del click era valido y no bloqueado, y despues del click el diagnostico
+        /// decia «la cama necesita 588" y la estructura efectiva solo ofrece 396"» mientras la peticion de dibujo
+        /// ya habia salido. El boton deshabilitado no protegia nada: se deshabilita con el veredicto ANTERIOR.
+        /// </para>
+        ///
+        /// <para>
+        /// <b>La correccion.</b> No hay regla nueva. Se vuelve a consultar LA MISMA autoridad —<c>outputIsBlocked</c>,
+        /// que fija <see cref="Recompute"/> desde <c>CompositeHasBlocking</c>— en el orden que le da sentido:
+        /// confirmar la intencion, recalcular, comprobar las entradas y, por ultimo, comprobar la salida. El motivo
+        /// que se muestra es el DIAGNOSTICO REAL del sistema recien resuelto; el texto de reserva solo cubre el caso
+        /// imposible de un bloqueo sin diagnostico. La ventana no se cierra y la edicion escenificada se conserva:
+        /// el usuario ve por que no salio y puede corregirlo sin volver a teclearlo.
+        /// </para>
+        /// </summary>
+        private bool OutputBlockedAfterRecompute(string fallback)
+        {
+            if (!outputIsBlocked)
+            {
+                return false;
+            }
+
+            SetStatus(CompositeStatusOr(fallback), true);
+            return true;
+        }
+
         private void UpdateButtons()
         {
-            InsertButton.IsEnabled = canInsertInAutoCad && currentInputsAreValid;
-            UpdateButton.IsEnabled = canInsertInAutoCad && currentInputsAreValid && isEditingExisting;
-            BomButton.IsEnabled = currentInputsAreValid;
+            var canOutput = currentInputsAreValid && !outputIsBlocked;
+            InsertButton.IsEnabled = canInsertInAutoCad && canOutput;
+            UpdateButton.IsEnabled = canInsertInAutoCad && canOutput && isEditingExisting;
+            BomButton.IsEnabled = canOutput;
             SaveLibraryButton.IsEnabled = currentInputsAreValid;
             if (!canInsertInAutoCad)
             {
@@ -2622,7 +3415,11 @@ namespace RackCad.UI.Systems.PushBack
             }
             else
             {
-                InsertButton.ToolTip = currentInputsAreValid ? "Inserta la vista seleccionada enlazada al sistema." : "Corrige los campos numéricos marcados.";
+                InsertButton.ToolTip = outputIsBlocked
+                    ? "Corrige el diagnóstico bloqueante: el rack no puede dibujarse ni cotizarse así."
+                    : currentInputsAreValid
+                        ? "Inserta la vista seleccionada enlazada al sistema."
+                        : "Corrige los campos numéricos marcados.";
                 UpdateButton.ToolTip = isEditingExisting
                     ? "Redibuja en sitio todas las vistas del sistema."
                     : "Disponible solo para un sistema abierto con RACKEDITAR.";
@@ -2676,6 +3473,38 @@ namespace RackCad.UI.Systems.PushBack
         private static double SelectedPeralte(ComboBox combo, double fallback) => combo?.SelectedItem is double value ? value : fallback;
 
         private static double Val(NumericField field, double fallback) => field.Value ?? fallback;
+
+        /// <summary>
+        /// I-42 (A3-CELL, contrato del dueño) — LA LECTURA POR LADO DE UN OVERRIDE OPCIONAL.
+        ///
+        /// <para>
+        /// <b>El defecto.</b> Los demas campos de la celda ya caian al valor DEL LADO que se escribe cuando el
+        /// control esta vacio (<see cref="Val"/>), que es lo que hace que «Ambos» con valores distintos no pise a
+        /// nadie. «Largo manual» se leia crudo —<c>CellBeamLengthOverrideBox.Value</c>—, asi que el hueco que pinta
+        /// el estado mixto viajaba como <c>null</c> A LOS DOS LADOS. Medido: con A = 100 y B sin override, elegir
+        /// «Ambos lados» sin tocar el campo dejaba A = null y B = null; con A = 100 y B = 120, los dos en null.
+        /// </para>
+        ///
+        /// <para>
+        /// <b>Por que este campo y no los otros.</b> Es el unico campo de la celda que es opcional POR NATURALEZA:
+        /// en el resto un hueco nunca es authored y por eso bastaba con caer al valor del lado. Aqui el hueco
+        /// significa dos cosas distintas, y la que vale la dice el estado del control, no el valor:
+        /// </para>
+        ///
+        /// <list type="bullet">
+        /// <item><b>Vacio por MIXTO</b> —A y B difieren y el panel lo esta diciendo— - cada lado conserva el suyo.</item>
+        /// <item><b>Vacio a proposito</b> —el campo no esta mixto— - sin override, tal cual, y se escribe en los
+        /// lados que el alcance alcance. El borrado explicito de un valor comun sigue borrando en los dos.</item>
+        /// </list>
+        ///
+        /// <para>
+        /// <c>null</c> NO es cero, ni el valor del otro lado, ni el ancho compartido que resuelve la reticula de
+        /// A3-G1/G2: es «sin override authored». Que la geometria derivada comparta una envolvente entre A y B no
+        /// autoriza a materializarla como intencion de nadie.
+        /// </para>
+        /// </summary>
+        private double? OptionalVal(NumericField field, double? sideValue)
+            => field.Value ?? (IsMixed(field) ? sideValue : null);
 
         private static int IntVal(NumericField field, int fallback) => field.Value.HasValue ? (int)Math.Round(field.Value.Value) : fallback;
     }

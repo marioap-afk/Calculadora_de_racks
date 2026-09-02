@@ -16,6 +16,18 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
+**I-42 — Push Back compuesto, bidireccional y camas compartidas — queda INTEGRADA y CERRADA** el
+**2026-09-02** (`feature/push-back-compuesto`). Push Back deja de estar limitado a un solo sentido: dentro
+de **un mismo sistema físico** conviven **lado A y lado B enfrentados**, con **UNA estructura física** y
+**DOS configuraciones funcionales de almacenamiento**. La topología es **por celda** —`Solo A`, `Solo B`,
+`Encontradas` (dos camas) y `Corrida` (una cama que atraviesa el rack, en sus dos sentidos)—, el **hueco**
+central es longitud física real con separador opcional, y los **dos pasillos** de carga reciben su
+seguridad. Un rack de un solo sentido **no cambia**: se persiste y se resuelve exactamente como antes de
+I-42. **Validación manual del Owner APROBADA** en AutoCAD 2025 sobre el DLL construido desde `077d35a`:
+**8/8 escenarios**, con el 2 (corrida sobre el hueco) **aprobado con observación** no bloqueante.
+**ADR-0031 queda `aceptado`** con el modelo implementado y sus **seis limitaciones declaradas**. Detalle
+en §4.
+
 **I-41 — Configuración por celda de Push Back — queda INTEGRADA y CERRADA** el **2026-08-23**
 (`feature/push-back-cell-configuration`). El **fondo** deja de ser una propiedad del FRENTE y se resuelve
 por **celda** (`FrontIndex + LevelIndex`) con una regla de precedencia única, de modo que el
@@ -888,6 +900,20 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-42 (2026-09-02) — APROBADA.** El dueño cargó por NETLOAD el DLL Debug del worktree de
+`feature/push-back-compuesto`, construido **exactamente** desde
+`077d35ad418615bed4c1d8375ea9cfc0de9fca24`, y recorrió la matriz manual de ocho escenarios con veredicto
+**APROBADA — 8/8**: (1) retícula transversal compartida; (2) cama **corrida** y hueco; (3) restauración
+con el lado B dormido; (4) ciclo completo de un despertar fallido; (5) edición confirmada y todavía no
+recalculada; (6) `RACKEDITAR` sobre un rack compuesto; (7) restauración, rangos no anidados y seguridad
+de los dos pasillos; (8) bloqueo de salidas —Insertar, Actualizar, BOM y biblioteca— cuando el recálculo
+no es válido. El escenario 2 quedó **APROBADO CON OBSERVACIÓN** no bloqueante —**CORRIDA GAP STORAGE**—,
+que el dueño decidió **no implementar ahora**: es la limitación 6 de la iniciativa y ya vive en
+[`docs/ideas-futuras.md`](ideas-futuras.md) con su coste real. `origin/main` **no avanzó** desde la base
+`088c7b9`, así que **no hubo rebase final** y la validación corresponde exactamente al contenido
+integrado. La aprobación llegó tras **varias rondas rechazadas** —candidatos `6c9f778`, `e90442a`,
+`3b55ca7`, `36fe5d3`, `67a24d0`, `d6e6372`, `5a73b92` y `82e918b`—, todas corregidas en la misma rama.
+
 **I-41 (2026-08-23) — APROBADA.** El dueño cargó por NETLOAD el DLL Debug del worktree de
 `feature/push-back-cell-configuration`, construido **exactamente** desde
 `c41aee1b8bcbfc0d6fed7a38b8c4767538648cd2`, y aprobó la configuración por celda de Push Back en AutoCAD
@@ -1147,7 +1173,96 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-41 está INTEGRADA y CERRADA. No hay iniciativa en curso.
+### I-42 está INTEGRADA y CERRADA. No hay iniciativa en curso.
+
+**I-42 — Push Back compuesto, bidireccional y camas compartidas quedó integrada el 2026-09-02** con merge
+`--no-ff` (el SHA queda registrado en el commit de registro sobre `main`), sobre el candidato funcional
+**`077d35ad418615bed4c1d8375ea9cfc0de9fca24`**, con **validación manual del Owner APROBADA** en AutoCAD
+2025 —**8/8 escenarios**, el 2 con observación no bloqueante— y CI verde. `origin/main` **no avanzó**
+desde la base `088c7b9`: **sin rebase final**, así que la validación corresponde exactamente al contenido
+integrado.
+
+**Lo que Push Back gana, en su comportamiento final:**
+
+- **A. Una estructura física, dos configuraciones funcionales.** La *estructura* —postes, perfil y
+  peralte, cabeceras, separadores, postes derivados, placas, alturas, seguridad, anotaciones y los
+  overrides por línea de I-40— es propiedad **única del rack**. La *configuración funcional* —frentes,
+  niveles, elevaciones, fondos, tarimas, celdas y topes— pertenece a **cada lado** y no puede describir
+  estructura. No hay «rack A + rack B espejado» ni un BOM deduplicado a posteriori.
+- **B. El lado A es el de referencia y es el legacy.** Un rack de un solo sentido no tiene lado B ni
+  intención de interfaz: su JSON se re-escribe **byte-idéntico** y su camino de resolución es el anterior
+  a I-42, sin pasar por la composición.
+- **C. Una sola secuencia de profundidad.** `módulos de A → línea terminal de A → HUECO → línea inicial de
+  B → módulos de B`, con los de B **invertidos** porque su pasillo es el otro extremo. El hueco es
+  **longitud física real** —nunca un desplazamiento visual, un fondo ficticio ni una posición de tarima—
+  y ocupa su propia posición; con separador central se materializa como el **mismo** separador del rack,
+  contado una vez.
+- **D. Una sola retícula transversal, y la asimetría se expresa con PRESENCIA.** Cada ranura toma la
+  **mayor demanda aplicable** de los dos lados (calles, ancho de larguero y niveles) —incluidos los
+  overrides de celda— de modo que líneas de postes y BFR son únicos. El número de frentes es **del rack**:
+  que una ranura exista sólo en un lado es **presencia** por ranura y por lado, y la retícula se iguala
+  siempre **creciendo**.
+- **E. La estructura efectiva es editable por lado.** `demanda de celdas → envolvente por ranura →
+  estructura PROPUESTA → override manual → estructura EFECTIVA`. La propuesta se deriva siempre; el
+  override la **sustituye**, no la acota; restaurar es eliminar el override. Una estructura insuficiente
+  **no se corrige en silencio**: las celdas que no caben se declaran imposibles **con su motivo**.
+- **F. Tres magnitudes de cama, tres autoridades.** `RequiredBedLength` es lo que exige la **demanda**
+  (sólo módulos que alojan tarima; no depende del hueco); `AvailableBedSpan` es lo que ofrece la
+  **estructura** (el hueco **sí** suma); `ResolvedBedLength` es la longitud **física** del primer apoyo
+  válido. Se cumple `Required <= Resolved <= Available`, y por eso **un hueco positivo puede volver válida
+  una cama que sin él no cabe** sin inflar la demanda.
+- **G. La topología es por CELDA (ranura × nivel).** Cuatro modos físicos: `Solo A` y `Solo B` (una cama),
+  `Encontradas` (**dos** camas independientes con topes independientes) y `Corrida` (**una** cama con una
+  longitud, una pendiente continua, un eje y como mucho **un** tope). Un nivel que sólo existe en un lado
+  degrada de forma explícita **sin tocar la intención almacenada**, que queda **dormante** y vuelve
+  intacta. La topología por defecto depende de cuántos sentidos tiene el rack.
+- **H. El fondo de una cama CORRIDA es una autoridad PROPIA por celda**, nunca `fondo(A) + fondo(B)`. Sin
+  valor propio hereda un default derivado —la capacidad en fondos de la estructura—; los fondos de A y de
+  B **no se borran** al volver corrida una celda, así que cambiar de topología es **reversible**. Y
+  `CorridaDepth` son **fondos**, no módulos: el módulo que la cama atraviesa sin almacenar no vuelve a la
+  demanda.
+- **I. El lado B es una imagen especular FÍSICA.** Cada cama se resuelve con el código ya validado de un
+  Push Back de un sentido **en su propio marco** y se lleva al rack con **una sola reflexión rígida**, que
+  no toca las elevaciones. Un larguero intermedio pertenece a una **cama**, no a la estructura, y el BOM
+  lo cuenta con el **mismo** builder que lo dibuja. Anotaciones y cotas se trasladan, no se reflejan.
+- **J. Se comparte la retícula TRANSVERSAL, no la ALTURA.** Las cabeceras son piezas **longitudinales** de
+  un lado: su altura, su celosía y sus personalizaciones de I-40 salen de la sub-estructura de **ese**
+  lado. Una autoridad global del tipo `max(alturaA, alturaB)` está **prohibida**; subir un nivel en A no
+  mueve ni una pieza de B.
+- **K. Dos pasillos de carga, y los dos llevan su seguridad.** La autoridad no cambia —sigue siendo la
+  única `PushBackSafetyAuthority`—; lo que el rack declara es en **cuántos extremos** se materializa
+  (`BothEndsAreLoadFaces`, derivado y no persistido). **Pertenencia, orientación y extremo son tres ejes
+  distintos.** El tope posterior vive en el extremo ALTO y su autoridad es **por lado**.
+- **L. El ancla de una cama es su extremo BAJO, en las dos direcciones** (decisión del dueño).
+  Longitudinalmente, el extremo por el que se carga queda anclado al poste exterior de su lado.
+  Verticalmente, «Alto 1er nivel» fija el larguero de entrada y el ALTO se **deriva** contra los
+  troqueles: **supersede** la redacción de I-32/PB-004 sin cambiar el criterio de selección. La autoridad
+  vertical es UNA, `PushBackElevations`, y la leen las cuatro vistas, la cama, los apoyos intermedios, el
+  desviador y el tope.
+- **M. El ciclo de vida de la intención dormida es transaccional.** Dormir el lado B **no** borra el lado
+  B: su cola compuesta se aparca, se consume **por computación** y sólo se limpia cuando esa computación
+  se **acepta**; un despertar fallido no degrada nada, y «Restaurar valores» actúa sobre el sistema
+  **efectivo** sin llevarse por delante una intención que no forma parte de él. Cargar otro rack sí la
+  borra, y es la única acción que lo hace.
+- **N. Las salidas se bloquean después del recálculo.** Insertar, Actualizar, BOM y guardar en biblioteca
+  revalidan el resultado **ya recalculado**, de modo que un sistema inválido no llega al dibujo, al BOM ni
+  a la biblioteca.
+
+**Dinámico, Selectivo y Cama no se tocan.** Las **seis limitaciones declaradas** viven en la iniciativa
+([`docs/initiatives/I-42-push-back-compuesto.md`](initiatives/I-42-push-back-compuesto.md) §5) y las dos
+que siguen siendo deuda futura, en [`docs/ideas-futuras.md`](ideas-futuras.md). Entre ellas la
+**observación del Owner** del escenario 2 —**CORRIDA GAP STORAGE**: una entrada de topología creada sólo
+para guardar el fondo de una corrida fija el default vigente al escribirla; hoy no es observable porque
+ningún camino de producción cambia el default—, que queda **registrada y no implementada** por decisión
+del dueño.
+
+**[ADR-0031](adr/0031-push-back-compuesto-estructura-unica-y-configuracion-por-lado.md) queda
+`aceptado`** por el dueño con el modelo implementado y sus seis limitaciones. A partir de aquí su
+contenido es **inmutable**.
+
+---
+
+#### I-41 (integrada el 2026-08-23, previa a I-42)
 
 **I-41 — Configuración por celda de Push Back quedó integrada el 2026-08-23** con merge `--no-ff`
 **`a28c9b73965f528ffbf3c2cd893e52da36995063`** (padres `43181a3` y `638c009`), sobre el candidato
@@ -2029,7 +2144,27 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-41 — 2026-08-23** (la vigente):
+**Baseline integrada de I-42 — 2026-09-02** (la vigente):
+
+- candidato **funcional** aprobado por el Owner: `077d35ad418615bed4c1d8375ea9cfc0de9fca24`
+  (CI run `33578565581`, **success** en los cuatro jobs). El SHA final de rama difiere del aprobado
+  **sólo en documentación de cierre**;
+- **merge `--no-ff`**: el SHA queda registrado en el commit de registro sobre `main`;
+- `origin/main` **no avanzó** desde la base `088c7b9abac4bb024369238cac6abce8c871b104`: **sin rebase
+  final**, de modo que la validación manual corresponde exactamente al contenido integrado;
+- **validación manual del Owner en AutoCAD 2025: APROBADA — 8/8 escenarios** (retícula compartida;
+  corrida y hueco; restauración con B dormido; despertar fallido; edición confirmada sin recalcular;
+  `RACKEDITAR`; restauración, rangos no anidados y seguridad de los dos pasillos; bloqueo de salidas),
+  con el escenario 2 **APROBADO CON OBSERVACIÓN** no bloqueante (**CORRIDA GAP STORAGE**, registrada y
+  **no** implementada por decisión del dueño);
+- **ocho rondas rechazadas** antes de la aprobación (`6c9f778`, `e90442a`, `3b55ca7`, `36fe5d3`,
+  `67a24d0`, `d6e6372`, `5a73b92`, `82e918b`), todas corregidas en la misma rama;
+- suites locales sobre el HEAD de rama: **RackCad.Tests 4403/4403** y **RackCad.UI.Tests 1070 correctas /
+  17 omitidas / 1087 totales**; Debug de UI y del Plugin con **0 errores** (sólo los MSB3277 conocidos);
+- **[ADR-0031](adr/0031-push-back-compuesto-estructura-unica-y-configuracion-por-lado.md) `aceptado`**
+  por el dueño.
+
+**Baseline integrada de I-41 — 2026-08-23** (previa):
 
 - candidato **funcional** aprobado por el Owner: `c41aee1b8bcbfc0d6fed7a38b8c4767538648cd2`
   (CI run `32627802845`, **success**). El SHA final de rama difiere del aprobado **solo en documentación
@@ -3070,3 +3205,11 @@ implementado**, tras validar manualmente en AutoCAD 2025 el DLL construido exact
 `c41aee1b8bcbfc0d6fed7a38b8c4767538648cd2`, e **incluye expresamente la limitación declarada**: el corte
 lateral **NO seccionado** no dibuja tarimas, por ser una envolvente y no una celda. Su contenido es
 **inmutable** desde ahora; solo pueden cambiar su Estado y sus enlaces.
+
+**ADR-0031 — el Push Back compuesto tiene UNA estructura física y DOS configuraciones funcionales —
+`aceptado` el 2026-09-02** (iniciativa I-42). El dueño la acepta **con el modelo tal como quedó
+implementado**, tras validar manualmente en AutoCAD 2025 el DLL construido exactamente desde
+`077d35ad418615bed4c1d8375ea9cfc0de9fca24` con veredicto **8/8 escenarios**, e **incluye expresamente sus
+seis limitaciones declaradas**, entre ellas la observación no bloqueante del escenario 2 (**CORRIDA GAP
+STORAGE**), que queda registrada y **no** implementada. Su contenido es **inmutable** desde ahora; sólo
+pueden cambiar su Estado y sus enlaces.

@@ -1,7 +1,13 @@
+using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Drawing;
 using RackCad.Domain.Systems.Dynamic;
+
+using System;
+
+using System.Globalization;
 
 namespace RackCad.Application.Systems.PushBack
 {
@@ -59,6 +65,87 @@ namespace RackCad.Application.Systems.PushBack
             => (plan?.Headers ?? new List<HeaderGroup>()).Where(KeepHeaderGroup).ToList();
 
         /// <summary>The structural loose instances of <paramref name="plan"/> (dynamic ends/bed/safety/intermediates removed).</summary>
+        /// <summary>
+        /// La identidad FISICA de una pieza ya colocada: que es, donde esta, con que mano y con que rotacion.
+        ///
+        /// <para>
+        /// Es la clave con la que una PROYECCION —un corte lateral, una planta— decide si dos instancias son la
+        /// misma pieza. Vive aqui, y no en cada builder, porque el compositor del rack compuesto y el camino de un
+        /// solo sentido tienen que usar exactamente la misma: si difirieran, una vista deduplicaria lo que la otra
+        /// dibuja dos veces.
+        /// </para>
+        /// </summary>
+        public static string PhysicalKey(HeaderBlockInstance instance)
+            => instance == null
+                ? string.Empty
+                : string.Join(
+                    "|",
+                    instance.PieceId,
+                    instance.Insertion.X.ToString("0.####", CultureInfo.InvariantCulture),
+                    instance.Insertion.Y.ToString("0.####", CultureInfo.InvariantCulture),
+                    instance.MirroredX,
+                    instance.MirroredY,
+                    instance.RotationRadians.ToString("0.######", CultureInfo.InvariantCulture));
+
+        /// <summary>La identidad FISICA de un GRUPO: su definicion anidada y donde se coloca.</summary>
+        public static string PhysicalKey(HeaderGroup group)
+            => group == null
+                ? string.Empty
+                : "GRUPO|" + string.Join(
+                    ";",
+                    group.Instances.Select(PhysicalKey).Concat(
+                        group.Placements.Select(placement => string.Join(
+                            "|",
+                            placement.InsertionX.ToString("0.####", CultureInfo.InvariantCulture),
+                            placement.InsertionY.ToString("0.####", CultureInfo.InvariantCulture),
+                            placement.Mirrored))));
+
+        /// <summary>
+        /// Un corte es una PROYECCION y dibuja cada cosa UNA vez.
+        ///
+        /// <para>
+        /// Un corte muestra todos los frentes que su linea sostiene, y dos frentes contiguos proyectan sus piezas
+        /// comunes EXACTAMENTE una encima de otra — el larguero de entrada de dos frentes que arrancan en la misma
+        /// posicion, por ejemplo. Dibujar las dos deja bloques superpuestos en el DWG, que es lo que el dueño ve
+        /// como «doble larguero». Las ANOTACIONES y las COTAS no se tocan: dos etiquetas iguales en el mismo sitio
+        /// son un problema distinto y las emite otro pipeline.
+        /// </para>
+        /// <para>
+        /// No afecta a ningun conteo: el BOM cuenta CAMAS y piezas del modelo, nunca instancias de una vista.
+        /// </para>
+        /// </summary>
+        public static HeaderRunPlan DeduplicateProjection(
+            IEnumerable<HeaderGroup> headers, IEnumerable<HeaderBlockInstance> loose)
+        {
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var groups = new List<HeaderGroup>();
+            foreach (var group in headers ?? Enumerable.Empty<HeaderGroup>())
+            {
+                if (group != null && seen.Add(PhysicalKey(group)))
+                {
+                    groups.Add(group);
+                }
+            }
+
+            var instances = new List<HeaderBlockInstance>();
+            foreach (var instance in loose ?? Enumerable.Empty<HeaderBlockInstance>())
+            {
+                if (instance == null)
+                {
+                    continue;
+                }
+
+                var decoration = instance.Role == HeaderBlockRole.Annotation
+                    || instance.Role == HeaderBlockRole.Dimension;
+                if (decoration || seen.Add(PhysicalKey(instance)))
+                {
+                    instances.Add(instance);
+                }
+            }
+
+            return new HeaderRunPlan(groups, instances);
+        }
+
         public static List<HeaderBlockInstance> StructuralLoose(HeaderRunPlan plan)
             => (plan?.LooseInstances ?? new List<HeaderBlockInstance>()).Where(KeepLoose).ToList();
     }

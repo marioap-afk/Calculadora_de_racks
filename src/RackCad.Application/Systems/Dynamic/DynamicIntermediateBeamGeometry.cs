@@ -10,14 +10,28 @@ namespace RackCad.Application.Systems.Dynamic
     /// <summary>One logical internal post that receives exactly one intermediate support beam.</summary>
     public readonly struct DynamicIntermediateBeamSupport
     {
-        public DynamicIntermediateBeamSupport(double postAxisX, bool mirrored)
+        public DynamicIntermediateBeamSupport(double postAxisX, bool mirrored, double boundaryX)
         {
             PostAxisX = postAxisX;
             Mirrored = mirrored;
+            BoundaryX = boundaryX;
         }
 
+        /// <summary>Donde se DIBUJA el apoyo: el eje del poste, que en uno derivado y reforzado no es su frontera.</summary>
         public double PostAxisX { get; }
+
         public bool Mirrored { get; }
+
+        /// <summary>
+        /// La FRONTERA DE MODULOS a la que pertenece este apoyo — su identidad fisica.
+        ///
+        /// <para>
+        /// En un poste derivado y REFORZADO el eje dibujado no cae en la frontera: FIN_POSTE es la interfaz donde
+        /// acaba el perfil primario y empieza el refuerzo, asi que el primario arranca una <c>finPoste.X</c> antes.
+        /// Preguntar «¿este apoyo esta dentro de la cama?» por el eje dibujado da la respuesta equivocada justo ahi.
+        /// </para>
+        /// </summary>
+        public double BoundaryX { get; }
     }
 
     /// <summary>
@@ -153,6 +167,53 @@ namespace RackCad.Application.Systems.Dynamic
                    .Max()
                ?? DynamicRackDefaults.DefaultIntermediateBeamDepth;
 
+        /// <summary>Cuanto puede separarse la insercion de una pieza del final de su modulo (in).</summary>
+        private const double BoundaryTolerance = 1.0;
+
+        /// <summary>
+        /// LA MANO de un larguero apoyado en una frontera de modulos: la decide el modulo que TERMINA ahi. Si es una
+        /// CABECERA el larguero va espejado; si es un vano, en su orientacion normal.
+        ///
+        /// <para>
+        /// Es la regla que este builder ya aplicaba a los largueros INTERMEDIOS, extraida para que pueda
+        /// CONSUMIRSE. I-42 (correccion aislada 5B): el larguero de salida de una cama Push Back debe tener
+        /// exactamente la orientacion que tendria un intermedio en esa misma posicion fisica, asi que consume ESTA
+        /// funcion en vez de tener una regla propia. Una sola decision, dos consumidores.
+        /// </para>
+        /// </summary>
+        public static bool HandAtBoundary(DynamicRackModule moduleEndingThere)
+            => moduleEndingThere != null && moduleEndingThere.IsHeader;
+
+        /// <summary>
+        /// La mano de un larguero apoyado EN LA POSICION FISICA <paramref name="x"/>: la del modulo que termina ahi.
+        /// Null cuando ningun modulo acaba en esa X, y entonces quien pregunta conserva lo que traia — nunca se
+        /// inventa una orientacion.
+        ///
+        /// <para>
+        /// La tolerancia es de una pulgada porque se compara la INSERCION de una pieza contra el final de un modulo:
+        /// el bloque se apoya en esa frontera pero su punto de insercion lleva el pequeño desplazamiento del mate.
+        /// Con modulos de decenas de pulgadas no hay ambiguedad.
+        /// </para>
+        /// </summary>
+        public static bool? HandAtDepthX(DynamicRackSystem system, double x)
+        {
+            var modules = system?.Modules;
+            if (modules == null)
+            {
+                return null;
+            }
+
+            foreach (var module in modules)
+            {
+                if (Math.Abs(module.EndX - x) <= BoundaryTolerance)
+                {
+                    return HandAtBoundary(module);
+                }
+            }
+
+            return null;
+        }
+
         public static IReadOnlyList<DynamicIntermediateBeamSupport> Supports(DynamicRackSystem system, Point2D finPoste)
             => Supports(system, finPoste, null);
 
@@ -175,14 +236,14 @@ namespace RackCad.Application.Systems.Dynamic
             {
                 var previous = modules[index - 1];
                 var current = modules[index];
-                var mirrored = previous.IsHeader;
+                var mirrored = HandAtBoundary(previous);
                 var postAxisX = !previous.IsHeader && !current.IsHeader
                     ? DynamicDerivedPostGeometry.Resolve(
                         current.StartX,
                         system.DerivedPostReinforced,
                         finPoste).PrimaryOrigin.X
                     : current.StartX;
-                result.Add(new DynamicIntermediateBeamSupport(postAxisX, mirrored));
+                result.Add(new DynamicIntermediateBeamSupport(postAxisX, mirrored, current.StartX));
             }
 
             return result;

@@ -23,6 +23,9 @@ namespace RackCad.Plugin.KindHandlers
             return header == null ? null : BomBuilder.Build(header, catalog);
         }
 
+        /// <summary>La cabecera no publica diagnosticos bloqueantes propios: su salida no se filtra aqui (I-42/H11).</summary>
+        public string OutputBlockedReason(RackEmbedDocument embed, RackCatalog catalog) => null;
+
         public string RestampDesign(string designJson, string newId, string copyName)
         {
             var store = new RackProjectStore();

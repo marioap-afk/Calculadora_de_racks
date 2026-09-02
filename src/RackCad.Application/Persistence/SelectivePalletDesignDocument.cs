@@ -323,6 +323,59 @@ namespace RackCad.Application.Persistence
         public int? ParrillaCantidad { get; set; }
         public List<GridCellDocument> ParrillaOffCells { get; set; }
 
+        /// <summary>
+        /// I-42 (S1B) — BOTA: la colocacion general elegida (nulo = la resuelve el sistema) y los postes con
+        /// decision propia. Aditivo: un documento anterior no los trae y se lee por su <see cref="Side"/> historico,
+        /// cuya intencion es la misma (Izquierda = entrada/salida, Derecha = posterior).
+        /// </summary>
+        public int? BotaPlacement { get; set; }
+
+        public List<BootPostDocument> BotaPosts { get; set; }
+
+        /// <summary>
+        /// I-42 (S1E) — BOTA del LADO B de un rack compuesto: su propia colocacion general y sus propios postes.
+        /// Aditivo y nulo por omision: un documento anterior no los trae, y entonces su unica configuracion se lee
+        /// como la del lado A —que es como se dibujaba— y el lado B no pide nada.
+        /// </summary>
+        public int? BotaBPlacement { get; set; }
+
+        public List<BootPostDocument> BotaBPosts { get; set; }
+
+        /// <summary>
+        /// I-42 (S1E) — true cuando este documento declara las botas POR LADO. Ausente = documento anterior, cuya
+        /// unica configuracion se lee como la del lado A y deja el lado B sin pedir nada, que es como se dibujaba.
+        /// </summary>
+        public bool? BotaSidesDeclared { get; set; }
+
+        /// <summary>
+        /// I-42 (S1G) — el TIPO de pieza de cada lado. Ausente = ese lado nunca lo eligio y hereda el del documento
+        /// (<see cref="ElementId"/>), que es como se guardaba antes: un documento anterior abre con la misma pieza
+        /// en los dos lados y dibuja exactamente lo que dibujaba.
+        /// </summary>
+        public string BotaPieceId { get; set; }
+
+        public string BotaBPieceId { get; set; }
+
+        /// <summary>
+        /// I-42 (A1/B1) — el lado que el USUARIO eligio, antes de que la restriccion de extremo de un sistema lo
+        /// colapse. Ausente = documento anterior, que se lee por <see cref="Side"/> como siempre.
+        ///
+        /// <para>
+        /// Sin el, un rack compuesto guardado SIN abrir «Elementos de seguridad» persistia el lado ya colapsado
+        /// —«Izquierda»— y al reabrirlo parecia un documento antiguo con una decision global explicita: el lado B
+        /// perdia su configuracion automatica y sus botas desaparecian del dibujo y del BOM.
+        /// </para>
+        /// </summary>
+        public int? AuthoredSide { get; set; }
+
+        /// <summary>
+        /// I-42 (A1/H8) — los postes cuya entrada en <see cref="PostSides"/> la escribio una regla DERIVADA (los
+        /// pasillos de carga que el rack tiene ahora), con el valor que el usuario tenia ahi. No se persiste el
+        /// derivado: se persiste lo que el usuario habia decidido, para que degradar un compuesto a un solo sentido
+        /// no deje un lado rancio que mueva el desviador al extremo alto.
+        /// </summary>
+        public List<PostSideDocument> DerivedAisles { get; set; }
+
         /// <summary>Shared explicit mapping used by every rack system that composes the safety subsystem. The wire
         /// format is a FLAT record (unchanged, and shared with the dynamic path); each family flattens its own DTO
         /// (I-22, E7 — <see cref="TopeSelectionDocument"/> and siblings) into these flat properties and reads it back
@@ -334,8 +387,8 @@ namespace RackCad.Application.Persistence
                 ElementId = selection.ElementId,
                 Quantity = selection.Quantity,
                 Side = (int)selection.Side,
-                PostSides = selection.PostSides.Where(p => p != null)
-                    .Select(p => new PostSideDocument { PostIndex = p.PostIndex, Side = (int)p.Side }).ToList()
+                AuthoredSide = selection.AuthoredSide.HasValue ? (int)selection.AuthoredSide.Value : (int?)null,
+                PostSides = AuthoredPostSides(selection)
             };
 
             TopeSelectionDocument.From(selection.Tope).WriteInto(document);
@@ -343,8 +396,55 @@ namespace RackCad.Application.Persistence
             DefensaSelectionDocument.From(selection.Defensa).WriteInto(document);
             GuiaSelectionDocument.From(selection.Guia).WriteInto(document);
             ParrillaSelectionDocument.From(selection.Parrilla).WriteInto(document);
+            document.BotaPlacement = selection.Bota.Placement.HasValue ? (int)selection.Bota.Placement.Value : (int?)null;
+            document.BotaPosts = BootPosts(selection.Bota);
+            document.BotaBPlacement = selection.BotaB.Placement.HasValue
+                ? (int)selection.BotaB.Placement.Value
+                : (int?)null;
+            document.BotaBPosts = BootPosts(selection.BotaB);
+            document.BotaSidesDeclared = selection.BootSidesDeclared ? true : (bool?)null;
+            document.BotaPieceId = selection.Bota.PieceId;
+            document.BotaBPieceId = selection.BotaB.PieceId;
             return document;
         }
+
+        /// <summary>
+        /// La matriz por poste TAL Y COMO EL USUARIO LA DEJO: las entradas que una regla derivada escribio se
+        /// devuelven a su valor autorado, y las que esa regla creo no se guardan.
+        /// </summary>
+        private static List<PostSideDocument> AuthoredPostSides(SelectiveSafetySelection selection)
+        {
+            var derived = selection.DerivedAisles.Where(entry => entry != null).ToList();
+            var result = new List<PostSideDocument>();
+            foreach (var post in selection.PostSides.Where(entry => entry != null))
+            {
+                var overwritten = derived.FirstOrDefault(entry => entry.PostIndex == post.PostIndex);
+                if (overwritten == null)
+                {
+                    result.Add(new PostSideDocument { PostIndex = post.PostIndex, Side = (int)post.Side });
+                    continue;
+                }
+
+                if (overwritten.Authored.HasValue)
+                {
+                    result.Add(new PostSideDocument
+                    {
+                        PostIndex = post.PostIndex,
+                        Side = (int)overwritten.Authored.Value,
+                    });
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>Los postes con decision propia de un lado, o NULL cuando no hay ninguno.</summary>
+        private static List<BootPostDocument> BootPosts(SelectiveBotaConfig config)
+            => config == null || config.Posts.Count == 0
+                ? null
+                : config.Posts.Where(post => post != null)
+                    .Select(post => new BootPostDocument { PostIndex = post.PostIndex, Placement = (int)post.Placement })
+                    .ToList();
 
         /// <summary>Version-tolerant domain mapping. Each family reconstructs its own config subtype from its DTO, with
         /// the exact legacy fallback for a missing field (I-22, E7).</summary>
@@ -355,6 +455,9 @@ namespace RackCad.Application.Persistence
                 ElementId = ElementId,
                 Quantity = Quantity,
                 Side = SafetyDocumentMapping.ToSafetySide(Side),
+                AuthoredSide = AuthoredSide.HasValue
+                    ? SafetyDocumentMapping.ToSafetySide(AuthoredSide.Value)
+                    : (SafetySide?)null,
                 Tope = TopeSelectionDocument.ReadFrom(this).ToDomain(),
                 Desviador = DesviadorSelectionDocument.ReadFrom(this).ToDomain(),
                 Defensa = DefensaSelectionDocument.ReadFrom(this).ToDomain(),
@@ -370,9 +473,55 @@ namespace RackCad.Application.Persistence
                 }
             }
 
+            // I-42 (S1B): la colocacion de la bota. Ausente = documento anterior, que se lee por su lado historico.
+            if (BotaPlacement.HasValue && Enum.IsDefined(typeof(BootPlacement), BotaPlacement.Value))
+            {
+                selection.Bota.Placement = (BootPlacement)BotaPlacement.Value;
+            }
+
+            BootPostDocumentMapping.Read(BotaPosts, selection.Bota);
+
+            // I-42 (S1E): y la del lado B, si el documento la trae. Ausente = documento anterior a S1E.
+            if (BotaBPlacement.HasValue && Enum.IsDefined(typeof(BootPlacement), BotaBPlacement.Value))
+            {
+                selection.BotaB.Placement = (BootPlacement)BotaBPlacement.Value;
+            }
+
+            BootPostDocumentMapping.Read(BotaBPosts, selection.BotaB);
+            selection.BootSidesDeclared = BotaSidesDeclared ?? false;
+            selection.Bota.PieceId = BotaPieceId;
+            selection.BotaB.PieceId = BotaBPieceId;
+
             return selection;
         }
 
+    }
+
+    /// <summary>I-42 (S1B) — la colocacion de bota que UN poste declara por su cuenta.</summary>
+    public static class BootPostDocumentMapping
+    {
+        /// <summary>Vuelca los postes de un lado en su configuracion, ignorando lo que no sea un valor valido.</summary>
+        public static void Read(IEnumerable<BootPostDocument> posts, SelectiveBotaConfig config)
+        {
+            foreach (var post in posts ?? Enumerable.Empty<BootPostDocument>())
+            {
+                if (post != null && post.PostIndex >= 0 && Enum.IsDefined(typeof(BootPlacement), post.Placement))
+                {
+                    config.Posts.Add(new BootPostPlacement
+                    {
+                        PostIndex = post.PostIndex,
+                        Placement = (BootPlacement)post.Placement,
+                    });
+                }
+            }
+        }
+    }
+
+    public sealed class BootPostDocument
+    {
+        public int PostIndex { get; set; }
+
+        public int Placement { get; set; }
     }
 
     /// <summary>A serialized (frente, level) cell — a tope cell that is turned off.</summary>

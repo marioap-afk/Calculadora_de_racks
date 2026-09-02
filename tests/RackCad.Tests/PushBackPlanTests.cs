@@ -76,18 +76,17 @@ namespace RackCad.Tests
             var system = System(catalog);
             var instances = new PushBackSystemLateralBuilder().Build(system, catalog).Flatten().Instances;
 
-            // PB-004 (I-32, regla del Owner tras el round 1): el POSTERIOR es el ancla y conserva la elevación de
-            // entrada que ajustó el resolver; el de ENTRADA/SALIDA se DERIVA de él y se ajusta a su propio troquel, así
-            // que ya no coincide con la elevación de salida del resolver.
+            // Decisión FINAL del dueño: el de ENTRADA/SALIDA es el ancla y conserva la elevación de salida que
+            // ajustó el resolver; el POSTERIOR se DERIVA de él con la pendiente sobre la longitud real de la cama, así
+            // que ya no tiene por qué coincidir con la elevación de entrada del resolver.
             var front0 = system.Structure.Fronts[0];
             var lowElevations = PushBackLoadBeamGeometry.LowBeamElevations(system, catalog, front0);
             var exitYs = system.Structure.LoadBeamLevels
                 .Select(l => Math.Round(lowElevations[l.LevelNumber], 3)).OrderBy(y => y).ToList();
+            // El posterior se DERIVA, asi que su elevacion la da la autoridad de elevaciones, no el resolver.
+            var highElevations = PushBackElevations.HighInsertions(system, catalog, front0);
             var entranceYs = system.Structure.LoadBeamLevels
-                .Select(l =>
-                {
-                    return Math.Round(l.EntranceElevation, 3);
-                })
+                .Select(l => Math.Round(highElevations[l.LevelNumber], 3))
                 .OrderBy(y => y).ToList();
 
             var lowYs = instances.Where(i => i.PieceId == InOut).Select(i => Math.Round(i.Insertion.Y, 3)).OrderBy(y => y).ToList();
@@ -134,20 +133,27 @@ namespace RackCad.Tests
             var level0 = system.Structure.LoadBeamLevels[0];
             var axis0 = axes.First(a => a.LevelNumber == 1);
 
-            // El extremo BAJO también es un contacto real, pero de un larguero DERIVADO del alto y ajustado a su
-            // troquel: por eso ya no coincide con la elevación de salida del resolver.
+            // El extremo BAJO es el ANCLA: su contacto se mide sobre la elevación que el resolver le dio, sin
+            // corrección alguna.
             Assert.Equal(0.0 + lowCama.X, axis0.ExitMate.X, 3);
             var lowElevations = PushBackLoadBeamGeometry.LowBeamElevations(system, catalog, system.Structure.Fronts[0]);
+            Assert.Equal(lowElevations[axis0.LevelNumber], level0.ExitElevation, 9);
             Assert.Equal(lowElevations[axis0.LevelNumber] + lowCama.Y, axis0.ExitMate.Y, 9);
-            // PB-004 (I-32, regla vigente): el extremo ALTO es el ANCLA y su contacto es la arista que elige la
-            // GEOMETRÍA entre las dos medidas del bloque —la de mayor X en mundo—, no un lado fijo del catálogo. Con
-            // el larguero espejado esa arista es INICIO_IZQUIERDO, no INICIO_DERECHO.
+
+            // El extremo ALTO se DERIVA del bajo, así que su elevación la da la autoridad de elevaciones y no el
+            // resolver. Su contacto es la arista que elige la GEOMETRÍA entre las dos medidas del bloque —la de
+            // mayor X en mundo—, no un lado fijo del catálogo: con el larguero espejado esa arista es
+            // INICIO_IZQUIERDO, no INICIO_DERECHO.
+            var highElevations = PushBackElevations.HighInsertions(system, catalog, system.Structure.Fronts[0]);
             var rearEdge = PushBackLoadBeamGeometry.RearBeamTangencyPointWorld(
-                catalog, Redondo, system.TotalLength, level0.EntranceElevation, mirroredX: true);
+                catalog, Redondo, system.TotalLength, highElevations[axis0.LevelNumber], mirroredX: true);
             Assert.True(rearEdge.HasValue);
             Assert.Equal(rearEdge.Value.X, axis0.HighMate.X, 6);
             Assert.Equal(rearEdge.Value.Y, axis0.HighMate.Y, 6);
-            Assert.Equal(level0.EntranceElevation + highInicio.Y, axis0.HighMate.Y, 3);
+            Assert.Equal(highElevations[axis0.LevelNumber] + highInicio.Y, axis0.HighMate.Y, 3);
+            Assert.True(
+                highElevations[axis0.LevelNumber] > lowElevations[axis0.LevelNumber],
+                "la cama tiene que subir del extremo bajo al alto");
             Assert.True(axis0.HighMate.X > axis0.ExitMate.X); // bed runs low(left) -> high(right)
         }
 

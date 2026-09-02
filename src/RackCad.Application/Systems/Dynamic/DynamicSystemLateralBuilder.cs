@@ -71,11 +71,49 @@ namespace RackCad.Application.Systems.Dynamic
             var sectionHeight = sectioned
                 ? DynamicFrontGeometry.PostHeight(system, postIndex)
                 : DynamicFrontGeometry.Height(system);
-            var sectionRange = sectioned
-                ? DynamicDepthGeometry.AtPost(system, postIndex)
-                : new DynamicDepthRange(1, system.PalletsDeep);
+            // Un CORTE dibuja la estructura de SU linea, asi que respeta su cobertura: si un frente compuesto no
+            // usa una parte de la profundidad, alli no hay cabecera que dibujar (I-42, error 4). El lateral general
+            // sigue siendo la envolvente del rack entero.
+            var sectionCoverage = sectioned
+                ? DynamicDepthGeometry.CoverageAtPost(system, postIndex)
+                : new DynamicDepthCoverage(new[] { new DynamicDepthRange(1, system.PalletsDeep) });
+            var sectionRange = new DynamicDepthRange(
+                sectionCoverage.StartPosition,
+                sectionCoverage.EndPosition - sectionCoverage.StartPosition + 1);
             var context = Resolve(system, catalog, sectionHeight, postIndex);
             var loose = new List<HeaderBlockInstance>();
+
+            // I-42 (ronda 6D) — el contexto de altura POR TRAMO DE PROFUNDIDAD. Separadores y postes derivados
+            // cuelgan de la altura de la cabecera que tienen al lado, y en un rack compuesto esa altura cambia a la
+            // mitad de la profundidad: la primera mitad es del lado A y la segunda del B. Sin zonas declaradas hay
+            // un solo contexto y es el de siempre, asi que el Dinamico no cambia ni un bit.
+            var contextsByHeight = new Dictionary<double, HeaderContext> { [context.Height] = context };
+            HeaderContext ContextAt(double x)
+            {
+                if (system.HeaderHeightZones.Count == 0)
+                {
+                    return context;
+                }
+
+                // I-42 (A1B-D6): el lateral GENERAL tampoco puede usar una altura aplanada. No representa una linea,
+                // asi que su altura en una profundidad es la ENVOLVENTE de esa zona; un corte si tiene linea y
+                // pregunta por ella. Las dos leen la misma autoridad, y sin zonas ninguna de las dos cambia.
+                var height = sectioned
+                    ? DynamicFrontGeometry.PostHeightAt(system, postIndex, x)
+                    : DynamicFrontGeometry.HeightAt(system, x);
+                if (height <= 0.0 || Math.Abs(height - context.Height) < 1e-6)
+                {
+                    return context;
+                }
+
+                if (!contextsByHeight.TryGetValue(height, out var zoned))
+                {
+                    zoned = Resolve(system, catalog, height, postIndex);
+                    contextsByHeight[height] = zoned;
+                }
+
+                return zoned;
+            }
 
             // Group identical headers so each distinct header becomes one shared block definition; record the
             // placements (with a mirror flag) where each is used. Consecutive headers alternate (mirror) so the
@@ -84,13 +122,18 @@ namespace RackCad.Application.Systems.Dynamic
             var order = new List<string>();
             var headerOrdinal = 0;
 
-            foreach (var module in DynamicDepthGeometry.ModulesInRange(system, sectionRange))
+            foreach (var module in DynamicDepthGeometry.ModulesInCoverage(system, sectionCoverage))
             {
                 if (module.IsHeader && module.AssociatedFrameConfiguration != null)
                 {
+                    // I-42 (A3-H3R): las DOS vistas preguntan por la configuracion EFECTIVA de la cabecera; lo
+                    // unico que cambia es la pregunta de altura —la linea en el corte, la envolvente de la zona en
+                    // el general—. Tomar aqui el objeto asociado tal cual dibujaba la altura que tenia ANTES de que
+                    // se resolviera la demanda por zona, de modo que la misma cabecera fisica salia con una altura
+                    // en el lateral general y con otra en su corte y en el BOM.
                     var configuration = sectioned
                         ? DynamicFrontGeometry.HeaderConfigurationAtPost(system, module, catalog, postIndex)
-                        : module.AssociatedFrameConfiguration;
+                        : DynamicFrontGeometry.HeaderConfigurationAt(system, module, catalog);
 
                     // Build the header and key the group on the resulting geometry, so two headers share a
                     // definition only when their drawing is truly identical (any edit separates them).
@@ -114,10 +157,11 @@ namespace RackCad.Application.Systems.Dynamic
                 }
                 else if (module.Kind == DynamicRackModuleKind.Separator && module.Length > 0.0 && context.SeparatorBlock != null)
                 {
-                    foreach (var level in context.Levels)
+                    var separatorContext = ContextAt(0.5 * (module.StartX + module.EndX));
+                    foreach (var level in separatorContext.Levels)
                     {
                         loose.Add(MakeSeparator(
-                            context,
+                            separatorContext,
                             module.StartX,
                             module.Length,
                             level,
@@ -132,11 +176,11 @@ namespace RackCad.Application.Systems.Dynamic
             var rangeEndX = system.Modules.FirstOrDefault(module => module.Index + 1 == sectionRange.EndPosition)?.EndX ?? system.TotalLength;
             foreach (var offset in system.GetDerivedPostOffsets().Where(offset => offset > rangeStartX && offset < rangeEndX))
             {
-                AddDerivedPost(loose, context, offset, context.ReinforceDerivedPost);
+                AddDerivedPost(loose, ContextAt(offset), offset, context.ReinforceDerivedPost);
             }
-            foreach (var offset in DynamicDepthGeometry.BoundaryPostOffsets(system, sectionRange))
+            foreach (var offset in DynamicDepthGeometry.BoundaryPostOffsets(system, sectionCoverage))
             {
-                AddDerivedPost(loose, context, offset, reinforced: false);
+                AddDerivedPost(loose, ContextAt(offset), offset, reinforced: false);
             }
 
             var intermediateBeams = intermediateBeamBuilder.Build(system, catalog, postIndex, levelCount);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RackCad.Domain.Systems.Selective;
 
@@ -22,12 +23,34 @@ namespace RackCad.Domain.Systems.PushBack
         /// </summary>
         public string PieceId { get; set; }
 
+        /// <summary>
+        /// I-42 (ronda 7C, defecto del dueño) — «NINGUNO»: el valor EXPLICITO de <see cref="PieceId"/> que dice que
+        /// este objetivo NO lleva tope posterior. Hasta ahora la unica forma de quitarlo era apagar celda por celda,
+        /// y no habia manera de decirlo de una vez ni de leerlo despues: la ausencia se confundia con «todavia no lo
+        /// he tocado». Es un valor persistido como cualquier otro id, asi que sobrevive a guardar y a RACKEDITAR.
+        ///
+        /// Los parentesis lo mantienen fuera del espacio de ids del catalogo, que no los usa.
+        /// </summary>
+        public const string NonePieceId = PushBackDefaults.NonePieceId;
+
+        /// <summary>True cuando el usuario eligio «Ninguno» para este objetivo.</summary>
+        public bool IsNone => !string.IsNullOrWhiteSpace(PieceId)
+                              && string.Equals(PieceId.Trim(), NonePieceId, StringComparison.OrdinalIgnoreCase);
+
         /// <summary>The (front, level) cells with NO rear tope (default empty = a tope at every front x level).</summary>
         public IList<SelectiveGridCell> OffCells { get; } = new List<SelectiveGridCell>();
 
         /// <summary>True if a rear tope is drawn at (<paramref name="front"/>, <paramref name="level"/>) — i.e. that cell
         /// is not deactivated. The default (empty <see cref="OffCells"/>) materializes every cell as active.</summary>
         public bool At(int front, int level) => !SelectiveSafetyCells.Contains(OffCells, front, level);
+
+        /// <summary>
+        /// LA pregunta fisica: ¿se materializa un tope en esta celda? Es <see cref="At"/> mas la decision de
+        /// objetivo <see cref="IsNone"/>, y es la que consumen el dibujo y el BOM —los dos, para que no puedan
+        /// discrepar—. El editor sigue leyendo <see cref="At"/>: la mascara por celda es del usuario y «Ninguno» no
+        /// la borra, asi que volver a elegir una pieza devuelve exactamente las celdas que habia.
+        /// </summary>
+        public bool Draws(int front, int level) => !IsNone && At(front, level);
 
         /// <summary>Deactivate the rear tope at (<paramref name="front"/>, <paramref name="level"/>); no-op if already off.</summary>
         public void Disable(int front, int level)

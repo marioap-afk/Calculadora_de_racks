@@ -55,14 +55,10 @@ namespace RackCad.Application.Systems.Dynamic
                     intermediateId,
                     Positive(requested?.IntermediateBeamDepth, legacyDepth),
                     DynamicRackDefaults.DefaultIntermediateBeamDepth);
-                var manualLength = PositiveNullable(requested?.BeamLengthOverride)
-                                   ?? PositiveNullable(frontDesign?.BeamLengthOverride);
+                var manualLength = ManualBeamLength(requested, frontDesign);
                 var bfr = DynamicFrontGeometry.Bfr(palletFront);
-                var beamLength = manualLength
-                                 ?? DynamicFrontGeometry.AutoBeamLength(
-                                     palletFront,
-                                     Math.Max(1, front.PalletCount),
-                                     design.PalletTolerance);
+                var beamLength = EffectiveBeamLengthDemand(
+                    design, frontDesign, requested, Math.Max(1, front.PalletCount));
 
                 result.Add(new DynamicRackLevel
                 {
@@ -224,6 +220,77 @@ namespace RackCad.Application.Systems.Dynamic
             return fallback > 0.0
                 ? fallback
                 : allowed.FirstOrDefault() > 0.0 ? allowed[0] : Math.Max(preferredFallback, requested);
+        }
+
+        /// <summary>
+        /// El ancho manual de un nivel: el suyo si lo tiene, y si no el del frente. Es la PRECEDENCIA, dicha una
+        /// sola vez.
+        /// </summary>
+        public static double? ManualBeamLength(
+            DynamicRackLevelDesign level, DynamicRackFrontDesign frontDesign)
+            => PositiveNullable(level?.BeamLengthOverride) ?? PositiveNullable(frontDesign?.BeamLengthOverride);
+
+        /// <summary>
+        /// I-42 (A3-G2, contrato del dueño) — LA DEMANDA TRANSVERSAL EFECTIVA DE UN NIVEL: lo que ese nivel exige
+        /// que mida su bahia.
+        ///
+        /// <para>
+        /// Es exactamente la regla que <see cref="Resolve"/> aplicaba dentro de su bucle —override de la celda, si
+        /// no el del frente, si no el ancho automatico de sus calles— extraida para que exista UNA definicion de
+        /// «cuanto mide este nivel». El resolver dinamico la consume, y el compositor de Push Back tambien: es lo
+        /// que impide que un rack compuesto y sus dos marcos locales no coincidan sobre el mismo dato fisico.
+        /// </para>
+        /// </summary>
+        public static double EffectiveBeamLengthDemand(
+            DynamicRackDesign design,
+            DynamicRackFrontDesign frontDesign,
+            DynamicRackLevelDesign level,
+            int palletCount)
+        {
+            // I-42 (A4-GRID, contrato del dueño) — el SUELO fisico de la bahia entra en la demanda de CADA nivel.
+            //
+            // El override de una celda es intencion LOCAL de ese nivel, no un limite superior del rack: si todos
+            // los niveles resueltos de un lado lo tienen, ese lado dejaba de ver la envolvente compartida —que
+            // viajaba como override de FRENTE, y la celda tiene precedencia sobre el frente— y su marco local se
+            // quedaba con el mayor de sus celdas. Medido: con A en 90"/95" y B pidiendo 125", la compuesta ponia su
+            // segunda columna en 128.494 y el marco de A en 98.494. El suelo no sustituye a nadie: solo impide que
+            // la bahia mida menos que la reticula del rack, y el valor authored de la celda no se toca.
+            var floor = PositiveNullable(frontDesign?.SharedBeamLengthFloor) ?? 0.0;
+            var manual = ManualBeamLength(level, frontDesign);
+            if (manual.HasValue)
+            {
+                return Math.Max(floor, manual.Value);
+            }
+
+            var palletFront = Positive(level?.PalletFront, design?.Pallet?.Front ?? 0.0);
+            return Math.Max(
+                floor,
+                DynamicFrontGeometry.AutoBeamLength(
+                    palletFront, Math.Max(1, palletCount), design?.PalletTolerance ?? 0.0));
+        }
+
+        /// <summary>
+        /// La demanda transversal de un FRENTE: la mayor de sus niveles, que es la que gobierna el ancho de la
+        /// bahia. Un frente sin niveles declarados responde por el nivel que hereda.
+        /// </summary>
+        public static double EffectiveBeamLengthDemand(
+            DynamicRackDesign design,
+            DynamicRackFrontDesign frontDesign,
+            int levelCount,
+            int palletCount)
+        {
+            var levels = Math.Max(1, levelCount);
+            var demand = 0.0;
+            for (var index = 0; index < levels; index++)
+            {
+                var level = frontDesign != null && index < frontDesign.Levels.Count
+                    ? frontDesign.Levels[index]
+                    : null;
+                demand = Math.Max(
+                    demand, EffectiveBeamLengthDemand(design, frontDesign, level, palletCount));
+            }
+
+            return demand;
         }
 
         private static double Positive(double? value, double fallback)

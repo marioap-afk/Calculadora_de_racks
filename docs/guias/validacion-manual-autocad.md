@@ -154,6 +154,84 @@ Para **Push Back**, además de lo del dinámico, cubre la configuración por cel
 - **legacy**: un rack Push Back dibujado antes de I-41 debe reabrirse y redibujarse EXACTAMENTE igual —
   todos sus niveles al mismo fondo y sin ninguna tarima.
 
+Y, desde I-42, el **Push Back compuesto (lado A / lado B)**:
+
+- **declarar el lado B**: con «Rack de dos sentidos» apagado el rack es el de siempre y toda la sección
+  compuesta está deshabilitada; al encenderlo aparece la segunda mitad sobre la MISMA estructura, sin que
+  el lado A cambie de sitio ni de altura;
+- **selector de lado**: la matriz Frente x Nivel, la celda seleccionada y los cinco alcances pasan a
+  trabajar sobre el lado elegido; al volver al otro, su selección y su configuración siguen intactas;
+- **el número de frentes es del RACK**: subirlo crece los DOS lados a la vez. Con 4 frentes y 3 niveles
+  aplicados a todo, los CUATRO frentes deben traer sus camas en los tres niveles y en los dos lados —
+  ninguno puede quedarse sólo con cabeceras y postes;
+- **A = 3 y B = 4**: se declara con «La ranura existe en este lado» en el frente que sobra. La cuarta
+  ranura existe solo en B, su estructura vive solo en la mitad de B y la retícula transversal (líneas de
+  postes y BFR) es una sola para los dos lados. Quitar una ranura que quedaría sin ningún lado, o la
+  última de un lado, debe rehusarse y explicarse;
+- **topes por lado**: «Tope lado A» y «Tope lado B» deciden las cuatro combinaciones (ninguno / A / B /
+  ambos) con los mismos cinco alcances. Con una sola cama, la casilla del lado que no tiene extremo alto
+  queda deshabilitada con su motivo y conserva lo elegido — al volver a encontradas reaparece;
+- **niveles y elevaciones independientes**: con 2 niveles en A y 5 en B, los postes se dimensionan por la
+  mayor demanda y cada lado dibuja SUS elevaciones;
+- **topologías distintas entre niveles del mismo frente**: nivel 1 corrida, nivel 2 encontradas, nivel 3
+  solo A y nivel 4 solo B deben coexistir en el mismo frente;
+- **encontradas**: DOS camas físicas con pendientes opuestas y sus extremos altos enfrentados en el
+  centro, cada una con su propio tope (ninguno / A / B / ambos desde Seguridad);
+- **corrida**: UNA sola cama que atraviesa A + hueco + B, con una sola pendiente continua y como mucho UN
+  tope, en su extremo alto. Cámbiale el sentido (A→B y B→A) y comprueba que el extremo ALTO se mueve
+  físicamente al otro lado y que el tope lo sigue;
+- **el extremo BAJO de una corrida no se mueve**: por donde se carga queda pegado al poste EXTERIOR de su
+  lado. Al reducir su fondo, el que se mete hacia dentro es el ALTO. Compruébalo con 6, 8 y 10 fondos en el
+  mismo rack, y en los dos sentidos;
+- **alturas por lado**: con 4 niveles en A y 2 en B, las cabeceras de B NO se estiran hasta la altura de A, y
+  las dos líneas de la interfaz —terminal de A e inicial de B— pueden medir distinto. Cambia solo los niveles
+  de A y comprueba que ninguna pieza de B se mueve;
+- **seguridad en los DOS pasillos**: un rack compuesto nuevo la trae en A y en B sin activarla a mano;
+- **los cuatro cortes frontales**: con el compuesto encendido, el selector de la barra de vistas dice de qué
+  lado es el corte. Entrada/salida y posterior de cada lado son cuatro dibujos distintos;
+- **«Ambos lados»**: aplica los mismos niveles y fondos a A y B en una sola acción. Con valores distintos entre
+  lados el campo aparece VACÍO —ni el de A ni el de B—, y escribir uno lo aplica a los dos. Lo que es de un
+  lado por definición (presencia del frente, ajuste de estructura) queda deshabilitado con su motivo;
+- **fondo contra estructura**: «Fondos frente» es almacenamiento; «Estructura longitudinal del lado» es hasta
+  dónde llega el acero, con propuesta, efectiva y ajuste manual. Cambiar una NO cambia la otra;
+- **fondo de la cama corrida**: con la celda en corrida, el campo de fondo pasa a llamarse «Fondo de cama
+  corrida» y edita la profundidad TOTAL de esa cama. Sobre una estructura 5 + 8, escribir **10** debe dar
+  una cama de 10 fondos —ni 13, ni 5, ni 8— sin mover ninguna de las dos estructuras. Devuelve la celda a
+  encontradas: las dos camas por lado deben reaparecer intactas, y al volver a corrida el 10 sigue escrito;
+- **dónde APOYA la cama**: su extremo bajo debe caer siempre sobre una línea de módulo. Una corrida que
+  atraviesa el rack arranca en el PRIMER fondo (con hueco 0 y con hueco positivo); una corrida corta
+  arranca en el apoyo que le corresponde, nunca a media posición;
+- **largueros intermedios en PLANTA**: deben existir en las cuatro topologías **y en TODOS los frentes**,
+  no sólo en el primero. Con una corrida corta, deben cubrir todo su recorrido —incluida la parte que pisa
+  el otro lado— y ninguno por delante de su extremo bajo;
+- **cada corte lateral**: recórrelos todos. Cada uno trae los niveles y los largueros de los frentes que
+  tiene al lado; ninguno puede quedarse sólo con la estructura;
+- **una estructura más larga que la cama**: sube la estructura del lado a 8 fondos y deja una celda en 4.
+  Esa cama ocupa 4 y en el tramo sobrante NO hay riel, rodillo, intermedio ni tarima; otro nivel del mismo
+  rack puede usar los 8 a la vez. La estructura es capacidad, no longitud obligatoria;
+- **ninguna tarima dentro del hueco**: una corrida que lo cruza lo atraviesa, pero no almacena en él;
+- **gap**: llévalo de 0 a un valor positivo y comprueba que el rack se ALARGA esa misma medida y que las
+  dos líneas de postes de la interfaz siguen existiendo también con 0;
+- **separador central**: con hueco positivo aparece UNA sola pieza —la misma que usa el rack— y se cuenta
+  una vez en `RACKBOMTOTAL`; con hueco 0 se avisa y no se coloca;
+- **estructura efectiva por lado**: sube la estructura del lado activo por encima de la propuesta y
+  comprueba que el rack crece; bájala por debajo y comprueba que NO se corrige sola, que se avisa y que
+  las celdas que no caben quedan bloqueadas con su motivo; «Restaurar estructura» vuelve a la propuesta;
+- **fondos y tarimas por celda en los DOS lados**: son independientes; las tarimas siguen la pendiente de
+  SU cama y siguen fuera del BOM;
+- **cortes frontales**: los cuatro (entrada/salida y posterior de cada lado) se insertan y se actualizan;
+  una celda corrida NO debe mostrar larguero posterior en la línea interior de su lado BAJO;
+- **planta y laterales**: llevan las etiquetas **A** y **B** y muestran un larguero de entrada/salida en
+  los DOS pasillos;
+- **BOM**: la estructura NO se duplica por tener dos lados; una corrida cuenta UNA cama, a la longitud
+  FÍSICA que se dibuja —la de su apoyo, que con fondo propio es menor que el rack—, y dos encontradas
+  cuentan DOS;
+- **round trip**: guarda, cierra, reabre con `RACKEDITAR` y comprueba que topología, sentido, hueco,
+  separador, estructura manual y las dos configuraciones vuelven idénticas; `RACKDUPLICAR` produce una
+  copia independiente;
+- **legacy**: un rack Push Back dibujado antes de I-42 debe reabrirse como de un solo sentido, sin pedir
+  ninguna reconfiguración, y redibujarse EXACTAMENTE igual.
+
 ## 6. Criterios de aprobación
 
 Una validación manual se aprueba solo si:

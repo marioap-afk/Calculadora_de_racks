@@ -122,23 +122,54 @@ namespace RackCad.Application.Systems.Dynamic
             // espejada se queda delante en vez de desaparecer.
             var atFarEnd = !selection.LowEndOnly;
 
+            // I-42 — un Push Back COMPUESTO tiene cara de carga en los DOS extremos: son dos pasillos, y cada uno
+            // necesita su par de protectores. La PERTENENCIA no cambia —siguen siendo las dos lineas de orilla, y
+            // ningun poste interior—: lo que se duplica es la CARA, no el numero de postes. Convertir «dos pasillos»
+            // en «protector en cada poste» es exactamente el defecto que el dueño vio.
+            // I-42: la segunda cara se pregunta POR LINEA. Un rack compuesto PARCIAL la tiene solo donde hay
+            // lado B; las lineas de los frentes que siguen siendo de un solo sentido conservan su regla legacy.
+            var bothFaces = selection.HasSecondLoadFaceAt(postIndex);
+
             if (postCount <= 1)
             {
-                return new[]
-                {
-                    new SafetyEndCopy(atHighEnd: false, mirrored: false),
-                    new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true),
-                };
+                return bothFaces
+                    ? new[]
+                    {
+                        new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                        new SafetyEndCopy(atHighEnd: false, mirrored: true),
+                        new SafetyEndCopy(atHighEnd: true, mirrored: false),
+                        new SafetyEndCopy(atHighEnd: true, mirrored: true),
+                    }
+                    : new[]
+                    {
+                        new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                        new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true),
+                    };
             }
 
+            // La copia de la cara LEJANA es la IMAGEN ESPEJO de la cercana: los dos pasillos miran en sentidos
+            // opuestos, asi que la pieza que protege uno esta girada respecto de la que protege el otro. Antes las
+            // dos salian con la misma mano y la del fondo quedaba del reves — la orientacion que el dueño rechazo.
             if (postIndex == 0)
             {
-                return new[] { new SafetyEndCopy(atHighEnd: false, mirrored: false) };
+                return bothFaces
+                    ? new[]
+                    {
+                        new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                        new SafetyEndCopy(atHighEnd: true, mirrored: true),
+                    }
+                    : new[] { new SafetyEndCopy(atHighEnd: false, mirrored: false) };
             }
 
             if (postIndex == postCount - 1)
             {
-                return new[] { new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true) };
+                return bothFaces
+                    ? new[]
+                    {
+                        new SafetyEndCopy(atHighEnd: false, mirrored: true),
+                        new SafetyEndCopy(atHighEnd: true, mirrored: false),
+                    }
+                    : new[] { new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true) };
             }
 
             return new SafetyEndCopy[0];
