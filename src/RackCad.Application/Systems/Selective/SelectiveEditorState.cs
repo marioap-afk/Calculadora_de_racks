@@ -737,6 +737,58 @@ namespace RackCad.Application.Systems.Selective
         /// </summary>
         public SelectiveFrontApplyResult ApplyFloorBeamRiseToTargets(
             SelectiveFrontApplyScope scope, int frontIndex, double? rise)
+            => ApplyToFrontTargets(scope, frontIndex, (fondo, front) => FloorBeamRiseRow(fondo)[front] = rise);
+
+        /// <summary>
+        /// Set "larguero a piso" on a frente across the target fondos (I-43, gate 7). The flag has no inheritance:
+        /// it is written true or false explicitly, so there is no restore value for it.
+        /// </summary>
+        public SelectiveFrontApplyResult ApplyFloorBeamToTargets(
+            SelectiveFrontApplyScope scope, int frontIndex, bool floorBeam)
+            => ApplyToFrontTargets(scope, frontIndex, (fondo, front) => FloorBeamRow(fondo)[front] = floorBeam);
+
+        /// <summary>
+        /// Set a frente's manual height across the target fondos (I-43, gate 7). Null is the RESTORE: that frente goes
+        /// back to the derived height. There is no run-wide default for this one, so null means "auto", exactly the
+        /// semantics the editor has always had.
+        /// </summary>
+        public SelectiveFrontApplyResult ApplyBayHeightToTargets(
+            SelectiveFrontApplyScope scope, int frontIndex, double? height)
+            => ApplyToFrontTargets(scope, frontIndex, (fondo, front) => BayHeightRow(fondo)[front] = height);
+
+        /// <summary>
+        /// Project one "medio frente" tramo configuration onto the SAME frente of every target fondo (I-43, gate 7).
+        /// Each target receives an independent copy of the segments, so editing one later cannot move another.
+        /// <para>
+        /// Only <see cref="SelectiveFrontApplyScope.Front"/> exists here, and that is a DOMAIN limit rather than an
+        /// omission. A tramo list is a set of absolute lengths that must fit the frente's width; the same
+        /// <c>FrontIndex</c> has the same width in every fondo — the horizontal grid comes from fondo 0 so the posts
+        /// align — which is what makes projecting across fondos meaningful. Different frentes do NOT share a width,
+        /// so an "All" would push lengths onto frentes they may not fit, and the resolver would silently fall back to
+        /// a full-width frente on each one that fails. Rather than invent a scope that quietly does nothing on half
+        /// the rack, medio frente stays <c>Front x TargetFondos</c>.
+        /// </para>
+        /// </summary>
+        public SelectiveFrontApplyResult ApplySegmentsToTargets(int frontIndex, IEnumerable<SelectiveSegment> segments)
+        {
+            var source = CloneSegments(segments);
+            return ApplyToFrontTargets(
+                SelectiveFrontApplyScope.Front,
+                frontIndex,
+                (fondo, front) => SegmentRow(fondo)[front] = CloneSegments(source));
+        }
+
+        /// <summary>
+        /// Resolve the frentes a frente-wide operation reaches and write every one of them (I-43, gate 7).
+        /// <para>
+        /// It is the single place that knows how a frente-wide edit lands: which fondos are targeted, which of them
+        /// actually have the frente — a target that does not is OMITTED and reported, never padded and never clamped
+        /// onto a neighbour — and that the fondo being edited is the LIVE matrix while the rest are their stored ones.
+        /// Every property routes through it so none of them can grow its own interpretation.
+        /// </para>
+        /// </summary>
+        private SelectiveFrontApplyResult ApplyToFrontTargets(
+            SelectiveFrontApplyScope scope, int frontIndex, Action<int, int> write)
         {
             var topology = SelectiveTopology.From(this);
             var applied = new List<(int FondoIndex, int FrontIndex)>();
@@ -744,21 +796,18 @@ namespace RackCad.Application.Systems.Selective
 
             foreach (var fondo in targetFondos.Fondos)
             {
-                var row = topology.HasFondo(fondo) ? FloorBeamRiseRow(fondo) : null;
-                var frentes = topology.FrontCount(fondo);
-                if (row == null || frentes == 0)
+                var frentes = topology.HasFondo(fondo) ? topology.FrontCount(fondo) : 0;
+                if (frentes == 0 || !EnsureFrontRows(fondo, frentes))
                 {
                     omitted.Add(fondo);
                     continue;
                 }
 
-                while (row.Count < frentes) row.Add(null); // keep the parallel list whole
-
                 if (scope == SelectiveFrontApplyScope.All)
                 {
                     for (var front = 0; front < frentes; front++)
                     {
-                        row[front] = rise;
+                        write(fondo, front);
                         applied.Add((fondo, front));
                     }
 
@@ -771,11 +820,102 @@ namespace RackCad.Application.Systems.Selective
                     continue;
                 }
 
-                row[frontIndex] = rise;
+                write(fondo, frontIndex);
                 applied.Add((fondo, frontIndex));
             }
 
             return new SelectiveFrontApplyResult(scope, applied, omitted);
+        }
+
+        /// <summary>Grow that fondo's per-bay lists so every frente it has is addressable; false when the fondo has no
+        /// storage at all. Filling a list up to the frentes a fondo REALLY has is not padding the rack.</summary>
+        private bool EnsureFrontRows(int fondoIndex, int frentes)
+        {
+            var floorBeams = FloorBeamRow(fondoIndex);
+            var heights = BayHeightRow(fondoIndex);
+            var segments = SegmentRow(fondoIndex);
+            var rises = FloorBeamRiseRow(fondoIndex);
+            if (floorBeams == null || heights == null || segments == null || rises == null) return false;
+
+            while (floorBeams.Count < frentes) floorBeams.Add(false);
+            while (heights.Count < frentes) heights.Add(null);
+            while (segments.Count < frentes) segments.Add(new List<SelectiveSegment>());
+            while (rises.Count < frentes) rises.Add(null);
+            return true;
+        }
+
+        private List<bool> FloorBeamRow(int fondoIndex)
+        {
+            if (FondoMatrices.Count == 0) return fondoIndex == 0 ? FloorBeams : null;
+            if (fondoIndex < 0 || fondoIndex >= FondoMatrices.Count) return null;
+            return fondoIndex == SelectedFondo ? FloorBeams : FondoMatrices[fondoIndex].FloorBeams;
+        }
+
+        private List<double?> BayHeightRow(int fondoIndex)
+        {
+            if (FondoMatrices.Count == 0) return fondoIndex == 0 ? BayHeights : null;
+            if (fondoIndex < 0 || fondoIndex >= FondoMatrices.Count) return null;
+            return fondoIndex == SelectedFondo ? BayHeights : FondoMatrices[fondoIndex].BayHeights;
+        }
+
+        private List<List<SelectiveSegment>> SegmentRow(int fondoIndex)
+        {
+            if (FondoMatrices.Count == 0) return fondoIndex == 0 ? BaySegments : null;
+            if (fondoIndex < 0 || fondoIndex >= FondoMatrices.Count) return null;
+            return fondoIndex == SelectedFondo ? BaySegments : FondoMatrices[fondoIndex].BaySegments;
+        }
+
+        // ---- Fondo-wide properties over the target fondos (I-43, gate 7) ----
+
+        /// <summary>
+        /// Write the pallet depth of every TARGET fondo. This one has no inner scope at all: the depth belongs to a
+        /// fondo as a whole, so inventing a "frente" or "celda" reach for it would be fiction.
+        /// <para>
+        /// The custom cabeceras of each touched fondo immediately adopt the depth their fondo now dictates, through
+        /// the same authority that governs it everywhere else — so the editor never shows a cabecera at a depth the
+        /// drawing would not use.
+        /// </para>
+        /// </summary>
+        public SelectiveFondoApplyResult ApplyPalletDepthToTargets(double depth)
+            => ApplyToFondoTargets(fondo => FondoMatrices[fondo].Depth = depth);
+
+        /// <summary>
+        /// Write the "fondo de cabecera" override of every TARGET fondo; null (or a non-positive value) is the
+        /// RESTORE, which returns those fondos to the derived rule (<c>tarima − 6"</c>).
+        /// </summary>
+        public SelectiveFondoApplyResult ApplyCabeceraDepthToTargets(double? cabeceraOverride)
+            => ApplyToFondoTargets(fondo => FondoMatrices[fondo].CabeceraOverride =
+                cabeceraOverride.HasValue && cabeceraOverride.Value > 0.0 ? cabeceraOverride.Value : 0.0);
+
+        private SelectiveFondoApplyResult ApplyToFondoTargets(Action<int> write)
+        {
+            var applied = new List<int>();
+            var omitted = new List<int>();
+            foreach (var fondo in targetFondos.Fondos)
+            {
+                if (fondo < 0 || fondo >= FondoMatrices.Count)
+                {
+                    omitted.Add(fondo);
+                    continue;
+                }
+
+                write(fondo);
+                applied.Add(fondo);
+            }
+
+            // A fondo's depth just moved, so the cabeceras stored there must follow it now rather than at the next
+            // read: the depth of a cabecera is the fondo's authority (gate 4), never the configuration's own.
+            foreach (var fondo in applied)
+            {
+                var depth = CabeceraDepthOfFondo(fondo);
+                var row = CabeceraRow(fondo);
+                for (var post = 0; row != null && post < row.Count; post++)
+                {
+                    SelectiveCabeceraAuthority.ImposeFondoDepth(row[post], depth);
+                }
+            }
+
+            return new SelectiveFondoApplyResult(applied, omitted);
         }
 
         // ---- Custom cabeceras by (fondo, post) - I-43 ----

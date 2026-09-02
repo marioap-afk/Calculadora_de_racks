@@ -483,11 +483,57 @@ namespace RackCad.UI.Systems.Selective
             }
         }
 
-        /// <summary>The "Fondo de tarima" is per-fondo now (it belongs to the selected fondo); recompute so the change lands.</summary>
+        /// <summary>
+        /// "Fondo de tarima" and "Fondo de cabecera" are authorities of a FONDO, and they now land on every target
+        /// fondo (I-43, gate 7). There is no inner scope for them: a depth belongs to a whole fondo.
+        /// <para>
+        /// The boxes keep showing the VISIBLE fondo; <c>TargetFondos</c> only decides where the edit lands. The custom
+        /// cabeceras of each touched fondo adopt their new effective depth immediately, through the gate-4 authority.
+        /// </para>
+        /// </summary>
         private void FondoDepth_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (catalog == null) return; // ignore the initial value set during InitializeComponent
-            Recompute(); // BuildDesign -> SaveWorkingToSelected captures this fondo's depth into its slot
+            if (catalog == null || !initialized) return; // ignore the initial values set during InitializeComponent
+
+            using (DeferRecompute())
+            {
+                // Commit the boxes into the visible fondo's slot first; then one Application call writes every target.
+                SaveWorkingToSelected();
+
+                var isCabecera = ReferenceEquals(sender, CabeceraFondoBox);
+                SelectiveFondoApplyResult result;
+                if (isCabecera)
+                {
+                    var text = CabeceraFondoBox.Text;
+                    double? over = null;
+                    if (!string.IsNullOrWhiteSpace(text))
+                    {
+                        if (!UiSupport.TryNum(text, out var typed) || typed <= 0.0)
+                        {
+                            SetStatus("Fondo de cabecera inválido (vacío = derivado de la tarima).", true);
+                            return;
+                        }
+
+                        over = typed;
+                    }
+
+                    result = state.ApplyCabeceraDepthToTargets(over);
+                    if (state.TargetFondos.Count > 1) pendingWarning = result.Describe("el fondo de cabecera", restore: !over.HasValue);
+                }
+                else
+                {
+                    if (!UiSupport.TryNum(FondoBox.Text, out var depth) || depth <= 0.0)
+                    {
+                        SetStatus("Fondo de tarima inválido.", true);
+                        return;
+                    }
+
+                    result = state.ApplyPalletDepthToTargets(depth);
+                    if (state.TargetFondos.Count > 1) pendingWarning = result.Describe("el fondo de tarima", restore: false);
+                }
+
+                Recompute();
+            }
         }
 
         private void Fondos_LostFocus(object sender, RoutedEventArgs e)
@@ -539,11 +585,23 @@ namespace RackCad.UI.Systems.Selective
             }
         }
 
+        /// <summary>"Larguero a piso" of a frente, over the SAME target fondos as everything else (I-43, gate 7).
+        /// The flag has no inheritance, so it is written explicitly; the state omits and reports a target fondo that
+        /// does not have this frente, and the window recomputes ONCE.</summary>
         private void SetFloor(int bay, bool value)
         {
             if (bay < 0 || bay >= floorBeams.Count) return;
-            floorBeams[bay] = value;
-            Recompute();
+
+            using (DeferRecompute())
+            {
+                SaveWorkingToSelected(); // the state writes the OTHER fondos' stored matrices
+                var result = state.ApplyFloorBeamToTargets(SelectiveFrontApplyScope.Front, bay, value);
+                Recompute();
+                if (state.TargetFondos.Count > 1 || result.OmittedFondos.Count > 0)
+                {
+                    pendingWarning = result.Describe(restore: false);
+                }
+            }
         }
 
         private void ClampSelection() => state.ClampSelection();
@@ -766,13 +824,32 @@ namespace RackCad.UI.Systems.Selective
             }
         }
 
+        /// <summary>A frente's manual height, over the target fondos (I-43, gate 7). Null is the RESTORE to the
+        /// derived height — there is no run-wide default here — and the legacy parse is kept verbatim, so 0 stays an
+        /// invalid height rather than becoming a second way to say "auto".</summary>
         private void SetBayHeight(int bay, string text)
         {
             if (bay < 0 || bay >= bayHeights.Count) return;
             if (!UiSupport.TryOptionalNum(text, out var value)) { SetStatus("Altura de frente inválida (vacío = auto).", true); return; }
-            if (Nullable.Equals(bayHeights[bay], value)) return;
-            bayHeights[bay] = value;
-            Recompute();
+            if (Nullable.Equals(bayHeights[bay], value)
+                && state.TargetFondos.Count == 1
+                && state.TargetFondos.Fondos[0] == selectedFondo)
+            {
+                return; // nothing to do: the only target already holds this height
+            }
+
+            using (DeferRecompute())
+            {
+                SaveWorkingToSelected();
+                var result = state.ApplyBayHeightToTargets(SelectiveFrontApplyScope.Front, bay, value);
+                RenderMatrix();
+                Recompute();
+                if (state.TargetFondos.Count > 1 || result.OmittedFondos.Count > 0)
+                {
+                    pendingWarning = result.Describe(restore: !value.HasValue);
+                }
+            }
+
         }
 
         /// <summary>Open the tramos ("medio frente" generalizado) editor for a frente and apply the result.</summary>
@@ -783,12 +860,24 @@ namespace RackCad.UI.Systems.Selective
             // Best-effort full bay width (shared across fondos) so the dialog can show the calculated last tramo + warn.
             var fullWidth = lastSystem != null && bay < lastSystem.Bays.Count ? lastSystem.Bays[bay].BeamLength : 0.0;
 
+            // The dialog opens ONCE, seeded from the VISIBLE frente. Cancelling changes nothing anywhere (I-39).
             var dialog = new SelectiveSegmentsWindow(bay + 1, baySegments[bay], fullWidth) { Owner = this };
             if (dialog.ShowDialog() != true) return;
 
-            baySegments[bay] = dialog.Result.Select(s => new SelectiveSegment { Length = s.Length, Loaded = s.Loaded }).ToList();
-            RenderMatrix(); // refresh the button label (tramo count)
-            Recompute();
+            using (DeferRecompute())
+            {
+                SaveWorkingToSelected();
+                // Application projects the accepted tramos onto the SAME frente of every valid target, each with its
+                // own copy of the segments. Scope is Front only, and that is a domain limit, not an omission: the
+                // width of a frente is shared by FrontIndex across fondos but NOT between different frentes.
+                var result = state.ApplySegmentsToTargets(bay, dialog.Result.Select(s => new SelectiveSegment { Length = s.Length, Loaded = s.Loaded }));
+                RenderMatrix(); // refresh the button label (tramo count)
+                Recompute();
+                if (state.TargetFondos.Count > 1 || result.OmittedFondos.Count > 0)
+                {
+                    pendingWarning = result.Describe(restore: false);
+                }
+            }
         }
 
         // ---- Per-post cabeceras ----
