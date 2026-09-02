@@ -49,8 +49,13 @@ namespace RackCad.Domain.Systems.Selective
         /// </summary>
         public IList<IList<SelectiveBay>> FondoBays { get; } = new List<IList<SelectiveBay>>();
 
-        /// <summary>Optional per-post cabecera (pass-through from the design), one per post position; null = run default.</summary>
+        /// <summary>Optional per-post cabecera of FONDO 0 (pass-through from the design), one per post position;
+        /// null = run default. Fondos 1..N carry theirs in <see cref="ExtraFondoPostCabeceras"/>.</summary>
         public IList<RackFrameConfiguration> PostCabeceras { get; } = new List<RackFrameConfiguration>();
+
+        /// <summary>Per-post custom cabeceras of the fondos after fondo 0 (I-43): entry <c>k-1</c> is fondo <c>k</c>.
+        /// Missing row, short row or null entry all mean "standard". Resolve through <c>SelectiveCabeceraAuthority</c>.</summary>
+        public IList<IList<RackFrameConfiguration>> ExtraFondoPostCabeceras { get; } = new List<IList<RackFrameConfiguration>>();
 
         /// <summary>Resolved per-post PERALTE, one per post (N+1). Each is the post's override or the run's <see cref="PostPeralte"/>.</summary>
         public IList<double> PostPeraltes { get; } = new List<double>();

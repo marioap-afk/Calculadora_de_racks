@@ -71,7 +71,6 @@ namespace RackCad.Application.Systems.Selective
             // are a prefix of the master grid, so it just stops early. Height/peralte are per fondo too.
             for (var i = 0; i < frenteYs.Count; i++)
             {
-                var custom = i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
                 var framePeralte = SelectivePostGeometry.PostPeralteAt(system, i);
 
                 // Botas belong to the SYSTEM, not each cabecera: "Izquierda/Derecha/Ambos" is the FRONT vs BACK aisle
@@ -120,10 +119,13 @@ namespace RackCad.Application.Systems.Selective
                     var height = SelectivePostGeometry.PostHeight(baysK, i, fondoFallbacks[k]);
                     var resolvedHeight = height > 0.0 ? height : system.Height;
 
+                    // The custom cabecera of THIS (fondo, post) — I-43: every fondo can carry its own.
+                    var custom = SelectiveCabeceraAuthority.EffectiveCustomAt(system, k, i);
+
                     PlantaGroupBuilder group;
-                    if (k == 0 && custom != null && custom.Height > 0.0)
+                    if (custom != null)
                     {
-                        // Custom cabecera (fondo 0 only): never shared, even with an identical twin — editing one must not move both.
+                        // Custom cabecera: never shared, even with an identical twin — editing one must not move both.
                         group = NewGroup(groups, custom, catalog, framePeralte, system.DrawBasePlate);
                     }
                     else

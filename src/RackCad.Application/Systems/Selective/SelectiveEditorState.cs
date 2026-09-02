@@ -46,7 +46,21 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>Optional per-post cabecera (frame); one entry per post (N frentes → N+1 posts), null = run default.</summary>
         public List<RackFrameConfiguration> PostCabeceras { get; } = new List<RackFrameConfiguration>();
 
-        /// <summary>Per-post PERALTE override; 0 = inherit the global. One entry per post, parallel to <see cref="PostCabeceras"/>.</summary>
+        /// <summary>
+        /// Per-post custom cabeceras of the fondos AFTER fondo 0 (I-43): entry <c>k-1</c> is fondo <c>k</c>, each a row
+        /// by post of THAT fondo. Missing row, short row or null entry all mean "standard". Fondo 0 keeps using
+        /// <see cref="PostCabeceras"/>, so the legacy shape and its meaning are untouched.
+        /// </summary>
+        public List<List<RackFrameConfiguration>> ExtraFondoPostCabeceras { get; } = new List<List<RackFrameConfiguration>>();
+
+        /// <summary>
+        /// Per-post PERALTE override; 0 = inherit the global. One entry per post of the MASTER grid.
+        /// <para>
+        /// This axis is deliberately NOT per fondo (I-43). A post is one physical column shared by every fondo of its
+        /// frente, so its peralte is a property of the post, not of a depth line. Only the CABECERA gained the fondo
+        /// axis.
+        /// </para>
+        /// </summary>
         public List<double> PostPeraltes { get; } = new List<double>();
 
         private int selBay;
@@ -634,9 +648,17 @@ namespace RackCad.Application.Systems.Selective
             return max;
         }
 
-        /// <summary>Keep the per-post cabecera + peralte lists sized to the MASTER grid's posts (masterFrentes+1),
-        /// preserving existing entries. Sizing to the LONGEST fondo (not the working one) means switching to a shorter
-        /// fondo never truncates and loses fondo 0's custom cabeceras / per-post peraltes.</summary>
+        /// <summary>
+        /// Keep the per-post cabecera + peralte lists sized to the MASTER grid's posts (masterFrentes+1), preserving
+        /// existing entries, and keep every fondo's cabecera row consistent with the posts that fondo actually has.
+        /// Sizing to the LONGEST fondo (not the working one) means switching to a shorter fondo never truncates and
+        /// loses fondo 0's custom cabeceras / per-post peraltes.
+        /// <para>
+        /// The pruning is DESTRUCTIVE and there is no resurrection (I-43): an override at a post its fondo no longer
+        /// reaches is dropped, and growing back creates a standard (null) slot instead of restoring what used to be
+        /// there. A configuration that survived invisibly would come back on a rack the user had already reshaped.
+        /// </para>
+        /// </summary>
         public void SyncPostCabeceras()
         {
             var posts = MaxFrenteCount() + 1;
@@ -644,6 +666,105 @@ namespace RackCad.Application.Systems.Selective
             while (PostCabeceras.Count > posts) PostCabeceras.RemoveAt(PostCabeceras.Count - 1);
             while (PostPeraltes.Count < posts) PostPeraltes.Add(0.0);
             while (PostPeraltes.Count > posts) PostPeraltes.RemoveAt(PostPeraltes.Count - 1);
+
+            var topology = SelectiveTopology.From(this);
+            var extras = Math.Max(0, topology.FondoCount - 1);
+            while (ExtraFondoPostCabeceras.Count < extras) ExtraFondoPostCabeceras.Add(new List<RackFrameConfiguration>());
+            while (ExtraFondoPostCabeceras.Count > extras) ExtraFondoPostCabeceras.RemoveAt(ExtraFondoPostCabeceras.Count - 1);
+
+            // Fondo 0's row keeps the master length (nothing else may shrink it), but any entry beyond the posts fondo 0
+            // really has is cleared: it could never be drawn, and leaving it would resurrect it on a regrow.
+            for (var i = topology.FrontCount(0) + 1; i < PostCabeceras.Count; i++) PostCabeceras[i] = null;
+
+            for (var k = 1; k < topology.FondoCount; k++)
+            {
+                var row = ExtraFondoPostCabeceras[k - 1];
+                var own = topology.FrontCount(k) + 1;
+                while (row.Count > own) row.RemoveAt(row.Count - 1);
+            }
+        }
+
+        // ---- Custom cabeceras by (fondo, post) - I-43 ----
+
+        /// <summary>The custom cabecera stored at <c>(fondoIndex, postIndex)</c>, or null for the standard one.</summary>
+        public RackFrameConfiguration CabeceraAt(int fondoIndex, int postIndex)
+        {
+            var row = CabeceraRow(fondoIndex);
+            return row != null && postIndex >= 0 && postIndex < row.Count ? row[postIndex] : null;
+        }
+
+        /// <summary>Whether that post exists in that fondo: a fondo with C frentes has posts 0..C.</summary>
+        public bool PostExistsIn(int fondoIndex, int postIndex)
+        {
+            var topology = SelectiveTopology.From(this);
+            return topology.HasFondo(fondoIndex) && postIndex >= 0 && postIndex <= topology.FrontCount(fondoIndex);
+        }
+
+        private List<RackFrameConfiguration> CabeceraRow(int fondoIndex)
+        {
+            if (fondoIndex == 0) return PostCabeceras;
+            if (fondoIndex < 0 || fondoIndex - 1 >= ExtraFondoPostCabeceras.Count) return null;
+            return ExtraFondoPostCabeceras[fondoIndex - 1];
+        }
+
+        /// <summary>
+        /// Apply one cabecera configuration to <paramref name="postIndex"/> of every TARGET fondo, using the same
+        /// <see cref="TargetFondos"/> the cell editor uses so the editor teaches ONE grammar of fondos (I-43).
+        /// <para>
+        /// Each target receives an INDEPENDENT deep copy, never the same instance: editing one cabecera afterwards must
+        /// not silently edit the others, which is exactly what sharing a reference would do. A target where that post
+        /// does not exist is OMITTED and reported, never padded and never clamped onto a neighbouring post.
+        /// </para>
+        /// <para>
+        /// Passing null is the RESET: that post returns to the standard cabecera in the targeted fondos. It does not
+        /// touch <see cref="PostPeraltes"/>, which is a GLOBAL per-post authority: a reset aimed at some fondos must not
+        /// clear an override that belongs to the whole rack.
+        /// </para>
+        /// </summary>
+        public SelectiveCabeceraApplyResult ApplyCabeceraToTargets(
+            int postIndex, RackFrameConfiguration configuration, Func<RackFrameConfiguration, RackFrameConfiguration> deepCopy)
+        {
+            SyncPostCabeceras();
+            var applied = new List<int>();
+            var omitted = new List<int>();
+            foreach (var fondo in targetFondos.Fondos)
+            {
+                if (!PostExistsIn(fondo, postIndex))
+                {
+                    omitted.Add(fondo);
+                    continue;
+                }
+
+                var row = EnsureCabeceraRow(fondo, postIndex);
+                if (row == null)
+                {
+                    omitted.Add(fondo);
+                    continue;
+                }
+
+                row[postIndex] = configuration == null
+                    ? null
+                    : (deepCopy != null ? deepCopy(configuration) : configuration);
+                applied.Add(fondo);
+            }
+
+            return new SelectiveCabeceraApplyResult(postIndex, applied, omitted);
+        }
+
+        /// <summary>The row of <paramref name="fondoIndex"/>, grown with nulls so <paramref name="postIndex"/> fits.
+        /// Padding INSIDE a fondo that really has that post is not invention: the row is a sparse list by post.</summary>
+        private List<RackFrameConfiguration> EnsureCabeceraRow(int fondoIndex, int postIndex)
+        {
+            if (fondoIndex < 0) return null;
+            if (fondoIndex > 0)
+            {
+                while (ExtraFondoPostCabeceras.Count < fondoIndex) ExtraFondoPostCabeceras.Add(new List<RackFrameConfiguration>());
+            }
+
+            var row = CabeceraRow(fondoIndex);
+            if (row == null) return null;
+            while (row.Count <= postIndex) row.Add(null);
+            return row;
         }
 
         /// <summary>
@@ -702,6 +823,13 @@ namespace RackCad.Application.Systems.Selective
             foreach (var peralte in PostPeraltes)
             {
                 design.PostPeraltes.Add(peralte);
+            }
+
+            // The other fondos' cabecera rows travel as they are; fondo 0 stays in PostCabeceras above, which is what
+            // keeps the legacy projection (and the frontal master representation) intact (I-43).
+            foreach (var row in ExtraFondoPostCabeceras)
+            {
+                design.ExtraFondoPostCabeceras.Add(new List<RackFrameConfiguration>(row));
             }
 
             design.DrawBasePlate = inputs.DrawBasePlate;

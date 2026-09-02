@@ -49,8 +49,18 @@ namespace RackCad.Application.Persistence
         /// <summary>Per-fondo level matrices for fondos 1..N-1 (each a list of bays). Empty = every fondo shares fondo 0's <see cref="Bays"/>.</summary>
         public List<List<SelectiveBayDocument>> ExtraFondoBays { get; set; } = new List<List<SelectiveBayDocument>>();
 
-        /// <summary>Per-post cabeceras (one per post; null = run default), each embedded as a frame document.</summary>
+        /// <summary>Per-post cabeceras of FONDO 0 (one per post; null = run default), each embedded as a frame
+        /// document. This is the legacy field and keeps its legacy meaning exactly: a document written before I-43
+        /// carries only this, and it describes fondo 0 alone.</summary>
         public List<RackFrameProjectDocument> PostCabeceras { get; set; } = new List<RackFrameProjectDocument>();
+
+        /// <summary>
+        /// Per-post cabeceras of the fondos AFTER fondo 0 (I-43): entry <c>k-1</c> is fondo <c>k</c>. NULLABLE and
+        /// additive — a legacy document has no such field, which deserializes to null and means "every extra fondo is
+        /// standard". That is precisely what those drawings showed, so nothing is migrated and no existing rack changes
+        /// when it is reopened. Rows may be null, short, or hold nulls; all three mean "standard" at that post.
+        /// </summary>
+        public List<List<RackFrameProjectDocument>> ExtraFondoPostCabeceras { get; set; }
 
         /// <summary>Per-post PERALTE overrides (one per post; &lt;= 0 = inherit <see cref="PostPeralte"/>).</summary>
         public List<double> PostPeraltes { get; set; } = new List<double>();
@@ -121,6 +131,19 @@ namespace RackCad.Application.Persistence
                 document.PostCabeceras.Add(cabecera == null ? null : RackFrameProjectDocument.FromConfiguration(cabecera));
             }
 
+            // The extra fondos' rows are written ONLY when at least one of them carries something. Writing an empty
+            // structure into every design would churn the JSON of every single-fondo rack for no information (I-43).
+            if (design.ExtraFondoPostCabeceras.Any(row => row != null && row.Any(cabecera => cabecera != null)))
+            {
+                document.ExtraFondoPostCabeceras = new List<List<RackFrameProjectDocument>>();
+                foreach (var row in design.ExtraFondoPostCabeceras)
+                {
+                    document.ExtraFondoPostCabeceras.Add(row == null
+                        ? null
+                        : row.Select(cabecera => cabecera == null ? null : RackFrameProjectDocument.FromConfiguration(cabecera)).ToList());
+                }
+            }
+
             document.PostPeraltes = design.PostPeraltes.ToList();
             document.DrawBasePlate = design.DrawBasePlate;
             document.NumberFronts = design.NumberFronts;
@@ -185,6 +208,15 @@ namespace RackCad.Application.Persistence
             foreach (var cabecera in PostCabeceras ?? Enumerable.Empty<RackFrameProjectDocument>())
             {
                 design.PostCabeceras.Add(cabecera?.ToConfiguration());
+            }
+
+            // Absent field (a legacy document) = no extra rows at all = every fondo after 0 is standard. There is no
+            // migration: propagating fondo 0's customs to the other fondos would change drawings that already exist.
+            foreach (var row in ExtraFondoPostCabeceras ?? Enumerable.Empty<List<RackFrameProjectDocument>>())
+            {
+                design.ExtraFondoPostCabeceras.Add(row == null
+                    ? new List<RackFrameConfiguration>()
+                    : row.Select(cabecera => cabecera?.ToConfiguration()).ToList());
             }
 
             foreach (var peralte in PostPeraltes ?? Enumerable.Empty<double>())

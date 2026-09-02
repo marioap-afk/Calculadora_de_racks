@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.Systems.Selective
@@ -180,12 +181,28 @@ namespace RackCad.Application.Systems.Selective
 
             system.Height = overallHeight;
 
-            // Per-post cabeceras span the MASTER grid (masterCount frentes -> masterCount+1 posts); pad with null so
-            // absent ones fall back to the run default. Custom cabeceras are still authored on fondo 0's posts only.
+            // Per-post cabeceras of FONDO 0 span the MASTER grid (masterCount frentes -> masterCount+1 posts); pad with
+            // null so absent ones fall back to the run default.
             var postCount = master.Count + 1;
             for (var i = 0; i < postCount; i++)
             {
                 system.PostCabeceras.Add(i < design.PostCabeceras.Count ? design.PostCabeceras[i] : null);
+            }
+
+            // The other fondos' rows travel as they are (I-43). Each row is only as long as ITS fondo's posts, and a
+            // shorter or missing row simply means "standard" there — the authority reads it that way, so nothing is
+            // padded to the master grid: a fondo that does not reach a post must not gain a phantom cabecera.
+            for (var k = 1; k < system.DepthCount; k++)
+            {
+                var row = new List<RackFrameConfiguration>();
+                var stored = k - 1 < design.ExtraFondoPostCabeceras.Count ? design.ExtraFondoPostCabeceras[k - 1] : null;
+                var posts = SelectiveDepthLayout.BaysOfFondo(system, k).Count + 1;
+                for (var i = 0; stored != null && i < stored.Count && i < posts; i++)
+                {
+                    row.Add(stored[i]);
+                }
+
+                system.ExtraFondoPostCabeceras.Add(row);
             }
 
             return system;

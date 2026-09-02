@@ -478,6 +478,7 @@ namespace RackCad.UI.Systems.Selective
                 BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
                 LoadCellEditor();
                 RenderMatrix();
+                UpdatePostStatus(); // "Personalizada/Por defecto" is about the VISIBLE fondo (I-43)
                 Recompute();
             }
         }
@@ -841,12 +842,24 @@ namespace RackCad.UI.Systems.Selective
             Recompute();
         }
 
+        /// <summary>"Personalizada / Por defecto" always describes the pair <c>(fondo visible, poste seleccionado)</c>
+        /// (I-43): with several fondos the same post can be custom on one and standard on another, so a status that
+        /// only ever read fondo 0 would be wrong on every other fondo.</summary>
         private void UpdatePostStatus()
         {
             if (PostCabeceraStatus == null) return;
             var i = PostSelectBox.SelectedIndex;
-            var custom = i >= 0 && i < postCabeceras.Count && postCabeceras[i] != null;
-            PostCabeceraStatus.Text = i < 0 ? string.Empty : (custom ? "Personalizada" : "Por defecto (del tramo)");
+            if (i < 0)
+            {
+                PostCabeceraStatus.Text = string.Empty;
+                return;
+            }
+
+            var custom = state.CabeceraAt(selectedFondo, i) != null;
+            var label = custom ? "Personalizada" : "Por defecto (del tramo)";
+            PostCabeceraStatus.Text = state.FondoCount > 1
+                ? label + " · fondo " + (selectedFondo + 1).ToString(CultureInfo.InvariantCulture)
+                : label;
         }
 
         private void CustomizePost_Click(object sender, RoutedEventArgs e)
@@ -854,15 +867,16 @@ namespace RackCad.UI.Systems.Selective
             var i = PostSelectBox.SelectedIndex;
             if (i < 0 || i >= postCabeceras.Count) return;
 
-            // Seed with the RESOLVED cabecera for THIS post: height = the post's resolved height (tallest adjacent
-            // frente), fondo = the tramo's fondo (shared by every cabecera). So "Personalizar" opens the cabecera that
-            // is actually in use (e.g. 312 in / 48 in), not a generic 132/42. A custom one keeps its structural edits.
+            // Seed from the fondo the user is LOOKING AT (I-43): its custom cabecera at this post if it has one, else
+            // the standard cabecera resolved with THAT fondo's height and depth. Seeding from fondo 0 would open a
+            // cabecera that is not the one on screen.
             var resolvedHeight = ResolvedPostHeight(i);
             var fondo = ResolvedFondo();
 
             // Work on a CLONE and compare before/after: closing the configurator without editing is a real
             // CANCEL (before, the seed was mutated up-front and any close marked the post "Personalizada").
-            var seed = postCabeceras[i] != null ? CloneCabecera(postCabeceras[i]) : BuildStandardPostCabecera(resolvedHeight, fondo);
+            var visibleCustom = state.CabeceraAt(selectedFondo, i);
+            var seed = visibleCustom != null ? CloneCabecera(visibleCustom) : BuildStandardPostCabecera(resolvedHeight, fondo);
             if (seed == null) return;
             if (resolvedHeight > 0.0) seed.Height = resolvedHeight;
             if (fondo > 0.0) seed.Depth = fondo;
@@ -920,6 +934,7 @@ namespace RackCad.UI.Systems.Selective
 
             // Sync the post peralte edited in the cabecera back to the selective's per-post source of truth (0 = global,
             // so it keeps tracking the global peralte). The frontal/planta read PostPeraltes, so this avoids divergence.
+            // PostPeraltes stays GLOBAL by post (I-43): it is not part of the per-fondo write below.
             if (i < postPeraltes.Count)
             {
                 var edited = cfg.PostPeralte;
@@ -927,9 +942,15 @@ namespace RackCad.UI.Systems.Selective
                 ShowPostPeralteOverride();
             }
 
-            postCabeceras[i] = cfg;
-            UpdatePostStatus();
-            Recompute();
+            // ONE Application call writes this post in every target fondo, each with its own deep copy, and reports the
+            // fondos that do not reach that post. The window never loops over fondos (I-43).
+            using (DeferRecompute())
+            {
+                var result = state.ApplyCabeceraToTargets(i, cfg, CloneCabecera);
+                UpdatePostStatus();
+                Recompute();
+                pendingWarning = result.Describe(reset: false);
+            }
         }
 
         /// <summary>Deep-clone a cabecera via the single canonical clone (initiative I-17),
@@ -1042,15 +1063,35 @@ namespace RackCad.UI.Systems.Selective
                 : "Elementos de seguridad…";
         }
 
+        /// <summary>
+        /// Restore the standard cabecera at the selected post, over the SAME target fondos the rest of the editor uses.
+        /// <para>
+        /// The per-post PERALTE is a separate, GLOBAL authority and is only cleared when the reset covers EVERY fondo
+        /// (I-43). A reset aimed at some fondos is a statement about those cabeceras; wiping a rack-wide peralte
+        /// override because of it would destroy something the user never pointed at. With a single fondo, or with all
+        /// of them targeted, the behaviour is exactly the legacy one.
+        /// </para>
+        /// </summary>
         private void ResetPost_Click(object sender, RoutedEventArgs e)
         {
             var i = PostSelectBox.SelectedIndex;
             if (i < 0 || i >= postCabeceras.Count) return;
-            postCabeceras[i] = null;
-            if (i < postPeraltes.Count) postPeraltes[i] = 0.0; // back to the global peralte too
-            UpdatePostStatus();
-            ShowPostPeralteOverride();
-            Recompute();
+
+            using (DeferRecompute())
+            {
+                var result = state.ApplyCabeceraToTargets(i, null, CloneCabecera);
+
+                var allFondos = state.TargetFondos.Count >= state.FondoCount;
+                if (allFondos && i < postPeraltes.Count)
+                {
+                    postPeraltes[i] = 0.0; // whole-post reset: back to the global peralte too, as it always did
+                    ShowPostPeralteOverride();
+                }
+
+                UpdatePostStatus();
+                Recompute();
+                pendingWarning = result.Describe(reset: true);
+            }
         }
 
         private static Button SmallButton(string text) => new Button
@@ -1902,6 +1943,26 @@ namespace RackCad.UI.Systems.Selective
                 // legacy/round-tripped design can't carry a stale/independently-set depth.
                 if (cabecera != null) cabecera.Depth = loadedCabeceraFondo;
                 postCabeceras.Add(cabecera);
+            }
+
+            // The other fondos' cabecera rows (I-43). A design written before this axis existed carries none, so those
+            // fondos stay standard — the drawing it described is reproduced exactly, with no migration. Each row keeps
+            // ITS fondo's cabecera depth, which can differ from fondo 0's.
+            state.ExtraFondoPostCabeceras.Clear();
+            for (var k = 1; k < fondoMatrices.Count; k++)
+            {
+                var row = new List<RackFrameConfiguration>();
+                var stored = (k - 1) < design.ExtraFondoPostCabeceras.Count ? design.ExtraFondoPostCabeceras[k - 1] : null;
+                var depthK = SelectiveDepthLayout.CabeceraDepthOfFondoValue(
+                    fondoMatrices[k].Depth > 0.0 ? fondoMatrices[k].Depth : loadedPallet, fondoMatrices[k].CabeceraOverride);
+                for (var i = 0; stored != null && i < stored.Count; i++)
+                {
+                    var cabecera = stored[i];
+                    if (cabecera != null && depthK > 0.0) cabecera.Depth = depthK;
+                    row.Add(cabecera);
+                }
+
+                state.ExtraFondoPostCabeceras.Add(row);
             }
 
             postPeraltes.Clear();

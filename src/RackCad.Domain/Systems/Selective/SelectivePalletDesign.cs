@@ -87,6 +87,19 @@ namespace RackCad.Domain.Systems.Selective
         public IList<RackFrameConfiguration> PostCabeceras { get; } = new List<RackFrameConfiguration>();
 
         /// <summary>
+        /// Per-post custom cabeceras of the fondos AFTER fondo 0 (I-43): entry <c>k-1</c> is fondo <c>k</c>, and inside
+        /// it one entry per post of THAT fondo. A null entry, a short row or a missing row all mean "standard cabecera",
+        /// so a design written before this existed leaves every extra fondo standard — which is exactly what those
+        /// drawings showed, since a custom cabecera only ever applied to fondo 0.
+        /// <para>
+        /// <see cref="PostCabeceras"/> stays fondo 0's row, so the legacy shape keeps its legacy meaning and the frontal
+        /// keeps reading the master fondo. Read the pair through the single authority
+        /// (<c>SelectiveCabeceraAuthority</c>) instead of indexing either list, so nothing re-derives the fallback.
+        /// </para>
+        /// </summary>
+        public IList<IList<RackFrameConfiguration>> ExtraFondoPostCabeceras { get; } = new List<IList<RackFrameConfiguration>>();
+
+        /// <summary>
         /// Optional per-post PERALTE override, one entry per post position (N frentes → N+1 posts). An entry
         /// &lt;= 0 (or a short list) means that post inherits <see cref="PostPeralte"/>. Lets each post carry its
         /// own peralte in the frontal/planta; the larguero spacing adapts to each post's troquel.

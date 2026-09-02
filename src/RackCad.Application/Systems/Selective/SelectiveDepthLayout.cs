@@ -148,12 +148,18 @@ namespace RackCad.Application.Systems.Selective
         /// lateral/planta draw and that the fondo offsets step by.</summary>
         public static double CabeceraDepthOfFondo(SelectiveRackSystem system, int k)
         {
-            if (system != null && k >= 0 && k < system.FondoCabeceraOverrides.Count && system.FondoCabeceraOverrides[k] > 0.0)
-            {
-                return system.FondoCabeceraOverrides[k]; // custom "Fondo de cabecera" for this line
-            }
+            var over = system != null && k >= 0 && k < system.FondoCabeceraOverrides.Count ? system.FondoCabeceraOverrides[k] : 0.0;
+            return CabeceraDepthOfFondoValue(DepthOfFondo(system, k), over);
+        }
 
-            var pallet = DepthOfFondo(system, k);
+        /// <summary>The same override→rule→fallback precedence from raw values, for callers that hold a fondo's pallet
+        /// depth and its optional override but no resolved system (the editor's load path, I-43). Keeping ONE
+        /// implementation is what stops a loaded cabecera from being coerced to a depth the drawing never used.</summary>
+        public static double CabeceraDepthOfFondoValue(double palletDepth, double cabeceraOverride)
+        {
+            if (cabeceraOverride > 0.0) return cabeceraOverride; // custom "Fondo de cabecera" for this line
+
+            var pallet = palletDepth > 0.0 ? palletDepth : SelectiveRackDefaults.DefaultPalletDepth;
             var cabecera = pallet - SelectiveRackDefaults.CabeceraFondoAllowance;
             return cabecera > 0.0 ? cabecera : pallet;
         }
