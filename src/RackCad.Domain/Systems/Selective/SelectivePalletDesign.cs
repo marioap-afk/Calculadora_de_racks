@@ -698,6 +698,23 @@ namespace RackCad.Domain.Systems.Selective
         public double? HeightOverride { get; set; }
 
         /// <summary>
+        /// This frente's own "elevacion de larguero a piso" (in), overriding the run-wide
+        /// <see cref="SelectivePalletDesign.FloorBeamRise"/> (I-43, ID14). A bay IS the pair
+        /// <c>(fondo, frente)</c>, so this is that authority without a second table.
+        /// <para>
+        /// NULL means inherit the global; <c>0.0</c> is an EXPLICIT override that says "no rise at all", and the two
+        /// are not the same thing — a nullable is what keeps them distinguishable, and a later change of the global
+        /// moves the first and never the second.
+        /// </para>
+        /// <para>
+        /// It only affects geometry while <see cref="FloorBeam"/> is true, but it is NOT cleared when that flag is
+        /// turned off: unchecking "Piso" is a change of intent about the beam, not an instruction to forget the
+        /// elevation the user typed, and re-checking it brings the value back.
+        /// </para>
+        /// </summary>
+        public double? FloorBeamRiseOverride { get; set; }
+
+        /// <summary>
         /// "Medio frente" generalizado: partition this bay into N tramos with N-1 INTERMEDIATE posts (of this fondo
         /// only, so the fondos stay aligned at the shared end posts). Each tramo has a larguero length and a loaded
         /// flag; the LAST tramo's length is CALCULATED (the remainder of the bay). Fewer than 2 tramos = a normal

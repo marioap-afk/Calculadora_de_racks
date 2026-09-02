@@ -260,6 +260,14 @@ namespace RackCad.Application.Persistence
         public bool FloorBeam { get; set; }
         public double? HeightOverride { get; set; }
 
+        /// <summary>
+        /// This frente's own "elevacion de larguero a piso" (in), or null to inherit the run-wide
+        /// <c>FloorBeamRise</c> (I-43, ID14). Additive and nullable: a document written before this field existed has
+        /// no such property, deserializes to null, and therefore behaves exactly as it always did. <c>0.0</c> is a
+        /// stored, explicit value and round-trips as itself, distinct from null — no migration, no schema bump.
+        /// </summary>
+        public double? FloorBeamRiseOverride { get; set; }
+
         /// <summary>"Medio frente" generalizado: N tramos (each length + loaded); the last length is calculated. Empty = full bay.</summary>
         public List<SelectiveSegmentDocument> Segments { get; set; } = new List<SelectiveSegmentDocument>();
 
@@ -274,7 +282,8 @@ namespace RackCad.Application.Persistence
             var document = new SelectiveBayDocument
             {
                 FloorBeam = bay.FloorBeam,
-                HeightOverride = bay.HeightOverride
+                HeightOverride = bay.HeightOverride,
+                FloorBeamRiseOverride = bay.FloorBeamRiseOverride
             };
 
             foreach (var segment in bay.Segments)
@@ -295,7 +304,8 @@ namespace RackCad.Application.Persistence
             var bay = new SelectiveBayDesign
             {
                 FloorBeam = FloorBeam,
-                HeightOverride = HeightOverride
+                HeightOverride = HeightOverride,
+                FloorBeamRiseOverride = FloorBeamRiseOverride
             };
 
             if (Segments != null && Segments.Count > 0)

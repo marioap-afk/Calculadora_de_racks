@@ -17,6 +17,10 @@ namespace RackCad.Application.Systems.Selective
         public List<double?> BayHeights { get; } = new List<double?>();
         public List<List<SelectiveSegment>> BaySegments { get; } = new List<List<SelectiveSegment>>();
 
+        /// <summary>Per-bay "elevacion de larguero a piso" override (in); null = inherit the run-wide value, and
+        /// <c>0.0</c> is an explicit "no rise" (I-43, ID14). Parallel to <see cref="Bays"/> by bay.</summary>
+        public List<double?> FloorBeamRiseOverrides { get; } = new List<double?>();
+
         /// <summary>This fondo's pallet depth (in). Defaults to the shared default, mirroring the editor's field default.</summary>
         public double Depth { get; set; } = SelectiveRackDefaults.DefaultPalletDepth;
 

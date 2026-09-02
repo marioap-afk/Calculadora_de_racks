@@ -35,6 +35,10 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>Per-bay "medio frente" tramos (N tramos, the last calculated); empty = normal full-width bay. Parallel to <see cref="Bays"/>.</summary>
         public List<List<SelectiveSegment>> BaySegments { get; } = new List<List<SelectiveSegment>>();
 
+        /// <summary>Per-bay "elevacion de larguero a piso" override (in); null = inherit the global, <c>0.0</c> = an
+        /// explicit zero (I-43, ID14). Parallel to <see cref="Bays"/> by bay.</summary>
+        public List<double?> FloorBeamRiseOverrides { get; } = new List<double?>();
+
         /// <summary>One saved level matrix per fondo. Entry <see cref="SelectedFondo"/> is stale WHILE editing — the live
         /// working matrix (<see cref="Bays"/> etc.) is that fondo's copy until <see cref="SaveWorkingToSelected"/> commits.
         /// Fondo 0 defines the shared frente count.</summary>
@@ -138,6 +142,7 @@ namespace RackCad.Application.Systems.Selective
                 FloorBeams.Add(false);
                 BayHeights.Add(null);
                 BaySegments.Add(new List<SelectiveSegment>());
+                FloorBeamRiseOverrides.Add(null);
             }
 
             // A full reset of the matrix resets the selection too: keeping positions from the matrix that just
@@ -167,6 +172,7 @@ namespace RackCad.Application.Systems.Selective
             foreach (var column in Bays) snap.Bays.Add(CloneColumn(column));
             snap.FloorBeams.AddRange(FloorBeams);
             snap.BayHeights.AddRange(BayHeights);
+            snap.FloorBeamRiseOverrides.AddRange(FloorBeamRiseOverrides);
             foreach (var segments in BaySegments) snap.BaySegments.Add(CloneSegments(segments));
             return snap;
         }
@@ -179,12 +185,15 @@ namespace RackCad.Application.Systems.Selective
             FloorBeams.Clear();
             BayHeights.Clear();
             BaySegments.Clear();
+            FloorBeamRiseOverrides.Clear();
             foreach (var column in snap.Bays) Bays.Add(CloneColumn(column));
             FloorBeams.AddRange(snap.FloorBeams);
             BayHeights.AddRange(snap.BayHeights);
+            FloorBeamRiseOverrides.AddRange(snap.FloorBeamRiseOverrides);
             foreach (var segments in snap.BaySegments) BaySegments.Add(CloneSegments(segments));
-            if (Bays.Count == 0) { Bays.Add(new List<SelectiveEditorCell> { NewCell() }); FloorBeams.Add(false); BayHeights.Add(null); BaySegments.Add(new List<SelectiveSegment>()); }
+            if (Bays.Count == 0) { Bays.Add(new List<SelectiveEditorCell> { NewCell() }); FloorBeams.Add(false); BayHeights.Add(null); BaySegments.Add(new List<SelectiveSegment>()); FloorBeamRiseOverrides.Add(null); }
             while (BaySegments.Count < Bays.Count) BaySegments.Add(new List<SelectiveSegment>()); // defensive: keep parallel to bays (legacy snapshots)
+            while (FloorBeamRiseOverrides.Count < Bays.Count) FloorBeamRiseOverrides.Add(null);   // same, for a snapshot taken before ID14
             ClampSelection();
         }
 
@@ -208,6 +217,7 @@ namespace RackCad.Application.Systems.Selective
                     m.Bays.Add(CloneColumn(source.Bays[b]));
                     m.FloorBeams.Add(source.FloorBeams[b]);
                     m.BayHeights.Add(source.BayHeights[b]);
+                    m.FloorBeamRiseOverrides.Add(b < source.FloorBeamRiseOverrides.Count ? source.FloorBeamRiseOverrides[b] : null);
                     m.BaySegments.Add(b < source.BaySegments.Count ? CloneSegments(source.BaySegments[b]) : new List<SelectiveSegment>());
                 }
                 else
@@ -215,6 +225,7 @@ namespace RackCad.Application.Systems.Selective
                     m.Bays.Add(widthSeed != null && b < widthSeed.Bays.Count ? CloneColumn(widthSeed.Bays[b]) : new List<SelectiveEditorCell> { NewCell() });
                     m.FloorBeams.Add(false);
                     m.BayHeights.Add(null);
+                    m.FloorBeamRiseOverrides.Add(null);
                     m.BaySegments.Add(new List<SelectiveSegment>());
                 }
             }
@@ -235,7 +246,8 @@ namespace RackCad.Application.Systems.Selective
                 var bay = new SelectiveBayDesign
                 {
                     FloorBeam = m.FloorBeams[b],
-                    HeightOverride = m.BayHeights[b]
+                    HeightOverride = m.BayHeights[b],
+                    FloorBeamRiseOverride = b < m.FloorBeamRiseOverrides.Count ? m.FloorBeamRiseOverrides[b] : null
                 };
                 if (b < m.BaySegments.Count)
                 {
@@ -298,10 +310,11 @@ namespace RackCad.Application.Systems.Selective
                 m.Bays.Add(column);
                 m.FloorBeams.Add(bayDesign.FloorBeam);
                 m.BayHeights.Add(bayDesign.HeightOverride);
+                m.FloorBeamRiseOverrides.Add(bayDesign.FloorBeamRiseOverride);
                 m.BaySegments.Add(CloneSegments(bayDesign.Segments));
             }
 
-            if (m.Bays.Count == 0) { m.Bays.Add(new List<SelectiveEditorCell> { NewCell() }); m.FloorBeams.Add(false); m.BayHeights.Add(null); m.BaySegments.Add(new List<SelectiveSegment>()); }
+            if (m.Bays.Count == 0) { m.Bays.Add(new List<SelectiveEditorCell> { NewCell() }); m.FloorBeams.Add(false); m.BayHeights.Add(null); m.FloorBeamRiseOverrides.Add(null); m.BaySegments.Add(new List<SelectiveSegment>()); }
             return m;
         }
 
@@ -315,6 +328,9 @@ namespace RackCad.Application.Systems.Selective
                     Bays.Add(Bays[Bays.Count - 1].Select(c => c.Clone()).ToList());
                     FloorBeams.Add(FloorBeams[FloorBeams.Count - 1]);
                     BayHeights.Add(BayHeights[BayHeights.Count - 1]);
+                    // A new frente clones the last one, exactly like every other per-bay field. It does NOT resurrect a
+                    // value a previous shrink deleted: what it copies is whatever the CURRENT last frente holds.
+                    FloorBeamRiseOverrides.Add(FloorBeamRiseOverrides[FloorBeamRiseOverrides.Count - 1]);
                     BaySegments.Add(CloneSegments(BaySegments[BaySegments.Count - 1]));
                 }
                 else
@@ -322,6 +338,7 @@ namespace RackCad.Application.Systems.Selective
                     Bays.Add(new List<SelectiveEditorCell> { NewCell() });
                     FloorBeams.Add(false);
                     BayHeights.Add(null);
+                    FloorBeamRiseOverrides.Add(null);
                     BaySegments.Add(new List<SelectiveSegment>());
                 }
             }
@@ -332,6 +349,7 @@ namespace RackCad.Application.Systems.Selective
                 BaySegments.RemoveAt(BaySegments.Count - 1);
                 FloorBeams.RemoveAt(FloorBeams.Count - 1);
                 BayHeights.RemoveAt(BayHeights.Count - 1);
+                FloorBeamRiseOverrides.RemoveAt(FloorBeamRiseOverrides.Count - 1);
             }
 
             ClampSelection();
@@ -682,6 +700,79 @@ namespace RackCad.Application.Systems.Selective
                 var own = topology.FrontCount(k) + 1;
                 while (row.Count > own) row.RemoveAt(row.Count - 1);
             }
+        }
+
+        // ---- Floor-beam rise by (fondo, frente) - I-43, ID14 ----
+
+        /// <summary>The "elevacion de larguero a piso" override of <c>(fondoIndex, frontIndex)</c>; null = inherit the
+        /// global. Reads the LIVE working matrix for the fondo being edited and the stored slot for the rest.</summary>
+        public double? FloorBeamRiseOverrideAt(int fondoIndex, int frontIndex)
+        {
+            var row = FloorBeamRiseRow(fondoIndex);
+            return row != null && frontIndex >= 0 && frontIndex < row.Count ? row[frontIndex] : null;
+        }
+
+        private List<double?> FloorBeamRiseRow(int fondoIndex)
+        {
+            if (FondoMatrices.Count == 0) return fondoIndex == 0 ? FloorBeamRiseOverrides : null;
+            if (fondoIndex < 0 || fondoIndex >= FondoMatrices.Count) return null;
+            return fondoIndex == SelectedFondo ? FloorBeamRiseOverrides : FondoMatrices[fondoIndex].FloorBeamRiseOverrides;
+        }
+
+        /// <summary>
+        /// Write a frente-wide "elevacion de larguero a piso" over <see cref="TargetFondos"/> - the same fondo axis the
+        /// rest of the editor uses, with the two scopes a FRENTE really has (I-43, ID14).
+        /// <para>
+        /// <paramref name="rise"/> null is the RESTORE: those frentes go back to inheriting the global. A value of
+        /// <c>0.0</c> is written as an explicit zero, which is a different thing. A target fondo that does not have
+        /// the requested frente is OMITTED and reported - never padded, never clamped onto a neighbouring frente.
+        /// </para>
+        /// <para>
+        /// It writes the LIVE matrix for the fondo being edited and the stored matrices for the others, so the caller
+        /// mutates everything in one call and recomputes ONCE.
+        /// </para>
+        /// </summary>
+        public SelectiveFrontApplyResult ApplyFloorBeamRiseToTargets(
+            SelectiveFrontApplyScope scope, int frontIndex, double? rise)
+        {
+            var topology = SelectiveTopology.From(this);
+            var applied = new List<(int FondoIndex, int FrontIndex)>();
+            var omitted = new List<int>();
+
+            foreach (var fondo in targetFondos.Fondos)
+            {
+                var row = topology.HasFondo(fondo) ? FloorBeamRiseRow(fondo) : null;
+                var frentes = topology.FrontCount(fondo);
+                if (row == null || frentes == 0)
+                {
+                    omitted.Add(fondo);
+                    continue;
+                }
+
+                while (row.Count < frentes) row.Add(null); // keep the parallel list whole
+
+                if (scope == SelectiveFrontApplyScope.All)
+                {
+                    for (var front = 0; front < frentes; front++)
+                    {
+                        row[front] = rise;
+                        applied.Add((fondo, front));
+                    }
+
+                    continue;
+                }
+
+                if (frontIndex < 0 || frontIndex >= frentes)
+                {
+                    omitted.Add(fondo); // this fondo simply does not have that frente
+                    continue;
+                }
+
+                row[frontIndex] = rise;
+                applied.Add((fondo, frontIndex));
+            }
+
+            return new SelectiveFrontApplyResult(scope, applied, omitted);
         }
 
         // ---- Custom cabeceras by (fondo, post) - I-43 ----

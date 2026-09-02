@@ -659,6 +659,33 @@ namespace RackCad.UI.Systems.Selective
             floor.Unchecked += (s, e) => SetFloor(bay, false);
             panel.Children.Add(floor);
 
+            // "Elevacion de larguero a piso" of THIS frente (I-43, ID14): a number overrides the global, empty
+            // inherits it. It sits under "Piso" because that is the only flag it acts on — and it is NOT cleared when
+            // that box is unchecked, so re-checking brings the value back.
+            var riseRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 3, 0, 0) };
+            riseRow.Children.Add(new TextBlock { Text = "Elev.", Foreground = LabelStroke, FontSize = 10.5, Margin = new Thickness(0, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
+            var stored = state.FloorBeamRiseOverrideAt(selectedFondo, bay);
+            var riseBox = new TextBox
+            {
+                Width = 44,
+                FontSize = 10.5,
+                Text = stored.HasValue ? stored.Value.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty,
+                ToolTip = "Elevación del larguero a piso de ESTE frente (in). Vacío = usa el valor global; 0 = elevación cero, que no es lo mismo. "
+                    + "Solo actúa cuando 'Piso' está marcado, pero el valor se conserva aunque lo desmarques. "
+                    + "Se aplica a este frente en TODOS los fondos destino de «Aplicar en fondos»."
+            };
+            riseBox.LostFocus += (s, e) => SetFloorBeamRise(bay, riseBox.Text);
+            // e.Handled for the same reason as the height box: Enter must not also fire the window's default button.
+            riseBox.KeyDown += (s, e) => { if (e.Key == Key.Enter) { SetFloorBeamRise(bay, riseBox.Text); e.Handled = true; } };
+            riseRow.Children.Add(riseBox);
+
+            var riseAll = SmallButton("⇊");
+            riseAll.ToolTip = "Aplicar esta elevación a TODOS los frentes de los fondos destino.";
+            riseAll.Margin = new Thickness(4, 0, 0, 0);
+            riseAll.Click += (s, e) => SetFloorBeamRise(bay, riseBox.Text, SelectiveFrontApplyScope.All);
+            riseRow.Children.Add(riseAll);
+            panel.Children.Add(riseRow);
+
             var heightRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 3, 0, 0) };
             heightRow.Children.Add(new TextBlock { Text = "Alto", Foreground = LabelStroke, FontSize = 10.5, Margin = new Thickness(0, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
             var heightBox = new TextBox
@@ -690,6 +717,53 @@ namespace RackCad.UI.Systems.Selective
             panel.Children.Add(tramosBtn);
 
             return panel;
+        }
+
+        /// <summary>
+        /// Commit the per-frente "elevacion de larguero a piso". The value goes to <see cref="SelectiveEditorState"/>,
+        /// which writes it across every target fondo that has that frente — the window never loops over fondos, and
+        /// recomputes ONCE for the whole operation (I-43, ID14).
+        /// <para>
+        /// An empty box is the RESTORE (null: inherit the global); <c>0</c> is an explicit zero. Scope <c>All</c>
+        /// writes every frente of those fondos instead of just this one.
+        /// </para>
+        /// </summary>
+        private void SetFloorBeamRise(int bay, string text, SelectiveFrontApplyScope scope = SelectiveFrontApplyScope.Front)
+        {
+            if (bay < 0 || bay >= bays.Count) return;
+
+            // Parsed here rather than with UiSupport.TryOptionalNum: that helper rejects 0, which is right for a
+            // height ("auto or a real height") and wrong here, where 0 is an explicit "no rise at all" and must be
+            // distinguishable from empty (I-43, ID14).
+            double? value = null;
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                if (!UiSupport.TryNum(text, out var typed) || typed < 0.0)
+                {
+                    SetStatus("Elevación de larguero a piso inválida (vacío = usa el valor global; 0 = sin elevación).", true);
+                    return;
+                }
+
+                value = typed;
+            }
+
+            if (scope == SelectiveFrontApplyScope.Front
+                && Nullable.Equals(state.FloorBeamRiseOverrideAt(selectedFondo, bay), value)
+                && state.TargetFondos.Count == 1
+                && state.TargetFondos.Fondos[0] == selectedFondo)
+            {
+                return; // nothing to do: the only target already holds this value
+            }
+
+            using (DeferRecompute())
+            {
+                // The fondo boxes must be committed first: the state writes the OTHER fondos' stored matrices.
+                SaveWorkingToSelected();
+                var result = state.ApplyFloorBeamRiseToTargets(scope, bay, value);
+                RenderMatrix();
+                Recompute();
+                pendingWarning = result.Describe(restore: !value.HasValue);
+            }
         }
 
         private void SetBayHeight(int bay, string text)
@@ -1812,7 +1886,7 @@ namespace RackCad.UI.Systems.Selective
             if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste inválido."; return null; }
             if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal inválida."; return null; }
             if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical inválida."; return null; }
-            if (!UiSupport.TryNum(FloorRiseBox.Text, out var floorRise) || floorRise < 0.0) { error = "Elevación de larguero a piso inválida."; return null; }
+            if (!UiSupport.TryNum(FloorRiseBox.Text, out var floorRise) || floorRise < 0.0) { error = "Elevación de larguero a piso (global) inválida."; return null; }
             if (!UiSupport.TryNum(FondoBox.Text, out var fondo) || fondo <= 0.0) { error = "Fondo de tarima inválido."; return null; }
             if (!UiSupport.TryNum(FondosBox.Text, out var fondosNum) || fondosNum < 1.0) { error = "Número de fondos inválido (mínimo 1)."; return null; }
             var depthCount = Math.Min(SelectiveRackDefaults.MaxDepthCount, Math.Max(1, (int)Math.Round(fondosNum)));

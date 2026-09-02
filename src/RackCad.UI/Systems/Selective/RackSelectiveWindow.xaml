@@ -124,10 +124,10 @@
                                      ToolTip="Espacio libre sobre la tarima hasta el siguiente larguero. Se aplica al salir del campo." />
                         </StackPanel>
                     </Grid>
-                    <TextBlock Text="Elevación larguero a piso (in)" Style="{StaticResource FieldLabel}" />
+                    <TextBlock Text="Elevación larguero a piso (in) — global" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="FloorRiseBox" Style="{StaticResource FieldBox}" Text="4"
                              LostFocus="GlobalScalar_LostFocus" KeyDown="GlobalScalar_KeyDown"
-                             ToolTip="Altura del larguero a piso cuando el frente tiene marcada la casilla 'Piso'. Se aplica al salir del campo." />
+                             ToolTip="Valor PREDETERMINADO de la elevación del larguero a piso, para los frentes que no tienen el suyo. Cada frente puede fijar el propio en su encabezado (campo «Elev.»); cambiar este global mueve solo a los que heredan. Actúa cuando el frente tiene marcada la casilla 'Piso'. Se aplica al salir del campo." />
                     <TextBlock Text="Fondo de tarima (in)" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="FondoBox" Style="{StaticResource FieldBox}" Text="48" LostFocus="FondoDepth_LostFocus"
                              ToolTip="Profundidad de la TARIMA (por fondo). La cabecera se dibuja 6&quot; menos (regla: cabecera = tarima − 6&quot;). Con 2+ fondos aplica al fondo elegido en 'Editando fondo'." />
