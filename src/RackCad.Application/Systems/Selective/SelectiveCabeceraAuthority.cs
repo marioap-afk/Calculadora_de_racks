@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using RackCad.Application.RackFrames;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 
@@ -33,18 +35,56 @@ namespace RackCad.Application.Systems.Selective
             => design == null ? null : At(design.PostCabeceras, design.ExtraFondoPostCabeceras, fondoIndex, postIndex);
 
         /// <summary>
-        /// The custom that is usable as a FULL override of that post's cabecera, or null.
+        /// The custom that is usable as a FULL override of that post's cabecera, or null — with ONE exception, the
+        /// depth.
         /// <para>
-        /// A custom cabecera overrides everything for its post — height, depth and the whole frame — but only when it
-        /// actually carries a height. A stored configuration with <c>Height &lt;= 0</c> is not a usable frame, and
-        /// every consumer already refused it; keeping that check here means none of them has to remember it.
+        /// A custom cabecera overrides the height and the whole frame recipe, but it does NOT own its depth: the
+        /// Selectivo already has an explicit per-fondo authority for that (<c>CabeceraFondoOverride</c>, else
+        /// <c>tarima − 6"</c>, in <see cref="SelectiveDepthLayout.CabeceraDepthOfFondo"/>). Letting a stored
+        /// configuration carry its own depth would make it a SECOND authority, and the two would disagree the moment
+        /// the same configuration is applied to fondos of different depth — which is exactly what the multi-fondo
+        /// apply of I-43 does. So the fondo's depth is imposed here, at the single point every consumer reads through,
+        /// instead of being repaired later on load: the drawing is then the same before and after a save/load, and
+        /// changing a fondo's <c>CabeceraFondoOverride</c> moves that fondo's cabeceras and no others.
+        /// </para>
+        /// <para>
+        /// The configuration is normalized in place rather than copied, so identity is preserved for callers that
+        /// compare it, and the write is idempotent. This is sound because a configuration belongs to exactly ONE
+        /// <c>(fondo, post)</c> — the multi-fondo apply hands every target its own deep copy for this very reason.
+        /// A stored configuration with <c>Height &lt;= 0</c> is not a usable frame and is refused, as every consumer
+        /// already did on its own.
         /// </para>
         /// </summary>
         public static RackFrameConfiguration EffectiveCustomAt(SelectiveRackSystem system, int fondoIndex, int postIndex)
         {
             var custom = CustomAt(system, fondoIndex, postIndex);
-            return custom != null && custom.Height > 0.0 ? custom : null;
+            if (custom == null || custom.Height <= 0.0) return null;
+
+            ImposeFondoDepth(custom, SelectiveDepthLayout.CabeceraDepthOfFondo(system, fondoIndex));
+            return custom;
         }
+
+        /// <summary>
+        /// Make a custom cabecera carry the depth its FONDO dictates. This is the one function that governs the rule,
+        /// used both when a configuration is written to a fondo and whenever one is read back, so there is no path on
+        /// which the two could disagree.
+        /// <para>
+        /// Changing the depth also refreshes the DERIVED physical model. The members (travesaños, diagonales) are
+        /// computed from the frame and its depth, so a configuration whose depth moved while its members did not is
+        /// internally inconsistent — and it would be counted one way in the live session and another after a reload
+        /// regenerated them. Refreshing here is what makes the BOM identical before and after a save/load.
+        /// </para>
+        /// </summary>
+        public static void ImposeFondoDepth(RackFrameConfiguration custom, double depth)
+        {
+            if (custom == null || depth <= 0.0 || Math.Abs(custom.Depth - depth) <= DepthTolerance) return;
+
+            custom.Depth = depth;
+            new BracingPanelMemberBuilder().RefreshPhysicalModel(custom);
+        }
+
+        /// <summary>Inches below which two depths are the same value (they come from the same arithmetic).</summary>
+        private const double DepthTolerance = 1e-6;
 
         /// <summary>Whether that post of that fondo draws a customized cabecera rather than a derived one.</summary>
         public static bool HasCustomAt(SelectiveRackSystem system, int fondoIndex, int postIndex)

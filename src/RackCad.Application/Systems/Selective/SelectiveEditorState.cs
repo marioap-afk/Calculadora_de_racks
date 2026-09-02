@@ -693,6 +693,22 @@ namespace RackCad.Application.Systems.Selective
             return row != null && postIndex >= 0 && postIndex < row.Count ? row[postIndex] : null;
         }
 
+        /// <summary>
+        /// The CABECERA depth of a fondo: its <c>CabeceraFondoOverride</c> when set, else the rule
+        /// (<c>tarima − 6"</c>). Delegates to <see cref="SelectiveDepthLayout.CabeceraDepthOfFondoValue"/>, the same
+        /// precedence the resolved system uses, so the editor and the drawing can never disagree about it (I-43).
+        /// <para>
+        /// It reads the fondo's SLOT, so a caller editing the depth boxes must commit them
+        /// (<see cref="SaveWorkingToSelected"/>) first — the same rule every other build path already follows.
+        /// </para>
+        /// </summary>
+        public double CabeceraDepthOfFondo(int fondoIndex)
+        {
+            if (fondoIndex < 0 || fondoIndex >= FondoMatrices.Count) return 0.0;
+            var matrix = FondoMatrices[fondoIndex];
+            return SelectiveDepthLayout.CabeceraDepthOfFondoValue(matrix.Depth, matrix.CabeceraOverride);
+        }
+
         /// <summary>Whether that post exists in that fondo: a fondo with C frentes has posts 0..C.</summary>
         public bool PostExistsIn(int fondoIndex, int postIndex)
         {
@@ -742,9 +758,16 @@ namespace RackCad.Application.Systems.Selective
                     continue;
                 }
 
-                row[postIndex] = configuration == null
+                var copy = configuration == null
                     ? null
                     : (deepCopy != null ? deepCopy(configuration) : configuration);
+
+                // Each target gets ITS OWN fondo's cabecera depth, resolved with the same rule the drawing uses, so the
+                // state is already correct before anything recomputes. Without this the configuration would travel
+                // carrying the depth of the fondo it was authored on (I-43).
+                SelectiveCabeceraAuthority.ImposeFondoDepth(copy, CabeceraDepthOfFondo(fondo));
+
+                row[postIndex] = copy;
                 applied.Add(fondo);
             }
 

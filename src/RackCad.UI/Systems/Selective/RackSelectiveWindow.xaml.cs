@@ -946,6 +946,9 @@ namespace RackCad.UI.Systems.Selective
             // fondos that do not reach that post. The window never loops over fondos (I-43).
             using (DeferRecompute())
             {
+                // Commit the depth/cabecera boxes into their fondo slot first: ApplyCabeceraToTargets resolves EACH
+                // target's cabecera depth from its slot, so an uncommitted box would stamp a stale depth (I-43).
+                SaveWorkingToSelected();
                 var result = state.ApplyCabeceraToTargets(i, cfg, CloneCabecera);
                 UpdatePostStatus();
                 Recompute();
@@ -1946,23 +1949,16 @@ namespace RackCad.UI.Systems.Selective
             }
 
             // The other fondos' cabecera rows (I-43). A design written before this axis existed carries none, so those
-            // fondos stay standard — the drawing it described is reproduced exactly, with no migration. Each row keeps
-            // ITS fondo's cabecera depth, which can differ from fondo 0's.
+            // fondos stay standard — the drawing it described is reproduced exactly, with no migration.
+            // No depth is repaired here: SelectiveCabeceraAuthority imposes each fondo's cabecera depth wherever a
+            // custom is read, so load is not a place where a wrong value gets fixed.
             state.ExtraFondoPostCabeceras.Clear();
             for (var k = 1; k < fondoMatrices.Count; k++)
             {
-                var row = new List<RackFrameConfiguration>();
                 var stored = (k - 1) < design.ExtraFondoPostCabeceras.Count ? design.ExtraFondoPostCabeceras[k - 1] : null;
-                var depthK = SelectiveDepthLayout.CabeceraDepthOfFondoValue(
-                    fondoMatrices[k].Depth > 0.0 ? fondoMatrices[k].Depth : loadedPallet, fondoMatrices[k].CabeceraOverride);
-                for (var i = 0; stored != null && i < stored.Count; i++)
-                {
-                    var cabecera = stored[i];
-                    if (cabecera != null && depthK > 0.0) cabecera.Depth = depthK;
-                    row.Add(cabecera);
-                }
-
-                state.ExtraFondoPostCabeceras.Add(row);
+                state.ExtraFondoPostCabeceras.Add(stored == null
+                    ? new List<RackFrameConfiguration>()
+                    : new List<RackFrameConfiguration>(stored));
             }
 
             postPeraltes.Clear();

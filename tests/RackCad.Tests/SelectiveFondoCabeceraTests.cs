@@ -357,6 +357,184 @@ namespace RackCad.Tests
             return document.ToDomain();
         }
 
+        // ---- Depth: the FONDO owns it, a custom cabecera never becomes a second authority ----
+
+        /// <summary>A state of <paramref name="depths"/> fondos, each with its own pallet depth (so each has its own
+        /// derived cabecera depth: tarima - 6").</summary>
+        private static SelectiveEditorState StateWithDepths(params double[] depths)
+        {
+            var state = new SelectiveEditorState { DefaultBeamId = BeamId };
+            foreach (var depth in depths)
+            {
+                state.InitMatrix(2, 2);
+                state.FondoMatrices.Add(state.SnapshotWorking(depth, 0.0));
+            }
+
+            state.SelectedFondo = 0;
+            state.LoadFondo(0);
+            state.SetTargetFondos(new[] { 0 });
+            state.SyncPostCabeceras();
+            return state;
+        }
+
+        /// <summary>The editor inputs matching a state built by <see cref="StateWithDepths"/>.</summary>
+        private static SelectiveDesignInputs Inputs(SelectiveEditorState state)
+            => new SelectiveDesignInputs
+            {
+                PostId = PostId,
+                PostPeralte = 3.0,
+                PalletTolerance = 4.0,
+                VerticalClearance = 6.0,
+                FloorBeamRise = 4.0,
+                Fondo = state.FondoMatrices[0].Depth,
+                DepthCount = state.FondoMatrices.Count,
+                WorkingDepth = state.FondoMatrices[state.SelectedFondo].Depth,
+                WorkingCabeceraOverride = state.FondoMatrices[state.SelectedFondo].CabeceraOverride,
+                Separators = new List<double>()
+            };
+
+        [Fact]
+        public void CustomizingOnce_GivesEachTargetFondoItsOwnDepth_Immediately()
+        {
+            // Fondo 0 draws its cabecera at 42 (48 - 6) and fondo 1 at 54 (60 - 6). ONE customization aimed at both
+            // must land with each fondo's own depth, not with the depth of the fondo it was authored on.
+            var state = StateWithDepths(48.0, 60.0);
+            state.SetTargetFondos(new[] { 0, 1 });
+
+            var authored = Custom(400.0);
+            authored.Depth = state.CabeceraDepthOfFondo(0); // as the editor seeds it, from the VISIBLE fondo
+            state.ApplyCabeceraToTargets(1, authored, DeepCopy);
+
+            Assert.Equal(42.0, state.CabeceraAt(0, 1).Depth, 4);
+            Assert.Equal(54.0, state.CabeceraAt(1, 1).Depth, 4);
+            Assert.Equal(400.0, state.CabeceraAt(0, 1).Height, 4); // the rest of the recipe is preserved
+            Assert.Equal(400.0, state.CabeceraAt(1, 1).Height, 4);
+            Assert.NotSame(state.CabeceraAt(0, 1), state.CabeceraAt(1, 1));
+        }
+
+        [Fact]
+        public void ThoseDepthsSurviveBuildDesignAndResolve()
+        {
+            var state = StateWithDepths(48.0, 60.0);
+            state.SetTargetFondos(new[] { 0, 1 });
+            var authored = Custom(400.0);
+            authored.Depth = state.CabeceraDepthOfFondo(0);
+            state.ApplyCabeceraToTargets(1, authored, DeepCopy);
+
+            var system = Resolve(state.BuildDesign(Inputs(state)));
+
+            Assert.Equal(42.0, SelectiveCabeceraAuthority.EffectiveCustomAt(system, 0, 1).Depth, 4);
+            Assert.Equal(54.0, SelectiveCabeceraAuthority.EffectiveCustomAt(system, 1, 1).Depth, 4);
+        }
+
+        [Fact]
+        public void ThoseDepthsSurviveASaveAndLoad_SoTheDrawingDoesNotChange()
+        {
+            var state = StateWithDepths(48.0, 60.0);
+            state.SetTargetFondos(new[] { 0, 1 });
+            var authored = Custom(400.0);
+            authored.Depth = state.CabeceraDepthOfFondo(0);
+            state.ApplyCabeceraToTargets(1, authored, DeepCopy);
+
+            var before = Resolve(state.BuildDesign(Inputs(state)));
+            var beforeDepths = new[]
+            {
+                SelectiveCabeceraAuthority.EffectiveCustomAt(before, 0, 1).Depth,
+                SelectiveCabeceraAuthority.EffectiveCustomAt(before, 1, 1).Depth
+            };
+
+            var after = Resolve(RoundTrip(state.BuildDesign(Inputs(state)), out _));
+            var afterDepths = new[]
+            {
+                SelectiveCabeceraAuthority.EffectiveCustomAt(after, 0, 1).Depth,
+                SelectiveCabeceraAuthority.EffectiveCustomAt(after, 1, 1).Depth
+            };
+
+            Assert.Equal(new[] { 42.0, 54.0 }, beforeDepths);
+            Assert.Equal(beforeDepths, afterDepths);
+            Assert.Equal(BomSignature(before), BomSignature(after)); // and the BOM is the same before and after
+        }
+
+        [Fact]
+        public void ApplyingFromTheDeepFondoTowardsTheShallowOne_GivesTheSameResult()
+        {
+            var state = StateWithDepths(48.0, 60.0);
+            state.SelectFondo(1);
+            state.LoadFondo(1);
+            state.SetTargetFondos(new[] { 0, 1 });
+
+            var authored = Custom(400.0);
+            authored.Depth = state.CabeceraDepthOfFondo(1); // authored on the DEEP fondo this time
+            state.ApplyCabeceraToTargets(1, authored, DeepCopy);
+
+            Assert.Equal(42.0, state.CabeceraAt(0, 1).Depth, 4);
+            Assert.Equal(54.0, state.CabeceraAt(1, 1).Depth, 4);
+        }
+
+        [Fact]
+        public void ChangingAFondosCabeceraOverride_MovesOnlyThatFondosCustomDepth()
+        {
+            var design = Design(2, 2);
+            design.ExtraFondoDepths[0] = 60.0;
+            SetCustom(design, 0, 1, Custom(410.0));
+            SetCustom(design, 1, 1, Custom(410.0));
+
+            // Fondo 1 gets an explicit cabecera override; fondo 0 keeps the rule.
+            design.CabeceraFondoOverrides.Add(0.0);
+            design.CabeceraFondoOverrides.Add(37.0);
+            var system = Resolve(design);
+
+            Assert.Equal(42.0, SelectiveCabeceraAuthority.EffectiveCustomAt(system, 0, 1).Depth, 4);
+            Assert.Equal(37.0, SelectiveCabeceraAuthority.EffectiveCustomAt(system, 1, 1).Depth, 4);
+        }
+
+        [Fact]
+        public void AFondoWithoutACustom_KeepsDerivingItsCabeceraDepthNormally()
+        {
+            var design = Design(2, 2);
+            design.ExtraFondoDepths[0] = 60.0;
+            SetCustom(design, 0, 1, Custom(420.0));
+            var system = Resolve(design);
+
+            Assert.Equal(42.0, SelectiveCabeceraAuthority.EffectiveCustomAt(system, 0, 1).Depth, 4);
+            Assert.Null(SelectiveCabeceraAuthority.EffectiveCustomAt(system, 1, 1));
+            Assert.Equal(54.0, SelectiveDepthLayout.CabeceraDepthOfFondo(system, 1), 4); // still the rule
+        }
+
+        [Fact]
+        public void TheDepthRuleNeverAliasesTwoFondosOntoOneConfiguration()
+        {
+            var state = StateWithDepths(48.0, 60.0);
+            state.SetTargetFondos(new[] { 0, 1 });
+            state.ApplyCabeceraToTargets(1, Custom(430.0), DeepCopy);
+
+            state.CabeceraAt(0, 1).Height = 999.0;
+
+            Assert.Equal(430.0, state.CabeceraAt(1, 1).Height, 4);
+            Assert.Equal(42.0, state.CabeceraAt(0, 1).Depth, 4);
+            Assert.Equal(54.0, state.CabeceraAt(1, 1).Depth, 4);
+        }
+
+        [Fact]
+        public void ALegacyDocumentKeepsItsExactDepthBehaviour()
+        {
+            // Only fondo 0 is customized, and its cabecera depth is the rule for fondo 0 — exactly what the drawing
+            // showed before this axis existed.
+            var design = Design(2, 2);
+            design.ExtraFondoDepths[0] = 60.0;
+            SetCustom(design, 0, 1, Custom(440.0));
+            var document = SelectivePalletDesignDocument.From(design, "GUID-LEG-DEPTH", "Legacy");
+            document.ExtraFondoPostCabeceras = null;
+            var store = new SelectivePalletDesignStore();
+
+            var restored = store.Deserialize(store.Serialize(document)).ToDomain();
+            var system = Resolve(restored);
+
+            Assert.Equal(42.0, SelectiveCabeceraAuthority.EffectiveCustomAt(system, 0, 1).Depth, 4);
+            Assert.Null(SelectiveCabeceraAuthority.EffectiveCustomAt(system, 1, 1));
+        }
+
+
         // ---- Consumers: lateral, planta, BOM ----
 
         /// <summary>The tallest point any instance of a corte reaches. A custom cabecera taller than the derived one
@@ -471,6 +649,31 @@ namespace RackCad.Tests
             design.ExtraFondoPostCabeceras.Add(new List<RackFrameConfiguration> { null, null, Custom(370.0) });
 
             Assert.Equal(BomSignature(plain), BomSignature(Resolve(design)));
+        }
+
+        [Fact]
+        public void LateralAndPlantaAndBom_ObserveEachFondosOwnCabeceraDepth()
+        {
+            // The same customization on two fondos of different depth: the drawing and the BOM must see 42 and 54,
+            // never twice the depth of the fondo it was authored on.
+            var design = Design(2, 2);
+            design.ExtraFondoDepths[0] = 60.0;
+            SetCustom(design, 0, 1, Custom(450.0));
+            SetCustom(design, 1, 1, Custom(450.0));
+            var system = Resolve(design);
+
+            // Reading through the authority is what every consumer does, and it is what imposes the depth.
+            var corte = new SelectiveLateralBuilder().Cortes(system, Catalog).First(c => c.PostIndex == 1);
+            Assert.Equal(42.0, corte.Cabecera.Depth, 4); // the anchor is fondo 0
+
+            Assert.Equal(42.0, SelectiveCabeceraAuthority.EffectiveCustomAt(system, 0, 1).Depth, 4);
+            Assert.Equal(54.0, SelectiveCabeceraAuthority.EffectiveCustomAt(system, 1, 1).Depth, 4);
+
+            // Planta and BOM run over the same authority, so building them must not change those depths back.
+            new SelectivePlantaBuilder().BuildPlan(system, Catalog);
+            SelectiveBomBuilder.Build(system, Catalog);
+            Assert.Equal(42.0, SelectiveCabeceraAuthority.EffectiveCustomAt(system, 0, 1).Depth, 4);
+            Assert.Equal(54.0, SelectiveCabeceraAuthority.EffectiveCustomAt(system, 1, 1).Depth, 4);
         }
 
         [Fact]
