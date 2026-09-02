@@ -1176,7 +1176,8 @@ veredicto.
 ### I-42 está INTEGRADA y CERRADA. No hay iniciativa en curso.
 
 **I-42 — Push Back compuesto, bidireccional y camas compartidas quedó integrada el 2026-09-02** con merge
-`--no-ff` (el SHA queda registrado en el commit de registro sobre `main`), sobre el candidato funcional
+`--no-ff` **`e6bb6d7ce9790e1e9c495cb30e580a9304bccd44`** (padres `088c7b9` y `9ea11d6`), sobre el candidato
+funcional
 **`077d35ad418615bed4c1d8375ea9cfc0de9fca24`**, con **validación manual del Owner APROBADA** en AutoCAD
 2025 —**8/8 escenarios**, el 2 con observación no bloqueante— y CI verde. `origin/main` **no avanzó**
 desde la base `088c7b9`: **sin rebase final**, así que la validación corresponde exactamente al contenido
@@ -2147,9 +2148,10 @@ la Fase 5, depende de todas).
 **Baseline integrada de I-42 — 2026-09-02** (la vigente):
 
 - candidato **funcional** aprobado por el Owner: `077d35ad418615bed4c1d8375ea9cfc0de9fca24`
-  (CI run `33578565581`, **success** en los cuatro jobs). El SHA final de rama difiere del aprobado
-  **sólo en documentación de cierre**;
-- **merge `--no-ff`**: el SHA queda registrado en el commit de registro sobre `main`;
+  (CI run `33578565581`, **success** en los cuatro jobs). El SHA final de rama es `9ea11d6` y difiere del
+  aprobado **sólo en documentación de cierre** (CI run `33648079222`, **success** en los cuatro jobs);
+- **merge `--no-ff`**: `e6bb6d7ce9790e1e9c495cb30e580a9304bccd44`, padres `088c7b9` y `9ea11d6`, con CI
+  run `33650124713` **success** en los cuatro jobs sobre el merge ya en `main`;
 - `origin/main` **no avanzó** desde la base `088c7b9abac4bb024369238cac6abce8c871b104`: **sin rebase
   final**, de modo que la validación manual corresponde exactamente al contenido integrado;
 - **validación manual del Owner en AutoCAD 2025: APROBADA — 8/8 escenarios** (retícula compartida;
