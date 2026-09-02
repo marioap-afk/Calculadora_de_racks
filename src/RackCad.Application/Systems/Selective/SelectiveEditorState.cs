@@ -55,6 +55,18 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>Selected level index in the working matrix.</summary>
         public int SelLevel { get; set; }
 
+        /// <summary>
+        /// The multi-selection of the VISIBLE matrix (I-43), as positions — never cells. It is ONE set for the editor,
+        /// not one per fondo: switching fondo prunes the positions that no longer exist and keeps the rest, so a
+        /// selection is never accumulated per fondo. <see cref="SelBay"/>/<see cref="SelLevel"/> remain the PRIMARY
+        /// cell and are always inside this set, which is never empty. Runtime only: nothing here is persisted.
+        /// </summary>
+        private readonly HashSet<SelectiveMatrixPosition> selectedPositions = new HashSet<SelectiveMatrixPosition> { new SelectiveMatrixPosition(0, 0) };
+
+        /// <summary>The fondos an operation is aimed at (I-43). Default and legacy behaviour: only the fondo being
+        /// edited. Runtime only: never persisted.</summary>
+        private SelectiveFondoTargets targetFondos = SelectiveFondoTargets.Single(0);
+
         /// <summary>The beam id a fresh cell adopts (the editor's default larguero); set once by the window at startup.</summary>
         public string DefaultBeamId { get; set; }
 
@@ -81,6 +93,10 @@ namespace RackCad.Application.Systems.Selective
 
             SelBay = 0;
             SelLevel = 0;
+            // A full reset of the matrix resets the selection too: keeping positions from the matrix that just
+            // disappeared would leave stale coordinates that no ClampSelection call is coming to prune (I-43).
+            selectedPositions.Clear();
+            if (Bays.Count > 0 && Bays[0].Count > 0) selectedPositions.Add(new SelectiveMatrixPosition(0, 0));
         }
 
         // ---- Per-fondo matrices (doble profundidad: each fondo edits its own levels) ----
@@ -289,12 +305,145 @@ namespace RackCad.Application.Systems.Selective
             return true;
         }
 
-        /// <summary>Keep the selection inside the working matrix after a structural change.</summary>
+        /// <summary>Keep the selection inside the working matrix after a structural change — the primary cell AND the
+        /// multi-selection, which is pruned and re-seated by <see cref="NormalizeSelection"/>.</summary>
         public void ClampSelection()
         {
             SelBay = Math.Min(Math.Max(0, SelBay), Bays.Count - 1);
             var levelCount = SelBay >= 0 && SelBay < Bays.Count ? Bays[SelBay].Count : 1;
             SelLevel = Math.Min(Math.Max(0, SelLevel), levelCount - 1);
+            NormalizeSelection();
+        }
+
+        // ---- Multi-selection of the visible matrix (I-43) ----
+
+        /// <summary>How many positions are selected (at least one, once the matrix has a cell).</summary>
+        public int SelectedCount => selectedPositions.Count;
+
+        /// <summary>Whether that matrix position is part of the multi-selection.</summary>
+        public bool IsSelected(int bay, int level) => selectedPositions.Contains(new SelectiveMatrixPosition(bay, level));
+
+        /// <summary>The selection in canonical order (frente, then nivel), so the same set always resolves the same
+        /// plan. Sorting here — rather than handing out the hash set's iteration order, as the dinamico does — is what
+        /// makes <see cref="SelectiveApplyScope.Selected"/> deterministic end to end.</summary>
+        public IReadOnlyList<SelectiveMatrixPosition> SelectedPositions()
+            => selectedPositions.OrderBy(position => position).ToList();
+
+        /// <summary>True when that position exists in the working matrix.</summary>
+        private bool PositionExists(SelectiveMatrixPosition position)
+            => position.FrontIndex >= 0 && position.FrontIndex < Bays.Count
+               && position.LevelIndex >= 0 && position.LevelIndex < Bays[position.FrontIndex].Count;
+
+        /// <summary>
+        /// Select a matrix cell: a plain click (<paramref name="extend"/> false) makes it the ONLY selection, and a
+        /// Ctrl+click toggles it. Removing is refused when it would empty the selection — an editor with nothing
+        /// selected has no cell editor to show — so the set is never empty and the primary always belongs to it.
+        /// Out-of-range coordinates change nothing (the same guard <c>DynamicFrontMatrix.ToggleCell</c> applies).
+        /// </summary>
+        public void SelectCell(int bay, int level, bool extend)
+        {
+            var position = new SelectiveMatrixPosition(bay, level);
+            if (!PositionExists(position)) return;
+
+            if (!extend)
+            {
+                selectedPositions.Clear();
+                selectedPositions.Add(position);
+                SelBay = bay;
+                SelLevel = level;
+                return;
+            }
+
+            if (selectedPositions.Contains(position))
+            {
+                if (selectedPositions.Count == 1) return; // never leave the selection empty
+                selectedPositions.Remove(position);
+                if (SelBay == bay && SelLevel == level) SeatPrimaryOnFirstSelected();
+                return;
+            }
+
+            selectedPositions.Add(position);
+            SelBay = bay;
+            SelLevel = level;
+        }
+
+        /// <summary>
+        /// Prune the positions the working matrix no longer has, and make sure the primary is inside the selection.
+        /// Called on every structural change (resize, add/remove level, fondo switch) through
+        /// <see cref="ClampSelection"/>: whatever still exists survives, whatever does not is dropped.
+        /// <para>
+        /// When the primary itself vanished, <see cref="ClampSelection"/> has ALREADY moved it to the nearest valid
+        /// cell, and that clamped primary wins: it is added to the selection rather than the primary being re-seated
+        /// onto some other selected cell. The cell editor is bound to the primary, so moving it somewhere the user did
+        /// not point would silently retarget the editor — and it would also change the clamping the editor has always
+        /// done. A deliberate Ctrl+click that removes the primary is the one case that re-seats, in
+        /// <see cref="SelectCell"/>.
+        /// </para>
+        /// </summary>
+        public void NormalizeSelection()
+        {
+            selectedPositions.RemoveWhere(position => !PositionExists(position));
+            if (Bays.Count == 0) return; // no cell to select; ClampSelection already parked the primary
+
+            var primary = new SelectiveMatrixPosition(SelBay, SelLevel);
+            if (PositionExists(primary)) selectedPositions.Add(primary); // also what keeps the set non-empty
+        }
+
+        /// <summary>Move the primary onto the FIRST selected position in canonical order — deterministic, unlike
+        /// taking whatever the hash set yields first.</summary>
+        private void SeatPrimaryOnFirstSelected()
+        {
+            var first = selectedPositions.OrderBy(position => position).First();
+            SelBay = first.FrontIndex;
+            SelLevel = first.LevelIndex;
+        }
+
+        // ---- Target fondos (I-43) ----
+
+        /// <summary>The fondos the next operation writes to. Never empty.</summary>
+        public SelectiveFondoTargets TargetFondos => targetFondos;
+
+        /// <summary>How many fondos this state has, counting the uncommitted working matrix as fondo 0 when no slot
+        /// exists yet — the same rule <see cref="SelectiveTopology.From"/> applies.</summary>
+        public int FondoCount => FondoMatrices.Count > 0 ? FondoMatrices.Count : (Bays.Count > 0 ? 1 : 0);
+
+        /// <summary>
+        /// Choose the target fondos. Indices this rack does not have are dropped, and a request that leaves nothing
+        /// falls back to the fondo being edited: the set is never empty, because an operation with no destination
+        /// would silently do nothing.
+        /// </summary>
+        public void SetTargetFondos(IEnumerable<int> fondos)
+        {
+            var count = FondoCount;
+            var valid = (fondos ?? Enumerable.Empty<int>())
+                .Where(index => index >= 0 && index < count)
+                .Distinct()
+                .ToList();
+            targetFondos = valid.Count > 0 ? SelectiveFondoTargets.Of(valid) : CurrentFondoOnly();
+        }
+
+        /// <summary>
+        /// Switch the fondo being edited, preserving the legacy feel: when the targets were EXACTLY the fondo we are
+        /// leaving, they follow to the new one, so an editor nobody has touched keeps behaving as it always did —
+        /// edits land on the fondo on screen. A deliberate multi-fondo choice is left alone, because following it
+        /// would silently rewrite an intent the user expressed.
+        /// </summary>
+        public void SelectFondo(int fondoIndex)
+        {
+            var previous = SelectedFondo;
+            SelectedFondo = fondoIndex;
+            if (targetFondos.Count == 1 && targetFondos.Fondos[0] == previous) targetFondos = CurrentFondoOnly();
+        }
+
+        /// <summary>Drop targets the rack no longer has after a fondo-count change, never leaving the set empty.
+        /// Call it whenever the number of fondos changes.</summary>
+        public void SyncTargetFondos() => SetTargetFondos(targetFondos.Fondos);
+
+        private SelectiveFondoTargets CurrentFondoOnly()
+        {
+            var count = FondoCount;
+            if (count <= 0) return SelectiveFondoTargets.Single(0);
+            return SelectiveFondoTargets.Single(Math.Min(Math.Max(0, SelectedFondo), count - 1));
         }
 
         /// <summary>The currently selected cell, or false when the selection is out of range.</summary>
@@ -350,6 +499,69 @@ namespace RackCad.Application.Systems.Selective
 
             return touched;
         }
+
+        // ---- The multi-fondo write authority (I-43) ----
+
+        /// <summary>
+        /// The cell at a three-axis address, or null when it does not exist. It is the ONE place that knows a fondo's
+        /// cells live in two different containers: the fondo being edited is the LIVE working matrix (its slot is
+        /// stale), every other fondo is its slot in <see cref="FondoMatrices"/>. Getting this backwards would write
+        /// the active fondo's edits into a copy that the next <c>SaveWorkingToSelected</c> overwrites.
+        /// </summary>
+        public SelectiveEditorCell CellAt(SelectiveCellAddress address)
+        {
+            var columns = ColumnsOf(address.FondoIndex);
+            if (columns == null || address.FrontIndex < 0 || address.FrontIndex >= columns.Count) return null;
+            var column = columns[address.FrontIndex];
+            return address.LevelIndex >= 0 && address.LevelIndex < column.Count ? column[address.LevelIndex] : null;
+        }
+
+        private List<List<SelectiveEditorCell>> ColumnsOf(int fondoIndex)
+        {
+            if (FondoMatrices.Count == 0) return fondoIndex == 0 ? Bays : null;
+            if (fondoIndex < 0 || fondoIndex >= FondoMatrices.Count) return null;
+            return fondoIndex == SelectedFondo ? Bays : FondoMatrices[fondoIndex].Bays;
+        }
+
+        /// <summary>
+        /// Apply <paramref name="values"/> to <c>fondos objetivo x alcance</c> — the whole multi-fondo operation, in
+        /// Application, so no window ever loops over fondos.
+        /// <para>
+        /// The order is the contract: snapshot the topology, resolve the COMPLETE plan, and only then write. Nothing
+        /// mutates while targets are still being decided, so the plan can be inspected or refused first, and the
+        /// caller recomputes ONCE for the whole plan however many fondos it touched. Cells are reached through
+        /// <see cref="CellAt"/>, which routes the active fondo to the live matrix and the rest to their slots.
+        /// </para>
+        /// <para>
+        /// Only the seven value fields of <see cref="SelectiveEditorCell"/> are written (<c>CopyFrom</c>). The matrix
+        /// SHAPE and everything that hangs off a bay — floor beam, manual height, tramos — is untouched, so a scope
+        /// can never restructure the rack. Writing the same values twice is therefore idempotent.
+        /// </para>
+        /// </summary>
+        public SelectiveTargetPlan ApplyToTargets(SelectiveApplyScope scope, SelectiveEditorCell values)
+        {
+            var plan = ResolveTargets(scope);
+            if (values != null)
+            {
+                foreach (var target in plan.Targets)
+                {
+                    CellAt(target)?.CopyFrom(values);
+                }
+            }
+
+            NormalizeSelection();
+            return plan;
+        }
+
+        /// <summary>Resolve what an operation WOULD touch, without touching it: the same snapshot-then-resolve the
+        /// write path uses, exposed so a caller can preview or report a plan first.</summary>
+        public SelectiveTargetPlan ResolveTargets(SelectiveApplyScope scope)
+            => SelectiveTargetResolver.Resolve(
+                SelectiveTopology.From(this),
+                targetFondos,
+                scope,
+                new SelectiveCellAddress(SelectedFondo, SelBay, SelLevel),
+                SelectedPositions());
 
         /// <summary>The largest frente count across all fondos (the master grid). Uses the LIVE working matrix for the
         /// selected fondo (its slot is stale mid-edit) and the saved slots for the rest.</summary>

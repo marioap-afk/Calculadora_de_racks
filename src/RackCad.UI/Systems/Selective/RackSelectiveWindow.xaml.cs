@@ -51,6 +51,10 @@ namespace RackCad.UI.Systems.Selective
         private static readonly Brush CellText = UiSupport.FrozenBrush(Color.FromRgb(0x1F, 0x29, 0x33));
         private static readonly Brush CellSelStroke = UiSupport.FrozenBrush(Color.FromRgb(0x2F, 0x6F, 0xED));
         private static readonly Brush CellSelFill = UiSupport.FrozenBrush(Color.FromRgb(0xDB, 0xEA, 0xFE));
+        /// <summary>Stroke of a cell that is part of the multi-selection but is NOT the primary (I-43): the same
+        /// softer-outline distinction the dinamico draws, so one glance separates "the editor is bound to this"
+        /// from "this will also be written".</summary>
+        private static readonly Brush CellMultiStroke = UiSupport.FrozenBrush(Color.FromRgb(0x93, 0xB4, 0xF5));
 
         private readonly RackCatalog catalog;
         private readonly SelectiveFrontalBuilder builder = new SelectiveFrontalBuilder();
@@ -339,6 +343,10 @@ namespace RackCad.UI.Systems.Selective
             FondoSelectorPanel.Visibility = fondoMatrices.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
             switchingFondo = false;
             UpdateFrenteEditingEnabled();
+            // The fondo count just changed: drop targets that no longer exist (never leaving the set empty) and show
+            // the surviving set (I-43).
+            state.SyncTargetFondos();
+            RefreshTargetFondos();
         }
 
         /// <summary>Rebuild the per-gap separator textboxes (fondoCount-1 of them), preserving current values.</summary>
@@ -461,8 +469,11 @@ namespace RackCad.UI.Systems.Selective
             using (DeferRecompute())
             {
                 SaveWorkingToSelected();
-                selectedFondo = target;
+                // SelectFondo, not the raw setter: when the targets were exactly the fondo being left they follow to
+                // the new one, so an editor nobody has retargeted keeps applying to the fondo on screen (I-43).
+                state.SelectFondo(target);
                 LoadFondo(selectedFondo);
+                RefreshTargetFondos();
                 UpdateFrenteEditingEnabled();
                 BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
                 LoadCellEditor();
@@ -1067,10 +1078,12 @@ namespace RackCad.UI.Systems.Selective
                 }
             };
 
-            StyleCellBorder(border, bay == selBay && level == selLevel);
+            StyleCellBorder(border, bay == selBay && level == selLevel, state.IsSelected(bay, level));
             RefreshCellVisual(border, cell);
 
-            border.MouseLeftButtonUp += (s, e) => SelectCell(bay, level);
+            // Ctrl+clic agrega/quita de la seleccion; el clic normal deja UNA sola celda — el mismo gesto del dinamico.
+            border.MouseLeftButtonUp += (s, e) =>
+                SelectCell(bay, level, (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control);
             cellBorders[(bay, level)] = border;
             return border;
         }
@@ -1089,12 +1102,28 @@ namespace RackCad.UI.Systems.Selective
                 cell.Frente, cell.Alto, cell.PalletCount, cell.BeamPeralte,
                 cell.HasOverride ? " · con ajustes manuales (✎)" : string.Empty);
 
-        /// <summary>Selection styling of a matrix cell — single source for <see cref="CellUi"/> and <see cref="SelectCell"/>.</summary>
-        private static void StyleCellBorder(Border border, bool selected)
+        /// <summary>
+        /// Selection styling of a matrix cell — single source for <see cref="CellUi"/> and <see cref="SelectCell"/>.
+        /// Three states, the same grammar Dinamico/Push Back already use: the PRIMARY cell (the one the editor is
+        /// bound to) keeps the strong stroke, a cell that is merely part of the multi-selection gets the same fill
+        /// with a softer stroke, and an unselected one stays white and thin (I-43).
+        /// </summary>
+        private static void StyleCellBorder(Border border, bool primary, bool included)
         {
-            border.Background = selected ? CellSelFill : Brushes.White;
-            border.BorderBrush = selected ? CellSelStroke : CellStroke;
-            border.BorderThickness = new Thickness(selected ? 2 : 1);
+            border.Background = primary || included ? CellSelFill : Brushes.White;
+            border.BorderBrush = primary ? CellSelStroke : included ? CellMultiStroke : CellStroke;
+            border.BorderThickness = new Thickness(primary || included ? 2 : 1);
+        }
+
+        /// <summary>Restyle EVERY cached cell to the current selection. A plain click can deselect an arbitrary number
+        /// of cells, so tracking a delta would be wrong; this only sets three properties per cell and creates no
+        /// elements, which is what the border cache exists to make cheap.</summary>
+        private void RefreshSelectionVisuals()
+        {
+            foreach (var entry in cellBorders)
+            {
+                StyleCellBorder(entry.Value, entry.Key.Bay == selBay && entry.Key.Level == selLevel, state.IsSelected(entry.Key.Bay, entry.Key.Level));
+            }
         }
 
         /// <summary>Refresh a cell's text AND tooltip from its data (the tooltip reads the same values, so a
@@ -1118,7 +1147,14 @@ namespace RackCad.UI.Systems.Selective
             }
         }
 
-        private void SelectCell(int bay, int level)
+        private void SelectCell(int bay, int level) => SelectCell(bay, level, extend: false);
+
+        /// <summary>
+        /// A matrix click. <paramref name="extend"/> (Ctrl) toggles the cell in the multi-selection; without it the
+        /// cell becomes the only selection. The state refuses to empty the selection and keeps the primary coherent,
+        /// so the cell editor always has a cell to bind to (I-43).
+        /// </summary>
+        private void SelectCell(int bay, int level, bool extend)
         {
             using (DeferRecompute())
             {
@@ -1128,8 +1164,7 @@ namespace RackCad.UI.Systems.Selective
 
                 var prevBay = selBay;
                 var prevLevel = selLevel;
-                selBay = bay;
-                selLevel = level;
+                state.SelectCell(bay, level, extend);
                 LoadCellEditor();
 
                 // Same effect the full rebuild had here: a focused bay-height box commits (LostFocus) before the
@@ -1137,13 +1172,12 @@ namespace RackCad.UI.Systems.Selective
                 CommitFocusedMatrixTextBox();
 
                 // A click only changes the selection visuals (and, when applied, the OLD cell's committed text):
-                // restyle those two cells in place instead of rebuilding ~400 elements. Structure never changes here.
-                if (cellBorders.TryGetValue((prevBay, prevLevel), out var previous)
-                    && cellBorders.TryGetValue((bay, level), out var current))
+                // restyle in place instead of rebuilding ~400 elements. Structure never changes here.
+                if (cellBorders.Count > 0)
                 {
-                    StyleCellBorder(previous, selected: false);
-                    StyleCellBorder(current, selected: true);
-                    if (applied && prevBay < bays.Count && prevLevel < bays[prevBay].Count)
+                    RefreshSelectionVisuals();
+                    if (applied && prevBay >= 0 && prevBay < bays.Count && prevLevel >= 0 && prevLevel < bays[prevBay].Count
+                        && cellBorders.TryGetValue((prevBay, prevLevel), out var previous))
                     {
                         RefreshCellVisual(previous, bays[prevBay][prevLevel]); // the commit wrote into the OLD cell
                     }
@@ -1204,7 +1238,11 @@ namespace RackCad.UI.Systems.Selective
             if (!TryGetSelected(out var cell)) return;
 
             loadingCell = true;
-            CellHeader.Text = string.Format(CultureInfo.InvariantCulture, "Celda: Frente {0} · Nivel {1}", selBay + 1, selLevel + 1);
+            // The header names the PRIMARY cell and, when a multi-selection is live, how many cells "Seleccionadas"
+            // would write — so the count is readable without counting outlines in the matrix (I-43).
+            CellHeader.Text = state.SelectedCount > 1
+                ? string.Format(CultureInfo.InvariantCulture, "Celda: Frente {0} · Nivel {1} ({2} seleccionadas)", selBay + 1, selLevel + 1, state.SelectedCount)
+                : string.Format(CultureInfo.InvariantCulture, "Celda: Frente {0} · Nivel {1}", selBay + 1, selLevel + 1);
             FrenteBox.Text = cell.Frente.ToString("0.###", CultureInfo.InvariantCulture);
             AltoBox.Text = cell.Alto.ToString("0.###", CultureInfo.InvariantCulture);
             PalletCountBox.Text = cell.PalletCount.ToString(CultureInfo.InvariantCulture);
@@ -1381,9 +1419,70 @@ namespace RackCad.UI.Systems.Selective
         }
 
         private void ApplyCell_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Cell);
+        private void ApplySelected_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Selected);
         private void ApplyRow_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Row);
         private void ApplyColumn_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Column);
         private void ApplyAll_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.All);
+
+        // ---- Fondos destino (I-43): the second axis, edited next to "Editando fondo" ----
+
+        private void TargetFondos_LostFocus(object sender, RoutedEventArgs e) => CommitTargetFondos();
+
+        private void TargetFondos_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter) return;
+            CommitTargetFondos();
+            e.Handled = true; // Enter edits this field; it must not reach the window's default-button policy (I-39)
+        }
+
+        private void TargetFondosAll_Click(object sender, RoutedEventArgs e)
+        {
+            state.SetTargetFondos(Enumerable.Range(0, state.FondoCount));
+            RefreshTargetFondos();
+        }
+
+        private void TargetFondosCurrent_Click(object sender, RoutedEventArgs e)
+        {
+            state.SetTargetFondos(new[] { selectedFondo });
+            RefreshTargetFondos();
+        }
+
+        /// <summary>Read the typed subset. An unreadable or out-of-range entry is REJECTED with its reason and the box
+        /// reverts to the set still in force — narrowing an operation silently is the failure this axis exists to
+        /// avoid. Choosing targets changes no geometry, so nothing recomputes here.</summary>
+        private void CommitTargetFondos()
+        {
+            if (!initialized) return;
+
+            if (string.IsNullOrWhiteSpace(TargetFondosBox.Text))
+            {
+                state.SetTargetFondos(new[] { selectedFondo }); // blank = the fondo being edited (the default)
+                RefreshTargetFondos();
+                return;
+            }
+
+            if (!SelectiveFondoTargets.TryParse(TargetFondosBox.Text, state.FondoCount, out var parsed, out var error))
+            {
+                SetStatus(error, true);
+                RefreshTargetFondos();
+                return;
+            }
+
+            state.SetTargetFondos(parsed.Fondos);
+            RefreshTargetFondos();
+        }
+
+        /// <summary>Show the target set the state actually holds (one-based, like the fondo combo), and hide the whole
+        /// row when there is a single fondo — there the two axes always coincide.</summary>
+        private void RefreshTargetFondos()
+        {
+            var fondos = state.TargetFondos.Fondos;
+            TargetFondosPanel.Visibility = state.FondoCount > 1 ? Visibility.Visible : Visibility.Collapsed;
+            TargetFondosBox.Text = string.Join(", ", fondos.Select(k => (k + 1).ToString(CultureInfo.InvariantCulture)));
+            TargetFondosHint.Text = fondos.Count == 1
+                ? "(solo el fondo " + (fondos[0] + 1).ToString(CultureInfo.InvariantCulture) + ")"
+                : "(" + fondos.Count.ToString(CultureInfo.InvariantCulture) + " fondos)";
+        }
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
         private void ShowBom_Click(object sender, RoutedEventArgs e)
@@ -1398,6 +1497,12 @@ namespace RackCad.UI.Systems.Selective
             new RackBomWindow(bom) { Owner = this }.ShowDialog();
         }
 
+        /// <summary>
+        /// Apply the cell editor over <c>alcance x fondos destino</c>. The window does NOT loop over fondos: it hands
+        /// the scope to <see cref="SelectiveEditorState.ApplyToTargets"/>, which snapshots the topology, resolves the
+        /// whole plan and writes every target — the active fondo's live matrix and the other fondos' stored ones —
+        /// before returning. One plan, then ONE recompute, whether it touched one fondo or four (I-43).
+        /// </summary>
         private void ApplyScope(Scope scope)
         {
             if (!ReadCellEditor(out var values, out var error))
@@ -1406,22 +1511,24 @@ namespace RackCad.UI.Systems.Selective
                 return;
             }
 
-            int applied;
+            SelectiveTargetPlan plan;
             using (DeferRecompute())
             {
-                // The scope rewrites cell VALUES, never the matrix shape: the state mutates the in-scope cells and
-                // returns them, so we refresh just those in place instead of rebuilding ~400 elements.
-                var touched = state.ApplyScope(scope, values);
-                applied = touched.Count;
+                // The scope rewrites cell VALUES, never the matrix shape, so we refresh in place instead of
+                // rebuilding ~400 elements. Only the fondo on screen has borders to refresh; the rest were written
+                // into their stored matrices and will show when the user navigates to them.
+                plan = state.ApplyToTargets(scope, values);
 
                 var stale = false;
-                foreach (var (b, l) in touched)
+                foreach (var target in plan.Targets)
                 {
-                    if (cellBorders.TryGetValue((b, l), out var border)) RefreshCellVisual(border, bays[b][l]);
+                    if (target.FondoIndex != selectedFondo) continue;
+                    if (cellBorders.TryGetValue((target.FrontIndex, target.LevelIndex), out var border)) RefreshCellVisual(border, bays[target.FrontIndex][target.LevelIndex]);
                     else stale = true;
                 }
 
                 if (stale) RenderMatrix(); // defensive fallback: cache out of sync → old full-rebuild behavior
+                else RefreshSelectionVisuals(); // the state may have re-seated the primary
                 CommitFocusedMatrixTextBox(); // the rebuild used to commit a focused bay-height box here; keep that
                 Recompute();
             }
@@ -1430,8 +1537,24 @@ namespace RackCad.UI.Systems.Selective
             // (only on success — an error status from Recompute must stay visible).
             if (lastSystem != null)
             {
-                SetStatus(string.Format(CultureInfo.InvariantCulture, "Aplicado a {0} celda(s).", applied), false);
+                SetStatus(DescribeApplied(plan), false);
             }
+        }
+
+        /// <summary>What an apply reached, in the user's own numbering (fondos are shown one-based, as the "Editando
+        /// fondo" combo does). The single-fondo wording is the one the editor has always shown.</summary>
+        private static string DescribeApplied(SelectiveTargetPlan plan)
+        {
+            if (plan.AnchorMissing) return "La celda de origen ya no existe: no se aplicó nada.";
+            if (plan.IsEmpty) return "Ningún fondo destino tiene celdas en el alcance: no se aplicó nada.";
+
+            var text = string.Format(CultureInfo.InvariantCulture, "Aplicado a {0} celda(s)", plan.Count);
+            if (plan.Fondos.Count > 1)
+            {
+                text += " en los fondos " + string.Join(", ", plan.Fondos.Select(k => (k + 1).ToString(CultureInfo.InvariantCulture)));
+            }
+
+            return text + ".";
         }
 
         private void InsertFrontal_Click(object sender, RoutedEventArgs e) => RequestDraw(RackEmbedDocument.ViewFrontal, updateOnly: false);
@@ -1559,10 +1682,32 @@ namespace RackCad.UI.Systems.Selective
 
         private void Recompute() => session.Recompute.Request();
 
+        /// <summary>How many times the REAL recompute pipeline ran. A test seam (I-43, InternalsVisibleTo): it is how
+        /// the promise "one bulk apply, one recompute, however many fondos" is checked rather than asserted.</summary>
+        internal int RecomputeCount { get; private set; }
+
+        /// <summary>The editor state — a test seam (I-43, InternalsVisibleTo), matching the one the safety grids expose.</summary>
+        internal SelectiveEditorState EditorState => state;
+
+        /// <summary>The Border painted for a matrix cell, or null when it is not on screen — a test seam (I-43) so the
+        /// multi-selection can be verified as PIXELS-worth-of-brush, not just as model state.</summary>
+        internal Border MatrixCell(int bay, int level) => cellBorders.TryGetValue((bay, level), out var border) ? border : null;
+
+        /// <summary>The brush a cell that is selected but not primary is outlined with (I-43 test seam).</summary>
+        internal static Brush MultiSelectionStroke => CellMultiStroke;
+
+        /// <summary>The brush the PRIMARY cell is outlined with (I-43 test seam).</summary>
+        internal static Brush PrimarySelectionStroke => CellSelStroke;
+
+        /// <summary>Repaint the selection — a test seam (I-43) for the gesture a real Ctrl+click drives, since a test
+        /// cannot forge <c>Keyboard.Modifiers</c>.</summary>
+        internal void RefreshSelectionVisualsForTest() => RefreshSelectionVisuals();
+
         /// <summary>The actual rebuild the session's coalescing gate runs; <see cref="DeferRecompute"/> collapses a burst
         /// of <see cref="Recompute"/> calls within a gesture into one pass here (same behavior as the old inline deferral).</summary>
         private void RunRecompute()
         {
+            RecomputeCount++; // test seam (I-43): the coalescing gate must collapse a bulk apply into ONE run
             var system = BuildSystem(out var error);
             if (system == null)
             {

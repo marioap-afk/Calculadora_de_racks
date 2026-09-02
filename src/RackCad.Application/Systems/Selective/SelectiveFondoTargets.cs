@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -53,5 +54,93 @@ namespace RackCad.Application.Systems.Selective
             => topology == null || topology.FondoCount == 0
                 ? None
                 : new SelectiveFondoTargets(Enumerable.Range(0, topology.FondoCount).ToArray());
+
+        /// <summary>
+        /// Parse the compact subset notation the editor offers: <c>1+3</c>, <c>2-4</c>, <c>1,3-4</c>, <c>todos</c>.
+        /// Separators are <c>,</c>, <c>+</c>, <c>;</c> or spaces; a range is <c>a-b</c> in either direction.
+        /// <para>
+        /// Input is ONE-BASED because that is what the editor shows ("Fondo 1"); the result is zero-based like every
+        /// index in the model. An out-of-range or unreadable fondo is an ERROR, not a silent drop: the user typed
+        /// something specific, and quietly narrowing an operation is exactly what this initiative is meant to prevent.
+        /// </para>
+        /// </summary>
+        public static bool TryParse(string text, int fondoCount, out SelectiveFondoTargets targets, out string error)
+        {
+            targets = None;
+            error = null;
+            var trimmed = (text ?? string.Empty).Trim();
+            if (trimmed.Length == 0)
+            {
+                error = "Indica al menos un fondo.";
+                return false;
+            }
+
+            if (trimmed.Equals("todos", StringComparison.OrdinalIgnoreCase)
+                || trimmed.Equals("todas", StringComparison.OrdinalIgnoreCase)
+                || trimmed.Equals("all", StringComparison.OrdinalIgnoreCase)
+                || trimmed == "*")
+            {
+                if (fondoCount <= 0)
+                {
+                    error = "No hay fondos.";
+                    return false;
+                }
+
+                targets = new SelectiveFondoTargets(Enumerable.Range(0, fondoCount).ToArray());
+                return true;
+            }
+
+            var found = new List<int>();
+            foreach (var token in trimmed.Split(new[] { ',', '+', ';', ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var range = token.Split(new[] { '-', '–' }, StringSplitOptions.RemoveEmptyEntries);
+                if (range.Length > 2)
+                {
+                    error = "Rango inválido: " + token;
+                    return false;
+                }
+
+                if (!TryFondo(range[0], fondoCount, out var first, out error)) return false;
+                if (range.Length == 1)
+                {
+                    found.Add(first);
+                    continue;
+                }
+
+                if (!TryFondo(range[1], fondoCount, out var last, out error)) return false;
+                for (var index = Math.Min(first, last); index <= Math.Max(first, last); index++) found.Add(index);
+            }
+
+            if (found.Count == 0)
+            {
+                error = "Indica al menos un fondo.";
+                return false;
+            }
+
+            targets = Of(found);
+            return true;
+        }
+
+        /// <summary>One one-based fondo number to a zero-based index, refusing anything the rack does not have.</summary>
+        private static bool TryFondo(string token, int fondoCount, out int index, out string error)
+        {
+            index = 0;
+            error = null;
+            if (!int.TryParse(token.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var oneBased))
+            {
+                error = "No es un número de fondo: " + token.Trim();
+                return false;
+            }
+
+            if (oneBased < 1 || oneBased > fondoCount)
+            {
+                error = string.Format(
+                    CultureInfo.CurrentCulture, "El fondo {0} no existe (hay {1}).", oneBased, Math.Max(0, fondoCount));
+                return false;
+            }
+
+            index = oneBased - 1;
+            return true;
+        }
     }
 }

@@ -51,8 +51,12 @@ namespace RackCad.Application.Systems.Selective
         /// distinct. Every one of them EXISTS in the topology the plan was resolved against.</summary>
         public IReadOnlyList<SelectiveCellAddress> Targets { get; }
 
-        /// <summary>The fondos the plan actually reaches, ascending. One recompute each, AFTER the whole plan is
-        /// applied — never one per target.</summary>
+        /// <summary>
+        /// The fondos this plan AFFECTS, ascending and distinct — which fondos the operation changed, nothing more.
+        /// It is NOT a list of recomputes to run: a whole plan is applied and then the editor recomputes ONCE, whether
+        /// it touched one fondo or four (the rack is resolved as a unit, so a recompute per fondo would repeat the
+        /// same work). Read it to report or to decide, never to loop.
+        /// </summary>
         public IReadOnlyList<int> Fondos { get; }
 
         /// <summary>Requested target fondos this rack does not have, ascending. Omitted, never created.</summary>

@@ -200,6 +200,8 @@
                             <WrapPanel>
                                 <Button Content="Celda" Click="ApplyCell_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6"
                                         ToolTip="Aplica los valores a la celda seleccionada." />
+                                <Button x:Name="ApplySelectedButton" Content="Seleccionadas" Click="ApplySelected_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="96" Margin="0,0,6,6"
+                                        ToolTip="Aplica a las celdas marcadas en la matriz (Ctrl+clic para marcar varias)." />
                                 <Button Content="Nivel" Click="ApplyRow_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="60" Margin="0,0,6,6"
                                         ToolTip="Aplica a todo el nivel (misma fila, todos los frentes)." />
                                 <Button Content="Frente" Click="ApplyColumn_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="72" Margin="0,0,6,6"
@@ -231,6 +233,20 @@
                         <TextBlock Text="Editando fondo:" Foreground="#415161" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0" />
                         <ComboBox x:Name="FondoSelectorBox" Width="120" SelectionChanged="FondoSelector_Changed" />
                         <TextBlock Text="(los frentes se definen en el Fondo 1)" Foreground="#8A97A4" FontSize="11" VerticalAlignment="Center" Margin="10,0,0,0" />
+                    </StackPanel>
+                    <!-- I-43: the SECOND axis of a cell operation. "Editando fondo" says which matrix is on screen;
+                         this says which fondos the cell editor writes to. Hidden with a single fondo, where the two
+                         would always coincide. -->
+                    <StackPanel x:Name="TargetFondosPanel" Orientation="Horizontal" Margin="10,6,10,0" Visibility="Collapsed">
+                        <TextBlock Text="Aplicar en fondos:" Foreground="#415161" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBox x:Name="TargetFondosBox" Width="120" VerticalAlignment="Center"
+                                 LostFocus="TargetFondos_LostFocus" KeyDown="TargetFondos_KeyDown"
+                                 ToolTip="Fondos destino del editor de celda: 1+3, 2-4, 1,3-4 o «todos». Vacío = el fondo que estás editando." />
+                        <Button x:Name="TargetFondosAllButton" Content="Todos" Click="TargetFondosAll_Click" Style="{StaticResource SecondaryButtonStyle}"
+                                MinWidth="56" Margin="6,0,0,0" ToolTip="Aplicar en todos los fondos." />
+                        <Button x:Name="TargetFondosCurrentButton" Content="Actual" Click="TargetFondosCurrent_Click" Style="{StaticResource SecondaryButtonStyle}"
+                                MinWidth="56" Margin="6,0,0,0" ToolTip="Aplicar solo en el fondo que estás editando (comportamiento por omisión)." />
+                        <TextBlock x:Name="TargetFondosHint" Foreground="#8A97A4" FontSize="11" VerticalAlignment="Center" Margin="10,0,0,0" />
                     </StackPanel>
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="230">
                         <Grid x:Name="MatrixGrid" Margin="10,8,10,10" />
