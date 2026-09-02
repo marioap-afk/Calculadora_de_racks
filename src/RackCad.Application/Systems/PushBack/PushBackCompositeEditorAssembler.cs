@@ -189,7 +189,56 @@ namespace RackCad.Application.Systems.PushBack
             var lines = baseline.HeaderLineOverrides
                 .Where(line => line != null && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId))
                 .ToList();
-            state.ParkDormantTail(tail.Select(PushBackCompositeStructure.ToTailDesign).ToList(), lines);
+            var parked = tail.Select(PushBackCompositeStructure.ToTailDesign).ToList();
+
+            // I-42 (A7 / A6V-2, contrato del dueño) — DORMIR NO DESCARTA LO QUE EL USUARIO YA CONFIRMO.
+            //
+            // El baseline solo avanza cuando una computacion se ACEPTA, asi que una edicion de modulo confirmada
+            // cuyo recalculo fallo por otra causa vive en el COMMIT y todavia no en el baseline. Aparcar mirando
+            // solo el baseline la tiraba: medido, con B:M2 = 40" en el baseline y 44" confirmado, dormir el lado B
+            // guardaba 40" y al despertar el 44" habia desaparecido. Se proyecta por ModuleId, y SOLO sobre la cola
+            // —el lado A no se toca, y «M2» y «B:M2» siguen siendo identidades distintas—; una edicion apenas
+            // TECLEADA no participa, porque no es intencion confirmada.
+            var commit = state.SideA?.ModuleCommit;
+            if (commit != null)
+            {
+                foreach (var intent in commit.Modules)
+                {
+                    if (intent == null || !PushBackCompositeStructure.IsCompositeTailId(intent.ModuleId))
+                    {
+                        continue;
+                    }
+
+                    var index = parked.FindIndex(module =>
+                        string.Equals(module.ModuleId, intent.ModuleId, StringComparison.Ordinal));
+                    if (index >= 0)
+                    {
+                        parked[index] = intent;
+                    }
+                }
+
+                foreach (var line in commit.LineOverrides)
+                {
+                    if (line?.Header == null || !PushBackCompositeStructure.IsCompositeTailId(line.ModuleId))
+                    {
+                        continue;
+                    }
+
+                    var index = lines.FindIndex(existing =>
+                        existing.PostIndex == line.PostIndex
+                        && string.Equals(existing.ModuleId, line.ModuleId, StringComparison.Ordinal));
+                    if (index >= 0)
+                    {
+                        lines[index] = line;
+                    }
+                    else
+                    {
+                        lines.Add(line);
+                    }
+                }
+            }
+
+            state.ParkDormantTail(parked, lines);
         }
 
         /// <summary>

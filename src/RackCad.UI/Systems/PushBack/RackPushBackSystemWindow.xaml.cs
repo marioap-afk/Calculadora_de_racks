@@ -3190,7 +3190,11 @@ namespace RackCad.UI.Systems.PushBack
             composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
             composite.SetSideBPresent(false);
             var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
-            LoadCompositeFromDesign(design);
+
+            // I-42 (A7 / A6V-1, decision del dueño): restaurar actua sobre el sistema EFECTIVO. Con el lado B
+            // dormido su intencion no forma parte de ese sistema, asi que ni se restaura ni se borra; con el lado B
+            // activo el rack efectivo lo incluye y el reset le alcanza como a cualquier otra parte.
+            LoadCompositeFromDesign(design, preserveDormantIntent: true);
             LoadFromModel(inputs, NameBox.Text);
             SetStatus("Valores restaurados al último sistema válido.", false);
         }

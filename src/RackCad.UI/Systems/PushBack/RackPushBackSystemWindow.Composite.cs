@@ -786,7 +786,29 @@ namespace RackCad.UI.Systems.PushBack
 
         /// <summary>Recupera la intencion compuesta de un diseno cargado (save/load, RACKEDITAR, biblioteca).</summary>
         private void LoadCompositeFromDesign(PushBackDesign design)
+            => LoadCompositeFromDesign(design, preserveDormantIntent: false);
+
+        /// <summary>
+        /// I-42 (A7 / A6V-1, contrato del dueño) — CARGAR OTRO RACK Y RESTAURAR EL ACTUAL NO SON LO MISMO.
+        ///
+        /// <para>
+        /// Una CARGA trae otro rack: lo que hubiera dormido pertenece al anterior y se borra, o resucitaria la
+        /// mitad B de un rack distinto. «Restaurar valores» actua sobre el sistema EFECTIVO del rack que YA esta
+        /// abierto, y con el lado B dormido ese sistema es de un solo sentido: restaurarlo no puede llevarse por
+        /// delante una intencion que no forma parte de el. Medido, lo hacia: tras restaurar, la cola y sus lineas
+        /// quedaban vacias y al despertar el lado B volvia estandar —B:M2 de 40" a 48", override de linea perdido—.
+        /// </para>
+        /// </summary>
+        private void LoadCompositeFromDesign(PushBackDesign design, bool preserveDormantIntent)
         {
+            var dormantTail = preserveDormantIntent ? composite.DormantCompositeTail.ToList() : null;
+            var dormantLines = preserveDormantIntent ? composite.DormantTailLineOverrides.ToList() : null;
+            var dormantSlots = preserveDormantIntent
+                ? Enumerable.Range(0, composite.Of(PushBackSide.B).Structure.Count)
+                    .Select(slot => composite.Of(PushBackSide.B).Structure.IsActive(slot))
+                    .ToList()
+                : null;
+
             composite.SetSideBPresent(design != null && design.IsComposite);
             composite.LoadComposite(design?.Composite);
 
@@ -798,6 +820,17 @@ namespace RackCad.UI.Systems.PushBack
             // pertenece al rack que estaba abierto, y arrastrarla al siguiente resucitaria la mitad B de otro. Es la
             // unica accion que borra; un aparcado con fuente vacia no borra nada.
             composite.ClearDormantTail();
+            if (preserveDormantIntent)
+            {
+                // La intencion DORMIDA vuelve entera: sus modulos, sus configuraciones por linea y la presencia de
+                // sus ranuras, que un diseño efectivo de un solo sentido no puede declarar.
+                composite.ParkDormantTail(dormantTail, dormantLines);
+                var matrix = composite.Of(PushBackSide.B).Structure;
+                for (var slot = 0; slot < dormantSlots.Count && slot < matrix.Count; slot++)
+                {
+                    matrix.Fronts[slot].IsActive = dormantSlots[slot];
+                }
+            }
 
             var structure = design?.Structure;
             if (structure != null)
