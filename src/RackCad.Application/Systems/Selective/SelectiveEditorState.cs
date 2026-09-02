@@ -309,9 +309,26 @@ namespace RackCad.Application.Systems.Selective
         }
 
         /// <summary>Copy <paramref name="values"/> into every cell in scope of the current selection, returning the
-        /// touched (bay, level) coordinates (bay-outer, level-inner order) so the window can refresh just those cells.</summary>
+        /// touched (bay, level) coordinates (bay-outer, level-inner order) so the window can refresh just those cells.
+        /// <para>
+        /// This is the SINGLE-FONDO legacy path: it walks the live working matrix, so it can only reach the fondo
+        /// being edited. It rejects <see cref="SelectiveApplyScope.Selected"/> out loud rather than matching no cell
+        /// and returning an empty list, because a bulk edit that quietly applies to nothing is the worst outcome of
+        /// the three. The multi-selection contract lives in <see cref="SelectiveTargetResolver"/> (I-43), which
+        /// resolves across fondos; no editor produces <c>Selected</c> yet.
+        /// </para>
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">The scope is <see cref="SelectiveApplyScope.Selected"/>.</exception>
         public IReadOnlyList<(int Bay, int Level)> ApplyScope(SelectiveApplyScope scope, SelectiveEditorCell values)
         {
+            if (scope == SelectiveApplyScope.Selected)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(scope),
+                    scope,
+                    "El alcance 'Selected' no lo resuelve el estado de un solo fondo; usa SelectiveTargetResolver.");
+            }
+
             var touched = new List<(int Bay, int Level)>();
             for (var b = 0; b < Bays.Count; b++)
             {
