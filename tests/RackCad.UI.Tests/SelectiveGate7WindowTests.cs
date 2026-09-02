@@ -44,9 +44,15 @@ namespace RackCad.UI.Tests
             RaiseLostFocus(window, name);
         }
 
-        /// <summary>The "Piso" checkbox of a bay header.</summary>
+        /// <summary>The "Piso" checkbox of a bay header. It sits inside the row that also holds its scope button, so
+        /// the search descends one level instead of looking only at the header's direct children.</summary>
         private static CheckBox FloorCheck(RackSelectiveWindow window, int bay)
-            => Header(window, bay).Children.OfType<CheckBox>().First();
+        {
+            var header = Header(window, bay);
+            return header.Children.OfType<CheckBox>()
+                .Concat(header.Children.OfType<StackPanel>().SelectMany(row => row.Children.OfType<CheckBox>()))
+                .First();
+        }
 
         /// <summary>The bay header panel of a frente.</summary>
         private static StackPanel Header(RackSelectiveWindow window, int bay)

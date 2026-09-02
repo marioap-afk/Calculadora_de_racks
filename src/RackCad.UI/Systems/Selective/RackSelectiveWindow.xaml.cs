@@ -314,6 +314,39 @@ namespace RackCad.UI.Systems.Selective
             state.SaveWorkingToSelected(depth, cabecera);
         }
 
+        /// <summary>
+        /// Commit the live MATRIX of the visible fondo while KEEPING the depths its slot already holds.
+        /// <para>
+        /// The ordinary commit reads <c>FondoBox</c>/<c>CabeceraFondoBox</c>, which is right when the boxes describe
+        /// the fondo they are about to be written into. It is wrong just before a fondo-wide edit aimed elsewhere: the
+        /// text the user just typed would become the VISIBLE fondo's value even though that fondo is not a target.
+        /// The matrix still has to be committed — the state writes the OTHER fondos through their slots — so this
+        /// commits it with the depths already stored (I-43, gate 7).
+        /// </para>
+        /// </summary>
+        private void SaveWorkingMatrixKeepingDepths()
+        {
+            var slot = selectedFondo >= 0 && selectedFondo < fondoMatrices.Count ? fondoMatrices[selectedFondo] : null;
+            if (slot == null)
+            {
+                SaveWorkingToSelected();
+                return;
+            }
+
+            state.SaveWorkingToSelected(slot.Depth, slot.CabeceraOverride);
+        }
+
+        /// <summary>Re-show the two fondo boxes from the VISIBLE fondo's real slot. The boxes always describe the fondo
+        /// on screen, whatever fondos an edit actually landed on; this only touches the two texts, never the matrix.</summary>
+        private void SyncFondoDepthBoxes()
+        {
+            var slot = selectedFondo >= 0 && selectedFondo < fondoMatrices.Count ? fondoMatrices[selectedFondo] : null;
+            if (slot == null) return;
+
+            FondoBox.Text = (slot.Depth > 0.0 ? slot.Depth : SelectiveRackDefaults.DefaultPalletDepth).ToString("0.###", CultureInfo.InvariantCulture);
+            CabeceraFondoBox.Text = slot.CabeceraOverride > 0.0 ? slot.CabeceraOverride.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+        }
+
         /// <summary>A copy of <paramref name="source"/> resized to <paramref name="bayCount"/> frentes (delegates to the state:
         /// a new frente clones <paramref name="widthSeed"/>'s column at that index; extra bays are dropped).</summary>
         private FondoMatrix CloneAligned(FondoMatrix source, int bayCount, FondoMatrix widthSeed)
@@ -497,8 +530,9 @@ namespace RackCad.UI.Systems.Selective
 
             using (DeferRecompute())
             {
-                // Commit the boxes into the visible fondo's slot first; then one Application call writes every target.
-                SaveWorkingToSelected();
+                // Commit the live MATRIX keeping the slot's depths: the typed text is an edit aimed at TargetFondos,
+                // not a statement about the fondo on screen (which may not even be a target).
+                SaveWorkingMatrixKeepingDepths();
 
                 var isCabecera = ReferenceEquals(sender, CabeceraFondoBox);
                 SelectiveFondoApplyResult result;
@@ -532,6 +566,10 @@ namespace RackCad.UI.Systems.Selective
                     if (state.TargetFondos.Count > 1) pendingWarning = result.Describe("el fondo de tarima", restore: false);
                 }
 
+                // The boxes describe the VISIBLE fondo, so they go back to ITS values — otherwise the next commit (or
+                // BuildDesign, which reads them again) would re-introduce the typed value into a fondo that was never
+                // a target.
+                SyncFondoDepthBoxes();
                 Recompute();
             }
         }
@@ -588,14 +626,15 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>"Larguero a piso" of a frente, over the SAME target fondos as everything else (I-43, gate 7).
         /// The flag has no inheritance, so it is written explicitly; the state omits and reports a target fondo that
         /// does not have this frente, and the window recomputes ONCE.</summary>
-        private void SetFloor(int bay, bool value)
+        private void SetFloor(int bay, bool value, SelectiveFrontApplyScope scope = SelectiveFrontApplyScope.Front)
         {
             if (bay < 0 || bay >= floorBeams.Count) return;
 
             using (DeferRecompute())
             {
                 SaveWorkingToSelected(); // the state writes the OTHER fondos' stored matrices
-                var result = state.ApplyFloorBeamToTargets(SelectiveFrontApplyScope.Front, bay, value);
+                var result = state.ApplyFloorBeamToTargets(scope, bay, value);
+                if (scope == SelectiveFrontApplyScope.All) RenderMatrix(); // every checkbox of the fondo may have moved
                 Recompute();
                 if (state.TargetFondos.Count > 1 || result.OmittedFondos.Count > 0)
                 {
@@ -715,7 +754,17 @@ namespace RackCad.UI.Systems.Selective
             };
             floor.Checked += (s, e) => SetFloor(bay, true);
             floor.Unchecked += (s, e) => SetFloor(bay, false);
-            panel.Children.Add(floor);
+
+            // The checkbox is Front x TargetFondos; the button applies its CURRENT value to every frente of those
+            // fondos in ONE operation (I-43, gate 7) — never Front first and All after.
+            var floorRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center };
+            floorRow.Children.Add(floor);
+            var floorAll = SmallButton("⇊");
+            floorAll.ToolTip = "Aplicar este «Piso» a TODOS los frentes de los fondos destino.";
+            floorAll.Margin = new Thickness(4, 3, 0, 0);
+            floorAll.Click += (s, e) => SetFloor(bay, floor.IsChecked == true, SelectiveFrontApplyScope.All);
+            floorRow.Children.Add(floorAll);
+            panel.Children.Add(floorRow);
 
             // "Elevacion de larguero a piso" of THIS frente (I-43, ID14): a number overrides the global, empty
             // inherits it. It sits under "Piso" because that is the only flag it acts on — and it is NOT cleared when
@@ -758,6 +807,12 @@ namespace RackCad.UI.Systems.Selective
             // rebuild steals focus and any validation message is wiped instantly).
             heightBox.KeyDown += (s, e) => { if (e.Key == Key.Enter) { SetBayHeight(bay, heightBox.Text); e.Handled = true; } };
             heightRow.Children.Add(heightBox);
+
+            var heightAll = SmallButton("⇊");
+            heightAll.ToolTip = "Aplicar esta altura a TODOS los frentes de los fondos destino (vacío = restablecer a automático).";
+            heightAll.Margin = new Thickness(4, 0, 0, 0);
+            heightAll.Click += (s, e) => SetBayHeight(bay, heightBox.Text, SelectiveFrontApplyScope.All);
+            heightRow.Children.Add(heightAll);
             panel.Children.Add(heightRow);
 
             // "Medio frente" (N tramos): a button opens the tramos dialog. No tramos = normal full-width bay.
@@ -827,11 +882,12 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>A frente's manual height, over the target fondos (I-43, gate 7). Null is the RESTORE to the
         /// derived height — there is no run-wide default here — and the legacy parse is kept verbatim, so 0 stays an
         /// invalid height rather than becoming a second way to say "auto".</summary>
-        private void SetBayHeight(int bay, string text)
+        private void SetBayHeight(int bay, string text, SelectiveFrontApplyScope scope = SelectiveFrontApplyScope.Front)
         {
             if (bay < 0 || bay >= bayHeights.Count) return;
             if (!UiSupport.TryOptionalNum(text, out var value)) { SetStatus("Altura de frente inválida (vacío = auto).", true); return; }
-            if (Nullable.Equals(bayHeights[bay], value)
+            if (scope == SelectiveFrontApplyScope.Front
+                && Nullable.Equals(bayHeights[bay], value)
                 && state.TargetFondos.Count == 1
                 && state.TargetFondos.Fondos[0] == selectedFondo)
             {
@@ -841,7 +897,7 @@ namespace RackCad.UI.Systems.Selective
             using (DeferRecompute())
             {
                 SaveWorkingToSelected();
-                var result = state.ApplyBayHeightToTargets(SelectiveFrontApplyScope.Front, bay, value);
+                var result = state.ApplyBayHeightToTargets(scope, bay, value);
                 RenderMatrix();
                 Recompute();
                 if (state.TargetFondos.Count > 1 || result.OmittedFondos.Count > 0)
