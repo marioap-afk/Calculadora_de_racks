@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-42
 title: Push Back compuesto, bidireccional y camas compartidas
 type: feature
-status: implementing
+status: integrated
 branch: feature/push-back-compuesto
 base_branch: main
 priority:
@@ -24,10 +24,14 @@ automation:
 
 # Push Back compuesto, bidireccional y camas compartidas
 
-> **Gate documental abierto.** I-42 **no tiene fila en `docs/ROADMAP.md`**; la apertura la autorizo el
-> Owner por instruccion directa, igual que I-35 y I-40. La fila y el estado en HANDOFF los escribe la
-> **sesion de integracion**, como ultimo commit de esta rama (WORKFLOW 4.5.4 y 8). Esta sesion no toca
-> ninguno de los dos.
+> **INTEGRADA y CERRADA el 2026-09-02.** Validacion manual del Owner en AutoCAD 2025 **APROBADA** sobre
+> el DLL construido exactamente desde `077d35ad418615bed4c1d8375ea9cfc0de9fca24`: **8/8 escenarios**, con
+> el escenario 2 (corrida y hueco) **aprobado con observacion** no bloqueante —**CORRIDA GAP STORAGE**,
+> la limitacion 6 de la seccion 5—, que el dueño decidio **no implementar ahora**. El gate documental que
+> esta nota declaraba queda **resuelto**: esta sesion de integracion escribio la fila de I-42 en
+> `docs/ROADMAP.md` y su estado en `docs/HANDOFF.md` (secciones 1, 2, 4, 5 y 7) como ultimo commit de la
+> rama, conforme a WORKFLOW 4.5.4 y 8. [ADR-0031](../adr/0031-push-back-compuesto-estructura-unica-y-configuracion-por-lado.md)
+> pasa a **aceptado** con el modelo implementado y sus seis limitaciones declaradas.
 
 ## 1. Objetivo
 
@@ -3370,4 +3374,10 @@ Son los puntos que este candidato dice haber cerrado. Cada uno se ve en el dibuj
 
 El veredicto del Owner en AutoCAD 2025 es el gate: CI verde es necesario y **no** suficiente, porque las
 pruebas no ven los bloques DWG reales. Si se aprueba, ADR-0031 pasa a `aceptado` con el modelo
-implementado y sus cinco limitaciones declaradas.
+implementado y sus limitaciones declaradas.
+
+**Veredicto (2026-09-02): APROBADA — 8/8 escenarios**, sobre el DLL construido exactamente desde
+`077d35ad418615bed4c1d8375ea9cfc0de9fca24`. El escenario 2 (corrida y hueco) quedo **aprobado con
+observacion** no bloqueante —**CORRIDA GAP STORAGE**, la limitacion 6 de la seccion 5—, que **no** se
+implementa ahora por decision del dueño. ADR-0031 queda **aceptado** con el modelo implementado y sus
+**seis** limitaciones declaradas.

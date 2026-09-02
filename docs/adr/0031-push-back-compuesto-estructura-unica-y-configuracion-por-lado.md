@@ -1,9 +1,20 @@
 # ADR-0031: El Push Back compuesto tiene UNA estructura física y DOS configuraciones funcionales
 
-- **Estado:** propuesto
-- **Fecha:** 2026-08-23
-- **Decisores:** dueño del repo (pendiente de aceptación); Claude (redacción e implementación)
+- **Estado:** **aceptado**
+- **Fecha:** 2026-08-23 (propuesto) · 2026-09-02 (aceptado)
+- **Decisores:** dueño del repo (**acepta**); Claude (redacción e implementación)
 - **Iniciativa relacionada:** I-42 — `feature/push-back-compuesto`
+
+> **Aceptación del dueño (2026-09-02).** El dueño acepta esta decisión **con el modelo tal como quedó
+> implementado**, tras validar manualmente en AutoCAD 2025 el DLL construido exactamente desde
+> `077d35ad418615bed4c1d8375ea9cfc0de9fca24`, con veredicto **APROBADA — 8/8 escenarios**. El escenario 2
+> (cama **corrida** y hueco) quedó **APROBADO CON OBSERVACIÓN** no bloqueante —**CORRIDA GAP STORAGE**:
+> una entrada de topología creada sólo para guardar el fondo de una corrida fija la topología por defecto
+> vigente al escribirla—, que el dueño decidió **no implementar ahora** y queda registrada en
+> [`docs/ideas-futuras.md`](../ideas-futuras.md). La aceptación incluye **expresamente las seis
+> limitaciones declaradas** en la iniciativa
+> ([`I-42-push-back-compuesto.md`](../initiatives/I-42-push-back-compuesto.md) §5). A partir de aquí el
+> contenido de este ADR es **inmutable** (adr/README.md): sólo pueden cambiar su Estado y sus enlaces.
 
 ## Contexto
 
