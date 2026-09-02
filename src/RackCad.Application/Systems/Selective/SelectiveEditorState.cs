@@ -130,10 +130,13 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>Reset the working matrix to <paramref name="bayCount"/> bays × <paramref name="levelCount"/> levels of fresh cells.</summary>
         public void InitMatrix(int bayCount, int levelCount)
         {
+            // EVERY per-bay list is cleared, or a leftover entry survives a full reset by index and the lists stop
+            // being parallel — a stale override would reappear on a frente the user never touched (I-43, ID14).
             Bays.Clear();
             FloorBeams.Clear();
             BayHeights.Clear();
             BaySegments.Clear();
+            FloorBeamRiseOverrides.Clear();
             for (var b = 0; b < bayCount; b++)
             {
                 var column = new List<SelectiveEditorCell>();

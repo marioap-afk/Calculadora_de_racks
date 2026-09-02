@@ -313,6 +313,77 @@ namespace RackCad.Tests
             Assert.Equal(new double?[] { null, null }, state.FloorBeamRiseOverrides.ToArray());
         }
 
+        // ---- InitMatrix: a full reset clears EVERY parallel list ----
+
+        /// <summary>The invariant every per-bay list of the working matrix must satisfy.</summary>
+        private static void AssertParallelLists(SelectiveEditorState state)
+        {
+            Assert.Equal(state.Bays.Count, state.FloorBeams.Count);
+            Assert.Equal(state.Bays.Count, state.BayHeights.Count);
+            Assert.Equal(state.Bays.Count, state.BaySegments.Count);
+            Assert.Equal(state.Bays.Count, state.FloorBeamRiseOverrides.Count);
+        }
+
+        [Fact]
+        public void InitMatrix_DoesNotKeepAPreviousOverrideByIndex()
+        {
+            // The mandatory case: an override set on the old matrix must not survive a full reinitialization.
+            var state = new SelectiveEditorState { DefaultBeamId = BeamId };
+            state.InitMatrix(2, 2);
+            state.FloorBeamRiseOverrides[0] = 12.0;
+
+            state.InitMatrix(1, 2);
+
+            Assert.Single(state.Bays);
+            Assert.Single(state.FloorBeamRiseOverrides);
+            Assert.Null(state.FloorBeamRiseOverrides[0]);
+            AssertParallelLists(state);
+        }
+
+        [Fact]
+        public void InitMatrix_WithFewerFrentes_LeavesExactlyAsManyEntriesAsBays()
+        {
+            var state = new SelectiveEditorState { DefaultBeamId = BeamId };
+            state.InitMatrix(4, 2);
+            for (var b = 0; b < 4; b++) state.FloorBeamRiseOverrides[b] = 10.0 + b;
+
+            state.InitMatrix(2, 3);
+
+            Assert.Equal(2, state.FloorBeamRiseOverrides.Count);
+            Assert.All(state.FloorBeamRiseOverrides, value => Assert.Null(value));
+            AssertParallelLists(state);
+        }
+
+        [Fact]
+        public void InitMatrix_WithMoreFrentes_ProducesOnlyNewNulls()
+        {
+            var state = new SelectiveEditorState { DefaultBeamId = BeamId };
+            state.InitMatrix(1, 2);
+            state.FloorBeamRiseOverrides[0] = 33.0;
+
+            state.InitMatrix(3, 2);
+
+            Assert.Equal(3, state.FloorBeamRiseOverrides.Count);
+            Assert.All(state.FloorBeamRiseOverrides, value => Assert.Null(value));
+            AssertParallelLists(state);
+        }
+
+        [Fact]
+        public void AfterThatReset_BuildDesignEmitsNoOverrideOnAnyFrente()
+        {
+            var state = new SelectiveEditorState { DefaultBeamId = BeamId };
+            state.InitMatrix(2, 2);
+            state.FloorBeamRiseOverrides[0] = 12.0;
+
+            state.InitMatrix(3, 2);
+            state.FondoMatrices.Add(state.SnapshotWorking(48.0, 0.0));
+            state.SelectedFondo = 0;
+            var design = state.BuildDesign(Inputs(state, globalRise: 4.0));
+
+            Assert.Equal(3, design.Bays.Count);
+            Assert.All(design.Bays, bay => Assert.Null(bay.FloorBeamRiseOverride));
+        }
+
         // ---- Persistence ----
 
         [Fact]
