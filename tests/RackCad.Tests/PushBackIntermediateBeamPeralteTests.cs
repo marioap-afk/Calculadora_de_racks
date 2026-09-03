@@ -316,13 +316,22 @@ namespace RackCad.Tests
         }
 
         /// <summary>
-        /// Un rack COMPUESTO con una cama CORRIDA: la cama atraviesa la interfaz, asi que sus intermedios se cuentan
-        /// sobre el sistema SINTETICO de la corrida, cuyos niveles se copian del lado BAJO. Aqui el lado alto pide
-        /// 4.5" y el bajo 3.5": si la cuenta se queda con la del lado bajo, un 4.5 authored sale del BOM como 3.5
-        /// sin que ningun maximo lo explique.
+        /// CARACTERIZACION, no especificacion (I-44 Gate 2). Un rack COMPUESTO con cama CORRIDA cuenta sus
+        /// intermedios sobre el sistema SINTETICO de la corrida, cuyo <c>front.Levels</c> se copia del lado BAJO
+        /// (<c>PushBackRuns.BuildCorrida</c>: <c>elevations = lowFront ?? highFront</c>). Con A (bajo) en 3.5" y B
+        /// (alto) en 4.5", el BOM publica 3.5 y el 4.5 authored desaparece — un descenso que ningun maximo explica.
+        ///
+        /// <para>
+        /// NO existe contrato previo sobre quien gobierna <c>IntermediateBeamCatalogId</c> /
+        /// <c>IntermediateBeamDepth</c> de una cama que cruza la interfaz: ADR-0031 §8-bis solo dice que un
+        /// intermedio pertenece a UNA CAMA, y la autoridad efectiva ya cambio de lado por efecto colateral (el
+        /// commit 82e918b movio la fuente de <c>highFront</c> a <c>elevations</c> para anclar las ELEVACIONES en el
+        /// lado bajo, arrastrando con ellas valores de celda que no son elevaciones). Esta prueba fija lo observado
+        /// y NO decide el contrato: es AMBIGÜEDAD DE PRODUCTO pendiente del dueño.
+        /// </para>
         /// </summary>
         [Fact]
-        public void ACorridaBed_DoesNotDropTheHighSidePeralte()
+        public void Characterization_ACorridaTakesTheLowSideCellValues_ContractPending()
         {
             var catalog = Catalog;
             var design = PushBackCompositeStructureTests.Composite(
@@ -332,10 +341,18 @@ namespace RackCad.Tests
             SetIntermediate(design.Structure.Fronts[0], PeralteF1);   // lado A (bajo) pide 3.5"
             SetIntermediate(design.SideB.Fronts[0], PeralteF2);       // lado B (alto) pide 4.5"
 
-            var system = Resolve(design, catalog);
-            var published = Intermediates(system, catalog).Select(PeralteOf).Distinct().OrderBy(v => v).ToArray();
+            var published = Intermediates(Resolve(design, catalog), catalog)
+                .Select(PeralteOf).Distinct().OrderBy(v => v).ToArray();
+            Assert.Equal(new[] { PeralteF1 }, published);             // hoy: manda el lado BAJO
 
-            Assert.Contains(PeralteF2, published);
+            // Y la simetria: intercambiar los dos lados intercambia el resultado. Es el lado BAJO el que gobierna,
+            // no «el mayor» ni «el que lo declaro primero».
+            SetIntermediate(design.Structure.Fronts[0], PeralteF2);   // A (bajo) 4.5"
+            SetIntermediate(design.SideB.Fronts[0], PeralteF1);       // B (alto) 3.5"
+
+            var swapped = Intermediates(Resolve(design, catalog), catalog)
+                .Select(PeralteOf).Distinct().OrderBy(v => v).ToArray();
+            Assert.Equal(new[] { PeralteF2 }, swapped);
         }
 
         private static void SetIntermediate(DynamicRackFrontDesign front, double peralte)
