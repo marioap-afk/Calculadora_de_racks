@@ -14,6 +14,39 @@ namespace RackCad.Application.Settings
 
         /// <summary>Folder for the design library (named .rackcad.json designs); null/empty = the default under %APPDATA%\RackCad\Designs.</summary>
         public string DesignLibraryPath { get; set; }
+
+        /// <summary>
+        /// The selective editor's last "Fondos destino" choice (I-43, gate 8 correction): <c>"Todos"</c>,
+        /// <c>"Actual"</c>, or the 0-based indices as <c>"0,2"</c>. Null/absent = never chosen, which resolves to
+        /// "Todos". Encoded and re-resolved by <c>SelectiveTargetPreference</c>, the single home of that rule.
+        /// <para>
+        /// It belongs HERE and not in the design: it describes the editor, not the rack, so it must not travel inside
+        /// a document or change a drawing depending on who opened it.
+        /// </para>
+        /// </summary>
+        public string SelectiveTargetFondos { get; set; }
+    }
+
+    /// <summary>
+    /// Read/write access to the per-user settings. The one indirection over <see cref="UserSettingsStore"/> exists so
+    /// a window can be opened against an in-memory store in tests: reading the real <c>%APPDATA%</c> would make a test
+    /// depend on the machine it runs on — the "no preference yet" case especially, which cannot be asserted at all
+    /// while a developer's own settings file is what answers it.
+    /// </summary>
+    public interface IUserSettingsGateway
+    {
+        UserSettings Load();
+
+        void Save(UserSettings settings);
+    }
+
+    /// <summary>The production gateway: the real <c>%APPDATA%\RackCad\settings.json</c>, through the store's own
+    /// best-effort load and atomic save.</summary>
+    public sealed class UserSettingsGateway : IUserSettingsGateway
+    {
+        public UserSettings Load() => UserSettingsStore.Load();
+
+        public void Save(UserSettings settings) => UserSettingsStore.Save(settings);
     }
 
     /// <summary>Loads/saves <see cref="UserSettings"/> as a best-effort JSON file; failures fall back to defaults.</summary>

@@ -517,6 +517,17 @@ namespace RackCad.Application.Systems.Selective
             targetFondos = CurrentFondoOnly();
         }
 
+        /// <summary>
+        /// Choose "Todos": every fondo, and it KEEPS meaning every fondo (gate 8 correction). Storing the indices
+        /// instead would freeze the answer: a fondo added afterwards would silently fall outside the set the user
+        /// believes is "todos", and the remembered preference could not open a rack with a different fondo count.
+        /// </summary>
+        public void FollowAllFondos()
+        {
+            TargetMode = SelectiveTargetMode.All;
+            targetFondos = AllFondos();
+        }
+
         /// <summary>How many fondos this state has, counting the uncommitted working matrix as fondo 0 when no slot
         /// exists yet — the same rule <see cref="SelectiveTopology.From"/> applies.</summary>
         public int FondoCount => FondoMatrices.Count > 0 ? FondoMatrices.Count : (Bays.Count > 0 ? 1 : 0);
@@ -554,6 +565,7 @@ namespace RackCad.Application.Systems.Selective
         {
             SelectedFondo = fondoIndex;
             if (TargetMode == SelectiveTargetMode.FollowCurrent) targetFondos = CurrentFondoOnly();
+            // "Todos" does not depend on the fondo on screen, so navigating leaves it exactly as it is.
         }
 
         /// <summary>Drop targets the rack no longer has after a fondo-count change, never leaving the set empty.
@@ -561,7 +573,15 @@ namespace RackCad.Application.Systems.Selective
         public void SyncTargetFondos()
         {
             if (TargetMode == SelectiveTargetMode.FollowCurrent) FollowCurrentFondo();
+            else if (TargetMode == SelectiveTargetMode.All) FollowAllFondos(); // re-expands: a new fondo joins "todos"
             else SetTargetFondosCore(targetFondos.Fondos);
+        }
+
+        /// <summary>Every fondo this rack has; a rack with none still yields fondo 0, so the set is never empty.</summary>
+        private SelectiveFondoTargets AllFondos()
+        {
+            var count = FondoCount;
+            return count > 0 ? SelectiveFondoTargets.Of(Enumerable.Range(0, count)) : SelectiveFondoTargets.Single(0);
         }
 
         private SelectiveFondoTargets CurrentFondoOnly()

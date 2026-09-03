@@ -81,7 +81,7 @@ namespace RackCad.UI.Tests
         // ---- The target-fondo axis, through the real controls ----
 
         [Fact]
-        public void TargetFondos_DefaultsToTheFondoBeingEdited_AndTheRowIsHiddenForASingleFondo()
+        public void TargetFondos_WithASingleFondo_IsThatFondo_AndTheRowIsHidden()
         {
             var (targets, visibility) = StaTestRunner.Run(() =>
             {
@@ -90,8 +90,10 @@ namespace RackCad.UI.Tests
                 return (window.EditorState.TargetFondos.Fondos.ToArray(), panel.Visibility);
             });
 
+            // With one fondo every possible choice — "Todos" (the default since the gate-8 correction), "Actual", or
+            // that fondo explicitly — resolves to the same single target, so there is nothing to choose between.
             Assert.Equal(new[] { 0 }, targets);
-            Assert.Equal(Visibility.Collapsed, visibility); // with one fondo the two axes always coincide
+            Assert.Equal(Visibility.Collapsed, visibility);
         }
 
         [Fact]
@@ -100,11 +102,14 @@ namespace RackCad.UI.Tests
             var targets = StaTestRunner.Run(() =>
             {
                 var window = OpenWith(3);
+                // "Actual" is chosen deliberately: since the gate-8 correction the editor OPENS on "Todos", so the
+                // mode this test is about has to be the one in force for the question to mean anything.
+                SelectiveTargetsTestSupport.SetCurrentTarget(window);
                 ((ComboBox)window.FindName("FondoSelectorBox")).SelectedIndex = 2; // the real handler runs
                 return window.EditorState.TargetFondos.Fondos.ToArray();
             });
 
-            Assert.Equal(new[] { 2 }, targets); // legacy feel preserved: edits land on the fondo on screen
+            Assert.Equal(new[] { 2 }, targets); // "Actual" keeps aiming at the fondo on screen
         }
 
         [Fact]

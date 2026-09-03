@@ -11,6 +11,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
+using RackCad.Application.Settings;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
@@ -99,6 +100,13 @@ namespace RackCad.UI.Systems.Selective
         private List<FondoMatrix> fondoMatrices => state.FondoMatrices;
         private int selectedFondo { get => state.SelectedFondo; set => state.SelectedFondo = value; }
         private bool switchingFondo; // guards FondoSelector_Changed while the combo is repopulated
+        private readonly IUserSettingsGateway settingsGateway;
+        private readonly UserSettings settings;
+
+        /// <summary>The remembered "Fondos destino" INTENT (gate 8 correction). Kept for the session because it must be
+        /// re-resolved against each rack that gets OPENED: a preference of <c>{1,3}</c> means nothing against the empty
+        /// one-fondo matrix a fresh window starts with, and would be thrown away if it were only read there.</summary>
+        private SelectiveTargetPreference targetPreference = SelectiveTargetPreference.All;
 
         /// <summary>The dynamic per-gap separator textboxes (one per hueco between consecutive fondos).</summary>
         private readonly List<TextBox> separatorBoxes = new List<TextBox>();
@@ -194,8 +202,17 @@ namespace RackCad.UI.Systems.Selective
         }
 
         public RackSelectiveWindow(bool canInsertInAutoCad)
+            : this(canInsertInAutoCad, new UserSettingsGateway())
+        {
+        }
+
+        /// <summary>Same window against an explicit settings gateway, so a test can drive the remembered "Fondos
+        /// destino" preference without reading or writing the developer's real <c>%APPDATA%</c>.</summary>
+        internal RackSelectiveWindow(bool canInsertInAutoCad, IUserSettingsGateway settingsGateway)
         {
             this.canInsertInAutoCad = canInsertInAutoCad;
+            this.settingsGateway = settingsGateway ?? new UserSettingsGateway();
+            settings = this.settingsGateway.Load();
             // The shared session owns the catalog, the identity, the coalesced recompute (its gate runs RunRecompute) and
             // the insert contract (I-15). Created before InitializeComponent so the catalog is ready for the combos below.
             session = new RackEditorSession<SelectivePalletDesign, SelectiveRackSystem>(recompute: RunRecompute);
@@ -218,6 +235,8 @@ namespace RackCad.UI.Systems.Selective
             fondoMatrices.Clear();
             fondoMatrices.Add(SnapshotWorking());
             selectedFondo = 0;
+            targetPreference = SelectiveTargetPreference.Decode(settings?.SelectiveTargetFondos);
+            ApplyStoredTargetPreference();
             RebuildFondoSelector();
             RebuildSeparatorFields(1);
             LoadCellEditor();
@@ -880,7 +899,14 @@ namespace RackCad.UI.Systems.Selective
             // the standard cabecera resolved with THAT fondo's height and depth. Seeding from fondo 0 would open a
             // cabecera that is not the one on screen.
             var resolvedHeight = ResolvedPostHeight(i);
-            var fondo = ResolvedFondo();
+
+            // CabeceraDepthOfFondo reads the fondo's SLOT, and the fondo being edited lives in the working matrix
+            // until it is committed: without this the seed would use the depth from before the user's last edit.
+            SaveWorkingToSelected();
+
+            // The depth of the fondo ON SCREEN. Reading fondo 0 here (what ResolvedFondo used to do) opened the
+            // configurator at another fondo's cabecera depth — 42" while editing a 72" tarima, say.
+            var fondo = ResolvedCabeceraFondo(selectedFondo);
 
             // Work on a CLONE and compare before/after: closing the configurator without editing is a real
             // CANCEL (before, the seed was mutated up-front and any close marked the post "Personalizada").
@@ -909,7 +935,9 @@ namespace RackCad.UI.Systems.Selective
                 return;
             }
 
-            // Fondo is locked to the tramo — every cabecera of the rack shares it.
+            // The depth is NOT the configurator's to choose: it belongs to the fondo (gate 4). Stamp the visible
+            // fondo's depth here so what the user accepted matches what they saw; every TARGET fondo then has its own
+            // depth imposed by ApplyCabeceraToTargets, which is the single authority.
             if (fondo > 0.0) cfg.Depth = fondo;
 
             // Height comes from the system; the user MAY override it, but warn it can desynchronize the rack
@@ -1003,17 +1031,22 @@ namespace RackCad.UI.Systems.Selective
             return top;
         }
 
-        /// <summary>The CABECERA fondo of fondo 0: the per-line "Fondo de cabecera" override when set, else the rule
-        /// (cabecera = tarima − 6"). This is what a per-post custom cabecera is drawn at; its fondo is not set
-        /// independently, so we coerce it to this value. Delegates to <see cref="SelectiveDepthLayout.CabeceraDepthOfFondo"/>
-        /// (the single home of override→rule→fallback) so "Personalizar" matches the drawn geometry.</summary>
-        private double ResolvedFondo()
+        /// <summary>
+        /// The CABECERA depth of fondo <paramref name="fondoIndex"/>: its own "Fondo de cabecera" override when set,
+        /// else the rule (cabecera = tarima − 6"). This is what a per-post custom cabecera is drawn at, so it is what
+        /// "Personalizar" must open with.
+        /// <para>
+        /// It reads the LIVE editor state (<see cref="SelectiveEditorState.CabeceraDepthOfFondo"/>), which is the
+        /// gate-4 authority <c>FondoIndex → CabeceraDepth</c> — no new authority, and no dependence on
+        /// <c>lastSystem</c>, whose fondo 0 is what made the configurator open at the wrong depth. The final depth of
+        /// what gets stored is still imposed per TARGET fondo by <c>ApplyCabeceraToTargets</c>; this only decides what
+        /// the user is shown.
+        /// </para>
+        /// </summary>
+        private double ResolvedCabeceraFondo(int fondoIndex)
         {
-            if (lastSystem != null)
-            {
-                var cabecera = SelectiveDepthLayout.CabeceraDepthOfFondo(lastSystem, 0);
-                if (cabecera > 0.0) return cabecera;
-            }
+            var cabecera = state.CabeceraDepthOfFondo(fondoIndex);
+            if (cabecera > 0.0) return cabecera;
 
             var pallet = SelectiveRackDefaults.DefaultPalletDepth;
             var derived = pallet - SelectiveRackDefaults.CabeceraFondoAllowance;
@@ -1588,7 +1621,7 @@ namespace RackCad.UI.Systems.Selective
             // "Actual" is a MODE, not a set that happens to match: an explicit "Fondo 2" reads as itself even while
             // fondo 2 is the one on screen (I-43, gate 8A correction).
             var isCurrentOnly = state.TargetMode == SelectiveTargetMode.FollowCurrent;
-            var isAll = !isCurrentOnly && count > 0 && fondos.Count == count;
+            var isAll = state.TargetMode == SelectiveTargetMode.All;
 
             // "Actual" and "Todos" are ACTIONS, not ticks. A check box can be un-ticked, and neither "no mode" nor
             // "un-select all" exists in the model, so a tick that can be turned off would let the UI show a state the
@@ -1601,7 +1634,7 @@ namespace RackCad.UI.Systems.Selective
                 Padding = new Thickness(6, 2, 6, 2),
                 ToolTip = "Aplicar solo en el fondo que estás editando; sigue al fondo visible."
             };
-            actual.Click += (s, e) => { if (!buildingTargetFondos) { state.FollowCurrentFondo(); RefreshTargetFondos(); } };
+            actual.Click += (s, e) => { if (!buildingTargetFondos) { state.FollowCurrentFondo(); RefreshTargetFondos(); RememberTargetFondos(); } };
             TargetFondosList.Children.Add(actual);
 
             var todos = new Button
@@ -1612,7 +1645,9 @@ namespace RackCad.UI.Systems.Selective
                 Padding = new Thickness(6, 2, 6, 2),
                 ToolTip = "Aplicar en todos los fondos."
             };
-            todos.Click += (s, e) => { if (!buildingTargetFondos) SetTargets(Enumerable.Range(0, state.FondoCount)); };
+            // FollowAllFondos, not a snapshot of today's indices: "Todos" must keep meaning every fondo when the rack
+            // grows, and it is the intent that gets remembered between openings.
+            todos.Click += (s, e) => { if (!buildingTargetFondos) { state.FollowAllFondos(); RefreshTargetFondos(); RememberTargetFondos(); } };
             TargetFondosList.Children.Add(todos);
 
             for (var k = 0; k < count; k++)
@@ -1631,19 +1666,20 @@ namespace RackCad.UI.Systems.Selective
                 {
                     if (buildingTargetFondos) return;
 
-                    // While "Actual" is the mode the boxes are shown EMPTY, so they are the visible truth: ticking the
-                    // first one starts a fresh explicit set. Carrying the followed fondo over would silently add a
-                    // second target the user never ticked.
-                    var chosen = state.TargetMode == SelectiveTargetMode.Explicit
-                        ? state.TargetFondos.Fondos.ToList()
-                        : new List<int>();
+                    // The boxes are the VISIBLE truth, so a toggle starts from what they show, never from the mode's
+                    // internal set: under "Actual" they read EMPTY (ticking the first one begins a fresh explicit set,
+                    // instead of silently adding a second target next to the followed fondo), while under "Todos" they
+                    // read ALL TICKED (un-ticking one must mean "every fondo except this", not "nothing").
+                    var chosen = state.TargetMode == SelectiveTargetMode.FollowCurrent
+                        ? new List<int>()
+                        : state.TargetFondos.Fondos.ToList();
 
                     if (item.IsChecked == true) { if (!chosen.Contains(index)) chosen.Add(index); }
                     else chosen.Remove(index);
 
                     // Un-ticking the last one leaves no explicit target: fall back to "Actual", which is a real mode,
                     // instead of inventing a singleton the user never chose.
-                    if (chosen.Count == 0) { state.FollowCurrentFondo(); RefreshTargetFondos(); return; }
+                    if (chosen.Count == 0) { state.FollowCurrentFondo(); RefreshTargetFondos(); RememberTargetFondos(); return; }
                     SetTargets(chosen);
                 }
 
@@ -1667,7 +1703,33 @@ namespace RackCad.UI.Systems.Selective
         {
             state.SetTargetFondos(fondos);
             RefreshTargetFondos();
+            RememberTargetFondos();
         }
+
+        /// <summary>
+        /// Store the "Fondos destino" INTENT as an editor preference so the next opening starts where the user left
+        /// off (gate 8 correction). Best-effort and atomic through the existing per-user settings; it never touches
+        /// the design, so no recompute and no unsaved-changes state is involved.
+        /// </summary>
+        private void RememberTargetFondos()
+        {
+            targetPreference = SelectiveTargetPreference.Capture(state);
+            if (settingsGateway == null) return;
+
+            // Re-read before writing: the settings file holds OTHER preferences (block library, design library) that
+            // another window may have changed since this editor opened, and saving our stale snapshot would undo them.
+            var current = settingsGateway.Load() ?? new UserSettings();
+            current.SelectiveTargetFondos = targetPreference.Encode();
+            settingsGateway.Save(current);
+        }
+
+        /// <summary>
+        /// Aim the editor at the remembered choice, resolved against the fondos the rack ACTUALLY has. Called only
+        /// when a rack is opened — a fresh editor, or a design loaded into it. It is deliberately NOT called on every
+        /// fondo-count change: resizing drops targets destructively (gate 4), and re-resolving there would resurrect
+        /// indices the user had already reshaped away.
+        /// </summary>
+        private void ApplyStoredTargetPreference() => targetPreference.ApplyTo(state);
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
         private void ShowBom_Click(object sender, RoutedEventArgs e)
@@ -1897,6 +1959,20 @@ namespace RackCad.UI.Systems.Selective
         /// cannot forge <c>Keyboard.Modifiers</c>.</summary>
         internal void RefreshSelectionVisualsForTest() => RefreshSelectionVisuals();
 
+        /// <summary>Test seam: recompute the "Personalizada / Por defecto" legend, exactly as every handler that
+        /// changes the visible fondo or the selected post does. Needed only when a test writes a cabecera straight
+        /// into the state instead of going through the configurator dialog (which cannot run headless).</summary>
+        internal void RefreshPostStatusForTest() => UpdatePostStatus();
+
+        /// <summary>Test seam: the cabecera depth "Personalizar" would open with right now — the VISIBLE fondo's,
+        /// committed first, exactly as <see cref="CustomizePost_Click"/> computes it. The click itself cannot be
+        /// driven from a test because the configurator is modal (ShowDialog blocks the STA thread).</summary>
+        internal double CustomizeSeedDepthForTest()
+        {
+            SaveWorkingToSelected();
+            return ResolvedCabeceraFondo(selectedFondo);
+        }
+
         /// <summary>The actual rebuild the session's coalescing gate runs; <see cref="DeferRecompute"/> collapses a burst
         /// of <see cref="Recompute"/> calls within a gesture into one pass here (same behavior as the old inline deferral).</summary>
         private void RunRecompute()
@@ -2083,6 +2159,9 @@ namespace RackCad.UI.Systems.Selective
             // the frente is the authority (I-43, gate 8A).
             state.MaterializeFloorBeamRises(legacyFloorBeamRise);
             RestoreWorkingFrom(fondoMatrices[0]);
+            // NOW the fondos of this rack are known, so the remembered choice can be resolved against them: an
+            // explicit set keeps the fondos this rack has, and "Todos"/"Actual" re-aim at it (gate 8 correction).
+            ApplyStoredTargetPreference();
             RebuildFondoSelector();
             RebuildSeparatorFields(depthCount);
             SetSeparatorValues(design.SeparatorLengths);

@@ -96,12 +96,27 @@
                             HorizontalAlignment="Left" Margin="0,4,0,0"
                             ToolTip="Quita la cabecera personalizada de este poste (vuelve a la del tramo)." />
 
+                    <!-- I-43: the SECOND axis of every operation. One selector for the whole editor. -->
+                    <StackPanel x:Name="TargetFondosPanel" Margin="0,10,0,0">
+                        <TextBlock Text="Fondos destino" Style="{StaticResource FieldLabel}" />
+                        <ToggleButton x:Name="TargetFondosButton" HorizontalContentAlignment="Left" Content="Actual"
+                                      Padding="8,3" Background="White" BorderBrush="#D8DEE6" BorderThickness="1" Foreground="#1F2933"
+                                      ToolTip="Dónde aterrizan las ediciones: el fondo actual, uno, varios o todos. No cambia lo que ves en la matriz." />
+                        <Popup x:Name="TargetFondosPopup" PlacementTarget="{Binding ElementName=TargetFondosButton}" Placement="Bottom"
+                               StaysOpen="False" AllowsTransparency="True"
+                               IsOpen="{Binding IsChecked, ElementName=TargetFondosButton, Mode=TwoWay}">
+                            <Border Background="White" BorderBrush="#D8DEE6" BorderThickness="1" Padding="8">
+                                <StackPanel x:Name="TargetFondosList" MinWidth="150" />
+                            </Border>
+                        </Popup>
+                    </StackPanel>
+
                     <TextBlock Text="Tramo" Style="{StaticResource SectionTitle}" />
                     <TextBlock Text="Frentes" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="BayCountBox" Style="{StaticResource FieldBox}" Text="2"
                              LostFocus="BayCount_LostFocus" KeyDown="BayCount_KeyDown"
-                             ToolTip="Número de frentes de los FONDOS DESTINO (cada fondo puede tener el suyo) (bahías) del tramo. Se aplica al salir del campo (o con 'Recalcular tramo')." />
-                    <TextBlock Text="Los niveles, la altura y 'larguero a piso' se ajustan por frente en el encabezado de la matriz. El piso arranca en 0."
+                             ToolTip="Número de frentes (bahías) de los «Fondos destino»; cada fondo puede tener el suyo. Se aplica al salir del campo (o con 'Recalcular tramo')." />
+                    <TextBlock Text="Cuántos niveles tiene cada frente y su larguero a piso se editan en «Frente seleccionado», con su propio alcance."
                                Foreground="#8B98A6" FontSize="10.5" TextWrapping="Wrap" Margin="0,4,0,0" />
 
                     <TextBlock Text="Tolerancias y medidas" Style="{StaticResource SectionTitle}" />
@@ -268,21 +283,6 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-
-                    <!-- I-43: the SECOND axis of every operation. One selector for the whole editor. -->
-                    <StackPanel x:Name="TargetFondosPanel" Margin="0,10,0,0">
-                        <TextBlock Text="Fondos destino" Style="{StaticResource FieldLabel}" />
-                        <ToggleButton x:Name="TargetFondosButton" HorizontalContentAlignment="Left" Content="Actual"
-                                      Padding="8,3" Background="White" BorderBrush="#D8DEE6" BorderThickness="1" Foreground="#1F2933"
-                                      ToolTip="Dónde aterrizan las ediciones: el fondo actual, uno, varios o todos. No cambia lo que ves en la matriz." />
-                        <Popup x:Name="TargetFondosPopup" PlacementTarget="{Binding ElementName=TargetFondosButton}" Placement="Bottom"
-                               StaysOpen="False" AllowsTransparency="True"
-                               IsOpen="{Binding IsChecked, ElementName=TargetFondosButton, Mode=TwoWay}">
-                            <Border Background="White" BorderBrush="#D8DEE6" BorderThickness="1" Padding="8">
-                                <StackPanel x:Name="TargetFondosList" MinWidth="150" />
-                            </Border>
-                        </Popup>
-                    </StackPanel>
                 </StackPanel>
             </Border>
         </shell:RackEditorVisualShell.SidePanelContent>
