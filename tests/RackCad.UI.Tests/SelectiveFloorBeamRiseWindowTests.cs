@@ -8,19 +8,28 @@ using Xunit;
 namespace RackCad.UI.Tests
 {
     /// <summary>
-    /// STA tests for the REAL <see cref="RackSelectiveWindow"/> wiring of I-43 / ID14: the per-frente "elevacion de
-    /// larguero a piso" is edited in the bay header, applies over the SAME target fondos, and a multi-fondo write
-    /// recomputes ONCE.
+    /// STA tests for the REAL <see cref="RackSelectiveWindow"/> after the gate-8A redesign: the FRENTE properties —
+    /// "larguero a piso" and its elevation — are edited in the LEFT PANEL and applied with a reach (Frente /
+    /// Seleccionados / Todos) over the single "Fondos destino" selector. There is no run-wide elevation any more and
+    /// no per-frente control inside the matrix.
     /// </summary>
     public sealed class SelectiveFloorBeamRiseWindowTests
     {
-        private static RackSelectiveWindow OpenWith(int fondos)
+        private static RackSelectiveWindow OpenWith(int fondos, int frentes = 2)
         {
             var window = new RackSelectiveWindow(canInsertInAutoCad: false);
             if (fondos > 1)
             {
                 EditorWindowTestSupport.SetText(window, "FondosBox", fondos.ToString());
                 RaiseLostFocus(window, "FondosBox");
+            }
+
+            if (frentes != 2)
+            {
+                SelectiveTargetsTestSupport.SetAllTargets(window); // grow every fondo, so topologies stay comparable
+                EditorWindowTestSupport.SetText(window, "BayCountBox", frentes.ToString());
+                RaiseLostFocus(window, "BayCountBox");
+                SelectiveTargetsTestSupport.SetCurrentTarget(window);
             }
 
             return window;
@@ -32,138 +41,227 @@ namespace RackCad.UI.Tests
             box.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, box));
         }
 
-        private static void SetTargetFondos(RackSelectiveWindow window, string text)
+        /// <summary>Edit the frente panel and apply it with the given reach — the whole gesture, as a user performs it.</summary>
+        private static void ApplyFront(RackSelectiveWindow window, bool floorBeam, string rise, string scope)
         {
-            EditorWindowTestSupport.SetText(window, "TargetFondosBox", text);
-            RaiseLostFocus(window, "TargetFondosBox");
+            ((CheckBox)window.FindName("FrontFloorBeamCheck")).IsChecked = floorBeam;
+            ((TextBox)window.FindName("FrontRiseBox")).Text = rise;
+            EditorWindowTestSupport.ClickByContent(window, scope);
         }
 
-        /// <summary>The per-frente "Elev." box of a bay header, found by its tooltip text.</summary>
-        private static TextBox RiseBox(RackSelectiveWindow window, int bay)
+        private static double?[] RisesOf(RackSelectiveWindow window, int fondo)
         {
-            var grid = (Grid)window.FindName("MatrixGrid");
-            var header = grid.Children.OfType<StackPanel>().First(panel => Grid.GetRow(panel) == 0 && Grid.GetColumn(panel) == bay + 1);
-            return header.Children.OfType<StackPanel>()
-                .SelectMany(row => row.Children.OfType<TextBox>())
-                .First(box => box.ToolTip is string tip && tip.Contains("Elevación del larguero a piso de ESTE frente"));
+            var state = window.EditorState;
+            var frentes = fondo == state.SelectedFondo ? state.Bays.Count : state.FondoMatrices[fondo].Bays.Count;
+            return Enumerable.Range(0, frentes).Select(front => state.FloorBeamRiseOverrideAt(fondo, front)).ToArray();
         }
 
-        private static void CommitRise(RackSelectiveWindow window, int bay, string text)
+        private static bool[] FloorsOf(RackSelectiveWindow window, int fondo)
         {
-            var box = RiseBox(window, bay);
-            box.Text = text;
-            box.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, box));
+            var state = window.EditorState;
+            return (fondo == state.SelectedFondo ? state.FloorBeams : state.FondoMatrices[fondo].FloorBeams).ToArray();
         }
+
+        // ---- The run-wide elevation is gone ----
 
         [Fact]
-        public void TheBayHeaderShowsAPerFrenteRiseBox_EmptyWhenItInheritsTheGlobal()
+        public void ThereIsNoGlobalElevationControlAnyMore()
         {
-            var text = StaTestRunner.Run(() => RiseBox(OpenWith(1), 0).Text);
-
-            Assert.Equal(string.Empty, text);
-        }
-
-        [Fact]
-        public void EditingTheBoxWritesThatFrenteInEveryTargetFondo()
-        {
-            var (fondo1, fondo2, fondo3, otherFrente) = StaTestRunner.Run(() =>
+            var (globalBox, panelBox) = StaTestRunner.Run(() =>
             {
-                var window = OpenWith(3);
-                SetTargetFondos(window, "1,3");
-                CommitRise(window, 1, "14");
-                var state = window.EditorState;
+                var window = OpenWith(1);
+                return (window.FindName("FloorRiseBox"), window.FindName("FrontRiseBox"));
+            });
+
+            Assert.Null(globalBox);    // the global concept left the UI entirely
+            Assert.NotNull(panelBox);  // the elevation is a property of the frente, edited in the left panel
+        }
+
+        [Fact]
+        public void TheMatrixHeaderNoLongerCarriesPisoElevationOrHeight()
+        {
+            var texts = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(1);
+                var header = ((Grid)window.FindName("MatrixGrid")).Children.OfType<StackPanel>()
+                    .First(panel => Grid.GetRow(panel) == 0 && Grid.GetColumn(panel) == 1);
                 return (
-                    state.FloorBeamRiseOverrideAt(0, 1),
-                    state.FloorBeamRiseOverrideAt(1, 1),
-                    state.FloorBeamRiseOverrideAt(2, 1),
-                    state.FloorBeamRiseOverrideAt(0, 0));
+                    header.Children.OfType<CheckBox>().Count()
+                        + header.Children.OfType<StackPanel>().SelectMany(r => r.Children.OfType<CheckBox>()).Count(),
+                    header.Children.OfType<StackPanel>().SelectMany(r => r.Children.OfType<TextBox>()).Count());
             });
 
-            Assert.Equal(14.0, fondo1);
-            Assert.Null(fondo2);   // fondo 2 was not a target
-            Assert.Equal(14.0, fondo3);
-            Assert.Null(otherFrente);
+            Assert.Equal(0, texts.Item1); // no "Piso" checkbox
+            Assert.Equal(0, texts.Item2); // no "Elev." and no "Alto"
+        }
+
+        // ---- Front / Selected / All over the target fondos ----
+
+        [Fact]
+        public void Frente_WritesTheSelectedFrenteInEveryTargetFondo()
+        {
+            var (rises, floors, outside) = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(3, frentes: 3);
+                SelectiveTargetsTestSupport.SetTargets(window, 1, 3);
+                window.EditorState.SelectCell(1, 0, extend: false);
+                ApplyFront(window, floorBeam: true, rise: "13", scope: "Este frente");
+                return (RisesOf(window, 0), FloorsOf(window, 0), RisesOf(window, 1));
+            });
+
+            Assert.Equal(new double?[] { 4.0, 13.0, 4.0 }, rises);
+            Assert.Equal(new[] { false, true, false }, floors);
+            Assert.Equal(new double?[] { 4.0, 4.0, 4.0 }, outside); // fondo 2 was not a target
         }
 
         [Fact]
-        public void ClearingTheBoxRestoresTheGlobal_AndAnExplicitZeroIsKept()
+        public void Seleccionados_WritesTheFrentesTheCellSelectionTouches()
         {
-            var (restored, zero) = StaTestRunner.Run(() =>
+            // A selection of (F0,N0) and (F2,N1) names the frentes {0, 2} — the levels are irrelevant to a frente
+            // property, which is exactly what "Seleccionados" means here.
+            var rises = StaTestRunner.Run(() =>
             {
-                var window = OpenWith(1);
-                CommitRise(window, 0, "14");
-                CommitRise(window, 0, string.Empty);
-                var afterRestore = window.EditorState.FloorBeamRiseOverrideAt(0, 0);
-
-                CommitRise(window, 0, "0");
-                return (afterRestore, window.EditorState.FloorBeamRiseOverrideAt(0, 0));
+                var window = OpenWith(2, frentes: 3);
+                SelectiveTargetsTestSupport.SetTargets(window, 1, 2);
+                var state = window.EditorState;
+                state.SelectCell(0, 0, extend: false);
+                state.SelectCell(2, 1, extend: true);
+                ApplyFront(window, floorBeam: true, rise: "16", scope: "Frentes seleccionados");
+                return RisesOf(window, 0).Concat(RisesOf(window, 1)).ToArray();
             });
 
-            Assert.Null(restored);
-            Assert.Equal(0.0, zero); // a value, not an inheritance
+            Assert.Equal(new double?[] { 16.0, 4.0, 16.0, 16.0, 4.0, 16.0 }, rises);
         }
 
         [Fact]
-        public void AMultiFondoRiseEdit_RecomputesExactlyOnce()
+        public void Todos_WritesEveryFrenteOfEveryTargetFondo()
         {
-            var (single, multi) = StaTestRunner.Run(() =>
+            var (targets, outside) = StaTestRunner.Run(() =>
             {
-                var window = OpenWith(4);
+                var window = OpenWith(3, frentes: 3);
+                SelectiveTargetsTestSupport.SetTargets(window, 1, 3);
+                ApplyFront(window, floorBeam: true, rise: "9", scope: "Todos los frentes");
+                return (RisesOf(window, 0).Concat(RisesOf(window, 2)).ToArray(), RisesOf(window, 1));
+            });
 
-                SetTargetFondos(window, "1");
+            Assert.All(targets, r => Assert.Equal(9.0, r));
+            Assert.All(outside, r => Assert.Equal(4.0, r));
+        }
+
+        [Fact]
+        public void ADivergentTopology_SkipsTheFrenteAFondoDoesNotHave()
+        {
+            var (longFondo, shortFondo) = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(2, frentes: 3);          // both fondos start with 3 frentes
+                SelectiveTargetsTestSupport.SetTargets(window, 2);
+                EditorWindowTestSupport.SetText(window, "BayCountBox", "1"); // fondo 2 shrinks to one frente
+                RaiseLostFocus(window, "BayCountBox");
+
+                SelectiveTargetsTestSupport.SetTargets(window, 1, 2);
+                window.EditorState.SelectCell(2, 0, extend: false);
+                ApplyFront(window, floorBeam: true, rise: "21", scope: "Este frente");
+                return (RisesOf(window, 0), RisesOf(window, 1));
+            });
+
+            Assert.Equal(new double?[] { 4.0, 4.0, 21.0 }, longFondo);
+            Assert.Single(shortFondo);                 // never padded to reach frente 3
+            Assert.Equal(4.0, shortFondo[0]);
+        }
+
+        // ---- The elevation is direct: no inheritance, and it survives "piso" being off ----
+
+        [Fact]
+        public void ChangingOneFrentesElevation_DoesNotMoveTheOthers()
+        {
+            var rises = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(1, frentes: 3);
+                window.EditorState.SelectCell(1, 0, extend: false);
+                ApplyFront(window, floorBeam: true, rise: "18", scope: "Este frente");
+                return RisesOf(window, 0);
+            });
+
+            Assert.Equal(new double?[] { 4.0, 18.0, 4.0 }, rises);
+        }
+
+        [Fact]
+        public void TurningPisoOff_KeepsTheElevation_AndTurningItBackOnRecoversIt()
+        {
+            var (offRise, onRise, offFloor) = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(1, frentes: 2);
+                window.EditorState.SelectCell(0, 0, extend: false);
+                ApplyFront(window, floorBeam: true, rise: "17", scope: "Este frente");
+
+                ApplyFront(window, floorBeam: false, rise: "17", scope: "Este frente");
+                var afterOff = RisesOf(window, 0)[0];
+                var floorOff = FloorsOf(window, 0)[0];
+
+                ApplyFront(window, floorBeam: true, rise: "17", scope: "Este frente");
+                return (afterOff, RisesOf(window, 0)[0], floorOff);
+            });
+
+            Assert.Equal(17.0, offRise); // the value is kept while the beam is off
+            Assert.False(offFloor);
+            Assert.Equal(17.0, onRise);
+        }
+
+        [Fact]
+        public void TheFrentePanelShowsTheFrenteOfTheSelectedCell()
+        {
+            var (first, second) = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(1, frentes: 3);
+                var state = window.EditorState;
+                state.SelectCell(2, 0, extend: false);
+                ApplyFront(window, floorBeam: true, rise: "23", scope: "Este frente");
+
+                state.SelectCell(0, 0, extend: false);
+                window.LoadCellEditorForTest();
+                var atFrente1 = ((TextBox)window.FindName("FrontRiseBox")).Text;
+
+                state.SelectCell(2, 0, extend: false);
+                window.LoadCellEditorForTest();
+                return (atFrente1, ((TextBox)window.FindName("FrontRiseBox")).Text);
+            });
+
+            Assert.Equal("4", first);
+            Assert.Equal("23", second);
+        }
+
+        // ---- One recompute per bulk operation ----
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(4)]
+        public void AFrenteApply_RecomputesExactlyOnce(int targets)
+        {
+            var count = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(4, frentes: 3);
+                if (targets == 1) SelectiveTargetsTestSupport.SetCurrentTarget(window);
+                else SelectiveTargetsTestSupport.SetAllTargets(window);
+
                 var before = window.RecomputeCount;
-                CommitRise(window, 0, "10");
-                var afterSingle = window.RecomputeCount - before;
-
-                SetTargetFondos(window, "todos");
-                before = window.RecomputeCount;
-                CommitRise(window, 0, "12");
-                return (afterSingle, window.RecomputeCount - before);
+                ApplyFront(window, floorBeam: true, rise: "11", scope: "Todos los frentes");
+                return window.RecomputeCount - before;
             });
 
-            Assert.Equal(1, single);
-            Assert.Equal(1, multi); // four fondos, still ONE recompute
+            Assert.Equal(1, count);
         }
 
         [Fact]
-        public void UncheckingPiso_DoesNotClearTheFrentesRise()
+        public void ThereIsExactlyOneTargetFondoSelector_AndItLivesInTheLeftPanel()
         {
-            var kept = StaTestRunner.Run(() =>
-            {
-                var window = OpenWith(1);
-                CommitRise(window, 0, "16");
-                window.EditorState.FloorBeams[0] = false; // the same effect as unchecking "Piso"
-                window.EditorState.FloorBeams[0] = true;
-                return window.EditorState.FloorBeamRiseOverrideAt(0, 0);
-            });
-
-            Assert.Equal(16.0, kept);
-        }
-
-        [Fact]
-        public void TheGlobalBoxStillExists_AndSaysItIsTheDefault()
-        {
-            var (exists, tip) = StaTestRunner.Run(() =>
-            {
-                var window = OpenWith(1);
-                var box = (TextBox)window.FindName("FloorRiseBox");
-                return (box != null, box.ToolTip as string);
-            });
-
-            Assert.True(exists);
-            Assert.Contains("PREDETERMINADO", tip);
-        }
-
-        [Fact]
-        public void TheRiseReusesTheSameTargetFondos_WithNoSecondSelector()
-        {
-            var boxes = StaTestRunner.Run(() =>
+            var (selector, oldBox) = StaTestRunner.Run(() =>
             {
                 var window = OpenWith(2);
-                return new[] { "TargetFondosBox" }.Count(name => window.FindName(name) != null);
+                return (window.FindName("TargetFondosList"), window.FindName("TargetFondosBox"));
             });
 
-            Assert.Equal(1, boxes);
+            Assert.NotNull(selector);
+            Assert.Null(oldBox); // the old syntax field is gone
         }
     }
 }

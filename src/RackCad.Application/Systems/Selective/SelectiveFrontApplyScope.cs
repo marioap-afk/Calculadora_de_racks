@@ -19,6 +19,14 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>Only the frente the editor is on, in every target fondo that has it.</summary>
         Front,
 
+        /// <summary>
+        /// The frentes the cell selection touches: the DISTINCT FrontIndex values of the selected cells (I-43, gate
+        /// 8A). A selection of (F1,N1), (F1,N3) and (F3,N2) names the frentes {1, 3} — the levels are irrelevant to a
+        /// property that belongs to the frente. It is the same selection the cell scopes use, read at the axis this
+        /// property actually has, so the editor never asks the user to mark anything twice.
+        /// </summary>
+        Selected,
+
         /// <summary>Every frente of every target fondo.</summary>
         All
     }

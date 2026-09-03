@@ -35,10 +35,26 @@ namespace RackCad.UI.Tests
             box.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, box));
         }
 
+        /// <summary>Choose the target fondos through the REAL dropdown (I-43, gate 8A): "todos", or a comma/plus
+        /// separated list of one-based fondo numbers.</summary>
         private static void SetTargetFondos(RackSelectiveWindow window, string text)
         {
-            EditorWindowTestSupport.SetText(window, "TargetFondosBox", text);
-            RaiseLostFocus(window, "TargetFondosBox");
+            if (text.Equals("todos", System.StringComparison.OrdinalIgnoreCase))
+            {
+                SelectiveTargetsTestSupport.SetAllTargets(window);
+                return;
+            }
+
+            var wanted = text.Split(new[] { ',', '+', ' ' }, System.StringSplitOptions.RemoveEmptyEntries)
+                .SelectMany(token =>
+                {
+                    var range = token.Split('-');
+                    return range.Length == 2
+                        ? Enumerable.Range(int.Parse(range[0]), int.Parse(range[1]) - int.Parse(range[0]) + 1)
+                        : new[] { int.Parse(token) };
+                })
+                .ToArray();
+            SelectiveTargetsTestSupport.SetTargets(window, wanted);
         }
 
         /// <summary>A real left-click on a matrix cell (the Border's own MouseLeftButtonUp, which is what the window
@@ -76,35 +92,6 @@ namespace RackCad.UI.Tests
 
             Assert.Equal(new[] { 0 }, targets);
             Assert.Equal(Visibility.Collapsed, visibility); // with one fondo the two axes always coincide
-        }
-
-        [Fact]
-        public void TargetFondos_AcceptTheCompactSubsetNotation_ThroughTheRealBox()
-        {
-            var targets = StaTestRunner.Run(() =>
-            {
-                var window = OpenWith(4);
-                SetTargetFondos(window, "1+3");
-                return window.EditorState.TargetFondos.Fondos.ToArray();
-            });
-
-            Assert.Equal(new[] { 0, 2 }, targets); // shown one-based, held zero-based
-        }
-
-        [Fact]
-        public void TargetFondos_RejectAnImpossibleEntry_AndRevertToTheSetStillInForce()
-        {
-            var (targets, shown) = StaTestRunner.Run(() =>
-            {
-                var window = OpenWith(2);
-                SetTargetFondos(window, "1,2");
-                SetTargetFondos(window, "9"); // no such fondo
-                var box = (TextBox)window.FindName("TargetFondosBox");
-                return (window.EditorState.TargetFondos.Fondos.ToArray(), box.Text);
-            });
-
-            Assert.Equal(new[] { 0, 1 }, targets); // the previous, valid choice survives
-            Assert.Equal("1, 2", shown);
         }
 
         [Fact]

@@ -42,14 +42,18 @@ namespace RackCad.UI.Tests
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
-        // Every x:Name defined in RackSelectiveWindow.xaml (45 originals + the new shell root "Shell"). The migration
-        // reparented these into the shell's slots; none may be lost (the code-behind binds to all of them by name).
+        // Every x:Name defined in RackSelectiveWindow.xaml. The I-31 migration reparented these into the shell's slots
+        // and none may be lost (the code-behind binds to all of them by name). I-43 gate 8A moved the frente properties
+        // out of the matrix into the left panel, so "FloorRiseBox" (the run-wide elevation, a concept the Owner
+        // rejected) is gone and the frente panel + the single "Fondos destino" selector are here instead.
         private static readonly string[] AllNamedControls =
         {
             "Shell", "NameBox", "DrawBasePlateCheck", "NumberFrontsCheck", "NumberLevelsCheck", "DrawRackNameCheck",
             "DrawPalletsCheck", "AnnotationScaleBox", "DimensionsBox", "DimStyleBox", "SafetyButton", "PostBox",
             "PostPeralteBox", "PostSelectBox", "CustomizePostButton", "PostPeralteOverrideBox", "PostCabeceraStatus",
-            "BayCountBox", "ToleranceBox", "ClearanceBox", "FloorRiseBox", "FondoBox", "CabeceraFondoBox", "FondosBox",
+            "BayCountBox", "ToleranceBox", "ClearanceBox", "FondoBox", "CabeceraFondoBox", "FondosBox",
+            "FrontHeader", "FrontFloorBeamCheck", "FrontRiseBox", "ApplyFrontSelectedButton",
+            "TargetFondosPanel", "TargetFondosButton", "TargetFondosPopup", "TargetFondosList",
             "SeparatorsSection", "SeparatorsHost", "CellHeader", "CellBeamBox", "FrenteBox", "PalletCountBox", "AltoBox",
             "BeamPeralteCombo", "BeamLenBox", "ClearBox", "SummaryText", "StatusText", "FondoSelectorPanel",
             "FondoSelectorBox", "MatrixGrid", "PreviewFrontalRadio", "PreviewLateralRadio", "PreviewHint", "PreviewCanvas",

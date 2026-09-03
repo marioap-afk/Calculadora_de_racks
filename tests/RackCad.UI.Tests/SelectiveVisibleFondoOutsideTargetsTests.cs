@@ -34,10 +34,26 @@ namespace RackCad.UI.Tests
             box.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, box));
         }
 
+        /// <summary>Choose the target fondos through the REAL dropdown (I-43, gate 8A): "todos", or a comma/plus
+        /// separated list of one-based fondo numbers.</summary>
         private static void SetTargetFondos(RackSelectiveWindow window, string text)
         {
-            EditorWindowTestSupport.SetText(window, "TargetFondosBox", text);
-            RaiseLostFocus(window, "TargetFondosBox");
+            if (text.Equals("todos", System.StringComparison.OrdinalIgnoreCase))
+            {
+                SelectiveTargetsTestSupport.SetAllTargets(window);
+                return;
+            }
+
+            var wanted = text.Split(new[] { ',', '+', ' ' }, System.StringSplitOptions.RemoveEmptyEntries)
+                .SelectMany(token =>
+                {
+                    var range = token.Split('-');
+                    return range.Length == 2
+                        ? Enumerable.Range(int.Parse(range[0]), int.Parse(range[1]) - int.Parse(range[0]) + 1)
+                        : new[] { int.Parse(token) };
+                })
+                .ToArray();
+            SelectiveTargetsTestSupport.SetTargets(window, wanted);
         }
 
         private static void CommitBox(RackSelectiveWindow window, string name, string text)
@@ -193,114 +209,12 @@ namespace RackCad.UI.Tests
         // ---- 2. The All reach of the two frente-wide flags ----
 
         [Fact]
-        public void FloorBeam_All_ReachesEveryFrenteOfTheTargets_InOneRecompute()
-        {
-            var (flags, recomputes) = StaTestRunner.Run(() =>
-            {
-                var window = OpenWith(3);
-                EditorWindowTestSupport.SetText(window, "BayCountBox", "3");
-                RaiseLostFocus(window, "BayCountBox");
-                SetTargetFondos(window, "1,3");
-
-                var check = FloorCheck(window, 0);
-                check.IsChecked = true; // Front x targets
-                var before = window.RecomputeCount;
-                Click(HeaderButton(window, 0, "Aplicar este «Piso» a TODOS los frentes"));
-
-                var state = window.EditorState;
-                return (
-                    new[]
-                    {
-                        state.FloorBeams.All(f => f),
-                        state.FondoMatrices[1].FloorBeams.Any(f => f),
-                        state.FondoMatrices[2].FloorBeams.All(f => f)
-                    },
-                    window.RecomputeCount - before);
-            });
-
-            Assert.Equal(new[] { true, false, true }, flags);
-            Assert.Equal(1, recomputes);
-        }
-
-        [Fact]
-        public void BayHeight_All_ReachesEveryFrenteOfTheTargets_InOneRecompute()
-        {
-            var (heights, outside, recomputes) = StaTestRunner.Run(() =>
-            {
-                var window = OpenWith(3);
-                EditorWindowTestSupport.SetText(window, "BayCountBox", "3");
-                RaiseLostFocus(window, "BayCountBox");
-                SetTargetFondos(window, "1,3");
-
-                HeaderBox(window, 0, "Altura del frente").Text = "220";
-                var before = window.RecomputeCount;
-                Click(HeaderButton(window, 0, "Aplicar esta altura a TODOS los frentes"));
-
-                var state = window.EditorState;
-                return (
-                    state.BayHeights.ToArray(),
-                    state.FondoMatrices[1].BayHeights.ToArray(),
-                    window.RecomputeCount - before);
-            });
-
-            Assert.All(heights, h => Assert.Equal(220.0, h));
-            Assert.All(outside, h => Assert.Null(h));
-            Assert.Equal(1, recomputes);
-        }
-
-        [Fact]
-        public void BayHeight_EmptyPlusAll_RestoresAutoOnEveryFrenteOfTheTargets()
-        {
-            var (restored, recomputes) = StaTestRunner.Run(() =>
-            {
-                var window = OpenWith(2);
-                SetTargetFondos(window, "1,2");
-                HeaderBox(window, 0, "Altura del frente").Text = "220";
-                Click(HeaderButton(window, 0, "Aplicar esta altura a TODOS los frentes"));
-
-                HeaderBox(window, 0, "Altura del frente").Text = string.Empty;
-                var before = window.RecomputeCount;
-                Click(HeaderButton(window, 0, "Aplicar esta altura a TODOS los frentes"));
-
-                var state = window.EditorState;
-                return (state.BayHeights.Concat(state.FondoMatrices[1].BayHeights).ToArray(), window.RecomputeCount - before);
-            });
-
-            Assert.All(restored, h => Assert.Null(h));
-            Assert.Equal(1, recomputes);
-        }
-
-        [Fact]
-        public void All_WalksTheRealFrentesOfEachTarget_WithoutPaddingAShorterFondo()
-        {
-            var (visible, shorter) = StaTestRunner.Run(() =>
-            {
-                var window = OpenWith(2);
-                // Fondo 1 grows to three frentes; fondo 2 keeps two.
-                EditorWindowTestSupport.SetText(window, "BayCountBox", "3");
-                RaiseLostFocus(window, "BayCountBox");
-                SetTargetFondos(window, "1,2");
-
-                HeaderBox(window, 0, "Altura del frente").Text = "205";
-                Click(HeaderButton(window, 0, "Aplicar esta altura a TODOS los frentes"));
-
-                var state = window.EditorState;
-                return (state.BayHeights.ToArray(), state.FondoMatrices[1].BayHeights.ToArray());
-            });
-
-            Assert.Equal(3, visible.Length);
-            Assert.All(visible, h => Assert.Equal(205.0, h));
-            Assert.Equal(2, shorter.Length); // NOT padded to three
-            Assert.All(shorter, h => Assert.Equal(205.0, h));
-        }
-
-        [Fact]
         public void ThereIsStillExactlyOneTargetFondoSelector()
         {
             var count = StaTestRunner.Run(() =>
             {
                 var window = OpenWith(2);
-                return new[] { "TargetFondosBox" }.Count(name => window.FindName(name) != null);
+                return new[] { "TargetFondosList" }.Count(name => window.FindName(name) != null);
             });
 
             Assert.Equal(1, count);

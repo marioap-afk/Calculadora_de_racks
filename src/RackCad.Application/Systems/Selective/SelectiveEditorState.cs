@@ -403,6 +403,11 @@ namespace RackCad.Application.Systems.Selective
         public IReadOnlyList<SelectiveMatrixPosition> SelectedPositions()
             => selectedPositions.OrderBy(position => position).ToList();
 
+        /// <summary>The DISTINCT frentes the cell selection touches, ascending — the selection read at the frente
+        /// axis, for properties whose authority is the frente rather than the cell (I-43, gate 8A).</summary>
+        public IReadOnlyList<int> SelectedFrontIndices()
+            => selectedPositions.Select(position => position.FrontIndex).Distinct().OrderBy(index => index).ToList();
+
         /// <summary>True when that position exists in the working matrix.</summary>
         private bool PositionExists(SelectiveMatrixPosition position)
             => position.FrontIndex >= 0 && position.FrontIndex < Bays.Count
@@ -779,6 +784,152 @@ namespace RackCad.Application.Systems.Selective
         }
 
         /// <summary>
+        /// Write BOTH properties a frente owns — "larguero a piso" and its elevation — in ONE pass (I-43, gate 8A).
+        /// <para>
+        /// They travel together because the editor edits them together: the left panel shows the pair for the frente
+        /// on screen and the scope buttons apply that pair. Splitting them into two calls would mean two mutations and
+        /// two chances for the scopes to disagree about which frentes they reached.
+        /// </para>
+        /// <para>
+        /// The elevation is a DIRECT value of the frente, not an override of anything: there is no global to inherit
+        /// from and no "empty means inherit". It keeps its value while "piso" is off, so switching the beam back on
+        /// restores the elevation the user had chosen.
+        /// </para>
+        /// </summary>
+        public SelectiveFrontApplyResult ApplyFrontPropertiesToTargets(
+            SelectiveFrontApplyScope scope, int frontIndex, bool floorBeam, double rise)
+            => ApplyToFrontTargets(scope, frontIndex, (fondo, front) =>
+            {
+                FloorBeamRow(fondo)[front] = floorBeam;
+                FloorBeamRiseRow(fondo)[front] = rise;
+            });
+
+        /// <summary>
+        /// Add or remove load levels on the resolved frentes of every target fondo (I-43, gate 8A).
+        /// <para>
+        /// Levels are per <c>(fondo, frente)</c> by design — doble profundidad exists precisely so each fondo edits
+        /// its OWN levels — so this projects like every other frente-wide operation instead of staying a local matrix
+        /// action. Removing never empties a frente (one level is the floor of the model) and never resurrects a level
+        /// that was dropped: a new one clones the top of the column it grows.
+        /// </para>
+        /// </summary>
+        public SelectiveFrontApplyResult ApplyLevelDeltaToTargets(SelectiveFrontApplyScope scope, int frontIndex, int delta)
+            => ApplyToFrontTargets(scope, frontIndex, (fondo, front) =>
+            {
+                var columns = ColumnsOf(fondo);
+                if (columns == null || front >= columns.Count) return;
+                var column = columns[front];
+                if (delta > 0)
+                {
+                    for (var i = 0; i < delta; i++) column.Add(column.Count > 0 ? column[column.Count - 1].Clone() : NewCell());
+                }
+                else
+                {
+                    for (var i = 0; i < -delta && column.Count > 1; i++) column.RemoveAt(column.Count - 1);
+                }
+            });
+
+        /// <summary>
+        /// Set the number of frentes of every TARGET fondo (I-43, gate 8A). This is TOPOLOGY, so it is the one
+        /// operation that changes the shape of the rack rather than a value inside it.
+        /// <para>
+        /// Each fondo is resized INDEPENDENTLY — they do not have to share a frente count — and every parallel list
+        /// travels with it: cells, "piso", elevations, manual heights and tramos. Shrinking drops the tail and
+        /// growing clones the last surviving frente, so nothing a shrink deleted comes back. It never creates a fondo:
+        /// a target index the rack does not have is omitted.
+        /// </para>
+        /// </summary>
+        public SelectiveFondoApplyResult ApplyBayCountToTargets(int bayCount)
+        {
+            if (bayCount < 1) return new SelectiveFondoApplyResult(new List<int>(), targetFondos.Fondos.ToList());
+
+            var applied = new List<int>();
+            var omitted = new List<int>();
+            foreach (var fondo in targetFondos.Fondos)
+            {
+                if (fondo < 0 || fondo >= Math.Max(FondoMatrices.Count, 1))
+                {
+                    omitted.Add(fondo);
+                    continue;
+                }
+
+                if (FondoMatrices.Count == 0 || fondo == SelectedFondo) ResizeBays(bayCount);
+                else ResizeStoredMatrix(FondoMatrices[fondo], bayCount);
+                applied.Add(fondo);
+            }
+
+            SyncPostCabeceras(); // trims the cabeceras of posts the resized fondos no longer have
+            ClampSelection();    // and prunes the selection to what survived
+            return new SelectiveFondoApplyResult(applied, omitted);
+        }
+
+        /// <summary>Resize a STORED fondo matrix with exactly the semantics <see cref="ResizeBays"/> applies to the
+        /// live one, keeping its five per-bay lists parallel.</summary>
+        private void ResizeStoredMatrix(SelectiveEditorFondoMatrix matrix, int bayCount)
+        {
+            while (matrix.Bays.Count < bayCount)
+            {
+                var last = matrix.Bays.Count - 1;
+                if (last >= 0)
+                {
+                    matrix.Bays.Add(matrix.Bays[last].Select(cell => cell.Clone()).ToList());
+                    matrix.FloorBeams.Add(matrix.FloorBeams[last]);
+                    matrix.BayHeights.Add(matrix.BayHeights[last]);
+                    matrix.FloorBeamRiseOverrides.Add(last < matrix.FloorBeamRiseOverrides.Count ? matrix.FloorBeamRiseOverrides[last] : null);
+                    matrix.BaySegments.Add(CloneSegments(last < matrix.BaySegments.Count ? matrix.BaySegments[last] : null));
+                }
+                else
+                {
+                    matrix.Bays.Add(new List<SelectiveEditorCell> { NewCell() });
+                    matrix.FloorBeams.Add(false);
+                    matrix.BayHeights.Add(null);
+                    matrix.FloorBeamRiseOverrides.Add(null);
+                    matrix.BaySegments.Add(new List<SelectiveSegment>());
+                }
+            }
+
+            while (matrix.Bays.Count > bayCount)
+            {
+                var last = matrix.Bays.Count - 1;
+                matrix.Bays.RemoveAt(last);
+                if (last < matrix.FloorBeams.Count) matrix.FloorBeams.RemoveAt(last);
+                if (last < matrix.BayHeights.Count) matrix.BayHeights.RemoveAt(last);
+                if (last < matrix.FloorBeamRiseOverrides.Count) matrix.FloorBeamRiseOverrides.RemoveAt(last);
+                if (last < matrix.BaySegments.Count) matrix.BaySegments.RemoveAt(last);
+            }
+        }
+
+        /// <summary>
+        /// Give every frente a DIRECT elevation, filling the ones that have none from <paramref name="legacyGlobal"/>
+        /// (I-43, gate 8A).
+        /// <para>
+        /// This is the whole legacy contract in one place. A document written before the elevation became a property
+        /// of the frente carries only the run-wide value, and the drawing it described used that value everywhere; so
+        /// on load each frente materializes it as its own. From then on the frente is the authority and the old global
+        /// is never consulted again — which is what removes the "which frentes still follow the global?" ambiguity.
+        /// </para>
+        /// </summary>
+        public void MaterializeFloorBeamRises(double legacyGlobal)
+        {
+            var value = legacyGlobal > 0.0 ? legacyGlobal : SelectiveRackDefaults.DefaultFloorBeamRise;
+            void Fill(List<double?> row, int count)
+            {
+                while (row.Count < count) row.Add(null);
+                for (var i = 0; i < count; i++)
+                {
+                    if (!row[i].HasValue) row[i] = value;
+                }
+            }
+
+            Fill(FloorBeamRiseOverrides, Bays.Count);
+            for (var k = 0; k < FondoMatrices.Count; k++)
+            {
+                if (k == SelectedFondo) continue; // the live row above IS this fondo
+                Fill(FondoMatrices[k].FloorBeamRiseOverrides, FondoMatrices[k].Bays.Count);
+            }
+        }
+
+        /// <summary>
         /// Resolve the frentes a frente-wide operation reaches and write every one of them (I-43, gate 7).
         /// <para>
         /// It is the single place that knows how a frente-wide edit lands: which fondos are targeted, which of them
@@ -811,6 +962,23 @@ namespace RackCad.Application.Systems.Selective
                         applied.Add((fondo, front));
                     }
 
+                    continue;
+                }
+
+                if (scope == SelectiveFrontApplyScope.Selected)
+                {
+                    // The frentes the cell selection names. A fondo that reaches none of them is omitted whole, and a
+                    // single frente the fondo lacks is simply skipped: never padded, never clamped onto a neighbour.
+                    var reached = 0;
+                    foreach (var front in SelectedFrontIndices())
+                    {
+                        if (front < 0 || front >= frentes) continue;
+                        write(fondo, front);
+                        applied.Add((fondo, front));
+                        reached++;
+                    }
+
+                    if (reached == 0) omitted.Add(fondo);
                     continue;
                 }
 

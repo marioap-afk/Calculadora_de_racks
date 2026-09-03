@@ -32,10 +32,26 @@ namespace RackCad.UI.Tests
             box.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, box));
         }
 
+        /// <summary>Choose the target fondos through the REAL dropdown (I-43, gate 8A): "todos", or a comma/plus
+        /// separated list of one-based fondo numbers.</summary>
         private static void SetTargetFondos(RackSelectiveWindow window, string text)
         {
-            EditorWindowTestSupport.SetText(window, "TargetFondosBox", text);
-            RaiseLostFocus(window, "TargetFondosBox");
+            if (text.Equals("todos", System.StringComparison.OrdinalIgnoreCase))
+            {
+                SelectiveTargetsTestSupport.SetAllTargets(window);
+                return;
+            }
+
+            var wanted = text.Split(new[] { ',', '+', ' ' }, System.StringSplitOptions.RemoveEmptyEntries)
+                .SelectMany(token =>
+                {
+                    var range = token.Split('-');
+                    return range.Length == 2
+                        ? Enumerable.Range(int.Parse(range[0]), int.Parse(range[1]) - int.Parse(range[0]) + 1)
+                        : new[] { int.Parse(token) };
+                })
+                .ToArray();
+            SelectiveTargetsTestSupport.SetTargets(window, wanted);
         }
 
         private static void CommitBox(RackSelectiveWindow window, string name, string text)
@@ -44,74 +60,12 @@ namespace RackCad.UI.Tests
             RaiseLostFocus(window, name);
         }
 
-        /// <summary>The "Piso" checkbox of a bay header. It sits inside the row that also holds its scope button, so
-        /// the search descends one level instead of looking only at the header's direct children.</summary>
-        private static CheckBox FloorCheck(RackSelectiveWindow window, int bay)
-        {
-            var header = Header(window, bay);
-            return header.Children.OfType<CheckBox>()
-                .Concat(header.Children.OfType<StackPanel>().SelectMany(row => row.Children.OfType<CheckBox>()))
-                .First();
-        }
-
         /// <summary>The bay header panel of a frente.</summary>
         private static StackPanel Header(RackSelectiveWindow window, int bay)
             => ((Grid)window.FindName("MatrixGrid")).Children.OfType<StackPanel>()
                 .First(panel => Grid.GetRow(panel) == 0 && Grid.GetColumn(panel) == bay + 1);
 
-        /// <summary>A text box of a bay header, found by a distinctive fragment of its tooltip.</summary>
-        private static TextBox HeaderBox(RackSelectiveWindow window, int bay, string tooltipFragment)
-            => Header(window, bay).Children.OfType<StackPanel>()
-                .SelectMany(row => row.Children.OfType<TextBox>())
-                .First(box => box.ToolTip is string tip && tip.Contains(tooltipFragment));
-
-        private static void CommitHeaderBox(RackSelectiveWindow window, int bay, string fragment, string text)
-        {
-            var box = HeaderBox(window, bay, fragment);
-            box.Text = text;
-            box.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, box));
-        }
-
         // ---- Every remaining property lands on the target fondos ----
-
-        [Fact]
-        public void Piso_LandsOnTheFrenteOfEveryTargetFondo()
-        {
-            var flags = StaTestRunner.Run(() =>
-            {
-                var window = OpenWith(3);
-                SetTargetFondos(window, "1,3");
-                FloorCheck(window, 1).IsChecked = true; // the real Checked handler runs
-                var state = window.EditorState;
-                return new[]
-                {
-                    state.FloorBeams[1],
-                    state.FondoMatrices[1].FloorBeams[1],
-                    state.FondoMatrices[2].FloorBeams[1]
-                };
-            });
-
-            Assert.Equal(new[] { true, false, true }, flags);
-        }
-
-        [Fact]
-        public void AltoDeFrente_LandsOnTheTargets_AndClearingItRestoresAuto()
-        {
-            var (applied, restored) = StaTestRunner.Run(() =>
-            {
-                var window = OpenWith(3);
-                SetTargetFondos(window, "1,3");
-                CommitHeaderBox(window, 0, "Altura del frente", "220");
-                var state = window.EditorState;
-                var after = new[] { state.BayHeights[0], state.FondoMatrices[1].BayHeights[0], state.FondoMatrices[2].BayHeights[0] };
-
-                CommitHeaderBox(window, 0, "Altura del frente", string.Empty);
-                return (after, new[] { state.BayHeights[0], state.FondoMatrices[2].BayHeights[0] });
-            });
-
-            Assert.Equal(new double?[] { 220.0, null, 220.0 }, applied);
-            Assert.Equal(new double?[] { null, null }, restored);
-        }
 
         [Fact]
         public void FondoDeTarima_LandsOnEveryTargetFondo()
@@ -183,15 +137,12 @@ namespace RackCad.UI.Tests
 
                 return new[]
                 {
-                    Measure(() => FloorCheck(window, 0).IsChecked = true),
-                    Measure(() => CommitHeaderBox(window, 0, "Altura del frente", "215")),
-                    Measure(() => CommitHeaderBox(window, 0, "Elevación del larguero a piso de ESTE frente", "13")),
                     Measure(() => CommitBox(window, "FondoBox", "60")),
                     Measure(() => CommitBox(window, "CabeceraFondoBox", "40"))
                 };
             });
 
-            Assert.Equal(new[] { 1, 1, 1, 1, 1 }, counts);
+            Assert.Equal(new[] { 1, 1 }, counts);
         }
 
         // ---- I-39: a cancelled dialog must not mutate any target ----
@@ -224,7 +175,7 @@ namespace RackCad.UI.Tests
             var count = StaTestRunner.Run(() =>
             {
                 var window = OpenWith(2);
-                return new[] { "TargetFondosBox" }.Count(name => window.FindName(name) != null);
+                return new[] { "TargetFondosList" }.Count(name => window.FindName(name) != null);
             });
 
             Assert.Equal(1, count);

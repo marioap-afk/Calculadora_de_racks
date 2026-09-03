@@ -107,6 +107,13 @@ namespace RackCad.UI.Systems.Selective
         private int selLevel { get => state.SelLevel; set => state.SelLevel = value; }
         private bool loadingCell;
 
+        /// <summary>
+        /// The run-wide "elevacion de larguero a piso" a loaded document carried, kept ONLY so the design keeps
+        /// writing the legacy field and an older reader still finds it (I-43, gate 8A). It is no longer an operative
+        /// concept: the authority is each frente's own value, and this is never shown or edited.
+        /// </summary>
+        private double legacyFloorBeamRise = SelectiveRackDefaults.DefaultFloorBeamRise;
+
         /// <summary>False until the constructor finished wiring the UI. The live-apply handlers (poste, tolerancias,
         /// frentes…) check this so the ItemsSource/SelectedValue assignments during construction don't fire a
         /// premature Recompute on a half-built matrix.</summary>
@@ -596,54 +603,6 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>Grow/shrink the number of bays (delegates to the state: a new bay clones the last — cells + floor flag + height + tramos).</summary>
         private void ResizeBays(int bayCount) => state.ResizeBays(bayCount);
 
-        private void AddLevel(int bay)
-        {
-            using (DeferRecompute()) // the rebuild can fire a height box LostFocus → coalesce its Recompute with ours
-            {
-                state.AddLevel(bay);
-                RenderMatrix();
-                Recompute();
-            }
-        }
-
-        private void RemoveLevel(int bay)
-        {
-            if (!state.CanRemoveLevel(bay))
-            {
-                SetStatus("Cada frente necesita al menos un nivel.", true);
-                return;
-            }
-
-            using (DeferRecompute()) // the rebuild can fire a height box LostFocus → coalesce its Recompute with ours
-            {
-                state.RemoveLevel(bay); // drops the top level and clamps the selection
-                LoadCellEditor();
-                RenderMatrix();
-                Recompute();
-            }
-        }
-
-        /// <summary>"Larguero a piso" of a frente, over the SAME target fondos as everything else (I-43, gate 7).
-        /// The flag has no inheritance, so it is written explicitly; the state omits and reports a target fondo that
-        /// does not have this frente, and the window recomputes ONCE.</summary>
-        private void SetFloor(int bay, bool value, SelectiveFrontApplyScope scope = SelectiveFrontApplyScope.Front)
-        {
-            if (bay < 0 || bay >= floorBeams.Count) return;
-
-            using (DeferRecompute())
-            {
-                SaveWorkingToSelected(); // the state writes the OTHER fondos' stored matrices
-                FrontApplyLog.Add("Piso:" + scope);
-                var result = state.ApplyFloorBeamToTargets(scope, bay, value);
-                if (scope == SelectiveFrontApplyScope.All) RenderMatrix(); // every checkbox of the fondo may have moved
-                Recompute();
-                if (state.TargetFondos.Count > 1 || result.OmittedFondos.Count > 0)
-                {
-                    pendingWarning = result.Describe(restore: false);
-                }
-            }
-        }
-
         private void ClampSelection() => state.ClampSelection();
 
         private bool TryGetSelected(out Cell cell) => state.TryGetSelected(out cell);
@@ -724,7 +683,7 @@ namespace RackCad.UI.Systems.Selective
             var levelRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 2, 0, 0) };
             var minus = SmallButton("−");
             minus.ToolTip = "Quitar el nivel superior de este frente.";
-            minus.Click += (s, e) => RemoveLevel(bay);
+            minus.Click += (s, e) => ChangeLevels(bay, -1);
             var count = new TextBlock
             {
                 Text = bays[bay].Count.ToString(CultureInfo.InvariantCulture),
@@ -737,84 +696,11 @@ namespace RackCad.UI.Systems.Selective
             };
             var plus = SmallButton("+");
             plus.ToolTip = "Agregar un nivel arriba (clona el último).";
-            plus.Click += (s, e) => AddLevel(bay);
+            plus.Click += (s, e) => ChangeLevels(bay, +1);
             levelRow.Children.Add(minus);
             levelRow.Children.Add(count);
             levelRow.Children.Add(plus);
             panel.Children.Add(levelRow);
-
-            var floor = new CheckBox
-            {
-                Content = "Piso",
-                FontSize = 10.5,
-                Foreground = LabelStroke,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(0, 3, 0, 0),
-                IsChecked = floorBeams[bay],
-                ToolTip = "Larguero a piso: el nivel de piso lleva larguero."
-            };
-            floor.Checked += (s, e) => SetFloor(bay, true);
-            floor.Unchecked += (s, e) => SetFloor(bay, false);
-
-            // The checkbox is Front x TargetFondos; the button applies its CURRENT value to every frente of those
-            // fondos in ONE operation (I-43, gate 7) — never Front first and All after.
-            var floorRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center };
-            floorRow.Children.Add(floor);
-            var floorAll = SmallButton("⇊");
-            floorAll.ToolTip = "Aplicar este «Piso» a TODOS los frentes de los fondos destino.";
-            floorAll.Margin = new Thickness(4, 3, 0, 0);
-            WireScopeButton(floorAll, () => SetFloor(bay, floor.IsChecked == true, SelectiveFrontApplyScope.All));
-            floorRow.Children.Add(floorAll);
-            panel.Children.Add(floorRow);
-
-            // "Elevacion de larguero a piso" of THIS frente (I-43, ID14): a number overrides the global, empty
-            // inherits it. It sits under "Piso" because that is the only flag it acts on — and it is NOT cleared when
-            // that box is unchecked, so re-checking brings the value back.
-            var riseRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 3, 0, 0) };
-            riseRow.Children.Add(new TextBlock { Text = "Elev.", Foreground = LabelStroke, FontSize = 10.5, Margin = new Thickness(0, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
-            var stored = state.FloorBeamRiseOverrideAt(selectedFondo, bay);
-            var riseBox = new TextBox
-            {
-                Width = 44,
-                FontSize = 10.5,
-                Text = stored.HasValue ? stored.Value.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty,
-                ToolTip = "Elevación del larguero a piso de ESTE frente (in). Vacío = usa el valor global; 0 = elevación cero, que no es lo mismo. "
-                    + "Solo actúa cuando 'Piso' está marcado, pero el valor se conserva aunque lo desmarques. "
-                    + "Se aplica a este frente en TODOS los fondos destino de «Aplicar en fondos»."
-            };
-            riseBox.LostFocus += (s, e) => SetFloorBeamRise(bay, riseBox.Text);
-            // e.Handled for the same reason as the height box: Enter must not also fire the window's default button.
-            riseBox.KeyDown += (s, e) => { if (e.Key == Key.Enter) { SetFloorBeamRise(bay, riseBox.Text); e.Handled = true; } };
-            riseRow.Children.Add(riseBox);
-
-            var riseAll = SmallButton("⇊");
-            riseAll.ToolTip = "Aplicar esta elevación a TODOS los frentes de los fondos destino.";
-            riseAll.Margin = new Thickness(4, 0, 0, 0);
-            WireScopeButton(riseAll, () => SetFloorBeamRise(bay, riseBox.Text, SelectiveFrontApplyScope.All));
-            riseRow.Children.Add(riseAll);
-            panel.Children.Add(riseRow);
-
-            var heightRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 3, 0, 0) };
-            heightRow.Children.Add(new TextBlock { Text = "Alto", Foreground = LabelStroke, FontSize = 10.5, Margin = new Thickness(0, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
-            var heightBox = new TextBox
-            {
-                Width = 44,
-                FontSize = 10.5,
-                Text = bayHeights[bay].HasValue ? bayHeights[bay].Value.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty,
-                ToolTip = "Altura del frente (in). Vacío = auto. El poste toma el frente más alto que toca."
-            };
-            heightBox.LostFocus += (s, e) => SetBayHeight(bay, heightBox.Text);
-            // e.Handled: without it Enter ALSO fires the window's default button (double Recompute; the matrix
-            // rebuild steals focus and any validation message is wiped instantly).
-            heightBox.KeyDown += (s, e) => { if (e.Key == Key.Enter) { SetBayHeight(bay, heightBox.Text); e.Handled = true; } };
-            heightRow.Children.Add(heightBox);
-
-            var heightAll = SmallButton("⇊");
-            heightAll.ToolTip = "Aplicar esta altura a TODOS los frentes de los fondos destino (vacío = restablecer a automático).";
-            heightAll.Margin = new Thickness(4, 0, 0, 0);
-            WireScopeButton(heightAll, () => SetBayHeight(bay, heightBox.Text, SelectiveFrontApplyScope.All));
-            heightRow.Children.Add(heightAll);
-            panel.Children.Add(heightRow);
 
             // "Medio frente" (N tramos): a button opens the tramos dialog. No tramos = normal full-width bay.
             var segCount = bay < baySegments.Count ? baySegments[bay].Count : 0;
@@ -831,84 +717,6 @@ namespace RackCad.UI.Systems.Selective
             panel.Children.Add(tramosBtn);
 
             return panel;
-        }
-
-        /// <summary>
-        /// Commit the per-frente "elevacion de larguero a piso". The value goes to <see cref="SelectiveEditorState"/>,
-        /// which writes it across every target fondo that has that frente — the window never loops over fondos, and
-        /// recomputes ONCE for the whole operation (I-43, ID14).
-        /// <para>
-        /// An empty box is the RESTORE (null: inherit the global); <c>0</c> is an explicit zero. Scope <c>All</c>
-        /// writes every frente of those fondos instead of just this one.
-        /// </para>
-        /// </summary>
-        private void SetFloorBeamRise(int bay, string text, SelectiveFrontApplyScope scope = SelectiveFrontApplyScope.Front)
-        {
-            if (bay < 0 || bay >= bays.Count) return;
-
-            // Parsed here rather than with UiSupport.TryOptionalNum: that helper rejects 0, which is right for a
-            // height ("auto or a real height") and wrong here, where 0 is an explicit "no rise at all" and must be
-            // distinguishable from empty (I-43, ID14).
-            double? value = null;
-            if (!string.IsNullOrWhiteSpace(text))
-            {
-                if (!UiSupport.TryNum(text, out var typed) || typed < 0.0)
-                {
-                    SetStatus("Elevación de larguero a piso inválida (vacío = usa el valor global; 0 = sin elevación).", true);
-                    return;
-                }
-
-                value = typed;
-            }
-
-            if (scope == SelectiveFrontApplyScope.Front
-                && Nullable.Equals(state.FloorBeamRiseOverrideAt(selectedFondo, bay), value)
-                && state.TargetFondos.Count == 1
-                && state.TargetFondos.Fondos[0] == selectedFondo)
-            {
-                return; // nothing to do: the only target already holds this value
-            }
-
-            using (DeferRecompute())
-            {
-                // The fondo boxes must be committed first: the state writes the OTHER fondos' stored matrices.
-                SaveWorkingToSelected();
-                FrontApplyLog.Add("Elevacion:" + scope);
-                var result = state.ApplyFloorBeamRiseToTargets(scope, bay, value);
-                RenderMatrix();
-                Recompute();
-                pendingWarning = result.Describe(restore: !value.HasValue);
-            }
-        }
-
-        /// <summary>A frente's manual height, over the target fondos (I-43, gate 7). Null is the RESTORE to the
-        /// derived height — there is no run-wide default here — and the legacy parse is kept verbatim, so 0 stays an
-        /// invalid height rather than becoming a second way to say "auto".</summary>
-        private void SetBayHeight(int bay, string text, SelectiveFrontApplyScope scope = SelectiveFrontApplyScope.Front)
-        {
-            if (bay < 0 || bay >= bayHeights.Count) return;
-            if (!UiSupport.TryOptionalNum(text, out var value)) { SetStatus("Altura de frente inválida (vacío = auto).", true); return; }
-            if (scope == SelectiveFrontApplyScope.Front
-                && Nullable.Equals(bayHeights[bay], value)
-                && state.TargetFondos.Count == 1
-                && state.TargetFondos.Fondos[0] == selectedFondo)
-            {
-                return; // nothing to do: the only target already holds this height
-            }
-
-            using (DeferRecompute())
-            {
-                SaveWorkingToSelected();
-                FrontApplyLog.Add("Alto:" + scope);
-                var result = state.ApplyBayHeightToTargets(scope, bay, value);
-                RenderMatrix();
-                Recompute();
-                if (state.TargetFondos.Count > 1 || result.OmittedFondos.Count > 0)
-                {
-                    pendingWarning = result.Describe(restore: !value.HasValue);
-                }
-            }
-
         }
 
         /// <summary>Open the tramos ("medio frente" generalizado) editor for a frente and apply the result.</summary>
@@ -1319,32 +1127,6 @@ namespace RackCad.UI.Systems.Selective
             }
         }
 
-        /// <summary>
-        /// Wire a compact "apply to every frente" button so a REAL mouse click performs exactly ONE operation.
-        /// <para>
-        /// WPF moves focus to a Button on <c>MouseLeftButtonDown</c>, which makes the TextBox next to it raise
-        /// <c>LostFocus</c> BEFORE the button's <c>Click</c>. Left alone, one gesture would run the Front commit and
-        /// then the All one — two mutations of the model, and the first of them rebuilds the matrix and destroys the
-        /// very button the click is travelling to. So the gesture is consumed one step earlier, on
-        /// <c>PreviewMouseLeftButtonDown</c>: the handler runs the All operation and marks the event handled, which
-        /// stops <c>ButtonBase</c> from taking focus at all. No focus change, no LostFocus, no Front commit.
-        /// </para>
-        /// <para>
-        /// There is no flag anywhere: the decision is the event itself, so a cancelled or redirected gesture leaves
-        /// nothing behind. The <c>Click</c> handler stays for keyboard and programmatic activation, where focus has
-        /// already moved deliberately and the ordinary commit is the correct behaviour.
-        /// </para>
-        /// </summary>
-        private static void WireScopeButton(Button button, Action apply)
-        {
-            button.PreviewMouseLeftButtonDown += (s, e) =>
-            {
-                e.Handled = true; // consume the gesture before ButtonBase focuses the button
-                apply();
-            };
-            button.Click += (s, e) => apply();
-        }
-
         private static Button SmallButton(string text) => new Button
         {
             Content = text,
@@ -1543,6 +1325,7 @@ namespace RackCad.UI.Systems.Selective
             CellBeamBox.SelectedValue = cell.BeamId;
             RefreshPeralteCombo(cell.BeamPeralte);
             loadingCell = false;
+            LoadFrontEditor(); // the frente panel describes the frente of the selected cell
         }
 
         /// <summary>The beam changed in the cell editor: repopulate the allowed peraltes, keeping the current one if it still fits.</summary>
@@ -1594,7 +1377,8 @@ namespace RackCad.UI.Systems.Selective
                 return;
             }
 
-            if (bayCount == bays.Count && !TryCellEditorDiffersFromSelected())
+            var singleCurrentTarget = state.TargetFondos.Count == 1 && state.TargetFondos.Fondos[0] == selectedFondo;
+            if (bayCount == bays.Count && singleCurrentTarget && !TryCellEditorDiffersFromSelected())
             {
                 return; // no structural change and nothing typed pending — avoid a redundant rebuild on tab-out
             }
@@ -1603,7 +1387,17 @@ namespace RackCad.UI.Systems.Selective
 
             using (DeferRecompute()) // the rebuild can fire a height box LostFocus → coalesce its Recompute with ours
             {
-                ResizeBays(bayCount);
+                // "Frentes" is TOPOLOGY and it is per fondo, so it obeys the target fondos like everything else
+                // (I-43, gate 8A). The state resizes each target independently, trims every parallel list and the
+                // cabeceras of posts that stopped existing, and never creates a fondo.
+                SaveWorkingToSelected();
+                var resize = state.ApplyBayCountToTargets(bayCount);
+                state.MaterializeFloorBeamRises(legacyFloorBeamRise); // frentes that just appeared get a direct value
+                if (state.TargetFondos.Count > 1 || resize.OmittedFondos.Count > 0)
+                {
+                    pendingWarning = resize.Describe("el número de frentes", restore: false);
+                }
+
                 ApplyFondoCountFromBox();      // apply "Número de fondos" (rebuild combo + separators; may reset selectedFondo)
                 LoadFondo(selectedFondo);      // reload the working matrix for the (possibly new) selected fondo
                 BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
@@ -1710,6 +1504,70 @@ namespace RackCad.UI.Systems.Selective
             return ReadCellEditor(out var edited, out _) && !CellEquals(current, edited);
         }
 
+        /// <summary>
+        /// Add or remove a level on this frente, over the target fondos (I-43, gate 8A). Levels belong to
+        /// <c>(fondo, frente)</c> — doble profundidad exists so each fondo keeps its own — so the ± buttons project
+        /// like every other frente-wide edit instead of quietly touching only the fondo on screen.
+        /// </summary>
+        private void ChangeLevels(int bay, int delta)
+        {
+            if (bay < 0 || bay >= bays.Count) return;
+
+            using (DeferRecompute())
+            {
+                SaveWorkingToSelected();
+                FrontApplyLog.Add("Niveles:Front");
+                var result = state.ApplyLevelDeltaToTargets(SelectiveFrontApplyScope.Front, bay, delta);
+                RenderMatrix();
+                LoadCellEditor();
+                Recompute();
+                if (state.TargetFondos.Count > 1 || result.OmittedFondos.Count > 0)
+                {
+                    pendingWarning = result.Describe(restore: false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Apply the FRENTE properties — "larguero a piso" and its elevation — over the chosen reach and the target
+        /// fondos (I-43, gate 8A). One Application call, one recompute; the pair travels together because the panel
+        /// edits them together.
+        /// </summary>
+        private void ApplyFrontScope_Click(object sender, RoutedEventArgs e)
+        {
+            var scope = (sender as FrameworkElement)?.Tag as string == "All" ? SelectiveFrontApplyScope.All
+                : (sender as FrameworkElement)?.Tag as string == "Selected" ? SelectiveFrontApplyScope.Selected
+                : SelectiveFrontApplyScope.Front;
+
+            if (!UiSupport.TryNum(FrontRiseBox.Text, out var rise) || rise < 0.0)
+            {
+                SetStatus("Elevación del larguero a piso inválida (número ≥ 0).", true);
+                return;
+            }
+
+            using (DeferRecompute())
+            {
+                SaveWorkingToSelected();
+                FrontApplyLog.Add("Frente:" + scope);
+                var result = state.ApplyFrontPropertiesToTargets(scope, selBay, FrontFloorBeamCheck.IsChecked == true, rise);
+                RenderMatrix();
+                Recompute();
+                pendingWarning = result.Describe(restore: false);
+            }
+        }
+
+        /// <summary>Show the frente properties of the cell currently selected — the frente on screen is what the panel
+        /// describes, whatever fondos an edit will land on.</summary>
+        private void LoadFrontEditor()
+        {
+            if (FrontFloorBeamCheck == null || selBay < 0 || selBay >= bays.Count) return;
+
+            FrontHeader.Text = string.Format(CultureInfo.InvariantCulture, "Frente {0}", selBay + 1);
+            FrontFloorBeamCheck.IsChecked = selBay < floorBeams.Count && floorBeams[selBay];
+            var rise = state.FloorBeamRiseOverrideAt(selectedFondo, selBay) ?? SelectiveRackDefaults.DefaultFloorBeamRise;
+            FrontRiseBox.Text = rise.ToString("0.###", CultureInfo.InvariantCulture);
+        }
+
         private void ApplyCell_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Cell);
         private void ApplySelected_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Selected);
         private void ApplyRow_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Row);
@@ -1718,62 +1576,90 @@ namespace RackCad.UI.Systems.Selective
 
         // ---- Fondos destino (I-43): the second axis, edited next to "Editando fondo" ----
 
-        private void TargetFondos_LostFocus(object sender, RoutedEventArgs e) => CommitTargetFondos();
+        /// <summary>True while the dropdown is being rebuilt, so repopulating its checkboxes does not look like clicks.</summary>
+        private bool buildingTargetFondos;
 
-        private void TargetFondos_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key != Key.Enter) return;
-            CommitTargetFondos();
-            e.Handled = true; // Enter edits this field; it must not reach the window's default-button policy (I-39)
-        }
-
-        private void TargetFondosAll_Click(object sender, RoutedEventArgs e)
-        {
-            state.SetTargetFondos(Enumerable.Range(0, state.FondoCount));
-            RefreshTargetFondos();
-        }
-
-        private void TargetFondosCurrent_Click(object sender, RoutedEventArgs e)
-        {
-            state.SetTargetFondos(new[] { selectedFondo });
-            RefreshTargetFondos();
-        }
-
-        /// <summary>Read the typed subset. An unreadable or out-of-range entry is REJECTED with its reason and the box
-        /// reverts to the set still in force — narrowing an operation silently is the failure this axis exists to
-        /// avoid. Choosing targets changes no geometry, so nothing recomputes here.</summary>
-        private void CommitTargetFondos()
-        {
-            if (!initialized) return;
-
-            if (string.IsNullOrWhiteSpace(TargetFondosBox.Text))
-            {
-                state.SetTargetFondos(new[] { selectedFondo }); // blank = the fondo being edited (the default)
-                RefreshTargetFondos();
-                return;
-            }
-
-            if (!SelectiveFondoTargets.TryParse(TargetFondosBox.Text, state.FondoCount, out var parsed, out var error))
-            {
-                SetStatus(error, true);
-                RefreshTargetFondos();
-                return;
-            }
-
-            state.SetTargetFondos(parsed.Fondos);
-            RefreshTargetFondos();
-        }
-
-        /// <summary>Show the target set the state actually holds (one-based, like the fondo combo), and hide the whole
-        /// row when there is a single fondo — there the two axes always coincide.</summary>
+        /// <summary>
+        /// Rebuild the "Fondos destino" dropdown and its closed caption (I-43, gate 8A).
+        /// <para>
+        /// It is a popup of check boxes rather than a text field: the Owner should never have to learn a syntax like
+        /// <c>1,3-4</c> to say "fondos 1 and 3". "Actual" is a live choice, not a snapshot — it keeps following the
+        /// fondo on screen — while a deliberate set of fondos is preserved when navigating, which is the gate-3 rule.
+        /// With a single fondo the whole thing is hidden: the two axes would always coincide.
+        /// </para>
+        /// </summary>
         private void RefreshTargetFondos()
         {
+            if (TargetFondosList == null) return;
+
+            var count = state.FondoCount;
+            TargetFondosPanel.Visibility = count > 1 ? Visibility.Visible : Visibility.Collapsed;
+
+            buildingTargetFondos = true;
+            TargetFondosList.Children.Clear();
+
             var fondos = state.TargetFondos.Fondos;
-            TargetFondosPanel.Visibility = state.FondoCount > 1 ? Visibility.Visible : Visibility.Collapsed;
-            TargetFondosBox.Text = string.Join(", ", fondos.Select(k => (k + 1).ToString(CultureInfo.InvariantCulture)));
-            TargetFondosHint.Text = fondos.Count == 1
-                ? "(solo el fondo " + (fondos[0] + 1).ToString(CultureInfo.InvariantCulture) + ")"
-                : "(" + fondos.Count.ToString(CultureInfo.InvariantCulture) + " fondos)";
+            var isCurrentOnly = fondos.Count == 1 && fondos[0] == selectedFondo;
+            var isAll = count > 0 && fondos.Count == count;
+
+            var actual = new CheckBox
+            {
+                Content = "Actual",
+                IsChecked = isCurrentOnly,
+                Margin = new Thickness(0, 0, 0, 4),
+                ToolTip = "Aplicar solo en el fondo que estás editando; sigue al fondo visible."
+            };
+            actual.Checked += (s, e) => { if (!buildingTargetFondos) SetTargets(new[] { selectedFondo }); };
+            TargetFondosList.Children.Add(actual);
+
+            var todos = new CheckBox
+            {
+                Content = "Todos",
+                IsChecked = isAll,
+                Margin = new Thickness(0, 0, 0, 6),
+                ToolTip = "Aplicar en todos los fondos."
+            };
+            todos.Checked += (s, e) => { if (!buildingTargetFondos) SetTargets(Enumerable.Range(0, state.FondoCount)); };
+            TargetFondosList.Children.Add(todos);
+
+            for (var k = 0; k < count; k++)
+            {
+                var index = k;
+                var item = new CheckBox
+                {
+                    Content = "Fondo " + (k + 1).ToString(CultureInfo.InvariantCulture),
+                    IsChecked = state.TargetFondos.Contains(k),
+                    Margin = new Thickness(0, 0, 0, 2)
+                };
+                void Toggle(object s, RoutedEventArgs e)
+                {
+                    if (buildingTargetFondos) return;
+                    var chosen = state.TargetFondos.Fondos.ToList();
+                    if (item.IsChecked == true) { if (!chosen.Contains(index)) chosen.Add(index); }
+                    else chosen.Remove(index);
+                    SetTargets(chosen); // an emptied set falls back to the visible fondo, never to nothing
+                }
+
+                item.Checked += Toggle;
+                item.Unchecked += Toggle;
+                TargetFondosList.Children.Add(item);
+            }
+
+            TargetFondosButton.Content = isCurrentOnly
+                ? "Actual"
+                : isAll
+                    ? "Todos"
+                    : fondos.Count == 1
+                        ? "Fondo " + (fondos[0] + 1).ToString(CultureInfo.InvariantCulture)
+                        : "Fondos " + string.Join(", ", fondos.Select(k => (k + 1).ToString(CultureInfo.InvariantCulture)));
+            buildingTargetFondos = false;
+        }
+
+        /// <summary>Choose the target fondos. Picking targets changes no geometry, so nothing recomputes here.</summary>
+        private void SetTargets(IEnumerable<int> fondos)
+        {
+            state.SetTargetFondos(fondos);
+            RefreshTargetFondos();
         }
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
@@ -1980,11 +1866,15 @@ namespace RackCad.UI.Systems.Selective
 
         /// <summary>Every frente-wide Application operation this window issued, as <c>"property:scope"</c>. A test seam
         /// (I-43, InternalsVisibleTo): a recompute counter alone cannot tell one operation from two that coalesced, and
-        /// what the gesture contract forbids is the second MUTATION, not the second redraw.</summary>
+        /// what a bulk gesture must never do is mutate twice.</summary>
         internal List<string> FrontApplyLog { get; } = new List<string>();
 
         /// <summary>The editor state — a test seam (I-43, InternalsVisibleTo), matching the one the safety grids expose.</summary>
         internal SelectiveEditorState EditorState => state;
+
+        /// <summary>Refresh the cell + frente panels from the current selection — a test seam (I-43, gate 8A) for the
+        /// repaint a real click performs after moving the selection.</summary>
+        internal void LoadCellEditorForTest() => LoadCellEditor();
 
         /// <summary>The Border painted for a matrix cell, or null when it is not on screen — a test seam (I-43) so the
         /// multi-selection can be verified as PIXELS-worth-of-brush, not just as model state.</summary>
@@ -2065,7 +1955,6 @@ namespace RackCad.UI.Systems.Selective
             if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste inválido."; return null; }
             if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal inválida."; return null; }
             if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical inválida."; return null; }
-            if (!UiSupport.TryNum(FloorRiseBox.Text, out var floorRise) || floorRise < 0.0) { error = "Elevación de larguero a piso (global) inválida."; return null; }
             if (!UiSupport.TryNum(FondoBox.Text, out var fondo) || fondo <= 0.0) { error = "Fondo de tarima inválido."; return null; }
             if (!UiSupport.TryNum(FondosBox.Text, out var fondosNum) || fondosNum < 1.0) { error = "Número de fondos inválido (mínimo 1)."; return null; }
             var depthCount = Math.Min(SelectiveRackDefaults.MaxDepthCount, Math.Max(1, (int)Math.Round(fondosNum)));
@@ -2080,7 +1969,7 @@ namespace RackCad.UI.Systems.Selective
                 PostPeralte = postPeralte,
                 PalletTolerance = tolerance,
                 VerticalClearance = clearance,
-                FloorBeamRise = floorRise,
+                FloorBeamRise = legacyFloorBeamRise, // legacy field only: every frente carries its own value now
                 Fondo = fondo,
                 DepthCount = depthCount,
                 WorkingDepth = workingDepth,
@@ -2149,7 +2038,7 @@ namespace RackCad.UI.Systems.Selective
             PostPeralteBox.Text = design.PostPeralte.ToString("0.###", CultureInfo.InvariantCulture);
             ToleranceBox.Text = design.PalletTolerance.ToString("0.###", CultureInfo.InvariantCulture);
             ClearanceBox.Text = design.VerticalClearance.ToString("0.###", CultureInfo.InvariantCulture);
-            FloorRiseBox.Text = design.FloorBeamRise.ToString("0.###", CultureInfo.InvariantCulture);
+            legacyFloorBeamRise = design.FloorBeamRise > 0.0 ? design.FloorBeamRise : SelectiveRackDefaults.DefaultFloorBeamRise;
             FondoBox.Text = (design.PalletDepth > 0.0 ? design.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth).ToString("0.###", CultureInfo.InvariantCulture);
             FondosBox.Text = Math.Max(1, design.DepthCount).ToString(CultureInfo.InvariantCulture);
 
@@ -2181,6 +2070,10 @@ namespace RackCad.UI.Systems.Selective
             }
 
             selectedFondo = 0;
+            // Every frente gets a DIRECT elevation. A document written before gate 8A carries only the run-wide value,
+            // and the drawing it described used it everywhere, so each frente materializes it as its own; from here on
+            // the frente is the authority (I-43, gate 8A).
+            state.MaterializeFloorBeamRises(legacyFloorBeamRise);
             RestoreWorkingFrom(fondoMatrices[0]);
             RebuildFondoSelector();
             RebuildSeparatorFields(depthCount);

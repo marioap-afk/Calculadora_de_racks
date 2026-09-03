@@ -33,10 +33,26 @@ namespace RackCad.UI.Tests
             box.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, box));
         }
 
+        /// <summary>Choose the target fondos through the REAL dropdown (I-43, gate 8A): "todos", or a comma/plus
+        /// separated list of one-based fondo numbers.</summary>
         private static void SetTargetFondos(RackSelectiveWindow window, string text)
         {
-            EditorWindowTestSupport.SetText(window, "TargetFondosBox", text);
-            RaiseLostFocus(window, "TargetFondosBox");
+            if (text.Equals("todos", System.StringComparison.OrdinalIgnoreCase))
+            {
+                SelectiveTargetsTestSupport.SetAllTargets(window);
+                return;
+            }
+
+            var wanted = text.Split(new[] { ',', '+', ' ' }, System.StringSplitOptions.RemoveEmptyEntries)
+                .SelectMany(token =>
+                {
+                    var range = token.Split('-');
+                    return range.Length == 2
+                        ? Enumerable.Range(int.Parse(range[0]), int.Parse(range[1]) - int.Parse(range[0]) + 1)
+                        : new[] { int.Parse(token) };
+                })
+                .ToArray();
+            SelectiveTargetsTestSupport.SetTargets(window, wanted);
         }
 
         private static RackFrameConfiguration Custom(RackSelectiveWindow window, double height)
@@ -161,7 +177,7 @@ namespace RackCad.UI.Tests
             var count = StaTestRunner.Run(() =>
             {
                 var window = OpenWith(2);
-                return new[] { "TargetFondosBox" }.Count(name => window.FindName(name) != null);
+                return new[] { "TargetFondosList" }.Count(name => window.FindName(name) != null);
             });
 
             Assert.Equal(1, count);
