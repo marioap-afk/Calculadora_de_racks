@@ -15,17 +15,7 @@ namespace RackCad.UI.Tests
     /// </summary>
     public sealed class SelectiveFondoCabeceraWindowTests
     {
-        private static RackSelectiveWindow OpenWith(int fondos)
-        {
-            var window = new RackSelectiveWindow(canInsertInAutoCad: false);
-            if (fondos > 1)
-            {
-                EditorWindowTestSupport.SetText(window, "FondosBox", fondos.ToString());
-                RaiseLostFocus(window, "FondosBox");
-            }
-
-            return window;
-        }
+        private static RackSelectiveWindow OpenWith(int fondos) => SelectiveWindowTestSupport.Open(fondos);
 
         private static void RaiseLostFocus(Window window, string name)
         {
