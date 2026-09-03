@@ -676,3 +676,42 @@ Ninguno bloqueó I-37A: se rodearon dentro del namespace Cantilever, sin tocar I
    *encontradas* / `A→B` y sólo la API lo permite—, así que no es un defecto observable. Resolverlo bien pide una
    topología **anulable** en la celda (el documento ya la guarda como texto y cae al default cuando no la reconoce),
    y eso toca los cuatro límites de persistencia: es una migración, no un ajuste.
+
+## I-44 — AMBIGÜEDAD DE PRODUCTO: quién gobierna el intermedio de una cama CORRIDA (2026-09-03)
+
+**Pendiente de DECISIÓN DEL DUEÑO. No es un defecto con arreglo obvio: es una pregunta de producto que
+nadie ha contestado todavía, y por eso I-44 no la tocó.**
+
+Una cama **corrida** es **una sola cama** que cruza la interfaz del rack compuesto. Su larguero
+intermedio es una pieza física única, así que su `IntermediateBeamCatalogId` y su `IntermediateBeamDepth`
+sólo pueden salir de **un** lado. Cuando A y B declaran valores distintos, ¿cuál manda?
+
+**Hoy manda el lado BAJO, y no porque se decidiera.** `PushBackRuns.BuildCorrida` copia al frente
+sintético los `DynamicRackLevel` del lado bajo (`elevations = lowFront ?? highFront`) porque las
+**ELEVACIONES** son de ese lado —esa sí fue decisión del dueño en I-42, commit `82e918b`, «corrida anclada
+en su lado BAJO»—, y ese mismo objeto transporta además el par del intermedio, la tarima, el claro y el
+IN/OUT. Antes de `82e918b` la fuente era `highFront`, así que la autoridad del intermedio **ya cambió de
+lado como efecto colateral** de una decisión sobre otra cosa.
+
+En el mismo `BuildCorrida` conviven dos elecciones **explícitas y opuestas**: las elevaciones salen del
+lado **bajo** y el peralte del larguero **alto** sale del lado **alto** (`highResolved.HighEndBeamPeraltes`).
+El intermedio nunca se nombró en ninguna de las dos.
+
+**Qué se revisó buscando un contrato previo, sin encontrarlo:**
+
+- [ADR-0031](adr/0031-push-back-compuesto-estructura-unica-y-configuracion-por-lado.md) §8-bis dice sólo
+  que un intermedio pertenece a **una cama** y que BOM y plano usan el mismo builder. No nombra al dueño
+  del par cuando A y B discrepan.
+- `PushBackCompositeCorridaAuthorityTests` (I-42, ronda 4, «pruebas vinculantes») consagra el **fondo
+  propio**, el **ancla en el apoyo real** y la **reversibilidad**. Nada del peralte intermedio.
+
+**Efecto observable.** Con A (bajo) = 3.5" y B (alto) = 4.5", el BOM publica `[3.5]` y el 4.5" authored
+desaparece. Es un descenso que ningún máximo explica, y es **independiente** del defecto que I-44 corrigió
+(aquél sólo podía subir el peralte).
+
+**Estado.** I-44 **congeló** el comportamiento actual con una prueba de caracterización,
+`PushBackIntermediateBeamPeralteTests.Characterization_ACorridaTakesTheLowSideCellValues_ContractPending`,
+que además comprueba la simetría: intercambiar los lados intercambia el resultado, de modo que gobierna el
+lado bajo y no «el mayor» ni «el que lo declaró primero». Esa prueba **no es especificación**: fija lo que
+hay para que un cambio futuro sea deliberado y visible. Cambiar la semántica exige la decisión del dueño y,
+por su alcance, probablemente un ADR.
