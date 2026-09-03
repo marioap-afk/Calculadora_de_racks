@@ -207,7 +207,7 @@ namespace RackCad.Tests
 
             Assert.Equal(new[] { (0, 2), (2, 2) }, result.Applied);
             Assert.Equal(new[] { 1 }, result.OmittedFondos);
-            Assert.Contains("no tiene ese frente", result.Describe(restore: false));
+            Assert.Contains("no tiene ese frente", result.Describe("la elevación", restore: false));
             Assert.Equal(new double?[] { null }, RisesOf(state, 1, 1)); // nothing padded, nothing clamped
         }
 
@@ -237,7 +237,7 @@ namespace RackCad.Tests
             state.SetTargetFondos(new[] { 1 });
             var result = state.ApplyFloorBeamRiseToTargets(SelectiveFrontApplyScope.Front, 0, null);
 
-            Assert.Contains("Restablecida", result.Describe(restore: true));
+            Assert.Contains("Se restableció la elevación", result.Describe("la elevación", restore: true));
             Assert.Equal(18.0, state.FloorBeamRiseOverrideAt(0, 0)); // still overridden
             Assert.Null(state.FloorBeamRiseOverrideAt(1, 0));        // back to inheriting
 

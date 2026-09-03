@@ -500,6 +500,23 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>The fondos the next operation writes to. Never empty.</summary>
         public SelectiveFondoTargets TargetFondos => targetFondos;
 
+        /// <summary>
+        /// Whether the target set FOLLOWS the fondo on screen or was chosen deliberately (I-43, gate 8A correction).
+        /// <para>
+        /// Without it the two are indistinguishable whenever an explicit choice happens to be a single fondo that
+        /// matches the one being edited: navigating away would silently re-aim it. The mode records the user's
+        /// INTENT, which no comparison of the sets can recover. Runtime only, like the set itself.
+        /// </para>
+        /// </summary>
+        public SelectiveTargetMode TargetMode { get; private set; } = SelectiveTargetMode.FollowCurrent;
+
+        /// <summary>Choose "Actual": the targets are the fondo being edited, and they keep following it.</summary>
+        public void FollowCurrentFondo()
+        {
+            TargetMode = SelectiveTargetMode.FollowCurrent;
+            targetFondos = CurrentFondoOnly();
+        }
+
         /// <summary>How many fondos this state has, counting the uncommitted working matrix as fondo 0 when no slot
         /// exists yet — the same rule <see cref="SelectiveTopology.From"/> applies.</summary>
         public int FondoCount => FondoMatrices.Count > 0 ? FondoMatrices.Count : (Bays.Count > 0 ? 1 : 0);
@@ -510,6 +527,14 @@ namespace RackCad.Application.Systems.Selective
         /// would silently do nothing.
         /// </summary>
         public void SetTargetFondos(IEnumerable<int> fondos)
+        {
+            TargetMode = SelectiveTargetMode.Explicit; // a deliberate choice, even when it is a single fondo
+            SetTargetFondosCore(fondos);
+        }
+
+        /// <summary>Re-normalize the set WITHOUT touching the mode — for the internal reconciliations (a fondo count
+        /// change), which are not the user choosing anything.</summary>
+        private void SetTargetFondosCore(IEnumerable<int> fondos)
         {
             var count = FondoCount;
             var valid = (fondos ?? Enumerable.Empty<int>())
@@ -527,14 +552,17 @@ namespace RackCad.Application.Systems.Selective
         /// </summary>
         public void SelectFondo(int fondoIndex)
         {
-            var previous = SelectedFondo;
             SelectedFondo = fondoIndex;
-            if (targetFondos.Count == 1 && targetFondos.Fondos[0] == previous) targetFondos = CurrentFondoOnly();
+            if (TargetMode == SelectiveTargetMode.FollowCurrent) targetFondos = CurrentFondoOnly();
         }
 
         /// <summary>Drop targets the rack no longer has after a fondo-count change, never leaving the set empty.
         /// Call it whenever the number of fondos changes.</summary>
-        public void SyncTargetFondos() => SetTargetFondos(targetFondos.Fondos);
+        public void SyncTargetFondos()
+        {
+            if (TargetMode == SelectiveTargetMode.FollowCurrent) FollowCurrentFondo();
+            else SetTargetFondosCore(targetFondos.Fondos);
+        }
 
         private SelectiveFondoTargets CurrentFondoOnly()
         {
@@ -796,38 +824,31 @@ namespace RackCad.Application.Systems.Selective
         /// restores the elevation the user had chosen.
         /// </para>
         /// </summary>
-        public SelectiveFrontApplyResult ApplyFrontPropertiesToTargets(
-            SelectiveFrontApplyScope scope, int frontIndex, bool floorBeam, double rise)
-            => ApplyToFrontTargets(scope, frontIndex, (fondo, front) =>
-            {
-                FloorBeamRow(fondo)[front] = floorBeam;
-                FloorBeamRiseRow(fondo)[front] = rise;
-            });
-
         /// <summary>
-        /// Add or remove load levels on the resolved frentes of every target fondo (I-43, gate 8A).
+        /// Set the LEVEL COUNT of the resolved frentes of every target fondo (I-43, gate 8A correction).
         /// <para>
-        /// Levels are per <c>(fondo, frente)</c> by design — doble profundidad exists precisely so each fondo edits
-        /// its OWN levels — so this projects like every other frente-wide operation instead of staying a local matrix
-        /// action. Removing never empties a frente (one level is the floor of the model) and never resurrects a level
-        /// that was dropped: a new one clones the top of the column it grows.
+        /// An exact count rather than a delta, because a delta means different things on frentes that start with
+        /// different numbers of levels: "+1" over a selection leaves them as uneven as it found them, while "5" says
+        /// what the user actually wants. Growing clones the top level of the column it grows; shrinking drops the tail
+        /// and never resurrects it; one level is the floor, so a frente is never emptied.
         /// </para>
         /// </summary>
-        public SelectiveFrontApplyResult ApplyLevelDeltaToTargets(SelectiveFrontApplyScope scope, int frontIndex, int delta)
-            => ApplyToFrontTargets(scope, frontIndex, (fondo, front) =>
+        public SelectiveFrontApplyResult ApplyLevelCountToTargets(
+            SelectiveFrontApplyScope scope, int frontIndex, int levels)
+        {
+            var wanted = Math.Max(1, levels);
+            var result = ApplyToFrontTargets(scope, frontIndex, (fondo, front) =>
             {
                 var columns = ColumnsOf(fondo);
                 if (columns == null || front >= columns.Count) return;
                 var column = columns[front];
-                if (delta > 0)
-                {
-                    for (var i = 0; i < delta; i++) column.Add(column.Count > 0 ? column[column.Count - 1].Clone() : NewCell());
-                }
-                else
-                {
-                    for (var i = 0; i < -delta && column.Count > 1; i++) column.RemoveAt(column.Count - 1);
-                }
+                while (column.Count < wanted) column.Add(column.Count > 0 ? column[column.Count - 1].Clone() : NewCell());
+                while (column.Count > wanted) column.RemoveAt(column.Count - 1);
             });
+
+            ClampSelection(); // levels vanished: prune the selection to what survived
+            return result;
+        }
 
         /// <summary>
         /// Set the number of frentes of every TARGET fondo (I-43, gate 8A). This is TOPOLOGY, so it is the one
@@ -911,7 +932,9 @@ namespace RackCad.Application.Systems.Selective
         /// </summary>
         public void MaterializeFloorBeamRises(double legacyGlobal)
         {
-            var value = legacyGlobal > 0.0 ? legacyGlobal : SelectiveRackDefaults.DefaultFloorBeamRise;
+            // A NEGATIVE value is not a rise; 0 IS one. The old run-wide field accepted >= 0, so a document that
+            // deliberately said "no rise at all" must materialize 0 and not the 4" default (I-43, gate 8A correction).
+            var value = legacyGlobal >= 0.0 ? legacyGlobal : SelectiveRackDefaults.DefaultFloorBeamRise;
             void Fill(List<double?> row, int count)
             {
                 while (row.Count < count) row.Add(null);

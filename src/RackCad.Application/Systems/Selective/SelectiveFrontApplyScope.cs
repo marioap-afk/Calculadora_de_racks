@@ -68,8 +68,13 @@ namespace RackCad.Application.Systems.Selective
 
         public bool IsEmpty => Applied.Count == 0;
 
-        /// <summary>One Spanish sentence for a status line, numbering fondos and frentes as the editor shows them.</summary>
-        public string Describe(bool restore)
+        /// <summary>
+        /// One Spanish sentence for a status line, numbering fondos and frentes as the editor shows them.
+        /// <paramref name="what"/> names the property, because this result serves every frente-wide operation — the
+        /// floor beam, its elevation, the level count, the tramos — and a status that always said "la elevación"
+        /// would be reporting the wrong thing for three of them.
+        /// </summary>
+        public string Describe(string what, bool restore)
         {
             if (IsEmpty)
             {
@@ -78,8 +83,9 @@ namespace RackCad.Application.Systems.Selective
 
             var text = string.Format(
                 CultureInfo.InvariantCulture,
-                Count == 1 ? "{0} la elevación en {1} frente" : "{0} la elevación en {1} frentes",
-                restore ? "Restablecida" : "Aplicada",
+                Count == 1 ? "{0} {1} en {2} frente" : "{0} {1} en {2} frentes",
+                restore ? "Se restableció" : "Se aplicó",
+                what,
                 Count);
 
             text += Fondos.Count == 1

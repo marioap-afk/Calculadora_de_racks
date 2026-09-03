@@ -52,7 +52,8 @@ namespace RackCad.UI.Tests
             "DrawPalletsCheck", "AnnotationScaleBox", "DimensionsBox", "DimStyleBox", "SafetyButton", "PostBox",
             "PostPeralteBox", "PostSelectBox", "CustomizePostButton", "PostPeralteOverrideBox", "PostCabeceraStatus",
             "BayCountBox", "ToleranceBox", "ClearanceBox", "FondoBox", "CabeceraFondoBox", "FondosBox",
-            "FrontHeader", "FrontFloorBeamCheck", "FrontRiseBox", "ApplyFrontSelectedButton",
+            "FrontHeader", "FrontScopeBox", "FrontFloorBeamCheck", "ApplyFrontFloorBeamButton",
+            "FrontRiseBox", "ApplyFrontRiseButton", "FrontLevelsBox", "ApplyFrontLevelsButton",
             "TargetFondosPanel", "TargetFondosButton", "TargetFondosPopup", "TargetFondosList",
             "SeparatorsSection", "SeparatorsHost", "CellHeader", "CellBeamBox", "FrenteBox", "PalletCountBox", "AltoBox",
             "BeamPeralteCombo", "BeamLenBox", "ClearBox", "SummaryText", "StatusText", "FondoSelectorPanel",
@@ -249,10 +250,13 @@ namespace RackCad.UI.Tests
                 var bayCount = window.MatrixGrid.ColumnDefinitions.Count - 1; // minus the label column
                 var cellsBefore = CellBorders(window.MatrixGrid).Count;       // default 2 bays × 4 levels = 8
 
-                // Grow ONE bay by clicking its "+" (AddLevel): the matrix becomes JAGGED — that bay has one more level than the
-                // rest, and the shorter bay leaves its top display row empty. The grid renders maxLevels rows either way.
-                var plus = VisualDescendants(window.MatrixGrid).OfType<Button>().First(b => (b.Content as string) == "+");
-                plus.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent, plus));
+                // Grow ONE bay through the frente panel (the ± buttons left the matrix in I-43 gate 8A): the matrix
+                // becomes JAGGED — that bay has one more level than the rest, and the shorter bay leaves its top
+                // display row empty. The grid renders maxLevels rows either way.
+                window.EditorState.SelectCell(0, 0, extend: false);
+                ((ComboBox)window.FindName("FrontScopeBox")).SelectedIndex = 0; // this frente only
+                ((TextBox)window.FindName("FrontLevelsBox")).Text = "5";        // the default matrix has 4 levels
+                EditorWindowTestSupport.ClickByContent(window, "Aplicar niveles");
 
                 var cellsAfter = CellBorders(window.MatrixGrid).Count;
                 var maxLevels = window.MatrixGrid.RowDefinitions.Count - 1;   // minus the header row

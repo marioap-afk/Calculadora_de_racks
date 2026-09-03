@@ -61,6 +61,14 @@ namespace RackCad.Tests
         private static bool[] FloorsOf(SelectiveEditorState state, int fondo)
             => (fondo == state.SelectedFondo ? state.FloorBeams : state.FondoMatrices[fondo].FloorBeams).ToArray();
 
+        /// <summary>Write both frente properties as two INDEPENDENT operations, which is what the editor does now.</summary>
+        private static SelectiveFrontApplyResult ApplyBoth(
+            SelectiveEditorState state, SelectiveFrontApplyScope scope, int front, bool floorBeam, double rise)
+        {
+            state.ApplyFloorBeamToTargets(scope, front, floorBeam);
+            return state.ApplyFloorBeamRiseToTargets(scope, front, rise);
+        }
+
         private static int LevelsAt(SelectiveEditorState state, int fondo, int front)
             => (fondo == state.SelectedFondo ? state.Bays : state.FondoMatrices[fondo].Bays)[front].Count;
 
@@ -85,7 +93,7 @@ namespace RackCad.Tests
             state.SelectCell(0, 0, extend: false);
             state.SelectCell(2, 1, extend: true);
 
-            var result = state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.Selected, 0, true, 16.0);
+            var result = ApplyBoth(state, SelectiveFrontApplyScope.Selected, 0, true, 16.0);
 
             Assert.Equal(new[] { (0, 0), (0, 2), (2, 0), (2, 2) }, result.Applied);
             Assert.Equal(new double?[] { 16.0, null, 16.0 }, RisesOf(state, 0));
@@ -101,7 +109,7 @@ namespace RackCad.Tests
             state.SelectCell(0, 0, extend: false);
             state.SelectCell(2, 0, extend: true);
 
-            var result = state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.Selected, 0, true, 12.0);
+            var result = ApplyBoth(state, SelectiveFrontApplyScope.Selected, 0, true, 12.0);
 
             Assert.Equal(new[] { (0, 0), (0, 2), (1, 0), (2, 0), (2, 2) }, result.Applied);
             Assert.Single(RisesOf(state, 1)); // never padded to reach frente 2
@@ -114,7 +122,7 @@ namespace RackCad.Tests
             state.SetTargetFondos(new[] { 0, 1 });
             state.SelectCell(2, 0, extend: false); // only frente 2, which fondo 1 does not have
 
-            var result = state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.Selected, 2, true, 14.0);
+            var result = ApplyBoth(state, SelectiveFrontApplyScope.Selected, 2, true, 14.0);
 
             Assert.Equal(new[] { (0, 2) }, result.Applied);
             Assert.Equal(new[] { 1 }, result.OmittedFondos);
@@ -128,7 +136,7 @@ namespace RackCad.Tests
             var state = StateWith(3);
             state.MaterializeFloorBeamRises(4.0);
 
-            state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.Front, 1, true, 18.0);
+            ApplyBoth(state, SelectiveFrontApplyScope.Front, 1, true, 18.0);
 
             Assert.Equal(new double?[] { 4.0, 18.0, 4.0 }, RisesOf(state, 0));
         }
@@ -137,16 +145,16 @@ namespace RackCad.Tests
         public void TurningPisoOffKeepsTheElevation_SoTurningItBackOnRecoversIt()
         {
             var state = StateWith(2);
-            state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.Front, 0, true, 17.0);
+            ApplyBoth(state, SelectiveFrontApplyScope.Front, 0, true, 17.0);
 
-            state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.Front, 0, false, 17.0);
+            ApplyBoth(state, SelectiveFrontApplyScope.Front, 0, false, 17.0);
             Assert.False(FloorsOf(state, 0)[0]);
             Assert.Equal(17.0, state.FloorBeamRiseOverrideAt(0, 0));
 
             // And with the beam off the elevation moves no geometry at all.
             var off = new SelectiveGeometryResolver().Resolve(state.BuildDesign(Inputs(state)), Catalog);
             var plain = StateWith(2);
-            plain.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.Front, 0, false, 4.0);
+            ApplyBoth(plain, SelectiveFrontApplyScope.Front, 0, false, 4.0);
             var reference = new SelectiveGeometryResolver().Resolve(plain.BuildDesign(Inputs(plain)), Catalog);
             Assert.Equal(reference.Bays[0].Levels.Min(l => l.Y), off.Bays[0].Levels.Min(l => l.Y), 6);
         }
@@ -158,7 +166,7 @@ namespace RackCad.Tests
             var state = StateWith(3, 3, 3);
             state.SetTargetFondos(new[] { 0, 1, 2 });
 
-            state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.All, 0, true, 10.0);
+            ApplyBoth(state, SelectiveFrontApplyScope.All, 0, true, 10.0);
 
             for (var fondo = 0; fondo < 3; fondo++)
             {
@@ -186,7 +194,7 @@ namespace RackCad.Tests
             Assert.Equal(before.Bays[0].Levels.Min(l => l.Y), after.Bays[0].Levels.Min(l => l.Y), 6);
 
             // From here the frente governs: changing one moves only it, whatever the legacy field still says.
-            state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.Front, 0, true, 15.0);
+            ApplyBoth(state, SelectiveFrontApplyScope.Front, 0, true, 15.0);
             var edited = new SelectiveGeometryResolver().Resolve(state.BuildDesign(Inputs(state, legacyGlobalRise: 7.0)), Catalog);
             Assert.NotEqual(edited.Bays[0].Levels.Min(l => l.Y), edited.Bays[1].Levels.Min(l => l.Y));
         }
@@ -196,9 +204,9 @@ namespace RackCad.Tests
         {
             var state = StateWith(2, 2);
             state.SetTargetFondos(new[] { 0, 1 });
-            state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.All, 0, true, 13.0);
+            ApplyBoth(state, SelectiveFrontApplyScope.All, 0, true, 13.0);
             state.SetTargetFondos(new[] { 1 });
-            state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.Front, 1, true, 21.0);
+            ApplyBoth(state, SelectiveFrontApplyScope.Front, 1, true, 21.0);
 
             var design = state.BuildDesign(Inputs(state));
             var restored = RoundTrip(design, out var id);
@@ -207,6 +215,43 @@ namespace RackCad.Tests
             Assert.Equal(13.0, restored.Bays[0].FloorBeamRiseOverride);
             Assert.Equal(13.0, restored.ExtraFondoBays[0][0].FloorBeamRiseOverride);
             Assert.Equal(21.0, restored.ExtraFondoBays[0][1].FloorBeamRiseOverride);
+        }
+
+        [Fact]
+        public void ALegacyGlobalOfZero_MaterializesZero_NotTheDefault()
+        {
+            // 0 was a legitimate run-wide value ("no elevation at all"). Treating it as "unset" would silently raise
+            // every floor larguero of a historic rack by the 4" default.
+            var legacy = LegacyDesign(globalRise: 0.0);
+            var before = new SelectiveGeometryResolver().Resolve(legacy, Catalog);
+
+            var state = StateWith(2);
+            state.FloorBeams[0] = true;
+            state.FloorBeams[1] = true;
+            state.MaterializeFloorBeamRises(0.0);
+
+            Assert.All(RisesOf(state, 0), rise => Assert.Equal(0.0, rise));
+
+            var design = state.BuildDesign(Inputs(state, legacyGlobalRise: 0.0));
+            var after = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            Assert.Equal(before.Bays[0].Levels.Min(l => l.Y), after.Bays[0].Levels.Min(l => l.Y), 6);
+
+            // And it survives the round trip as a stored 0, never as "inherit".
+            var restored = RoundTrip(design, out _);
+            Assert.Equal(0.0, restored.Bays[0].FloorBeamRiseOverride);
+            var reloaded = new SelectiveGeometryResolver().Resolve(restored, Catalog);
+            Assert.Equal(before.Bays[0].Levels.Min(l => l.Y), reloaded.Bays[0].Levels.Min(l => l.Y), 6);
+        }
+
+        [Fact]
+        public void ADirectValueAlwaysWinsOverTheLegacyGlobal()
+        {
+            var state = StateWith(2);
+            state.ApplyFloorBeamRiseToTargets(SelectiveFrontApplyScope.Front, 0, 0.0); // an explicit zero
+            state.MaterializeFloorBeamRises(9.0);                                      // a legacy global arrives after
+
+            Assert.Equal(0.0, state.FloorBeamRiseOverrideAt(0, 0)); // the direct value is untouched
+            Assert.Equal(9.0, state.FloorBeamRiseOverrideAt(0, 1)); // the frente without one takes the legacy value
         }
 
         // ---- E. Legacy manual height ----
@@ -231,7 +276,7 @@ namespace RackCad.Tests
             // Nothing in the new flow authors one: a design built from a fresh state has none.
             var state = StateWith(3, 3);
             state.SetTargetFondos(new[] { 0, 1 });
-            state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.All, 0, true, 11.0);
+            ApplyBoth(state, SelectiveFrontApplyScope.All, 0, true, 11.0);
             state.ApplyBayCountToTargets(4);
 
             var design = state.BuildDesign(Inputs(state));
@@ -262,7 +307,7 @@ namespace RackCad.Tests
         {
             var state = StateWith(3, 3);
             state.SetTargetFondos(new[] { 0, 1 });
-            state.ApplyFrontPropertiesToTargets(SelectiveFrontApplyScope.Front, 2, true, 19.0);
+            ApplyBoth(state, SelectiveFrontApplyScope.Front, 2, true, 19.0);
             state.ApplyCabeceraToTargets(3, new RackCad.Domain.RackFrames.RackFrameConfiguration { Height = 300.0 }, c => c);
 
             state.ApplyBayCountToTargets(1);
@@ -329,7 +374,7 @@ namespace RackCad.Tests
             var state = StateWith(2, 2, 2);
             state.SetTargetFondos(new[] { 0, 2 });
 
-            state.ApplyLevelDeltaToTargets(SelectiveFrontApplyScope.Front, 1, +1);
+            state.ApplyLevelCountToTargets(SelectiveFrontApplyScope.Front, 1, 3);
 
             Assert.Equal(3, LevelsAt(state, 0, 1));
             Assert.Equal(2, LevelsAt(state, 1, 1)); // untouched
@@ -343,7 +388,7 @@ namespace RackCad.Tests
             var state = StateWith(2, 2);
             state.SetTargetFondos(new[] { 0, 1 });
 
-            state.ApplyLevelDeltaToTargets(SelectiveFrontApplyScope.Front, 0, -5);
+            state.ApplyLevelCountToTargets(SelectiveFrontApplyScope.Front, 0, 0); // asking for none still leaves one
 
             Assert.Equal(1, LevelsAt(state, 0, 0));
             Assert.Equal(1, LevelsAt(state, 1, 0));
@@ -355,7 +400,7 @@ namespace RackCad.Tests
             var state = StateWith(3, 1);
             state.SetTargetFondos(new[] { 0, 1 });
 
-            var result = state.ApplyLevelDeltaToTargets(SelectiveFrontApplyScope.Front, 2, +1);
+            var result = state.ApplyLevelCountToTargets(SelectiveFrontApplyScope.Front, 2, 3);
 
             Assert.Equal(new[] { (0, 2) }, result.Applied);
             Assert.Equal(new[] { 1 }, result.OmittedFondos);

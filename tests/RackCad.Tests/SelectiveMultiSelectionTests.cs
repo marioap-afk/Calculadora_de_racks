@@ -256,13 +256,31 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void ChangingFondo_FollowsTheTarget_WhenItWasOnlyThePreviousFondo()
+        public void ChangingFondo_FollowsTheTarget_WhileTheModeIsFollowCurrent()
         {
+            // "Actual" is a MODE, not a set that happens to match the fondo on screen (I-43, gate 8A correction):
+            // it is what keeps the legacy feel of edits landing on the fondo being edited.
             var state = FourSquare();
+            state.FollowCurrentFondo();
 
             state.SelectFondo(2);
 
-            Assert.Equal(new[] { 2 }, state.TargetFondos.Fondos); // legacy feel: edits land on the fondo on screen
+            Assert.Equal(new[] { 2 }, state.TargetFondos.Fondos);
+            Assert.Equal(SelectiveTargetMode.FollowCurrent, state.TargetMode);
+        }
+
+        [Fact]
+        public void ChangingFondo_DoesNotMoveAnEXPLICITSingleton_EvenWhenItMatchesTheFondoBeingLeft()
+        {
+            // The case the previous rule could not see: choosing "Fondo 1" deliberately while looking at fondo 1 is
+            // not the same as choosing "Actual", and navigating away must not silently re-aim it.
+            var state = FourSquare();
+            state.SetTargetFondos(new[] { 0 });
+
+            state.SelectFondo(2);
+
+            Assert.Equal(new[] { 0 }, state.TargetFondos.Fondos);
+            Assert.Equal(SelectiveTargetMode.Explicit, state.TargetMode);
         }
 
         [Fact]
