@@ -16,6 +16,7 @@ using RackCad.Application.Systems.Selective;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
+using RackCad.UI.Controls;
 using RackCad.UI.Editor;
 using RackCad.UI.RackFrames;
 // I-20: the selective editor's state and its Cell/FondoMatrix/Scope models moved to RackCad.Application.Systems;
@@ -100,6 +101,14 @@ namespace RackCad.UI.Systems.Selective
         private List<FondoMatrix> fondoMatrices => state.FondoMatrices;
         private int selectedFondo { get => state.SelectedFondo; set => state.SelectedFondo = value; }
         private bool switchingFondo; // guards FondoSelector_Changed while the combo is repopulated
+
+        // I-43 (gate 8.6C): las cuatro cajas son editores de un valor PENDIENTE; la autoridad son los slots y las
+        // matrices. Se comprometen en dos fases y SIEMPRE en este orden: estructura antes que valores.
+        private PendingTextField<int> pendingFondos;
+        private PendingTextField<int> pendingBayCount;
+        private PendingTextField<double> pendingDepth;
+        private PendingTextField<double?> pendingCabecera;
+        private IPendingTextField[] pendingAll;
         private readonly IUserSettingsGateway settingsGateway;
         private readonly UserSettings settings;
 
@@ -231,6 +240,8 @@ namespace RackCad.UI.Systems.Selective
             state.DefaultBeamId = CellBeamBox.SelectedValue as string; // the beam a fresh cell adopts (I-20)
             CellBeamBox.SelectionChanged += (s, e) => OnBeamChanged();
 
+            BuildPendingEditors();
+
             state.InitMatrix(2, 4);
             fondoMatrices.Clear();
             fondoMatrices.Add(SnapshotWorking());
@@ -292,28 +303,16 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>Read the working fondo's depth + cabecera override from the boxes, with the editor's keep-previous
         /// fallback: invalid text keeps the fondo's PREVIOUSLY SAVED value (not the global default) and latches a
         /// warning, so a typo while switching fondos doesn't silently reset this line; blank cabecera stays auto (0).</summary>
-        private (double Depth, double CabeceraOverride) ReadWorkingDepthCabecera()
+        /// <summary>
+        /// Las profundidades COMPROMETIDAS del fondo seleccionado, leídas de su slot (I-43, gate 8.6C). Antes esto
+        /// leía <c>FondoBox</c>/<c>CabeceraFondoBox</c>, que es de donde se filtraba el texto pendiente al slot y al
+        /// diseño (S7). Sin slot todavía —el constructor, antes del primer snapshot— vale el valor por defecto.
+        /// </summary>
+        private (double Depth, double CabeceraOverride) CommittedDepthCabecera()
         {
-            var previous = selectedFondo >= 0 && selectedFondo < fondoMatrices.Count ? fondoMatrices[selectedFondo] : null;
-
-            double depth;
-            if (UiSupport.TryNum(FondoBox.Text, out var d) && d > 0.0) depth = d;
-            else
-            {
-                depth = previous != null && previous.Depth > 0.0 ? previous.Depth : SelectiveRackDefaults.DefaultPalletDepth;
-                if (!string.IsNullOrWhiteSpace(FondoBox.Text)) pendingWarning = "Fondo de tarima inválido; se conserva el anterior.";
-            }
-
-            double cabecera;
-            if (string.IsNullOrWhiteSpace(CabeceraFondoBox.Text)) cabecera = 0.0; // blank = auto (rule tarima − 6)
-            else if (UiSupport.TryNum(CabeceraFondoBox.Text, out var co) && co > 0.0) cabecera = co;
-            else
-            {
-                cabecera = previous?.CabeceraOverride ?? 0.0;
-                pendingWarning = "Fondo de cabecera inválido (vacío = auto); se conserva el anterior.";
-            }
-
-            return (depth, cabecera);
+            var slot = selectedFondo >= 0 && selectedFondo < fondoMatrices.Count ? fondoMatrices[selectedFondo] : null;
+            var depth = slot != null && slot.Depth > 0.0 ? slot.Depth : SelectiveRackDefaults.DefaultPalletDepth;
+            return (depth, slot?.CabeceraOverride ?? 0.0);
         }
 
         // ---- Per-fondo matrices (doble profundidad: each fondo edits its own levels) ----
@@ -321,7 +320,7 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>Snapshot the live working matrix (the selected fondo) into a saveable copy, reading its fondo (depth)/cabecera boxes.</summary>
         private FondoMatrix SnapshotWorking()
         {
-            var (depth, cabecera) = ReadWorkingDepthCabecera();
+            var (depth, cabecera) = CommittedDepthCabecera();
             return state.SnapshotWorking(depth, cabecera);
         }
 
@@ -329,14 +328,22 @@ namespace RackCad.UI.Systems.Selective
         private void RestoreWorkingFrom(FondoMatrix snap)
         {
             state.RestoreWorkingFrom(snap);
-            FondoBox.Text = (snap.Depth > 0.0 ? snap.Depth : SelectiveRackDefaults.DefaultPalletDepth).ToString("0.###", CultureInfo.InvariantCulture);
-            CabeceraFondoBox.Text = snap.CabeceraOverride > 0.0 ? snap.CabeceraOverride.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+            ShowDepthBoxes();
         }
 
-        /// <summary>Commit the live working matrix back into its fondo slot (reading its boxes) before switching/building/resizing.</summary>
+        /// <summary>
+        /// Commit the live working MATRIX back into its fondo slot, conservando las profundidades COMPROMETIDAS de ese
+        /// slot (I-43, gate 8.6C).
+        /// <para>
+        /// Sigue guardando exactamente lo mismo que antes —<c>Bays</c>, <c>FloorBeams</c>, <c>BayHeights</c>,
+        /// <c>FloorBeamRiseOverrides</c> y <c>BaySegments</c>—; lo único que cambia es de dónde salen <c>Depth</c> y
+        /// <c>CabeceraOverride</c>: del propio slot, no de las cajas. Así una matriz se puede comprometer sin que el
+        /// texto pendiente de la caja se cuele en el fondo visible aunque no sea destino.
+        /// </para>
+        /// </summary>
         private void SaveWorkingToSelected()
         {
-            var (depth, cabecera) = ReadWorkingDepthCabecera();
+            var (depth, cabecera) = CommittedDepthCabecera();
             state.SaveWorkingToSelected(depth, cabecera);
         }
 
@@ -350,17 +357,225 @@ namespace RackCad.UI.Systems.Selective
         /// commits it with the depths already stored (I-43, gate 7).
         /// </para>
         /// </summary>
-        private void SaveWorkingMatrixKeepingDepths()
+        private void SaveWorkingMatrixKeepingDepths() => SaveWorkingToSelected();
+
+        // ---- I-43, gate 8.6C: frontera pendiente / comprometido -------------------------------------------
+
+        /// <summary>Texto comprometido de cada caja: lo que el estado dice AHORA, nunca lo tecleado.</summary>
+        private string CommittedFondosText() => Math.Max(1, fondoMatrices.Count).ToString(CultureInfo.InvariantCulture);
+
+        private string CommittedBayCountText() => bays.Count.ToString(CultureInfo.InvariantCulture);
+
+        private string CommittedDepthText()
+            => CommittedDepthCabecera().Depth.ToString("0.###", CultureInfo.InvariantCulture);
+
+        private string CommittedCabeceraText()
         {
-            var slot = selectedFondo >= 0 && selectedFondo < fondoMatrices.Count ? fondoMatrices[selectedFondo] : null;
-            if (slot == null)
+            var over = CommittedDepthCabecera().CabeceraOverride;
+            return over > 0.0 ? over.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+        }
+
+        /// <summary>Re-mostrar las dos cajas de profundidad desde el slot del fondo VISIBLE.</summary>
+        private void ShowDepthBoxes()
+        {
+            pendingDepth?.Show(CommittedDepthText());
+            pendingCabecera?.Show(CommittedCabeceraText());
+        }
+
+        /// <summary>
+        /// Ata cada caja a su parseo (fase 1) y a su escritura productiva (fase 2). El orden del arreglo ES el orden
+        /// contractual del commit (INV-17): la estructura define la topología contra la que se resuelven los valores,
+        /// y <c>TargetFondos</c> se re-resuelve entre medias.
+        /// </summary>
+        private void BuildPendingEditors()
+        {
+            pendingFondos = new PendingTextField<int>(
+                FondosBox,
+                "Número de fondos",
+                text => UiSupport.TryNum(text, out var f) && f >= 1.0
+                    ? PendingParse<int>.Valid(Math.Min(SelectiveRackDefaults.MaxDepthCount, (int)Math.Round(f)))
+                    : PendingParse<int>.Invalid("Número de fondos inválido (mínimo 1)."),
+                ApplyFondoCount,
+                CommittedFondosText);
+
+            pendingBayCount = new PendingTextField<int>(
+                BayCountBox,
+                "Frentes",
+                text => TryInt(text, out var n) && n >= 1
+                    ? PendingParse<int>.Valid(n)
+                    : PendingParse<int>.Invalid("Cantidad de frentes inválida (mínimo 1)."),
+                ApplyBayCountToTargets,
+                CommittedBayCountText);
+
+            pendingDepth = new PendingTextField<double>(
+                FondoBox,
+                "Fondo de tarima",
+                text => UiSupport.TryNum(text, out var d) && d > 0.0
+                    ? PendingParse<double>.Valid(d)
+                    : PendingParse<double>.Invalid("Fondo de tarima inválido."),
+                ApplyPalletDepthToTargets,
+                CommittedDepthText);
+
+            // Vacío es un valor legítimo: "derivado de la tarima". Por eso el tipo es anulable y no un double con
+            // centinela: un RESTORE explícito tiene que poder distinguirse de "no hay nada que aplicar".
+            pendingCabecera = new PendingTextField<double?>(
+                CabeceraFondoBox,
+                "Fondo de cabecera",
+                text =>
+                {
+                    if (string.IsNullOrWhiteSpace(text)) return PendingParse<double?>.Valid(null);
+                    return UiSupport.TryNum(text, out var over) && over > 0.0
+                        ? PendingParse<double?>.Valid(over)
+                        : PendingParse<double?>.Invalid("Fondo de cabecera inválido (vacío = derivado de la tarima).");
+                },
+                ApplyCabeceraDepthToTargets,
+                CommittedCabeceraText);
+
+            pendingAll = new IPendingTextField[] { pendingFondos, pendingBayCount, pendingDepth, pendingCabecera };
+        }
+
+        /// <summary>Fase 2 de "Número de fondos": crece o encoge la lista de slots y re-resuelve los destinos.</summary>
+        private void ApplyFondoCount(int n)
+        {
+            SaveWorkingToSelected();
+            if (fondoMatrices.Count == 0) fondoMatrices.Add(SnapshotWorking());
+
+            while (fondoMatrices.Count < n) fondoMatrices.Add(CloneAligned(fondoMatrices[0], fondoMatrices[0].Bays.Count, fondoMatrices[0]));
+            while (fondoMatrices.Count > n) fondoMatrices.RemoveAt(fondoMatrices.Count - 1);
+            if (selectedFondo >= fondoMatrices.Count) selectedFondo = 0;
+
+            // RebuildFondoSelector re-resuelve TargetFondos (SyncTargetFondos): "Todos" se expande al fondo nuevo,
+            // "Explicit" poda y "Actual" sigue al visible. Los valores pendientes que se apliquen después ven ya ese
+            // conjunto final, que es justo lo que exige INV-17.
+            RebuildFondoSelector();
+            RebuildSeparatorFields(fondoMatrices.Count);
+            structuralCommit = true;
+        }
+
+        /// <summary>Fase 2 de "Frentes": redimensiona cada fondo destino por separado.</summary>
+        private void ApplyBayCountToTargets(int bayCount)
+        {
+            SaveWorkingToSelected();
+            var resize = state.ApplyBayCountToTargets(bayCount);
+            state.MaterializeFloorBeamRises(legacyFloorBeamRise); // frentes que acaban de aparecer reciben un valor directo
+            if (state.TargetFondos.Count > 1 || resize.OmittedFondos.Count > 0)
             {
-                SaveWorkingToSelected();
+                pendingWarning = resize.Describe("el número de frentes", restore: false);
+            }
+
+            structuralCommit = true;
+        }
+
+        /// <summary>Fase 2 de "Fondo de tarima".</summary>
+        private void ApplyPalletDepthToTargets(double depth)
+        {
+            SaveWorkingToSelected();
+            var result = state.ApplyPalletDepthToTargets(depth);
+            if (state.TargetFondos.Count > 1) pendingWarning = result.Describe("el fondo de tarima", restore: false);
+        }
+
+        /// <summary>Fase 2 de "Fondo de cabecera"; <c>null</c> es el RESTORE al valor derivado.</summary>
+        private void ApplyCabeceraDepthToTargets(double? over)
+        {
+            SaveWorkingToSelected();
+            var result = state.ApplyCabeceraDepthToTargets(over);
+            if (state.TargetFondos.Count > 1) pendingWarning = result.Describe("el fondo de cabecera", restore: !over.HasValue);
+        }
+
+        /// <summary>Marca que un apply cambió la TOPOLOGÍA, para reconciliar la UI una sola vez al cerrar el commit.</summary>
+        private bool structuralCommit;
+
+        /// <summary>
+        /// Compromete los campos pendientes indicados, en DOS FASES y de forma atómica (INV-16).
+        /// <para>
+        /// Fase 1: se valida cada campo sucio en el orden recibido, sin mutar nada. Si alguno es inválido la operación
+        /// se ABORTA: no se ejecuta ningún apply, no cambia ningún slot, ninguna matriz, <c>FondoMatrices.Count</c> ni
+        /// <c>TargetFondos</c>, y el texto inválido se queda en su caja (una frontera no auto-repara). Fase 2: solo si
+        /// todos son válidos, dentro de un ÚNICO <c>DeferRecompute</c>, se aplican en orden, se reconcilia la UI si la
+        /// topología cambió y cada caja vuelve a mostrar el estado comprometido — un solo recompute (INV-07).
+        /// </para>
+        /// <para>
+        /// La fase 2 no puede fallar por construcción: los apply son operaciones de estado sobre valores ya validados
+        /// en sintaxis y rango, y las que pueden no alcanzar a un fondo (un destino sin ese poste) lo OMITEN y lo
+        /// reportan en vez de reventar. La atomicidad se consigue validando antes, no revirtiendo después.
+        /// </para>
+        /// </summary>
+        private bool CommitPendingEditors(params IPendingTextField[] fields)
+        {
+            var targets = fields == null || fields.Length == 0 ? pendingAll : fields;
+            if (targets == null) return true;
+
+            // --- fase 1: preparar TODO sin mutar nada ---
+            var invalid = new List<string>();
+            var dirty = false;
+            foreach (var field in targets)
+            {
+                if (field == null) continue;
+                if (field.IsDirty) dirty = true;
+                if (!field.TryStage(out var error)) invalid.Add(error);
+            }
+
+            if (invalid.Count > 0)
+            {
+                SetStatus(string.Join(" ", invalid.Distinct()), true);
+                return false;
+            }
+
+            if (!dirty) return true; // idempotente: tras un commit por LostFocus no queda nada que hacer
+
+            // --- fase 2: aplicar todo, un solo recompute ---
+            structuralCommit = false;
+            using (DeferRecompute())
+            {
+                foreach (var field in targets) field?.ApplyStaged();
+
+                if (structuralCommit)
+                {
+                    // La matriz VIVA acaba de cambiar de forma; su slot todavia tiene la anterior. Comprometerla
+                    // antes de recargar es obligatorio: LoadFondo lee del slot y, sin esto, revertiria en silencio
+                    // el redimensionado del fondo visible.
+                    SaveWorkingToSelected();
+                    LoadFondo(selectedFondo);
+                    LoadCellEditor();
+                    RenderMatrix();
+                    RefreshPostSelect();
+                    UpdateFrenteEditingEnabled();
+                }
+
+                foreach (var field in targets) field?.ShowCommitted();
+                ShowDepthBoxes(); // las dos cajas describen el fondo VISIBLE, aunque la edición fuera a otros
+                Recompute();
+            }
+
+            return true;
+        }
+
+        /// <summary>Compromete los cuatro campos. Es lo que hace toda frontera transaccional antes de consumir estado.</summary>
+        private bool CommitPendingEditors() => CommitPendingEditors(pendingAll);
+
+        /// <summary>
+        /// El gesto propio de un campo ESTRUCTURAL (<c>Frentes</c>, <c>Número de fondos</c>): su reconciliación hace
+        /// <c>Show</c> sobre los hermanos, así que estos tienen que estar resueltos.
+        /// <para>
+        /// Si un hermano está sucio e inválido, se ABORTA nombrándolo (C5): descartarlo con un <c>Show</c> sería
+        /// perder en silencio lo que el usuario tecleó. Si el propio campo es inválido y NINGÚN hermano está sucio, se
+        /// conserva la auto-reparación de siempre — es un descarte explícito de un texto que no significa nada.
+        /// </para>
+        /// </summary>
+        private void CommitStructuralGesture(IPendingTextField own)
+        {
+            var siblingDirty = pendingAll.Any(f => !ReferenceEquals(f, own) && f.IsDirty);
+            if (!siblingDirty && own.IsDirty && !own.TryStage(out var ownError))
+            {
+                pendingWarning = ownError;
+                own.ResetToCommitted();
+                Recompute();
                 return;
             }
 
-            state.SaveWorkingToSelected(slot.Depth, slot.CabeceraOverride);
+            CommitPendingEditors();
         }
+
 
         /// <summary>Re-show the two fondo boxes from the VISIBLE fondo's real slot. The boxes always describe the fondo
         /// on screen, whatever fondos an edit actually landed on; this only touches the two texts, never the matrix.</summary>
@@ -369,8 +584,7 @@ namespace RackCad.UI.Systems.Selective
             var slot = selectedFondo >= 0 && selectedFondo < fondoMatrices.Count ? fondoMatrices[selectedFondo] : null;
             if (slot == null) return;
 
-            FondoBox.Text = (slot.Depth > 0.0 ? slot.Depth : SelectiveRackDefaults.DefaultPalletDepth).ToString("0.###", CultureInfo.InvariantCulture);
-            CabeceraFondoBox.Text = slot.CabeceraOverride > 0.0 ? slot.CabeceraOverride.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+            ShowDepthBoxes();
         }
 
         /// <summary>A copy of <paramref name="source"/> resized to <paramref name="bayCount"/> frentes (delegates to the state:
@@ -475,30 +689,13 @@ namespace RackCad.UI.Systems.Selective
         }
 
         /// <summary>Read "Número de fondos", resize the fondo list (new fondos clone fondo 0), rebuild the combo + separators.</summary>
-        private void ApplyFondoCountFromBox()
+        /// <summary>Gesto propio de «Número de fondos»: <c>LoadFondo</c> hace <c>Show</c> de las otras tres cajas,
+        /// así que el commit las incluye (C4).</summary>
+        private void Fondos_LostFocus(object sender, RoutedEventArgs e)
         {
-            // Commit the working matrix to its slot FIRST — the callers reload from the slots afterwards
-            // (LoadFondo), so bailing out before this save would silently revert uncommitted matrix edits.
-            SaveWorkingToSelected();
-            if (fondoMatrices.Count == 0) fondoMatrices.Add(SnapshotWorking());
-
-            // An invalid/blank count must NOT shrink the list — the old fallback to 1 silently DELETED the extra
-            // fondos' level matrices before any validation could run. Keep the current count and say why.
-            if (!UiSupport.TryNum(FondosBox.Text, out var f) || f < 1.0)
-            {
-                pendingWarning = "Número de fondos inválido (mínimo 1); se conserva el actual.";
-                FondosBox.Text = Math.Max(1, fondoMatrices.Count).ToString(CultureInfo.InvariantCulture);
-                return;
-            }
-
-            var n = Math.Min(SelectiveRackDefaults.MaxDepthCount, (int)Math.Round(f));
-
-            while (fondoMatrices.Count < n) fondoMatrices.Add(CloneAligned(fondoMatrices[0], fondoMatrices[0].Bays.Count, fondoMatrices[0]));
-            while (fondoMatrices.Count > n) fondoMatrices.RemoveAt(fondoMatrices.Count - 1);
-            if (selectedFondo >= fondoMatrices.Count) selectedFondo = 0;
-
-            RebuildFondoSelector();
-            RebuildSeparatorFields(n);
+            if (catalog == null || !initialized) return; // ignore the initial value set during InitializeComponent
+            if (!TryCommitEditedCell(out _)) return;      // don't discard typed cell input on a fondo-count change
+            CommitStructuralGesture(pendingFondos);
         }
 
         /// <summary>Frentes (bay count) are edited PER FONDO now: each line can have its own count (a corner layout).
@@ -516,6 +713,16 @@ namespace RackCad.UI.Systems.Selective
             if (switchingFondo || catalog == null) return;
             var target = FondoSelectorBox.SelectedIndex;
             if (target < 0 || target >= fondoMatrices.Count || target == selectedFondo) return;
+
+            // Los cuatro pendientes se comprometen ANTES de LoadFondo, que hace Show sobre sus cajas (C4). Un
+            // pendiente inválido revierte el combo, igual que ya hace la celda inválida más abajo.
+            if (!CommitPendingEditors())
+            {
+                switchingFondo = true;
+                FondoSelectorBox.SelectedIndex = selectedFondo;
+                switchingFondo = false;
+                return;
+            }
 
             // Commit what's typed in the cell editor first (like SelectCell) — don't silently discard it.
             if (!TryCommitEditedCell(out _))
@@ -535,7 +742,7 @@ namespace RackCad.UI.Systems.Selective
                 LoadFondo(selectedFondo);
                 RefreshTargetFondos();
                 UpdateFrenteEditingEnabled();
-                BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
+                pendingBayCount.Show(CommittedBayCountText());
                 LoadCellEditor();
                 RenderMatrix();
                 UpdatePostStatus(); // "Personalizada/Por defecto" is about the VISIBLE fondo (I-43)
@@ -551,74 +758,25 @@ namespace RackCad.UI.Systems.Selective
         /// cabeceras of each touched fondo adopt their new effective depth immediately, through the gate-4 authority.
         /// </para>
         /// </summary>
+        /// <summary>
+        /// Gesto propio de «Fondo de tarima» / «Fondo de cabecera»: comprometen SOLO su campo (no muestran hermanos).
+        /// Un texto inválido se queda en la caja con el error en status, como siempre (C5).
+        /// </summary>
         private void FondoDepth_LostFocus(object sender, RoutedEventArgs e)
         {
             if (catalog == null || !initialized) return; // ignore the initial values set during InitializeComponent
-
-            using (DeferRecompute())
-            {
-                // Commit the live MATRIX keeping the slot's depths: the typed text is an edit aimed at TargetFondos,
-                // not a statement about the fondo on screen (which may not even be a target).
-                SaveWorkingMatrixKeepingDepths();
-
-                var isCabecera = ReferenceEquals(sender, CabeceraFondoBox);
-                SelectiveFondoApplyResult result;
-                if (isCabecera)
-                {
-                    var text = CabeceraFondoBox.Text;
-                    double? over = null;
-                    if (!string.IsNullOrWhiteSpace(text))
-                    {
-                        if (!UiSupport.TryNum(text, out var typed) || typed <= 0.0)
-                        {
-                            SetStatus("Fondo de cabecera inválido (vacío = derivado de la tarima).", true);
-                            return;
-                        }
-
-                        over = typed;
-                    }
-
-                    result = state.ApplyCabeceraDepthToTargets(over);
-                    if (state.TargetFondos.Count > 1) pendingWarning = result.Describe("el fondo de cabecera", restore: !over.HasValue);
-                }
-                else
-                {
-                    if (!UiSupport.TryNum(FondoBox.Text, out var depth) || depth <= 0.0)
-                    {
-                        SetStatus("Fondo de tarima inválido.", true);
-                        return;
-                    }
-
-                    result = state.ApplyPalletDepthToTargets(depth);
-                    if (state.TargetFondos.Count > 1) pendingWarning = result.Describe("el fondo de tarima", restore: false);
-                }
-
-                // The boxes describe the VISIBLE fondo, so they go back to ITS values — otherwise the next commit (or
-                // BuildDesign, which reads them again) would re-introduce the typed value into a fondo that was never
-                // a target.
-                SyncFondoDepthBoxes();
-                Recompute();
-            }
+            CommitPendingEditors(ReferenceEquals(sender, CabeceraFondoBox) ? pendingCabecera : (IPendingTextField)pendingDepth);
         }
 
-        private void Fondos_LostFocus(object sender, RoutedEventArgs e)
+        /// <summary>Enter compromete igual que salir del campo: O-43-02 lo exige y antes no hacía nada.</summary>
+        private void FondoDepth_KeyDown(object sender, KeyEventArgs e)
         {
-            if (catalog == null) return; // ignore the initial value set during InitializeComponent
-            if (!TryCommitEditedCell(out _)) return; // don't discard typed cell input on a fondo-count change
-            using (DeferRecompute())
-            {
-                ApplyFondoCountFromBox();  // may reset selectedFondo when the count shrinks
-                LoadFondo(selectedFondo);  // always reload the working matrix for the (possibly new) selection
-                // Resync the frente-count box + post selector to the reloaded fondo — a shrink can switch fondos, and a
-                // stale BayCountBox would make the next 'Recalcular' resize the wrong fondo (matches the other handlers).
-                BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
-                UpdateFrenteEditingEnabled();
-                LoadCellEditor();
-                RenderMatrix();
-                RefreshPostSelect();
-                Recompute();
-            }
+            if (e.Key != Key.Enter) return;
+            FondoDepth_LostFocus(sender, e);
+            e.Handled = true;
         }
+
+
 
         /// <summary>Grow/shrink the number of bays (delegates to the state: a new bay clones the last — cells + floor flag + height + tramos).</summary>
         private void ResizeBays(int bayCount) => state.ResizeBays(bayCount);
@@ -721,6 +879,7 @@ namespace RackCad.UI.Systems.Selective
         private void EditTramos(int bay)
         {
             if (bay < 0 || bay >= baySegments.Count) return;
+            if (!CommitPendingEditors()) return; // frontera: fullWidth y la proyección leen estado comprometido (C4)
 
             // Best-effort full bay width (shared across fondos) so the dialog can show the calculated last tramo + warn.
             var fullWidth = lastSystem != null && bay < lastSystem.Bays.Count ? lastSystem.Bays[bay].BeamLength : 0.0;
@@ -894,6 +1053,7 @@ namespace RackCad.UI.Systems.Selective
         {
             var i = PostSelectBox.SelectedIndex;
             if (i < 0 || i >= postCabeceras.Count) return;
+            if (!CommitPendingEditors()) return; // frontera: la semilla lee slots (C4)
 
             // Seed from the fondo the user is LOOKING AT (I-43): its custom cabecera at this post if it has one, else
             // the standard cabecera resolved with THAT fondo's height and depth. Seeding from fondo 0 would open a
@@ -1068,11 +1228,11 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>Open the safety-accessories dialog (catalog elements × quantity); store the selection for the BOM.</summary>
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
+            if (!CommitPendingEditors()) return; // frontera: siempre consume BuildSystem (C4)
+
             // The safety grid needs the resolved matrix dimensions and the fondo count so the tope picker can offer the
             // real fondos (doble/triple profundidad).
-            var depthCount = UiSupport.TryNum(FondosBox.Text, out var fondosNum) && fondosNum >= 1.0
-                ? Math.Min(SelectiveRackDefaults.MaxDepthCount, Math.Max(1, (int)Math.Round(fondosNum)))
-                : 1;
+            var depthCount = Math.Max(1, fondoMatrices.Count); // comprometido, no el texto de la caja (INV-13)
             // The parrilla grid shows a live deck count per cell, which needs the RESOLVED claros (and the medio-frente
             // tramos). Resolve once here; if the design doesn't resolve yet (BuildSystem returns null), the dialog still
             // configures — it just omits the counts.
@@ -1121,6 +1281,7 @@ namespace RackCad.UI.Systems.Selective
         {
             var i = PostSelectBox.SelectedIndex;
             if (i < 0 || i >= postCabeceras.Count) return;
+            if (!CommitPendingEditors()) return; // frontera: comando explícito de escritura (C4)
 
             using (DeferRecompute())
             {
@@ -1376,48 +1537,19 @@ namespace RackCad.UI.Systems.Selective
         /// recompute. Shared by the explicit "Recalcular tramo" button and the live BayCountBox commit (LostFocus/Enter)
         /// so both paths behave identically. Frentes are per-fondo (a corner layout); the resolver aligns overlapping
         /// widths to the longest fondo.</summary>
+        /// <summary>
+        /// Gesto propio de «Frentes» y acción de «Recalcular tramo».
+        /// <para>
+        /// Sin edición pendiente NO redimensiona nada: es la diferencia que exige O-43-02 entre tabular por el campo y
+        /// editarlo. Comprometer aquí los cuatro campos es obligatorio porque la reconciliación posterior hace
+        /// <c>Show</c> sobre los hermanos.
+        /// </para>
+        /// </summary>
         private void ApplyBayCount()
         {
             if (!initialized) return;
-
-            if (!TryInt(BayCountBox.Text, out var bayCount) || bayCount < 1)
-            {
-                // Keep the current count (don't wipe the matrix on a typo) and say why, latched so Recompute shows it.
-                pendingWarning = "Cantidad de frentes inválida (mínimo 1); se conserva la actual.";
-                BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
-                Recompute();
-                return;
-            }
-
-            var singleCurrentTarget = state.TargetFondos.Count == 1 && state.TargetFondos.Fondos[0] == selectedFondo;
-            if (bayCount == bays.Count && singleCurrentTarget && !TryCellEditorDiffersFromSelected())
-            {
-                return; // no structural change and nothing typed pending — avoid a redundant rebuild on tab-out
-            }
-
             if (!TryCommitEditedCell(out _)) return; // don't discard typed cell input on a frente-count change
-
-            using (DeferRecompute()) // the rebuild can fire a height box LostFocus → coalesce its Recompute with ours
-            {
-                // "Frentes" is TOPOLOGY and it is per fondo, so it obeys the target fondos like everything else
-                // (I-43, gate 8A). The state resizes each target independently, trims every parallel list and the
-                // cabeceras of posts that stopped existing, and never creates a fondo.
-                SaveWorkingToSelected();
-                var resize = state.ApplyBayCountToTargets(bayCount);
-                state.MaterializeFloorBeamRises(legacyFloorBeamRise); // frentes that just appeared get a direct value
-                if (state.TargetFondos.Count > 1 || resize.OmittedFondos.Count > 0)
-                {
-                    pendingWarning = resize.Describe("el número de frentes", restore: false);
-                }
-
-                ApplyFondoCountFromBox();      // apply "Número de fondos" (rebuild combo + separators; may reset selectedFondo)
-                LoadFondo(selectedFondo);      // reload the working matrix for the (possibly new) selected fondo
-                BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
-                LoadCellEditor();
-                RenderMatrix();
-                RefreshPostSelect();
-                Recompute();
-            }
+            CommitStructuralGesture(pendingBayCount);
         }
 
         /// <summary>The global tramo scalars (poste peralte, tolerancia, holgura, elevación) live-apply on leave-field
@@ -1529,6 +1661,8 @@ namespace RackCad.UI.Systems.Selective
         /// </summary>
         private void ApplyFrontOperation(string logName, string describeAs, Func<SelectiveFrontApplyScope, SelectiveFrontApplyResult> apply)
         {
+            if (!CommitPendingEditors()) return; // frontera: comando explícito de escritura (C4)
+
             var scope = FrontScope();
             using (DeferRecompute())
             {
@@ -1734,6 +1868,10 @@ namespace RackCad.UI.Systems.Selective
 
         private void ShowBom_Click(object sender, RoutedEventArgs e)
         {
+            // El commit abre y CIERRA su propio Defer, así que lastSystem ya está recalculado cuando se lee aquí
+            // abajo; con el commit diferido el BOM describiría el estado anterior (C4).
+            if (!CommitPendingEditors()) return;
+
             if (lastInstances == null || lastSystem == null)
             {
                 SetStatus("Genera primero la geometría (revisa tarima/niveles).", true);
@@ -1752,6 +1890,7 @@ namespace RackCad.UI.Systems.Selective
         /// </summary>
         private void ApplyScope(Scope scope)
         {
+            if (!CommitPendingEditors()) return; // frontera: comando explícito de escritura (C4)
             if (!ReadCellEditor(out var values, out var error))
             {
                 SetStatus(error, true);
@@ -1842,6 +1981,7 @@ namespace RackCad.UI.Systems.Selective
             // The cell editor's "Aplicar a:" is manual (it carries a scope choice), so the user can type new cell
             // values and hit Actualizar/Insertar without applying them. Ask before drawing the OLD values instead of
             // silently losing the edit.
+            if (!CommitPendingEditors()) return; // frontera: lo pendiente se compromete ANTES de construir (C4)
             if (!ConfirmPendingCellEdits()) return;
 
             var system = BuildSystem(out var design, out var error);
@@ -2038,14 +2178,13 @@ namespace RackCad.UI.Systems.Selective
             if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste inválido."; return null; }
             if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal inválida."; return null; }
             if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical inválida."; return null; }
-            if (!UiSupport.TryNum(FondoBox.Text, out var fondo) || fondo <= 0.0) { error = "Fondo de tarima inválido."; return null; }
-            if (!UiSupport.TryNum(FondosBox.Text, out var fondosNum) || fondosNum < 1.0) { error = "Número de fondos inválido (mínimo 1)."; return null; }
-            var depthCount = Math.Min(SelectiveRackDefaults.MaxDepthCount, Math.Max(1, (int)Math.Round(fondosNum)));
-
-            // The working fondo's depth/cabecera come from their boxes (with the keep-previous fallback); the state commits
-            // the live matrix into its fondo slot before reading fondo 0. Safety is filtered + deep-copied here so its
-            // ownership stays in the editor (I-22).
-            var (workingDepth, workingCabecera) = ReadWorkingDepthCabecera();
+            // INV-13: NADA de esto sale de una caja de texto. Las cuatro son editores de un valor pendiente; la
+            // autoridad son los slots y la lista de fondos, así que un texto tecleado y no comprometido no puede
+            // llegar al documento ni redimensionar el rack (I-43, gate 8.6C). Safety se filtra + copia aquí para que
+            // su propiedad siga siendo del editor (I-22).
+            var depthCount = Math.Max(1, fondoMatrices.Count);
+            var (workingDepth, workingCabecera) = CommittedDepthCabecera();
+            var fondo = workingDepth;
             var inputs = new SelectiveDesignInputs
             {
                 PostId = postId,
@@ -2123,8 +2262,11 @@ namespace RackCad.UI.Systems.Selective
             ClearanceBox.Text = design.VerticalClearance.ToString("0.###", CultureInfo.InvariantCulture);
             // 0 is a legitimate rise ("no elevation at all"), so only a NEGATIVE value falls back to the default.
             legacyFloorBeamRise = design.FloorBeamRise >= 0.0 ? design.FloorBeamRise : SelectiveRackDefaults.DefaultFloorBeamRise;
-            FondoBox.Text = (design.PalletDepth > 0.0 ? design.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth).ToString("0.###", CultureInfo.InvariantCulture);
-            FondosBox.Text = Math.Max(1, design.DepthCount).ToString(CultureInfo.InvariantCulture);
+            // Una carga REEMPLAZA todo el estado: lo que hubiera pendiente se descarta explícitamente (Reset), que
+            // es distinto de Show — aquí no hay nada que preservar (C4, fila "Carga").
+            pendingDepth.Reset((design.PalletDepth > 0.0 ? design.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth).ToString("0.###", CultureInfo.InvariantCulture));
+            pendingFondos.Reset(Math.Max(1, design.DepthCount).ToString(CultureInfo.InvariantCulture));
+            pendingCabecera.Reset(string.Empty);
 
             // Rebuild every fondo's matrix: fondo 0 from Bays, the rest from ExtraFondoBays (or a clone of fondo 0).
             fondoMatrices.Clear();
@@ -2220,7 +2362,7 @@ namespace RackCad.UI.Systems.Selective
 
             UpdateSafetyButton();
 
-            BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
+            pendingBayCount.Reset(CommittedBayCountText());
             selBay = 0;
             selLevel = 0;
             ClampSelection();
@@ -2266,6 +2408,7 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>Save this selective design to the on-disk design library (a reusable <c>.rackcad.json</c>).</summary>
         private void SaveToLibrary_Click(object sender, RoutedEventArgs e)
         {
+            if (!CommitPendingEditors()) return; // frontera: persiste el diseño (C4)
             var design = BuildDesign(out var error);
             if (design == null)
             {

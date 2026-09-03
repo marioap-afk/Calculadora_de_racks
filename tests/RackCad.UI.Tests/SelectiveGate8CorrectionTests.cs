@@ -453,18 +453,28 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void TheSeedUsesTheDepthJustTypedEvenBeforeItIsCommittedElsewhere()
+        public void TheSeedUsesTheDepthOnceItIsCommitted_NotTheTextStillBeingTyped()
         {
-            // CabeceraDepthOfFondo reads the fondo's SLOT, so the seed must commit the working matrix first.
-            var seed = StaTestRunner.Run(() =>
+            // CAMBIO DE INTENCIÓN (I-43, gate 8.6C). Este test afirmaba que la semilla usaba el texto TECLEADO aunque
+            // nadie lo hubiera comprometido, que es justo lo que ADR-0032 prohíbe: las cajas son editores de un valor
+            // pendiente y la autoridad es el slot. Ahora comprueba las dos mitades del contrato — sin commit la
+            // semilla sigue en el valor comprometido; tras salir del campo, adopta el nuevo.
+            var (pending, committed) = StaTestRunner.Run(() =>
             {
                 var window = Open(2, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 SelectiveTargetsTestSupport.SetTargets(window, 1);
-                ((TextBox)window.FindName("FondoBox")).Text = "72"; // typed, never lost focus
-                return window.CustomizeSeedDepthForTest();
+
+                var box = (TextBox)window.FindName("FondoBox");
+                box.Text = "72"; // tecleado, sin salir del campo
+                var beforeCommit = window.CustomizeSeedDepthForTest();
+
+                box.Text = "72";
+                box.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, box));
+                return (beforeCommit, window.CustomizeSeedDepthForTest());
             });
 
-            Assert.Equal(66.0, seed);
+            Assert.Equal(42.0, pending);   // 48 − 6: el valor COMPROMETIDO, no el tecleado
+            Assert.Equal(66.0, committed); // 72 − 6, una vez comprometido
         }
 
         [Fact]

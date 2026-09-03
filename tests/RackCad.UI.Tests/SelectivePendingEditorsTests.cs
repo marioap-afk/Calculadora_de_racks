@@ -196,7 +196,11 @@ namespace RackCad.UI.Tests
                 FondoSelector(window).SelectedIndex = 0;
                 SelectiveTargetsTestSupport.SetAllTargets(window);
 
-                TypeAndLeave(window, "BayCountBox", "3"); // el mismo 3 que ya muestra: es una edición deliberada
+                // Retipear DE VERDAD: el usuario borra y vuelve a escribir, así que el texto pasa por un valor
+                // intermedio. Asignar la misma cadena de golpe no dispara TextChanged en WPF y no sería el gesto
+                // humano que O-43-02 describe.
+                Type(window, "BayCountBox", string.Empty);
+                TypeAndLeave(window, "BayCountBox", "3"); // el mismo 3 que ya mostraba: es una edición deliberada
                 return Counts(window);
             });
 
@@ -282,7 +286,7 @@ namespace RackCad.UI.Tests
 
                 var snapshot = Depths(window);
                 Type(window, "FondoBox", "60");                 // tecleado, sin salir del campo
-                Box(window, "CellFrenteBox").Text = "55";        // y una edición de celda pendiente
+                Box(window, "FrenteBox").Text = "55";            // y una edición de celda pendiente
                 window.EditorState.SelectCell(1, 0, extend: false); // clic de navegación: recompute incidental
                 var navigated = Depths(window);
 

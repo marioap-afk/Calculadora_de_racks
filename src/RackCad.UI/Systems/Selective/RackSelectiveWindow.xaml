@@ -140,10 +140,10 @@
                         </StackPanel>
                     </Grid>
                     <TextBlock Text="Fondo de tarima (in)" Style="{StaticResource FieldLabel}" />
-                    <TextBox x:Name="FondoBox" Style="{StaticResource FieldBox}" Text="48" LostFocus="FondoDepth_LostFocus"
+                    <TextBox x:Name="FondoBox" Style="{StaticResource FieldBox}" Text="48" LostFocus="FondoDepth_LostFocus" KeyDown="FondoDepth_KeyDown"
                              ToolTip="Profundidad de la TARIMA. Es una propiedad del FONDO: se aplica a los «Fondos destino» elegidos abajo. La cabecera se dibuja 6&quot; menos (regla: cabecera = tarima − 6&quot;)." />
                     <TextBlock Text="Fondo de cabecera (in, opcional)" Style="{StaticResource FieldLabel}" />
-                    <TextBox x:Name="CabeceraFondoBox" Style="{StaticResource FieldBox}" Text="" LostFocus="FondoDepth_LostFocus"
+                    <TextBox x:Name="CabeceraFondoBox" Style="{StaticResource FieldBox}" Text="" LostFocus="FondoDepth_LostFocus" KeyDown="FondoDepth_KeyDown"
                              ToolTip="Fondo de la CABECERA (marco). Propiedad del FONDO: se aplica a los «Fondos destino». Vacío = calculado de la tarima (tarima − 6&quot;)." />
 
                     <TextBlock Text="Número de fondos" Style="{StaticResource FieldLabel}" />

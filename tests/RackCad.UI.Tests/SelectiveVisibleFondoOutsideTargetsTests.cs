@@ -132,6 +132,10 @@ namespace RackCad.UI.Tests
                 CommitBox(window, "CabeceraFondoBox", "37");
                 var set = window.EditorState.FondoMatrices.Select(m => m.CabeceraOverride).ToArray();
 
+                // Tras el commit la caja vuelve a describir el fondo VISIBLE, que no es destino y no tiene override:
+                // ya está vacía. Restablecer los destinos exige entonces una edición REAL — escribir algo y borrarlo —
+                // porque una caja limpia no muta nada (I-43, O-43-02). Antes bastaba con salir del campo.
+                EditorWindowTestSupport.SetText(window, "CabeceraFondoBox", "40");
                 CommitBox(window, "CabeceraFondoBox", string.Empty);
                 return (set, window.EditorState.FondoMatrices.Select(m => m.CabeceraOverride).ToArray());
             });
