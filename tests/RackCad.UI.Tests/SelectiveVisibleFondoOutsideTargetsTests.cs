@@ -18,7 +18,7 @@ namespace RackCad.UI.Tests
     {
         private static RackSelectiveWindow OpenWith(int fondos)
         {
-            var window = new RackSelectiveWindow(canInsertInAutoCad: false);
+            var window = SelectiveWindowTestSupport.Open();
             if (fondos > 1)
             {
                 EditorWindowTestSupport.SetText(window, "FondosBox", fondos.ToString());

@@ -38,7 +38,7 @@ namespace RackCad.UI.Tests
             // RACKEDITAR path: reopening a drawn selective rack adopts its GUID + name so a re-save keeps identity.
             var (id, name) = StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.LoadExisting(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-SEL", "Selectivo A"));
                 return (window.RackId, window.RackName);
             });
@@ -57,7 +57,7 @@ namespace RackCad.UI.Tests
             // payload's design+system STRICTLY correspond (full drawing signature of design == of system).
             var (requested, view, updateOnly, id, name, requestType, corresponds) = StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.LoadForNew(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-TEMPLATE", "Plantilla"));
                 EditorWindowTestSupport.SetText(window, "NameBox", "Selectivo nuevo");
                 EditorWindowTestSupport.ClickByContent(window, "Insertar frontal");
@@ -80,7 +80,7 @@ namespace RackCad.UI.Tests
             // UpdateOnly true), typed SelectiveInsertionRequest, strictly corresponding payload.
             var (requested, view, updateOnly, id, name, requestType, corresponds) = StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.LoadExisting(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-SEL", "Selectivo A"));
                 EditorWindowTestSupport.ClickNamed(window, "UpdateButton");
                 return Capture(window);
@@ -102,7 +102,7 @@ namespace RackCad.UI.Tests
             // carries the normalized view; typed SelectiveInsertionRequest with a strictly corresponding payload.
             var (requested, view, updateOnly, id, name, requestType, corresponds) = StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.LoadExisting(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-SEL", "Selectivo A"));
                 EditorWindowTestSupport.ClickNamed(window, "InsertLateralButton");
                 return Capture(window);

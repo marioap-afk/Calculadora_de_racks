@@ -147,7 +147,10 @@ namespace RackCad.UI.Tests
                 var window = OpenWith(2);
                 var state = window.EditorState;
 
-                // Fondo 2 keeps two frentes (posts 0..2); fondo 1 grows to four (posts 0..4).
+                // Fondo 2 keeps two frentes (posts 0..2); fondo 1 grows to four (posts 0..4). The target has to be
+                // narrowed FIRST: the editor opens on "Todos", so growing before choosing would resize both fondos
+                // and the comment above would stop being true (I-43, gate 8.6B).
+                SetTargetFondos(window, "1");
                 EditorWindowTestSupport.SetText(window, "BayCountBox", "4");
                 RaiseLostFocus(window, "BayCountBox");
                 SetTargetFondos(window, "1,2");

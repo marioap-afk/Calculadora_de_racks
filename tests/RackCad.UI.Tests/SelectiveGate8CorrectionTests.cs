@@ -19,28 +19,9 @@ namespace RackCad.UI.Tests
     /// </summary>
     public sealed class SelectiveGate8CorrectionTests
     {
-        /// <summary>An in-memory stand-in for <c>%APPDATA%\RackCad\settings.json</c>, so the remembered preference is
-        /// deterministic and the developer's real settings are never read or written.</summary>
-        private sealed class FakeSettings : IUserSettingsGateway
-        {
-            public FakeSettings(string stored = null) => Stored = new UserSettings { SelectiveTargetFondos = stored };
-
-            public UserSettings Stored { get; private set; }
-
-            public int Saves { get; private set; }
-
-            public UserSettings Load() => Stored;
-
-            public void Save(UserSettings settings)
-            {
-                Stored = settings;
-                Saves++;
-            }
-        }
-
         private static RackSelectiveWindow Open(int fondos, IUserSettingsGateway gateway = null)
         {
-            var window = new RackSelectiveWindow(canInsertInAutoCad: false, gateway ?? new FakeSettings());
+            var window = SelectiveWindowTestSupport.Open(gateway: gateway);
             if (fondos > 1)
             {
                 EditorWindowTestSupport.SetText(window, "FondosBox", fondos.ToString());
@@ -61,11 +42,11 @@ namespace RackCad.UI.Tests
         /// fondos to survive onto.</summary>
         private static RackSelectiveWindow OpenExistingRack(int fondos, IUserSettingsGateway gateway)
         {
-            var source = Open(fondos, new FakeSettings(stored: "Todos"));
+            var source = Open(fondos, new SelectiveWindowTestSupport.FakeSettings(stored: "Todos"));
             var document = RackCad.Application.Persistence.SelectivePalletDesignDocument.From(
                 source.BuildDesignForTest(out _), "rack-" + fondos, "Rack " + fondos);
 
-            var window = new RackSelectiveWindow(canInsertInAutoCad: false, gateway);
+            var window = SelectiveWindowTestSupport.Open(gateway: gateway);
             window.LoadForNew(document);
             return window;
         }
@@ -154,7 +135,7 @@ namespace RackCad.UI.Tests
         {
             var (mode, caption, targets) = StaTestRunner.Run(() =>
             {
-                var window = Open(3, new FakeSettings(stored: null));
+                var window = Open(3, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 return (window.EditorState.TargetMode, SelectiveTargetsTestSupport.Caption(window), window.EditorState.TargetFondos.Fondos.ToArray());
             });
 
@@ -170,7 +151,7 @@ namespace RackCad.UI.Tests
             // aimed at the single fondo that existed when the window opened.
             var targets = StaTestRunner.Run(() =>
             {
-                var window = Open(1, new FakeSettings(stored: null));
+                var window = Open(1, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 EditorWindowTestSupport.SetText(window, "FondosBox", "4");
                 RaiseLostFocus(window, "FondosBox");
                 return window.EditorState.TargetFondos.Fondos.ToArray();
@@ -186,7 +167,7 @@ namespace RackCad.UI.Tests
             // so walking the fondo selector must leave every fondo targeted.
             var (targets, caption) = StaTestRunner.Run(() =>
             {
-                var window = Open(3, new FakeSettings(stored: null));
+                var window = Open(3, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 ((ComboBox)window.FindName("FondoSelectorBox")).SelectedIndex = 2;
                 return (window.EditorState.TargetFondos.Fondos.ToArray(), SelectiveTargetsTestSupport.Caption(window));
             });
@@ -200,7 +181,7 @@ namespace RackCad.UI.Tests
         {
             var (targets, visibility) = StaTestRunner.Run(() =>
             {
-                var window = Open(1, new FakeSettings(stored: null));
+                var window = Open(1, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 return (
                     window.EditorState.TargetFondos.Fondos.ToArray(),
                     ((FrameworkElement)window.FindName("TargetFondosPanel")).Visibility);
@@ -219,7 +200,7 @@ namespace RackCad.UI.Tests
         {
             var (stored, reopened, caption) = StaTestRunner.Run(() =>
             {
-                var gateway = new FakeSettings(stored: null);
+                var gateway = new SelectiveWindowTestSupport.FakeSettings(stored: null);
                 var first = Open(3, gateway);
                 SelectiveTargetsTestSupport.SetCurrentTarget(first);
                 var written = gateway.Stored.SelectiveTargetFondos;
@@ -238,7 +219,7 @@ namespace RackCad.UI.Tests
         {
             var (stored, targets, mode) = StaTestRunner.Run(() =>
             {
-                var gateway = new FakeSettings(stored: null);
+                var gateway = new SelectiveWindowTestSupport.FakeSettings(stored: null);
                 var first = Open(4, gateway);
                 SelectiveTargetsTestSupport.SetTargets(first, 2, 4); // one-based in the UI
                 var written = gateway.Stored.SelectiveTargetFondos;
@@ -258,7 +239,7 @@ namespace RackCad.UI.Tests
             // Storing the two indices it resolved to would leave the next, bigger rack partly out of "todos".
             var (stored, targets, caption) = StaTestRunner.Run(() =>
             {
-                var gateway = new FakeSettings(stored: "Actual");
+                var gateway = new SelectiveWindowTestSupport.FakeSettings(stored: "Actual");
                 var first = Open(2, gateway);
                 SelectiveTargetsTestSupport.SetAllTargets(first);
                 var written = gateway.Stored.SelectiveTargetFondos;
@@ -277,7 +258,7 @@ namespace RackCad.UI.Tests
         {
             var (targets, mode) = StaTestRunner.Run(() =>
             {
-                var window = OpenExistingRack(2, new FakeSettings(stored: "1,3")); // a 2-fondo rack has no fondo index 3
+                var window = OpenExistingRack(2, new SelectiveWindowTestSupport.FakeSettings(stored: "1,3")); // a 2-fondo rack has no fondo index 3
                 return (window.EditorState.TargetFondos.Fondos.ToArray(), window.EditorState.TargetMode);
             });
 
@@ -290,7 +271,7 @@ namespace RackCad.UI.Tests
         {
             var (targets, mode, caption) = StaTestRunner.Run(() =>
             {
-                var window = OpenExistingRack(2, new FakeSettings(stored: "7,9"));
+                var window = OpenExistingRack(2, new SelectiveWindowTestSupport.FakeSettings(stored: "7,9"));
                 return (window.EditorState.TargetFondos.Fondos.ToArray(), window.EditorState.TargetMode, SelectiveTargetsTestSupport.Caption(window));
             });
 
@@ -305,8 +286,8 @@ namespace RackCad.UI.Tests
             // It is an editor preference: two racks saved with different "Fondos destino" must serialize identically.
             var (a, b) = StaTestRunner.Run(() =>
             {
-                var first = Open(3, new FakeSettings(stored: "Todos"));
-                var second = Open(3, new FakeSettings(stored: "1"));
+                var first = Open(3, new SelectiveWindowTestSupport.FakeSettings(stored: "Todos"));
+                var second = Open(3, new SelectiveWindowTestSupport.FakeSettings(stored: "1"));
                 var store = new RackCad.Application.Persistence.SelectivePalletDesignStore();
                 return (
                     store.Serialize(RackCad.Application.Persistence.SelectivePalletDesignDocument.From(first.BuildDesignForTest(out _), "id", "Rack")),
@@ -342,7 +323,7 @@ namespace RackCad.UI.Tests
             // F1 -> F2 -> F3. Hard-coding fondo 0 anywhere in the status or the lookup fails this.
             var (statuses, customs, visibleDepths) = StaTestRunner.Run(() =>
             {
-                var window = Open(3, new FakeSettings(stored: null));
+                var window = Open(3, new SelectiveWindowTestSupport.FakeSettings(stored: null));
 
                 // Give each fondo its own pallet depth, so "the matrix really changed fondo" is observable.
                 SetDepthOfFondo(window, 1, 48.0);
@@ -383,7 +364,7 @@ namespace RackCad.UI.Tests
         {
             var statuses = StaTestRunner.Run(() =>
             {
-                var window = Open(3, new FakeSettings(stored: null));
+                var window = Open(3, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 var combo = (ComboBox)window.FindName("FondoSelectorBox");
                 var status = (TextBlock)window.FindName("PostCabeceraStatus");
 
@@ -407,7 +388,7 @@ namespace RackCad.UI.Tests
         {
             var statuses = StaTestRunner.Run(() =>
             {
-                var window = Open(2, new FakeSettings(stored: null));
+                var window = Open(2, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 SelectiveTargetsTestSupport.SetTargets(window, 2);
                 window.EditorState.ApplyCabeceraToTargets(1, Custom(window, 250.0), c => c); // poste 2 of fondo 2
 
@@ -437,7 +418,7 @@ namespace RackCad.UI.Tests
             // Tarimas 48 / 60 / 72 -> cabeceras 42 / 54 / 66. Reading fondo 0 would answer 42 on all three.
             var seeds = StaTestRunner.Run(() =>
             {
-                var window = Open(3, new FakeSettings(stored: null));
+                var window = Open(3, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 SetDepthOfFondo(window, 1, 48.0);
                 SetDepthOfFondo(window, 2, 60.0);
                 SetDepthOfFondo(window, 3, 72.0);
@@ -461,7 +442,7 @@ namespace RackCad.UI.Tests
         {
             var seed = StaTestRunner.Run(() =>
             {
-                var window = Open(2, new FakeSettings(stored: null));
+                var window = Open(2, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 SetDepthOfFondo(window, 2, 60.0);                           // would derive 54
                 EditorWindowTestSupport.SetText(window, "CabeceraFondoBox", "50");
                 RaiseLostFocus(window, "CabeceraFondoBox");
@@ -477,7 +458,7 @@ namespace RackCad.UI.Tests
             // CabeceraDepthOfFondo reads the fondo's SLOT, so the seed must commit the working matrix first.
             var seed = StaTestRunner.Run(() =>
             {
-                var window = Open(2, new FakeSettings(stored: null));
+                var window = Open(2, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 SelectiveTargetsTestSupport.SetTargets(window, 1);
                 ((TextBox)window.FindName("FondoBox")).Text = "72"; // typed, never lost focus
                 return window.CustomizeSeedDepthForTest();
@@ -492,7 +473,7 @@ namespace RackCad.UI.Tests
             // The seed decides what the user SEES; the authority still imposes each target's own depth on accept.
             var (depths, independent) = StaTestRunner.Run(() =>
             {
-                var window = Open(3, new FakeSettings(stored: null));
+                var window = Open(3, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 SetDepthOfFondo(window, 1, 48.0);
                 SetDepthOfFondo(window, 2, 60.0);
                 SetDepthOfFondo(window, 3, 72.0);
@@ -523,7 +504,7 @@ namespace RackCad.UI.Tests
         {
             var (afterA, afterB, afterReset) = StaTestRunner.Run(() =>
             {
-                var window = Open(3, new FakeSettings(stored: null));
+                var window = Open(3, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 var state = window.EditorState;
 
                 // A) targets {1,3}: poste 1 -> A
@@ -552,7 +533,7 @@ namespace RackCad.UI.Tests
         {
             var heights = StaTestRunner.Run(() =>
             {
-                var window = Open(3, new FakeSettings(stored: null));
+                var window = Open(3, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 var state = window.EditorState;
                 SelectiveTargetsTestSupport.SetTargets(window, 1, 3);
                 state.ApplyCabeceraToTargets(0, Custom(window, 250.0), Copy);
@@ -578,7 +559,7 @@ namespace RackCad.UI.Tests
             // keeps a later change from quietly turning it into one.
             var peraltes = StaTestRunner.Run(() =>
             {
-                var window = Open(3, new FakeSettings(stored: null));
+                var window = Open(3, new SelectiveWindowTestSupport.FakeSettings(stored: null));
                 var state = window.EditorState;
                 state.SyncPostCabeceras();
                 SelectiveTargetsTestSupport.SetTargets(window, 2);

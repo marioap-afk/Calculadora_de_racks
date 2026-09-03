@@ -66,7 +66,7 @@ namespace RackCad.UI.Tests
             {
                 var windows = new List<Window>
                 {
-                    new RackSelectiveWindow(canInsertInAutoCad: false),
+                    SelectiveWindowTestSupport.Open(),
                     new RackDynamicSystemWindow(canInsertInAutoCad: false),
                     new RackPushBackSystemWindow(canInsertInAutoCad: false),
                     new RackFlowBedWindow(canInsertInAutoCad: false),
