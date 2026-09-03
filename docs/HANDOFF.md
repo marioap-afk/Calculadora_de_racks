@@ -2255,7 +2255,8 @@ la Fase 5, depende de todas).
 - candidato **funcional** aprobado por el Owner: `4947a1b5e43a291b01e8e43b5a8ff36d74c99186`
   (CI run `33797723636`, **success**). El SHA final de rama difiere del aprobado **sólo en documentación
   de cierre**: el binario funcional es idéntico;
-- **merge `--no-ff`** sobre `main`, con CI verde post-merge (hashes en el commit de registro);
+- **merge `--no-ff`**: `1165240ad780f32851ebccf18c7da89525d32167`, padres `085ca2f` y `0e13410`,
+  con CI verde post-merge sobre el merge ya en `main`;
 - `origin/main` **no avanzó** desde la base `085ca2f5b33541cfb93c8cdec8cbc8f0368c899f`: **sin rebase
   final**, de modo que la validación manual corresponde exactamente al contenido integrado;
 - **validación manual del Owner en AutoCAD 2025: APROBADA** sobre el **DWG real que presentaba el
