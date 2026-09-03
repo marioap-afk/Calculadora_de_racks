@@ -487,7 +487,8 @@ namespace RackCad.UI.Systems.Selective
         private void UpdateFrenteEditingEnabled()
         {
             BayCountBox.IsEnabled = true;
-            BayCountBox.ToolTip = "Número de frentes (bahías) de ESTE fondo. Cada fondo puede tener su propio número (p. ej. esquina); "
+            BayCountBox.ToolTip = "Número de frentes (bahías). Se aplica a los «Fondos destino»: cada uno se redimensiona por separado "
+                + "y los demás quedan intactos. Cada fondo puede tener su propio número (p. ej. esquina); "
                 + "el fondo más largo define la rejilla y los frentes que se traslapan alinean sus postes. Se aplica al salir del campo.";
         }
 
@@ -1589,24 +1590,29 @@ namespace RackCad.UI.Systems.Selective
             var isCurrentOnly = state.TargetMode == SelectiveTargetMode.FollowCurrent;
             var isAll = !isCurrentOnly && count > 0 && fondos.Count == count;
 
-            var actual = new CheckBox
+            // "Actual" and "Todos" are ACTIONS, not ticks. A check box can be un-ticked, and neither "no mode" nor
+            // "un-select all" exists in the model, so a tick that can be turned off would let the UI show a state the
+            // editor cannot hold. Which one is in force is read from the closed caption, not from a mark here.
+            var actual = new Button
             {
-                Content = "Actual",
-                IsChecked = isCurrentOnly,
+                Content = isCurrentOnly ? "✓ Actual" : "Actual",
+                HorizontalContentAlignment = HorizontalAlignment.Left,
                 Margin = new Thickness(0, 0, 0, 4),
+                Padding = new Thickness(6, 2, 6, 2),
                 ToolTip = "Aplicar solo en el fondo que estás editando; sigue al fondo visible."
             };
-            actual.Checked += (s, e) => { if (!buildingTargetFondos) { state.FollowCurrentFondo(); RefreshTargetFondos(); } };
+            actual.Click += (s, e) => { if (!buildingTargetFondos) { state.FollowCurrentFondo(); RefreshTargetFondos(); } };
             TargetFondosList.Children.Add(actual);
 
-            var todos = new CheckBox
+            var todos = new Button
             {
-                Content = "Todos",
-                IsChecked = isAll,
+                Content = isAll ? "✓ Todos" : "Todos",
+                HorizontalContentAlignment = HorizontalAlignment.Left,
                 Margin = new Thickness(0, 0, 0, 6),
+                Padding = new Thickness(6, 2, 6, 2),
                 ToolTip = "Aplicar en todos los fondos."
             };
-            todos.Checked += (s, e) => { if (!buildingTargetFondos) SetTargets(Enumerable.Range(0, state.FondoCount)); };
+            todos.Click += (s, e) => { if (!buildingTargetFondos) SetTargets(Enumerable.Range(0, state.FondoCount)); };
             TargetFondosList.Children.Add(todos);
 
             for (var k = 0; k < count; k++)
@@ -1624,10 +1630,21 @@ namespace RackCad.UI.Systems.Selective
                 void Toggle(object s, RoutedEventArgs e)
                 {
                     if (buildingTargetFondos) return;
-                    var chosen = state.TargetFondos.Fondos.ToList();
+
+                    // While "Actual" is the mode the boxes are shown EMPTY, so they are the visible truth: ticking the
+                    // first one starts a fresh explicit set. Carrying the followed fondo over would silently add a
+                    // second target the user never ticked.
+                    var chosen = state.TargetMode == SelectiveTargetMode.Explicit
+                        ? state.TargetFondos.Fondos.ToList()
+                        : new List<int>();
+
                     if (item.IsChecked == true) { if (!chosen.Contains(index)) chosen.Add(index); }
                     else chosen.Remove(index);
-                    SetTargets(chosen); // an emptied set falls back to the visible fondo, never to nothing
+
+                    // Un-ticking the last one leaves no explicit target: fall back to "Actual", which is a real mode,
+                    // instead of inventing a singleton the user never chose.
+                    if (chosen.Count == 0) { state.FollowCurrentFondo(); RefreshTargetFondos(); return; }
+                    SetTargets(chosen);
                 }
 
                 item.Checked += Toggle;

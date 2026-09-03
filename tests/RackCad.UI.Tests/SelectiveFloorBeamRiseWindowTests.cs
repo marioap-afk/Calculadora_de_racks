@@ -414,6 +414,104 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void PressingActualWhileItIsAlreadyTheMode_LeavesUiAndStateCoherent()
+        {
+            // "Actual" is an action, not a tick: pressing it again re-affirms the mode and cannot leave the popup
+            // showing something the editor does not hold.
+            var (caption, mode, targets, marked) = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(3);
+                SelectiveTargetsTestSupport.SetCurrentTarget(window);
+                SelectiveTargetsTestSupport.SetCurrentTarget(window); // press it again
+                var state = window.EditorState;
+                return (SelectiveTargetsTestSupport.Caption(window), state.TargetMode,
+                    state.TargetFondos.Fondos.ToArray(), SelectiveTargetsTestSupport.CheckedFondos(window));
+            });
+
+            Assert.Equal("Actual", caption);
+            Assert.Equal(RackCad.Application.Systems.Selective.SelectiveTargetMode.FollowCurrent, mode);
+            Assert.Equal(new[] { 0 }, targets);
+            Assert.Empty(marked); // the fondo boxes stay empty while "Actual" is the mode
+        }
+
+        [Fact]
+        public void PressingTodosWhileItIsAlreadyTheMode_LeavesUiAndStateCoherent()
+        {
+            var (caption, targets, marked) = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(3);
+                SelectiveTargetsTestSupport.SetAllTargets(window);
+                SelectiveTargetsTestSupport.SetAllTargets(window); // press it again
+                return (SelectiveTargetsTestSupport.Caption(window),
+                    window.EditorState.TargetFondos.Fondos.ToArray(),
+                    SelectiveTargetsTestSupport.CheckedFondos(window));
+            });
+
+            Assert.Equal("Todos", caption);
+            Assert.Equal(new[] { 0, 1, 2 }, targets);
+            Assert.Equal(new[] { 1, 2, 3 }, marked); // and every box reads as ticked
+        }
+
+        [Fact]
+        public void LeavingActualThroughAFondoBox_StartsTheExplicitSetEmpty()
+        {
+            // Visible = fondo 2, mode = Actual, every box empty. Ticking fondo 3 must give {3} — not {2,3}: the
+            // followed fondo was never ticked, so it must not be carried into the explicit set.
+            var (targets, caption, marked) = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(3);
+                ((ComboBox)window.FindName("FondoSelectorBox")).SelectedIndex = 1; // looking at fondo 2
+                SelectiveTargetsTestSupport.SetCurrentTarget(window);
+                SelectiveTargetsTestSupport.ToggleFondo(window, 3, true);
+                return (window.EditorState.TargetFondos.Fondos.ToArray(),
+                    SelectiveTargetsTestSupport.Caption(window),
+                    SelectiveTargetsTestSupport.CheckedFondos(window));
+            });
+
+            Assert.Equal(new[] { 2 }, targets);
+            Assert.Equal("Fondo 3", caption);
+            Assert.Equal(new[] { 3 }, marked);
+        }
+
+        [Fact]
+        public void TheFondoBoxesAreTheVisibleTruthOfAnExplicitSet()
+        {
+            var (afterAdd, afterRemove) = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(3);
+                SelectiveTargetsTestSupport.SetCurrentTarget(window);
+                SelectiveTargetsTestSupport.ToggleFondo(window, 3, true);
+                SelectiveTargetsTestSupport.ToggleFondo(window, 1, true);
+                var added = window.EditorState.TargetFondos.Fondos.ToArray();
+
+                SelectiveTargetsTestSupport.ToggleFondo(window, 3, false);
+                return (added, window.EditorState.TargetFondos.Fondos.ToArray());
+            });
+
+            Assert.Equal(new[] { 0, 2 }, afterAdd);
+            Assert.Equal(new[] { 0 }, afterRemove);
+        }
+
+        [Fact]
+        public void EmptyingTheExplicitSet_GoesBackToActual()
+        {
+            var (mode, caption, targets) = StaTestRunner.Run(() =>
+            {
+                var window = OpenWith(3);
+                ((ComboBox)window.FindName("FondoSelectorBox")).SelectedIndex = 1;
+                SelectiveTargetsTestSupport.SetCurrentTarget(window);
+                SelectiveTargetsTestSupport.ToggleFondo(window, 3, true);
+                SelectiveTargetsTestSupport.ToggleFondo(window, 3, false); // the last explicit target goes away
+                var state = window.EditorState;
+                return (state.TargetMode, SelectiveTargetsTestSupport.Caption(window), state.TargetFondos.Fondos.ToArray());
+            });
+
+            Assert.Equal(RackCad.Application.Systems.Selective.SelectiveTargetMode.FollowCurrent, mode);
+            Assert.Equal("Actual", caption);
+            Assert.Equal(new[] { 1 }, targets); // the fondo on screen, because that is what "Actual" means
+        }
+
+        [Fact]
         public void AnExplicitSubsetOrAll_SurvivesNavigation()
         {
             var (subset, all) = StaTestRunner.Run(() =>

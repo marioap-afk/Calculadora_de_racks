@@ -17,7 +17,7 @@ namespace RackCad.UI.Tests
         /// wanted, then drop the rest. Wanted-first matters — emptying the set would fall back to the visible fondo.</summary>
         public static void SetTargets(RackSelectiveWindow window, params int[] oneBased)
         {
-            Toggle(window, "Actual", true); // start from a known single-fondo state
+            Press(window, "Actual"); // start from a known state: FollowCurrent, every fondo box empty
             foreach (var fondo in oneBased) Toggle(window, "Fondo " + fondo, true);
 
             var count = window.EditorState.FondoCount;
@@ -27,15 +27,40 @@ namespace RackCad.UI.Tests
             }
         }
 
-        /// <summary>Pick the "Todos" entry.</summary>
-        public static void SetAllTargets(RackSelectiveWindow window) => Toggle(window, "Todos", true);
+        /// <summary>Press the "Todos" action.</summary>
+        public static void SetAllTargets(RackSelectiveWindow window) => Press(window, "Todos");
 
-        /// <summary>Pick the "Actual" entry (the default: only the fondo on screen).</summary>
-        public static void SetCurrentTarget(RackSelectiveWindow window) => Toggle(window, "Actual", true);
+        /// <summary>Press the "Actual" action (the default: only the fondo on screen, and it follows it).</summary>
+        public static void SetCurrentTarget(RackSelectiveWindow window) => Press(window, "Actual");
+
+        /// <summary>Tick or untick one fondo box, as a user does.</summary>
+        public static void ToggleFondo(RackSelectiveWindow window, int oneBased, bool wanted)
+            => Toggle(window, "Fondo " + oneBased, wanted);
+
+        /// <summary>Press one of the two ACTION entries at the top of the popup ("Actual" / "Todos"); their captions
+        /// carry a ✓ when they are the mode in force.</summary>
+        private static void Press(RackSelectiveWindow window, string label)
+        {
+            var host = (StackPanel)window.FindName("TargetFondosList");
+            var button = host.Children.OfType<Button>()
+                .First(b => (b.Content as string) == label || (b.Content as string) == "✓ " + label);
+            button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent, button));
+        }
 
         /// <summary>The dropdown's closed caption, which is what the user reads without opening it.</summary>
         public static string Caption(RackSelectiveWindow window)
             => ((ToggleButton)window.FindName("TargetFondosButton")).Content as string;
+
+        /// <summary>The fondo numbers whose box reads as ticked — the popup's visible truth.</summary>
+        public static int[] CheckedFondos(RackSelectiveWindow window)
+        {
+            var host = (StackPanel)window.FindName("TargetFondosList");
+            return host.Children.OfType<CheckBox>()
+                .Where(c => c.IsChecked == true && (c.Content as string ?? string.Empty).StartsWith("Fondo "))
+                .Select(c => int.Parse(((string)c.Content).Substring("Fondo ".Length)))
+                .OrderBy(n => n)
+                .ToArray();
+        }
 
         private static void Toggle(RackSelectiveWindow window, string content, bool wanted)
         {
