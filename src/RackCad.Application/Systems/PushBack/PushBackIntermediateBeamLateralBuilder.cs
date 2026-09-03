@@ -28,6 +28,33 @@ namespace RackCad.Application.Systems.PushBack
     {
         public const string GroupPrefix = "PB_LARGUERO_INTERMEDIO";
 
+        /// <summary>
+        /// I-44 — QUIEN decide que larguero es este: el perfil y el peralte de cada instancia. Lo fija el LLAMADOR,
+        /// no la forma de sus argumentos.
+        ///
+        /// <para>
+        /// La distincion no puede leerse de <c>postIndex</c> ni de <c>front</c>: <see cref="Build"/> pasa los dos
+        /// cuando proyecta un corte por poste, y <see cref="BuildFor"/> tambien recibe un <c>postIndex</c> real
+        /// desde el dibujo de un rack compuesto. Deducirla de los argumentos es exactamente el defecto que I-44
+        /// corrige — el BOM materializaba camas fisicas y cobraba la envolvente del rack.
+        /// </para>
+        /// </summary>
+        private enum BeamAuthority
+        {
+            /// <summary>
+            /// Lo VISIBLE en un corte lateral: varios frentes se superponen en la proyeccion y el que se ve es el de
+            /// mayor peralte, que tapa a los de detras. La envolvente vive en
+            /// <see cref="DynamicIntermediateBeamGeometry"/> y esta semantica no cambia.
+            /// </summary>
+            Projection,
+
+            /// <summary>
+            /// La pieza que EXISTE en una cama concreta: su perfil y su peralte son los de esa celda (frente x
+            /// nivel) y de ninguna otra. Ningun frente vecino puede convertir un intermedio de 3.5" en uno de 6".
+            /// </summary>
+            PhysicalBed
+        }
+
         public HeaderRunPlan Build(PushBackSystem system, RackCatalog catalog, int postIndex = -1, int levelCount = int.MaxValue)
         {
             var flat = new List<HeaderBlockInstance>();
@@ -43,7 +70,7 @@ namespace RackCad.Application.Systems.PushBack
             var added = new HashSet<string>();
             foreach (var front in fronts)
             {
-                Append(flat, added, system, catalog, front, null, postIndex, levelCount);
+                Append(flat, added, system, catalog, front, null, postIndex, levelCount, BeamAuthority.Projection);
             }
 
             return HeaderInstanceGrouper.Group(flat, GroupPrefix);
@@ -53,6 +80,13 @@ namespace RackCad.Application.Systems.PushBack
         /// I-42 — los intermedios de UNA cama: los de <paramref name="front"/> en el marco de
         /// <paramref name="system"/>, restringidos a <paramref name="levels"/>. Devuelve instancias sueltas para que
         /// el compositor las refleje junto con el resto de la cama, con la MISMA transformacion.
+        ///
+        /// <para>
+        /// I-44 — estas son piezas FISICAS, asi que su perfil y su peralte son los de la celda que las pide
+        /// (<see cref="BeamAuthority.PhysicalBed"/>). <paramref name="postIndex"/> sigue participando en la
+        /// COLOCACION, pero no decide ninguno de los dos: un dibujo de rack compuesto pasa un poste real y aun asi
+        /// cada cama debe llevar su propio larguero.
+        /// </para>
         /// </summary>
         public IReadOnlyList<HeaderBlockInstance> BuildFor(
             PushBackSystem system,
@@ -67,7 +101,9 @@ namespace RackCad.Application.Systems.PushBack
                 return flat;
             }
 
-            Append(flat, new HashSet<string>(), system, catalog, front, levels, postIndex, int.MaxValue);
+            Append(
+                flat, new HashSet<string>(), system, catalog, front, levels, postIndex, int.MaxValue,
+                BeamAuthority.PhysicalBed);
             return flat;
         }
 
@@ -79,7 +115,8 @@ namespace RackCad.Application.Systems.PushBack
             DynamicRackFront front,
             IReadOnlyCollection<int> levels,
             int postIndex,
-            int levelCount)
+            int levelCount,
+            BeamAuthority authority)
         {
             var structure = system.Structure;
             var postId = structure.Modules
@@ -115,13 +152,38 @@ namespace RackCad.Application.Systems.PushBack
                         }
                     }
 
-                    var beamId = postIndex >= 0
-                        ? DynamicIntermediateBeamGeometry.BeamIdAtPost(structure, postIndex, axis.LevelNumber)
-                        : structure.Fronts
+                    // I-44 — el perfil y el peralte SALEN JUNTOS de la misma autoridad, nunca uno de cada una.
+                    //
+                    // En una cama fisica los da la celda concreta, leidos de UNA sola operacion
+                    // (DynamicRackLevelGeometry.At es el unico accesor que devuelve los dos del MISMO nivel
+                    // resuelto): asi no puede volver a ocurrir que el id venga del frente de mayor peralte y el
+                    // peralte de la envolvente del rack. En una proyeccion los da la envolvente, exactamente como
+                    // antes — un corte lateral muestra el larguero que se VE, que es el que tapa a los de detras.
+                    string beamId;
+                    double peralte;
+                    if (authority == BeamAuthority.PhysicalBed)
+                    {
+                        var cell = DynamicRackLevelGeometry.At(structure, front, axis.LevelNumber);
+                        beamId = string.IsNullOrWhiteSpace(cell.IntermediateBeamCatalogId)
+                            ? DynamicRackDefaults.IntermediateBeamCatalogId
+                            : cell.IntermediateBeamCatalogId;
+                        peralte = cell.IntermediateBeamDepth;
+                    }
+                    else if (postIndex >= 0)
+                    {
+                        beamId = DynamicIntermediateBeamGeometry.BeamIdAtPost(structure, postIndex, axis.LevelNumber);
+                        peralte = DynamicIntermediateBeamGeometry.PeralteAtPost(structure, postIndex, axis.LevelNumber);
+                    }
+                    else
+                    {
+                        beamId = structure.Fronts
                             .Where(candidate => candidate.LoadLevels >= axis.LevelNumber)
                             .OrderByDescending(candidate => DynamicIntermediateBeamGeometry.PeralteAt(candidate, axis.LevelNumber))
                             .Select(candidate => DynamicIntermediateBeamGeometry.BeamIdAt(candidate, axis.LevelNumber))
                             .FirstOrDefault() ?? DynamicRackDefaults.IntermediateBeamCatalogId;
+                        peralte = DynamicIntermediateBeamGeometry.PeralteAt(structure, axis.LevelNumber);
+                    }
+
                     var block = CatalogLookup.Block(catalog, beamId, DynamicRackDefaults.IntermediateBeamView);
                     var leftEntry = catalog?.ConnectionLayout.FindConnectionLayout(
                         beamId, DynamicRackDefaults.IntermediateBeamLeftBedMatePoint, DynamicRackDefaults.IntermediateBeamView);
@@ -142,16 +204,7 @@ namespace RackCad.Application.Systems.PushBack
                         continue;
                     }
 
-                    flat.Add(Make(
-                        axis,
-                        support.PostAxisX,
-                        mate,
-                        support.Mirrored,
-                        beamId,
-                        block,
-                        postIndex >= 0
-                            ? DynamicIntermediateBeamGeometry.PeralteAtPost(structure, postIndex, axis.LevelNumber)
-                            : DynamicIntermediateBeamGeometry.PeralteAt(structure, axis.LevelNumber)));
+                    flat.Add(Make(axis, support.PostAxisX, mate, support.Mirrored, beamId, block, peralte));
                 }
             }
         }
