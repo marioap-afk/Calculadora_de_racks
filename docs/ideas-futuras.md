@@ -676,3 +676,69 @@ Ninguno bloqueó I-37A: se rodearon dentro del namespace Cantilever, sin tocar I
    *encontradas* / `A→B` y sólo la API lo permite—, así que no es un defecto observable. Resolverlo bien pide una
    topología **anulable** en la celda (el documento ya la guarda como texto y cae al default cuando no la reconoce),
    y eso toca los cuatro límites de persistencia: es una migración, no un ajuste.
+
+## I-43 — Selectivo por alcance y fondos: follow-ups fuera de alcance
+
+> Registrados en el **Gate 8.6A** de la corrección post-Gate 8 de I-43, a partir de la revisión
+> arquitectónica (Gate 8.5) del candidato `de100ed`. **Ninguno de estos se implementa en I-43**: el plan
+> aprobado los excluye expresamente y tocarlos "de paso" rechaza el gate. El contrato vigente es
+> [ADR-0032](adr/0032-selectivo-pendiente-comprometido-y-autoridades-por-fondo.md); el alcance, el
+> [contrato de I-43](initiatives/I-43-selectivo-scopes-fondos.md). Nada de lo de abajo está roto hoy.
+
+### Deuda arquitectónica del Selectivo diferida (ARQ-43)
+
+1. **ARQ-43-10 — el lector "efectivo" de cabecera muta durante una lectura.** Resolver la profundidad de
+   una cabecera custom la escribe en la configuración y reconstruye su modelo físico, es decir, una
+   lectura muta. Lo correcto es imponer la profundidad **una sola vez, en la frontera de escritura**, y
+   que el lector sea puro; además, la copia profunda debería ser obligatoria en esa frontera. El Gate
+   8.6F deja preparado el lector puro (`UsableCustomAt`) pero **no retira** la imposición del lector
+   efectivo: eso es este follow-up.
+
+2. **ARQ-43-11 — el valor global de elevación sigue en Domain.** Tras I-43 la autoridad es el frente; el
+   global solo se conserva como compatibilidad de **lectura** para documentos antiguos. Retirarlo del
+   modelo de dominio exige decidir qué hacer con los documentos que aún lo llevan, y por eso queda
+   fuera.
+
+3. **ARQ-43-12 — la ventana del Selectivo hace trabajo de aplicación.** La carga de un diseño, el número
+   de fondos y los peraltes por poste viven en `RackSelectiveWindow`; los campos `WorkingDepth`,
+   `WorkingCabeceraOverride` y `Fondo` de las entradas de diseño sobreviven solo por diff mínimo (I-43
+   los alimenta desde el slot en vez de las cajas, pero no los borra). Moverlo a Application es un
+   refactor con superficie propia.
+
+4. **ARQ-43-14 — reglas duplicadas de destinos.** Hay varios tipos de resultado y varios resolvers que
+   responden a la misma pregunta; la existencia de un fondo se decide en más de un sitio; el fallback
+   cuando un conjunto explícito se queda vacío conserva el modo explícito apuntando al fondo visible; y
+   la normalización de la selección merece unificarse. I-43 **caracteriza** ese fallback con pruebas,
+   no lo cambia.
+
+5. **ARQ-43-15 — superficie legacy y helpers muertos.** Alcance legacy, añadir/quitar nivel, la
+   aplicación de altura por destino, el parser de texto de fondos (ya sin UI que lo use), el
+   `Describe` con índices 0-based, el commit del cuadro de texto enfocado de la matriz, el registro de
+   aplicaciones de frente y varios helpers de prueba sin usar. Es limpieza: no entra en una corrección.
+
+6. **ARQ-43-16 — costuras de diálogo y duplicación en pruebas.** Faltan seams para los diálogos modales,
+   hay aserciones tautológicas y helpers duplicados entre suites.
+
+7. **ARQ-43-17 — política de versionado de esquema.** Un build anterior que lee un documento nuevo
+   ignora los campos aditivos en silencio. Es la política preexistente del repo y no la cambia I-43;
+   decidirla de verdad es un ADR aparte.
+
+8. **ARQ-43-19 — estado de frente dedicado.** Un tipo propio para el estado de un frente (en lugar de
+   listas paralelas por matriz) simplificaría el editor, pero es exactamente el refactor transversal
+   que el plan prohíbe.
+
+### Producto: pendientes conocidos del Selectivo
+
+9. **ID12 — tope de tarima por lado (SPLIT).** El tope de tarima debe poder ser izquierdo, derecho o
+   ambos. Queda **dividido**: la parte de modelo y colocación es una iniciativa propia, no un ajuste
+   del editor. No se implementa en I-43.
+
+10. **ID13 — frentes en blanco del Selectivo.** Igual que en el Dinámico, un frente debe poder quedar en
+    blanco. Toca activación de frentes y cortes, y por eso no cabe en una corrección de alcance.
+
+11. **Aviso "los tramos no caben" y el botón de medio frente tras un cálculo nulo.** Cuando el cálculo
+    de tramos devuelve nulo el frente se dibuja completo, pero el usuario no recibe aviso y el botón de
+    medio frente sigue ofreciendo la acción. Es una mejora de UX, no un defecto de dibujo.
+
+12. **El resumen del editor describe siempre el fondo 0.** La línea de resumen se calcula sobre el
+    primer fondo aunque el usuario esté editando otro. No afecta al dibujo ni al BOM.
