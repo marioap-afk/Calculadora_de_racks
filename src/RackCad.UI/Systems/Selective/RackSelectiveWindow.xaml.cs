@@ -375,11 +375,19 @@ namespace RackCad.UI.Systems.Selective
             return over > 0.0 ? over.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
         }
 
-        /// <summary>Re-mostrar las dos cajas de profundidad desde el slot del fondo VISIBLE.</summary>
+        /// <summary>
+        /// Re-mostrar las dos cajas de profundidad desde el slot del fondo VISIBLE.
+        /// <para>
+        /// Un campo con una edición SIN RESOLVER se deja intacto: puede llegarse aquí desde un commit parcial —el
+        /// gesto propio de «Fondo de tarima» solo compromete su campo— y entonces lo tecleado en el hermano sigue
+        /// siendo del usuario. Pisarlo sería justo el descarte silencioso que INV-14 prohíbe; el hermano se resolverá
+        /// en su propio gesto o en la siguiente frontera.
+        /// </para>
+        /// </summary>
         private void ShowDepthBoxes()
         {
-            pendingDepth?.Show(CommittedDepthText());
-            pendingCabecera?.Show(CommittedCabeceraText());
+            if (pendingDepth != null && !pendingDepth.IsDirty) pendingDepth.Show(CommittedDepthText());
+            if (pendingCabecera != null && !pendingCabecera.IsDirty) pendingCabecera.Show(CommittedCabeceraText());
         }
 
         /// <summary>

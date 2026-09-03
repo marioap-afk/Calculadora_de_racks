@@ -99,11 +99,15 @@ namespace RackCad.UI.Controls
         internal void Show(string text)
         {
 #if DEBUG
-            if (IsDirty && !string.Equals(box.Text, text, StringComparison.Ordinal))
+            // La protección NO puede depender de que el texto difiera. Una edición humana que acaba en el mismo texto
+            // comprometido sigue siendo una intención explícita (O-43-02: retipear el mismo valor CUENTA como
+            // edición), y con la comparación de textos se descartaba en silencio. INV-14 es incondicional: un campo
+            // sin resolver solo sale de ese estado por un commit o por un descarte explícito.
+            if (IsDirty)
             {
                 throw new InvalidOperationException(
                     "Show() sobre '" + Label + "' con una edición pendiente sin comprometer ni descartar (I-43, INV-14). "
-                        + "Compromete el campo antes, o descártalo explícitamente si eso es lo que quieres.");
+                        + "Compromete el campo antes, o descártalo explícitamente con Reset si eso es lo que quieres.");
             }
 #endif
             Write(text);
