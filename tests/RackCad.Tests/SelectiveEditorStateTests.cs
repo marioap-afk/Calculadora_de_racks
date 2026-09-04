@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
@@ -469,6 +470,83 @@ namespace RackCad.Tests
                 Assert.Equal(b.Bays[i].BeamLength, a.Bays[i].BeamLength, 6);
                 Assert.Equal(b.Bays[i].Levels.Select(l => l.Y), a.Bays[i].Levels.Select(l => l.Y));
             }
+        }
+
+        // ---- I-43: the single-fondo path refuses Selected, and the topology bridge honours the stale slot ----
+
+        [Fact]
+        public void ApplyScope_Selected_IsRefusedByTheSingleFondoPath_NotSilentlyAppliedToNothing()
+        {
+            var state = Opened(3, 3);
+            var values = new SelectiveEditorCell { Frente = 99, BeamId = BeamId, BeamPeralte = 4 };
+
+            var error = Assert.Throws<ArgumentOutOfRangeException>(
+                () => state.ApplyScope(SelectiveApplyScope.Selected, values));
+
+            Assert.Contains("SelectiveTargetResolver", error.Message);
+            Assert.All(state.Bays.SelectMany(column => column), cell => Assert.Equal(42, cell.Frente));
+        }
+
+        [Fact]
+        public void ApplyScope_TheFourOriginalScopes_KeepWorkingAfterSelectedWasAdded()
+        {
+            // Regression for the enum change itself: appending Selected must not shift or alter the four scopes the
+            // editor has always had.
+            var state = Opened(2, 2);
+            state.SelBay = 0; state.SelLevel = 0;
+            var values = new SelectiveEditorCell { Frente = 99, BeamId = BeamId, BeamPeralte = 4 };
+
+            Assert.Equal(new[] { (0, 0) }, state.ApplyScope(SelectiveApplyScope.Cell, values));
+            Assert.Equal(new[] { (0, 0), (1, 0) }, state.ApplyScope(SelectiveApplyScope.Row, values));
+            Assert.Equal(new[] { (0, 0), (0, 1) }, state.ApplyScope(SelectiveApplyScope.Column, values));
+            Assert.Equal(new[] { (0, 0), (0, 1), (1, 0), (1, 1) }, state.ApplyScope(SelectiveApplyScope.All, values));
+        }
+
+        [Fact]
+        public void Topology_From_ReadsTheLiveWorkingMatrixForTheFondoBeingEdited_NotItsStaleSlot()
+        {
+            var state = Opened(2, 3);                                   // fondo 0: two frentes of three levels
+            state.FondoMatrices.Add(state.SnapshotWorking(36.0, 0.0));  // fondo 1: a copy of it
+            state.SelectedFondo = 1;
+            state.LoadFondo(1);
+            state.AddLevel(0);                                          // live edit, NOT yet committed to the slot
+
+            var topology = SelectiveTopology.From(state);
+
+            Assert.Equal(2, topology.FondoCount);
+            Assert.Equal(3, topology.LevelCount(0, 0)); // the other fondo comes from its (accurate) slot
+            Assert.Equal(4, topology.LevelCount(1, 0)); // the edited fondo comes from the live matrix, not the slot
+            Assert.Equal(3, topology.LevelCount(1, 1));
+        }
+
+        [Fact]
+        public void Topology_From_AStateWithNoSlotYet_IsOneFondoHoldingTheWorkingMatrix()
+        {
+            var state = NewState();
+            state.InitMatrix(3, 2);
+
+            var topology = SelectiveTopology.From(state);
+
+            Assert.Equal(1, topology.FondoCount);
+            Assert.Equal(3, topology.FrontCount(0));
+            Assert.Equal(2, topology.LevelCount(0, 2));
+            Assert.Equal(0, SelectiveTopology.From(new SelectiveEditorState()).FondoCount);
+        }
+
+        [Fact]
+        public void Topology_From_CarriesTheRaggedShapeTheResolverNeeds()
+        {
+            var state = Opened(3, 3);
+            state.Bays[1].RemoveAt(2); // ragged column, exactly like ApplyScope_All_TouchesEveryCell_IncludingRagged…
+
+            var topology = SelectiveTopology.From(state);
+            var plan = SelectiveTargetResolver.Resolve(
+                topology, SelectiveFondoTargets.Single(0), SelectiveApplyScope.Row, new SelectiveCellAddress(0, 0, 2));
+
+            // Same omission rule as the state's own ApplyScope: bay 1 has no level 2, so it is skipped, not clamped.
+            Assert.Equal(
+                new[] { new SelectiveCellAddress(0, 0, 2), new SelectiveCellAddress(0, 2, 2) },
+                plan.Targets);
         }
 
         private static SelectiveBayDesign DesignBay(int levels, bool floor = false, double frente = 42.0, double alto = 60.0)

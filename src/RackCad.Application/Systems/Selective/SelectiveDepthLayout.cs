@@ -56,9 +56,10 @@ namespace RackCad.Application.Systems.Selective
 
         /// <summary>
         /// A shallow one-fondo VIEW of the system: its own bays (levels/heights) plus the shared run settings, so the
-        /// frontal builder / BOM can lay out that single fondo's face. Custom per-post cabeceras apply to fondo 0 only
-        /// (Fase 1); extra fondos use the standard frame. Used by the editor preview (show the fondo being edited) and
-        /// the BOM (sum every fondo's real content).
+        /// frontal builder / BOM can lay out that single fondo's face. Its <c>PostCabeceras</c> row is THAT fondo's
+        /// row: cada frontal Fk representa fisicamente al fondo k (O-43-03), asi que la vista lleva la custom de
+        /// <c>(k, i)</c> cuando existe y deja el hueco cuando no, para que el builder derive la estandar. Used by the
+        /// editor preview (show the fondo being edited) and the BOM (sum every fondo's real content).
         /// </summary>
         public static SelectiveRackSystem FondoSystemView(SelectiveRackSystem system, int k)
         {
@@ -91,9 +92,19 @@ namespace RackCad.Application.Systems.Selective
 
             foreach (var bay in BaysOfFondo(system, k)) view.Bays.Add(bay);
             foreach (var peralte in system.PostPeraltes) view.PostPeraltes.Add(peralte);
-            if (k == 0)
+
+            // La cabecera custom es autoridad de (fondo, poste), asi que la vista de un fondo expone la fila de ESE
+            // fondo como su fila local: para sus consumidores la vista ES un rack de un solo fondo (O-43-03). Antes
+            // solo se copiaba con k == 0, de modo que el frontal y la preview de cualquier otro fondo perdian su
+            // cabecera y dibujaban la derivada.
+            // Se recorren todos los postes (un fondo de C frentes tiene C+1) para PRESERVAR EL INDICE: un hueco se
+            // copia como hueco, porque comprimir la fila moveria la cabecera a otro poste. Un hueco significa
+            // "derivala": no se materializa ninguna estandar aqui. Se guardan REFERENCIAS, sin imponer Depth y sin
+            // copiar, igual que hacia la rama de fondo 0.
+            var posts = view.Bays.Count + 1;
+            for (var i = 0; i < posts; i++)
             {
-                foreach (var cabecera in system.PostCabeceras) view.PostCabeceras.Add(cabecera);
+                view.PostCabeceras.Add(SelectiveCabeceraAuthority.UsableCustomAt(system, k, i));
             }
 
             return view;
@@ -148,12 +159,18 @@ namespace RackCad.Application.Systems.Selective
         /// lateral/planta draw and that the fondo offsets step by.</summary>
         public static double CabeceraDepthOfFondo(SelectiveRackSystem system, int k)
         {
-            if (system != null && k >= 0 && k < system.FondoCabeceraOverrides.Count && system.FondoCabeceraOverrides[k] > 0.0)
-            {
-                return system.FondoCabeceraOverrides[k]; // custom "Fondo de cabecera" for this line
-            }
+            var over = system != null && k >= 0 && k < system.FondoCabeceraOverrides.Count ? system.FondoCabeceraOverrides[k] : 0.0;
+            return CabeceraDepthOfFondoValue(DepthOfFondo(system, k), over);
+        }
 
-            var pallet = DepthOfFondo(system, k);
+        /// <summary>The same override→rule→fallback precedence from raw values, for callers that hold a fondo's pallet
+        /// depth and its optional override but no resolved system (the editor's load path, I-43). Keeping ONE
+        /// implementation is what stops a loaded cabecera from being coerced to a depth the drawing never used.</summary>
+        public static double CabeceraDepthOfFondoValue(double palletDepth, double cabeceraOverride)
+        {
+            if (cabeceraOverride > 0.0) return cabeceraOverride; // custom "Fondo de cabecera" for this line
+
+            var pallet = palletDepth > 0.0 ? palletDepth : SelectiveRackDefaults.DefaultPalletDepth;
             var cabecera = pallet - SelectiveRackDefaults.CabeceraFondoAllowance;
             return cabecera > 0.0 ? cabecera : pallet;
         }

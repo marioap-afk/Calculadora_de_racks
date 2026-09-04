@@ -87,6 +87,19 @@ namespace RackCad.Domain.Systems.Selective
         public IList<RackFrameConfiguration> PostCabeceras { get; } = new List<RackFrameConfiguration>();
 
         /// <summary>
+        /// Per-post custom cabeceras of the fondos AFTER fondo 0 (I-43): entry <c>k-1</c> is fondo <c>k</c>, and inside
+        /// it one entry per post of THAT fondo. A null entry, a short row or a missing row all mean "standard cabecera",
+        /// so a design written before this existed leaves every extra fondo standard — which is exactly what those
+        /// drawings showed, since a custom cabecera only ever applied to fondo 0.
+        /// <para>
+        /// <see cref="PostCabeceras"/> stays fondo 0's row, so the legacy shape keeps its legacy meaning; el frontal de
+        /// cada fondo lee la fila de SU fondo (O-43-03), no la del fondo 0. Read the pair through the single authority
+        /// (<c>SelectiveCabeceraAuthority</c>) instead of indexing either list, so nothing re-derives the fallback.
+        /// </para>
+        /// </summary>
+        public IList<IList<RackFrameConfiguration>> ExtraFondoPostCabeceras { get; } = new List<IList<RackFrameConfiguration>>();
+
+        /// <summary>
         /// Optional per-post PERALTE override, one entry per post position (N frentes → N+1 posts). An entry
         /// &lt;= 0 (or a short list) means that post inherits <see cref="PostPeralte"/>. Lets each post carry its
         /// own peralte in the frontal/planta; the larguero spacing adapts to each post's troquel.
@@ -683,6 +696,24 @@ namespace RackCad.Domain.Systems.Selective
 
         /// <summary>Manual override for this bay's height (in). Null = auto. A post still takes the tallest of the bays it touches.</summary>
         public double? HeightOverride { get; set; }
+
+        /// <summary>
+        /// This frente's own "elevacion de larguero a piso" (in), overriding the run-wide
+        /// <see cref="SelectivePalletDesign.FloorBeamRise"/> (I-43, ID14). A bay IS the pair
+        /// <c>(fondo, frente)</c>, so this is that authority without a second table.
+        /// <para>
+        /// NULL solo puede venir de un documento LEGACY anterior a este campo, y se materializa al cargarlo: desde
+        /// entonces todo frente tiene valor directo (I-43, gate 8.6D). <c>0.0</c> es un valor explicito —"ninguna
+        /// elevacion"— y nunca significa "hereda"; el campo sigue siendo anulable justamente para poder distinguir
+        /// esas dos cosas al leer lo antiguo. El global ya no es autoridad de escritura: solo compatibilidad de lectura.
+        /// </para>
+        /// <para>
+        /// It only affects geometry while <see cref="FloorBeam"/> is true, but it is NOT cleared when that flag is
+        /// turned off: unchecking "Piso" is a change of intent about the beam, not an instruction to forget the
+        /// elevation the user typed, and re-checking it brings the value back.
+        /// </para>
+        /// </summary>
+        public double? FloorBeamRiseOverride { get; set; }
 
         /// <summary>
         /// "Medio frente" generalizado: partition this bay into N tramos with N-1 INTERMEDIATE posts (of this fondo

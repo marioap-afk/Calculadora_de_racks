@@ -42,14 +42,19 @@ namespace RackCad.UI.Tests
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
-        // Every x:Name defined in RackSelectiveWindow.xaml (45 originals + the new shell root "Shell"). The migration
-        // reparented these into the shell's slots; none may be lost (the code-behind binds to all of them by name).
+        // Every x:Name defined in RackSelectiveWindow.xaml. The I-31 migration reparented these into the shell's slots
+        // and none may be lost (the code-behind binds to all of them by name). I-43 gate 8A moved the frente properties
+        // out of the matrix into the left panel, so "FloorRiseBox" (the run-wide elevation, a concept the Owner
+        // rejected) is gone and the frente panel + the single "Fondos destino" selector are here instead.
         private static readonly string[] AllNamedControls =
         {
             "Shell", "NameBox", "DrawBasePlateCheck", "NumberFrontsCheck", "NumberLevelsCheck", "DrawRackNameCheck",
             "DrawPalletsCheck", "AnnotationScaleBox", "DimensionsBox", "DimStyleBox", "SafetyButton", "PostBox",
             "PostPeralteBox", "PostSelectBox", "CustomizePostButton", "PostPeralteOverrideBox", "PostCabeceraStatus",
-            "BayCountBox", "ToleranceBox", "ClearanceBox", "FloorRiseBox", "FondoBox", "CabeceraFondoBox", "FondosBox",
+            "BayCountBox", "ToleranceBox", "ClearanceBox", "FondoBox", "CabeceraFondoBox", "FondosBox",
+            "FrontHeader", "FrontScopeBox", "FrontFloorBeamCheck", "ApplyFrontFloorBeamButton",
+            "FrontRiseBox", "ApplyFrontRiseButton", "FrontLevelsBox", "ApplyFrontLevelsButton",
+            "TargetFondosPanel", "TargetFondosButton", "TargetFondosPopup", "TargetFondosList",
             "SeparatorsSection", "SeparatorsHost", "CellHeader", "CellBeamBox", "FrenteBox", "PalletCountBox", "AltoBox",
             "BeamPeralteCombo", "BeamLenBox", "ClearBox", "SummaryText", "StatusText", "FondoSelectorPanel",
             "FondoSelectorBox", "MatrixGrid", "PreviewFrontalRadio", "PreviewLateralRadio", "PreviewHint", "PreviewCanvas",
@@ -66,7 +71,7 @@ namespace RackCad.UI.Tests
         {
             var (contentIsShell, sameAsField) = StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 return (window.Content is RackEditorVisualShell, ReferenceEquals(window.Content, window.Shell));
             });
 
@@ -81,7 +86,7 @@ namespace RackCad.UI.Tests
         {
             var missing = StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 return AllNamedControls.Where(name => window.FindName(name) == null).ToArray();
             });
 
@@ -95,7 +100,7 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 var shell = window.Shell;
 
                 // Sidebar: global settings + selected-cell editor live in the scrolling side panel.
@@ -140,7 +145,7 @@ namespace RackCad.UI.Tests
             {
                 // Opened NOT from AutoCAD → every gated draw button is disabled, still shows its tooltip while disabled,
                 // and carries the origin reason. The migration must not have dropped these (they moved into Leading/Primary).
-                var window = new RackSelectiveWindow(canInsertInAutoCad: false);
+                var window = SelectiveWindowTestSupport.Open();
                 foreach (var name in GatedDrawButtons)
                 {
                     var button = (Button)window.FindName(name);
@@ -163,7 +168,7 @@ namespace RackCad.UI.Tests
             {
                 // RACKEDITAR from AutoCAD on an existing rack → the three gated draws light up with their descriptive tooltips
                 // restored (UpdateInsertButtons swaps the disabled reason back).
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.LoadExisting(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-SEL", "Selectivo A"));
 
                 var lateral = (Button)window.FindName("InsertLateralButton");
@@ -182,7 +187,7 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
 
                 // The ctor runs RenderMatrix()+Recompute(): the matrix grid (in MatrixContent) is populated and the status
                 // band (in StatusContent) shows the recomputed summary — proving the pipeline still targets the shell-hosted
@@ -198,7 +203,7 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 var cell = FirstSelectableCell(window.MatrixGrid);
                 Assert.NotNull(cell);
                 // The real SelectCell handler fires on MouseLeftButtonUp (selective's cell wiring) — post-migration it still
@@ -217,7 +222,7 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 // Select a cell, type a distinctive frente, and apply to ALL cells via the real ApplyAll_Click handler.
                 var cell = FirstSelectableCell(window.MatrixGrid);
                 cell.RaiseEvent(new MouseButtonEventArgs(InputManager.Current.PrimaryMouseDevice, 0, MouseButton.Left)
@@ -241,14 +246,17 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 var bayCount = window.MatrixGrid.ColumnDefinitions.Count - 1; // minus the label column
                 var cellsBefore = CellBorders(window.MatrixGrid).Count;       // default 2 bays × 4 levels = 8
 
-                // Grow ONE bay by clicking its "+" (AddLevel): the matrix becomes JAGGED — that bay has one more level than the
-                // rest, and the shorter bay leaves its top display row empty. The grid renders maxLevels rows either way.
-                var plus = VisualDescendants(window.MatrixGrid).OfType<Button>().First(b => (b.Content as string) == "+");
-                plus.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent, plus));
+                // Grow ONE bay through the frente panel (the ± buttons left the matrix in I-43 gate 8A): the matrix
+                // becomes JAGGED — that bay has one more level than the rest, and the shorter bay leaves its top
+                // display row empty. The grid renders maxLevels rows either way.
+                window.EditorState.SelectCell(0, 0, extend: false);
+                ((ComboBox)window.FindName("FrontScopeBox")).SelectedIndex = 0; // this frente only
+                ((TextBox)window.FindName("FrontLevelsBox")).Text = "5";        // the default matrix has 4 levels
+                EditorWindowTestSupport.ClickByContent(window, "Aplicar niveles");
 
                 var cellsAfter = CellBorders(window.MatrixGrid).Count;
                 var maxLevels = window.MatrixGrid.RowDefinitions.Count - 1;   // minus the header row
@@ -263,7 +271,7 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 Assert.Equal(Visibility.Collapsed, window.FondoSelectorPanel.Visibility); // single fondo → hidden
 
                 // Two fondos (doble profundidad): the real Fondos_LostFocus rebuilds the per-fondo selector, which lives in the
@@ -283,7 +291,7 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 LayoutShell(window, 1300, 760);
 
                 // Frontal (default) draws.
@@ -305,7 +313,7 @@ namespace RackCad.UI.Tests
         {
             var (requested, view, updateOnly, id, name, requestType, payload) = StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.LoadForNew(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-TEMPLATE", "Plantilla"));
                 EditorWindowTestSupport.SetText(window, "NameBox", "Selectivo nuevo");
                 EditorWindowTestSupport.ClickByContent(window, "Insertar frontal"); // the CTA in PrimaryActions
@@ -326,7 +334,7 @@ namespace RackCad.UI.Tests
         {
             var (requested, view, updateOnly, id, name, requestType, payload) = StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.LoadExisting(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-SEL", "Selectivo A"));
                 EditorWindowTestSupport.ClickNamed(window, "UpdateButton"); // now in the LeadingActions slot
                 return Capture(window);
@@ -347,7 +355,7 @@ namespace RackCad.UI.Tests
             // The ONE real-handler gap not covered by SelectiveEditorWindowTests (frontal/lateral/update): the PLANTA view.
             var (requested, view, updateOnly, id, name, requestType, payload, resolves) = StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.LoadExisting(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-SEL", "Selectivo A"));
                 EditorWindowTestSupport.ClickNamed(window, "InsertPlantaButton"); // now in the PrimaryActions slot
                 var cap = Capture(window);
@@ -376,7 +384,7 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 var shell = window.Shell;
                 LayoutShell(window, 1300, 700);
 
@@ -409,7 +417,7 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.WindowStartupLocation = WindowStartupLocation.Manual;
                 window.Left = -10000; window.Top = -10000; window.ShowInTaskbar = false;
                 window.Width = window.MinWidth;   // show at the contractual minimum (outer), from the shared tokens
@@ -466,7 +474,7 @@ namespace RackCad.UI.Tests
             var (minW, minH, initW, initH, wMinW, wMinH, wW, wH, hasStyle) = StaTestRunner.Run(() =>
             {
                 var tokens = AppStyles();
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 return ((double)tokens["ShellMinWidth"], (double)tokens["ShellMinHeight"],
                         (double)tokens["ShellInitialWidth"], (double)tokens["ShellInitialHeight"],
                         window.MinWidth, window.MinHeight, window.Width, window.Height,
@@ -490,7 +498,7 @@ namespace RackCad.UI.Tests
                 var minH = (double)tokens["ShellMinHeight"];
                 var sidebarWidth = (double)tokens["ShellSidebarWidth"];
 
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 var shell = window.Shell;
                 var generic = new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/Generic.xaml", UriKind.Relative) };
                 shell.Style = (Style)generic[typeof(RackEditorVisualShell)];

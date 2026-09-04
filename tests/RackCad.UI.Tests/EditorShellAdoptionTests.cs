@@ -58,7 +58,7 @@ namespace RackCad.UI.Tests
         {
             var (hasSession, rackId, requested, view, catalog) = StaTestRunner.Run(() =>
             {
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.Session.Identity.Adopt("GUID-S", "Sel");
                 window.Session.RequestInsert("frontal", -1,
                     ctx => new SelectiveInsertionRequest(null, null, ctx.Id, ctx.Name, ctx.View));

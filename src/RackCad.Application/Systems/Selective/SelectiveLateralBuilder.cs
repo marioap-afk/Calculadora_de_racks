@@ -96,10 +96,11 @@ namespace RackCad.Application.Systems.Selective
 
                 var anchorOffset = offsets[firstReaching];
 
-                // Primary cabecera = the first reaching fondo. A per-post custom cabecera wins, but only for fondo 0.
-                var custom = firstReaching == 0 && i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
+                // Primary cabecera = the first reaching fondo, with ITS OWN custom cabecera if that (fondo, post) has
+                // one (I-43: the custom axis is per fondo, no longer fondo 0 only).
+                var custom = SelectiveCabeceraAuthority.EffectiveCustomAt(system, firstReaching, i);
                 RackFrameConfiguration cabecera;
-                if (custom != null && custom.Height > 0.0)
+                if (custom != null)
                 {
                     cabecera = custom;
                 }
@@ -122,6 +123,14 @@ namespace RackCad.Application.Systems.Selective
                 {
                     if (k == firstReaching || i > fondoBays[k].Count)
                     {
+                        continue;
+                    }
+
+                    // Each of them can carry its own custom cabecera, which overrides its height and depth whole.
+                    var customK = SelectiveCabeceraAuthority.EffectiveCustomAt(system, k, i);
+                    if (customK != null)
+                    {
+                        AddCabeceraAtOffset(extras, customK, offsets[k] - anchorOffset, catalog);
                         continue;
                     }
 

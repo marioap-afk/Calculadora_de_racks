@@ -28,7 +28,7 @@ namespace RackCad.UI.Tests
     /// </summary>
     public sealed class RichEditorCloseContractTests
     {
-        private static RackSelectiveWindow Selective() => new RackSelectiveWindow(canInsertInAutoCad: true);
+        private static RackSelectiveWindow Selective() => SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
         private static RackDynamicSystemWindow Dynamic() => new RackDynamicSystemWindow(canInsertInAutoCad: true);
         private static RackPushBackSystemWindow PushBack() => new RackPushBackSystemWindow(canInsertInAutoCad: true);
         private static RackCantileverWindow Cantilever() => new RackCantileverWindow(canInsertInAutoCad: true);

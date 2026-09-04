@@ -438,8 +438,9 @@ namespace RackCad.Application.Systems.Selective
                 // Shared posts (frame positions): a fondo with C bays has C+1 posts.
                 for (var i = 0; i < bays.Count + 1; i++)
                 {
-                    var custom = k == 0 && i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
-                    if (custom != null && custom.Height > 0.0)
+                    // The custom cabecera of THIS (fondo, post) — I-43: the BOM counts the recipe each fondo really has.
+                    var custom = SelectiveCabeceraAuthority.EffectiveCustomAt(system, k, i);
+                    if (custom != null)
                     {
                         // A custom cabecera restored from persistence carries Horizontals + BracingPanels but an EMPTY
                         // Members list (derived data is regenerated on load), so materialize its celosía too — otherwise
@@ -532,19 +533,9 @@ namespace RackCad.Application.Systems.Selective
             }
         }
 
+        /// <summary>Delega en la regla unica (I-43, gate 8.6E); antes era una copia identica de la misma aritmetica.</summary>
         private static double FondoFallbackHeight(IList<SelectiveBay> bays, double systemHeight)
-        {
-            var h = 0.0;
-            if (bays != null)
-            {
-                foreach (var bay in bays)
-                {
-                    if (bay.Height > h) h = bay.Height;
-                }
-            }
-
-            return h > 0.0 ? h : systemHeight;
-        }
+            => SelectivePostGeometry.FallbackHeight(bays, systemHeight);
 
         private static double Param(HeaderBlockInstance instance, string name)
             => instance.DynamicParameters.TryGetValue(name, out var value) ? value : 0.0;

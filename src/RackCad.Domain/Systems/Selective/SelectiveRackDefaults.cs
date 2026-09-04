@@ -24,6 +24,11 @@ namespace RackCad.Domain.Systems.Selective
         /// <summary>Default pallet depth / fondo (in) when a design does not specify one (legacy documents too).</summary>
         public const double DefaultPalletDepth = 48.0;
 
+        /// <summary>Default "elevacion de larguero a piso" (in) of a frente, the value the editor has always shown.
+        /// Since I-43 the elevation is a DIRECT property of each frente, so this is what a NEW frente starts with —
+        /// not a global anyone inherits from.</summary>
+        public const double DefaultFloorBeamRise = 4.0;
+
         /// <summary>Default separation (in) between consecutive fondos in a doble-profundidad rack when a gap has no value.</summary>
         public const double DefaultSeparator = 12.0;
 

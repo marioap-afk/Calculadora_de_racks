@@ -60,12 +60,53 @@ namespace RackCad.Application.Systems.Selective
         private static double MaxBayHeight(IList<SelectiveBay> bays)
         {
             var h = 0.0;
+            if (bays == null) return h;
             foreach (var bay in bays)
             {
                 if (bay.Height > h) h = bay.Height;
             }
 
             return h;
+        }
+
+        /// <summary>
+        /// La altura de referencia de UN fondo cuando su poste no limita con ninguna bahia: la mas alta de sus bahias,
+        /// y si no tiene ninguna, la del sistema. Es la misma regla que ya aplicaban el lateral y el BOM por su
+        /// cuenta; vive aqui para que la semilla de "Personalizar" no invente una tercera (AGENTS: una regla en un
+        /// solo sitio).
+        /// </summary>
+        public static double FallbackHeight(IList<SelectiveBay> bays, double systemHeight)
+        {
+            var h = MaxBayHeight(bays);
+            return h > 0.0 ? h : systemHeight;
+        }
+
+        /// <summary>
+        /// La Y del nivel de carga MAS ALTO que toca el poste <paramref name="postIndex"/> dentro de esas bahias (las
+        /// dos que limita, como mucho); 0 si ninguna. PURA: no lee el sistema completo, asi que sirve igual para el
+        /// fondo 0 que para cualquier otro (I-43, gate 8.6E).
+        /// <para>
+        /// Es la referencia de la validacion SEVERA: una cabecera por debajo de este valor dejaria el larguero o la
+        /// tarima superiores sobresaliendo por encima del poste.
+        /// </para>
+        /// </summary>
+        public static double TopLevelYAtPost(IList<SelectiveBay> bays, int postIndex)
+        {
+            if (bays == null) return 0.0;
+
+            var top = 0.0;
+            void Consider(int bayIndex)
+            {
+                if (bayIndex < 0 || bayIndex >= bays.Count) return;
+                foreach (var level in bays[bayIndex].Levels)
+                {
+                    if (level.Y > top) top = level.Y;
+                }
+            }
+
+            Consider(postIndex - 1); // la bahia a la izquierda del poste
+            Consider(postIndex);     // y la de la derecha
+            return top;
         }
 
         /// <summary>Height of post <paramref name="postIndex"/> WITHIN a given fondo's bays = the tallest of the (up to

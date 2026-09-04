@@ -57,7 +57,7 @@ namespace RackCad.UI.Tests
         {
             var (built, error) = StaTestRunner.Run(() =>
             {
-                var window = new RackCad.UI.Systems.Selective.RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.LoadForNew(SelectivePalletDesignDocument.From(design, "GUID-20", "Rack 20"));
                 var rebuilt = window.BuildDesignForTest(out var err);
                 return (rebuilt, err);
