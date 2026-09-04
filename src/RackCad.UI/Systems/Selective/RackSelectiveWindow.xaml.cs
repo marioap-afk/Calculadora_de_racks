@@ -246,6 +246,9 @@ namespace RackCad.UI.Systems.Selective
             fondoMatrices.Clear();
             fondoMatrices.Add(SnapshotWorking());
             selectedFondo = 0;
+            // No-op con la siembra de InitMatrix, pero deja escrito que una ventana recien abierta ya cumple INV-12:
+            // ningun frente espera a que alguien coalesque el global.
+            state.MaterializeFloorBeamRises(legacyFloorBeamRise);
             targetPreference = SelectiveTargetPreference.Decode(settings?.SelectiveTargetFondos);
             ApplyStoredTargetPreference();
             RebuildFondoSelector();
@@ -2307,8 +2310,11 @@ namespace RackCad.UI.Systems.Selective
             // Every frente gets a DIRECT elevation. A document written before gate 8A carries only the run-wide value,
             // and the drawing it described used it everywhere, so each frente materializes it as its own; from here on
             // the frente is the authority (I-43, gate 8A).
-            state.MaterializeFloorBeamRises(legacyFloorBeamRise);
             RestoreWorkingFrom(fondoMatrices[0]);
+            // DESPUES de restaurar: asi la fila viva ya es la del fondo 0 y la materializacion opera sobre el estado
+            // definitivo. Materialize cubre ademas todos los slots, de modo que un documento legacy queda con valor
+            // directo en cada frente de cada fondo (I-43, gate 8.6D, INV-12).
+            state.MaterializeFloorBeamRises(legacyFloorBeamRise);
             // NOW the fondos of this rack are known, so the remembered choice can be resolved against them: an
             // explicit set keeps the fondos this rack has, and "Todos"/"Actual" re-aim at it (gate 8 correction).
             ApplyStoredTargetPreference();

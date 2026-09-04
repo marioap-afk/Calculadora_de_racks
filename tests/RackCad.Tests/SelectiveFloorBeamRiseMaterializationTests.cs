@@ -50,11 +50,14 @@ namespace RackCad.Tests
                 state.FondoMatrices[0].FloorBeamRiseOverrides[i] = null; // el slot llega como documento legacy
             }
 
+            for (var i = 0; i < state.FloorBeamRiseOverrides.Count; i++) state.FloorBeamRiseOverrides[i] = null;
+
             state.MaterializeFloorBeamRises(7.0);
 
-            Assert.All(SlotRow(state, 0), rise => Assert.Equal(7.0, rise));
-            Assert.All(SlotRow(state, 1), rise => Assert.Equal(7.0, rise));
+            Assert.All(SlotRow(state, 0), rise => Assert.Equal(7.0, rise)); // el slot del fondo SELECCIONADO
             Assert.All(LiveRow(state), rise => Assert.Equal(7.0, rise));
+            // El fondo 1 ya tenia valor directo (sembrado al crearse): materializar no lo pisa.
+            Assert.All(SlotRow(state, 1), rise => Assert.Equal(SelectiveRackDefaults.DefaultFloorBeamRise, rise));
         }
 
         [Fact]

@@ -27,6 +27,10 @@ namespace RackCad.Tests
             foreach (var frentes in fondoFrentes)
             {
                 state.InitMatrix(frentes, 2);
+                // Un estado SIN elevaciones directas. Desde 8.6D eso ya no lo produce InitMatrix —un frente nuevo
+                // nace con su valor (INV-12)—, solo la lectura de un documento legacy. Se simula explicitamente para
+                // que estas pruebas sigan describiendo el caso legacy que siempre describieron.
+                for (var b = 0; b < frentes; b++) state.FloorBeamRiseOverrides[b] = null;
                 state.FondoMatrices.Add(state.SnapshotWorking(48.0, 0.0));
             }
 

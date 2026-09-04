@@ -238,7 +238,9 @@ namespace RackCad.Tests
                 Assert.Equal(42.0, state.CellAt(new SelectiveCellAddress(fondo, 1, 1)).Frente);
                 Assert.False(FloorBeamAt(state, fondo, 1));
                 Assert.Null(HeightAt(state, fondo, 1));
-                Assert.Null(state.FloorBeamRiseOverrideAt(fondo, 1));
+                // Conserva su valor DIRECTO sembrado (4"), NO el 14" que recibieron los destinos: sigue probando
+                // exactamente lo mismo, que a este fondo no llego la edicion (I-43, gate 8.6D, INV-12).
+                Assert.Equal(SelectiveRackDefaults.DefaultFloorBeamRise, state.FloorBeamRiseOverrideAt(fondo, 1));
                 Assert.Null(state.CabeceraAt(fondo, 1));
                 Assert.Equal(48.0, state.FondoMatrices[fondo].Depth);
                 Assert.Equal(0.0, state.FondoMatrices[fondo].CabeceraOverride);
@@ -321,7 +323,8 @@ namespace RackCad.Tests
             state.ResizeBays(3);
             state.SyncPostCabeceras();
 
-            Assert.Null(state.FloorBeamRiseOverrideAt(0, 2));
+            // El frente que vuelve clona al superviviente (4"), NO resucita el 15" que el shrink borro.
+            Assert.Equal(SelectiveRackDefaults.DefaultFloorBeamRise, state.FloorBeamRiseOverrideAt(0, 2));
             Assert.Null(HeightAt(state, 0, 2));
             Assert.Null(state.CabeceraAt(0, 3));
             Assert.Equal(3, state.BaySegments.Count);

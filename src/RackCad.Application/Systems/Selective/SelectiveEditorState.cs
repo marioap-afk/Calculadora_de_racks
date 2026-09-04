@@ -145,7 +145,8 @@ namespace RackCad.Application.Systems.Selective
                 FloorBeams.Add(false);
                 BayHeights.Add(null);
                 BaySegments.Add(new List<SelectiveSegment>());
-                FloorBeamRiseOverrides.Add(null);
+                // Un frente NUEVO sin origen nace con valor DIRECTO (INV-12); solo la carga legacy produce null.
+                FloorBeamRiseOverrides.Add(SelectiveRackDefaults.DefaultFloorBeamRise);
             }
 
             // A full reset of the matrix resets the selection too: keeping positions from the matrix that just
@@ -228,7 +229,7 @@ namespace RackCad.Application.Systems.Selective
                     m.Bays.Add(widthSeed != null && b < widthSeed.Bays.Count ? CloneColumn(widthSeed.Bays[b]) : new List<SelectiveEditorCell> { NewCell() });
                     m.FloorBeams.Add(false);
                     m.BayHeights.Add(null);
-                    m.FloorBeamRiseOverrides.Add(null);
+                    m.FloorBeamRiseOverrides.Add(SelectiveRackDefaults.DefaultFloorBeamRise); // frente nuevo sin origen
                     m.BaySegments.Add(new List<SelectiveSegment>());
                 }
             }
@@ -341,7 +342,7 @@ namespace RackCad.Application.Systems.Selective
                     Bays.Add(new List<SelectiveEditorCell> { NewCell() });
                     FloorBeams.Add(false);
                     BayHeights.Add(null);
-                    FloorBeamRiseOverrides.Add(null);
+                    FloorBeamRiseOverrides.Add(SelectiveRackDefaults.DefaultFloorBeamRise); // frente nuevo sin origen
                     BaySegments.Add(new List<SelectiveSegment>());
                 }
             }
@@ -924,7 +925,7 @@ namespace RackCad.Application.Systems.Selective
                     matrix.Bays.Add(new List<SelectiveEditorCell> { NewCell() });
                     matrix.FloorBeams.Add(false);
                     matrix.BayHeights.Add(null);
-                    matrix.FloorBeamRiseOverrides.Add(null);
+                    matrix.FloorBeamRiseOverrides.Add(SelectiveRackDefaults.DefaultFloorBeamRise); // frente nuevo sin origen
                     matrix.BaySegments.Add(new List<SelectiveSegment>());
                 }
             }
@@ -965,9 +966,13 @@ namespace RackCad.Application.Systems.Selective
             }
 
             Fill(FloorBeamRiseOverrides, Bays.Count);
+
+            // TODOS los slots, incluido el del fondo seleccionado. Saltarlo daba por sentado que la fila viva y ese
+            // slot son la misma cosa, y durante una carga NO lo son: se materializa antes de restaurar, asi que el
+            // slot se quedaba con nulos y el RestoreWorkingFrom siguiente los devolvia a la fila viva (I-43,
+            // gate 8.6D, INV-12). Cada contenedor se rellena hasta SU propio conteo de frentes.
             for (var k = 0; k < FondoMatrices.Count; k++)
             {
-                if (k == SelectedFondo) continue; // the live row above IS this fondo
                 Fill(FondoMatrices[k].FloorBeamRiseOverrides, FondoMatrices[k].Bays.Count);
             }
         }

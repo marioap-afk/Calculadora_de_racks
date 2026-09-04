@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Settings;
 using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.RackFrames;
 using RackCad.UI.Systems.Selective;
 using Xunit;
@@ -122,7 +123,9 @@ namespace RackCad.UI.Tests
             });
 
             Assert.Equal(new[] { true, false, true }, cells);
-            Assert.Equal(new double?[] { 15.0, null, 15.0 }, rises);
+            // El fondo 2 no era destino: conserva su valor DIRECTO sembrado al crearse, ya no un null a la
+            // espera de que el global lo coalesque (I-43, gate 8.6D, INV-12).
+            Assert.Equal(new double?[] { 15.0, SelectiveRackDefaults.DefaultFloorBeamRise, 15.0 }, rises);
             Assert.Equal(new[] { true, false, true }, cabeceras);
         }
 

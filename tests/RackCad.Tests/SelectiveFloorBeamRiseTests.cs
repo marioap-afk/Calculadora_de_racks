@@ -156,6 +156,10 @@ namespace RackCad.Tests
             {
                 state.InitMatrix(frentes, 2);
                 for (var b = 0; b < frentes; b++) state.FloorBeams[b] = true;
+                // Un estado SIN elevaciones directas. Desde 8.6D eso ya no lo produce InitMatrix —un frente nuevo
+                // nace con su valor (INV-12)—, solo la lectura de un documento legacy. Se simula explicitamente para
+                // que estas pruebas sigan describiendo el caso legacy que siempre describieron.
+                for (var b = 0; b < frentes; b++) state.FloorBeamRiseOverrides[b] = null;
                 state.FondoMatrices.Add(state.SnapshotWorking(48.0, 0.0));
             }
 
@@ -298,7 +302,8 @@ namespace RackCad.Tests
             Assert.Equal(new double?[] { null, 21.0 }, state.FloorBeamRiseOverrides.ToArray());
 
             var aligned = state.CloneAligned(snapshot, 3, snapshot);
-            Assert.Equal(new double?[] { null, 21.0, null }, aligned.FloorBeamRiseOverrides.ToArray());
+            // El tercer frente no tiene origen en el snapshot: nace con su valor directo, no como null.
+            Assert.Equal(new double?[] { null, 21.0, SelectiveRackDefaults.DefaultFloorBeamRise }, aligned.FloorBeamRiseOverrides.ToArray());
         }
 
         [Fact]
@@ -336,7 +341,9 @@ namespace RackCad.Tests
 
             Assert.Single(state.Bays);
             Assert.Single(state.FloorBeamRiseOverrides);
-            Assert.Null(state.FloorBeamRiseOverrides[0]);
+            // Ya no es null: un frente nuevo nace con su valor DIRECTO (I-43, gate 8.6D, INV-12). Lo que la prueba
+            // afirma sigue siendo lo mismo — el 12.0 de la matriz anterior no sobrevive a la reinicializacion.
+            Assert.Equal(SelectiveRackDefaults.DefaultFloorBeamRise, state.FloorBeamRiseOverrides[0]);
             AssertParallelLists(state);
         }
 
@@ -350,12 +357,12 @@ namespace RackCad.Tests
             state.InitMatrix(2, 3);
 
             Assert.Equal(2, state.FloorBeamRiseOverrides.Count);
-            Assert.All(state.FloorBeamRiseOverrides, value => Assert.Null(value));
+            Assert.All(state.FloorBeamRiseOverrides, value => Assert.Equal(SelectiveRackDefaults.DefaultFloorBeamRise, value));
             AssertParallelLists(state);
         }
 
         [Fact]
-        public void InitMatrix_WithMoreFrentes_ProducesOnlyNewNulls()
+        public void InitMatrix_WithMoreFrentes_ProducesOnlyFreshDirectValues()
         {
             var state = new SelectiveEditorState { DefaultBeamId = BeamId };
             state.InitMatrix(1, 2);
@@ -364,12 +371,12 @@ namespace RackCad.Tests
             state.InitMatrix(3, 2);
 
             Assert.Equal(3, state.FloorBeamRiseOverrides.Count);
-            Assert.All(state.FloorBeamRiseOverrides, value => Assert.Null(value));
+            Assert.All(state.FloorBeamRiseOverrides, value => Assert.Equal(SelectiveRackDefaults.DefaultFloorBeamRise, value));
             AssertParallelLists(state);
         }
 
         [Fact]
-        public void AfterThatReset_BuildDesignEmitsNoOverrideOnAnyFrente()
+        public void AfterThatReset_BuildDesignEmitsTheDefaultOnEveryFrente()
         {
             var state = new SelectiveEditorState { DefaultBeamId = BeamId };
             state.InitMatrix(2, 2);
@@ -381,7 +388,9 @@ namespace RackCad.Tests
             var design = state.BuildDesign(Inputs(state, globalRise: 4.0));
 
             Assert.Equal(3, design.Bays.Count);
-            Assert.All(design.Bays, bay => Assert.Null(bay.FloorBeamRiseOverride));
+            // El 12.0 anterior desaparecio, que es lo que esta prueba vigila; los frentes salen con su valor directo
+            // en vez de esperando a que el global los coalesque (INV-12).
+            Assert.All(design.Bays, bay => Assert.Equal(SelectiveRackDefaults.DefaultFloorBeamRise, bay.FloorBeamRiseOverride));
         }
 
         // ---- Persistence ----
