@@ -1106,6 +1106,16 @@ namespace RackCad.UI.Systems.Selective
                 return;
             }
 
+            ApplyCustomizedCabecera(i, cfg, fondo, resolvedHeight, globalPeralte);
+        }
+
+        /// <summary>
+        /// La mitad de "Personalizar" que ocurre DESPUÉS del configurador: validar la altura, avisar y escribir.
+        /// Extraída para que sea comprobable — el configurador es modal y bloquea el hilo STA, así que sin esto el
+        /// contrato de validación y de cancelación no se podría probar (I-43, gate 8.6E).
+        /// </summary>
+        private void ApplyCustomizedCabecera(int i, RackFrameConfiguration cfg, double fondo, double resolvedHeight, double globalPeralte)
+        {
             // The depth is NOT the configurator's to choose: it belongs to the fondo (gate 4). Stamp the visible
             // fondo's depth here so what the user accepted matches what they saw; every TARGET fondo then has its own
             // depth imposed by ApplyCabeceraToTargets, which is the single authority.
@@ -1117,27 +1127,21 @@ namespace RackCad.UI.Systems.Selective
             var topLevelY = TopLevelYAtPost(i);
             if (topLevelY > 0.0 && cfg.Height < topLevelY - 0.5)
             {
-                MessageBox.Show(
-                    this,
+                SelectiveCabeceraHeightPrompt.ConfirmSevere(
                     "La cabecera del poste (" + cfg.Height.ToString("0.##", CultureInfo.InvariantCulture)
                         + " in) queda MÁS BAJA que el nivel de carga superior (" + topLevelY.ToString("0.##", CultureInfo.InvariantCulture)
                         + " in).\n\nEl larguero/tarima superior sobresaldría por encima del poste. Sube la altura de la cabecera "
                         + "o revisa los niveles de las bahías vecinas.",
-                    "Cabecera demasiado baja",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                    this);
             }
             else if (resolvedHeight > 0.0 && Math.Abs(cfg.Height - resolvedHeight) > 0.5)
             {
-                MessageBox.Show(
-                    this,
+                SelectiveCabeceraHeightPrompt.Inform(
                     "La altura de la cabecera (" + cfg.Height.ToString("0.##", CultureInfo.InvariantCulture)
                         + " in) difiere del alto resuelto del poste (" + resolvedHeight.ToString("0.##", CultureInfo.InvariantCulture)
                         + " in).\n\nEl sistema se puede desconfigurar: el frontal coloca los largueros para el alto resuelto, "
                         + "así que el corte lateral y el frontal pueden dejar de coincidir.",
-                    "Altura de cabecera",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                    this);
             }
 
             // Sync the post peralte edited in the cabecera back to the selective's per-post source of truth (0 = global,
@@ -2122,6 +2126,18 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>Test seam: the cabecera depth "Personalizar" would open with right now — the VISIBLE fondo's,
         /// committed first, exactly as <see cref="CustomizePost_Click"/> computes it. The click itself cannot be
         /// driven from a test because the configurator is modal (ShowDialog blocks the STA thread).</summary>
+        /// <summary>Test seam: la ALTURA con la que "Personalizar" abriria ahora mismo, para el poste dado.</summary>
+        internal double CustomizeSeedHeightForTest(int postIndex) => ResolvedPostHeight(postIndex);
+
+        /// <summary>Test seam: el ancho completo del frente que "Medio frente" pasaria al dialogo.</summary>
+        internal double TramosFullWidthForTest(int bay)
+            => lastSystem != null && bay >= 0 && bay < lastSystem.Bays.Count ? lastSystem.Bays[bay].BeamLength : 0.0;
+
+        /// <summary>Test seam: la mitad post-configurador de "Personalizar", que un modal impide ejecutar.</summary>
+        internal void ApplyCustomizedCabeceraForTest(int postIndex, RackFrameConfiguration cfg, double globalPeralte)
+            => ApplyCustomizedCabecera(
+                postIndex, cfg, ResolvedCabeceraFondo(selectedFondo), ResolvedPostHeight(postIndex), globalPeralte);
+
         internal double CustomizeSeedDepthForTest()
         {
             SaveWorkingToSelected();
