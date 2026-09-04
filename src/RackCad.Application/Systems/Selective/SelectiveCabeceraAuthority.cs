@@ -35,6 +35,26 @@ namespace RackCad.Application.Systems.Selective
             => design == null ? null : At(design.PostCabeceras, design.ExtraFondoPostCabeceras, fondoIndex, postIndex);
 
         /// <summary>
+        /// La custom de <c>(fondoIndex, postIndex)</c> que SIRVE como marco, o null. Es una LECTURA PURA: comprueba
+        /// que existe y que tiene altura, y devuelve la receta ALMACENADA tal cual — sin imponer el <c>Depth</c> del
+        /// fondo, sin refrescar el modelo fisico y sin copiarla.
+        /// <para>
+        /// Preguntar no puede mutar. Quien necesite la configuracion EFECTIVA —con el <c>Depth</c> del fondo ya
+        /// impuesto— usa <see cref="EffectiveCustomAt"/>; quien solo necesita decidir si hay una custom, o mostrarla
+        /// como receta, usa esta (I-43, gate 8.6F).
+        /// </para>
+        /// <para>
+        /// Una receta con <c>Height &lt;= 0</c> no es un marco utilizable y se rechaza, como ya hacia cada consumidor
+        /// por su cuenta.
+        /// </para>
+        /// </summary>
+        public static RackFrameConfiguration UsableCustomAt(SelectiveRackSystem system, int fondoIndex, int postIndex)
+        {
+            var raw = CustomAt(system, fondoIndex, postIndex);
+            return raw != null && raw.Height > 0.0 ? raw : null;
+        }
+
+        /// <summary>
         /// The custom that is usable as a FULL override of that post's cabecera, or null — with ONE exception, the
         /// depth.
         /// <para>
@@ -57,9 +77,12 @@ namespace RackCad.Application.Systems.Selective
         /// </summary>
         public static RackFrameConfiguration EffectiveCustomAt(SelectiveRackSystem system, int fondoIndex, int postIndex)
         {
-            var custom = CustomAt(system, fondoIndex, postIndex);
-            if (custom == null || custom.Height <= 0.0) return null;
+            var custom = UsableCustomAt(system, fondoIndex, postIndex);
+            if (custom == null) return null;
 
+            // SIGUE imponiendo el Depth sobre la receta almacenada, a proposito: purificarlo es ARQ-43-10, un
+            // follow-up DIFERIDO fuera de I-43. Lo unico que cambia aqui es que la comprobacion de usabilidad se
+            // delega en la consulta pura, para que no haya dos redacciones de la misma regla.
             ImposeFondoDepth(custom, SelectiveDepthLayout.CabeceraDepthOfFondo(system, fondoIndex));
             return custom;
         }
@@ -86,9 +109,13 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>Inches below which two depths are the same value (they come from the same arithmetic).</summary>
         private const double DepthTolerance = 1e-6;
 
-        /// <summary>Whether that post of that fondo draws a customized cabecera rather than a derived one.</summary>
+        /// <summary>
+        /// Si ese poste de ese fondo dibuja una cabecera personalizada en vez de una derivada. PURA: pasa por
+        /// <see cref="UsableCustomAt"/>, no por <see cref="EffectiveCustomAt"/>, porque preguntar si algo existe no
+        /// puede imponer el <c>Depth</c> del fondo sobre la receta almacenada (I-43, gate 8.6F).
+        /// </summary>
         public static bool HasCustomAt(SelectiveRackSystem system, int fondoIndex, int postIndex)
-            => EffectiveCustomAt(system, fondoIndex, postIndex) != null;
+            => UsableCustomAt(system, fondoIndex, postIndex) != null;
 
         private static RackFrameConfiguration At(
             IList<RackFrameConfiguration> fondoZero,

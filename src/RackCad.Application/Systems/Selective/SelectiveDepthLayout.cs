@@ -91,9 +91,19 @@ namespace RackCad.Application.Systems.Selective
 
             foreach (var bay in BaysOfFondo(system, k)) view.Bays.Add(bay);
             foreach (var peralte in system.PostPeraltes) view.PostPeraltes.Add(peralte);
-            if (k == 0)
+
+            // La cabecera custom es autoridad de (fondo, poste), asi que la vista de un fondo expone la fila de ESE
+            // fondo como su fila local: para sus consumidores la vista ES un rack de un solo fondo (O-43-03). Antes
+            // solo se copiaba con k == 0, de modo que el frontal y la preview de cualquier otro fondo perdian su
+            // cabecera y dibujaban la derivada.
+            // Se recorren todos los postes (un fondo de C frentes tiene C+1) para PRESERVAR EL INDICE: un hueco se
+            // copia como hueco, porque comprimir la fila moveria la cabecera a otro poste. Un hueco significa
+            // "derivala": no se materializa ninguna estandar aqui. Se guardan REFERENCIAS, sin imponer Depth y sin
+            // copiar, igual que hacia la rama de fondo 0.
+            var posts = view.Bays.Count + 1;
+            for (var i = 0; i < posts; i++)
             {
-                foreach (var cabecera in system.PostCabeceras) view.PostCabeceras.Add(cabecera);
+                view.PostCabeceras.Add(SelectiveCabeceraAuthority.UsableCustomAt(system, k, i));
             }
 
             return view;

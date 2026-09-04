@@ -677,17 +677,23 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Frontal_KeepsTheMasterFondoZeroRepresentation()
+        public void Frontal_RepresentsItsOwnFondo_NotTheMasterFondoZero()
         {
-            // The frontal collapses the fondo axis, so it must not pick a cabecera from fondo 1..N (I-43, by decision):
-            // superimposing cabeceras of different depth, or choosing one arbitrarily, would both be wrong.
+            // REESCRITO AL CONTRARIO (I-43, gate 8.6F, O-43-03). Este test afirmaba que el frontal colapsa el eje de
+            // fondos y por eso NO podia tomar la cabecera de un fondo 1..N. La decision del dueno es la opuesta: cada
+            // frontal Fk representa FISICAMENTE al fondo k, asi que dibuja la custom de (k, i). No hay superposicion
+            // que temer — cada frontal es el de UN fondo — ni eleccion arbitraria: la vista es la de ese fondo.
             var design = Design(2, 2);
             SetCustom(design, 1, 1, Custom(380.0));
             var system = Resolve(design);
 
             var view = SelectiveDepthLayout.FondoSystemView(system, 1);
 
-            Assert.DoesNotContain(view.PostCabeceras, c => c != null && c.Height == 380.0);
+            Assert.Contains(view.PostCabeceras, c => c != null && c.Height == 380.0);
+            // Y no se contagia: el fondo 0 sigue sin esa cabecera.
+            Assert.DoesNotContain(
+                SelectiveDepthLayout.FondoSystemView(system, 0).PostCabeceras,
+                c => c != null && c.Height == 380.0);
         }
     }
 }

@@ -201,6 +201,39 @@ namespace RackCad.Tests
         // ======================================================================================
 
         [Fact]
+        public void Pureza1_UsableCustomAt_DoesNotTouchTheStoredRecipe()
+        {
+            // El fondo 1 tiene 60" de tarima, asi que su cabecera EFECTIVA mediria 54"; la receta almacenada dice 42.
+            var design = Design(2);
+            design.ExtraFondoDepths.Add(60.0);
+            SetCustom(design, 1, 1, Custom(300.0));
+            var system = Resolve(design);
+
+            var raw = SelectiveCabeceraAuthority.CustomAt(system, 1, 1);
+            var depthBefore = raw.Depth;
+            var membersBefore = raw.Members?.Count ?? 0;
+
+            var usable = SelectiveCabeceraAuthority.UsableCustomAt(system, 1, 1);
+
+            Assert.Same(raw, usable);                             // la misma receta, ni copia ni version efectiva
+            Assert.Equal(depthBefore, raw.Depth);                 // sin imponer el Depth del fondo
+            Assert.Equal(membersBefore, raw.Members?.Count ?? 0);  // sin refrescar el modelo fisico
+        }
+
+        [Fact]
+        public void Pureza1_UsableCustomAt_RefusesAnUnusableRecipe()
+        {
+            var design = Design(2);
+            var broken = Custom(300.0);
+            broken.Height = 0.0; // sin altura no es un marco usable
+            SetCustom(design, 1, 1, broken);
+            var system = Resolve(design);
+
+            Assert.Null(SelectiveCabeceraAuthority.UsableCustomAt(system, 1, 1));
+            Assert.Null(SelectiveCabeceraAuthority.UsableCustomAt(system, 1, 0)); // no hay ninguna
+        }
+
+        [Fact]
         public void Pureza3_HasCustomAt_IsAPureQuestion()
         {
             var design = Design(2);
