@@ -2092,6 +2092,10 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>The editor state — a test seam (I-43, InternalsVisibleTo), matching the one the safety grids expose.</summary>
         internal SelectiveEditorState EditorState => state;
 
+        /// <summary>Test seam: las instancias que la preview acaba de construir. La preview dibuja el fondo VISIBLE,
+        /// asi que esto es lo que permite comprobar que la cabecera que pinta es la de ESE fondo (I-43, O-43-03).</summary>
+        internal IReadOnlyList<HeaderBlockInstance> PreviewInstancesForTest => lastInstances;
+
         /// <summary>Refresh the cell + frente panels from the current selection — a test seam (I-43, gate 8A) for the
         /// repaint a real click performs after moving the selection.</summary>
         internal void LoadCellEditorForTest() => LoadCellEditor();
