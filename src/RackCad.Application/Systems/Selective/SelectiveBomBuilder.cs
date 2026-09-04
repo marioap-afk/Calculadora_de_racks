@@ -533,19 +533,9 @@ namespace RackCad.Application.Systems.Selective
             }
         }
 
+        /// <summary>Delega en la regla unica (I-43, gate 8.6E); antes era una copia identica de la misma aritmetica.</summary>
         private static double FondoFallbackHeight(IList<SelectiveBay> bays, double systemHeight)
-        {
-            var h = 0.0;
-            if (bays != null)
-            {
-                foreach (var bay in bays)
-                {
-                    if (bay.Height > h) h = bay.Height;
-                }
-            }
-
-            return h > 0.0 ? h : systemHeight;
-        }
+            => SelectivePostGeometry.FallbackHeight(bays, systemHeight);
 
         private static double Param(HeaderBlockInstance instance, string name)
             => instance.DynamicParameters.TryGetValue(name, out var value) ? value : 0.0;

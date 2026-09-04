@@ -892,8 +892,9 @@ namespace RackCad.UI.Systems.Selective
             if (bay < 0 || bay >= baySegments.Count) return;
             if (!CommitPendingEditors()) return; // frontera: fullWidth y la proyección leen estado comprometido (C4)
 
-            // Best-effort full bay width (shared across fondos) so the dialog can show the calculated last tramo + warn.
-            var fullWidth = lastSystem != null && bay < lastSystem.Bays.Count ? lastSystem.Bays[bay].BeamLength : 0.0;
+            // El ancho del frente EN EL FONDO VISIBLE. Leer lastSystem.Bays (fondo 0) daba 0 para un frente que
+            // solo existe en un fondo mas largo, y el dialogo se abria sin poder calcular el ultimo tramo (ARQ-43-18).
+            var fullWidth = TramosFullWidth(bay);
 
             // The dialog opens ONCE, seeded from the VISIBLE frente. Cancelling changes nothing anywhere (I-39).
             var dialog = new SelectiveSegmentsWindow(bay + 1, baySegments[bay], fullWidth) { Owner = this };
@@ -1106,7 +1107,7 @@ namespace RackCad.UI.Systems.Selective
                 return;
             }
 
-            ApplyCustomizedCabecera(i, cfg, fondo, resolvedHeight, globalPeralte);
+            ApplyCustomizedCabecera(i, cfg, fondo, globalPeralte);
         }
 
         /// <summary>
@@ -1114,39 +1115,37 @@ namespace RackCad.UI.Systems.Selective
         /// Extraída para que sea comprobable — el configurador es modal y bloquea el hilo STA, así que sin esto el
         /// contrato de validación y de cancelación no se podría probar (I-43, gate 8.6E).
         /// </summary>
-        private void ApplyCustomizedCabecera(int i, RackFrameConfiguration cfg, double fondo, double resolvedHeight, double globalPeralte)
+        private void ApplyCustomizedCabecera(int i, RackFrameConfiguration cfg, double fondo, double globalPeralte)
         {
             // The depth is NOT the configurator's to choose: it belongs to the fondo (gate 4). Stamp the visible
             // fondo's depth here so what the user accepted matches what they saw; every TARGET fondo then has its own
             // depth imposed by ApplyCabeceraToTargets, which is the single authority.
             if (fondo > 0.0) cfg.Depth = fondo;
 
-            // Height comes from the system; the user MAY override it, but warn it can desynchronize the rack
-            // (the frontal largueros are placed for the resolved height). The SEVERE case is when the cabecera ends
-            // up BELOW the top load level: the top larguero/pallet would stick out above the post — flag it specially.
-            var topLevelY = TopLevelYAtPost(i);
-            if (topLevelY > 0.0 && cfg.Height < topLevelY - 0.5)
+            // La altura se revisa en TODOS los fondos destino, no solo en el visible: una misma receta puede ser
+            // valida en uno, discrepante en otro y peligrosa en un tercero, porque cada fondo tiene su propia
+            // topologia y sus propias alturas. Un destino que no tiene ese poste se OMITE, y el review lo reporta
+            // aparte en vez de bloquear a los demas (I-43, gate 8.6E).
+            var review = SelectiveCabeceraHeightReview.Of(lastSystem, state.TargetFondos.Fondos, i, cfg.Height);
+            if (review.HasSevere)
             {
-                SelectiveCabeceraHeightPrompt.ConfirmSevere(
-                    "La cabecera del poste (" + cfg.Height.ToString("0.##", CultureInfo.InvariantCulture)
-                        + " in) queda MÁS BAJA que el nivel de carga superior (" + topLevelY.ToString("0.##", CultureInfo.InvariantCulture)
-                        + " in).\n\nEl larguero/tarima superior sobresaldría por encima del poste. Sube la altura de la cabecera "
-                        + "o revisa los niveles de las bahías vecinas.",
-                    this);
+                // UN solo dialogo con todos los fondos implicados. Cancelar tiene que dejar mutacion CERO, y por
+                // eso se pregunta ANTES de escribir el peralte y antes de aplicar la receta.
+                if (!SelectiveCabeceraHeightPrompt.ConfirmSevere(
+                    review.Describe() + "\n\nAplicar de todos modos?", this))
+                {
+                    return;
+                }
             }
-            else if (resolvedHeight > 0.0 && Math.Abs(cfg.Height - resolvedHeight) > 0.5)
+            else if (review.HasInformative)
             {
-                SelectiveCabeceraHeightPrompt.Inform(
-                    "La altura de la cabecera (" + cfg.Height.ToString("0.##", CultureInfo.InvariantCulture)
-                        + " in) difiere del alto resuelto del poste (" + resolvedHeight.ToString("0.##", CultureInfo.InvariantCulture)
-                        + " in).\n\nEl sistema se puede desconfigurar: el frontal coloca los largueros para el alto resuelto, "
-                        + "así que el corte lateral y el frontal pueden dejar de coincidir.",
-                    this);
+                SelectiveCabeceraHeightPrompt.Inform(review.Describe(), this);
             }
 
             // Sync the post peralte edited in the cabecera back to the selective's per-post source of truth (0 = global,
             // so it keeps tracking the global peralte). The frontal/planta read PostPeraltes, so this avoids divergence.
-            // PostPeraltes stays GLOBAL by post (I-43): it is not part of the per-fondo write below.
+            // PostPeraltes stays GLOBAL by post (I-43): it is not part of the per-fondo write below, y se escribe
+            // DESPUES de la confirmacion: antes, un "Cancelar" dejaba el peralte ya cambiado.
             if (i < postPeraltes.Count)
             {
                 var edited = cfg.PostPeralte;
@@ -1178,33 +1177,30 @@ namespace RackCad.UI.Systems.Selective
         private static RackFrameConfiguration CloneCabecera(RackFrameConfiguration configuration)
             => new RackFrameProjectStore().DeepCopy(configuration);
 
-        /// <summary>The resolved height of post <paramref name="i"/> (tallest adjacent frente); falls back to the run height.</summary>
+        /// <summary>Las bahias del fondo VISIBLE. <c>lastSystem.Bays</c> son las del fondo 0, asi que leerlas
+        /// directamente describia otro fondo en cuanto el usuario cambiaba de vista (I-43, gate 8.6E).</summary>
+        private IList<SelectiveBay> VisibleFondoBays()
+            => lastSystem == null ? null : SelectiveDepthLayout.BaysOfFondo(lastSystem, selectedFondo);
+
+        /// <summary>El ancho completo del frente <paramref name="bay"/> en el fondo VISIBLE; 0 si no lo tiene.</summary>
+        private double TramosFullWidth(int bay)
+        {
+            var bays = VisibleFondoBays();
+            return bays != null && bay >= 0 && bay < bays.Count ? bays[bay].BeamLength : 0.0;
+        }
+
+        /// <summary>El alto resuelto del poste <paramref name="i"/> EN EL FONDO VISIBLE (la mas alta de sus bahias
+        /// vecinas); cae a la altura de referencia de ese fondo. La formula no cambia: cambia la FUENTE de bahias.</summary>
         private double ResolvedPostHeight(int i)
         {
             if (lastSystem == null) return 0.0;
-            var height = SelectivePostGeometry.PostHeight(lastSystem, i);
+            var bays = VisibleFondoBays();
+            var height = SelectivePostGeometry.PostHeight(bays, i, SelectivePostGeometry.FallbackHeight(bays, lastSystem.Height));
             return height > 0.0 ? height : lastSystem.Height;
         }
 
-        /// <summary>The Y of the topmost load level touching post <paramref name="i"/> (max over its adjacent bays); 0 if none.</summary>
-        private double TopLevelYAtPost(int i)
-        {
-            if (lastSystem == null) return 0.0;
-
-            var top = 0.0;
-            void Consider(int bayIndex)
-            {
-                if (bayIndex < 0 || bayIndex >= lastSystem.Bays.Count) return;
-                foreach (var level in lastSystem.Bays[bayIndex].Levels)
-                {
-                    if (level.Y > top) top = level.Y;
-                }
-            }
-
-            Consider(i - 1); // bay to the left of the post
-            Consider(i);     // bay to the right
-            return top;
-        }
+        /// <summary>La Y del nivel de carga mas alto que toca el poste <paramref name="i"/> EN EL FONDO VISIBLE.</summary>
+        private double TopLevelYAtPost(int i) => SelectivePostGeometry.TopLevelYAtPost(VisibleFondoBays(), i);
 
         /// <summary>
         /// The CABECERA depth of fondo <paramref name="fondoIndex"/>: its own "Fondo de cabecera" override when set,
@@ -2130,13 +2126,11 @@ namespace RackCad.UI.Systems.Selective
         internal double CustomizeSeedHeightForTest(int postIndex) => ResolvedPostHeight(postIndex);
 
         /// <summary>Test seam: el ancho completo del frente que "Medio frente" pasaria al dialogo.</summary>
-        internal double TramosFullWidthForTest(int bay)
-            => lastSystem != null && bay >= 0 && bay < lastSystem.Bays.Count ? lastSystem.Bays[bay].BeamLength : 0.0;
+        internal double TramosFullWidthForTest(int bay) => TramosFullWidth(bay);
 
         /// <summary>Test seam: la mitad post-configurador de "Personalizar", que un modal impide ejecutar.</summary>
         internal void ApplyCustomizedCabeceraForTest(int postIndex, RackFrameConfiguration cfg, double globalPeralte)
-            => ApplyCustomizedCabecera(
-                postIndex, cfg, ResolvedCabeceraFondo(selectedFondo), ResolvedPostHeight(postIndex), globalPeralte);
+            => ApplyCustomizedCabecera(postIndex, cfg, ResolvedCabeceraFondo(selectedFondo), globalPeralte);
 
         internal double CustomizeSeedDepthForTest()
         {
