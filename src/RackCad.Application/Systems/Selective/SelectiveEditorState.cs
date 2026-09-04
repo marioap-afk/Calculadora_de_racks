@@ -10,7 +10,7 @@ namespace RackCad.Application.Systems.Selective
     /// The pure, testable STATE of the selective advanced editor (initiative I-20): the working matrix (bays × levels),
     /// the saved matrix per fondo (doble profundidad), the selection, and the per-post cabeceras/peraltes — plus the
     /// operations the editor performs on them (init, snapshot/restore of the working fondo, save/load fondo, resize,
-    /// add/remove level, apply-by-scope, and <see cref="BuildDesign"/>). Extracted verbatim from
+    /// numero exacto de niveles por frente, apply-by-scope, and <see cref="BuildDesign"/>). Extracted verbatim from
     /// <c>RackSelectiveWindow</c> so this logic runs without WPF and is covered by <c>RackCad.Tests</c>; the window keeps
     /// the painting (matrix + previews), the cell editor, the events and the coalesced recompute (shell I-15). No AutoCAD,
     /// no WPF, no catalog: the resolver/builder stay in the window and consume the <see cref="SelectivePalletDesign"/>

@@ -56,9 +56,10 @@ namespace RackCad.Application.Systems.Selective
 
         /// <summary>
         /// A shallow one-fondo VIEW of the system: its own bays (levels/heights) plus the shared run settings, so the
-        /// frontal builder / BOM can lay out that single fondo's face. Custom per-post cabeceras apply to fondo 0 only
-        /// (Fase 1); extra fondos use the standard frame. Used by the editor preview (show the fondo being edited) and
-        /// the BOM (sum every fondo's real content).
+        /// frontal builder / BOM can lay out that single fondo's face. Its <c>PostCabeceras</c> row is THAT fondo's
+        /// row: cada frontal Fk representa fisicamente al fondo k (O-43-03), asi que la vista lleva la custom de
+        /// <c>(k, i)</c> cuando existe y deja el hueco cuando no, para que el builder derive la estandar. Used by the
+        /// editor preview (show the fondo being edited) and the BOM (sum every fondo's real content).
         /// </summary>
         public static SelectiveRackSystem FondoSystemView(SelectiveRackSystem system, int k)
         {

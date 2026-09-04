@@ -92,8 +92,8 @@ namespace RackCad.Domain.Systems.Selective
         /// so a design written before this existed leaves every extra fondo standard — which is exactly what those
         /// drawings showed, since a custom cabecera only ever applied to fondo 0.
         /// <para>
-        /// <see cref="PostCabeceras"/> stays fondo 0's row, so the legacy shape keeps its legacy meaning and the frontal
-        /// keeps reading the master fondo. Read the pair through the single authority
+        /// <see cref="PostCabeceras"/> stays fondo 0's row, so the legacy shape keeps its legacy meaning; el frontal de
+        /// cada fondo lee la fila de SU fondo (O-43-03), no la del fondo 0. Read the pair through the single authority
         /// (<c>SelectiveCabeceraAuthority</c>) instead of indexing either list, so nothing re-derives the fallback.
         /// </para>
         /// </summary>
@@ -702,9 +702,10 @@ namespace RackCad.Domain.Systems.Selective
         /// <see cref="SelectivePalletDesign.FloorBeamRise"/> (I-43, ID14). A bay IS the pair
         /// <c>(fondo, frente)</c>, so this is that authority without a second table.
         /// <para>
-        /// NULL means inherit the global; <c>0.0</c> is an EXPLICIT override that says "no rise at all", and the two
-        /// are not the same thing — a nullable is what keeps them distinguishable, and a later change of the global
-        /// moves the first and never the second.
+        /// NULL solo puede venir de un documento LEGACY anterior a este campo, y se materializa al cargarlo: desde
+        /// entonces todo frente tiene valor directo (I-43, gate 8.6D). <c>0.0</c> es un valor explicito —"ninguna
+        /// elevacion"— y nunca significa "hereda"; el campo sigue siendo anulable justamente para poder distinguir
+        /// esas dos cosas al leer lo antiguo. El global ya no es autoridad de escritura: solo compatibilidad de lectura.
         /// </para>
         /// <para>
         /// It only affects geometry while <see cref="FloorBeam"/> is true, but it is NOT cleared when that flag is

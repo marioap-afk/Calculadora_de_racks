@@ -101,7 +101,7 @@
                         <TextBlock Text="Fondos destino" Style="{StaticResource FieldLabel}" />
                         <ToggleButton x:Name="TargetFondosButton" HorizontalContentAlignment="Left" Content="Actual"
                                       Padding="8,3" Background="White" BorderBrush="#D8DEE6" BorderThickness="1" Foreground="#1F2933"
-                                      ToolTip="Dónde aterrizan las ediciones: el fondo actual, uno, varios o todos. No cambia lo que ves en la matriz." />
+                                      ToolTip="Dónde aplican los botones «Aplicar» y los campos que edites: el fondo actual, uno, varios o todos. No cambia lo que ves en la matriz." />
                         <Popup x:Name="TargetFondosPopup" PlacementTarget="{Binding ElementName=TargetFondosButton}" Placement="Bottom"
                                StaysOpen="False" AllowsTransparency="True"
                                IsOpen="{Binding IsChecked, ElementName=TargetFondosButton, Mode=TwoWay}">
@@ -207,7 +207,8 @@
                                              ToolTip="Claro/separación debajo de este larguero. Vacío = automático. Se ajusta al troquel." />
                                 </StackPanel>
                             </Grid>
-                            <TextBlock Text="Aplicar a (celdas):" Style="{StaticResource FieldLabel}" Margin="0,6,0,2" />
+                            <TextBlock Text="Aplicar a (celdas):" Style="{StaticResource FieldLabel}" Margin="0,6,0,2"
+                                       ToolTip="Hasta dónde llega cada botón dentro de un fondo. Los fondos en los que escribe los decide «Fondos destino»." />
                             <WrapPanel>
                                 <Button Content="Celda" Click="ApplyCell_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6"
                                         ToolTip="Aplica los valores a la celda seleccionada." />
@@ -218,7 +219,7 @@
                                 <Button Content="Frente" Click="ApplyColumn_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="72" Margin="0,0,6,6"
                                         ToolTip="Aplica a todo el frente (misma columna, todos los niveles)." />
                                 <Button Content="Todas" Click="ApplyAll_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,0,6"
-                                        ToolTip="Aplica a todas las celdas del tramo." />
+                                        ToolTip="Aplica a todas las celdas de cada fondo destino." />
                             </WrapPanel>
                         </StackPanel>
                     </Border>
@@ -299,7 +300,7 @@
         <shell:RackEditorVisualShell.MatrixContent>
             <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="Matriz frente × nivel — clic para seleccionar una celda, Ctrl+clic para marcar varias. Todo se edita en el panel izquierdo y se aplica con su alcance + «Fondos destino». El único control propio de la columna es «Medio frente». Nivel 1 abajo."
+                    <TextBlock Text="Matriz frente × nivel — clic para seleccionar una celda, Ctrl+clic para marcar varias. Al cambiar de celda solo se guarda la celda visible; para escribir en los «Fondos destino» usa un botón «Aplicar» con su alcance. El único control propio de la columna es «Medio frente». Nivel 1 abajo."
                                Foreground="#617080" FontSize="11" TextWrapping="Wrap" Margin="10,8,10,0" />
                     <StackPanel x:Name="FondoSelectorPanel" Orientation="Horizontal" Margin="10,6,10,0" Visibility="Collapsed">
                         <TextBlock Text="Editando fondo:" Foreground="#415161" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0" />

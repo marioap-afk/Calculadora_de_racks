@@ -282,7 +282,8 @@ namespace RackCad.Application.Systems.Selective
                     // The floor larguero rises FloorBeamRise above the lowest troquel so its ménsula clears the base
                     // plate. The rise is user-entered, so snap it up to the troquel pitch — otherwise the floor beam
                     // AND every level stacked above it (separations are always multiples of paso) leave the grid.
-                    // The rise is per FRENTE: its own override when it has one, else the run-wide default (I-43).
+                    // The rise is per FRENTE: es su autoridad. El coalesce contra el valor de la corrida es solo
+                    // compatibilidad de LECTURA para un documento legacy sin materializar (I-43, gate 8.6D).
                     // A 0.0 override is a real value, so the coalesce must be on null, never on "is it zero".
                     var effectiveRise = bayDesign.FloorBeamRiseOverride ?? floorBeamRise;
                     y = gridBase + RoundUpToMultiple(effectiveRise, paso);

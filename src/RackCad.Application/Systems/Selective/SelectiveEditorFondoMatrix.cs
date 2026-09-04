@@ -17,8 +17,9 @@ namespace RackCad.Application.Systems.Selective
         public List<double?> BayHeights { get; } = new List<double?>();
         public List<List<SelectiveSegment>> BaySegments { get; } = new List<List<SelectiveSegment>>();
 
-        /// <summary>Per-bay "elevacion de larguero a piso" override (in); null = inherit the run-wide value, and
-        /// <c>0.0</c> is an explicit "no rise" (I-43, ID14). Parallel to <see cref="Bays"/> by bay.</summary>
+        /// <summary>Elevacion de "larguero a piso" de cada frente (in). Es la AUTORIDAD del frente: null solo aparece
+        /// transitoriamente al leer un documento legacy, antes de materializarlo, y <c>0.0</c> es un valor explicito
+        /// ("ninguna elevacion"), nunca "hereda" (I-43, ID14 + gate 8.6D). Parallel to <see cref="Bays"/> by bay.</summary>
         public List<double?> FloorBeamRiseOverrides { get; } = new List<double?>();
 
         /// <summary>This fondo's pallet depth (in). Defaults to the shared default, mirroring the editor's field default.</summary>
