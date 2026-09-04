@@ -725,6 +725,31 @@ Ninguno bloqueó I-37A: se rodearon dentro del namespace Cantilever, sin tocar I
    listas paralelas por matriz) simplificaría el editor, pero es exactamente el refactor transversal
    que el plan prohíbe.
 
+### Deuda registrada por la SEGUNDA revisión arquitectónica (Gate 8.9)
+
+13. **R2-04 — celda pendiente y commit estructural en escenarios que el arreglo no cubre.** El Gate 8.6H hizo que un
+    gesto estructural que compromete una celda recalcule, pero la segunda revisión dejó anotados escenarios vecinos
+    —otras combinaciones de campo pendiente y celda editada— que no se cubrieron. No hay defecto observado: es
+    cobertura por ampliar.
+
+14. **R2-09 — visibilidad del lector crudo de cabeceras.** El plan preveía bajar `CustomAt` a `internal`; se conservó
+    su visibilidad para no cambiar API por estética. Desviación aceptada y registrada, no deuda funcional.
+
+15. **ARQ-43-08B — limpieza de código muerto del Selectivo.** El Gate 8.6G corrigió solo los textos que afirmaban un
+    contrato falso (08A). Retirar el código que ya nadie usa quedó expresamente fuera.
+
+16. **UX de «Fondo de tarima» / «Fondo de cabecera» al navegar entre fondos.** El dueño reportó una vez que las cajas
+    parecían no seguir al fondo visible. **No se pudo reproducir**: ocho pruebas con gestos reales —teclear, cargar
+    con `LoadForNew` y con `RACKEDITAR`, dos y tres fondos, navegación repetida— dan el valor correcto del fondo en
+    pantalla. Si el comportamiento vuelve a verse, hace falta el escenario exacto: cómo se fijaron las profundidades,
+    qué decía «Fondos destino» y por qué punto de entrada se abrió el editor.
+
+17. **Vocabulario de la BOTA en el sistema DINÁMICO — pendiente de decisión del dueño.** El Selectivo volvió a
+    `Ninguno / Izquierda / Derecha / Ambas` en el Gate 8.6H, que es como se llamó siempre. El Dinámico se quedó con
+    `Ninguno / Entrada/Salida / Posterior / Ambas`, que llegó como efecto colateral de I-42 (Push Back) y **no tiene
+    ninguna decisión registrada**. Se conservó a propósito, declarado de forma explícita en su llamada y fijado con
+    una prueba de caracterización. Push Back mantiene el suyo en su propia sección.
+
 ### Producto: pendientes conocidos del Selectivo
 
 9. **ID12 — tope de tarima por lado (SPLIT).** El tope de tarima debe poder ser izquierdo, derecho o

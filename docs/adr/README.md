@@ -71,7 +71,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0029](0029-contrato-funcional-comun-de-ventanas-wpf.md) | Contrato funcional común de ventanas WPF | aceptado |
 | [0030](0030-fondo-por-celda-push-back-y-envolvente-derivada.md) | El fondo de Push Back es de la celda; el del frente es una envolvente derivada | aceptado |
 | [0031](0031-push-back-compuesto-estructura-unica-y-configuracion-por-lado.md) | El Push Back compuesto tiene UNA estructura física y DOS configuraciones funcionales | aceptado |
-| [0032](0032-selectivo-pendiente-comprometido-y-autoridades-por-fondo.md) | El editor Selectivo separa valor pendiente de estado comprometido, y cada propiedad tiene una autoridad por fondo | propuesto |
+| [0032](0032-selectivo-pendiente-comprometido-y-autoridades-por-fondo.md) | El editor Selectivo separa valor pendiente de estado comprometido, y cada propiedad tiene una autoridad por fondo | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,

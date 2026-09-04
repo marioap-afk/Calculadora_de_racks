@@ -1,17 +1,25 @@
 # ADR-0032: El editor Selectivo separa valor pendiente de estado comprometido, y cada propiedad tiene una autoridad por fondo
 
-- **Estado:** **propuesto**
-- **Fecha:** 2026-09-03 (propuesto)
-- **Decisores:** dueño del repo (**pendiente de aceptar**); Arquitecto independiente de I-43 (plan v1.1);
-  Coordinador de I-43 (revisión); Claude (redacción)
+- **Estado:** **aceptado**
+- **Fecha:** 2026-09-03 (propuesto) · 2026-09-04 (aceptado)
+- **Decisores:** dueño del repo (**acepta**); Arquitecto independiente de I-43 (plan v1.1 y segunda revisión
+  del Gate 8.9); Coordinador de I-43 (revisión); Claude (redacción e implementación)
 - **Iniciativa relacionada:** I-43 — `feature/selectivo-scopes-fondos`
   ([contrato](../initiatives/I-43-selectivo-scopes-fondos.md))
 
-> **Este ADR se redacta ANTES de tocar código productivo** (Gate 8.6A del plan de corrección
+> **Aceptación del dueño (2026-09-04).** El dueño acepta esta decisión **con el contrato tal como quedó
+> implementado**, tras validarlo manualmente en AutoCAD 2025 sobre el DLL construido exactamente desde
+> `d582deed5bbd93083261399e45b2ecc3e16088d7` (SHA-256 del DLL
+> `f70d89bffad38cf77fd8b5b51e2951512e34f2af5b7050392c590d8ff4a06d87`), con veredicto **PASS TOTAL**: los ejes
+> independientes, la selección proyectada, la frontera pendiente/comprometido, la elevación y la cabecera por
+> fondo, el frontal y la preview de cada fondo, y la compatibilidad legacy. La aceptación incluye los
+> **follow-ups declarados en D14**, que siguen fuera de I-43. A partir de aquí el contenido de este ADR es
+> **inmutable** ([adr/README.md](README.md)): solo pueden cambiar su Estado y sus enlaces.
+>
+> **Este ADR se redactó ANTES de tocar código productivo** (Gate 8.6A del plan de corrección
 > post-Gate 8). Fija por escrito el contrato que los gates 8.6B–8.6G implementarán, de modo que la
 > implementación se pueda contrastar contra una decisión declarada y no contra la lectura que cada
-> agente haga del código. Mientras esté en `propuesto` puede editarse libremente; solo el dueño lo
-> acepta o lo rechaza ([adr/README.md](README.md)).
+> agente haga del código.
 
 ## Contexto
 

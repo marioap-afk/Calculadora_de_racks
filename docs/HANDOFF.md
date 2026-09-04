@@ -16,6 +16,25 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
+**I-43 — Selectivo: edición por alcance y fondos — queda INTEGRADA y CERRADA** el **2026-09-04**
+(`feature/selectivo-scopes-fondos`). El editor Selectivo gana **dos ejes independientes**: *dónde* se escribe
+—`TargetFondos`: el fondo actual, uno, varios o todos— y *qué alcance* tiene dentro de un fondo —`Scope`: celda,
+seleccionadas, nivel, frente, todas—. Toda escritura explícita es el producto **`Scope` × `TargetFondos`**, y una
+celda que un fondo destino no tiene se **omite**, nunca se recorta ni se crea. La selección son **posiciones 2D**
+`(frente, nivel)` que se proyectan sobre cada destino. Cada propiedad recibió una autoridad **por fondo**: la
+profundidad de tarima y la de cabecera viven en el slot de su fondo, la elevación del larguero a piso es directa por
+`(FondoIndex, FrontIndex)` —el valor global histórico queda solo como compatibilidad de lectura— y la cabecera
+personalizada es autoridad de `(FondoIndex, PostIndex)`, de modo que **el frontal y la preview de cada fondo dibujan
+la suya** (se retira la asimetría «custom solo en el fondo 0»). Las cuatro cajas de texto pasan a ser **editores de un
+valor pendiente**: los slots y las matrices son la única autoridad comprometida, `BuildDesign` no lee texto, y el
+commit es **atómico, en dos fases y ordenado** (`FondosBox` → `BayCountBox` → `FondoBox` → `CabeceraFondoBox`), con
+`TargetFondos` re-resuelto tras cada cambio estructural y **un solo recompute por operación**. El contrato quedó
+escrito ANTES de tocar código en
+[ADR-0032](adr/0032-selectivo-pendiente-comprometido-y-autoridades-por-fondo.md), **aceptado por el dueño**.
+**Compatibilidad legacy intacta**: sin cambio de DTO, de `SchemaVersion` (sigue `1.0`) ni de stores, y los documentos
+anteriores dibujan igual. **Validación manual del Owner: PASS TOTAL** en AutoCAD 2025 sobre el DLL construido desde
+`d582deed5bbd93083261399e45b2ecc3e16088d7`.
+
 **I-44 — Hotfix Push Back: peraltes incorrectos de largueros intermedios en BOM — queda INTEGRADA y
 CERRADA** el **2026-09-03** (`fix/push-back-peraltes-intermedios-bom`). Un larguero intermedio pertenece a
 una **cama**, no a la estructura (ADR-0031 §8-bis), pero `PushBackIntermediateBeamLateralBuilder.BuildFor(…)`
@@ -1214,7 +1233,40 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-44 está INTEGRADA y CERRADA. I-43 sigue PAUSADA, con su rama y su worktree intactos.
+### I-43 e I-44 están INTEGRADAS y CERRADAS. No hay iniciativa en curso.
+
+**I-43 — Selectivo: edición por alcance y fondos quedó integrada el 2026-09-04** desde
+`feature/selectivo-scopes-fondos` con merge `--no-ff`, sobre el candidato
+**`d582deed5bbd93083261399e45b2ecc3e16088d7`** —que ya incorporaba `main` (`aff66a8`, I-44) por merge, no por
+rebase— y con **validación manual del Owner PASS TOTAL** en AutoCAD 2025 sobre el DLL
+`f70d89bffad38cf77fd8b5b51e2951512e34f2af5b7050392c590d8ff4a06d87`.
+
+**Trazabilidad.** BASE `085ca2f5b33541cfb93c8cdec8cbc8f0368c899f` · CLAIM
+`788febe52fd7be1dc381e798d462efd2dcc84ba3` · Claim-Id `5ef90a1b-acf8-4f18-a3be-37b75614e1d9` · código final
+pre-main `d7b5e5513e86e9e44ebed23f6128bb8c6b70c247` · candidato Owner `d582dee` · CI pre-Owner **33916118566**
+success · `RackCad.Tests` **4643 PASS**, `RackCad.UI.Tests` **1216 PASS / 17 skip**, **P0 61/61**, focal I-44
+**22/22**.
+
+**Cómo se llegó aquí.** El Gate 8 tuvo un PASS funcional del Owner, pero una **primera revisión arquitectónica**
+(8.5) encontró que el contrato no estaba escrito en ninguna parte y que las cajas de texto eran a la vez editor y
+autoridad; de ahí salió el plan por gates 8.6A–8.6G, que fijó el contrato en ADR-0032 antes de tocar código. Una
+**segunda revisión independiente** (8.9) dictaminó *C — CONDITIONAL* y destapó tres regresiones introducidas por
+esos mismos arreglos: encoger el número de fondos desde uno que desaparecía **pisaba la matriz del superviviente**
+(bloqueante), el índice destino del combo se validaba **antes** del commit y podía quedar fuera de rango, y un gesto
+estructural podía comprometer una celda **sin recalcular**, dejando la preview describiendo un estado que ya no
+existía. El Gate 8.6H las cerró, junto con la acumulación de avisos, la etiqueta del poste, los textos contradictorios
+y un hallazgo del dueño: la nomenclatura de BOTA de Push Back se había filtrado al Selectivo. El Gate 8.10 incorporó
+`main` por merge y produjo el candidato que el Owner validó.
+
+**Lo que NO se hizo, a propósito.** Los follow-ups quedan registrados en
+[ideas-futuras.md](ideas-futuras.md): R2-04, R2-09, ARQ-43-10 (purificar `EffectiveCustomAt`, que sigue imponiendo
+el Depth in-place), ARQ-43-11, ARQ-43-12, ARQ-43-14, ARQ-43-15, ARQ-43-16, ARQ-43-08B, ID12 (tope de tarima por
+lado, SPLIT) e ID13 (frentes en blanco). Dos piden **decisión del dueño**: el **vocabulario de la BOTA en el
+DINÁMICO** —que se conservó exactamente como estaba, `Ninguno / Entrada-Salida / Posterior / Ambas`, porque no hay
+ninguna decisión registrada para ese sistema— y una **confusión de display** de «Fondo de tarima»/«Fondo de cabecera»
+que el dueño reportó una vez y **no se pudo reproducir** con ninguno de los gestos disponibles.
+
+### I-44 está INTEGRADA y CERRADA.
 
 **I-44 — Hotfix Push Back: peraltes incorrectos de largueros intermedios en BOM quedó integrada el
 2026-09-03** desde `fix/push-back-peraltes-intermedios-bom`, sobre el candidato funcional

@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-43
 title: Selectivo — edicion por alcance y fondos
 type: feature
-status: implementing
+status: integrated
 branch: feature/selectivo-scopes-fondos
 base_branch: main
 priority:
@@ -26,16 +26,33 @@ automation:
 
 # Selectivo — edicion por alcance y fondos
 
-> **Estado real (2026-09-03).** Gate 8 tiene **PASS funcional del Owner** sobre
-> `de100ed111d8551690f58fbcea2e4a29f0db5909`. La revision arquitectonica posterior (Gate 8.5) alcanzo
-> consenso tecnico y produjo un plan de correccion por gates (v1.1, APROBADO). **Gate 9 esta
-> BLOQUEADO** hasta cerrar 8.6A–8.6G, 8.7 y la revalidacion del Owner (8.8). Este documento se crea en
-> **Gate 8.6A** junto con [ADR-0032](../adr/0032-selectivo-pendiente-comprometido-y-autoridades-por-fondo.md)
-> (estado `propuesto`), ANTES de tocar codigo productivo.
+> **INTEGRADA y CERRADA el 2026-09-04.** Validacion manual del Owner en AutoCAD 2025 **PASS TOTAL** sobre el DLL
+> construido exactamente desde `d582deed5bbd93083261399e45b2ecc3e16088d7` (SHA-256
+> `f70d89bffad38cf77fd8b5b51e2951512e34f2af5b7050392c590d8ff4a06d87`).
+> [ADR-0032](../adr/0032-selectivo-pendiente-comprometido-y-autoridades-por-fondo.md) queda **aceptado**, e I-43 ya
+> tiene fila en [ROADMAP.md](../ROADMAP.md).
 >
-> **I-43 no tiene fila en [ROADMAP.md](../ROADMAP.md).** La iniciativa avanza por instruccion directa
-> del dueno a traves del Coordinador; el registro en ROADMAP corresponde al Gate 9 de integracion y
-> **no lo hace el implementador**.
+> **Recorrido.** Gate 8 PASS funcional sobre `de100ed`; primera revision arquitectonica (8.5) que produjo el plan
+> v1.1 y el contrato escrito ANTES de codificar (8.6A); gates 8.6B-8.6G; **segunda revision independiente (8.9)** con
+> dictamen *C - CONDITIONAL*; **Gate 8.6H** correctivo; **Gate 8.10** incorporacion de `main` por merge; Owner PASS;
+> Gate 9 integracion.
+>
+> **Lo que la segunda revision destapo y 8.6H cerro:** R2-01 (BLOCKER - encoger el numero de fondos desde uno que
+> desaparecia pisaba la matriz del superviviente), R2-02 (el indice destino del combo se validaba ANTES del commit y
+> podia quedar fuera de rango), R2-03 (un gesto estructural podia comprometer una celda sin recalcular), R2-05
+> (avisos que se pisaban), R2-06 («poste F3» se leia como un fondo), R2-07 (textos contradictorios), R2-08
+> (cobertura ausente) y **R2-10** (la nomenclatura de BOTA de Push Back se habia filtrado al Selectivo: vuelve a
+> `Ninguno / Izquierda / Derecha / Ambas`, con los MISMOS ordinales, asi que ninguna seleccion guardada cambia de
+> significado).
+>
+> **Evidencia final.** CI pre-Owner **33916118566** success; `RackCad.Tests` **4643 PASS**;
+> `RackCad.UI.Tests` **1216 PASS / 17 skip**; **P0 61/61**; focal I-44 **22/22** (Push Back intacto).
+>
+> **Diferidos, en [ideas-futuras.md](../ideas-futuras.md):** R2-04, R2-09, ARQ-43-10 (`EffectiveCustomAt` sigue
+> imponiendo el Depth in-place, a proposito), ARQ-43-11, ARQ-43-12, ARQ-43-14, ARQ-43-15, ARQ-43-16, ARQ-43-08B,
+> **ID12 (SPLIT)** e ID13. Dos piden **decision del dueno**: el vocabulario de BOTA del **DINAMICO** -conservado
+> exactamente como estaba porque no hay decision registrada para ese sistema- y una confusion de display de «Fondo de
+> tarima»/«Fondo de cabecera» que el dueno reporto una vez y **no se pudo reproducir**.
 
 ## 1. Objetivo
 
