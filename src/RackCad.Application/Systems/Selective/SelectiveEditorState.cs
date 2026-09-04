@@ -35,8 +35,10 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>Per-bay "medio frente" tramos (N tramos, the last calculated); empty = normal full-width bay. Parallel to <see cref="Bays"/>.</summary>
         public List<List<SelectiveSegment>> BaySegments { get; } = new List<List<SelectiveSegment>>();
 
-        /// <summary>Per-bay "elevacion de larguero a piso" override (in); null = inherit the global, <c>0.0</c> = an
-        /// explicit zero (I-43, ID14). Parallel to <see cref="Bays"/> by bay.</summary>
+        /// <summary>Elevacion de "larguero a piso" de cada frente (in). Es la AUTORIDAD del frente: null solo
+        /// aparece transitoriamente al leer un documento legacy, antes de materializarlo, y <c>0.0</c> es un valor
+        /// explicito ("ninguna elevacion"), nunca "hereda" (I-43, ID14 + gate 8.6D). Parallel to
+        /// <see cref="Bays"/> by bay.</summary>
         public List<double?> FloorBeamRiseOverrides { get; } = new List<double?>();
 
         /// <summary>One saved level matrix per fondo. Entry <see cref="SelectedFondo"/> is stale WHILE editing — the live
@@ -761,8 +763,9 @@ namespace RackCad.Application.Systems.Selective
 
         // ---- Floor-beam rise by (fondo, frente) - I-43, ID14 ----
 
-        /// <summary>The "elevacion de larguero a piso" override of <c>(fondoIndex, frontIndex)</c>; null = inherit the
-        /// global. Reads the LIVE working matrix for the fondo being edited and the stored slot for the rest.</summary>
+        /// <summary>La elevacion de "larguero a piso" de <c>(fondoIndex, frontIndex)</c>. Tras crear, cargar o
+        /// redimensionar siempre tiene valor directo; null solo puede venir de un documento legacy sin
+        /// materializar (gate 8.6D). Lee la matriz VIVA para el fondo en edicion y el slot para el resto.</summary>
         public double? FloorBeamRiseOverrideAt(int fondoIndex, int frontIndex)
         {
             var row = FloorBeamRiseRow(fondoIndex);

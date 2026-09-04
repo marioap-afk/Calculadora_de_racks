@@ -30,6 +30,18 @@ namespace RackCad.UI
         /// </summary>
         private static readonly string[] BootLabels = { "Ninguno", "Entrada/Salida", "Posterior", "Ambas" };
 
+        /// <summary>
+        /// El vocabulario de la fila de la BOTA segun el anfitrion (I-43, gate 8.6H, R2-10).
+        /// <para>
+        /// En el Selectivo la bota se coloca por LADO del poste, que es como el usuario la ve. El vocabulario por
+        /// UBICACION —«Entrada/Salida» / «Posterior»— lo introdujo I-42 para Push Back, cuyo sistema SI tiene una cara
+        /// de carga y una opuesta, y quedo como unico vocabulario de esta ventana compartida: el Selectivo empezo a
+        /// pedir que se eligiera entre dos caras que no tiene. Los ORDINALES son los mismos, asi que lo unico que
+        /// cambia es el nombre de las cuatro opciones y ninguna seleccion guardada cambia de significado.
+        /// </para>
+        /// </summary>
+        private IReadOnlyList<string> BootRowLabels => bootUsesPlacementNames ? BootLabels : SideLabels;
+
         private readonly List<Row> rows = new List<Row>();
         private readonly TextBlock error;
         private readonly int postCount;
@@ -64,6 +76,7 @@ namespace RackCad.UI
         /// </para>
         /// </summary>
         private readonly bool bootFamilyInSections;
+        private readonly bool bootUsesPlacementNames;
 
         /// <summary>
         /// PB-002 (I-32) — an OPT-IN, already-per-POST level count for the desviador grid. Null (Selectivo, Dinámico)
@@ -153,11 +166,12 @@ namespace RackCad.UI
         /// is the historical behaviour of the Selectivo and of the Dinámico; Push Back passes false explicitly
         /// (PB-003: its safety lives only at the low end, so naming a face the user cannot choose is pure noise).
         /// </param>
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false, bool showDesviadorSide = true, bool bootFamilyInSections = false)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false, bool showDesviadorSide = true, bool bootFamilyInSections = false, bool bootUsesPlacementNames = false)
         {
             this.allowBlankFrontColumns = allowBlankFrontColumns;
             this.showDesviadorSide = showDesviadorSide;
             this.bootFamilyInSections = bootFamilyInSections;
+            this.bootUsesPlacementNames = bootUsesPlacementNames;
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
@@ -473,11 +487,13 @@ namespace RackCad.UI
                             var combo = new ComboBox
                             {
                                 VerticalAlignment = VerticalAlignment.Center,
-                                ToolTip = "Dónde va la bota: Entrada/Salida es la cara del frente operativo y Posterior"
-                                          + " la opuesta —que puede necesitar protección aunque no se cargue por ella,"
-                                          + " por ejemplo si detrás hay un pasillo de tránsito—. Se puede afinar por poste.",
+                                ToolTip = bootUsesPlacementNames
+                                    ? "Dónde va la bota: Entrada/Salida es la cara del frente operativo y Posterior"
+                                      + " la opuesta —que puede necesitar protección aunque no se cargue por ella,"
+                                      + " por ejemplo si detrás hay un pasillo de tránsito—. Se puede afinar por poste."
+                                    : "De qué lado del poste va la bota. Se puede afinar por poste.",
                             };
-                            foreach (var label in BootLabels) combo.Items.Add(label);
+                            foreach (var label in BootRowLabels) combo.Items.Add(label);
                             combo.SelectedIndex = existing != null
                                 ? (int)BootPlacements.To(existing.Bota.Placement ?? BootPlacements.From(existing.Side))
                                 : (int)SafetySide.None;
@@ -568,7 +584,7 @@ namespace RackCad.UI
 
             var dialog = new SafetyPerPostWindow(
                 SelectedElementLabel(row), postCount, defaultSide, current,
-                row.IsBota ? BootLabels : SideLabels) { Owner = this };
+                row.IsBota ? BootRowLabels : SideLabels) { Owner = this };
             var accepted = PerPostDialog != null ? PerPostDialog(dialog) : dialog.ShowDialog();
             if (accepted != true)
             {
@@ -643,6 +659,12 @@ namespace RackCad.UI
         internal Func<SafetyPerPostWindow, bool?> PerPostDialog;
 
         /// <summary>El selector de VARIANTE de la fila de BOTA (seam de prueba); null si la familia no es exclusiva.</summary>
+        /// <summary>Test seam: el vocabulario que la fila de la BOTA ofrece en ESTE anfitrion (I-43, gate 8.6H).</summary>
+        internal IReadOnlyList<string> BootRowOptionsForTest => BootRowLabels;
+
+        /// <summary>Test seam: si este anfitrion construye la fila de la bota aqui, o la lleva en su propia seccion.</summary>
+        internal bool BuildsBootRowForTest => !bootFamilyInSections;
+
         internal ComboBox BootVariantComboForTest
             => rows.FirstOrDefault(row => row.IsBota)?.Variant;
 

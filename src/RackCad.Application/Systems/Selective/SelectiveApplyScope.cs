@@ -38,7 +38,8 @@ namespace RackCad.Application.Systems.Selective
         /// fondo, so the fondo axis keeps meaning the same thing for all five. I-43 only founds the CONTRACT:
         /// <see cref="SelectiveTargetResolver"/> resolves it, and <see cref="SelectiveEditorState.ApplyScope"/> (the
         /// single-fondo legacy path, which has no multi-selection) REFUSES it out loud instead of quietly applying to
-        /// nothing. No editor produces it yet.
+        /// nothing. El editor SI produce multi-seleccion desde I-43: Ctrl+clic marca varias celdas y «Aplicar a ->
+        /// Seleccionadas» las escribe sobre los fondos destino.
         /// </summary>
         Selected
     }

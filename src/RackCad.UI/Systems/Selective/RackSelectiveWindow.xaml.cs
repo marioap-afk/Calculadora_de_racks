@@ -453,7 +453,15 @@ namespace RackCad.UI.Systems.Selective
 
             while (fondoMatrices.Count < n) fondoMatrices.Add(CloneAligned(fondoMatrices[0], fondoMatrices[0].Bays.Count, fondoMatrices[0]));
             while (fondoMatrices.Count > n) fondoMatrices.RemoveAt(fondoMatrices.Count - 1);
-            if (selectedFondo >= fondoMatrices.Count) selectedFondo = 0;
+            if (selectedFondo >= fondoMatrices.Count)
+            {
+                // El fondo que se estaba viendo acaba de desaparecer. La matriz VIVA sigue siendo la SUYA, asi
+                // que hay que recargarla desde el superviviente antes de que nadie vuelva a comprometerla: el
+                // SaveWorkingToSelected de la reconciliacion la estamparia sobre el slot del superviviente y le
+                // borraria su contenido (I-43, gate 8.6H, R2-01).
+                selectedFondo = 0;
+                LoadFondo(selectedFondo);
+            }
 
             // RebuildFondoSelector re-resuelve TargetFondos (SyncTargetFondos): "Todos" se expande al fondo nuevo,
             // "Explicit" poda y "Actual" sigue al visible. Los valores pendientes que se apliquen después ven ya ese
@@ -471,7 +479,7 @@ namespace RackCad.UI.Systems.Selective
             state.MaterializeFloorBeamRises(legacyFloorBeamRise); // frentes que acaban de aparecer reciben un valor directo
             if (state.TargetFondos.Count > 1 || resize.OmittedFondos.Count > 0)
             {
-                pendingWarning = resize.Describe("el número de frentes", restore: false);
+                LatchWarning(resize.Describe("el número de frentes", restore: false));
             }
 
             structuralCommit = true;
@@ -482,7 +490,7 @@ namespace RackCad.UI.Systems.Selective
         {
             SaveWorkingToSelected();
             var result = state.ApplyPalletDepthToTargets(depth);
-            if (state.TargetFondos.Count > 1) pendingWarning = result.Describe("el fondo de tarima", restore: false);
+            if (state.TargetFondos.Count > 1) LatchWarning(result.Describe("el fondo de tarima", restore: false));
         }
 
         /// <summary>Fase 2 de "Fondo de cabecera"; <c>null</c> es el RESTORE al valor derivado.</summary>
@@ -490,7 +498,7 @@ namespace RackCad.UI.Systems.Selective
         {
             SaveWorkingToSelected();
             var result = state.ApplyCabeceraDepthToTargets(over);
-            if (state.TargetFondos.Count > 1) pendingWarning = result.Describe("el fondo de cabecera", restore: !over.HasValue);
+            if (state.TargetFondos.Count > 1) LatchWarning(result.Describe("el fondo de cabecera", restore: !over.HasValue));
         }
 
         /// <summary>Marca que un apply cambió la TOPOLOGÍA, para reconciliar la UI una sola vez al cerrar el commit.</summary>
@@ -573,7 +581,7 @@ namespace RackCad.UI.Systems.Selective
         /// conserva la auto-reparación de siempre — es un descarte explícito de un texto que no significa nada.
         /// </para>
         /// </summary>
-        private void CommitStructuralGesture(IPendingTextField own)
+        private void CommitStructuralGesture(IPendingTextField own, bool cellApplied = false)
         {
             var siblingDirty = pendingAll.Any(f => !ReferenceEquals(f, own) && f.IsDirty);
             if (!siblingDirty && own.IsDirty && !own.TryStage(out var ownError))
@@ -584,7 +592,16 @@ namespace RackCad.UI.Systems.Selective
                 return;
             }
 
-            CommitPendingEditors();
+            // Si el gesto ya comprometio una CELDA, hubo mutacion real aunque el campo estructural este limpio.
+            // Sin esto CommitPendingEditors sale por la puerta "nada sucio" y el gesto termina con cero recompute:
+            // la preview y el modelo resuelto seguirian describiendo el estado anterior (I-43, gate 8.6H, R2-03).
+            // El Defer garantiza que sigue siendo UN solo recompute cuando ademas habia pendientes, y como
+            // solo vuelca si alguien lo pidio, un commit ABORTADO sin celda aplicada sigue en cero (P0 H).
+            using (DeferRecompute())
+            {
+                CommitPendingEditors();
+                if (cellApplied) Recompute();
+            }
         }
 
 
@@ -690,7 +707,7 @@ namespace RackCad.UI.Systems.Selective
                     result.Add(SelectiveRackDefaults.DefaultSeparator);
                     if (!string.IsNullOrWhiteSpace(box.Text))
                     {
-                        pendingWarning = "Separación " + (g + 1).ToString(CultureInfo.InvariantCulture) + " inválida; se usa la default.";
+                        LatchWarning("Separación " + (g + 1).ToString(CultureInfo.InvariantCulture) + " inválida; se usa la default.");
                         box.Text = SelectiveRackDefaults.DefaultSeparator.ToString("0.###", CultureInfo.InvariantCulture);
                     }
                 }
@@ -705,8 +722,8 @@ namespace RackCad.UI.Systems.Selective
         private void Fondos_LostFocus(object sender, RoutedEventArgs e)
         {
             if (catalog == null || !initialized) return; // ignore the initial value set during InitializeComponent
-            if (!TryCommitEditedCell(out _)) return;      // don't discard typed cell input on a fondo-count change
-            CommitStructuralGesture(pendingFondos);
+            if (!TryCommitEditedCell(out var cellApplied)) return; // don't discard typed cell input on a fondo-count change
+            CommitStructuralGesture(pendingFondos, cellApplied);
         }
 
         /// <summary>Frentes (bay count) are edited PER FONDO now: each line can have its own count (a corner layout).
@@ -719,30 +736,51 @@ namespace RackCad.UI.Systems.Selective
                 + "el fondo más largo define la rejilla y los frentes que se traslapan alinean sus postes. Se aplica al salir del campo.";
         }
 
+        /// <summary>Devuelve el combo al fondo que sigue en pantalla, sin re-disparar el handler.</summary>
+        private void RevertFondoSelector()
+        {
+            switchingFondo = true;
+            FondoSelectorBox.SelectedIndex = selectedFondo;
+            switchingFondo = false;
+        }
+
         private void FondoSelector_Changed(object sender, SelectionChangedEventArgs e)
         {
             if (switchingFondo || catalog == null) return;
             var target = FondoSelectorBox.SelectedIndex;
-            if (target < 0 || target >= fondoMatrices.Count || target == selectedFondo) return;
+            if (target < 0) return;
 
             // Los cuatro pendientes se comprometen ANTES de LoadFondo, que hace Show sobre sus cajas (C4). Un
             // pendiente inválido revierte el combo, igual que ya hace la celda inválida más abajo.
             if (!CommitPendingEditors())
             {
-                switchingFondo = true;
-                FondoSelectorBox.SelectedIndex = selectedFondo;
-                switchingFondo = false;
+                RevertFondoSelector();
+                return;
+            }
+
+            // El destino se valida DESPUES del commit, no antes: «Número de fondos» es uno de los pendientes que
+            // se acaba de comprometer, asi que la lista pudo encoger —y dejar el indice fuera de rango— o crecer
+            // —y hacer valido un destino que la guarda temprana habria descartado— (I-43, gate 8.6H, R2-02).
+            if (target >= fondoMatrices.Count)
+            {
+                RevertFondoSelector(); // el fondo al que se queria ir ya no existe: no se inventa otro
+                return;
+            }
+
+            if (target == selectedFondo)
+            {
+                RevertFondoSelector(); // el commit pudo mover el fondo visible hasta coincidir con el destino
                 return;
             }
 
             // Commit what's typed in the cell editor first (like SelectCell) — don't silently discard it.
-            if (!TryCommitEditedCell(out _))
+            if (!TryCommitEditedCell(out var cellApplied))
             {
-                switchingFondo = true; // user kept an invalid value: revert the combo and stay on this fondo
-                FondoSelectorBox.SelectedIndex = selectedFondo;
-                switchingFondo = false;
+                RevertFondoSelector(); // user kept an invalid value: revert the combo and stay on this fondo
                 return;
             }
+
+            _ = cellApplied; // la celda se aplica al fondo que se DEJA; el recompute llega al final de este gesto
 
             using (DeferRecompute())
             {
@@ -1559,8 +1597,8 @@ namespace RackCad.UI.Systems.Selective
         private void ApplyBayCount()
         {
             if (!initialized) return;
-            if (!TryCommitEditedCell(out _)) return; // don't discard typed cell input on a frente-count change
-            CommitStructuralGesture(pendingBayCount);
+            if (!TryCommitEditedCell(out var cellApplied)) return; // don't discard typed cell input on a frente-count change
+            CommitStructuralGesture(pendingBayCount, cellApplied);
         }
 
         /// <summary>The global tramo scalars (poste peralte, tolerancia, holgura, elevación) live-apply on leave-field
@@ -2268,6 +2306,22 @@ namespace RackCad.UI.Systems.Selective
         /// fallbacks): the pipeline always ends in <see cref="Recompute"/>, whose final status would overwrite a direct
         /// SetStatus, so Recompute emits THIS instead of the generic success message when set.</summary>
         private string pendingWarning;
+
+        /// <summary>
+        /// Anade un aviso al de la operacion en curso en vez de pisarlo (I-43, gate 8.6H, R2-05).
+        /// <para>
+        /// Un commit puede tocar varios campos y cada uno puede tener algo que decir —fondos omitidos, valores
+        /// conservados—. Asignar directamente dejaba solo el ultimo, asi que el usuario veia una omision y no las
+        /// otras. Los mensajes identicos no se repiten.
+        /// </para>
+        /// </summary>
+        private void LatchWarning(string message)
+        {
+            if (string.IsNullOrWhiteSpace(message)) return;
+            if (string.IsNullOrEmpty(pendingWarning)) { pendingWarning = message; return; }
+            if (pendingWarning.Contains(message)) return;
+            pendingWarning += " " + message;
+        }
 
         /// <summary>Restore the whole editor (globals + matrix) from a saved design, then recompute.</summary>
         private void LoadDesign(SelectivePalletDesign design)

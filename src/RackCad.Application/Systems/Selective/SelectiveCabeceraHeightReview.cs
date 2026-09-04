@@ -137,8 +137,7 @@ namespace RackCad.Application.Systems.Selective
         {
             if (IsClean) return string.Empty;
 
-            var text = "Altura de la cabecera del poste " + One(PostIndex) + ": "
-                + Inches(Height) + ".";
+            var text = "Altura de la cabecera del " + Post(PostIndex) + ": " + Inches(Height) + ".";
 
             var severe = Findings.Where(f => f.Issue == SelectiveCabeceraHeightIssue.Severe).ToList();
             if (severe.Count > 0)
@@ -165,8 +164,14 @@ namespace RackCad.Application.Systems.Selective
 
         private static string Where(SelectiveCabeceraHeightFinding f) => One(f.FondoIndex) + " (" + Inches(f.Reference) + ")";
 
-        /// <summary>Los fondos se numeran desde 1 de cara al usuario, como en el resto del editor.</summary>
+        /// <summary>Los FONDOS se numeran desde 1 y llevan la F del editor: F1, F2, F3.</summary>
         private static string One(int index) => "F" + (index + 1).ToString(CultureInfo.InvariantCulture);
+
+        /// <summary>
+        /// Los POSTES tambien se numeran desde 1, pero NO llevan la F: esa letra es de los fondos, y usarla para un
+        /// poste hacia leer "poste F3" como si nombrara un fondo (I-43, gate 8.6H, R2-06).
+        /// </summary>
+        private static string Post(int index) => "Poste " + (index + 1).ToString(CultureInfo.InvariantCulture);
 
         private static string Inches(double value) => value.ToString("0.##", CultureInfo.InvariantCulture) + " in";
     }

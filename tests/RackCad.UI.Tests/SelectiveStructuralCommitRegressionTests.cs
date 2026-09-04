@@ -152,20 +152,40 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void R2_02_NavigatingWithAPendingGrow_ReachesTheRequestedFondo()
+        public void R2_02_NavigatingToAFondoThatSurvivesTheShrink_StillCompletes()
         {
-            // La otra mitad: si tras el commit el destino SÍ existe, la navegación tiene que completarse.
+            // La otra mitad: el commit encoge la lista, pero el destino SIGUE existiendo. Revalidar no puede
+            // convertirse en abortar siempre — la navegación tiene que completarse.
             var (selected, count) = StaTestRunner.Run(() =>
             {
-                var window = SelectiveWindowTestSupport.Open(2);
+                var window = ThreeDistinctFondos();
                 Show(window, 1);
-                Type(window, "FondosBox", "4"); // pendiente: habrá 4 fondos
-                Show(window, 3);                // destino que solo existe DESPUÉS del commit
+                Type(window, "FondosBox", "2"); // pendiente: quedarán 2 fondos
+                Show(window, 2);                // el fondo 2 sobrevive
                 return (window.EditorState.SelectedFondo, window.EditorState.FondoCount);
             });
 
-            Assert.Equal(4, count);
-            Assert.Equal(2, selected); // llegó al fondo 3 (índice 2)
+            Assert.Equal(2, count);
+            Assert.Equal(1, selected); // llegó al fondo 2
+        }
+
+        [Fact]
+        public void R2_02_SelectingAnIndexTheComboDoesNotHave_IsANoOp()
+        {
+            // Caracterización: el combo solo lista los fondos que existen, así que un índice mayor no es un gesto
+            // que un usuario pueda hacer. No lanza, no compromete y no mueve el fondo visible.
+            var (selected, count, comboIndex) = StaTestRunner.Run(() =>
+            {
+                var window = SelectiveWindowTestSupport.Open(2);
+                Show(window, 1);
+                Type(window, "FondosBox", "4");
+                FondoSelector(window).SelectedIndex = 2; // fuera del rango del combo
+                return (window.EditorState.SelectedFondo, window.EditorState.FondoCount, FondoSelector(window).SelectedIndex);
+            });
+
+            Assert.Equal(0, selected);
+            Assert.Equal(2, count);      // el pendiente sigue pendiente: no hubo gesto
+            Assert.Equal(0, comboIndex); // y el combo no se movió
         }
 
         // =====================================================================================

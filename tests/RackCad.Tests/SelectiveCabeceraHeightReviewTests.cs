@@ -167,7 +167,9 @@ namespace RackCad.Tests
             var review = SelectiveCabeceraHeightReview.Of(system, new[] { 0, 1, 2 }, 2, 20.0);
             var text = review.Describe();
 
-            Assert.Contains("poste F3", text);          // el poste, en la numeración de cara al usuario
+            // R2-06: el poste NO lleva la "F" de los fondos. "poste F3" se leia como si nombrara un fondo.
+            Assert.Contains("Poste 3", text);
+            Assert.DoesNotContain("poste F", text);
             Assert.Contains("20 in", text);             // la altura pedida
             Assert.Contains("F1", text);                // los fondos afectados
             Assert.Contains("F2", text);

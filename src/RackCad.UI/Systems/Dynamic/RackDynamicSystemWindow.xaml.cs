@@ -569,6 +569,10 @@ namespace RackCad.UI.Systems.Dynamic
                 includeDefensa: true,
                 includeGuia: true,
                 useDynamicSafetyDefaults: true,
+                // El Dinamico conserva el vocabulario por UBICACION que tiene hoy. Llego como efecto colateral
+                // de I-42 y no hay decision registrada para este sistema, asi que 8.6H lo deja igual y lo declara
+                // explicitamente en vez de arrastrarlo por omision (I-43, gate 8.6H, R2-10).
+                bootUsesPlacementNames: true,
                 // Por POSTE y SOLO para el desviador; la forma de la rejilla no decide nada más.
                 desviadorLevelsPerPost: DesviadorLevelsPerPost(),
                 allowBlankFrontColumns: true,

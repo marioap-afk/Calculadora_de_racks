@@ -8,7 +8,8 @@ namespace RackCad.Application.Systems.Selective
     /// bays (each a column of <see cref="SelectiveEditorCell"/>), the per-bay "larguero a piso" flag, the per-bay manual
     /// height override, the per-bay "medio frente" tramos, plus this fondo's own depth and its optional cabecera-fondo
     /// override. Extracted verbatim from the private <c>FondoMatrix</c> of <c>RackSelectiveWindow</c> (initiative I-20).
-    /// The four parallel lists stay index-aligned by bay, exactly as the editor keeps them.
+    /// The five parallel lists (Bays, FloorBeams, BayHeights, BaySegments, FloorBeamRiseOverrides) stay
+    /// index-aligned by bay, exactly as the editor keeps them.
     /// </summary>
     public sealed class SelectiveEditorFondoMatrix
     {
