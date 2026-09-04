@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-08-23**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-03**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -15,6 +15,21 @@ es el único adaptador de la API de AutoCAD.
 El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, dinámico modular y cama
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
+
+**I-44 — Hotfix Push Back: peraltes incorrectos de largueros intermedios en BOM — queda INTEGRADA y
+CERRADA** el **2026-09-03** (`fix/push-back-peraltes-intermedios-bom`). Un larguero intermedio pertenece a
+una **cama**, no a la estructura (ADR-0031 §8-bis), pero `PushBackIntermediateBeamLateralBuilder.BuildFor(…)`
+—que es quien materializa esa cama, y a quien el BOM le pregunta— resolvía `ProfileId` y `Peralte` con la
+**envolvente de proyección** del rack o del poste. Resultado: con varios frentes en un mismo nivel, el BOM
+cobraba a **todas** las camas el mayor peralte del rack (F1 = 3.5", F2 = 4.5", F3 = 6" → las tres a 6").
+Ahora la autoridad la fija el **llamador**: `Build(…)` es **proyección** —un corte lateral muestra el
+larguero que se ve, el que tapa a los de detrás— y `BuildFor(…)` es **cama física**, donde el par
+`ProfileId + Peralte` sale **junto** de `DynamicRackLevelGeometry.At(structure, front, level)`. `postIndex`
+sigue colocando pero ya **no decide** propiedades físicas. **No hubo bug legacy** y **no se creó ADR**: el
+contrato ya estaba enunciado en ADR-0031 §8-bis y sólo faltaba aplicarlo. **Validación manual del Owner
+APROBADA** en AutoCAD 2025 sobre el DLL construido desde `4947a1b`, en el DWG real que presentaba el
+defecto. Queda **abierta y separada** una ambigüedad de producto sobre la cama **CORRIDA** (§3 y
+[ideas-futuras.md](ideas-futuras.md)). Detalle en §4.
 
 **I-42 — Push Back compuesto, bidireccional y camas compartidas — queda INTEGRADA y CERRADA** el
 **2026-09-02** (`feature/push-back-compuesto`). Push Back deja de estar limitado a un solo sentido: dentro
@@ -900,6 +915,16 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-44 (2026-09-03) — APROBADA.** El dueño cargó por NETLOAD el DLL Debug del worktree de
+`fix/push-back-peraltes-intermedios-bom`, construido **exactamente** desde
+`4947a1b5e43a291b01e8e43b5a8ff36d74c99186`, **abrió el DWG real que presentaba el defecto** y confirmó que
+el **BOM volvió a coincidir**: los largueros intermedios recuperan su `ProfileId`, `Length`, `Peralte` y
+`Quantity` por cama, y desaparece la inflación al mayor peralte del rack. Veredicto: **APROBADA**, **sin
+rondas rechazadas**. `origin/main` **no avanzó** desde la base
+`085ca2f5b33541cfb93c8cdec8cbc8f0368c899f`, así que **no hubo rebase final** y la validación corresponde
+exactamente al contenido integrado. El SHA final de rama difiere del validado **sólo en documentación de
+cierre**; el binario funcional es idéntico.
+
 **I-42 (2026-09-02) — APROBADA.** El dueño cargó por NETLOAD el DLL Debug del worktree de
 `feature/push-back-compuesto`, construido **exactamente** desde
 `077d35ad418615bed4c1d8375ea9cfc0de9fca24`, y recorrió la matriz manual de ocho escenarios con veredicto
@@ -1138,6 +1163,22 @@ veredicto.
 
 ## 3. Problemas y riesgos activos
 
+- **AMBIGÜEDAD DE PRODUCTO abierta (I-44, no decidida): quién gobierna el larguero intermedio de una cama
+  CORRIDA cuando A y B discrepan.** Una corrida es **una sola cama** que cruza la interfaz, así que su
+  `IntermediateBeamCatalogId`/`IntermediateBeamDepth` sólo pueden salir de un lado. Hoy salen del **lado
+  BAJO**, y de forma **no decidida**: `PushBackRuns.BuildCorrida` copia al frente sintético los
+  `DynamicRackLevel` del lado bajo porque las **elevaciones** son de ese lado (decisión del dueño en I-42,
+  commit `82e918b`), y ese objeto transporta además el par del intermedio. Antes de `82e918b` mandaba el
+  lado ALTO: la autoridad **ya cambió de lado como efecto colateral**, sin que nadie lo decidiera.
+  Consecuencia observable: con A (bajo) = 3.5" y B (alto) = 4.5", el BOM publica 3.5" y el 4.5" authored
+  desaparece. **I-44 NO cambió esta semántica** y la congeló con una prueba de caracterización
+  (`Characterization_ACorridaTakesTheLowSideCellValues_ContractPending`). Requiere decisión del dueño antes
+  de tocarla; registrada también en [ideas-futuras.md](ideas-futuras.md).
+- **I-44 cambia el corte lateral de un rack COMPUESTO.** `PushBackCompositeContent.Lateral` dibuja con
+  `BuildFor`, así que ahora cada cama muestra su peralte propio: dos frentes contiguos con peraltes
+  distintos **dejan de fundirse** en una sola pieza dibujada. Es el efecto buscado —plano y BOM ya no
+  pueden divergir— y el Owner validó el candidato, pero conviene tenerlo presente al revisar cortes
+  compuestos antiguos.
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
   heterogénea puede requerir overrides por frente o nivel en una iniciativa futura.
 - En medio frente, la cantidad de parrilla es por tramo; el comportamiento es intencional, pero
@@ -1173,7 +1214,71 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-42 está INTEGRADA y CERRADA. No hay iniciativa en curso.
+### I-44 está INTEGRADA y CERRADA. I-43 sigue PAUSADA, con su rama y su worktree intactos.
+
+**I-44 — Hotfix Push Back: peraltes incorrectos de largueros intermedios en BOM quedó integrada el
+2026-09-03** desde `fix/push-back-peraltes-intermedios-bom`, sobre el candidato funcional
+**`4947a1b5e43a291b01e8e43b5a8ff36d74c99186`**, con **validación manual del Owner APROBADA** en AutoCAD
+2025 sobre el DWG real que presentaba el defecto y CI verde. `origin/main` **no avanzó** desde la base
+`085ca2f`: **sin rebase final**, así que la validación corresponde exactamente al contenido integrado.
+
+**Qué estaba mal.** `PushBackIntermediateBeamLateralBuilder` tenía **dos clientes con significados
+distintos y una sola regla**:
+
+- `Build(…)` **proyecta** un corte lateral. Varios frentes se superponen en la proyección y el que se ve
+  es el de **mayor peralte**, que tapa a los de detrás. Su autoridad es la envolvente —`PeralteAtPost` con
+  poste, `PeralteAt(system, …)` sin él—, y es correcta.
+- `BuildFor(…)` **materializa la pieza física de una cama concreta** (I-42,
+  [ADR-0031](adr/0031-push-back-compuesto-estructura-unica-y-configuracion-por-lado.md) §8-bis: «un
+  larguero intermedio pertenece a una CAMA, no a la estructura», y el BOM lo cuenta con el mismo builder
+  que lo dibuja).
+
+`BuildFor` resolvía `ProfileId` y `Peralte` con la **envolvente**, así que el BOM materializaba camas y
+cobraba la proyección. Con F1 = 3.5", F2 = 4.5" y F3 = 6" en el mismo nivel, el BOM publicaba
+`L=50 P=6 x3 | L=94 P=6 x3 | L=138 P=6 x3`: la **longitud** sí era la del frente, el **peralte** no.
+
+**El contrato, ahora explícito.** Lo fija el **llamador**, mediante un enum `BeamAuthority`
+(`Projection` / `PhysicalBed`), **no la forma de los argumentos**. No podía deducirse de ellos: `Build`
+pasa `front` y `postIndex` cuando proyecta por poste, y `BuildFor` recibe un `postIndex` **real** desde el
+dibujo de un rack compuesto (`PushBackCompositeContent.Lateral`). Deducirlo de los argumentos era
+justamente el defecto.
+
+- En una **cama física** el par sale **junto** de `DynamicRackLevelGeometry.At(structure, front, level)`,
+  el único accesor que devuelve perfil y peralte del **mismo** nivel resuelto. Antes venían de dos
+  consultas independientes —el id del frente de mayor peralte, el peralte de la envolvente del rack— que
+  coincidían **sólo** porque ambas usaban un máximo: con dos frentes empatados en peralte y perfiles
+  distintos, el id lo decidía el orden del `OrderByDescending`.
+- En una **proyección** el par sigue saliendo de la envolvente, **sin cambio**.
+- `postIndex` en `BuildFor` sigue participando en colocación y filtro geométrico, pero **no decide**
+  `ProfileId` ni `Peralte`.
+
+**Qué NO se tocó.** `PushBackBomBuilder.EmitIntermediates`, el conteo de `Supports`, los filtros
+`rearX`/`front.StartX`, la deduplicación, `SystemBomBuilder`, la semántica compartida de
+`PeralteAt(system, …)` y `PeralteAtPost(…)`, la persistencia, el editor y el conteo por cama/apoyo de
+I-42. **Un solo archivo de producción**:
+`src/RackCad.Application/Systems/PushBack/PushBackIntermediateBeamLateralBuilder.cs`.
+
+**Legacy: descartado con historial, no con hipótesis.** No existe ni existió un writer capaz de persistir
+`front.Levels[n].IntermediateBeamDepth != front.IntermediateBeamDepths[n]`. Las dos listas se escriben
+desde **la misma celda en un solo bucle** desde el commit que introdujo `Levels` (`c91874b`, tanto en el
+writer de entonces —`RackDynamicSystemWindow.xaml.cs`— como después en
+`DynamicFrontMatrix.BuildFrontDesigns`, verificado en las **seis** versiones del archivo), y el re-sync de
+lectura existe desde ese mismo commit en los dos límites (`DynamicRackLevelGeometry.Resolve` y
+`DynamicRackFrontDocument.ToDomain`). Por eso **no se construyó ningún documento híbrido**: no habría
+writer que lo produjera. Además, en un rack de **un solo sentido** el defecto sólo podía **subir** el
+peralte —un máximo no baja, y un frente que materializa intermedios en un nivel está siempre en el
+conjunto del máximo—, comprobado con un barrido de **81 configuraciones**. Y **editar y restaurar no
+normaliza nada**: dos ciclos completos (`load → RACKEDITAR sin cambios → rebuild → save → reload → BOM`, y
+el mismo cambiando el valor y devolviéndolo) dejan el BOM idéntico.
+
+**Clasificación final: A** — bug de autoridad `system`/`post` frente a `front + level`. No hay bug legacy
+demostrado.
+
+**Sin ADR nuevo.** No hubo decisión arquitectónica nueva: I-44 **aplica** el contrato que ADR-0031 §8-bis
+ya enunciaba. La única decisión pendiente —la cama **CORRIDA**— **no** se tomó y queda registrada en §3 y
+en [ideas-futuras.md](ideas-futuras.md).
+
+### I-42 está INTEGRADA y CERRADA (histórico).
 
 **I-42 — Push Back compuesto, bidireccional y camas compartidas quedó integrada el 2026-09-02** con merge
 `--no-ff` **`e6bb6d7ce9790e1e9c495cb30e580a9304bccd44`** (padres `088c7b9` y `9ea11d6`), sobre el candidato
@@ -2145,7 +2250,29 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-42 — 2026-09-02** (la vigente):
+**Baseline integrada de I-44 — 2026-09-03** (la vigente):
+
+- candidato **funcional** aprobado por el Owner: `4947a1b5e43a291b01e8e43b5a8ff36d74c99186`
+  (CI run `33797723636`, **success**). El SHA final de rama difiere del aprobado **sólo en documentación
+  de cierre**: el binario funcional es idéntico;
+- **merge `--no-ff`**: `1165240ad780f32851ebccf18c7da89525d32167`, padres `085ca2f` y `0e13410`,
+  con CI verde post-merge sobre el merge ya en `main`;
+- `origin/main` **no avanzó** desde la base `085ca2f5b33541cfb93c8cdec8cbc8f0368c899f`: **sin rebase
+  final**, de modo que la validación manual corresponde exactamente al contenido integrado;
+- **validación manual del Owner en AutoCAD 2025: APROBADA** sobre el **DWG real que presentaba el
+  defecto**: el BOM volvió a coincidir, con `ProfileId`, `Length`, `Peralte` y `Quantity` correctos por
+  cama. **Sin rondas rechazadas**;
+- suites locales sobre el HEAD de rama: **RackCad.Tests 4425/4425** y **RackCad.UI.Tests 1070 correctas /
+  17 omitidas / 1087 totales**; Debug de UI (0 advertencias, 0 errores) y del Plugin (0 errores, sólo los
+  MSB3277 conocidos);
+- filtros dirigidos, todos con descubrimiento no vacío: I-44 **22/22**, I-41 fondo y tarima por celda
+  **86/86**, compuesto I-42 **304/304**, corrida · runs · solo-A · solo-B · ambos sentidos **234/234**;
+- **6 reproducciones** verificadas en rojo antes del fix y verdes después, sin modificarlas; de las **4**
+  pruebas nuevas de contrato, **3** verificadas en rojo sin el fix (la cuarta es la guarda de preservación
+  de `Build`, verde a ambos lados por diseño);
+- **sin ADR nuevo**: I-44 aplica el contrato ya enunciado en ADR-0031 §8-bis.
+
+**Baseline integrada de I-42 — 2026-09-02** (previa):
 
 - candidato **funcional** aprobado por el Owner: `077d35ad418615bed4c1d8375ea9cfc0de9fca24`
   (CI run `33578565581`, **success** en los cuatro jobs). El SHA final de rama es `9ea11d6` y difiere del
