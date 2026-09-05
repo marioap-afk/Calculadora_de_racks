@@ -109,9 +109,16 @@ Fase de **DISCOVERY**, y solo eso:
   ejecucion), ciclo local obligatorio, perfil por prueba y por clase de las dos suites, y el ciclo de
   validacion manual del Owner.
 - **Inventariar** la arquitectura de pruebas vigente: taxonomia (o su ausencia), guardas de codigo
-  fuente, goldens, dependencias por texto y por datos, y el mapa empirico prueba -> codigo derivado
-  de la cobertura que el CI **ya publica**.
-- **Versionar** esa evidencia en `docs/automation/evidence/` para que sea auditable y reutilizable.
+  fuente, goldens, y dependencias por texto y por datos.
+  **Correccion (cierre de Discovery):** este contrato prometia ademas «el mapa empirico prueba ->
+  codigo derivado de la cobertura que el CI ya publica». La promesa **se retira**: el artefacto
+  Cobertura del CI es un agregado por corrida **sin identidad de prueba**, y el job de UI no recolecta
+  cobertura en absoluto, asi que ese mapa **no es derivable de esa fuente**. Evidencia en
+  [`I-45-discovery.md`](I-45-discovery.md) §7.3; el hueco queda registrado en su §14.
+- **Versionar** esa evidencia en [`I-45-discovery.md`](I-45-discovery.md), **ruta unica**, para que
+  sea auditable y reutilizable. (Este contrato nombraba antes tambien `docs/automation/evidence/`;
+  eran dos rutas obligatorias y mutuamente excluyentes para el mismo artefacto, y la seccion 7 exige
+  detenerse ante una desviacion. Se unifica aqui.)
 - **Redactar** la Proposal con alternativas, recomendacion, riesgos, despliegue y reversion.
 - **Reconciliar** con el Arquitecto hasta consenso explicito, registrando acuerdos y desacuerdos.
 - **Corregir** las derivas documentales que el propio Discovery detecte **solo cuando sean errores de
@@ -196,12 +203,17 @@ Una desviacion material respecto de estas listas obliga a detenerse.
 
 0. **Reclamo y bootstrap documental** — HECHA. Rama, worktree, fila de ROADMAP, contrato y absorcion
    de «CI por capas». Sin evidencia versionada todavia.
-1. **Cierre de Discovery y versionado de la evidencia** — HECHA. Publica
-   [`I-45-discovery.md`](I-45-discovery.md) con el comando que produjo cada dato y su marcador
-   epistemologico, y cierra las cuatro lineas que quedaban abiertas: baseline del ciclo de
-   validacion del Owner (D1), precision y falsos positivos de una seleccion por impacto (D2),
-   contraindicaciones de una futura estrategia multi-STA (D3) y repeticion historica de Full (D4).
-   Corrige ademas la ubicacion de la fila en ROADMAP y retira el SHA de este contrato.
+1. **Cierre de Discovery y versionado de la evidencia** — HECHA **en el commit que publica
+   [`I-45-discovery.md`](I-45-discovery.md)**, no antes. Cierra las cuatro lineas que quedaban
+   abiertas: baseline del ciclo de validacion del Owner (D1), precision y falsos positivos de una
+   seleccion por impacto (D2), contraindicaciones de una futura estrategia multi-STA (D3) y
+   repeticion historica de Full (D4). Corrige ademas la ubicacion de la fila en ROADMAP y retira el
+   SHA de este contrato.
+   > Una version anterior de esta seccion declaraba la fase HECHA cuando su unico entregable **no
+   > existia en ninguna referencia de git**. Lo detecto el critico de cierre y es exactamente la
+   > clase de error de hecho que la seccion 3 autoriza corregir — la misma que el Discovery
+   > documenta en `HANDOFF` (§8.4 de la evidencia). Se conserva la nota para que el error no se
+   > repita por omision.
 2. **Proposal V1** — problema medido, alternativas con evidencia, recomendacion, riesgos, metricas de
    exito, despliegue y reversion. **No escrita todavia.**
 3. **Revision independiente del Arquitecto** — analisis propio, no aprobacion jerarquica; salida con
