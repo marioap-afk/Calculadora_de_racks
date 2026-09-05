@@ -189,8 +189,12 @@
 > (editar un catalogo caliente append-only y cambiar el comportamiento de lookup por rol esta fuera de alcance);
 > resolver luego: renombrar uno de los dos ids o unificar la definicion. La prueba de integridad
 > (`ShippedCatalogIntegrityTests`) fija este estado conocido para que un id duplicado NUEVO falle el build.
-16. **CI por capas** — ejecutar Domain/Application/tests en cualquier runner y reservar un smoke test Windows con
-    AutoCAD para releases. El Plugin no debe impedir que las reglas puras tengan gate continuo.
+16. **CI por capas** — **ABSORBIDO por [I-45](initiatives/I-45-test-validation-workflow.md) (2026-09-04).**
+    El enunciado original se conserva: ejecutar Domain/Application/tests en cualquier runner y reservar un smoke
+    test Windows con AutoCAD para releases; el Plugin no debe impedir que las reglas puras tengan gate continuo.
+    Entra en I-45 como **problema y como alternativa a estudiar**, no como solución adoptada: absorberlo **no**
+    decide que la estrategia final sea CI por capas, y I-45 está en fase DISCOVERY con la implementación
+    bloqueada hasta el consenso Coordinator/Architect. Cualquier decisión sobre este item se toma allí.
 17. **Benchmarks y presupuestos de complejidad** — medir resolver/builders/BOM con 10/30/100 frentes y el layout con
     5,000 candidatos. Convertir regresiones de tiempo/memoria en pruebas de benchmark antes de ampliar los limites UI.
 18. **Migraciones de schema explicitas** — `SchemaGuard` hoy cubre compatibilidad por fallback. Antes del primer 2.x,
