@@ -30,7 +30,7 @@ automation:
 >
 > ```
 > Phase:    DISCOVERY
-> BASE_SHA: bd40ef7888df5c4b65db64c2b2791a854a5c74df
+> Baseline: parent of the atomic claim commit on origin/main
 >
 > NO IMPLEMENTATION BEFORE CONSENSUS
 >
@@ -171,15 +171,22 @@ Entradas del dueno que **deben existir** antes de pasar de fase:
 
 ## 7. Archivos esperados
 
-De este gate de reclamo y bootstrap, exactamente tres:
+Del gate de reclamo y bootstrap, exactamente tres:
 
 - `docs/initiatives/I-45-test-validation-workflow.md` (nuevo) — este contrato.
 - `docs/ROADMAP.md` (modificado) — fila de I-45.
 - `docs/ideas-futuras.md` (modificado) — «CI por capas» marcado como absorbido.
 
-De las fases posteriores de DISCOVERY:
+Del gate de cierre de Discovery:
 
-- `docs/automation/evidence/I-45-*.md` — evidencia medida y reproducible.
+- `docs/initiatives/I-45-discovery.md` (nuevo) — **la evidencia**, no la Proposal. Es el unico
+  artefacto donde viven las mediciones, las reconstrucciones, las hipotesis refutadas y las
+  incognitas, cada una con su marcador epistemologico.
+- `docs/ROADMAP.md` (modificado) — reubicacion de la fila a la seccion transversal.
+- Este contrato (modificado) — retirada del SHA versionado y ajuste de fases.
+
+De las fases posteriores:
+
 - `docs/automation/decisions/I-45.md` — decisiones del dueno, si las hubiera.
 - La Proposal y el registro de reconciliacion, en la ruta que el Owner apruebe.
 
@@ -187,24 +194,24 @@ Una desviacion material respecto de estas listas obliga a detenerse.
 
 ## 8. Fases
 
-0. **Reclamo y bootstrap documental** — este gate. Rama, worktree, fila de ROADMAP, contrato y
-   absorcion de «CI por capas». Sin evidencia versionada todavia.
-1. **Versionar la evidencia del Discovery** — publicar las mediciones ya realizadas en
-   `docs/automation/evidence/`, con el comando que produjo cada numero, para que sean auditables.
-2. **Cerrar los huecos de medicion** — el ciclo de validacion del Owner; el mapa empirico
-   prueba -> codigo a partir del artefacto de cobertura que el CI ya publica; el determinismo de los
-   catalogos bajo mas paralelismo; y la **precision** (no solo la cobertura) de cualquier regla de
-   seleccion candidata.
-3. **Proposal V1** — problema medido, alternativas con evidencia, recomendacion, riesgos, metricas de
-   exito, despliegue y reversion.
-4. **Revision independiente del Arquitecto** — analisis propio, no aprobacion jerarquica; salida con
+0. **Reclamo y bootstrap documental** — HECHA. Rama, worktree, fila de ROADMAP, contrato y absorcion
+   de «CI por capas». Sin evidencia versionada todavia.
+1. **Cierre de Discovery y versionado de la evidencia** — HECHA. Publica
+   [`I-45-discovery.md`](I-45-discovery.md) con el comando que produjo cada dato y su marcador
+   epistemologico, y cierra las cuatro lineas que quedaban abiertas: baseline del ciclo de
+   validacion del Owner (D1), precision y falsos positivos de una seleccion por impacto (D2),
+   contraindicaciones de una futura estrategia multi-STA (D3) y repeticion historica de Full (D4).
+   Corrige ademas la ubicacion de la fila en ROADMAP y retira el SHA de este contrato.
+2. **Proposal V1** — problema medido, alternativas con evidencia, recomendacion, riesgos, metricas de
+   exito, despliegue y reversion. **No escrita todavia.**
+3. **Revision independiente del Arquitecto** — analisis propio, no aprobacion jerarquica; salida con
    acuerdos, desacuerdos, cambios propuestos, riesgos, alternativas y preguntas.
-5. **Reconciliacion** — ajustes y nueva version del plan hasta que ambos declaren AGREED sobre la
+4. **Reconciliacion** — ajustes y nueva version del plan hasta que ambos declaren AGREED sobre la
    misma `PLAN_VERSION`, sin desacuerdos abiertos.
-6. **CONSENSUS** — se registra el acuerdo. Solo aqui deja de aplicar la seccion 4, y la
+5. **CONSENSUS** — se registra el acuerdo. Solo aqui deja de aplicar la seccion 4, y la
    implementacion se planifica como alcance separado.
 
-Cada fase termina con evidencia revisable. Ninguna fase posterior a la 6 forma parte de esta
+Cada fase termina con evidencia revisable. Ninguna fase posterior a la 5 forma parte de esta
 iniciativa sin una decision explicita del dueno.
 
 ## 9. Pruebas y builds
@@ -240,8 +247,8 @@ De este gate:
 1. `origin/architecture/test-validation-workflow` existe y contiene el commit de reclamo con su
    `Claim-Id`.
 2. I-45 tiene fila en `docs/ROADMAP.md`.
-3. Este contrato existe y declara fase, `BASE_SHA`, el bloqueo por consenso y la lista de la
-   seccion 4.
+3. Este contrato existe y declara fase, baseline **sin hash versionado** (`WORKFLOW.md` seccion 8),
+   el bloqueo por consenso y la lista de la seccion 4.
 4. «CI por capas» aparece en `ideas-futuras.md` marcado como absorbido por I-45, sin presentarse como
    decision arquitectonica.
 5. Cero cambios en codigo de producto, codigo de pruebas y configuracion de CI.
