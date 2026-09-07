@@ -221,13 +221,27 @@ Se reportan cuatro cosas, todas derivadas de marcas de tiempo que da la propia A
 | Magnitud | Definición |
 |---|---|
 | **reloj de pared de la corrida** | `updatedAt − createdAt` |
-| **espera en cola** | `startedAt(corrida) − createdAt` |
+| **cola del runner** | `startedAt(corrida) − createdAt` |
 | **duración por trabajo** | `completedAt − startedAt` de cada job |
+| **desplazamiento de inicio por trabajo** | `startedAt(job) − createdAt(corrida)` |
 | **trabajo crítico de cierre** | el job cuyo `completedAt` es el mayor |
 
 El **trabajo crítico de cierre** es el que hay que mirar, y es por lo que este método lo calcula en
 vez de dejarlo a la vista: el reloj de pared del CI es un `max()` sobre caminos que corren en
 paralelo, no una suma. Acelerar un job que no es el crítico no mueve el reloj.
+
+**Y el crítico no es necesariamente el más largo.** Un job con `needs:` no arranca hasta que
+terminan sus dependencias, así que puede cerrar la corrida siendo mucho más corto que otro que
+corrió en paralelo desde el principio. Por eso el crítico se calcula por `completedAt` y no por
+duración.
+
+> **«Desplazamiento de inicio» no es «cola».** Para un job con `needs:`, el hueco entre la creación
+> de la corrida y su arranque mezcla la cola del runner con la espera por sus dependencias.
+> Llamarlo cola sería falso y produciría el diagnóstico contrario al correcto: aparecería un
+> problema de capacidad de runners donde solo hay una dependencia declarada. **La cola del runner
+> solo es aislable a nivel de corrida.** Discovery dejó abierto (`UNKNOWN`) qué fracción del reloj
+> se lleva la cola a lo largo del tiempo; este método la expone por corrida, pero **una corrida no
+> es una serie** y no cierra ese `UNKNOWN`.
 
 ### CI sin `gh`
 
@@ -335,12 +349,18 @@ reproduce y lo extiende.
 | Latencia de ciclo por iniciativa | tabla de calendario | `-Sessions`, con seis umbrales y sensibilidad |
 | Tiempo activo del dueño | `UNKNOWN`, estructuralmente inmedible | §9: definida, **no** medida |
 
-**Dónde difieren los números de calendario, y por qué.** Discovery reportó la latencia de ciclo de
-una iniciativa como el intervalo de punta a punta de su registro documental. Este método reporta el
-intervalo entre el **primer y el último commit de autor** del rango del merge. Son dos magnitudes
-distintas: la de Discovery incluye lo que ocurrió antes del primer commit y después del último, la de
-este método no. Un desajuste de menos de una hora entre ambas sobre la misma iniciativa es la
-diferencia esperada, no una contradicción.
+**Dónde difieren los números de calendario, y por qué.** No miden lo mismo, y la diferencia tiene un
+signo predecible:
+
+- La **latencia de ciclo** de Discovery se leyó del registro documental de la iniciativa: va del
+  primer candidato presentado al veredicto final. Es un **sub-intervalo** de la vida de la rama,
+  porque una rama empieza a acumular commits antes de que exista candidato alguno.
+- El **calendario** de este método va del primer al último commit de **autor** del rango del merge,
+  es decir, la rama entera.
+
+De ahí que lo esperable sea **calendario ≥ latencia de ciclo** sobre la misma iniciativa, y que la
+diferencia crezca con lo que la rama trabajó antes de su primer candidato. Una diferencia con ese
+signo no es una contradicción; una con el signo contrario sí lo sería, y habría que investigarla.
 
 **Regla de precedencia.** Donde este método y Discovery discrepen sobre la **misma** magnitud, gana
 este método —es reproducible por un tercero y Discovery no lo era—, pero **solo si explica la

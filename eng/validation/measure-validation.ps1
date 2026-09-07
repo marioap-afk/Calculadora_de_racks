@@ -722,13 +722,16 @@ function Get-CiMeasurement {
                 $js = [datetimeoffset]::Parse($_.startedAt)
                 $jc = $(if ($_.completedAt -and $_.completedAt -notlike '0001-01-01*') { [datetimeoffset]::Parse($_.completedAt) } else { $null })
                 [pscustomobject]@{
-                    name          = $_.name
-                    conclusion    = $_.conclusion
-                    startedAt     = $js.UtcDateTime.ToString('o')
-                    completedAt   = $(if ($jc) { $jc.UtcDateTime.ToString('o') } else { $null })
-                    queueDelaySec = [math]::Round(($js - $created).TotalSeconds, 1)
-                    durationSec   = $(if ($jc) { [math]::Round(($jc - $js).TotalSeconds, 1) } else { $null })
-                    endOffsetSec  = $(if ($jc) { [math]::Round(($jc - $created).TotalSeconds, 1) } else { $null })
+                    name = $_.name
+                    conclusion = $_.conclusion
+                    startedAt = $js.UtcDateTime.ToString('o')
+                    completedAt = $(if ($jc) { $jc.UtcDateTime.ToString('o') } else { $null })
+                    # startOffset, NO "cola". Para un job con needs: esto mezcla la cola del
+                    # runner con la espera por sus dependencias, y llamarlo cola seria falso.
+                    # La cola del runner solo es aislable a nivel de CORRIDA (queueDelaySec).
+                    startOffsetSec = [math]::Round(($js - $created).TotalSeconds, 1)
+                    durationSec = $(if ($jc) { [math]::Round(($jc - $js).TotalSeconds, 1) } else { $null })
+                    endOffsetSec = $(if ($jc) { [math]::Round(($jc - $created).TotalSeconds, 1) } else { $null })
                 }
             })
 
@@ -749,15 +752,17 @@ function Get-CiMeasurement {
             jobs              = $jobs
         }
 
-        Write-Host "  corrida ............ $($result.runId)  ($($result.conclusion))  sha $($result.headSha.Substring(0,7))"
-        Write-Host "  reloj de pared ..... $($result.runWallClockSec) s"
-        Write-Host "  espera en cola ..... $($result.queueDelaySec) s"
-        Write-Host "  trabajo critico .... $($result.criticalJob)  (termina a los $($result.criticalJobEndSec) s)"
+        Write-Host "  corrida ................ $($result.runId)  ($($result.conclusion))  sha $($result.headSha.Substring(0,7))"
+        Write-Host "  reloj de pared ......... $($result.runWallClockSec) s"
+        Write-Host "  cola del runner ........ $($result.queueDelaySec) s  (nivel de corrida; es lo unico aislable como cola)"
+        Write-Host "  trabajo critico ........ $($result.criticalJob)  (termina a los $($result.criticalJobEndSec) s)"
         Write-Host ''
-        Write-Host '  trabajo                                        cola(s)  duracion(s)  fin(s)'
+        Write-Host '  trabajo                                        inicio(s)  duracion(s)  fin(s)'
         foreach ($j in ($jobs | Sort-Object endOffsetSec)) {
-            Write-Host ("  {0,-45} {1,8} {2,12} {3,7}" -f $j.name, $j.queueDelaySec, $j.durationSec, $j.endOffsetSec)
+            Write-Host ("  {0,-45} {1,9} {2,12} {3,7}" -f $j.name, $j.startOffsetSec, $j.durationSec, $j.endOffsetSec)
         }
+        Write-Host '  (inicio = desplazamiento desde la creacion de la corrida; en un job con needs:'
+        Write-Host '   incluye la espera por sus dependencias y NO es cola del runner)'
 
         return $result
     }
