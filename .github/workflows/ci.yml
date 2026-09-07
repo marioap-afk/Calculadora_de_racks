@@ -14,13 +14,28 @@ jobs:
   tests:
     name: Tests (Domain + Application)
     runs-on: ubuntu-latest
+    # Fusible contra cuelgues (I-45 G2), no un SLA. El maximo observado de este job es ~2.5 min, asi
+    # que 20 deja ~8x de holgura: absorbe la variacion del runner sin volver roja una corrida lenta
+    # legitima, y corta un hang real. Es la red EXTERIOR: --blame-hang (5 min) dispara antes y deja
+    # diagnostico; este timeout solo actua si el propio blame se queda encallado.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
-      - name: dotnet test with Cobertura
-        run: dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug -v:minimal --collect:"XPlat Code Coverage" --results-directory artifacts/TestResults -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+      # I-45 G2: se anaden el logger TRX y --blame-hang. La poblacion de pruebas NO cambia (sin
+      # --filter), la cobertura se sigue recolectando igual y el --results-directory es el mismo, de
+      # modo que "Normalize coverage path" sigue encontrando exactamente un coverage.cobertura.xml:
+      # el TRX y la salida de blame son nombres distintos y no entran en su filtro.
+      - name: dotnet test Core (Cobertura + TRX + blame-hang)
+        run: >
+          dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug -v:minimal
+          --collect:"XPlat Code Coverage"
+          --logger "trx;LogFileName=core.trx"
+          --results-directory artifacts/TestResults
+          --blame-hang --blame-hang-timeout 5m --blame-hang-dump-type mini
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
       - name: Normalize coverage path
         shell: pwsh
         run: |
@@ -39,10 +54,23 @@ jobs:
           path: artifacts/coverage/coverage.cobertura.xml
           if-no-files-found: error
           retention-days: 14
+      # if: always() para no perder el diagnostico justo cuando la prueba falla, que es cuando sirve.
+      # if-no-files-found: warn (no error) a proposito: si el paso de pruebas muere antes de crear
+      # ningun archivo, un artifact vacio NO debe anadir un segundo fallo que tape el original.
+      - name: Upload Core test diagnostics (TRX + blame)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rackcad-core-test-diagnostics
+          path: artifacts/TestResults
+          if-no-files-found: warn
+          retention-days: 14
 
   build-ui:
     name: Build UI (WPF, valida API de Application)
     runs-on: windows-latest
+    # Fusible (I-45 G2). Maximo observado ~1.5 min; 15 deja ~10x de holgura.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -56,13 +84,34 @@ jobs:
     # The reusable controls (I-14) are born with tests; WPF needs a Windows runner and STA, so this is
     # a dedicated job (the Domain/Application suite stays on ubuntu). It does not gate the Plugin build.
     runs-on: windows-latest
+    # Fusible (I-45 G2). Es el job mas largo: maximo observado ~4.5 min, asi que 25 deja ~5.5x de
+    # holgura sobre el peor caso medido. Importa especialmente aqui: la suite de UI marshala la mayor
+    # parte de sus pruebas sobre UN hilo STA compartido cuyo dialogo por defecto es un MessageBox
+    # modal REAL, de modo que un cuelgue seria indefinido y hasta hoy este job no tenia ninguna red.
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
-      - name: dotnet test UI controls
-        run: dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug -v:minimal
+      # I-45 G2: TRX propio, directorio de resultados propio y blame-hang. La poblacion de pruebas NO
+      # cambia (sin --filter) y la configuracion sigue siendo Debug. --blame-hang NO resuelve la
+      # carrera de estado global que Discovery documento: solo hace DIAGNOSTICABLE su manifestacion,
+      # nombrando la prueba que dejo de progresar en vez de morir muda.
+      - name: dotnet test UI controls (TRX + blame-hang)
+        run: >
+          dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug -v:minimal
+          --logger "trx;LogFileName=ui.trx"
+          --results-directory artifacts/UiTestResults
+          --blame-hang --blame-hang-timeout 5m --blame-hang-dump-type mini
+      - name: Upload UI test diagnostics (TRX + blame)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rackcad-ui-test-diagnostics
+          path: artifacts/UiTestResults
+          if-no-files-found: warn
+          retention-days: 14
 
   build-plugin:
     name: Build Plugin without AutoCAD
