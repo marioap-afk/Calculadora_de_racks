@@ -47,7 +47,14 @@ namespace RackCad.UI.Tests
                         // suite es responder que si, que es lo que hacian de facto todas las pruebas antes de que la
                         // politica existiera. Una prueba que se interese por el dialogo sustituye el suyo con
                         // EditorDiscardPrompt.Substitute y recupera este al salir de su alcance.
-                        RackCad.UI.Shell.EditorDiscardPrompt.Substitute(_ => true);
+                        // El IDisposable se descarta A PROPOSITO: esto NO es un ambito, es el SUELO de la
+                        // suite. Restaurarlo devolveria el defecto de produccion, que es un MessageBox modal
+                        // real, y cualquier cierre posterior con trabajo pendiente colgaria la corrida. Se
+                        // instala una sola vez por proceso, dentro del hilo y antes de publicar el dispatcher.
+                        // Lo que hace segura esta instalacion permanente frente a las pruebas que SI usan
+                        // ambitos es EditorDiscardPromptCollection, que serializa a las dos unicas clases que
+                        // sustituyen este delegado (I-45, gate G0B).
+                        _ = RackCad.UI.Shell.EditorDiscardPrompt.Substitute(_ => true);
 
                         dispatcher = Dispatcher.CurrentDispatcher;
                         ready.Set();

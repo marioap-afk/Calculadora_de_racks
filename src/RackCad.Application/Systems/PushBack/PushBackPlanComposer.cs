@@ -5,10 +5,6 @@ using System.Linq;
 using RackCad.Application.Drawing;
 using RackCad.Domain.Systems.Dynamic;
 
-using System;
-
-using System.Globalization;
-
 namespace RackCad.Application.Systems.PushBack
 {
     /// <summary>
