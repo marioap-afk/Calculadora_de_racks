@@ -46,7 +46,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $SchemaName = 'rackcad-validation-repetition'
-$SchemaVersion = 1
+# v2 (G6): cada ejecucion publica `crossChannelBasis`, que declara que el cruce de canal se detecta por
+# CO-UBICACION en el mismo commit y no por identidad de SHA. La forma cambia, asi que la version sube.
+$SchemaVersion = 2
 
 # Corpus de G3. Es el corpus comparativo de Discovery, que ya tiene evidencia suficiente.
 $Corpus = @(
@@ -336,7 +338,20 @@ function Get-InitiativeReconstruction {
 
         $initClaims = @($Claims | Where-Object { $_.initiative -eq $Initiative.id })
 
-        # Afirmaciones locales indexadas por el commit que las contiene.
+        # Afirmaciones locales indexadas por el commit que las CONTIENE.
+        #
+        # ATENCION, y es la razon de que este indice se llame asi: el commit contenedor NO es el SHA
+        # que esa evidencia atestigua. La suite local se ejecuta ANTES de que el commit exista, y
+        # Directory.Build.targets estampa `git rev-parse HEAD`, que en ese momento es el PADRE. Este
+        # indice solo sirve para detectar CO-UBICACION —"en este commit alguien afirmo haber corrido
+        # algo"—, que es una base MAS DEBIL que la identidad de SHA y se declara como tal en cada
+        # ejecucion (`crossChannelBasis`).
+        #
+        # Este indice NO rellena el campo `sha`. Ese campo solo se llena por dos vias, ambas
+        # declaradas en `shaBasis`: VERBATIM, cuando la frase nombra el SHA, y STATED_AFTER_COMMIT,
+        # cuando el texto afirma explicitamente que la corrida fue POSTERIOR a crear ese commit —el
+        # unico caso en que el commit contenedor SI es el SHA atestiguado, y por lo que el texto dice,
+        # no por co-ubicacion—. Cualquier otra afirmacion local se queda con `sha = $null`.
         $localByCommit = @{}
         foreach ($c in $initClaims) {
             if ($c.channel -ne 'local') { continue }
@@ -375,6 +390,7 @@ function Get-InitiativeReconstruction {
                     attempt                  = 1
                     isRerun                  = $false
                     mergeKind                = $null
+                    crossChannelBasis        = $null
                     priorAttemptConclusion   = $null
                     sha                      = $sha
                     shaBasis                 = $shaBasis
@@ -424,7 +440,13 @@ function Get-InitiativeReconstruction {
                 $priorGreen = 0
                 for ($k = 0; $k -lt $i; $k++) { if ($runs[$k].conclusion -eq 'success') { $priorGreen++ } }
                 $priorSame = ($priorGreen -gt 0)
+
+                # CO-UBICACION, no identidad de SHA. El cruce de canal se detecta porque el cuerpo de
+                # ESTE commit afirma una corrida local; que esa corrida atestiguara este SHA es
+                # indemostrable (se ejecuto antes de que el commit existiera). La base queda declarada
+                # en `crossChannelBasis` para que ningun consumidor la lea como identidad.
                 $priorOther = ($i -eq 0 -and $hasLocalClaim -and -not $isMerge)
+                $crossBasis = $(if ($priorOther) { 'commit-colocated (NO es identidad de SHA)' } else { $null })
                 $priorConclusion = $(if ($i -gt 0) { $runs[$i - 1].conclusion } else { $null })
 
                 $rule = $null
@@ -452,6 +474,7 @@ function Get-InitiativeReconstruction {
                         attempt                  = $run.attempt
                         isRerun                  = $run.isRerun
                         mergeKind                = $mergeKind
+                        crossChannelBasis        = $crossBasis
                         priorAttemptConclusion   = $priorConclusion
                         sha                      = $sha
                         shaBasis                 = 'API'

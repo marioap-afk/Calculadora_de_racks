@@ -168,10 +168,10 @@ Un cambio de comportamiento esta terminado cuando:
    de declararlo esta en
    [docs/guias/validacion-manual-autocad.md](docs/guias/validacion-manual-autocad.md) §7.1.
 
-   **LC-UI no toca el gate del dueño.** «Sobre ese SHA» rige para las cuatro evidencias automatizadas
-   y para el CI; la validacion manual en AutoCAD conserva **exactamente** su regla de reutilizacion de
-   hoy —si el trunk no avanzo desde una validacion previa, esa validacion sigue valiendo
-   (docs/WORKFLOW.md seccion 4.5.3)—. Ni se relaja ni se endurece aqui.
+   **LC-UI no cambia QUE valida el dueño.** «Sobre ese SHA» rige para las cuatro evidencias
+   automatizadas y para el CI; cuando la validacion manual puede reutilizarse lo decide la seccion
+   siguiente, no LC-UI.
+
 2. Todo bugfix lleva **test de regresion verificado FALLANDO** con el fix desactivado (un test que nunca se
    vio fallar no prueba nada).
 3. Build de UI + Plugin en Debug con 0 errores (el usuario prueba via NETLOAD del Debug, no del Release).
@@ -189,6 +189,81 @@ Un cambio de comportamiento esta terminado cuando:
    Es una **metrica experimental de I-45 y NO es parte de este punto 5**: que el dato falte —o que
    nadie lo preguntara— no invalida la validacion, no cambia su veredicto, **no impide que el cambio
    este terminado y no bloquea la integracion**. No preguntar no incumple esta lista.
+
+### Reutilizacion de evidencia: **SHA exacto, y nada mas**
+
+Una evidencia ya producida se reutiliza **solo** si recae sobre **el mismo SHA exacto**. No autorizan
+reutilizar nada: el mismo arbol, los mismos archivos, el mismo diff, la misma rama, que `main` no
+haya avanzado, ni que `tree(merge) == tree(segundo padre)`.
+
+**Por que.** `Directory.Build.targets` estampa el SHA del commit en `InformationalVersion` —siempre
+que el build vea el repositorio; el fallback documentado para un build fuera de un checkout deja la
+version sin sufijo, y ese caso no es el nuestro—. Dos commits con el mismo arbol producen por tanto
+**ensamblados distintos**, asi que **igualdad de arbol no es identidad de binario**. Una regla que
+reutilizara por arbol estaria afirmando de un binario algo que solo se comprobo de otro.
+
+**La regla.** Si una evidencia requerida (1) ya existe sobre ese mismo SHA exacto, (2) es de la misma
+clase, (3) sigue valiendo para el mismo proposito y (4) no la invalido nada de la lista de abajo,
+entonces **cruzar otro gate administrativo no obliga a repetirla por ceremonia**. El objetivo es
+**una ejecucion de suite completa por Candidato**, salvo invalidacion explicita.
+
+**Las clases no se sustituyen entre si**, nunca: Core local ≠ Core del CI; UI local ≠ UI del CI;
+build Debug ≠ build del CI; validacion del dueño ≠ cualquier evidencia automatizada. LC-UI es una
+**excepcion normativa explicita** de reparto durante la iteracion ordinaria, **no** una equivalencia
+inferida, y **no se generaliza**.
+
+**Invalidadores, y solo estos.** Ademas de cambiar el SHA:
+
+- **evidencia local** — el **arbol de trabajo estaba sucio** al producirla. No se puede atribuir
+  limpiamente a ese SHA.
+- **evidencia dependiente del SDK** — cambio el **SDK resuelto**. `8.0.x` o un `global.json` sin
+  tocar **no** demuestran que el SDK resuelto sea el mismo: `8.0.x` es un pin **flotante**.
+- **evidencia del dueño en AutoCAD** — cambio la **version de AutoCAD** o la **biblioteca externa de
+  bloques**.
+
+La lista no se amplia especulativamente.
+
+**Validacion del dueño.** Se reutiliza si y solo si: **mismo SHA exacto** + **misma version de
+AutoCAD** + **misma biblioteca de bloques**, y para el mismo proposito y alcance. Si cambia el SHA,
+**no es reutilizable automaticamente**, aunque el arbol sea identico.
+
+**Rebase.** Un rebase crea SHAs nuevos: la evidencia previa al rebase **no valida** el SHA rebasado.
+**Merge `--no-ff`.** El commit de merge `Y` no es el Candidato `X`: **el CI posterior al merge es
+obligatorio**, aunque `tree(Y) == tree(X)`.
+
+**Commit documental.** Un commit que solo toca documentacion **sigue siendo un SHA nuevo** y **no
+hereda** la evidencia del anterior. La politica puede exigir sobre el **menos clases** de evidencia
+—eso es una regla de que se exige, proporcional al cambio—, pero **no se llama reutilizacion** y no
+se apoya en que «el binario no cambia», porque cambia.
+
+**Orden para la evidencia local de un Candidato**, en este orden y no en otro:
+
+```
+1. crear el commit Candidato
+2. confirmar que el arbol esta limpio
+3. ejecutar la evidencia requerida sobre ESE HEAD exacto
+4. registrar el resultado contra ese SHA
+```
+
+Importa porque una suite ejecutada **antes** de crear el commit estampa `git rev-parse HEAD`, que en
+ese momento es el **padre**: una frase «pruebas verdes» dentro del commit nuevo **no demuestra por si
+sola** que validaran ese SHA. Si una correccion posterior crea otro SHA, el Candidato anterior queda
+invalidado y el nuevo necesita sus propias evidencias.
+
+**Mismo SHA, misma clase, mismo entorno, resultados incompatibles.** Eso **no refuta** la identidad
+por SHA exacto: es una **senal de no determinismo**, y se trata como tal con el diagnostico del CI
+—TRX, `--blame-hang`, volcados—. No se convierte en una equivalencia nueva.
+
+**Registro historico, no precedente.** En `docs/HANDOFF.md` y en archivos de evidencia antiguos hay
+entradas que razonan «el commit de cierre no toca `src/`, luego no cambia el binario, luego la
+aprobacion sigue vigente», a veces encadenadas como «con el mismo criterio que I-31, I-35, I-39A…».
+Esa frontera **queda retirada** y **no es citable**: son registros de lo que se hizo entonces, no una
+regla. La premisa era ademas falsa —el SHA se estampa—, y no se corrigen hacia atras.
+
+**Lo que esta regla NO reclama.** I-45 midio **cero** reconfirmaciones por SHA exacto determinables en
+su corpus, y el canal local historico es **UNKNOWN** porque nunca registro contra que SHA corrio. Esta
+regla es **preventiva y de bajo coste**; **no** se le atribuye ningun ahorro historico ni ningun
+porcentaje.
 
 ### Una seleccion de pruebas que no selecciona nada es un FALLO
 

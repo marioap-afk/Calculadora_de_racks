@@ -289,8 +289,12 @@ Resultado global: aprobado | rechazado | parcial
 Confirmación explícita del validador:
 ```
 
-Una validación parcial no desbloquea un gate que exige el checklist completo. Después de un rebase
-final, la evidencia anterior solo sigue siendo válida si `main` no avanzó desde el árbol validado.
+Una validación parcial no desbloquea un gate que exige el checklist completo.
+
+**Reutilizar una validación anterior exige el mismo SHA exacto**, más la misma versión de AutoCAD y
+la misma biblioteca de bloques (§7.1). Que el árbol sea idéntico, o que `main` no haya avanzado, **ya
+no autoriza nada**: un rebase o un commit documental producen un SHA nuevo, y el SHA se estampa en el
+ensamblado, así que el binario validado y el binario nuevo **no son el mismo binario**.
 
 ### 7.1 Declarar un Candidato
 
@@ -300,13 +304,25 @@ iniciativa, o en el cuerpo del commit que la registra, igual que el veredicto (�
 
 ```text
 Candidate SHA:        <sha exacto>
+Arbol limpio:         SI            <- al producir la evidencia local
+SDK resuelto:         <dotnet --version>
 Core Full local:      PASS
 UI Full local:        PASS
 Debug UI build:       PASS
 Debug Plugin build:   PASS
 CI exact SHA:         GREEN (run <id>, job ui-tests success)
 Owner validation:     required | not required | pending | pass
+Biblioteca de bloques: <ruta resuelta>  SHA-256 <hash>   <- solo si hay validacion del dueño
 ```
+
+La última línea **solo aplica si esa ronda incluye validación del dueño**; con
+`Owner validation: not required` se omite, y su ausencia entonces no descompleta el bloque. La
+versión de AutoCAD —el cuarto dato de procedencia— ya vive en el bloque de §7 y no se repite aquí.
+
+Estas líneas de procedencia existen por una razón concreta: junto con la versión de AutoCAD de §7,
+cubren los invalidadores de AGENTS.md, «Reutilización de evidencia», que son lo que hace falta para
+decidir después si esa evidencia puede reutilizarse. Sin ellas, la respuesta a «¿sigue valiendo?» es
+`UNKNOWN`, y `UNKNOWN` no autoriza reutilizar.
 
 Reglas, y son cortas:
 
@@ -318,6 +334,24 @@ Reglas, y son cortas:
   correr, ni otra rama, ni otro commit.
 - **Si falta cualquiera de las líneas, no hay Candidato.** No se rellena por analogía con un SHA
   anterior o posterior, ni se hereda de un push agrupado.
+- **La evidencia local se ejecuta DESPUÉS de crear el commit**, con el árbol limpio, sobre ese `HEAD`
+  exacto. Una suite corrida antes de commitear estampa `git rev-parse HEAD`, que entonces es el
+  **padre**: no vale para este SHA.
+- **La biblioteca de bloques no tiene versión**, así que se identifica por su **ruta resuelta** y su
+  **SHA-256** en el momento de validar. No se versiona el DWG y no se toca.
+
+  La ruta es la que resuelve el producto (`BlockLibraryLocator.ResolvePath`): el **override** guardado
+  en `%APPDATA%\RackCad\settings.json` (`BlockLibraryPath`) **si está definido**, y si no, el
+  `blocks-library.dwg` que acompaña a los catálogos. Con override, el archivo **puede llamarse de otro
+  modo**: no se asume el nombre, y un nombre con aspecto de versión **no es** un campo de versión.
+
+  ```powershell
+  $s    = Join-Path $env:APPDATA 'RackCad\settings.json'
+  $over = if (Test-Path -LiteralPath $s) { (Get-Content -LiteralPath $s -Raw | ConvertFrom-Json).BlockLibraryPath } else { $null }
+  $lib  = if ([string]::IsNullOrWhiteSpace($over)) { '<catalogs>\blocks-library.dwg' } else { $over }
+  (Get-FileHash -LiteralPath $lib -Algorithm SHA256).Hash
+  ```
+
 - Los hashes van aquí, en el registro de la ronda, donde ya viven el commit y el SHA-256 del DLL. No
   se copian a documentos normativos.
 

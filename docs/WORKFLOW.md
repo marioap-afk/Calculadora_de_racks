@@ -159,12 +159,29 @@ inmediatamente después (sección 2, que es la autoridad de esta regla).
       haberse corrido en local en las iteraciones previas — razón de más para hacerlo aquí explícito.
       **Ese tip rebasado es un Candidato**, así que exige además las DOS suites en local sobre él
       (AGENTS.md, «Pruebas — definicion de terminado», punto 1). Es el único SHA que entra a `main`.
-   3. **Validación manual en AutoCAD sobre el árbol YA rebasado** (sección 6) si cambió
-      comportamiento de dibujo. Si el trunk no avanzó desde una validación previa, esa validación
-      sigue valiendo.
+   3. **Validación manual en AutoCAD sobre el SHA YA rebasado** (sección 6) si cambió comportamiento
+      de dibujo. Una validación anterior **solo** se reutiliza si recae sobre **ese mismo SHA exacto**
+      —y con la misma versión de AutoCAD y la misma biblioteca de bloques—. Que el trunk no haya
+      avanzado **ya no basta**: el rebase produce SHAs nuevos, y el SHA se estampa en el ensamblado
+      (AGENTS.md, «Reutilización de evidencia»).
    4. Último commit de la rama: actualizar `docs/HANDOFF.md` §8-12 y marcar la iniciativa en
       `docs/ROADMAP.md` como `integrada (fecha)` — así el merge lleva los docs consigo y nadie
       commitea directo al trunk después.
+
+      **Este commit es un SHA nuevo y no hereda NADA del Candidato.** Lo que se le exige, de forma
+      explícita y proporcional a lo que contiene —esto es una regla de *qué evidencia se exige*, **no**
+      una reutilización (AGENTS.md, «Reutilización de evidencia»)—:
+
+      - **Comprobar mecánicamente que solo toca documentación**:
+        `git diff --name-only <candidato>..HEAD` no debe listar nada fuera de `docs/`, `README.md` o
+        `CLAUDE.md`. Si toca `src/`, `tests/`, `assets/`, `eng/`, `deploy/`, `.github/` o cualquier
+        archivo de build, **no es un commit documental** y se le exige todo lo del Candidato.
+      - **CI verde sobre ese SHA exacto.** Es evidencia real y propia de ese commit, no heredada: el
+        CI ejecuta las dos suites y los dos builds sobre él.
+      - **No se le exige validación del dueño**, y no porque se reutilice la del Candidato: la
+        obligación de validar en AutoCAD se activa cuando **cambia el comportamiento de dibujo**, y un
+        commit que demostrablemente no toca producto no lo cambia. Si tocara producto, la obligación
+        se activa y el punto anterior ya lo manda al camino completo.
    5. `git checkout main && git merge --no-ff <rama>` y push de `main`. Cada iniciativa queda como
       una burbuja con su nombre; `git log --first-parent main` lee como el registro de iniciativas
       y los commits internos siguen siendo atómicos y bisecables.
@@ -206,7 +223,10 @@ si el resultado se adopta, se re-implementa limpio en una rama `architecture/`/`
 - Cerrar AutoCAD antes de cada rebuild del worktree (el DLL cargado queda bloqueado — trampa
   conocida de AGENTS.md).
 - La validación que cuenta para integrar es la que se hace **sobre el árbol ya rebasado sobre
-  `main`** (sección 4.5.3): validar antes del rebase final solo vale si el trunk no avanzó después.
+  `main`** (sección 4.5.3): una validación hecha **antes** del rebase final recae sobre un SHA que ya
+  no existe en la rama, así que **no vale** para el SHA rebasado, aunque el árbol sea idéntico y
+  aunque el trunk no se haya movido. La reutilización se decide por **SHA exacto**, nunca por árbol
+  (AGENTS.md, «Reutilización de evidencia»).
 
 ## 7. Archivos calientes (alto riesgo de conflicto)
 

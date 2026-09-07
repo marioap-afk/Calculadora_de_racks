@@ -376,6 +376,9 @@ Sin `-ClaimsPath`, solo se reconstruye el canal de CI y los canales local y del 
 observados** — nunca en cero. Sin `-PolicyPath`, ninguna ejecución se clasifica `POLICY_REQUIRED`: la
 costumbre no es norma.
 
-Salida legible por máquina: `rackcad-validation-repetition/v1`, en `artifacts/validation/` (ignorado).
+Salida legible por máquina: `rackcad-validation-repetition/v2`, en `artifacts/validation/` (ignorado).
+La **v2** la introdujo G6: cada ejecución publica `crossChannelBasis`, que declara en los **datos** —no
+solo en esta prosa— que el cruce de canal se detecta por **co-ubicación en el mismo commit** y no por
+identidad de SHA. Los conteos no cambian: 440 ejecuciones, 64 cruces, 0 reconfirmaciones.
 **Los resultados no se versionan**; se versiona el método. El inventario completo de las 440
 ejecuciones vive en el JSON, no aquí.
