@@ -159,6 +159,29 @@ inmediatamente después (sección 2, que es la autoridad de esta regla).
       haberse corrido en local en las iteraciones previas — razón de más para hacerlo aquí explícito.
       **Ese tip rebasado es un Candidato**, así que exige además las DOS suites en local sobre él
       (AGENTS.md, «Pruebas — definicion de terminado», punto 1). Es el único SHA que entra a `main`.
+   2.bis. **Cobertura del Candidato**, si se quiere la señal de salud sobre ese SHA. Se pide de forma
+      **explícita**, nunca se infiere:
+
+      ```bash
+      gh workflow run ci.yml --ref <rama> -f candidate_sha=<sha completo de 40 hex>
+      ```
+
+      El SHA viaja en el **input**, no en `--ref`. La corrida hace checkout de ese commit exacto y
+      **aborta en rojo** si `git rev-parse HEAD` no coincide con lo pedido; sin input explícito
+      también aborta, en vez de medir la punta de la rama. El artifact incluye
+      `measured-sha.txt` con el commit que se midió de verdad.
+
+      > **Condición para que el comando exista:** GitHub solo ofrece `workflow_dispatch` para
+      > workflows presentes en la **rama por defecto**. Mientras `ci.yml` con ese disparador viva solo
+      > en una rama de iniciativa, `gh workflow run` responde `HTTP 422: Workflow does not have
+      > 'workflow_dispatch' trigger`. No es un fallo del proceso: se resuelve solo al integrar.
+
+      **Esa corrida NO es la evidencia «CI verde sobre el SHA exacto» del Candidato.** El registro de
+      un `workflow_dispatch` lleva como `head_sha` la punta del ref despachado, no el SHA medido; lo
+      que prueba qué commit se midió es la comprobación dentro del log. La evidencia de CI del
+      Candidato sigue siendo la corrida de **push** de ese SHA. Y la cobertura **no declara**
+      Candidato: el proceso declara el Candidato, y solo después se le mide.
+
    3. **Validación manual en AutoCAD sobre el SHA YA rebasado** (sección 6) si cambió comportamiento
       de dibujo. Una validación anterior **solo** se reutiliza si recae sobre **ese mismo SHA exacto**
       —y con la misma versión de AutoCAD y la misma biblioteca de bloques—. Que el trunk no haya

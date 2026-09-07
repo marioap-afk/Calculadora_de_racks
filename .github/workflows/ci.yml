@@ -7,8 +7,29 @@ name: CI
 # Corre en TODO push (sin lista de ramas: una copia de los prefijos de WORKFLOW §1 aquí divergiría,
 # y el checklist de cierre exige "CI verde en la rama" para cualquier iniciativa). Sin trigger
 # pull_request para no duplicar corridas; la compuerta de integración es el CI del push (WORKFLOW §4.5).
+#
+# workflow_dispatch (I-45 G6-C1) es el ÚNICO camino para pedir cobertura de un Candidato. Es explícito
+# a propósito: el Candidato lo declara el proceso, nunca se infiere del nombre de la rama, de las rutas
+# tocadas, del mensaje del commit ni de "el último SHA". El SHA viaja como INPUT y no como ref del
+# dispatch, porque la API documenta el ref del dispatch como rama o tag, no como commit suelto.
 on:
   push:
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: "SHA COMPLETO (40 hex minúsculas) del Candidato sobre el que medir cobertura"
+        required: true
+        type: string
+
+# I-45 G6-C1, y no es decoración. `Directory.Build.targets` resuelve el SHA que se estampa en
+# `InformationalVersion` con esta prioridad: $(SourceRevisionId), luego $(GITHUB_SHA), y solo si no hay
+# ninguno invoca `git rev-parse HEAD`. En un dispatch de Candidato el checkout es el SHA pedido pero
+# GITHUB_SHA sigue siendo la PUNTA del ref despachado, así que sin esta línea TODOS los ensamblados de
+# esa corrida saldrían marcados con un commit que no es el que compilaron — en silencio, y rompiendo
+# justo la trazabilidad binario↔commit sobre la que G6 apoya su regla de SHA exacto.
+# En un push el input llega vacío, la propiedad queda vacía y el comportamiento es el de siempre.
+env:
+  SourceRevisionId: ${{ inputs.candidate_sha }}
 
 jobs:
   tests:
@@ -20,23 +41,103 @@ jobs:
     # diagnostico; este timeout solo actua si el propio blame se queda encallado.
     timeout-minutes: 20
     steps:
+      # I-45 G6-C1. Decide UNA vez la cadencia de cobertura de ADR-0033 §9 y la deja escrita en el log,
+      # que es lo que la vuelve auditable. Se calcula en shell y no en una expresion porque el SHA
+      # objetivo tambien se valida aqui: comparar SHAs dentro de una expresion de Actions es inseguro
+      # (las cadenas se coercionan a numero en silencio).
+      #
+      # El input NUNCA se interpola en el cuerpo del script: entra por `env`, que es lo que la guia de
+      # seguridad de GitHub prescribe para entradas no confiables.
+      - name: Cadencia de cobertura y SHA objetivo
+        id: cadence
+        env:
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+          FALLBACK_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          # En un dispatch manda el input y NO hay fallback: caer a la punta de la rama mediria un
+          # commit que nadie pidio y publicaria su cobertura como si fuera la del Candidato. En un
+          # push el contexto `inputs` no esta poblado y el objetivo es el commit empujado.
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            if [ -z "${CANDIDATE_SHA:-}" ]; then
+              echo "::error::un dispatch de cobertura exige candidate_sha explicito; no se asume la punta de la rama."
+              exit 1
+            fi
+            TARGET="$CANDIDATE_SHA"
+          else
+            TARGET="$FALLBACK_SHA"
+          fi
+
+          # Fail-closed de FORMA, antes de gastar un checkout: actions/checkout solo reconoce como
+          # commit un SHA de 40 hex. Uno corto no falla como "SHA invalido": lo busca como rama y
+          # muere con un mensaje que despista.
+          #
+          # Se compara la CADENA COMPLETA con [[ =~ ]], no con grep: grep ancla por LINEA, de modo que
+          # un input con un salto de linea embebido pasaria el guardia y sus lineas extra acabarian
+          # escritas como asignaciones en GITHUB_OUTPUT unas lineas mas abajo.
+          if [[ ! "$TARGET" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::SHA objetivo invalido; se exige un SHA completo de 40 hex minusculas."
+            exit 1
+          fi
+
+          # Cobertura SOLO en Candidato (dispatch explicito) y en el trunk. En el push ordinario, no.
+          # Se acepta tanto `main` literal como la rama por defecto que declare el repositorio: si el
+          # trunk se renombrara, comparar solo contra la constante apagaria la cobertura del trunk en
+          # SILENCIO, sin rojo y sin aviso, que es el unico modo de perderla sin que nadie lo note.
+          TRUNK="${DEFAULT_BRANCH:-main}"
+          if [ "$EVENT" = "workflow_dispatch" ] || { [ "$EVENT" = "push" ] && { [ "$REF" = "refs/heads/main" ] || [ "$REF" = "refs/heads/$TRUNK" ]; }; }; then
+            COLLECT=true
+          else
+            COLLECT=false
+          fi
+
+          echo "sha=$TARGET" >> "$GITHUB_OUTPUT"
+          echo "collect=$COLLECT" >> "$GITHUB_OUTPUT"
+          echo "evento=$EVENT ref=$REF objetivo=$TARGET cobertura=$COLLECT"
+
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.cadence.outputs.sha }}
+
+      # Fail-closed de IDENTIDAD. Sin esto no hay garantia de que la cobertura se midiera sobre el SHA
+      # pedido, solo esperanza: si el commit no existiera o checkout resolviera otra cosa, el job debe
+      # morir en rojo en vez de publicar cobertura del commit equivocado.
+      - name: Verificar que el checkout es el SHA pedido
+        env:
+          WANT: ${{ steps.cadence.outputs.sha }}
+        run: |
+          set -euo pipefail
+          GOT="$(git rev-parse HEAD)"
+          if [ "$GOT" != "$WANT" ]; then
+            echo "::error::checkout en $GOT pero se pidio $WANT"
+            exit 1
+          fi
+          echo "SHA verificado: $GOT"
+
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
       # I-45 G2: se anaden el logger TRX y --blame-hang. La poblacion de pruebas NO cambia (sin
-      # --filter), la cobertura se sigue recolectando igual y el --results-directory es el mismo, de
-      # modo que "Normalize coverage path" sigue encontrando exactamente un coverage.cobertura.xml:
-      # el TRX y la salida de blame son nombres distintos y no entran en su filtro.
-      - name: dotnet test Core (Cobertura + TRX + blame-hang)
+      # --filter) y el --results-directory es el mismo.
+      #
+      # I-45 G6-C1: los dos fragmentos de cobertura son condicionales, y son los UNICOS condicionales:
+      # la suite sigue siendo completa en todos los caminos. Se mantiene UN solo comando en vez de dos
+      # pasos alternativos para que las banderas de diagnostico no puedan divergir entre ellos. El
+      # idioma `cond && 'x' || ''` es seguro aqui porque el operando verdadero nunca es vacio.
+      - name: dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
         run: >
           dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug -v:minimal
-          --collect:"XPlat Code Coverage"
+          ${{ steps.cadence.outputs.collect == 'true' && '--collect:"XPlat Code Coverage"' || '' }}
           --logger "trx;LogFileName=core.trx"
           --results-directory artifacts/TestResults
           --blame-hang --blame-hang-timeout 5m --blame-hang-dump-type mini
-          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+          ${{ steps.cadence.outputs.collect == 'true' && '-- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura' || '' }}
       - name: Normalize coverage path
+        if: steps.cadence.outputs.collect == 'true'
         shell: pwsh
         run: |
           $allCoverage = @(Get-ChildItem -LiteralPath artifacts/TestResults -Recurse -File -Filter coverage.cobertura.xml)
@@ -56,11 +157,25 @@ jobs:
           $destination = "artifacts/coverage/coverage.cobertura.xml"
           New-Item -ItemType Directory -Path (Split-Path -Parent $destination) -Force | Out-Null
           Copy-Item -LiteralPath $coverageFiles[0].FullName -Destination $destination
+
+          # I-45 G6-C1: el artifact viaja con el SHA que REALMENTE se midio. En un dispatch, el
+          # head_sha del registro de la corrida es la punta del ref despachado y NO el commit medido,
+          # asi que sin esto el artifact seria indistinguible de uno tomado sobre otro commit.
+          @(
+            "measured_sha=$(git rev-parse HEAD)"
+            "event=$env:GITHUB_EVENT_NAME"
+            "run_head_sha=$env:GITHUB_SHA"
+            "run_id=$env:GITHUB_RUN_ID"
+          ) | Set-Content -LiteralPath "artifacts/coverage/measured-sha.txt" -Encoding utf8
+      # La ausencia deliberada de cobertura en un push ordinario NO es un aviso ni un error: el paso
+      # simplemente no corre. `if-no-files-found: error` se conserva para los caminos que SI la
+      # recolectan, donde un artifact vacio si seria un fallo real.
       - name: Upload Cobertura coverage
+        if: steps.cadence.outputs.collect == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: rackcad-coverage-cobertura
-          path: artifacts/coverage/coverage.cobertura.xml
+          path: artifacts/coverage
           if-no-files-found: error
           retention-days: 14
       # if: always() para no perder el diagnostico justo cuando la prueba falla, que es cuando sirve.
@@ -81,7 +196,14 @@ jobs:
     # Fusible (I-45 G2). Maximo observado ~1.5 min; 15 deja ~10x de holgura.
     timeout-minutes: 15
     steps:
+      # Mismo SHA objetivo que el job `tests`: en un dispatch de Candidato TODOS los jobs corren sobre
+      # el commit pedido, no sobre la punta de la rama. En un push el input llega vacio —el contexto
+      # `inputs` no esta poblado— y la expresion cae a `github.sha`, que es el commit empujado. La
+      # validacion de forma y la comprobacion fail-closed del SHA viven en `tests`, que es donde se
+      # mide la cobertura.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.candidate_sha || github.sha }}
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
@@ -99,7 +221,14 @@ jobs:
     # modal REAL, de modo que un cuelgue seria indefinido y hasta hoy este job no tenia ninguna red.
     timeout-minutes: 25
     steps:
+      # Mismo SHA objetivo que el job `tests`: en un dispatch de Candidato TODOS los jobs corren sobre
+      # el commit pedido, no sobre la punta de la rama. En un push el input llega vacio —el contexto
+      # `inputs` no esta poblado— y la expresion cae a `github.sha`, que es el commit empujado. La
+      # validacion de forma y la comprobacion fail-closed del SHA viven en `tests`, que es donde se
+      # mide la cobertura.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.candidate_sha || github.sha }}
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
@@ -132,7 +261,14 @@ jobs:
     permissions:
       contents: read
     steps:
+      # Mismo SHA objetivo que el job `tests`: en un dispatch de Candidato TODOS los jobs corren sobre
+      # el commit pedido, no sobre la punta de la rama. En un push el input llega vacio —el contexto
+      # `inputs` no esta poblado— y la expresion cae a `github.sha`, que es el commit empujado. La
+      # validacion de forma y la comprobacion fail-closed del SHA viven en `tests`, que es donde se
+      # mide la cobertura.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.candidate_sha || github.sha }}
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
