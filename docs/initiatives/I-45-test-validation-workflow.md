@@ -26,27 +26,31 @@ automation:
 
 # Engineering Productivity — arquitectura de pruebas y workflow de validacion
 
-> **Fase actual: DISCOVERY.** Esta iniciativa investiga y propone; **no implementa**.
+> **Fase actual: CONSENSO ALCANZADO — P0 versionado.** Discovery esta cerrado y el plan esta acordado.
 >
 > ```
-> Phase:    DISCOVERY
+> Phase:    P0 VERSIONED  (precondicion documental cumplida)
 > Baseline: parent of the atomic claim commit on origin/main
 >
-> NO IMPLEMENTATION BEFORE CONSENSUS
+> PLAN VERSION:       V4
+> Coordinator:        AGREED
+> Architect:          AGREED
+> Open disagreements: NONE
+> CONSENSUS STATUS:   REACHED
 >
-> Coordinator <-> Architect
-> proposal <-> critical review <-> adjustments <-> reconciliation <-> CONSENSUS
->
-> Implementation READY only when:
->   Coordinator = AGREED
->   Architect   = AGREED
->   same PLAN_VERSION
->   Open disagreements = NONE
+> Behavioral implementation: READY a partir de la existencia de este commit de P0
 > ```
 >
-> Mientras esas cuatro condiciones no se cumplan **sobre la misma version concreta del plan**, ningun
-> cambio de la seccion 4 esta autorizado, aunque el Discovery ya haya medido que seria beneficioso.
-> Un hallazgo no es una autorizacion.
+> Las cuatro condiciones se cumplen sobre **la misma version concreta del plan**, `V4`. La decision
+> vive en [ADR-0033](../adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md), en estado
+> **`propuesto`**; el plan, en [I-45-plan.md](I-45-plan.md).
+>
+> **El consenso NO es aceptacion del ADR.** Son dos actos de dos autoridades distintas: `adr/README.md`
+> reserva al dueno del repositorio aceptar o rechazar, y los agentes solo redactan en `propuesto`.
+>
+> La secuencia autorizada a partir de aqui es `G0A → G2 → G0B → G1 → G3 → G4 → G5 → G6 → G7`, y no se
+> reordena. Cada gate conserva su alcance: **un hallazgo no es una autorizacion**, y ningun gate
+> posterior se abre si el anterior no produjo su evidencia.
 
 ## 1. Objetivo
 
@@ -192,10 +196,18 @@ Del gate de cierre de Discovery:
 - `docs/ROADMAP.md` (modificado) — reubicacion de la fila a la seccion transversal.
 - Este contrato (modificado) — retirada del SHA versionado y ajuste de fases.
 
+Del gate P0 — precondicion documental, exactamente cuatro:
+
+- `docs/adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md` (nuevo) — **la decision**, en
+  estado `propuesto`.
+- `docs/adr/README.md` (modificado) — el ADR en el indice, con ese mismo estado.
+- `docs/initiatives/I-45-plan.md` (nuevo) — **el plan consensuado** `V4` y la secuencia de gates.
+- Este contrato (modificado) — estado del consenso y transicion.
+
 De las fases posteriores:
 
 - `docs/automation/decisions/I-45.md` — decisiones del dueno, si las hubiera.
-- La Proposal y el registro de reconciliacion, en la ruta que el Owner apruebe.
+- Lo que produzca cada gate, dentro de su propio alcance.
 
 Una desviacion material respecto de estas listas obliga a detenerse.
 
@@ -214,17 +226,22 @@ Una desviacion material respecto de estas listas obliga a detenerse.
    > clase de error de hecho que la seccion 3 autoriza corregir — la misma que el Discovery
    > documenta en `HANDOFF` (§8.4 de la evidencia). Se conserva la nota para que el error no se
    > repita por omision.
-2. **Proposal V1** — problema medido, alternativas con evidencia, recomendacion, riesgos, metricas de
-   exito, despliegue y reversion. **No escrita todavia.**
-3. **Revision independiente del Arquitecto** — analisis propio, no aprobacion jerarquica; salida con
-   acuerdos, desacuerdos, cambios propuestos, riesgos, alternativas y preguntas.
-4. **Reconciliacion** — ajustes y nueva version del plan hasta que ambos declaren AGREED sobre la
-   misma `PLAN_VERSION`, sin desacuerdos abiertos.
-5. **CONSENSUS** — se registra el acuerdo. Solo aqui deja de aplicar la seccion 4, y la
-   implementacion se planifica como alcance separado.
+2. **Proposal** — HECHA. Problema medido, alternativas con evidencia, recomendacion, riesgos,
+   metricas, despliegue y reversion.
+3. **Revision independiente del Arquitecto** — HECHA. Cuatro rondas, con analisis propio y no
+   aprobacion jerarquica. La primera devolvio ocho cambios materiales; la segunda, tres; la tercera,
+   uno. Cada uno se reconcilio antes de la siguiente.
+4. **Reconciliacion** — HECHA. `V1 → V2 → V3 → V4`, con las versiones anteriores conservadas como
+   historia de lo rechazado en [I-45-plan.md](I-45-plan.md).
+5. **CONSENSUS** — ALCANZADO sobre `V4`, sin desacuerdos abiertos.
+6. **P0 — precondicion documental** — HECHA en el commit que publica el ADR y el plan. Cumple
+   `WORKFLOW` seccion 8, que exige el ADR **antes** de implementar una decision de arquitectura y el
+   documento de proceso **antes** de aplicar un proceso nuevo. **No aplica nada de lo que documenta.**
+7. **Implementacion por gates** — `G0A → G2 → G0B → G1 → G3 → G4 → G5 → G6 → G7`, en ese orden y sin
+   reordenar. Se detalla en [I-45-plan.md](I-45-plan.md).
 
-Cada fase termina con evidencia revisable. Ninguna fase posterior a la 5 forma parte de esta
-iniciativa sin una decision explicita del dueno.
+Cada fase termina con evidencia revisable. A partir de P0 la seccion 4 deja de aplicar **solo dentro
+del alcance que el ADR autoriza y en el gate que corresponde**; todo lo demas sigue fuera.
 
 ## 9. Pruebas y builds
 
