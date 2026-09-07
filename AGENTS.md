@@ -117,10 +117,61 @@ Un cambio de comportamiento esta terminado cuando:
 
 1. **Validacion automatizada completa** verde: **suite Core + suite UI**, todas las pruebas y no solo
    las nuevas. Eso es lo que significa «Full» cuando un gate lo exige, y es una definicion de QUE se
-   ejecuta, no de DONDE: el reparto de responsabilidad entre la corrida local y la del CI lo decide
-   I-45 en su gate correspondiente
-   ([ADR-0033](docs/adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md), en estado
-   `propuesto`). Hasta que ese gate aterrice, no cambia nada de lo que ya se hacia.
+   ejecuta, no de DONDE. **El reparto entre la corrida local y la del CI es el de la tabla de abajo.**
+   ([ADR-0033](docs/adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md) es el **origen** de esta
+   regla, pero sigue en estado `propuesto`: vale como origen, no como autoridad, y este punto **se
+   sostiene solo**. Donde ambos difieran, **manda este punto**, que es el mas estricto de los dos.)
+
+   | Momento | suite Core en local | suite UI en local |
+   |---|---|---|
+   | **Iteracion ordinaria** | sin cambio: LC-UI **no toca el nucleo** | **NO obligatoria** antes del push |
+   | **Candidato** | **obligatoria** | **obligatoria** |
+   | **Cierre, o cualquier gate que exija Full** | **obligatoria** | **obligatoria** |
+
+   **Iteracion ordinaria (LC-UI).** La suite completa de UI deja de ser obligatoria en local en cada
+   iteracion: la evidencia intermedia de UI la aporta el CI. Es un **reparto de responsabilidad
+   declarado, no una equivalencia**: la corrida local de UI y la del CI **no son la misma clase de
+   evidencia**, y fuera de esta regla ninguna sustituye a la otra. «Opcional en local» significa
+   **opcional en local**, no «UI opcional»: la suite se ejecuta igual, en el CI.
+
+   **El nucleo queda fuera de esta regla, y no por olvido.** Core local y Core del CI son clases
+   distintas —el CI corre en ubuntu y el bucle local en Windows, y hay pruebas cuyo resultado depende
+   de bytes en disco y de la cultura del hilo—. **No existe ninguna regla que permita que el Core del
+   CI sustituya al Core local**, y no se deduce ninguna por analogia con LC-UI.
+
+   **La exencion es previa al push; la evidencia es posterior.** No hay que correr la suite de UI en
+   local antes de empujar. Lo que decide si ese SHA **tiene** evidencia de UI es lo que ocurra despues:
+   si su corrida de CI pasa, la tiene; si esa corrida no existe o el job no queda en verde, **ese SHA
+   se queda sin evidencia de UI** y hay que resolverlo antes de que pueda ser Candidato. No se
+   posterga la validacion: se traslada de canal.
+
+   **Que cuenta como evidencia de UI del CI**, y solo esto: el job **`ui-tests`** —el que el CI publica
+   como `UI Tests (WPF controls, net8.0-windows)`— con `conclusion = success` sobre el **`head_sha`
+   exacto** de ese commit. NO basta el workflow en verde si ese job no corrio, ni el mismo SHA en otra
+   rama, ni un commit anterior, ni uno posterior.
+
+   **Push agrupado: la evidencia no se propaga.** Si un push lleva `A → B → C` y Actions corre solo
+   sobre `C`, solo `C` recibe evidencia; `A` y `B` tienen **evidencia de UI del CI = NINGUNA**. No se
+   hereda hacia atras ni hacia delante. No es formalismo: I-45 midio que los commits sin corrida
+   propia son, en su mayoria, fases **rojas** de TDD empujadas junto a su verde — heredarles el verde
+   del tip afirmaria que un commit rojo por diseno estaba verde.
+
+   **SHA sin evidencia de UI.** Un SHA sin corrida local de UI **y** sin corrida propia de CI de UI es
+   un SHA sin evidencia de UI, y **no puede ser Candidato**. Es condicion **necesaria, no suficiente**:
+   tener evidencia de UI del CI no convierte a un SHA en Candidato — para eso hace falta ademas todo
+   lo del parrafo siguiente, **incluida la UI Full local**.
+
+   **Candidato** es el SHA exacto que se entrega para validar o integrar. Exige, sobre **ese** SHA:
+   Core Full local, **UI Full local**, build Debug de UI, build Debug de Plugin y CI verde sobre el
+   SHA exacto; mas la validacion del dueño en AutoCAD donde aplique. LC-UI **no reduce el Candidato**,
+   no reduce el cierre y no reduce el Full final: solo retira la repeticion local intermedia. La forma
+   de declararlo esta en
+   [docs/guias/validacion-manual-autocad.md](docs/guias/validacion-manual-autocad.md) §7.1.
+
+   **LC-UI no toca el gate del dueño.** «Sobre ese SHA» rige para las cuatro evidencias automatizadas
+   y para el CI; la validacion manual en AutoCAD conserva **exactamente** su regla de reutilizacion de
+   hoy —si el trunk no avanzo desde una validacion previa, esa validacion sigue valiendo
+   (docs/WORKFLOW.md seccion 4.5.3)—. Ni se relaja ni se endurece aqui.
 2. Todo bugfix lleva **test de regresion verificado FALLANDO** con el fix desactivado (un test que nunca se
    vio fallar no prueba nada).
 3. Build de UI + Plugin en Debug con 0 errores (el usuario prueba via NETLOAD del Debug, no del Release).

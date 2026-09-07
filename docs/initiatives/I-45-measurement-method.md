@@ -72,6 +72,27 @@ Si algún paso falla o queda bloqueado, la iteración **no** se cuenta como cicl
 como `statsLowerBound`, y se lee como **cota inferior** —lo que se llevaba gastado cuando el ciclo se
 rompió—, nunca como el coste del ciclo.
 
+### 1.6 `OrdinaryIterationLocalSeconds` (añadida en G5)
+
+Lo que la norma exige **en local** antes del push en una **iteración ordinaria**, una vez aplicada
+LC-UI:
+
+```
+build UI → build Plugin → Core Full
+```
+
+La suite de UI no está porque su evidencia intermedia la aporta el CI sobre el SHA exacto empujado.
+
+**No es la misma magnitud que §1.5, y no se compara como «antes y después» de una optimización.** La
+definición de `MandatoryLocalCycleSeconds` **no cambia** —se conserva intacta para poder seguir
+reproduciendo la línea base histórica—; lo que cambia es *qué secuencia describe la norma vigente*.
+Restar una de otra daría un número sin significado: son dos flujos de trabajo distintos, no dos
+medidas del mismo.
+
+**Esta métrica no incluye reloj de CI.** La preparación local y la realimentación del CI se reportan
+**por separado** y no se suman: sumarlas presentaría como trabajo serial local algo que ocurre en otra
+máquina y en paralelo con lo que la persona haga después.
+
 ## 2. Cómo se ejecuta
 
 ```powershell
@@ -80,7 +101,7 @@ pwsh -File eng/validation/measure-validation.ps1 -Measure all -N 3
 
 | Parámetro | Para qué |
 |---|---|
-| `-Measure` | `all`, `none`, o cualquier combinación de `core`, `ui`, `build-ui`, `build-plugin`, `cycle` |
+| `-Measure` | `all`, `none`, o cualquier combinación de `core`, `ui`, `build-ui`, `build-plugin`, `cycle`, `ordinary` |
 | `-Repeat` (alias `-N`) | repeticiones solicitadas |
 | `-NoBuild` | mide las suites sin el build incremental |
 | `-Sessions <merge>` | reconstrucción de calendario (§6) |
@@ -102,7 +123,7 @@ ejecutable** acabó usando.
 | Medida | Mínimo |
 |---|---:|
 | `CoreFullSeconds`, `UiFullSeconds` | 3 |
-| builds y ciclo | 2 |
+| builds, `MandatoryLocalCycleSeconds` y `OrdinaryIterationLocalSeconds` | 2 |
 
 Discovery midió una banda de **175.6 – 557.4 s** para la misma suite en la misma sesión: un ruido de
 más de 2×. Una sola corrida no dice nada sobre una diferencia menor que eso, y **una línea base de
@@ -320,7 +341,8 @@ Un JSON por ejecución en `artifacts/validation/`, más una copia en `measure-la
 
 ```
 schema        : "rackcad.validation-measurement"
-schemaVersion : 1
+schemaVersion : 2      (v2 en G5: cada métrica de secuencia publica `steps`,
+                        y existe la clave OrdinaryIterationLocalSeconds)
 gate, status ("OK" | "FAIL"), failures[]
 invocation    : qué se pidió
 provenance    : §4

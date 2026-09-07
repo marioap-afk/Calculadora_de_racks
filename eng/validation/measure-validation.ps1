@@ -44,7 +44,7 @@
 
 [CmdletBinding()]
 param(
-    [ValidateSet('all', 'none', 'core', 'ui', 'build-ui', 'build-plugin', 'cycle')]
+    [ValidateSet('all', 'none', 'core', 'ui', 'build-ui', 'build-plugin', 'cycle', 'ordinary')]
     [string[]]$Measure = @('none'),
 
     [Alias('N')]
@@ -70,7 +70,10 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $SchemaName = 'rackcad.validation-measurement'
-$SchemaVersion = 1
+# v2 (G5): la forma cambio — cada metrica de secuencia publica ahora `steps`, y existe la clave nueva
+# OrdinaryIterationLocalSeconds. La regla del propio metodo es que la version sube cuando cambia la
+# forma, para que un consumidor que no la reconozca se detenga en vez de adivinar.
+$SchemaVersion = 2
 
 # Minimos de repeticion por medida. Documentados, no negociables desde la linea de comandos.
 $RepeatMinimums = @{
@@ -79,6 +82,22 @@ $RepeatMinimums = @{
     'build-ui'     = 2
     'build-plugin' = 2
     'cycle'        = 2
+    'ordinary'     = 2
+}
+
+# Pasos de cada secuencia. La del ciclo obligatorio NO se toca: es la linea base de G1.
+$CycleSteps = @{
+    'cycle'    = @(
+        @{ name = 'build-ui'; kind = 'build'; args = @('build', 'src/RackCad.UI/RackCad.UI.csproj', '-c', 'Debug', '-v:minimal') }
+        @{ name = 'build-plugin'; kind = 'build'; args = @('build', 'src/RackCad.Plugin/RackCad.Plugin.csproj', '-c', 'Debug', '-v:minimal') }
+        @{ name = 'core-full'; kind = 'test'; args = @('test', 'tests/RackCad.Tests/RackCad.Tests.csproj', '-c', 'Debug', '-v:minimal') }
+        @{ name = 'ui-full'; kind = 'test'; args = @('test', 'tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj', '-c', 'Debug', '-v:minimal') }
+    )
+    'ordinary' = @(
+        @{ name = 'build-ui'; kind = 'build'; args = @('build', 'src/RackCad.UI/RackCad.UI.csproj', '-c', 'Debug', '-v:minimal') }
+        @{ name = 'build-plugin'; kind = 'build'; args = @('build', 'src/RackCad.Plugin/RackCad.Plugin.csproj', '-c', 'Debug', '-v:minimal') }
+        @{ name = 'core-full'; kind = 'test'; args = @('test', 'tests/RackCad.Tests/RackCad.Tests.csproj', '-c', 'Debug', '-v:minimal') }
+    )
 }
 
 $script:Failures = [System.Collections.Generic.List[string]]::new()
@@ -453,32 +472,40 @@ function Measure-Build {
 }
 
 <#
-    Ciclo local obligatorio TAL COMO ES HOY, no como podria ser.
-
-    AGENTS.md, "Pruebas - definicion de terminado": el punto 1 exige la validacion
-    automatizada completa (suite Core + suite UI) y el punto 3 exige el build de UI y de
-    Plugin en Debug con 0 errores. G1 precede a LC-UI: aqui no se descuenta nada.
-
-    Se mide como UN reloj de pared de la secuencia completa, no como suma de partes
-    medidas por separado: las partes medidas aisladas no comparten el estado de
+    Cronometra una SECUENCIA local completa, como UN reloj de pared, no como suma de
+    partes medidas por separado: las partes medidas aisladas no comparten el estado de
     compilacion incremental, y su suma no es un numero que nadie viva.
+
+    Hay dos secuencias, y son medidas DISTINTAS que no se comparan como "antes y despues"
+    de una optimizacion, porque no significan lo mismo:
+
+    - MandatoryLocalCycleSeconds (G1) — el ciclo obligatorio TAL COMO ERA: build UI +
+      build Plugin + Core Full + UI Full. Su definicion NO cambia con LC-UI y se conserva
+      para poder seguir reproduciendo la linea base historica.
+
+    - OrdinaryIterationLocalSeconds (G5) — lo que la norma exige en LOCAL antes del push
+      en una iteracion ORDINARIA una vez aplicado LC-UI: build UI + build Plugin +
+      Core Full. La evidencia de UI de esa iteracion la aporta el CI sobre el SHA exacto
+      empujado, y por eso NO aparece aqui. Esta metrica no incluye reloj de CI: la
+      preparacion local y la realimentacion del CI se reportan por separado y no se suman
+      como si fueran trabajo serial local.
 #>
-function Measure-MandatoryCycle {
+function Measure-Cycle {
     param(
         [string]$RepositoryRoot,
         [string]$Dotnet,
-        [int]$Requested
+        [int]$Requested,
+        [string]$Key,
+        [string]$MetricName,
+        [string]$DefinitionOf,
+        [bool]$LcUiApplied,
+        [object[]]$Steps
     )
 
-    $plan = Get-EffectiveRepeat -Key 'cycle' -Requested $Requested
-    Write-Section "MandatoryLocalCycleSeconds  ($($plan.repeatEffective) repeticiones)"
+    $plan = Get-EffectiveRepeat -Key $Key -Requested $Requested
+    Write-Section "$MetricName  ($($plan.repeatEffective) repeticiones)"
 
-    $steps = @(
-        @{ name = 'build-ui'; kind = 'build'; args = @('build', 'src/RackCad.UI/RackCad.UI.csproj', '-c', 'Debug', '-v:minimal') }
-        @{ name = 'build-plugin'; kind = 'build'; args = @('build', 'src/RackCad.Plugin/RackCad.Plugin.csproj', '-c', 'Debug', '-v:minimal') }
-        @{ name = 'core-full'; kind = 'test'; args = @('test', 'tests/RackCad.Tests/RackCad.Tests.csproj', '-c', 'Debug', '-v:minimal') }
-        @{ name = 'ui-full'; kind = 'test'; args = @('test', 'tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj', '-c', 'Debug', '-v:minimal') }
-    )
+    $steps = $Steps
 
     $samples = [System.Collections.Generic.List[object]]::new()
     $completeSeconds = [System.Collections.Generic.List[double]]::new()
@@ -529,9 +556,10 @@ function Measure-MandatoryCycle {
     }
 
     return [pscustomobject]@{
-        metric          = 'MandatoryLocalCycleSeconds'
-        definitionOf    = 'AGENTS.md "Pruebas - definicion de terminado" puntos 1 y 3: build UI + build Plugin (Debug, 0 errores) + Core Full + UI Full'
-        lcUiApplied     = $false
+        metric          = $MetricName
+        definitionOf    = $DefinitionOf
+        lcUiApplied     = $LcUiApplied
+        steps           = @($steps | ForEach-Object { $_.name })
         repeatRequested = $plan.repeatRequested
         repeatMinimum   = $plan.repeatMinimum
         repeatEffective = $plan.repeatEffective
@@ -882,7 +910,7 @@ if ($provenance.autocadRunning) {
 }
 
 $selected = $(
-    if ($Measure -contains 'all') { @('core', 'ui', 'build-ui', 'build-plugin', 'cycle') }
+    if ($Measure -contains 'all') { @('core', 'ui', 'build-ui', 'build-plugin', 'cycle', 'ordinary') }
     elseif ($Measure -contains 'none') { @() }
     else { @($Measure) }
 )
@@ -909,7 +937,14 @@ if ($selected -contains 'build-plugin') {
         -ProjectPath 'src/RackCad.Plugin/RackCad.Plugin.csproj' -RepositoryRoot $repoRoot -Dotnet $dotnet -Requested $Repeat
 }
 if ($selected -contains 'cycle') {
-    $measurements['MandatoryLocalCycleSeconds'] = Measure-MandatoryCycle -RepositoryRoot $repoRoot -Dotnet $dotnet -Requested $Repeat
+    $measurements['MandatoryLocalCycleSeconds'] = Measure-Cycle -RepositoryRoot $repoRoot -Dotnet $dotnet -Requested $Repeat `
+        -Key 'cycle' -MetricName 'MandatoryLocalCycleSeconds' -LcUiApplied $false -Steps $CycleSteps['cycle'] `
+        -DefinitionOf 'AGENTS.md "Pruebas - definicion de terminado" puntos 1 y 3: build UI + build Plugin (Debug, 0 errores) + Core Full + UI Full'
+}
+if ($selected -contains 'ordinary') {
+    $measurements['OrdinaryIterationLocalSeconds'] = Measure-Cycle -RepositoryRoot $repoRoot -Dotnet $dotnet -Requested $Repeat `
+        -Key 'ordinary' -MetricName 'OrdinaryIterationLocalSeconds' -LcUiApplied $true -Steps $CycleSteps['ordinary'] `
+        -DefinitionOf 'Con LC-UI aplicada: lo que la norma exige en LOCAL antes del push en una iteracion ORDINARIA — build UI + build Plugin (Debug) + Core Full. La evidencia de UI de esa iteracion la aporta el CI sobre el SHA exacto empujado, y NO se suma aqui.'
 }
 
 $sessionResult = $(if ($Sessions) { Get-SessionReconstruction -RepositoryRoot $repoRoot -MergeRef $Sessions -ThresholdHours $Thresholds } else { $null })

@@ -149,12 +149,23 @@ de uso, el resultado visual, el DWG y la integración real. **No se reduce por p
 
 ### 11. Duración activa del dueño
 
-Se instrumenta como **experimento**. El agente pregunta en la misma ronda de validación: «Duración
-activa aproximada de esta validación: ___ min». Solo se registra un valor **dado explícitamente por el
-dueño**; **nunca se infiere de marcas de tiempo**. Se evalúa cuando existan al menos diez rondas
-elegibles —aquellas en que el dueño ejecutó realmente una validación manual— repartidas en al menos
-tres iniciativas: se conserva si el cumplimiento alcanza el ochenta por ciento y **se retira del
-proceso** si no lo alcanza.
+Se instrumenta como **experimento**, y como experimento no gobierna nada. El agente pregunta en la
+misma ronda de validación: «Duración activa aproximada de esta validación: ___ min». Solo se registra
+un valor **dado explícitamente por el dueño**; **nunca se infiere de marcas de tiempo**.
+
+**Que el dato falte —o que nadie lo preguntara— no es un fallo.** No invalida la validación, no cambia
+su veredicto, no impide que un cambio esté terminado y **no bloquea ninguna integración**. Es un dato
+experimental ausente, y nada más.
+
+Se evalúa cuando existan al menos diez rondas elegibles —aquellas en que el dueño ejecutó realmente
+una validación manual— repartidas en al menos tres iniciativas: se conserva si la **tasa de captura**
+alcanza el ochenta por ciento y **se retira del proceso** si no lo alcanza. Se dice *tasa de captura*
+y no *cumplimiento* a propósito: aquí «cumplimiento» nombra la violación de un campo obligatorio, y
+este campo no lo es.
+
+La sede operativa —qué ronda cuenta, la pregunta exacta, qué incluye y excluye, y dónde se
+registra— es [`docs/guias/validacion-manual-autocad.md`](../guias/validacion-manual-autocad.md) §8,
+que se sostiene sola. Esta sección enuncia la decisión; la guía la ejecuta.
 
 ### 12. Lo que NO se introduce ahora
 

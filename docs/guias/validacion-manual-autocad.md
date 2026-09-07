@@ -53,6 +53,13 @@ El DLL que se carga es siempre el Debug producido dentro del worktree validado:
 Registra el SHA de Git, la ruta absoluta del DLL, su fecha y, cuando la validación sea gate de
 integración, su SHA-256. Un DLL sin trazabilidad no valida la rama.
 
+> **Si este NETLOAD es para una validación del dueño, el SHA tiene que ser un Candidato.** Los tres
+> comandos de arriba **no** bastan para eso: un Candidato exige además la **suite de UI completa en
+> local** y CI verde sobre ese SHA exacto (AGENTS.md, «Pruebas — definicion de terminado», punto 1;
+> forma de declararlo en §7.1). Una carga exploratoria durante la iteración ordinaria no necesita esa
+> evidencia; una ronda de validación del dueño, sí. Sin ella, el resultado de §6 no se sostiene sobre
+> nada: se estaría aprobando un dibujo producido por un SHA del que no consta que pasara la UI.
+
 ## 3. Cargar con NETLOAD
 
 1. Abre AutoCAD 2025 con un dibujo de prueba recuperable.
@@ -284,6 +291,35 @@ Confirmación explícita del validador:
 
 Una validación parcial no desbloquea un gate que exige el checklist completo. Después de un rebase
 final, la evidencia anterior solo sigue siendo válida si `main` no avanzó desde el árbol validado.
+
+### 7.1 Declarar un Candidato
+
+Un **Candidato** es el SHA exacto que se entrega para validar o integrar. No es un archivo ni un
+registro central: es **este bloque, escrito junto a la evidencia de la ronda** —en el contrato de la
+iniciativa, o en el cuerpo del commit que la registra, igual que el veredicto (§8.5)—.
+
+```text
+Candidate SHA:        <sha exacto>
+Core Full local:      PASS
+UI Full local:        PASS
+Debug UI build:       PASS
+Debug Plugin build:   PASS
+CI exact SHA:         GREEN (run <id>, job ui-tests success)
+Owner validation:     required | not required | pending | pass
+```
+
+Reglas, y son cortas:
+
+- **El SHA es exacto.** No vale «la punta de la rama», ni un SHA parecido, ni el de un commit vecino.
+- **`UI Full local: PASS` es obligatorio.** LC-UI retira la corrida de UI de la *iteración ordinaria*,
+  no del Candidato. Un Candidato sin UI Full local **no es Candidato**, aunque su CI esté verde.
+- **`CI exact SHA: GREEN` exige el job `ui-tests`** —publicado como `UI Tests (WPF controls,
+  net8.0-windows)`— **en `success` sobre ese mismo `head_sha`.** Ni el workflow verde con ese job sin
+  correr, ni otra rama, ni otro commit.
+- **Si falta cualquiera de las líneas, no hay Candidato.** No se rellena por analogía con un SHA
+  anterior o posterior, ni se hereda de un push agrupado.
+- Los hashes van aquí, en el registro de la ronda, donde ya viven el commit y el SHA-256 del DLL. No
+  se copian a documentos normativos.
 
 ## 8. Duración activa del dueño (métrica EXPERIMENTAL de I-45)
 

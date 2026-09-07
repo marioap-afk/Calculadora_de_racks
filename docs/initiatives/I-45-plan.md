@@ -91,13 +91,19 @@ se conserva solo como higiene: el plan no puede reclamarla como resultado.
 
 ## Lo que este plan declara NO resuelto
 
+> Instantánea de V4, en el momento del consenso. Los gates posteriores han cerrado varios de estos
+> puntos; donde así sea, se anota debajo. La lista no se borra: es el registro de lo que estaba
+> abierto cuando se acordó el plan.
+
 1. El determinismo de la suite de UI, con una condición de carrera **viva** sobre un delegado estático
    de proceso.
 2. El trabajo serializado real del hilo STA.
 3. La duración del ciclo local obligatorio, **denominador de todo ahorro** que se reclame.
 4. El recall de cualquier selección, que **no es acotable** desde este repositorio y no lo será por
    acumulación de tiempo.
-5. La ambigüedad normativa sobre si «todas las pruebas» incluye la suite de UI.
+5. La ambigüedad normativa sobre si «todas las pruebas» incluye la suite de UI. — **CERRADO en G0A**:
+   `AGENTS.md` fija que «Full» es **Core + UI**, y **G5** añade el reparto local/CI sobre esa
+   definición. No se re-litiga.
 6. La contradicción entre el requisito de fila en el ROADMAP al abrir una iniciativa y la regla de que
    el ROADMAP se edita solo al integrar. Se resuelve en **G0A**.
 

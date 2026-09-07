@@ -153,7 +153,12 @@ inmediatamente después (sección 2, que es la autoridad de esta regla).
    sesión dedicada **en la workstation del dueño** — el build del Plugin exige AutoCAD 2025
    instalado, y cerrado durante el build):
    1. Rebase final de la rama sobre `main` + `git push --force-with-lease`.
-   2. Esperar **CI verde sobre esos commits** + build Debug local de UI y Plugin (la suite no los cubre).
+   2. Esperar **CI verde sobre el SHA empujado** —el tip rebasado; la evidencia de CI no se propaga a
+      los commits anteriores del mismo push— + build Debug local de UI y Plugin. El build del Plugin
+      no lo cubre ninguna suite; el de UI lo compila de paso la suite de UI, que bajo LC-UI puede no
+      haberse corrido en local en las iteraciones previas — razón de más para hacerlo aquí explícito.
+      **Ese tip rebasado es un Candidato**, así que exige además las DOS suites en local sobre él
+      (AGENTS.md, «Pruebas — definicion de terminado», punto 1). Es el único SHA que entra a `main`.
    3. **Validación manual en AutoCAD sobre el árbol YA rebasado** (sección 6) si cambió
       comportamiento de dibujo. Si el trunk no avanzó desde una validación previa, esa validación
       sigue valiendo.
@@ -175,7 +180,10 @@ si el resultado se adopta, se re-implementa limpio en una rama `architecture/`/`
 
 ## 5. Checklist de cierre de iniciativa
 
-- [ ] Suite completa verde (`dotnet test`) y CI verde en la rama.
+- [ ] **Las DOS suites** verdes **en local** —Core y UI, no un solo `dotnet test`— y CI verde en la
+      rama. El cierre exige ambas en local: LC-UI retira la corrida de UI de la **iteración
+      ordinaria**, nunca del cierre ni del Candidato (AGENTS.md, «Pruebas — definicion de terminado»,
+      punto 1).
 - [ ] Build Debug de UI y Plugin con 0 errores (los MSB3277 conocidos no cuentan).
 - [ ] Bugfix ⇒ test de regresión **verificado fallando** sin el fix (AGENTS.md).
 - [ ] Cambio de dibujo ⇒ validación manual del usuario en AutoCAD (sección 6).
