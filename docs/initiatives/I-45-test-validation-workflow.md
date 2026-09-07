@@ -68,16 +68,26 @@ que esta iniciativa **no** ejecuta sin ese consenso.
 Validar un cambio obliga hoy a pagar repetidamente la misma evidencia, y hasta este Discovery el
 repositorio **no tenia ni un solo tiempo registrado**: lleva un registro cuidadoso de conteos de
 pruebas y ninguno de duracion, de modo que el coste que motiva esta iniciativa nunca habia sido
-medido. Las mediciones preliminares del Discovery (aun **no versionadas**; publicarlas es la fase 1)
-apuntan a cuatro hechos:
+medido. Discovery esta cerrado y **su evidencia esta versionada**: la autoridad es
+[`I-45-discovery.md`](I-45-discovery.md), con un marcador epistemologico por afirmacion. Lo que sigue
+son los hechos que **sobrevivieron** a esa fase, no las hipotesis con que empezo.
 
-1. **El reloj de pared del CI no lo gobierna el volumen de pruebas, sino un punto de serializacion.**
-   La suite de UI cuesta del orden de doce veces mas por prueba que la del nucleo, y la causa medida
-   no es construir ventanas WPF: es que mas del ochenta por ciento de sus pruebas se marshalan sobre
-   **un unico hilo STA compartido** (`tests/RackCad.UI.Tests/StaTestRunner.cs`, un `Dispatcher`
-   estatico invocado de forma sincrona). Las pruebas que no lo tocan son ~400 veces mas baratas, y
-   forzar `xUnit.MaxParallelThreads=1` **acelera** la suite: el paralelismo actual solo aniade
-   contencion sobre un embudo.
+> **Las hipotesis preliminares de este contrato fueron investigadas y varias quedaron REFUTADAS.** No
+> se reproducen aqui como verdad vigente. Entre ellas: que las pruebas que pasan por el hilo STA
+> cuesten del orden de cuatrocientas veces mas **trabajo** —la mayor parte de esa duracion resulto ser
+> bloqueo en cola, no ejecucion—; que `xUnit.MaxParallelThreads=1` este demostrado como aceleracion
+> —la comparacion es de una sola corrida contra una sola corrida, dentro de una banda de ruido mas
+> ancha que el efecto—; que cinco clases concretas dominen **causalmente** la suite del nucleo; y que
+> el job de UI explique alrededor del noventa y cinco por ciento del reloj de pared del CI —es un
+> `max()` sobre dos caminos casi iguales—. La evidencia y las refutaciones, con sus mediciones, viven
+> en [`I-45-discovery.md`](I-45-discovery.md); este contrato no las duplica.
+
+1. **La suite de UI tiene un punto de serializacion real.** Mas del ochenta por ciento de sus pruebas
+   se marshalan sobre **un unico hilo STA compartido**
+   (`tests/RackCad.UI.Tests/StaTestRunner.cs`, un `Dispatcher` estatico invocado de forma sincrona).
+   Es un hecho estructural medido. **Lo que NO esta medido es cuanto trabajo serializado real hay
+   sobre ese hilo**, y por tanto cuanto reloj devolveria tocarlo: esa cantidad sigue siendo `UNKNOWN`
+   y ninguna decision sobre paralelismo puede apoyarse en ella todavia.
 2. **La obligacion de correr todo esta escrita, no heredada.** Vive en cuatro capas independientes:
    [`AGENTS.md`](../../AGENTS.md) seccion «Pruebas — definicion de terminado»; la precedencia de
    [`WORKFLOW.md`](../WORKFLOW.md) seccion 10, que eleva `dotnet test` por encima de todo documento y
@@ -107,7 +117,14 @@ nada: no significa que la solucion final sea CI por capas.
 
 ## 3. Alcance
 
-Fase de **DISCOVERY**, y solo eso:
+> **Cómo leer esta seccion.** Lo que sigue describe el alcance de la fase **DISCOVERY**, que esta
+> **CERRADA**. Se conserva porque documenta que se hizo y con que limites, **no** porque siga
+> restringiendo el trabajo. El alcance vigente a partir de P0 lo gobiernan el
+> [ADR-0033](../adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md) y los gates del
+> [plan V4](I-45-plan.md), cada uno con el suyo. Los limites **permanentes** de la iniciativa
+> completa —los que siguen vigentes hoy y despues del consenso— estan al final de la seccion 4.
+
+Fase de **DISCOVERY** (cerrada), y solo eso:
 
 - **Medir** el coste real de validar: CI (reloj de pared, por job, y el reparto restore/build/
   ejecucion), ciclo local obligatorio, perfil por prueba y por clase de las dos suites, y el ciclo de
@@ -130,12 +147,15 @@ Fase de **DISCOVERY**, y solo eso:
   obsoleta en `AGENTS.md`, o una regla atribuida a un documento que no la contiene). Cualquier cambio
   de este tipo se propone al Owner antes de escribirlo.
 
-Todo cambio de esta fase es **documental**. No se toca codigo de producto, ni codigo de pruebas, ni
-configuracion de CI.
+Todo cambio de **aquella fase** fue documental: no se toco codigo de producto, ni codigo de pruebas, ni
+configuracion de CI. Esa restriccion describe lo que ocurrio en DISCOVERY y **no gobierna los gates
+posteriores**, que tienen su propio alcance autorizado.
 
 ## 4. Fuera de alcance
 
-Fuera de **este gate y de toda la fase DISCOVERY**, aunque el Discovery mida que serian beneficiosos:
+### 4.1 Limites de la fase DISCOVERY — **historicos, ya no vigentes**
+
+Estuvo fuera de aquella fase, aunque el Discovery midiera que serian beneficiosos:
 
 - cambios de producto;
 - cambios funcionales de cualquier tipo;
@@ -149,9 +169,18 @@ Fuera de **este gate y de toda la fase DISCOVERY**, aunque el Discovery mida que
 - Golden DWG;
 - **cualquier optimizacion basada en los hallazgos del Discovery**.
 
-Fuera del alcance de la iniciativa completa, tambien tras el consenso: cambiar el criterio de
-**cobertura funcional** del producto, relajar la validacion manual del Owner en AutoCAD, y sustituir
-la decision del dueno sobre que se considera «terminado».
+Varios de esos puntos **siguen sin autorizarse**, pero ya no por ser fase DISCOVERY: lo decide el
+[ADR-0033](../adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md), que enumera lo que **no** se
+introduce ahora y da a cada pieza su criterio de reapertura. Lo que un gate del [plan V4](I-45-plan.md)
+autoriza expresamente —y solo eso— deja de estar fuera de alcance **en ese gate**.
+
+### 4.2 Limites de la iniciativa completa — **permanentes, vigentes tambien tras el consenso**
+
+Estos no caducan con la fase y ningun gate los levanta:
+
+- cambiar el criterio de **cobertura funcional** del producto;
+- **relajar la validacion manual del Owner en AutoCAD**;
+- sustituir la decision del dueno sobre que se considera «terminado».
 
 ## 5. Contexto requerido
 

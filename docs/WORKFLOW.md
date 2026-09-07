@@ -31,11 +31,15 @@ integrada por I-02 como `feature/dinamico-modular` (sección 9).
 
 ## 2. Iniciativas: la unidad de trabajo
 
-**1 iniciativa = 1 rama = 1 worktree = 1 entrada en ROADMAP.md.**
+**1 iniciativa = 1 rama = 1 worktree = 1 entrada en ROADMAP.md.** La entrada es **obligatoria**, pero
+no siempre **preexistente**: en el caso (d) de abajo nace en el bootstrap inmediatamente posterior al
+reclamo. Lo que nunca ocurre es que una iniciativa viva sin fila.
 
 - Una iniciativa cabe en **1-3 sesiones**. Si crece más, se parte (el ROADMAP muestra cómo).
 - Se abre una rama solo si: (a) la iniciativa está en ROADMAP.md, o (b) es un `fix/` puntual, o
-  (c) es un `experiment/` con pregunta concreta que responder.
+  (c) es un `experiment/` con pregunta concreta que responder, o (d) **el dueño la autoriza
+  explícitamente** aunque todavía no tenga fila — con la obligación de crearla en el bootstrap
+  inmediatamente posterior al reclamo (regla completa abajo).
 - **El registro vivo del trabajo en curso son las ramas del REMOTO** (`git fetch && git branch -r`),
   no las locales. Por eso el reclamo de una iniciativa es su **commit de reclamo + primer push
   aceptado, sin force** (sección 4.1): crear la rama local no reclama nada — dos sesiones pueden
@@ -44,6 +48,40 @@ integrada por I-02 como `feature/dinamico-modular` (sección 9).
   "se estorba con" del ROADMAP codifica esto: **"independiente" significa sin dependencias previas,
   pero los estorbos declarados siguen aplicando** — una iniciativa de relleno solo arranca si sus
   estorbos no están en curso.
+
+### Qué es ROADMAP.md, y cuándo se edita — **autoridad única de esta regla**
+
+`docs/ROADMAP.md` es **planificación, alcance y registro de cierre**. **No es el estado vivo de lo que
+está en curso**: ese estado se deriva, siempre, de la existencia de la rama en el remoto
+(`origin/<rama-de-la-iniciativa>`).
+
+De ahí que sea legítimo editarlo en **tres momentos, y solo en tres**:
+
+1. **Al planificar** una iniciativa, antes de su reclamo.
+2. **En el bootstrap inmediatamente posterior al reclamo**, cuando el dueño autorizó explícitamente
+   una iniciativa que aún no tenía fila (caso (d) de arriba).
+3. **Al integrar o cerrar**, para dejar el registro de cierre.
+
+Y **no** se edita para marcar «en curso», ni en cada sesión, ni en cada gate, ni en cada push.
+
+**El caso (d), con precisión.** La autorización explícita del dueño sustituye **únicamente la
+preexistencia de la fila**. No sustituye nada más: siguen siendo obligatorios el reclamo atómico
+(sección 4.1), la rama y el worktree, el contrato de iniciativa y el bootstrap, y la fila durable en
+ROADMAP. La secuencia es:
+
+```
+autorización explícita del dueño → reclamo atómico remoto → bootstrap inmediato
+   → fila en ROADMAP → (solo entonces) trabajo sustantivo
+```
+
+**Ningún trabajo sustantivo antes de que el bootstrap esté versionado.** El bootstrap **no** es el
+reclamo: el reclamo sigue siendo el primer push que el remoto acepta.
+
+**«Ramas paralelas», con precisión** (sección 8 lo repite en su tabla). La prohibición de tocar
+HANDOFF y ROADMAP desde una rama de iniciativa se refiere a **la rama de OTRA iniciativa**, y sigue
+siendo absoluta para `HANDOFF.md`. Para `ROADMAP.md`, la propia rama de la iniciativa puede escribir
+su fila en los momentos 1 y 2, y su marca de cierre en el 3 — nunca su estado «en curso», y nunca la
+fila de una iniciativa ajena.
 
 ## 3. Worktrees
 
@@ -74,11 +112,22 @@ integrada por I-02 como `feature/dinamico-modular` (sección 9).
 ## 4. Ciclo de vida de una iniciativa (el proceso repetible)
 
 ```
-ROADMAP → rama + commit de reclamo + push (reclamo) → sesiones (rebase al abrir, push al cerrar)
+fila en ROADMAP            ┐
+   O BIEN                  ├→ rama + commit de reclamo + push (reclamo) ┐
+autorización del dueño     ┘                                            │
+                                                                        ↓
+   (solo caso (d)) bootstrap inmediato: contrato + fila en ROADMAP  ────┤
+                                                                        ↓
+   sesiones (rebase al abrir, push al cerrar)
        → sesión de integración (rebase final → CI → validación → HANDOFF/ROADMAP → merge) → limpieza
 ```
 
-1. **Abrir (reclamo atómico)**: elegir iniciativa del ROADMAP cuyos estorbos no estén en curso →
+El bootstrap **no reclama**: el reclamo sigue siendo el primer push aceptado. La condición de entrada
+es «fila en ROADMAP **o** autorización explícita del dueño», y en el segundo caso la fila se crea
+inmediatamente después (sección 2, que es la autoridad de esta regla).
+
+1. **Abrir (reclamo atómico)**: elegir iniciativa del ROADMAP cuyos estorbos no estén en curso —o una
+   que el dueño haya autorizado explícitamente, caso (d) de la sección 2— →
    `git fetch origin` → crear rama y worktree desde **`origin/main`** (la punta REMOTA del trunk,
    no la local) → **commit vacío de reclamo** (`git commit --allow-empty`) cuyo mensaje incluye:
    el ID de iniciativa (p. ej. `I-26`), el nombre de la rama, un trailer `Claim-Id:` único
@@ -159,15 +208,19 @@ cualquier iniciativa que los toque.
 | Archivo | Por qué es caliente |
 |---|---|
 | `docs/HANDOFF.md` | Único doc de estado; se actualiza SOLO en la sesión de integración (último commit de la rama), nunca en sesiones paralelas |
-| `docs/ROADMAP.md` | Estado de iniciativas; se edita SOLO al integrar (misma regla). El estado "en curso" NO se anota ahí: se deriva de la existencia de la rama en origin |
-| `assets/catalogs/*.csv` | Datos compartidos por todos los sistemas y ~23 archivos de tests. **Append-only** (filas nuevas al final); nunca reordenar ni re-guardar con otro encoding |
-| `src/RackCad.UI/RackSelectiveWindow.xaml.cs` (~2,460 líneas) | Editor más grande; toda feature del selectivo pasa por aquí |
-| `src/RackCad.Plugin/RackFrameCommands.cs` + partials | Una clase en 12 archivos con helpers estáticos cruzados |
-| `src/RackCad.UI/RackFrameConfiguratorViewModel.cs` (~2,550 líneas) | God-ViewModel del configurador |
-| `src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs` | DeepCopy + DTO de seguridad: cada familia nueva lo toca |
+| `docs/ROADMAP.md` | Planificación, alcance y registro de cierre. Se edita en los **tres momentos** que fija la sección 2, que es la autoridad de esa regla. El estado "en curso" NO se anota ahí: se deriva de la existencia de la rama en origin |
+| `assets/catalogs/*.csv` y `*.json` | Datos compartidos por todos los sistemas: 16 CSV y 3 JSON que **208 archivos de prueba** alcanzan. **Append-only** (filas nuevas al final); nunca reordenar ni re-guardar con otro encoding |
+| Los tres editores grandes de `src/RackCad.UI/Systems/` | `PushBack/RackPushBackSystemWindow.xaml.cs` (3.511 líneas), `Dynamic/RackDynamicSystemWindow.xaml.cs` (2.937) y `Selective/RackSelectiveWindow.xaml.cs` (2.867). Toda feature de su sistema pasa por el suyo |
+| `src/RackCad.UI/RackFrames/RackFrameConfiguratorViewModel.cs` (2.305 líneas) | God-ViewModel del configurador de cabecera |
+| `src/RackCad.Plugin/*Commands*.cs` | 14 archivos de comandos con helpers estáticos cruzados; dos de ellos son parciales de otro (`RackLayoutCommands.Fill.cs`, `RackInventarioCommands.BomTotal.cs`). Tocar uno rara vez basta |
+| `src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs` (776 líneas) | DeepCopy + DTO de seguridad: cada familia nueva lo toca |
 
-(Las iniciativas `architecture/system-registry`, `architecture/editor-shell` y
-`refactor/plugin-commands` existen precisamente para encoger esta lista.)
+Las rutas de esta tabla se verificaron contra el árbol real en el gate G0A de I-45: tres de ellas
+apuntaban a archivos que ya no existían. `RackFrameCommands.cs` desapareció como archivo único cuando
+I-09 partió los comandos del Plugin por área, y los dos editores citados se movieron a
+`src/RackCad.UI/Systems/<sistema>/` con I-23. Una tabla que nombra archivos inexistentes no protege
+nada, así que **cualquier iniciativa que mueva o parta uno de estos archivos actualiza esta fila en la
+misma rama**.
 
 ## 8. Cuándo actualizar cada documento
 
@@ -176,8 +229,10 @@ cualquier iniciativa que los toque.
 | Cambia comportamiento visible, catálogos o elementos | `docs/guias/catalogos-y-plantillas.md` / guía correspondiente | En la misma rama, antes de integrar |
 | Cambian comandos de AutoCAD, build o superficie de uso | `README.md` | En la misma rama |
 | Se toma una decisión de arquitectura (criterios en adr/README.md) | `docs/adr/NNNN-*.md` | ANTES de implementarla |
-| Cierre de iniciativa | `docs/HANDOFF.md` §8-12 y estado en `docs/ROADMAP.md` | En la sesión de integración, como último commit de la rama (sección 4.5.4) |
-| Cierre de sesión intermedia (sin integrar) | Cuerpo del commit + push de la rama | Nunca HANDOFF/ROADMAP desde ramas paralelas |
+| Se planifica una iniciativa | `docs/ROADMAP.md` | Antes de su reclamo (momento 1 de la sección 2) |
+| Bootstrap de una iniciativa que el dueño autorizó explícitamente **sin** fila previa | `docs/ROADMAP.md` + contrato en `docs/initiatives/` | Inmediatamente después del reclamo y **antes de todo trabajo sustantivo** (momento 2 de la sección 2) |
+| Cierre de iniciativa | `docs/HANDOFF.md` §8-12 y estado en `docs/ROADMAP.md` | En la sesión de integración, como último commit de la rama (sección 4.5.4) — momento 3 de la sección 2 |
+| Cierre de sesión intermedia (sin integrar) | Cuerpo del commit + push de la rama | Nunca `HANDOFF.md`, y nunca la fila de OTRA iniciativa en `ROADMAP.md`. La propia fila sí, pero solo en los tres momentos de la sección 2 — jamás para marcar «en curso» |
 | Cambia el proceso mismo | Este documento + ADR si es decisión de fondo | Antes de aplicar el proceso nuevo |
 | Hallazgo fuera de alcance de la iniciativa | `docs/ideas-futuras.md` | Al detectarlo |
 | Conteos de tests / hashes de commit | SOLO `docs/HANDOFF.md` §12 | Nunca copiarlos a otros docs; en ROADMAP la marca de cierre es `integrada (fecha)`, sin hash |

@@ -21,19 +21,31 @@ Este archivo contiene SOLO convenciones estables. El estado vivo del proyecto es
 | `src/RackCad.UI` | Ventanas WPF (net8.0-windows). NO referencia AutoCAD. |
 | `src/RackCad.Plugin` | UNICO proyecto que toca la API de AutoCAD (comandos, drawers, jigs, embed en DWG). |
 | `assets/catalogs/` | CSV/JSON de datos (fuente de verdad de perfiles, bloques, seguridad). |
-| `tests/RackCad.Tests` | xUnit sobre Domain + Application; corre sin AutoCAD y sin Windows. |
+| `tests/RackCad.Tests` | xUnit sobre Domain + Application (**suite Core**); corre sin AutoCAD y sin Windows. |
+| `tests/RackCad.UI.Tests` | xUnit sobre los controles y las ventanas WPF (**suite UI**, net8.0-windows); exige Windows y un hilo STA. |
 | `deploy/` | Bundle del Autoloader (`install-bundle.ps1`). |
 
 ## Comandos canonicos
 
 ```powershell
-dotnet build RackCad.sln -v:minimal                              # build completo
-dotnet test tests/RackCad.Tests/RackCad.Tests.csproj             # pruebas (rapidas, <2 s)
-dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug   # el DLL que se prueba con NETLOAD
+dotnet build RackCad.sln -v:minimal                                   # build completo
+dotnet test tests/RackCad.Tests/RackCad.Tests.csproj                  # suite Core
+dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj            # suite UI (solo Windows)
+dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug        # el DLL que se prueba con NETLOAD
 ```
+
+**Hay DOS suites automatizadas y ambas son canonicas.** No existe un unico comando de pruebas: cuando
+un gate exige la validacion automatizada completa, exige **las dos** (ver «Pruebas — definicion de
+terminado»). La duracion de cada suite **se mide, no se declara**: este documento no fija ninguna
+constante de tiempo, porque un numero copiado envejece sin que nadie lo note.
 
 - No hay lint/formatter configurado; el compilador C# es el type-check. Meta: **0 errores, 0 advertencias**
   propias (los `MSB3277` de las referencias de AutoCAD en el Plugin son conocidos y se ignoran).
+  - **La meta no cambia**, y hoy no se cumple: I-45 midió advertencias propias vivas contra el log del
+    CI del mismo candidato. El hallazgo, con su evidencia, está en
+    [`docs/initiatives/I-45-discovery.md`](docs/initiatives/I-45-discovery.md) §8.4 y **no se repite
+    aquí**. No es una excepción permitida: su corrección corresponde al gate `G0B` de I-45 si el
+    Coordinador confirma que es higiene no funcional.
 - **Trampa**: con AutoCAD abierto y el plugin cargado, los DLL del bin quedan bloqueados y el build falla
   en el paso de copia (MSB3021/MSB3027). Para validar solo codigo: compilar a una carpeta temporal
   (`dotnet build src/RackCad.UI/RackCad.UI.csproj -o <temp>`) y correr las pruebas. El procedimiento
@@ -101,7 +113,12 @@ de tests usa paquetes (xunit, Test SDK). No agregar dependencias sin acuerdo exp
 
 Un cambio de comportamiento esta terminado cuando:
 
-1. `dotnet test` verde (todas las pruebas, no solo las nuevas).
+1. **Validacion automatizada completa** verde: **suite Core + suite UI**, todas las pruebas y no solo
+   las nuevas. Eso es lo que significa «Full» cuando un gate lo exige, y es una definicion de QUE se
+   ejecuta, no de DONDE: el reparto de responsabilidad entre la corrida local y la del CI lo decide
+   I-45 en su gate correspondiente
+   ([ADR-0033](docs/adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md), en estado
+   `propuesto`). Hasta que ese gate aterrice, no cambia nada de lo que ya se hacia.
 2. Todo bugfix lleva **test de regresion verificado FALLANDO** con el fix desactivado (un test que nunca se
    vio fallar no prueba nada).
 3. Build de UI + Plugin en Debug con 0 errores (el usuario prueba via NETLOAD del Debug, no del Release).
@@ -114,7 +131,23 @@ Un cambio de comportamiento esta terminado cuando:
    respaldo y se hace al cerrar CADA sesion (push de rama != integrado); la integracion a `main` espera
    la confirmacion del usuario (docs/WORKFLOW.md secciones 4 y 6).
 
-## Seguridad y datos
+### Una seleccion de pruebas que no selecciona nada es un FALLO
+
+Toda invocacion **filtrada o seleccionada** de pruebas —`--filter`, o cualquier mecanismo futuro de
+seleccion— debe **demostrar que selecciono al menos una prueba esperada**.
+
+```
+0 pruebas seleccionadas = FALLO
+```
+
+Nunca un exito. Un filtro que deja de coincidir con lo que nombraba —porque una clase se renombro o un
+namespace se movio— pasa en verde sin ejecutar nada, y ese verde es indistinguible del de una suite que
+si corrio. Por eso el resultado de una corrida focal solo vale acompanado del conteo que produjo.
+
+Esta regla **es normativa desde aqui**. Hasta hoy se citaba como si ya viviera en este documento y no
+estaba escrita en ninguna parte; varios documentos y una prueba la atribuian a `AGENTS.md`. El
+mecanismo que la haga cumplir automaticamente es trabajo de un gate posterior de I-45: por ahora la
+obligacion es de quien ejecuta.
 
 - No hay secretos, tokens ni variables de entorno en este repo. Mantenerlo asi.
 - `blocks-library.dwg` (biblioteca de bloques del usuario) NO se versiona; su ruta vive en
