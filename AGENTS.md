@@ -37,7 +37,9 @@ dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug        # el DLL q
 **Hay DOS suites automatizadas y ambas son canonicas.** No existe un unico comando de pruebas: cuando
 un gate exige la validacion automatizada completa, exige **las dos** (ver «Pruebas — definicion de
 terminado»). La duracion de cada suite **se mide, no se declara**: este documento no fija ninguna
-constante de tiempo, porque un numero copiado envejece sin que nadie lo note.
+constante de tiempo, porque un numero copiado envejece sin que nadie lo note. Esta regla habla de las
+**suites automatizadas**; no alcanza a la duracion activa del dueño, que por diseno solo se admite
+declarada por el (guia de validacion manual §8).
 
 - No hay lint/formatter configurado; el compilador C# es el type-check. Meta: **0 errores, 0 advertencias**
   propias (los `MSB3277` de las referencias de AutoCAD en el Plugin son conocidos y se ignoran).
@@ -129,7 +131,13 @@ Un cambio de comportamiento esta terminado cuando:
 5. **No INTEGRAR features al trunk sin la verificacion manual del usuario en AutoCAD** (el dibujo real es
    el criterio final; los tests no ven los bloques DWG reales). El push de la RAMA de iniciativa es
    respaldo y se hace al cerrar CADA sesion (push de rama != integrado); la integracion a `main` espera
-   la confirmacion del usuario (docs/WORKFLOW.md secciones 4 y 6).
+   la confirmacion del usuario (docs/WORKFLOW.md secciones 4 y 6). Cuando el dueño **ejecute** una de
+   esas validaciones, preguntale en el mismo turno su duracion activa y registrala junto al veredicto:
+   la definicion completa, la pregunta exacta y sus limites viven en
+   [docs/guias/validacion-manual-autocad.md](docs/guias/validacion-manual-autocad.md) §8.
+   Es una **metrica experimental de I-45 y NO es parte de este punto 5**: que el dato falte —o que
+   nadie lo preguntara— no invalida la validacion, no cambia su veredicto, **no impide que el cambio
+   este terminado y no bloquea la integracion**. No preguntar no incumple esta lista.
 
 ### Una seleccion de pruebas que no selecciona nada es un FALLO
 

@@ -308,8 +308,11 @@ conclusión sigue en pie y esta métrica no la contradice, precisamente porque *
 dado a mano.
 
 **G1 la define y ahí se detiene.** Cómo se pregunta, cuándo, dónde se registra y con qué criterio se
-conserva o se retira el experimento es trabajo de **G4** (ADR-0033 §11). Este script **no** la mide,
-**no** la pregunta y **no** la almacena. Está aquí para que G4 no tenga que inventarse qué significa.
+conserva o se retira el experimento lo operacionalizó **G4**, y su sede operativa es
+[`docs/guias/validacion-manual-autocad.md`](../guias/validacion-manual-autocad.md) §8, que se sostiene
+por sí sola. ADR-0033 §11 enuncia la misma métrica pero sigue en estado `propuesto`: vale como origen,
+no como autoridad, y convendría alinearlo con la guía antes de aceptarlo. Este script **no** la mide,
+**no** la pregunta y **no** la almacena.
 
 ## 10. Salida legible por máquina
 

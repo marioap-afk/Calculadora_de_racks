@@ -355,6 +355,13 @@ transcurrido**. El proceso, por diseno, nunca capturo el dato. Ningun timestamp 
 puede sustituirlo: un candidato entregado el viernes y aprobado el lunes son **2 d 16 h de latencia** y
 **cero minutos demostrados de trabajo**.
 
+> **Nota fechada (gate G4).** Esta medicion era exacta cuando se tomo y no se reescribe. Desde G4 el
+> `grep` ya **no** devuelve cero lineas: la guia tiene una seccion §8 con una metrica **experimental y
+> opcional** de duracion activa del dueño. No contradice nada de lo de arriba —sigue siendo
+> inmedible por reconstruccion, y por eso solo se admite **declarada** por el dueño—, y el campo vive
+> **fuera** del bloque de evidencia de §7 precisamente para que su ausencia no se lea como
+> incumplimiento de un campo obligatorio.
+
 ### 8.3 La carga que si es medible
 
 - `MEASURED` — I-37D redacto **327 filas** de checklist repartidas en 7 paquetes (58 + 67 + 36 + 26 +
