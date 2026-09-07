@@ -39,9 +39,18 @@ jobs:
       - name: Normalize coverage path
         shell: pwsh
         run: |
-          $coverageFiles = @(Get-ChildItem -LiteralPath artifacts/TestResults -Recurse -File -Filter coverage.cobertura.xml)
+          $allCoverage = @(Get-ChildItem -LiteralPath artifacts/TestResults -Recurse -File -Filter coverage.cobertura.xml)
+
+          # I-45 G2: --blame copia los adjuntos de la corrida a "_<maquina>_<timestamp>/In/<maquina>/",
+          # asi que el mismo coverage.cobertura.xml aparece DOS veces. Se verifico en la corrida
+          # d8d9919 que ambos son byte-identicos (mismo tamano y mismo SHA-1): es una copia, no una
+          # segunda medicion. Se descarta por RUTA para conservar el invariante "exactamente uno" en
+          # vez de debilitarlo a "toma el primero": si algun dia aparecen dos coberturas de verdad,
+          # este paso debe seguir fallando.
+          $coverageFiles = @($allCoverage | Where-Object { $_.FullName -notmatch '[\\/]_[^\\/]+[\\/]In[\\/]' })
+
           if ($coverageFiles.Count -ne 1) {
-            throw "Expected exactly one coverage.cobertura.xml, found $($coverageFiles.Count)."
+            throw "Expected exactly one coverage.cobertura.xml outside the blame attachment folder, found $($coverageFiles.Count) (of $($allCoverage.Count) total)."
           }
 
           $destination = "artifacts/coverage/coverage.cobertura.xml"
