@@ -100,8 +100,12 @@ fila de una iniciativa ajena.
 - El worktree principal (`D:\Documentos\Codex\Calculadora de racks`) es del humano: los agentes no
   dejan ahí cambios sin commitear. Un CSV editado "en vivo" en el principal se commitea o descarta
   el mismo día (es invisible para los demás worktrees mientras tanto).
-- **Eliminar** el worktree en el mismo acto en que su rama muere (integración o abandono formal),
-  con **borrado seguro por defecto**: `git worktree remove` + `git branch -d` — la `-d` minúscula
+- **Eliminar** el worktree en el mismo acto en que su rama muere, y su rama **no muere con el merge**:
+  sobrevive hasta que el merge exista **y** pasen las comprobaciones posteriores al merge (sección 4.5
+  pasos 6 y 7); solo entonces se limpia. Si esa verificación sale roja, la corrección se hace **en
+  esta rama**, que por eso sigue viva. Una rama también muere por abandono formal, y una `experiment/*`
+  por su cierre propio (sección 4.5). En todos los casos, con **borrado seguro por defecto**:
+  `git worktree remove` + `git branch -d` — la `-d` minúscula
   falla si la rama no está contenida en el HEAD actual, y esa falla ES la protección (investigar,
   no forzar). `git branch -D` queda reservado para: (a) iniciativas abandonadas con autorización
   explícita del dueño, (b) ramas ya archivadas con tag verificado, y (c) reclamos locales
@@ -234,8 +238,12 @@ inmediatamente después (sección 2, que es la autoridad de esta regla).
       artifact rackcad-coverage-cobertura    = PRESENTE      (main lleva cobertura: ADR-0033 §9)
       ```
 
-      **Si esa corrida no está verde, o falta la cobertura, la integración NO está completa** y no se
-      limpia nada: se corrige sobre `main` con su propio commit y su propio CI.
+      **Si esa corrida no está verde, o falta la cobertura, la integración no está VERIFICADA** —el
+      merge ya ocurrió y no se deshace— y no se limpia nada. La corrección se hace **en la rama de
+      iniciativa**, que por eso sigue viva: se arregla ahí, se ejecuta la validación que corresponda,
+      se empuja la rama y se vuelve a entrar por el proceso de integración, con su propio merge y su
+      propio CI posterior. **Nunca con un commit directo sobre `main`**: eso está prohibido y este
+      caso no es una excepción.
 
    7. **Comprobación diferida de la cobertura del Candidato.** GitHub solo ofrece `workflow_dispatch`
       para workflows presentes en la rama por defecto, así que esta comprobación **solo es posible
@@ -293,8 +301,10 @@ si el resultado se adopta, se re-implementa limpio en una rama `architecture/`/`
       tras el merge, **CI del `MERGE_SHA` verde con su cobertura** y comprobación de la cobertura del
       Candidato (§4.5 pasos 6 y 7); **solo entonces** rama + worktree borrados.
       > Ese commit de cierre marca la iniciativa como `integrada` **antes** de que exista el CI del
-      > merge. Si esa corrida sale roja, la declaración queda desmentida: se corrige sobre la rama,
-      > que por eso no se ha borrado todavía.
+      > merge, y eso es correcto: `integrada` significa que **el merge existe en `main`**, no que la
+      > integración esté verificada. Si esa corrida sale roja, la iniciativa **sigue mergeada** pero
+      > su integración **aún no está verificada ni completa**; se corrige en la rama, que por eso no
+      > se ha borrado todavía.
 
 ## 6. Validación manual en AutoCAD (a mitad o al cierre de una iniciativa)
 
