@@ -1,6 +1,6 @@
 # I-45 — Conformidad de V4
 
-**Gate:** G7 · **Entregado para revisión independiente** · **NO integrado**
+**Gates:** G7 · G7-C1 · G7-C2 · **revisión independiente cerrada con consenso** · **cierre documental del 2026-09-08**
 
 Este documento **no decide nada y no se aprueba a sí mismo**. Registra si lo que V4 acordó está de
 verdad implementado, y deja por escrito lo que falta, lo que se difiere y lo que I-45 **no** demuestra.
@@ -16,8 +16,11 @@ Open disagreements: NONE
 CONSENSUS STATUS:   REACHED
 
 ADR-0033:           propuesto        (ningún gate lo aceptó)
-Gates ejecutados:   P0 · G0A · G2 · G0B · G1 · G3 · G4 · G5 · G6 · G6-C1 · G7
-Integración:        NO
+Gates ejecutados:   P0 · G0A · G2 · G0B · G1 · G3 · G4 · G5 · G6 · G6-C1 · G7 · G7-C1 · G7-C2
+Candidato:          6d3f9db39316c2f7a1bcbf6b10715597f271fba3
+Integración:        cierre documental escrito el 2026-09-08; el merge --no-ff se hace
+                    con este commit como punta de la rama, y la integración no queda
+                    VERIFICADA hasta que pasen el CI del MERGE_SHA y la cobertura (§5)
 ```
 
 El consenso Coordinator ↔ Architect **no es** aceptación del ADR: son dos actos de dos autoridades
@@ -313,17 +316,22 @@ El **experimento de duración del dueño no es deuda**: está **activo** hasta c
 `docs/ideas-futuras.md` · `.github/workflows/ci.yml` · `eng/validation/*.ps1` ·
 `tests/RackCad.UI.Tests` (G0B) · `src/RackCad.Application/…/PushBackPlanComposer.cs` (dos `using`).
 
-`main` no ha sido modificada. `docs/ROADMAP.md` y `docs/HANDOFF.md` **no** se tocan: corresponden a la
-sesión de integración.
+Ningún gate modificó `main`. `docs/ROADMAP.md` y `docs/HANDOFF.md` se tocan **solo** en el commit de
+cierre de la sesión de integración, que es el último de la rama (`WORKFLOW.md` §4.5.4).
 
 ## 14. Qué queda
 
 1. ~~Revisión de conformidad del **Coordinador**~~ — **AGREED**.
 2. ~~Revisión de conformidad del **Arquitecto**~~ — **AGREED WITH NON-BLOCKING FINDINGS**, tras dos
    rondas en `NOT AGREED` y sus dos correctivos.
-3. Candidato final y su evidencia completa sobre un SHA exacto.
-4. Validación del dueño en AutoCAD **si aplica el disparador vigente** (§6).
-5. Integración, y con ella las dos comprobaciones diferidas de §5.
-6. Limpieza.
+3. ~~Candidato final y su evidencia completa sobre un SHA exacto~~ — `6d3f9db`, árbol limpio, SDK
+   `8.0.423`, las dos suites y los dos builds en local y **CI de `push` verde sobre ese mismo SHA**
+   (corrida `34258522145`).
+4. ~~Validación del dueño en AutoCAD~~ — **NO aplica**: el disparador vigente es «cambió el
+   comportamiento de dibujo» y el único cambio de producto de la rama son dos `using` duplicados.
+5. Integración: merge `--no-ff` con este cierre como punta, y con él las **dos comprobaciones diferidas
+   de §5**, que solo pueden ejecutarse después del merge.
+6. Limpieza — bloqueada hasta que ambas pasen (`WORKFLOW.md` §4.5, pasos 6 y 7).
 
-**I-45 no está cerrada, no está integrada, y ADR-0033 no está aceptado.**
+**ADR-0033 sigue `propuesto` y no está aceptado**: el consenso Coordinador ↔ Arquitecto no es
+aceptación de un ADR, y aceptarlo corresponde solo al dueño.

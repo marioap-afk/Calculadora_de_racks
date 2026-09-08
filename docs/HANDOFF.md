@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-03**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-08**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -15,6 +15,26 @@ es el único adaptador de la API de AutoCAD.
 El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, dinámico modular y cama
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
+
+**I-45 — Engineering Productivity: arquitectura de pruebas y workflow de validación — queda INTEGRADA
+y CERRADA** el **2026-09-08** (`architecture/test-validation-workflow`). Es la primera iniciativa del
+repositorio cuyo objeto no fue el producto sino **el coste de validarlo**, y no cambia dibujo, BOM, GUID,
+persistencia ni catálogos: el único cambio en `src/**` de toda la rama son **dos `using` duplicados
+retirados** de `PushBackPlanComposer.cs`. Lo que deja operativo, y su sede es `AGENTS.md` y
+[WORKFLOW.md](WORKFLOW.md), no este documento: la evidencia vale **por clase y por SHA exacto** —Core
+local, UI local, CI Core, CI UI, build y validación del dueño **no se sustituyen entre sí**, y el único
+criterio para reutilizar una evidencia es que sea **el mismo commit**, nunca «mismo árbol», «mismo diff»
+ni «`main` no avanzó»—; **LC-UI**, que retira la corrida local de UI de la **iteración ordinaria** y no
+la toca ni en el cierre ni en el Candidato; la **cadencia de cobertura** —fuera del push ordinario,
+dentro en Candidato explícito y en el trunk—; las **dos compuertas** de integración —CI de la rama sobre
+el SHA rebasado **y** CI de `main` sobre el `MERGE_SHA` con su cobertura—, con la limpieza bloqueada
+hasta que ambas pasen; y la **monotonía** de `requires_owner_validation`/`requires_autocad`, donde un
+`false` no exime de nada. La implementación quedó autorizada por **consenso Coordinador ↔ Arquitecto
+sobre `PLAN VERSION V4`**, alcanzado tras **dos rondas en `NOT AGREED`** —cinco hallazgos, `ARCH-01`..
+`ARCH-05`, de los que **tres los creó la propia I-45** al cambiar algo de lo que dependía otra regla sin
+volver a mirarla—. **`ADR-0033` sigue en estado `propuesto`**: el consenso técnico **no** es aceptación
+de un ADR, y aceptarlo corresponde solo al dueño. La conformidad decisión por decisión vive en
+[initiatives/I-45-conformance.md](initiatives/I-45-conformance.md).
 
 **I-43 — Selectivo: edición por alcance y fondos — queda INTEGRADA y CERRADA** el **2026-09-04**
 (`feature/selectivo-scopes-fondos`). El editor Selectivo gana **dos ejes independientes**: *dónde* se escribe
@@ -934,6 +954,18 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-45 (2026-09-08) — NO requirió validación en AutoCAD, y eso es una decisión registrada, no una
+omisión.** El disparador vigente es objetivo —«cambió el comportamiento de dibujo», `AGENTS.md` punto 5
+y [WORKFLOW.md](WORKFLOW.md) §4.5.3— y el único cambio de producto de toda la rama son dos `using`
+duplicados retirados en `PushBackPlanComposer.cs`, sin cambio de comportamiento. La evidencia del
+Candidato **`6d3f9db39316c2f7a1bcbf6b10715597f271fba3`** se produjo sobre **ese** SHA exacto, con el
+árbol limpio y el SDK resuelto **8.0.423**: `RackCad.Tests` **4643 PASS / 0 fail**, `RackCad.UI.Tests`
+**1216 PASS / 17 skip / 1233 total**, build Debug de UI **0 errores y 0 advertencias**, build Debug del
+Plugin **0 errores** más los dos `MSB3277` conocidos de AutoCAD, y **CI de `push` sobre el mismo SHA**
+—corrida **34258522145**— con los cuatro jobs en `success`. Esa corrida **no** llevó cobertura, y es lo
+correcto: la cadencia la reserva para el Candidato explícito y para el trunk (ADR-0033 §9), de modo que
+las dos comprobaciones de cobertura se verifican **después** del merge, ya en `main`.
+
 **I-44 (2026-09-03) — APROBADA.** El dueño cargó por NETLOAD el DLL Debug del worktree de
 `fix/push-back-peraltes-intermedios-bom`, construido **exactamente** desde
 `4947a1b5e43a291b01e8e43b5a8ff36d74c99186`, **abrió el DWG real que presentaba el defecto** y confirmó que
@@ -1233,7 +1265,47 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-43 e I-44 están INTEGRADAS y CERRADAS. No hay iniciativa en curso.
+### I-45, I-43 e I-44 están INTEGRADAS y CERRADAS. No hay iniciativa en curso.
+
+**Queda una decisión del dueño, y es la única:** aceptar o rechazar
+[ADR-0033](adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md), que sigue **`propuesto`**. Ningún
+gate lo aceptó y ningún texto operativo depende de él como autoridad —las reglas que hoy rigen viven en
+`AGENTS.md` y [WORKFLOW.md](WORKFLOW.md)—, así que el repositorio funciona igual con o sin esa
+aceptación; lo que falta es el acto formal.
+
+**I-45 — Engineering Productivity quedó integrada el 2026-09-08** desde
+`architecture/test-validation-workflow` con merge `--no-ff`, sobre el candidato
+**`6d3f9db39316c2f7a1bcbf6b10715597f271fba3`**, **sin validación en AutoCAD** (§2) y con CI de `push`
+verde sobre ese mismo SHA. `origin/main` **no avanzó** desde
+`bd40ef7888df5c4b65db64c2b2791a854a5c74df`, así que **no hubo rebase final** y la evidencia corresponde
+exactamente al contenido integrado.
+
+**Trazabilidad.** Gates ejecutados: `P0 · G0A · G2 · G0B · G1 · G3 · G4 · G5 · G6 · G6-C1 · G7 ·
+G7-C1 · G7-C2`. Revisión independiente del Arquitecto: `4d33871` **NOT AGREED** (`ARCH-01`..`ARCH-04`)
+→ correctivo `G7-C1`; `19a555f` **NOT AGREED** (`ARCH-05`) → correctivo `G7-C2`; `e932c0c` **AGREED WITH
+NON-BLOCKING FINDINGS**, con **0 BLOCKER y 0 HIGH**. Candidato `6d3f9db` · CI **34258522145** `push`
+success con los cuatro jobs, sin cobertura por cadencia.
+
+**Lo que I-45 NO demuestra, y consta por escrito.** No reclama ninguna mejora del reloj de pared del CI:
+el plan esperaba aproximadamente cero, y así salió. Las dos filas de tiempo local medidas **no se
+restan** —la suite de UI sigue ejecutándose, en el CI—: lo que cambia es la semántica del flujo, no la
+velocidad de la suite. La línea base de **duración activa del dueño** sigue `UNKNOWN`, sin ningún valor
+todavía: es un experimento con criterio de muerte, y su ausencia **no** convierte un PASS funcional en
+FAIL. De **160** afirmaciones de clase Full del corpus histórico **ninguna nombra un SHA**, así que
+cuántas veces se repitió una Full sobre el mismo commit sigue siendo `UNKNOWN`; las **reconfirmaciones
+por SHA exacto determinables fueron 0**. El **45 % de «reconfirmación»** que reportó el Discovery es,
+bajo V4, **cruce de canal** —el instrumento reencuentra **64** ejecuciones frente a sus 66—, y el cruce
+de canal **nunca cuenta como ahorro disponible**; el corpus completo de G3, sobre I-40/42/43/44, suma
+**440** ejecuciones de evidencia.
+
+**Lo que NO se hizo, a propósito.** La deuda diferida y los hallazgos fuera de alcance viven en
+[ideas-futuras.md](ideas-futuras.md): «CI por capas» sigue **sin decidir** como solución, las **30**
+advertencias propias de las suites quedan registradas con su comando reproducible, y la regla de «cero
+pruebas seleccionadas» **no** tiene todavía enforcement automático. El detalle decisión por decisión,
+con sus criterios de reapertura y sus incógnitas conocidas, está en
+[initiatives/I-45-conformance.md](initiatives/I-45-conformance.md).
+
+### I-43 e I-44 están INTEGRADAS y CERRADAS.
 
 **I-43 — Selectivo: edición por alcance y fondos quedó integrada el 2026-09-04** desde
 `feature/selectivo-scopes-fondos` con merge `--no-ff`, sobre el candidato

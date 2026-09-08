@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-45
 title: Engineering Productivity — arquitectura de pruebas y workflow de validacion
 type: architecture
-status: in-progress
+status: integrated
 branch: architecture/test-validation-workflow
 base_branch: main
 priority:
@@ -26,31 +26,26 @@ automation:
 
 # Engineering Productivity — arquitectura de pruebas y workflow de validacion
 
-> **Fase actual: GATES DE IMPLEMENTACION COMPLETOS HASTA G7.** La iniciativa NO esta cerrada, NO esta
-> integrada, y ADR-0033 NO esta aceptado.
+> **Fase actual: INTEGRADA y CERRADA (2026-09-08).** Este cierre documental es el ultimo commit de la
+> rama, y el merge `--no-ff` a `main` se hace con el como punta: `integrada` significa que el merge
+> existe, no que la integracion este verificada —eso lo dicen el CI posterior al merge y la cobertura
+> del Candidato—. **ADR-0033 NO esta aceptado** y sigue `propuesto`.
 >
 > ```
-> Phase:    G7 EJECUTADO — conformidad auditada; la revision independiente aun no ha ocurrido
+> Phase:    CERRADA — gates completos, consenso alcanzado, candidato con evidencia completa
 > Baseline: parent of the atomic claim commit on origin/main
 >
 > PLAN VERSION:       V4
 > Coordinator:        AGREED
-> Architect:          AGREED
+> Architect:          AGREED WITH NON-BLOCKING FINDINGS   (0 BLOCKER, 0 HIGH)
 > Open disagreements: NONE
 > CONSENSUS STATUS:   REACHED
 >
-> Gates:    P0 · G0A · G2 · G0B · G1 · G3 · G4 · G5 · G6 · G6-C1 · G7   (ejecutados)
+> Gates:    P0 · G0A · G2 · G0B · G1 · G3 · G4 · G5 · G6 · G6-C1 · G7 · G7-C1 · G7-C2  (ejecutados)
 > ADR-0033: propuesto        (ningun gate lo acepto)
+> Candidato: 6d3f9db39316c2f7a1bcbf6b10715597f271fba3
 >
-> PENDIENTE, en orden:
->   1. revision de conformidad del Coordinador
->   2. revision de conformidad del Arquitecto
->   3. candidato final con su evidencia completa sobre un SHA exacto
->   4. validacion del dueno en AutoCAD SI aplica el disparador vigente —«cambio el comportamiento de
->      dibujo», AGENTS.md punto 5 y WORKFLOW seccion 4.5.3—. I-45 no ha cambiado comportamiento de
->      dibujo, pero quien decide es el Coordinador, no este documento
->   5. integracion, y con ella las dos comprobaciones diferidas de conformidad
->   6. limpieza
+> PENDIENTE: solo la decision del dueno sobre ADR-0033. No la toma ningun gate, ni este documento.
 > ```
 >
 > El estado verificado, decision por decision, vive en [I-45-conformance.md](I-45-conformance.md).
@@ -371,11 +366,24 @@ El merge automatico esta prohibido, como en toda iniciativa del repositorio.
 
 ## 14. Evidencia final
 
-Se completa al integrar. El estado verificado al cerrar `G7` vive en
-[I-45-conformance.md](I-45-conformance.md): matriz de decisiones V4 con su estado, comprobaciones
-diferidas a la integracion, metricas defendibles, deuda registrada y criterios de reapertura.
+Candidato **`6d3f9db39316c2f7a1bcbf6b10715597f271fba3`**, arbol limpio, SDK resuelto **8.0.423**:
 
-**`main` no ha sido modificada.** Lo que si se modifico, por gate:
+```
+RackCad.Tests            4643 PASS / 0 fail
+RackCad.UI.Tests         1216 PASS / 17 skip / 1233 total
+Build UI Debug           0 errores, 0 advertencias
+Build Plugin Debug       0 errores + 2 MSB3277 conocidos de AutoCAD
+CI push sobre 6d3f9db    corrida 34258522145, los cuatro jobs success, sin cobertura (cadencia)
+AutoCAD                  NO aplica: el unico cambio de producto de la rama son dos `using` duplicados
+```
+
+Consenso de conformidad **REACHED** tras tres rondas: `4d33871` NOT AGREED (`ARCH-01`..`ARCH-04`) →
+`G7-C1`; `19a555f` NOT AGREED (`ARCH-05`) → `G7-C2`; `e932c0c` AGREED WITH NON-BLOCKING FINDINGS, con
+0 BLOCKER y 0 HIGH. El estado verificado decision por decision —matriz V4, comprobaciones diferidas a
+la integracion, metricas con su procedencia, deuda registrada, criterios de reapertura e incognitas
+conocidas— vive en [I-45-conformance.md](I-45-conformance.md).
+
+**Ningun gate modifico `main`.** Lo que si se modifico, por gate:
 
 | Ambito | Gates | Que |
 |---|---|---|
