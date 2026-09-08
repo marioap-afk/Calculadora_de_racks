@@ -43,11 +43,12 @@ declarada por el (guia de validacion manual §8).
 
 - No hay lint/formatter configurado; el compilador C# es el type-check. Meta: **0 errores, 0 advertencias**
   propias (los `MSB3277` de las referencias de AutoCAD en el Plugin son conocidos y se ignoran).
-  - **La meta no cambia**, y hoy no se cumple: I-45 midió advertencias propias vivas contra el log del
-    CI del mismo candidato. El hallazgo, con su evidencia, está en
-    [`docs/initiatives/I-45-discovery.md`](docs/initiatives/I-45-discovery.md) §8.4 y **no se repite
-    aquí**. No es una excepción permitida: su corrección corresponde al gate `G0B` de I-45 si el
-    Coordinador confirma que es higiene no funcional.
+  - **La meta no cambia**, y hoy no se cumple. Los dos `CS0105` que I-45 midió contra el log del CI
+    —el caso que documenta `I-45-discovery.md` §8.4— **ya están corregidos** (gate G0B). Lo que sigue
+    vivo es la deuda de **advertencias de analizadores xUnit en las suites de prueba**, registrada con
+    su cifra, su método de medición y el motivo de haberla diferido en
+    [`docs/ideas-futuras.md`](docs/ideas-futuras.md). **No es una excepción permitida**: es deuda con
+    registro, y corregirla reescribe aserciones —trabajo propio, no higiene de paso—.
 - **Trampa**: con AutoCAD abierto y el plugin cargado, los DLL del bin quedan bloqueados y el build falla
   en el paso de copia (MSB3021/MSB3027). Para validar solo codigo: compilar a una carpeta temporal
   (`dotnet build src/RackCad.UI/RackCad.UI.csproj -o <temp>`) y correr las pruebas. El procedimiento
@@ -278,10 +279,14 @@ Nunca un exito. Un filtro que deja de coincidir con lo que nombraba —porque un
 namespace se movio— pasa en verde sin ejecutar nada, y ese verde es indistinguible del de una suite que
 si corrio. Por eso el resultado de una corrida focal solo vale acompanado del conteo que produjo.
 
-Esta regla **es normativa desde aqui**. Hasta hoy se citaba como si ya viviera en este documento y no
-estaba escrita en ninguna parte; varios documentos y una prueba la atribuian a `AGENTS.md`. El
-mecanismo que la haga cumplir automaticamente es trabajo de un gate posterior de I-45: por ahora la
-obligacion es de quien ejecuta.
+Esta regla **es normativa desde aqui**. Hasta G0A se citaba como si ya viviera en este documento y no
+estaba escrita en ninguna parte; varios documentos y una prueba la atribuian a `AGENTS.md`.
+
+**La obligacion es de quien ejecuta, y de nadie mas: no existe mecanismo automatico que la haga
+cumplir.** I-45 lo dejo asi a proposito y no construyo uno —el unico sitio donde la guarda es
+automatica es `eng/validation/measure-validation.ps1`, y solo sobre sus propias corridas de
+medicion—. Queda registrado como deuda en [`docs/ideas-futuras.md`](docs/ideas-futuras.md); un gate
+futuro puede tomarlo, pero **ninguno lo tiene asignado**.
 
 - No hay secretos, tokens ni variables de entorno en este repo. Mantenerlo asi.
 - `blocks-library.dwg` (biblioteca de bloques del usuario) NO se versiona; su ruta vive en

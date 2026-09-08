@@ -26,10 +26,11 @@ automation:
 
 # Engineering Productivity — arquitectura de pruebas y workflow de validacion
 
-> **Fase actual: CONSENSO ALCANZADO — P0 versionado.** Discovery esta cerrado y el plan esta acordado.
+> **Fase actual: GATES DE IMPLEMENTACION COMPLETOS HASTA G7.** La iniciativa NO esta cerrada, NO esta
+> integrada, y ADR-0033 NO esta aceptado.
 >
 > ```
-> Phase:    P0 VERSIONED  (precondicion documental cumplida)
+> Phase:    G7 EJECUTADO — conformidad auditada; la revision independiente aun no ha ocurrido
 > Baseline: parent of the atomic claim commit on origin/main
 >
 > PLAN VERSION:       V4
@@ -38,8 +39,21 @@ automation:
 > Open disagreements: NONE
 > CONSENSUS STATUS:   REACHED
 >
-> Behavioral implementation: READY a partir de la existencia de este commit de P0
+> Gates:    P0 · G0A · G2 · G0B · G1 · G3 · G4 · G5 · G6 · G6-C1 · G7   (ejecutados)
+> ADR-0033: propuesto        (ningun gate lo acepto)
+>
+> PENDIENTE, en orden:
+>   1. revision de conformidad del Coordinador
+>   2. revision de conformidad del Arquitecto
+>   3. candidato final con su evidencia completa sobre un SHA exacto
+>   4. validacion del dueno en AutoCAD SI aplica el disparador vigente —«cambio el comportamiento de
+>      dibujo», AGENTS.md punto 5 y WORKFLOW seccion 4.5.3—. I-45 no ha cambiado comportamiento de
+>      dibujo, pero quien decide es el Coordinador, no este documento
+>   5. integracion, y con ella las dos comprobaciones diferidas de conformidad
+>   6. limpieza
 > ```
+>
+> El estado verificado, decision por decision, vive en [I-45-conformance.md](I-45-conformance.md).
 >
 > Las cuatro condiciones se cumplen sobre **la misma version concreta del plan**, `V4`. La decision
 > vive en [ADR-0033](../adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md), en estado
@@ -274,10 +288,22 @@ del alcance que el ADR autoriza y en el gate que corresponde**; todo lo demas si
 
 ## 9. Pruebas y builds
 
-**Este gate es documental.** No modifica codigo de produccion ni de pruebas, ni la configuracion de
-CI, de modo que no existe regla vigente que exija ejecutar las suites completas ni los builds de UI y
-Plugin para cerrarlo: el checklist de `WORKFLOW.md` seccion 5 gobierna el **cierre de la iniciativa**,
-no cada commit intermedio, y `AGENTS.md` fija la definicion de terminado de un cambio de codigo.
+**La iniciativa NO es solo documental, y este parrafo lo decia mal.** Redactado en el bootstrap,
+afirmaba «no modifica codigo de produccion ni de pruebas, ni la configuracion de CI»; eso dejo de ser
+cierto en dos gates y se corrige aqui, en G7:
+
+- **`tests/**` SI se toco**, en `G0B`: se anadio `EditorDiscardPromptCollection` y se marcaron las dos
+  clases que mutan el delegado estatico del prompt de descarte, mas higiene de comentarios y dos
+  `using` duplicados en `src/RackCad.Application/Systems/PushBack/PushBackPlanComposer.cs`. Ningun
+  cambio de comportamiento de producto y ninguna prueba nueva ni retirada.
+- **`.github/**` SI se toco**, dos veces: en `G2` (timeouts, TRX, `--blame-hang`, artefactos de
+  diagnostico) y en `G6-C1` (cadencia de cobertura y disparador explicito de Candidato).
+- **`src/**` de producto NO se toco** mas alla de los dos `using` duplicados de G0B, que no cambian
+  comportamiento.
+
+Cada gate declaro su propio alcance y su propia validacion proporcional, y ninguno ejecuto las suites
+completas por ceremonia: el checklist de `WORKFLOW.md` seccion 5 gobierna el **cierre de la
+iniciativa**, no cada commit intermedio.
 
 La validacion proporcional de un cambio documental es:
 
@@ -300,7 +326,7 @@ Lo que **si** requiere el dueno es una **decision**: el consenso sobre la `PLAN_
 
 ## 11. Criterios de aceptacion
 
-De este gate:
+Del gate de reclamo y bootstrap, que es al que se referia esta lista cuando se escribio:
 
 1. `origin/architecture/test-validation-workflow` existe y contiene el commit de reclamo con su
    `Claim-Id`.
@@ -309,8 +335,12 @@ De este gate:
    el bloqueo por consenso y la lista de la seccion 4.
 4. «CI por capas» aparece en `ideas-futuras.md` marcado como absorbido por I-45, sin presentarse como
    decision arquitectonica.
-5. Cero cambios en codigo de producto, codigo de pruebas y configuracion de CI.
-6. `main` no fue modificada.
+5. `main` no fue modificada.
+
+> El criterio que decia «cero cambios en codigo de produccion, codigo de pruebas y configuracion de
+> CI» **valia para aquel gate y dejo de valer despues**: `G0B` toco `tests/**`, y `G2` y `G6-C1`
+> tocaron `.github/**`. El alcance real, por gate, esta en la seccion 14. Se corrige aqui en vez de
+> dejar en pie un criterio que el propio expediente incumple.
 
 De la fase DISCOVERY completa: evidencia versionada, huecos de medicion cerrados, Proposal escrita,
 revision del Arquitecto realizada y consenso registrado — o, si no se alcanza, el desacuerdo
@@ -331,7 +361,7 @@ documentado con su motivo.
 `automation.enabled: false` y `automation_state_path` vacio: I-45 se conduce manualmente, igual que
 las iniciativas recientes del mismo tipo, de modo que **no** se crea
 `docs/automation/state/I-45.yml` y **no** se abre Pull Request. El estado en curso se deriva de la
-existencia de `origin/architecture/test-validation-workflow`, conforme a `WORKFLOW.md` seccion 7.
+existencia de `origin/architecture/test-validation-workflow`, conforme a `WORKFLOW.md` seccion 2.
 
 Si el dueno decidiera pasar la iniciativa al ejecutor automatico, ese cambio exige actualizar el
 frontmatter y crear el archivo de estado con el esquema de `TEMPLATE.md` seccion 13; hasta entonces,
@@ -341,8 +371,20 @@ El merge automatico esta prohibido, como en toda iniciativa del repositorio.
 
 ## 14. Evidencia final
 
-Se completa al cerrar la iniciativa. De momento consta unicamente el gate de reclamo y bootstrap:
-rama y worktree creados desde la punta remota de `main`, commit vacio de reclamo con `Claim-Id`,
-primer push aceptado sin force, y los tres archivos documentales de la seccion 7.
+Se completa al integrar. El estado verificado al cerrar `G7` vive en
+[I-45-conformance.md](I-45-conformance.md): matriz de decisiones V4 con su estado, comprobaciones
+diferidas a la integracion, metricas defendibles, deuda registrada y criterios de reapertura.
 
-**Cero cambios de producto, de pruebas y de CI. `main` no fue modificada.**
+**`main` no ha sido modificada.** Lo que si se modifico, por gate:
+
+| Ambito | Gates | Que |
+|---|---|---|
+| Documentacion normativa | G0A, G4, G5, G6, G6-C1, G7 | `AGENTS.md`, `WORKFLOW.md`, la guia de validacion manual |
+| Documentacion de la iniciativa | todos | plan, contrato, metodo, repeticion, conformidad |
+| `.github/workflows/ci.yml` | G2, G6-C1 | diagnostico y fusibles; cadencia de cobertura |
+| `tests/**` | G0B | coleccion que serializa el prompt de descarte, e higiene |
+| `eng/validation/**` | G1, G3, G5, G6 | los dos instrumentos de medicion |
+| `src/**` | G0B | dos `using` duplicados; sin cambio de comportamiento |
+
+ADR-0033 sigue en estado **`propuesto`**: ningun gate lo acepto, y ningun texto operativo depende de
+el como autoridad.

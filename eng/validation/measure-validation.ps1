@@ -14,7 +14,7 @@
     aqui se pega a mano en un documento normativo.
 
 .PARAMETER Measure
-    Que medir. Combinable. 'all' equivale a core, ui, build-ui, build-plugin y cycle.
+    Que medir. Combinable. 'all' equivale a core, ui, build-ui, build-plugin, cycle y ordinary.
     'none' no mide nada (util para pedir solo -Sessions, -Ci o -SelfTest).
 
 .PARAMETER Repeat

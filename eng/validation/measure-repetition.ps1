@@ -250,7 +250,7 @@ function Get-Classification {
     param(
         [bool]$IsMergeCommit,
         [bool]$PriorSameClassSameSha,
-        [bool]$PriorOtherChannelSameSha,
+        [bool]$PriorOtherChannelColocated,
         [string]$Channel,
         [pscustomobject]$PolicyRule
     )
@@ -287,7 +287,7 @@ function Get-Classification {
         }
     }
 
-    if ($PriorOtherChannelSameSha) {
+    if ($PriorOtherChannelColocated) {
         return [pscustomobject]@{
             classification = 'CROSS_CHANNEL'
             reason         = 'mismo commit ya tenia evidencia declarada en otro canal; las clases no son intercambiables'
@@ -380,7 +380,7 @@ function Get-InitiativeReconstruction {
             elseif ($c.ranAfterCommitStated) { $sha = $c.source; $shaBasis = 'STATED_AFTER_COMMIT' }
 
             $cls = Get-Classification -IsMergeCommit $false -PriorSameClassSameSha $false `
-                -PriorOtherChannelSameSha $false -Channel $c.channel -PolicyRule $null
+                -PriorOtherChannelColocated $false -Channel $c.channel -PolicyRule $null
 
             $executions.Add([pscustomobject]@{
                     initiative               = $Initiative.id
@@ -455,7 +455,7 @@ function Get-InitiativeReconstruction {
                 }
 
                 $cls = Get-Classification -IsMergeCommit $isMerge -PriorSameClassSameSha $priorSame `
-                    -PriorOtherChannelSameSha $priorOther -Channel 'ci' -PolicyRule $rule
+                    -PriorOtherChannelColocated $priorOther -Channel 'ci' -PolicyRule $rule
 
                 if ($cls.classification -eq 'CROSS_CHANNEL') {
                     $crossChannelPairs.Add([pscustomobject]@{
@@ -579,7 +579,7 @@ function Invoke-Controls {
             $second = $runs[1]
             $priorGreen = @($runs[0..($runs.Count - 2)] | Where-Object { $_.conclusion -eq 'success' }).Count -gt 0
             $inv = Get-InvalidationStatus -Channel 'ci'
-            $cls = Get-Classification -IsMergeCommit $false -PriorSameClassSameSha $priorGreen -PriorOtherChannelSameSha $false -Channel 'ci' -PolicyRule $null
+            $cls = Get-Classification -IsMergeCommit $false -PriorSameClassSameSha $priorGreen -PriorOtherChannelColocated $false -Channel 'ci' -PolicyRule $null
             [pscustomobject]@{
                 sha              = $sha.Substring(0, 7)
                 executions       = $runs.Count

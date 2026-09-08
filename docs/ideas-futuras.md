@@ -193,8 +193,49 @@
     El enunciado original se conserva: ejecutar Domain/Application/tests en cualquier runner y reservar un smoke
     test Windows con AutoCAD para releases; el Plugin no debe impedir que las reglas puras tengan gate continuo.
     Entra en I-45 como **problema y como alternativa a estudiar**, no como solución adoptada: absorberlo **no**
-    decide que la estrategia final sea CI por capas, y I-45 está en fase DISCOVERY con la implementación
-    bloqueada hasta el consenso Coordinator/Architect. Cualquier decisión sobre este item se toma allí.
+    decide que la estrategia final sea CI por capas. **Resuelto en I-45 (2026-09-07):** la estrategia NO es
+    CI por capas ni un carril rápido. El CI sigue ejecutando las dos suites completas en cada push; lo que
+    cambió es **dónde** se produce la evidencia intermedia de UI (LC-UI) y **cuándo** se recolecta cobertura.
+    Un CI rápido separado solo se reabre con los criterios reproducidos en
+    [I-45-conformance.md](initiatives/I-45-conformance.md) §9 —cuya fuente es ADR-0033 §13, hoy en
+    estado `propuesto`—, no por conveniencia.
+16.bis **Advertencias de analizadores xUnit en las suites de prueba — DEUDA CON REGISTRO, no excepción**
+    (hallazgo de I-45 `G0B`, medido de nuevo en `G7`, 2026-09-07).
+
+    **Cifra reproducible: 30 advertencias propias**, únicas por archivo+línea+código:
+    `xUnit2031` 14, `xUnit2029` 9, `xUnit2013` 6, `xUnit2000` 1. Se obtienen con:
+
+    ```powershell
+    dotnet build tests/RackCad.Tests/RackCad.Tests.csproj    -c Debug -t:Rebuild -v:minimal
+    dotnet build tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug -t:Rebuild -v:minimal
+    ```
+
+    y contando líneas `warning <código>` **deduplicadas por archivo+línea+código**.
+
+    > **Corrección de una cifra propia.** `G0B` registró «60 (28/18/12/2)» en el cuerpo de su commit.
+    > Eran **líneas de aviso**, no advertencias distintas: MSBuild las emite dos veces, y el desglose
+    > nuevo es exactamente la mitad en **cada** categoría. El número correcto es **30**. Se corrige aquí
+    > en vez de dejarlo vivir en un mensaje de commit, que no es un artefacto consultable.
+
+    **Por qué se difirió y sigue diferida:** corregirlas **reescribe aserciones**
+    (`Assert.Empty` → `Assert.DoesNotContain`, `Assert.Equal(1, x.Count)` → `Assert.Single`) en ~25
+    archivos. Eso es trabajo propio con su propio riesgo, no higiene de paso, y `G0B` tenía prohibido
+    tocar aserciones. **La meta de `AGENTS.md` de 0 advertencias propias NO se debilita y esto NO es una
+    excepción permitida.** Los `MSB3277` del Plugin siguen bajo la excepción que ya existía.
+
+
+16.ter **Nadie hace cumplir automáticamente «0 pruebas seleccionadas = FALLO»** (hallazgo de I-45 `G7`).
+
+    `AGENTS.md` volvió normativa esa regla en `G0A` y anunció que el mecanismo automático sería
+    «trabajo de un gate posterior de I-45». **Ese gate no existe:** `G7` es el último del plan, y
+    ninguno construyó el mecanismo. Hoy la obligación es **enteramente de quien ejecuta**; el único
+    sitio donde la guarda es automática es `eng/validation/measure-validation.ps1`, y solo sobre sus
+    propias corridas de medición.
+
+    Se registra aquí para que la promesa no se evapore. **La regla sigue siendo normativa** —lo que
+    falta es su comprobación automática, no su vigencia—. Un gate o una iniciativa futura puede
+    tomarlo; ninguno lo tiene asignado.
+
 17. **Benchmarks y presupuestos de complejidad** — medir resolver/builders/BOM con 10/30/100 frentes y el layout con
     5,000 candidatos. Convertir regresiones de tiempo/memoria en pruebas de benchmark antes de ampliar los limites UI.
 18. **Migraciones de schema explicitas** — `SchemaGuard` hoy cubre compatibilidad por fallback. Antes del primer 2.x,

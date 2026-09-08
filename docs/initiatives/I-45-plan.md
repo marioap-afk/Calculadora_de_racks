@@ -96,7 +96,9 @@ se conserva solo como higiene: el plan no puede reclamarla como resultado.
 > abierto cuando se acordó el plan.
 
 1. El determinismo de la suite de UI, con una condición de carrera **viva** sobre un delegado estático
-   de proceso.
+   de proceso. — **G0B cerró esa carrera concreta**: las dos únicas clases que mutan ese delegado ya
+   no pueden ejecutarse concurrentemente. El determinismo **global** de la suite de UI sigue sin
+   demostrarse, y este punto no lo declara resuelto.
 2. El trabajo serializado real del hilo STA.
 3. La duración del ciclo local obligatorio, **denominador de todo ahorro** que se reclame.
 4. El recall de cualquier selección, que **no es acotable** desde este repositorio y no lo será por
