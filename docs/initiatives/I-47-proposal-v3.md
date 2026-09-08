@@ -1,38 +1,20 @@
-# I-47 — Proposal V2: contrato de variables de proyecto (ID22A)
+# I-47 — Proposal V3: contrato de variables de proyecto (ID22A)
 
-> ## SUPERSEDIDA por [I-47-proposal-v3.md](I-47-proposal-v3.md) (Gate C3)
-> **No usar como referencia.** Se conserva como registro historico del Gate C2 y porque su
-> §0-bis contiene la tabla **V1 → V2**, que V3 no repite.
->
-> Lo que V3 cambia respecto de este documento:
->
-> - **D-07**: aqui F2 era una recomendacion y **F3 seguia viva**. V3 **decide F2** y **rechaza F3**
->   (una version vieja preserva el binding pero no lo entiende: redibujaria con el literal). Ademas
->   la mecanica pasa de «major segun contenido actual» a **promocion pegajosa**.
-> - **D-10**: aqui era recomendacion y pregunta abierta. V3 la **decide** (F1).
-> - **D-13**: aqui se decia que `EnsureForPlan` convenia resolverlo en el preflight. **Es incorrecto**:
->   muta el `Database` fuera de la transaccion del llamador. V3 lo saca del lote y exige **verificar
->   y abortar**.
-> - **§14**: aqui el Freeze exigia tocar `ROADMAP.md`, lo que **contradice WORKFLOW seccion 2**.
->
-> La tabla completa V2 → V3 esta en la §0-bis de V3.
-
-> **Documental. No autoriza implementacion.** No toca `src/` ni `tests/`. Compara alternativas y
-> **recomienda** un contrato; **elegir sigue siendo del dueno** y el gate `owner-decision` sigue
-> abierto. **No se pidio Architect Review** en este gate.
+> **Documental. No autoriza implementacion.** No toca `src/` ni `tests/`. **No se pidio Architect
+> Review** en este gate.
 >
 > ```
-> PROPOSAL VERSION:   V2
-> Sustituye a:        I-47-proposal-v1.md  (commit 83a2cdb)
+> PROPOSAL VERSION:   V3
+> Sustituye a:        I-47-proposal-v2.md  (commit e08431f)   — que a su vez supersedio a V1
 > Base del analisis:  9e25d5291daa13c4846112241be6e52526429a47  (Discovery)
 > origin/main:        306e18ed4676e5e96b54d59402c9a230efb137d3  (sin avanzar)
-> Premisas:           C-1..C-6 del Gate C  +  C2-1..C2-9 del Gate C2
+> Premisas:           C-1..C-6 (Gate C) + C2-1..C2-9 (Gate C2) + C3-1..C3-8 (Gate C3)
 > ```
 >
-> **V2 corrige nueve puntos de V1 y no toca nada mas.** Las decisiones no citadas en la tabla de §0-bis
-> se conservan **literalmente**. Dos de las correcciones invalidan una afirmacion de V1 —no la matizan—
-> y se senalan como tales: la garantia que V1 atribuia a `[JsonExtensionData]` (D-07) y la atomicidad
-> que V1 atribuia al lote de redibujo (D-13).
+> **V3 corrige ocho puntos de V2 y no toca nada mas.** Su efecto principal es que **el contrato deja de
+> tener decisiones de arquitectura pendientes**: el dueno cerro D-07 y D-10, y retiro del terreno de las
+> preguntas abiertas la viabilidad de la transaccion unica y la numeracion de H3. Lo que queda vivo es
+> **verificacion e implementacion**, no diseno. La confirmacion explicita esta en §12.
 
 ## 0. Premisas — no se comparan
 
@@ -66,23 +48,37 @@ reabrir el mismo DWG** (§9.2).
 | C2-8 | La transferencia/fusion de variables entre dibujos **no** pertenece a ID22B: es futuro separado |
 | C2-9 | El contrato y la fila de ROADMAP deben actualizarse **antes de produccion** si UI/comando forman parte del plan final (§14) |
 
-## 0-bis. Tabla exacta V1 → V2
+### Premisas anadidas en el Gate C3
 
-| Decision | V1 decia | V2 dice | Motivo |
+| # | Premisa |
+|---|---|
+| C3-1 | **D-07 queda decidido: F2.** F3 se **rechaza** por una razon semantica, no de formato (D-07) |
+| C3-2 | F2 se corrige a **promocion de schema PEGAJOSA**, no «major segun contenido actual» (D-07) |
+| C3-3 | **D-10 queda decidido: F1.** Borrar una variable con consumidores **se bloquea** y se listan; «desvincular todos materializando + borrar» solo como **accion explicita separada** |
+| C3-4 | `RedefineSystemBlock` usa la **`Transaction` del llamador**; transaccion **unica** para `ProjectVariables` + geometria + payloads |
+| C3-5 | **`BlockLibraryImporter.EnsureForPlan` NO forma parte del preflight ni del lote**: puede mutar el `Database` **fuera** de la transaccion. La propagacion **verifica** que las definiciones ya existan y **aborta** si falta alguna; **no importa ni repara** la biblioteca como efecto colateral |
+| C3-6 | La **viabilidad** de la transaccion unica **deja de ser pregunta de contrato**. La validacion real en AutoCAD es **gate de implementacion / Owner Validation**, no condicion previa de Consensus Freeze |
+| C3-7 | **WORKFLOW §2 manda sobre CF-2**: el **contrato** de iniciativa si refleja el alcance final antes de produccion; **ROADMAP no se modifica en un gate intermedio** y se actualiza **al integrar/cerrar**. ROADMAP sale del Consensus Freeze y pasa al **checklist de cierre** |
+| C3-8 | Se retiran de «preguntas abiertas»: F2 vs F3, D-10, viabilidad conceptual de la transaccion unica, y asignar numero a H3. El **coste de propagacion** queda como **riesgo/metrica de implementacion**, no como decision de arquitectura |
+
+## 0-bis. Tabla exacta V2 → V3
+
+| Decision | V2 decia | V3 dice | Motivo |
 |---|---|---|---|
-| **D-01** | NOD, citando `Database.NamedObjectsDictionary` | NOD, citando **`Database.NamedObjectsDictionaryId`** abierto como `DBDictionary` en la transaccion | C2 punto 7: precision de API. **La decision NO cambia** |
-| **D-03** | El discriminador de tipo se justifica porque «ID22B agregara tipos» | ID22B son **formulas**, no tipos. El discriminador se justifica por candidatos **no numericos** y porque **una expresion necesita operandos tipados**. Se separa `Type` de `Definition` | C2-1 |
-| **D-04** | `Bindings: slot → string` | **`PropertyValues: PropertyId → { kind, variableId }`**, referencia **tipada**; `slot → string` **retirado**; escalar legacy conservado como literal | C2-3, C2-4 |
-| **D-07** | `[JsonExtensionData]` como prerequisito que **evita la perdida silenciosa** | **Falso para builds ya compilados.** Se separa *backward* de *downgrade/forward round-trip*; el contrato pasa a apoyarse en el **major condicional** (`SchemaGuard`, ya compilado) o en el **sobre**; `[JsonExtensionData]` se conserva con garantia **honesta y acotada** | C2-5 |
-| **D-13** | «La primitiva de lote ya existe»; todo-o-nata implicito | `RedrawInPlace` **abre y commitea su propia transaccion por bloque** ⇒ **no** es atomico. Se exige preflight completo, **commit unico o rollback real**, y un solo `Regen`; se propone la frontera (writer de lote con transaccion **del llamador**) | C2-6 |
-| **D-15** | H3 (fusion entre dibujos) = «territorio de ID22B» | H3 es **futuro separado**; ID22B son formulas | C2-8 |
-| **D-17** | Round-trip del Store cubre el restamp de RACKDUPLICAR | **No lo cubre.** Se propone **extraer la transformacion a codigo puro** y verificarla por comportamiento, mas guarda de texto que impida saltarsela | C2-7 |
-| **§10** | «No se que son ID22B ni ID21» | Definidos: se enuncia **que extiende cada uno** (`Definition` vs `PropertyValue<T>`) y que preserva el contrato | C2-1, C2-2 |
-| **§12** | Pregunta abierta «¿que son ID22B e ID21?» | **Retirada.** Quedan las que siguen realmente abiertas | C2-1, C2-2 |
-| **§14** | — | **Nueva**: condiciones de Consensus Freeze | C2-9 |
+| **D-07** | F2 **recomendada**, F3 «alternativa viva»; la eleccion se dejaba al dueno | **F2 DECIDIDA.** F3 **rechazada** con razon propia: una version vieja puede *preservar* el binding en el sobre pero **no entiende su semantica**, asi que podria editar y redibujar con el **literal** y dejar geometria **incoherente** con la autoridad que una version nueva resolvera despues | C3-1 |
+| **D-07 (mecanica)** | «major condicional» segun si el documento lleva `PropertyValues` | **Promocion PEGAJOSA**: 1.x nunca vinculado sigue en 1.x; introducir `PropertyValues` promueve a **2.0**; **una vez 2.x, nunca vuelve a 1.x**; desvincular materializa y borra la referencia **sin degradar el schema**; minors posteriores se preservan segun `SchemaVersionPolicy` | C3-2 |
+| **D-10** | F1 **recomendada**, seguia listada como pregunta abierta | **F1 DECIDIDA.** Se bloquea y se listan los consumidores; el atajo comodo existe **solo** como accion explicita separada | C3-3 |
+| **D-13** | «conviene resolver `EnsureForPlan` en el preflight» | **Fuera del preflight y del lote.** `EnsureBlocks` **abre y commitea su propia transaccion** y luego llama a `WblockCloneObjects`, que muta el `Database` **fuera** de la del llamador. La propagacion **verifica** que las definiciones existan y **aborta antes** de tocar la variable o los consumidores | C3-5 |
+| **D-13 (transaccion)** | «se propone» una frontera con transaccion del llamador | **Se exige**: `RedefineSystemBlock` recibe la `Transaction` del llamador y **una sola** transaccion cubre registro + geometria + payloads | C3-4 |
+| **§12** | 4 preguntas abiertas (F2/F3, transaccion unica, coste, numero de H3) | **1 sola**, y no es de arquitectura. Las otras tres se retiran; el coste pasa a §13 como metrica | C3-6, C3-8 |
+| **§13** | P9 = «la atomicidad podria no ser alcanzable» | P9 reformulado: la **viabilidad** no se discute; lo que se verifica en AutoCAD es la **implementacion**. Coste de propagacion entra como **metrica** | C3-6, C3-8 |
+| **§14** | CF-2 exigia actualizar ROADMAP antes de produccion; CF-5 exigia contestar la viabilidad **antes** del Freeze | **CF-2 retirado del Freeze** y movido al **checklist de cierre** (WORKFLOW §2: ROADMAP no se toca en un gate intermedio). **CF-5 reformulado**: la validacion en AutoCAD es gate de **implementacion / Owner Validation** | C3-6, C3-7 |
 
-**No se reabren** D-05, D-06, D-08, D-09, D-10, D-11, D-12, D-14, D-16, D-18 ni D-19. Donde una
-correccion los roza, se anota el ajuste de redaccion sin cambiar la decision, y se dice cual.
+La tabla **V1 → V2** vive en la §0-bis de [V2](I-47-proposal-v2.md); no se repite aqui.
+
+**No se reabren** D-01..D-06, D-08, D-09, D-11, D-12, D-14..D-19, ni §1-bis, §10 y §11 salvo por las
+entradas que estas ocho correcciones anaden.
+
 
 ## 1. Metodo, y una regla que gobierna todo el documento
 
@@ -436,58 +432,127 @@ throw new InvalidOperationException(
 ExtensionData = source?.ExtensionData
 ```
 
-### Alternativas reales
+### Alternativas, y por que F3 se rechaza
 
 | Alt | Donde vive la referencia | Que hace una version **pre-I-47** con un rack vinculado |
 |---|---|---|
 | F1 | Diseno selectivo, `SchemaVersion` sigue `1.0` | **Lo desvincula en silencio.** Inaceptable |
-| **F2** | Diseno selectivo, **major condicional**: el documento se escribe como `2.0` **solo si lleva `PropertyValues`** | **Se niega a abrirlo**, con el mensaje ya compilado de `SchemaGuard`. Falla **visible**, cero corrupcion. Coste: un rack vinculado deja de abrirse en versiones anteriores |
-| F3 | En el **sobre** (`RackEmbedDocument`) | **Lo conserva**, porque `[JsonExtensionData]` + `RackEmbedComposer` ya estan compilados ahi. Coste: almacenamiento agnostico del kind para un dato del diseno |
+| **F2 — DECIDIDA** | Diseno selectivo, con **promocion pegajosa de schema** | **Se niega a abrirlo**, con el mensaje ya compilado de `SchemaGuard`. Falla **visible**, cero corrupcion |
+| ~~F3~~ | En el **sobre** (`RackEmbedDocument`) | **RECHAZADA en V3.** Lo conserva... y ese es justamente el problema (abajo) |
 | E3 (V1) | Diseno, sin nada mas | Igual que F1 |
 
-> **Correccion secundaria, por honestidad:** V1 objetaba a la opcion del sobre que «el vinculo quedaria
-> duplicado por cada vista, con riesgo de divergencia». Ese argumento **estaba mal calibrado**: hoy el
-> **diseno entero** ya viaja duplicado en el Xrecord de cada bloque-vista, y los editores reescriben
-> todas las vistas desde un solo diseno. La duplicacion no es un riesgo **nuevo** que F3 introduzca.
+**Por que F3 se rechaza (C3-1).** El argumento a su favor era que una version vieja **preserva** el
+binding, gracias a `[JsonExtensionData]` + `RackEmbedComposer`, ya compilados. Es cierto — y es
+**insuficiente**, porque preservar bytes no es entender semantica:
 
-### Contrato de compatibilidad recomendado
+> Una version pre-I-47 **conserva** la referencia en el sobre, pero **no sabe que existe**. Al abrir
+> ese rack lee la propiedad de su **literal**, y con el literal **edita y redibuja**. El resultado es
+> geometria **coherente con el literal** y **contradictoria con la autoridad** que una version nueva
+> resolvera despues: el dibujo muestra una cosa y el modelo dice otra, sin que nada falle.
 
-**Recomendacion: F2** — la referencia vive en el diseno selectivo, y el documento **sube de major solo
-cuando lleva `PropertyValues`**.
+F3 convierte un fallo ruidoso en una **divergencia silenciosa entre dibujo y autoridad**, que es peor
+que lo que intentaba evitar y es exactamente lo que el proyecto persigue desde I-03. **La preservacion
+sin comprension no es compatibilidad.**
 
-Se elige F2 sobre F3 porque coloca el dato donde pertenece semanticamente y porque convierte el unico
-escenario peligroso en un **fallo visible con mensaje ya escrito**, que es la doctrina del proyecto
-desde I-03 y la misma de D-08. F3 es preferible **si y solo si** el dueno exige que las versiones
-anteriores sigan **abriendo** racks vinculados; eso es una decision suya y esta en §12.
+> **Nota conservada de V2, por honestidad:** V1 objetaba a F3 que «el vinculo quedaria duplicado por
+> cada vista». Ese argumento estaba mal calibrado —el diseno entero ya viaja duplicado en el Xrecord de
+> cada bloque-vista— y **no** es el motivo del rechazo. F3 cae por semantica, no por duplicacion.
+
+### Contrato de compatibilidad — DECIDIDO (F2 con promocion pegajosa)
+
+**F2 queda decidida** (C3-1): la referencia vive en el **diseno selectivo**, y el `SchemaVersion` del
+documento se **promueve de forma pegajosa** (C3-2). «Pegajosa» significa **monotona**: sube y no baja.
+
+```
+documento 1.x que NUNCA ha llevado PropertyValues   ->  se sigue escribiendo 1.x
+introducir PropertyValues                           ->  PROMUEVE a 2.0
+documento ya almacenado como 2.x                    ->  se escribe 2.x SIEMPRE
+    aunque se elimine el ultimo binding             ->  NO vuelve a 1.x
+desvincular (D-11)                                  ->  materializa el literal y borra la referencia,
+                                                        pero NO degrada el schema
+minor posterior del mismo major                     ->  se preserva segun SchemaVersionPolicy
+```
+
+**Por que pegajosa y no «segun el contenido actual».** Una regla que mira solo el contenido hace que el
+documento **oscile** `1.0 -> 2.0 -> 1.0` al vincular y desvincular. Eso tiene tres consecuencias malas y
+ninguna buena:
+
+1. **«Que versiones pueden abrir este rack» pasaria a depender de estado transitorio**, imposible de
+   explicar a un usuario.
+2. **El dibujo ya ha sido tocado por la semantica nueva.** Aunque este rack quede sin vinculos, el DWG
+   puede tener un registro `ProjectVariables` y otros racks vinculados; devolverlo a 1.x afirma una
+   compatibilidad que el archivo, como conjunto, ya no tiene.
+3. Un ciclo de bajada y subida es una fuente clasica de perdidas sutiles. Monotono no la tiene.
+
+**Coste aceptado, dicho sin adornos:** un rack que se vinculo **una vez** queda fuera del alcance de las
+versiones anteriores **para siempre**, incluso despues de desvincularlo. Es deliberado.
 
 **Lo que F2 garantiza, exactamente:**
 
 - Un DWG sin registro de variables se lee como **registro vacio** (C-1). Sin migracion.
-- Un rack **sin** vinculos conserva `SchemaVersion 1.0` y **cualquier version anterior lo sigue
-  abriendo y editando** con normalidad. El caso comun no se degrada.
-- Un rack **con** vinculos es **ilegible** para una version anterior, que lo dice con un mensaje claro
-  y **no lo modifica**.
+- Un rack **que nunca se vinculo** conserva `1.x` y **cualquier version anterior lo sigue abriendo y
+  editando** con normalidad. El caso comun no se degrada.
+- Un rack **promovido** es **ilegible** para una version anterior, que lo dice con un mensaje claro y
+  **no lo modifica** — ni lo desvincula, ni lo redibuja con el literal.
 - Una version I-47+ lee y escribe ambos.
 
-**Lo que F2 NO garantiza, y hay que decirlo:**
+**Lo que F2 NO garantiza:**
 
-- **No** permite que una version anterior edite un rack vinculado. Lo impide a proposito.
-- **No** hace nada retroactivo: si una version anterior ya guardo un documento, lo guardo con sus
-  reglas.
-- **No** protege campos que se anadan **dentro** de tipos anidados sin version propia.
-- Exige algo que hoy **no existe**: una **version de escritura condicional**.
-  `SchemaVersionPolicy.ResolveWriteVersion` resuelve la version a partir de la almacenada y una
-  constante del build; no sabe decidir segun el **contenido**. Es trabajo nuevo, pequeno pero real, y
-  se declara aqui en vez de darlo por hecho.
+- **No** permite que una version anterior edite un rack promovido. Lo impide a proposito.
+- **No** es reversible: la promocion no se deshace (es el punto).
+- **No** hace nada retroactivo sobre documentos que una version anterior ya guardo.
+- **No** protege campos anadidos **dentro** de tipos anidados sin version propia.
 
-### ¿Se conserva `[JsonExtensionData]` en el DTO selectivo?
+### Que politica de escritura nueva necesita el Selectivo (no se implementa)
+
+Hoy la version de escritura sale de `SchemaVersionPolicy.ResolveWriteVersion(stored, current)`, donde
+`current` es **una constante del build**. Verificado:
+
+```csharp
+// src/RackCad.Application/Persistence/SchemaVersionPolicy.cs — ResolveWriteVersion
+if (!TryParse(storedVersion, out var storedMajor, out var storedMinor)
+    || !TryParse(currentVersion, out var currentMajor, out var currentMinor)
+    || storedMajor != currentMajor)
+{
+    return currentVersion;            // <- majors distintos: DEVUELVE la constante del build
+}
+return storedMinor > currentMinor ? storedVersion.Trim() : currentVersion;
+```
+
+Esa forma **no puede** expresar la promocion pegajosa: con `current = "1.0"` y `stored = "2.0"` los
+majors difieren y devuelve **`"1.0"`**, que es precisamente el downgrade prohibido. Y subir la constante
+a `"2.0"` promoveria **todos** los documentos, incluidos los que nunca se vincularon.
+
+Hace falta, por tanto, **un helper nuevo** —aditivo, puro y testeable en la suite Core— con esta forma:
+
+```
+ResolveStickyWriteVersion(storedVersion, hasPropertyValues) :
+
+    MajorOf(stored) >= 2   ->  ResolveWriteVersion(stored, "2.0")   // pegajoso: nunca baja; respeta minors
+    hasPropertyValues      ->  "2.0"                                 // promocion
+    en otro caso           ->  ResolveWriteVersion(stored, "1.0")    // camino legado, intacto
+```
+
+Tres consecuencias que la implementacion debe asumir y que se declaran aqui en vez de darse por hechas:
+
+1. **`SelectivePalletDesignDocument` necesita dos constantes de linea** (la legada `1.x` que sigue
+   escribiendo y la promovida `2.0`), no una sola `CurrentSchemaVersion`.
+2. **La version de LECTURA del build I-47+ debe ser la `2.x`**, o `SchemaGuard.CheckReadable` rechazaria
+   los documentos que el propio build acaba de promover. Leer y escribir dejan de compartir constante,
+   y eso debe ser explicito.
+3. **`hasPropertyValues` se evalua sobre el documento que se va a ESCRIBIR**, no sobre el que se leyo;
+   si no, vincular y guardar en el mismo paso no promoveria.
+
+`SchemaVersionPolicy.ResolveWriteVersion` **no se modifica**: el helper nuevo lo **usa**. Los otros
+cuatro stores siguen exactamente igual.
+
+### Se conserva `[JsonExtensionData]` en el DTO selectivo
 
 **Si, pero con la garantia correcta y por un motivo distinto del que daba V1.**
 
 - **No** protege frente a versiones pre-I-47. Ninguna afirmacion de este documento depende ya de eso.
 - **Si** protege de I-47 en adelante: una version N preservara los campos que escriba una version N+1
-  del mismo major, que es justo lo que hace que el major condicional de F2 se necesite **cada vez
-  menos** con el tiempo.
+  del mismo major.
 - Elimina una **asimetria real**: cinco DTO hermanos lo tienen y el del slice no.
 
 Es, por tanto, una mejora **justificada por si misma**, no un prerequisito del que dependa la
@@ -533,17 +598,23 @@ nombre, y por eso no tiene alternativas que comparar.
 
 ### D-10 — Borrar: bloquear vs referencias rotas
 
+> Aviso de notacion: las etiquetas `F1`/`F2`/`F3` de esta decision son **locales a D-10** y no tienen
+> relacion con las `F1`/`F2`/`F3` de D-07. El dueno decidio **F1 aqui** y **F2 alli**.
+
 | Alt | Comportamiento | Tradeoff |
 |---|---|---|
 | **F1** | **Bloquear** mientras existan consumidores, **listandolos** | Ningun estado roto se crea nunca. Exige el barrido de consumidores — que **ya existe** (D-12). El usuario debe desvincular antes: mas pasos, pero ninguno sorpresa |
 | F2 | Permitir y dejar referencias rotas | «Barato» al borrar y caro despues: traslada el fallo a un momento futuro y a otra persona |
 | F3 | Borrar y **desvincular automaticamente** todos los consumidores | Comodo, pero **reescribe en silencio el diseno persistido de N racks** como efecto colateral de un borrado. Destructivo y sorprendente |
 
-**Recomendacion: F1**, con dos matices que importan:
+**DECIDIDA: F1** (C3-3). No es ya una recomendacion: borrar una variable **con consumidores se
+bloquea**, y la operacion **lista los consumidores** que lo impiden. Con dos matices que forman parte
+de la decision:
 
-1. **F3 se ofrece como accion explicita y separada** —«desvincular todos los consumidores» y despues
-   borrar—, nunca como efecto automatico del borrado. Asi el usuario tiene el camino comodo **y** ve
-   lo que va a pasar.
+1. **F3 puede existir SOLO como accion explicita y separada** —«desvincular todos materializando» y
+   despues borrar—, **nunca** como efecto automatico del borrado. El usuario tiene el camino comodo
+   **y** ve lo que va a pasar. El desvinculado de esa accion es el de D-11: **materializa** el valor
+   efectivo, asi que ningun rack cambia de geometria al ejecutarla.
 2. **La ruta de error de F2 se implementa igualmente.** Aunque el borrado se bloquee, una referencia
    colgante sigue siendo alcanzable por otros caminos (otra version, edicion externa), asi que D-08 no
    es opcional por haber elegido F1.
@@ -665,18 +736,62 @@ PROPUESTO  un writer de LOTE cuya transaccion es del LLAMADOR:
 
 Tres detalles que esa frontera debe resolver, y que se nombran para que nadie los descubra tarde:
 
-- **`PurgeUnreferenced` debe salir del bucle.** Hoy corre por bloque y **despues del commit**; en el
-  modelo de lote se acumulan los `staleDefs` y se purga **una vez**, tras el commit unico.
+- **`RedefineSystemBlock` opera sobre la `Transaction` del llamador** (C3-4). Ya la recibe como
+  parametro, asi que el cambio es de **quien la crea**, no de su firma. La transaccion unica cubre
+  **las tres escrituras**: el registro `ProjectVariables`, la geometria redefinida y los payloads de
+  cada bloque-vista. No hay tres commits, hay uno.
+- **`PurgeUnreferenced` sale del bucle.** Hoy corre por bloque y **despues del commit**; en el modelo de
+  lote se **acumulan** los `staleDefs` de todos los racks y se purga **una vez**, tras el commit unico.
 - **`ApplyRegen` deja de decidirse por bloque.** El `regen: false` de hoy es una convencion del
-  llamador; en el lote el writer no regenera nunca y el `Regen` es responsabilidad explicita del
-  orquestador.
-- **`BlockLibraryImporter.EnsureForPlan`** se invoca hoy dentro de `RedrawInPlace`; en el lote conviene
-  resolverlo en el preflight, para que la importacion de bloques no ocurra a mitad de la transaccion.
+  llamador; en el lote el writer no regenera nunca y el **unico** `Regen` es responsabilidad explicita
+  del orquestador, al final.
 
-**Si el rollback real resultara inviable** —por ejemplo, si alguna operacion de AutoCAD no fuera
-reversible dentro de una sola transaccion—, el contrato **no se relaja en silencio**: se declara la
-limitacion y se pide decision. Este documento **no afirma** que una unica transaccion cubra todo lo que
-`RedefineSystemBlock` hace; eso **exige comprobacion en AutoCAD** y se anota en §12.
+#### La biblioteca de bloques queda FUERA del lote (C3-5)
+
+**Correccion de V2**, que proponia «resolver `EnsureForPlan` en el preflight». Eso era incorrecto: esa
+llamada **no puede formar parte ni del preflight ni del lote**, porque **muta el `Database` fuera de
+cualquier transaccion del llamador**. Verificado:
+
+```csharp
+// src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs — EnsureBlocks
+using (var transaction = db.TransactionManager.StartTransaction())   // <- abre la SUYA
+{
+    ...  // detecta los que faltan
+    transaction.Commit();                                            // <- y la COMMITEA
+}
+...
+source.WblockCloneObjects(ids, db.BlockTableId, mapping, DuplicateRecordCloning.Ignore, deferTranslation: false);
+```
+
+`WblockCloneObjects` escribe en la `BlockTable` del dibujo **por su cuenta**. Meterlo dentro de una
+operacion que promete «commit unico o rollback real» romperia esa promesa en el primer rack que
+necesitara importar algo.
+
+**El contrato, entonces:**
+
+1. La propagacion **VERIFICA** que las definiciones de bloque que cada consumidor necesita **ya existan**
+   en el dibujo. La comprobacion es de **solo lectura** y es la misma que el importador usa para
+   detectar lo que falta: `blockTable.Has(name)` sobre los nombres del plan
+   (`plan.LooseInstances` + `plan.Headers.SelectMany(g => g.Instances)`).
+2. **Si falta alguna, ABORTA** —antes de tocar la variable y antes de tocar ningun consumidor— y
+   **nombra las que faltan**. Ningun cambio parcial, coherente con D-08.
+3. **No se importa ni se repara la biblioteca como efecto colateral** de cambiar una variable. Reparar
+   la biblioteca es una operacion propia, que el usuario pide a proposito; un cambio de valor no es el
+   momento de descubrir que falta un DWG.
+
+Hay una razon adicional, verificada, para no delegar en el importador: si el archivo de biblioteca **no
+existe**, `EnsureBlocks` **devuelve 0 en silencio** (`if (!File.Exists(path)) return 0;`). Apoyarse en
+el durante una propagacion convertiria una biblioteca ausente en **geometria incompleta sin aviso**.
+
+#### Viabilidad de la transaccion unica
+
+**Deja de ser una pregunta de contrato** (C3-6). El contrato es el de los cuatro puntos de arriba, y se
+sostiene: la unica operacion que se sabia problematica —la importacion de bloques— queda **fuera** por
+el punto anterior, y `RedefineSystemBlock` ya esta escrito para trabajar sobre una transaccion ajena.
+
+Lo que sigue siendo necesario es **comprobarlo ejecutando**, y eso es un **gate de implementacion y de
+Owner Validation** (§14, CF-5'), no una condicion previa del Consensus Freeze ni una incognita de
+diseno.
 
 **Alternativa descartada: propagacion perezosa** (marcar los racks y redibujar cuando se abran).
 Evitaria el barrido, pero contradice C-3 —«en una operacion»— y dejaria el dibujo en un estado
@@ -727,11 +842,12 @@ tiene que ser un **campo declarado** del DTO. Un campo no declarado sobreviviria
 pero **moriria en la primera duplicacion**, porque este restamp re-serializa a traves del DTO y el DTO
 selectivo no preserva desconocidos.
 
-> Precision anadida en V2: **este argumento es especifico de F2.** Bajo **F3** —la referencia en el
-> **sobre**— no aplica: `RestampEnvelope` re-serializa el mismo `RackEmbedDocument`, cuyo
-> `[JsonExtensionData]` **si** conserva lo desconocido. Es un punto mas a favor de F3 en §12.1, y no
-> cambia la decision de D-14: bajo **cualquiera** de las dos, el restamp **no debe tocar** las
-> referencias, y eso **merece prueba de comportamiento propia** (D-17-bis), no un round-trip del Store.
+> Precision heredada de V2, **actualizada**: este argumento era especifico de F2 y **F2 es ahora la
+> opcion decidida** (D-07), asi que **aplica sin condiciones**. Bajo la rechazada F3 no habria hecho
+> falta, porque `RestampEnvelope` re-serializa el mismo `RackEmbedDocument` y su `[JsonExtensionData]`
+> si conserva lo desconocido — pero F3 cayo por semantica, no por esto. La decision de D-14 no cambia:
+> el restamp **no debe tocar** las referencias, y eso **merece prueba de comportamiento propia**
+> (D-17-bis), no un round-trip del Store.
 
 **Detalle adicional del arbol**: RACKDUPLICAR clona **solo la definicion del bloque-vista que el
 usuario pico**; las vistas hermanas del mismo rack no se copian. La propagacion (D-12) debe partir del
@@ -778,9 +894,11 @@ biblioteca** — no ocurre solo.
 
 ## 7. Interfaz de usuario
 
-> **Nota de alcance.** La fila de I-47 en ROADMAP lista «UI» y «comando nuevo» como fuera de alcance.
-> Esa fila describe lo que **no se construye**, y sigue siendo cierta: esta seccion **disena en papel**
-> y no toca `src/`. Se senala en §12 por si el dueno quiere que la fila lo diga con mas precision.
+> **Nota de alcance.** La fila de I-47 en ROADMAP —y el §3 del contrato— listan «UI» y «comando nuevo»
+> como fuera de alcance. Describen lo que **no se construye**, y siguen siendo ciertas: esta seccion
+> **disena en papel** y no toca `src/`. Si el dueno acepta D-16, el **contrato** debe reflejarlo antes
+> de produccion (§14, CF-1) y la **fila de ROADMAP** se actualiza **al cerrar** (§14-bis), que es el
+> unico momento que WORKFLOW seccion 2 permite.
 
 ### D-16a — Donde vive la ventana central
 
@@ -1028,10 +1146,13 @@ a ID22B ni a ninguna iniciativa definida** (D-15).
 | D2 — Sustituir el escalar por objeto | Exigiria migracion: **prohibida por C-1** |
 | **D3 — `Bindings: slot → string`** (recomendada en V1) | **Retirada en V2**: el valor es una cadena desnuda, asi que el par `(RackId, PropertyId)` de ID21 no cabe sin cambiar el tipo del valor |
 | F1 / E3 — Referencia en el diseno con major sin cambiar | Perdida **silenciosa** en el round-trip de una version pre-I-47, que `[JsonExtensionData]` **no** puede evitar |
+| **F3 — Referencia en el sobre** (viva en V2) | **Rechazada en V3**: una version vieja la **preserva** pero **no la entiende**; editaria y redibujaria con el literal, dejando geometria **incoherente con la autoridad**. Preservar bytes no es compatibilidad |
+| **Major «segun contenido actual»** (mecanica de F2 en V2) | Hace **oscilar** el schema al vincular y desvincular: que versiones abren el rack dependeria de estado transitorio. Sustituida por **promocion pegajosa** |
+| `EnsureForPlan` dentro del preflight/lote (V2) | **Muta el `Database` fuera de la transaccion del llamador** y con biblioteca ausente devuelve 0 en silencio. Sustituido por **verificar y abortar** |
 | L1 — Round-trip del Store como prueba del restamp | **No prueba el restamp**: solo prueba el serializador |
 | «Variable pisa `ClearOverride`» | Invierte una precedencia probada; ninguna premisa lo pide |
 | A (D-08) — Fallback al literal | Cambia la geometria en silencio |
-| F2 / F3 (D-10) | Traslada el fallo al futuro / reescribe N racks como efecto colateral |
+| F2 / F3 **de D-10** (etiquetas locales, no las de D-07) | Traslada el fallo al futuro / reescribe N racks como efecto colateral de un borrado |
 | G2 / G3 (D-11) | Salto geometrico visible al desvincular |
 | Propagacion perezosa | Contradice C-3 y permite estados intermedios inconsistentes |
 | H2 (D-15) | Importaciones que fallan en casi cualquier dibujo destino |
@@ -1040,30 +1161,31 @@ a ID22B ni a ninguna iniciativa definida** (D-15).
 
 ## 12. Preguntas realmente abiertas
 
-Solo lo que **no** esta decidido. Ni las premisas C-1..C-6 y C2-1..C2-9, ni lo que esta Proposal
-recomienda —una recomendacion no es una decision—.
+### 12.1 Decisiones de producto y arquitectura: **NO queda ninguna abierta**
 
-1. **¿Se acepta el contrato recomendado?** El gate `owner-decision` sigue abierto sobre D-01..D-19 en
-   bloque. Tras las correcciones de V2, las elecciones con alternativa **realmente** defendible se
-   reducen a dos:
-   - **D-07: F2 frente a F3.** F2 (major condicional) hace que una version pre-I-47 **se niegue a
-     abrir** un rack vinculado; F3 (referencia en el sobre) hace que **lo conserve y lo siga
-     abriendo**. La pregunta que decide no es tecnica sino de despliegue: **¿tiene que seguir
-     funcionando alguna version anterior sobre dibujos ya vinculados?** Si la respuesta es no —el
-     dueno actualiza su instalacion—, F2 es mejor. Si es si, F3 gana.
-   - **D-10: F1 (bloquear el borrado).** Sigue siendo un juicio de producto, no de arquitectura.
+Se confirma explicitamente, que era lo que el Gate C3 pedia comprobar. El recorrido completo:
 
-   D-04 ya **no** es una pregunta abierta: C2-4 fija la referencia tipada.
-2. **¿Cabe todo lo que hace `RedefineSystemBlock` en una sola transaccion?** D-13 exige commit unico o
-   rollback real, pero este documento **no afirma** que una transaccion cubra la redefinicion completa
-   de N bloques, la purga de definiciones huerfanas y la importacion de bloques de biblioteca. **Exige
-   comprobacion en AutoCAD**, y de su resultado depende si el contrato se cumple tal cual o si hay que
-   declarar una limitacion.
-3. **Coste de la propagacion en un dibujo grande.** No hay medicion. El repositorio ya sabe que fijar
-   parametros dinamicos por referencia es lento —de ahi el patron ARRAY—, y una transaccion unica sobre
-   N racks mantiene abierto mas estado durante mas tiempo. Solo se sabe midiendo.
-4. **¿A que iniciativa pertenece la transferencia/fusion de variables entre dibujos?** V2 la saca de
-   ID22B (C2-8) y **no le asigna otra**. Queda sin numero hasta que el dueno decida.
+| Antes abierta | Estado | Donde |
+|---|---|---|
+| D-07: F2 frente a F3 | **CERRADA** — F2, con promocion pegajosa; F3 rechazada por semantica | C3-1, C3-2 |
+| D-10: bloquear el borrado | **CERRADA** — F1; el atajo solo como accion explicita separada | C3-3 |
+| Viabilidad conceptual de la transaccion unica | **RETIRADA** — deja de ser pregunta de contrato; pasa a verificacion | C3-6 |
+| Numero de iniciativa para H3 | **RETIRADA** — H3 es futuro separado y **no necesita numero** para que ID22A cierre | C3-8 |
+| Coste de la propagacion | **RECLASIFICADO** — riesgo y **metrica de implementacion**, no decision de arquitectura | C3-8 |
+| D-04 (forma de la referencia) | Cerrada en el Gate C2 | C2-4 |
+
+**Todas las decisiones D-01..D-19 estan tomadas.** Lo que queda no es diseno: es **aceptacion formal**
+del contrato por el dueno (gate `owner-decision`), **verificacion en AutoCAD** y **ejecucion**.
+
+### 12.2 Lo unico que sigue abierto, y no es una decision de producto
+
+**La aceptacion formal del contrato por el dueno.** El gate `owner-decision` sigue abierto sobre
+D-01..D-19 **en bloque**: no porque falte elegir entre alternativas —ya no hay ninguna viva— sino
+porque una Proposal **recomienda** y solo el dueno **acepta**. Formalmente, eso ocurre con el ADR de
+D-19, que nace `propuesto` y que **solo el dueno** pasa a `aceptado`.
+
+Si al leer el contrato el dueno quisiera cambiar algo, eso abriria una decision nueva; hoy no hay
+ninguna pendiente por parte de esta Proposal.
 
 ## 13. Riesgos de esta propuesta
 
@@ -1076,28 +1198,59 @@ Distintos de los del Discovery: aquellos describen el arbol, estos son de **lo q
 | P3 | **Desvinculado silencioso al guardar un rack** desde RACKEDITAR | D-14 lo nombra como el riesgo principal del editor y exige que desvincular sea accion explicita |
 | P4 | **Perdida silenciosa del vinculo** por round-trip de version anterior, o por el restamp de RACKDUPLICAR | D-07 **F2** (major condicional: la version anterior se **niega** en vez de desvincular; `[JsonExtensionData]` **no** cubre esto) y D-17-bis (transformacion extraida y probada por comportamiento) |
 | P5 | **Un tercer significado del campo vacio** en la UI | D-16b elige adorno adyacente (K3), no ausencia de valor |
-| P6 | **Coste de propagacion desconocido** | Declarado en §12.3. No se estima ni se promete |
-| **P9** | **La atomicidad exigida por D-13 podria no ser alcanzable** con una sola transaccion | Declarado como pregunta abierta (§12.2). El contrato **no se relaja en silencio**: si no cabe, se declara la limitacion y se pide decision |
+| P6 | **Coste de propagacion desconocido** en un dibujo grande | **Riesgo y metrica de implementacion** (C3-8), no decision de arquitectura. Se **mide** cuando exista algo que medir; no se estima aqui ni condiciona el contrato. La transaccion unica **agrava** el perfil, porque mantiene mas estado abierto mas tiempo |
+| **P9** | La transaccion unica de D-13 **hay que verificarla ejecutando** | **Ya no es una incognita de diseno** (C3-6): la unica operacion que se sabia problematica queda fuera del lote, y `RedefineSystemBlock` ya trabaja sobre una transaccion ajena. Se verifica como **gate de implementacion / Owner Validation** (CF-5) |
 | **P10** | **Profundidad 1 asumida por descuido**: ID22B (variable→variable) e ID21 (rack→rack) convierten el preflight en recorrido de **grafo** | §10 lo senala como limite comun; la forma persistida y el modelo de errores de D-13 no deben cerrar esa puerta |
 | P7 | **Archivos calientes**: el slice toca `SelectivePalletDesign.cs` y `RackSelectiveWindow.xaml.cs`, ambos en la tabla de WORKFLOW seccion 7 | La implementacion debe **serializarse** con cualquier otra iniciativa del Selectivo |
 | P8 | **Sobre-ingenieria**: D-03 (tipos) y D-04 (mapa de vinculos) construyen para ID22A mas de lo que ID22A necesita | Es una apuesta **consciente** por «evolucion limpia a ID22B», que el dueno pidio. Si prefiere el minimo, D1 y C3 son las alternativas, y estan escritas con su coste |
 
 ---
 
-## 14. Condiciones de Consensus Freeze (C2-9)
+## 14. Condiciones de Consensus Freeze (corregidas en V3)
 
-El Consensus Freeze de I-47 **no se da por alcanzado** mientras quede pendiente cualquiera de estas.
-Son condiciones de **proceso**, no de diseno, y todas se cumplen **antes de tocar produccion**.
+El Consensus Freeze **no** se da por alcanzado mientras quede pendiente cualquiera de estas. Son
+condiciones de **proceso**, no de diseno.
+
+> **Correccion de V3 (C3-7), conforme a [WORKFLOW](../WORKFLOW.md) seccion 2.** V2 metia la
+> actualizacion de `ROADMAP.md` en el Freeze, y eso **contradice el proceso**: ROADMAP se edita en
+> **tres momentos** y ninguno es un gate intermedio. **Sale del Freeze** y pasa al checklist de cierre
+> (§14-bis). El **contrato de iniciativa** si permanece: ese no tiene restriccion de momento y debe
+> reflejar el alcance final **antes de produccion**.
 
 | # | Condicion |
 |---|---|
-| **CF-1** | **El contrato de iniciativa deja de presentar UI y comando como fuera de alcance** si forman parte del plan final. Hoy [`I-47-project-variables-foundation.md`](I-47-project-variables-foundation.md) §3 los excluye, redactado para DISCOVERY; D-16 los incluye **en papel**. Si el dueno acepta D-16, el contrato debe decirlo **antes** de que se escriba la primera linea de produccion |
-| **CF-2** | **La fila de I-47 en [ROADMAP.md](../ROADMAP.md) se actualiza** por el mismo motivo: hoy lista «UI, comando nuevo» entre lo expresamente fuera de alcance. **El momento legitimo de editarla no es este gate**: WORKFLOW seccion 2 fija tres momentos, y el aplicable es el **cierre**. Por eso es condicion de Freeze y no una correccion de ahora |
-| **CF-3** | **El ADR de D-19 existe y esta escrito antes de implementar** (WORKFLOW seccion 8), en estado `propuesto`. **Solo el dueno lo acepta** |
-| **CF-4** | **El gate `owner-decision` esta resuelto** sobre las dos elecciones que §12.1 deja vivas: D-07 (F2 frente a F3) y D-10 |
-| **CF-5** | **La pregunta de transaccion unica (§12.2) esta contestada** —comprobada en AutoCAD—, o la limitacion esta declarada por escrito y aceptada. D-13 exige rollback real; un contrato que no se puede cumplir se corrige **antes**, no despues |
-| **CF-6** | **Los prerequisitos declarados estan reconocidos como trabajo**, no dados por hecho: la version de escritura **condicional** (D-07 F2), la extraccion del restamp a Application (D-17-bis) y el writer de lote con transaccion del llamador (D-13) |
+| **CF-1** | **El contrato de iniciativa refleja el alcance final antes de produccion.** Hoy [`I-47-project-variables-foundation.md`](I-47-project-variables-foundation.md) §3 excluye UI y comando, redactado para DISCOVERY; D-16 los incluye. Si el dueno acepta D-16, el contrato debe decirlo **antes** de que se escriba la primera linea de produccion |
+| **CF-2** | **El ADR de D-19 esta escrito antes de implementar** (WORKFLOW seccion 8), en estado `propuesto`. **Solo el dueno lo acepta** — y esa aceptacion es la forma concreta de cerrar el gate `owner-decision` (§12.2) |
+| **CF-3** | **Los prerequisitos declarados estan reconocidos como trabajo**, no dados por hecho: el helper de **promocion pegajosa** con sus dos constantes de linea y su version de lectura `2.x` (D-07), la **extraccion del restamp** a Application (D-17-bis), y el **writer de lote con transaccion del llamador** mas la **verificacion de definiciones de bloque** (D-13) |
 
-**Ninguna de estas seis es un cambio de produccion**, y por eso ninguna se ejecuta en este gate: CF-1 y
-CF-2 son documentales pero corresponden a otro momento del proceso; CF-3 y CF-4 son del dueno; CF-5
-exige AutoCAD; CF-6 es una constatacion de alcance que se hereda a la fase de implementacion.
+**Eso es todo.** Tres condiciones, las tres documentales o de reconocimiento de alcance. Ninguna es un
+cambio de produccion y ninguna depende de AutoCAD.
+
+### Lo que V2 pedia aqui y en V3 ya NO es condicion de Freeze
+
+| Antes | Ahora |
+|---|---|
+| CF-2 de V2: actualizar la fila de ROADMAP | **Checklist de cierre** (§14-bis). WORKFLOW seccion 2 lo prohibe en un gate intermedio |
+| CF-4 de V2: resolver D-07 y D-10 | **Ya resueltos** por el Gate C3 |
+| CF-5 de V2: contestar la viabilidad de la transaccion unica **antes** del Freeze | **Gate de implementacion / Owner Validation** (C3-6). Ver CF-5' abajo |
+
+### CF-5' — donde vive ahora la validacion en AutoCAD
+
+**No es condicion de Consensus Freeze. Es gate de implementacion.** Se verifica sobre el candidato ya
+construido, conforme a WORKFLOW seccion 6, y cubre como minimo:
+
+- La transaccion unica hace lo que el contrato dice: **commit unico**, y ante un fallo inducido
+  **ningun** consumidor queda modificado.
+- El registro sobrevive a **guardar, cerrar y reabrir el mismo DWG** (D-18).
+- La propagacion **aborta** —sin tocar nada— cuando falta una definicion de bloque (D-13).
+- `PURGE` no destruye la entrada del NOD (D-01).
+
+## 14-bis. Checklist de cierre (no es Freeze)
+
+Se ejecuta en la **sesion de integracion**, como ultimo commit de la rama, segun WORKFLOW seccion 4.5.4
+y el momento 3 de su seccion 2:
+
+- **`docs/ROADMAP.md`**: actualizar la fila de I-47 —hoy lista «UI, comando nuevo» entre lo expresamente
+  fuera de alcance, redactado para DISCOVERY— y marcar el estado de cierre. **Este es el unico momento
+  legitimo para tocarla.**
+- `docs/HANDOFF.md` §8-12, conforme al proceso.

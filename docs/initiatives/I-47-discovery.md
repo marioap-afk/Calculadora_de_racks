@@ -616,7 +616,7 @@ Solo esto, y ninguna de las dos es una pregunta que el Discovery pudiera contest
 
 1. **El contrato concreto** que implementa las seis premisas: identidad, tipos, formato persistido,
    semantica de borrado y desvinculado, descubrimiento, orden de redibujo y superficie de UI. Es el
-   objeto de la **Proposal V2** ([I-47-proposal-v2.md](I-47-proposal-v2.md)), que lo compara y lo
+   objeto de la **Proposal V3** ([I-47-proposal-v3.md](I-47-proposal-v3.md)), que lo compara y lo
    recomienda; **elegir** sigue siendo del dueno y el gate `owner-decision` sigue abierto.
 2. **La lista de variables mas alla del slice.** C-5 la fija **para ID22A** (Selectivo,
    `VerticalClearance`). §4.7 inventaria al menos una docena de candidatos para despues —incluido
