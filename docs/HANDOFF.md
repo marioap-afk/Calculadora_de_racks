@@ -16,6 +16,31 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
+**I-46 — Selectivo: BUG topes de tarima Izquierda/Derecha — queda CERRADA EN LA RAMA el 2026-09-08,
+con la integración todavía PENDIENTE** (`fix/selectivo-topes-izquierda-derecha`, candidato
+`259aa2e08a1a08c2451cb873c3f634d0fde9b2e6`). Implementa **ID12**, que
+[ideas-futuras.md](ideas-futuras.md) registraba como pendiente conocido del Selectivo y que I-43 dejó
+expresamente fuera. La causa raíz es de **resolver / materialización geométrica**, con la UI como causa
+**secundaria**: `SelectiveSafetyPlacement.TopeSpots` no leía `Side` como un lado sino como **qué fondo
+del par central** lleva la pieza —`Izquierda` = poste trasero del fondo `c`, `Derecha` = poste delantero
+de `c + 1` **sólo si `c + 1 < fondoCount`**—, que es un eje de **profundidad**; y el diálogo ofrecía
+**tres** opciones mientras `SelectiveSafetyWindow` reescribía un `Ninguno` guardado a `Ambas` al
+reabrir. En un rack de **un fondo** la condición era falsa, así que `Derecha` no colocaba nada y `Ambas`
+colocaba la mitad. **Contrato final**: `Izquierda` = extremo **BAJO** y `Derecha` = extremo **ALTO**,
+leídos siempre sobre el eje de profundidad **LOCAL** (`Offsets`, poste frontal en 0) y **nunca sobre
+World X**; el **compartido histórico se PRESERVA** cuando existe `c + 1` —una pieza en LOW, lado
+dormante, verificado byte a byte— y es **inerte** cuando no hay fondo siguiente; `Ninguno` resuelve a
+**cero spots desde `SelectiveTopePlan`**, no tapado aguas abajo; y el **frontal dibuja UNA proyección
+por celda, nunca por spot**, porque es un alzado y multiplicar por spots duplicaría el par por fondo.
+**Sin migración de datos**: `SafetySide` conserva `0/1/2/3`, `SchemaVersion` sigue `1.0`, **no nace
+ningún campo ni DTO** —`Side` ya viajaba como `int?` y `ToSafetySide` ya aceptaba `0 = None`, así que
+quien destruía el valor era el editor— y el legado `Side` nulo sigue significando `Ambas`. Producción
+tocada: **cuatro archivos** —`SelectiveSafetyPlacement.cs`, `SelectiveTopePlan.cs`,
+`SafetyTopeGridWindow.cs` y `SelectiveSafetyWindow.cs`—, con **cero impacto en Push Back y en el
+Dinámico**. **Validación manual del Owner en AutoCAD 2025: PASS TOTAL 7/7** sobre ese candidato exacto.
+Detalle en §2, §4 y §5, y la evidencia decisión por decisión en
+[initiatives/I-46-selectivo-topes-izquierda-derecha.md](initiatives/I-46-selectivo-topes-izquierda-derecha.md) §14.
+
 **I-45 — Engineering Productivity: arquitectura de pruebas y workflow de validación — queda INTEGRADA
 y CERRADA** el **2026-09-08** (`architecture/test-validation-workflow`). Es la primera iniciativa del
 repositorio cuyo objeto no fue el producto sino **el coste de validarlo**, y no cambia dibujo, BOM, GUID,
@@ -954,6 +979,19 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-46 (2026-09-08) — PASS TOTAL, 7/7.** El dueño cargó por NETLOAD el DLL Debug del worktree de
+`fix/selectivo-topes-izquierda-derecha`, construido **exactamente** desde
+`259aa2e08a1a08c2451cb873c3f634d0fde9b2e6`, y recorrió los siete puntos del tope de tarima por lado con
+veredicto **PASS TOTAL — 7/7**, **sin rondas rechazadas**. `origin/main` **no avanzó** desde la base
+`e85c588757433592ba05d1533049fe0431dcb808`, así que **no hubo rebase final** y la validación corresponde
+exactamente al contenido que se integrará. La evidencia automatizada del mismo SHA, con el árbol limpio
+y el SDK resuelto **8.0.423**: `RackCad.Tests` **4763 PASS / 0 fail / 0 skip**, `RackCad.UI.Tests`
+**1256 PASS / 17 skip / 1273 total**, build Debug de UI **0 errores y 0 advertencias**, build Debug del
+Plugin **0 errores** más los **dos `MSB3277`** conocidos de AutoCAD, y **CI de `push` sobre ese mismo
+SHA** —corrida **34274626718**— con los **cuatro jobs en `success`**. Esa corrida no lleva cobertura, y
+es lo correcto: la cadencia la reserva para el Candidato explícito y para el trunk, de modo que las dos
+comprobaciones de cobertura se verifican **después** del merge.
+
 **I-45 (2026-09-08) — NO requirió validación en AutoCAD, y eso es una decisión registrada, no una
 omisión.** El disparador vigente es objetivo —«cambió el comportamiento de dibujo», `AGENTS.md` punto 5
 y [WORKFLOW.md](WORKFLOW.md) §4.5.3— y el único cambio de producto de toda la rama son dos `using`
@@ -1265,7 +1303,39 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-45, I-43 e I-44 están INTEGRADAS y CERRADAS. No hay iniciativa en curso.
+### La siguiente acción es INTEGRAR I-46. Su rama está cerrada y su candidato validado.
+
+**I-46 — Selectivo: BUG topes de tarima Izquierda/Derecha.** Rama
+`fix/selectivo-topes-izquierda-derecha`, candidato **`259aa2e08a1a08c2451cb873c3f634d0fde9b2e6`**, con
+**CI de `push` verde sobre ese SHA exacto** (corrida **34274626718**, 4/4 jobs) y **validación manual
+del Owner PASS TOTAL 7/7** sobre el mismo SHA. `origin/main` sigue en
+`e85c588757433592ba05d1533049fe0431dcb808`, así que **no hace falta rebase final**.
+
+**No queda ningún pendiente funcional de I-46.** Lo que falta es proceso, y en este orden
+([WORKFLOW.md](WORKFLOW.md) §4.5): merge `--no-ff` → **CI posterior al merge sobre el `MERGE_SHA`** con
+su artifact de cobertura → **comprobación diferida de la cobertura del Candidato** → y **sólo entonces**
+la limpieza de rama y worktree, que las dos compuertas bloquean hasta pasar.
+
+**Trazabilidad de I-46.** Gates ejecutados: `reclamo · bootstrap · reproducción · G3 · G3.1 · G4 · G5 ·
+G5.1 · G6 · Owner · G8`. El Gate 3 fijó el contrato y **caracterizó el multi-fondo antes de tocarlo**;
+el **G3.1 corrigió un error del ejecutor**: se había marcado el compartido con hueco real como celda a
+arreglar, y es **comportamiento histórico que la regla preserva**, no ID12 —hay un centinela verde que
+impide «arreglarlo»—. El G4 movió **una sola familia de celdas**: la del fondo elegido **sin fondo
+siguiente**, que incluye todo rack de un fondo. El G5.1 autorizó **un** cambio de testabilidad —el seam
+`TopeDialog`, con el patrón ya existente de `DefensaDialog`— para cubrir la cadena real de `EditTope`.
+
+**Lo que I-46 NO hace, y consta.** No decide nada sobre **ID13** (frentes en blanco del Selectivo), ni
+sobre el tope **REAR** de Push Back, ni sobre el vocabulario de la BOTA del **Dinámico**, que sigue
+pendiente de decisión del dueño. Y no arregla el **marcador de conflicto huérfano** que sobrevive en
+[ideas-futuras.md](ideas-futuras.md) desde el merge `d582dee` de I-43: es un hallazgo ajeno, se reporta
+y no se corrige de paso.
+
+**Un cambio de datos que el dueño debe conocer.** Un rack de **un solo fondo** guardado con el `Ambas`
+por defecto pasa de **una** pieza de tope a **dos** al reabrirlo: es exactamente lo que el contrato pide
+(«`Ambas` = unión exacta de los dos extremos»), pero es visible en dibujos existentes. El multi-fondo con
+fondo automático y valores por defecto **no cambia**.
+
+### I-45, I-43 e I-44 están INTEGRADAS y CERRADAS.
 
 **Queda una decisión del dueño, y es la única:** aceptar o rechazar
 [ADR-0033](adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md), que sigue **`propuesto`**. Ningún
@@ -2373,6 +2443,27 @@ visualmente** y no debe presentarse como tal.
 la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
+
+**Candidato de I-46 — 2026-09-08 — VALIDADO Y PENDIENTE DE INTEGRAR** (no es todavía una baseline
+integrada; la baseline vigente sigue siendo la de I-44, más abajo):
+
+- candidato **funcional** aprobado por el Owner: `259aa2e08a1a08c2451cb873c3f634d0fde9b2e6`
+  (CI de `push` **34274626718**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**);
+- **validación manual del Owner en AutoCAD 2025: PASS TOTAL — 7/7**, **sin rondas rechazadas**, sobre el
+  DLL Debug construido exactamente desde ese candidato;
+- `origin/main` **no avanzó** desde la base `e85c588757433592ba05d1533049fe0431dcb808`: **sin rebase
+  final**, de modo que la validación corresponde exactamente al contenido que se integrará;
+- suites locales sobre el candidato: **RackCad.Tests 4763/4763** (0 omitidas) y **RackCad.UI.Tests
+  1256 correctas / 17 omitidas / 1273 totales**; Debug de UI (0 advertencias, 0 errores) y del Plugin
+  (0 errores, sólo los **dos** MSB3277 conocidos);
+- **26 pruebas de contrato verificadas en ROJO antes del arreglo** y verdes después sin modificarlas
+  —10 de `SelectiveTopeSideTests` y 16 de `SelectiveTopeSideMultiFondoContractTests`—; la
+  caracterización multi-fondo quedó **46/46**, con **12 filas movidas declaradas una a una** y su valor
+  previo anotado, y las **10 del centinela del compartido con hueco real intactas**;
+- **producción: cuatro archivos**, +81 / −18 líneas; **cero** en Domain, Persistence, Push Back,
+  Dinámico, catálogos, build o workflows;
+- **sin ADR nuevo**: I-46 no toma ninguna decisión de arquitectura; el contrato de lados lo fijó el dueño
+  y vive en el contrato de la iniciativa, §15.1.
 
 **Baseline integrada de I-44 — 2026-09-03** (la vigente):
 

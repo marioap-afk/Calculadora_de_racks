@@ -1,9 +1,9 @@
 ---
 schema: rackcad-initiative/v1
 id: I-46
-title: Selectivo — tope de tarima por lado (ID12)
+title: "Selectivo: BUG topes de tarima Izquierda/Derecha"
 type: fix
-status: in-progress
+status: integration-ready
 branch: fix/selectivo-topes-izquierda-derecha
 base_branch: main
 priority:
@@ -24,18 +24,18 @@ automation:
   max_attempts: 3
 ---
 
-# Selectivo — tope de tarima por lado (ID12)
+# Selectivo: BUG topes de tarima Izquierda/Derecha (ID12)
 
-> **Fase actual: GATE 3 CERRADO — CONTRATO FIJADO Y CARACTERIZADO.** Esta iniciativa se abrio por autorizacion explicita del
+> **Fase actual: CIERRE DOCUMENTAL DE LA RAMA. Candidato validado; integracion PENDIENTE.** Esta iniciativa se abrio por autorizacion explicita del
 > dueno (caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2): ID12 vivia en
 > [ideas-futuras.md](../ideas-futuras.md) como pendiente conocido del Selectivo, sin fila propia. El
 > reclamo atomico se hizo antes que este bootstrap y la fila en [ROADMAP.md](../ROADMAP.md) se crea
 > con el, que es el orden que manda el proceso.
 >
-> **Lo entregado hasta aqui es reproduccion y caracterizacion. No hay cambio de produccion.** Las
-> pruebas de contrato estan ROJAS a proposito y las de caracterizacion VERDES: las primeras fijan lo
-> que el dueno pide, las segundas congelan lo que el codigo hace hoy en multi-fondo para que el
-> arreglo pueda demostrar que celda preserva y que celda mueve.
+> El arreglo esta implementado y validado. Las pruebas de contrato que nacieron ROJAS estan VERDES, la
+> caracterizacion multi-fondo sigue VERDE con sus doce filas movidas declaradas una a una, y el dueno
+> aprobo la validacion manual en AutoCAD 2025 **PASS TOTAL 7/7** sobre el candidato exacto. La
+> evidencia completa esta en la seccion 14.
 >
 > **CONTRATO DE LADOS, FIJADO POR EL DUENO (Gate 3). No se re-decide:**
 >
@@ -211,9 +211,91 @@ Prohibido el merge automatico. `main` no se toca.
 
 ## 14. Evidencia final
 
-Se completa al cerrar. Hasta aqui: reclamo atomico aceptado por el remoto sin force, bootstrap
-documental versionado antes de todo trabajo sustantivo, y la prueba de reproduccion ROJA con su
-medicion del comportamiento de hoy.
+### 14.1 Cadena de SHAs
+
+| Hito | SHA |
+|---|---|
+| Base (`origin/main` al reclamar, y sigue ahi) | `e85c588757433592ba05d1533049fe0431dcb808` |
+| Reclamo atomico (vacio, `Claim-Id` 7a5bc03c-fd8f-440f-91ca-7b15507614be) | `3fcfc9b13dc15bf68b097c62749453398137200b` |
+| Reproduccion ROJA | `0fa0734da16018ba32610405014bc0cf668f2168` |
+| Codigo del arreglo | `183f8656646a9d3ca2a850b6067a6eb2f4fa0952` |
+| Cobertura de persistencia, editor y aislamiento | `474b6463f8b3107fb06d6f3b771fce37ba595b51` |
+| Seam `TopeDialog` y cadena real de `EditTope` | `1310b8b7910ec8287db7b34a41a9a0887d1f4c78` |
+| **CANDIDATO final** | **`259aa2e08a1a08c2451cb873c3f634d0fde9b2e6`** |
+
+`origin/main` **no avanzo** en toda la vida de la rama, asi que **no hubo rebase final**: la evidencia
+recae sobre el contenido que se integrara, sin SHAs intermedios que ya no existan.
+
+### 14.2 Causa raiz
+
+**Resolver / materializacion geometrica**, con la UI como causa **secundaria**. `TopeSpots` no leia
+`Side` como un lado: lo leia como **que fondo del par central** lleva la pieza —`Left` = poste trasero
+del fondo `c`, `Right` = poste delantero de `c + 1` **solo si `c + 1 < fondoCount`**—, que es un eje de
+**profundidad**. La UI agravaba el defecto sin causarlo: el dialogo ofrecia **tres** opciones y
+`SelectiveSafetyWindow` reescribia un `None` guardado a `Both` al reabrir la fila.
+
+**RED inicial, con su causa observable.** En un rack de UN fondo, `c + 1 < fondoCount` es falso, asi que
+`Derecha` no colocaba nada y `Ambas` colocaba la mitad. Medido sobre `0fa0734`: `Ninguno` 0 (correcto),
+`Izquierda` 1 (correcto), **`Derecha` 0 donde se pide 1**, **`Ambas` 1 donde se piden 2**; suite Core
+4652 con **5 fallos, todos de `SelectiveTopeSideTests`**. Ampliado en el Gate 3 a **26 fallos** de
+contrato al cubrir el modo compartido, la identidad BAJO/ALTO, el plan y el acuerdo frontal-BOM.
+
+### 14.3 Contrato final materializado
+
+- `Izquierda` = extremo **BAJO** y `Derecha` = extremo **ALTO**, leidos **siempre** sobre el eje de
+  profundidad **LOCAL** (`SelectiveDepthLayout.Offsets`, poste frontal en 0). **Nunca World X.**
+- `TopeShared` **historico y PRESERVADO** cuando existe `c + 1`: UNA pieza compartida en LOW y el lado
+  **dormante**. Verificado byte a byte —mismo spot, mismo BOM, misma X lateral, mismo frontal y planta—.
+- `TopeShared` **inerte** cuando NO existe fondo siguiente: sin hueco no hay nada que compartir, y los
+  dos modos son indistinguibles.
+- `Ninguno` = **cero spots desde `SelectiveTopePlan`**, no solo tapado aguas abajo por `EnabledOfType`.
+- **Frontal = UNA proyeccion por celda, nunca por spot**: es un alzado y los spots caen en el mismo
+  sitio; multiplicarlos duplicaria el par por fondo (lo que I-22 evito).
+
+### 14.4 Persistencia
+
+- **`persistence ordinal changed` = NO.** `SafetySide` conserva `None = 0`, `Left = 1`, `Right = 2`,
+  `Both = 3`; **ningun archivo de Domain** entra en el diff.
+- **`SchemaVersion` = `1.0`**, sin tocar; **ningun archivo de Persistence** entra en el diff.
+- **`DTO/schema migration` = NO.** No nace campo alguno: `Side` ya viajaba como `int?` y
+  `ToSafetySide` ya aceptaba `0 = None`. Quien destruia el valor era el editor, no el store.
+- **Legado `Side` nulo -> `Both` PRESERVADO**, y un valor fuera de rango sigue cayendo en `Both`, no en
+  el `None` recien alcanzable.
+- **`RACKEDITAR` probado**: cargar los cuatro lados y aceptar sin editar los conserva (1 y 3 fondos);
+  guardar y reabrir tambien; y la cadena real —boton de la fila, dialogo real, `EditTope`— propaga
+  `Izquierda->Derecha`, `Derecha->Ambas` y `Ambas->Ninguno`, mientras cancelar deja el lado intacto.
+
+### 14.5 Alcance tocado
+
+Produccion, **cuatro archivos y ninguno mas**:
+
+- `src/RackCad.Application/Systems/Selective/SelectiveSafetyPlacement.cs`
+- `src/RackCad.Application/Systems/Selective/SelectiveTopePlan.cs`
+- `src/RackCad.UI/SafetyTopeGridWindow.cs`
+- `src/RackCad.UI/SelectiveSafetyWindow.cs`
+
+**`Push Back impact` = NO** y **`Dinamico impact` = NO**: cero archivos de produccion de esos sistemas.
+El aislamiento del Dinamico no se apoya en el dialogo —los tres editores comparten
+`SelectiveSafetyWindow`— sino en que `RackDynamicSystemWindow.Safety_Click` le entrega una lista blanca
+de bota, lateral, desviador, defensa y guia que **no incluye TOPE**, y eso queda con guarda propia.
+
+### 14.6 Evidencia del candidato `259aa2e`
+
+| Clase | Resultado |
+|---|---|
+| `RackCad.Tests` FULL local | **4763 / 4763**, 0 fallos, 0 omitidas |
+| `RackCad.UI.Tests` FULL local | **1273 total: 1256 PASS, 17 omitidas**, 0 fallos |
+| Build Debug `RackCad.UI` | **PASS** — 0 errores, 0 advertencias |
+| Build Debug `RackCad.Plugin` | **PASS** — 0 errores, solo las **2 `MSB3277`** conocidas de AutoCAD |
+| CI de `push` sobre el SHA exacto | corrida **34274626718**, **4/4 jobs `success`**, `headSha` = `259aa2e` |
+| Validacion manual del dueno, AutoCAD 2025 | **PASS TOTAL 7/7** sobre `259aa2e` |
+
+### 14.7 Pendientes
+
+**Ninguno funcional de I-46.** Siguen pendientes, y son de proceso: la **integracion** (merge `--no-ff`),
+el **CI posterior al merge** sobre el `MERGE_SHA` con su cobertura, la **comprobacion diferida de la
+cobertura del Candidato** y la **limpieza** de rama y worktree, que WORKFLOW §4.5 bloquea hasta que las
+dos compuertas pasen.
 
 ## 15. Gate 3 — auditoria: matriz actual, matriz propuesta y diff minimo
 
