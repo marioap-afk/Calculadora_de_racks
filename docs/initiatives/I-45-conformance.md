@@ -43,11 +43,34 @@ resuelven en §2 y §3; ninguno era una divergencia de comportamiento entre lo d
 implementado. Las tablas de §4 resumen por área los 128 enunciados; **el volcado completo de la
 auditoría no se versiona**, igual que el resto de resultados de instrumento.
 
-## 1.bis Revisión del Arquitecto: NOT AGREED, y qué se corrigió
+## 1.bis Revisión de conformidad: tres rondas, cinco hallazgos, consenso alcanzado
 
-La revisión de conformidad independiente del **Arquitecto** sobre `4d33871` terminó en **NOT AGREED**,
-con **cuatro hallazgos materiales** (0 BLOCKER, 4 HIGH). El **Coordinador los aceptó** y se aplicaron
-en el correctivo **`G7-C1`**. **Dos de los cuatro los había creado I-45 en su propio gate G6-C1.**
+```
+Architect, primera revisión (4d33871)   NOT AGREED   ARCH-01..04  → G7-C1
+Architect, re-revisión      (19a555f)   NOT AGREED   ARCH-05      → G7-C2
+Architect, revisión final   (e932c0c)   AGREED WITH NON-BLOCKING FINDINGS
+Coordinator                             AGREED
+
+IMPLEMENTATION CONFORMANCE CONSENSUS:   REACHED
+```
+
+La revisión final cerró con **0 BLOCKER y 0 HIGH**; lo que queda son `LOW` y `NOTE` que **no** se
+convierten en backlog obligatorio. Dos de ellos, por dejarlos nombrados:
+
+- **Redacción del borrado remoto** (`WORKFLOW.md` §3): enuncia solo la condición necesaria «solo
+  procede tras confirmar que el merge existe». **`LOW`, no bloqueante**: no es una ruta ejecutable —la
+  viñeta que la contiene encabeza con el gate completo, §3 no ejecuta ningún borrado, y `AGENTS.md`
+  exige además el CI posterior verde y gana por precedencia.
+- **Paquete de conformidad desactualizado**: no registraba ARCH-05 ni `G7-C2`. **Corregido aquí.**
+
+**Tres de los cinco hallazgos los creó I-45 en sus propios gates** —dos en `G6-C1` y uno en `G7-C1`—,
+al modificar algo de lo que dependía otra regla sin volver a mirarla. Es el patrón que estas revisiones
+existen para atrapar.
+
+### Los cinco hallazgos
+
+La revisión sobre `4d33871` devolvió **cuatro hallazgos materiales** (0 BLOCKER, 4 HIGH), aceptados por
+el **Coordinador** y aplicados en **`G7-C1`**:
 
 | # | Hallazgo | Corrección en `G7-C1` |
 |---|---|---|
@@ -56,8 +79,11 @@ en el correctivo **`G7-C1`**. **Dos de los cuatro los había creado I-45 en su p
 | **ARCH-03** | El instrumento agrupaba **todas** las corridas por `head_sha`, sin filtrar evento: un despacho contaminaría la evidencia de CI del SHA equivocado | Solo entran eventos `push`. Los no-`push` se **excluyen y se cuentan aparte**. **Control E** nuevo, ejercido con material sintético |
 | **ARCH-04** | `requires_owner_validation` / `requires_autocad` podían leerse como exención de la validación del dueño —HANDOFF muestra casos propagados «por analogía»— y G7 cerró esa casilla buscando la nomenclatura `R0–R4`, no el concepto | La metadata es **monotónica**: `false` no exime; gana el requisito más estricto. La fila de §4.1 se reescribe diciendo lo que de verdad se verificó |
 
-**Estado: la re-revisión del Arquitecto está pendiente.** Este documento **no declara** que se haya
-alcanzado consenso de conformidad.
+Y la re-revisión sobre `19a555f` devolvió un **quinto** hallazgo, esta vez creado por `G7-C1`:
+
+| # | Hallazgo | Corrección en `G7-C2` |
+|---|---|---|
+| **ARCH-05** | `G7-C1` dejó **dos remedios incompatibles** ante un CI posterior al merge en rojo: uno ordenaba corregir **directamente sobre `main`** —que el repositorio prohíbe en dos sedes— y otro, corregir en la rama | Una sola semántica: el merge **sigue existiendo**, la integración queda **no verificada**, la limpieza se bloquea, **rama y worktree se conservan**, la corrección se hace **en la rama de iniciativa** y se reingresa por integración controlada con su propia verificación posterior. **Trabajo directo sobre `main`: prohibido, sin excepción** |
 
 ## 2. Los seis bloqueadores encontrados, y cómo quedaron
 
@@ -137,7 +163,8 @@ reapertura sin sede operativa (§9), y la promesa de un mecanismo automático a 
 |---|---|
 | Duración del dueño: experimental, solo él la declara, nunca inferida, su ausencia no bloquea nada, criterio 10/3/80 %, sin relleno retroactivo | `PASS` |
 | UI Full local no obligatoria en la iteración ordinaria | `PASS` |
-| Evidencia intermedia = job `ui-tests` en `success` sobre el `head_sha` exacto | `PASS` |
+| Evidencia intermedia de UI del CI = **las cuatro condiciones a la vez**: `event = push` · job `ui-tests` · `conclusion = success` · `head_sha` = el SHA empujado exacto | `PASS` |
+| Una corrida de **`workflow_dispatch` NO es evidencia LC-UI** de ningún SHA —ni del tip ni del medido—: su `head_sha` es la punta del ref y ejecuta el commit del input | `PASS` (cerrado en `G7-C1`, ARCH-02) |
 | Candidato exige UI Full local; Full final conserva UI; sin sustitución del Core | `PASS` |
 | Push agrupado no propaga evidencia | `PASS` |
 | Frontera de reutilización = SHA exacto, misma clase | `PASS` |
@@ -291,8 +318,9 @@ sesión de integración.
 
 ## 14. Qué queda
 
-1. Revisión de conformidad del **Coordinador**.
-2. Revisión de conformidad del **Arquitecto**.
+1. ~~Revisión de conformidad del **Coordinador**~~ — **AGREED**.
+2. ~~Revisión de conformidad del **Arquitecto**~~ — **AGREED WITH NON-BLOCKING FINDINGS**, tras dos
+   rondas en `NOT AGREED` y sus dos correctivos.
 3. Candidato final y su evidencia completa sobre un SHA exacto.
 4. Validación del dueño en AutoCAD **si aplica el disparador vigente** (§6).
 5. Integración, y con ella las dos comprobaciones diferidas de §5.
