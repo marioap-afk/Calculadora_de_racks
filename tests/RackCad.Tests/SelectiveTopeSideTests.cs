@@ -34,8 +34,9 @@ namespace RackCad.Tests
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
         /// <summary>A rack with ONE fondo, one frente and one larguero level: the smallest shape in which a tope has
-        /// exactly one piece per position, so a piece count reads as a position count.</summary>
-        private static SelectiveRackSystem OneFondoRack(SafetySide side)
+        /// exactly one piece per position, so a piece count reads as a position count. With a single fondo there is
+        /// nothing to share, so <paramref name="shared"/> must not change any result (G3).</summary>
+        private static SelectiveRackSystem OneFondoRack(SafetySide side, bool shared = false)
         {
             var design = new SelectivePalletDesign
             {
@@ -52,7 +53,7 @@ namespace RackCad.Tests
 
             design.SafetySelections.Add(new SelectiveSafetySelection
             {
-                ElementId = TopeId, Quantity = 1, Side = side, TopeShared = false
+                ElementId = TopeId, Quantity = 1, Side = side, TopeShared = shared
             });
 
             var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
@@ -109,6 +110,75 @@ namespace RackCad.Tests
             Assert.Equal(
                 new List<double> { left, right }.OrderBy(x => x).ToList(),
                 TopeXs(OneFondoRack(SafetySide.Both)));
+        }
+
+        // ================================ Gate 3 — the owner's fixed contract ================================
+        // "Izquierda = extremo BAJO del marco local del rack; Derecha = extremo ALTO; Ambas = union exacta; nunca
+        // World X." The frame is the rack's own DEPTH axis, where SelectiveDepthLayout puts the frontmost post at
+        // offset 0 and every further fondo above it, so LOW/HIGH are read off that axis and never off world coords.
+
+        /// <summary>The rack's local depth extent: the frontmost post (always 0) and the backmost post across fondos.</summary>
+        private static (double Low, double High) LocalDepthExtent(SelectiveRackSystem system)
+        {
+            var offsets = SelectiveDepthLayout.Offsets(system);
+            var low = offsets.Min();
+            var high = offsets.Select((o, k) => o + SelectiveDepthLayout.CabeceraDepthOfFondo(system, k)).Max();
+            return (low, high);
+        }
+
+        // ---- Izquierda is the LOW end and Derecha the HIGH end, ordered on the rack's own depth axis ----
+        [Fact]
+        public void OneFondo_LeftIsTheLowEnd_AndRightIsTheHighEnd()
+        {
+            var left = Assert.Single(TopeXs(OneFondoRack(SafetySide.Left)));
+            var right = Assert.Single(TopeXs(OneFondoRack(SafetySide.Right)));
+            var (low, high) = LocalDepthExtent(OneFondoRack(SafetySide.Both));
+
+            // Ordered on the local axis: the LOW-end piece sits below the HIGH-end one, never the other way round.
+            Assert.True(left < right, $"Izquierda ({left}) debe quedar por debajo de Derecha ({right}) en el eje local");
+
+            // ...and each one belongs to its own end of the rack, not both to the same post.
+            Assert.True(left < (low + high) / 2.0, $"Izquierda ({left}) debe caer en la mitad BAJA de [{low}, {high}]");
+            Assert.True(right > (low + high) / 2.0, $"Derecha ({right}) debe caer en la mitad ALTA de [{low}, {high}]");
+        }
+
+        // ---- With ONE fondo there is nothing to share, so "Compartido" must not change a single result ----
+        [Theory]
+        [InlineData(SafetySide.None, 0)]
+        [InlineData(SafetySide.Left, 1)]
+        [InlineData(SafetySide.Right, 1)]
+        [InlineData(SafetySide.Both, 2)]
+        public void OneFondo_Shared_BillsExactlyTheSameAsPerFondo(SafetySide side, int expected)
+        {
+            Assert.Equal(expected, TopePieces(OneFondoRack(side, shared: true)));
+            Assert.Equal(
+                TopeXs(OneFondoRack(side, shared: false)),
+                TopeXs(OneFondoRack(side, shared: true)));
+        }
+
+        // ---- "Ninguno" must be empty in the PLAN itself, not only in the consumers that happen to gate downstream ----
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void OneFondo_Ninguno_LeavesThePlanEmpty(bool shared)
+            => Assert.Empty(SelectiveTopePlan.Build(OneFondoRack(SafetySide.None, shared), Catalog));
+
+        // ---- The FRONTAL must bill what it draws: today it ignores the side entirely and draws a piece nobody counts ----
+        [Theory]
+        [InlineData(SafetySide.None)]
+        [InlineData(SafetySide.Left)]
+        [InlineData(SafetySide.Right)]
+        [InlineData(SafetySide.Both)]
+        public void OneFondo_FrontalAgreesWithTheBom(SafetySide side)
+        {
+            var system = OneFondoRack(side);
+            foreach (var selection in system.SafetySelections) selection.TopeFrontal = true;
+
+            var frontal = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .Count(instance => instance.Role == HeaderBlockRole.Tope);
+
+            // One frente and one level, so the frontal shows exactly the pieces the BOM bills — no more, no fewer.
+            Assert.Equal(TopePieces(system), frontal);
         }
     }
 }
