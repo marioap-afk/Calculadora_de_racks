@@ -600,7 +600,8 @@ namespace RackCad.UI
         private void EditTope(Row row)
         {
             var dialog = new SafetyTopeGridWindow(SelectedElementLabel(row), levelsPerFrente, row.TopeShared, row.TopeSide, row.TopeSaque, row.TopeFrontal, row.TopeOffCells, fondoCount, row.TopeFondo) { Owner = this };
-            if (dialog.ShowDialog() != true)
+            var accepted = TopeDialog != null ? TopeDialog(dialog) : dialog.ShowDialog();
+            if (accepted != true)
             {
                 return;
             }
@@ -657,6 +658,14 @@ namespace RackCad.UI
         /// que recibe es la real, con sus opciones y sus combos.
         /// </summary>
         internal Func<SafetyPerPostWindow, bool?> PerPostDialog;
+
+        /// <summary>
+        /// I-46 (G5.1) — seam de prueba de la rejilla del TOPE, con el mismo patron que los dos de arriba. Sustituye
+        /// UNICAMENTE el <c>ShowDialog</c>: la ventana que recibe es la real, construida con los mismos argumentos que
+        /// ve el usuario, asi que una prueba recorre la cadena completa —esta ventana, su selector de lado, su OnOk y
+        /// la escritura de vuelta en la fila— en vez de escribir el estado interno a mano.
+        /// </summary>
+        internal Func<SafetyTopeGridWindow, bool?> TopeDialog;
 
         /// <summary>El selector de VARIANTE de la fila de BOTA (seam de prueba); null si la familia no es exclusiva.</summary>
         /// <summary>Test seam: el vocabulario que la fila de la BOTA ofrece en ESTE anfitrion (I-43, gate 8.6H).</summary>
