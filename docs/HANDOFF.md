@@ -16,8 +16,8 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
-**I-46 — Selectivo: BUG topes de tarima Izquierda/Derecha — queda CERRADA EN LA RAMA el 2026-09-08,
-con la integración todavía PENDIENTE** (`fix/selectivo-topes-izquierda-derecha`, candidato
+**I-46 — Selectivo: BUG topes de tarima Izquierda/Derecha — queda INTEGRADA y CERRADA** el
+**2026-09-08** (`fix/selectivo-topes-izquierda-derecha`, candidato
 `259aa2e08a1a08c2451cb873c3f634d0fde9b2e6`). Implementa **ID12**, que
 [ideas-futuras.md](ideas-futuras.md) registraba como pendiente conocido del Selectivo y que I-43 dejó
 expresamente fuera. La causa raíz es de **resolver / materialización geométrica**, con la UI como causa
@@ -1303,18 +1303,22 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### La siguiente acción es INTEGRAR I-46. Su rama está cerrada y su candidato validado.
+### La siguiente acción es cerrar las COMPUERTAS POSTERIORES de I-46, ya integrada.
 
-**I-46 — Selectivo: BUG topes de tarima Izquierda/Derecha.** Rama
-`fix/selectivo-topes-izquierda-derecha`, candidato **`259aa2e08a1a08c2451cb873c3f634d0fde9b2e6`**, con
-**CI de `push` verde sobre ese SHA exacto** (corrida **34274626718**, 4/4 jobs) y **validación manual
-del Owner PASS TOTAL 7/7** sobre el mismo SHA. `origin/main` sigue en
-`e85c588757433592ba05d1533049fe0431dcb808`, así que **no hace falta rebase final**.
+**I-46 — Selectivo: BUG topes de tarima Izquierda/Derecha — INTEGRADA y CERRADA el 2026-09-08** desde
+`fix/selectivo-topes-izquierda-derecha` con merge `--no-ff`, sobre el candidato
+**`259aa2e08a1a08c2451cb873c3f634d0fde9b2e6`**, con **CI de `push` verde sobre ese SHA exacto**
+(corrida **34274626718**, 4/4 jobs) y **validación manual del Owner PASS TOTAL 7/7** sobre el mismo SHA.
+`origin/main` **no avanzó** desde `e85c588757433592ba05d1533049fe0431dcb808`, así que **no hubo rebase
+final** y la evidencia corresponde exactamente al contenido integrado.
 
-**No queda ningún pendiente funcional de I-46.** Lo que falta es proceso, y en este orden
-([WORKFLOW.md](WORKFLOW.md) §4.5): merge `--no-ff` → **CI posterior al merge sobre el `MERGE_SHA`** con
-su artifact de cobertura → **comprobación diferida de la cobertura del Candidato** → y **sólo entonces**
-la limpieza de rama y worktree, que las dos compuertas bloquean hasta pasar.
+**No queda ningún pendiente funcional de I-46**, y lo que sigue es proceso, en este orden
+([WORKFLOW.md](WORKFLOW.md) §4.5 pasos 6 y 7): ejecutar el merge `--no-ff` → verificar el **CI posterior
+al merge sobre el `MERGE_SHA`** con su artifact `rackcad-coverage-cobertura` → la **comprobación diferida
+de la cobertura del Candidato** → y **sólo entonces** la limpieza de rama y worktree, que ambas compuertas
+bloquean hasta pasar. El `MERGE_SHA` **todavía no existe**, así que no se registra aquí ningún valor: se
+anota cuando el merge lo produzca. Mientras esa verificación no pase, la integración está hecha pero
+**no verificada**, y la corrección se haría en la rama, que por eso sigue viva.
 
 **Trazabilidad de I-46.** Gates ejecutados: `reclamo · bootstrap · reproducción · G3 · G3.1 · G4 · G5 ·
 G5.1 · G6 · Owner · G8`. El Gate 3 fijó el contrato y **caracterizó el multi-fondo antes de tocarlo**;
@@ -2444,15 +2448,17 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Candidato de I-46 — 2026-09-08 — VALIDADO Y PENDIENTE DE INTEGRAR** (no es todavía una baseline
-integrada; la baseline vigente sigue siendo la de I-44, más abajo):
+**Baseline integrada de I-46 — 2026-09-08** (la vigente):
 
 - candidato **funcional** aprobado por el Owner: `259aa2e08a1a08c2451cb873c3f634d0fde9b2e6`
   (CI de `push` **34274626718**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**);
 - **validación manual del Owner en AutoCAD 2025: PASS TOTAL — 7/7**, **sin rondas rechazadas**, sobre el
   DLL Debug construido exactamente desde ese candidato;
 - `origin/main` **no avanzó** desde la base `e85c588757433592ba05d1533049fe0431dcb808`: **sin rebase
-  final**, de modo que la validación corresponde exactamente al contenido que se integrará;
+  final**, de modo que la validación manual corresponde exactamente al contenido integrado;
+- **merge `--no-ff`**: su `MERGE_SHA` **todavía no existe** y por eso no se anota; el CI posterior al merge
+  y la comprobación diferida de la cobertura del Candidato siguen **pendientes** ([WORKFLOW.md](WORKFLOW.md)
+  §4.5 pasos 6 y 7);
 - suites locales sobre el candidato: **RackCad.Tests 4763/4763** (0 omitidas) y **RackCad.UI.Tests
   1256 correctas / 17 omitidas / 1273 totales**; Debug de UI (0 advertencias, 0 errores) y del Plugin
   (0 errores, sólo los **dos** MSB3277 conocidos);
@@ -2465,7 +2471,7 @@ integrada; la baseline vigente sigue siendo la de I-44, más abajo):
 - **sin ADR nuevo**: I-46 no toma ninguna decisión de arquitectura; el contrato de lados lo fijó el dueño
   y vive en el contrato de la iniciativa, §15.1.
 
-**Baseline integrada de I-44 — 2026-09-03** (la vigente):
+**Baseline integrada de I-44 — 2026-09-03** (previa):
 
 - candidato **funcional** aprobado por el Owner: `4947a1b5e43a291b01e8e43b5a8ff36d74c99186`
   (CI run `33797723636`, **success**). El SHA final de rama difiere del aprobado **sólo en documentación

@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-46
 title: "Selectivo: BUG topes de tarima Izquierda/Derecha"
 type: fix
-status: integration-ready
+status: integrated
 branch: fix/selectivo-topes-izquierda-derecha
 base_branch: main
 priority:
@@ -26,7 +26,7 @@ automation:
 
 # Selectivo: BUG topes de tarima Izquierda/Derecha (ID12)
 
-> **Fase actual: CIERRE DOCUMENTAL DE LA RAMA. Candidato validado; integracion PENDIENTE.** Esta iniciativa se abrio por autorizacion explicita del
+> **INTEGRADA y CERRADA el 2026-09-08.** El `MERGE_SHA`, el CI posterior al merge y la limpieza **todavia no existen**: se registran cuando el merge los produzca (seccion 14.7). Esta iniciativa se abrio por autorizacion explicita del
 > dueno (caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2): ID12 vivia en
 > [ideas-futuras.md](../ideas-futuras.md) como pendiente conocido del Selectivo, sin fila propia. El
 > reclamo atomico se hizo antes que este bootstrap y la fila en [ROADMAP.md](../ROADMAP.md) se crea
@@ -292,10 +292,17 @@ de bota, lateral, desviador, defensa y guia que **no incluye TOPE**, y eso queda
 
 ### 14.7 Pendientes
 
-**Ninguno funcional de I-46.** Siguen pendientes, y son de proceso: la **integracion** (merge `--no-ff`),
-el **CI posterior al merge** sobre el `MERGE_SHA` con su cobertura, la **comprobacion diferida de la
-cobertura del Candidato** y la **limpieza** de rama y worktree, que WORKFLOW §4.5 bloquea hasta que las
-dos compuertas pasen.
+**Ninguno funcional de I-46.** Lo que queda son las compuertas POSTERIORES de WORKFLOW §4.5 pasos 6 y 7,
+y **ninguna de ellas existe todavia**, asi que este documento no registra sus valores:
+
+- el **`MERGE_SHA`** del merge `--no-ff`, que se anota cuando el merge lo produzca;
+- el **CI posterior al merge** sobre ese SHA, con su artifact `rackcad-coverage-cobertura`;
+- la **comprobacion diferida de la cobertura del Candidato**;
+- la **limpieza** de rama y worktree, que ambas compuertas bloquean hasta pasar.
+
+`integrada` significa que el merge existe en `main`, **no** que la integracion este verificada: mientras
+el CI del `MERGE_SHA` no este verde, la integracion sigue sin verificar y la correccion se hace en esta
+rama, que por eso no se ha borrado.
 
 ## 15. Gate 3 — auditoria: matriz actual, matriz propuesta y diff minimo
 
