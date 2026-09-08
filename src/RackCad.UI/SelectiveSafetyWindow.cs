@@ -661,9 +661,15 @@ namespace RackCad.UI
 
         /// <summary>
         /// I-46 (G5.1) — seam de prueba de la rejilla del TOPE, con el mismo patron que los dos de arriba. Sustituye
-        /// UNICAMENTE el <c>ShowDialog</c>: la ventana que recibe es la real, construida con los mismos argumentos que
-        /// ve el usuario, asi que una prueba recorre la cadena completa —esta ventana, su selector de lado, su OnOk y
-        /// la escritura de vuelta en la fila— en vez de escribir el estado interno a mano.
+        /// UNICAMENTE la MODALIZACION: la ventana que recibe es la real, ya construida con los mismos argumentos que
+        /// ve el usuario, asi que una prueba recorre el dialogo real y su <c>BuildResult</c> —su selector de lado, su
+        /// casilla de compartido, su SAQUE y su rejilla— y desde ahi la escritura de vuelta que <c>EditTope</c> hace
+        /// sobre la fila, en vez de escribir ese estado a mano.
+        /// <para>
+        /// Lo que NO recorre es el <c>OnOk</c> del dialogo: ese fija ademas <c>DialogResult</c>, que solo existe bajo
+        /// <c>ShowDialog</c> y es precisamente lo que este seam evita. Quien acepta desde una prueba aporta el
+        /// <c>true</c> y deja el <c>Result</c> del dialogo ya construido.
+        /// </para>
         /// </summary>
         internal Func<SafetyTopeGridWindow, bool?> TopeDialog;
 
