@@ -232,8 +232,11 @@ namespace RackCad.Tests
             var system = Resolve(SegmentsDesignWithTope(frontal: false, (30.0, true), (0.0, true)));
             var topes = new SelectivePlantaBuilder().Build(system, Catalog).Where(i => i.Role == HeaderBlockRole.Tope).ToList();
 
-            // Planta collapses the level stack to one line → ONE tope per loaded tramo (2 loaded tramos, 1 shared fondo).
-            Assert.Equal(2, topes.Count);
+            // Planta collapses the level stack to one line → ONE tope per loaded tramo PER PHYSICAL END.
+            // This fixture is a SINGLE-fondo rack asking for "Ambas", so I-46 gives it both ends of its own frame:
+            // 2 loaded tramos × 2 ends = 4. It read 2 before I-46, when TopeShared collapsed a single-fondo rack to
+            // one end regardless of the side — the one legacy-visible change the initiative declares.
+            Assert.Equal(4, topes.Count);
             var lengths = TopeLengths(topes);
             Assert.Contains(lengths, l => System.Math.Abs(l - (30.0 + TopeAllowance)) < 1e-6);
             Assert.All(lengths, l => Assert.True(l < system.Bays[0].BeamLength));

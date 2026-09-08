@@ -66,29 +66,64 @@ namespace RackCad.Application.Systems.Selective
             public bool Mirror;
         }
 
-        /// <summary>The tope position(s): shared → one at the central fondo's back (facing the gap). Per-fondo → the two
-        /// posts flanking the CENTRAL GAP — fondo c's back and fondo c+1's FRONT (back-to-back) — filtered by side
-        /// (Left = c's back, Right = c+1's front, Both = both). So a per-fondo pair lands in the same gap, not two depths.</summary>
+        /// <summary>
+        /// The tope position(s). The side is read on the rack's own DEPTH axis — never a world coordinate — where
+        /// <c>SelectiveDepthLayout.Offsets</c> puts the frontmost post at 0, so LOW/HIGH are the two ends of the
+        /// tope's reference span ordered along it (I-46, ID12):
+        /// <list type="number">
+        /// <item><c>Side = None</c> → NO spot, decided BEFORE the shared/per-fondo split, so the plan agrees with the
+        /// drawable gate its consumers already applied;</item>
+        /// <item>with a fondo AFTER c the span is the CENTRAL GAP — <c>LOW = c's back</c>, <c>HIGH = c+1's front</c>
+        /// (back-to-back, same gap, not two depths). Shared keeps ONE bar at LOW and the side is DORMANT there:
+        /// that is the historic shared tope and it does not change;</item>
+        /// <item>with no fondo after c — the last fondo, and the only case a SINGLE-fondo rack ever has — the span
+        /// degenerates to c's own frame (<c>LOW = c's front</c>, <c>HIGH = c's back</c>) and there is nothing to
+        /// share, so <c>TopeShared</c> is inert.</item>
+        /// </list>
+        /// </summary>
         public static IEnumerable<TopeSpot> TopeSpots(SelectiveSafetySelection selection, int fondoCount)
         {
+            if (selection == null)
+            {
+                // No selection to read a side from: the historic single central spot, unchanged.
+                yield return new TopeSpot { Fondo = CentralFondo(fondoCount), AtFront = false, Mirror = false };
+                yield break;
+            }
+
+            if (selection.Side == SafetySide.None)
+            {
+                yield break; // "Ninguno" is zero spots, in both modes and at any fondo
+            }
+
             // The user's chosen fondo (0-based) if valid, else the automatic central one.
-            var c = selection != null && selection.TopeFondo >= 0 && selection.TopeFondo < fondoCount
+            var c = selection.TopeFondo >= 0 && selection.TopeFondo < fondoCount
                 ? selection.TopeFondo
                 : CentralFondo(fondoCount);
-            if (selection == null || selection.TopeShared)
+
+            // The two ends of the reference span, ordered LOW → HIGH on the local depth axis. A front post's tope
+            // faces back into the span, which is the mirrored orientation the gap's far cabecera already used.
+            var gap = c + 1 < fondoCount;
+            var low = gap
+                ? new TopeSpot { Fondo = c, AtFront = false, Mirror = false }
+                : new TopeSpot { Fondo = c, AtFront = true, Mirror = true };
+            var high = gap
+                ? new TopeSpot { Fondo = c + 1, AtFront = true, Mirror = true }
+                : new TopeSpot { Fondo = c, AtFront = false, Mirror = false };
+
+            if (selection.TopeShared && gap)
             {
-                yield return new TopeSpot { Fondo = c, AtFront = false, Mirror = false };
+                yield return low; // one shared bar in the gap; the side is dormant (historic)
                 yield break;
             }
 
             if (selection.Side == SafetySide.Left || selection.Side == SafetySide.Both)
             {
-                yield return new TopeSpot { Fondo = c, AtFront = false, Mirror = false };
+                yield return low;
             }
 
-            if ((selection.Side == SafetySide.Right || selection.Side == SafetySide.Both) && c + 1 < fondoCount)
+            if (selection.Side == SafetySide.Right || selection.Side == SafetySide.Both)
             {
-                yield return new TopeSpot { Fondo = c + 1, AtFront = true, Mirror = true }; // the other cabecera facing the same gap
+                yield return high;
             }
         }
 

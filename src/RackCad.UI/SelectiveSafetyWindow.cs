@@ -347,7 +347,7 @@ namespace RackCad.UI
                         {
                             row.TopeConfigured = true;
                             row.TopeShared = existing.TopeShared;
-                            row.TopeSide = existing.Side == SafetySide.None ? SafetySide.Both : existing.Side;
+                            row.TopeSide = existing.Side; // I-46: "Ninguno" es elegible, asi que reabrir no puede promoverlo a "Ambas"
                             row.TopeSaque = existing.TopeSaque > 0.0 ? existing.TopeSaque : SelectiveSafetyDefaults.TopeSaque;
                             row.TopeFrontal = existing.TopeFrontal;
                             row.TopeFondo = existing.TopeFondo;
@@ -600,7 +600,8 @@ namespace RackCad.UI
         private void EditTope(Row row)
         {
             var dialog = new SafetyTopeGridWindow(SelectedElementLabel(row), levelsPerFrente, row.TopeShared, row.TopeSide, row.TopeSaque, row.TopeFrontal, row.TopeOffCells, fondoCount, row.TopeFondo) { Owner = this };
-            if (dialog.ShowDialog() != true)
+            var accepted = TopeDialog != null ? TopeDialog(dialog) : dialog.ShowDialog();
+            if (accepted != true)
             {
                 return;
             }
@@ -657,6 +658,20 @@ namespace RackCad.UI
         /// que recibe es la real, con sus opciones y sus combos.
         /// </summary>
         internal Func<SafetyPerPostWindow, bool?> PerPostDialog;
+
+        /// <summary>
+        /// I-46 (G5.1) — seam de prueba de la rejilla del TOPE, con el mismo patron que los dos de arriba. Sustituye
+        /// UNICAMENTE la MODALIZACION: la ventana que recibe es la real, ya construida con los mismos argumentos que
+        /// ve el usuario, asi que una prueba recorre el dialogo real y su <c>BuildResult</c> —su selector de lado, su
+        /// casilla de compartido, su SAQUE y su rejilla— y desde ahi la escritura de vuelta que <c>EditTope</c> hace
+        /// sobre la fila, en vez de escribir ese estado a mano.
+        /// <para>
+        /// Lo que NO recorre es el <c>OnOk</c> del dialogo: ese fija ademas <c>DialogResult</c>, que solo existe bajo
+        /// <c>ShowDialog</c> y es precisamente lo que este seam evita. Quien acepta desde una prueba aporta el
+        /// <c>true</c> y deja el <c>Result</c> del dialogo ya construido.
+        /// </para>
+        /// </summary>
+        internal Func<SafetyTopeGridWindow, bool?> TopeDialog;
 
         /// <summary>El selector de VARIANTE de la fila de BOTA (seam de prueba); null si la familia no es exclusiva.</summary>
         /// <summary>Test seam: el vocabulario que la fila de la BOTA ofrece en ESTE anfitrion (I-43, gate 8.6H).</summary>
