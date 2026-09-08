@@ -46,6 +46,11 @@ automation:
 > - **Nunca World X**: bajo/alto se leen sobre el eje de profundidad LOCAL, donde
 >   `SelectiveDepthLayout.Offsets` pone el poste frontal en 0 y cada fondo siguiente por encima.
 > - `SafetySide` conserva sus ordinales **0/1/2/3**: no cambia el enum ni su orden.
+> - Con **hueco real** (`c + 1` existe) y `TopeShared = true`, hay **UNA pieza compartida en LOW** y
+>   `Side` queda **dormante**: comportamiento **historico que NO cambia**.
+>
+> La forma ejecutable y completa de esta regla —las nueve clausulas— vive en la **seccion 15.1**, que
+> es la que manda sobre cualquier parafrasis de este documento.
 
 ## 1. Objetivo
 
@@ -77,7 +82,10 @@ Es un eje de **profundidad**, no de lado, y arrastra tres consecuencias:
 2. **`Ninguno` no es alcanzable.** El selector del dialogo (`SafetyTopeGridWindow`) ofrece tres
    opciones —`Izquierda`, `Derecha`, `Ambos`—; `SafetySide.None` no se puede elegir, y si llega de un
    documento anterior `SelectiveSafetyWindow` lo reescribe a `Both` al cargar la fila. Ademas
-   `TopeSpots` devuelve una posicion **antes de mirar el lado** cuando `TopeShared` es cierto.
+   `TopeSpots` devuelve una posicion **antes de mirar el lado** cuando `TopeShared` es cierto, y eso
+   con `Ninguno` es un defecto real del plan. **Ojo:** que el modo compartido ignore el lado
+   **cuando hay hueco** NO es defecto — es el tope compartido historico y la regla lo preserva
+   (seccion 15.1, clausula 3).
 3. **La intencion no tiene sede propia.** El lado del tope viaja en `SelectiveSafetySelection.Side`,
    el campo generico de la familia, y no en `SelectiveTopeConfig`, que es donde viven `Shared`,
    `Fondo`, `Saque`, `Frontal` y `OffCells`. `SelectiveTopeConfig` **no tiene** campo de lado.
@@ -130,6 +138,7 @@ prueba (AGENTS.md, «Reutilizacion de evidencia»).
 | Area | Archivos |
 |---|---|
 | Reproduccion (contrato, ROJA) | `tests/RackCad.Tests/SelectiveTopeSideTests.cs` |
+| Contrato multi-fondo (ROJA + centinela VERDE) | `tests/RackCad.Tests/SelectiveTopeSideMultiFondoContractTests.cs` |
 | Caracterizacion multi-fondo (VERDE) | `tests/RackCad.Tests/SelectiveTopeMultiFondoCharacterizationTests.cs` |
 | Modelo/colocacion | `src/RackCad.Application/Systems/Selective/SelectiveSafetyPlacement.cs`, `SelectiveTopePlan.cs` |
 | Dominio | `src/RackCad.Domain/Systems/Selective/SelectiveSafetyConfig.cs` (`SelectiveTopeConfig`) |
@@ -215,56 +224,76 @@ eje de profundidad **local** (`Offsets` pone el poste frontal en 0): postes `f0[
 
 `c` = `TopeFondo` si es valido, si no `CentralFondo(fondoCount) = (fondoCount - 1) / 2`.
 
-### 15.1 Regla propuesta (una sola, tres lineas de intencion)
+### 15.1 Regla VINCULANTE (fijada por el dueno; no se re-decide)
 
-El tope tiene un **vano de referencia** y `Side` elige sus **extremos**, ordenados sobre el eje local:
+1. Resolver `c` = `TopeFondo` valido, o `CentralFondo(fondoCount) = (fondoCount - 1) / 2`.
+2. `Side = None` -> **cero spots, siempre**, en los dos modos y en cualquier fondo.
+3. Si **`c + 1` existe**, el vano de referencia es el **hueco central**: `LOW = back(c)`,
+   `HIGH = front(c + 1)`.
+   - `TopeShared = false`: `Izquierda` = LOW, `Derecha` = HIGH, `Ambas` = LOW + HIGH.
+   - `TopeShared = true`: **UNA pieza compartida en LOW** para cualquier `Side` no-`None`. `Side` queda
+     **dormante / no aplicable** en ese estado. **Esto es comportamiento historico y NO cambia.**
+4. Si **`c + 1` NO existe**, el vano **degenera al propio fondo**: `LOW = front(c)`, `HIGH = back(c)`.
+   `TopeShared` es **inerte**: `Izquierda` = LOW, `Derecha` = HIGH, `Ambas` = LOW + HIGH.
+5. **Nunca World X**: bajo/alto se leen sobre el eje de profundidad local.
+6. `SafetySide` conserva `None = 0`, `Left = 1`, `Right = 2`, `Both = 3`.
+7. `Build` devuelve **cero spots** para `None` (el gate vive en el plan, no aguas abajo).
+8. `BuildFrontal`: vacio si el conjunto fisico esta vacio; si no, **una sola** proyeccion esquematica por
+   celda, **sin multiplicar por spots**.
+9. Sin DTO nuevo, sin `SchemaVersion`, sin campo `Side` nuevo.
 
-- si **hay fondo siguiente** (`c + 1 < fondoCount`), el vano es el **hueco central**:
-  `BAJO` = trasero de `c`, `ALTO` = delantero de `c + 1` (espejado);
-- si **no lo hay** (`c` es el ultimo fondo, e incluye `fondoCount == 1`), el vano **degenera** al propio
-  fondo: `BAJO` = delantero de `c` (espejado), `ALTO` = trasero de `c`.
+> **Correccion respecto de la primera redaccion de este gate.** Yo habia marcado
+> `TopeShared = true` + `Derecha` **con hueco real** como una celda a arreglar. **Es falso**: con
+> `c + 1` existente esa celda es el tope compartido historico, `Side` esta dormante por diseno y la
+> regla la **preserva**. El unico eje que se mueve es el de la clausula 4 —`c` sin fondo siguiente—,
+> que incluye **todo rack de un solo fondo**.
 
-`Ninguno` = {} · `Izquierda` = {BAJO} · `Derecha` = {ALTO} · `Ambas` = {BAJO, ALTO}.
+### 15.2 Matriz FINAL congelada — HOY frente a la REGLA
 
-`TopeShared` conserva su significado —**una barra compartida** frente a una por fondo— y por eso sigue
-colapsando el par a UNA pieza **cuando hay hueco**: `Derecha` la monta en el ALTO y cualquier otro lado
-en el BAJO, de modo que `Ambas` compartida sigue siendo **una** pieza. Sin hueco no hay nada que
-compartir y `TopeShared` es **inerte**.
+`=` significa que la celda **no se mueve**. Posiciones en X del mate sobre el eje local: postes
+`f0[0, 42]`, `f1[54, 96]`, `f2[108, 150]`; el `TROQUEL_TOPE` mata 0.875" dentro de cada uno, asi que un
+poste TRASERO mata en `back - 0.875` y uno DELANTERO en `front + 0.875`.
 
-### 15.2 Matriz — HOY frente a PROPUESTA
+**Clausula 3 — hay hueco (`c + 1` existe). Nada se mueve salvo el spot rancio del plan.**
 
-`=` significa que la celda **no se mueve**. Las celdas marcadas **CAMBIA** son las unicas que el
-arreglo desplaza, y todas ellas son defectos declarados de ID12.
+| fondos | `TopeFondo` | `c` | shared | Ninguno | Izquierda | Derecha | Ambas | |
+|---|---|---|---|---|---|---|---|---|
+| 2 | auto / 0 | 0 | no | — | 41.125 | 54.875 | 41.125 + 54.875 | = |
+| 2 | auto / 0 | 0 | **si** | — | 41.125 | **41.125** | 41.125 | = *(historico, `Side` dormante)* |
+| 3 | auto / 1 | 1 | no | — | 95.125 | 108.875 | 95.125 + 108.875 | = |
+| 3 | auto / 1 | 1 | **si** | — | 95.125 | **95.125** | 95.125 | = *(historico)* |
+| 3 | 0 | 0 | no | — | 41.125 | 54.875 | 41.125 + 54.875 | = |
+| 3 | 0 | 0 | **si** | — | 41.125 | **41.125** | 41.125 | = *(historico)* |
 
-| fondos | shared | `TopeFondo` | Lado | HOY | PROPUESTA | |
+Unica diferencia en este bloque: hoy, con `Ninguno` y `TopeShared = true`, `SelectiveTopePlan.Build`
+devuelve **un spot rancio** que solo tapa `EnabledOfType` aguas abajo. La clausula 7 lo elimina **en el
+plan**; el dibujo y el BOM ya daban cero, asi que **no cambia ni una pieza dibujada**.
+
+**Clausula 4 — no hay hueco (`c` es el ultimo fondo, incluido todo rack de 1 fondo).**
+
+| fondos | `TopeFondo` | shared | Lado | HOY | REGLA | |
 |---|---|---|---|---|---|---|
-| 1 | no | auto/0 | Ninguno | — | — | = |
-| 1 | no | auto/0 | Izquierda | 41.125 | 0.875 | **CAMBIA** |
-| 1 | no | auto/0 | Derecha | — | 41.125 | **CAMBIA** |
-| 1 | no | auto/0 | Ambas | 41.125 | 0.875 + 41.125 | **CAMBIA** |
-| 1 | si | auto/0 | Ninguno | — (plan: 1 spot rancio) | — (plan vacio) | **CAMBIA** (solo el plan) |
-| 1 | si | auto/0 | Izquierda | 41.125 | 0.875 | **CAMBIA** |
-| 1 | si | auto/0 | Derecha | 41.125 | 41.125 | = |
-| 1 | si | auto/0 | Ambas | 41.125 | 0.875 + 41.125 | **CAMBIA** |
-| 2 | no | auto/0 | Ninguno / Izq / Der / Ambas | — / 41.125 / 54.875 / ambas | idem | = |
-| 2 | no | 1 (ultimo) | Izquierda | 95.125 | 54.875 | **CAMBIA** |
-| 2 | no | 1 (ultimo) | Derecha | — | 95.125 | **CAMBIA** |
-| 2 | no | 1 (ultimo) | Ambas | 95.125 | 54.875 + 95.125 | **CAMBIA** |
-| 2 | si | auto/0 | Izquierda / Ambas | 41.125 | 41.125 | = |
-| 2 | si | auto/0 | Derecha | 41.125 | 54.875 | **CAMBIA** |
-| 2 | si | 1 (ultimo) | Izquierda | 95.125 | 54.875 | **CAMBIA** |
-| 2 | si | 1 (ultimo) | Derecha | 95.125 | 95.125 | = |
-| 2 | si | 1 (ultimo) | Ambas | 95.125 | 54.875 + 95.125 | **CAMBIA** |
-| 3 | no | auto/1 | Izq / Der / Ambas | 95.125 / 108.875 / ambas | idem | = |
-| 3 | no | 0 | Izq / Der / Ambas | 41.125 / 54.875 / ambas | idem | = |
-| 3 | no | 2 (ultimo) | Izq / Der / Ambas | 149.125 / — / 149.125 | 108.875 / 149.125 / ambas | **CAMBIA** |
-| 3 | si | auto/1, 0 | Derecha | el BAJO | el ALTO | **CAMBIA** |
-| 3 | si | auto/1, 0 | Izquierda / Ambas | el BAJO | el BAJO | = |
-| 3 | si | 2 (ultimo) | como el caso de 2 fondos con `TopeFondo` ultimo | | | **CAMBIA** |
+| 1 | auto / 0 | no | Izquierda | 41.125 | **0.875** | CAMBIA |
+| 1 | auto / 0 | no | Derecha | **—** | **41.125** | CAMBIA |
+| 1 | auto / 0 | no | Ambas | 41.125 | **0.875 + 41.125** | CAMBIA |
+| 1 | auto / 0 | si | Izquierda | 41.125 | **0.875** | CAMBIA *(inerte)* |
+| 1 | auto / 0 | si | Derecha | 41.125 | 41.125 | = |
+| 1 | auto / 0 | si | Ambas | 41.125 | **0.875 + 41.125** | CAMBIA *(inerte)* |
+| 2 | 1 | no | Izquierda | 95.125 | **54.875** | CAMBIA |
+| 2 | 1 | no | Derecha | **—** | **95.125** | CAMBIA |
+| 2 | 1 | no | Ambas | 95.125 | **54.875 + 95.125** | CAMBIA |
+| 2 | 1 | si | Izquierda | 95.125 | **54.875** | CAMBIA *(inerte)* |
+| 2 | 1 | si | Derecha | 95.125 | 95.125 | = |
+| 2 | 1 | si | Ambas | 95.125 | **54.875 + 95.125** | CAMBIA *(inerte)* |
+| 3 | 2 | no | Izquierda | 149.125 | **108.875** | CAMBIA |
+| 3 | 2 | no | Derecha | **—** | **149.125** | CAMBIA |
+| 3 | 2 | no | Ambas | 149.125 | **108.875 + 149.125** | CAMBIA |
+| 3 | 2 | si | Izquierda | 149.125 | **108.875** | CAMBIA *(inerte)* |
+| 3 | 2 | si | Derecha | 149.125 | 149.125 | = |
+| 3 | 2 | si | Ambas | 149.125 | **108.875 + 149.125** | CAMBIA *(inerte)* |
 
-**Lectura corta**: se mueve exactamente lo roto — todo `TopeFondo` que apunta al **ultimo** fondo
-(incluido el unico fondo de un rack sencillo), `Derecha` en modo compartido, y el spot rancio del plan
-con `Ninguno`. **Todo lo demas queda byte a byte igual**, y eso es lo que congela la caracterizacion.
+**Lectura corta.** Se mueve **una sola familia de celdas**: la del fondo elegido **sin fondo siguiente**.
+El tope compartido con hueco real, que es el caso por defecto de un doble profundidad, **no se toca**.
 
 ### 15.3 Compatibilidad legado
 
@@ -287,7 +316,7 @@ Lo que **si** cambia de significado en disco, y hay que declararlo:
 
 | Archivo | Cambio | Tamano |
 |---|---|---|
-| `src/RackCad.Application/Systems/Selective/SelectiveSafetyPlacement.cs` | Reescribir `TopeSpots` con la regla de 15.1: salida vacia con `Ninguno`, extremos BAJO/ALTO y degeneracion cuando no hay fondo siguiente | ~15 lineas, sustituyen a ~20 |
+| `src/RackCad.Application/Systems/Selective/SelectiveSafetyPlacement.cs` | Reescribir `TopeSpots` con las clausulas 1-4 y 7 de 15.1: salida vacia con `Ninguno`; con hueco, la rama compartida **se conserva tal cual** (una pieza en LOW, `Side` dormante) y la de por-fondo elige LOW/HIGH; sin hueco, el vano degenera al propio fondo y `TopeShared` deja de consultarse | ~18 lineas, sustituyen a ~20 |
 | `src/RackCad.Application/Systems/Selective/SelectiveTopePlan.cs` | `BuildFrontal` devuelve vacio cuando el conjunto de spots lo esta, consultando **el mismo** `TopeSpots`. **No** itera los spots: seguiria duplicando el par por fondo | ~4 lineas |
 | `src/RackCad.UI/SafetyTopeGridWindow.cs` | `Ninguno` como cuarta opcion en `SideLabels` + su ordinal en `SideIndex`/`SideFromIndex` | ~4 lineas |
 | `src/RackCad.UI/SelectiveSafetyWindow.cs` | Retirar la coercion `existing.Side == None ? Both : existing.Side` | 1 linea |

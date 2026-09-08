@@ -13,8 +13,13 @@ namespace RackCad.Tests
     /// I-46 (ID12) — CHARACTERIZATION, not a contract. Freezes what the tope family does TODAY for 2 and 3 fondos
     /// across <c>TopeShared</c> × <c>Side</c> × <c>TopeFondo</c> (automatic and explicit), so the model change of I-46
     /// can prove which cells it preserves and which it deliberately moves. Every expectation here is a MEASUREMENT of
-    /// the current build, not a statement of what the behaviour ought to be: the cells this class pins as broken are
-    /// named as such in their comments and are expected to CHANGE when the fix lands.
+    /// the current build, not a statement of what the behaviour ought to be.
+    /// <para>
+    /// The split that matters, and it is the binding rule of I-46, not a guess: a cell only moves when the chosen
+    /// fondo has NO fondo after it (<c>c + 1</c> does not exist), which is where "Derecha" has nowhere to go today.
+    /// Everything with a REAL GAP is historic behaviour that the fix PRESERVES — including the shared tope, whose
+    /// single piece at LOW with a dormant Side is correct and must not be read as ID12.
+    /// </para>
     /// <para>
     /// Positions are the tope mate X on the rack's own DEPTH axis (<see cref="SelectiveDepthLayout.Offsets"/> puts the
     /// frontmost post at 0), never a world coordinate. With <c>PalletDepth = 48</c> the cabecera is 42" deep and the
@@ -131,21 +136,40 @@ namespace RackCad.Tests
             Assert.Equal(positions.Count, TopePieces(system)); // the BOM bills exactly the drawn positions
         }
 
-        // ---- Shared mode (TopeShared = true): ONE piece at the chosen fondo's BACK post, and the side is IGNORED ----
-        // Every Left/Right/Both row below lands on the same X: that collapse is ID12 seen from the shared side.
+        // ---- Shared mode WITH A REAL GAP (c + 1 exists): ONE shared piece at LOW, and Side is DORMANT there ----
+        // This is NOT ID12 and NOT a defect: it is the historic shared tope, and the binding rule of I-46 PRESERVES
+        // it exactly. Every row below must keep passing after the fix — see the contract sentinel in
+        // SelectiveTopeSideMultiFondoContractTests, which pins the same behaviour as a rule instead of a measurement.
         [Theory]
         [InlineData(2, -1, SafetySide.Left, "41.125")]
         [InlineData(2, -1, SafetySide.Right, "41.125")]
         [InlineData(2, -1, SafetySide.Both, "41.125")]
-        [InlineData(2, 1, SafetySide.Left, "95.125")]
-        [InlineData(2, 1, SafetySide.Right, "95.125")]
-        [InlineData(2, 1, SafetySide.Both, "95.125")]
+        [InlineData(2, 0, SafetySide.Right, "41.125")]
         [InlineData(3, -1, SafetySide.Left, "95.125")]
         [InlineData(3, -1, SafetySide.Right, "95.125")]
         [InlineData(3, -1, SafetySide.Both, "95.125")]
+        [InlineData(3, 0, SafetySide.Right, "41.125")]
         [InlineData(3, 0, SafetySide.Both, "41.125")]
-        [InlineData(3, 2, SafetySide.Both, "149.125")]
-        public void Shared_Today_IgnoresTheSideAndKeepsOnePiece(int fondos, int topeFondo, SafetySide side, string expected)
+        [InlineData(3, 1, SafetySide.Right, "95.125")]
+        public void Shared_WithARealGap_KeepsTheHistoricSinglePieceAtLow(int fondos, int topeFondo, SafetySide side, string expected)
+        {
+            var system = Rack(fondos, shared: true, topeFondo: topeFondo, side: side);
+
+            Assert.Equal(Parse(expected), TopeXs(system));
+            Assert.Equal(1, TopePieces(system));
+        }
+
+        // ---- Shared mode on the LAST fondo (no c + 1): today it still collapses, and THIS one is ID12 ----
+        // With no gap there is nothing to share, so the binding rule makes TopeShared inert here: Left → the fondo's
+        // FRONT post, Right → its BACK post, Both → the two. These rows therefore WILL move when the fix lands.
+        [Theory]
+        [InlineData(2, 1, SafetySide.Left, "95.125")]  // → will become 54.875 (front of f1)
+        [InlineData(2, 1, SafetySide.Right, "95.125")] // → stays 95.125 (back of f1)
+        [InlineData(2, 1, SafetySide.Both, "95.125")]  // → will become 54.875 + 95.125
+        [InlineData(3, 2, SafetySide.Left, "149.125")] // → will become 108.875 (front of f2)
+        [InlineData(3, 2, SafetySide.Right, "149.125")]// → stays 149.125 (back of f2)
+        [InlineData(3, 2, SafetySide.Both, "149.125")] // → will become 108.875 + 149.125
+        public void Shared_OnTheLastFondo_Today_StillCollapses(int fondos, int topeFondo, SafetySide side, string expected)
         {
             var system = Rack(fondos, shared: true, topeFondo: topeFondo, side: side);
 
