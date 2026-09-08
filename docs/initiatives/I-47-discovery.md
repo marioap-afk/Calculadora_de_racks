@@ -1,9 +1,15 @@
 # I-47 — Informe de Discovery: variables de proyecto y autoridad drawing-level
 
 > **Fase DISCOVERY. Sin cambios de produccion.** Este documento **describe** el arbol; no propone
-> implementacion, no elige mecanismo y no disena formulas ni propagacion rack a rack. Esas cuatro
+> implementacion, no elige mecanismo y no disena formulas ni propagacion **rack a rack**. Esas cuatro
 > cosas quedan fuera por el encargo del dueno, registrado en
 > [`docs/automation/decisions/I-47.md`](../automation/decisions/I-47.md).
+>
+> **Actualizado en el Gate C (2026-09-08):** la §6 se reescribio porque seis de sus siete preguntas
+> **ya no estan abiertas** — el dueno las decidio. Las secciones 2 a 5 **no se tocaron**: siguen
+> describiendo el arbol en el mismo SHA. Aviso sobre la exclusion de arriba: la decision **C-3** manda
+> propagar de la variable a **sus consumidores**, que es propagacion **proyecto → rack**; la que sigue
+> excluida es la de **rack a rack** (un rack heredando de otro), que es cosa distinta.
 >
 > ```
 > Rama:     architecture/project-variables-foundation
@@ -556,30 +562,66 @@ Y un valor de nivel dibujo guardado por rack: **`DimensionStyle`**
 | R9 | **Precedencia sin definir entre proyecto y rack** | §4.6 y §4.4 | El unico precedente interno de «general + excepcion» es `FondoDepths`; extenderlo es decision del dueno |
 | R10 | **Archivos calientes** | WORKFLOW §7 | Los tres editores grandes y `SelectivePalletDesign.cs` (776 lineas) estan en la tabla de archivos calientes. Una implementacion futura los toca y debe serializarse con cualquier otra iniciativa de esos sistemas |
 
+> **Estado tras el Gate C** (§6.1): **R4 se acota** —C-5 saca de ID22A la unificacion de granularidades,
+> asi que sigue siendo un hecho del arbol pero no un riesgo de esta iniciativa—; **R5-bis se cierra**
+> —C-6 prohibe convertir `defaults.json` en `ProjectVariables`—; y **R6 se activa** —C-3 exige propagar
+> en una sola operacion, asi que la costura sin dialogo pasa de hipotetica a obligatoria—. Los demas
+> siguen vigentes tal cual.
+
 ---
 
-## 6. Preguntas abiertas — para el dueno
+## 6. Decisiones del dueno y lo que sigue abierto
 
-Ninguna se responde aqui; todas cambian el resultado.
+> **Actualizado en el Gate C (2026-09-08).** Esta seccion planteaba siete preguntas. **Seis quedaron
+> resueltas por decision del dueno** y ya **no** son preguntas: presentarlas como abiertas seria
+> falso. Se listan como **premisas** con su decision literal, y solo despues lo que de verdad sigue
+> sin decidir. El registro vinculante vive en
+> [`docs/automation/decisions/I-47.md`](../automation/decisions/I-47.md) §«Decisiones vinculantes del
+> Gate C»; si esta prosa y aquel registro discreparan, **manda el registro**.
 
-1. **Dibujos heredados.** Un DWG sin registro de variables: nace con defaults, nace vacio, o el
-   comando avisa. (Precedente disponible: `RackUnitsGuard` **avisa y no bloquea**, ADR-0005.)
-2. **Precedencia proyecto vs rack.** Cuando un rack ya guardado discrepa: gana el proyecto, gana el
-   rack, o el rack queda marcado como desactualizado sin tocarse.
-3. **Granularidad.** Que ocurre con `ClearHeight` **por nivel** si existe un `VerticalClearance` de
-   proyecto: lo sustituye, lo siembra, o convive como excepcion al estilo de `ClearOverride` y
-   `ExtraFondoDepths` — que es el patron que el Selectivo ya usa **entre rack y celda** (§4.2).
-4. **Alcance de la lista.** Las tres del slice son muestra. La lista real no esta fijada, y §4.7
-   muestra al menos una docena de candidatos —incluido `DimensionStyle`, que **no** es numerico—.
-4-bis. **Relacion con `defaults.json`.** Existiendo ya un mecanismo global **por instalacion**
-   (§4.5-bis), ¿el de proyecto lo **sustituye**, lo **sobrescribe por dibujo**, o convive con el como
-   dos capas (instalacion → dibujo → rack)? Afecta a `headerEndAllowance` y `defaultHeaderHeight`,
-   que hoy ya son editables sin recompilar.
-5. **Retroactividad.** Cambiar un valor de proyecto, ¿debe redibujar lo ya colocado, o solo afectar a
-   lo que se dibuje despues? De esto depende por completo si hace falta la costura del riesgo R6.
-6. **Copias independientes.** Un rack duplicado con GUID propio, ¿sigue siendo del proyecto?
-7. **Supervivencia exigida.** ¿Debe el registro sobrevivir a WBLOCK y a copiar el DWG a otro archivo?
-   Es verificable, pero exige AutoCAD y por tanto al dueno.
+### 6.1 Premisas fijadas — no se reabren
+
+| # | Decision del dueno | Que pregunta cierra |
+|---|---|---|
+| **C-1** | Un DWG **sin** `ProjectVariables` tiene un **registro vacio**; **no hay migracion** y los **literales existentes se preservan** | «dibujos heredados» |
+| **C-2** | Una propiedad es **`Literal`** o **`ProjectVariableReference`**; cuando es referencia, **la referencia gobierna el valor efectivo** | «precedencia proyecto vs rack» |
+| **C-3** | Cambiar una variable **propaga y redibuja a todos sus consumidores en UNA operacion** | «retroactividad» |
+| **C-4** | **RACKDUPLICAR conserva el mismo `VariableId`** | «copias independientes» |
+| **C-5** | **ID22A no unifica** el `ClearHeight` de otros sistemas; el vertical slice es **Selectivo** | «granularidad» y el alcance de la lista **para ID22A** |
+| **C-6** | **`defaults.json` convive** y **no** se convierte en `ProjectVariables` | «relacion con defaults.json» |
+
+Tres consecuencias que conviene leer junto al resto del informe, porque **desactivan** parte de lo que
+este documento planteo como problema:
+
+- **C-5 acota el riesgo R4.** La divergencia de granularidad entre `VerticalClearance` (Selectivo),
+  `ClearHeight` (Dinamico/Push Back, **por nivel**) y `RequestedClearHeight` (Cantilever) sigue siendo
+  **un hecho del arbol** —§4.2 no cambia—, pero **deja de ser un problema de ID22A**: nada se unifica
+  aqui. R4 pasa de riesgo activo a **contexto para una iniciativa posterior**.
+- **C-3 activa el riesgo R6.** La costura «aplicar diseno y redibujar **sin dialogo**», que §3.5
+  documenta como inexistente, **deja de ser hipotetica**: propagar en una operacion la exige.
+- **C-6 cierra la puerta a reutilizar `defaults.json`.** Junto con D1 (§2.1), significa que la
+  autoridad de nivel dibujo es **mecanismo nuevo por partida doble**: ni existe, ni se va a construir
+  reciclando el unico mecanismo global que hay.
+
+### 6.2 Diferido por decision expresa
+
+**Supervivencia a `WBLOCK` y a copiar/pegar entre dibujos.** El dueno la declara **cuestion
+diferible**: no es requisito de ID22A. Sigue siendo **no verificada** (§1: no se ejecuto AutoCAD), y
+por tanto este informe no afirma nada sobre ella en ningun sentido. Lo que si es requisito minimo —y
+tambien esta sin verificar— es la supervivencia a **guardar, cerrar y reabrir el mismo DWG**.
+
+### 6.3 Lo que sigue realmente abierto
+
+Solo esto, y ninguna de las dos es una pregunta que el Discovery pudiera contestar:
+
+1. **El contrato concreto** que implementa las seis premisas: identidad, tipos, formato persistido,
+   semantica de borrado y desvinculado, descubrimiento, orden de redibujo y superficie de UI. Es el
+   objeto de la **Proposal V1** ([I-47-proposal-v1.md](I-47-proposal-v1.md)), que lo compara y lo
+   recomienda; **elegir** sigue siendo del dueno y el gate `owner-decision` sigue abierto.
+2. **La lista de variables mas alla del slice.** C-5 la fija **para ID22A** (Selectivo,
+   `VerticalClearance`). §4.7 inventaria al menos una docena de candidatos para despues —incluido
+   `DimensionStyle`, que **no es numerico** y por eso presiona el modelo de tipos—. Fuera de alcance
+   aqui.
 
 ---
 

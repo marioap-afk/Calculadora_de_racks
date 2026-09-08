@@ -108,15 +108,24 @@ el promedio.
 - La **pulgada** es la unidad geometrica interna ([ADR-0005](../adr/0005-estrategia-de-unidades.md));
   ninguna conversion se introduce aqui.
 
-## 5. Entregable de esta fase
+## 5. Entregables
 
-Un **informe de Discovery versionado en esta rama**, con:
+### 5.1 Fase DISCOVERY — **entregada** ([I-47-discovery.md](I-47-discovery.md))
 
 1. Respuesta a D1, D2 y D3 con rutas y simbolos reales verificados contra el arbol.
 2. **Riesgos** y ambiguedades encontrados, cada uno atribuido a evidencia.
 3. Las **preguntas que quedan para el dueno**, separadas de los hechos.
 
-No se entrega propuesta de implementacion: eso exige una autorizacion que hoy no existe.
+### 5.2 Fase PROPOSAL — autorizada en el **Gate C** (2026-09-08)
+
+El dueno fijo **seis decisiones vinculantes** (C-1..C-6, registro en
+[`docs/automation/decisions/I-47.md`](../automation/decisions/I-47.md)) y autorizo una
+**Proposal V1 documental**: [I-47-proposal-v1.md](I-47-proposal-v1.md).
+
+- **Sigue sin autorizarse la implementacion.** La Proposal **compara alternativas y recomienda**; no
+  toca `src/` ni `tests/`, y el gate `owner-decision` sigue abierto sobre el contrato que recomienda.
+- Las seis decisiones son **premisas** de la Proposal, no opciones a comparar.
+- **No se pidio Architect Review** en este gate.
 
 ## 6. Gates
 
@@ -135,3 +144,5 @@ Si una fase posterior tocara colocacion, dibujo o BOM, `requires_autocad` y `req
 | Fecha | Hito |
 |---|---|
 | 2026-09-08 | Reclamo atomico `6e17bd5` aceptado por el remoto; bootstrap (contrato + fila en ROADMAP + registro de autorizacion) |
+| 2026-09-08 | Discovery entregado (`9e25d52`): D1/D2/D3 con evidencia, 10 riesgos, 11 hallazgos fuera de alcance |
+| 2026-09-08 | **Gate C**: el dueno fija C-1..C-6 y autoriza la Proposal V1 documental. WBLOCK/copia entre dibujos queda **diferido**. Sin Architect Review |
