@@ -347,7 +347,7 @@ namespace RackCad.UI
                         {
                             row.TopeConfigured = true;
                             row.TopeShared = existing.TopeShared;
-                            row.TopeSide = existing.Side == SafetySide.None ? SafetySide.Both : existing.Side;
+                            row.TopeSide = existing.Side; // I-46: "Ninguno" es elegible, asi que reabrir no puede promoverlo a "Ambas"
                             row.TopeSaque = existing.TopeSaque > 0.0 ? existing.TopeSaque : SelectiveSafetyDefaults.TopeSaque;
                             row.TopeFrontal = existing.TopeFrontal;
                             row.TopeFondo = existing.TopeFondo;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Domain.Systems.Selective;
 
@@ -219,6 +220,14 @@ namespace RackCad.Application.Systems.Selective
             var selection = SelectiveSafetyFamilies.SelectedOfType(
                 system?.SafetySelections, catalog?.SafetyElements, SelectiveSafetyDefaults.TopeType);
             if (system == null || catalog == null || selection == null || string.IsNullOrWhiteSpace(selection.ElementId))
+            {
+                return cells;
+            }
+
+            // The frontal is an ELEVATION: every physical spot projects onto the SAME place, so it draws the EXISTENCE
+            // of the resolved set — once per cell — and never once per spot, which would double a per-fondo pair.
+            // Consulting the set (not iterating it) is what keeps the frontal from billing what the BOM does not.
+            if (!SelectiveSafetyPlacement.TopeSpots(selection, SelectiveDepthLayout.Count(system)).Any())
             {
                 return cells;
             }

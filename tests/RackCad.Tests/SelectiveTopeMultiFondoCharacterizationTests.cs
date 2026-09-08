@@ -10,15 +10,16 @@ using Xunit;
 namespace RackCad.Tests
 {
     /// <summary>
-    /// I-46 (ID12) — CHARACTERIZATION, not a contract. Freezes what the tope family does TODAY for 2 and 3 fondos
-    /// across <c>TopeShared</c> × <c>Side</c> × <c>TopeFondo</c> (automatic and explicit), so the model change of I-46
-    /// can prove which cells it preserves and which it deliberately moves. Every expectation here is a MEASUREMENT of
-    /// the current build, not a statement of what the behaviour ought to be.
+    /// I-46 (ID12) — CHARACTERIZATION, not a contract. Measures the tope family for 2 and 3 fondos across
+    /// <c>TopeShared</c> × <c>Side</c> × <c>TopeFondo</c> (automatic and explicit). It was written BEFORE the model
+    /// change, to freeze the build as it stood, and is the ledger of what that change actually moved.
     /// <para>
-    /// The split that matters, and it is the binding rule of I-46, not a guess: a cell only moves when the chosen
-    /// fondo has NO fondo after it (<c>c + 1</c> does not exist), which is where "Derecha" has nowhere to go today.
-    /// Everything with a REAL GAP is historic behaviour that the fix PRESERVES — including the shared tope, whose
-    /// single piece at LOW with a dormant Side is correct and must not be read as ID12.
+    /// Of its rows, <b>12 moved and every one of them says so and carries its pre-fix value</b>: the six per-fondo and
+    /// four shared rows whose <c>TopeFondo</c> is the LAST fondo (no <c>c + 1</c>, so the span degenerates — rule 4),
+    /// plus the two that pinned the stale spot the plan used to resolve for "Ninguno" (rule 7, which changed no drawn
+    /// or billed piece). <b>Everything with a REAL GAP is untouched</b>, above all
+    /// <see cref="Shared_WithARealGap_KeepsTheHistoricSinglePieceAtLow"/>: the historic shared tope — one piece at LOW
+    /// with a dormant Side — was never ID12 and the fix preserves it verbatim.
     /// </para>
     /// <para>
     /// Positions are the tope mate X on the rack's own DEPTH axis (<see cref="SelectiveDepthLayout.Offsets"/> puts the
@@ -95,7 +96,7 @@ namespace RackCad.Tests
         }
 
         // ---- 2 and 3 fondos, per-fondo mode (TopeShared = false): the side picks a post of the CENTRAL GAP ----
-        // Cells marked BROKEN are the ones I-46 will move; every other cell must survive the fix untouched.
+        // Only the rows whose TopeFondo is the LAST fondo moved with the fix; each says so and carries its old value.
         [Theory]
         // 2 fondos, central gap = f0's back (41.125) ↔ f1's front (54.875). Automatic central fondo = 0.
         [InlineData(2, -1, SafetySide.None, "")]
@@ -106,11 +107,12 @@ namespace RackCad.Tests
         [InlineData(2, 0, SafetySide.Left, "41.125")]
         [InlineData(2, 0, SafetySide.Right, "54.875")]
         [InlineData(2, 0, SafetySide.Both, "41.125,54.875")]
-        // TopeFondo = the LAST fondo: no fondo follows it, so "Derecha" has nowhere to go. BROKEN — this is ID12.
+        // TopeFondo = the LAST fondo: no gap follows, so the span degenerates to f1's own frame (rule 4). These four
+        // rows MOVED with the fix — before it they read "" / 95.125 / "" / 95.125, with "Derecha" drawing nothing.
         [InlineData(2, 1, SafetySide.None, "")]
-        [InlineData(2, 1, SafetySide.Left, "95.125")]
-        [InlineData(2, 1, SafetySide.Right, "")]
-        [InlineData(2, 1, SafetySide.Both, "95.125")]
+        [InlineData(2, 1, SafetySide.Left, "54.875")]
+        [InlineData(2, 1, SafetySide.Right, "95.125")]
+        [InlineData(2, 1, SafetySide.Both, "54.875,95.125")]
         // 3 fondos, automatic central fondo = 1, gap = f1's back (95.125) ↔ f2's front (108.875).
         [InlineData(3, -1, SafetySide.None, "")]
         [InlineData(3, -1, SafetySide.Left, "95.125")]
@@ -122,12 +124,12 @@ namespace RackCad.Tests
         [InlineData(3, 1, SafetySide.Left, "95.125")]
         [InlineData(3, 1, SafetySide.Right, "108.875")]
         [InlineData(3, 1, SafetySide.Both, "95.125,108.875")]
-        // TopeFondo = the LAST fondo again. BROKEN, same shape as the 2-fondo case.
+        // TopeFondo = the LAST fondo again, same shape. Before the fix: "" / 149.125 / "" / 149.125.
         [InlineData(3, 2, SafetySide.None, "")]
-        [InlineData(3, 2, SafetySide.Left, "149.125")]
-        [InlineData(3, 2, SafetySide.Right, "")]
-        [InlineData(3, 2, SafetySide.Both, "149.125")]
-        public void PerFondo_Today_PlacesAtTheCentralGap(int fondos, int topeFondo, SafetySide side, string expected)
+        [InlineData(3, 2, SafetySide.Left, "108.875")]
+        [InlineData(3, 2, SafetySide.Right, "149.125")]
+        [InlineData(3, 2, SafetySide.Both, "108.875,149.125")]
+        public void PerFondo_PlacesAtTheCentralGap_OrAtTheFondosOwnEnds(int fondos, int topeFondo, SafetySide side, string expected)
         {
             var system = Rack(fondos, shared: false, topeFondo: topeFondo, side: side);
             var positions = Parse(expected);
@@ -159,37 +161,41 @@ namespace RackCad.Tests
             Assert.Equal(1, TopePieces(system));
         }
 
-        // ---- Shared mode on the LAST fondo (no c + 1): today it still collapses, and THIS one is ID12 ----
-        // With no gap there is nothing to share, so the binding rule makes TopeShared inert here: Left → the fondo's
-        // FRONT post, Right → its BACK post, Both → the two. These rows therefore WILL move when the fix lands.
+        // ---- Shared mode on the LAST fondo (no c + 1): nothing to share, so TopeShared is INERT (rule 4) ----
+        // This is the half of ID12 seen from the shared side, and it MOVED with the fix. Before it, every row below
+        // collapsed onto the fondo's BACK post and billed exactly one piece.
         [Theory]
-        [InlineData(2, 1, SafetySide.Left, "95.125")]  // → will become 54.875 (front of f1)
-        [InlineData(2, 1, SafetySide.Right, "95.125")] // → stays 95.125 (back of f1)
-        [InlineData(2, 1, SafetySide.Both, "95.125")]  // → will become 54.875 + 95.125
-        [InlineData(3, 2, SafetySide.Left, "149.125")] // → will become 108.875 (front of f2)
-        [InlineData(3, 2, SafetySide.Right, "149.125")]// → stays 149.125 (back of f2)
-        [InlineData(3, 2, SafetySide.Both, "149.125")] // → will become 108.875 + 149.125
-        public void Shared_OnTheLastFondo_Today_StillCollapses(int fondos, int topeFondo, SafetySide side, string expected)
+        [InlineData(2, 1, SafetySide.Left, "54.875")]          // was 95.125 (the back post)
+        [InlineData(2, 1, SafetySide.Right, "95.125")]         // unchanged
+        [InlineData(2, 1, SafetySide.Both, "54.875,95.125")]   // was one piece at 95.125
+        [InlineData(3, 2, SafetySide.Left, "108.875")]         // was 149.125
+        [InlineData(3, 2, SafetySide.Right, "149.125")]        // unchanged
+        [InlineData(3, 2, SafetySide.Both, "108.875,149.125")] // was one piece at 149.125
+        public void Shared_OnTheLastFondo_IsInert(int fondos, int topeFondo, SafetySide side, string expected)
         {
             var system = Rack(fondos, shared: true, topeFondo: topeFondo, side: side);
+            var positions = Parse(expected);
 
-            Assert.Equal(Parse(expected), TopeXs(system));
-            Assert.Equal(1, TopePieces(system));
+            Assert.Equal(positions, TopeXs(system));
+            Assert.Equal(positions.Count, TopePieces(system));
+
+            // Inert means indistinguishable: the per-fondo mode must give exactly the same thing.
+            Assert.Equal(TopeXs(Rack(fondos, shared: false, topeFondo: topeFondo, side: side)), TopeXs(system));
         }
 
-        // ---- Shared + "Ninguno": the PLAN still resolves a spot, and only the downstream drawable gate hides it ----
-        // The plan documents itself as "the physical topes, resolved once", so this disagreement is a defect of the
-        // plan, not of its consumers. Pinned here because the fix must remove it without disturbing the consumers.
+        // ---- Shared + "Ninguno": the PLAN itself is empty (rule 7) ----
+        // Before the fix the plan resolved a STALE spot here and only the downstream drawable gate hid it, so the
+        // plan disagreed with its own documentation. The drawn and billed results below never changed.
         [Theory]
         [InlineData(2)]
         [InlineData(3)]
-        public void Shared_Ninguno_Today_LeavesAStaleSpotInThePlan(int fondos)
+        public void Shared_Ninguno_LeavesThePlanEmpty(int fondos)
         {
             var system = Rack(fondos, shared: true, topeFondo: -1, side: SafetySide.None);
 
-            Assert.Single(SelectiveTopePlan.Build(system, Catalog)); // the plan says one physical tope...
-            Assert.Empty(TopeXs(system));                            // ...and nothing is drawn
-            Assert.Equal(0, TopePieces(system));                     // ...and nothing is billed
+            Assert.Empty(SelectiveTopePlan.Build(system, Catalog)); // was: exactly one stale spot
+            Assert.Empty(TopeXs(system));                           // unchanged: nothing drawn
+            Assert.Equal(0, TopePieces(system));                    // unchanged: nothing billed
         }
     }
 }

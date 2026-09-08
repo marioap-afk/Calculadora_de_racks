@@ -24,7 +24,9 @@ namespace RackCad.UI
     /// </summary>
     public sealed class SafetyTopeGridWindow : Window
     {
-        private static readonly string[] SideLabels = { "Izquierda", "Derecha", "Ambos" };
+        // I-46: the four options, in the SAME order as the SafetySide ordinals (None=0, Left=1, Right=2, Both=3),
+        // so the index IS the enum value and a round trip cannot silently promote one side into another.
+        private static readonly string[] SideLabels = { "Ninguno", "Izquierda", "Derecha", "Ambas" };
 
         private readonly SelectionMatrixModel model;
         private readonly SelectionMatrixBulkEditor bulkEditor;
@@ -109,7 +111,7 @@ namespace RackCad.UI
             // visual tree and make "the control is not offered" unverifiable.
             this.shared = new CheckBox { Content = "Compartido (uno central)", IsChecked = shared, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 4, 0, 4), ToolTip = "Un solo tope central para ambos fondos; desmarcado = uno por fondo (según el lado)." };
             var sideLabel = new TextBlock { Text = "Lado:", Margin = new Thickness(16, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center };
-            this.side = new ComboBox { Width = 100, VerticalAlignment = VerticalAlignment.Center, ToolTip = "Cuando NO es compartido: qué fondo(s) del par central llevan tope." };
+            this.side = new ComboBox { Width = 100, VerticalAlignment = VerticalAlignment.Center, ToolTip = "En qué extremo va el tope: Izquierda = el extremo bajo, Derecha = el alto, Ambas = los dos, Ninguno = ninguno." };
             foreach (var s in SideLabels) this.side.Items.Add(s);
             this.side.SelectedIndex = SideIndex(side);
             if (showSharedAndSide)
@@ -185,9 +187,10 @@ namespace RackCad.UI
         {
             switch (side)
             {
-                case SafetySide.Left: return 0;
-                case SafetySide.Right: return 1;
-                default: return 2; // Both
+                case SafetySide.None: return 0;
+                case SafetySide.Left: return 1;
+                case SafetySide.Right: return 2;
+                default: return 3; // Both
             }
         }
 
@@ -195,8 +198,9 @@ namespace RackCad.UI
         {
             switch (index)
             {
-                case 0: return SafetySide.Left;
-                case 1: return SafetySide.Right;
+                case 0: return SafetySide.None;
+                case 1: return SafetySide.Left;
+                case 2: return SafetySide.Right;
                 default: return SafetySide.Both;
             }
         }

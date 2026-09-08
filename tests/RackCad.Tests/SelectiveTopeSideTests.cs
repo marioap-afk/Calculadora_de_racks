@@ -163,13 +163,16 @@ namespace RackCad.Tests
         public void OneFondo_Ninguno_LeavesThePlanEmpty(bool shared)
             => Assert.Empty(SelectiveTopePlan.Build(OneFondoRack(SafetySide.None, shared), Catalog));
 
-        // ---- The FRONTAL must bill what it draws: today it ignores the side entirely and draws a piece nobody counts ----
+        // ---- Rule 8: the FRONTAL is an elevation — nothing when there is no physical tope, and ONE schematic
+        // projection per cell when there is. It is NOT the BOM count: with "Ambas" the two pieces sit at different
+        // DEPTHS and collapse onto the same place in an elevation, so drawing two would be drawing a lie. What the
+        // frontal must not do is draw while the BOM bills nothing, which is what it does today for "Derecha".
         [Theory]
-        [InlineData(SafetySide.None)]
-        [InlineData(SafetySide.Left)]
-        [InlineData(SafetySide.Right)]
-        [InlineData(SafetySide.Both)]
-        public void OneFondo_FrontalAgreesWithTheBom(SafetySide side)
+        [InlineData(SafetySide.None, 0)]
+        [InlineData(SafetySide.Left, 1)]
+        [InlineData(SafetySide.Right, 1)]
+        [InlineData(SafetySide.Both, 1)]
+        public void OneFondo_Frontal_IsOneProjectionPerCell_OrNothing(SafetySide side, int expected)
         {
             var system = OneFondoRack(side);
             foreach (var selection in system.SafetySelections) selection.TopeFrontal = true;
@@ -177,8 +180,10 @@ namespace RackCad.Tests
             var frontal = new SelectiveFrontalBuilder().Build(system, Catalog)
                 .Count(instance => instance.Role == HeaderBlockRole.Tope);
 
-            // One frente and one level, so the frontal shows exactly the pieces the BOM bills — no more, no fewer.
-            Assert.Equal(TopePieces(system), frontal);
+            // One frente and one level → at most one projection, and none at all when nothing is billed.
+            Assert.Equal(expected, frontal);
+            if (expected == 0) Assert.Equal(0, TopePieces(system));
+            else Assert.True(TopePieces(system) >= 1);
         }
     }
 }
