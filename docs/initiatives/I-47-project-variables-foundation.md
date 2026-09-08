@@ -120,7 +120,8 @@ el promedio.
 
 El dueno fijo **seis decisiones vinculantes** (C-1..C-6, registro en
 [`docs/automation/decisions/I-47.md`](../automation/decisions/I-47.md)) y autorizo una
-**Proposal V1 documental**: [I-47-proposal-v1.md](I-47-proposal-v1.md).
+**Proposal documental**: [I-47-proposal-v2.md](I-47-proposal-v2.md) (**V2**, Gate C2). La
+[V1](I-47-proposal-v1.md) queda **supersedida** y se conserva solo como registro.
 
 - **Sigue sin autorizarse la implementacion.** La Proposal **compara alternativas y recomienda**; no
   toca `src/` ni `tests/`, y el gate `owner-decision` sigue abierto sobre el contrato que recomienda.
@@ -146,3 +147,4 @@ Si una fase posterior tocara colocacion, dibujo o BOM, `requires_autocad` y `req
 | 2026-09-08 | Reclamo atomico `6e17bd5` aceptado por el remoto; bootstrap (contrato + fila en ROADMAP + registro de autorizacion) |
 | 2026-09-08 | Discovery entregado (`9e25d52`): D1/D2/D3 con evidencia, 10 riesgos, 11 hallazgos fuera de alcance |
 | 2026-09-08 | **Gate C**: el dueno fija C-1..C-6 y autoriza la Proposal V1 documental. WBLOCK/copia entre dibujos queda **diferido**. Sin Architect Review |
+| 2026-09-08 | **Gate C2**: el dueno define **ID22B** (formulas) e **ID21** (refs a propiedades de racks) y fija C2-1..C2-9. **Proposal V2** sustituye a V1: corrige nueve puntos, dos de ellos invalidando afirmaciones de V1 (D-07 y D-13). Sin Architect Review |

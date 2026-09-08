@@ -1,5 +1,17 @@
 # I-47 — Proposal V1: contrato de variables de proyecto (ID22A)
 
+> ## ⛔ SUPERSEDIDA por [I-47-proposal-v2.md](I-47-proposal-v2.md) (Gate C2)
+> **No usar como referencia.** Se conserva como registro historico del Gate C.
+>
+> V2 corrige nueve puntos. Dos de ellos **invalidan** afirmaciones de este documento, no las matizan:
+>
+> - **D-07**: aqui se dice que anadir `[JsonExtensionData]` evita la perdida silenciosa del vinculo.
+>   Es **falso** — un binario pre-I-47 ya compilado no tiene ese atributo y nunca lo tendra.
+> - **D-13**: aqui se presenta el lote de redibujo como si fuera todo-o-nada. **No lo es**:
+>   `SystemBlockWriter.RedrawInPlace` abre y commitea su propia transaccion por bloque.
+>
+> La tabla completa V1 → V2 esta en la §0-bis de V2.
+
 > **Documental. No autoriza implementacion.** No toca `src/` ni `tests/`. Compara alternativas y
 > **recomienda** un contrato; **elegir sigue siendo del dueno** y el gate `owner-decision` sigue
 > abierto. **No se pidio Architect Review** en este gate.
