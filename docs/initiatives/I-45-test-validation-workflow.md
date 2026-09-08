@@ -1,0 +1,398 @@
+---
+schema: rackcad-initiative/v1
+id: I-45
+title: Engineering Productivity — arquitectura de pruebas y workflow de validacion
+type: architecture
+status: integrated
+branch: architecture/test-validation-workflow
+base_branch: main
+priority:
+size:
+depends_on: []
+conflicts_with: []
+context_packs: [delivery-validation, documentation-governance]
+automation_state_path:
+decision_paths: []
+requires_ci: true
+requires_plugin_build: false
+requires_autocad: false
+requires_owner_decision: true
+requires_owner_validation: false
+automation:
+  enabled: false
+  auto_merge: false
+  max_attempts: 3
+---
+
+# Engineering Productivity — arquitectura de pruebas y workflow de validacion
+
+> **Fase actual: INTEGRADA y CERRADA (2026-09-08).** Este cierre documental es el ultimo commit de la
+> rama, y el merge `--no-ff` a `main` se hace con el como punta: `integrada` significa que el merge
+> existe, no que la integracion este verificada —eso lo dicen el CI posterior al merge y la cobertura
+> del Candidato—. **ADR-0033 NO esta aceptado** y sigue `propuesto`.
+>
+> ```
+> Phase:    CERRADA — gates completos, consenso alcanzado, candidato con evidencia completa
+> Baseline: parent of the atomic claim commit on origin/main
+>
+> PLAN VERSION:       V4
+> Coordinator:        AGREED
+> Architect:          AGREED WITH NON-BLOCKING FINDINGS   (0 BLOCKER, 0 HIGH)
+> Open disagreements: NONE
+> CONSENSUS STATUS:   REACHED
+>
+> Gates:    P0 · G0A · G2 · G0B · G1 · G3 · G4 · G5 · G6 · G6-C1 · G7 · G7-C1 · G7-C2  (ejecutados)
+> ADR-0033: propuesto        (ningun gate lo acepto)
+> Candidato: 6d3f9db39316c2f7a1bcbf6b10715597f271fba3
+>
+> PENDIENTE: solo la decision del dueno sobre ADR-0033. No la toma ningun gate, ni este documento.
+> ```
+>
+> El estado verificado, decision por decision, vive en [I-45-conformance.md](I-45-conformance.md).
+>
+> Las cuatro condiciones se cumplen sobre **la misma version concreta del plan**, `V4`. La decision
+> vive en [ADR-0033](../adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md), en estado
+> **`propuesto`**; el plan, en [I-45-plan.md](I-45-plan.md).
+>
+> **El consenso NO es aceptacion del ADR.** Son dos actos de dos autoridades distintas: `adr/README.md`
+> reserva al dueno del repositorio aceptar o rechazar, y los agentes solo redactan en `propuesto`.
+>
+> La secuencia autorizada a partir de aqui es `G0A → G2 → G0B → G1 → G3 → G4 → G5 → G6 → G7`, y no se
+> reordena. Cada gate conserva su alcance: **un hallazgo no es una autorizacion**, y ningun gate
+> posterior se abre si el anterior no produjo su evidencia.
+
+## 1. Objetivo
+
+Entender, con evidencia medida, **por que cuesta lo que cuesta validar un cambio en RackCad**, y
+producir despues un plan acordado para reducir ese coste sin perder capacidad de deteccion.
+
+El resultado verificable de la fase actual es un unico artefacto: una **Proposal** versionada que
+enuncie el problema medido, las alternativas consideradas con su evidencia, la recomendada, sus
+riesgos, su plan de despliegue y su plan de reversion — y el registro de la **reconciliacion** con el
+Arquitecto hasta alcanzar consenso explicito. La implementacion es un alcance posterior y separado,
+que esta iniciativa **no** ejecuta sin ese consenso.
+
+## 2. Problema
+
+Validar un cambio obliga hoy a pagar repetidamente la misma evidencia, y hasta este Discovery el
+repositorio **no tenia ni un solo tiempo registrado**: lleva un registro cuidadoso de conteos de
+pruebas y ninguno de duracion, de modo que el coste que motiva esta iniciativa nunca habia sido
+medido. Discovery esta cerrado y **su evidencia esta versionada**: la autoridad es
+[`I-45-discovery.md`](I-45-discovery.md), con un marcador epistemologico por afirmacion. Lo que sigue
+son los hechos que **sobrevivieron** a esa fase, no las hipotesis con que empezo.
+
+> **Las hipotesis preliminares de este contrato fueron investigadas y varias quedaron REFUTADAS.** No
+> se reproducen aqui como verdad vigente. Entre ellas: que las pruebas que pasan por el hilo STA
+> cuesten del orden de cuatrocientas veces mas **trabajo** —la mayor parte de esa duracion resulto ser
+> bloqueo en cola, no ejecucion—; que `xUnit.MaxParallelThreads=1` este demostrado como aceleracion
+> —la comparacion es de una sola corrida contra una sola corrida, dentro de una banda de ruido mas
+> ancha que el efecto—; que cinco clases concretas dominen **causalmente** la suite del nucleo; y que
+> el job de UI explique alrededor del noventa y cinco por ciento del reloj de pared del CI —es un
+> `max()` sobre dos caminos casi iguales—. La evidencia y las refutaciones, con sus mediciones, viven
+> en [`I-45-discovery.md`](I-45-discovery.md); este contrato no las duplica.
+
+1. **La suite de UI tiene un punto de serializacion real.** Mas del ochenta por ciento de sus pruebas
+   se marshalan sobre **un unico hilo STA compartido**
+   (`tests/RackCad.UI.Tests/StaTestRunner.cs`, un `Dispatcher` estatico invocado de forma sincrona).
+   Es un hecho estructural medido. **Lo que NO esta medido es cuanto trabajo serializado real hay
+   sobre ese hilo**, y por tanto cuanto reloj devolveria tocarlo: esa cantidad sigue siendo `UNKNOWN`
+   y ninguna decision sobre paralelismo puede apoyarse en ella todavia.
+2. **La obligacion de correr todo esta escrita, no heredada.** Vive en cuatro capas independientes:
+   [`AGENTS.md`](../../AGENTS.md) seccion «Pruebas — definicion de terminado»; la precedencia de
+   [`WORKFLOW.md`](../WORKFLOW.md) seccion 10, que eleva `dotnet test` por encima de todo documento y
+   por tanto obliga a pagarla solo para **saber donde estas**; el checklist de cierre de
+   `WORKFLOW.md` seccion 5; y `ci.yml`, que dispara sus cuatro jobs en **todo** push. Ademas, la
+   mayoria de los contratos de `docs/initiatives/` la reinscriben a mano, porque
+   [`TEMPLATE.md`](TEMPLATE.md) no la prescribe.
+3. **No existe taxonomia sobre la que construir una seleccion.** Las dos suites no declaran ningun
+   `[Trait]` ni `IClassFixture`; las unicas dos `[CollectionDefinition]` del repositorio existen para
+   **desactivar** paralelismo, no para seleccionar. La suite del nucleo es un directorio plano bajo un
+   solo namespace.
+4. **El grafo de compilacion no describe el impacto real.** Varios archivos de `tests/RackCad.Tests`
+   verifican `src/RackCad.Plugin` y `src/RackCad.UI` **leyendo su texto**, y ningun `csproj` de
+   pruebas referencia esos proyectos; tres guardas aseveran ademas sobre la prosa de documentos de
+   `docs/`. Un selector construido sobre referencias de proyecto concluiria justo lo contrario de la
+   verdad.
+
+Existe ademas un **sospechoso mayor todavia sin medir**: el ciclo de validacion manual del Owner.
+`docs/guias/validacion-manual-autocad.md` exige la suite completa y dos builds **antes de cada
+carga**, y el historial de `docs/automation/` registra iniciativas con varias rondas y checklists de
+decenas de filas. Si ese ciclo domina el coste total, una estrategia de seleccion de pruebas
+atacaria el termino menor de la suma. Discovery **debe** medirlo antes de proponer.
+
+**Absorcion declarada.** El item «CI por capas» de [`ideas-futuras.md`](../ideas-futuras.md) queda
+absorbido por esta iniciativa **como problema y como alternativa a estudiar**. Absorberlo no decide
+nada: no significa que la solucion final sea CI por capas.
+
+## 3. Alcance
+
+> **Cómo leer esta seccion.** Lo que sigue describe el alcance de la fase **DISCOVERY**, que esta
+> **CERRADA**. Se conserva porque documenta que se hizo y con que limites, **no** porque siga
+> restringiendo el trabajo. El alcance vigente a partir de P0 lo gobiernan el
+> [ADR-0033](../adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md) y los gates del
+> [plan V4](I-45-plan.md), cada uno con el suyo. Los limites **permanentes** de la iniciativa
+> completa —los que siguen vigentes hoy y despues del consenso— estan al final de la seccion 4.
+
+Fase de **DISCOVERY** (cerrada), y solo eso:
+
+- **Medir** el coste real de validar: CI (reloj de pared, por job, y el reparto restore/build/
+  ejecucion), ciclo local obligatorio, perfil por prueba y por clase de las dos suites, y el ciclo de
+  validacion manual del Owner.
+- **Inventariar** la arquitectura de pruebas vigente: taxonomia (o su ausencia), guardas de codigo
+  fuente, goldens, y dependencias por texto y por datos.
+  **Correccion (cierre de Discovery):** este contrato prometia ademas «el mapa empirico prueba ->
+  codigo derivado de la cobertura que el CI ya publica». La promesa **se retira**: el artefacto
+  Cobertura del CI es un agregado por corrida **sin identidad de prueba**, y el job de UI no recolecta
+  cobertura en absoluto, asi que ese mapa **no es derivable de esa fuente**. Evidencia en
+  [`I-45-discovery.md`](I-45-discovery.md) §7.3; el hueco queda registrado en su §14.
+- **Versionar** esa evidencia en [`I-45-discovery.md`](I-45-discovery.md), **ruta unica**, para que
+  sea auditable y reutilizable. (Este contrato nombraba antes tambien `docs/automation/evidence/`;
+  eran dos rutas obligatorias y mutuamente excluyentes para el mismo artefacto, y la seccion 7 exige
+  detenerse ante una desviacion. Se unifica aqui.)
+- **Redactar** la Proposal con alternativas, recomendacion, riesgos, despliegue y reversion.
+- **Reconciliar** con el Arquitecto hasta consenso explicito, registrando acuerdos y desacuerdos.
+- **Corregir** las derivas documentales que el propio Discovery detecte **solo cuando sean errores de
+  hecho comprobables** y no impliquen decision de disenio (por ejemplo, una afirmacion de tiempo
+  obsoleta en `AGENTS.md`, o una regla atribuida a un documento que no la contiene). Cualquier cambio
+  de este tipo se propone al Owner antes de escribirlo.
+
+Todo cambio de **aquella fase** fue documental: no se toco codigo de producto, ni codigo de pruebas, ni
+configuracion de CI. Esa restriccion describe lo que ocurrio en DISCOVERY y **no gobierna los gates
+posteriores**, que tienen su propio alcance autorizado.
+
+## 4. Fuera de alcance
+
+### 4.1 Limites de la fase DISCOVERY — **historicos, ya no vigentes**
+
+Estuvo fuera de aquella fase, aunque el Discovery midiera que serian beneficiosos:
+
+- cambios de producto;
+- cambios funcionales de cualquier tipo;
+- cambios de CI (`.github/workflows/**`, `eng/**`);
+- refactors de pruebas;
+- borrado o consolidacion de pruebas;
+- cambios de paralelismo (incluido `xUnit.MaxParallelThreads`, `CollectionDefinition` y el disenio de
+  `StaTestRunner`);
+- introduccion de `[Trait]` o de cualquier taxonomia de pruebas;
+- implementacion de tiers, Quick CI / Full CI, seleccion por impacto o reutilizacion de evidencia;
+- Golden DWG;
+- **cualquier optimizacion basada en los hallazgos del Discovery**.
+
+Varios de esos puntos **siguen sin autorizarse**, pero ya no por ser fase DISCOVERY: lo decide el
+[ADR-0033](../adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md), que enumera lo que **no** se
+introduce ahora y da a cada pieza su criterio de reapertura. Lo que un gate del [plan V4](I-45-plan.md)
+autoriza expresamente —y solo eso— deja de estar fuera de alcance **en ese gate**.
+
+### 4.2 Limites de la iniciativa completa — **permanentes, vigentes tambien tras el consenso**
+
+Estos no caducan con la fase y ningun gate los levanta:
+
+- cambiar el criterio de **cobertura funcional** del producto;
+- **relajar la validacion manual del Owner en AutoCAD**;
+- sustituir la decision del dueno sobre que se considera «terminado».
+
+## 5. Contexto requerido
+
+- [`AGENTS.md`](../../AGENTS.md) — convenciones obligatorias y «Pruebas — definicion de terminado».
+- [`docs/WORKFLOW.md`](../WORKFLOW.md) — ciclo de iniciativa, checklist de cierre, archivos calientes
+  y precedencia de documentos.
+- [`docs/AUTOMATION_PLAN.md`](../AUTOMATION_PLAN.md) — reclamo atomico, estado versionado y limites.
+- [`docs/ROADMAP.md`](../ROADMAP.md) — fila de I-45 y dependencias.
+- [`docs/initiatives/README.md`](README.md) y [`TEMPLATE.md`](TEMPLATE.md) — contrato de iniciativas.
+- [`docs/ideas-futuras.md`](../ideas-futuras.md) — item «CI por capas», absorbido por esta iniciativa.
+- Context packs `delivery-validation` y `documentation-governance`.
+- `.github/workflows/ci.yml` y `eng/ci/` — **solo lectura** durante DISCOVERY.
+- `tests/RackCad.Tests/`, `tests/RackCad.UI.Tests/` y `tests/RackCad.UI.Tests/StaTestRunner.cs` —
+  **solo lectura** durante DISCOVERY.
+
+## 6. Dependencias
+
+Ninguna iniciativa debe estar integrada previamente: I-45 no depende de trabajo de producto y su fase
+DISCOVERY no toca ningun archivo de codigo, asi que no compite por archivos calientes con ninguna
+iniciativa en curso.
+
+Entradas del dueno que **deben existir** antes de pasar de fase:
+
+1. La decision, ya tomada, de que I-45 es iniciativa formal de ROADMAP y de que «CI por capas» queda
+   absorbido como problema y no como solucion.
+2. El **consenso Coordinator/Architect** sobre una `PLAN_VERSION` concreta. Sin el, la fase de
+   implementacion no existe.
+
+## 7. Archivos esperados
+
+Del gate de reclamo y bootstrap, exactamente tres:
+
+- `docs/initiatives/I-45-test-validation-workflow.md` (nuevo) — este contrato.
+- `docs/ROADMAP.md` (modificado) — fila de I-45.
+- `docs/ideas-futuras.md` (modificado) — «CI por capas» marcado como absorbido.
+
+Del gate de cierre de Discovery:
+
+- `docs/initiatives/I-45-discovery.md` (nuevo) — **la evidencia**, no la Proposal. Es el unico
+  artefacto donde viven las mediciones, las reconstrucciones, las hipotesis refutadas y las
+  incognitas, cada una con su marcador epistemologico.
+- `docs/ROADMAP.md` (modificado) — reubicacion de la fila a la seccion transversal.
+- Este contrato (modificado) — retirada del SHA versionado y ajuste de fases.
+
+Del gate P0 — precondicion documental, exactamente cuatro:
+
+- `docs/adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md` (nuevo) — **la decision**, en
+  estado `propuesto`.
+- `docs/adr/README.md` (modificado) — el ADR en el indice, con ese mismo estado.
+- `docs/initiatives/I-45-plan.md` (nuevo) — **el plan consensuado** `V4` y la secuencia de gates.
+- Este contrato (modificado) — estado del consenso y transicion.
+
+De las fases posteriores:
+
+- `docs/automation/decisions/I-45.md` — decisiones del dueno, si las hubiera.
+- Lo que produzca cada gate, dentro de su propio alcance.
+
+Una desviacion material respecto de estas listas obliga a detenerse.
+
+## 8. Fases
+
+0. **Reclamo y bootstrap documental** — HECHA. Rama, worktree, fila de ROADMAP, contrato y absorcion
+   de «CI por capas». Sin evidencia versionada todavia.
+1. **Cierre de Discovery y versionado de la evidencia** — HECHA **en el commit que publica
+   [`I-45-discovery.md`](I-45-discovery.md)**, no antes. Cierra las cuatro lineas que quedaban
+   abiertas: baseline del ciclo de validacion del Owner (D1), precision y falsos positivos de una
+   seleccion por impacto (D2), contraindicaciones de una futura estrategia multi-STA (D3) y
+   repeticion historica de Full (D4). Corrige ademas la ubicacion de la fila en ROADMAP y retira el
+   SHA de este contrato.
+   > Una version anterior de esta seccion declaraba la fase HECHA cuando su unico entregable **no
+   > existia en ninguna referencia de git**. Lo detecto el critico de cierre y es exactamente la
+   > clase de error de hecho que la seccion 3 autoriza corregir — la misma que el Discovery
+   > documenta en `HANDOFF` (§8.4 de la evidencia). Se conserva la nota para que el error no se
+   > repita por omision.
+2. **Proposal** — HECHA. Problema medido, alternativas con evidencia, recomendacion, riesgos,
+   metricas, despliegue y reversion.
+3. **Revision independiente del Arquitecto** — HECHA. Cuatro rondas, con analisis propio y no
+   aprobacion jerarquica. La primera devolvio ocho cambios materiales; la segunda, tres; la tercera,
+   uno. Cada uno se reconcilio antes de la siguiente.
+4. **Reconciliacion** — HECHA. `V1 → V2 → V3 → V4`, con las versiones anteriores conservadas como
+   historia de lo rechazado en [I-45-plan.md](I-45-plan.md).
+5. **CONSENSUS** — ALCANZADO sobre `V4`, sin desacuerdos abiertos.
+6. **P0 — precondicion documental** — HECHA en el commit que publica el ADR y el plan. Cumple
+   `WORKFLOW` seccion 8, que exige el ADR **antes** de implementar una decision de arquitectura y el
+   documento de proceso **antes** de aplicar un proceso nuevo. **No aplica nada de lo que documenta.**
+7. **Implementacion por gates** — `G0A → G2 → G0B → G1 → G3 → G4 → G5 → G6 → G7`, en ese orden y sin
+   reordenar. Se detalla en [I-45-plan.md](I-45-plan.md).
+
+Cada fase termina con evidencia revisable. A partir de P0 la seccion 4 deja de aplicar **solo dentro
+del alcance que el ADR autoriza y en el gate que corresponde**; todo lo demas sigue fuera.
+
+## 9. Pruebas y builds
+
+**La iniciativa NO es solo documental, y este parrafo lo decia mal.** Redactado en el bootstrap,
+afirmaba «no modifica codigo de produccion ni de pruebas, ni la configuracion de CI»; eso dejo de ser
+cierto en dos gates y se corrige aqui, en G7:
+
+- **`tests/**` SI se toco**, en `G0B`: se anadio `EditorDiscardPromptCollection` y se marcaron las dos
+  clases que mutan el delegado estatico del prompt de descarte, mas higiene de comentarios y dos
+  `using` duplicados en `src/RackCad.Application/Systems/PushBack/PushBackPlanComposer.cs`. Ningun
+  cambio de comportamiento de producto y ninguna prueba nueva ni retirada.
+- **`.github/**` SI se toco**, dos veces: en `G2` (timeouts, TRX, `--blame-hang`, artefactos de
+  diagnostico) y en `G6-C1` (cadencia de cobertura y disparador explicito de Candidato).
+- **`src/**` de producto NO se toco** mas alla de los dos `using` duplicados de G0B, que no cambian
+  comportamiento.
+
+Cada gate declaro su propio alcance y su propia validacion proporcional, y ninguno ejecuto las suites
+completas por ceremonia: el checklist de `WORKFLOW.md` seccion 5 gobierna el **cierre de la
+iniciativa**, no cada commit intermedio.
+
+La validacion proporcional de un cambio documental es:
+
+- comprobar que ninguna prueba lee como texto los documentos modificados — las guardas de fuente
+  vigentes aseveran sobre `docs/adr/`, `docs/initiatives/I-37B-*` y `docs/automation/decisions/I-37.md`,
+  ninguno de los cuales entra en este gate;
+- comprobar que el arbol queda limpio y que `main` no fue modificada;
+- dejar que el CI del push corra, que es la compuerta real segun `WORKFLOW.md` seccion 4.5.
+
+Durante DISCOVERY, cualquier ejecucion de suites es **medicion**, no gate: se ejecuta para producir
+evidencia y sus resultados se versionan como tales.
+
+## 10. Validacion manual
+
+**No aplica.** I-45 no cambia dibujo, BOM, GUID, persistencia, catalogos ni ninguna superficie
+observable en AutoCAD. `requires_autocad: false` y `requires_owner_validation: false`.
+
+Lo que **si** requiere el dueno es una **decision**: el consenso sobre la `PLAN_VERSION`
+(`requires_owner_decision: true`).
+
+## 11. Criterios de aceptacion
+
+Del gate de reclamo y bootstrap, que es al que se referia esta lista cuando se escribio:
+
+1. `origin/architecture/test-validation-workflow` existe y contiene el commit de reclamo con su
+   `Claim-Id`.
+2. I-45 tiene fila en `docs/ROADMAP.md`.
+3. Este contrato existe y declara fase, baseline **sin hash versionado** (`WORKFLOW.md` seccion 8),
+   el bloqueo por consenso y la lista de la seccion 4.
+4. «CI por capas» aparece en `ideas-futuras.md` marcado como absorbido por I-45, sin presentarse como
+   decision arquitectonica.
+5. `main` no fue modificada.
+
+> El criterio que decia «cero cambios en codigo de produccion, codigo de pruebas y configuracion de
+> CI» **valia para aquel gate y dejo de valer despues**: `G0B` toco `tests/**`, y `G2` y `G6-C1`
+> tocaron `.github/**`. El alcance real, por gate, esta en la seccion 14. Se corrige aqui en vez de
+> dejar en pie un criterio que el propio expediente incumple.
+
+De la fase DISCOVERY completa: evidencia versionada, huecos de medicion cerrados, Proposal escrita,
+revision del Arquitecto realizada y consenso registrado — o, si no se alcanza, el desacuerdo
+documentado con su motivo.
+
+## 12. Condiciones para detenerse
+
+- Cualquier tentacion de implementar antes del consenso, incluida una «mejora obvia» que el Discovery
+  acabe de medir.
+- Una medicion que contradiga un hallazgo ya publicado: se corrige el hallazgo antes de seguir.
+- Un cambio de alcance que empuje hacia codigo de producto, de pruebas o de CI.
+- Un conflicto entre estas instrucciones y `AGENTS.md` o `WORKFLOW.md`: se reporta la regla concreta
+  con su evidencia y se espera decision del dueno.
+- La aparicion de otra iniciativa que reclame los mismos archivos documentales.
+
+## 13. Estado versionado y entrega del Pull Request
+
+`automation.enabled: false` y `automation_state_path` vacio: I-45 se conduce manualmente, igual que
+las iniciativas recientes del mismo tipo, de modo que **no** se crea
+`docs/automation/state/I-45.yml` y **no** se abre Pull Request. El estado en curso se deriva de la
+existencia de `origin/architecture/test-validation-workflow`, conforme a `WORKFLOW.md` seccion 2.
+
+Si el dueno decidiera pasar la iniciativa al ejecutor automatico, ese cambio exige actualizar el
+frontmatter y crear el archivo de estado con el esquema de `TEMPLATE.md` seccion 13; hasta entonces,
+Git es la unica fuente de estado.
+
+El merge automatico esta prohibido, como en toda iniciativa del repositorio.
+
+## 14. Evidencia final
+
+Candidato **`6d3f9db39316c2f7a1bcbf6b10715597f271fba3`**, arbol limpio, SDK resuelto **8.0.423**:
+
+```
+RackCad.Tests            4643 PASS / 0 fail
+RackCad.UI.Tests         1216 PASS / 17 skip / 1233 total
+Build UI Debug           0 errores, 0 advertencias
+Build Plugin Debug       0 errores + 2 MSB3277 conocidos de AutoCAD
+CI push sobre 6d3f9db    corrida 34258522145, los cuatro jobs success, sin cobertura (cadencia)
+AutoCAD                  NO aplica: el unico cambio de producto de la rama son dos `using` duplicados
+```
+
+Consenso de conformidad **REACHED** tras tres rondas: `4d33871` NOT AGREED (`ARCH-01`..`ARCH-04`) →
+`G7-C1`; `19a555f` NOT AGREED (`ARCH-05`) → `G7-C2`; `e932c0c` AGREED WITH NON-BLOCKING FINDINGS, con
+0 BLOCKER y 0 HIGH. El estado verificado decision por decision —matriz V4, comprobaciones diferidas a
+la integracion, metricas con su procedencia, deuda registrada, criterios de reapertura e incognitas
+conocidas— vive en [I-45-conformance.md](I-45-conformance.md).
+
+**Ningun gate modifico `main`.** Lo que si se modifico, por gate:
+
+| Ambito | Gates | Que |
+|---|---|---|
+| Documentacion normativa | G0A, G4, G5, G6, G6-C1, G7 | `AGENTS.md`, `WORKFLOW.md`, la guia de validacion manual |
+| Documentacion de la iniciativa | todos | plan, contrato, metodo, repeticion, conformidad |
+| `.github/workflows/ci.yml` | G2, G6-C1 | diagnostico y fusibles; cadencia de cobertura |
+| `tests/**` | G0B | coleccion que serializa el prompt de descarte, e higiene |
+| `eng/validation/**` | G1, G3, G5, G6 | los dos instrumentos de medicion |
+| `src/**` | G0B | dos `using` duplicados; sin cambio de comportamiento |
+
+ADR-0033 sigue en estado **`propuesto`**: ningun gate lo acepto, y ningun texto operativo depende de
+el como autoridad.

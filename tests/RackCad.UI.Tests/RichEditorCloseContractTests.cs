@@ -26,6 +26,7 @@ namespace RackCad.UI.Tests
     /// El enfrentamiento aserción por aserción está en
     /// <c>docs/automation/evidence/I-39B-caracterizacion-base-vs-contrato.md</c>.</para>
     /// </summary>
+    [Collection(EditorDiscardPromptCollection.Name)]
     public sealed class RichEditorCloseContractTests
     {
         private static RackSelectiveWindow Selective() => SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);

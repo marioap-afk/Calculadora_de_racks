@@ -31,11 +31,15 @@ integrada por I-02 como `feature/dinamico-modular` (sección 9).
 
 ## 2. Iniciativas: la unidad de trabajo
 
-**1 iniciativa = 1 rama = 1 worktree = 1 entrada en ROADMAP.md.**
+**1 iniciativa = 1 rama = 1 worktree = 1 entrada en ROADMAP.md.** La entrada es **obligatoria**, pero
+no siempre **preexistente**: en el caso (d) de abajo nace en el bootstrap inmediatamente posterior al
+reclamo. Lo que nunca ocurre es que una iniciativa viva sin fila.
 
 - Una iniciativa cabe en **1-3 sesiones**. Si crece más, se parte (el ROADMAP muestra cómo).
 - Se abre una rama solo si: (a) la iniciativa está en ROADMAP.md, o (b) es un `fix/` puntual, o
-  (c) es un `experiment/` con pregunta concreta que responder.
+  (c) es un `experiment/` con pregunta concreta que responder, o (d) **el dueño la autoriza
+  explícitamente** aunque todavía no tenga fila — con la obligación de crearla en el bootstrap
+  inmediatamente posterior al reclamo (regla completa abajo).
 - **El registro vivo del trabajo en curso son las ramas del REMOTO** (`git fetch && git branch -r`),
   no las locales. Por eso el reclamo de una iniciativa es su **commit de reclamo + primer push
   aceptado, sin force** (sección 4.1): crear la rama local no reclama nada — dos sesiones pueden
@@ -44,6 +48,40 @@ integrada por I-02 como `feature/dinamico-modular` (sección 9).
   "se estorba con" del ROADMAP codifica esto: **"independiente" significa sin dependencias previas,
   pero los estorbos declarados siguen aplicando** — una iniciativa de relleno solo arranca si sus
   estorbos no están en curso.
+
+### Qué es ROADMAP.md, y cuándo se edita — **autoridad única de esta regla**
+
+`docs/ROADMAP.md` es **planificación, alcance y registro de cierre**. **No es el estado vivo de lo que
+está en curso**: ese estado se deriva, siempre, de la existencia de la rama en el remoto
+(`origin/<rama-de-la-iniciativa>`).
+
+De ahí que sea legítimo editarlo en **tres momentos, y solo en tres**:
+
+1. **Al planificar** una iniciativa, antes de su reclamo.
+2. **En el bootstrap inmediatamente posterior al reclamo**, cuando el dueño autorizó explícitamente
+   una iniciativa que aún no tenía fila (caso (d) de arriba).
+3. **Al integrar o cerrar**, para dejar el registro de cierre.
+
+Y **no** se edita para marcar «en curso», ni en cada sesión, ni en cada gate, ni en cada push.
+
+**El caso (d), con precisión.** La autorización explícita del dueño sustituye **únicamente la
+preexistencia de la fila**. No sustituye nada más: siguen siendo obligatorios el reclamo atómico
+(sección 4.1), la rama y el worktree, el contrato de iniciativa y el bootstrap, y la fila durable en
+ROADMAP. La secuencia es:
+
+```
+autorización explícita del dueño → reclamo atómico remoto → bootstrap inmediato
+   → fila en ROADMAP → (solo entonces) trabajo sustantivo
+```
+
+**Ningún trabajo sustantivo antes de que el bootstrap esté versionado.** El bootstrap **no** es el
+reclamo: el reclamo sigue siendo el primer push que el remoto acepta.
+
+**«Ramas paralelas», con precisión** (sección 8 lo repite en su tabla). La prohibición de tocar
+HANDOFF y ROADMAP desde una rama de iniciativa se refiere a **la rama de OTRA iniciativa**, y sigue
+siendo absoluta para `HANDOFF.md`. Para `ROADMAP.md`, la propia rama de la iniciativa puede escribir
+su fila en los momentos 1 y 2, y su marca de cierre en el 3 — nunca su estado «en curso», y nunca la
+fila de una iniciativa ajena.
 
 ## 3. Worktrees
 
@@ -62,8 +100,12 @@ integrada por I-02 como `feature/dinamico-modular` (sección 9).
 - El worktree principal (`D:\Documentos\Codex\Calculadora de racks`) es del humano: los agentes no
   dejan ahí cambios sin commitear. Un CSV editado "en vivo" en el principal se commitea o descarta
   el mismo día (es invisible para los demás worktrees mientras tanto).
-- **Eliminar** el worktree en el mismo acto en que su rama muere (integración o abandono formal),
-  con **borrado seguro por defecto**: `git worktree remove` + `git branch -d` — la `-d` minúscula
+- **Eliminar** el worktree en el mismo acto en que su rama muere, y su rama **no muere con el merge**:
+  sobrevive hasta que el merge exista **y** pasen las comprobaciones posteriores al merge (sección 4.5
+  pasos 6 y 7); solo entonces se limpia. Si esa verificación sale roja, la corrección se hace **en
+  esta rama**, que por eso sigue viva. Una rama también muere por abandono formal, y una `experiment/*`
+  por su cierre propio (sección 4.5). En todos los casos, con **borrado seguro por defecto**:
+  `git worktree remove` + `git branch -d` — la `-d` minúscula
   falla si la rama no está contenida en el HEAD actual, y esa falla ES la protección (investigar,
   no forzar). `git branch -D` queda reservado para: (a) iniciativas abandonadas con autorización
   explícita del dueño, (b) ramas ya archivadas con tag verificado, y (c) reclamos locales
@@ -74,11 +116,23 @@ integrada por I-02 como `feature/dinamico-modular` (sección 9).
 ## 4. Ciclo de vida de una iniciativa (el proceso repetible)
 
 ```
-ROADMAP → rama + commit de reclamo + push (reclamo) → sesiones (rebase al abrir, push al cerrar)
-       → sesión de integración (rebase final → CI → validación → HANDOFF/ROADMAP → merge) → limpieza
+fila en ROADMAP            ┐
+   O BIEN                  ├→ rama + commit de reclamo + push (reclamo) ┐
+autorización del dueño     ┘                                            │
+                                                                        ↓
+   (solo caso (d)) bootstrap inmediato: contrato + fila en ROADMAP  ────┤
+                                                                        ↓
+   sesiones (rebase al abrir, push al cerrar)
+       → sesión de integración (rebase final → CI → validación → HANDOFF/ROADMAP → merge
+         → **CI post-merge** → cobertura del Candidato) → limpieza
 ```
 
-1. **Abrir (reclamo atómico)**: elegir iniciativa del ROADMAP cuyos estorbos no estén en curso →
+El bootstrap **no reclama**: el reclamo sigue siendo el primer push aceptado. La condición de entrada
+es «fila en ROADMAP **o** autorización explícita del dueño», y en el segundo caso la fila se crea
+inmediatamente después (sección 2, que es la autoridad de esta regla).
+
+1. **Abrir (reclamo atómico)**: elegir iniciativa del ROADMAP cuyos estorbos no estén en curso —o una
+   que el dueño haya autorizado explícitamente, caso (d) de la sección 2— →
    `git fetch origin` → crear rama y worktree desde **`origin/main`** (la punta REMOTA del trunk,
    no la local) → **commit vacío de reclamo** (`git commit --allow-empty`) cuyo mensaje incluye:
    el ID de iniciativa (p. ej. `I-26`), el nombre de la rama, un trailer `Claim-Id:` único
@@ -104,21 +158,125 @@ ROADMAP → rama + commit de reclamo + push (reclamo) → sesiones (rebase al ab
    sesión dedicada **en la workstation del dueño** — el build del Plugin exige AutoCAD 2025
    instalado, y cerrado durante el build):
    1. Rebase final de la rama sobre `main` + `git push --force-with-lease`.
-   2. Esperar **CI verde sobre esos commits** + build Debug local de UI y Plugin (la suite no los cubre).
-   3. **Validación manual en AutoCAD sobre el árbol YA rebasado** (sección 6) si cambió
-      comportamiento de dibujo. Si el trunk no avanzó desde una validación previa, esa validación
-      sigue valiendo.
+   2. Esperar **CI verde sobre el SHA empujado** —el tip rebasado; la evidencia de CI no se propaga a
+      los commits anteriores del mismo push— + build Debug local de UI y Plugin. El build del Plugin
+      no lo cubre ninguna suite; el de UI lo compila de paso la suite de UI, que bajo LC-UI puede no
+      haberse corrido en local en las iteraciones previas — razón de más para hacerlo aquí explícito.
+      **Ese tip rebasado es un Candidato**, así que exige además las DOS suites en local sobre él
+      (AGENTS.md, «Pruebas — definicion de terminado», punto 1).
+
+      > **El Candidato NO es el único SHA que entra a `main`**, y decirlo sería falso: el paso 4 crea
+      > después el commit documental de cierre, que es el tip que de hecho se mergea, y el paso 5
+      > produce además el commit de merge. Son tres SHAs distintos con papeles distintos:
+      >
+      > ```
+      > SHA del Candidato      = el SHA validado que porta el producto
+      > SHA de cierre documental = tip real de la rama que se mergea; SHA nuevo, evidencia propia (paso 4)
+      > MERGE_SHA              = SHA nuevo del merge; exige su propio CI (paso 6)
+      > ```
+   2.bis. **Cobertura del Candidato**, si se quiere la señal de salud sobre ese SHA. Se pide de forma
+      **explícita**, nunca se infiere:
+
+      ```bash
+      gh workflow run ci.yml --ref <rama> -f candidate_sha=<sha completo de 40 hex>
+      ```
+
+      El SHA viaja en el **input**, no en `--ref`. La corrida hace checkout de ese commit exacto y
+      **aborta en rojo** si `git rev-parse HEAD` no coincide con lo pedido; sin input explícito
+      también aborta, en vez de medir la punta de la rama. El artifact incluye
+      `measured-sha.txt` con el commit que se midió de verdad.
+
+      > **Condición para que el comando exista:** GitHub solo ofrece `workflow_dispatch` para
+      > workflows presentes en la **rama por defecto**. Mientras `ci.yml` con ese disparador viva solo
+      > en una rama de iniciativa, `gh workflow run` responde `HTTP 422: Workflow does not have
+      > 'workflow_dispatch' trigger`. No es un fallo del proceso: se resuelve solo al integrar.
+
+      **Esa corrida NO es la evidencia «CI verde sobre el SHA exacto» del Candidato.** El registro de
+      un `workflow_dispatch` lleva como `head_sha` la punta del ref despachado, no el SHA medido; lo
+      que prueba qué commit se midió es la comprobación dentro del log. La evidencia de CI del
+      Candidato sigue siendo la corrida de **push** de ese SHA. Y la cobertura **no declara**
+      Candidato: el proceso declara el Candidato, y solo después se le mide.
+
+   3. **Validación manual en AutoCAD sobre el SHA YA rebasado** (sección 6) si cambió comportamiento
+      de dibujo. Una validación anterior **solo** se reutiliza si recae sobre **ese mismo SHA exacto**
+      —y con la misma versión de AutoCAD y la misma biblioteca de bloques—. Que el trunk no haya
+      avanzado **ya no basta**: el rebase produce SHAs nuevos, y el SHA se estampa en el ensamblado
+      (AGENTS.md, «Reutilización de evidencia»).
    4. Último commit de la rama: actualizar `docs/HANDOFF.md` §8-12 y marcar la iniciativa en
       `docs/ROADMAP.md` como `integrada (fecha)` — así el merge lleva los docs consigo y nadie
       commitea directo al trunk después.
+
+      **Este commit es un SHA nuevo y no hereda NADA del Candidato.** Lo que se le exige, de forma
+      explícita y proporcional a lo que contiene —esto es una regla de *qué evidencia se exige*, **no**
+      una reutilización (AGENTS.md, «Reutilización de evidencia»)—:
+
+      - **Comprobar mecánicamente que solo toca documentación**:
+        `git diff --name-only <candidato>..HEAD` no debe listar nada fuera de `docs/`, `README.md` o
+        `CLAUDE.md`. Si toca `src/`, `tests/`, `assets/`, `eng/`, `deploy/`, `.github/` o cualquier
+        archivo de build, **no es un commit documental** y se le exige todo lo del Candidato.
+      - **CI verde sobre ese SHA exacto.** Es evidencia real y propia de ese commit, no heredada: el
+        CI ejecuta las dos suites y los dos builds sobre él.
+      - **No se le exige validación del dueño**, y no porque se reutilice la del Candidato: la
+        obligación de validar en AutoCAD se activa cuando **cambia el comportamiento de dibujo**, y un
+        commit que demostrablemente no toca producto no lo cambia. Si tocara producto, la obligación
+        se activa y el punto anterior ya lo manda al camino completo.
    5. `git checkout main && git merge --no-ff <rama>` y push de `main`. Cada iniciativa queda como
       una burbuja con su nombre; `git log --first-parent main` lee como el registro de iniciativas
       y los commits internos siguen siendo atómicos y bisecables.
+
+   6. **Esperar y verificar el CI POSTERIOR AL MERGE. Es una compuerta real, no un trámite.** El
+      commit de merge es un **SHA nuevo** que nadie ha construido antes —y RackCad estampa el SHA en
+      el ensamblado—, así que ninguna evidencia de la rama lo cubre (AGENTS.md, «Reutilización de
+      evidencia»). Con `MERGE_SHA = git rev-parse main`, exigir sobre **ese** SHA exacto:
+
+      ```
+      corrida de CI sobre MERGE_SHA          = success
+        Tests (Domain + Application)         = success
+        UI Tests (WPF...)                    = success
+        Build UI                             = success
+        Build Plugin without AutoCAD         = success
+      artifact rackcad-coverage-cobertura    = PRESENTE      (main lleva cobertura: ADR-0033 §9)
+      ```
+
+      **Si esa corrida no está verde, o falta la cobertura, la integración no está VERIFICADA** —el
+      merge ya ocurrió y no se deshace— y no se limpia nada. La corrección se hace **en la rama de
+      iniciativa**, que por eso sigue viva: se arregla ahí, se ejecuta la validación que corresponda,
+      se empuja la rama y se vuelve a entrar por el proceso de integración, con su propio merge y su
+      propio CI posterior. **Nunca con un commit directo sobre `main`**: eso está prohibido y este
+      caso no es una excepción.
+
+   7. **Comprobación diferida de la cobertura del Candidato.** GitHub solo ofrece `workflow_dispatch`
+      para workflows presentes en la rama por defecto, así que esta comprobación **solo es posible
+      después** de que el merge publique `ci.yml` en `main`. Mientras la rama aún exista:
+
+      ```bash
+      gh workflow run ci.yml --ref main -f candidate_sha=<CANDIDATE_SHA>
+      ```
+
+      y verificar que `candidate_sha` pedido == `HEAD` del checkout == `measured-sha.txt`, y que el
+      artifact `rackcad-coverage-cobertura` está presente. Es una **señal de salud**: no declara
+      Candidato, y **no** es la evidencia «CI verde sobre el SHA exacto» del Candidato —esa sigue
+      siendo su corrida de `push`—.
+
    - Protección de `main`: contra force-push y borrado, **sin** "required status checks" (el commit
-     de merge local no tendría CI previo y GitHub lo rechazaría). El requisito "CI verde en la rama"
-     del paso 2 es la compuerta real y la verifica la sesión de integración.
-6. **Limpiar**: borrar rama local (`git branch -d` — el merge la contiene), remota (procede: el
-   merge ya existe en `main`) y el worktree, según las reglas de borrado seguro de la sección 3.
+     de merge local no tendría CI previo y GitHub lo rechazaría). Por eso las **dos** compuertas se
+     verifican a mano en la sesión de integración, y **ambas son obligatorias**:
+
+     ```
+     CI de la rama sobre el SHA rebasado  = PRECONDICIÓN del merge   (paso 2)
+     CI de main sobre el MERGE_SHA        = VERIFICACIÓN posterior   (paso 6)
+     ```
+
+     Ninguna sustituye a la otra. Que la primera esté verde **no** dice nada del SHA del merge.
+
+6. **Limpiar** — **solo después de que los pasos 5.6 y 5.7 hayan pasado**: borrar rama local
+   (`git branch -d` — el merge la contiene), remota (procede: el merge ya existe en `main`) y el
+   worktree, según las reglas de borrado seguro de la sección 3.
+
+   La razón del orden **no** es que los SHAs se pierdan: tras el merge son ancestros de `main` y el
+   CI hace checkout por SHA, sin depender de ningún nombre de rama. La razón es que **limpiar es
+   declarar terminada la integración**, y no lo está mientras falte una compuerta: si el paso 5.6
+   sale rojo, la corrección se hace **sobre la rama**, que para entonces ya no existiría.
 
 `experiment/*` tiene un final distinto: se cierra con una **conclusión escrita** (en el ADR o
 iniciativa a la que alimenta, o en ideas-futuras.md) y la rama se borra. Su código no se mergea;
@@ -126,7 +284,12 @@ si el resultado se adopta, se re-implementa limpio en una rama `architecture/`/`
 
 ## 5. Checklist de cierre de iniciativa
 
-- [ ] Suite completa verde (`dotnet test`) y CI verde en la rama.
+- [ ] **Las DOS suites** verdes **en local** —Core y UI, no un solo `dotnet test`— y **CI verde sobre
+      el SHA exacto que ese punto del proceso exija**, no «en la rama»: una rama no tiene evidencia,
+      la tienen sus commits, y el verde de un SHA no dice nada de otro (AGENTS.md, «Reutilización de
+      evidencia»). El cierre exige ambas suites en local: LC-UI retira la corrida de UI de la
+      **iteración ordinaria**, nunca del cierre ni del Candidato (AGENTS.md, «Pruebas — definicion de
+      terminado», punto 1).
 - [ ] Build Debug de UI y Plugin con 0 errores (los MSB3277 conocidos no cuentan).
 - [ ] Bugfix ⇒ test de regresión **verificado fallando** sin el fix (AGENTS.md).
 - [ ] Cambio de dibujo ⇒ validación manual del usuario en AutoCAD (sección 6).
@@ -135,7 +298,13 @@ si el resultado se adopta, se re-implementa limpio en una rama `architecture/`/`
       [adr/README.md](adr/README.md)).
 - [ ] Hallazgos fuera de alcance anotados en ideas-futuras.md (no arreglados "de paso").
 - [ ] En la sesión de integración: HANDOFF §8-12 + estado en ROADMAP como último commit de la rama;
-      tras el merge, rama + worktree borrados.
+      tras el merge, **CI del `MERGE_SHA` verde con su cobertura** y comprobación de la cobertura del
+      Candidato (§4.5 pasos 6 y 7); **solo entonces** rama + worktree borrados.
+      > Ese commit de cierre marca la iniciativa como `integrada` **antes** de que exista el CI del
+      > merge, y eso es correcto: `integrada` significa que **el merge existe en `main`**, no que la
+      > integración esté verificada. Si esa corrida sale roja, la iniciativa **sigue mergeada** pero
+      > su integración **aún no está verificada ni completa**; se corrige en la rama, que por eso no
+      > se ha borrado todavía.
 
 ## 6. Validación manual en AutoCAD (a mitad o al cierre de una iniciativa)
 
@@ -149,7 +318,10 @@ si el resultado se adopta, se re-implementa limpio en una rama `architecture/`/`
 - Cerrar AutoCAD antes de cada rebuild del worktree (el DLL cargado queda bloqueado — trampa
   conocida de AGENTS.md).
 - La validación que cuenta para integrar es la que se hace **sobre el árbol ya rebasado sobre
-  `main`** (sección 4.5.3): validar antes del rebase final solo vale si el trunk no avanzó después.
+  `main`** (sección 4.5.3): una validación hecha **antes** del rebase final recae sobre un SHA que ya
+  no existe en la rama, así que **no vale** para el SHA rebasado, aunque el árbol sea idéntico y
+  aunque el trunk no se haya movido. La reutilización se decide por **SHA exacto**, nunca por árbol
+  (AGENTS.md, «Reutilización de evidencia»).
 
 ## 7. Archivos calientes (alto riesgo de conflicto)
 
@@ -159,15 +331,19 @@ cualquier iniciativa que los toque.
 | Archivo | Por qué es caliente |
 |---|---|
 | `docs/HANDOFF.md` | Único doc de estado; se actualiza SOLO en la sesión de integración (último commit de la rama), nunca en sesiones paralelas |
-| `docs/ROADMAP.md` | Estado de iniciativas; se edita SOLO al integrar (misma regla). El estado "en curso" NO se anota ahí: se deriva de la existencia de la rama en origin |
-| `assets/catalogs/*.csv` | Datos compartidos por todos los sistemas y ~23 archivos de tests. **Append-only** (filas nuevas al final); nunca reordenar ni re-guardar con otro encoding |
-| `src/RackCad.UI/RackSelectiveWindow.xaml.cs` (~2,460 líneas) | Editor más grande; toda feature del selectivo pasa por aquí |
-| `src/RackCad.Plugin/RackFrameCommands.cs` + partials | Una clase en 12 archivos con helpers estáticos cruzados |
-| `src/RackCad.UI/RackFrameConfiguratorViewModel.cs` (~2,550 líneas) | God-ViewModel del configurador |
-| `src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs` | DeepCopy + DTO de seguridad: cada familia nueva lo toca |
+| `docs/ROADMAP.md` | Planificación, alcance y registro de cierre. Se edita en los **tres momentos** que fija la sección 2, que es la autoridad de esa regla. El estado "en curso" NO se anota ahí: se deriva de la existencia de la rama en origin |
+| `assets/catalogs/*.csv` y `*.json` | Datos compartidos por todos los sistemas: 16 CSV y 3 JSON que **208 archivos de prueba** alcanzan. **Append-only** (filas nuevas al final); nunca reordenar ni re-guardar con otro encoding |
+| Los tres editores grandes de `src/RackCad.UI/Systems/` | `PushBack/RackPushBackSystemWindow.xaml.cs` (3.511 líneas), `Dynamic/RackDynamicSystemWindow.xaml.cs` (2.937) y `Selective/RackSelectiveWindow.xaml.cs` (2.867). Toda feature de su sistema pasa por el suyo |
+| `src/RackCad.UI/RackFrames/RackFrameConfiguratorViewModel.cs` (2.305 líneas) | God-ViewModel del configurador de cabecera |
+| `src/RackCad.Plugin/*Commands*.cs` | 14 archivos de comandos con helpers estáticos cruzados; dos de ellos son parciales de otro (`RackLayoutCommands.Fill.cs`, `RackInventarioCommands.BomTotal.cs`). Tocar uno rara vez basta |
+| `src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs` (776 líneas) | DeepCopy + DTO de seguridad: cada familia nueva lo toca |
 
-(Las iniciativas `architecture/system-registry`, `architecture/editor-shell` y
-`refactor/plugin-commands` existen precisamente para encoger esta lista.)
+Las rutas de esta tabla se verificaron contra el árbol real en el gate G0A de I-45: tres de ellas
+apuntaban a archivos que ya no existían. `RackFrameCommands.cs` desapareció como archivo único cuando
+I-09 partió los comandos del Plugin por área, y los dos editores citados se movieron a
+`src/RackCad.UI/Systems/<sistema>/` con I-23. Una tabla que nombra archivos inexistentes no protege
+nada, así que **cualquier iniciativa que mueva o parta uno de estos archivos actualiza esta fila en la
+misma rama**.
 
 ## 8. Cuándo actualizar cada documento
 
@@ -176,8 +352,10 @@ cualquier iniciativa que los toque.
 | Cambia comportamiento visible, catálogos o elementos | `docs/guias/catalogos-y-plantillas.md` / guía correspondiente | En la misma rama, antes de integrar |
 | Cambian comandos de AutoCAD, build o superficie de uso | `README.md` | En la misma rama |
 | Se toma una decisión de arquitectura (criterios en adr/README.md) | `docs/adr/NNNN-*.md` | ANTES de implementarla |
-| Cierre de iniciativa | `docs/HANDOFF.md` §8-12 y estado en `docs/ROADMAP.md` | En la sesión de integración, como último commit de la rama (sección 4.5.4) |
-| Cierre de sesión intermedia (sin integrar) | Cuerpo del commit + push de la rama | Nunca HANDOFF/ROADMAP desde ramas paralelas |
+| Se planifica una iniciativa | `docs/ROADMAP.md` | Antes de su reclamo (momento 1 de la sección 2) |
+| Bootstrap de una iniciativa que el dueño autorizó explícitamente **sin** fila previa | `docs/ROADMAP.md` + contrato en `docs/initiatives/` | Inmediatamente después del reclamo y **antes de todo trabajo sustantivo** (momento 2 de la sección 2) |
+| Cierre de iniciativa | `docs/HANDOFF.md` §8-12 y estado en `docs/ROADMAP.md` | En la sesión de integración, como último commit de la rama (sección 4.5.4) — momento 3 de la sección 2 |
+| Cierre de sesión intermedia (sin integrar) | Cuerpo del commit + push de la rama | Nunca `HANDOFF.md`, y nunca la fila de OTRA iniciativa en `ROADMAP.md`. La propia fila sí, pero solo en los tres momentos de la sección 2 — jamás para marcar «en curso» |
 | Cambia el proceso mismo | Este documento + ADR si es decisión de fondo | Antes de aplicar el proceso nuevo |
 | Hallazgo fuera de alcance de la iniciativa | `docs/ideas-futuras.md` | Al detectarlo |
 | Conteos de tests / hashes de commit | SOLO `docs/HANDOFF.md` §12 | Nunca copiarlos a otros docs; en ROADMAP la marca de cierre es `integrada (fecha)`, sin hash |

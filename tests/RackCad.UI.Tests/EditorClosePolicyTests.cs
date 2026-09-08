@@ -15,6 +15,7 @@ namespace RackCad.UI.Tests
     /// inverificable es exactamente la que pierde trabajo en silencio. En producción sigue mostrando el mismo
     /// <c>MessageBox</c>; aquí se sustituye la respuesta.</para>
     /// </summary>
+    [Collection(EditorDiscardPromptCollection.Name)]
     public sealed class EditorClosePolicyTests
     {
         // ---- 1. El ámbito pendiente ----

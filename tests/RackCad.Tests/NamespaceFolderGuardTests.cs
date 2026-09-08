@@ -39,9 +39,12 @@ namespace RackCad.Tests
 
         /// <summary>
         /// Los dos proyectos de prueba conservan UN namespace de ensamblado, como excepción explícita.
-        /// El motivo es medible sobre este mismo árbol: 92 de 220 archivos de prueba (42%) ejercitan MÁS DE UN
-        /// sistema —los golden comparan Selectivo contra Dinámico contra Push Back en el mismo archivo—, así que
-        /// asignarles un propietario sería arbitrario justo donde la regla de I-23 exige que sea inequívoco.
+        /// El motivo es ESTRUCTURAL, no una cifra: una fracción grande de los archivos de prueba ejercita MÁS DE
+        /// UN sistema —los golden comparan Selectivo contra Dinámico contra Push Back en el mismo archivo, y las
+        /// guardas de fuente barren árboles enteros—, así que asignarles un propietario sería arbitrario justo
+        /// donde la regla de I-23 exige que sea inequívoco. Mientras exista una sola prueba que cruce sistemas,
+        /// la excepción se sostiene; el porcentaje exacto no añade nada y envejece solo (esta línea llevaba
+        /// «92 de 220 (42%)», medido sobre un árbol que ya no existe).
         /// Además <c>FullyQualifiedName~</c> es la interfaz operativa de verificación del repo: mover los
         /// namespaces cambiaría el significado de cada filtro registrado, y un filtro que pasa a coincidir con
         /// cero pruebas no avisa (AGENTS.md).

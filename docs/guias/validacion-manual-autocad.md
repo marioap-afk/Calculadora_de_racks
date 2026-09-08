@@ -53,6 +53,13 @@ El DLL que se carga es siempre el Debug producido dentro del worktree validado:
 Registra el SHA de Git, la ruta absoluta del DLL, su fecha y, cuando la validación sea gate de
 integración, su SHA-256. Un DLL sin trazabilidad no valida la rama.
 
+> **Si este NETLOAD es para una validación del dueño, el SHA tiene que ser un Candidato.** Los tres
+> comandos de arriba **no** bastan para eso: un Candidato exige además la **suite de UI completa en
+> local** y CI verde sobre ese SHA exacto (AGENTS.md, «Pruebas — definicion de terminado», punto 1;
+> forma de declararlo en §7.1). Una carga exploratoria durante la iteración ordinaria no necesita esa
+> evidencia; una ronda de validación del dueño, sí. Sin ella, el resultado de §6 no se sostiene sobre
+> nada: se estaría aprobando un dibujo producido por un SHA del que no consta que pasara la UI.
+
 ## 3. Cargar con NETLOAD
 
 1. Abre AutoCAD 2025 con un dibujo de prueba recuperable.
@@ -282,5 +289,191 @@ Resultado global: aprobado | rechazado | parcial
 Confirmación explícita del validador:
 ```
 
-Una validación parcial no desbloquea un gate que exige el checklist completo. Después de un rebase
-final, la evidencia anterior solo sigue siendo válida si `main` no avanzó desde el árbol validado.
+Una validación parcial no desbloquea un gate que exige el checklist completo.
+
+**Reutilizar una validación anterior exige el mismo SHA exacto**, más la misma versión de AutoCAD y
+la misma biblioteca de bloques (§7.1). Que el árbol sea idéntico, o que `main` no haya avanzado, **ya
+no autoriza nada**: un rebase o un commit documental producen un SHA nuevo, y el SHA se estampa en el
+ensamblado, así que el binario validado y el binario nuevo **no son el mismo binario**.
+
+### 7.1 Declarar un Candidato
+
+Un **Candidato** es el SHA exacto que se entrega para validar o integrar. No es un archivo ni un
+registro central: es **este bloque, escrito junto a la evidencia de la ronda** —en el contrato de la
+iniciativa, o en el cuerpo del commit que la registra, igual que el veredicto (§8.5)—.
+
+```text
+Candidate SHA:        <sha exacto>
+Arbol limpio:         SI            <- al producir la evidencia local
+SDK resuelto:         <dotnet --version>
+Core Full local:      PASS
+UI Full local:        PASS
+Debug UI build:       PASS
+Debug Plugin build:   PASS
+CI exact SHA:         GREEN (run <id>, job ui-tests success)
+Owner validation:     required | not required | pending | pass
+Biblioteca de bloques: <ruta resuelta>  SHA-256 <hash>   <- solo si hay validacion del dueño
+```
+
+La última línea **solo aplica si esa ronda incluye validación del dueño**; con
+`Owner validation: not required` se omite, y su ausencia entonces no descompleta el bloque. La
+versión de AutoCAD —el cuarto dato de procedencia— ya vive en el bloque de §7 y no se repite aquí.
+
+Estas líneas de procedencia existen por una razón concreta: junto con la versión de AutoCAD de §7,
+cubren los invalidadores de AGENTS.md, «Reutilización de evidencia», que son lo que hace falta para
+decidir después si esa evidencia puede reutilizarse. Sin ellas, la respuesta a «¿sigue valiendo?» es
+`UNKNOWN`, y `UNKNOWN` no autoriza reutilizar.
+
+Reglas, y son cortas:
+
+- **El SHA es exacto.** No vale «la punta de la rama», ni un SHA parecido, ni el de un commit vecino.
+- **`UI Full local: PASS` es obligatorio.** LC-UI retira la corrida de UI de la *iteración ordinaria*,
+  no del Candidato. Un Candidato sin UI Full local **no es Candidato**, aunque su CI esté verde.
+- **`CI exact SHA: GREEN` exige el job `ui-tests`** —publicado como `UI Tests (WPF controls,
+  net8.0-windows)`— **en `success` sobre ese mismo `head_sha`.** Ni el workflow verde con ese job sin
+  correr, ni otra rama, ni otro commit.
+- **Si falta cualquiera de las líneas, no hay Candidato.** No se rellena por analogía con un SHA
+  anterior o posterior, ni se hereda de un push agrupado.
+- **La evidencia local se ejecuta DESPUÉS de crear el commit**, con el árbol limpio, sobre ese `HEAD`
+  exacto. Una suite corrida antes de commitear estampa `git rev-parse HEAD`, que entonces es el
+  **padre**: no vale para este SHA.
+- **La biblioteca de bloques no tiene versión**, así que se identifica por su **ruta resuelta** y su
+  **SHA-256** en el momento de validar. No se versiona el DWG y no se toca.
+
+  La ruta es la que resuelve el producto (`BlockLibraryLocator.ResolvePath`): el **override** guardado
+  en `%APPDATA%\RackCad\settings.json` (`BlockLibraryPath`) **si está definido**, y si no, el
+  `blocks-library.dwg` que acompaña a los catálogos. Con override, el archivo **puede llamarse de otro
+  modo**: no se asume el nombre, y un nombre con aspecto de versión **no es** un campo de versión.
+
+  ```powershell
+  $s    = Join-Path $env:APPDATA 'RackCad\settings.json'
+  $over = if (Test-Path -LiteralPath $s) { (Get-Content -LiteralPath $s -Raw | ConvertFrom-Json).BlockLibraryPath } else { $null }
+  $lib  = if ([string]::IsNullOrWhiteSpace($over)) { '<catalogs>\blocks-library.dwg' } else { $over }
+  (Get-FileHash -LiteralPath $lib -Algorithm SHA256).Hash
+  ```
+
+- Los hashes van aquí, en el registro de la ronda, donde ya viven el commit y el SHA-256 del DLL. No
+  se copian a documentos normativos.
+
+## 8. Duración activa del dueño (métrica EXPERIMENTAL de I-45)
+
+Esta sección **no cambia qué se valida, ni cuánto, ni con qué criterio se aprueba**. No añade ninguna
+casilla al checklist de §7 ni ninguna condición a la lista de aprobación de §6, y **no debe añadirlas
+nunca**. Es un experimento de proceso de la iniciativa I-45.
+
+> **La ausencia de este dato NO es una validación fallida, ni parcial, ni incompleta.** Es un dato
+> experimental ausente. El veredicto funcional —aprobado, rechazado o parcial— se decide por los
+> criterios de §6 y por el bloque de evidencia de §7, exactamente como antes de que existiera esta
+> sección: **este campo no participa en esa decisión**, y su falta no exime de ningún otro campo. Que
+> falte, o que nadie lo preguntara, **no impide que un cambio esté terminado y no bloquea ninguna
+> integración**. Una ronda aprobada sin duración declarada está aprobada, sin matices y sin nota al
+> pie.
+
+Origen de la métrica: [ADR-0033](../adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md) §11.
+Ese ADR está en estado `propuesto`, así que **esta sección se sostiene por sí sola** y no delega en él
+ninguna de sus salvaguardas. El plan de la iniciativa lo dice en una línea:
+[`I-45-plan.md`](../initiatives/I-45-plan.md), gate G4, «No gobierna ningún nivel de validación».
+
+### 8.1 Qué ronda cuenta
+
+Una ronda es **elegible** cuando el dueño **ejecutó realmente una validación manual**: cargó el
+candidato en AutoCAD y operó el producto.
+
+**No** son rondas elegibles, aunque terminen en un veredicto:
+
+- revisión de código;
+- revisión arquitectónica;
+- aprobación de un plan o de un contrato;
+- leer capturas o vídeos sin ejecutar el producto;
+- esperar un candidato, un build o el CI;
+- una pregunta al dueño que no implicó ejecución manual;
+- una ronda que el agente propuso y el dueño no llegó a realizar.
+
+### 8.2 La pregunta
+
+En el **mismo turno** en que el dueño entrega el veredicto de una ronda elegible, el agente pregunta,
+con este texto:
+
+```
+Duración activa aproximada de esta validación: ___ min
+```
+
+Una sola vez por ronda. No se insiste, no se reformula para obtener una cifra y no se pregunta por
+rondas pasadas.
+
+### 8.3 Qué mide, y qué no
+
+**Incluye** el tiempo **activo** dedicado a: abrir y cargar el candidato; operar AutoCAD; recorrer los
+escenarios aplicables; inspeccionar resultados; registrar el veredicto.
+
+**Excluye**: espera de CI; espera de builds; tiempo de agentes; correcciones; pausas e inactividad; y
+el tiempo transcurrido entre mensajes.
+
+### 8.4 Solo lo declara el dueño
+
+El único declarante es **el dueño**. El agente puede preguntar, registrar la respuesta literal y
+contar cuántas rondas elegibles la tienen.
+
+El agente **no puede** estimar, redondear por su cuenta, deducir ni reconstruir el valor a posteriori.
+**Nunca se infiere de marcas de tiempo**, ni de git, ni de Actions, ni del hueco entre dos mensajes.
+La latencia entre entregar un candidato y recibir la respuesta **no es** duración activa: I-45 midió
+un caso de 2 d 16 h de latencia con cero minutos demostrados de trabajo.
+
+Si el dueño dice «como 12 minutos», se registra `12 min`. Si dice «no sé», la ronda **sigue siendo
+elegible** y queda **sin duración**: eso es un dato válido del experimento, no un fallo de nadie.
+
+> La regla de AGENTS.md «la duración de cada suite se mide, no se declara» habla de las **suites
+> automatizadas**. Esta métrica es lo contrario por diseño y no la contradice: el tiempo humano
+> resultó **estructuralmente inmedible** por reconstrucción, y por eso solo se admite declarado.
+
+### 8.5 Dónde se registra
+
+**Una línea, pegada al veredicto de esa ronda, en el registro vivo de la ronda.** No se crea ningún
+archivo, tabla, CSV, base de datos ni panel, y **no** existe un registro central de duraciones.
+
+```
+Veredicto (2026-09-02): APROBADA — 8/8 escenarios
+Duración activa declarada por el dueño: 12 min
+```
+
+El contenedor es el que ya tenga el veredicto de esa ronda, en este orden:
+
+1. **el contrato de la iniciativa** en `docs/initiatives/`, en la sección de esa ronda o de criterio
+   de aprobación — es donde vive el patrón reciente, y donde el checklist ya se escribe antes de la
+   ronda y recibe el veredicto al terminar;
+2. si la iniciativa no tiene contrato, **el cuerpo del commit** que registra el veredicto.
+
+Si el dueño no dio duración, **no se escribe la línea** y no se escribe ninguna otra en su lugar. Una
+línea que diga «duración: desconocida» no aporta nada y sugiere una carencia que no existe.
+
+### 8.6 Cuándo se evalúa el experimento, y cuándo se retira
+
+Se evalúa cuando existan **≥ 10 rondas elegibles** repartidas en **≥ 3 iniciativas distintas**.
+
+```
+tasa de captura = rondas elegibles con duración explícita / rondas elegibles totales
+```
+
+- `tasa de captura ≥ 80 %` → la métrica **puede conservarse**.
+- `tasa de captura < 80 %` → la métrica **se retira del proceso**, y esta sección con ella.
+
+Se dice **tasa de captura**, y no «cumplimiento», a propósito: en esta iniciativa «cumplimiento»
+nombra la violación de un campo **obligatorio**, y este no lo es. Una ronda sin duración no incumple
+nada; solo no aporta el dato.
+
+**De dónde sale el denominador.** Una ronda elegible se identifica por **su veredicto**, en el mismo
+contenedor donde ese veredicto vive (§8.5). Ahí se cuenta: las que llevan la línea de duración son el
+numerador, y las rondas elegibles con veredicto, el denominador. No hace falta ningún registro
+adicional, y por eso no se crea ninguno.
+
+El umbral no se renegocia al llegar. Se retira en vez de sobrevivir como obligación fantasma. Y si al
+cerrar I-45 ese corpus **no** se ha alcanzado, el gate de cierre de la iniciativa decide si la sección
+sigue abierta o se retira: una métrica que nunca llega a evaluarse es la obligación fantasma que esta
+regla existe para evitar.
+
+### 8.7 No se rellena hacia atrás
+
+Las iniciativas anteriores a esta sección quedan con `OwnerActiveDurationMinutes = UNKNOWN`, y así se
+quedan. No se reconstruye, no se estima y **no se le pregunta al dueño por rondas pasadas**. Solo
+tendría valor un valor explícito que el dueño ya hubiera dado en su momento; a fecha de esta sección
+no existe ninguno.
