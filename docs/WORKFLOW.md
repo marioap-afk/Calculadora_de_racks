@@ -119,7 +119,8 @@ autorización del dueño     ┘                                            │
    (solo caso (d)) bootstrap inmediato: contrato + fila en ROADMAP  ────┤
                                                                         ↓
    sesiones (rebase al abrir, push al cerrar)
-       → sesión de integración (rebase final → CI → validación → HANDOFF/ROADMAP → merge) → limpieza
+       → sesión de integración (rebase final → CI → validación → HANDOFF/ROADMAP → merge
+         → **CI post-merge** → cobertura del Candidato) → limpieza
 ```
 
 El bootstrap **no reclama**: el reclamo sigue siendo el primer push aceptado. La condición de entrada
@@ -158,7 +159,17 @@ inmediatamente después (sección 2, que es la autoridad de esta regla).
       no lo cubre ninguna suite; el de UI lo compila de paso la suite de UI, que bajo LC-UI puede no
       haberse corrido en local en las iteraciones previas — razón de más para hacerlo aquí explícito.
       **Ese tip rebasado es un Candidato**, así que exige además las DOS suites en local sobre él
-      (AGENTS.md, «Pruebas — definicion de terminado», punto 1). Es el único SHA que entra a `main`.
+      (AGENTS.md, «Pruebas — definicion de terminado», punto 1).
+
+      > **El Candidato NO es el único SHA que entra a `main`**, y decirlo sería falso: el paso 4 crea
+      > después el commit documental de cierre, que es el tip que de hecho se mergea, y el paso 5
+      > produce además el commit de merge. Son tres SHAs distintos con papeles distintos:
+      >
+      > ```
+      > SHA del Candidato      = el SHA validado que porta el producto
+      > SHA de cierre documental = tip real de la rama que se mergea; SHA nuevo, evidencia propia (paso 4)
+      > MERGE_SHA              = SHA nuevo del merge; exige su propio CI (paso 6)
+      > ```
    2.bis. **Cobertura del Candidato**, si se quiere la señal de salud sobre ese SHA. Se pide de forma
       **explícita**, nunca se infiere:
 
@@ -208,11 +219,56 @@ inmediatamente después (sección 2, que es la autoridad de esta regla).
    5. `git checkout main && git merge --no-ff <rama>` y push de `main`. Cada iniciativa queda como
       una burbuja con su nombre; `git log --first-parent main` lee como el registro de iniciativas
       y los commits internos siguen siendo atómicos y bisecables.
+
+   6. **Esperar y verificar el CI POSTERIOR AL MERGE. Es una compuerta real, no un trámite.** El
+      commit de merge es un **SHA nuevo** que nadie ha construido antes —y RackCad estampa el SHA en
+      el ensamblado—, así que ninguna evidencia de la rama lo cubre (AGENTS.md, «Reutilización de
+      evidencia»). Con `MERGE_SHA = git rev-parse main`, exigir sobre **ese** SHA exacto:
+
+      ```
+      corrida de CI sobre MERGE_SHA          = success
+        Tests (Domain + Application)         = success
+        UI Tests (WPF...)                    = success
+        Build UI                             = success
+        Build Plugin without AutoCAD         = success
+      artifact rackcad-coverage-cobertura    = PRESENTE      (main lleva cobertura: ADR-0033 §9)
+      ```
+
+      **Si esa corrida no está verde, o falta la cobertura, la integración NO está completa** y no se
+      limpia nada: se corrige sobre `main` con su propio commit y su propio CI.
+
+   7. **Comprobación diferida de la cobertura del Candidato.** GitHub solo ofrece `workflow_dispatch`
+      para workflows presentes en la rama por defecto, así que esta comprobación **solo es posible
+      después** de que el merge publique `ci.yml` en `main`. Mientras la rama aún exista:
+
+      ```bash
+      gh workflow run ci.yml --ref main -f candidate_sha=<CANDIDATE_SHA>
+      ```
+
+      y verificar que `candidate_sha` pedido == `HEAD` del checkout == `measured-sha.txt`, y que el
+      artifact `rackcad-coverage-cobertura` está presente. Es una **señal de salud**: no declara
+      Candidato, y **no** es la evidencia «CI verde sobre el SHA exacto» del Candidato —esa sigue
+      siendo su corrida de `push`—.
+
    - Protección de `main`: contra force-push y borrado, **sin** "required status checks" (el commit
-     de merge local no tendría CI previo y GitHub lo rechazaría). El requisito "CI verde en la rama"
-     del paso 2 es la compuerta real y la verifica la sesión de integración.
-6. **Limpiar**: borrar rama local (`git branch -d` — el merge la contiene), remota (procede: el
-   merge ya existe en `main`) y el worktree, según las reglas de borrado seguro de la sección 3.
+     de merge local no tendría CI previo y GitHub lo rechazaría). Por eso las **dos** compuertas se
+     verifican a mano en la sesión de integración, y **ambas son obligatorias**:
+
+     ```
+     CI de la rama sobre el SHA rebasado  = PRECONDICIÓN del merge   (paso 2)
+     CI de main sobre el MERGE_SHA        = VERIFICACIÓN posterior   (paso 6)
+     ```
+
+     Ninguna sustituye a la otra. Que la primera esté verde **no** dice nada del SHA del merge.
+
+6. **Limpiar** — **solo después de que los pasos 5.6 y 5.7 hayan pasado**: borrar rama local
+   (`git branch -d` — el merge la contiene), remota (procede: el merge ya existe en `main`) y el
+   worktree, según las reglas de borrado seguro de la sección 3.
+
+   La razón del orden **no** es que los SHAs se pierdan: tras el merge son ancestros de `main` y el
+   CI hace checkout por SHA, sin depender de ningún nombre de rama. La razón es que **limpiar es
+   declarar terminada la integración**, y no lo está mientras falte una compuerta: si el paso 5.6
+   sale rojo, la corrección se hace **sobre la rama**, que para entonces ya no existiría.
 
 `experiment/*` tiene un final distinto: se cierra con una **conclusión escrita** (en el ADR o
 iniciativa a la que alimenta, o en ideas-futuras.md) y la rama se borra. Su código no se mergea;
@@ -220,10 +276,12 @@ si el resultado se adopta, se re-implementa limpio en una rama `architecture/`/`
 
 ## 5. Checklist de cierre de iniciativa
 
-- [ ] **Las DOS suites** verdes **en local** —Core y UI, no un solo `dotnet test`— y CI verde en la
-      rama. El cierre exige ambas en local: LC-UI retira la corrida de UI de la **iteración
-      ordinaria**, nunca del cierre ni del Candidato (AGENTS.md, «Pruebas — definicion de terminado»,
-      punto 1).
+- [ ] **Las DOS suites** verdes **en local** —Core y UI, no un solo `dotnet test`— y **CI verde sobre
+      el SHA exacto que ese punto del proceso exija**, no «en la rama»: una rama no tiene evidencia,
+      la tienen sus commits, y el verde de un SHA no dice nada de otro (AGENTS.md, «Reutilización de
+      evidencia»). El cierre exige ambas suites en local: LC-UI retira la corrida de UI de la
+      **iteración ordinaria**, nunca del cierre ni del Candidato (AGENTS.md, «Pruebas — definicion de
+      terminado», punto 1).
 - [ ] Build Debug de UI y Plugin con 0 errores (los MSB3277 conocidos no cuentan).
 - [ ] Bugfix ⇒ test de regresión **verificado fallando** sin el fix (AGENTS.md).
 - [ ] Cambio de dibujo ⇒ validación manual del usuario en AutoCAD (sección 6).
@@ -232,7 +290,11 @@ si el resultado se adopta, se re-implementa limpio en una rama `architecture/`/`
       [adr/README.md](adr/README.md)).
 - [ ] Hallazgos fuera de alcance anotados en ideas-futuras.md (no arreglados "de paso").
 - [ ] En la sesión de integración: HANDOFF §8-12 + estado en ROADMAP como último commit de la rama;
-      tras el merge, rama + worktree borrados.
+      tras el merge, **CI del `MERGE_SHA` verde con su cobertura** y comprobación de la cobertura del
+      Candidato (§4.5 pasos 6 y 7); **solo entonces** rama + worktree borrados.
+      > Ese commit de cierre marca la iniciativa como `integrada` **antes** de que exista el CI del
+      > merge. Si esa corrida sale roja, la declaración queda desmentida: se corrige sobre la rama,
+      > que por eso no se ha borrado todavía.
 
 ## 6. Validación manual en AutoCAD (a mitad o al cierre de una iniciativa)
 

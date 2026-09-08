@@ -97,9 +97,10 @@ vacio de reclamo (ID de iniciativa + Claim-Id UUID + Co-Authored-By) + `git push
 el primer push ACEPTADO es el reclamo; si el remoto ya tiene la rama, no forzar: borrar el reclamo
 local y elegir otra iniciativa; rebase al abrir sesion si el trunk avanzo (republicar con
 `--force-with-lease`); push de la rama al cerrar CADA sesion (push de rama != integrar); la
-integracion es serializada (rebase final + CI + validacion + merge --no-ff, WORKFLOW seccion 4.5);
-al cerrar, borrado SEGURO: `git branch -d` (nunca `-D` salvo los casos de WORKFLOW seccion 3) y el
-remoto solo tras confirmar el merge en `main`; todo commit de agente lleva trailer de identificacion
+integracion es serializada (rebase final + CI + validacion + merge --no-ff + **CI posterior al merge**,
+WORKFLOW seccion 4.5); al cerrar, borrado SEGURO: `git branch -d` (nunca `-D` salvo los casos de
+WORKFLOW seccion 3) y el remoto solo tras confirmar el merge en `main` **y que su CI posterior este
+verde** —limpiar antes declara terminada una integracion que aun no lo esta—; todo commit de agente lleva trailer de identificacion
 (Co-Authored-By), tambien los de Codex. No copiar conteos de tests ni hashes de commit fuera de
 `docs/HANDOFF.md` (seccion 12): los numeros copiados divergen.
 
@@ -146,10 +147,23 @@ Un cambio de comportamiento esta terminado cuando:
    se queda sin evidencia de UI** y hay que resolverlo antes de que pueda ser Candidato. No se
    posterga la validacion: se traslada de canal.
 
-   **Que cuenta como evidencia de UI del CI**, y solo esto: el job **`ui-tests`** —el que el CI publica
-   como `UI Tests (WPF controls, net8.0-windows)`— con `conclusion = success` sobre el **`head_sha`
-   exacto** de ese commit. NO basta el workflow en verde si ese job no corrio, ni el mismo SHA en otra
-   rama, ni un commit anterior, ni uno posterior.
+   **Que cuenta como evidencia de UI del CI**, y solo esto, las cuatro condiciones a la vez:
+
+   ```
+   event      = push
+   job        = ui-tests            (publicado como "UI Tests (WPF controls, net8.0-windows)")
+   conclusion = success
+   head_sha   = el SHA empujado, exacto
+   ```
+
+   NO basta el workflow en verde si ese job no corrio, ni el mismo SHA en otra rama, ni un commit
+   anterior, ni uno posterior.
+
+   **`event = push` no es un detalle.** Es lo unico que ata la ejecucion al `head_sha`. Una corrida de
+   **`workflow_dispatch`** lleva como `head_sha` la punta del ref despachado y ejecuta el commit que
+   le pasaron por input: su `head_sha` **no es el SHA medido**. Por eso una corrida de despacho **NO
+   acredita evidencia de UI a ningun SHA por su `head_sha`** —ni al tip, ni al medido—, no sustituye a
+   la corrida de `push` del Candidato y no se propaga. Mide cobertura; eso es todo lo que hace.
 
    **Push agrupado: la evidencia no se propaga.** Si un push lleva `A → B → C` y Actions corre solo
    sobre `C`, solo `C` recibe evidencia; `A` y `B` tienen **evidencia de UI del CI = NINGUNA**. No se
@@ -183,7 +197,10 @@ Un cambio de comportamiento esta terminado cuando:
 5. **No INTEGRAR features al trunk sin la verificacion manual del usuario en AutoCAD** (el dibujo real es
    el criterio final; los tests no ven los bloques DWG reales). El push de la RAMA de iniciativa es
    respaldo y se hace al cerrar CADA sesion (push de rama != integrado); la integracion a `main` espera
-   la confirmacion del usuario (docs/WORKFLOW.md secciones 4 y 6). Cuando el dueño **ejecute** una de
+   la confirmacion del usuario (docs/WORKFLOW.md secciones 4 y 6). El disparador es **la naturaleza del
+   cambio**, no un campo declarado: `requires_owner_validation: false` en el contrato de una iniciativa
+   **no exime** de esta obligacion cuando el cambio la activa — esa metadata solo puede ANADIR
+   (docs/AUTOMATION_PLAN.md, «La metadata de validacion del dueno es MONOTONICA»). Cuando el dueño **ejecute** una de
    esas validaciones, preguntale en el mismo turno su duracion activa y registrala junto al veredicto:
    la definicion completa, la pregunta exacta y sus limites viven en
    [docs/guias/validacion-manual-autocad.md](docs/guias/validacion-manual-autocad.md) §8.
@@ -255,11 +272,12 @@ invalidado y el nuevo necesita sus propias evidencias.
 por SHA exacto: es una **senal de no determinismo**, y se trata como tal con el diagnostico del CI
 —TRX, `--blame-hang`, volcados—. No se convierte en una equivalencia nueva.
 
-**Registro historico, no precedente.** En `docs/HANDOFF.md` y en archivos de evidencia antiguos hay
-entradas que razonan «el commit de cierre no toca `src/`, luego no cambia el binario, luego la
-aprobacion sigue vigente», a veces encadenadas como «con el mismo criterio que I-31, I-35, I-39A…».
-Esa frontera **queda retirada** y **no es citable**: son registros de lo que se hizo entonces, no una
-regla. La premisa era ademas falsa —el SHA se estampa—, y no se corrigen hacia atras.
+**Registro historico, no precedente.** En `docs/HANDOFF.md`, en archivos de evidencia antiguos **y en
+contratos de iniciativas ya cerradas** hay entradas que razonan «el commit de cierre no toca `src/`,
+luego no cambia el binario, luego la aprobacion sigue vigente», a veces encadenadas como «con el mismo
+criterio que I-31, I-35, I-39A…». Esa frontera **queda retirada** y **no es citable desde ninguno de
+esos tres contenedores**: son registros de lo que se hizo entonces, no una regla. La premisa era
+ademas falsa —el SHA se estampa—, y no se corrigen hacia atras.
 
 **Lo que esta regla NO reclama.** I-45 midio **cero** reconfirmaciones por SHA exacto determinables en
 su corpus, y el canal local historico es **UNKNOWN** porque nunca registro contra que SHA corrio. Esta

@@ -43,6 +43,22 @@ resuelven en §2 y §3; ninguno era una divergencia de comportamiento entre lo d
 implementado. Las tablas de §4 resumen por área los 128 enunciados; **el volcado completo de la
 auditoría no se versiona**, igual que el resto de resultados de instrumento.
 
+## 1.bis Revisión del Arquitecto: NOT AGREED, y qué se corrigió
+
+La revisión de conformidad independiente del **Arquitecto** sobre `4d33871` terminó en **NOT AGREED**,
+con **cuatro hallazgos materiales** (0 BLOCKER, 4 HIGH). El **Coordinador los aceptó** y se aplicaron
+en el correctivo **`G7-C1`**. **Dos de los cuatro los había creado I-45 en su propio gate G6-C1.**
+
+| # | Hallazgo | Corrección en `G7-C1` |
+|---|---|---|
+| **ARCH-01** | El CI posterior al merge era obligatorio en `AGENTS.md` y en ADR §7, pero `WORKFLOW` §4.5 no lo exigía en ningún paso, ordenaba limpiar justo después del merge, y su nota llamaba al CI **pre**-merge «la compuerta real» | `WORKFLOW` §4.5 gana los pasos 6 y 7: esperar y verificar el CI sobre el `MERGE_SHA` **con su cobertura**, y la comprobación diferida de la cobertura del Candidato. **La limpieza queda bloqueada hasta que ambos pasen.** La nota se reformula: son **dos** compuertas, ambas obligatorias |
+| **ARCH-02** | «Evidencia de UI del CI» se definía solo por `head_sha`. Desde `G6-C1` una corrida de `workflow_dispatch` tiene `head_sha` = punta del ref y ejecuta otro commit: podía acreditar UI a un SHA cuyo código nunca corrió | La definición exige ahora **las cuatro condiciones**, con `event = push` entre ellas. Un despacho **no acredita UI a ningún SHA** |
+| **ARCH-03** | El instrumento agrupaba **todas** las corridas por `head_sha`, sin filtrar evento: un despacho contaminaría la evidencia de CI del SHA equivocado | Solo entran eventos `push`. Los no-`push` se **excluyen y se cuentan aparte**. **Control E** nuevo, ejercido con material sintético |
+| **ARCH-04** | `requires_owner_validation` / `requires_autocad` podían leerse como exención de la validación del dueño —HANDOFF muestra casos propagados «por analogía»— y G7 cerró esa casilla buscando la nomenclatura `R0–R4`, no el concepto | La metadata es **monotónica**: `false` no exime; gana el requisito más estricto. La fila de §4.1 se reescribe diciendo lo que de verdad se verificó |
+
+**Estado: la re-revisión del Arquitecto está pendiente.** Este documento **no declara** que se haya
+alcanzado consenso de conformidad.
+
 ## 2. Los seis bloqueadores encontrados, y cómo quedaron
 
 | # | Bloqueador | Resolución en G7 |
@@ -78,7 +94,8 @@ reapertura sin sede operativa (§9), y la promesa de un mecanismo automático a 
 | Decisión | Verificación | Estado |
 |---|---|---|
 | Tiers T0–T4 operativos | Sin coincidencias operativas en `src/`, `tests/`, `eng/`, `.github/`; CI con 4 jobs planos | `PASS` |
-| Modelo de riesgo R0–R4 | Los `R1..R4` del repo son etiquetas de ronda e ids de catálogo; ninguno decide ejecución | `PASS` |
+| Modelo de riesgo R0–R4 **introducido por I-45** | Ninguno. Los `R1..R4` del repo son etiquetas de ronda e ids de catálogo, y ninguno decide ejecución | `PASS` |
+| ⚠ Metadata **preexistente** de requisito de validación (`requires_autocad`, `requires_owner_validation`) | **Existe**, es anterior a I-45, y gobierna si se exige la validación del dueño. **Esta casilla se cerró en G7 buscando la nomenclatura `R0–R4`, no el concepto** — lo señaló la revisión del Arquitecto (ARCH-04). Desde `G7-C1` esa metadata es **monotónica**: `false` no exime de una obligación que venga de otra sede, y gana el requisito más estricto | `PASS` tras `G7-C1` |
 | Selector por impacto | `on: push` sin `paths:`; cero `--filter` ejecutable; los cuatro comandos apuntan al csproj completo | `PASS` |
 | Taxonomía manual de pruebas | `[Trait]` = 0, `[Category]` = 0, `*.runsettings` = 0, `xunit.runner.json` = 0 | `PASS` |
 | Quick CI / carril rápido | Un solo workflow; ningún `if:` reduce la población | `PASS` |

@@ -65,6 +65,29 @@ $LocalClasses = @('CoreFullLocal', 'UiFullLocal', 'BuildUiDebugLocal', 'BuildPlu
 $script:Notes = [System.Collections.Generic.List[string]]::new()
 function Add-Note { param([string]$m) $script:Notes.Add($m) }
 
+<#
+    Indexa por head_sha SOLO las corridas cuyo evento ata la ejecucion a ese head_sha. Hoy eso es
+    `push`, y solo `push`.
+
+    Un `workflow_dispatch` no lo cumple desde G6-C1: su head_sha es la punta del ref despachado
+    mientras el checkout —y por tanto el codigo que corre— es el `candidate_sha` del input.
+    Atribuirlo por head_sha acreditaria evidencia a un commit cuyo codigo nunca se ejecuto.
+
+    Es UNA funcion, y no dos copias de la misma condicion, para que el control falsador pueda
+    ejercer ESTE codigo. Un control que reimplemente el filtro no puede fallar aunque el filtro de
+    produccion se rompa, y una asercion que no puede fallar no es evidencia (AGENTS.md).
+#>
+function Get-CiEvidenceIndex {
+    param([object[]]$Runs)
+
+    $index = @{}
+    foreach ($r in @($Runs | Where-Object { $_.event -eq 'push' })) {
+        if (-not $index.ContainsKey($r.headSha)) { $index[$r.headSha] = @() }
+        $index[$r.headSha] += $r
+    }
+    return $index
+}
+
 function Get-RepositoryRoot {
     param([string]$StartDirectory)
     Push-Location -LiteralPath $StartDirectory
@@ -564,7 +587,7 @@ function Get-Metrics {
 # ---------------------------------------------------------------------------
 
 function Invoke-Controls {
-    param([string]$RepositoryRoot, [hashtable]$RunsBySha, [object[]]$AllExecutions)
+    param([string]$RepositoryRoot, [hashtable]$RunsBySha, [object[]]$AllExecutions, [int]$ExcludedNonPushRuns)
 
     $results = [System.Collections.Generic.List[object]]::new()
 
@@ -671,6 +694,36 @@ function Invoke-Controls {
             detail  = "$($merges.Count) corridas post-merge, todas NEW_EVIDENCE"
         })
 
+    # E — un `workflow_dispatch` NO se atribuye como evidencia normal de CI a su head_sha.
+    #
+    # Se ejerce con material SINTETICO a proposito: hoy no existe ningun despacho recuperable en la
+    # historia, y provocar uno artificial para tener el caso seria fabricar evidencia.
+    #
+    # Lo que se invoca es `Get-CiEvidenceIndex`, LA MISMA funcion que construye el indice de
+    # produccion. No se reimplementa el filtro: si alguien lo rompiera alli, este control se pone en
+    # rojo. Un control que copia la condicion que dice vigilar no puede fallar nunca.
+    $fixture = @(
+        [pscustomobject]@{ databaseId = 1; attempt = 1; headSha = ('t' * 40); headBranch = 'rama'; createdAt = '2026-01-01T00:00:00Z'; conclusion = 'success'; event = 'push'; isRerun = $false }
+        [pscustomobject]@{ databaseId = 2; attempt = 1; headSha = ('t' * 40); headBranch = 'rama'; createdAt = '2026-01-02T00:00:00Z'; conclusion = 'success'; event = 'workflow_dispatch'; isRerun = $false }
+    )
+    $fixtureBySha = Get-CiEvidenceIndex -Runs $fixture
+    $attributed = @($fixtureBySha[('t' * 40)])
+    $dispatchLeaked = @($attributed | Where-Object { $_.event -eq 'workflow_dispatch' }).Count
+    $pushKept = @($attributed | Where-Object { $_.event -eq 'push' }).Count
+    $eOk = ($dispatchLeaked -eq 0 -and $pushKept -eq 1)
+    $results.Add([pscustomobject]@{
+            control = 'E'
+            present = $true
+            verdict = $(if ($eOk) { 'PASS' } else { 'FAIL' })
+            detail  = [pscustomobject]@{
+                fixture           = 'dos corridas sobre el MISMO head_sha: una push y una workflow_dispatch, pasadas por Get-CiEvidenceIndex'
+                pushAttributed    = $pushKept
+                dispatchLeaked    = $dispatchLeaked
+                expectation       = 'la push se atribuye al head_sha; la dispatch NO, porque su head_sha no es el SHA medido'
+                realNonPushRunsExcluded = $ExcludedNonPushRuns
+            }
+        })
+
     return $results
 }
 
@@ -688,12 +741,15 @@ Write-Host 'RackCad - telemetria de repeticion de validacion (I-45, G3)' -Foregr
 Write-Host "  sha $($provenance.gitShaShort) en $($provenance.gitBranch)  |  arbol $(if ($provenance.workingTreeClean) { 'limpio' } else { 'SUCIO' })"
 
 $ci = Get-CiRuns -RepositoryRoot $repoRoot -CachePath $CiCachePath -Refresh:$RefreshCi
-$runsBySha = @{}
-foreach ($r in $ci.runs) {
-    if (-not $runsBySha.ContainsKey($r.headSha)) { $runsBySha[$r.headSha] = @() }
-    $runsBySha[$r.headSha] += $r
+
+# Los despachos NO se reclasifican ni se cuentan como otra cosa: G3 mide el canal de CI ORDINARIO de
+# las iniciativas, no la senal de salud de cobertura. Se cuentan aparte y se declaran.
+$runsBySha = Get-CiEvidenceIndex -Runs $ci.runs
+$dispatchRuns = @($ci.runs | Where-Object { $_.event -ne 'push' })
+if ($dispatchRuns.Count -gt 0) {
+    Add-Note "$($dispatchRuns.Count) corridas de evento distinto de 'push' EXCLUIDAS de la evidencia de CI por commit: su head_sha no es el SHA medido. Eventos: $((@($dispatchRuns | ForEach-Object { $_.event } | Sort-Object -Unique)) -join ', ')."
 }
-Write-Host "  CI: $($ci.runs.Count) corridas, $($runsBySha.Keys.Count) SHAs distintos (API declara $($ci.apiTotalCount))"
+Write-Host "  CI: $($ci.runs.Count) corridas, $($runsBySha.Keys.Count) SHAs distintos por push (API declara $($ci.apiTotalCount)); no-push excluidas: $($dispatchRuns.Count)"
 
 $claims = @()
 if ($ClaimsPath) {
@@ -723,7 +779,7 @@ $byInitiative = @($byInitiative)
 
 $allExecutions = @($byInitiative | ForEach-Object { $_.executions })
 $metrics = Get-Metrics -Executions $allExecutions
-$controlResults = $(if ($Controls) { Invoke-Controls -RepositoryRoot $repoRoot -RunsBySha $runsBySha -AllExecutions $allExecutions } else { $null })
+$controlResults = $(if ($Controls) { Invoke-Controls -RepositoryRoot $repoRoot -RunsBySha $runsBySha -AllExecutions $allExecutions -ExcludedNonPushRuns $dispatchRuns.Count } else { $null })
 
 Write-Host ''
 Write-Host '  iniciativa  commits  con CI  sin CI  pushes agrupados  merge con CI  ejecuciones'

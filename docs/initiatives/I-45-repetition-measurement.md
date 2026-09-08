@@ -29,7 +29,11 @@ HANDOFF. Es un hecho del corpus, no un fallo de la búsqueda.
 
 ## 2. Fuentes y orden de autoridad
 
-1. **GitHub Actions real** (`MEASURED`).
+1. **GitHub Actions real** (`MEASURED`) — y **solo los eventos `push`**. Un `workflow_dispatch` lleva
+   como `head_sha` la punta del ref despachado mientras ejecuta el commit que le pasaron por input:
+   atribuirlo por `head_sha` acreditaría evidencia a un commit cuyo código nunca corrió. Se excluyen y
+   se cuentan aparte (corrección `G7-C1`, hallazgo ARCH-03 de la revisión del Arquitecto). El corpus
+   no contiene ninguno, así que los conteos no cambian.
 2. Cuerpos de commit.
 3. Contratos y evidencia de iniciativa.
 4. Registros de validación del dueño.
@@ -236,6 +240,7 @@ en vez de imputarla a ciegas.
 | Control | Veredicto | Qué se comprobó |
 |---|---|---|
 | **A** — mismo SHA con dos corridas | `PASS` | 5 casos en el repositorio, **ninguno en el corpus** |
+| **E** — un `workflow_dispatch` no se atribuye a su `head_sha` | `PASS` | material sintético; no hay despachos reales que atribuir |
 | **B** — cambio de SHA entre dos Full | `PASS` | invariante + ejemplo real |
 | **C** — local → CI del mismo commit | `PASS` | 64 casos, todos `CROSS_CHANNEL` |
 | **D** — CI posterior al merge | `PASS` | todos `NEW_EVIDENCE` |

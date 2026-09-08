@@ -309,6 +309,32 @@ consultarse, pero no es el unico canal admitido.
 `requires_owner_validation: true` exige una confirmacion explicita del dueno antes de considerar la
 iniciativa lista para integracion, incluso si CI esta verde.
 
+### La metadata de validacion del dueno es MONOTONICA: solo puede anadir, nunca quitar
+
+`requires_owner_validation` y `requires_autocad` son **declaraciones que ANADEN una obligacion**, y esa
+es toda su semantica:
+
+```
+true   = este contrato anade o confirma explicitamente el gate de validacion del dueno
+false  = este contrato no anade un gate adicional POR ESTA METADATA
+         NO significa exencion, y no cancela ninguna obligacion que venga de otro sitio
+```
+
+Si `AGENTS.md`, `docs/WORKFLOW.md`, la guia de validacion manual o el alcance de la propia iniciativa
+exigen la validacion del dueno por la **naturaleza del cambio** —el disparador vigente es «cambio el
+comportamiento de dibujo», AGENTS.md punto 5 y WORKFLOW seccion 4.5.3—, entonces
+`requires_owner_validation: false` **NO la cancela**.
+
+**En caso de conflicto gana el requisito aplicable mas estricto.** Y un `false` heredado «por analogia»
+con otra iniciativa no es un argumento: la obligacion se decide por lo que el cambio hace, no por lo
+que declaro un contrato vecino.
+
+Esto no introduce ningun nivel ni modelo de riesgo, y no debe leerse como tal: es la regla de
+composicion de un campo que ya existia, escrita para que un dato autodeclarado no pueda retirar en
+silencio una garantia que otro documento exige
+([ADR-0033](adr/0033-validacion-por-clase-de-evidencia-y-sha-exacto.md) §10, en estado `propuesto`,
+llega a la misma conclusion: esa validacion no se reduce por politica general).
+
 ## 12. Condiciones obligatorias para detenerse
 
 El ejecutor se detiene y deja informe cuando ocurra cualquiera de estas condiciones:
