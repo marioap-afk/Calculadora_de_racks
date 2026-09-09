@@ -59,6 +59,41 @@ namespace RackCad.Application.Persistence
         }
 
         /// <summary>
+        /// Turns what the drawing PHYSICALLY held into what it MEANS.
+        ///
+        /// <para>
+        /// This is the whole of the boundary the register crosses: the layer that touches AutoCAD reports
+        /// absent, present-with-text or present-and-unusable, and every judgement about versions, unknown
+        /// types and unknown definition kinds is made here, where the Core suite can reach it.
+        /// </para>
+        /// <para>
+        /// A null payload is treated as PRESENT AND UNREADABLE rather than absent. "I was not told" is not
+        /// evidence that the drawing has no register, and turning it into an empty one is how every variable
+        /// in a drawing gets erased by the next write.
+        /// </para>
+        /// </summary>
+        public ProjectVariablesReadResult Read(ProjectVariablesPayload payload)
+        {
+            if (payload == null)
+            {
+                return ProjectVariablesReadResult.Unreadable(
+                    "No se pudo determinar el estado del registro de variables de proyecto en el dibujo.");
+            }
+
+            switch (payload.State)
+            {
+                case ProjectVariablesPayloadState.Absent:
+                    return ProjectVariablesReadResult.Absent();
+
+                case ProjectVariablesPayloadState.PresentButUnreadable:
+                    return ProjectVariablesReadResult.Unreadable(payload.Error);
+
+                default:
+                    return Deserialize(payload.Json);
+            }
+        }
+
+        /// <summary>
         /// Reads a register whose entry the caller has already established is PRESENT. The absence of the
         /// entry is a different thing and is modelled by <see cref="ProjectVariablesReadResult.Absent"/>:
         /// this method never turns a failure into an empty register.
