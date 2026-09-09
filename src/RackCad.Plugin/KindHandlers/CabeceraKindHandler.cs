@@ -41,17 +41,28 @@ namespace RackCad.Plugin.KindHandlers
         /// <summary>La cabecera no publica diagnosticos bloqueantes propios: su salida no se filtra aqui (I-42/H11).</summary>
         public string OutputBlockedReason(RackEmbedDocument embed, RackCatalog catalog) => null;
 
-        public string RestampDesign(string designJson, string newId, string copyName)
+        public RestampResult RestampDesign(string designJson, string newId, string copyName)
         {
             var store = new RackProjectStore();
-            var project = store.Deserialize(designJson);
+            RackProject project;
+
+            try
+            {
+                project = store.Deserialize(designJson);
+            }
+            catch (System.Exception ex)
+            {
+                // I-47 G14: fallar es un valor, no un JSON original devuelto como si nada hubiera pasado.
+                return RestampResult.Failure(ex.Message);
+            }
+
             if (project?.Header == null)
             {
-                return designJson;
+                return RestampResult.Success(designJson);
             }
 
             project.Header.Name = copyName;
-            return store.Serialize(project);
+            return RestampResult.Success(store.Serialize(project));
         }
     }
 }

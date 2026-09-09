@@ -231,8 +231,16 @@ namespace RackCad.Plugin
                         if (independent)
                         {
                             var copyName = ComposeCopyName(embed.Name, cell.Label);
-                            var payload = RackEnvelopeRestamp.RestampEnvelope(seed.Payload, copyName);
-                            definitionId = RackCloner.CloneDefinition(database, transaction, seed.DefinitionId, copyName, payload, embed.Name, copyName);
+                            // I-47 G14: mismo contrato que RACKDUPLICAR. Al lanzar sin commit, el lote entero se
+                            // deshace: ninguna celda queda colocada con la identidad de otro rack dentro.
+                            var restamped = RackEnvelopeRestamp.RestampEnvelope(seed.Payload, copyName);
+
+                            if (!restamped.IsSuccess)
+                            {
+                                throw new InvalidOperationException(restamped.Error);
+                            }
+
+                            definitionId = RackCloner.CloneDefinition(database, transaction, seed.DefinitionId, copyName, restamped.DesignJson, embed.Name, copyName);
                         }
 
                         // Every copy keeps the seed's orientation/mirror. NOTE (back-to-back v1): the paired row is placed

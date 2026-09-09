@@ -46,6 +46,6 @@ namespace RackCad.Plugin.KindHandlers
         /// <summary>El rack dinamico no publica diagnosticos bloqueantes propios: su salida no se filtra aqui (I-42/H11).</summary>
         public string OutputBlockedReason(RackEmbedDocument embed, RackCatalog catalog) => null;
 
-        public string RestampDesign(string designJson, string newId, string copyName) => designJson;
+        public RestampResult RestampDesign(string designJson, string newId, string copyName) => RestampResult.Success(designJson);
     }
 }

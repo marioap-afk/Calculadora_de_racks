@@ -61,9 +61,17 @@ namespace RackCad.Plugin.KindHandlers
         /// </summary>
         string OutputBlockedReason(RackEmbedDocument embed, RackCatalog catalog);
 
-        /// <summary>Re-stamp the kind-specific inner identity of an INDEPENDENT copy's design (selective: Id+Name;
-        /// cabecera: Header.Name). Kinds with no inner identity of their own (dynamic, cama) return
-        /// <paramref name="designJson"/> untouched.</summary>
-        string RestampDesign(string designJson, string newId, string copyName);
+        /// <summary>
+        /// Re-stamp the kind-specific inner identity of an INDEPENDENT copy's design (selective: Id+Name;
+        /// cabecera: Header.Name), TYPED (I-47 G14). Kinds with no inner identity of their own (dynamic, cama)
+        /// succeed with <paramref name="designJson"/> untouched.
+        ///
+        /// <para>
+        /// It used to return a bare string, so a design it could not re-stamp came back as the ORIGINAL — and
+        /// the copy was written with a fresh RackId outside and the source's identity inside. A failure is a
+        /// value now, and the caller has to look at it BEFORE materialising anything.
+        /// </para>
+        /// </summary>
+        RestampResult RestampDesign(string designJson, string newId, string copyName);
     }
 }

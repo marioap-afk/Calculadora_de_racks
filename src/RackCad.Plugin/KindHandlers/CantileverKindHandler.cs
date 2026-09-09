@@ -77,14 +77,25 @@ namespace RackCad.Plugin.KindHandlers
         /// <summary>El cantilever no publica diagnosticos bloqueantes propios: su salida no se filtra aqui (I-42/H11).</summary>
         public string OutputBlockedReason(RackEmbedDocument embed, RackCatalog catalog) => null;
 
-        public string RestampDesign(string designJson, string newId, string copyName)
+        public RestampResult RestampDesign(string designJson, string newId, string copyName)
         {
             var store = new RackProjectStore();
-            var project = store.Deserialize(designJson);
+            RackProject project;
+
+            try
+            {
+                project = store.Deserialize(designJson);
+            }
+            catch (System.Exception ex)
+            {
+                // I-47 G14: un diseno que no se puede leer NO se copia tal cual. La copia saldria con la
+                // identidad vieja dentro y una nueva fuera.
+                return RestampResult.Failure(ex.Message);
+            }
 
             if (project?.CantileverLineDesign == null)
             {
-                return designJson; // not a Cantilever payload: leave it byte-for-byte intact
+                return RestampResult.Success(designJson); // not a Cantilever payload: leave it byte-for-byte intact
             }
 
             var design = project.CantileverLineDesign;
@@ -94,7 +105,8 @@ namespace RackCad.Plugin.KindHandlers
             design.Id = Guid.TryParse(newId, out var parsed) ? parsed : Guid.NewGuid();
             design.Name = copyName;
 
-            return store.Serialize(RackProject.ForCantilever(design).WithSourceMetadataFrom(project));
+            return RestampResult.Success(
+                store.Serialize(RackProject.ForCantilever(design).WithSourceMetadataFrom(project)));
         }
     }
 }

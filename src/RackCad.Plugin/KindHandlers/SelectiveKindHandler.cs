@@ -72,13 +72,11 @@ namespace RackCad.Plugin.KindHandlers
         /// <summary>El rack selectivo no publica diagnosticos bloqueantes propios: su salida no se filtra aqui (I-42/H11).</summary>
         public string OutputBlockedReason(RackEmbedDocument embed, RackCatalog catalog) => null;
 
-        public string RestampDesign(string designJson, string newId, string copyName)
-        {
-            var store = new SelectivePalletDesignStore();
-            var design = store.Deserialize(designJson);
-            design.Id = newId;
-            design.Name = copyName;
-            return store.Serialize(design);
-        }
+        /// <summary>
+        /// I-47 G14 — la transformacion entera vive en Application, donde se puede demostrar que el vinculo, el
+        /// literal congelado, la version y los campos desconocidos sobreviven a la copia.
+        /// </summary>
+        public RestampResult RestampDesign(string designJson, string newId, string copyName)
+            => SelectiveAuthoredRestamp.Restamp(designJson, newId, copyName);
     }
 }

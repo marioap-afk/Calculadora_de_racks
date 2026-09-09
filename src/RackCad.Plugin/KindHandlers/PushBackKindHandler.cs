@@ -72,6 +72,6 @@ namespace RackCad.Plugin.KindHandlers
             }
         }
 
-        public string RestampDesign(string designJson, string newId, string copyName) => designJson;
+        public RestampResult RestampDesign(string designJson, string newId, string copyName) => RestampResult.Success(designJson);
     }
 }
