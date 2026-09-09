@@ -4,7 +4,7 @@
 > todavia.** **No se declara `Coordinator=AGREED` ni `Architect=AGREED`.**
 >
 > ```
-> PROPOSAL VERSION:   V4.4
+> PROPOSAL VERSION:   V4.5
 > Sustituye a:        I-47-proposal-v3.md  (commit 4470c6b)   — V1 y V2 ya supersedidas por V3
 > Base del analisis:  9e25d5291daa13c4846112241be6e52526429a47  (Discovery)
 > origin/main:        306e18ed4676e5e96b54d59402c9a230efb137d3  (sin avanzar)
@@ -77,6 +77,23 @@
 >   documentos ya legibles** y por tanto **no puede** expresar la 24 (una hermana indescifrable).
 >
 > El detalle esta en **§0-septies**. **N5 no cambia**: se precisa **donde** vive cada mitad suya.
+>
+> ## V4.5 — revision transversal final del Coordinador
+>
+> Con N1-N8 cerrados, el Coordinador hizo una revision **transversal** —no de la ultima superficie,
+> sino del contrato entero— y encontro tres inconsistencias **entre secciones que por separado eran
+> correctas**:
+>
+> - **N9 (HIGH)** — el documento describia **dos pipelines de BOM incompatibles**: uno en el que
+>   `RACKBOMTOTAL` resuelve el efectivo, y otro en el que lo resuelve `SelectiveKindHandler.BuildBom`.
+>   Ambos aparecian como definitivos.
+> - **N10 (HIGH)** — el probe de D-12 colapsaba **todo lo desconocido en `NEGATIVE`**, contradiciendo
+>   a D-04 (`kind` desconocido = error visible) y a C4-14 (`PropertyId` desconocido = error visible).
+> - **N11 (MEDIUM)** — el comparador de V4-01 se describia sobre «lo que puede cambiar el efectivo o el
+>   vinculo», pero **C4-2 exige preservar `ExtensionData`** en el portador; un authored que preserva
+>   algo que el comparador ignora es una autoridad que no se compara entera.
+>
+> **`Coordinator=DISAGREED` sobre V4.4 exacta** (`fb3d38d`). El detalle esta en **§0-octies**.
 
 ## 0. Premisas — no se comparan
 
@@ -264,6 +281,26 @@ C4.3.
 |---|---|
 | C4.4-1 | **La frontera del authored es por CAPA, no por comando.** La **orquestacion** del BOM puede inspeccionar authored **exclusivamente** en la etapa de *authority precheck*; el **calculo** del BOM, despues del resolver, consume **unicamente** el efectivo |
 | C4.4-2 | **La autoridad authored del BOM la fija una pieza PURA de Application** con tres resultados (`Success` / `NoAuthority(UnreadableSibling)` / `NoAuthority(DivergentSiblings)`). Nunca filtra una hermana illegible para seguir con las legibles. Cero AutoCAD, no construye BOM, no resuelve `ProjectVariables`, y **no es un framework generico** |
+
+## 0-octies. Diff V4.4 → V4.5
+
+| # | Punto | V4.4 decia | V4.5 dice |
+|---|---|---|---|
+| **N9** | Pipeline del BOM | **Dos** call graphs incompatibles, ambos presentados como finales: (A) `RACKBOMTOTAL` → autoridad → **resolver** → `BuildBom` desde el efectivo; (B) `RACKBOMTOTAL` → `BuildBom(embed, catalog, projectVariables)` → el **handler** resuelve | **UNO solo.** `RACKBOMTOTAL` fija la autoridad y pasa el **embed representante ya aprobado** a `handler.BuildBom(...)`; **el handler** resuelve el efectivo. `RACKBOMTOTAL` **no** ejecuta el resolver |
+| **N10** | Probe tri-estado | `known projectVariable && id==target → POSITIVE`; **`en otro caso → NEGATIVE`** — lo desconocido caia a `NEGATIVE` | **Lo desconocido NUNCA es `NEGATIVE`.** `PropertyId` desconocido, `kind` desconocido o `VariableId` no interpretable ⇒ **`INDETERMINATE`**. `NEGATIVE` exige haber **comprendido el mapa entero** |
+| **N11** | `mismaAutoridadAuthored` | Comparaba «lo que puede cambiar el efectivo o el vinculo» | Compara **TODO el estado authored persistido**, **incluido `ExtensionData`**. Solo se excluye la metadata de **vista** del sobre (`View`, `Section`) |
+
+**Nada mas cambia.** N1-N8 permanecen cerrados; **no se reabre** F2, la politica sticky, ni ninguna
+decision C4, C4.2, C4.3 o C4.4. La firma `BuildBom(RackEmbedDocument, RackCatalog,
+ProjectVariablesDocument)` **no se vuelve a tocar**.
+
+### Premisas anadidas en V4.5
+
+| # | Premisa |
+|---|---|
+| C4.5-1 | **Un solo call graph para el BOM.** `RACKBOMTOTAL` reune las hermanas, obtiene la autoridad, y pasa al handler el **embed representante ya aprobado** junto al **mismo** snapshot de `ProjectVariables`. **El resolver se ejecuta UNA vez, dentro del handler.** Elegir representante es seguro **solo despues** de que la autoridad pura demuestre igualdad authored completa |
+| C4.5-2 | **`UNKNOWN` jamas se convierte en `NEGATIVE`.** `NEGATIVE` significa, literalmente, **«se comprendio todo el `PropertyValues` y ninguna referencia usa el objetivo»**. Cualquier cosa no comprendida es `INDETERMINATE` |
+| C4.5-3 | **La igualdad authored es TOTAL**: cubre todo el estado authored persistido del `SelectivePalletDesignDocument`, **incluido `ExtensionData`**, y excluye **solo** `View` y `Section` del sobre |
 
 ## 1. Metodo, y una regla que gobierna todo el documento
 
@@ -657,23 +694,23 @@ autoridad** antes de resolver. Ninguna geometria, ningun BOM y ninguna preview s
 
 | Capa | Quien | Que puede tocar | Que NO hace |
 |---|---|---|---|
-| **Orquestacion del BOM** — *authority precheck* | `RACKBOMTOTAL` | **SI inspecciona authored**, y **solo** para: reunir los payloads de las hermanas · fijar **una** autoridad authored unica · detectar **illegible** o **divergencia** · entregar **UNA** snapshot authored al resolver | **No** calcula geometria. **No** calcula BOM. No decide valores |
+| **Orquestacion del BOM** — *authority precheck* | `RACKBOMTOTAL` | **SI inspecciona authored**, y **solo** para: reunir los payloads de las hermanas · fijar **una** autoridad authored unica · detectar **illegible** o **divergencia** · entregar al handler el **embed representante ya aprobado** | **No** calcula geometria. **No** calcula BOM. **No ejecuta el resolver** (N9). No decide valores |
 | **Calculo del BOM** — tras el resolver | `SelectiveKindHandler` → `SelectiveGeometryResolver` → `SelectiveBomBuilder` | **solo** el `SelectivePalletDesign` **efectivo** | **No** conoce `PropertyValues`. **No** conoce `VariableId`. **No** consume authored. **No** resuelve bindings |
 
 ```
-sibling payloads ──► authority precheck (authored) ──► UNA snapshot authored
-                                                             │
-                                                             ▼
-                                  SelectiveEffectiveDesignResolver(authored, projectVariables)
-                                                             │
-                                                             ▼
-                                              SelectivePalletDesign EFECTIVO
-                                                             │
-                                    ┌────────────────────────┼────────────────────────┐
-                                    ▼                        ▼                        ▼
-                          SelectiveGeometryResolver      dibujo                    preview
+RACKBOMTOTAL
+  sibling payloads ──► authority precheck (AUTHORED) ──► embed representante APROBADO
+                                                                  │
+                                                                  ▼
+  handler.BuildBom(embedAprobado, catalog, projectVariables)  ◄── mismo snapshot del NOD
+                                                                  │
+                     SelectiveEffectiveDesignResolver(authored, projectVariables)   ← UNA vez, aqui
+                                                                  │
+                                                   SelectivePalletDesign EFECTIVO
+                                    ┌─────────────────────────────┼─────────────────────┐
+                                    ▼                             ▼                     ▼
+                          SelectiveGeometryResolver            dibujo                preview
                                     │
-                                    ▼
                             SelectiveBomBuilder
 ```
 
@@ -775,10 +812,14 @@ mismo total se coticen contra estados distintos del registro.
 5. DIVERGEN               -> NO frontal, NO primera, NO mayoria.
                              Reportar que las vistas del RackId tienen disenos divergentes.
                              NO construir el BOM de ese rack desde una hermana arbitraria.
-6. COINCIDEN              -> una authored snapshot logica
-                             -> resolver con el MISMO snapshot de ProjectVariables del comando
-                             -> BuildBom desde el EFECTIVO
+6. COINCIDEN              -> una authored snapshot logica, y con ella un EMBED REPRESENTANTE
+                             ya APROBADO por la autoridad
+                             -> handler.BuildBom(embedAprobado, catalog, snapshotUnicoDelNod)
 ```
+
+> **Elegir un representante es seguro SOLO en el paso 6**, nunca antes: lo que lo autoriza es que la
+> autoridad pura **ya demostro igualdad authored completa** entre todas las hermanas. Antes de esa
+> prueba, cualquier eleccion es la de V4.3 — la del orden de iteracion.
 
 ##### La pieza pura que fija esa autoridad (N8, nueva en V4.4)
 
@@ -794,10 +835,15 @@ Conceptualmente —**el nombre no es contractual**—:
 ```
 ResolveBomAuthoredAuthority( siblingPayloads )  ->  BomAuthoredAuthority      // PURO, Application
 
-    Success(authoredDocument)
+    Success(authoredDocument, payloadAprobado)     // el authored Y el payload/envelope representante
     NoAuthority(UnreadableSibling)
     NoAuthority(DivergentSiblings)
 ```
+
+> **Ajuste de V4.5 (N9):** `Success` transporta —o identifica— **el payload autorizado**, ademas del
+> authored document. Es lo que permite que `RACKBOMTOTAL` entregue al handler un **embed representante
+> ya aprobado** sin volver a elegir por su cuenta. **El nombre y el tipo exactos no son
+> contractuales**; lo contractual es que el representante salga **de la autoridad**, no del llamador.
 
 **Reglas, las nueve:**
 
@@ -817,14 +863,39 @@ La regla 2 es la razon de ser del artefacto. Sin el, «una hermana indescifrable
 divergentes» colapsarian en el mismo camino, y el atajo natural —descartar la que no se lee y seguir con
 la que si— es precisamente el defecto de N5.
 
-**Como lo usa `RACKBOMTOTAL`:**
+**Como lo usa `RACKBOMTOTAL` — UN solo call graph (N9, corregido en V4.5):**
+
+> **Correccion de V4.5.** V4.4 describia **dos** pipelines incompatibles y ambos como definitivos: uno
+> en el que **`RACKBOMTOTAL`** ejecutaba el resolver, y otro —la costura **d1**— en el que lo ejecutaba
+> **`SelectiveKindHandler.BuildBom`**. Se conserva **d1** y la abstraccion comun `IRackKindHandler`, y
+> el resolver corre **una sola vez, dentro del handler**.
 
 ```
-Success(authored)   ->  SelectiveEffectiveDesignResolver(authored, snapshotUnicoDelNod)
-                    ->  BuildBom desde el EFECTIVO
-NoAuthority(...)    ->  politica visible de N5: se omite ese rack con aviso, nombrandolo,
-                        por el canal existente. NUNCA se elige otra hermana.
+RACKBOMTOTAL
+    -> reune TODAS las siblings del RackId
+    -> ResolveBomAuthoredAuthority(...)
+    -> Success  =>  embed REPRESENTANTE ya APROBADO por la autoridad
+    -> handler.BuildBom(embedAprobado, catalog, MISMO snapshot de ProjectVariables)
+
+SelectiveKindHandler.BuildBom(embed, catalog, projectVariables)
+    -> deserializa el authored del embed aprobado
+    -> SelectiveEffectiveDesignResolver(authored, projectVariables)
+    -> SelectiveGeometryResolver
+    -> SelectiveBomBuilder
+
+NoAuthority(...)
+    -> politica visible de N5: se omite ese rack con aviso, nombrandolo, por el canal
+       existente. NUNCA se elige otra hermana.
 ```
+
+**`RACKBOMTOTAL` NO ejecuta el effective resolver.** Lo ejecuta el handler, una vez, con el snapshot
+que el comando le pasa. La firma decidida **no se vuelve a tocar**:
+
+```
+BuildBom(RackEmbedDocument embed, RackCatalog catalog, ProjectVariablesDocument projectVariables)
+```
+
+y los **cinco handlers no-Selectivo siguen ignorando** `projectVariables` (C4.2-5).
 
 **La presentacion no se mezcla con la autoridad.** `RackBomOutputGate` sigue siendo quien **redacta** el
 mensaje visible; el artefacto solo **decide**. Son dos responsabilidades y viven separadas — y ambas en
@@ -1178,8 +1249,20 @@ resolveStickyWriteVersion(stored, hasPropertyValues) :
   (`SelectivePalletDesignDocument.PostCabeceras`). Ese caso anidado pertenece a «Lo que F2 NO
   garantiza» y se declara alli, no se resuelve aqui.
 
-Es, por tanto, una mejora **justificada por si misma**, no un prerequisito del que dependa la
-compatibilidad. Si el dueno prefiere no tocar el DTO selectivo, **F2 sigue funcionando igual**.
+**Pero «no es prerequisito de F2» NO significa «es opcional» (precision de V4.5, N11).** Son dos
+exigencias distintas y solo una depende de F2:
+
+| Exigencia | ¿Depende de F2? |
+|---|---|
+| Que una version pre-I-47 **rechace** un rack promovido | **No** depende de `[JsonExtensionData]`: lo hace el `SchemaGuard` ya compilado + la promocion pegajosa |
+| Que el portador authored de I-47+ **preserve `ExtensionData`** en `load → edit → save` | **Lo exige C4-2**, y es **obligatorio** con independencia de F2 |
+
+Es decir: `[JsonExtensionData]` **no** es el mecanismo que sostiene F2 —eso ya quedo corregido en
+C2-5— pero **si** es parte de como el portador cumple C4-2. Y desde V4.5 tiene una segunda razon: el
+comparador **compara** `ExtensionData`, asi que un portador que no lo preserve produciria divergencias
+fantasma en cuanto un guardado lo perdiera.
+
+**F2 y la politica sticky no se reabren.**
 
 ### D-08 — `VariableId` inexistente = **error visible**, jamas fallback silencioso
 
@@ -1410,18 +1493,42 @@ falta, sino por lo que se encuentra: se busca en `PropertyValues` una entrada cu
 
 El probe es **tri-estado**, no booleano — la distincion es la que N1 obligo a hacer explicita:
 
+> **Corregido en V4.5 (N10).** V4.4 escribia la ultima rama como **«en otro caso ⇒ `NEGATIVE`»**, lo
+> que hacia caer a `NEGATIVE` **todo lo desconocido**. Contradecia a **D-04** (`kind` de referencia
+> desconocido = error visible) y a **C4-14** (`PropertyId` desconocido = error visible), y habria
+> convertido un dibujo escrito por una version posterior en un dibujo **silenciosamente ajeno** a la
+> variable. Ademas el pseudocodigo usaba un `propertyId` suelto, sin decir que el mapa se recorre
+> entero.
+
 ```
 probe(vistaHermana, variableIdObjetivo) : POSITIVE | NEGATIVE | INDETERMINATE   // PURO, suite Core
 
-    el payload RackCad de esa vista NO deserializa   -> INDETERMINATE
-    entrada = authoredDocument.PropertyValues[propertyId]        // comparacion Ordinal (C4-14)
-    entrada != null && entrada.kind == "projectVariable"
-                    && idIgual(entrada.variableId, objetivo)     -> POSITIVE
-    en otro caso                                                 -> NEGATIVE
+  el payload RackCad de esa vista NO deserializa            -> INDETERMINATE
+
+  // se VALIDA Y RECORRE EL MAPA COMPLETO antes de poder declarar NEGATIVE
+  para cada (propertyId, referencia) de authoredDocument.PropertyValues:
+
+      propertyId NO reconocido            (comparacion Ordinal, C4-14)  -> INDETERMINATE   // jamas NEGATIVE
+      referencia.kind NO reconocido       (ID22A solo projectVariable)  -> INDETERMINATE   // jamas NEGATIVE
+      variableId ausente / malformado / no interpretable                -> INDETERMINATE
+
+      kind == "projectVariable" && idIgual(variableId, objetivo)        -> POSITIVE
+
+  SOLO si TODO el mapa se comprendio y NINGUNA referencia usa el objetivo -> NEGATIVE
 ```
 
-`NEGATIVE` significa **«se pudo leer y demostrablemente no referencia el objetivo»**. `INDETERMINATE`
-significa **«no se pudo leer, asi que no se puede afirmar nada»**. Nunca se colapsan.
+**ID22A sigue aceptando un unico `PropertyId`: `selective.verticalClearance`.** Aqui no se disena ID21
+ni ningun otro id: lo que se fija es que **encontrarse uno desconocido no es una respuesta negativa**,
+es una respuesta **que este build no puede dar**.
+
+`NEGATIVE` significa, **literalmente**, «se comprendio **todo** el `PropertyValues` y **ninguna**
+referencia usa el objetivo». `INDETERMINATE` significa «hay algo que este build **no comprende**, asi
+que no puede afirmar nada». Nunca se colapsan, y **lo desconocido nunca cae del lado de `NEGATIVE`**.
+
+> **Esto NO debilita M4** (C4.5-2). M4 cerro que un rack **demostrablemente ajeno** no bloquee, y esa
+> palabra —*demostrablemente*— es justo la que V4.5 hace cumplir: un rack con un `PropertyId` que este
+> build no conoce **no esta demostrado como ajeno**, asi que nunca lo fue. Lo que V4.5 quita no es
+> proteccion de M4: es una **falsa** demostracion que V4.4 admitia por descuido.
 
 **3. El alcance del analisis: solo el Selectivo.** ID22A considera para bindings **unicamente**
 `kind=selective` (C4.2-1). Los racks `dynamic`, `pushback`, `cantilever`, `cabecera` y `cama` no
@@ -1511,11 +1618,35 @@ Application:
 mismaAutoridadAuthored(docs : IReadOnlyList<SelectivePalletDesignDocument>) : bool      // PURO, suite Core
 ```
 
-Entra **todo lo que puede cambiar el diseno efectivo o el estado de vinculo**: los literales authored,
-`PropertyValues` **y** `SchemaVersion` — una vista promovida a `2.x` junto a una hermana en `1.x`
-**es** divergencia, y es el rastro que deja un `Link` interrumpido a mitad del bucle de vistas.
+> **Corregido en V4.5 (N11).** V4.4 lo definia como «todo lo que puede cambiar el diseno efectivo o el
+> estado de vinculo». Eso es **mas estrecho que C4-2**, que exige que el portador preserve tambien
+> `ExtensionData`. Un authored que **preserva** algo que el comparador **ignora** es una autoridad que
+> no se compara entera: dos hermanas podrian declararse «la misma autoridad» difiriendo en datos que
+> una version posterior escribio y que este build no entiende.
 
-Quedan **fuera** los campos del **sobre** que legitimamente difieren por vista: `View` y `Section`.
+**El comparador gobierna TODO el estado authored persistido**, no solo lo que este build sabe que
+cambia geometria:
+
+| Entra en la comparacion | |
+|---|---|
+| `Id` / `Name` authored, cuando corresponda | son del rack, no de la vista |
+| **Todos** los inputs del diseno | literales authored incluidos |
+| **Estructuras y listas anidadas** persistidas | bahias, cabeceras por poste, seguridad, overrides por fondo… |
+| **`PropertyValues`** | el estado de vinculo |
+| **`SchemaVersion`** | una vista en `2.x` junto a una en `1.x` **es** divergencia — el rastro de un `Link` interrumpido |
+| **`ExtensionData`** | **anadido en V4.5**: lo que una version posterior escribio y este build preserva sin entender |
+| **Cualquier estado authored persistido que se anada en el futuro** | la regla es por defecto **incluir**, no por defecto excluir |
+
+**Se excluye SOLO la metadata legitimamente especifica de la vista, que vive en el sobre:**
+`RackEmbedDocument.View` y `RackEmbedDocument.Section`. Nada mas.
+
+> **Consecuencia explicita: dos hermanas iguales en todos los campos conocidos pero distintas en
+> `ExtensionData` son DIVERGENTES.** Puede parecer severo, y es deliberado: si una version posterior
+> escribio autoridad en una vista y no en las otras, este build **no puede** saber cual manda, y esa es
+> exactamente la situacion que V4-01 existe para no resolver a ciegas.
+
+La regla de diseno detras: **por defecto se compara todo lo persistido**, y cada exclusion se justifica
+una a una. La lista de exclusiones tiene hoy **dos** elementos y ambos son del sobre, no del diseno.
 
 > **Vistas fantasma:** un bloque-vista cuyo fondo o corte ya no existe se **borra** en el flujo actual
 > (`staleViewBlocks`), no se compara. Una hermana ausente **no es** divergencia: la divergencia es que
@@ -2061,6 +2192,10 @@ AutoCAD ([ADR-0003](../adr/0003-referencias-autocad-para-ci.md)) y la CI no tien
 | **22** | **BOM: hermanas con authored IGUAL ⇒ `Success(authored)`** con **una** snapshot logica; el efectivo se resuelve despues contra el snapshot unico del comando | §autoridad BOM (N5, N8) |
 | **23** | **BOM: hermanas legibles pero DIVERGENTES ⇒ `NoAuthority(DivergentSiblings)`**, y **ninguna** entrada de BOM para ese rack | §autoridad BOM (N5, N8) |
 | **24** | **BOM: hermana A legible + hermana B INDESCIFRABLE ⇒ `NoAuthority(UnreadableSibling)`, y NO `Success(A)`.** La asercion es sobre el **caso** devuelto, no solo sobre «no hay BOM» | §autoridad BOM (N5, N8) |
+| **25** | **Centinela: `PropertyId` desconocido ⇒ el probe devuelve `INDETERMINATE`, JAMAS `NEGATIVE`** | D-12 probe (N10, C4.5-2) |
+| **26** | **Centinela: `kind` de referencia desconocido ⇒ `INDETERMINATE`, JAMAS `NEGATIVE`** | D-12 probe (N10, C4.5-2) |
+| **27** | **Con cualquiera de los dos anteriores, una operacion target-variable ABORTA** y deja el `MutationPlan` **vacio** | D-12 + D-13 (N10) |
+| **28** | **Centinela: dos hermanas identicas en todos los campos conocidos pero con `ExtensionData` DISTINTO ⇒ el comparador devuelve DIVERGENCIA.** El mismo centinela protege las operaciones de variable (D-12) **y** la autoridad BOM (N5/N8) | §igualdad authored (N11, C4.5-3) |
 
 Los puntos 7 y 11 son los que V3 no tenia, y son **precisamente** los que cierran B2 y M2: ambos son
 **puros** y por tanto plenamente verificables — el preflight opera sobre documentos, no sobre el
@@ -2069,6 +2204,10 @@ dibujo, y el portador es un DTO.
 Los puntos **15-17** nacieron en V4.1 y cierran **V4-01**; el **17** es el que de verdad importa, y en
 V4.2 ya se apoya en un artefacto **definido** (`VariableMutationPreflightResult`, D-13): no basta con
 que el preflight devuelva error, hay que comprobar que **no queda nada planificado**.
+
+Los puntos **25-28** son los de V4.5. Los tres primeros cierran **N10** y el **28** cierra **N11**; el
+28 es un **unico** centinela que protege **dos** superficies a la vez —las operaciones de variable de
+D-12 y la autoridad BOM de N5/N8— porque ambas usan **el mismo** comparador.
 
 Los puntos **22-24** nacieron en V4.3 para cerrar **N5** y en **V4.4** quedan **atados al artefacto
 puro** `ResolveBomAuthoredAuthority` (N8), que es lo que los hace expresables. Los tres operan sobre
@@ -2306,10 +2445,11 @@ C4-1..C4-14 del dueno.**
 1. **La aceptacion del contrato por sus dos revisores.** `Coordinator` y `Architect` deben coincidir
    sobre **la misma version**, y **V4.3 no declara ninguno de los dos**. El estado real, sin adornos:
    `Architect=DISAGREED` sobre **V3** y sobre **V4.1**; el `Coordinator` **retiro** su AGREED en ambas
-   ocasiones y **no lo ha declarado sobre V4.2 ni sobre V4.3**; el `Architect` **no llego a revisar V4.2
-   ni V4.3**, porque cada una fue sustituida antes. **La version a revisar ahora es V4.4.**
+   ocasiones y **no lo ha declarado sobre V4.2, V4.3 ni V4.4** —de hecho `Coordinator=DISAGREED` sobre
+   **V4.4**—; el `Architect` **no llego a revisar V4.2, V4.3 ni V4.4**, porque cada una fue sustituida
+   antes. **La version a revisar ahora es V4.5.**
 2. **El coste de la propagacion** sigue sin medir (riesgo P6). No es una decision de arquitectura.
-**Ninguna de las dos bloquea la revision del Architect sobre V4.4.**
+**Ninguna de las dos bloquea la revision del Architect sobre V4.5.**
 
 > **Corregido en V4.1 (punto 7).** V4 listaba aqui una tercera pregunta: «a que iniciativa pertenece la
 > fusion de conjuntos de variables entre dibujos». **No es una pregunta abierta**: **C3-8 ya retiro esa
@@ -2330,7 +2470,7 @@ C4-1..C4-14 del dueno.**
 | P8 | **Sobre-ingenieria** | Apuesta consciente por la evolucion limpia a ID22B/ID21. La revision adversarial **no** sostuvo ningun hallazgo de sobre-ingenieria |
 | P9 | La transaccion unica **hay que verificarla ejecutando** | Gate de implementacion / Owner Validation (CF-5') |
 | P10 | **Profundidad 1 asumida por descuido** | §10 lo senala; ni la forma persistida ni el modelo de errores deben cerrar esa puerta |
-| **P11** | **El alcance real siguio creciendo en V4.1, V4.2 y V4.3**: dos writers, un portador nuevo, un resolver nuevo con **tres costuras** (una de ellas una interfaz de seis handlers), un documento nuevo con store y guard, el comparador multi-vista con probe tri-estado **reutilizado tambien por el BOM**, el artefacto de preflight **partido en dos mitades**, y ocho operaciones confirmadas. **Cada ronda de revision ha encontrado algo**, y eso es informacion sobre el estado del contrato, no solo sobre las rondas | Todo ello esta **declarado** en CF-3 como trabajo reconocido, no dado por hecho. Es la consecuencia honesta de cerrar los BLOCKER, no un descubrimiento posterior |
+| **P11** | **El alcance real siguio creciendo en V4.1, V4.2 y V4.3**: dos writers, un portador nuevo, un resolver nuevo con **tres costuras** (una de ellas una interfaz de seis handlers), un documento nuevo con store y guard, el comparador multi-vista con probe tri-estado **reutilizado tambien por el BOM**, el artefacto de preflight **partido en dos mitades**, **la autoridad BOM pura que anadio V4.4**, y ocho operaciones confirmadas. **Cada ronda de revision ha encontrado algo**, y eso es informacion sobre el estado del contrato, no solo sobre las rondas | Todo ello esta **declarado** en CF-3 como trabajo reconocido, no dado por hecho. Es la consecuencia honesta de cerrar los BLOCKER, no un descubrimiento posterior |
 | **P12** | **`SelectivePalletDesignDocument` es un DTO muy tocado**: el portador cambia como se guarda **todo** el selectivo, no solo la holgura | El cambio es de **fontaneria de guardado**, no de forma del documento; los golden y el round-trip existentes son la red. Se prueba en Core (D-17 punto 11) |
 
 ## 14. Condiciones de Consensus Freeze
@@ -2339,8 +2479,8 @@ C4-1..C4-14 del dueno.**
 |---|---|
 | **CF-1** | **El contrato de iniciativa refleja el alcance final antes de produccion.** Hoy [`I-47-project-variables-foundation.md`](I-47-project-variables-foundation.md) §3 excluye UI y comando, redactado para DISCOVERY; D-16 los incluye |
 | **CF-2** | **El ADR existe, escrito antes de implementar** (WORKFLOW seccion 8), en estado `propuesto`. **Solo el dueno lo acepta.** **V4 no lo escribe todavia**, por instruccion expresa |
-| **CF-3** | **Los prerequisitos estan reconocidos como trabajo.** La lista, **ampliada en V4**: (a) el **portador del estado authored** — el guardado del selectivo deja de reconstruirse con `From(...)` (C4-2, B2); (b) el helper **sticky monotonico** con su rama de ERROR, sus dos lineas de version y su constante de **lectura `2.x`** (C4-9); (c) el **writer de lote transaction-aware sobre los DOS writers**, incluido `LateralHeaderDrawService`, con verificacion read-only de definiciones (C4-3, B3); (d) el **`SelectiveEffectiveDesignResolver`** y el desplazamiento de dibujo/BOM/preview a consumirlo (C4-4, B4), **con sus tres costuras nombradas (N2)**: **d1** `IRackKindHandler.BuildBom` gana un tercer argumento `ProjectVariablesDocument` —los cinco kinds no-Selectivo lo ignoran—; **d2** `RACKBOMTOTAL` lee el NOD **una vez** y usa **el mismo snapshot** en todo el BOM, **y deja de cotizar desde una sibling arbitraria**: para cada `RackId` Selectivo colocado reune todas sus hermanas, exige **igualdad authored completa** con el comparador de V4-01 y, si divergen o alguna es indescifrable, **omite ese rack con aviso visible** por la politica existente en vez de elegir una (N5, C4.3-1). **Precision de V4.4 (N7, N8):** esa seleccion y validacion de la autoridad authored tiene una **pieza PURA de Application** que la soporta —tres resultados: `Success` / `NoAuthority(UnreadableSibling)` / `NoAuthority(DivergentSiblings)`— para que las pruebas 22-24 sean expresables; `RACKBOMTOTAL` **inspecciona authored SOLO en esa etapa de authority precheck**, y **despues del resolver el BOM consume unicamente el efectivo**; **d3** el **split authored/effective** en `RackSelectiveWindow.BuildDesign`/`BuildSystem`, de modo que lo que se persiste y lo que se dibuja dejen de ser el mismo objeto en un rack vinculado. **`RACKLISTA` NO entra**, y `OutputBlockedReason` **no** cambia; (e) el **`ProjectVariablesDocument`** con store y guard propios (C4-8); (f) el **`SchemaGuard` anidado** para `RackProjectDocument.SelectiveRack` (C4-10); (g) la **extraccion del restamp** a Application (D-17-bis); **(h)** la **autoridad authored multi-vista** con su comparador puro y **su probe tri-estado por vista** (Familia A / Familia B), con el portador de (a) siendo **UNO por `RackId`** —no uno por vista— para no destruir el restampado que hace de `RACKEDITAR` una reconciliacion (V4-01, N1); **(i)** el artefacto **`VariableMutationPreflightResult` / `MutationPlan`**, puro y sin tipos de AutoCAD (N3), **partido en sus dos mitades**: el preflight **semantico** en Application y el **fisico** en el Plugin, con el fisico corriendo solo tras un `Success` del semantico y todavia antes de mutar (N6, C4.3-2) |
-| **CF-4** | **Ambos revisores AGREED sobre la MISMA version.** Estado real tras V4.4: `Architect=DISAGREED` sobre **V3** (`4470c6b`) y sobre **V4.1** (`9301f0f`); el `Coordinator` **no ha declarado AGREED sobre V4.2 ni sobre V4.3**; el `Architect` **no ha revisado V4.2 ni V4.3**; y **V4.4 no tiene AGREED de nadie** |
+| **CF-3** | **Los prerequisitos estan reconocidos como trabajo.** La lista, **ampliada en V4**: (a) el **portador del estado authored** — el guardado del selectivo deja de reconstruirse con `From(...)` (C4-2, B2); (b) el helper **sticky monotonico** con su rama de ERROR, sus dos lineas de version y su constante de **lectura `2.x`** (C4-9); (c) el **writer de lote transaction-aware sobre los DOS writers**, incluido `LateralHeaderDrawService`, con verificacion read-only de definiciones (C4-3, B3); (d) el **`SelectiveEffectiveDesignResolver`** y el desplazamiento de dibujo/BOM/preview a consumirlo (C4-4, B4), **con sus tres costuras nombradas (N2)**: **d1** `IRackKindHandler.BuildBom` gana un tercer argumento `ProjectVariablesDocument` —los cinco kinds no-Selectivo lo ignoran—; **d2** `RACKBOMTOTAL` lee el NOD **una vez** y usa **el mismo snapshot** en todo el BOM, **y deja de cotizar desde una sibling arbitraria**: para cada `RackId` Selectivo colocado reune todas sus hermanas, exige **igualdad authored completa** con el comparador de V4-01 y, si divergen o alguna es indescifrable, **omite ese rack con aviso visible** por la politica existente en vez de elegir una (N5, C4.3-1). **Precision de V4.4 (N7, N8):** esa seleccion y validacion de la autoridad authored tiene una **pieza PURA de Application** que la soporta —tres resultados: `Success` / `NoAuthority(UnreadableSibling)` / `NoAuthority(DivergentSiblings)`— para que las pruebas 22-24 sean expresables; `RACKBOMTOTAL` **inspecciona authored SOLO en esa etapa de authority precheck**, y **despues del resolver el BOM consume unicamente el efectivo**. **Precision de V4.5 (N9): UN solo call graph** — `RACKBOMTOTAL` entrega al handler el **embed representante ya aprobado** por la autoridad y **NO ejecuta el resolver**; lo ejecuta `SelectiveKindHandler.BuildBom` **una sola vez**, con el mismo snapshot; **d3** el **split authored/effective** en `RackSelectiveWindow.BuildDesign`/`BuildSystem`, de modo que lo que se persiste y lo que se dibuja dejen de ser el mismo objeto en un rack vinculado. **`RACKLISTA` NO entra**, y `OutputBlockedReason` **no** cambia; (e) el **`ProjectVariablesDocument`** con store y guard propios (C4-8); (f) el **`SchemaGuard` anidado** para `RackProjectDocument.SelectiveRack` (C4-10); (g) la **extraccion del restamp** a Application (D-17-bis); **(h)** la **autoridad authored multi-vista** con su comparador puro y **su probe tri-estado por vista** (Familia A / Familia B), con el portador de (a) siendo **UNO por `RackId`** —no uno por vista— para no destruir el restampado que hace de `RACKEDITAR` una reconciliacion (V4-01, N1); **(i)** el artefacto **`VariableMutationPreflightResult` / `MutationPlan`**, puro y sin tipos de AutoCAD (N3), **partido en sus dos mitades**: el preflight **semantico** en Application y el **fisico** en el Plugin, con el fisico corriendo solo tras un `Success` del semantico y todavia antes de mutar (N6, C4.3-2) |
+| **CF-4** | **Ambos revisores AGREED sobre la MISMA version.** Estado real tras V4.5: `Architect=DISAGREED` sobre **V3** (`4470c6b`) y sobre **V4.1** (`9301f0f`); **`Coordinator=DISAGREED` sobre V4.4** (`fb3d38d`); el `Coordinator` **no ha declarado AGREED sobre V4.2, V4.3 ni V4.4**; el `Architect` **no ha revisado V4.2, V4.3 ni V4.4**; y **V4.5 no tiene AGREED de nadie** |
 
 **CF-5' — donde vive la validacion en AutoCAD.** No es condicion de Freeze; es gate de implementacion
 y Owner Validation, con el alcance de la tabla de D-17.
