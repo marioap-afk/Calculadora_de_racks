@@ -4,7 +4,7 @@
 > todavia.** **No se declara `Coordinator=AGREED` ni `Architect=AGREED`.**
 >
 > ```
-> PROPOSAL VERSION:   V4.1
+> PROPOSAL VERSION:   V4.2
 > Sustituye a:        I-47-proposal-v3.md  (commit 4470c6b)   — V1 y V2 ya supersedidas por V3
 > Base del analisis:  9e25d5291daa13c4846112241be6e52526429a47  (Discovery)
 > origin/main:        306e18ed4676e5e96b54d59402c9a230efb137d3  (sin avanzar)
@@ -33,6 +33,23 @@
 > divergentes**. Ese estado es **alcanzable** —por commits parciales historicos— y **no** se puede
 > resolver eligiendo una vista arbitraria. Se corrige en **D-12 §autoridad authored multi-vista** y se
 > propaga a D-13 y a D-17. El detalle esta en **§0-quater**.
+>
+> ## V4.2 — Architect Review de V4.1: `DISAGREED`, y su reconciliacion
+>
+> El **Architect Review sobre V4.1 fue `DISAGREED`** (1 BLOCKER, 1 HIGH, 1 MEDIUM, 1 LOW). El
+> Coordinador **retira su AGREED sobre V4.1** y **acepta los cuatro findings**, modificando
+> parcialmente la correccion propuesta para N2.
+>
+> - **N1 (BLOCKER)** — el «Paso 0» de V4.1 exigia igualdad authored completa **antes** de clasificar
+>   consumidores, y eso **contradice C4-13/M4**: un rack divergente pero **ajeno** bloquearia toda
+>   operacion de variable. Ademas aplicaba un tipo del Selectivo a *cualquier* `RackId`. Se corrige
+>   distinguiendo **dos familias de operacion** (§0-quinquies y D-12).
+> - **N2 (HIGH)** — D-04-bis decidia el punto unico de resolucion sin nombrar las costuras que fuerza.
+>   Se aceptan y se nombran, **con una modificacion del Coordinador**: `RACKLISTA` **no** entra.
+> - **N3 (MEDIUM)** — el `MutationPlan` de la prueba 17 no existia como artefacto. Se define en D-13.
+> - **N4 (LOW)** — referencias editoriales obsoletas. Corregidas.
+>
+> El detalle esta en **§0-quinquies**.
 
 ## 0. Premisas — no se comparan
 
@@ -161,6 +178,29 @@ D-06, D-09, D-10 (F1), D-14, D-17-bis, D-18, D-19, §1-bis (separacion de concep
 
 **Nada mas cambia.** Las decisiones D-01..D-19, D-01-bis, D-04-bis, D-08-bis, D-11-bis y las premisas
 C-1..C-6, C2-1..C2-9, C3-1..C3-8 y C4-1..C4-14 se conservan **literalmente**.
+
+## 0-quinquies. Diff V4.1 → V4.2
+
+| # | Punto | V4.1 decia | V4.2 dice |
+|---|---|---|---|
+| **N1** | Orden entre probe de consumidores y autoridad multi-vista | «Paso 0, **antes de clasificar**, resolver o mutar **cualquier `RackId`**»: igualdad authored completa primero, clasificacion despues | **Dos familias.** **Target-variable**: el probe corre **por vista** ANTES de exigir igualdad; todas NEGATIVE ⇒ **se ignora el rack** sin exigirle igualdad. **Target-rack**: el `RackId` esta en scope por decision del usuario, **no** se usa el probe para decidir si se inspecciona. Ademas, solo `kind=selective` entra al analisis de bindings |
+| **N2** | Costuras de D-04-bis | Decision tomada, costuras **sin nombrar** | Nombradas: **`IRackKindHandler.BuildBom`** con tercer argumento, **`RACKBOMTOTAL`** con snapshot unico del NOD, y el **split authored/effective** en `RackSelectiveWindow`. **`RACKLISTA` NO cambia** y **no lee el NOD** — modificacion del Coordinador sobre la correccion propuesta. `OutputBlockedReason` **no** cambia |
+| **N3** | `MutationPlan` | Mencionado **solo** en la prueba 17 | **Definido en D-13** como artefacto **puro** de Application: `VariableMutationPreflightResult` = `Success/Error` + `MutationPlan`. Sin `ObjectId`/`Database`/`Transaction`. Preflight fallido ⇒ plan **vacio** |
+| **N4** | Referencias editoriales | «Architect debe revisar V4»; CF-4 «ninguno declarado sobre V4» | Actualizadas al estado real: AGREED **retirado** sobre V4.1, `Architect=DISAGREED` sobre V4.1, **ninguno declarado sobre V4.2** |
+
+**Nada mas cambia.** D-01, D-01-bis, D-02..D-11, D-11-bis, D-14..D-19 y las premisas C-1..C-6,
+C2-1..C2-9, C3-1..C3-8, C4-1..C4-14 se conservan **literalmente**.
+
+### Premisas anadidas en V4.2
+
+| # | Premisa |
+|---|---|
+| C4.2-1 | **ID22A considera para bindings SOLO `kind=selective`.** Ningun otro kind participa del analisis de vinculos |
+| C4.2-2 | **Operaciones target-variable** (`ChangeValue`, deteccion de consumidores de `Delete`, `UnlinkAllAndDelete`): el **probe corre por vista hermana** antes de exigir igualdad authored. Todas NEGATIVE ⇒ **ignorar el rack**, sin exigirle igualdad |
+| C4.2-3 | **Operaciones target-rack** (`Link`, `Unlink`, `RepairBroken`): el `RackId` esta en scope **por decision del usuario**; **no** se usa el probe para decidir si se inspecciona. Siempre se exige una sola autoridad authored logica |
+| C4.2-4 | **`Create` no hace consumer scan. `Rename` no hace consumer scan ni redibujo** (D-09 intacto) |
+| C4.2-5 | **`BuildBom` recibe un tercer argumento** `ProjectVariablesDocument`; `RACKBOMTOTAL` lee el NOD **una vez** y usa **el mismo snapshot** en todo el BOM. **`RACKLISTA` no cambia ni lee el NOD.** `OutputBlockedReason` **no** cambia |
+| C4.2-6 | **`MutationPlan`** es un artefacto **puro** de Application, sin tipos de AutoCAD; preflight fallido ⇒ plan vacio |
 
 ## 1. Metodo, y una regla que gobierna todo el documento
 
@@ -563,6 +603,84 @@ variable. Esa es la propiedad que hace imposible la divergencia de B4.
    existiendo y es, exactamente, el caso **sin binding**.
 2. **Es la pieza mas testeable de todo ID22A**: dos documentos puros dentro, un Domain fuera. Toda la
    semantica de C-2, D-08, D-08-bis y C4-5 se prueba aqui, en la suite Core, sin AutoCAD (D-17).
+
+#### Las costuras que esta decision fuerza (N2, nombradas en V4.2)
+
+> **Correccion de V4.2.** El Architect (N2) registro que V4/V4.1 **decidian** el punto unico de
+> resolucion pero **no nombraban** las costuras que obliga a tocar, una de ellas una **interfaz
+> compartida por seis handlers**. CF-3 solo decia «el desplazamiento de dibujo/BOM/preview a
+> consumirlo». Se nombran las tres, y se **acota** una: **`RACKLISTA` no entra** — modificacion del
+> Coordinador sobre la correccion propuesta.
+
+**Costura 1 — el BOM, que es la unica de alcance drawing-wide.**
+
+Estado verificado hoy:
+
+```csharp
+// src/RackCad.Plugin/KindHandlers/IRackKindHandler.cs
+BillOfMaterials BuildBom(RackEmbedDocument embed, RackCatalog catalog);      // <-- sin variables
+
+// src/RackCad.Plugin/KindHandlers/SelectiveKindHandler.cs
+var design = new SelectivePalletDesignStore().Deserialize(embed.Design)?.ToDomain();   // <-- AUTHORED
+var system = new SelectiveGeometryResolver().Resolve(design, catalog);
+return SelectiveBomBuilder.Build(system, catalog);
+```
+
+`ToDomain()` es exactamente el camino **authored sin resolver**, y es el que hoy alimenta la
+cotizacion. Contrato conceptual final:
+
+```
+BuildBom(RackEmbedDocument embed, RackCatalog catalog, ProjectVariablesDocument projectVariables)
+```
+
+**Un tercer argumento, no un objeto de contexto nuevo.** Y con el reparto explicito:
+
+| Kind | Que hace con el argumento |
+|---|---|
+| `selective` | lo usa: `SelectiveEffectiveDesignResolver.Resolve(authored, projectVariables)` |
+| `cabecera`, `dynamic`, `cama`, `pushback`, `cantilever` | **lo ignoran** en ID22A |
+
+**`RACKBOMTOTAL`**: lee `ProjectVariables` del NOD **UNA vez al inicio**, usa **el mismo snapshot**
+durante todo el BOM y lo pasa a cada `BuildBom`. Un unico snapshot es lo que impide que dos racks del
+mismo total se coticen contra estados distintos del registro.
+
+**`OutputBlockedReason` NO cambia por ID22A.** Su firma se queda como esta; para el Selectivo devuelve
+`null` (`SelectiveKindHandler`), asi que no es una via de divergencia para este slice.
+
+**Costura 2 — `RACKLISTA`: NO entra, y conviene decirlo expresamente.**
+
+- **No** es consumidor del diseno efectivo.
+- **No** lee el NOD.
+- **No** cambia.
+
+Su modelo es solo identidad y etiquetas: `RackListEntry` lleva `Id`, `Name`, `Kind`, `KindLabel`,
+`ViewsLabel` y `ViewCount` — **ningun valor de diseno**. Hacerle leer el registro seria coste y
+superficie sin beneficio.
+
+**Costura 3 — el editor Selectivo.**
+
+Arbol actual: `RackSelectiveWindow.BuildDesign(out string)` produce **un** `SelectivePalletDesign`, y
+`BuildSystem(out string)` lo resuelve contra el catalogo dejando `lastSystem`. Ese unico objeto sirve
+hoy **a la vez** para previsualizar y para persistir.
+
+**En un rack vinculado eso deja de ser sostenible**, porque C4-5 exige que el guardado **no** escriba
+el efectivo en el literal. La separacion conceptual que debe existir:
+
+| | AUTHORED | EFFECTIVE |
+|---|---|---|
+| Que es | el estado **que se persistira** | el estado que **gobierna la geometria** |
+| Conserva | `PropertyValues`, `SchemaVersion`, `ExtensionData` y el **literal authored** | nada: se **calcula** |
+| Se obtiene | del portador (C4-2) | `SelectiveEffectiveDesignResolver` |
+| Alimenta | el guardado del payload | `SelectiveGeometryResolver` → preview → `lastSystem` → BOM local del editor → geometria de dibujo |
+| Con binding activo | Save **NO** copia el `VerticalClearance` efectivo al literal | es lo que el usuario ve en el campo |
+
+**Un solo `SelectivePalletDesign` no puede seguir significando authored y effective a la vez en un
+rack vinculado.** Esa es la costura, y queda nombrada.
+
+**No se prescribe una refactorizacion WPF mayor de la necesaria.** No se pide reescribir la ventana ni
+adoptar un patron nuevo: se pide que el objeto que se **persiste** y el que se **dibuja** dejen de ser
+el mismo cuando hay binding. Como se implemente es de la fase de implementacion; **que exista la
+separacion** es del contrato, y entra en **CF-3**.
 
 **Alternativa descartada: resolver en cada consumidor.** Es lo que V3 dejaba implicito por omision.
 Duplica la regla en tres sitios como minimo, contradice la convencion 2 de AGENTS y es exactamente el
@@ -1081,99 +1199,114 @@ saca a la luz la siguiente insercion (`RACKLAYOUT` inserta referencias sobre `se
 falta, sino por lo que se encuentra: se busca en `PropertyValues` una entrada cuyo valor referencie el
 `VariableId` objetivo.
 
-```
-esConsumidor(authoredDocument, variableIdObjetivo) : bool      // PURO, suite Core
-    entrada = authoredDocument.PropertyValues[propertyId]      // comparacion Ordinal (C4-14)
-    entrada != null && entrada.kind == "projectVariable" && idIgual(entrada.variableId, objetivo)
-```
-
-**3. Un rack corrupto NO RELACIONADO no bloquea la operacion.** La regla de aborto se acota al conjunto
-que de verdad importa:
-
-| Estado del bloque | Que hace la operacion |
-|---|---|
-| Consumidor **confirmado** del objetivo, y **legible y resoluble** | entra en el lote |
-| Consumidor **confirmado**, pero **illegible o irresoluble** | **ABORTA** toda la operacion, nombrandolo |
-| **Demostrablemente sin referencia** al objetivo — el probe se pudo ejecutar y dio negativo | **se IGNORA** para esta operacion |
-| **Indistinguible**: el payload **no deserializa**, asi que el probe **no se puede ejecutar** | **ABORTA**. No se puede afirmar que sea ajeno |
-
-**Precision de V4.1 (punto 8), porque V4 prometia de mas.** V4 decia que un rack corrupto **«ajeno»** se
-ignora. Eso es incorrecto tal cual: **«ajeno» es una conclusion del probe, no una propiedad
-observable de antemano**. La regla exacta:
-
-> **Un rack se ignora SOLO si el probe pudo ejecutarse y DEMOSTRO que no referencia el `VariableId`
-> objetivo.** Un payload **completamente indescifrable** no es ajeno: es **indistinguible**, y por
-> seguridad **aborta**.
-
-La asimetria sigue siendo deliberada y ahora esta bien delimitada: un consumidor que no se puede leer
-**podria** estar mostrando el valor viejo, y continuar dejaria el dibujo incoherente. Lo que V4.1
-**no** promete es inmunidad frente a cualquier bloque corrupto del dibujo — solo frente a los que se
-pueden **leer y descartar**. Un bloque que no deserializa bloquea la operacion, y eso es el precio
-consciente de no dar saltos silenciosos.
-
-> Matiz que evita una lectura demasiado dura: «no deserializa» significa **el payload de RackCad**, no
-> «un bloque cualquiera del dibujo». Los bloques sin payload de RackCad no entran siquiera al probe:
-> `ScanEnvelopes` ya los descarta antes.
-
-#### Autoridad authored multi-vista (V4-01) — el paso 0 del preflight
-
-> **NUEVA en V4.1.** V4 asumia —sin decirlo en ninguna parte— que **todas las vistas de un `RackId`
-> llevan el mismo `Design` completo**. La suposicion es correcta como **invariante que el producto
-> mantiene**: `RackSelectivoCommands` serializa el diseno **una sola vez** y da el mismo JSON a las tres
-> vistas, y lo deja escrito:
->
-> ```csharp
-> // src/RackCad.Plugin/RackSelectivoCommands.cs
-> // The design JSON is identical for every view-block (only the envelope's view/section differ), so
-> // serialize the full design ONCE — not once per frontal + corte + planta.
-> var designJson = SerializeSelectiveDesign(design, id, name);
-> ```
->
-> Pero **una invariante que el producto mantiene no es una invariante que el dibujo garantice**. Un
-> commit parcial historico —una edicion interrumpida, una version anterior, un fallo a mitad del bucle
-> de vistas— deja payloads **divergentes** entre hermanas. V4 no decia nada de ese estado, y **no se
-> puede resolver eligiendo una vista arbitraria**: elegir la frontal, la primera o la mayoritaria seria
-> inventar autoridad y **descartar en silencio** el diseno de las demas.
-
-**Paso 0, antes de clasificar, resolver o mutar cualquier `RackId`:**
+El probe es **tri-estado**, no booleano — la distincion es la que N1 obligo a hacer explicita:
 
 ```
-1. AGRUPAR todas las vistas hermanas del RackId            (frontal(es) + laterales + planta)
-2. LEER el authored SelectivePalletDesignDocument COMPLETO de cada una
-3. COMPROBAR que todas representan la MISMA autoridad authored
+probe(vistaHermana, variableIdObjetivo) : POSITIVE | NEGATIVE | INDETERMINATE   // PURO, suite Core
+
+    el payload RackCad de esa vista NO deserializa   -> INDETERMINATE
+    entrada = authoredDocument.PropertyValues[propertyId]        // comparacion Ordinal (C4-14)
+    entrada != null && entrada.kind == "projectVariable"
+                    && idIgual(entrada.variableId, objetivo)     -> POSITIVE
+    en otro caso                                                 -> NEGATIVE
 ```
 
-**Si todas coinciden semanticamente:**
+`NEGATIVE` significa **«se pudo leer y demostrablemente no referencia el objetivo»**. `INDETERMINATE`
+significa **«no se pudo leer, asi que no se puede afirmar nada»**. Nunca se colapsan.
 
-- se continua con **UNA sola snapshot authored logica** — no una por vista;
-- esa snapshot es la que entra al probe de consumidores, al resolver (D-04-bis) y al lote;
-- **todas las vistas se reescriben** por D-13, desde esa unica autoridad.
+**3. El alcance del analisis: solo el Selectivo.** ID22A considera para bindings **unicamente**
+`kind=selective` (C4.2-1). Los racks `dynamic`, `pushback`, `cantilever`, `cabecera` y `cama` no
+participan: no tienen `PropertyValues` en esta iniciativa y su payload **no es** un
+`SelectivePalletDesignDocument`. V4.1 decia «cualquier `RackId`» y eso era un error de tipo.
 
-**Si difieren:**
+#### Autoridad authored multi-vista (V4-01) — corregido en V4.2 por N1
 
-- **ABORTA la operacion de nivel dibujo**, completa;
-- **error visible que NOMBRA el `RackId`** y dice que **sus vistas tienen disenos divergentes**;
-- **CERO mutacion**: ni el registro, ni ese rack, ni ningun otro consumidor;
-- **NO se elige automaticamente** la frontal, ni la primera vista, ni la mayoritaria. Ninguna heuristica.
+> **Correccion de V4.2.** V4.1 ponia la igualdad authored completa **antes** de clasificar
+> consumidores, sobre **cualquier** `RackId`. El Architect (N1) demostro que eso **contradice
+> C4-13/M4**: un rack cuyas vistas divergen en un campo cualquiera, y que **demostrablemente no
+> referencia** la variable objetivo, abortaria **toda** operacion de variable del dibujo — justo lo
+> que M4 habia cerrado. La correccion no es debilitar V4-01: es **ordenar** probe y comparacion, y
+> distinguir **dos familias de operacion**.
 
-> El aborto es de la **operacion entera**, no solo de ese rack. Un cambio de variable es **una unidad
-> confirmada** (C4-11): saltarse un rack divergente y propagar a los demas produciria exactamente el
-> apply parcial que esa premisa prohibe.
+##### Familia A — operaciones TARGET-VARIABLE
 
-**Que significa «la misma autoridad authored».** La comparacion es **por valor sobre el documento
-authored**, no byte a byte sobre el JSON, y es una **funcion pura** de Application:
+Aplica a **`ChangeValue`**, a la **deteccion de consumidores de `Delete`** y a **`UnlinkAllAndDelete`**.
+Aqui el conjunto de racks afectados **se descubre**, no se conoce de antemano.
+
+```
+1. ScanEnvelopes
+2. quedarse SOLO con kind = selective                         (C4.2-1)
+3. agrupar las vistas Selectivo por RackId
+4. ANTES de elegir autoridad authored:
+   ejecutar el probe contra el VariableId objetivo EN CADA VISTA HERMANA, independientemente
+
+   por RackId:
+     TODAS NEGATIVE                  -> IGNORAR el rack.
+                                        NO se le exige igualdad authored para esta operacion.
+     alguna INDETERMINATE            -> ABORTAR toda la operacion.
+     mezcla POSITIVE y NEGATIVE      -> ABORTAR: las hermanas DISCREPAN sobre el binding objetivo.
+     TODAS POSITIVE                  -> deserializar los authored completos;
+                                        exigir igualdad semantica COMPLETA;
+                                          iguales    -> UN consumidor logico;
+                                          divergentes-> ABORTAR.
+```
+
+**La linea que cierra N1 es la primera:** un rack cuyas vistas divergen pero que **todas** dicen
+`NEGATIVE` **se ignora**, y su divergencia —real— no bloquea nada, porque es **ajena a esta
+operacion**. Sigue siendo un defecto del dibujo; simplemente no es asunto de esta variable.
+
+**Y la tercera es la que conserva V4-01:** si una hermana dice `POSITIVE` y otra `NEGATIVE`, la
+divergencia esta **en el binding mismo**. No hay respuesta correcta que no sea abortar.
+
+**Nunca se usa la primera vista, ni la frontal, ni la mayoritaria.** Ninguna heuristica, en ninguna
+de las cuatro ramas.
+
+##### Familia B — operaciones TARGET-RACK
+
+Aplica a **`Link`**, **`Unlink`** y **`RepairBroken`**. Aqui el `RackId` **ya esta en scope por
+decision explicita del usuario**, que pico ese rack.
+
+```
+NO se usa el consumer probe para decidir si se inspecciona.   <-- el rack YA esta en scope
+
+antes de mutar:
+    recoger TODAS sus vistas hermanas Selectivo PRESENTES
+    deserializar el authored COMPLETO de cada una
+    exigir UNA sola autoridad authored logica
+      divergencia o indescifrable -> ABORT, y MutationPlan VACIO (D-13)
+```
+
+**Por que esta separacion es imprescindible, y no una comodidad:** un rack **todavia no vinculado**
+da `NEGATIVE` en **todas** sus vistas. Con las reglas de la Familia A se **ignoraria** — y `Link`
+es precisamente la operacion que se aplica a un rack no vinculado. Sin la Familia B, **`Link` no
+podria vincular nada**.
+
+##### Sin barrido innecesario
+
+| Operacion | Consumer scan | Redibujo |
+|---|---|---|
+| `Create` | **no** | no |
+| `Rename` | **no** | **no** — D-09 intacto: cambia `Name` y nada mas |
+| `ChangeValue`, `Delete`, `UnlinkAllAndDelete` | si (Familia A) | los consumidores |
+| `Link`, `Unlink`, `RepairBroken` | **no** (Familia B) | las vistas de ese rack |
+
+`Create` no puede tener consumidores: la variable acaba de nacer. `Rename` no toca ningun valor
+efectivo, porque las referencias van por `VariableId` y no por `Name` (D-02, D-09).
+
+##### Que significa «la misma autoridad authored»
+
+Comparacion **por valor sobre el documento authored**, no byte a byte, y **funcion pura** de
+Application:
 
 ```
 mismaAutoridadAuthored(docs : IReadOnlyList<SelectivePalletDesignDocument>) : bool      // PURO, suite Core
 ```
 
-Entra en la comparacion **todo lo que puede cambiar el diseno efectivo o el estado de vinculo**:
-los literales authored, `PropertyValues` **y** `SchemaVersion` — una vista promovida a `2.x` junto a
-una hermana en `1.x` **es** divergencia, y es justo el rastro que deja un `Link` interrumpido a mitad
-del bucle de vistas.
+Entra **todo lo que puede cambiar el diseno efectivo o el estado de vinculo**: los literales authored,
+`PropertyValues` **y** `SchemaVersion` — una vista promovida a `2.x` junto a una hermana en `1.x`
+**es** divergencia, y es el rastro que deja un `Link` interrumpido a mitad del bucle de vistas.
 
-Quedan **fuera** de la comparacion los campos del **sobre** que legitimamente difieren por vista:
-`View` y `Section`. No son parte del documento authored del diseno; son la identidad de la vista.
+Quedan **fuera** los campos del **sobre** que legitimamente difieren por vista: `View` y `Section`.
 
 > **Vistas fantasma:** un bloque-vista cuyo fondo o corte ya no existe se **borra** en el flujo actual
 > (`staleViewBlocks`), no se compara. Una hermana ausente **no es** divergencia: la divergencia es que
@@ -1320,6 +1453,40 @@ preflight, de solo lectura, sobre el plan de CADA vista de CADA consumidor:
 verificada, ademas de la transaccional: con el archivo de biblioteca ausente, `EnsureBlocks` **devuelve
 0 en silencio**, asi que apoyarse en el convertiria una biblioteca ausente en **geometria incompleta sin
 aviso**.
+
+#### El artefacto del preflight: `VariableMutationPreflightResult` (N3, nuevo en V4.2)
+
+> **Correccion de V4.2.** El Architect (N3) registro que la prueba 17 aseveraba sobre un «plan de
+> mutacion» que el contrato **no definia en ninguna parte**. Se define aqui, y **solo** con lo que hace
+> falta: **no** es un framework generico.
+
+```
+VariableMutationPreflightResult          // PURO, en Application. Salida del preflight.
+    Success | Error(mensaje visible)
+    MutationPlan                          // vacio/null cuando hay Error
+
+MutationPlan                              // SOLO mutaciones SEMANTICAS previstas
+    registryMutation                      // que le pasa al ProjectVariablesDocument
+    rackMutations : por RackId
+        authoredOutput                    // el authored document que se persistira
+        effectiveOutputRequerido          // el diseno efectivo que la geometria debe reflejar
+```
+
+**Lo que el `MutationPlan` NO contiene** —y es la mitad importante de la definicion—:
+
+```
+NADA de AutoCAD:   ObjectId · Database · Transaction · BlockTableRecord · Editor
+```
+
+Por eso es **puro** y por eso la prueba 17 puede verificarse **entera en Core**, sin dibujo.
+
+**Regla, sin excepcion: preflight fallido ⇒ `MutationPlan` vacio.** No un plan parcial, no un plan con
+los racks que si pasaron. Vacio. Es la forma verificable de la promesa «cero mutacion» de D-12 y
+C4-11, y lo que convierte «aborta» en algo que se puede **probar** en vez de solo afirmar.
+
+**El Plugin viene despues.** Con un `Success` en la mano, el Plugin traduce el plan a las mutaciones
+**fisicas** —resolver `ObjectId`, verificar definiciones de bloque, abrir el lock y la transaccion— bajo
+las reglas de D-13. El plan dice **que** debe cambiar; el Plugin decide **como** lo escribe.
 
 #### La unidad de atomicidad del registro (C4-11, cierra H4)
 
@@ -1629,16 +1796,26 @@ AutoCAD ([ADR-0003](../adr/0003-referencias-autocad-para-ci.md)) y la CI no tien
 | 13 | **El restamp conserva el binding** y cambia `RackId`/`Name` | D-17-bis, C-4 |
 | 14 | **Precedencia de `ClearOverride`** sobre el efectivo, sin cambios | D-06 |
 | **15** | **Vistas hermanas con la MISMA snapshot authored ⇒ el preflight PASA** y produce **una sola** autoridad logica | D-12 §multi-vista (V4-01) |
-| **16** | **Una sola vista hermana divergente ⇒ el preflight ABORTA**, y el error **nombra el `RackId`**. Se cubren las tres formas de divergencia: literal authored distinto, `PropertyValues` distinto y `SchemaVersion` distinto | D-12 §multi-vista (V4-01) |
-| **17** | **Con divergencia, el plan de mutacion queda VACIO**: ni registro, ni el rack divergente, ni **ningun otro consumidor**. Se comprueba sobre el plan, que es puro — no hace falta dibujo | D-12 §multi-vista, C4-11 |
+| **16** | **Todas POSITIVE + authored divergente ⇒ ABORTA**, y el error **nombra el `RackId`**. Se cubren las tres formas de divergencia: literal authored, `PropertyValues` y `SchemaVersion` | D-12 Familia A (V4-01, N1) |
+| **17** | **Con abort, el `MutationPlan` queda VACIO**: ni registro, ni el rack divergente, ni **ningun otro consumidor**. Se comprueba sobre `VariableMutationPreflightResult`, que es **puro** — sin dibujo | D-13 §preflight, C4-11 (N3) |
+| **18** | **Target-variable: rack DIVERGENTE pero con TODAS las vistas `NEGATIVE` ⇒ se IGNORA** y la operacion **continua** con normalidad. Es la prueba que fija N1: la divergencia ajena no bloquea | D-12 Familia A (C4.2-2) |
+| **19** | **Mezcla `POSITIVE`/`NEGATIVE` entre hermanas ⇒ ABORTA**: las vistas discrepan sobre el binding objetivo | D-12 Familia A (C4.2-2) |
+| **20** | **`Link` sobre un rack hoy `NEGATIVE` en todas sus vistas ⇒ SI entra al preflight multi-vista completo** y no se ignora. Es la prueba que justifica la Familia B | D-12 Familia B (C4.2-3) |
+| **21** | **Payload RackCad indescifrable en un candidato relevante ⇒ ABORTA** (`INDETERMINATE`), tanto en Familia A como en Familia B | D-12 (C4-13, C4.2-2/3) |
 
 Los puntos 7 y 11 son los que V3 no tenia, y son **precisamente** los que cierran B2 y M2: ambos son
 **puros** y por tanto plenamente verificables — el preflight opera sobre documentos, no sobre el
 dibujo, y el portador es un DTO.
 
-Los puntos **15-17** son los de V4.1 y cierran **V4-01**. El 17 es el que de verdad importa: no basta
-con que el preflight devuelva error, hay que comprobar que **no queda nada planificado**. Como el plan
-es una estructura pura, se verifica **entero en Core**, sin AutoCAD.
+Los puntos **15-17** nacieron en V4.1 y cierran **V4-01**; el **17** es el que de verdad importa, y en
+V4.2 ya se apoya en un artefacto **definido** (`VariableMutationPreflightResult`, D-13): no basta con
+que el preflight devuelva error, hay que comprobar que **no queda nada planificado**.
+
+Los puntos **18-21** son los de V4.2 y cierran **N1**. El **18** y el **20** son los dos que fijan la
+correccion, y conviene leerlos juntos porque son simetricos: **18** prueba que un rack divergente pero
+**ajeno** NO bloquea (Familia A), y **20** prueba que un rack **no vinculado** —`NEGATIVE` en todas sus
+vistas— **si** se inspecciona cuando el usuario lo elige (Familia B). Sin el 20, `Link` no podria
+vincular nada; sin el 18, un dibujo heredado quedaria bloqueado para siempre.
 
 **A la suite UI (WPF, sin AutoCAD, sobre los DTO de D-16-frontera):**
 
@@ -1852,10 +2029,12 @@ C4-1..C4-14 del dueno.**
 ### 12.2 Lo que sigue abierto
 
 1. **La aceptacion del contrato por sus dos revisores.** `Coordinator` y `Architect` deben coincidir
-   sobre **la misma version**, y **V4 no declara ninguno de los dos**: este documento es la propuesta
-   de reconciliacion, no su aprobacion. El `Architect` debe revisar **V4**, no V3.
+   sobre **la misma version**, y **V4.2 no declara ninguno de los dos**: este documento es la propuesta
+   de reconciliacion, no su aprobacion. Historial: `Architect=DISAGREED` sobre V3 y de nuevo **sobre
+   V4.1**; el `Coordinator` **retiro** su AGREED en ambas ocasiones. **La version a revisar ahora es
+   V4.2.**
 2. **El coste de la propagacion** sigue sin medir (riesgo P6). No es una decision de arquitectura.
-**Ninguna de las dos bloquea la revision del Architect sobre V4.1.**
+**Ninguna de las dos bloquea la revision del Architect sobre V4.2.**
 
 > **Corregido en V4.1 (punto 7).** V4 listaba aqui una tercera pregunta: «a que iniciativa pertenece la
 > fusion de conjuntos de variables entre dibujos». **No es una pregunta abierta**: **C3-8 ya retiro esa
@@ -1876,7 +2055,7 @@ C4-1..C4-14 del dueno.**
 | P8 | **Sobre-ingenieria** | Apuesta consciente por la evolucion limpia a ID22B/ID21. La revision adversarial **no** sostuvo ningun hallazgo de sobre-ingenieria |
 | P9 | La transaccion unica **hay que verificarla ejecutando** | Gate de implementacion / Owner Validation (CF-5') |
 | P10 | **Profundidad 1 asumida por descuido** | §10 lo senala; ni la forma persistida ni el modelo de errores deben cerrar esa puerta |
-| **P11** | **El alcance real de V4 crecio**: dos writers, un portador nuevo, un resolver nuevo, un documento nuevo con su store y su guard, y ocho operaciones confirmadas | Todo ello esta **declarado** en CF-3 como trabajo reconocido, no dado por hecho. Es la consecuencia honesta de cerrar los BLOCKER, no un descubrimiento posterior |
+| **P11** | **El alcance real siguio creciendo en V4.1 y V4.2**: dos writers, un portador nuevo, un resolver nuevo con **tres costuras** (una de ellas una interfaz de seis handlers), un documento nuevo con store y guard, el comparador multi-vista con probe tri-estado, el artefacto de preflight, y ocho operaciones confirmadas | Todo ello esta **declarado** en CF-3 como trabajo reconocido, no dado por hecho. Es la consecuencia honesta de cerrar los BLOCKER, no un descubrimiento posterior |
 | **P12** | **`SelectivePalletDesignDocument` es un DTO muy tocado**: el portador cambia como se guarda **todo** el selectivo, no solo la holgura | El cambio es de **fontaneria de guardado**, no de forma del documento; los golden y el round-trip existentes son la red. Se prueba en Core (D-17 punto 11) |
 
 ## 14. Condiciones de Consensus Freeze
@@ -1885,8 +2064,8 @@ C4-1..C4-14 del dueno.**
 |---|---|
 | **CF-1** | **El contrato de iniciativa refleja el alcance final antes de produccion.** Hoy [`I-47-project-variables-foundation.md`](I-47-project-variables-foundation.md) §3 excluye UI y comando, redactado para DISCOVERY; D-16 los incluye |
 | **CF-2** | **El ADR existe, escrito antes de implementar** (WORKFLOW seccion 8), en estado `propuesto`. **Solo el dueno lo acepta.** **V4 no lo escribe todavia**, por instruccion expresa |
-| **CF-3** | **Los prerequisitos estan reconocidos como trabajo.** La lista, **ampliada en V4**: (a) el **portador del estado authored** — el guardado del selectivo deja de reconstruirse con `From(...)` (C4-2, B2); (b) el helper **sticky monotonico** con su rama de ERROR, sus dos lineas de version y su constante de **lectura `2.x`** (C4-9); (c) el **writer de lote transaction-aware sobre los DOS writers**, incluido `LateralHeaderDrawService`, con verificacion read-only de definiciones (C4-3, B3); (d) el **`SelectiveEffectiveDesignResolver`** y el desplazamiento de dibujo/BOM/preview a consumirlo (C4-4, B4); (e) el **`ProjectVariablesDocument`** con store y guard propios (C4-8); (f) el **`SchemaGuard` anidado** para `RackProjectDocument.SelectiveRack` (C4-10); (g) la **extraccion del restamp** a Application (D-17-bis); **(h)** el **paso 0 de autoridad authored multi-vista** y su comparador puro, con el portador de (a) siendo **UNO por `RackId`** —no uno por vista— para no destruir el restampado que hace de `RACKEDITAR` una reconciliacion (V4-01) |
-| **CF-4** | **Ambos revisores AGREED sobre la MISMA version.** Hoy: `Coordinator` **retirado** sobre V3, `Architect=DISAGREED` sobre V3, y **ninguno declarado sobre V4** |
+| **CF-3** | **Los prerequisitos estan reconocidos como trabajo.** La lista, **ampliada en V4**: (a) el **portador del estado authored** — el guardado del selectivo deja de reconstruirse con `From(...)` (C4-2, B2); (b) el helper **sticky monotonico** con su rama de ERROR, sus dos lineas de version y su constante de **lectura `2.x`** (C4-9); (c) el **writer de lote transaction-aware sobre los DOS writers**, incluido `LateralHeaderDrawService`, con verificacion read-only de definiciones (C4-3, B3); (d) el **`SelectiveEffectiveDesignResolver`** y el desplazamiento de dibujo/BOM/preview a consumirlo (C4-4, B4), **con sus tres costuras nombradas (N2)**: **d1** `IRackKindHandler.BuildBom` gana un tercer argumento `ProjectVariablesDocument` —los cinco kinds no-Selectivo lo ignoran—; **d2** `RACKBOMTOTAL` lee el NOD **una vez** y usa **el mismo snapshot** en todo el BOM; **d3** el **split authored/effective** en `RackSelectiveWindow.BuildDesign`/`BuildSystem`, de modo que lo que se persiste y lo que se dibuja dejen de ser el mismo objeto en un rack vinculado. **`RACKLISTA` NO entra**, y `OutputBlockedReason` **no** cambia; (e) el **`ProjectVariablesDocument`** con store y guard propios (C4-8); (f) el **`SchemaGuard` anidado** para `RackProjectDocument.SelectiveRack` (C4-10); (g) la **extraccion del restamp** a Application (D-17-bis); **(h)** la **autoridad authored multi-vista** con su comparador puro y **su probe tri-estado por vista** (Familia A / Familia B), con el portador de (a) siendo **UNO por `RackId`** —no uno por vista— para no destruir el restampado que hace de `RACKEDITAR` una reconciliacion (V4-01, N1); **(i)** el artefacto **`VariableMutationPreflightResult` / `MutationPlan`**, puro y sin tipos de AutoCAD (N3) |
+| **CF-4** | **Ambos revisores AGREED sobre la MISMA version.** Estado real tras V4.2: `Coordinator` **AGREED retirado sobre V4.1**; `Architect=DISAGREED` **sobre V4.1** (`9301f0f`); **ninguno de los dos declarado todavia sobre V4.2** |
 
 **CF-5' — donde vive la validacion en AutoCAD.** No es condicion de Freeze; es gate de implementacion
 y Owner Validation, con el alcance de la tabla de D-17.
