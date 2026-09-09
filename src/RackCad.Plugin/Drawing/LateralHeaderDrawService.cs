@@ -81,20 +81,23 @@ namespace RackCad.Plugin.Drawing
                 {
                     // ARRAY pattern: group identical pieces of the corte into nested defs referenced N times (same
                     // optimization as frontal/planta). The redefine creates fresh nested defs and purges the prior run's.
+                    // PREPARE — grouping and importing happen outside the transaction, because importing can
+                    // mutate the database on its own account (I-47 G9).
                     var plan = HeaderInstanceGrouper.Group(layout.Instances, ReadBlockName(database, blockId));
                     BlockLibraryImporter.EnsureForPlan(database, plan);
 
                     using (var transaction = database.TransactionManager.StartTransaction())
                     {
-                        outcome = drawer.RedefineSystemBlock(database, transaction, blockId, plan, out staleDefs);
-                        RackBlockData.Write(transaction, blockId, payloadJson);
+                        // MUTATE — the SAME shared primitive the frontal/planta path uses. The lateral used to
+                        // repeat this step, which is how it stayed outside the transactional boundary the first
+                        // time one was drawn: fixing one writer left the other one behind.
+                        outcome = SystemBlockWriter.RedefineInTransaction(
+                            database, transaction, drawer, blockId, plan, payloadJson, out staleDefs);
                         transaction.Commit();
                     }
 
-                    // Post-commit purge of the orphaned nested defs (Database.Purge on committed state; see the drawer note).
-                    LateralHeaderDrawer.PurgeUnreferenced(database, staleDefs);
-
-                    // Same guarded regen as the system redraw path — applied through the one shared helper (I-16 F4).
+                    // POST — purge after commit, then the one guarded regen, both through the shared helpers.
+                    SystemBlockWriter.PurgeAfterCommit(database, staleDefs);
                     SystemBlockWriter.ApplyRegen(document, regen);
                 }
 
