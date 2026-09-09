@@ -75,7 +75,13 @@ namespace RackCad.Plugin
                 }
 
                 var embed = store.Deserialize(json);
-                var referenceCount = includeReferenceCount && embed != null
+
+                // The count comes from the RECORD and never from the payload (I-47 G8). It used to be gated on
+                // the envelope deserializing, which meant a definition that IS placed but whose envelope this
+                // build cannot interpret reported zero references — and read downstream as "not in the
+                // drawing". Whether a definition is placed is a physical fact; whether its payload can be
+                // understood is a separate one, and conflating them hid the case that matters most.
+                var referenceCount = includeReferenceCount
                     ? record.GetBlockReferenceIds(directOnly: true, forceValidity: false).Count
                     : 0;
                 results.Add(new RackEnvelopeScan(id, embed, referenceCount));

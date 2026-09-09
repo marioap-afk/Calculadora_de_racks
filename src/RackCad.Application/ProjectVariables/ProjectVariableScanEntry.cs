@@ -26,7 +26,8 @@ namespace RackCad.Application.ProjectVariables
             string rackId,
             string kind,
             bool authoredReadable,
-            SelectivePalletDesignDocument authored)
+            SelectivePalletDesignDocument authored,
+            int directReferenceCount)
         {
             DefinitionId = definitionId;
             OuterEnvelopeInterpretable = outerEnvelopeInterpretable;
@@ -34,6 +35,7 @@ namespace RackCad.Application.ProjectVariables
             Kind = kind;
             AuthoredReadable = authoredReadable;
             Authored = authored;
+            DirectReferenceCount = directReferenceCount;
         }
 
         /// <summary>The physical identifier of the block definition. Always known, even when nothing else is.</summary>
@@ -58,38 +60,64 @@ namespace RackCad.Application.ProjectVariables
         /// RackCad data is PRESENT but the envelope cannot be interpreted — invalid JSON, or a MAJOR from the
         /// future. Not absent, not foreign, not negative: unclassifiable.
         /// </summary>
-        public static ProjectVariableScanEntry UnreadableEnvelope(string definitionId)
-            => new ProjectVariableScanEntry(definitionId, false, null, null, false, null);
+        public static ProjectVariableScanEntry UnreadableEnvelope(string definitionId, int directReferenceCount = 0)
+            => new ProjectVariableScanEntry(definitionId, false, null, null, false, null, directReferenceCount);
 
         /// <summary>A rack of another kind. ID22A considers only selective racks for bindings.</summary>
-        public static ProjectVariableScanEntry Foreign(string definitionId, string rackId, string kind)
-            => new ProjectVariableScanEntry(definitionId, true, rackId, kind, false, null);
+        public static ProjectVariableScanEntry Foreign(
+            string definitionId,
+            string rackId,
+            string kind,
+            int directReferenceCount = 0)
+            => new ProjectVariableScanEntry(definitionId, true, rackId, kind, false, null, directReferenceCount);
 
         /// <summary>A selective view whose authored design was read.</summary>
         public static ProjectVariableScanEntry Selective(
             string definitionId,
             string rackId,
-            SelectivePalletDesignDocument authored)
+            SelectivePalletDesignDocument authored,
+            int directReferenceCount = 0)
             => new ProjectVariableScanEntry(
                 definitionId,
                 true,
                 rackId,
                 RackEmbedDocument.KindSelective,
                 authored != null,
-                authored);
+                authored,
+                directReferenceCount);
 
         /// <summary>
         /// A selective view whose envelope was read — so the rack IS known — but whose inner design was not.
         /// It is a sibling that exists and cannot be understood, which is never the same as one that is absent.
         /// </summary>
-        public static ProjectVariableScanEntry SelectiveUnreadableDesign(string definitionId, string rackId)
+        public static ProjectVariableScanEntry SelectiveUnreadableDesign(
+            string definitionId,
+            string rackId,
+            int directReferenceCount = 0)
             => new ProjectVariableScanEntry(
                 definitionId,
                 true,
                 rackId,
                 RackEmbedDocument.KindSelective,
                 false,
-                null);
+                null,
+                directReferenceCount);
+
+        /// <summary>
+        /// How many DIRECT references the drawing has to this definition -- i.e. whether it is PLACED.
+        ///
+        /// <para>It is counted from the block table record and NEVER from the payload, so a definition whose
+        /// envelope cannot be interpreted still reports honestly that it is in the drawing. Tying the two
+        /// together made an unreadable-but-placed definition look like one that was not there.</para>
+        /// </summary>
+        public int DirectReferenceCount { get; }
+
+        /// <summary>
+        /// True when the definition carried RackCad data at all. Every entry the sweep produces does: a block
+        /// with no payload is discarded before it becomes an entry, so this is never a way of saying "some
+        /// block of the drawing".
+        /// </summary>
+        public bool RackCadDataPresent => true;
 
         /// <summary>True when this entry is a selective view, readable or not.</summary>
         public bool IsSelective
