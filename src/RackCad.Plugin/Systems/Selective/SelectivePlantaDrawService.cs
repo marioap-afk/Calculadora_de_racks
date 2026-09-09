@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -31,6 +32,26 @@ namespace RackCad.Plugin.Systems.Selective
                 catalog => builder.BuildPlan(system, catalog),
                 () => BlockName(system, rackName),
                 payloadJson);
+
+        /// <summary>PREPARE — catalog, plan and imports, before the caller opens its transaction (I-47 G9.1).</summary>
+        internal PreparedViewRedraw PrepareRedraw(
+            Database database, ObjectId blockId, SelectiveRackSystem system, string payloadJson)
+            => ViewBlockDraw.PrepareRedraw(
+                database,
+                blockId,
+                system != null && !blockId.IsNull,
+                "No hay rack para actualizar.",
+                drawer,
+                catalog => builder.BuildPlan(system, catalog),
+                payloadJson);
+
+        /// <summary>MUTATE — redefine inside the CALLER's transaction. No lock, commit, regen or import here.</summary>
+        internal LateralHeaderDrawOutcome RedrawInTransaction(
+            Database database,
+            Transaction transaction,
+            PreparedViewRedraw prepared,
+            out IReadOnlyCollection<ObjectId> staleDefinitions)
+            => ViewBlockDraw.RedrawInTransaction(database, transaction, prepared, out staleDefinitions);
 
         public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, SelectiveRackSystem system, string payloadJson, bool regen = true)
             => ViewBlockDraw.RedrawInPlace(
