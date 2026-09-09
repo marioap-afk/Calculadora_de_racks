@@ -143,7 +143,11 @@ namespace RackCad.Tests
         public void LOS_DOS_WRITERS_DELEGAN_EN_LA_MISMA_PRIMITIVA()
         {
             Assert.Contains("RedefineInTransaction", Body(Writer, "internal static HeaderPlacementResult RedrawInPlace"));
-            Assert.Contains("RedefineInTransaction", Body(Lateral, "public HeaderPlacementResult RedrawInPlace"));
+
+            // El lateral llega por la costura caller-owned que le anadio G9.1, y esa costura no hace otra cosa
+            // que bajar a la primitiva compartida: sigue habiendo UNA autoridad, con una indireccion mas.
+            Assert.Contains("RedrawInTransaction(", Body(Lateral, "public HeaderPlacementResult RedrawInPlace"));
+            Assert.Contains("SystemBlockWriter.RedefineInTransaction", Lateral);
         }
 
         /// <summary>
@@ -165,19 +169,23 @@ namespace RackCad.Tests
         {
             // El comportamiento de los comandos existentes NO cambia: siguen preparando antes de mutar.
             Assert.Contains("EnsureForPlan", Body(Writer, "internal static HeaderPlacementResult RedrawInPlace"));
-            Assert.Contains("EnsureForPlan", Body(Lateral, "public HeaderPlacementResult RedrawInPlace"));
+
+            // En el lateral el paso vive desde G9.1 en su costura de preparacion, y el wrapper la llama: no
+            // cambia lo que hace el comando, cambia donde vive — y con ello el camino caller-owned prepara igual.
+            Assert.Contains("PrepareRedraw(", Body(Lateral, "public HeaderPlacementResult RedrawInPlace"));
+            Assert.Contains("EnsureForPlan", Body(Lateral, "internal PreparedViewRedraw PrepareRedraw"));
         }
 
         [Fact]
         public void PREPARE_OCURRE_ANTES_DE_ABRIR_LA_TRANSACCION()
         {
-            foreach (var body in new[]
+            foreach (var (body, prepared) in new[]
             {
-                Body(Writer, "internal static HeaderPlacementResult RedrawInPlace"),
-                Body(Lateral, "public HeaderPlacementResult RedrawInPlace"),
+                (Body(Writer, "internal static HeaderPlacementResult RedrawInPlace"), "EnsureForPlan"),
+                (Body(Lateral, "public HeaderPlacementResult RedrawInPlace"), "PrepareRedraw("),
             })
             {
-                var prepare = body.IndexOf("EnsureForPlan", StringComparison.Ordinal);
+                var prepare = body.IndexOf(prepared, StringComparison.Ordinal);
                 var mutate = body.IndexOf("StartTransaction", StringComparison.Ordinal);
 
                 Assert.True(prepare >= 0 && mutate >= 0);
