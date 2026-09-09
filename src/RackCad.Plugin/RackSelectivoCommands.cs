@@ -102,7 +102,10 @@ namespace RackCad.Plugin
 
             // The design JSON is identical for every view-block (only the envelope's view/section differ), so
             // serialize the full design ONCE — not once per frontal + corte + planta.
-            var designJson = SerializeSelectiveDesign(design, id, name);
+            // The AUTHORED CARRIER (I-47 G10): this rack ALREADY has a persisted document, so saving
+            // UPDATES it. Rebuilding one from the domain would drop its schema version, its bindings and any
+            // field a later build wrote -- the domain cannot carry those, so the trip through it loses them.
+            var designJson = SerializeSelectiveDesign(design, id, name, saved);
 
             // Each frontal block draws ONE fondo's face (its Section = fondo index; a legacy block with -1 = fondo 0).
             // Every loop below redraws with regen:false and the drawing regenerates ONCE at the end — a full
@@ -227,9 +230,35 @@ namespace RackCad.Plugin
             SelectivePalletDesign design, string id, string name, string view, int section = -1, RackEmbedDocument source = null)
             => design == null ? null : WrapSelectivePayload(SerializeSelectiveDesign(design, id, name), id, name, view, section, source);
 
-        /// <summary>The full design serialized once; every view-block carries this SAME JSON (see <see cref="WrapSelectivePayload"/>).</summary>
-        private static string SerializeSelectiveDesign(SelectivePalletDesign design, string id, string name)
-            => design == null ? null : new SelectivePalletDesignStore().Serialize(SelectivePalletDesignDocument.From(design, id, name));
+        /// <summary>
+        /// The full design serialized once; every view-block carries this SAME JSON (see <see cref="WrapSelectivePayload"/>).
+        ///
+        /// <para>
+        /// With <paramref name="authored"/> the rack ALREADY exists and its document is UPDATED, preserving
+        /// the schema version, the bindings, the frozen authored literal and any field a later build wrote.
+        /// Without it — a fresh insert — there is nothing to preserve and the document is built from the
+        /// design, exactly as before.
+        /// </para>
+        /// <para>
+        /// The carrier is ONE per rack, not one per view: it is the document of the view the user picked. A
+        /// per-view carrier would let each sibling keep its own divergence, turning a repairable defect into
+        /// a permanent one — saving from a chosen view is precisely what reconciles them today.
+        /// </para>
+        /// </summary>
+        private static string SerializeSelectiveDesign(
+            SelectivePalletDesign design, string id, string name, SelectivePalletDesignDocument authored = null)
+        {
+            if (design == null)
+            {
+                return null;
+            }
+
+            var document = authored == null
+                ? SelectivePalletDesignDocument.From(design, id, name)
+                : authored.WithDesign(design, id, name);
+
+            return new SelectivePalletDesignStore().Serialize(document);
+        }
 
         /// <summary>Wraps an ALREADY-serialized design in the per-view embed envelope — multi-view redraws reuse one
         /// design JSON instead of re-serializing the whole design per view-block. When <paramref name="source"/> is the

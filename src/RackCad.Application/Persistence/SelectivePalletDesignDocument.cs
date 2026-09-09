@@ -301,8 +301,20 @@ namespace RackCad.Application.Persistence
         /// </para>
         /// </summary>
         public SelectivePalletDesignDocument WithDesign(SelectivePalletDesign design)
+            => WithDesign(design, null, null);
+
+        /// <summary>
+        /// The same carrier, carrying an identity the editor may have changed.
+        ///
+        /// <para>
+        /// <paramref name="name"/> exists because the user can RENAME a rack while editing it, and the name
+        /// belongs to the editor rather than to the carrier. A null argument keeps what this document already
+        /// had, so the common case reads as "just update the design".
+        /// </para>
+        /// </summary>
+        public SelectivePalletDesignDocument WithDesign(SelectivePalletDesign design, string id, string name)
         {
-            var next = From(design, Id, Name);
+            var next = From(design, id ?? Id, name ?? Name);
 
             next.SchemaVersion = SchemaVersion;
             next.PropertyValues = PropertyValues;
