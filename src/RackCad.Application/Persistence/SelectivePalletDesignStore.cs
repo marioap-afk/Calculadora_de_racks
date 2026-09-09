@@ -13,12 +13,22 @@ namespace RackCad.Application.Persistence
     {
         private static readonly JsonSerializerOptions SerializerOptions = CreateOptions();
 
+        /// <summary>
+        /// Writes the design, STAMPING its schema version through the sticky rule
+        /// (<see cref="SelectiveDesignSchema.ResolveWriteVersion"/>): a design that carries a binding is
+        /// promoted, one that never did keeps the legacy line, and a promoted one never goes back down.
+        /// A design stored above the readable major throws rather than being overwritten.
+        /// </summary>
         public string Serialize(SelectivePalletDesignDocument document)
         {
             if (document == null)
             {
                 throw new ArgumentNullException(nameof(document));
             }
+
+            document.SchemaVersion = SelectiveDesignSchema.ResolveWriteVersion(
+                document.SchemaVersion,
+                document.HasPropertyValues);
 
             return JsonSerializer.Serialize(document, SerializerOptions);
         }
@@ -40,7 +50,9 @@ namespace RackCad.Application.Persistence
                 throw new InvalidOperationException("El diseño del selectivo no es un JSON válido: " + ex.Message, ex);
             }
 
-            SchemaGuard.CheckReadable(document?.SchemaVersion, SelectivePalletDesignDocument.CurrentSchemaVersion, "El diseño del selectivo");
+            // The READ constant is the PROMOTED line, not the legacy one this build usually writes: otherwise
+            // the guard would reject the very documents the sticky promotion just produced (I-47 C4-9).
+            SchemaGuard.CheckReadable(document?.SchemaVersion, SelectivePalletDesignDocument.PromotedSchemaVersion, "El diseño del selectivo");
 
             if (!RackDesignValidation.IsUsableSelective(document))
             {
