@@ -4,13 +4,13 @@
 > todavia.** **No se declara `Coordinator=AGREED` ni `Architect=AGREED`.**
 >
 > ```
-> PROPOSAL VERSION:   V4.7
+> PROPOSAL VERSION:   V4.8
 > Sustituye a:        I-47-proposal-v3.md  (commit 4470c6b)   — V1 y V2 ya supersedidas por V3
 > Base del analisis:  9e25d5291daa13c4846112241be6e52526429a47  (Discovery)
 > origin/main:        306e18ed4676e5e96b54d59402c9a230efb137d3  (sin avanzar)
 > Premisas:           C-1..C-6 (Gate C) · C2-1..C2-9 (Gate C2) · C3-1..C3-8 (Gate C3)
 >                     C4-1..C4-14 (V4) · C4.2-1..6 · C4.3-1..2 · C4.4-1..2 · C4.5-1..3 · C4.6-1..8
->                     C4.7-1 (doctrina) · C4.7-2..C4.7-6
+>                     C4.7-1 (doctrina) · C4.7-2..C4.7-6 · C4.8-1
 > ```
 >
 > ## Reconciliacion
@@ -127,6 +127,22 @@
 > Es correcto, y es la critica mas util que ha recibido este contrato. **V4.7 anade la doctrina
 > (`C4.7-1`) y deriva de ella los cinco findings**, en vez de parchear el sexto cuando aparezca. El
 > detalle esta en **§0-decies**.
+>
+> ## V4.8 — A27: la doctrina encuentra un fallo de la propia V4.7
+>
+> El Architect declaro **`C4.7-1 = SOUND`** y cerro **A22, A23, A24 y A25**, pero dejo **A26 en
+> PARTIAL** por un unico finding nuevo, **A27 (HIGH)** — y lo encontro **aplicando la doctrina**, no
+> leyendo el diff:
+>
+> > La rama «`SchemaVersion` **ausente**» de C4.7-6 es **indetectable** con el patron de DTO del
+> > repositorio. Los **ocho** documentos persistidos usan
+> > `public string SchemaVersion { get; set; } = CurrentSchemaVersion;`, y `System.Text.Json` **no toca
+> > una propiedad ausente del JSON**: conserva el inicializador. Un registro cuyo JSON no traiga el
+> > campo deserializa con `"1.0"`, **indistinguible** de uno que lo declaro. Es la forma que **C4.7-1
+> > prohibe**: un **valor por defecto** convirtiendo `UNKNOWN` en `SUCCESS`.
+>
+> **ACEPTADO.** V4.8 fija la **regla de presencia** y separa **READ** de **CREATE/WRITE**. El detalle
+> esta en **§0-undecies**.
 
 ## 0. Premisas — no se comparan
 
@@ -407,6 +423,21 @@ resolver.
 | **C4.7-5** | **El `SchemaGuard` anidado no puede quedar neutralizado por el `catch` generico del listado.** Un archivo de biblioteca con `SelectiveRack` incompatible **no se ofrece como diseno abrible normal** pero **si produce diagnostico visible**; nunca desaparece en silencio |
 | **C4.7-6** | **Para la entrada `RACKCAD_PROJECT` PRESENTE**, una `SchemaVersion` **ausente, en blanco o no parseable** es `PRESENT_BUT_UNREADABLE` ⇒ **ERROR visible, sin registro vacio y sin escritura**. La **ausencia real** de la entrada sigue siendo `ABSENT` ⇒ registro vacio. **La politica global de `SchemaVersionPolicy` no cambia** |
 
+## 0-undecies. Diff V4.7 → V4.8
+
+| ID | Sev. | Disposicion | Donde |
+|---|---|---|---|
+| **A27** | HIGH | **ACEPTADO** | **D-01-bis §regla de presencia** (C4.8-1) + pruebas **41** precisada y **42** nueva |
+
+**Nada mas cambia.** `C4.7-1` permanece **SOUND**; A22-A25 permanecen **CLOSED**; **A26 vuelve a
+CLOSED** por esta precision; A9, N9, N10, N11 y V4-01 permanecen **CLOSED**. No se reabre nada.
+
+### Premisa anadida en V4.8
+
+| # | Premisa |
+|---|---|
+| **C4.8-1** | **Regla de presencia de `SchemaVersion` en el registro.** La lectura del `ProjectVariablesDocument` **conserva la diferencia** entre la propiedad **AUSENTE** del JSON y la propiedad **PRESENTE con `"1.0"`**. **No se usa un default de lectura que borre esa diferencia.** Y se separa el contrato: **READ** no inventa una version ausente; **CREATE/WRITE** estampa **explicitamente** `CurrentSchemaVersion` |
+
 ## 1. Metodo, y una regla que gobierna todo el documento
 
 **Ninguna opcion gana por existir ya.** El Discovery (§2.1) demostro que la autoridad de nivel dibujo
@@ -647,6 +678,45 @@ hermanos, **desde el dia uno**:
 >
 > Es `UNKNOWN` dejando de tratarse como `ABSENT`, que es la regla de §1-ter, aplicada **solo donde
 > ID22A es dueno del documento**. **No se disena ningun cambio a otros documentos persistidos.**
+
+> **La regla de PRESENCIA (A27, C4.8-1) — nueva en V4.8, y sin ella la regla de arriba no es
+> implementable.** El patron del repositorio es
+> `public string SchemaVersion { get; set; } = CurrentSchemaVersion;` en los **ocho** documentos
+> persistidos. Con `System.Text.Json`, una propiedad **ausente del JSON** conserva el inicializador,
+> asi que «ausente» se vuelve **indistinguible** de «presente con `"1.0"`». Eso es exactamente lo que
+> **C4.7-1** prohibe: un **valor por defecto** convirtiendo `UNKNOWN` en `SUCCESS`.
+>
+> **Obligatorio:** la deserializacion del `ProjectVariablesDocument` **conserva la capacidad de saber si
+> la propiedad `SchemaVersion` estaba realmente presente en el JSON**.
+>
+> Conceptualmente basta con declararla **sin inicializador** —`public string SchemaVersion { get; set; }`—
+> o con un centinela equivalente. **La sintaxis exacta NO es contractual**; lo contractual es que la
+> distincion **sobreviva** a la deserializacion.
+>
+> **Y la separacion que evita el error simetrico:**
+>
+> ```
+> READ           :  NO inventar una version ausente.
+>                   Ausente != "1.0". Ausente es PRESENT_BUT_UNREADABLE.
+>
+> CREATE / WRITE :  estampar EXPLICITAMENTE
+>                   SchemaVersion = ProjectVariablesDocument.CurrentSchemaVersion   (hoy "1.0")
+> ```
+>
+> Quitar el inicializador **no** significa que los documentos nuevos nazcan sin version: significa que
+> la version la pone **quien escribe**, a proposito, en vez de aparecer sola al deserializar. El
+> `same-major newer minor` se sigue preservando segun C4.7-6.
+
+**Semantica completa de la entrada `RACKCAD_PROJECT`** (C4.6-2 + C4.7-6 + C4.8-1):
+
+| Estado | Resultado |
+|---|---|
+| Entrada del NOD **inexistente** | **`ABSENT`** ⇒ **registro vacio** |
+| Entrada presente · propiedad `SchemaVersion` **AUSENTE** | **`PRESENT_BUT_UNREADABLE`** ⇒ **ERROR visible** · no registro vacio · **no write** |
+| Entrada presente · `SchemaVersion` **null o en blanco** | **`PRESENT_BUT_UNREADABLE`** ⇒ **no write** |
+| Entrada presente · `SchemaVersion` **no parseable** | **`PRESENT_BUT_UNREADABLE`** ⇒ **no write** |
+| Entrada presente · `SchemaVersion` **valida y soportada** | **legible** |
+| Entrada presente · `SchemaVersion` de **major superior** | **ERROR** ⇒ **no write** |
 
 > **Version de escritura (A16, C4.6-8).** V4.5 fijaba la version de **lectura** del registro y callaba
 > sobre la de **escritura**, mientras exigia preservar el `ExtensionData` que hubiera escrito un build
@@ -2755,7 +2825,8 @@ AutoCAD ([ADR-0003](../adr/0003-referencias-autocad-para-ci.md)) y la CI no tien
 | **38** | **`BrokenProjectVariableReference` viaja como RESULTADO SEMANTICO**: nunca como `UnreadablePayload`, nunca como `null`, nunca como excepcion generica. Se afirma sobre el **caso** devuelto | §resultado tipado (A23, C4.7-3) |
 | **39** | **Fallo del restamp interior ⇒ la operacion de copia NO puede producir un payload ni una copia parcialmente re-estampada.** O se cumple la postcondicion indivisible completa, o **no hay copia** | D-17-bis §fail-closed (A24, C4.7-4) |
 | **40** | **`SelectiveRack` anidado de major superior en biblioteca ⇒ NO aparece como diseno normal Y existe diagnostico explicito.** Se comprueba que **no desaparece en silencio** | D-15 §listado (A25, C4.7-5) |
-| **41** | **`ProjectVariablesDocument` presente con `SchemaVersion` ausente o no parseable ⇒ error duro y sin escritura.** La ausencia real de la entrada sigue dando registro **vacio** | D-01-bis §version (A26, C4.7-6) |
+| **41** | **`ProjectVariablesDocument` PRESENTE sin la propiedad `SchemaVersion` ⇒ error duro, sin escritura.** Y **`SchemaVersion` no parseable ⇒ error duro, sin escritura**. La ausencia real de la **entrada del NOD** sigue dando registro **vacio** | D-01-bis §version (A26, C4.7-6, A27/C4.8-1) |
+| **42** | **Centinela de la distincion: JSON presente CON `SchemaVersion = "1.0"` ⇒ LEGIBLE.** Junto a la prueba 41 demuestra que **`missing` != `"1.0"` explicito**, que es la garantia que un inicializador de campo destruiria | D-01-bis §regla de presencia (A27, C4.8-1) |
 
 Los puntos 7 y 11 son los que V3 no tenia, y son **precisamente** los que cierran B2 y M2: ambos son
 **puros** y por tanto plenamente verificables — el preflight opera sobre documentos, no sobre el
@@ -2764,6 +2835,11 @@ dibujo, y el portador es un DTO.
 Los puntos **15-17** nacieron en V4.1 y cierran **V4-01**; el **17** es el que de verdad importa, y en
 V4.2 ya se apoya en un artefacto **definido** (`VariableMutationPreflightResult`, D-13): no basta con
 que el preflight devuelva error, hay que comprobar que **no queda nada planificado**.
+
+El **42** es el de V4.8 y cierra **A27**. Es un centinela **positivo**, y esa es su gracia: por si sola,
+la prueba 41 la satisface tambien una implementacion que rechace **todo** documento; emparejada con la
+42 —que exige que un `"1.0"` explicito **si** se lea— fija la **distincion**, que es lo que A27 puso en
+duda. Las dos juntas son la prueba; ninguna lo es por separado.
 
 Los puntos **36-41** son los de V4.7 y cierran A22-A26. Los seis comparten forma, porque los cinco
 findings la comparten: **cada uno afirma sobre un resultado tipado o sobre una precondicion, no sobre
@@ -3071,11 +3147,11 @@ C4-1..C4-14 del dueno.**
    sobre **la misma version**. Un proposal **no puede** declarar su propio veredicto: los veredictos se
    emiten **despues** de crear el SHA y viven en el registro de revision (A21, CF-4). El historial
    completo: `Architect=DISAGREED` sobre **V3** (`4470c6b`), **V4.1** (`9301f0f`), **V4.5** (`cdbc26e`)
-   y **V4.6** (`5e5e369`); `Coordinator=DISAGREED` sobre **V4.4** (`fb3d38d`), **V4.5** (`cdbc26e`) y
-   **V4.6** (`5e5e369`). V4.2 y V4.3 nunca llegaron a revisarse: cada una fue sustituida antes.
-   **La version a revisar ahora es V4.7.**
+   **V4.6** (`5e5e369`) y **V4.7** (`eb11f7b`); `Coordinator=DISAGREED` sobre **V4.4** (`fb3d38d`),
+   **V4.5** (`cdbc26e`), **V4.6** (`5e5e369`) y **V4.7** (`eb11f7b`). V4.2 y V4.3 nunca llegaron a
+   revisarse: cada una fue sustituida antes. **La version a revisar ahora es V4.8.**
 2. **El coste de la propagacion** sigue sin medir (riesgo P6). No es una decision de arquitectura.
-**Ninguna de las dos bloquea la revision del Architect sobre V4.7.**
+**Ninguna de las dos bloquea la revision del Architect sobre V4.8.**
 
 > **Corregido en V4.1 (punto 7).** V4 listaba aqui una tercera pregunta: «a que iniciativa pertenece la
 > fusion de conjuntos de variables entre dibujos». **No es una pregunta abierta**: **C3-8 ya retiro esa
