@@ -26,9 +26,10 @@ automation:
 
 # Variables de proyecto: fundacion de autoridad drawing-level (ID22A)
 
-> **Fase actual: CONSENSUS FREEZE.** Este contrato nacio en el bootstrap posterior al reclamo atomico
-> —caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2— y describia entonces **solo la fase Discovery**.
-> Esta actualizacion lo pone al dia con el **alcance final aprobado**, y es la que satisface **CF-1**.
+> **Fase actual: CONSENSUS FREEZE COMPLETO — siguiente fase: IMPLEMENTACION.** Este contrato nacio en
+> el bootstrap posterior al reclamo atomico —caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2— y
+> describia entonces **solo la fase Discovery**. La actualizacion de CF-1 lo puso al dia con el
+> **alcance final aprobado**; esta lo cierra: **el Owner acepto ADR-0034 el 2026-09-09**.
 >
 > ```
 > Reclamo atomico:  6e17bd5   (commit vacio, Claim-Id 73672933-f052-46af-b3c0-8091f0add299)
@@ -43,10 +44,12 @@ automation:
 > |---|---|
 > | **Discovery** | **CERRADO** — entregado en [I-47-discovery.md](I-47-discovery.md) |
 > | **Proposal V4.8** | **consenso tecnico CERRADO** sobre el SHA de arriba |
-> | **CF-1** — el contrato refleja el alcance final | **SATISFECHA por esta actualizacion** |
-> | **CF-2** — el ADR existe antes de implementar | **ADR-0034 creado en estado `propuesto`**; **PENDIENTE de aceptacion del Owner** |
+> | **CF-1** — el contrato refleja el alcance final | **SATISFECHA** |
+> | **CF-2** — el ADR existe antes de implementar, y el Owner lo acepta | **SATISFECHA** — **ADR-0034 nacio `propuesto` y el Owner lo ACEPTO el 2026-09-09** |
 > | **CF-3** — prerequisitos reconocidos como trabajo | **SATISFECHA** |
 > | **CF-4** — ambos revisores AGREED sobre el mismo SHA | **SATISFECHA** |
+> | **CONSENSUS FREEZE** | **COMPLETO** |
+> | **IMPLEMENTACION** | **AUTORIZADA A COMENZAR** — **no iniciada** |
 >
 > **Los dos veredictos, sobre exactamente el mismo SHA:**
 >
@@ -55,9 +58,14 @@ automation:
 > Architect=AGREED   — Proposal V4.8 / SHA a0621abbd22952ad5a62bf7678212a74526a05ce
 > ```
 >
-> **PRODUCCION TODAVIA BLOQUEADA.** El Consensus Freeze **no esta completo**: falta **CF-2**, y esa es
-> aceptacion del **Owner**, no de los revisores. El consenso Coordinador ↔ Arquitecto dice que la
-> decision esta **lista** para implementarse; **no** equivale a aceptarla.
+> **CONSENSUS FREEZE COMPLETO; IMPLEMENTACION AUTORIZADA A COMENZAR.** CF-2 la satisface un acto del
+> **Owner**, no de los revisores: el consenso Coordinador ↔ Arquitecto decia que la decision estaba
+> **lista** para implementarse, y la aceptacion es lo que la autoriza.
+>
+> **Congelar el contrato no es haberlo implementado.** La implementacion **no ha comenzado**, no hay
+> Candidate, no hay merge, y **la validacion manual del Owner en AutoCAD 2025 no se ha ejecutado**:
+> `requires_plugin_build`, `requires_autocad` y `requires_owner_validation` siguen vigentes.
+> **I-47 no esta cerrada y la produccion no esta validada.**
 
 ## 1. Objetivo
 
@@ -242,30 +250,38 @@ vive en [`docs/automation/decisions/I-47.md`](../automation/decisions/I-47.md).
 
 **Consenso tecnico alcanzado sobre `a0621abbd22952ad5a62bf7678212a74526a05ce`.**
 
-### 5.3 Fase CONSENSUS FREEZE — **en curso**
+### 5.3 Fase CONSENSUS FREEZE — **COMPLETA**
 
-- **CF-1** — esta actualizacion. **Satisfecha.**
+- **CF-1** — la actualizacion de alcance de este contrato. **Satisfecha.**
 - **CF-2** — [ADR-0034](../adr/0034-project-variables-autoridad-drawing-level.md), creado en estado
-  **`propuesto`**. **Pendiente de aceptacion del Owner.**
+  **`propuesto`** y **ACEPTADO por el Owner el 2026-09-09**, sobre el contenido de
+  `6eafd590017278767288b15cdcd9d651c293d5e6`. **Satisfecha.**
 - **CF-3** — satisfecha por el Proposal.
 - **CF-4** — satisfecha por los dos AGREED.
 
-### 5.4 Fase IMPLEMENTACION — **NO autorizada**
+El registro del acto vive en
+[`docs/automation/decisions/I-47.md`](../automation/decisions/I-47.md).
 
-**No comienza** hasta que el Owner acepte ADR-0034. Cuando comience, arrastra los gates de ejecucion
-del frontmatter: build del Plugin, AutoCAD y validacion manual del Owner.
+### 5.4 Fase IMPLEMENTACION — **AUTORIZADA A COMENZAR**, no iniciada
+
+La aceptacion de ADR-0034 **autoriza el arranque**; **no** lo ejecuta. Cuando comience, arrastra los
+gates de ejecucion del frontmatter: build del Plugin, AutoCAD y validacion manual del Owner. **A la
+fecha de este documento no se ha escrito ninguna linea de produccion para I-47**: no hay Candidate,
+no hay merge y no hay validacion del Owner.
 
 ## 6. Gates
 
 | Gate | Estado | Motivo |
 |---|---|---|
-| `owner-decision` | **ABIERTO** | **ADR-0034 esta `propuesto`.** Solo el Owner lo acepta o lo rechaza |
+| `owner-decision` | **RESUELTO — APROBADO** | **ADR-0034 ACEPTADO por el Owner el 2026-09-09.** El campo `requires_owner_decision` se mantiene `true`: declara que la iniciativa **necesitaba** la decision e identifica donde ([AUTOMATION_PLAN](../AUTOMATION_PLAN.md) seccion 11); lo que se resuelve es el **gate** |
 | `owner-validation` | **aplicara** | El alcance final cambia dibujo, BOM y persistencia ⇒ `requires_owner_validation: true`. **No ejecutada** |
 | `autocad` | **aplicara** | `requires_autocad: true` desde esta actualizacion |
 | `plugin-build` | **aplicara** | `requires_plugin_build: true` desde esta actualizacion |
 | CI | aplica | Toda punta empujada se mide como cualquier otra |
 
-**Produccion BLOQUEADA.** El Consensus Freeze **no esta completo** mientras CF-2 siga pendiente.
+**Consensus Freeze COMPLETO. Implementacion AUTORIZADA A COMENZAR.** Lo que **sigue sin declararse**
+es la produccion: no hay implementacion, ni Candidate, ni merge, ni validacion en AutoCAD. Los tres
+gates de ejecucion siguen **vigentes**.
 
 ## 7. Bitacora
 
@@ -280,3 +296,4 @@ del frontmatter: build del Plugin, AutoCAD y validacion manual del Owner.
 | 2026-09-08 | **Gate C3**: el dueno **decide D-07 (F2, promocion pegajosa; F3 rechazada)** y **D-10 (F1)**, saca la biblioteca de bloques del lote de propagacion y corrige el Consensus Freeze conforme a WORKFLOW seccion 2. **Proposal V3** sustituye a V2. **No quedan decisiones de producto abiertas.** Sin Architect Review |
 | 2026-09-08 | **Architect Review sobre V3: `DISAGREED`** — 4 BLOCKER, 5 HIGH, 7 MEDIUM, 4 LOW. La afirmacion de V3 «no quedan decisiones de producto abiertas» resulto **falsa**: ni LINK ni el punto de resolucion estaban decididos |
 | 2026-09-08 | **Reconciliacion V4**: el Coordinador **retira** su AGREED sobre V3 y acepta los findings. El dueno fija C4-1..C4-14. **Proposal V4** sustituye a V3 y cierra B1-B4, H1-H5, M1-M7 y L1-L4. **Ningun revisor declarado**; ADR **no** escrito |
+| 2026-09-09 | **CF-2 SATISFECHA — Consensus Freeze COMPLETO**: el Owner **acepta ADR-0034** («Acepto ADR-0034»). El ADR pasa de `propuesto` a **`aceptado`** sobre el contenido de `6eafd59`, que ya incluye la **correccion material de `RepairBroken`**. Gate `owner-decision` **resuelto**. **Implementacion AUTORIZADA A COMENZAR, no iniciada**; produccion **no validada** |

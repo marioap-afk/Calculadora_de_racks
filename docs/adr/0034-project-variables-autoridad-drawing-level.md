@@ -1,21 +1,34 @@
 # ADR-0034: Variables de proyecto como autoridad persistente de nivel dibujo y referencias tipadas por VariableId
 
-- **Estado:** **propuesto**
-- **Fecha:** 2026-09-09 (propuesto)
-- **Decisores:** Mario Pérez, Owner del repositorio (**pendiente de aceptación**: solo el dueño acepta
-  o rechaza, `adr/README.md`); Coordinador de I-47 y Arquitecto de I-47 (consenso técnico sobre
-  Proposal **V4.8** / SHA `a0621abbd22952ad5a62bf7678212a74526a05ce`); Claude (redacción)
+- **Estado:** **aceptado**
+- **Fecha:** 2026-09-09 (propuesto) · 2026-09-09 (aceptado)
+- **Decisores:** Mario Pérez, Owner del repositorio (**acepta**); Coordinador de I-47 y Arquitecto de
+  I-47 (consenso técnico sobre Proposal **V4.8** / SHA
+  `a0621abbd22952ad5a62bf7678212a74526a05ce`); Claude (redacción)
 - **Iniciativa relacionada:** I-47 — `architecture/project-variables-foundation`
   ([contrato](../initiatives/I-47-project-variables-foundation.md),
   [proposal](../initiatives/I-47-proposal-v4.md))
 
-> **Este ADR está `propuesto`, no aceptado.** El consenso Coordinador ↔ Arquitecto establece que la
-> decisión está **lista para implementarse**; **no** equivale a aceptación. Son dos actos de dos
-> autoridades distintas, y el repositorio lo fija así: «Estados: `propuesto` → `aceptado` |
-> `rechazado`; **Solo el dueño del repo acepta o rechaza**. Los agentes pueden redactar ADRs en estado
-> `propuesto`».
+> **Aceptación del Owner (2026-09-09).** El Owner acepta esta decisión de forma **explícita**:
+> «**Acepto ADR-0034**». Con ello **CF-2 queda satisfecha** y el **Consensus Freeze de I-47 queda
+> COMPLETO**.
 >
-> **Producción sigue BLOQUEADA** mientras este ADR no esté aceptado.
+> **Dos actos, dos autoridades.** El Coordinador y el Arquitecto aportaron el **consenso técnico**
+> sobre Proposal **V4.8** / SHA `a0621abbd22952ad5a62bf7678212a74526a05ce`, y ese consenso decía que
+> la decisión estaba **lista** para implementarse. La **aceptación** es un acto distinto, y **solo el
+> dueño del repo la ejerce**: «Estados: `propuesto` → `aceptado` | `rechazado`; **Solo el dueño del
+> repo acepta o rechaza**» (`adr/README.md`). Este ADR **nació `propuesto`** el 2026-09-09 y pasa a
+> **`aceptado`** ese mismo día; la trazabilidad de los dos estados se conserva a propósito.
+>
+> **La aceptación es posterior a la corrección material de `RepairBroken`** (§11). El contenido
+> aceptado es **exactamente** el que existe en el commit
+> **`6eafd590017278767288b15cdcd9d651c293d5e6`**.
+>
+> **Lo que esta aceptación autoriza — y lo que no.** Autoriza **empezar la implementación** sobre el
+> contrato congelado. **No** declara la implementación hecha, **no** declara pruebas verdes, **no**
+> declara validación en AutoCAD y **no** declara producción validada: `requires_plugin_build`,
+> `requires_autocad` y `requires_owner_validation` siguen **vigentes**, y la **validación manual del
+> Owner no se ha ejecutado**.
 
 ## Contexto
 
