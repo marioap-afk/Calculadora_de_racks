@@ -4,12 +4,12 @@
 > todavia.** **No se declara `Coordinator=AGREED` ni `Architect=AGREED`.**
 >
 > ```
-> PROPOSAL VERSION:   V4.5
+> PROPOSAL VERSION:   V4.6
 > Sustituye a:        I-47-proposal-v3.md  (commit 4470c6b)   — V1 y V2 ya supersedidas por V3
 > Base del analisis:  9e25d5291daa13c4846112241be6e52526429a47  (Discovery)
 > origin/main:        306e18ed4676e5e96b54d59402c9a230efb137d3  (sin avanzar)
-> Premisas:           C-1..C-6 (Gate C) + C2-1..C2-9 (Gate C2) + C3-1..C3-8 (Gate C3)
->                     + C4-1..C4-14 (Reconciliacion V4)
+> Premisas:           C-1..C-6 (Gate C) · C2-1..C2-9 (Gate C2) · C3-1..C3-8 (Gate C3)
+>                     C4-1..C4-14 (V4) · C4.2-1..6 · C4.3-1..2 · C4.4-1..2 · C4.5-1..3 · C4.6-1..8
 > ```
 >
 > ## Reconciliacion
@@ -94,6 +94,22 @@
 >   algo que el comparador ignora es una autoridad que no se compara entera.
 >
 > **`Coordinator=DISAGREED` sobre V4.4 exacta** (`fb3d38d`). El detalle esta en **§0-octies**.
+>
+> ## V4.6 — reconciliacion del Architect Review de V4.5
+>
+> El Architect reviso **V4.5** (`cdbc26e`) con un barrido adversarial de 18 dimensiones —100 hallazgos
+> planteados, 78 refutados— y declaro **`Architect=DISAGREED`**: 1 BLOCKER, 2 HIGH, 8 MEDIUM, 10 LOW.
+> **El Coordinador retira su AGREED y declara `Coordinator=DISAGREED` sobre V4.5 exacta.**
+>
+> El BLOCKER es del mismo tipo que B2 y B3 en su dia: **el contrato hereda, sin decidirla, la politica
+> de tolerancia de la capa de abajo**. `RackEmbedStore.Deserialize` devuelve `null` —nunca lanza— ante
+> un JSON invalido o un major futuro del **sobre**; `ScanEnvelopes` conserva esa entrada con
+> `Embed == null`; y los pasos 2-3 de la Familia A la descartan **antes** del probe, que es donde vive
+> la unica rama `INDETERMINATE`. Resultado: una vista vinculada que no se redibuja y un dibujo con
+> **dos valores para la misma variable**.
+>
+> Esta ronda es una **reconciliacion acotada de A1-A21**, no una auditoria nueva. El detalle esta en
+> **§0-nonies**.
 
 ## 0. Premisas — no se comparan
 
@@ -193,6 +209,11 @@ Solo lo que cambia. Lo no listado se conserva **literalmente** de V3.
 | **H1** | La garantia de F2 se aplica en un solo call site; la ruta de biblioteca no esta guardada | **D-07 §alcance** + **D-15** (C4-10) |
 | **H2** | `ProjectVariablesDocument` sin contrato de versionado | **D-01-bis** (C4-8) |
 | **H3** | Referencia rota ⇒ rack irreparable | **D-08-bis** (C4-7) |
+
+> **Aviso de notacion (A20).** La etiqueta **`H3`** aparece en este documento con **dos** significados
+> sin relacion: el **finding HIGH del Architect** de esta tabla (referencia rota ⇒ rack irreparable) y,
+> en **D-15**, la **tercera alternativa** de export a biblioteca —la fusion de conjuntos de variables
+> entre dibujos, que C2-8 dejo como futuro separado y sin numero—. Cada una es local a su seccion.
 | **H4** | Granularidad del registro vs unidad de atomicidad | **D-13 §unidad** (C4-11) |
 | **H5** | D-10 y D-16b necesitan datos del dibujo dentro de una ventana que no puede leerlo | **D-16 §frontera** (C4-12) |
 | **M1** | D-12 no dice si hereda el filtro `Copies > 0` | **D-12** (C4-13) |
@@ -301,6 +322,46 @@ ProjectVariablesDocument)` **no se vuelve a tocar**.
 | C4.5-1 | **Un solo call graph para el BOM.** `RACKBOMTOTAL` reune las hermanas, obtiene la autoridad, y pasa al handler el **embed representante ya aprobado** junto al **mismo** snapshot de `ProjectVariables`. **El resolver se ejecuta UNA vez, dentro del handler.** Elegir representante es seguro **solo despues** de que la autoridad pura demuestre igualdad authored completa |
 | C4.5-2 | **`UNKNOWN` jamas se convierte en `NEGATIVE`.** `NEGATIVE` significa, literalmente, **«se comprendio todo el `PropertyValues` y ninguna referencia usa el objetivo»**. Cualquier cosa no comprendida es `INDETERMINATE` |
 | C4.5-3 | **La igualdad authored es TOTAL**: cubre todo el estado authored persistido del `SelectivePalletDesignDocument`, **incluido `ExtensionData`**, y excluye **solo** `View` y `Section` del sobre |
+
+## 0-nonies. Diff V4.5 → V4.6, y disposicion de A1-A21
+
+| ID | Sev. | Disposicion | Donde se resuelve |
+|---|---|---|---|
+| **A1** | BLOCKER | **ACEPTADO** | **D-12 §envelope indeterminate de nivel dibujo** (C4.6-1) + prueba 29 |
+| **A2** | HIGH | **ACEPTADO** | **D-01-bis §ausente vs presente-ilegible** (C4.6-2) + prueba 30 |
+| **A3** | HIGH | **ACEPTADO** (hueco de validacion) | **D-17 prueba 31** |
+| **A4** | MEDIUM | **ACEPTADO CON MODIFICACION** — no se exige `RackId` cuando A1 lo hace imposible | **D-12 §diagnostico** (C4.6-3) |
+| **A5** | MEDIUM | **Correccion factual** — sin filtro nuevo | D-12 §vistas fantasma |
+| **A6** | MEDIUM | **Aclaracion**, no arquitectura nueva | D-16-frontera §intent desde el editor modal |
+| **A7** | MEDIUM | **ACEPTADO** | **D-16a §superficie de `RepairBroken`** (C4.6-4) |
+| **A8** | MEDIUM | **ACEPTADO** | **D-17 prueba 32** |
+| **A9** | MEDIUM→**HIGH** | **ACEPTADO**, elevado | **D-15/BOM §cuarto canal** (C4.6-5) + prueba 33 |
+| **A10** | MEDIUM | **ACEPTADO** | **D-13 §sobre por sibling** (C4.6-6) + prueba 35 |
+| **A11** | MEDIUM | **Editorial** | P7 |
+| **A12** | LOW | **Correccion** | D-07 §portador |
+| **A13** | LOW | **ACEPTADO** | **D-17 prueba 34** |
+| **A14** | LOW | **Editorial** | diagrama de D-04-bis |
+| **A15** | LOW | **ACEPTADO** | **D-13 §unidad: registry-only vs rack-affecting** (C4.6-7) |
+| **A16** | LOW | **ACEPTADO** | **D-01-bis §version de escritura** (C4.6-8) |
+| **A17** | LOW | **Aclaracion** | D-13 §B |
+| **A18-A20** | LOW | **Editorial** | sello de premisas · §12.2 · aviso de notacion H3 |
+| **A21** | LOW | **NO es defecto material** | **CF-4 reescrito para no ser auto-invalidante** |
+
+**No se reabren** por estas correcciones: N2, N4, N6, N9, N10, N11 ni V4-01. Tampoco F2, la politica
+sticky, ni ninguna decision C4, C4.2, C4.3, C4.4 o C4.5.
+
+### Premisas anadidas en V4.6
+
+| # | Premisa |
+|---|---|
+| C4.6-1 | **`DRAWING_ENVELOPE_INDETERMINATE`**: todo bloque con datos `RackBlockData` **presentes** cuyo `RackEmbedDocument` **no pueda interpretarse** no es `NEGATIVE`, no es «rack ajeno» y **no se ignora**. Antes de producir `Success` en cualquier operacion que pueda tocar racks ⇒ **ABORT**, `MutationPlan` vacio, cero mutacion |
+| C4.6-2 | **`ABSENT` != `PRESENT_BUT_UNREADABLE`** en el NOD. Ausente ⇒ `ProjectVariablesDocument` **vacio** (legado valido). Presente pero vacio/corrupto/no deserializable ⇒ **ERROR VISIBLE**, no registro vacio, y **prohibido escribir encima**. Falla **cerrado** |
+| C4.6-3 | **Diagnostico por atribuibilidad**: error atribuible ⇒ el mensaje nombra el `RackId` y el dato problematico; error **no atribuible** del sobre ⇒ nombra `DefinitionId`/nombre de definicion y dice que el `RackId` **no puede determinarse**. **Jamas se inventa un `RackId`** |
+| C4.6-4 | **La superficie propietaria de `RepairBroken` es la ventana central de Project Variables**, no el editor del rack. No se exige abrir `RackSelectiveWindow` para reparar un binding que impide abrirlo |
+| C4.6-5 | **Un binding roto NO es «payload unreadable»**: es un **cuarto caso**, `BrokenProjectVariableReference`, que **aborta el TOTAL** de `RACKBOMTOTAL`. Ni se omite en silencio, ni se materializa el authored, ni hay fallback |
+| C4.6-6 | **El sobre es por sibling FISICA; el authored es uno logico por `RackId`.** Al reescribir cada vista, `RackEmbedComposer.Compose` recibe como `source` **el sobre PROPIO de esa vista**, nunca el representante |
+| C4.6-7 | **Registry-only vs rack-affecting.** `Create` y `Rename` no hacen scan, ni preflight de racks, ni redibujo, ni exigen `Regen` — pero su escritura del registro **sigue siendo transaccional**. Las otras seis aplican D-12/D-13 segun su familia. **Un `Delete` bloqueado no muta** |
+| C4.6-8 | **Version de escritura del `ProjectVariablesDocument`**: registro nuevo ⇒ `1.0`; almacenado con **minor mayor** del mismo major ⇒ se preserva ese minor y su `ExtensionData`; **major superior ⇒ ERROR, no se escribe**; presente-pero-ilegible ⇒ C4.6-2, **no se escribe** |
 
 ## 1. Metodo, y una regla que gobierna todo el documento
 
@@ -455,7 +516,20 @@ hermanos, **desde el dia uno**:
 | Store propio | `ProjectVariablesStore` en `RackCad.Application/Persistence`, **puro**, con `Serialize`/`Deserialize` — el Plugin solo aporta el acceso al NOD |
 | Guard propio | `SchemaGuard.CheckReadable(stored, current, "Las variables de proyecto")`. **Major superior = ERROR**, con el mensaje ya existente, no con `null` silencioso |
 | `ExtensionData` | `[JsonExtensionData]` en la raiz **desde el dia 1**, para que un build I-47 preserve lo que escriba un build posterior del mismo major |
-| Ausencia | Un DWG sin la entrada del NOD se lee como **registro vacio** (C-1). Eso **no** es un error: es un proyecto con cero variables |
+| **`ABSENT`** | Un DWG **sin** la entrada del NOD se lee como **registro vacio** (C-1). Eso **no** es un error: es un proyecto con cero variables, y es **legado valido** |
+| **`PRESENT_BUT_UNREADABLE`** | La entrada **existe** pero su contenido esta **vacio, corrupto o no deserializable** ⇒ **ERROR VISIBLE**. **NO** se devuelve registro vacio y **NO se escribe encima**. Falla **cerrado** |
+| Version de **escritura** | Registro nuevo ⇒ **`1.0`**. Almacenado con **minor mayor** del mismo major ⇒ se **preserva** ese minor y su `ExtensionData`. **Major superior ⇒ ERROR, no se escribe.** `PRESENT_BUT_UNREADABLE` ⇒ **no se escribe** |
+
+> **`ABSENT` != `PRESENT_BUT_UNREADABLE` (A2, C4.6-2).** V4.5 solo tenia la fila de ausencia, y su
+> vecindad invitaba a la lectura peligrosa: tratar un registro **presente e ilegible** como vacio. Esa
+> lectura **destruiria en silencio todas las variables del dibujo** en la siguiente escritura. Son dos
+> estados distintos y se resuelven al reves: **ausente es legado valido; presente-pero-ilegible es
+> autoridad corrupta o desconocida, y falla cerrado.**
+
+> **Version de escritura (A16, C4.6-8).** V4.5 fijaba la version de **lectura** del registro y callaba
+> sobre la de **escritura**, mientras exigia preservar el `ExtensionData` que hubiera escrito un build
+> posterior. La fila de arriba lo cierra. **No** se disena un major 2 ni nada de ID22B: eso lo decidira
+> ID22B cuando exista.
 
 **Tres errores duros, y ninguno se degrada a aviso** (C4-8):
 
@@ -698,20 +772,23 @@ autoridad** antes de resolver. Ninguna geometria, ningun BOM y ninguna preview s
 | **Calculo del BOM** — tras el resolver | `SelectiveKindHandler` → `SelectiveGeometryResolver` → `SelectiveBomBuilder` | **solo** el `SelectivePalletDesign` **efectivo** | **No** conoce `PropertyValues`. **No** conoce `VariableId`. **No** consume authored. **No** resuelve bindings |
 
 ```
-RACKBOMTOTAL
+AUTORIDAD  (orquestacion del BOM)
   sibling payloads ──► authority precheck (AUTHORED) ──► embed representante APROBADO
                                                                   │
                                                                   ▼
-  handler.BuildBom(embedAprobado, catalog, projectVariables)  ◄── mismo snapshot del NOD
+                       handler.BuildBom(embedAprobado, catalog, projectVariables)
                                                                   │
-                     SelectiveEffectiveDesignResolver(authored, projectVariables)   ← UNA vez, aqui
+RESOLUCION  (un solo punto, D-04-bis)                             ▼
+                       SelectiveEffectiveDesignResolver(authored, projectVariables)
                                                                   │
                                                    SelectivePalletDesign EFECTIVO
-                                    ┌─────────────────────────────┼─────────────────────┐
-                                    ▼                             ▼                     ▼
-                          SelectiveGeometryResolver            dibujo                preview
-                                    │
-                            SelectiveBomBuilder
+                                                                  │
+CONSUMO                          ┌────────────────────────────────┼──────────────────┐
+                                 ▼                                ▼                  ▼
+                       SelectiveGeometryResolver               dibujo             preview
+                                 │                          (su propio camino, NO via BuildBom)
+                                 ▼
+                         SelectiveBomBuilder
 ```
 
 **Quien consume que, corregido:**
@@ -915,10 +992,50 @@ y ambos se conservan tal cual:
 | Diagnostico bloqueante del propio sistema | **aborta el total** (`RackBomOutputGate.DescribeBlocked`) — *«un total al que le falta un rack no puede parecer completo»* |
 | **Payload ilegible** de un rack | **se omite ese rack con aviso visible** (`RackBomOutputGate.DescribeUnreadable`), nunca en silencio |
 
-Lo unico que V4.3 anade es **un motivo nuevo que entra por el tercer canal**: un `RackId` Selectivo con
-hermanas **divergentes** —o con alguna **indescifrable**— es un rack **sin autoridad BOM**, y se trata
-como el payload ilegible: **se omite con aviso visible que nombra el rack**. No se inventa un canal
-nuevo, no se cambia el reparto abortar/omitir, y **no** se cotiza desde una hermana elegida a dedo.
+V4.3 anadio **un motivo que entra por el tercer canal**: un `RackId` Selectivo con hermanas
+**divergentes** —o con alguna **indescifrable**— es un rack **sin autoridad BOM**, y se trata como el
+payload ilegible: **se omite con aviso visible que nombra el rack**. No se cambia el reparto
+abortar/omitir, y **no** se cotiza desde una hermana elegida a dedo.
+
+#### El CUARTO canal: binding roto (A9, C4.6-5, nuevo en V4.6)
+
+> **Corregido en V4.6.** El Architect registro que un **binding roto** caia en el canal de «payload
+> ilegible» y se reportaba como *«no se pudo interpretar»*. Eso es **falso y ademas encubridor**: el
+> authored es **perfectamente legible**; lo que falta es la **variable**. Con ese encuadre, la promesa
+> de D-08 —un mensaje que **nombra el rack y la variable**— resultaba inalcanzable en el camino BOM.
+
+**Un binding roto NO es un payload ilegible. Es un caso propio:**
+
+```
+Selective authored LEGIBLE
+  + ProjectVariableReference a un VariableId INEXISTENTE
+  -> la resolucion del efectivo es un ERROR
+
+en RACKBOMTOTAL:
+  -> ABORTA EL TOTAL
+  -> NO se omite el rack en silencio
+  -> NO se materializa el authored
+  -> NO hay fallback
+```
+
+**Aborta el total, no omite.** Es deliberado y sigue la logica del canal de diagnostico bloqueante:
+*«un total al que le falta un rack no puede parecer completo»*. Y omitirlo seria peor aqui que en el
+caso ilegible, porque el rack **si** tiene autoridad — lo que no tiene es el valor.
+
+**El mensaje visible debe nombrar los tres:** `RackId`/`Name`, `PropertyId`, y el `VariableId` que
+falta. Vive en **Application** —junto a `DescribeBlocked` y `DescribeUnreadable` en
+`RackBomOutputGate`— y por tanto es **verificable en Core** (prueba 33).
+
+Los cuatro canales, ahora completos:
+
+| Situacion | Politica |
+|---|---|
+| Kind sin handler | **aborta el total** |
+| Diagnostico bloqueante del sistema | **aborta el total** |
+| Payload **verdaderamente** ilegible, o sin autoridad multi-vista | **se omite con aviso visible** |
+| **`BrokenProjectVariableReference`** | **aborta el total**, nombrando rack + propiedad + variable |
+
+Los tres primeros **se conservan exactamente como estaban**.
 
 El mensaje vive donde ya viven sus hermanos: `RackBomOutputGate`, en
 **`RackCad.Application/Bom/`** — puro, y por tanto verificable en la suite Core junto a
@@ -1199,9 +1316,16 @@ Entre `load`, `edit` y `save` el authored document debe preservar **cuatro** cos
 **actualizar** el documento authored en vez de fabricar otro. Es trabajo real, esta reconocido en
 **CF-3**, y no se da por hecho.
 
-> **El alcance de esto es mayor que la version.** El mismo defecto explica por que un binding
-> sobreviviria a guardar y reabrir pero **moriria en RACKDUPLICAR** (D-14): aquel restamp tambien
-> re-serializa a traves del DTO. Un unico portador correcto cierra los dos casos.
+> **Correccion de V4.6 (A12).** V4.5 afirmaba aqui que el mismo defecto explicaba por que un binding
+> «moriria en RACKDUPLICAR» y que **un unico portador cierra los dos casos**. Es **inexacto**: el
+> restamp del Selectivo hace `deserialize DTO → cambia Id/Name → serialize DTO`, **sin pasar por
+> Domain ni por `From(...)`**, asi que **no tiene el defecto B2** y el portador C4-2 **no** es lo que
+> lo salva. Lo que salva a RACKDUPLICAR es que el binding sea un **campo declarado del DTO** (D-04) —
+> y eso **si** es requisito.
+>
+> **D-17-bis sigue siendo requisito**, por su propia razon: extraer la transformacion a codigo puro y
+> probar por comportamiento que `RackId` cambia, `Name` cambia, y que **`PropertyValues`,
+> `SchemaVersion` y `ExtensionData` se conservan**.
 
 ### La invariante de escritura, ahora monotonica (C4-9, cierra M5)
 
@@ -1544,6 +1668,86 @@ participan: no tienen `PropertyValues` en esta iniciativa y su payload **no es**
 > que M4 habia cerrado. La correccion no es debilitar V4-01: es **ordenar** probe y comparacion, y
 > distinguir **dos familias de operacion**.
 
+##### Paso previo a TODO: el sobre de nivel dibujo (A1, C4.6-1)
+
+> **BLOCKER cerrado en V4.6.** El Architect verifico que V4.5 dejaba un hueco por el que se escapa
+> justamente lo que C-3 promete. La cadena, comprobada linea a linea:
+>
+> ```csharp
+> // src/RackCad.Application/Persistence/RackEmbedDocument.cs — Deserialize
+> catch (JsonException) { return null; }
+> // "a block written by a newer MAJOR is skipped (null), NEVER thrown — a single
+> //  future/foreign block must not abort the drawing-wide envelope scan"
+> if (!SchemaVersionPolicy.IsReadable(...)) { return null; }
+> ```
+> ```csharp
+> // src/RackCad.Plugin/RackBlockFinder.cs — la entrada SE CONSERVA con Embed == null
+> var embed = store.Deserialize(json);
+> results.Add(new RackEnvelopeScan(id, embed, referenceCount));
+> ```
+> ```csharp
+> // src/RackCad.Plugin/RackCommandSupport.cs — el camino de redibujo la descarta en silencio
+> if (envelope.Embed != null && string.Equals(envelope.Embed.Id, rackId, ...))
+> ```
+>
+> Una entrada con `Embed == null` **no tiene `Kind` ni `Id`**, asi que muere en los pasos 2-3 de la
+> Familia A y **nunca llega al probe**, que es donde vivia la unica rama `INDETERMINATE`. Consecuencia
+> concreta: un rack vinculado con una vista de sobre corrupto o de major futuro ⇒ `ChangeValue` ve
+> frontal y planta, tiene exito, las redibuja, y esa tercera vista **conserva el valor viejo**. El
+> dibujo queda con **dos valores para la misma variable**, que es lo que C-3 y D-13 punto 2 prohiben.
+>
+> **Es el mismo tipo de defecto que B2 y B3**: el contrato heredaba, sin decidirla, la politica de
+> tolerancia de la capa de abajo. Aqui **se decide**.
+
+**Regla, y corre ANTES del paso 2 —antes de filtrar por `kind` y antes de agrupar por `RackId`—:**
+
+```
+DRAWING_ENVELOPE_INDETERMINATE
+
+  Todo bloque con datos RackBlockData PRESENTES cuyo RackEmbedDocument NO pueda
+  interpretarse es DRAWING_ENVELOPE_INDETERMINATE.
+
+      NO es NEGATIVE.
+      NO es "rack ajeno".
+      NO se ignora.
+```
+
+**Se aplica antes de producir `Success` en CUALQUIER operacion que pueda tocar racks:**
+`ChangeValue` · deteccion de consumidores de `Delete` · `UnlinkAllAndDelete` · `Link` · `Unlink` ·
+`RepairBroken`.
+
+```
+si existe algun RackEnvelopeScan con
+      Embed == null                                             (JSON invalido o major de SOBRE futuro)
+   o  identidad necesaria no interpretable (Id/Kind ausente cuando impide clasificar)
+
+   ->  ABORT
+   ->  MutationPlan VACIO
+   ->  cero mutacion
+```
+
+**M4 no se debilita.** M4 solo ignora racks **DEMOSTRABLEMENTE** ajenos; un sobre que no puede
+atribuirse **no esta demostrado como ajeno**, y por tanto nunca entro en el alcance de M4. Es la misma
+correccion que C4.5-2 hizo dentro del probe, aplicada ahora una capa mas arriba — donde el probe no
+llega.
+
+**Nota de alcance:** V4.6 **no cambia** la tolerancia de `RackEmbedStore.Deserialize` —seguira
+devolviendo `null`, que es correcto para un barrido de nivel dibujo—. Lo que se gobierna es **que hace
+el contrato con ese `null`**.
+
+##### Diagnostico: atribuible o no (A4, C4.6-3)
+
+Un aborto que el usuario no puede localizar no sirve, y el unico camino de reparacion le exige picar
+el rack exacto. Pero **no siempre se puede saber cual es**:
+
+| Caso | El mensaje nombra |
+|---|---|
+| Error **atribuible** — se conoce el `RackId` | el **`RackId`** y el **dato problematico** (`PropertyId` desconocido, `kind` desconocido, `VariableId` malformado, divergencia authored) |
+| Error **no atribuible** del sobre (A1) — el `RackId` no se puede leer | el **`DefinitionId` / nombre de la definicion**, y dice explicitamente que **el `RackId` no puede determinarse** |
+
+**Jamas se inventa un `RackId`.** Los abortos por `PropertyId` desconocido, `kind` de referencia
+desconocido y `VariableId` malformado **si** deben nombrarlo: en esos casos el sobre se leyo.
+
 ##### Familia A — operaciones TARGET-VARIABLE
 
 Aplica a **`ChangeValue`**, a la **deteccion de consumidores de `Delete`** y a **`UnlinkAllAndDelete`**.
@@ -1648,9 +1852,18 @@ cambia geometria:
 La regla de diseno detras: **por defecto se compara todo lo persistido**, y cada exclusion se justifica
 una a una. La lista de exclusiones tiene hoy **dos** elementos y ambos son del sobre, no del diseno.
 
-> **Vistas fantasma:** un bloque-vista cuyo fondo o corte ya no existe se **borra** en el flujo actual
-> (`staleViewBlocks`), no se compara. Una hermana ausente **no es** divergencia: la divergencia es que
-> dos hermanas **presentes** discrepen.
+> **Vistas fantasma — corregido en V4.6 (A5).** V4.5 afirmaba que un bloque-vista obsoleto «se **borra**
+> en el flujo actual». **Es falso como afirmacion absoluta**: el borrado es **condicional**. En
+> `RackSelectivoCommands` el codigo calcula los supervivientes y **solo borra si queda al menos uno**;
+> si el encogimiento dejara obsoletas **todas** las vistas, se **conservan a proposito** —para no
+> destruir el rack— y el comando pide al usuario insertar una vista valida y borrar las viejas a mano.
+>
+> **Consecuencia contractual, y es la unica que se saca de aqui:** una hermana persistida **presente**
+> —aunque sea obsoleta— **no se excluye en silencio de la autoridad**. Si conviven payloads viejo y
+> nuevo, gobiernan las reglas normales de igualdad authored completa, con su resultado normal:
+> divergencia. **V4.6 no introduce un filtro de autoridad basado en «stale»**, y **V4-01 no se reabre**.
+> Una hermana **ausente** sigue sin ser divergencia; lo que se corrige es la premisa factual de que
+> siempre acaba ausente.
 
 #### Reparacion de la divergencia: quien puede, y quien no
 
@@ -1774,6 +1987,26 @@ Corre **solo despues** de un `Success` del semantico, y **todavia antes** de mut
 registro, geometria y payloads, y se hace **UN** commit. Y **despues** del commit: purga acumulada y
 **UN** `Regen`.
 
+###### El SOBRE es por sibling fisica; el AUTHORED es uno logico por `RackId` (A10, C4.6-6)
+
+V4.5 decia solo «escribe los payloads de todas las vistas», mezclando dos granularidades. Al reescribir
+**cada** vista existente:
+
+```
+RackEmbedComposer.Compose(
+    source:  ESA sibling.Embed,          <-- el sobre PROPIO de esa vista, NUNCA el representante
+    ...,
+    design:  commonAuthoredOutputJson)   <-- el authored comun, UNO por RackId
+```
+
+De **esa** vista se preservan su `SchemaVersion` de sobre, su `ExtensionData` de sobre y su metadata
+valida por vista. **Reutilizar el embed representante de la autoridad BOM como `source` para todas
+borraria en silencio el `ExtensionData` de las demas** — justo lo que C4.5-3 acaba de declarar
+autoritativo, y por tanto produciria divergencias fantasma en la siguiente comparacion.
+
+Para una **vista nueva insertada** se conserva la politica historica: el sobre **iniciador/picado** es
+el `source`.
+
 ```
 A. semantico (puro)  ->  B. fisico (AutoCAD, read-only)  ->  lock + transaction
                                                               registro + geometria + payloads
@@ -1783,6 +2016,14 @@ A. semantico (puro)  ->  B. fisico (AutoCAD, read-only)  ->  lock + transaction
 
 La separacion no es cosmetica: **A es testeable sin AutoCAD y B no lo es**, asi que meter en B algo que
 podia estar en A reduce lo que la CI puede garantizar.
+
+> **Aclaracion de V4.6 (A17).** «B no es testeable» se refiere a **lo que toca AutoCAD**, no a todo lo
+> que el Plugin invoca durante la preparacion fisica. **No** hace falta mover conceptualmente toda la
+> construccion de planes al preflight semantico: los **builders y planners puros de Application siguen
+> siendo testeables en Core** aunque sea el Plugin quien los llame en el paso 2. Lo que **no** se puede
+> probar sin AutoCAD es concretamente: resolucion de `ObjectId`, lecturas de `Database`,
+> `blockTable.Has`, y `DocumentLock`/`Transaction`. La regla operativa es **no mezclar planificacion
+> pura con mutacion de AutoCAD**; no es «todo lo que ocurre en B es opaco». **N6 no se reabre.**
 
 **Frontera arquitectonica EXIGIDA (no se implementa aqui) — ahora sobre TODOS los writers del slice
 (C4-3, cierra B3).**
@@ -1887,7 +2128,16 @@ resolvia el desajuste.
 Create · Rename · ChangeValue · Delete · Link · Unlink · RepairBroken · UnlinkAllAndDelete
 ```
 
-Cada una es **una** unidad: un preflight, una transaccion, un commit, un `Regen`.
+Cada una es **una** unidad. Pero **no todas hacen lo mismo**, y V4.5 afirmaba que si (A15):
+
+| Familia | Operaciones | Que hace |
+|---|---|---|
+| **Registry-only** | `Create` · `Rename` | **sin** scan de racks · **sin** preflight de racks · **sin** redibujo · **sin** `Regen`. La escritura del registro **sigue siendo transaccional** |
+| **Rack-affecting** | `ChangeValue` · `Delete` (cuando proceda) · `Link` · `Unlink` · `RepairBroken` · `UnlinkAllAndDelete` | aplican D-12 y D-13 **segun su familia** (A o B) y **segun sus mutaciones reales** |
+
+**Un `Delete` bloqueado no muta**: no hay `registryMutation`, no hay mutaciones de rack, y el
+`MutationPlan` queda **vacio**. Es coherente con D-10 F1 y con C4.2-4, que V4.5 contradecia al afirmar
+que las ocho operaciones siempre incluian preflight, redibujo y `Regen`.
 
 **Si una UI futura entrega varios cambios en un solo Apply, el change-set ENTERO es una sola unidad**, y
 entonces:
@@ -2043,6 +2293,24 @@ nunca sale por ahi un documento promovido ni vinculado.
 | J2 | `[CommandMethod]` propio (p. ej. `RACKVARIABLES`) sin entrada de menu | Accesible pero **no descubrible** — el problema que I-36C existio para arreglar |
 | J3 | Pestana dentro de cada editor de rack | Repetida N veces; el registro es **del dibujo**, no del rack |
 
+##### La superficie propietaria de `RepairBroken` (A7, C4.6-4)
+
+> **Cerrado en V4.6.** El Architect registro que «estado roto» era el unico de los cinco DTO de
+> D-16-frontera **sin superficie propietaria**, y que la unica superficie por rack —el editor— es
+> justamente la que **D-08 impide abrir** cuando hay una referencia rota. El rack quedaba visible como
+> roto y sin sitio donde repararse.
+
+**La ventana central de Project Variables es la superficie propietaria.** Muestra, por cada binding
+roto: el **rack** (`RackId`/`Name`), el **`PropertyId`**, el **`VariableId` que falta** —y que la
+variable no existe— y el **estado roto**.
+
+Ofrece la accion **`RepairBroken`**, que antes de ejecutarse presenta el aviso de D-08-bis: **no existe
+valor efectivo**, se usara el **literal authored**, la **geometria puede cambiar**, y exige
+**confirmacion explicita**. Confirmada, la UI **devuelve el intent** al Plugin/Application.
+
+**No se exige abrir `RackSelectiveWindow` para reparar un binding que impide abrirlo.** Esa es la
+propiedad que cierra A7 y la que hacia de H3 un estado sin salida.
+
 **Recomendacion: J1 y J2 juntos** —entrada de menu **y** comando con alias, como tiene todo lo demas—.
 El precedente literal:
 
@@ -2106,7 +2374,19 @@ Plugin + Application  ejecutan la operacion confirmada (C4-11)
 | **Estado roto** | que bindings no resuelven — lo que D-08-bis debe ofrecer reparar |
 
 **La UI devuelve intenciones, no efectos.** Un clic en «Desvincular» produce una **peticion**
-`Unlink(rack, propertyId)`; no muta nada por su cuenta. Es lo que permite que las ocho operaciones
+`Unlink(rack, propertyId)`; no muta nada por su cuenta.
+
+> **Aclaracion de V4.6 (A6) — no es arquitectura nueva.** D-16-frontera ya gobierna esto; faltaba
+> decirlo para el caso de un editor **modal**. Para `Unlink` desde `RackSelectiveWindow`:
+>
+> ```
+> boton  ->  intent tipado de UI  ->  salir / devolver el control a la frontera modal
+>                                 ->  Plugin/Application ejecuta Unlink
+> ```
+>
+> **La UI no abre una `Transaction` de AutoCAD ni toca `Database`/`ObjectId`.** Y **no es obligatorio**
+> que la transaccion ocurra mientras el modal sigue abierto: la operacion confirmada (C4-11) la ejecuta
+> el Plugin, con su preflight, su commit y su `Regen`, cuando el control vuelve a el. Es lo que permite que las ocho operaciones
 confirmadas (C4-11) tengan **un solo** camino de ejecucion, con su preflight y su commit, sea cual sea
 la superficie que las dispare.
 
@@ -2196,6 +2476,13 @@ AutoCAD ([ADR-0003](../adr/0003-referencias-autocad-para-ci.md)) y la CI no tien
 | **26** | **Centinela: `kind` de referencia desconocido ⇒ `INDETERMINATE`, JAMAS `NEGATIVE`** | D-12 probe (N10, C4.5-2) |
 | **27** | **Con cualquiera de los dos anteriores, una operacion target-variable ABORTA** y deja el `MutationPlan` **vacio** | D-12 + D-13 (N10) |
 | **28** | **Centinela: dos hermanas identicas en todos los campos conocidos pero con `ExtensionData` DISTINTO ⇒ el comparador devuelve DIVERGENCIA.** El mismo centinela protege las operaciones de variable (D-12) **y** la autoridad BOM (N5/N8) | §igualdad authored (N11, C4.5-3) |
+| **29** | **Sobre RackCad PRESENTE pero no interpretable ⇒ el preflight semantico NO devuelve `Success` y el `MutationPlan` queda VACIO.** Cubre `Embed == null` por JSON invalido y por major de sobre futuro | D-12 §envelope indeterminate (A1, C4.6-1) |
+| **30** | **Contenido serializado del registro CORRUPTO ⇒ error duro, NO documento vacio**, y **escritura prohibida** tras un error de lectura. La **ausencia**, en cambio, la modela como vacio la capa Plugin | D-01-bis (A2, C4.6-2) |
+| **31** | **`Link` multi-vista**: sobre un `RackId` con varias hermanas, un `Link` exitoso conserva el literal authored, anade el binding, promueve el schema, resuelve el efectivo, y el `MutationPlan` **incluye como destino TODAS las sibling views presentes** | D-11-bis (A3) |
+| **32** | **`Delete` con consumidores ⇒ resultado BLOQUEADO**: resumenes de consumidores presentes, **sin** `registryMutation`, y `MutationPlan` **vacio** | D-10 F1 (A8) |
+| **33** | **Referencia rota en el camino BOM ⇒ veredicto de ABORTO TOTAL**, con mensaje que nombra **rack + `PropertyId` + `VariableId` faltante**. No se omite, no se materializa el authored | §cuarto canal (A9, C4.6-5) |
+| **34** | **Export a biblioteca de un Selectivo vinculado con `VariableId` inexistente ⇒ falla visiblemente**; **no** se genera artefacto literal desde el authored congelado | D-15 (A13) |
+| **35** | **Preservacion del sobre por sibling**: dos sobres con `ExtensionData` distinto ⇒ `Compose` de cada uno conserva **SU** propio `ExtensionData` | D-13 §sobre por sibling (A10, C4.6-6) |
 
 Los puntos 7 y 11 son los que V3 no tenia, y son **precisamente** los que cierran B2 y M2: ambos son
 **puros** y por tanto plenamente verificables — el preflight opera sobre documentos, no sobre el
@@ -2204,6 +2491,15 @@ dibujo, y el portador es un DTO.
 Los puntos **15-17** nacieron en V4.1 y cierran **V4-01**; el **17** es el que de verdad importa, y en
 V4.2 ya se apoya en un artefacto **definido** (`VariableMutationPreflightResult`, D-13): no basta con
 que el preflight devuelva error, hay que comprobar que **no queda nada planificado**.
+
+Los puntos **29-35** son los de V4.6 y cierran A1, A2, A3, A8, A9, A10 y A13. El **29** y el **30**
+son los que mas importan, y ensenan lo mismo: **el contrato no puede heredar en silencio la politica de
+tolerancia de la capa de abajo** — un `null` de `Deserialize` y una entrada corrupta del NOD tienen que
+producir un **fallo**, no un **vacio**.
+
+La division del **31** es deliberada: **Core prueba el plan y sus destinos logicos**; la aplicacion
+fisica real de frontal + planta + lateral bajo un commit la prueba el dueno. **No se duplica la logica
+del writer dentro de la prueba.**
 
 Los puntos **25-28** son los de V4.5. Los tres primeros cierran **N10** y el **28** cierra **N11**; el
 28 es un **unico** centinela que protege **dos** superficies a la vez —las operaciones de variable de
@@ -2443,13 +2739,13 @@ C4-1..C4-14 del dueno.**
 ### 12.2 Lo que sigue abierto
 
 1. **La aceptacion del contrato por sus dos revisores.** `Coordinator` y `Architect` deben coincidir
-   sobre **la misma version**, y **V4.3 no declara ninguno de los dos**. El estado real, sin adornos:
-   `Architect=DISAGREED` sobre **V3** y sobre **V4.1**; el `Coordinator` **retiro** su AGREED en ambas
-   ocasiones y **no lo ha declarado sobre V4.2, V4.3 ni V4.4** —de hecho `Coordinator=DISAGREED` sobre
-   **V4.4**—; el `Architect` **no llego a revisar V4.2, V4.3 ni V4.4**, porque cada una fue sustituida
-   antes. **La version a revisar ahora es V4.5.**
+   sobre **la misma version**. Un proposal **no puede** declarar su propio veredicto: los veredictos se
+   emiten **despues** de crear el SHA y viven en el registro de revision (A21, CF-4). El historial
+   completo: `Architect=DISAGREED` sobre **V3** (`4470c6b`), sobre **V4.1** (`9301f0f`) y sobre **V4.5**
+   (`cdbc26e`); `Coordinator=DISAGREED` sobre **V4.4** (`fb3d38d`) y sobre **V4.5** (`cdbc26e`). V4.2 y
+   V4.3 nunca llegaron a revisarse: cada una fue sustituida antes. **La version a revisar ahora es V4.6.**
 2. **El coste de la propagacion** sigue sin medir (riesgo P6). No es una decision de arquitectura.
-**Ninguna de las dos bloquea la revision del Architect sobre V4.5.**
+**Ninguna de las dos bloquea la revision del Architect sobre V4.6.**
 
 > **Corregido en V4.1 (punto 7).** V4 listaba aqui una tercera pregunta: «a que iniciativa pertenece la
 > fusion de conjuntos de variables entre dibujos». **No es una pregunta abierta**: **C3-8 ya retiro esa
@@ -2466,7 +2762,7 @@ C4-1..C4-14 del dueno.**
 | P4 | **Perdida silenciosa del vinculo** por round-trip antiguo o por el restamp | Promocion pegajosa + **portador authored** (C4-2) + D-17-bis |
 | P5 | **Un tercer significado del campo vacio** en la UI | D-16b: adorno adyacente, no ausencia de valor |
 | P6 | **Coste de propagacion desconocido** | Riesgo y **metrica de implementacion** (C3-8). Una transaccion unica sobre N racks **agrava** el perfil: mantiene mas estado abierto mas tiempo |
-| P7 | **Archivos calientes**: el slice toca `SelectivePalletDesign.cs` y `RackSelectiveWindow.xaml.cs` | Serializar con cualquier otra iniciativa del Selectivo (WORKFLOW seccion 7) |
+| P7 | **Archivos calientes y superficies compartidas**, corregido en V4.6 (A11). Los que CF-3 reconoce: `src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs` (d3); los **flujos de comando del Plugin** `src/RackCad.Plugin/*Commands*.cs` — `RackSelectivoCommands`, `RackInventarioCommands.BomTotal`, `RackDuplicarCommands` — (c, d2, D-16a); **`IRackKindHandler` y sus seis implementaciones** (d1); y `SelectivePalletDesignDocument` con su store (a, b). **`SelectivePalletDesign.cs` (Domain) se retira de esta fila**: ninguna decision lo toca | Serializar con cualquier otra iniciativa del Selectivo o de Push Back (WORKFLOW seccion 7) |
 | P8 | **Sobre-ingenieria** | Apuesta consciente por la evolucion limpia a ID22B/ID21. La revision adversarial **no** sostuvo ningun hallazgo de sobre-ingenieria |
 | P9 | La transaccion unica **hay que verificarla ejecutando** | Gate de implementacion / Owner Validation (CF-5') |
 | P10 | **Profundidad 1 asumida por descuido** | §10 lo senala; ni la forma persistida ni el modelo de errores deben cerrar esa puerta |
@@ -2480,7 +2776,7 @@ C4-1..C4-14 del dueno.**
 | **CF-1** | **El contrato de iniciativa refleja el alcance final antes de produccion.** Hoy [`I-47-project-variables-foundation.md`](I-47-project-variables-foundation.md) §3 excluye UI y comando, redactado para DISCOVERY; D-16 los incluye |
 | **CF-2** | **El ADR existe, escrito antes de implementar** (WORKFLOW seccion 8), en estado `propuesto`. **Solo el dueno lo acepta.** **V4 no lo escribe todavia**, por instruccion expresa |
 | **CF-3** | **Los prerequisitos estan reconocidos como trabajo.** La lista, **ampliada en V4**: (a) el **portador del estado authored** — el guardado del selectivo deja de reconstruirse con `From(...)` (C4-2, B2); (b) el helper **sticky monotonico** con su rama de ERROR, sus dos lineas de version y su constante de **lectura `2.x`** (C4-9); (c) el **writer de lote transaction-aware sobre los DOS writers**, incluido `LateralHeaderDrawService`, con verificacion read-only de definiciones (C4-3, B3); (d) el **`SelectiveEffectiveDesignResolver`** y el desplazamiento de dibujo/BOM/preview a consumirlo (C4-4, B4), **con sus tres costuras nombradas (N2)**: **d1** `IRackKindHandler.BuildBom` gana un tercer argumento `ProjectVariablesDocument` —los cinco kinds no-Selectivo lo ignoran—; **d2** `RACKBOMTOTAL` lee el NOD **una vez** y usa **el mismo snapshot** en todo el BOM, **y deja de cotizar desde una sibling arbitraria**: para cada `RackId` Selectivo colocado reune todas sus hermanas, exige **igualdad authored completa** con el comparador de V4-01 y, si divergen o alguna es indescifrable, **omite ese rack con aviso visible** por la politica existente en vez de elegir una (N5, C4.3-1). **Precision de V4.4 (N7, N8):** esa seleccion y validacion de la autoridad authored tiene una **pieza PURA de Application** que la soporta —tres resultados: `Success` / `NoAuthority(UnreadableSibling)` / `NoAuthority(DivergentSiblings)`— para que las pruebas 22-24 sean expresables; `RACKBOMTOTAL` **inspecciona authored SOLO en esa etapa de authority precheck**, y **despues del resolver el BOM consume unicamente el efectivo**. **Precision de V4.5 (N9): UN solo call graph** — `RACKBOMTOTAL` entrega al handler el **embed representante ya aprobado** por la autoridad y **NO ejecuta el resolver**; lo ejecuta `SelectiveKindHandler.BuildBom` **una sola vez**, con el mismo snapshot; **d3** el **split authored/effective** en `RackSelectiveWindow.BuildDesign`/`BuildSystem`, de modo que lo que se persiste y lo que se dibuja dejen de ser el mismo objeto en un rack vinculado. **`RACKLISTA` NO entra**, y `OutputBlockedReason` **no** cambia; (e) el **`ProjectVariablesDocument`** con store y guard propios (C4-8); (f) el **`SchemaGuard` anidado** para `RackProjectDocument.SelectiveRack` (C4-10); (g) la **extraccion del restamp** a Application (D-17-bis); **(h)** la **autoridad authored multi-vista** con su comparador puro y **su probe tri-estado por vista** (Familia A / Familia B), con el portador de (a) siendo **UNO por `RackId`** —no uno por vista— para no destruir el restampado que hace de `RACKEDITAR` una reconciliacion (V4-01, N1); **(i)** el artefacto **`VariableMutationPreflightResult` / `MutationPlan`**, puro y sin tipos de AutoCAD (N3), **partido en sus dos mitades**: el preflight **semantico** en Application y el **fisico** en el Plugin, con el fisico corriendo solo tras un `Success` del semantico y todavia antes de mutar (N6, C4.3-2) |
-| **CF-4** | **Ambos revisores AGREED sobre la MISMA version.** Estado real tras V4.5: `Architect=DISAGREED` sobre **V3** (`4470c6b`) y sobre **V4.1** (`9301f0f`); **`Coordinator=DISAGREED` sobre V4.4** (`fb3d38d`); el `Coordinator` **no ha declarado AGREED sobre V4.2, V4.3 ni V4.4**; el `Architect` **no ha revisado V4.2, V4.3 ni V4.4**; y **V4.5 no tiene AGREED de nadie** |
+| **CF-4** | **El Consensus Freeze exige `Coordinator=AGREED` y `Architect=AGREED` sobre exactamente el MISMO Proposal SHA.** El proposal registra, como maximo, el estado **conocido en el momento de su commit**: los veredictos se emiten **despues** de crear ese SHA, pertenecen al **registro de revision** —[`docs/automation/decisions/I-47.md`](../automation/decisions/I-47.md)— y **no obligan a reescribir el proposal que estan revisando**. Esta condicion se comprueba **contra ese registro**, no contra el texto del proposal |
 
 **CF-5' — donde vive la validacion en AutoCAD.** No es condicion de Freeze; es gate de implementacion
 y Owner Validation, con el alcance de la tabla de D-17.
