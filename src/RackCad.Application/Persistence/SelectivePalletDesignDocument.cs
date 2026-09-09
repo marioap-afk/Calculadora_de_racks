@@ -151,14 +151,36 @@ namespace RackCad.Application.Persistence
         [JsonIgnore]
         public bool HasPropertyValues => PropertyValues != null && PropertyValues.Count > 0;
 
-        /// <summary>True when the property is governed by a project variable rather than by its literal.</summary>
+        /// <summary>
+        /// Whether this document CARRIES a binding entry for the property — presence, and nothing else.
+        ///
+        /// <para>
+        /// It deliberately does not look at the kind and does not parse the id, because "there is a binding
+        /// here" and "I can interpret that binding" are DIFFERENT QUESTIONS, and answering the first with the
+        /// second collapses PRESENT-BUT-UNINTERPRETABLE into UNBOUND. An entry written by a newer build would
+        /// then read as no entry at all, and everything downstream would proceed as if the user had never
+        /// bound the property.
+        /// </para>
+        /// <para>
+        /// The key is compared exactly, so an entry for a different property — or the same token in another
+        /// case — is not this property's binding.
+        /// </para>
+        /// </summary>
+        public bool HasBindingEntry(PropertyId propertyId)
+            => PropertyValues != null && PropertyValues.ContainsKey(propertyId.Value);
+
+        /// <summary>
+        /// Whether the property is governed by a variable THIS BUILD CAN RESOLVE. Not the same as
+        /// <see cref="HasBindingEntry"/>, and the difference matters: use this one only where the answer
+        /// needed is about resolution, never to decide whether a binding exists.
+        /// </summary>
         public bool IsBound(PropertyId propertyId) => TryGetBinding(propertyId, out _);
 
         /// <summary>
         /// The variable that governs the property, when there is one this build understands. An entry with an
         /// unknown kind or an unreadable id answers FALSE here; deciding what THAT means is not this type's
         /// job, and treating it as "not bound" at a decision point would be the silent fallback the contract
-        /// forbids.
+        /// forbids — which is exactly why <see cref="HasBindingEntry"/> exists beside it.
         /// </summary>
         public bool TryGetBinding(PropertyId propertyId, out VariableId variableId)
         {
@@ -268,6 +290,15 @@ namespace RackCad.Application.Persistence
         /// intention the user typed before binding -- and that literal is the only honest thing left to use
         /// the day the reference has to be repaired.
         /// </para>
+        /// <para>
+        /// Freezing is decided by PRESENCE of the binding entry, not by whether this build can interpret it
+        /// (<see cref="HasBindingEntry"/>, never <see cref="IsBound"/>). An entry with an unknown kind or an
+        /// unreadable id is a binding this version does not understand -- it is NOT the absence of one -- and
+        /// asking the interpreting question here would overwrite the frozen literal in precisely the case
+        /// where something was already wrong, destroying the value the repair needs. Whether such an entry is
+        /// an error is decided by the semantic layer, which already reports it as one; persisting faithfully
+        /// and resolving correctly are separate responsibilities.
+        /// </para>
         /// </summary>
         public SelectivePalletDesignDocument WithDesign(SelectivePalletDesign design)
         {
@@ -277,7 +308,7 @@ namespace RackCad.Application.Persistence
             next.PropertyValues = PropertyValues;
             next.ExtensionData = ExtensionData;
 
-            if (IsBound(ProjectPropertyIds.SelectiveVerticalClearance))
+            if (HasBindingEntry(ProjectPropertyIds.SelectiveVerticalClearance))
             {
                 next.VerticalClearance = VerticalClearance;
             }
