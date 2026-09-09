@@ -2302,6 +2302,9 @@ namespace RackCad.UI.Systems.Selective
         /// zero-level columns yet); &gt; 0 makes <see cref="LoadDesign"/> warn instead of silently converting them.</summary>
         private int paddedEmptyFrentesOnLoad;
 
+        /// <summary>The XAML tooltip, kept so releasing the field restores it verbatim.</summary>
+        private object clearanceTooltip;
+
         /// <summary>A warning latched by input-normalizing code (invalid fondo/cabecera/separador/conteo kept-previous
         /// fallbacks): the pipeline always ends in <see cref="Recompute"/>, whose final status would overwrite a direct
         /// SetStatus, so Recompute emits THIS instead of the generic success message when set.</summary>
@@ -2463,15 +2466,67 @@ namespace RackCad.UI.Systems.Selective
             Recompute();
         }
 
+        /// <summary>
+        /// The RACKEDITAR path when the rack's properties may be governed by project variables (I-47 G12).
+        ///
+        /// <para>
+        /// <paramref name="effective"/> is the design ALREADY resolved: the editor shows and edits the value
+        /// in force, not the frozen authored literal. <paramref name="verticalClearance"/> only says whether
+        /// that field belongs to the editor. Resolving is not a job of this window — the reference, the id and
+        /// the register never reach it, precisely so it cannot resolve.
+        /// </para>
+        /// <para>
+        /// What gets PERSISTED is still the authored carrier adopted in G10; this method changes what is
+        /// shown, never what is saved.
+        /// </para>
+        /// </summary>
+        public void LoadExisting(
+            SelectivePalletDesignDocument document,
+            SelectivePalletDesign effective,
+            VerticalClearanceBindingState verticalClearance)
+        {
+            if (document == null || effective == null) return;
+            AdoptExisting(document);
+            LoadDesign(effective);
+            ApplyVerticalClearanceBinding(verticalClearance);
+        }
+
         /// <summary>Open the editor pre-loaded with an existing rack (from an embedded/saved document), keeping its Id/Name.</summary>
         public void LoadExisting(SelectivePalletDesignDocument document)
         {
             if (document == null) return;
-            session.Identity.Adopt(document.Id, document.Name); // keep the drawn rack's GUID + name (I-15)
-            isEditingExisting = true; // opened on an existing rack → "Actualizar" + linked lateral/planta become available
+            AdoptExisting(document);
+            // No governing state: ToDomain() IS the unbound case, which is what a library open and every
+            // pre-I-47 caller mean.
+            LoadDesign(document.ToDomain());
+            ApplyVerticalClearanceBinding(null);
+        }
+
+        /// <summary>The identity half of both loads: the drawn rack's GUID + name survive a re-save (I-15).</summary>
+        private void AdoptExisting(SelectivePalletDesignDocument document)
+        {
+            session.Identity.Adopt(document.Id, document.Name);
+            isEditingExisting = true; // opened on an existing rack -> "Actualizar" + linked lateral/planta become available
             UpdateInsertButtons();
             NameBox.Text = document.Name ?? string.Empty;
-            LoadDesign(document.ToDomain());
+        }
+
+        /// <summary>
+        /// A governed field is shown and NOT edited here. Disabled rather than hidden: the user has to be able
+        /// to SEE the number that rules their rack — hiding it would turn "governed by a variable" into "does
+        /// not exist", which is worse than editable. Unbinding is an explicit operation, and it is not this
+        /// control.
+        /// </summary>
+        private void ApplyVerticalClearanceBinding(VerticalClearanceBindingState state)
+        {
+            clearanceTooltip ??= ClearanceBox.ToolTip;
+
+            var bound = state != null && state.IsBound;
+            ClearanceBox.IsReadOnly = bound;
+            ClearanceBox.IsEnabled = !bound;
+            ClearanceBox.ToolTip = bound
+                ? "La gobierna una variable de proyecto: se muestra el valor en vigor y no se edita desde aquí."
+                : clearanceTooltip;
         }
 
         /// <summary>Open pre-loaded from a LIBRARY template as a NEW rack — a fresh GUID on insert (not an in-place update),

@@ -58,9 +58,21 @@ namespace RackCad.Plugin
                 return;
             }
 
+            // AUTHORED vs EFFECTIVE (I-47 G12). The editor works on the value IN FORCE, so the register has to
+            // be read before the window exists — and reading it can say no. A broken reference, a kind from the
+            // future or a register this build cannot read do NOT fall back to the frozen literal: falling back
+            // would change the geometry in silence. Repairing is an explicit operation and it is not this one.
+            var open = SelectiveEditorOpen.Resolve(saved, ReadProjectVariables(document));
+
+            if (!open.IsOpen)
+            {
+                editor.WriteMessage("\nRackCad: " + open.Error);
+                return;
+            }
+
             var window = new RackSelectiveWindow(canInsertInAutoCad: true);
             window.SetDimensionStyles(RackCommandSupport.ReadDimensionStyleNames(document)); // before LoadExisting so a saved style selects
-            window.LoadExisting(saved);
+            window.LoadExisting(saved, open.Design, open.VerticalClearance);
             AcApplication.ShowModalWindow(window);
 
             if (!window.InsertRequested)
@@ -215,6 +227,21 @@ namespace RackCad.Plugin
                     + updatedPlanta.ToString(CultureInfo.InvariantCulture) + ")."
                     + (erasedPhantoms > 0 ? " Vistas obsoletas retiradas: x" + erasedPhantoms.ToString(CultureInfo.InvariantCulture) + "." : string.Empty)
                 : "\nRackCad: no se pudo actualizar el rack.");
+        }
+
+        /// <summary>
+        /// The drawing's project-variable register, read in its own short transaction (I-47 G7). It is a READ
+        /// and it happens before the editor exists, so it owns its transaction rather than borrowing one.
+        /// </summary>
+        private static ProjectVariablesReadResult ReadProjectVariables(Document document)
+        {
+            using (document.LockDocument())
+            using (var transaction = document.Database.TransactionManager.StartTransaction())
+            {
+                var read = ProjectVariablesRegistry.Read(transaction, document.Database);
+                transaction.Commit();
+                return read;
+            }
         }
 
         /// <summary>True when a view-block draws the LATERAL view (so it is a section of the system, not the frontal).</summary>
