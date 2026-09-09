@@ -119,9 +119,12 @@ semántico tipado** que **aborta el total** en vez de degradarse a «payload ile
 ### 11. Ciclo de vida
 
 **`Delete` se bloquea si existen consumidores**, listándolos. **`Unlink` materializa el efectivo
-actual**, de modo que su efecto geométrico es nulo. **`RepairBroken`** es una acción **explícita y
-avisada** que puede cambiar la geometría, y es el único camino por el que un literal authored vuelve a
-gobernar con un binding escrito.
+actual**, de modo que su efecto geométrico es nulo. **Una referencia rota no tiene valor efectivo** y
+**no existe fallback automático al literal authored**: mientras el binding roto siga escrito, el
+literal almacenado sigue congelado e inactivo. **`RepairBroken`** es una acción **explícita y
+avisada** que puede cambiar la geometría: **usa el literal authored almacenado**, **elimina el
+binding roto** y **mantiene el schema promovido**. **Después de eliminar el binding, ese literal
+vuelve a gobernar**, y el rack **se redibuja normalmente**.
 
 ### 12. Duplicación
 
