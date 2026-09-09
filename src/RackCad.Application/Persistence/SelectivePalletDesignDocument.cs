@@ -125,6 +125,7 @@ namespace RackCad.Application.Persistence
         /// rack-to-rack reference arrive as one more case rather than changing the type of what is stored.
         /// </para>
         /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Dictionary<string, SelectivePropertyValueDocument> PropertyValues { get; set; }
 
         /// <summary>

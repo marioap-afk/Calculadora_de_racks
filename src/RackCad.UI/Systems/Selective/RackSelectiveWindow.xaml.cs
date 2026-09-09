@@ -2557,7 +2557,10 @@ namespace RackCad.UI.Systems.Selective
             // it anyway): does NOT mint into the session identity, so a later Insert still gets its own fresh GUID (I-15).
             var id = session.Identity.HasId ? session.Identity.Id : Guid.NewGuid().ToString();
             var name = string.IsNullOrWhiteSpace(NameBox.Text) ? session.Identity.Name : NameBox.Text.Trim();
-            var document = SelectivePalletDesignDocument.From(design, id, name);
+            // I-47 G15: la biblioteca es un artefacto DERIVADO. El editor ya trabaja sobre el EFECTIVO (G12),
+            // asi que exportar es materializar ese numero y dejar el vinculo -y la version promocionada- en el
+            // dibujo, que es donde significan algo.
+            var document = SelectiveLibraryExport.FromEffective(design, id, name);
 
             var path = UiSupport.PromptSaveToLibrary(this, name, "selectivo");
             if (path == null) return;
