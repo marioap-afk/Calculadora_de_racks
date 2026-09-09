@@ -1,38 +1,30 @@
-# I-47 — Proposal V3: contrato de variables de proyecto (ID22A)
+# I-47 — Proposal V4: contrato de variables de proyecto (ID22A)
 
-> ## SUPERSEDIDA por [I-47-proposal-v4.md](I-47-proposal-v4.md) (Reconciliacion V4)
-> **No usar como referencia.** Se conserva como registro historico del Gate C3.
->
-> **El Architect Review sobre esta version fue `DISAGREED`** (4 BLOCKER, 5 HIGH, 7 MEDIUM,
-> 4 LOW) y **el Coordinador retiro su `AGREED`**. Dos de los BLOCKER no eran defectos de
-> redaccion sino decisiones ya ratificadas **inimplementables contra el arbol**:
->
-> - **B1** — ninguna de sus 21 decisiones definia la accion **LINK**.
-> - **B2** — la promocion pegajosa **no tenia portador**: `From(...)` reconstruye desde Domain y
->   destruye `SchemaVersion`, `PropertyValues` y `ExtensionData`.
-> - **B3** — la frontera transaccional nombraba `SystemBlockWriter`, pero las vistas laterales
->   del propio slice pasan por `LateralHeaderDrawService.RedrawInPlace`, un segundo writer que
->   ademas llama a `EnsureForPlan`.
-> - **B4** — el punto de resolucion no estaba definido, D-04 contradecia a D-11, y el BOM
->   cotizaria el literal mientras el dibujo muestra la variable.
->
-> La tabla V3 → V4 y la correspondencia finding → resolucion estan en §0-bis y §0-ter de V4.
-
-> **Documental. No autoriza implementacion.** No toca `src/` ni `tests/`. **No se pidio Architect
-> Review** en este gate.
+> **Documental. No autoriza implementacion.** No toca `src/` ni `tests/`. **No se escribe el ADR
+> todavia.** **No se declara `Coordinator=AGREED` ni `Architect=AGREED`.**
 >
 > ```
-> PROPOSAL VERSION:   V3
-> Sustituye a:        I-47-proposal-v2.md  (commit e08431f)   — que a su vez supersedio a V1
+> PROPOSAL VERSION:   V4
+> Sustituye a:        I-47-proposal-v3.md  (commit 4470c6b)   — V1 y V2 ya supersedidas por V3
 > Base del analisis:  9e25d5291daa13c4846112241be6e52526429a47  (Discovery)
 > origin/main:        306e18ed4676e5e96b54d59402c9a230efb137d3  (sin avanzar)
 > Premisas:           C-1..C-6 (Gate C) + C2-1..C2-9 (Gate C2) + C3-1..C3-8 (Gate C3)
+>                     + C4-1..C4-14 (Reconciliacion V4)
 > ```
 >
-> **V3 corrige ocho puntos de V2 y no toca nada mas.** Su efecto principal es que **el contrato deja de
-> tener decisiones de arquitectura pendientes**: el dueno cerro D-07 y D-10, y retiro del terreno de las
-> preguntas abiertas la viabilidad de la transaccion unica y la numeracion de H3. Lo que queda vivo es
-> **verificacion e implementacion**, no diseno. La confirmacion explicita esta en §12.
+> ## Reconciliacion
+>
+> El **Architect Review sobre V3 fue `DISAGREED`** (4 BLOCKER, 5 HIGH, 7 MEDIUM, 4 LOW).
+> **El Coordinador retira su `AGREED` sobre V3 y acepta los findings materiales.** V4 los cierra.
+>
+> Dos de los cuatro BLOCKER no eran defectos de redaccion: eran **decisiones ya ratificadas que no se
+> podian implementar contra el arbol real** — la promocion pegajosa no tenia portador (B2) y la
+> frontera transaccional estaba nombrada sobre la clase equivocada para las vistas laterales del
+> propio slice (B3). Un tercero, B1, era una **operacion no definida**: nada gobernaba el acto de
+> **vincular**. El cuarto, B4, era el **punto de resolucion** del valor efectivo, sin el cual dibujo y
+> BOM pueden discrepar.
+>
+> La correspondencia completa finding → resolucion esta en **§0-ter**.
 
 ## 0. Premisas — no se comparan
 
@@ -50,7 +42,7 @@ que, en vez de omitirla.
 | C-6 | **`defaults.json` convive**; **no** se convierte en `ProjectVariables` |
 
 Diferido por el dueno: **WBLOCK y copia entre dibujos**. Minimo exigible: **guardar, cerrar y
-reabrir el mismo DWG** (§9.2).
+reabrir el mismo DWG** (§8, D-18).
 
 ### Premisas anadidas en el Gate C2
 
@@ -79,24 +71,75 @@ reabrir el mismo DWG** (§9.2).
 | C3-7 | **WORKFLOW §2 manda sobre CF-2**: el **contrato** de iniciativa si refleja el alcance final antes de produccion; **ROADMAP no se modifica en un gate intermedio** y se actualiza **al integrar/cerrar**. ROADMAP sale del Consensus Freeze y pasa al **checklist de cierre** |
 | C3-8 | Se retiran de «preguntas abiertas»: F2 vs F3, D-10, viabilidad conceptual de la transaccion unica, y asignar numero a H3. El **coste de propagacion** queda como **riesgo/metrica de implementacion**, no como decision de arquitectura |
 
-## 0-bis. Tabla exacta V2 → V3
+### Premisas anadidas en la Reconciliacion V4
 
-| Decision | V2 decia | V3 dice | Motivo |
+| # | Premisa |
+|---|---|
+| C4-1 | **LINK queda definido** (B1). Sobre un rack existente: conservar el literal **authored**, anadir la `ProjectVariableReference`, **promover** el schema, resolver el efectivo y redibujar **todas sus vistas** por el camino de D-13. **El binding gobierna de inmediato.** Sobre un rack **sin vistas todavia**: se guarda el binding y las inserciones futuras usan el efectivo |
+| C4-2 | **El portador del estado authored es el `SelectivePalletDesignDocument` deserializado, NO el Domain** (B2). Entre load/edit/save debe preservar `SchemaVersion`, `PropertyValues`, el **literal authored** y `ExtensionData`. El guardado **no puede** reconstruirse solo con `From(SelectivePalletDesign…)` |
+| C4-3 | **D-13 cubre TODOS los writers del slice** (B3): los caminos de `SystemBlockWriter` **y** `LateralHeaderDrawService.RedrawInPlace`. La frontera transaction-aware debe permitir redefinir **frontal, planta y lateral** bajo la transaccion del llamador. `EnsureForPlan`/import **prohibido** dentro de la propagacion; verificacion **read-only** de definiciones antes de mutar |
+| C4-4 | **UN solo punto de resolucion, en Application** (B4): `SelectiveEffectiveDesignResolver.Resolve(authoredDocument, projectVariables) -> SelectivePalletDesign efectivo`. Dibujo, BOM y preview consumen **unicamente** el diseno efectivo. La UI recibe **valor efectivo + estado authored del binding** |
+| C4-5 | **Literal authored, mientras haya binding**: el `VerticalClearance` persistido es un literal **congelado e INACTIVO**. Un cambio de variable **no** lo sobrescribe. `RACKEDITAR` Save con binding activo **no** copia el textbox efectivo al literal |
+| C4-6 | **UNLINK sano**: resolver el efectivo actual → escribirlo al literal → quitar el binding → el schema **permanece pegajoso** → redibujar. **Efecto geometrico nulo** |
+| C4-7 | **Referencia rota**: en la resolucion normal, **error visible y sin fallback**. Se anade **reparacion explicita**: se puede desvincular usando el **literal authored almacenado**, avisando de que **no existe valor efectivo** y de que la geometria **puede cambiar**; solo por accion explicita; quita el binding, **conserva el schema 2.x** y redibuja. Es **reparacion, no fallback silencioso** |
+| C4-8 | **`ProjectVariablesDocument` tiene contrato propio**: `SchemaVersion` desde el dia 1 (`1.0`), store y guard propios, `ExtensionData`, **major superior = error**, `VariableType` desconocido = **error**, `Definition.kind` desconocido = **error**. **Nunca ignorar datos que el build no entiende.** ID22B decidira su evolucion |
+| C4-9 | **Sticky del Selectivo como invariante monotonica**: `stored major > read major soportado` ⇒ **ERROR**, nunca escribir ni degradar · `stored 2.x` ⇒ permanece `2.x` preservando el minor mayor · `stored 1.x` + `PropertyValues` ⇒ `2.0` · `stored 1.x` sin `PropertyValues` ⇒ linea `1.x`. `hasPropertyValues` se evalua sobre el **authored document a escribir**. **Read support de I-47 = `2.x`.** Portador = authored document, no Domain |
+| C4-10 | **Biblioteca `.rackcad.json`**: el export es un **artefacto NUEVO**. Materializa el efectivo, **elimina `PropertyValues`**, escribe `SelectiveRack` **literal-only en linea `1.x`** y **no hereda** el schema pegajoso del rack embebido. Se anade el `SchemaGuard` anidado que falta para `RackProjectDocument.SelectiveRack` **en I-47+**, sin afirmar que proteja binarios pre-I-47. **ID22A nunca exporta un `SelectiveRack` promovido o vinculado** |
+| C4-11 | **Unidad de atomicidad del registro**: un Xrecord contiene todo el `ProjectVariablesDocument`, pero la unidad **logica** es **una operacion confirmada** — `Create` / `Rename` / `ChangeValue` / `Delete` / `Link` / `Unlink` / `RepairBroken` / `UnlinkAllAndDelete`. Si una UI futura entrega varios cambios en un Apply, **el change-set entero es una sola unidad** y usa la **union** de consumidores. **Nunca apply parcial** |
+| C4-12 | **Frontera Plugin → UI**: la UI **no conoce AutoCAD**. El Plugin lee el NOD y `ScanEnvelopes` y entrega **DTOs puros**: variables, estado de binding, valor efectivo, resumenes de consumidores y estado roto. La UI devuelve **peticiones/intenciones**; Plugin y Application ejecutan |
+| C4-13 | **Descubrimiento de consumidores**: **no** filtrar por `DirectReferenceCount` —una definicion vinculada con 0 referencias **sigue siendo consumidor**—; **no** bloquear una operacion por un rack corrupto **no relacionado**; identificar **positivamente** los consumidores del `VariableId` objetivo mediante un **probe puro** de `PropertyValues`; consumidor confirmado + illegible/irresoluble ⇒ **abortar**; sin referencia al objetivo ⇒ **ignorar** para esa operacion |
+| C4-14 | **`PropertyId`**: token canonico **exacto**, comparacion **`Ordinal`**, slice `selective.verticalClearance`. Un `PropertyId` **desconocido** presente en `PropertyValues` es **error visible**, nunca caida silenciosa al literal |
+
+## 0-bis. Tabla V3 → V4
+
+Solo lo que cambia. Lo no listado se conserva **literalmente** de V3.
+
+| Decision | V3 decia | V4 dice | Cierra |
 |---|---|---|---|
-| **D-07** | F2 **recomendada**, F3 «alternativa viva»; la eleccion se dejaba al dueno | **F2 DECIDIDA.** F3 **rechazada** con razon propia: una version vieja puede *preservar* el binding en el sobre pero **no entiende su semantica**, asi que podria editar y redibujar con el **literal** y dejar geometria **incoherente** con la autoridad que una version nueva resolvera despues | C3-1 |
-| **D-07 (mecanica)** | «major condicional» segun si el documento lleva `PropertyValues` | **Promocion PEGAJOSA**: 1.x nunca vinculado sigue en 1.x; introducir `PropertyValues` promueve a **2.0**; **una vez 2.x, nunca vuelve a 1.x**; desvincular materializa y borra la referencia **sin degradar el schema**; minors posteriores se preservan segun `SchemaVersionPolicy` | C3-2 |
-| **D-10** | F1 **recomendada**, seguia listada como pregunta abierta | **F1 DECIDIDA.** Se bloquea y se listan los consumidores; el atajo comodo existe **solo** como accion explicita separada | C3-3 |
-| **D-13** | «conviene resolver `EnsureForPlan` en el preflight» | **Fuera del preflight y del lote.** `EnsureBlocks` **abre y commitea su propia transaccion** y luego llama a `WblockCloneObjects`, que muta el `Database` **fuera** de la del llamador. La propagacion **verifica** que las definiciones existan y **aborta antes** de tocar la variable o los consumidores | C3-5 |
-| **D-13 (transaccion)** | «se propone» una frontera con transaccion del llamador | **Se exige**: `RedefineSystemBlock` recibe la `Transaction` del llamador y **una sola** transaccion cubre registro + geometria + payloads | C3-4 |
-| **§12** | 4 preguntas abiertas (F2/F3, transaccion unica, coste, numero de H3) | **1 sola**, y no es de arquitectura. Las otras tres se retiran; el coste pasa a §13 como metrica | C3-6, C3-8 |
-| **§13** | P9 = «la atomicidad podria no ser alcanzable» | P9 reformulado: la **viabilidad** no se discute; lo que se verifica en AutoCAD es la **implementacion**. Coste de propagacion entra como **metrica** | C3-6, C3-8 |
-| **§14** | CF-2 exigia actualizar ROADMAP antes de produccion; CF-5 exigia contestar la viabilidad **antes** del Freeze | **CF-2 retirado del Freeze** y movido al **checklist de cierre** (WORKFLOW §2: ROADMAP no se toca en un gate intermedio). **CF-5 reformulado**: la validacion en AutoCAD es gate de **implementacion / Owner Validation** | C3-6, C3-7 |
+| **D-04** | El literal «se conserva y es lo que D-11 devuelve al desvincular» | **Contradiccion eliminada.** El literal es **authored, congelado e inactivo** mientras hay binding; el desvinculado escribe el **efectivo** (D-11). Se separan `authored` y `effective` como conceptos con nombre | B4, M7 |
+| **D-04-bis** | — | **NUEVA.** `SelectiveEffectiveDesignResolver`: **un solo** punto de resolucion en Application. Dibujo, BOM y preview consumen **solo** el efectivo | B4 |
+| **D-01-bis** | — | **NUEVA.** Contrato propio del `ProjectVariablesDocument`: version, store, guard, `ExtensionData`, y **tres errores duros** (major, `VariableType`, `Definition.kind`) | H2 |
+| **D-07** | Helper `ResolveStickyWriteVersion(stored, hasPropertyValues)`, sin decir de donde sale `stored` | **Portador nombrado**: el authored document deserializado. Invariante **monotonica** con rama de **ERROR** para major superior. Read support `2.x`. Garantia de F2 **acotada al camino embebido** | B2, H1, M5 |
+| **D-08-bis** | — | **NUEVA.** Reparacion explicita de una referencia rota, usando el literal authored, con aviso de cambio geometrico | H3 |
+| **D-11-bis** | — | **NUEVA — LINK.** La operacion que V3 no definia | B1 |
+| **D-11** | Materializar el efectivo (correcto) | Sin cambio de decision; se explicita la secuencia y el efecto geometrico nulo | — |
+| **D-12** | Aborta ante cualquier bloque sin `Id`/`Kind` o illegible | **Probe positivo** por `VariableId`; **sin** filtro de `DirectReferenceCount`; un rack corrupto **no relacionado** no bloquea | M1, M4 |
+| **D-13** | Frontera sobre `SystemBlockWriter` | **Ambos writers**, con `LateralHeaderDrawService.RedrawInPlace` nombrado; `EnsureForPlan` prohibido dentro; **unidad de atomicidad** del registro definida | B3, H4 |
+| **D-15** | Materializar al exportar | **Artefacto nuevo**, `PropertyValues` eliminado, linea `1.x`, **sin** herencia del sticky; guard anidado en I-47+ | H1, M6 |
+| **D-16** | Ventana + chip, sin decir como llegan los datos | **Frontera Plugin → UI** con DTOs puros; la UI devuelve intenciones | H5 |
+| **D-17** | Sin cobertura para D-12/D-13; solo el mensaje de D-08 | Asignacion completa a Core y a Plugin/AutoCAD | M2, M3 |
+| **§1-bis** | `PropertyId` sin politica de comparacion | **`Ordinal`**, token canonico; `PropertyId` desconocido = error visible | L4 |
+| **§13 P4** | «major condicional» | **promocion pegajosa** | L1 |
+| **D-07 (nota)** | «cinco DTO hermanos lo tienen» | Conjunto real corregido; `RackFrameProjectDocument` tambien carece de `[JsonExtensionData]` | L2 |
+| **§0 / D-01** | Referencia colgante «§9.2» | Repuntada a §8/D-18 | L3 |
 
-La tabla **V1 → V2** vive en la §0-bis de [V2](I-47-proposal-v2.md); no se repite aqui.
+## 0-ter. Findings del Architect → resolucion en V4
 
-**No se reabren** D-01..D-06, D-08, D-09, D-11, D-12, D-14..D-19, ni §1-bis, §10 y §11 salvo por las
-entradas que estas ocho correcciones anaden.
+| # | Finding | Resuelto en |
+|---|---|---|
+| **B1** | Nada define la accion LINK | **D-11-bis** (C4-1) |
+| **B2** | La promocion pegajosa no tiene portador: `From(...)` reconstruye desde Domain y pierde `SchemaVersion` | **D-07 §portador** (C4-2) + **CF-3** |
+| **B3** | D-13 nombra la clase equivocada; el lateral del slice usa un segundo writer que ademas llama a `EnsureForPlan` | **D-13** (C4-3) |
+| **B4** | Punto de resolucion sin definir; D-04 contradice a D-11; el BOM cotiza el literal | **D-04 + D-04-bis** (C4-4, C4-5) |
+| **H1** | La garantia de F2 se aplica en un solo call site; la ruta de biblioteca no esta guardada | **D-07 §alcance** + **D-15** (C4-10) |
+| **H2** | `ProjectVariablesDocument` sin contrato de versionado | **D-01-bis** (C4-8) |
+| **H3** | Referencia rota ⇒ rack irreparable | **D-08-bis** (C4-7) |
+| **H4** | Granularidad del registro vs unidad de atomicidad | **D-13 §unidad** (C4-11) |
+| **H5** | D-10 y D-16b necesitan datos del dibujo dentro de una ventana que no puede leerlo | **D-16 §frontera** (C4-12) |
+| **M1** | D-12 no dice si hereda el filtro `Copies > 0` | **D-12** (C4-13) |
+| **M2** | Sin verificacion asignada a D-12/D-13 | **D-17** |
+| **M3** | De D-08 solo se verifica el mensaje, no el aborto | **D-17** |
+| **M4** | El aborto de D-12 es mas ancho de lo que el arbol tolera | **D-12** (C4-13) |
+| **M5** | El helper sticky tiene una rama de downgrade para major ≥3 | **D-07 §invariante** (C4-9) |
+| **M6** | Schema de una entrada de biblioteca materializada sin especificar | **D-15** (C4-10) |
+| **M7** | Guardar sobrescribe el literal con el efectivo | **D-04 §authored** (C4-5) |
+| **L1** | P4 nombra «major condicional» | **§13** |
+| **L2** | «cinco DTO hermanos» es incorrecto | **D-07 (nota)** |
+| **L3** | Referencia colgante §9.2 | **§0 / D-01** |
+| **L4** | `PropertyId` sin politica de comparacion; clave desconocida cae al literal | **§1-bis** (C4-14) |
 
+**Se conservan sin cambio** las decisiones que el Architect no impugno: D-01 (NOD), D-02, D-03, D-05,
+D-06, D-09, D-10 (F1), D-14, D-17-bis, D-18, D-19, §1-bis (separacion de conceptos), §10 y §11.
 
 ## 1. Metodo, y una regla que gobierna todo el documento
 
@@ -171,6 +214,24 @@ Los ids se declaran como **constantes en un solo sitio**, siguiendo la disciplin
 (`SelectiveRackDefaults.LengthParam`, `PeralteParam`, `PalletAltoParam`), para que un renombrado de C#
 no pueda romperlos en silencio.
 
+**Politica de comparacion (C4-14), corregida en V4.** V3 no la fijaba, y el Architect registro que sin
+ella una clave desconocida cae al literal en silencio (L4).
+
+- `PropertyId` es un **token canonico exacto**. Se compara **`Ordinal`** — sensible a mayusculas,
+  sin normalizacion, sin recorte semantico. No hay alias ni sinonimos.
+- El unico `PropertyId` de ID22A es **`selective.verticalClearance`**.
+- **Un `PropertyId` desconocido presente en `PropertyValues` es ERROR VISIBLE**, nunca una caida
+  silenciosa al literal. Un build que no sabe que propiedad es esa **no puede** afirmar que el literal
+  sea el valor correcto: el documento declara una autoridad que el build no entiende, y eso es
+  exactamente el caso que D-01-bis prohibe ignorar.
+
+> **Asimetria deliberada, declarada para que no se lea como descuido:** `VariableId` se compara
+> **`OrdinalIgnoreCase`** (D-02, siguiendo la politica del GUID de rack en `FindRackBlocks`) y
+> `PropertyId` se compara **`Ordinal`**. Son cosas distintas: el primero es un GUID generado por la
+> maquina, cuya representacion hexadecimal varia de caja entre escritores; el segundo es un token
+> **autorado en el codigo** y declarado en una constante, donde una diferencia de caja significa que
+> alguien escribio otra cosa.
+
 ---
 
 ## 2. Fundacion
@@ -215,7 +276,47 @@ comportamiento (§2.3 del Discovery), asi que todo lo que pueda vivir fuera del 
 > encontrado ambas formas. Los ceros siguen siendo ceros.
 
 **A verificar cuando haya AutoCAD** (no se afirma aqui): que `PURGE` no toque una entrada del NOD con
-Xrecord propio. Es la unica duda operativa de A1 dentro del alcance minimo de §9.2.
+Xrecord propio. Es la unica duda operativa de A1 dentro del alcance minimo de §8, D-18.
+
+### D-01-bis — Contrato propio del `ProjectVariablesDocument` (C4-8)
+
+> **NUEVA en V4.** El Architect registro (H2) que V3 nombraba este documento **dos veces** —el
+> diagrama de capas y la tabla de pruebas— y **nunca** le daba contrato de versionado, en un
+> documento cuya seccion mas larga trata precisamente de versionado. Todo documento persistido del
+> repositorio tiene el suyo; el que ID22A **funda** no lo tenia.
+
+El registro del dibujo es un documento persistido de pleno derecho y se le exige lo mismo que a sus
+hermanos, **desde el dia uno**:
+
+| Elemento | Contrato |
+|---|---|
+| `SchemaVersion` | Presente desde el dia 1, valor inicial **`"1.0"`**. Es **independiente** de la linea del diseno selectivo: son dos documentos distintos y sus versiones no se mezclan |
+| Store propio | `ProjectVariablesStore` en `RackCad.Application/Persistence`, **puro**, con `Serialize`/`Deserialize` — el Plugin solo aporta el acceso al NOD |
+| Guard propio | `SchemaGuard.CheckReadable(stored, current, "Las variables de proyecto")`. **Major superior = ERROR**, con el mensaje ya existente, no con `null` silencioso |
+| `ExtensionData` | `[JsonExtensionData]` en la raiz **desde el dia 1**, para que un build I-47 preserve lo que escriba un build posterior del mismo major |
+| Ausencia | Un DWG sin la entrada del NOD se lee como **registro vacio** (C-1). Eso **no** es un error: es un proyecto con cero variables |
+
+**Tres errores duros, y ninguno se degrada a aviso** (C4-8):
+
+```
+SchemaVersion con major > el soportado   ->  ERROR visible. No se lee, no se escribe, no se degrada.
+VariableType desconocido                 ->  ERROR visible.
+Definition.kind desconocido              ->  ERROR visible.
+```
+
+**La regla que los une: NUNCA ignorar datos que el build no entiende.** Un `VariableType` o un
+`Definition.kind` que este build no conoce significa que **otra version escribio autoridad que aqui no
+se puede resolver**. Continuar equivaldria a dibujar con una autoridad que no se comprende, que es la
+familia de fallos que el proyecto persigue desde I-03 y la misma doctrina de D-08.
+
+> Esto es lo que **habilita** a ID22B sin disenarlo: cuando `Definition` gane el caso `Expression`, un
+> build I-47 encontrara un `kind` desconocido y **fallara de forma visible** en vez de evaluar una
+> variable cuyo valor no sabe calcular. **ID22B decidira su propia evolucion de version**; ID22A solo
+> garantiza que el encuentro no sea silencioso.
+
+**Relacion con el schema del Selectivo:** son **dos lineas de version independientes**. La promocion
+pegajosa de D-07 gobierna `SelectivePalletDesignDocument`; `ProjectVariablesDocument` tiene la suya y
+**no** se promueve por el hecho de que un rack se vincule.
 
 ### D-02 — `VariableId` estable e independiente de `Name`
 
@@ -332,10 +433,113 @@ tradeoff pasa de «cuando pago el escalar» a «cuantas veces rompo el esquema»
 valor efectivo(propiedad) =
     hay entrada en PropertyValues  →  se resuelve segun su kind      (C-2: la referencia gobierna)
                                       ID22A: projectVariable → valor de esa variable
-    no hay entrada                 →  el literal persistido          (C-1: literal preservado)
+    no hay entrada                 →  el literal authored            (C-1: literal preservado)
 ```
 
-El literal **nunca se borra** al vincular: se conserva y es lo que D-11 devuelve al desvincular.
+#### El literal `authored`, con la contradiccion de V3 eliminada (C4-5)
+
+> **Correccion de V4 (B4, M7).** V3 decia aqui: *«El literal nunca se borra al vincular: se conserva y
+> es lo que D-11 devuelve al desvincular.»* Eso describia la opcion **G2**, que **D-11 rechaza
+> explicitamente** como «el bug facil» por producir un salto geometrico. El documento normativo se
+> contradecia sobre un comportamiento que mueve geometria. Se elimina.
+
+Se nombran **dos** cosas que V3 confundia en una:
+
+| Nombre | Que es | Quien lo escribe |
+|---|---|---|
+| **`authored`** | El valor **que el usuario tecleo**, persistido en `VerticalClearance`. Mientras haya binding esta **congelado e INACTIVO** | solo el usuario, **editando sin binding**; y el **UNLINK** (D-11) |
+| **`effective`** | El valor que **gobierna** dibujo, BOM y preview. Con binding, sale de la variable; sin binding, **es** el authored | nadie: **se calcula**, no se persiste (D-04-bis) |
+
+Las tres reglas que se derivan, y que cierran M7:
+
+1. **Un cambio de variable NO sobrescribe el literal authored.** La propagacion redibuja; no reescribe
+   la intencion del usuario.
+2. **`RACKEDITAR` Save con binding activo NO copia el textbox efectivo al literal.** Hoy
+   [`RackSelectiveWindow.xaml.cs`](../../src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs)
+   lee `ClearanceBox.Text` y lo escribe en `VerticalClearance`; con binding activo ese camino queda
+   **cortado** y el literal persistido no se toca.
+3. **El literal authored solo cambia por UNLINK** (D-11), que escribe en el el **efectivo** —no el
+   authored anterior—, y por eso el desvinculado tiene efecto geometrico nulo.
+
+> Consecuencia honesta: tras un UNLINK el authored **ya no es** lo que el usuario tecleo originalmente,
+> sino el efectivo materializado. Es deliberado y es lo que hace segura la operacion. Lo que **no**
+> ocurre nunca es que el literal cambie **por si solo** mientras el binding esta vivo.
+
+
+
+---
+
+### D-04-bis — UN solo punto de resolucion, en Application (C4-4)
+
+> **NUEVA en V4.** El Architect registro (B4) que V3 **nunca decia donde** se resuelve una referencia.
+> Consecuencia verificada en el arbol: el BOM re-resuelve el diseno por su cuenta
+> —[`SelectiveKindHandler.cs:29`](../../src/RackCad.Plugin/KindHandlers/SelectiveKindHandler.cs)
+> llama a `new SelectiveGeometryResolver().Resolve(design, catalog)` y
+> [`SelectiveGeometryResolver.cs:96`](../../src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs)
+> lee `design.VerticalClearance`, el **literal**— sin acceso al registro. El dibujo mostraria la
+> variable y la **cotizacion el literal congelado**. Eso viola la convencion 2 de AGENTS: cuando
+> dibujo, BOM y UI deben coincidir en un numero, la regla vive en **UNA** funcion de Application.
+
+**Contrato conceptual:**
+
+```
+RackCad.Application/Systems/Selective/
+
+    SelectiveEffectiveDesignResolver.Resolve(
+        authoredDocument : SelectivePalletDesignDocument,   // lo persistido, con PropertyValues
+        projectVariables : ProjectVariablesDocument         // el registro del dibujo (o vacio)
+    ) -> SelectivePalletDesign                              // el diseno EFECTIVO
+```
+
+Es **puro**: sin AutoCAD, sin I/O, sin catalogo. Recibe los dos documentos y devuelve el diseno de
+Domain que todo lo demas consume.
+
+```
+   PERSISTIDO                        CALCULADO                      CONSUMIDORES
+   ----------                        ---------                      ------------
+
+   SelectivePalletDesignDocument
+     VerticalClearance  ──authored──┐
+       (congelado e INACTIVO         │
+        mientras haya binding)       │
+     PropertyValues                  ├──> SelectiveEffectiveDesignResolver ──> SelectivePalletDesign
+       "selective.verticalClearance" │         .Resolve(authored, variables)        (EFECTIVO)
+         { kind, variableId } ───────┤                                                   │
+     SchemaVersion / ExtensionData   │                                                   ├──> DIBUJO   (frontal/lateral/planta)
+                                     │                                                   ├──> BOM      (RACKBOMTOTAL incluido)
+   ProjectVariablesDocument  (NOD)   │                                                   └──> PREVIEW
+     ProjectVariable                 │
+       VariableId / Name             │                                             UI  <── efectivo + estado authored
+       Type / Definition ────────────┘                                                   (D-16-frontera)
+```
+
+**Nadie mas resuelve.** El authored no llega a dibujo, BOM ni preview: **solo** llega al resolver y a
+la UI, y a la UI acompanado de su estado de binding para poder pintarlo.
+
+**Quien consume que — y esto es lo vinculante:**
+
+| Consumidor | Consume | NO consume |
+|---|---|---|
+| Dibujo (`SelectiveGeometryResolver`, builders frontal/lateral/planta) | el **efectivo** | el authored |
+| **BOM** (`SelectiveKindHandler`, `SelectiveBomBuilder`, `RACKBOMTOTAL`) | el **efectivo** | el authored |
+| Preview del editor | el **efectivo** | el authored |
+| UI del editor | **valor efectivo + estado authored del binding** (D-16) | — |
+
+**Ninguno de ellos resuelve bindings.** No hay logica de resolucion en geometria, ni en BOM, ni en la
+UI: **todos reciben un `SelectivePalletDesign` ya efectivo** y no saben si nacio de un literal o de una
+variable. Esa es la propiedad que hace imposible la divergencia de B4.
+
+**Dos consecuencias de diseno:**
+
+1. **El punto de entrada se desplaza, no se duplica.** Hoy los consumidores parten de
+   `document.ToDomain()`. Pasan a partir de `Resolve(document, variables)`. `ToDomain()` sigue
+   existiendo y es, exactamente, el caso **sin binding**.
+2. **Es la pieza mas testeable de todo ID22A**: dos documentos puros dentro, un Domain fuera. Toda la
+   semantica de C-2, D-08, D-08-bis y C4-5 se prueba aqui, en la suite Core, sin AutoCAD (D-17).
+
+**Alternativa descartada: resolver en cada consumidor.** Es lo que V3 dejaba implicito por omision.
+Duplica la regla en tres sitios como minimo, contradice la convencion 2 de AGENTS y es exactamente el
+defecto B4.
 
 ---
 
@@ -520,49 +724,90 @@ versiones anteriores **para siempre**, incluso despues de desvincularlo. Es deli
 - **No** es reversible: la promocion no se deshace (es el punto).
 - **No** hace nada retroactivo sobre documentos que una version anterior ya guardo.
 - **No** protege campos anadidos **dentro** de tipos anidados sin version propia.
+- **No cubre la ruta de BIBLIOTECA, y V3 lo afirmaba de mas** (H1). El guard que sostiene todo lo
+  anterior vive en **un solo call site**,
+  [`SelectivePalletDesignStore.cs:43`](../../src/RackCad.Application/Persistence/SelectivePalletDesignStore.cs).
+  El **mismo DTO** llega a disco tambien como
+  [`RackProjectDocument.SelectiveRack`](../../src/RackCad.Application/Persistence/RackProjectDocument.cs),
+  y ahi **nadie comprueba su version**: `RackProjectStore` guarda el envoltorio, y sus cuatro payloads
+  anidados hermanos **si** estan guardados (`SystemRegistry.Default` para FlowBed, Larguero, PushBack y
+  Cantilever) — **el selectivo no**. La garantia de F2 queda **acotada al camino embebido en el DWG**.
+  Lo que protege la ruta de biblioteca es **D-15** (nunca se exporta un documento promovido ni
+  vinculado), no el mecanismo de schema.
 
-### Que politica de escritura nueva necesita el Selectivo (no se implementa)
+### El portador del estado authored, y por que V3 no lo tenia (C4-2, cierra B2)
 
-Hoy la version de escritura sale de `SchemaVersionPolicy.ResolveWriteVersion(stored, current)`, donde
-`current` es **una constante del build**. Verificado:
+> **Correccion de V4.** V3 proponia `ResolveStickyWriteVersion(storedVersion, hasPropertyValues)` sin
+> decir **de donde sale `storedVersion` en el momento de escribir**. El Architect verifico que **no
+> sale de ningun sitio**: el camino de guardado es
+> [`RackSelectivoCommands.cs:232`](../../src/RackCad.Plugin/RackSelectivoCommands.cs) →
+> `SelectivePalletDesignDocument.From(design, id, name)`, que construye un documento **nuevo** a partir
+> del **Domain**; y `grep -c SchemaVersion src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs`
+> devuelve **0**. El viaje `Document → Domain → Document` **destruye** la version almacenada, junto con
+> `PropertyValues` y cualquier campo desconocido. **La promocion pegajosa, tal como V3 la escribio, era
+> inimplementable.**
 
-```csharp
-// src/RackCad.Application/Persistence/SchemaVersionPolicy.cs — ResolveWriteVersion
-if (!TryParse(storedVersion, out var storedMajor, out var storedMinor)
-    || !TryParse(currentVersion, out var currentMajor, out var currentMinor)
-    || storedMajor != currentMajor)
-{
-    return currentVersion;            // <- majors distintos: DEVUELVE la constante del build
-}
-return storedMinor > currentMinor ? storedVersion.Trim() : currentVersion;
+**El portador es el `SelectivePalletDesignDocument` DESERIALIZADO, no el Domain** (C4-2).
+
+```
+load   :  json  ->  SelectivePalletDesignDocument   <-- AUTHORED DOCUMENT: se CONSERVA vivo
+                          |
+                          +--> Resolve(authored, variables) -> SelectivePalletDesign efectivo  (D-04-bis)
+                                     |
+edit   :                             +--> dibujo / BOM / preview / editor
+                          |
+save   :  authored document ACTUALIZADO (no reconstruido)  ->  json
 ```
 
-Esa forma **no puede** expresar la promocion pegajosa: con `current = "1.0"` y `stored = "2.0"` los
-majors difieren y devuelve **`"1.0"`**, que es precisamente el downgrade prohibido. Y subir la constante
-a `"2.0"` promoveria **todos** los documentos, incluidos los que nunca se vincularon.
+Entre `load`, `edit` y `save` el authored document debe preservar **cuatro** cosas:
 
-Hace falta, por tanto, **un helper nuevo** —aditivo, puro y testeable en la suite Core— con esta forma:
+| Debe sobrevivir | Por que |
+|---|---|
+| `SchemaVersion` | es la entrada de la invariante pegajosa; sin el no hay `stored` |
+| `PropertyValues` | es el binding; perderlo **es** el desvinculado silencioso que F2 existe para impedir |
+| El **literal authored** | C4-5: congelado e inactivo mientras haya binding |
+| `ExtensionData` | preservacion de campos de un build posterior del mismo major |
+
+**Regla vinculante: el guardado no puede reconstruirse exclusivamente con
+`From(SelectivePalletDesign…)`.** Ese metodo se conserva para el caso que hoy sirve —crear un documento
+**nuevo** desde un diseno— pero deja de ser el camino del **guardado de un rack existente**, que debe
+**actualizar** el documento authored en vez de fabricar otro. Es trabajo real, esta reconocido en
+**CF-3**, y no se da por hecho.
+
+> **El alcance de esto es mayor que la version.** El mismo defecto explica por que un binding
+> sobreviviria a guardar y reabrir pero **moriria en RACKDUPLICAR** (D-14): aquel restamp tambien
+> re-serializa a traves del DTO. Un unico portador correcto cierra los dos casos.
+
+### La invariante de escritura, ahora monotonica (C4-9, cierra M5)
+
+V3 escribia la regla en tres ramas y el Architect encontro una **cuarta implicita que degradaba**: con
+`stored = "3.x"` y la constante `"2.0"`, `ResolveWriteVersion` ve majors distintos y devuelve `"2.0"`.
+Era inalcanzable solo porque el guard de lectura dispara antes — es decir, la seguridad dependia de
+**otro** componente, no de la propia funcion.
+
+**Se especifica como invariante, con una rama de ERROR explicita:**
 
 ```
-ResolveStickyWriteVersion(storedVersion, hasPropertyValues) :
+resolveStickyWriteVersion(stored, hasPropertyValues) :
 
-    MajorOf(stored) >= 2   ->  ResolveWriteVersion(stored, "2.0")   // pegajoso: nunca baja; respeta minors
-    hasPropertyValues      ->  "2.0"                                 // promocion
-    en otro caso           ->  ResolveWriteVersion(stored, "1.0")    // camino legado, intacto
+  1. major(stored) > READ_MAJOR_SOPORTADO   ->  ERROR.  No se escribe. No se degrada. No se abre.
+  2. major(stored) == 2                     ->  permanece 2.x, preservando el minor MAYOR
+  3. major(stored) <= 1  y  hasPropertyValues  ->  "2.0"          (promocion)
+  4. major(stored) <= 1  y  no hasPropertyValues -> linea 1.x     (camino legado, intacto)
 ```
 
-Tres consecuencias que la implementacion debe asumir y que se declaran aqui en vez de darse por hechas:
+- **La invariante que la funcion garantiza por si sola: el resultado NUNCA es de major inferior al
+  almacenado.** No delega esa propiedad en el guard de lectura.
+- **`READ_MAJOR_SOPORTADO` de I-47 es `2`**: el build lee y escribe la linea `2.x`. Sin esto,
+  `SchemaGuard` rechazaria los documentos que el propio build acaba de promover.
+- **`hasPropertyValues` se evalua sobre el AUTHORED DOCUMENT QUE SE VA A ESCRIBIR**, no sobre el que se
+  leyo: vincular y guardar en el mismo paso debe promover.
+- **Leer y escribir dejan de compartir constante.** `SelectivePalletDesignDocument` necesita la linea
+  legada `1.x` que aun escribe y la promovida `2.0`; y la constante de **lectura** es `2.x`. Debe ser
+  explicito, no implicito.
 
-1. **`SelectivePalletDesignDocument` necesita dos constantes de linea** (la legada `1.x` que sigue
-   escribiendo y la promovida `2.0`), no una sola `CurrentSchemaVersion`.
-2. **La version de LECTURA del build I-47+ debe ser la `2.x`**, o `SchemaGuard.CheckReadable` rechazaria
-   los documentos que el propio build acaba de promover. Leer y escribir dejan de compartir constante,
-   y eso debe ser explicito.
-3. **`hasPropertyValues` se evalua sobre el documento que se va a ESCRIBIR**, no sobre el que se leyo;
-   si no, vincular y guardar en el mismo paso no promoveria.
-
-`SchemaVersionPolicy.ResolveWriteVersion` **no se modifica**: el helper nuevo lo **usa**. Los otros
-cuatro stores siguen exactamente igual.
+`SchemaVersionPolicy.ResolveWriteVersion` **no se modifica**: el helper nuevo lo usa para el caso 2
+(preservar el minor mayor dentro del mismo major). Los otros cuatro stores siguen igual.
 
 ### Se conserva `[JsonExtensionData]` en el DTO selectivo
 
@@ -571,7 +816,13 @@ cuatro stores siguen exactamente igual.
 - **No** protege frente a versiones pre-I-47. Ninguna afirmacion de este documento depende ya de eso.
 - **Si** protege de I-47 en adelante: una version N preservara los campos que escriba una version N+1
   del mismo major.
-- Elimina una **asimetria real**: cinco DTO hermanos lo tienen y el del slice no.
+- Corrige una asimetria real, pero **no la que V3 afirmaba** (L2). El conjunto verificado con
+  `[JsonExtensionData]` es de **seis**: `RackEmbedDocument`, `RackProjectDocument`,
+  `PushBackDesignDocument`, `FlowBedDocument`, `CantileverLineDocument` y `LargueroDocument`. El del
+  slice **no es la unica excepcion**: `RackFrameProjectDocument` tambien esta **versionado y sin**
+  extension data — y esta **anidado dentro** del propio documento selectivo
+  (`SelectivePalletDesignDocument.PostCabeceras`). Ese caso anidado pertenece a «Lo que F2 NO
+  garantiza» y se declara alli, no se resuelve aqui.
 
 Es, por tanto, una mejora **justificada por si misma**, no un prerequisito del que dependa la
 compatibilidad. Si el dueno prefiere no tocar el DTO selectivo, **F2 sigue funcionando igual**.
@@ -606,6 +857,54 @@ modo que la suite Core pueda probarlo sin AutoCAD, y el Plugin solo lo muestre.
 
 ---
 
+### D-08-bis — Reparacion explicita de una referencia rota (C4-7, cierra H3)
+
+> **NUEVA en V4.** El Architect registro (H3) que V3 creaba **un estado sin salida**: D-08 aborta al
+> resolver una referencia rota; D-11 exige que el desvinculado materialice un **valor efectivo** que
+> por definicion no existe; y D-16b pone el boton «Desvincular» **dentro** del editor, que D-08 impide
+> abrir. El rack quedaba **irreparable**.
+
+**La resolucion normal no cambia**: referencia rota ⇒ **error visible**, **sin fallback**. D-08 sigue
+intacto y esto **no** lo debilita.
+
+Lo que se anade es una **operacion distinta y explicita**, `RepairBroken`:
+
+```
+RepairBroken(rack, propertyId) :
+    1. NO se intenta resolver: se sabe que no hay valor efectivo.
+    2. Se AVISA al usuario, antes de actuar:
+         - la variable referida no existe;
+         - NO hay valor efectivo que materializar;
+         - se usara el LITERAL AUTHORED almacenado;
+         - la GEOMETRIA PUEDE CAMBIAR.
+    3. Solo con confirmacion explicita:
+         - se quita el binding;
+         - el literal authored queda como valor activo (ya estaba persistido, C4-5);
+         - el SchemaVersion PERMANECE 2.x  (pegajoso, C4-9: no baja);
+         - se redibuja por el camino de D-13.
+```
+
+**Por que esto es reparacion y no el fallback que D-08 prohibe** — la distincion es exacta y merece
+enunciarse, porque desde fuera el valor final es el mismo:
+
+| | Fallback silencioso (**prohibido**) | `RepairBroken` (**permitido**) |
+|---|---|---|
+| Quien lo inicia | el sistema, al resolver | el **usuario**, con una accion nombrada |
+| Cuando ocurre | en cualquier lectura | solo tras confirmar |
+| Que sabe el usuario | nada | que no hay efectivo y que **la geometria puede cambiar** |
+| Estado final | binding intacto, valor mentido | binding **retirado**, estado coherente |
+
+El literal authored **esta ahi** precisamente por C4-5: se congelo al vincular y ningun cambio de
+variable lo toco. Es lo unico honesto que queda por usar cuando la autoridad desaparecio, y usarlo con
+aviso **no** es afirmar que sea el valor correcto — es devolver el rack a un estado que el usuario
+puede corregir.
+
+> **`RepairBroken` es una de las ocho operaciones confirmadas** de la unidad de atomicidad (D-13,
+> C4-11), y por tanto se propaga y se commitea como cualquier otra.
+
+Alternativa descartada: **recrear la variable ausente**. Adivinaria un valor que nadie autorizo y
+resucitaria una autoridad borrada a proposito.
+
 ## 5. Ciclo de vida de una variable
 
 ### D-09 — Renombrar es por `Id`
@@ -637,6 +936,48 @@ de la decision:
    colgante sigue siendo alcanzable por otros caminos (otra version, edicion externa), asi que D-08 no
    es opcional por haber elegido F1.
 
+### D-11-bis — VINCULAR (C4-1, cierra B1)
+
+> **NUEVA en V4.** El Architect registro (B1) que V3 definia **21 decisiones** y **ninguna** gobernaba
+> el acto de vincular — la operacion con **mayor efecto geometrico** y la puerta de entrada de todo
+> ID22A. C-3 hablaba de «cambiar una variable», no de «crear un vinculo», asi que D-13 no la cubria: una
+> implementacion conforme podia crear un binding y **dejar el dibujo mostrando el valor viejo**.
+
+**`Link(rack, propertyId, variableId)` sobre un rack EXISTENTE, en este orden:**
+
+```
+1. CONSERVAR el literal authored           -> VerticalClearance persistido NO se toca (C4-5).
+                                              Queda congelado e INACTIVO.
+2. ANADIR la referencia                    -> PropertyValues["selective.verticalClearance"]
+                                                 = { kind: "projectVariable", variableId: ... }
+3. PROMOVER el schema                       -> primera aparicion de PropertyValues => 2.0  (C4-9)
+4. RESOLVER el efectivo                     -> SelectiveEffectiveDesignResolver.Resolve(...)  (D-04-bis)
+5. REDIBUJAR TODAS SUS VISTAS               -> preflight / lote / commit unico / UN Regen  (D-13)
+```
+
+**El binding gobierna de inmediato.** No hay estado intermedio en el que el vinculo exista y el dibujo
+siga mostrando el authored: los pasos 1-5 son **una sola operacion confirmada** (C4-11) y, si el
+preflight falla, **no se escribe ninguno de ellos** — ni el binding, ni la promocion, ni la geometria.
+
+**Rack SIN vistas todavia** (definicion sin bloques dibujados, o un diseno que aun no se ha insertado):
+se **guarda el binding** y no hay nada que redibujar. **Las inserciones futuras usan el efectivo**,
+porque toda insercion parte del diseno resuelto por D-04-bis. No es un caso especial del contrato: es el
+mismo contrato con el conjunto de vistas vacio.
+
+**Simetria con UNLINK, que es lo que hace el par comprensible:**
+
+| | `Link` | `Unlink` (D-11) |
+|---|---|---|
+| Literal authored | se **congela**, no se toca | se **sobrescribe** con el efectivo |
+| `PropertyValues` | se **anade** la entrada | se **quita** la entrada |
+| Schema | **promueve** a `2.0` | **permanece** `2.x` (pegajoso) |
+| Efecto geometrico | **el que la variable imponga** — puede ser visible, y es el objetivo | **nulo** |
+| Redibujo | todas las vistas, por D-13 | todas las vistas, por D-13 |
+
+**Que el efecto geometrico de `Link` sea visible es correcto y deliberado**: el usuario esta pidiendo
+que el rack pase a obedecer al proyecto. Lo que seria un defecto es que **no** se viera hasta la
+siguiente edicion, que es exactamente lo que V3 permitia.
+
 ### D-11 — Desvincular: materializar el valor efectivo
 
 | Alt | Al desvincular, el literal queda… | Efecto geometrico inmediato |
@@ -645,12 +986,31 @@ de la decision:
 | G2 | = el literal anterior al vinculo | **Salto visible**: el rack cambia de forma al desvincular |
 | G3 | = default o cero | Peor version de G2 |
 
-**Recomendacion: G1 (materializar).** Es la unica con efecto geometrico nulo en el instante de
-desvincular, que es lo que hace la operacion segura y comprensible.
+**DECIDIDA: G1 (materializar).** Es la unica con efecto geometrico nulo en el instante de desvincular,
+que es lo que hace la operacion segura y comprensible.
+
+**Secuencia exacta (C4-6):**
+
+```
+Unlink(rack, propertyId) :
+    1. RESOLVER el efectivo actual                     (D-04-bis)
+    2. ESCRIBIR ese efectivo en el literal authored    <-- paso ACTIVO
+    3. QUITAR el binding de PropertyValues
+    4. El SchemaVersion PERMANECE 2.x                  (pegajoso, C4-9: nunca baja)
+    5. REDIBUJAR por el camino de D-13                 -> efecto geometrico NULO
+```
 
 **Aviso de implementacion, porque G2 es el bug facil:** si al limpiar el binding se deja el campo
-literal como estaba, el resultado **es G2 sin haberlo elegido**. Materializar es un paso **activo**
-(escribir el valor efectivo en el literal antes de borrar el vinculo) y merece su propia prueba.
+literal como estaba, el resultado **es G2 sin haberlo elegido** — el rack salta a un valor viejo.
+El paso 2 es **activo** y merece su propia prueba (D-17).
+
+**El paso 4 no es una omision.** El schema no baja aunque el rack quede sin ningun binding: la
+promocion es monotona (C4-9) y el motivo esta en D-07 — un documento que oscila hace que «que versiones
+pueden abrir este rack» dependa de estado transitorio.
+
+**Caso rota:** si la referencia esta rota, el paso 1 **no puede** ejecutarse. Ese caso **no** entra por
+aqui: entra por **D-08-bis** (`RepairBroken`), que avisa de que no hay efectivo y de que la geometria
+puede cambiar. `Unlink` **nunca** cae al literal en silencio.
 
 ---
 
@@ -679,9 +1039,46 @@ cumple. Para un BOM, saltar un bloque ilegible produce un total incompleto y vis
 propagacion, saltar en silencio produce un dibujo incorrecto y mudo**: un rack vinculado que no se
 redibuja queda mostrando el valor viejo.
 
-**Recomendacion**: la propagacion **no hereda la politica de `continue`**. Un bloque sin `Id`, sin
-`Kind` o cuyo diseno no deserializa **aborta la operacion** (D-13) en cuanto **pueda** ser consumidor;
-solo se ignoran los bloques que demostrablemente no llevan payload de RackCad.
+#### Las tres reglas del descubrimiento (C4-13, cierran M1 y M4)
+
+V3 decia solo «no hereda la politica de `continue`; aborta ante un bloque sin `Id`, sin `Kind` o
+illegible». El Architect encontro que eso era **a la vez demasiado estrecho y demasiado ancho**: no
+decia nada del filtro de referencias (M1) y bloqueaba por racks corruptos ajenos (M4).
+
+**1. NO se filtra por `DirectReferenceCount`.** El precedente citado arriba lo usa porque un BOM cotiza
+lo **colocado**; una propagacion mantiene coherente lo **persistido**. **Una definicion vinculada con
+cero referencias sigue siendo consumidor** y debe redibujarse: si no, queda con geometria vieja y la
+saca a la luz la siguiente insercion (`RACKLAYOUT` inserta referencias sobre `seed.DefinitionId`).
+
+**2. Los consumidores se identifican POSITIVAMENTE, con un probe puro.** No se clasifica por lo que
+falta, sino por lo que se encuentra: se busca en `PropertyValues` una entrada cuyo valor referencie el
+`VariableId` objetivo.
+
+```
+esConsumidor(authoredDocument, variableIdObjetivo) : bool      // PURO, suite Core
+    entrada = authoredDocument.PropertyValues[propertyId]      // comparacion Ordinal (C4-14)
+    entrada != null && entrada.kind == "projectVariable" && idIgual(entrada.variableId, objetivo)
+```
+
+**3. Un rack corrupto NO RELACIONADO no bloquea la operacion.** La regla de aborto se acota al conjunto
+que de verdad importa:
+
+| Estado del bloque | Que hace la operacion |
+|---|---|
+| Consumidor **confirmado** del objetivo, y **legible y resoluble** | entra en el lote |
+| Consumidor **confirmado**, pero **illegible o irresoluble** | **ABORTA** toda la operacion, nombrandolo |
+| **Sin referencia** al objetivo — incluso illegible, sin `Kind`, o corrupto | **se IGNORA** para esta operacion |
+
+La asimetria es deliberada: un consumidor que no se puede leer **podria** estar mostrando el valor
+viejo, y continuar dejaria el dibujo incoherente; un rack ajeno y roto no tiene nada que ver con esta
+variable, y bloquear por el haria el producto inservible en cuanto un dibujo arrastrara un bloque
+heredado sin `Kind`.
+
+> **Caso limite honesto:** un bloque cuyo payload no deserializa **no puede** probarse ni como
+> consumidor ni como ajeno. Se trata como **consumidor potencial ⇒ aborta**, porque la alternativa —
+> asumir que no referencia nada— es exactamente el salto silencioso que el contrato prohibe. La
+> diferencia con V3 es que ahora **solo** aborta si el bloque es indistinguible, no si es legible y
+> demostrablemente ajeno.
 
 ### D-13 — Preflight completo, commit unico y **un solo** `Regen`
 
@@ -734,78 +1131,93 @@ deshace lo ya commiteado si algo falla a mitad.
    retorno.
 4. **Un solo `Regen`**, al final, despues del commit.
 
-**Frontera arquitectonica propuesta (no se implementa aqui).** El seam necesario ya esta **un nivel mas
-abajo**: `LateralHeaderDrawer.RedefineSystemBlock(database, transaction, blockId, plan, out staleDefs)`
-**ya recibe la transaccion**. Quien la crea y la commitea es `SystemBlockWriter`. La frontera, por
-tanto, es exactamente esa capa:
+**Frontera arquitectonica EXIGIDA (no se implementa aqui) — ahora sobre TODOS los writers del slice
+(C4-3, cierra B3).**
+
+> **Correccion de V4.** V3 nombraba **`SystemBlockWriter`** como el unico orquestador que commitea por
+> su cuenta. El Architect verifico que **las vistas laterales del propio slice no pasan por el**:
+> [`RackSelectivoCommands.cs:154`](../../src/RackCad.Plugin/RackSelectivoCommands.cs) llama, en un bucle
+> por corte, a `lateralService.RedrawInPlace(...)`, es decir a
+> [`LateralHeaderDrawService.RedrawInPlace`](../../src/RackCad.Plugin/Drawing/LateralHeaderDrawService.cs),
+> **un segundo writer independiente** que abre su propio `LockDocument`, **llama a
+> `BlockLibraryImporter.EnsureForPlan`**, abre su propia transaccion, **commitea**, purga y regenera.
+> Con la frontera de V3, «una transaccion, un commit» era **inalcanzable para el slice elegido**, y
+> C3-5 —que prohibe `EnsureForPlan` dentro de la operacion— era **inimplementable en ese camino**.
+
+**Los dos writers quedan nombrados, y los tres tipos de vista bajo la misma transaccion:**
+
+| Vista del Selectivo | Writer de hoy | Estado de hoy |
+|---|---|---|
+| **Frontal** | `SelectiveFrontalDrawService` → `ViewBlockDraw` → `SystemBlockWriter.RedrawInPlace` | transaccion propia + commit |
+| **Planta** | `SelectivePlantaDrawService` → `ViewBlockDraw` → `SystemBlockWriter.RedrawInPlace` | transaccion propia + commit |
+| **Lateral (cortes)** | **`LateralHeaderDrawService.RedrawInPlace`**, una llamada **por corte** | `EnsureForPlan` + transaccion propia + commit + purge + regen, **todo por su cuenta** |
 
 ```
-HOY     SystemBlockWriter.RedrawInPlace(document, …)            crea la transaccion, commitea, purga, regenera
-                                                                 → atomicidad = 1 bloque
+PROPUESTO — una frontera transaction-aware que cubra los TRES:
 
-PROPUESTO  un writer de LOTE cuya transaccion es del LLAMADOR:
-           - el llamador abre UNA transaccion (y el document lock)
-           - por cada bloque: redefinir + escribir payload  → SIN commit
-           - escribir tambien el registro ProjectVariables  → misma transaccion
-           - UN commit
-           - DESPUES del commit: purga de definiciones huerfanas acumuladas
-           - UN Editor.Regen()
+  el orquestador abre UN document lock y UNA transaccion, y entonces:
+      - escribe el registro ProjectVariables                       (misma transaccion)
+      - redefine FRONTAL  bajo esa transaccion                     (sin commit propio)
+      - redefine PLANTA   bajo esa transaccion                     (sin commit propio)
+      - redefine LATERAL, corte a corte, bajo esa transaccion      (sin commit propio)
+      - escribe los payloads de todas las vistas                   (misma transaccion)
+      - UN commit
+  despues del commit:
+      - purga ACUMULADA de las definiciones huerfanas de todos los racks y todas las vistas
+      - UN Editor.Regen()
 ```
 
-Tres detalles que esa frontera debe resolver, y que se nombran para que nadie los descubra tarde:
+La pieza que lo hace viable ya existe y no cambia de firma: `LateralHeaderDrawer.RedefineSystemBlock`
+**ya recibe la `Transaction`**, y los **dos** writers la usan. Lo que cambia es **quien crea y commitea
+la transaccion**, en ambos.
 
-- **`RedefineSystemBlock` opera sobre la `Transaction` del llamador** (C3-4). Ya la recibe como
-  parametro, asi que el cambio es de **quien la crea**, no de su firma. La transaccion unica cubre
-  **las tres escrituras**: el registro `ProjectVariables`, la geometria redefinida y los payloads de
-  cada bloque-vista. No hay tres commits, hay uno.
-- **`PurgeUnreferenced` sale del bucle.** Hoy corre por bloque y **despues del commit**; en el modelo de
-  lote se **acumulan** los `staleDefs` de todos los racks y se purga **una vez**, tras el commit unico.
-- **`ApplyRegen` deja de decidirse por bloque.** El `regen: false` de hoy es una convencion del
-  llamador; en el lote el writer no regenera nunca y el **unico** `Regen` es responsabilidad explicita
-  del orquestador, al final.
+**`EnsureForPlan` / cualquier importacion queda PROHIBIDA dentro de la propagacion** (C3-5), y esto
+ahora **incluye la ruta lateral**, que es donde de hecho estaba. En su lugar, **verificacion read-only
+antes de mutar**:
 
-#### La biblioteca de bloques queda FUERA del lote (C3-5)
-
-**Correccion de V2**, que proponia «resolver `EnsureForPlan` en el preflight». Eso era incorrecto: esa
-llamada **no puede formar parte ni del preflight ni del lote**, porque **muta el `Database` fuera de
-cualquier transaccion del llamador**. Verificado:
-
-```csharp
-// src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs — EnsureBlocks
-using (var transaction = db.TransactionManager.StartTransaction())   // <- abre la SUYA
-{
-    ...  // detecta los que faltan
-    transaction.Commit();                                            // <- y la COMMITEA
-}
-...
-source.WblockCloneObjects(ids, db.BlockTableId, mapping, DuplicateRecordCloning.Ignore, deferTranslation: false);
+```
+preflight, de solo lectura, sobre el plan de CADA vista de CADA consumidor:
+    para cada nombre de bloque del plan (LooseInstances + Headers.SelectMany(Instances)):
+        blockTable.Has(nombre)  ?
+    si falta alguno  ->  ABORTA, nombrando los que faltan
+                         antes de tocar la variable y antes de tocar ningun consumidor
 ```
 
-`WblockCloneObjects` escribe en la `BlockTable` del dibujo **por su cuenta**. Meterlo dentro de una
-operacion que promete «commit unico o rollback real» romperia esa promesa en el primer rack que
-necesitara importar algo.
+**No se importa ni se repara la biblioteca como efecto colateral** de cambiar una variable. Razon
+verificada, ademas de la transaccional: con el archivo de biblioteca ausente, `EnsureBlocks` **devuelve
+0 en silencio**, asi que apoyarse en el convertiria una biblioteca ausente en **geometria incompleta sin
+aviso**.
 
-**El contrato, entonces:**
+#### La unidad de atomicidad del registro (C4-11, cierra H4)
 
-1. La propagacion **VERIFICA** que las definiciones de bloque que cada consumidor necesita **ya existan**
-   en el dibujo. La comprobacion es de **solo lectura** y es la misma que el importador usa para
-   detectar lo que falta: `blockTable.Has(name)` sobre los nombres del plan
-   (`plan.LooseInstances` + `plan.Headers.SelectMany(g => g.Instances)`).
-2. **Si falta alguna, ABORTA** —antes de tocar la variable y antes de tocar ningun consumidor— y
-   **nombra las que faltan**. Ningun cambio parcial, coherente con D-08.
-3. **No se importa ni se repara la biblioteca como efecto colateral** de cambiar una variable. Reparar
-   la biblioteca es una operacion propia, que el usuario pide a proposito; un cambio de valor no es el
-   momento de descubrir que falta un DWG.
+El Architect registro que el registro entero vive en **un** `Xrecord` —luego toda escritura es
+todo-o-nada sobre **todas** las variables— mientras que la unidad de D-13 era **una variable**. V3 no
+resolvia el desajuste.
 
-Hay una razon adicional, verificada, para no delegar en el importador: si el archivo de biblioteca **no
-existe**, `EnsureBlocks` **devuelve 0 en silencio** (`if (!File.Exists(path)) return 0;`). Apoyarse en
-el durante una propagacion convertiria una biblioteca ausente en **geometria incompleta sin aviso**.
+**La unidad logica es UNA OPERACION CONFIRMADA**, no una variable y no un documento:
+
+```
+Create · Rename · ChangeValue · Delete · Link · Unlink · RepairBroken · UnlinkAllAndDelete
+```
+
+Cada una es **una** unidad: un preflight, una transaccion, un commit, un `Regen`.
+
+**Si una UI futura entrega varios cambios en un solo Apply, el change-set ENTERO es una sola unidad**, y
+entonces:
+
+- el conjunto de consumidores es la **UNION** de los consumidores de todos los cambios del change-set;
+- el preflight cubre esa union completa **antes** de mutar nada;
+- **nunca hay apply parcial**: o entran todos los cambios y todos sus consumidores, o no entra ninguno.
+
+Eso hace que la granularidad del `Xrecord` deje de ser un problema: escribir el documento completo del
+registro **es** la forma natural de confirmar una unidad, sea de un cambio o de veinte.
 
 #### Viabilidad de la transaccion unica
 
 **Deja de ser una pregunta de contrato** (C3-6). El contrato es el de los cuatro puntos de arriba, y se
-sostiene: la unica operacion que se sabia problematica —la importacion de bloques— queda **fuera** por
-el punto anterior, y `RedefineSystemBlock` ya esta escrito para trabajar sobre una transaccion ajena.
+sostiene: la importacion de bloques queda **fuera** por el punto anterior —**en los dos writers**, no
+solo en uno—, y `RedefineSystemBlock` ya esta escrito para trabajar sobre una transaccion ajena y ya lo
+usan ambos.
 
 Lo que sigue siendo necesario es **comprobarlo ejecutando**, y eso es un **gate de implementacion y de
 Owner Validation** (§14, CF-5'), no una condicion previa del Consensus Freeze ni una incognita de
@@ -883,32 +1295,50 @@ un diseno exportado con un vinculo llega a destino apuntando a nada.
 | H2 | Conservar el vinculo y resolver o fallar al importar | Preserva la intencion; produce **importaciones que fallan** en cualquier dibujo que no tenga esa variable — la mayoria |
 | H3 | Exportar el vinculo **y** una copia de la variable, fusionando al importar | Lo mas completo y lo mas caro: exige semantica de **fusion y conflicto** entre conjuntos de variables |
 
-**Recomendacion: H1 para ID22A.** Y no solo por coherencia con D-11: **el repositorio ya trata la
-frontera de la biblioteca exactamente asi**. Una entrada de biblioteca **nunca conserva la identidad
-del rack**; al abrirla se adopta identidad nula y se acuna un GUID nuevo al insertar:
+**DECIDIDA: H1 (materializar), y con el contrato completo que V3 no daba (C4-10).**
 
-```csharp
-// src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs
-session.Identity.Adopt(null, document.Name); // a library template inserts as a NEW rack: no id yet, fresh GUID on insert (I-15)
+El repositorio ya trata asi la frontera de la biblioteca: una entrada **nunca** conserva la identidad
+del rack — al abrirla se adopta identidad nula y se acuna un GUID nuevo al insertar. Si el `RackId` —un
+identificador con alcance de dibujo— ya se descarta al cruzar, **un `VariableId` se descarta por la
+misma razon**.
+
+**El export es un ARTEFACTO NUEVO, no una copia del documento embebido:**
+
+```
+exportar a biblioteca(rack) :
+    1. RESOLVER el efectivo                   (D-04-bis)
+    2. MATERIALIZAR: el efectivo pasa a ser el literal de la entrada
+    3. ELIMINAR PropertyValues                -> la entrada es LITERAL-ONLY
+    4. ESCRIBIR SelectiveRack en la LINEA 1.x -> NO hereda el schema pegajoso del rack embebido
 ```
 
-Si el `RackId` —un identificador con alcance de dibujo— ya se descarta al cruzar a la biblioteca,
-**un `VariableId` debe descartarse por la misma razon y con el mismo criterio**. H1 no inventa una
-politica: aplica la existente a un identificador nuevo.
+**El punto 4 es el que V3 no decia (M6).** Un rack embebido promovido esta en `2.x`; su entrada de
+biblioteca **no**. Y no es una excepcion a la regla pegajosa: es que **son documentos distintos**. La
+promocion pegajosa describe la vida de **un** documento a lo largo de sus reescrituras; el export
+**crea otro**, sin `PropertyValues` y sin historia, y un documento literal-only pertenece a la linea
+`1.x`. Mantenerlo en `2.x` haria que **cualquier** version anterior rechazara una plantilla que es
+perfectamente compatible con ella.
 
-**H3 queda como futuro SEPARADO (corregido en V2 por C2-8).** V1 lo llamaba «territorio de ID22B», y
-eso era un error de clasificacion: **ID22B son formulas entre variables**, un problema *dentro* de un
-dibujo. Transferir o **fusionar conjuntos de variables entre dibujos** es un problema distinto —
-identidad, colision de nombres, conflicto de valores, reconciliacion al importar— que no depende de
-ID22B ni lo habilita. **No pertenece a ninguna de las iniciativas hoy definidas** (ID22A, ID22B, ID21)
-y no se le asigna una: queda como futuro propio, sin numero.
+**Invariante vinculante: ID22A NUNCA exporta un `SelectiveRack` promovido ni vinculado.** Si el
+materializado no puede completarse —por ejemplo, con una referencia rota—, el export **falla de forma
+visible**; no exporta el authored congelado haciendolo pasar por el valor bueno.
 
-**Aviso de implementacion**: el guardado del selectivo escribe
-`RackProject.ForSelectiveRack(document)` con **el mismo `SelectivePalletDesignDocument`** que se
-embebe en el DWG. Materializar es, por tanto, un paso **explicito antes de componer el proyecto de
-biblioteca** — no ocurre solo.
+**El guard anidado que falta (H1).** El Architect verifico que `RackProjectDocument.SelectiveRack`
+**no** pasa por ningun `SchemaGuard`, mientras sus cuatro payloads anidados hermanos si. Se anade:
 
----
+```
+SchemaGuard.CheckReadable(document.SelectiveRack?.SchemaVersion, <constante de lectura selectiva>,
+                          "El diseño del selectivo")
+```
+
+**Con una advertencia explicita que no se puede omitir:** ese guard es codigo **nuevo**, luego
+**protege a I-47 en adelante y NO a los binarios pre-I-47 ya compilados**. No se le atribuye una
+garantia retroactiva — es el mismo error que V1 cometio con `[JsonExtensionData]` y que C2-5 corrigio.
+Lo que protege la ruta de biblioteca frente a versiones anteriores es la **invariante** de arriba: que
+nunca sale por ahi un documento promovido ni vinculado.
+
+**H3 sigue siendo territorio de ID22B/futuro** (fusion de conjuntos de variables entre dibujos), y
+**C2-8** ya la saco de ID22B: no pertenece a ninguna iniciativa definida.
 
 ## 7. Interfaz de usuario
 
@@ -951,6 +1381,51 @@ entradas), y el comando nuevo debe anadirse a `RackCommandReference` —que ya a
 Discovery—. Ademas, `WindowCensusGuardTests` obliga a **clasificar** cualquier ventana nueva en uno de
 cuatro arquetipos; una ventana de variables encaja en `Utilities` o `ConfigurationDialogs`, y el
 arquetipo elegido arrastra su contrato (`DialogWindowContractTests`).
+
+### D-16-frontera — Como llegan los datos del dibujo a la UI (C4-12, cierra H5)
+
+> **NUEVA en V4.** El Architect registro (H5) que **dos comportamientos ya decididos** necesitan datos
+> con alcance de dibujo dentro de una ventana WPF que **estructuralmente no puede leer el dibujo**:
+> D-10 F1 debe **listar los consumidores** que impiden un borrado, y D-16b debe mostrar **que variable**
+> gobierna el campo. `RackCad.UI` no referencia AutoCAD (ADR-0006) y D-01 solo nombraba, del lado del
+> Plugin, un helper de lectura/escritura del NOD.
+
+**La regla, y no admite excepcion: la UI no conoce AutoCAD.**
+
+```
+Plugin  (unico que toca AutoCAD)
+    lee el NOD                      -> ProjectVariablesDocument
+    lee RackBlockFinder.ScanEnvelopes -> envelopes + authored documents
+    resuelve con D-04-bis            -> efectivos
+    |
+    |  entrega DTOs PUROS (Application), sin ObjectId, sin Transaction, sin Database
+    v
+UI  (WPF)
+    pinta variables, chips, listas y avisos
+    |
+    |  devuelve PETICIONES / INTENCIONES, no acciones
+    v
+Plugin + Application  ejecutan la operacion confirmada (C4-11)
+```
+
+**Los cinco DTO que cruzan la frontera**, todos puros y todos testeables en la suite Core:
+
+| DTO | Contenido |
+|---|---|
+| **Variables** | la lista del registro: `VariableId`, `Name`, `Type`, `Definition` |
+| **Estado de binding** | por propiedad: vinculada o no, y a que `VariableId` |
+| **Valor efectivo** | el numero que gobierna hoy, ya resuelto (D-04-bis) |
+| **Resumenes de consumidores** | que racks usan cada variable — lo que D-10 F1 debe listar |
+| **Estado roto** | que bindings no resuelven — lo que D-08-bis debe ofrecer reparar |
+
+**La UI devuelve intenciones, no efectos.** Un clic en «Desvincular» produce una **peticion**
+`Unlink(rack, propertyId)`; no muta nada por su cuenta. Es lo que permite que las ocho operaciones
+confirmadas (C4-11) tengan **un solo** camino de ejecucion, con su preflight y su commit, sea cual sea
+la superficie que las dispare.
+
+> Ventaja lateral que conviene declarar: como el DTO es puro y la UI solo pinta, **el comportamiento de
+> la ventana de variables y del chip se prueba entero en la suite UI sin AutoCAD** (D-17), igual que ya
+> se prueban los editores existentes.
 
 ### D-16b — Estado visual del vinculo: el problema real
 
@@ -998,17 +1473,50 @@ El reparto lo dicta un hecho duro del repositorio: **ningun proyecto de pruebas 
 UI). No hay forma de ejecutar un `[CommandMethod]` en CI, y no la va a haber: el Plugin referencia
 AutoCAD ([ADR-0003](../adr/0003-referencias-autocad-para-ci.md)) y la CI no tiene AutoCAD.
 
-| Pieza | Como se verifica | Suite |
+> **Corregido en V4 (M2, M3).** V3 no asignaba **ninguna** verificacion a D-12/D-13 —la propagacion que
+> C-3 existe para gobernar— y de D-08 solo verificaba **el mensaje**, no el **aborto**. Ambas quedan
+> asignadas.
+
+**A la suite Core (pura, sin AutoCAD):**
+
+| # | Que se verifica | Decision |
 |---|---|---|
-| `ProjectVariablesDocument` + store (round-trip, ausencia = vacio, tipo desconocido) | Pruebas puras | **Core** |
-| Resolucion del valor efectivo (D-04) y precedencia de `ClearOverride` (D-06) | Pruebas puras sobre `SelectiveGeometryResolver` | **Core** |
-| Mensaje de variable inexistente (D-08) | Prueba pura del mensaje en Application, como `KindDispatchMessages` | **Core** |
-| Materializar al desvincular (D-11) y al exportar (D-15) | Pruebas puras | **Core** |
-| Supervivencia del vinculo al restamp de RACKDUPLICAR (D-14) | **Ver D-17-bis** — un round-trip del Store **no** sirve | **Core**, tras extraer |
-| Ventana de variables y estado visual (D-16) | `StaTestRunner` + `EditorWindowTestSupport`, sin mostrar la ventana | **UI** |
-| Entrada de menu y `MainMenuAction` | UI tests (precedente: `RackMainMenuStructuralSectionTests`) | **UI** |
-| `[CommandMethod]` y la llamada al NOD | **Solo guarda de texto fuente** — precedente literal: `MainMenuStructuralSectionAccessGuardTests` afirma sobre el `.cs` leido como texto | Core (guarda) |
-| **El NOD escribe y lee de verdad** | **Imposible automatizar** | **Dueno, en AutoCAD** |
+| 1 | `ProjectVariablesDocument`: schema, store, guard, `ExtensionData`, y los **tres errores duros** | D-01-bis |
+| 2 | **Resolver efectivo**: con binding gana la variable; sin binding gana el authored | D-04-bis |
+| 3 | **`Link`**: authored congelado, `PropertyValues` anadido, schema promovido, efectivo resuelto | D-11-bis |
+| 4 | **`Unlink`**: el efectivo se escribe al literal, el binding desaparece, el schema **no baja** | D-11 |
+| 5 | **`RepairBroken`**: usa el authored, quita el binding, conserva `2.x`, y **no** es alcanzable sin accion explicita | D-08-bis |
+| 6 | **Probe y clasificacion de consumidores**: confirmado / ajeno / indistinguible | D-12 |
+| 7 | **Preflight y aborto**: con un consumidor irresoluble, la operacion **no produce ninguna mutacion** | D-12, D-13 |
+| 8 | **`PropertyId` desconocido** ⇒ error visible, nunca caida al literal | §1-bis, C4-14 |
+| 9 | **`kind` de referencia desconocido** ⇒ error visible | D-04 |
+| 10 | **Monotonicidad del sticky**: las cuatro ramas, incluida la de **ERROR** por major superior | D-07, C4-9 |
+| 11 | **Preservacion del estado authored** en `load → edit → save`: version, `PropertyValues`, literal y `ExtensionData` | D-07 portador, C4-2 |
+| 12 | **Materializacion y schema de la biblioteca**: literal-only, sin `PropertyValues`, en linea `1.x` | D-15 |
+| 13 | **El restamp conserva el binding** y cambia `RackId`/`Name` | D-17-bis, C-4 |
+| 14 | **Precedencia de `ClearOverride`** sobre el efectivo, sin cambios | D-06 |
+
+Los puntos 7 y 11 son los que V3 no tenia, y son **precisamente** los que cierran B2 y M2: ambos son
+**puros** y por tanto plenamente verificables — el preflight opera sobre documentos, no sobre el
+dibujo, y el portador es un DTO.
+
+**A la suite UI (WPF, sin AutoCAD, sobre los DTO de D-16-frontera):**
+
+| Que se verifica | Decision |
+|---|---|
+| La ventana de variables: alta, renombrado, borrado bloqueado con lista de consumidores | D-16a, D-10 |
+| El estado visual del vinculo: chip presente, campo de solo lectura, boton «Desvincular» | D-16b |
+| La entrada de menu y `MainMenuAction` | D-16a |
+
+**Al dueno, en AutoCAD (Owner Validation, CF-5'):**
+
+| Que se verifica |
+|---|
+| **Lote transaccional sobre frontal + planta + lateral**, con **un** commit |
+| **Fallo inducido ⇒ CERO commits parciales**: ningun consumidor queda modificado |
+| **Definicion de bloque ausente ⇒ CERO mutacion**, y el aborto nombra la que falta |
+| **`save` / `close` / `reopen`** del mismo DWG conserva registro y bindings |
+| El registro del **NOD sobrevive a `PURGE`** |
 
 **Consecuencia de diseno, no de pruebas**: cuanto mas codigo viva en Application, mas cae del lado
 verificable. Es la misma razon por la que D-01 deja en el Plugin solo el acceso al diccionario.
@@ -1179,96 +1687,73 @@ a ID22B ni a ninguna iniciativa definida** (D-15).
 
 ## 12. Preguntas realmente abiertas
 
-### 12.1 Decisiones de producto y arquitectura: **NO queda ninguna abierta**
+### 12.1 Estado tras la reconciliacion
 
-Se confirma explicitamente, que era lo que el Gate C3 pedia comprobar. El recorrido completo:
+**V3 afirmaba que no quedaba ninguna decision de producto abierta. Era falso**, y el Architect lo
+registro como su desacuerdo material principal: B1 (vincular) era una decision de producto sin tomar y
+B4 (punto de resolucion) una decision de arquitectura sin tomar. **V4 las toma, con las premisas
+C4-1..C4-14 del dueno.**
 
-| Antes abierta | Estado | Donde |
-|---|---|---|
-| D-07: F2 frente a F3 | **CERRADA** — F2, con promocion pegajosa; F3 rechazada por semantica | C3-1, C3-2 |
-| D-10: bloquear el borrado | **CERRADA** — F1; el atajo solo como accion explicita separada | C3-3 |
-| Viabilidad conceptual de la transaccion unica | **RETIRADA** — deja de ser pregunta de contrato; pasa a verificacion | C3-6 |
-| Numero de iniciativa para H3 | **RETIRADA** — H3 es futuro separado y **no necesita numero** para que ID22A cierre | C3-8 |
-| Coste de la propagacion | **RECLASIFICADO** — riesgo y **metrica de implementacion**, no decision de arquitectura | C3-8 |
-| D-04 (forma de la referencia) | Cerrada en el Gate C2 | C2-4 |
+| Antes abierto | Estado en V4 |
+|---|---|
+| La accion `Link` | **DECIDIDA** — D-11-bis (C4-1) |
+| El punto de resolucion | **DECIDIDO** — D-04-bis (C4-4) |
+| Semantica del literal authored | **DECIDIDA** — D-04 (C4-5) |
+| Reparacion de referencia rota | **DECIDIDA** — D-08-bis (C4-7) |
+| Contrato del `ProjectVariablesDocument` | **DECIDIDO** — D-01-bis (C4-8) |
+| Portador del estado authored | **DECIDIDO** — D-07 (C4-2) |
+| Frontera transaccional completa | **DECIDIDA** — D-13 (C4-3) |
+| Unidad de atomicidad del registro | **DECIDIDA** — D-13 (C4-11) |
+| Frontera Plugin → UI | **DECIDIDA** — D-16-frontera (C4-12) |
+| Descubrimiento de consumidores | **DECIDIDO** — D-12 (C4-13) |
+| Politica de `PropertyId` | **DECIDIDA** — §1-bis (C4-14) |
+| Schema de la biblioteca | **DECIDIDO** — D-15 (C4-10) |
 
-**Todas las decisiones D-01..D-19 estan tomadas.** Lo que queda no es diseno: es **aceptacion formal**
-del contrato por el dueno (gate `owner-decision`), **verificacion en AutoCAD** y **ejecucion**.
+### 12.2 Lo que sigue abierto
 
-### 12.2 Lo unico que sigue abierto, y no es una decision de producto
+1. **La aceptacion del contrato por sus dos revisores.** `Coordinator` y `Architect` deben coincidir
+   sobre **la misma version**, y **V4 no declara ninguno de los dos**: este documento es la propuesta
+   de reconciliacion, no su aprobacion. El `Architect` debe revisar **V4**, no V3.
+2. **El coste de la propagacion** sigue sin medir (riesgo P6). No es una decision de arquitectura.
+3. **A que iniciativa pertenece la fusion de conjuntos de variables entre dibujos** (H3 de D-15). Sigue
+   sin numero desde C2-8.
 
-**La aceptacion formal del contrato por el dueno.** El gate `owner-decision` sigue abierto sobre
-D-01..D-19 **en bloque**: no porque falte elegir entre alternativas —ya no hay ninguna viva— sino
-porque una Proposal **recomienda** y solo el dueno **acepta**. Formalmente, eso ocurre con el ADR de
-D-19, que nace `propuesto` y que **solo el dueno** pasa a `aceptado`.
-
-Si al leer el contrato el dueno quisiera cambiar algo, eso abriria una decision nueva; hoy no hay
-ninguna pendiente por parte de esta Proposal.
+**Ninguna de las tres bloquea la revision del Architect sobre V4.**
 
 ## 13. Riesgos de esta propuesta
 
-Distintos de los del Discovery: aquellos describen el arbol, estos son de **lo que se propone**.
-
 | # | Riesgo | Mitigacion incorporada |
 |---|---|---|
-| P1 | **El acceso al NOD no lo cubre ninguna suite** y no lo cubrira nunca | D-01 deja en el Plugin solo el acceso al diccionario; DTO, store, resolucion, mensajes y materializacion viven en Application y **si** se prueban |
-| P2 | **`PURGE` sobre una entrada del NOD**: comportamiento no verificado | Se declara como pendiente de comprobar en AutoCAD (D-01). **No se afirma en ningun sentido** |
-| P3 | **Desvinculado silencioso al guardar un rack** desde RACKEDITAR | D-14 lo nombra como el riesgo principal del editor y exige que desvincular sea accion explicita |
-| P4 | **Perdida silenciosa del vinculo** por round-trip de version anterior, o por el restamp de RACKDUPLICAR | D-07 **F2** (major condicional: la version anterior se **niega** en vez de desvincular; `[JsonExtensionData]` **no** cubre esto) y D-17-bis (transformacion extraida y probada por comportamiento) |
-| P5 | **Un tercer significado del campo vacio** en la UI | D-16b elige adorno adyacente (K3), no ausencia de valor |
-| P6 | **Coste de propagacion desconocido** en un dibujo grande | **Riesgo y metrica de implementacion** (C3-8), no decision de arquitectura. Se **mide** cuando exista algo que medir; no se estima aqui ni condiciona el contrato. La transaccion unica **agrava** el perfil, porque mantiene mas estado abierto mas tiempo |
-| **P9** | La transaccion unica de D-13 **hay que verificarla ejecutando** | **Ya no es una incognita de diseno** (C3-6): la unica operacion que se sabia problematica queda fuera del lote, y `RedefineSystemBlock` ya trabaja sobre una transaccion ajena. Se verifica como **gate de implementacion / Owner Validation** (CF-5) |
-| **P10** | **Profundidad 1 asumida por descuido**: ID22B (variable→variable) e ID21 (rack→rack) convierten el preflight en recorrido de **grafo** | §10 lo senala como limite comun; la forma persistida y el modelo de errores de D-13 no deben cerrar esa puerta |
-| P7 | **Archivos calientes**: el slice toca `SelectivePalletDesign.cs` y `RackSelectiveWindow.xaml.cs`, ambos en la tabla de WORKFLOW seccion 7 | La implementacion debe **serializarse** con cualquier otra iniciativa del Selectivo |
-| P8 | **Sobre-ingenieria**: D-03 (tipos) y D-04 (mapa de vinculos) construyen para ID22A mas de lo que ID22A necesita | Es una apuesta **consciente** por «evolucion limpia a ID22B», que el dueno pidio. Si prefiere el minimo, D1 y C3 son las alternativas, y estan escritas con su coste |
+| P1 | **El acceso al NOD no lo cubre ninguna suite** y no lo cubrira | D-01 deja en el Plugin solo el acceso; DTO, store, resolver, mensajes y materializacion viven en Application y **si** se prueban (D-17) |
+| P2 | **`PURGE` sobre la entrada del NOD**: no verificado | Owner Validation (CF-5'). **No se afirma en ningun sentido** |
+| P3 | **Desvinculado silencioso al guardar** desde RACKEDITAR | C4-5 corta el camino: con binding activo el guardado **no** escribe el literal |
+| P4 | **Perdida silenciosa del vinculo** por round-trip antiguo o por el restamp | Promocion pegajosa + **portador authored** (C4-2) + D-17-bis |
+| P5 | **Un tercer significado del campo vacio** en la UI | D-16b: adorno adyacente, no ausencia de valor |
+| P6 | **Coste de propagacion desconocido** | Riesgo y **metrica de implementacion** (C3-8). Una transaccion unica sobre N racks **agrava** el perfil: mantiene mas estado abierto mas tiempo |
+| P7 | **Archivos calientes**: el slice toca `SelectivePalletDesign.cs` y `RackSelectiveWindow.xaml.cs` | Serializar con cualquier otra iniciativa del Selectivo (WORKFLOW seccion 7) |
+| P8 | **Sobre-ingenieria** | Apuesta consciente por la evolucion limpia a ID22B/ID21. La revision adversarial **no** sostuvo ningun hallazgo de sobre-ingenieria |
+| P9 | La transaccion unica **hay que verificarla ejecutando** | Gate de implementacion / Owner Validation (CF-5') |
+| P10 | **Profundidad 1 asumida por descuido** | §10 lo senala; ni la forma persistida ni el modelo de errores deben cerrar esa puerta |
+| **P11** | **El alcance real de V4 crecio**: dos writers, un portador nuevo, un resolver nuevo, un documento nuevo con su store y su guard, y ocho operaciones confirmadas | Todo ello esta **declarado** en CF-3 como trabajo reconocido, no dado por hecho. Es la consecuencia honesta de cerrar los BLOCKER, no un descubrimiento posterior |
+| **P12** | **`SelectivePalletDesignDocument` es un DTO muy tocado**: el portador cambia como se guarda **todo** el selectivo, no solo la holgura | El cambio es de **fontaneria de guardado**, no de forma del documento; los golden y el round-trip existentes son la red. Se prueba en Core (D-17 punto 11) |
 
----
-
-## 14. Condiciones de Consensus Freeze (corregidas en V3)
-
-El Consensus Freeze **no** se da por alcanzado mientras quede pendiente cualquiera de estas. Son
-condiciones de **proceso**, no de diseno.
-
-> **Correccion de V3 (C3-7), conforme a [WORKFLOW](../WORKFLOW.md) seccion 2.** V2 metia la
-> actualizacion de `ROADMAP.md` en el Freeze, y eso **contradice el proceso**: ROADMAP se edita en
-> **tres momentos** y ninguno es un gate intermedio. **Sale del Freeze** y pasa al checklist de cierre
-> (§14-bis). El **contrato de iniciativa** si permanece: ese no tiene restriccion de momento y debe
-> reflejar el alcance final **antes de produccion**.
+## 14. Condiciones de Consensus Freeze
 
 | # | Condicion |
 |---|---|
-| **CF-1** | **El contrato de iniciativa refleja el alcance final antes de produccion.** Hoy [`I-47-project-variables-foundation.md`](I-47-project-variables-foundation.md) §3 excluye UI y comando, redactado para DISCOVERY; D-16 los incluye. Si el dueno acepta D-16, el contrato debe decirlo **antes** de que se escriba la primera linea de produccion |
-| **CF-2** | **El ADR de D-19 esta escrito antes de implementar** (WORKFLOW seccion 8), en estado `propuesto`. **Solo el dueno lo acepta** — y esa aceptacion es la forma concreta de cerrar el gate `owner-decision` (§12.2) |
-| **CF-3** | **Los prerequisitos declarados estan reconocidos como trabajo**, no dados por hecho: el helper de **promocion pegajosa** con sus dos constantes de linea y su version de lectura `2.x` (D-07), la **extraccion del restamp** a Application (D-17-bis), y el **writer de lote con transaccion del llamador** mas la **verificacion de definiciones de bloque** (D-13) |
+| **CF-1** | **El contrato de iniciativa refleja el alcance final antes de produccion.** Hoy [`I-47-project-variables-foundation.md`](I-47-project-variables-foundation.md) §3 excluye UI y comando, redactado para DISCOVERY; D-16 los incluye |
+| **CF-2** | **El ADR existe, escrito antes de implementar** (WORKFLOW seccion 8), en estado `propuesto`. **Solo el dueno lo acepta.** **V4 no lo escribe todavia**, por instruccion expresa |
+| **CF-3** | **Los prerequisitos estan reconocidos como trabajo.** La lista, **ampliada en V4**: (a) el **portador del estado authored** — el guardado del selectivo deja de reconstruirse con `From(...)` (C4-2, B2); (b) el helper **sticky monotonico** con su rama de ERROR, sus dos lineas de version y su constante de **lectura `2.x`** (C4-9); (c) el **writer de lote transaction-aware sobre los DOS writers**, incluido `LateralHeaderDrawService`, con verificacion read-only de definiciones (C4-3, B3); (d) el **`SelectiveEffectiveDesignResolver`** y el desplazamiento de dibujo/BOM/preview a consumirlo (C4-4, B4); (e) el **`ProjectVariablesDocument`** con store y guard propios (C4-8); (f) el **`SchemaGuard` anidado** para `RackProjectDocument.SelectiveRack` (C4-10); (g) la **extraccion del restamp** a Application (D-17-bis) |
+| **CF-4** | **Ambos revisores AGREED sobre la MISMA version.** Hoy: `Coordinator` **retirado** sobre V3, `Architect=DISAGREED` sobre V3, y **ninguno declarado sobre V4** |
 
-**Eso es todo.** Tres condiciones, las tres documentales o de reconocimiento de alcance. Ninguna es un
-cambio de produccion y ninguna depende de AutoCAD.
-
-### Lo que V2 pedia aqui y en V3 ya NO es condicion de Freeze
-
-| Antes | Ahora |
-|---|---|
-| CF-2 de V2: actualizar la fila de ROADMAP | **Checklist de cierre** (§14-bis). WORKFLOW seccion 2 lo prohibe en un gate intermedio |
-| CF-4 de V2: resolver D-07 y D-10 | **Ya resueltos** por el Gate C3 |
-| CF-5 de V2: contestar la viabilidad de la transaccion unica **antes** del Freeze | **Gate de implementacion / Owner Validation** (C3-6). Ver CF-5' abajo |
-
-### CF-5' — donde vive ahora la validacion en AutoCAD
-
-**No es condicion de Consensus Freeze. Es gate de implementacion.** Se verifica sobre el candidato ya
-construido, conforme a WORKFLOW seccion 6, y cubre como minimo:
-
-- La transaccion unica hace lo que el contrato dice: **commit unico**, y ante un fallo inducido
-  **ningun** consumidor queda modificado.
-- El registro sobrevive a **guardar, cerrar y reabrir el mismo DWG** (D-18).
-- La propagacion **aborta** —sin tocar nada— cuando falta una definicion de bloque (D-13).
-- `PURGE` no destruye la entrada del NOD (D-01).
+**CF-5' — donde vive la validacion en AutoCAD.** No es condicion de Freeze; es gate de implementacion
+y Owner Validation, con el alcance de la tabla de D-17.
 
 ## 14-bis. Checklist de cierre (no es Freeze)
 
-Se ejecuta en la **sesion de integracion**, como ultimo commit de la rama, segun WORKFLOW seccion 4.5.4
-y el momento 3 de su seccion 2:
+En la **sesion de integracion**, como ultimo commit de la rama (WORKFLOW seccion 4.5.4, momento 3 de su
+seccion 2):
 
-- **`docs/ROADMAP.md`**: actualizar la fila de I-47 —hoy lista «UI, comando nuevo» entre lo expresamente
-  fuera de alcance, redactado para DISCOVERY— y marcar el estado de cierre. **Este es el unico momento
-  legitimo para tocarla.**
-- `docs/HANDOFF.md` §8-12, conforme al proceso.
+- **`docs/ROADMAP.md`**: actualizar la fila de I-47 —hoy lista «UI, comando nuevo» entre lo fuera de
+  alcance— y marcar el cierre. **Unico momento legitimo para tocarla.**
+- `docs/HANDOFF.md` §8-12.
