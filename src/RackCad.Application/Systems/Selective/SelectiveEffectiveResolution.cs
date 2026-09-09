@@ -45,12 +45,14 @@ namespace RackCad.Application.Systems.Selective
             SelectiveEffectiveOutcome outcome,
             SelectivePalletDesign design,
             string error,
-            PropertyId propertyId)
+            PropertyId propertyId,
+            string variableId)
         {
             Outcome = outcome;
             Design = design;
             Error = error;
             PropertyId = propertyId;
+            VariableId = variableId;
         }
 
         public SelectiveEffectiveOutcome Outcome { get; }
@@ -64,15 +66,23 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>The property the failure is about. Empty on success.</summary>
         public PropertyId PropertyId { get; }
 
+        /// <summary>
+        /// The variable the failed reference names, EXACTLY as persisted — an unreadable id travels raw
+        /// rather than as null, because the raw text is what lets a user find the reference and repair it
+        /// (I-47 G13). Null on success and where the reference carried no id at all.
+        /// </summary>
+        public string VariableId { get; }
+
         public bool IsSuccess => Outcome == SelectiveEffectiveOutcome.Success;
 
         public static SelectiveEffectiveResolution Success(SelectivePalletDesign design)
-            => new SelectiveEffectiveResolution(SelectiveEffectiveOutcome.Success, design, null, default);
+            => new SelectiveEffectiveResolution(SelectiveEffectiveOutcome.Success, design, null, default, null);
 
         public static SelectiveEffectiveResolution Failure(
             SelectiveEffectiveOutcome outcome,
             PropertyId propertyId,
-            string error)
-            => new SelectiveEffectiveResolution(outcome, null, error, propertyId);
+            string error,
+            string variableId = null)
+            => new SelectiveEffectiveResolution(outcome, null, error, propertyId, variableId);
     }
 }

@@ -94,7 +94,8 @@ namespace RackCad.Application.Systems.Selective
                     SelectiveEffectiveOutcome.UnknownPropertyId,
                     propertyId,
                     rack + " declara un vínculo sobre una propiedad que esta versión no conoce ('" +
-                    (propertyToken ?? "<null>") + "').");
+                    (propertyToken ?? "<null>") + "').",
+                    reference?.VariableId);
             }
 
             if (reference == null ||
@@ -104,7 +105,8 @@ namespace RackCad.Application.Systems.Selective
                     SelectiveEffectiveOutcome.UnknownReferenceKind,
                     propertyId,
                     rack + ", propiedad '" + propertyId + "': el vínculo es de una clase que esta versión no " +
-                    "conoce ('" + (reference?.Kind ?? "<null>") + "').");
+                    "conoce ('" + (reference?.Kind ?? "<null>") + "').",
+                    reference?.VariableId);
             }
 
             if (!VariableId.TryParse(reference.VariableId, out var variableId))
@@ -113,7 +115,8 @@ namespace RackCad.Application.Systems.Selective
                     SelectiveEffectiveOutcome.MalformedReference,
                     propertyId,
                     rack + ", propiedad '" + propertyId + "': el vínculo apunta a un id de variable " +
-                    "ilegible ('" + (reference.VariableId ?? "<null>") + "').");
+                    "ilegible ('" + (reference.VariableId ?? "<null>") + "').",
+                    reference.VariableId);
             }
 
             if (!variables.TryGetValue(variableId, out var variable))
@@ -122,7 +125,8 @@ namespace RackCad.Application.Systems.Selective
                     SelectiveEffectiveOutcome.BrokenProjectVariableReference,
                     propertyId,
                     rack + ", propiedad '" + propertyId + "': la variable de proyecto '" + variableId +
-                    "' no existe en este dibujo. No hay valor efectivo que aplicar.");
+                    "' no existe en este dibujo. No hay valor efectivo que aplicar.",
+                    reference.VariableId);
             }
 
             value = variable.Definition.LiteralValue;

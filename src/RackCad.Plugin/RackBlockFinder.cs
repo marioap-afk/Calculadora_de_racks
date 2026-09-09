@@ -84,7 +84,7 @@ namespace RackCad.Plugin
                 var referenceCount = includeReferenceCount
                     ? record.GetBlockReferenceIds(directOnly: true, forceValidity: false).Count
                     : 0;
-                results.Add(new RackEnvelopeScan(id, embed, referenceCount));
+                results.Add(new RackEnvelopeScan(id, embed, referenceCount, record.Name));
             }
 
             return results;
@@ -98,11 +98,12 @@ namespace RackCad.Plugin
     /// </summary>
     internal readonly struct RackEnvelopeScan
     {
-        public RackEnvelopeScan(ObjectId definitionId, RackEmbedDocument embed, int directReferenceCount)
+        public RackEnvelopeScan(ObjectId definitionId, RackEmbedDocument embed, int directReferenceCount, string blockName = null)
         {
             DefinitionId = definitionId;
             Embed = embed;
             DirectReferenceCount = directReferenceCount;
+            BlockName = blockName;
         }
 
         public ObjectId DefinitionId { get; }
@@ -110,5 +111,11 @@ namespace RackCad.Plugin
         public RackEmbedDocument Embed { get; }
 
         public int DirectReferenceCount { get; }
+
+        /// <summary>
+        /// The block definition's name. It is the only human-readable handle on a definition whose envelope
+        /// cannot be interpreted -- there is no RackId to name it by, and inventing one is forbidden (I-47 G13).
+        /// </summary>
+        public string BlockName { get; }
     }
 }

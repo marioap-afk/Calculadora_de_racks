@@ -28,12 +28,27 @@ namespace RackCad.Plugin.KindHandlers
         /// <summary>Reopen the right editor for this rack and redraw every view-block in place (RACKEDITAR).</summary>
         void Edit(Document document, ObjectId blockId, RackEmbedDocument embed);
 
-        /// <summary>Rebuild ONE rack's bill of materials from its embedded design. Returns <c>null</c> when the
-        /// design cannot be turned into a BOM — an unreadable payload OR a readable-but-unusable design (e.g. a
-        /// null-resolving system, header or config). The caller treats <c>null</c> as a best-effort skip of that
-        /// rack. This is distinct from a kind with NO handler, which the caller resolves and reports up front
-        /// (a visible error), so it never reaches this method.</summary>
-        BillOfMaterials BuildBom(RackEmbedDocument embed, RackCatalog catalog);
+        /// <summary>
+        /// Rebuild ONE rack's bill of materials from its embedded design, TYPED (I-47 G13).
+        ///
+        /// <para>
+        /// It used to return <c>null</c> for everything that was not a BOM, and the caller wrapped the call in a
+        /// blanket <c>catch</c>. Between them, a corrupt payload and a rack whose project VARIABLE is missing
+        /// arrived as the same thing — and the second is not a payload problem at all: the design is perfectly
+        /// readable. <see cref="BomBuildResult"/> keeps them apart, and the caller applies a different policy to
+        /// each.
+        /// </para>
+        /// <para>
+        /// <paramref name="projectVariables"/> is the register snapshot the COMMAND read once. A handler never
+        /// reads the drawing: five of the six kinds have no bindings in ID22A and ignore it entirely.
+        /// </para>
+        /// <para>
+        /// A kind with NO handler is a different matter, resolved and reported by the caller up front, so it
+        /// never reaches this method.
+        /// </para>
+        /// </summary>
+        BomBuildResult BuildBom(
+            RackEmbedDocument embed, RackCatalog catalog, ProjectVariablesDocument projectVariables);
 
         /// <summary>
         /// I-42 (A1C/H11) — el motivo por el que este rack NO puede producir salida final, o <c>null</c> si puede.

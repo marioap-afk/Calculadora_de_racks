@@ -89,5 +89,52 @@ namespace RackCad.Application.Bom
             => "RackCad: el rack «"
                + (string.IsNullOrWhiteSpace(rackName) ? "(sin nombre)" : rackName.Trim())
                + "» no se pudo interpretar y queda FUERA del listado.";
+
+        /// <summary>
+        /// I-47 G13 — un vínculo de variable de proyecto que no se puede resolver ABORTA el total.
+        ///
+        /// <para>
+        /// La asimetría con <see cref="DescribeUnreadable"/> es deliberada. Un payload ilegible es un rack que
+        /// no se entiende, y omitirlo con aviso deja al usuario un total más corto que sabe interpretar. Un
+        /// vínculo roto es otra cosa: el diseño se lee perfectamente y lo que falta es la VARIABLE, así que
+        /// omitir ese rack produciría un total que parece completo y no lo está. Y el mensaje nombra las tres
+        /// cosas que hacen falta para repararlo.
+        /// </para>
+        /// </summary>
+        public static string DescribeBrokenProjectVariableReference(
+            string rackName, string propertyId, string variableId, string detail)
+            => "RackCad: no se genera el listado. El rack «"
+               + (string.IsNullOrWhiteSpace(rackName) ? "(sin nombre)" : rackName.Trim())
+               + "» está vinculado a una variable de proyecto que no se puede resolver (propiedad '"
+               + (string.IsNullOrWhiteSpace(propertyId) ? "(desconocida)" : propertyId)
+               + "', variable '" + (string.IsNullOrWhiteSpace(variableId) ? "(sin id)" : variableId)
+               + "'). Repara el vínculo antes de cotizar."
+               + (string.IsNullOrWhiteSpace(detail) ? string.Empty : " " + detail.Trim());
+
+        /// <summary>
+        /// I-47 G13 — el rack cuyas vistas no coinciden queda FUERA con aviso, política histórica: es un rack
+        /// que esta versión no sabe leer, no un total incompleto que se disfraza de completo.
+        /// </summary>
+        public static string DescribeNoAuthority(string rackName, string detail)
+            => "RackCad: el rack «"
+               + (string.IsNullOrWhiteSpace(rackName) ? "(sin nombre)" : rackName.Trim())
+               + "» no tiene un diseño único entre sus vistas y queda FUERA del listado."
+               + (string.IsNullOrWhiteSpace(detail) ? string.Empty : " " + detail.Trim());
+
+        /// <summary>
+        /// I-47 G13 — una definición COLOCADA cuyo sobre no se puede interpretar aborta el total.
+        ///
+        /// <para>
+        /// Sin identidad no se puede demostrar que esa definición no pertenezca a un rack que sí se está
+        /// cotizando, así que el total no puede afirmarse completo. Se nombra por lo único que se sabe de
+        /// ella —su definición y su nombre de bloque—: <b>un RackId no se inventa</b>, y no se la asocia por
+        /// parecido a ningún rack conocido.
+        /// </para>
+        /// </summary>
+        public static string DescribeUnclassifiableDefinition(string definitionId, string blockName)
+            => "RackCad: no se genera el listado. La definición '" + (definitionId ?? "(desconocida)")
+               + "'" + (string.IsNullOrWhiteSpace(blockName) ? string.Empty : " (bloque «" + blockName.Trim() + "»)")
+               + " está colocada en el dibujo y lleva datos de RackCad que esta versión no puede interpretar: "
+               + "su rack y su tipo no se pueden determinar, así que no hay forma de saber si falta en el total.";
     }
 }
