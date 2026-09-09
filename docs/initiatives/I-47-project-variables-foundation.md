@@ -14,10 +14,10 @@ context_packs: [architecture-kernel, persistence, autocad-plugin]
 automation_state_path:
 decision_paths: [docs/automation/decisions/I-47.md]
 requires_ci: true
-requires_plugin_build: false
-requires_autocad: false
+requires_plugin_build: true
+requires_autocad: true
 requires_owner_decision: true
-requires_owner_validation: false
+requires_owner_validation: true
 automation:
   enabled: false
   auto_merge: false
@@ -26,74 +26,194 @@ automation:
 
 # Variables de proyecto: fundacion de autoridad drawing-level (ID22A)
 
-> **Fase actual: DISCOVERY.** Este contrato nace en el bootstrap inmediatamente posterior al reclamo
-> atomico, conforme al caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2: el dueno autorizo la
-> iniciativa explicitamente y todavia no tenia fila en [ROADMAP.md](../ROADMAP.md); la fila se crea
-> con este mismo commit, que es el orden que manda el proceso.
+> **Fase actual: CONSENSUS FREEZE.** Este contrato nacio en el bootstrap posterior al reclamo atomico
+> —caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2— y describia entonces **solo la fase Discovery**.
+> Esta actualizacion lo pone al dia con el **alcance final aprobado**, y es la que satisface **CF-1**.
 >
 > ```
 > Reclamo atomico:  6e17bd5   (commit vacio, Claim-Id 73672933-f052-46af-b3c0-8091f0add299)
 > Base:             origin/main 306e18ed4676e5e96b54d59402c9a230efb137d3
-> Fase:             DISCOVERY — sin cambios de produccion
+> Proposal:         I-47-proposal-v4.md — VERSION V4.8
+> Proposal SHA:     a0621abbd22952ad5a62bf7678212a74526a05ce
 > ```
 >
-> **Lo unico autorizado hoy es el Discovery.** El encargo del dueno delimita esta primera sesion a
-> **investigacion sin cambios de produccion** y excluye expresamente dos disenos: **formulas** y
-> **propagacion rack a rack**. Este contrato **no** declara un alcance de implementacion, porque el
-> dueno no lo ha autorizado: lo que el Discovery encuentre alimenta una propuesta posterior, y un
-> hallazgo **no** es una autorizacion. El registro literal de la autorizacion vive en
-> [`docs/automation/decisions/I-47.md`](../automation/decisions/I-47.md).
+> **Estado de las fases y de las compuertas:**
+>
+> | | Estado |
+> |---|---|
+> | **Discovery** | **CERRADO** — entregado en [I-47-discovery.md](I-47-discovery.md) |
+> | **Proposal V4.8** | **consenso tecnico CERRADO** sobre el SHA de arriba |
+> | **CF-1** — el contrato refleja el alcance final | **SATISFECHA por esta actualizacion** |
+> | **CF-2** — el ADR existe antes de implementar | **ADR-0034 creado en estado `propuesto`**; **PENDIENTE de aceptacion del Owner** |
+> | **CF-3** — prerequisitos reconocidos como trabajo | **SATISFECHA** |
+> | **CF-4** — ambos revisores AGREED sobre el mismo SHA | **SATISFECHA** |
+>
+> **Los dos veredictos, sobre exactamente el mismo SHA:**
+>
+> ```
+> Coordinator=AGREED — Proposal V4.8 / SHA a0621abbd22952ad5a62bf7678212a74526a05ce
+> Architect=AGREED   — Proposal V4.8 / SHA a0621abbd22952ad5a62bf7678212a74526a05ce
+> ```
+>
+> **PRODUCCION TODAVIA BLOQUEADA.** El Consensus Freeze **no esta completo**: falta **CF-2**, y esa es
+> aceptacion del **Owner**, no de los revisores. El consenso Coordinador ↔ Arquitecto dice que la
+> decision esta **lista** para implementarse; **no** equivale a aceptarla.
 
 ## 1. Objetivo
 
-Establecer si RackCad puede sostener **un unico registro `ProjectVariables` por DWG** —una autoridad
-de **nivel dibujo**, no de nivel rack ni de nivel maquina— y que consecuencias tendria sobre los
-consumidores que hoy leen esos valores desde otra parte.
+Fundar en RackCad una **autoridad de variables de proyecto de nivel dibujo**: un unico registro por
+DWG cuyo valor gobierna a todos los racks que lo referencian, de modo que cambiarlo actualice lo ya
+dibujado en **una sola operacion**.
 
-«Variable de proyecto» significa aqui un valor que **todos los racks de un mismo dibujo comparten por
-decision del proyecto**, no por coincidencia de configuracion. La pregunta que abre la iniciativa no
-es como calcular con esos valores, sino **donde viven, quien manda cuando discrepan y que pasa con lo
-ya dibujado cuando uno cambia**.
+«Variable de proyecto» es un valor que **todos los racks de un mismo dibujo comparten por decision del
+proyecto**, no por coincidencia de configuracion. El objetivo no es calcular con esos valores, sino
+fijar **donde viven, quien manda cuando discrepan, y que pasa con lo ya dibujado cuando uno cambia**.
 
-## 2. Preguntas del Discovery
+El **vertical slice** de ID22A es **una sola propiedad**: `selective.verticalClearance`.
 
-Las tres que fija el encargo, y ninguna mas. Cada una se responde con evidencia del arbol —ruta,
-simbolo y cita corta—, no con una descripcion plausible.
+## 2. Alcance FINAL aprobado (Proposal V4.8)
 
-### D1 — Autoridad drawing-level disponible
+> Las tres preguntas de Discovery —D1 autoridad drawing-level, D2 descubrimiento y redibujo, D3 vertical
+> slice— estan **respondidas y cerradas** en [I-47-discovery.md](I-47-discovery.md). Esta seccion las
+> sustituye por el **alcance de implementacion**. Es un **resumen normativo**: la fuente completa y
+> vinculante es el [Proposal V4.8](I-47-proposal-v4.md), y ante cualquier discrepancia **manda el
+> Proposal**.
 
-Confirmar que mecanismo existente en el codigo permite guardar **exactamente un** registro por
-dibujo, y con que garantias: como se nombra, quien lo posee, si sobrevive al guardado y reapertura
-del DWG, si sobrevive a WBLOCK/copia entre dibujos, y que ocurre cuando el registro **no existe**
-(dibujo heredado). Interesa especialmente distinguir lo que hoy cuelga del **dibujo** de lo que
-cuelga de un **bloque o una referencia de bloque**: solo lo primero puede ser autoridad de proyecto.
+### 2.1 Registro de nivel dibujo
 
-### D2 — Descubrimiento y redibujo de consumidores
+Un unico **`ProjectVariablesDocument` por DWG**, persistido a nivel dibujo mediante **NOD/Xrecord**
+segun el Proposal.
 
-Auditar la maquinaria que ya existe para **encontrar los racks de un dibujo** y para **redibujarlos**.
-Un valor de proyecto que cambia solo sirve si lo ya dibujado puede reaccionar; el Discovery no
-disena esa reaccion, pero si establece si el precedente existe, cual es y que limites conocidos
-arrastra.
+```
+entrada del NOD AUSENTE            -> registro VACIO (legado valido)
+entrada PRESENTE pero ilegible     -> ERROR VISIBLE · sin registro vacio · SIN WRITE
+```
 
-### D3 — Vertical slice de tres variables
+### 2.2 Variables
 
-Comparar `VerticalClearance`, `PalletTolerance` y `PalletDepth` **como muestra representativa**: donde
-se declara cada una, quien la consume, en que capa vive, si esta duplicada por sistema, si viaja en
-los DTO de persistencia y con que fallback legado. Tres variables elegidas por el dueno porque se
-espera que **no se comporten igual entre si**: el valor del Discovery esta en las diferencias, no en
-el promedio.
+`VariableId` **GUID estable e inmutable**; `Name` **mutable** y sin papel en la resolucion. **Tipadas
+desde el dia 1**; ID22A soporta **unicamente `Length`** con **definicion literal**. **Sin formulas**.
 
-## 3. Fuera de alcance — explicito
+### 2.3 Binding
 
-- **Cambios de produccion de cualquier tipo.** Ni `src/`, ni `assets/`, ni `tests/`.
-- **Diseno de formulas.** No se define como se combinan estas variables ni que aritmetica las
-  consume.
-- **Propagacion rack a rack.** No se disena que un rack herede, copie ni imponga valores a otro.
-- **Decidir la autoridad.** El Discovery levanta el mapa; **elegir** el mecanismo es decision del
-  dueno y, por su alcance, probablemente un ADR.
-- **Migracion de dibujos existentes**, formato de persistencia nuevo, UI, comando nuevo y BOM.
-- Cualquier optimizacion o correccion «de paso» que el propio Discovery destape: se registra en
-  [ideas-futuras.md](../ideas-futuras.md), no se arregla.
+Una propiedad es conceptualmente `Literal(T)` **o** `ProjectVariableReference(VariableId)`. Propiedad
+piloto: **`selective.verticalClearance`**.
+
+- El **literal authored queda congelado** mientras exista binding.
+- **La referencia gobierna el valor efectivo.**
+- Un **`VariableId` inexistente es ERROR VISIBLE**: **nunca** hay fallback silencioso al literal.
+
+### 2.4 Authored frente a effective
+
+| | Que es |
+|---|---|
+| **Authored** | `SelectivePalletDesignDocument` — la autoridad **persistida** |
+| **Effective** | `SelectivePalletDesign` — el diseno **geometrico** que gobierna |
+
+La resolucion es **central y en Application**: `authored + ProjectVariables -> effective`. **Geometria
+y BOM no conocen `VariableId`.**
+
+### 2.5 Operaciones
+
+`CreateVariable` · `Rename` · `ChangeValue` · `Delete` **bloqueado si hay consumidores** · `Link` ·
+`Unlink` · `RepairBroken` · `UnlinkAllAndDelete`.
+
+**`Rename` preserva las referencias** (van por `VariableId`). **`Unlink` saludable materializa el
+efectivo actual**, de modo que su efecto geometrico es nulo. **`RepairBroken` exige accion explicita y
+puede cambiar la geometria**, con aviso previo.
+
+### 2.6 Propagacion
+
+Un cambio de variable: descubre consumidores · fija la autoridad multi-vista · **preflight semantico**
+(puro) · **preflight fisico** (AutoCAD, read-only) · **una** operacion transaccional que actualiza
+payloads y geometria · **un** commit · **un** `Regen`.
+
+**Ningun import ni reparacion best-effort dentro del lote.**
+
+### 2.7 Multi-vista
+
+**Una autoridad authored logica por `RackId`.** Las operaciones **target-variable** usan un probe
+**tri-estado** por sibling —`POSITIVE` / `NEGATIVE` / `INDETERMINATE`— con la regla
+**`UNKNOWN != NEGATIVE`**. Las operaciones **target-rack** exigen la autoridad de **todas** las
+siblings presentes. Divergencia o ilegible ⇒ **fail-closed**.
+
+### 2.8 BOM
+
+`RACKBOMTOTAL` reune **todas** las siblings, valida la autoridad authored y usa **un unico snapshot**
+de `ProjectVariables` en todo el total. El **effective resolver corre UNA sola vez dentro del handler
+Selectivo**.
+
+```
+BrokenProjectVariableReference  -> resultado semantico TIPADO -> ABORTA EL TOTAL
+outer envelope ilegible COLOCADO                              -> ABORTA EL TOTAL
+outer envelope ilegible NO colocado                           -> se ignora
+```
+
+### 2.9 Duplicacion
+
+Copia independiente: **`RackId` nuevo**, **`Name` nuevo**, **mismo `VariableId`**, `PropertyValues`
+preservado, schema y `ExtensionData` preservados. El restamp es **completo o NO COPY**: **nunca
+identidad parcial**.
+
+### 2.10 Biblioteca
+
+El export de un Selectivo vinculado **resuelve el efectivo, materializa el literal, elimina
+`PropertyValues`** y escribe el `SelectiveRack` anidado **literal-only en linea `1.x`**. Un **binding
+roto no produce artefacto**. Un schema anidado incompatible **no se ofrece como diseno abrible normal**
+y **si produce diagnostico visible**.
+
+### 2.11 Interfaz de usuario — DENTRO del alcance
+
+La implementacion **si incluye**: superficie **central de Project Variables**; `create` / `edit` /
+`rename` / `delete`; seleccion y vinculacion para la **propiedad piloto**; `unlink`; **resumenes de
+consumidores**; y **`RepairBroken` explicito**.
+
+**La UI permanece AutoCAD-free**: el Plugin entrega **DTO puros** y recibe **intents**. **No** se crea
+un panel generico de propiedades.
+
+### 2.12 Persistencia y schema
+
+`ProjectVariablesDocument`: **`SchemaVersion 1.0`**, las variables, y `ExtensionData`.
+
+Regla **C4.8-1**:
+
+```
+READ           : NO inventar una SchemaVersion ausente
+CREATE / WRITE : estampar EXPLICITAMENTE CurrentSchemaVersion
+
+missing != explicit "1.0"
+```
+
+El **sticky schema del Selectivo** rige segun el Proposal.
+
+### 2.13 Validacion del Owner
+
+La implementacion **requerira validacion manual proporcional en AutoCAD 2025 antes de integrar**
+(`requires_autocad: true`, `requires_owner_validation: true`). **Esa validacion NO se ha ejecutado** y
+este contrato **no** la da por hecha.
+
+## 3. Fuera de alcance FINAL — explicito
+
+> **Actualizado por CF-1.** La version anterior excluia **UI, comando nuevo y BOM**, porque describia
+> la fase Discovery. **Los tres estan ahora DENTRO del alcance** (seccion 2). Lo que queda fuera es:
+
+- **Formulas, parser y AST** de cualquier clase.
+- **ID22B** completa.
+- **Referencias entre variables.**
+- **Referencias a propiedades de racks** e **ID21** completa.
+- **Grafo de dependencias persistente.**
+- **Deteccion de ciclos.**
+- **Conversion masiva de propiedades** — el slice es **una**.
+- **Conversion de otros sistemas** (Dinamico, Push Back, Cantilever, Cama, Cabecera).
+- **Panel generico de «smart properties».**
+- **WBLOCK y cualquier escenario cross-DWG.**
+- **Transferencia o fusion de variables entre dibujos.**
+- **Golden DWG** como parte de I-47.
+- **Refactors amplios** no necesarios para este alcance.
+- **Optimizaciones** no necesarias para el slice.
+
+Los hallazgos laterales se registran en [ideas-futuras.md](../ideas-futuras.md); **no se arreglan de
+paso**.
 
 ## 4. Restricciones que ya rigen y no se reabren
 
@@ -112,37 +232,40 @@ el promedio.
 
 ### 5.1 Fase DISCOVERY — **entregada** ([I-47-discovery.md](I-47-discovery.md))
 
-1. Respuesta a D1, D2 y D3 con rutas y simbolos reales verificados contra el arbol.
-2. **Riesgos** y ambiguedades encontrados, cada uno atribuido a evidencia.
-3. Las **preguntas que quedan para el dueno**, separadas de los hechos.
+D1, D2 y D3 respondidas con evidencia del arbol, mas riesgos y hallazgos fuera de alcance.
 
-### 5.2 Fase PROPOSAL — autorizada en el **Gate C** (2026-09-08)
+### 5.2 Fase PROPOSAL — **cerrada en V4.8** ([I-47-proposal-v4.md](I-47-proposal-v4.md))
 
-El dueno fijo **seis decisiones vinculantes** (C-1..C-6, registro en
-[`docs/automation/decisions/I-47.md`](../automation/decisions/I-47.md)) y autorizo una
-**Proposal documental**: [I-47-proposal-v4.md](I-47-proposal-v4.md) (**V4**, Reconciliacion). Las
-[V1](I-47-proposal-v1.md), [V2](I-47-proposal-v2.md) y [V3](I-47-proposal-v3.md) quedan
-**supersedidas** y se conservan solo como registro.
+Contrato completo con sus decisiones, alternativas descartadas, pruebas y condiciones de Freeze.
+Recorrio **nueve versiones y cuatro revisiones adversariales del Arquitecto**; el registro completo
+vive en [`docs/automation/decisions/I-47.md`](../automation/decisions/I-47.md).
 
-- El **Architect Review sobre V3 fue `DISAGREED`**; el Coordinador **retiro** su `AGREED`.
-- **V4 no declara `Coordinator=AGREED` ni `Architect=AGREED`**, y **no** escribe el ADR todavia.
+**Consenso tecnico alcanzado sobre `a0621abbd22952ad5a62bf7678212a74526a05ce`.**
 
-- **Sigue sin autorizarse la implementacion.** La Proposal **compara alternativas y recomienda**; no
-  toca `src/` ni `tests/`, y el gate `owner-decision` sigue abierto sobre el contrato que recomienda.
-- Las seis decisiones son **premisas** de la Proposal, no opciones a comparar.
-- **No se pidio Architect Review** en este gate.
+### 5.3 Fase CONSENSUS FREEZE — **en curso**
+
+- **CF-1** — esta actualizacion. **Satisfecha.**
+- **CF-2** — [ADR-0034](../adr/0034-project-variables-autoridad-drawing-level.md), creado en estado
+  **`propuesto`**. **Pendiente de aceptacion del Owner.**
+- **CF-3** — satisfecha por el Proposal.
+- **CF-4** — satisfecha por los dos AGREED.
+
+### 5.4 Fase IMPLEMENTACION — **NO autorizada**
+
+**No comienza** hasta que el Owner acepte ADR-0034. Cuando comience, arrastra los gates de ejecucion
+del frontmatter: build del Plugin, AutoCAD y validacion manual del Owner.
 
 ## 6. Gates
 
 | Gate | Estado | Motivo |
 |---|---|---|
-| `owner-decision` | **abierto** | El alcance posterior al Discovery no esta autorizado |
-| `owner-validation` | no aplica en DISCOVERY | Sin cambios de produccion no hay dibujo que validar |
-| `autocad` | no aplica en DISCOVERY | `requires_autocad: false` mientras no se toque produccion |
-| CI | aplica | Toda punta empujada de la rama se mide como cualquier otra |
+| `owner-decision` | **ABIERTO** | **ADR-0034 esta `propuesto`.** Solo el Owner lo acepta o lo rechaza |
+| `owner-validation` | **aplicara** | El alcance final cambia dibujo, BOM y persistencia ⇒ `requires_owner_validation: true`. **No ejecutada** |
+| `autocad` | **aplicara** | `requires_autocad: true` desde esta actualizacion |
+| `plugin-build` | **aplicara** | `requires_plugin_build: true` desde esta actualizacion |
+| CI | aplica | Toda punta empujada se mide como cualquier otra |
 
-Si una fase posterior tocara colocacion, dibujo o BOM, `requires_autocad` y `requires_owner_validation`
-**cambian en el mismo commit que introduzca ese cambio**, no despues.
+**Produccion BLOQUEADA.** El Consensus Freeze **no esta completo** mientras CF-2 siga pendiente.
 
 ## 7. Bitacora
 
@@ -151,6 +274,8 @@ Si una fase posterior tocara colocacion, dibujo o BOM, `requires_autocad` y `req
 | 2026-09-08 | Reclamo atomico `6e17bd5` aceptado por el remoto; bootstrap (contrato + fila en ROADMAP + registro de autorizacion) |
 | 2026-09-08 | Discovery entregado (`9e25d52`): D1/D2/D3 con evidencia, 10 riesgos, 11 hallazgos fuera de alcance |
 | 2026-09-08 | **Gate C**: el dueno fija C-1..C-6 y autoriza la Proposal V1 documental. WBLOCK/copia entre dibujos queda **diferido**. Sin Architect Review |
+| 2026-09-09 | **CF-1 SATISFECHA**: este contrato pasa de Discovery-only al **alcance final** de Proposal V4.8 — UI, comando y BOM entran; gates de ejecucion a `true`. **CF-2**: se crea **ADR-0034** en `propuesto`. **Produccion sigue BLOQUEADA** |
+| 2026-09-09 | **Consenso tecnico cerrado sobre `a0621ab`**: `Coordinator=AGREED` y `Architect=AGREED` sobre Proposal **V4.8**. CF-3 y CF-4 satisfechas |
 | 2026-09-08 | **Gate C2**: el dueno define **ID22B** (formulas) e **ID21** (refs a propiedades de racks) y fija C2-1..C2-9. **Proposal V2** sustituye a V1: corrige nueve puntos, dos de ellos invalidando afirmaciones de V1 (D-07 y D-13). Sin Architect Review |
 | 2026-09-08 | **Gate C3**: el dueno **decide D-07 (F2, promocion pegajosa; F3 rechazada)** y **D-10 (F1)**, saca la biblioteca de bloques del lote de propagacion y corrige el Consensus Freeze conforme a WORKFLOW seccion 2. **Proposal V3** sustituye a V2. **No quedan decisiones de producto abiertas.** Sin Architect Review |
 | 2026-09-08 | **Architect Review sobre V3: `DISAGREED`** — 4 BLOCKER, 5 HIGH, 7 MEDIUM, 4 LOW. La afirmacion de V3 «no quedan decisiones de producto abiertas» resulto **falsa**: ni LINK ni el punto de resolucion estaban decididos |
