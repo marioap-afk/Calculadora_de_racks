@@ -1,7 +1,8 @@
 # I-47 — Plan de implementacion por gates (ID22A)
 
 ```
-PLAN VERSION:        V1
+PLAN VERSION:        V1.1
+Sustituye a:         V1  (884e5821315230232a74c68e03cf9f0fb388e947)
 Contrato vinculante: docs/initiatives/I-47-proposal-v4.md   — VERSION V4.8
 Proposal SHA:        a0621abbd22952ad5a62bf7678212a74526a05ce
 ADR:                 docs/adr/0034-project-variables-autoridad-drawing-level.md   — ACEPTADO
@@ -14,6 +15,25 @@ Implementation   = AUTHORIZED TO START · NOT STARTED
 
 > **Este documento planifica. No implementa nada.** No toca `src/`, `tests/`, `assets/`, `eng/`,
 > `deploy/` ni `.github/`. No modifica el Proposal, el ADR, `ROADMAP.md` ni `HANDOFF.md`.
+>
+> ## Reconciliacion V1 → V1.1
+>
+> **`Coordinator=DISAGREED` sobre V1.** Tres findings materiales, los tres **aceptados**:
+>
+> | ID | Sev. | Finding | Correccion |
+> |---|---|---|---|
+> | **P1** | HIGH | V1 proponia partir I-47 en `G0-G12 + G18 + OV` frente a `G13-G17`. **Imposible**: `G18` depende de **todos** los gates, y `OV` valida escenarios de `G13` (BOM), `G14` (duplicacion), `G15` (biblioteca), `G16` y `G17` (UI) | Propuesta **retirada** (§3). `G18` sigue final y depende de G1-G17; `OV` sigue posterior a G18. **19 gates != 19 sesiones**: WORKFLOW §2 acota **sesiones**. La particion solo se reevalua si la **ejecucion real** excede 1-3 sesiones |
+> | **P2** | HIGH | `G13` declaraba `G4, G5, G8`, pero su mitad Plugin **lee el NOD**, y ese acceso nace en `G7` | `G13` depende ahora de **`G4, G5, G7, G8`** (§4.1, §4.2, §5.1) |
+> | **P3** | HIGH | `G16` declaraba `G6, G7`. Insuficiente: la ventana ofrece `ChangeValue`, `Delete` con consumidores, `UnlinkAllAndDelete` y `RepairBroken` —operaciones **rack-affecting**— cuya ejecucion fisica cierra en `G11`. La UI podia **emitir un intent sin executor** | `G16` depende ahora de **`G11`**, que arrastra G6 y G7 transitivamente. `G17` conserva `G12 + G16`, **verificado suficiente** tras recalcular el DAG (§5.1) |
+>
+> **El camino critico se parte en dos hitos** que V1 fundia en uno: **A**, el
+> `developer-demonstrable propagation engine` (hasta G11, verificado por **developer smoke**), y **B**,
+> el **piloto operable por el usuario**, que exige ademas **G16 y G17** (§5.2, §5.3).
+>
+> **No se reabre nada mas.** La separacion G2/G3, el adelanto de G9, G10 antes de G11, las 42 pruebas
+> contractuales, el resultado tipado del BOM, la secuencia de `RepairBroken`, la doctrina fail-closed,
+> los escenarios de Owner Validation y los checkpoints de suite completa **se conservan literalmente**
+> — el DAG corregido no obliga a mover ninguno.
 >
 > **Jerarquia, para que no haya duda de quien manda:** el **Proposal V4.8** es el contrato y ante
 > cualquier discrepancia gana el Proposal; el **ADR-0034** es la decision; el
@@ -108,10 +128,21 @@ cosas se mueven, y cada una tiene su razon en el arbol real.
 G5→G6 · G6→G7 · G7→G8 · G8→G9 · G9→**G10+G11** · G10→G12 · G11→G13 · G12→G14 · G13→G15 · G14→G16 ·
 G15→G17 · G16→G18 · Owner Validation→**OV**.
 
-**Diecinueve gates es mas de lo que WORKFLOW §2 llama una iniciativa** («cabe en 1-3 sesiones; si
-crece mas, se parte»). Se declara aqui y **no se resuelve por cuenta propia**: partir I-47 es decision
-del Owner y exige filas de ROADMAP. Lo unico que este plan hace es dejar la **linea de corte natural**
-señalada en §5.
+> **Diecinueve gates NO son diecinueve sesiones, y este plan ya no los confunde.** WORKFLOW §2 acota
+> **sesiones** —«una iniciativa cabe en 1-3 sesiones»—, **no gates**. Un gate es una unidad de trabajo
+> con su criterio RED/GREEN y su frontera de commit; **varios gates caben en una sesion**, y los hay
+> de minutos (G0) junto a otros de dias (G9). **El numero de gates no dice nada sobre cuantas sesiones
+> costara I-47.**
+>
+> **I-47 no se parte, y este plan no propone partirla.** La particion solo se reevalua si **la
+> ejecucion real** demuestra que I-47 excede las 1-3 sesiones — con **sesiones medidas**, no con gates
+> contados. Esa reevaluacion seria del Owner y exigiria filas de ROADMAP; **no se anticipa aqui**.
+>
+> **Correccion de la V1 de este plan.** V1 proponia un corte —`G0-G12 + G18 + OV` frente a `G13-G17`—
+> y era **imposible**: **`G18` depende de TODOS** los gates de implementacion, y **`OV` contiene
+> escenarios que solo existen tras `G13`** (BOM), **`G14`** (duplicacion), **`G15`** (biblioteca),
+> **`G16`** y **`G17`** (UI). Un slice que se llevara `G18` y `OV` sin ellos no podria ejecutar ni su
+> propia conformidad ni su propia validacion. **La propuesta queda retirada.**
 
 ---
 
@@ -134,12 +165,12 @@ señalada en §5.
 | **G10** | Guardar un Selectivo deja de reconstruir el documento | G3, G4 | **HIGH** | **si** | Core (guard) |
 | **G11** | Cambiar una variable redibuja todos sus consumidores en UNA operacion | G6-G10 | **HIGH** | **si** | Core (plan) |
 | **G12** | `RACKEDITAR` muestra el efectivo y no desvincula al guardar | G4, G10 | MEDIUM | **si** | UI |
-| **G13** | El BOM cotiza el efectivo, con autoridad y sin totales que parezcan completos | G4, G5, G8 | **HIGH** | **si** | Core |
+| **G13** | El BOM cotiza el efectivo, con autoridad y sin totales que parezcan completos | G4, G5, **G7**, G8 | **HIGH** | **si** | Core |
 | **G14** | Una copia independiente es completa o no existe | G3 | MEDIUM | **si** | Core |
 | **G15** | La biblioteca sale literal-only y nada incompatible desaparece | G3, G4 | MEDIUM | no | Core |
-| **G16** | Hay una superficie central donde viven las variables | G6, G7 | MEDIUM | no | UI |
+| **G16** | Hay una superficie central donde viven las variables | **G11** | MEDIUM | no | UI |
 | **G17** | La propiedad piloto se vincula y desvincula desde su editor | G12, G16 | MEDIUM | no | UI |
-| **G18** | Lo implementado es lo que V4.8 dice, y nada mas | todos | LOW | no | Core + UI |
+| **G18** | Lo implementado es lo que V4.8 dice, y nada mas | **G1-G17, todos cerrados** | LOW | no | Core + UI |
 | **OV** | El dueno valida en AutoCAD 2025 lo que solo el dibujo puede validar | G18 | — | **si** | — |
 
 `Riesgo` es **metadata de planificacion de I-47**, no un proceso de validacion nuevo: no añade
@@ -575,7 +606,9 @@ Cada gate declara los catorce campos. `Regression` nombra suites **existentes** 
 
 - **Objetivo.** Que la cotizacion salga del efectivo, con autoridad demostrada, y que **ningun total
   parezca completo cuando no lo esta**.
-- **Dependencias.** G4, G5, G8.
+- **Dependencias.** G4, G5, **G7**, G8. **`G7` es la que V1 omitia**: la mitad Plugin de este gate
+  dice que `RACKBOMTOTAL` **lee `ProjectVariables` del NOD una vez**, y ese acceso fisico **nace en
+  G7**. Sin el no hay snapshot que pasar a cada `BuildBom`.
 - **Scope, en dos mitades.**
   - **Pura (Application, suite Core).** `ResolveBomAuthoredAuthority(siblingPayloads)` con sus tres
     resultados —`Success(authored, payloadAprobado)`, `NoAuthority(UnreadableSibling)`,
@@ -686,7 +719,13 @@ Cada gate declara los catorce campos. `Regression` nombra suites **existentes** 
 #### G16 — Superficie central de Project Variables
 
 - **Objetivo.** Que exista un sitio, uno solo, donde las variables se crean, se editan y se reparan.
-- **Dependencias.** G6, G7.
+- **Dependencias.** **G11**, que arrastra transitivamente G6 (el plan puro) y G7 (el registro fisico).
+  **V1 decia «G6, G7» y era insuficiente**: esta superficie ofrece `ChangeValue`, `Delete` con
+  consumidores, `UnlinkAllAndDelete` y `RepairBroken`, que son operaciones **rack-affecting**. Su
+  **ejecucion fisica** —preflight fisico, lote, commit unico y `Regen`— **se cierra en G11**. Con solo
+  G6 y G7 la UI podria emitir un intent **para el que todavia no existe executor**, y un boton que
+  produce una peticion que nadie puede ejecutar es exactamente la clase de estado a medias que este
+  contrato prohibe.
 - **Scope.** Entrada en `RackMainMenuWindow` + miembro nuevo en `MainMenuAction` (**precedente
   exacto**: `RackMenuCommands.cs:36-40`) **y** comando con alias · listar / crear / editar valor /
   renombrar / borrar · **resumenes de consumidores** · `UnlinkAllAndDelete` · **`RepairBroken` con su
@@ -716,7 +755,11 @@ Cada gate declara los catorce campos. `Regression` nombra suites **existentes** 
 
 - **Objetivo.** Que `selective.verticalClearance` se pueda vincular y desvincular donde el usuario la
   edita.
-- **Dependencias.** G12, G16.
+- **Dependencias.** G12, G16 — **suficientes tras recalcular el DAG**. `G12` arrastra G4 y G10 (y por
+  ellos G1-G3); `G16` arrastra ahora **G11**, y con el G6, G7, G8, G9 y G10. La clausura transitiva de
+  G17 cubre **G1-G12 y G16**, que es todo lo que `Link`/`Unlink` sobre la propiedad piloto necesita —
+  y **su executor existe**, porque `Link` y `Unlink` son operaciones target-rack cuya ejecucion fisica
+  cierra en G11.
 - **Scope.** Literal **o** `ProjectVariable` compatible · `Link` · `Unlink` · mostrar el **efectivo** ·
   mostrar el estado authored/binding sin ambiguedad · **K3**: chip adyacente con el nombre de la
   variable, campo en solo lectura con el valor efectivo y boton **«Desvincular»** explicito ·
@@ -744,7 +787,9 @@ Cada gate declara los catorce campos. `Regression` nombra suites **existentes** 
 #### G18 — Conformidad del vertical slice
 
 - **Objetivo.** Comprobar que lo implementado es V4.8, y que no se implemento nada mas.
-- **Dependencias.** Todos.
+- **Dependencias.** **G1-G17, todos cerrados.** No es una formula: G18 recorre las **42** pruebas
+  contractuales, y siete de ellas viven en G13, G14 y G15. **G18 permanece el ultimo gate y no se
+  adelanta**, ni entero ni por partes.
 - **Scope.** Recorrer las **42** pruebas contractuales y mapear
   `prueba contractual → prueba ejecutable → costura de implementacion`, sin omitir ninguna · barrido
   adversarial de **§1-ter** buscando: fallback silencioso · `catch` tolerante decidiendo semantica ·
@@ -772,32 +817,97 @@ Cada gate declara los catorce campos. `Regression` nombra suites **existentes** 
 
 ## 5. Camino critico
 
-El camino minimo que desbloquea el vertical slice —cambiar una variable y ver el dibujo cambiar— es:
+### 5.1 El DAG completo
+
+```
+G0  ──────────────────────────────────────────────► G1 , G9
+G1  ──► G2
+G2  ──► G3 , G7
+G3  ──► G4 , G5 , G10 , G14 , G15
+G4  ──► G6 , G10 , G12 , G13 , G15
+G5  ──► G6 , G8 , G13
+G6  ──► G11
+G7  ──► G11 , G13
+G8  ──► G11 , G13
+G9  ──► G11
+G10 ──► G11 , G12
+G11 ──► G16
+G12 ──► G17
+G16 ──► G17
+G13 , G14 , G15 , G17 ──► G18
+G18 ──► OV
+```
+
+**Es la reduccion transitiva**, no la lista de dependencias declaradas: una arista redundante —por
+ejemplo `G1 → G3`, que ya llega por `G1 → G2 → G3`— **no se dibuja**. Las listas completas viven en
+§4.1 y en cada gate de §4.2, y **coinciden con este grafo en alcanzabilidad**.
+
+**Aristas corregidas en esta reconciliacion:** `G7 → G13` (P2) y `G11 → G16` (P3, que sustituye a
+`G6 → G16` y `G7 → G16`; ambas llegan ahora **transitivamente** por G11).
+
+**Y una consecuencia que conviene leer:** la reduccion transitiva de «`G18` depende de G1-G17» es
+exactamente **`{G13, G14, G15, G17} → G18`**, porque los ancestros de esos cuatro cubren G0-G12 y G16.
+Es la comprobacion aritmetica de P1: **no hay ningun corte que se lleve `G18` sin llevarse tambien
+G13, G14 y G15.**
+
+### 5.2 Hito A — motor de propagacion demostrable por el implementador
 
 ```
 G0 → G1 → G2 → G3 → G4 → G5 → G6 ──┐
-                                    ├→ G11 → (G12) → G18 → OV
 G0 → G9 ────────────────────────────┤
-G2 → G7 ────────────────────────────┤
+G2 → G7 ────────────────────────────├──► G11
 G5 → G8 ────────────────────────────┤
-G3,G4 → G10 ────────────────────────┘
+G3, G4 → G10 ───────────────────────┘
 ```
 
-**Once gates hasta el primer efecto visible.** Dos observaciones que cambian como se secuencia:
+**G0 mas once gates de implementacion (G1-G11).** Lo que demuestra:
 
-1. **La cadena pura G1→G6 es larga y serial**, y es la que decide casi todo el contrato. No se puede
-   acortar: cada gate consume el artefacto del anterior.
-2. **G9 es el unico gate HIGH que no depende de la cadena pura.** Empezarlo tarde concentra el riesgo
-   mas alto del plan justo antes de la integracion. Empezarlo pronto **acorta el camino critico
-   real**, aunque no acorte la cadena de dependencias.
+```
+semantica pura + registro en el NOD + descubrimiento fisico
++ infraestructura transaccional + portador authored
+                    -> PROPAGACION
+```
 
-**Fuera del camino critico**, y por tanto aplazables sin bloquear el slice: **G13** (BOM), **G14**
-(duplicacion), **G15** (biblioteca), **G16** y **G17** (UI). Son alcance comprometido —estan **dentro**
-del contrato— pero **no** condicionan que la propagacion funcione.
+**Se llama exactamente eso: `developer-demonstrable propagation engine`.** **NO es un «vertical slice
+de producto»** y **no es el «primer efecto visible» para el usuario**: su unica verificacion en este
+punto es el **developer smoke** de §8 —un diagnostico del implementador—, porque en G11 **todavia no
+existe ninguna superficie por la que el usuario pueda crear una variable ni vincularla**. Llamarlo
+producto seria afirmar algo que el DAG no sostiene.
 
-> **La linea de corte natural, si el Owner decide partir I-47** (§3): `G0–G12 + G18 + OV` es un slice
-> completo y demostrable —crear, vincular, propagar, editar—; `G13–G17` es el resto del alcance
-> comprometido. **No se propone partirla**: se señala donde partiria sin romper nada.
+### 5.3 Hito B — piloto operable por el usuario
+
+Para que el usuario **gestione la variable** y **vincule o desvincule `selective.verticalClearance`**
+hacen falta, ademas, las dos superficies:
+
+```
+Hito A (…G11) ──┬──► G12 ──┐
+                └──► G16 ──┴──► G17     = piloto operable por el usuario
+```
+
+**G0-G12 + G16 + G17.** `G16` aporta la superficie central —crear, editar, renombrar, borrar,
+resumenes de consumidores, `UnlinkAllAndDelete` y `RepairBroken`—; `G17` aporta el `Link`/`Unlink` de
+la propiedad piloto en su editor. **Antes de G16 no hay piloto operable**, por definicion.
+
+Fuera de este hito, y solo de este: **G13** (BOM), **G14** (duplicacion) y **G15** (biblioteca). Son
+**alcance comprometido** y **obligatorios para I-47** —`G18` los recorre y `OV` los valida—; lo unico
+que se afirma es que **el piloto es operable sin ellos**.
+
+### 5.4 Hito C — I-47 completa
+
+```
+G0-G17 → G18 → OV
+```
+
+**`G18` depende de G1-G17 y es el ultimo gate**; **`OV` es posterior a G18** y conserva sus 16
+escenarios mas los tres fisicos. Ninguno de los dos se adelanta, ni entero ni por partes.
+
+### 5.5 Dos observaciones sobre la forma del DAG
+
+1. **La cadena pura G1→G6 es larga y serial**, y decide casi todo el contrato. No se puede acortar:
+   cada gate consume el artefacto del anterior.
+2. **G9 es el unico gate HIGH que no depende de la cadena pura** — solo de G0. Empezarlo tarde
+   concentra el riesgo mas alto del plan justo antes de la integracion; empezarlo pronto **acorta el
+   camino critico real**, aunque no acorte la cadena de dependencias.
 
 ---
 
@@ -992,7 +1102,7 @@ repiten aqui.
 | **R10** | `NumericField` es dueño de su `BorderBrush` y guarda/restaura la procedencia | G17 | K2 esta descartada; si K3 obliga a tocarlo, parar |
 | **R11** | Tres archivos calientes de WORKFLOW §7 quedan dentro del alcance: `RackSelectiveWindow.xaml.cs`, `Plugin/*Commands*.cs` y —**solo de lectura**— `SelectivePalletDesign.cs` | todos | Ninguna iniciativa de Selectivo o Push Back en paralelo |
 | **R12** | El build del Plugin **falla si AutoCAD esta abierto** (MSB3021/MSB3027) | G7, G9-G14 | Cerrar AutoCAD antes de cada rebuild |
-| **R13** | Diecinueve gates exceden el «1-3 sesiones» de WORKFLOW §2 | plan | Partir I-47 es **decision del Owner**; §5 señala la linea |
+| **R13** | **Confundir gates con sesiones.** WORKFLOW §2 acota **sesiones**, no gates: varios gates caben en una sesion. V1 de este plan leyo «19 gates» como «excede 1-3 sesiones» y de ahi dedujo un corte imposible | plan | La particion **solo** se reevalua si la **ejecucion real** —sesiones medidas— excede 1-3. No se anticipa, y **`G18`/`OV` nunca se separan de los gates que recorren** |
 
 ---
 
@@ -1023,11 +1133,11 @@ Las catorce preguntas, respondidas contra el plan ya corregido.
 
 | # | Pregunta | Respuesta |
 |---|---|---|
-| 1 | ¿Algun gate requiere una pieza que no existe? | **No.** G11 necesita la frontera de G9; G13 necesita el conteo de G8; G16 necesita los DTO de G6 y el lector de G7. Todas son gates anteriores |
+| 1 | ¿Algun gate requiere una pieza que no existe? | **No, tras corregir dos aristas.** G11 necesita la frontera de G9; **G13 necesita el conteo de G8 Y el lector del NOD de G7** (P2); **G16 necesita el executor fisico de G11** (P3). Todas son dependencias declaradas |
 | 2 | ¿Algun gate mezcla semantica pura y AutoCAD innecesariamente? | **G8 y G13 lo hacen, y por eso estan partidos en mitades nombradas**, con las pruebas del lado puro. G7 deja en el Plugin **solo** el acceso al diccionario |
-| 3 | ¿Alguna dependencia esta invertida? | **Habia una, y se corrigio (D3).** El portador (G10) tenia que ir **antes** de la propagacion, no despues: si no, cada redibujo destruye el binding recien creado |
+| 3 | ¿Alguna dependencia esta invertida? | **Habia una y se corrigio (D3)**: el portador (G10) va **antes** de la propagacion, o cada redibujo destruye el binding recien creado. Ademas habia **dos incompletas**, corregidas en esta reconciliacion: **G13 sin G7** (P2) y **G16 sin G11** (P3) |
 | 4 | ¿El BOM puede implementarse sin segundo resolver? | **Si**, y es obligatorio: `RACKBOMTOTAL` entrega el **embed representante ya aprobado** y **el handler** resuelve **una vez**. G13 lo declara non-scope y G18 lo audita |
-| 5 | ¿La UI puede empezar solo con sus DTO/intents disponibles? | **Si**: G16 depende de G6 (resumenes, estado roto) y G7 (lectura del registro). Antes de eso no hay nada que pintar |
+| 5 | ¿La UI puede empezar solo con sus DTO/intents disponibles? | **Y con su EXECUTOR disponible, que es lo que V1 omitia.** G16 depende ahora de **G11**, que arrastra G6 (los DTO) y G7 (el registro) **y ademas ejecuta** las operaciones rack-affecting que la ventana ofrece. Una superficie que emite un intent sin executor es un boton que no puede cumplir lo que promete |
 | 6 | ¿`RepairBroken` conserva la secuencia final aceptada? | **Si**, y G6 la prueba **en orden**: sin valor efectivo · sin fallback automatico · explicita y avisada · usa el literal authored almacenado · elimina el binding · mantiene el schema · **despues** el literal gobierna · se redibuja |
 | 7 | ¿Algun gate permitiria commit parcial? | **Invariante 1**: ningun gate anterior a G9 escribe sobre mas de un rack. G9 es el que hace imposible el parcial |
 | 8 | ¿Hay un camino donde `UNKNOWN` vuelva a `NEGATIVE`/`EMPTY`/`SUCCESS`? | Los **seis** sitios estan asignados: probe (G5) · lectura del NOD (G2/G7) · barrido (G8) · listado de biblioteca (G15) · restamp (G14) · `catch` del BOM (G13). **Invariante 6** y auditoria en G18 |
@@ -1037,6 +1147,19 @@ Las catorce preguntas, respondidas contra el plan ya corregido.
 | 12 | ¿El plan cubre las pruebas 1-42? | **Si**, §9, sin omitir ninguna, con el reparto por gate |
 | 13 | ¿Se introdujo trabajo fuera del vertical slice? | **No.** Nada de `ClearHeight`, formulas, ID21, WBLOCK, panel generico ni conversion masiva. `SelectivePalletDesign.cs` (Domain) se lee, no se toca (P7) |
 | 14 | ¿Owner Validation llega pronto o tarde? | **En su sitio**: una sola compuerta formal, tras G18. Lo que se adelanta es el **developer smoke** en G7, G9 y G11 — que es diagnostico, no evidencia de proceso |
+
+### Las ocho confirmaciones sobre el DAG corregido
+
+| # | Confirmacion | Verificado contra |
+|---|---|---|
+| 1 | **Ningun gate consume infraestructura de un gate que no sea dependencia transitiva.** Recorrido arista por arista sobre §5.1 | §5.1 |
+| 2 | **G13 puede realmente leer el NOD**: `G7 → G13` es explicita, y `G7` es lo unico que da acceso fisico al registro | §4.1, §4.2 G13, §5.1 |
+| 3 | **G16 no puede emitir un intent antes de que exista su executor**: depende de `G11`, que ejecuta las seis operaciones rack-affecting; las dos registry-only (`Create`, `Rename`) necesitan la escritura del NOD, que `G11` arrastra por `G7` | §4.2 G16 |
+| 4 | **G17 tiene todas sus dependencias transitivas**: `G12` aporta G4 y G10 (y por ellos G1-G3); `G16` aporta G11 y con el G6, G7, G8, G9, G10. Clausura = **G1-G12 + G16** | §4.2 G17 |
+| 5 | **G18 solo puede empezar con G1-G17 cerrados**: recorre las 42 pruebas contractuales, y **siete** viven en G13, G14 y G15 | §4.2 G18, §9 |
+| 6 | **OV solo puede empezar despues de G18**: `G18 → OV` es la ultima arista del DAG, y OV conserva sus 16 escenarios mas los tres fisicos | §5.1, §5.4, §8 |
+| 7 | **No queda ninguna afirmacion de que `G0-G12 + G18 + OV` sea un slice independiente.** La unica mencion superviviente es el registro de la correccion, marcada como **retirada** | §3, §5, §11 R13, §14 |
+| 8 | **«gate count» no se usa como sinonimo de «session count»** en ningun punto del documento. El unico sitio que los relacionaba —R13— ahora dice lo contrario | §3, §11 R13, §14 |
 
 ---
 
@@ -1048,7 +1171,10 @@ Se declara en vez de disimularse.
 2. **La viabilidad de la transaccion unica (P9)** solo se demuestra ejecutando. G9 la aborda y su
    stop condition devuelve al Coordinator si no cabe.
 3. **`PURGE` sobre la entrada del NOD (P2)** no esta verificado **en ningun sentido**. G7 y OV.
-4. **La particion de I-47** en varias iniciativas: se señala la linea de corte (§5) y **no se decide**.
+4. **Cuantas sesiones costara I-47.** El plan cuenta **gates**, que no es lo mismo. **No se propone
+   ninguna particion**: `G18` depende de G1-G17 y `OV` valida escenarios de G13-G17, asi que no existe
+   un corte que se lleve la conformidad y la validacion sin llevarse todo lo demas. Si la **ejecucion
+   real** excediera las 1-3 sesiones de WORKFLOW §2, la reevaluacion seria del Owner.
 5. **La ubicacion exacta del modelo puro** —Domain o Application— la fija G1 con su justificacion; el
    contrato no la impone.
 6. **El mecanismo del diagnostico de biblioteca** no es contractual; G15 elige y lo justifica.
