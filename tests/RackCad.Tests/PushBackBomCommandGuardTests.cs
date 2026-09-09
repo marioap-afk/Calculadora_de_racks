@@ -52,10 +52,13 @@ namespace RackCad.Tests
             var source = BomTotal;
 
             // Pregunta la puerta ANTES de construir ningun BOM...
+            //
+            // I-47 G13 reapunta el ancla del segundo indice: el comando ya no indexa handlers en paralelo,
+            // recorre los racks cuya autoridad multi-vista quedo aprobada. La propiedad protegida no cambia.
             Assert.Contains("OutputBlockedReason", source, StringComparison.Ordinal);
             Assert.True(
                 source.IndexOf("OutputBlockedReason", StringComparison.Ordinal)
-                < source.IndexOf("BuildRackBom(handlers[i]", StringComparison.Ordinal),
+                < source.IndexOf("BuildRackBom(rack.Handler", StringComparison.Ordinal),
                 "la puerta se consulta antes de construir el BOM de ningun rack");
 
             // ...y ABORTA el total, como ya hacia con un kind sin handler.
@@ -80,7 +83,10 @@ namespace RackCad.Tests
         public void UnreadableRack_IsNeverSkippedSilentlyByTheCommand()
         {
             var source = BomTotal;
-            var skip = source.IndexOf("if (bom == null)", StringComparison.Ordinal);
+
+            // I-47 G13: el salto ya no se decide sobre un null, sino sobre el resultado TIPADO -que ademas
+            // distingue el payload ilegible del vinculo roto, que aborta el total en vez de saltarse-.
+            var skip = source.IndexOf("if (!result.IsSuccess)", StringComparison.Ordinal);
 
             Assert.True(skip > 0, "el comando sigue teniendo el salto por payload ilegible");
             var block = source.Substring(skip, Math.Min(500, source.Length - skip));
