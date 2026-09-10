@@ -53,6 +53,59 @@ namespace RackCad.Plugin.Drawing
             }
         }
 
+        /// <summary>
+        /// PREPARE — resolve the catalog, build the layout and group the plan, and IMPORT what the plan needs,
+        /// all BEFORE the semantic transaction opens (I-47 G9.1). Meant to be called inside the caller's lock.
+        /// </summary>
+        internal PreparedViewRedraw PrepareRedraw(
+            Database database,
+            ObjectId blockId,
+            RackFrameConfiguration configuration,
+            string payloadJson,
+            IReadOnlyList<HeaderBlockInstance> extraInstances = null)
+        {
+            if (database == null)
+            {
+                throw new InvalidOperationException("No hay un dibujo activo en AutoCAD.");
+            }
+
+            if (configuration == null || blockId.IsNull)
+            {
+                throw new InvalidOperationException("No hay cabecera para actualizar.");
+            }
+
+            var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
+            var catalog = LoadCatalog();
+            var layout = Merge(builder.Build(configuration, parameters, catalog), extraInstances);
+
+            // ARRAY pattern: group identical pieces of the corte into nested defs referenced N times (same
+            // optimization as frontal/planta). The redefine creates fresh nested defs and purges the prior run's.
+            var plan = HeaderInstanceGrouper.Group(layout.Instances, ReadBlockName(database, blockId));
+            BlockLibraryImporter.EnsureForPlan(database, plan);
+
+            return new PreparedViewRedraw(blockId, drawer, plan, payloadJson, catalog);
+        }
+
+        /// <summary>
+        /// MUTATE — redefine inside a transaction THE CALLER owns. It does not lock, does not open or commit a
+        /// transaction, does not regen and does not import; and it goes STRAIGHT to the shared primitive,
+        /// because routing back through a self-owned wrapper would reintroduce the per-block commit that makes
+        /// a multi-rack propagation non-atomic.
+        /// </summary>
+        internal LateralHeaderDrawOutcome RedrawInTransaction(
+            Database database,
+            Transaction transaction,
+            PreparedViewRedraw prepared,
+            out IReadOnlyCollection<ObjectId> staleDefinitions)
+            => SystemBlockWriter.RedefineInTransaction(
+                database,
+                transaction,
+                prepared.Drawer,
+                prepared.BlockId,
+                prepared.Plan,
+                prepared.PayloadJson,
+                out staleDefinitions);
+
         /// <summary>Redraw an existing cabecera's block DEFINITION in place; every copy updates on regen. Extra
         /// instances (e.g. a selective corte's largueros) are drawn together with the cabecera. Pass
         /// <paramref name="regen"/> = false when redrawing several blocks in a loop and regen once at the end.</summary>
@@ -70,36 +123,32 @@ namespace RackCad.Plugin.Drawing
 
             try
             {
-                var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
-                var catalog = LoadCatalog();
-                var layout = Merge(builder.Build(configuration, parameters, catalog), extraInstances);
                 var database = document.Database;
 
                 LateralHeaderDrawOutcome outcome;
                 IReadOnlyCollection<ObjectId> staleDefs;
+                PreparedViewRedraw prepared;
+
                 using (document.LockDocument())
                 {
-                    // ARRAY pattern: group identical pieces of the corte into nested defs referenced N times (same
-                    // optimization as frontal/planta). The redefine creates fresh nested defs and purges the prior run's.
-                    var plan = HeaderInstanceGrouper.Group(layout.Instances, ReadBlockName(database, blockId));
-                    BlockLibraryImporter.EnsureForPlan(database, plan);
+                    // PREPARE — through the same seam a caller-owned transaction uses, so both paths prepare
+                    // identically: importing can mutate the database on its own account (I-47 G9).
+                    prepared = PrepareRedraw(database, blockId, configuration, payloadJson, extraInstances);
 
                     using (var transaction = database.TransactionManager.StartTransaction())
                     {
-                        outcome = drawer.RedefineSystemBlock(database, transaction, blockId, plan, out staleDefs);
-                        RackBlockData.Write(transaction, blockId, payloadJson);
+                        // MUTATE — the SAME primitive the caller-owned path reaches.
+                        outcome = RedrawInTransaction(database, transaction, prepared, out staleDefs);
                         transaction.Commit();
                     }
 
-                    // Post-commit purge of the orphaned nested defs (Database.Purge on committed state; see the drawer note).
-                    LateralHeaderDrawer.PurgeUnreferenced(database, staleDefs);
-
-                    // Same guarded regen as the system redraw path — applied through the one shared helper (I-16 F4).
+                    // POST — purge after commit, then the one guarded regen, both through the shared helpers.
+                    SystemBlockWriter.PurgeAfterCommit(database, staleDefs);
                     SystemBlockWriter.ApplyRegen(document, regen);
                 }
 
                 // Report pieces skipped during the redraw too — an edit can lose blocks just like an insert.
-                return new HeaderPlacementResult(true, true, null, DescribeMissing(catalog, outcome), outcome);
+                return new HeaderPlacementResult(true, true, null, DescribeMissing(prepared.Catalog, outcome), outcome);
             }
             catch (Exception ex)
             {

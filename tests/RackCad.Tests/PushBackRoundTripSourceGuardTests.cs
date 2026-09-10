@@ -119,7 +119,11 @@ namespace RackCad.Tests
         [Fact]
         public void Handler_RestampReturnsDesignJsonUnchanged()
         {
-            Assert.Contains("RestampDesign(string designJson, string newId, string copyName) => designJson", Handler);
+            // I-47 G14 la reapunta al contrato tipado: la propiedad protegida sigue siendo que Push Back no
+            // tiene identidad interior que re-estampar, no la forma exacta del retorno.
+            Assert.Contains(
+                "RestampDesign(string designJson, string newId, string copyName) => RestampResult.Success(designJson)",
+                Handler);
         }
 
         // ---- Registry ----

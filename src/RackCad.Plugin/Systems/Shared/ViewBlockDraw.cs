@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Catalogs;
@@ -54,6 +55,58 @@ namespace RackCad.Plugin.Systems.Shared
                 return HeaderPlacementResult.Failure(ex.Message);
             }
         }
+
+        /// <summary>
+        /// PREPARE — resolve the catalog, build the plan and IMPORT the definitions it needs, all BEFORE the
+        /// semantic transaction exists (I-47 G9.1). Importing is the reason this is a separate step: it mutates
+        /// the database on its own account, so it cannot happen inside a transaction meant to be one atomic
+        /// unit over many racks. Must be called inside the document lock.
+        /// </summary>
+        internal static PreparedViewRedraw PrepareRedraw(
+            Database database,
+            ObjectId blockId,
+            bool hasTarget,
+            string emptyMessage,
+            LateralHeaderDrawer drawer,
+            Func<RackCatalog, HeaderRunPlan> plan,
+            string payloadJson)
+        {
+            if (database == null)
+            {
+                throw new InvalidOperationException("No hay un dibujo activo en AutoCAD.");
+            }
+
+            if (!hasTarget)
+            {
+                throw new InvalidOperationException(emptyMessage);
+            }
+
+            var catalog = RackCatalogLoader.Load();
+            var built = plan(catalog);
+            BlockLibraryImporter.EnsureForPlan(database, built);
+
+            return new PreparedViewRedraw(blockId, drawer, built, payloadJson, catalog);
+        }
+
+        /// <summary>
+        /// MUTATE — redefine the block inside a transaction THE CALLER OWNS. No lock, no transaction, no
+        /// commit, no regen, no import: all of those belong to the caller, before or after. It goes straight
+        /// to the shared primitive and never back down through a wrapper that owns its own transaction —
+        /// that would reintroduce the per-block commit through the back door.
+        /// </summary>
+        internal static LateralHeaderDrawOutcome RedrawInTransaction(
+            Database database,
+            Transaction transaction,
+            PreparedViewRedraw prepared,
+            out IReadOnlyCollection<ObjectId> staleDefinitions)
+            => SystemBlockWriter.RedefineInTransaction(
+                database,
+                transaction,
+                prepared.Drawer,
+                prepared.BlockId,
+                prepared.Plan,
+                prepared.PayloadJson,
+                out staleDefinitions);
 
         /// <summary>Redefine an existing view block's DEFINITION in place. <paramref name="hasTarget"/> is the facade's
         /// "payload present and blockId not null" check; <paramref name="regen"/> is forwarded to

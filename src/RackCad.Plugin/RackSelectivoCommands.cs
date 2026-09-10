@@ -5,6 +5,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
+using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Plugin.Drawing;
@@ -58,10 +59,34 @@ namespace RackCad.Plugin
                 return;
             }
 
+            // AUTHORED vs EFFECTIVE (I-47 G12). The editor works on the value IN FORCE, so the register has to
+            // be read before the window exists — and reading it can say no. A broken reference, a kind from the
+            // future or a register this build cannot read do NOT fall back to the frozen literal: falling back
+            // would change the geometry in silence. Repairing is an explicit operation and it is not this one.
+            var registry = ReadProjectVariables(document, out var entries);
+            var open = SelectiveEditorOpen.Resolve(saved, registry);
+
+            if (!open.IsOpen)
+            {
+                editor.WriteMessage("\nRackCad: " + open.Error);
+                return;
+            }
+
             var window = new RackSelectiveWindow(canInsertInAutoCad: true);
             window.SetDimensionStyles(RackCommandSupport.ReadDimensionStyleNames(document)); // before LoadExisting so a saved style selects
-            window.LoadExisting(saved);
+
+            // I-47 G17: las variables COMPATIBLES, ya filtradas. La ventana no decide que lo es.
+            window.SetProjectVariables(SelectiveBindingOptions.ForLength(registry.Document));
+            window.LoadExisting(saved, open.Design, open.VerticalClearance);
             AcApplication.ShowModalWindow(window);
+
+            if (window.BindingIntent != null)
+            {
+                // Vincular no es dibujar: no pasa por el camino de redibujo del editor, pasa por la semantica
+                // que ya sabe congelar el literal, materializar el efectivo y negarse ante un vinculo roto.
+                ApplyBinding(document, editor, window.BindingIntent, registry, entries);
+                return;
+            }
 
             if (!window.InsertRequested)
             {
@@ -102,7 +127,10 @@ namespace RackCad.Plugin
 
             // The design JSON is identical for every view-block (only the envelope's view/section differ), so
             // serialize the full design ONCE — not once per frontal + corte + planta.
-            var designJson = SerializeSelectiveDesign(design, id, name);
+            // The AUTHORED CARRIER (I-47 G10): this rack ALREADY has a persisted document, so saving
+            // UPDATES it. Rebuilding one from the domain would drop its schema version, its bindings and any
+            // field a later build wrote -- the domain cannot carry those, so the trip through it loses them.
+            var designJson = SerializeSelectiveDesign(design, id, name, saved);
 
             // Each frontal block draws ONE fondo's face (its Section = fondo index; a legacy block with -1 = fondo 0).
             // Every loop below redraws with regen:false and the drawing regenerates ONCE at the end — a full
@@ -214,6 +242,63 @@ namespace RackCad.Plugin
                 : "\nRackCad: no se pudo actualizar el rack.");
         }
 
+        /// <summary>
+        /// The drawing's project-variable register AND its sweep, read in ONE short transaction (I-47 G7/G8).
+        /// It is a READ and it happens before the editor exists, so it owns its transaction rather than
+        /// borrowing one. The sweep travels with it because a binding gesture has to reason over the rack's
+        /// views, and reading it twice could read two different drawings.
+        /// </summary>
+        private static ProjectVariablesReadResult ReadProjectVariables(
+            Document document, out System.Collections.Generic.IReadOnlyList<ProjectVariableScanEntry> entries)
+        {
+            var swept = new System.Collections.Generic.List<ProjectVariableScanEntry>();
+
+            using (document.LockDocument())
+            using (var transaction = document.Database.TransactionManager.StartTransaction())
+            {
+                var read = ProjectVariablesRegistry.Read(transaction, document.Database);
+
+                foreach (var envelope in RackBlockFinder.ScanEnvelopes(
+                             transaction, document.Database, includeReferenceCount: true))
+                {
+                    swept.Add(ProjectVariableScanProjection.Project(
+                        envelope.DefinitionId.Handle.ToString(), envelope.Embed, envelope.DirectReferenceCount));
+                }
+
+                transaction.Commit();
+                entries = swept;
+                return read;
+            }
+        }
+
+        /// <summary>
+        /// Runs a binding gesture through the semantics that already exist (I-47 G17): G6 decides what it may
+        /// do, G11 writes it. Nothing about freezing a literal, materialising an effective value or refusing a
+        /// broken reference is decided here.
+        /// </summary>
+        private static void ApplyBinding(
+            Document document,
+            Editor editor,
+            SelectiveBindingIntent intent,
+            ProjectVariablesReadResult registry,
+            System.Collections.Generic.IReadOnlyList<ProjectVariableScanEntry> entries)
+        {
+            var preflight = SelectiveBindingIntentPreflight.Run(intent, registry.Document, entries);
+
+            if (!preflight.IsSuccess)
+            {
+                editor.WriteMessage("\nRackCad: " + preflight.Error);
+                return;
+            }
+
+            var execution = ProjectVariableMutationExecutor.Execute(document, preflight.Plan);
+
+            editor.WriteMessage(execution.IsApplied
+                ? "\nRackCad: vinculo actualizado; se redibujaron " + execution.ViewsRedrawn.ToString(
+                      CultureInfo.InvariantCulture) + " vista(s) del rack."
+                : "\nRackCad: " + (execution.Error ?? "no habia nada que aplicar."));
+        }
+
         /// <summary>True when a view-block draws the LATERAL view (so it is a section of the system, not the frontal).</summary>
         private static bool IsLateralView(RackEmbedDocument embed) =>
             embed != null && string.Equals(embed.View, RackEmbedDocument.ViewLateral, System.StringComparison.OrdinalIgnoreCase);
@@ -227,9 +312,35 @@ namespace RackCad.Plugin
             SelectivePalletDesign design, string id, string name, string view, int section = -1, RackEmbedDocument source = null)
             => design == null ? null : WrapSelectivePayload(SerializeSelectiveDesign(design, id, name), id, name, view, section, source);
 
-        /// <summary>The full design serialized once; every view-block carries this SAME JSON (see <see cref="WrapSelectivePayload"/>).</summary>
-        private static string SerializeSelectiveDesign(SelectivePalletDesign design, string id, string name)
-            => design == null ? null : new SelectivePalletDesignStore().Serialize(SelectivePalletDesignDocument.From(design, id, name));
+        /// <summary>
+        /// The full design serialized once; every view-block carries this SAME JSON (see <see cref="WrapSelectivePayload"/>).
+        ///
+        /// <para>
+        /// With <paramref name="authored"/> the rack ALREADY exists and its document is UPDATED, preserving
+        /// the schema version, the bindings, the frozen authored literal and any field a later build wrote.
+        /// Without it — a fresh insert — there is nothing to preserve and the document is built from the
+        /// design, exactly as before.
+        /// </para>
+        /// <para>
+        /// The carrier is ONE per rack, not one per view: it is the document of the view the user picked. A
+        /// per-view carrier would let each sibling keep its own divergence, turning a repairable defect into
+        /// a permanent one — saving from a chosen view is precisely what reconciles them today.
+        /// </para>
+        /// </summary>
+        private static string SerializeSelectiveDesign(
+            SelectivePalletDesign design, string id, string name, SelectivePalletDesignDocument authored = null)
+        {
+            if (design == null)
+            {
+                return null;
+            }
+
+            var document = authored == null
+                ? SelectivePalletDesignDocument.From(design, id, name)
+                : authored.WithDesign(design, id, name);
+
+            return new SelectivePalletDesignStore().Serialize(document);
+        }
 
         /// <summary>Wraps an ALREADY-serialized design in the per-view embed envelope — multi-view redraws reuse one
         /// design JSON instead of re-serializing the whole design per view-block. When <paramref name="source"/> is the

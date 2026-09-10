@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-08**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-09**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -15,6 +15,57 @@ es el único adaptador de la API de AutoCAD.
 El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, dinámico modular y cama
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
+
+**I-47 — Variables de proyecto: fundación de autoridad drawing-level (ID22A) — IMPLEMENTACIÓN
+COMPLETA y CANDIDATO APROBADO; falta ÚNICAMENTE la sesión de integración.** Rama
+`architecture/project-variables-foundation`, **candidato funcional
+`af572393dab5c755a8f272c746bdce20848b7dd0`**. Es la primera autoridad de nivel **DIBUJO** de RackCad:
+un único registro `ProjectVariables` por DWG, en el `NamedObjectsDictionary` bajo `RACKCAD_PROJECT`,
+del que un rack puede tomar el valor de una propiedad en vez de guardarlo por su cuenta.
+
+**Lo que I-47 implementa** —y esto es el contrato, no una dirección—:
+
+| | |
+|---|---|
+| Modelo | `VariableId` **estable** (GUID); el **nombre NO es identidad** y puede repetirse; tipo `Length` declarado desde el día 1; definición **literal**; una propiedad vale `Literal` **o** `ProjectVariableReference` |
+| Persistencia | registro en el DWG (G7); **esquema pegajoso** del Selectivo: vincular promueve a `2.x` y **nunca** vuelve a `1.x` |
+| Operaciones | `create` · `rename` · `changeValue` · `delete` **bloqueado con consumidores** · `Link` · `Unlink` · `RepairBroken` · `UnlinkAllAndDelete` |
+| Semántica | separación **authored / effective**; **autoridad multi-vista** (todas las hermanas de un rack tienen que decir lo mismo); plan de mutación **atómico**; **transacción del llamador** con un solo `Commit` y un solo `Regen` |
+| Consumidores | `RACKEDITAR` (muestra el efectivo, guarda el authored) · `RACKBOMTOTAL` (cotiza el efectivo) · duplicación **fail-closed** · exportación a biblioteca **materializada** |
+| Superficies | `RACKVARIABLES` (ventana central) y el **primer vertical slice**: `selective.verticalClearance` |
+
+**Las tres asimetrías que hay que conocer antes de tocar nada.** (1) **Vincular CONGELA** el literal —no
+lo sustituye—, y **desvincular MATERIALIZA** el efectivo actual: devolver el literal viejo haría *saltar*
+la geometría. (2) Un **vínculo roto** no se desvincula —no hay efectivo que materializar— y sólo se
+repara desde la ventana central, con aviso explícito de que se usará el literal almacenado y de que la
+geometría puede cambiar. (3) Un registro **presente e ilegible NUNCA se lee como vacío**: bloquea el
+editor, la ventana central y el BOM, porque escribir encima destruiría en silencio todo lo que tuviera.
+
+**Evidencia del candidato funcional `af57239`:**
+
+| | |
+|---|---|
+| Core Full | **5253 / 5253** |
+| UI Full | **1284 / 1301** (17 omitidas históricas, declaradas en fuente) |
+| Builds | UI Debug y Plugin Debug sin errores (sólo los dos `MSB3277` conocidos) |
+| CI de `push` | corrida **34427341491**, `head_sha` = `af57239…`, **4/4 `success`** |
+| Cobertura del Candidato | dispatch **34427649290** con `candidate_sha=af57239…`, **4/4 `success`**, artifact `rackcad-coverage-cobertura` |
+
+**Validación del Owner en AutoCAD 2025: PASS.** `PV-1..PV-5` (registro: crear, renombrar, cambiar valor,
+borrar sin consumidores, save/reopen) · `PV-17.1..PV-17.8` (vincular, save/reopen, propagación
+multi-consumidor, renombrado, desvincular, multi-rack, delete bloqueado, desvincular-todos-y-eliminar) ·
+`OV-1..OV-9`.
+
+**OV-9 cerró la única operación que quedaba sin ejercicio físico.** Copiar un rack **vinculado** a un DWG
+**sin registro** produjo un vínculo roto **legítimo**, sin editar ningún Xrecord a mano. Comportamiento
+observado, y es el correcto: `RACKEDITAR` **falla cerrado** —no abre con el literal congelado— y
+`RACKVARIABLES → RepairBroken` **quita el vínculo** y deja gobernando el **literal authored almacenado**.
+
+**Deuda técnica conocida, NO bloqueante.** `ProjectVariablesDocument.ToProjectVariables()` **hardcodea
+hoy `VariableType.Length`** e ignora el `Type` persistido. Es inocuo mientras ID22A soporte un solo tipo,
+y por eso `SelectiveBindingOptions.ForLength` filtra por el tipo **persistido** y no por esa proyección.
+**Cuando exista un segundo `VariableType`, esa proyección hay que corregirla antes de apoyarse en ella
+como autoridad del tipo.** Registrada en [ideas-futuras.md](ideas-futuras.md); no se arregla ahora.
 
 **I-46 — Selectivo: BUG topes de tarima Izquierda/Derecha — queda INTEGRADA y CERRADA** el
 **2026-09-08** (`fix/selectivo-topes-izquierda-derecha`, candidato
@@ -1303,7 +1354,110 @@ veredicto.
 
 ## 4. Siguiente acción
 
+### La siguiente acción es la SESIÓN DE INTEGRACIÓN de I-47.
+
+**I-47 — Variables de proyecto (ID22A) — implementación COMPLETA, `G1`–`G18` verdes, validación del
+Owner PASS, Candidato APROBADO.** No queda ningún pendiente funcional: lo que falta es **proceso**.
+
+```text
+FUNCTIONAL_CANDIDATE_SHA = af572393dab5c755a8f272c746bdce20848b7dd0
+```
+
+Ese SHA es el que se integra y el que la evidencia mide. **Este cierre documental produce un SHA
+posterior que es SÓLO documentación y no lo reemplaza**: no vuelve a compilarse ni a validarse porque no
+toca `src/`, `tests/` ni `.github/`.
+
+La sesión de integración ejecuta, en este orden ([WORKFLOW.md](WORKFLOW.md) §4.5): rebase sobre
+`origin/main` **si avanzó** —en el momento de escribir esto sigue en
+`306e18ed4676e5e96b54d59402c9a230efb137d3`, la misma base, así que no habría rebase— → merge `--no-ff`
+→ **CI posterior al merge sobre el `MERGE_SHA`** con su artifact `rackcad-coverage-cobertura` → la
+**comprobación diferida de la cobertura del Candidato** → y **sólo entonces** la limpieza de rama y
+worktree. El `MERGE_SHA` **todavía no existe** y por eso aquí no se anota ningún valor.
+
+**Trazabilidad de I-47.** `reclamo · bootstrap · Discovery · Proposal V1→V4.8 · ADR-0034 · Consensus
+Freeze · plan V1→V1.1 · G0 · G1 · G2 · G3 · G3.1 · G4 · G5 · G6 · G7 · G8 · G9 · G9.1 · G10 · G11 · G12 ·
+G13 · G14 · G15 · G16 · G17 · G18`. Dos correcciones de secuenciación las aprobó el Coordinator sobre la
+marcha y constan: **G9.1** —el alcance de G9 era necesario pero no suficiente, porque frontal y planta
+llegan al writer por `ViewBlockDraw` y todas las fachadas de arriba poseían su transacción— y **G11 como
+servicio antes que su llamador**, porque cualquier comando para ejercitarlo habría sido producto (G16) o
+descartable. La validación física quedó diferida hasta tener disparador legítimo, y se cobró entera en
+G16/G17.
+
+**Lo que I-47 NO hace, y consta.** Ni fórmulas, ni parser, ni AST, ni grafo de dependencias (**ID22B**);
+ni referencias de una propiedad a la propiedad de otro rack (**ID21**); ni `PalletTolerance` ni
+`PalletDepth` —el vertical slice es **`selective.verticalClearance` y sólo esa**—; ni unificación de
+`ClearHeight` en Dinámico/Push Back; ni migración de dibujos existentes; ni WBLOCK/copia entre dibujos
+como caso soportado. Una guarda de conformidad barre las tres assemblies y falla si algo de eso entra.
+
+---
+
+### FUTURE UX DIRECTION — **NO NORMATIVA PARA I-47**
+
+> Lo de abajo es **dirección futura decidida por el dueño**. **No está implementado**, no forma parte del
+> contrato de I-47 y no debe leerse como requisito retroactivo. Lo que hoy existe en producción es un
+> `ComboBox` de variables compatibles más botones explícitos de **Vincular** y **Desvincular** para
+> `selective.verticalClearance`, y esa superficie es el **primer slice de producto**, no una restricción
+> permanente de UX.
+
+**La dirección preferida es un único input estilo Excel**, sin controles adicionales permanentes:
+
+```text
+6                    → Literal(6)
+=Holgura General     → ProjectVariableReference(VariableId)
+```
+
+Al escribir `=` en un campo compatible, el **mismo** control entra en modo referencia y ofrece
+selector/autocompletado de las variables **compatibles**:
+
+```text
+Holgura
+[ = ]
+
+  Holgura General     10 in
+  Holgura Cliente A    8 in
+  Holgura Especial    12 in
+```
+
+y al elegir queda `[ =Holgura General ]`.
+
+**Reglas que la UX futura NO puede saltarse** —son las de I-47 y siguen valiendo—:
+
+- se **persiste** `ProjectVariableReference(VariableId)`, **nunca** el texto `"=Holgura General"`;
+- el nombre es **sólo representación**; nombres duplicados siguen permitidos, así que la lista tiene que
+  mostrar nombre **y** valor (u otro contexto suficiente) para poder distinguirlos;
+- **renombrar** deja el `VariableId` y el vínculo intactos: la UI simplemente vuelve a dibujar
+  `=NuevoNombre`;
+- pasar de literal a variable es un **`Link`** —el literal queda congelado, el efectivo pasa a ser el de
+  la variable—;
+- pasar de variable a literal es una operación **semántica explícita**: `Unlink` —que materializa el
+  efectivo actual— y, si el usuario escribió otro número, un `SetLiteral` **después**. Nunca editar
+  `PropertyValues` directamente, y nunca un fallback silencioso;
+- el input no puede puentear **G6** (qué puede hacer cada operación) ni **G11** (cómo se escribe).
+
+**Compatibilidad con ID22B, como dirección y no como contrato.** El mismo campo admitiría más adelante
+`=Holgura General + 2`. Eso **no autoriza** añadir ahora parser, AST, fórmulas, grafo de dependencias,
+detección de ciclos, persistencia de expresiones ni referencias a propiedades de otros racks. La decisión
+de UX se toma **para ser compatible** con ese futuro, no para adelantarlo.
+
+Backlog de la iniciativa futura: [ideas-futuras.md](ideas-futuras.md) → *Project Variables — Excel-like
+Property Input UX*. **Sin número de iniciativa y sin reclamar**: numerarla es acto de planificación
+formal.
+
+**Nota de UX sobre ADR-0034 — registrada AQUÍ y no en el ADR.** El contrato de vínculo es **independiente**
+de la presentación: la superficie de G17 es el primer slice de producto, no una restricción permanente, y
+un input único estilo Excel podría emitir **los mismos** intents `Link`/`Unlink` sin cambiar la
+persistencia ni la autoridad del `VariableId`. No se toca
+[ADR-0034](adr/0034-project-variables-autoridad-drawing-level.md) porque
+[docs/adr/README.md](adr/README.md) declara que **un ADR `aceptado` es inmutable en su contenido**: sólo
+cambian su estado y sus enlaces.
+
+---
+
 ### La siguiente acción es cerrar las COMPUERTAS POSTERIORES de I-46, ya integrada.
+
+> **Nota (2026-09-09):** el bloque que sigue se escribió **antes** del merge de I-46. Ese merge ya
+> ocurrió y `origin/main` está en `306e18ed4676e5e96b54d59402c9a230efb137d3`, que lo contiene. Se
+> conserva como trazabilidad de I-46; **la siguiente acción vigente es la de I-47, arriba**.
 
 **I-46 — Selectivo: BUG topes de tarima Izquierda/Derecha — INTEGRADA y CERRADA el 2026-09-08** desde
 `fix/selectivo-topes-izquierda-derecha` con merge `--no-ff`, sobre el candidato

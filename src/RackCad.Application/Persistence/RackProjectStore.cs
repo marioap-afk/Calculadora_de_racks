@@ -280,6 +280,18 @@ namespace RackCad.Application.Persistence
 
             SchemaGuard.CheckReadable(document.SchemaVersion, RackProjectDocument.CurrentSchemaVersion, "El proyecto");
 
+            if (document.SelectiveRack != null)
+            {
+                // I-47 G15 -- el ANIDADO tiene su propia guarda. El sobre la tenia y el diseno interior no, asi
+                // que un Selectivo escrito por un MAJOR futuro entraba entero por debajo de una version que no
+                // lo entiende. El techo de lectura es el mismo que en el dibujo (la linea promocionada), asi
+                // que la guarda mide el MAJOR y no la procedencia del archivo.
+                SchemaGuard.CheckReadable(
+                    document.SelectiveRack.SchemaVersion,
+                    SelectivePalletDesignDocument.PromotedSchemaVersion,
+                    "El diseno selectivo del archivo");
+            }
+
             var project = BuildProject(document);
             ValidateProject(project);
             return project;

@@ -12,6 +12,7 @@ using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Settings;
+using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
@@ -2302,6 +2303,74 @@ namespace RackCad.UI.Systems.Selective
         /// zero-level columns yet); &gt; 0 makes <see cref="LoadDesign"/> warn instead of silently converting them.</summary>
         private int paddedEmptyFrentesOnLoad;
 
+        /// <summary>The XAML tooltip, kept so releasing the field restores it verbatim.</summary>
+        private object clearanceTooltip;
+
+        /// <summary>Whether the clearance is currently governed by a project variable (I-47 G17).</summary>
+        private bool clearanceBound;
+
+        /// <summary>
+        /// The binding gesture the user asked for, or null. It is SEPARATE from the insertion request: linking
+        /// is not drawing, and the caller runs it through the semantic preflight instead of the draw path.
+        /// </summary>
+        public SelectiveBindingIntent BindingIntent { get; private set; }
+
+        /// <summary>
+        /// The project variables this property may be bound to, ALREADY filtered by compatible type (I-47 G17).
+        /// The window never decides what is compatible and never resolves anything: it shows what it is given
+        /// and returns the identity of what was picked.
+        /// </summary>
+        public void SetProjectVariables(IReadOnlyList<ProjectVariableOption> options)
+        {
+            ClearanceVariableBox.ItemsSource = options;
+            UpdateClearanceBindingActions();
+        }
+
+        private void ClearanceVariable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            => UpdateClearanceBindingActions();
+
+        private void LinkClearance_Click(object sender, RoutedEventArgs e)
+        {
+            // La IDENTIDAD de lo elegido, nunca su nombre: dos variables pueden llamarse igual.
+            if (clearanceBound || !(ClearanceVariableBox.SelectedItem is ProjectVariableOption option))
+            {
+                return;
+            }
+
+            AskBinding(SelectiveBindingIntent.Link(
+                session.Identity.Id, ProjectPropertyIds.SelectiveVerticalClearanceToken, option.Id));
+        }
+
+        private void UnlinkClearance_Click(object sender, RoutedEventArgs e)
+        {
+            if (!clearanceBound)
+            {
+                return;
+            }
+
+            // Sin variable: el rack ya sabe cual lo gobierna, y volver a nombrarla seria otra oportunidad de
+            // nombrar la equivocada.
+            AskBinding(SelectiveBindingIntent.Unlink(
+                session.Identity.Id, ProjectPropertyIds.SelectiveVerticalClearanceToken));
+        }
+
+        /// <summary>Records the gesture and closes: ejecutarlo no es trabajo de esta ventana.</summary>
+        private void AskBinding(SelectiveBindingIntent intent)
+        {
+            BindingIntent = intent;
+            Close();
+        }
+
+        private void UpdateClearanceBindingActions()
+        {
+            var known = isEditingExisting && session.Identity.HasId;
+
+            LinkClearanceButton.IsEnabled =
+                known && !clearanceBound && ClearanceVariableBox.SelectedItem is ProjectVariableOption;
+            UnlinkClearanceButton.IsEnabled = known && clearanceBound;
+            ClearanceVariableBox.IsEnabled = !clearanceBound;
+        }
+
         /// <summary>A warning latched by input-normalizing code (invalid fondo/cabecera/separador/conteo kept-previous
         /// fallbacks): the pipeline always ends in <see cref="Recompute"/>, whose final status would overwrite a direct
         /// SetStatus, so Recompute emits THIS instead of the generic success message when set.</summary>
@@ -2463,15 +2532,75 @@ namespace RackCad.UI.Systems.Selective
             Recompute();
         }
 
+        /// <summary>
+        /// The RACKEDITAR path when the rack's properties may be governed by project variables (I-47 G12).
+        ///
+        /// <para>
+        /// <paramref name="effective"/> is the design ALREADY resolved: the editor shows and edits the value
+        /// in force, not the frozen authored literal. <paramref name="verticalClearance"/> only says whether
+        /// that field belongs to the editor. Resolving is not a job of this window — the reference, the id and
+        /// the register never reach it, precisely so it cannot resolve.
+        /// </para>
+        /// <para>
+        /// What gets PERSISTED is still the authored carrier adopted in G10; this method changes what is
+        /// shown, never what is saved.
+        /// </para>
+        /// </summary>
+        public void LoadExisting(
+            SelectivePalletDesignDocument document,
+            SelectivePalletDesign effective,
+            VerticalClearanceBindingState verticalClearance)
+        {
+            if (document == null || effective == null) return;
+            AdoptExisting(document);
+            LoadDesign(effective);
+            ApplyVerticalClearanceBinding(verticalClearance);
+        }
+
         /// <summary>Open the editor pre-loaded with an existing rack (from an embedded/saved document), keeping its Id/Name.</summary>
         public void LoadExisting(SelectivePalletDesignDocument document)
         {
             if (document == null) return;
-            session.Identity.Adopt(document.Id, document.Name); // keep the drawn rack's GUID + name (I-15)
-            isEditingExisting = true; // opened on an existing rack → "Actualizar" + linked lateral/planta become available
+            AdoptExisting(document);
+            // No governing state: ToDomain() IS the unbound case, which is what a library open and every
+            // pre-I-47 caller mean.
+            LoadDesign(document.ToDomain());
+            ApplyVerticalClearanceBinding(null);
+        }
+
+        /// <summary>The identity half of both loads: the drawn rack's GUID + name survive a re-save (I-15).</summary>
+        private void AdoptExisting(SelectivePalletDesignDocument document)
+        {
+            session.Identity.Adopt(document.Id, document.Name);
+            isEditingExisting = true; // opened on an existing rack -> "Actualizar" + linked lateral/planta become available
             UpdateInsertButtons();
             NameBox.Text = document.Name ?? string.Empty;
-            LoadDesign(document.ToDomain());
+        }
+
+        /// <summary>
+        /// A governed field is shown and NOT edited here. Disabled rather than hidden: the user has to be able
+        /// to SEE the number that rules their rack — hiding it would turn "governed by a variable" into "does
+        /// not exist", which is worse than editable. Unbinding is an explicit operation, and it is not this
+        /// control.
+        /// </summary>
+        private void ApplyVerticalClearanceBinding(VerticalClearanceBindingState state)
+        {
+            clearanceTooltip ??= ClearanceBox.ToolTip;
+
+            var bound = state != null && state.IsBound;
+            ClearanceBox.IsReadOnly = bound;
+            ClearanceBox.IsEnabled = !bound;
+            ClearanceBox.ToolTip = bound
+                ? "La gobierna una variable de proyecto: se muestra el valor en vigor y no se edita desde aquí."
+                : clearanceTooltip;
+
+            clearanceBound = bound;
+            ClearanceStateText.Text = bound
+                ? "Variable: " + (string.IsNullOrWhiteSpace(state.BoundVariableName) ? "(sin nombre)" : state.BoundVariableName)
+                  + " = " + state.EffectiveValue.ToString("0.###", CultureInfo.InvariantCulture)
+                : "Literal: el valor de arriba es de este rack.";
+
+            UpdateClearanceBindingActions();
         }
 
         /// <summary>Open pre-loaded from a LIBRARY template as a NEW rack — a fresh GUID on insert (not an in-place update),
@@ -2502,7 +2631,10 @@ namespace RackCad.UI.Systems.Selective
             // it anyway): does NOT mint into the session identity, so a later Insert still gets its own fresh GUID (I-15).
             var id = session.Identity.HasId ? session.Identity.Id : Guid.NewGuid().ToString();
             var name = string.IsNullOrWhiteSpace(NameBox.Text) ? session.Identity.Name : NameBox.Text.Trim();
-            var document = SelectivePalletDesignDocument.From(design, id, name);
+            // I-47 G15: la biblioteca es un artefacto DERIVADO. El editor ya trabaja sobre el EFECTIVO (G12),
+            // asi que exportar es materializar ese numero y dejar el vinculo -y la version promocionada- en el
+            // dibujo, que es donde significan algo.
+            var document = SelectiveLibraryExport.FromEffective(design, id, name);
 
             var path = UiSupport.PromptSaveToLibrary(this, name, "selectivo");
             if (path == null) return;

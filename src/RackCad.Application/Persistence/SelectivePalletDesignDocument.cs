@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using RackCad.Application.ProjectVariables;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
@@ -14,9 +17,33 @@ namespace RackCad.Application.Persistence
     /// </summary>
     public sealed class SelectivePalletDesignDocument
     {
-        /// <summary>Schema version this build writes; a file with a higher MAJOR is rejected (see <see cref="SchemaGuard"/>).</summary>
+        /// <summary>
+        /// The LEGACY write line: what a design that was never bound to a project variable keeps writing, so
+        /// the common case is not degraded and any earlier build still opens and edits it (I-47 D-07, F2).
+        /// </summary>
         public const string CurrentSchemaVersion = "1.0";
 
+        /// <summary>
+        /// The line a design moves to the first time it carries a <see cref="PropertyValues"/> binding. An
+        /// earlier build then REFUSES to open it, with the message <see cref="SchemaGuard"/> already ships --
+        /// which is the point: it fails loudly instead of silently unbinding the rack and redrawing it with
+        /// the frozen literal.
+        /// </summary>
+        public const string PromotedSchemaVersion = "2.0";
+
+        /// <summary>
+        /// The highest MAJOR this build READS. It is 2 and not 1 on purpose: without it
+        /// <see cref="SchemaGuard"/> would reject the very documents this build just promoted. Reading and
+        /// writing stop sharing a constant here, and that is deliberate rather than an oversight.
+        /// </summary>
+        public const int SupportedReadMajor = 2;
+
+        /// <summary>
+        /// The stored version. It KEEPS its initializer, unlike
+        /// <see cref="ProjectVariablesDocument.SchemaVersion"/>: C4.8-1 governs only the register, which is
+        /// born in ID22A and always writes its version. This document is older than versioning, so a missing
+        /// value here correctly means legacy.
+        /// </summary>
         public string SchemaVersion { get; set; } = CurrentSchemaVersion;
 
         /// <summary>Stable identity of the rack (GUID string). Kept across edits; assigned by the caller.</summary>
@@ -83,6 +110,93 @@ namespace RackCad.Application.Persistence
 
         /// <summary>Selected safety accessories (id + quantity). Null/empty for legacy designs (no field).</summary>
         public List<SafetySelectionDocument> SafetySelections { get; set; }
+
+        /// <summary>
+        /// The bindings of this rack: a PropertyId mapped to a TYPED reference. Null or empty for every
+        /// design that was never bound, which is why it is absent from their JSON entirely.
+        ///
+        /// <para>
+        /// It is a DECLARED field of the DTO, and that is a requirement rather than a style choice: the
+        /// restamp of an independent copy re-serializes THROUGH this document, so anything it does not
+        /// declare dies on the first RACKDUPLICAR. Surviving save-and-reopen would not be enough.
+        /// </para>
+        /// <para>
+        /// The value is discriminated by its kind instead of being a bare id, which is what lets a future
+        /// rack-to-rack reference arrive as one more case rather than changing the type of what is stored.
+        /// </para>
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public Dictionary<string, SelectivePropertyValueDocument> PropertyValues { get; set; }
+
+        /// <summary>
+        /// Whatever a later build of the same MAJOR wrote and this one does not understand.
+        ///
+        /// <para>
+        /// It does NOT protect against builds compiled before I-47 -- nothing added today can -- and no claim
+        /// here depends on that. What it does is let the authored carrier survive load, edit and save intact,
+        /// which the multi-view authority comparison later relies on: a carrier that dropped unknown fields
+        /// would make two sibling views look divergent when they are not.
+        /// </para>
+        /// </summary>
+        [JsonExtensionData]
+        public IDictionary<string, JsonElement> ExtensionData { get; set; }
+
+        /// <summary>
+        /// True when this document carries at least one binding. Evaluated on the document ABOUT TO BE
+        /// WRITTEN, which is what makes binding-and-saving in one step promote the schema.
+        ///
+        /// <para>JsonIgnore is not decoration: this is DERIVED state, and a serializer that emitted it would
+        /// write a redundant field into every stored rack -- one a later reader would have to decide whether
+        /// to trust.</para>
+        /// </summary>
+        [JsonIgnore]
+        public bool HasPropertyValues => PropertyValues != null && PropertyValues.Count > 0;
+
+        /// <summary>
+        /// Whether this document CARRIES a binding entry for the property — presence, and nothing else.
+        ///
+        /// <para>
+        /// It deliberately does not look at the kind and does not parse the id, because "there is a binding
+        /// here" and "I can interpret that binding" are DIFFERENT QUESTIONS, and answering the first with the
+        /// second collapses PRESENT-BUT-UNINTERPRETABLE into UNBOUND. An entry written by a newer build would
+        /// then read as no entry at all, and everything downstream would proceed as if the user had never
+        /// bound the property.
+        /// </para>
+        /// <para>
+        /// The key is compared exactly, so an entry for a different property — or the same token in another
+        /// case — is not this property's binding.
+        /// </para>
+        /// </summary>
+        public bool HasBindingEntry(PropertyId propertyId)
+            => PropertyValues != null && PropertyValues.ContainsKey(propertyId.Value);
+
+        /// <summary>
+        /// Whether the property is governed by a variable THIS BUILD CAN RESOLVE. Not the same as
+        /// <see cref="HasBindingEntry"/>, and the difference matters: use this one only where the answer
+        /// needed is about resolution, never to decide whether a binding exists.
+        /// </summary>
+        public bool IsBound(PropertyId propertyId) => TryGetBinding(propertyId, out _);
+
+        /// <summary>
+        /// The variable that governs the property, when there is one this build understands. An entry with an
+        /// unknown kind or an unreadable id answers FALSE here; deciding what THAT means is not this type's
+        /// job, and treating it as "not bound" at a decision point would be the silent fallback the contract
+        /// forbids — which is exactly why <see cref="HasBindingEntry"/> exists beside it.
+        /// </summary>
+        public bool TryGetBinding(PropertyId propertyId, out VariableId variableId)
+        {
+            variableId = default;
+
+            if (PropertyValues == null ||
+                !PropertyValues.TryGetValue(propertyId.Value, out var reference) ||
+                reference == null ||
+                !string.Equals(reference.Kind, SelectivePropertyValueDocument.ProjectVariableKind, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            return VariableId.TryParse(reference.VariableId, out variableId);
+        }
 
         public static SelectivePalletDesignDocument From(SelectivePalletDesign design, string id, string name)
         {
@@ -159,6 +273,60 @@ namespace RackCad.Application.Persistence
                 .ToList();
 
             return document;
+        }
+
+        /// <summary>
+        /// The AUTHORED CARRIER: produces the document to persist after an edit, keeping everything the
+        /// design itself cannot carry.
+        ///
+        /// <para>
+        /// It exists because From(design, id, name) builds a document out of the DOMAIN, and the domain has
+        /// no version, no bindings and no unknown fields -- so the round trip document, domain, document
+        /// destroys exactly the state that has to survive. Saving an existing rack UPDATES its authored
+        /// document; it does not fabricate another.
+        /// </para>
+        /// <para>
+        /// And the literal: while a property is bound, its authored literal is FROZEN AND INACTIVE. The value
+        /// the user sees in the editor is the variable's, so copying it back would silently overwrite the
+        /// intention the user typed before binding -- and that literal is the only honest thing left to use
+        /// the day the reference has to be repaired.
+        /// </para>
+        /// <para>
+        /// Freezing is decided by PRESENCE of the binding entry, not by whether this build can interpret it
+        /// (<see cref="HasBindingEntry"/>, never <see cref="IsBound"/>). An entry with an unknown kind or an
+        /// unreadable id is a binding this version does not understand -- it is NOT the absence of one -- and
+        /// asking the interpreting question here would overwrite the frozen literal in precisely the case
+        /// where something was already wrong, destroying the value the repair needs. Whether such an entry is
+        /// an error is decided by the semantic layer, which already reports it as one; persisting faithfully
+        /// and resolving correctly are separate responsibilities.
+        /// </para>
+        /// </summary>
+        public SelectivePalletDesignDocument WithDesign(SelectivePalletDesign design)
+            => WithDesign(design, null, null);
+
+        /// <summary>
+        /// The same carrier, carrying an identity the editor may have changed.
+        ///
+        /// <para>
+        /// <paramref name="name"/> exists because the user can RENAME a rack while editing it, and the name
+        /// belongs to the editor rather than to the carrier. A null argument keeps what this document already
+        /// had, so the common case reads as "just update the design".
+        /// </para>
+        /// </summary>
+        public SelectivePalletDesignDocument WithDesign(SelectivePalletDesign design, string id, string name)
+        {
+            var next = From(design, id ?? Id, name ?? Name);
+
+            next.SchemaVersion = SchemaVersion;
+            next.PropertyValues = PropertyValues;
+            next.ExtensionData = ExtensionData;
+
+            if (HasBindingEntry(ProjectPropertyIds.SelectiveVerticalClearance))
+            {
+                next.VerticalClearance = VerticalClearance;
+            }
+
+            return next;
         }
 
         public SelectivePalletDesign ToDomain()

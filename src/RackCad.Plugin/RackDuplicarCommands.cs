@@ -184,8 +184,17 @@ namespace RackCad.Plugin
 
             InDocumentTransaction.Run(document, transaction =>
             {
-                var payload = RackEnvelopeRestamp.RestampEnvelope(source.Payload, copyName);
-                var definitionId = RackCloner.CloneDefinition(database, transaction, source.DefinitionId, copyName, payload, sourceName, copyName);
+                // I-47 G14: la transformacion que puede fallar se decide ANTES de materializar la copia. Si el
+                // re-estampado no sale, no se clona nada: una copia con la identidad vieja dentro y una nueva
+                // fuera es irreversible, y solo se descubre cuando alguien la abre y la guarda.
+                var restamped = RackEnvelopeRestamp.RestampEnvelope(source.Payload, copyName);
+
+                if (!restamped.IsSuccess)
+                {
+                    throw new InvalidOperationException(restamped.Error);
+                }
+
+                var definitionId = RackCloner.CloneDefinition(database, transaction, source.DefinitionId, copyName, restamped.DesignJson, sourceName, copyName);
 
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);

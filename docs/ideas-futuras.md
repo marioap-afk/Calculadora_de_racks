@@ -850,3 +850,68 @@ que además comprueba la simetría: intercambiar los lados intercambia el result
 lado bajo y no «el mayor» ni «el que lo declaró primero». Esa prueba **no es especificación**: fija lo que
 hay para que un cambio futuro sea deliberado y visible. Cambiar la semántica exige la decisión del dueño y,
 por su alcance, probablemente un ADR.
+
+---
+
+## I-47 — hallazgos y dirección futura (2026-09-09, registrados sin implementar)
+
+### Deuda técnica: `ToProjectVariables()` no es autoridad del tipo persistido
+
+`ProjectVariablesDocument.ToProjectVariables()` **hardcodea hoy `VariableType.Length`** y **no lee** el
+campo `Type` que el registro guarda. Es inocuo mientras ID22A soporte un solo tipo, y por eso
+`SelectiveBindingOptions.ForLength` —la lista de variables que el editor Selectivo ofrece para vincular—
+filtra por el tipo **persistido** y no por esa proyección.
+
+**Cuando exista un segundo `VariableType`, esa proyección hay que corregirla ANTES de apoyarse en ella
+como autoridad del tipo.** Un tipo futuro leído como `Length` ofrecería para vincular una variable cuyo
+número significa otra cosa, y el vínculo resolvería sin fallar.
+
+No se arregla ahora: no hay segundo tipo, y arreglarlo hoy sería código sin caso que lo ejerza.
+
+### Project Variables — Excel-like Property Input UX (**futura, sin número y sin reclamar**)
+
+**Objetivo.** Reemplazar progresivamente los controles específicos de vínculo —hoy un `ComboBox` de
+variables compatibles más botones **Vincular** / **Desvincular**, sólo para
+`selective.verticalClearance`— por **un único input reutilizable** para cualquier propiedad vinculable.
+
+**Concepto.** El mismo campo acepta las dos cosas, y el marcador es `=`:
+
+```text
+6                    → Literal(6)
+=Holgura General     → ProjectVariableReference(VariableId)
+```
+
+Al escribir `=`, el control entra en modo referencia y ofrece autocompletado de las variables
+**compatibles**, mostrando nombre **y** valor:
+
+```text
+Holgura
+[ = ]
+
+  Holgura General     10 in
+  Holgura Cliente A    8 in
+  Holgura Especial    12 in
+```
+
+**Alcance tentativo.** Input numérico inteligente · modo literal · modo referencia con `=` ·
+selector/autocompletado de variables · **presentación por nombre, autoridad por `VariableId`** ·
+transición literal ↔ variable **mediante intents** · reutilizable en varias propiedades · **sin cambiar
+la persistencia de ID22A**.
+
+**Reglas que NO puede saltarse** (son las de I-47, y siguen valiendo):
+
+- se persiste `ProjectVariableReference(VariableId)`, **nunca** el texto `"=Holgura General"`;
+- los **nombres duplicados siguen permitidos**, así que la lista debe dar contexto suficiente para
+  distinguir dos homónimas;
+- **renombrar** deja el `VariableId` y el vínculo intactos; la UI sólo vuelve a dibujar `=NuevoNombre`;
+- literal → variable es un **`Link`** (el literal queda congelado);
+- variable → literal es **explícito**: `Unlink` —que materializa el efectivo actual— y, sólo después, un
+  `SetLiteral` si el usuario escribió otro número. **Nunca** editar `PropertyValues` directamente ni caer
+  a un valor por defecto en silencio;
+- el input no puentea el preflight semántico ni el ejecutor.
+
+**Compatibilidad con ID22B, como dirección y no como permiso.** El mismo campo admitiría más adelante
+`=Holgura General + 2`. Eso **no autoriza** añadir ahora parser, AST, fórmulas, grafo de dependencias,
+detección de ciclos, persistencia de expresiones ni referencias a propiedades de otros racks (**ID21**).
+
+**No se numera ni se reclama aquí**: asignarle número es acto de planificación formal.
