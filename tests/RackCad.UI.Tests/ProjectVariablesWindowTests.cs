@@ -87,6 +87,25 @@ namespace RackCad.UI.Tests
                 ProjectVariablesReadResult.Readable(Registro(10.0, id: Otra)),
                 ProjectVariableScanEntry.Selective("D1", RackA, Doc(6.0, VarId), 1));
 
+        /// <summary>
+        /// Un rack con dos vinculos no resolubles, uno de ellos sobre una propiedad que esta version no conoce.
+        /// El rack entero queda BLOQUEADO: ninguna fila es accionable, ni la que por si sola seria reparable.
+        /// </summary>
+        private static ProjectVariablesWorkspace ConUnRackBloqueado()
+        {
+            var doc = SelectivePalletDesignDocument.From(Diseno(6.0), RackA, "Rack A");
+            doc.PropertyValues = new Dictionary<string, SelectivePropertyValueDocument>
+            {
+                [Token] = SelectivePropertyValueDocument.ToProjectVariable(VarId),
+                ["selective.noExiste"] = SelectivePropertyValueDocument.ToProjectVariable(VarId),
+            };
+            doc.SchemaVersion = SelectivePalletDesignDocument.PromotedSchemaVersion;
+
+            return Workspace(
+                ProjectVariablesReadResult.Readable(Registro(10.0, id: Otra)),
+                ProjectVariableScanEntry.Selective("D1", RackA, doc, 1));
+        }
+
         private static T Control<T>(RackProjectVariablesWindow window, string name)
             where T : System.Windows.FrameworkElement
             => EditorWindowTestSupport.Find<T>(window, element => element.Name == name);
@@ -294,8 +313,57 @@ namespace RackCad.UI.Tests
             Assert.Null(intentSin);
             Assert.Equal(ProjectVariableIntentKind.RepairBroken, intentCon.Kind);
             Assert.Equal(RackA, intentCon.RackId);
-            Assert.Equal(Token, intentCon.PropertyId);
             Assert.True(intentCon.Confirmed);
+
+            // I-48 G4B: reparar es del RACK. El intent ya no lleva alcance de propiedad, porque una reparacion
+            // parcial no se puede aplicar: el ejecutor necesita un diseno efectivo COMPLETO.
+            Assert.Null(intentCon.PropertyId);
+        }
+
+        // ---------------------------------------------------------------- I-48 G4B: el rack bloqueado
+
+        [Fact]
+        public void UN_RACK_BLOQUEADO_MUESTRA_SUS_FILAS_PERO_NO_DEJA_REPARAR()
+        {
+            var (count, enabled, warning, intent) = StaTestRunner.Run(() =>
+            {
+                var window = new RackProjectVariablesWindow(ConUnRackBloqueado());
+                var list = Control<ListBox>(window, "BrokenList");
+                list.SelectedIndex = 0;
+
+                // Incluso confirmando: el boton sigue apagado y el clic no produce intent.
+                Control<CheckBox>(window, "RepairConfirmCheck").IsChecked = true;
+                EditorWindowTestSupport.ClickNamed(window, "RepairButton");
+
+                return (list.Items.Count,
+                    Control<Button>(window, "RepairButton").IsEnabled,
+                    Control<TextBlock>(window, "RepairWarningText").Text,
+                    window.Intent);
+            });
+
+            // Diagnostico SI: las dos filas se ven.
+            Assert.Equal(2, count);
+
+            // Accionable NO.
+            Assert.False(enabled);
+            Assert.Null(intent);
+        }
+
+        [Fact]
+        public void UN_RACK_BLOQUEADO_NO_PROMETE_EL_LITERAL_ALMACENADO()
+        {
+            // Prometerlo seria prometer un cambio que no se puede aplicar en absoluto mientras el rack lleve un
+            // estado fatal. La ventana no deduce eso: lo lee del veredicto que trae la fila.
+            var warning = StaTestRunner.Run(() =>
+            {
+                var window = new RackProjectVariablesWindow(ConUnRackBloqueado());
+                Control<ListBox>(window, "BrokenList").SelectedIndex = 0;
+                return Control<TextBlock>(window, "RepairWarningText").Text;
+            });
+
+            Assert.Contains("no se puede reparar", warning);
+            Assert.Contains("diagnóstico", warning);
+            Assert.DoesNotContain("literal almacenado", warning);
         }
 
         // ================================================================ 11, 12: el registro que no se lee

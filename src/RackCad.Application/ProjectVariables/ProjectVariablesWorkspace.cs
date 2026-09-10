@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using RackCad.Application.Persistence;
-using RackCad.Application.Systems.Selective;
 
 namespace RackCad.Application.ProjectVariables
 {
@@ -55,7 +54,14 @@ namespace RackCad.Application.ProjectVariables
     public sealed class BrokenBindingRow
     {
         public BrokenBindingRow(
-            string rackId, string rackName, string propertyId, string variableId, double storedLiteral, string detail)
+            string rackId,
+            string rackName,
+            string propertyId,
+            string variableId,
+            double storedLiteral,
+            string detail,
+            bool rackCanRepair,
+            string rackBlockingReason)
         {
             RackId = rackId;
             RackName = rackName;
@@ -63,6 +69,8 @@ namespace RackCad.Application.ProjectVariables
             VariableId = variableId;
             StoredLiteral = storedLiteral;
             Detail = detail;
+            RackCanRepair = rackCanRepair;
+            RackBlockingReason = rackBlockingReason;
         }
 
         public string RackId { get; }
@@ -78,6 +86,20 @@ namespace RackCad.Application.ProjectVariables
         public double StoredLiteral { get; }
 
         public string Detail { get; }
+
+        /// <summary>
+        /// Whether the RACK this row belongs to can be repaired. Application decides it; a surface must NOT
+        /// derive it by looking at the other rows, because that would put the meaning of FATAL in the UI.
+        ///
+        /// <para>
+        /// False means this row is a DIAGNOSTIC: still worth showing, never an actionable repair. Repair is
+        /// rack-scoped, so a single fatal state anywhere in the rack makes every row of it unactionable.
+        /// </para>
+        /// </summary>
+        public bool RackCanRepair { get; }
+
+        /// <summary>Why the rack cannot be repaired, when it cannot. Null when it can.</summary>
+        public string RackBlockingReason { get; }
     }
 
     /// <summary>
@@ -143,7 +165,17 @@ namespace RackCad.Application.ProjectVariables
                 return Blocked(registry.Error);
             }
 
-            var document = registry.Document;
+            var accreditation = UsableProjectVariablesRegistry.Accredit(registry);
+
+            if (!accreditation.IsUsable)
+            {
+                // Includes the ambiguous identity: a register that is persistence-readable but declares a
+                // VariableId twice cannot be administered, because every row and every count would have to
+                // pick one of the two.
+                return Blocked(accreditation.Error);
+            }
+
+            var usable = accreditation.Registry;
 
             // A definition that is NOT placed is not in the drawing, so it cannot be a consumer of anything.
             // Dropping it here is what keeps an old, unplaced, unreadable leftover from blocking the register.
@@ -152,7 +184,7 @@ namespace RackCad.Application.ProjectVariables
             // The repairs are computed FIRST and travel even on a blocked workspace. Otherwise the one thing
             // that fixes an indeterminate drawing -- removing the broken binding -- would be unreachable
             // precisely because the drawing is indeterminate.
-            var broken = FindBroken(present, document);
+            var broken = FindBroken(present, usable);
             var unclassifiable = FirstPlacedUnclassifiable(present);
 
             if (unclassifiable != null)
@@ -162,25 +194,24 @@ namespace RackCad.Application.ProjectVariables
 
             var rows = new List<ProjectVariableRow>();
 
-            if (document != null)
+            // The listing reads the SAME accredited authority a lookup reads. Before I-48 G4B it walked the
+            // document on its own, which is how a listing and a resolution could disagree.
+            foreach (var target in usable.Targets())
             {
-                foreach (var variable in document.ToProjectVariables())
+                var discovery = ProjectVariableConsumerDiscovery.DiscoverConsumers(present, target.VariableId);
+
+                if (!discovery.IsSuccess)
                 {
-                    var discovery = ProjectVariableConsumerDiscovery.DiscoverConsumers(present, variable.Id);
-
-                    if (!discovery.IsSuccess)
-                    {
-                        // A count that cannot be established is not a count of zero.
-                        return Blocked(discovery.Error, broken);
-                    }
-
-                    rows.Add(new ProjectVariableRow(
-                        variable.Id,
-                        variable.Name,
-                        variable.Type,
-                        variable.Definition.LiteralValue,
-                        ProjectVariableMutationPreflight.Summarize(discovery.Consumers, variable.Id)));
+                    // A count that cannot be established is not a count of zero.
+                    return Blocked(discovery.Error, broken);
                 }
+
+                rows.Add(new ProjectVariableRow(
+                    target.VariableId,
+                    target.Name,
+                    target.VariableType,
+                    target.LiteralValue,
+                    ProjectVariableMutationPreflight.Summarize(discovery.Consumers, target.VariableId)));
             }
 
             return new ProjectVariablesWorkspace(
@@ -241,12 +272,26 @@ namespace RackCad.Application.ProjectVariables
         }
 
         /// <summary>
-        /// The bindings that do not resolve, one row per rack and property — the sibling views of a rack are
-        /// the SAME repair, not three. Resolution is asked of the one resolver; nothing about what a binding
-        /// means is decided here.
+        /// Every binding of every rack that does NOT resolve, one row per rack and property (I-48 G4B).
+        ///
+        /// <para>
+        /// It no longer stops at the first failure of a whole-document resolve. That shortcut reported ONE row
+        /// per rack, so a rack with two broken references surfaced one, and the second only appeared after the
+        /// first was fixed. The scan is now complete and every state is classified.
+        /// </para>
+        /// <para>
+        /// <b>Repairability is a property of the RACK.</b> Each row carries the rack's verdict, computed over
+        /// its complete scan, so a surface never has to derive "is there a fatal elsewhere" by inspecting the
+        /// other rows — deriving it would move the meaning of FATAL into the UI. A row of a blocked rack is a
+        /// diagnostic: shown, never actionable.
+        /// </para>
+        /// <para>
+        /// The stored literal of each row comes from THAT property's descriptor. A single hardcoded field would
+        /// show the user the wrong number at exactly the moment they must decide a repair.
+        /// </para>
         /// </summary>
         private static IReadOnlyList<BrokenBindingRow> FindBroken(
-            IReadOnlyList<ProjectVariableScanEntry> entries, ProjectVariablesDocument document)
+            IReadOnlyList<ProjectVariableScanEntry> entries, UsableProjectVariablesRegistry registry)
         {
             var rows = new List<BrokenBindingRow>();
 
@@ -256,7 +301,7 @@ namespace RackCad.Application.ProjectVariables
             }
 
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var resolver = new SelectiveEffectiveDesignResolver();
+            var descriptors = SelectiveLinkedProperties.All;
 
             foreach (var entry in entries)
             {
@@ -270,27 +315,40 @@ namespace RackCad.Application.ProjectVariables
                     continue;
                 }
 
-                var resolution = resolver.Resolve(entry.Authored, document);
+                var assessment = SelectiveLinkedPropertyKernel.Assess(entry.Authored, descriptors, registry);
 
-                if (resolution.IsSuccess)
+                if (assessment.Outcome == RackRepairability.Healthy)
                 {
                     continue;
                 }
 
-                var propertyId = resolution.PropertyId.Value ?? string.Empty;
-
-                if (!seen.Add(entry.RackId + "|" + propertyId))
+                foreach (var inspection in assessment.Inspections)
                 {
-                    continue;
-                }
+                    if (inspection.IsHealthy)
+                    {
+                        continue;
+                    }
 
-                rows.Add(new BrokenBindingRow(
-                    entry.RackId,
-                    entry.Authored.Name,
-                    propertyId,
-                    resolution.VariableId,
-                    entry.Authored.VerticalClearance,
-                    resolution.Error));
+                    // The sibling views of a rack are the SAME row, not three.
+                    if (!seen.Add(entry.RackId + "|" + (inspection.PropertyToken ?? string.Empty)))
+                    {
+                        continue;
+                    }
+
+                    var literal = descriptors.TryGetDescriptor(inspection.PropertyId, out var descriptor)
+                        ? descriptor.ReadAuthored(entry.Authored)
+                        : 0.0;
+
+                    rows.Add(new BrokenBindingRow(
+                        entry.RackId,
+                        entry.Authored.Name,
+                        inspection.PropertyToken,
+                        inspection.RawVariableId,
+                        literal,
+                        inspection.Detail,
+                        assessment.CanRepair,
+                        assessment.CanRepair ? null : assessment.BlockingReason));
+                }
             }
 
             return rows;

@@ -26,11 +26,13 @@ namespace RackCad.Application.ProjectVariables
     /// </summary>
     internal sealed class VariableTargetSnapshot
     {
-        private VariableTargetSnapshot(VariableId variableId, VariableType variableType, double literalValue)
+        private VariableTargetSnapshot(
+            VariableId variableId, VariableType variableType, double literalValue, string name)
         {
             VariableId = variableId;
             VariableType = variableType;
             LiteralValue = literalValue;
+            Name = name;
         }
 
         internal VariableId VariableId { get; }
@@ -38,6 +40,13 @@ namespace RackCad.Application.ProjectVariables
         internal VariableType VariableType { get; }
 
         internal double LiteralValue { get; }
+
+        /// <summary>
+        /// The label a person reads. It travels here so that the surface SHOWING a name and the surface
+        /// RESOLVING a value read the same accredited target: an editor displaying one variable while the
+        /// drawing takes another's value is exactly the split this authority removes. It is never identity.
+        /// </summary>
+        internal string Name { get; }
 
         /// <summary>
         /// Builds a snapshot, or explains why the input is not one. Rejects an empty identity and a non-finite
@@ -48,7 +57,8 @@ namespace RackCad.Application.ProjectVariables
             VariableType variableType,
             double literalValue,
             out VariableTargetSnapshot snapshot,
-            out string error)
+            out string error,
+            string name = null)
         {
             snapshot = null;
             error = null;
@@ -65,7 +75,7 @@ namespace RackCad.Application.ProjectVariables
                 return false;
             }
 
-            snapshot = new VariableTargetSnapshot(variableId, variableType, literalValue);
+            snapshot = new VariableTargetSnapshot(variableId, variableType, literalValue, name);
             return true;
         }
 

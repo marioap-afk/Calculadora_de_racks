@@ -253,12 +253,18 @@ namespace RackCad.Plugin
                         {
                             var lastRead = ProjectVariablesRegistry.Read(transaction, database);
 
+                            // The re-read is a DIFFERENT document from the one the plan was decided against, so
+                            // it gets its own accreditation. Application owns that order — the raw result never
+                            // becomes the thing a change is applied to.
+                            var commit = RegistryCommit.Prepare(plan.RegistryMutation, lastRead);
+
+                            if (commit.IsBlocked)
+                            {
+                                return MutationExecutionResult.Aborted(commit.Error);
+                            }
+
                             if (!ProjectVariablesRegistry.TryWrite(
-                                    transaction,
-                                    database,
-                                    lastRead,
-                                    plan.RegistryMutation.ApplyTo(lastRead.Document),
-                                    out var registryError))
+                                    transaction, database, lastRead, commit.Changed, out var registryError))
                             {
                                 // Leaving without confirming: the transaction unwinds and the drawing is
                                 // untouched — including every view that was already redefined in it.

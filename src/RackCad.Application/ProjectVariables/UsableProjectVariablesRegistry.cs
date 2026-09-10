@@ -26,10 +26,14 @@ namespace RackCad.Application.ProjectVariables
     internal sealed class ProjectVariablesAccreditation
     {
         private ProjectVariablesAccreditation(
-            ProjectVariablesAccreditationOutcome outcome, UsableProjectVariablesRegistry registry, string error)
+            ProjectVariablesAccreditationOutcome outcome,
+            UsableProjectVariablesRegistry registry,
+            ProjectVariablesDocument document,
+            string error)
         {
             Outcome = outcome;
             Registry = registry;
+            Document = document;
             Error = error;
         }
 
@@ -40,14 +44,28 @@ namespace RackCad.Application.ProjectVariables
 
         internal string Error { get; }
 
+        /// <summary>
+        /// The document this accreditation VOUCHES for, and the only one a mutation may be applied to. It is
+        /// non-null only when a real read was accredited: the pure target path has no document, so a fixture
+        /// can never produce something committable.
+        ///
+        /// <para>
+        /// It exists so that "apply the change to the accredited document" is expressible as a value instead of
+        /// as a convention. A caller that holds a raw read has nothing to apply a mutation to.
+        /// </para>
+        /// </summary>
+        internal ProjectVariablesDocument Document { get; }
+
         internal bool IsUsable => Outcome == ProjectVariablesAccreditationOutcome.Usable;
 
-        internal static ProjectVariablesAccreditation Usable(UsableProjectVariablesRegistry registry)
-            => new ProjectVariablesAccreditation(ProjectVariablesAccreditationOutcome.Usable, registry, null);
+        internal static ProjectVariablesAccreditation Usable(
+            UsableProjectVariablesRegistry registry, ProjectVariablesDocument document = null)
+            => new ProjectVariablesAccreditation(
+                ProjectVariablesAccreditationOutcome.Usable, registry, document, null);
 
         internal static ProjectVariablesAccreditation Failed(
             ProjectVariablesAccreditationOutcome outcome, string error)
-            => new ProjectVariablesAccreditation(outcome, null, error);
+            => new ProjectVariablesAccreditation(outcome, null, null, error);
     }
 
     /// <summary>
@@ -140,7 +158,8 @@ namespace RackCad.Application.ProjectVariables
                         (entry?.VariableId ?? "<null>") + "').");
                 }
 
-                if (!VariableTargetSnapshot.TryCreate(id, type, entry.Definition.Value.Value, out var snapshot, out var error))
+                if (!VariableTargetSnapshot.TryCreate(
+                        id, type, entry.Definition.Value.Value, out var snapshot, out var error, entry.Name))
                 {
                     return ProjectVariablesAccreditation.Failed(
                         ProjectVariablesAccreditationOutcome.NotReadable, error);
@@ -158,7 +177,8 @@ namespace RackCad.Application.ProjectVariables
                 byId.Add(id, snapshot);
             }
 
-            return ProjectVariablesAccreditation.Usable(new UsableProjectVariablesRegistry(byId));
+            return ProjectVariablesAccreditation.Usable(
+                new UsableProjectVariablesRegistry(byId), read.Document);
         }
 
         /// <summary>
@@ -208,5 +228,18 @@ namespace RackCad.Application.ProjectVariables
         /// <summary>The target a reference names, when this register holds it. A miss is MISSING, never ambiguous.</summary>
         internal bool TryGetTarget(VariableId variableId, out VariableTargetSnapshot target)
             => _byId.TryGetValue(variableId, out target);
+
+        /// <summary>
+        /// Every accredited target, ordered by identity so a listing never depends on Dictionary enumeration
+        /// order. This is how a surface that ENUMERATES variables consumes the same authority as one that looks
+        /// a single target up.
+        /// </summary>
+        internal IReadOnlyList<VariableTargetSnapshot> Targets()
+        {
+            var targets = new List<VariableTargetSnapshot>(_byId.Values);
+            targets.Sort(static (left, right) =>
+                string.Compare(left.VariableId.Value, right.VariableId.Value, System.StringComparison.OrdinalIgnoreCase));
+            return targets;
+        }
     }
 }

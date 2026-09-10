@@ -115,23 +115,15 @@ namespace RackCad.Application.Systems.Selective
         /// value already came from the one resolver, and nothing here decides anything by this string.
         /// </summary>
         private static string BoundName(
-            SelectivePalletDesignDocument authored, ProjectVariablesDocument registry)
+            SelectivePalletDesignDocument authored, UsableProjectVariablesRegistry registry)
         {
-            if (registry == null ||
-                !authored.TryGetBinding(ProjectPropertyIds.SelectiveVerticalClearance, out var variableId))
-            {
-                return null;
-            }
-
-            foreach (var variable in registry.ToProjectVariables())
-            {
-                if (variable.Id.Equals(variableId))
-                {
-                    return variable.Name;
-                }
-            }
-
-            return null;
+            // ONE lookup, over the SAME accredited authority the resolver just used. Before I-48 G4B this
+            // walked the document itself and returned the FIRST match, so with a duplicated identity the
+            // editor could name one variable while the drawing took another's value.
+            return authored.TryGetBinding(ProjectPropertyIds.SelectiveVerticalClearance, out var variableId) &&
+                   registry.TryGetTarget(variableId, out var target)
+                ? target.Name
+                : null;
         }
 
         public static SelectiveEditorOpenResult Resolve(
@@ -161,7 +153,16 @@ namespace RackCad.Application.Systems.Selective
                     return SelectiveEditorOpenResult.Blocked(registry.Error);
             }
 
-            var resolution = Resolver.Resolve(authored, registry.Document);
+            var accreditation = UsableProjectVariablesRegistry.Accredit(registry);
+
+            if (!accreditation.IsUsable)
+            {
+                // An ambiguous identity blocks the editor exactly like an unreadable register: there is no
+                // authority to open against, and picking one entry would be an arbitrary resolution.
+                return SelectiveEditorOpenResult.Blocked(accreditation.Error);
+            }
+
+            var resolution = Resolver.ResolveAgainst(authored, accreditation.Registry);
 
             if (!resolution.IsSuccess)
             {
@@ -175,7 +176,7 @@ namespace RackCad.Application.Systems.Selective
             return SelectiveEditorOpenResult.Open(
                 resolution.Design,
                 VerticalClearanceBindingState.Of(
-                    bound, resolution.Design.VerticalClearance, bound ? BoundName(authored, registry.Document) : null));
+                    bound, resolution.Design.VerticalClearance, bound ? BoundName(authored, accreditation.Registry) : null));
         }
     }
 }

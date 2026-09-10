@@ -34,6 +34,23 @@ namespace RackCad.Application.ProjectVariables
         FatalMalformedReference = 5,
     }
 
+    /// <summary>
+    /// Which of the two malformed shapes a reference had. It is NOT a sixth classification: both are
+    /// <see cref="BindingInspectionOutcome.FatalMalformedReference"/> with the same disposition. It exists
+    /// because the resolver's published outcome vocabulary already distinguished them, and that distinction
+    /// cannot be inferred from whether an id string happened to be present.
+    /// </summary>
+    internal enum MalformedReferenceReason
+    {
+        None = 0,
+
+        /// <summary>A reference kind this build does not implement.</summary>
+        UnknownKind = 1,
+
+        /// <summary>The kind was right but the <see cref="VariableId"/> could not be read.</summary>
+        UnreadableVariableId = 2,
+    }
+
     /// <summary>The classification of one binding, with what a caller needs to act on it or explain it.</summary>
     internal sealed class BindingInspection
     {
@@ -44,9 +61,11 @@ namespace RackCad.Application.ProjectVariables
             string rawVariableId,
             VariableId variableId,
             VariableTargetSnapshot target,
-            string detail)
+            string detail,
+            MalformedReferenceReason malformed = MalformedReferenceReason.None)
         {
             Outcome = outcome;
+            Malformed = malformed;
             PropertyToken = propertyToken;
             PropertyId = propertyId;
             RawVariableId = rawVariableId;
@@ -79,6 +98,9 @@ namespace RackCad.Application.ProjectVariables
         /// <summary>The visible reason. Null when healthy.</summary>
         internal string Detail { get; }
 
+        /// <summary>Which malformed shape it was, when the outcome is the malformed one.</summary>
+        internal MalformedReferenceReason Malformed { get; }
+
         internal bool IsHealthy => Outcome == BindingInspectionOutcome.Healthy;
 
         internal bool IsRepairable => Outcome == BindingInspectionOutcome.RepairableMissingTarget;
@@ -107,10 +129,15 @@ namespace RackCad.Application.ProjectVariables
             => new BindingInspection(
                 BindingInspectionOutcome.FatalUnknownProperty, token, propertyId, null, default, null, detail);
 
-        internal static BindingInspection Malformed(
-            string token, PropertyId propertyId, string rawVariableId, string detail)
+        internal static BindingInspection MalformedReference(
+            string token,
+            PropertyId propertyId,
+            string rawVariableId,
+            string detail,
+            MalformedReferenceReason reason)
             => new BindingInspection(
-                BindingInspectionOutcome.FatalMalformedReference, token, propertyId, rawVariableId, default, null, detail);
+                BindingInspectionOutcome.FatalMalformedReference,
+                token, propertyId, rawVariableId, default, null, detail, reason);
     }
 
     /// <summary>
@@ -159,7 +186,8 @@ namespace RackCad.Application.ProjectVariables
                 return BindingInspection.UnknownProperty(
                     rawPropertyToken,
                     propertyId,
-                    "La propiedad '" + (rawPropertyToken ?? "<null>") + "' no es una que esta version conozca.");
+                    "declara un vinculo sobre una propiedad que esta version no conoce ('" +
+                    (rawPropertyToken ?? "<null>") + "').");
             }
 
             if (rawReference == null ||
@@ -168,22 +196,24 @@ namespace RackCad.Application.ProjectVariables
                     SelectivePropertyValueDocument.ProjectVariableKind,
                     StringComparison.Ordinal))
             {
-                return BindingInspection.Malformed(
+                return BindingInspection.MalformedReference(
                     rawPropertyToken,
                     propertyId,
                     rawReference?.VariableId,
-                    "El vinculo de '" + propertyId + "' es de una clase que esta version no conoce ('" +
-                    (rawReference?.Kind ?? "<null>") + "').");
+                    "propiedad '" + propertyId + "': el vinculo es de una clase que esta version no conoce ('" +
+                    (rawReference?.Kind ?? "<null>") + "').",
+                    MalformedReferenceReason.UnknownKind);
             }
 
             if (!VariableId.TryParse(rawReference.VariableId, out var variableId))
             {
-                return BindingInspection.Malformed(
+                return BindingInspection.MalformedReference(
                     rawPropertyToken,
                     propertyId,
                     rawReference.VariableId,
-                    "El vinculo de '" + propertyId + "' apunta a un id de variable ilegible ('" +
-                    (rawReference.VariableId ?? "<null>") + "').");
+                    "propiedad '" + propertyId + "': el vinculo apunta a un id de variable ilegible ('" +
+                    (rawReference.VariableId ?? "<null>") + "').",
+                    MalformedReferenceReason.UnreadableVariableId);
             }
 
             if (!registry.TryGetTarget(variableId, out var target))
@@ -192,7 +222,8 @@ namespace RackCad.Application.ProjectVariables
                     rawPropertyToken,
                     propertyId,
                     variableId,
-                    "La variable de proyecto '" + variableId + "' no existe en este dibujo.");
+                    "propiedad '" + propertyId + "': la variable de proyecto '" + variableId +
+                    "' no existe en este dibujo. No hay valor efectivo que aplicar.");
             }
 
             if (target.VariableType != descriptor.VariableType)
@@ -202,7 +233,7 @@ namespace RackCad.Application.ProjectVariables
                     propertyId,
                     variableId,
                     target,
-                    "La propiedad '" + propertyId + "' exige una variable de tipo " + descriptor.VariableType +
+                    "propiedad '" + propertyId + "': exige una variable de tipo " + descriptor.VariableType +
                     ", pero '" + variableId + "' es de tipo " + target.VariableType + ".");
             }
 

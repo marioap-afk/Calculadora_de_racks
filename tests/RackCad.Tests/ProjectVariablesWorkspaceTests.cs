@@ -67,6 +67,25 @@ namespace RackCad.Tests
             return doc;
         }
 
+        /// <summary>
+        /// Un documento con DOS vinculos. El segundo token es arbitrario a proposito: con una sola propiedad
+        /// registrada, es la unica forma de alcanzar en produccion un rack con dos vinculos no resolubles.
+        /// </summary>
+        private static SelectivePalletDesignDocument Dos(
+            double literal, string primera, string segundoToken, string segunda, string rackId = RackA)
+        {
+            var doc = SelectivePalletDesignDocument.From(Diseno(literal), rackId, "Rack A");
+
+            doc.PropertyValues = new Dictionary<string, SelectivePropertyValueDocument>
+            {
+                [Token] = SelectivePropertyValueDocument.ToProjectVariable(primera),
+                [segundoToken] = SelectivePropertyValueDocument.ToProjectVariable(segunda),
+            };
+
+            doc.SchemaVersion = SelectivePalletDesignDocument.PromotedSchemaVersion;
+            return doc;
+        }
+
         private static ProjectVariableScanEntry Vista(
             SelectivePalletDesignDocument doc, string def = "D1", string rackId = RackA, int refs = 1)
             => ProjectVariableScanEntry.Selective(def, rackId, doc, refs);
@@ -236,6 +255,123 @@ namespace RackCad.Tests
             Assert.Single(workspace.BrokenBindings);
         }
 
+        // ---------------------------------------------------------------- I-48 G4B: el escaneo completo
+
+        [Fact]
+        public void UN_RACK_CON_DOS_VINCULOS_NO_RESOLUBLES_LISTA_LOS_DOS()
+        {
+            // El deadlock que la revision encontro: cuando la ventana paraba en el primer fallo del resolver,
+            // un rack con dos vinculos rotos publicaba una fila, y la segunda solo aparecia tras arreglar la
+            // primera. Se llega a este estado copiando un rack a un dibujo sin registro.
+            var workspace = Abrir(
+                ProjectVariablesReadResult.Readable(Registro(10.0, id: Otra)),
+                Vista(Dos(6.0, VarId, "selective.noExiste", Otra), "D1"));
+
+            Assert.Equal(2, workspace.BrokenBindings.Count);
+        }
+
+        [Fact]
+        public void UN_ESTADO_FATAL_DEJA_TODO_EL_RACK_SIN_REPARAR_Y_LO_EXPLICA()
+        {
+            // La reparabilidad es del RACK. Con un estado fatal en cualquier parte, ninguna fila es accionable
+            // -aunque una de ellas sea, por si sola, un target ausente reparable-, porque el ejecutor necesita
+            // un diseno efectivo COMPLETO y no hay ninguno.
+            var workspace = Abrir(
+                ProjectVariablesReadResult.Readable(Registro(10.0, id: Otra)),
+                Vista(Dos(6.0, VarId, "selective.noExiste", Otra), "D1"));
+
+            Assert.All(workspace.BrokenBindings, row => Assert.False(row.RackCanRepair));
+            Assert.All(workspace.BrokenBindings, row => Assert.NotNull(row.RackBlockingReason));
+        }
+
+        [Fact]
+        public void UN_TARGET_AUSENTE_SIN_NADA_FATAL_SI_ES_REPARABLE()
+        {
+            var workspace = Abrir(
+                ProjectVariablesReadResult.Readable(Registro(10.0, id: Otra)),
+                Vista(Doc(6.0, VarId), "D1"));
+
+            var broken = Assert.Single(workspace.BrokenBindings);
+            Assert.True(broken.RackCanRepair);
+            Assert.Null(broken.RackBlockingReason);
+        }
+
+        [Fact]
+        public void EL_VEREDICTO_DEL_RACK_NO_DEPENDE_DEL_ORDEN_EN_QUE_SE_ESCANEA()
+        {
+            // La fila del token que ordena PRIMERO ya sale marcada como no reparable, asi que el veredicto no
+            // se publica antes de terminar el escaneo completo del rack.
+            var workspace = Abrir(
+                ProjectVariablesReadResult.Readable(Registro(10.0, id: Otra)),
+                Vista(Dos(6.0, VarId, "aaa.antesQueTodo", Otra), "D1"));
+
+            Assert.Equal(2, workspace.BrokenBindings.Count);
+            Assert.Equal("aaa.antesQueTodo", workspace.BrokenBindings[0].PropertyId);
+            Assert.False(workspace.BrokenBindings[0].RackCanRepair);
+        }
+
+        [Fact]
+        public void EL_LITERAL_DE_UNA_FILA_SALE_DE_SU_DESCRIPTOR_NO_DE_UN_CAMPO_FIJO()
+        {
+            // Una propiedad que esta version no conoce no tiene descriptor, asi que no hay literal que
+            // prometer. Un campo hardcodeado ensenaria la holgura vertical del rack como si fuera el valor que
+            // gobernaria tras reparar, justo cuando el usuario tiene que decidir.
+            var workspace = Abrir(
+                ProjectVariablesReadResult.Readable(Registro(10.0, id: Otra)),
+                Vista(Dos(6.0, VarId, "selective.noExiste", Otra), "D1"));
+
+            var desconocida = Assert.Single(
+                workspace.BrokenBindings.Where(row => row.PropertyId == "selective.noExiste"));
+            var conocida = Assert.Single(
+                workspace.BrokenBindings.Where(row => row.PropertyId == Token));
+
+            Assert.Equal(0.0, desconocida.StoredLiteral);
+            Assert.Equal(6.0, conocida.StoredLiteral);
+        }
+
+        [Fact]
+        public void UN_REGISTRO_CON_VARIABLEID_DUPLICADO_BLOQUEA_LA_VENTANA()
+        {
+            // El store lo acepta -no valida unicidad de VariableId- pero la identidad no: cada fila y cada
+            // conteo tendrian que elegir una de las dos entradas.
+            var document = Registro(10.0, id: VarId, name: "Primera");
+            document.Variables.Add(new ProjectVariableDocument
+            {
+                VariableId = VarId,
+                Name = "Segunda",
+                Type = VariableType.Length.ToString(),
+                Definition = new ProjectVariableDefinitionDocument { Kind = "literal", Value = 20.0 },
+            });
+
+            var workspace = Abrir(ProjectVariablesReadResult.Readable(document));
+
+            Assert.False(workspace.IsEditable);
+            Assert.Empty(workspace.Variables);
+            Assert.Contains(VarId, workspace.Error);
+        }
+
+        [Fact]
+        public void LAS_FILAS_DE_VARIABLES_SALEN_ORDENADAS_POR_IDENTIDAD()
+        {
+            // La ventana enumera la MISMA autoridad acreditada que resuelve un lookup, asi que su orden no
+            // depende de la enumeracion de un diccionario.
+            var document = Registro(10.0, id: Otra, name: "Segunda");
+            document.Variables.Add(new ProjectVariableDocument
+            {
+                VariableId = VarId,
+                Name = "Primera",
+                Type = VariableType.Length.ToString(),
+                Definition = new ProjectVariableDefinitionDocument { Kind = "literal", Value = 20.0 },
+            });
+
+            var workspace = Abrir(ProjectVariablesReadResult.Readable(document));
+
+            Assert.True(workspace.IsEditable);
+            Assert.Equal(
+                new[] { Otra, VarId },
+                workspace.Variables.Select(row => row.Id.Value).ToArray());
+        }
+
         // ================================================================ los intents
 
         [Fact]
@@ -258,12 +394,17 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void REPARAR_VIAJA_POR_RACK_Y_PROPIEDAD()
+        /// <summary>
+        /// I-48 G4B cambio el ALCANCE de reparar: viaja por RACK y por nada mas. Antes llevaba tambien una
+        /// PropertyId, y eso invitaba a creer que acotaba el conjunto; no puede acotarlo, porque una reparacion
+        /// parcial no produce el diseno efectivo completo que el executor redibuja.
+        /// </summary>
+        public void REPARAR_VIAJA_POR_RACK_Y_NO_LLEVA_ALCANCE_DE_PROPIEDAD()
         {
-            var intent = ProjectVariableIntent.RepairBroken(RackA, Token, confirmed: true);
+            var intent = ProjectVariableIntent.RepairBroken(RackA, confirmed: true);
 
             Assert.Equal(RackA, intent.RackId);
-            Assert.Equal(Token, intent.PropertyId);
+            Assert.Null(intent.PropertyId);
             Assert.True(intent.Confirmed);
         }
 
@@ -358,7 +499,7 @@ namespace RackCad.Tests
         public void REPARAR_SIN_CONFIRMAR_NO_PRODUCE_PLAN()
         {
             var result = Correr(
-                ProjectVariableIntent.RepairBroken(RackA, Token, confirmed: false),
+                ProjectVariableIntent.RepairBroken(RackA, confirmed: false),
                 Registro(10.0, id: Otra),
                 Vista(Doc(6.0, VarId), "D1"));
 
@@ -370,7 +511,7 @@ namespace RackCad.Tests
         public void REPARAR_CONFIRMADO_QUITA_EL_VINCULO_Y_DEJA_EL_LITERAL()
         {
             var result = Correr(
-                ProjectVariableIntent.RepairBroken(RackA, Token, confirmed: true),
+                ProjectVariableIntent.RepairBroken(RackA, confirmed: true),
                 Registro(10.0, id: Otra),
                 Vista(Doc(6.0, VarId), "D1"));
 

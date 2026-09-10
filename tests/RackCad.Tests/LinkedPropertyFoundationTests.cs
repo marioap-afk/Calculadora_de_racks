@@ -49,6 +49,20 @@ namespace RackCad.Tests
             return snapshot;
         }
 
+        /// <summary>
+        /// Un descriptor de prueba. Los accesores apuntan a campos REALES del documento y del diseno para que
+        /// el kernel se ejercite de verdad, pero el PropertyId es sintetico: no se registra en produccion.
+        /// </summary>
+        private static SelectiveLinkedPropertyDescriptor Descriptor(
+            string token, VariableType type = VariableType.Length)
+            => new SelectiveLinkedPropertyDescriptor(
+                PropertyId.Parse(token),
+                type,
+                authored => authored.VerticalClearance,
+                (authored, value) => authored.VerticalClearance = value,
+                design => design.VerticalClearance,
+                (design, value) => design.VerticalClearance = value);
+
         private static LinkedPropertyDescriptorSet SetOf(params SelectiveLinkedPropertyDescriptor[] descriptors)
         {
             Assert.True(LinkedPropertyDescriptorSet.TryCreate(descriptors, out var set, out _));
@@ -88,8 +102,8 @@ namespace RackCad.Tests
         {
             var duplicado = new[]
             {
-                new SelectiveLinkedPropertyDescriptor(PropertyId.Parse(ClearanceToken), VariableType.Length),
-                new SelectiveLinkedPropertyDescriptor(PropertyId.Parse(ClearanceToken), VariableType.Length),
+                Descriptor(ClearanceToken),
+                Descriptor(ClearanceToken),
             };
 
             Assert.False(LinkedPropertyDescriptorSet.TryCreate(duplicado, out var set, out var error));
@@ -102,8 +116,8 @@ namespace RackCad.Tests
         {
             // Dos cajas distintas NO son la misma propiedad, asi que conviven en el mismo set sin ser duplicado.
             var set = SetOf(
-                new SelectiveLinkedPropertyDescriptor(PropertyId.Parse("selective.verticalClearance"), VariableType.Length),
-                new SelectiveLinkedPropertyDescriptor(PropertyId.Parse("selective.verticalclearance"), VariableType.Length));
+                Descriptor("selective.verticalClearance"),
+                Descriptor("selective.verticalclearance"));
 
             Assert.Equal(2, set.Count);
             Assert.True(set.Contains(PropertyId.Parse("selective.verticalClearance")));

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using RackCad.Application.Persistence;
+using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.ProjectVariables
 {
@@ -12,14 +14,21 @@ namespace RackCad.Application.ProjectVariables
     /// descriptor that accepted a general delegate would BE the service locator the design says it is not.
     /// </para>
     /// <para>
-    /// The mechanical accessors to the authored literal and to the effective field belong to the surfaces that
-    /// route through this authority, and land with them — declaring them here before a single consumer exists
-    /// would be dead code.
+    /// The four accessors are MECHANICAL: each moves exactly one value. They decide nothing — not whether a
+    /// reference exists, not which <see cref="VariableId"/> wins, not compatibility, not repair, not
+    /// Link/Unlink and not any fallback. Every one of those decisions belongs to the kernel, and that split is
+    /// what keeps this type from becoming a bag of behaviour (I-48 G4B).
     /// </para>
     /// </summary>
     internal sealed class SelectiveLinkedPropertyDescriptor
     {
-        internal SelectiveLinkedPropertyDescriptor(PropertyId propertyId, VariableType variableType)
+        internal SelectiveLinkedPropertyDescriptor(
+            PropertyId propertyId,
+            VariableType variableType,
+            Func<SelectivePalletDesignDocument, double> readAuthored,
+            Action<SelectivePalletDesignDocument, double> writeAuthored,
+            Func<SelectivePalletDesign, double> readEffective,
+            Action<SelectivePalletDesign, double> writeEffective)
         {
             if (propertyId.IsEmpty)
             {
@@ -29,13 +38,34 @@ namespace RackCad.Application.ProjectVariables
 
             PropertyId = propertyId;
             VariableType = variableType;
+            _readAuthored = readAuthored ?? throw new ArgumentNullException(nameof(readAuthored));
+            _writeAuthored = writeAuthored ?? throw new ArgumentNullException(nameof(writeAuthored));
+            _readEffective = readEffective ?? throw new ArgumentNullException(nameof(readEffective));
+            _writeEffective = writeEffective ?? throw new ArgumentNullException(nameof(writeEffective));
         }
+
+        private readonly Func<SelectivePalletDesignDocument, double> _readAuthored;
+        private readonly Action<SelectivePalletDesignDocument, double> _writeAuthored;
+        private readonly Func<SelectivePalletDesign, double> _readEffective;
+        private readonly Action<SelectivePalletDesign, double> _writeEffective;
 
         /// <summary>The persisted identity of the property. Compared Ordinal, like <see cref="ProjectVariables.PropertyId"/>.</summary>
         internal PropertyId PropertyId { get; }
 
         /// <summary>The type this property REQUIRES of the variable that governs it.</summary>
         internal VariableType VariableType { get; }
+
+        /// <summary>The stored literal, verbatim. While a binding exists this is the FROZEN value.</summary>
+        internal double ReadAuthored(SelectivePalletDesignDocument authored) => _readAuthored(authored);
+
+        /// <summary>Writes the stored literal. Freezing and materialising decide WHEN; this only moves the value.</summary>
+        internal void WriteAuthored(SelectivePalletDesignDocument authored, double value) => _writeAuthored(authored, value);
+
+        /// <summary>The effective field of the domain design this property governs.</summary>
+        internal double ReadEffective(SelectivePalletDesign design) => _readEffective(design);
+
+        /// <summary>Writes the effective field. The resolver decides WHAT; this only puts it in the right place.</summary>
+        internal void WriteEffective(SelectivePalletDesign design, double value) => _writeEffective(design, value);
     }
 
     /// <summary>
@@ -112,6 +142,19 @@ namespace RackCad.Application.ProjectVariables
             => _byProperty.TryGetValue(propertyId, out descriptor);
 
         internal bool Contains(PropertyId propertyId) => _byProperty.ContainsKey(propertyId);
+
+        /// <summary>
+        /// The descriptors, ordered Ordinal by <see cref="PropertyId"/>. Deterministic on purpose: anything a
+        /// caller derives from the catalogue — a scan, a diagnostic, a plan — must not depend on the
+        /// enumeration order of a Dictionary.
+        /// </summary>
+        internal IReadOnlyList<SelectiveLinkedPropertyDescriptor> Ordered()
+        {
+            var ordered = new List<SelectiveLinkedPropertyDescriptor>(_byProperty.Values);
+            ordered.Sort(static (left, right) =>
+                string.Compare(left.PropertyId.Value, right.PropertyId.Value, StringComparison.Ordinal));
+            return ordered;
+        }
     }
 
     /// <summary>
@@ -143,8 +186,15 @@ namespace RackCad.Application.ProjectVariables
         {
             var descriptors = new[]
             {
+                // Mechanical, one field each. A reviewer must be able to SEE that these move a value and
+                // decide nothing: no existence check, no compatibility, no fallback, no repair.
                 new SelectiveLinkedPropertyDescriptor(
-                    ProjectPropertyIds.SelectiveVerticalClearance, VariableType.Length),
+                    ProjectPropertyIds.SelectiveVerticalClearance,
+                    VariableType.Length,
+                    authored => authored.VerticalClearance,
+                    (authored, value) => authored.VerticalClearance = value,
+                    design => design.VerticalClearance,
+                    (design, value) => design.VerticalClearance = value),
             };
 
             if (!TryCreate(descriptors, out var set, out var error))

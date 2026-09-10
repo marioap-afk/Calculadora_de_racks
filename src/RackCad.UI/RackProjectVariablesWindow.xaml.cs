@@ -81,14 +81,35 @@ namespace RackCad.UI
         {
             var broken = SelectedBroken;
 
-            RepairWarningText.Text = broken == null
-                ? string.Empty
-                : "No existe un valor efectivo para esta propiedad. Se utilizará el literal almacenado ("
-                  + broken.StoredLiteral.ToString("0.###", CultureInfo.InvariantCulture)
-                  + "), así que la geometría puede cambiar.";
+            RepairWarningText.Text = DescribeRepair(broken);
 
             RepairConfirmCheck.IsChecked = false;
             UpdateActions();
+        }
+
+        /// <summary>
+        /// What the user is told about the selected broken row. Whether the rack CAN be repaired is decided in
+        /// Application and travels in the row; this window only reports it. Deriving it here -- by looking at
+        /// the other rows for something fatal -- would move the meaning of FATAL into the UI.
+        /// </summary>
+        private static string DescribeRepair(BrokenBindingRow broken)
+        {
+            if (broken == null)
+            {
+                return string.Empty;
+            }
+
+            if (!broken.RackCanRepair)
+            {
+                // A diagnostic, not an offer: promising the stored literal here would promise a change that
+                // cannot be applied at all while the rack carries a fatal state.
+                return "Este rack no se puede reparar. " + (broken.RackBlockingReason ?? "Estado no interpretable.")
+                       + " La fila se muestra solo como diagnóstico.";
+            }
+
+            return "No existe un valor efectivo para esta propiedad. Se utilizará el literal almacenado ("
+                   + broken.StoredLiteral.ToString("0.###", CultureInfo.InvariantCulture)
+                   + "), así que la geometría puede cambiar.";
         }
 
         /// <summary>The racks in the way, named the way the user can act on them (rack + property).</summary>
@@ -123,7 +144,9 @@ namespace RackCad.UI
 
             // La reparación NO depende de que el registro se pueda administrar: cuando el alcance del dibujo
             // es indeterminado es justo cuando hace falta poder quitar el vínculo que lo rompe.
-            RepairButton.IsEnabled = SelectedBroken != null && RepairConfirmCheck.IsChecked == true;
+            var repairable = SelectedBroken != null && SelectedBroken.RackCanRepair;
+
+            RepairButton.IsEnabled = repairable && RepairConfirmCheck.IsChecked == true;
         }
 
         /// <summary>
@@ -196,12 +219,14 @@ namespace RackCad.UI
         {
             var broken = SelectedBroken;
 
-            if (broken == null || RepairConfirmCheck.IsChecked != true)
+            // RackCanRepair se comprueba AQUI y no solo al habilitar el botón: la habilitación es una pista
+            // visual, y la precondición tiene que sostenerse en el punto donde nace el intent.
+            if (broken == null || !broken.RackCanRepair || RepairConfirmCheck.IsChecked != true)
             {
                 return;
             }
 
-            Ask(ProjectVariableIntent.RepairBroken(broken.RackId, broken.PropertyId, confirmed: true));
+            Ask(ProjectVariableIntent.RepairBroken(broken.RackId, confirmed: true));
         }
 
         /// <summary>Records the request and hands control back: executing is not this window's job.</summary>
