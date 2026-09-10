@@ -22,7 +22,16 @@ namespace RackCad.Application.ProjectVariables
         /// <summary>The pilot property of ID22A, as a comparable id.</summary>
         public static PropertyId SelectiveVerticalClearance { get; } = PropertyId.Parse(SelectiveVerticalClearanceToken);
 
-        /// <summary>True when this build knows what property <paramref name="id"/> names.</summary>
-        public static bool IsKnown(PropertyId id) => id == SelectiveVerticalClearance;
+        /// <summary>
+        /// True when this build knows what property <paramref name="id"/> names.
+        ///
+        /// <para>
+        /// Since I-48 G4A the answer is DERIVED from the closed catalogue of linked properties by membership,
+        /// instead of being an equality against a single constant. The behaviour is identical while the
+        /// catalogue holds one property — which it does, deliberately, until the proof gate — but the authority
+        /// has moved: what this build knows is now whatever the catalogue declares, in one place.
+        /// </para>
+        /// </summary>
+        public static bool IsKnown(PropertyId id) => SelectiveLinkedProperties.IsKnown(id);
     }
 }

@@ -207,8 +207,12 @@ namespace RackCad.Application.Persistence
             return null;
         }
 
-        private static bool IsKnownType(string type)
-            => string.Equals(type, VariableType.Length.ToString(), StringComparison.OrdinalIgnoreCase);
+        /// <summary>
+        /// Whether the persisted type token is one this build supports. It delegates to the SINGLE mapping
+        /// (I-48 G4A): the store still COMPOSES this answer with its other checks to decide readability, but
+        /// it no longer keeps its own copy of what the token means.
+        /// </summary>
+        private static bool IsKnownType(string type) => VariableTypes.TryParseToken(type, out _);
 
         /// <summary>
         /// A STRICT <c>MAJOR.MINOR</c> parse, local to the register on purpose.

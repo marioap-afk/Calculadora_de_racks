@@ -27,5 +27,39 @@ namespace RackCad.Application.ProjectVariables
     {
         /// <summary>True when <paramref name="type"/> is a type ID22A declares. A value outside the enum is never supported.</summary>
         public static bool IsSupported(VariableType type) => type == VariableType.Length;
+
+        /// <summary>
+        /// THE single mapping from a persisted type token to a supported <see cref="VariableType"/> (I-48 G4A,
+        /// Proposal V8 R-04/V7-R04).
+        ///
+        /// <para>
+        /// One table, several consumers, and that is the point. The store composes it with its other checks to
+        /// decide whether a document is readable; the registry accreditation consumes it MECHANICALLY on a
+        /// document the store already accredited. Keeping a second copy — a switch here and a string compare
+        /// there — is how two builds of the same token start disagreeing about what a variable is.
+        /// </para>
+        /// <para>
+        /// Sharing the mapping does NOT make its consumers authorities of readability: that verdict stays with
+        /// the store. And after a readable verdict, a failure of this same conversion is an invariant
+        /// violation to report, never a silent reinterpretation of the document.
+        /// </para>
+        /// <para>
+        /// The comparison is case-insensitive because the token is written by a serializer, not authored by
+        /// hand — the same reason <see cref="VariableId"/> compares OrdinalIgnoreCase and
+        /// <see cref="PropertyId"/> does not.
+        /// </para>
+        /// </summary>
+        public static bool TryParseToken(string token, out VariableType type)
+        {
+            type = default;
+
+            if (!System.Enum.TryParse(token, ignoreCase: true, out VariableType parsed) || !IsSupported(parsed))
+            {
+                return false;
+            }
+
+            type = parsed;
+            return true;
+        }
     }
 }
