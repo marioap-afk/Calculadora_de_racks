@@ -634,32 +634,57 @@ Durante UNA MISMA apertura del editor:
 
 **Pregunta: al ejecutar el `Link`, ¿que literal debe quedar CONGELADO — `4` o `7`?**
 
-**Esta Proposal NO lo decide.** Se somete tal cual, porque la respuesta condiciona la forma minima de
-`D-13` y el Coordinador no quiere fijarla por omision.
+**Esta Proposal NO lo decide, y NO se inclina por ninguna de las dos.** Se somete abierta porque la
+respuesta condiciona la forma minima de `D-13`, y fijarla por omision —o insinuarla en la
+redaccion— seria decidir sin revision.
 
-**Por que el problema existe** —y no es hipotetico, sale del codigo vigente—:
+**El hecho de partida, del codigo vigente y no discutido:** el `Link` actual **congela por omision**.
+`Preflight.Link` escribe **solo** en `PropertyValues` y **no toca el campo**, asi que el literal que
+queda congelado es, exactamente, el que traia el authored que recibio. Esto describe el mecanismo; **no
+dice cual de las dos semanticas de abajo es la correcta**.
 
-- El `Link` vigente **congela por omision**: `Preflight.Link` escribe **solo** en `PropertyValues` y
-  **no toca el campo**, de modo que el literal que queda congelado es, literalmente, el que traia el
-  authored que recibio.
-- Si Application solo recibe `Link(PropertyId, VariableId)` **contra el authored original**, congelara
-  **`4`** — el numero que el usuario ya habia sustituido en pantalla.
-- Pero si la intencion del usuario incluye **haber editado antes el literal a `7`**, el modelo de
-  **«solo intent final por `PropertyId`»** de `D-13` **puede perder esa informacion**: la intencion
-  final es «vincular a X», y el `7` se queda por el camino.
-- Y sin embargo **NO queremos transportar un historial completo de gestos**: eso convertiria a la
-  ventana en un log, daria a la UI una secuencia con semantica y contradiria `D-13` y `D-09-bis`.
+**Las dos semanticas estan ABIERTAS. Ninguna es la preferida del Coordinador.**
 
-**Lo que se pide al Arquitecto:** definir **cual es la representacion MINIMA correcta del estado /
-intencion final** para una propiedad, tal que simultaneamente:
+**Semantica A — la referencia REEMPLAZA el draft literal.**
+Seleccionar `=VariableX` **sustituye** el draft literal `7`. El estado final que el usuario expresa es
+`Reference(X)` y nada mas: el `7` fue una edicion en curso que el propio usuario abandono al vincular.
+En consecuencia el `Link` conserva el authored **previamente comprometido**, es decir **`4`**.
+*Lectura natural:* el campo es uno solo y su ultimo estado expresado es una referencia; un draft sin
+comprometer no es una intencion, es un intento.
 
-1. **no se pierda intencion** — el `7` no puede desaparecer solo porque despues se vinculo;
-2. **la UI no adquiera semantica** — sigue describiendo, no decidiendo (`D-09-bis`, `D-14`);
-3. **no haya estado intermedio persistido** — ni un guardado con `7` y sin vinculo, ni al reves
-   (misma exigencia que `D-12` impone a `Reference → Literal`);
-4. **el resultado siga plegandose en UNA sola operacion de Application**, atomica (`D-07`, `D-13`).
+**Semantica B — el draft literal FORMA PARTE de la intencion final.**
+El usuario primero cambio el literal base a `7` y **despues** pidio vincularlo. El estado final debe
+expresar algo equivalente a **«nuevo literal congelado `7` + `Reference(X)`»**.
+*Lectura natural:* el usuario dejo dos cosas dichas sobre la misma propiedad —cual es su valor propio y
+que ahora la gobierna X— y congelar `4` descartaria la primera.
 
-*(Notese la simetria con `20.6`: alli el problema es `Reference → Literal(valor)`; aqui es
+**Restriccion que vale para AMBAS, y que no favorece a ninguna:** **NO se quiere transportar un
+historial completo de gestos**. Eso convertiria la ventana en un log, daria a la UI una secuencia con
+semantica y contradiria `D-13` y `D-09-bis`. Sea A o sea B, la representacion tiene que ser **de
+estado final**, no de trayectoria.
+
+**Lo que se pide al Arquitecto — cinco preguntas, todas abiertas:**
+
+1. **¿Cual interpretacion corresponde mejor al contrato UX** de este editor, A o B?
+2. **¿Como puede la UI representar la intencion final MINIMA** sin transportar historial?
+3. **¿Basta que el estado final contenga unicamente `Source = Reference(X)`**, o necesita ademas algo
+   como un **`LiteralCandidate`**?
+4. **¿Que debe ocurrir si el usuario escribe un literal y despues selecciona referencia SIN haber
+   comprometido ese literal** explicitamente con Enter o LostFocus? (Es decir: ¿un draft no
+   comprometido cuenta o no cuenta?)
+5. **¿Cambia la respuesta si el `7` YA habia sido comprometido** antes de seleccionar `=VariableX`?
+   Si A y B convergen en ese caso y divergen en el otro, la frontera esta en el compromiso, y conviene
+   decirlo.
+
+**Condiciones que la respuesta debe satisfacer, sea cual sea:**
+
+1. **No inferir en silencio una intencion que el usuario no expreso.**
+2. **La UI sigue describiendo estado / intencion, no decidiendo semantica** (`D-09-bis`, `D-14`).
+3. **Ningun estado intermedio se persiste** — misma exigencia que `D-12` impone a
+   `Reference → Literal`.
+4. **Application produce un unico resultado atomico** (`D-07`, `D-13`).
+
+*(Notese la simetria con `20.6`: alli el caso es `Reference → Literal(valor)`; aqui es
 `Literal(valor nuevo) → Reference`. Puede que ambas pidan la misma respuesta estructural, y puede que
 no — decidirlo es parte de la revision.)*
 
