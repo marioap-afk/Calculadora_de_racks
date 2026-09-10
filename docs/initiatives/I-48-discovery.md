@@ -42,6 +42,18 @@ Los tres commits de I-48 anteriores a este son **solo docs**, asi que el arbol d
 auditado es **byte-identico** al de `origin/main`. `origin/main` no avanzo durante la sesion, de modo
 que **no hubo rebase**.
 
+> **ADDENDUM G1.1** (sobre el HEAD `edacf7d7b280715c4192c779a4c38748d33a56ef`, mismo codigo auditado,
+> `origin/main` sin avanzar). Amplia el informe en tres puntos, **sin cambiar ningun conteo** y sin
+> proponer solucion:
+> - **§4.4-bis y H2** — la cardinalidad real de `UnlinkAllAndDelete`: **1 variable → N propiedades por
+>   rack**. Es un defecto **estructural** que el hardcode de `Materialize` tapaba, y el arreglo obvio
+>   (pasarle un `PropertyId` singular) **no basta**.
+> - **§9-bis** — que mide cada cifra: `BEFORE_PRODUCT_FILES` es la metrica arquitectonica primaria;
+>   los tests **no** son una metrica a minimizar.
+> - **§7** — el veredicto de la deuda de tipos se mantiene, pero se explicita **condicional hasta G2**.
+>
+> Los conteos de §9 **no** cambian: `9 / 10 / 19`, extendido `+5`.
+
 ## 2. Mapa end-to-end
 
 Cada fila: archivo, simbolo, responsabilidad. La clasificacion va en la seccion 3.
@@ -253,6 +265,86 @@ materializa `VerticalClearance` (l.369) y quita la entrada por la **constante** 
 consumida por otra propiedad, borraria la entrada de clearance —que quiza no existe— y dejaria intacto
 el vinculo real, mientras el registro pierde la variable. Doble hardcode.
 
+**Y hay una consecuencia estructural que el hardcode tapa: la CARDINALIDAD. Ver §4.4-bis.**
+
+**4.4-bis (ADDENDUM G1.1) — `UnlinkAllAndDelete` y la cardinalidad 1 variable → N propiedades por rack**
+
+El defecto de 4.4 no es solo «materializa el campo equivocado». Es que **la operacion esta modelada
+por RACK cuando su unidad real es (RACK, PROPIEDAD)**. Siete hechos, cada uno verificado:
+
+| # | Hecho | Evidencia |
+|---|---|---|
+| 1 | `UnlinkAllAndDelete` es **target-variable** (familia A) | `ProjectVariableConsumerDiscovery.DiscoverConsumers` se documenta como *«FAMILY A — target-variable (change a value, find what a delete would block, **unlink-all-and-delete**)»*. `Preflight.UnlinkAllAndDelete` la llama. |
+| 2 | `DiscoverConsumers(entries, variableId)` devuelve **racks** consumidores de esa variable | Su bucle agrupa por rack (`GroupSelectiveByRack`) y anade **un** `ProjectVariableConsumer` **por rack**: `consumers.Add(new ProjectVariableConsumer(group.Key, authority.Authored, group.Value))`. |
+| 3 | Un mismo rack puede tener **VARIAS** entradas de `PropertyValues` apuntando al **mismo** `VariableId` | `PropertyValues` es `Dictionary<string, SelectivePropertyValueDocument>` con clave `PropertyId`: las claves son distintas, pero **nada impide** que dos valores lleven el mismo `VariableId`. No hay unicidad de `VariableId` en ningun punto del modelo, ni guarda que la imponga. |
+| 4 | `ProjectVariableConsumerProbe` da **positivo si CUALQUIER** entrada referencia el target | `Probe` recorre el mapa **entero** y hace `found = true` al primer match, **sin registrar cual**; devuelve `found ? Positive : Negative`. Un `bool`, no una lista. |
+| 5 | `Summarize` **ya enumera TODAS** las `PropertyIds` del rack que referencian ese `VariableId` | Recorre `consumer.Authored.PropertyValues` y hace `properties.Add(entry.Key)` por **cada** coincidencia; `VariableConsumerSummary.PropertyIds` es `IReadOnlyList<string>`, **plural por diseno**. |
+| 6 | `ProjectVariableConsumer` **NO** reduce ese consumo a una propiedad | Su superficie completa es `RackId`, `Authored`, `Siblings`. **No tiene ningun `PropertyId`.** La propiedad se pierde entre el probe y el plan. |
+| 7 | `UnlinkAllAndDelete` llama `Materialize(...)` **una sola vez por rack** | `foreach (var consumer in discovery.Consumers) { var materialized = Materialize(consumer.Authored, registry, after, out var failure); … racks.Add(new RackMutation(consumer.RackId, materialized.Authored, …)); }` — una llamada y **una** `RackMutation` por consumidor, o sea por rack. |
+
+**La contradiccion, en una linea:** el sistema **ya sabe** que un rack consume una variable por N
+propiedades —lo demuestra `Summarize`, que devuelve una **lista**— pero el camino de ejecucion lo
+colapsa a **una** materializacion por rack. Hoy nadie lo nota porque `IsKnown` admite una sola
+propiedad, asi que N nunca pasa de 1.
+
+**El caso explicito:**
+
+```text
+Rack A
+  selective.verticalClearance -> Variable X
+  selective.palletTolerance   -> Variable X
+```
+
+Que saldria mal hoy con `UnlinkAllAndDelete(X)`, paso a paso:
+
+1. `DiscoverConsumers(entries, X)` → **un** consumidor: Rack A. (El probe dijo `Positive`; que fueran
+   dos las entradas coincidentes no viaja: hecho 4.)
+2. `Materialize` se llama **una vez** (hecho 7): materializa `VerticalClearance` y quita **solo** la
+   clave `selective.verticalClearance` (l.369-370).
+3. `RegistryMutation.Remove(X)` borra la variable del registro.
+4. **Resultado: `selective.palletTolerance` queda apuntando a una `X` que ya no existe.**
+
+Las consecuencias, y ninguna es cosmetica:
+
+- **La operacion FABRICA un vinculo roto** — exactamente lo que `Delete` existe para impedir
+  (bloquea con consumidores «para que nada roto se cree jamas»). `UnlinkAllAndDelete` es el *camino
+  comodo* para ese mismo fin; producir el dano que la puerta principal rechaza invierte su contrato.
+- **Y lo hace en silencio**: el preflight devuelve `Success`, el plan se aplica entero y el ejecutor
+  commitea. Nada falla en el momento del dano.
+- **El dano se manifiesta despues y lejos**: en el siguiente `RACKEDITAR`, `SelectiveEditorOpen`
+  **bloquea la apertura** por referencia rota — el usuario pierde la capacidad de editar el rack—; y
+  `RACKBOMTOTAL` lo reporta como `BrokenProjectVariableReference`.
+- **Rompe la invariante 2**: el contrato dice que ningun rack cambia de forma, pero `palletTolerance`
+  se queda sin valor efectivo alguno.
+- **Y ni siquiera queda reparable con lo que la operacion promete**: `RepairBroken` usa el literal
+  congelado, que sigue ahi — pero el usuario nunca fue advertido, porque la operacion dijo que habia
+  ido bien.
+
+**Consecuencia contractual que G2 debera resolver (aqui NO se propone como):** para una variable `X`
+usada por **N** propiedades del **mismo** rack, `UnlinkAllAndDelete` debe materializar los **N**
+valores efectivos correspondientes y retirar los **N** bindings **antes** de eliminar `X`, **todo
+dentro de la misma `MutationPlan`** y bajo la misma atomicidad de «o plan completo o nada».
+
+**Y esto es lo que hace insuficiente el arreglo obvio: modelarlo como «`Materialize` recibe un
+`PropertyId` singular» NO basta para el caso general.** Dos razones estructurales, ambas verificadas:
+
+1. `Materialize` empieza con `ProjectVariableCloning.Clone(source)` **sobre el `source` que recibe**.
+   Dos llamadas singulares sucesivas partirian **las dos del `consumer.Authored` original**, y la
+   segunda **descartaria** el trabajo de la primera. Las N materializaciones tienen que plegarse en
+   **UN** documento autorado.
+2. `RackMutation` lleva **un** `AuthoredOutput` por rack, y el plan agrega **una** `RackMutation` por
+   consumidor. Emitir dos `RackMutation` para el mismo rack seria una doble escritura sobre las
+   mismas vistas, no una composicion.
+
+O sea: el eje que falta no es «que propiedad», es «**que conjunto** de propiedades», y ese conjunto ni
+lo transporta `ProjectVariableConsumer` (hecho 6) ni lo produce el probe (hecho 4) — aunque
+`Summarize` demuestre que se sabe calcular (hecho 5).
+
+**Alcance de la observacion:** afecta tambien a `Delete` y a `ChangeValue` en cuanto a *como cuentan*,
+aunque hoy ninguno se rompe: `Delete` solo **bloquea** y su mensaje ya usa `Summarize` (plural
+correcto), y `ChangeValue` **no** reescribe literales, asi que le basta re-resolver el rack entero. El
+unico que **materializa por rack** es `UnlinkAllAndDelete`.
+
 **4.5 ¿`ProjectVariablesWorkspace.FindBroken()` obtiene `StoredLiteral` por `PropertyId`?**
 **NO: lo hardcodea.** l.292 pasa `entry.Authored.VerticalClearance` como `StoredLiteral`, sea cual sea
 la propiedad rota que `resolution.PropertyId` acaba de nombrar. La ventana muestra ese numero
@@ -386,9 +478,37 @@ cualquier `Type` que no sea `Length`, y el documento entero se rechaza (uso en l
 otro tipo **no puede llegar** a `ToProjectVariables()`. El hardcode y la realidad coinciden por
 construccion, no por casualidad — pero coinciden por una guarda **externa al metodo**.
 
-### Veredicto: `DEFER SAFE FOR I-48`
+### Veredicto: `DEFER SAFE FOR I-48 under current one-Type assumptions`
 
-Con dos condiciones que hoy se cumplen y hay que vigilar:
+**Y es CONDICIONAL hasta G2, no un cierre.** (ADDENDUM G1.1: el veredicto del Discovery se conserva,
+pero se explicita de que depende y quien lo decide.)
+
+Los **cuatro** consumidores de `ToProjectVariables()` en produccion son
+`ProjectVariableMutationPreflight.TryFind` (l.413), `ProjectVariablesWorkspace.Build` (l.167),
+`SelectiveEditorOpen.BoundName` (l.126) y `SelectiveEffectiveDesignResolver.Index` (l.155). Todos
+reciben hoy un `ProjectVariable` cuyo `Type` es **siempre** `Length`, venga de donde venga el dato
+persistido.
+
+**`TryFind` es el que conviene mirar**, porque es la puerta de entrada de `Link`, `ChangeValue`,
+`Delete`, `Rename` y `UnlinkAllAndDelete`: hoy solo comprueba **existencia** (`candidate.Id.Equals`) y
+descarta el `Type` que acaba de fabricar. Es decir, **el preflight de `Link` no valida hoy ninguna
+compatibilidad de tipo**: quien la garantiza es `SelectiveBindingOptions.ForLength`, que filtra en la
+UI leyendo `entry.Type` del **documento**.
+
+**El veredicto pasa a `FIX REQUIRED BY I-48` si G2 decide cualquiera de estas dos**, y es la Proposal
+quien debe decidirlo **expresamente**, no dejarlo implicito:
+
+- que **Application valide** la compatibilidad `Property.VariableType ↔ Variable.Type` —lo natural si
+  la compatibilidad deja de estar cableada en el nombre `ForLength`—, porque esa validacion caeria
+  justo donde `TryFind` ya tiene el `ProjectVariable` en la mano; o
+- que `ToProjectVariables()` se convierta en **autoridad de compatibilidad** (que su `Type` sea el
+  dato con el que alguien decide), en vez del proyector inocuo que es hoy.
+
+En cualquiera de los dos casos el metodo estaria **afirmando** `Length` sobre una decision real, y el
+hardcode dejaria de ser inofensivo aunque siguiera habiendo un solo tipo. **No se arregla aqui**, y
+este Discovery **no** propone cual de las dos ramas tomar.
+
+Las condiciones bajo las que hoy es seguro, que hay que vigilar:
 
 1. I-48 **no anade un segundo `VariableType`** (su alcance lo prohibe: sin formulas, sin ID21).
 2. `selective.palletTolerance` es **tambien** `Length`, asi que toda variable vinculable en I-48 es
@@ -479,6 +599,29 @@ BEFORE_TOTAL_FILES   = 19
 **Definicion de la cifra, para que el AFTER sea comparable:** `BEFORE_TEST_FILES` cuenta los archivos
 cuyo **contrato deja de ser cierto** y hay que extender o duplicar. Documentacion **no** se cuenta.
 
+### 9-bis (ADDENDUM G1.1) — Que mide cada cifra, y cual NO es un objetivo
+
+Los conteos **no cambian**. Lo que se fija aqui es su **lectura**, para que el AFTER no se interprete
+mal ni se optimice contra la metrica equivocada.
+
+- **`BEFORE_PRODUCT_FILES = 9` es la METRICA ARQUITECTONICA PRIMARIA: el coste de wiring.** Es la que
+  responde «cuantos sitios hay que tocar para que una propiedad mas sea vinculable», y por tanto la
+  que mide si I-48 logro su objetivo. Bajarla **es** la mejora.
+- **Los tests NO son una metrica a minimizar.** `BEFORE_TEST_FILES = 10` y el conjunto extendido
+  (`+5`) miden **evidencia y cobertura**: sirven para **planificar** cuanta prueba exige una propiedad
+  nueva, no para reducirse.
+- **Una reduccion artificial de tests NO cuenta como mejora arquitectonica.** Borrar, fusionar o
+  generalizar pruebas hasta que el numero baje **no** es progreso: es perdida de evidencia. Si tras
+  I-48 una propiedad nueva necesita **mas** archivos de prueba porque hay mas casos que demostrar, eso
+  puede ser perfectamente correcto.
+- **El AFTER debera reportar las dos cifras POR SEPARADO**, nunca sumadas en un unico indicador:
+  1. **archivos productivos** necesarios para anadir otra propiedad (comparable contra `9`);
+  2. **archivos de tests** necesarios para probarla correctamente (comparable contra `10`, o contra
+     `15` si se adopta el conjunto extendido — decision de la Proposal, §12.10).
+
+**`BEFORE_TOTAL_FILES = 19` es un agregado informativo, no un objetivo.** Se conserva por trazabilidad;
+la comparacion que significa algo es la de las dos cifras por separado.
+
 **Conjunto extendido, declarado aparte y NO incluido en la cifra:** otros **5** archivos usan el token
 como fixture y seguirian pasando sin tocarlos, pero necesitarian un caso de segunda propiedad para
 *demostrar* que la semantica se sostiene de punta a punta —
@@ -499,7 +642,7 @@ descubre; uno silencioso dibuja mal y cotiza mal.
 | # | Hotspot | Riesgo si se toca mal |
 |---|---|---|
 | **H1** | `SelectiveEffectiveDesignResolver.Resolve` l.51/63/69 | **Maximo.** Todo binding termina en `VerticalClearance`. Con dos ids conocidos y sin despacho, el ultimo del diccionario gana con orden no determinista. Es el corazon. |
-| **H2** | `Preflight.Materialize` l.369-370 | **Maximo.** Doble hardcode y **sin `PropertyId` en la firma**: hoy no hay ni por donde pasarle la propiedad. |
+| **H2** | `Preflight.Materialize` l.369-370 **+ la cardinalidad de `UnlinkAllAndDelete`** (§4.4-bis) | **Maximo, y por DOS defectos apilados.** (a) Doble hardcode —campo fijo y constante— **sin `PropertyId` en la firma**: hoy no hay ni por donde pasarle la propiedad. (b) **Defecto de CARDINALIDAD, mas profundo:** la operacion es target-variable y esta modelada **por rack**, cuando su unidad real es **(rack, propiedad)**. `DiscoverConsumers` devuelve un consumidor por rack, `ProjectVariableConsumer` **no lleva ningun `PropertyId`**, el probe reduce N coincidencias a un `bool`, y `Materialize` se llama **una vez por rack**. Con `X` consumida por N propiedades del mismo rack, la operacion **fabrica un vinculo roto** —justo lo que `Delete` existe para impedir—, en silencio y con `Success`; el dano aparece despues, bloqueando `RACKEDITAR` de ese rack. **Parchear solo (a) no arregla (b):** `Materialize` clona del `source` recibido y `RackMutation` lleva **un** authored por rack, asi que N llamadas singulares se pisarian entre si. |
 | **H3** | `Preflight.Unlink` l.273 | **Alto.** Quita el vinculo correcto y materializa el campo equivocado: el rack cambia de forma y nada falla. |
 | **H4** | `WithDesign` l.324-327 | **Alto.** Sin la preservacion, cada guardado destruye el literal congelado — que es lo unico que la reparacion tiene. Silencioso por definicion. |
 | **H5** | `ProjectPropertyIds.IsKnown` l.26 | **Alto por efecto palanca.** Es la guarda que hoy hace inofensivos H1 y H3. **Relajarla antes que ellos activa los demas hotspots.** El orden importa. |
@@ -542,10 +685,31 @@ Fronteras y tensiones detectadas. **Ninguna se responde aqui**: responderlas es 
    es entre la persistencia —que no deberia conocer el catalogo de propiedades— y el hecho de que es
    ella quien tiene el literal.
 3. **`Materialize` sin `PropertyId` en la firma** (H2): ¿se le pasa la propiedad, o cambia el reparto de
-   responsabilidades entre `Unlink` y `UnlinkAllAndDelete`?
-4. **Compatibilidad por tipo.** `ForLength` es correcto por coincidencia (H9). Si la compatibilidad pasa
-   a derivarse del tipo declarado **de la propiedad**, la deuda de §7 pasa de `DEFER SAFE` a
-   `FIX REQUIRED`. ¿Se declara el tipo en la propiedad, y con que consecuencia sobre la deuda?
+   responsabilidades entre `Unlink` y `UnlinkAllAndDelete`? **Ojo: pasarle un `PropertyId` singular NO
+   basta** — ver 3-bis, que es la pregunta de fondo.
+3-bis. **CARDINALIDAD 1 variable → N propiedades por rack** (§4.4-bis, H2). La unidad real de
+   `UnlinkAllAndDelete` es **(rack, propiedad)**, pero hoy la operacion esta modelada **por rack**:
+   `ProjectVariableConsumer` no lleva `PropertyId`, el probe colapsa N coincidencias en un `bool`, y
+   `Materialize` corre una vez por rack. El contrato que G2 debe satisfacer —y que **este informe no
+   disena**— es: **materializar los N valores efectivos y retirar los N bindings antes de borrar `X`,
+   todo en la misma `MutationPlan`**. Las preguntas abiertas:
+   - ¿Que tipo **transporta** el conjunto de propiedades desde el descubrimiento hasta el plan?
+     Hoy ninguno lo hace, aunque `Summarize` demuestre que el conjunto se sabe calcular.
+   - ¿Se pliegan las N materializaciones en **UN** documento autorado —obligatorio, porque
+     `Materialize` clona del `source` recibido y dos llamadas sucesivas se pisarian— o cambia el
+     contrato de clonado?
+   - ¿Sigue habiendo **una** `RackMutation` por rack (hoy si), o el plan admite composicion? Emitir
+     dos para el mismo rack seria doble escritura sobre las mismas vistas.
+   - ¿Que hace la operacion si **una** de las N propiedades no se puede materializar? La atomicidad
+     vigente («o plan completo o nada») sugiere abortar entero, pero eso hay que **decidirlo**.
+   - ¿Debe el modelo **impedir** que dos propiedades del mismo rack apunten a la misma variable, o
+     **soportarlo**? Hoy nada lo impide y nada lo soporta: es el hueco exacto.
+4. **Compatibilidad por tipo.** `ForLength` es correcto por coincidencia (H9), y **hoy el preflight de
+   `Link` no valida tipo en absoluto**: `TryFind` solo comprueba existencia. Si la compatibilidad pasa
+   a derivarse del tipo declarado **de la propiedad**, o si `ToProjectVariables()` se vuelve autoridad
+   de compatibilidad, la deuda de §7 pasa de `DEFER SAFE` a **`FIX REQUIRED`**. ¿Se declara el tipo en
+   la propiedad? ¿Valida Application `Property.VariableType ↔ Variable.Type`, y donde? **La Proposal
+   debe decidirlo expresamente**, no heredarlo por omision.
 5. **Protocolo de gestos de vinculo** (H8): hoy uno por apertura y cerrando la ventana. ¿Sigue siendo
    uno, pasan a ser N, o cambia el ciclo de vida del editor?
 6. **Forma publica de `SelectiveEditorOpenResult`** (H6): ¿DTO por propiedad, coleccion indexada, u
@@ -558,5 +722,8 @@ Fronteras y tensiones detectadas. **Ninguna se responde aqui**: responderlas es 
    Selectivo adoptando `NumericField` dentro o fuera de I-48?
 9. **`0` legado vs `0` tecleado** en `PalletTolerance` (H10): ¿se toca, o se declara fuera con la
    consecuencia asumida?
-10. **Definicion de «coste» para el AFTER.** §9 fija `BEFORE = 19` (must-change) y declara un extendido
-    de `24`. ¿Cual de las dos es la cifra contra la que se medira anadir la tercera propiedad?
+10. **Definicion de «coste» para el AFTER.** §9-bis fija que la metrica arquitectonica primaria es
+    **`BEFORE_PRODUCT_FILES = 9`**, que los tests **no** son una metrica a minimizar y que el AFTER
+    reporta **producto y tests por separado**. Lo que queda por decidir: ¿la cifra de tests contra la
+    que se compara es `10` (must-change) o `15` (con el conjunto extendido)? Elegirla **antes** de
+    medir, para que el AFTER no se compare contra una base distinta.
