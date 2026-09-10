@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-47
 title: "Variables de proyecto: fundacion de autoridad drawing-level"
 type: architecture
-status: in-progress
+status: integrated
 branch: architecture/project-variables-foundation
 base_branch: main
 priority:
@@ -26,10 +26,13 @@ automation:
 
 # Variables de proyecto: fundacion de autoridad drawing-level (ID22A)
 
-> **Fase actual: IMPLEMENTACION COMPLETA — CANDIDATO APROBADO — falta la SESION DE INTEGRACION.**
+> **Fase actual: INTEGRADA y CERRADA el 2026-09-09.**
 >
 > ```
+> PRE_MERGE_MAIN_SHA       = 306e18ed4676e5e96b54d59402c9a230efb137d3
 > FUNCTIONAL_CANDIDATE_SHA = af572393dab5c755a8f272c746bdce20848b7dd0
+> CLOSURE_DOCS_SHA         = 31d7f3b44d503f32c1b40c809532d5e7193e8a75   (docs-only)
+> MERGE_SHA                = 507921f4839f59219928a42beb146d285225579c   (--no-ff, dos padres)
 > ```
 >
 > `G1`-`G18` verdes. Core **5253/5253**, UI **1284 PASS / 17 omitidas / 1301**, Debug de UI y de Plugin
@@ -40,8 +43,11 @@ automation:
 > copiando un rack vinculado a un DWG sin registro (`RACKEDITAR` falla cerrado; `RepairBroken` quita el
 > vinculo y deja gobernando el literal almacenado).
 >
-> **NO integrada:** sin merge, sin cierre de ROADMAP y sin limpieza de rama ni de worktree. El estado y
-> el handoff de integracion viven en [HANDOFF](../HANDOFF.md) seccion 4. La **UX futura tipo Excel** para
+> **Compuertas posteriores al merge PASADAS:** `origin/main` no avanzo desde la base, asi que no hubo
+> rebase final; el CI sobre el `MERGE_SHA` —corrida **34430762596**— quedo **4/4 `success`** y produjo el
+> artifact `rackcad-coverage-cobertura` por ser trunk, con lo que la comprobacion diferida de cobertura
+> tambien queda cubierta; suites locales sobre el merge **Core 5253/5253** y **UI 1284 PASS / 17 omitidas
+> / 1301**. Rama y worktree **retirados**. El estado vivo esta en [HANDOFF](../HANDOFF.md) seccion 4. La **UX futura tipo Excel** para
 > propiedades vinculables es **direccion NO normativa** y esta registrada en
 > [ideas-futuras.md](../ideas-futuras.md); **no forma parte de este contrato**.
 >

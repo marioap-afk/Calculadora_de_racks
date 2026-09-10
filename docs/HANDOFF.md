@@ -16,10 +16,10 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
-**I-47 — Variables de proyecto: fundación de autoridad drawing-level (ID22A) — IMPLEMENTACIÓN
-COMPLETA y CANDIDATO APROBADO; falta ÚNICAMENTE la sesión de integración.** Rama
-`architecture/project-variables-foundation`, **candidato funcional
-`af572393dab5c755a8f272c746bdce20848b7dd0`**. Es la primera autoridad de nivel **DIBUJO** de RackCad:
+**I-47 — Variables de proyecto: fundación de autoridad drawing-level (ID22A) — INTEGRADA y CERRADA** el
+**2026-09-09** (`architecture/project-variables-foundation`, candidato funcional
+`af572393dab5c755a8f272c746bdce20848b7dd0`, merge `--no-ff`
+**`507921f4839f59219928a42beb146d285225579c`**). Es la primera autoridad de nivel **DIBUJO** de RackCad:
 un único registro `ProjectVariables` por DWG, en el `NamedObjectsDictionary` bajo `RACKCAD_PROJECT`,
 del que un rack puede tomar el valor de una propiedad en vez de guardarlo por su cuenta.
 
@@ -50,6 +50,13 @@ editor, la ventana central y el BOM, porque escribir encima destruiría en silen
 | Builds | UI Debug y Plugin Debug sin errores (sólo los dos `MSB3277` conocidos) |
 | CI de `push` | corrida **34427341491**, `head_sha` = `af57239…`, **4/4 `success`** |
 | Cobertura del Candidato | dispatch **34427649290** con `candidate_sha=af57239…`, **4/4 `success`**, artifact `rackcad-coverage-cobertura` |
+
+**Integración.** `origin/main` **no avanzó** desde la base `306e18ed4676e5e96b54d59402c9a230efb137d3`,
+así que **no hubo rebase final** y lo validado es exactamente lo integrado. El merge es `--no-ff` con dos
+padres (`306e18e` + `31d7f3b`); el **CI posterior al merge sobre el `MERGE_SHA`** —corrida
+**34430762596**— quedó **4/4 `success`** y, por ser trunk, produjo también el artifact
+`rackcad-coverage-cobertura`, que cierra de paso la comprobación diferida de cobertura. Suites locales
+sobre el merge: **Core 5253/5253** y **UI 1284 correctas / 17 omitidas / 1301**, idénticas al candidato.
 
 **Validación del Owner en AutoCAD 2025: PASS.** `PV-1..PV-5` (registro: crear, renombrar, cambiar valor,
 borrar sin consumidores, save/reopen) · `PV-17.1..PV-17.8` (vincular, save/reopen, propagación
@@ -1030,6 +1037,29 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-47 (2026-09-09) — PASS.** El dueño cargó por NETLOAD el DLL Debug construido **exactamente** desde el
+candidato funcional `af572393dab5c755a8f272c746bdce20848b7dd0` y recorrió las tres tandas: `PV-1..PV-5`
+—el registro por sí solo: crear, renombrar, cambiar valor, borrar sin consumidores y save/reopen, más que
+una operación de **solo registro no redibuja** ningún rack—, `PV-17.1..PV-17.8` —vincular, save/reopen,
+propagación con varios consumidores, renombrado, desvincular, multi-rack, delete **bloqueado** y
+desvincular-todos-y-eliminar— y `OV-1..OV-9`.
+
+**`OV-9` cerró la única operación que quedaba sin ejercicio físico, y por una vía legítima.** Producto
+**no puede** fabricar un vínculo roto —`delete` se bloquea con consumidores, `UnlinkAllAndDelete` quita
+los vínculos antes de borrar y `Link` exige que la variable exista—, así que el fixture salió de copiar un
+rack **vinculado** a un DWG **sin registro**, sin editar ningún Xrecord a mano. Comportamiento observado,
+y es el correcto: `RACKEDITAR` **falla cerrado** —no abre con el literal congelado— y
+`RACKVARIABLES → RepairBroken` **quita el vínculo** dejando gobernando el **literal authored almacenado**.
+
+`origin/main` **no avanzó** desde la base `306e18ed4676e5e96b54d59402c9a230efb137d3`, así que **no hubo
+rebase final** y la validación corresponde exactamente al contenido integrado. Evidencia automatizada del
+mismo SHA, árbol limpio y SDK **8.0.423**: `RackCad.Tests` **5253 PASS / 0 fail / 0 skip**,
+`RackCad.UI.Tests` **1284 PASS / 17 skip / 1301 total**, build Debug de UI **0 errores y 0 advertencias**,
+build Debug del Plugin **0 errores** más los **dos `MSB3277`** conocidos, **CI de `push` sobre ese SHA
+exacto** —corrida **34427341491**, 4/4 `success`— y **cobertura del Candidato** por `workflow_dispatch`
+—corrida **34427649290**, 4/4 `success`, con su artifact `rackcad-coverage-cobertura`—, que es el único
+camino que la cadencia admite para pedirla.
+
 **I-46 (2026-09-08) — PASS TOTAL, 7/7.** El dueño cargó por NETLOAD el DLL Debug del worktree de
 `fix/selectivo-topes-izquierda-derecha`, construido **exactamente** desde
 `259aa2e08a1a08c2451cb873c3f634d0fde9b2e6`, y recorrió los siete puntos del tope de tarima por lado con
@@ -1354,25 +1384,53 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### La siguiente acción es la SESIÓN DE INTEGRACIÓN de I-47.
+### No hay iniciativa en curso. I-47 quedó INTEGRADA y CERRADA; lo que sigue es backlog.
 
-**I-47 — Variables de proyecto (ID22A) — implementación COMPLETA, `G1`–`G18` verdes, validación del
-Owner PASS, Candidato APROBADO.** No queda ningún pendiente funcional: lo que falta es **proceso**.
+**I-47 — Variables de proyecto (ID22A) — INTEGRADA y CERRADA el 2026-09-09.** `G1`–`G18` verdes,
+validación del Owner **PASS**, Candidato aprobado e integrado con merge `--no-ff`. No queda ningún
+pendiente de esta iniciativa: ni funcional, ni de proceso.
 
 ```text
+PRE_MERGE_MAIN_SHA       = 306e18ed4676e5e96b54d59402c9a230efb137d3
 FUNCTIONAL_CANDIDATE_SHA = af572393dab5c755a8f272c746bdce20848b7dd0
+CLOSURE_DOCS_SHA         = 31d7f3b44d503f32c1b40c809532d5e7193e8a75   (docs-only; NO reemplaza al candidato)
+MERGE_SHA                = 507921f4839f59219928a42beb146d285225579c   (dos padres: 306e18e + 31d7f3b)
 ```
 
-Ese SHA es el que se integra y el que la evidencia mide. **Este cierre documental produce un SHA
-posterior que es SÓLO documentación y no lo reemplaza**: no vuelve a compilarse ni a validarse porque no
-toca `src/`, `tests/` ni `.github/`.
+**Qué quedó operativo en `main`.** Un único registro `ProjectVariables` por DWG (`NamedObjectsDictionary`
+→ `RACKCAD_PROJECT`), con `VariableId` estable, tipo `Length` y definición literal; la ventana central
+**`RACKVARIABLES`** con `create` / `rename` / `changeValue` / `delete` bloqueado con consumidores /
+`RepairBroken` / `UnlinkAllAndDelete`; el vínculo explícito **`Link` / `Unlink`** en el editor Selectivo
+para **`selective.verticalClearance`** —el primer y único vertical slice—; la separación
+**authored / effective**; la propagación **multi-vista** bajo un plan de mutación **atómico** con una sola
+transacción, un `Commit` y un `Regen`; y el comportamiento de `RACKEDITAR`, `RACKBOMTOTAL`, duplicación y
+exportación a biblioteca ya alineado con todo lo anterior.
 
-La sesión de integración ejecuta, en este orden ([WORKFLOW.md](WORKFLOW.md) §4.5): rebase sobre
-`origin/main` **si avanzó** —en el momento de escribir esto sigue en
-`306e18ed4676e5e96b54d59402c9a230efb137d3`, la misma base, así que no habría rebase— → merge `--no-ff`
-→ **CI posterior al merge sobre el `MERGE_SHA`** con su artifact `rackcad-coverage-cobertura` → la
-**comprobación diferida de la cobertura del Candidato** → y **sólo entonces** la limpieza de rama y
-worktree. El `MERGE_SHA` **todavía no existe** y por eso aquí no se anota ningún valor.
+**Compuertas posteriores al merge: PASADAS.** `origin/main` no avanzó desde la base, así que no hubo
+rebase final. El **CI sobre el `MERGE_SHA`** —corrida **34430762596**— quedó **4/4 `success`** y, por ser
+trunk, produjo el artifact `rackcad-coverage-cobertura`, con lo que la **comprobación diferida de la
+cobertura del Candidato** queda cubierta. Suites locales sobre el merge: **Core 5253/5253** y
+**UI 1284 correctas / 17 omitidas / 1301**. Rama y worktree de la iniciativa: **retirados**.
+
+**Deuda conocida que sobrevive a I-47, y no es suya de arreglar.**
+`ProjectVariablesDocument.ToProjectVariables()` **hardcodea `VariableType.Length`** e ignora el `Type`
+persistido. Inocuo mientras haya un solo tipo —y por eso `SelectiveBindingOptions.ForLength` filtra por el
+tipo **persistido** y no por esa proyección—, pero **hay que corregirlo ANTES de apoyarse en ella como
+autoridad del tipo** el día que exista un segundo. Registrado en [ideas-futuras.md](ideas-futuras.md).
+
+**Backlog que I-47 deja abierto — es backlog, NO parte de I-47:**
+
+1. **UX de entrada tipo Excel** para propiedades vinculables (`6` / `=Holgura General` en un único input).
+   Decidida como dirección, **no implementada**; el detalle vive abajo y en
+   [ideas-futuras.md](ideas-futuras.md), **sin número y sin reclamar**.
+2. **ID22B — expresiones** (`=Holgura General + 2`): no implementado. Ni parser, ni AST, ni grafo de
+   dependencias, ni ciclos, ni persistencia de expresiones.
+3. **ID21 — referencias a propiedades de otros racks**: no implementado.
+4. **Más propiedades y más sistemas vinculables**: hoy sólo `selective.verticalClearance`.
+   `PalletTolerance`, `PalletDepth` y la unificación de `ClearHeight` en Dinámico/Push Back siguen fuera.
+5. **WBLOCK / copia entre dibujos** como caso soportado: sigue diferido. Lo que sí quedó demostrado es que
+   copiar un rack vinculado a un DWG sin registro produce un vínculo roto **que el producto detecta y
+   repara** —es la vía por la que se validó `RepairBroken`—, no que la copia esté soportada.
 
 **Trazabilidad de I-47.** `reclamo · bootstrap · Discovery · Proposal V1→V4.8 · ADR-0034 · Consensus
 Freeze · plan V1→V1.1 · G0 · G1 · G2 · G3 · G3.1 · G4 · G5 · G6 · G7 · G8 · G9 · G9.1 · G10 · G11 · G12 ·
@@ -2602,7 +2660,27 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-46 — 2026-09-08** (la vigente):
+**Baseline integrada de I-47 — 2026-09-09** (la vigente):
+
+- candidato **funcional** aprobado por el Owner: `af572393dab5c755a8f272c746bdce20848b7dd0`
+  (CI de `push` **34427341491**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**; y cobertura del
+  Candidato por `workflow_dispatch` **34427649290**, 4/4, con su artifact `rackcad-coverage-cobertura`);
+- **cierre documental previo a la integración**: `31d7f3b44d503f32c1b40c809532d5e7193e8a75`, **docs-only**
+  —no recompila ni revalida nada, y **no reemplaza** al candidato funcional—;
+- **validación manual del Owner en AutoCAD 2025: PASS** — `PV-1..PV-5`, `PV-17.1..PV-17.8` y `OV-1..OV-9`,
+  sobre el DLL Debug construido exactamente desde el candidato;
+- `origin/main` **no avanzó** desde la base `306e18ed4676e5e96b54d59402c9a230efb137d3`: **sin rebase
+  final**, de modo que la validación manual corresponde exactamente al contenido integrado;
+- **merge `--no-ff`**: `MERGE_SHA` = `507921f4839f59219928a42beb146d285225579c`, con dos padres; el **CI
+  posterior al merge** —corrida **34430762596**— quedó **4/4 `success`** y produjo el artifact
+  `rackcad-coverage-cobertura` por ser trunk, con lo que **ambas compuertas** de
+  [WORKFLOW.md](WORKFLOW.md) §4.5 (pasos 6 y 7) están **pasadas**;
+- suites locales sobre el merge: **RackCad.Tests 5253/5253** (0 omitidas) y **RackCad.UI.Tests
+  1284 correctas / 17 omitidas / 1301 totales**; Debug de UI (0 advertencias, 0 errores) y del Plugin
+  (0 errores, sólo los **dos** MSB3277 conocidos);
+- rama y worktree de la iniciativa **retirados** tras pasar las dos compuertas.
+
+**Baseline integrada de I-46 — 2026-09-08** (anterior):
 
 - candidato **funcional** aprobado por el Owner: `259aa2e08a1a08c2451cb873c3f634d0fde9b2e6`
   (CI de `push` **34274626718**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**);
