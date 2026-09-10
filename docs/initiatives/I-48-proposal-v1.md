@@ -1,6 +1,6 @@
-# I-48 — Proposal V1: edicion vinculable reusable
+# I-48 — Proposal V1.1: edicion vinculable reusable
 
-> # ⚠ COORDINATOR PROPOSAL V1 — NOT CONSENSUS
+> # ⚠ COORDINATOR PROPOSAL V1.1 — NOT CONSENSUS
 >
 > # ⛔ Implementation remains BLOCKED
 >
@@ -17,8 +17,22 @@
 > Base del analisis:  edacf7d7b280715c4192c779a4c38748d33a56ef  (G1  Discovery)
 >                     7a9471f0d5abd815519069f67171800ec29337c9  (G1.1 addendum)
 > Codigo auditado:    e8ed2bcc3ad32b9418be3e98d26f3fcbfeee5918  (origin/main, sin avanzar)
-> Estado de gates:    G0 hecho · G1 hecho · G1.1 hecho · **G2 EN CURSO** · G3 consenso PENDIENTE
+> Estado de gates:    G0 hecho · G1 hecho · G1.1 hecho · **G2A.1 EN CURSO** · G3 consenso PENDIENTE
+> Version sometida:   V1.1  (sustituye a V1, que NO llego a revisarse)
 > ```
+
+### Que cambia en V1.1 respecto a V1 — leer esto antes de revisar
+
+V1.1 es una **correccion previa a la Architect Review**: V1 se publico y se corrigio **antes** de ser
+revisada, asi que no hay revision que invalidar. Dos cambios, y **ningun otro**:
+
+| # | Cambio | Alcance |
+|---|---|---|
+| 1 | **`D-09` corregido y ampliado con `D-09-bis`.** V1 afirmaba que la UI «sigue sin ver `VariableId`». Era **incorrecto** —la UI ya lo transporta hoy, y **debe** seguir haciendolo para que los homonimos sigan siendo distinguibles— y ademas **se contradecia con `D-10`**. `D-09-bis` fija la frontera real: **transportar identidad opaca** SI, **ejercer semantica** NO. `D-10` y `D-14` quedan alineados con esa redaccion. | Aclaracion de frontera. **No cambia que decide** ninguna D-NN |
+| 2 | **Nueva pregunta `20.13`** al Arquitecto: que literal se congela cuando el usuario **edita el numero y despues vincula** en la misma apertura (`4` o `7`). Apunta a `D-13` y **no se decide aqui**. | Pregunta nueva. `D-13` **no** se modifica |
+
+**`D-01`..`D-18` conservan sus decisiones**, salvo la aclaracion de frontera del punto 1. `Coordinator`
+sigue `PROPOSED`, `Architect` sigue `NOT REVIEWED`, la implementacion sigue **BLOQUEADA**.
 
 ## 0. Que decide esta Proposal, y que no
 
@@ -299,11 +313,54 @@ propiedad**, de modo que anadir una no cambie la forma del resultado.
 
 **Lo que NO cambia, y es lo importante:**
 
-- **La UI no recibe autoridad para resolver variables.** Sigue sin ver `VariableId` para decidir nada,
-  sigue sin recibir el registro, y el nombre sigue siendo **solo display**.
 - **La apertura sigue pudiendo NEGARSE**, con las mismas causas: referencia rota, `Kind` del futuro, id
   ilegible, y registro `PresentButUnreadable`/`IncompatibleMajor` **aunque el rack no este vinculado**.
 - **Reparar sigue sin estar aqui** (`D-12`).
+- **La UI no adquiere autoridad semantica.** La frontera exacta es `D-09-bis`, y no es «la UI no ve
+  `VariableId`».
+
+### D-09-bis — La frontera de la UI respecto a `VariableId` (CORRECCION V1.1)
+
+> **Correccion sobre V1.** V1 afirmaba que la UI «sigue sin ver `VariableId` para decidir nada». Esa
+> redaccion era **incorrecta y ademas se contradecia con `D-10`**: la UI **ya transporta hoy** el
+> `VariableId` —`ProjectVariableOption.Id`, que `LinkClearance_Click` envia como `option.Id`— y **tiene
+> que seguir haciendolo**. Se sustituye por la frontera de abajo, que es la que de verdad importa.
+
+La distincion correcta **no** es «ver o no ver el id». Es **transportar identidad opaca** frente a
+**ejercer semantica**.
+
+**La UI PUEDE — y debe:**
+
+- **Recibir y transportar `VariableId`** como **identidad OPACA** de una opcion. Opaca significa: la
+  trata como una etiqueta sin estructura, no la interpreta, no la compara contra el registro, no deriva
+  nada de ella.
+- **Devolver ese `VariableId`** dentro de una **intencion semantica** (`D-13`).
+
+**Y esto no es una concesion, es un REQUISITO.** Es lo unico que mantiene en pie la invariante vigente
+de I-47 de que **los nombres homonimos siguen siendo distinguibles**: si la UI devolviera un nombre, dos
+variables llamadas igual serian indistinguibles en el viaje de vuelta y se vincularia la equivocada, en
+silencio y de forma permanente. Devolver el id **es** el mecanismo que lo impide (`D-10`, regla de
+homonimos).
+
+**La UI NO PUEDE:**
+
+| Prohibido | Por que |
+|---|---|
+| Resolver `VariableId → valor` | La resolucion tiene **un solo hogar**: `SelectiveEffectiveDesignResolver` (`H1`) |
+| Consultar el registro `ProjectVariables` | El registro se lee en el limite del Plugin, en transaccion; la UI recibe lo ya proyectado |
+| Resolver una variable **por nombre** | El nombre no es identidad; buscar por nombre es exactamente el bug de los homonimos |
+| Decidir compatibilidad `Property ↔ Variable` | Es de Application (`D-08`); el filtro de UI es **comodidad, no frontera de seguridad** |
+| Decidir la semantica de `Link` / `Unlink` / materializacion | Es de Application (`D-12`); congelar, materializar y negarse ante un roto son respuestas ya probadas |
+| Escribir `PropertyValues` | Guarda vigente `NADIE_FUERA_DE_APPLICATION_TOCA_EL_MAPA_DE_VINCULOS` (`D-14`) |
+
+**El nombre sigue siendo SOLO DISPLAY.** `BoundVariableName` y el nombre de cada opcion existen para que
+una persona lea; **ninguna decision de la maquina** —ni en la UI, ni en el Plugin, ni en Application—
+se toma a partir de esa cadena.
+
+*(Coherencia: `D-10` exige que la identidad interna y persistida sea siempre `VariableId` y que los
+homonimos nunca se resuelvan «tomando el primero»; `D-13` hace que la intencion que la ventana devuelve
+lleve ese id; `D-14` mantiene que la UI **describe intencion** y Application **decide semantica**. Las
+tres dicen lo mismo que `D-09-bis`, y ya no hay contradiccion con `D-09`.)*
 
 ---
 
@@ -321,7 +378,9 @@ propiedad**, de modo que anadir una no cambie la forma del resultado.
 - **`=` en posicion inicial inicia un draft de referencia** y ofrece sugerencias.
 - **Las opciones llegan YA FILTRADAS por Application** (`D-08`): el control **no** decide que es
   compatible ni consulta el registro.
-- **La identidad interna y persistida es SIEMPRE `VariableId`.** Nunca el texto. Renombrar la variable
+- **La identidad interna y persistida es SIEMPRE `VariableId`.** El control lo **recibe y lo devuelve**
+  como **identidad opaca** —eso es exactamente lo que `D-09-bis` autoriza, y lo que hace distinguibles a
+  las homonimas—, pero **no lo interpreta, no lo resuelve y no consulta el registro con el**. Nunca el texto. Renombrar la variable
   deja el vinculo intacto y el control solo vuelve a dibujar `=NuevoNombre`.
 - **Los nombres duplicados NO pueden resolverse tomando el primero.** Es la regla dura de este control:
   I-47 permite homonimos deliberadamente, asi que «el primero que coincida» vincularia la variable
@@ -423,7 +482,7 @@ Reglas que lo acotan:
 
 | Capa | Papel | Lo que NO hace |
 |---|---|---|
-| **UI** | **Describe intencion** | No resuelve, no valida compatibilidad, no escribe `PropertyValues`, no conoce AutoCAD |
+| **UI** | **Describe intencion** — y para eso **transporta `VariableId` como identidad opaca** (`D-09-bis`) | No resuelve `VariableId → valor`, no consulta el registro, no resuelve por nombre, no valida compatibilidad, no decide la semantica de Link/Unlink/materializacion, no escribe `PropertyValues`, no conoce AutoCAD |
 | **Application** | **Decide semantica** | No dibuja, no abre transacciones, no conoce AutoCAD |
 | **Plugin** | **Orquesta** | No re-decide semantica ni re-resuelve |
 | **Frontera fisica vigente** | **Escritura y transaccion** | Sin cambios |
@@ -549,6 +608,7 @@ control» como coste de la tercera propiedad. ¿Es alcanzable? ¿Es **deseable**
 disenar para la metrica?
 
 **20.11 — ¿Cual es el cambio minimo suficiente en la UI?** ¿Basta el batch de intents de `D-13`?
+**Ver tambien `20.13`, que expone un caso concreto donde ese batch podria perder intencion.**
 ¿Debe el Selectivo adoptar `NumericField` dentro de I-48 o queda fuera? ¿Se reutiliza
 `PendingTextField<T>` —hoy `internal`— o el control lleva su propio estado?
 
@@ -557,19 +617,66 @@ calientes. Las seis superficies de `D-05` mas el editor tocan varios a la vez. �
 evidencia por gate, y como se garantiza el invariante de `D-18` —que ningun commit deje una segunda
 propiedad reconocible pero mal resuelta—?
 
+**20.13 — ¿QUE LITERAL SE CONGELA cuando el usuario edita el numero Y DESPUES vincula, en la misma
+apertura?** *(nueva en V1.1; refina `20.11` y apunta directamente a `D-13`.)*
+
+**El caso, concreto:**
+
+```text
+Estado inicial:
+  selective.palletTolerance   literal authored = 4
+
+Durante UNA MISMA apertura del editor:
+  1. el usuario escribe            7
+  2. despues selecciona            =VariableX
+  3. despues confirma la ventana
+```
+
+**Pregunta: al ejecutar el `Link`, ¿que literal debe quedar CONGELADO — `4` o `7`?**
+
+**Esta Proposal NO lo decide.** Se somete tal cual, porque la respuesta condiciona la forma minima de
+`D-13` y el Coordinador no quiere fijarla por omision.
+
+**Por que el problema existe** —y no es hipotetico, sale del codigo vigente—:
+
+- El `Link` vigente **congela por omision**: `Preflight.Link` escribe **solo** en `PropertyValues` y
+  **no toca el campo**, de modo que el literal que queda congelado es, literalmente, el que traia el
+  authored que recibio.
+- Si Application solo recibe `Link(PropertyId, VariableId)` **contra el authored original**, congelara
+  **`4`** — el numero que el usuario ya habia sustituido en pantalla.
+- Pero si la intencion del usuario incluye **haber editado antes el literal a `7`**, el modelo de
+  **«solo intent final por `PropertyId`»** de `D-13` **puede perder esa informacion**: la intencion
+  final es «vincular a X», y el `7` se queda por el camino.
+- Y sin embargo **NO queremos transportar un historial completo de gestos**: eso convertiria a la
+  ventana en un log, daria a la UI una secuencia con semantica y contradiria `D-13` y `D-09-bis`.
+
+**Lo que se pide al Arquitecto:** definir **cual es la representacion MINIMA correcta del estado /
+intencion final** para una propiedad, tal que simultaneamente:
+
+1. **no se pierda intencion** — el `7` no puede desaparecer solo porque despues se vinculo;
+2. **la UI no adquiera semantica** — sigue describiendo, no decidiendo (`D-09-bis`, `D-14`);
+3. **no haya estado intermedio persistido** — ni un guardado con `7` y sin vinculo, ni al reves
+   (misma exigencia que `D-12` impone a `Reference → Literal`);
+4. **el resultado siga plegandose en UNA sola operacion de Application**, atomica (`D-07`, `D-13`).
+
+*(Notese la simetria con `20.6`: alli el problema es `Reference → Literal(valor)`; aqui es
+`Literal(valor nuevo) → Reference`. Puede que ambas pidan la misma respuesta estructural, y puede que
+no — decidirlo es parte de la revision.)*
+
 ---
 
 ## 21. Estado
 
 ```text
-COORDINATOR PROPOSAL V1 — NOT CONSENSUS
+COORDINATOR PROPOSAL V1.1 — NOT CONSENSUS
 Implementation remains BLOCKED
 
+Version     : V1.1  (V1 se corrigio ANTES de revisarse; no hay revision invalidada)
 Coordinator : PROPOSED  (este documento)
 Architect   : NOT REVIEWED
 Consenso    : NO ALCANZADO
 
-Siguiente paso: Architect Review sobre ESTA version.
+Siguiente paso: Architect Review sobre ESTA version (V1.1).
 El consenso exige Coordinator = AGREED y Architect = AGREED sobre la MISMA PLAN_VERSION,
 sin desacuerdos abiertos. Hasta entonces no se escribe produccion.
 ```
@@ -577,7 +684,7 @@ sin desacuerdos abiertos. Hasta entonces no se escribe produccion.
 **Cambios de veredicto que esta Proposal introduce respecto al Discovery**, para que no pasen
 inadvertidos en la revision:
 
-| Punto | Discovery (G1/G1.1) | Proposal V1 | Por que |
+| Punto | Discovery (G1/G1.1) | Proposal V1.1 | Por que |
 |---|---|---|---|
 | `ToProjectVariables()` | `DEFER SAFE under current one-Type assumptions`, condicional hasta G2 | **`FIX REQUIRED BY I-48`** | `D-08` decide que Application valide tipo, que es justo el disparador que §7 del Discovery anticipo |
 
