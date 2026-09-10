@@ -26,7 +26,30 @@ automation:
 
 # Variables de proyecto: fundacion de autoridad drawing-level (ID22A)
 
-> **Fase actual: CONSENSUS FREEZE COMPLETO — siguiente fase: IMPLEMENTACION.** Este contrato nacio en
+> **Fase actual: IMPLEMENTACION COMPLETA — CANDIDATO APROBADO — falta la SESION DE INTEGRACION.**
+>
+> ```
+> FUNCTIONAL_CANDIDATE_SHA = af572393dab5c755a8f272c746bdce20848b7dd0
+> ```
+>
+> `G1`-`G18` verdes. Core **5253/5253**, UI **1284 PASS / 17 omitidas / 1301**, Debug de UI y de Plugin
+> sin errores (solo los dos `MSB3277` conocidos). **CI de `push` 4/4 `success`** sobre ese SHA exacto
+> (corrida **34427341491**) y **cobertura del Candidato** por dispatch **34427649290**, con su artifact
+> `rackcad-coverage-cobertura`. **Validacion manual del Owner en AutoCAD 2025: PASS** — `PV-1..PV-5`,
+> `PV-17.1..PV-17.8` y `OV-1..OV-9`, incluida la reparacion de un vinculo roto **legitimo** obtenido
+> copiando un rack vinculado a un DWG sin registro (`RACKEDITAR` falla cerrado; `RepairBroken` quita el
+> vinculo y deja gobernando el literal almacenado).
+>
+> **NO integrada:** sin merge, sin cierre de ROADMAP y sin limpieza de rama ni de worktree. El estado y
+> el handoff de integracion viven en [HANDOFF](../HANDOFF.md) seccion 4. La **UX futura tipo Excel** para
+> propiedades vinculables es **direccion NO normativa** y esta registrada en
+> [ideas-futuras.md](../ideas-futuras.md); **no forma parte de este contrato**.
+>
+> El historial de fases previas se conserva abajo sin cambios.
+>
+> ---
+>
+> **Fase anterior: CONSENSUS FREEZE COMPLETO.** Este contrato nacio en
 > el bootstrap posterior al reclamo atomico —caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2— y
 > describia entonces **solo la fase Discovery**. La actualizacion de CF-1 lo puso al dia con el
 > **alcance final aprobado**; esta lo cierra: **el Owner acepto ADR-0034 el 2026-09-09**.
