@@ -24,10 +24,11 @@ namespace RackCad.Application.Systems.Selective
     /// </summary>
     public sealed class VerticalClearanceBindingState
     {
-        private VerticalClearanceBindingState(bool isBound, double effectiveValue)
+        private VerticalClearanceBindingState(bool isBound, double effectiveValue, string boundVariableName)
         {
             IsBound = isBound;
             EffectiveValue = effectiveValue;
+            BoundVariableName = boundVariableName;
         }
 
         /// <summary>True when a project variable governs the property, so the editor is not its author.</summary>
@@ -36,8 +37,15 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>The value in force — the variable's when bound, the authored literal when not.</summary>
         public double EffectiveValue { get; }
 
-        public static VerticalClearanceBindingState Of(bool isBound, double effectiveValue)
-            => new VerticalClearanceBindingState(isBound, effectiveValue);
+        /// <summary>
+        /// The governing variable's name, for DISPLAY only (I-47 G17). Null when unbound. The editor never
+        /// addresses anything by it — a name is text the user edits, and two variables may share one.
+        /// </summary>
+        public string BoundVariableName { get; }
+
+        public static VerticalClearanceBindingState Of(
+            bool isBound, double effectiveValue, string boundVariableName = null)
+            => new VerticalClearanceBindingState(isBound, effectiveValue, boundVariableName);
     }
 
     /// <summary>The answer: open with this state, or do not open and say why.</summary>
@@ -102,6 +110,30 @@ namespace RackCad.Application.Systems.Selective
     {
         private static readonly SelectiveEffectiveDesignResolver Resolver = new SelectiveEffectiveDesignResolver();
 
+        /// <summary>
+        /// The governing variable's name, for the editor to SHOW. Looking a name up is not resolving: the
+        /// value already came from the one resolver, and nothing here decides anything by this string.
+        /// </summary>
+        private static string BoundName(
+            SelectivePalletDesignDocument authored, ProjectVariablesDocument registry)
+        {
+            if (registry == null ||
+                !authored.TryGetBinding(ProjectPropertyIds.SelectiveVerticalClearance, out var variableId))
+            {
+                return null;
+            }
+
+            foreach (var variable in registry.ToProjectVariables())
+            {
+                if (variable.Id.Equals(variableId))
+                {
+                    return variable.Name;
+                }
+            }
+
+            return null;
+        }
+
         public static SelectiveEditorOpenResult Resolve(
             SelectivePalletDesignDocument authored, ProjectVariablesReadResult registry)
         {
@@ -142,7 +174,8 @@ namespace RackCad.Application.Systems.Selective
 
             return SelectiveEditorOpenResult.Open(
                 resolution.Design,
-                VerticalClearanceBindingState.Of(bound, resolution.Design.VerticalClearance));
+                VerticalClearanceBindingState.Of(
+                    bound, resolution.Design.VerticalClearance, bound ? BoundName(authored, registry.Document) : null));
         }
     }
 }

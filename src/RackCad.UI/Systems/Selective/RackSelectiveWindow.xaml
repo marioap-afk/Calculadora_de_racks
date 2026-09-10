@@ -139,6 +139,33 @@
                                      ToolTip="Espacio libre sobre la tarima hasta el siguiente larguero. Se aplica al salir del campo." />
                         </StackPanel>
                     </Grid>
+
+                    <!-- I-47 G17: vinculo de la holgura vertical a una variable de proyecto. Especifico de
+                         esta propiedad a proposito: no es un panel generico de propiedades. -->
+                    <Border BorderBrush="#D5DDE5" BorderThickness="1" Padding="8" Margin="0,6,0,8" CornerRadius="3">
+                        <StackPanel>
+                            <TextBlock x:Name="ClearanceStateText" Foreground="#1F2933" FontSize="11" TextWrapping="Wrap" />
+                            <ComboBox x:Name="ClearanceVariableBox" Margin="0,4,0,4"
+                                      SelectionChanged="ClearanceVariable_SelectionChanged">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <Run Text="{Binding Name, Mode=OneWay}" />
+                                            <Run Text=" — " />
+                                            <Run Text="{Binding Value, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <WrapPanel>
+                                <Button x:Name="LinkClearanceButton" Content="Vincular" Width="104" Margin="0,0,8,0"
+                                        Click="LinkClearance_Click" />
+                                <Button x:Name="UnlinkClearanceButton" Content="Desvincular" Width="104"
+                                        Click="UnlinkClearance_Click" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
                     <TextBlock Text="Fondo de tarima (in)" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="FondoBox" Style="{StaticResource FieldBox}" Text="48" LostFocus="FondoDepth_LostFocus" KeyDown="FondoDepth_KeyDown"
                              ToolTip="Profundidad de la TARIMA. Es una propiedad del FONDO: se aplica a los «Fondos destino» elegidos abajo. La cabecera se dibuja 6&quot; menos (regla: cabecera = tarima − 6&quot;)." />

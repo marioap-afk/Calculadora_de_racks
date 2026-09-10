@@ -12,6 +12,7 @@ using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Settings;
+using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
@@ -2305,6 +2306,71 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>The XAML tooltip, kept so releasing the field restores it verbatim.</summary>
         private object clearanceTooltip;
 
+        /// <summary>Whether the clearance is currently governed by a project variable (I-47 G17).</summary>
+        private bool clearanceBound;
+
+        /// <summary>
+        /// The binding gesture the user asked for, or null. It is SEPARATE from the insertion request: linking
+        /// is not drawing, and the caller runs it through the semantic preflight instead of the draw path.
+        /// </summary>
+        public SelectiveBindingIntent BindingIntent { get; private set; }
+
+        /// <summary>
+        /// The project variables this property may be bound to, ALREADY filtered by compatible type (I-47 G17).
+        /// The window never decides what is compatible and never resolves anything: it shows what it is given
+        /// and returns the identity of what was picked.
+        /// </summary>
+        public void SetProjectVariables(IReadOnlyList<ProjectVariableOption> options)
+        {
+            ClearanceVariableBox.ItemsSource = options;
+            UpdateClearanceBindingActions();
+        }
+
+        private void ClearanceVariable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            => UpdateClearanceBindingActions();
+
+        private void LinkClearance_Click(object sender, RoutedEventArgs e)
+        {
+            // La IDENTIDAD de lo elegido, nunca su nombre: dos variables pueden llamarse igual.
+            if (clearanceBound || !(ClearanceVariableBox.SelectedItem is ProjectVariableOption option))
+            {
+                return;
+            }
+
+            AskBinding(SelectiveBindingIntent.Link(
+                session.Identity.Id, ProjectPropertyIds.SelectiveVerticalClearanceToken, option.Id));
+        }
+
+        private void UnlinkClearance_Click(object sender, RoutedEventArgs e)
+        {
+            if (!clearanceBound)
+            {
+                return;
+            }
+
+            // Sin variable: el rack ya sabe cual lo gobierna, y volver a nombrarla seria otra oportunidad de
+            // nombrar la equivocada.
+            AskBinding(SelectiveBindingIntent.Unlink(
+                session.Identity.Id, ProjectPropertyIds.SelectiveVerticalClearanceToken));
+        }
+
+        /// <summary>Records the gesture and closes: ejecutarlo no es trabajo de esta ventana.</summary>
+        private void AskBinding(SelectiveBindingIntent intent)
+        {
+            BindingIntent = intent;
+            Close();
+        }
+
+        private void UpdateClearanceBindingActions()
+        {
+            var known = isEditingExisting && session.Identity.HasId;
+
+            LinkClearanceButton.IsEnabled =
+                known && !clearanceBound && ClearanceVariableBox.SelectedItem is ProjectVariableOption;
+            UnlinkClearanceButton.IsEnabled = known && clearanceBound;
+            ClearanceVariableBox.IsEnabled = !clearanceBound;
+        }
+
         /// <summary>A warning latched by input-normalizing code (invalid fondo/cabecera/separador/conteo kept-previous
         /// fallbacks): the pipeline always ends in <see cref="Recompute"/>, whose final status would overwrite a direct
         /// SetStatus, so Recompute emits THIS instead of the generic success message when set.</summary>
@@ -2527,6 +2593,14 @@ namespace RackCad.UI.Systems.Selective
             ClearanceBox.ToolTip = bound
                 ? "La gobierna una variable de proyecto: se muestra el valor en vigor y no se edita desde aquí."
                 : clearanceTooltip;
+
+            clearanceBound = bound;
+            ClearanceStateText.Text = bound
+                ? "Variable: " + (string.IsNullOrWhiteSpace(state.BoundVariableName) ? "(sin nombre)" : state.BoundVariableName)
+                  + " = " + state.EffectiveValue.ToString("0.###", CultureInfo.InvariantCulture)
+                : "Literal: el valor de arriba es de este rack.";
+
+            UpdateClearanceBindingActions();
         }
 
         /// <summary>Open pre-loaded from a LIBRARY template as a NEW rack — a fresh GUID on insert (not an in-place update),

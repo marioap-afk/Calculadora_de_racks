@@ -5,6 +5,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
+using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Plugin.Drawing;
@@ -62,7 +63,8 @@ namespace RackCad.Plugin
             // be read before the window exists — and reading it can say no. A broken reference, a kind from the
             // future or a register this build cannot read do NOT fall back to the frozen literal: falling back
             // would change the geometry in silence. Repairing is an explicit operation and it is not this one.
-            var open = SelectiveEditorOpen.Resolve(saved, ReadProjectVariables(document));
+            var registry = ReadProjectVariables(document, out var entries);
+            var open = SelectiveEditorOpen.Resolve(saved, registry);
 
             if (!open.IsOpen)
             {
@@ -72,8 +74,19 @@ namespace RackCad.Plugin
 
             var window = new RackSelectiveWindow(canInsertInAutoCad: true);
             window.SetDimensionStyles(RackCommandSupport.ReadDimensionStyleNames(document)); // before LoadExisting so a saved style selects
+
+            // I-47 G17: las variables COMPATIBLES, ya filtradas. La ventana no decide que lo es.
+            window.SetProjectVariables(SelectiveBindingOptions.ForLength(registry.Document));
             window.LoadExisting(saved, open.Design, open.VerticalClearance);
             AcApplication.ShowModalWindow(window);
+
+            if (window.BindingIntent != null)
+            {
+                // Vincular no es dibujar: no pasa por el camino de redibujo del editor, pasa por la semantica
+                // que ya sabe congelar el literal, materializar el efectivo y negarse ante un vinculo roto.
+                ApplyBinding(document, editor, window.BindingIntent, registry, entries);
+                return;
+            }
 
             if (!window.InsertRequested)
             {
@@ -230,18 +243,60 @@ namespace RackCad.Plugin
         }
 
         /// <summary>
-        /// The drawing's project-variable register, read in its own short transaction (I-47 G7). It is a READ
-        /// and it happens before the editor exists, so it owns its transaction rather than borrowing one.
+        /// The drawing's project-variable register AND its sweep, read in ONE short transaction (I-47 G7/G8).
+        /// It is a READ and it happens before the editor exists, so it owns its transaction rather than
+        /// borrowing one. The sweep travels with it because a binding gesture has to reason over the rack's
+        /// views, and reading it twice could read two different drawings.
         /// </summary>
-        private static ProjectVariablesReadResult ReadProjectVariables(Document document)
+        private static ProjectVariablesReadResult ReadProjectVariables(
+            Document document, out System.Collections.Generic.IReadOnlyList<ProjectVariableScanEntry> entries)
         {
+            var swept = new System.Collections.Generic.List<ProjectVariableScanEntry>();
+
             using (document.LockDocument())
             using (var transaction = document.Database.TransactionManager.StartTransaction())
             {
                 var read = ProjectVariablesRegistry.Read(transaction, document.Database);
+
+                foreach (var envelope in RackBlockFinder.ScanEnvelopes(
+                             transaction, document.Database, includeReferenceCount: true))
+                {
+                    swept.Add(ProjectVariableScanProjection.Project(
+                        envelope.DefinitionId.Handle.ToString(), envelope.Embed, envelope.DirectReferenceCount));
+                }
+
                 transaction.Commit();
+                entries = swept;
                 return read;
             }
+        }
+
+        /// <summary>
+        /// Runs a binding gesture through the semantics that already exist (I-47 G17): G6 decides what it may
+        /// do, G11 writes it. Nothing about freezing a literal, materialising an effective value or refusing a
+        /// broken reference is decided here.
+        /// </summary>
+        private static void ApplyBinding(
+            Document document,
+            Editor editor,
+            SelectiveBindingIntent intent,
+            ProjectVariablesReadResult registry,
+            System.Collections.Generic.IReadOnlyList<ProjectVariableScanEntry> entries)
+        {
+            var preflight = SelectiveBindingIntentPreflight.Run(intent, registry.Document, entries);
+
+            if (!preflight.IsSuccess)
+            {
+                editor.WriteMessage("\nRackCad: " + preflight.Error);
+                return;
+            }
+
+            var execution = ProjectVariableMutationExecutor.Execute(document, preflight.Plan);
+
+            editor.WriteMessage(execution.IsApplied
+                ? "\nRackCad: vinculo actualizado; se redibujaron " + execution.ViewsRedrawn.ToString(
+                      CultureInfo.InvariantCulture) + " vista(s) del rack."
+                : "\nRackCad: " + (execution.Error ?? "no habia nada que aplicar."));
         }
 
         /// <summary>True when a view-block draws the LATERAL view (so it is a section of the system, not the frontal).</summary>

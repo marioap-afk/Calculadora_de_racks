@@ -468,16 +468,24 @@ namespace RackCad.Tests
             Assert.DoesNotContain("ProjectVariablesData", window);
         }
 
-        /// <summary>G16 no adelanta G17: no hay vínculo/desvínculo por propiedad desde el editor Selectivo.</summary>
+        /// <summary>
+        /// La ventana central administra; el editor Selectivo no.
+        ///
+        /// <para>
+        /// I-47 G17 reapunta esta guarda: nacio para probar que G16 no adelantaba el vinculo por propiedad, y
+        /// G17 ya lo introdujo. Lo que sigue siendo cierto —y es lo que se protege— es que el editor no lleva
+        /// los intents de administracion del registro ni construye la lista de opciones: la recibe.
+        /// </para>
+        /// </summary>
         [Fact]
-        public void GUARDA_NO_SE_ADELANTA_G17()
+        public void GUARDA_EL_EDITOR_SELECTIVO_NO_ADMINISTRA_EL_REGISTRO()
         {
             var selective = File.ReadAllText(Path.Combine(
                 RepoRoot().FullName, "src", "RackCad.UI", "Systems", "Selective", "RackSelectiveWindow.xaml.cs"));
 
-            Assert.DoesNotContain("Vincular", selective);
             Assert.DoesNotContain("ProjectVariableIntent", selective);
-            Assert.DoesNotContain("VariableId", selective);
+            Assert.DoesNotContain("SelectiveBindingOptions", selective);
+            Assert.DoesNotContain("ProjectVariablesWorkspace", selective);
         }
     }
 }
