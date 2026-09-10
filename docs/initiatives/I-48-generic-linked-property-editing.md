@@ -12,7 +12,7 @@ depends_on: [I-47]
 conflicts_with: []
 context_packs: [ui-editors, system-selective, architecture-kernel, persistence]
 automation_state_path:
-decision_paths: []
+decision_paths: [docs/automation/decisions/I-48.md]
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
@@ -26,16 +26,36 @@ automation:
 
 # Generic Linked Property Editing
 
-> **Fase actual: RECLAMADA Y BOOTSTRAPEADA.** No hay Discovery hecho, no hay Proposal, no hay
-> consenso y **no hay una sola linea de produccion escrita**. La implementacion esta BLOQUEADA por
-> la compuerta de la seccion 12.
+> **Fase actual: G3 CERRADA — consenso tecnico ALCANZADO y Proposal V8 APROBADA por el dueno.**
+>
+> ```text
+> Proposal     = V8
+> Proposal SHA = 32e37500766212e685d617c462f32e616c65f104   (FROZEN)
+>
+> Coordinator = AGREED
+> Architect   = AGREED
+> Technical Consensus = REACHED
+>
+> Owner Decision = APPROVED
+> G3 = CLOSED
+>
+> Implementation gates = READY TO BEGIN
+> G4A = NOT STARTED  (no se ejecuta en este commit)
+> Owner Validation = PENDING
+> ```
+>
+> **Todavia no hay una sola linea de produccion escrita.** La aprobacion del dueno autoriza avanzar
+> a la secuencia `G4A..G4H` de la Proposal, **no** el merge, **no** la integracion y **no** la
+> validacion final. Evidencia en
+> [`docs/automation/decisions/I-48.md`](../automation/decisions/I-48.md).
 
 > **Apertura por autorizacion explicita del dueno sin fila previa** — caso (d) de
 > [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la preexistencia de
 > la fila en ROADMAP: la fila durable y este contrato nacen en el bootstrap inmediatamente posterior
-> al reclamo atomico. La autorizacion es la **instruccion directa del dueno** que abrio la
-> iniciativa; **no existe** `docs/automation/decisions/I-48.md` y la norma **no lo exige** para el
-> caso (d), asi que `decision_paths` queda vacio en vez de apuntar a un archivo inventado.
+> al reclamo atomico. La autorizacion fue la **instruccion directa del dueno** que abrio la
+> iniciativa, y en el bootstrap `decision_paths` quedo vacio porque el caso (d) **no exige** un
+> archivo de decision previo. **Ese archivo existe desde G3** —registra la decision sobre Proposal
+> V8, no la apertura— y `decision_paths` lo apunta ya.
 
 ## 1. Objetivo
 
@@ -123,7 +143,13 @@ donde** se ejerce esa semantica; **no** puede cambiar la semantica.
 
 - **I-47 integrada y cerrada** (merge `507921f`): es la base sobre la que se generaliza. Sin ella
   esta iniciativa no tiene objeto.
-- **Entrada del dueno requerida**: el consenso de la seccion 12 y la aprobacion de la Proposal.
+- **Entrada del dueno — SATISFECHA para Proposal V8.** El consenso de la seccion 12 se alcanzo
+  (`Coordinator = AGREED`, `Architect = AGREED` sobre `32e3750`) y el dueno **APROBO** esa Proposal
+  exacta. Evidencia: [`docs/automation/decisions/I-48.md`](../automation/decisions/I-48.md).
+  `requires_owner_decision` **se conserva en `true`**: declara que la iniciativa requirio decision del
+  dueno, y no se pone en `false` porque el gate quedara resuelto. Lo que cambia es el estado del
+  gate: `owner-decision = RESUELTO / APPROVED`. **`requires_owner_validation` sigue PENDIENTE**
+  (`G4H`, AutoCAD 2025).
 - No se declaran estorbos: al reclamar, **ninguna otra iniciativa estaba en curso** —`origin` solo
   tenia `main`—. Si se abriera otra sobre el editor Selectivo o sobre variables de proyecto, se
   serializa.
@@ -145,12 +171,20 @@ acordado. **Una desviacion material frente a esto obliga a detenerse** y a volve
 | # | Fase | Entregable | Estado |
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
-| G1 | Discovery | Informe del wiring vigente por archivo/simbolo y hotspots de la segunda propiedad | pendiente |
-| G2 | Proposal | Mecanismo reusable y contrato de reuso, congelado en una version | pendiente |
-| G3 | Consenso | `Coordinator=AGREED` y `Architect=AGREED` sobre la MISMA Proposal | pendiente — **compuerta** |
-| G4+ | Implementacion | Por definir **en la Proposal**, no aqui | bloqueada por G3 |
+| G1 | Discovery | Informe del wiring vigente por archivo/simbolo y hotspots de la segunda propiedad | **HECHA** |
+| G2 | Proposal | Mecanismo reusable y contrato de reuso, congelado en una version | **HECHA** — **Proposal V8 frozen** `32e3750` |
+| G3 | Consenso | `Coordinator=AGREED` y `Architect=AGREED` sobre la MISMA Proposal | **HECHA** — sobre V8 **exacta**; **Owner APPROVED** |
+| G4+ | Implementacion | `G4A..G4H`, definidos **en la Proposal**, no aqui | **pendiente** — autorizada, **no iniciada** |
 
 Ninguna fase posterior arranca sin que la anterior tenga evidencia revisable.
+
+**Sobre `G2`:** la Proposal recorrio `V1 → V1.1 → V2 → V3 → V4 → V5 → V6 → V7 → V8` con **ocho
+Architect Reviews adversariales**, cada una sobre un SHA concreto. Las siete primeras terminaron
+`NOT AGREED`; la octava, sobre `32e3750`, cerro con **0 BLOCKER / 0 MATERIAL / 0 MINOR**. Las
+Proposals V1..V7 se conservan **intactas** como registro de lo que se reviso en cada ronda.
+
+**Sobre `G4+`:** el dueno autorizo avanzar a la secuencia por gates. **Solo el siguiente gate puede
+abrirse cada vez**; no quedan todos autorizados de una vez. El siguiente esperado es **`G4A`**.
 
 ## 9. Pruebas y builds
 
@@ -182,6 +216,23 @@ consta la obligacion. G0 y G1 **no** la requieren: no tocan producto.
 - **COMPUERTA PRINCIPAL — NO IMPLEMENTATION BEFORE CONSENSUS.** La implementacion queda **bloqueada**
   hasta que **Coordinator y Architect esten `AGREED` sobre la MISMA Proposal**, sin desacuerdos
   abiertos. Un hallazgo del Discovery, por concluyente que parezca, **no es una autorizacion**.
+
+  > **SATISFECHA para Proposal V8 exacta** (`32e37500766212e685d617c462f32e616c65f104`):
+  > `Coordinator = AGREED`, `Architect = AGREED`, **Owner APPROVED**
+  > ([evidencia](../automation/decisions/I-48.md)).
+  >
+  > **La regla NO se retira: se conserva y sigue vigente hacia adelante.** Lo que quedo satisfecho es
+  > la compuerta **para esa version y ese SHA**, no la regla.
+  >
+  > ```text
+  > Cualquier cambio contractual posterior a Proposal V8
+  >   → invalida este consenso
+  >   → exige nueva revision Coordinator + Architect
+  >   → y nueva decision del Owner si cambia materialmente lo aprobado.
+  > ```
+  >
+  > Por eso **`docs/initiatives/I-48-proposal-v8.md` es INMUTABLE**: editarla despues de ese SHA
+  > invalidaria el consenso que la autoriza.
 - Si el Discovery muestra que la generalizacion exige tocar la persistencia de ID22A o la semantica
   de ADR-0034: **detenerse**. Eso es ADR nuevo y decision del dueno, no un ajuste de alcance.
 - Si `selective.palletTolerance` resulta no ser buena prueba de generalidad: **no sustituirla en
