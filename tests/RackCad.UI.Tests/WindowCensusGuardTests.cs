@@ -47,7 +47,12 @@ namespace RackCad.UI.Tests
         {
             "SelectiveSafetyWindow", "SafetyPerPostWindow", "SafetyTopeGridWindow", "SafetyParrillaGridWindow",
             "SafetyGuiaEntradaGridWindow", "SafetyDesviadorGridWindow", "SafetyDefensaGridWindow",
-            "SelectiveSegmentsWindow", "RackWarehouseLayoutWindow", "RackWarehouseFillWindow"
+            "SelectiveSegmentsWindow", "RackWarehouseLayoutWindow", "RackWarehouseFillWindow",
+
+            // I-47 G16: la ventana central de variables de proyecto. Es C y no D porque NO es consulta: edita
+            // una seleccion, acepta o cancela y devuelve una operacion. No corre sesion de rack ni tiene
+            // preview, que es justo lo que separa este arquetipo del A.
+            "RackProjectVariablesWindow"
         };
 
         /// <summary>D — utility window: navigation, consultation, help, lists or BOM, with no transactional editing
@@ -147,18 +152,22 @@ namespace RackCad.UI.Tests
         public void EveryCensusedWindowIsNowProduct()
         {
             // I-39D REAPUNTA esta guarda, no la debilita. Antes aseveraba que la unica pieza de infraestructura
-            // estaba censada y NO contaba como producto; ahora que se retiro, asevera lo que queda: que el censo son
-            // 28 ventanas y las 28 son producto, repartidas 6 + 6 + 10 + 6. Si alguien vuelve a introducir chrome que
+            // estaba censada y NO contaba como producto; ahora que se retiro, asevera lo que queda: que el censo
+            // son ventanas de producto, y ninguna de infraestructura. Si alguien vuelve a introducir chrome que
             // derive de Window, tendra que declararlo en `Infrastructure` y esta prueba lo obligara a explicarlo.
+            //
+            // I-47 G16 sube el reparto a 6 + 6 + 11 + 6 = 29: anade EXACTAMENTE una ventana de producto, la
+            // superficie central de variables de proyecto que faltaba desde G7. Lo que ADR-0029 D2 exige es que
+            // toda ventana declare su arquetipo, y eso es lo que se hace aqui; el numero no es el invariante.
             Assert.Empty(Infrastructure);
 
             var product = RichEditors.Concat(BoundedEditors).Concat(ConfigurationDialogs).Concat(Utilities).ToList();
 
             Assert.Equal(6, RichEditors.Length);
             Assert.Equal(6, BoundedEditors.Length);
-            Assert.Equal(10, ConfigurationDialogs.Length);
+            Assert.Equal(11, ConfigurationDialogs.Length);
             Assert.Equal(6, Utilities.Length);
-            Assert.Equal(28, product.Count);
+            Assert.Equal(29, product.Count);
             Assert.Equal(product.Count, ConcreteWindows().Count);
         }
 
