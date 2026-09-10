@@ -422,7 +422,12 @@ namespace RackCad.Application.ProjectVariables
             return false;
         }
 
-        private static IReadOnlyList<VariableConsumerSummary> Summarize(
+        /// <summary>
+        /// The consumers of a variable, named the way a user can act on them. Public since I-47 G16: the
+        /// central window presents exactly this, and building a second version of it there would be a second
+        /// answer to the same question.
+        /// </summary>
+        public static IReadOnlyList<VariableConsumerSummary> Summarize(
             IReadOnlyList<ProjectVariableConsumer> consumers,
             VariableId variableId)
         {
