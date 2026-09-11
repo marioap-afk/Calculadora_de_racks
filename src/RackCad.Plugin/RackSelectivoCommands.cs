@@ -248,8 +248,14 @@ namespace RackCad.Plugin
             // (UpdateOnly) inserts nothing — the refresh above is the whole action.
             if (!window.UpdateOnly)
             {
+                // I-48 G4C.1: la vista NUEVA porta el MISMO authored reconciliado que las que ya existian, no
+                // uno reconstruido desde el diseno efectivo. Un diseno de dominio no puede llevar vinculos, asi
+                // que reconstruirlo dejaba la vista nueva sin vinculo y con el valor de la variable escrito como
+                // literal del rack -- es decir, divergencia authored entre hermanas del mismo rack, que es el
+                // estado que ninguna operacion puede resolver eligiendo una vista.
+                //
                 // A NEW view inserted during an edit inherits the initiating (picked) envelope's metadata (I-11).
-                DrawSelectiveView(window.InsertView, system, design, id, name, embed);
+                DrawSelectiveViewFromAuthored(window.InsertView, system, designJson, id, name, embed);
                 return;
             }
 
@@ -324,13 +330,20 @@ namespace RackCad.Plugin
             embed != null && string.Equals(embed.View, RackEmbedDocument.ViewLateral, System.StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Wraps a selective design in the uniform embed envelope (kind + id + name + view + section + design JSON).
-        /// Every view-block of a rack (the one frontal + each lateral section) carries the SAME full design and Id, so
-        /// RACKEDITAR on any of them reopens the whole system; <paramref name="section"/> tags which lateral section.
+        /// Wraps an ALREADY-SERIALIZED authored document in the uniform embed envelope (kind + id + name + view
+        /// + section + design JSON).
+        ///
+        /// <para>
+        /// Since I-48 G4C.1 it takes the JSON and not a <see cref="SelectivePalletDesign"/>, and that is the
+        /// whole point of the correction: the document a view carries is decided ONCE, upstream, and travels
+        /// verbatim. Taking a domain design here meant every insertion re-derived the document, and a domain
+        /// design cannot carry a binding — so the derived one silently dropped it and wrote the variable's value
+        /// as if it were the rack's own literal.
+        /// </para>
         /// </summary>
         private static string BuildSelectivePayload(
-            SelectivePalletDesign design, string id, string name, string view, int section = -1, RackEmbedDocument source = null)
-            => design == null ? null : WrapSelectivePayload(SerializeSelectiveDesign(design, id, name), id, name, view, section, source);
+            string authoredJson, string id, string name, string view, int section = -1, RackEmbedDocument source = null)
+            => WrapSelectivePayload(authoredJson, id, name, view, section, source);
 
         /// <summary>
         /// The full design serialized once; every view-block carries this SAME JSON (see <see cref="WrapSelectivePayload"/>).
@@ -380,9 +393,38 @@ namespace RackCad.Plugin
             return new RackEmbedStore().Serialize(embed);
         }
 
-        /// <summary>Draws the selective in the requested VIEW: frontal = one selective block; lateral = one cabecera "corte" per post.</summary>
+        /// <summary>
+        /// Draws the selective in the requested VIEW for a rack that is being CREATED: frontal = one selective
+        /// block; lateral = one cabecera "corte" per post.
+        ///
+        /// <para>
+        /// A fresh rack has no previous carrier and no bindings to preserve, so building its document from the
+        /// design is exactly right. An EDIT must not come through here — see
+        /// <see cref="DrawSelectiveViewFromAuthored"/>.
+        /// </para>
+        /// </summary>
         internal static void DrawSelectiveView(
             string view, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name, RackEmbedDocument source = null)
+            => DrawSelectiveViewFromAuthored(
+                view, system, SerializeSelectiveDesign(design, id, name), id, name, source);
+
+        /// <summary>
+        /// The same insertion, carrying an authored document that was ALREADY decided upstream (I-48 G4C.1).
+        ///
+        /// <para>
+        /// This is the path an EDIT uses. The reconciler produced the rack's final document and it was
+        /// serialized once for the views that already existed; a view inserted in that same operation carries
+        /// that very string, so every sibling of the rack ends up with the same authored state and only the
+        /// envelope — view, section, per-view metadata — differs.
+        /// </para>
+        /// <para>
+        /// The GEOMETRY still comes from <paramref name="system"/>, which the editor already resolved. Nothing
+        /// is resolved twice: effective belongs to the system, authored belongs to the serialized document, and
+        /// this correction is exactly the separation of those two.
+        /// </para>
+        /// </summary>
+        internal static void DrawSelectiveViewFromAuthored(
+            string view, SelectiveRackSystem system, string authoredJson, string id, string name, RackEmbedDocument source = null)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -395,19 +437,19 @@ namespace RackCad.Plugin
 
             if (view == RackEmbedDocument.ViewLateral)
             {
-                InsertSelectiveLateralSection(document, system, design, id, name, source);
+                InsertSelectiveLateralSection(document, system, authoredJson, id, name, source);
                 return;
             }
 
             if (view == RackEmbedDocument.ViewPlanta)
             {
-                var plantaPayload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewPlanta, source: source);
+                var plantaPayload = BuildSelectivePayload(authoredJson, id, name, RackEmbedDocument.ViewPlanta, source: source);
                 var plantaResult = new SelectivePlantaDrawService().DrawAndPlace(document, system, plantaPayload, name);
                 document.Editor.WriteMessage("\n" + DescribeSelective(plantaResult));
                 return;
             }
 
-            InsertSelectiveFrontal(document, system, design, id, name, source);
+            InsertSelectiveFrontal(document, system, authoredJson, id, name, source);
         }
 
         /// <summary>
@@ -417,7 +459,7 @@ namespace RackCad.Plugin
         /// redraws every view.
         /// </summary>
         private static void InsertSelectiveFrontal(
-            Document document, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name, RackEmbedDocument source = null)
+            Document document, SelectiveRackSystem system, string authoredJson, string id, string name, RackEmbedDocument source = null)
         {
             if (document == null || system == null)
             {
@@ -451,7 +493,7 @@ namespace RackCad.Plugin
 
             var fondoView = SelectiveDepthLayout.FondoSystemView(system, fondo);
             fondoView.Name = name;
-            var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewFrontal, fondo, source);
+            var payload = BuildSelectivePayload(authoredJson, id, name, RackEmbedDocument.ViewFrontal, fondo, source);
             var blockName = FrontalName(string.IsNullOrWhiteSpace(name) ? "Selectivo" : name.Trim(), fondo, fondoCount);
             var result = new SelectiveFrontalDrawService().DrawAndPlace(document, fondoView, payload, blockName);
             document.Editor.WriteMessage("\n" + DescribeSelective(result));
@@ -475,7 +517,7 @@ namespace RackCad.Plugin
         /// OF the system, not a loose cabecera. Called after inserting the frontal (via RACKEDITAR) so it links to it.
         /// </summary>
         private static void InsertSelectiveLateralSection(
-            Document document, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name, RackEmbedDocument source = null)
+            Document document, SelectiveRackSystem system, string authoredJson, string id, string name, RackEmbedDocument source = null)
         {
             if (document == null || system == null)
             {
@@ -525,7 +567,7 @@ namespace RackCad.Plugin
 
             var baseName = string.IsNullOrWhiteSpace(name) ? "Selectivo" : name.Trim();
             var sectionName = baseName + " - lateral " + pick.Value.ToString(CultureInfo.InvariantCulture);
-            var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex, source);
+            var payload = BuildSelectivePayload(authoredJson, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex, source);
 
             var result = new LateralHeaderDrawService().DrawAndPlace(document, corte.Cabecera, payload, sectionName, corte.Largueros);
             editor.WriteMessage(result != null && result.Success
