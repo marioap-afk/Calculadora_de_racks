@@ -133,14 +133,28 @@ namespace RackCad.Tests
             Assert.True(ProjectPropertyIds.IsKnown(ProjectPropertyIds.SelectiveVerticalClearance));
         }
 
+        /// <summary>
+        /// El catalogo es CERRADO y su contenido esta declarado, no descubierto.
+        ///
+        /// <para>
+        /// Hasta G4E esta prueba exigia que la segunda propiedad NO estuviera registrada: la capacidad
+        /// productiva crecia en el gate del proof y no antes, porque registrar una propiedad que la
+        /// infraestructura todavia no resolvia bien habria dejado un estado que se reconoce pero no se aplica.
+        /// Ahora que G4E la activo, lo que la prueba protege es lo mismo desde el otro lado: el catalogo tiene
+        /// EXACTAMENTE las dos propiedades decididas, y una tercera no entra por descuido.
+        /// </para>
+        /// </summary>
         [Fact]
-        public void ElCatalogoProductivoNoDeclaraTodaviaUnaSegundaPropiedadVinculable()
+        public void ElCatalogoProductivoDeclaraExactamenteLasDosPropiedadesDecididas()
         {
-            // G4A cierra con capacidad productiva de UNA sola propiedad. Registrar la segunda es G4E, y
-            // hacerlo antes dejaria un estado donde se reconoce pero no se resuelve bien.
-            Assert.Equal(1, SelectiveLinkedProperties.All.Count);
-            Assert.False(SelectiveLinkedProperties.IsKnown(PropertyId.Parse("selective.palletTolerance")));
-            Assert.False(ProjectPropertyIds.IsKnown(PropertyId.Parse("selective.palletTolerance")));
+            Assert.Equal(2, SelectiveLinkedProperties.All.Count);
+
+            Assert.True(ProjectPropertyIds.IsKnown(ProjectPropertyIds.SelectiveVerticalClearance));
+            Assert.True(ProjectPropertyIds.IsKnown(ProjectPropertyIds.SelectivePalletTolerance));
+
+            // Y nada mas: un token plausible del mismo sistema sigue siendo desconocido.
+            Assert.False(SelectiveLinkedProperties.IsKnown(PropertyId.Parse("selective.palletDepth")));
+            Assert.False(ProjectPropertyIds.IsKnown(PropertyId.Parse("selective.floorBeamRise")));
         }
 
         // ================================================================ registro productivo

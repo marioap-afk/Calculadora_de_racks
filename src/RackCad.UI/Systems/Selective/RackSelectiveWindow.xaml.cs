@@ -448,15 +448,37 @@ namespace RackCad.UI.Systems.Selective
             // escritura sin validarse, o se perderia en silencio.
             pendingAll = new IPendingTextField[]
             {
-                pendingFondos, pendingBayCount, pendingDepth, pendingCabecera, ClearanceEditor,
+                pendingFondos, pendingBayCount, pendingDepth, pendingCabecera, ClearanceEditor, ToleranceEditor,
             };
 
-            ClearanceEditor.Committed += ClearanceEditor_Committed;
-            ClearanceEditor.Refused += ClearanceEditor_Refused;
+            // I-48 G4E: el mapa es lo que hace que una propiedad nueva no obligue a tocar cada metodo de la
+            // ventana. Con una sola propiedad un campo bastaba; con dos, un campo por propiedad seria
+            // crecimiento lineal y cada propiedad futura tendria que acordarse de sumarse a cada sitio.
+            linkedEditors = new Dictionary<PropertyId, LinkedPropertyEditor>
+            {
+                [ProjectPropertyIds.SelectiveVerticalClearance] = ClearanceEditor,
+                [ProjectPropertyIds.SelectivePalletTolerance] = ToleranceEditor,
+            };
 
-            // Un rack nuevo empieza con el literal por defecto y sin variables ofrecidas: quien las tenga las
+            ClearanceEditor.Label = "Holgura vertical";
+            ToleranceEditor.Label = "Tolerancia horizontal";
+
+            foreach (var editor in linkedEditors.Values)
+            {
+                editor.Committed += LinkedProperty_Committed;
+                editor.Refused += LinkedProperty_Refused;
+            }
+
+            // Un rack nuevo empieza con los literales por defecto y sin variables ofrecidas: quien las tenga las
             // entregara con SetProjectVariables.
-            AttachClearanceEditor(LinkedPropertyEditState.Literal(new SelectivePalletDesign().VerticalClearance));
+            var defaults = new SelectivePalletDesign();
+            AttachLinkedEditors(new Dictionary<PropertyId, LinkedPropertyEditState>
+            {
+                [ProjectPropertyIds.SelectiveVerticalClearance] =
+                    LinkedPropertyEditState.Literal(defaults.VerticalClearance),
+                [ProjectPropertyIds.SelectivePalletTolerance] =
+                    LinkedPropertyEditState.Literal(defaults.PalletTolerance),
+            });
         }
 
         /// <summary>Fase 2 de "Número de fondos": crece o encoge la lista de slots y re-resuelve los destinos.</summary>
@@ -2282,12 +2304,12 @@ namespace RackCad.UI.Systems.Selective
             error = null;
             if (!(PostBox.SelectedValue is string postId) || string.IsNullOrWhiteSpace(postId)) { error = "Selecciona un poste."; return null; }
             if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste inválido."; return null; }
-            if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal inválida."; return null; }
+            if (!TryEffective(ProjectPropertyIds.SelectivePalletTolerance, "Tolerancia horizontal", out var tolerance, out var toleranceError)) { error = toleranceError; return null; }
             // I-48 G4C: el valor EN VIGOR lo da el editor vinculable, no una caja de texto. Con un literal es
             // el numero comprometido; con una variable es el valor de esa variable. Leer el texto seria leer
             // "=Holgura General", y ademas dejaria que el efectivo de una propiedad gobernada llegase al
             // documento como si fuese su literal congelado.
-            if (!TryEffectiveClearance(out var clearance, out var clearanceError)) { error = clearanceError; return null; }
+            if (!TryEffective(ProjectPropertyIds.SelectiveVerticalClearance, "Holgura vertical", out var clearance, out var clearanceError)) { error = clearanceError; return null; }
             // INV-13: NADA de esto sale de una caja de texto. Las cuatro son editores de un valor pendiente; la
             // autoridad son los slots y la lista de fondos, así que un texto tecleado y no comprometido no puede
             // llegar al documento ni redimensionar el rack (I-43, gate 8.6C). Safety se filtra + copia aquí para que
@@ -2355,6 +2377,17 @@ namespace RackCad.UI.Systems.Selective
         /// </summary>
         private IReadOnlyList<LinkedPropertyOption> linkedOptions = new LinkedPropertyOption[0];
 
+        /// <summary>
+        /// Los editores vinculables de esta ventana, por <see cref="PropertyId"/> (I-48 G4E).
+        ///
+        /// <para>
+        /// Es un mapa y no dos campos: cada metodo que los recorre —sembrar, leer el estado final, describir,
+        /// pedir el efectivo— funciona igual con dos que con cinco, asi que registrar una propiedad nueva no
+        /// obliga a revisitar cada uno de ellos buscando el sitio donde faltaba sumarla.
+        /// </para>
+        /// </summary>
+        private Dictionary<PropertyId, LinkedPropertyEditor> linkedEditors;
+
         /// <summary>Whether the clearance is currently governed by a project variable (I-47 G17, I-48 G4C).</summary>
         private bool clearanceBound;
 
@@ -2369,14 +2402,24 @@ namespace RackCad.UI.Systems.Selective
         /// Application (I-48 G4C).
         ///
         /// <para>
-        /// The window never decides what is compatible, never resolves an id and never reads the register. What
-        /// it does with this list is show it and hand back the IDENTITY of what a human picked.
+        /// Both properties are lengths, so they share one compatible set — but each editor receives it from
+        /// Application. The window never decides what is compatible, never resolves an id and never reads the
+        /// register. What it does with this list is show it and hand back the IDENTITY of what a human picked.
         /// </para>
         /// </summary>
         public void SetProjectVariables(IReadOnlyList<LinkedPropertyOption> options)
         {
             linkedOptions = options ?? new LinkedPropertyOption[0];
-            AttachClearanceEditor(ClearanceEditor.FinalState ?? LinkedPropertyEditState.Literal(6.0));
+
+            // Re-sembrar CONSERVA el estado comprometido de cada editor: cambiar las opciones no es una carga.
+            var committed = new Dictionary<PropertyId, LinkedPropertyEditState>();
+
+            foreach (var pair in linkedEditors)
+            {
+                committed[pair.Key] = pair.Value.FinalState;
+            }
+
+            AttachLinkedEditors(committed);
         }
 
         /// <summary>
@@ -2393,87 +2436,116 @@ namespace RackCad.UI.Systems.Selective
             get
             {
                 var states = new Dictionary<PropertyId, LinkedPropertyEditState>();
-                var state = ClearanceEditor.FinalState;
 
-                if (state != null)
+                foreach (var pair in linkedEditors)
                 {
-                    states[ProjectPropertyIds.SelectiveVerticalClearance] = state;
+                    if (pair.Value.FinalState != null)
+                    {
+                        states[pair.Key] = pair.Value.FinalState;
+                    }
                 }
 
                 return states;
             }
         }
 
-        /// <summary>Adopts a session for the clearance over the options currently on offer.</summary>
-        private void AttachClearanceEditor(LinkedPropertyEditState committed)
+        /// <summary>
+        /// Siembra cada editor con su estado comprometido sobre las opciones en oferta. Una propiedad sin
+        /// estado declarado conserva el suyo, y si no tenia ninguno empieza por el literal de su campo.
+        /// </summary>
+        private void AttachLinkedEditors(IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> states)
         {
-            ClearanceEditor.Label = "Holgura vertical";
-            ClearanceEditor.Attach(new LinkedPropertyEditSession(committed, linkedOptions));
-            UpdateClearanceState();
+            foreach (var pair in linkedEditors)
+            {
+                var committed = states != null && states.TryGetValue(pair.Key, out var state) && state != null
+                    ? state
+                    : pair.Value.FinalState;
+
+                if (committed == null)
+                {
+                    continue;
+                }
+
+                pair.Value.Attach(new LinkedPropertyEditSession(committed, linkedOptions));
+            }
+
+            UpdateLinkedPropertyState();
         }
 
         /// <summary>
-        /// The value IN FORCE for the clearance. With a literal it is the committed number; with a variable it
-        /// is that variable's value. It FAILS rather than falling back: a reference whose variable is not on
+        /// The value IN FORCE for a linked property. With a literal it is the committed number; with a variable
+        /// it is that variable's value. It FAILS rather than falling back: a reference whose variable is not on
         /// offer has no effective value, and using the frozen literal instead would change the geometry in
         /// silence.
         /// </summary>
-        private bool TryEffectiveClearance(out double value, out string error)
+        private bool TryEffective(PropertyId propertyId, string label, out double value, out string error)
         {
             value = 0.0;
             error = null;
 
-            if (!ClearanceEditor.Session.TryGetEffectiveValue(out value))
+            if (!linkedEditors.TryGetValue(propertyId, out var editor) || editor.Session == null)
             {
-                error = "La variable que gobierna la holgura vertical no esta disponible en este dibujo.";
+                error = label + ": el editor de esta propiedad no esta disponible.";
+                return false;
+            }
+
+            if (!editor.Session.TryGetEffectiveValue(out value))
+            {
+                error = "La variable que gobierna " + label.ToLowerInvariant() + " no esta disponible en este dibujo.";
                 return false;
             }
 
             if (value < 0.0)
             {
-                error = "Holgura vertical inválida.";
+                error = label + " inválida.";
                 return false;
             }
 
             return true;
         }
 
-        /// <summary>What the user reads about who governs the clearance. It DESCRIBES; it decides nothing.</summary>
-        private void UpdateClearanceState()
+        /// <summary>What the user reads about who governs each property. It DESCRIBES; it decides nothing.</summary>
+        private void UpdateLinkedPropertyState()
         {
-            var state = ClearanceEditor.FinalState;
+            ClearanceStateText.Text = Describe(ProjectPropertyIds.SelectiveVerticalClearance, "Holgura vertical");
+            ToleranceStateText.Text = Describe(ProjectPropertyIds.SelectivePalletTolerance, "Tolerancia horizontal");
 
-            if (state == null)
+            clearanceBound =
+                linkedEditors.TryGetValue(ProjectPropertyIds.SelectiveVerticalClearance, out var clearance) &&
+                clearance.FinalState != null &&
+                clearance.FinalState.IsReference;
+        }
+
+        private string Describe(PropertyId propertyId, string label)
+        {
+            if (!linkedEditors.TryGetValue(propertyId, out var editor) || editor.FinalState == null)
             {
-                ClearanceStateText.Text = string.Empty;
-                return;
+                return string.Empty;
             }
 
-            clearanceBound = state.IsReference;
+            var state = editor.FinalState;
 
             if (!state.IsReference)
             {
-                ClearanceStateText.Text = "Literal: el valor es de este rack.";
-                return;
+                return label + " · literal: el valor es de este rack.";
             }
 
-            var efectivo = ClearanceEditor.Session.TryGetEffectiveValue(out var value)
+            var efectivo = editor.Session.TryGetEffectiveValue(out var value)
                 ? value.ToString("0.###", CultureInfo.InvariantCulture)
                 : "(no disponible)";
 
-            ClearanceStateText.Text =
-                "Variable: " + ClearanceEditor.Session.Text.TrimStart('=') + " = " + efectivo
-                + " · el literal de este rack queda congelado en "
-                + state.CommittedLiteral.ToString("0.###", CultureInfo.InvariantCulture) + ".";
+            return label + " · variable: " + editor.Session.Text.TrimStart('=') + " = " + efectivo
+                   + " · el literal de este rack queda congelado en "
+                   + state.CommittedLiteral.ToString("0.###", CultureInfo.InvariantCulture) + ".";
         }
 
-        private void ClearanceEditor_Committed(object sender, EventArgs e)
+        private void LinkedProperty_Committed(object sender, EventArgs e)
         {
-            UpdateClearanceState();
+            UpdateLinkedPropertyState();
             Recompute();
         }
 
-        private void ClearanceEditor_Refused(object sender, string reason) => SetStatus(reason, true);
+        private void LinkedProperty_Refused(object sender, string reason) => SetStatus(reason, true);
 
         /// <summary>A warning latched by input-normalizing code (invalid fondo/cabecera/separador/conteo kept-previous
         /// fallbacks): the pipeline always ends in <see cref="Recompute"/>, whose final status would overwrite a direct
@@ -2510,11 +2582,16 @@ namespace RackCad.UI.Systems.Selective
             PostBox.SelectedValue = design.PostId;
             if (PostBox.SelectedItem == null && PostBox.Items.Count > 0) PostBox.SelectedIndex = 0;
             PostPeralteBox.Text = design.PostPeralte.ToString("0.###", CultureInfo.InvariantCulture);
-            ToleranceBox.Text = design.PalletTolerance.ToString("0.###", CultureInfo.InvariantCulture);
             // Un diseno de dominio ES el caso sin vinculo: cargarlo siembra un literal. Un open sobre un rack
             // vinculado vuelve a sembrar despues con el estado AUTHORED, que es el unico que conserva el
             // literal congelado (I-48 G4C).
-            AttachClearanceEditor(LinkedPropertyEditState.Literal(design.VerticalClearance));
+            AttachLinkedEditors(new Dictionary<PropertyId, LinkedPropertyEditState>
+            {
+                [ProjectPropertyIds.SelectiveVerticalClearance] =
+                    LinkedPropertyEditState.Literal(design.VerticalClearance),
+                [ProjectPropertyIds.SelectivePalletTolerance] =
+                    LinkedPropertyEditState.Literal(design.PalletTolerance),
+            });
             // 0 is a legitimate rise ("no elevation at all"), so only a NEGATIVE value falls back to the default.
             legacyFloorBeamRise = design.FloorBeamRise >= 0.0 ? design.FloorBeamRise : SelectiveRackDefaults.DefaultFloorBeamRise;
             // Una carga REEMPLAZA todo el estado: lo que hubiera pendiente se descarta explícitamente (Reset), que
@@ -2656,7 +2733,7 @@ namespace RackCad.UI.Systems.Selective
         public void LoadExisting(
             SelectivePalletDesignDocument document,
             SelectivePalletDesign effective,
-            LinkedPropertyEditState clearanceState)
+            IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> linkedPropertyStates)
         {
             if (document == null || effective == null) return;
             AdoptExisting(document);
@@ -2664,7 +2741,7 @@ namespace RackCad.UI.Systems.Selective
 
             // El estado COMPROMETIDO de la propiedad vinculable es el del authored, no el efectivo: el literal
             // congelado tiene que sobrevivir a abrir y guardar sin tocar nada (I-48 G4C).
-            AttachClearanceEditor(clearanceState ?? LinkedPropertyEditState.Literal(document.VerticalClearance));
+            AttachLinkedEditors(linkedPropertyStates);
         }
 
         /// <summary>Open the editor pre-loaded with an existing rack (from an embedded/saved document), keeping its Id/Name.</summary>

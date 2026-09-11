@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Domain.Systems.Selective;
@@ -55,15 +56,18 @@ namespace RackCad.Application.Systems.Selective
             SelectiveEditorOpenOutcome outcome,
             SelectivePalletDesign design,
             VerticalClearanceBindingState verticalClearance,
-            LinkedPropertyEditState verticalClearanceState,
+            IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> linkedPropertyStates,
             string error)
         {
             Outcome = outcome;
             Design = design;
             VerticalClearance = verticalClearance;
-            VerticalClearanceState = verticalClearanceState;
+            LinkedPropertyStates = linkedPropertyStates ?? NoStates;
             Error = error;
         }
+
+        private static readonly IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> NoStates =
+            new Dictionary<PropertyId, LinkedPropertyEditState>();
 
         public SelectiveEditorOpenOutcome Outcome { get; }
 
@@ -74,16 +78,23 @@ namespace RackCad.Application.Systems.Selective
         public VerticalClearanceBindingState VerticalClearance { get; }
 
         /// <summary>
-        /// El estado COMPROMETIDO de la holgura vertical, como lo consume el editor vinculable (I-48 G4C).
+        /// El estado COMPROMETIDO de CADA propiedad vinculable, como lo consume el editor reusable
+        /// (I-48 G4C, generalizado en G4E).
         ///
         /// <para>
-        /// Su literal es el del AUTHORED, no el efectivo, y ahi esta la diferencia con
-        /// <see cref="VerticalClearance"/>: aquel describe que se MUESTRA, este describe que se GUARDA si nadie
-        /// toca el campo. Sin el, abrir un rack vinculado y guardarlo sin tocar nada copiaria el valor de la
-        /// variable sobre el literal congelado.
+        /// Su literal es el del AUTHORED, no el efectivo, y ahi esta la diferencia con <see cref="Design"/>:
+        /// aquel describe que se MUESTRA, este describe que se GUARDA si nadie toca el campo. Sin el, abrir un
+        /// rack vinculado y guardarlo sin tocar nada copiaria el valor de la variable sobre el literal
+        /// congelado.
+        /// </para>
+        /// <para>
+        /// Es un LOOKUP por <see cref="PropertyId"/> y no un campo por propiedad. Con una sola propiedad
+        /// registrada las dos formas eran indistinguibles; con la segunda, un campo por propiedad seria
+        /// crecimiento lineal —y cada propiedad futura tendria que acordarse de anadir el suyo a cada
+        /// superficie. Se construye recorriendo el catalogo, asi que una entrada nueva aparece aqui sola.
         /// </para>
         /// </summary>
-        public LinkedPropertyEditState VerticalClearanceState { get; }
+        public IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> LinkedPropertyStates { get; }
 
         /// <summary>The visible reason. Null when open.</summary>
         public string Error { get; }
@@ -93,9 +104,9 @@ namespace RackCad.Application.Systems.Selective
         public static SelectiveEditorOpenResult Open(
             SelectivePalletDesign design,
             VerticalClearanceBindingState verticalClearance,
-            LinkedPropertyEditState verticalClearanceState = null)
+            IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> linkedPropertyStates = null)
             => new SelectiveEditorOpenResult(
-                SelectiveEditorOpenOutcome.Open, design, verticalClearance, verticalClearanceState, null);
+                SelectiveEditorOpenOutcome.Open, design, verticalClearance, linkedPropertyStates, null);
 
         public static SelectiveEditorOpenResult Blocked(string error)
             => new SelectiveEditorOpenResult(SelectiveEditorOpenOutcome.Blocked, null, null, null, error);
@@ -191,17 +202,28 @@ namespace RackCad.Application.Systems.Selective
             var bound = authored.HasBindingEntry(ProjectPropertyIds.SelectiveVerticalClearance);
 
             // El literal COMPROMETIDO sale del authored; la fuente, de la presencia del vinculo. Que el
-            // resolver haya tenido exito garantiza que, si esta vinculada, su variable existe y es compatible.
-            var state =
-                bound && authored.TryGetBinding(ProjectPropertyIds.SelectiveVerticalClearance, out var variableId)
-                    ? LinkedPropertyEditState.Reference(authored.VerticalClearance, variableId)
-                    : LinkedPropertyEditState.Literal(authored.VerticalClearance);
+            // resolver haya tenido exito garantiza que, si una propiedad esta vinculada, su variable existe y
+            // es compatible.
+            //
+            // Se recorre el CATALOGO, no una lista escrita a mano: una propiedad nueva aparece aqui por el solo
+            // hecho de registrarse, que es exactamente lo que I-48 existe para conseguir.
+            var states = new Dictionary<PropertyId, LinkedPropertyEditState>();
+
+            foreach (var descriptor in SelectiveLinkedProperties.All.Ordered())
+            {
+                var literal = descriptor.ReadAuthored(authored);
+
+                states[descriptor.PropertyId] =
+                    authored.TryGetBinding(descriptor.PropertyId, out var variableId)
+                        ? LinkedPropertyEditState.Reference(literal, variableId)
+                        : LinkedPropertyEditState.Literal(literal);
+            }
 
             return SelectiveEditorOpenResult.Open(
                 resolution.Design,
                 VerticalClearanceBindingState.Of(
                     bound, resolution.Design.VerticalClearance, bound ? BoundName(authored, accreditation.Registry) : null),
-                state);
+                states);
         }
     }
 }

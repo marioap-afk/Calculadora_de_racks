@@ -167,9 +167,10 @@ namespace RackCad.Application.ProjectVariables
     /// would be.
     /// </para>
     /// <para>
-    /// It holds exactly ONE property until the proof gate adds the second. That is not a placeholder: the
-    /// guard that keeps a second property from being resolved, materialised or frozen incorrectly is the
-    /// catalogue itself, so it is the LAST thing that grows.
+    /// It held exactly ONE property until the proof gate, deliberately: the guard that keeps a property from
+    /// being resolved, materialised or frozen incorrectly is the catalogue itself, so it is the LAST thing
+    /// that grows. I-48 G4E adds the second, and the size of that change — one entry — is the measurement the
+    /// initiative exists to produce.
     /// </para>
     /// </summary>
     internal static class SelectiveLinkedProperties
@@ -195,6 +196,21 @@ namespace RackCad.Application.ProjectVariables
                     (authored, value) => authored.VerticalClearance = value,
                     design => design.VerticalClearance,
                     (design, value) => design.VerticalClearance = value),
+
+                // I-48 G4E. The SECOND real property, and the point of the whole initiative: activating it is a
+                // catalogue entry, not an architecture change. Same shape as the first, four accessors, zero
+                // special cases anywhere downstream.
+                //
+                // It is a length like the clearance, so no second VariableType appears here either. And its
+                // persisted field does not move: the rack keeps its own literal, and a binding is an OPTIONAL
+                // entry in PropertyValues that only exists once a user creates it.
+                new SelectiveLinkedPropertyDescriptor(
+                    ProjectPropertyIds.SelectivePalletTolerance,
+                    VariableType.Length,
+                    authored => authored.PalletTolerance,
+                    (authored, value) => authored.PalletTolerance = value,
+                    design => design.PalletTolerance,
+                    (design, value) => design.PalletTolerance = value),
             };
 
             if (!TryCreate(descriptors, out var set, out var error))

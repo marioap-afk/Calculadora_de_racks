@@ -87,7 +87,7 @@ namespace RackCad.Plugin
             }
 
             window.SetProjectVariables(options.Options);
-            window.LoadExisting(saved, open.Design, open.VerticalClearanceState);
+            window.LoadExisting(saved, open.Design, open.LinkedPropertyStates);
             AcApplication.ShowModalWindow(window);
 
             if (window.BindingIntent != null)

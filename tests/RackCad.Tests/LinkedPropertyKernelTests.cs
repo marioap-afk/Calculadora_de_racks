@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
@@ -614,17 +615,22 @@ namespace RackCad.Tests
             }
         }
 
-        // ================================================================ produccion sigue con UNA propiedad
+        // ================================================================ produccion: las dos propiedades
 
+        /// <summary>
+        /// El catalogo productivo, enumerado en orden determinista. Hasta G4E exigia UNA sola propiedad —la
+        /// capability crecia en el gate del proof y no antes—; ahora exige exactamente las dos decididas, en el
+        /// orden Ordinal que hace reproducible cualquier diagnostico construido sobre el.
+        /// </summary>
         [Fact]
-        public void EL_CATALOGO_PRODUCTIVO_SIGUE_DECLARANDO_UNA_SOLA_PROPIEDAD()
+        public void EL_CATALOGO_PRODUCTIVO_DECLARA_LAS_DOS_PROPIEDADES_EN_ORDEN_DETERMINISTA()
         {
-            // La capability de G4B no crece: palletTolerance se registra en G4E, no aqui.
             var ordered = SelectiveLinkedProperties.All.Ordered();
 
-            Assert.Single(ordered);
-            Assert.Equal(ClearanceToken, ordered[0].PropertyId.Value);
-            Assert.False(SelectiveLinkedProperties.IsKnown(PropertyId.Parse("selective.palletTolerance")));
+            Assert.Equal(2, ordered.Count);
+            Assert.Equal(
+                new[] { "selective.palletTolerance", ClearanceToken },
+                ordered.Select(d => d.PropertyId.Value).ToArray());
         }
 
         [Fact]

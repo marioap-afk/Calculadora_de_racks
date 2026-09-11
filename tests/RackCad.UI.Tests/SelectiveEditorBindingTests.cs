@@ -116,7 +116,7 @@ namespace RackCad.UI.Tests
 
             var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
             window.SetProjectVariables(Opciones(registro));
-            window.LoadExisting(authored, open.Design, open.VerticalClearanceState);
+            window.LoadExisting(authored, open.Design, open.LinkedPropertyStates);
             return window;
         }
 

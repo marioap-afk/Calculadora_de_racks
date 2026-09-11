@@ -129,9 +129,10 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Horizontal (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="ToleranceBox" Style="{StaticResource FieldBox}" Text="4"
-                                     LostFocus="GlobalScalar_LostFocus" KeyDown="GlobalScalar_KeyDown"
-                                     ToolTip="Tolerancia horizontal total entre tarimas y postes; define el largo del larguero. Se aplica al salir del campo." />
+                            <!-- I-48 G4E: la MISMA clase de control que la holgura vertical, otra instancia. No
+                                 es un editor propio de la tolerancia: la UX vinculable se comparte. -->
+                            <controls:LinkedPropertyEditor x:Name="ToleranceEditor" Margin="0,0,0,4"
+                                                           ToolTip="Tolerancia horizontal total entre tarimas y postes; define el largo del larguero. Escribe un numero, o &quot;=&quot; para gobernarla con una variable de proyecto." />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="Holgura vertical (in)" Style="{StaticResource FieldLabel}" />
@@ -149,6 +150,8 @@
                     <Border BorderBrush="#D5DDE5" BorderThickness="1" Padding="8" Margin="0,6,0,8" CornerRadius="3">
                         <StackPanel>
                             <TextBlock x:Name="ClearanceStateText" Foreground="#1F2933" FontSize="11" TextWrapping="Wrap" />
+                            <TextBlock x:Name="ToleranceStateText" Foreground="#1F2933" FontSize="11" TextWrapping="Wrap"
+                                       Margin="0,2,0,0" />
                             <TextBlock x:Name="ClearanceHintText" Foreground="#617080" FontSize="11" TextWrapping="Wrap"
                                        Margin="0,2,0,0"
                                        Text="Escribe un numero para que el valor sea de este rack, o &quot;=&quot; y elige una variable de la lista para que ella lo gobierne. Enter confirma; Escape cancela." />

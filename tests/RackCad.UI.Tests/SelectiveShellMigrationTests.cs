@@ -51,7 +51,7 @@ namespace RackCad.UI.Tests
             "Shell", "NameBox", "DrawBasePlateCheck", "NumberFrontsCheck", "NumberLevelsCheck", "DrawRackNameCheck",
             "DrawPalletsCheck", "AnnotationScaleBox", "DimensionsBox", "DimStyleBox", "SafetyButton", "PostBox",
             "PostPeralteBox", "PostSelectBox", "CustomizePostButton", "PostPeralteOverrideBox", "PostCabeceraStatus",
-            "BayCountBox", "ToleranceBox", "ClearanceEditor", "FondoBox", "CabeceraFondoBox", "FondosBox",
+            "BayCountBox", "ToleranceEditor", "ClearanceEditor", "FondoBox", "CabeceraFondoBox", "FondosBox",
             "FrontHeader", "FrontScopeBox", "FrontFloorBeamCheck", "ApplyFrontFloorBeamButton",
             "FrontRiseBox", "ApplyFrontRiseButton", "FrontLevelsBox", "ApplyFrontLevelsButton",
             "TargetFondosPanel", "TargetFondosButton", "TargetFondosPopup", "TargetFondosList",
@@ -60,6 +60,9 @@ namespace RackCad.UI.Tests
             "FondoSelectorBox", "MatrixGrid", "PreviewFrontalRadio", "PreviewLateralRadio", "PreviewHint", "PreviewCanvas",
             "UpdateButton", "InsertLateralButton", "InsertPlantaButton"
         };
+
+        // I-48 G4E: lo mismo con "ToleranceBox" -> "ToleranceEditor", la SEGUNDA instancia del mismo
+        // control reusable.
 
         // I-48 G4C: "ClearanceBox" dejo de existir y su sitio lo ocupa "ClearanceEditor", el control
         // vinculable reusable. No es un control PERDIDO en la migracion del shell: es una sustitucion
@@ -108,7 +111,7 @@ namespace RackCad.UI.Tests
                 var shell = window.Shell;
 
                 // Sidebar: global settings + selected-cell editor live in the scrolling side panel.
-                foreach (var name in new[] { "NameBox", "DrawBasePlateCheck", "PostBox", "BayCountBox", "ToleranceBox",
+                foreach (var name in new[] { "NameBox", "DrawBasePlateCheck", "PostBox", "BayCountBox", "ToleranceEditor",
                     "FondoBox", "FondosBox", "SafetyButton", "CellHeader", "FrenteBox", "SeparatorsHost" })
                 {
                     AssertInSlot(shell.SidePanelContent, window, name, "SidePanelContent");

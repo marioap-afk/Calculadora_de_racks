@@ -107,7 +107,7 @@ namespace RackCad.UI.Tests
 
             var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
             window.SetProjectVariables(options.Options);
-            window.LoadExisting(authored, open.Design, open.VerticalClearanceState);
+            window.LoadExisting(authored, open.Design, open.LinkedPropertyStates);
             return window;
         }
 
@@ -255,13 +255,26 @@ namespace RackCad.UI.Tests
             Assert.False(trasEnter);
         }
 
+        /// <summary>
+        /// I-48 G4E: el estado NOMBRA la propiedad, porque ya hay mas de una. Antes bastaba decir
+        /// «literal»; con dos propiedades vinculables, no decir cual seria ambiguo.
+        /// </summary>
         [Fact]
-        public void SIN_VINCULO_EL_ESTADO_DICE_QUE_ES_UN_LITERAL()
+        public void SIN_VINCULO_EL_ESTADO_DICE_QUE_ES_UN_LITERAL_Y_DE_QUE_PROPIEDAD()
         {
-            var text = StaTestRunner.Run(() =>
-                Control<TextBlock>(Abrir(Doc(), Registro((VarX, "Holgura", 10.0))), "ClearanceStateText").Text);
+            var (holgura, tolerancia) = StaTestRunner.Run(() =>
+            {
+                var window = Abrir(Doc(), Registro((VarX, "Holgura", 10.0)));
+                return (Control<TextBlock>(window, "ClearanceStateText").Text,
+                    Control<TextBlock>(window, "ToleranceStateText").Text);
+            });
 
-            Assert.Contains("Literal", text);
+            Assert.Contains("Holgura vertical", holgura);
+            Assert.Contains("literal", holgura);
+
+            // Y la SEGUNDA propiedad tambien se describe, por el mismo camino.
+            Assert.Contains("Tolerancia horizontal", tolerancia);
+            Assert.Contains("literal", tolerancia);
         }
 
         // ================================================================ 12: foco compuesto
