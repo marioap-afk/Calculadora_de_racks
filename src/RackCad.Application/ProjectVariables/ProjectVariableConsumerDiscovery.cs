@@ -215,8 +215,17 @@ namespace RackCad.Application.ProjectVariables
             return null;
         }
 
-        /// <summary>Selective views grouped by rack, preserving the sweep order so diagnostics are reproducible.</summary>
-        private static List<KeyValuePair<string, List<ProjectVariableScanEntry>>> GroupSelectiveByRack(
+        /// <summary>
+        /// Selective views grouped by rack, preserving the sweep order so diagnostics are reproducible.
+        ///
+        /// <para>
+        /// INTERNAL since I-48 G4B.1 so that the central window's repair list groups a rack exactly like every
+        /// operation does. A second copy of this rule is how one surface starts calling three views a rack and
+        /// another calls them three racks. Nothing unreadable is filtered here on purpose: the authority has to
+        /// SEE an unreadable sibling to be able to say there is no authority.
+        /// </para>
+        /// </summary>
+        internal static List<KeyValuePair<string, List<ProjectVariableScanEntry>>> GroupSelectiveByRack(
             IReadOnlyList<ProjectVariableScanEntry> entries)
         {
             var order = new List<KeyValuePair<string, List<ProjectVariableScanEntry>>>();

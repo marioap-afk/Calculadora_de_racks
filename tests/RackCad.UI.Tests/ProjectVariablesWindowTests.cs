@@ -106,6 +106,16 @@ namespace RackCad.UI.Tests
                 ProjectVariableScanEntry.Selective("D1", RackA, doc, 1));
         }
 
+        /// <summary>
+        /// Dos hermanas del mismo rack, ambas legibles, identicas salvo en <c>PropertyValues</c>. El rack no
+        /// tiene autoridad authored, asi que no puede producir ninguna reparacion accionable.
+        /// </summary>
+        private static ProjectVariablesWorkspace ConHermanasDivergentes()
+            => Workspace(
+                ProjectVariablesReadResult.Readable(Registro(10.0, id: Otra)),
+                ProjectVariableScanEntry.Selective("D1", RackA, Doc(6.0, VarId), 1),
+                ProjectVariableScanEntry.Selective("D2", RackA, Doc(6.0, "99999999-8888-7777-6666-555555555555"), 1));
+
         private static T Control<T>(RackProjectVariablesWindow window, string name)
             where T : System.Windows.FrameworkElement
             => EditorWindowTestSupport.Find<T>(window, element => element.Name == name);
@@ -318,6 +328,138 @@ namespace RackCad.UI.Tests
             // I-48 G4B: reparar es del RACK. El intent ya no lleva alcance de propiedad, porque una reparacion
             // parcial no se puede aplicar: el ejecutor necesita un diseno efectivo COMPLETO.
             Assert.Null(intentCon.PropertyId);
+        }
+
+        // ---------------------------------------------------------------- I-48 G4B.1: la unidad es el RACK
+
+        [Fact]
+        public void EL_AVISO_DE_REPARACION_DICE_QUE_LA_UNIDAD_ES_EL_RACK_COMPLETO()
+        {
+            // La operacion es RepairBroken(rackId) y retira TODOS los vinculos rotos reparables del rack. Un
+            // aviso que hable de "esta propiedad" hace creer al usuario que confirmo solo la fila seleccionada.
+            var warning = StaTestRunner.Run(() =>
+            {
+                var window = new RackProjectVariablesWindow(ConUnaRota());
+                Control<ListBox>(window, "BrokenList").SelectedIndex = 0;
+                return Control<TextBlock>(window, "RepairWarningText").Text;
+            });
+
+            Assert.Contains(RackA, warning);
+            Assert.Contains("todos los vínculos rotos", warning.ToLowerInvariant());
+            Assert.DoesNotContain("esta propiedad", warning);
+        }
+
+        /// <summary>
+        /// Un batch SINTETICO de dos bindings. El catalogo productivo declara una sola propiedad vinculable, asi
+        /// que <c>Workspace.Build</c> no puede construir |B| &gt; 1 todavia: la presentacion se prueba sobre la
+        /// costura pura. Registrar una segunda propiedad real sigue siendo G4E.
+        /// </summary>
+        private static BrokenBindingRow FilaConBatchDeDos()
+        {
+            var batch = new RackRepairBatch(
+                RackA,
+                "Rack A",
+                new[]
+                {
+                    new RepairBinding(Token, VarId, 6.0),
+                    new RepairBinding("test.betaDepth", Otra, 48.5),
+                });
+
+            return new BrokenBindingRow(
+                RackA, "Rack A", Token, VarId, 6.0, "detalle", batch, null);
+        }
+
+        [Fact]
+        public void EL_AVISO_COMUNICA_LOS_DOS_BINDINGS_COMPLETOS_DEL_BATCH()
+        {
+            var warning = ProjectVariableRepairText.Describe(FilaConBatchDeDos());
+
+            // El tamano del conjunto, y que son TODOS.
+            Assert.Contains("2", warning);
+            Assert.Contains("TODOS", warning);
+            Assert.Contains(RackA, warning);
+            Assert.Contains("no solo la fila seleccionada", warning);
+
+            // Los tres datos de CADA binding, incluido el que no esta seleccionado.
+            Assert.Contains(Token, warning);
+            Assert.Contains(VarId, warning);
+            Assert.Contains("6", warning);
+
+            Assert.Contains("test.betaDepth", warning);
+            Assert.Contains(Otra, warning);
+            Assert.Contains("48.5", warning);
+
+        }
+
+        [Fact]
+        public void CON_UNA_SOLA_ROTA_EL_AVISO_SIGUE_SIENDO_CORRECTO_Y_NO_MIENTE_SOBRE_EL_TAMANO()
+        {
+            var batch = new RackRepairBatch(RackA, "Rack A", new[] { new RepairBinding(Token, VarId, 6.0) });
+            var row = new BrokenBindingRow(RackA, "Rack A", Token, VarId, 6.0, "detalle", batch, null);
+
+            var warning = ProjectVariableRepairText.Describe(row);
+
+            Assert.Contains("(1)", warning);
+            Assert.Contains(Token, warning);
+            Assert.Contains(VarId, warning);
+            Assert.Contains("literal almacenado 6", warning);
+            Assert.DoesNotContain("test.betaDepth", warning);
+        }
+
+        [Fact]
+        public void UNA_FILA_SIN_BATCH_NO_OFRECE_NINGUN_ALCANCE()
+        {
+            // Rack bloqueado: no hay batch, asi que no hay nada que prometer.
+            var row = new BrokenBindingRow(
+                RackA, "Rack A", Token, VarId, 6.0, "detalle", null, "motivo del bloqueo");
+
+            var warning = ProjectVariableRepairText.Describe(row);
+
+            Assert.Contains("no se puede reparar", warning);
+            Assert.Contains("motivo del bloqueo", warning);
+            Assert.DoesNotContain("literal almacenado", warning);
+        }
+
+        [Fact]
+        public void LOS_RACKS_SIN_AUTORIDAD_AUTHORED_SE_MUESTRAN_COMO_DIAGNOSTICO()
+        {
+            // Dos hermanas divergentes: el rack no aporta ninguna fila reparable, pero su razon queda visible.
+            var texto = StaTestRunner.Run(() =>
+            {
+                var window = new RackProjectVariablesWindow(ConHermanasDivergentes());
+
+                // Y aun forzando la confirmacion y el clic: no hay fila que reparar, asi que no nace intent.
+                Control<CheckBox>(window, "RepairConfirmCheck").IsChecked = true;
+                EditorWindowTestSupport.ClickNamed(window, "RepairButton");
+
+                return (
+                    Control<TextBlock>(window, "RepairAuthorityText").Text,
+                    Control<ListBox>(window, "BrokenList").Items.Count,
+                    Control<Button>(window, "RepairButton").IsEnabled,
+                    window.Intent);
+            });
+
+            Assert.Contains("no coinciden", texto.Item1);
+            Assert.Contains("divergentes", texto.Item1);
+            Assert.Equal(0, texto.Item2);
+            Assert.False(texto.Item3);
+            Assert.Null(texto.Item4);
+        }
+
+        [Fact]
+        public void LA_CASILLA_DE_CONFIRMACION_TAMBIEN_HABLA_DEL_RACK_COMPLETO()
+        {
+            // La confirmacion es el consentimiento; si dice menos que la accion, el consentimiento no cubre lo
+            // que se va a aplicar.
+            var content = StaTestRunner.Run(() =>
+            {
+                var window = new RackProjectVariablesWindow(ConUnaRota());
+                Control<ListBox>(window, "BrokenList").SelectedIndex = 0;
+                return Control<CheckBox>(window, "RepairConfirmCheck").Content as string;
+            });
+
+            Assert.Contains("rack", content.ToLowerInvariant());
+            Assert.Contains("todos", content.ToLowerInvariant());
         }
 
         // ---------------------------------------------------------------- I-48 G4B: el rack bloqueado

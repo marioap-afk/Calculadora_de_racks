@@ -37,6 +37,7 @@ namespace RackCad.UI
 
             VariablesList.ItemsSource = workspace?.Variables;
             BrokenList.ItemsSource = workspace?.BrokenBindings;
+            RepairAuthorityText.Text = ProjectVariableRepairText.DescribeUnresolvable(workspace?.UnresolvableRacks);
 
             var editable = workspace != null && workspace.IsEditable;
             EditorPanel.IsEnabled = editable;
@@ -81,35 +82,10 @@ namespace RackCad.UI
         {
             var broken = SelectedBroken;
 
-            RepairWarningText.Text = DescribeRepair(broken);
+            RepairWarningText.Text = ProjectVariableRepairText.Describe(broken);
 
             RepairConfirmCheck.IsChecked = false;
             UpdateActions();
-        }
-
-        /// <summary>
-        /// What the user is told about the selected broken row. Whether the rack CAN be repaired is decided in
-        /// Application and travels in the row; this window only reports it. Deriving it here -- by looking at
-        /// the other rows for something fatal -- would move the meaning of FATAL into the UI.
-        /// </summary>
-        private static string DescribeRepair(BrokenBindingRow broken)
-        {
-            if (broken == null)
-            {
-                return string.Empty;
-            }
-
-            if (!broken.RackCanRepair)
-            {
-                // A diagnostic, not an offer: promising the stored literal here would promise a change that
-                // cannot be applied at all while the rack carries a fatal state.
-                return "Este rack no se puede reparar. " + (broken.RackBlockingReason ?? "Estado no interpretable.")
-                       + " La fila se muestra solo como diagnóstico.";
-            }
-
-            return "No existe un valor efectivo para esta propiedad. Se utilizará el literal almacenado ("
-                   + broken.StoredLiteral.ToString("0.###", CultureInfo.InvariantCulture)
-                   + "), así que la geometría puede cambiar.";
         }
 
         /// <summary>The racks in the way, named the way the user can act on them (rack + property).</summary>
