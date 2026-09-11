@@ -185,5 +185,134 @@ namespace RackCad.Tests
             Assert.Equal(ProjectVariablesAccreditationOutcome.NotReadable, accreditation.Outcome);
             Assert.Null(accreditation.Registry);
         }
+
+        // ================================================================ I-48 G4D: la TERCERA superficie
+
+        /// <summary>
+        /// G4D. El camino REAL y completo: documento -> JSON -> store -> <c>Readable</c> -> proyeccion. El tipo
+        /// que sale es el que estaba PERSISTIDO, no uno fabricado.
+        ///
+        /// <para>
+        /// El token va en minuscula a proposito: si la proyeccion respetase el token pero con una regla propia
+        /// mas estrecha, este caso -que el store SI acepta- se rompiria. Y si lo fabricase, pasaria sin mirarlo.
+        /// La prueba solo pasa cuando las dos superficies comparten la misma primitiva.
+        /// </para>
+        /// </summary>
+        [Fact]
+        public void EL_CAMINO_REAL_PROYECTA_EL_TIPO_PERSISTIDO_Y_NO_UNO_FABRICADO()
+        {
+            var read = RoundTrip(Document(Entry(GuidA, "length", 7.5)));
+
+            Assert.Equal(ProjectVariablesReadOutcome.Readable, read.Outcome);
+
+            var variable = Assert.Single(read.Document.ToProjectVariables());
+
+            Assert.Equal(VariableType.Length, variable.Type);
+            Assert.Equal(VariableId.Parse(GuidA), variable.Id);
+            Assert.Equal("Holgura", variable.Name);
+            Assert.Equal(7.5, variable.Definition.LiteralValue);
+        }
+
+        /// <summary>
+        /// G4D. Un documento FABRICADO con un tipo que esta build no soporta es una violacion de invariante, no
+        /// un estado que reinterpretar.
+        ///
+        /// <para>
+        /// El store jamas produce esto: rechaza el documento entero al leerlo. Por eso hay que fabricarlo — y
+        /// por eso la respuesta correcta es fallar ruidosamente. Devolver <c>Length</c> convertiria un documento
+        /// inconsistente en un registro que parece sano, y el rack que lo consumiese tomaria un numero cuyo
+        /// significado nadie ha declarado.
+        /// </para>
+        /// </summary>
+        [Fact]
+        public void UN_TIPO_NO_SOPORTADO_EN_UN_DOCUMENTO_FABRICADO_FALLA_RUIDOSAMENTE()
+        {
+            var document = Document(Entry(GuidA, "unsupported-type"));
+
+            var error = Assert.Throws<System.InvalidOperationException>(() => document.ToProjectVariables());
+
+            // Con contexto suficiente para localizar el documento inconsistente.
+            Assert.Contains(GuidA, error.Message);
+            Assert.Contains("unsupported-type", error.Message);
+        }
+
+        /// <summary>
+        /// G4D. La forma NUMERICA del enum tampoco se proyecta. Es la misma trampa de <c>Enum.TryParse</c> que
+        /// G4A.1 saco del store, y aqui protege la tercera superficie: si la proyeccion tuviera su propia tabla,
+        /// podria volver a aceptarla sin que el store lo notase.
+        /// </summary>
+        [Fact]
+        public void EL_TOKEN_NUMERICO_NO_SE_PROYECTA()
+        {
+            var document = Document(Entry(GuidA, "1"));
+
+            var error = Assert.Throws<System.InvalidOperationException>(() => document.ToProjectVariables());
+
+            Assert.Contains("'1'", error.Message);
+        }
+
+        /// <summary>G4D. Espacios alrededor y lista con coma: rechazados igual que en el store.</summary>
+        [Theory]
+        [InlineData(" Length ")]
+        [InlineData("Length,Length")]
+        [InlineData("Dimension")]
+        [InlineData("")]
+        public void LOS_TOKENS_QUE_EL_STORE_RECHAZA_TAMPOCO_SE_PROYECTAN(string token)
+        {
+            var document = Document(Entry(GuidA, token));
+
+            Assert.Throws<System.InvalidOperationException>(() => document.ToProjectVariables());
+        }
+
+        [Fact]
+        public void UN_TIPO_AUSENTE_TAMPOCO_SE_PROYECTA()
+        {
+            var document = Document(Entry(GuidA, null));
+
+            Assert.Throws<System.InvalidOperationException>(() => document.ToProjectVariables());
+        }
+
+        // ================================================================ la matriz compartida
+
+        /// <summary>
+        /// G4D — la prueba de AUTORIDAD COMPARTIDA. Para cada token, el veredicto del store y el de la
+        /// proyeccion se miden en la MISMA prueba, asi que no pueden divergir sin que salte.
+        ///
+        /// <para>
+        /// Es la propiedad que <c>V7-R04</c> exige y que ninguna de las dos superficies puede garantizar sola:
+        /// lo que el store declara legible, la proyeccion lo proyecta; lo que el store rechaza, la proyeccion
+        /// -si alguien fabrica ese documento- falla ruidosamente. Ni una tabla mas, ni una excepcion menos.
+        /// </para>
+        /// </summary>
+        [Theory]
+        [InlineData("Length", true)]
+        [InlineData("length", true)]
+        [InlineData("LENGTH", true)]
+        [InlineData("1", false)]
+        [InlineData(" Length ", false)]
+        [InlineData("Length,Length", false)]
+        [InlineData("Dimension", false)]
+        [InlineData("", false)]
+        public void EL_STORE_Y_LA_PROYECCION_NO_MANTIENEN_SEMANTICAS_DIVERGENTES(string token, bool aceptado)
+        {
+            var document = Document(Entry(GuidA, token));
+
+            // 1) el veredicto del store, recorriendo el limite de persistencia de verdad.
+            var read = RoundTrip(document);
+            var legible = read.Outcome == ProjectVariablesReadOutcome.Readable;
+
+            Assert.Equal(aceptado, legible);
+
+            // 2) el de la proyeccion, sobre el MISMO token.
+            if (aceptado)
+            {
+                Assert.Equal(VariableType.Length, Assert.Single(read.Document.ToProjectVariables()).Type);
+                return;
+            }
+
+            // El store no entrego documento, asi que la proyeccion se ejercita sobre el fabricado: es la unica
+            // forma de alcanzar el estado, y tiene que ser fail-loud.
+            Assert.Throws<System.InvalidOperationException>(() => document.ToProjectVariables());
+        }
     }
 }
