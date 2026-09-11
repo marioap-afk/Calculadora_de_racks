@@ -55,11 +55,13 @@ namespace RackCad.Application.Systems.Selective
             SelectiveEditorOpenOutcome outcome,
             SelectivePalletDesign design,
             VerticalClearanceBindingState verticalClearance,
+            LinkedPropertyEditState verticalClearanceState,
             string error)
         {
             Outcome = outcome;
             Design = design;
             VerticalClearance = verticalClearance;
+            VerticalClearanceState = verticalClearanceState;
             Error = error;
         }
 
@@ -71,17 +73,32 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>Null when blocked, for the same reason.</summary>
         public VerticalClearanceBindingState VerticalClearance { get; }
 
+        /// <summary>
+        /// El estado COMPROMETIDO de la holgura vertical, como lo consume el editor vinculable (I-48 G4C).
+        ///
+        /// <para>
+        /// Su literal es el del AUTHORED, no el efectivo, y ahi esta la diferencia con
+        /// <see cref="VerticalClearance"/>: aquel describe que se MUESTRA, este describe que se GUARDA si nadie
+        /// toca el campo. Sin el, abrir un rack vinculado y guardarlo sin tocar nada copiaria el valor de la
+        /// variable sobre el literal congelado.
+        /// </para>
+        /// </summary>
+        public LinkedPropertyEditState VerticalClearanceState { get; }
+
         /// <summary>The visible reason. Null when open.</summary>
         public string Error { get; }
 
         public bool IsOpen => Outcome == SelectiveEditorOpenOutcome.Open;
 
         public static SelectiveEditorOpenResult Open(
-            SelectivePalletDesign design, VerticalClearanceBindingState verticalClearance)
-            => new SelectiveEditorOpenResult(SelectiveEditorOpenOutcome.Open, design, verticalClearance, null);
+            SelectivePalletDesign design,
+            VerticalClearanceBindingState verticalClearance,
+            LinkedPropertyEditState verticalClearanceState = null)
+            => new SelectiveEditorOpenResult(
+                SelectiveEditorOpenOutcome.Open, design, verticalClearance, verticalClearanceState, null);
 
         public static SelectiveEditorOpenResult Blocked(string error)
-            => new SelectiveEditorOpenResult(SelectiveEditorOpenOutcome.Blocked, null, null, error);
+            => new SelectiveEditorOpenResult(SelectiveEditorOpenOutcome.Blocked, null, null, null, error);
     }
 
     /// <summary>
@@ -173,10 +190,18 @@ namespace RackCad.Application.Systems.Selective
             // blocked, so the two questions agree — and asking the presence one keeps the doctrine intact.
             var bound = authored.HasBindingEntry(ProjectPropertyIds.SelectiveVerticalClearance);
 
+            // El literal COMPROMETIDO sale del authored; la fuente, de la presencia del vinculo. Que el
+            // resolver haya tenido exito garantiza que, si esta vinculada, su variable existe y es compatible.
+            var state =
+                bound && authored.TryGetBinding(ProjectPropertyIds.SelectiveVerticalClearance, out var variableId)
+                    ? LinkedPropertyEditState.Reference(authored.VerticalClearance, variableId)
+                    : LinkedPropertyEditState.Literal(authored.VerticalClearance);
+
             return SelectiveEditorOpenResult.Open(
                 resolution.Design,
                 VerticalClearanceBindingState.Of(
-                    bound, resolution.Design.VerticalClearance, bound ? BoundName(authored, accreditation.Registry) : null));
+                    bound, resolution.Design.VerticalClearance, bound ? BoundName(authored, accreditation.Registry) : null),
+                state);
         }
     }
 }

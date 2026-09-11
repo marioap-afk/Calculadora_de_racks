@@ -1,26 +1,29 @@
 using System.Collections.Generic;
-using System.Windows.Controls;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Selective;
+using RackCad.UI.Controls;
 using RackCad.UI.Systems.Selective;
 using Xunit;
 
 namespace RackCad.UI.Tests
 {
     /// <summary>
-    /// I-47 gate G12 — lo que el editor Selectivo REAL enseña cuando la holgura vertical está gobernada.
+    /// I-47 gate G12 + I-48 gate G4C — lo que el editor Selectivo REAL enseña y devuelve cuando la holgura
+    /// vertical está gobernada por una variable.
     ///
     /// <para>
-    /// La mitad pura ya está probada en el Core: authored + registro → efectivo. Aquí se comprueba lo único
-    /// que solo puede comprobarse con la ventana de verdad — que la caja muestra el valor efectivo, que
-    /// mientras el vínculo esté activo no es una vía de edición, y que el viaje de vuelta por el portador de
-    /// G10 devuelve el literal congelado.
+    /// La semántica pura ya está probada en el Core (sesión de edición y reconciler). Aquí se comprueba lo
+    /// único que solo puede comprobarse con la ventana de verdad: que el campo enseña <c>=Nombre</c> con el
+    /// efectivo disponible, que el literal congelado del authored sobrevive a abrir y guardar, y que el
+    /// documento final lo produce el reconciler y no la ventana.
     /// </para>
     /// <para>
-    /// El control queda <b>deshabilitado</b> y no oculto: el usuario tiene que poder VER el número que gobierna
-    /// su rack. Esconderlo convertiría "gobernado por una variable" en "no existe", que es peor que editable.
+    /// <b>Cambio de comportamiento deliberado (Proposal V2 R-11).</b> Hasta G4C el campo gobernado quedaba
+    /// <c>IsReadOnly</c> y desvincular era un botón. Ahora el mismo campo admite edición: teclear un número no
+    /// desvincula — crea un borrador — y solo Enter lo confirma. Queda registrado como tal para la validación
+    /// del dueño.
     /// </para>
     /// </summary>
     public sealed class SelectiveEditorBindingTests
@@ -95,97 +98,223 @@ namespace RackCad.UI.Tests
             return ProjectVariablesReadResult.Readable(document);
         }
 
-        private static TextBox Clearance(RackSelectiveWindow window)
-            => EditorWindowTestSupport.Find<TextBox>(window, box => box.Name == "ClearanceBox");
-
-        // ================================================================ lo que la caja enseña
-
-        [Fact]
-        public void BOUND_LaCajaMUESTRA_EL_EFECTIVO_Y_NO_SE_EDITA()
+        /// <summary>Las variables ACREDITADAS que la ventana recibe, como se las da el Plugin.</summary>
+        private static IReadOnlyList<LinkedPropertyOption> Opciones(ProjectVariablesReadResult registro)
         {
-            var (text, readOnly, enabled) = StaTestRunner.Run(() =>
-            {
-                var authored = Authored(bound: true);
-                var open = SelectiveEditorOpen.Resolve(authored, Registro(10.0));
-                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
-                window.LoadExisting(authored, open.Design, open.VerticalClearance);
-
-                var box = Clearance(window);
-                return (box.Text, box.IsReadOnly, box.IsEnabled);
-            });
-
-            Assert.Equal("10", text);
-            Assert.True(readOnly);
-            Assert.False(enabled);
+            var options = LinkedPropertyOptions.ForProperty(
+                ProjectPropertyIds.SelectiveVerticalClearance, registro);
+            Assert.True(options.IsUsable);
+            return options.Options;
         }
 
-        [Fact]
-        public void UNBOUND_LaCajaMUESTRA_EL_LITERAL_Y_SE_EDITA()
+        /// <summary>Abre la ventana como lo hace RACKEDITAR: opciones acreditadas + estado authored.</summary>
+        private static RackSelectiveWindow Abrir(
+            SelectivePalletDesignDocument authored, ProjectVariablesReadResult registro)
         {
-            var (text, readOnly, enabled) = StaTestRunner.Run(() =>
-            {
-                var authored = Authored(bound: false);
-                var open = SelectiveEditorOpen.Resolve(authored, ProjectVariablesReadResult.Absent());
-                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
-                window.LoadExisting(authored, open.Design, open.VerticalClearance);
+            var open = SelectiveEditorOpen.Resolve(authored, registro);
+            Assert.True(open.IsOpen);
 
-                var box = Clearance(window);
-                return (box.Text, box.IsReadOnly, box.IsEnabled);
+            var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
+            window.SetProjectVariables(Opciones(registro));
+            window.LoadExisting(authored, open.Design, open.VerticalClearanceState);
+            return window;
+        }
+
+        private static LinkedPropertyEditor Editor(RackSelectiveWindow window)
+            => EditorWindowTestSupport.Find<LinkedPropertyEditor>(window, e => e.Name == "ClearanceEditor");
+
+        // ================================================================ 23, 24: lo que el campo ensena
+
+        /// <summary>
+        /// I-48 G4C, prueba 24. Vinculado, el campo ensena <c>=Nombre</c>, el efectivo esta disponible, y el
+        /// literal congelado del authored NO se pierde. Y —cambio deliberado de V2 R-11— el campo SI se edita.
+        /// </summary>
+        [Fact]
+        public void BOUND_EL_CAMPO_ENSENA_LA_VARIABLE_Y_CONSERVA_EL_LITERAL_CONGELADO()
+        {
+            var (text, editable, effective, frozen, isReference) = StaTestRunner.Run(() =>
+            {
+                var editor = Editor(Abrir(Authored(bound: true), Registro(10.0)));
+                editor.Session.TryGetEffectiveValue(out var value);
+
+                return (editor.Box.Text,
+                    !editor.Box.IsReadOnly && editor.Box.IsEnabled,
+                    value,
+                    editor.FinalState.CommittedLiteral,
+                    editor.FinalState.IsReference);
+            });
+
+            Assert.Equal("=Holgura estándar", text);
+            Assert.Equal(10.0, effective);
+            Assert.Equal(6.0, frozen);
+            Assert.True(isReference);
+
+            // V2 R-11: un campo gobernado deja de ser read-only. Es el cambio de comportamiento que el consenso
+            // decidio y que la validacion del dueno tiene registrado.
+            Assert.True(editable);
+        }
+
+        /// <summary>I-48 G4C, prueba 23: sin vinculo, el literal se ve y se edita.</summary>
+        [Fact]
+        public void UNBOUND_EL_CAMPO_ENSENA_EL_LITERAL_Y_SE_EDITA()
+        {
+            var (text, editable, isReference) = StaTestRunner.Run(() =>
+            {
+                var editor = Editor(Abrir(Authored(bound: false), ProjectVariablesReadResult.Absent()));
+                return (editor.Box.Text, !editor.Box.IsReadOnly && editor.Box.IsEnabled, editor.FinalState.IsReference);
             });
 
             Assert.Equal("6", text);
-            Assert.False(readOnly);
-            Assert.True(enabled);
+            Assert.True(editable);
+            Assert.False(isReference);
         }
 
-        /// <summary>La carga histórica de un argumento —biblioteca, tests— sigue siendo el caso sin vínculo.</summary>
+        /// <summary>La carga historica de un argumento —biblioteca, tests— sigue siendo el caso sin vinculo.</summary>
         [Fact]
-        public void LA_CARGA_HISTORICA_SIGUE_SIENDO_EDITABLE()
+        public void LA_CARGA_HISTORICA_SIGUE_SIENDO_EL_CASO_SIN_VINCULO()
         {
-            var (text, readOnly, enabled) = StaTestRunner.Run(() =>
+            var (text, isReference) = StaTestRunner.Run(() =>
             {
                 var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
                 window.LoadExisting(Authored(bound: false));
 
-                var box = Clearance(window);
-                return (box.Text, box.IsReadOnly, box.IsEnabled);
+                var editor = Editor(window);
+                return (editor.Box.Text, editor.FinalState.IsReference);
             });
 
             Assert.Equal("6", text);
-            Assert.False(readOnly);
-            Assert.True(enabled);
+            Assert.False(isReference);
         }
 
-        // ================================================================ el viaje completo
+        // ================================================================ 28: guardar vinculado y sin tocar
 
         /// <summary>
-        /// El ciclo entero por el editor REAL: authored + registro → efectivo → la ventana → «Actualizar» →
-        /// el diseño que sale lleva el efectivo (el dibujo tiene que reflejarlo) → el portador de G10 lo
-        /// persiste dejando el literal congelado y el vínculo intacto.
+        /// I-48 G4C, prueba 28 — la critica. Se abre un rack vinculado, no se toca NADA y se pulsa
+        /// «Actualizar».
+        ///
+        /// <para>
+        /// El campo ensena el EFECTIVO (10) porque es el valor en vigor, asi que el diseno que sale lo lleva y
+        /// el dibujo lo refleja. Pero el documento que se persiste tiene que seguir congelando el 6: si el
+        /// efectivo se copiase sobre el literal, el dia que el usuario desvincule gobernaria 10 en lugar del
+        /// numero que el mismo congelo, y nada habria fallado por el camino.
+        /// </para>
         /// </summary>
         [Fact]
-        public void BOUND_ACTUALIZAR_DEVUELVE_EL_EFECTIVO_Y_EL_PORTADOR_CONGELA_EL_LITERAL()
+        public void BOUND_GUARDAR_SIN_TOCAR_NADA_NO_COPIA_EL_EFECTIVO_SOBRE_EL_LITERAL_CONGELADO()
         {
             var authored = Authored(bound: true);
+            var registro = Registro(10.0);
 
-            var salida = StaTestRunner.Run(() =>
+            var (salida, finales) = StaTestRunner.Run(() =>
             {
-                var open = SelectiveEditorOpen.Resolve(authored, Registro(10.0));
-                var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
-                window.LoadExisting(authored, open.Design, open.VerticalClearance);
+                var window = Abrir(authored, registro);
                 EditorWindowTestSupport.ClickNamed(window, "UpdateButton");
-
-                return window.DesignToInsert;
+                return (window.DesignToInsert, window.LinkedPropertyFinalStates);
             });
 
             Assert.NotNull(salida);
             Assert.Equal(10.0, salida.VerticalClearance); // el dibujo refleja el efectivo
 
-            var persistido = authored.WithDesign(salida, RackId, "Selectivo G12");
+            // Y el documento final lo produce el RECONCILER, no la ventana.
+            var reconciled = LinkedPropertyReconciler.Reconcile(
+                authored, salida, finales, registro, RackId, "Selectivo G12");
 
-            Assert.Equal(6.0, persistido.VerticalClearance); // el snapshot congelado sobrevive
-            Assert.True(persistido.TryGetBinding(ProjectPropertyIds.SelectiveVerticalClearance, out var id));
+            Assert.True(reconciled.IsSuccess);
+            Assert.Equal(6.0, reconciled.Authored.VerticalClearance); // el congelado sobrevive
+            Assert.True(reconciled.Authored.TryGetBinding(ProjectPropertyIds.SelectiveVerticalClearance, out var id));
             Assert.Equal(VariableId.Parse(VarId), id);
+            Assert.Equal(10.0, reconciled.Effective.VerticalClearance);
+        }
+
+        // ================================================================ 25, 26: 20.13 por la ventana real
+
+        /// <summary>
+        /// I-48 G4C, prueba 25. Se teclea 7 sobre el literal 6 y se vincula SIN comprometerlo: congela 6.
+        /// </summary>
+        [Fact]
+        public void PRUEBA_25_TECLEAR_Y_VINCULAR_SIN_COMPROMETER_CONGELA_EL_LITERAL_ANTERIOR()
+        {
+            var authored = Authored(bound: false);
+            var registro = Registro(10.0);
+
+            var finales = StaTestRunner.Run(() =>
+            {
+                var window = Abrir(authored, registro);
+                var editor = Editor(window);
+
+                editor.Box.Text = "7";                                   // draft, sin comprometer
+                editor.Session.TrySelect(VariableId.Parse(VarId), out _); // seleccion explicita
+
+                return window.LinkedPropertyFinalStates;
+            });
+
+            var reconciled = LinkedPropertyReconciler.Reconcile(
+                authored, MinimalDesign(10.0), finales, registro, RackId, "Selectivo G12");
+
+            Assert.True(reconciled.IsSuccess);
+            Assert.Equal(6.0, reconciled.Authored.VerticalClearance);
+            Assert.Equal(10.0, reconciled.Effective.VerticalClearance);
+        }
+
+        /// <summary>
+        /// I-48 G4C, prueba 26. El mismo gesto pero comprometiendo el 7 antes de vincular: congela 7.
+        /// </summary>
+        [Fact]
+        public void PRUEBA_26_TECLEAR_COMPROMETER_Y_VINCULAR_CONGELA_EL_LITERAL_NUEVO()
+        {
+            var authored = Authored(bound: false);
+            var registro = Registro(10.0);
+
+            var finales = StaTestRunner.Run(() =>
+            {
+                var window = Abrir(authored, registro);
+                var editor = Editor(window);
+
+                editor.Box.Text = "7";
+                Assert.True(editor.Session.TryCommitByEnter(out _));      // commit explicito
+                editor.Session.TrySelect(VariableId.Parse(VarId), out _);
+
+                return window.LinkedPropertyFinalStates;
+            });
+
+            var reconciled = LinkedPropertyReconciler.Reconcile(
+                authored, MinimalDesign(10.0), finales, registro, RackId, "Selectivo G12");
+
+            Assert.True(reconciled.IsSuccess);
+            Assert.Equal(7.0, reconciled.Authored.VerticalClearance);
+            Assert.Equal(10.0, reconciled.Effective.VerticalClearance);
+        }
+
+        // ================================================================ 27: desvincular tecleando un numero
+
+        /// <summary>
+        /// I-48 G4C, prueba 27. Vinculado, el usuario teclea un numero y pulsa Enter: el documento final se
+        /// queda SIN vinculo y con ese numero. Sin boton «Desvincular» de por medio.
+        /// </summary>
+        [Fact]
+        public void PRUEBA_27_UN_NUMERO_CON_ENTER_SOBRE_UNA_VARIABLE_DESVINCULA()
+        {
+            var authored = Authored(bound: true);
+            var registro = Registro(10.0);
+
+            var finales = StaTestRunner.Run(() =>
+            {
+                var window = Abrir(authored, registro);
+                var editor = Editor(window);
+
+                editor.Box.Text = "7";
+                Assert.True(editor.Session.TryCommitByEnter(out _));
+
+                return window.LinkedPropertyFinalStates;
+            });
+
+            var reconciled = LinkedPropertyReconciler.Reconcile(
+                authored, MinimalDesign(7.0), finales, registro, RackId, "Selectivo G12");
+
+            Assert.True(reconciled.IsSuccess);
+            Assert.False(reconciled.Authored.TryGetBinding(ProjectPropertyIds.SelectiveVerticalClearance, out _));
+            Assert.Equal(7.0, reconciled.Authored.VerticalClearance);
+            Assert.Equal(7.0, reconciled.Effective.VerticalClearance);
         }
     }
 }

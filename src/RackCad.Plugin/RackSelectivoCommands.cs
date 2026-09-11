@@ -75,9 +75,19 @@ namespace RackCad.Plugin
             var window = new RackSelectiveWindow(canInsertInAutoCad: true);
             window.SetDimensionStyles(RackCommandSupport.ReadDimensionStyleNames(document)); // before LoadExisting so a saved style selects
 
-            // I-47 G17: las variables COMPATIBLES, ya filtradas. La ventana no decide que lo es.
-            window.SetProjectVariables(SelectiveBindingOptions.ForLength(registry.Document));
-            window.LoadExisting(saved, open.Design, open.VerticalClearance);
+            // I-48 G4C: las variables COMPATIBLES, ya ACREDITADAS. La ventana no decide que lo es, y no lee el
+            // registro: si el registro no se puede usar como autoridad de identidad, no se ofrece ninguna.
+            var options = LinkedPropertyOptions.ForProperty(
+                ProjectPropertyIds.SelectiveVerticalClearance, registry);
+
+            if (!options.IsUsable)
+            {
+                editor.WriteMessage("\nRackCad: " + options.Error);
+                return;
+            }
+
+            window.SetProjectVariables(options.Options);
+            window.LoadExisting(saved, open.Design, open.VerticalClearanceState);
             AcApplication.ShowModalWindow(window);
 
             if (window.BindingIntent != null)
@@ -127,10 +137,20 @@ namespace RackCad.Plugin
 
             // The design JSON is identical for every view-block (only the envelope's view/section differ), so
             // serialize the full design ONCE — not once per frontal + corte + planta.
-            // The AUTHORED CARRIER (I-47 G10): this rack ALREADY has a persisted document, so saving
-            // UPDATES it. Rebuilding one from the domain would drop its schema version, its bindings and any
-            // field a later build wrote -- the domain cannot carry those, so the trip through it loses them.
-            var designJson = SerializeSelectiveDesign(design, id, name, saved);
+            //
+            // I-48 G4C: el documento final lo produce el RECONCILER de Application a partir del estado final
+            // declarado por el editor. Ni esta capa ni la ventana escriben vinculos, y no se transporta una
+            // secuencia Unlink -> SetLiteral -> Link: lo que el usuario expreso es donde TERMINO.
+            var reconciled = LinkedPropertyReconciler.Reconcile(
+                saved, design, window.LinkedPropertyFinalStates, registry, id, name);
+
+            if (!reconciled.IsSuccess)
+            {
+                editor.WriteMessage("\nRackCad: " + reconciled.Error);
+                return;
+            }
+
+            var designJson = new SelectivePalletDesignStore().Serialize(reconciled.Authored);
 
             // Each frontal block draws ONE fondo's face (its Section = fondo index; a legacy block with -1 = fondo 0).
             // Every loop below redraws with regen:false and the drawing regenerates ONCE at the end — a full

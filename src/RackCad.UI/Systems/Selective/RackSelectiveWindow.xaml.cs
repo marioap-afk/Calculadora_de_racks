@@ -443,7 +443,20 @@ namespace RackCad.UI.Systems.Selective
                 ApplyCabeceraDepthToTargets,
                 CommittedCabeceraText);
 
-            pendingAll = new IPendingTextField[] { pendingFondos, pendingBayCount, pendingDepth, pendingCabecera };
+            // I-48 G4C: el editor vinculable tiene drafts REALES, asi que participa del protocolo de dos
+            // fases como cualquier otro pendiente. Sin esto, un borrador suyo sobreviviria a una frontera de
+            // escritura sin validarse, o se perderia en silencio.
+            pendingAll = new IPendingTextField[]
+            {
+                pendingFondos, pendingBayCount, pendingDepth, pendingCabecera, ClearanceEditor,
+            };
+
+            ClearanceEditor.Committed += ClearanceEditor_Committed;
+            ClearanceEditor.Refused += ClearanceEditor_Refused;
+
+            // Un rack nuevo empieza con el literal por defecto y sin variables ofrecidas: quien las tenga las
+            // entregara con SetProjectVariables.
+            AttachClearanceEditor(LinkedPropertyEditState.Literal(new SelectivePalletDesign().VerticalClearance));
         }
 
         /// <summary>Fase 2 de "Número de fondos": crece o encoge la lista de slots y re-resuelve los destinos.</summary>
@@ -528,16 +541,22 @@ namespace RackCad.UI.Systems.Selective
             // --- fase 1: preparar TODO sin mutar nada ---
             var invalid = new List<string>();
             var dirty = false;
+            IPendingTextField offender = null;
             foreach (var field in targets)
             {
                 if (field == null) continue;
                 if (field.IsDirty) dirty = true;
-                if (!field.TryStage(out var error)) invalid.Add(error);
+                if (!field.TryStage(out var error))
+                {
+                    invalid.Add(error);
+                    offender ??= field;
+                }
             }
 
             if (invalid.Count > 0)
             {
                 SetStatus(string.Join(" ", invalid.Distinct()), true);
+                RestoreFocusTo(offender);
                 return false;
             }
 
@@ -570,8 +589,31 @@ namespace RackCad.UI.Systems.Selective
             return true;
         }
 
-        /// <summary>Compromete los cuatro campos. Es lo que hace toda frontera transaccional antes de consumir estado.</summary>
+        /// <summary>Compromete los pendientes. Es lo que hace toda frontera transaccional antes de consumir estado.</summary>
         private bool CommitPendingEditors() => CommitPendingEditors(pendingAll);
+
+        /// <summary>
+        /// Devuelve el foco al campo que bloqueó la frontera (I-48 G4C, punto N).
+        ///
+        /// <para>
+        /// Un mensaje de estado no basta cuando lo que bloquea es un borrador que cambia la FUENTE de una
+        /// propiedad: la salida es teclear Enter o Escape en ESE campo, así que el usuario tiene que estar
+        /// dentro de él. Sin esto, el editor vinculable puede bloquear «Actualizar» desde un rincón de la
+        /// ventana que el usuario ni está mirando.
+        /// </para>
+        /// <para>
+        /// Solo se restaura para el editor vinculable. Los demás pendientes son cajas de texto normales cuya
+        /// auto-reparación ya existía, y moverles el foco cambiaría un comportamiento que nadie ha pedido
+        /// cambiar.
+        /// </para>
+        /// </summary>
+        private static void RestoreFocusTo(IPendingTextField offender)
+        {
+            if (offender is LinkedPropertyEditor editor)
+            {
+                editor.FocusForCorrection();
+            }
+        }
 
         /// <summary>
         /// El gesto propio de un campo ESTRUCTURAL (<c>Frentes</c>, <c>Número de fondos</c>): su reconciliación hace
@@ -2241,7 +2283,11 @@ namespace RackCad.UI.Systems.Selective
             if (!(PostBox.SelectedValue is string postId) || string.IsNullOrWhiteSpace(postId)) { error = "Selecciona un poste."; return null; }
             if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste inválido."; return null; }
             if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal inválida."; return null; }
-            if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical inválida."; return null; }
+            // I-48 G4C: el valor EN VIGOR lo da el editor vinculable, no una caja de texto. Con un literal es
+            // el numero comprometido; con una variable es el valor de esa variable. Leer el texto seria leer
+            // "=Holgura General", y ademas dejaria que el efectivo de una propiedad gobernada llegase al
+            // documento como si fuese su literal congelado.
+            if (!TryEffectiveClearance(out var clearance, out var clearanceError)) { error = clearanceError; return null; }
             // INV-13: NADA de esto sale de una caja de texto. Las cuatro son editores de un valor pendiente; la
             // autoridad son los slots y la lista de fondos, así que un texto tecleado y no comprometido no puede
             // llegar al documento ni redimensionar el rack (I-43, gate 8.6C). Safety se filtra + copia aquí para que
@@ -2303,10 +2349,13 @@ namespace RackCad.UI.Systems.Selective
         /// zero-level columns yet); &gt; 0 makes <see cref="LoadDesign"/> warn instead of silently converting them.</summary>
         private int paddedEmptyFrentesOnLoad;
 
-        /// <summary>The XAML tooltip, kept so releasing the field restores it verbatim.</summary>
-        private object clearanceTooltip;
+        /// <summary>
+        /// The accredited, type-compatible variables on offer. The window holds them only to hand them to the
+        /// editor; it never looks anything up in them.
+        /// </summary>
+        private IReadOnlyList<LinkedPropertyOption> linkedOptions = new LinkedPropertyOption[0];
 
-        /// <summary>Whether the clearance is currently governed by a project variable (I-47 G17).</summary>
+        /// <summary>Whether the clearance is currently governed by a project variable (I-47 G17, I-48 G4C).</summary>
         private bool clearanceBound;
 
         /// <summary>
@@ -2316,60 +2365,115 @@ namespace RackCad.UI.Systems.Selective
         public SelectiveBindingIntent BindingIntent { get; private set; }
 
         /// <summary>
-        /// The project variables this property may be bound to, ALREADY filtered by compatible type (I-47 G17).
-        /// The window never decides what is compatible and never resolves anything: it shows what it is given
-        /// and returns the identity of what was picked.
+        /// The variables this rack's linked properties may be bound to, ALREADY accredited and filtered by
+        /// Application (I-48 G4C).
+        ///
+        /// <para>
+        /// The window never decides what is compatible, never resolves an id and never reads the register. What
+        /// it does with this list is show it and hand back the IDENTITY of what a human picked.
+        /// </para>
         /// </summary>
-        public void SetProjectVariables(IReadOnlyList<ProjectVariableOption> options)
+        public void SetProjectVariables(IReadOnlyList<LinkedPropertyOption> options)
         {
-            ClearanceVariableBox.ItemsSource = options;
-            UpdateClearanceBindingActions();
+            linkedOptions = options ?? new LinkedPropertyOption[0];
+            AttachClearanceEditor(ClearanceEditor.FinalState ?? LinkedPropertyEditState.Literal(6.0));
         }
 
-        private void ClearanceVariable_SelectionChanged(object sender, SelectionChangedEventArgs e)
-            => UpdateClearanceBindingActions();
-
-        private void LinkClearance_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// The FINAL declared state of every linked property — what the reconciler consumes (Proposal V2 R-03).
+        ///
+        /// <para>
+        /// It is a final state and NOT a sequence of gestures. A session where the user links, unlinks and
+        /// relinks would otherwise persist intermediate documents, and one of them freezes a literal nobody
+        /// asked for.
+        /// </para>
+        /// </summary>
+        public IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> LinkedPropertyFinalStates
         {
-            // La IDENTIDAD de lo elegido, nunca su nombre: dos variables pueden llamarse igual.
-            if (clearanceBound || !(ClearanceVariableBox.SelectedItem is ProjectVariableOption option))
+            get
             {
+                var states = new Dictionary<PropertyId, LinkedPropertyEditState>();
+                var state = ClearanceEditor.FinalState;
+
+                if (state != null)
+                {
+                    states[ProjectPropertyIds.SelectiveVerticalClearance] = state;
+                }
+
+                return states;
+            }
+        }
+
+        /// <summary>Adopts a session for the clearance over the options currently on offer.</summary>
+        private void AttachClearanceEditor(LinkedPropertyEditState committed)
+        {
+            ClearanceEditor.Label = "Holgura vertical";
+            ClearanceEditor.Attach(new LinkedPropertyEditSession(committed, linkedOptions));
+            UpdateClearanceState();
+        }
+
+        /// <summary>
+        /// The value IN FORCE for the clearance. With a literal it is the committed number; with a variable it
+        /// is that variable's value. It FAILS rather than falling back: a reference whose variable is not on
+        /// offer has no effective value, and using the frozen literal instead would change the geometry in
+        /// silence.
+        /// </summary>
+        private bool TryEffectiveClearance(out double value, out string error)
+        {
+            value = 0.0;
+            error = null;
+
+            if (!ClearanceEditor.Session.TryGetEffectiveValue(out value))
+            {
+                error = "La variable que gobierna la holgura vertical no esta disponible en este dibujo.";
+                return false;
+            }
+
+            if (value < 0.0)
+            {
+                error = "Holgura vertical inválida.";
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>What the user reads about who governs the clearance. It DESCRIBES; it decides nothing.</summary>
+        private void UpdateClearanceState()
+        {
+            var state = ClearanceEditor.FinalState;
+
+            if (state == null)
+            {
+                ClearanceStateText.Text = string.Empty;
                 return;
             }
 
-            AskBinding(SelectiveBindingIntent.Link(
-                session.Identity.Id, ProjectPropertyIds.SelectiveVerticalClearanceToken, option.Id));
-        }
+            clearanceBound = state.IsReference;
 
-        private void UnlinkClearance_Click(object sender, RoutedEventArgs e)
-        {
-            if (!clearanceBound)
+            if (!state.IsReference)
             {
+                ClearanceStateText.Text = "Literal: el valor es de este rack.";
                 return;
             }
 
-            // Sin variable: el rack ya sabe cual lo gobierna, y volver a nombrarla seria otra oportunidad de
-            // nombrar la equivocada.
-            AskBinding(SelectiveBindingIntent.Unlink(
-                session.Identity.Id, ProjectPropertyIds.SelectiveVerticalClearanceToken));
+            var efectivo = ClearanceEditor.Session.TryGetEffectiveValue(out var value)
+                ? value.ToString("0.###", CultureInfo.InvariantCulture)
+                : "(no disponible)";
+
+            ClearanceStateText.Text =
+                "Variable: " + ClearanceEditor.Session.Text.TrimStart('=') + " = " + efectivo
+                + " · el literal de este rack queda congelado en "
+                + state.CommittedLiteral.ToString("0.###", CultureInfo.InvariantCulture) + ".";
         }
 
-        /// <summary>Records the gesture and closes: ejecutarlo no es trabajo de esta ventana.</summary>
-        private void AskBinding(SelectiveBindingIntent intent)
+        private void ClearanceEditor_Committed(object sender, EventArgs e)
         {
-            BindingIntent = intent;
-            Close();
+            UpdateClearanceState();
+            Recompute();
         }
 
-        private void UpdateClearanceBindingActions()
-        {
-            var known = isEditingExisting && session.Identity.HasId;
-
-            LinkClearanceButton.IsEnabled =
-                known && !clearanceBound && ClearanceVariableBox.SelectedItem is ProjectVariableOption;
-            UnlinkClearanceButton.IsEnabled = known && clearanceBound;
-            ClearanceVariableBox.IsEnabled = !clearanceBound;
-        }
+        private void ClearanceEditor_Refused(object sender, string reason) => SetStatus(reason, true);
 
         /// <summary>A warning latched by input-normalizing code (invalid fondo/cabecera/separador/conteo kept-previous
         /// fallbacks): the pipeline always ends in <see cref="Recompute"/>, whose final status would overwrite a direct
@@ -2407,7 +2511,10 @@ namespace RackCad.UI.Systems.Selective
             if (PostBox.SelectedItem == null && PostBox.Items.Count > 0) PostBox.SelectedIndex = 0;
             PostPeralteBox.Text = design.PostPeralte.ToString("0.###", CultureInfo.InvariantCulture);
             ToleranceBox.Text = design.PalletTolerance.ToString("0.###", CultureInfo.InvariantCulture);
-            ClearanceBox.Text = design.VerticalClearance.ToString("0.###", CultureInfo.InvariantCulture);
+            // Un diseno de dominio ES el caso sin vinculo: cargarlo siembra un literal. Un open sobre un rack
+            // vinculado vuelve a sembrar despues con el estado AUTHORED, que es el unico que conserva el
+            // literal congelado (I-48 G4C).
+            AttachClearanceEditor(LinkedPropertyEditState.Literal(design.VerticalClearance));
             // 0 is a legitimate rise ("no elevation at all"), so only a NEGATIVE value falls back to the default.
             legacyFloorBeamRise = design.FloorBeamRise >= 0.0 ? design.FloorBeamRise : SelectiveRackDefaults.DefaultFloorBeamRise;
             // Una carga REEMPLAZA todo el estado: lo que hubiera pendiente se descarta explícitamente (Reset), que
@@ -2549,12 +2656,15 @@ namespace RackCad.UI.Systems.Selective
         public void LoadExisting(
             SelectivePalletDesignDocument document,
             SelectivePalletDesign effective,
-            VerticalClearanceBindingState verticalClearance)
+            LinkedPropertyEditState clearanceState)
         {
             if (document == null || effective == null) return;
             AdoptExisting(document);
             LoadDesign(effective);
-            ApplyVerticalClearanceBinding(verticalClearance);
+
+            // El estado COMPROMETIDO de la propiedad vinculable es el del authored, no el efectivo: el literal
+            // congelado tiene que sobrevivir a abrir y guardar sin tocar nada (I-48 G4C).
+            AttachClearanceEditor(clearanceState ?? LinkedPropertyEditState.Literal(document.VerticalClearance));
         }
 
         /// <summary>Open the editor pre-loaded with an existing rack (from an embedded/saved document), keeping its Id/Name.</summary>
@@ -2565,7 +2675,6 @@ namespace RackCad.UI.Systems.Selective
             // No governing state: ToDomain() IS the unbound case, which is what a library open and every
             // pre-I-47 caller mean.
             LoadDesign(document.ToDomain());
-            ApplyVerticalClearanceBinding(null);
         }
 
         /// <summary>The identity half of both loads: the drawn rack's GUID + name survive a re-save (I-15).</summary>
@@ -2575,32 +2684,6 @@ namespace RackCad.UI.Systems.Selective
             isEditingExisting = true; // opened on an existing rack -> "Actualizar" + linked lateral/planta become available
             UpdateInsertButtons();
             NameBox.Text = document.Name ?? string.Empty;
-        }
-
-        /// <summary>
-        /// A governed field is shown and NOT edited here. Disabled rather than hidden: the user has to be able
-        /// to SEE the number that rules their rack — hiding it would turn "governed by a variable" into "does
-        /// not exist", which is worse than editable. Unbinding is an explicit operation, and it is not this
-        /// control.
-        /// </summary>
-        private void ApplyVerticalClearanceBinding(VerticalClearanceBindingState state)
-        {
-            clearanceTooltip ??= ClearanceBox.ToolTip;
-
-            var bound = state != null && state.IsBound;
-            ClearanceBox.IsReadOnly = bound;
-            ClearanceBox.IsEnabled = !bound;
-            ClearanceBox.ToolTip = bound
-                ? "La gobierna una variable de proyecto: se muestra el valor en vigor y no se edita desde aquí."
-                : clearanceTooltip;
-
-            clearanceBound = bound;
-            ClearanceStateText.Text = bound
-                ? "Variable: " + (string.IsNullOrWhiteSpace(state.BoundVariableName) ? "(sin nombre)" : state.BoundVariableName)
-                  + " = " + state.EffectiveValue.ToString("0.###", CultureInfo.InvariantCulture)
-                : "Literal: el valor de arriba es de este rack.";
-
-            UpdateClearanceBindingActions();
         }
 
         /// <summary>Open pre-loaded from a LIBRARY template as a NEW rack — a fresh GUID on insert (not an in-place update),

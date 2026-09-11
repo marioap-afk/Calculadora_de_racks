@@ -51,7 +51,7 @@ namespace RackCad.UI.Tests
             "Shell", "NameBox", "DrawBasePlateCheck", "NumberFrontsCheck", "NumberLevelsCheck", "DrawRackNameCheck",
             "DrawPalletsCheck", "AnnotationScaleBox", "DimensionsBox", "DimStyleBox", "SafetyButton", "PostBox",
             "PostPeralteBox", "PostSelectBox", "CustomizePostButton", "PostPeralteOverrideBox", "PostCabeceraStatus",
-            "BayCountBox", "ToleranceBox", "ClearanceBox", "FondoBox", "CabeceraFondoBox", "FondosBox",
+            "BayCountBox", "ToleranceBox", "ClearanceEditor", "FondoBox", "CabeceraFondoBox", "FondosBox",
             "FrontHeader", "FrontScopeBox", "FrontFloorBeamCheck", "ApplyFrontFloorBeamButton",
             "FrontRiseBox", "ApplyFrontRiseButton", "FrontLevelsBox", "ApplyFrontLevelsButton",
             "TargetFondosPanel", "TargetFondosButton", "TargetFondosPopup", "TargetFondosList",
@@ -60,6 +60,10 @@ namespace RackCad.UI.Tests
             "FondoSelectorBox", "MatrixGrid", "PreviewFrontalRadio", "PreviewLateralRadio", "PreviewHint", "PreviewCanvas",
             "UpdateButton", "InsertLateralButton", "InsertPlantaButton"
         };
+
+        // I-48 G4C: "ClearanceBox" dejo de existir y su sitio lo ocupa "ClearanceEditor", el control
+        // vinculable reusable. No es un control PERDIDO en la migracion del shell: es una sustitucion
+        // deliberada (Proposal V2 R-11), y el censo la refleja para seguir detectando perdidas de verdad.
 
         // The three draw actions that carry a show-on-disabled reason (they gate on the AutoCAD origin / editing state).
         private static readonly string[] GatedDrawButtons = { "UpdateButton", "InsertLateralButton", "InsertPlantaButton" };
