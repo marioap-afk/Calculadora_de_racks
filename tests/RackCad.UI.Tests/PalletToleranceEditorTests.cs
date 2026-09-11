@@ -31,6 +31,15 @@ namespace RackCad.UI.Tests
         private const string RackId = "3f2b1c9e-6d4a-4f38-9b71-0c2a5e8d1f44";
         private const string VarX = "11111111-1111-1111-1111-111111111111";
 
+        // Los ids REALES del catalogo que carga la ventana (assets/catalogs/secciones.csv). No son decorativos:
+        // un BeamId ausente deja CellBeamBox.SelectedValue en null, vacia los peraltes, y entonces "Actualizar"
+        // termina en un MessageBox modal que en headless cuelga la suite entera. Fue un hang real de CI (I-48
+        // G4G) y el larguero admite 4.5 en su lista de peraltes, asi que la fixture es valida tal cual.
+        private const string CatalogPostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
+        private const string CatalogBeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const double CatalogBeamPeralte = 4.5;
+        private const string CatalogBeamPeralteText = "4.5"; // como lo ensena el combo
+
         private static VariableId Id(string guid) => VariableId.Parse(guid);
 
         private static PropertyId Tolerance => ProjectPropertyIds.SelectivePalletTolerance;
@@ -41,7 +50,7 @@ namespace RackCad.UI.Tests
         {
             var design = new SelectivePalletDesign
             {
-                PostId = "POSTE_A",
+                PostId = CatalogPostId,
                 PostPeralte = 3.0,
                 PalletTolerance = tolerance,
                 VerticalClearance = clearance,
@@ -53,8 +62,8 @@ namespace RackCad.UI.Tests
             {
                 Pallet = new Tarima { Frente = 48, Alto = 50 },
                 PalletCount = 1,
-                BeamId = "BEAM_A",
-                BeamPeralte = 4.5,
+                BeamId = CatalogBeamId,
+                BeamPeralte = CatalogBeamPeralte,
             });
             design.Bays.Add(bay);
             return design;
@@ -107,6 +116,14 @@ namespace RackCad.UI.Tests
             var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
             window.SetProjectVariables(options.Options);
             window.LoadExisting(authored, open.Design, open.LinkedPropertyStates);
+
+            // La fixture tiene que ser VALIDA contra el catalogo, no solo plausible. Comprobarlo aqui cubre a
+            // TODAS las pruebas de la clase, que es exactamente donde estaba el agujero: una prueba llamada
+            // "guardar sin tocar nada" cuya ventana ya era invalida ANTES del gesto, y cuyo unico sintoma era
+            // un cuelgue intermitente del agente.
+            Assert.Equal(CatalogBeamId, window.CellBeamBox.SelectedValue);
+            Assert.Equal(CatalogBeamPeralteText, window.BeamPeralteCombo.SelectedItem);
+
             return window;
         }
 
