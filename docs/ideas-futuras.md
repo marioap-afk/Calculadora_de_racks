@@ -971,3 +971,73 @@ cuelgue costó tres gates de diagnóstico y sólo se resolvió leyendo los minid
 
 **No implementado tampoco.** Ponerlos detrás de la costura existente es barato, pero es cambio de
 producción y no entra en el cierre de I-48.
+
+## I-50 — hallazgos fuera de alcance (2026-09-12, registrados sin corregir)
+
+Encontrados en el Discovery de I-50 ([I-50-discovery.md](initiatives/I-50-discovery.md)) y declarados
+**fuera de alcance** por la decisión `CD-09` del Coordinador. **Ninguno está corregido**: siguen vivos en
+`main`. Las líneas se refieren a `a4d88f1`.
+
+### H1 — Push Back: el estilo de cota no se puede elegir y cada recálculo lo borra
+
+La ventana de Push Back solo tiene el combo de nivel (`DimensionsBox`, `RackPushBackSystemWindow.xaml:73`):
+no hay combo de estilo, y `EditPushBack` no lee los estilos del dibujo, cosa que sí hacen Selectivo y
+Dinámico con `RackCommandSupport.ReadDimensionStyleNames`. Al cargar, `PushBackEditorState.Load.cs:208`
+copia el estilo guardado a las opciones, pero `ReadInputs` construye opciones nuevas **sin** estilo
+(`RackPushBackSystemWindow.xaml.cs:810-817`) y `DynamicEditorDesignAssembler.cs:175` las asigna al diseño:
+cada recálculo deja `DimensionStyle = null`. Un Push Back que traiga un estilo lo pierde en cuanto se abre
+con `RACKEDITAR`, y «Actualizar» escribe `null` en todas sus vistas; el dibujo pasa a usar el estilo vigente
+del DWG.
+
+**Qué habría que decidir**: si Push Back debe ofrecer el mismo combo que el Dinámico, o si su estilo es
+deliberadamente automático, en cuyo caso conviene no persistir un valor que nadie puede elegir.
+
+### H2 — Push Back: el lateral envía la posición del corte y el Plugin la lee como poste
+
+`RackPushBackSystemWindow.xaml.cs:3005` pide el lateral con `Section = LateralSectionBox.SelectedIndex`, que
+es la **posición** en la lista `LateralCortes` (`:2976-2983`). El Plugin trata ese número como **índice de
+poste** (`RackPushBackCommands.cs:284-285`), y `PushBackSystemLateralBuilder.Cortes` omite postes
+(`PushBackSystemLateralBuilder.cs:91`, `continue` en `:107`). En cuanto se omite un poste, posición e índice
+pueden diferir y se insertaría otro corte. *(Sin verificar en ejecución.)*
+
+### H3 — Bloques anónimos `*D` de las cotas que no se encolan para purga
+
+Al redefinir, `LateralHeaderDrawer` registra el `DimBlockId` de cada cota para purgarlo
+(`LateralHeaderDrawer.cs:107-111`). Los otros dos caminos que borran vistas solo recogen las definiciones de
+bloques anidados, no los `*D` de las cotas: la inserción cancelada (`BlockPlacement.cs:133-162`) y
+`RackCommandSupport.EraseViewBlocks` (`RackCommandSupport.cs:210-250`). Si AutoCAD los elimina al guardar,
+el efecto es nulo. *(Sin verificar en ejecución.)*
+
+### H4 — `HeaderRunPlan.PlacedClone` no copia los campos de texto y de cota
+
+`PlacedClone` (`HeaderRunPlan.cs:53-72`) copia rol, pieza, bloque, vista, rotación, espejos y puntos, pero
+no `Text`, `TextHeight`, `DimensionOffset` ni `DimensionStyleName`. Hoy es inocuo: cotas y etiquetas quedan
+siempre sueltas (`HeaderInstanceGrouper.cs:35-43`) y `Flatten` las añade sin clonar (`HeaderRunPlan.cs:49`).
+Se volvería un defecto el día que una anotación entrara en un grupo ARRAY.
+
+### H5 — El Dinámico descarta un estilo guardado que el DWG no tiene; el Selectivo lo conserva
+
+`RackSelectiveWindow.SelectDimStyle` añade al combo un estilo guardado que falta en el dibujo, para que
+sobreviva al volver a guardar (`RackSelectiveWindow.xaml.cs:1733-1746`).
+`RackDynamicSystemWindow.SelectDimensionStyle` cae a «(Automático)»
+(`RackDynamicSystemWindow.xaml.cs:263-282`), así que abrir y guardar un Dinámico en un DWG sin ese estilo
+borra la elección. Asimetría de producto sin decisión registrada; relacionada con la entrada de I-15 sobre
+los estilos de cota del Selectivo creado desde el menú (sección «Hallazgos de la revisión de código
+2026-07-15»).
+
+### H6 — El BOM del Selectivo calcula las cotas laterales y las descarta
+
+`SelectiveBomBuilder` fuerza `None` para contar planta y frontal (`SelectiveBomBuilder.cs:60-68`, `:508`),
+pero al contar separadores recorre `SelectiveLateralBuilder.Cortes` **sin** forzarlo (`:219`): cada corte
+emite sus cotas con el nivel real del rack y el BOM las descarta al filtrar por rol. Es coste de
+rendimiento, no de resultado.
+
+### H7 — Comentarios desfasados
+
+- `RackBlockData.cs:8` dice que el payload vive en el diccionario de extensión de la «block reference»;
+  vive en el de la **definición** (`SystemBlockWriter.cs:13`). Ya lo señaló I-47 como H-01 en su Discovery,
+  sin corregirlo.
+- `RackInsertionRequest.cs:152` describe la `Section` frontal de Push Back como `(int)PushBackFrontalEnd`;
+  desde I-42 es `(int)end + (B ? 2 : 0)` (`PushBackSystemFrontalBuilder.cs:138-139`).
+- `PushBackSystemLateralBuilder.cs:147-151` dice que las decoraciones compartidas usan el contexto de
+  elevaciones del lado A; el código emite las cotas por lado (`:156-158`, `:196-231`).
