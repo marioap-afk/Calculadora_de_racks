@@ -64,6 +64,7 @@ namespace RackCad.Application.Systems.Selective
             system.DrawPallets = design.DrawPallets;
             system.AnnotationScale = design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0;
             system.Dimensions = design.Dimensions;
+            system.DimensionViews = design.DimensionViews; // I-50 C-04: tal cual, null incluido
             system.DimensionStyle = design.DimensionStyle;
             foreach (var safety in design.SafetySelections)
             {

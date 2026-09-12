@@ -61,8 +61,16 @@ namespace RackCad.Tests
         // ---- Selectivo ------------------------------------------------------------------------------------------
 
         /// <summary>Un fondo (tres frentes de cuatro niveles) o dos fondos en esquina (el segundo con 40" de fondo, dos
-        /// frentes y tres niveles más bajos).</summary>
+        /// frentes y tres niveles más bajos), resuelto y con el nombre que el comando asigna antes de dibujar.</summary>
         internal static SelectiveRackSystem Selective(DimensionDetail detail, bool twoFondos, RackCatalog catalog)
+        {
+            var system = new SelectiveGeometryResolver().Resolve(SelectiveDesign(detail, twoFondos), catalog);
+            system.Name = RackName;
+            return system;
+        }
+
+        /// <summary>El diseño de <see cref="Selective"/>, sin resolver.</summary>
+        internal static SelectivePalletDesign SelectiveDesign(DimensionDetail detail, bool twoFondos)
         {
             var design = new SelectivePalletDesign
             {
@@ -93,9 +101,7 @@ namespace RackCad.Tests
                 });
             }
 
-            var system = new SelectiveGeometryResolver().Resolve(design, catalog);
-            system.Name = RackName;
-            return system;
+            return design;
         }
 
         private static SelectiveBayDesign SelectiveBay(int levels, double palletHeight)
@@ -141,8 +147,16 @@ namespace RackCad.Tests
         // ---- Dinámico ------------------------------------------------------------------------------------------
 
         /// <summary>El escenario jagged de la golden del Dinámico: frentes con distinto número de niveles, profundidad y
-        /// altura de primer nivel.</summary>
+        /// altura de primer nivel. Resuelto y con nombre.</summary>
         internal static DynamicRackSystem Dynamic(DimensionDetail detail, RackCatalog catalog)
+        {
+            var system = new DynamicRackSystemResolver(catalog).Resolve(DynamicDesign(detail, catalog)).System;
+            system.Name = RackName;
+            return system;
+        }
+
+        /// <summary>El diseño de <see cref="Dynamic"/>, sin resolver.</summary>
+        internal static DynamicRackDesign DynamicDesign(DimensionDetail detail, RackCatalog catalog)
         {
             var design = new DynamicRackDesign
             {
@@ -165,9 +179,7 @@ namespace RackCad.Tests
                 design.SafetySelections.Add(family);
             }
 
-            var system = new DynamicRackSystemResolver(catalog).Resolve(design).System;
-            system.Name = RackName;
-            return system;
+            return design;
         }
 
         /// <summary>La frontal de salida y la de entrada (las dos Frontal), el lateral entero y sus cortes, y la planta.</summary>
@@ -197,6 +209,14 @@ namespace RackCad.Tests
         /// Back (T-08) son de G6: su política necesita la copia compartida C-15.</summary>
         internal static PushBackSystem PushBackSingleSided(DimensionDetail detail, RackCatalog catalog)
         {
+            var system = new PushBackResolver(catalog).Resolve(PushBackSingleSidedDesign(detail));
+            system.Name = RackName;
+            return system;
+        }
+
+        /// <summary>El diseño de <see cref="PushBackSingleSided"/>, sin resolver.</summary>
+        internal static PushBackDesign PushBackSingleSidedDesign(DimensionDetail detail)
+        {
             var design = new PushBackDesign
             {
                 Structure = new DynamicRackDesign
@@ -221,10 +241,7 @@ namespace RackCad.Tests
             design.Fronts.Add(f0);
             design.RearTope.Disable(0, 0);
             design.Structure.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Quantity = 1, Side = SafetySide.Both });
-
-            var system = new PushBackResolver(catalog).Resolve(design);
-            system.Name = RackName;
-            return system;
+            return design;
         }
 
         internal static IReadOnlyList<View> PushBackSingleSidedViews(PushBackSystem system, RackCatalog catalog)
