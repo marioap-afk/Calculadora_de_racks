@@ -190,6 +190,89 @@ namespace RackCad.Tests
             Assert.Null(RestampResult.Failure("no").DesignJson);
         }
 
+        // ================================================================ 14, 15: caracterizacion para I-51 (ID15)
+
+        // I-51 duplica VARIAS vistas de un mismo rack en un solo gesto, y todas se re-estampan con la misma
+        // identidad. Estas dos pruebas no cambian produccion: fijan lo que esa copia multivista necesita del
+        // re-estampado que ya existe. T14, que sobreviven los DOS vinculos reales de I-48; T15, que dos vistas
+        // iguales re-estampadas con el mismo (id, nombre) siguen siendo UNA autoridad, y que un nombre por
+        // vista fabrica una copia que nace divergente (contrato de I-51, INV-08 e INV-09).
+
+        private const string VarToleranceId = "5b0c7e21-9a3d-4f6e-b812-3c4d5e6f7a80";
+
+        private static string JsonConDosVinculos()
+        {
+            var design = Diseno(6.0);
+            design.PalletTolerance = 3.0;
+
+            var doc = SelectivePalletDesignDocument.From(design, RackA, "Rack original");
+            doc.PropertyValues = new Dictionary<string, SelectivePropertyValueDocument>
+            {
+                [ProjectPropertyIds.SelectiveVerticalClearanceToken] = SelectivePropertyValueDocument.ToProjectVariable(VarId),
+                [ProjectPropertyIds.SelectivePalletToleranceToken] = SelectivePropertyValueDocument.ToProjectVariable(VarToleranceId),
+            };
+            doc.SchemaVersion = SelectivePalletDesignDocument.PromotedSchemaVersion;
+
+            return new SelectivePalletDesignStore().Serialize(doc);
+        }
+
+        [Fact]
+        public void T14_UNA_COPIA_CON_DOS_VINCULOS_CONSERVA_AMBAS_VARIABLES_Y_AMBOS_LITERALES()
+        {
+            var store = new SelectivePalletDesignStore();
+            var original = store.Deserialize(JsonConDosVinculos());
+
+            var result = SelectiveAuthoredRestamp.Restamp(JsonConDosVinculos(), CopyId, "Rack copia");
+
+            Assert.True(result.IsSuccess);
+            var copia = store.Deserialize(result.DesignJson);
+
+            // Lo unico que cambia es la identidad del rack.
+            Assert.Equal(CopyId, copia.Id);
+            Assert.Equal("Rack copia", copia.Name);
+
+            // Cada vinculo conserva SU variable: ninguno se pierde y ninguno se cruza con el otro.
+            Assert.Equal(2, copia.PropertyValues.Count);
+            Assert.True(copia.TryGetBinding(ProjectPropertyIds.SelectiveVerticalClearance, out var clearance));
+            Assert.Equal(VariableId.Parse(VarId), clearance);
+            Assert.True(copia.TryGetBinding(ProjectPropertyIds.SelectivePalletTolerance, out var tolerance));
+            Assert.Equal(VariableId.Parse(VarToleranceId), tolerance);
+
+            // Los dos literales congelados sobreviven.
+            Assert.Equal(6.0, copia.VerticalClearance);
+            Assert.Equal(3.0, copia.PalletTolerance);
+
+            // Y el resto del authored es identico: con la identidad igualada, el comparador TOTAL de I-47 no
+            // encuentra ninguna otra diferencia (version, vinculos, literales, estructura y desconocidos).
+            copia.Id = original.Id;
+            copia.Name = original.Name;
+            Assert.True(SelectiveAuthoredAuthority.IsSameAuthority(new[] { original, copia }));
+        }
+
+        [Fact]
+        public void T15_VISTAS_IGUALES_REESTAMPADAS_CON_LA_MISMA_IDENTIDAD_SIGUEN_SIENDO_UNA_AUTORIDAD()
+        {
+            var store = new SelectivePalletDesignStore();
+
+            SelectivePalletDesignDocument Copiar(string json, string name)
+            {
+                var result = SelectiveAuthoredRestamp.Restamp(json, CopyId, name);
+                Assert.True(result.IsSuccess);
+                return store.Deserialize(result.DesignJson);
+            }
+
+            // Dos vistas hermanas del mismo rack llevan el mismo documento authored.
+            var frontal = JsonConDosVinculos();
+            var lateral = JsonConDosVinculos();
+
+            Assert.True(SelectiveAuthoredAuthority.IsSameAuthority(
+                new[] { Copiar(frontal, "Rack copia"), Copiar(lateral, "Rack copia") }));
+
+            // Un nombre distinto por vista basta para que la copia nazca divergente.
+            Assert.False(SelectiveAuthoredAuthority.IsSameAuthority(
+                new[] { Copiar(frontal, "Rack copia"), Copiar(lateral, "Rack copia 2") }));
+        }
+
         // ================================================================ guardas de fuente
 
         private static DirectoryInfo RepoRoot()
