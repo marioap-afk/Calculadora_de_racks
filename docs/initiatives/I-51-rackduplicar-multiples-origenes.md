@@ -26,9 +26,11 @@ automation:
 
 # RACKDUPLICAR con multiples origenes
 
-> **Fase actual: RECLAMADA Y BOOTSTRAPEADA (G0).** No hay Discovery hecho, no hay contrato de
-> autoridad (G2) y **no hay una sola linea de produccion escrita**. La sesion que abrio la
-> iniciativa esta autorizada **solo para G0 y G1**; la implementacion esta BLOQUEADA (seccion 12).
+> **Fase actual: G1 (Discovery) HECHO; G2 BLOQUEADO.** El informe
+> [I-51-discovery.md](I-51-discovery.md) declara una **decision arquitectonica material** —revision de
+> Arquitecto antes de G2— y siete decisiones de producto para el dueno. No hay contrato de autoridad
+> (G2) y **no hay una sola linea de produccion escrita**. La sesion que abrio la iniciativa estaba
+> autorizada **solo para G0 y G1**; la implementacion esta BLOQUEADA (seccion 12).
 
 > **Apertura por autorizacion explicita del dueno sin fila previa** — caso (d) de
 > [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la preexistencia de
@@ -155,8 +157,8 @@ desviacion material frente a esto obliga a detenerse** y a volver a G2.
 | # | Fase | Entregable | Estado |
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
-| G1 | Discovery | Informe por archivo/linea y respuestas de la seccion 3, punto 2 | pendiente |
-| G2 | Contrato | Seleccion, identidad, atomicidad y transformacion; revision de Arquitecto si hay decision arquitectonica material | pendiente |
+| G1 | Discovery | [I-51-discovery.md](I-51-discovery.md): informe por archivo/linea y respuestas de la seccion 3, punto 2 | **HECHA** — declara decision arquitectonica material (AM-1 a AM-3; AM-4 condicionada a I-50) |
+| G2 | Contrato | Seleccion, identidad, atomicidad y transformacion; revision de Arquitecto si hay decision arquitectonica material | pendiente — **bloqueada** hasta la revision de Arquitecto y las decisiones PD-1 a PD-7 del dueno |
 | G3+ | Implementacion, Candidato, validacion del dueno, integracion | Por definir **en G2**, no aqui | bloqueada |
 
 Ninguna fase posterior arranca sin que la anterior tenga evidencia revisable.
