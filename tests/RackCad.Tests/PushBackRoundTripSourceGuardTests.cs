@@ -296,15 +296,51 @@ namespace RackCad.Tests
             Assert.DoesNotContain("PushBack", Restamp);
         }
 
+        /// <summary>I-51 G4: the RACKDUPLICAR half moved to <see cref="G_R3_Duplicar_ResolvesKindIgnoreCase_WithNoPerSystemBranch"/>
+        /// (a property, not one exact line); the RACKLAYOUT half stays literal.</summary>
         [Fact]
         public void CopyAndLayout_AcceptPushBackViaIgnoreCaseLookup_WithNoPerKindBranch()
         {
-            foreach (var src in new[] { Duplicar, Layout })
+            var src = Layout;
+
+            Assert.Contains("KindHandlerDispatch.TryResolveIgnoreCase(editor, embed.Kind, out _)", src);
+            Assert.DoesNotContain("KindPushBack", src);        // no hard-coded per-kind arm
+            Assert.DoesNotContain("PushBackKindHandler", src);
+        }
+
+        /// <summary>
+        /// I-51 G4, G-R3. RACKDUPLICAR accepts Push Back — and every registered kind — through the case-INSENSITIVE
+        /// resolution alone, with no per-system branch however it is written: no <c>RackEmbedDocument.Kind*</c> constant,
+        /// no string literal equal to a kind value, no concrete <c>*KindHandler</c> type, no comparison or switch on a
+        /// <c>Kind</c>, no system catalogue. Checked on the CODE (comments and literal contents masked), not on one line.
+        /// </summary>
+        [Fact]
+        public void G_R3_Duplicar_ResolvesKindIgnoreCase_WithNoPerSystemBranch()
+        {
+            var code = PluginSourceCode.Mask(Duplicar);
+
+            Assert.Matches(@"\bTry(?:ResolveIgnoreCase|GetIgnoreCase)\s*\(", code);
+            Assert.DoesNotMatch(@"\bTry(?:Resolve|ResolveAll|Get)\s*\(", code);   // the case-SENSITIVE seams
+
+            var kinds = typeof(RackCad.Application.Persistence.RackEmbedDocument)
+                .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+                .Where(field => field.IsLiteral && field.Name.StartsWith("Kind", StringComparison.Ordinal))
+                .ToList();
+            Assert.Contains(kinds, field => field.Name == "KindPushBack");
+
+            var literals = PluginSourceCode.StringLiterals(Duplicar);
+            foreach (var kind in kinds)
             {
-                Assert.Contains("KindHandlerDispatch.TryResolveIgnoreCase(editor, embed.Kind, out _)", src);
-                Assert.DoesNotContain("KindPushBack", src);        // no hard-coded per-kind arm
-                Assert.DoesNotContain("PushBackKindHandler", src);
+                Assert.DoesNotMatch(@"\b" + kind.Name + @"\b", code);
+                Assert.DoesNotContain(literals, literal =>
+                    string.Equals(literal.Trim(), (string)kind.GetRawConstantValue(), StringComparison.OrdinalIgnoreCase));
             }
+
+            Assert.DoesNotMatch(@"\b(?!IRackKindHandler\b)[A-Z]\w*KindHandler\b", code);
+            Assert.DoesNotMatch(@"\b(?:RackSystemKind|SystemRegistry)\b", code);
+            Assert.DoesNotMatch(@"\.\s*Kind\b\s*(?:==|!=|\.|\bswitch\b)|(?:==|!=)\s*[\w.]*\.\s*Kind\b|\bswitch\s*\([^)]*\.\s*Kind\s*\)", code);
+            Assert.DoesNotContain(PluginSourceCode.Calls(code, "Equals").Concat(PluginSourceCode.Calls(code, "Compare")),
+                call => call.Arguments.Any(argument => Regex.IsMatch(argument, @"\.\s*Kind\b")));
         }
 
         // ---- Increment 5a: end-to-end chain closure ----

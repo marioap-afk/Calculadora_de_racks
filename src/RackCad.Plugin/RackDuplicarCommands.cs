@@ -102,12 +102,23 @@ namespace RackCad.Plugin
                         ? baseName + " - copia"
                         : baseName + " - copia " + placed.ToString(CultureInfo.InvariantCulture);
 
+                    // PREPARE (I-47 G14, I-51 G4): la transformacion que puede fallar se decide AQUI, antes de abrir
+                    // la transaccion de escritura. Si el re-estampado no sale, no se clona nada: una copia con la
+                    // identidad vieja dentro y una nueva fuera es irreversible, y solo se descubre cuando alguien la
+                    // abre y la guarda. El fallo sale como siempre, hacia el catch del comando.
+                    var restamped = RackEnvelopeRestamp.RestampEnvelope(source.Payload, copyName);
+
+                    if (!restamped.IsSuccess)
+                    {
+                        throw new InvalidOperationException(restamped.Error);
+                    }
+
                     // GetPoint returns CURRENT-UCS coordinates but BlockReference.Position is WCS: transform the
                     // displacement (a vector — only the rotational part applies) or a rotated UCS lands copies wrong.
                     var displacement = (destination.Value - basePoint).TransformBy(editor.CurrentUserCoordinateSystem);
                     var position = source.Position + displacement;
 
-                    PlaceIndependentCopy(document, source, copyName, position, embed.Name);
+                    PlaceIndependentCopy(document, source, restamped.DesignJson, copyName, position, embed.Name);
                     editor.WriteMessage("\nRackCad: copia '" + copyName + "' colocada.");
 
                     if (!multiple)
@@ -175,26 +186,17 @@ namespace RackCad.Plugin
             return true;
         }
 
-        /// <summary>One independent copy: clone the view-block's definition (nested ARRAY defs shared, payload
-        /// re-stamped with a fresh GUID + the copy name, drawn name label renamed — Layout's helpers) and reference it
-        /// at the destination with the source's own rotation/mirror/layer.</summary>
-        private static void PlaceIndependentCopy(Document document, DuplicateSource source, string copyName, Point3d position, string sourceName)
+        /// <summary>One independent copy — the MUTATE half: clone the view-block's definition (nested ARRAY defs
+        /// shared, drawn name label renamed — Layout's helpers) with a payload the caller ALREADY prepared and
+        /// checked, and reference it at the destination with the source's own rotation/mirror/layer. Nothing that
+        /// can fail for a semantic reason is decided in here (I-47 G14, I-51 G4).</summary>
+        private static void PlaceIndependentCopy(Document document, DuplicateSource source, string preparedPayload, string copyName, Point3d position, string sourceName)
         {
             var database = document.Database;
 
             InDocumentTransaction.Run(document, transaction =>
             {
-                // I-47 G14: la transformacion que puede fallar se decide ANTES de materializar la copia. Si el
-                // re-estampado no sale, no se clona nada: una copia con la identidad vieja dentro y una nueva
-                // fuera es irreversible, y solo se descubre cuando alguien la abre y la guarda.
-                var restamped = RackEnvelopeRestamp.RestampEnvelope(source.Payload, copyName);
-
-                if (!restamped.IsSuccess)
-                {
-                    throw new InvalidOperationException(restamped.Error);
-                }
-
-                var definitionId = RackCloner.CloneDefinition(database, transaction, source.DefinitionId, copyName, restamped.DesignJson, sourceName, copyName);
+                var definitionId = RackCloner.CloneDefinition(database, transaction, source.DefinitionId, copyName, preparedPayload, sourceName, copyName);
 
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);

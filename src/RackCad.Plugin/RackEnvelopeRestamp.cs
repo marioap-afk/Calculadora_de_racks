@@ -21,22 +21,61 @@ namespace RackCad.Plugin
     /// Así que el fallo es un VALOR y el llamador tiene que mirarlo ANTES de materializar la copia. No hay
     /// mejor esfuerzo: o sale entera, o no sale ninguna.
     /// </para>
+    /// <para>
+    /// I-51 G4 — <b>la identidad nueva puede venir del llamador</b>. Duplicar varias vistas de un mismo rack
+    /// exige que todas nazcan con el MISMO id, y este helper no ve el lote: por eso la entrada con
+    /// <see cref="Guid"/> es la ÚNICA implementación, y la firma histórica de dos argumentos solo delega en ella
+    /// con un GUID nuevo, de modo que sus consumidores no cambian.
+    /// </para>
     /// </summary>
     internal static class RackEnvelopeRestamp
     {
         /// <summary>Copy a rack payload with a FRESH GUID and the copy's name so it is an independent rack. The
-        /// KIND-SPECIFIC design inside is re-stamped too (selective: Id+Name; cabecera: Header.Name) — otherwise the
-        /// first RACKEDITAR on the copy would show and silently write back the ORIGINAL's name (its editor loads the
-        /// name from the inner design). The caller guarantees <paramref name="payload"/> deserializes, and must
-        /// check the result BEFORE it writes anything (I-47 G14).</summary>
+        /// historic entry point: it only generates the identity and delegates to the single implementation.</summary>
         public static RestampResult RestampEnvelope(string payload, string copyName)
+            => RestampEnvelope(payload, copyName, Guid.NewGuid());
+
+        /// <summary>
+        /// Copy a rack payload with the identity <paramref name="newId"/> and the copy's name so it is an independent
+        /// rack. The KIND-SPECIFIC design inside is re-stamped too (selective: Id+Name; cabecera: Header.Name) —
+        /// otherwise the first RACKEDITAR on the copy would show and silently write back the ORIGINAL's name (its
+        /// editor loads the name from the inner design). The caller must check the result BEFORE it writes anything
+        /// (I-47 G14).
+        ///
+        /// <para>
+        /// The identity is converted to text ONCE and that very text goes to the envelope and to the inner restamp,
+        /// so both halves always agree (a kind that parses the id, like Cantilever, would otherwise be free to
+        /// disagree). An empty identity, one equal to the source's own id, and an envelope that cannot be read are
+        /// failures: none of them can produce an independent copy.
+        /// </para>
+        /// </summary>
+        public static RestampResult RestampEnvelope(string payload, string copyName, Guid newId)
         {
+            if (newId == Guid.Empty)
+            {
+                return RestampResult.Failure("La copia necesita una identidad nueva y recibio un GUID vacio.");
+            }
+
             var store = new RackEmbedStore();
             var embed = store.Deserialize(payload);
-            embed.Id = System.Guid.NewGuid().ToString();
+
+            if (embed == null)
+            {
+                // The drawing-wide scan tolerates an envelope it cannot read; an independent copy cannot be built on one.
+                return RestampResult.Failure("Los datos del rack de origen no se pueden leer: no se crea la copia.");
+            }
+
+            var newIdText = newId.ToString();
+
+            if (string.Equals(embed.Id, newIdText, StringComparison.OrdinalIgnoreCase))
+            {
+                return RestampResult.Failure("La identidad nueva coincide con la del rack de origen: no se crea la copia.");
+            }
+
+            embed.Id = newIdText;
             embed.Name = copyName;
 
-            var design = RestampDesign(embed.Kind, embed.Design, embed.Id, copyName);
+            var design = RestampDesign(embed.Kind, embed.Design, newIdText, copyName);
 
             if (!design.IsSuccess)
             {

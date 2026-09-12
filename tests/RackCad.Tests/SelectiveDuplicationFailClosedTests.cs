@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Domain.Systems.Selective;
@@ -327,13 +329,161 @@ namespace RackCad.Tests
             Assert.Contains("RestampResult RestampEnvelope(", source);
         }
 
+        /// <summary>
+        /// I-51 G4, G-R1 (reapunta <c>GUARDA_RACKDUPLICAR_DECIDE_ANTES_DE_CLONAR</c>). La guarda anterior comparaba la
+        /// PRIMERA aparicion de dos textos en el archivo, y seguia verde con el re-estampado DENTRO de la transaccion de
+        /// escritura, justo antes del clon. Esta mira la propiedad: el miembro que clona no re-estampa; el payload que
+        /// clona le llega como parametro; y quien lo llama le pasa el <c>DesignJson</c> de un re-estampado cuyo
+        /// <c>IsSuccess</c> ya miro —abandonando si falla— antes de llamarlo.
+        /// </summary>
         [Fact]
-        public void GUARDA_RACKDUPLICAR_DECIDE_ANTES_DE_CLONAR()
+        public void GUARDA_G_R1_RACKDUPLICAR_DECIDE_ANTES_DE_CLONAR()
         {
-            var source = Plugin("RackDuplicarCommands.cs");
+            var members = PluginSourceCode.Members(PluginSourceCode.Mask(Plugin("RackDuplicarCommands.cs")));
 
-            Assert.True(At(source, "RestampEnvelope(") < At(source, "RackCloner.CloneDefinition"));
-            Assert.Contains("IsSuccess", source);
+            // MUTATE: un solo miembro clona, y no re-estampa.
+            var mutation = Assert.Single(members, m => PluginSourceCode.Calls(m.Body, "CloneDefinition").Count > 0);
+            Assert.True(PluginSourceCode.Calls(mutation.Body, "RestampEnvelope").Count == 0,
+                mutation.Name + " clona y tambien re-estampa: la decision que puede fallar quedo dentro de la mutacion.");
+
+            // El payload que clona es uno de SUS parametros (la posicion sale de la firma real de RackCloner).
+            var clone = Assert.Single(PluginSourceCode.Calls(mutation.Body, "CloneDefinition"));
+            var payload = clone.Arguments[ClonerPayloadIndex()];
+            var parameter = mutation.Parameters.Select(p => p.Name).ToList().IndexOf(payload);
+            Assert.True(parameter >= 0, "el payload que clona " + mutation.Name + " no le llega como parametro: " + payload);
+
+            // PREPARE: quien llama a la mutacion re-estampa, mira IsSuccess, abandona si falla y le pasa lo preparado.
+            var prepare = Assert.Single(members, m => m != mutation && PluginSourceCode.Calls(m.Body, mutation.Name).Count > 0);
+            var place = Assert.Single(PluginSourceCode.Calls(prepare.Body, mutation.Name));
+            var restamp = Regex.Match(prepare.Body, @"\b(?<result>\w+)\s*=\s*(?:\w+\s*\.\s*)*RestampEnvelope\s*\(");
+            Assert.True(restamp.Success && restamp.Index < place.Start,
+                prepare.Name + " no re-estampa antes de llamar a " + mutation.Name + ".");
+
+            var result = restamp.Groups["result"].Value;
+            var check = Regex.Match(prepare.Body, @"\b" + result + @"\s*\.\s*IsSuccess\b");
+            Assert.True(check.Success && restamp.Index < check.Index && check.Index < place.Start,
+                "el IsSuccess de '" + result + "' no se mira entre el re-estampado y la llamada a " + mutation.Name + ".");
+            Assert.Matches(@"\b(?:throw|return|break|continue)\b", prepare.Body.Substring(check.Index, place.Start - check.Index));
+
+            Assert.Equal(result + ".DesignJson", Regex.Replace(place.Arguments[parameter], @"\s+", string.Empty));
+        }
+
+        /// <summary>Posicion del parametro <c>payload</c> en la firma vigente de <c>RackCloner.CloneDefinition</c>.</summary>
+        private static int ClonerPayloadIndex()
+        {
+            var cloner = Assert.Single(
+                PluginSourceCode.Members(PluginSourceCode.Mask(Plugin("RackCloner.cs"))), m => m.Name == "CloneDefinition");
+            var index = cloner.Parameters.Select(p => p.Name).ToList().IndexOf("payload");
+
+            Assert.True(index >= 0, "RackCloner.CloneDefinition ya no tiene un parametro 'payload'.");
+            return index;
+        }
+
+        /// <summary>
+        /// I-51 G4, G-R2 (reapunta la mitad de RACKDUPLICAR de <c>GUARDA_NINGUN_CAMINO_DE_COPIA_CAE_AL_PAYLOAD_DE_ORIGEN</c>).
+        /// Ningun <c>CloneDefinition</c> del comando recibe un payload de ORIGEN, escriba como se escriba la llamada: ni el
+        /// <c>Payload</c> de la instantanea del comando, ni el <c>RawPayload</c> de la instantanea del planificador (G3), ni
+        /// una lectura directa del dibujo.
+        /// </summary>
+        [Fact]
+        public void GUARDA_G_R2_RACKDUPLICAR_NUNCA_CLONA_EL_PAYLOAD_DE_ORIGEN()
+        {
+            var clones = PluginSourceCode.Calls(PluginSourceCode.Mask(Plugin("RackDuplicarCommands.cs")), "CloneDefinition");
+
+            Assert.NotEmpty(clones);
+            foreach (var clone in clones)
+            {
+                Assert.DoesNotMatch(@"\.\s*(?:Raw)?Payload\b|\bRackBlockData\s*\.\s*Read\s*\(", string.Join(", ", clone.Arguments));
+            }
+        }
+
+        /// <summary>I-51 G4, G-R4 (nueva, PD-1). RACKDUPLICAR duplica lo SELECCIONADO: no barre el dibujo buscando hermanas.</summary>
+        [Fact]
+        public void GUARDA_G_R4_RACKDUPLICAR_NO_BARRE_EL_DIBUJO()
+        {
+            Assert.DoesNotMatch(@"\b(?:FindRackBlocks|ScanEnvelopes)\b", PluginSourceCode.Mask(Plugin("RackDuplicarCommands.cs")));
+        }
+
+        /// <summary>
+        /// I-51 G4, G-R5 (amplia, sin retirarlas, <see cref="GUARDA_EL_RESTAMP_COMPARTIDO_NO_TIENE_MEJOR_ESFUERZO"/> y la guarda
+        /// de Push Back sobre el mismo archivo). Una sola implementacion y una sola identidad: la firma historica es el UNICO
+        /// lugar que inventa un GUID, y solo delega; la entrada con <see cref="Guid"/> rechaza el vacio, convierte la
+        /// identidad a texto UNA vez, y ese mismo texto es el Id del sobre y el que recibe el re-estampado interior
+        /// (NI-1, NI-2). No exige nombres de variables ni formato.
+        /// </summary>
+        [Fact]
+        public void GUARDA_G_R5_EL_RESTAMP_TIENE_UNA_IMPLEMENTACION_Y_UNA_IDENTIDAD()
+        {
+            var code = PluginSourceCode.Mask(Plugin("RackEnvelopeRestamp.cs"));
+
+            // Sigue sin mejor esfuerzo y resolviendo el kind sin distinguir mayusculas.
+            Assert.DoesNotContain("catch (", code);
+            Assert.DoesNotContain("return designJson;", code);
+            Assert.Contains("TryGetIgnoreCase(", code);
+
+            // Dos entradas: la historica (payload, nombre) y la que recibe la identidad.
+            var overloads = PluginSourceCode.Members(code).Where(m => m.Name == "RestampEnvelope").ToList();
+            Assert.Equal(2, overloads.Count);
+            var historic = Assert.Single(overloads, m => m.Parameters.Count == 2 && !m.Parameters.Any(p => IsGuid(p.Type)));
+            var withId = Assert.Single(overloads, m => m.Parameters.Count(p => IsGuid(p.Type)) == 1);
+
+            // Un unico GUID inventado en todo el archivo: el de la firma historica, que no hace nada mas que delegar.
+            Assert.Single(Regex.Matches(code, @"\bNewGuid\s*\("));
+            Assert.Matches(@"\bNewGuid\s*\(", historic.Body);
+            Assert.Single(PluginSourceCode.Calls(historic.Body, "RestampEnvelope"));
+            Assert.DoesNotMatch(@"\b(?:Deserialize|Serialize|RestampDesign)\s*\(", historic.Body);
+
+            // La entrada con Guid rechaza el vacio y convierte la identidad a texto una sola vez...
+            var id = withId.Parameters.Single(p => IsGuid(p.Type)).Name;
+            Assert.Matches(@"\bGuid\s*\.\s*Empty\b", withId.Body);
+            Assert.Single(Regex.Matches(withId.Body, @"\b" + id + @"\s*\.\s*ToString\s*\("));
+
+            // ...y ese mismo texto es el Id del sobre y el que recibe el re-estampado interior.
+            var envelope = Assert.Single(Regex.Matches(withId.Body, @"\b(?<target>\w+)\s*\.\s*Id\s*=(?!=)\s*(?<value>[^;]+);"));
+            var value = Regex.Replace(envelope.Groups["value"].Value, @"\s+", string.Empty);
+            var sameText = new List<string> { envelope.Groups["target"].Value + ".Id" };
+            var text = Regex.Match(withId.Body, @"(?<!\.\s*)\b(?<text>\w+)\s*=(?!=)\s*" + id + @"\s*\.\s*ToString\s*\(");
+
+            if (text.Success)
+            {
+                sameText.Add(text.Groups["text"].Value);
+                Assert.Equal(text.Groups["text"].Value, value);
+            }
+            else
+            {
+                Assert.StartsWith(id + ".ToString(", value);
+            }
+
+            var design = Assert.Single(PluginSourceCode.Calls(withId.Body, "RestampDesign"));
+            Assert.Contains(design.Arguments, argument => sameText.Contains(Regex.Replace(argument, @"\s+", string.Empty)));
+        }
+
+        private static bool IsGuid(string type) => type == "Guid" || type == "System.Guid";
+
+        /// <summary>
+        /// I-51 G4, G-R6 (nueva, INV-11 e INV-14). Duplicar no regenera, no renombra, no crea capas ni purga; y la conversion
+        /// UCS→WCS del desplazamiento ocurre UNA vez por destino: en quien pide el punto, despues de pedirlo y antes de
+        /// colocar la copia, nunca dentro de la mutacion.
+        /// </summary>
+        [Fact]
+        public void GUARDA_G_R6_RACKDUPLICAR_NO_TOCA_DE_MAS_Y_TRANSFORMA_UNA_VEZ_POR_DESTINO()
+        {
+            var code = PluginSourceCode.Mask(Plugin("RackDuplicarCommands.cs"));
+
+            Assert.DoesNotMatch(@"\b(?:Regen|SyncName|EnsureLayer|EnsureForPlan|PurgeUnreferenced)\s*\(", code);
+
+            const string Ucs = @"\bCurrentUserCoordinateSystem\b";
+            Assert.Single(Regex.Matches(code, Ucs));
+
+            var members = PluginSourceCode.Members(code);
+            var mutation = Assert.Single(members, m => PluginSourceCode.Calls(m.Body, "CloneDefinition").Count > 0);
+            var prepare = Assert.Single(members, m => m != mutation && PluginSourceCode.Calls(m.Body, mutation.Name).Count > 0);
+            var place = Assert.Single(PluginSourceCode.Calls(prepare.Body, mutation.Name));
+            var transform = Assert.Single(Regex.Matches(prepare.Body, Ucs));
+
+            Assert.True(Regex.Matches(prepare.Body, @"\bGetPoint\s*\(").Any(point => point.Index < transform.Index),
+                "la conversion UCS->WCS no sigue a la lectura del punto de destino.");
+            Assert.True(transform.Index < place.Start, "la conversion UCS->WCS no precede a " + mutation.Name + ".");
         }
 
         [Fact]
@@ -345,18 +495,277 @@ namespace RackCad.Tests
             Assert.Contains("IsSuccess", source);
         }
 
-        /// <summary>Ningún camino de copia se queda con el payload de origen cuando el re-estampado falla.</summary>
+        /// <summary>
+        /// Ningún camino de copia se queda con el payload de origen cuando el re-estampado falla. I-51 G4: la mitad de
+        /// RACKDUPLICAR pasó a <see cref="GUARDA_G_R2_RACKDUPLICAR_NUNCA_CLONA_EL_PAYLOAD_DE_ORIGEN"/>; RACKLAYOUT sigue literal.
+        /// </summary>
         [Fact]
         public void GUARDA_NINGUN_CAMINO_DE_COPIA_CAE_AL_PAYLOAD_DE_ORIGEN()
         {
-            foreach (var file in new[] { "RackDuplicarCommands.cs", "RackLayoutCommands.cs" })
-            {
-                var source = Plugin(file);
+            var source = Plugin("RackLayoutCommands.cs");
 
-                Assert.DoesNotContain("source.Payload, copyName)", source.Replace("RestampEnvelope(source.Payload, copyName)", string.Empty));
-                Assert.DoesNotContain("CloneDefinition(database, transaction, source.DefinitionId, copyName, source.Payload", source);
-                Assert.DoesNotContain("CloneDefinition(database, transaction, seed.DefinitionId, copyName, seed.Payload", source);
+            Assert.DoesNotContain("source.Payload, copyName)", source.Replace("RestampEnvelope(source.Payload, copyName)", string.Empty));
+            Assert.DoesNotContain("CloneDefinition(database, transaction, source.DefinitionId, copyName, source.Payload", source);
+            Assert.DoesNotContain("CloneDefinition(database, transaction, seed.DefinitionId, copyName, seed.Payload", source);
+        }
+    }
+
+    /// <summary>
+    /// I-51 G4 — lectura ESTRUCTURAL de una fuente del Plugin para las guardas G-R1..G-R6. El Plugin no se carga en las
+    /// pruebas (ADR-0003), así que las guardas leen texto; pero una guarda de literales se rompe con cualquier refactor
+    /// honesto y deja pasar uno deshonesto escrito de otra forma. Esto enmascara los comentarios y el contenido de los
+    /// literales (misma longitud, mismos saltos de línea) para que las comprobaciones vean solo código, y separa miembros
+    /// y argumentos por llaves y paréntesis balanceados. No es un parser de C#: no entiende comillas dentro de los huecos
+    /// de una cadena interpolada, y los archivos guardados no las usan.
+    /// </summary>
+    internal static class PluginSourceCode
+    {
+        internal sealed record Member(string Name, IReadOnlyList<(string Type, string Name)> Parameters, string Body);
+
+        internal sealed record Call(int Start, IReadOnlyList<string> Arguments);
+
+        private static readonly Regex Signature = new Regex(
+            @"\b(?:public|private|internal|protected)\s+(?:(?:static|override|virtual|sealed|async|unsafe|extern)\s+)*"
+            + @"(?<type>[\w.]+(?:<[^<>()]*>)?[?\[\]]*)\s+(?<name>\w+)\s*\((?<parameters>[^()]*)\)\s*(?<open>\{|=>)");
+
+        private static readonly Regex Parameter = new Regex(
+            @"^(?:(?:this|ref|out|in|params)\s+)*(?<type>.+?)\s+(?<name>\w+)$", RegexOptions.Singleline);
+
+        /// <summary>El código sin comentarios ni contenido de literales; los delimitadores quedan.</summary>
+        public static string Mask(string source) => Scan(source, null);
+
+        /// <summary>El contenido de cada literal de cadena, tal como está escrito.</summary>
+        public static IReadOnlyList<string> StringLiterals(string source)
+        {
+            var literals = new List<string>();
+            Scan(source, literals);
+            return literals;
+        }
+
+        /// <summary>Métodos con modificador de acceso y su cuerpo: de llave a llave, o de <c>=&gt;</c> al <c>;</c>.</summary>
+        public static IReadOnlyList<Member> Members(string code)
+        {
+            var members = new List<Member>();
+
+            foreach (Match match in Signature.Matches(code))
+            {
+                var open = match.Groups["open"];
+                var end = open.Value == "{" ? Closing(code, open.Index) : StatementEnd(code, open.Index);
+                var parameters = Split(match.Groups["parameters"].Value, genericBrackets: true)
+                    .Select(declaration => Parameter.Match(declaration.Split('=')[0].Trim()))
+                    .Select(declaration => (declaration.Groups["type"].Value.Trim(), declaration.Groups["name"].Value))
+                    .ToList();
+
+                members.Add(new Member(match.Groups["name"].Value, parameters, code.Substring(open.Index, end - open.Index)));
             }
+
+            return members;
+        }
+
+        /// <summary>Cada llamada a <paramref name="name"/> en <paramref name="code"/>, con sus argumentos de primer nivel.</summary>
+        public static IReadOnlyList<Call> Calls(string code, string name)
+        {
+            var calls = new List<Call>();
+
+            foreach (Match match in Regex.Matches(code, @"\b" + Regex.Escape(name) + @"\s*\("))
+            {
+                var open = match.Index + match.Length - 1;
+                var close = Closing(code, open);
+                calls.Add(new Call(match.Index, Split(code.Substring(open + 1, close - open - 2), genericBrackets: false)));
+            }
+
+            return calls;
+        }
+
+        private static string Scan(string source, List<string> literals)
+        {
+            var code = new StringBuilder(source.Length);
+            var i = 0;
+
+            while (i < source.Length)
+            {
+                var next = i + 1 < source.Length ? source[i + 1] : '\0';
+
+                if (source[i] == '/' && next == '/')
+                {
+                    var end = source.IndexOf('\n', i);
+                    i = Blank(source, i, end < 0 ? source.Length : end, code);
+                }
+                else if (source[i] == '/' && next == '*')
+                {
+                    var end = source.IndexOf("*/", i + 2, StringComparison.Ordinal);
+                    i = Blank(source, i, end < 0 ? source.Length : end + 2, code);
+                }
+                else if (source[i] == '\'')
+                {
+                    i = Literal(source, i, i + 1, LiteralEnd(source, i + 1, verbatim: false, closer: '\''), 1, code, null);
+                }
+                else if (StringStart(source, i, out var quote))
+                {
+                    var verbatim = source.IndexOf('@', i, quote - i) >= 0;
+                    var quotes = 0;
+                    while (quote + quotes < source.Length && source[quote + quotes] == '"')
+                    {
+                        quotes++;
+                    }
+
+                    if (!verbatim && quotes >= 3)
+                    {
+                        var end = source.IndexOf(new string('"', quotes), quote + quotes, StringComparison.Ordinal);
+                        i = Literal(source, i, quote + quotes, end < 0 ? source.Length : end, quotes, code, literals);
+                    }
+                    else
+                    {
+                        i = Literal(source, i, quote + 1, LiteralEnd(source, quote + 1, verbatim, closer: '"'), 1, code, literals);
+                    }
+                }
+                else
+                {
+                    code.Append(source[i]);
+                    i++;
+                }
+            }
+
+            return code.ToString();
+        }
+
+        private static bool StringStart(string source, int at, out int quote)
+        {
+            quote = at;
+            while (quote < source.Length && (source[quote] == '$' || source[quote] == '@'))
+            {
+                quote++;
+            }
+
+            return quote < source.Length && source[quote] == '"';
+        }
+
+        private static int LiteralEnd(string source, int from, bool verbatim, char closer)
+        {
+            var at = from;
+
+            while (at < source.Length)
+            {
+                if (source[at] == closer)
+                {
+                    if (verbatim && at + 1 < source.Length && source[at + 1] == closer)
+                    {
+                        at += 2;
+                        continue;
+                    }
+
+                    break;
+                }
+
+                if (!verbatim && source[at] == '\n')
+                {
+                    break;
+                }
+
+                at += !verbatim && source[at] == '\\' ? 2 : 1;
+            }
+
+            return Math.Min(at, source.Length);
+        }
+
+        private static int Literal(string source, int start, int contentStart, int contentEnd, int closing, StringBuilder code, List<string> literals)
+        {
+            code.Append(source, start, contentStart - start);
+            Blank(source, contentStart, contentEnd, code);
+            literals?.Add(source.Substring(contentStart, contentEnd - contentStart));
+
+            var end = Math.Min(contentEnd + closing, source.Length);
+            code.Append(source, contentEnd, end - contentEnd);
+            return end;
+        }
+
+        private static int Blank(string source, int from, int to, StringBuilder code)
+        {
+            for (var at = from; at < to; at++)
+            {
+                code.Append(source[at] == '\n' || source[at] == '\r' ? source[at] : ' ');
+            }
+
+            return to;
+        }
+
+        private static int Closing(string code, int open)
+        {
+            var depth = 0;
+
+            for (var at = open; at < code.Length; at++)
+            {
+                if (code[at] == '(' || code[at] == '{' || code[at] == '[')
+                {
+                    depth++;
+                }
+                else if ((code[at] == ')' || code[at] == '}' || code[at] == ']') && --depth == 0)
+                {
+                    return at + 1;
+                }
+            }
+
+            Assert.Fail("sin cierre balanceado desde la posicion " + open + ".");
+            return code.Length;
+        }
+
+        private static int StatementEnd(string code, int from)
+        {
+            var depth = 0;
+
+            for (var at = from; at < code.Length; at++)
+            {
+                if (code[at] == '(' || code[at] == '{' || code[at] == '[')
+                {
+                    depth++;
+                }
+                else if (code[at] == ')' || code[at] == '}' || code[at] == ']')
+                {
+                    depth--;
+                }
+                else if (code[at] == ';' && depth == 0)
+                {
+                    return at + 1;
+                }
+            }
+
+            Assert.Fail("sin ';' de cierre desde la posicion " + from + ".");
+            return code.Length;
+        }
+
+        private static IReadOnlyList<string> Split(string text, bool genericBrackets)
+        {
+            var parts = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return parts;
+            }
+
+            var depth = 0;
+            var start = 0;
+
+            for (var at = 0; at < text.Length; at++)
+            {
+                var c = text[at];
+
+                if (c == '(' || c == '{' || c == '[' || (genericBrackets && c == '<'))
+                {
+                    depth++;
+                }
+                else if (c == ')' || c == '}' || c == ']' || (genericBrackets && c == '>'))
+                {
+                    depth--;
+                }
+                else if (c == ',' && depth == 0)
+                {
+                    parts.Add(text.Substring(start, at - start).Trim());
+                    start = at + 1;
+                }
+            }
+
+            parts.Add(text.Substring(start).Trim());
+            return parts;
         }
     }
 }
