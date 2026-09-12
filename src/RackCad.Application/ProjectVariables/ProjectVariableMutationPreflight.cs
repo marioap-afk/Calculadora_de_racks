@@ -48,6 +48,32 @@ namespace RackCad.Application.ProjectVariables
         }
 
         /// <summary>
+        /// Accredits the register handed in, so every operation below works over a proven identity authority.
+        ///
+        /// <para>
+        /// A null document is the legacy "this drawing has no register" case and maps to an ABSENT read; a
+        /// document with a duplicated <see cref="VariableId"/> fails HERE, before any operation could pick one.
+        /// </para>
+        /// </summary>
+        private static bool TryAccredit(
+            ProjectVariablesDocument registry,
+            out UsableProjectVariablesRegistry usable,
+            out VariableMutationPreflightResult failure)
+        {
+            var accreditation = UsableProjectVariablesRegistry.Accredit(
+                registry == null
+                    ? ProjectVariablesReadResult.Absent()
+                    : ProjectVariablesReadResult.Readable(registry));
+
+            usable = accreditation.Registry;
+            failure = accreditation.IsUsable
+                ? null
+                : VariableMutationPreflightResult.Failed(accreditation.Error);
+
+            return accreditation.IsUsable;
+        }
+
+        /// <summary>
         /// Renames a variable: the <see cref="VariableId"/> is untouched, so no consumer changes, nothing is
         /// swept and nothing is redrawn. That is the entire reason the identity is independent of the name.
         /// </summary>
@@ -56,14 +82,20 @@ namespace RackCad.Application.ProjectVariables
             VariableId variableId,
             string newName)
         {
-            if (!TryFind(registry, variableId, out var variable))
+            if (!TryAccredit(registry, out var usable, out var failure))
+            {
+                return failure;
+            }
+
+            if (!usable.TryGetTarget(variableId, out var target))
             {
                 return Missing(variableId);
             }
 
             try
             {
-                variable.WithName(newName);
+                ProjectVariable.Create(
+                    variableId, newName, target.VariableType, VariableDefinition.Literal(target.LiteralValue));
             }
             catch (ArgumentException ex)
             {
@@ -79,6 +111,12 @@ namespace RackCad.Application.ProjectVariables
         /// <summary>
         /// Changes what a variable is worth and plans the redraw of every consumer. The authored literal of a
         /// consumer is NOT touched: propagation redraws, it does not rewrite the intention the user typed.
+        ///
+        /// <para>
+        /// With one variable governing N properties of the same rack this still emits ONE
+        /// <see cref="RackMutation"/> per rack: the effective design is resolved once, against the register as
+        /// it will be, so every property that variable governs moves together.
+        /// </para>
         /// </summary>
         public static VariableMutationPreflightResult ChangeValue(
             ProjectVariablesDocument registry,
@@ -86,7 +124,12 @@ namespace RackCad.Application.ProjectVariables
             VariableDefinition definition,
             IReadOnlyList<ProjectVariableScanEntry> entries)
         {
-            if (!TryFind(registry, variableId, out _))
+            if (!TryAccredit(registry, out var usable, out var failure))
+            {
+                return failure;
+            }
+
+            if (!usable.TryGetTarget(variableId, out _))
             {
                 return Missing(variableId);
             }
@@ -99,13 +142,18 @@ namespace RackCad.Application.ProjectVariables
             }
 
             var mutation = RegistryMutation.ChangeValue(variableId, definition);
-            var after = mutation.ApplyTo(registry);
+
+            if (!TryAccredit(mutation.ApplyTo(registry), out var after, out var afterFailure))
+            {
+                return afterFailure;
+            }
+
             var racks = new List<RackMutation>();
 
             foreach (var consumer in discovery.Consumers)
             {
                 var authored = ProjectVariableCloning.Clone(consumer.Authored);
-                var effective = new SelectiveEffectiveDesignResolver().Resolve(authored, after);
+                var effective = Resolver.ResolveAgainst(authored, after);
 
                 if (!effective.IsSuccess)
                 {
@@ -119,7 +167,7 @@ namespace RackCad.Application.ProjectVariables
         }
 
         /// <summary>
-        /// Deletes a variable, and REFUSES while anything still uses it — listing what does. Nothing broken is
+        /// Deletes a variable, and REFUSES while anything still uses it - listing what does. Nothing broken is
         /// ever created: the user unlinks first, or uses the explicit unlink-all-and-delete.
         /// </summary>
         public static VariableMutationPreflightResult Delete(
@@ -127,7 +175,12 @@ namespace RackCad.Application.ProjectVariables
             VariableId variableId,
             IReadOnlyList<ProjectVariableScanEntry> entries)
         {
-            if (!TryFind(registry, variableId, out _))
+            if (!TryAccredit(registry, out var usable, out var failure))
+            {
+                return failure;
+            }
+
+            if (!usable.TryGetTarget(variableId, out _))
             {
                 return Missing(variableId);
             }
@@ -142,9 +195,9 @@ namespace RackCad.Application.ProjectVariables
             if (discovery.Consumers.Count > 0)
             {
                 return VariableMutationPreflightResult.Blocked(
-                    "No se puede borrar la variable " + variableId + ": todavía la usan " +
-                    discovery.Consumers.Count + " rack(s). Desvincúlalos primero, o usa la acción explícita " +
-                    "que desvincula todos materializando el valor y después borra.",
+                    "No se puede borrar la variable " + variableId + ": todavia la usan " +
+                    discovery.Consumers.Count + " rack(s). Desvinculalos primero, o usa la accion explicita " +
+                    "que desvincula todos materializando el valor y despues borra.",
                     Summarize(discovery.Consumers, variableId));
             }
 
@@ -154,14 +207,27 @@ namespace RackCad.Application.ProjectVariables
 
         /// <summary>
         /// The comfortable path, as ONE logical unit: every consumer is unlinked MATERIALIZING its current
-        /// effective value — so no rack changes shape — and only then is the variable removed. All or nothing.
+        /// effective value - so no rack changes shape - and only then is the variable removed. All or nothing.
+        ///
+        /// <para>
+        /// <b>N properties of the same rack may point at the same variable</b>, and this is where that used to
+        /// break: materialising only one of them left the other pointing at a variable about to disappear, so
+        /// the operation FABRICATED a broken binding - the exact damage <see cref="Delete"/> refuses to cause -
+        /// and reported success. Now the whole set is derived from the single authored authority, materialised
+        /// on ONE clone, and emitted as ONE <see cref="RackMutation"/>.
+        /// </para>
         /// </summary>
         public static VariableMutationPreflightResult UnlinkAllAndDelete(
             ProjectVariablesDocument registry,
             VariableId variableId,
             IReadOnlyList<ProjectVariableScanEntry> entries)
         {
-            if (!TryFind(registry, variableId, out _))
+            if (!TryAccredit(registry, out var usable, out var failure))
+            {
+                return failure;
+            }
+
+            if (!usable.TryGetTarget(variableId, out _))
             {
                 return Missing(variableId);
             }
@@ -174,19 +240,58 @@ namespace RackCad.Application.ProjectVariables
             }
 
             var mutation = RegistryMutation.Remove(variableId);
-            var after = mutation.ApplyTo(registry);
+
+            if (!TryAccredit(mutation.ApplyTo(registry), out var after, out var afterFailure))
+            {
+                return afterFailure;
+            }
+
+            var descriptors = SelectiveLinkedProperties.All;
             var racks = new List<RackMutation>();
 
             foreach (var consumer in discovery.Consumers)
             {
-                var materialized = Materialize(consumer.Authored, registry, after, out var failure);
+                // Effective values are read BEFORE the variable goes away, against the register as it is.
+                var current = Resolver.ResolveAgainst(consumer.Authored, usable);
 
-                if (failure != null)
+                if (!current.IsSuccess)
                 {
-                    return failure;
+                    return VariableMutationPreflightResult.Failed(current.Error);
                 }
 
-                racks.Add(new RackMutation(consumer.RackId, materialized.Authored, materialized.Effective, consumer.Siblings));
+                // P, derived from the ONE authored authority this consumer was already proven to have.
+                var properties = SelectiveLinkedPropertyKernel.PropertiesBoundTo(consumer.Authored, variableId);
+
+                if (properties.Count == 0)
+                {
+                    return VariableMutationPreflightResult.Failed(
+                        "El rack " + consumer.RackId + " se detecto como consumidor de " + variableId +
+                        " pero no declara ninguna propiedad vinculada a ella.");
+                }
+
+                var authored = ProjectVariableCloning.Clone(consumer.Authored);
+
+                foreach (var propertyId in properties)
+                {
+                    if (!descriptors.TryGetDescriptor(propertyId, out var descriptor))
+                    {
+                        return VariableMutationPreflightResult.Failed(
+                            "La propiedad '" + propertyId + "' del rack " + consumer.RackId +
+                            " no es una que esta version conozca.");
+                    }
+
+                    descriptor.WriteAuthored(authored, descriptor.ReadEffective(current.Design));
+                    authored.PropertyValues?.Remove(propertyId.Value);
+                }
+
+                var effective = Resolver.ResolveAgainst(authored, after);
+
+                if (!effective.IsSuccess)
+                {
+                    return VariableMutationPreflightResult.Failed(effective.Error);
+                }
+
+                racks.Add(new RackMutation(consumer.RackId, authored, effective.Design, consumer.Siblings));
             }
 
             return VariableMutationPreflightResult.Success(MutationPlan.Of(mutation, racks));
@@ -196,8 +301,17 @@ namespace RackCad.Application.ProjectVariables
 
         /// <summary>
         /// Binds a property to a variable. The authored literal is FROZEN, not replaced; the schema is
-        /// promoted; the effective value is the variable's from this moment on. There is no intermediate state
-        /// where the binding exists and the drawing still shows the old number.
+        /// promoted; the effective value is the variable's from this moment on.
+        ///
+        /// <para>
+        /// Compatibility is checked HERE, in Application, and not left to whatever the UI happened to offer: a
+        /// filter is a convenience, never a boundary. A target of the wrong type is refused.
+        /// </para>
+        /// <para>
+        /// If ANOTHER property of the same rack is broken the operation fails with an empty plan. That is
+        /// deliberate: the executor redraws from a COMPLETE effective design, and while something else is
+        /// unresolvable there is none.
+        /// </para>
         /// </summary>
         public static VariableMutationPreflightResult Link(
             ProjectVariablesDocument registry,
@@ -206,14 +320,32 @@ namespace RackCad.Application.ProjectVariables
             VariableId variableId,
             IReadOnlyList<ProjectVariableScanEntry> entries)
         {
-            if (!TryFind(registry, variableId, out _))
+            if (!TryAccredit(registry, out var usable, out var failure))
+            {
+                return failure;
+            }
+
+            if (!SelectiveLinkedProperties.All.TryGetDescriptor(propertyId, out var descriptor))
+            {
+                return VariableMutationPreflightResult.Failed(
+                    "La propiedad '" + propertyId + "' no es una que esta version conozca.");
+            }
+
+            if (!usable.TryGetTarget(variableId, out var target))
             {
                 return Missing(variableId);
             }
 
-            if (!TryRack(entries, rackId, out var consumer, out var failure))
+            if (target.VariableType != descriptor.VariableType)
             {
-                return failure;
+                return VariableMutationPreflightResult.Failed(
+                    "La propiedad '" + propertyId + "' exige una variable de tipo " + descriptor.VariableType +
+                    ", pero '" + variableId + "' es de tipo " + target.VariableType + ".");
+            }
+
+            if (!TryRack(entries, rackId, out var consumer, out var rackFailure))
+            {
+                return rackFailure;
             }
 
             var authored = ProjectVariableCloning.Clone(consumer.Authored);
@@ -223,7 +355,7 @@ namespace RackCad.Application.ProjectVariables
                 SelectivePropertyValueDocument.ToProjectVariable(variableId.Value);
             authored.SchemaVersion = SelectiveDesignSchema.ResolveWriteVersion(authored.SchemaVersion, true);
 
-            var effective = new SelectiveEffectiveDesignResolver().Resolve(authored, registry);
+            var effective = Resolver.ResolveAgainst(authored, usable);
 
             return effective.IsSuccess
                 ? VariableMutationPreflightResult.Success(
@@ -234,13 +366,19 @@ namespace RackCad.Application.ProjectVariables
         }
 
         /// <summary>
-        /// Unbinds a HEALTHY binding by writing the CURRENT EFFECTIVE value into the literal — which is what
-        /// makes the geometric effect nil. Writing the old literal back instead would make the rack jump, and
-        /// that is the easy bug this step exists to avoid.
+        /// Unbinds a HEALTHY binding by writing the CURRENT EFFECTIVE value into THAT property's literal, which
+        /// is what makes the geometric effect nil. Writing the old literal back instead would make the rack
+        /// jump, and that is the easy bug this step exists to avoid.
         ///
-        /// <para>A broken reference does not come through here: there is no effective value to materialize,
-        /// and pretending the frozen literal is one would be the silent fallback the contract forbids. That
-        /// case is <see cref="RepairBroken"/>.</para>
+        /// <para>
+        /// The value lands on the DESCRIBED property's field, not on a fixed one: before this gate the
+        /// materialisation wrote a single hardcoded field regardless of which property was being unlinked.
+        /// </para>
+        /// <para>
+        /// A broken reference does not come through here: there is no effective value to materialize, and
+        /// pretending the frozen literal is one would be the silent fallback the contract forbids. That case is
+        /// the rack-scoped repair.
+        /// </para>
         /// </summary>
         public static VariableMutationPreflightResult Unlink(
             ProjectVariablesDocument registry,
@@ -248,9 +386,20 @@ namespace RackCad.Application.ProjectVariables
             PropertyId propertyId,
             IReadOnlyList<ProjectVariableScanEntry> entries)
         {
-            if (!TryRack(entries, rackId, out var consumer, out var failure))
+            if (!TryAccredit(registry, out var usable, out var failure))
             {
                 return failure;
+            }
+
+            if (!SelectiveLinkedProperties.All.TryGetDescriptor(propertyId, out var descriptor))
+            {
+                return VariableMutationPreflightResult.Failed(
+                    "La propiedad '" + propertyId + "' no es una que esta version conozca.");
+            }
+
+            if (!TryRack(entries, rackId, out var consumer, out var rackFailure))
+            {
+                return rackFailure;
             }
 
             if (!consumer.Authored.HasBindingEntry(propertyId))
@@ -258,22 +407,23 @@ namespace RackCad.Application.ProjectVariables
                 return NotBound(rackId, propertyId);
             }
 
-            var current = new SelectiveEffectiveDesignResolver().Resolve(consumer.Authored, registry);
+            var current = Resolver.ResolveAgainst(consumer.Authored, usable);
 
             if (!current.IsSuccess)
             {
                 return VariableMutationPreflightResult.Failed(
-                    current.Error + " Desvincular exige un valor efectivo que materializar; para un vínculo " +
-                    "roto usa la reparación explícita.");
+                    current.Error + " Desvincular exige un valor efectivo que materializar; para un vinculo " +
+                    "roto usa la reparacion explicita.");
             }
 
             var authored = ProjectVariableCloning.Clone(consumer.Authored);
 
-            // The ACTIVE step. Leaving the old literal here is the same as never having bound the rack.
-            authored.VerticalClearance = current.Design.VerticalClearance;
+            // The ACTIVE step, now per property. Leaving the old literal here is the same as never having
+            // bound the rack; writing another property's field would move the wrong geometry.
+            descriptor.WriteAuthored(authored, descriptor.ReadEffective(current.Design));
             authored.PropertyValues.Remove(propertyId.Value);
 
-            var effective = new SelectiveEffectiveDesignResolver().Resolve(authored, registry);
+            var effective = Resolver.ResolveAgainst(authored, usable);
 
             return effective.IsSuccess
                 ? VariableMutationPreflightResult.Success(
@@ -284,59 +434,92 @@ namespace RackCad.Application.ProjectVariables
         }
 
         /// <summary>
-        /// Repairs a BROKEN reference, and only a broken one.
+        /// Repairs the BROKEN references of a RACK, all of them, as one unit (I-48 G4B, Proposal V8 V3-R01).
         ///
         /// <para>
-        /// The sequence is exactly the accepted one, and the order is the whole point: a broken reference has
-        /// NO effective value; there is no automatic fallback to the authored literal; the action is explicit
-        /// and warned; it uses the STORED authored literal; it REMOVES the broken binding; it keeps the
-        /// promoted schema; and only AFTER the binding is gone does that literal govern again. There is never
-        /// a state where the binding is still there and the literal governs.
+        /// <b>Repair is rack-scoped, and it has to be.</b> A <see cref="RackMutation"/> carries a COMPLETE
+        /// effective design and the executor redraws every view from it, so while any other reference of the
+        /// same rack is unresolvable there is nothing to hand it. That is why a per-property repair used to
+        /// DEADLOCK a rack with two broken bindings: it removed one and then failed the whole-document check,
+        /// leaving the rack neither editable nor repairable.
         /// </para>
         /// <para>
-        /// It is repair and not the fallback D-08 forbids because of who starts it and what they were told:
-        /// the user, having been warned there is no effective value and that the geometry may change. The
-        /// literal is available precisely because binding froze it and no variable change ever touched it.
+        /// Every guarantee of the accepted contract survives: a broken reference has NO effective value; there
+        /// is no automatic fallback; the action is explicit and warned over the COMPLETE set; it uses the
+        /// STORED literals and does not touch them; it removes the broken bindings; it keeps the promoted
+        /// schema; and only AFTER they are gone do those literals govern again.
+        /// </para>
+        /// <para>
+        /// ANY fatal state - unknown property, malformed reference, incompatible target - blocks the WHOLE
+        /// rack. Those are not repairable, and offering a partial remedy would promise what the executor
+        /// rejects.
         /// </para>
         /// </summary>
-        public static VariableMutationPreflightResult RepairBroken(
+        public static VariableMutationPreflightResult RepairBrokenRack(
             ProjectVariablesDocument registry,
             string rackId,
-            PropertyId propertyId,
             IReadOnlyList<ProjectVariableScanEntry> entries,
             bool confirmed)
         {
-            if (!TryRack(entries, rackId, out var consumer, out var failure))
+            if (!TryAccredit(registry, out var usable, out var failure))
             {
                 return failure;
             }
 
-            if (!consumer.Authored.HasBindingEntry(propertyId))
+            if (!TryRack(entries, rackId, out var consumer, out var rackFailure))
             {
-                return NotBound(rackId, propertyId);
+                return rackFailure;
             }
 
-            if (new SelectiveEffectiveDesignResolver().Resolve(consumer.Authored, registry).IsSuccess)
+            var descriptors = SelectiveLinkedProperties.All;
+            var assessment = SelectiveLinkedPropertyKernel.Assess(consumer.Authored, descriptors, usable);
+
+            if (assessment.IsBlocked)
             {
                 return VariableMutationPreflightResult.Failed(
-                    "El vínculo de '" + propertyId + "' en el rack " + rackId + " resuelve correctamente: no " +
-                    "hay nada que reparar. Para quitarlo sin cambiar la geometría, desvincula.");
+                    "El rack " + rackId + " no se puede reparar: " + assessment.BlockingReason +
+                    " Mientras exista ese estado no hay diseno efectivo completo que dibujar.");
+            }
+
+            if (assessment.Missing.Count == 0)
+            {
+                return VariableMutationPreflightResult.Failed(
+                    "El rack " + rackId + " no tiene vinculos rotos que reparar. Para quitar un vinculo sano " +
+                    "sin cambiar la geometria, desvincula.");
             }
 
             if (!confirmed)
             {
+                var detalle = new List<string>();
+
+                foreach (var missing in assessment.Missing)
+                {
+                    var literal = descriptors.TryGetDescriptor(missing.PropertyId, out var descriptor)
+                        ? descriptor.ReadAuthored(consumer.Authored).ToString(
+                            System.Globalization.CultureInfo.InvariantCulture)
+                        : "?";
+
+                    detalle.Add(
+                        "'" + missing.PropertyId + "' -> '" + missing.RawVariableId +
+                        "' (literal almacenado " + literal + ")");
+                }
+
                 return VariableMutationPreflightResult.Failed(
-                    "La variable a la que apunta '" + propertyId + "' en el rack " + rackId + " no existe, así " +
-                    "que NO hay valor efectivo que materializar. Reparar usará el literal almacenado y la " +
-                    "geometría puede cambiar. Requiere confirmación explícita.");
+                    "El rack " + rackId + " tiene " + assessment.Missing.Count + " vinculo(s) roto(s): " +
+                    string.Join("; ", detalle) + ". NO hay valor efectivo que materializar; reparar usara esos " +
+                    "literales almacenados y la geometria puede cambiar. Requiere confirmacion explicita del " +
+                    "conjunto completo.");
             }
 
             var authored = ProjectVariableCloning.Clone(consumer.Authored);
 
-            // El literal almacenado NO se toca; lo que se retira es el binding. Solo entonces gobierna.
-            authored.PropertyValues.Remove(propertyId.Value);
+            foreach (var missing in assessment.Missing)
+            {
+                // El literal almacenado NO se toca; lo que se retira es el binding. Solo entonces gobierna.
+                authored.PropertyValues.Remove(missing.PropertyId.Value);
+            }
 
-            var effective = new SelectiveEffectiveDesignResolver().Resolve(authored, registry);
+            var effective = Resolver.ResolveAgainst(authored, usable);
 
             return effective.IsSuccess
                 ? VariableMutationPreflightResult.Success(
@@ -348,37 +531,7 @@ namespace RackCad.Application.ProjectVariables
 
         // ------------------------------------------------------------------ helpers
 
-        /// <summary>Unlinks one consumer by materializing its current effective value. Shared by unlink-all-and-delete.</summary>
-        private static (SelectivePalletDesignDocument Authored, Domain.Systems.Selective.SelectivePalletDesign Effective) Materialize(
-            SelectivePalletDesignDocument source,
-            ProjectVariablesDocument before,
-            ProjectVariablesDocument after,
-            out VariableMutationPreflightResult failure)
-        {
-            failure = null;
-
-            var current = new SelectiveEffectiveDesignResolver().Resolve(source, before);
-
-            if (!current.IsSuccess)
-            {
-                failure = VariableMutationPreflightResult.Failed(current.Error);
-                return default;
-            }
-
-            var authored = ProjectVariableCloning.Clone(source);
-            authored.VerticalClearance = current.Design.VerticalClearance;
-            authored.PropertyValues?.Remove(ProjectPropertyIds.SelectiveVerticalClearance.Value);
-
-            var effective = new SelectiveEffectiveDesignResolver().Resolve(authored, after);
-
-            if (!effective.IsSuccess)
-            {
-                failure = VariableMutationPreflightResult.Failed(effective.Error);
-                return default;
-            }
-
-            return (authored, effective.Design);
-        }
+        private static readonly SelectiveEffectiveDesignResolver Resolver = new SelectiveEffectiveDesignResolver();
 
         private static bool TryRack(
             IReadOnlyList<ProjectVariableScanEntry> entries,
@@ -399,27 +552,6 @@ namespace RackCad.Application.ProjectVariables
 
             consumer = resolved.Consumers[0];
             return true;
-        }
-
-        private static bool TryFind(ProjectVariablesDocument registry, VariableId variableId, out ProjectVariable variable)
-        {
-            variable = null;
-
-            if (registry == null)
-            {
-                return false;
-            }
-
-            foreach (var candidate in registry.ToProjectVariables())
-            {
-                if (candidate.Id.Equals(variableId))
-                {
-                    variable = candidate;
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         /// <summary>

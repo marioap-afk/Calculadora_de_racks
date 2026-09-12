@@ -212,7 +212,7 @@ namespace RackCad.Tests
             var commands = File.ReadAllText(Path.Combine(
                 RepoRoot().FullName, "src", "RackCad.Plugin", "RackSelectivoCommands.cs"));
 
-            Assert.Contains("LoadExisting(saved, open.Design, open.VerticalClearance)", commands);
+            Assert.Contains("LoadExisting(saved, open.Design, open.LinkedPropertyStates)", commands);
         }
 
         // ================================================================ la resolución sigue teniendo un dueño

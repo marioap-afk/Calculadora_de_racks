@@ -73,8 +73,18 @@ namespace RackCad.Application.ProjectVariables
         public static RegistryMutation Remove(VariableId id)
             => new RegistryMutation(RegistryMutationKind.Remove, id, null, VariableType.Length, null);
 
-        /// <summary>Applies this change to a COPY of <paramref name="registry"/>, leaving the original untouched.</summary>
-        public ProjectVariablesDocument ApplyTo(ProjectVariablesDocument registry)
+        /// <summary>
+        /// Applies this change to a COPY of <paramref name="registry"/>, leaving the original untouched.
+        ///
+        /// <para>
+        /// INTERNAL since I-48 G4B, and that is the point. A raw read is not an authority: applying a change to
+        /// one skips the identity precondition, and with a duplicated <see cref="VariableId"/> a Remove deletes
+        /// BOTH entries. Making it internal means the executor cannot reach it at all — the guarantee is a
+        /// compile error rather than a review habit. Commits go through
+        /// <see cref="RegistryCommit.Prepare"/>, which accredits first.
+        /// </para>
+        /// </summary>
+        internal ProjectVariablesDocument ApplyTo(ProjectVariablesDocument registry)
         {
             var next = ProjectVariableCloning.Clone(registry) ?? ProjectVariablesDocument.CreateNew();
 

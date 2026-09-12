@@ -212,7 +212,8 @@ namespace RackCad.Tests
         {
             var source = Commands();
 
-            Assert.Contains("SerializeSelectiveDesign(design, id, name, saved)", source);
+            // I-48 G4C: el authored guardado sigue viajando por el camino de edicion, ahora al reconciler.
+            Assert.Contains("saved, design, window.LinkedPropertyFinalStates", source);
         }
 
         [Fact]

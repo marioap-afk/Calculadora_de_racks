@@ -359,6 +359,9 @@ namespace RackCad.Tests
         private static string Window()
             => Src("RackCad.UI", "Systems", "Selective", "RackSelectiveWindow.xaml.cs");
 
+        /// <summary>El control reusable donde vive la seleccion explicita desde I-48 G4C.</summary>
+        private static string Editor() => Src("RackCad.UI", "Controls", "LinkedPropertyEditor.cs");
+
         [Fact]
         public void GUARDA_EL_CAMINO_DE_VINCULO_PASA_POR_G6_Y_G11()
         {
@@ -389,15 +392,20 @@ namespace RackCad.Tests
         [Fact]
         public void GUARDA_LA_VENTANA_VINCULA_POR_IDENTIDAD_Y_NO_POR_NOMBRE()
         {
-            var window = Window();
+            // I-48 G4C: vincular ya no es un boton de la ventana, es una seleccion explicita en el editor
+            // reusable. La invariante no cambia -se vincula por IDENTIDAD- pero el sitio donde vive si.
+            var editor = Editor();
 
-            var at = window.IndexOf("SelectiveBindingIntent.Link(", StringComparison.Ordinal);
-            Assert.True(at >= 0, "la ventana tiene que emitir el intent de vinculo");
+            var at = editor.IndexOf("session.TrySelect(option.VariableId", StringComparison.Ordinal);
+            Assert.True(at >= 0, "el editor tiene que seleccionar por VariableId");
 
-            var call = window.Substring(at, Math.Min(220, window.Length - at));
+            var call = editor.Substring(at, Math.Min(220, editor.Length - at));
 
-            Assert.Contains("option.Id", call);
             Assert.DoesNotContain("option.Name", call);
+
+            // Y no hay ninguna via que resuelva un nombre a una identidad.
+            Assert.DoesNotContain("Name ==", editor);
+            Assert.DoesNotContain("FirstOrDefault(o => o.Name", editor);
         }
 
         /// <summary>G17 no introduce reparación desde el editor: eso vive en la ventana central.</summary>

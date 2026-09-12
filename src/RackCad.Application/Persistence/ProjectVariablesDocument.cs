@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -63,7 +64,28 @@ namespace RackCad.Application.Persistence
         /// <summary>
         /// Projects the persisted entries onto the pure model. Only ever called on a document the store
         /// already accepted, so every entry is known to be valid here.
+        ///
+        /// <para>
+        /// The type comes from what was PERSISTED, through the one shared mapping (I-48 G4D, Proposal V8
+        /// R-04 / V7-R04). Until this gate it wrote <c>VariableType.Length</c> literally, which happened to
+        /// agree with every readable document only because this build supports exactly one type — so the
+        /// projection was not reading the register, it was asserting an assumption about it. The day a second
+        /// type exists, a hardcode like that does not fail: it silently relabels every variable of the new type
+        /// as a length, and the drawing takes a number whose meaning nobody declared.
+        /// </para>
+        /// <para>
+        /// Sharing the mapping does NOT make this a second authority of readability: that verdict stays with
+        /// <see cref="ProjectVariablesStore"/>. What it means is that all three surfaces — the store, the
+        /// registry accreditation and this projection — answer "what is this token" from the same table, so
+        /// they cannot drift apart.
+        /// </para>
         /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// An entry declares a type this build does not support. That is an INVARIANT VIOLATION rather than a
+        /// state to reinterpret: the store refuses such a document whole, so reaching here means the caller
+        /// projected something it never accredited. Defaulting to a type, skipping the entry or reinterpreting
+        /// the token would each turn an impossible state into a silent success.
+        /// </exception>
         public IReadOnlyList<ProjectVariable> ToProjectVariables()
         {
             var variables = new List<ProjectVariable>();
@@ -75,10 +97,18 @@ namespace RackCad.Application.Persistence
 
             foreach (var entry in Variables)
             {
+                if (!VariableTypes.TryParseToken(entry.Type, out var type))
+                {
+                    throw new InvalidOperationException(
+                        "El registro de variables de proyecto se dio por legible pero la variable '" +
+                        (entry.VariableId ?? "<null>") + "' declara un tipo que esta version no soporta ('" +
+                        (entry.Type ?? "<null>") + "').");
+                }
+
                 variables.Add(ProjectVariable.Create(
                     VariableId.Parse(entry.VariableId),
                     entry.Name,
-                    VariableType.Length,
+                    type,
                     VariableDefinition.Literal(entry.Definition.Value.Value)));
             }
 

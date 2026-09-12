@@ -109,9 +109,10 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
+            <TextBlock x:Name="RepairAuthorityText" Foreground="#8A5A11" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,6" />
             <TextBlock x:Name="RepairWarningText" Foreground="#8A5A11" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,6" />
             <CheckBox x:Name="RepairConfirmCheck" Margin="0,0,0,6" Checked="Confirm_Changed" Unchecked="Confirm_Changed" TextBlock.FontSize="12"
-                      Content="Entiendo que no hay valor efectivo y que la geometría puede cambiar." />
+                      Content="Entiendo que se retirarán TODOS los vínculos rotos reparables de este rack y que la geometría puede cambiar." />
             <Button x:Name="RepairButton" Content="Reparar (quitar el vínculo)" HorizontalAlignment="Left"
                     Padding="12,4" Click="Repair_Click" />
         </StackPanel>

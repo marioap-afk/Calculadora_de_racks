@@ -71,6 +71,26 @@ namespace RackCad.Tests
             return doc;
         }
 
+        /// <summary>
+        /// Un documento con DOS propiedades vinculadas. El segundo token es arbitrario a proposito: con una
+        /// sola propiedad registrada, es la unica forma de llevar el conjunto P a cardinalidad 2 en produccion.
+        /// </summary>
+        private static SelectivePalletDesignDocument DocDos(
+            string segundoToken, string primera, string segunda, double clearance = 6.0, string rackId = RackA)
+        {
+            var doc = SelectivePalletDesignDocument.From(
+                Diseno(clearance), rackId, "Rack " + rackId.Substring(0, 4));
+
+            doc.PropertyValues = new Dictionary<string, SelectivePropertyValueDocument>
+            {
+                [Token] = SelectivePropertyValueDocument.ToProjectVariable(primera),
+                [segundoToken] = SelectivePropertyValueDocument.ToProjectVariable(segunda),
+            };
+
+            doc.SchemaVersion = SelectivePalletDesignDocument.PromotedSchemaVersion;
+            return doc;
+        }
+
         private static ProjectVariableScanEntry Vista(SelectivePalletDesignDocument doc, string def, string rackId = RackA)
             => ProjectVariableScanEntry.Selective(def, rackId, doc);
 
@@ -260,8 +280,8 @@ namespace RackCad.Tests
         [Fact]
         public void Prueba5_RepairBroken_NO_ES_ALCANZABLE_SIN_ACCION_EXPLICITA()
         {
-            var r = ProjectVariableMutationPreflight.RepairBroken(
-                Registro(), RackA, Piloto, new[] { Vista(Doc(6.0, variableId: VarId), "D1") }, confirmed: false);
+            var r = ProjectVariableMutationPreflight.RepairBrokenRack(
+                Registro(), RackA, new[] { Vista(Doc(6.0, variableId: VarId), "D1") }, confirmed: false);
 
             AssertPlanVacio(r);
             Assert.Contains("geometr", r.Error);
@@ -270,8 +290,8 @@ namespace RackCad.Tests
         [Fact]
         public void Prueba5_RepairBroken_USA_EL_LITERAL_ALMACENADO_QUITA_EL_BINDING_Y_CONSERVA_EL_SCHEMA()
         {
-            var r = ProjectVariableMutationPreflight.RepairBroken(
-                Registro(), RackA, Piloto, new[] { Vista(Doc(6.0, variableId: VarId), "D1") }, confirmed: true);
+            var r = ProjectVariableMutationPreflight.RepairBrokenRack(
+                Registro(), RackA, new[] { Vista(Doc(6.0, variableId: VarId), "D1") }, confirmed: true);
 
             Assert.True(r.IsSuccess);
             var m = Assert.Single(r.Plan.RackMutations);
@@ -288,8 +308,8 @@ namespace RackCad.Tests
         [Fact]
         public void Prueba5_SOLO_TRAS_QUITAR_EL_BINDING_EL_LITERAL_GOBIERNA()
         {
-            var m = Assert.Single(ProjectVariableMutationPreflight.RepairBroken(
-                Registro(), RackA, Piloto, new[] { Vista(Doc(6.0, variableId: VarId), "D1") }, confirmed: true)
+            var m = Assert.Single(ProjectVariableMutationPreflight.RepairBrokenRack(
+                Registro(), RackA, new[] { Vista(Doc(6.0, variableId: VarId), "D1") }, confirmed: true)
                 .Plan.RackMutations);
 
             Assert.False(m.AuthoredOutput.HasBindingEntry(Piloto));
@@ -299,16 +319,16 @@ namespace RackCad.Tests
         [Fact]
         public void RepairBroken_SOBRE_UN_BINDING_SANO_FALLA_NoEsUnaViaDeDesvinculado()
         {
-            var r = ProjectVariableMutationPreflight.RepairBroken(
-                Registro((VarId, 11.0)), RackA, Piloto, new[] { Vista(Doc(6.0, variableId: VarId), "D1") }, confirmed: true);
+            var r = ProjectVariableMutationPreflight.RepairBrokenRack(
+                Registro((VarId, 11.0)), RackA, new[] { Vista(Doc(6.0, variableId: VarId), "D1") }, confirmed: true);
 
             AssertPlanVacio(r);
         }
 
         [Fact]
         public void RepairBroken_SinBinding_FALLA()
-            => AssertPlanVacio(ProjectVariableMutationPreflight.RepairBroken(
-                Registro(), RackA, Piloto, new[] { Vista(Doc(), "D1") }, confirmed: true));
+            => AssertPlanVacio(ProjectVariableMutationPreflight.RepairBrokenRack(
+                Registro(), RackA, new[] { Vista(Doc(), "D1") }, confirmed: true));
 
         // ================================================================ prueba 32 — Delete
 
@@ -574,6 +594,150 @@ namespace RackCad.Tests
             var registro = Registro((VarId, 6.0));
 
             Assert.Single(RegistryMutation.None.ApplyTo(registro).Variables);
+        }
+
+        // ================================================================ I-48 G4B: cardinalidad N -> 1
+
+        /// <summary>
+        /// El conjunto P es la CARDINALIDAD real de la operacion, y con una sola propiedad registrada
+        /// productivamente vale exactamente 1: un segundo token vinculado aborta antes, en el descubrimiento
+        /// de consumidores, porque el rack lleva una vista que esta version no puede interpretar.
+        ///
+        /// <para>
+        /// Por eso el N -> 1 se demuestra en dos sitios distintos y ninguno es redundante. Aqui se fija que la
+        /// via productiva no puede alcanzar |P| &gt; 1 sin pasar por la guarda; que el recorrido sea del
+        /// conjunto entero y no de una propiedad fija se demuestra sobre el kernel, donde |P| = 2 SI es
+        /// construible (<c>P_INCLUYE_TODAS_LAS_PROPIEDADES_QUE_APUNTAN_A_LA_MISMA_VARIABLE</c>).
+        /// </para>
+        /// </summary>
+        [Fact]
+        public void UnlinkAllAndDelete_CON_UN_SEGUNDO_TOKEN_NO_CONOCIDO_ABORTA_ANTES_DE_DERIVAR_P()
+        {
+            var registro = Registro((VarId, 10.0));
+            var vista = Vista(DocDos("selective.noExiste", VarId, VarId), "D1");
+
+            // El conjunto P del documento SI tiene dos propiedades: la ambiguedad no esta en derivarlo.
+            Assert.Equal(2, SelectiveLinkedPropertyKernel.PropertiesBoundTo(vista.Authored, Objetivo).Count);
+
+            var r = ProjectVariableMutationPreflight.UnlinkAllAndDelete(registro, Objetivo, new[] { vista });
+
+            // Y aun asi no se aplica NADA: ni el borrado del registro, ni la materializacion de la propiedad
+            // que si se conoce. Un vinculo huerfano no se deja detras.
+            AssertPlanVacio(r);
+            Assert.Contains("no puede interpretar", r.Error);
+        }
+
+        [Fact]
+        public void UnlinkAllAndDelete_EMITE_UNA_SOLA_MUTACION_POR_RACK_AunqueTengaVariasVistas()
+        {
+            var registro = Registro((VarId, 10.0));
+
+            var r = ProjectVariableMutationPreflight.UnlinkAllAndDelete(
+                registro,
+                Objetivo,
+                new[]
+                {
+                    Vista(Doc(6.0, variableId: VarId), "D1"),
+                    Vista(Doc(6.0, variableId: VarId), "D2"),
+                    Vista(Doc(6.0, variableId: VarId), "D3"),
+                });
+
+            Assert.True(r.IsSuccess);
+
+            // Una unidad logica: un RackMutation con las tres vistas como destinos, no tres mutaciones.
+            var rack = Assert.Single(r.Plan.RackMutations);
+            Assert.Equal(3, rack.Destinations.Count);
+        }
+
+        [Fact]
+        public void ChangeValue_EMITE_UNA_SOLA_MUTACION_POR_RACK_AunqueTengaVariasVistas()
+        {
+            var registro = Registro((VarId, 10.0));
+
+            var r = ProjectVariableMutationPreflight.ChangeValue(
+                registro,
+                Objetivo,
+                VariableDefinition.Literal(21.0),
+                new[]
+                {
+                    Vista(Doc(6.0, variableId: VarId), "D1"),
+                    Vista(Doc(6.0, variableId: VarId), "D2"),
+                });
+
+            Assert.True(r.IsSuccess);
+
+            var rack = Assert.Single(r.Plan.RackMutations);
+            Assert.Equal(2, rack.Destinations.Count);
+            Assert.Equal(21.0, rack.EffectiveOutput.VerticalClearance);
+        }
+
+        // ================================================================ I-48 G4B: reparar es del RACK
+
+        [Fact]
+        public void RepairBrokenRack_REPARA_TODAS_LAS_ROTAS_EN_UNA_SOLA_MUTACION()
+        {
+            // Dos vistas del mismo rack, una sola reparacion, y el literal almacenado gobierna despues.
+            var registro = Registro((Otra, 10.0));
+
+            var r = ProjectVariableMutationPreflight.RepairBrokenRack(
+                registro,
+                RackA,
+                new[] { Vista(Doc(6.0, variableId: VarId), "D1"), Vista(Doc(6.0, variableId: VarId), "D2") },
+                confirmed: true);
+
+            Assert.True(r.IsSuccess);
+            Assert.Equal(RegistryMutationKind.None, r.Plan.RegistryMutation.Kind);
+
+            var rack = Assert.Single(r.Plan.RackMutations);
+            Assert.Equal(2, rack.Destinations.Count);
+            Assert.Equal(6.0, rack.EffectiveOutput.VerticalClearance);
+            Assert.False(rack.AuthoredOutput.PropertyValues.ContainsKey(Token));
+        }
+
+        [Fact]
+        public void RepairBrokenRack_CON_UN_ESTADO_FATAL_NO_REPARA_NADA_NiLoQueEsReparablePorSiSolo()
+        {
+            // El vinculo a VarId es, por si solo, un target ausente reparable. El rack no se repara igualmente:
+            // el ejecutor necesita un diseno efectivo COMPLETO y con un estado fatal no existe ninguno.
+            var registro = Registro((Otra, 10.0));
+
+            var r = ProjectVariableMutationPreflight.RepairBrokenRack(
+                registro,
+                RackA,
+                new[] { Vista(DocDos("selective.noExiste", VarId, Otra), "D1") },
+                confirmed: true);
+
+            AssertPlanVacio(r);
+            Assert.Contains("no se puede reparar", r.Error);
+        }
+
+        [Fact]
+        public void RepairBrokenRack_SIN_CONFIRMAR_AVISA_SOBRE_EL_CONJUNTO_COMPLETO()
+        {
+            var registro = Registro((Otra, 10.0));
+
+            var r = ProjectVariableMutationPreflight.RepairBrokenRack(
+                registro, RackA, new[] { Vista(Doc(6.0, variableId: VarId), "D1") }, confirmed: false);
+
+            AssertPlanVacio(r);
+            Assert.Contains("1 vinculo(s) roto(s)", r.Error);
+            Assert.Contains(Token, r.Error);
+            Assert.Contains(VarId, r.Error);
+            Assert.Contains("literal almacenado 6", r.Error);
+        }
+
+        [Fact]
+        public void RepairBrokenRack_SOBRE_UN_REGISTRO_AMBIGUO_NO_REPARA_NADA()
+        {
+            // Identidad ambigua: no se elige ninguna entrada, no se repara el registro y no se aplica ninguna
+            // mutacion. Fail-closed antes de mirar el rack.
+            var registro = Registro((VarId, 10.0), (VarId, 20.0));
+
+            var r = ProjectVariableMutationPreflight.RepairBrokenRack(
+                registro, RackA, new[] { Vista(Doc(6.0, variableId: Otra), "D1") }, confirmed: true);
+
+            AssertPlanVacio(r);
+            Assert.Contains(VarId, r.Error);
         }
     }
 }

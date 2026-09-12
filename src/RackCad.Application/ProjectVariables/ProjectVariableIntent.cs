@@ -86,9 +86,13 @@ namespace RackCad.Application.ProjectVariables
             => new ProjectVariableIntent(
                 ProjectVariableIntentKind.UnlinkAllAndDelete, variableId, null, 0.0, null, null, confirmed);
 
-        public static ProjectVariableIntent RepairBroken(string rackId, string propertyId, bool confirmed)
+        /// <summary>
+        /// Asks to repair a RACK. There is no property parameter on purpose: the unit of repair is the rack,
+        /// and accepting one would invite a caller to believe it narrows the set.
+        /// </summary>
+        public static ProjectVariableIntent RepairBroken(string rackId, bool confirmed)
             => new ProjectVariableIntent(
-                ProjectVariableIntentKind.RepairBroken, default, null, 0.0, rackId, propertyId, confirmed);
+                ProjectVariableIntentKind.RepairBroken, default, null, 0.0, rackId, null, confirmed);
     }
 
     /// <summary>
@@ -144,12 +148,12 @@ namespace RackCad.Application.ProjectVariables
                     return ProjectVariableMutationPreflight.UnlinkAllAndDelete(registry, intent.VariableId, entries);
 
                 case ProjectVariableIntentKind.RepairBroken:
-                    return ProjectVariableMutationPreflight.RepairBroken(
-                        registry,
-                        intent.RackId,
-                        PropertyId.TryParse(intent.PropertyId, out var propertyId) ? propertyId : default,
-                        entries,
-                        intent.Confirmed);
+                    // RACK-SCOPED (I-48 G4B). The PropertyId a diagnostic row happens to carry is provenance
+                    // metadata for the message, never the scope: repair acts on EVERY broken reference of the
+                    // rack, because a partial repair cannot produce the complete effective design the executor
+                    // redraws from.
+                    return ProjectVariableMutationPreflight.RepairBrokenRack(
+                        registry, intent.RackId, entries, intent.Confirmed);
 
                 default:
                     return VariableMutationPreflightResult.Failed("Operación no reconocida.");

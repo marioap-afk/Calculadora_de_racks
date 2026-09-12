@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Domain.Systems.Selective;
@@ -55,13 +56,18 @@ namespace RackCad.Application.Systems.Selective
             SelectiveEditorOpenOutcome outcome,
             SelectivePalletDesign design,
             VerticalClearanceBindingState verticalClearance,
+            IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> linkedPropertyStates,
             string error)
         {
             Outcome = outcome;
             Design = design;
             VerticalClearance = verticalClearance;
+            LinkedPropertyStates = linkedPropertyStates ?? NoStates;
             Error = error;
         }
+
+        private static readonly IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> NoStates =
+            new Dictionary<PropertyId, LinkedPropertyEditState>();
 
         public SelectiveEditorOpenOutcome Outcome { get; }
 
@@ -71,17 +77,39 @@ namespace RackCad.Application.Systems.Selective
         /// <summary>Null when blocked, for the same reason.</summary>
         public VerticalClearanceBindingState VerticalClearance { get; }
 
+        /// <summary>
+        /// El estado COMPROMETIDO de CADA propiedad vinculable, como lo consume el editor reusable
+        /// (I-48 G4C, generalizado en G4E).
+        ///
+        /// <para>
+        /// Su literal es el del AUTHORED, no el efectivo, y ahi esta la diferencia con <see cref="Design"/>:
+        /// aquel describe que se MUESTRA, este describe que se GUARDA si nadie toca el campo. Sin el, abrir un
+        /// rack vinculado y guardarlo sin tocar nada copiaria el valor de la variable sobre el literal
+        /// congelado.
+        /// </para>
+        /// <para>
+        /// Es un LOOKUP por <see cref="PropertyId"/> y no un campo por propiedad. Con una sola propiedad
+        /// registrada las dos formas eran indistinguibles; con la segunda, un campo por propiedad seria
+        /// crecimiento lineal —y cada propiedad futura tendria que acordarse de anadir el suyo a cada
+        /// superficie. Se construye recorriendo el catalogo, asi que una entrada nueva aparece aqui sola.
+        /// </para>
+        /// </summary>
+        public IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> LinkedPropertyStates { get; }
+
         /// <summary>The visible reason. Null when open.</summary>
         public string Error { get; }
 
         public bool IsOpen => Outcome == SelectiveEditorOpenOutcome.Open;
 
         public static SelectiveEditorOpenResult Open(
-            SelectivePalletDesign design, VerticalClearanceBindingState verticalClearance)
-            => new SelectiveEditorOpenResult(SelectiveEditorOpenOutcome.Open, design, verticalClearance, null);
+            SelectivePalletDesign design,
+            VerticalClearanceBindingState verticalClearance,
+            IReadOnlyDictionary<PropertyId, LinkedPropertyEditState> linkedPropertyStates = null)
+            => new SelectiveEditorOpenResult(
+                SelectiveEditorOpenOutcome.Open, design, verticalClearance, linkedPropertyStates, null);
 
         public static SelectiveEditorOpenResult Blocked(string error)
-            => new SelectiveEditorOpenResult(SelectiveEditorOpenOutcome.Blocked, null, null, error);
+            => new SelectiveEditorOpenResult(SelectiveEditorOpenOutcome.Blocked, null, null, null, error);
     }
 
     /// <summary>
@@ -115,23 +143,15 @@ namespace RackCad.Application.Systems.Selective
         /// value already came from the one resolver, and nothing here decides anything by this string.
         /// </summary>
         private static string BoundName(
-            SelectivePalletDesignDocument authored, ProjectVariablesDocument registry)
+            SelectivePalletDesignDocument authored, UsableProjectVariablesRegistry registry)
         {
-            if (registry == null ||
-                !authored.TryGetBinding(ProjectPropertyIds.SelectiveVerticalClearance, out var variableId))
-            {
-                return null;
-            }
-
-            foreach (var variable in registry.ToProjectVariables())
-            {
-                if (variable.Id.Equals(variableId))
-                {
-                    return variable.Name;
-                }
-            }
-
-            return null;
+            // ONE lookup, over the SAME accredited authority the resolver just used. Before I-48 G4B this
+            // walked the document itself and returned the FIRST match, so with a duplicated identity the
+            // editor could name one variable while the drawing took another's value.
+            return authored.TryGetBinding(ProjectPropertyIds.SelectiveVerticalClearance, out var variableId) &&
+                   registry.TryGetTarget(variableId, out var target)
+                ? target.Name
+                : null;
         }
 
         public static SelectiveEditorOpenResult Resolve(
@@ -161,7 +181,16 @@ namespace RackCad.Application.Systems.Selective
                     return SelectiveEditorOpenResult.Blocked(registry.Error);
             }
 
-            var resolution = Resolver.Resolve(authored, registry.Document);
+            var accreditation = UsableProjectVariablesRegistry.Accredit(registry);
+
+            if (!accreditation.IsUsable)
+            {
+                // An ambiguous identity blocks the editor exactly like an unreadable register: there is no
+                // authority to open against, and picking one entry would be an arbitrary resolution.
+                return SelectiveEditorOpenResult.Blocked(accreditation.Error);
+            }
+
+            var resolution = Resolver.ResolveAgainst(authored, accreditation.Registry);
 
             if (!resolution.IsSuccess)
             {
@@ -172,10 +201,29 @@ namespace RackCad.Application.Systems.Selective
             // blocked, so the two questions agree — and asking the presence one keeps the doctrine intact.
             var bound = authored.HasBindingEntry(ProjectPropertyIds.SelectiveVerticalClearance);
 
+            // El literal COMPROMETIDO sale del authored; la fuente, de la presencia del vinculo. Que el
+            // resolver haya tenido exito garantiza que, si una propiedad esta vinculada, su variable existe y
+            // es compatible.
+            //
+            // Se recorre el CATALOGO, no una lista escrita a mano: una propiedad nueva aparece aqui por el solo
+            // hecho de registrarse, que es exactamente lo que I-48 existe para conseguir.
+            var states = new Dictionary<PropertyId, LinkedPropertyEditState>();
+
+            foreach (var descriptor in SelectiveLinkedProperties.All.Ordered())
+            {
+                var literal = descriptor.ReadAuthored(authored);
+
+                states[descriptor.PropertyId] =
+                    authored.TryGetBinding(descriptor.PropertyId, out var variableId)
+                        ? LinkedPropertyEditState.Reference(literal, variableId)
+                        : LinkedPropertyEditState.Literal(literal);
+            }
+
             return SelectiveEditorOpenResult.Open(
                 resolution.Design,
                 VerticalClearanceBindingState.Of(
-                    bound, resolution.Design.VerticalClearance, bound ? BoundName(authored, registry.Document) : null));
+                    bound, resolution.Design.VerticalClearance, bound ? BoundName(authored, accreditation.Registry) : null),
+                states);
         }
     }
 }

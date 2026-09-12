@@ -37,6 +37,7 @@ namespace RackCad.UI
 
             VariablesList.ItemsSource = workspace?.Variables;
             BrokenList.ItemsSource = workspace?.BrokenBindings;
+            RepairAuthorityText.Text = ProjectVariableRepairText.DescribeUnresolvable(workspace?.UnresolvableRacks);
 
             var editable = workspace != null && workspace.IsEditable;
             EditorPanel.IsEnabled = editable;
@@ -81,11 +82,7 @@ namespace RackCad.UI
         {
             var broken = SelectedBroken;
 
-            RepairWarningText.Text = broken == null
-                ? string.Empty
-                : "No existe un valor efectivo para esta propiedad. Se utilizará el literal almacenado ("
-                  + broken.StoredLiteral.ToString("0.###", CultureInfo.InvariantCulture)
-                  + "), así que la geometría puede cambiar.";
+            RepairWarningText.Text = ProjectVariableRepairText.Describe(broken);
 
             RepairConfirmCheck.IsChecked = false;
             UpdateActions();
@@ -123,7 +120,9 @@ namespace RackCad.UI
 
             // La reparación NO depende de que el registro se pueda administrar: cuando el alcance del dibujo
             // es indeterminado es justo cuando hace falta poder quitar el vínculo que lo rompe.
-            RepairButton.IsEnabled = SelectedBroken != null && RepairConfirmCheck.IsChecked == true;
+            var repairable = SelectedBroken != null && SelectedBroken.RackCanRepair;
+
+            RepairButton.IsEnabled = repairable && RepairConfirmCheck.IsChecked == true;
         }
 
         /// <summary>
@@ -196,12 +195,14 @@ namespace RackCad.UI
         {
             var broken = SelectedBroken;
 
-            if (broken == null || RepairConfirmCheck.IsChecked != true)
+            // RackCanRepair se comprueba AQUI y no solo al habilitar el botón: la habilitación es una pista
+            // visual, y la precondición tiene que sostenerse en el punto donde nace el intent.
+            if (broken == null || !broken.RackCanRepair || RepairConfirmCheck.IsChecked != true)
             {
                 return;
             }
 
-            Ask(ProjectVariableIntent.RepairBroken(broken.RackId, broken.PropertyId, confirmed: true));
+            Ask(ProjectVariableIntent.RepairBroken(broken.RackId, confirmed: true));
         }
 
         /// <summary>Records the request and hands control back: executing is not this window's job.</summary>

@@ -30,134 +30,163 @@ namespace RackCad.Application.Systems.Selective
     public sealed class SelectiveEffectiveDesignResolver
     {
         /// <summary>
-        /// Resolves the effective design.
-        ///
-        /// <para>
-        /// A null <paramref name="projectVariables"/> means a drawing with no register, which is valid legacy
-        /// (C-1) and resolves normally for an unbound rack. For a BOUND one it is a broken reference like any
-        /// other: the variable it names does not exist.
-        /// </para>
+        /// Resolves against a register document. Kept as the productive facade so existing call sites read the
+        /// same, but it no longer resolves anything itself: a null document is the legacy "this drawing has no
+        /// register" case (C-1) and is mapped EXPLICITLY, here and only here, to an ABSENT read — the one input
+        /// for which an empty register is the right answer.
         /// </summary>
         public SelectiveEffectiveResolution Resolve(
             SelectivePalletDesignDocument authored,
             ProjectVariablesDocument projectVariables)
+            => ResolveAccredited(
+                authored,
+                projectVariables == null
+                    ? ProjectVariablesReadResult.Absent()
+                    : ProjectVariablesReadResult.Readable(projectVariables));
+
+        /// <summary>
+        /// Resolves against a READ, so the accreditation belongs to THAT read. An unreadable register, an
+        /// incompatible major and an ambiguous identity all fail here, before a single field is written.
+        /// </summary>
+        public SelectiveEffectiveResolution ResolveAccredited(
+            SelectivePalletDesignDocument authored, ProjectVariablesReadResult read)
         {
             if (authored == null)
             {
                 throw new ArgumentNullException(nameof(authored));
             }
 
-            var variables = Index(projectVariables);
-            var effectiveClearance = authored.VerticalClearance;
+            var accreditation = UsableProjectVariablesRegistry.Accredit(read);
 
-            if (authored.PropertyValues != null)
+            return accreditation.IsUsable
+                ? ResolveAgainst(authored, accreditation.Registry)
+                : SelectiveEffectiveResolution.Failure(
+                    SelectiveEffectiveOutcome.BrokenProjectVariableReference,
+                    default,
+                    Describe(authored) + ": " + accreditation.Error,
+                    null);
+        }
+
+        /// <summary>
+        /// THE resolution, now GENERIC (I-48 G4B).
+        ///
+        /// <para>
+        /// Before this gate every binding wrote into the same local and the result landed on one hardcoded
+        /// field, so no <c>PropertyId</c> could ever resolve anywhere else — what made that safe was the guard
+        /// that admitted a single property, not the loop. Now each HEALTHY binding writes through ITS OWN
+        /// descriptor, which is what lets two properties resolve independently.
+        /// </para>
+        /// <para>
+        /// Two properties it must have, and both are verifiable: the outcome does NOT depend on the enumeration
+        /// order of the persisted map, and resolving one property does NOT touch another's field.
+        /// </para>
+        /// <para>
+        /// Nothing degrades. Missing target, unknown property, malformed reference and incompatible type all
+        /// ABORT: there is no fall back to the stored literal, because a literal frozen when the binding was
+        /// created is not the value in force.
+        /// </para>
+        /// <para>
+        /// Fields are written only AFTER every binding is proven resolvable. Writing as the scan went would
+        /// leave a half-applied design behind on the first failure.
+        /// </para>
+        /// </summary>
+        internal SelectiveEffectiveResolution ResolveAgainst(
+            SelectivePalletDesignDocument authored, UsableProjectVariablesRegistry registry)
+            => ResolveWith(authored, registry, SelectiveLinkedProperties.All);
+
+        /// <summary>
+        /// The same resolution over an EXPLICIT descriptor set. Pure-function seam, not runtime extensibility
+        /// (V4-R02/V4-R04): it is internal, it is never populated from configuration, and production has exactly
+        /// one caller, which passes <see cref="SelectiveLinkedProperties.All"/>.
+        ///
+        /// <para>
+        /// It exists because genericity is not observable through a catalogue of one. With a single registered
+        /// property, "each binding writes through its own descriptor" and "every binding writes the vertical
+        /// clearance" produce identical results — the field-level hardcode the reviews found would pass every
+        /// test. Two synthetic properties over REAL fields separate the two, without registering a second
+        /// productive property.
+        /// </para>
+        /// </summary>
+        internal SelectiveEffectiveResolution ResolveWith(
+            SelectivePalletDesignDocument authored,
+            UsableProjectVariablesRegistry registry,
+            LinkedPropertyDescriptorSet descriptors)
+        {
+            if (authored == null)
             {
-                foreach (var binding in authored.PropertyValues)
+                throw new ArgumentNullException(nameof(authored));
+            }
+
+            if (registry == null)
+            {
+                throw new ArgumentNullException(nameof(registry));
+            }
+
+            if (descriptors == null)
+            {
+                throw new ArgumentNullException(nameof(descriptors));
+            }
+
+            var inspections = SelectiveLinkedPropertyKernel.InspectBindings(authored, descriptors, registry);
+            var rack = Describe(authored);
+
+            foreach (var inspection in inspections)
+            {
+                if (!inspection.IsHealthy)
                 {
-                    var failure = TryResolveBinding(authored, binding.Key, binding.Value, variables, out var value);
-
-                    if (failure != null)
-                    {
-                        return failure;
-                    }
-
-                    effectiveClearance = value;
+                    return SelectiveEffectiveResolution.Failure(
+                        OutcomeOf(inspection),
+                        inspection.PropertyId,
+                        rack + ", " + inspection.Detail,
+                        inspection.RawVariableId);
                 }
             }
 
             var design = authored.ToDomain();
-            design.VerticalClearance = effectiveClearance;
+
+            foreach (var inspection in inspections)
+            {
+                if (!descriptors.TryGetDescriptor(inspection.PropertyId, out var descriptor))
+                {
+                    // Unreachable: HEALTHY means the descriptor was found. Reaching it is an invariant
+                    // violation, not a state to reinterpret.
+                    return SelectiveEffectiveResolution.Failure(
+                        SelectiveEffectiveOutcome.UnknownPropertyId,
+                        inspection.PropertyId,
+                        rack + ": la propiedad '" + inspection.PropertyId + "' resolvio sin descriptor.",
+                        inspection.RawVariableId);
+                }
+
+                descriptor.WriteEffective(design, inspection.Target.LiteralValue);
+            }
 
             return SelectiveEffectiveResolution.Success(design);
         }
 
-        /// <summary>
-        /// Resolves one binding, or explains why it cannot be resolved. Every branch that fails names the
-        /// rack, the property and the variable: an abort the user cannot locate is not usable, and the only
-        /// repair path asks them to pick that exact rack.
-        /// </summary>
-        private static SelectiveEffectiveResolution TryResolveBinding(
-            SelectivePalletDesignDocument authored,
-            string propertyToken,
-            SelectivePropertyValueDocument reference,
-            IReadOnlyDictionary<VariableId, ProjectVariable> variables,
-            out double value)
+        /// <summary>Maps an inspection failure onto the outcome vocabulary this resolver already published.</summary>
+        private static SelectiveEffectiveOutcome OutcomeOf(BindingInspection inspection)
         {
-            value = 0.0;
-
-            var rack = Describe(authored);
-
-            if (!PropertyId.TryParse(propertyToken, out var propertyId) ||
-                !ProjectPropertyIds.IsKnown(propertyId))
+            switch (inspection.Outcome)
             {
-                return SelectiveEffectiveResolution.Failure(
-                    SelectiveEffectiveOutcome.UnknownPropertyId,
-                    propertyId,
-                    rack + " declara un vínculo sobre una propiedad que esta versión no conoce ('" +
-                    (propertyToken ?? "<null>") + "').",
-                    reference?.VariableId);
-            }
+                case BindingInspectionOutcome.FatalUnknownProperty:
+                    return SelectiveEffectiveOutcome.UnknownPropertyId;
 
-            if (reference == null ||
-                !string.Equals(reference.Kind, SelectivePropertyValueDocument.ProjectVariableKind, StringComparison.Ordinal))
-            {
-                return SelectiveEffectiveResolution.Failure(
-                    SelectiveEffectiveOutcome.UnknownReferenceKind,
-                    propertyId,
-                    rack + ", propiedad '" + propertyId + "': el vínculo es de una clase que esta versión no " +
-                    "conoce ('" + (reference?.Kind ?? "<null>") + "').",
-                    reference?.VariableId);
-            }
+                case BindingInspectionOutcome.FatalMalformedReference:
+                    return inspection.Malformed == MalformedReferenceReason.UnknownKind
+                        ? SelectiveEffectiveOutcome.UnknownReferenceKind
+                        : SelectiveEffectiveOutcome.MalformedReference;
 
-            if (!VariableId.TryParse(reference.VariableId, out var variableId))
-            {
-                return SelectiveEffectiveResolution.Failure(
-                    SelectiveEffectiveOutcome.MalformedReference,
-                    propertyId,
-                    rack + ", propiedad '" + propertyId + "': el vínculo apunta a un id de variable " +
-                    "ilegible ('" + (reference.VariableId ?? "<null>") + "').",
-                    reference.VariableId);
+                default:
+                    // Missing target and incompatible target are both "this reference yields no value".
+                    return SelectiveEffectiveOutcome.BrokenProjectVariableReference;
             }
-
-            if (!variables.TryGetValue(variableId, out var variable))
-            {
-                return SelectiveEffectiveResolution.Failure(
-                    SelectiveEffectiveOutcome.BrokenProjectVariableReference,
-                    propertyId,
-                    rack + ", propiedad '" + propertyId + "': la variable de proyecto '" + variableId +
-                    "' no existe en este dibujo. No hay valor efectivo que aplicar.",
-                    reference.VariableId);
-            }
-
-            value = variable.Definition.LiteralValue;
-            return null;
         }
+
 
         /// <summary>The rack, named the way a user can find it: by id, and by name when it has one.</summary>
         private static string Describe(SelectivePalletDesignDocument authored)
             => string.IsNullOrWhiteSpace(authored.Name)
                 ? "El rack " + authored.Id
                 : "El rack " + authored.Id + " (" + authored.Name + ")";
-
-        /// <summary>
-        /// The register as a lookup. A null register is an EMPTY one — a drawing with zero variables is valid
-        /// legacy, not a failure. What is a failure is a rack that references one of them.
-        /// </summary>
-        private static IReadOnlyDictionary<VariableId, ProjectVariable> Index(ProjectVariablesDocument document)
-        {
-            var index = new Dictionary<VariableId, ProjectVariable>();
-
-            if (document == null)
-            {
-                return index;
-            }
-
-            foreach (var variable in document.ToProjectVariables())
-            {
-                index[variable.Id] = variable;
-            }
-
-            return index;
-        }
     }
 }
