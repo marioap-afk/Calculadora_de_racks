@@ -971,3 +971,41 @@ cuelgue costó tres gates de diagnóstico y sólo se resolvió leyendo los minid
 
 **No implementado tampoco.** Ponerlos detrás de la costura existente es barato, pero es cambio de
 producción y no entra en el cierre de I-48.
+
+## I-51 — hallazgos fuera de alcance (2026-09-12, registrados sin corregir)
+
+Encontrados en el Discovery de I-51 ([I-51-discovery.md](initiatives/I-51-discovery.md) §17) y declarados
+**fuera de alcance** en su G2 ([decisiones de I-51](automation/decisions/I-51.md);
+[contrato](initiatives/I-51-rackduplicar-multiples-origenes.md) §4). **Ninguno está corregido**: siguen
+vivos en `main`. Las líneas se refieren a `a4d88f1`.
+
+### L-1 — `RackBlockData`: el comentario dice «referencia» y los datos viven en la definición
+
+El `<summary>` de `RackBlockData.cs:8-11` afirma que el payload se guarda en el diccionario de extensión de
+una «block **reference**». Todos los llamadores escriben y leen en la **definición**
+(`LateralHeaderDrawService.cs:258`, `SystemBlockWriter.cs:33` y `:114`, `RackCantileverCommands.cs:156` y
+`:324`, `RackCloner.cs:66`; lectores en `RackDuplicarCommands.cs:170`, `RackCommandSupport.cs:93`,
+`RackBlockFinder.cs:71` y `RackLayoutCommands.cs:191`). Es el mismo hallazgo que **H-01** del Discovery de
+I-47 y que el primer punto de **H7** que I-50 registra en su rama: se anota aquí para que I-51 no lo pierda,
+no como una deuda distinta.
+
+### L-2 — `CantileverKindHandler`: documentación XML desplazada
+
+`CantileverKindHandler.cs:70-78` tiene dos `<summary>` seguidos: la documentación del re-estampado quedó
+pegada a `OutputBlockedReason`, y `RestampDesign` no tiene la suya. Cosmético.
+
+### L-3 — `RACKLAYOUT` y `RACKRELLENAR` no conservan la capa ni la elevación del semilla
+
+Las copias de `RACKLAYOUT` copian `Rotation` y `ScaleFactors`, pero no `LayerId`, y fijan **Z = 0**
+(`RackLayoutCommands.cs:250-254`); `RACKRELLENAR` hace lo mismo (`RackLayoutCommands.Fill.cs:454-457`).
+`RACKDUPLICAR`, en cambio, conserva la capa del origen (`RackDuplicarCommands.cs:205`).
+
+**Qué habría que decidir**: si las copias de layout deben heredar capa y elevación del semilla, como las de
+`RACKDUPLICAR`, o si su capa y su plano de trabajo son deliberados.
+
+### L-4 — El selector de `RACKDUPLICAR` admite MINSERT y la copia sale como referencia simple
+
+`RackDuplicarCommands.cs:151` usa `AddAllowedClass(typeof(BlockReference), exactMatch: false)`, que admite
+`MInsertBlock`. La copia crea una `BlockReference` simple (`:201-206`), así que se pierden las filas y
+columnas del MINSERT. I-51 **no** lo cambia: su contrato conserva el comportamiento histórico de una
+referencia (INV-16).

@@ -83,7 +83,7 @@ no una regla geométrica defectuosa.
 | `QUICKCAMA` | Cama de rodamiento dinámica o pushback. |
 | `RACKSELECTIVO` | Selectivo, matriz, fondos, vistas y seguridad. |
 | `RACKEDITAR` | Recuperación del diseño y redibujo en sitio. |
-| `RACKDUPLICAR` | Identidad independiente frente a COPY de AutoCAD. |
+| `RACKDUPLICAR` | Identidad independiente frente a COPY de AutoCAD; varios racks y vistas en un gesto (§5.7). |
 | `RACKLISTA` | Inventario de racks, vistas y copias. |
 | `RACKBOMTOTAL` | BOM consolidado sin duplicar vistas. |
 | `RACKLAYOUT` / `RACKRELLENAR` | Colocación y relleno determinista. |
@@ -238,6 +238,30 @@ Y, desde I-42, el **Push Back compuesto (lado A / lado B)**:
   copia independiente;
 - **legacy**: un rack Push Back dibujado antes de I-42 debe reabrirse como de un solo sentido, sin pedir
   ninguna reconfiguración, y redibujarse EXACTAMENTE igual.
+
+### 5.7 Duplicación con `RACKDUPLICAR`
+
+`RACKDUPLICAR` copia **lo seleccionado** —uno o varios racks, varias vistas de un rack, referencias enlazadas— a
+uno o varios destinos. Recorre lo que el alcance exija:
+
+- **Una referencia**, en `Multiple` y en `Unica`: el resultado es el histórico —un clon, una referencia, nombres
+  «… - copia», «… - copia 2»— y las palabras clave no consumen numeración.
+- **Varias vistas de un rack** (frontal, lateral, planta): cada destino recibe **esas** vistas y ninguna otra;
+  comparten **un** GUID nuevo y un nombre, `RACKEDITAR` sobre la copia redibuja sus vistas juntas y el original
+  queda intacto.
+- **Varios racks**, también con **UCS girado** y origen desplazado: cada rack copiado lleva su propio GUID y
+  nombre; se conservan la disposición relativa y la rotación, la escala y la capa de cada referencia, y la posición
+  en WCS corresponde al desplazamiento pedido en el UCS.
+- **Referencias enlazadas** de una misma definición: en la copia siguen enlazadas —editar una cambia la otra— y
+  `RACKLISTA`/`RACKBOMTOTAL` cuentan lo mismo que en el origen.
+- **Selección mixta** con líneas, textos o bloques sin datos de rack, y referencias en **Paper Space**: se ignoran
+  con aviso y el resto se duplica.
+- **Rack con vínculos a variables de proyecto**: la copia conserva los mismos vínculos, aparece como consumidora y
+  un cambio de valor la alcanza.
+- **Datos de rack inutilizables** (por ejemplo, un payload de MAJOR futuro): el comando falla **antes** de pedir
+  el punto base y no dibuja nada.
+- **`UNDO`** tras varios destinos: observa y registra cuántos pasos deshace.
+- **Guardar y reabrir**: las copias conservan identidad, nombre, vistas y enlaces.
 
 ## 6. Criterios de aprobación
 

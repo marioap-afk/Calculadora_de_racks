@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-09**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-12**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -15,6 +15,49 @@ es el único adaptador de la API de AutoCAD.
 El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, dinámico modular y cama
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
+
+**I-51 — ID15 — RACKDUPLICAR: múltiples racks origen — INTEGRADA y CERRADA** el **2026-09-12**
+(`feature/rackduplicar-multiples-origenes`, candidato funcional `cd96c1b86cdcb3ed02fc1fa4ecd73c3b00d4a29e`).
+`RACKDUPLICAR` deja de copiar **la vista clicada** y copia, en un solo gesto, **todo lo seleccionado** —varios
+racks, varias vistas de un mismo rack y referencias enlazadas— hacia cada punto de destino, sin dejar de ser
+COPY para racks: cada rack copiado es **independiente** de su origen.
+
+**El resultado verificable.**
+
+| | |
+|---|---|
+| Selección | selección **física múltiple** de AutoCAD (`GetSelection`) **sin filtro de tipo**: lo que no es un rack se ignora **con aviso**, y lo que está fuera del espacio modelo se filtra con aviso (**solo Model Space**) |
+| Vistas | se copian **solo las vistas físicamente seleccionadas**: una vista no arrastra a sus hermanas, y el dibujo nunca se barre buscándolas |
+| Agrupación | por **RackId**, sin distinguir mayúsculas; una definición legacy **sin RackId** es su propio grupo y nunca se funde con otra por nombre ni contenido |
+| Enlaces | las referencias seleccionadas de **una misma definición** siguen **enlazadas** en la copia —una definición clonada y N referencias—, así que `RACKLISTA` y `RACKBOMTOTAL` cuentan igual que en el origen |
+| Identidad | **un** `NewRackId` y **un** nombre («… - copia», «… - copia 2») por rack lógico y destino, compartidos por todas sus vistas; cada vista se re-estampa desde **su propio** payload |
+| Autoridad | `RackDuplicationPlan` (Application, puro) decide grupos, definiciones, referencias, identidades y nombres; el comando del Plugin solo lee, prepara y escribe |
+| Atomicidad | **PREPARE → MUTATE**: todas las definiciones del destino se re-estampan y comprueban **antes** de abrir la escritura, y **una sola transacción por destino** contiene todos los clones y referencias; un fallo deja ese destino **intacto** y los anteriores permanecen |
+| Transformación | un único desplazamiento UCS→WCS por destino; cada referencia conserva su posición relativa, rotación, escala y capa |
+| Variables de proyecto | los vínculos viajan intactos: la copia conserva el **mismo `VariableId`** y el literal congelado; no se crean, leen ni resuelven variables |
+| Fallos | un payload RackCad inutilizable, un grupo inconsistente o un re-estampado imposible **fallan cerrados antes de pedir el punto base**, con mensaje atribuible y cero mutación |
+
+**Lo que cambió de comportamiento a propósito, y hay que conocer.** El comando pide una selección múltiple
+(«Selecciona racks para duplicar») en vez de un solo objeto; lo que no es un rack ya no se rechaza al elegirlo,
+se ignora con aviso; un kind desconocido o un sobre inutilizable se informan **por definición**, desde el plan;
+y un rack que no se puede copiar falla **antes** del punto base. Al copiar varias vistas de un rack, los nombres
+de bloque de los clones quedan uniquificados por `RackCloner` («… - copia», «… - copia (1)»…), su política de
+siempre. **Una sola referencia reproduce el resultado histórico.**
+
+**Lo que NO cambió.** `RACKLAYOUT` y `RACKRELLENAR`, la BOM y la lista, la semántica de las variables de
+proyecto, `RackCloner`, el formato del sobre y la firma histórica de `RackEnvelopeRestamp`, que ahora delega en
+la entrada con `Guid`. **No hay ADR nuevo**: I-51 aplica ADR-0009 y ADR-0034 §9 y §12 sin cambiarlos.
+
+**Evidencia del candidato funcional `cd96c1b`:**
+
+| | |
+|---|---|
+| Core Full | **5515 / 5515** (0 omitidas) |
+| UI Full | **1324 / 1341** (17 omitidas históricas, declaradas en fuente; las mismas que `main`) |
+| Builds | UI Debug **0 errores y 0 advertencias**; Plugin Debug **0 errores** (solo los dos `MSB3277` conocidos) |
+| CI de `push` | corrida **34721967891**, `head_sha` = `cd96c1b...`, **4/4 `success`** |
+| Cobertura del Candidato | dispatch **34723143392**, `measured_sha` = `cd96c1b...`, artifact `rackcad-coverage-cobertura` presente (líneas **89.49 %**, ramas **75.56 %**) |
+| Owner Validation | **PASS TOTAL** en AutoCAD 2025 —M1..M9 y guardar/reabrir— sobre el DLL Debug construido desde ese candidato |
 
 **I-48 — Generic Linked Property Editing: edicion vinculable reusable — INTEGRADA y CERRADA** el
 **2026-09-12** (`architecture/generic-linked-property-editing`, candidato funcional
@@ -1084,6 +1127,22 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-51 (2026-09-12) — PASS TOTAL.** El dueño validó por NETLOAD el DLL Debug construido **exactamente** desde
+el candidato funcional `cd96c1b86cdcb3ed02fc1fa4ecd73c3b00d4a29e` —el identificado para la ronda:
+`RackCad.Plugin.dll`, versión `1.0.0+cd96c1b86cdcb3ed02fc1fa4ecd73c3b00d4a29e`, SHA-256
+`52E252D38F9C55158E42D28EC3E61A27B14596641C8061747E3C9A994BC9F012`— y aprobó **M1..M9** del contrato: regresión
+de una vista en `Multiple` y `Unica`; frontal, lateral y planta de un rack con `RACKEDITAR` sobre cada copia;
+dos racks con UCS girado; referencias enlazadas con `RACKLISTA` y `RACKBOMTOTAL`; selección mixta; Paper Space;
+Selectivo con dos vínculos; payload de MAJOR futuro; y `UNDO` tras varios destinos. Más un smoke de guardar y
+reabrir, también **PASS**.
+
+`origin/main` **no avanzó** desde la base `a4d88f18a1f42263d366c44dc05dd18a6786f152`, así que **no hubo rebase
+final** y la validación corresponde exactamente al contenido integrado. Evidencia automatizada del mismo SHA,
+árbol limpio y SDK **8.0.423**: `RackCad.Tests` **5515 PASS / 0 fail / 0 skip**, `RackCad.UI.Tests` **1324 PASS /
+17 skip / 1341 total** —las mismas 17 omitidas que `main`—, build Debug de UI **0 errores y 0 advertencias**,
+build Debug del Plugin **0 errores** más los **dos `MSB3277`** conocidos, y **CI de `push` sobre ese SHA
+exacto** —corrida **34721967891**, 4/4 `success`—.
+
 **I-48 (2026-09-12) — PASS.** El dueño cargó por NETLOAD el DLL Debug construido **exactamente** desde el
 candidato funcional `b0547990f9ffcbd015feed9a9efa95c9ff3b24b5` y validó la edición vinculable sobre las
 **dos** propiedades reales, incluido el cambio de comportamiento deliberado: el campo de una propiedad
@@ -1454,7 +1513,63 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### No hay iniciativa en curso. I-48 quedó INTEGRADA y CERRADA; lo que sigue es backlog.
+### I-51 quedó INTEGRADA y CERRADA. I-49 e I-50 siguen en sus ramas, sin integrar.
+
+**I-51 — ID15 — RACKDUPLICAR: múltiples racks origen — INTEGRADA y CERRADA el 2026-09-12.** `G0`–`G5`
+cerrados, Candidato `G6` **PASS**, validación del Owner `G7` **PASS TOTAL** y cierre documental `G8`;
+integración con merge `--no-ff`. No queda ningún pendiente **de alcance** de esta iniciativa; lo que quedó fuera
+está abajo y en [ideas-futuras.md](ideas-futuras.md), y no es deuda de I-51.
+
+```text
+BASE_MAIN_SHA            = a4d88f18a1f42263d366c44dc05dd18a6786f152
+CLAIM_SHA                = 3ffd2ca21778b29bd5ccac2e6d171971769ad8ca
+BOOTSTRAP_SHA            = 5a5c12aaf04bb9f3edfd861aad9fc266dfb89cf2
+G1_SHA                   = c6fbfbccfc898764ffa71793070237bd6f824b8d   (Discovery)
+G2_SHA                   = c4cc2e49ce6de79b745ba5c2ced61c2c7572f307   (contrato y decisiones)
+G3_SHA                   = 4c79e4a46b2adf45aee87ffb399c786f25d5d274   (RackDuplicationPlan + T1-T15)
+G4_SHA                   = f8cf4c9f2024f3494d977f4bfbd2c2f9816b8c73   (restamp con Guid + G-R1..G-R6)
+G5_SHA                   = cd96c1b86cdcb3ed02fc1fa4ecd73c3b00d4a29e   (cableado multiorigen)
+FUNCTIONAL_CANDIDATE_SHA = cd96c1b86cdcb3ed02fc1fa4ecd73c3b00d4a29e
+CLOSURE_DOCS_SHA         = este mismo commit (docs-only; NO reemplaza al candidato)
+MERGE_SHA                = PENDING hasta el merge
+```
+
+**Qué quedó operativo en `main`.** `RACKDUPLICAR` sigue siendo COPY para racks —punto base, destinos,
+`Multiple` por defecto, `Unica`, Enter/Esc— pero sobre una **selección múltiple**:
+
+- **Fases**: ACQUIRE → SNAPSHOT → PREFLIGHT → punto base → por destino PREPARE → MUTATE. La selección se lee en
+  **una** transacción de lectura; `RackDuplicationPlan.Build` clasifica, agrupa y deduplica; un **ensayo** de
+  re-estampado por definición corre antes del punto base; y cada destino asigna identidades
+  (`CreateDestinationAssigner` → `Next()`), re-estampa **todas** sus definiciones y escribe todo en **una**
+  transacción. Después del commit solo hay mensajes.
+- **Qué se copia**: solo las referencias seleccionadas en Model Space; lo demás se ignora con aviso.
+- **Cómo se agrupa**: por RackId o, para un sobre legacy sin RackId, por definición; un grupo con kinds, nombres
+  o —en el Selectivo— diseños authored divergentes **falla cerrado** y pide reconciliarlo con `RACKEDITAR`.
+- **Qué recibe cada copia**: un `NewRackId` y un nombre comunes a todas sus vistas; cada definición se clona
+  **una** vez y cada referencia seleccionada se recrea sobre el clon de **su** definición, en su posición más el
+  desplazamiento del destino, con su rotación, escala y capa.
+- **Qué no se toca**: los vínculos a variables de proyecto viajan con el mismo `VariableId`; ni el registro ni
+  el origen se escriben.
+- **Guardas del Plugin** (texto, ADR-0003): `G-R1`..`G-R6` y la guarda de cableado de G5, en
+  `SelectiveDuplicationFailClosedTests` y `PushBackRoundTripSourceGuardTests`. Leen el **código** con
+  comentarios y literales enmascarados (`PluginSourceCode`), no líneas: una refactorización honesta no las rompe
+  y una deshonesta escrita de otra forma no las pasa.
+
+**Lo que I-51 dejó expresamente fuera**: RACKMIRROR (**ID16**), **ID19**, **ID21**, **ID22B**, expandir a vistas
+hermanas, Paper Space y cross-space, cross-DWG y WBLOCK, copiar propiedades de la referencia más allá del conjunto
+histórico, `RACKLAYOUT`/`RACKRELLENAR` y un `UNDO` especial. **L-1..L-4** siguen registrados **sin corregir** en
+[ideas-futuras.md](ideas-futuras.md). El texto de ayuda de `RACKAYUDA` (`RackCommandReference`, opcional en el
+contrato) sigue describiendo la copia de **un** rack.
+
+**Interacción conocida con I-49 e I-50**, ambas en sus ramas y sin integrar al cerrar I-51; ninguna toca archivos
+productivos de I-51. **I-50** —cotas por vista— guarda su política en el **diseño** del rack (rack × tipo de vista,
+nunca en la referencia), así que viaja con el re-estampado de la copia; si se persiste en el authored del
+Selectivo, entra además en la comparación de autoridad entre vistas hermanas que usa el plan. Quien integre I-50
+debe conservar ese campo en el round-trip de la duplicación. **I-49** —motor de expresiones— declara que
+duplicar y re-estampar no cambian. Con ambas, los conflictos previstos son solo documentales: la fila de ROADMAP y
+el final de `ideas-futuras.md`.
+
+**I-48 queda como historia:**
 
 **I-48 — Generic Linked Property Editing — INTEGRADA y CERRADA el 2026-09-12.** `G1`–`G4H` cerrados,
 validación del Owner **PASS**, Candidato aprobado e integrado con merge `--no-ff`. No queda ningún
@@ -2756,7 +2871,30 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-48 — 2026-09-12** (la vigente):
+**Baseline integrada de I-51 — 2026-09-12** (la vigente):
+
+- candidato **funcional** aprobado por el Owner: `cd96c1b86cdcb3ed02fc1fa4ecd73c3b00d4a29e`
+  (CI de `push` **34721967891**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**; cobertura del Candidato
+  por dispatch **34723143392**: `candidate_sha`, checkout medido y `measured-sha.txt` = ese mismo SHA, artifact
+  `rackcad-coverage-cobertura` presente, líneas **89.49 %** y ramas **75.56 %**);
+- **cierre documental previo a la integración**: este commit, **docs-only** —no recompila ni revalida nada, y
+  **no reemplaza** al candidato funcional—;
+- **validación manual del Owner en AutoCAD 2025: PASS TOTAL** —M1..M9 y guardar/reabrir—, sobre el DLL Debug
+  construido exactamente desde el candidato;
+- `origin/main` **no avanzó** desde la base `a4d88f18a1f42263d366c44dc05dd18a6786f152`: **sin rebase final**, de
+  modo que la validación manual corresponde exactamente al contenido integrado;
+- suites locales sobre el candidato: **RackCad.Tests 5515/5515** (0 omitidas; `main` traía 5476) y
+  **RackCad.UI.Tests 1324 correctas / 17 omitidas / 1341 totales** (las mismas 17 omitidas que `main`); Debug de UI
+  (0 advertencias, 0 errores) y del Plugin (0 errores, sólo los **dos** MSB3277 conocidos);
+- **rojo demostrado** en cada gate de producto: T1–T13 contra un andamiaje sin comportamiento en G3, y `G-R1`..`G-R6`
+  más la guarda de cableado mediante violaciones temporales **que compilan**, restauradas byte a byte y nunca
+  commiteadas, en G4 y G5;
+- **compuertas posteriores al merge**: el `MERGE_SHA` no existe todavía cuando se escribe esto, así que el CI del
+  merge, con su artifact `rackcad-coverage-cobertura`, sigue **pendiente** ([WORKFLOW.md](WORKFLOW.md) §4.5 paso
+  6). La comprobación de cobertura del Candidato (paso 7) ya está cubierta por el dispatch **34723143392**. La
+  rama y el worktree **no** se retiran hasta que pase el paso 6.
+
+**Baseline integrada de I-48 — 2026-09-12** (anterior):
 
 - candidato **funcional** aprobado por el Owner: `b0547990f9ffcbd015feed9a9efa95c9ff3b24b5`
   (CI de `push` **34657252232**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**);
@@ -3919,3 +4057,10 @@ podía cambiar **por dónde** se ejerce la semántica de las variables de proyec
 se ejerce. El propio contrato dice que tocar esa doctrina sería «ADR nuevo y decisión del dueño, no un
 ajuste de alcance», y no se tocó. El acuerdo técnico de I-48 vive en su **Proposal V8**
 (`32e37500766212e685d617c462f32e616c65f104`, congelada y sin cambio), no en un ADR.
+
+**I-51 no produjo ADR, y eso es deliberado.** I-51 **aplica**
+[ADR-0009](adr/0009-identidad-guid-embebida-en-dwg.md) —la identidad vive en la definición— y
+[ADR-0034](adr/0034-project-variables-autoridad-drawing-level.md) §9 y §12 —una copia es otro rack con la misma
+variable— **sin cambiarlos**. Sus decisiones de producto (PD-1..PD-7) y la reconciliación de la revisión de
+Arquitecto viven en [`docs/automation/decisions/I-51.md`](automation/decisions/I-51.md), que fija también las
+condiciones que habrían exigido un ADR; ninguna se activó.
