@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-51
 title: "ID15 — RACKDUPLICAR: multiples racks origen"
 type: feature
-status: claimed
+status: integrated
 branch: feature/rackduplicar-multiples-origenes
 base_branch: main
 priority:
@@ -26,22 +26,42 @@ automation:
 
 # I-51 — ID15 — RACKDUPLICAR: multiples racks origen
 
-> **Fase actual: G0 CERRADA · G1 CERRADA · G2 CERRADA al publicarse este contrato · G3 NO INICIADA.**
-> Este documento es el **contrato vinculante** de la implementacion. No hay una sola linea de produccion
-> escrita, y G3 no arranca sin **orden explicita** y el preflight de la seccion 12.
+> **Fase actual: G8 — cierre documental para la integracion (2026-09-12).** El producto esta terminado y
+> aprobado; este commit es **solo documentacion** y **no** reemplaza al candidato. El merge `--no-ff`, el CI
+> del `MERGE_SHA` y la limpieza siguen [WORKFLOW](../WORKFLOW.md) 4.5.
+>
+> ```text
+> G0 = CLOSED   G1 = CLOSED   G2 = CLOSED
+> G3 = CLOSED   G4 = CLOSED   G5 = CLOSED
+> G6 = PASS          Candidate cd96c1b86cdcb3ed02fc1fa4ecd73c3b00d4a29e
+> G7 = PASS TOTAL    Owner Validation en AutoCAD 2025, M1..M9 + guardar/reabrir
+> G8 = EN CURSO      cierre documental; merge y compuertas posteriores pendientes
+> ```
+>
+> Este documento sigue siendo el **contrato vinculante** que la implementacion cumplio. Los conteos de
+> pruebas viven en [HANDOFF](../HANDOFF.md) §5, que es su unico sitio.
 
 ```text
-Initiative   = I-51
-Owner ID     = ID15 — RACKDUPLICAR: multiples racks origen
-Branch       = feature/rackduplicar-multiples-origenes
-Worktree     = ~/.codex/worktrees/feature-rackduplicar-multiples-origenes
-BASE_SHA     = a4d88f18a1f42263d366c44dc05dd18a6786f152
-CLAIM_SHA    = 3ffd2ca21778b29bd5ccac2e6d171971769ad8ca   (Claim-Id ad4b9e47-63c0-48c3-9406-9ae2db8a121a)
-BOOTSTRAP    = 5a5c12aaf04bb9f3edfd861aad9fc266dfb89cf2
-G1_SHA       = c6fbfbccfc898764ffa71793070237bd6f824b8d
-Decisiones   = docs/automation/decisions/I-51.md
-Discovery    = docs/initiatives/I-51-discovery.md
-ROADMAP      = fila «RACKDUPLICAR con multiples origenes»; NO se toca en G2 y se alinea al integrar
+Initiative          = I-51
+Owner ID            = ID15 — RACKDUPLICAR: multiples racks origen
+Branch              = feature/rackduplicar-multiples-origenes
+Worktree            = ~/.codex/worktrees/feature-rackduplicar-multiples-origenes
+BASE_SHA            = a4d88f18a1f42263d366c44dc05dd18a6786f152
+CLAIM_SHA           = 3ffd2ca21778b29bd5ccac2e6d171971769ad8ca   (Claim-Id ad4b9e47-63c0-48c3-9406-9ae2db8a121a)
+BOOTSTRAP_SHA       = 5a5c12aaf04bb9f3edfd861aad9fc266dfb89cf2
+G1_SHA              = c6fbfbccfc898764ffa71793070237bd6f824b8d   (Discovery)
+G2_SHA              = c4cc2e49ce6de79b745ba5c2ced61c2c7572f307   (este contrato y decisiones)
+G3_SHA              = 4c79e4a46b2adf45aee87ffb399c786f25d5d274   (RackDuplicationPlan + T1-T15)
+G4_SHA              = f8cf4c9f2024f3494d977f4bfbd2c2f9816b8c73   (restamp con Guid + G-R1..G-R6)
+G5_SHA              = cd96c1b86cdcb3ed02fc1fa4ecd73c3b00d4a29e   (cableado multiorigen)
+FINAL_CANDIDATE_SHA = cd96c1b86cdcb3ed02fc1fa4ecd73c3b00d4a29e
+CI Candidate        = push 34721967891, head_sha = FINAL_CANDIDATE_SHA, 4/4 success
+Coverage Candidate  = dispatch 34723143392, measured_sha = FINAL_CANDIDATE_SHA, rackcad-coverage-cobertura
+Owner Validation    = PASS TOTAL — AutoCAD 2025, M1..M9 + guardar/reabrir
+MERGE_SHA           = PENDING hasta el merge
+Decisiones          = docs/automation/decisions/I-51.md
+Discovery           = docs/initiatives/I-51-discovery.md
+ROADMAP             = fila «RACKDUPLICAR con multiples origenes»; alineada en el cierre: integrada (2026-09-12)
 ```
 
 > **Apertura por autorizacion explicita del dueno sin fila previa** — caso (d) de
@@ -409,18 +429,19 @@ Necesitar cualquiera de ellos ⇒ **detenerse** (seccion 12).
 
 | # | Fase | Entregable | Estado |
 |---|---|---|---|
-| G0 | Reclamo + bootstrap | Reclamo atomico, contrato y fila en ROADMAP | **CERRADA** |
-| G1 | Discovery | [I-51-discovery.md](I-51-discovery.md) @ `c6fbfbc` | **CERRADA** |
-| G2 | Contrato | Este contrato, [`decisions/I-51.md`](../automation/decisions/I-51.md), reconciliacion del Discovery y L-1..L-4 en ideas-futuras | **CERRADA al publicarse este commit** |
-| G3 | Planificador puro + T1-T15 (solo Core, sin Plugin) | T1-T13 RED → GREEN; T14-T15 de caracterizacion | **NO INICIADA** — orden explicita + protocolo §6 |
-| G4 | Entrada con `Guid` en `RackEnvelopeRestamp` + G-R1..G-R6 | RED demostrado por violacion temporal → GREEN | pendiente |
-| G5 | Cableado de `RackDuplicarCommands` + build Debug del Plugin | protocolo §6 antes | pendiente |
-| G6 | Candidato | Core y UI locales, CI 4/4 sobre el SHA exacto, Debug de UI y Plugin | pendiente |
-| G7 | Validacion del Owner en AutoCAD 2025 | M1..M9 | pendiente |
-| G8 | Documentacion + integracion serializada | WORKFLOW 4.5 | pendiente |
+| G0 | Reclamo + bootstrap | Reclamo atomico, contrato y fila en ROADMAP | **CLOSED** — bootstrap `5a5c12a` |
+| G1 | Discovery | [I-51-discovery.md](I-51-discovery.md) @ `c6fbfbc` | **CLOSED** |
+| G2 | Contrato | Este contrato, [`decisions/I-51.md`](../automation/decisions/I-51.md), reconciliacion del Discovery y L-1..L-4 en ideas-futuras | **CLOSED** — `c4cc2e4` |
+| G3 | Planificador puro + T1-T15 (solo Core, sin Plugin) | T1-T13 RED → GREEN; T14-T15 de caracterizacion | **CLOSED** — `4c79e4a` |
+| G4 | Entrada con `Guid` en `RackEnvelopeRestamp` + G-R1..G-R6 | RED demostrado por violacion temporal → GREEN | **CLOSED** — `f8cf4c9` |
+| G5 | Cableado de `RackDuplicarCommands` + build Debug del Plugin | protocolo §6 antes | **CLOSED** — `cd96c1b` |
+| G6 | Candidato | Core y UI locales, CI 4/4 sobre el SHA exacto, Debug de UI y Plugin | **PASS** — Candidate `cd96c1b` |
+| G7 | Validacion del Owner en AutoCAD 2025 | M1..M9 | **PASS TOTAL** — AutoCAD 2025, M1..M9 + guardar/reabrir |
+| G8 | Documentacion + integracion serializada | WORKFLOW 4.5 | **EN CURSO** — cierre documental; merge `--no-ff`, CI del `MERGE_SHA` y limpieza pendientes |
 
-El SHA de G2 se registra en el reporte y en el siguiente commit de la rama, **no** en este documento: un
-documento no puede contener el SHA del commit que lo crea.
+Cada SHA de gate se registra en un commit **posterior** al que lo produce: un documento no puede contener
+el SHA del commit que lo crea. Por eso el SHA de este cierre documental no figura aqui, y el `MERGE_SHA`
+todavia no existe.
 
 ## 9. Pruebas y builds — compuertas obligatorias
 
@@ -536,3 +557,33 @@ force (`* [new branch]`) sobre `BASE_SHA`; `main` no fue modificada. Bootstrap `
 reconciliadas y AM-4 cerrada como no material, en
 [`decisions/I-51.md`](../automation/decisions/I-51.md). Preflight de G2: I-49 @ `f2d28a2` e I-50 @
 `fdaf2bc` solo tocan `docs/`, y ninguna modifica los cinco archivos de S1. Solo documentacion.
+
+**G3 — planificador puro.** `4c79e4a`: `RackDuplicationPlan` en `src/RackCad.Application/Persistence/`, sin
+tipos de AutoCAD, y T1-T15 en Core. T1-T13 se vieron **en rojo** contra un andamiaje sin comportamiento antes
+de implementarse; T14-T15 caracterizan y pasaron desde el principio. CI de push en verde.
+
+**G4 — restamp con `Guid` y guardas.** `f8cf4c9`: `RestampEnvelope(payload, copyName, Guid newId)` es la unica
+implementacion (NI-1..NI-6) y la firma historica solo delega; `RACKDUPLICAR`, todavia de una sola fuente,
+re-estampa y comprueba **antes** de la transaccion. G-R1..G-R6 leen el **codigo** —comentarios y literales
+enmascarados—, no lineas, y cada una se demostro **en rojo** con una violacion temporal que compila, restaurada
+byte a byte y sin commitear. CI de push 4/4.
+
+**G5 — cableado.** `cd96c1b`: seleccion multiple sin filtro de tipo, SNAPSHOT en una transaccion de lectura,
+`RackDuplicationPlan` como unica autoridad de grupos, definiciones y referencias, ensayo de restamp antes del
+punto base, PREPARE de todas las definiciones por destino y MUTATE en **una** transaccion. G-R1 reapuntada al
+lote y guarda de cableado nueva, con rojo demostrado del mismo modo. `RackEnvelopeRestamp.cs` quedo identico a
+G4 y `RackDuplicationPlan.cs` identico a G3. CI de push 4/4.
+
+**G6 — Candidato.** `cd96c1b86cdcb3ed02fc1fa4ecd73c3b00d4a29e`, **sin rebase**: `origin/main` seguia en
+`BASE_SHA`. Suites Core y UI completas en local, build Debug de UI y de Plugin sin errores, CI de push 4/4 sobre
+el SHA exacto (corrida **34721967891**) y cobertura del Candidato por dispatch (corrida **34723143392**:
+`candidate_sha`, checkout medido y `measured-sha.txt` coinciden con el candidato; artifact
+`rackcad-coverage-cobertura` presente).
+
+**G7 — validacion del Owner.** **PASS TOTAL** en AutoCAD 2025 sobre el DLL Debug construido desde el candidato:
+M1..M9 y smoke de guardar y reabrir.
+
+**G8 — cierre e integracion.** Preflight de integracion: `origin/main` = `BASE_SHA`, sin rebase ni otra sesion
+de integracion. I-49 @ `9aef7d0` solo toca documentacion; I-50 @ `11c04db` ya tiene produccion de cotas por
+vista (`DimensionViewVisibility`, `DimensionViewPolicy` y sus emisores), sin archivos comunes con I-51 y sin
+activar S1..S5. Este cierre es solo documentacion.
