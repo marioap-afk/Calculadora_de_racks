@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.PushBack;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Shared;
 using Xunit;
 using static RackCad.Tests.DimensionViewScenarios;
@@ -17,8 +19,9 @@ namespace RackCad.Tests
     /// siendo null, que es el legacy.
     ///
     /// <para>
-    /// NO cubre C-01, C-07 ni C-12 —las tres ventanas, de G3 (T-17..T-19)—, ni C-05 —cerrado en G4 por T-06—, ni C-15
-    /// —la copia compartida del compuesto de Push Back, de G6 (T-08)—.
+    /// Cubre C-02, C-03, C-04, C-06 (Selectivo), C-08, C-09, C-10, C-11 (Dinámico), C-13 y C-14 (Push Back). NO cubre
+    /// C-01, C-07 ni C-12 —las tres ventanas, de G3 (T-17..T-19)—, ni C-05 —cerrado en G4 por T-06—, ni C-15 —la copia
+    /// compartida del compuesto de Push Back, de G6 (T-08)—.
     /// </para>
     /// </summary>
     public class DimensionViewsCopySitesTests
@@ -184,6 +187,83 @@ namespace RackCad.Tests
             document.DimensionViews = sentinel;
             Assert.Equal(sentinel, AsInt(document.ToDesign().DimensionViews));                               // ToDesign
             Assert.Equal(sentinel, AsInt(document.ToDomain().DimensionViews));                               // ToDomain
+        }
+
+        // ---- Push Back ------------------------------------------------------------------------------------------
+
+        private static PushBackDesign PushBackDesignWith(DimensionViewVisibility? policy)
+        {
+            var design = PushBackSingleSidedDesign(DimensionDetail.Standard);
+            design.Structure.DimensionViews = policy;
+            return design;
+        }
+
+        [Theory]
+        [MemberData(nameof(Sentinels))]
+        public void T13_C13_PushBackEditorState_Load_RecoversThePolicyIntoTheAnnotations(int sentinel)
+        {
+            var resolver = new PushBackResolver(Catalog);
+            var inputs = new PushBackEditorState().LoadFromDesign(PushBackDesignWith((DimensionViewVisibility)sentinel), resolver);
+            Assert.Equal(sentinel, AsInt(inputs.Annotations.DimensionViews));
+
+            Assert.Null(new PushBackEditorState().LoadFromDesign(PushBackDesignWith(null), resolver).Annotations.DimensionViews);
+        }
+
+        /// <summary>
+        /// Por qué importa C-13: el editor de Push Back guarda sus anotaciones por C-09, así que reabrir un rack y
+        /// guardarlo sin tocar nada perdería la política si la carga no la devolviera a las opciones.
+        /// </summary>
+        [Theory]
+        [MemberData(nameof(Sentinels))]
+        public void T13_C13_ThePushBackEditor_ReopenedAndSavedUntouched_KeepsTheExactInt(int sentinel)
+        {
+            var assembler = new PushBackEditorDesignAssembler(Catalog);
+
+            var state = new PushBackEditorState();
+            var inputs = state.LoadFromDesign(PushBackDesignWith((DimensionViewVisibility)sentinel), assembler.Resolver);
+            Assert.Equal(sentinel, AsInt(assembler.BuildDesign(state, inputs).Structure.DimensionViews));
+
+            var legacyState = new PushBackEditorState();
+            var legacyInputs = legacyState.LoadFromDesign(PushBackDesignWith(null), assembler.Resolver);
+            Assert.Null(assembler.BuildDesign(legacyState, legacyInputs).Structure.DimensionViews);
+        }
+
+        [Theory]
+        [MemberData(nameof(Sentinels))]
+        public void T13_C14_PushBackMirror_TheReflectedAndTheClonedStructure_CarryTheExactInt(int sentinel)
+        {
+            var source = PushBackSingleSided(DimensionDetail.Standard, Catalog).Structure;
+            source.DimensionViews = (DimensionViewVisibility)sentinel;
+
+            Assert.Equal(sentinel, AsInt(PushBackMirror.Structure(source).DimensionViews));                          // una reflexión
+            Assert.Equal(sentinel, AsInt(PushBackMirror.Structure(source, index => index == 0).DimensionViews));   // re-declarando ranuras
+            Assert.Equal(sentinel, AsInt(PushBackMirror.Clone(source).DimensionViews));                              // dos reflexiones
+
+            source.DimensionViews = null;
+            Assert.Null(PushBackMirror.Structure(source).DimensionViews);
+            Assert.Null(PushBackMirror.Clone(source).DimensionViews);
+        }
+
+        /// <summary>
+        /// <c>PushBackRuns.Clone</c> es privado y se alcanza por <c>BuildCorrida</c>: A→B resuelve la corrida sobre ese
+        /// clon (dos reflexiones) y B→A sobre una reflexión. La política se asigna al sistema compuesto YA resuelto,
+        /// porque la copia compartida que la llevaría desde el diseño es C-15, de G6.
+        /// </summary>
+        [Theory]
+        [MemberData(nameof(Sentinels))]
+        public void T13_C14_PushBackRuns_BothCorridaFrames_CarryTheExactInt(int sentinel)
+        {
+            var design = PushBackCompositeStructureTests.Composite(slotsA: 1, slotsB: 1, deepA: 5, deepB: 8, levelsA: 1, levelsB: 1);
+            design.Composite.DefaultTopology = PushBackCellTopology.Corrida;
+            var system = new PushBackResolver(Catalog).Resolve(design);
+
+            system.Structure.DimensionViews = (DimensionViewVisibility)sentinel;
+            Assert.Equal(sentinel, AsInt(PushBackRuns.BuildCorrida(system, PushBackRunDirection.AToB, 10).Structure.DimensionViews));   // PushBackRuns.Clone
+            Assert.Equal(sentinel, AsInt(PushBackRuns.BuildCorrida(system, PushBackRunDirection.BToA, 10).Structure.DimensionViews));   // PushBackMirror.Structure
+
+            system.Structure.DimensionViews = null;
+            Assert.Null(PushBackRuns.BuildCorrida(system, PushBackRunDirection.AToB, 10).Structure.DimensionViews);
+            Assert.Null(PushBackRuns.BuildCorrida(system, PushBackRunDirection.BToA, 10).Structure.DimensionViews);
         }
     }
 }

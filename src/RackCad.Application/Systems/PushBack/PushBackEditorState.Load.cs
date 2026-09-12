@@ -205,6 +205,7 @@ namespace RackCad.Application.Systems.PushBack
                     DrawRackName = s.DrawRackName,
                     AnnotationScale = s.AnnotationScale > 0.0 ? s.AnnotationScale : 1.0,
                     Dimensions = s.Dimensions,
+                    DimensionViews = s.DimensionViews,
                     DimensionStyle = s.DimensionStyle
                 }
             };
