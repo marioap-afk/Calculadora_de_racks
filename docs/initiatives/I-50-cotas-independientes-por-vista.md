@@ -26,10 +26,10 @@ automation:
 
 # I-50 — Cotas independientes por vista
 
-> Fase actual: **G0 CLOSED · G1 CLOSED · G2 IN PROGRESS · G2A IN PROGRESS**. Proposal actual = **V1.1**
-> (Coordinator **PENDING REVIEW**, Architect **NOT REVIEWED**); la V1 recibió **NOT AGREED** del Coordinador
-> y se conserva intacta. ADR-0035 sigue `propuesto`. **Solo documentación**: no hay una sola línea de
-> producción en la rama.
+> Fase actual: **G0 CLOSED · G1 CLOSED · G2 IN PROGRESS · G2A IN PROGRESS**. Proposal actual = **V1.2**
+> (Coordinator **PENDING REVIEW**, Architect **PENDING RE-REVIEW**, Consensus **NOT REACHED**). V1 y V1.1 se
+> conservan intactas (historial en la sección 15). ADR-0035 sigue `propuesto`. **G4 no está abierto. Solo
+> documentación**: no hay una sola línea de producción ni de pruebas en la rama.
 >
 > ```text
 > BASE_SHA      = a4d88f18a1f42263d366c44dc05dd18a6786f152
@@ -148,7 +148,7 @@ Además, por confirmación del Coordinador: la **variación de huella de `RACKLA
 | G0 | Preflight, claim, worktree, bootstrap | **CLOSED** — reclamo `97cc0ef`, contrato `4e22d91`, fila de ROADMAP `a2fba4f`, worktree creado |
 | G1 | Characterization / matriz completa | **CLOSED** — [I-50-discovery.md](I-50-discovery.md); decisiones del Coordinador en la sección 12 |
 | G2 | Contrato de autoridad + persistencia + default legacy | **IN PROGRESS** |
-| G2A | Proposal + ADR `propuesto` (solo documentación) | **IN PROGRESS** — Proposal actual **V1.1** ([I-50-proposal-v1.1.md](I-50-proposal-v1.1.md)): Coordinator **PENDING REVIEW**, Architect **NOT REVIEWED**. Historial: V1 ([I-50-proposal-v1.md](I-50-proposal-v1.md), `93c352a`): Coordinator **NOT AGREED** (MATERIAL-01, MATERIAL-02). [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md) `propuesto` |
+| G2A | Proposal + ADR `propuesto` (solo documentación) | **IN PROGRESS** — Proposal actual **V1.2** ([I-50-proposal-v1.2.md](I-50-proposal-v1.2.md)): Coordinator **PENDING REVIEW**, Architect **PENDING RE-REVIEW**, Consensus **NOT REACHED**. Historial: V1 (`93c352a`) Coordinator **NOT AGREED**; V1.1 (`0d7670c`) Coordinator **AGREED**, Architect **NOT AGREED** (MAT-A1). [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md) `propuesto` |
 | G3 | UI mínima | pendiente |
 | G4 | Builders / draw path | pendiente |
 | G5 | Persistence / update | pendiente |
@@ -159,6 +159,8 @@ Además, por confirmación del Coordinador: la **variación de huella de `RACKLA
 **No implementation before G1/G2.** G3+ queda bloqueado hasta cerrar el contrato y, si aparece una decisión arquitectónica transversal material, hasta la revisión de Arquitecto correspondiente. **Cerrar G1 no autoriza implementar**: G3+ sigue bloqueado hasta que el Coordinador y el Arquitecto revisen la Proposal.
 
 **Orden de ejecución aprobado por el Coordinador** (revisión de V1): **G4 → G5 → G6 → G3 → G7 → G8**. Se conserva la numeración de la tabla; solo cambia el orden en que se abren.
+
+**Contenido y cierre de cada gate** (archivos, sitios de copia C-xx y pruebas o validaciones que lo cierran): tabla de la [Proposal V1.2](I-50-proposal-v1.2.md), sección 14.3 (MAT-A1). El orden no cambia.
 
 **Compuerta de código productivo**: consenso del Coordinador y del Arquitecto sobre la **misma** versión de la Proposal **y** ADR-0035 `aceptado` por el Owner (sección 14). Faltando cualquiera de las dos, no se escribe producción.
 
@@ -246,4 +248,8 @@ nuevo permanece `propuesto` hasta que el dueño lo acepta o lo rechaza).
 | Versión | Archivo | Revisión del Coordinador | Revisión del Arquitecto |
 |---|---|---|---|
 | V1 | [I-50-proposal-v1.md](I-50-proposal-v1.md) (`93c352a`), conservada **intacta** | **NOT AGREED**. MATERIAL-01: retirar «entero negativo ⇒ legacy» y conservar exactamente todo entero presente. MATERIAL-02: retirar la guarda de texto T-22 del Plugin. Confirmó el resto (representación B, sin `All`, `null` = legacy, orden de gates, `requires_owner_decision`, ADR aceptado antes de código, I-50 no modifica `RACKLAYOUT`) | no revisada |
-| V1.1 | [I-50-proposal-v1.1.md](I-50-proposal-v1.1.md) | **PENDING REVIEW** | **NOT REVIEWED** |
+| V1.1 | [I-50-proposal-v1.1.md](I-50-proposal-v1.1.md) (`0d7670c`), conservada **intacta** | **AGREED** | **NOT AGREED**. Único MATERIAL: **MAT-A1**, ejecutabilidad de los gates (faltaba el contenido y cierre de cada gate; T-06 dependía de C-05 y T-08 de C-10/C-14/C-15). MINOR MIN-1..MIN-9. Respondió QA-1, QA-3, QA-4 y QA-5 con AGREE. **El diseño de datos no se reabrió** |
+| V1.2 | [I-50-proposal-v1.2.md](I-50-proposal-v1.2.md) | **PENDING REVIEW** | **PENDING RE-REVIEW** |
+
+**Consenso**: **NOT REACHED**. V1.2 hereda íntegramente el contrato técnico de V1.1 y solo incorpora MAT-A1
+(tabla de gates, con C-05 adelantado a G4) y MIN-1..MIN-8; MIN-9 se aplicó a ADR-0035, que sigue `propuesto`.
