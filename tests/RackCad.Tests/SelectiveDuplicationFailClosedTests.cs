@@ -330,42 +330,73 @@ namespace RackCad.Tests
         }
 
         /// <summary>
-        /// I-51 G4, G-R1 (reapunta <c>GUARDA_RACKDUPLICAR_DECIDE_ANTES_DE_CLONAR</c>). La guarda anterior comparaba la
-        /// PRIMERA aparicion de dos textos en el archivo, y seguia verde con el re-estampado DENTRO de la transaccion de
-        /// escritura, justo antes del clon. Esta mira la propiedad: el miembro que clona no re-estampa; el payload que
-        /// clona le llega como parametro; y quien lo llama le pasa el <c>DesignJson</c> de un re-estampado cuyo
-        /// <c>IsSuccess</c> ya miro —abandonando si falla— antes de llamarlo.
+        /// I-51 G-R1. G4 reapunto aqui <c>GUARDA_RACKDUPLICAR_DECIDE_ANTES_DE_CLONAR</c>, que comparaba la PRIMERA aparicion
+        /// de dos textos y seguia verde con el re-estampado dentro de la transaccion; G5 la reapunta al LOTE por destino. La
+        /// propiedad: cada destino re-estampa TODAS sus definiciones y mira TODOS sus <c>IsSuccess</c> antes de la UNICA
+        /// transaccion que clona. Se comprueba sin fijar una forma: el miembro que clona no re-estampa, ni por si mismo ni
+        /// por lo que llama; ninguna transaccion del comando re-estampa; una sola transaccion alcanza los clones y los
+        /// contiene todos; el clon recibe el <c>DesignJson</c> preparado; el payload de origen solo entra al re-estampado;
+        /// quien re-estampa mira <c>IsSuccess</c> y abandona antes de usar el resultado; y en cada destino esa preparacion
+        /// termina antes de llamar a la mutacion.
         /// </summary>
         [Fact]
         public void GUARDA_G_R1_RACKDUPLICAR_DECIDE_ANTES_DE_CLONAR()
         {
-            var members = PluginSourceCode.Members(PluginSourceCode.Mask(Plugin("RackDuplicarCommands.cs")));
+            var code = PluginSourceCode.Mask(Plugin("RackDuplicarCommands.cs"));
+            var members = PluginSourceCode.Members(code);
 
-            // MUTATE: un solo miembro clona, y no re-estampa.
+            // MUTATE: un solo miembro clona, y no re-estampa ni directa ni indirectamente.
             var mutation = Assert.Single(members, m => PluginSourceCode.Calls(m.Body, "CloneDefinition").Count > 0);
-            Assert.True(PluginSourceCode.Calls(mutation.Body, "RestampEnvelope").Count == 0,
-                mutation.Name + " clona y tambien re-estampa: la decision que puede fallar quedo dentro de la mutacion.");
+            Assert.False(PluginSourceCode.Reaches(members, mutation.Body, "RestampEnvelope"),
+                mutation.Name + " re-estampa: la decision que puede fallar quedo dentro de la mutacion.");
 
-            // El payload que clona es uno de SUS parametros (la posicion sale de la firma real de RackCloner).
-            var clone = Assert.Single(PluginSourceCode.Calls(mutation.Body, "CloneDefinition"));
-            var payload = clone.Arguments[ClonerPayloadIndex()];
-            var parameter = mutation.Parameters.Select(p => p.Name).ToList().IndexOf(payload);
-            Assert.True(parameter >= 0, "el payload que clona " + mutation.Name + " no le llega como parametro: " + payload);
+            // Las transacciones se abren solo con InDocumentTransaction.Run: ninguna re-estampa, y una sola alcanza los clones.
+            Assert.DoesNotMatch(@"\b(?:StartTransaction|StartOpenCloseTransaction|LockDocument)\s*\(", code);
+            var transactions = PluginSourceCode.Calls(code, "Run");
 
-            // PREPARE: quien llama a la mutacion re-estampa, mira IsSuccess, abandona si falla y le pasa lo preparado.
-            var prepare = Assert.Single(members, m => m != mutation && PluginSourceCode.Calls(m.Body, mutation.Name).Count > 0);
-            var place = Assert.Single(PluginSourceCode.Calls(prepare.Body, mutation.Name));
+            foreach (var transaction in transactions)
+            {
+                Assert.False(PluginSourceCode.Reaches(members, transaction.ArgumentText, "RestampEnvelope"),
+                    "una transaccion se abre antes de terminar los re-estampados.");
+            }
+
+            var clones = PluginSourceCode.Calls(code, "CloneDefinition");
+            var cloning = Assert.Single(transactions, t => PluginSourceCode.Reaches(members, t.ArgumentText, "CloneDefinition"));
+            Assert.Equal(clones.Count, PluginSourceCode.Calls(cloning.ArgumentText, "CloneDefinition").Count);
+
+            // El clon recibe lo PREPARADO, y el payload de origen solo entra al re-estampado.
+            var payloadAt = ClonerPayloadIndex();
+
+            foreach (var clone in clones)
+            {
+                Assert.True(Regex.IsMatch(clone.Arguments[payloadAt], @"^\w+\s*\.\s*DesignJson$"),
+                    "el clon no recibe el DesignJson preparado: " + clone.Arguments[payloadAt]);
+            }
+
+            var restampedSources = PluginSourceCode.Calls(code, "RestampEnvelope")
+                .Count(call => Regex.IsMatch(call.Arguments[0], @"^\w+\s*\.\s*(?:Raw)?Payload$"));
+            Assert.True(Regex.Matches(code, @"\.\s*(?:Raw)?Payload\b").Count == restampedSources,
+                "un payload de origen se usa fuera del re-estampado.");
+
+            // PREPARE: el unico miembro que re-estampa mira IsSuccess y abandona antes de usar el resultado.
+            var prepare = Assert.Single(members, m => PluginSourceCode.Calls(m.Body, "RestampEnvelope").Count > 0);
             var restamp = Regex.Match(prepare.Body, @"\b(?<result>\w+)\s*=\s*(?:\w+\s*\.\s*)*RestampEnvelope\s*\(");
-            Assert.True(restamp.Success && restamp.Index < place.Start,
-                prepare.Name + " no re-estampa antes de llamar a " + mutation.Name + ".");
+            Assert.True(restamp.Success, prepare.Name + " no guarda el resultado del re-estampado.");
 
             var result = restamp.Groups["result"].Value;
             var check = Regex.Match(prepare.Body, @"\b" + result + @"\s*\.\s*IsSuccess\b");
-            Assert.True(check.Success && restamp.Index < check.Index && check.Index < place.Start,
-                "el IsSuccess de '" + result + "' no se mira entre el re-estampado y la llamada a " + mutation.Name + ".");
-            Assert.Matches(@"\b(?:throw|return|break|continue)\b", prepare.Body.Substring(check.Index, place.Start - check.Index));
+            var use = Regex.Match(prepare.Body, @"\b" + result + @"\s*\.\s*DesignJson\b");
+            Assert.True(check.Success && use.Success && restamp.Index < check.Index && check.Index < use.Index,
+                "el IsSuccess de '" + result + "' no se mira antes de usar el resultado.");
+            Assert.Matches(@"\b(?:throw|return|break|continue)\b", prepare.Body.Substring(check.Index, use.Index - check.Index));
 
-            Assert.Equal(result + ".DesignJson", Regex.Replace(place.Arguments[parameter], @"\s+", string.Empty));
+            // En cada destino, la preparacion completa termina antes de llamar a la mutacion.
+            var loop = Assert.Single(members, m => m != mutation && PluginSourceCode.Calls(m.Body, mutation.Name).Count > 0);
+            var place = Assert.Single(PluginSourceCode.Calls(loop.Body, mutation.Name));
+            var assigner = Regex.Match(loop.Body, @"\bCreateDestinationAssigner\s*\(");
+            Assert.True(assigner.Success && PluginSourceCode.Calls(loop.Body, prepare.Name)
+                    .Any(call => assigner.Index < call.Start && call.End <= place.Start),
+                "el destino no se prepara entero antes de llamar a " + mutation.Name + ".");
         }
 
         /// <summary>Posicion del parametro <c>payload</c> en la firma vigente de <c>RackCloner.CloneDefinition</c>.</summary>
@@ -397,11 +428,47 @@ namespace RackCad.Tests
             }
         }
 
-        /// <summary>I-51 G4, G-R4 (nueva, PD-1). RACKDUPLICAR duplica lo SELECCIONADO: no barre el dibujo buscando hermanas.</summary>
+        /// <summary>
+        /// I-51 G-R4 (G4, PD-1; ampliada en G5). RACKDUPLICAR duplica lo SELECCIONADO: no barre el dibujo buscando hermanas,
+        /// y su seleccion es la multiple de AutoCAD sin filtro de tipo; lo que no es un rack lo informa el plan.
+        /// </summary>
         [Fact]
         public void GUARDA_G_R4_RACKDUPLICAR_NO_BARRE_EL_DIBUJO()
         {
-            Assert.DoesNotMatch(@"\b(?:FindRackBlocks|ScanEnvelopes)\b", PluginSourceCode.Mask(Plugin("RackDuplicarCommands.cs")));
+            var code = PluginSourceCode.Mask(Plugin("RackDuplicarCommands.cs"));
+
+            Assert.DoesNotMatch(@"\b(?:FindRackBlocks|ScanEnvelopes|SelectAll)\b", code);
+
+            var selection = Assert.Single(PluginSourceCode.Calls(code, "GetSelection"));
+            Assert.True(selection.Arguments.Count <= 1, "la seleccion lleva filtro: " + selection.ArgumentText);
+            Assert.DoesNotMatch(@"\b(?:SelectionFilter|TypedValue|SingleOnly)\b", code);
+        }
+
+        /// <summary>
+        /// I-51 G5 — RACKDUPLICAR esta cableado al planificador y no conserva un camino paralelo: seleccion multiple y no la
+        /// de una entidad; UN plan como unica autoridad de grupos, definiciones y referencias; UN asignador de destinos; y
+        /// ninguna agrupacion hecha a mano en el comando, ni por RackId, ni por kind, ni comparando disenos.
+        /// </summary>
+        [Fact]
+        public void GUARDA_G5_RACKDUPLICAR_ESTA_CABLEADO_AL_PLANIFICADOR()
+        {
+            var code = PluginSourceCode.Mask(Plugin("RackDuplicarCommands.cs"));
+
+            Assert.Single(Regex.Matches(code, @"\bRackDuplicationPlan\s*\.\s*Build\s*\("));
+            Assert.Single(Regex.Matches(code, @"\.\s*CreateDestinationAssigner\s*\("));
+            Assert.Single(Regex.Matches(code, @"\.\s*Next\s*\(\s*\)"));
+            Assert.Single(PluginSourceCode.Calls(code, "GetSelection"));
+            Assert.DoesNotMatch(@"\bGetEntity\s*\(", code);
+
+            // Lo que forma cada copia sale del plan.
+            Assert.Matches(@"\.\s*Groups\b", code);
+            Assert.Matches(@"\.\s*Definitions\b", code);
+            Assert.Matches(@"\.\s*References\b", code);
+
+            // Ninguna agrupacion paralela.
+            Assert.DoesNotMatch(
+                @"\b(?:GroupBy|ToLookup|IsSameAuthority|SelectiveAuthoredAuthority|KindHandlerDispatch)\b|\bRackDuplicationSourceKey\s*\.\s*For\w+\s*\(|\.\s*Id\b",
+                code);
         }
 
         /// <summary>
@@ -461,29 +528,35 @@ namespace RackCad.Tests
         private static bool IsGuid(string type) => type == "Guid" || type == "System.Guid";
 
         /// <summary>
-        /// I-51 G4, G-R6 (nueva, INV-11 e INV-14). Duplicar no regenera, no renombra, no crea capas ni purga; y la conversion
-        /// UCS→WCS del desplazamiento ocurre UNA vez por destino: en quien pide el punto, despues de pedirlo y antes de
-        /// colocar la copia, nunca dentro de la mutacion.
+        /// I-51 G-R6 (G4, INV-11 e INV-14; ampliada en G5). Duplicar no regenera, no renombra, no crea capas, no importa
+        /// bloques ni purga; despues de colocar un destino solo informa; y la conversion UCS→WCS del desplazamiento ocurre
+        /// UNA vez por destino: en quien pide el punto, despues de pedirlo y antes de colocar, nunca dentro de la mutacion.
         /// </summary>
         [Fact]
         public void GUARDA_G_R6_RACKDUPLICAR_NO_TOCA_DE_MAS_Y_TRANSFORMA_UNA_VEZ_POR_DESTINO()
         {
             var code = PluginSourceCode.Mask(Plugin("RackDuplicarCommands.cs"));
 
-            Assert.DoesNotMatch(@"\b(?:Regen|SyncName|EnsureLayer|EnsureForPlan|PurgeUnreferenced)\s*\(", code);
+            Assert.DoesNotMatch(
+                @"\b(?:Regen|SyncName|EnsureLayer|EnsureForPlan|EnsureBlocks|PurgeUnreferenced|PurgeAfterCommit)\s*\(", code);
 
             const string Ucs = @"\bCurrentUserCoordinateSystem\b";
             Assert.Single(Regex.Matches(code, Ucs));
 
             var members = PluginSourceCode.Members(code);
             var mutation = Assert.Single(members, m => PluginSourceCode.Calls(m.Body, "CloneDefinition").Count > 0);
-            var prepare = Assert.Single(members, m => m != mutation && PluginSourceCode.Calls(m.Body, mutation.Name).Count > 0);
-            var place = Assert.Single(PluginSourceCode.Calls(prepare.Body, mutation.Name));
-            var transform = Assert.Single(Regex.Matches(prepare.Body, Ucs));
+            var loop = Assert.Single(members, m => m != mutation && PluginSourceCode.Calls(m.Body, mutation.Name).Count > 0);
+            var place = Assert.Single(PluginSourceCode.Calls(loop.Body, mutation.Name));
+            var transform = Assert.Single(Regex.Matches(loop.Body, Ucs));
 
-            Assert.True(Regex.Matches(prepare.Body, @"\bGetPoint\s*\(").Any(point => point.Index < transform.Index),
+            Assert.True(Regex.Matches(loop.Body, @"\bGetPoint\s*\(").Any(point => point.Index < transform.Index),
                 "la conversion UCS->WCS no sigue a la lectura del punto de destino.");
             Assert.True(transform.Index < place.Start, "la conversion UCS->WCS no precede a " + mutation.Name + ".");
+
+            // Despues de colocar el destino solo se informa: ni otra transaccion, ni clones, ni entidades nuevas o editadas.
+            Assert.False(
+                PluginSourceCode.Reaches(members, loop.Body.Substring(place.End), "Run", "CloneDefinition", "AppendEntity", "UpgradeOpen", "Erase"),
+                "despues de " + mutation.Name + " el comando vuelve a tocar el dibujo.");
         }
 
         [Fact]
@@ -522,11 +595,14 @@ namespace RackCad.Tests
     {
         internal sealed record Member(string Name, IReadOnlyList<(string Type, string Name)> Parameters, string Body);
 
-        internal sealed record Call(int Start, IReadOnlyList<string> Arguments);
+        internal sealed record Call(int Start, int End, IReadOnlyList<string> Arguments)
+        {
+            public string ArgumentText => string.Join(", ", Arguments);
+        }
 
         private static readonly Regex Signature = new Regex(
             @"\b(?:public|private|internal|protected)\s+(?:(?:static|override|virtual|sealed|async|unsafe|extern)\s+)*"
-            + @"(?<type>[\w.]+(?:<[^<>()]*>)?[?\[\]]*)\s+(?<name>\w+)\s*\((?<parameters>[^()]*)\)\s*(?<open>\{|=>)");
+            + @"(?<type>[\w.]+(?:<[^<>()]*>)?[?\[\]]*)\s+(?<name>\w+)\s*\((?<parameters>[^()]*(?:\([^()]*\)[^()]*)*)\)\s*(?<open>\{|=>)");
 
         private static readonly Regex Parameter = new Regex(
             @"^(?:(?:this|ref|out|in|params)\s+)*(?<type>.+?)\s+(?<name>\w+)$", RegexOptions.Singleline);
@@ -571,10 +647,41 @@ namespace RackCad.Tests
             {
                 var open = match.Index + match.Length - 1;
                 var close = Closing(code, open);
-                calls.Add(new Call(match.Index, Split(code.Substring(open + 1, close - open - 2), genericBrackets: false)));
+                calls.Add(new Call(match.Index, close, Split(code.Substring(open + 1, close - open - 2), genericBrackets: false)));
             }
 
             return calls;
+        }
+
+        /// <summary>
+        /// Si <paramref name="text"/> llama a alguno de <paramref name="names"/>, directamente o a traves de los miembros de
+        /// <paramref name="members"/> que llama, a cualquier profundidad.
+        /// </summary>
+        public static bool Reaches(IReadOnlyList<Member> members, string text, params string[] names)
+        {
+            var visited = new HashSet<Member>();
+            var pending = new Stack<string>();
+            pending.Push(text);
+
+            while (pending.Count > 0)
+            {
+                var current = pending.Pop();
+
+                if (names.Any(name => Calls(current, name).Count > 0))
+                {
+                    return true;
+                }
+
+                foreach (var member in members)
+                {
+                    if (Calls(current, member.Name).Count > 0 && visited.Add(member))
+                    {
+                        pending.Push(member.Body);
+                    }
+                }
+            }
+
+            return false;
         }
 
         private static string Scan(string source, List<string> literals)

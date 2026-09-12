@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
@@ -12,18 +14,28 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>RACKDUPLICAR: COPY-style duplication of a rack — base point + repeated destination points, each copy
+    /// <summary>RACKDUPLICAR: COPY-style duplication of racks — base point + repeated destination points, each copy
     /// an INDEPENDENT rack (fresh GUID + numbered "- copia" name). Plus its short alias.</summary>
     public sealed class RackDuplicarCommands
     {
         [CommandMethod("RD")]  public void AliasRackDuplicar() => RackDuplicar();          // RACKDUPLICAR
 
         /// <summary>
-        /// Duplicate a rack like AutoCAD's COPY: pick the rack, pick a BASE point, then click destination points —
-        /// each click places an independent copy (its own GUID and name, so RACKEDITAR touches only that copy).
-        /// Multiple mode by default (keep clicking; Enter/Esc ends); the [Unica] keyword switches to a single copy.
-        /// The copy CLONES the clicked view-block's drawn geometry (nested ARRAY defs shared, payload re-stamped),
-        /// so it is exact and works the same for the five rack types (selective, dynamic, Push Back, cabecera, cama).
+        /// Duplicate racks like AutoCAD's COPY: select one or more racks — several racks, several views of one rack,
+        /// linked references, anything else is ignored with a notice — pick a BASE point, then click destination points.
+        /// Each click places an independent copy of every selected rack (its own GUID and name, so RACKEDITAR touches
+        /// only that copy) keeping the selection's layout. Multiple mode by default (keep clicking; Enter/Esc ends); the
+        /// [Unica] keyword switches to a single destination. The copy CLONES each selected view-block's drawn geometry
+        /// (nested ARRAY defs shared, payload re-stamped), so it is exact and works the same for every rack type.
+        ///
+        /// <para>
+        /// I-51 (ID15). Only what was selected is copied: a view nobody selected is never added (PD-1). The command runs
+        /// in phases — ACQUIRE the selection, SNAPSHOT it in one read transaction, PREFLIGHT it with the pure
+        /// <see cref="RackDuplicationPlan"/> and a rehearsal of every restamp, ask the BASE point, and then per
+        /// destination: assign identities, PREPARE every restamp, MUTATE in one transaction. Everything that can fail
+        /// for a semantic reason is decided before that transaction opens, and an exception inside it rolls the whole
+        /// destination back: a destination is placed entirely or not at all, and the ones already placed remain.
+        /// </para>
         /// </summary>
         [CommandMethod("RACKDUPLICAR")]
         public void RackDuplicar()
@@ -38,24 +50,43 @@ namespace RackCad.Plugin
 
                 var editor = document.Editor;
 
-                if (!PickDuplicateSource(document, out var embed, out var source))
+                // ACQUIRE: a plain multiple selection with no type filter; what is not a rack is reported by the plan.
+                var selection = editor.GetSelection(new PromptSelectionOptions
+                {
+                    MessageForAdding = "\nSelecciona racks para duplicar: "
+                });
+                if (selection.Status != PromptStatus.OK)
                 {
                     return;
                 }
 
-                if (embed == null || string.IsNullOrEmpty(embed.Design))
+                var snapshot = TakeSnapshot(document, selection.Value.GetObjectIds());
+
+                // PREFLIGHT: the plan is the only authority on which definitions and references form each copy.
+                var plan = RackDuplicationPlan.Build(
+                    snapshot.Selection,
+                    snapshot.DefinitionSnapshots,
+                    kind => KindHandlerRegistry.Default.TryGetIgnoreCase(kind, out _));
+
+                foreach (var notice in plan.Notices)
                 {
-                    editor.WriteMessage("\nRackCad: ese bloque no tiene datos de rack para duplicar.");
+                    editor.WriteMessage("\nRackCad: " + notice);
+                }
+
+                if (!plan.IsSuccess)
+                {
+                    foreach (var error in plan.Errors)
+                    {
+                        editor.WriteMessage("\nRackCad: " + error);
+                    }
+
                     return;
                 }
 
-                // An unrecognized kind cannot be re-stamped safely (its inner identity is unknown): report the
-                // historic visible error and abort BEFORE placing any copy, so no copy carries a possibly-
-                // inconsistent identity. Case-insensitive, matching the restamp; the five embedded kinds resolve.
-                if (!KindHandlerDispatch.TryResolveIgnoreCase(editor, embed.Kind, out _))
-                {
-                    return;
-                }
+                // INV-12: rehearse every restamp before asking for a point, so a rack this build cannot copy fails with
+                // nothing clicked and nothing written. One throwaway id and name per group, like a real destination;
+                // they never reach the drawing nor the destination assigner.
+                Prepare(plan, snapshot, group => (Guid.NewGuid(), group.BaseName + " - copia"));
 
                 var basePrompt = new PromptPointOptions("\nPunto base: ");
                 var baseResult = editor.GetPoint(basePrompt);
@@ -65,7 +96,7 @@ namespace RackCad.Plugin
                 }
 
                 var basePoint = baseResult.Value;
-                var baseName = string.IsNullOrWhiteSpace(embed.Name) ? "Rack" : embed.Name.Trim();
+                var assigner = plan.CreateDestinationAssigner(Guid.NewGuid);
                 var multiple = true; // like COPY: keep placing until Enter/Esc
                 var placed = 0;
 
@@ -97,29 +128,25 @@ namespace RackCad.Plugin
                         break; // Enter or Esc
                     }
 
-                    placed++;
-                    var copyName = placed == 1
-                        ? baseName + " - copia"
-                        : baseName + " - copia " + placed.ToString(CultureInfo.InvariantCulture);
-
-                    // PREPARE (I-47 G14, I-51 G4): la transformacion que puede fallar se decide AQUI, antes de abrir
-                    // la transaccion de escritura. Si el re-estampado no sale, no se clona nada: una copia con la
-                    // identidad vieja dentro y una nueva fuera es irreversible, y solo se descubre cuando alguien la
-                    // abre y la guarda. El fallo sale como siempre, hacia el catch del comando.
-                    var restamped = RackEnvelopeRestamp.RestampEnvelope(source.Payload, copyName);
-
-                    if (!restamped.IsSuccess)
+                    var assignment = assigner.Next();
+                    if (!assignment.IsSuccess)
                     {
-                        throw new InvalidOperationException(restamped.Error);
+                        throw new InvalidOperationException(assignment.Error);
                     }
+
+                    // PREPARE (I-47 G14, I-51 G5): todas las definiciones de todos los grupos se re-estampan con la
+                    // identidad y el nombre de SU grupo, y se comprueban, antes de abrir la transaccion de escritura. Si
+                    // una falla, el comando termina aqui: este destino queda intacto y los ya colocados permanecen.
+                    var identities = assignment.Groups.ToDictionary(group => group.Key);
+                    var prepared = Prepare(plan, snapshot, group => (identities[group.Key].NewRackId, identities[group.Key].CopyName));
 
                     // GetPoint returns CURRENT-UCS coordinates but BlockReference.Position is WCS: transform the
                     // displacement (a vector — only the rotational part applies) or a rotated UCS lands copies wrong.
                     var displacement = (destination.Value - basePoint).TransformBy(editor.CurrentUserCoordinateSystem);
-                    var position = source.Position + displacement;
 
-                    PlaceIndependentCopy(document, source, restamped.DesignJson, copyName, position, embed.Name);
-                    editor.WriteMessage("\nRackCad: copia '" + copyName + "' colocada.");
+                    PlaceDestination(document, plan, snapshot, prepared, displacement);
+                    placed = assignment.Ordinal;
+                    editor.WriteMessage(DescribePlaced(assignment));
 
                     if (!multiple)
                     {
@@ -129,8 +156,7 @@ namespace RackCad.Plugin
 
                 if (placed > 0)
                 {
-                    editor.WriteMessage(string.Format(CultureInfo.InvariantCulture,
-                        "\nRackCad: {0} copia(s) independiente(s) de '{1}'.", placed, baseName));
+                    editor.WriteMessage(DescribeSummary(plan, placed));
                 }
             }
             catch (System.Exception ex)
@@ -139,76 +165,207 @@ namespace RackCad.Plugin
             }
         }
 
-        /// <summary>Everything a duplication needs from the clicked reference, read in ONE transaction.</summary>
-        private struct DuplicateSource
+        /// <summary>
+        /// SNAPSHOT: everything the command needs from the selection, read in ONE transaction and kept in two worlds
+        /// keyed by the same handles — the plain data the planner decides on, and the AutoCAD side only this command
+        /// uses. A definition referenced several times is read once. No DBObject leaves the transaction.
+        /// </summary>
+        private static DuplicationSnapshot TakeSnapshot(Document document, ObjectId[] selectedIds)
         {
-            public ObjectId DefinitionId;
-            public Point3d Position;
-            public double Rotation;
-            public Scale3d Scale;
-            public ObjectId LayerId; // COPY preserves the entity's layer; so do we
-            public string Payload;
-        }
-
-        /// <summary>Pick a rack block reference and snapshot it. False only when the user cancels the selection; a
-        /// picked-but-non-rack block returns true with a null <paramref name="embed"/> so the caller reports it.</summary>
-        private static bool PickDuplicateSource(Document document, out RackEmbedDocument embed, out DuplicateSource source)
-        {
-            embed = null;
-            source = default;
-
-            var options = new PromptEntityOptions("\nSelecciona un rack para duplicar: ");
-            options.SetRejectMessage("\nEse objeto no es un rack.");
-            options.AddAllowedClass(typeof(BlockReference), exactMatch: false);
-
-            var selection = document.Editor.GetEntity(options);
-            if (selection.Status != PromptStatus.OK)
+            return InDocumentTransaction.Run(document, transaction =>
             {
-                return false;
-            }
+                var snapshot = new DuplicationSnapshot();
+                var modelSpaceId = SymbolUtilityServices.GetBlockModelSpaceId(document.Database);
 
-            source = InDocumentTransaction.Run(document, transaction =>
-            {
-                var reference = (BlockReference)transaction.GetObject(selection.ObjectId, OpenMode.ForRead);
-                var snapshot = new DuplicateSource
+                foreach (var id in selectedIds)
                 {
-                    DefinitionId = reference.BlockTableRecord,
-                    Position = reference.Position,
-                    Rotation = reference.Rotation,
-                    Scale = reference.ScaleFactors,
-                    LayerId = reference.LayerId
-                };
-                snapshot.Payload = RackBlockData.Read(transaction, snapshot.DefinitionId);
+                    var key = id.Handle.ToString();
+
+                    if (!(transaction.GetObject(id, OpenMode.ForRead) is BlockReference reference))
+                    {
+                        snapshot.Selection.Add(new RackDuplicationSelectedReference(key, false, false, null));
+                        continue;
+                    }
+
+                    if (reference.OwnerId != modelSpaceId)
+                    {
+                        // PD-7: the plan filters it before looking at its definition, so the definition is not read.
+                        snapshot.Selection.Add(new RackDuplicationSelectedReference(key, true, false, null));
+                        continue;
+                    }
+
+                    var definitionId = reference.BlockTableRecord;
+                    var definitionKey = definitionId.Handle.ToString();
+
+                    snapshot.Selection.Add(new RackDuplicationSelectedReference(key, true, true, definitionKey));
+                    snapshot.ReferencesByKey[key] = new SourceReference
+                    {
+                        Position = reference.Position,
+                        Rotation = reference.Rotation,
+                        Scale = reference.ScaleFactors,
+                        LayerId = reference.LayerId // COPY preserves the entity's layer; so do we
+                    };
+
+                    if (snapshot.DefinitionsByKey.ContainsKey(definitionKey))
+                    {
+                        continue; // linked references share one definition
+                    }
+
+                    var definition = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
+                    var payload = RackBlockData.Read(transaction, definitionId);
+
+                    snapshot.DefinitionSnapshots.Add(new RackDuplicationDefinitionSnapshot(definitionKey, payload, definition.Name));
+                    snapshot.DefinitionsByKey.Add(definitionKey, new SourceDefinition
+                    {
+                        DefinitionId = definitionId,
+                        // The name THIS definition's envelope carries, as stored: RackCloner renames the drawn label
+                        // equal to it, exactly as the historic single-view copy did with the clicked view's name.
+                        LabelName = string.IsNullOrEmpty(payload) ? null : new RackEmbedStore().Deserialize(payload)?.Name
+                    });
+                }
+
                 return snapshot;
             });
-
-            embed = new RackEmbedStore().Deserialize(source.Payload);
-            return true;
         }
 
-        /// <summary>One independent copy — the MUTATE half: clone the view-block's definition (nested ARRAY defs
-        /// shared, drawn name label renamed — Layout's helpers) with a payload the caller ALREADY prepared and
-        /// checked, and reference it at the destination with the source's own rotation/mirror/layer. Nothing that
-        /// can fail for a semantic reason is decided in here (I-47 G14, I-51 G4).</summary>
-        private static void PlaceIndependentCopy(Document document, DuplicateSource source, string preparedPayload, string copyName, Point3d position, string sourceName)
+        /// <summary>
+        /// PREPARE: re-stamp EVERY definition of EVERY group with its group's identity and name and check each result,
+        /// before anything is written (I-47 G14). One identity per group is what makes every view of one rack be born
+        /// with the SAME id and name; each view still re-stamps its OWN payload, never another view's. Throws on the
+        /// first failure, so a caller only ever holds a complete set.
+        /// </summary>
+        private static List<PreparedDefinition> Prepare(
+            RackDuplicationPlan plan, DuplicationSnapshot snapshot, Func<RackDuplicationGroup, (Guid NewRackId, string CopyName)> identityOf)
+        {
+            var prepared = new List<PreparedDefinition>();
+            var severalDefinitions = plan.Groups.Count > 1 || plan.Groups[0].Definitions.Count > 1;
+
+            foreach (var group in plan.Groups)
+            {
+                var identity = identityOf(group);
+
+                foreach (var definition in group.Definitions)
+                {
+                    var restamped = RackEnvelopeRestamp.RestampEnvelope(definition.RawPayload, identity.CopyName, identity.NewRackId);
+
+                    if (!restamped.IsSuccess)
+                    {
+                        // One definition keeps the historic message; with several, say which one cannot be copied.
+                        throw new InvalidOperationException(severalDefinitions
+                            ? "La definicion de bloque '" + definition.DefinitionName + "' no se puede copiar: " + restamped.Error
+                            : restamped.Error);
+                    }
+
+                    var source = snapshot.DefinitionsByKey[definition.DefinitionKey];
+
+                    prepared.Add(new PreparedDefinition
+                    {
+                        DefinitionKey = definition.DefinitionKey,
+                        SourceDefinitionId = source.DefinitionId,
+                        SourceName = source.LabelName,
+                        CopyName = identity.CopyName,
+                        DesignJson = restamped.DesignJson
+                    });
+                }
+            }
+
+            return prepared;
+        }
+
+        /// <summary>
+        /// MUTATE: one destination in ONE transaction. Each prepared definition is cloned exactly once, and every selected
+        /// reference is re-created on the clone of ITS OWN definition — two references to one source definition become two
+        /// references to one clone, so linked copies stay linked — at its own position plus the displacement, with its own
+        /// rotation, scale and layer. Nothing here can fail for a semantic reason; if AutoCAD throws, nothing commits and
+        /// the destination leaves no partial copy.
+        /// </summary>
+        private static void PlaceDestination(
+            Document document, RackDuplicationPlan plan, DuplicationSnapshot snapshot, IReadOnlyList<PreparedDefinition> prepared, Vector3d displacement)
         {
             var database = document.Database;
 
             InDocumentTransaction.Run(document, transaction =>
             {
-                var definitionId = RackCloner.CloneDefinition(database, transaction, source.DefinitionId, copyName, preparedPayload, sourceName, copyName);
-
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);
-                var reference = new BlockReference(position, definitionId)
+                var clones = new Dictionary<string, ObjectId>(StringComparer.Ordinal); // source DefinitionKey -> clone
+
+                foreach (var definition in prepared)
                 {
-                    Rotation = source.Rotation,
-                    ScaleFactors = source.Scale,
-                    LayerId = source.LayerId
-                };
-                modelSpace.AppendEntity(reference);
-                transaction.AddNewlyCreatedDBObject(reference, true);
+                    clones.Add(definition.DefinitionKey, RackCloner.CloneDefinition(
+                        database, transaction, definition.SourceDefinitionId, definition.CopyName, definition.DesignJson,
+                        definition.SourceName, definition.CopyName));
+                }
+
+                foreach (var reference in plan.Groups.SelectMany(group => group.References))
+                {
+                    var source = snapshot.ReferencesByKey[reference.ReferenceKey];
+                    var copy = new BlockReference(source.Position + displacement, clones[reference.DefinitionKey])
+                    {
+                        Rotation = source.Rotation,
+                        ScaleFactors = source.Scale,
+                        LayerId = source.LayerId
+                    };
+                    modelSpace.AppendEntity(copy);
+                    transaction.AddNewlyCreatedDBObject(copy, true);
+                }
             });
+        }
+
+        /// <summary>The line for one placed destination: the historic one for one rack, the list of copies for several.</summary>
+        private static string DescribePlaced(RackDuplicationDestinationAssignment assignment)
+            => assignment.Groups.Count == 1
+                ? "\nRackCad: copia '" + assignment.Groups[0].CopyName + "' colocada."
+                : "\nRackCad: copias " + string.Join(", ", assignment.Groups.Select(group => "'" + group.CopyName + "'")) + " colocadas.";
+
+        /// <summary>The closing line: the historic one for one rack; for several, how many racks every destination copied.</summary>
+        private static string DescribeSummary(RackDuplicationPlan plan, int placed)
+            => plan.Groups.Count == 1
+                ? string.Format(CultureInfo.InvariantCulture,
+                    "\nRackCad: {0} copia(s) independiente(s) de '{1}'.", placed, plan.Groups[0].BaseName)
+                : string.Format(CultureInfo.InvariantCulture,
+                    "\nRackCad: {0} copia(s) independiente(s) de {1} racks.", placed, plan.Groups.Count);
+
+        /// <summary>The SNAPSHOT of a selection, in two worlds keyed by the same handles.</summary>
+        private sealed class DuplicationSnapshot
+        {
+            /// <summary>Planner input: every selected entity, in selection order.</summary>
+            public readonly List<RackDuplicationSelectedReference> Selection = new List<RackDuplicationSelectedReference>();
+
+            /// <summary>Planner input: one snapshot per distinct definition referenced from Model Space.</summary>
+            public readonly List<RackDuplicationDefinitionSnapshot> DefinitionSnapshots = new List<RackDuplicationDefinitionSnapshot>();
+
+            /// <summary>AutoCAD side: the placement of every Model Space block reference, by its handle.</summary>
+            public readonly Dictionary<string, SourceReference> ReferencesByKey = new Dictionary<string, SourceReference>(StringComparer.Ordinal);
+
+            /// <summary>AutoCAD side: every distinct definition behind them, by its handle.</summary>
+            public readonly Dictionary<string, SourceDefinition> DefinitionsByKey = new Dictionary<string, SourceDefinition>(StringComparer.Ordinal);
+        }
+
+        /// <summary>What a copy of one selected reference keeps from it: COPY's own placement, nothing live.</summary>
+        private struct SourceReference
+        {
+            public Point3d Position;
+            public double Rotation;
+            public Scale3d Scale;
+            public ObjectId LayerId;
+        }
+
+        /// <summary>The AutoCAD side of one distinct source definition.</summary>
+        private struct SourceDefinition
+        {
+            public ObjectId DefinitionId;
+            public string LabelName;
+        }
+
+        /// <summary>PREPARE's result for one definition: everything MUTATE needs to clone it, already re-stamped and checked.</summary>
+        private struct PreparedDefinition
+        {
+            public string DefinitionKey;
+            public ObjectId SourceDefinitionId;
+            public string SourceName;
+            public string CopyName;
+            public string DesignJson;
         }
     }
 }
