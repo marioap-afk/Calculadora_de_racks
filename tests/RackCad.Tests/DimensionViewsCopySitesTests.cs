@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using RackCad.Application.Persistence;
+using RackCad.Application.RackFrames;
+using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Shared;
 using Xunit;
 using static RackCad.Tests.DimensionViewScenarios;
@@ -102,6 +105,85 @@ namespace RackCad.Tests
             Assert.Equal(sentinel, AsInt(document.ToDomain().DimensionViews));                                         // ToDomain
             document.DimensionViews = null;
             Assert.Null(document.ToDomain().DimensionViews);
+        }
+
+        // ---- Dinámico ------------------------------------------------------------------------------------------
+
+        private const string DynamicPostId = "POSTE_OMEGA_3X3";
+
+        [Theory]
+        [MemberData(nameof(Sentinels))]
+        public void T13_C08_DynamicAnnotationOptions_HoldsTheExactInt(int sentinel)
+        {
+            Assert.Equal(sentinel, AsInt(new DynamicAnnotationOptions { DimensionViews = (DimensionViewVisibility)sentinel }.DimensionViews));
+            Assert.Null(new DynamicAnnotationOptions().DimensionViews);
+        }
+
+        /// <summary>
+        /// C-09 copia las opciones DESPUÉS del snapshot, como hace con <c>Dimensions</c>: lo que el editor declara manda
+        /// sobre lo que traía el sistema, y unas opciones sin política dejan el diseño en legacy.
+        /// </summary>
+        [Theory]
+        [MemberData(nameof(Sentinels))]
+        public void T13_C09_DynamicEditorDesignAssembler_BuildDesign_CopiesTheOptionsExactly_AfterTheSnapshot(int sentinel)
+        {
+            var catalog = Catalog;
+            var builder = new DynamicRackSystemBuilder(catalog);
+            var assembler = new DynamicEditorDesignAssembler(catalog, builder, new DynamicRackSystemResolver(catalog));
+            var system = builder.BuildDefault(
+                new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"), 5, RackFrameTemplateCatalog.Default, DynamicPostId, 132.0, 3.0);
+            system.DimensionViews = (DimensionViewVisibility)(sentinel == 13 ? -8 : 13);
+
+            DynamicRackDesign Build(DynamicAnnotationOptions options)
+                => assembler.BuildDesign(
+                    system, new DynamicFrontMatrix(),
+                    levels: 3, firstLevel: 6.0, beamDepth: DynamicRackDefaults.DefaultBeamDepth,
+                    headerPostCatalogId: DynamicPostId,
+                    palletsDeep: 5, postPeralte: 3.0, palletTolerance: DynamicRackDefaults.DefaultPalletTolerance,
+                    annotations: options, safetySelections: null);
+
+            Assert.Equal(sentinel, AsInt(Build(new DynamicAnnotationOptions { DimensionViews = (DimensionViewVisibility)sentinel }).DimensionViews));
+            Assert.Null(Build(new DynamicAnnotationOptions()).DimensionViews);
+        }
+
+        [Theory]
+        [MemberData(nameof(Sentinels))]
+        public void T13_C10_DynamicRackSystemResolver_CopiesExactly_DesignToSystem_AndSystemToDesign(int sentinel)
+        {
+            var catalog = Catalog;
+            var resolver = new DynamicRackSystemResolver(catalog);
+
+            var design = DynamicDesign(DimensionDetail.Standard, catalog);
+            design.DimensionViews = (DimensionViewVisibility)sentinel;
+            Assert.Equal(sentinel, AsInt(resolver.Resolve(design).System.DimensionViews));                    // diseño → sistema
+
+            var legacyDesign = DynamicDesign(DimensionDetail.Standard, catalog);
+            var system = resolver.Resolve(legacyDesign).System;
+            Assert.Null(system.DimensionViews);
+            system.DimensionViews = (DimensionViewVisibility)sentinel;
+            var snapshot = resolver.Snapshot(
+                system, legacyDesign.LoadLevels, legacyDesign.FirstLevelHeight, legacyDesign.BeamDepth, legacyDesign.HeaderPostCatalogId);
+            Assert.Equal(sentinel, AsInt(snapshot.DimensionViews));                                            // sistema → diseño
+        }
+
+        [Theory]
+        [MemberData(nameof(Sentinels))]
+        public void T13_C11_DynamicRackSystemDocument_TheFourMappingsCarryTheExactInt(int sentinel)
+        {
+            var catalog = Catalog;
+            var design = DynamicDesign(DimensionDetail.Standard, catalog);
+            design.DimensionViews = (DimensionViewVisibility)sentinel;
+            Assert.Equal(sentinel, DynamicRackSystemDocument.From(design).DimensionViews);                   // From(design)
+
+            var system = Dynamic(DimensionDetail.Standard, catalog);
+            system.DimensionViews = (DimensionViewVisibility)sentinel;
+            Assert.Equal(sentinel, DynamicRackSystemDocument.From(system).DimensionViews);                   // From(system)
+
+            var document = DynamicRackSystemDocument.From(DynamicDesign(DimensionDetail.Standard, catalog));
+            Assert.Null(document.DimensionViews);
+            document.DimensionViews = sentinel;
+            Assert.Equal(sentinel, AsInt(document.ToDesign().DimensionViews));                               // ToDesign
+            Assert.Equal(sentinel, AsInt(document.ToDomain().DimensionViews));                               // ToDomain
         }
     }
 }

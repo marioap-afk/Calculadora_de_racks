@@ -242,6 +242,7 @@ namespace RackCad.Application.Systems.Dynamic
             system.DrawRackName = design.DrawRackName;
             system.AnnotationScale = design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0;
             system.Dimensions = design.Dimensions;
+            system.DimensionViews = design.DimensionViews; // I-50 C-10: diseño → sistema, tal cual
             system.DimensionStyle = design.DimensionStyle;
             system.PalletTolerance = palletTolerance;
             // I-42 — el datum viaja al sistema resuelto para que el snapshot lo devuelva: sin esto, RACKEDITAR
@@ -355,6 +356,7 @@ namespace RackCad.Application.Systems.Dynamic
             design.DrawRackName = system.DrawRackName;
             design.AnnotationScale = system.AnnotationScale > 0.0 ? system.AnnotationScale : 1.0;
             design.Dimensions = system.Dimensions;
+            design.DimensionViews = system.DimensionViews; // I-50 C-10: sistema → diseño, tal cual
             design.DimensionStyle = system.DimensionStyle;
 
             foreach (var peralte in system.IntermediateBeamDepths)

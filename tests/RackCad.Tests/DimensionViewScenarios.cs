@@ -155,6 +155,19 @@ namespace RackCad.Tests
             return system;
         }
 
+        /// <summary>
+        /// El diseño que el editor PERSISTE: el snapshot del sistema resuelto, con sus módulos. Es la forma que
+        /// <c>RackProjectStore</c> acepta de vuelta —un diseño sin resolver no trae módulos y el store lo rechaza por
+        /// incompleto—, así que las idas y vueltas por el archivo parten de aquí.
+        /// </summary>
+        internal static DynamicRackDesign DynamicPersistedDesign(DimensionDetail detail, RackCatalog catalog)
+        {
+            var design = DynamicDesign(detail, catalog);
+            var resolver = new DynamicRackSystemResolver(catalog);
+            return resolver.Snapshot(
+                resolver.Resolve(design).System, design.LoadLevels, design.FirstLevelHeight, design.BeamDepth, design.HeaderPostCatalogId);
+        }
+
         /// <summary>El diseño de <see cref="Dynamic"/>, sin resolver.</summary>
         internal static DynamicRackDesign DynamicDesign(DimensionDetail detail, RackCatalog catalog)
         {

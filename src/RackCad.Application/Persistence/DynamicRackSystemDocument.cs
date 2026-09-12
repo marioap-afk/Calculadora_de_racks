@@ -60,6 +60,16 @@ namespace RackCad.Application.Persistence
         public bool? DrawRackName { get; set; }
         public double? AnnotationScale { get; set; }
         public int? Dimensions { get; set; }
+
+        /// <summary>
+        /// I-50 (ADR-0035, C-11): en qué tipos de vista se dibujan las cotas. ADITIVO y ANULABLE: ausente o null es el
+        /// legacy exacto y no se escribe —el store no ignora nulos de forma global—, así que un rack que no la usa
+        /// conserva su JSON byte a byte. Cualquier <c>int</c> (Int32) presente se conserva EXACTO en los cuatro mapeos:
+        /// sin máscara, sin validar bits y sin convertirlo nunca en null.
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? DimensionViews { get; set; }
+
         public string DimensionStyle { get; set; }
         public List<SafetySelectionDocument> SafetySelections { get; set; }
         public List<DynamicRackFrontDocument> Fronts { get; set; }
@@ -110,6 +120,7 @@ namespace RackCad.Application.Persistence
                 DrawRackName = system.DrawRackName,
                 AnnotationScale = system.AnnotationScale,
                 Dimensions = (int)system.Dimensions,
+                DimensionViews = (int?)system.DimensionViews, // I-50 C-11: el int exacto; null no se escribe
                 DimensionStyle = system.DimensionStyle,
                 SafetySelections = system.SafetySelections.Where(s => s != null).Select(SafetySelectionDocument.From).ToList()
             };
@@ -159,6 +170,7 @@ namespace RackCad.Application.Persistence
                 DrawRackName = design.DrawRackName,
                 AnnotationScale = design.AnnotationScale,
                 Dimensions = (int)design.Dimensions,
+                DimensionViews = (int?)design.DimensionViews, // I-50 C-11: el int exacto; null no se escribe
                 DimensionStyle = design.DimensionStyle,
                 SafetySelections = design.SafetySelections.Where(s => s != null).Select(SafetySelectionDocument.From).ToList()
             };
@@ -213,6 +225,7 @@ namespace RackCad.Application.Persistence
                 DrawRackName = DrawRackName ?? false,
                 AnnotationScale = AnnotationScale.HasValue && AnnotationScale.Value > 0.0 ? AnnotationScale.Value : 1.0,
                 Dimensions = ValidDimensions(Dimensions),
+                DimensionViews = (DimensionViewVisibility?)DimensionViews, // I-50 C-11: cast crudo, sin máscara ni validación
                 DimensionStyle = DimensionStyle
             };
 
@@ -307,6 +320,7 @@ namespace RackCad.Application.Persistence
                 DrawRackName = DrawRackName ?? false,
                 AnnotationScale = AnnotationScale.HasValue && AnnotationScale.Value > 0.0 ? AnnotationScale.Value : 1.0,
                 Dimensions = ValidDimensions(Dimensions),
+                DimensionViews = (DimensionViewVisibility?)DimensionViews, // I-50 C-11: cast crudo, sin máscara ni validación
                 DimensionStyle = DimensionStyle
             };
 
