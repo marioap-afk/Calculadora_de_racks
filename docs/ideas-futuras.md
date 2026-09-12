@@ -855,20 +855,24 @@ por su alcance, probablemente un ADR.
 
 ## I-47 — hallazgos y dirección futura (2026-09-09, registrados sin implementar)
 
-### Deuda técnica: `ToProjectVariables()` no es autoridad del tipo persistido
+### Deuda técnica: `ToProjectVariables()` no es autoridad del tipo persistido — **RESUELTA por I-48 G4D (2026-09-12)**
 
-`ProjectVariablesDocument.ToProjectVariables()` **hardcodea hoy `VariableType.Length`** y **no lee** el
-campo `Type` que el registro guarda. Es inocuo mientras ID22A soporte un solo tipo, y por eso
-`SelectiveBindingOptions.ForLength` —la lista de variables que el editor Selectivo ofrece para vincular—
-filtra por el tipo **persistido** y no por esa proyección.
+*Registro histórico. `ProjectVariablesDocument.ToProjectVariables()` hardcodeaba `VariableType.Length` e
+ignoraba el campo `Type` del registro. Era inocuo mientras ID22A soportara un solo tipo, pero un tipo
+futuro leído como `Length` habría ofrecido para vincular una variable cuyo número significa otra cosa, y
+el vínculo habría resuelto sin fallar.*
 
-**Cuando exista un segundo `VariableType`, esa proyección hay que corregirla ANTES de apoyarse en ella
-como autoridad del tipo.** Un tipo futuro leído como `Length` ofrecería para vincular una variable cuyo
-número significa otra cosa, y el vínculo resolvería sin fallar.
+**Cómo quedó.** La proyección lee el `Type` persistido a través de **la misma** primitiva
+`token → VariableType` que usan el store y la factoría del registro —una sola tabla, no tres— y **falla
+cerrado**: un token que esta versión no soporta lanza, nombrando el `VariableId` y el token, en vez de
+inventar un tipo, saltarse la entrada o reinterpretarla.
 
-No se arregla ahora: no hay segundo tipo, y arreglarlo hoy sería código sin caso que lo ejerza.
+**Alcance real del arreglo, dicho sin inflar.** `ToProjectVariables()` **no tiene hoy ningún consumidor
+en `src/`** —sólo pruebas—, porque G4B y G4C movieron la lectura del registro a otras superficies. Así
+que esto no cambió ningún comportamiento observable: cierra la trampa **antes** de que exista un segundo
+`VariableType` que la active. Esa parte sigue siendo futura.
 
-### Project Variables — Excel-like Property Input UX (**futura, sin número y sin reclamar**)
+### Project Variables — Excel-like Property Input UX — **ENTREGADA por I-48 (2026-09-12)**
 
 **Objetivo.** Reemplazar progresivamente los controles específicos de vínculo —hoy un `ComboBox` de
 variables compatibles más botones **Vincular** / **Desvincular**, sólo para
@@ -914,4 +918,56 @@ la persistencia de ID22A**.
 `=Holgura General + 2`. Eso **no autoriza** añadir ahora parser, AST, fórmulas, grafo de dependencias,
 detección de ciclos, persistencia de expresiones ni referencias a propiedades de otros racks (**ID21**).
 
-**No se numera ni se reclama aquí**: asignarle número es acto de planificación formal.
+**Cómo quedó.** I-48 numeró y reclamó esta dirección y entregó su núcleo: un **único control
+reutilizable** (`LinkedPropertyEditor`) que acepta literal o `=Nombre` en el mismo campo, con
+autocompletado de las variables compatibles **sin auto-selección**, sufijo corto del `VariableId` como
+desambiguador **obligatorio** cuando dos variables se llaman igual, y transición literal ↔ referencia
+por intents. Lo consumen **dos** propiedades reales: `selective.verticalClearance` —que dejó de ser un
+caso especial— y `selective.palletTolerance`. Las reglas de I-47 listadas arriba se conservaron todas.
+
+**Lo que sigue fuera, y no lo autoriza nada de lo anterior**: fórmulas (**ID22B**) —ni parser, ni AST,
+ni grafo de dependencias, ni detección de ciclos—, referencias rack a rack (**ID21**), y generalizar el
+mecanismo a los otros sistemas (Dinámico, Push Back, Cama de rodamiento, Cantilever).
+
+## I-48 — hallazgo fuera de alcance (2026-09-12, registrado sin implementar)
+
+### Selectivo / compatibilidad de catálogo: un `BeamId` persistido que ya no existe no se recupera
+
+**Hallazgo fuera de I-48. NO implementado. Candidato a fix o iniciativa separada.** No es un defecto
+resuelto: sigue vivo en `main`.
+
+`RackSelectiveWindow.LoadCellEditor` asigna el larguero guardado del diseño directamente al combo:
+
+```text
+CellBeamBox.SelectedValue = cell.BeamId;     // sin red de seguridad
+RefreshPeralteCombo(cell.BeamPeralte);       // PeralteOptions(null) -> lista vacía
+```
+
+Si ese `BeamId` **no está en el catálogo cargado** —porque el larguero se renombró o se retiró; el
+catálogo compartido es de sólo lectura y puede cambiar **bajo** diseños ya guardados— WPF deja el combo
+**sin selección** y los peraltes se vacían. A partir de ahí, «Actualizar» e «Insertar» no pueden
+completarse: `ReadCellEditor` rechaza la celda y el editor pide *«Selecciona un larguero.»* en un diálogo
+modal, sin decir que el problema es que el larguero del rack ya no existe.
+
+**La asimetría es lo que lo delata**: el **poste** sí tiene red, y en dos sitios
+(`if (PostBox.SelectedItem == null && PostBox.Items.Count > 0) PostBox.SelectedIndex = 0`), tanto al
+construir la ventana como en `LoadDesign`. El larguero no tiene ninguna, y el constructor sí lo
+preselecciona —`CellBeamBox.SelectedIndex = 0`— sólo para que `LoadCellEditor` destruya esa selección
+después.
+
+**Qué habría que decidir, no dar por supuesto**: si el comportamiento correcto es caer al primer
+larguero del catálogo (como hace el poste, silenciosamente) o **reportar** que el diseño referencia un
+larguero desaparecido. Lo segundo parece mejor —un rack no debería cambiar de larguero sin que nadie lo
+diga— pero es decisión de producto.
+
+### Relacionado: `ConfirmPendingCellEdits` usa `MessageBox` directo, sin costura de prueba
+
+Las dos llamadas de `ConfirmPendingCellEdits` —y las de `TryCommitEditedCell` y `RequestDraw`— van a
+`MessageBox.Show` **sin** la costura reemplazable que el repositorio ya usa para esto en
+`SelectiveCabeceraHeightPrompt` (I-43 gate 8.6E) y `EditorDiscardPrompt`. Consecuencia medida en I-48
+G4G: cualquier estado que llegue a uno de esos avisos **cuelga** un agente headless hasta que
+`--blame-hang` aborta el testhost, y el síntoma no es un fallo legible sino una corrida abortada. Ese
+cuelgue costó tres gates de diagnóstico y sólo se resolvió leyendo los minidumps.
+
+**No implementado tampoco.** Ponerlos detrás de la costura existente es barato, pero es cambio de
+producción y no entra en el cierre de I-48.

@@ -16,6 +16,52 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
+**I-48 — Generic Linked Property Editing: edicion vinculable reusable — INTEGRADA y CERRADA** el
+**2026-09-12** (`architecture/generic-linked-property-editing`, candidato funcional
+`b0547990f9ffcbd015feed9a9efa95c9ff3b24b5`). Cierra la pregunta que I-47 dejo abierta: **que parte del
+camino de una propiedad vinculable era generica y que parte estaba atada a `VerticalClearance`**.
+
+**El resultado verificable.** Vincular una propiedad **dejo de ser un caso especial**:
+
+| | |
+|---|---|
+| Mecanismo | un control reutilizable, `LinkedPropertyEditor`: el MISMO campo acepta un literal o `=Nombre`, con autocompletado de las variables compatibles **sin auto-seleccion** |
+| Identidad | presentacion por **nombre**, autoridad por **`VariableId`**; con nombres duplicados el desambiguador (sufijo corto del id) es **obligatorio**, no decorativo |
+| Consumidores | **dos** propiedades REALES: `selective.verticalClearance`, que paso a ser **un consumidor mas**, y `selective.palletTolerance`, activada como **segunda propiedad de producto** —no un doble de prueba— |
+| Pendiente/comprometido | los campos vinculables entraron en el protocolo C4 de I-43: `TryStage` valida sin mutar y `ApplyStaged` aplica **solo si TODO lo staged esta bien** |
+| Tipo persistido | `ToProjectVariables()` lee el `Type` guardado por **la misma** primitiva `token -> VariableType` que el store, y **falla cerrado** ante un token no soportado |
+
+**Lo que cambio de comportamiento a proposito, y hay que conocer.** El campo de una propiedad
+**gobernada** por una variable **deja de ser de solo lectura**: se puede teclear en el. Escribir no
+rompe el vinculo —`LostFocus` **nunca** cambia la fuente, y cambiar de fuente exige Enter explicito o
+Escape para cancelar—, pero es un cambio deliberado frente a I-47 y quedo registrado para la validacion
+del Owner, que lo aprobo.
+
+**Lo que NO cambio.** La semantica de I-47 y [ADR-0034](adr/0034-project-variables-autoridad-drawing-level.md)
+siguen intactas, las tres asimetrias incluidas; I-48 movio **por donde** se ejerce, no **que** se ejerce.
+**No hay ADR nuevo**: ADR-0034 fue **entrada** de esta iniciativa, no objeto de ella.
+
+**Evidencia del candidato funcional `b054799`:**
+
+| | |
+|---|---|
+| Core Full | **5476 / 5476** (0 omitidas) |
+| UI Full | **1324 / 1341** (17 omitidas historicas, declaradas en fuente) |
+| Builds | UI Debug **0 errores y 0 advertencias**; Plugin Debug **0 errores** (solo los dos `MSB3277` conocidos) |
+| CI de `push` | corrida **34657252232**, `head_sha` = `b054799...`, **4/4 `success`** |
+| Owner Validation | **PASS** en AutoCAD 2025, sobre el DLL Debug construido desde ese candidato |
+
+**Por que hubo tres candidatos antes de este.** Los candidatos de G4E y G4F fueron rechazados por un
+**cuelgue del job `UI Tests`** que `--blame-hang` abortaba a los 5 minutos. Se diagnostico con los
+**minidumps** del testhost, que fue lo unico concluyente: dos hipotesis previas basadas en inferencia
+resultaron **falsas** y sus correctivos no llegaron a integrarse. La causa real: **dos fixtures nuevas de
+I-48 usaban ids de catalogo inexistentes**, de modo que el editor de celda quedaba sin larguero
+seleccionado y «Actualizar» acababa en un `MessageBox` de produccion que en headless no se puede
+descartar. El correctivo **G4G.3 es solo de pruebas** —ids reales del catalogo, mas una comprobacion en
+el helper que abre la ventana para que una fixture invalida falle **antes** del gesto en vez de colgar—.
+La asimetria de produccion que lo hizo posible quedo registrada en
+[ideas-futuras.md](ideas-futuras.md) **sin implementar**.
+
 **I-47 — Variables de proyecto: fundación de autoridad drawing-level (ID22A) — INTEGRADA y CERRADA** el
 **2026-09-09** (`architecture/project-variables-foundation`, candidato funcional
 `af572393dab5c755a8f272c746bdce20848b7dd0`, merge `--no-ff`
@@ -68,11 +114,12 @@ multi-consumidor, renombrado, desvincular, multi-rack, delete bloqueado, desvinc
 observado, y es el correcto: `RACKEDITAR` **falla cerrado** —no abre con el literal congelado— y
 `RACKVARIABLES → RepairBroken` **quita el vínculo** y deja gobernando el **literal authored almacenado**.
 
-**Deuda técnica conocida, NO bloqueante.** `ProjectVariablesDocument.ToProjectVariables()` **hardcodea
-hoy `VariableType.Length`** e ignora el `Type` persistido. Es inocuo mientras ID22A soporte un solo tipo,
-y por eso `SelectiveBindingOptions.ForLength` filtra por el tipo **persistido** y no por esa proyección.
-**Cuando exista un segundo `VariableType`, esa proyección hay que corregirla antes de apoyarse en ella
-como autoridad del tipo.** Registrada en [ideas-futuras.md](ideas-futuras.md); no se arregla ahora.
+**Deuda técnica de I-47 — RESUELTA por I-48 G4D.** `ProjectVariablesDocument.ToProjectVariables()`
+hardcodeaba `VariableType.Length` e ignoraba el `Type` persistido. Ahora lo lee, por **la misma**
+primitiva `token → VariableType` que usan el store y la factoría del registro, y **falla cerrado** ante
+un token que esta versión no soporta. Dicho sin inflarlo: esa proyección **no tiene hoy consumidores en
+`src/`** —sólo pruebas—, así que el arreglo no cambió comportamiento observable; cierra la trampa
+**antes** de que exista un segundo `VariableType` que la active.
 
 **I-46 — Selectivo: BUG topes de tarima Izquierda/Derecha — queda INTEGRADA y CERRADA** el
 **2026-09-08** (`fix/selectivo-topes-izquierda-derecha`, candidato
@@ -1037,6 +1084,20 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-48 (2026-09-12) — PASS.** El dueño cargó por NETLOAD el DLL Debug construido **exactamente** desde el
+candidato funcional `b0547990f9ffcbd015feed9a9efa95c9ff3b24b5` y validó la edición vinculable sobre las
+**dos** propiedades reales, incluido el cambio de comportamiento deliberado: el campo de una propiedad
+gobernada **ya no es de sólo lectura**, y aun así escribir en él no rompe el vínculo —cambiar de fuente
+exige Enter explícito, o Escape para cancelar—.
+
+`origin/main` **no avanzó** desde la base `e8ed2bcc3ad32b9418be3e98d26f3fcbfeee5918`, así que **no hubo
+rebase final** y la validación corresponde exactamente al contenido integrado. Evidencia automatizada del
+mismo SHA, árbol limpio y SDK **8.0.423**: `RackCad.Tests` **5476 PASS / 0 fail / 0 skip**,
+`RackCad.UI.Tests` **1324 PASS / 17 skip / 1341 total**, build Debug de UI **0 errores y 0 advertencias**,
+build Debug del Plugin **0 errores** más los **dos `MSB3277`** conocidos, y **CI de `push` sobre ese SHA
+exacto** —corrida **34657252232**, 4/4 `success`, con su job `Build Plugin without AutoCAD` verde en
+runner limpio—.
+
 **I-47 (2026-09-09) — PASS.** El dueño cargó por NETLOAD el DLL Debug construido **exactamente** desde el
 candidato funcional `af572393dab5c755a8f272c746bdce20848b7dd0` y recorrió las tres tandas: `PV-1..PV-5`
 —el registro por sí solo: crear, renombrar, cambiar valor, borrar sin consumidores y save/reopen, más que
@@ -1333,6 +1394,15 @@ veredicto.
 
 ## 3. Problemas y riesgos activos
 
+- **COMPATIBILIDAD DE CATÁLOGO del Selectivo (hallazgo de I-48, NO arreglado).** `LoadCellEditor` asigna
+  el `BeamId` guardado del diseño al combo **sin red de seguridad**, mientras el **poste** sí la tiene en
+  dos sitios. Si ese larguero se renombró o se retiró del catálogo —que es de sólo lectura y puede
+  cambiar **bajo** diseños ya guardados— el combo queda sin selección, los peraltes se vacían, y
+  «Actualizar» e «Insertar» no pueden completarse: el editor pide *«Selecciona un larguero.»* sin decir
+  que el problema es que el larguero del rack ya no existe. Requiere **decisión de producto** (caer al
+  primero del catálogo, como el poste, o reportar el diseño desalineado). Detalle y el hallazgo asociado
+  —los `MessageBox` del Selectivo sin costura de prueba, que convierten cualquier aviso en un cuelgue de
+  agente headless— en [ideas-futuras.md](ideas-futuras.md).
 - **AMBIGÜEDAD DE PRODUCTO abierta (I-44, no decidida): quién gobierna el larguero intermedio de una cama
   CORRIDA cuando A y B discrepan.** Una corrida es **una sola cama** que cruza la interfaz, así que su
   `IntermediateBeamCatalogId`/`IntermediateBeamDepth` sólo pueden salir de un lado. Hoy salen del **lado
@@ -1384,7 +1454,33 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### No hay iniciativa en curso. I-47 quedó INTEGRADA y CERRADA; lo que sigue es backlog.
+### No hay iniciativa en curso. I-48 quedó INTEGRADA y CERRADA; lo que sigue es backlog.
+
+**I-48 — Generic Linked Property Editing — INTEGRADA y CERRADA el 2026-09-12.** `G1`–`G4H` cerrados,
+validación del Owner **PASS**, Candidato aprobado e integrado con merge `--no-ff`. No queda ningún
+pendiente **de alcance** de esta iniciativa; lo que quedó fuera está en
+[ideas-futuras.md](ideas-futuras.md) y no es deuda de I-48.
+
+```text
+BASE_MAIN_SHA            = e8ed2bcc3ad32b9418be3e98d26f3fcbfeee5918
+FUNCTIONAL_CANDIDATE_SHA = b0547990f9ffcbd015feed9a9efa95c9ff3b24b5
+CLOSURE_DOCS_SHA         = este mismo commit (docs-only; NO reemplaza al candidato)
+MERGE_SHA                = PENDING hasta el merge
+Proposal V8 SHA          = 32e37500766212e685d617c462f32e616c65f104   (FROZEN, sin cambio)
+```
+
+**Qué quedó operativo en `main`.** Un control de edición vinculable **reutilizable**: el mismo campo
+acepta `6` o `=Holgura General`, con autocompletado de las variables compatibles, sin auto-selección, y
+con desambiguador obligatorio cuando dos variables comparten nombre. Lo consumen **dos** propiedades
+reales del Selectivo —`verticalClearance` y `palletTolerance`—, ambas dentro del protocolo pendiente /
+comprometido de I-43, y ambas reconciliadas contra el documento `authored` por un solo reconciliador en
+vez de por la ventana. La semántica de I-47 y ADR-0034 no cambió.
+
+**Lo que I-48 dejó expresamente fuera**: fórmulas (**ID22B**), referencias rack a rack (**ID21**),
+generalizar el mecanismo a los otros sistemas (Dinámico, Push Back, Cama de rodamiento, Cantilever),
+reescribir editores completos, migración de dibujos y unificación de `ClearHeight`.
+
+**I-47 sigue siendo su base, y queda como historia:**
 
 **I-47 — Variables de proyecto (ID22A) — INTEGRADA y CERRADA el 2026-09-09.** `G1`–`G18` verdes,
 validación del Owner **PASS**, Candidato aprobado e integrado con merge `--no-ff`. No queda ningún
@@ -2660,7 +2756,28 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-47 — 2026-09-09** (la vigente):
+**Baseline integrada de I-48 — 2026-09-12** (la vigente):
+
+- candidato **funcional** aprobado por el Owner: `b0547990f9ffcbd015feed9a9efa95c9ff3b24b5`
+  (CI de `push` **34657252232**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**);
+- **cierre documental previo a la integración**: este commit, **docs-only** —no recompila ni revalida
+  nada, y **no reemplaza** al candidato funcional—;
+- **validación manual del Owner en AutoCAD 2025: PASS**, sobre el DLL Debug construido exactamente desde
+  el candidato, incluido el cambio deliberado de que el campo gobernado ya no es de sólo lectura;
+- `origin/main` **no avanzó** desde la base `e8ed2bcc3ad32b9418be3e98d26f3fcbfeee5918`: **sin rebase
+  final**, de modo que la validación manual corresponde exactamente al contenido integrado;
+- suites locales sobre el candidato: **RackCad.Tests 5476/5476** (0 omitidas) y **RackCad.UI.Tests
+  1324 correctas / 17 omitidas / 1341 totales**; Debug de UI (0 advertencias, 0 errores) y del Plugin
+  (0 errores, sólo los **dos** MSB3277 conocidos);
+- **el cuelgue de `UI Tests` que rechazó los candidatos de G4E y G4F quedó cerrado por causa probada**,
+  no por reintento: la pila del minidump lo situó en un `MessageBox` de producción alcanzado desde
+  «Actualizar», y el correctivo `G4G.3` es **sólo de pruebas**. Las dos hipótesis anteriores
+  —inferidas, no medidas— quedaron **refutadas** y sus parches **no** se integraron;
+- **compuertas posteriores al merge**: el `MERGE_SHA` no existe todavía cuando se escribe esto, así que
+  el CI del merge y la comprobación diferida de la cobertura del Candidato siguen **pendientes**
+  ([WORKFLOW.md](WORKFLOW.md) §4.5 pasos 6 y 7); la rama y el worktree **no** se retiran hasta que pasen.
+
+**Baseline integrada de I-47 — 2026-09-09** (anterior):
 
 - candidato **funcional** aprobado por el Owner: `af572393dab5c755a8f272c746bdce20848b7dd0`
   (CI de `push` **34427341491**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**; y cobertura del
@@ -3795,3 +3912,10 @@ implementado**, tras validar manualmente en AutoCAD 2025 el DLL construido exact
 seis limitaciones declaradas**, entre ellas la observación no bloqueante del escenario 2 (**CORRIDA GAP
 STORAGE**), que queda registrada y **no** implementada. Su contenido es **inmutable** desde ahora; sólo
 pueden cambiar su Estado y sus enlaces.
+
+**I-48 no produjo ADR, y eso es deliberado.** Su contrato fija
+[ADR-0034](adr/0034-project-variables-autoridad-drawing-level.md) como **entrada**, no como objeto: I-48
+podía cambiar **por dónde** se ejerce la semántica de las variables de proyecto, nunca **qué** semántica
+se ejerce. El propio contrato dice que tocar esa doctrina sería «ADR nuevo y decisión del dueño, no un
+ajuste de alcance», y no se tocó. El acuerdo técnico de I-48 vive en su **Proposal V8**
+(`32e37500766212e685d617c462f32e616c65f104`, congelada y sin cambio), no en un ADR.

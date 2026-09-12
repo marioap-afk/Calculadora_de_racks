@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-48
 title: "Generic Linked Property Editing"
 type: architecture
-status: claimed
+status: integrated
 branch: architecture/generic-linked-property-editing
 base_branch: main
 priority:
@@ -26,28 +26,31 @@ automation:
 
 # Generic Linked Property Editing
 
-> **Fase actual: G3 CERRADA — consenso tecnico ALCANZADO y Proposal V8 APROBADA por el dueno.**
+> **Fase actual: INTEGRADA y CERRADA — 2026-09-12.**
 >
 > ```text
 > Proposal     = V8
-> Proposal SHA = 32e37500766212e685d617c462f32e616c65f104   (FROZEN)
+> Proposal SHA = 32e37500766212e685d617c462f32e616c65f104   (FROZEN, sin cambio)
 >
 > Coordinator = AGREED
 > Architect   = AGREED
 > Technical Consensus = REACHED
 >
-> Owner Decision = APPROVED
-> G3 = CLOSED
+> Owner Decision   = APPROVED
+> Owner Validation = PASS   (AutoCAD 2025, sobre el candidato funcional)
 >
-> Implementation gates = READY TO BEGIN
-> G4A = NOT STARTED  (no se ejecuta en este commit)
-> Owner Validation = PENDING
+> G3 = CLOSED
+> G4A G4B G4C G4D G4E G4F G4G G4H = CLOSED
 > ```
 >
-> **Todavia no hay una sola linea de produccion escrita.** La aprobacion del dueno autoriza avanzar
-> a la secuencia `G4A..G4H` de la Proposal, **no** el merge, **no** la integracion y **no** la
-> validacion final. Evidencia en
-> [`docs/automation/decisions/I-48.md`](../automation/decisions/I-48.md).
+> El objetivo se consiguio: **vincular una propiedad dejo de ser un caso especial**. Existe un
+> mecanismo de edicion vinculable reusable, `selective.verticalClearance` es **un consumidor mas** de
+> ese mecanismo en vez de su unica implementacion, y `selective.palletTolerance` quedo activada como
+> **segunda propiedad REAL** —no un doble de prueba— que lo demuestra.
+>
+> Los SHAs, la evidencia y las compuertas posteriores al merge viven en
+> [HANDOFF](../HANDOFF.md) secciones 1, 2, 4 y 5, que es su unico sitio; aqui no se copian.
+> **La Proposal V8 no se ha tocado**: su SHA congelado sigue siendo la autoridad del acuerdo.
 
 > **Apertura por autorizacion explicita del dueno sin fila previa** — caso (d) de
 > [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la preexistencia de
