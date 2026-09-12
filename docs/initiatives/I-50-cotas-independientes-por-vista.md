@@ -26,9 +26,10 @@ automation:
 
 # I-50 — Cotas independientes por vista
 
-> Fase actual: **G0 CLOSED · G1 CLOSED · G2 IN PROGRESS**. G2A entregada: Proposal V1 y ADR-0035
-> `propuesto`, **solo documentación**, en revisión del Coordinador y del Arquitecto. No hay una sola línea
-> de producción en la rama.
+> Fase actual: **G0 CLOSED · G1 CLOSED · G2 IN PROGRESS · G2A IN PROGRESS**. Proposal actual = **V1.1**
+> (Coordinator **PENDING REVIEW**, Architect **NOT REVIEWED**); la V1 recibió **NOT AGREED** del Coordinador
+> y se conserva intacta. ADR-0035 sigue `propuesto`. **Solo documentación**: no hay una sola línea de
+> producción en la rama.
 >
 > ```text
 > BASE_SHA      = a4d88f18a1f42263d366c44dc05dd18a6786f152
@@ -114,7 +115,9 @@ Buscar el punto mínimo y coherente de configuración: creación, editor o una �
 - Expression Engine;
 - cotas nuevas no pedidas;
 - refactor general de UI;
-- los hallazgos H1–H7 del Discovery (`CD-09`, sección 13).
+- los hallazgos H1–H7 del Discovery (`CD-09`, sección 13);
+- modificar `RACKLAYOUT` (confirmación del Coordinador): la variación de huella al ocultar las cotas de
+  Planta es consecuencia explícita de ADR-0035 y punto de Owner Validation, y no se corrige.
 
 ## 8. Tests mínimos de aceptación
 
@@ -136,6 +139,8 @@ Buscar el punto mínimo y coherente de configuración: creación, editor o una �
 
 AutoCAD 2025, por cada sistema acordado: crear rack, elegir cotas por vista, insertar, verificar solo vistas seleccionadas, `RACKEDITAR`/Actualizar, save/reopen, insertar vista adicional y smoke legacy.
 
+Además, por confirmación del Coordinador: la **variación de huella de `RACKLAYOUT`** cuando se ocultan las cotas de Planta se verifica como consecuencia aceptada, sin corregirla.
+
 ## 10. Gates
 
 | Gate | Entregable | Estado |
@@ -143,7 +148,7 @@ AutoCAD 2025, por cada sistema acordado: crear rack, elegir cotas por vista, ins
 | G0 | Preflight, claim, worktree, bootstrap | **CLOSED** — reclamo `97cc0ef`, contrato `4e22d91`, fila de ROADMAP `a2fba4f`, worktree creado |
 | G1 | Characterization / matriz completa | **CLOSED** — [I-50-discovery.md](I-50-discovery.md); decisiones del Coordinador en la sección 12 |
 | G2 | Contrato de autoridad + persistencia + default legacy | **IN PROGRESS** |
-| G2A | Proposal V1 + ADR `propuesto` (solo documentación) | **PROPOSED** — [I-50-proposal-v1.md](I-50-proposal-v1.md) y [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md) `propuesto`; pendiente de revisión del Coordinador y del Arquitecto |
+| G2A | Proposal + ADR `propuesto` (solo documentación) | **IN PROGRESS** — Proposal actual **V1.1** ([I-50-proposal-v1.1.md](I-50-proposal-v1.1.md)): Coordinator **PENDING REVIEW**, Architect **NOT REVIEWED**. Historial: V1 ([I-50-proposal-v1.md](I-50-proposal-v1.md), `93c352a`): Coordinator **NOT AGREED** (MATERIAL-01, MATERIAL-02). [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md) `propuesto` |
 | G3 | UI mínima | pendiente |
 | G4 | Builders / draw path | pendiente |
 | G5 | Persistence / update | pendiente |
@@ -152,6 +157,10 @@ AutoCAD 2025, por cada sistema acordado: crear rack, elegir cotas por vista, ins
 | G8 | Docs + integration + cleanup | pendiente |
 
 **No implementation before G1/G2.** G3+ queda bloqueado hasta cerrar el contrato y, si aparece una decisión arquitectónica transversal material, hasta la revisión de Arquitecto correspondiente. **Cerrar G1 no autoriza implementar**: G3+ sigue bloqueado hasta que el Coordinador y el Arquitecto revisen la Proposal.
+
+**Orden de ejecución aprobado por el Coordinador** (revisión de V1): **G4 → G5 → G6 → G3 → G7 → G8**. Se conserva la numeración de la tabla; solo cambia el orden en que se abren.
+
+**Compuerta de código productivo**: consenso del Coordinador y del Arquitecto sobre la **misma** versión de la Proposal **y** ADR-0035 `aceptado` por el Owner (sección 14). Faltando cualquiera de las dos, no se escribe producción.
 
 ## 11. Coordinación con I-49 e I-51
 
@@ -226,8 +235,15 @@ evidencia están en [I-50-discovery.md](I-50-discovery.md) §13.
 nuevo permanece `propuesto` hasta que el dueño lo acepta o lo rechaza).
 
 - **Decisión**: aceptar o rechazar [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md).
-- **Punto en que se necesita**: antes de abrir G3+, es decir antes de la primera línea de producción, junto
-  con el consenso del Coordinador y del Arquitecto sobre la misma versión de la Proposal (precedente: I-47,
-  CF-2). **Propuesto**: lo confirma el Coordinador.
+- **Punto en que se necesita — CONFIRMADO por el Coordinador**: ADR-0035 debe estar `aceptado` por el Owner
+  **antes de cualquier código productivo** de I-50, junto con el consenso del Coordinador y del Arquitecto
+  sobre la misma versión de la Proposal (precedente: I-47, CF-2).
 - Ninguna de las dos compuertas sustituye a la otra: el consenso técnico dice que la decisión está lista; la
   aceptación la ejerce solo el Owner.
+
+## 15. Historial de revisión de la Proposal
+
+| Versión | Archivo | Revisión del Coordinador | Revisión del Arquitecto |
+|---|---|---|---|
+| V1 | [I-50-proposal-v1.md](I-50-proposal-v1.md) (`93c352a`), conservada **intacta** | **NOT AGREED**. MATERIAL-01: retirar «entero negativo ⇒ legacy» y conservar exactamente todo entero presente. MATERIAL-02: retirar la guarda de texto T-22 del Plugin. Confirmó el resto (representación B, sin `All`, `null` = legacy, orden de gates, `requires_owner_decision`, ADR aceptado antes de código, I-50 no modifica `RACKLAYOUT`) | no revisada |
+| V1.1 | [I-50-proposal-v1.1.md](I-50-proposal-v1.1.md) | **PENDING REVIEW** | **NOT REVIEWED** |
