@@ -15,6 +15,12 @@ namespace RackCad.Application.Systems.Dynamic
     /// <summary>
     /// Text and linear dimensions shared by the dynamic rack's linked views. The physical builders stay responsible
     /// only for members; this class owns the annotation offsets so frontal/planta/lateral cannot drift apart.
+    /// <para>
+    /// I-50 (ADR-0035): each view resolves its EFFECTIVE detail once, through <see cref="DimensionViewPolicy.EffectiveDetail"/>
+    /// over <see cref="DynamicRackSystem.Dimensions"/> and <see cref="DynamicRackSystem.DimensionViews"/>, and both its
+    /// dimensions and the reach of its labels read that value — never the rack-wide detail again. A null policy is the
+    /// rack-wide detail, exactly as before.
+    /// </para>
     /// </summary>
     internal static class DynamicViewDecorations
     {
@@ -41,6 +47,8 @@ namespace RackCad.Application.Systems.Dynamic
             }
 
             const string view = "FRONTAL";
+            // La salida y la entrada son el MISMO tipo de vista: las dos consultan el bit Frontal.
+            var detail = DimensionViewPolicy.EffectiveDetail(system.Dimensions, system.DimensionViews, DimensionViewKind.Frontal);
             var scale = Scale(system);
             var textHeight = SelectiveAnnotations.TextHeightFor(scale);
             var height = DynamicFrontGeometry.Height(system);
@@ -50,10 +58,10 @@ namespace RackCad.Application.Systems.Dynamic
                     end == DynamicRackEnd.Entrance ? level.EntranceElevation : level.ExitElevation))
                 .ToList();
 
-            AppendFrontalDimensions(target, system, layout, view, height, levelYs, textHeight, scale, catalog);
+            AppendFrontalDimensions(target, system, detail, layout, view, height, levelYs, textHeight, scale, catalog);
 
-            var leftReach = FrontalLeftReach(system, levelYs.Count, scale);
-            var bottomReach = BottomReach(system, scale);
+            var leftReach = FrontalLeftReach(detail, levelYs.Count, scale);
+            var bottomReach = BottomReach(detail, scale);
             var labelGap = textHeight + SelectiveAnnotations.Margin;
             if (system.NumberFronts)
             {
@@ -101,18 +109,19 @@ namespace RackCad.Application.Systems.Dynamic
             }
 
             const string view = "PLANTA";
+            var detail = DimensionViewPolicy.EffectiveDetail(system.Dimensions, system.DimensionViews, DimensionViewKind.Planta);
             var scale = Scale(system);
             var textHeight = SelectiveAnnotations.TextHeightFor(scale);
             var near = ChainGap * scale;
             var far = (ChainGap + OverallGap) * scale;
             var style = system.DimensionStyle;
 
-            if (system.Dimensions != DimensionDetail.None)
+            if (detail != DimensionDetail.None)
             {
-                var depthOffset = system.Dimensions == DimensionDetail.Minimal ? -near : -far;
+                var depthOffset = detail == DimensionDetail.Minimal ? -near : -far;
                 AddHorizontal(target, view, 0.0, system.TotalLength, layout.PostPositions[0], depthOffset, textHeight, style);
 
-                var frontCount = system.Dimensions == DimensionDetail.Minimal ? Math.Min(1, system.Fronts.Count) : system.Fronts.Count;
+                var frontCount = detail == DimensionDetail.Minimal ? Math.Min(1, system.Fronts.Count) : system.Fronts.Count;
                 for (var i = 0; i < frontCount && i + 1 < layout.PostPositions.Count; i++)
                 {
                     var pitch = layout.PostPositions[i + 1] - layout.PostPositions[i];
@@ -120,7 +129,7 @@ namespace RackCad.Application.Systems.Dynamic
                     AddVertical(target, view, 0.0, start, start + system.Fronts[i].BeamLength, -near, textHeight, style);
                 }
 
-                if (system.Dimensions >= DimensionDetail.Standard)
+                if (detail >= DimensionDetail.Standard)
                 {
                     foreach (var module in system.Modules.Where(module => module.Length > 0.0))
                     {
@@ -130,7 +139,7 @@ namespace RackCad.Application.Systems.Dynamic
             }
 
             var labelGap = textHeight + SelectiveAnnotations.Margin;
-            var leftReach = system.Dimensions == DimensionDetail.None ? 0.0 : near;
+            var leftReach = detail == DimensionDetail.None ? 0.0 : near;
             if (system.NumberFronts)
             {
                 for (var i = 0; i < system.Fronts.Count && i + 1 < layout.PostPositions.Count; i++)
@@ -179,6 +188,7 @@ namespace RackCad.Application.Systems.Dynamic
             }
 
             const string view = "LATERAL";
+            var detail = DimensionViewPolicy.EffectiveDetail(system.Dimensions, system.DimensionViews, DimensionViewKind.Lateral);
             var scale = Scale(system);
             var textHeight = SelectiveAnnotations.TextHeightFor(scale);
             var near = ChainGap * scale;
@@ -196,13 +206,13 @@ namespace RackCad.Application.Systems.Dynamic
             var style = system.DimensionStyle;
             var endX = sectionEndX ?? system.TotalLength;
 
-            if (system.Dimensions != DimensionDetail.None && height > 0.0)
+            if (detail != DimensionDetail.None && height > 0.0)
             {
-                var outer = system.Dimensions == DimensionDetail.Minimal ? near : far;
+                var outer = detail == DimensionDetail.Minimal ? near : far;
                 AddHorizontal(target, view, sectionStartX, endX, 0.0, -outer, textHeight, style);
                 AddVertical(target, view, sectionStartX, 0.0, height, -outer, textHeight, style);
 
-                if (system.Dimensions >= DimensionDetail.Standard)
+                if (detail >= DimensionDetail.Standard)
                 {
                     foreach (var module in system.Modules.Where(module => module.Length > 0.0
                                  && module.StartX >= sectionStartX - 1e-6
@@ -219,7 +229,7 @@ namespace RackCad.Application.Systems.Dynamic
                     }
                 }
 
-                if (system.Dimensions == DimensionDetail.Detailed)
+                if (detail == DimensionDetail.Detailed)
                 {
                     for (var i = 0; i < levelYs.Count; i++)
                     {
@@ -229,7 +239,7 @@ namespace RackCad.Application.Systems.Dynamic
                 }
             }
 
-            var leftReach = FrontalLeftReach(system, levelYs.Count, scale);
+            var leftReach = FrontalLeftReach(detail, levelYs.Count, scale);
             var labelGap = textHeight + SelectiveAnnotations.Margin;
             if (system.NumberLevels)
             {
@@ -256,6 +266,7 @@ namespace RackCad.Application.Systems.Dynamic
         private static void AppendFrontalDimensions(
             ICollection<HeaderBlockInstance> target,
             DynamicRackSystem system,
+            DimensionDetail detail,
             DynamicFrontLayout layout,
             string view,
             double height,
@@ -264,7 +275,7 @@ namespace RackCad.Application.Systems.Dynamic
             double scale,
             RackCatalog catalog)
         {
-            if (system.Dimensions == DimensionDetail.None || height <= 0.0)
+            if (detail == DimensionDetail.None || height <= 0.0)
             {
                 return;
             }
@@ -272,12 +283,12 @@ namespace RackCad.Application.Systems.Dynamic
             var near = ChainGap * scale;
             var far = (ChainGap + OverallGap) * scale;
             var style = system.DimensionStyle;
-            var outer = system.Dimensions == DimensionDetail.Minimal ? near : far;
+            var outer = detail == DimensionDetail.Minimal ? near : far;
             AddHorizontal(target, view, layout.PostPositions[0], layout.PostPositions[layout.PostPositions.Count - 1],
                 0.0, -outer, textHeight, style);
             AddVertical(target, view, layout.PostPositions[0], 0.0, height, -outer, textHeight, style);
 
-            if (system.Dimensions >= DimensionDetail.Standard)
+            if (detail >= DimensionDetail.Standard)
             {
                 for (var i = 0; i < system.Fronts.Count && i < layout.TroquelPositions.Count; i++)
                 {
@@ -304,7 +315,7 @@ namespace RackCad.Application.Systems.Dynamic
                 }
             }
 
-            if (system.Dimensions == DimensionDetail.Detailed)
+            if (detail == DimensionDetail.Detailed)
             {
                 for (var i = 0; i < levelYs.Count; i++)
                 {
@@ -317,24 +328,26 @@ namespace RackCad.Application.Systems.Dynamic
         private static double Scale(DynamicRackSystem system)
             => system.AnnotationScale > 0.0 ? system.AnnotationScale : 1.0;
 
-        private static double BottomReach(DynamicRackSystem system, double scale)
-            => system.Dimensions == DimensionDetail.None
+        /// <summary>How far below Y=0 a view's cotas reach, from that view's EFFECTIVE detail.</summary>
+        private static double BottomReach(DimensionDetail detail, double scale)
+            => detail == DimensionDetail.None
                 ? 0.0
-                : system.Dimensions == DimensionDetail.Minimal
+                : detail == DimensionDetail.Minimal
                     ? ChainGap * scale
                     : (ChainGap + OverallGap) * scale;
 
-        private static double FrontalLeftReach(DynamicRackSystem system, int levels, double scale)
+        /// <summary>How far left of the section a view's cotas reach, from that view's EFFECTIVE detail.</summary>
+        private static double FrontalLeftReach(DimensionDetail detail, int levels, double scale)
         {
-            if (system.Dimensions == DimensionDetail.None)
+            if (detail == DimensionDetail.None)
             {
                 return 0.0;
             }
 
-            var reach = system.Dimensions == DimensionDetail.Minimal
+            var reach = detail == DimensionDetail.Minimal
                 ? ChainGap * scale
                 : (ChainGap + OverallGap) * scale;
-            return system.Dimensions == DimensionDetail.Detailed
+            return detail == DimensionDetail.Detailed
                 ? reach + levels * ElevationStep * scale
                 : reach;
         }
