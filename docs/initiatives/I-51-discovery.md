@@ -1,4 +1,4 @@
-# I-51 — Discovery (G1): RACKDUPLICAR hoy, y lo que exige duplicar varios origenes
+# I-51 — ID15 — Discovery (G1): RACKDUPLICAR hoy, y lo que exige duplicar varios origenes
 
 > **Esto es G1: un informe de caracterizacion.** No cambia codigo productivo ni pruebas. Las
 > «respuestas de diseno» de la seccion 12 son **insumo para G2**, no un contrato: la implementacion
@@ -6,6 +6,26 @@
 > dueno** antes de G2.
 >
 > Contrato: [I-51-rackduplicar-multiples-origenes.md](I-51-rackduplicar-multiples-origenes.md).
+
+## 0. Reconciliacion de G2 (2026-09-12)
+
+Este informe se escribio en G1 (`c6fbfbc`) y **se conserva como evidencia de ese momento**: no se reescribe
+para aparentar que G1 conocia decisiones posteriores. G2 lo reconcilia con las decisiones PD-1..PD-7 y con
+la revision de Arquitecto (`AGREED WITH CHANGES`), registradas en
+[`docs/automation/decisions/I-51.md`](../automation/decisions/I-51.md).
+
+Cada afirmacion que G2 corrige lleva junto al texto original una marca **`[G2-Dn]`**; las marcas **`[G2]`**
+solo anotan el estado posterior. **Donde este informe y el contrato difieran, manda el contrato.**
+
+| Marca | Correccion |
+|---|---|
+| `[G2-D1]` | `ProjectVariableScanProjection` **no** clasifica fuentes de I-51: convierte un sobre sin `Id` en `UnreadableEnvelope` (`ProjectVariableScanProjection.cs:37-42`), lo que contradice PD-6. La clasificacion es propia, en cuatro clases (contrato, INV-03). `SelectiveAuthoredAuthority.IsSameAuthority` **si** se reutiliza |
+| `[G2-D2]` | La clave logica es un valor **discriminado**: `RackId` (sin distinguir mayusculas) o `Definition(handle)` cuando el `Id` es null, vacio o solo espacios (PD-6). El handle vive solo dentro del lote y nunca se persiste como RackId |
+| `[G2-D3]` | La entrada con identidad explicita recibe **`Guid newId`**, no un string, con los invariantes NI-1..NI-6 del contrato; la firma historica de dos argumentos delega en ella |
+| `[G2-D4]` | No hay estructura `OldRackId → NewRackId`: el plan de cada destino asigna `{LogicalSourceKey, NewRackId, CopyName}`; la correspondencia definicion → clon es local a la transaccion del Plugin |
+| `[G2-D5]` | Estado posterior de las paralelas: **I-49** reclamada y bootstrapeada (`f2d28a2`); su contrato extiende `ProjectVariable.Definition` y **excluye ID21**. **I-50** cerro G1 en `fdaf2bc`: autoridad rack × tipo de vista **en el diseno**, metadata por instancia rechazada (`CD-01`, `CD-08`) |
+| `[G2-D6]` | PD-1..PD-7 estan **cerradas**: ya no son preguntas abiertas |
+| `[G2-D7]` | El titulo incorpora el ID del Owner, **ID15** |
 
 ## 1. Baseline inspeccionado y preflight
 
@@ -40,15 +60,15 @@ AutoCAD ni ninguna suite: G1 no cambia codigo. Toda cita es `archivo:linea` sobr
 |---|---|---|---|
 | 1 | Flujo actual | `GetEntity` de **una** referencia → snapshot en una transaccion de lectura → punto base → bucle de destinos. Por destino, **una** transaccion: `RestampEnvelope` (GUID nuevo **generado dentro**) → comprobar → `CloneDefinition` → `new BlockReference` en `Position + desplazamiento UCS→WCS` → commit. Sin Regen | §3 |
 | 2 | ¿Una vista seleccionada duplica solo esa vista o todas sus hermanas? | **Solo esa vista**, siempre. Lo confirman el codigo, la historia y tres documentos; es decision del dueno del 2026-07-09 | §5.5 |
-| 3 | Seleccion multiple agrupada sin perder vistas | Snapshot plano por referencia → **grupo por RackId** → **definiciones deduplicadas** → **todas las referencias elegidas** | §12.1 |
-| 4 | UN RackId nuevo para las hermanas copiadas de A | El GUID debe asignarlo el **llamador** (hoy nace en `RackEnvelopeRestamp.cs:36`), y cada definicion del grupo se re-estampa con el **mismo** `(newId, copyName)`. La mitad interior ya recibe `newId` (`IRackKindHandler.cs:75`) | §12.2 |
-| 5 | ¿Hace falta `OldRackId → NewRackId`? | **Si, efimero y por punto de destino**, como tabla de asignacion. **No** para reescribir contenido: hoy ningun diseno referencia a otro rack. Cambia si llega ID21 | §12.3 |
+| 3 | Seleccion multiple agrupada sin perder vistas | Snapshot plano por referencia → **grupo por RackId** → **definiciones deduplicadas** → **todas las referencias elegidas** **[G2-D2]** | §12.1 |
+| 4 | UN RackId nuevo para las hermanas copiadas de A | El GUID debe asignarlo el **llamador** (hoy nace en `RackEnvelopeRestamp.cs:36`), y cada definicion del grupo se re-estampa con el **mismo** `(newId, copyName)`. La mitad interior ya recibe `newId` (`IRackKindHandler.cs:75`) **[G2-D3]** | §12.2 |
+| 5 | ¿Hace falta `OldRackId → NewRackId`? | **Si, efimero y por punto de destino**, como tabla de asignacion. **No** para reescribir contenido: hoy ningun diseno referencia a otro rack. Cambia si llega ID21 **[G2-D4]** | §12.3 |
 | 6 | Atomicidad | Preflight completo sin escribir + **una transaccion por punto de destino** que cubre todos los grupos, definiciones y referencias. Los puntos ya confirmados quedan, como hoy | §12.4 |
 | 7 | N racks × M puntos | `M × N` RackIds; `M × Σ definiciones` clones; `M × Σ referencias` referencias; un nombre por (rack, punto) | §12.5 |
 | 8 | Riesgos con copias enlazadas | El mayor: `RACKLISTA` y `RACKBOMTOTAL` cuentan copias como el **MAX de referencias directas** por RackId; clonar por referencia en vez de por definicion cambia ese conteo en silencio. Una copia Selectivo con vistas divergentes sale del BOM y bloquea las operaciones de las variables que consume | §11 |
-| 9 | Conflictos con I-49/I-50 | Ningun archivo productivo comun **previsto**; mismo grupo caliente `*Commands*.cs` que I-50; acoplamiento semantico si I-50 guarda politica por vista en la **referencia**; I-49 sin rama | §13 |
-| 10 | Piezas pequenas reutilizables | Sobrecarga de `RestampEnvelope` con `newId`; un planificador puro en Application; reutilizar `ProjectVariableScanProjection`, `SelectiveAuthoredAuthority`, `KindHandlerDispatch.TryResolveIgnoreCase`, `RackCloner` e `InDocumentTransaction` | §14 |
-| — | ¿Decision arquitectonica material? | **SI**: AM-1, AM-2 y AM-3; AM-4 condicionada a I-50 | §16 |
+| 9 | Conflictos con I-49/I-50 | Ningun archivo productivo comun **previsto**; mismo grupo caliente `*Commands*.cs` que I-50; acoplamiento semantico si I-50 guarda politica por vista en la **referencia**; I-49 sin rama **[G2-D5]** | §13 |
+| 10 | Piezas pequenas reutilizables | Sobrecarga de `RestampEnvelope` con `newId`; un planificador puro en Application; reutilizar `ProjectVariableScanProjection`, `SelectiveAuthoredAuthority`, `KindHandlerDispatch.TryResolveIgnoreCase`, `RackCloner` e `InDocumentTransaction` **[G2-D1]** **[G2-D3]** | §14 |
+| — | ¿Decision arquitectonica material? | **SI**: AM-1, AM-2 y AM-3; AM-4 condicionada a I-50 **[G2]** AM-1..AM-3 reconciliadas; AM-4 cerrada como no material | §16 |
 
 ## 3. Flujo exacto actual: seleccion → clon → restamp → traslado → commit
 
@@ -120,7 +140,7 @@ Colaboradores directos:
 | `src/RackCad.Application/Persistence/RackEmbedDocument.cs` | Sobre y su store | No |
 | `src/RackCad.Application/Persistence/RestampResult.cs` | `RestampResult` y `SelectiveAuthoredRestamp` | No |
 | `src/RackCad.Application/Persistence/RackListBuilder.cs` | Agrupacion pura por GUID | Precedente de forma |
-| `src/RackCad.Application/ProjectVariables/ProjectVariableScanProjection.cs` | Clasificacion sin inventar RackId | Reutilizar |
+| `src/RackCad.Application/ProjectVariables/ProjectVariableScanProjection.cs` | Clasificacion sin inventar RackId | Reutilizar **[G2-D1]**: NO como clasificador de fuentes de I-51 |
 | `src/RackCad.Application/ProjectVariables/SelectiveAuthoredAuthority.cs` | Igualdad authored entre hermanas | Reutilizar |
 | `src/RackCad.Application/ProjectVariables/ProjectVariableConsumerDiscovery.cs` | Aborta ante consumidores divergentes | No |
 | `src/RackCad.Application/Bom/BomAuthoredAuthority.cs` | Autoridad del BOM por rack | No |
@@ -319,13 +339,13 @@ asignacion del id entra como sobrecarga.
 |---|---|---|---|
 | R1 | **Conteo de copias alterado** | `RACKLISTA` y `RACKBOMTOTAL` cuentan copias como el **MAX de referencias directas** entre las vistas de un RackId (`RackInventarioCommands.cs:72`; `RackInventarioCommands.BomTotal.cs:109-113`). Si dos referencias de la misma definicion se clonan en **dos** definiciones con el mismo RackId nuevo, el rack pasa de «2 copias» a «1» | Deduplicar por **definicion de origen** dentro del grupo: un clon por definicion y N referencias al clon |
 | R2 | **Copia divergente** (Selectivo) | §6: un GUID o nombre por vista, o vistas de origen ya divergentes, dejan la copia fuera del BOM y **abortan**, en todo el dibujo, las operaciones de las variables que la copia consume | Un `(newId, copyName)` por grupo; preflight de igualdad authored de las vistas seleccionadas de cada grupo Selectivo |
-| R3 | **Copia parcial** | Lo historico es copiar lo seleccionado, no las hermanas (§5.5). Un rack copiado sin laterales es valido: `RACKEDITAR` redibuja las vistas que existan | Decision de producto PD-1 |
-| R4 | **Ambiguedad de intencion** | Dos referencias de `A` pueden ser dos racks fisicos enlazados. ¿Su copia son dos racks enlazados, con un RackId, o dos independientes? | Decision PD-2; la exigencia «las hermanas de A comparten UN RackId» apunta a enlazados |
+| R3 | **Copia parcial** | Lo historico es copiar lo seleccionado, no las hermanas (§5.5). Un rack copiado sin laterales es valido: `RACKEDITAR` redibuja las vistas que existan | Decision de producto PD-1 **[G2-D6]** |
+| R4 | **Ambiguedad de intencion** | Dos referencias de `A` pueden ser dos racks fisicos enlazados. ¿Su copia son dos racks enlazados, con un RackId, o dos independientes? | Decision PD-2; la exigencia «las hermanas de A comparten UN RackId» apunta a enlazados **[G2-D6]** |
 | R5 | Referencias de `A` **no** seleccionadas | No se tocan: el clon es un BTR nuevo (`RackCloner.cs:34-36`) y el payload de origen no se escribe | Ninguna: conservar |
 | R6 | Dos definiciones con la misma (View, Section) bajo `A` | Posible por «Insertar» (§5.4); `RACKEDITAR` las redibuja todas | Reproducirlas tal cual, sin fusionar |
-| R7 | Sobre sin `Id` (legado) | Hoy se duplica; agruparlo exigiria inventar un RackId, y eso esta prohibido (`ProjectVariableScanProjection.cs:17-21`) | Decision PD-6 |
+| R7 | Sobre sin `Id` (legado) | Hoy se duplica; agruparlo exigiria inventar un RackId, y eso esta prohibido (`ProjectVariableScanProjection.cs:17-21`) | Decision PD-6 **[G2-D6]** **[G2-D2]** |
 | R8 | Mismo RackId con `Kind` distinto en dos definiciones | Corrupcion; con una sola vista no podia manifestarse | Abortar en el preflight |
-| R9 | Referencia en espacio papel | La copia cae en Model Space (§7) | Decision PD-7 |
+| R9 | Referencia en espacio papel | La copia cae en Model Space (§7) | Decision PD-7 **[G2-D6]** |
 | R10 | Rack ilegible confundido con «no es rack» | Mismo mensaje (§4) | Clasificar en el preflight y abortar si una referencia elegida es un rack ilegible |
 | R11 | Cama con varias definiciones del mismo RackId | Su `RACKEDITAR` no busca hermanas (§5.4): dos definiciones no se editan juntas | Deduplicar por definicion reproduce la estructura del origen y no crea definiciones de mas |
 
@@ -346,6 +366,9 @@ Plan (puro, en Application)
       Referencias [ ReferenceHandle ... ]              TODAS las elegidas: ninguna se descarta al agrupar
 ```
 
+> **[G2-D2]** `OldRackId` no sirve de clave: los sobres legacy no tienen `Id`. La clave es un valor
+> discriminado, `RackId` o `Definition(handle)`, y el handle vive solo dentro del lote.
+
 - **Agrupar por RackId** responde a «un RackId por rack origen»; **deduplicar por definicion**
   responde a R1; **conservar cada referencia** responde a «sin perder las vistas realmente
   seleccionadas».
@@ -353,7 +376,8 @@ Plan (puro, en Application)
   (`RackSelectivoCommands.cs:291`, `RackInventarioCommands.BomTotal.cs:80`).
 - La clasificacion puede reutilizar `ProjectVariableScanProjection.Project`
   (`ProjectVariableScanProjection.cs:30-65`), que nunca inventa un RackId y ya distingue sobre
-  ilegible, rack de otro kind y Selectivo legible.
+  ilegible, rack de otro kind y Selectivo legible. **[G2-D1]** Incorrecto para I-51: esa proyeccion
+  trata un sobre sin `Id` como ilegible (l.37-42) y dejaria fuera los legacy que PD-6 incluye.
 
 ### 12.2 Un RackId nuevo compartido por las hermanas copiadas de A
 
@@ -363,6 +387,7 @@ Plan (puro, en Application)
   `RestampEnvelope(payload, copyName, newId)`, con la firma actual delegando en ella con un GUID nuevo,
   de modo que `RACKLAYOUT` no cambia. La mitad interior ya lo admite:
   `IRackKindHandler.RestampDesign(designJson, newId, copyName)` (`IRackKindHandler.cs:75`).
+  **[G2-D3]** La entrada recibe `Guid newId`, no un string, con NI-1..NI-6 del contrato.
 - Cada definicion se re-estampa desde **su propio** payload, para conservar su `View`, su `Section` y su
   `ExtensionData` por vista (`RackEmbedDocument.cs:41-64`), pero con el `(newId, copyName)` **del
   grupo**. No conviene componer un sobre nuevo desde un diseno comun: perderia los metadatos por vista.
@@ -371,6 +396,10 @@ Plan (puro, en Application)
   podria vigilarse con guardas de texto.
 
 ### 12.3 ¿Hace falta `OldRackId → NewRackId`?
+
+> **[G2-D4]** Se sustituye por una **asignacion** en el plan de cada destino,
+> `{LogicalSourceKey, NewRackId, CopyName}`, sin estructura `OldRackId → NewRackId`. La correspondencia
+> definicion → clon es local a la transaccion del Plugin. Nada se persiste ni se remapea.
 
 **Si, como tabla efimera por punto de destino.** Es lo que hace que las N definiciones de un grupo
 reciban el mismo id y que dos grupos no compartan nunca uno. Va acompanada de
@@ -422,6 +451,11 @@ definiciones anidadas ARRAY se comparten, no se duplican (`RackCloner.cs:46-49`)
 - **I-49**: **sin rama remota** en los dos chequeos (13:06 y 13:19) y sin mencion en `main`. La unica
   fuente es el contrato de I-50 (§6 y §11), que la asocia a `LinkedPropertyEditor`, Expression Engine y
   Project Variables. **Su alcance real no se conoce.**
+- **[G2-D5]** Estado posterior a G1: **I-49** reclamada (`77262fe`) y bootstrapeada (`f2d28a2`); su
+  contrato extiende `ProjectVariable.Definition` (ADR-0034 §15), **excluye ID21** (§4) y reconoce a I-51
+  sin archivo productivo previsto en comun (§6.4). **I-50** cerro G1 en `fdaf2bc`: autoridad rack × tipo
+  de vista en el diseno (`CD-01`), metadata por instancia rechazada (`CD-08`), e I-51 solo con conflicto
+  documental de ROADMAP (`CD-11`). Ninguna de las dos toca `src/` ni `tests/`.
 
 ### 13.2 Archivos
 
@@ -446,8 +480,11 @@ ni el registro de variables.
   restamp la transportan sin cambios. Si vive en la **referencia** (XData o diccionario de extension de
   la `BlockReference`), la copia actual **la pierde** (§7) y la vista copiada mostraria cotas distintas
   de su origen. Conviene que el G2 de I-50 declare donde vive **antes** del G2 de I-51 (AM-4).
+  **[G2-D5]** Declarado en `fdaf2bc` (`CD-01`, `CD-08`): vive en el diseno. AM-4 queda cerrada como no
+  material mientras ese contrato siga vigente.
 - **I-49 → I-51.** Si I-49 introduce **ID21**, la duplicacion de grupos necesita politica de remapeo
-  (AM-3). Si cambia la representacion de los bindings en `SelectivePalletDesignDocument`, el restamp
+  (AM-3). **[G2-D5]** El contrato de I-49 (`f2d28a2`, §4) excluye ID21.
+  Si cambia la representacion de los bindings en `SelectivePalletDesignDocument`, el restamp
   debe seguir preservandola; hoy lo vigilan las pruebas de C-4
   (`SelectiveDuplicationFailClosedTests.cs:109-117`).
 
@@ -459,9 +496,9 @@ como pide el contrato (§12).
 
 | Pieza | Tipo | Por que basta |
 |---|---|---|
-| `RackEnvelopeRestamp.RestampEnvelope(payload, copyName, newId)` | Sobrecarga en el Plugin | La mitad interior ya recibe `newId`; la firma de dos argumentos delega y `RACKLAYOUT` queda intacto |
+| `RackEnvelopeRestamp.RestampEnvelope(payload, copyName, newId)` **[G2-D3]**: `Guid newId` | Sobrecarga en el Plugin | La mitad interior ya recibe `newId`; la firma de dos argumentos delega y `RACKLAYOUT` queda intacto |
 | Planificador puro de duplicacion: una clase estatica y dos o tres registros inmutables | Nuevo, en Application | Agrupa por RackId, deduplica definiciones, conserva referencias, clasifica y asigna `(newId, copyName)` por (grupo, punto). Precedente de forma: `RackListBuilder` (`RackListBuilder.cs:44-79`) |
-| `ProjectVariableScanProjection.Project` | Reutilizar | Clasifica sin inventar RackId |
+| `ProjectVariableScanProjection.Project` | Reutilizar **[G2-D1]**: NO para clasificar fuentes de I-51 | Clasifica sin inventar RackId |
 | `SelectiveAuthoredAuthority.IsSameAuthority` | Reutilizar | Igualdad authored de las vistas de un grupo, sin comparador nuevo |
 | `KindHandlerDispatch.TryResolveIgnoreCase` | Reutilizar, por grupo | Mantiene la sensibilidad a mayusculas historica |
 | `RackCloner.CloneDefinition` | Reutilizar sin cambio | Ya clona una definicion con su payload y su etiqueta |
@@ -511,11 +548,19 @@ protegen. G2 debe **reapuntarlas a la propiedad** —como hizo I-47 G14 con la g
   desplazandola, con paridad COPY de `Normal`, color, XData y diccionario de extension. Pasa a material
   si I-50 guarda politica por vista en la referencia.
 
+> **[G2]** Revision de Arquitecto `AGREED WITH CHANGES`: AM-1, AM-2 y AM-3 **reconciliadas**; AM-4
+> **cerrada como no material** por la decision vigente de I-50. Detalle en
+> [`decisions/I-51.md`](../automation/decisions/I-51.md) seccion 3.3.
+
 **No** son decisiones arquitectonicas nuevas, porque aplican precedentes existentes: el preflight con
 transaccion por punto (C2-6, el ejecutor de variables, `RACKLAYOUT`), la reutilizacion de autoridades
 puras y la ausencia de un registro nuevo.
 
 ### 16.2 Decisiones de producto para el dueno
+
+> **[G2-D6]** Las siete estan **cerradas**; decisiones y precisiones en
+> [`decisions/I-51.md`](../automation/decisions/I-51.md) seccion 2. Las preguntas se conservan tal como se
+> formularon en G1.
 
 - **PD-1.** Seleccionar una vista, ¿copia solo esa vista, como decidio el dueno el 2026-07-09, o todas sus
   hermanas? *Recomendacion tecnica*: conservar lo historico.
@@ -528,7 +573,7 @@ puras y la ausencia de un registro nuevo.
 - **PD-7.** Referencias en espacio papel: ¿se restringe a Model Space o se copia en su propio espacio?
 
 Con estas decisiones abiertas, el contrato deberia pasar `requires_owner_decision` a `true` en G2 (la
-metadata solo anade).
+metadata solo anade). **[G2]** Hecho.
 
 ## 17. Hallazgos laterales (no se arreglan en I-51)
 
@@ -542,7 +587,8 @@ metadata solo anade).
   referencia simple.
 
 Estan **pendientes de registrar en `docs/ideas-futuras.md`**: este commit se limita al informe de G1, por
-instruccion del dueno. El Discovery de I-48 tampoco toco `ideas-futuras.md`.
+instruccion del dueno. El Discovery de I-48 tampoco toco `ideas-futuras.md`. **[G2]** Registrados sin
+corregir en `docs/ideas-futuras.md`, seccion «I-51».
 
 ## 18. Conclusion G1
 
@@ -558,3 +604,6 @@ instruccion del dueno. El Discovery de I-48 tampoco toco `ideas-futuras.md`.
    I-50), que necesita **revision de Arquitecto antes de G2**, y siete decisiones de producto (PD-1 a
    PD-7) para el dueno.
 5. **G2 queda bloqueado** hasta esa revision. G0 y G1 no cambiaron codigo productivo.
+
+> **[G2]** La revision llego (`AGREED WITH CHANGES`) y G2 la reconcilio: el contrato vinculante es
+> [I-51-rackduplicar-multiples-origenes.md](I-51-rackduplicar-multiples-origenes.md).
