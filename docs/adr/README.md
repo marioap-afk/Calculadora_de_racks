@@ -74,7 +74,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0032](0032-selectivo-pendiente-comprometido-y-autoridades-por-fondo.md) | El editor Selectivo separa valor pendiente de estado comprometido, y cada propiedad tiene una autoridad por fondo | aceptado |
 | [0033](0033-validacion-por-clase-de-evidencia-y-sha-exacto.md) | La validación se organiza por clase de evidencia y por SHA exacto, no por equivalencia de contenido | propuesto |
 | [0034](0034-project-variables-autoridad-drawing-level.md) | Variables de proyecto como autoridad persistente de nivel dibujo y referencias tipadas por VariableId | aceptado |
-| [0035](0035-visibilidad-de-cotas-por-tipo-de-vista.md) | Visibilidad de cotas por tipo de vista del rack | propuesto |
+| [0035](0035-visibilidad-de-cotas-por-tipo-de-vista.md) | Visibilidad de cotas por tipo de vista del rack | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,

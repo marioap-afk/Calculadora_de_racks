@@ -1,21 +1,35 @@
 # ADR-0035: Visibilidad de cotas por tipo de vista del rack
 
-- **Estado:** propuesto
-- **Fecha:** 2026-09-12 (propuesto)
-- **Decisores:** Mario Pérez, Owner del repositorio (acepta o rechaza; **pendiente**); Coordinador de I-50
-  (decisiones `CD-01`..`CD-11`; revisión de la Proposal: V1 **NOT AGREED**, V1.1 **AGREED**, V1.2
-  **pendiente**); Arquitecto de I-50 (V1.1 **NOT AGREED** por MAT-A1; V1.2 **pendiente de re-revisión**);
-  Claude (redacción)
+- **Estado:** aceptado
+- **Fecha:** 2026-09-12 (propuesto) · 2026-09-12 (aceptado)
+- **Decisores:** Mario Pérez, Owner del repositorio (**acepta**); Coordinador de I-50 (decisiones
+  `CD-01`..`CD-11`; revisión de la Proposal: V1 **NOT AGREED**, V1.1 **AGREED**, V1.2 **AGREED**);
+  Arquitecto de I-50 (V1.1 **NOT AGREED** por MAT-A1; V1.2 **AGREED**, MAT-A1 resuelto): consenso técnico
+  sobre Proposal **V1.2** / SHA `0e91c52f41f26b3302af8cabd9dd8b293f2d3cbd`; Claude (redacción)
 - **Iniciativa relacionada:** I-50 — `feature/cotas-independientes-por-vista`
   ([contrato](../initiatives/I-50-cotas-independientes-por-vista.md),
   [Discovery](../initiatives/I-50-discovery.md), [Proposal V1.2](../initiatives/I-50-proposal-v1.2.md);
   [Proposal V1.1](../initiatives/I-50-proposal-v1.1.md) y [Proposal V1](../initiatives/I-50-proposal-v1.md)
-  como registro de sus rondas)
+  como registro de sus rondas; [decisión del Owner](../automation/decisions/I-50.md))
 
-> **Estado `propuesto`.** Este registro acompaña a la Proposal **V1.2**, que todavía **no** tiene consenso
-> (V1: Coordinador NOT AGREED; V1.1: Coordinador AGREED y Arquitecto NOT AGREED). Puede editarse hasta que el
-> Owner lo acepte o lo rechace ([README](README.md)). No autoriza implementación por sí mismo: el
-> Coordinador exige que el Owner lo **acepte antes de cualquier código productivo** de I-50.
+> **Aceptación del Owner (2026-09-12).** El Owner acepta esta decisión de forma **explícita**: «**Sí,
+> acepto ADR-0035 para I-50 sobre Proposal V1.2.**» Registro durable en
+> [`docs/automation/decisions/I-50.md`](../automation/decisions/I-50.md).
+>
+> **Dos actos, dos autoridades.** El Coordinador y el Arquitecto aportaron el **consenso técnico**, ambos
+> **AGREED** sobre Proposal **V1.2** / SHA `0e91c52f41f26b3302af8cabd9dd8b293f2d3cbd`: la decisión estaba
+> **lista**. La **aceptación** es un acto distinto que **solo el dueño del repo** ejerce ([README](README.md)).
+> Este registro **nació `propuesto`** el 2026-09-12 y pasa a **`aceptado`** ese mismo día; la trazabilidad
+> de los dos estados se conserva a propósito.
+>
+> **Contenido aceptado.** Es **exactamente** el que este registro tiene en `0e91c52`. Al aceptarlo solo
+> cambia este encabezado —estado, fecha, decisores y enlaces—: Contexto, Decisión, Alternativas
+> consideradas, Consecuencias y Referencias quedan idénticos y, desde ahora, **inmutables** ([README](README.md)).
+>
+> **Lo que esta aceptación autoriza — y lo que no.** Junto con el consenso sobre la misma Proposal, cumple la
+> compuerta de código productivo de I-50: **G4** puede abrirse una vez versionado este estado. **No** declara
+> implementación hecha, pruebas verdes ni validación en AutoCAD: `requires_plugin_build`, `requires_autocad` y
+> `requires_owner_validation` siguen **vigentes**.
 >
 > **Revisión V1.1 de este registro** (2026-09-12): el punto 8 de la decisión deja de leer los enteros
 > negativos como legacy y pasa a conservar **cualquier** valor presente exactamente (MATERIAL-01 del

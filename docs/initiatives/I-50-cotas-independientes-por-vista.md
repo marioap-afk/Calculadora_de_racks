@@ -12,7 +12,7 @@ depends_on: []
 conflicts_with: []
 context_packs: [ui-editors, persistence, system-selective, architecture-kernel]
 automation_state_path:
-decision_paths: []
+decision_paths: [docs/automation/decisions/I-50.md]
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
@@ -26,10 +26,29 @@ automation:
 
 # I-50 — Cotas independientes por vista
 
-> Fase actual: **G0 CLOSED · G1 CLOSED · G2 IN PROGRESS · G2A IN PROGRESS**. Proposal actual = **V1.2**
-> (Coordinator **PENDING REVIEW**, Architect **PENDING RE-REVIEW**, Consensus **NOT REACHED**). V1 y V1.1 se
-> conservan intactas (historial en la sección 15). ADR-0035 sigue `propuesto`. **G4 no está abierto. Solo
-> documentación**: no hay una sola línea de producción ni de pruebas en la rama.
+> Fase actual: **G0 CLOSED · G1 CLOSED · G2 CLOSED · G2A CLOSED** — Consensus Freeze de la **Proposal V1.2**
+> y **ADR-0035 `aceptado`** por el Owner. **Siguiente gate: G4, no iniciado.**
+>
+> ```text
+> Proposal            = V1.2
+> Proposal SHA        = 0e91c52f41f26b3302af8cabd9dd8b293f2d3cbd   (FROZEN)
+>
+> Coordinator         = AGREED
+> Architect           = AGREED   (MAT-A1 = RESOLVED)
+> Technical Consensus = REACHED
+>
+> Owner Decision      = ACCEPTED   (2026-09-12)
+> ADR-0035            = ACCEPTED   (aceptado)
+> G2 / G2A            = CLOSED
+>
+> Next gate           = G4         (NOT STARTED: sin trabajo ejecutado)
+> Owner Validation    = PENDING    (G7)
+> ```
+>
+> **Todavía no hay una sola línea de producción ni de pruebas en la rama.** La compuerta de código productivo
+> (sección 10) queda satisfecha para la V1.2 exacta, y G4 abre con el commit test-only de su Paso 1. V1 y V1.1
+> se conservan intactas (historial en la sección 15). Evidencia de la decisión en
+> [`docs/automation/decisions/I-50.md`](../automation/decisions/I-50.md).
 >
 > ```text
 > BASE_SHA      = a4d88f18a1f42263d366c44dc05dd18a6786f152
@@ -147,10 +166,10 @@ Además, por confirmación del Coordinador: la **variación de huella de `RACKLA
 |---|---|---|
 | G0 | Preflight, claim, worktree, bootstrap | **CLOSED** — reclamo `97cc0ef`, contrato `4e22d91`, fila de ROADMAP `a2fba4f`, worktree creado |
 | G1 | Characterization / matriz completa | **CLOSED** — [I-50-discovery.md](I-50-discovery.md); decisiones del Coordinador en la sección 12 |
-| G2 | Contrato de autoridad + persistencia + default legacy | **IN PROGRESS** |
-| G2A | Proposal + ADR `propuesto` (solo documentación) | **IN PROGRESS** — Proposal actual **V1.2** ([I-50-proposal-v1.2.md](I-50-proposal-v1.2.md)): Coordinator **PENDING REVIEW**, Architect **PENDING RE-REVIEW**, Consensus **NOT REACHED**. Historial: V1 (`93c352a`) Coordinator **NOT AGREED**; V1.1 (`0d7670c`) Coordinator **AGREED**, Architect **NOT AGREED** (MAT-A1). [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md) `propuesto` |
+| G2 | Contrato de autoridad + persistencia + default legacy | **CLOSED** — congelado en la [Proposal V1.2](I-50-proposal-v1.2.md) (`0e91c52`) |
+| G2A | Proposal + ADR `propuesto` (solo documentación) | **CLOSED** — Proposal **V1.2 FROZEN** (`0e91c52f41f26b3302af8cabd9dd8b293f2d3cbd`): Coordinator **AGREED**, Architect **AGREED** (MAT-A1 **RESOLVED**), Consensus **REACHED**; [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md) **`aceptado`** por el Owner el 2026-09-12 ([decisión](../automation/decisions/I-50.md)). Historial: V1 (`93c352a`) Coordinator **NOT AGREED**; V1.1 (`0d7670c`) Coordinator **AGREED**, Architect **NOT AGREED** (MAT-A1) |
 | G3 | UI mínima | pendiente |
-| G4 | Builders / draw path | pendiente |
+| G4 | Builders / draw path | **SIGUIENTE** — no iniciado, sin trabajo ejecutado; abre con el Paso 1 de la sección 14.3 de la Proposal V1.2 |
 | G5 | Persistence / update | pendiente |
 | G6 | Cobertura de sistemas | pendiente |
 | G7 | Candidate + Owner AutoCAD 2025 | pendiente |
@@ -163,6 +182,23 @@ Además, por confirmación del Coordinador: la **variación de huella de `RACKLA
 **Contenido y cierre de cada gate** (archivos, sitios de copia C-xx y pruebas o validaciones que lo cierran): tabla de la [Proposal V1.2](I-50-proposal-v1.2.md), sección 14.3 (MAT-A1). El orden no cambia.
 
 **Compuerta de código productivo**: consenso del Coordinador y del Arquitecto sobre la **misma** versión de la Proposal **y** ADR-0035 `aceptado` por el Owner (sección 14). Faltando cualquiera de las dos, no se escribe producción.
+
+> **SATISFECHA para la Proposal V1.2 exacta** (`0e91c52f41f26b3302af8cabd9dd8b293f2d3cbd`): Coordinator
+> **AGREED**, Architect **AGREED** y ADR-0035 **`aceptado`** por el Owner el 2026-09-12
+> ([evidencia](../automation/decisions/I-50.md)).
+>
+> **La regla no se retira: sigue vigente hacia adelante.** Lo satisfecho es la compuerta **para esa versión y
+> ese SHA**:
+>
+> ```text
+> Cualquier cambio contractual posterior a Proposal V1.2
+>   → invalida este consenso
+>   → exige nueva revisión Coordinator + Architect
+>   → y nueva decisión del Owner si cambia materialmente lo aceptado.
+> ```
+>
+> Por eso [I-50-proposal-v1.2.md](I-50-proposal-v1.2.md) es **INMUTABLE**. Los MINOR editoriales m1 y m2 de
+> la re-revisión del Arquitecto no la alteran.
 
 ## 11. Coordinación con I-49 e I-51
 
@@ -216,6 +252,10 @@ integre después conserva todas las filas y secciones.
 Lo que queda para G2: la **representación** del dato. La Proposal V1 compara solo dos formas —una lista
 nula de tokens de vista y un `[Flags] DimensionViewVisibility` nulo— y recomienda una.
 
+> **Resuelto en G2A.** Representación B: `[Flags] DimensionViewVisibility` nulo, persistido como
+> `int? DimensionViews`. Queda congelada en la [Proposal V1.2](I-50-proposal-v1.2.md) y decidida en
+> [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md), `aceptado`.
+
 ## 13. Hallazgos fuera de alcance (`CD-09`)
 
 Registrados **sin corregir** en [ideas-futuras.md](../ideas-futuras.md), sección «I-50»; el detalle y la
@@ -243,13 +283,32 @@ nuevo permanece `propuesto` hasta que el dueño lo acepta o lo rechaza).
 - Ninguna de las dos compuertas sustituye a la otra: el consenso técnico dice que la decisión está lista; la
   aceptación la ejerce solo el Owner.
 
+> **SATISFECHA el 2026-09-12.** El Owner aceptó expresamente ADR-0035 sobre la Proposal V1.2:
+> «**Sí, acepto ADR-0035 para I-50 sobre Proposal V1.2.**» Registro durable en
+> [`docs/automation/decisions/I-50.md`](../automation/decisions/I-50.md), enlazado desde `decision_paths`.
+>
+> ```text
+> Owner Decision      = ACCEPTED
+> ADR-0035            = ACCEPTED
+> owner-decision gate = RESOLVED
+> ```
+>
+> **`requires_owner_decision` se conserva en `true`**, como en I-47 e I-48: declara que la iniciativa requirió
+> una decisión del dueño, y no pasa a `false` porque esa decisión quede resuelta; lo que cambia es el estado
+> del gate. **`requires_owner_validation` sigue pendiente** (G7, AutoCAD 2025) y es monotónica
+> ([AUTOMATION_PLAN](../AUTOMATION_PLAN.md) sección 11). `status` se conserva en `claimed`: G4 no está
+> iniciado.
+
 ## 15. Historial de revisión de la Proposal
 
 | Versión | Archivo | Revisión del Coordinador | Revisión del Arquitecto |
 |---|---|---|---|
 | V1 | [I-50-proposal-v1.md](I-50-proposal-v1.md) (`93c352a`), conservada **intacta** | **NOT AGREED**. MATERIAL-01: retirar «entero negativo ⇒ legacy» y conservar exactamente todo entero presente. MATERIAL-02: retirar la guarda de texto T-22 del Plugin. Confirmó el resto (representación B, sin `All`, `null` = legacy, orden de gates, `requires_owner_decision`, ADR aceptado antes de código, I-50 no modifica `RACKLAYOUT`) | no revisada |
 | V1.1 | [I-50-proposal-v1.1.md](I-50-proposal-v1.1.md) (`0d7670c`), conservada **intacta** | **AGREED** | **NOT AGREED**. Único MATERIAL: **MAT-A1**, ejecutabilidad de los gates (faltaba el contenido y cierre de cada gate; T-06 dependía de C-05 y T-08 de C-10/C-14/C-15). MINOR MIN-1..MIN-9. Respondió QA-1, QA-3, QA-4 y QA-5 con AGREE. **El diseño de datos no se reabrió** |
-| V1.2 | [I-50-proposal-v1.2.md](I-50-proposal-v1.2.md) | **PENDING REVIEW** | **PENDING RE-REVIEW** |
+| V1.2 | [I-50-proposal-v1.2.md](I-50-proposal-v1.2.md) (`0e91c52`), **FROZEN** | **AGREED** | **AGREED**. **MAT-A1 RESOLVED**; 0 BLOCKER, 0 MATERIAL; G4, G5, G6, G3 y G7 ejecutables. MINOR editoriales: m1 (matriz de trazabilidad, 13.6 A) y m2 (suite de T-20), que no alteran la Proposal congelada, y m3 (estado atrasado), corregido en este contrato, en ADR-0035 y en el registro de decisión |
 
-**Consenso**: **NOT REACHED**. V1.2 hereda íntegramente el contrato técnico de V1.1 y solo incorpora MAT-A1
-(tabla de gates, con C-05 adelantado a G4) y MIN-1..MIN-8; MIN-9 se aplicó a ADR-0035, que sigue `propuesto`.
+**Consenso**: **REACHED** sobre V1.2 (`0e91c52f41f26b3302af8cabd9dd8b293f2d3cbd`), y **ADR-0035 `aceptado`** por
+el Owner el 2026-09-12 ([decisión](../automation/decisions/I-50.md)). V1.2 hereda íntegramente el contrato técnico
+de V1.1 e incorpora MAT-A1 (tabla de gates, con C-05 adelantado a G4) y MIN-1..MIN-8; MIN-9 se aplicó a
+ADR-0035. **V1.2 queda congelada**: su cabecera conserva el estado con que se publicó (PENDING), y el estado
+vigente lo registran este contrato, ADR-0035 y el registro de decisión.
