@@ -1,0 +1,498 @@
+# I-50 — Proposal V1: visibilidad de cotas por tipo de vista
+
+> # PROPOSAL V1 — NOT CONSENSUS
+>
+> # Implementación BLOQUEADA
+>
+> Documento de G2A, **solo documentación**. Queda sometido a revisión del **Coordinador** y del
+> **Arquitecto**; mientras no estén de acuerdo **sobre esta misma versión**, no se escribe una sola línea
+> de producción (contrato, sección 10). La decisión de arquitectura asociada nace como
+> [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md) en estado **`propuesto`**; aceptarlo
+> o rechazarlo corresponde solo al Owner.
+>
+> ```text
+> Base del análisis  = I-50-discovery.md (G1 CLOSED)
+> Código auditado    = a4d88f18a1f42263d366c44dc05dd18a6786f152   (origin/main, sin avanzar)
+> Decisiones entrada = CD-01..CD-11 (contrato, sección 12) — vinculantes, no se reabren
+> Estado             = Coordinator: PENDIENTE DE REVISIÓN · Architect: NOT REVIEWED · Consensus: NOT REACHED
+> ```
+>
+> Las citas `archivo:línea` se refieren a `a4d88f1`.
+
+## 0. Qué decide esta Proposal, y qué no
+
+**Decide**, para las decisiones `CD-01`..`CD-11` ya tomadas:
+
+- la **representación** del dato, comparando **solo** dos formas (sección 2);
+- el formato de cable, la semántica de nulo/legacy y el tratamiento de valores desconocidos;
+- la **regla única** `EffectiveDetail(detail, policy, viewKind)` y cómo gobierna el alcance de las etiquetas;
+- la lista completa de sitios de copia, el comportamiento en cada flujo (guardar y reabrir, `RACKEDITAR`,
+  Actualizar, vista enlazada nueva, `RACKDUPLICAR`) y las pruebas RED previstas.
+
+**No decide**: nombres internos de controles WPF ni su disposición fina (G3), el orden definitivo de los
+gates (se propone en la sección 14, lo aprueba el Coordinador) ni nada de lo que las `CD` ya fijaron.
+
+**No cambia**: geometría, BOM, GUID, `View`/`Section`, sobre del DWG, comandos del Plugin, catálogos,
+`LinkedPropertyEditor`, Project Variables, Expression Engine ni los sistemas sin cotas.
+
+## 1. Decisiones de entrada (vinculantes)
+
+| ID | Resumen | Consecuencia para esta Proposal |
+|---|---|---|
+| `CD-01` | Autoridad = rack × tipo de vista | El dato vive en el **diseño** del rack, igual en todas sus vistas |
+| `CD-02` | Tipos = Frontal / Lateral / Planta; `Section` no crea tipo | Tres valores; salida y entrada, y los cuatro cortes frontales de Push Back, comparten Frontal |
+| `CD-03`, `CD-04` | `DimensionDetail` y `DimensionStyle` siguen globales | No se tocan; la política solo apaga o enciende |
+| `CD-05` | Solo ON/OFF por tipo | Un bit por tipo; no hay nivel por vista |
+| `CD-06` | `Dimensions = None` siempre gana | Primer caso de la regla (sección 4) |
+| `CD-07` | Nulo = legacy exacto; no se materializa «todas» al guardar sin tocar | Sección 3.3 y sección 8 |
+| `CD-08` | Metadata por instancia rechazada | Ni sobre ni referencia; el Plugin no cambia |
+| `CD-09` | H1–H7 fuera de alcance | Push Back sigue sin control de estilo (sección 7.3) |
+| `CD-10`, `CD-11` | I-49 en paralelo; I-51 solo documental | Protocolo de archivos compartidos (sección 15) |
+
+## 2. Representación: A frente a B
+
+- **A — lista nula de tokens.** DTO: `List<string> DimensionViews`, con los tokens del sobre
+  `RackEmbedDocument.ViewFrontal`/`ViewLateral`/`ViewPlanta` (`"frontal"`, `"lateral"`, `"planta"`,
+  `RackEmbedDocument.cs:28-30`). `null` = legacy; `[]` = ninguna.
+- **B — `[Flags] DimensionViewVisibility` nulo.** Dominio: `DimensionViewVisibility?`; DTO: `int?` con bits
+  fijos `Frontal = 1`, `Lateral = 2`, `Planta = 4`. `null` = legacy; `0` = ninguna.
+
+| Criterio | A — lista de tokens | B — `[Flags]` | Evidencia |
+|---|---|---|---|
+| Nulo = legacy, «ninguna» explícito | `null` / `[]` | `null` / `0` | empate |
+| Forma canónica frente a la autoridad multivista | **Frágil**: los arrays se comparan **en orden** y las cadenas con comparación **Ordinal**, así que `["planta","frontal"]` y `["frontal","planta"]`, o `"Frontal"` y `"frontal"`, son hermanas **divergentes** y abortan `RACKBOMTOTAL` y la propagación; obliga a canonicalizar orden, mayúsculas y duplicados en cada escritura | **Única por construcción**: un número se compara numéricamente | `SelectiveAuthoredAuthority.cs:162-226` |
+| Semántica en los sitios de copia | Tipo por **referencia**: una asignación directa comparte la misma lista entre diseño, sistema, vistas por fondo y lados de Push Back; exige copia defensiva en cada sitio | Tipo por **valor**: la asignación copia | 14 sitios de copia, varios escritos a mano ([Discovery](I-50-discovery.md) §5.5) |
+| Contrato de persistencia | Hay que fijar una regla de lectura de texto (mayúsculas, espacios, duplicados, desconocidos): ensancharla o estrecharla cambia qué documentos cargan (lección de I-48 G4A.1) | Ordinal entero, como `Dimensions` en el mismo DTO y los ordinales de `SafetySide` | `SelectivePalletDesignDocument.cs:106`; I-46 |
+| Coherencia con el campo vecino | Distinta a `int? Dimensions` | Igual a `int? Dimensions` | `SelectivePalletDesignDocument.cs:106`, `DynamicRackSystemDocument.cs:62` |
+| Valores desconocidos o futuros | El dominio debe guardar la lista **cruda** para no perderlos | Un bit desconocido sobrevive solo: convertir `int` a enum no enmascara | sección 5 |
+| Oráculo de pruebas | combinaciones × orden × mayúsculas | tabla de verdad de 8 combinaciones más bits desconocidos | sección 13 |
+| Legibilidad del JSON | **Mejor**: `"frontal"` se explica solo | Opaco (`5`), como ya lo es `Dimensions` | — |
+| Reutiliza un vocabulario congelado | **Sí**, el del sobre | No: introduce ordinales nuevos que deben congelarse | — |
+
+**Recomendación: B.** Las dos ventajas de A —legibilidad y vocabulario compartido— son de presentación.
+Las de B evitan **dos clases de defecto silencioso** que el árbol castiga hoy: hermanas divergentes por
+orden o mayúsculas, que la autoridad multivista trata como corrupción y aborta, y alias de listas mutables
+entre sitios de copia. Además, un bit desconocido sobrevive sin código adicional.
+
+> **Cambio respecto a G1.** El Discovery sugirió como forma una lista de tokens del sobre (§9). Esta Proposal
+> la **retira** con la evidencia de la tabla: la comparación en orden y Ordinal de
+> `SelectiveAuthoredAuthority` (§7.4 del Discovery) y la semántica por referencia en los sitios de copia.
+
+## 3. Contrato de datos (B)
+
+### P-01 — Tipo de dominio
+
+`src/RackCad.Domain/Systems/Shared/DimensionViewVisibility.cs` (nuevo), junto a `DimensionDetail`:
+
+```csharp
+[Flags]
+public enum DimensionViewVisibility
+{
+    None = 0,
+    Frontal = 1,
+    Lateral = 2,
+    Planta = 4
+}
+```
+
+- Los valores `1`, `2` y `4` son **contrato de persistencia**: nunca se renumeran.
+- **Sin miembro `All`**, a propósito. Legacy es `null`, no «todas»; un `All` con nombre invita a escribir
+  «todas» donde se quería legacy, y su valor cambiaría el día que se añadiera un tipo.
+
+### P-02 — Propiedad en los cuatro tipos de dominio
+
+`public DimensionViewVisibility? DimensionViews { get; set; }`, con valor por defecto `null`, en
+`SelectivePalletDesign`, `SelectiveRackSystem`, `DynamicRackDesign` y `DynamicRackSystem`. Push Back la
+recibe a través de su estructura dinámica, y su lado B no la tiene propia (`CD-02`).
+
+### P-03 — Formato de cable
+
+En `SelectivePalletDesignDocument` y en `DynamicRackSystemDocument` (Push Back la hereda en `Structure`):
+
+```csharp
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+public int? DimensionViews { get; set; }
+```
+
+- Nombre JSON `DimensionViews`, en PascalCase como sus vecinos.
+- Sin política: el campo **no aparece**; el JSON es **byte-idéntico** al de hoy. Precedente:
+  `FirstLevelDatum` (`DynamicRackSystemDocument.cs:30-31`).
+- Ejemplos: `"DimensionViews": 5` = Frontal + Planta; `0` = ninguna; `7` = las tres, **explícito**.
+- `From` (dominio → DTO): `(int?)design.DimensionViews`, sin enmascarar.
+- `ToDomain`/`ToDesign` (DTO → dominio): `null` → `null`; `< 0` → `null` (sección 5); en otro caso
+  `(DimensionViewVisibility)value`, sin enmascarar.
+- Sitios exactos: `SelectivePalletDesignDocument.From` (`:268`) y `ToDomain` (`:401`);
+  `DynamicRackSystemDocument.From(system)` (`:112`), `From(design)` (`:161`), `ToDesign` (`:215`) y
+  `ToDomain` (`:309`).
+- **Ninguna `SchemaVersion` cambia.** Precedente: `SelectivePalletDesignDocument` sigue en 1.0 y
+  `PushBackDesignDocument` en 1.0 tras varios campos aditivos; `DynamicRackSystemDocument` no tiene
+  versión propia.
+- El tipo JSON (entero) también es contrato: un valor no entero hace fallar la deserialización del diseño
+  igual que hoy con `Dimensions`. I-50 no añade tolerancia de tipo.
+
+### P-04 — Semántica de nulo y legacy (`CD-06`, `CD-07`)
+
+| Valor de `DimensionViews` | `Dimensions = None` | `Dimensions` ≠ `None` |
+|---|---|---|
+| `null` (ausente) | ninguna cota | **legacy exacto**: las tres vistas con `Dimensions`, como hoy |
+| `0` | ninguna cota | ninguna cota |
+| bits `F`, `L`, `P` | ninguna cota | solo las vistas con su bit, con `Dimensions` |
+| bits desconocidos | ninguna cota | se ignoran para Frontal/Lateral/Planta (sección 5) |
+
+«Todas las vistas históricamente elegibles» son exactamente las tres vistas de los tres sistemas que hoy
+emiten cotas (Discovery §3). Un rack legacy **nunca** se reescribe con `7`.
+
+## 4. Regla única: `EffectiveDetail`
+
+### P-05 — Firma y semántica
+
+`src/RackCad.Application/Systems/Shared/DimensionViewPolicy.cs` (nuevo), puro, con `DimensionViewKind`:
+
+```csharp
+public enum DimensionViewKind { Frontal, Lateral, Planta }
+
+public static class DimensionViewPolicy
+{
+    public static DimensionDetail EffectiveDetail(
+        DimensionDetail detail, DimensionViewVisibility? policy, DimensionViewKind viewKind)
+    {
+        var bit = BitOf(viewKind);                   // tipo no definido => ArgumentOutOfRangeException
+        if (detail == DimensionDetail.None) return DimensionDetail.None;   // CD-06
+        if (policy == null) return detail;                                   // CD-07: legacy exacto
+        return (policy.Value & bit) != 0 ? detail : DimensionDetail.None;    // CD-05
+    }
+}
+```
+
+- El tipo de vista se valida **antes** que nada, para que un error de programación salga aunque el nivel sea
+  `None`.
+- `DimensionViewKind` es un enum **distinto** de los flags: así nadie puede pasar `Frontal | Lateral` como
+  «un tipo».
+- **Consumidores únicos**: `SelectiveDimensions` y `DynamicViewDecorations`, además de las pruebas. La UI no
+  calcula detalle efectivo, y el Plugin no conoce el campo.
+
+### P-06 — Asignación de tipos por emisor
+
+| Emisor | Tipo | Nota |
+|---|---|---|
+| `SelectiveDimensions.AddFrontal`, `FrontalBottomReach` | `Frontal` | todas las frontales por fondo (`FondoSystemView` copia el campo) |
+| `SelectiveDimensions.AddLateralCorte` | `Lateral` | cada corte |
+| `SelectiveDimensions.AddPlanta` | `Planta` | |
+| `DynamicViewDecorations.AppendFrontal` | `Frontal` | **`end` no participa** (`CD-02`): salida, entrada y los cuatro cortes frontales de Push Back |
+| `DynamicViewDecorations.AppendLateral` | `Lateral` | lateral entero, cada corte y cada lado del compuesto (D4) |
+| `DynamicViewDecorations.AppendPlanta` | `Planta` | un sentido y compuesto |
+
+El tipo sale de **qué método emite**, no de un argumento nuevo. Las firmas públicas de los builders y de los
+servicios de dibujo **no cambian**.
+
+## 5. Valores desconocidos y futuros
+
+### P-07
+
+- **Bits desconocidos** (≥ 8): se **conservan** en lectura y escritura porque ni `From` ni `ToDomain`
+  enmascaran; `EffectiveDetail` los ignora; la UI no los muestra y **los conserva** al escribir (P-11).
+- **Valores negativos**: se leen como `null`, es decir legacy, y se reescriben como ausentes.
+  - Justificación, sometida al Arquitecto (QA-2): es una preferencia visual sin autoridad sobre geometría ni
+    BOM; el mismo DTO ya lee `Dimensions` con tolerancia (`ToDimensionDetail`,
+    `SelectivePalletDesignDocument.cs:416-422`; `ValidDimensions`, `DynamicRackSystemDocument.cs:415-418`); y
+    el fallo va en la dirección visible, porque las cotas reaparecen.
+  - Se reconoce la tensión con la doctrina de I-47 («UNREADABLE ≠ ABSENT»), que gobierna autoridades como el
+    registro de variables y no esta preferencia.
+- **Tipos de vista futuros**: el día que exista un cuarto tipo con bit propio, **su** iniciativa define su
+  regla legacy. Las políticas explícitas escritas por I-50 tienen ese bit a `0`, y I-50 no decide por
+  adelantado cómo leerlo.
+- **Builds anteriores** que re-guardan: pierden el campo (siempre en Dinámico y Push Back; en Selectivo solo
+  los anteriores a I-47) y el rack vuelve a legacy, así que **las cotas reaparecen**. Limitación declarada;
+  no se sube el major, porque bloquear la apertura de racks por una preferencia visual sería
+  desproporcionado.
+
+## 6. Alcance de las etiquetas
+
+### P-08 — Regla
+
+> **Dentro de una vista, todo cálculo de alcance usa el mismo detalle efectivo que decide sus cotas.**
+> Una vista con las cotas apagadas coloca sus etiquetas **exactamente** como hoy las coloca
+> `Dimensions = None`.
+
+| Emisor | Lecturas del nivel que pasan a usar el detalle efectivo |
+|---|---|
+| `SelectiveDimensions.AddFrontal` | `:55` |
+| `SelectiveDimensions.FrontalBottomReach` | `:34-40` (número de frente, `SelectiveFrontalBuilder.cs:324-325`) |
+| `SelectiveDimensions.AddLateralCorte` | `:135` |
+| `SelectiveDimensions.AddPlanta` | `:201` |
+| `DynamicViewDecorations.AppendFrontal` | `AppendFrontalDimensions` (`:267-315`), `FrontalLeftReach` y `BottomReach` (`:55-56`) |
+| `DynamicViewDecorations.AppendPlanta` | cotas (`:110-130`) y `leftReach` (`:133`) |
+| `DynamicViewDecorations.AppendLateral` | cotas (`:199-229`) y `FrontalLeftReach` (`:232`) |
+
+Los auxiliares privados `BottomReach` y `FrontalLeftReach` (`:320-340`) pasan a recibir el
+`DimensionDetail` ya resuelto en vez de leer `system.Dimensions`. Ninguna otra etiqueta depende del nivel:
+`SelectiveAnnotations` y `PushBackSideAnnotations` no lo leen.
+
+**Invariante legacy**: con `DimensionViews = null`, cada alcance es idéntico al de hoy (T-03..T-05).
+
+## 7. Por sistema
+
+### 7.1 Selectivo
+
+- Frontal: **todas** las frontales por fondo siguen `Frontal`; `SelectiveDepthLayout.FondoSystemView` copia
+  el campo (`:83-84`).
+- Lateral: cada corte sigue `Lateral`.
+- Planta: un bloque, `Planta`.
+- Guardado: `LinkedPropertyReconciler.Reconcile` → `WithDesign` → `From(design)` ya transporta cualquier
+  campo que `From` mapee (`LinkedPropertyReconciler.cs:146`; `SelectivePalletDesignDocument.cs:316-330`).
+  **No se tocan `WithDesign` ni el reconciliador.**
+
+### 7.2 Dinámico
+
+- Frontal: salida (`Section` 0) y entrada (`Section` 1) siguen `Frontal`; `AppendFrontal` no consulta `end`
+  para decidir visibilidad.
+- Lateral: entero y cada corte siguen `Lateral`.
+- Planta: `Planta`.
+
+### 7.3 Push Back
+
+- **Frontal de un sentido**: EntradaSalida (pasada `Exit`) y Posterior (pasada `Entrance`) pasan por D1 y
+  siguen `Frontal`.
+- **Frontal compuesto**: la primera pasada aporta «postes, placas, cotas» a los **cuatro** cortes
+  (`PushBackCompositeFrontal.cs:46-48`, `:66-71`), así que los cuatro siguen `Frontal`.
+- **Lateral compuesto**: la estructura desnuda sigue sin cotas (`WithoutDecorations`, `:234-242`). Cada lado
+  emite con **su** sub-estructura (`SideDecorations`, `:196-231`), que recibe el campo por dos copias
+  obligatorias: `PushBackCompositeStructure.CopySharedStructuralIntent` (`:831-859`) y
+  `DynamicRackSystemResolver` (`:244-245`).
+  - Precedente de por qué importa: el comentario de I-42 en `:841-845` documenta que omitir
+    `FirstLevelDatum` en esa misma copia **devolvía un lado a la semántica histórica** sin avisar.
+- **Planta compuesta**: `AppendPlanta` sobre la estructura compuesta, `Planta`.
+- **Clones**: `PushBackMirror.Structure` (`:139-162`) es el único clonador y cubre `Clone`, `PushBackRuns.Clone`,
+  `WithoutDecorations` y `WithoutRackName`.
+- **H1 fuera de alcance** (`CD-09`): Push Back sigue **sin** control de estilo. I-50 añade solo las tres
+  casillas junto a `DimensionsBox` y **no** cambia que cada recálculo deje `DimensionStyle = null`, que queda
+  caracterizado (T-19).
+
+### 7.4 Cantilever, Cama, Larguero y Cabecera
+
+Sin cambio y sin controles: no dibujan cotas (Discovery §3.2; contrato, sección 5).
+
+## 8. Guardar, reabrir, RACKEDITAR y Actualizar
+
+### P-09 — Guardar y reabrir
+
+- La política viaja **dentro del `Design`** de cada sobre, idéntica en todas las vistas del rack. No cambian
+  el sobre, `RackBlockData`, el Xrecord ni su ubicación en la definición.
+- Al reabrir, `RackEmbedStore.Deserialize` sigue igual de tolerante, y el diseño se lee con P-03.
+- Biblioteca: `RackProjectStore` guarda el diseño (Dinámico y Push Back a través de
+  `DynamicRackSystemDocument`). `SelectiveLibraryExport` reconstruye el documento con `From(effective, …)`
+  (`SelectiveLibraryExport.cs:88`), así que lo incluye si `From` lo mapea.
+
+### P-10 — RACKEDITAR y Actualizar
+
+- **Carga**: la ventana recibe `DimensionViews` del diseño efectivo. Con `null`, las tres casillas se
+  muestran **activas**, que es la conducta real de legacy.
+- **Escritura**: la ventana entrega un único valor, calculado con la regla pura de P-11.
+- **Actualizar**: el diseño se serializa **una sola vez** y todas las vistas reciben el mismo JSON
+  (`RackSelectivoCommands.cs:144-153`); Dinámico y Push Back redibujan cada definición con el mismo diseño.
+  La autoridad multivista sigue viendo hermanas iguales.
+- **Cero cambios en el Plugin**: `EditSelective`, `EditDynamic` y `EditPushBack` no leen ni escriben el
+  campo; les llega dentro del diseño.
+
+### P-11 — «Sin tocar» no materializa (`CD-07`)
+
+Regla pura en `DimensionViewPolicy`, para que las tres ventanas no repitan aritmética de bits (AGENTS,
+convención 2):
+
+```text
+FromEditor(loaded, touched, frontal, lateral, planta):
+  si !touched  -> loaded                                   (null sigue null; explícito sigue explícito)
+  si touched   -> ((loaded ?? None) & ~Conocidos) | casillas   (nunca null; conserva bits desconocidos)
+```
+
+- **«Tocar»** = que el usuario cambie **una de las tres casillas de vista**. Cambiar solo el nivel o el
+  estilo **no** toca la visibilidad, y un rack legacy sigue siendo legacy.
+- Cargar, recargar (`RestoreFrom`, `LoadFromModel`) y los recálculos automáticos **no** tocan.
+- El primer recálculo tras cargar **debe** reproducir exactamente el valor cargado. Push Back recalcula
+  dentro de `LoadFromModel`, así que el estado cargado se fija antes de ese recálculo (T-19).
+- Volver a marcar las tres casillas tras tocarlas produce `7` explícito, **no** `null`: una elección
+  explícita no se convierte en legacy en silencio.
+- Con nivel «Ninguna», las casillas pueden mostrarse deshabilitadas, pero ese estado **nunca** modifica el
+  valor guardado.
+
+## 9. Vista enlazada nueva
+
+### P-12
+
+La vista nueva lleva el **mismo JSON de diseño** que sus hermanas: en el Selectivo, el authored
+reconciliado (`RackSelectivoCommands.cs:251-258`); en Dinámico y Push Back, el diseño del editor. Por eso
+sigue la política de su tipo sin trabajo adicional. El sobre se compone desde el de la vista **elegida**
+(`:257-258`; `RackDinamicoCommands.cs:280-281`; `RackPushBackCommands.cs:330`), pero ese sobre **no** lleva
+política (`CD-08`), así que **no hay escritura cruzada**. Cubre el requisito «nueva vista creada después
+del cambio» (contrato, sección 8).
+
+## 10. RACKDUPLICAR y RACKLAYOUT
+
+### P-13
+
+- `RACKDUPLICAR` clona las entidades de la definición elegida, con las cotas **ya dibujadas**
+  (`RackDuplicarCommands.cs:190-197`), y re-estampa el diseño:
+  - Selectivo: `SelectiveAuthoredRestamp.Restamp` hace ida y vuelta **por el documento**
+    (`RestampResult.cs:67-74`), así que un campo declarado sobrevive, bits desconocidos incluidos.
+  - Dinámico y Push Back: `RestampDesign` devuelve el JSON intacto (`DynamicKindHandler.cs:49`,
+    `PushBackKindHandler.cs:75`).
+- La copia es independiente (GUID nuevo) y conserva la política en sus redibujos futuros.
+- **I-50 no toca** `RackDuplicarCommands.cs`, `RackEnvelopeRestamp.cs` ni `RackCloner.cs`. Eso responde la
+  decisión AM-4 de I-51: la política vive en el diseño, no en la referencia ni en el sobre.
+- `RACKLAYOUT`: las copias enlazadas referencian la definición y las independientes la clonan; la política
+  se conserva. **Consecuencia visible**: la huella de la rejilla sale de `GeometricExtents` de la planta
+  semilla (`RackLayoutCommands.cs:189-197`), así que apagar las cotas de la planta **encoge** las rejillas
+  futuras. Entra en la validación del Owner.
+
+## 11. Sin cambios de geometría ni de BOM
+
+### P-14
+
+- Solo cambian **qué instancias `Dimension` se emiten** por vista y **dónde caen las etiquetas** de una
+  vista apagada.
+- Toda instancia con otro rol queda idéntica, para cualquier política.
+- BOM: el del Selectivo cuenta con `None` forzado (`SelectiveBomBuilder.cs:60-68`, `:508`), y ni
+  `SystemBomBuilder` ni `PushBackBomBuilder` ejecutan decoraciones. **El BOM es idéntico** para cualquier
+  política (T-16).
+- GUID, `View`, `Section`, nombre de bloque, sobre, capa `RACKCAD_COTAS` y materializador: sin cambio.
+
+## 12. Lista de sitios de copia
+
+Todo sitio que hoy propaga `Dimensions` debe propagar `DimensionViews` en el **mismo** punto. Omitir uno no
+falla: vuelve a legacy en silencio (sección 7.3). Cada fila tiene su prueba en T-13.
+
+| # | Archivo | Símbolo | Línea actual | Dirección |
+|---|---|---|---|---|
+| C-01 | `RackSelectiveWindow.xaml.cs` | `BuildDesign` / `LoadDesign` | `:2338` / `:2686` | UI ⇄ entradas |
+| C-02 | `SelectiveDesignInputs.cs` | propiedad | `:43-44` | entradas |
+| C-03 | `SelectiveEditorState.cs` | construcción del diseño | `:1317-1318` | entradas → diseño |
+| C-04 | `SelectiveGeometryResolver.cs` | resolución | `:66-67` | diseño → sistema |
+| C-05 | `SelectiveDepthLayout.cs` | `FondoSystemView` | `:83-84` | sistema → vista por fondo |
+| C-06 | `SelectivePalletDesignDocument.cs` | `From` / `ToDomain` | `:268` / `:401` | diseño ⇄ DTO |
+| C-07 | `RackDynamicSystemWindow.xaml.cs` | `ReadAnnotationOptions` / `RestoreFrom` | `:292-298` / `:2772-2775` | UI ⇄ opciones |
+| C-08 | `DynamicAnnotationOptions.cs` | propiedad | `:16-17` | opciones |
+| C-09 | `DynamicEditorDesignAssembler.cs` | `BuildDesign` | `:174-175` | opciones → diseño |
+| C-10 | `DynamicRackSystemResolver.cs` | diseño → sistema / sistema → diseño | `:244-245` / `:357-358` | diseño ⇄ sistema |
+| C-11 | `DynamicRackSystemDocument.cs` | `From(system)`, `From(design)`, `ToDesign`, `ToDomain` | `:112`, `:161`, `:215`, `:309` | DTO |
+| C-12 | `RackPushBackSystemWindow.xaml.cs` | `LoadFromModel` / `ReadInputs` | `:378` / `:810-817` | UI ⇄ opciones |
+| C-13 | `PushBackEditorState.Load.cs` | opciones de anotación | `:206-208` | diseño → opciones |
+| C-14 | `PushBackMirror.cs` | `Structure` | `:158-160` | clon |
+| C-15 | `PushBackCompositeStructure.cs` | `CopySharedStructuralIntent` | `:856-858` | compartido → lados y compuesto |
+
+**No cambian, a propósito**: `PushBackEditorDesignAssembler.cs:378` (solo reenvía las opciones),
+`SelectivePalletDesignDocument.WithDesign`, `LinkedPropertyReconciler`, `SelectiveEffectiveDesignResolver`
+(usa `ToDomain`), `SelectiveAuthoredAuthority`, `SelectiveLibraryExport`, `RackEmbedDocument`,
+`RackEmbedComposer`, `RackBlockData`, `RackEnvelopeRestamp`, los kind handlers, los builders de BOM y todo
+`src/RackCad.Plugin`.
+
+## 13. Pruebas RED previstas
+
+### 13.1 Estrategia
+
+1. **Caracterización primero, en verde sobre el árbol sin tocar**: firma de hoy con cotas activas donde falta
+   (Selectivo y Push Back; el Dinámico ya tiene `DynamicNullOverrideGoldenTests`). Tiene que seguir verde con
+   `DimensionViews = null`: es la prueba del legacy exacto.
+2. **RED por capa, con fallo de comportamiento**, nunca un fallo de compilación. Primero se introduce la
+   superficie **inerte** de la capa y después se escriben las pruebas que la hacen fallar:
+   - la regla que aún devuelve `detail`: falla T-01;
+   - los emisores sin cablear: fallan T-06..T-09;
+   - el DTO sin mapear: fallan T-11 y T-12;
+   - las copias sin propagar: falla T-13;
+   - las ventanas sin cablear: fallan T-17..T-19.
+3. **Solo se commitea en verde**, sin SHA remoto rojo, con la evidencia RED (conteo de fallos) en el cuerpo
+   del commit (precedente I-48).
+
+### 13.2 Suite Core (`tests/RackCad.Tests`)
+
+| ID | Prueba | Clase |
+|---|---|---|
+| T-01 | `DimensionViewPolicy.EffectiveDetail`: tabla de verdad con 4 niveles × {`null`, 0..7, 8, 13} × 3 tipos; `None` gana; `null` = detalle; un tipo no definido lanza | RED |
+| T-02 | `DimensionViewPolicy.FromEditor`: sin tocar devuelve lo cargado (`null`, explícito y bits desconocidos); tocado compone y conserva bits desconocidos; legacy tocado da solo las casillas | RED |
+| T-03 | Caracterización Selectivo: firma frontal (1 y 2 fondos), cada corte y planta con Minimal/Standard/Detailed y numeración y nombre activos; verde hoy y con `null` | Caracterización |
+| T-04 | Caracterización Dinámico: `DynamicNullOverrideGoldenTests` intacta más planta y etiquetas; verde hoy y con `null` | Caracterización |
+| T-05 | Caracterización Push Back: un sentido y compuesto A/B, 4 cortes frontales, lateral entero y por poste, planta, con cotas activas; verde hoy y con `null` | Caracterización |
+| T-06 | Selectivo por vista: {F}, {L}, {P}, {F, P}, 0; todas las frontales por fondo siguen F; cada corte sigue L | RED |
+| T-07 | Dinámico por vista: salida y entrada siguen F; lateral entero y cortes siguen L; planta sigue P | RED |
+| T-08 | Push Back por vista: EntradaSalida y Posterior; 4 cortes compuestos; lateral compuesto en ambos lados; planta compuesta | RED |
+| T-09 | Etiquetas: con una vista apagada, sus etiquetas quedan donde las pone `None`; las demás vistas no cambian | RED |
+| T-10 | `None` gana: `Dimensions = None` con cualquier política da cero instancias `Dimension` en todo | Guarda |
+| T-11 | DTO Selectivo: `null` no se escribe y el JSON es byte-idéntico al de hoy; 0, 1, 5 y 7 hacen ida y vuelta; bits desconocidos (13) también; negativo → `null`; `WithDesign` y la exportación a biblioteca lo conservan | RED |
+| T-12 | DTO Dinámico y Push Back: los cuatro mapeos; ida y vuelta por `RackProjectStore` (incluido `Structure`); `null` no se escribe | RED |
+| T-13 | Sitios de copia C-02..C-06 y C-08..C-11, C-13..C-15: cada uno propaga el valor, incluidos `PushBackRuns.Clone` y los dos lados del compuesto | RED |
+| T-14 | Autoridad multivista: documentos que difieren solo en `DimensionViews` ⇒ `Divergent`; iguales ⇒ `Single` | Guarda |
+| T-15 | `RACKDUPLICAR`: `SelectiveAuthoredRestamp` conserva el campo, bits desconocidos incluidos; Dinámico y Push Back devuelven el JSON intacto | Guarda |
+| T-16 | Sin cambio de geometría ni BOM: para cada política, las instancias que no son cotas son idénticas, y el BOM de los tres sistemas también | Guarda |
+
+### 13.3 Suite UI (`tests/RackCad.UI.Tests`)
+
+| ID | Prueba | Clase |
+|---|---|---|
+| T-17 | Selectivo: legacy carga con tres casillas activas; guardar sin tocar deja `null`; apagar Lateral da F\|P; cambiar solo el nivel deja `null`; una recarga explícita se refleja; tocar conserva bits desconocidos | RED |
+| T-18 | Dinámico: lo mismo, incluido `RestoreFrom` repetido | RED |
+| T-19 | Push Back: lo mismo, incluido el recálculo dentro de `LoadFromModel`; y H1 caracterizado: `DimensionStyle` sigue saliendo `null` | RED y caracterización |
+| T-20 | Censos de `x:Name` (`DynamicShellMigrationTests`, `SelectiveShellMigrationTests`, `PushBackModuleEditorCharacterizationTests`): se **actualizan**, no se relajan | Guarda |
+| T-21 | Firmas de dibujo de I-24 (`DynamicEditorWindowTests.FullDrawingSignature`, `SelectiveEditorWindowTests.DrawingSignature`) con variantes de política | RED |
+
+### 13.4 Plugin, sin suite (ADR-0003)
+
+| ID | Prueba | Clase |
+|---|---|---|
+| T-22 | Guarda de fuente: ningún archivo de `src/RackCad.Plugin` nombra `DimensionViews`; demuestra `CD-08` y «sin cambios en el Plugin» | Guarda |
+| OV | Validación del Owner en AutoCAD 2025 (contrato, sección 9), más la posición de etiquetas con una vista apagada, la huella de `RACKLAYOUT` con la planta apagada y Push Back compuesto A/B | Owner |
+
+## 14. Archivos previstos y orden de gates
+
+### 14.1 Producción (no se toca en G2)
+
+| Capa | Nuevos | Modificados |
+|---|---|---|
+| Domain | `Systems/Shared/DimensionViewVisibility.cs` | `SelectivePalletDesign.cs` (caliente), `SelectiveRackSystem.cs`, `DynamicRackDesign.cs`, `DynamicRackSystem.cs` |
+| Application | `Systems/Shared/DimensionViewPolicy.cs` (con `DimensionViewKind`) | `SelectiveDimensions.cs`, `DynamicViewDecorations.cs`, `SelectiveGeometryResolver.cs`, `SelectiveDepthLayout.cs`, `SelectiveDesignInputs.cs`, `SelectiveEditorState.cs`, `DynamicRackSystemResolver.cs`, `DynamicAnnotationOptions.cs`, `DynamicEditorDesignAssembler.cs`, `PushBackMirror.cs`, `PushBackCompositeStructure.cs`, `PushBackEditorState.Load.cs`, `SelectivePalletDesignDocument.cs`, `DynamicRackSystemDocument.cs` |
+| UI | — | `RackSelectiveWindow.xaml/.cs`, `RackDynamicSystemWindow.xaml/.cs`, `RackPushBackSystemWindow.xaml/.cs` (los tres calientes) |
+| Plugin | — | **ninguno** |
+
+**Total: 2 nuevos y 24 modificados.** Pruebas: T-01..T-22, en archivos nuevos donde sea posible, para no
+chocar con suites ajenas.
+
+### 14.2 UI mínima (restricciones para G3)
+
+- Una sola sección: la existente **«Cotas»** de cada editor recibe tres casillas, **Frontal**, **Lateral**
+  y **Planta**. No hay ventana nueva, así que el censo de ventanas de I-39 no se mueve.
+- Sin controles en Cantilever, Cama, Larguero ni Cabecera (contrato, sección 5).
+- El texto explica que la elección es **por tipo de vista del rack**: todas las frontales, todos los cortes
+  y todas las copias comparten. Se actualiza la leyenda del Selectivo «(las tres vistas)»
+  (`RackSelectiveWindow.xaml:63`).
+
+### 14.3 Orden de gates propuesto (lo aprueba el Coordinador)
+
+`G4` (caracterización, regla y emisores) → `G5` (DTO y sitios de copia) → `G6` (cobertura de Push Back
+compuesto) → `G3` (UI) → `G7` (Candidato y Owner) → `G8` (docs e integración).
+
+Motivo: la UI no debe poder **escribir** un campo que nada consume todavía, el mismo patrón de «intent sin
+executor» que I-47 corrigió en su plan. Mantiene la numeración del contrato y solo cambia el orden de
+ejecución.
+
+## 15. Coordinación y riesgos
+
+- **I-49**: antes de editar `RackSelectiveWindow.xaml/.cs` o `SelectivePalletDesignDocument.cs`, aplicar el
+  protocolo del contrato (sección 11): fetch; `git diff --name-only
+  origin/main...origin/architecture/motor-expresiones-parametricas`; si I-49 los modifica materialmente,
+  **detenerse** y reportar. En `SelectivePalletDesignDocument.cs`, I-50 solo toca `From` y `ToDomain`,
+  nunca `PropertyValues` ni `WithDesign`.
+- **I-51**: sin archivos productivos comunes; AM-4 queda respondida (sección 10).
+- **Documentales**: `docs/ROADMAP.md`, `docs/ideas-futuras.md` y el índice de `docs/adr/README.md` pueden
+  chocar textualmente con I-49 e I-51 al integrar. Si una paralela también numera un ADR-0035, quien integre
+  después renumera el suyo.
+- **Riesgos de producto**: sitios de copia omitidos que vuelven a legacy en silencio (sección 12, T-13);
+  etiquetas desplazadas en vistas apagadas (P-08, OV); builds anteriores (P-07); huella de `RACKLAYOUT`
+  (P-13).
+
+## 16. Preguntas al Arquitecto
+
+| ID | Pregunta |
+|---|---|
+| QA-1 | Ubicación: `DimensionViewVisibility` en Domain (lo usan los diseños) y `DimensionViewKind` más `DimensionViewPolicy` en Application (solo los usan los emisores y la regla de la UI). ¿De acuerdo? |
+| QA-2 | Lectura tolerante de valores negativos como legacy (P-07) frente a «UNREADABLE ≠ ABSENT». ¿Aceptable para una preferencia visual, o se exige otra conducta? |
+| QA-3 | Sin miembro `All` en el enum (P-01). |
+| QA-4 | Estrategia RED por capa con superficie inerte y commits solo en verde (13.1). |
+| QA-5 | Orden de gates G4 → G5 → G6 → G3 (14.3). |

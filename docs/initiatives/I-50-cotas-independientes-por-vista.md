@@ -16,7 +16,7 @@ decision_paths: []
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
-requires_owner_decision: false
+requires_owner_decision: true
 requires_owner_validation: true
 automation:
   enabled: false
@@ -26,8 +26,9 @@ automation:
 
 # I-50 — Cotas independientes por vista
 
-> Fase actual: **G0 CLOSED · G1 CLOSED · G2 IN PROGRESS**. G2A prepara la Proposal V1 y el ADR
-> `propuesto`, **solo documentación**. No hay una sola línea de producción en la rama.
+> Fase actual: **G0 CLOSED · G1 CLOSED · G2 IN PROGRESS**. G2A entregada: Proposal V1 y ADR-0035
+> `propuesto`, **solo documentación**, en revisión del Coordinador y del Arquitecto. No hay una sola línea
+> de producción en la rama.
 >
 > ```text
 > BASE_SHA      = a4d88f18a1f42263d366c44dc05dd18a6786f152
@@ -142,7 +143,7 @@ AutoCAD 2025, por cada sistema acordado: crear rack, elegir cotas por vista, ins
 | G0 | Preflight, claim, worktree, bootstrap | **CLOSED** — reclamo `97cc0ef`, contrato `4e22d91`, fila de ROADMAP `a2fba4f`, worktree creado |
 | G1 | Characterization / matriz completa | **CLOSED** — [I-50-discovery.md](I-50-discovery.md); decisiones del Coordinador en la sección 12 |
 | G2 | Contrato de autoridad + persistencia + default legacy | **IN PROGRESS** |
-| G2A | Proposal V1 + ADR `propuesto` (solo documentación) | en preparación |
+| G2A | Proposal V1 + ADR `propuesto` (solo documentación) | **PROPOSED** — [I-50-proposal-v1.md](I-50-proposal-v1.md) y [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md) `propuesto`; pendiente de revisión del Coordinador y del Arquitecto |
 | G3 | UI mínima | pendiente |
 | G4 | Builders / draw path | pendiente |
 | G5 | Persistence / update | pendiente |
@@ -218,3 +219,15 @@ evidencia están en [I-50-discovery.md](I-50-discovery.md) §13.
 | H5 | El Dinámico descarta un estilo de cota guardado que el DWG no tiene; el Selectivo lo conserva |
 | H6 | El BOM del Selectivo calcula las cotas laterales y las descarta |
 | H7 | Tres comentarios desfasados (`RackBlockData.cs:8`, `RackInsertionRequest.cs:152`, `PushBackSystemLateralBuilder.cs:147-151`) |
+
+## 14. Decisión del Owner requerida
+
+`requires_owner_decision: true` desde G2A ([AUTOMATION_PLAN](../AUTOMATION_PLAN.md) sección 11: un ADR
+nuevo permanece `propuesto` hasta que el dueño lo acepta o lo rechaza).
+
+- **Decisión**: aceptar o rechazar [ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md).
+- **Punto en que se necesita**: antes de abrir G3+, es decir antes de la primera línea de producción, junto
+  con el consenso del Coordinador y del Arquitecto sobre la misma versión de la Proposal (precedente: I-47,
+  CF-2). **Propuesto**: lo confirma el Coordinador.
+- Ninguna de las dos compuertas sustituye a la otra: el consenso técnico dice que la decisión está lista; la
+  aceptación la ejerce solo el Owner.
