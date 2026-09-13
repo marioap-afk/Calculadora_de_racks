@@ -16,7 +16,7 @@ decision_paths: []
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
-requires_owner_decision:
+requires_owner_decision: true
 requires_owner_validation: true
 automation:
   enabled: false
@@ -26,9 +26,11 @@ automation:
 
 # I-54 — ID24 — Custom Properties Foundation
 
-> **Fase actual: G1 CERRADO — Discovery en [I-54-discovery.md](I-54-discovery.md).** No hay Proposal todavia
-> y **no hay una sola linea de produccion escrita**. La sesion que abrio la iniciativa esta autorizada **solo
-> para G0, G1 y una Proposal V1 documental**; la implementacion esta BLOQUEADA (seccion 12).
+> **Fase actual: G2A — Proposal V1 publicada, SIN consenso.** Discovery en [I-54-discovery.md](I-54-discovery.md)
+> (G1 `195964b`), Proposal en [I-54-proposal-v1.md](I-54-proposal-v1.md) y paquete de revision en
+> [I-54-architect-review-package.md](I-54-architect-review-package.md). `Coordinator = NOT REVIEWED`,
+> `Architect = NOT REVIEWED`, `Owner = NOT ASKED`. **No hay una sola linea de produccion escrita** y la
+> implementacion esta BLOQUEADA (seccion 12). La revision de Arquitecto no se inicia sin orden.
 
 > **Apertura por autorizacion explicita del Owner sin fila previa**, transmitida por el Coordinador de
 > I-54 — caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la
@@ -152,9 +154,15 @@ darlos por ciertos:
   **I-52** (`feature/rackmirror-espejo-semantico`, reclamada durante el preflight). `conflicts_with` queda
   **vacio** hasta que G1 mida el cruce real de archivos: no se declara un estorbo sin evidencia, ni se
   omite uno que la tenga.
-- **Entrada del Owner**: la Proposal contiene decisiones de producto (alcances, tipos, duplicacion). Por
-  eso `requires_owner_decision` queda **vacio** hasta que la Proposal las fije, en vez de fijarse por
-  analogia.
+- **Entrada del Owner**: la Proposal V1 lista nueve preguntas de producto (OQ-01..OQ-09: biblioteca, limites,
+  comando, politica de copia, builds desplegados, orden, relacion con ID20, texto de ID24 y edicion desde los
+  editores de sistema). Con esa evidencia `requires_owner_decision` pasa a `true`; la metadata solo añade.
+- **Cruce medido en G1** ([Discovery](I-54-discovery.md) §2 y §13): cruce **productivo** actual con I-49,
+  I-50, I-52 e I-53 = **cero archivos** mientras I-54 no toque DTO ni Domain de sistema, editores de sistema,
+  `RackEnvelopeRestamp` ni `RackCloner`. Cruce **documental** previsto con las cuatro (fila de ROADMAP tras I-51,
+  final de `ideas-futuras.md`, numeracion de ADR) y **textual** con I-52 si ambas añaden comandos (censo de
+  `[CommandMethod]` y ayuda). Cruce **semantico** con I-49: `Rack`/`Project` reservados para ID20. Por eso
+  `conflicts_with` sigue vacio.
 
 ## 7. Archivos esperados
 
@@ -169,8 +177,8 @@ Lo que si se declara para esta sesion: solo `docs/initiatives/I-54-*.md` y la fi
 | # | Fase | Entregable | Estado |
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** — bootstrap `f908b2f` |
-| G1 | Discovery | [I-54-discovery.md](I-54-discovery.md): informe por archivo/simbolo, H-1..H-8, mapa de cruces, riesgos y hallazgos fuera de alcance | **HECHA** (su SHA se registra en el commit siguiente) |
-| G2 | Proposal y consenso | Proposal V1 en esta sesion; revision de Arquitecto y reconciliacion **despues**, cada una con orden propia | pendiente |
+| G1 | Discovery | [I-54-discovery.md](I-54-discovery.md): informe por archivo/simbolo, H-1..H-8, mapa de cruces, riesgos y hallazgos fuera de alcance | **HECHA** — `195964b` |
+| G2 | Proposal y consenso | **G2A**: [Proposal V1](I-54-proposal-v1.md) + [paquete de Arquitecto](I-54-architect-review-package.md) (su SHA se registra en el commit siguiente). Revision de Arquitecto, reconciliacion y Consensus Freeze **despues**, cada una con orden propia | **G2A HECHA**; revision PENDIENTE, sin consenso |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Por definir **tras el consenso de G2**, no aqui | bloqueada |
 
 Ninguna fase posterior arranca sin que la anterior tenga evidencia revisable.
@@ -245,7 +253,14 @@ modificada**.
 **G1 — Discovery.** Solo documentacion, sobre el codigo de `BASE_SHA` (la rama no difiere en `src/`,
 `tests/` ni `assets/`). Preflight de G1: `origin/main` sin mover; I-49 y I-52/I-53 solo documentacion; I-50
 con produccion que **no** toca sobre, compositor, restamp, cloner ni autoridad. Sin compilacion ni pruebas:
-G1 no produce codigo. Los hallazgos fuera de alcance (F-01..F-12) quedan en el Discovery y pasan a
+G1 no produce codigo. Los hallazgos fuera de alcance (F-01..F-12 en G1; F-13 añadido en G2A) quedan en el Discovery y pasan a
 `ideas-futuras.md` cuando se fije el contrato.
+
+**G2A — Proposal V1.** Solo documentacion. Compara A/B/C, evalua componente a componente la opcion del
+Coordinador sin aceptarla por instruccion, propone D-01..D-20, INV-01..INV-16, gates G2B..G10 no autorizados,
+pruebas T/U, validacion OV-01..OV-12 y preguntas OQ-01..OQ-09, y recomienda ADR antes de implementar. El
+paquete autonomo de Arquitecto lista RD-01..RD-20 con evidencia verificable. Addendum al Discovery (§2.5:
+re-medicion de paralelas antes de publicar —I-50 @ `8ceb3a7`, I-52 @ `339b3ab`, I-53 @ `c8476cc`, sin cambio de
+cruce—; §11.5: lista verificada de comandos; §15: F-13, troceado de Xrecord duplicado). Sin compilacion ni pruebas.
 
 El resto de la evidencia se acumula al cerrar cada fase.
