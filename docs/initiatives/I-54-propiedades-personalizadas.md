@@ -26,30 +26,33 @@ automation:
 
 # I-54 — ID24 — Custom Properties Foundation
 
-> **Fase actual: G2E — Proposal V3 publicada, SIN consenso.**
+> **Fase actual: G2G — rebase obligatorio hecho y Proposal V4 publicada, SIN consenso.**
 >
-> - Discovery: [I-54-discovery.md](I-54-discovery.md) (G1 `195964b`).
-> - Proposal vigente: [I-54-proposal-v3.md](I-54-proposal-v3.md). La [V1](I-54-proposal-v1.md) (`7c197af`) y la
->   [V2](I-54-proposal-v2.md) (`36c337b`) quedan como historia.
-> - Paquete de revision exact-SHA, limitado a los cambios de G2D:
+> - Discovery: [I-54-discovery.md](I-54-discovery.md) (G1 `195964b`, equivalente post-rebase `97e27ea`).
+> - Proposal vigente: [I-54-proposal-v4.md](I-54-proposal-v4.md). La [V1](I-54-proposal-v1.md), la
+>   [V2](I-54-proposal-v2.md) y la [V3](I-54-proposal-v3.md) quedan como historia; el mapa de SHAs pre y post rebase
+>   esta en la V4 §2.2.
+> - Paquete de revision exact-SHA, limitado a C-F1, C-F2 y la integridad del rebase:
 >   [I-54-architect-review-package.md](I-54-architect-review-package.md).
 > - G2B cerrado: `Architect Review V1 = AGREED WITH CHANGES` (cambios V2-1..V2-22), incorporados en V2.
-> - G2D cerrado: `Architect Review V2 = AGREED WITH CHANGES` (AR-54-04 reabierto, 2 MATERIAL, 4 MINOR, cambios
->   C-1..C-8), aceptados por el Coordinador e incorporados en V3.
+> - G2D cerrado: `Architect Review V2 = AGREED WITH CHANGES` (cambios C-1..C-8), incorporados en V3.
+> - G2F cerrado: `Architect Review V3 = AGREED WITH CHANGES` sobre `5d25da8` (solo AR-54-V3-01 y AR-54-V3-02,
+>   MINOR), con `Coordinator = AGREED`; el Coordinador acepta la lista cerrada, incorporada en V4 como C-F1 y C-F2.
 >
 > ```text
-> Coordinator    = NOT YET AGREED ON V3
-> Architect      = NOT YET REVIEWED ON V3
+> Coordinator    = NOT YET AGREED ON V4
+> Architect      = NOT YET REVIEWED ON V4
 > Consensus      = NOT REACHED
 > Implementation = BLOCKED
 > Owner          = NOT ASKED
 > ```
 >
-> **No hay una sola linea de produccion escrita.** La siguiente gate es la revision exact-SHA de V3 por
-> Coordinador y Arquitecto, **limitada a C-1..C-8** (G2F), con orden propia. Solo si converge se abre G2-FREEZE.
+> **No hay una sola linea de produccion escrita.** La siguiente gate es la revision exact-SHA post-rebase de V4 por
+> Coordinador y Arquitecto, **limitada a C-F1, C-F2 y la integridad del rebase** (G2H), con orden propia. Solo si
+> converge se evalua G2-FREEZE.
 >
-> La rama sigue sobre `BASE_SHA`: `origin/main` avanzo a `f8deb67` (I-50 integrada) durante G2E, y el rebase
-> queda pendiente segun WORKFLOW §4.2 (§6).
+> La rama esta rebasada sobre `origin/main` @ `f8deb67` (WORKFLOW §4.2) desde G2G. Los veredictos anteriores
+> pertenecen a sus SHAs pre-rebase y no se transfieren.
 
 > **Apertura por autorizacion explicita del Owner sin fila previa**, transmitida por el Coordinador de
 > I-54 — caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la
@@ -65,6 +68,7 @@ Branch     = architecture/propiedades-personalizadas
 Worktree   = ~/.codex/worktrees/architecture-propiedades-personalizadas
 BASE_SHA   = 46fcac2b071929d2bd5b07aa28373941417f74a8   (origin/main, merge de I-51)
 CLAIM_SHA  = 143490d8ecfb1c5f3011cf752c5cfcd11af13784   (Claim-Id d4b871e9-8a5d-4e67-bc11-a8f3c023788e)
+             equivalente tras el rebase de G2G: c60c17fa46ef1eb2e9ab696432721d7649fe7c1d (mismo commit vacio y Claim-Id)
 ```
 
 ## 1. Objetivo
@@ -76,9 +80,9 @@ fundacion **no** convierte esas propiedades en variables de proyecto ni en expre
 plantillas.
 
 G0, G1 y G2 **no** entregan la fundacion. Entregan la **evidencia** (G1), la **primera propuesta** (Proposal V1),
-su revision de Arquitecto (G2B), la **reconciliacion** (Proposal V2, G2C), la revision exact-SHA de V2 (G2D) y la
-**segunda reconciliacion** (Proposal V3, G2E). Sobre V3 deben converger Coordinador y Arquitecto antes de escribir
-codigo.
+su revision de Arquitecto (G2B), la **reconciliacion** (Proposal V2, G2C), la revision exact-SHA de V2 (G2D), la
+**segunda reconciliacion** (Proposal V3, G2E), la revision exact-SHA de V3 (G2F) y la **reconciliacion final** tras
+el rebase (Proposal V4, G2G). Sobre V4 deben converger Coordinador y Arquitecto antes de escribir codigo.
 
 ## 2. Problema
 
@@ -207,6 +211,16 @@ darlos por ciertos:
   al abrir la sesion `origin/main` seguia en `46fcac2`. WORKFLOW §4.2 exige rebasar al abrir la proxima sesion
   que escriba en la rama; como reescribe los SHAs revisados, su momento exacto (G2-FREEZE o una V4, y siempre
   antes de G3) lo fija la orden del Coordinador.
+- **Rebase y paralelas en G2G** (Proposal V4 §2 y §13). Por orden del Coordinador, la sesion G2G rebaso la rama
+  sobre `origin/main` @ `f8deb67` antes de escribir (WORKFLOW §4.2): 6/6 commits, sin conflictos, mapa de SHAs en
+  la V4 §2.2 y V3 byte a byte identica a la revisada. Estado al publicar V4, medido solo sobre C-F1 y C-F2:
+  - I-49 @ `1ed93a0`: rebasada sobre `main` con la misma Proposal V6, solo documentacion;
+  - I-52 @ `545c222`: Proposal V3 y ADR-0036 actualizado, solo documentacion; su espejo reserializa el sobre, asi
+    que F-14a y F-14b le afectan como a los demas flujos que lo reescriben;
+  - I-53 @ `4e00a27`: G3 con tipos nuevos en `Application/Systems/Shared` y pruebas, sin tocar sobre, `Compose`,
+    Custom Properties, NFC ni UI.
+
+  Ningun avance invalida C-F1 ni C-F2, y `conflicts_with` sigue vacio.
 - **Cruce medido en G1** ([Discovery](I-54-discovery.md) §2 y §13): cruce **productivo** actual con I-49,
   I-50, I-52 e I-53 = **cero archivos** mientras I-54 no toque DTO ni Domain de sistema, editores de sistema,
   `RackEnvelopeRestamp` ni `RackCloner`. Cruce **documental** previsto con las cuatro (fila de ROADMAP tras I-51,
@@ -220,8 +234,8 @@ darlos por ciertos:
 y simbolo **es el entregable de G1**, y los archivos de produccion los fija el consenso de G2.
 
 Lo que si se declara para G0..G2: solo `docs/initiatives/I-54-*.md`, y la fila de I-54 en `docs/ROADMAP.md` solo
-en el bootstrap. G2C y G2E tocan **unicamente** `docs/initiatives/I-54-*.md`. **Una desviacion material frente a
-esto obliga a detenerse.**
+en el bootstrap. G2C, G2E y G2G tocan **unicamente** `docs/initiatives/I-54-*.md`; el rebase de G2G solo
+reaplica los commits existentes de I-54. **Una desviacion material frente a esto obliga a detenerse.**
 
 ## 8. Fases
 
@@ -229,7 +243,7 @@ esto obliga a detenerse.**
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** — bootstrap `f908b2f` |
 | G1 | Discovery | [I-54-discovery.md](I-54-discovery.md): informe por archivo/simbolo, H-1..H-8, mapa de cruces, riesgos y hallazgos fuera de alcance | **HECHA** — `195964b` |
-| G2 | Proposal y consenso | **G2A**: [Proposal V1](I-54-proposal-v1.md) y paquete de Arquitecto. **G2B**: Architect Review de V1. **G2C**: [Proposal V2](I-54-proposal-v2.md) y paquete reescrito. **G2D**: revision exact-SHA de V2. **G2E**: [Proposal V3](I-54-proposal-v3.md) y paquete reescrito para la revision exact-SHA (su SHA es el del commit que introduce la V3). **G2F**: revision exact-SHA de V3 por Coordinador y Arquitecto, limitada a C-1..C-8. **G2-FREEZE**: consenso, ADR `propuesto` y aprobacion del Owner. Cada una con orden propia | **G2A HECHA** (`7c197af`); **G2B CERRADA** (AGREED WITH CHANGES sobre `7c197af`); **G2C HECHA** (`36c337b`); **G2D CERRADA** (AGREED WITH CHANGES sobre `36c337b`); **G2E HECHA** (Proposal V3); G2F PENDIENTE; sin consenso |
+| G2 | Proposal y consenso | **G2A**: [Proposal V1](I-54-proposal-v1.md) y paquete de Arquitecto. **G2B**: Architect Review de V1. **G2C**: [Proposal V2](I-54-proposal-v2.md) y paquete reescrito. **G2D**: revision exact-SHA de V2. **G2E**: [Proposal V3](I-54-proposal-v3.md) y paquete reescrito. **G2F**: revision exact-SHA de V3, limitada a C-1..C-8. **G2G**: rebase obligatorio sobre `origin/main` y [Proposal V4](I-54-proposal-v4.md) con paquete reescrito para la revision exact-SHA (su SHA es el del commit que introduce la V4). **G2H**: revision exact-SHA post-rebase de V4 por Coordinador y Arquitecto, limitada a C-F1, C-F2 y la integridad del rebase. **G2-FREEZE**: consenso, ADR `propuesto` y aprobacion del Owner. Cada una con orden propia. SHAs pre-rebase y sus equivalentes en la V4 §2.2 | **G2A HECHA** (`7c197af`); **G2B CERRADA** (AGREED WITH CHANGES sobre `7c197af`); **G2C HECHA** (`36c337b`); **G2D CERRADA** (AGREED WITH CHANGES sobre `36c337b`); **G2E HECHA** (`5d25da8`); **G2F CERRADA** (AGREED WITH CHANGES sobre `5d25da8`); **G2G HECHA** (rebase y Proposal V4); G2H PENDIENTE; sin consenso |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Por definir **tras el consenso de G2**, no aqui | bloqueada |
 
 Ninguna fase posterior arranca sin que la anterior tenga evidencia revisable.
@@ -263,8 +277,8 @@ expreso de la orden:
 
 ## 12. Condiciones para detenerse
 
-- **COMPUERTA VIGENTE — G2, solo documentacion.** G2E publica la Proposal V3 sin produccion, sin pruebas
-  productivas, sin ADR definitivo y sin tocar `docs/HANDOFF.md` ni `docs/ROADMAP.md`. G3+ no se inicia.
+- **COMPUERTA VIGENTE — G2, solo documentacion.** G2G rebasa la rama y publica la Proposal V4 sin produccion,
+  sin pruebas productivas, sin ADR definitivo y sin tocar `docs/HANDOFF.md` ni `docs/ROADMAP.md`. G3+ no se inicia.
 - **Implementacion bloqueada** hasta `Coordinator = AGREED` y `Architect = AGREED` sobre la **misma**
   Proposal, y la aprobacion del Owner.
 - Si G1 encuentra **archivos productivos compartidos materiales con I-49, I-50 o I-52**: reportarlo antes
@@ -371,5 +385,42 @@ La revision no modifico el repositorio.
 Las sondas de `System.Text.Json` que sostienen C-2..C-4 se re-ejecutaron fuera del repositorio sobre .NET 8.0.29.
 Durante la sesion `origin/main` avanzo a `f8deb67` (integracion de I-50). V3 se publica sin rebase y sin force,
 con la medicion de §6. Sin compilacion ni pruebas del repositorio: G2E no produce codigo.
+
+**G2F — Architect Review exact-SHA de V3** (sobre `5d25da89972df2468f1d03243301761f5463e6eb`, CI 34737707481
+verde): `Coordinator = AGREED`; `GLOBAL VERDICT = AGREED WITH CHANGES`, `G2F Architect Review = CLOSED`,
+implementacion bloqueada.
+
+- C-1, C-2 y C-4..C-8 `VERIFIED`; C-3 `DEFECT`.
+- Dos hallazgos MINOR con evidencia ejecutada:
+  - **AR-54-V3-01**: `Normalize(FormC)` lanza con UTF-16 bien formado que contiene no-caracteres;
+  - **AR-54-V3-02**: un sobre con un surrogate escapado se lee, pero toda reescritura lanza.
+- AR-54-04, AR-54-V2-01, -02 y -04..-06 `CLOSED`; AR-54-V2-03 `REOPENED` solo por esos dos puntos.
+- PR-03, -06, -07 y -13 `AGREED`; PR-12 `RECONCILED`.
+- RD-04 y RD-07 AGREE WITH CHANGE; RD-01, -03, -10, -13, -19 y -20 AGREE.
+- `AUTHORITY ORDER = AGREED`; `ADR REQUIRED = YES`; `ADR SCOPE = AGREED`.
+- `main` @ `f8deb67` sin impacto sobre C-1..C-8.
+
+El Coordinador acepta la lista cerrada de cambios. La revision no modifico el repositorio.
+
+**G2G — Rebase y Proposal V4.** Solo documentacion.
+
+- **Rebase** sobre `origin/main` @ `f8deb675c6d1ef0e64693b157d69c4cc170d7b24` (WORKFLOW §4.2): 6/6 commits, sin
+  conflictos. `git range-diff` da cinco `=` y el bootstrap `!` solo por contexto de `ROADMAP.md`. El V3 rebasado
+  (`ff98b9ee95ea7c4f8da0b90fe949b8ebb42157ed`) es byte a byte el revisado en G2F. Mapa de SHAs en la V4 §2.2;
+  los historicos no se sustituyen.
+- **Nuevo**: [I-54-proposal-v4.md](I-54-proposal-v4.md), que es la V3 rebasada con exactamente:
+  - **C-F1**: un `Name` con no-caracteres es invalido al escribir y `PresentButUnreadable` al leer, antes de NFC;
+    `Value` sin cambios;
+  - **C-F2**: residual F-14b declarado junto a F-14a; INV-07, D-13 y RP-11 acotados a sobres que BASE puede leer y
+    reserializar; sin commit si una serializacion lanza; caracterizacion en T-CHR-04 y T-ENV-13.
+
+  AR-54-V3-01, AR-54-V3-02 y AR-54-V2-03 quedan `CLOSED IN V4`, pendientes de re-verificacion; RD-04 y RD-07
+  `ACCEPTED WITH FINAL RECONCILIATION`; §15 identica a V3.
+- **Reescrito**: el paquete de revision, limitado a C-F1, C-F2 y la integridad del rebase.
+- **Contrato**: este archivo, solo en lo que refleja G2F y G2G. El Discovery no cambia.
+
+F-14a y F-14b se registran en `ideas-futuras.md` en G2-FREEZE, como reserva §4. La historia rebasada se publica
+con `git push --force-with-lease` (WORKFLOW §4.3). Sin compilacion ni pruebas del repositorio: G2G no produce
+codigo.
 
 El resto de la evidencia se acumula al cerrar cada fase.
