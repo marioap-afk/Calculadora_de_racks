@@ -25,7 +25,10 @@ namespace RackCad.Domain.Systems.Dynamic
         /// <summary>True while the module still matches the calculated default.</summary>
         public bool IsCalculated { get; set; } = true;
 
-        /// <summary>True when the user has overridden the module relative to the default layout.</summary>
+        /// <summary>
+        /// True when the user set the module's LENGTH manually, and nothing else (ADR-0037). A customized cabecera is
+        /// expressed by <see cref="UseCalculatedHeaderConfiguration"/> = false, never by this flag.
+        /// </summary>
         public bool IsManualOverride { get; set; }
 
         /// <summary>Header configuration for header modules; null for separators and posts.</summary>

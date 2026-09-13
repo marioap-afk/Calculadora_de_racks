@@ -48,6 +48,15 @@ namespace RackCad.Application.Systems.Selective
                 ? system.PostPeraltes[postIndex]
                 : system?.PostPeralte ?? 0.0;
 
+        /// <summary>
+        /// The effective PERALTE a post WOULD have with <paramref name="postPeralte"/> as its per-post value: that value when
+        /// positive, else the run peralte. It is the rule of <see cref="PostPeralteAt"/> for a per-post value that is not in
+        /// <paramref name="system"/> yet — the scalar an EDIT precomputes and writes at MUTATE (I-53, contract §6.7). The two
+        /// are pinned to each other by test; <see cref="PostPeralteAt"/> itself is left untouched, since the drawing reads it.
+        /// </summary>
+        public static double PostPeralteFor(SelectiveRackSystem system, double postPeralte)
+            => postPeralte > 0.0 ? postPeralte : system?.PostPeralte ?? 0.0;
+
         /// <summary>Height of post <paramref name="postIndex"/> in fondo 0 = the tallest of the (up to two) bays it
         /// bounds; empty bays fall back to fondo 0's own tallest bay (not the overall system height, which a taller
         /// OTHER fondo could inflate), so the frontal and fondo 0's lateral agree.</summary>

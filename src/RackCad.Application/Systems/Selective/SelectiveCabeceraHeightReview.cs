@@ -174,5 +174,69 @@ namespace RackCad.Application.Systems.Selective
         private static string Post(int index) => "Poste " + (index + 1).ToString(CultureInfo.InvariantCulture);
 
         private static string Inches(double value) => value.ToString("0.##", CultureInfo.InvariantCulture) + " in";
+
+        /// <summary>
+        /// La MISMA revisión para varias cabeceras destino a la vez (I-53, distribución por lotes): un hallazgo por
+        /// (fondo, poste), en orden de fondo y poste.
+        /// <para>
+        /// No es una regla nueva ni una copia de los criterios: agrupa los destinos por poste y consulta <see cref="Of"/> con
+        /// los fondos de cada uno. Un destino que ese sistema no tiene no produce hallazgo, igual que en <see cref="Of"/>;
+        /// quien prepara el lote ya lo omitió e informó.
+        /// </para>
+        /// </summary>
+        public static IReadOnlyList<SelectiveCabeceraHeightDestinationFinding> OfDestinations(
+            SelectiveRackSystem system, IEnumerable<SelectiveHeaderAddress> destinations, double height)
+        {
+            var findings = new List<SelectiveCabeceraHeightDestinationFinding>();
+            if (system == null || destinations == null)
+            {
+                return findings;
+            }
+
+            foreach (var post in destinations.GroupBy(destination => destination.PostIndex).OrderBy(group => group.Key))
+            {
+                var review = Of(system, post.Select(destination => destination.FondoIndex), post.Key, height);
+                findings.AddRange(review.Findings.Select(finding => new SelectiveCabeceraHeightDestinationFinding(
+                    new SelectiveHeaderAddress(finding.FondoIndex, post.Key), finding.Issue, finding.Reference, height)));
+            }
+
+            return findings.OrderBy(finding => finding.Address).ToList();
+        }
+
+        /// <summary>Una frase para UN destino, con la numeración del editor: F de fondo, Poste sin F.</summary>
+        internal static string DescribeDestination(SelectiveCabeceraHeightDestinationFinding finding)
+        {
+            var where = One(finding.Address.FondoIndex) + ", " + Post(finding.Address.PostIndex) + ": altura " + Inches(finding.Height);
+            return finding.Issue == SelectiveCabeceraHeightIssue.Severe
+                ? where + ", por debajo del nivel de carga superior (" + Inches(finding.Reference) + "). "
+                  + "El larguero o la tarima superiores sobresaldrían por encima del poste."
+                : where + ", difiere del alto resuelto (" + Inches(finding.Reference) + "). "
+                  + "El corte lateral y el frontal pueden dejar de coincidir.";
+        }
+    }
+
+    /// <summary>Un hallazgo de altura sobre UNA cabecera destino <c>(fondo, poste)</c> de una distribución por lotes (I-53).</summary>
+    public sealed class SelectiveCabeceraHeightDestinationFinding
+    {
+        internal SelectiveCabeceraHeightDestinationFinding(
+            SelectiveHeaderAddress address, SelectiveCabeceraHeightIssue issue, double reference, double height)
+        {
+            Address = address;
+            Issue = issue;
+            Reference = reference;
+            Height = height;
+        }
+
+        public SelectiveHeaderAddress Address { get; }
+
+        public SelectiveCabeceraHeightIssue Issue { get; }
+
+        /// <summary>El valor contra el que se comparó: el nivel superior (severa) o el alto resuelto (informativa).</summary>
+        public double Reference { get; }
+
+        /// <summary>La altura de la receta, la misma en todos los destinos.</summary>
+        public double Height { get; }
+
+        public string Describe() => SelectiveCabeceraHeightReview.DescribeDestination(this);
     }
 }

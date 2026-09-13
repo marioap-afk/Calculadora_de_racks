@@ -1079,3 +1079,93 @@ Las copias de `RACKLAYOUT` copian `Rotation` y `ScaleFactors`, pero no `LayerId`
 `MInsertBlock`. La copia crea una `BlockReference` simple (`:201-206`), así que se pierden las filas y
 columnas del MINSERT. I-51 **no** lo cambia: su contrato conserva el comportamiento histórico de una
 referencia (INV-16).
+
+## I-53 — hallazgos fuera de alcance (2026-09-12, registrados sin corregir)
+
+Encontrados en el Discovery de I-53 ([I-53-discovery.md](initiatives/I-53-discovery.md) §19) y en su G2
+([Proposal V2](initiatives/I-53-proposal-v2.md) §17), y declarados **fuera de alcance** en el freeze de G2
+([decisiones de I-53](automation/decisions/I-53.md) §10.10; [contrato](initiatives/I-53-cabeceras-configurables-multidestino.md)
+§4). **Ninguno está corregido**: siguen vivos en `main`. Las líneas de L-2..L-14 se refieren a `46fcac2`; las de
+N-02 y N-03, a `f8deb67`. L-1 y L-7 no figuran aquí: están dentro de la línea I-53.
+
+### L-2 — Push Back: `RACKBOMTOTAL` cotizaría sin celosía las cabeceras con override por línea
+
+`BuildPushBack` refresca solo las cabeceras de módulo; el resolver clona los overrides con `CloneHeader`, sin
+refresco; `BomBuilder` itera `Members`, vacío, y emite solo postes y placas. El BOM del editor (que sí refresca)
+y el total divergirían. Ninguna prueba cubre esta ruta: la de BOM usa el ensamblador vivo
+(`PushBackKindHandler.cs:40-50`; `SystemRegistry.Default.cs:172-189`; `DynamicRackSystemResolver.cs:226-238` y
+`:512-516`; `RackFrameProjectDocument.cs:81-120`; `BomBuilder.cs:74-93`; `TC/PushBackDerivedPostAndLineTests.cs:388-403`).
+*(TRAZA; no ejecutada.)* I-53 **no** lo corrige ni lo fija con una prueba: corregirlo toca el resolver
+compartido y el comportamiento integrado de Push Back.
+
+### L-3 — El comentario del resolver dice «COPIA canónica» y el código usa la no canónica
+
+`DynamicRackSystemResolver.cs:212` frente a `:235`. Complementa la entrada existente «El clon del resolver no es
+el clon canónico de I-17».
+
+### L-4 — «Ausente cuando está vacío» es inexacto: las listas vacías se escriben como `null`
+
+`DynamicRackSystemDocument.cs:47-56`; `RackProjectStore.cs:402-410`; `RackEmbedDocument.cs:70-74`. *(Hecho en
+las opciones; inferencia sobre el comportamiento por defecto de System.Text.Json.)*
+
+### L-5 — HANDOFF afirma que el Dinámico comparte `RackModuleEditSession`, y no la usa
+
+`HANDOFF.md:2096-2098`.
+
+### L-6 — Push Back: `SaveLibrary_Click` dice que confirma la sesión y solo recalcula; `Bom_Click` tampoco confirma
+
+`RackPushBackSystemWindow.xaml.cs:3304-3337`.
+
+### L-8 — I-40 prometió informar omisiones en la ronda 2 y su modelo final no lo hace
+
+Discovery de I-53, §9.10, punto 1.
+
+### L-9 — Comentarios del Selectivo que siguen hablando de la «representación master del fondo 0» en la frontal
+
+La prueba vigente `TC/SelectiveFondoCabeceraTests.cs:680` fija que cada frontal representa **su propio** fondo;
+los comentarios de `SelectiveEditorState.cs:1304-1305`, `SelectiveBomBuilder.cs:422-423`,
+`RackSelectiveWindow.xaml:170` y `SelectivePalletDesign.cs:41-42` siguen describiendo el modelo anterior.
+*(Hecho en la prueba; los comentarios, según la auditoría del Discovery.)*
+
+### L-10 — WORKFLOW §7 desactualizado
+
+En `46fcac2`, `RackSelectiveWindow.xaml.cs` tenía **3.159** líneas (la tabla dice 2.867) y el patrón
+`*Commands*.cs` del Plugin daba **16** archivos (dice 14). Conteo directo.
+
+### L-11 — Marcador de conflicto diff3 en este mismo archivo
+
+La línea 813 de `docs/ideas-futuras.md` conserva un marcador de conflicto diff3 (siete barras verticales seguidas
+de `085ca2f`), introducido por el merge `d582dee` (I-43 incorporando `main`); lo muestra `git blame -L 813,813`.
+Sigue presente en `f8deb67`.
+
+### L-12 — `RackModuleHeaderScope` no tiene consumidor: solo aparece citado en comentarios
+
+`RackModuleHeaderApply.cs:19`; búsqueda con `git grep`.
+
+### L-13 — `RackCommandReference` (RACKAYUDA) no lista `RACKPUSHBACK`, `RACKSECCION` ni `RACKVARIABLES`
+
+Búsqueda sin coincidencias en `src/RackCad.UI/RackCommandReference.cs`. Amplía con `RACKVARIABLES` la entrada
+existente «Dos comandos ausentes de la referencia en la app (hallazgo de I-36B)».
+
+### L-14 — Push Back: los overrides por línea no se podan por `PostIndex`
+
+Sobreviven a un cambio de tipo de cabecera, no adaptan fondo ni peralte y su descarte no se informa
+(`PushBackEditorDesignAssembler.cs:348-364`). Es comportamiento integrado de I-40: observación, **no** reapertura.
+
+### N-02 — Dinámico: «Calculada» regenera la configuración y también borra la longitud manual
+
+`ConfigBox_SelectionChanged`, en su rama «Calculada», regenera la cabecera y fija `IsManualOverride = false`
+(`RackDynamicSystemWindow.xaml.cs:1876-1881`, `:1879`). Restablecer la **configuración** borra así también la
+**longitud manual** del módulo, que la reconciliación lee de ese flag (`RackModuleReconciliation.cs:164`). Es la
+misma sobrecarga que I-53 corrigió para ID6/ID7 (H-04), en sentido inverso, pero es un restablecimiento y no una
+reutilización: I-53 lo **caracteriza sin cambiarlo** (prueba D-26).
+
+**Qué habría que decidir**: si restablecer la cabecera a «Calculada» debe conservar la longitud manual, ya que
+ADR-0037 fija que `IsManualOverride` significa longitud manual.
+
+### N-03 — Dinámico: el desplegable de configuración muestra siempre «Calculada»
+
+Al seleccionar un módulo, `UpdateSelectedPanel` llama a `SelectConfigCalculated`
+(`RackDynamicSystemWindow.xaml.cs:1823`), que pone el índice 0 sin mirar la procedencia (`:1844-1860`): un
+módulo personalizado aparece como «Calculada». Es una lectura engañosa, no una reutilización. I-53D decidirá la
+forma de ese control al retirar los presets «Personalizada N» (OD-8).

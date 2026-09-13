@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-12**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-13**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -15,6 +15,38 @@ es el único adaptador de la API de AutoCAD.
 El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, dinámico modular y cama
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
+
+**I-53 — ID6 REUSE + ID7 BATCH DISTRIBUTION — Entrega 1 (fundación) — INTEGRADA y CERRADA** el **2026-09-13**
+(`feature/cabeceras-configurables-multidestino`, candidato funcional `f271fd578b3e583f1261d9f30e97d90a838bb7fe`). I-53
+es **una** iniciativa conceptual entregada en **tres integraciones** (OD-6 B′): esta es la **fundación sin cambio
+visible**; la capacidad de usuario llega con **I-53S** (Selectivo) y después con **I-53D** (Dinámico), ninguna reclamada
+todavía. **ID6/ID7 aún NO son visibles para el usuario**, y la iniciativa conceptual **no** termina aquí.
+
+**El resultado verificable.**
+
+| | |
+|---|---|
+| Contrato | ID6 + ID7 congelado en la [Proposal V2](initiatives/I-53-proposal-v2.md): la configuración de una cabecera **existente** se copia a un **conjunto de destinos**, cada uno con **copia independiente** y aplicación **todo o nada**, con destinos propios de cada sistema y sin dirección universal. [ADR-0037](adr/0037-reutilizacion-de-cabecera-por-copia-y-distribucion-por-lotes.md) **aceptado** |
+| Núcleo compartido (G3) | `Application/Systems/Shared`: `HeaderConfigurationSnapshot` (captura del valor ACTUAL; copias por el clon canónico de I-17), `HeaderBatchPlan<T>` (`Rejected` / `Prepared`), `HeaderBatchOutcome<T>` (`Rejected` / `Cancelled` / `Committed`), firma opaca, tres motivos Omitted y siete códigos Rejected cerrados; sin ejecutor genérico ni política de cobertura. **Demostrado** por dos consumidores sin cambiar desde G3 |
+| Selectivo (G4) | destinos `TargetFondos` (I-43, tal cual) × `PostTargets`; PREPARE **puro** que normaliza solo la copia (fondo por `ImposeFondoDepth`, peralte por `PostPeralteAt`, altura revisada por destino); MUTATE **aditivo** en `SelectiveEditorState`, con la firma verificada antes de escribir, incluida la generación del sistema resuelto (RR-01) |
+| Dinámico (G6) | destino = `ModuleId`; `ModuleTargets` Actual / Explícito / Todas; firma `ModuleId:Kind` + **generación de reconstrucción**; PREPARE puro, MUTATE atómico y **un** recompute (`ApplyPostPeralte` + `Refresh`); `IsManualOverride` = solo longitud manual (ADR-0037); reconstrucción con `RackModuleReconciliation` que informa Preserved / Adapted / Removed / Incompatible / Restored |
+| Sin cambio visible | cero UI, XAML, Plugin, DTO, persistencia y Push Back, y **ningún llamador de producción** de los tipos nuevos: las ventanas siguen con `ApplyCabeceraToTargets`, `SelectiveCabeceraHeightReview.Of`, el par `SnapshotHeaderFondos` / `RestoreHeaderFondos`, los presets «Personalizada N» y L-1 |
+
+**Lo que NO está entregado todavía, y no debe leerse como hecho.** Ninguna ventana tiene «Tomar como origen», destinos ni
+aplicación por lotes. N-01 y el cableado de RR-01 son de **I-53S**; L-1, la retirada de presets y el informe de
+reconciliación en pantalla, de **I-53D**.
+
+**Evidencia del candidato funcional `f271fd5`:**
+
+| | |
+|---|---|
+| Core Full | **6451 / 6451** (0 omitidas) |
+| UI Full | **1361 PASS / 17 omitidas / 1378** (las mismas 17 que `main`) |
+| Focales | G3 **50/50**; G4 **52/52**; G6 **61/61**; I-43 **242/242**; I-35 Fact1..Fact7 **15/15**; I-35/I-40 compartido **160/160**; Push Back **1967/1967**; firmas de dibujo I-24 **18/18** |
+| Builds | UI Debug **0 errores y 0 advertencias**; Plugin Debug **0 errores** (solo los dos `MSB3277` conocidos) |
+| Invariantes | E1-INV-1..5 **PASS**: sin UI ni Plugin, sin llamadores de producción, pruebas existentes intactas, cambios solo aditivos y Push Back sin diff |
+| CI de `push` | corrida **34750678118**, `head_sha` = `f271fd5...`, **4/4 `success`** |
+| Owner Validation | **E1-V PASS** en AutoCAD 2025 —smoke de Selectivo y Dinámico, Actualizar/Insertar vista y `RACKBOMTOTAL`— sobre el DLL Debug construido desde ese candidato |
 
 **I-50 — Cotas independientes por vista (ID1) — INTEGRADA** el **2026-09-12** con merge `--no-ff`
 (`feature/cotas-independientes-por-vista`, Candidate `6cd2970c36a906cb9e784797008bed5e8111e433`). Queda
@@ -1175,6 +1207,21 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-53 E1 (2026-09-13) — PASS.** El dueño validó en AutoCAD 2025 el candidato funcional
+`f271fd578b3e583f1261d9f30e97d90a838bb7fe`, sobre el DLL Debug identificado para la ronda —`RackCad.Plugin.dll`, versión
+`1.0.0+f271fd578b3e583f1261d9f30e97d90a838bb7fe`, SHA-256
+`68F79064076B013C8241B643D54083668C0F3B82BC5C5A77CC03961DC7E8D176`—, con la biblioteca de bloques
+`D:\Base_de_datos_AutoCAD_V.0.dwg` (SHA-256 `B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8`). Es el
+**smoke corto** que el contrato fija para una fundación sin UI nueva —Selectivo, Dinámico, Actualizar/Insertar vista y
+`RACKBOMTOTAL`— y el resultado recibido es **PASS, sin regresión visible**. No es validación funcional de ID6/ID7, que E1
+no expone.
+
+`origin/main` **no avanzó** desde la base `f8deb675c6d1ef0e64693b157d69c4cc170d7b24`, así que **no hubo rebase final** y
+la validación corresponde exactamente al contenido integrado. Evidencia automatizada del mismo SHA, árbol limpio y SDK
+**8.0.423**: `RackCad.Tests` **6451 PASS / 0 fail / 0 skip**, `RackCad.UI.Tests` **1361 PASS / 17 skip / 1378 total**,
+build Debug de UI **0 errores y 0 advertencias**, build Debug del Plugin **0 errores** más los **dos `MSB3277`**
+conocidos, y **CI de `push` sobre ese SHA exacto** —corrida **34750678118**, 4/4 `success`—.
+
 **I-50 (2026-09-12) — PASS.** El dueño validó en AutoCAD 2025 el Candidate
 `6cd2970c36a906cb9e784797008bed5e8111e433`, sobre el DLL Debug identificado para la ronda en G7
 —`RackCad.Plugin.dll`, versión `1.0.0+6cd2970c36a906cb9e784797008bed5e8111e433`, SHA-256
@@ -1519,6 +1566,9 @@ veredicto.
 
 ## 3. Problemas y riesgos activos
 
+- **Coordinación I-53S ↔ I-49 (archivo caliente).** I-53S cableará ID6/ID7 en `RackSelectiveWindow.xaml.cs`, y la
+  Proposal de I-49 prevé tocar esa misma ventana; I-49 ya lleva código de producción en su rama. Al reclamar I-53S, el
+  **preflight de archivos calientes es obligatorio** ([WORKFLOW.md](WORKFLOW.md) §7) y, si coinciden, se serializa.
 - **COMPATIBILIDAD DE CATÁLOGO del Selectivo (hallazgo de I-48, NO arreglado).** `LoadCellEditor` asigna
   el `BeamId` guardado del diseño al combo **sin red de seguridad**, mientras el **poste** sí la tiene en
   dos sitios. Si ese larguero se renombró o se retiró del catálogo —que es de sólo lectura y puede
@@ -1579,7 +1629,90 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-50 quedó INTEGRADA; CLOSED solo tras sus compuertas posteriores al merge. Las demás iniciativas abiertas siguen en sus ramas.
+### I-53 E1 quedó INTEGRADA y CERRADA; la línea funcional continúa en I-53S y después en I-53D. Las demás iniciativas abiertas siguen en sus ramas.
+
+**I-53 — ID6 REUSE + ID7 BATCH DISTRIBUTION — Entrega 1 (fundación) — INTEGRADA el 2026-09-13.** `G0`–`G2` (freeze),
+`G3`, `G4` y `G6` cerrados, Candidato `E1-C` **PASS**, validación del Owner `E1-V` **PASS** y cierre documental `E1-I`;
+integración con merge `--no-ff`. No queda ningún pendiente **de alcance de E1**; la capacidad de usuario es alcance de
+I-53S e I-53D, no deuda de E1.
+
+```text
+I-53 / E1 = INTEGRATED + CLOSED
+
+ID6/ID7 contract                              = FROZEN
+ADR-0037                                      = ACCEPTED
+
+Shared foundation                             = IN MAIN
+Selective Application foundation              = IN MAIN
+Dynamic Application/reconciliation foundation = IN MAIN
+
+UI capability                                 = NOT YET DELIVERED
+
+Next:
+I-53S → Selectivo UI
+then
+I-53D → Dinámico UI
+```
+
+```text
+BASE_MAIN_SHA    = f8deb675c6d1ef0e64693b157d69c4cc170d7b24   (base de G2-F; sin avance al integrar)
+CLAIM_SHA        = f317ea947daa1c0fdff1cc8fcc13ef4b5ebc1258   (reclamo tras el rebase de G2-F; el original fue e1d5996)
+G2_FREEZE_SHA    = 5efaf7e1ecf8b070e06e4bd6fe8aca179afda847
+G3_SHARED_SHA    = 4e00a273e22634cb3abbc1b3fb3778edf49dbc7e
+G4_SELECTIVE_SHA = 7de424e4f0f69f6e2fb18fd7c2e018479aab3fbe
+G6_DYNAMIC_SHA   = f271fd578b3e583f1261d9f30e97d90a838bb7fe
+E1_CANDIDATE_SHA = f271fd578b3e583f1261d9f30e97d90a838bb7fe   (= G6)
+CLOSURE_DOCS_SHA = este mismo commit (docs-only; NO reemplaza al candidato)
+MERGE_SHA        = PENDING hasta el merge
+```
+
+**Qué quedó en `main`, como fundación sin llamador.**
+
+- **Núcleo compartido** (`Application/Systems/Shared`, G3): el Snapshot captura el valor actual de la cabecera origen y
+  entrega una copia nueva por destino con el clon canónico; Plan y Outcome son formas cerradas con constructores
+  internos, así que la UI no puede fabricar un resultado.
+- **Selectivo** (`Application/Systems/Selective`, G4): `SelectiveHeaderBatchPlanner.Prepare` resuelve origen, destinos
+  `TargetFondos` × `PostTargets`, omisiones y rechazos sin mutar nada, y `SelectiveEditorState.ApplyHeaderBatch` asigna
+  las copias preparadas solo si la firma —generación del sistema resuelto incluida— sigue igual.
+- **Dinámico** (`Application/Systems/Dynamic`, G6): `DynamicHeaderBatch.Prepare` / `Apply` por `ModuleId`, con la
+  firma `ModuleId:Kind` + generación y un recompute; `DynamicRackRebuild` reconstruye, reconcilia por `ModuleId + Kind` e
+  informa, y avanza la generación descartando el origen y los destinos explícitos recordados.
+
+**Continuación de la línea (OD-6 B′).**
+
+```text
+I-53S:
+  feature/cabeceras-multidestino-selectivo
+  pendiente de claim/bootstrap tras E1-I
+  implementa G5 + N-01
+
+I-53D:
+  feature/cabeceras-multidestino-dinamico
+  pendiente después de integrar I-53S
+  implementa G7 + L-1 + retirada de presets + reconciliation reporting
+```
+
+- **I-53S (G5)** cablea el planner y `ApplyHeaderBatch` en la ventana del Selectivo: frontera C4 fuera del
+  `DeferRecompute` del lote, precondiciones RR-01 antes de PREPARE, la resolución para MUTATE leída **antes** de abrir el
+  ámbito diferido, un recompute por operación confirmada, retirar de la ventana la copia de la regla del escalar de
+  peralte y N-01 (S-31); pruebas S-27..S-32. **Preflight de archivos calientes obligatorio**: I-49 puede tocar
+  `RackSelectiveWindow.xaml.cs`.
+- **I-53D (G7)** cablea `DynamicHeaderBatch`, sustituye en la ventana el par ordinal `SnapshotHeaderFondos` /
+  `RestoreHeaderFondos` por `DynamicRackRebuild` y muestra su `Describe()`, retira los presets «Personalizada N» (OD-8),
+  resuelve L-1 y reapunta `Fact5` (x2) y `DynamicEditorDesignAssemblerTests` a la reconciliación **sin relajarlos**;
+  pruebas D-26..D-39. D-23 dejó caracterizado que una reconstrucción del Dinámico **hoy** pierde los overrides por línea:
+  comportamiento histórico, no una golden de L-2.
+- Cada una se reclama desde `origin/main` por el caso (d) con OD-6 como autorización, con su propio bootstrap, fila de
+  ROADMAP, Candidato, Owner Validation, integración y limpieza, bajo el contrato congelado de I-53 y el mismo
+  [registro de decisiones](automation/decisions/I-53.md).
+
+**Lo que I-53 E1 dejó expresamente fuera**: toda ventana, XAML y prueba de UI; el Plugin; G5 y G7; **L-2** de Push
+Back, que sigue fuera de toda la línea; formato persistido, DTO y `SchemaVersion`. Los hallazgos laterales **L-2..L-6**,
+**L-8..L-14**, **N-02** y **N-03** siguen registrados **sin corregir** en [ideas-futuras.md](ideas-futuras.md).
+
+**I-50 queda como historia.** Sus compuertas posteriores al merge pasaron después de escribir lo de abajo —CI del
+`MERGE_SHA` `f8deb675...` 4/4 con su artifact de cobertura y cobertura diferida por dispatch— y rama y worktree se
+retiraron; constancia en el [registro de I-53](automation/decisions/I-53.md) §10.2.
 
 **I-50 — Cotas independientes por vista (ID1) — INTEGRADA el 2026-09-12.** Gates cerrados en el orden aprobado
 por el Coordinador —`G0`/`G1`, `G2`/`G2A`, `G4`, `G5`, `G6`, `G3` y `G7`— y `G8` en curso con este cierre
@@ -3023,7 +3156,33 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-50 — 2026-09-12** (la vigente):
+**Baseline integrada de I-53 E1 — 2026-09-13** (la vigente):
+
+- candidato **funcional** aprobado por el Owner: `f271fd578b3e583f1261d9f30e97d90a838bb7fe` —el SHA de G6, sin commit ni
+  rebase posterior— (CI de `push` **34750678118**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**, con «SHA
+  verificado» en el checkout);
+- **cierre documental previo a la integración**: este commit, **docs-only** —no recompila ni revalida nada, y **no
+  reemplaza** al candidato funcional—;
+- **validación manual del Owner en AutoCAD 2025: PASS** —smoke de E1: Selectivo, Dinámico, Actualizar/Insertar vista y
+  `RACKBOMTOTAL`—, sobre el DLL Debug construido exactamente desde el candidato;
+- `origin/main` **no avanzó** desde la base `f8deb675c6d1ef0e64693b157d69c4cc170d7b24`: **sin rebase final**, de modo que
+  la validación manual corresponde exactamente al contenido integrado;
+- suites locales sobre el candidato, árbol limpio y SDK **8.0.423**: **RackCad.Tests 6451/6451** (0 omitidas; E1 añade
+  163 —G3 50, G4 52 y G6 61— a las 6288 de la base) y **RackCad.UI.Tests 1361 correctas / 17 omitidas / 1378 totales**
+  (sin pruebas de UI nuevas); focales G3 **50/50**, G4 **52/52**, G6 **61/61**, I-43 **242/242**, I-35 Fact1..Fact7
+  **15/15**, I-35/I-40 compartido **160/160**, Push Back **1967/1967** y firmas de dibujo I-24 **18/18**; Debug de UI
+  (0 advertencias, 0 errores) y del Plugin (0 errores, sólo los **dos** MSB3277 conocidos); todos los ensamblados
+  estampados con `1.0.0+f271fd5...`;
+- invariantes **E1-INV-1..5 PASS** sobre `git diff 5efaf7e..f271fd5`: sin UI, Plugin, `assets`, `deploy`, `eng`,
+  `.github` ni docs; sin llamadores de producción; ninguna prueba existente modificada; cambios solo aditivos; Push Back
+  sin diff;
+- **rojo demostrado** en cada gate por aserción contra un andamiaje compilable sin comportamiento —G3, G4 y G6—, más
+  mutaciones temporales, revertidas, sobre las guardas de G6;
+- **compuertas posteriores al merge**: el `MERGE_SHA` no existe todavía cuando se escribe esto, así que el CI del merge,
+  con su artifact `rackcad-coverage-cobertura`, y la comprobación diferida de la cobertura del Candidato siguen
+  **pendientes** ([WORKFLOW.md](WORKFLOW.md) §4.5 pasos 6 y 7); la rama y el worktree **no** se retiran hasta que pasen.
+
+**Baseline integrada de I-50 — 2026-09-12** (anterior):
 
 - Candidate **funcional** aprobado por el Owner: `6cd2970c36a906cb9e784797008bed5e8111e433` (CI de `push`
   **34732123814**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**; cobertura del Candidate por dispatch
@@ -4248,4 +4407,12 @@ condiciones que habrían exigido un ADR; ninguna se activó.
 I-50). El Owner la aceptó **antes de cualquier código productivo**, sobre la Proposal **V1.2** congelada
 (`0e91c52f41f26b3302af8cabd9dd8b293f2d3cbd`) y con el consenso de Coordinator y Architect sobre ese mismo SHA
 ([registro](automation/decisions/I-50.md)). La implementación la cumplió sin cambiarla: su contenido es
+**inmutable**; sólo pueden cambiar su Estado y sus enlaces.
+
+**ADR-0037 — reutilizar una configuración de cabecera es copiarla y distribuirla por lotes — `aceptado` el
+2026-09-12** (iniciativa I-53). El Owner la aceptó en el freeze de G2 («Acepto el ADR»), **antes de cualquier código
+productivo**, sobre la Proposal V2 congelada y con `ARCHITECT_V2 = AGREED`
+([registro](automation/decisions/I-53.md) §10.4). La Entrega 1 implementa su fundación —destinos propios de cada
+sistema, preparación pura todo-o-nada, una copia independiente por destino con el clon canónico y autoridades de
+normalización de cada sistema— **sin cambiarla**; I-53S e I-53D la cablean en las ventanas. Su contenido es
 **inmutable**; sólo pueden cambiar su Estado y sus enlaces.
