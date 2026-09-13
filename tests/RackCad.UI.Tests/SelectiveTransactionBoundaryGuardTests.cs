@@ -34,6 +34,7 @@ namespace RackCad.UI.Tests
             ("private void ApplyScope(", "Celda / Seleccionadas / Nivel / Frente / Todas"),
             ("private void ApplyFrontOperation(", "Aplicar piso / elevación / niveles"),
             ("private void FondoSelector_Changed(", "Cambio de fondo visible"),
+            ("private void ApplyHeaderBatch_Click(", "Aplicar origen a destinos (I-53S, ID6 + ID7)"),
         };
 
         /// <summary>Las que NO comprometen (✘ en C4): comprometer aquí sería una mutación que el usuario no pidió.</summary>
@@ -42,6 +43,7 @@ namespace RackCad.UI.Tests
             ("private void PostSelect_Changed(", "solo cambia status y preview"),
             ("private void PreviewView_Changed(", "solo repinta"),
             ("private void Close_Click(", "cerrar no persiste nada"),
+            ("private void TakeHeaderSource_Click(", "solo recuerda una direccion; la configuracion se captura al aplicar (I-53S)"),
         };
 
         private static DirectoryInfo RepoRoot()

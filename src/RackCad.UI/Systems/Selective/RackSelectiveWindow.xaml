@@ -107,6 +107,41 @@
                             HorizontalAlignment="Left" Margin="0,4,0,0"
                             ToolTip="Quita la cabecera personalizada de este poste (vuelve a la del tramo)." />
 
+                    <!-- I-53S (ID6 REUSE + ID7 BATCH DISTRIBUTION, ADR-0037): una cabecera personalizada como ORIGEN,
+                         copiada a «Postes destino» × «Fondos destino». El origen es solo una DIRECCION (fondo, poste): su
+                         configuracion se lee al aplicar, asi que editarla despues de tomarla aplica el valor nuevo. Nada de
+                         esto se guarda con el diseño ni se recuerda entre aperturas. Va ANTES de «Fondos destino», que sigue
+                         siendo la fila inmediatamente anterior a «Tramo» (I-43, gate 8A). -->
+                    <StackPanel x:Name="HeaderBatchPanel" Margin="0,10,0,0">
+                        <TextBlock Text="Reutilizar cabecera" Style="{StaticResource FieldLabel}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="6" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="HeaderSourceText" Grid.Column="0" Text="Sin origen." Foreground="#617080"
+                                       FontSize="10.5" TextWrapping="Wrap" VerticalAlignment="Center" />
+                            <Button x:Name="TakeHeaderSourceButton" Grid.Column="2" Content="Tomar como origen"
+                                    Click="TakeHeaderSource_Click" Style="{StaticResource SecondaryButtonStyle}"
+                                    ToolTip="Recuerda como ORIGEN el poste seleccionado del fondo que estás viendo. No copia nada todavía: al aplicar se usa la cabecera que ese poste tenga en ese momento." />
+                        </Grid>
+                        <TextBlock Text="Postes destino" Style="{StaticResource FieldLabel}" Margin="0,4,0,0" />
+                        <ToggleButton x:Name="PostTargetsButton" HorizontalContentAlignment="Left" Content="Actual"
+                                      Padding="8,3" Background="White" BorderBrush="#D8DEE6" BorderThickness="1" Foreground="#1F2933"
+                                      ToolTip="A qué postes se copia el origen: el poste seleccionado, uno, varios o todos. Se cruza con «Fondos destino»; un fondo que no tenga ese poste se omite." />
+                        <Popup x:Name="PostTargetsPopup" PlacementTarget="{Binding ElementName=PostTargetsButton}" Placement="Bottom"
+                               StaysOpen="False" AllowsTransparency="True"
+                               IsOpen="{Binding IsChecked, ElementName=PostTargetsButton, Mode=TwoWay}">
+                            <Border Background="White" BorderBrush="#D8DEE6" BorderThickness="1" Padding="8">
+                                <StackPanel x:Name="PostTargetsList" MinWidth="150" />
+                            </Border>
+                        </Popup>
+                        <Button x:Name="ApplyHeaderBatchButton" Content="Aplicar origen a destinos" Click="ApplyHeaderBatch_Click"
+                                Style="{StaticResource SecondaryButtonStyle}" HorizontalAlignment="Left" Margin="0,6,0,0"
+                                ToolTip="Copia la cabecera del origen a «Postes destino» × «Fondos destino»: cada destino recibe su propia copia, con la profundidad de su fondo y el peralte de su poste. Si un destino no es válido no se aplica nada." />
+                    </StackPanel>
+
                     <!-- I-43: the SECOND axis of every operation. One selector for the whole editor. -->
                     <StackPanel x:Name="TargetFondosPanel" Margin="0,10,0,0">
                         <TextBlock Text="Fondos destino" Style="{StaticResource FieldLabel}" />

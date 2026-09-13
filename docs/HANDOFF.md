@@ -16,6 +16,41 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
+**I-53S — ID6 REUSE + ID7 BATCH DISTRIBUTION — Entrega 2 (Selectivo UI) — INTEGRADA** el **2026-09-13**
+(`feature/cabeceras-multidestino-selectivo`, candidato funcional `e528ef20007256f903dc87604209e8ae891698d0`). Es la
+**segunda** de las tres integraciones de I-53 (OD-6 B′): **ID6/ID7 ya son visibles para el usuario en el Selectivo**. El
+Dinámico sigue sin esa capacidad —es **I-53D**, **no reclamada**— y la iniciativa conceptual **no** termina aquí. Queda
+**cerrada** cuando pasen las compuertas posteriores al merge ([WORKFLOW.md](WORKFLOW.md) §4.5 pasos 6 y 7) y se retiren
+rama y worktree. El bloque de I-53 E1 de abajo describe el estado **al integrar E1**.
+
+**El resultado verificable.**
+
+| | |
+|---|---|
+| Origen | «Tomar como origen» recuerda **solo la dirección** `(FondoIndex, PostIndex)` del fondo visible y el poste seleccionado. PREPARE captura el valor **actual** al aplicar: editar el origen después de tomarlo aplica el valor nuevo, y un origen que ya no existe se rechaza. No se persiste ni se recuerda entre aperturas |
+| Destinos | «Postes destino» (Actual / Explícito / Todos, `SelectivePostTargets`) × «Fondos destino» (`TargetFondos` de I-43, tal cual). Lo que el rack no tiene se **omite y se informa**: nunca se crea ni se recorta sobre el vecino |
+| Aplicación por lotes | un único gesto para «Aplicar origen a destinos» y «Personalizar»: frontera C4 → `SaveWorkingToSelected` → resolución vigente con generación propia (RR-01) → PREPARE → confirmación solo ante un aviso **severo** de altura → resolución para MUTATE leída **antes** del ámbito diferido → `DeferRecompute { MUTATE; Recompute }`. **Un** recompute por operación confirmada y **cero** en rechazos y cancelaciones, incluido el lote obsoleto en MUTATE |
+| Outcome | lo produce Application (constructores internos) y la ventana lo informa en la barra de estado: destinos aplicados, omitidos con su motivo, rechazo por código en palabras o cancelación. Sin diálogos nuevos fuera de la costura de altura |
+| N-01 | «Personalizar» abre una cabecera ya personalizada en **editor avanzado** y una estándar en **modo rápido** (`ViewModel.IsAdvancedEditor`, costura `HeaderConfiguratorPresenter`); `RackFrameConfiguratorWindow` intacta |
+| L-7 | la ventana ya no escribe el peralte del poste antes de saber si algo se aplicó ni guarda su copia de la regla: lo escribe Application en MUTATE, y solo si hubo destino aplicado |
+| Alcance del cambio | solo `RackSelectiveWindow.xaml(.cs)` y pruebas de UI; sin cambios en Application, núcleo compartido, Domain, Plugin, DTO, persistencia, Dinámico ni Push Back. `ApplyCabeceraToTargets` queda solo para «Restablecer poste» |
+
+**Lo que NO está entregado, y no debe leerse como hecho.** La UI del **Dinámico** —G7, L-1, retirada de los presets
+«Personalizada N» e informe de reconciliación en pantalla— es de **I-53D**. No existen biblioteca de configuraciones,
+plantillas, portapapeles ni origen durable: origen y destinos viven solo mientras el editor está abierto.
+
+**Evidencia del candidato funcional `e528ef2`:**
+
+| | |
+|---|---|
+| Core Full | **6451 / 6451** (0 omitidas) |
+| UI Full | **1394 PASS / 17 omitidas / 1411** (las mismas 17; incluye las **33** pruebas nuevas de I-53S) |
+| Focales | S-27 **2/2**; S-28 **5/5**; S-29 **1/1**; S-30 **5/5**; S-31 **3/3**; S-32 **5/5**; S-23 WPF **1/1**; L-7 **2/2**; I-53S **33/33**; G3 **50/50**; G4 **52/52**; I-43 Core **242/242** y ventana **132/132**; I-50 Selectivo Core **641/641** y UI **11/11**; I-24 Selectivo **9/9**; I-52 C2-4 **1/1** |
+| Builds | UI Debug **0 errores y 0 advertencias**; Plugin Debug **0 errores** (solo los dos `MSB3277` conocidos) |
+| Invariantes | E2-INV-1..7 **PASS**: productivo solo en la ventana; cero cambios en Application, Shared, Domain, Plugin, persistencia, Dinámico, Push Back, `assets` y `.github`; pruebas solo en `RackCad.UI.Tests`; configurador intacto; `ApplyCabeceraToTargets` fuera del lote; sin escritura anticipada de `PostPeraltes`; sin `MessageBox` ni `ShowDialog` directos nuevos |
+| CI de `push` | corrida **34779766360**, `head_sha` = `e528ef2...`, **4/4 `success`** |
+| Owner Validation | **E2-V PASS** en AutoCAD 2025, en todos los escenarios, sobre el DLL Debug construido desde ese candidato |
+
 **I-53 — ID6 REUSE + ID7 BATCH DISTRIBUTION — Entrega 1 (fundación) — INTEGRADA y CERRADA** el **2026-09-13**
 (`feature/cabeceras-configurables-multidestino`, candidato funcional `f271fd578b3e583f1261d9f30e97d90a838bb7fe`). I-53
 es **una** iniciativa conceptual entregada en **tres integraciones** (OD-6 B′): esta es la **fundación sin cambio
@@ -1207,6 +1242,24 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-53S E2 (2026-09-13) — PASS.** El dueño validó en AutoCAD 2025 el candidato funcional
+`e528ef20007256f903dc87604209e8ae891698d0`, sobre el DLL Debug identificado para la ronda —`RackCad.Plugin.dll`, versión
+`1.0.0+e528ef20007256f903dc87604209e8ae891698d0`, SHA-256
+`61A48111AE1DBB373577189EAE388219F8D86A84BD08ADD3770C8288F37CE31F`—, con la biblioteca de bloques
+`D:\Base_de_datos_AutoCAD_V.0.dwg` (SHA-256 `B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8`, resuelta
+por el override de `%APPDATA%\RackCad\settings.json`); los dos hashes se volvieron a comprobar, sin cambios, al recibir el
+veredicto. Es la **validación funcional de ID6/ID7 en el Selectivo** y el resultado recibido es **PASS en todos los
+escenarios**: N-01 (estándar en modo rápido, personalizada en editor avanzado); origen vivo; aplicar a uno, a varios y a
+todos, con omisiones; origen estándar rechazado que funciona tras personalizarlo; origen desaparecido; confirmar y cancelar
+un aviso severo de altura; peralte del poste destino y EDIT sin destino aplicable; independencia de las copias; Actualizar
+con frontal, lateral y planta por fondo; `RACKEDITAR`; guardar y reabrir; y `RACKBOMTOTAL`.
+
+`origin/main` **no avanzó** desde la base `1b091bedafceb67ca57054a9eb3bf5259efff774`, así que **no hubo rebase final** y
+la validación corresponde exactamente al contenido integrado. Evidencia automatizada del mismo SHA, árbol limpio y SDK
+**8.0.423**: `RackCad.Tests` **6451 PASS / 0 fail / 0 skip**, `RackCad.UI.Tests` **1394 PASS / 17 skip / 1411 total**,
+build Debug de UI **0 errores y 0 advertencias**, build Debug del Plugin **0 errores** más los **dos `MSB3277`**
+conocidos, y **CI de `push` sobre ese SHA exacto** —corrida **34779766360**, 4/4 `success`—.
+
 **I-53 E1 (2026-09-13) — PASS.** El dueño validó en AutoCAD 2025 el candidato funcional
 `f271fd578b3e583f1261d9f30e97d90a838bb7fe`, sobre el DLL Debug identificado para la ronda —`RackCad.Plugin.dll`, versión
 `1.0.0+f271fd578b3e583f1261d9f30e97d90a838bb7fe`, SHA-256
@@ -1566,9 +1619,13 @@ veredicto.
 
 ## 3. Problemas y riesgos activos
 
-- **Coordinación I-53S ↔ I-49 (archivo caliente).** I-53S cableará ID6/ID7 en `RackSelectiveWindow.xaml.cs`, y la
-  Proposal de I-49 prevé tocar esa misma ventana; I-49 ya lleva código de producción en su rama. Al reclamar I-53S, el
-  **preflight de archivos calientes es obligatorio** ([WORKFLOW.md](WORKFLOW.md) §7) y, si coinciden, se serializa.
+- **I-49 G10 frente a la ventana del Selectivo que integró I-53S (archivo caliente).** I-53S cambió
+  `RackSelectiveWindow.xaml.cs` —panel «Reutilizar cabecera», gesto `RunHeaderBatch`, `ShowHeaderConfigurator` y seis
+  ayudas `Describe*` nuevas—, y el G10 de I-49 prevé cambiar en esa misma ventana el miembro `Describe(PropertyId, string)`
+  (ADR-0038 de su rama, D21 / P23.13). El Coordinador serializó **I-53S primero**: el G10 de I-49 **solo se reanuda tras
+  la limpieza de I-53S**. Antes de editar, I-49 debe hacer `fetch --prune`, reconciliar o rebasar sobre el nuevo `main`
+  según [WORKFLOW.md](WORKFLOW.md), volver a localizar `Describe` —por firma y semántica, no por nombre, porque ahora
+  conviven con él las ayudas de I-53S—, verificar P23.13 y D21 contra la ventana resultante y correr sus RED y guardas.
 - **COMPATIBILIDAD DE CATÁLOGO del Selectivo (hallazgo de I-48, NO arreglado).** `LoadCellEditor` asigna
   el `BeamId` guardado del diseño al combo **sin red de seguridad**, mientras el **poste** sí la tiene en
   dos sitios. Si ese larguero se renombró o se retiró del catálogo —que es de sólo lectura y puede
@@ -1629,7 +1686,107 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-53 E1 quedó INTEGRADA y CERRADA; la línea funcional continúa en I-53S y después en I-53D. Las demás iniciativas abiertas siguen en sus ramas.
+### I-53S E2 quedó INTEGRADA; la línea funcional continúa en I-53D. Las demás iniciativas abiertas siguen en sus ramas.
+
+**I-53S — ID6 REUSE + ID7 BATCH DISTRIBUTION — Entrega 2 (Selectivo UI) — INTEGRADA el 2026-09-13.** `G0` (reclamo y
+bootstrap) y `G5` cerrados, Candidato `E2-C` **PASS**, validación del Owner `E2-V` **PASS** y cierre documental `E2-I`;
+integración con merge `--no-ff`. No queda ningún pendiente **de alcance de E2**; la UI del Dinámico es alcance de I-53D, no
+deuda de E2.
+
+```text
+I-53S / E2:
+  Selectivo UI = DELIVERED
+
+Source (dirección)                        = DELIVERED
+PostTargets × TargetFondos                = DELIVERED
+Batch apply + confirm/cancel              = DELIVERED
+Outcome / informe                         = DELIVERED
+N-01                                      = DELIVERED
+RR-01 UI                                  = DELIVERED
+L-7                                       = CLOSED
+Dibujo / RACKEDITAR / save-reopen / BOM   = VALIDATED (E2-V)
+
+I-49:
+  G10 puede reanudarse SOLO después del cleanup de I-53S;
+  debe rebasar/reconciliar con main y volver a localizar Describe.
+
+I-53D:
+  NOT CLAIMED
+  siguiente unidad de la línea I-53
+
+Línea conceptual I-53:
+  E1 = CLOSED
+  E2 = INTEGRATED (CLOSED tras las compuertas posteriores al merge y la limpieza)
+  E3 = PENDING
+```
+
+```text
+BASE_MAIN_SHA       = 1b091bedafceb67ca57054a9eb3bf5259efff774   (merge de I-53 E1; sin avance al integrar)
+CLAIM_SHA           = fddbffecf67105eb7924f3fa4cc7fdf015def2fc   (Claim-Id 28b64301-c860-4fda-8ad8-4b3771995aae)
+BOOTSTRAP_SHA       = 6ac42caf5cfa5c936d5bdc65bfd62cb8e04c2c4f
+G5_SELECTIVE_UI_SHA = e528ef20007256f903dc87604209e8ae891698d0
+E2_CANDIDATE_SHA    = e528ef20007256f903dc87604209e8ae891698d0   (= G5)
+CLOSURE_DOCS_SHA    = este mismo commit (docs-only; NO reemplaza al candidato)
+MERGE_SHA           = PENDING hasta el merge
+```
+
+**Qué quedó en `main`.**
+
+- **Ventana del Selectivo** (`RackSelectiveWindow.xaml(.cs)`): el panel «Reutilizar cabecera» entre «Restablecer poste»
+  y «Fondos destino» —ahí y no después, porque el pin de I-43 exige «Fondos destino» justo antes de «Tramo»—, con el
+  texto del origen, «Tomar como origen», «Postes destino» (mismo patrón de popup que «Fondos destino») y «Aplicar origen a
+  destinos».
+- **Un solo gesto para EDIT y DISTRIBUTE** (`RunHeaderBatch`): la ventana recoge la intención, cruza la frontera C4,
+  declara la resolución vigente con una generación propia que avanza en cada recompute (RR-01) y pregunta por
+  `SelectiveCabeceraHeightPrompt`; PREPARE, el plan, las copias, el Outcome y la escritura son de Application.
+- **N-01** por `ShowHeaderConfigurator`, que fija el modo por la propiedad pública del ViewModel y lee la configuración
+  realmente efectiva al cerrar el configurador.
+- **L-7 y la regla del peralte**: la ventana ya no escribe `PostPeraltes` en «Personalizar»; `ApplyCabeceraToTargets`
+  (opción A) queda solo para «Restablecer poste», su llamador productivo, y para las pruebas de I-43.
+- **Pruebas de UI**: S-23 (mitad WPF), S-27..S-32, L-7, origen y destinos y la re-medición C2-4 de I-52 (editor igual al
+  documento reabierto); censos ampliados sin relajar —siete `x:Name` nuevos, «Aplicar origen a destinos» como frontera C4 y
+  «Tomar como origen» como no frontera—.
+
+**Coordinación con I-49 (archivo caliente).** `HOTFILE_OWNER_NOW = I-53S` hasta completar la limpieza de esta rama;
+`I-49 G10` sigue **bloqueado** hasta entonces. En los preflights de G5, E2-C, E2-V y E2-I la rama de I-49 **no** tocó
+`RackSelectiveWindow.xaml(.cs)`. I-49 se libera solo después de: merge de I-53S, CI posterior al merge, cobertura del
+`MERGE_SHA`, cobertura del Candidato y limpieza completa. Tras eso, I-49:
+
+1. hace `fetch --prune`;
+2. reconcilia o rebasa sobre el nuevo `main` conforme a [WORKFLOW.md](WORKFLOW.md);
+3. vuelve a localizar `Describe(PropertyId, string)`;
+4. verifica P23.13 y D21 contra la ventana resultante;
+5. corre sus RED y guardas;
+6. solo entonces edita.
+
+Nada de esto se hace desde I-53S, que no toca la rama de I-49.
+
+**Continuación de la línea (OD-6 B′).**
+
+```text
+I-53D:
+  feature/cabeceras-multidestino-dinamico
+  NOT CLAIMED — siguiente unidad de la línea I-53
+  implementa G7 + L-1 + retirada de presets + informe de reconciliación
+```
+
+- **I-53D** queda habilitada conceptualmente, pero arranca en una **sesión separada**: G0, reclamo propio desde
+  `origin/main` por el caso (d) con OD-6, worktree, fila de ROADMAP y bootstrap propios y preflight actualizado. Lo que su
+  G7 cablea está descrito abajo, en el bloque de E1.
+
+**Lo que I-53S dejó expresamente fuera**: el Dinámico; Push Back; Application y el núcleo compartido; persistencia, DTO y
+`SchemaVersion`; biblioteca, plantillas y portapapeles de configuraciones; y **L-2**, que sigue fuera de toda la línea. Los
+hallazgos **L-2..L-6**, **L-8..L-14**, **N-02** y **N-03** siguen **sin corregir** en
+[ideas-futuras.md](ideas-futuras.md), y se añade **N-04**: el comentario XML de `ResolvedCabeceraFondo` todavía atribuye a
+`ApplyCabeceraToTargets` la profundidad guardada, que desde G5 impone PREPARE. Es solo un comentario y el Candidato ya
+estaba fijado, así que no se tocó `src`.
+
+**I-53 E1 queda como historia.** Sus compuertas posteriores al merge pasaron después de escribir lo de abajo: CI de `push`
+del `MERGE_SHA` `1b091bed...` 4/4 con su artifact de cobertura (corrida **34770347066**), cobertura por dispatch sobre ese
+`MERGE_SHA` (**34770880954**) y cobertura del Candidato `f271fd5` por dispatch (**34772075585**; SHA pedido = checkout =
+SHA medido). La rama y el worktree de E1 se retiraron **antes** de esa última comprobación: el Coordinador lo registró como
+desviación de proceso y la completó con la orden E1-I.1, que pasó. Constancia en el
+[registro de I-53](automation/decisions/I-53.md) §12.1.
 
 **I-53 — ID6 REUSE + ID7 BATCH DISTRIBUTION — Entrega 1 (fundación) — INTEGRADA el 2026-09-13.** `G0`–`G2` (freeze),
 `G3`, `G4` y `G6` cerrados, Candidato `E1-C` **PASS**, validación del Owner `E1-V` **PASS** y cierre documental `E1-I`;
@@ -3156,7 +3313,37 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-53 E1 — 2026-09-13** (la vigente):
+**Baseline integrada de I-53S E2 — 2026-09-13** (la vigente):
+
+- candidato **funcional** aprobado por el Owner: `e528ef20007256f903dc87604209e8ae891698d0` —el SHA de G5, sin commit ni
+  rebase posterior— (CI de `push` **34779766360**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**, con «SHA
+  verificado» en el checkout);
+- **cierre documental previo a la integración**: este commit, **docs-only** —no recompila ni revalida nada, y **no
+  reemplaza** al candidato funcional—;
+- **validación manual del Owner en AutoCAD 2025: PASS** en todos los escenarios de E2-V, sobre el DLL Debug construido
+  exactamente desde el candidato;
+- `origin/main` **no avanzó** desde la base `1b091bedafceb67ca57054a9eb3bf5259efff774`: **sin rebase final**, de modo que
+  la validación manual corresponde exactamente al contenido integrado;
+- suites locales sobre el candidato, árbol limpio y SDK **8.0.423**, ejecutadas **después** de crear su commit —la
+  corrida de G5 fue anterior al commit y sus ensamblados llevaban el SHA del padre, así que no cuenta para el
+  Candidato—: **RackCad.Tests 6451/6451** (0 omitidas; E2 no añade pruebas de núcleo) y **RackCad.UI.Tests 1394
+  correctas / 17 omitidas / 1411 totales** (E2 añade 33 a las 1378 de la base); focales S-27 **2/2**, S-28 **5/5**, S-29
+  **1/1**, S-30 **5/5**, S-31 **3/3**, S-32 **5/5**, S-23 WPF **1/1**, L-7 **2/2**, I-53S **33/33**, G3 **50/50**, G4
+  **52/52**, I-43 Core **242/242** y ventana **132/132**, I-50 Selectivo Core **641/641** y UI **11/11**, I-24 Selectivo
+  **9/9**, I-52 C2-4 **1/1**, impacto Selectivo UI **272/272** y Selectivo Core **1078/1078**; Debug de UI (0
+  advertencias, 0 errores) y del Plugin (0 errores, sólo los **dos** MSB3277 conocidos), reconstruidos sin incremental;
+  todos los ensamblados estampados con `1.0.0+e528ef2...`;
+- invariantes **E2-INV-1..7 PASS** sobre `git diff 6ac42ca..e528ef2`: productivo solo en `RackSelectiveWindow.xaml(.cs)`;
+  pruebas solo en `RackCad.UI.Tests`; `RackFrameConfigurator*` idénticos a `main`; `ApplyCabeceraToTargets` solo en
+  «Restablecer poste»; sin escritura anticipada de `PostPeraltes`; cuatro `MessageBox.Show` y cuatro `ShowDialog` antes y
+  después;
+- **rojo demostrado** en G5 por aserción contra un andamiaje compilable sin comportamiento, en dos pasos —sin gesto y con
+  la captura de intención ya hecha—; S-23 WPF y S-31 estándar son caracterización;
+- **compuertas posteriores al merge**: el `MERGE_SHA` no existe todavía cuando se escribe esto, así que el CI del merge,
+  con su artifact `rackcad-coverage-cobertura`, y la comprobación diferida de la cobertura del Candidato siguen
+  **pendientes** ([WORKFLOW.md](WORKFLOW.md) §4.5 pasos 6 y 7); la rama y el worktree **no** se retiran hasta que pasen.
+
+**Baseline integrada de I-53 E1 — 2026-09-13** (anterior; sus compuertas posteriores al merge ya pasaron, ver §4):
 
 - candidato **funcional** aprobado por el Owner: `f271fd578b3e583f1261d9f30e97d90a838bb7fe` —el SHA de G6, sin commit ni
   rebase posterior— (CI de `push` **34750678118**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**, con «SHA
