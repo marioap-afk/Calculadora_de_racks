@@ -769,6 +769,19 @@ Ambas bifurcan de a4d88f1: 9 commits por detras de origin/main (no contienen el 
 4. Numero de ADR y filas de ROADMAP en orden numerico.
 5. **No** se mezclan ramas ni se anaden dependencias directas.
 
+### 18.5 Iniciativas nuevas observadas al cerrar G1
+
+Tras publicar el primer commit de este informe, `git ls-remote --heads origin` mostro dos ramas reclamadas
+**despues** de I-52 (reclamo de I-52 a las 17:41 -06:00), ambas bifurcadas de `46fcac2` y **solo con `docs/`**:
+
+| Iniciativa | Rama @ SHA | Objeto | Cruce con I-52 |
+|---|---|---|---|
+| **I-53** | `feature/cabeceras-configurables-multidestino` @ `c8476cc` (reclamo `e1d5996`, G1 cerrado) | configuracion de cabecera origen aplicada a conjuntos de destinos en todos los sistemas | **Semantico**: los datos de cabecera direccionados por indice (`PostCabeceras`, `ExtraFondoPostCabeceras`, `HeaderLineOverrides.PostIndex`, ids `B:`) son filas S-07, D-04 y PC-09 de la matriz. Su propio Discovery (§16.3) declara que I-52 no se ve afectada **si I-53 no anade datos persistidos direccionados por indice**. Vigilar: todo dato nuevo indexado por poste, fondo o modulo es un remapeo nuevo del espejo |
+| **I-54** | `architecture/propiedades-personalizadas` @ `195964b` (reclamo `143490d`, G1 cerrado) | propiedades personalizadas de alcance Proyecto y Rack persistidas en el DWG | **Persistencia**: una propiedad de alcance Rack viajaria en el sobre o en el diseño y el espejo debe conservarla. Su Discovery (§8.2) confirma una perdida que afecta tambien al espejo: el restamp de **cabecera** re-serializa por dominio y `RackFrameProjectDocument` **no** tiene `ExtensionData` (su version vuelve a 1.0) |
+
+Ninguna toca `src/`. Conflictos previstos: filas de ROADMAP (I-49, I-50, I-52, I-53 e I-54 insertan en el mismo punto)
+y numeracion de ADR. Se anaden al protocolo de 18.4 antes del Candidato.
+
 ---
 
 ## 19. Riesgos y unknowns
@@ -792,7 +805,7 @@ Ambas bifurcan de a4d88f1: 9 commits por detras de origin/main (no contienen el 
 | U-15 | Nombre del comando (`RACKMIRROR` frente a la convencion española), alias libre y censo de 33 | baja | PDC-8 |
 | U-16 | Granularidad de UNDO (M9 de I-51 la observo) | baja | validacion |
 | U-17 | Paper Space, MINSERT (L-4 de I-51), `Normal` no WCS, UCS | media | PDC-9 |
-| U-18 | Orden de integracion con I-50 (sitios de copia) e I-49 (`expression`) | media | seccion 18 |
+| U-18 | Orden de integracion con I-50 (sitios de copia), I-49 (`expression`), I-53 (datos de cabecera por indice) e I-54 (propiedades de rack) | media | seccion 18 |
 | U-19 | Necesidad y numero de ADR | media | Arquitecto |
 | U-20 | Espejo en sitio borrando originales: rack parcial y doble conteo en BOM (B1) | alta | PDC-1 |
 
