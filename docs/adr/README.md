@@ -76,7 +76,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0034](0034-project-variables-autoridad-drawing-level.md) | Variables de proyecto como autoridad persistente de nivel dibujo y referencias tipadas por VariableId | aceptado |
 | [0035](0035-visibilidad-de-cotas-por-tipo-de-vista.md) | Visibilidad de cotas por tipo de vista del rack | aceptado |
 | [0037](0037-reutilizacion-de-cabecera-por-copia-y-distribucion-por-lotes.md) | Reutilizar una configuración de cabecera es copiarla y distribuirla por lotes: destinos por sistema, preparación todo-o-nada y autoridades de normalización propias | aceptado |
-| [0039](0039-custom-properties-persistencia-autoridad.md) | Contrato de persistencia y autoridad de Custom Properties | propuesto |
+| [0039](0039-custom-properties-persistencia-autoridad.md) | Contrato de persistencia y autoridad de Custom Properties | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -246,7 +246,8 @@ del editor rico A. **No** decide MVVM, **no** unifica los mecanismos de recomput
 DPI mínimos y **no** autoriza corregir el defecto de Escape de Push Back, que espera a I-39B. Decisiones
 vinculantes del Owner en [`docs/automation/decisions/I-39.md`](../automation/decisions/I-39.md).
 
-Iniciativa I-54 (`architecture/propiedades-personalizadas`): **ADR-0039 nace `propuesto` el 2026-09-13**, con el
-consenso técnico del Coordinador y del Arquitecto sobre la Proposal V5 de I-54, y **espera la aceptación explícita
-del Owner**. Los números 0036, 0037 y 0038 están tomados por I-52, I-53 e I-49 en sus ramas y aún no figuran en este
-índice. Registro en [`docs/automation/decisions/I-54.md`](../automation/decisions/I-54.md).
+Iniciativa I-54 (`architecture/propiedades-personalizadas`): **ADR-0039 nació `propuesto` y quedó `aceptado` el
+2026-09-13**, con el consenso técnico del Coordinador y del Arquitecto sobre la Proposal V5 de I-54 y la aceptación
+explícita del Owner (“Acepto”). Con ella se completa el Consensus Freeze de I-54; no inicia la implementación. Los
+números 0036, 0037 y 0038 están tomados por I-52, I-53 e I-49 en sus ramas y aún no figuran en este índice. Registro en
+[`docs/automation/decisions/I-54.md`](../automation/decisions/I-54.md).

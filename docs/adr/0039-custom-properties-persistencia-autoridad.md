@@ -1,8 +1,8 @@
 # ADR-0039: Contrato de persistencia y autoridad de Custom Properties
 
-- **Estado:** propuesto
-- **Fecha:** 2026-09-13 (propuesto)
-- **Decisores:** Mario Pérez, Owner del repositorio — **aceptación pendiente**; Coordinador de I-54 y Arquitecto de
+- **Estado:** aceptado
+- **Fecha:** 2026-09-13 (propuesto) · 2026-09-13 (aceptado)
+- **Decisores:** Mario Pérez, Owner del repositorio (**acepta**, 2026-09-13); Coordinador de I-54 y Arquitecto de
   I-54 (consenso técnico **AGREED** sobre Proposal **V5** / SHA `26ca923492576185b753d6dbf2a852969df2accf`); Claude
   (redacción)
 - **Iniciativa relacionada:** I-54 — `architecture/propiedades-personalizadas`
@@ -11,9 +11,28 @@
   [V4](../initiatives/I-54-proposal-v4.md) como registro de sus rondas;
   [registro de I-54](../automation/decisions/I-54.md))
 
-> **Registro propuesto para la decisión del Owner.** Este ADR nace `propuesto` y **no** autoriza implementación.
-> Solo el dueño del repositorio acepta o rechaza un ADR ([README](README.md)). Hasta esa decisión, la implementación
-> de I-54 sigue **bloqueada** y G3 no está autorizado (contrato de I-54 §12; Proposal V5 D-20).
+> **Aceptación del Owner (2026-09-13).** El Owner, Mario Pérez, acepta esta decisión de forma **explícita**. Redacción
+> literal recibida: “Acepto”. La transmite el Coordinador de I-54 con un contexto inequívoco: ADR-0039 —Contrato de
+> persistencia y autoridad de Custom Properties—, iniciativa I-54 y Proposal V5 @
+> `26ca923492576185b753d6dbf2a852969df2accf`. No se registra ninguna cita más larga. Registro durable en
+> [`docs/automation/decisions/I-54.md`](../automation/decisions/I-54.md) §11.
+>
+> **Dos actos, dos autoridades.** El Coordinador y el Arquitecto aportaron el **consenso técnico**, ambos **AGREED**
+> sobre la Proposal V5: la decisión estaba **lista**. La **aceptación** es un acto distinto que **solo el dueño del
+> repositorio** ejerce ([README](README.md)). Este registro **nació `propuesto`** el 2026-09-13 en
+> `d84f480f032f6a7e5e481359aeab9fd18f691fbf` y pasa a **`aceptado`** ese mismo día; la trazabilidad de los dos estados
+> se conserva a propósito.
+>
+> **Contenido aceptado.** Es **exactamente** el que este registro tiene en `d84f480f032f6a7e5e481359aeab9fd18f691fbf`
+> (blob `f87f9d73067f6032a21978e3de0ab4268cca70f2`). Al aceptarlo solo cambian este encabezado y el bloque «Aceptación
+> del Owner»: Contexto, Decisión, Alternativas consideradas, Consecuencias, Relación con otros ADR y Referencias quedan
+> idénticos y, desde ahora, **inmutables** ([README](README.md)).
+>
+> **Lo que esta aceptación autoriza — y lo que no.** Junto con el consenso técnico sobre la misma Proposal, completa el
+> **Consensus Freeze** de I-54. **No** inicia la implementación ni abre G3: la implementación sigue **bloqueada** hasta
+> que el commit que versiona esta aceptación tenga CI verde; después queda sin iniciar, y G3 queda listo para que el
+> Coordinador lo autorice en una sesión posterior. **No** declara implementación hecha, pruebas verdes ni validación en
+> AutoCAD.
 >
 > **Autoridad normativa.** El contrato técnico consensuado es la **Proposal V5** tal como existe en
 > `26ca923492576185b753d6dbf2a852969df2accf` (blob `a75444702ad354b35b67bfbbf5bb955913a02c81`). El Coordinador y el
@@ -32,28 +51,30 @@
 ## Aceptación del Owner
 
 ```text
-ADR                  = ADR-0039 — propuesto
+ADR                  = ADR-0039 — aceptado
 Proposal             = V5 @ 26ca923492576185b753d6dbf2a852969df2accf
 Coordinator          = AGREED
 Architect            = AGREED
 Technical Consensus  = REACHED
-Owner ADR Acceptance = PENDING
-Consensus Freeze     = PENDING OWNER ACCEPTANCE
-Implementation       = BLOCKED
+Owner ADR Acceptance = ACCEPTED
+Consensus Freeze     = COMPLETE
+Implementation       = BLOCKED hasta CI verde del commit que versiona esta aceptación
 ```
 
 | Campo | Valor |
 |---|---|
-| Owner | Mario Pérez — **PENDING** |
-| Fecha | **PENDING** |
-| Redacción literal recibida | **PENDING** |
-| Contenido que se somete | Este ADR tal como existe en el commit que lo crea |
+| Owner | Mario Pérez |
+| Fecha | 2026-09-13 |
+| Redacción literal recibida | “Acepto” |
+| Contexto inequívoco | ADR-0039 — Contrato de persistencia y autoridad de Custom Properties · I-54 · Proposal V5 @ `26ca923492576185b753d6dbf2a852969df2accf` |
+| Proposal | V5 @ `26ca923492576185b753d6dbf2a852969df2accf` |
+| Contenido aceptado | Este ADR tal como existe en `d84f480f032f6a7e5e481359aeab9fd18f691fbf` (blob `f87f9d73067f6032a21978e3de0ab4268cca70f2`) |
+| Canal | Coordinador de I-54, en la orden de G2-FREEZE COMPLETION |
 
-La aceptación tiene que ser **explícita** y posterior a la lectura de este ADR. Antes de decidir, el Owner queda
-informado —sin que sea una pregunta técnica— del riesgo residual **R-12** y de los residuales **F-14a** y **F-14b**
-(ver «Consecuencias»). Solo esa aceptación abre la sesión documental que la registra textualmente, actualiza este
-encabezado y este bloque y versiona el Consensus Freeze; Contexto, Decisión, Alternativas consideradas,
-Consecuencias y Referencias no cambian por aceptarse. Después se evalúa, en otra orden, la autorización de G3.
+La aceptación es explícita y se refiere de forma inequívoca a este ADR, a I-54 y a la Proposal V5 en ese SHA. La sesión
+G2-FREEZE COMPLETION la registra, actualiza solo este encabezado y este bloque y completa el Consensus Freeze. La
+implementación sigue sin iniciarse: la autorización de G3 corresponde al Coordinador, en una sesión posterior y con la
+CI del commit que versiona esta aceptación en verde.
 
 ## Contexto
 
