@@ -30,7 +30,8 @@ namespace RackCad.UI.Tests
         private static readonly string[] AllNamedControls =
         {
             "Shell", "NameBox", "NumberFrontsCheck", "NumberLevelsCheck", "DrawRackNameCheck", "AnnotationScaleBox",
-            "DimensionsBox", "DimStyleBox", "DepthBox", "PalletsDeepBox", "LoadLevelsBox", "PostPeralteBox", "PostBox",
+            "DimensionsBox", "DimensionsFrontalCheck", "DimensionsLateralCheck", "DimensionsPlantaCheck", // I-50 G3
+            "DimStyleBox", "DepthBox", "PalletsDeepBox", "LoadLevelsBox", "PostPeralteBox", "PostBox",
             "FrontCountBox", "SelectedFrontText", "SelectedPositionsBox", "SelectedLevelsBox", "FirstLevelHeightBox",
             "SelectedPalletsDeepBox", "SelectedDepthStartBox", "FrontBox", "PalletHeightBox", "WeightBox",
             "SelectedClearHeightBox", "SelectedBeamLengthBox", "SelectedInOutBeamBox", "SelectedInOutPeralteBox",
@@ -76,7 +77,7 @@ namespace RackCad.UI.Tests
                 return AllNamedControls.Where(name => window.FindName(name) == null).ToArray();
             });
 
-            Assert.Empty(missing); // all 63 named elements still resolve in the window's name scope after the migration
+            Assert.Empty(missing); // all 66 named elements still resolve in the window's name scope after the migration
         }
 
         // ---- 3. each control lands in the correct neutral slot ----
@@ -91,7 +92,8 @@ namespace RackCad.UI.Tests
 
                 // Sidebar: inputs + per-cell editor + module table live in the scrolling side panel.
                 foreach (var name in new[] { "NameBox", "DepthBox", "PostBox", "FrontCountBox", "SelectedPositionsBox",
-                    "FrontBox", "SafetyButton", "AdvancedPanel", "ModulesGrid", "ConfigBox", "SelectedFrontText" })
+                    "FrontBox", "SafetyButton", "AdvancedPanel", "ModulesGrid", "ConfigBox", "SelectedFrontText",
+                    "DimensionsFrontalCheck", "DimensionsLateralCheck", "DimensionsPlantaCheck" })
                 {
                     AssertInSlot(shell.SidePanelContent, window, name, "SidePanelContent");
                 }

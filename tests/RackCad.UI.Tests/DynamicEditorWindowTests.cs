@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Controls;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
@@ -243,6 +244,95 @@ namespace RackCad.UI.Tests
             Assert.Equal(nameof(DynamicInsertionRequest), r.RequestType);
             Assert.True(r.PayloadCorresponds);
             Assert.True(sourcePreserved); // the source project flowed through the real handler into the payload (I-11)
+        }
+
+        // ---- I-50, T-21: the policy the user chose reaches the drawing through the real "Actualizar" ----
+
+        /// <summary>
+        /// I-50 T-21 (G3). On an existing rack with dimensions on, the «Mostrar cotas en» boxes are driven like a user would
+        /// and the REAL "Actualizar" handler builds the payload. The drawing built from it follows the policy per view TYPE:
+        /// the exit and entrance frontals follow Frontal, every lateral corte follows Lateral and the planta follows Planta —
+        /// an enabled type draws exactly its legacy views, a disabled one draws no dimension. The payload still corresponds
+        /// strictly (design → resolve == system), so the policy travels in the embedded DESIGN. Legacy stays null.
+        /// </summary>
+        [Fact]
+        public void T21_ExistingSystem_Update_ThePolicyTheUserChose_ReachesEveryDrawnViewByType()
+        {
+            var outcomes = StaTestRunner.Run(() => new[]
+            {
+                UpdateWith("legacy"),
+                UpdateWith("F", "DimensionsLateralCheck", "DimensionsPlantaCheck"),
+                UpdateWith("L", "DimensionsFrontalCheck", "DimensionsPlantaCheck"),
+                UpdateWith("F|P", "DimensionsLateralCheck")
+            }.ToDictionary(outcome => outcome.Case));
+
+            var legacy = outcomes["legacy"];
+            Assert.Null(legacy.Policy);
+            Assert.True(legacy.Corresponds);
+            Assert.True(legacy.Frontal.Dimensions > 0 && legacy.Lateral.Dimensions > 0 && legacy.Planta.Dimensions > 0,
+                "the legacy rack draws dimensions in its three view types");
+
+            foreach (var (key, policy, frontal, lateral, planta) in new[]
+                     {
+                         ("F", 1, true, false, false),
+                         ("L", 2, false, true, false),
+                         ("F|P", 5, true, false, true)
+                     })
+            {
+                var outcome = outcomes[key];
+                Assert.Equal(policy, outcome.Policy);
+                Assert.True(outcome.Corresponds, key + ": payload design and system must correspond");
+                AssertView(key + " frontal", frontal, legacy.Frontal, outcome.Frontal);
+                AssertView(key + " lateral", lateral, legacy.Lateral, outcome.Lateral);
+                AssertView(key + " planta", planta, legacy.Planta, outcome.Planta);
+            }
+        }
+
+        private static void AssertView(string what, bool on, (int Dimensions, string Signature) legacy, (int Dimensions, string Signature) actual)
+        {
+            if (on)
+            {
+                Assert.True(legacy.Signature == actual.Signature, what + ": an enabled view type must draw exactly its legacy views");
+            }
+            else
+            {
+                Assert.True(actual.Dimensions == 0, $"{what}: a disabled view type drew {actual.Dimensions} dimension(s)");
+            }
+        }
+
+        /// <summary>Open the rich rack (dimensions Standard, legacy policy), untick the named boxes as the user would, press
+        /// the real "Actualizar" and sign each view TYPE of the payload's system.</summary>
+        private static (string Case, int? Policy, bool Corresponds, (int Dimensions, string Signature) Frontal, (int Dimensions, string Signature) Lateral, (int Dimensions, string Signature) Planta)
+            UpdateWith(string key, params string[] untick)
+        {
+            var window = new RackDynamicSystemWindow(canInsertInAutoCad: true);
+            window.LoadExisting(RichDesign(), "GUID-EXIST", "Din existente");
+            foreach (var name in untick)
+            {
+                ((CheckBox)window.FindName(name)).IsChecked = false;
+            }
+
+            EditorWindowTestSupport.ClickNamed(window, "UpdateButton");
+            var system = window.SystemToInsert;
+            var payload = window.DesignToInsert;
+            var policy = payload?.DimensionViews;
+            var catalog = Catalog;
+            var frontal = new DynamicSystemFrontalBuilder();
+            return (key,
+                policy.HasValue ? (int)policy.Value : (int?)null,
+                system != null && payload != null && Corresponds(payload, system),
+                ViewSignature("frontal", frontal.Build(system, catalog, DynamicRackEnd.Exit)
+                    .Concat(frontal.Build(system, catalog, DynamicRackEnd.Entrance))),
+                ViewSignature("lateral", new DynamicSystemLateralBuilder().Cortes(system, catalog)
+                    .SelectMany(corte => corte.Plan.Flatten().Instances)),
+                ViewSignature("planta", new DynamicSystemPlantaBuilder().Build(system, catalog)));
+        }
+
+        private static (int Dimensions, string Signature) ViewSignature(string tag, IEnumerable<HeaderBlockInstance> instances)
+        {
+            var list = instances.ToList();
+            return (list.Count(i => i.Role == HeaderBlockRole.Dimension),
+                string.Join("\n", list.Select(i => InstanceKey(tag, i)).OrderBy(s => s, StringComparer.Ordinal)));
         }
 
         // ---- Helpers ----

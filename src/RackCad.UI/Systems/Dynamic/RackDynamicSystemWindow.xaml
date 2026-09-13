@@ -50,6 +50,17 @@
                         <ComboBoxItem Content="Estándar" />
                         <ComboBoxItem Content="Detallado" />
                     </ComboBox>
+                    <!-- I-50 (ADR-0035): en qué TIPOS de vista del rack se dibujan las cotas. -->
+                    <TextBlock Text="Mostrar cotas en" Style="{StaticResource FieldLabel}" />
+                    <StackPanel Orientation="Horizontal"
+                                ToolTip="Por tipo de vista del rack: cada casilla vale para TODAS sus vistas de ese tipo (frontal de salida y de entrada, lateral y todos sus cortes, planta), también las que se inserten después. Con «Ninguna» no se dibuja ninguna cota.">
+                        <CheckBox x:Name="DimensionsFrontalCheck" Content="Frontal" Margin="0,2,12,0" Foreground="#415161"
+                                  Checked="DimensionViews_Changed" Unchecked="DimensionViews_Changed" />
+                        <CheckBox x:Name="DimensionsLateralCheck" Content="Lateral" Margin="0,2,12,0" Foreground="#415161"
+                                  Checked="DimensionViews_Changed" Unchecked="DimensionViews_Changed" />
+                        <CheckBox x:Name="DimensionsPlantaCheck" Content="Planta" Margin="0,2,0,0" Foreground="#415161"
+                                  Checked="DimensionViews_Changed" Unchecked="DimensionViews_Changed" />
+                    </StackPanel>
                     <TextBlock Text="Estilo de cota" Style="{StaticResource FieldLabel}" />
                     <ComboBox x:Name="DimStyleBox" SelectionChanged="Annotation_Changed"
                               ToolTip="(Automático) usa el estilo vigente; también puedes elegir un estilo existente del DWG." />
