@@ -12,7 +12,7 @@ depends_on: []
 conflicts_with: []
 context_packs: [persistence, autocad-plugin, architecture-kernel, ui-editors]
 automation_state_path:
-decision_paths: []
+decision_paths: [docs/automation/decisions/I-54.md]
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
@@ -26,13 +26,18 @@ automation:
 
 # I-54 — ID24 — Custom Properties Foundation
 
-> **Fase actual: G2I — Proposal V5 publicada, SIN consenso.**
+> **Fase actual: G2-FREEZE — consenso tecnico alcanzado sobre Proposal V5; ADR-0039 `propuesto`; aceptacion del
+> Owner PENDIENTE.**
 >
 > - Discovery: [I-54-discovery.md](I-54-discovery.md) (G1 `195964b`, equivalente post-rebase `97e27ea`).
-> - Proposal vigente: [I-54-proposal-v5.md](I-54-proposal-v5.md). La [V1](I-54-proposal-v1.md), la
->   [V2](I-54-proposal-v2.md), la [V3](I-54-proposal-v3.md) y la [V4](I-54-proposal-v4.md) quedan como historia; el
->   mapa de SHAs pre y post rebase esta en la V5 §2.2.
-> - Paquete de revision exact-SHA, limitado a AR-54-V4-01 / C-F3:
+> - Proposal consensuada, inmutable: [I-54-proposal-v5.md](I-54-proposal-v5.md) @
+>   `26ca923492576185b753d6dbf2a852969df2accf`. La [V1](I-54-proposal-v1.md), la [V2](I-54-proposal-v2.md), la
+>   [V3](I-54-proposal-v3.md) y la [V4](I-54-proposal-v4.md) quedan como historia; el mapa de SHAs pre y post rebase
+>   esta en la V5 §2.2, y el historial pre-rebase revisado queda preservado en el tag
+>   `archive/i-54-custom-properties-pre-rebase-5d25da8`.
+> - ADR: [ADR-0039](../adr/0039-custom-properties-persistencia-autoridad.md), `propuesto`. Registro de decisiones:
+>   [decisions/I-54.md](../automation/decisions/I-54.md).
+> - Paquete de la ultima revision exact-SHA (G2J), limitado a AR-54-V4-01 / C-F3:
 >   [I-54-architect-review-package.md](I-54-architect-review-package.md).
 > - G2B cerrado: `Architect Review V1 = AGREED WITH CHANGES` (cambios V2-1..V2-22), incorporados en V2.
 > - G2D cerrado: `Architect Review V2 = AGREED WITH CHANGES` (cambios C-1..C-8), incorporados en V3.
@@ -40,28 +45,38 @@ automation:
 >   incorporados en V4 como C-F1 y C-F2.
 > - G2H cerrado: `Architect Review V4 = AGREED WITH CHANGES` sobre `8bc991c` (solo AR-54-V4-01, MINOR de
 >   redaccion), con `Coordinator = AGREED`; el Coordinador acepta el cambio, incorporado en V5 como C-F3.
+> - G2J cerrado: revision final exact-SHA de V5, limitada a AR-54-V4-01 / C-F3, con `Coordinator = AGREED` y
+>   `Architect = AGREED` sobre `26ca923`, sin hallazgos nuevos ni cambios requeridos.
 >
 > ```text
-> Coordinator    = NOT YET AGREED ON V5
-> Architect      = NOT YET REVIEWED ON V5
-> Consensus      = NOT REACHED
-> Implementation = BLOCKED
-> Owner          = NOT ASKED
+> G2J                  = CLOSED
+> Proposal V5          = 26ca923492576185b753d6dbf2a852969df2accf
+> Coordinator          = AGREED
+> Architect            = AGREED
+> Technical Consensus  = REACHED
+> G2-FREEZE            = IN PROGRESS / OWNER APPROVAL PENDING
+> ADR                  = 0039 PROPOSED
+> Owner ADR Acceptance = PENDING
+> Consensus Freeze     = PENDING OWNER ACCEPTANCE
+> Implementation       = BLOCKED
+> G3                   = NOT AUTHORIZED
+> Next condition       = explicit Owner acceptance of ADR
 > ```
 >
-> **No hay una sola linea de produccion escrita.** La siguiente gate es la revision final exact-SHA de V5 por
-> Coordinador y Arquitecto, **limitada a AR-54-V4-01 / C-F3** (G2J), con orden propia. Si converge, no habra V6 y el
-> siguiente paso sera G2-FREEZE.
+> **No hay una sola linea de produccion escrita.** El siguiente acto es del Owner: aceptar o rechazar ADR-0039 de
+> forma explicita. Solo su aceptacion permite la sesion corta G2-FREEZE COMPLETION, que registra la aceptacion
+> textual, cambia el estado del ADR, declara completo el freeze y pasa la CI documental del nuevo SHA. La
+> autorizacion de G3 se evalua despues.
 >
-> La rama esta rebasada sobre `origin/main` @ `f8deb67` (WORKFLOW §4.2) desde G2G; en G2I `main` no avanzo y no hubo
-> rebase. Los veredictos anteriores pertenecen a sus SHAs y no se transfieren.
+> La rama esta rebasada sobre `origin/main` @ `f8deb67` (WORKFLOW §4.2) desde G2G; en G2I y en G2-FREEZE `main` no
+> avanzo y no hubo rebase. Los veredictos pertenecen a sus SHAs y no se transfieren.
 
 > **Apertura por autorizacion explicita del Owner sin fila previa**, transmitida por el Coordinador de
 > I-54 — caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la
 > preexistencia de la fila en ROADMAP: la fila durable y este contrato nacen en el bootstrap
-> inmediatamente posterior al reclamo atomico. **No existe** `docs/automation/decisions/I-54.md` y la
-> norma **no lo exige** para el caso (d), asi que `decision_paths` queda vacio en vez de apuntar a un
-> archivo inventado.
+> inmediatamente posterior al reclamo atomico. Hasta G2I **no existio** `docs/automation/decisions/I-54.md` —la
+> norma **no lo exige** para el caso (d)— y `decision_paths` quedo vacio en vez de apuntar a un archivo inventado.
+> G2-FREEZE lo crea para registrar el consenso tecnico y ADR-0039, y desde entonces `decision_paths` apunta a el.
 
 ```text
 Initiative = I-54
@@ -84,8 +99,9 @@ plantillas.
 G0, G1 y G2 **no** entregan la fundacion. Entregan la **evidencia** (G1), la **primera propuesta** (Proposal V1),
 su revision de Arquitecto (G2B), la **reconciliacion** (Proposal V2, G2C), la revision exact-SHA de V2 (G2D), la
 **segunda reconciliacion** (Proposal V3, G2E), la revision exact-SHA de V3 (G2F), la reconciliacion tras el rebase
-(Proposal V4, G2G), la revision exact-SHA de V4 (G2H) y la **reconciliacion final** (Proposal V5, G2I). Sobre V5
-deben converger Coordinador y Arquitecto antes de escribir codigo.
+(Proposal V4, G2G), la revision exact-SHA de V4 (G2H) y la **reconciliacion final** (Proposal V5, G2I). Coordinador
+y Arquitecto convergieron sobre V5 en G2J. G2-FREEZE versiona ese consenso con ADR-0039 `propuesto`, y antes de
+escribir codigo falta la aceptacion explicita del Owner.
 
 ## 2. Problema
 
@@ -143,7 +159,8 @@ darlos por ciertos:
 4. **Publicacion** en la rama: informe Discovery; Proposal V1; mapa de archivos y simbolos con los cruces
    con las ramas activas; decisiones materiales; riesgos; recomendacion de ADR si/no; y un **paquete
    autonomo** para la revision de Arquitecto.
-5. **Implementacion**: sus gates se definen tras el consenso de G2. **No esta autorizada.**
+5. **Implementacion**: sus gates son los de la Proposal V5 §14 (G3..G10), congelados por el consenso de G2J. **No
+   esta autorizada**: exige ademas la aceptacion explicita de ADR-0039 por el Owner y la orden de G3.
 
 ## 4. Fuera de alcance
 
@@ -191,8 +208,8 @@ darlos por ciertos:
   - OQ-02 se divide: la existencia de limites es arquitectura y los numeros son tuning;
   - las demas se difieren, cada una con su gate limite (el nombre del comando, antes de G7).
 
-  Siguen haciendo falta decisiones del Owner (nombre del comando, aprobacion del freeze y del ADR), asi que
-  `requires_owner_decision` sigue en `true`.
+  Siguen haciendo falta decisiones del Owner —en G2-FREEZE, **solo** la aceptacion explicita de ADR-0039; despues, el
+  nombre del comando antes de G7—, asi que `requires_owner_decision` sigue en `true`.
 - **Paralelas re-medidas en G2C** ([Discovery](I-54-discovery.md) §2.6; Proposal V2 §13):
   - I-49 @ `ccf21c6` e I-53 @ `f38362d`: solo documentacion;
   - I-50 @ `6cd2970`: G3 en las ventanas del Selectivo, Dinamico y Push Back, fuera del mapa de I-54;
@@ -231,6 +248,17 @@ darlos por ciertos:
   - I-53 @ `4e00a27`: sin cambios.
 
   `conflicts_with` sigue vacio.
+- **Paralelas en G2-FREEZE** ([decisions/I-54.md](../automation/decisions/I-54.md) §9). `main` sigue en `f8deb67`,
+  asi que no hubo rebase y el SHA acordado es el de la rama.
+  - I-49 @ `364d6c0`: sin cambios.
+  - I-52 @ `8e2ae4f`: un commit nuevo, solo documentacion (Proposal V4 y ADR-0036 actualizado). ADR-0036 sigue
+    `propuesto`, mantiene las propiedades de rack de I-54 como portador y su espejo sigue cumpliendo D-21.
+  - I-53 @ `7de424e`: un commit nuevo, su G4 productivo, en `src/RackCad.Application/Systems/Selective/` y pruebas,
+    fuera del mapa de I-54; no toca el sobre ni `docs/adr/`.
+  - Censo de ADR: `main` llega a 0035; 0036 (I-52), 0037 (I-53) y 0038 (I-49) estan en sus ramas; 0039 estaba libre
+    en todos los refs y se asigna a I-54.
+
+  `conflicts_with` sigue vacio.
 - **Cruce medido en G1** ([Discovery](I-54-discovery.md) §2 y §13): cruce **productivo** actual con I-49,
   I-50, I-52 e I-53 = **cero archivos** mientras I-54 no toque DTO ni Domain de sistema, editores de sistema,
   `RackEnvelopeRestamp` ni `RackCloner`. Cruce **documental** previsto con las cuatro (fila de ROADMAP tras I-51,
@@ -245,7 +273,11 @@ y simbolo **es el entregable de G1**, y los archivos de produccion los fija el c
 
 Lo que si se declara para G0..G2: solo `docs/initiatives/I-54-*.md`, y la fila de I-54 en `docs/ROADMAP.md` solo
 en el bootstrap. G2C, G2E, G2G y G2I tocan **unicamente** `docs/initiatives/I-54-*.md`; el rebase de G2G solo
-reaplica los commits existentes de I-54. **Una desviacion material frente a esto obliga a detenerse.**
+reaplica los commits existentes de I-54. G2-FREEZE toca ademas, conforme a la Proposal V5 §14 y a la orden del
+Coordinador, `docs/adr/0039-custom-properties-persistencia-autoridad.md` (nuevo), `docs/adr/README.md` (fila del
+indice), `docs/automation/decisions/I-54.md` (nuevo) y `docs/ideas-futuras.md` (F-01..F-13, F-14a, F-14b y la mejora
+de D-11.6); no toca `docs/ROADMAP.md` ni `docs/HANDOFF.md`. **Una desviacion material frente a esto obliga a
+detenerse.**
 
 ## 8. Fases
 
@@ -253,29 +285,30 @@ reaplica los commits existentes de I-54. **Una desviacion material frente a esto
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** — bootstrap `f908b2f` |
 | G1 | Discovery | [I-54-discovery.md](I-54-discovery.md): informe por archivo/simbolo, H-1..H-8, mapa de cruces, riesgos y hallazgos fuera de alcance | **HECHA** — `195964b` |
-| G2 | Proposal y consenso | **G2A**: [Proposal V1](I-54-proposal-v1.md) y paquete de Arquitecto. **G2B**: Architect Review de V1. **G2C**: [Proposal V2](I-54-proposal-v2.md) y paquete reescrito. **G2D**: revision exact-SHA de V2. **G2E**: [Proposal V3](I-54-proposal-v3.md) y paquete reescrito. **G2F**: revision exact-SHA de V3, limitada a C-1..C-8. **G2G**: rebase obligatorio sobre `origin/main` y [Proposal V4](I-54-proposal-v4.md) con paquete reescrito para la revision exact-SHA (su SHA es el del commit que introduce la V4). **G2H**: revision exact-SHA post-rebase de V4, limitada a C-F1, C-F2 y la integridad del rebase. **G2I**: [Proposal V5](I-54-proposal-v5.md) (C-F3) y paquete reescrito para la revision final exact-SHA (su SHA es el del commit que introduce la V5). **G2J**: revision final exact-SHA de V5 por Coordinador y Arquitecto, limitada a AR-54-V4-01 / C-F3. **G2-FREEZE**: consenso, ADR `propuesto` y aprobacion del Owner. Cada una con orden propia. SHAs pre-rebase y sus equivalentes en la V5 §2.2 | **G2A HECHA** (`7c197af`); **G2B CERRADA** (AGREED WITH CHANGES sobre `7c197af`); **G2C HECHA** (`36c337b`); **G2D CERRADA** (AGREED WITH CHANGES sobre `36c337b`); **G2E HECHA** (`5d25da8`); **G2F CERRADA** (AGREED WITH CHANGES sobre `5d25da8`); **G2G HECHA** (`8bc991c`); **G2H CERRADA** (AGREED WITH CHANGES sobre `8bc991c`); **G2I HECHA** (Proposal V5); G2J PENDIENTE; sin consenso |
-| G3+ | Implementacion, Candidato, validacion del Owner, integracion | Por definir **tras el consenso de G2**, no aqui | bloqueada |
+| G2 | Proposal y consenso | **G2A**: [Proposal V1](I-54-proposal-v1.md) y paquete de Arquitecto. **G2B**: Architect Review de V1. **G2C**: [Proposal V2](I-54-proposal-v2.md) y paquete reescrito. **G2D**: revision exact-SHA de V2. **G2E**: [Proposal V3](I-54-proposal-v3.md) y paquete reescrito. **G2F**: revision exact-SHA de V3, limitada a C-1..C-8. **G2G**: rebase obligatorio sobre `origin/main` y [Proposal V4](I-54-proposal-v4.md) con paquete reescrito para la revision exact-SHA (su SHA es el del commit que introduce la V4). **G2H**: revision exact-SHA post-rebase de V4, limitada a C-F1, C-F2 y la integridad del rebase. **G2I**: [Proposal V5](I-54-proposal-v5.md) (C-F3) y paquete reescrito para la revision final exact-SHA (su SHA es el del commit que introduce la V5). **G2J**: revision final exact-SHA de V5 por Coordinador y Arquitecto, limitada a AR-54-V4-01 / C-F3. **G2-FREEZE**: consenso, ADR `propuesto` y aprobacion del Owner. Cada una con orden propia. SHAs pre-rebase y sus equivalentes en la V5 §2.2 | **G2A HECHA** (`7c197af`); **G2B CERRADA** (AGREED WITH CHANGES sobre `7c197af`); **G2C HECHA** (`36c337b`); **G2D CERRADA** (AGREED WITH CHANGES sobre `36c337b`); **G2E HECHA** (`5d25da8`); **G2F CERRADA** (AGREED WITH CHANGES sobre `5d25da8`); **G2G HECHA** (`8bc991c`); **G2H CERRADA** (AGREED WITH CHANGES sobre `8bc991c`); **G2I HECHA** (`26ca923`); **G2J CERRADA** (Coordinator AGREED y Architect AGREED sobre `26ca923`); **G2-FREEZE EN CURSO**: consenso tecnico alcanzado, ADR-0039 `propuesto`, aceptacion del Owner PENDIENTE |
+| G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates G3..G10 de la [Proposal V5](I-54-proposal-v5.md) §14, congelados por el consenso de G2J | **bloqueada**: G3 NOT AUTHORIZED hasta la aceptacion de ADR-0039 y su orden |
 
 Ninguna fase posterior arranca sin que la anterior tenga evidencia revisable.
 
 ## 9. Pruebas y builds
 
-Se fijan **tras el consenso de G2**, cuando exista alcance de codigo. Lo que ya es exigible por norma y no
-depende de G2: las **dos suites** en local sobre el Candidato, **CI verde sobre el SHA exacto**, y builds
-Debug de UI y de Plugin (AGENTS.md, «Pruebas — definicion de terminado»). G0, G1 y G2 no producen codigo:
-su evidencia es documental.
+Las fija la Proposal V5 §12, congelada por el consenso de G2J, y se ejecutan a partir de G3, que no esta
+autorizado. Lo que ya es exigible por norma y no depende de G2: las **dos suites** en local sobre el Candidato,
+**CI verde sobre el SHA exacto**, y builds Debug de UI y de Plugin (AGENTS.md, «Pruebas — definicion de
+terminado»). G0, G1 y G2 no producen codigo: su evidencia es documental.
 
 ## 10. Validacion manual
 
 **Requerida** en la implementacion: persistir datos del usuario en el DWG y hacerlos sobrevivir a
 `RACKEDITAR`, a la duplicacion y a guardar/reabrir cambia el comportamiento del dibujo (AGENTS.md,
-punto 5). El **checklist concreto se fija tras el consenso de G2**. G0, G1 y G2 **no** la requieren: no
-tocan producto.
+punto 5). El **checklist concreto** es OV-01..OV-14 de la Proposal V5 §12.8, en G9. G0, G1 y G2 **no** la
+requieren: no tocan producto.
 
 ## 11. Criterios de aceptacion
 
-Preliminares; **los fija el consenso de G2**. Solo recogen lo que ya es doctrina del repositorio o limite
-expreso de la orden:
+Redaccion preliminar, anterior a G2. El consenso de G2J los concreta en la Proposal V5 (objetivos §4, invariantes
+§7, y pruebas y validacion §12) y en ADR-0039 `propuesto`. Solo recogen lo que ya es doctrina del repositorio o
+limite expreso de la orden:
 
 1. Las propiedades de ambos alcances sobreviven a guardar, cerrar y reabrir el mismo DWG.
 2. Un contenedor presente pero ilegible, o de un schema futuro, **no** se trata como vacio
@@ -287,11 +320,14 @@ expreso de la orden:
 
 ## 12. Condiciones para detenerse
 
-- **COMPUERTA VIGENTE — G2, solo documentacion.** G2I publica la Proposal V5 sin produccion, sin pruebas
-  productivas, sin ADR definitivo, sin tags y sin tocar `docs/HANDOFF.md`, `docs/ROADMAP.md` ni
-  `docs/ideas-futuras.md`. G3+ no se inicia.
-- **Implementacion bloqueada** hasta `Coordinator = AGREED` y `Architect = AGREED` sobre la **misma**
-  Proposal, y la aprobacion del Owner.
+- **COMPUERTA VIGENTE — G2-FREEZE, solo documentacion.** Versiona el consenso tecnico sobre V5, crea ADR-0039
+  `propuesto`, registra F-01..F-13, F-14a, F-14b y la mejora de D-11.6 en `docs/ideas-futuras.md` y preserva el
+  historial pre-rebase con un tag `archive/*`. Sin produccion, sin pruebas productivas y sin tocar
+  `docs/HANDOFF.md` ni `docs/ROADMAP.md`. G3+ no se inicia.
+- **Implementacion bloqueada** hasta que se cumplan todas estas condiciones:
+  - `Coordinator = AGREED` y `Architect = AGREED` sobre la **misma** Proposal: **cumplida** en G2J, sobre `26ca923`;
+  - aceptacion **explicita** de ADR-0039 por el Owner: **pendiente**;
+  - la orden de G3.
 - Si G1 encuentra **archivos productivos compartidos materiales con I-49, I-50 o I-52**: reportarlo antes
   de continuar.
 - Si la Proposal exige cambiar el **formato persistido existente** (major de `RackEmbedDocument`, forma de
@@ -465,5 +501,34 @@ El Coordinador acepta el cambio. La revision no modifico el repositorio.
 - **Contrato**: este archivo, solo en lo que refleja G2H y G2I. El Discovery y `ideas-futuras.md` no cambian.
 
 Sin compilacion ni pruebas del repositorio: G2I no produce codigo.
+
+**G2J — Revision final exact-SHA de V5** (sobre `26ca923492576185b753d6dbf2a852969df2accf`, CI 34747220760 verde):
+`Coordinator = AGREED`; `GLOBAL VERDICT = AGREED`, `G2J Architect Review = CLOSED`.
+
+- Q-1..Q-6 `VERIFIED`: descripcion de F-14b; ninguna afirmacion global de atomicidad para los consumidores
+  existentes; garantia de D-22.10 intacta y exclusiva del ejecutor de I-54; D-13 y RP-11 alineados; redaccion futura
+  de F-14 lista; integridad del alcance.
+- AR-54-V4-01, AR-54-V3-01, AR-54-V3-02, AR-54-V2-03 y AR-54-04 `CLOSED`; RD-04 y RD-07 AGREE; `ADR REQUIRED = YES`;
+  `ADR SCOPE = AGREED`; `Authority order = AGREED`.
+- `New findings = NONE`; `Required Proposal changes = NONE`; paralelas sin impacto material sobre F-14b.
+- `Consensus = READY FOR FREEZE`; implementacion bloqueada.
+
+La revision no modifico el repositorio.
+
+**G2-FREEZE — preparacion documental del freeze.** Solo documentacion, sin rebase: `main` no avanzo.
+
+- **Nuevo**: [ADR-0039](../adr/0039-custom-properties-persistencia-autoridad.md) `propuesto`, que congela los
+  dieciseis puntos de la V5 §15 sin reabrir decisiones y deja la aceptacion del Owner en `PENDING`.
+- **Nuevo**: [decisions/I-54.md](../automation/decisions/I-54.md), con el consenso, el estado del freeze y la
+  informacion para el Owner sobre R-12, F-14a y F-14b.
+- **Indice de ADR**: fila 0039 `propuesto`; 0036..0038 siguen en sus ramas.
+- **`ideas-futuras.md`**: F-01..F-13, con F-01 y F-06 enlazados a registros existentes; F-14a; F-14b con la
+  redaccion de C-F3; y la mejora de D-11.6.
+- **Tag** `archive/i-54-custom-properties-pre-rebase-5d25da8` → `5d25da8` (Proposal V3 pre-rebase, revisada en G2F),
+  anotado y publicado en `origin`.
+- **Contrato**: este archivo, con `decision_paths` y el estado del freeze.
+
+La Proposal V5, V1..V4, el Discovery, el paquete, `ROADMAP.md` y `HANDOFF.md` no cambian. Sin compilacion ni pruebas
+del repositorio: G2-FREEZE no produce codigo. El SHA de este commit y su CI se reportan al Coordinador.
 
 El resto de la evidencia se acumula al cerrar cada fase.
