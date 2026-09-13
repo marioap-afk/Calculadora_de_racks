@@ -2,17 +2,18 @@
 
 - **Estado:** **propuesto**
 - **Fecha:** 2026-09-12 (propuesto; borrador corregido con Proposal V2 y con Proposal V3 el mismo día, y con Proposal V4,
-  Proposal V5 y Proposal V6 el 2026-09-13)
+  Proposal V5, Proposal V6 y Proposal V7 el 2026-09-13)
 - **Decisores:** Mario Pérez, Owner del repositorio (**acepta o rechaza**; pendiente). La aceptación **no** es
   precondición de la caracterización (G3): se pide **después de G3**, si G3 no contradice materialmente el contrato (si
-  lo contradice, se abre una Proposal V7), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
+  lo contradice, se abre una Proposal V8), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
   (consenso técnico **pendiente** sobre la Proposal); Claude (redacción)
 - **Iniciativa relacionada:** I-52 — `feature/rackmirror-espejo-semantico`
   ([contrato](../initiatives/I-52-rackmirror-espejo-semantico.md),
   [Discovery](../initiatives/I-52-discovery.md), [Proposal V1](../initiatives/I-52-proposal-v1.md),
   [Proposal V2](../initiatives/I-52-proposal-v2.md), [Proposal V3](../initiatives/I-52-proposal-v3.md),
-  [Proposal V4](../initiatives/I-52-proposal-v4.md) y [Proposal V5](../initiatives/I-52-proposal-v5.md) (historial),
-  [Proposal V6](../initiatives/I-52-proposal-v6.md), [decisiones](../automation/decisions/I-52.md))
+  [Proposal V4](../initiatives/I-52-proposal-v4.md), [Proposal V5](../initiatives/I-52-proposal-v5.md) y
+  [Proposal V6](../initiatives/I-52-proposal-v6.md) (historial), [Proposal V7](../initiatives/I-52-proposal-v7.md),
+  [decisiones](../automation/decisions/I-52.md))
 
 > **Numeración.** Un número de ADR queda reclamado por su primera publicación observable en un ref remoto. Este ADR se
 > publicó por primera vez con el número 0036 en `origin/feature/rackmirror-espejo-semantico`, commit
@@ -21,7 +22,7 @@
 > en `main`; ADR-0038 (I-49) y ADR-0039 (I-54) están aceptados en sus ramas. Los tres posteriores a 0036 se publicaron
 > después y con otro número: no hay colisión. Antes de pedir la aceptación del Owner se vuelve a buscar 0036 en todos
 > los refs; si apareciera una publicación anterior, este ADR se renumera antes de la aceptación. Una vez `aceptado` no se
-> renumera, y dos ADR aceptados con el mismo número detienen el trabajo hasta que decida el Owner (Proposal V6 §16).
+> renumera, y dos ADR aceptados con el mismo número detienen el trabajo hasta que decida el Owner (Proposal V7 §16).
 
 ## Contexto
 
@@ -51,8 +52,8 @@ transacción del dibujo; algunos valores geométricos (el ancho de un claro) dep
 de proyecto; varios builders anclan holguras gráficas a un solo lado (el tope del Selectivo y el tope posterior de
 Push Back); y casi todas las piezas de frontal y planta son bloques dinámicos de una biblioteca sin versionar ni metadato
 de simetría, cuyo estado (longitud, altura) puede cambiar de forma continua, a veces con una variable de proyecto, y
-cuya apariencia depende de capas, colores y tipos de línea por entidad. La ruta de esa biblioteca la configura el
-usuario, así que otra estación puede usar otra biblioteca.
+cuya apariencia depende de capas, colores, tipos de línea, grosores y escalas por entidad, a menudo heredados por capa o
+por bloque. La ruta de esa biblioteca la configura el usuario, así que otra estación puede usar otra biblioteca.
 
 ## Decisión
 
@@ -80,7 +81,7 @@ usuario, así que otra estación puede usar otra biblioteca.
    de los builders queda pendiente de caracterización; una contradicción reabre la Proposal, no se parchea. Al cerrar la
    caracterización **ninguna** propiedad puede quedar pendiente: cada una queda verificada o reclasificada `UNKNOWN` o
    `REQUIRES_MODEL_CHANGE` con fallo cerrado, y una reclasificación que cambie materialmente el alcance, este ADR, una
-   regla de reflexión o la arquitectura abre una Proposal V7. Una holgura gráfica anclada a un lado ya demostrada en
+   regla de reflexión o la arquitectura abre una Proposal V8. Una holgura gráfica anclada a un lado ya demostrada en
    código (tope del Selectivo, tope posterior activo de Push Back) es `UNKNOWN` y falla cerrado hasta que se apruebe una
    regla explícita.
 6. **Reflectores puros en Application sobre el sustrato real de cada kind**, despachados por kind fuera del comando.
@@ -178,49 +179,67 @@ usuario, así que otra estación puede usar otra biblioteca.
     pasan, en este orden, dos evidencias:
     - **Evidencia visual-geométrica evaluada por estado (`GeometricEvidence`).** Para cada pieza de cualquier vista
       admisible que necesite aceptar un cambio de mano se evalúa la pieza real en el **estado concreto** que usa: la
-      definición real del bloque; su vector de parámetros dinámicos, aplicado con la **misma semántica que el
-      materializador** (nombres sin distinguir mayúsculas, propiedades de solo lectura sin escribir, nombres ausentes
-      ignorados igual y recomputación gráfica tras aplicar), con los **valores efectivos** leídos después de evaluar; y
-      su marco local de inserción, medido desde el `Origin` del **bloque evaluado** de ese estado (nunca en WCS, en el
-      marco del rack ni desde el origen de la definición dinámica base). La pieza se aplana recursivamente —bloques
-      anidados con su transformación completa, su propio estado y su bloque evaluado; un ciclo falla cerrado— y cada
-      primitiva lleva su **firma visual efectiva**: capa efectiva, color, tipo de línea, grosor, transparencia,
-      visibilidad y relleno, resueltos como los resuelve AutoCAD (capa `0`, `ByLayer` y `ByBlock` en anidados). Se
-      prueba la simetría respecto del eje que derivan `F` y la rotación de la instancia (una rotación oblicua falla
-      cerrado) y de un centro candidato. La correspondencia es uno a uno entre **primitivas canónicas** —rectas y arcos
-      maximales, polilíneas por sus segmentos, splines por su curva, sin sentido de trazado y sin fusionar familias
-      distintas— y solo empareja primitivas con la **misma firma visual**, de modo que ningún estado de capa pueda
-      mostrar una mitad y ocultar la otra; si el resultado visible depende del orden de rellenos solapados, ese orden se
-      demuestra o la pieza falla cerrado. La caja envolvente nunca es prueba: una pieza asimétrica con caja simétrica
-      falla, y una pieza geométricamente simétrica con atributos visuales asimétricos también. La definición evaluada es
-      la del dibujo si el bloque ya existe y, si no, la de la biblioteca candidata; tras importar, PREPARE verifica de
-      nuevo la definición real que quedó en el dibujo, porque la importación conserva una definición local con el mismo
-      nombre. La evaluación no muta el dibujo del usuario (solo lectura o una base de datos auxiliar descartable; el dibujo
-      queda intacto y la base de datos de trabajo restaurada, también ante excepción), entrega datos planos a
-      Application, que no depende de AutoCAD, y su resultado no se persiste.
-    - **Política de clases cerrada.** Se evalúan líneas, arcos, círculos, polilíneas con bulges, elipses, splines,
-      sólidos 2D, trazos, sombreados sólidos uniformes reducibles a su contorno y referencias anidadas. **Toda otra clase
-      falla cerrado**: entre ellas regiones, sólidos 3D, entidades proxy o personalizadas, imágenes, OLE, puntos,
-      polilíneas 2D y 3D de estilo antiguo, multilíneas, caras, wipeouts, directrices, tablas, formas, textos, atributos,
-      cotas, sombreados con patrón y **sombreados de degradado**; igual falla una correspondencia ambigua.
+      definición real del bloque, clonada en una base de datos auxiliar privada y descartable; su vector de parámetros
+      dinámicos, aplicado con **exactamente la misma semántica que el materializador** (nombres sin distinguir
+      mayúsculas y la última clave duplicada ganando, propiedades de solo lectura sin escribir, nombres ausentes
+      ignorados y recomputación gráfica solo si se aplicó alguna propiedad); y, leídos después del **punto de
+      observación** que fije la caracterización, los valores efectivos, la definición evaluada, su `Origin` y la
+      **transformación efectiva** de la referencia (posición, rotación, escalas, normal y transformación de bloque). Si
+      una acción dinámica altera la referencia de un modo no representado, la pieza falla cerrado. La pieza se aplana
+      recursivamente —bloques anidados con su transformación completa, su propio estado y su bloque evaluado; un ciclo
+      falla cerrado.
+    - **Apariencia por fuentes simbólicas.** Cada propiedad visual (color, tipo de línea, escala de tipo de línea, grosor,
+      transparencia y estilo de trazado) se compara por su **fuente simbólica tipada** según las reglas de AutoCAD —valor
+      explícito, por capa con nombre, heredada por la capa `0` (`InheritLayer`) o heredada por bloque (`InheritBlock`),
+      con rutas canónicas relativas a la raíz de la pieza—, **nunca** por el valor que resuelve hoy: una mitad `ByLayer` y
+      otra con el mismo color explícito no son equivalentes, ni lo son una herencia por capa y una por bloque. La escala
+      de tipo de línea forma siempre parte de la firma. La **ruta de visibilidad** de cada primitiva (visibilidad y fuente
+      de capa de cada referencia ancestro y de la propia primitiva) debe coincidir en las homólogas, de modo que ningún
+      estado de capas o de visibilidad pueda mostrar una mitad y ocultar la otra; un mecanismo de visibilidad no modelado
+      falla cerrado. Donde dos primitivas se superponen de forma visualmente material (rellenos, trazos coincidentes con
+      firmas distintas, entidades transparentes), el orden visual relativo de las homólogas se conserva o la pieza falla
+      cerrado.
+    - **Correspondencia conservadora.** La simetría se prueba respecto del eje que derivan `F` y la rotación de la
+      instancia (una rotación oblicua falla cerrado) y de un centro candidato, con una correspondencia uno a uno entre
+      **primitivas canónicas** de la misma firma. La canonización es conservadora: solo se fusionan trazos con continuidad
+      demostrable por su fuente; sin ella se conservan segmentación, orientación, escala y multiplicidad; los sólidos y
+      trazos se comparan por el polígono que AutoCAD representa y los sombreados sólidos por sus bucles y su estilo de
+      islas; nunca se fusionan familias distintas. La caja envolvente nunca es prueba: una pieza asimétrica con caja
+      simétrica falla, y una pieza geométricamente simétrica con fuentes visuales o rutas de visibilidad distintas también.
+    - **Política de clases cerrada.** Se evalúan líneas, arcos, círculos, elipses, splines, polilíneas con bulges sin
+      ancho, sin grosor y con normal +Z, sólidos 2D, trazos, sombreados sólidos uniformes canonizables y referencias
+      anidadas. **Toda otra clase o variante falla cerrado**: entre ellas polilíneas con ancho, grosor o normal distinta,
+      regiones, sólidos 3D, entidades proxy o personalizadas, imágenes, OLE, puntos, polilíneas 2D y 3D de estilo antiguo,
+      multilíneas, caras, wipeouts, directrices, tablas, formas, textos, atributos, cotas y sombreados de **patrón** o de
+      **degradado**; igual falla una correspondencia ambigua.
     - **Evidencia de colocación (`PlanPlacementEvidence`).** Después, la conmutación de la vista demuestra que los
       builders colocan la pieza de forma coherente con el centro verificado; nunca ajusta, infiere ni corrige el centro.
 
-    Una huella de la pieza evaluada —valores efectivos, clases, geometría aplanada y firma visual, en serialización
-    canónica y nunca en el orden de iteración de la definición— sirve solo para trazabilidad, detección de obsolescencia
-    y enlace entre la verificación previa y PREPARE; **no** es evidencia de simetría. No se usa una forma afín del centro
-    sobre un parámetro dinámico ni se interpretan los grafos de acciones de los bloques dinámicos. Si un parámetro
-    dinámico que la evidencia necesita depende directa o transitivamente de una propiedad vinculable, la evidencia de un
-    solo estado **no** basta: se exige una prueba sobre todo el dominio autoritativo del parámetro, una autoridad
-    integrada que garantice la equivalencia para todos sus estados o la demostración de que el parámetro no depende del
-    vínculo; si no, falla cerrado, y nunca se infiere universalidad a partir de estados de muestra. Nunca se infiere un
-    centro de la diferencia entre planes, de la caja envolvente, de la diferencia de inserciones ni de un mínimo de
-    error; por eso ninguna evidencia puede hacer equivalente una pieza con holgura u offset anclado a un lado, cualquiera
-    sea su rol, y el rechazo de las familias con holgura `UNKNOWN` (hoy los topes) es una defensa adicional. Ninguna
-    holgura, offset gráfico o parámetro con semántica de lado se asume simétrico: sin regla, falla cerrado. La
-    caracterización demuestra, fuera del código de producción y en AutoCAD 2025 (`acad.exe`), la viabilidad de la
-    evaluación, su paridad con el materializador y la postcondición del dibujo; la evaluación productiva nace en el Plugin
-    durante la implementación. La confirmación visual del Owner es confirmación, nunca la única prueba.
+    La definición evaluada es la del dibujo si el bloque ya existe y, si no, la de la biblioteca candidata; tras importar,
+    PREPARE verifica de nuevo la definición real que quedó en el dibujo, porque la importación conserva una definición
+    local con el mismo nombre. La evaluación no muta el dibujo del usuario (el dibujo queda intacto y la base de datos de
+    trabajo restaurada, también ante excepción) ni la base de datos cacheada de la biblioteca, que solo se lee y se clona;
+    entrega datos planos a Application, que no depende de AutoCAD, y su resultado no se persiste.
+
+    Una huella de la pieza evaluada —valores efectivos, clases, geometría aplanada, fuentes simbólicas, rutas, escala,
+    visibilidad, orden visual material y transformación efectiva, en serialización canónica y nunca en el orden de
+    iteración de la definición— sirve solo para trazabilidad, detección de obsolescencia y enlace entre la verificación
+    previa y PREPARE; **no** es evidencia de simetría. La evidencia registrada de una biblioteca concreta se identifica por
+    el **SHA-256** de su contenido y no se reutiliza si cambia; para una definición ya presente en el dibujo manda su
+    huella efectiva. No se usa una forma afín del centro sobre un parámetro dinámico ni se interpretan los grafos de
+    acciones de los bloques dinámicos. Si un parámetro dinámico que la evidencia necesita depende directa o
+    transitivamente de una propiedad vinculable, la evidencia de un solo estado **no** basta: se exige una prueba sobre
+    todo el dominio autoritativo del parámetro, una autoridad integrada que garantice la equivalencia para todos sus
+    estados o la demostración de que el parámetro no depende del vínculo; si no, falla cerrado, y nunca se infiere
+    universalidad a partir de estados de muestra. Nunca se infiere un centro de la diferencia entre planes, de la caja
+    envolvente, de la diferencia de inserciones ni de un mínimo de error; por eso ninguna evidencia puede hacer
+    equivalente una pieza con holgura u offset anclado a un lado, cualquiera sea su rol, y el rechazo de las familias con
+    holgura `UNKNOWN` (hoy los topes) es una defensa adicional. Ninguna holgura, offset gráfico o parámetro con semántica
+    de lado se asume simétrico: sin regla, falla cerrado. La caracterización demuestra, fuera del código de producción y en
+    AutoCAD 2025 (`acad.exe`), la viabilidad de la evaluación, su paridad con el materializador, el punto de observación,
+    las reglas de fuentes, visibilidad y orden visual, y la postcondición del dibujo y de la caché; la evaluación
+    productiva nace en el Plugin durante la implementación. La confirmación visual del Owner es confirmación, nunca la
+    única prueba.
 14. **Verificación dinámica por rack sobre todas las vistas admisibles.** Antes de pedir la línea, cada rack lógico
     verifica sobre su diseño reflejado: la ausencia de metadata semántica desconocida en el payload y en el exterior; la
     autoridad de dependencias y la estabilidad dinámica de sus decisiones; la evidencia visual-geométrica de las piezas con
@@ -260,6 +279,13 @@ usuario, así que otra estación puede usar otra biblioteca.
 - **Comparar solo la geometría de las piezas, sin capa, color, tipo de línea ni visibilidad** — descartada: una mitad en
   otra capa o con otro trazo haría que la copia no fuera el espejo visual del original, o que un estado de capa mostrara
   solo una mitad.
+- **Comparar los valores visuales que resuelven hoy las propiedades, con un único token de herencia y la misma capa
+  efectiva como regla de visibilidad** — descartada: dos mitades con fuentes distintas y el mismo aspecto actual dejan de
+  verse iguales al cambiar una capa o la referencia, y una referencia anidada en otra capa puede ocultar una sola mitad.
+- **Fusionar o normalizar el sentido de trazos sin continuidad demostrable** — diferida: con tipos de línea discontinuos
+  cambia la fase del patrón; solo la caracterización puede habilitarlo con evidencia.
+- **Evaluar los estados dinámicos directamente en la base de datos cacheada de la biblioteca** — descartada: contaminaría
+  un estado compartido por todas las importaciones de la sesión.
 - **Comparar las primitivas tal como están dibujadas, sin canonizarlas** — descartada: dos mitades simétricas dibujadas
   con segmentaciones distintas fallarían sin motivo.
 - **Aceptar sombreados de degradado cuando sus parámetros parecen simétricos** — diferida: el primer corte los trata como
@@ -307,29 +333,29 @@ usuario, así que otra estación puede usar otra biblioteca.
     con una variable** sin overrides que los fijen; y todo rack con **alguna vista admisible** que no conmute;
   - las vistas frontal y planta dependen de la evidencia visual-geométrica evaluada por estado, porque prácticamente
     todas sus piezas necesitan aceptar un cambio de mano; si la evaluación no es viable en AutoCAD 2025, no tiene paridad
-    con el materializador o la biblioteca usa clases o apariencias fuera de la política (textos, atributos, sombreados con
-    patrón o degradado, sólidos 3D, mitades con capa o trazo distintos), esas piezas —y con ellas kinds enteros— fallan
-    cerrado;
-  - el alcance real depende de la **biblioteca efectiva**, que no está versionada en el repositorio y cuya ruta configura
-    el usuario: otra biblioteca puede dar otro resultado, siempre con fallo cerrado. La evidencia de una biblioteca
-    concreta es indicativa; la caracterización es la autoridad;
-  - con la biblioteca inspeccionada antes de la caracterización, postes, largueros y placas base son simétricos, pero los
-    separadores de planta, las parrillas, los desviadores de tipo A y las defensas son asimétricos, y la tarima usa un
-    degradado: gran parte de Dinámico y Push Back, y los Selectivos con esos accesorios o con tarimas visibles, podrían
-    fallar cerrado;
+    con el materializador ni un punto de observación soportado, o la biblioteca usa clases, variantes o apariencias fuera
+    de la política (textos, atributos, sombreados con patrón o degradado, sólidos 3D, polilíneas con ancho, mitades con
+    fuentes visuales o rutas de visibilidad distintas), esas piezas —y con ellas kinds enteros— fallan cerrado;
+  - la **representabilidad depende de la biblioteca efectiva** y puede reducirse cuando una pieza no satisface el contrato
+    visual-geométrico. La biblioteca no está versionada en el repositorio y su ruta la configura el usuario: otra
+    biblioteca puede dar otro resultado, siempre con fallo cerrado. La evidencia de una biblioteca concreta es indicativa,
+    se identifica por su SHA-256 y está en la Proposal (§1.4); la caracterización es la autoridad;
+  - la canonización conservadora puede dejar fuera piezas visualmente simétricas cuyos trazos sin continuidad
+    demostrable difieren en segmentación u orientación, hasta que la caracterización habilite más con evidencia;
   - la **selección es todo-o-nada**: un solo rack que no pase hace fallar el comando entero y no se refleja ninguno;
   - `RACKMIRROR` no corrige racks espejados antes con el `MIRROR` nativo (escala negativa): esas fuentes fallan cerrado;
   - los racks legados con **miembros retirados** fallan cerrado: si el store actual los descarta, hay que abrirlos con
     `RACKEDITAR` y Actualizar antes de reflejarlos; si el store los conserva (el peralte retirado del larguero alto de
     Push Back), no hay remedio en I-52;
-  - la evaluación visual-geométrica (canonización y firma visual incluidas) tiene un coste por pieza y estado que se mide
-    en AutoCAD 2025 antes de exponer el comando;
+  - la evaluación visual-geométrica (fuentes simbólicas, rutas de visibilidad, orden visual, canonización y clonado
+    aislado desde la caché incluidos) tiene un coste por pieza y estado que se mide en AutoCAD 2025 antes de exponer el
+    comando;
   - lo importado de la biblioteca puede sobrevivir a un fallo;
   - todo tipo, miembro o valor de enum nuevo alcanzado desde los tipos raíz exige clasificar su regla de espejo antes de
     integrarse;
   - la aceptación de este ADR espera a la caracterización (G3), lo que añade una ronda del Owner antes de implementar; si
     G3 contradice materialmente el contrato o reduce materialmente el alcance que el Owner aceptó, se abre una Proposal
-    V7 antes de pedirla.
+    V8 antes de pedirla.
 - Vigilar: cada kind o vista nueva debe declarar su reflector, su decodificación de sección, su conjunto de vistas
   admisibles y su exposición; todo miembro nuevo y toda propiedad vinculable nueva necesitan clasificación antes de
   integrarse; todo offset gráfico nuevo de un builder de vista admitida debe caracterizarse.
@@ -357,8 +383,8 @@ usuario, así que otra estación puede usar otra biblioteca.
   `src/RackCad.Application/Systems/PushBack/PushBackRearTopeBuilder.cs`;
   `src/RackCad.Application/Persistence/RackEmbedDocument.cs`;
   `src/RackCad.Application/Catalogs/BlockLibrary.cs` (ruta configurable de la biblioteca);
-  `src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs`; `src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs`
-  (`ApplyDynamicParameters`).
+  `src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs` (caché de sesión de la biblioteca);
+  `src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs` (`ApplyDynamicParameters`).
 
 ## Historial del borrador
 
@@ -422,7 +448,9 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
     soportadas; coste de la evaluación;
   - alternativas: registro estático de simetrías, huella como ligadura, caja envolvente, muestras de estados y limpieza
     automática de miembros retirados, descartadas.
-- **Borrador V6** — este texto, con Proposal V6. Cambios respecto del V5, por la revisión de Arquitecto de Proposal V5
+- **Borrador V6** — publicado con Proposal V6 en `91bdd38` (recuperable con
+  `git show 91bdd38:docs/adr/0036-rackmirror-espejo-semantico-por-copia.md`). Cambios respecto del V5, por la revisión
+  de Arquitecto de Proposal V5
   (`Architect: CHANGES REQUIRED — PROPOSAL V6`) y la orden del Coordinador:
   - decisión 13: **equivalencia visual-geométrica** (firma visual efectiva con capa `0`, `ByLayer` y `ByBlock`, estado de
     capa, visibilidad y orden de rellenos solapados); **primitivas canónicas** dentro de la misma firma; parámetros
@@ -436,5 +464,18 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
   - alternativas: comparación solo geométrica, primitivas sin canonizar, degradados y caracterización solo en la consola,
     descartadas o diferidas;
   - numeración: ADR-0037 ya está en `main`.
+- **Borrador V7** — este texto, con Proposal V7. Cambios respecto del V6, por la revisión de Arquitecto de Proposal V6
+  (`Architect: CHANGES REQUIRED — PROPOSAL V7`) y la orden del Coordinador:
+  - decisión 13: **fuentes visuales simbólicas** (`Explicit`, `ByLayer`, `InheritLayer`, `InheritBlock`) en lugar de
+    valores resueltos; **ruta de visibilidad** de ancestros y primitiva; escala de tipo de línea siempre en la firma;
+    **orden visual** de superposiciones materiales; canonización **conservadora** (sin continuidad demostrable no se
+    fusiona ni se normaliza el sentido); polígono real de sólidos y trazos y sombreados por bucles y estilo de islas;
+    polilíneas con ancho, grosor o normal distinta y sombreados de patrón fallan cerrado; recomputación gráfica solo si se
+    aplicó alguna propiedad; **punto de observación**; **transformación efectiva**; **caché de biblioteca aislada**;
+    identidad **SHA-256** de la evidencia;
+  - decisión 5 y consecuencias: una contradicción material abre una Proposal V8; las consecuencias ya no enumeran piezas
+    de una biblioteca concreta y remiten a la Proposal (§1.4);
+  - contexto, alternativas y referencias: apariencia heredada por capa o por bloque; comparación de valores resueltos,
+    fusión sin continuidad demostrable y evaluación en la caché, descartadas o diferidas.
 
   Sigue **propuesto**: su aceptación se pide después de G3 y antes de G4.
