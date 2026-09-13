@@ -17,7 +17,8 @@ namespace RackCad.Tests
     /// I-50 (G4) — los racks y las vistas sobre los que T-06, T-07, T-09 y T-10 asignan la política a sistemas YA
     /// resueltos. Son los escenarios de la caracterización T-03..T-05 (numeración, nombre y estilo de cota activos),
     /// recorridos por el mismo camino que dibuja el Plugin. Cada vista declara su TIPO, que es lo que decide qué bit la
-    /// gobierna. En G4 la política no viaja todavía por diseños, resolvers ni DTO: se asigna al sistema resuelto.
+    /// gobierna. En G4 la política no viaja todavía por diseños, resolvers ni DTO: se asigna al sistema resuelto. G5 y
+    /// G6 exponen los DISEÑOS —incluido el compuesto A/B de T-05— para llevarla por el camino productivo.
     /// </summary>
     internal static class DimensionViewScenarios
     {
@@ -216,13 +217,18 @@ namespace RackCad.Tests
             return views;
         }
 
-        // ---- Push Back de un sentido (solo T-10 en G4) ------------------------------------------------------------
+        // ---- Push Back de un sentido (T-10 en G4; T-08 y T-16 en G6) -----------------------------------------------
 
         /// <summary>El escenario de un sentido de la golden de Push Back. El compuesto A/B y la cobertura por vista de Push
         /// Back (T-08) son de G6: su política necesita la copia compartida C-15.</summary>
         internal static PushBackSystem PushBackSingleSided(DimensionDetail detail, RackCatalog catalog)
+            => PushBack(PushBackSingleSidedDesign(detail), catalog);
+
+        /// <summary>Un diseño de Push Back resuelto por el camino productivo y con el nombre que el comando asigna antes de
+        /// dibujar.</summary>
+        internal static PushBackSystem PushBack(PushBackDesign design, RackCatalog catalog)
         {
-            var system = new PushBackResolver(catalog).Resolve(PushBackSingleSidedDesign(detail));
+            var system = new PushBackResolver(catalog).Resolve(design);
             system.Name = RackName;
             return system;
         }
@@ -268,6 +274,78 @@ namespace RackCad.Tests
                 new View("lateral", DimensionViewKind.Lateral, lateral.Build(system, catalog).Flatten().Instances)
             };
 
+            foreach (var corte in lateral.Cortes(system, catalog))
+            {
+                views.Add(new View($"lateral-corte{corte.PostIndex}", DimensionViewKind.Lateral, corte.Plan.Flatten().Instances));
+            }
+
+            views.Add(new View("planta", DimensionViewKind.Planta, new PushBackSystemPlantaBuilder().BuildPlan(system, catalog).Flatten().Instances));
+            return views;
+        }
+
+        // ---- Push Back compuesto A/B (T-08 y T-16 en G6) ----------------------------------------------------------
+
+        /// <summary>
+        /// El compuesto encontrado de la caracterización T-05, el mismo diseño: dos ranuras por lado, A con 3 niveles y
+        /// fondo 5, B con 2 niveles y fondo 4, con cotas, numeración, nombre y estilo activos en la estructura
+        /// compartida. Así una vista encendida se compara contra el legacy que fijan los pines de T-05.
+        /// </summary>
+        internal static PushBackDesign PushBackCompositeDesign(DimensionDetail detail)
+        {
+            var design = new PushBackDesign
+            {
+                Structure = new DynamicRackDesign
+                {
+                    Pallet = new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
+                    PalletsDeep = 5,
+                    LoadLevels = 3,
+                    FirstLevelHeight = 4.0,
+                    BeamDepth = 4.0,
+                    NumberFronts = true,
+                    NumberLevels = true,
+                    DrawRackName = true,
+                    Dimensions = detail,
+                    DimensionStyle = DimensionStyle
+                },
+                SideB = new PushBackSideDesign { IsPresent = true, LoadLevels = 2, FirstLevelHeight = 4.0 },
+                Composite = new PushBackCompositeDesign
+                {
+                    Gap = 0.0,
+                    CentralSeparator = false,
+                    DefaultTopology = PushBackCellTopology.Encontradas
+                }
+            };
+
+            for (var slot = 0; slot < 2; slot++)
+            {
+                design.Structure.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 3, PalletsDeep = 5, DepthStartPosition = 1 });
+                design.Fronts.Add(new PushBackFrontConfig { DefaultPalletsDeep = 5 });
+                design.SideB.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 2, PalletsDeep = 4, DepthStartPosition = 1 });
+                design.SideB.FrontConfigs.Add(new PushBackFrontConfig { DefaultPalletsDeep = 4 });
+            }
+
+            return design;
+        }
+
+        /// <summary>
+        /// Las vistas del compuesto por el camino del Plugin, con las claves de T-05: los CUATRO cortes frontales
+        /// (entrada-salida y posterior de cada lado, los cuatro Frontal), el lateral entero y cada corte (Lateral) y la
+        /// planta (Planta).
+        /// </summary>
+        internal static IReadOnlyList<View> PushBackCompositeViews(PushBackSystem system, RackCatalog catalog)
+        {
+            var frontal = new PushBackSystemFrontalBuilder();
+            var lateral = new PushBackSystemLateralBuilder();
+            var views = new List<View>();
+            foreach (var side in new[] { PushBackSide.A, PushBackSide.B })
+            {
+                views.Add(new View("frontal-entrada-salida-" + side, DimensionViewKind.Frontal,
+                    frontal.BuildPlan(system, catalog, PushBackFrontalEnd.EntradaSalida, side).Flatten().Instances));
+                views.Add(new View("frontal-posterior-" + side, DimensionViewKind.Frontal,
+                    frontal.BuildPlan(system, catalog, PushBackFrontalEnd.Posterior, side).Flatten().Instances));
+            }
+
+            views.Add(new View("lateral", DimensionViewKind.Lateral, lateral.Build(system, catalog).Flatten().Instances));
             foreach (var corte in lateral.Cortes(system, catalog))
             {
                 views.Add(new View($"lateral-corte{corte.PostIndex}", DimensionViewKind.Lateral, corte.Plan.Flatten().Instances));
