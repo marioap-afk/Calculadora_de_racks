@@ -26,9 +26,10 @@ automation:
 
 # I-53 — Cabecera configurable: configuracion origen hacia conjuntos de destinos en todos los sistemas
 
-> **Fase actual: RECLAMADA Y BOOTSTRAPEADA (G0).** No hay Discovery hecho, no hay contrato de
-> autoridad (G2) y **no hay una sola linea de produccion escrita**. La sesion que abrio la
-> iniciativa esta autorizada **solo para G0 y G1**; la implementacion esta BLOQUEADA (seccion 12).
+> **Fase actual: G1 CERRADO — Discovery en [I-53-discovery.md](I-53-discovery.md).** No hay contrato de
+> autoridad (G2 **no abierto**) y **no hay una sola linea de produccion escrita**. G1 declara decisiones
+> arquitectonicas materiales (AM-1..AM-4) para **revision de Arquitecto antes de G2** y decisiones del Owner
+> (OD-1..OD-7). La implementacion esta BLOQUEADA (seccion 12).
 
 > **Apertura por autorizacion explicita del Owner sin fila previa** — caso (d) de
 > [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la preexistencia de
@@ -163,8 +164,8 @@ editores grandes y los DTO de sistema son **archivos calientes** ([WORKFLOW](../
 | # | Fase | Entregable | Estado |
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
-| G1 | Discovery | Informe por archivo/simbolo/SHA con las respuestas de la seccion 3, punto 2 | pendiente |
-| G2 | Contrato | Origen, destinos, copia y atomicidad; revision de Arquitecto si hay decision material | pendiente |
+| G1 | Discovery | Informe por archivo/simbolo/SHA con las respuestas de la seccion 3, punto 2 | **HECHA** — [I-53-discovery.md](I-53-discovery.md) |
+| G2 | Contrato | Origen, destinos, copia y atomicidad; revision de Arquitecto (AM-1..AM-4) y decisiones del Owner (OD-1..OD-7) declaradas en el Discovery §18 | pendiente — **no abierto** |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Por definir **en G2**, no aqui | bloqueada |
 
 Ninguna fase posterior arranca sin que la anterior tenga evidencia revisable.
