@@ -26,25 +26,30 @@ automation:
 
 # I-54 — ID24 — Custom Properties Foundation
 
-> **Fase actual: G2C — Proposal V2 publicada, SIN consenso.**
+> **Fase actual: G2E — Proposal V3 publicada, SIN consenso.**
 >
 > - Discovery: [I-54-discovery.md](I-54-discovery.md) (G1 `195964b`).
-> - Proposal vigente: [I-54-proposal-v2.md](I-54-proposal-v2.md). La [V1](I-54-proposal-v1.md) (`7c197af`) queda
->   como historia.
-> - Paquete de revision exact-SHA: [I-54-architect-review-package.md](I-54-architect-review-package.md).
-> - G2B cerrado: `Architect Review V1 = AGREED WITH CHANGES` (5 MATERIAL, 13 MINOR, cambios V2-1..V2-22), todos
->   incorporados en V2.
+> - Proposal vigente: [I-54-proposal-v3.md](I-54-proposal-v3.md). La [V1](I-54-proposal-v1.md) (`7c197af`) y la
+>   [V2](I-54-proposal-v2.md) (`36c337b`) quedan como historia.
+> - Paquete de revision exact-SHA, limitado a los cambios de G2D:
+>   [I-54-architect-review-package.md](I-54-architect-review-package.md).
+> - G2B cerrado: `Architect Review V1 = AGREED WITH CHANGES` (cambios V2-1..V2-22), incorporados en V2.
+> - G2D cerrado: `Architect Review V2 = AGREED WITH CHANGES` (AR-54-04 reabierto, 2 MATERIAL, 4 MINOR, cambios
+>   C-1..C-8), aceptados por el Coordinador e incorporados en V3.
 >
 > ```text
-> Coordinator    = NOT YET AGREED ON V2
-> Architect      = NOT YET REVIEWED ON V2
+> Coordinator    = NOT YET AGREED ON V3
+> Architect      = NOT YET REVIEWED ON V3
 > Consensus      = NOT REACHED
 > Implementation = BLOCKED
 > Owner          = NOT ASKED
 > ```
 >
-> **No hay una sola linea de produccion escrita.** La siguiente gate es la revision exact-SHA de V2 por
-> Coordinador y Arquitecto (G2D), con orden propia.
+> **No hay una sola linea de produccion escrita.** La siguiente gate es la revision exact-SHA de V3 por
+> Coordinador y Arquitecto, **limitada a C-1..C-8** (G2F), con orden propia. Solo si converge se abre G2-FREEZE.
+>
+> La rama sigue sobre `BASE_SHA`: `origin/main` avanzo a `f8deb67` (I-50 integrada) durante G2E, y el rebase
+> queda pendiente segun WORKFLOW §4.2 (§6).
 
 > **Apertura por autorizacion explicita del Owner sin fila previa**, transmitida por el Coordinador de
 > I-54 — caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la
@@ -71,8 +76,9 @@ fundacion **no** convierte esas propiedades en variables de proyecto ni en expre
 plantillas.
 
 G0, G1 y G2 **no** entregan la fundacion. Entregan la **evidencia** (G1), la **primera propuesta** (Proposal V1),
-su revision de Arquitecto (G2B) y la **reconciliacion** (Proposal V2, G2C). Sobre V2 deben converger Coordinador y
-Arquitecto antes de escribir codigo.
+su revision de Arquitecto (G2B), la **reconciliacion** (Proposal V2, G2C), la revision exact-SHA de V2 (G2D) y la
+**segunda reconciliacion** (Proposal V3, G2E). Sobre V3 deben converger Coordinador y Arquitecto antes de escribir
+codigo.
 
 ## 2. Problema
 
@@ -170,7 +176,8 @@ darlos por ciertos:
   **vacio** hasta que G1 mida el cruce real de archivos: no se declara un estorbo sin evidencia, ni se
   omite uno que la tenga.
 - **Entrada del Owner**: la Proposal V1 listo nueve preguntas de producto (OQ-01..OQ-09), y con esa evidencia
-  `requires_owner_decision` paso a `true`. La V2 las **reclasifica** (§16 de la V2) y **ninguna bloquea el
+  `requires_owner_decision` paso a `true`. La V2 las **reclasifica** (§16 de la V2), la V3 mantiene esa
+  clasificacion con una aclaracion en OQ-02 (la cota de profundidad no es tuning) y **ninguna bloquea el
   consenso**:
   - OQ-08 queda resuelta;
   - OQ-05 pasa a riesgo residual documentado;
@@ -187,6 +194,19 @@ darlos por ciertos:
     censo de comandos y censo de llamadas a `Compose`.
 
   Ningun supuesto de I-54 queda invalidado, y `conflicts_with` sigue vacio.
+- **Paralelas re-medidas en G2E**, en el preflight y antes de publicar ([Discovery](I-54-discovery.md) §2.7;
+  Proposal V3 §2 y §13). Estado al publicar:
+  - `main` @ `f8deb67`: **I-50 integrada** durante la sesion (su rama remota se retiro). No cambia ningun archivo
+    de codigo del mapa de I-54; `src/` mantiene los censos que vigila I-54, y `git merge-tree` no da conflictos.
+    ADR-0035 queda `aceptado` en `main`;
+  - I-49 @ `048a508`: Proposal V6, solo documentacion; sigue reservando `Rack`/`Project` para ID20;
+  - I-52 @ `0445718`: Proposal V2 y ADR-0036 corregido, solo documentacion; sigue cumpliendo D-21;
+  - I-53 @ `d7f17ad`: Proposal V2 y ADR-0037 `propuesto`, solo documentacion.
+
+  Ningun avance invalida C-1..C-8 ni una costura de I-54, y `conflicts_with` sigue vacio. **Sin rebase en G2E**:
+  al abrir la sesion `origin/main` seguia en `46fcac2`. WORKFLOW §4.2 exige rebasar al abrir la proxima sesion
+  que escriba en la rama; como reescribe los SHAs revisados, su momento exacto (G2-FREEZE o una V4, y siempre
+  antes de G3) lo fija la orden del Coordinador.
 - **Cruce medido en G1** ([Discovery](I-54-discovery.md) §2 y §13): cruce **productivo** actual con I-49,
   I-50, I-52 e I-53 = **cero archivos** mientras I-54 no toque DTO ni Domain de sistema, editores de sistema,
   `RackEnvelopeRestamp` ni `RackCloner`. Cruce **documental** previsto con las cuatro (fila de ROADMAP tras I-51,
@@ -200,8 +220,8 @@ darlos por ciertos:
 y simbolo **es el entregable de G1**, y los archivos de produccion los fija el consenso de G2.
 
 Lo que si se declara para G0..G2: solo `docs/initiatives/I-54-*.md`, y la fila de I-54 en `docs/ROADMAP.md` solo
-en el bootstrap. G2C toca **unicamente** `docs/initiatives/I-54-*.md`. **Una desviacion material frente a esto
-obliga a detenerse.**
+en el bootstrap. G2C y G2E tocan **unicamente** `docs/initiatives/I-54-*.md`. **Una desviacion material frente a
+esto obliga a detenerse.**
 
 ## 8. Fases
 
@@ -209,7 +229,7 @@ obliga a detenerse.**
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** — bootstrap `f908b2f` |
 | G1 | Discovery | [I-54-discovery.md](I-54-discovery.md): informe por archivo/simbolo, H-1..H-8, mapa de cruces, riesgos y hallazgos fuera de alcance | **HECHA** — `195964b` |
-| G2 | Proposal y consenso | **G2A**: [Proposal V1](I-54-proposal-v1.md) y paquete de Arquitecto. **G2B**: Architect Review de V1. **G2C**: [Proposal V2](I-54-proposal-v2.md) y paquete reescrito para la revision exact-SHA (su SHA es el del commit que introduce la V2). **G2D**: revision exact-SHA de V2 por Coordinador y Arquitecto. **G2-FREEZE**: consenso, ADR `propuesto` y aprobacion del Owner. Cada una con orden propia | **G2A HECHA** (`7c197af`); **G2B CERRADA** (AGREED WITH CHANGES sobre `7c197af`); **G2C HECHA** (Proposal V2); G2D PENDIENTE; sin consenso |
+| G2 | Proposal y consenso | **G2A**: [Proposal V1](I-54-proposal-v1.md) y paquete de Arquitecto. **G2B**: Architect Review de V1. **G2C**: [Proposal V2](I-54-proposal-v2.md) y paquete reescrito. **G2D**: revision exact-SHA de V2. **G2E**: [Proposal V3](I-54-proposal-v3.md) y paquete reescrito para la revision exact-SHA (su SHA es el del commit que introduce la V3). **G2F**: revision exact-SHA de V3 por Coordinador y Arquitecto, limitada a C-1..C-8. **G2-FREEZE**: consenso, ADR `propuesto` y aprobacion del Owner. Cada una con orden propia | **G2A HECHA** (`7c197af`); **G2B CERRADA** (AGREED WITH CHANGES sobre `7c197af`); **G2C HECHA** (`36c337b`); **G2D CERRADA** (AGREED WITH CHANGES sobre `36c337b`); **G2E HECHA** (Proposal V3); G2F PENDIENTE; sin consenso |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Por definir **tras el consenso de G2**, no aqui | bloqueada |
 
 Ninguna fase posterior arranca sin que la anterior tenga evidencia revisable.
@@ -243,7 +263,7 @@ expreso de la orden:
 
 ## 12. Condiciones para detenerse
 
-- **COMPUERTA VIGENTE — G2, solo documentacion.** G2C publica la Proposal V2 sin produccion, sin pruebas
+- **COMPUERTA VIGENTE — G2, solo documentacion.** G2E publica la Proposal V3 sin produccion, sin pruebas
   productivas, sin ADR definitivo y sin tocar `docs/HANDOFF.md` ni `docs/ROADMAP.md`. G3+ no se inicia.
 - **Implementacion bloqueada** hasta `Coordinator = AGREED` y `Architect = AGREED` sobre la **misma**
   Proposal, y la aprobacion del Owner.
@@ -314,5 +334,42 @@ revision no modifico el repositorio.
 
 Nueva evidencia ejecutada [X] en una sonda de `System.Text.Json` fuera del repositorio. Sin compilacion ni pruebas
 del repositorio: G2C no produce codigo.
+
+**G2D — Architect Review exact-SHA de V2** (sobre `36c337b84c47f9ac7c97d860fce42d3a5f4370e8`): `GLOBAL VERDICT =
+AGREED WITH CHANGES`, `G2D Architect Review = CLOSED`, implementacion bloqueada.
+
+- AR-54-01, -02, -03 y -05 `CLOSED`; AR-54-04 `REOPENED` por la restriccion B (cota de profundidad).
+- Hallazgos nuevos: 2 MATERIAL (AR-54-V2-01 kind desconocido escribible; AR-54-V2-02 cota fuera del ADR y
+  contradicciones de edicion) y 4 MINOR (AR-54-V2-03..06: UTF-16 y excepciones, nombres repetidos anidados,
+  huecos de la unificacion, `Id` textual).
+- Ocho cambios vinculantes, C-1..C-8, que el Coordinador acepta.
+- PR-03, -06, -07 y -13 con cambio; PR-12 en desacuerdo; las demas de acuerdo.
+- RD-01, -03, -04, -07, -10, -13, -19 y -20 AGREE WITH CHANGE; las demas AGREE.
+- `Kind` en blanco = opcion A; ADR requerido con cambios de alcance; ningun bloqueo del Owner.
+
+La revision no modifico el repositorio.
+
+**G2E — Proposal V3.** Solo documentacion.
+
+- **Nuevo**: [I-54-proposal-v3.md](I-54-proposal-v3.md), que es V2 con exactamente C-1..C-8:
+  - `UnknownKind` de solo lectura con `isKnownKind` inyectado (PR-12 rechazada);
+  - cota 16 como constante del formato 1.x con `DepthLimitExceeded`;
+  - clases de excepcion explicitas y UTF-16 validado antes de NFC y de serializar, con el residual preexistente
+    del sobre declarado (F-14 para el freeze);
+  - nombres repetidos a cualquier profundidad;
+  - origen `Absent` canonico, revalidacion de todos los miembros y atomicidad logica al unificar;
+  - `Id` igual por valor;
+  - alcance del ADR en 16 puntos;
+  - orden unico de ocho resultados de autoridad.
+
+  Trazas en §17..§19 y §21: C-1..C-8 `INCORPORATED`, AR-54-V2-01..06 y AR-54-04 `CLOSED IN V3` pendientes de
+  re-verificacion, `OPEN DISAGREEMENT = NINGUNO`.
+- **Reescrito**: el paquete de revision, limitado a C-1..C-8.
+- **Addendum**: Discovery §2.7 (re-medicion de paralelas).
+- **Contrato**: este archivo, solo en lo que refleja G2D y G2E.
+
+Las sondas de `System.Text.Json` que sostienen C-2..C-4 se re-ejecutaron fuera del repositorio sobre .NET 8.0.29.
+Durante la sesion `origin/main` avanzo a `f8deb67` (integracion de I-50). V3 se publica sin rebase y sin force,
+con la medicion de §6. Sin compilacion ni pruebas del repositorio: G2E no produce codigo.
 
 El resto de la evidencia se acumula al cerrar cada fase.
