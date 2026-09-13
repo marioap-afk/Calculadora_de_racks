@@ -1,17 +1,42 @@
 # ADR-0037: Reutilizar una configuración de cabecera es copiarla y distribuirla por lotes: destinos por sistema, preparación todo-o-nada y autoridades de normalización propias
 
-- **Estado:** **propuesto**
-- **Fecha:** 2026-09-12 (propuesto)
-- **Decisores:** Mario Pérez, Owner del repositorio (**acepta o rechaza**; pendiente); Coordinador de I-53 y
-  Arquitecto de I-53 (consenso técnico **pendiente** sobre la Proposal V2); Claude (redacción)
+- **Estado:** aceptado
+- **Fecha:** 2026-09-12 (propuesto) · 2026-09-12 (aceptado)
+- **Decisores:** Mario Pérez, Owner del repositorio (**acepta**); Coordinador de I-53 (órdenes de G2B y G2-F,
+  que transmiten las decisiones del Owner OD-2.b, OD-6 y OD-8); Arquitecto de I-53 (revisión de la Proposal V1:
+  **AGREED WITH CHANGES**; re-revisión de la Proposal V2: **AGREED**, con PA-1B, N-01, RR-01 y las tres
+  correcciones de este registro): consenso técnico sobre Proposal **V2** / SHA
+  `d7f17addb47ea943b61ff50b4b4a5b23010d6fab` (rebasada sin cambios de contenido a
+  `d0db698facf2297d6bd5aaa512f3b3b3f2358a59`); Claude (redacción)
 - **Iniciativa relacionada:** I-53 — `feature/cabeceras-configurables-multidestino`
   ([contrato](../initiatives/I-53-cabeceras-configurables-multidestino.md),
-  [Discovery](../initiatives/I-53-discovery.md), [Proposal V2](../initiatives/I-53-proposal-v2.md),
+  [Discovery](../initiatives/I-53-discovery.md), [Proposal V2](../initiatives/I-53-proposal-v2.md), congelada;
+  [Proposal V1](../initiatives/I-53-proposal-v1.md) como registro de su primera ronda;
   [decisiones](../automation/decisions/I-53.md))
 
+> **Aceptación del Owner (2026-09-12).** El Owner acepta esta decisión de forma **explícita**: «**Acepto el
+> ADR**», dicho en el canal del Coordinador de I-53 y referido inequívocamente a ADR-0037 de I-53. Registro
+> durable en [`docs/automation/decisions/I-53.md`](../automation/decisions/I-53.md).
+>
+> **Dos actos, dos autoridades.** El Coordinador y el Arquitecto aportaron el **consenso técnico** sobre la
+> Proposal V2; aceptar es un acto distinto que **solo el dueño del repo** ejerce ([README](README.md)). Este
+> registro **nació `propuesto`** el 2026-09-12 y pasa a **`aceptado`** ese mismo día.
+>
+> **Contenido aceptado.** Es el de este archivo en el commit de freeze de G2 de I-53. Respecto del texto
+> `propuesto`, ese commit solo incorpora las **tres correcciones** que la re-revisión del Arquitecto exigió antes
+> de aceptar —la redacción de la alternativa de disciplina, la lectura de estado comprometido y resolución
+> vigente en la decisión 5, y la vigencia de la nota de numeración hasta `main`— y actualiza este encabezado. No
+> cambia ninguna otra decisión. Desde ahora el contenido es **inmutable** ([README](README.md)).
+>
+> **Lo que esta aceptación autoriza — y lo que no.** Junto con el freeze de G2 cumple la compuerta de código
+> productivo de I-53: **G3** puede abrirse en una sesión posterior. **No** implementa nada, **no** abre G3 por sí
+> misma y **no** decide la forma de las entregas de I-53, que vive en su contrato.
+
 > **Numeración.** 0037 es el primer número libre observado en `origin/main` y en todas las ramas remotas vivas al
-> redactarlo (0035 pertenece a I-50 y 0036 a I-52, ambos en sus ramas; I-49 e I-54 declaran ADR sin número; ninguna
-> rama cita ADR-0037). Mientras sea `propuesto` puede renumerarse si otra rama integra antes con el mismo número.
+> redactarlo (0035 pertenece a I-50, ya integrada en `main`; 0036, a I-52 en su rama; I-49 e I-54 declaran ADR sin
+> número; ninguna rama cita ADR-0037). **Hasta que este registro llegue a `main`** se comprueba el número en cada
+> preflight de I-53; si otra rama integra antes un ADR-0037, este se renumera cambiando solo su número y sus
+> enlaces, sin tocar el contenido aceptado.
 
 ## Contexto
 
@@ -52,10 +77,12 @@ evita escribir la mitad de un lote.
    la política de esa copia y no se crea serialización nueva. La copia privada del origen nace dentro de la
    preparación, no se expone y muere con la operación.
 5. **La preparación es todo-o-nada.** Todo lo que puede fallar ocurre antes de escribir y sin mutación observable:
-   resolver y capturar el origen, resolver los destinos, validarlos, materializar, normalizar y validar las copias. El
-   plan vive un solo gesto y lleva una firma de la topología que leyó; la mutación solo asigna, verifica esa firma
-   antes de la primera asignación y, si no coincide, no escribe nada. La frontera previa de edición de cada editor
-   (en el Selectivo, ADR-0032 D6) es anterior y externa al lote.
+   resolver y capturar el origen, resolver los destinos, validarlos, materializar, normalizar y validar las copias.
+   La preparación lee **únicamente** estado comprometido y su **resolución vigente**, sin recompute pendiente ni
+   diferido que pueda invalidar esa resolución; si esa condición no se cumple, el gesto termina antes de preparar. El
+   plan vive un solo gesto y lleva una firma de la topología y de la resolución que leyó; la mutación solo asigna,
+   verifica esa firma antes de la primera asignación y, si no coincide, no escribe nada. La frontera previa de
+   edición de cada editor (en el Selectivo, ADR-0032 D6) es anterior y externa al lote.
 6. **Omitido y rechazado son tipados y distintos.** *Omitido*: la dirección es válida en la taxonomía, pero no hay
    instancia aplicable (`AbsentInScope`, `NotPhysicallyPresent`, `IsSource`); no invalida a los demás destinos.
    *Rechazado*: la operación entera es inválida (`SourceNotFound`, `SourceUnusable`, `NoTargets`, `MalformedTarget`,
@@ -87,7 +114,9 @@ evita escribir la mitad de un lote.
   ([ADR-0029](0029-contrato-funcional-comun-de-ventanas-wpf.md) D8) y un ciclo Confirmar/Cancelar que nadie pidió;
   descartado.
 - **Disciplina sobre la copia canónica, sin copia privada encapsulada** — la separación entre origen y destino
-  quedaría en la convención, que el Discovery de I-53 midió fallando en cuatro alias vivos; descartado.
+  quedaría en la convención. El Discovery de I-53 registró cuatro sitios donde instancias de configuración se
+  comparten por referencia y confirmó al menos un defecto de comportamiento real (L-1: el configurador del Dinámico
+  edita la instancia viva); descartado.
 - **Capturar el origen al elegirlo** — crea un portapapeles invisible que aplica una versión obsoleta si el origen se
   edita después; descartado.
 - **Una política de cobertura común con escritura inerte** — describiría a Push Back en un código que Push Back no
@@ -111,7 +140,7 @@ evita escribir la mitad de un lote.
 - Vigilar:
   - que el contrato común no crezca hacia un ejecutor genérico;
   - que ninguna ruta materialice con una copia no canónica sin refresco del derivado;
-  - que el número de este ADR no colisione mientras siga `propuesto`.
+  - que el número de este ADR no colisione hasta que llegue a `main`.
 
 ## Fuera de este ADR
 
