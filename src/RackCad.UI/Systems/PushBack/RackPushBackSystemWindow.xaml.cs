@@ -376,6 +376,7 @@ namespace RackCad.UI.Systems.PushBack
                 DrawRackNameCheck.IsChecked = options.DrawRackName;
                 AnnotationScaleBox.SetNumber(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0);
                 DimensionsBox.SelectedIndex = Math.Min((int)DimensionDetail.Detailed, Math.Max(0, (int)options.Dimensions));
+                ShowDimensionViews(options.DimensionViews); // I-50 C-12: la política cargada, sin marcar «tocado»
 
                 safetySelections.Clear();
                 foreach (var safety in inputs.SafetySelections ?? Enumerable.Empty<SelectiveSafetySelection>())
@@ -813,7 +814,8 @@ namespace RackCad.UI.Systems.PushBack
                     NumberLevels = NumberLevelsCheck.IsChecked == true,
                     DrawRackName = DrawRackNameCheck.IsChecked == true,
                     AnnotationScale = Val(AnnotationScaleBox, 1.0),
-                    Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex))
+                    Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex)),
+                    DimensionViews = SelectedDimensionViews() // I-50 C-12
                 }
             };
             // Only the authorized (GUIA-free) safety reaches the design; the assembler filters again, so a GUIA can never persist.
@@ -1174,6 +1176,64 @@ namespace RackCad.UI.Systems.PushBack
         }
 
         private void Input_Changed(object sender, RoutedEventArgs e) => RequestRecompute();
+
+        // ---- I-50 (C-12): cotas por TIPO de vista ------------------------------------------------------------------
+
+        /// <summary>
+        /// I-50 — la política de cotas por tipo de vista que trajo el modelo CARGADO (<see cref="LoadFromModel"/>).
+        /// <c>null</c> es legacy: las tres casillas se muestran activas, pero recalcular sin tocarlas vuelve a escribir
+        /// <c>null</c>, no 7.
+        /// </summary>
+        private DimensionViewVisibility? loadedDimensionViews;
+
+        /// <summary>Si el USUARIO cambió alguna de las tres casillas desde la última carga. Cargar, restaurar, recalcular o
+        /// cambiar el nivel de cotas no cuentan.</summary>
+        private bool dimensionViewsTouched;
+
+        /// <summary>
+        /// Adopta <paramref name="views"/> como la política cargada y pinta las tres casillas desde ella bajo
+        /// <see cref="suppressSync"/>, el interruptor con el que la ventana ya sincroniza sus controles: sus Checked/Unchecked
+        /// ni recalculan ni marcan «tocado» aunque una casilla cambie de verdad (MIN-4). Cada casilla muestra la regla única
+        /// de ADR-0035: ese tipo dibuja cotas si su detalle efectivo no es <c>None</c>.
+        /// </summary>
+        private void ShowDimensionViews(DimensionViewVisibility? views)
+        {
+            loadedDimensionViews = views;
+            dimensionViewsTouched = false;
+            var wasSuppressed = suppressSync;
+            suppressSync = true;
+            try
+            {
+                DimensionsFrontalCheck.IsChecked = ShowsCotas(views, DimensionViewKind.Frontal);
+                DimensionsLateralCheck.IsChecked = ShowsCotas(views, DimensionViewKind.Lateral);
+                DimensionsPlantaCheck.IsChecked = ShowsCotas(views, DimensionViewKind.Planta);
+            }
+            finally
+            {
+                suppressSync = wasSuppressed;
+            }
+        }
+
+        private static bool ShowsCotas(DimensionViewVisibility? views, DimensionViewKind kind)
+            => DimensionViewPolicy.EffectiveDetail(DimensionDetail.Minimal, views, kind) != DimensionDetail.None;
+
+        /// <summary>La política que se guarda: la cargada, exacta, si el usuario no tocó las casillas; si las tocó, las tres
+        /// casillas con los bits desconocidos de la cargada conservados (<see cref="DimensionViewPolicy.FromEditor"/>).</summary>
+        private DimensionViewVisibility? SelectedDimensionViews()
+            => DimensionViewPolicy.FromEditor(
+                loadedDimensionViews,
+                dimensionViewsTouched,
+                DimensionsFrontalCheck.IsChecked == true,
+                DimensionsLateralCheck.IsChecked == true,
+                DimensionsPlantaCheck.IsChecked == true);
+
+        /// <summary>Una casilla de vista cambiada por el usuario: marca «tocado» y recalcula.</summary>
+        private void DimensionViews_Changed(object sender, RoutedEventArgs e)
+        {
+            if (suppressSync) return; // una carga o el pintado de ShowDimensionViews: no es un gesto del usuario
+            dimensionViewsTouched = true;
+            RequestRecompute();
+        }
 
         private void Combo_Changed(object sender, SelectionChangedEventArgs e) => RequestRecompute();
 
