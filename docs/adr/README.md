@@ -248,6 +248,7 @@ vinculantes del Owner en [`docs/automation/decisions/I-39.md`](../automation/dec
 
 Iniciativa I-54 (`architecture/propiedades-personalizadas`): **ADR-0039 nació `propuesto` y quedó `aceptado` el
 2026-09-13**, con el consenso técnico del Coordinador y del Arquitecto sobre la Proposal V5 de I-54 y la aceptación
-explícita del Owner (“Acepto”). Con ella se completa el Consensus Freeze de I-54; no inicia la implementación. Los
-números 0036, 0037 y 0038 están tomados por I-52, I-53 e I-49 en sus ramas y aún no figuran en este índice. Registro en
+explícita del Owner (“Acepto”). Con ella se completa el Consensus Freeze de I-54; no inicia la implementación. El
+número 0037 ya figura en este índice, desde la integración de I-53 (E1) en `main`; 0036 y 0038 siguen tomados por
+I-52 e I-49 en sus ramas y aún no figuran en él. Registro en
 [`docs/automation/decisions/I-54.md`](../automation/decisions/I-54.md).
