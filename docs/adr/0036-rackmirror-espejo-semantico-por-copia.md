@@ -2,24 +2,26 @@
 
 - **Estado:** **propuesto**
 - **Fecha:** 2026-09-12 (propuesto; borrador corregido con Proposal V2 y con Proposal V3 el mismo día, y con Proposal V4
-  el 2026-09-13)
+  y Proposal V5 el 2026-09-13)
 - **Decisores:** Mario Pérez, Owner del repositorio (**acepta o rechaza**; pendiente). La aceptación **no** es
   precondición de la caracterización (G3): se pide **después de G3**, si G3 no contradice materialmente el contrato (si
-  lo contradice, se abre una Proposal V5), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
+  lo contradice, se abre una Proposal V6), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
   (consenso técnico **pendiente** sobre la Proposal); Claude (redacción)
 - **Iniciativa relacionada:** I-52 — `feature/rackmirror-espejo-semantico`
   ([contrato](../initiatives/I-52-rackmirror-espejo-semantico.md),
   [Discovery](../initiatives/I-52-discovery.md), [Proposal V1](../initiatives/I-52-proposal-v1.md),
-  [Proposal V2](../initiatives/I-52-proposal-v2.md) y [Proposal V3](../initiatives/I-52-proposal-v3.md) (historial),
-  [Proposal V4](../initiatives/I-52-proposal-v4.md), [decisiones](../automation/decisions/I-52.md))
+  [Proposal V2](../initiatives/I-52-proposal-v2.md), [Proposal V3](../initiatives/I-52-proposal-v3.md) y
+  [Proposal V4](../initiatives/I-52-proposal-v4.md) (historial), [Proposal V5](../initiatives/I-52-proposal-v5.md),
+  [decisiones](../automation/decisions/I-52.md))
 
 > **Numeración.** Un número de ADR queda reclamado por su primera publicación observable en un ref remoto. Este ADR se
 > publicó por primera vez con el número 0036 en `origin/feature/rackmirror-espejo-semantico`, commit
 > `0fc7032bf15d03e7d478bbd9350f156708621c9d` (corrida de CI del push `34731908035`, creada el `2026-09-13T01:59:44Z`),
-> sin publicación anterior de otro 0036 en ningún ref. ADR-0035 (I-50) está aceptado en `main`; ADR-0037 (I-53) y
-> ADR-0038 (I-49) están aceptados en sus ramas, ambos publicados después y con otro número: no hay colisión. Antes de pedir la aceptación del Owner se vuelve a buscar 0036 en todos los refs; si apareciera una
+> sin publicación anterior de otro 0036 en ningún ref. ADR-0035 (I-50) está aceptado en `main`; ADR-0037 (I-53),
+> ADR-0038 (I-49) y ADR-0039 (I-54) están aceptados en sus ramas, los tres publicados después y con otro número: no hay
+> colisión. Antes de pedir la aceptación del Owner se vuelve a buscar 0036 en todos los refs; si apareciera una
 > publicación anterior, este ADR se renumera antes de la aceptación. Una vez `aceptado` no se renumera, y dos ADR
-> aceptados con el mismo número detienen el trabajo hasta que decida el Owner (Proposal V4 §16).
+> aceptados con el mismo número detienen el trabajo hasta que decida el Owner (Proposal V5 §16).
 
 ## Contexto
 
@@ -46,8 +48,9 @@ código condicionan el diseño: solo el Selectivo guarda en el sobre un document
 leen y escriben a través del dominio del proyecto; la definición de bloque tiene un `Origin` que forma parte de la
 transformación efectiva; la importación de la biblioteca de bloques es de mejor esfuerzo y ocurre fuera de la
 transacción del dibujo; algunos valores geométricos (el ancho de un claro) dependen de propiedades vinculadas a variables
-de proyecto; y varios builders anclan holguras gráficas a un solo lado (el tope del Selectivo y el tope posterior de
-Push Back).
+de proyecto; varios builders anclan holguras gráficas a un solo lado (el tope del Selectivo y el tope posterior de
+Push Back); y casi todas las piezas de frontal y planta son bloques dinámicos de una biblioteca sin versionar ni metadato
+de simetría, cuyo estado (longitud, altura) puede cambiar de forma continua, a veces con una variable de proyecto.
 
 ## Decisión
 
@@ -75,7 +78,7 @@ Push Back).
    de los builders queda pendiente de caracterización; una contradicción reabre la Proposal, no se parchea. Al cerrar la
    caracterización **ninguna** propiedad puede quedar pendiente: cada una queda verificada o reclasificada `UNKNOWN` o
    `REQUIRES_MODEL_CHANGE` con fallo cerrado, y una reclasificación que cambie materialmente el alcance, este ADR, una
-   regla de reflexión o la arquitectura abre una Proposal V5. Una holgura gráfica anclada a un lado ya demostrada en
+   regla de reflexión o la arquitectura abre una Proposal V6. Una holgura gráfica anclada a un lado ya demostrada en
    código (tope del Selectivo, tope posterior activo de Push Back) es `UNKNOWN` y falla cerrado hasta que se apruebe una
    regla explícita.
 6. **Reflectores puros en Application sobre el sustrato real de cada kind**, despachados por kind fuera del comando.
@@ -92,19 +95,29 @@ Push Back).
      escriba en el documento un valor calculado a partir de una propiedad vinculada: el caso es `REQUIRES_MODEL_CHANGE`.
    - **Estabilidad dinámica.** Toda decisión de continuar o canonizar cuyo predicado dependa directa o transitivamente
      de una propiedad vinculable (ajuste, desborde, ancho gobernante, espacio de índices, cantidad o posición) conserva su
-     verdad para **todo** estado acreditable futuro del registro; si no puede demostrarse, falla cerrado. Una autoridad
-     explícita de dependencias declara, por regla, sus entradas, los descriptores vinculables de los que dependen, su
-     predicado y la prueba o el motivo del fallo cerrado.
+     verdad para **todo** estado acreditable futuro del registro, incluido el **estado dinámico** de las piezas cuya
+     simetría se acepta (decisión 13); si no puede demostrarse, falla cerrado. Una autoridad explícita de dependencias
+     declara, por regla, sus entradas, los descriptores vinculables de los que dependen, su predicado y la prueba o el
+     motivo del fallo cerrado.
    - **Metadata desconocida.** Se distingue la metadata **portadora**, nombrada en una **lista cerrada** cuyo contrato es
      conservarse exactamente (versiones del sobre y del envoltorio, valores de propiedades vinculables, `DimensionViews`,
      propiedades de rack de I-54), de la metadata **semántica** del payload que se somete a `μ_k` y de la metadata
      **exterior** del sobre y del envoltorio. Un miembro desconocido no vacío en el payload, o una clave desconocida no
      vacía del sobre o del envoltorio que no esté en la lista, es `UNKNOWN` y falla cerrado, salvo declaración tipada de
-     invariancia o de transformador. Ningún contenedor es portador por ser contenedor.
-   - **Cobertura.** Un **cierre transitivo** calculado desde los tipos raíz del sobre, del envoltorio y de cada kind
-     clasifica exactamente una vez cada miembro alcanzado, cada propiedad vinculable y cada valor de los enums
-     alcanzados; un tipo, miembro, valor o descriptor nuevo sin clasificar detiene el trabajo. La guarda, no una lista
-     manual, es la autoridad.
+     invariancia o de transformador. Ningún contenedor es portador por ser contenedor. Los valores de propiedades
+     vinculables son portador de almacenamiento, pero cada propiedad conocida tiene un descriptor con efecto semántico
+     que se clasifica en la cobertura y en la autoridad de dependencias.
+   - **Contrato de serialización real.** «Conocido», «desconocido», «vacío» y «colisión» se deciden con el contrato que
+     producen las mismas opciones de serialización de cada store (modificadores, conversores, coincidencia sin
+     distinguir mayúsculas, miembros ignorados y de extensión), no con la reflexión de tipos. Fallan cerrado: dos claves
+     que esa coincidencia asigna al mismo miembro, un entero de enum no definido (salvo invariante compatible declarado y
+     probado) y un **miembro retirado** de una versión anterior. El espejo no limpia datos automáticamente: si el store
+     actual descarta el miembro retirado, el mensaje pide abrir el rack con `RACKEDITAR` y Actualizar antes de reflejarlo;
+     si el store lo conserva, el mensaje no promete remedio.
+   - **Cobertura.** Un **cierre transitivo** calculado sobre ese contrato desde los tipos raíz del sobre, del envoltorio y
+     de cada kind clasifica exactamente una vez cada miembro alcanzado, cada propiedad vinculable y cada valor de los
+     enums alcanzados; un tipo, miembro, valor o descriptor nuevo sin clasificar detiene el trabajo. La guarda, no una
+     lista manual, es la autoridad.
 7. **Autoridad pura de planes por vista en Application** y un **materializador genérico en el Plugin** que crea la
    definición dentro de la transacción del llamador, escribe el payload preparado y crea la referencia con la
    colocación ya calculada. La autoridad recibe el nombre lógico de la copia, el estado efectivo y la vista y sección
@@ -118,8 +131,9 @@ Push Back).
    referencia nueva es `P' = G·P·F`, con determinante positivo y la escala uniforme de la fuente. Para una vista
    admitida, `P'·Π(μ_k D) = G·P·Π(D)` para todo estado del registro: la geometría física coincide con el espejo
    geométrico, también tras cambiar una variable, y los textos y cotas se regeneran legibles. Esa igualdad solo se
-   afirma si cada decisión que la autoriza —incluidos los predicados de ajuste, desborde, ancho e índices— es estable
-   para todo estado acreditable del registro (decisión 6, estabilidad dinámica). Las definiciones nuevas se crean con
+   afirma si cada decisión que la autoriza —incluidos los predicados de ajuste, desborde, ancho e índices y el estado
+   dinámico de las piezas cuya simetría se acepta— es estable para todo estado acreditable del registro (decisión 6,
+   estabilidad dinámica). Las definiciones nuevas se crean con
    `Origin = 0`.
 9. **Identidad nueva.** Un `NewRackId` por grupo lógico, compartido por sus vistas seleccionadas; el mapa
    `OldRackId → NewRackId` vive solo en memoria; el diseño se refleja **antes** de componer el sobre con el sobre fuente
@@ -131,7 +145,8 @@ Push Back).
     desvincula ni materializa variables y no escribe el registro. Para dibujar consume en **solo lectura** la autoridad
     efectiva existente, con su mismo criterio de acreditación del registro: un registro no acreditable o un vínculo roto
     fallan cerrado solo para los kinds cuya autoridad consume el registro. Un cambio de valor de una variable no puede
-    deshacer la equivalencia reflejada **ni invalidar ninguna decisión de continuar o canonizar** tomada antes de mutar.
+    deshacer la equivalencia reflejada **ni invalidar ninguna decisión de continuar o canonizar** tomada antes de mutar,
+    incluida la aceptación de un cambio de mano cuya evidencia dependa de un parámetro dinámico vinculado.
     Una cota inferior del valor de una propiedad vinculada solo se usa para demostrarlo si la define una autoridad real
     de resolución o de dominio, nunca un control de la interfaz.
 11. **Fuente canónica.** Solo `BlockReference` de Model Space, no MINSERT, con `Normal = +Z`, rotación finita y escala
@@ -140,8 +155,9 @@ Push Back).
     referencia **dinámica, anónima o anotativa** que lleve datos de RackCad fallan cerrado con mensaje propio; nunca se
     ignoran como si no fueran racks. Primero se reconoce si un objeto lleva datos de RackCad: los objetos que no los
     llevan —aunque tengan escala, rotación, origen o tipo no canónicos, o contengan racks anidados— se ignoran con aviso
-    y nunca abortan la operación; las restricciones estrictas solo se aplican a los candidatos RackCad. La línea se
-    captura en el UCS con Z paralela a la de WCS y se convierte a WCS. Las
+    y nunca abortan la operación; las restricciones estrictas solo se aplican a los candidatos RackCad. Un candidato
+    RackCad fuera de Model Space no entra como fuente: se ignora con aviso y no aborta (decisión deliberada, en
+    continuidad con `RACKDUPLICAR`). La línea se captura en el UCS con Z paralela a la de WCS y se convierte a WCS. Las
     tolerancias son las absolutas del repositorio; no se introduce tolerancia relativa.
 12. **Atomicidad semántica, no de infraestructura.**
     `ACQUIRE → SNAPSHOT → PREFLIGHT (un solo orden normativo) → LINE → PREPARE → MUTATE → COMMIT`, con una sola
@@ -152,29 +168,49 @@ Push Back).
     completo) se re-verifican antes de mutar. La importación de la
     biblioteca de bloques en PREPARE es **de mejor esfuerzo**: ocurre fuera de esa transacción, puede arrastrar
     dependencias (bloques anidados, capas, estilos), puede quedar parcial y puede **permanecer** aunque la operación
-    falle. PREPARE re-verifica los bloques requeridos. El comportamiento del UNDO sobre lo importado es desconocido hasta
-    la validación del Owner y no se promete.
-13. **Mano y simetría de bloques, con evidencia geométrica independiente.** Ningún bloque DWG se asume simétrico. Una
-    diferencia de mano entre el plan reflejado y el plan original transformado solo es equivalente si el bloque figura
-    en una **declaración tipada única** en Application con: nombre exacto del bloque, vista o familia, **eje local** de
-    simetría y **centro** medido en el **marco local de inserción de la pieza después de aplicar `T(−Origin)` de su
-    definición** (nunca en WCS, en el marco del rack ni en coordenadas crudas de la definición), y si la declaración
-    **aplica**. La evidencia tiene dos partes con orden obligatorio: primero una **evidencia geométrica** que demuestra,
-    sin usar builders ni la diferencia entre planes, que la **definición real** del bloque es igual a su reflexión
-    respecto de ese eje y centro en cada estado de parámetros cubierto; después una **evidencia de colocación** que
-    demuestra que los builders usan esa simetría. Nunca se infiere un centro de la diferencia entre planes, del
-    centro de su caja envolvente, de la diferencia de inserciones ni de un mínimo de error. Un centro afín sobre un
-    parámetro dinámico solo se admite si la relación se deriva de la parametrización del bloque y se verifica en los
-    estados caracterizados; ajustar una recta a unos puntos no basta. Un bloque dinámico solo queda cubierto en su
-    dominio caracterizado, y la declaración se liga a la definición real que el espejo dibuja: si la definición difiere
-    de la caracterizada, no aplica. Por eso una declaración nunca puede hacer equivalente una pieza con holgura u
-    offset anclado a un lado, cualquiera sea su rol; el rechazo de las familias con holgura `UNKNOWN` (hoy los topes) es
-    una defensa adicional. Ninguna holgura, offset gráfico o parámetro con semántica de lado se asume simétrico: sin
-    regla, falla cerrado. La confirmación visual del Owner es confirmación, nunca la única prueba.
+    falle. PREPARE re-verifica los bloques requeridos y la definición real que quedó en el dibujo para las piezas cuya
+    simetría se aceptó (decisión 13). El comportamiento del UNDO sobre lo importado es desconocido hasta la validación
+    del Owner y no se promete.
+13. **Mano y simetría de bloques, con evidencia geométrica evaluada por estado.** Ningún bloque DWG se asume simétrico.
+    Una diferencia de mano entre el plan reflejado y el plan original transformado solo es equivalente si pasan, en este
+    orden, dos evidencias:
+    - **Evidencia geométrica evaluada por estado.** Para cada pieza de cualquier vista admisible que necesite aceptar un
+      cambio de mano se evalúa la geometría real del **estado concreto** que usa: la definición real del bloque, su
+      vector de parámetros dinámicos y su marco local de inserción después de aplicar `T(−Origin)` de su definición (nunca
+      en WCS, en el marco del rack ni en coordenadas crudas de la definición). La geometría se aplana recursivamente
+      —bloques anidados con su transformación completa y su propio estado; un ciclo falla cerrado— y se prueba su
+      simetría respecto del eje que derivan `F` y la rotación de la instancia (una rotación oblicua falla cerrado) y de un
+      centro candidato, comparando el multiconjunto de primitivas originales con el reflejado dentro de las tolerancias
+      del repositorio. La caja envolvente nunca es prueba: una pieza asimétrica con caja simétrica falla. La definición
+      evaluada es la del dibujo si el bloque ya existe y, si no, la de la biblioteca candidata; tras importar, PREPARE
+      verifica de nuevo la definición real que quedó en el dibujo, porque la importación conserva una definición local
+      con el mismo nombre. La evaluación no muta el dibujo del usuario (trabaja en solo lectura o en una base de datos
+      lateral), entrega datos planos a Application, que no depende de AutoCAD, y su resultado no se persiste.
+    - **Política de entidades.** Se evalúan líneas, arcos, círculos, polilíneas con bulges, elipses, splines, sólidos 2D,
+      trazos, sombreados sólidos reducibles a su contorno y referencias anidadas. Regiones, sólidos 3D, entidades proxy o
+      personalizadas, imágenes, OLE, sombreados no reducibles, textos, atributos y cotas fallan cerrado, igual que una
+      correspondencia geométrica ambigua.
+    - **Evidencia de colocación.** Después, la conmutación de la vista demuestra que los builders colocan la pieza de
+      forma coherente con el centro verificado; nunca ajusta, infiere ni corrige el centro.
+
+    Una huella de la geometría evaluada, en serialización canónica y nunca en el orden de iteración de la definición,
+    sirve solo para trazabilidad, detección de obsolescencia y enlace entre la verificación previa y PREPARE; no es
+    evidencia de simetría. No se usa una forma afín del centro sobre un parámetro dinámico ni se interpretan los grafos de
+    acciones de los bloques dinámicos. Si un parámetro dinámico que la evidencia necesita depende directa o
+    transitivamente de una propiedad vinculable, la evidencia de un solo estado **no** basta: se exige una prueba sobre
+    todo el dominio autoritativo del parámetro, una autoridad integrada que garantice la simetría para todos sus estados o
+    la demostración de que el parámetro no depende del vínculo; si no, falla cerrado, y nunca se infiere universalidad a
+    partir de estados de muestra. Nunca se infiere un centro de la diferencia entre planes, de la caja envolvente, de la
+    diferencia de inserciones ni de un mínimo de error; por eso ninguna evidencia puede hacer equivalente una pieza con
+    holgura u offset anclado a un lado, cualquiera sea su rol, y el rechazo de las familias con holgura `UNKNOWN` (hoy
+    los topes) es una defensa adicional. Ninguna holgura, offset gráfico o parámetro con semántica de lado se asume
+    simétrico: sin regla, falla cerrado. La caracterización demuestra la viabilidad de la evaluación fuera del código de
+    producción; la evaluación productiva nace en el Plugin durante la implementación. La confirmación visual del Owner
+    es confirmación, nunca la única prueba.
 14. **Verificación dinámica por rack sobre todas las vistas admisibles.** Antes de pedir la línea, cada rack lógico
     verifica sobre su diseño reflejado: la ausencia de metadata semántica desconocida en el payload y en el exterior; la
-    autoridad de dependencias y la estabilidad dinámica de sus decisiones; la conmutación de **todas** las vistas
-    admisibles que el rack podría materializar después con
+    autoridad de dependencias y la estabilidad dinámica de sus decisiones; la evidencia geométrica de las piezas con
+    cambio de mano; la conmutación de **todas** las vistas admisibles que el rack podría materializar después con
     Insertar —estén o no seleccionadas—; el BOM, con el multiconjunto de líneas de su builder y con la clave con que
     producción lo consolida; y la fidelidad del store. La enumeración de vistas es pura: no busca vistas hermanas en el
     dibujo, no las añade a la selección y no las crea. Es la garantía ejecutable del fail-closed: una regla estática que
@@ -206,7 +242,17 @@ Push Back).
 - **Soportar definiciones con BASE movida o referencias dinámicas** — diferida: exige componer el origen y las acciones
   del bloque en la colocación y en los planes; el primer corte falla cerrado.
 - **Metadato de simetría en los catálogos (`assets/`)** — diferida: cambio de catálogo compartido; el primer corte usa
-  la declaración tipada en Application.
+  la evidencia geométrica evaluada por estado.
+- **Registro estático de simetrías caracterizadas** (lista finita de estados o intervalo con un centro afín sobre un
+  parámetro) — descartada: no cubre los estados continuos de los bloques dinámicos y derivar la relación exigiría
+  interpretar las acciones del bloque.
+- **Huella de la definición como ligadura normativa de la simetría** — descartada: una huella no demuestra simetría y el
+  orden de iteración de una definición cambia con ediciones irrelevantes; queda solo como trazabilidad.
+- **Probar la simetría con la caja envolvente** — descartada: una pieza asimétrica puede tener una caja simétrica.
+- **Inferir la simetría de todos los estados de un bloque dinámico a partir de estados de muestra** — descartada: un
+  número finito de estados no demuestra el continuo que un cambio de variable puede producir.
+- **Limpiar automáticamente los miembros retirados de versiones anteriores** — descartada: el espejo no reescribe datos
+  que no sabe interpretar; si el store los descarta, el usuario los limpia con `RACKEDITAR` → Actualizar.
 - **Inferir el centro de simetría de la diferencia entre el plan reflejado y el original** — descartada: es circular; un
   centro «conveniente» oculta un desplazamiento.
 - **Tratar como portador todo el `ExtensionData` del sobre y del envoltorio** — descartada: el sobre ya lleva semántica
@@ -232,15 +278,25 @@ Push Back).
     podría desbordar sin prueba para todo estado del registro; las **tarimas frontales de Push Back desbordadas**, en
     rack simple o compuesto; las cabeceras de plantilla con diagonales automáticas; las definiciones con BASE movida; las
     referencias dinámicas, anónimas o anotativas; los payloads con **metadata semántica desconocida** y los sobres o
-    envoltorios con **claves desconocidas** fuera de la lista de portadores; las piezas con diferencia de mano sin
-    evidencia geométrica aplicable; y todo rack con **alguna vista admisible** que no conmute;
-  - la equivalencia exige evidencia geométrica independiente de la mano de los bloques DWG, que no están versionados, y
-    ligarla a la definición real; si no puede obtenerse, las piezas afectadas fallan cerrado;
+    envoltorios con **claves desconocidas** fuera de la lista de portadores, con nombres que colisionan o con enteros
+    de enum no definidos; los estados latentes del tope posterior con índices fuera del rango válido; las piezas con
+    diferencia de mano sin evidencia geométrica aplicable; los **Selectivos cuyos largueros o postes cambian de estado
+    con una variable** sin overrides que los fijen; y todo rack con **alguna vista admisible** que no conmute;
+  - las vistas frontal y planta dependen de la evidencia geométrica evaluada por estado, porque prácticamente todas sus
+    piezas necesitan aceptar un cambio de mano; si la evaluación no es viable en AutoCAD o la biblioteca usa clases de
+    entidad fuera de la política (textos, atributos, sombreados con patrón, sólidos 3D), esas piezas —y con ellas kinds
+    enteros— fallan cerrado;
+  - `RACKMIRROR` no corrige racks espejados antes con el `MIRROR` nativo (escala negativa): esas fuentes fallan cerrado;
+  - los racks legados con **miembros retirados** fallan cerrado: si el store actual los descarta, hay que abrirlos con
+    `RACKEDITAR` y Actualizar antes de reflejarlos; si el store los conserva (el peralte retirado del larguero alto de
+    Push Back), no hay remedio en I-52;
+  - la evaluación geométrica tiene un coste por pieza y estado que se mide antes de exponer el comando;
   - lo importado de la biblioteca puede sobrevivir a un fallo;
   - todo tipo, miembro o valor de enum nuevo alcanzado desde los tipos raíz exige clasificar su regla de espejo antes de
     integrarse;
   - la aceptación de este ADR espera a la caracterización (G3), lo que añade una ronda del Owner antes de implementar; si
-    G3 contradice materialmente el contrato, se abre una Proposal V5 antes de pedirla.
+    G3 contradice materialmente el contrato o reduce materialmente el alcance que el Owner aceptó, se abre una Proposal
+    V6 antes de pedirla.
 - Vigilar: cada kind o vista nueva debe declarar su reflector, su decodificación de sección, su conjunto de vistas
   admisibles y su exposición; todo miembro nuevo y toda propiedad vinculable nueva necesitan clasificación antes de
   integrarse; todo offset gráfico nuevo de un builder de vista admitida debe caracterizarse.
@@ -253,16 +309,20 @@ Push Back).
 - I-47 G9.1: `ViewBlockDraw.PrepareRedraw`, `SystemBlockWriter.RedefineInTransaction`, `PreparedViewRedraw`,
   `ProjectVariableMutationExecutor`.
 - I-50: `DimensionViewVisibility`, `DimensionViewPolicy`.
-- I-54 Proposal V5 D-21 (invariante de preservación del sobre, que el espejo cumple) y sus residuales F-14a y F-14b.
+- I-54 Proposal V5 D-21 (invariante de preservación del sobre, que el espejo cumple) y sus residuales F-14a y F-14b;
+  ADR-0039 (aceptado en su rama).
 - I-49 ADR-0038 (aceptado en su rama; implementación no integrada): `PlanReadSet` y dominio del consumidor declarado
   por el descriptor.
-- I-53 G3: guardas C-08 y C-10 sobre `RackCad.Application.Systems.Shared`.
+- I-53 G3: guardas C-08 y C-10 sobre `RackCad.Application.Systems.Shared`; ADR-0037 (aceptado en su rama).
 - I-19: `CatalogBlockParameters`, `CatalogBlockManifest`.
 - `src/RackCad.Application/Geometry/Transform2D.cs`; `src/RackCad.Application/Geometry/Vector2D.cs` (`GeometryTolerance`);
   `src/RackCad.Application/Persistence/RackProjectStore.cs`; `src/RackCad.Application/Persistence/RackProject.cs`;
   `src/RackCad.Application/Systems/Selective/SelectiveEffectiveDesignResolver.cs`;
   `src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs`;
+  `src/RackCad.Application/Systems/Selective/SelectivePostGeometry.cs`;
+  `src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs`;
   `src/RackCad.Application/Systems/PushBack/PushBackRearTopeBuilder.cs`;
+  `src/RackCad.Application/Persistence/RackEmbedDocument.cs`;
   `src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs`; `src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs`.
 
 ## Historial del borrador
@@ -292,8 +352,9 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
     comando consuma la autoridad; equivalencia para todo estado del registro; `DimensionViews` obligatorio con I-50
     integrada; referencias dinámicas, anónimas o anotativas; conjunto de entradas del registro leídas en la huella;
   - consecuencias ampliadas y aceptación del Owner después de G3, como precondición de G4.
-- **Borrador V4** — este texto, con Proposal V4. Cambios respecto del V3, por la revisión de Arquitecto de Proposal V3
-  (`Architect: CHANGES REQUIRED — PROPOSAL V4`) y la orden del Coordinador:
+- **Borrador V4** — publicado con Proposal V4 en `8e2ae4f` (recuperable con
+  `git show 8e2ae4f:docs/adr/0036-rackmirror-espejo-semantico-por-copia.md`). Cambios respecto del V3, por la revisión
+  de Arquitecto de Proposal V3 (`Architect: CHANGES REQUIRED — PROPOSAL V4`) y la orden del Coordinador:
   - decisión 13: evidencia geométrica independiente de la definición real antes de la evidencia de colocación; nunca un
     centro inferido de planes; forma afín solo con relación derivada de la parametrización; dominio caracterizado y
     ligadura a la definición que se dibuja; el rechazo de los topes pasa a ser defensa adicional;
@@ -307,3 +368,23 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
   - decisiones 11 y 12: precedencia de fuente (primero el candidato RackCad) y observaciones reales del registro;
   - consecuencias: tope posterior de Push Back activo por defecto, tarimas frontales de Push Back desbordadas, filas que
     un cambio de variable podría desbordar y claves exteriores desconocidas.
+- **Borrador V5** — este texto, con Proposal V5. Cambios respecto del V4, por la revisión de Arquitecto de Proposal V4
+  (`Architect: CHANGES REQUIRED — PROPOSAL V5`) y la orden del Coordinador:
+  - decisión 13: evidencia geométrica **evaluada por estado** sobre la definición real (la del dibujo si existe;
+    re-verificada en PREPARE tras importar), aplanada recursivamente y sin mutar el dibujo; política explícita de clases
+    de entidad; verificación por multiconjunto y nunca por caja envolvente; eje derivado de `F` y de la rotación; huella
+    solo de trazabilidad; sin forma afín ni interpretación de acciones de bloques dinámicos; regla para parámetros
+    dinámicos que dependen de vínculos; viabilidad demostrada en la caracterización fuera del código de producción;
+  - decisión 6: contrato de serialización real para la metadata y la cobertura; colisiones de nombres, enteros de enum
+    no definidos y miembros retirados fallan cerrado, con mensaje y sin limpieza automática; descriptores de las
+    propiedades vinculables en la cobertura; estado dinámico en la estabilidad;
+  - decisiones 8, 10, 12 y 14: estado dinámico de las piezas en la igualdad para todo estado del registro; re-verificación
+    de la definición real en PREPARE; evidencia geométrica en la verificación por rack;
+  - decisión 11: Model Space como decisión deliberada (candidato fuera de Model Space ignorado con aviso);
+  - decisión 5 y consecuencias: una contradicción material de G3 abre una Proposal V6; frontal y planta dependen de la
+    evidencia geométrica; fuentes espejadas con `MIRROR` nativo fuera; miembros retirados; clases de entidad no
+    soportadas; coste de la evaluación;
+  - alternativas: registro estático de simetrías, huella como ligadura, caja envolvente, muestras de estados y limpieza
+    automática de miembros retirados, descartadas.
+
+  Sigue **propuesto**: su aceptación se pide después de G3 y antes de G4.
