@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 
@@ -1241,6 +1242,80 @@ namespace RackCad.Application.Systems.Selective
             if (row == null) return null;
             while (row.Count <= postIndex) row.Add(null);
             return row;
+        }
+
+        // ---- Cabecera reuse and batch distribution: MUTATE (I-53) ----
+
+        /// <summary>
+        /// MUTATE of a Selectivo cabecera batch (I-53, ID6 REUSE + ID7 BATCH DISTRIBUTION; contract §3.4, §3.9, §3.10, §6.9;
+        /// ADR-0037): it assigns what <see cref="SelectiveHeaderBatchPlanner.Prepare"/> prepared, and nothing else.
+        /// <para>
+        /// Everything that can fail already failed in PREPARE. The one check here is the SIGNATURE, recomputed against
+        /// <paramref name="current"/> before the first assignment: a different topology, fondo depth, post peralte or system
+        /// generation — or a resolution that is not current — means the plan was prepared against something else, and the
+        /// answer is <see cref="HeaderRejectionCode.StaleTargets"/> with zero writes. Nothing is re-resolved or re-aimed here
+        /// (RR-01 rules 5 and 6).
+        /// </para>
+        /// <para>
+        /// Each target then receives ITS prepared copy, in the plan's order, as it is: no copy, validation or normalization.
+        /// A fondo's cabecera row only grows up to a post that fondo really has, which PREPARE and the signature guarantee. An
+        /// EDIT also writes its precomputed per-post peralte, and only here, so a batch where everything was omitted never
+        /// reaches it (L-7); a DISTRIBUTE never touches <see cref="PostPeraltes"/>. There is no recompute: the caller runs ONE,
+        /// inside the batch's deferred scope, and reads <paramref name="current"/> before opening that scope.
+        /// </para>
+        /// <para>
+        /// A rejected plan returns its own rejection and writes nothing. Applying a preparation that has no plan, one prepared
+        /// on another state, or one already used is a defect and throws.
+        /// </para>
+        /// </summary>
+        public HeaderBatchOutcome<SelectiveHeaderAddress> ApplyHeaderBatch(
+            SelectiveHeaderBatchPreparation preparation, SelectiveHeaderResolution current)
+        {
+            if (preparation == null)
+            {
+                throw new ArgumentNullException(nameof(preparation));
+            }
+
+            if (!ReferenceEquals(preparation.State, this))
+            {
+                throw new InvalidOperationException("El plan se preparo sobre otro estado del editor.");
+            }
+
+            preparation.Consume();
+
+            if (preparation.Plan is HeaderBatchPlan<SelectiveHeaderAddress>.Rejected rejected)
+            {
+                return new HeaderBatchOutcome<SelectiveHeaderAddress>.Rejected(rejected.Code);
+            }
+
+            if (!(preparation.Plan is HeaderBatchPlan<SelectiveHeaderAddress>.Prepared prepared))
+            {
+                throw new InvalidOperationException("El gesto termino antes de PREPARE: no hay plan que aplicar.");
+            }
+
+            // The only verification of MUTATE, before the first assignment.
+            if (current == null || !current.IsCurrent
+                || SelectiveHeaderBatchPlanner.Signature(this, current, prepared.Targets.Concat(prepared.Omitted.Select(omission => omission.Address)))
+                   != prepared.Signature)
+            {
+                return new HeaderBatchOutcome<SelectiveHeaderAddress>.Rejected(HeaderRejectionCode.StaleTargets);
+            }
+
+            for (var i = 0; i < prepared.Targets.Count; i++)
+            {
+                var target = prepared.Targets[i];
+                EnsureCabeceraRow(target.FondoIndex, target.PostIndex)[target.PostIndex] = preparation.PreparedCopies[i];
+            }
+
+            if (preparation.Operation == SelectiveHeaderBatchOperation.Edit)
+            {
+                // The edited post is a post of the master grid (PREPARE applied it somewhere): a shorter list is padded with
+                // "inherit" up to it, which changes no other post.
+                while (PostPeraltes.Count <= preparation.EditPost) PostPeraltes.Add(0.0);
+                PostPeraltes[preparation.EditPost] = preparation.EditPostPeralte;
+            }
+
+            return new HeaderBatchOutcome<SelectiveHeaderAddress>.Committed(prepared);
         }
 
         /// <summary>
