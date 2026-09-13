@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using RackCad.Application.Expressions;
 using Xunit;
 
 namespace RackCad.Tests
@@ -114,17 +117,80 @@ namespace RackCad.Tests
             AssertAbsentFrom("RackCad.Domain", "ProjectVariables", "VariableId", "PropertyValues");
         }
 
+        /// <summary>
+        /// I-49 G5 (V6 P28.4, guarda G4: «Domain sin tokens del núcleo»). La guarda de arriba no cambia; esta añade
+        /// que el dominio tampoco nombra el núcleo de expresiones: ni su namespace ni ninguno de sus tipos. La lista
+        /// sale del ensamblado compilado, así que cada tipo nuevo del núcleo queda cubierto sin tocar esta prueba.
+        ///
+        /// <para>
+        /// Un nombre de tipo se busca como IDENTIFICADOR completo y no como subcadena: <c>Number</c> dentro de
+        /// <c>LevelNumber</c> no es el tipo del núcleo, y una coincidencia parcial empujaría a renombrar tipos para
+        /// esquivar la guarda, que es justo lo que P28.4 prohíbe. El namespace sí se busca como texto.
+        /// </para>
+        /// </summary>
+        [Fact]
+        public void EL_DOMINIO_ENTERO_TAMPOCO_CONOCE_EL_NUCLEO_DE_EXPRESIONES()
+        {
+            const string nucleo = "RackCad.Application.Expressions";
+
+            var tiposDelNucleo = typeof(ExpressionParser).Assembly
+                .GetTypes()
+                .Where(type => !type.IsNested
+                               && type.Namespace != null
+                               && (type.Namespace == nucleo || type.Namespace.StartsWith(nucleo + ".", StringComparison.Ordinal))
+                               && !type.IsDefined(typeof(CompilerGeneratedAttribute), false))
+                .Select(type => type.Name.Split('`')[0])
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+
+            Assert.Contains("ExpressionParser", tiposDelNucleo);
+
+            var identificadores = tiposDelNucleo
+                .Select(name => new Regex("(?<![A-Za-z0-9_])" + Regex.Escape(name) + "(?![A-Za-z0-9_])", RegexOptions.CultureInvariant))
+                .ToList();
+
+            // El buscador ve lo que tiene que ver: el núcleo se nombra a sí mismo en Application.
+            Assert.Contains(Sources("RackCad.Application"), path => identificadores.Any(pattern => pattern.IsMatch(Code(path))));
+
+            foreach (var path in Sources("RackCad.Domain"))
+            {
+                var code = Code(path);
+
+                Assert.False(code.Contains(nucleo, StringComparison.Ordinal), Path.GetFileName(path) + " contiene '" + nucleo + "'");
+
+                foreach (var pattern in identificadores)
+                {
+                    Assert.False(pattern.IsMatch(code), Path.GetFileName(path) + " nombra el tipo del núcleo " + pattern);
+                }
+            }
+        }
+
         // ================================================================ 30: ni fórmulas ni ID21
 
         /// <summary>
-        /// ID22A implementa UN caso: literal. Ni fórmulas, ni parser, ni AST, ni grafo de dependencias, ni
-        /// referencias de una propiedad a la propiedad de otro rack (ID21). Todo eso está DISEÑADO para caber
-        /// después sin romper nada, y lo que esta guarda fija es que todavía no ha entrado.
+        /// ID22A implementó UN caso: literal. Ni fórmulas, ni parser, ni AST, ni grafo de dependencias, ni
+        /// referencias de una propiedad a la propiedad de otro rack (ID21). Todo eso estaba DISEÑADO para caber
+        /// después sin romper nada, y esta guarda fijaba que todavía no había entrado.
+        ///
+        /// <para>
+        /// I-49 G5 la evoluciona exactamente como fija la Proposal V6 (P28.4, guarda G1), en el mismo gate que el
+        /// comportamiento y sin renombrar nada para esquivarla: <c>ExpressionParser</c> pasa a permitirse SOLO en
+        /// Application —el núcleo de expresiones y sus adaptadores— y sigue prohibido en Plugin y UI.
+        /// <c>RackPropertyReference</c>, <c>rackProperty</c> y <c>FormulaParser</c> siguen prohibidos en las tres
+        /// capas. <c>DependencyGraph</c> también sigue prohibido en las tres: su evolución es de G7.
+        /// </para>
         /// </summary>
         [Fact]
         public void NO_HAY_FORMULAS_NI_REFERENCIAS_A_PROPIEDADES_DE_OTROS_RACKS()
         {
-            foreach (var project in new[] { "RackCad.Application", "RackCad.Plugin", "RackCad.UI" })
+            AssertAbsentFrom(
+                "RackCad.Application",
+                "FormulaParser",
+                "DependencyGraph",
+                "RackPropertyReference",
+                "rackProperty");
+
+            foreach (var project in new[] { "RackCad.Plugin", "RackCad.UI" })
             {
                 AssertAbsentFrom(
                     project,
