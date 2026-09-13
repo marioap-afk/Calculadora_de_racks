@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-09**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-12**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -15,6 +15,54 @@ es el único adaptador de la API de AutoCAD.
 El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, dinámico modular y cama
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
+
+**I-50 — Cotas independientes por vista (ID1) — INTEGRADA** el **2026-09-12** con merge `--no-ff`
+(`feature/cotas-independientes-por-vista`, Candidate `6cd2970c36a906cb9e784797008bed5e8111e433`). Queda
+**CLOSED** solo cuando pasen las compuertas posteriores al merge y se retiren rama y worktree
+([WORKFLOW](WORKFLOW.md) §4.5 pasos 6 y 7, y §3); este cierre documental no lo anticipa. Selectivo, Dinámico y
+Push Back deciden **por separado** si dibujan cotas en cada tipo de vista, con el motor de cotas de siempre.
+
+**El resultado verificable.**
+
+| | |
+|---|---|
+| Producto | cotas automáticas seleccionables en **Frontal**, **Lateral** y **Planta** para **Selectivo, Dinámico y Push Back**. Cantilever, Cama, Larguero y Cabecera no dibujan cotas y no reciben controles |
+| Autoridad | **rack × tipo de vista**, guardada en el **diseño**: **no** por instancia dibujada ni por `Section`. La salida y la entrada del Dinámico comparten Frontal; los cortes frontales de Push Back —los **cuatro** de un compuesto— comparten Frontal, y el compuesto A/B comparte **una** política |
+| Dato | `[Flags] DimensionViewVisibility` (`None = 0`, `Frontal = 1`, `Lateral = 2`, `Planta = 4`, sin `All`), persistido como `int? DimensionViews` y omitido cuando es nulo |
+| Legacy | `DimensionViews = null` = comportamiento histórico **exacto**; un rack legacy guardado sin tocar las casillas no se reescribe |
+| Persistencia | todo `Int32` presente se conserva **exacto** —`0`, `13`, `-1`, `-8`, bits desconocidos o de signo—, sin máscara ni normalización; la regla solo observa los bits `1`, `2` y `4` |
+| Regla | **una**, `DimensionViewPolicy.EffectiveDetail`: `Dimensions = None` **siempre gana**; política nula o bit encendido → el nivel global; bit apagado → `None`. Gobierna las cotas **y** el alcance de las etiquetas de cada vista |
+| Nivel y estilo | `DimensionDetail` y `DimensionStyle` siguen **globales** del rack |
+| UI | «Mostrar cotas en» —Frontal, Lateral, Planta— en la sección de cotas de las **tres** ventanas; un rack legacy las muestra marcadas **sin materializar `7`** mientras el usuario no las toque |
+| Propagación | los 15 sitios de copia `C-01`..`C-15` llevan el mismo entero, cada uno con su prueba |
+
+**Lo que cambió de comportamiento a propósito, y hay que conocer.** Con las cotas de **Planta** ocultas, los
+*extents* del bloque de planta pueden encogerse, y con ellos la huella que calcula `RACKLAYOUT`. Es
+**consecuencia aceptada** de ADR-0035 —verificada en OV-9—, no un defecto por corregir.
+
+**Lo que NO cambió.** Geometría, BOM, GUID, `View`/`Section`, sobre, capa y materializador; ningún archivo de
+`src/RackCad.Plugin` (CE-01 vacío), ni `RACKLAYOUT`, `LinkedPropertyEditor`, Project Variables o Expression
+Engine. La decisión es [ADR-0035](adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md), **aceptada** por el Owner
+antes de cualquier código productivo, e intacta.
+
+**Evidencia del Candidate `6cd2970`:**
+
+| | |
+|---|---|
+| Core Full | **6249 / 6249** (0 omitidas) |
+| UI Full | **1361 PASS / 17 omitidas / 1378** (17 omitidas, el mismo número que `main`) |
+| Focal I-50 | Core **773 / 773**; UI **72 / 72** |
+| Legacy | T-03, T-04 y T-05 **19 / 19**, con sus **148** pines intactos desde `974c709` |
+| Builds | UI Debug **0 errores y 0 advertencias**; Plugin Debug **0 errores** (solo los dos `MSB3277` conocidos) |
+| CE-01 | vacío: I-50 no toca `src/RackCad.Plugin` |
+| CI de `push` | corrida **34732123814**, `head_sha` = `6cd2970...`, **4/4 `success`** |
+| Cobertura del Candidate | dispatch **34733326111**, **4/4 `success`**: objetivo y checkout verificado = `6cd2970...`; artifact `rackcad-coverage-cobertura` presente |
+| Owner Validation | **PASS** en AutoCAD 2025 —OV-1..OV-10— sobre el DLL Debug construido desde ese Candidate |
+
+**Desviación de proceso G5-01, registrada.** Un SHA de G5 (`94220fb`) se publicó antes de conocer que su CI
+fallaba: dos pruebas de pines JSON dependían del salto de línea de Windows. Impacto solo de portabilidad de
+pruebas; la corrigió `695d34b`, test-only, sin reescribir historia, y el Candidate no quedó afectado. Bloque
+completo en §4.
 
 **I-48 — Generic Linked Property Editing: edicion vinculable reusable — INTEGRADA y CERRADA** el
 **2026-09-12** (`architecture/generic-linked-property-editing`, candidato funcional
@@ -1084,6 +1132,24 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-50 (2026-09-12) — PASS.** El dueño validó en AutoCAD 2025 el Candidate
+`6cd2970c36a906cb9e784797008bed5e8111e433`, sobre el DLL Debug identificado para la ronda en G7
+—`RackCad.Plugin.dll`, versión `1.0.0+6cd2970c36a906cb9e784797008bed5e8111e433`, SHA-256
+`EB9A476BE446C9E2083758946ACF56CECC9B35D7F8486DA2CE3DFC9F443B16CB`—, y el resultado recibido es **PASS
+COMPLETO** sobre **OV-1..OV-10**: crear e insertar; selección Frontal / Lateral / Planta; `RACKEDITAR` y
+Actualizar; guardar y reabrir; vistas hermanas; nueva vista enlazada; etiquetas y alcance; Push Back compuesto
+A/B; `RACKLAYOUT`, con la variación de huella al ocultar Planta como consecuencia aceptada; y smoke legacy. El
+resultado no trae observaciones adicionales.
+
+`origin/main` **avanzó** desde la base `a4d88f18a1f42263d366c44dc05dd18a6786f152` con la integración de I-51, sin
+archivos productivos comunes, y el Coordinador ordenó integrar **sin rebase final**: la validación del dueño recae
+sobre el Candidate, y el árbol combinado se valida con el guard de producto, las suites y builds locales y el CI
+del `MERGE_SHA`, sin nueva ronda en AutoCAD mientras no haga falta una resolución productiva. Evidencia
+automatizada del Candidate, árbol limpio y SDK **8.0.423**: `RackCad.Tests` **6249 PASS / 0 fail / 0 skip**,
+`RackCad.UI.Tests` **1361 PASS / 17 skip / 1378 total**, build Debug de UI **0 errores y 0 advertencias**, build
+Debug del Plugin **0 errores** más los **dos `MSB3277`** conocidos, y **CI de `push` sobre ese SHA exacto**
+—corrida **34732123814**, 4/4 `success`—.
+
 **I-48 (2026-09-12) — PASS.** El dueño cargó por NETLOAD el DLL Debug construido **exactamente** desde el
 candidato funcional `b0547990f9ffcbd015feed9a9efa95c9ff3b24b5` y validó la edición vinculable sobre las
 **dos** propiedades reales, incluido el cambio de comportamiento deliberado: el campo de una propiedad
@@ -1454,7 +1520,93 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### No hay iniciativa en curso. I-48 quedó INTEGRADA y CERRADA; lo que sigue es backlog.
+### I-50 quedó INTEGRADA; CLOSED solo tras sus compuertas posteriores al merge. Las demás iniciativas abiertas siguen en sus ramas.
+
+**I-50 — Cotas independientes por vista (ID1) — INTEGRADA el 2026-09-12.** Gates cerrados en el orden aprobado
+por el Coordinador —`G0`/`G1`, `G2`/`G2A`, `G4`, `G5`, `G6`, `G3` y `G7`— y `G8` en curso con este cierre
+documental; integración con merge `--no-ff`. No queda ningún pendiente **de alcance**; lo que quedó fuera está
+abajo y en [ideas-futuras.md](ideas-futuras.md), y no es deuda de I-50.
+
+```text
+I-50 = IMPLEMENTED / VALIDATED / READY FOR INTEGRATION
+
+BASE_MAIN_SHA          = a4d88f18a1f42263d366c44dc05dd18a6786f152
+PROPOSAL_V1.2_SHA      = 0e91c52f41f26b3302af8cabd9dd8b293f2d3cbd   (FROZEN, sin cambio)
+CHARACTERIZATION_SHA   = 974c70916dd9db538b72b21439741e259a674e4e   (G4 Paso 1)
+MODEL_POLICY_SHA       = fb039e1eed4f7caac7288901078cd3ff54fa0a59   (G4)
+DRAW_SHA               = 11c04db1ba596ba974ca6dcbf096e9882a15d54c   (G4)
+G5_FINAL_SHA           = a4806ff4ca0e563b0496908fedb8f21d569ec9c5   (G5)
+PUSHBACK_COMPOSITE_SHA = 8ceb3a72c093b511d4f128510e2f4bfd07b78138   (G6)
+FINAL_CANDIDATE_SHA    = 6cd2970c36a906cb9e784797008bed5e8111e433   (G3; Candidate de G7)
+CLOSURE_DOCS_SHA       = este mismo commit (docs-only; NO reemplaza al Candidate)
+MERGE_SHA              = PENDING hasta el merge
+
+Coordinator = AGREED    Architect = AGREED    Owner ADR = ACCEPTED
+Automated Candidate = PASS    Owner Validation = PASS
+```
+
+**Qué quedó operativo en `main`.**
+
+- **Modelo y regla** (G4): `DimensionViewVisibility` en Domain y `DimensionViewPolicy` en Application
+  (`EffectiveDetail` para dibujar, `FromEditor` para editar); los emisores dibujan cada vista con su detalle
+  efectivo.
+- **Persistencia** (G5): la política viaja por diseño, DTO, resolvers y sitios de copia de los tres sistemas;
+  `RACKEDITAR`/Actualizar, guardar y reabrir, las vistas enlazadas y el re-estampado de la duplicación conservan
+  el entero exacto.
+- **Push Back compuesto** (G6): `C-15`, en `PushBackCompositeStructure.CopySharedStructuralIntent`, lleva la
+  política a los lados A y B.
+- **Editores** (G3): tres casillas por ventana. Solo un gesto del usuario las marca como tocadas —cargar,
+  recargar, recalcular o cambiar nivel o estilo no—, y `FromEditor` conserva los bits desconocidos de la política
+  cargada.
+
+**Interacción con I-51**, integrada en `main` mientras I-50 seguía en su rama: sin archivos productivos comunes.
+La nota de I-51 —quien integre I-50 debe conservar el campo en el round-trip de la duplicación— queda cubierta
+por T-15: el re-estampado authored del Selectivo conserva el entero exacto y un legacy sigue legacy, y el sobre de
+Dinámico y Push Back conserva el JSON del diseño byte a byte.
+
+**Integración sin rebase final, por orden del Coordinador** ([decisión](automation/decisions/I-50.md) §9).
+WORKFLOW §4.5 prescribe rebasar y validar el SHA rebasado; aquí `origin/main` avanzó con I-51 y la orden fue
+`git merge --no-ff` sin rebase, con guard de producto —el contenido productivo propio de I-50 en el merge debe ser
+idéntico al del Candidate— y validación local del árbol combinado antes del push de `main`, sin repetir la Owner
+Validation mientras no haga falta una resolución productiva.
+
+**Lo que I-50 dejó expresamente fuera** (`CD-09`; registrados **sin corregir** en
+[ideas-futuras.md](ideas-futuras.md)): **H1** Push Back no tiene control de estilo de cota y cada recálculo
+escribe `DimensionStyle = null`; **H2** el lateral de Push Back envía la posición en la lista de cortes y el Plugin
+la lee como índice de poste; **H3** los bloques anónimos `*D` de las cotas no se encolan para purga al cancelar
+una inserción ni en `EraseViewBlocks`; **H4** `HeaderRunPlan.PlacedClone` no copia los campos de texto ni de
+cota; **H5** el Dinámico descarta un estilo de cota guardado que el DWG no tiene; **H6** el BOM del Selectivo
+calcula las cotas laterales y las descarta; **H7** tres comentarios desfasados. Tampoco: nivel de detalle por
+vista, cotas nuevas ni corregir la huella de `RACKLAYOUT`.
+
+**Desviación de proceso, registrada sin minimizar:**
+
+```text
+PROCESS_DEVIATION I-50/G5-01
+
+SHA:
+94220fbb73c51f6b844713e1e89f5bea8a8d7fca
+
+Hecho:
+un SHA fue publicado antes de conocer que CI fallaba.
+
+Fallo:
+2 pruebas de pines JSON por CRLF Windows vs LF Linux.
+
+Impacto:
+test portability only; no defecto productivo demostrado.
+
+Corrección:
+695d34b, test-only, normalización CRLF→LF antes del hash.
+
+Historia:
+preservada; sin force-push.
+
+Candidate final:
+no afectado.
+```
+
+**I-48 queda como historia:**
 
 **I-48 — Generic Linked Property Editing — INTEGRADA y CERRADA el 2026-09-12.** `G1`–`G4H` cerrados,
 validación del Owner **PASS**, Candidato aprobado e integrado con merge `--no-ff`. No queda ningún
@@ -2756,7 +2908,34 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-48 — 2026-09-12** (la vigente):
+**Baseline integrada de I-50 — 2026-09-12** (la vigente):
+
+- Candidate **funcional** aprobado por el Owner: `6cd2970c36a906cb9e784797008bed5e8111e433` (CI de `push`
+  **34732123814**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**; cobertura del Candidate por dispatch
+  **34733326111**, **4/4**: objetivo y checkout verificado = ese mismo SHA, artifact `rackcad-coverage-cobertura`
+  presente);
+- **cierre documental previo a la integración**: este commit, **docs-only** —no recompila ni revalida nada, y
+  **no reemplaza** al Candidate—;
+- **validación manual del Owner en AutoCAD 2025: PASS** —OV-1..OV-10—, sobre el DLL Debug construido exactamente
+  desde el Candidate;
+- suites locales sobre el Candidate: **RackCad.Tests 6249/6249** (0 omitidas; la base traía 5476) y
+  **RackCad.UI.Tests 1361 correctas / 17 omitidas / 1378 totales** (la base: 1324 / 17 / 1341); focal de I-50
+  **Core 773/773** y **UI 72/72**; T-03, T-04 y T-05 **19/19** con sus **148** pines intactos desde `974c709`;
+  Debug de UI (0 advertencias, 0 errores) y del Plugin (0 errores, sólo los **dos** MSB3277 conocidos); CE-01
+  vacío;
+- **rojo demostrado** antes de cada cambio de producto —sobre superficie inerte o sobre producción sin el sitio de
+  copia en G4 y G5, T-08 sobre producción intacta antes de `C-15` en G6 y, en G3, sobre la superficie inerte de
+  cada ventana más una prueba de sensibilidad de la supresión de carga—; la caracterización T-03..T-05 y la guarda
+  de invariancia T-16 pasan por diseño;
+- `origin/main` **avanzó** desde la base `a4d88f18a1f42263d366c44dc05dd18a6786f152` —nueve commits de I-51, sin
+  archivos productivos comunes—: por orden del Coordinador **no hay rebase final**, y el merge `--no-ff` se valida
+  en local sobre el árbol combinado antes del push de `main`;
+- **compuertas posteriores al merge**: el `MERGE_SHA` no existe todavía cuando se escribe esto, así que el CI del
+  merge, con su artifact `rackcad-coverage-cobertura`, y la comprobación diferida de la cobertura del Candidate
+  siguen **pendientes** ([WORKFLOW.md](WORKFLOW.md) §4.5 pasos 6 y 7); la rama y el worktree **no** se retiran
+  hasta que pasen.
+
+**Baseline integrada de I-48 — 2026-09-12** (anterior):
 
 - candidato **funcional** aprobado por el Owner: `b0547990f9ffcbd015feed9a9efa95c9ff3b24b5`
   (CI de `push` **34657252232**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**);
@@ -3919,3 +4098,9 @@ podía cambiar **por dónde** se ejerce la semántica de las variables de proyec
 se ejerce. El propio contrato dice que tocar esa doctrina sería «ADR nuevo y decisión del dueño, no un
 ajuste de alcance», y no se tocó. El acuerdo técnico de I-48 vive en su **Proposal V8**
 (`32e37500766212e685d617c462f32e616c65f104`, congelada y sin cambio), no en un ADR.
+
+**ADR-0035 — la visibilidad de cotas es del rack por tipo de vista — `aceptado` el 2026-09-12** (iniciativa
+I-50). El Owner la aceptó **antes de cualquier código productivo**, sobre la Proposal **V1.2** congelada
+(`0e91c52f41f26b3302af8cabd9dd8b293f2d3cbd`) y con el consenso de Coordinator y Architect sobre ese mismo SHA
+([registro](automation/decisions/I-50.md)). La implementación la cumplió sin cambiarla: su contenido es
+**inmutable**; sólo pueden cambiar su Estado y sus enlaces.
