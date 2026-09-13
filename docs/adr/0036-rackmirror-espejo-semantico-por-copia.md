@@ -1,27 +1,27 @@
 # ADR-0036: RACKMIRROR es un espejo semántico por copia: reflexión canónica por kind, vistas admisibles y colocación sin escala negativa
 
 - **Estado:** **propuesto**
-- **Fecha:** 2026-09-12 (propuesto; borrador corregido con Proposal V2 y con Proposal V3 el mismo día, y con Proposal V4
-  y Proposal V5 el 2026-09-13)
+- **Fecha:** 2026-09-12 (propuesto; borrador corregido con Proposal V2 y con Proposal V3 el mismo día, y con Proposal V4,
+  Proposal V5 y Proposal V6 el 2026-09-13)
 - **Decisores:** Mario Pérez, Owner del repositorio (**acepta o rechaza**; pendiente). La aceptación **no** es
   precondición de la caracterización (G3): se pide **después de G3**, si G3 no contradice materialmente el contrato (si
-  lo contradice, se abre una Proposal V6), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
+  lo contradice, se abre una Proposal V7), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
   (consenso técnico **pendiente** sobre la Proposal); Claude (redacción)
 - **Iniciativa relacionada:** I-52 — `feature/rackmirror-espejo-semantico`
   ([contrato](../initiatives/I-52-rackmirror-espejo-semantico.md),
   [Discovery](../initiatives/I-52-discovery.md), [Proposal V1](../initiatives/I-52-proposal-v1.md),
-  [Proposal V2](../initiatives/I-52-proposal-v2.md), [Proposal V3](../initiatives/I-52-proposal-v3.md) y
-  [Proposal V4](../initiatives/I-52-proposal-v4.md) (historial), [Proposal V5](../initiatives/I-52-proposal-v5.md),
-  [decisiones](../automation/decisions/I-52.md))
+  [Proposal V2](../initiatives/I-52-proposal-v2.md), [Proposal V3](../initiatives/I-52-proposal-v3.md),
+  [Proposal V4](../initiatives/I-52-proposal-v4.md) y [Proposal V5](../initiatives/I-52-proposal-v5.md) (historial),
+  [Proposal V6](../initiatives/I-52-proposal-v6.md), [decisiones](../automation/decisions/I-52.md))
 
 > **Numeración.** Un número de ADR queda reclamado por su primera publicación observable en un ref remoto. Este ADR se
 > publicó por primera vez con el número 0036 en `origin/feature/rackmirror-espejo-semantico`, commit
 > `0fc7032bf15d03e7d478bbd9350f156708621c9d` (corrida de CI del push `34731908035`, creada el `2026-09-13T01:59:44Z`),
-> sin publicación anterior de otro 0036 en ningún ref. ADR-0035 (I-50) está aceptado en `main`; ADR-0037 (I-53),
-> ADR-0038 (I-49) y ADR-0039 (I-54) están aceptados en sus ramas, los tres publicados después y con otro número: no hay
-> colisión. Antes de pedir la aceptación del Owner se vuelve a buscar 0036 en todos los refs; si apareciera una
-> publicación anterior, este ADR se renumera antes de la aceptación. Una vez `aceptado` no se renumera, y dos ADR
-> aceptados con el mismo número detienen el trabajo hasta que decida el Owner (Proposal V5 §16).
+> sin publicación anterior de otro 0036 en ningún ref. ADR-0035 (I-50) y ADR-0037 (I-53, ya integrada) están aceptados
+> en `main`; ADR-0038 (I-49) y ADR-0039 (I-54) están aceptados en sus ramas. Los tres posteriores a 0036 se publicaron
+> después y con otro número: no hay colisión. Antes de pedir la aceptación del Owner se vuelve a buscar 0036 en todos
+> los refs; si apareciera una publicación anterior, este ADR se renumera antes de la aceptación. Una vez `aceptado` no se
+> renumera, y dos ADR aceptados con el mismo número detienen el trabajo hasta que decida el Owner (Proposal V6 §16).
 
 ## Contexto
 
@@ -50,7 +50,9 @@ transformación efectiva; la importación de la biblioteca de bloques es de mejo
 transacción del dibujo; algunos valores geométricos (el ancho de un claro) dependen de propiedades vinculadas a variables
 de proyecto; varios builders anclan holguras gráficas a un solo lado (el tope del Selectivo y el tope posterior de
 Push Back); y casi todas las piezas de frontal y planta son bloques dinámicos de una biblioteca sin versionar ni metadato
-de simetría, cuyo estado (longitud, altura) puede cambiar de forma continua, a veces con una variable de proyecto.
+de simetría, cuyo estado (longitud, altura) puede cambiar de forma continua, a veces con una variable de proyecto, y
+cuya apariencia depende de capas, colores y tipos de línea por entidad. La ruta de esa biblioteca la configura el
+usuario, así que otra estación puede usar otra biblioteca.
 
 ## Decisión
 
@@ -78,7 +80,7 @@ de simetría, cuyo estado (longitud, altura) puede cambiar de forma continua, a 
    de los builders queda pendiente de caracterización; una contradicción reabre la Proposal, no se parchea. Al cerrar la
    caracterización **ninguna** propiedad puede quedar pendiente: cada una queda verificada o reclasificada `UNKNOWN` o
    `REQUIRES_MODEL_CHANGE` con fallo cerrado, y una reclasificación que cambie materialmente el alcance, este ADR, una
-   regla de reflexión o la arquitectura abre una Proposal V6. Una holgura gráfica anclada a un lado ya demostrada en
+   regla de reflexión o la arquitectura abre una Proposal V7. Una holgura gráfica anclada a un lado ya demostrada en
    código (tope del Selectivo, tope posterior activo de Push Back) es `UNKNOWN` y falla cerrado hasta que se apruebe una
    regla explícita.
 6. **Reflectores puros en Application sobre el sustrato real de cada kind**, despachados por kind fuera del comando.
@@ -169,47 +171,59 @@ de simetría, cuyo estado (longitud, altura) puede cambiar de forma continua, a 
     biblioteca de bloques en PREPARE es **de mejor esfuerzo**: ocurre fuera de esa transacción, puede arrastrar
     dependencias (bloques anidados, capas, estilos), puede quedar parcial y puede **permanecer** aunque la operación
     falle. PREPARE re-verifica los bloques requeridos y la definición real que quedó en el dibujo para las piezas cuya
-    simetría se aceptó (decisión 13). El comportamiento del UNDO sobre lo importado es desconocido hasta la validación
-    del Owner y no se promete.
-13. **Mano y simetría de bloques, con evidencia geométrica evaluada por estado.** Ningún bloque DWG se asume simétrico.
-    Una diferencia de mano entre el plan reflejado y el plan original transformado solo es equivalente si pasan, en este
-    orden, dos evidencias:
-    - **Evidencia geométrica evaluada por estado.** Para cada pieza de cualquier vista admisible que necesite aceptar un
-      cambio de mano se evalúa la geometría real del **estado concreto** que usa: la definición real del bloque, su
-      vector de parámetros dinámicos y su marco local de inserción después de aplicar `T(−Origin)` de su definición (nunca
-      en WCS, en el marco del rack ni en coordenadas crudas de la definición). La geometría se aplana recursivamente
-      —bloques anidados con su transformación completa y su propio estado; un ciclo falla cerrado— y se prueba su
-      simetría respecto del eje que derivan `F` y la rotación de la instancia (una rotación oblicua falla cerrado) y de un
-      centro candidato, comparando el multiconjunto de primitivas originales con el reflejado dentro de las tolerancias
-      del repositorio. La caja envolvente nunca es prueba: una pieza asimétrica con caja simétrica falla. La definición
-      evaluada es la del dibujo si el bloque ya existe y, si no, la de la biblioteca candidata; tras importar, PREPARE
-      verifica de nuevo la definición real que quedó en el dibujo, porque la importación conserva una definición local
-      con el mismo nombre. La evaluación no muta el dibujo del usuario (trabaja en solo lectura o en una base de datos
-      lateral), entrega datos planos a Application, que no depende de AutoCAD, y su resultado no se persiste.
-    - **Política de entidades.** Se evalúan líneas, arcos, círculos, polilíneas con bulges, elipses, splines, sólidos 2D,
-      trazos, sombreados sólidos reducibles a su contorno y referencias anidadas. Regiones, sólidos 3D, entidades proxy o
-      personalizadas, imágenes, OLE, sombreados no reducibles, textos, atributos y cotas fallan cerrado, igual que una
-      correspondencia geométrica ambigua.
-    - **Evidencia de colocación.** Después, la conmutación de la vista demuestra que los builders colocan la pieza de
-      forma coherente con el centro verificado; nunca ajusta, infiere ni corrige el centro.
+    equivalencia visual-geométrica se aceptó (decisión 13). El comportamiento del UNDO sobre lo importado es desconocido
+    hasta la validación del Owner y no se promete.
+13. **Mano y simetría de bloques, con equivalencia visual-geométrica evaluada por estado.** Ningún bloque DWG se asume
+    simétrico. Una diferencia de mano entre el plan reflejado y el plan original transformado solo es equivalente si
+    pasan, en este orden, dos evidencias:
+    - **Evidencia visual-geométrica evaluada por estado (`GeometricEvidence`).** Para cada pieza de cualquier vista
+      admisible que necesite aceptar un cambio de mano se evalúa la pieza real en el **estado concreto** que usa: la
+      definición real del bloque; su vector de parámetros dinámicos, aplicado con la **misma semántica que el
+      materializador** (nombres sin distinguir mayúsculas, propiedades de solo lectura sin escribir, nombres ausentes
+      ignorados igual y recomputación gráfica tras aplicar), con los **valores efectivos** leídos después de evaluar; y
+      su marco local de inserción, medido desde el `Origin` del **bloque evaluado** de ese estado (nunca en WCS, en el
+      marco del rack ni desde el origen de la definición dinámica base). La pieza se aplana recursivamente —bloques
+      anidados con su transformación completa, su propio estado y su bloque evaluado; un ciclo falla cerrado— y cada
+      primitiva lleva su **firma visual efectiva**: capa efectiva, color, tipo de línea, grosor, transparencia,
+      visibilidad y relleno, resueltos como los resuelve AutoCAD (capa `0`, `ByLayer` y `ByBlock` en anidados). Se
+      prueba la simetría respecto del eje que derivan `F` y la rotación de la instancia (una rotación oblicua falla
+      cerrado) y de un centro candidato. La correspondencia es uno a uno entre **primitivas canónicas** —rectas y arcos
+      maximales, polilíneas por sus segmentos, splines por su curva, sin sentido de trazado y sin fusionar familias
+      distintas— y solo empareja primitivas con la **misma firma visual**, de modo que ningún estado de capa pueda
+      mostrar una mitad y ocultar la otra; si el resultado visible depende del orden de rellenos solapados, ese orden se
+      demuestra o la pieza falla cerrado. La caja envolvente nunca es prueba: una pieza asimétrica con caja simétrica
+      falla, y una pieza geométricamente simétrica con atributos visuales asimétricos también. La definición evaluada es
+      la del dibujo si el bloque ya existe y, si no, la de la biblioteca candidata; tras importar, PREPARE verifica de
+      nuevo la definición real que quedó en el dibujo, porque la importación conserva una definición local con el mismo
+      nombre. La evaluación no muta el dibujo del usuario (solo lectura o una base de datos auxiliar descartable; el dibujo
+      queda intacto y la base de datos de trabajo restaurada, también ante excepción), entrega datos planos a
+      Application, que no depende de AutoCAD, y su resultado no se persiste.
+    - **Política de clases cerrada.** Se evalúan líneas, arcos, círculos, polilíneas con bulges, elipses, splines,
+      sólidos 2D, trazos, sombreados sólidos uniformes reducibles a su contorno y referencias anidadas. **Toda otra clase
+      falla cerrado**: entre ellas regiones, sólidos 3D, entidades proxy o personalizadas, imágenes, OLE, puntos,
+      polilíneas 2D y 3D de estilo antiguo, multilíneas, caras, wipeouts, directrices, tablas, formas, textos, atributos,
+      cotas, sombreados con patrón y **sombreados de degradado**; igual falla una correspondencia ambigua.
+    - **Evidencia de colocación (`PlanPlacementEvidence`).** Después, la conmutación de la vista demuestra que los
+      builders colocan la pieza de forma coherente con el centro verificado; nunca ajusta, infiere ni corrige el centro.
 
-    Una huella de la geometría evaluada, en serialización canónica y nunca en el orden de iteración de la definición,
-    sirve solo para trazabilidad, detección de obsolescencia y enlace entre la verificación previa y PREPARE; no es
-    evidencia de simetría. No se usa una forma afín del centro sobre un parámetro dinámico ni se interpretan los grafos de
-    acciones de los bloques dinámicos. Si un parámetro dinámico que la evidencia necesita depende directa o
-    transitivamente de una propiedad vinculable, la evidencia de un solo estado **no** basta: se exige una prueba sobre
-    todo el dominio autoritativo del parámetro, una autoridad integrada que garantice la simetría para todos sus estados o
-    la demostración de que el parámetro no depende del vínculo; si no, falla cerrado, y nunca se infiere universalidad a
-    partir de estados de muestra. Nunca se infiere un centro de la diferencia entre planes, de la caja envolvente, de la
-    diferencia de inserciones ni de un mínimo de error; por eso ninguna evidencia puede hacer equivalente una pieza con
-    holgura u offset anclado a un lado, cualquiera sea su rol, y el rechazo de las familias con holgura `UNKNOWN` (hoy
-    los topes) es una defensa adicional. Ninguna holgura, offset gráfico o parámetro con semántica de lado se asume
-    simétrico: sin regla, falla cerrado. La caracterización demuestra la viabilidad de la evaluación fuera del código de
-    producción; la evaluación productiva nace en el Plugin durante la implementación. La confirmación visual del Owner
-    es confirmación, nunca la única prueba.
+    Una huella de la pieza evaluada —valores efectivos, clases, geometría aplanada y firma visual, en serialización
+    canónica y nunca en el orden de iteración de la definición— sirve solo para trazabilidad, detección de obsolescencia
+    y enlace entre la verificación previa y PREPARE; **no** es evidencia de simetría. No se usa una forma afín del centro
+    sobre un parámetro dinámico ni se interpretan los grafos de acciones de los bloques dinámicos. Si un parámetro
+    dinámico que la evidencia necesita depende directa o transitivamente de una propiedad vinculable, la evidencia de un
+    solo estado **no** basta: se exige una prueba sobre todo el dominio autoritativo del parámetro, una autoridad
+    integrada que garantice la equivalencia para todos sus estados o la demostración de que el parámetro no depende del
+    vínculo; si no, falla cerrado, y nunca se infiere universalidad a partir de estados de muestra. Nunca se infiere un
+    centro de la diferencia entre planes, de la caja envolvente, de la diferencia de inserciones ni de un mínimo de
+    error; por eso ninguna evidencia puede hacer equivalente una pieza con holgura u offset anclado a un lado, cualquiera
+    sea su rol, y el rechazo de las familias con holgura `UNKNOWN` (hoy los topes) es una defensa adicional. Ninguna
+    holgura, offset gráfico o parámetro con semántica de lado se asume simétrico: sin regla, falla cerrado. La
+    caracterización demuestra, fuera del código de producción y en AutoCAD 2025 (`acad.exe`), la viabilidad de la
+    evaluación, su paridad con el materializador y la postcondición del dibujo; la evaluación productiva nace en el Plugin
+    durante la implementación. La confirmación visual del Owner es confirmación, nunca la única prueba.
 14. **Verificación dinámica por rack sobre todas las vistas admisibles.** Antes de pedir la línea, cada rack lógico
     verifica sobre su diseño reflejado: la ausencia de metadata semántica desconocida en el payload y en el exterior; la
-    autoridad de dependencias y la estabilidad dinámica de sus decisiones; la evidencia geométrica de las piezas con
+    autoridad de dependencias y la estabilidad dinámica de sus decisiones; la evidencia visual-geométrica de las piezas con
     cambio de mano; la conmutación de **todas** las vistas admisibles que el rack podría materializar después con
     Insertar —estén o no seleccionadas—; el BOM, con el multiconjunto de líneas de su builder y con la clave con que
     producción lo consolida; y la fidelidad del store. La enumeración de vistas es pura: no busca vistas hermanas en el
@@ -242,7 +256,16 @@ de simetría, cuyo estado (longitud, altura) puede cambiar de forma continua, a 
 - **Soportar definiciones con BASE movida o referencias dinámicas** — diferida: exige componer el origen y las acciones
   del bloque en la colocación y en los planes; el primer corte falla cerrado.
 - **Metadato de simetría en los catálogos (`assets/`)** — diferida: cambio de catálogo compartido; el primer corte usa
-  la evidencia geométrica evaluada por estado.
+  la evidencia visual-geométrica evaluada por estado.
+- **Comparar solo la geometría de las piezas, sin capa, color, tipo de línea ni visibilidad** — descartada: una mitad en
+  otra capa o con otro trazo haría que la copia no fuera el espejo visual del original, o que un estado de capa mostrara
+  solo una mitad.
+- **Comparar las primitivas tal como están dibujadas, sin canonizarlas** — descartada: dos mitades simétricas dibujadas
+  con segmentaciones distintas fallarían sin motivo.
+- **Aceptar sombreados de degradado cuando sus parámetros parecen simétricos** — diferida: el primer corte los trata como
+  clase no soportada.
+- **Caracterizar la sonda solo en la consola sin interfaz de AutoCAD** — descartada como autoridad: el runtime objetivo es
+  AutoCAD 2025; la consola solo sirve como comparación.
 - **Registro estático de simetrías caracterizadas** (lista finita de estados o intervalo con un centro afín sobre un
   parámetro) — descartada: no cubre los estados continuos de los bloques dinámicos y derivar la relación exigiría
   interpretar las acciones del bloque.
@@ -282,21 +305,31 @@ de simetría, cuyo estado (longitud, altura) puede cambiar de forma continua, a 
     de enum no definidos; los estados latentes del tope posterior con índices fuera del rango válido; las piezas con
     diferencia de mano sin evidencia geométrica aplicable; los **Selectivos cuyos largueros o postes cambian de estado
     con una variable** sin overrides que los fijen; y todo rack con **alguna vista admisible** que no conmute;
-  - las vistas frontal y planta dependen de la evidencia geométrica evaluada por estado, porque prácticamente todas sus
-    piezas necesitan aceptar un cambio de mano; si la evaluación no es viable en AutoCAD o la biblioteca usa clases de
-    entidad fuera de la política (textos, atributos, sombreados con patrón, sólidos 3D), esas piezas —y con ellas kinds
-    enteros— fallan cerrado;
+  - las vistas frontal y planta dependen de la evidencia visual-geométrica evaluada por estado, porque prácticamente
+    todas sus piezas necesitan aceptar un cambio de mano; si la evaluación no es viable en AutoCAD 2025, no tiene paridad
+    con el materializador o la biblioteca usa clases o apariencias fuera de la política (textos, atributos, sombreados con
+    patrón o degradado, sólidos 3D, mitades con capa o trazo distintos), esas piezas —y con ellas kinds enteros— fallan
+    cerrado;
+  - el alcance real depende de la **biblioteca efectiva**, que no está versionada en el repositorio y cuya ruta configura
+    el usuario: otra biblioteca puede dar otro resultado, siempre con fallo cerrado. La evidencia de una biblioteca
+    concreta es indicativa; la caracterización es la autoridad;
+  - con la biblioteca inspeccionada antes de la caracterización, postes, largueros y placas base son simétricos, pero los
+    separadores de planta, las parrillas, los desviadores de tipo A y las defensas son asimétricos, y la tarima usa un
+    degradado: gran parte de Dinámico y Push Back, y los Selectivos con esos accesorios o con tarimas visibles, podrían
+    fallar cerrado;
+  - la **selección es todo-o-nada**: un solo rack que no pase hace fallar el comando entero y no se refleja ninguno;
   - `RACKMIRROR` no corrige racks espejados antes con el `MIRROR` nativo (escala negativa): esas fuentes fallan cerrado;
   - los racks legados con **miembros retirados** fallan cerrado: si el store actual los descarta, hay que abrirlos con
     `RACKEDITAR` y Actualizar antes de reflejarlos; si el store los conserva (el peralte retirado del larguero alto de
     Push Back), no hay remedio en I-52;
-  - la evaluación geométrica tiene un coste por pieza y estado que se mide antes de exponer el comando;
+  - la evaluación visual-geométrica (canonización y firma visual incluidas) tiene un coste por pieza y estado que se mide
+    en AutoCAD 2025 antes de exponer el comando;
   - lo importado de la biblioteca puede sobrevivir a un fallo;
   - todo tipo, miembro o valor de enum nuevo alcanzado desde los tipos raíz exige clasificar su regla de espejo antes de
     integrarse;
   - la aceptación de este ADR espera a la caracterización (G3), lo que añade una ronda del Owner antes de implementar; si
     G3 contradice materialmente el contrato o reduce materialmente el alcance que el Owner aceptó, se abre una Proposal
-    V6 antes de pedirla.
+    V7 antes de pedirla.
 - Vigilar: cada kind o vista nueva debe declarar su reflector, su decodificación de sección, su conjunto de vistas
   admisibles y su exposición; todo miembro nuevo y toda propiedad vinculable nueva necesitan clasificación antes de
   integrarse; todo offset gráfico nuevo de un builder de vista admitida debe caracterizarse.
@@ -311,9 +344,9 @@ de simetría, cuyo estado (longitud, altura) puede cambiar de forma continua, a 
 - I-50: `DimensionViewVisibility`, `DimensionViewPolicy`.
 - I-54 Proposal V5 D-21 (invariante de preservación del sobre, que el espejo cumple) y sus residuales F-14a y F-14b;
   ADR-0039 (aceptado en su rama).
-- I-49 ADR-0038 (aceptado en su rama; implementación no integrada): `PlanReadSet` y dominio del consumidor declarado
-  por el descriptor.
-- I-53 G3: guardas C-08 y C-10 sobre `RackCad.Application.Systems.Shared`; ADR-0037 (aceptado en su rama).
+- I-49 ADR-0038 (aceptado en su rama; G5 solo sintáctico, sin `PlanReadSet` ni dominio integrados): `PlanReadSet` y
+  dominio del consumidor declarado por el descriptor; guardas de texto de `ProjectVariablesConformanceTests`.
+- I-53 E1 (integrada en `main`): guardas C-08 y C-10 sobre `RackCad.Application.Systems.Shared`; ADR-0037 (aceptado).
 - I-19: `CatalogBlockParameters`, `CatalogBlockManifest`.
 - `src/RackCad.Application/Geometry/Transform2D.cs`; `src/RackCad.Application/Geometry/Vector2D.cs` (`GeometryTolerance`);
   `src/RackCad.Application/Persistence/RackProjectStore.cs`; `src/RackCad.Application/Persistence/RackProject.cs`;
@@ -323,7 +356,9 @@ de simetría, cuyo estado (longitud, altura) puede cambiar de forma continua, a 
   `src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs`;
   `src/RackCad.Application/Systems/PushBack/PushBackRearTopeBuilder.cs`;
   `src/RackCad.Application/Persistence/RackEmbedDocument.cs`;
-  `src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs`; `src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs`.
+  `src/RackCad.Application/Catalogs/BlockLibrary.cs` (ruta configurable de la biblioteca);
+  `src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs`; `src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs`
+  (`ApplyDynamicParameters`).
 
 ## Historial del borrador
 
@@ -368,8 +403,9 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
   - decisiones 11 y 12: precedencia de fuente (primero el candidato RackCad) y observaciones reales del registro;
   - consecuencias: tope posterior de Push Back activo por defecto, tarimas frontales de Push Back desbordadas, filas que
     un cambio de variable podría desbordar y claves exteriores desconocidas.
-- **Borrador V5** — este texto, con Proposal V5. Cambios respecto del V4, por la revisión de Arquitecto de Proposal V4
-  (`Architect: CHANGES REQUIRED — PROPOSAL V5`) y la orden del Coordinador:
+- **Borrador V5** — publicado con Proposal V5 en `e998a2b` (recuperable con
+  `git show e998a2b:docs/adr/0036-rackmirror-espejo-semantico-por-copia.md`). Cambios respecto del V4, por la revisión
+  de Arquitecto de Proposal V4 (`Architect: CHANGES REQUIRED — PROPOSAL V5`) y la orden del Coordinador:
   - decisión 13: evidencia geométrica **evaluada por estado** sobre la definición real (la del dibujo si existe;
     re-verificada en PREPARE tras importar), aplanada recursivamente y sin mutar el dibujo; política explícita de clases
     de entidad; verificación por multiconjunto y nunca por caja envolvente; eje derivado de `F` y de la rotación; huella
@@ -386,5 +422,19 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
     soportadas; coste de la evaluación;
   - alternativas: registro estático de simetrías, huella como ligadura, caja envolvente, muestras de estados y limpieza
     automática de miembros retirados, descartadas.
+- **Borrador V6** — este texto, con Proposal V6. Cambios respecto del V5, por la revisión de Arquitecto de Proposal V5
+  (`Architect: CHANGES REQUIRED — PROPOSAL V6`) y la orden del Coordinador:
+  - decisión 13: **equivalencia visual-geométrica** (firma visual efectiva con capa `0`, `ByLayer` y `ByBlock`, estado de
+    capa, visibilidad y orden de rellenos solapados); **primitivas canónicas** dentro de la misma firma; parámetros
+    aplicados con la semántica del materializador y **valores efectivos**; `Origin` del **bloque evaluado**; política de
+    clases **cerrada** con el degradado como no soportado; huella con firma visual; caracterización en AutoCAD 2025 con la
+    postcondición del dibujo;
+  - decisiones 5, 12 y 14: una contradicción material abre una Proposal V7; re-verificación y verificación por rack
+    visual-geométricas;
+  - contexto y consecuencias: apariencia por entidad, alcance dependiente de la biblioteca efectiva, evidencia indicativa
+    de la biblioteca inspeccionada, selección todo-o-nada y coste de la evaluación;
+  - alternativas: comparación solo geométrica, primitivas sin canonizar, degradados y caracterización solo en la consola,
+    descartadas o diferidas;
+  - numeración: ADR-0037 ya está en `main`.
 
   Sigue **propuesto**: su aceptación se pide después de G3 y antes de G4.
