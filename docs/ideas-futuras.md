@@ -1169,3 +1169,117 @@ Al seleccionar un módulo, `UpdateSelectedPanel` llama a `SelectConfigCalculated
 (`RackDynamicSystemWindow.xaml.cs:1823`), que pone el índice 0 sin mirar la procedencia (`:1844-1860`): un
 módulo personalizado aparece como «Calculada». Es una lectura engañosa, no una reutilización. I-53D decidirá la
 forma de ese control al retirar los presets «Personalizada N» (OD-8).
+
+## I-49 — hallazgos fuera de alcance y seguimientos (2026-09-13, registrados sin corregir)
+
+Encontrados en el Discovery de I-49 ([I-49-discovery.md](initiatives/I-49-discovery.md) §5.8, §7, §8.1 y §11.5, con
+los riesgos R7, R13 y R15 de §17) y declarados **fuera de alcance** por su Proposal V6 congelada
+([I-49-proposal-v6.md](initiatives/I-49-proposal-v6.md) P30.17;
+[ADR-0038](adr/0038-motor-expresiones-parametricas-y-edicion-formula-aware.md) D25), que manda registrarlos aquí en
+G4. Al final van los dos seguimientos que V6 manda registrar también en G4 y que no son hallazgos de P30.17 (P24.5 y
+P9.6). Las líneas se refieren a `a4d88f1`.
+
+P30.17 fija dos **excepciones acotadas**, que no son arreglos laterales sino preservación de invariantes en código que
+I-49 reescribe: L2 en la rama del reconciliador (P23.15, A-09) y la tabla explícita del token `Type` en la rama `Add`
+(P17.10, A-17).
+
+**Ninguno está corregido**: L1, L2, L3, L5, el camino heredado y el factor duplicado de `tools/` siguen vivos en
+`main`, y el seguimiento de P24.5 parte de lo que I-49 todavía tiene que implementar.
+
+El Discovery rotula como hallazgos laterales L1, L2, L3 y L5, y **no rotula ninguno como L4**. V6 P30.17 remite a §7,
+§5.8, §8.1 y §11.5; lo que §8.1 añade fuera de su tabla es la nota sobre el camino heredado sin disparador, que se
+registra con su propio nombre, sin atribuirle una etiqueta que el Discovery no le dio.
+
+### L1 — Asimetría de colocación
+
+La ventana de RACKVARIABLES descarta las entradas (definiciones de bloque) no colocadas (`DirectReferenceCount == 0`)
+cuyo sobre no es interpretable (`ProjectVariablesWorkspace.cs:282,337-355`), pero el preflight recibe **todas** las
+entradas (`RackVariablesCommands.cs:59-60,122`) y aborta ante cualquier sobre ilegible, esté colocado o no. Además, un
+registro bloqueado por una definición colocada ilegible sigue ofreciendo reparaciones
+(`ProjectVariablesWorkspace.cs:284-294`) que `ResolveTargetRack` abortaría. *(Lo que descarta la ventana es un hecho
+del código citado; la asimetría es inferencia, y ninguna prueba la cubre.)*
+
+**Por qué queda fuera de I-49**: V6 no corrige los hallazgos laterales L1–L5; los registra aquí (P30.17).
+
+### L2 — Posible degradación de minor `2.x` en RACKEDITAR
+
+`Link` calcula la versión con `SelectiveDesignSchema.ResolveWriteVersion(stored, true)`
+(`ProjectVariableMutationPreflight.cs:356`), pero el reconciliador fija `"2.0"` sin condición
+(`LinkedPropertyReconciler.cs:218`), y el store vuelve a resolverla al serializar
+(`SelectivePalletDesignStore.cs:29-31`). Por esa asignación incondicional, un documento guardado como `2.x` (x > 0)
+por una build futura podría reescribirse como `2.0` al pasar por RACKEDITAR. *(Los tres puntos citados son hechos;
+la degradación es inferencia, y ninguna prueba la cubre.)*
+
+**Relación con I-49**: no se corrige como arreglo lateral. La rama del reconciliador que I-49 reescribe calculará la
+versión con `SelectiveDesignSchema.ResolveWriteVersion` o con la autoridad vigente equivalente, y nunca fijará `"2.0"`.
+V6 lo acepta como **preservación de la invariante C4-9, no como deuda lateral** (P23.15, A-09 y P30.17; ADR-0038 D13,
+condición C3). Hasta que esa implementación llegue, sigue vivo en `main`.
+
+### L3 — Diccionario `PropertyValues` compartido por `WithDesign`
+
+`SelectivePalletDesignDocument.WithDesign` comparte la **misma instancia** del diccionario `PropertyValues` en vez de
+clonarla (`SelectivePalletDesignDocument.cs:321`) y solo congela el literal de la holgura (`:324-327`). El reconciliador
+la llama sobre el authored inicial (`LinkedPropertyReconciler.cs:146`) y `Apply` la muta (`:206-218`). Hoy un fallo no
+persiste nada, porque el comando aborta (`RackSelectivoCommands.cs:147-150`), pero el objeto que recibió el
+reconciliador puede quedar mutado en memoria (V6 P23.16).
+
+El Discovery describe al reconciliador como único llamador de `WithDesign` en `src/` (§5.8). Hay una segunda llamada,
+en `RackSelectivoCommands.SerializeSelectiveDesign` (`RackSelectivoCommands.cs:373`), pero solo en la rama con
+`authored`, y su único llamador, `DrawSelectiveView` (`:409`), no lo pasa: hoy esa rama no se alcanza, y el
+reconciliador es el único llamador alcanzable. Quien corrija el portador tendrá que revisar también esa rama. *(Hecho,
+comprobado en `a4d88f1` y en `f8deb67`.)*
+
+**Por qué queda fuera de I-49**: el portador no se toca —I-50 lo modificó y ya está integrado en `main`—. I-49 aislará
+su propio estado clonando el authored inicial antes de `WithDesign` y de `Apply` (V6 P23.16 y ALT-30).
+
+### L5 — Campos sembrados con `"0.###"` que pierden dígitos al releerse
+
+Los campos sembrados con `"0.###"` y releídos pierden los dígitos que no se muestran: `ValueBox` de RACKVARIABLES,
+separadores y editor de celda del Selectivo (Discovery §11.5, inferencia). En RACKVARIABLES, «Cambiar valor» sin
+reescribir envía el valor redondeado (`RackProjectVariablesWindow.xaml.cs:73,158-168`; riesgo R7). Las ventanas de
+Cantilever lo evitan con `Keep()` (`RackCantileverWindow.xaml.cs:366-382`; hecho).
+
+**Por qué queda fuera de I-49**: V6 no corrige los hallazgos laterales L1–L5 (P30.17). `"0.###"` es formato de
+**presentación** y redondea (V6 P4, Base); el texto de una expresión lo producirá un solo formatter, que nunca usará
+`"0.###"` (P4.2).
+
+### Camino heredado `Link` / `Unlink` sin disparador en producción (Discovery §8.1)
+
+`Link` y `Unlink` existen en el preflight, pero el camino heredado que los invocaba
+—`SelectiveBindingIntentPreflight.Run` (`SelectiveBindingIntent.cs:136-158`), llamado desde
+`RackSelectivoCommands.ApplyBinding` (`:305-326`)— **no tiene disparador en producción**:
+`RackSelectiveWindow.BindingIntent` (`RackSelectiveWindow.xaml.cs:2398`) no se asigna en ningún archivo de `src/`.
+Desde I-48, vincular y desvincular en RACKEDITAR entra por el reconciliador. *(Hecho, Discovery §8.1.)* El riesgo R15
+agrupa con él `SelectiveBindingOptions.ForLength` (con `Enum.TryParse`) y `VerticalClearanceBindingState`
+(`SelectiveBindingIntent.cs:92-124`; `SelectiveEditorOpen.cs:26-50`).
+
+**Por qué queda fuera de I-49**: V6 no extiende estos caminos heredados (P29.6), porque ampliarlos reabriría una
+gramática de tipo que I-48 retiró (riesgo R15). Lo único que V6 fija para `Link` y `Unlink` heredados es qué
+observaciones del `PlanReadSet` llevan (P21.6; ADR-0038 D19).
+
+### Seguimiento — unificar en el descriptor la comprobación de dominio de la ventana (V6 P24.5)
+
+**Qué exige V6 a I-49** (lo nuevo, todavía sin implementar): el descriptor de cada propiedad vinculable declarará su
+dominio **como dato** —hoy `>= 0` en las dos propiedades Selectivas— y ese dominio se aplicará al valor efectivo de las
+tres fuentes. Al escribir, la comprobación histórica de la ventana del Selectivo (`TryEffective`,
+`RackSelectiveWindow.xaml.cs:2481-2505`), que hoy ya rechaza `< 0` sobre el efectivo de la sesión del literal y de la
+referencia, se aplicará también a la expresión; la referencia y la expresión pasarán además por el reconciliador, y la
+expresión, por el aviso del pipeline de la sesión. Al resolver lo persistido, un literal **no** se re-valida, como hoy,
+y una referencia o una expresión fuera de dominio darán `OutOfRange`. Una prueba de paridad fijará que, para cada
+propiedad, la ventana y el resolver aceptan exactamente el mismo conjunto de efectivos.
+
+**Seguimiento**: V6 deja una sola declaración del dominio, en el descriptor, pero la ventana conserva su propia
+comprobación. Unificarla en el descriptor tocaría `RackSelectiveWindow`, un archivo caliente, así que V6 lo deja como
+seguimiento. **I-49 no lo hace.**
+
+### Seguimiento — factor lb/ft→kg/m duplicado en `tools/` (V6 P9.6)
+
+`StructuralSectionUnits.PoundsPerFootToKilogramsPerMeter` declara el factor exacto lb/ft→kg/m como el cociente
+`0.45359237d / 0.3048d` (`src/RackCad.Application/StructuralSections/StructuralSectionUnits.cs:25`), y el importador
+de secciones repite ese cociente como literal
+(`tools/RackCad.StructuralSections.Import/AiscShapesImporter.cs:108`; Discovery §12.3). Ese duplicado está fuera de
+los ensamblados de producto.
+
+**Seguimiento**: V6 lo deja registrado para G4 (P9.6); I-49 **no** modifica `tools/`. Tampoco lo absorberá la
+autoridad neutral de unidades del motor, a la que V6 asigna **únicamente** las conversiones genéricas de longitud (P9.5;
+ADR-0038 D3): un factor de masa por longitud de las secciones de catálogo no parece una de ellas *(inferencia)*.
