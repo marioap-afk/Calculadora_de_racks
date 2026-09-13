@@ -342,13 +342,28 @@ namespace RackCad.Tests
         /// <summary>
         /// La promesa que hace demostrable "cero mutación en fallo": el plan describe, no toca. Si un
         /// <c>ObjectId</c> entrara en la capa pura, la mitad del contrato dejaría de poder probarse aquí.
+        ///
+        /// <para>
+        /// I-49 G5 (V6 P28.4, guarda G5) la extiende al núcleo de expresiones, <c>RackCad.Application.Expressions</c>,
+        /// entero y con sus subcarpetas: parsear, enlazar y evaluar también son capa pura. La autoridad neutral de
+        /// unidades todavía no existe; cuando G6 la cree, entra aquí.
+        /// </para>
         /// </summary>
         [Fact]
         public void LA_CAPA_PURA_SIGUE_SIN_CONOCER_EL_DIBUJO()
         {
-            var carpeta = Path.Combine(RepoRoot().FullName, "src", "RackCad.Application", "ProjectVariables");
+            var application = Path.Combine(RepoRoot().FullName, "src", "RackCad.Application");
+            var nucleo = Path.Combine(application, "Expressions");
 
-            foreach (var file in Directory.GetFiles(carpeta, "*.cs"))
+            Assert.True(Directory.Exists(nucleo), "No existe el núcleo de expresiones: " + nucleo);
+
+            var archivosDelNucleo = Directory.GetFiles(nucleo, "*.cs", SearchOption.AllDirectories);
+            Assert.NotEmpty(archivosDelNucleo);
+
+            var archivos = Directory.GetFiles(Path.Combine(application, "ProjectVariables"), "*.cs")
+                .Concat(archivosDelNucleo);
+
+            foreach (var file in archivos)
             {
                 // Sin los comentarios: la prohibición es sobre el CÓDIGO. Nombrar lo que no se usa —«no lleva
                 // ObjectId»— es justamente la documentación de esta regla.
