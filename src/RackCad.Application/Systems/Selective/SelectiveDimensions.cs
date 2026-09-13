@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Drawing;
 using RackCad.Application.Geometry;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.Application.Systems.Selective
 {
     /// <summary>
-    /// Builds the linear-dimension instances for a selective rack view, gated by <see cref="SelectiveRackSystem.Dimensions"/>
-    /// (None/Minimal/Standard/Detailed). Pure — emits <see cref="HeaderBlockRole.Dimension"/> instances (two measured
+    /// Builds the linear-dimension instances for a selective rack view, gated by the view's EFFECTIVE detail: the rack's
+    /// <see cref="SelectiveRackSystem.Dimensions"/> (None/Minimal/Standard/Detailed) filtered by its per-view-kind policy
+    /// <see cref="SelectiveRackSystem.DimensionViews"/> through <see cref="DimensionViewPolicy.EffectiveDetail"/> (I-50,
+    /// ADR-0035; null = every view as before). Pure — emits <see cref="HeaderBlockRole.Dimension"/> instances (two measured
     /// points + a signed dimension-line offset) that the AutoCAD drawer materializes as RotatedDimensions on the
     /// dimensions layer. Sizes/offsets scale with the rack's annotation scale, so cotas and numbers stay proportional.
     /// </summary>
@@ -27,17 +30,23 @@ namespace RackCad.Application.Systems.Selective
         private const double ElevationStep = 14.0;
 
         /// <summary>How far below Y=0 the FRONTAL cotas reach (a positive magnitude), so an annotation (the frente number)
-        /// can be placed clear of them; 0 when dimensions are off. Minimal stops at the near chain; Standard/Detailed go
-        /// out to the overall (far) line.</summary>
+        /// can be placed clear of them; 0 when the frontal draws no dimensions. Minimal stops at the near chain;
+        /// Standard/Detailed go out to the overall (far) line. Same effective detail as <see cref="AddFrontal"/>.</summary>
         public static double FrontalBottomReach(SelectiveRackSystem system)
         {
-            if (system == null || system.Dimensions == DimensionDetail.None)
+            if (system == null)
+            {
+                return 0.0;
+            }
+
+            var detail = DimensionViewPolicy.EffectiveDetail(system.Dimensions, system.DimensionViews, DimensionViewKind.Frontal);
+            if (detail == DimensionDetail.None)
             {
                 return 0.0;
             }
 
             var scale = system.AnnotationScale > 0.0 ? system.AnnotationScale : 1.0;
-            return system.Dimensions == DimensionDetail.Minimal ? ChainGap * scale : (ChainGap + OverallGap) * scale;
+            return detail == DimensionDetail.Minimal ? ChainGap * scale : (ChainGap + OverallGap) * scale;
         }
 
         /// <summary>
@@ -52,7 +61,7 @@ namespace RackCad.Application.Systems.Selective
             ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, string view,
             IReadOnlyList<double> postX, IReadOnlyList<double> beamStartXs)
         {
-            var detail = system.Dimensions;
+            var detail = DimensionViewPolicy.EffectiveDetail(system.Dimensions, system.DimensionViews, DimensionViewKind.Frontal);
             if (detail == DimensionDetail.None || postX == null || postX.Count < 2 || system.Height <= 0.0)
             {
                 return;
@@ -132,7 +141,7 @@ namespace RackCad.Application.Systems.Selective
             ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, string view,
             IReadOnlyList<double> fondoFrontXs, IReadOnlyList<double> fondoDepths, IReadOnlyList<double> levelYs, double height)
         {
-            var detail = system.Dimensions;
+            var detail = DimensionViewPolicy.EffectiveDetail(system.Dimensions, system.DimensionViews, DimensionViewKind.Lateral);
             if (detail == DimensionDetail.None || fondoFrontXs == null || fondoFrontXs.Count == 0 || fondoDepths == null || height <= 0.0)
             {
                 return;
@@ -198,7 +207,7 @@ namespace RackCad.Application.Systems.Selective
             IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets, IReadOnlyList<double> fondoDepths,
             IReadOnlyList<double> beamLengths)
         {
-            var detail = system.Dimensions;
+            var detail = DimensionViewPolicy.EffectiveDetail(system.Dimensions, system.DimensionViews, DimensionViewKind.Planta);
             if (detail == DimensionDetail.None || frenteYs == null || frenteYs.Count < 2 || offsets == null || offsets.Count == 0 || fondoDepths == null)
             {
                 return;

@@ -172,6 +172,7 @@ namespace RackCad.Application.Systems.Dynamic
             design.DrawRackName = options.DrawRackName;
             design.AnnotationScale = options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0;
             design.Dimensions = options.Dimensions;
+            design.DimensionViews = options.DimensionViews; // I-50 C-09: las opciones mandan tras el snapshot, tal cual
             design.DimensionStyle = options.DimensionStyle;
             DynamicEditorSafety.CopyDrawable(design.SafetySelections, safetySelections);
             return design;

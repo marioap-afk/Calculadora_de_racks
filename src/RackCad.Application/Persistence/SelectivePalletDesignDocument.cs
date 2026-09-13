@@ -105,6 +105,15 @@ namespace RackCad.Application.Persistence
         /// <summary>Dimension detail (0=None..3=Detailed). Nullable so legacy designs (no field) keep dimensions off.</summary>
         public int? Dimensions { get; set; }
 
+        /// <summary>
+        /// I-50 (ADR-0035, C-06): en qué tipos de vista se dibujan las cotas. ADITIVO y ANULABLE: ausente o null es el
+        /// legacy exacto y no se escribe, así que un rack que no la usa conserva su JSON byte a byte. Cualquier
+        /// <c>int</c> (Int32) presente se conserva EXACTO en los dos sentidos: sin máscara, sin validar bits y sin
+        /// convertirlo nunca en null.
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? DimensionViews { get; set; }
+
         /// <summary>Chosen AutoCAD dimension style name (null/empty = automatic).</summary>
         public string DimensionStyle { get; set; }
 
@@ -266,6 +275,7 @@ namespace RackCad.Application.Persistence
             document.DrawPallets = design.DrawPallets;
             document.AnnotationScale = design.AnnotationScale;
             document.Dimensions = (int)design.Dimensions;
+            document.DimensionViews = (int?)design.DimensionViews; // I-50 C-06: el int exacto; null no se escribe
             document.DimensionStyle = design.DimensionStyle;
             document.SafetySelections = design.SafetySelections
                 .Where(s => s != null)
@@ -399,6 +409,7 @@ namespace RackCad.Application.Persistence
             design.DrawPallets = DrawPallets;
             design.AnnotationScale = AnnotationScale.HasValue && AnnotationScale.Value > 0.0 ? AnnotationScale.Value : 1.0;
             design.Dimensions = ToDimensionDetail(Dimensions);
+            design.DimensionViews = (DimensionViewVisibility?)DimensionViews; // I-50 C-06: cast crudo, sin máscara ni validación
             design.DimensionStyle = string.IsNullOrWhiteSpace(DimensionStyle) ? null : DimensionStyle.Trim();
             foreach (var safety in SafetySelections ?? Enumerable.Empty<SafetySelectionDocument>())
             {

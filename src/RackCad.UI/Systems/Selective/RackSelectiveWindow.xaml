@@ -57,10 +57,20 @@
                         <ComboBoxItem Content="Estándar" />
                         <ComboBoxItem Content="Detallado" />
                     </ComboBox>
+                    <!-- I-50 (ADR-0035): en qué TIPOS de vista del rack se dibujan las cotas. -->
+                    <TextBlock Text="Mostrar cotas en" Style="{StaticResource FieldLabel}" Margin="0,4,0,0" />
+                    <WrapPanel ToolTip="Por tipo de vista del rack: cada casilla vale para TODAS sus vistas de ese tipo (todas las frontales, todos los cortes laterales y la planta), también las que se inserten después. Con «Ninguna» no se dibuja ninguna cota.">
+                        <CheckBox x:Name="DimensionsFrontalCheck" Content="Frontal" Margin="0,2,12,0" Foreground="#415161"
+                                  Checked="DimensionViews_Changed" Unchecked="DimensionViews_Changed" />
+                        <CheckBox x:Name="DimensionsLateralCheck" Content="Lateral" Margin="0,2,12,0" Foreground="#415161"
+                                  Checked="DimensionViews_Changed" Unchecked="DimensionViews_Changed" />
+                        <CheckBox x:Name="DimensionsPlantaCheck" Content="Planta" Margin="0,2,0,0" Foreground="#415161"
+                                  Checked="DimensionViews_Changed" Unchecked="DimensionViews_Changed" />
+                    </WrapPanel>
                     <TextBlock Text="Estilo de cota" Style="{StaticResource FieldLabel}" Margin="0,4,0,0" />
                     <ComboBox x:Name="DimStyleBox" SelectionChanged="Dimensions_Changed"
                               ToolTip="Estilo de cota tomado de la tabla de estilos del dibujo actual de AutoCAD. «(Automático)» usa el estilo vigente con el tamaño según la escala de texto; un estilo elegido se respeta tal cual." />
-                    <TextBlock Text="La numeración y el nombre se dibujan en RACKCAD_ANOTACIONES; las cotas en RACKCAD_COTAS (las tres vistas)."
+                    <TextBlock Text="La numeración y el nombre se dibujan en RACKCAD_ANOTACIONES; las cotas en RACKCAD_COTAS, en los tipos de vista marcados."
                                Foreground="#8B98A6" FontSize="10.5" TextWrapping="Wrap" Margin="0,3,0,0" />
 
                     <TextBlock Text="Seguridad" Style="{StaticResource SectionTitle}" />

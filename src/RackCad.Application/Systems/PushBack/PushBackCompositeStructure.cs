@@ -855,6 +855,7 @@ namespace RackCad.Application.Systems.PushBack
                 DrawRackName = shared.DrawRackName,
                 AnnotationScale = shared.AnnotationScale,
                 Dimensions = shared.Dimensions,
+                DimensionViews = shared.DimensionViews,
                 DimensionStyle = shared.DimensionStyle
             };
 

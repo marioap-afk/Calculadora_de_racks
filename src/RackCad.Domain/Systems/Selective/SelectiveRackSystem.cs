@@ -82,6 +82,10 @@ namespace RackCad.Domain.Systems.Selective
         /// <summary>How much automatic dimensioning to draw per view (None = off).</summary>
         public DimensionDetail Dimensions { get; set; } = DimensionDetail.None;
 
+        /// <summary>I-50 (ADR-0035): en qué tipos de vista se dibujan las cotas. <c>null</c> = legacy exacto (todas con
+        /// <see cref="Dimensions"/>); un valor presente se conserva tal cual.</summary>
+        public DimensionViewVisibility? DimensionViews { get; set; }
+
         /// <summary>Name of the AutoCAD dimension style for the cotas; null/empty = automatic (current style, scaled).</summary>
         public string DimensionStyle { get; set; }
 

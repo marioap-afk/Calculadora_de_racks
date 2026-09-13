@@ -263,6 +263,27 @@ uno o varios destinos. Recorre lo que el alcance exija:
 - **`UNDO`** tras varios destinos: observa y registra cuántos pasos deshace.
 - **Guardar y reabrir**: las copias conservan identidad, nombre, vistas y enlaces.
 
+### 5.8 Cotas por tipo de vista
+
+Desde I-50, **Selectivo, Dinámico y Push Back** deciden en su editor —«Mostrar cotas en»: Frontal, Lateral,
+Planta— en qué **tipos** de vista se dibujan las cotas
+([ADR-0035](../adr/0035-visibilidad-de-cotas-por-tipo-de-vista.md)). Recorre lo que el alcance exija:
+
+- **Selección por tipo**: con un nivel de «Cotas» distinto de «Ninguna» y las tres casillas marcadas, el rack
+  dibuja como siempre. Desmarca una: todas las vistas de ese tipo pierden sus cotas y colocan sus etiquetas como
+  con «Ninguna», y las de los otros tipos no cambian.
+- **Tipo, no instancia**: todos los cortes laterales, la salida y la entrada del Dinámico, y los cortes frontales
+  de Push Back —los cuatro en un compuesto A/B, que comparte una sola política— siguen la MISMA casilla.
+- **Nivel y estilo globales**: con «Ninguna» no se dibuja ninguna cota, marque lo que marque; el nivel y el estilo
+  siguen siendo uno por rack.
+- **`RACKEDITAR` / `Actualizar`**, **guardar y reabrir**, **vistas hermanas** e **`Insertar {vista}`** después del
+  cambio: las casillas reaparecen igual y valen para todas las vistas del rack, también para las nuevas.
+- **Geometría y BOM**: no cambian con las casillas; compruébalo con `RACKBOMTOTAL`.
+- **`RACKLAYOUT`**: con las cotas de Planta ocultas, la huella de la rejilla puede reducirse, porque se mide por
+  los *extents* del bloque. Es consecuencia aceptada: regístrala, no la reportes como defecto.
+- **Legacy**: un rack dibujado antes de I-50 abre con las tres casillas marcadas y se redibuja EXACTAMENTE igual;
+  guardarlo sin tocarlas no cambia su dato.
+
 ## 6. Criterios de aprobación
 
 Una validación manual se aprueba solo si:

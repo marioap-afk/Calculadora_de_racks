@@ -1315,6 +1315,7 @@ namespace RackCad.Application.Systems.Selective
             design.DrawPallets = inputs.DrawPallets;
             design.AnnotationScale = inputs.AnnotationScale;
             design.Dimensions = inputs.Dimensions;
+            design.DimensionViews = inputs.DimensionViews; // I-50 C-03: tal cual, null incluido
             design.DimensionStyle = inputs.DimensionStyle;
             foreach (var safety in inputs.SafetySelections)
             {

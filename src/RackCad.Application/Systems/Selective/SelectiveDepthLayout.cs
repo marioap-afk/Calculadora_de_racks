@@ -81,6 +81,7 @@ namespace RackCad.Application.Systems.Selective
                 DrawPallets = system.DrawPallets,
                 AnnotationScale = system.AnnotationScale,
                 Dimensions = system.Dimensions,
+                DimensionViews = system.DimensionViews, // I-50 C-05: la frontal de cada fondo sigue la política exacta
                 DimensionStyle = system.DimensionStyle,
                 Name = system.Name
             };

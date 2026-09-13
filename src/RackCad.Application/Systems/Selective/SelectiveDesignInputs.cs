@@ -41,6 +41,10 @@ namespace RackCad.Application.Systems.Selective
         public bool DrawPallets { get; set; }
         public double AnnotationScale { get; set; }
         public DimensionDetail Dimensions { get; set; }
+
+        /// <summary>I-50 (C-02): la visibilidad de cotas por tipo de vista que el diseño recibe tal cual; null = legacy.</summary>
+        public DimensionViewVisibility? DimensionViews { get; set; }
+
         public string DimensionStyle { get; set; }
 
         /// <summary>The drawing-eligible safety selections, already filtered and deep-copied by the window (I-22 keeps

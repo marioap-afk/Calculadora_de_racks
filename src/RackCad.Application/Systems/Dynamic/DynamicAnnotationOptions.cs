@@ -14,6 +14,10 @@ namespace RackCad.Application.Systems.Dynamic
         public bool DrawRackName { get; set; }
         public double AnnotationScale { get; set; } = 1.0;
         public DimensionDetail Dimensions { get; set; } = DimensionDetail.None;
+
+        /// <summary>I-50 (C-08): la visibilidad de cotas por tipo de vista que el diseño recibe tal cual; null = legacy.</summary>
+        public DimensionViewVisibility? DimensionViews { get; set; }
+
         public string DimensionStyle { get; set; }
     }
 }

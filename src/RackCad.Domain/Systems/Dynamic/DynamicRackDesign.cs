@@ -73,6 +73,12 @@ namespace RackCad.Domain.Systems.Dynamic
         public bool DrawRackName { get; set; }
         public double AnnotationScale { get; set; } = 1.0;
         public DimensionDetail Dimensions { get; set; } = DimensionDetail.None;
+
+        /// <summary>I-50 (ADR-0035): en qué tipos de vista se dibujan las cotas. <c>null</c> = legacy exacto (todas con
+        /// <see cref="Dimensions"/>); un valor presente viaja y se conserva tal cual, sin máscara ni normalización. Push
+        /// Back lo hereda en su <c>Structure</c>.</summary>
+        public DimensionViewVisibility? DimensionViews { get; set; }
+
         public string DimensionStyle { get; set; }
 
         /// <summary>

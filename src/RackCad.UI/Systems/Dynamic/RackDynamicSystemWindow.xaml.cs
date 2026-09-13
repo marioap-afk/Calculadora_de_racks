@@ -14,6 +14,7 @@ using RackCad.Application.Geometry;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Selective;
@@ -162,6 +163,7 @@ namespace RackCad.UI.Systems.Dynamic
             SelectedIntermediateBeamBox.ItemsSource = IntermediateBeamOptions();
             KindBox.ItemsSource = new[] { KindHeader, KindSeparator };
             if (DimensionsBox != null) DimensionsBox.SelectedIndex = 0;
+            ShowDimensionViews(null); // I-50: a new system is legacy — the three view types shown on, nothing touched
             if (DimStyleBox != null)
             {
                 DimStyleBox.Items.Add(AutoDimStyle);
@@ -295,8 +297,75 @@ namespace RackCad.UI.Systems.Dynamic
                 Dimensions = (DimensionDetail)Math.Min(
                     (int)DimensionDetail.Detailed,
                     Math.Max(0, DimensionsBox?.SelectedIndex ?? 0)),
+                DimensionViews = SelectedDimensionViews(), // I-50 C-07
                 DimensionStyle = SelectedDimensionStyle()
             };
+
+        // ---- I-50 (C-07): cotas por TIPO de vista ------------------------------------------------------------------
+
+        /// <summary>
+        /// I-50 — la política de cotas por tipo de vista que trajo el diseño RESTAURADO. <c>null</c> es legacy: las tres
+        /// casillas se muestran activas, pero recalcular sin tocarlas vuelve a escribir <c>null</c>, no 7.
+        /// </summary>
+        private DimensionViewVisibility? loadedDimensionViews;
+
+        /// <summary>Si el USUARIO cambió alguna de las tres casillas desde la última restauración. Restaurar, recalcular,
+        /// cambiar el nivel o el estilo de cota no cuentan.</summary>
+        private bool dimensionViewsTouched;
+
+        /// <summary>
+        /// Adopta <paramref name="views"/> como la política restaurada y pinta las tres casillas desde ella. Se pinta bajo
+        /// <see cref="suppressRecompose"/>, el mismo interruptor con el que <see cref="RestoreFrom"/> sincroniza una carga,
+        /// así que sus Checked/Unchecked ni recalculan ni marcan «tocado» aunque una casilla cambie de verdad (MIN-4). Cada
+        /// casilla muestra la regla única de ADR-0035: ese tipo dibuja cotas si su detalle efectivo no es <c>None</c>.
+        /// </summary>
+        private void ShowDimensionViews(DimensionViewVisibility? views)
+        {
+            loadedDimensionViews = views;
+            dimensionViewsTouched = false;
+            if (DimensionsFrontalCheck == null || DimensionsLateralCheck == null || DimensionsPlantaCheck == null)
+            {
+                return;
+            }
+
+            var wasSuppressed = suppressRecompose;
+            suppressRecompose = true;
+            try
+            {
+                DimensionsFrontalCheck.IsChecked = ShowsCotas(views, DimensionViewKind.Frontal);
+                DimensionsLateralCheck.IsChecked = ShowsCotas(views, DimensionViewKind.Lateral);
+                DimensionsPlantaCheck.IsChecked = ShowsCotas(views, DimensionViewKind.Planta);
+            }
+            finally
+            {
+                suppressRecompose = wasSuppressed;
+            }
+        }
+
+        private static bool ShowsCotas(DimensionViewVisibility? views, DimensionViewKind kind)
+            => DimensionViewPolicy.EffectiveDetail(DimensionDetail.Minimal, views, kind) != DimensionDetail.None;
+
+        /// <summary>La política que se guarda: la restaurada, exacta, si el usuario no tocó las casillas; si las tocó, las tres
+        /// casillas con los bits desconocidos de la restaurada conservados (<see cref="DimensionViewPolicy.FromEditor"/>).</summary>
+        private DimensionViewVisibility? SelectedDimensionViews()
+            => DimensionViewPolicy.FromEditor(
+                loadedDimensionViews,
+                dimensionViewsTouched,
+                DimensionsFrontalCheck?.IsChecked == true,
+                DimensionsLateralCheck?.IsChecked == true,
+                DimensionsPlantaCheck?.IsChecked == true);
+
+        /// <summary>Una casilla de vista cambiada por el usuario: marca «tocado» y recalcula por el camino de las anotaciones.</summary>
+        private void DimensionViews_Changed(object sender, RoutedEventArgs e)
+        {
+            if (suppressRecompose)
+            {
+                return; // una restauración o el pintado de ShowDimensionViews: no es un gesto del usuario
+            }
+
+            dimensionViewsTouched = true;
+            Annotation_Changed(sender, e);
+        }
 
         private void Annotation_Changed(object sender, RoutedEventArgs e)
         {
@@ -2772,6 +2841,7 @@ namespace RackCad.UI.Systems.Dynamic
                 DimensionsBox.SelectedIndex = Math.Min(
                     (int)DimensionDetail.Detailed,
                     Math.Max(0, (int)loaded.Dimensions));
+                ShowDimensionViews(loaded.DimensionViews); // I-50 C-07: la política restaurada, sin marcar «tocado»
                 SelectDimensionStyle(loaded.DimensionStyle);
 
                 SeparatorCountBox.Text = system.SeparatorCountOverride?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;

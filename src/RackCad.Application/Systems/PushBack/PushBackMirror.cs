@@ -157,6 +157,7 @@ namespace RackCad.Application.Systems.PushBack
                 DrawRackName = source.DrawRackName,
                 AnnotationScale = source.AnnotationScale,
                 Dimensions = source.Dimensions,
+                DimensionViews = source.DimensionViews,
                 DimensionStyle = source.DimensionStyle,
                 Name = source.Name
             };
