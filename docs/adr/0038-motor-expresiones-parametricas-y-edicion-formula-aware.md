@@ -1,6 +1,6 @@
 # ADR-0038: Motor de expresiones paramétricas (ID22B, Expression Engine) y edición de fórmulas
 
-- **Estado:** aceptado
+- **Estado:** reemplazado por [ADR-0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md)
 - **Fecha:** 2026-09-13 (propuesto) · 2026-09-13 (aceptado)
 - **Decisores:** Mario Pérez, Owner del repositorio (**acepta**, 2026-09-13); Coordinador de I-49 y Arquitecto de
   I-49 (consenso técnico **AGREED WITH V6** sobre la Proposal V6, blob
@@ -1284,3 +1284,11 @@ implementación** sin modificar V6.
   [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md),
   [ADR-0025](0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) y
   [ADR-0035](0035-visibilidad-de-cotas-por-tipo-de-vista.md).
+
+## Notas posteriores
+
+- **2026-09-13 — Reemplazado por [ADR-0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md)**
+  (I-49), que el Owner aceptó ese mismo día. ADR-0040 conserva D1–D7 y D9–D25 sin cambiar su semántica y sustituye
+  solo la guarda de recurso del parser de D8 (Amendment A1). El contenido de este registro, incluida su aceptación del
+  2026-09-13, no se altera: un ADR aceptado es inmutable. Registro en
+  [`docs/automation/decisions/I-49.md`](../automation/decisions/I-49.md) §13.
