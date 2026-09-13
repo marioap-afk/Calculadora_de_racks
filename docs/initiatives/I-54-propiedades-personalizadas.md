@@ -26,8 +26,8 @@ automation:
 
 # I-54 — ID24 — Custom Properties Foundation
 
-> **Fase actual: G2-FREEZE COMPLETION — el Owner acepta ADR-0039 (“Acepto”) y el Consensus Freeze queda COMPLETO;
-> el commit que lo versiona esta pendiente de CI.**
+> **Fase actual: G3-CLOSE — sincronizacion documental tras G3. G3 queda COMPLETO y aceptado por el Coordinador; G4
+> no esta autorizado.**
 >
 > - Discovery: [I-54-discovery.md](I-54-discovery.md) (G1 `195964b`, equivalente post-rebase `97e27ea`).
 > - Proposal consensuada, inmutable: [I-54-proposal-v5.md](I-54-proposal-v5.md) @
@@ -36,7 +36,8 @@ automation:
 >   esta en la V5 §2.2, y el historial pre-rebase revisado queda preservado en el tag
 >   `archive/i-54-custom-properties-pre-rebase-5d25da8`.
 > - ADR: [ADR-0039](../adr/0039-custom-properties-persistencia-autoridad.md), `aceptado` (nacio `propuesto` en
->   `d84f480`). Registro de decisiones: [decisions/I-54.md](../automation/decisions/I-54.md), §11 para la aceptacion.
+>   `d84f480`). Registro de decisiones: [decisions/I-54.md](../automation/decisions/I-54.md), §11 para la aceptacion,
+>   §12 para la traza del freeze y §13 para el cierre de G3.
 > - Paquete de la ultima revision exact-SHA (G2J), limitado a AR-54-V4-01 / C-F3:
 >   [I-54-architect-review-package.md](I-54-architect-review-package.md).
 > - G2B cerrado: `Architect Review V1 = AGREED WITH CHANGES` (cambios V2-1..V2-22), incorporados en V2.
@@ -49,30 +50,59 @@ automation:
 >   `Architect = AGREED` sobre `26ca923`, sin hallazgos nuevos ni cambios requeridos.
 > - G2-FREEZE PREP hecho: `d84f480`, con ADR-0039 `propuesto`, F-01..F-14b en `ideas-futuras.md` y el tag de archivo;
 >   CI 34748982744 en verde.
-> - G2-FREEZE COMPLETION: el Owner acepta ADR-0039 de forma explicita, con la redaccion literal “Acepto”.
+> - G2-FREEZE COMPLETION hecho: el Owner acepta ADR-0039 de forma explicita, con la redaccion literal “Acepto”;
+>   `3866252`, CI 34750208424 en verde.
+> - G3 hecho, por orden del Coordinador tras el freeze completo: nucleo puro de Custom Properties en Application, con
+>   sus pruebas Core; `57f2b4e`, CI 34759032979 en verde. El Coordinador lo acepta.
 >
 > ```text
-> G2J                  = CLOSED
-> Proposal V5          = 26ca923492576185b753d6dbf2a852969df2accf
-> G2-FREEZE PREP       = d84f480f032f6a7e5e481359aeab9fd18f691fbf   (CI 34748982744 GREEN)
-> Coordinator          = AGREED
-> Architect            = AGREED
-> Technical Consensus  = REACHED
-> Owner ADR Acceptance = ACCEPTED   (literal: “Acepto”; 2026-09-13)
-> ADR-0039             = ACCEPTED
-> Consensus Freeze     = COMPLETE   (definido documentalmente en el commit de G2-FREEZE COMPLETION)
-> Completion commit    = PENDING CI (el freeze documental queda validado solo con la CI verde de ese commit)
-> Implementation       = BLOCKED    (hasta esa CI verde; despues, NOT STARTED)
-> G3                   = NOT AUTHORIZED (tras esa CI verde, READY FOR COORDINATOR AUTHORIZATION)
+> G2J                   = CLOSED
+> Proposal V5           = 26ca923492576185b753d6dbf2a852969df2accf
+> G2-FREEZE PREP        = d84f480f032f6a7e5e481359aeab9fd18f691fbf   (CI 34748982744 GREEN)
+> Coordinator           = AGREED
+> Architect             = AGREED
+> Technical Consensus   = REACHED
+> Owner ADR Acceptance  = ACCEPTED   (literal: “Acepto”; 2026-09-13)
+> ADR-0039              = ACCEPTED
+> Consensus Freeze      = COMPLETE
+> FREEZE_COMPLETION_SHA = 386625259922fc90ec735f739d4d5ed8e9510873
+> FREEZE_COMPLETION_CI  = 34750208424 success
+> G3 authorization      = Coordinator authorized after freeze completion
+> G3_SHA                = 57f2b4e062be6b8f83b27e0cdb1b2a42eb2a4799
+> G3_CI                 = 34759032979 success
+> Coordinator Review    = G3 ACCEPTED
+> G3                    = COMPLETE
+> Implementation        = STARTED
+> G4                    = NOT AUTHORIZED
+> Owner Validation      = NOT STARTED
 > ```
 >
-> **No hay una sola linea de produccion escrita.** Hay que distinguir dos cosas. El freeze documental ya esta
-> **definido**: consenso tecnico sobre V5, ADR-0039 aceptado y material de G2-FREEZE completo. El **commit** que lo
-> versiona espera todavia su CI. Hasta esa CI verde, la implementacion sigue bloqueada y G3 no esta autorizado;
-> despues, la orden de G3 la emite el Coordinador en una sesion posterior.
+> **G3 es el unico gate de implementacion ejecutado.** Entrego el nucleo puro de Custom Properties en Application:
 >
-> La rama esta rebasada sobre `origin/main` @ `f8deb67` (WORKFLOW §4.2) desde G2G; en G2I, en G2-FREEZE y en su
-> completion `main` no avanzo y no hubo rebase. Los veredictos pertenecen a sus SHAs y no se transfieren.
+> - **Modelo y documento puro**: `CustomPropertiesDocument` `{SchemaVersion, Entries[{Id, Name, Value}]}` y
+>   `CustomPropertyEntryDocument`, con `ExtensionData` en raiz y en entrada. La identidad estable es
+>   `CustomPropertyId`: GUID en forma D exacta, igual por valor, escrito en minusculas y con `Guid.Empty` invalido.
+> - **Store**: `CustomPropertiesStore` lee el payload tri-estado del NOD (`CustomPropertiesPayload`) y el miembro
+>   `JsonElement` del rack, clasifica en el orden de D-07.4 y serializa sin degradar la version.
+> - **Resultados tipados**: `CustomPropertiesReadResult` (Absent, Readable, PresentButUnreadable, IncompatibleMajor,
+>   AmbiguousIdentity y DepthLimitExceeded) y `CustomPropertiesMutationResult`, con rechazos
+>   `CustomPropertiesRejection`.
+> - **Validaciones**: UTF-16 bien formado; en `Name`, no-caracteres antes de NFC, NFC, limites y controles; en
+>   `Value`, limites y controles, sin normalizar nunca; profundidad <= 16. `CustomPropertiesWriteGuard` solo deja
+>   escribir sobre Absent y Readable.
+> - **Mutaciones puras**: `CustomPropertiesMutations` crea, renombra, cambia el valor y elimina sobre una copia, sin
+>   tocar lo leido. Eliminar la ultima entrada deja `Entries` vacio y conserva el contenedor.
+> - **Intent por id**: `CustomPropertiesIntent`. Toda operacion sobre una entrada existente va por id; el nombre nunca
+>   localiza.
+> - **Pruebas Core**: T-STO-01..20, T-MUT-01..06 y T-MUT-09, en verde.
+>
+> **G3 NO toco** el sobre exterior (`RackEmbedDocument`), `Compose`, la autoridad por `RackId`, Plugin, el NOD fisico,
+> UI ni AutoCAD; tampoco Domain ni las pruebas existentes. T-MUT-07, T-MUT-08 y T-MUT-10 son de G5. G4..G10 no se
+> inician sin orden propia del Coordinador.
+>
+> La rama esta rebasada sobre `origin/main` @ `f8deb67` (WORKFLOW §4.2) desde G2G. En G2I, en G2-FREEZE, en su
+> completion, en G3 y en G3-CLOSE `main` no avanzo y no hubo rebase. Los veredictos pertenecen a sus SHAs y no se
+> transfieren.
 
 > **Apertura por autorizacion explicita del Owner sin fila previa**, transmitida por el Coordinador de
 > I-54 — caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la
@@ -104,8 +134,10 @@ su revision de Arquitecto (G2B), la **reconciliacion** (Proposal V2, G2C), la re
 **segunda reconciliacion** (Proposal V3, G2E), la revision exact-SHA de V3 (G2F), la reconciliacion tras el rebase
 (Proposal V4, G2G), la revision exact-SHA de V4 (G2H) y la **reconciliacion final** (Proposal V5, G2I). Coordinador
 y Arquitecto convergieron sobre V5 en G2J. G2-FREEZE versiono ese consenso con ADR-0039 `propuesto`, el Owner lo
-acepto (“Acepto”) y G2-FREEZE COMPLETION completa el Consensus Freeze. Antes de escribir codigo faltan la CI verde de
-ese commit y la orden de G3 del Coordinador.
+acepto (“Acepto”) y G2-FREEZE COMPLETION completo el Consensus Freeze, con CI verde. Por orden del Coordinador, G3
+entrego la primera pieza de la fundacion: el nucleo puro de Application (documento, store, resultados tipados,
+validaciones y mutaciones por id) con sus pruebas Core. La fundacion no esta completa: faltan G4..G10, cada uno con su
+propia orden.
 
 ## 2. Problema
 
@@ -163,14 +195,15 @@ darlos por ciertos:
 4. **Publicacion** en la rama: informe Discovery; Proposal V1; mapa de archivos y simbolos con los cruces
    con las ramas activas; decisiones materiales; riesgos; recomendacion de ADR si/no; y un **paquete
    autonomo** para la revision de Arquitecto.
-5. **Implementacion**: sus gates son los de la Proposal V5 §14 (G3..G10), congelados por el consenso de G2J. **No
-   esta autorizada**: la aceptacion de ADR-0039 ya consta (“Acepto”), pero faltan la CI verde del commit de G2-FREEZE
-   COMPLETION y la orden de G3 del Coordinador.
+5. **Implementacion**: sus gates son los de la Proposal V5 §14 (G3..G10), congelados por el consenso de G2J. Esta
+   **iniciada**: con el freeze completo y su CI en verde, el Coordinador autorizo **solo G3**, que esta **COMPLETO**
+   (§8 y §14). **G4..G10 no estan autorizados**: cada gate exige su propia orden del Coordinador.
 
 ## 4. Fuera de alcance
 
 - **Cualquier cambio de produccion en G0, G1 y G2**: nada en `src/`, `tests/`, `assets/`, `eng/`,
-  `deploy/` ni `.github/`. **G3+ no se inicia.**
+  `deploy/` ni `.github/`. G3, por orden propia, solo toco Application pura y pruebas Core nuevas. **G4+ no se inicia
+  sin orden del Coordinador.**
 - `docs/HANDOFF.md`: prohibido por la orden y por [WORKFLOW](../WORKFLOW.md) seccion 2.
 - **La semantica de Project Variables** (I-47, ADR-0034) y de la **edicion vinculable** (I-48): una
   propiedad personalizada no es una variable de proyecto, y esta iniciativa no reabre esa semantica.
@@ -272,6 +305,19 @@ darlos por ciertos:
   - 0039 sigue siendo exclusivo de I-54 en todos los refs.
 
   `conflicts_with` sigue vacio.
+- **Paralelas en G3 y G3-CLOSE** ([decisions/I-54.md](../automation/decisions/I-54.md) §13). `main` sigue en
+  `f8deb67`, sin rebase.
+  - I-49: en G3 seguia en `82aa61b`; ahora esta en `c4880af`, su G5 productivo, publicado despues de G3. Es el nucleo
+    sintactico en `src/RackCad.Application/Expressions/`, con sus guardas y pruebas. Esas guardas barren Domain y
+    `Application/Expressions`, y la lista de tokens prohibidos en Application no nombra nada de G3. No toca Custom
+    Properties, el sobre ni `docs/adr/0039*`.
+  - I-52 @ `e998a2b`: un commit nuevo desde `8e2ae4f`, medido en G3. Solo documentacion: Proposal V5, ADR-0036 y su
+    registro.
+  - I-53 @ `f271fd5`: un commit nuevo desde `7de424e`, medido en G3. Es su G6 productivo, el consumidor Dinamico del
+    nucleo de cabeceras, en `Systems/Dynamic` de Application y Domain y en pruebas; queda fuera del mapa de I-54.
+  - 0039 sigue siendo exclusivo de I-54 en todos los refs.
+
+  `conflicts_with` sigue vacio.
 - **Cruce medido en G1** ([Discovery](I-54-discovery.md) §2 y §13): cruce **productivo** actual con I-49,
   I-50, I-52 e I-53 = **cero archivos** mientras I-54 no toque DTO ni Domain de sistema, editores de sistema,
   `RackEnvelopeRestamp` ni `RackCloner`. Cruce **documental** previsto con las cuatro (fila de ROADMAP tras I-51,
@@ -290,8 +336,11 @@ reaplica los commits existentes de I-54. G2-FREEZE toca ademas, conforme a la Pr
 Coordinador, `docs/adr/0039-custom-properties-persistencia-autoridad.md` (nuevo), `docs/adr/README.md` (fila del
 indice), `docs/automation/decisions/I-54.md` (nuevo) y `docs/ideas-futuras.md` (F-01..F-13, F-14a, F-14b y la mejora
 de D-11.6); no toca `docs/ROADMAP.md` ni `docs/HANDOFF.md`. G2-FREEZE COMPLETION toca solo ADR-0039 (encabezado y
-bloque «Aceptación del Owner»), `docs/adr/README.md`, `docs/automation/decisions/I-54.md` y este contrato. **Una
-desviacion material frente a esto obliga a detenerse.**
+bloque «Aceptación del Owner»), `docs/adr/README.md`, `docs/automation/decisions/I-54.md` y este contrato. G3, por
+orden del Coordinador, crea nueve archivos de produccion en `src/RackCad.Application/CustomProperties/` y
+`src/RackCad.Application/Persistence/CustomProperties*.cs`, crea tres archivos de pruebas Core en
+`tests/RackCad.Tests/CustomProperties*.cs` y anota la traza en `docs/automation/decisions/I-54.md`. G3-CLOSE toca solo
+este contrato y ese registro. **Una desviacion material frente a esto obliga a detenerse.**
 
 ## 8. Fases
 
@@ -299,24 +348,26 @@ desviacion material frente a esto obliga a detenerse.**
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** — bootstrap `f908b2f` |
 | G1 | Discovery | [I-54-discovery.md](I-54-discovery.md): informe por archivo/simbolo, H-1..H-8, mapa de cruces, riesgos y hallazgos fuera de alcance | **HECHA** — `195964b` |
-| G2 | Proposal y consenso | **G2A**: [Proposal V1](I-54-proposal-v1.md) y paquete de Arquitecto. **G2B**: Architect Review de V1. **G2C**: [Proposal V2](I-54-proposal-v2.md) y paquete reescrito. **G2D**: revision exact-SHA de V2. **G2E**: [Proposal V3](I-54-proposal-v3.md) y paquete reescrito. **G2F**: revision exact-SHA de V3, limitada a C-1..C-8. **G2G**: rebase obligatorio sobre `origin/main` y [Proposal V4](I-54-proposal-v4.md) con paquete reescrito para la revision exact-SHA (su SHA es el del commit que introduce la V4). **G2H**: revision exact-SHA post-rebase de V4, limitada a C-F1, C-F2 y la integridad del rebase. **G2I**: [Proposal V5](I-54-proposal-v5.md) (C-F3) y paquete reescrito para la revision final exact-SHA (su SHA es el del commit que introduce la V5). **G2J**: revision final exact-SHA de V5 por Coordinador y Arquitecto, limitada a AR-54-V4-01 / C-F3. **G2-FREEZE**: consenso, ADR `propuesto` y aprobacion del Owner. Cada una con orden propia. SHAs pre-rebase y sus equivalentes en la V5 §2.2 | **G2A HECHA** (`7c197af`); **G2B CERRADA** (AGREED WITH CHANGES sobre `7c197af`); **G2C HECHA** (`36c337b`); **G2D CERRADA** (AGREED WITH CHANGES sobre `36c337b`); **G2E HECHA** (`5d25da8`); **G2F CERRADA** (AGREED WITH CHANGES sobre `5d25da8`); **G2G HECHA** (`8bc991c`); **G2H CERRADA** (AGREED WITH CHANGES sobre `8bc991c`); **G2I HECHA** (`26ca923`); **G2J CERRADA** (Coordinator AGREED y Architect AGREED sobre `26ca923`); **G2-FREEZE PREP HECHA** (`d84f480`, CI 34748982744 verde); **G2-FREEZE COMPLETION**: ADR-0039 aceptado por el Owner (“Acepto”), Consensus Freeze COMPLETE, commit pendiente de CI |
-| G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates G3..G10 de la [Proposal V5](I-54-proposal-v5.md) §14, congelados por el consenso de G2J | **bloqueada**: G3 NOT AUTHORIZED hasta la CI verde del commit de G2-FREEZE COMPLETION; despues, READY FOR COORDINATOR AUTHORIZATION |
+| G2 | Proposal y consenso | **G2A**: [Proposal V1](I-54-proposal-v1.md) y paquete de Arquitecto. **G2B**: Architect Review de V1. **G2C**: [Proposal V2](I-54-proposal-v2.md) y paquete reescrito. **G2D**: revision exact-SHA de V2. **G2E**: [Proposal V3](I-54-proposal-v3.md) y paquete reescrito. **G2F**: revision exact-SHA de V3, limitada a C-1..C-8. **G2G**: rebase obligatorio sobre `origin/main` y [Proposal V4](I-54-proposal-v4.md) con paquete reescrito para la revision exact-SHA (su SHA es el del commit que introduce la V4). **G2H**: revision exact-SHA post-rebase de V4, limitada a C-F1, C-F2 y la integridad del rebase. **G2I**: [Proposal V5](I-54-proposal-v5.md) (C-F3) y paquete reescrito para la revision final exact-SHA (su SHA es el del commit que introduce la V5). **G2J**: revision final exact-SHA de V5 por Coordinador y Arquitecto, limitada a AR-54-V4-01 / C-F3. **G2-FREEZE**: consenso, ADR `propuesto` y aprobacion del Owner. Cada una con orden propia. SHAs pre-rebase y sus equivalentes en la V5 §2.2 | **G2A HECHA** (`7c197af`); **G2B CERRADA** (AGREED WITH CHANGES sobre `7c197af`); **G2C HECHA** (`36c337b`); **G2D CERRADA** (AGREED WITH CHANGES sobre `36c337b`); **G2E HECHA** (`5d25da8`); **G2F CERRADA** (AGREED WITH CHANGES sobre `5d25da8`); **G2G HECHA** (`8bc991c`); **G2H CERRADA** (AGREED WITH CHANGES sobre `8bc991c`); **G2I HECHA** (`26ca923`); **G2J CERRADA** (Coordinator AGREED y Architect AGREED sobre `26ca923`); **G2-FREEZE PREP HECHA** (`d84f480`, CI 34748982744 verde); **G2-FREEZE COMPLETION HECHA** (`3866252`, CI 34750208424 verde): ADR-0039 aceptado por el Owner (“Acepto”), Consensus Freeze COMPLETE |
+| G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates G3..G10 de la [Proposal V5](I-54-proposal-v5.md) §14, congelados por el consenso de G2J | **iniciada**: **G3 HECHA** (`57f2b4e`, CI 34759032979 verde; aceptada por el Coordinador), G3 COMPLETE; **G3-CLOSE**: sincronizacion documental; **G4..G10 NOT AUTHORIZED**, cada uno con su propia orden del Coordinador; Owner Validation NOT STARTED |
 
 Ninguna fase posterior arranca sin que la anterior tenga evidencia revisable.
 
 ## 9. Pruebas y builds
 
-Las fija la Proposal V5 §12, congelada por el consenso de G2J, y se ejecutan a partir de G3, que no esta
-autorizado. Lo que ya es exigible por norma y no depende de G2: las **dos suites** en local sobre el Candidato,
-**CI verde sobre el SHA exacto**, y builds Debug de UI y de Plugin (AGENTS.md, «Pruebas — definicion de
-terminado»). G0, G1 y G2 no producen codigo: su evidencia es documental.
+Las fija la Proposal V5 §12, congelada por el consenso de G2J, y se ejecutan a partir de G3. Lo que ya es exigible
+por norma y no depende de G2: las **dos suites** en local sobre el Candidato, **CI verde sobre el SHA exacto**, y
+builds Debug de UI y de Plugin (AGENTS.md, «Pruebas — definicion de terminado»). G0, G1 y G2 no producen codigo: su
+evidencia es documental. G3 si produce codigo, y su evidencia es la suite Core en local mas la CI verde sobre su SHA
+exacto (§14). G3 no es Candidato: por LC-UI, la evidencia de UI de `57f2b4e` es la de su CI. La UI Full local y los
+builds Debug de UI y de Plugin en local no se ejecutaron en G3; se exigen sobre el SHA del Candidato.
 
 ## 10. Validacion manual
 
 **Requerida** en la implementacion: persistir datos del usuario en el DWG y hacerlos sobrevivir a
 `RACKEDITAR`, a la duplicacion y a guardar/reabrir cambia el comportamiento del dibujo (AGENTS.md,
 punto 5). El **checklist concreto** es OV-01..OV-14 de la Proposal V5 §12.8, en G9. G0, G1 y G2 **no** la
-requieren: no tocan producto.
+requieren: no tocan producto. G3 tampoco: es nucleo puro, sin AutoCAD. **Owner Validation = NOT STARTED.**
 
 ## 11. Criterios de aceptacion
 
@@ -334,15 +385,16 @@ limite expreso de la orden:
 
 ## 12. Condiciones para detenerse
 
-- **COMPUERTA VIGENTE — G2-FREEZE COMPLETION, solo documentacion.** Registra la aceptacion del Owner, cambia
-  ADR-0039 a `aceptado` y completa el Consensus Freeze. Sin produccion, sin pruebas productivas, sin tag nuevo y sin
-  tocar `docs/ideas-futuras.md`, `docs/HANDOFF.md` ni `docs/ROADMAP.md`. G3+ no se inicia. (La preparacion del
-  freeze quedo en `d84f480`: ADR `propuesto`, F-01..F-13, F-14a, F-14b y la mejora de D-11.6, y tag `archive/*`.)
-- **Implementacion bloqueada** hasta que se cumplan todas estas condiciones:
+- **COMPUERTA VIGENTE — G3-CLOSE, solo documentacion.** Sincroniza este contrato y el registro de decisiones con G3
+  ya completo. Sin produccion, sin pruebas, sin AutoCAD y sin tocar la Proposal V5, ADR-0039, el Discovery,
+  `docs/ideas-futuras.md`, `docs/HANDOFF.md` ni `docs/ROADMAP.md`. G4+ no se inicia. (El freeze quedo en `d84f480` y
+  `3866252`; G3, en `57f2b4e`.)
+- **Condiciones para iniciar la implementacion**, todas **cumplidas**:
   - `Coordinator = AGREED` y `Architect = AGREED` sobre la **misma** Proposal: **cumplida** en G2J, sobre `26ca923`;
   - aceptacion **explicita** de ADR-0039 por el Owner: **cumplida** (“Acepto”, 2026-09-13);
-  - CI verde del commit de G2-FREEZE COMPLETION: **pendiente**;
-  - la orden de G3 del Coordinador, en una sesion posterior.
+  - CI verde del commit de G2-FREEZE COMPLETION: **cumplida** (`3866252`, CI 34750208424 `success`);
+  - la orden de G3 del Coordinador: **cumplida**, limitada a G3.
+- **Cada gate posterior, de G4 a G10, exige su propia orden del Coordinador.** Sin ella, G4+ no se inicia.
 - Si G1 encuentra **archivos productivos compartidos materiales con I-49, I-50 o I-52**: reportarlo antes
   de continuar.
 - Si la Proposal exige cambiar el **formato persistido existente** (major de `RackEmbedDocument`, forma de
@@ -576,5 +628,53 @@ G3                  = NOT AUTHORIZED hasta esa CI verde; despues, READY FOR COOR
 
 Sin compilacion ni pruebas del repositorio: G2-FREEZE COMPLETION no produce codigo. El SHA de este commit y su CI se
 reportan al Coordinador.
+
+**G3 — store puro, resultados tipados y mutaciones puras.** Es el primer gate de implementacion, por orden del
+Coordinador (`IMPLEMENTATION AUTHORIZED FOR G3 ONLY`). Sin rebase: `main` no avanzo.
+
+- **Freeze verificado**: `386625259922fc90ec735f739d4d5ed8e9510873`, CI 34750208424 `success` con los cuatro jobs en
+  verde; se anota en el registro de decisiones, §11 y §12.
+- **Produccion**, solo Application pura:
+  - `CustomProperties/`: `CustomPropertyId`, `CustomPropertyText`, `CustomPropertiesIntent` y
+    `CustomPropertiesMutations`;
+  - `Persistence/`: `CustomPropertiesDocument`, `CustomPropertiesPayload`, `CustomPropertiesReadResult`,
+    `CustomPropertiesWriteGuard` y `CustomPropertiesStore`.
+- **Pruebas Core nuevas**: `CustomPropertiesStoreTests`, `CustomPropertiesMutationTests` y `CustomPropertiesTestKit`,
+  con T-STO-01..20, T-MUT-01..06 y T-MUT-09.
+  - **RED** antes de producir: la compilacion falla solo por los tipos de G3 ausentes; sobre un esqueleto temporal, que
+    nunca se versiono, fallan 244 de 245 casos.
+  - **GREEN**: focal 245/245, impacto 1032/1032 y Core completa 6533/6533 con 0 omitidas, antes del commit y otra vez
+    sobre `57f2b4e` con el arbol limpio.
+- **Commit** `57f2b4e062be6b8f83b27e0cdb1b2a42eb2a4799`. CI 34759032979 (push) `success` sobre ese head_sha exacto, con
+  los cuatro jobs en verde: Tests (Domain + Application), Build UI, UI Tests y Build Plugin without AutoCAD.
+- **No toco**: el sobre exterior, `Compose`, la autoridad por `RackId`, Plugin, el NOD fisico, UI, AutoCAD, Domain ni
+  las pruebas existentes. Tampoco la Proposal V5, ADR-0039, el Discovery, `ideas-futuras.md`, `ROADMAP.md` ni
+  `HANDOFF.md`.
+- **Revision del Coordinador**: G3 = ACCEPTED / COMPLETE. Las precisiones de profundidad y de unificacion quedan en el
+  registro de decisiones, §13.
+
+**G3-CLOSE — sincronizacion documental tras G3.** Solo documentacion, sin rebase: `main` no avanzo.
+
+- **G3 verificado**: la rama esta en `57f2b4e062be6b8f83b27e0cdb1b2a42eb2a4799`, igual a su upstream, y la CI
+  34759032979 dio `success` sobre ese SHA exacto.
+- **Contrato**: este archivo deja de describir el estado anterior a G3 y registra G3 COMPLETE, Implementation STARTED,
+  G4 NOT AUTHORIZED y Owner Validation NOT STARTED. Las entradas anteriores de esta seccion se conservan como historia.
+  El campo `status` sigue en `claimed`, como en las demas iniciativas en implementacion: Git y la evidencia prevalecen
+  sobre el ([README](README.md)).
+- **[decisions/I-54.md](../automation/decisions/I-54.md) §13**: traza de G3 COMPLETION, sin reescribir §1..§12.
+- No cambian la Proposal V5, ADR-0039, el Discovery, `ideas-futuras.md`, `ROADMAP.md`, `HANDOFF.md`, `src/` ni
+  `tests/`.
+
+```text
+Consensus Freeze = COMPLETE
+ADR-0039         = ACCEPTED
+G3               = COMPLETE
+Implementation   = STARTED
+G4               = NOT AUTHORIZED
+Owner Validation = NOT STARTED
+```
+
+Sin compilacion ni pruebas del repositorio: G3-CLOSE no produce codigo. El SHA de este commit y su CI se reportan al
+Coordinador.
 
 El resto de la evidencia se acumula al cerrar cada fase.
