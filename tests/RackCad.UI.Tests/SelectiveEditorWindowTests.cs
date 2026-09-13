@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Controls;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
 using RackCad.UI.Systems.Selective;
 using Xunit;
@@ -117,6 +119,93 @@ namespace RackCad.UI.Tests
             Assert.True(corresponds);
         }
 
+        // ---- I-50, T-21: the policy the user chose reaches the drawing through the real "Actualizar" ----
+
+        /// <summary>
+        /// I-50 T-21 (G3). The three «Mostrar cotas en» boxes are driven like a user would (outside a load), the REAL
+        /// "Actualizar" handler builds the payload, and the drawing built from it follows the policy per view TYPE: an
+        /// enabled type draws exactly its legacy view (same signature as the untouched legacy rack), a disabled type draws
+        /// no dimension. The payload still corresponds strictly (design → resolve == system), so the policy travels in the
+        /// DESIGN that gets embedded, not only in the system. Legacy stays null.
+        /// </summary>
+        [Fact]
+        public void T21_ExistingRack_Update_ThePolicyTheUserChose_ReachesEveryDrawnViewByType()
+        {
+            var outcomes = StaTestRunner.Run(() => new[]
+            {
+                UpdateWith("legacy"),
+                UpdateWith("F", "DimensionsLateralCheck", "DimensionsPlantaCheck"),
+                UpdateWith("L", "DimensionsFrontalCheck", "DimensionsPlantaCheck"),
+                UpdateWith("F|P", "DimensionsLateralCheck")
+            }.ToDictionary(outcome => outcome.Case));
+
+            var legacy = outcomes["legacy"];
+            Assert.Null(legacy.Policy);
+            Assert.True(legacy.Corresponds);
+            Assert.True(legacy.Frontal.Dimensions > 0 && legacy.Lateral.Dimensions > 0 && legacy.Planta.Dimensions > 0,
+                "the legacy rack draws dimensions in its three view types");
+
+            foreach (var (key, policy, frontal, lateral, planta) in new[]
+                     {
+                         ("F", 1, true, false, false),
+                         ("L", 2, false, true, false),
+                         ("F|P", 5, true, false, true)
+                     })
+            {
+                var outcome = outcomes[key];
+                Assert.Equal(policy, outcome.Policy);
+                Assert.True(outcome.Corresponds, key + ": payload design and system must correspond");
+                AssertView(key + " frontal", frontal, legacy.Frontal, outcome.Frontal);
+                AssertView(key + " lateral", lateral, legacy.Lateral, outcome.Lateral);
+                AssertView(key + " planta", planta, legacy.Planta, outcome.Planta);
+            }
+        }
+
+        private static void AssertView(string what, bool on, (int Dimensions, string Signature) legacy, (int Dimensions, string Signature) actual)
+        {
+            if (on)
+            {
+                Assert.True(legacy.Signature == actual.Signature, what + ": an enabled view type must draw exactly its legacy view");
+            }
+            else
+            {
+                Assert.True(actual.Dimensions == 0, $"{what}: a disabled view type drew {actual.Dimensions} dimension(s)");
+            }
+        }
+
+        /// <summary>Open an existing rack with dimensions on (Standard, legacy policy), untick the named boxes as the user
+        /// would, press the real "Actualizar", and sign each view type of the payload's system.</summary>
+        private static (string Case, int? Policy, bool Corresponds, (int Dimensions, string Signature) Frontal, (int Dimensions, string Signature) Lateral, (int Dimensions, string Signature) Planta)
+            UpdateWith(string key, params string[] untick)
+        {
+            var design = MinimalDesign();
+            design.Dimensions = DimensionDetail.Standard;
+            var window = SelectiveWindowTestSupport.Open(canInsertInAutoCad: true);
+            window.LoadExisting(SelectivePalletDesignDocument.From(design, "GUID-SEL", "Selectivo A"));
+            foreach (var name in untick)
+            {
+                ((CheckBox)window.FindName(name)).IsChecked = false;
+            }
+
+            EditorWindowTestSupport.ClickNamed(window, "UpdateButton");
+            var system = window.SystemToInsert;
+            var payload = window.DesignToInsert;
+            var policy = payload?.DimensionViews;
+            return (key,
+                policy.HasValue ? (int)policy.Value : (int?)null,
+                system != null && payload != null && Corresponds(payload, system),
+                ViewSignature(FrontalInstances(system)),
+                ViewSignature(LateralInstances(system)),
+                ViewSignature(PlantaInstances(system)));
+        }
+
+        private static (int Dimensions, string Signature) ViewSignature(IEnumerable<HeaderBlockInstance> instances)
+        {
+            var list = instances.ToList();
+            return (list.Count(i => i.Role == HeaderBlockRole.Dimension),
+                string.Join("\n", list.Select(InstanceKey).OrderBy(s => s, StringComparer.Ordinal)));
+        }
+
         // ---- Helpers ----
 
         private static (bool Requested, string View, bool UpdateOnly, string Id, string Name, string RequestType, bool Corresponds) Capture(RackSelectiveWindow window)
@@ -143,22 +232,34 @@ namespace RackCad.UI.Tests
         /// InstanceKey), plus the resolved height. Mirrors the pattern in SelectiveEditorStateAdoptionTests.</summary>
         private static string DrawingSignature(SelectiveRackSystem system)
         {
-            var catalog = Catalog;
             var instances = new List<HeaderBlockInstance>();
-
-            var fondoCount = SelectiveDepthLayout.Count(system);
-            var frontal = new SelectiveFrontalBuilder();
-            for (var fondo = 0; fondo < fondoCount; fondo++)
-            {
-                instances.AddRange(frontal.Build(SelectiveDepthLayout.FondoSystemView(system, fondo), catalog));
-            }
-
-            instances.AddRange(new SelectivePlantaBuilder().Build(system, catalog));
-            instances.AddRange(new SelectiveLateralBuilder().Cortes(system, catalog).SelectMany(c => c.Largueros));
+            instances.AddRange(FrontalInstances(system));
+            instances.AddRange(PlantaInstances(system));
+            instances.AddRange(LateralInstances(system));
 
             var keys = instances.Select(InstanceKey).OrderBy(s => s, StringComparer.Ordinal);
             return "H=" + system.Height.ToString("R", CultureInfo.InvariantCulture) + "\n" + string.Join("\n", keys);
         }
+
+        /// <summary>The frontal of every fondo (each through <c>FondoSystemView</c>, as the plugin draws it).</summary>
+        private static IEnumerable<HeaderBlockInstance> FrontalInstances(SelectiveRackSystem system)
+        {
+            var catalog = Catalog;
+            var frontal = new SelectiveFrontalBuilder();
+            var instances = new List<HeaderBlockInstance>();
+            for (var fondo = 0; fondo < SelectiveDepthLayout.Count(system); fondo++)
+            {
+                instances.AddRange(frontal.Build(SelectiveDepthLayout.FondoSystemView(system, fondo), catalog));
+            }
+
+            return instances;
+        }
+
+        private static IEnumerable<HeaderBlockInstance> PlantaInstances(SelectiveRackSystem system)
+            => new SelectivePlantaBuilder().Build(system, Catalog);
+
+        private static IEnumerable<HeaderBlockInstance> LateralInstances(SelectiveRackSystem system)
+            => new SelectiveLateralBuilder().Cortes(system, Catalog).SelectMany(c => c.Largueros);
 
         private static string InstanceKey(HeaderBlockInstance i)
         {

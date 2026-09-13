@@ -14,6 +14,7 @@ using RackCad.Application.RackFrames;
 using RackCad.Application.Settings;
 using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
@@ -259,6 +260,7 @@ namespace RackCad.UI.Systems.Selective
             RefreshPostSelect();
             UpdateInsertButtons();
             DimensionsBox.SelectedIndex = 0; // "Ninguna" — cotas off by default
+            ShowDimensionViews(null);            // I-50: a new rack is legacy — the three view types shown on, nothing touched
             DimStyleBox.Items.Add(AutoDimStyle); // populated with the drawing's styles later via SetDimensionStyles
             DimStyleBox.SelectedIndex = 0;
             initialized = true; // from here on, field edits live-apply (see GlobalScalar_* / Post_Changed / BayCount_*)
@@ -1699,6 +1701,66 @@ namespace RackCad.UI.Systems.Selective
             Recompute();
         }
 
+        // ---- I-50 (C-01): cotas por TIPO de vista ------------------------------------------------------------------
+
+        /// <summary>
+        /// I-50 — la política de cotas por tipo de vista que trajo el diseño CARGADO. <c>null</c> es legacy: las tres
+        /// casillas se muestran activas, pero guardar sin tocarlas vuelve a escribir <c>null</c>, no 7.
+        /// </summary>
+        private DimensionViewVisibility? loadedDimensionViews;
+
+        /// <summary>Si el USUARIO cambió alguna de las tres casillas desde la última carga. Cargar, recargar o recalcular no
+        /// cuentan, y cambiar el nivel o el estilo de cota tampoco.</summary>
+        private bool dimensionViewsTouched;
+
+        /// <summary>True mientras el código pinta las casillas: sus Checked/Unchecked no son un gesto del usuario.</summary>
+        private bool showingDimensionViews;
+
+        /// <summary>
+        /// Adopta <paramref name="views"/> como la política cargada y pinta las tres casillas desde ella, sin marcar
+        /// «tocado» aunque alguna casilla cambie de verdad (MIN-4). Cada casilla muestra lo que dice la regla única de
+        /// ADR-0035: ese tipo dibuja cotas si su detalle efectivo no es <c>None</c>; así <c>null</c> sale activa y los
+        /// bits desconocidos no se ven, sin repetir aritmética de bits en la ventana.
+        /// </summary>
+        private void ShowDimensionViews(DimensionViewVisibility? views)
+        {
+            loadedDimensionViews = views;
+            dimensionViewsTouched = false;
+            showingDimensionViews = true;
+            try
+            {
+                DimensionsFrontalCheck.IsChecked = ShowsCotas(views, DimensionViewKind.Frontal);
+                DimensionsLateralCheck.IsChecked = ShowsCotas(views, DimensionViewKind.Lateral);
+                DimensionsPlantaCheck.IsChecked = ShowsCotas(views, DimensionViewKind.Planta);
+            }
+            finally
+            {
+                showingDimensionViews = false;
+            }
+        }
+
+        private static bool ShowsCotas(DimensionViewVisibility? views, DimensionViewKind kind)
+            => DimensionViewPolicy.EffectiveDetail(DimensionDetail.Minimal, views, kind) != DimensionDetail.None;
+
+        /// <summary>La política que se guarda: la cargada, exacta, si el usuario no tocó las casillas; si las tocó, las tres
+        /// casillas con los bits desconocidos de la cargada conservados (<see cref="DimensionViewPolicy.FromEditor"/>).</summary>
+        private DimensionViewVisibility? SelectedDimensionViews()
+            => DimensionViewPolicy.FromEditor(
+                loadedDimensionViews,
+                dimensionViewsTouched,
+                DimensionsFrontalCheck.IsChecked == true,
+                DimensionsLateralCheck.IsChecked == true,
+                DimensionsPlantaCheck.IsChecked == true);
+
+        /// <summary>Una casilla de vista cambiada por el usuario: marca «tocado» y recalcula, igual que el nivel de cotas.</summary>
+        private void DimensionViews_Changed(object sender, RoutedEventArgs e)
+        {
+            if (showingDimensionViews) return;
+            dimensionViewsTouched = true;
+            if (!initialized) return;
+            Recompute();
+        }
+
         /// <summary>The "(Automático)" entry: the current DIMSTYLE sized to the annotation scale (no named style).</summary>
         private const string AutoDimStyle = "(Automático)";
 
@@ -2336,6 +2398,7 @@ namespace RackCad.UI.Systems.Selective
                 DrawPallets = DrawPalletsCheck.IsChecked == true,
                 AnnotationScale = UiSupport.TryNum(AnnotationScaleBox.Text, out var annScale) && annScale > 0.0 ? annScale : 1.0,
                 Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex)),
+                DimensionViews = SelectedDimensionViews(), // I-50 C-01
                 DimensionStyle = SelectedDimStyle(),
                 SafetySelections = safetySelections
                     .Where(s => SafetyDraws(s) && !string.IsNullOrWhiteSpace(s.ElementId))
@@ -2684,6 +2747,7 @@ namespace RackCad.UI.Systems.Selective
             DrawPalletsCheck.IsChecked = design.DrawPallets;
             AnnotationScaleBox.Text = (design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0).ToString(CultureInfo.InvariantCulture);
             DimensionsBox.SelectedIndex = (int)design.Dimensions;
+            ShowDimensionViews(design.DimensionViews); // I-50 C-01: la política cargada, sin marcar «tocado»
             SelectDimStyle(design.DimensionStyle);
 
             safetySelections.Clear();
