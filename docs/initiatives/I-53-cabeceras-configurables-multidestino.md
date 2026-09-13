@@ -16,7 +16,7 @@ decision_paths: []
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
-requires_owner_decision:
+requires_owner_decision: true
 requires_owner_validation: true
 automation:
   enabled: false
@@ -26,10 +26,10 @@ automation:
 
 # I-53 — Cabecera configurable: configuracion origen hacia conjuntos de destinos en todos los sistemas
 
-> **Fase actual: G1 CERRADO — Discovery en [I-53-discovery.md](I-53-discovery.md).** No hay contrato de
-> autoridad (G2 **no abierto**) y **no hay una sola linea de produccion escrita**. G1 declara decisiones
-> arquitectonicas materiales (AM-1..AM-4) para **revision de Arquitecto antes de G2** y decisiones del Owner
-> (OD-1..OD-7). La implementacion esta BLOQUEADA (seccion 12).
+> **Fase actual: G2 ABIERTO, no cerrado — [Proposal V1](I-53-proposal-v1.md) publicada** con su paquete de
+> revision de Arquitecto (Anexo A). Arquitecto **PENDING** (AM-1..AM-4); Owner **PENDING** (OD-2..OD-7); OD-1
+> **RESUELTA**. G1 cerrado en [I-53-discovery.md](I-53-discovery.md). **No hay una sola linea de produccion
+> escrita**, G3 no esta abierto y la implementacion esta BLOQUEADA (seccion 12).
 
 > **Apertura por autorizacion explicita del Owner sin fila previa** — caso (d) de
 > [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la preexistencia de
@@ -40,8 +40,7 @@ automation:
 
 ```text
 Initiative = I-53
-Owner IDs  = ID6, ID7 (citados por la autorizacion como columnas «pendiente» de la matriz de G1;
-             su texto vive en la numeracion del Owner y NO esta versionado en el arbol)
+Owner IDs  = ID6 REUSE + ID7 BATCH DISTRIBUTION   (OD-1 RESUELTA por la autorizacion original; seccion 1)
 Branch     = feature/cabeceras-configurables-multidestino
 Worktree   = ~/.codex/worktrees/feature-cabeceras-configurables-multidestino
 BASE_SHA   = 46fcac2b071929d2bd5b07aa28373941417f74a8   (origin/main, merge de I-51)
@@ -62,10 +61,18 @@ seleccion. El Selectivo tiene, desde I-43, autoridad de cabecera por `(FondoInde
 destinos `TargetFondos × Scope`. Que le falta a cada sistema, y si un contrato compartido lo cierra
 sin reabrir lo entregado, es la pregunta de G1 —no una respuesta de este contrato—.
 
-La autorizacion nombra **ID6** e **ID7** como lo pendiente que la matriz de G1 debe medir por
-sistema. **Este contrato no redacta su texto**: G1 los lee solo a traves de la evidencia y de lo que
-la autorizacion enuncia, y cualquier lectura que no se sostenga en ambos se declara como pregunta al
-Owner.
+**OD-1 — RESUELTA por la autorizacion original (G2).** Texto vinculante:
+
+- **ID6 — REUSE**: el usuario selecciona una configuracion de cabecera existente como SOURCE; reutilizar
+  significa COPIAR sus valores authored, sin live link, sin instancia mutable compartida y sin referencia viva.
+  Despues de aplicar, source y destination son independientes.
+- **ID7 — BATCH DISTRIBUTION**: una source configuration se aplica a un CONJUNTO de destinos compatibles.
+  Source y Destinations son conceptos separados, sin una lista ambigua que los mezcle. La taxonomia de destinos
+  no es universal: cada sistema traduce sus destinos al contrato comun.
+
+Sistemas **en alcance** tras G1: **Selectivo** y **Dinamico**. Push Back = ALREADY DONE (precedente y
+regresion). Cabecera independiente, Cantilever, Cama, Larguero y Drive-In: **N/A**. El contrato propuesto vive
+en la [Proposal V1](I-53-proposal-v1.md) hasta que G2 se cierre.
 
 ## 2. Problema
 
@@ -146,8 +153,12 @@ Lo que ya consta, sin afirmar nada que G1 deba verificar:
   **I-52** (`feature/rackmirror-espejo-semantico`) e **I-54** (`architecture/propiedades-personalizadas`).
   `conflicts_with` queda **vacio** hasta que G1 mida el cruce real de archivos: no se declara un
   estorbo sin evidencia, ni se omite uno que la tenga.
-- **Entrada del Owner**: probable, porque el texto de ID6 e ID7 no esta versionado. Aun asi
-  `requires_owner_decision` queda **vacio** hasta G1, en vez de fijarse por analogia.
+- **Serializacion con I-50 (vinculante, Coordinador en G2).** Ningun gate de UI de I-53 edita
+  `RackSelectiveWindow.xaml/.cs`, `RackDynamicSystemWindow.xaml/.cs`, los censos de `x:Name` ni sus pruebas de
+  UI mientras el G3 de I-50 este abierto o sin integrar. No bloquea G2 ni los gates de Application.
+  `conflicts_with` sigue vacio porque el campo no puede expresar un conflicto limitado a unos gates; el detalle
+  vive aqui y en la Proposal V1 §10.
+- **Entrada del Owner**: requerida (`requires_owner_decision: true`): OD-2..OD-7 de la Proposal V1 §16.
 
 ## 7. Archivos esperados
 
@@ -165,8 +176,8 @@ editores grandes y los DTO de sistema son **archivos calientes** ([WORKFLOW](../
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
 | G1 | Discovery | Informe por archivo/simbolo/SHA con las respuestas de la seccion 3, punto 2 | **HECHA** — [I-53-discovery.md](I-53-discovery.md) |
-| G2 | Contrato | Origen, destinos, copia y atomicidad; revision de Arquitecto (AM-1..AM-4) y decisiones del Owner (OD-1..OD-7) declaradas en el Discovery §18 | pendiente — **no abierto** |
-| G3+ | Implementacion, Candidato, validacion del Owner, integracion | Por definir **en G2**, no aqui | bloqueada |
+| G2 | Contrato | Origen, destinos, copia y atomicidad; revision de Arquitecto (AM-1..AM-4) y decisiones del Owner (OD-2..OD-7) | **EN CURSO** — [Proposal V1](I-53-proposal-v1.md) publicada; **no cerrado** |
+| G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates G3..G10 **propuestos** en la Proposal V1 §11; se fijan al cerrar G2 | bloqueada |
 
 Ninguna fase posterior arranca sin que la anterior tenga evidencia revisable.
 
@@ -199,8 +210,12 @@ Preliminares; **los fija G2**. Solo recogen lo que la autorizacion enuncia:
 
 ## 12. Condiciones para detenerse
 
-- **COMPUERTA DE ESTA SESION — G0 y G1 solamente.** Ninguna linea de produccion. G2 no se abre; G3+
-  queda bloqueado hasta cerrar G2.
+- **COMPUERTA DE LA SESION DE G2 — solo documentacion.** Proposal V1 y paquete de Arquitecto; ninguna linea
+  de produccion, UI ni pruebas; **G3 no se abre**; G2 no se declara cerrado. (G0 y G1 se cerraron en su propia
+  sesion.)
+- **UI serializada con I-50**: G5 y G7 no arrancan mientras el G3 de I-50 este abierto o sin integrar.
+- **Push Back**: cero diff de produccion; solo lectura y regresion contractual.
+- **L-2**: OUT OF SCOPE / FOLLOW-UP FIX salvo decision explicita del Owner.
 - Si el contrato compartido, la autoridad o la persistencia exigen una **decision arquitectonica
   material**: **declararla para revision de Arquitecto antes de G2**.
 - Si el texto de **ID6** o **ID7** no se puede sostener con la evidencia: **pregunta al Owner**, no
