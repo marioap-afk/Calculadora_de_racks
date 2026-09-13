@@ -12,7 +12,7 @@ depends_on: [I-40, I-43]
 conflicts_with: []
 context_packs: [system-dynamic-flowbed, system-selective, ui-editors, persistence, architecture-kernel]
 automation_state_path:
-decision_paths: []
+decision_paths: [docs/automation/decisions/I-53.md]
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
@@ -26,17 +26,21 @@ automation:
 
 # I-53 — Cabecera configurable: configuracion origen hacia conjuntos de destinos en todos los sistemas
 
-> **Fase actual: G2 ABIERTO, no cerrado — [Proposal V1](I-53-proposal-v1.md) publicada** con su paquete de
-> revision de Arquitecto (Anexo A). Arquitecto **PENDING** (AM-1..AM-4); Owner **PENDING** (OD-2..OD-7); OD-1
-> **RESUELTA**. G1 cerrado en [I-53-discovery.md](I-53-discovery.md). **No hay una sola linea de produccion
-> escrita**, G3 no esta abierto y la implementacion esta BLOQUEADA (seccion 12).
+> **Fase actual: G2 ABIERTO, no cerrado — [Proposal V2](I-53-proposal-v2.md) publicada** (G2B) con su paquete de
+> re-revision acotada (Anexo A); la [Proposal V1](I-53-proposal-v1.md) se conserva como historial. Arquitecto sobre
+> V1 = **AGREED WITH CHANGES**; re-revision de V2 **PENDING**. Owner: OD-1 **RESUELTA**; OD-2.b, OD-6 (B′) y OD-8
+> **APPROVED**. [ADR-0037](../adr/0037-reutilizacion-de-cabecera-por-copia-y-distribucion-por-lotes.md) **propuesto**.
+> Elevados sin asumir: PA-1 (tres integraciones frente a WORKFLOW) y N-01. G1 cerrado en
+> [I-53-discovery.md](I-53-discovery.md). **No hay una sola linea de produccion escrita**, G3 **no esta abierto** y la
+> implementacion esta BLOQUEADA (seccion 12).
 
 > **Apertura por autorizacion explicita del Owner sin fila previa** — caso (d) de
 > [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la preexistencia de
 > la fila en ROADMAP: la fila durable y este contrato nacen en el bootstrap inmediatamente posterior
-> al reclamo atomico. La autorizacion es la **instruccion directa del Owner** que abrio la iniciativa;
-> **no existe** `docs/automation/decisions/I-53.md` y la norma **no lo exige** para el caso (d), asi
-> que `decision_paths` queda vacio en vez de apuntar a un archivo inventado.
+> al reclamo atomico. La autorizacion es la **instruccion directa del Owner** que abrio la iniciativa; la
+> norma **no exige** un registro de decisiones para el caso (d). Desde G2B, con decisiones del Owner aprobadas y un
+> veredicto de Arquitecto que el freeze debe verificar desde la rama remota (TEMPLATE seccion 13), el canal durable
+> es [`docs/automation/decisions/I-53.md`](../automation/decisions/I-53.md), y `decision_paths` apunta a el.
 
 ```text
 Initiative = I-53
@@ -71,8 +75,13 @@ sin reabrir lo entregado, es la pregunta de G1 —no una respuesta de este contr
   no es universal: cada sistema traduce sus destinos al contrato comun.
 
 Sistemas **en alcance** tras G1: **Selectivo** y **Dinamico**. Push Back = ALREADY DONE (precedente y
-regresion). Cabecera independiente, Cantilever, Cama, Larguero y Drive-In: **N/A**. El contrato propuesto vive
-en la [Proposal V1](I-53-proposal-v1.md) hasta que G2 se cierre.
+regresion). Cabecera independiente, Cantilever, Cama, Larguero y Drive-In: **N/A**. El contrato recomendado vive
+en la [Proposal V2](I-53-proposal-v2.md) hasta que G2 se congele; la [Proposal V1](I-53-proposal-v1.md) es historial.
+
+**Decisiones del Owner aprobadas (G2B)**, registradas en [decisions/I-53.md](../automation/decisions/I-53.md):
+**OD-2.b** (el Dinamico reconcilia sus personalizaciones al reconstruir, informando lo que conserva, adapta o pierde),
+**OD-6 = B′** (una iniciativa y un contrato, entregados en tres integraciones: fundacion sin cambio visible, UI del
+Selectivo y UI del Dinamico) y **OD-8** (retirar los presets «Personalizada N» del Dinamico en su gate de UI).
 
 ## 2. Problema
 
@@ -153,12 +162,17 @@ Lo que ya consta, sin afirmar nada que G1 deba verificar:
   **I-52** (`feature/rackmirror-espejo-semantico`) e **I-54** (`architecture/propiedades-personalizadas`).
   `conflicts_with` queda **vacio** hasta que G1 mida el cruce real de archivos: no se declara un
   estorbo sin evidencia, ni se omite uno que la tenga.
-- **Serializacion con I-50 (vinculante, Coordinador en G2).** Ningun gate de UI de I-53 edita
-  `RackSelectiveWindow.xaml/.cs`, `RackDynamicSystemWindow.xaml/.cs`, los censos de `x:Name` ni sus pruebas de
-  UI mientras el G3 de I-50 este abierto o sin integrar. No bloquea G2 ni los gates de Application.
-  `conflicts_with` sigue vacio porque el campo no puede expresar un conflicto limitado a unos gates; el detalle
-  vive aqui y en la Proposal V1 §10.
-- **Entrada del Owner**: requerida (`requires_owner_decision: true`): OD-2..OD-7 de la Proposal V1 §16.
+- **Serializacion con I-50 (vinculante, Coordinador; regla exacta en G2B).** Mientras
+  `origin/feature/cotas-independientes-por-vista` exista sin integrarse en `main` con CI posterior verde, I-53 **no
+  toca** `RackSelectiveWindow.xaml/.cs`, `RackDynamicSystemWindow.xaml/.cs`, `SelectiveShellMigrationTests`,
+  `DynamicShellMigrationTests`, `SelectiveEditorWindowTests`, `DynamicEditorWindowTests` ni pruebas nuevas que
+  instancien esas ventanas. Liberacion: merge de I-50 → CI posterior verde → verificacion de su cobertura y compuertas
+  de cierre → rebase de I-53 → solo entonces ventanas y pruebas calientes. Sin `OWNER_OVERRIDE` como camino normal.
+  No bloquea G2 ni la fundacion de Application. `conflicts_with` sigue vacio porque el campo no puede expresar un
+  conflicto limitado a unas entregas; el detalle vive aqui y en la Proposal V2 §11.
+- **Entrada del Owner**: OD-1 resuelta; OD-2.b, OD-6 y OD-8 aprobadas; OD-2, OD-3.a-c, OD-4, OD-5 y OD-7 resueltas sin
+  el Owner (Proposal V2 §16). `requires_owner_decision` **sigue en `true`** porque V2 eleva dos elementos nuevos
+  —PA-1, procesal, y N-01— cuya clasificacion no se asume.
 
 ## 7. Archivos esperados
 
@@ -176,8 +190,8 @@ editores grandes y los DTO de sistema son **archivos calientes** ([WORKFLOW](../
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
 | G1 | Discovery | Informe por archivo/simbolo/SHA con las respuestas de la seccion 3, punto 2 | **HECHA** — [I-53-discovery.md](I-53-discovery.md) |
-| G2 | Contrato | Origen, destinos, copia y atomicidad; revision de Arquitecto (AM-1..AM-4) y decisiones del Owner (OD-2..OD-7) | **EN CURSO** — [Proposal V1](I-53-proposal-v1.md) publicada; **no cerrado** |
-| G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates G3..G10 **propuestos** en la Proposal V1 §11; se fijan al cerrar G2 | bloqueada |
+| G2 | Contrato | Origen, destinos, copia y atomicidad; revision de Arquitecto (AM-1..AM-4) y decisiones del Owner | **EN CURSO** — [Proposal V1](I-53-proposal-v1.md) (historial, Arquitecto AGREED WITH CHANGES) y [Proposal V2](I-53-proposal-v2.md) publicadas; re-revision de V2 pendiente; **no cerrado** |
+| G3+ | Implementacion en tres entregas (E1 fundacion G3+G4+G6, E2 Selectivo UI G5, E3 Dinamico UI G7), cada una con Candidato, validacion e integracion | Gates **propuestos** en la Proposal V2 §12; el mecanismo de tres integraciones depende de PA-1 (§10); se fijan al congelar G2 | bloqueada; **G3 no abierto** |
 
 Ninguna fase posterior arranca sin que la anterior tenga evidencia revisable.
 
@@ -210,10 +224,12 @@ Preliminares; **los fija G2**. Solo recogen lo que la autorizacion enuncia:
 
 ## 12. Condiciones para detenerse
 
-- **COMPUERTA DE LA SESION DE G2 — solo documentacion.** Proposal V1 y paquete de Arquitecto; ninguna linea
-  de produccion, UI ni pruebas; **G3 no se abre**; G2 no se declara cerrado. (G0 y G1 se cerraron en su propia
-  sesion.)
-- **UI serializada con I-50**: G5 y G7 no arrancan mientras el G3 de I-50 este abierto o sin integrar.
+- **COMPUERTA DE LA SESION DE G2B — solo documentacion.** Proposal V2, registro de decisiones, ADR-0037 `propuesto` y
+  estos ajustes; ninguna linea de produccion, UI ni pruebas; **G3 no se abre**; G2 no se declara cerrado. (G0, G1 y
+  G2A se cerraron en sus propias sesiones.)
+- **UI serializada con I-50**: G5 y G7 no arrancan hasta la liberacion de la seccion 6.
+- **Tres integraciones (OD-6 B′)**: WORKFLOW no permite literalmente que una misma rama se integre tres veces; la
+  adaptacion minima PA-1 (Proposal V2 §10) esta **elevada** y **no se aplica** hasta que se autorice.
 - **Push Back**: cero diff de produccion; solo lectura y regresion contractual.
 - **L-2**: OUT OF SCOPE / FOLLOW-UP FIX salvo decision explicita del Owner.
 - Si el contrato compartido, la autoridad o la persistencia exigen una **decision arquitectonica
