@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-53
 title: "Cabecera configurable: configuracion origen hacia conjuntos de destinos en todos los sistemas"
 type: feature
-status: claimed
+status: integrated
 branch: feature/cabeceras-configurables-multidestino
 base_branch: main
 priority:
@@ -26,12 +26,26 @@ automation:
 
 # I-53 — Cabecera configurable: configuracion origen hacia conjuntos de destinos en todos los sistemas
 
-> **Fase actual: G2-F — G2 CONGELADO.** El contrato tecnico vinculante es la [Proposal V2](I-53-proposal-v2.md),
-> congelada; la [Proposal V1](I-53-proposal-v1.md) queda superada y se conserva intacta como historial. Arquitecto:
-> V1 **AGREED WITH CHANGES**, V2 **AGREED**. Owner: OD-2.b, OD-6 (B′) y OD-8 **aprobadas** y
-> [ADR-0037](../adr/0037-reutilizacion-de-cabecera-por-copia-y-distribucion-por-lotes.md) **aceptado** («Acepto el
-> ADR»). PA-1 = **PA-1B**; N-01 = **A**; RR-01 incorporado. **No queda ninguna decision del Owner.** **Proximo gate:
-> G3 — nucleo compartido de la fundacion; NO abierto.** No hay una sola linea de produccion escrita.
+> **Fase actual: E1-I — cierre documental para la integracion de E1 (2026-09-13).** La fundacion E1 esta
+> terminada y validada; este commit es **solo documentacion** y **no** reemplaza al Candidato. El merge `--no-ff`,
+> el CI del `MERGE_SHA` con su cobertura y la limpieza siguen [WORKFLOW](../WORKFLOW.md) 4.5.
+>
+> ```text
+> G0 = CLOSED   G1 = CLOSED   G2 = FROZEN
+> G3 = CLOSED   G4 = CLOSED   G6 = CLOSED
+> E1-C = PASS        Candidate f271fd578b3e583f1261d9f30e97d90a838bb7fe
+> E1-V = PASS        Owner, smoke de E1 en AutoCAD 2025 (Selectivo, Dinamico, Actualizar/Insertar vista, RACKBOMTOTAL)
+> E1-I = EN CURSO    cierre documental; merge y compuertas posteriores pendientes
+>
+> UI capability = NOT YET DELIVERED (ID6/ID7 sin llamador de produccion ni UI)
+> Next          = I-53S (Selectivo UI) -> I-53D (Dinamico UI); ninguna reclamada
+> ```
+>
+> I-53 es **una** iniciativa conceptual: la integracion de E1 **no** la completa. El contrato tecnico vinculante sigue
+> siendo la [Proposal V2](I-53-proposal-v2.md), congelada; la [Proposal V1](I-53-proposal-v1.md) queda superada.
+> Arquitecto V2 **AGREED**; OD-2.b, OD-6 (B′) y OD-8 **aprobadas**;
+> [ADR-0037](../adr/0037-reutilizacion-de-cabecera-por-copia-y-distribucion-por-lotes.md) **aceptado**. Los conteos de
+> pruebas viven en [HANDOFF](../HANDOFF.md) §5, que es su unico sitio.
 
 > **Apertura por autorizacion explicita del Owner sin fila previa** — caso (d) de
 > [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la preexistencia de
@@ -49,7 +63,17 @@ REBASE_BASE  = f8deb675c6d1ef0e64693b157d69c4cc170d7b24   (origin/main en G2-F, 
 CLAIM_SHA    = e1d5996e70cb75589beb96a256714982fe693be3   (commit vacio; f317ea9 tras el rebase de G2-F)
 Claim-Id     = d7144fe8-6921-4a46-9d66-2d723620bea4
 G2           = FROZEN
-G3           = NOT OPENED
+
+G2_FREEZE_SHA    = 5efaf7e1ecf8b070e06e4bd6fe8aca179afda847   (G2-F; CI push 34738923985 success)
+G3_SHARED_SHA    = 4e00a273e22634cb3abbc1b3fb3778edf49dbc7e   (CI push 34741192566, 4/4 success)
+G4_SELECTIVE_SHA = 7de424e4f0f69f6e2fb18fd7c2e018479aab3fbe   (CI push 34747886682, 4/4 success)
+G6_DYNAMIC_SHA   = f271fd578b3e583f1261d9f30e97d90a838bb7fe   (CI push 34750678118, 4/4 success)
+E1_CANDIDATE_SHA = f271fd578b3e583f1261d9f30e97d90a838bb7fe   (= G6; sin commit ni rebase posterior)
+CI Candidate     = push 34750678118, head_sha = E1_CANDIDATE_SHA, 4/4 success
+Owner Validation = E1-V PASS — AutoCAD 2025, smoke de E1 sobre el DLL Debug de E1_CANDIDATE_SHA
+MERGE_SHA        = PENDING hasta el merge
+Decisiones       = docs/automation/decisions/I-53.md (secciones 10 y 11)
+ROADMAP          = fila de I-53; alineada en el cierre: integrada (2026-09-13), E1 cerrada, linea en I-53S e I-53D
 ```
 
 ## 1. Objetivo
@@ -151,7 +175,8 @@ G1 respondio con evidencia ([I-53-discovery.md](I-53-discovery.md)); G2 fijo el 
   las ventanas y sus pruebas quedo **liberada**, pero G5 y G7 no pertenecen a esta rama.
 - **I-49** (`architecture/motor-expresiones-parametricas`): su Proposal preve tocar un miembro de
   `RackSelectiveWindow.xaml.cs` en su G10. Si coincide con el arranque de I-53S, se aplica la regla de archivo caliente
-  (WORKFLOW §7) y se serializa.
+  (WORKFLOW §7) y se serializa. Al cerrar E1 (2026-09-13) I-49 ya lleva codigo de produccion en su rama (G5, sin
+  archivos de E1): **el preflight de archivos calientes es obligatorio al reclamar I-53S**.
 - **I-52** (`feature/rackmirror-espejo-semantico`): comparte el indice de ADR (0036 en su rama). **I-54**: sin archivos
   de I-53.
 - `conflicts_with` queda vacio: no hay conflicto activo con ninguna rama viva; la coordinacion con I-49 es futura y
@@ -178,15 +203,18 @@ G1 respondio con evidencia ([I-53-discovery.md](I-53-discovery.md)); G2 fijo el 
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
 | G1 | Discovery | [I-53-discovery.md](I-53-discovery.md) | **HECHA** |
-| G2 | Contrato | Proposal V1 (superada) y V2; Arquitecto V1 AGREED WITH CHANGES y V2 AGREED; OD-2.b, OD-6, OD-8; ADR-0037 aceptado | **CONGELADA (G2-F)** |
-| G3 | Nucleo compartido | Snapshot, Plan, Outcome, codigos y guardas | pendiente — **no abierto** |
-| G4 | Selectivo Application/estado | PREPARE/MUTATE del Selectivo, RR-01 en la firma | pendiente |
-| G6 | Dinamico Application/estado/reconciliacion | PREPARE/MUTATE/RECOMPUTE, firma y reconstruccion sin cablear | pendiente |
-| E1-C | Candidato E1 | seccion 9 | pendiente |
-| E1-V | Validacion E1 | seccion 10 | pendiente |
-| E1-I | Integracion E1 | WORKFLOW §4.5 completo, con limpieza | pendiente |
+| G2 | Contrato | Proposal V1 (superada) y V2; Arquitecto V1 AGREED WITH CHANGES y V2 AGREED; OD-2.b, OD-6, OD-8; ADR-0037 aceptado | **CONGELADA (G2-F)** — `5efaf7e` |
+| G3 | Nucleo compartido | Snapshot, Plan, Outcome, codigos y guardas | **CLOSED** — `4e00a27` |
+| G4 | Selectivo Application/estado | PREPARE/MUTATE del Selectivo, RR-01 en la firma | **CLOSED** — `7de424e` |
+| G6 | Dinamico Application/estado/reconciliacion | PREPARE/MUTATE/RECOMPUTE, firma y reconstruccion sin cablear | **CLOSED** — `f271fd5` |
+| E1-C | Candidato E1 | seccion 9 | **PASS** — Candidate `f271fd5` |
+| E1-V | Validacion E1 | seccion 10 | **PASS** — Owner, smoke de E1 en AutoCAD 2025 |
+| E1-I | Integracion E1 | WORKFLOW §4.5 completo, con limpieza | **EN CURSO** — cierre documental; merge `--no-ff`, CI del `MERGE_SHA` con cobertura y limpieza pendientes |
 
 Ninguna fase arranca sin que la anterior tenga evidencia revisable. I-53S e I-53D siguen su propio cuadro (seccion 12).
+Cada SHA de gate se registra en un commit **posterior** al que lo produce: por eso el SHA de este cierre documental no
+figura aqui, y el `MERGE_SHA` todavia no existe. El nucleo compartido quedo **demostrado** por sus dos consumidores (G4 y
+G6) **sin cambios** desde G3: el diff de `Application/Systems/Shared` entre `4e00a27` y el Candidato es vacio.
 
 ## 9. Pruebas y builds (E1)
 
@@ -284,3 +312,129 @@ este reclamo. `main` **no fue modificada**.
 resuelto conservando las filas 0035 y 0037), aceptacion de ADR-0037, PA-1B, N-01, RR-01, follow-ups y este freeze, en
 un unico commit documental. Un commit no puede citar su propio SHA: el de G2-F y su CI se registran en la evidencia de
 E1.
+
+**G2-F, registrado en E1.** `5efaf7e1ecf8b070e06e4bd6fe8aca179afda847`, CI de `push` `34738923985` **success**.
+
+### 14.1 E1 — fundacion (G3, G4 y G6)
+
+Cada gate se abrio por orden del Coordinador, con RED **por asercion** contra un andamiaje compilable sin
+comportamiento (ninguno por excepcion ni por compilacion), GREEN de sus suites focales, de las de los gates anteriores y
+de la suite Core completa, y CI de `push` 4/4 sobre su SHA exacto. Los conteos viven en [HANDOFF](../HANDOFF.md) §5; el
+detalle de cada RED, en el cuerpo de su commit.
+
+| Gate | SHA | CI de `push` | Entrega | Pruebas |
+|---|---|---|---|---|
+| G3 | `4e00a273e22634cb3abbc1b3fb3778edf49dbc7e` | `34741192566`, 4/4 | `Application/Systems/Shared`: `HeaderConfigurationSnapshot` (`TryCapture` / `Materialize` por el clon canonico), `HeaderBatchPlan<T>` (`Rejected` / `Prepared`), `HeaderBatchOutcome<T>` (`Rejected` / `Cancelled` / `Committed`), `HeaderBatchSignature`, omisiones, avisos y codigos cerrados; constructores internos | C-01..C-10 |
+| G4 | `7de424e4f0f69f6e2fb18fd7c2e018479aab3fbe` | `34747886682`, 4/4 | `Application/Systems/Selective`: `SelectiveHeaderAddress`, `SelectivePostTargets`, `SelectiveHeaderResolution`, `SelectiveHeaderBatchRequest`, `SelectiveHeaderBatchPlanner` (PREPARE puro + firma RR-01) y `SelectiveHeaderBatchPreparation`; aditivos: `SelectiveEditorState.ApplyHeaderBatch` (MUTATE), `SelectiveCabeceraHeightReview.OfDestinations` y `SelectivePostGeometry.PostPeralteFor` | S-01..S-25 + S-26 (suites de I-43 existentes) |
+| G6 | `f271fd578b3e583f1261d9f30e97d90a838bb7fe` | `34750678118`, 4/4 | `Application/Systems/Dynamic`: `DynamicHeaderAddress`, `DynamicHeaderSource`, `DynamicModuleTargets`, `DynamicHeaderBatchState`, `DynamicHeaderBatchRequest`, `DynamicHeaderBatchPreparation`, `DynamicHeaderBatch` (`SequenceSignature`, `Prepare`, `Apply` = MUTATE + un recompute) y `DynamicRackRebuild` (Snapshot → `BuildDefault` → `RackModuleReconciliation`); Domain: solo el XML-doc de `DynamicRackModule.IsManualOverride` | D-01..D-25 |
+
+**Lecturas declaradas en G4** (cuerpo de `7de424e`): S-12 con la autoridad real `CabeceraDepthOfFondo` solo da `<= 0`
+en un fondo sin slot, asi que el ultimo destino invalido se demuestra con profundidad no finita y el `<= 0` literal con
+el estado sin slot; S-23 se prueba en la mitad de Application de `RACKEDITAR` (store + `SelectiveEditorOpen`), sin
+`LoadExisting` de la ventana; el escalar de peralte de EDIT reproduce la regla historica de la ventana; y **G5 debe leer
+la resolucion para MUTATE antes de abrir el `DeferRecompute` del lote**.
+
+**Lecturas declaradas en G6** (cuerpo de `f271fd5`): la firma del plan agrega la `Length` de cada destino, porque PREPARE
+la valida y MUTATE no valida; el plan queda ligado ademas a la instancia del sistema resuelto (§3.9: no cruza
+recomputes), mientras la **peticion** sobrevive a una recomposicion sin reconstruccion (§7.6); con firma vigente,
+`SourceNotFound` solo lo alcanza un id que no designa cabecera, porque una direccion tomada antes de un cambio de
+secuencia es `StaleTargets` por precedencia; un id que designa varios modulos no es direccion (`MalformedTarget`); y el
+recompute «exactamente uno» es estructural —Application no tiene contador—, con cero recomputes fijados en PREPARE y en
+todo `Rejected`. Mutaciones temporales, revertidas: sus guardas fallan por asercion.
+
+### 14.2 E1-C — Candidato
+
+```text
+Candidate SHA:        f271fd578b3e583f1261d9f30e97d90a838bb7fe
+Arbol limpio:         SI
+SDK resuelto:         8.0.423
+Core Full local:      PASS
+UI Full local:        PASS
+Debug UI build:       PASS
+Debug Plugin build:   PASS
+CI exact SHA:         GREEN (run 34750678118, job ui-tests success)
+Owner validation:     pass
+Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8
+```
+
+La biblioteca se resolvio por el override de `%APPDATA%\RackCad\settings.json` y su hash se volvio a medir al recibir el
+veredicto: sin cambios. Los ensamblados de la ronda llevan `InformationalVersion 1.0.0+f271fd578b3e583f1261d9f30e97d90a838bb7fe`.
+La cobertura **no** es requisito para declarar el Candidato (AGENTS, «Pruebas», punto 1; WORKFLOW §4.5 paso 2.bis); se
+mide despues del merge.
+
+| Invariante | Resultado | Evidencia (`git diff 5efaf7e..f271fd5`) |
+|---|---|---|
+| E1-INV-1 | **PASS** | cero archivos en `src/RackCad.UI`, `src/RackCad.Plugin`, `assets`, `deploy`, `eng`, `.github` y `docs`; todos los archivos clasificados: Shared, Selectivo, Dinamico, un Domain y pruebas nuevas |
+| E1-INV-2 | **PASS** | los simbolos nuevos no existian en `src/` en la base y hoy solo aparecen en los archivos de la fundacion; ninguna ventana, comando, handler ni Plugin los invoca |
+| E1-INV-3 | **PASS** | todas las pruebas de E1 son archivos nuevos; ninguna prueba existente modificada; `tests/RackCad.UI.Tests` intacto; omitidas sin aumento |
+| E1-INV-4 | **PASS** | `SelectiveEditorState`, `SelectiveCabeceraHeightReview` y `SelectivePostGeometry` solo con adiciones, fuera de `ApplyCabeceraToTargets`, `Of` y `PostPeralteAt`; `DynamicRackModule`, solo el XML-doc; `DynamicEditorDesignAssembler` y las ventanas, sin diff |
+| E1-INV-5 | **PASS** | cero archivos de Push Back; su regresion completa, verde |
+
+### 14.3 E1-V — validacion del Owner
+
+```text
+Fecha y zona:                 2026-09-13 (-06:00), veredicto recibido por el canal del Coordinador de I-53
+Validador:                    Owner del repositorio
+Iniciativa / rama:            I-53 E1 / feature/cabeceras-configurables-multidestino
+Commit:                       f271fd578b3e583f1261d9f30e97d90a838bb7fe
+Worktree:                     ~/.codex/worktrees/feature-cabeceras-configurables-multidestino
+Ruta del DLL Debug:           <worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll
+InformationalVersion:         1.0.0+f271fd578b3e583f1261d9f30e97d90a838bb7fe
+SHA-256 del DLL:              68F79064076B013C8241B643D54083668C0F3B82BC5C5A77CC03961DC7E8D176
+Version de AutoCAD:           AutoCAD 2025 (R25.0.171.0.0)
+DWG / escenario:              smoke corto de E1 (contrato, seccion 10)
+Bloques reales disponibles:   biblioteca de 14.2
+Pruebas automatizadas:        Core Full y UI Full PASS (conteos en HANDOFF §5)
+Build UI:                     PASS
+Build Plugin:                 PASS
+
+Checklist ejecutado (alcance de E1-V, tal como lo declaro el Owner):
+- [x] Selectivo
+- [x] Dinamico
+- [x] Actualizar / Insertar vista
+- [x] RACKBOMTOTAL
+- [x] sin regresion visible
+
+Resultado por punto:          smoke PASS sobre Selectivo y sobre Dinamico
+Fallos y severidad:           ninguno
+Resultado global:             aprobado (smoke de E1; no es validacion total ni funcional de ID6/ID7, que E1 no expone)
+Confirmacion explicita:       E1-V = PASS
+```
+
+Veredicto (2026-09-13): **E1-V = PASS** — smoke de E1 sobre Selectivo y Dinamico, Actualizar/Insertar vista y
+`RACKBOMTOTAL`, sin regresion visible.
+
+### 14.4 E1-I — integracion
+
+- `origin/main` **no avanzo** desde `f8deb675c6d1ef0e64693b157d69c4cc170d7b24`: **sin rebase final**, de modo que la
+  validacion del Owner corresponde exactamente al contenido que se integra.
+- Este cierre es **docs-only**: `git diff --name-only f271fd5..` del commit de cierre lista solo `docs/`. No es un
+  Candidato y no reemplaza al funcional.
+- Pendiente al escribirlo: merge `--no-ff`, CI del `MERGE_SHA` con su artifact `rackcad-coverage-cobertura`,
+  comprobacion diferida de la cobertura del Candidato (WORKFLOW §4.5 pasos 6 y 7) y limpieza de rama y worktree.
+
+### 14.5 Continuacion de la linea (OD-6 B′)
+
+```text
+I-53S:
+  feature/cabeceras-multidestino-selectivo
+  pendiente de claim/bootstrap tras E1-I
+  implementa G5 + N-01
+
+I-53D:
+  feature/cabeceras-multidestino-dinamico
+  pendiente despues de integrar I-53S
+  implementa G7 + L-1 + retirada de presets + reconciliation reporting
+```
+
+**Puntos de continuacion para I-53S (G5).** Cablear `SelectiveHeaderBatchPlanner.Prepare` y
+`SelectiveEditorState.ApplyHeaderBatch` en la ventana; frontera C4 fuera del `DeferRecompute` del lote y precondiciones
+RR-01 antes de PREPARE; leer la resolucion para MUTATE antes de abrir el ambito diferido; un solo recompute por operacion
+confirmada; retirar de la ventana la copia de la regla del escalar de peralte de EDIT; N-01 (S-31) y S-27..S-32.
+**Preflight de archivos calientes obligatorio**: I-49 puede tocar `RackSelectiveWindow.xaml.cs`.
+
+**Puntos de continuacion para I-53D (G7).** Cablear `DynamicHeaderBatch` y reemplazar en la ventana el par ordinal
+`SnapshotHeaderFondos`/`RestoreHeaderFondos` por `DynamicRackRebuild`, mostrando `Describe()`; retirar los presets
+«Personalizada N» (OD-8, D-27); L-1 (D-28..D-31); D-26 y D-32..D-39; reapuntar `Fact5` (x2) y
+`DynamicEditorDesignAssemblerTests` al contrato de reconciliacion **sin relajarlos** (D-39). D-23 caracteriza que una
+reconstruccion del Dinamico **hoy** pierde los overrides por linea: es comportamiento historico, no una golden de L-2.
