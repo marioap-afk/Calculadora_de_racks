@@ -1169,3 +1169,20 @@ Al seleccionar un módulo, `UpdateSelectedPanel` llama a `SelectConfigCalculated
 (`RackDynamicSystemWindow.xaml.cs:1823`), que pone el índice 0 sin mirar la procedencia (`:1844-1860`): un
 módulo personalizado aparece como «Calculada». Es una lectura engañosa, no una reutilización. I-53D decidirá la
 forma de ese control al retirar los presets «Personalizada N» (OD-8).
+
+## I-53S — hallazgo fuera de alcance (2026-09-13, registrado sin corregir)
+
+Detectado en el Candidato de I-53S (E2-C, sobre `e528ef2`) y registrado en su cierre
+([decisiones de I-53](automation/decisions/I-53.md) §12.5). **No está corregido**: el Candidato validado ya estaba fijado y
+el cierre de E2 no admite cambios en `src`. Continúa la numeración de hallazgos de la línea I-53.
+
+### N-04 — Selectivo: el XML-doc de `ResolvedCabeceraFondo` atribuye la profundidad guardada a `ApplyCabeceraToTargets`
+
+`RackSelectiveWindow.xaml.cs:1287-1289` (en `e528ef2`) dice que la profundidad final de lo que se guarda la sigue
+imponiendo `ApplyCabeceraToTargets` por fondo destino. Desde I-53S, «Personalizar» es el EDIT del lote: la profundidad de cada copia la
+impone PREPARE (`SelectiveHeaderBatchPlanner`, con `SelectiveCabeceraAuthority.ImposeFondoDepth`), y
+`ApplyCabeceraToTargets` solo lo usa «Restablecer poste». Es solo un comentario, sin efecto en el comportamiento; el texto
+viene de I-43 y quedó desfasado con el G5 de I-53S.
+
+**Qué habría que hacer**: alinear ese comentario con PREPARE, sin cambio de comportamiento, en la próxima iniciativa que
+toque la ventana.

@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-53S
 title: "Cabeceras multidestino: Selectivo UI para ID6 REUSE + ID7 BATCH DISTRIBUTION (E2 de I-53)"
 type: feature
-status: claimed
+status: integrated
 branch: feature/cabeceras-multidestino-selectivo
 base_branch: main
 priority:
@@ -26,8 +26,10 @@ automation:
 
 # I-53S — Cabeceras multidestino: Selectivo UI (E2 de I-53)
 
-> **Fase actual: G0 — reclamo y bootstrap (2026-09-13).** Solo documentacion. **G5 no esta abierto**: queda
-> bloqueado por la coordinacion de archivo caliente con I-49 hasta que el Coordinador fije el orden (seccion 6).
+> **Fase actual: E2-I — cierre documental e integracion (2026-09-13).** G0 y G5 **CLOSED**, E2-C **PASS** y E2-V
+> **PASS** del Owner sobre el Candidato `e528ef20007256f903dc87604209e8ae891698d0`. El orden de archivo caliente con I-49
+> lo fijo el Coordinador tras G0: **I-53S primero**; el G10 de I-49 sigue bloqueado hasta la limpieza de esta rama
+> (seccion 6). **ID6/ID7 quedan visibles en el Selectivo**; la linea continua en I-53D, no reclamada.
 >
 > ```text
 > Initiative = I-53S
@@ -72,6 +74,14 @@ BASE_SHA     = 1b091bedafceb67ca57054a9eb3bf5259efff774   (origin/main al reclam
 CLAIM_SHA    = fddbffecf67105eb7924f3fa4cc7fdf015def2fc   (commit vacio)
 Claim-Id     = 28b64301-c860-4fda-8ad8-4b3771995aae
 Decisiones   = docs/automation/decisions/I-53.md (registro unico de la linea; no se crea uno propio)
+```
+
+```text
+BOOTSTRAP_SHA       = 6ac42caf5cfa5c936d5bdc65bfd62cb8e04c2c4f   (contrato + fila de ROADMAP; CI de push 34773323308, 4/4)
+G5_SELECTIVE_UI_SHA = e528ef20007256f903dc87604209e8ae891698d0   (CI de push 34779766360, 4/4)
+E2_CANDIDATE_SHA    = e528ef20007256f903dc87604209e8ae891698d0   (= G5; sin commit ni rebase posterior)
+E2_CLOSURE_SHA      = el commit que registra esta seccion (docs-only; un commit no puede citar su propio SHA)
+E2_MERGE_SHA        = PENDING hasta el merge
 ```
 
 ## 1. Objetivo
@@ -175,8 +185,22 @@ las casillas y listas y los dialogos se deciden en G5 **sin ADR**: ADR-0037 excl
   («Que vigilar») piden **serializar ese cambio con el G5 de I-53S**. **G5 no se abre hasta que el Coordinador fije el
   orden**, y antes de editar la ventana se repite el preflight de archivos calientes contra el `main` y las ramas
   vigentes.
+
+  **Orden fijado por el Coordinador tras G0**, registrado en [decisions/I-53.md](../automation/decisions/I-53.md) §12.3:
+
+  ```text
+  HOTFILE_OWNER_NOW = I-53S            hasta completar la limpieza de esta rama
+  I-49 G10          = BLOCKED UNTIL I-53S E2-I (merge, CI posterior, cobertura del MERGE_SHA y del Candidato, limpieza)
+  ```
+
+  En los preflights de G5, E2-C, E2-V y E2-I la rama de I-49 **no** toco `RackSelectiveWindow.xaml(.cs)`; I-53S no espero
+  a I-49 ni modifico su rama. Tras la limpieza, I-49 hace `fetch --prune`, reconcilia o rebasa sobre el nuevo `main`
+  segun WORKFLOW, vuelve a localizar `Describe(PropertyId, string)` —ahora conviven con el seis ayudas `Describe*` de
+  I-53S—, verifica P23.13 y D21 contra la ventana resultante y corre sus RED y guardas antes de editar.
 - **I-52** (`feature/rackmirror-espejo-semantico`): solo documentacion, sin archivos de la UI del Selectivo. Su rama ya
-  registra una coordinacion semantica: re-medir su C2-4 cuando se conecte `ApplyHeaderBatch`.
+  registra una coordinacion semantica: re-medir su C2-4 cuando se conecte `ApplyHeaderBatch`. **Hecho en G5** como
+  evidencia cruzada, sin tocar I-52: tras distribuir desde la ventana, el estado del editor corresponde al documento
+  guardado, reabierto y actualizado.
 - **I-54** (`architecture/propiedades-personalizadas`): produccion en `Application/CustomProperties` y
   `Application/Persistence`, sin archivos de I-53S.
 - **Cruce documental previsto**: filas de `docs/ROADMAP.md` (cada rama inserta la suya); se resuelve al integrar
@@ -193,15 +217,19 @@ las casillas y listas y los dialogos se deciden en G5 **sin ADR**: ADR-0037 excl
 
 Una desviacion material de esta tabla obliga a detenerse.
 
+En E2-I la orden del Coordinador anade dos documentos que esta tabla no preveia: `docs/automation/decisions/I-53.md`
+(seccion 12, registro unico de la linea) y `docs/ideas-futuras.md` (hallazgo **N-04**, que WORKFLOW §8 manda registrar
+ahi). Siguen siendo solo documentacion.
+
 ## 8. Fases
 
 | # | Fase | Entregable | Estado |
 |---|---|---|---|
-| G0 | Reclamo + bootstrap | reclamo atomico, este contrato y la fila en ROADMAP | **cierra con este bootstrap** |
-| G5 | Selectivo UI + N-01 + RR-01 | ventana sobre Plan/Outcome; S-23 (WPF) y S-27..S-32 | **bloqueado** por coordinacion de archivo caliente con I-49 |
-| E2-C | Candidato | seccion 9 | pendiente |
-| E2-V | Owner Validation del Selectivo | seccion 10 | pendiente |
-| E2-I | Integracion | WORKFLOW §4.5 completo; limpieza solo tras las coberturas del `MERGE_SHA` y del Candidato | pendiente |
+| G0 | Reclamo + bootstrap | reclamo atomico, este contrato y la fila en ROADMAP | **CLOSED** (G5 quedo bloqueado hasta la orden de archivo caliente) |
+| G5 | Selectivo UI + N-01 + RR-01 | ventana sobre Plan/Outcome; S-23 (WPF) y S-27..S-32 | **CLOSED** (orden del Coordinador: I-53S primero) |
+| E2-C | Candidato | seccion 9 | **PASS** |
+| E2-V | Owner Validation del Selectivo | seccion 10 | **PASS** |
+| E2-I | Integracion | WORKFLOW §4.5 completo; limpieza solo tras las coberturas del `MERGE_SHA` y del Candidato | en curso al registrarlo: cierre documental hecho; merge, CI posterior, coberturas y limpieza pendientes |
 
 Los gates estan congelados en la Proposal V2 §12. Ninguno arranca sin evidencia revisable del anterior y sin orden del
 Coordinador.
@@ -230,6 +258,24 @@ Proposal V2 §13.8:
 - Actualizar, `RACKEDITAR` y guardar y reabrir.
 - Vistas por fondo.
 - BOM del editor frente a `RACKBOMTOTAL`.
+
+**Ronda E2-V (2026-09-13).** La orden E2-V del Coordinador concreto ese checklist en estos escenarios, con el Owner
+trabajando sobre una copia recuperable del DWG y en una sesion nueva de AutoCAD:
+
+```text
+N01 · LIVE_SOURCE · APPLY_ONE · APPLY_MANY · APPLY_ALL · STANDARD_THEN_CUSTOM · SOURCE_DISAPPEARED ·
+HEIGHT_CONFIRM_CANCEL · PERALTE · INDEPENDENT_COPIES · DRAWING_UPDATE · RACKEDITAR_REOPEN · SAVE_REOPEN · BOM
+```
+
+| Campo | Valor |
+|---|---|
+| Candidato | `e528ef20007256f903dc87604209e8ae891698d0` |
+| DLL | `~/.codex/worktrees/feature-cabeceras-multidestino-selectivo/src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll`, `InformationalVersion 1.0.0+e528ef20007256f903dc87604209e8ae891698d0`, SHA-256 `61A48111AE1DBB373577189EAE388219F8D86A84BD08ADD3770C8288F37CE31F` |
+| Biblioteca de bloques | `D:\Base_de_datos_AutoCAD_V.0.dwg` (override de `%APPDATA%\RackCad\settings.json`), SHA-256 `B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8` |
+| AutoCAD | 2025 (instalacion R25.0.171.0.0) |
+| Al recibir el veredicto | DLL y biblioteca con los mismos SHA-256 |
+
+Veredicto (2026-09-13): E2-V = PASS — todos los escenarios de E2-V
 
 ## 11. Criterios de aceptacion
 
@@ -268,5 +314,71 @@ manual (WORKFLOW 4.5).
 
 ## 14. Evidencia final
 
-Pendiente hasta E2-I. El SHA de este bootstrap se registra en un commit posterior: un commit no puede citar su propio
-SHA.
+### 14.1 G0
+
+Reclamo atomico `fddbffe` y bootstrap `6ac42ca`. Auditoria de archivos calientes contra I-49:
+`CURRENT_OVERLAP_I49 = NO` y `PLANNED_HOTFILE_COLLISION_I49 = YES`, asi que G0 cerro con
+`G5 = BLOCKED BY HOT FILE COORDINATION` hasta la orden del Coordinador (seccion 6).
+
+### 14.2 G5 — Selectivo UI
+
+Commit unico `e528ef2`, que solo toca `RackSelectiveWindow.xaml(.cs)` y `tests/RackCad.UI.Tests`:
+
+- **Disposicion**: panel «Reutilizar cabecera» entre «Restablecer poste» y «Fondos destino»; el pin de I-43
+  `TheSelectorSitsImmediatelyBeforeTheTramoSection` exige «Fondos destino» justo antes de «Tramo».
+- **Origen**: `SelectiveHeaderAddress?` recordado por «Tomar como origen». Acepta un poste estandar y deja a PREPARE
+  decidir `SourceUnusable`; se descarta al cargar otro diseno.
+- **Destinos**: «Postes destino» sobre `SelectivePostTargets` (Actual / Explicito / Todos), reconciliado tras cada cambio
+  estructural y cruzado con `TargetFondos` por el planner.
+- **Gesto** `RunHeaderBatch`, unico para EDIT y DISTRIBUTE: C4 → `SaveWorkingToSelected` → resolucion con generacion
+  propia → PREPARE → `ConfirmSevere` o `Inform` → resolucion para MUTATE antes del ambito →
+  `DeferRecompute { MUTATE; Recompute }`. El informe va a la barra de estado.
+- **N-01**: `ShowHeaderConfigurator` fija `ViewModel.IsAdvancedEditor = alreadyCustom`, con la costura
+  `HeaderConfiguratorPresenter`, y lee el resultado real del configurador.
+- **L-7**: fuera la escritura anticipada de `PostPeraltes` y la copia de la regla del escalar de peralte.
+- **`ApplyCabeceraToTargets`**: opcion A; se conserva para «Restablecer poste» y para las pruebas de I-43.
+- **RED** por asercion en dos pasos —andamiaje sin comportamiento, y captura de intencion hecha con el gesto vacio—;
+  S-23 WPF y S-31 estandar son caracterizacion.
+- **Desviaciones de G5**: el fetch previo al primer edit se hizo en el preflight y se repitio a mitad del trabajo y antes
+  del commit; la primera colocacion del panel rompio el pin de I-43 y se movio el panel sin tocar el pin;
+  `ApplyCustomizedCabeceraForTest` conserva un parametro ya sin efecto para no editar pruebas de I-43.
+
+### 14.3 E2-C — Candidato
+
+```text
+Candidate SHA:        e528ef20007256f903dc87604209e8ae891698d0
+Arbol limpio:         SI
+SDK resuelto:         8.0.423
+Core Full local:      PASS
+UI Full local:        PASS
+Debug UI build:       PASS
+Debug Plugin build:   PASS
+CI exact SHA:         GREEN (run 34779766360, job ui-tests success)
+Owner validation:     pass
+Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8
+```
+
+- Sin rebase: `origin/main` seguia en la base. La evidencia local se ejecuto **despues** de crear el commit y con
+  reconstruccion completa: la corrida de G5 fue anterior al commit y sus ensamblados llevaban el SHA del padre, asi que no
+  valia para el Candidato. Todos los ensamblados quedaron estampados con `1.0.0+e528ef2...`.
+- CI de `push` reutilizado: mismo SHA exacto, misma clase y ningun invalidador (AGENTS, «Reutilizacion de evidencia»).
+- Cobertura **no requerida** para declarar el Candidato (WORKFLOW §4.5 paso 2.bis; AGENTS, «Pruebas», punto 1): se mide en
+  E2-I, despues del merge (paso 7).
+- **E2-INV-1..7 = PASS** sobre `6ac42ca..e528ef2`: productivo solo en la ventana; cero cambios en Application, Shared,
+  Domain, Plugin, Persistence/DTO, Dinamico, Push Back, `assets` y `.github`; pruebas solo en `RackCad.UI.Tests`;
+  `RackFrameConfigurator*` intactos; `ApplyCabeceraToTargets` solo en «Restablecer poste»; sin escritura anticipada de
+  `PostPeraltes`; sin `MessageBox` ni `ShowDialog` directos nuevos.
+- Observacion no corregida: **N-04** en [ideas-futuras.md](../ideas-futuras.md).
+
+### 14.4 E2-V
+
+Seccion 10: **PASS** en todos los escenarios.
+
+### 14.5 Continuacion
+
+- **I-53D** (`feature/cabeceras-multidestino-dinamico`): **NOT CLAIMED**. Es la siguiente unidad de la linea I-53 y se
+  abre en una sesion separada, con G0, reclamo, worktree, fila de ROADMAP y bootstrap propios.
+- **I-49**: su G10 se reanuda solo tras la limpieza de esta rama (seccion 6).
+- La linea I-53 queda completa al cerrar I-53D ([decisions/I-53.md](../automation/decisions/I-53.md) §10.5).
+
+Los conteos de pruebas viven en [HANDOFF](../HANDOFF.md) §5.
