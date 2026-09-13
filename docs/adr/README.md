@@ -76,7 +76,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0034](0034-project-variables-autoridad-drawing-level.md) | Variables de proyecto como autoridad persistente de nivel dibujo y referencias tipadas por VariableId | aceptado |
 | [0035](0035-visibilidad-de-cotas-por-tipo-de-vista.md) | Visibilidad de cotas por tipo de vista del rack | aceptado |
 | [0037](0037-reutilizacion-de-cabecera-por-copia-y-distribucion-por-lotes.md) | Reutilizar una configuración de cabecera es copiarla y distribuirla por lotes: destinos por sistema, preparación todo-o-nada y autoridades de normalización propias | aceptado |
-| [0038](0038-motor-expresiones-parametricas-y-edicion-formula-aware.md) | Motor de expresiones paramétricas (ID22B, Expression Engine) y edición de fórmulas | propuesto |
+| [0038](0038-motor-expresiones-parametricas-y-edicion-formula-aware.md) | Motor de expresiones paramétricas (ID22B, Expression Engine) y edición de fórmulas | aceptado |
 | [0039](0039-custom-properties-persistencia-autoridad.md) | Contrato de persistencia y autoridad de Custom Properties | aceptado |
 | [0045](0045-workflow-v2-ciclo-evidencia-e-integracion.md) | Workflow V2 — Initiative lifecycle, evidence and integration governance | aceptado |
 
