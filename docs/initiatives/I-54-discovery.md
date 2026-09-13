@@ -175,6 +175,47 @@ Lo que dicen de I-54 [E, `git show` sobre cada rama]:
 
 Conclusion: ninguna medicion de §2.1-§2.5 cambia.
 
+### 2.7 Re-medicion en G2E (addendum)
+
+Dos mediciones con `git fetch --all --prune`: en el preflight de G2E y antes de publicar la Proposal V3. La rama de
+I-54 seguia en `36c337b` en las dos. [E]
+
+| Referencia | Tip en G2C | Tip al cerrar G2D | Preflight de G2E | Al publicar V3 | Que cambio |
+|---|---|---|---|---|---|
+| `origin/main` | `46fcac2` | `46fcac2` | `46fcac2` | `f8deb67` | **Integracion de I-50** (`c9a5f0a`, cierre documental, y merge `f8deb67`), publicada durante la sesion; la rama remota de I-50 se retiro |
+| I-49 | `ccf21c6` | `2783acc` | `2783acc` | `048a508` | Proposal V5 (`2783acc`) y V6 (`048a508`), **solo `docs/`** |
+| I-50 | `6cd2970` | `6cd2970` | `c9a5f0a` | integrada | Cierre documental (`HANDOFF.md`, `ROADMAP.md`, decisiones, `validacion-manual-autocad.md` y contrato) e integracion |
+| I-52 | `0fc7032` | `0fc7032` | `0fc7032` | `0445718` | Proposal V2, ADR-0036 corregido (`propuesto`) y decisiones, **solo `docs/`** |
+| I-53 | `f38362d` | `f38362d` | `d7f17ad` | `d7f17ad` | Proposal V2, ADR-0037 (`propuesto`), `adr/README.md`, decisiones y contrato, **solo `docs/`** |
+
+Lo que eso cambia para I-54 [E, `git diff`, `git grep` y `git show` sobre cada referencia]:
+
+- **`main` @ `f8deb67`**:
+  - entre `46fcac2` y `f8deb67` cambian 52 archivos de `src/`, `tests/` y `assets/`, ninguno de codigo del mapa de
+    I-54 ni de los que cita la Proposal, salvo `DimensionViewsRestampTests.cs`, la prueba de I-50 que ya se citaba
+    desde su rama. De los documentos que I-54 tocara al implementar cambian `validacion-manual-autocad.md` e
+    `ideas-futuras.md`, sin conflicto;
+  - en `src/` sigue habiendo un solo `new RackEmbedDocument` (`RackEmbedComposer.cs:24`), siete llamadas a
+    `RackEmbedComposer.Compose(` y 33 `[CommandMethod(`;
+  - ADR-0035 queda `aceptado` y su frase sobre `RackEmbedComposer` sigue en `:97-102`;
+  - la cita `HANDOFF.md:1133-1136` de la Proposal es `:1199-1202` en `main`, con el mismo texto;
+  - `git merge-tree` entre la rama de I-54 y `origin/main` no da conflictos.
+- **Sin rebase en G2E.** WORKFLOW §4.2 exige rebasar al abrir una sesion si el trunk avanzo; al abrir G2E no
+  habia avanzado. El rebase queda pendiente para la proxima sesion que escriba en la rama (Proposal V3 §2).
+- **I-49 V6** sigue reservando `Rack` y `Project` como nombres reservados, y la sintaxis de namespace, para ID20
+  (`I49:docs/initiatives/I-49-proposal-v6.md:622-624,2930`); no cambia los censos de 33 comandos y 29 ventanas
+  (`:1914,2082,2311`), y su fila de I-54 mantiene el punto de extension solo como restriccion (`:3157`).
+- **I-52 V2** mantiene el orden reflejar → `Compose(sobreFuente, …)` → `RestampEnvelope` sin modificar
+  `RackEnvelopeRestamp.cs` (`I52:docs/initiatives/I-52-proposal-v2.md:458-459`), `RACKMIRROR` sin alias con el
+  censo en 34 (`:96`) y la prueba cruzada T-M20 (`:1243`). Su ADR-0036 corregido declara intactos los portadores
+  de las iniciativas integradas, propiedades de rack incluidas (`0036-rackmirror-espejo-semantico-por-copia.md:88-90`),
+  y cita D-21 de I-54 (`:162`).
+- **I-53 V2** no añade datos persistidos; sus censos son de `x:Name`, no de comandos ni de ventanas
+  (`I53:docs/initiatives/I-53-proposal-v2.md:883-884,917,921`), y declara «sin archivos de I-53» en I-54 (`:896`).
+- **Numeracion de ADR**: 0035 aceptado en `main`; 0036 (I-52) y 0037 (I-53) tomados en sus ramas.
+
+Conclusion: ninguna medicion de §2.1-§2.6 cambia, y ningun avance invalida los cambios C-1..C-8 de la Proposal V3.
+
 ## 3. Metadatos existentes
 
 ### 3.1 La lista del Coordinador, uno por uno
