@@ -145,6 +145,36 @@ Lo que esos Discovery dicen de I-54 [E, `git grep` sobre cada rama]:
 Conclusion: ninguna medicion de §2.1-§2.4 cambia; el camino de escritura del espejo de I-52 queda **abierto** y
 debe conservar los miembros del sobre (Proposal V1, D-11).
 
+### 2.6 Re-medicion en G2C (addendum)
+
+Antes de publicar la Proposal V2, tras `git fetch --all --prune`: `origin/main` sigue en `46fcac2` y la rama de
+I-54 en `7c197af`, sin cambios. Las cuatro paralelas avanzaron desde la publicacion de G2A. [E]
+
+| Iniciativa | Tip en G2A | Tip en G2C | Que cambio |
+|---|---|---|---|
+| I-49 | `4df9480` | `ccf21c6` | Proposal V4 (`I-49-proposal-v4.md`), **solo `docs/`** |
+| I-50 | `8ceb3a7` | `6cd2970` | G3 (A), (B) y (C): `RackSelectiveWindow`, `RackDynamicSystemWindow` y `RackPushBackSystemWindow` (`.xaml` y `.xaml.cs`), mas pruebas de UI. **Sigue sin tocar** sobre, compositor, restamp, cloner, autoridad, biblioteca y censos de comandos o ventanas |
+| I-52 | `339b3ab` | `0fc7032` | G2: Proposal V1, `docs/adr/0036-rackmirror-espejo-semantico-por-copia.md` (`propuesto`), `docs/adr/README.md` y `docs/automation/decisions/I-52.md`, **solo `docs/`** |
+| I-53 | `c8476cc` | `f38362d` | Proposal V1 y contrato, **solo `docs/`** |
+
+Lo que dicen de I-54 [E, `git show` sobre cada rama]:
+
+- **I-49 V4** sigue reservando `Rack` y `Project`, sus namespaces y el ambito `Rack` para ID20
+  (`I49:docs/initiatives/I-49-proposal-v4.md:628-633,1737-1745`). Mide su presupuesto de profundidad JSON con el
+  diseño «como cadena dentro del sobre» (`:470-484`), y no cambia los censos de comandos ni de ventanas (`:1447`).
+- **I-50**: la prueba `DimensionViewsRestampTests.cs`, en su rama desde `94220fb`, construye `new RackEmbedDocument` en
+  `tests/`. En `src/` el unico sigue siendo `RackEmbedComposer.cs:24`, y hay siete llamadas a
+  `RackEmbedComposer.Compose(`, tambien en `6cd2970`.
+- **I-52 V1**: el espejo compone con `RackEmbedComposer.Compose(sobreFuente, …)` sobre el diseño reflejado y
+  despues re-estampa con `RestampEnvelope`, sin modificar `RackEnvelopeRestamp.cs`
+  (`I52:docs/initiatives/I-52-proposal-v1.md:316-317,698-702`). Declara que las propiedades de rack de I-54 solo
+  sobreviven si `Compose` hereda ese miembro (`:537`, `:735-737`), y preve `RACKMIRROR` sin alias, con el censo de
+  comandos en 34 (`:76`).
+- **I-53 V1** no añade datos persistidos y declara «sin cruce» con I-54
+  (`I53:docs/initiatives/I-53-proposal-v1.md:649-650`).
+
+Conclusion: ninguna medicion de §2.1-§2.5 cambia.
+
 ## 3. Metadatos existentes
 
 ### 3.1 La lista del Coordinador, uno por uno
