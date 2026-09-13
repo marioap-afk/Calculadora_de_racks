@@ -57,6 +57,9 @@ namespace RackCad.UI.Tests
             "FrontHeader", "FrontScopeBox", "FrontFloorBeamCheck", "ApplyFrontFloorBeamButton",
             "FrontRiseBox", "ApplyFrontRiseButton", "FrontLevelsBox", "ApplyFrontLevelsButton",
             "TargetFondosPanel", "TargetFondosButton", "TargetFondosPopup", "TargetFondosList",
+            // I-53S G5: reutilizar una cabecera (origen por direccion + «Postes destino» + aplicar).
+            "HeaderBatchPanel", "HeaderSourceText", "TakeHeaderSourceButton", "PostTargetsButton", "PostTargetsPopup",
+            "PostTargetsList", "ApplyHeaderBatchButton",
             "SeparatorsSection", "SeparatorsHost", "CellHeader", "CellBeamBox", "FrenteBox", "PalletCountBox", "AltoBox",
             "BeamPeralteCombo", "BeamLenBox", "ClearBox", "SummaryText", "StatusText", "FondoSelectorPanel",
             "FondoSelectorBox", "MatrixGrid", "PreviewFrontalRadio", "PreviewLateralRadio", "PreviewHint", "PreviewCanvas",
@@ -99,7 +102,7 @@ namespace RackCad.UI.Tests
                 return AllNamedControls.Where(name => window.FindName(name) == null).ToArray();
             });
 
-            Assert.Empty(missing); // all 59 named elements (+ Shell) still resolve in the window's name scope after migration
+            Assert.Empty(missing); // all 66 named elements (+ Shell) still resolve in the window's name scope after migration
         }
 
         // ---- 3. each control lands in the correct neutral slot (once, in its zone) ----
@@ -115,7 +118,8 @@ namespace RackCad.UI.Tests
                 // Sidebar: global settings + selected-cell editor live in the scrolling side panel.
                 foreach (var name in new[] { "NameBox", "DrawBasePlateCheck", "PostBox", "BayCountBox", "ToleranceEditor",
                     "FondoBox", "FondosBox", "SafetyButton", "CellHeader", "FrenteBox", "SeparatorsHost",
-                    "DimensionsFrontalCheck", "DimensionsLateralCheck", "DimensionsPlantaCheck" })
+                    "DimensionsFrontalCheck", "DimensionsLateralCheck", "DimensionsPlantaCheck",
+                    "HeaderSourceText", "TakeHeaderSourceButton", "PostTargetsButton", "ApplyHeaderBatchButton" })
                 {
                     AssertInSlot(shell.SidePanelContent, window, name, "SidePanelContent");
                 }

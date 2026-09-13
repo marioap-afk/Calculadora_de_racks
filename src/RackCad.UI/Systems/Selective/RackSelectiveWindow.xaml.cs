@@ -1040,6 +1040,10 @@ namespace RackCad.UI.Systems.Selective
             for (var i = 0; i < postCabeceras.Count; i++) items.Add("Poste " + (i + 1).ToString(CultureInfo.InvariantCulture));
             PostSelectBox.ItemsSource = items;
             PostSelectBox.SelectedIndex = previous >= 0 && previous < items.Count ? previous : (items.Count > 0 ? 0 : -1);
+            // I-53S: the post axis of a distribution follows the grid it names — an explicit set loses the posts the grid no
+            // longer has (Application decides how), "Todos" re-expands.
+            postTargets.SyncPostTargets(state);
+            RefreshPostTargets();
             UpdatePostStatus();
         }
 
@@ -1152,6 +1156,7 @@ namespace RackCad.UI.Systems.Selective
         private void UpdatePostStatus()
         {
             if (PostCabeceraStatus == null) return;
+            RefreshHeaderSource(); // I-53S: "personalizada / estándar / ya no existe" of the remembered source moves with the state
             var i = PostSelectBox.SelectedIndex;
             if (i < 0)
             {
@@ -1170,7 +1175,12 @@ namespace RackCad.UI.Systems.Selective
         {
             var i = PostSelectBox.SelectedIndex;
             if (i < 0 || i >= postCabeceras.Count) return;
-            if (!CommitPendingEditors()) return; // frontera: la semilla lee slots (C4)
+            BeginHeaderBatchGesture("editar");
+            if (!CommitPendingEditors()) // frontera: la semilla lee slots (C4), y el lote no se abre si falla
+            {
+                HeaderBatchLog.Add("c4:abortado");
+                return;
+            }
 
             // Seed from the fondo the user is LOOKING AT (I-43): its custom cabecera at this post if it has one, else
             // the standard cabecera resolved with THAT fondo's height and depth. Seeding from fondo 0 would open a
@@ -1194,17 +1204,15 @@ namespace RackCad.UI.Systems.Selective
             if (fondo > 0.0) seed.Depth = fondo;
 
             // Seed the cabecera's post peralte with THIS post's effective value (its override, else the global) so the
-            // configurator shows/edits it; the write-back below keeps the selective's PostPeraltes the source of truth.
+            // configurator shows/edits it. What gets WRITTEN back to PostPeraltes is decided by Application at MUTATE.
             var globalPeralte = UiSupport.TryNum(PostPeralteBox.Text, out var gp) && gp > 0.0 ? gp : 0.0;
             seed.PostPeralte = (i < postPeraltes.Count && postPeraltes[i] > 0.0) ? postPeraltes[i] : globalPeralte;
 
             var store = new RackProjectStore();
             var before = store.Serialize(RackProject.ForSelective(seed));
 
-            var window = new RackFrameConfiguratorWindow(seed, canInsertInAutoCad: false) { Owner = this };
-            window.ShowDialog();
-
-            var cfg = window.Configuration;
+            // N-01: an already custom cabecera opens in the advanced editor, a standard one in quick mode.
+            var cfg = ShowHeaderConfigurator(seed, alreadyCustom: visibleCustom != null);
             if (cfg == null || store.Serialize(RackProject.ForSelective(cfg)) == before)
             {
                 // Nothing was edited: leave the post exactly as it was (default stays default).
@@ -1212,64 +1220,26 @@ namespace RackCad.UI.Systems.Selective
                 return;
             }
 
-            ApplyCustomizedCabecera(i, cfg, fondo, globalPeralte);
+            ApplyCustomizedCabecera(i, cfg, fondo);
         }
 
         /// <summary>
-        /// La mitad de "Personalizar" que ocurre DESPUÉS del configurador: validar la altura, avisar y escribir.
-        /// Extraída para que sea comprobable — el configurador es modal y bloquea el hilo STA, así que sin esto el
-        /// contrato de validación y de cancelación no se podría probar (I-43, gate 8.6E).
+        /// La mitad de "Personalizar" que ocurre DESPUÉS del configurador (I-43, gate 8.6E): el EDIT del lote de cabeceras
+        /// (I-53S; Proposal V2 §3.2, §6.7, §6.9). Extraída para que sea comprobable — el configurador es modal.
+        /// <para>
+        /// Desde I-53S no valida, ni avisa, ni escribe por su cuenta: EDIT es el caso degenerado de DISTRIBUTE y recorre el
+        /// MISMO gesto, <see cref="RunHeaderBatch"/>. La revisión de altura de cada (fondo, poste) destino, las omisiones, la
+        /// copia por destino y el peralte del poste son de Application. En particular la ventana ya no escribe
+        /// <c>PostPeraltes</c> antes de saber si algo se aplicó (L-7) ni guarda una copia propia de esa regla.
+        /// </para>
         /// </summary>
-        private void ApplyCustomizedCabecera(int i, RackFrameConfiguration cfg, double fondo, double globalPeralte)
+        private void ApplyCustomizedCabecera(int i, RackFrameConfiguration cfg, double fondo)
         {
-            // The depth is NOT the configurator's to choose: it belongs to the fondo (gate 4). Stamp the visible
-            // fondo's depth here so what the user accepted matches what they saw; every TARGET fondo then has its own
-            // depth imposed by ApplyCabeceraToTargets, which is the single authority.
+            // The depth is NOT the configurator's to choose: it belongs to the fondo (gate 4). Stamp the visible fondo's
+            // depth so what the user accepted matches what they saw; each copy then takes ITS fondo's depth in PREPARE.
             if (fondo > 0.0) cfg.Depth = fondo;
 
-            // La altura se revisa en TODOS los fondos destino, no solo en el visible: una misma receta puede ser
-            // valida en uno, discrepante en otro y peligrosa en un tercero, porque cada fondo tiene su propia
-            // topologia y sus propias alturas. Un destino que no tiene ese poste se OMITE, y el review lo reporta
-            // aparte en vez de bloquear a los demas (I-43, gate 8.6E).
-            var review = SelectiveCabeceraHeightReview.Of(lastSystem, state.TargetFondos.Fondos, i, cfg.Height);
-            if (review.HasSevere)
-            {
-                // UN solo dialogo con todos los fondos implicados. Cancelar tiene que dejar mutacion CERO, y por
-                // eso se pregunta ANTES de escribir el peralte y antes de aplicar la receta.
-                if (!SelectiveCabeceraHeightPrompt.ConfirmSevere(
-                    review.Describe() + "\n\nAplicar de todos modos?", this))
-                {
-                    return;
-                }
-            }
-            else if (review.HasInformative)
-            {
-                SelectiveCabeceraHeightPrompt.Inform(review.Describe(), this);
-            }
-
-            // Sync the post peralte edited in the cabecera back to the selective's per-post source of truth (0 = global,
-            // so it keeps tracking the global peralte). The frontal/planta read PostPeraltes, so this avoids divergence.
-            // PostPeraltes stays GLOBAL by post (I-43): it is not part of the per-fondo write below, y se escribe
-            // DESPUES de la confirmacion: antes, un "Cancelar" dejaba el peralte ya cambiado.
-            if (i < postPeraltes.Count)
-            {
-                var edited = cfg.PostPeralte;
-                postPeraltes[i] = (edited > 0.0 && Math.Abs(edited - globalPeralte) > 1e-6) ? edited : 0.0;
-                ShowPostPeralteOverride();
-            }
-
-            // ONE Application call writes this post in every target fondo, each with its own deep copy, and reports the
-            // fondos that do not reach that post. The window never loops over fondos (I-43).
-            using (DeferRecompute())
-            {
-                // Commit the depth/cabecera boxes into their fondo slot first: ApplyCabeceraToTargets resolves EACH
-                // target's cabecera depth from its slot, so an uncommitted box would stamp a stale depth (I-43).
-                SaveWorkingToSelected();
-                var result = state.ApplyCabeceraToTargets(i, cfg, CloneCabecera);
-                UpdatePostStatus();
-                Recompute();
-                pendingWarning = result.Describe(reset: false);
-            }
+            RunHeaderBatch(SelectiveHeaderBatchRequest.Edit(cfg, i));
         }
 
         /// <summary>Deep-clone a cabecera via the single canonical clone (initiative I-17),
@@ -1413,6 +1383,451 @@ namespace RackCad.UI.Systems.Selective
                 UpdatePostStatus();
                 Recompute();
                 pendingWarning = result.Describe(reset: true);
+            }
+        }
+
+        // ---- I-53S: reutilizar una cabecera personalizada (ID6 REUSE + ID7 BATCH DISTRIBUTION, ADR-0037) ----
+        //
+        // The Application foundation integrated by I-53 E1 (Proposal V2 §3, §6) wired into the window. The window collects the
+        // intent — a source ADDRESS, the posts (SelectivePostTargets) crossed with the fondos the editor already targets
+        // (TargetFondos, I-43) — crosses the C4 boundary, states the resolution in force honestly (RR-01) and asks through the
+        // existing height prompt. PREPARE, the plan, the copies, the Outcome and the write are Application's; nothing here
+        // re-derives a rule, loops over fondos or builds an outcome.
+
+        /// <summary>
+        /// The remembered SOURCE: an address and nothing else (Proposal V2 §3.3, «no existe portapapeles oculto»). Its
+        /// configuration is captured by PREPARE when the user applies, so editing that cabecera after taking it applies the new
+        /// value, and an address that no longer designates a cabecera is rejected there. Not persisted, not remembered.
+        /// </summary>
+        private SelectiveHeaderAddress? headerSource;
+
+        /// <summary>The POST axis of a distribution (Proposal V2 §6.3): runtime state of this editor, opening on «Actual».</summary>
+        private readonly SelectivePostTargets postTargets = new SelectivePostTargets();
+
+        /// <summary>True while «Postes destino» is rebuilt, so repopulating its boxes does not look like clicks.</summary>
+        private bool buildingPostTargets;
+
+        /// <summary>
+        /// Identity of the resolution in force (RR-01; Proposal V2 §3.9): it changes on EVERY rebuild, successful or not, so a
+        /// plan prepared against one resolved system is never applied to another even when their topology coincides.
+        /// </summary>
+        private long resolutionGeneration;
+
+        /// <summary>
+        /// Test seam: how the configurator window is SHOWN. Production shows it modally; a test drives the REAL window and
+        /// its REAL ViewModel without a modal loop. The mode choice and the read-back are NOT part of the seam, so a test
+        /// exercises the statements production runs (the Push Back pattern of I-40).
+        /// </summary>
+        internal Action<RackFrameConfiguratorWindow> HeaderConfiguratorPresenter { get; set; }
+
+        /// <summary>Test seam: the remembered source address.</summary>
+        internal SelectiveHeaderAddress? HeaderSourceForTest => headerSource;
+
+        /// <summary>Test seam: the post axis of the next distribution.</summary>
+        internal SelectivePostTargets PostTargetsForTest => postTargets;
+
+        /// <summary>A (fondo, post) the way the editor numbers them: one-based, «F» for the fondo only when there are several.</summary>
+        private string DescribeHeaderAddress(SelectiveHeaderAddress address)
+        {
+            var post = "Poste " + (address.PostIndex + 1).ToString(CultureInfo.InvariantCulture);
+            return state.FondoCount > 1
+                ? "F" + (address.FondoIndex + 1).ToString(CultureInfo.InvariantCulture) + ", " + post
+                : post;
+        }
+
+        /// <summary>The caption of the remembered source. It reads the committed state to SAY whether that position is custom
+        /// today; whether it can be a source is decided by PREPARE when the user applies.</summary>
+        private void RefreshHeaderSource()
+        {
+            if (HeaderSourceText == null) return;
+            if (!headerSource.HasValue)
+            {
+                HeaderSourceText.Text = "Sin origen.";
+                return;
+            }
+
+            var source = headerSource.Value;
+            var condition = !state.PostExistsIn(source.FondoIndex, source.PostIndex)
+                ? "ya no existe"
+                : state.CabeceraAt(source.FondoIndex, source.PostIndex) != null
+                    ? "personalizada"
+                    : "estándar: todavía no sirve de origen";
+            HeaderSourceText.Text = "Origen: " + DescribeHeaderAddress(source) + " (" + condition + ").";
+        }
+
+        /// <summary>
+        /// Rebuild «Postes destino» from <see cref="SelectivePostTargets"/>, with the same popup grammar as «Fondos destino»
+        /// (I-43, gate 8A): «Actual» and «Todos» are actions, one box per MAIN post of the master grid (a medio frente post is
+        /// not addressable). A toggle starts from what the boxes show and hands the set to Application, which decides what a
+        /// set means — distinct, in range, and «Actual» when nothing is left. Choosing posts changes no geometry: no recompute.
+        /// </summary>
+        private void RefreshPostTargets()
+        {
+            if (PostTargetsList == null || PostTargetsButton == null) return;
+
+            buildingPostTargets = true;
+            PostTargetsList.Children.Clear();
+
+            var isCurrent = postTargets.Mode == SelectivePostTargetMode.FollowCurrent;
+            var isAll = postTargets.Mode == SelectivePostTargetMode.All;
+
+            var actual = new Button
+            {
+                Content = isCurrent ? "✓ Actual" : "Actual",
+                HorizontalContentAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(0, 0, 0, 4),
+                Padding = new Thickness(6, 2, 6, 2),
+                ToolTip = "Solo el poste seleccionado; sigue a la selección."
+            };
+            actual.Click += (s, e) => { if (!buildingPostTargets) { postTargets.FollowCurrentPost(); RefreshPostTargets(); } };
+            PostTargetsList.Children.Add(actual);
+
+            var todos = new Button
+            {
+                Content = isAll ? "✓ Todos" : "Todos",
+                HorizontalContentAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(0, 0, 0, 6),
+                Padding = new Thickness(6, 2, 6, 2),
+                ToolTip = "Todos los postes principales (los de medio frente no cuentan); crece con el rack."
+            };
+            todos.Click += (s, e) => { if (!buildingPostTargets) { postTargets.FollowAllPosts(); RefreshPostTargets(); } };
+            PostTargetsList.Children.Add(todos);
+
+            var shown = isCurrent ? new List<int>() : ChosenPosts();
+            for (var post = 0; post <= MaxFrenteCount(); post++)
+            {
+                var index = post;
+                var item = new CheckBox
+                {
+                    Content = "Poste " + (post + 1).ToString(CultureInfo.InvariantCulture),
+                    IsChecked = shown.Contains(post),
+                    Margin = new Thickness(0, 0, 0, 2)
+                };
+                void Toggle(object s, RoutedEventArgs e)
+                {
+                    if (buildingPostTargets) return;
+                    var chosen = postTargets.Mode == SelectivePostTargetMode.FollowCurrent ? new List<int>() : ChosenPosts();
+                    if (item.IsChecked == true) { if (!chosen.Contains(index)) chosen.Add(index); }
+                    else chosen.Remove(index);
+                    postTargets.SetTargetPosts(chosen, state);
+                    RefreshPostTargets();
+                }
+
+                item.Checked += Toggle;
+                item.Unchecked += Toggle;
+                PostTargetsList.Children.Add(item);
+            }
+
+            var explicitPosts = postTargets.ExplicitPosts;
+            PostTargetsButton.Content = isCurrent
+                ? "Actual"
+                : isAll
+                    ? "Todos"
+                    : explicitPosts.Count == 1
+                        ? "Poste " + (explicitPosts[0] + 1).ToString(CultureInfo.InvariantCulture)
+                        : "Postes " + string.Join(", ", explicitPosts.Select(p => (p + 1).ToString(CultureInfo.InvariantCulture)));
+            buildingPostTargets = false;
+        }
+
+        /// <summary>The posts the choice names now, as Application resolves it («Actual» follows the selected post).</summary>
+        private List<int> ChosenPosts() => postTargets.Resolve(state, Math.Max(0, PostSelectBox?.SelectedIndex ?? 0)).ToList();
+
+        /// <summary>Test seam: the Outcome Application produced for the last cabecera batch gesture; null when the gesture
+        /// ended with no outcome (C4 failed, no source, or RR-01 ended it before any plan).</summary>
+        internal HeaderBatchOutcome<SelectiveHeaderAddress> LastHeaderBatchOutcome { get; private set; }
+
+        /// <summary>
+        /// Test seam: the phases the last cabecera batch gesture went through, in order — <c>gesto:*</c>, <c>c4:abortado</c>,
+        /// <c>sin-origen</c>, <c>precondiciones(diferido,pendiente,sistema)</c>, <c>fin:*</c>, <c>plan:*</c>,
+        /// <c>confirmacion:*</c>, <c>aviso:informativo</c>, <c>mutate(diferido)</c>, <c>outcome:*</c>. A recompute counter
+        /// alone cannot tell WHERE the gesture read the resolution; this can. Cleared at the start of every gesture.
+        /// </summary>
+        internal List<string> HeaderBatchLog { get; } = new List<string>();
+
+        /// <summary>
+        /// Open the shared configurator on <paramref name="seed"/> and return the configuration that is ACTUALLY effective
+        /// when it closes — read off the window, never assumed to be the seed: the ViewModel REPLACES its configuration on
+        /// «Aplicar» of the quick mode, «Restaurar estándar» and opening a project (PBH-01, I-40).
+        /// <para>
+        /// N-01 (= A; Proposal V2 §6.11): an already custom cabecera opens in the ADVANCED editor. The configurator always
+        /// starts in «Configuración rápida», whose «Aplicar» does not edit but REBUILDS the cabecera from the template, so on a
+        /// custom one it would silently drop everything else the user had confirmed — and the lost recipe would then travel
+        /// to every target fondo. The mode is chosen here through the ViewModel's public property; the shared window is not
+        /// touched. A standard cabecera keeps the quick mode, which is exactly how one is generated.
+        /// </para>
+        /// </summary>
+        private RackFrameConfiguration ShowHeaderConfigurator(RackFrameConfiguration seed, bool alreadyCustom)
+        {
+            var window = new RackFrameConfiguratorWindow(seed, canInsertInAutoCad: false) { Owner = this };
+            window.ViewModel.IsAdvancedEditor = alreadyCustom;
+
+            if (HeaderConfiguratorPresenter != null)
+            {
+                HeaderConfiguratorPresenter(window);
+            }
+            else
+            {
+                window.ShowDialog();
+            }
+
+            return window.Configuration;
+        }
+
+        /// <summary>
+        /// «Tomar como origen»: remember the ADDRESS (visible fondo, selected post) and nothing else. It is not a transactional
+        /// boundary — it consumes no state and writes none — so it does not commit the pending editors; the configuration is
+        /// captured when the user applies, after that boundary.
+        /// </summary>
+        private void TakeHeaderSource_Click(object sender, RoutedEventArgs e)
+        {
+            var post = PostSelectBox.SelectedIndex;
+            if (post < 0)
+            {
+                SetStatus("Selecciona un poste para tomarlo como origen.", true);
+                return;
+            }
+
+            if (!state.PostExistsIn(selectedFondo, post))
+            {
+                SetStatus("Ese poste no existe en el fondo que estás viendo: no se tomó como origen.", true);
+                return;
+            }
+
+            headerSource = new SelectiveHeaderAddress(selectedFondo, post);
+            RefreshHeaderSource();
+            SetStatus("Origen: " + DescribeHeaderAddress(headerSource.Value) + ".", false);
+        }
+
+        /// <summary>
+        /// «Aplicar origen a destinos» — DISTRIBUTE (ID6 + ID7): the remembered source to «Postes destino» × «Fondos destino».
+        /// <para>
+        /// The C4 boundary runs first and OUTSIDE any deferred scope of the batch (RR-01): if a pending field is invalid the
+        /// gesture ends with no plan, no outcome and no ID6/ID7 mutation; if pending fields are valid, their commit recomputes
+        /// on its own and that recompute is not the batch's. The posts are resolved AFTER the boundary, because a committed
+        /// structural edit may have reshaped the grid they name.
+        /// </para>
+        /// </summary>
+        private void ApplyHeaderBatch_Click(object sender, RoutedEventArgs e)
+        {
+            BeginHeaderBatchGesture("distribuir");
+            if (!headerSource.HasValue)
+            {
+                HeaderBatchLog.Add("sin-origen");
+                SetStatus("Primero toma una cabecera como origen con «Tomar como origen».", true);
+                return;
+            }
+
+            if (!CommitPendingEditors()) // frontera: comando explícito de escritura (C4), antes del lote
+            {
+                HeaderBatchLog.Add("c4:abortado");
+                return;
+            }
+
+            var posts = postTargets.Resolve(state, Math.Max(0, PostSelectBox.SelectedIndex));
+            RunHeaderBatch(SelectiveHeaderBatchRequest.Distribute(headerSource.Value, posts));
+        }
+
+        private void BeginHeaderBatchGesture(string kind)
+        {
+            HeaderBatchLog.Clear();
+            LastHeaderBatchOutcome = null;
+            HeaderBatchLog.Add("gesto:" + kind);
+        }
+
+        /// <summary>The resolution in force, stated honestly: the resolved system, its generation, and whether a recompute is
+        /// pending or a deferred scope is open. Application decides what that allows (RR-01).</summary>
+        private SelectiveHeaderResolution CurrentHeaderResolution()
+            => SelectiveHeaderResolution.Of(lastSystem, resolutionGeneration, session.Recompute.IsPending || session.Recompute.IsDeferred);
+
+        /// <summary>
+        /// The ONE cabecera batch gesture of the Selectivo (Proposal V2 §3.3, §3.11, §6.8, §6.9), shared by EDIT («Personalizar»)
+        /// and DISTRIBUTE («Aplicar origen a destinos»). The caller has already crossed the C4 boundary.
+        /// <code>
+        /// SaveWorkingToSelected → resolution in force (RR-01) → PREPARE
+        ///   → no plan (RR-01 ended it) | Rejected | Prepared → CONFIRM through the height prompt (only if a notice is severe)
+        ///   → resolution for MUTATE, read BEFORE the batch scope → DeferRecompute { MUTATE; Recompute }
+        /// </code>
+        /// The deferred scope holds exactly MUTATE and its recompute: one recompute for a committed batch, none for a rejected
+        /// or cancelled one — a plan found stale at MUTATE included, since nothing is written.
+        /// </summary>
+        private void RunHeaderBatch(SelectiveHeaderBatchRequest request)
+        {
+            // The slots are the authority PREPARE reads (depths, topology); the live matrix of the visible fondo is committed first.
+            SaveWorkingToSelected();
+
+            var resolution = CurrentHeaderResolution();
+            HeaderBatchLog.Add(string.Format(
+                CultureInfo.InvariantCulture,
+                "precondiciones(diferido={0},pendiente={1},sistema={2})",
+                session.Recompute.IsDeferred,
+                session.Recompute.IsPending,
+                lastSystem != null));
+
+            var preparation = SelectiveHeaderBatchPlanner.Prepare(state, resolution, request);
+            if (preparation.PreconditionFailure.HasValue)
+            {
+                // RR-01: no plan and no outcome — the resolution PREPARE would read is not the current one.
+                HeaderBatchLog.Add("fin:" + preparation.PreconditionFailure.Value);
+                ReportHeaderBatchEnded(preparation.PreconditionFailure.Value);
+                return;
+            }
+
+            HeaderBatchOutcome<SelectiveHeaderAddress> outcome;
+            if (!(preparation.Plan is HeaderBatchPlan<SelectiveHeaderAddress>.Prepared prepared))
+            {
+                // A rejected plan: Application states the outcome, with zero writes; there is nothing to defer or recompute.
+                HeaderBatchLog.Add("plan:" + DescribePlan(preparation.Plan));
+                outcome = state.ApplyHeaderBatch(preparation, resolution);
+                FinishHeaderBatch(outcome);
+                return;
+            }
+
+            HeaderBatchLog.Add("plan:" + DescribePlan(prepared));
+            if (prepared.RequiresConfirmation)
+            {
+                // ONE question with every destination involved; cancelling leaves zero mutation and zero recompute.
+                HeaderBatchLog.Add("confirmacion:pedida");
+                if (!SelectiveCabeceraHeightPrompt.ConfirmSevere(DescribeHeaderWarnings(prepared) + "\n\n¿Aplicar de todos modos?", this))
+                {
+                    HeaderBatchLog.Add("confirmacion:cancelada");
+                    FinishHeaderBatch(preparation.Cancel());
+                    return;
+                }
+
+                HeaderBatchLog.Add("confirmacion:aceptada");
+            }
+            else if (prepared.Warnings.Count > 0)
+            {
+                HeaderBatchLog.Add("aviso:informativo");
+                SelectiveCabeceraHeightPrompt.Inform(DescribeHeaderWarnings(prepared), this);
+            }
+
+            // RR-01: the resolution MUTATE verifies is read BEFORE the batch opens its deferred scope — inside it a recompute is
+            // deferred by design, so a resolution read there could never be current. If anything rebuilt the system since
+            // PREPARE (a dialog pumps messages), the signature differs and MUTATE answers StaleTargets with zero writes.
+            var current = CurrentHeaderResolution();
+            using (DeferRecompute())
+            {
+                HeaderBatchLog.Add(string.Format(CultureInfo.InvariantCulture, "mutate(diferido={0})", session.Recompute.IsDeferred));
+                outcome = state.ApplyHeaderBatch(preparation, current);
+                if (outcome is HeaderBatchOutcome<SelectiveHeaderAddress>.Committed)
+                {
+                    UpdatePostStatus();
+                    ShowPostPeralteOverride(); // an EDIT may have written this post's peralte
+                    Recompute();               // the batch's ONE recompute, run when this scope closes
+                }
+            }
+
+            FinishHeaderBatch(outcome);
+        }
+
+        private void FinishHeaderBatch(HeaderBatchOutcome<SelectiveHeaderAddress> outcome)
+        {
+            HeaderBatchLog.Add("outcome:" + DescribeOutcome(outcome));
+            LastHeaderBatchOutcome = outcome;
+            ReportHeaderBatch(outcome);
+        }
+
+        /// <summary>
+        /// What the gesture tells the user, from the Outcome Application produced (Proposal V2 §3.4-§3.7): the applied
+        /// destinations and every omission with its reason, a rejection in words, or a cancellation. It goes to the status
+        /// band, which is always visible and never modal.
+        /// </summary>
+        private void ReportHeaderBatch(HeaderBatchOutcome<SelectiveHeaderAddress> outcome)
+        {
+            switch (outcome)
+            {
+                case HeaderBatchOutcome<SelectiveHeaderAddress>.Committed committed:
+                    // An error status the recompute left must stay visible, as ApplyScope already does.
+                    if (lastSystem == null) return;
+                    var text = string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Cabecera aplicada en {0} destino(s): {1}.",
+                        committed.Applied.Count,
+                        string.Join("; ", committed.Applied.Select(DescribeHeaderAddress)));
+                    if (committed.Omitted.Count > 0)
+                    {
+                        text += " Omitidos: " + string.Join("; ", committed.Omitted.Select(omission =>
+                            DescribeHeaderAddress(omission.Address) + " (" + DescribeOmission(omission.Reason) + ")")) + ".";
+                    }
+
+                    // Leaving out the source itself is expected; leaving out a destination the rack does not have is worth noticing.
+                    SetStatus(text, committed.Omitted.Any(omission => omission.Reason != HeaderOmissionReason.IsSource));
+                    break;
+                case HeaderBatchOutcome<SelectiveHeaderAddress>.Rejected rejected:
+                    SetStatus(DescribeRejection(rejected.Code), true);
+                    break;
+                case HeaderBatchOutcome<SelectiveHeaderAddress>.Cancelled _:
+                    SetStatus("Cancelado: no se aplicó ninguna copia de la cabecera.", false);
+                    break;
+            }
+        }
+
+        private void ReportHeaderBatchEnded(SelectiveHeaderPreconditionFailure failure)
+            => SetStatus(failure == SelectiveHeaderPreconditionFailure.NoResolvedSystem
+                ? "No se aplicó nada: el rack todavía no tiene geometría resuelta. Corrige primero los datos del rack."
+                : "No se aplicó nada: hay un recálculo pendiente. Vuelve a intentarlo.", true);
+
+        private static string DescribeHeaderWarnings(HeaderBatchPlan<SelectiveHeaderAddress>.Prepared prepared)
+            => string.Join("\n", prepared.Warnings.Select(warning => warning.Message));
+
+        private static string DescribeOmission(HeaderOmissionReason reason)
+        {
+            switch (reason)
+            {
+                case HeaderOmissionReason.IsSource: return "es el origen";
+                case HeaderOmissionReason.AbsentInScope: return "no existe en ese fondo";
+                default: return "no se dibuja";
+            }
+        }
+
+        private static string DescribeRejection(HeaderRejectionCode code)
+        {
+            switch (code)
+            {
+                case HeaderRejectionCode.StaleTargets:
+                    return "No se aplicó nada: el rack cambió mientras se preparaban las copias. Vuelve a aplicar.";
+                case HeaderRejectionCode.SourceNotFound:
+                    return "No se aplicó nada: el origen ya no existe (su poste o su fondo desaparecieron). Toma otro origen.";
+                case HeaderRejectionCode.SourceUnusable:
+                    return "No se aplicó nada: el origen no es una cabecera personalizada utilizable. Personalízala primero o toma otra.";
+                case HeaderRejectionCode.NoTargets:
+                    return "No se aplicó nada: no hay destinos. Elige «Postes destino» y «Fondos destino».";
+                case HeaderRejectionCode.MalformedTarget:
+                    return "No se aplicó nada: hay un poste destino inválido.";
+                case HeaderRejectionCode.NoApplicableTargets:
+                    return "No se aplicó nada: ningún destino existe en los fondos elegidos (o el único destino es el origen).";
+                default:
+                    return "No se aplicó nada: un destino no es válido, así que no se copió a ninguno.";
+            }
+        }
+
+        private static string DescribePlan(HeaderBatchPlan<SelectiveHeaderAddress> plan)
+        {
+            switch (plan)
+            {
+                case HeaderBatchPlan<SelectiveHeaderAddress>.Prepared prepared:
+                    return string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Prepared(destinos={0},omitidos={1},avisos={2})",
+                        prepared.Targets.Count,
+                        prepared.Omitted.Count,
+                        prepared.Warnings.Count);
+                case HeaderBatchPlan<SelectiveHeaderAddress>.Rejected rejected:
+                    return "Rejected(" + rejected.Code + ")";
+                default:
+                    return "desconocido";
+            }
+        }
+
+        private static string DescribeOutcome(HeaderBatchOutcome<SelectiveHeaderAddress> outcome)
+        {
+            switch (outcome)
+            {
+                case HeaderBatchOutcome<SelectiveHeaderAddress>.Committed _: return "Committed";
+                case HeaderBatchOutcome<SelectiveHeaderAddress>.Cancelled _: return "Cancelled";
+                case HeaderBatchOutcome<SelectiveHeaderAddress>.Rejected rejected: return "Rejected(" + rejected.Code + ")";
+                default: return "desconocido";
             }
         }
 
@@ -2293,9 +2708,14 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>Test seam: el ancho completo del frente que "Medio frente" pasaria al dialogo.</summary>
         internal double TramosFullWidthForTest(int bay) => TramosFullWidth(bay);
 
-        /// <summary>Test seam: la mitad post-configurador de "Personalizar", que un modal impide ejecutar.</summary>
+        /// <summary>Test seam: la mitad post-configurador de "Personalizar", que un modal impide ejecutar. Desde I-53S
+        /// <paramref name="globalPeralte"/> no interviene: la regla del peralte del poste vive en Application y lee el peralte
+        /// del sistema resuelto. Se conserva la firma que usan las pruebas de I-43.</summary>
         internal void ApplyCustomizedCabeceraForTest(int postIndex, RackFrameConfiguration cfg, double globalPeralte)
-            => ApplyCustomizedCabecera(postIndex, cfg, ResolvedCabeceraFondo(selectedFondo), globalPeralte);
+        {
+            BeginHeaderBatchGesture("editar");
+            ApplyCustomizedCabecera(postIndex, cfg, ResolvedCabeceraFondo(selectedFondo));
+        }
 
         internal double CustomizeSeedDepthForTest()
         {
@@ -2308,6 +2728,7 @@ namespace RackCad.UI.Systems.Selective
         private void RunRecompute()
         {
             RecomputeCount++; // test seam (I-43): the coalescing gate must collapse a bulk apply into ONE run
+            resolutionGeneration++; // I-53S, RR-01: every rebuild is a new resolution, successful or not
             var system = BuildSystem(out var error);
             if (system == null)
             {
@@ -2767,6 +3188,10 @@ namespace RackCad.UI.Systems.Selective
             ClampSelection();
             LoadCellEditor();
             RenderMatrix();
+            // I-53S: a load REPLACES the rack, so a remembered source address and a post choice would name positions of
+            // another rack. Neither is part of the design, and a new rack opens on "Actual" with no source.
+            headerSource = null;
+            postTargets.FollowCurrentPost();
             RefreshPostSelect();
 
             if (paddedEmptyFrentesOnLoad > 0)
