@@ -56,6 +56,17 @@ namespace RackCad.Application.Persistence
         public string Design { get; set; }
 
         /// <summary>
+        /// I-54 (ADR-0039 §4): the rack's custom properties, carried as RAW JSON. The envelope never interprets it — only
+        /// <see cref="CustomPropertiesStore"/> does — so no JSON shape of this member can make a syntactically valid envelope
+        /// unreadable. Omitted when null, so an envelope without properties keeps the exact bytes older builds wrote; builds
+        /// I-11..I-53 keep it verbatim as extension data. It does not bump <see cref="CurrentSchemaVersion"/>: the properties
+        /// document versions itself. Build envelopes through <see cref="RackEmbedComposer"/>, which never leaves an
+        /// <c>Undefined</c> or <c>Null</c> element here.
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public JsonElement? CustomProperties { get; set; }
+
+        /// <summary>
         /// Envelope JSON fields this build does not know about, preserved verbatim across a deserialize/serialize — so an
         /// edit or an independent-copy re-stamp keeps metadata a newer build wrote (I-11 D3). Null/empty for envelopes this
         /// build authored (no extra keys emitted).
