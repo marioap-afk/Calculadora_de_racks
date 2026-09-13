@@ -120,6 +120,31 @@ e I-53 despues; ninguna reclama I-54 ni ID24. [E]
 - Sus textos de ID del Owner (ID6/ID7) **no estan versionados**; lo mismo ocurre con el texto de **ID24**:
   este Discovery solo conoce ID24 por la instruccion del Coordinador. [E]
 
+### 2.5 Re-medicion antes de publicar G2A (addendum)
+
+Justo antes del commit de la Proposal, tres paralelas habian avanzado. `origin/main` seguia en `46fcac2`. [E]
+
+| Iniciativa | Tip en G1 | Tip al publicar G2A | Que cambio |
+|---|---|---|---|
+| I-49 | `4df9480` | `4df9480` | nada |
+| I-50 | `a4806ff` | `8ceb3a7` | G6: `PushBackCompositeStructure.cs` y dos archivos de pruebas nuevos. **Sigue sin tocar** sobre, compositor, restamp, cloner, autoridad ni biblioteca |
+| I-52 | `7ee7975` | `339b3ab` | G1 publicado (`9751849`) y addendum (`339b3ab`), solo `docs/` |
+| I-53 | `405cfc0` | `c8476cc` | G1 publicado, solo `docs/` |
+
+Lo que esos Discovery dicen de I-54 [E, `git grep` sobre cada rama]:
+
+- **I-52** clasifica `RackCloner.CloneDefinition` como «**No directa**» para el espejo, porque clona geometria
+  sin reflejar y el espejo tiene que **regenerarla** desde el diseño reflejado
+  (`I52:docs/initiatives/I-52-discovery.md:127`); reutiliza `RestampEnvelope` **solo para identidad**, sin hook de
+  transformacion, y advierte que meter transformacion en `RackEnvelopeRestamp.cs` rompe la guarda G-R5 (`:126`,
+  `:156`, `:516`). Registra a I-54 con un cruce de **persistencia**: «una propiedad de alcance Rack viajaria en el
+  sobre o en el diseño y el espejo debe conservarla» (`:780`, fila U-18 en `:808`).
+- **I-53** califica el cruce con I-54 como **bajo**, «quiza UI en editores» (`I53:docs/initiatives/I-53-discovery.md:688-690`),
+  y confirma por su cuenta que `RackEmbedStore` escribe nulos (`:747`, L-4).
+
+Conclusion: ninguna medicion de §2.1-§2.4 cambia; el camino de escritura del espejo de I-52 queda **abierto** y
+debe conservar los miembros del sobre (Proposal V1, D-11).
+
 ## 3. Metadatos existentes
 
 ### 3.1 La lista del Coordinador, uno por uno
@@ -293,16 +318,17 @@ del NOD sin `XrecordMergeStyle` ni `DuplicateRecordCloning` explicitos **no esta
 - `SchemaVersionPolicy.IsReadable`: `MajorOf(stored) <= MajorOf(current)`; ausente o no parseable = major 1
   (`SchemaVersionPolicy.cs:27-28,54`). [L]
 
-### 5.2 `RackBlockData`: el sobre vive en la DEFINICION [L]
+### 5.2 `RackBlockData`: el sobre vive en la DEFINICION
 
 - Xrecord con clave `"RACKCAD_SELECTIVE"` **para todos los kinds** (`src/RackCad.Plugin/Systems/Shared/RackBlockData.cs:16`),
-  en el diccionario de extension del objeto recibido, troceado 255 (`:18,35-39`).
+  en el diccionario de extension del objeto recibido —que crea si falta (`:28-31`)—, troceado 255 (`:18,35-39`). [E]
 - Los **4** `Read` y los **6** `Write` operan sobre `BlockTableRecord`: `RackBlockFinder.cs:71` [E],
   `RackCommandSupport.cs:93`, `RackLayoutCommands.cs:191`, `RackDuplicarCommands.cs:215`;
   `SystemBlockWriter.cs:33,114`, `LateralHeaderDrawService.cs:258`, `RackCloner.cs:66` [E],
   `RackCantileverCommands.cs:156,324`.
 - El resumen XML dice «block reference» y es **falso** (`RackBlockData.cs:8-11`; ya registrado como H-01 de
-  I-47). `Read` hace un cast duro `(Xrecord)` sin `try` (`:73`), a diferencia de `ProjectVariablesData`.
+  I-47). `Read` y `Write` hacen un cast duro `(Xrecord)` sin `try` (`:43`, `:73`), a diferencia de
+  `ProjectVariablesData`. [E]
 
 ### 5.3 `RackEmbedComposer.Compose`: la costura, y su limite [E]
 
@@ -604,8 +630,12 @@ solo tiene `None` y `GenerateStructuralSection`.
 
 Censo `GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA`: **33** apariciones de `[CommandMethod(` en el Plugin
 (`tests/RackCad.Tests/SelectiveEditorOpenTests.cs:539-547`), 17 primarios + 16 alias; guarda de unicidad en
-`PushBackRoundTripSourceGuardTests.cs:360-375`. `RACKVARIABLES` no figura en la ayuda
-`RackCommandReference.cs:30-47` (hallazgo F-07).
+`PushBackRoundTripSourceGuardTests.cs:360-375`. Nombres registrados hoy [E, grep sobre `src/RackCad.Plugin`]:
+`RACKCAD/RK`, `RACKEDITAR/RED`, `RACKSELECTIVO/RS`, `RACKSISTEMADINAMICO/RSD`, `RACKPUSHBACK/RPB`,
+`RACKCANTILEVER/RCT`, `RACKCABECERA/RCB`, `QUICKCABECERA/QCB`, `QUICKCAMA/QCM`, `RACKLISTA/RL`,
+`RACKBOMTOTAL/RB`, `RACKLAYOUT/RLY`, `RACKRELLENAR/RR`, `RACKDUPLICAR/RD`, `RACKVARIABLES/RVA`,
+`RACKAYUDA/RA` y `RACKSECCION`. `RACKVARIABLES` no figura en la ayuda `RackCommandReference.cs:30-47`
+(hallazgo F-07).
 
 ### 11.6 Guardas que condicionan nombres [E]
 
@@ -706,6 +736,7 @@ momento que I-51). **No se arreglan en I-54.**
 | F-10 | INV-09 de I-51 (sobre en restamp) sin prueba | §8.4 |
 | F-11 | `RackProjectVariablesWindow` no adopta `DialogWindowChrome`/`EditorActions` (ADR-0029 D11) | §11.2 |
 | F-12 | Comentarios desfasados: «five kinds» (`KindHandlerDispatch.cs:12-13`, `RackMenuCommands.cs:138-140`), regen via `DrawAndPlace` en Push Back (`RackPushBackCommands.cs:317-318`), `CantileverLineDesign.cs:335` «shown in the library list» | citados |
+| F-13 | Troceado de Xrecord duplicado con conducta distinta: `RackBlockData` (nulo, cast duro, sin catch) frente a `ProjectVariablesData` (tri-estado, nunca lanza), mas una tercera copia en pruebas (addendum de G2A) | `RackBlockData.cs:18,35-39,43,73,79-88` [E]; `ProjectVariablesData.cs:38,59-89,115-122` [E]; `ProjectVariablesRegistryAccessTests.cs:202-212` [L] |
 
 ## 16. Preguntas que la Proposal debe cerrar
 
