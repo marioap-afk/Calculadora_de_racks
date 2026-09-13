@@ -26,9 +26,9 @@ automation:
 
 # I-54 — ID24 — Custom Properties Foundation
 
-> **Fase actual: RECLAMADA Y BOOTSTRAPEADA (G0).** No hay Discovery hecho, no hay Proposal y **no hay
-> una sola linea de produccion escrita**. La sesion que abrio la iniciativa esta autorizada **solo para
-> G0, G1 y una Proposal V1 documental**; la implementacion esta BLOQUEADA (seccion 12).
+> **Fase actual: G1 CERRADO — Discovery en [I-54-discovery.md](I-54-discovery.md).** No hay Proposal todavia
+> y **no hay una sola linea de produccion escrita**. La sesion que abrio la iniciativa esta autorizada **solo
+> para G0, G1 y una Proposal V1 documental**; la implementacion esta BLOQUEADA (seccion 12).
 
 > **Apertura por autorizacion explicita del Owner sin fila previa**, transmitida por el Coordinador de
 > I-54 — caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la
@@ -168,8 +168,8 @@ Lo que si se declara para esta sesion: solo `docs/initiatives/I-54-*.md` y la fi
 
 | # | Fase | Entregable | Estado |
 |---|---|---|---|
-| G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
-| G1 | Discovery | Informe por archivo/simbolo y respuestas de la seccion 3, punto 2 | pendiente |
+| G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** — bootstrap `f908b2f` |
+| G1 | Discovery | [I-54-discovery.md](I-54-discovery.md): informe por archivo/simbolo, H-1..H-8, mapa de cruces, riesgos y hallazgos fuera de alcance | **HECHA** (su SHA se registra en el commit siguiente) |
 | G2 | Proposal y consenso | Proposal V1 en esta sesion; revision de Arquitecto y reconciliacion **despues**, cada una con orden propia | pendiente |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Por definir **tras el consenso de G2**, no aqui | bloqueada |
 
@@ -241,5 +241,11 @@ Claim-Id   = d4b871e9-8a5d-4e67-bc11-a8f3c023788e
 Primer `git push -u origin architecture/propiedades-personalizadas` **aceptado sin force**
 (`* [new branch]`), con `origin` sin ninguna referencia a I-54 ni a ID24 en el preflight. `main` **no fue
 modificada**.
+
+**G1 — Discovery.** Solo documentacion, sobre el codigo de `BASE_SHA` (la rama no difiere en `src/`,
+`tests/` ni `assets/`). Preflight de G1: `origin/main` sin mover; I-49 y I-52/I-53 solo documentacion; I-50
+con produccion que **no** toca sobre, compositor, restamp, cloner ni autoridad. Sin compilacion ni pruebas:
+G1 no produce codigo. Los hallazgos fuera de alcance (F-01..F-12) quedan en el Discovery y pasan a
+`ideas-futuras.md` cuando se fije el contrato.
 
 El resto de la evidencia se acumula al cerrar cada fase.
