@@ -12,7 +12,8 @@ namespace RackCad.Tests
 {
     /// <summary>
     /// Characterization + equivalence tests for the dynamic editor's recompute core extracted to Application (I-21):
-    /// the rebuild decision, header-fondo preservation, in-place header-height update and the design assembly. The final
+    /// the rebuild decision, header-fondo preservation (since I-53D, through the rebuild with reconciliation), in-place
+    /// header-height update and the design assembly. The final
     /// tests run the real pipeline (matrix -> BuildDesign -> resolver.Resolve) to prove the assembled design is a valid,
     /// self-consistent input to the same resolver the drawing/BOM consume — i.e. the extraction preserves behavior.
     /// </summary>
@@ -68,10 +69,17 @@ namespace RackCad.Tests
             Assert.True(DynamicEditorDesignAssembler.MustRebuild(new DynamicRackSystem(), system.Pallet, layout));
         }
 
+        /// <summary>
+        /// I-53D (D-39) — REAPUNTADA desde el par ordinal <c>SnapshotHeaderFondos</c> / <c>RestoreHeaderFondos</c>, que G7 retiro
+        /// del ensamblador, a la reconstruccion con reconciliacion con la que el editor reconstruye ahora
+        /// (<see cref="DynamicRackRebuild"/>; OD-2.b). Misma garantia y mismo escenario: el fondo propio de la SEGUNDA cabecera
+        /// sobrevive a la reconstruccion y la primera no gana ninguno; ahora por <c>ModuleId + Kind</c> y con informe, en vez
+        /// de por orden de cabecera. El conteo de restaurados pasa a ser la lista de conservados del informe.
+        /// </summary>
         [Fact]
-        public void SnapshotAndRestoreHeaderFondos_PreservesCustomFondosByHeaderOrder()
+        public void Rebuild_PreservesCustomFondosByModuleIdAndKind_AndReportsThem()
         {
-            var (builder, _, assembler) = Services();
+            var (builder, resolver, _) = Services();
             var system = BuildSystem(builder, 5); // headers at positions 1, 3, 5
 
             var headers = system.Modules.Where(m => m.IsHeader).ToList();
@@ -80,20 +88,36 @@ namespace RackCad.Tests
             headers[1].IsManualOverride = true;
             headers[1].Length = 61.0;
 
-            var snapshot = assembler.SnapshotHeaderFondos(system);
-            Assert.Equal(headers.Count, snapshot.Count);
-            Assert.Null(snapshot[0]);
-            Assert.Equal(61.0, snapshot[1]);
+            var state = new DynamicHeaderBatchState();
+            var result = DynamicRackRebuild.Rebuild(
+                system,
+                state,
+                new DynamicRackRebuildRequest
+                {
+                    Pallet = Pallet48(),
+                    DepthLayout = DynamicDepthGeometry.Resolve(system),
+                    HeaderPostCatalogId = PostId,
+                    HeaderHeight = 132.0,
+                    PostPeralte = 3.0,
+                    LoadLevels = 3,
+                    FirstLevelHeight = 6.0,
+                    BeamDepth = DynamicRackDefaults.DefaultBeamDepth
+                },
+                builder,
+                resolver);
 
-            // Rebuild a fresh standard system and restore the snapshot onto it.
-            var rebuilt = BuildSystem(builder, 5);
-            var restored = assembler.RestoreHeaderFondos(rebuilt, snapshot, 132.0, PostId);
-
-            Assert.Equal(1, restored);
-            var rebuiltHeaders = rebuilt.Modules.Where(m => m.IsHeader).ToList();
+            Assert.Equal(new[] { headers[1].ModuleId }, result.Reconciliation.Preserved);
+            Assert.False(result.Reconciliation.LostAnything);
+            Assert.Equal(1, state.Generation);
+            var rebuiltHeaders = result.System.Modules.Where(m => m.IsHeader).ToList();
+            Assert.Equal(headers[1].ModuleId, rebuiltHeaders[1].ModuleId);
             Assert.Equal(61.0, rebuiltHeaders[1].Length);
             Assert.True(rebuiltHeaders[1].IsManualOverride);
             Assert.False(rebuiltHeaders[0].IsManualOverride);
+
+            // The ordinal pair is retired: the reconciliation is the only way the editor carries a fondo across a rebuild.
+            Assert.Null(typeof(DynamicEditorDesignAssembler).GetMethod("SnapshotHeaderFondos"));
+            Assert.Null(typeof(DynamicEditorDesignAssembler).GetMethod("RestoreHeaderFondos"));
         }
 
         [Fact]
