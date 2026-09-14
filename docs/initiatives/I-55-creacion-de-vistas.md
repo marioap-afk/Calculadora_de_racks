@@ -26,11 +26,14 @@ automation:
 
 # I-55 — View Placement & Projection
 
-> **Fase actual: G2B — Proposal V2 publicada sin consenso** ([Proposal V2](I-55-proposal-v2.md) @ `f84f303`), tras
-> `Coordinator = CHANGES REQUIRED` sobre la [Proposal V1](I-55-proposal-v1.md) (`d1918ab`, historica). Incluye mapa de
-> implementacion V2, ADR-0042 propuesto y revisado, y paquetes de revision V2 para Coordinador y Arquitecto. **Open Material:
-> M-01** (semantica de colocacion de grupo) y X-1..X-8 con I-52. No hay una sola linea de produccion escrita; la
-> implementacion esta **BLOQUEADA** (seccion 12).
+> **Fase actual: G2C — revisiones sobre la Proposal V2** ([Proposal V2](I-55-proposal-v2.md) @ `f84f303`).
+>
+> - **Coordinador:** revision tecnica sin blocker nuevo, pero no `AGREED`; recomienda al Owner las opciones A.
+> - **Arquitecto:** [`CHANGES REQUIRED — PROPOSAL V3`](I-55-architect-review-v2.md), con X-1..X-8 reconciliados sin conflicto
+>   material y A-8 = complemento de ADR-0010.
+> - **Open Material:** M-01 (decision del Owner pendiente), cambios AR2-01..AR2-06 y registro de la reconciliacion por I-52.
+>
+> No hay una sola linea de produccion escrita; la implementacion esta **BLOQUEADA** (seccion 12).
 >
 > ```text
 > SUBSTANTIVE IMPLEMENTATION: BLOCKED
@@ -177,7 +180,7 @@ implementacion, ambos **sin consenso**. Una desviacion material frente a lo acor
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
 | G1 | Discovery | [I-55-discovery.md](I-55-discovery.md): matriz sistema × ViewKind × variante | **HECHA** |
 | G1.1 | Correccion contractual | Framing ID17 + ID18 + ID19, OQ reclasificadas, rebase y reconciliacion | **HECHA** (commit de esta correccion) |
-| G2 | Proposal y consenso | [Proposal V1](I-55-proposal-v1.md) (historica), [mapa V1](I-55-implementation-map-v1.md) y paquetes V1 ([Coordinador](I-55-coordinator-review-package-v1.md), [Arquitecto](I-55-architect-review-package-v1.md)); en G2B, [Proposal V2](I-55-proposal-v2.md), ADR-0042 propuesto, [mapa V2](I-55-implementation-map-v2.md) y paquetes V2 ([Coordinador](I-55-coordinator-review-package-v2.md), [Arquitecto](I-55-architect-review-package-v2.md)); veredictos de Coordinador y Arquitecto | **V1: Coordinator = CHANGES REQUIRED. V2 publicada (`f84f303`); M-01 abierta; pendiente de veredictos** |
+| G2 | Proposal y consenso | [Proposal V1](I-55-proposal-v1.md) (historica), [mapa V1](I-55-implementation-map-v1.md) y paquetes V1 ([Coordinador](I-55-coordinator-review-package-v1.md), [Arquitecto](I-55-architect-review-package-v1.md)); en G2B, [Proposal V2](I-55-proposal-v2.md), ADR-0042 propuesto, [mapa V2](I-55-implementation-map-v2.md) y paquetes V2 ([Coordinador](I-55-coordinator-review-package-v2.md), [Arquitecto](I-55-architect-review-package-v2.md)); veredictos de Coordinador y Arquitecto | **V1: Coordinator = CHANGES REQUIRED. V2 (`f84f303`): Coordinator sin blocker, no AGREED; [Architect = CHANGES REQUIRED — PROPOSAL V3](I-55-architect-review-v2.md); M-01 abierta; Proposal V3 requerida** |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates del mapa de implementacion **tras el consenso** | **bloqueada** |
 
 ## 9. Pruebas y builds
@@ -260,3 +263,13 @@ sin avance; I-49 avanzo a `75f1862` e I-52 a `2275f21` (Proposal V11, con la rec
 antes de cualquier freeze). La revision adversarial tuvo tres pasadas (Proposal V2 §23). Los paquetes de revision V2
 citan ese SHA exacto. Proposal V1, mapa V1 y paquetes V1 quedan como registro historico. Solo documentacion; HANDOFF
 y ROADMAP sin tocar.
+
+**G2C — revisiones sobre V2.** El Coordinador concluyo su revision tecnica sin blocker nuevo, pero no declaro
+`AGREED`: M-01 y X-1..X-8 siguen abiertas. Recomienda al Owner las opciones A, sin decision del Owner registrada. La
+revision del Arquitecto, asignada por la orden a esta sesion y hecha con revisores independientes de solo lectura, se
+registra en [I-55-architect-review-v2.md](I-55-architect-review-v2.md):
+- veredicto `CHANGES REQUIRED — PROPOSAL V3`, con MEDIUM AR2-01..AR2-06 y LOW AR2-07..AR2-20;
+- X-1..X-8 AGREED;
+- A-8 = complemento con nota posterior fechada en ADR-0010.
+
+Solo documentacion; HANDOFF y ROADMAP sin tocar.
