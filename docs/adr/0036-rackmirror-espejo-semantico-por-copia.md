@@ -2,27 +2,27 @@
 
 - **Estado:** **propuesto**
 - **Fecha:** 2026-09-12 (propuesto; borrador corregido con Proposal V2 y con Proposal V3 el mismo día, y con Proposal V4,
-  Proposal V5, Proposal V6 y Proposal V7 el 2026-09-13)
+  Proposal V5, Proposal V6, Proposal V7 y Proposal V8 el 2026-09-13)
 - **Decisores:** Mario Pérez, Owner del repositorio (**acepta o rechaza**; pendiente). La aceptación **no** es
   precondición de la caracterización (G3): se pide **después de G3**, si G3 no contradice materialmente el contrato (si
-  lo contradice, se abre una Proposal V8), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
+  lo contradice, se abre una Proposal V9), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
   (consenso técnico **pendiente** sobre la Proposal); Claude (redacción)
 - **Iniciativa relacionada:** I-52 — `feature/rackmirror-espejo-semantico`
   ([contrato](../initiatives/I-52-rackmirror-espejo-semantico.md),
   [Discovery](../initiatives/I-52-discovery.md), [Proposal V1](../initiatives/I-52-proposal-v1.md),
   [Proposal V2](../initiatives/I-52-proposal-v2.md), [Proposal V3](../initiatives/I-52-proposal-v3.md),
-  [Proposal V4](../initiatives/I-52-proposal-v4.md), [Proposal V5](../initiatives/I-52-proposal-v5.md) y
-  [Proposal V6](../initiatives/I-52-proposal-v6.md) (historial), [Proposal V7](../initiatives/I-52-proposal-v7.md),
-  [decisiones](../automation/decisions/I-52.md))
+  [Proposal V4](../initiatives/I-52-proposal-v4.md), [Proposal V5](../initiatives/I-52-proposal-v5.md),
+  [Proposal V6](../initiatives/I-52-proposal-v6.md) y [Proposal V7](../initiatives/I-52-proposal-v7.md) (historial),
+  [Proposal V8](../initiatives/I-52-proposal-v8.md), [decisiones](../automation/decisions/I-52.md))
 
 > **Numeración.** Un número de ADR queda reclamado por su primera publicación observable en un ref remoto. Este ADR se
 > publicó por primera vez con el número 0036 en `origin/feature/rackmirror-espejo-semantico`, commit
 > `0fc7032bf15d03e7d478bbd9350f156708621c9d` (corrida de CI del push `34731908035`, creada el `2026-09-13T01:59:44Z`),
 > sin publicación anterior de otro 0036 en ningún ref. ADR-0035 (I-50) y ADR-0037 (I-53, ya integrada) están aceptados
-> en `main`; ADR-0038 (I-49) y ADR-0039 (I-54) están aceptados en sus ramas. Los tres posteriores a 0036 se publicaron
-> después y con otro número: no hay colisión. Antes de pedir la aceptación del Owner se vuelve a buscar 0036 en todos
+> en `main`; ADR-0038 (I-49) y ADR-0039 (I-54) se aceptaron en sus ramas, y ADR-0040 (I-49), aceptado en la suya,
+> reemplaza a ADR-0038. Los cuatro posteriores a 0036 se publicaron después y con otro número: no hay colisión. Antes de pedir la aceptación del Owner se vuelve a buscar 0036 en todos
 > los refs; si apareciera una publicación anterior, este ADR se renumera antes de la aceptación. Una vez `aceptado` no se
-> renumera, y dos ADR aceptados con el mismo número detienen el trabajo hasta que decida el Owner (Proposal V7 §16).
+> renumera, y dos ADR aceptados con el mismo número detienen el trabajo hasta que decida el Owner (Proposal V8 §16).
 
 ## Contexto
 
@@ -53,7 +53,11 @@ de proyecto; varios builders anclan holguras gráficas a un solo lado (el tope d
 Push Back); y casi todas las piezas de frontal y planta son bloques dinámicos de una biblioteca sin versionar ni metadato
 de simetría, cuyo estado (longitud, altura) puede cambiar de forma continua, a veces con una variable de proyecto, y
 cuya apariencia depende de capas, colores, tipos de línea, grosores y escalas por entidad, a menudo heredados por capa o
-por bloque. La ruta de esa biblioteca la configura el usuario, así que otra estación puede usar otra biblioteca.
+por bloque. La ruta de esa biblioteca la configura el usuario, así que otra estación puede usar otra biblioteca. La
+referencia del rack en el espacio modelo tiene además su propia presentación (capa, color, tipo de línea, escala de tipo de
+línea, grosor, transparencia, estilo de trazado y visibilidad) y un lugar en el orden de dibujo, y la definición de un
+bloque se interpreta con el contexto del dibujo que la contiene (modo de estilos de trazado, unidades y escala de
+anotación).
 
 ## Decisión
 
@@ -81,7 +85,7 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
    de los builders queda pendiente de caracterización; una contradicción reabre la Proposal, no se parchea. Al cerrar la
    caracterización **ninguna** propiedad puede quedar pendiente: cada una queda verificada o reclasificada `UNKNOWN` o
    `REQUIRES_MODEL_CHANGE` con fallo cerrado, y una reclasificación que cambie materialmente el alcance, este ADR, una
-   regla de reflexión o la arquitectura abre una Proposal V8. Una holgura gráfica anclada a un lado ya demostrada en
+   regla de reflexión o la arquitectura abre una Proposal V9. Una holgura gráfica anclada a un lado ya demostrada en
    código (tope del Selectivo, tope posterior activo de Push Back) es `UNKNOWN` y falla cerrado hasta que se apruebe una
    regla explícita.
 6. **Reflectores puros en Application sobre el sustrato real de cada kind**, despachados por kind fuera del comando.
@@ -125,8 +129,9 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
    definición dentro de la transacción del llamador, escribe el payload preparado y crea la referencia con la
    colocación ya calculada. La autoridad recibe el nombre lógico de la copia, el estado efectivo y la vista y sección
    canónicas. Su convergencia con los productores de planes existentes (`RACKEDITAR` → Actualizar, `RACKEDITAR` →
-   **Insertar**, el ejecutor de variables y el paso del estado del editor al sistema) se demuestra **antes** de que el
-   comando la consuma; si Actualizar e Insertar comparten costura, una guarda demuestra que ambos la siguen usando. El comando
+   **Insertar**, el ejecutor de variables y el paso del estado del editor al sistema) debe demostrarse **antes** de que el
+   comando la consuma; si Actualizar e Insertar comparten costura, una guarda debe demostrar que ambos la siguen usando. El
+   comando
    no conoce Left/Right, A/B, estaciones ni reglas de cabecera. Una pieza sin bloque en el dibujo es **fallo duro** para
    el espejo: nunca se crea una copia incompleta, y los drawers existentes no cambian.
 8. **Colocación canónica.** Con la reflexión de la hoja `G`, la colocación efectiva de la fuente
@@ -144,7 +149,9 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
 10. **Portadores intactos, por nombre.** Los portadores de la lista cerrada —`SchemaVersion` del sobre y del envoltorio,
     `PropertyValues` (incluidos tipos desconocidos), literales congelados, `VariableId`, **`DimensionViews`** (I-50,
     integrada: requisito normativo, con el entero exacto) y las propiedades de rack de I-54— viajan desde el origen;
-    cualquier otra clave desconocida no vacía del sobre o del envoltorio falla cerrado. El espejo no crea, modifica,
+    cualquier otra clave desconocida no vacía del sobre o del envoltorio falla cerrado. La colección de definiciones de
+    las propiedades personalizadas, de nivel dibujo, no es un portador del rack: el origen y la copia la comparten en el
+    mismo dibujo, y el espejo no la copia, no la refleja, no la transforma ni la escribe. El espejo no crea, modifica,
     desvincula ni materializa variables y no escribe el registro. Para dibujar consume en **solo lectura** la autoridad
     efectiva existente, con su mismo criterio de acreditación del registro: un registro no acreditable o un vínculo roto
     fallan cerrado solo para los kinds cuya autoridad consume el registro. Un cambio de valor de una variable no puede
@@ -161,11 +168,18 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
     y nunca abortan la operación; las restricciones estrictas solo se aplican a los candidatos RackCad. Un candidato
     RackCad fuera de Model Space no entra como fuente: se ignora con aviso y no aborta (decisión deliberada, en
     continuidad con `RACKDUPLICAR`). La línea se captura en el UCS con Z paralela a la de WCS y se convierte a WCS. Las
-    tolerancias son las absolutas del repositorio; no se introduce tolerancia relativa.
+    tolerancias son las absolutas del repositorio; no se introduce tolerancia relativa. La referencia nueva **conserva la
+    presentación de su referencia fuente** —capa, color, tipo de línea, escala de tipo de línea, grosor, transparencia,
+    estilo de trazado y visibilidad—; una fuente con un estado de presentación que no se puede transportar o que no está
+    caracterizado (un recorte espacial, atributos u otra presentación desconocida) falla cerrado antes de mutar, nunca con
+    un simple aviso. Las copias se crean en el orden de dibujo relativo de sus fuentes y, si una copia se superpone de
+    forma visualmente material con un objeto que en ese orden va después de su fuente, el orden no puede conservarse y la
+    operación falla cerrado antes de mutar.
 12. **Atomicidad semántica, no de infraestructura.**
     `ACQUIRE → SNAPSHOT → PREFLIGHT (un solo orden normativo) → LINE → PREPARE → MUTATE → COMMIT`, con una sola
     transacción de escritura para todas las definiciones, payloads y referencias: cualquier fallo revierte todas las
-    copias. Una huella de cada referencia fuente (identidad, transformación, capa, `Origin`, banderas de bloque y payload)
+    copias. Una huella de cada referencia fuente (identidad, transformación, presentación, estado no transportable, orden
+    de dibujo, `Origin`, banderas de bloque y payload)
     y las observaciones del registro que la resolución efectiva realmente usó (acreditación, variables leídas y, si la
     autoridad de expresiones está integrada, sus dependencias transitivas; nunca una «versión» o una huella del registro
     completo) se re-verifican antes de mutar. La importación de la
@@ -179,7 +193,9 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
     pasan, en este orden, dos evidencias:
     - **Evidencia visual-geométrica evaluada por estado (`GeometricEvidence`).** Para cada pieza de cualquier vista
       admisible que necesite aceptar un cambio de mano se evalúa la pieza real en el **estado concreto** que usa: la
-      definición real del bloque, clonada en una base de datos auxiliar privada y descartable; su vector de parámetros
+      definición real del bloque, clonada en una base de datos auxiliar privada y descartable que reproduce el contexto
+      necesario de la autoridad origen (modo de estilos de trazado, unidades, escala de anotación y lo que descubra la
+      caracterización; si no se puede reproducir, la pieza falla cerrado); su vector de parámetros
       dinámicos, aplicado con **exactamente la misma semántica que el materializador** (nombres sin distinguir
       mayúsculas y la última clave duplicada ganando, propiedades de solo lectura sin escribir, nombres ausentes
       ignorados y recomputación gráfica solo si se aplicó alguna propiedad); y, leídos después del **punto de
@@ -188,42 +204,55 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
       una acción dinámica altera la referencia de un modo no representado, la pieza falla cerrado. La pieza se aplana
       recursivamente —bloques anidados con su transformación completa, su propio estado y su bloque evaluado; un ciclo
       falla cerrado.
-    - **Apariencia por fuentes simbólicas.** Cada propiedad visual (color, tipo de línea, escala de tipo de línea, grosor,
-      transparencia y estilo de trazado) se compara por su **fuente simbólica tipada** según las reglas de AutoCAD —valor
-      explícito, por capa con nombre, heredada por la capa `0` (`InheritLayer`) o heredada por bloque (`InheritBlock`),
-      con rutas canónicas relativas a la raíz de la pieza—, **nunca** por el valor que resuelve hoy: una mitad `ByLayer` y
-      otra con el mismo color explícito no son equivalentes, ni lo son una herencia por capa y una por bloque. La escala
-      de tipo de línea forma siempre parte de la firma. La **ruta de visibilidad** de cada primitiva (visibilidad y fuente
-      de capa de cada referencia ancestro y de la propia primitiva) debe coincidir en las homólogas, de modo que ningún
+    - **Apariencia por fuentes simbólicas tipadas.** Cada propiedad visual (color, tipo de línea, escala de tipo de línea,
+      grosor, transparencia y estilo de trazado) se compara por su **fuente simbólica tipada** según las reglas de
+      AutoCAD —valor explícito con su método y su valor, por capa con nombre, heredada por la capa `0` (`InheritLayer`) o
+      heredada por bloque (`InheritBlock`)—, **nunca** por el valor que resuelve hoy: una mitad `ByLayer` y otra con el
+      mismo color explícito no son equivalentes, ni lo son una herencia por capa y una por bloque, ni un color indexado y
+      un color verdadero del mismo aspecto. Las herencias usan rutas canónicas **estables** relativas a la raíz de la
+      pieza, que identifican cada anidado por su definición base, sus valores dinámicos efectivos y un ordinal por
+      contenido, y nunca por nombres anónimos generados ni por identificadores de la base de datos. La escala de tipo de
+      línea forma siempre parte de la firma y, en los trazos sin continuidad demostrable, también las escalas y las
+      escalas de tipo de línea de sus ancestros. La **ruta de visibilidad** de cada primitiva (visibilidad y fuente de
+      capa de cada referencia ancestro y de la propia primitiva) debe coincidir en las homólogas, de modo que ningún
       estado de capas o de visibilidad pueda mostrar una mitad y ocultar la otra; un mecanismo de visibilidad no modelado
-      falla cerrado. Donde dos primitivas se superponen de forma visualmente material (rellenos, trazos coincidentes con
-      firmas distintas, entidades transparentes), el orden visual relativo de las homólogas se conserva o la pieza falla
-      cerrado.
+      —incluidos los objetos anotativos— falla cerrado. Donde dos primitivas se superponen de forma visualmente material
+      (rellenos, trazos coincidentes con firmas distintas, entidades transparentes), el orden visual relativo de las
+      homólogas se conserva o la pieza falla cerrado; lo mismo rige entre instancias de pieza distintas de una vista, cuyo
+      orden relativo de emisión y materialización se conserva en el diseño reflejado o la vista falla cerrado.
     - **Correspondencia conservadora.** La simetría se prueba respecto del eje que derivan `F` y la rotación de la
       instancia (una rotación oblicua falla cerrado) y de un centro candidato, con una correspondencia uno a uno entre
-      **primitivas canónicas** de la misma firma. La canonización es conservadora: solo se fusionan trazos con continuidad
+      **primitivas canónicas** de la misma firma, incluida su clase de origen: una polilínea nunca se empareja con líneas o
+      arcos sueltos, y su cierre y la generación de su patrón de tipo de línea forman parte de la firma. La canonización es
+      conservadora: solo se fusionan trazos con continuidad
       demostrable por su fuente; sin ella se conservan segmentación, orientación, escala y multiplicidad; los sólidos y
-      trazos se comparan por el polígono que AutoCAD representa y los sombreados sólidos por sus bucles y su estilo de
-      islas; nunca se fusionan familias distintas. La caja envolvente nunca es prueba: una pieza asimétrica con caja
+      trazos se comparan por el polígono que AutoCAD representa y los sombreados sólidos por sus bucles, los tipos de sus
+      bucles y su estilo de islas; nunca se fusionan familias distintas. La caja envolvente nunca es prueba: una pieza asimétrica con caja
       simétrica falla, y una pieza geométricamente simétrica con fuentes visuales o rutas de visibilidad distintas también.
-    - **Política de clases cerrada.** Se evalúan líneas, arcos, círculos, elipses, splines, polilíneas con bulges sin
-      ancho, sin grosor y con normal +Z, sólidos 2D, trazos, sombreados sólidos uniformes canonizables y referencias
-      anidadas. **Toda otra clase o variante falla cerrado**: entre ellas polilíneas con ancho, grosor o normal distinta,
-      regiones, sólidos 3D, entidades proxy o personalizadas, imágenes, OLE, puntos, polilíneas 2D y 3D de estilo antiguo,
-      multilíneas, caras, wipeouts, directrices, tablas, formas, textos, atributos, cotas y sombreados de **patrón** o de
-      **degradado**; igual falla una correspondencia ambigua.
-    - **Evidencia de colocación (`PlanPlacementEvidence`).** Después, la conmutación de la vista demuestra que los
+    - **Política cerrada de clases y variantes.** Cada clase soportada lo es solo con la variante y los atributos de
+      representación que la política enumera; **cualquier otro atributo, variante o subclase se trata como no soportado y
+      falla cerrado**, y la clase se comprueba por su tipo exacto, nunca por herencia. En el primer corte se evalúan
+      líneas, arcos y círculos sin grosor y con normal +Z; elipses y splines planas en el plano de la vista; polilíneas
+      con bulges, sin ancho, sin grosor y con normal +Z; sólidos 2D y trazos sin grosor y con normal +Z; sombreados sólidos
+      uniformes no degradados, con normal +Z, con la elevación que admita la caracterización y con bucles canonizables por
+      sus aristas y sus tipos; y referencias anidadas de tipo exacto, sin inserción múltiple, no anotativas y sin recorte
+      espacial. Falla cerrado todo lo demás: entre otros, tipos de línea complejos, polilíneas con ancho, grosor o normal
+      distinta, regiones, sólidos 3D, entidades proxy o personalizadas, imágenes, OLE, puntos, polilíneas 2D y 3D de
+      estilo antiguo, multilíneas, caras, wipeouts, directrices, tablas, formas, textos, atributos, cotas y sombreados de
+      **patrón** o de **degradado**; igual falla una correspondencia ambigua.
+    - **Evidencia de colocación (`PlanPlacementEvidence`).** Después, la conmutación de la vista debe demostrar que los
       builders colocan la pieza de forma coherente con el centro verificado; nunca ajusta, infiere ni corrige el centro.
 
     La definición evaluada es la del dibujo si el bloque ya existe y, si no, la de la biblioteca candidata; tras importar,
     PREPARE verifica de nuevo la definición real que quedó en el dibujo, porque la importación conserva una definición
     local con el mismo nombre. La evaluación no muta el dibujo del usuario (el dibujo queda intacto y la base de datos de
-    trabajo restaurada, también ante excepción) ni la base de datos cacheada de la biblioteca, que solo se lee y se clona;
-    entrega datos planos a Application, que no depende de AutoCAD, y su resultado no se persiste.
+    trabajo restaurada, también ante excepción) ni la base de datos cacheada de la biblioteca, a la que solo se accede con
+    la API pública que clona definiciones hacia la base auxiliar —nunca por reflexión—, tras lo cual se verifica que
+    existen todos los bloques requeridos; entrega datos planos a Application, que no depende de AutoCAD, y su resultado no se persiste.
 
-    Una huella de la pieza evaluada —valores efectivos, clases, geometría aplanada, fuentes simbólicas, rutas, escala,
-    visibilidad, orden visual material y transformación efectiva, en serialización canónica y nunca en el orden de
-    iteración de la definición— sirve solo para trazabilidad, detección de obsolescencia y enlace entre la verificación
+    Una huella de la pieza evaluada —valores efectivos, clases y variantes, geometría aplanada, fuentes simbólicas
+    tipadas, rutas estables, escala y contexto de patrón, visibilidad, orden visual material, transformación efectiva y
+    contexto de la base auxiliar, en serialización canónica y nunca en el orden de iteración de la definición— sirve solo para trazabilidad, detección de obsolescencia y enlace entre la verificación
     previa y PREPARE; **no** es evidencia de simetría. La evidencia registrada de una biblioteca concreta se identifica por
     el **SHA-256** de su contenido y no se reutiliza si cambia; para una definición ya presente en el dibujo manda su
     huella efectiva. No se usa una forma afín del centro sobre un parámetro dinámico ni se interpretan los grafos de
@@ -235,16 +264,18 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
     envolvente, de la diferencia de inserciones ni de un mínimo de error; por eso ninguna evidencia puede hacer
     equivalente una pieza con holgura u offset anclado a un lado, cualquiera sea su rol, y el rechazo de las familias con
     holgura `UNKNOWN` (hoy los topes) es una defensa adicional. Ninguna holgura, offset gráfico o parámetro con semántica
-    de lado se asume simétrico: sin regla, falla cerrado. La caracterización demuestra, fuera del código de producción y en
-    AutoCAD 2025 (`acad.exe`), la viabilidad de la evaluación, su paridad con el materializador, el punto de observación,
-    las reglas de fuentes, visibilidad y orden visual, y la postcondición del dibujo y de la caché; la evaluación
-    productiva nace en el Plugin durante la implementación. La confirmación visual del Owner es confirmación, nunca la
+    de lado se asume simétrico: sin regla, falla cerrado. La caracterización **debe demostrar**, fuera del código de
+    producción y en AutoCAD 2025 (`acad.exe`), la viabilidad de la evaluación, su paridad con el materializador, el punto
+    de observación, el contexto de la base auxiliar, la política de variantes, las reglas de fuentes tipadas, visibilidad y
+    orden visual dentro de la pieza y entre piezas, la presentación y el orden de las referencias, y la postcondición del
+    dibujo y de la caché; la evaluación productiva nace en el Plugin durante la implementación. La confirmación visual del Owner es confirmación, nunca la
     única prueba.
 14. **Verificación dinámica por rack sobre todas las vistas admisibles.** Antes de pedir la línea, cada rack lógico
     verifica sobre su diseño reflejado: la ausencia de metadata semántica desconocida en el payload y en el exterior; la
     autoridad de dependencias y la estabilidad dinámica de sus decisiones; la evidencia visual-geométrica de las piezas con
     cambio de mano; la conmutación de **todas** las vistas admisibles que el rack podría materializar después con
-    Insertar —estén o no seleccionadas—; el BOM, con el multiconjunto de líneas de su builder y con la clave con que
+    Insertar —estén o no seleccionadas—, incluido el orden visual relativo de las piezas que se superponen de forma
+    material; el BOM, con el multiconjunto de líneas de su builder y con la clave con que
     producción lo consolida; y la fidelidad del store. La enumeración de vistas es pura: no busca vistas hermanas en el
     dibujo, no las añade a la selección y no las crea. Es la garantía ejecutable del fail-closed: una regla estática que
     resulte falsa para un rack concreto, en cualquier vista que la copia pueda generar, no llega a mutar.
@@ -309,6 +340,15 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
 - **Verificar la estabilidad solo con el estado del registro del momento** — descartada: un cambio de variable posterior
   puede desbordar filas o mover índices; tampoco se toma como cota un control de la interfaz.
 - **Censo manual de los tipos anidados cubiertos** — descartada: puede quedar incompleto sin avisar.
+- **Copiar solo la capa de la referencia fuente, como `RACKDUPLICAR`** — descartada: la apariencia de la referencia forma
+  parte de lo que el usuario refleja; una presentación que no se puede conservar falla cerrado en lugar de copiarse a
+  medias o de avisar.
+- **Emparejar polilíneas con líneas o arcos sueltos por su geometría** — descartada: la clase de origen, el cierre y la
+  generación del patrón cambian la representación.
+- **Tratar las piezas de una vista como un multiconjunto sin orden** — descartada donde se superponen de forma material: el
+  orden relativo cambia lo que se ve.
+- **Leer la caché de la biblioteca por reflexión** — descartada: la API pública ya clona definiciones hacia una base
+  auxiliar sin tocar la caché.
 
 ## Consecuencias
 
@@ -333,9 +373,11 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
     con una variable** sin overrides que los fijen; y todo rack con **alguna vista admisible** que no conmute;
   - las vistas frontal y planta dependen de la evidencia visual-geométrica evaluada por estado, porque prácticamente
     todas sus piezas necesitan aceptar un cambio de mano; si la evaluación no es viable en AutoCAD 2025, no tiene paridad
-    con el materializador ni un punto de observación soportado, o la biblioteca usa clases, variantes o apariencias fuera
-    de la política (textos, atributos, sombreados con patrón o degradado, sólidos 3D, polilíneas con ancho, mitades con
-    fuentes visuales o rutas de visibilidad distintas), esas piezas —y con ellas kinds enteros— fallan cerrado;
+    con el materializador, no tiene un punto de observación soportado o no puede reproducir el contexto del dibujo, o la
+    biblioteca usa clases, variantes o apariencias fuera de la política (textos, atributos, sombreados con patrón o
+    degradado, sólidos 3D, polilíneas con ancho, tipos de línea complejos, inserciones múltiples o anotativos anidados,
+    mitades con fuentes visuales, clases de origen o rutas de visibilidad distintas, piezas solapadas cuyo orden se
+    invierte), esas piezas —y con ellas kinds enteros— fallan cerrado;
   - la **representabilidad depende de la biblioteca efectiva** y puede reducirse cuando una pieza no satisface el contrato
     visual-geométrico. La biblioteca no está versionada en el repositorio y su ruta la configura el usuario: otra
     biblioteca puede dar otro resultado, siempre con fallo cerrado. La evidencia de una biblioteca concreta es indicativa,
@@ -343,22 +385,26 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
   - la canonización conservadora puede dejar fuera piezas visualmente simétricas cuyos trazos sin continuidad
     demostrable difieren en segmentación u orientación, hasta que la caracterización habilite más con evidencia;
   - la **selección es todo-o-nada**: un solo rack que no pase hace fallar el comando entero y no se refleja ninguno;
+  - la copia conserva la presentación de la referencia fuente; una fuente con un estado de presentación que no se puede
+    transportar o que no está caracterizado falla cerrado, y también una copia cuyo orden de dibujo en el espacio modelo
+    no puede conservarse frente a los objetos que se superponen con ella; `RACKDUPLICAR` no cambia;
   - `RACKMIRROR` no corrige racks espejados antes con el `MIRROR` nativo (escala negativa): esas fuentes fallan cerrado;
   - los racks legados con **miembros retirados** fallan cerrado: si el store actual los descarta, hay que abrirlos con
     `RACKEDITAR` y Actualizar antes de reflejarlos; si el store los conserva (el peralte retirado del larguero alto de
     Push Back), no hay remedio en I-52;
-  - la evaluación visual-geométrica (fuentes simbólicas, rutas de visibilidad, orden visual, canonización y clonado
-    aislado desde la caché incluidos) tiene un coste por pieza y estado que se mide en AutoCAD 2025 antes de exponer el
-    comando;
+  - la evaluación visual-geométrica (variantes, fuentes simbólicas tipadas, rutas de visibilidad, orden visual dentro de
+    la pieza y entre piezas, contexto de la base auxiliar, canonización y clonado aislado desde la caché incluidos) tiene
+    un coste por pieza y estado que se mide en AutoCAD 2025 antes de exponer el comando;
   - lo importado de la biblioteca puede sobrevivir a un fallo;
   - todo tipo, miembro o valor de enum nuevo alcanzado desde los tipos raíz exige clasificar su regla de espejo antes de
     integrarse;
   - la aceptación de este ADR espera a la caracterización (G3), lo que añade una ronda del Owner antes de implementar; si
     G3 contradice materialmente el contrato o reduce materialmente el alcance que el Owner aceptó, se abre una Proposal
-    V8 antes de pedirla.
+    V9 antes de pedirla.
 - Vigilar: cada kind o vista nueva debe declarar su reflector, su decodificación de sección, su conjunto de vistas
   admisibles y su exposición; todo miembro nuevo y toda propiedad vinculable nueva necesitan clasificación antes de
-  integrarse; todo offset gráfico nuevo de un builder de vista admitida debe caracterizarse.
+  integrarse; todo offset gráfico nuevo de un builder de vista admitida debe caracterizarse; toda variante de clase o
+  propiedad de presentación nueva debe clasificarse antes de admitirse.
 
 ## Referencias
 
@@ -369,10 +415,13 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
   `ProjectVariableMutationExecutor`.
 - I-50: `DimensionViewVisibility`, `DimensionViewPolicy`.
 - I-54 Proposal V5 D-21 (invariante de preservación del sobre, que el espejo cumple) y sus residuales F-14a y F-14b;
-  ADR-0039 (aceptado en su rama).
-- I-49 ADR-0038 (aceptado en su rama; G5 solo sintáctico, sin `PlanReadSet` ni dominio integrados): `PlanReadSet` y
+  ADR-0039 (aceptado en su rama); G6 de I-54: colección de definiciones de nivel dibujo y ejecutores físicos, fuera del
+  alcance del espejo.
+- I-49 ADR-0040 (aceptado en su rama; reemplaza a ADR-0038 y conserva sus decisiones salvo la guarda del parser; G5 solo
+  sintáctico, sin `PlanReadSet` ni dominio integrados): `PlanReadSet` y
   dominio del consumidor declarado por el descriptor; guardas de texto de `ProjectVariablesConformanceTests`.
-- I-53 E1 (integrada en `main`): guardas C-08 y C-10 sobre `RackCad.Application.Systems.Shared`; ADR-0037 (aceptado).
+- I-53 E1 e I-53S E2 (integradas en `main`): guardas C-08 y C-10 sobre `RackCad.Application.Systems.Shared`; ADR-0037
+  (aceptado); la ventana del Selectivo distribuye cabeceras con `ApplyHeaderBatch`.
 - I-19: `CatalogBlockParameters`, `CatalogBlockManifest`.
 - `src/RackCad.Application/Geometry/Transform2D.cs`; `src/RackCad.Application/Geometry/Vector2D.cs` (`GeometryTolerance`);
   `src/RackCad.Application/Persistence/RackProjectStore.cs`; `src/RackCad.Application/Persistence/RackProject.cs`;
@@ -383,8 +432,9 @@ por bloque. La ruta de esa biblioteca la configura el usuario, así que otra est
   `src/RackCad.Application/Systems/PushBack/PushBackRearTopeBuilder.cs`;
   `src/RackCad.Application/Persistence/RackEmbedDocument.cs`;
   `src/RackCad.Application/Catalogs/BlockLibrary.cs` (ruta configurable de la biblioteca);
-  `src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs` (caché de sesión de la biblioteca);
-  `src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs` (`ApplyDynamicParameters`).
+  `src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs` (caché privada de sesión de la biblioteca; acceso por
+  `EnsureBlocks`);
+  `src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs` (`ApplyDynamicParameters`; orden de materialización).
 
 ## Historial del borrador
 
@@ -464,7 +514,9 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
   - alternativas: comparación solo geométrica, primitivas sin canonizar, degradados y caracterización solo en la consola,
     descartadas o diferidas;
   - numeración: ADR-0037 ya está en `main`.
-- **Borrador V7** — este texto, con Proposal V7. Cambios respecto del V6, por la revisión de Arquitecto de Proposal V6
+- **Borrador V7** — publicado con Proposal V7 en `b70b5bf` (recuperable con
+  `git show b70b5bf:docs/adr/0036-rackmirror-espejo-semantico-por-copia.md`). Cambios respecto del V6, por la revisión de
+  Arquitecto de Proposal V6
   (`Architect: CHANGES REQUIRED — PROPOSAL V7`) y la orden del Coordinador:
   - decisión 13: **fuentes visuales simbólicas** (`Explicit`, `ByLayer`, `InheritLayer`, `InheritBlock`) en lugar de
     valores resueltos; **ruta de visibilidad** de ancestros y primitiva; escala de tipo de línea siempre en la firma;
@@ -477,5 +529,21 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
     de una biblioteca concreta y remiten a la Proposal (§1.4);
   - contexto, alternativas y referencias: apariencia heredada por capa o por bloque; comparación de valores resueltos,
     fusión sin continuidad demostrable y evaluación en la caché, descartadas o diferidas.
+- **Borrador V8** — este texto, con Proposal V8. Cambios respecto del V7, por la revisión de Arquitecto de Proposal V7
+  (`Architect: CHANGES REQUIRED — PROPOSAL V8`) y la orden del Coordinador:
+  - decisión 13: política **cerrada de clases y variantes** por tipo exacto; clase de origen, cierre y generación del
+    patrón en la firma; fuentes **tipadas** (método y valor); escalas de ancestros en los trazos sin continuidad
+    demostrable; rutas anidadas **estables**, sin nombres anónimos; base auxiliar con el **contexto de la autoridad
+    origen**; caché accedida solo por la API pública que clona definiciones; **orden visual entre piezas**; «la
+    caracterización **debe** demostrar»;
+  - decisiones 7, 10, 11, 12 y 14: «debe demostrarse»; la colección de nivel dibujo de las propiedades personalizadas no
+    es portador y el espejo no la toca; **presentación de la referencia fuente** conservada, con fallo cerrado ante un
+    estado no transportable o un orden en el espacio modelo que no se puede conservar; huella con presentación y orden;
+    orden entre piezas en la verificación por rack;
+  - decisión 5 y consecuencias: una contradicción material abre una Proposal V9; consecuencias genéricas de la
+    presentación, las variantes, el contexto y el orden;
+  - contexto, alternativas y referencias: presentación de la referencia y contexto del dibujo; copiar solo la capa,
+    emparejar por geometría entre clases, orden como multiconjunto y lectura de la caché por reflexión, descartadas;
+    ADR-0040 aceptado en I-49 en lugar de ADR-0038, I-53S integrada en `main` y G6 y G7A de I-54.
 
   Sigue **propuesto**: su aceptación se pide después de G3 y antes de G4.
