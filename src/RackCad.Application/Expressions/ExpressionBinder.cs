@@ -329,7 +329,9 @@ namespace RackCad.Application.Expressions
 
                 if (qualifier != null)
                 {
-                    var id = SymbolId.ProjectVariable(qualifier.Text);
+                    // The key text and the comparer of its namespace, nothing else (Amendment A2 §3.5): the entry found
+                    // gives the identity back with the spelling of the registry.
+                    var id = SymbolId.ProjectVariable(qualifier.Key);
 
                     if (!_context.Symbols.TryGet(id, out entry))
                     {

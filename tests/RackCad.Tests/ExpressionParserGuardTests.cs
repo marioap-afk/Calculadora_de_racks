@@ -78,7 +78,7 @@ namespace RackCad.Tests
             var homonimo = new string('A', 3964) + "#" + Guid1;
             Assert.Equal(4001, homonimo.Length);
             var cualificado = Assert.IsType<ReferenceSyntax>(ParseOk(homonimo));
-            Assert.Equal(Guid.Parse(Guid1), cualificado.Qualifier.Id);
+            Assert.Equal(Guid1, cualificado.Qualifier.Key);
 
             var astral = "{" + Repeat(LetraAstral, 4001) + "}";
             Assert.Equal(8004, astral.Length);
@@ -182,6 +182,9 @@ namespace RackCad.Tests
         [InlineData("{a}}b}", 1)]
         [InlineData("Holgura#" + Guid1, 2)]
         [InlineData("#" + Guid1, 1)]
+        [InlineData("#{" + ClaveN + "}", 1)]
+        [InlineData("Holgura#{{" + ClaveD + "}}}", 2)]
+        [InlineData("{a}}b}#{{0x3f2b1c9e, 0x8a4d, 0x4e6f, {0x9b, 0x0a, 0x1c, 0x2d, 0x3e, 0x4f, 0x5a, 0x6b}}}}} * 2", 4)]
         [InlineData("MAX(A, 1)", 6)]
         [InlineData("Rack.Frentes", 3)]
         [InlineData("-(1 + 2) * 3 / 4", 10)]
@@ -190,6 +193,37 @@ namespace RackCad.Tests
         public void CADA_LEXEMA_CUENTA_UNO_SEGUN_A1_3(string text, int tokens)
         {
             Assert.Equal(tokens, ExpressionLexer.Tokenize(text).Tokens.Count - 1);
+        }
+
+        /// <summary>
+        /// Amendment A2 §6 (ADR-0041 D8): las dos formas del cualificador cuentan UN token, sea cual sea la longitud de la
+        /// clave o cuántos escapes lleve, y A1 no cambia: sin límite de caracteres y la misma guarda de 4096 tokens, que
+        /// sigue cortando en el token 4097.
+        /// </summary>
+        [Fact]
+        public void UN_CUALIFICADOR_DE_CLAVE_EXACTA_ES_UN_TOKEN_AUNQUE_SEA_MUY_LARGO()
+        {
+            var ceros = "{0x" + new string('0', 100000) + "3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}";
+            var espacios = "{0x3f2b1c9e," + new string(' ', 100000) + "0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}";
+
+            foreach (var key in new[] { ClaveN, ClaveB, ClaveXConEspacios, ClaveXConEspacioDuro, ceros, espacios })
+            {
+                Assert.Equal(1, TokenCount(Llaves(key)));
+                Assert.Equal(2, TokenCount("Holgura" + Llaves(key)));
+                Assert.Equal(key, Assert.IsType<ReferenceSyntax>(ParseOk("Holgura" + Llaves(key))).Qualifier.Key);
+            }
+
+            var justo = "Holgura" + Llaves(ceros) + Repeat("+1", 2047);
+            Assert.Equal(4096, TokenCount(justo));
+            ParseOk(justo);
+
+            var sobra = justo + "+";
+            var diagnostic = Assert.Single(ParseFails(sobra));
+
+            Assert.Equal(ExpressionDiagnosticCode.LimitExceeded, diagnostic.Code);
+            Assert.Equal(ExpressionLimitKind.SyntacticTokenCount, diagnostic.Limit);
+            Assert.Equal(4096, diagnostic.LimitMaximum);
+            Assert.Equal(new SourceSpan(justo.Length, 1), diagnostic.Span);
         }
 
         // ================================================================ anidamiento sintáctico

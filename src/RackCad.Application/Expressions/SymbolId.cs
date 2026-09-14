@@ -70,14 +70,16 @@ namespace RackCad.Application.Expressions
     }
 
     /// <summary>
-    /// The identity of a symbol: <c>(SymbolNamespace, Key)</c> (P3.2; ADR-0040 D5). A NAME is never an identity (P3.5):
+    /// The identity of a symbol: <c>(SymbolNamespace, Key)</c> (P3.2; ADR-0041 D5). A NAME is never an identity (P3.5):
     /// names only take part when writing and when showing.
     ///
     /// <para>
-    /// For <c>projectVariable</c> the key must be a complete D-form GUID, 36 characters, hexadecimal in any case. That is
-    /// the form the qualifier of §4 writes and the formatter emits (P3.9), so every identity in a table can be written
-    /// back as text; a fragment or another GUID layout is not a key. The key is kept exactly as written and compared with
-    /// the namespace comparer.
+    /// For <c>projectVariable</c> the key is the <c>VariableId</c> text (Amendment A2 §3.1, §3.2). It is valid when it is not
+    /// empty, equals its own <c>Trim()</c> and <c>Guid.TryParse</c> accepts it: exactly the texts a <c>VariableId</c> can
+    /// have, in any layout —D, N, B, P, X and the compatibility ones. The parsed value only decides that: it is never
+    /// kept, compared, hashed or used to disambiguate. The key is kept exactly as written and compared with the namespace
+    /// comparer, so two layouts of one GUID are two identities and case is not a difference. Every valid key can be written
+    /// back as text: the formatter writes it as <c>Q(key)</c> (A2 §3.6).
     /// </para>
     /// </summary>
     public sealed class SymbolId : IEquatable<SymbolId>, IComparable<SymbolId>
@@ -94,9 +96,11 @@ namespace RackCad.Application.Expressions
                 throw new ArgumentNullException(nameof(key));
             }
 
-            if (!IsDFormatGuid(key))
+            if (!IsValidProjectVariableKey(key))
             {
-                throw new ArgumentException("A projectVariable key must be a complete D-form GUID (36 characters).", nameof(key));
+                throw new ArgumentException(
+                    "A projectVariable key must be non-empty, equal to its own trim and a GUID in a layout the runtime reads.",
+                    nameof(key));
             }
 
             Namespace = symbolNamespace;
@@ -140,31 +144,13 @@ namespace RackCad.Application.Expressions
 
         public static bool operator !=(SymbolId left, SymbolId right) => !(left == right);
 
-        private static bool IsDFormatGuid(string text)
-        {
-            if (text.Length != 36)
-            {
-                return false;
-            }
-
-            for (var index = 0; index < 36; index++)
-            {
-                var character = text[index];
-
-                if (index == 8 || index == 13 || index == 18 || index == 23)
-                {
-                    if (character != '-')
-                    {
-                        return false;
-                    }
-                }
-                else if (!((character >= '0' && character <= '9') || (character >= 'a' && character <= 'f') || (character >= 'A' && character <= 'F')))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        /// <summary>
+        /// The neutral validity of a <c>projectVariable</c> key (Amendment A2 §3.2), the one rule the constructor and the
+        /// exact-key qualifier of the lexer share. Whether the text is a GUID is the only thing the parse decides.
+        /// </summary>
+        internal static bool IsValidProjectVariableKey(string key)
+            => !string.IsNullOrEmpty(key)
+               && string.Equals(key, key.Trim(), StringComparison.Ordinal)
+               && Guid.TryParse(key, out _);
     }
 }

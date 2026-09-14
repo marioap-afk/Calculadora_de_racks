@@ -147,9 +147,9 @@ namespace RackCad.Tests
         [InlineData("#3f2b1c9e-6d4a-4f38-9b71-0c2a5e8d1f4", ExpressionDiagnosticCode.InvalidQualifier, 0, 36)]
         [InlineData("#3f2b1c9e6d4a4f389b710c2a5e8d1f44", ExpressionDiagnosticCode.InvalidQualifier, 0, 33)]
         [InlineData("#" + Guid1 + "x", ExpressionDiagnosticCode.InvalidQualifier, 0, 38)]
-        [InlineData("#{" + Guid1 + "}", ExpressionDiagnosticCode.InvalidQualifier, 0, 39)]
         [InlineData("#(" + Guid1 + ")", ExpressionDiagnosticCode.InvalidQualifier, 0, 39)]
         [InlineData("Holgura # " + Guid1, ExpressionDiagnosticCode.InvalidQualifier, 8, 38)]
+        [InlineData("Holgura # {" + Guid1 + "}", ExpressionDiagnosticCode.InvalidQualifier, 8, 40)]
         public void CADA_ERROR_TIENE_SU_CODIGO_Y_SU_POSICION_EXACTA(
             string text, ExpressionDiagnosticCode code, int start, int length)
         {
@@ -157,6 +157,55 @@ namespace RackCad.Tests
 
             Assert.Equal(code, diagnostic.Code);
             Assert.Equal(new SourceSpan(start, length), diagnostic.Span);
+        }
+
+        /// <summary>
+        /// Amendment A2 §3.4 (ADR-0041 D7), el cualificador de clave exacta: <c>#{</c> sin cerrar es <c>UnterminatedName</c>;
+        /// un contenido DESESCAPADO vacío, con espacio exterior —el de <c>Trim()</c>, también Unicode—, fragmento, texto que
+        /// no es GUID o con un carácter que <c>Guid.TryParse</c> rechaza es <c>InvalidQualifier</c> sobre el lexema entero.
+        /// No hay códigos nuevos. En cada fila el lexema llega hasta el final del texto.
+        /// </summary>
+        public static TheoryData<string, ExpressionDiagnosticCode, int> CualificadoresDeClaveExactaInvalidos
+        {
+            get
+            {
+                var data = new TheoryData<string, ExpressionDiagnosticCode, int>();
+                var espacioDuro = ((char)0x00A0).ToString();
+                var separadorDeLinea = ((char)0x2028).ToString();
+                var tresDeAnchoCompleto = ((char)0xFF13).ToString();
+
+                foreach (var prefix in new[] { string.Empty, "Holgura", "{Nombre}", "1 + Holgura" })
+                {
+                    foreach (var content in new[]
+                             {
+                                 string.Empty, " ", " " + Guid1, Guid1 + " ", espacioDuro + Guid1, Guid1 + separadorDeLinea,
+                                 "3f2b1c9e", "not-a-guid", "3f2b1c9e-6d4a-4f38-9b71-0c2a5e8d1f4g", Guid1 + "x",
+                                 "{" + Guid1 + "}}", "{+0x3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}",
+                                 tresDeAnchoCompleto + "f2b1c9e-6d4a-4f38-9b71-0c2a5e8d1f44",
+                             })
+                    {
+                        data.Add(prefix + Llaves(content), ExpressionDiagnosticCode.InvalidQualifier, prefix.Length);
+                    }
+
+                    foreach (var unterminated in new[] { "#{", "#{" + Guid1, "#{" + Guid1 + "}}", "#{" + ClaveX, "#{{" + Guid1 + "}}" })
+                    {
+                        data.Add(prefix + unterminated, ExpressionDiagnosticCode.UnterminatedName, prefix.Length);
+                    }
+                }
+
+                return data;
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CualificadoresDeClaveExactaInvalidos))]
+        public void UN_CUALIFICADOR_DE_CLAVE_EXACTA_INVALIDO_TIENE_SU_CODIGO_Y_SU_POSICION(
+            string text, ExpressionDiagnosticCode code, int start)
+        {
+            var diagnostic = Assert.Single(ParseFails(text));
+
+            Assert.Equal(code, diagnostic.Code);
+            Assert.Equal(new SourceSpan(start, text.Length - start), diagnostic.Span);
         }
 
         /// <summary>
@@ -290,6 +339,9 @@ namespace RackCad.Tests
         [InlineData("A[mm][in]", "UnitNotAllowedHere@1+4")]
         [InlineData("Holgura # " + Guid1 + " + 2", "InvalidQualifier@8+38")]
         [InlineData("#(" + Guid1 + ") * 2", "InvalidQualifier@0+39")]
+        [InlineData("#{} + 2", "InvalidQualifier@0+3")]
+        [InlineData("Holgura#{not-a-guid}[mm] * 2", "InvalidQualifier@7+13")]
+        [InlineData("#{" + Guid1 + " + 2", "UnterminatedName@0+42")]
         [InlineData("10'-6\" + 1", "UnitSyntaxNotSupported@0+6")]
         public void UN_ERROR_NO_ARRASTRA_ERRORES_EN_CASCADA(string text, string expected)
         {

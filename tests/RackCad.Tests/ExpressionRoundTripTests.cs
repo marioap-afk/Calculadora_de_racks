@@ -5,6 +5,7 @@ using RackCad.Application.Expressions;
 using RackCad.Application.Units;
 using Xunit;
 using static RackCad.Tests.ExpressionSemanticTestSupport;
+using static RackCad.Tests.ExpressionSyntaxTestSupport;
 
 namespace RackCad.Tests
 {
@@ -197,6 +198,176 @@ namespace RackCad.Tests
         {
             var table = CorpusTable();
             var random = new Random(20260913);
+            var accepted = 0;
+            var nearLimits = 0;
+
+            for (var attempt = 0; attempt < 20000 && accepted < 1500; attempt++)
+            {
+                var budget = 1 + random.Next(256);
+                var tree = Generate(random, table.Entries, ref budget, 1 + random.Next(24));
+
+                if (tree.NodeCount > ExpressionLimits.MaxNodeCount || tree.Depth > ExpressionLimits.MaxBoundExpressionDepth)
+                {
+                    continue;
+                }
+
+                AssertRoundTrip(tree, table);
+                accepted++;
+
+                if (tree.NodeCount >= 200 || tree.Depth >= 20)
+                {
+                    nearLimits++;
+                }
+            }
+
+            Assert.Equal(1500, accepted);
+            Assert.True(nearLimits >= 50, "El corpus apenas se acercó a los límites: " + nearLimits);
+        }
+
+        // ================================================================ identidades textuales de Amendment A2
+
+        /// <summary>
+        /// R1 de A2 §2.3 y §4: A con clave N y B con otra clave D, los dos «Holgura». A se escribe <c>Holgura#{n}</c> y B
+        /// <c>Holgura#d</c>; cada texto enlaza a SU id —sin primera coincidencia— y los dos hacen round-trip.
+        /// </summary>
+        [Fact]
+        public void R1_UNA_CLAVE_N_Y_UN_HOMONIMO_CON_OTRA_CLAVE_D_SE_DISTINGUEN_Y_HACEN_ROUND_TRIP()
+        {
+            const string otraD = "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d";
+            var a = VariableKey(ClaveN, "Holgura", 1);
+            var b = VariableKey(otraD, "Holgura", 2);
+            var table = Table(a, b);
+            var ctx = ExpressionContext.Create(table);
+
+            Assert.Equal("Holgura#{3f2b1c9e8a4d4e6f9b0a1c2d3e4f5a6b}", ExpressionFormatter.Format(BoundExpression.Reference(a.Id), table));
+            Assert.Equal("Holgura#0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d", ExpressionFormatter.Format(BoundExpression.Reference(b.Id), table));
+
+            Assert.Equal(BoundExpression.Reference(a.Id), BindOk("Holgura#{3f2b1c9e8a4d4e6f9b0a1c2d3e4f5a6b}", ctx));
+            Assert.Equal(BoundExpression.Reference(b.Id), BindOk("Holgura#0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d", ctx));
+            Assert.Equal(ExpressionDiagnosticCode.AmbiguousName, Assert.Single(BindFails("Holgura", ctx)).Code);
+
+            AssertRoundTrip(BoundExpression.Reference(a.Id), table);
+            AssertRoundTrip(BoundExpression.Reference(b.Id), table);
+            AssertRoundTrip(Sub(BoundExpression.Reference(a.Id), BoundExpression.Reference(b.Id)), table);
+        }
+
+        /// <summary>
+        /// R2 de A2 §2.4 y §4: el MISMO valor <c>System.Guid</c> en clave D y en clave N, los dos «Holgura», son DOS
+        /// identidades en la tabla —el núcleo no da <c>AmbiguousIdentity</c> porque los valores coincidan—; se escriben
+        /// <c>Holgura#d</c> y <c>Holgura#{n}</c> y cada una vuelve a su propio <c>SymbolId</c>.
+        /// </summary>
+        [Fact]
+        public void R2_LA_MISMA_GUID_EN_CLAVE_D_Y_EN_CLAVE_N_SON_DOS_IDENTIDADES_CON_SU_PROPIO_TEXTO()
+        {
+            var a = VariableKey(ClaveD, "Holgura", 1);
+            var b = VariableKey(ClaveN, "Holgura", 2);
+            var table = Table(a, b);
+            var ctx = ExpressionContext.Create(table);
+
+            Assert.Equal(Guid.Parse(ClaveD), Guid.Parse(ClaveN));
+            Assert.Equal(2, table.Entries.Count);
+            Assert.NotEqual(a.Id, b.Id);
+
+            Assert.Equal("Holgura#3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b", ExpressionFormatter.Format(BoundExpression.Reference(a.Id), table));
+            Assert.Equal("Holgura#{3f2b1c9e8a4d4e6f9b0a1c2d3e4f5a6b}", ExpressionFormatter.Format(BoundExpression.Reference(b.Id), table));
+
+            Assert.Equal(a.Id, Assert.IsType<BoundReference>(BindOk("Holgura#3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b", ctx)).Symbol);
+            Assert.Equal(b.Id, Assert.IsType<BoundReference>(BindOk("Holgura#{3f2b1c9e8a4d4e6f9b0a1c2d3e4f5a6b}", ctx)).Symbol);
+
+            AssertRoundTrip(BoundExpression.Reference(a.Id), table);
+            AssertRoundTrip(BoundExpression.Reference(b.Id), table);
+            AssertRoundTrip(Mul(BoundExpression.Reference(a.Id), Add(BoundExpression.Reference(b.Id), Num(1))), table);
+        }
+
+        /// <summary>
+        /// A2 §4 y pruebas E y G de A2 §9.3: la familia de seis grafías del mismo GUID, B, P, las disposiciones de
+        /// compatibilidad y X con espacio en blanco Unicode, todas con el mismo nombre: cualificadores distintos —los de la
+        /// familia, literales de A2 §4— y round-trip de cada una sola y de todas en un mismo árbol.
+        /// </summary>
+        [Fact]
+        public void LAS_GRAFIAS_DEL_MISMO_GUID_TIENEN_CUALIFICADORES_DISTINTOS_Y_HACEN_ROUND_TRIP()
+        {
+            var entries = ClavesDistintasA2.Select((key, index) => VariableKey(key, "Holgura", index)).ToArray();
+            var table = Table(entries);
+
+            var texts = entries.Select(entry => ExpressionFormatter.Format(BoundExpression.Reference(entry.Id), table)).ToList();
+            Assert.Equal(entries.Length, texts.Distinct(StringComparer.Ordinal).Count());
+
+            Assert.Equal(
+                new[]
+                {
+                    "Holgura#3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b",
+                    "Holgura#{3f2b1c9e8a4d4e6f9b0a1c2d3e4f5a6b}",
+                    "Holgura#{{0x3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}}}}",
+                    "Holgura#{{0x3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0xa,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}}}}",
+                    "Holgura#{{0x00003f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}}}}",
+                    "Holgura#{{0x3f2b1c9e, 0x8a4d, 0x4e6f, {0x9b, 0x0a, 0x1c, 0x2d, 0x3e, 0x4f, 0x5a, 0x6b}}}}}",
+                },
+                FamiliaA2.Select(key => ExpressionFormatter.Format(BoundExpression.Reference(SymbolId.ProjectVariable(key)), table)));
+
+            foreach (var entry in entries)
+            {
+                AssertRoundTrip(BoundExpression.Reference(entry.Id), table);
+                AssertRoundTrip(Neg(BoundExpression.Reference(entry.Id)), table);
+            }
+
+            AssertRoundTrip(Call(FunctionId.Max, entries.Select(entry => BoundExpression.Reference(entry.Id)).ToArray()), table);
+        }
+
+        /// <summary>
+        /// La cota de A1 §4 con cualificadores de clave exacta (prueba M de A2 §9.3): 256 nodos con homónimos cuyas claves
+        /// son N y X con mil ceros; cada cualificador es UN token, así que <c>tokens(Format(b)) ≤ 6n - 3</c> se sigue
+        /// cumpliendo y el texto hace round-trip.
+        /// </summary>
+        [Fact]
+        public void CASO_A_256_NODOS_CON_HOMONIMOS_DE_CLAVE_EXACTA()
+        {
+            var larga = "{0x" + new string('0', 1000) + "3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}";
+            var n = VariableKey(ClaveN, "Holgura", 1);
+            var x = VariableKey(larga, "Holgura", 2);
+            var table = Table(n, x);
+
+            var interior = Call(FunctionId.Min, Enumerable.Range(0, 16).Select(i => BoundExpression.Reference(i % 2 == 0 ? n.Id : x.Id)).ToArray());
+            var tree = Call(FunctionId.Min, Repeat(interior, 15));
+
+            Assert.Equal(256, tree.NodeCount);
+            AssertRoundTrip(tree, table);
+        }
+
+        /// <summary>
+        /// P2.5 sobre un corpus GENERADO con claves de todas las disposiciones (prueba L de A2 §9.3 y el corpus obligatorio
+        /// de A2 §5): D, N, B, P y X de dos GUID, las de compatibilidad, el mismo GUID en varias identidades textuales,
+        /// homónimos entre ellas, grafías en mayúsculas y en minúsculas, nombres largos, llaves, reservados y un ámbito Rack;
+        /// 1500 árboles, con los límites de nodos, profundidad y argumentos cerca. El corpus de siempre sigue aparte, sin
+        /// cambios.
+        /// </summary>
+        [Fact]
+        public void P2_5_SE_CUMPLE_SOBRE_UN_CORPUS_GENERADO_CON_CLAVES_DE_TODAS_LAS_DISPOSICIONES()
+        {
+            var keys = new[]
+            {
+                ClaveDMayusculas, ClaveN, ClaveB.ToUpperInvariant(), ClaveP, ClaveXMayusculas, ClaveXGrupoCorto, ClaveXConCeros,
+                ClaveXConEspacios, ClaveXConEspacioDuro, ClaveXConSeparadorDeLinea, ClaveDCompatSigno, ClaveDCompatHex,
+                ClaveBCompatHex, ClavePCompatSigno, Key(1), Key(2).ToUpperInvariant(), "8C1D7E204B5A4C6D9E7F102132435465",
+                "{8c1d7e20-4b5a-4c6d-9e7f-102132435465}", "(8C1D7E20-4B5A-4C6D-9E7F-102132435465)",
+                "{0x8c1d7e20,0x4b5a,0x4c6d,{0x9e,0x7f,0x10,0x21,0x32,0x43,0x54,0x65}}", Guid2,
+            };
+
+            var names = new[]
+            {
+                "Holgura", "holgura", "HOLGURA", "Base", "a}b", "}", "{", "MIN", "Rack", "Holgura-Base", "Alto (m)", " lead",
+                "Holgura General", new string('A', 300), new string('}', 150), string.Empty,
+            };
+
+            var table = SymbolTable.Create(keys.Select((key, index) => new SymbolEntry(
+                SymbolId.ProjectVariable(key),
+                index % 7 == 6 ? SymbolScope.Rack : SymbolScope.Project,
+                names[index % names.Length],
+                SymbolDefinition.FromLiteral(index))));
+
+            Assert.Equal(keys.Length, table.Entries.Count);
+
+            var random = new Random(20260914);
             var accepted = 0;
             var nearLimits = 0;
 

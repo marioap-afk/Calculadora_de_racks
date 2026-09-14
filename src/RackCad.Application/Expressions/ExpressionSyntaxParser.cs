@@ -168,7 +168,7 @@ namespace RackCad.Application.Expressions
 
                 case ExpressionTokenKind.Qualifier:
                     Advance();
-                    return new ReferenceSyntax(null, new QualifierSyntax(token.Id, token.Text, token.Span));
+                    return new ReferenceSyntax(null, new QualifierSyntax(token.Text, token.Span));
 
                 case ExpressionTokenKind.LeftParenthesis:
                     return ParseParenthesized(nesting);
@@ -240,7 +240,7 @@ namespace RackCad.Application.Expressions
             }
 
             var qualifier = Advance();
-            return new ReferenceSyntax(name, new QualifierSyntax(qualifier.Id, qualifier.Text, qualifier.Span));
+            return new ReferenceSyntax(name, new QualifierSyntax(qualifier.Text, qualifier.Span));
         }
 
         /// <summary><c>word "(" [ expression { "," expression } ] ")"</c>, one nesting level for the whole call.</summary>

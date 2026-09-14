@@ -188,6 +188,121 @@ namespace RackCad.Tests
             Assert.Equal(ExpressionDiagnosticCode.BrokenReference, Assert.Single(BindFails(text, ExpressionContext.Create(table))).Code);
         }
 
+        // ================================================================ Q(clave) (Amendment A2 §3.6, §3.7, §3.8)
+
+        /// <summary>
+        /// A2 §3.6 (ADR-0041 D6): <c>Q(clave)</c>. Una clave con forma D exacta sale <c>#</c> + la clave en minúsculas
+        /// ASCII; cualquier otra, <c>#{</c> + la clave en minúsculas ASCII con cada <c>}</c> duplicada + <c>}</c>. Las filas
+        /// son las de la tabla de A2 §3.6, literales. El mismo <c>Q</c> vale para la forma cualificada y para el homónimo.
+        /// </summary>
+        public static TheoryData<string, string> CualificadoresDeA2 => new TheoryData<string, string>
+        {
+            { "3F2B1C9E-8A4D-4E6F-9B0A-1C2D3E4F5A6B", "#3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b" },
+            { "3F2B1C9E8A4D4E6F9B0A1C2D3E4F5A6B", "#{3f2b1c9e8a4d4e6f9b0a1c2d3e4f5a6b}" },
+            { "{3F2B1C9E-8A4D-4E6F-9B0A-1C2D3E4F5A6B}", "#{{3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b}}}" },
+            { "(3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b)", "#{(3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b)}" },
+            {
+                "{0x3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}",
+                "#{{0x3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}}}}"
+            },
+            { "+03f2b1c-8a4d-4e6f-9b0a-1c2d3e4f5a6b", "#{+03f2b1c-8a4d-4e6f-9b0a-1c2d3e4f5a6b}" },
+        };
+
+        [Theory]
+        [MemberData(nameof(CualificadoresDeA2))]
+        public void UN_HOMONIMO_SE_CUALIFICA_CON_Q_DE_SU_CLAVE_SEGUN_A2(string key, string qualifier)
+        {
+            var entry = VariableKey(key, "Holgura");
+            var table = Table(entry, Variable(2, "HOLGURA"));
+
+            Assert.Equal("Holgura" + qualifier, ExpressionFormatter.FormatQualifiedReference(entry));
+            Assert.Equal("Holgura" + qualifier, Format(BoundExpression.Reference(entry.Id), table));
+            Assert.Equal("HOLGURA#" + Key(2), Format(Ref(2), table));
+            Assert.Equal("{Holgura-Base}" + qualifier, ExpressionFormatter.FormatQualifiedReference(VariableKey(key, "Holgura-Base")));
+        }
+
+        /// <summary>
+        /// A2 §3.6: bajar a minúsculas es SOLO A–Z → a–z. No reescribe la disposición ni el valor del GUID —los ceros, los
+        /// espacios, el grupo corto y el espacio en blanco Unicode se quedan—, no depende de la cultura y no cambia la clave
+        /// guardada en la tabla.
+        /// </summary>
+        [Fact]
+        public void Q_SOLO_BAJA_A_Z_Y_NO_REESCRIBE_LA_DISPOSICION()
+        {
+            var x = VariableKey(ClaveXMayusculas, "Holgura");
+            var ceros = VariableKey(ClaveXConCeros.ToUpperInvariant(), "Holgura");
+            var corto = VariableKey(ClaveXGrupoCorto, "Holgura");
+            var espacioDuro = VariableKey(ClaveXConEspacioDuro.ToUpperInvariant(), "Holgura");
+            var compat = VariableKey(ClaveDCompatHex.ToUpperInvariant(), "Holgura");
+
+            const string esperadoX = "Holgura#{{0x3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}}}}";
+
+            Assert.Equal(esperadoX, ExpressionFormatter.FormatQualifiedReference(x));
+            Assert.Equal("Holgura#{{0x00003f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}}}}", ExpressionFormatter.FormatQualifiedReference(ceros));
+            Assert.Equal("Holgura#{{0x3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0xa,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}}}}", ExpressionFormatter.FormatQualifiedReference(corto));
+            Assert.Equal("Holgura" + Llaves(ClaveXConEspacioDuro), ExpressionFormatter.FormatQualifiedReference(espacioDuro));
+            Assert.Equal("Holgura#{3f2b1c9e-0x8a-4e6f-9b0a-1c2d3e4f5a6b}", ExpressionFormatter.FormatQualifiedReference(compat));
+
+            Assert.Equal(ClaveXMayusculas, x.Id.Key);
+            WithCulture("tr-TR", () => Assert.Equal(esperadoX, ExpressionFormatter.FormatQualifiedReference(x)));
+        }
+
+        /// <summary>
+        /// A2 §3.7 (prueba J de A2 §9.3): una referencia rota se muestra SOLO con <c>Q(clave)</c>, sin tomar un nombre de
+        /// ningún sitio; ese texto se lee de vuelta como la misma clave y no se compromete.
+        /// </summary>
+        public static TheoryData<string, string> ReferenciasRotas => new TheoryData<string, string>
+        {
+            { ClaveDMayusculas, "#3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b" },
+            { ClaveN, "#{3f2b1c9e8a4d4e6f9b0a1c2d3e4f5a6b}" },
+            { ClaveB, "#{{3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b}}}" },
+            { ClaveP, "#{(3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b)}" },
+            { ClaveXMayusculas, "#{{0x3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}}}}" },
+            { ClaveBCompatHex, "#{{0x3f2b1c-8a4d-4e6f-9b0a-1c2d3e4f5a6b}}}" },
+        };
+
+        [Theory]
+        [MemberData(nameof(ReferenciasRotas))]
+        public void UNA_REFERENCIA_ROTA_SE_MUESTRA_CON_Q_DE_SU_CLAVE_Y_NO_SE_COMPROMETE(string key, string expected)
+        {
+            var table = Table(Variable(1, "Holgura"));
+            var ausente = SymbolId.ProjectVariable(key);
+
+            var text = Format(Add(BoundExpression.Reference(ausente), Num(2)), table);
+
+            Assert.Equal(expected + " + 2", text);
+
+            var diagnostic = Assert.Single(BindFails(text, ExpressionContext.Create(table)));
+            Assert.Equal(ExpressionDiagnosticCode.BrokenReference, diagnostic.Code);
+            Assert.Equal(new SourceSpan(0, expected.Length), diagnostic.Span);
+            Assert.Equal(new[] { ausente }, diagnostic.RelatedSymbols);
+        }
+
+        /// <summary>
+        /// A2 §3.8 (prueba I de A2 §9.3): lo tecleado como <c>Nombre#{D}</c> se enlaza a la clave D y se muestra en la forma
+        /// corta, <c>Nombre#d</c>; una clave D rota tecleada entre llaves se muestra <c>#d</c>. Es normalización de la
+        /// entrada, no de la identidad.
+        /// </summary>
+        [Fact]
+        public void EL_CUALIFICADOR_D_ENTRE_LLAVES_SE_MUESTRA_EN_FORMA_CORTA()
+        {
+            var d = VariableKey(ClaveDMayusculas, "Holgura", 1);
+            var n = VariableKey(ClaveN, "Holgura", 2);
+            var table = Table(d, n);
+
+            var bound = BindOk("Holgura" + Llaves(ClaveD) + " + 1", ExpressionContext.Create(table));
+
+            Assert.Equal(Add(BoundExpression.Reference(d.Id), Num(1)), bound);
+            Assert.Equal("Holgura#" + ClaveD + " + 1", Format(bound, table));
+
+            const string rotaD = "0A1B2C3D-4E5F-4A6B-8C7D-9E0F1A2B3C4D";
+            var rota = Assert.Single(BindFails("#{" + rotaD + "}", ExpressionContext.Create(table)));
+
+            Assert.Equal(ExpressionDiagnosticCode.BrokenReference, rota.Code);
+            Assert.Equal(rotaD, Assert.Single(rota.RelatedSymbols).Key);
+            Assert.Equal("#0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d", Format(BoundExpression.Reference(Assert.Single(rota.RelatedSymbols)), table));
+        }
+
         /// <summary>P4.7: la forma mostrada depende del snapshot actual; lo persistido no cambia.</summary>
         [Fact]
         public void LA_FORMA_MOSTRADA_DEPENDE_DEL_SNAPSHOT()

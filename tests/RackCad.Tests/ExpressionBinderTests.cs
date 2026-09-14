@@ -157,6 +157,109 @@ namespace RackCad.Tests
                 }));
         }
 
+        // ================================================================ clave exacta (Amendment A2 §3.5, §3.7, §3.8)
+
+        /// <summary>
+        /// A2 §3.5 (ADR-0041 D6): el binder resuelve SOLO con la clave textual recuperada y el comparador del namespace
+        /// (<c>OrdinalIgnoreCase</c>): sin valor <c>Guid</c>, sin normalizar a forma D, sin alias y sin primera
+        /// coincidencia. Devuelve el <c>SymbolId</c> de la entrada de la tabla, con la grafía del registro. El mismo GUID
+        /// en otra grafía no enlaza: es otra identidad.
+        /// </summary>
+        [Fact]
+        public void CON_CUALIFICADOR_DE_CLAVE_EXACTA_MANDA_LA_CLAVE_TEXTUAL()
+        {
+            var n = VariableKey(ClaveN, "Holgura", 1);
+            var b = VariableKey(ClaveB, "Holgura", 2);
+            var x = VariableKey(ClaveXMayusculas, "Holgura", 3);
+            var baseN = VariableKey(ClaveNMayusculas.Replace('3', '4'), "Base", 4);
+            var ctx = Context(n, b, x, baseN);
+
+            Assert.Equal(n.Id, RefId(BindOk("Holgura" + Llaves(ClaveN), ctx)));
+            Assert.Equal(n.Id, RefId(BindOk("holgura" + Llaves(ClaveNMayusculas), ctx)));
+            Assert.Equal(b.Id, RefId(BindOk("Holgura#{{" + ClaveD + "}}}", ctx)));
+            Assert.Equal(x.Id, RefId(BindOk("{Holgura}" + Llaves(ClaveX), ctx)));
+
+            // La identidad enlazada es la de la tabla, con su grafía: no la tecleada.
+            Assert.Equal(ClaveXMayusculas, RefId(BindOk("Holgura" + Llaves(ClaveX), ctx)).Key);
+            Assert.Equal(ClaveN, RefId(BindOk("Holgura" + Llaves(ClaveNMayusculas), ctx)).Key);
+
+            var otraGrafia = Assert.Single(BindFails("Holgura#" + ClaveD, ctx));
+            Assert.Equal(ExpressionDiagnosticCode.BrokenReference, otraGrafia.Code);
+            Assert.Equal(new[] { SymbolId.ProjectVariable(ClaveD) }, otraGrafia.RelatedSymbols);
+
+            var otraX = Assert.Single(BindFails("Holgura" + Llaves(ClaveXConEspacios), ctx));
+            Assert.Equal(ExpressionDiagnosticCode.BrokenReference, otraX.Code);
+            Assert.Equal(new[] { SymbolId.ProjectVariable(ClaveXConEspacios) }, otraX.RelatedSymbols);
+
+            var sinNombre = Assert.Single(BindFails(Llaves(ClaveN), ctx));
+            Assert.Equal(ExpressionDiagnosticCode.NameRequired, sinNombre.Code);
+            Assert.Equal(new SourceSpan(0, 35), sinNombre.Span);
+            Assert.Equal(new[] { n.Id }, sinNombre.RelatedSymbols);
+
+            var otroNombre = Assert.Single(BindFails("Base" + Llaves(ClaveN), ctx));
+            Assert.Equal(ExpressionDiagnosticCode.QualifiedNameMismatch, otroNombre.Code);
+            Assert.Equal(new SourceSpan(0, 39), otroNombre.Span);
+            Assert.Equal(new[] { n.Id }, otroNombre.RelatedSymbols);
+        }
+
+        /// <summary>
+        /// A2 §3.8 (prueba I de A2 §9.3): <c>#{&lt;clave con forma D&gt;}</c> es legal y resuelve exactamente igual que la
+        /// forma corta: la misma identidad textual D, sin crear otra.
+        /// </summary>
+        [Fact]
+        public void EL_CUALIFICADOR_D_ENTRE_LLAVES_RESUELVE_COMO_LA_FORMA_CORTA()
+        {
+            var d = VariableKey(ClaveD, "Holgura", 1);
+            var n = VariableKey(ClaveN, "Holgura", 2);
+            var ctx = Context(d, n);
+
+            Assert.Equal(d.Id, RefId(BindOk("Holgura#" + ClaveD, ctx)));
+            Assert.Equal(d.Id, RefId(BindOk("Holgura" + Llaves(ClaveD), ctx)));
+            Assert.Equal(d.Id, RefId(BindOk("HOLGURA" + Llaves(ClaveDMayusculas), ctx)));
+            Assert.Equal(ClaveD, RefId(BindOk("Holgura" + Llaves(ClaveDMayusculas), ctx)).Key);
+            Assert.Equal(n.Id, RefId(BindOk("Holgura" + Llaves(ClaveN), ctx)));
+        }
+
+        /// <summary>
+        /// A2 §3.7 (prueba K de A2 §9.3): los candidatos de <c>AmbiguousName</c> se muestran con la forma del nombre y
+        /// <c>Q(clave)</c> —la forma corta solo para la clave D—, todos distintos, y cada texto enlaza de vuelta a SU
+        /// candidato.
+        /// </summary>
+        [Fact]
+        public void LOS_CANDIDATOS_DE_AMBIGUOUSNAME_USAN_Q_DE_SU_CLAVE()
+        {
+            var entries = new[]
+            {
+                VariableKey(ClaveD, "Holgura", 1), VariableKey(ClaveN, "holgura", 2), VariableKey(ClaveB, "HOLGURA", 3),
+                VariableKey(ClaveXConEspacios, "Holgura", 4),
+            };
+            var ctx = Context(entries);
+
+            var diagnostic = Assert.Single(BindFails("Holgura * 2", ctx));
+            Assert.Equal(ExpressionDiagnosticCode.AmbiguousName, diagnostic.Code);
+            Assert.Equal(new SourceSpan(0, 7), diagnostic.Span);
+            Assert.Equal(entries.Select(entry => entry.Id).OrderBy(id => id), diagnostic.RelatedSymbols);
+
+            var candidatos = diagnostic.RelatedSymbols
+                .Select(id =>
+                {
+                    Assert.True(ctx.Symbols.TryGet(id, out var entry));
+                    return ExpressionFormatter.FormatQualifiedReference(entry);
+                })
+                .ToList();
+
+            Assert.Equal(4, candidatos.Distinct(StringComparer.Ordinal).Count());
+            Assert.Contains("Holgura#" + ClaveD, candidatos);
+            Assert.Contains("holgura#{" + ClaveN + "}", candidatos);
+            Assert.Contains("HOLGURA#{{" + ClaveD + "}}}", candidatos);
+            Assert.Contains("Holgura#{{0x3f2b1c9e, 0x8a4d, 0x4e6f, {0x9b, 0x0a, 0x1c, 0x2d, 0x3e, 0x4f, 0x5a, 0x6b}}}}}", candidatos);
+
+            foreach (var (candidato, id) in candidatos.Zip(diagnostic.RelatedSymbols))
+            {
+                Assert.Equal(id, RefId(BindOk(candidato, ctx)));
+            }
+        }
+
         [Theory]
         [InlineData("MIN")]
         [InlineData("max")]
