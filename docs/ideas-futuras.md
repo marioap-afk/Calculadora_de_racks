@@ -1328,6 +1328,22 @@ Residual **preexistente**, no introducido por I-54 (Proposal V5 D-08.4, P-36 y P
 
 Mismo candidato futuro que F-14a.
 
+### F-15 — La documentación de usuario de `RACKPROPIEDADES` quedó en `README.md` y en la ayuda de la app
+
+Registrado al integrar I-54 (G10), sin corregir:
+
+- La tabla de comandos de [despliegue.md](guias/despliegue.md), espejo declarado de `RackCommandReference`
+  (`RackCommandReference.cs`), ya omitía `RACKPUSHBACK`, `RACKSECCION` y `RACKVARIABLES`, y tampoco lista
+  `RACKPROPIEDADES`/`RPR`. El Coordinador lo difirió como no bloqueante al cerrar G7 (disposición D,
+  [decisiones de I-54](automation/decisions/I-54.md) §18).
+- La guía de uso que preveía el mapa orientativo de la [Proposal V5](initiatives/I-54-proposal-v5.md) §11 no se escribió
+  en ningún gate, así que la frontera con la biblioteca de D-12.3 —guardar no lleva las propiedades; abrir o insertar
+  crea el rack sin ellas— solo consta en la Proposal y la observó OV-11.
+- `RACKPROPIEDADES` sí figura en la tabla de `README.md` y en `RACKAYUDA`.
+
+Conviene resolverlo junto con «Dos comandos ausentes de la referencia en la app» y F-07: una sola pasada por las
+tablas de comandos.
+
 ### Mejora registrada por la Proposal V5 D-11.6 — el re-estampado del sobre, ejecutable en Core
 
 **No es un hallazgo F** ni deuda de I-54: es la mejora futura que la Proposal V5 registra en D-11.6 y que su freeze
