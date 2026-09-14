@@ -3,10 +3,10 @@
 - **Estado:** **propuesto**
 - **Fecha:** 2026-09-12 (propuesto; borrador corregido con Proposal V2 y con Proposal V3 el mismo día, y con
   Proposal V4, Proposal V5, Proposal V6, Proposal V7, Proposal V8, Proposal V9 y Proposal V10 el 2026-09-13, y con
-  Proposal V11, Proposal V12, Proposal V13 y Proposal V14 el 2026-09-14)
+  Proposal V11, Proposal V12, Proposal V13, Proposal V14 y Proposal V15 el 2026-09-14)
 - **Decisores:** Mario Pérez, Owner del repositorio (**acepta o rechaza**; pendiente). La aceptación **no** es
   precondición de la caracterización (G3): se pide **después de G3**, si G3 no contradice materialmente el contrato (si
-  lo contradice, se abre una Proposal V15), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
+  lo contradice, se abre una Proposal V16), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
   (consenso técnico **pendiente** sobre la Proposal); Claude (redacción)
 - **Iniciativa relacionada:** I-52 — `feature/rackmirror-espejo-semantico`
   ([contrato](../initiatives/I-52-rackmirror-espejo-semantico.md), [Discovery](../initiatives/I-52-discovery.md),
@@ -15,9 +15,9 @@
   [Proposal V5](../initiatives/I-52-proposal-v5.md), [Proposal V6](../initiatives/I-52-proposal-v6.md),
   [Proposal V7](../initiatives/I-52-proposal-v7.md), [Proposal V8](../initiatives/I-52-proposal-v8.md),
   [Proposal V9](../initiatives/I-52-proposal-v9.md), [Proposal V10](../initiatives/I-52-proposal-v10.md),
-  [Proposal V11](../initiatives/I-52-proposal-v11.md), [Proposal V12](../initiatives/I-52-proposal-v12.md) y
-  [Proposal V13](../initiatives/I-52-proposal-v13.md) (historial), [Proposal V14](../initiatives/I-52-proposal-v14.md),
-  [decisiones](../automation/decisions/I-52.md))
+  [Proposal V11](../initiatives/I-52-proposal-v11.md), [Proposal V12](../initiatives/I-52-proposal-v12.md),
+  [Proposal V13](../initiatives/I-52-proposal-v13.md), [Proposal V14](../initiatives/I-52-proposal-v14.md) (historial),
+  [Proposal V15](../initiatives/I-52-proposal-v15.md), [decisiones](../automation/decisions/I-52.md))
 
 > **Numeración.** Un número de ADR queda reclamado por su primera publicación observable en un ref remoto. Este ADR se
 > publicó por primera vez con el número 0036 en `origin/feature/rackmirror-espejo-semantico`, commit
@@ -25,10 +25,11 @@
 > sin publicación anterior de otro 0036 en ningún ref. ADR-0035 (I-50), ADR-0037 (I-53) y ADR-0039 (I-54), ya
 > integradas, están aceptados en `main`; ADR-0038 (I-49) se aceptó en su rama y lo reemplazó ADR-0040, aceptado en la
 > misma y reemplazado a su vez por ADR-0041, también aceptado allí; ADR-0042 (I-55) está propuesto en su rama, y el
-> Amendment A3 de I-49 anuncia un ADR de reemplazo de ADR-0041 aún sin número. Los seis posteriores a 0036 se publicaron
-> después y con otro número: no hay colisión. Antes de pedir la aceptación del Owner se vuelve a buscar 0036 en todos
-> los refs; si apareciera una publicación anterior, este ADR se renumera antes de la aceptación. Una vez `aceptado` no
-> se renumera, y dos ADR aceptados con el mismo número detienen el trabajo hasta que decida el Owner (Proposal V14 §16).
+> Amendment A3 de I-49, revisado por A3-R1, anuncia un ADR de reemplazo de ADR-0041 aún sin número. Los seis posteriores
+> a 0036 se publicaron después y con otro número: no hay colisión. Antes de pedir la aceptación del Owner se vuelve a
+> buscar 0036 en todos los refs; si apareciera una publicación anterior, este ADR se renumera antes de la aceptación.
+> Una vez `aceptado` no se renumera, y dos ADR aceptados con el mismo número detienen el trabajo hasta que decida el
+> Owner (Proposal V15 §16).
 
 ## Contexto
 
@@ -90,10 +91,15 @@ demanda con índices haya dejado fuera de memoria el contenido de capas inutiliz
 estados de visualización —atributos invisibles, objetos ocultos o aislados, proxies cuyos gráficos no se muestran y
 tablas con vínculos de datos o fórmulas— pueden ocultar o cambiar contenido sin cambiar el orden. El usuario puede estar
 además editando una referencia en sitio o un bloque en el Editor de bloques, con objetos temporales que vuelven a su
-definición al cerrar la sesión; un objeto borrado puede restaurarse después con OOPS; y el contorno o el marco de un
-recorte puede quedar fuera del contenido recortado y hacerse visible. Borrar, restaurar o editar el contenido más
-adelante (redefinir un bloque, editar un texto o editar y recargar el archivo de una referencia externa) es distinto de
-un cambio de estado, y ninguna huella puede preverlo.
+definición al cerrar la sesión, probando un bloque en su ventana de prueba o editando la fuente de una matriz
+asociativa, donde los objetos fuente se editan en el espacio modelo y los objetos nuevos pueden pasar a formar parte de
+la matriz; y puede haber otros modos de edición en sitio que nadie haya caracterizado; un objeto borrado puede
+restaurarse después con OOPS; y el contorno o el marco de un recorte puede quedar fuera del contenido recortado y
+hacerse visible. Borrar, restaurar o editar el contenido más adelante (redefinir un bloque, editar un texto, editar el
+objeto al que se refiere un campo o editar y recargar el archivo de una referencia externa) es distinto de un cambio de
+estado, y ninguna huella puede preverlo; un campo puede cambiar por un estado (la fecha, el nombre del archivo, el
+trazado) o por la edición del objeto al que se refiere, y una referencia externa puede cambiar de ruta sin cambiar de
+contenido.
 
 ## Decisión
 
@@ -121,7 +127,7 @@ un cambio de estado, y ninguna huella puede preverlo.
    de los builders queda pendiente de caracterización; una contradicción reabre la Proposal, no se parchea. Al cerrar la
    caracterización **ninguna** propiedad puede quedar pendiente: cada una queda verificada o reclasificada `UNKNOWN` o
    `REQUIRES_MODEL_CHANGE` con fallo cerrado, y una reclasificación que cambie materialmente el alcance, este ADR, una
-   regla de reflexión o la arquitectura abre una Proposal V15. Una holgura gráfica anclada a un lado ya demostrada en
+   regla de reflexión o la arquitectura abre una Proposal V16. Una holgura gráfica anclada a un lado ya demostrada en
    código (tope del Selectivo, tope posterior activo de Push Back) es `UNKNOWN` y falla cerrado hasta que se apruebe una
    regla explícita.
 6. **Reflectores puros en Application sobre el sustrato real de cada kind**, despachados por kind fuera del comando.
@@ -187,11 +193,17 @@ un cambio de estado, y ninguna huella puede preverlo.
    transformadas y explosiones; altas en las tablas de símbolos (bloques, capas, tipos de línea, estilos de texto y de
    cota); lecturas de las propiedades de cabecera y de los valores por defecto de la base de datos y de las variables
    del sistema; reevaluaciones gráficas de cotas, sombreados o tablas y transformaciones relevantes; atributos añadidos
-   a una referencia; construcción por reflexión; rutas de comando o COM; y delegación en ayudantes o factorías—, con
-   cada punto de llamada relevante declarado o excluido con motivo; una prueba debe demostrar que un productor por
-   clonado y una lectura de cabecera sin clasificar detienen el trabajo. Un punto de llamada nuevo sin clasificar o un
-   cambio de un productor declarado detienen el trabajo hasta que se actualicen la caracterización, las observaciones
-   consumidas y las pruebas, sin depender de los nombres de archivos o clases ni de hashes.
+   a una referencia; construcción por reflexión; rutas de comando o COM; delegación en ayudantes o factorías; y
+   **escritura o mutación de objetos o contexto existentes**: aperturas para escritura (también al promover un objeto
+   abierto para lectura o con transacciones de apertura y cierre), cambios de la presentación de una entidad (capa,
+   color, tipo de línea y su escala, grosor, transparencia, visibilidad, estilo de trazado, copia de propiedades desde
+   otra entidad o transformación donde sea material), cambios de registros de símbolo existentes (capas, tipos de línea,
+   estilos de texto y de cota) y escrituras de estado global (variables del sistema y valores actuales de la base de
+   datos)—, con cada punto de llamada relevante declarado o excluido con motivo; tres pruebas deben demostrar que un
+   productor por clonado, una lectura de cabecera y una mutación de presentación de un objeto existente sin clasificar
+   detienen el trabajo. Un punto de llamada nuevo sin clasificar o un cambio de un productor declarado detienen el
+   trabajo hasta que se actualicen la caracterización, las observaciones consumidas y las pruebas, sin depender de los
+   nombres de archivos o clases ni de hashes.
 8. **Colocación canónica.** Con la reflexión de la hoja `G`, la colocación efectiva de la fuente
    `P = T(p)·R(θ)·S(s,s)·T(−o)` —donde `o` es el `Origin` de su definición— y la reflexión local de la vista `F`, la
    referencia nueva es `P' = G·P·F`, con determinante positivo y la escala uniforme de la fuente. Para una vista
@@ -247,48 +259,57 @@ un cambio de estado, y ninguna huella puede preverlo.
     trazado; por eso el orden entre dos objetos que solo se tocan por el grosor de línea visible no se garantiza. Antes
     de evaluar ese orden hay que demostrar la **completitud de la base de datos y de la enumeración**, en dos partes.
     Los **prerrequisitos globales**, que se conocen antes de saber cuáles son las fuentes, se comprueban antes de pedir
-    la línea: el dibujo no está abierto parcialmente, no hay una edición de referencia en curso y el Editor de bloques
-    no está abierto; si alguno falla, la operación termina con un mensaje propio de esa causa, y los prerrequisitos se
-    vuelven a comprobar antes de la decisión definitiva y al empezar a mutar. El espejo no carga lo que falta, no fuerza
-    cargas, no cierra la edición de referencia ni el Editor de bloques, no mueve sus objetos de trabajo, no cambia capas
-    ni variables y no modifica el dibujo ni la sesión para completarlos. La **completitud relativa a cada fuente** —la
-    cola de objetos posteriores y su contenido relevante— se evalúa después de conocer las fuentes y la línea: una
-    evaluación temprana solo puede rechazar, y la decisión definitiva se toma sobre la cola enumerada de nuevo, antes de
-    decidir el orden. La caracterización confirma las API que indican la apertura parcial y las sesiones de edición y,
-    mientras no lo haga, la completitud no se demuestra. Que un objeto no esté cargado o no aparezca en la base de datos
-    **nunca** significa que no ocupa; los objetos borrados no forman parte de la enumeración, porque borrarlos y
-    restaurarlos es una edición. La clasificación sigue un orden fijo —completitud de la base de datos, completitud de
-    la enumeración, tipo exacto, componentes, disponibilidad del contenido, mecanismos, política y huella—, y una etapa
-    que falla deja la huella no clasificable o hace fallar la operación, sin saltar nunca a la huella. Para los objetos
-    existentes del dibujo, una **política cerrada por tipo exacto y por mecanismo** —la disponibilidad de su contenido y
-    los mecanismos por los que puede estar oculto, no cargado o recortado— decide si su huella está soportada y con qué
-    método, sin ninguna suposición optimista: para declararla soportada hay que cubrir la clase, sus componentes y todos
-    esos mecanismos, y una clase, un componente, un estado o un mecanismo no caracterizado cuenta como no clasificable,
-    y la extensión geométrica solo sirve en las clases donde la caracterización demuestre que acota de forma
-    conservadora. La huella de orden es la ocupación **latente**: todo contenido que pueda volverse visible sin cambiar
-    la relación de orden. No descarta geometría porque hoy su capa esté apagada, inutilizada o inutilizada en una
-    ventana gráfica, el objeto sea invisible o una representación anotativa no se muestre, y nunca trata como vacío un
-    contenido ausente que pueda reaparecer: una referencia externa descargada, no resuelta o con contenido anidado no
-    disponible es no clasificable en el primer corte, y también lo es una referencia que figura como cargada pero cuya
-    carga bajo demanda puede haber dejado fuera de memoria contenido potencialmente visible, salvo que la
-    caracterización demuestre que está completo; el espejo no abre archivos externos para adivinar su geometría; un
-    recorte (filtro espacial, recorte de imagen, de underlay o de nube de puntos, capas internas) no reduce la huella,
-    que es la ocupación del contenido sin recortar unida a la del contorno o marco del recorte que pueda hacerse
-    visible, o es no clasificable; un bloque dinámico posterior con estados de visibilidad necesita la unión
-    conservadora de los estados que pueden activarse sin cambiar el orden, o es no clasificable; la ocupación que
-    depende de un campo solo está soportada con una cota conservadora para todos sus resultados, nunca por su valor
-    actual; y los atributos invisibles y su modo de visualización, los objetos ocultos o aislados, los proxies cuyos
-    gráficos no se muestran y los vínculos de datos y las fórmulas de tabla siguen la misma regla: método latente
-    conservador o no clasificable. El orden persiste si cualquiera de esos mecanismos cambia. Esa garantía cubre el
-    **estado** —visibilidad (capas, objetos invisibles y representaciones anotativas), carga y descarga de referencias
-    externas, su resolución al mismo contenido, carga bajo demanda, recortes con sus marcos, solo la visibilidad
-    dinámica, evaluación de campos, refresco de vínculos de datos aunque haya cambiado su fuente externa (con una cota
-    conservadora o como no clasificable), visualización de proxies, aislamiento y estado de anotación y de entorno— y
-    **no** la **edición futura**: borrar y restaurar objetos (OOPS), editar geometría o texto, redefinir un bloque,
-    mover o estirar, cambiar un parámetro dinámico que altera la geometría —aunque también cambie la visibilidad—,
-    editar y recargar el archivo de una referencia externa, resolverla a otro archivo o contenido y reemplazar la fuente
-    o el contenido de una imagen, un underlay o una nube de puntos; frente a la edición futura el espejo no garantiza el
-    orden de dibujo; la ruta de visibilidad sigue rigiendo solo la equivalencia de las piezas (decisión 13). Una
+    la línea: el dibujo no está abierto parcialmente y se cumple una **política cerrada de sesiones de edición**, en la
+    que cada sesión de edición en sitio o alternativa es segura por caracterización o bloquea la operación; en el primer
+    corte bloquean la edición de referencia en curso, una transacción larga, el Editor de bloques, la ventana de prueba
+    de bloques y la edición de la fuente de una matriz asociativa, sin razonar sobre la geometría temporal de esa fuente
+    ni sobre su replicación, y un estado de edición o de sesión no caracterizado, o que no puede demostrarse ausente,
+    también la bloquea; si alguno falla, la operación termina con un mensaje propio de esa causa, y los prerrequisitos
+    se vuelven a comprobar antes de la decisión definitiva y al empezar a mutar. El espejo no carga lo que falta, no
+    fuerza cargas, no cierra la edición de referencia, el Editor de bloques, la ventana de prueba ni la edición de la
+    matriz, no mueve sus objetos de trabajo, no cambia capas ni variables y no modifica el dibujo ni la sesión para
+    completarlos. La **completitud relativa a cada fuente** —la cola de objetos posteriores y su contenido relevante— se
+    evalúa después de conocer las fuentes y la línea: una evaluación temprana solo puede rechazar, y la decisión
+    definitiva se toma sobre la cola enumerada de nuevo, antes de decidir el orden. La caracterización confirma las API
+    y la detección fiable de la apertura parcial y de las sesiones de edición y, mientras no lo haga, la completitud no
+    se demuestra. Que un objeto no esté cargado o no aparezca en la base de datos **nunca** significa que no ocupa; los
+    objetos borrados no forman parte de la enumeración, porque borrarlos y restaurarlos es una edición. La clasificación
+    sigue un orden fijo —completitud de la base de datos, completitud de la enumeración, tipo exacto, componentes,
+    disponibilidad del contenido, mecanismos, política y huella—, y una etapa que falla deja la huella no clasificable o
+    hace fallar la operación, sin saltar nunca a la huella. Para los objetos existentes del dibujo, una **política
+    cerrada por tipo exacto y por mecanismo** —la disponibilidad de su contenido y los mecanismos por los que puede
+    estar oculto, no cargado o recortado— decide si su huella está soportada y con qué método, sin ninguna suposición
+    optimista: para declararla soportada hay que cubrir la clase, sus componentes y todos esos mecanismos, y una clase,
+    un componente, un estado o un mecanismo no caracterizado cuenta como no clasificable, y la extensión geométrica solo
+    sirve en las clases donde la caracterización demuestre que acota de forma conservadora. La huella de orden es la
+    ocupación **latente**: todo contenido que pueda volverse visible sin cambiar la relación de orden. No descarta
+    geometría porque hoy su capa esté apagada, inutilizada o inutilizada en una ventana gráfica, el objeto sea invisible
+    o una representación anotativa no se muestre, y nunca trata como vacío un contenido ausente que pueda reaparecer:
+    una referencia externa descargada, no resuelta o con contenido anidado no disponible es no clasificable en el primer
+    corte, y también lo es una referencia que figura como cargada pero cuya carga bajo demanda puede haber dejado fuera
+    de memoria contenido potencialmente visible, salvo que la caracterización demuestre que está completo; el espejo no
+    abre archivos externos para adivinar su geometría; un recorte (filtro espacial, recorte de imagen, de underlay o de
+    nube de puntos, capas internas) no reduce la huella, que es la ocupación del contenido sin recortar unida a la del
+    contorno o marco del recorte que pueda hacerse visible, o es no clasificable; un bloque dinámico posterior con
+    estados de visibilidad necesita la unión conservadora de los estados que pueden activarse sin cambiar el orden, o es
+    no clasificable; la ocupación que depende de un campo solo está soportada con una cota conservadora para todos los
+    resultados que puede alcanzar solo por cambios de estado, nunca por su valor actual: un cambio del resultado causado
+    por la edición del contenido al que se refiere el campo es una edición, aunque el campo solo se reevalúe después; y
+    los atributos invisibles y su modo de visualización, los objetos ocultos o aislados, los proxies cuyos gráficos no
+    se muestran y los vínculos de datos y las fórmulas de tabla siguen la misma regla: método latente conservador o no
+    clasificable. El orden persiste si cualquiera de esos mecanismos cambia. Esa garantía cubre el **estado**
+    —visibilidad (capas, objetos invisibles y representaciones anotativas), carga y descarga de referencias externas, su
+    resolución al mismo contenido efectivo aunque cambie la ruta, las rutas de búsqueda o el proyecto (la identidad es
+    la del contenido, no la de la ruta), carga bajo demanda, recortes con sus marcos, solo la visibilidad dinámica,
+    evaluación de campos cuyo resultado cambia solo por un estado, refresco de vínculos de datos aunque haya cambiado su
+    fuente externa (con una cota conservadora o como no clasificable), visualización de proxies, aislamiento y estado de
+    anotación y de entorno— y **no** la **edición futura**: borrar y restaurar objetos (OOPS), editar geometría o texto,
+    editar el objeto al que se refiere un campo, redefinir un bloque, mover o estirar, cambiar un parámetro dinámico que
+    altera la geometría —aunque también cambie la visibilidad—, editar y recargar el archivo de una referencia externa,
+    resolverla a un contenido efectivo distinto, cualquiera sea la ruta, y reemplazar la fuente o el contenido de una
+    imagen, un underlay o una nube de puntos; frente a la edición futura el espejo no garantiza el orden de dibujo, y
+    una identidad de contenido que el espejo necesita y no puede demostrar, sin abrir archivos externos, es no
+    clasificable; la ruta de visibilidad sigue rigiendo solo la equivalencia de las piezas (decisión 13). Una
     representación que depende del entorno (tamaño de los puntos, escalas de tipo de línea, representaciones anotativas,
     métricas de las fuentes) solo está soportada si la caracterización demuestra una ocupación conservadora bajo todos
     los estados que admite el contrato, y esa regla vale también para las huellas de la propia copia (textos, cotas,
@@ -310,8 +331,10 @@ un cambio de estado, y ninguna huella puede preverlo.
     acordarse, pero su propiedad, su espacio de nombres, su ubicación —también la física en los gates de
     implementación—, la forma de su API y el primitivo neutral definitivo no los congela I-52 sola; se reconcilian con
     I-55, e I-49 donde aplique, antes de congelar el contrato, partiendo como entrada vinculante de las últimas entradas
-    acordadas con I-55 (hoy las ocho de su revisión de la Proposal V2) y sin duplicarlas, mientras que `μ_k`, las
-    huellas visuales, la evidencia de simetría y el orden en el espacio modelo siguen siendo propios de este ADR.
+    acordadas con I-55 (hoy las ocho de la revisión técnica adversarial de su Proposal V2, que su Proposal V3
+    reclasificó como no formal, con las diferencias de la V3 y la V4 pendientes de revisión formal) y sin duplicarlas,
+    mientras que `μ_k`, las huellas visuales, la evidencia de simetría y el orden en el espacio modelo siguen siendo
+    propios de este ADR.
 12. **Atomicidad semántica, no de infraestructura.**
     `ACQUIRE → SNAPSHOT → PREFLIGHT (un solo orden normativo) → LINE → PREPARE → MUTATE → COMMIT`, con una sola
     transacción de escritura para todas las definiciones, payloads y referencias: cualquier fallo revierte todas las
@@ -448,15 +471,17 @@ un cambio de estado, y ninguna huella puede preverlo.
     presentación resuelta en el dibujo destino, las huellas visuales de ocupación de modelo en el dibujo destino con la
     transformación de sus anchos, también con magnitud uniforme reflejada, y su recálculo tras importar, la regla del
     entorno en las huellas de la propia copia, la completitud de la base de datos y de la enumeración, con las API
-    exactas que indican la apertura parcial, la edición de referencia en curso y el Editor de bloques abierto, la
-    frontera entre estado y edición futura, los marcos de recorte, la política de huellas por tipo exacto y por
-    mecanismo de los objetos del dibujo —visibilidad, disponibilidad y carga bajo demanda de las referencias externas,
-    recortes, estados de visibilidad dinámica, campos, atributos invisibles, aislamiento de objetos, visualización de
-    proxies y datos externos de tabla— con su independencia del entorno, la cola completa de objetos posteriores, el
-    contexto de materialización que consume cada productor con su cierre transitivo, el censo inicial de sitios
-    productores por las familias ampliadas de símbolos de la API y la postcondición del dibujo y de la caché; la
-    evaluación productiva nace en el Plugin durante la implementación. La confirmación visual del Owner es confirmación,
-    nunca la única prueba.
+    exactas y la detección fiable de la apertura parcial y de las sesiones de edición (edición de referencia en curso,
+    transacción larga, Editor de bloques, ventana de prueba de bloques, edición de la fuente de una matriz asociativa y
+    otros modos de edición en sitio), la frontera entre estado y edición futura, con la precedencia causal de los campos
+    y la identidad de contenido de las referencias externas, los marcos de recorte, la política de huellas por tipo
+    exacto y por mecanismo de los objetos del dibujo —visibilidad, disponibilidad y carga bajo demanda de las
+    referencias externas, recortes, estados de visibilidad dinámica, campos, atributos invisibles, aislamiento de
+    objetos, visualización de proxies y datos externos de tabla— con su independencia del entorno, la cola completa de
+    objetos posteriores, el contexto de materialización que consume cada productor con su cierre transitivo, el censo
+    inicial de sitios productores por las familias ampliadas de símbolos de la API, incluidos los sitios de escritura, y
+    la postcondición del dibujo y de la caché; la evaluación productiva nace en el Plugin durante la implementación. La
+    confirmación visual del Owner es confirmación, nunca la única prueba.
 14. **Verificación dinámica por rack sobre todas las vistas admisibles.** Antes de pedir la línea, cada rack lógico
     verifica sobre su diseño reflejado: la ausencia de metadata semántica desconocida en el payload y en el exterior; la
     autoridad de dependencias y la estabilidad dinámica de sus decisiones; la evidencia visual-geométrica de las piezas
@@ -611,6 +636,21 @@ un cambio de estado, y ninguna huella puede preverlo.
   el freeze espera a la autoridad final de I-49.
 - **Fijar la ubicación física de las responsabilidades compartidas en los gates de implementación** — descartada: se
   decide en la reconciliación.
+- **Enumerar solo las sesiones de edición conocidas y tratar las demás como ausentes** — descartada: un modo de edición
+  no caracterizado puede exponer geometría temporal o absorber las copias; lo no caracterizado o no demostrablemente
+  ausente bloquea la operación.
+- **Reflejar durante la edición de la fuente de una matriz asociativa razonando sobre su geometría temporal** —
+  descartada: la copia podría quedar dentro de la matriz y replicarse en cada elemento.
+- **Vigilar solo la creación de entidades y registros, no la escritura de objetos o contexto existentes** — descartada:
+  una mutación de presentación o de un registro de símbolo existente cambia el contexto que consumen las huellas y los
+  productores.
+- **Clasificar un campo como estado por el mero hecho de reevaluarse** — descartada: el cambio causado por editar el
+  contenido referenciado es una edición, y sin precedencia causal caben dos implementaciones distintas.
+- **Identificar una referencia externa por su ruta** — descartada: la misma ruta puede resolver a otro contenido y otra
+  ruta al mismo; manda el contenido efectivo.
+- **Desbloquear el freeze o retirar las lecturas transitivas del registro si I-49 se cancela** — descartada: la salida
+  la decide el Coordinador en una Proposal (retirar ese soporte, adoptar otra autoridad integrada o mantener el
+  bloqueo).
 
 ## Consecuencias
 
@@ -664,17 +704,21 @@ un cambio de estado, y ninguna huella puede preverlo.
     demostrar completa su enumeración o que tienen después de alguna fuente una referencia externa cargada bajo demanda
     con contenido que puede no estar en memoria —aunque figure como cargada—, atributos invisibles, objetos ocultos o
     aislados, proxies o tablas con datos externos sin método latente conservador; fallan antes de pedir la línea las
-    operaciones con una edición de referencia en curso o con el Editor de bloques abierto; fallan también las que tienen
-    después de alguna fuente un objeto recortado cuyo marco no puede acotarse; y el orden no se garantiza frente a
-    ediciones futuras del contenido, incluidos los objetos borrados que se restauran con OOPS;
+    operaciones con una edición de referencia en curso, una transacción larga, el Editor de bloques o la ventana de
+    prueba de bloques abiertos, la edición de la fuente de una matriz asociativa en curso o un estado de sesión de
+    edición que no puede demostrarse ausente —y, sin detección fiable en AutoCAD 2025, podrían fallar todas—; fallan
+    también las que tienen después de alguna fuente un objeto recortado cuyo marco no puede acotarse; y el orden no se
+    garantiza frente a ediciones futuras del contenido, incluidos los objetos borrados que se restauran con OOPS, la
+    edición del objeto al que se refiere un campo y la resolución de una referencia externa a un contenido distinto,
+    mientras que un campo que solo cambia por estado sin cota conservadora hace fallar la operación;
   - la copia regenera sus piezas internas, anotaciones y cotas como Actualizar: los drawers no asignan explícitamente
     determinadas propiedades, la caracterización establece qué mecanismo aplica AutoCAD y qué observaciones consume cada
     productor, con su cierre transitivo (estilos de texto, bloques de flecha, tipos de línea y fuentes de los estilos de
     cota y de texto), una guarda con censo de sitios productores por familias de símbolos de la API detiene el trabajo
-    si un productor cambia lo que consume o aparece uno sin clasificar, la copia puede verse distinta de una fuente
-    dibujada con otro contexto, y si la huella de sus anotaciones o cotas depende del entorno sin cota conservadora
-    (estilos anotativos, `DIMSCALE = 0`, estilos hijos, fuentes sustituidas) la operación falla cerrado o el Owner
-    acepta la limitación;
+    si un productor cambia lo que consume o aparece uno sin clasificar, también un sitio que escribe o muta objetos o
+    contexto existentes, la copia puede verse distinta de una fuente dibujada con otro contexto, y si la huella de sus
+    anotaciones o cotas depende del entorno sin cota conservadora (estilos anotativos, `DIMSCALE = 0`, estilos hijos,
+    fuentes sustituidas) la operación falla cerrado o el Owner acepta la limitación;
   - `RACKMIRROR` añade un único comando, sin alias, al censo de comandos vigente al integrarse (no a un número fijo), y
     una entrada de ayuda sin alias, que la ventana de ayuda muestra sin distintivo de alias; comparte con las
     propiedades personalizadas, ya integradas, la referencia de ayuda y las guardas de censo;
@@ -683,12 +727,15 @@ un cambio de estado, y ninguna huella puede preverlo.
     origen y tramo del eje de la vista, descripción de la exposición de cada vista, comparador authored, primitivo de
     materialización, núcleo de selección, valor de colocación, transformaciones de proyección y caracterizaciones únicas
     compartidas), que quedan provisionales hasta entonces, partiendo de las entradas ya acordadas con I-55 como entrada
-    vinculante; si cualquiera intenta congelar una autoridad incompatible, no hay freeze para ninguna hasta resolverlo
-    —I-55 aplica la misma regla a su propio freeze—, y la segunda iniciativa en integrar restablece la convergencia con
-    Actualizar e Insertar;
+    vinculante, que no es un consenso formal mientras la revisión formal de la Proposal vigente de I-55 esté pendiente;
+    si cualquiera intenta congelar una autoridad incompatible, no hay freeze para ninguna hasta resolverlo —I-55 aplica
+    la misma regla a su propio freeze—, y la segunda iniciativa en integrar restablece la convergencia con Actualizar e
+    Insertar;
   - el contrato no se congela mientras no esté disponible la autoridad final de I-49 para las lecturas del registro (la
-    Proposal, su enmienda de fallos con varias causas, el ADR de reemplazo y el nuevo freeze): hasta entonces el freeze
-    de I-52 queda bloqueado;
+    Proposal, su enmienda de fallos con varias causas en su revisión vigente, el ADR de reemplazo y el nuevo freeze,
+    acordados, aceptados y congelados): hasta entonces el freeze de I-52 queda bloqueado, y si I-49 se cancela o
+    abandona antes, sigue bloqueado hasta que el Coordinador decida en una Proposal retirar ese soporte, adoptar otra
+    autoridad integrada o mantener el bloqueo;
   - I-52 está grandfathered y sigue el workflow bajo el que se reclamó: antes de cada transición del proceso se relee la
     autoridad de proceso vigente, las futuras autoridades de proceso se leen junto con sus reglas de transición y,
     mientras el invariante grandfathered aplique, I-52 conserva su workflow de reclamo; nunca se adoptan reglas no
@@ -706,17 +753,17 @@ un cambio de estado, y ninguna huella puede preverlo.
     integrarse;
   - la aceptación de este ADR espera a la caracterización (G3), lo que añade una ronda del Owner antes de implementar;
     si G3 contradice materialmente el contrato o reduce materialmente el alcance que el Owner aceptó, se abre una
-    Proposal V14 antes de pedirla.
+    Proposal V16 antes de pedirla.
 - Vigilar: cada kind o vista nueva debe declarar su reflector, su decodificación de sección, su conjunto de vistas
   admisibles y su exposición; todo miembro nuevo y toda propiedad vinculable nueva necesitan clasificación antes de
   integrarse; todo offset gráfico nuevo de un builder de vista admitida debe caracterizarse; toda variante de clase o
   propiedad de presentación nueva debe clasificarse antes de admitirse; todo comando nuevo del plugin se suma al censo
-  vigente al integrarse; si ADR-0042 (I-55), que complementa a ADR-0010 (vista adicional y precondiciones nuevas de
-  Insertar, con una nota posterior fechada en ADR-0010 solo si se acepta), se acepta antes del freeze, las autoridades
-  de Actualizar e Insertar en las que se apoya la convergencia se releen y se reconcilian; y si I-56 integra cambios de
-  proceso, se relee la autoridad de proceso vigente junto con sus reglas de transición, sin que por ello rija sobre I-52
-  mientras el invariante grandfathered aplique; y si la autoridad final de I-49 cambia las lecturas del registro, se
-  relee antes del freeze.
+  vigente al integrarse; si ADR-0042 (I-55), que complementa a ADR-0010 (vista adicional, precondiciones nuevas de
+  Insertar y redibujo atómico de las hermanas antes de Insertar, con una nota posterior fechada en ADR-0010 solo si se
+  acepta), se acepta antes del freeze, las autoridades de Actualizar e Insertar en las que se apoya la convergencia se
+  releen y se reconcilian; y si I-56 integra cambios de proceso, se relee la autoridad de proceso vigente junto con sus
+  reglas de transición, sin que por ello rija sobre I-52 mientras el invariante grandfathered aplique; y si la autoridad
+  final de I-49 cambia las lecturas del registro, se relee antes del freeze.
 
 ## Referencias
 
@@ -731,40 +778,52 @@ un cambio de estado, y ninguna huella puede preverlo.
   alcance, §1, y sin herencia entre ellos, §12); colección de propiedades de alcance Proyecto y ejecutores físicos,
   fuera del alcance del espejo; comando `RACKPROPIEDADES` con alias `RPR`, ayuda y censos por nombre de comandos, de
   ayuda y de ventanas (T-GRD-08) y censo de llamadas al compositor del sobre (T-GRD-02).
-- I-49 ADR-0041 (aceptado en su rama; reemplaza a ADR-0040, que reemplazó a ADR-0038; reproduce sin cambios sus demás
-  decisiones, incluidos el `PlanReadSet` (D19) y la identidad textual de `VariableId`, y solo cambia la validez de la
-  clave, la sintaxis del cualificador y las formas de referencia que lo emiten; G5 sintáctico, G6 con enlace y
-  evaluación y la corrección G6-C2 del cualificador de clave exacta, solo en `Expressions`, sin `PlanReadSet` ni dominio
-  integrados; el Amendment A3, solo documentación y pendiente de revisión, anuncia un ADR de reemplazo sin número que
-  cambia la semántica futura de D19 —las observaciones de símbolo del `PlanReadSet`, con todos los diagnósticos de un
-  símbolo no evaluado, su orden, la cadena de cada dependencia fallida y el conjunto de causas raíz— y el dato
-  `Upstream` de D20, que el espejo no consume; antes de congelar este contrato debe estar disponible la autoridad final
-  de I-49, o el freeze queda bloqueado): `PlanReadSet` y dominio del consumidor declarado por el descriptor; guardas de
-  texto de `ProjectVariablesConformanceTests` y autoridad de unidades de longitud (`LengthUnitsAuthorityGuardTests`).
+- I-49 ADR-0041 (aceptado en su rama; reemplaza a ADR-0040, que reemplazó a ADR-0038; frente a ADR-0040 solo cambia la
+  validez de la clave, la sintaxis del cualificador y las formas de referencia que lo emiten, y que conservara sin
+  cambios el `PlanReadSet` (D19) y la identidad textual de `VariableId` es un hecho histórico anterior al Amendment A3;
+  su D19 no es la autoridad vigente de las lecturas transitivas del espejo; G5 sintáctico, G6 con enlace y evaluación y
+  la corrección G6-C2 del cualificador de clave exacta, solo en `Expressions`, sin `PlanReadSet` ni dominio integrados;
+  el Amendment A3, solo documentación, recibió en su revisión exacta cambios requeridos y su revisión A3-R1, pendiente
+  de nueva revisión exacta, anuncia un ADR de reemplazo sin número y un nuevo freeze: cambia la semántica futura de las
+  observaciones de símbolo del `PlanReadSet` —todos los diagnósticos de un símbolo no evaluado, su orden, la cadena de
+  cada dependencia fallida y el conjunto de causas raíz por componente fuertemente conexo; según A3-R1, D19 se lee con
+  la enmienda y su texto aceptado sigue siendo cierto— y el dato `Upstream` de D20, que el espejo no consume, junto con
+  la sugerencia de recuperación de D18 y la ruptura de ciclos de D14; antes de congelar este contrato debe estar
+  disponible la autoridad final acordada, aceptada y congelada de I-49, o el freeze queda bloqueado, también si I-49 se
+  cancela sin una decisión del Coordinador): `PlanReadSet` y dominio del consumidor declarado por el descriptor; guardas
+  de texto de `ProjectVariablesConformanceTests` y autoridad de unidades de longitud (`LengthUnitsAuthorityGuardTests`).
 - I-53 E1, I-53S E2 e I-53D E3 (integradas en `main`): guardas C-08 y C-10 sobre `RackCad.Application.Systems.Shared`;
   ADR-0037 (aceptado); la ventana del Selectivo distribuye cabeceras con `ApplyHeaderBatch` y la del Dinámico conecta la
   misma fundación (`DynamicHeaderBatch`, `DynamicRackRebuild`).
-- I-55 (Proposal V3 en revisión, con Arquitecto formal pendiente; su revisión anterior de la V2 quedó reclasificada como
-  revisión técnica adversarial; la tabla de autoridades compartidas X-1..X-8 está aceptada del lado de I-55, sin
-  conflicto material con I-52, y es entrada vinculante de la reconciliación, mientras que las diferencias que propone la
-  V3 —entre ellas un único extractor en I-55 para la taxonomía, el códec, la resolución, el plan y el marco de las
-  vistas— se deciden en esa reconciliación; material abierto M-01; sin consenso ni decisión del Owner): ADR-0042
-  (propuesto; no reemplaza a ADR-0010: lo complementa sin revertir ninguna de sus decisiones, con una nota posterior
-  fechada en ADR-0010 solo si se acepta; vista adicional sobre un rack materializado o una intención de creación
-  aceptada, y dos precondiciones nuevas de Insertar —propiedades personalizadas acotadas al `RackId` y redibujo previo
-  sin fallos—; Actualizar no cambia) y la reconciliación de las autoridades compartidas con este ADR antes del freeze de
-  cualquiera de los dos.
-- I-56 (Initiative Workflow V2, con su auditoría de evidencias completa y corregida y la Proposal sin iniciar; solo
-  documentación y proceso; las hipótesis de la auditoría no son política): el WORKFLOW vigente sigue siendo la autoridad
-  de proceso hasta que I-56 integre; su contrato declara a I-49, I-52 e I-55 grandfathered —terminan bajo el workflow
-  con que se reclamaron— y que ninguna política de la V2 rige sin acuerdo técnico y aprobación del Owner; las futuras
-  autoridades de proceso se leen junto con sus reglas de transición.
+- I-55 (Proposal V4 en revisión, tras la decisión de su Coordinador de redibujar de forma atómica las vistas hermanas
+  antes de Insertar, con Arquitecto formal pendiente; su revisión anterior de la V2 quedó reclasificada como revisión
+  técnica adversarial no formal, que no es consenso formal del Arquitecto; la tabla de autoridades compartidas X-1..X-8
+  está aceptada del lado de I-55, sin conflicto material con I-52, y es entrada vinculante de la reconciliación,
+  mientras que las diferencias que proponen la V3 y la V4 —entre ellas un único extractor en I-55 para la taxonomía, el
+  códec, la resolución, el plan y el marco de las vistas, y en la V4 las precisiones del primitivo (crear y redefinir en
+  la transacción del llamador), del protocolo de reporte y de la convergencia con Insertar— siguen pendientes de
+  revisión formal y se deciden en esa reconciliación; material abierto M-01; sin consenso ni decisión del Owner):
+  ADR-0042 (propuesto; no reemplaza a ADR-0010: lo complementa sin revertir ninguna de sus decisiones, con una nota
+  posterior fechada en ADR-0010 solo si se acepta; vista adicional sobre un rack materializado o una intención de
+  creación aceptada, y dos precondiciones nuevas de Insertar —propiedades personalizadas acotadas al `RackId` y redibujo
+  previo sin fallos, que con la V4 es un redibujo atómico de las hermanas en una sola transacción antes de colocar
+  vistas nuevas—; Actualizar no cambia) y la reconciliación de las autoridades compartidas con este ADR antes del freeze
+  de cualquiera de los dos.
+- I-56 (Initiative Workflow V2, con su auditoría de evidencias completa y corregida y su Proposal V1 publicada sin
+  consenso, con Coordinador y Arquitecto en revisión y sin petición al Owner; solo documentación y proceso; las
+  hipótesis de la auditoría no son política y la Proposal V1 declara que no se aplica a I-49, I-52 ni I-55): el WORKFLOW
+  vigente sigue siendo la autoridad de proceso hasta que I-56 integre; su contrato declara a I-49, I-52 e I-55
+  grandfathered —terminan bajo el workflow con que se reclamaron— y que ninguna política de la V2 rige sin acuerdo
+  técnico y aprobación del Owner; las futuras autoridades de proceso se leen junto con sus reglas de transición.
 - I-19: `CatalogBlockParameters`, `CatalogBlockManifest`.
 - AutoCAD 2025, a confirmar por la caracterización: apertura parcial del dibujo (`Database.IsPartiallyOpened` o su
   equivalente), carga bajo demanda de referencias externas (`XLOADCTL`, `INDEXCTL`), atributos invisibles (`ATTDISP`),
   aislamiento de objetos (`OBJECTISOLATIONMODE`), proxies (`PROXYSHOW`, `PROXYGRAPHICS`), vínculos de datos de tabla,
-  edición de referencia en curso (`REFEDITNAME`), Editor de bloques (`BLOCKEDITOR`), restauración de objetos borrados
-  (OOPS) y marcos de recorte (`XCLIPFRAME`, `FRAME`, `IMAGEFRAME`, `WIPEOUTFRAME`, `PDFFRAME`, `DWFFRAME`, `DGNFRAME`,
+  edición de referencia en curso (`REFEDITNAME`), transacciones largas (`LongTransactionManager`), Editor de bloques
+  (`BLOCKEDITOR`), ventana de prueba de bloques (`BLOCKTESTWINDOW`), edición de la fuente de una matriz asociativa
+  (ARRAYEDIT, ARRAYCLOSE), campos de propiedad de objeto, resolución de referencias externas por ruta, rutas de búsqueda
+  y proyecto (`PROJECTNAME`), escritura de objetos y variables del sistema, restauración de objetos borrados (OOPS) y
+  marcos de recorte (`XCLIPFRAME`, `FRAME`, `IMAGEFRAME`, `WIPEOUTFRAME`, `PDFFRAME`, `DWFFRAME`, `DGNFRAME`,
   `POINTCLOUDCLIPFRAME`).
 - `src/RackCad.Application/Geometry/Transform2D.cs`; `src/RackCad.Application/Geometry/Vector2D.cs`
   (`GeometryTolerance`); `src/RackCad.Application/Persistence/RackProjectStore.cs`;
@@ -780,8 +839,10 @@ un cambio de estado, y ninguna huella puede preverlo.
   orden de materialización; referencias internas sin presentación asignada; estilo de cota actual cuando el plan no trae
   estilo con nombre, búsqueda del estilo con nombre y reconstrucción de la cota; colocaciones de grupo y referencias de
   pieza con escala reflejada de magnitud uniforme); `src/RackCad.Plugin/LayerHelper.cs` (una capa existente se usa tal
-  cual); `src/RackCad.Application/Systems/Selective/SelectiveAnnotations.cs` (altura de texto por la escala de anotación
-  del diseño); `src/RackCad.UI/RackCommandHelpWindow.cs` (distintivo de alias de la ayuda).
+  cual); sitios de apertura para escritura del Plugin (censo inicial de la caracterización, sin mutaciones de
+  presentación de objetos existentes); `src/RackCad.Application/Systems/Selective/SelectiveAnnotations.cs` (altura de
+  texto por la escala de anotación del diseño); `src/RackCad.UI/RackCommandHelpWindow.cs` (distintivo de alias de la
+  ayuda).
 
 ## Historial del borrador
 
@@ -984,8 +1045,9 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
     cargada, censo solo sintáctico, garantía frente a ediciones y forma de API fijada sin partir de lo acordado,
     descartadas; hechos de I-55 en `d091eeb` y redacción «complementa y precisa» de ADR-0042; Amendment A3 de I-49 con
     su ADR de reemplazo sin número; API de AutoCAD 2025 a confirmar.
-- **Borrador V14** — este texto, con Proposal V14. Cambios respecto del V13, por la revisión de Arquitecto de
-  Proposal V13 (`Architect: CHANGES REQUIRED — PROPOSAL V14`) y la orden del Coordinador:
+- **Borrador V14** — publicado con Proposal V14 en `e59bc89` (recuperable con
+  `git show e59bc89:docs/adr/0036-rackmirror-espejo-semantico-por-copia.md`). Cambios respecto del V13, por la revisión
+  de Arquitecto de Proposal V13 (`Architect: CHANGES REQUIRED — PROPOSAL V14`) y la orden del Coordinador:
   - decisión 11: prerrequisitos globales antes de pedir la línea (apertura parcial, edición de referencia en curso y
     Editor de bloques) frente a completitud relativa a cada fuente; borrar y restaurar objetos como edición futura;
     frontera exacta entre estado y edición, con los vínculos de datos como estado y los parámetros dinámicos que cambian
@@ -998,5 +1060,23 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
   - alternativas y referencias: cerrar sesiones, proteger OOPS, recortes sin marco, congelar sobre la decisión vigente
     de I-49 y fijar ubicaciones físicas, descartadas; D19 y D20 en el Amendment A3 de I-49; Proposal V3 de I-55 y sus
     diferencias en las autoridades compartidas; auditoría de evidencias de I-56; API de AutoCAD 2025 a confirmar.
+- **Borrador V15** — este texto, con Proposal V15. Cambios respecto del V14, por la revisión de Arquitecto de
+  Proposal V14 (`Architect: CHANGES REQUIRED — PROPOSAL V15`) y la orden del Coordinador:
+  - decisión 11: política cerrada de sesiones de edición (segura por caracterización o bloqueante; lo no caracterizado o
+    no demostrablemente ausente bloquea), con la edición de la fuente de una matriz asociativa y la ventana de prueba de
+    bloques bloqueantes en el primer corte; precedencia causal de los campos; identidad de contenido de las referencias
+    externas; revisión técnica adversarial de I-55 que no es consenso formal;
+  - decisión 7: familia de escritura o mutación de objetos o contexto existentes, con tres violaciones que deben detener
+    el trabajo;
+  - decisión 13: «la caracterización **debe demostrar**» también la detección fiable de las sesiones de edición, la
+    precedencia causal de los campos, la identidad de contenido de las referencias externas y los sitios de escritura;
+  - contexto, decisión 5 y consecuencias: matrices asociativas, ventana de prueba, campos y rutas de referencias
+    externas; Proposal V16; freeze bloqueado sin la autoridad final de I-49, también si se cancela, hasta una decisión
+    del Coordinador;
+  - alternativas y referencias: enumerar solo sesiones conocidas, reflejar durante la edición de una matriz, vigilar
+    solo la creación, clasificar campos por reevaluación, identificar referencias por ruta y desbloquear el freeze si
+    I-49 se cancela, descartadas; revisión A3-R1 de I-49 y D19 como hecho histórico; revisión no formal de I-55 y su
+    Proposal V4 con el redibujo atómico de las hermanas; Proposal V1 de I-56 sin consenso; API de AutoCAD 2025 a
+    confirmar.
 
   Sigue **propuesto**: su aceptación se pide después de G3 y antes de G4.
