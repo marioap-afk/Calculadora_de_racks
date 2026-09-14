@@ -16,6 +16,11 @@
 > porque son su materia prima verificable, como lo hacen los documentos de evidencia de I-45. No es estado
 > vivo ni contrato. La tension con la regla de AGENTS.md / WORKFLOW seccion 8 («hashes y conteos solo en
 > HANDOFF seccion 12») se registra como hallazgo (Q10), no se resuelve aqui.
+>
+> **Correccion G1.1.** Solo se corrigio la clasificacion normativa de las conclusiones (seccion H en tres categorias: H.1
+> vinculante de I-56, H.2 politica V1 vigente, H.3 alternativas rechazadas o diferidas) y las celdas que la remitian (seccion
+> 1, TABLE D, F y G), y se anadieron cuatro filas de control G1.1 a la seccion 9. Ninguna cifra, conteo ni fila de hallazgo
+> cambio.
 
 ## 0. Alcance, metodo y reglas de lectura
 
@@ -126,7 +131,7 @@ probada).
 | Exact-SHA | `Directory.Build.targets` estampa el SHA; reutilizacion solo por SHA exacto; tres invalidadores; docs-only no hereda (MEASURED en AGENTS.md) | cuanto retrabajo real produjo la regla y cuanto el avance de `main` (Q9) |
 | LC-UI | la suite UI local deja de ser obligatoria en la iteracion ordinaria; la evidencia intermedia de UI la aporta el CI push; el Core queda fuera («no se deduce ninguna por analogia con LC-UI») (MEASURED en AGENTS.md) | cuantas unidades lo aplicaron (I-51, E1) y cuantas corrieron UI Full local igualmente (Q7) |
 | Fuentes de defectos | corpus I-40/I-43/I-44: Owner manual 8, revision arquitectonica 6, prueba de regresion nueva 3, Full/CI/prueba preexistente 0 (RECONSTRUCTED; filas suman 17, rotulo 18) | etapas que encontraron defectos en I-45..I-54 (TABLE B) |
-| Rechazados | T0–T4 y R0–R4 (definiciones solo en transcripcion), seleccion por impacto y por FQN/ruta/grafo de proyectos, taxonomia de pruebas, clave de estado de validacion por contenido, igualdad de arbol, retirar cobertura, reducir validacion del Owner, multi-STA inmediato (ADR-0033 L197-226, MEASURED; ADR en estado `propuesto`) | **no se reintroducen** bajo otro nombre (secciones G y H) |
+| Rechazados | T0–T4 y R0–R4 (definiciones solo en transcripcion), seleccion por impacto y por FQN/ruta/grafo de proyectos, taxonomia de pruebas, clave de estado de validacion por contenido, igualdad de arbol, retirar cobertura, reducir validacion del Owner, multi-STA inmediato (ADR-0033 L197-226, MEASURED; ADR en estado `propuesto`) | Clasificacion en la seccion H: T0–T4, R0–R4 e igualdad de arbol como identidad de evidencia estan **prohibidos por la autorizacion de I-56** (H.1), no por el ADR; el resto se conserva como **rechazo historico** que solo se reabre con evidencia materialmente nueva (H.3); ninguno se adopta en silencio (seccion G) |
 | Duracion activa del Owner | experimento no bloqueante (guia §8); linea base UNKNOWN | ningun valor capturado encontrado en `main`; las plantillas de cierre de I-51/I-53 dejan «Duracion activa aproximada: ___ min» en blanco (MEASURED) |
 | Sobrecarga de proceso por iniciativa | **no medida por I-45** | objeto de este documento: rondas, versiones, ordenes, documentacion, ceremonia por unidad Git |
 
@@ -553,21 +558,21 @@ registro 5 veces (B-35) y el vocabulario de evidencia se re-invento 6 veces. Det
 | Proposal versionada | Acuerdo explicito antes de codigo | Base de todas las capturas de diseño | — | Evidencia a favor: I-51 sin archivo de Proposal | Evidencia de sobrecarga en versiones acumulativas | Humano/agente | MEDIA |
 | Architect-role, 1a ronda | Defectos de diseño | Todas las primeras rondas | Evidencia de valor | — | — | Agente (rol en sesion); independencia UNKNOWN | MEDIA |
 | Architect-role, rondas ≥2 | Seguimiento de reconciliaciones | Mixtas (Q4/Q5) | Evidencia mixta | Evidencia mixta | — | Agente | BAJA (contrafactual) |
-| Congelacion + decision de politica del Owner (ADR) | Autoridad y alcance | OD-6/OD-8 cambiaron alcance; ADR-0035/0037/0039 aceptados | Cuando hay ADR o decision (regla vigente) | — | Una vez por diseño | Humano (Owner) | ALTA |
+| Congelacion + decision de politica del Owner (ADR) | Autoridad y alcance | OD-6/OD-8 cambiaron alcance; ADR-0035/0037/0039 aceptados | Cuando hay ADR o decision (politica V1, H.2-9) | — | Una vez por diseño | Humano (Owner) | ALTA |
 | Gates con RED→GREEN focal | Pruebas que no fallan; regresion local | I-50 T-08 y MIN-4; I-51 guardas; I-54 defectos de prueba | Evidencia de valor | — | — | Automatizable (ejecucion) + humano (diseño de prueba) | MEDIA |
 | Revision del Coordinador entre gates | Defectos antes del siguiente gate | I-48: 4 MATERIAL en 3 gates de correccion | Evidencia de valor en I-48 | — | — | Humano | MEDIA |
 | Commits `-CLOSE` por gate | Trazabilidad | Nuevas precisiones y decision del Owner (I-54); resto re-enunciado | — | Evidencia mixta | Evidencia a favor de concentrar | Parcialmente automatizable | MEDIA |
 | Core Full local por gate | Regresion | 0 inesperados registrados | No sostenido por capturas; AGENTS lo mantiene fuera de LC-UI | Evidencia no concluyente | — | Automatizable | MEDIA (ausencia ≠ sin valor) |
 | UI Full local por gate | Regresion UI | 0; Full local afirmado verde mientras el CI colgaba | No sostenido; LC-UI ya lo retira de la iteracion ordinaria (vigente) | Ya condicional por LC-UI | — | Automatizable | MEDIA |
 | CI push sobre SHAs que tocan rutas de CI | Diferencias de plataforma (Linux: CRLF) y de entorno del runner (cuelgue de UI en Windows), determinismo | CRLF (I-50), cuelgue (I-48), blame (I-45) | Evidencia de valor | — | — | Automatizable (leer el resultado exige accion) | ALTA |
-| CI push sobre SHAs docs-only/vacios | Documentos que rompen pruebas (medido en G0 de I-56: la unica prueba que lee `docs/` es `CantileverSourceGuardTests`) | 0 fallos | No sostenido por capturas | **Colisiona** con enfoques rechazados por ADR-0033 (clase R0 «docs/nonfunctional» y clave de estado por contenido) | — | Automatizable | ALTA (conteos) |
+| CI push sobre SHAs docs-only/vacios | Documentos que rompen pruebas (medido en G0 de I-56: la unica prueba que lee `docs/` es `CantileverSourceGuardTests`) | 0 fallos | No sostenido por capturas | **Puede colisionar** con prohibiciones de I-56 si se formula como clase de riesgo que exime evidencia (R0 «docs/nonfunctional», definicion solo en transcripcion: H.1-6) o como CI reducido o separado (H.1-7), y con el rechazo historico de la clave de estado por contenido (H.3-4); la exigencia proporcional para commits documentales ya es politica V1 (AGENTS «Commit documental»; H.2-5) | — | Automatizable | ALTA (conteos) |
 | Re-fetch/preflight de ramas paralelas | Base superada; archivo caliente | E3-C BLOCKED (captura); I-54 G7A (fallo al no detener) | En momentos puntuales | Evidencia a favor (el resto «sin impacto») | — | Automatizable (chequeo) | ALTA |
-| Candidato: Full local + builds + CI exacto | Integrar un binario sin evidencia | E3-C.1; `acecde6` CI rojo | Regla vigente | — | Una vez por Candidato | Automatizable | ALTA |
-| Dispatch de cobertura del Candidato | Salud de cobertura sobre SHA medido | 0 defectos; 2 duplicados | Regla vigente | — | Una vez | Automatizable | ALTA |
-| Validacion del Owner en AutoCAD | Comportamiento de dibujo real (bloques DWG) | 0 hallazgos en la muestra; 8 de 17 en el corpus de I-45 | Cuando cambia dibujo (regla vigente, monotonica) | Metadata solo puede anadir (vinculante); «no se reduce por politica general» es conclusion de ADR-0033 §10 (propuesto) | Una vez por Candidato | Humano | MEDIA |
+| Candidato: Full local + builds + CI exacto | Integrar un binario sin evidencia | E3-C.1; `acecde6` CI rojo | Composicion: politica V1 (H.2-3, H.2-4); eliminar la validacion Full del Candidato: prohibido (H.1-9) | — | Una vez por Candidato | Automatizable | ALTA |
+| Dispatch de cobertura del Candidato | Salud de cobertura sobre SHA medido | 0 defectos; 2 duplicados | Politica V1 (H.2-8) | — | Una vez | Automatizable | ALTA |
+| Validacion del Owner en AutoCAD | Comportamiento de dibujo real (bloques DWG) | 0 hallazgos en la muestra; 8 de 17 en el corpus de I-45 | Cuando cambia dibujo (politica V1, metadata monotonica: H.2-6); eliminarla: prohibido (H.1-8) | Metadata solo puede anadir (AUTOMATION_PLAN §11, politica V1); «no se reduce por politica general» es conclusion de ADR-0033 §10 (`propuesto`): rechazo historico, H.3-6 | Una vez por Candidato | Humano | MEDIA |
 | Commit documental de cierre + CI | Registro durable | Estados obsoletos; copias 3–7x | — | — | Evidencia a favor de concentrar | Humano/automatizable | ALTA |
-| Merge `--no-ff` + CI post-merge | SHA de merge nunca construido | 0 fallos; arbol igual al del cierre salvo I-50 | Regla exact-SHA vigente | — | Una vez | Automatizable | ALTA |
-| Limpieza tras ambas coberturas | Declarar integrada una integracion no verificada | E1-I (limpieza anticipada) | Regla vigente | — | Una vez | Automatizable (chequeo) | ALTA |
+| Merge `--no-ff` + CI post-merge | SHA de merge nunca construido | 0 fallos; arbol igual al del cierre salvo I-50 | Exact-SHA no relajable y mismo arbol no es identidad (H.1-10, H.1-11); secuencia de merge: politica V1 (H.2-3) | — | Una vez | Automatizable | ALTA |
+| Limpieza tras ambas coberturas | Declarar integrada una integracion no verificada | E1-I (limpieza anticipada) | Politica V1 (H.2-3) | — | Una vez | Automatizable (chequeo) | ALTA |
 | Ordenes del Coordinador | Alcance y seguridad de cada gate | Capturas por cercas y re-fetch; incidentes O-1..O-10 | — | — | — | Humano | MEDIA |
 
 ---
@@ -589,8 +594,12 @@ suite en sus cuerpos de commit; la busqueda heuristica los habia omitido).
 | I-53 conceptual mezclado con E1/E2/E3 | Cuatro filas separadas en TABLE A; corridas de {C} señaladas dentro de E1 (C-03) |
 | I-52 incompleta usada como cerrada | Marcada «activa, no agregada» en cada uso; excluida de agregados de Q2, Q4, Q8 y B-38; instantanea de refs declarada (0.1) |
 | Hipotesis convertidas en recomendaciones | Seccion G formulada como hipotesis con prueba de refutacion; retirada de TABLE B la redaccion imperativa |
-| Politica V2 accidental | TABLE D rotulada como analisis; seccion H cita fuentes y su estado vinculante |
-| Reintroduccion de T0–T4 / R0–R4 | Retirada una hipotesis sobre exentar CI por clase «solo documentacion» (coincide con R0 y con la clave por contenido rechazadas en ADR-0033); colision anotada en TABLE D y en F |
+| Politica V2 accidental | TABLE D rotulada como analisis; seccion H separa restricciones vinculantes de I-56 (H.1), politica V1 vigente (H.2) y alternativas historicas (H.3), con la fuente de cada una |
+| Reintroduccion de T0–T4 / R0–R4 | Retirada una hipotesis sobre exentar CI por clase «solo documentacion» (coincide con R0 y con la clave por contenido rechazada en ADR-0033); colision anotada en TABLE D y en F; T0–T4/R0–R4 figuran como prohibicion de I-56 (H.1-5, H.1-6) |
+| ADR `propuesto` tratado como autoridad aceptada (G1.1) | En la seccion H y en TABLE D, ADR-0033 se cita con su estado; ninguna fila de H.1 se apoya en el; H.2-8 se sostiene en lo vigente (WORKFLOW y `ci.yml`), no en ADR-0033 §9; el requisito de reapertura de H.3 se atribuye a la orden G1.1, con §13 como criterio registrado |
+| Rechazo historico promovido a regla inmutable (G1.1) | La version G1 listaba todos los rechazos de ADR-0033 como «no se reintroducen»; G1.1 los reparte: H.1 solo con fuente vinculante independiente (autorizacion de I-56), el resto en H.3 con su criterio o racional de reapertura |
+| Prohibicion vinculante debilitada (G1.1) | H.1 recoge los trece puntos de la autorizacion en doce filas (H.1-1 agrupa dos); cada fila de H.2 y H.3 que roza una la cita; Quick CI queda en H.1 aunque ADR-0033 §13 le de criterio de reapertura; igualdad de arbol, eliminar Owner Validation y eliminar Full del Candidato quedan en H.1 por la autorizacion de I-56, no por ADR-0033 |
+| Decision de Proposal tomada en la correccion (G1.1) | H.2 no decide que cambiar ni en que sentido; H.3 no reabre ni adopta ninguna alternativa; las hipotesis H1–H9 no se modificaron salvo la nota de H3 y la frase introductoria de G |
 | Etiquetas de plataforma | El cuelgue de I-48 ocurrio en el runner Windows (job de UI); solo CRLF fue Linux |
 | Premisas del propio encargo | La premisa del blob de I-48 resulto error del executor (0.6.3); discrepancia de conflictos I-50/I-51 resuelta por simulacion (0.6.4) |
 
@@ -701,8 +710,9 @@ corpus de I-45) y cercas de alcance por gate (cumplidas en toda la muestra; valo
 
 ## F. PROCESS STEPS WITH EVIDENCE OF REPEAT OVERHEAD
 
-1. CI sobre SHAs docs-only, vacios o luego reescritos (C-01..C-04). Nota: una exencion por clase «solo documentacion» coincide
-   con enfoques rechazados por ADR-0033 (R0; clave de estado por contenido); este documento no la formula como hipotesis.
+1. CI sobre SHAs docs-only, vacios o luego reescritos (C-01..C-04). Nota: una exencion por clase «solo documentacion» puede
+   colisionar con prohibiciones de I-56 (como clase de riesgo, R0: H.1-6; como CI reducido o separado: H.1-7) y coincide con el
+   rechazo historico de la clave de estado por contenido (H.3-4); este documento no la formula como hipotesis.
 2. Rondas de Architect que confirman o corrigen su propia reconciliacion previa (C-14..C-16; I-52, activa, C-17).
 3. Versiones de Proposal acumulativas y documentos que re-enuncian el estado ronda por ronda (5.1; I-52, activa, C-18).
 4. Full locales repetidos sobre el mismo arbol por orden de commit y estampado (C-08..C-11).
@@ -716,7 +726,10 @@ corpus de I-45) y cercas de alcance por gate (cumplidas en toda la muestra; valo
 
 ## G. HYPOTHESES TO TEST IN PROPOSAL V1
 
-Hipotesis, no decisiones. Cada una indica que evidencia la refutaria. Ninguna reintroduce T0–T4 ni R0–R4 (seccion H, punto 7).
+Hipotesis, no decisiones. Cada una indica que evidencia la refutaria. Ninguna toca una restriccion vinculante de I-56 (H.1):
+ninguna reintroduce T0–T4 ni R0–R4, crea un carril rapido, elimina la Owner Validation o la validacion Full del Candidato, ni
+relaja la identidad por SHA exacto. Una hipotesis puede poner a prueba un cambio de politica V1 (H.2); convertirla en norma
+exige que la Proposal identifique el cambio y lo lleve a la compuerta de vigencia (H.1-3). Ninguna reabre una alternativa de H.3.
 
 1. **H1 — Rondas de diseño proporcionales.** Una segunda ronda solo cuando la primera deja un hallazgo material abierto no
    aumenta los defectos de producto posteriores. *Refutaria*: defectos materiales hallados despues del congelamiento en
@@ -725,8 +738,9 @@ Hipotesis, no decisiones. Cada una indica que evidencia la refutaria. Ninguna re
    adelanta la deteccion de fallos de plataforma y de runner. *Refutaria*: fallos de CI que igual se detectan solo al declarar
    Candidato.
 3. **H3 — Full local concentrado en el Candidato.** Mantener Full local solo en el Candidato, con focal por gate y CI push, no
-   aumenta regresiones integradas. Nota: no es un tier T0–T4; para el Core choca con AGENTS («no se deduce ninguna por analogia
-   con LC-UI»), por lo que exigiria cambiar esa regla dentro de la compuerta de vigencia. *Refutaria*: un defecto que solo un
+   aumenta regresiones integradas. Nota: no es un tier T0–T4 y conserva la validacion Full del Candidato (H.1-5, H.1-9); para el
+   Core choca con AGENTS («no se deduce ninguna por analogia con LC-UI»), politica V1 (H.2-4), por lo que exigiria identificar
+   ese cambio en la Proposal y llevarlo a la compuerta de vigencia (H.1-3). *Refutaria*: un defecto que solo un
    Full local intermedio habria capturado.
 4. **H4 — Re-fetch en momentos definidos.** Chequeos en puntos fijos (antes de la primera edicion de archivo caliente, antes del
    commit, antes de declarar Candidato, antes del merge) sustituyen la re-medicion por gate. *Refutaria*: trabajo sobre base
@@ -747,27 +761,84 @@ Hipotesis, no decisiones. Cada una indica que evidencia la refutaria. Ninguna re
 
 ## H. CONSTRAINTS THE PROPOSAL MUST NOT VIOLATE
 
-1. **Invariante de transicion** (contrato I-56 §0.1, vinculante): I-49, I-52 e I-55 grandfathered; toda iniciativa reclamada antes de
-   `WORKFLOW_V2_EFFECTIVE_SHA` termina bajo el workflow con el que se reclamo; I-56 incluida; ningun contrato activo se reescribe para
-   aplicar la V2.
-2. **Invariante de vigencia** (contrato I-56 §0.2, vinculante): ninguna politica normativa de la V2 entra en vigor sin
-   `Coordinator = AGREED` y `Architect = AGREED` sobre la misma version y `Owner = APPROVED`; `WORKFLOW_V2_EFFECTIVE_SHA` no
-   existe y no se inventa.
-3. **Identidad por SHA exacto** (AGENTS.md, «Reutilizacion de evidencia», vinculante): el binario estampa el SHA; igualdad de arbol
-   no es identidad de binario; las clases de evidencia no se sustituyen entre si.
-4. **Validacion del Owner** (AGENTS punto 5; AUTOMATION_PLAN §11, vinculantes): se exige cuando cambia el comportamiento de dibujo y
-   la metadata solo puede anadir, nunca quitar. Que ademas «no se reduce por politica general» es conclusion de ADR-0033 §10, en
-   estado `propuesto`, citada por AUTOMATION_PLAN §11.
-5. **Nunca un commit directo sobre `main`**; la correccion de un CI post-merge rojo se hace en la rama (CLAUDE.md; WORKFLOW 4.5.6;
-   AUTOMATION_PLAN §3; vinculantes).
-6. **Sin merge automatico** (AUTOMATION_PLAN §13, vinculante).
-7. **Enfoques rechazados por I-45 no se reintroducen bajo otra terminologia**: T0–T4, R0–R4, seleccion por impacto o por
-   FQN/ruta/grafo, taxonomia de pruebas, clave de estado de validacion por contenido, igualdad de arbol, retirar cobertura, reducir
-   la validacion del Owner, multi-STA inmediato. Fuente: ADR-0033 (estado `propuesto`; criterios de reapertura en su §13) y la orden
-   de G1 de I-56; su fuerza deriva de esa orden mientras el ADR no sea aceptado.
-8. **Aceptar o rechazar ADR corresponde solo al Owner** (AUTOMATION_PLAN §11, vinculante).
-9. **Una seleccion de pruebas que no selecciona nada es un FALLO** (AGENTS.md, vinculante).
-10. **Alcance de I-56** (contrato I-56 §1, §4): solo documentacion y proceso; sin cambios de producto ni de pruebas en toda su vida;
-    fuera de `docs/**` prohibido en G0/G0.1 y sujeto a declaracion en la Proposal despues. G0, G0.1 y G1 no crearon
-    `docs/ORCHESTRATION.md`; si la V2 lo necesita lo decide la Proposal, sujeta a la compuerta de vigencia (punto 2). Los registros
-    cerrados no se corrigen hacia atras (AGENTS, «Registro historico, no precedente»).
+Tres categorias distintas, que no se mezclan. Solo H.1 es restriccion **no reabrible** por la Proposal V1. H.2 gobierna a I-56
+por grandfathering y es la linea base de la V2, no una restriccion eterna. H.3 es **evidencia previa**, no regla. Un ADR en
+estado `propuesto` (ADR-0033) no se trata como autoridad aceptada en ninguna de las tres.
+
+### H.1 BINDING I-56 CONSTRAINTS
+
+No reabribles por la Proposal V1 salvo que el Owner cambie expresamente la autorizacion de I-56. La fuerza de cada una proviene
+de la autorizacion de I-56 (contrato y ordenes de I-56), no de ADR-0033; que ADR-0033 o documentos V1 digan algo parecido es
+coincidencia registrada, no la fuente.
+
+| # | Restriccion | Fijada por |
+|---|---|---|
+| H.1-1 | I-56 es solo documentacion y proceso: **ninguna implementacion de producto, pruebas, CI ni scripts** en I-56. Tocar documentos fuera de `docs/**` que no son producto (p. ej. `AGENTS.md`, `CLAUDE.md`) se declara en la Proposal y requiere orden (contrato §12). Agrupa dos puntos de la autorizacion: solo documentacion y proceso; sin implementacion | contrato I-56 §1, §4, §12; ordenes G1 y G1.1 |
+| H.1-2 | Transicion: I-49, I-52 e I-55 grandfathered; toda iniciativa reclamada antes de `WORKFLOW_V2_EFFECTIVE_SHA` termina bajo el workflow con el que se reclamo (I-56 incluida) | contrato I-56 §0.1 |
+| H.1-3 | Vigencia: ninguna politica normativa de la V2 entra en vigor sin `Coordinator = AGREED` y `Architect = AGREED` sobre la **misma** version y `Owner = APPROVED`; `WORKFLOW_V2_EFFECTIVE_SHA` no existe y no se inventa | contrato I-56 §0.2 |
+| H.1-4 | No modificar los contratos activos de I-49, I-52 ni I-55; no reescribir contratos activos para aplicar la V2 retroactivamente | contrato I-56 §0.1, §4; orden G1 |
+| H.1-5 | Sin niveles T0–T4, tampoco bajo otra terminologia | ordenes G1 y G1.1 |
+| H.1-6 | Sin modelo de riesgo R0–R4, tampoco bajo otra terminologia | ordenes G1 y G1.1 |
+| H.1-7 | Sin politica de Quick CI (carril rapido o CI rapido separado del completo) | orden G1.1 |
+| H.1-8 | No eliminar la Owner Validation | orden G1.1 |
+| H.1-9 | No eliminar la validacion Full del Candidato | orden G1.1 |
+| H.1-10 | No relajar la identidad de evidencia por SHA exacto | orden G1.1 |
+| H.1-11 | No aceptar mismo arbol como identidad de evidencia | orden G1.1 |
+| H.1-12 | Sin merges automaticos | orden G1.1 |
+
+### H.2 CURRENT V1 POLICY / BASELINE
+
+Gobierna a I-56 porque esta grandfathered y es la linea base contra la que se mide la V2. **No es una restriccion eterna del
+diseño de la V2.** Si la Proposal cambiara alguno de estos puntos, debe identificar el cambio explicitamente, analizarlo con
+evidencia, no romper H.1 y cumplir la compuerta de vigencia (H.1-3) y cualquier requisito de Owner o consenso aplicable. «Exige
+analisis explicito» no significa «no puede cambiar nunca».
+
+| # | Politica V1 vigente | Fuente | Limite que impone H.1 a cualquier cambio |
+|---|---|---|---|
+| H.2-1 | Mecanica Git y worktrees: 1 iniciativa = 1 rama = 1 worktree, prefijos, reclamo atomico, rebase al abrir sesion, `--force-with-lease`, borrado seguro | WORKFLOW §1, §3, §4; AGENTS «Flujo Git multi-agente» | — |
+| H.2-2 | Nunca un commit directo sobre `main`; la correccion de un CI post-merge rojo se hace en la rama (la evidencia B-27 registra su funcion de seguridad) | CLAUDE.md; WORKFLOW 4.5.6; AUTOMATION_PLAN §3 | — |
+| H.2-3 | Secuencia exacta de integracion mas alla de las invariantes: rebase final, CI verde sobre el SHA empujado, validacion manual sobre el SHA rebasado, commit documental de cierre, merge `--no-ff`, CI post-merge, cobertura diferida del Candidato, limpieza tras ambas compuertas | WORKFLOW 4.5.1–4.5.7 y §4 paso 6 | H.1-8, H.1-9, H.1-10, H.1-11, H.1-12 |
+| H.2-4 | Composicion de la evidencia del Candidato y reparto local/CI: Core y UI Full locales, builds Debug, CI push sobre el SHA exacto; LC-UI; el Core del CI no sustituye al Core local | AGENTS «Pruebas — definicion de terminado» | H.1-9, H.1-10 |
+| H.2-5 | Detalle de reutilizacion de evidencia: clases que no se sustituyen, lista de invalidadores, exigencia proporcional del commit documental, orden commit → evidencia → registro | AGENTS «Reutilizacion de evidencia» | H.1-10, H.1-11 (la identidad por SHA exacto no se relaja y mismo arbol no es identidad; el resto de la fila es politica V1) |
+| H.2-6 | Disparador y metadata de la Owner Validation: exigida cuando cambia el comportamiento de dibujo; `requires_owner_validation` y `requires_autocad` solo pueden anadir | AGENTS punto 5; AUTOMATION_PLAN §11 | H.1-8 |
+| H.2-7 | Ubicaciones y momentos documentales: HANDOFF solo en la integracion, ROADMAP en sus momentos, contratos en `docs/initiatives/`, decisiones en `docs/automation/decisions/`, estado en `docs/automation/state/`, context packs, hashes y conteos solo en HANDOFF (tension registrada en Q10) | WORKFLOW §2, §8; AGENTS; AUTOMATION_PLAN; README de iniciativas | — |
+| H.2-8 | Cadencia de cobertura: sin cobertura en el push ordinario; con cobertura en el push al trunk y en el `workflow_dispatch` del Candidato. Se clasifica como politica V1 **por estar vigente** (cobertura del Candidato y del trunk en WORKFLOW; push ordinario sin cobertura solo en `ci.yml`), no por la autoridad de ADR-0033 §9, que sigue `propuesto` y que WORKFLOW y `ci.yml` citan como origen | WORKFLOW 4.5.2.bis, 4.5.6–4.5.7; `.github/workflows/ci.yml`; ADR-0033 §9 (propuesto) | H.1-1 (I-56 no implementa CI); H.1-7 (un cambio de cadencia no puede crear un carril rapido) |
+| H.2-9 | Mecanica de ADR: estados `propuesto` → `aceptado` / `rechazado`; solo el Owner acepta o rechaza; un `propuesto` es editable y no es autoridad aceptada | `docs/adr/README.md`; AUTOMATION_PLAN §11 | H.1-3 (la aprobacion del Owner para la vigencia de la V2 es vinculante aparte) |
+| H.2-10 | Ejecutor automatizado: sin ejecutor activo; contratos, estado versionado y limites del ejecutor; ningun merge automatico | AUTOMATION_PLAN | H.1-12 |
+| H.2-11 | Una seleccion de pruebas que no selecciona nada es un FALLO | AGENTS.md | — |
+| H.2-12 | Los registros historicos no se corrigen hacia atras | AGENTS «Registro historico, no precedente» | — |
+| H.2-13 | (Practica observada, no norma) Practica de la muestra, no escrita como regla en WORKFLOW ni AGENTS: ordenes por gate del Coordinador; revision de Architect-role por cambio de rol dentro de la sesion executor | seccion 0.4; TABLE A; TABLE C | H.1-3 (`Coordinator = AGREED` y `Architect = AGREED` siguen siendo condicion de vigencia de la V2) |
+
+G0, G0.1 y G1 no crearon `docs/ORCHESTRATION.md`; si la V2 lo necesita lo decide la Proposal, dentro de H.1-1 y H.1-3.
+
+### H.3 PRIOR REJECTED / DEFERRED ALTERNATIVES
+
+Alternativas rechazadas o diferidas por I-45 / ADR-0033. ADR-0033 esta en estado `propuesto` y dice de lo que no introduce: «No
+porque esten prohibidos para siempre, sino porque hoy su seguridad, su retorno y su coste de mantenimiento no estan
+suficientemente demostrados» (§12). Por la orden G1.1, para cada una: **se conserva** el rechazo o diferimiento historico; **reabrirla exige
+evidencia materialmente nueva** que satisfaga el racional de reapertura, tomando como criterio registrado el de ADR-0033 §13
+(`propuesto`) o, donde no lo hay, el racional del rechazo; **no se adopta en silencio**; y **no se califica de prohibida** salvo
+que H.1 la prohiba de forma independiente.
+
+| # | Alternativa | Estado historico (fuente) | Reapertura: criterio o racional a satisfacer | Relacion con H.1 |
+|---|---|---|---|---|
+| H.3-1 | Seleccion por impacto como compuerta | descartada (ADR-0033 Alternativas); no introducida (§12) | §13: instrumento defendible para medir capacidad de deteccion (controles positivos, defectos sembrados o corpus de mutacion representativo); la observacion pasiva no sirve | Sin prohibicion independiente; una variante que opere como niveles o como modelo de riesgo cae en H.1-5 / H.1-6 |
+| H.3-2 | Seleccion por FQN, por rutas o por grafo de proyectos; FQN como frontera de seguridad | descartadas (ADR-0033 Alternativas); no introducidas (§12) | Sin criterio propio en §13; racional registrado: FQN selecciona una fraccion enorme de la suite, rutas es la misma heuristica de subcadena, grafo es casi indistinguible de correrlo todo y donde recorta pierde pruebas del nucleo que leen el texto de Plugin y UI; reabrir exige evidencia nueva que lo refute | Idem |
+| H.3-3 | Taxonomia de pruebas o etiquetas masivas | descartada (ADR-0033 Alternativas); no introducida (§12) | §13: consumidor operacional real que justifique mantenerla y pueda verificarse | — |
+| H.3-4 | Clave de estado de validacion por contenido | descartada tras medirla (ADR-0033 Alternativas); retirada (§5) | Sin criterio propio en §13; racional registrado: su valor incremental venia exclusivamente de excluir documentacion y exigia conjunto de entradas, clausura de lecturas, tupla de canal y arbol limpio; reabrir exige evidencia nueva sobre ese margen | La clave historica equiparaba evidencia entre SHAs distintos: reabrirla en esa forma choca con H.1-10 y H.1-11. Una idea basada en contenido que no actue como identidad de evidencia sigue en H.3. Una exencion por clase «solo documentacion» puede chocar ademas con H.1-6 o H.1-7 segun se formule |
+| H.3-5 | Retirar la cobertura por completo | defendible y **no adoptada** (ADR-0033 Alternativas) | Sin criterio propio en §13; racional registrado: su pregunta legitima (donde escribir pruebas nuevas) conserva valor | Sustituirla por un carril rapido caeria en H.1-7 |
+| H.3-6 | Reducir la validacion manual del Owner (distinto de eliminarla) | descartada (ADR-0033 Alternativas); §10 «No se reduce por politica general» (propuesto) | Sin criterio propio en §13; racional registrado: es el detector mas eficaz medido (Alternativas) y la automatizacion no cubre AutoCAD real, interaccion, experiencia de uso, resultado visual, DWG ni integracion real (§10); reabrir exige evidencia nueva sobre esos frentes | Eliminarla esta prohibido (H.1-8); el disparador vigente es H.2-6 |
+| H.3-7 | Multiples hilos STA inmediatamente | descartada (ADR-0033 Alternativas); no introducida (§12) | §13: controlar el estado global mutable relevante, *benchmark* reproducible y retorno demostrado | — |
+| H.3-8 | Golden DWG | no introducido (ADR-0033 §12) | §13: infraestructura suficiente para comparar salidas reales; invariante registrada en §13: el baseline nunca se actualiza solo | — |
+| H.3-9 | Mapa de pruebas o mapa de riesgo mantenidos a mano | no introducidos (ADR-0033 §12) | Sin criterio propio en §13; racional general de §12 | Un mapa de riesgo que opere como modelo de riesgo cae en H.1-6 |
+
+**Casos especiales** (la evidencia historica se conserva, pero la prohibicion viene de H.1, no de ADR-0033):
+
+- **T0–T4 y R0–R4** (ADR-0033: «niveles operativos de validacion» y «modelo operativo de riesgo»): descartados en ADR-0033
+  Alternativas, y §12 no los declara prohibidos para siempre; **prohibidos** en I-56 por H.1-5 y H.1-6.
+- **Igualdad de arbol como frontera de evidencia**: descartada en ADR-0033 (§7 y Alternativas); **prohibida** en I-56 por H.1-11.
+- **Quick CI** (ADR-0033 §12 «CI rapido por riesgo»; §13 «CI rapido separado del completo», con criterio de reapertura;
+  `I-45-conformance.md` «Quick CI / carril rapido»; `ideas-futuras.md` «CI por capas» absorbida): la reapertura que ADR-0033 §13
+  preveia **no esta disponible** para la Proposal V1: **prohibido** en I-56 por H.1-7.
+- **Owner Validation y validacion Full del Candidato**: pueden analizarse en su forma (H.2-3, H.2-4, H.2-6), pero **no
+  eliminarse** (H.1-8, H.1-9).
