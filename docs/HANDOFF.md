@@ -16,6 +16,40 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
+**I-54 — ID24 Custom Properties Foundation — INTEGRADA** el **2026-09-13** (`architecture/propiedades-personalizadas`,
+Candidato `02987bd18ef0904a0332556928503a9afaeddcd1`). Funda las **propiedades personalizadas**: metadatos de nombre y
+valor que define el usuario, persistidos en el DWG con identidad estable. Queda **cerrada** cuando pasen las compuertas
+posteriores al merge ([WORKFLOW.md](WORKFLOW.md) §4.5 pasos 6 y 7) y se retiren rama y worktree.
+
+**El resultado verificable.**
+
+| | |
+|---|---|
+| Comando | `RACKPROPIEDADES`, alias `RPR`: «Selecciona un rack o [Proyecto]». Un solo comando para los dos alcances; el botón de menú queda fuera de V1 |
+| Alcances y persistencia | **Proyecto**: entrada `RACKCAD_CUSTOM_PROPERTIES` del NOD, un Xrecord directo e independiente de `RACKCAD_PROJECT`. **Rack**: miembro `CustomProperties` del sobre (`RackEmbedDocument`) de cada vista, la misma colección en todas las vistas del `RackId`. Documento `{SchemaVersion, Entries[{Id, Name, Value}]}` en `1.0`, solo texto, con identidad `CustomPropertyId` (GUID) que sobrevive al renombrado, miembros desconocidos preservados y profundidad acotada a 16 |
+| Autoridad | Application decide sobre una proyección plana del dibujo: pertenencia por `RackId`, kind conocido por un predicado inyectado y el orden único `XrefRejected` → `NoIdentity` → `IndeterminateMembership` → `MixedKind` → `UnknownKind` → `CustomPropertiesReadOnly` → `Divergent` → `Single`. Solo son editables un rack `Single` y un Proyecto `Absent` o `Readable`; lo ilegible, ambiguo, de major futuro o demasiado profundo **nunca** se trata como vacío ni se sobrescribe |
+| Unificación segura | solo desde `Divergent`, con origen elegido explícitamente —un origen `Absent` es el vacío— y confirmación; se bloquea ante miembros desconocidos o un minor mayor en un destino, revalida lo mostrado sobre la lectura fresca y solo escribe los miembros distintos del origen |
+| Ejecutores físicos | `CustomPropertiesData` (NOD, trozos de 255) y `CustomPropertiesExecutor` (Proyecto y Rack): relectura fresca, decisión de Application, **una** transacción y **un** `Commit`, y el plan entero serializado antes de la primera escritura; sin regenerar, redefinir, importar ni purgar |
+| UI | `RackCustomPropertiesWindow`, arquetipo C: CRUD por id, solo lectura con su motivo desde la apertura, resúmenes por vista en `Divergent`, panel de unificar solo con las opciones de Application y aviso de nombres repetidos; sin descarte ni `MessageBox`, y sin controles en los editores de sistema |
+| Copias y dibujos | `RACKDUPLICAR` y `RACKLAYOUT` llevan las propiedades del rack a copias independientes; `COPY` comparte la definición; copiar un rack a otro DWG lleva las del rack y no las del Proyecto |
+| Fronteras | **no** viajan a la biblioteca (guardar no las lleva; abrir o insertar crea el rack sin ellas); **no** son variables de proyecto ni tienen semántica de fórmula o expresión; `RACKLISTA`, el BOM y las exportaciones no cambian |
+
+**Lo que NO está entregado, y no debe leerse como hecho.** Dibujar propiedades en el DWG, expresiones o fórmulas,
+plantillas, tipos distintos del texto, reordenar, importar o exportar, columnas en `RACKLISTA`, el botón de menú y
+controles en los editores de sistema: de todo eso solo quedan declarados los puntos de extensión. La guía de uso y la
+tabla de comandos de [despliegue](guias/despliegue.md) no se actualizaron (F-15 en
+[ideas-futuras.md](ideas-futuras.md)).
+
+**Evidencia del Candidato `02987bd`:**
+
+| | |
+|---|---|
+| Core Full | **7240 / 7240** (0 omitidas) |
+| UI Full | **1524 PASS / 17 omitidas / 1541** (las mismas 17 de la base) |
+| Builds | UI Debug **0 errores y 0 advertencias**; Plugin Debug **0 errores** (solo los dos `MSB3277` conocidos) |
+| CI de `push` | corrida **34794374450**, `head_sha` = `02987bd...`, **4/4 `success`** |
+| Owner Validation | **PASS**: OV-01..OV-14, con «Apruebo validación» |
+
 **I-53S — ID6 REUSE + ID7 BATCH DISTRIBUTION — Entrega 2 (Selectivo UI) — INTEGRADA** el **2026-09-13**
 (`feature/cabeceras-multidestino-selectivo`, candidato funcional `e528ef20007256f903dc87604209e8ae891698d0`). Es la
 **segunda** de las tres integraciones de I-53 (OD-6 B′): **ID6/ID7 ya son visibles para el usuario en el Selectivo**. El
@@ -1242,6 +1276,21 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-54 (2026-09-13) — PASS.** El Owner validó en AutoCAD el Candidato `02987bd18ef0904a0332556928503a9afaeddcd1`,
+sobre el DLL Debug de G8 —`RackCad.Plugin.dll`, versión `1.0.0+02987bd18ef0904a0332556928503a9afaeddcd1`, SHA-256
+`5D289A811F4FDF699E7AF5F4931B6CF540671CFDB1684290957264FE85AA6441`—: **OV-01..OV-14 PASS** (Proposal V5 §12.8) y
+resultado global PASS, con la aprobación «Apruebo validación». El checklist cubre Proyecto y Rack con guardar y
+reabrir, `RACKEDITAR` en los seis sistemas, vista nueva, `RACKDUPLICAR`, `RACKLAYOUT`, `COPY`, `RACKVARIABLES`, `UNDO`,
+copia a otro DWG, `PURGE` y `AUDIT`, biblioteca, `RACKLISTA` y `RACKBOMTOTAL`, rack nuevo y xref. **No constan
+registrados** en la transcripción del Coordinador la ruta ni el SHA-256 de la biblioteca de bloques, la versión o build
+exacta de AutoCAD ni la granularidad observada de `UNDO` (OV-08).
+
+`origin/main` **no avanzó** desde `104ef3a1b1df249d6e0a56dc4ad3846912b24f12`, así que **no hubo rebase final** y la
+validación corresponde exactamente al contenido integrado. Evidencia automatizada del mismo SHA, árbol limpio y SDK
+**8.0.423**: `RackCad.Tests` **7240 PASS / 0 fail / 0 skip**, `RackCad.UI.Tests` **1524 PASS / 17 skip / 1541 total**,
+build Debug de UI **0 errores y 0 advertencias**, build Debug del Plugin **0 errores** más los **dos `MSB3277`**
+conocidos, y **CI de `push` sobre ese SHA exacto** —corrida **34794374450**, 4/4 `success`—.
+
 **I-53S E2 (2026-09-13) — PASS.** El dueño validó en AutoCAD 2025 el candidato funcional
 `e528ef20007256f903dc87604209e8ae891698d0`, sobre el DLL Debug identificado para la ronda —`RackCad.Plugin.dll`, versión
 `1.0.0+e528ef20007256f903dc87604209e8ae891698d0`, SHA-256
@@ -1619,6 +1668,16 @@ veredicto.
 
 ## 3. Problemas y riesgos activos
 
+- **Residuales del sobre exterior F-14a y F-14b (preexistentes, NO corregidos; registrados por I-54).** Un surrogate
+  UTF-16 suelto **sin escapar** en el texto de un sobre hace que `RackEmbedStore` lance al leerlo (F-14a): cualquier
+  barrido que lo lea, también el de `RACKPROPIEDADES`, falla antes de mutar nada. **Escapado**, el sobre se lee pero
+  reserializarlo lanza (F-14b): un flujo que escribe por vista, como `RACKEDITAR`, puede quedar actualizado a medias
+  entre vistas. El ejecutor de Rack de I-54 lo evita solo para sí mismo —serializa el plan entero antes de escribir y,
+  si algo lanza, no escribe nada—; la garantía no se extiende a los demás consumidores del sobre. Detalle en
+  [ideas-futuras.md](ideas-futuras.md), F-14a y F-14b.
+- **Censos que I-54 deja fijados por nombre (T-GRD-08).** Comandos (35), ventanas (30; arquetipo C, 12) y pares de la
+  ayuda (15) se clasifican por nombre: la próxima iniciativa que añada un comando, una ventana o una entrada de ayuda
+  —`RACKMIRROR` de I-52, por ejemplo— tiene que clasificarla en esas guardas en su propia rama, sin relajarlas.
 - **I-49 G10 frente a la ventana del Selectivo que integró I-53S (archivo caliente).** I-53S cambió
   `RackSelectiveWindow.xaml.cs` —panel «Reutilizar cabecera», gesto `RunHeaderBatch`, `ShowHeaderConfigurator` y seis
   ayudas `Describe*` nuevas—, y el G10 de I-49 prevé cambiar en esa misma ventana el miembro `Describe(PropertyId, string)`
@@ -1686,7 +1745,72 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-53S E2 quedó INTEGRADA; la línea funcional continúa en I-53D. Las demás iniciativas abiertas siguen en sus ramas.
+### I-54 quedó INTEGRADA. Las demás iniciativas abiertas siguen en sus ramas.
+
+**I-54 — ID24 Custom Properties Foundation — INTEGRADA el 2026-09-13.** Consensus Freeze con ADR-0039 aceptado, G3..G7
+completos y aceptados por el Coordinador, Candidato G8 `02987bd`, validación del Owner G9 **PASS** y cierre documental e
+integración G10 con merge `--no-ff`. No queda ningún pendiente **de alcance de I-54**.
+
+```text
+I-54:
+  Custom Properties Foundation = DELIVERED
+
+Proyecto (NOD)                                  = DELIVERED
+Rack (sobre por vista)                          = DELIVERED
+Autoridad por RackId y solo lectura con motivo  = DELIVERED
+Unificación segura                              = DELIVERED
+Ejecutores físicos                              = DELIVERED
+RACKPROPIEDADES / RPR y ventana                 = DELIVERED
+Dibujo / RACKEDITAR / copias / guardar-reabrir  = VALIDATED (OV-01..OV-14)
+```
+
+```text
+BASE_MAIN_SHA    = 104ef3a1b1df249d6e0a56dc4ad3846912b24f12   (merge de I-53S E2; sin avance al integrar)
+CLAIM_SHA        = 40d09b2455b7a58cc06dd53b15227f7eb6015d48   (Claim-Id d4b871e9-8a5d-4e67-bc11-a8f3c023788e; historia rebasada)
+BOOTSTRAP_SHA    = f2a48f8c7cc910536e90919995f103d5d44a9e38
+FREEZE_SHA       = c5662e2e4bb83cf56d400231d7484721c6126708   (ADR-0039 aceptado; historia rebasada)
+G3_SHA           = 8c19c5d7880f9d29a44f00a28e08c00911276cd0
+G4_SHA           = 00101447ba7e7ee2266a418a67a2aafd5db6d411   (G4B; G4A = 3635c0f)
+G5_SHA           = 0572be4059ed781a58aadb2bf687dabc26dbba4e
+G6_SHA           = deca1e027c18e3d4b2210168ecb8193cfecaa9ea
+G7A_SHA          = 5c16ae8a8134e3b956459bd91ba15d097a24fc34
+G7_SHA           = 18cf2dcc55c1eb0f0c826e1716a43a2ae0a7cf71
+CANDIDATE_SHA    = 02987bd18ef0904a0332556928503a9afaeddcd1   (= G7-CLOSE; CI de push 34794374450)
+CLOSURE_DOCS_SHA = este mismo commit (docs-only; NO reemplaza al Candidato)
+MERGE_SHA        = PENDING hasta el merge
+```
+
+Los SHAs de gate de arriba son los de la historia rebasada que entra en `main`. Los originales de cada gate, que siguen
+siendo la autoridad de su evidencia, y los mapas de los rebases de G4 y G7 están en el
+[contrato de I-54](initiatives/I-54-propiedades-personalizadas.md) y en el
+[registro de I-54](automation/decisions/I-54.md) §14 y §18.
+
+**Qué quedó en `main`.**
+
+- **Application** (`CustomProperties/` y `Persistence/CustomProperties*`): documento, id, store tri-estado, resultados
+  tipados, validación de nombres y valores, mutaciones por id, guarda de escritura, autoridad por `RackId`, forma
+  canónica, estado mostrado e intent de unificación, workspace, preflight y commit con plan completo.
+- **Sobre**: `RackEmbedDocument.CustomProperties` (`JsonElement?`), heredado por `Compose` y reescrito solo por
+  `WithCustomProperties`, sin cambiar `CurrentSchemaVersion`.
+- **Plugin**: `CustomPropertiesData`, `CustomPropertiesExecutor` y `RackPropiedadesCommands`.
+- **UI**: `RackCustomPropertiesWindow` y la entrada `RACKPROPIEDADES`/`RPR` de `RackCommandReference`; `README.md` lista
+  el comando.
+- **Pruebas**: Core T-STO, T-CHR, T-ENV, T-CPY, T-MUT, T-AUT, T-PRJ y guardas T-GRD-01..08; UI U-01..U-10 y los censos
+  de ventanas y de ayuda.
+
+**Coordinación con las demás iniciativas.** I-49 (su G6 en la rama), I-52 (Proposal V9) e I-53D (su G7, la UI del
+Dinámico) no comparten archivos con I-54. Quien integre después vuelve a medir los censos de T-GRD-08 (§3) y el de
+llamadas a `Compose` de T-GRD-02, que I-52 prevé llevar de 7 a 8.
+
+**Lo que I-54 dejó expresamente fuera**: lo enumerado en §1; los hallazgos **F-01..F-13** del Discovery, los
+residuales **F-14a** y **F-14b** (§3) y la mejora de D-11.6 siguen en [ideas-futuras.md](ideas-futuras.md) sin
+corregir, junto con **F-15** (tabla de comandos de `despliegue.md` y guía de uso). Ningún ajuste del Owner a los
+números de los límites (OQ-02) consta registrado; el código aplica los valores de la Proposal V5 (D-05).
+
+**I-53S E2 queda como historia.** Sus compuertas posteriores al merge pasaron después de escribir lo de abajo: CI de
+`push` del `MERGE_SHA` `104ef3a...` 4/4 con el artifact `rackcad-coverage-cobertura` (corrida **34789059249**), y
+cobertura del Candidato `e528ef2` por dispatch (**34789286954**, `success`, con su artifact). Su rama y su worktree ya
+se retiraron.
 
 **I-53S — ID6 REUSE + ID7 BATCH DISTRIBUTION — Entrega 2 (Selectivo UI) — INTEGRADA el 2026-09-13.** `G0` (reclamo y
 bootstrap) y `G5` cerrados, Candidato `E2-C` **PASS**, validación del Owner `E2-V` **PASS** y cierre documental `E2-I`;
@@ -3313,7 +3437,28 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-53S E2 — 2026-09-13** (la vigente):
+**Baseline integrada de I-54 — 2026-09-13** (la vigente):
+
+- Candidato aprobado por el Owner: `02987bd18ef0904a0332556928503a9afaeddcd1` —la punta de G7-CLOSE, sin commit ni
+  rebase posterior— (CI de `push` **34794374450**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**);
+- **cierre documental previo a la integración**: este commit, **docs-only** —no recompila ni revalida nada y **no
+  reemplaza** al Candidato—;
+- **validación manual del Owner en AutoCAD: PASS**, OV-01..OV-14, sobre el DLL Debug construido desde el Candidato
+  (`1.0.0+02987bd18ef0904a0332556928503a9afaeddcd1`, SHA-256
+  `5D289A811F4FDF699E7AF5F4931B6CF540671CFDB1684290957264FE85AA6441`);
+- `origin/main` **no avanzó** desde la base `104ef3a1b1df249d6e0a56dc4ad3846912b24f12`: **sin rebase final**, de modo
+  que la validación corresponde exactamente al contenido integrado;
+- suites locales sobre el Candidato, con el árbol limpio y SDK **8.0.423**, ejecutadas **después** de crear su commit:
+  **RackCad.Tests 7240/7240** (0 omitidas) y **RackCad.UI.Tests 1524 correctas / 17 omitidas / 1541 totales** (las
+  mismas 17 omitidas de la base); Debug de UI (0 advertencias, 0 errores) y del Plugin (0 errores, sólo los **dos**
+  MSB3277 conocidos), reconstruidos sin incremental; ensamblados estampados con `1.0.0+02987bd...`;
+- **rojo demostrado** antes del comportamiento en G4B, G5, G6 y G7, y guardas T-GRD-01..08 en rojo con violaciones
+  temporales nunca versionadas;
+- **compuertas posteriores al merge**: el `MERGE_SHA` no existe todavía cuando se escribe esto, así que el CI del merge,
+  con su artifact `rackcad-coverage-cobertura`, y la comprobación diferida de la cobertura del Candidato siguen
+  **pendientes** ([WORKFLOW.md](WORKFLOW.md) §4.5 pasos 6 y 7); la rama y el worktree **no** se retiran hasta que pasen.
+
+**Baseline integrada de I-53S E2 — 2026-09-13** (anterior; sus compuertas posteriores al merge ya pasaron, ver §4):
 
 - candidato **funcional** aprobado por el Owner: `e528ef20007256f903dc87604209e8ae891698d0` —el SHA de G5, sin commit ni
   rebase posterior— (CI de `push` **34779766360**, **success**, `headSha` = ese mismo SHA, **4/4 jobs**, con «SHA
@@ -4603,3 +4748,12 @@ productivo**, sobre la Proposal V2 congelada y con `ARCHITECT_V2 = AGREED`
 sistema, preparación pura todo-o-nada, una copia independiente por destino con el clon canónico y autoridades de
 normalización de cada sistema— **sin cambiarla**; I-53S e I-53D la cablean en las ventanas. Su contenido es
 **inmutable**; sólo pueden cambiar su Estado y sus enlaces.
+
+**ADR-0039 — contrato de persistencia y autoridad de Custom Properties — `aceptado` el 2026-09-13** (iniciativa
+I-54). El Owner la aceptó en el Consensus Freeze («Acepto»), **antes de cualquier código productivo**, sobre
+la Proposal V5 congelada (`26ca923492576185b753d6dbf2a852969df2accf`) y con `Coordinator = AGREED` y
+`Architect = AGREED` sobre ese mismo SHA ([registro](automation/decisions/I-54.md) §11). Fija el documento solo texto
+con identidad estable, la entrada propia del NOD para el Proyecto y el miembro del sobre para el Rack, la autoridad por
+`RackId` con su orden único, los estados no escribibles que nunca se tratan como vacío, la unificación segura y el
+reparto entre Application, que decide, y el Plugin, que lee y escribe. G3..G7 lo implementaron **sin cambiarlo**, y el
+Owner validó el resultado en G9. Su contenido es **inmutable**; sólo pueden cambiar su Estado y sus enlaces.

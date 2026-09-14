@@ -1186,3 +1186,169 @@ viene de I-43 y quedó desfasado con el G5 de I-53S.
 
 **Qué habría que hacer**: alinear ese comentario con PREPARE, sin cambio de comportamiento, en la próxima iniciativa que
 toque la ventana.
+
+## I-54 — hallazgos fuera de alcance (2026-09-13, registrados sin corregir)
+
+F-01..F-13 salen del Discovery de I-54 ([I-54-discovery.md](initiatives/I-54-discovery.md) §15; F-13 se añadió en su
+addendum de G2A). F-14a y F-14b salen de las revisiones exact-SHA de sus Proposals V3 y V4 y quedan descritos en
+[I-54-proposal-v5.md](initiatives/I-54-proposal-v5.md) D-08.4. El [contrato de
+I-54](initiatives/I-54-propiedades-personalizadas.md) §4 los declara **fuera de alcance** y reserva su registro al
+freeze de G2 ([decisiones de I-54](automation/decisions/I-54.md)). **Ninguno está corregido**: siguen vivos en `main`.
+Las líneas se refieren a `46fcac2`, la base de I-54, y los archivos citados son idénticos en `f8deb67`.
+
+### F-01 — `RackBlockData`: el comentario dice «block reference» (ya registrado)
+
+Es el mismo hallazgo que **L-1** de I-51 y que el primer punto de **H7** de I-50, ambos más arriba, y que H-01 del
+Discovery de I-47. I-54 lo confirma sin cambios en `RackBlockData.cs:8-11`. **No** es una deuda distinta y no se
+duplica.
+
+### F-02 — `RackCloner`: el comentario habla de un «cloned (old) payload» que no existe
+
+`RackCloner.CloneDefinition` crea un `BlockTableRecord` nuevo, clona solo las entidades con `DeepCloneObjects` y
+escribe el payload recibido (`RackCloner.cs:34-36`, `:38-50`, `:66`). El comentario de `:66` («replace the cloned (old)
+payload») describe un payload clonado que no existe: según el Discovery, el diccionario de extensión de la definición
+de origen no viaja *(inferido, sin verificar en ejecución)*. El Discovery de I-51 repite esa descripción
+(`I-51-discovery.md:119`). Es cosmético, pero despista a quien razone sobre qué datos sobreviven a una copia
+independiente.
+
+### F-03 — I-47 describe `RACKCAD_PROJECT` como sub-diccionario; el código usa un Xrecord directo
+
+La Proposal V4 de I-47 (D-01, A1: `I-47-proposal-v4.md:602`) y su plan (G7: `I-47-implementation-plan.md:418-419`,
+`:427`, `:969`) describen «sub-`DBDictionary` `RACKCAD_PROJECT` → `Xrecord`». El código implementó un **Xrecord
+directo** del NOD (`ProjectVariablesData.cs:36`, `:59-68`), y ningún documento registra ese cambio. No es inocuo como
+descripción: migrar la entrada a un sub-diccionario la dejaría ilegible en todos los builds existentes y bloquearía
+tres comandos (Discovery de I-54 §4.5 y §4.6).
+
+### F-04 — `View` nulo se interpreta distinto según el consumidor
+
+La documentación XML de `RackEmbedDocument.cs:40` dice que nulo es frontal; `RackListBuilder` lo trata como lateral
+(`:117-118`); el Selectivo, como frontal; el Dinámico, como lateral legado; y la Cama siempre escribe `view: null`
+(Discovery de I-54 §5.5, lectura de auditoría).
+
+### F-05 — El despacho por `Kind` distingue mayúsculas en unos comandos y en otros no
+
+`KindDispatch` ofrece una búsqueda ordinal y otra sin distinguir mayúsculas (`KindDispatch.cs:75-96`). `RACKEDITAR` y
+`RACKBOMTOTAL` despachan de forma ordinal; `RACKLAYOUT`, `RACKDUPLICAR` y el re-estampado, sin distinguir mayúsculas.
+Un `Kind` escrito con otra capitalización se trata distinto según el comando.
+
+### F-06 — `RackListBuilder.KindLabel` sin caso Push Back (ya registrado)
+
+Es el mismo hallazgo que la fila 7 de «Documentación desalineada con el árbol (hallazgo de I-37A)», más arriba; el
+propio código lo declara hueco adyacente (`RackListBuilder.cs:92-95`). No se duplica.
+
+### F-07 — `RACKVARIABLES` falta en la ayuda de la app
+
+`RackCommandReference.Commands` (`RackCommandReference.cs:30-47`), la fuente de `RACKAYUDA`, no incluye `RACKVARIABLES`
+ni su alias `RVA`; en `f8deb67` tampoco figura en la tabla de comandos de `README.md`. Es la misma clase de hueco que
+«Dos comandos ausentes de la referencia en la app (hallazgo de I-36B)», que registra `RACKPUSHBACK` y `RACKSECCION`:
+conviene resolver los tres en un mismo cambio.
+
+### F-08 — La biblioteca omite en silencio un elemento de major incompatible
+
+`RackDesignLibrary` recorre los `.rackcad.json`, y un `catch` genérico salta cualquier archivo que no pueda leer
+(`RackDesignLibrary.cs:86-97`, con el `catch` en `:94-97`): un elemento de major incompatible desaparece del listado
+sin diagnóstico. Contradice **C4.7-5** de I-47 ([decisiones de I-47](automation/decisions/I-47.md):557), según la cual
+un archivo incompatible no se ofrece como diseño abrible pero **sí** produce un diagnóstico visible, y nada desaparece
+en silencio.
+
+### F-09 — Un Cantilever importado de la biblioteca podría conservar un `Line.Id` interior distinto del de su sobre
+
+*(Inferido en el Discovery de I-54, sin verificar en ejecución.)* El `Id` interior de `CantileverLineDesign` se
+re-estampa al hacer una copia independiente (`CantileverKindHandler.cs:105`), pero importar desde la biblioteca acuña
+un GUID nuevo para el sobre y compone con `source = null`. Si ese camino no alinea también el `Id` interior, la línea
+importada quedaría con dos identidades distintas, dentro y fuera.
+
+### F-10 — INV-09 de I-51 (preservación del sobre en el re-estampado) sin prueba de comportamiento
+
+Ninguna prueba hace pasar un campo desconocido del **sobre exterior** por `RestampEnvelope`, ni afirma `View`,
+`Section` o `SchemaVersion` tras un re-estampado, porque ningún proyecto de pruebas carga el Plugin
+(`tests/RackCad.Tests/RackCad.Tests.csproj:20-27`). La más cercana replica a mano la mitad que maneja el sobre
+(`PersistenceUniformityTests.cs:193-217`), y la `DimensionViewsRestampTests.cs` que añadió I-50 declara que no ejecuta
+las líneas del Plugin. El contrato de I-51 declara la preservación como INV-09
+(`I-51-rackduplicar-multiples-origenes.md:244-248`), pero T1-T15 y M1-M9 no la cubren. La Proposal V5 de I-54 tampoco la
+cierra: sus pruebas cubren la propiedad del store y la forma del re-estampado, y declaran que no demuestran el
+comportamiento de `RackEnvelopeRestamp.cs` (D-11.5). Ver la mejora de D-11.6, más abajo.
+
+### F-11 — `RackProjectVariablesWindow` no adopta `DialogWindowChrome` ni `EditorActions`
+
+La ventana es de arquetipo C y ADR-0029 D11 exige adoptar la infraestructura existente (Discovery de I-54 §11.2). En
+`f8deb67`, ni su XAML ni su code-behind referencian `DialogWindowChrome` ni `EditorActions`.
+
+### F-12 — Comentarios desfasados
+
+- «five kinds» en `KindHandlerDispatch.cs:12-13` y `RackMenuCommands.cs:138-140`: el registro de handlers incluye
+  también Cantilever.
+- `RackPushBackCommands.cs:317-318`: el comentario sobre la regeneración de una vista nueva a través de
+  `ViewBlockDraw.DrawAndPlace` (señalado como desfasado en el Discovery; sin verificar en ejecución).
+- `CantileverLineDesign.cs:335` documenta que el nombre de la línea se muestra en el listado de la biblioteca («Shown
+  in the library list»), pero ese listado toma el nombre de la cabecera, del Selectivo o del larguero, o el del
+  archivo (`RackDesignLibrary.cs:86-89`).
+
+### F-13 — Troceado de Xrecord duplicado con conducta distinta
+
+`RackBlockData` devuelve nulo, hace un cast duro y no captura (`RackBlockData.cs:18`, `:35-39`, `:43`, `:73`,
+`:79-88`); `ProjectVariablesData` es tri-estado y nunca lanza (`ProjectVariablesData.cs:38`, `:59-89`, `:115-122`); y
+hay una tercera copia en pruebas (`ProjectVariablesRegistryAccessTests.cs:202-212`). La implementación de I-54
+reimplementará ese troceado en su lector del NOD, con la semántica de `ProjectVariablesData` (Proposal V5 D-07.2): la
+duplicación es deliberada, y extraerla queda como esta deuda y no como trabajo de I-54.
+
+### F-14a — UTF-16 crudo inválido en el sobre exterior: `RackEmbedStore` lanza al leer
+
+Residual **preexistente**, no introducido por I-54 (Proposal V5 D-08.4 y P-31):
+
+- `RackEmbedStore.Deserialize` solo captura `JsonException` (`RackEmbedDocument.cs:98`). Con UTF-16 crudo inválido en
+  el texto del sobre —un surrogate suelto sin escapar— el parseo lanza `ArgumentException`, y **la excepción escapa al
+  leer** (sonda sobre .NET 8.0.29).
+- Un barrido que lee ese sobre, también el de I-54, **falla antes de cualquier mutación**, sin diagnóstico por
+  definición. Los consumidores existentes que leen ese sobre fallan en su propia lectura.
+- **I-54 no lo corrige** y no modifica `RackEmbedStore`.
+
+Candidato a una posible iniciativa futura de **robustez del sobre**.
+
+### F-14b — Escape JSON de un surrogate suelto en el sobre exterior: se lee, pero reserializarlo lanza
+
+Residual **preexistente**, no introducido por I-54 (Proposal V5 D-08.4, P-36 y P-37):
+
+- el sobre **se puede deserializar**, tanto si el escape está dentro de `CustomProperties` como en cualquier otro campo;
+- **reserializar ese sobre puede lanzar**: `Serialize` del mismo objeto, `Compose(source)` seguido de `Serialize` y el
+  re-estampado lanzan `JsonException`, porque `JsonElement.WriteTo` lanza `InvalidOperationException` (sonda sobre .NET
+  8.0.29);
+- el sobre afectado **no se escribe**;
+- los consumidores existentes **conservan su granularidad transaccional**: un flujo con una sola transacción global
+  aborta según esa transacción;
+- un flujo que escribe **por vista o por etapa puede conservar cambios ya confirmados** antes del sobre afectado;
+- `RACKEDITAR` procesa las vistas en secuencia y `SystemBlockWriter.RedrawInPlace` confirma una transacción por vista
+  (`RackSelectivoCommands.cs:166-223`, `SystemBlockWriter.cs:55-65`), así que **puede quedar parcialmente actualizado
+  entre vistas**;
+- esto **ya existe en la base**, sin I-54;
+- **I-54 no lo introduce ni lo corrige**;
+- el **ejecutor de Rack propio de I-54 evita escrituras parciales**: serializa todos los payloads antes de la primera
+  escritura y, si alguno lanza, no confirma ni escribe ningún miembro (D-22.10). Esa garantía es solo suya y no se
+  extiende a `RACKEDITAR`, `RACKDUPLICAR`, `RACKLAYOUT`, Project Variables ni otros consumidores existentes.
+
+Mismo candidato futuro que F-14a.
+
+### F-15 — La documentación de usuario de `RACKPROPIEDADES` quedó en `README.md` y en la ayuda de la app
+
+Registrado al integrar I-54 (G10), sin corregir:
+
+- La tabla de comandos de [despliegue.md](guias/despliegue.md), espejo declarado de `RackCommandReference`
+  (`RackCommandReference.cs`), ya omitía `RACKPUSHBACK`, `RACKSECCION` y `RACKVARIABLES`, y tampoco lista
+  `RACKPROPIEDADES`/`RPR`. El Coordinador lo difirió como no bloqueante al cerrar G7 (disposición D,
+  [decisiones de I-54](automation/decisions/I-54.md) §18).
+- La guía de uso que preveía el mapa orientativo de la [Proposal V5](initiatives/I-54-proposal-v5.md) §11 no se escribió
+  en ningún gate, así que la frontera con la biblioteca de D-12.3 —guardar no lleva las propiedades; abrir o insertar
+  crea el rack sin ellas— solo consta en la Proposal y la observó OV-11.
+- `RACKPROPIEDADES` sí figura en la tabla de `README.md` y en `RACKAYUDA`.
+
+Conviene resolverlo junto con «Dos comandos ausentes de la referencia en la app» y F-07: una sola pasada por las
+tablas de comandos.
+
+### Mejora registrada por la Proposal V5 D-11.6 — el re-estampado del sobre, ejecutable en Core
+
+**No es un hallazgo F** ni deuda de I-54: es la mejora futura que la Proposal V5 registra en D-11.6 y que su freeze
+traslada aquí (§14). Hoy ninguna suite ejecuta `RackEnvelopeRestamp.cs` (P-08), y la preservación del sobre en el
+re-estampado se cubre con una prueba de la propiedad del store, una guarda estructural y la validación en AutoCAD
+(D-11.5). Extraer a Application la mitad del re-estampado que maneja el sobre la haría ejecutable en Core.
+**Disparador**: cualquier cambio futuro al manejo del sobre en `RackEnvelopeRestamp.cs`. **No se hace en I-54**,
+porque tocaría ese archivo y re-apuntaría la guarda G-R5 mientras I-52 lo reutiliza. Relacionada con F-10.

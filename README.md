@@ -37,6 +37,7 @@ Después ejecuta `RACKCAD`. El procedimiento completo y el formato de evidencia 
 | `RACKSELECTIVO` | Diseñar un rack selectivo. |
 | `RACKEDITAR` | Reabrir y actualizar un rack existente. |
 | `RACKDUPLICAR` | Copiar uno o varios racks seleccionados como racks independientes (GUID nuevo), al estilo COPY. |
+| `RACKPROPIEDADES` | Administrar propiedades personalizadas (nombre y valor) de un rack o del Proyecto; alias `RPR`. |
 | `RACKLISTA` | Listar racks, vistas y copias del dibujo. |
 | `RACKBOMTOTAL` | Generar el BOM consolidado. |
 | `RACKLAYOUT` / `RACKRELLENAR` | Colocar racks en una rejilla o sitio. |
