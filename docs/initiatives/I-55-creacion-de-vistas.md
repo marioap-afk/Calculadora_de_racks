@@ -26,19 +26,21 @@ automation:
 
 # I-55 — View Placement & Projection
 
-> **Fase actual: G2C — revisiones sobre la Proposal V2** ([Proposal V2](I-55-proposal-v2.md) @ `f84f303`).
+> **Fase actual: G2D — Proposal V3 en revision** ([Proposal V3](I-55-proposal-v3.md) @ `8e35a51`).
 >
-> - **Coordinador:** revision tecnica sin blocker nuevo, pero no `AGREED`; recomienda al Owner las opciones A.
-> - **Arquitecto:** [`CHANGES REQUIRED — PROPOSAL V3`](I-55-architect-review-v2.md), con X-1..X-8 reconciliados sin conflicto
->   material y A-8 = complemento de ADR-0010.
-> - **Open Material:** M-01 (decision del Owner pendiente), cambios AR2-01..AR2-06 y registro de la reconciliacion por I-52.
+> - **Proposal V2** (`f84f303`): Coordinator = `CHANGES REQUIRED → V3`; Architect formal = `PENDING`. La revision de G2C
+>   ([I-55-architect-review-v2.md](I-55-architect-review-v2.md)) es una revision tecnica adversarial, no el veredicto del Arquitecto.
+> - **Proposal V3:** Coordinator = `REVIEW REQUIRED` ([paquete](I-55-coordinator-review-package-v3.md), con la decision CQ-01);
+>   Architect formal = `PENDING` ([paquete para un Arquitecto independiente](I-55-architect-review-package-v3.md)); Owner = `PENDING`.
+> - **Open Material:** M-01 (decision del Owner pendiente) y adopcion de X-1..X-8 por I-52 (Proposal V3 §17.2.1).
 >
 > No hay una sola linea de produccion escrita; la implementacion esta **BLOQUEADA** (seccion 12).
 >
 > ```text
 > SUBSTANTIVE IMPLEMENTATION: BLOCKED
 > Coordinator: REVIEW REQUIRED
-> Architect:   REVIEW REQUIRED
+> Architect:   PENDING (formal, independiente)
+> Owner:       PENDING
 > Consensus:   NOT REACHED
 > ```
 
@@ -117,8 +119,8 @@ El [Discovery](I-55-discovery.md) mide la linea base sobre el codigo:
 2. **G1 — Discovery**: HECHO; su evidencia sigue vigente (§2.1 del Discovery registra la re-medicion tras el rebase).
 3. **G1.1 — correccion contractual**: framing, Owner IDs, objetivo y alcance; reclasificacion de OQ-1..OQ-7; fila
    propia de ROADMAP; rebase sobre `dad4e77` y reconciliacion de la evidencia del Dinamico. Solo documentacion.
-4. **G2 — Proposal y consenso**: Proposal V1 (NOT CONSENSUS; Coordinator = CHANGES REQUIRED) y, en G2B, Proposal V2
-   (NOT CONSENSUS), ADR propuesto si corresponde, mapa de implementacion, diseno de pruebas y de validacion del Owner, y
+4. **G2 — Proposal y consenso**: Proposal V1 (NOT CONSENSUS; Coordinator = CHANGES REQUIRED), en G2B Proposal V2
+   (NOT CONSENSUS; Coordinator = CHANGES REQUIRED → V3) y, en G2D, Proposal V3 (NOT CONSENSUS), ADR propuesto si corresponde, mapa de implementacion, diseno de pruebas y de validacion del Owner, y
    paquetes de revision para Coordinador y Arquitecto. Autorizado como documentacion; el consenso lo emiten Coordinador y
    Arquitecto.
 5. **Implementacion** de ID17, ID18 e ID19 sobre la foundation acordada, por los gates que fije el consenso.
@@ -180,7 +182,7 @@ implementacion, ambos **sin consenso**. Una desviacion material frente a lo acor
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
 | G1 | Discovery | [I-55-discovery.md](I-55-discovery.md): matriz sistema × ViewKind × variante | **HECHA** |
 | G1.1 | Correccion contractual | Framing ID17 + ID18 + ID19, OQ reclasificadas, rebase y reconciliacion | **HECHA** (commit de esta correccion) |
-| G2 | Proposal y consenso | [Proposal V1](I-55-proposal-v1.md) (historica), [mapa V1](I-55-implementation-map-v1.md) y paquetes V1 ([Coordinador](I-55-coordinator-review-package-v1.md), [Arquitecto](I-55-architect-review-package-v1.md)); en G2B, [Proposal V2](I-55-proposal-v2.md), ADR-0042 propuesto, [mapa V2](I-55-implementation-map-v2.md) y paquetes V2 ([Coordinador](I-55-coordinator-review-package-v2.md), [Arquitecto](I-55-architect-review-package-v2.md)); veredictos de Coordinador y Arquitecto | **V1: Coordinator = CHANGES REQUIRED. V2 (`f84f303`): Coordinator sin blocker, no AGREED; [Architect = CHANGES REQUIRED — PROPOSAL V3](I-55-architect-review-v2.md); M-01 abierta; Proposal V3 requerida** |
+| G2 | Proposal y consenso | [Proposal V1](I-55-proposal-v1.md) (historica), [mapa V1](I-55-implementation-map-v1.md) y paquetes V1 ([Coordinador](I-55-coordinator-review-package-v1.md), [Arquitecto](I-55-architect-review-package-v1.md)); en G2B, [Proposal V2](I-55-proposal-v2.md), ADR-0042 propuesto, [mapa V2](I-55-implementation-map-v2.md) y paquetes V2 ([Coordinador](I-55-coordinator-review-package-v2.md), [Arquitecto](I-55-architect-review-package-v2.md)); en G2D, [Proposal V3](I-55-proposal-v3.md), [mapa V3](I-55-implementation-map-v3.md), ADR-0042 complementario y paquetes V3 ([Coordinador](I-55-coordinator-review-package-v3.md), [Arquitecto independiente](I-55-architect-review-package-v3.md)); veredictos de Coordinador y Arquitecto | **V1: Coordinator = CHANGES REQUIRED. V2 (`f84f303`): Coordinator = CHANGES REQUIRED → V3; Architect formal = PENDING ([revision tecnica adversarial](I-55-architect-review-v2.md)). V3 (`8e35a51`): Coordinator = REVIEW REQUIRED (con CQ-01); Architect formal = PENDING; M-01 abierta** |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates del mapa de implementacion **tras el consenso** | **bloqueada** |
 
 ## 9. Pruebas y builds
@@ -217,8 +219,9 @@ en G2 y se **ejecuta** solo sobre el Candidato. G0..G2 no la requieren.
 ## 12. Condiciones para detenerse
 
 - **Implementacion bloqueada** hasta `Coordinator = AGREED` y `Architect = AGREED` sobre la **misma** Proposal.
-- **M-01 abierta**: sin consenso posible sobre la Proposal V2 hasta resolverla (CR-02). Sin la reconciliacion obligatoria
-  con I-52 de las autoridades compartidas no hay Consensus Freeze (Proposal V2 §17.2).
+- **M-01 abierta**: sin consenso posible sobre la Proposal V3 hasta resolverla (CR-02); sin la decision CQ-01 del Coordinador no hay
+  `Coordinator = AGREED`. Sin la reconciliacion obligatoria con I-52 de las autoridades compartidas no hay Consensus Freeze (Proposal V3
+  §17.2).
 - Contradiccion material no resoluble con evidencia; decision del Owner no contestada por las decisiones vigentes;
   necesidad de veredicto del Arquitecto; conflicto Git o semantico ambiguo; fallo que invalide evidencia previa.
 - Cruce material con archivos de produccion de I-49 o I-52 al fijar los archivos de G2: reportarlo antes de continuar.
@@ -272,4 +275,14 @@ registra en [I-55-architect-review-v2.md](I-55-architect-review-v2.md):
 - X-1..X-8 AGREED;
 - A-8 = complemento con nota posterior fechada en ADR-0010.
 
-Solo documentacion; HANDOFF y ROADMAP sin tocar.
+Solo documentacion; HANDOFF y ROADMAP sin tocar. **Corregido en G2D:** el Coordinador reclasifica esa revision como revision tecnica
+adversarial; el veredicto formal del Arquitecto queda `PENDING`.
+
+**G2D — Proposal V3 (sin consenso).** Estado de V2: Coordinator = `CHANGES REQUIRED → V3`, Architect formal = `PENDING`.
+`8e35a51058033c2876c1935afd3f3a94931748ae` publica la Proposal V3, el mapa V3, ADR-0042 revisado (propuesto y complementario de ADR-0010, que no se
+modifica), la fila del indice de ADR, la seccion G2D del registro y la nota de reclasificacion de la revision de G2C. CI de `push`
+34881178359: success en sus cuatro trabajos. Preflight: `main` en `dad4e77` sin avance; antes del commit, I-49 avanzo a `f6f0991`
+(Amendment A3), I-52 a `dd45b0f` (Proposal V13, releida para X-1..X-8, sin MATERIAL CONFLICT) e I-56 a `0d66df2` (Evidence Audit). La
+revision adversarial de 20 puntos, con pase de verificacion, no dejo BLOCKER ni HIGH abiertos (Proposal V3 §23). Los paquetes V3 citan
+ese SHA exacto; el del Arquitecto es para un Arquitecto independiente. Sin decisiones del Owner registradas. Proposal V1 y V2, sus mapas y
+sus paquetes quedan como registro historico. Solo documentacion; HANDOFF y ROADMAP sin tocar.
