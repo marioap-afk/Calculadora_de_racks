@@ -248,6 +248,11 @@ namespace RackCad.Tests
                 Describe(result));
         }
 
+        /// <summary>
+        /// Los doce códigos de sintaxis y límites, con su valor y su orden de catálogo. G6 amplía el catálogo de P15.3 con
+        /// los códigos de enlace, semánticos y de frontera AL FINAL, sin renumerar estos (ver
+        /// <see cref="ExpressionDiagnosticCatalogTests"/>).
+        /// </summary>
         [Fact]
         public void EL_CATALOGO_SINTACTICO_TIENE_EL_ORDEN_Y_LOS_CODIGOS_DE_V6()
         {
@@ -260,6 +265,7 @@ namespace RackCad.Tests
                 },
                 Enum.GetValues(typeof(ExpressionDiagnosticCode))
                     .Cast<ExpressionDiagnosticCode>()
+                    .Where(code => (int)code <= 12)
                     .OrderBy(code => (int)code)
                     .Select(code => code.ToString()));
 
