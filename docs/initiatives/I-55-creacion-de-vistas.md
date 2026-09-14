@@ -26,9 +26,9 @@ automation:
 
 # I-55 — View Placement & Projection
 
-> **Fase actual: G1.1 — correccion contractual del framing, rebase sobre `dad4e77` y reconciliacion de evidencia.**
-> No hay una sola linea de produccion escrita. La Proposal se prepara en G2 como **documentacion sin consenso**; la
-> implementacion esta **BLOQUEADA** (seccion 12).
+> **Fase actual: G2 — Proposal V1 publicada sin consenso** ([Proposal V1](I-55-proposal-v1.md) @ `d1918ab`), con mapa de
+> implementacion, ADR-0042 propuesto y paquetes de revision para Coordinador y Arquitecto. No hay una sola linea de
+> produccion escrita; la implementacion esta **BLOQUEADA** (seccion 12).
 >
 > ```text
 > SUBSTANTIVE IMPLEMENTATION: BLOCKED
@@ -174,7 +174,7 @@ implementacion, ambos **sin consenso**. Una desviacion material frente a lo acor
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
 | G1 | Discovery | [I-55-discovery.md](I-55-discovery.md): matriz sistema × ViewKind × variante | **HECHA** |
 | G1.1 | Correccion contractual | Framing ID17 + ID18 + ID19, OQ reclasificadas, rebase y reconciliacion | **HECHA** (commit de esta correccion) |
-| G2 | Proposal y consenso | Proposal V1, ADR propuesto, mapa de implementacion, paquetes de revision; veredictos de Coordinador y Arquitecto | pendiente de veredictos |
+| G2 | Proposal y consenso | [Proposal V1](I-55-proposal-v1.md), ADR-0042 propuesto, [mapa de implementacion](I-55-implementation-map-v1.md), paquetes de revision ([Coordinador](I-55-coordinator-review-package-v1.md), [Arquitecto](I-55-architect-review-package-v1.md)); veredictos de Coordinador y Arquitecto | **Proposal V1 publicada (`d1918ab`); pendiente de veredictos** |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates del mapa de implementacion **tras el consenso** | **bloqueada** |
 
 ## 9. Pruebas y builds
@@ -239,3 +239,10 @@ primera vista (§6), vistas enlazadas (§7), `RequestDraw` (§8), materializacio
 solo en contexto de ROADMAP; publicacion con `--force-with-lease` sobre `96f6444`. La ventana del Dinamico se re-audito
 sobre la nueva base (Discovery §2.1). Este commit corrige el framing, reclasifica OQ-1..OQ-7 y crea el registro de
 decisiones. Solo documentacion.
+
+**G2 — Proposal V1 (sin consenso).** `d1918ab9a44ce7ae391aeacc10ff6686c8807a61`: Proposal V1, mapa de implementacion V1,
+ADR-0042 propuesto (sucesor propuesto de ADR-0010), fila del indice de ADR y seccion G2 del registro de decisiones. CI de
+`push` 34814797798: success en sus cuatro trabajos (Tests Domain + Application, UI Tests, Build UI, Build Plugin without
+AutoCAD). Antes del commit: re-fetch con `main` en `dad4e77`; I-49 publico ADR-0041 en su rama durante la redaccion, asi
+que el ADR de I-55 es 0042; revision adversarial propia y con un agente de solo lectura (Proposal §23). Los paquetes de
+revision citan ese SHA exacto. Solo documentacion; HANDOFF y ROADMAP sin tocar.
