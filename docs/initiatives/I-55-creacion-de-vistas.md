@@ -16,7 +16,7 @@ decision_paths: []
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
-requires_owner_decision:
+requires_owner_decision: true
 requires_owner_validation: true
 automation:
   enabled: false
@@ -26,9 +26,9 @@ automation:
 
 # I-55 — Creacion de vistas de rack en todos los sistemas
 
-> **Fase actual: RECLAMADA Y BOOTSTRAPEADA (G0).** No hay Discovery versionado, no hay Proposal y **no hay
-> una sola linea de produccion escrita**. La sesion que abrio la iniciativa esta autorizada **solo para G0 y
-> G1**; la implementacion esta BLOQUEADA (seccion 12).
+> **Fase actual: G1 CERRADA — Discovery publicado** en [I-55-discovery.md](I-55-discovery.md). No hay Proposal y
+> **no hay una sola linea de produccion escrita**. La sesion que abrio la iniciativa estaba autorizada **solo para
+> G0 y G1**; la implementacion esta BLOQUEADA (seccion 12) y G2 requiere orden propia.
 >
 > ```text
 > SUBSTANTIVE IMPLEMENTATION: BLOCKED
@@ -37,12 +37,14 @@ automation:
 > ```
 
 ```text
-Initiative = I-55
-Owner ID   = NO FIJADO por la orden de apertura (seccion 2, pregunta abierta)
-Branch     = feature/creacion-de-vistas
-Worktree   = ~/.codex/worktrees/feature-creacion-de-vistas
-BASE_SHA   = ba497f14581d81e83a27514852d6ec082ff57635   (origin/main, merge de I-54)
-CLAIM_SHA  = 24bb9cad77d945fecc00ec41f46ba0d0a7abb1de   (Claim-Id f96a4b1f-40ff-40d0-b3cf-e2cfad778cc7)
+Initiative    = I-55
+Owner ID      = NO FIJADO por la orden de apertura (seccion 2; Discovery §20, OQ-1)
+Branch        = feature/creacion-de-vistas
+Worktree      = ~/.codex/worktrees/feature-creacion-de-vistas
+BASE_SHA      = ba497f14581d81e83a27514852d6ec082ff57635   (origin/main, merge de I-54)
+CLAIM_SHA     = 24bb9cad77d945fecc00ec41f46ba0d0a7abb1de   (Claim-Id f96a4b1f-40ff-40d0-b3cf-e2cfad778cc7)
+BOOTSTRAP_SHA = 5f774b459eb8b13732e4ae5c4e93a909874a10c5
+DISCOVERY     = docs/initiatives/I-55-discovery.md          (su SHA se registra al abrir G2)
 ```
 
 > **Apertura por autorizacion explicita sin fila previa** — caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2.
@@ -161,9 +163,14 @@ ninguno no se afirma aqui**: es pregunta abierta para el Owner, via Coordinador,
   (`feature/cabeceras-multidestino-dinamico` @ `a57bd50`, produccion en la ventana y el ensamblador del
   Dinamico). `conflicts_with` queda **vacio** hasta que G1 mida el cruce real de archivos: no se declara un
   estorbo sin evidencia, ni se omite uno que la tenga.
-- **Entrada del Owner**: el resultado de producto no esta fijado (seccion 2). `requires_owner_decision` queda
-  **vacio** hasta que G2 lo fije, en vez de fijarse por analogia; las preguntas que G1 no pueda cerrar con
-  evidencia se escalan antes de G2.
+- **Cruce medido en G1** ([Discovery](I-55-discovery.md) §2 y §19): **0** archivos con I-49 y con I-52, y **2** con
+  I-53D —`RackDynamicSystemWindow.xaml(.cs)`, archivo caliente que contiene la puerta de primera vista del
+  Dinamico—. I-49 preve tocar en su G10 la ventana del Selectivo (`docs/ROADMAP.md:471`) e I-52 cruza en la
+  **semantica** de materializacion (`MaterializationContext`). `conflicts_with` sigue **vacio** porque I-55 aun no
+  tiene archivos de produccion: lo fija G2 re-midiendo este cruce.
+- **Entrada del Owner**: `requires_owner_decision` pasa a `true` en G1 con evidencia: la orden no fija el resultado
+  de producto (seccion 2) y el codigo no determina las preguntas OQ-1..OQ-7 del Discovery (§20), que se escalan
+  **antes** de G2.
 
 ## 7. Archivos esperados
 
@@ -178,7 +185,7 @@ Lo que si se declara para esta sesion: solo `docs/initiatives/I-55-*.md` y la fi
 | # | Fase | Entregable | Estado |
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
-| G1 | Discovery | `I-55-discovery.md`: matriz sistema × ViewKind × variante y respuestas de la seccion 3, punto 2 | pendiente |
+| G1 | Discovery | `I-55-discovery.md`: matriz sistema × ViewKind × variante y respuestas de la seccion 3, punto 2 | **HECHA** — [I-55-discovery.md](I-55-discovery.md) |
 | G2 | Proposal y consenso | Proposal, revision de Arquitecto y reconciliacion, cada una con orden propia | pendiente |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Por definir **tras el consenso de G2**, no aqui | bloqueada |
 
@@ -253,5 +260,15 @@ Claim-Id   = f96a4b1f-40ff-40d0-b3cf-e2cfad778cc7
 
 Primer `git push -u origin feature/creacion-de-vistas` **aceptado sin force** (`* [new branch]`), con `origin`
 sin ninguna referencia a I-55 en el preflight, repetido justo antes del reclamo. `main` **no fue modificada**.
+
+**Bootstrap (G0).** `BOOTSTRAP_SHA = 5f774b459eb8b13732e4ae5c4e93a909874a10c5`: este contrato y la fila de I-55 en
+`docs/ROADMAP.md`; solo documentacion; empujado sin force.
+
+**Discovery (G1).** [I-55-discovery.md](I-55-discovery.md): matriz sistema × ViewKind × variante (§5), creacion y
+primera vista (§6), vistas enlazadas (§7), contrato `RequestDraw` (§8), materializacion (§9), authored/effective,
+`DimensionViews`, `CustomProperties` y `ProjectVariables` (§10-13), BOM y listado (§14), `RACKLAYOUT` (§15), I-51
+(§16), cancelacion (§17), pruebas (§18), cruces (§19), preguntas abiertas OQ-1..OQ-7 y A-1..A-4 (§20) y hallazgos
+H-01..H-12 (§21). Solo documentacion: el commit toca unicamente `docs/initiatives/I-55-*.md`; `ROADMAP` y `HANDOFF`
+no se tocan en G1.
 
 El resto de la evidencia se acumula al cerrar cada fase.
