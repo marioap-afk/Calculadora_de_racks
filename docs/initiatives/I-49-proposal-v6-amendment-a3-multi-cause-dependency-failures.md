@@ -6,22 +6,25 @@ Amendment documental de la [Proposal V6](I-49-proposal-v6.md), leída con el
 diagnósticos recibe un símbolo cuando falla por **más de una causa a la vez**, qué es su conjunto de causas raíz y qué
 datos estables consumen de él el `PlanReadSet`, la razón `Upstream` y el mensaje de recuperación de §7.2. Lo encontró el
 STOP de G7 antes de RED y lo confirmó la revisión del Arquitecto (`MULTI_CAUSE_AMBIGUITY = CONFIRMED`). Esta es la
-revisión **A3-R1**, que resuelve los hallazgos MAT-1 a MAT-5 de la revisión exacta del Arquitecto sobre el texto
-anterior.
+revisión **A3-R2**: sobre A3-R1, que resolvió los hallazgos MAT-1 a MAT-5 de la primera revisión exacta, resuelve MAT-6
+y MAT-7 de la segunda revisión exacta.
 
 ```text
 Amendment          = A3
-Revisión           = A3-R1, tras la revisión exacta del Arquitecto (MAT-1 a MAT-5)
-Texto anterior     = blob 97996b7a6117e036f1e3defcb70db0e1fd7b035b (f6f0991); CHANGES REQUIRED, no es autoridad
+Revisión           = A3-R2, tras la segunda revisión exacta del Arquitecto (MAT-6 y MAT-7)
+Textos anteriores  = blob 97996b7a6117e036f1e3defcb70db0e1fd7b035b (f6f0991), A3 original
+                     blob 94a987ffce2c9918d9efd1fb5a6822d93c43de26 (c8cfee2), A3-R1
+                     los dos con CHANGES REQUIRED; ninguno es autoridad
 Finding            = MULTI-CAUSE DEPENDENCYFAILED / ROOTCAUSES CONTRACT GAP
 
 Enmienda a         = Proposal V6, blob ef4db3aa400483ff25a8f39b2beb93708fa43d1a (no se edita)
 Junto a            = Amendment A1, blob d62019088b9e7a140d5066799afe6ace6db303ba (no se edita ni se enmienda)
                      Amendment A2, blob 49a925336dd3775929a35b0f40b73cb7f8c487f7 (no se edita ni se enmienda)
-Cambian            = ADR-0041 D20 (dato estable de Upstream), D18 puntos 1-4 (sugerencia y bloqueo de
-                     recuperación) y D14 decisión 7 (ruptura de un ciclo)
-Se leen            = D4, D8, D11, D14 decisiones 1 y 6, D15, D18 (precedencia, tabla y puntos 5-7), D19,
-                     D20 (pruebas), D22, D23, D24 y Consecuencias
+Cambian            = ADR-0041 D20 (dato estable de Upstream), D18 puntos 3-4 (ciclo simple y razones de
+                     bloqueo) y D14 decisión 7 (ruptura de un ciclo)
+Se leen            = D4, D8, D11, D14 (fallo estructural, semánticos y decisiones 1-6 y 8), D15,
+                     D18 (precedencia, Blocked, tabla y puntos 1-2 y 5-7), D19, D20 (pruebas), D22, D23, D24
+                     y Consecuencias
                      ADR aceptado e inmutable, blob c6a3d2ba0ab9df93e51efcddf04ed9255b1a2231
 Freeze afectado    = docs/initiatives/I-49-consensus-freeze-v6-a1-a2.md
                      blob 57736f725663aab79a24b29685ed34e8c3e9ebad (no se reescribe)
@@ -41,8 +44,8 @@ Sin cambio         = identidad y cualificador (A2), guarda del parser (A1), extr
 
 - **Es** un amendment del Coordinador que recoge el modelo M1–M10 de la revisión del Arquitecto de G7, corregido con
   los hallazgos de su revisión exacta, y queda sometido a una nueva revisión exacta. Llena **un** hueco y nada más.
-- **A3-R1 edita este mismo documento.** El texto anterior (blob `97996b7`) recibió `CHANGES REQUIRED` y **no** es
-  autoridad acordada; no hay un A4.
+- **A3-R2 edita este mismo documento.** Los textos anteriores (blobs `97996b7` y `94a987f`) recibieron
+  `CHANGES REQUIRED` y **no** son autoridad acordada; no hay un A4.
 - **No** edita V6, A1, A2, ADR-0041, ninguno de los tres Consensus Freeze ni el Discovery: todos siguen en sus blobs
   exactos.
 - **No** autoriza implementación: G7 sigue BLOCKED antes de RED y G8 sigue BLOCKED (A3 §13).
@@ -51,8 +54,8 @@ Sin cambio         = identidad y cualificador (A2), guarda del parser (A1), extr
   códigos: no hay códigos nuevos y ninguno cambia de número o de clase.
 - **Activa** la regla de invalidación del freeze vigente (§6 de ese registro): cambia la semántica de Expression, el
   `PlanReadSet` y la `RepairDecisionObservation`, y cambia decisiones de ADR-0041 (A3 §12).
-- Como en V6, A1 y A2, los nombres de tipos, miembros y operaciones (`RootCauses`, `CycleRoot`, `SourceRoots`) son
-  **ilustrativos**: el contrato es el comportamiento.
+- Como en V6, A1 y A2, los nombres de tipos, miembros, operaciones y razones (`RootCauses`, `CycleRoot`, `SourceRoots`,
+  `RecoveryUnits`, `DiscoveryIndeterminate`) son **ilustrativos**: el contrato es el comportamiento.
 
 ---
 
@@ -63,10 +66,13 @@ Sin cambio         = identidad y cualificador (A2), guarda del parser (A1), extr
 - **R1, R2 y R3.** En A3 designan **solo** las reglas de intents correctivos de P21.3 (OPEN B). Los riesgos R1–R16 de
   §11.2 son otra serie, y los contraejemplos R1 y R2 de A2 (A2 §2.3 y A2 §2.4) no tienen relación con este documento.
   A3 no define nada con esos nombres.
-- **U1–U9**: los casos normativos (A3 §4). U1–U4 vienen del hallazgo; U5–U9, de la revisión exacta.
+- **U1–U11**: los casos normativos (A3 §4). U1–U4 vienen del hallazgo; U5–U9, de la primera revisión exacta; U10 y
+  U11, de la segunda.
 - **M1–M10**: las reglas del modelo decidido (A3 §5).
-- **MAT-1 a MAT-5** y **N-3 a N-5**: hallazgos materiales y notas de la revisión exacta del Arquitecto sobre el blob
-  `97996b7` (A3 §3.5).
+- **MAT-1 a MAT-5** y **N-3 a N-5**: hallazgos materiales y notas de la primera revisión exacta del Arquitecto, sobre
+  el blob `97996b7` (A3 §3.5).
+- **MAT-6 y MAT-7**: hallazgos materiales de la segunda revisión exacta, sobre el blob `94a987f` (A3 §3.6). En la
+  orden de A3-R2 se llamaron «NEW MAT-1» y «NEW MAT-2»; se renumeran para no confundirlos con MAT-1 y MAT-2.
 - **MC-A, MC-B y MC-C**: los modelos candidatos que la revisión del Arquitecto llamó R-A, R-B y R-C (A3 §9). Se
   renombran para que no se confundan con R1, R2 y R3.
 - **CX-1, CX-2 y CX-3**: contraejemplos y carreras de A3 (A3 §3.4, A3 §5.10).
@@ -81,13 +87,18 @@ Sin cambio         = identidad y cualificador (A2), guarda del parser (A1), extr
   Cada dependencia cuenta una vez, como en la extracción sin repetición (P11.1).
 - **Ciclo simple**: una SCC cíclica en la que cada miembro tiene exactamente una arista interna saliente y exactamente
   una entrante (A3 §6.2).
+- **Firma de raíz** (`RootSignature`): la razón estructural completa de una causa raíz (A3 §5.5). `RootCauses` es un
+  conjunto de firmas.
+- **Unidad de recuperación** (`RecoveryUnit`): la unidad authored que habría que corregir para quitar una causa raíz: el
+  `SymbolId` dueño de una firma que no es de ciclo, o el `CycleRoot` de una SCC. Varias firmas del mismo dueño son
+  **una** unidad (A3 §5.10(c)).
 - **Notación.** `DF{causa; cadena; raíz}` es un `DependencyFailed` con su causa directa, los ids de su cadena y la firma
   de su raíz. Las firmas de raíz son `(dueño, código, datos)` y `CycleRoot[miembros]` (A3 §5.5). En las tablas de
   pruebas, `{A1, A2}` abrevia el conjunto de las firmas de raíz de A1 y A2 cuando no hay ambigüedad.
 - **Supuesto de los ejemplos.** Los ids de los símbolos siguen en P11.1 el orden alfabético de sus nombres
-  (A < A1 < A2 < B < C < D < E < F < G < H < S < W < X < Y < Z, y `Holgura` después de `H`). `a`, `a1`, `a2`, `b`, `gone`,
-  `h`, `m`, `z` e `id-roto` son ids ausentes, y `K` es un rack. Los tokens de función son las mayúsculas canónicas de
-  P10.5 (`ABS`, `MAX`, `MIN`).
+  (A < A1 < A2 < B < C < D < E < F < G < H < Holgura < J < P < Q < S < T < W < X < Y < Z). `a`, `a1`, `a2`, `b`, `gone`,
+  `h`, `m`, `p`, `z` e `id-roto` son ids ausentes, y `K`, `K2`, `K3`, `K6`, `K7` y `K9` son racks. Los tokens de función
+  son las mayúsculas canónicas de P10.5 (`ABS`, `MAX`, `MIN`).
 
 ---
 
@@ -189,9 +200,24 @@ uno con un contraejemplo que A3-R1 convierte en caso normativo:
 Notas incorporadas: **N-3** (`Upstream` no observa las fuentes de otros racks, A3 §5.10(b)), **N-4** (coste de
 `RootCauses` y memoización por snapshot, A3 §5.9) y **N-5** (fallos numéricos latentes, A3 §5.1).
 
+### 3.6 Hallazgos de la segunda revisión exacta (A3-R2)
+
+La revisión exacta del Arquitecto sobre el blob `94a987f` (A3-R1) confirmó MAT-1 a MAT-5 y dio `CHANGES REQUIRED` con dos
+hallazgos materiales:
+
+| Hallazgo | Defecto de A3-R1 | Caso | Corrección |
+|---|---|---|---|
+| MAT-6 | La condición de §7.2 no miraba un rack cuyo consumo del cierre no se puede determinar. Contradice D14 (l. 914-916) y §5.1 (l. 2601-2603), para los que un dato que la build no entiende «nunca se lee como "no consume"», y §7.2.6 (l. 2792): la corrección abortaría en el descubrimiento, así que la recuperación no es demostrable | U10 | Precondición de descubrimiento y razón `DiscoveryIndeterminate` (M10(c), M10(d)) |
+| MAT-7 | La unicidad de la raíz se contaba por **firmas**: `H = ABS(#<m>, 2)` tenía dos firmas y nunca recibía «Corregir H», aunque §7.2.1 cuenta «variables cuya propia definición falla, o un ciclo tomado como una unidad» y corregir H basta | U11 | Unidades de recuperación sobre `RootCauses`; las firmas siguen para comparar (M10(c)) |
+
+La misma revisión dejó notas no materiales que A3-R2 incorpora: el fallo estático y numérico de una fuente (A3 §7.2),
+el rack `Blocked` y D18 punto 7 (M10(d)), el rechazo de R1 cuando la condición se cumplía antes (M10(d)), filas de censo
+(A3 §10), el censo de datos de las decisiones de reparación (M10(f)), las pruebas de G7 limitadas al núcleo de grafo
+(A3 §6.6), las pruebas A–K de G9 y G10 (A3 §11.2) y redacción.
+
 ---
 
-## 4. Casos normativos U1–U9: decisión A3
+## 4. Casos normativos U1–U11: decisión A3
 
 ### 4.1 U1 — dos raíces independientes
 
@@ -282,7 +308,7 @@ D = [Cycle[A, B, C, D]]
 RootCauses(A) = RootCauses(B) = RootCauses(C) = RootCauses(D)
               = { CycleRoot[A, B, C, D], (E, DivisionByZero), (F, DivisionByZero) }
 
-K: palletTolerance = B + D   → Upstream; SourceRoots de tres elementos: sin sugerencia; razón SeveralRoots
+K: palletTolerance = B + D   → Upstream; tres unidades de recuperación: sin sugerencia; razón SeveralRecoveryUnits
 ```
 
 - Un miembro **no** necesita una arista propia hacia E o F para que esas raíces estén en su `RootCauses`.
@@ -299,7 +325,7 @@ K: palletTolerance = B + D   → Upstream; SourceRoots de tres elementos: sin su
                        [DF{H; [H]; (H, BrokenReference, [h])},
                         InvalidArguments(ABS, 2)]
     RootCauses(S) = { (H, BrokenReference, [h]), (S, InvalidArguments, [(ABS, 2)]) }
-    K: palletTolerance = S + 1   → Upstream; SourceRoots de dos elementos: sin sugerencia; razón SeveralRoots
+    K: palletTolerance = S + 1   → Upstream; unidades {H, S}: sin sugerencia; razón SeveralRecoveryUnits
 
 (b) D = ABS(#<m>, 2) → no se evalúa
                        [BrokenReference(m), InvalidArguments(ABS, 2)]
@@ -330,12 +356,12 @@ SCC = {A, B, C, D}; aristas internas B→C, C→B, C→A, A→D, D→A, D→B: 6
 A = B = C = D = [Cycle[A, B, C, D]]
 RootCauses(cada miembro) = { CycleRoot[A, B, C, D] }
 
-K: palletTolerance = B + D   → Upstream; SourceRoots = {CycleRoot[A, B, C, D]}: sin sugerencia de recuperación
+K: palletTolerance = B + D   → Upstream; RecoveryUnits = {CycleRoot[A, B, C, D]}: sin sugerencia; razón NonSimpleCycle
 ```
 
 - Corregir B deja el ciclo A↔D; corregir A deja el ciclo B↔C: ningún `ChangeDefinition` de un solo miembro recupera la
   fuente, y R1 bloquea cada uno.
-- Aunque `SourceRoots` tenga un solo elemento, un `CycleRoot` de una SCC no simple **nunca** permite la sugerencia. El
+- Aunque `RecoveryUnits` tenga un solo elemento, un `CycleRoot` de una SCC no simple **nunca** permite la sugerencia. El
   bloqueo se informa con la razón `NonSimpleCycle` y los miembros del ciclo, sin afirmar que haya otras fuentes
   inválidas (M10(d)).
 
@@ -348,7 +374,8 @@ K: palletTolerance  = Holgura + #<gone>      → RepairableMissingTarget({gone})
 ```
 
 - `SourceRoots(verticalClearance) = {(Holgura, BrokenReference, [id-roto])}`.
-- `palletTolerance` no es `Upstream`: su `RootCauses` no la convierte en una fuente con causa superior.
+- `palletTolerance` no es `Upstream`: las raíces de la variable que lee no la convierten en una fuente con causa
+  superior.
 - **Sin sugerencia de recuperación** para ninguna de las dos: tras corregir Holgura, `gone` sigue ausente y R1 bloquea.
   `verticalClearance` lleva la razón `OtherInvalidSources` con `palletTolerance` (M10(d)).
 
@@ -364,6 +391,42 @@ después: H = B + 1   → [DF{B; [B]; CycleRoot[A, B]}]    RootCauses(H) = {Cycl
 - Una `RepairDecisionObservation` `Upstream` de una fuente retirada que lee H **coincide**.
 - Una `SymbolResultObservation` de H **no** coincide: cambian la causa y la cadena.
 - Es semántica **nueva** de A3: V6 no definía el símbolo raíz de un fallo que empieza en una SCC (A3 §8).
+
+### 4.10 U10 — descubrimiento que abortaría (MAT-6)
+
+```text
+Holgura = #<id-roto> + 1                     → [BrokenReference(id-roto)]
+K:  palletTolerance = Holgura + 2            → RepairableSemanticFailure(Upstream, Holgura); única fuente fallida de K;
+                                               K es Repairable
+K9: una entrada de PropertyValues con kind desconocido o id ilegible
+                                             → FatalMalformedReference; la sonda de K9 da Indeterminate
+```
+
+- La fuente de K cumple por sí sola las condiciones de raíz única: `RecoveryUnits = {Holgura}`, clasificación
+  `Upstream` y ninguna otra fuente fallida en K.
+- Pero `ChangeDefinition(Holgura)` necesita descubrir los consumidores del cierre (P21.2 paso 7, P21.4), y la sonda de
+  K9 da `Indeterminate`: el descubrimiento aborta. K9 **no** se lee como «no consume» (D14, l. 914-916; §5.1,
+  l. 2601-2603).
+- **Sin sugerencia de recuperación**: la recuperación no es demostrable en el estado diagnosticado (§7.2.6). Razón
+  `DiscoveryIndeterminate`, con el rack K9 y las causas del aborto; el texto no afirma que K9 consuma el cierre ni que la
+  recuperación sea imposible.
+
+### 4.11 U11 — un dueño con varias firmas: una unidad de recuperación (MAT-7)
+
+```text
+H = ABS(#<m>, 2)   → no se evalúa
+                     [BrokenReference(m), InvalidArguments(ABS, 2)]
+RootCauses(H)  = { (H, BrokenReference, [m]), (H, InvalidArguments, [(ABS, 2)]) }   // dos firmas
+RecoveryUnits  = { H }                                                               // una unidad
+
+K: palletTolerance = H + 1   → Upstream; única fuente fallida de K; sin otros bloqueos
+```
+
+- `RootCauses(H)` conserva las **dos** firmas: las usan las comparaciones de M10(a) y M10(b).
+- La unicidad de la sugerencia se decide por **unidades**: `{H}` tiene un elemento, y un `ChangeDefinition(H)` que evalúe
+  bien (R2) quita a la vez la referencia rota y la aridad errónea.
+- Si el resto de condiciones se cumple, incluido el descubrimiento, la sugerencia «Corregir H…» está permitida. A3 no
+  afirma que la corrección vaya a tener éxito: sigue sujeta a la validación normal (§7.2.6).
 
 ---
 
@@ -556,7 +619,7 @@ A < B.
 | Raíces detrás de dependencias directas distintas (U1) | Un `DependencyFailed` por dependencia directa que falla | Todas |
 | Varias raíces detrás de una sola dependencia (U2) | Un `DependencyFailed`, con su cadena representativa | Todas: ninguna se descarta |
 | Una raíz alcanzada por varios caminos (diamante) | Un `DependencyFailed` por dependencia directa que falla | La raíz, una vez |
-| Un ciclo leído por varios miembros (U4) | Un `DependencyFailed` por miembro leído | El `CycleRoot` una sola vez, junto con las demás raíces de la SCC |
+| Un dependiente que lee varios miembros de un ciclo (U4) | Un `DependencyFailed` por miembro leído | El `CycleRoot` una sola vez, junto con las demás raíces de la SCC |
 | Raíces externas que entran en una SCC por miembros distintos (U5) | Solo en el miembro que lee cada una | Todas, en todos los miembros y en sus dependientes |
 | Fallo propio y fallo superior en el mismo símbolo (U3, U6) | Todos los aplicables (M2) | Las raíces propias y las superiores |
 
@@ -618,6 +681,10 @@ coincidan (U2 con `a2` recuperado): `ABORT BEFORE WRITE`. `Success` sigue compar
 - Si cualquier miembro del conjunto desaparece, aparece o cambia de firma, la observación **no** coincide:
   `ABORT BEFORE WRITE`, y no se borra ninguna fórmula (U5).
 - `MissingTarget`, `Intrinsic` y `Domain` no cambian, ni la precedencia de D18.
+- `Upstream` compara **firmas**, nunca solo unidades de recuperación: la misma variable que falla por otra razón no
+  coincide aunque su unidad sea la misma (M10(f)).
+- La comparación es **por variable leída**: dos variables que intercambian sus raíces no coinciden, aunque la unión de
+  sus conjuntos sea la misma.
 - **Alcance de la protección (N-3).** `Upstream` protege la razón de **la fuente concreta que se retira**: por qué
   falla cada variable que lee. **No** observa por sí sola:
   - las demás fuentes, de este rack o de otros, que participaron en la clasificación global de §7.2 durante el
@@ -628,99 +695,200 @@ coincidan (U2 con `a2` recuperado): `ABORT BEFORE WRITE`. `Success` sigue compar
   Toda obligación de revalidar ese estado tiene que salir de las observaciones exactas que lleve el plan de G9, nunca de
   una implicación; ni CX-2 ni ninguna otra observación `Upstream` la dan por cubierta.
 
-**(c) §7.2, sugerencia de recuperación.** Para una fuente clasificada por `InspectBinding` como
-`RepairableSemanticFailure(Upstream)`:
+**(c) §7.2, sugerencia de recuperación.** Pertenece a la capa de recuperación de G9 y G10, en Application, sobre
+`RegistryEvaluation`, el descubrimiento de consumidores e `InspectBinding`; **no** es del núcleo de grafo de G7. Para una
+fuente clasificada por `InspectBinding` como `RepairableSemanticFailure(Upstream)`:
 
 ```text
-SourceRoots(fuente) = ∪ RootCauses(v)   para cada variable v que la fuente lee y que falla
+SourceRoots(fuente)   = ∪ RootCauses(v)   para cada variable v que la fuente lee y que falla      // firmas
+RecoveryUnits(firmas) = { unidad(r) | r ∈ firmas }                                                // deduplicado
+unidad(r)             = CycleRoot(C)       si r es el CycleRoot de la SCC C
+unidad(r)             = el dueño de r      en otro caso
 ```
 
-`SourceRoots` solo se define para fuentes `Upstream`. La sugerencia «Corregir <X> permitiría recuperar…» para esa fuente
-existe **solo** si se cumplen todas estas condiciones:
+- `SourceRoots` y `RecoveryUnits` solo se definen para fuentes `Upstream`.
+- **Firma frente a unidad.** `RootCauses` y `SourceRoots` siguen siendo conjuntos de **firmas** (A3 §5.5): son los datos
+  que comparan M10(a) y M10(b), y no se debilitan. `RecoveryUnits` solo responde a «qué unidad authored habría que
+  corregir»:
+  - varias firmas de un mismo dueño son **una** unidad (U11);
+  - el `CycleRoot` de una SCC es **una** unidad;
+  - un miembro de ciclo con fallos propios es una unidad **distinta** del `CycleRoot` de su SCC: sus fallos propios no
+    se funden en el ciclo.
+- **Orden de las unidades**, solo para listarlas: por el id relevante en el orden de P11.1 —el dueño, o el miembro mínimo
+  del ciclo— y, con el mismo id, la unidad de dueño antes que la de ciclo.
+- **Conteo por unidades, como V6.** §7.2.1 cuenta «variables cuya propia definición falla, o un ciclo tomado como una
+  unidad» (l. 2759-2761). Un `ChangeDefinition(X)` que evalúe bien (R2) quita a la vez todos los fallos propios de X, así
+  que varias firmas de X no impiden la sugerencia. D18 puntos 1-2 se leen con A3 y no cambian (A3 §10.3).
 
-1. `SourceRoots(fuente) = {X}`;
-2. si X es un `CycleRoot`, su SCC es un **ciclo simple** (A3 §6.2);
-3. **todas** las fuentes fallidas de todos los racks que consumen el cierre de X —la propia fuente incluida— están
-   clasificadas como `RepairableSemanticFailure(Upstream)` **y** tienen `SourceRoots = {X}`, con la misma X. El cierre de
-   X es el de su dueño o, para un `CycleRoot`, el de sus miembros;
-4. siguen vigentes las demás reglas de §7.2, entre ellas §7.2.6 y R1 sin relajar.
+La sugerencia «Corregir <X> permitiría recuperar…» para esa fuente existe **solo** si se cumplen todas estas condiciones:
 
-- Cualquier fuente fallida del conjunto clasificada como `RepairableMissingTarget`, `Intrinsic`, `Domain`, estructural
-  (`FatalMalformedReference`, `FatalUnknownProperty`) o `FatalIncompatibleTarget` hace que la condición **no** se cumpla,
-  aunque las variables que lee tengan raíces que coinciden con X (U8). Su `RootCauses` no la convierte en una fuente
+1. **Precondición de descubrimiento.** El **mismo** descubrimiento de consumidores que necesitaría el intent correctivo
+   termina con éxito sobre el snapshot diagnosticado (P21.2 paso 7, l. 1536-1537; P21.4, l. 1557-1563): el del cierre
+   `I(X)` para una unidad de dueño, o el del cierre de un miembro, que contiene toda la SCC y sus dependientes, para un
+   `CycleRoot`. Si ese descubrimiento abortaría —por la precondición global de sobres no interpretables, una sonda
+   `Indeterminate` en cualquier rack, o positivos parciales o autoridad no `Single` en un rack con alguna vista positiva
+   (Discovery §7, l. 537-541); son las cuatro únicas causas de aborto de la familia A (P21.4 y Discovery §7)—, no hay
+   sugerencia (U10). Un rack cuya sonda da `Indeterminate` **nunca** se lee como «no consume» (D14, l. 914-916; §5.1,
+   l. 2601-2603).
+2. `RecoveryUnits(SourceRoots(fuente)) = {X}`;
+3. si X es un `CycleRoot`, su SCC es un **ciclo simple** (A3 §6.2);
+4. **todas** las fuentes fallidas de todos los racks que ese descubrimiento identifica como consumidores del cierre de X
+   —la propia fuente incluida— están clasificadas como `RepairableSemanticFailure(Upstream)` **y** tienen
+   `RecoveryUnits(SourceRoots) = {X}`, con la misma X;
+5. siguen vigentes las demás reglas de §7.2, entre ellas §7.2.6 y R1 sin relajar.
+
+- **Fuentes no `Upstream`.** Cualquier fuente fallida de esos racks clasificada como `RepairableMissingTarget`,
+  `Intrinsic`, `Domain`, estructural (`FatalMalformedReference`, `FatalUnknownProperty`) o `FatalIncompatibleTarget`
+  hace que la condición **no** se cumpla (U8). Las raíces de las variables que lee no la convierten en una fuente
   `Upstream`.
-- La condición 3 exige **igualdad**: una fuente `Upstream` con `SourceRoots = {X, Y}` también la incumple, aunque
-  contenga X.
+- **Igualdad.** La condición 4 exige igualdad de unidades: una fuente `Upstream` con unidades `{X, Y}` también la
+  incumple, aunque contenga X.
+- **Alcance del descubrimiento.** Las condiciones solo miran los racks que el descubrimiento identifica como
+  consumidores. Un rack que el mismo descubrimiento clasifica como ajeno al cierre —cero positivos—, aunque tenga fuentes
+  semánticas fallidas o una autoridad multi-vista no `Single`, no bloquea (T-A3-57, T-A3-58). Un rack que no se puede
+  clasificar nunca es ajeno: bloquea por la condición 1.
+- **Rack `Blocked` y descubrimiento.** `FatalIncompatibleTarget` es inalcanzable con un solo `VariableType` (P24.6,
+  l. 2164), y toda otra causa de `Blocked` —`FatalUnknownProperty` y `FatalMalformedReference`— hace `Indeterminate` la
+  sonda: la semántica de la sonda no cambia (P21.4, l. 1557-1561; Discovery §7, l. 541; D14, l. 914-916;
+  `ProjectVariableConsumerProbe.cs:71-84`). Por tanto, en esta build un rack `Blocked` nunca se clasifica como ajeno y
+  siempre da además `DiscoveryIndeterminate` para cualquier cierre.
+- **Precisión sobre la orden de A3-R2.** La orden pedía que «el mismo rack estructural fuera del cierre» no bloqueara. Con
+  la sonda que V6 conserva (P21.4, l. 1557-1561: «La semántica de la sonda no cambia»; Discovery §7, l. 537-541), un
+  sobre no interpretable aborta el descubrimiento de **todo** el dibujo, y una entrada con propiedad o kind desconocidos
+  o id ilegible da `Indeterminate` y lo aborta para **cualquier** cierre: un rack ilegible nunca es demostrablemente
+  ajeno, así que siempre bloquea. Lo mismo vale para todo rack `Blocked` alcanzable (viñeta anterior). La prueba pedida
+  se aplica a un rack con defectos que el descubrimiento sí clasifica como ajeno: fuentes semánticas fallidas y autoridad
+  no `Single` (T-A3-58). Supone la sonda de V6, que clasifica una fuente `expression` legible (P21.4, l. 1559-1560);
+  la sonda de hoy da `Indeterminate` para todo kind distinto de `projectVariable`
+  (`ProjectVariableConsumerProbe.cs:79-84`).
 - **Fallo propio estático de una fuente.** Una fuente cuya propia expresión tiene aridad errónea o forma no canónica es
   `Intrinsic` aunque además lea una variable que falla: el fallo propio precede al superior, leído del orden «(propio,
   superior y dominio)» de la precedencia de P24.6 (l. 2168-2169), y hace a la fuente «no corregible desde arriba»
-  (§7.2.1, l. 2759-2761). La precedencia anterior de P24.6 se mantiene: por
-  ejemplo, `ABS(#<gone>, 2)` es `RepairableMissingTarget`.
-- Si X es un `CycleRoot` de un ciclo simple, `<X>` nombra a sus miembros y «corregir cualquiera de ellos rompe el ciclo»
-  es cierto. En una SCC no simple **nunca** hay sugerencia (U7).
-- **A3 cuenta firmas, no variables.** Con más de una firma nunca hay sugerencia, también si un mismo dueño aporta dos
-  (U6(b)). §7.2.1 cuenta «variables cuya propia definición falla», con la que `H = ABS(#<m>, 2)` tendría una sola causa
-  raíz y la sugerencia «Corregir H». A3 la oculta: es un cambio **directo y conservador** de D18 puntos 1-2 (A3 §10.3).
+  (§7.2.1). La precedencia anterior de P24.6 se mantiene: por ejemplo, `ABS(#<gone>, 2)` es `RepairableMissingTarget`.
+  Con un fallo estático conocido, la fuente no se evalúa numéricamente y su firma `Intrinsic` es solo la de sus fallos
+  estáticos: `1 / 0 + ABS(1, 2)` es `Intrinsic(InvalidArguments(ABS, 2))`, y su `DivisionByZero` es latente
+  (T-A3-59). Sin fallo estático propio, una fuente que lee una variable que falla tampoco se evalúa: `H + 1 / 0` con H
+  fallando es `Upstream`, y su `DivisionByZero` es latente, no un fallo propio conocido (M1, N-5).
+- **Ciclo simple.** Si X es un `CycleRoot` de un ciclo simple, `<X>` nombra a sus miembros y «corregir cualquiera de
+  ellos rompe el ciclo» es cierto. En una SCC no simple **nunca** hay sugerencia (U7).
 - **Sin sugerencias falsas respecto de lo conocido.** Todo se decide con los diagnósticos **conocidos** del snapshot
-  (A3 §5.1, N-5). La regla puede ocultar una sugerencia válida y nunca muestra una que desmientan las fuentes inválidas
-  conocidas de este rack o de los racks que consumen el cierre de X, que es el alcance de §7.2.6. Un fallo numérico
-  latente puede aparecer después de la corrección (T-A3-39).
-- **Límite heredado de V6.** Una fuente estructuralmente mal formada en un rack cuyo consumo del cierre no se puede
-  determinar hace que las mutaciones que necesitan descubrimiento aborten (§5.1, l. 2601-2603; P21.4), y la condición no
-  la mira. A3 no cambia esa regla y la registra para el ADR de reemplazo.
+  (A3 §5.1, N-5) y con el descubrimiento completo de la condición 1. La regla puede ocultar una sugerencia válida y nunca
+  muestra una que desmientan las fuentes inválidas conocidas de este rack o de los racks que consumen el cierre de X,
+  que es el alcance de §7.2.6. Un fallo numérico latente puede aparecer después de la corrección (T-A3-39).
 
-**(d) Bloqueo de la recuperación: razones.** Cuando la condición no se cumple para una fuente `Upstream`, nunca hay
-sugerencia y el diagnóstico lleva, como datos estructurados y no como texto, **todas** las razones que aplican, en este
-orden:
+**(d) Bloqueo de la recuperación: razones.** Cuando la condición no se cumple para una fuente `Upstream` f, nunca hay
+sugerencia y el diagnóstico lleva, como datos estructurados y no como texto, el **conjunto estable** de todas las razones
+que aplican, siempre en este orden:
 
 | Razón | Cuándo | Datos |
 |---|---|---|
-| `OtherInvalidSources` | Hay al menos una **fuente bloqueante** (abajo) | Las fuentes bloqueantes, con rack, propiedad y causa, como en §7.2.4, y si cada una está en el rack de la fuente o en otro |
-| `SeveralRoots` | `SourceRoots` tiene más de una firma | `SourceRoots`, en el orden de A3 §5.7 |
-| `NonSimpleCycle` | `SourceRoots = {CycleRoot(C)}` y C no es un ciclo simple | Los miembros de C |
+| `OtherInvalidSources` | Hay al menos una **fuente bloqueante** (abajo) | Las fuentes bloqueantes, con rack, propiedad y causa, como en §7.2.4, y si cada una está en el rack de f o en otro |
+| `SeveralRecoveryUnits` | `RecoveryUnits(SourceRoots(f))` tiene más de una unidad | Las unidades, en su orden, y las firmas de `SourceRoots(f)`, en el orden de A3 §5.7 |
+| `NonSimpleCycle` | `RecoveryUnits(SourceRoots(f)) = {CycleRoot(C)}` y C no es un ciclo simple | Los miembros de C |
+| `DiscoveryIndeterminate` | El descubrimiento de la condición 1 abortaría para alguna unidad de `RecoveryUnits(SourceRoots(f))` | Las causas de aborto —sobre no interpretable, sonda `Indeterminate`, positivos parciales o autoridad no `Single`—, cada una con la definición o el rack que la provoca y las unidades afectadas, en el orden fijado abajo |
 
-**Fuente bloqueante.** Para una fuente `Upstream` f, otra fuente fallida g es bloqueante si está en un rack que consume
-el cierre de alguna raíz de `SourceRoots(f)` y además:
+El mismo estado diagnosticado da siempre el mismo conjunto de razones: no hay precedencia entre ellas. Para que también
+los datos sean estables, las listas van en un orden fijo, que no es semántico y no depende del orden del barrido:
+
+- **Identidad de rack.** Un rack se identifica, se compara y se ordena por su `RackId` con `OrdinalIgnoreCase`, la
+  comparación con la que se agrupan sus vistas (`ProjectVariableConsumerDiscovery.cs:232`). Como dato se da la grafía
+  mínima en `Ordinal` entre las de sus vistas, nunca la de la primera vista del barrido, y la misma en todas las razones.
+- **Fuentes bloqueantes:** por rack (`OrdinalIgnoreCase`) y después por token de propiedad (`Ordinal`, P21.6,
+  l. 1658-1659).
+- **Causas de aborto:** las cuatro clases de la familia A (P21.4, l. 1557-1561, y Discovery §7, l. 537-541), sin
+  duplicados, cada causa con el conjunto de unidades de `RecoveryUnits(SourceRoots(f))` cuyo descubrimiento aborta por
+  ella, en el orden de las unidades:
+  - `EnvelopeUnclassifiable(DefinitionId)`: una definición con sobre no interpretable. Es la precondición global y no
+    depende del cierre (`:104-109`, `:197-216`): si hay alguna, el descubrimiento de **toda** unidad aborta antes de
+    agrupar racks, se listan **todas**, una por `DefinitionId` distinto y ordenadas por `DefinitionId` (`Ordinal`),
+    cada una con todas las unidades, y **ninguna** causa de rack;
+  - si no hay ninguna, para cada par (rack, unidad) cuyo descubrimiento aborta, **una** causa: la primera que aplica en
+    el orden de las comprobaciones de la familia A (`:122-149`) —`ProbeIndeterminate(rack)`, `PartialPositives(rack)`,
+    `NonSingleAuthority(rack)`— sobre el descubrimiento **por conjunto** de P21.4 del cierre de esa unidad (una vista es
+    positiva si alguna de sus fuentes toca ese cierre), no sobre descubrimientos por variable: la equivalencia de P21.4
+    (l. 1562-1563) fija el resultado —aborto y consumidores—, no la causa. `ProbeIndeterminate` no depende del cierre
+    y es la única causa de su rack; `PartialPositives` y `NonSingleAuthority` sí dependen, así que un mismo rack puede
+    aparecer con las dos, cada una con sus unidades. Las causas se agrupan por (rack, clase) y se ordenan por rack y
+    después por clase, en ese orden de comprobación.
+  - El código de hoy se detiene en la primera definición o en el primer rack que aborta (`:204-212`, `:122-149`); G9
+    tiene que evaluar todas las definiciones y todos los racks para obtener el conjunto completo. El conjunto de entradas
+    es el del preflight del intent correctivo; la diferencia con el panel, que solo mira entradas colocadas, es el
+    hallazgo lateral L1 del Discovery (§7, l. 544), que A3 no resuelve.
+
+**Fuente bloqueante.** Para una fuente `Upstream` f, otra fuente fallida g es bloqueante si está en el rack de f o en un
+rack que el descubrimiento identifica como consumidor del cierre de alguna unidad de `RecoveryUnits(SourceRoots(f))`, y
+además:
 
 - g no está clasificada como `RepairableSemanticFailure(Upstream)`; o
-- g es `Upstream` y `SourceRoots(g)` contiene alguna raíz que **no** está en `SourceRoots(f)`.
+- g es `Upstream` y `RecoveryUnits(SourceRoots(g))` contiene alguna unidad que **no** está en
+  `RecoveryUnits(SourceRoots(f))`.
 
-Con una sola raíz X, «g no es bloqueante» equivale exactamente a la condición 3 de M10(c): corregir X recupera toda g
-cuyas raíces son {X}. Con varias raíces, la lista es **informativa**: excluye las fuentes cuyas raíces están todas en
-`SourceRoots(f)`, que no afirman nada que `SeveralRoots` no diga ya, aunque alguna pueda bloquear la corrección de una
-raíz concreta. Por ejemplo, con `f = A1 + A2` en el rack K y `s3 = A1 + 1` en el rack K3, corregir A1 recupera s3 y la
-corrección queda bloqueada solo por f; en cambio, con `A2 = #<a2> + A1` y `g = A1 + 1` en el mismo rack que
-`f = A2 + 1`, corregir A2 recupera f y R1 bloquea por g.
-
-- **Completitud.** Las tres razones corresponden a las condiciones 1, 2 y 3 de M10(c): cada condición que falla da su
-  razón, y la condición 4 no añade ninguna condición de presentación. `SeveralRoots` y `NonSimpleCycle` se excluyen, y
-  sus listas nunca están vacías: una SCC no simple tiene al menos dos miembros.
+- **Firmas de una misma unidad** no hacen bloqueante a una fuente: con `H = ABS(#<m>, 2)` y `J = H + 1`, las fuentes
+  `f = H + 1` y `g = J * 2` tienen la misma unidad H, aunque g la alcance a través de J.
+- **Con `DiscoveryIndeterminate`**, esta regla precisa la definición anterior: las fuentes bloqueantes se buscan en el
+  rack de f, cuyo consumo del cierre consta por la propia f, y en los consumidores de las unidades cuyo descubrimiento
+  sí terminó; A3 no afirma nada de los racks que el descubrimiento no pudo clasificar. `InspectBinding` solo clasifica
+  las fuentes de un rack con autoridad `Single` (`ProjectVariablesWorkspace.cs:436-447`), cuyas vistas son
+  estructuralmente iguales, así que el rack de una f clasificada nunca aborta por positivos parciales ni por autoridad no
+  `Single`; sí puede abortar por una sonda `Indeterminate` (T-A3-56), y entonces sus demás fuentes fallidas se listan,
+  estructurales incluidas.
+- **Exactitud.** Con una sola unidad X, «g no es bloqueante» equivale exactamente a la condición 4: corregir X recupera
+  toda g cuyas unidades son {X}. Con varias unidades, la lista es **informativa**: excluye las fuentes cuyas unidades
+  están todas en las de f, que no afirman nada que `SeveralRecoveryUnits` no diga ya, aunque alguna pueda bloquear la
+  corrección de una unidad concreta. Por ejemplo, con `f = A1 + A2` en el rack K y `s3 = A1 + 1` en el rack K3, corregir
+  A1 recupera s3 y la corrección queda bloqueada solo por f; en cambio, con `A2 = #<a2> + A1` y `g = A1 + 1` en el mismo
+  rack que `f = A2 + 1`, corregir A2 recupera f y R1 bloquea por g.
+- **Completitud.** La condición 1 da `DiscoveryIndeterminate`; la 2, `SeveralRecoveryUnits`; la 3, `NonSimpleCycle`, que
+  solo se evalúa con una unidad; y la 4 —o, con varias unidades, la definición de fuente bloqueante— da
+  `OtherInvalidSources`. La condición 5 no añade condiciones de presentación. `SeveralRecoveryUnits` y `NonSimpleCycle`
+  se excluyen, y ninguna lista queda vacía: una SCC no simple tiene al menos dos miembros y un aborto tiene causa.
 - **Texto literal de §7.2.4.** «La corrección de <X> no puede aplicarse mientras este rack mantenga otras fuentes
-  inválidas» (l. 2778-2779) se usa **solo** si se cumplen las tres cosas: hay `OtherInvalidSources` con al menos una
-  fuente bloqueante en el rack de f; no aplica `SeveralRoots`; y no aplica `NonSimpleCycle`. Entonces `<X>` es la raíz
-  única, y la lista incluye también las fuentes bloqueantes de otros racks, como en V6.
+  inválidas» (l. 2778-2779) se usa **solo** si hay `OtherInvalidSources` con al menos una fuente bloqueante en el rack de
+  f, y no aplican ni `SeveralRecoveryUnits` ni `NonSimpleCycle`. Entonces `<X>` es la unidad única, y la lista incluye
+  también las fuentes bloqueantes de otros racks, como en V6. Si además aplica `DiscoveryIndeterminate`, se informa
+  también, con las reglas siguientes.
 - **En los demás casos**, la capa de texto nombra con verdad cada razón que aplica y lista las fuentes bloqueantes con su
-  rack, las raíces o los miembros. **No** dice «este rack» si ninguna fuente bloqueante está en él, y **no** afirma que
-  haya otras fuentes inválidas si no hay `OtherInvalidSources`.
-- **Veracidad de `SeveralRoots` y `NonSimpleCycle`.** Su redacción solo puede afirmar que la recuperación corrigiendo una
-  sola causa **no está garantizada**, nunca que sea imposible con una corrección. Corregir un intermedio común puede
-  recuperarla, como B en U2 o H en CX-2; y en una SCC no simple, corregir un miembro que esté en todos sus ciclos
-  también.
-- **Aviso de reparación.** El aviso de §7.2.4 con la fórmula canónica (l. 2781-2784) se conserva **solo** si el rack es
-  reparable (`RackRepairability = Repairable`, P24.6). Si el rack está `Blocked` —por ejemplo, con una fuente
-  estructural hermana—, el texto dice que el rack está bloqueado sin reparación (§5.1, l. 2601-2603; §7.2, l. 2731-2733)
-  y **no** anuncia que la reparación eliminará la fórmula.
+  rack, las unidades y sus firmas, los miembros o las causas del aborto. **No** dice «este rack» si ninguna fuente
+  bloqueante o causa de aborto está en él; **no** afirma que haya otras fuentes inválidas sin `OtherInvalidSources`; y
+  con `DiscoveryIndeterminate` **no** afirma que exista una fuente inválida cuyo estado se desconoce ni que el rack no
+  clasificado consuma el cierre.
+- **Veracidad de `SeveralRecoveryUnits`, `NonSimpleCycle` y `DiscoveryIndeterminate`.** Su redacción solo puede afirmar
+  que la recuperación con una corrección **no puede garantizarse ni demostrarse** en el estado actual, nunca que sea
+  imposible. Corregir un intermedio común puede recuperarla, como B en U2 o H en CX-2; en una SCC no simple, corregir un
+  miembro que esté en todos sus ciclos también; y un descubrimiento hoy indeterminado puede completarse después.
+- **Aviso de reparación y rack `Blocked`.** El aviso de §7.2.4 con la fórmula canónica (l. 2781-2784) se conserva
+  **solo** si el rack es reparable (`RackRepairability = Repairable`, P24.6). Un rack `Blocked` no ofrece acción ni aviso
+  de reparación, aunque alguna de sus fuentes semánticas pareciera reparable (D18, l. 1039-1041); el texto dice que está
+  bloqueado sin reparación (§5.1, l. 2601-2603; §7.2, l. 2731-2733). En esta build ese rack da además
+  `DiscoveryIndeterminate`. Si un diagnóstico posterior deja el rack `Blocked`, no se repite una sugerencia anterior.
+- **Reparación que abortaría.** Tampoco se muestra el **aviso** «Reparar el rack eliminará…» cuando la propia
+  resolución del rack que usa `RepairBrokenRack` abortaría (familia B, `ProjectVariableConsumerDiscovery.cs:157-189`;
+  Discovery §7, l. 537, 540). Como la fuente clasificada ya exige autoridad `Single`, en la práctica eso solo ocurre con
+  la precondición global de sobres no interpretables. El texto no describe una reparación que no puede ejecutarse. A3
+  fija solo el texto: **no** cambia la visibilidad de la acción de reparación, que hoy se ofrece también con el dibujo
+  indeterminado (`ProjectVariablesWorkspace.cs:284-287`), ni resuelve el hallazgo lateral L1 del Discovery (§7,
+  l. 544). El aviso de fórmulas de P21.2 paso 8 y de D18 punto 7 sigue estas dos reglas.
+- **Un aborto del descubrimiento solo quita la sugerencia.** Calcular la condición de §7.2 para el mensaje de
+  confirmación de la reparación no hace abortar la reparación: `DiscoveryIndeterminate` solo quita la sugerencia y
+  añade su razón. Con K9 `Indeterminate` y K `Repairable` (U10), la reparación de K y su aviso siguen disponibles.
 - La redacción en español de los casos nuevos es de la capa de texto (P15.4, G10). Como amplía el punto 4 de D18, que
   fija textos literales, se fija en el ADR de reemplazo con estas restricciones (A3 §12).
-- **Precisión sobre la indicación del Coordinador.** La orden de A3-R1 pedía que, sin sugerencia, siguiera «el
+- **Precisión sobre la indicación del Coordinador (A3-R1).** La orden de A3-R1 pedía que, sin sugerencia, siguiera «el
   diagnóstico de bloqueo genérico». El bloqueo se mantiene, sin sugerencia y con el aviso de reparación cuando el rack
-  es reparable; A3-R1 solo precisa qué razón informa, porque el texto literal de §7.2.4 sería falso en U7, con varias
-  raíces sin fuentes bloqueantes, con bloqueos solo en otros racks y, en su aviso de reparación, con un rack `Blocked`.
-- **Rechazo de R1.** Usa la misma clasificación y las mismas razones (§7.2.7, l. 2798-2799; D18 punto 7), las del
-  **estado diagnosticado antes de la corrección**, como el mensaje de P21.2 paso 8 (l. 1538-1541): para cada fuente
-  fallida de los racks que bloquean, sus razones del panel. No describen el estado resultante del plan rechazado. El
-  fallo tipado del estado resultante —el rack que no resuelve, con su `OutOfRange` o su clasificación— se sigue
-  informando como hoy (P22.8, P24.5); las razones del panel se añaden solo para las fuentes que ya fallaban.
+  es reparable; A3 solo precisa qué razón informa, porque el texto literal de §7.2.4 sería falso en U7, con varias
+  unidades sin fuentes bloqueantes, con bloqueos solo en otros racks, con un descubrimiento indeterminado y, en su aviso
+  de reparación, con un rack `Blocked`.
+- **Rechazo de R1.** Si R1 rechaza una corrección intentada:
+  - se informa el **fallo tipado exacto del estado resultante intentado**: el rack que no resuelve, con su `OutOfRange`
+    o su clasificación (P22.8, P24.5);
+  - no se inventan diagnósticos que no se evaluaron;
+  - no se repite la sugerencia de recuperación como si el estado intentado la cumpliera;
+  - si el rack ya estaba afectado antes, el mensaje **además** indica que hay que repararlo primero, lista sus fuentes
+    inválidas del estado diagnosticado **antes** de la corrección, con sus razones de M10(d), y advierte qué fórmulas
+    eliminaría la reparación, como exigen P21.2 paso 8 (l. 1538-1541), §7.2.7 (l. 2798-2799) y D18 punto 7; ese
+    contexto nunca se presenta como el fallo del estado resultante, y el aviso de fórmulas sigue las reglas de
+    «Aviso de reparación y rack `Blocked`» y «Reparación que abortaría». Si antes se cumplía la condición, sus fuentes
+    inválidas se listan igual, pero no hay razones de bloqueo previas que mostrar.
 
 **(e) Cadena representativa frente a causas raíz (CX-3).**
 
@@ -739,6 +907,34 @@ commit:    X pasa a 5 por una edición ajena; B = [DF{Y; [Y, Z]; …}]
 La distinción es deliberada: la observación de símbolo conserva la comparación conservadora de P21.6, y la decisión de
 reparación compara la razón, no el camino (D20, l. 1289). Lo mismo ocurre en U9, donde además cambia la causa directa.
 
+**(f) Datos de las decisiones de reparación (RR-1).** La regla de derivación (D19, l. 1158-1163) exige una observación
+comparable para todo dato que justifique una decisión **destructiva**. `RepairBrokenRack` retira las fuentes que
+`InspectBinding` clasifica como reparables; el mensaje de §7.2 se muestra antes de confirmar, pero no cambia qué fuentes
+se retiran. Inventario tras A3-R2:
+
+| Dato | ¿Decide qué borra `RepairBrokenRack`? | En el `PlanReadSet` |
+|---|---|---|
+| Clasificación reparable de cada fuente retirada | Sí | `RepairDecisionObservation` (D20), sin cambio |
+| `MissingTarget`: ids ausentes de la fuente | Sí | Datos de la razón, sin cambio |
+| `Intrinsic`: firma de los fallos propios, incluidos el `InvalidArguments` estático con token y número de argumentos y `NonCanonicalForm` | Sí | Datos de la razón (A3 §7.2) |
+| `Upstream`: ids de las variables leídas que fallan y `RootCauses` **completo** de cada una, por variable y en el orden de P11.1 | Sí | Datos de la razón (M10(b)) |
+| `Domain` | Sí | Solo la razón, sin cambio |
+| `RecoveryUnits`, ciclo simple o no, resultado del descubrimiento de consumidores, clasificación de las fuentes de **otros** racks, razones de M10(d) y aviso de reparación | **No**: solo deciden qué se muestra | **No** se observan |
+
+- Las fuentes hermanas del **rack reparado** sí deciden si hay reparación y qué se retira (`Blocked` o `Repairable`,
+  P24.6, l. 2170-2171). Ya quedan cubiertas sin datos nuevos: cada fuente retirada por su
+  `RepairDecisionObservation`, las fuentes conservadas por su validación en commit, y el estado estructural del rack por
+  las precondiciones propias de la mutación y la re-inspección de `InspectBinding` (P21.6, l. 1661-1663, 1697-1699).
+
+- `RecoveryUnits` se derivan de `RootCauses` y de las SCC, y no se guardan en el `PlanReadSet`: `Upstream` sigue
+  comparando firmas. Dos estados que exigen corregir la misma variable X por razones distintas —X con `BrokenReference`
+  antes y con `InvalidArguments` después— tienen la misma unidad X y **no** coinciden en `Upstream` (T-A3-53).
+- `RepairBrokenRack` es de alcance de rack y no descubre consumidores del cierre (familia B: Discovery §7, l. 540;
+  `ProjectVariableConsumerDiscovery.cs:157-160`, «link, unlink, repair»), así que ni el
+  ciclo simple ni el descubrimiento deciden lo que borra. Si un diseño futuro de G9 hiciera depender la retirada de alguno
+  de esos datos, RR-1 exigiría observarlo; A3 no lo introduce.
+- Como ya fija N-3 (M10(b)), `Upstream` no protege las premisas de presentación.
+
 ---
 
 ## 6. Ciclos, orden y conjuntos
@@ -752,9 +948,9 @@ reparación compara la razón, no el camino (D20, l. 1289). Lo mismo ocurre en U
   por dependencias que fallan fuera de su SCC. **Nunca** tiene `DependencyFailed` por una arista dentro de su SCC,
   tampoco por una autorreferencia.
 - `RootCauses` es el mismo para todos los miembros y reúne las raíces de toda la SCC (M6).
-- P13.4 («no son evaluables (`Cycle` o `DependencyFailed`)», l. 1182-1183) se lee así: un miembro tiene siempre `Cycle`;
-  un dependiente transitivo que no es miembro tiene al menos un `DependencyFailed`; ninguno se evalúa y ninguno tiene
-  fallback.
+- P13.4 («no son evaluables (`Cycle` o `DependencyFailed`)», l. 1182-1183), enmendada por A3 (A3 §10.1), queda así con
+  A3: un miembro tiene siempre `Cycle`; un dependiente transitivo que no es miembro tiene al menos un `DependencyFailed`;
+  ninguno se evalúa y ninguno tiene fallback.
 - P13.5 (l. 1186-1187) se cumple sin cambio: todos los miembros dan `Failed` con `Cycle` y sus dependientes dan
   `DependencyFailed`.
 
@@ -820,8 +1016,13 @@ G7 expone:
 
 `RootCauses` y el predicado de ciclo simple son las únicas adiciones de A3. **No** entran en G7: el cierre afectado de
 racks, el descubrimiento de consumidores, la implementación del `PlanReadSet`, la ejecución de la reparación, la
-sugerencia de recuperación ni el `MutationPlan`. El conjunto afectado y el conjunto leído de P12.7 siguen en P21.2 y
-P21.6, en G9.
+sugerencia de recuperación, `SourceRoots`, `RecoveryUnits`, las razones de bloqueo ni el `MutationPlan`. El conjunto
+afectado y el conjunto leído de P12.7 siguen en P21.2 y P21.6, en G9.
+
+- `RecoveryUnits` (M10(c)) se deriva de `RootCauses` y del dueño o la SCC de cada firma, datos que G7 ya expone; no
+  necesita nada más del grafo. Por eso pertenece a la capa de recuperación de Application (G9 y G10) y G7 no lo prueba.
+- Las pruebas de G7 de A3 §11.1 se limitan al núcleo de grafo: diagnósticos, orden, cadenas, firmas, `RootCauses`,
+  conjuntos y el predicado de ciclo simple.
 
 ---
 
@@ -855,6 +1056,10 @@ P21.6, en G9.
   mismos datos, salvo que la precedencia de P24.6 la clasifique antes (estructural, id ausente o tipo incompatible;
   A3 §5.10(c)). El diagnóstico sin datos del evaluador de G6 (`ExpressionEvaluator.cs:329-330`) no llega a
   `RegistryEvaluation`.
+- **Fallo estático con fallo numérico latente.** Una fuente o un símbolo con un `InvalidArguments` estático no se
+  evalúa, aunque además contenga una operación que fallaría al evaluar: `1 / 0 + ABS(1, 2)` da solo
+  `InvalidArguments(ABS, 2)`; el `DivisionByZero` queda latente y no es un diagnóstico conocido (M1, N-5). Como fuente
+  de rack, `InspectBinding` la clasifica `Intrinsic` con esa firma, por la misma comprobación estática (T-A3-59).
 
 ### 7.3 Traza opt-in y Explain
 
@@ -882,7 +1087,7 @@ definido en V6, A3 §3.2) ni para un fallo con raíz de ciclo.
 | T-V6-02 (l. 2389) | Holgura se recupera: `Healthy` | Igual: `ABORT BEFORE WRITE` |
 | T-V6-03 (l. 2390) | Otra causa raíz: cambia `RootCauses(Holgura)` | Igual: `ABORT BEFORE WRITE` |
 | P21.6, escenario de `RepairBrokenRack` (l. 1844-1853) | `RepairDecision(R, palletTolerance, Upstream(Holgura: {(Holgura, BrokenReference, [id-roto])}))` y `After(Y, Success(40))` | Igual: commit o `ABORT BEFORE WRITE` en cada rama del escenario |
-| T-V4-05, T-V4-06 y T-V4-11 (l. 2359-2360, 2365) | Cada fuente `Upstream` tiene `SourceRoots` de un elemento; la fuente de T-V4-06 (`ABS(A, B)`) es `Intrinsic` y no tiene `SourceRoots`; los bloqueos de T-V4-06 y T-V4-11 son `OtherInvalidSources` | Igual: sugerencia o bloqueo según §7.2, con el texto de §7.2.4 |
+| T-V4-05, T-V4-06 y T-V4-11 (l. 2359-2360, 2365) | Cada fuente `Upstream` tiene `SourceRoots` de un elemento y una sola unidad de recuperación, con el descubrimiento completo que esos escenarios suponen; la fuente de T-V4-06 (`ABS(A, B)`) es `Intrinsic` y no tiene `SourceRoots`; los bloqueos de T-V4-06 y T-V4-11 son `OtherInvalidSources` | Igual: sugerencia o bloqueo según §7.2, con el texto de §7.2.4 |
 
 En esos escenarios, la única diferencia es el dato estable adicional `RootCauses`, presente de forma mecánica con un solo
 elemento.
@@ -898,7 +1103,7 @@ V6»: con la lectura literal de D20, la raíz sería un símbolo y el cambio de 
 
 | Modelo | Qué haría | Decisión | Por qué |
 |---|---|---|---|
-| **MC-A** (R-A) — un `DependencyFailed` por dependencia directa que falla, con cadena representativa | Cardinalidad por dependencia y cadenas lineales con colas compartidas | **Aceptado con modificación** | Encaja con P14.3, P15.1 y P21.6 y es `O(V + E)`. Modificaciones: (1) miembros de ciclo con `DependencyFailed` solo fuera de su SCC; (2) coexistencia con los fallos propios estáticos, sin evaluación; (3) orden por código (P15.7) antes que por causa, con desempates deterministas; (4) «primer diagnóstico» según M3, raíces agregadas por dueño y raíz de ciclo como unidad; (5) `RootCauses`, porque «varias raíces = varios `DependencyFailed`» es falso con varias raíces detrás de una sola dependencia (U2) o dentro de una SCC (U4, U5); (6) `RootCauses` por SCC (MAT-1); (7) aridad y forma canónica como bloqueos estáticos (MAT-3); (8) datos del `PlanReadSet` y condición de §7.2 según M10, con clasificación `Upstream` y ciclo simple (MAT-2, MAT-4) |
+| **MC-A** (R-A) — un `DependencyFailed` por dependencia directa que falla, con cadena representativa | Cardinalidad por dependencia y cadenas lineales con colas compartidas | **Aceptado con modificación** | Encaja con P14.3, P15.1 y P21.6 y es `O(V + E)`. Modificaciones: (1) miembros de ciclo con `DependencyFailed` solo fuera de su SCC; (2) coexistencia con los fallos propios estáticos, sin evaluación; (3) orden por código (P15.7) antes que por causa, con desempates deterministas; (4) «primer diagnóstico» según M3, raíces agregadas por dueño y raíz de ciclo como unidad; (5) `RootCauses`, porque «varias raíces = varios `DependencyFailed`» es falso con varias raíces detrás de una sola dependencia (U2) o dentro de una SCC (U4, U5); (6) `RootCauses` por SCC (MAT-1); (7) aridad y forma canónica como bloqueos estáticos (MAT-3); (8) datos del `PlanReadSet` y condición de §7.2 según M10, con clasificación `Upstream` y ciclo simple (MAT-2, MAT-4); (9) condición de §7.2 con descubrimiento que no aborta (MAT-6) y contada por unidades de recuperación sobre las firmas (MAT-7) |
 | **MC-B** (R-B) — un `DependencyFailed` por símbolo, el de la primera dependencia que falla en P11.1 | Un solo diagnóstico superior por símbolo | **Rechazado** | Incumple P14.3 para las dependencias no elegidas; oculta causas posteriores (CX-1); con una sola raíz representativa, §7.2 mostraría una raíz única falsa y la reparación podría borrar una fórmula con la razón de su fuente cambiada (CX-2) |
 | **MC-C** (R-C) — un `DependencyFailed` por causa raíz distinta | Diagnósticos por raíz | **Rechazado** como modelo de diagnósticos | Materializa las raíces en los diagnósticos de todos los símbolos, `O(E·R)` en el peor caso, las pida alguien o no; exige un segundo desempate de camino por cada par símbolo-raíz; pierde el id de la causa directa de P14.3. El conjunto de raíces se conserva en `RootCauses`, bajo demanda y con memoización por snapshot (M6, M8) |
 | Un `DependencyFailed` por cada camino hasta una raíz | Enumeración completa | **Rechazado** | Crece como 2^k con k diamantes apilados |
@@ -907,6 +1112,9 @@ V6»: con la lectura literal de D20, la raíz sería un símbolo y el cambio de 
 | Aridad solo al evaluar (texto anterior) | Ocultar `InvalidArguments` tras un bloqueo | **Rechazado** (MAT-3) | V6 comprueba la aridad sobre el árbol en cada snapshot (P2.2, P7.5); oculta una invalidez conocida (U6(a)) |
 | `CycleRoot` como raíz única en cualquier SCC (texto anterior, heredado de §7.2.3) | Prometer la recuperación con un solo miembro | **Rechazado** (MAT-4) | Falso en una SCC no simple (U7) |
 | Texto de bloqueo de §7.2.4 para todo fallo de la condición | Decir siempre «mientras este rack mantenga otras fuentes inválidas» | **Rechazado** | Afirma algo falso cuando no hay otras fuentes inválidas (U7, o una fuente única con varias raíces) y deja `<X>` sin referente con varias raíces; A3 usa razones estructuradas (M10(d)) |
+| Contar las raíces por firmas para la sugerencia (texto anterior, blob `94a987f`) | `SourceRoots = {X}` con X una firma | **Rechazado** (MAT-7) | Niega la sugerencia cuando un solo símbolo tiene varios fallos propios (U11), aunque V6 cuenta variables o ciclos (§7.2.1); A3 cuenta unidades de recuperación y conserva las firmas para comparar (M10(c)) |
+| Ignorar los racks que el descubrimiento no puede clasificar (texto anterior, blob `94a987f`) | Evaluar la condición solo con las fuentes de los racks clasificados | **Rechazado** (MAT-6) | Un rack `Indeterminate` puede consumir el cierre; V6 aborta el descubrimiento y nunca lo lee como «no consume» (P21.4; §5.1). A3 exige descubrimiento completo y da `DiscoveryIndeterminate` (U10) |
+| Contar las raíces por unidades también en `Upstream` | Comparar solo la unidad de recuperación de cada variable leída | **Rechazado** | Incumple la regla de derivación de D19: la misma variable que falla por otra razón coincidiría (T-A3-53) |
 
 ---
 
@@ -921,7 +1129,10 @@ regla: cardinalidad, orden, datos, condición o alcance. Está **leída con A3**
 solo la aplica. En ADR-0041, una decisión **cambia directamente** solo si su texto aceptado deja de ser cierto con A3; si
 sigue siendo cierto aunque A3 lo complete, **se lee con A3**. Por eso P14.3, P13.4 y la fila `DependencyFailed` de P21.6
 están enmendadas en V6, mientras que sus gemelas D15 y D19 se leen: sus textos aceptados siguen siendo ciertos con M2 y
-M4.
+M4. Del mismo modo, §7.2.1 y §7.2.2 están enmendadas en V6 porque A3 precisa su condición, y D18 puntos 1-2 se leen:
+contar variables o ciclos es contar `RecoveryUnits` (M10(c)). P21.2 paso 8, §7.2.7 y D18 punto 7 también se leen: su
+aviso de fórmulas describe lo que eliminaría la reparación, y un rack `Blocked` (§7.2, l. 2731-2733; D18, l. 1039-1041)
+o una reparación que abortaría no eliminan nada.
 
 **Regla general de lectura.** Toda otra mención en V6 o en ADR-0041 de «la causa raíz» de una variable, de «la cadena
 hasta la causa raíz» o de «la causa» de un `DependencyFailed` se lee: cadena representativa y firma de raíz para cada
@@ -943,12 +1154,12 @@ hasta la causa raíz» o de «la causa» de un `DependencyFailed` se lee: cadena
 | §0.1, fila RR-1 (l. 65) | `Upstream(firma de causa raíz)` | M10(b) |
 | P24.6, tabla, fila `Upstream` (l. 2162) | «Una variable leída falla: `Cycle`, `DependencyFailed`, `BrokenReference` o un error propio de esa variable» | La clasificación no cambia; sus datos estables son los de M10(b) |
 | §5.2, decisión 7 (l. 2624-2625) | «se rompen con `ChangeDefinition` de un miembro» | A3 §6.2 |
-| §7.2.1 (l. 2759-2761) | «conjunto de causas raíz (variables cuya propia definición falla, o un ciclo tomado como una unidad)» | `SourceRoots` sobre `RootCauses` por SCC, contado por **firmas** y no por variables (M6, M10(c)) |
-| §7.2.2 (l. 2762-2766) | «Para una fuente con causa superior y causa raíz única X … todas las fuentes fallidas … tienen causa superior con causa raíz exactamente X» | M10(c): clasificación `Upstream` y `SourceRoots = {X}` para todas; ciclo simple si X es un `CycleRoot` |
+| §7.2.1 (l. 2759-2761) | «conjunto de causas raíz (variables cuya propia definición falla, o un ciclo tomado como una unidad)» | M10(c): `SourceRoots` es el conjunto de **firmas** sobre `RootCauses` por SCC, y se cuenta por `RecoveryUnits`, que son exactamente las variables o los ciclos del texto vigente; los fallos propios de un miembro de ciclo son una unidad distinta de su ciclo |
+| §7.2.2 (l. 2762-2766) | «Para una fuente con causa superior y causa raíz única X … todas las fuentes fallidas de todos los racks que consumen el cierre de X tienen causa superior con causa raíz exactamente X» | M10(c): descubrimiento completo del cierre de X (condición 1); `RecoveryUnits(SourceRoots) = {X}`; clasificación `Upstream` y `RecoveryUnits = {X}` para todas las fuentes fallidas de los racks consumidores; ciclo simple si X es un `CycleRoot` |
 | §7.2.3 (l. 2767-2773) | «Si X es un ciclo, `<X>` nombra a sus miembros: corregir cualquiera de ellos rompe el ciclo» | Solo si X es un ciclo simple (A3 §6.2, M10(c)) |
-| §7.2.4 (l. 2774-2788) | Si no se cumple la condición, mensaje de bloqueo con «otras fuentes inválidas» | M10(d): razones `OtherInvalidSources`, `SeveralRoots` y `NonSimpleCycle`; el texto literal de §7.2.4 solo en el caso que fija M10(d) (fuente bloqueante en el mismo rack, una sola raíz y sin `NonSimpleCycle`); el aviso de reparación solo si el rack es `Repairable` |
+| §7.2.4 (l. 2774-2788) | Si no se cumple la condición, mensaje de bloqueo con «otras fuentes inválidas» | M10(d): razones `OtherInvalidSources`, `SeveralRecoveryUnits`, `NonSimpleCycle` y `DiscoveryIndeterminate`; el texto literal de §7.2.4 solo en el caso que fija M10(d) (fuente bloqueante en el mismo rack, sin `SeveralRecoveryUnits` y sin `NonSimpleCycle`); el aviso de reparación solo si el rack es `Repairable` y la reparación no abortaría |
 | P28.3, fila G7 (l. 2290) | «… cortocircuito `DependencyFailed`; conjuntos de P12.7» | Además, las pruebas de G7 de A3 §11.1 |
-| P28.3, fila G8 (l. 2291) | Resultados de `InspectBinding` para los dos kinds, entre otras | Además, T-A3-46 |
+| P28.3, fila G8 (l. 2291) | Resultados de `InspectBinding` para los dos kinds, entre otras | Además, T-A3-46 y T-A3-59 |
 | P28.3, fila G9 (l. 2292) | Pruebas de G9 | Además, las pruebas de A3 §11.2 sin marca o marcadas G9 |
 | P28.3, fila G10 (l. 2293) | Pruebas de G10 | Además, las pruebas de A3 §11.2 marcadas G10 |
 
@@ -971,6 +1182,9 @@ hasta la causa raíz» o de «la causa» de un `DependencyFailed` se lee: cadena
 | P15.3 (l. 1242) | `Cycle` y `DependencyFailed` entre los códigos semánticos | Sin cambio: ningún código nuevo |
 | P17.7 (l. 1356-1359) | Los errores semánticos dan un resultado por símbolo o por fuente | Sin cambio |
 | P21.2, paso 4 (l. 1530) | `I = {X} ∪ dependientes transitivos de X` | Sin cambio (A3 §6.5) |
+| P21.2, paso 7 (l. 1536-1537) | Consumidores de rack de cualquier variable de `I`, sobre una proyección del barrido (P21.4) | M10(c), condición 1: la sugerencia exige que este mismo descubrimiento termine con éxito sobre el snapshot diagnosticado |
+| P21.2, paso 8 (l. 1538-1541) | R1: si el rack ya estaba afectado, el mensaje lista sus fuentes inválidas y advierte qué fórmulas eliminaría la reparación, con la regla de §7.2 | M10(d), rechazo de R1: fallo tipado exacto del estado intentado y, además, la lista de fuentes inválidas con su clasificación y, para las `Upstream`, sus razones previas de M10(d), como contexto; el aviso de fórmulas solo con el rack `Repairable` y si la reparación no abortaría |
+| P21.4 (l. 1557-1563) | «La semántica de la sonda no cambia: tri-estado, `Indeterminate` aborta, positivos parciales abortan y se exige autoridad `Single`» | Sin cambio; base de la condición 1 de M10(c) y de `DiscoveryIndeterminate` (U10) |
 | P21.3 (l. 1556) | «también con dos errores dentro de un ciclo» | Si los dos errores recaen en un mismo miembro, coexisten como diagnósticos (M2); la salida por R1, R2 y la reparación no cambia |
 | P21.6, sin dependencias transitivas por separado (l. 1641-1645) | «El resultado de un símbolo observado ya incorpora el de sus dependencias» | Con M10(a), ese resultado incorpora también `RootCauses` |
 | P21.6, resultado comparable (l. 1667-1670) | «`Failed` compara, en el orden determinista de P15.7, el código de cada diagnóstico del símbolo y sus datos estructurados estables» | M3 y M10(a) |
@@ -982,15 +1196,16 @@ hasta la causa raíz» o de «la causa» de un `DependencyFailed` se lee: cadena
 | P21.6, casos fijados por prueba (l. 1872, 1875-1877) | «fallo con otra causa»; «fallo superior idéntico, recuperado o con otra causa» | M10(a) y M10(b) |
 | P22.9 (l. 1951) | «las variables en error, con su causa raíz, los miembros y la ruta de cada ciclo y sus dependientes» | Con su `RootCauses` |
 | P22.9 (l. 1954) | Mensaje de recuperación condicional para cada fuente con causa superior | M10(c) |
-| P24.6, precedencia (l. 2168-2169) | Estructural, id ausente, tipo incompatible y fallo semántico, para una fuente de rack | Sin cambio: M2 trata de símbolos. Una fuente con aridad errónea o forma no canónica propia es `Intrinsic` aunque lea una variable que falla, salvo que esta precedencia la clasifique antes (A3 §5.10(c), A3 §7.2) |
+| P24.6, precedencia (l. 2168-2169) | Estructural, id ausente, tipo incompatible y fallo semántico, para una fuente de rack | Sin cambio: M2 trata de símbolos. Una fuente con aridad errónea o forma no canónica propia es `Intrinsic` aunque lea una variable que falla, salvo que esta precedencia la clasifique antes; su firma es la de sus fallos estáticos, aunque contenga un fallo numérico latente (A3 §5.10(c), A3 §7.2) |
 | P27.1 (l. 2255) | «diagnósticos (P15), con la cadena hasta la causa raíz» | A3 §7.3 |
 | §5.1, filas `Cycle`, `InvalidArguments`, `DependencyFailed` y `NonCanonicalForm` (l. 2592-2596) | Clasificación semántica | Sin cambio |
+| §5.1, fuente estructuralmente mal formada (l. 2601-2603) | «la sonda da `Indeterminate` y las mutaciones que necesitan descubrimiento abortan … nunca se interpreta como "no consume"»; rack bloqueado, sin reparación | Sin cambio; M10(c) condición 1, `DiscoveryIndeterminate`, y rack `Blocked` sin aviso de reparación (M10(d)) |
 | §5.2, decisión 5 (l. 2619-2621) | El panel muestra la causa raíz | Con `RootCauses` |
 | §7.2, commit de la reparación (l. 2734-2738) | «ya no es reparable por la misma razón —se recuperó, cambió su causa…—» | M10(b): «cambió su causa» incluye cualquier cambio de `RootCauses` |
 | §7.2, tabla de confirmación (l. 2749, 2751) | `FailureCause`; `UpstreamCause`: «la variable superior y su código» | Cada variable superior que falla, en el orden de P11.1, con su `RootCauses`, en la capa de texto (G10) |
 | §7.2.5 (l. 2789-2791) | Consecuencia de dos causas raíz independientes | Sin cambio |
 | §7.2.6 (l. 2792-2797) | «ninguna otra fuente inválida conocida» | Diagnósticos conocidos del snapshot; fallos numéricos latentes (A3 §5.1, N-5) |
-| §7.2.7 (l. 2798-2799) | «Mismo texto en el rechazo … usa la misma clasificación: lista las fuentes que bloquean» | La misma clasificación incluye las razones de M10(d), del estado diagnosticado antes de la corrección |
+| §7.2.7 (l. 2798-2799) | «Mismo texto en el rechazo … usa la misma clasificación: lista las fuentes que bloquean» | M10(d), rechazo de R1: se informa el fallo tipado exacto del estado resultante intentado; además, las fuentes inválidas con su clasificación y, para las `Upstream`, las razones de M10(d) del estado diagnosticado antes de la corrección, como contexto y nunca como el fallo del estado intentado; el aviso de fórmulas, solo con el rack `Repairable` y si la reparación no abortaría |
 | P28.5 a P28.8: T-V3-09 (l. 2333), T-V3-13 (l. 2337), T-V4-01 (l. 2355), T-V4-05 y T-V4-06 (l. 2359-2360), T-V4-11 (l. 2365), T-V5-01 y T-V5-02 (l. 2372-2373), T-V5-09 (l. 2380), T-V6-01 a T-V6-03 (l. 2388-2390) | Escenarios vigentes | A3 solo afirma igualdad con V6 en los escenarios enumerados en A3 §8. T-V5-09 no lleva observaciones y A3 no lo toca. En T-V3-09, si los dos errores recaen en un mismo miembro, coexisten como diagnósticos (M2), y A3 no cambia las reglas R1–R3 que dan la salida. T-V3-13 se lee con M10(c) y M10(d) |
 | §9, lo que el ADR tiene que fijar de V5 y V6 (l. 2916-2924) | Comparación por resultado y por razón estructurada | M10 |
 | §10, costes (l. 3013), y §11.2, R11 (l. 3069) | Dos causas raíz independientes; «diagnósticos con causa raíz» | Sin cambio; con `RootCauses` |
@@ -1004,9 +1219,8 @@ hasta la causa raíz» o de «la causa» de un `DependencyFailed` se lee: cadena
 |---|---|---|
 | D20, fila `Upstream` (l. 1289) | «su `SymbolId` y su causa raíz —el símbolo donde empieza el fallo, su código y sus datos estables—» | `SymbolId` + `RootCauses` completo por SCC (M10(b)) |
 | D20, coincidencia (l. 1298-1299) | «la misma variable sigue fallando por la misma causa raíz → coincide; se recupera o cambia la causa raíz → no coincide» | El mismo `RootCauses` completo; si cualquier miembro aparece, desaparece o cambia de firma → no coincide |
-| D18, puntos 1-2 (l. 1059-1066) | «conjunto de causas raíz (variables cuya propia definición falla, o un ciclo tomado como una unidad)»; «causa raíz única X»; «causa raíz exactamente X» | `SourceRoots` por SCC contado por **firmas**, no por variables; clasificación `Upstream` e igualdad `SourceRoots = {X}` para todas las fuentes (M10(c)) |
 | D18, punto 3 (l. 1067-1073) | «Si X es un ciclo, `<X>` nombra a sus miembros: corregir cualquiera de ellos rompe el ciclo» | Solo si X es un ciclo simple; en una SCC no simple nunca hay sugerencia (A3 §6.2, M10(c)) |
-| D18, punto 4 (l. 1074-1088) | «Si no se cumple, porque hay cualquier fuente con fallo propio, dominio inválido, id ausente u otra causa superior independiente …, el mensaje es: …» | Razones estructuradas de M10(d), con la definición de fuente bloqueante; el texto literal solo en el caso que fija M10(d); el aviso de reparación solo con el rack `Repairable`; la redacción nueva —`SeveralRoots`, `NonSimpleCycle`, bloqueos solo en otros racks y rack `Blocked`— la fija el ADR de reemplazo con las restricciones de veracidad de M10(d) |
+| D18, punto 4 (l. 1074-1088) | «Si no se cumple, porque hay cualquier fuente con fallo propio, dominio inválido, id ausente u otra causa superior independiente …, el mensaje es: …» | Razones estructuradas de M10(d), con la definición de fuente bloqueante; el texto literal solo en el caso que fija M10(d); el aviso de reparación solo con el rack `Repairable` y sin aborto de la reparación; la redacción nueva —`SeveralRecoveryUnits`, `NonSimpleCycle`, `DiscoveryIndeterminate`, bloqueos solo en otros racks y rack `Blocked`— la fija el ADR de reemplazo con las restricciones de veracidad de M10(d) |
 | D14, decisión 7 (l. 942-943) | «se rompen con `ChangeDefinition` de un miembro» | La recuperación garantizada con un solo miembro vale solo para un ciclo simple (A3 §6.2) |
 
 **Se leen con A3:**
@@ -1016,14 +1230,19 @@ hasta la causa raíz» o de «la causa» de un `DependencyFailed` se lee: cadena
 | D4, comprobación semántica (l. 319-320) | «existencia, aridad, unidades, ámbito, forma canónica y límites … un árbol leído de persistencia se re-comprueba en cada snapshot» | M1 y M2: bloqueos estáticos antes de evaluar |
 | D8, diagnósticos del parser (l. 718-719) | «El orden determinista de P15.7 no cambia» | Sin cambio para los diagnósticos con posición; M3 solo desempata diagnósticos de evaluación del mismo dueño y código |
 | D11, forma no canónica (l. 825-828) | `NonCanonicalForm`: «no se evalúa» | M1 bloqueo 4, M2.E |
-| D14, semánticos y decisiones 1 y 6 (l. 917-923, 940-941) | Lista de fallos semánticos; alcance del bloqueo; «también con dos errores dentro de un ciclo» | Sin cambio; los dos errores coexisten como diagnósticos del miembro (M2) |
+| D14, fallo estructural en el rack (l. 914-916) | `FatalMalformedReference` y rack `Blocked`; «La sonda da `Indeterminate` y las mutaciones que necesitan descubrimiento abortan: un dato que la build no entiende nunca se lee como "no consume"» | Sin cambio; base de la condición 1 de M10(c), de `DiscoveryIndeterminate` (U10) y del rack `Blocked` sin aviso de reparación (M10(d)) |
+| D14, semánticos y decisiones 1 y 6 (l. 917-923, 933-941) | Lista de fallos semánticos; alcance del bloqueo; «también con dos errores dentro de un ciclo» | Sin cambio; los dos errores coexisten como diagnósticos del miembro (M2) |
+| D14, decisiones 2 a 5 (l. 924-932) | Rack no afectado; rack afectado que solo entra en un plan que lo deje resuelto; RACKBOMTOTAL; RACKVARIABLES con registro legible | Sin cambio: A3 no cambia qué rack está afectado ni qué plan lo resuelve |
+| D14, decisión 8 (l. 944-947) | «el diagnóstico nunca indica la primera vía si no es demostrable en el estado diagnosticado (D18)»; las estructurales no se reparan | Sin cambio; M10(c) la aplica: no es demostrable sin descubrimiento completo ni con varias unidades o una SCC no simple |
 | D15, aristas rotas y conjuntos (l. 966-968) | «expone dependencias y dependientes directos y transitivos, el conjunto afectado y el conjunto leído» | A3 §6.5 y A3 §6.6 |
 | D15, ciclos (l. 969-973) | «cada ciclo informado con sus miembros en orden»; miembros y dependientes transitivos no evaluables | A3 §6.1, A3 §6.2 y A3 §6.4 |
 | D15, orden y cortocircuito (l. 974-977) | «topológico sobre la parte acíclica, con el desempate de P11.1»; «reciben `DependencyFailed` con el id de la causa, sin evaluarse» | A3 §6.3; M1 y M2 |
 | D18, precedencia de `InspectBinding` (l. 1031-1036) | Estructural, id ausente, tipo incompatible y fallo semántico | Sin cambio |
+| D18, `Blocked` (l. 1039-1041) | Lo estructural y `FatalIncompatibleTarget` dejan el rack `Blocked` entero, aunque tenga fuentes reparables | Sin cambio; M10(d): un rack `Blocked` no lleva acción ni aviso de reparación |
 | D18, tabla de confirmación (l. 1051, 1053) | `FailureCause`; `UpstreamCause` | Cada variable superior que falla, con su `RootCauses`; M10(c) y M10(d) |
+| D18, puntos 1-2 (l. 1059-1066) | «conjunto de causas raíz (variables cuya propia definición falla, o un ciclo tomado como una unidad)»; «causa raíz única X»; «todas las fuentes fallidas de todos los racks que consumen el cierre de X tienen causa superior con causa raíz exactamente X» | Su texto sigue siendo cierto: las variables y los ciclos del punto 1 son las `RecoveryUnits` de M10(c), calculadas sobre `RootCauses` por SCC; «causa superior» es la clasificación `Upstream`; y «todos los racks que consumen el cierre de X» solo se conocen si el descubrimiento termina (condición 1; D14, l. 914-916) |
 | D18, puntos 5 y 6 (l. 1089-1097) | Consecuencia de dos causas raíz independientes; «ninguna otra fuente inválida conocida» | Sin cambio; diagnósticos conocidos del snapshot (A3 §5.1, N-5) |
-| D18, punto 7 (l. 1098-1099) | «Mismo texto en el rechazo … usa la misma clasificación» | La misma clasificación incluye las razones de M10(d), del estado diagnosticado antes de la corrección |
+| D18, punto 7 (l. 1098-1099) | «Mismo texto en el rechazo … usa la misma clasificación: lista las fuentes que bloquean y advierte qué fórmulas eliminaría la reparación» | M10(d), rechazo de R1: el fallo tipado exacto del estado intentado y, además, la lista de fuentes inválidas con su clasificación y, para las `Upstream`, sus razones previas, como contexto; un rack `Blocked` no tiene reparación que advertir (l. 1039-1041) y una reparación que abortaría no elimina nada, así que el aviso de fórmulas solo aplica con el rack `Repairable` y sin aborto de la reparación |
 | D19, regla de derivación (l. 1158-1163) | «Todo dato o clasificación semántica que justifica una decisión destructiva queda representado por una observación comparable hasta el commit» | Sin cambio; A3 la aplica a la razón de la fuente retirada (CX-2), sin extenderla a otras fuentes (N-3) |
 | D19, sin dependencias transitivas por separado (l. 1176-1180) | «El resultado de un símbolo observado ya incorpora el de sus dependencias» | Con M10(a) |
 | D19, resultado comparable (l. 1194-1207) | Orden de P15.7; filas `DependencyFailed` (l. 1202) e `InvalidArguments` (l. 1203); ampliación de datos (l. 1206-1207) | M3, M4 y M10(a); los datos de `InvalidArguments` existen desde G7 |
@@ -1091,9 +1310,15 @@ hasta la causa raíz» o de «la causa» de un `DependencyFailed` se lee: cadena
 | T-A3-32 | NON-SIMPLE-CYCLE | U7 (seis aristas, cuatro miembros), un ciclo con una cuerda y `A = A + B ; B = A` (autorreferencia dentro de una SCC de dos miembros: tres aristas): no simple |
 | T-A3-33 | U9, parte de G7: cambio del miembro de entrada | `RootCauses(H)` igual antes y después; diagnósticos distintos |
 | T-A3-34 | `NonCanonicalForm` con una tabla sintética | Una definición `Expression` que solo es un número sin unidad: `[NonCanonicalForm]`, no se evalúa, raíz `(dueño, NonCanonicalForm)`, y sus dependientes dan `DependencyFailed` |
-| T-A3-41 | Invariante de la raíz representativa | En todos los casos U1–U9, la `Raíz` de cada `DependencyFailed` pertenece a `RootCauses` de su dueño |
+| T-A3-41 | Invariante de la raíz representativa | En todos los casos U1–U11, la `Raíz` de cada `DependencyFailed` pertenece a `RootCauses` de su dueño |
 | T-A3-42 | Cadena a través de un eslabón con `DependencyFailed` e `InvalidArguments` | U6(a) con `T = S + 1`: `T = [DF{S; [S, H]; (H, BrokenReference, [h])}]` y `RootCauses(T) = RootCauses(S)` |
 | T-A3-43 | Dos `CycleRoot` en el mismo conjunto | `A = B ; B = A ; C = D + A ; D = C`: `RootCauses(C) = {CycleRoot[A, B], CycleRoot[C, D]}`, ordenados por su miembro mínimo |
+| T-A3-61 | Raíz representativa por el fallo propio de un eslabón | `X = #<m> + A ; A = 1 / 0 ; Y = X + 1`: `X = [BrokenReference(m), DF{A; [A]; (A, DivisionByZero)}]`, `Y = [DF{X; [X]; (X, BrokenReference, [m])}]` y `RootCauses(Y) = {(X, BrokenReference, [m]), (A, DivisionByZero)}` |
+| T-A3-62 | Raíz agregada dentro de una cadena | `H = #<a> + #<b> ; T = H + 1`: `T = [DF{H; [H]; (H, BrokenReference, [a, b])}]` |
+| T-A3-63 | Referencias repetidas en un ciclo simple | `A = B + B ; B = A`: dos aristas internas y dos miembros, ciclo simple; la referencia repetida cuenta una vez |
+
+Las pruebas de G7 no incluyen `SourceRoots`, `RecoveryUnits` ni las razones de bloqueo: son de la capa de recuperación
+(A3 §6.6) y se prueban en A3 §11.2.
 
 ### 11.2 G9, G10 y G8 (obligatorias)
 
@@ -1105,20 +1330,34 @@ Las filas sin marca son de G9; las marcadas indican sus gates.
 | T-A3-18 | Antes, raíces {A}; después, raíces {A, B} | `ABORT BEFORE WRITE`, en `SymbolResultObservation` y en `Upstream` |
 | T-A3-19 | Mismas raíces; solo cambia la cadena representativa porque cambia un camino del grafo (CX-3) | `SymbolResultObservation`: `ABORT BEFORE WRITE`, porque P21.6 compara los ids de la cadena. `Upstream`: coincide, porque solo compara `RootCauses`, y el commit sigue si nada más difiere |
 | T-A3-20 | CX-2: `H = A1 + A2` con las dos rotas, fuente retirada `palletTolerance = H + 2`; reaparece `a2` antes del commit | `ABORT BEFORE WRITE`; la fórmula no se borra |
-| T-A3-21 | §7.2 con raíces detrás de una sola variable (G9 y G10) | Fuente `Upstream` con `SourceRoots` de un elemento y el resto de condiciones cumplidas → sugerencia; `SourceRoots = {A1, A2}` a través de una sola variable, sin otras fuentes fallidas → nunca sugerencia, razón `SeveralRoots` con las dos raíces y sin razón `OtherInvalidSources` |
+| T-A3-21 | §7.2 con raíces detrás de una sola variable (G9 y G10) | Fuente `Upstream` con `RecoveryUnits` de un elemento, descubrimiento completo y el resto de condiciones cumplidas → sugerencia; `SourceRoots = {A1, A2}` a través de una sola variable, con `RecoveryUnits = {A1, A2}`, descubrimiento completo para cada unidad y sin otras fuentes fallidas → nunca sugerencia, razón `SeveralRecoveryUnits` con las dos unidades y sus firmas, y sin razón `OtherInvalidSources` |
 | T-A3-35 | MAT-1: U5, E se recupera entre preflight y commit | `RootCauses(B)` cambia; `Upstream` no coincide; `ABORT BEFORE WRITE` |
 | T-A3-36 | MAT-2: U8, fuente hermana `MissingTarget` (G9 y G10) | Sin sugerencia de recuperación; razón `OtherInvalidSources` con `palletTolerance` |
 | T-A3-37 | MAT-4: U7, SCC no simple con solo `CycleRoot` (G9 y G10) | Sin sugerencia de recuperación con un solo cambio; razón `NonSimpleCycle` con los miembros, sin razón `OtherInvalidSources` |
 | T-A3-38 | MAT-5: U9, cambio del miembro de entrada | `Upstream`: coincide. `SymbolResultObservation` de H: no coincide |
-| T-A3-39 | Fallo numérico latente (G9 y G10): `A = #<a> + 1 ; D = A + 1 / 0`, fuente `palletTolerance = D + 2`, sin otras fuentes fallidas | `RegistryEvaluation` no informa ningún `DivisionByZero` de D; con los diagnósticos conocidos se cumple la condición y **se muestra** la sugerencia «Corregir A…» (§7.2.6); tras corregir A, el nuevo snapshot muestra el `DivisionByZero` y R1 bloquea la corrección |
-| T-A3-40 | Ciclo simple con sugerencia válida (G9 y G10): `A = B ; B = A`, fuente `palletTolerance = A + 1`, sin otras fuentes fallidas | Sugerencia de recuperación; corregir A o B deja la fuente recuperada |
-| T-A3-44 | Condición 3 exige igualdad (G9 y G10): `H = #<h> + 1 ; G = 1 / 0`; rack K con `f1 = H + 1` y `f2 = H + G`, las dos `Upstream` | f1 no recibe sugerencia aunque `SourceRoots(f2)` contenga la raíz de H; razón `OtherInvalidSources` con f2, que tiene la raíz de G fuera de `SourceRoots(f1)`. f2 no recibe sugerencia; solo la razón `SeveralRoots`: f1 no es bloqueante, porque sus raíces están en `SourceRoots(f2)` |
-| T-A3-45 | Fuentes hermanas `Domain`, estructural y de otro rack (G9 y G10) | Con `f1 = H + 1` `Upstream`: una hermana `Domain` en K, una fuente estructural en K, o `g = H + #<gone>` (`RepairableMissingTarget`) en un rack K2 que consume el cierre de H → en cada caso, sin sugerencia para f1 y razón `OtherInvalidSources`. Con la hermana en K se usa la primera frase de §7.2.4; con g solo en K2, el texto no dice «este rack». Con la hermana `Domain` o con g, el rack K es reparable y se muestra el aviso de reparación; con la fuente estructural, K está `Blocked`: el texto lo dice y no hay aviso de que la reparación eliminará la fórmula |
+| T-A3-39 | Fallo numérico latente (G9 y G10): `A = #<a> + 1 ; D = A + 1 / 0`, fuente `palletTolerance = D + 2`, sin otras fuentes fallidas | `RegistryEvaluation` no informa ningún `DivisionByZero` de D; con los diagnósticos conocidos se cumple la condición y **se muestra** la sugerencia «Corregir A…» (§7.2.6); al intentar corregir A, el estado resultante intentado muestra el `DivisionByZero` y R1 bloquea la corrección |
+| T-A3-40 | Ciclo simple con sugerencia válida (G9 y G10): `A = B ; B = A`, fuente `palletTolerance = A + 1`, sin otras fuentes fallidas y con descubrimiento completo | Sugerencia de recuperación; corregir A o B deja la fuente recuperada |
+| T-A3-44 | Condición 4 exige igualdad (G9 y G10): `H = #<h> + 1 ; G = 1 / 0`; rack K con `f1 = H + 1` y `f2 = H + G`, las dos `Upstream`, con descubrimiento completo para cada unidad | f1 no recibe sugerencia aunque las unidades de f2 contengan H; razón `OtherInvalidSources` con f2, que tiene la unidad G fuera de las de f1. f2 no recibe sugerencia; solo la razón `SeveralRecoveryUnits`: f1 no es bloqueante, porque su unidad está en las de f2 |
+| T-A3-45 | Fuentes hermanas `Domain`, estructural y de otro rack (G9 y G10) | Con `f1 = H + 1` `Upstream`: una hermana `Domain` en K, una fuente estructural en K, o `g = H + #<gone>` (`RepairableMissingTarget`) en un rack K2 que consume el cierre de H → en cada caso, sin sugerencia para f1 y razón `OtherInvalidSources`. Con la hermana en K se usa la primera frase de §7.2.4; con g solo en K2, el texto no dice «este rack». Con la hermana `Domain` o con g, el rack K es reparable y se muestra el aviso de reparación. La fuente estructural en K da además `DiscoveryIndeterminate` —la sonda de K es `Indeterminate` y el descubrimiento del cierre aborta—; K está `Blocked`: el texto lo dice y no hay aviso de que la reparación eliminará la fórmula |
 | T-A3-46 | Fallo propio estático de una fuente que lee una variable que falla (G8 y G9) | Con H rota: `palletTolerance = ABS(H, 2)` es `Intrinsic(InvalidArguments)`; una fuente `expression` que solo es `Reference(H)` es `Intrinsic(NonCanonicalForm)`; `ABS(#<gone>, 2)` es `RepairableMissingTarget`; ninguna es `Upstream` ni recibe «Corregir H» |
 | T-A3-47 | Autorreferencia dentro de una SCC de dos miembros (G9 y G10): `A = A + B ; B = A`, fuente `palletTolerance = A + 1` | Sin sugerencia; razón `NonSimpleCycle` |
-| T-A3-48 | Razones de bloqueo y texto (G10) | El texto de §7.2.4 solo con una fuente bloqueante en el rack de la fuente, una sola raíz y sin `NonSimpleCycle`; en los demás casos, el texto no afirma otras fuentes inválidas inexistentes, no dice «este rack» sin bloqueantes en él, y para `SeveralRoots` y `NonSimpleCycle` solo dice que la recuperación con una corrección no está garantizada; el aviso de reparación con la fórmula canónica solo con el rack `Repairable`, y con el rack `Blocked`, el bloqueo sin reparación |
-| T-A3-49 | Fuente de otro rack con raíces contenidas (G9 y G10): `A1 = #<a1> + 1 ; A2 = #<a2> + 1`; rack K con `f = A1 + A2`; rack K3 con `s3 = A1 + 1`, sin más fuentes fallidas | f: sin sugerencia, solo la razón `SeveralRoots`; s3 no es bloqueante de f y no se usa el texto de §7.2.4. s3: sin sugerencia, razón `OtherInvalidSources` con f, en otro rack, sin decir «este rack» |
-| T-A3-50 | Rechazo de R1 con la misma clasificación (G9 y G10) | Un `ChangeDefinition` que R1 bloquea en U7, en T-A3-44 y en T-A3-49 informa, para cada fuente fallida de los racks que bloquean, las razones del estado diagnosticado **antes** de la corrección, las mismas del panel (§7.2.7; P21.2 paso 8), y no las del estado resultante |
+| T-A3-48 | Razones de bloqueo y texto (G10) | El texto de §7.2.4 solo con una fuente bloqueante en el rack de la fuente, sin `SeveralRecoveryUnits` y sin `NonSimpleCycle`; en los demás casos, el texto no afirma otras fuentes inválidas inexistentes, no dice «este rack» sin bloqueantes ni causa de aborto en él, y para `SeveralRecoveryUnits`, `NonSimpleCycle` y `DiscoveryIndeterminate` solo dice que la recuperación con una corrección no puede garantizarse ni demostrarse; con `DiscoveryIndeterminate` no afirma que el rack no clasificado consuma el cierre ni que tenga fuentes inválidas; el aviso de reparación con la fórmula canónica solo con el rack `Repairable`, con el rack `Blocked`, el bloqueo sin reparación; y sin aviso cuando la reparación abortaría |
+| T-A3-49 | Fuente de otro rack con raíces contenidas (G9 y G10): `A1 = #<a1> + 1 ; A2 = #<a2> + 1`; rack K con `f = A1 + A2`; rack K3 con `s3 = A1 + 1`, sin más fuentes fallidas y con descubrimiento completo para cada unidad | f: sin sugerencia, solo la razón `SeveralRecoveryUnits`; s3 no es bloqueante de f y no se usa el texto de §7.2.4. s3: sin sugerencia, razón `OtherInvalidSources` con f, en otro rack, sin decir «este rack» |
+| T-A3-50 | Rechazo de R1 (G9 y G10) | Un `ChangeDefinition` que R1 bloquea en U7, en T-A3-44 y en T-A3-49 informa el fallo tipado exacto del estado resultante intentado —el rack que no resuelve, con su `OutOfRange` o su clasificación—; no inventa diagnósticos no evaluados; no repite la sugerencia; como el rack ya estaba afectado, indica además que hay que repararlo primero y lista sus fuentes inválidas con las razones del estado diagnosticado **antes** de la corrección, las mismas del panel (§7.2.7; P21.2 paso 8), como contexto y no como el fallo del estado intentado, con el aviso de fórmulas si el rack es `Repairable` y la reparación no abortaría; en T-A3-39, donde antes se cumplía la condición, se lista la fuente pero no hay razones de bloqueo previas |
+| T-A3-51 | MAT-6, caso A: U10, rack `Indeterminate` (G9 y G10) | K `palletTolerance = Holgura + 2`, `Upstream` y con `RecoveryUnits = {Holgura}`; K9 con una entrada de kind desconocido o id ilegible → sin sugerencia; razón `DiscoveryIndeterminate` con K9 y las causas del aborto; sin `OtherInvalidSources` si K no tiene otras fuentes fallidas; el texto no dice que K9 consuma Holgura ni que la recuperación sea imposible; la acción de reparación de K y su aviso siguen disponibles, porque el aborto del descubrimiento solo quita la sugerencia. Variante con un sobre no interpretable en cualquier parte del dibujo: la misma razón, con esa causa y sin la causa de K9, y sin aviso de reparación, porque la reparación de K también abortaría (A3 no cambia la visibilidad de la acción) |
+| T-A3-52 | MAT-7, caso C: U11, un dueño con dos firmas (G9 y G10) | `H = ABS(#<m>, 2)`, K `palletTolerance = H + 1`, sin otras fuentes fallidas y con descubrimiento completo: `RootCauses(H)` tiene dos firmas, `RecoveryUnits = {H}`, **se muestra** la sugerencia «Corregir H…»; `Upstream(H)` guarda las dos firmas |
+| T-A3-53 | MAT-7, caso D: misma unidad, otra firma (G9) | Fuente retirada `palletTolerance = H + 1` con `H = #<m> + 1` en el preflight; antes del commit, H pasa a `ABS(1, 2)`: la unidad sigue siendo H, pero `RootCauses(H)` cambia de `BrokenReference` a `InvalidArguments` → `Upstream` no coincide, `ABORT BEFORE WRITE` y no se borra la fórmula |
+| T-A3-54 | MAT-7, caso E: dos dueños con una firma cada uno (G9 y G10) | `P = #<p> + 1 ; Q = ABS(1, 2) ; S = P + Q`, K `palletTolerance = S + 1`, sin otras fuentes fallidas y con descubrimiento completo para cada unidad → `RecoveryUnits = {P, Q}`, sin sugerencia; solo la razón `SeveralRecoveryUnits`, con las dos unidades y sus firmas |
+| T-A3-55 | Caso G: ciclo simple y fallo propio de un miembro (G9 y G10) | `A = B + ABS(1, 2) ; B = A`, K `palletTolerance = B + 1` → `RootCauses = {CycleRoot[A, B], (A, InvalidArguments, [(ABS, 2)])}`, `RecoveryUnits = {A, CycleRoot[A, B]}`, listadas en ese orden; con descubrimiento completo para cada unidad: sin sugerencia; razón `SeveralRecoveryUnits`, sin `NonSimpleCycle`; el texto no afirma que corregir A no baste |
+| T-A3-56 | Caso J: rack `Blocked` (G9 y G10) | K con `f = H + 1` `Upstream` y una fuente con `PropertyId` desconocido (`FatalUnknownProperty`, alcanzable; `FatalIncompatibleTarget` es inalcanzable, P24.6 l. 2164): sin sugerencia; razones `OtherInvalidSources` con esa fuente y `DiscoveryIndeterminate` con K; el texto dice que K está bloqueado sin reparación y **no** hay acción ni aviso de reparación; si un diagnóstico anterior mostraba la sugerencia, no se repite |
+| T-A3-57 | Caso K: rack fallido ajeno al cierre (G9 y G10) | `H = #<h> + 1 ; Z = #<z> + 1`; K `f = H + 1`; K6 legible, con cero positivos para el cierre de H según la sonda de V6 (P21.4, l. 1559-1560) y fuentes fallidas `Z + 1` y `#<gone>`; sin otras fuentes fallidas en K y con descubrimiento completo → f recibe la sugerencia «Corregir H…»; K6 no aparece en ninguna razón |
+| T-A3-58 | Caso B reformulado: rack clasificable frente a rack ilegible (G9 y G10) | Como T-A3-57, con descubrimiento según la sonda de V6, pero K6 tiene además dos vistas con autoridad no `Single`, todas legibles y con cero positivos → no bloquea: sugerencia para f. Si K6 tiene en cambio una entrada estructural (`FatalUnknownProperty` o `FatalMalformedReference`, rack `Blocked`) que la sonda da `Indeterminate` → sin sugerencia y razón `DiscoveryIndeterminate`, aunque K6 no lea H (A3 §5.10(c), precisión sobre la orden de A3-R2) |
+| T-A3-59 | Caso I: fallo estático y numérico latente (G8 y G9) | Con H rota, `palletTolerance = 1 / 0 + ABS(1, 2)` es `Intrinsic(InvalidArguments(ABS, 2))`, sin `DivisionByZero`; con `palletTolerance = H + 1 / 0 + ABS(1, 2)`, también `Intrinsic`, no `Upstream`; con `palletTolerance = H + 1 / 0`, `Upstream(H)` sin `DivisionByZero`; y el símbolo `S = 1 / 0 + ABS(1, 2)` da solo `[InvalidArguments(ABS, 2)]` |
+| T-A3-60 | `Upstream` por variable leída (G9) | Fuente retirada `palletTolerance = A + B`; antes, `RootCauses(A) = {r1}` y `RootCauses(B) = {r2}`; después, `{r2}` y `{r1}`: la unión es la misma, pero `Upstream` no coincide → `ABORT BEFORE WRITE` |
+| T-A3-64 | Orden estable de las causas de aborto (G9 y G10) | (a) K con `f = Holgura + 2`, `RecoveryUnits = {Holgura}`; dos definiciones con sobre no interpretable D2 y D1, y un rack `Indeterminate` con dos vistas con `RackId` `k9` y `K9`: `DiscoveryIndeterminate` lista `EnvelopeUnclassifiable(D1)` y `EnvelopeUnclassifiable(D2)`, en ese orden, cada una una vez con `{Holgura}`, y ninguna causa de rack; sin los sobres, una sola causa `ProbeIndeterminate(K9)` con `{Holgura}`, con la grafía `K9` (mínima en `Ordinal`). (b) `H = #<h> + 1 ; G = 1 / 0 ; S = H + G`, K con `f = S + 1`, sin otras fuentes fallidas en K, y `RecoveryUnits = {G, H}`; K7 con dos vistas estructuralmente distintas, V1 `{palletTolerance: H, verticalClearance: G}` y V2 `{palletTolerance: H}`: para `I(H)` las dos vistas son positivas y la autoridad no es `Single`; para `I(G)` solo V1 es positiva. Razones `SeveralRecoveryUnits` y `DiscoveryIndeterminate` con `PartialPositives(K7)` `{G}` y después `NonSingleAuthority(K7)` `{H}`. (c) K8 con V1 `{palletTolerance: H}` y V2 `{palletTolerance: S}`, unidad H: las dos vistas tocan `I(H)`, así que la causa es `NonSingleAuthority(K8)`, nunca `PartialPositives`. En (a), (b) y (c), sin otras razones que las indicadas, toda permutación del barrido da los mismos datos |
+
+Correspondencia con los casos A–K de la orden de A3-R2: A = T-A3-51; B = T-A3-58, reformulado; C = T-A3-52; D = T-A3-53;
+E = T-A3-54; F = T-A3-40; G = T-A3-55; H = T-A3-37; I = T-A3-59; J = T-A3-56; K = T-A3-57.
 
 ---
 
@@ -1130,15 +1369,18 @@ Las filas sin marca son de G9; las marcadas indican sus gates.
   ```text
   D20:           de una causa raíz por cada variable leída que falla
                  al conjunto completo RootCauses, por SCC, por cada variable leída que falla
-  D18 puntos 1-2: de causas raíz contadas por variables
-                 a SourceRoots por SCC contado por firmas
   D18 punto 3:   de «corregir cualquiera de ellos rompe el ciclo»
                  a la recuperación garantizada con un solo miembro solo en un ciclo simple
   D14 decisión 7: de «se rompen con ChangeDefinition de un miembro»
                  a la misma restricción al ciclo simple
   D18 punto 4:   de un único mensaje de bloqueo
-                 a razones estructuradas OtherInvalidSources, SeveralRoots y NonSimpleCycle
+                 a razones estructuradas OtherInvalidSources, SeveralRecoveryUnits,
+                 NonSimpleCycle y DiscoveryIndeterminate
   ```
+
+- D18 puntos 1-2 **no** están en esta lista: A3-R2 cuenta `RecoveryUnits`, que son las variables o los ciclos de su
+  texto, y su condición sobre «todos los racks que consumen el cierre de X» ya exige conocerlos (A3 §10.3). El texto
+  anterior (blob `94a987f`) los cambiaba al contar por firmas; esa lectura queda rechazada (MAT-7).
 
 - Cambiar la decisión de un ADR aceptado exige un ADR nuevo que la reemplace (README de `docs/adr`; preámbulo de
   ADR-0041, l. 43-45). Por tanto: **REPLACEMENT ADR REQUIRED**.
@@ -1156,15 +1398,16 @@ Las filas sin marca son de G9; las marcadas indican sus gates.
   - Es un sucesor **completo**, D1–D25.
   - D20 recoge M10(b), con `RootCauses` por SCC.
   - D18 punto 3 y D14 decisión 7 recogen la regla del ciclo simple (A3 §6.2).
-  - D18 puntos 1-2 recogen la condición de recuperación de M10(c): `SourceRoots` por SCC contado por firmas, y, ya
-    explícitos, la clasificación `Upstream` y la igualdad para todas las fuentes, el fallo propio estático de una fuente
-    y los diagnósticos conocidos.
+  - D18 puntos 1-2 conservan su texto y el sucesor puede hacer explícitas sus lecturas de M10(c): `RecoveryUnits` sobre
+    las firmas de `RootCauses` por SCC, la precondición de descubrimiento, la clasificación `Upstream` y la igualdad de
+    unidades para todas las fuentes, el fallo propio estático de una fuente y los diagnósticos conocidos.
   - D18 punto 4 recoge las razones de bloqueo de M10(d), con la definición de fuente bloqueante, y fija la redacción en
-    español de los casos nuevos con las restricciones de veracidad de M10(d).
-  - D4, D8, D11, D14 decisiones 1 y 6, D15, D18 (precedencia, tabla y puntos 5-7), D19, D20 (pruebas), D22, D23, D24 y
-    Consecuencias recogen las lecturas de A3 §10.3, incluidos los bloqueos estáticos de M1 y los datos de
-    `InvalidArguments`.
-  - Queda registrado para el ADR de reemplazo el límite heredado de V6 sobre fuentes estructurales fuera del cierre
+    español de los casos nuevos —`DiscoveryIndeterminate` incluido— con las restricciones de veracidad de M10(d).
+  - D4, D8, D11, D14 (fallo estructural, semánticos y decisiones 1-6 y 8), D15, D18 (precedencia, `Blocked`, tabla y
+    puntos 1-2 y 5-7), D19, D20 (pruebas), D22, D23, D24 y Consecuencias recogen las lecturas de A3 §10.3, incluidos
+    los bloqueos estáticos de M1, los datos de `InvalidArguments` y el censo de datos de reparación de M10(f).
+  - Queda registrado para el ADR de reemplazo que un rack que la sonda no puede clasificar bloquea la sugerencia de
+    cualquier cierre con `DiscoveryIndeterminate`, porque V6 conserva la semántica de la sonda y nunca lo da por ajeno
     (A3 §5.10(c)).
   - Las demás decisiones conservan su semántica.
   - **Precedencia.** Remite a V6 leída con A1, A2 y A3 en sus blobs exactos.
@@ -1189,8 +1432,8 @@ V6 + A1 + A2 + A3 + ADR de reemplazo + un nuevo Consensus Freeze
   ```text
   STOP IMPLEMENTATION     → G7 BLOCKED BEFORE RED, sin código ni pruebas
   → document finding      → STOP de G7 y este amendment
-  → Coordinator review    → AGREED WITH REVISED TECHNICAL MODEL; PENDING ARCHITECT EXACT RE-REVIEW
-  → Architect review      → CHANGES REQUIRED sobre el blob 97996b7; PENDING EXACT REVIEW del blob revisado
+  → Coordinator review    → AGREED WITH REVISED A3-R2 MODEL; PENDING ARCHITECT EXACT RE-REVIEW
+  → Architect review      → CHANGES REQUIRED sobre los blobs 97996b7 y 94a987f; PENDING EXACT REVIEW del blob revisado
   → Owner decision        → PENDING (el ADR cambia)
   ```
 
@@ -1211,11 +1454,15 @@ V6 + A1 + A2 + A3 + ADR de reemplazo + un nuevo Consensus Freeze
 | Guarda G1 | `DependencyGraph` sigue prohibido en Application (`tests/RackCad.Tests/ProjectVariablesConformanceTests.cs:184-203`); evoluciona en G7 según P28.4, sin cambio por A3 |
 | Texto anterior (blob `97996b7`) | Dos pasadas de auditoría independiente de conformidad antes de su commit; CI 34875190797 success 4/4 sobre `f6f0991` |
 | Revisión exacta del Arquitecto del texto anterior | `CHANGES REQUIRED`: MAT-1 a MAT-5 (A3 §3.5) y notas N-3 a N-5, con contraejemplos verificados contra V6; confirmados U1–U3, M4, M5, M7, M9, la forma de M10, el orden de raíces, CX-3, DI-1 a DI-4, S1 y el ADR de reemplazo |
-| Auditorías independientes de A3-R1 | Solo lectura, antes del commit. Conformidad con la orden A3-R1: sin hallazgos materiales y trece menores de citas, censo y redacción. Revisión adversarial de solidez: un hallazgo material —el texto de bloqueo de §7.2.4 afirmaba «otras fuentes inválidas» cuando no las hay (U7) y dejaba `<X>` sin referente con varias raíces—, resuelto con las razones de M10(d), y ocho notas: autorreferencias dentro de una SCC, igualdad en la condición 3, fallo propio estático de una fuente, «nunca falsa» respecto de lo conocido, el predicado de ciclo simple fuera de `Upstream`, derivación iterativa y listas compartidas, conteo por firmas como cambio de D18 y pruebas de invariantes. En la tercera pasada, la conformidad no halló materiales y la revisión adversarial halló uno: el aviso de reparación exigido «en todos los casos» era falso con un rack `Blocked`, resuelto limitándolo a racks reparables, junto con la precisión de que la lista de bloqueantes solo es exacta con una sola raíz, el estado que describe un rechazo de R1 y cinco menores. En la cuarta pasada, la revisión adversarial confirmó esas correcciones sin hallazgos materiales y con una nota —el fallo tipado del estado resultante se sigue informando—, incorporada. En la segunda pasada, la conformidad no halló materiales y la revisión adversarial halló dos: `OtherInvalidSources` listaba como bloqueantes fuentes cuyas raíces ya estaban en las de la fuente, y el texto de §7.2.4 decía «este rack» con bloqueos solo en otros racks. Se resolvieron con la definición de fuente bloqueante y las reglas de texto de M10(d), junto con §7.2.7, el límite heredado de fuentes estructurales y siete menores. Todo se incorporó antes del commit; el resultado de la última re-auditoría consta en el mensaje del commit |
-| Archivos | A3-R1 cambia solo este documento; ninguna medición dejó cambios en el árbol |
+| Auditorías independientes de A3-R1 | Solo lectura, antes del commit. Conformidad con la orden A3-R1: sin hallazgos materiales y trece menores de citas, censo y redacción. Revisión adversarial de solidez: un hallazgo material —el texto de bloqueo de §7.2.4 afirmaba «otras fuentes inválidas» cuando no las hay (U7) y dejaba `<X>` sin referente con varias raíces—, resuelto con las razones de M10(d), y ocho notas: autorreferencias dentro de una SCC, igualdad en la condición 3, fallo propio estático de una fuente, «nunca falsa» respecto de lo conocido, el predicado de ciclo simple fuera de `Upstream`, derivación iterativa y listas compartidas, conteo por firmas como cambio de D18 y pruebas de invariantes. En la tercera pasada, la conformidad no halló materiales y la revisión adversarial halló uno: el aviso de reparación exigido «en todos los casos» era falso con un rack `Blocked`, resuelto limitándolo a racks reparables, junto con la precisión de que la lista de bloqueantes solo es exacta con una sola raíz, el estado que describe un rechazo de R1 y cinco menores. En la cuarta pasada, la revisión adversarial confirmó esas correcciones sin hallazgos materiales y con una nota —el fallo tipado del estado resultante se sigue informando—, incorporada. En la segunda pasada, la conformidad no halló materiales y la revisión adversarial halló dos: `OtherInvalidSources` listaba como bloqueantes fuentes cuyas raíces ya estaban en las de la fuente, y el texto de §7.2.4 decía «este rack» con bloqueos solo en otros racks. Se resolvieron con la definición de fuente bloqueante y las reglas de texto de M10(d), junto con §7.2.7, el límite heredado de fuentes estructurales —sustituido en A3-R2 por la precondición de descubrimiento (MAT-6)— y siete menores. Todo se incorporó antes del commit; el resultado de la última re-auditoría consta en el mensaje del commit |
+| Texto A3-R1 (blob `94a987f`) | Commit `c8cfee2`; CI 34886985747 success 4/4 |
+| Re-revisión exacta del Arquitecto de A3-R1 | `CHANGES REQUIRED`: MAT-6 (racks que el descubrimiento no puede clasificar ignorados por la condición de §7.2) y MAT-7 (unicidad de la raíz contada por firmas), A3 §3.6; confirmada la completitud y minimalidad de `RootCauses` por SCC; notas no materiales sobre fallo estático con numérico latente, rack `Blocked` y D18 punto 7, redacción del rechazo de R1, censo, alcance de las pruebas de G7, pruebas A–K y censo de datos de RR-1 |
+| Semántica de descubrimiento leída para MAT-6 | `ProjectVariableConsumerDiscovery.cs:104-155`: un sobre no interpretable aborta antes de agrupar; cualquier sonda `Indeterminate` aborta; cero positivos ignora el rack; positivos parciales abortan; autoridad `Single` exigida solo a los racks que consumen. `ProjectVariableConsumerProbe.cs:52-93`: propiedad desconocida, kind distinto o id ilegible dan `Indeterminate`. Discovery §7 (l. 537-541); V6 P21.4 (l. 1557-1563) conserva la sonda |
+| Auditorías independientes de A3-R2 | Solo lectura, antes del commit: conformidad con la orden A3-R2 y revisión adversarial nueva. Su resultado consta en el mensaje del commit |
+| Archivos | A3-R1 y A3-R2 cambian solo este documento; ninguna medición dejó cambios en el árbol |
 | Autoridades | V6 `ef4db3aa400483ff25a8f39b2beb93708fa43d1a`, A1 `d62019088b9e7a140d5066799afe6ace6db303ba`, A2 `49a925336dd3775929a35b0f40b73cb7f8c487f7`, ADR-0041 `c6a3d2ba0ab9df93e51efcddf04ed9255b1a2231` y freeze vigente `57736f725663aab79a24b29685ed34e8c3e9ebad`, sin cambio |
 | `main` | `dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093`, sin cambios en el núcleo de expresiones. La rama no se rebasa por un amendment documental |
-| Ramas paralelas | Medidas antes del commit: I-52 `e59bc89335c776a24cd48b30f54547696f820dfa` (ADR-0036 en su rama); I-55 `110cd39aded983df6c409bbd32d5bca05ceed0ed` (ADR-0042 en su rama); I-56 `0d66df26882cb5cdd2efc21155c121f58d2af669`. Todas solo documentación; ninguna toca `src/RackCad.Application/Expressions`, las pruebas de expresiones, la guarda G1 ni los documentos de I-49 |
+| Ramas paralelas | Medidas antes del commit de A3-R2: I-52 `53ae5fabe33cb0173305f9153a7314e3bdfd7da9` (ADR-0036 en su rama); I-55 `806836883ef18d06644cb69099aa21b8e0a875f1` (ADR-0042 en su rama); I-56 `f97a8b0bfe5813740ac250c1eb8a75ffaa2ae9a8`. Todas solo documentación; ninguna toca `src/RackCad.Application/Expressions`, las pruebas de expresiones, la guarda G1 ni los documentos de I-49 |
 
 ---
 
@@ -1224,14 +1471,15 @@ V6 + A1 + A2 + A3 + ADR de reemplazo + un nuevo Consensus Freeze
 ```text
 Amendment = A3
 
-Revision = A3-R1 after Architect exact-review findings MAT-1..MAT-5
+Revision = A3-R2 after Architect exact re-review findings on A3-R1
+           (discovery precondition and recovery units; MAT-6, MAT-7)
 
 Finding = MULTI-CAUSE DEPENDENCYFAILED / ROOTCAUSES CONTRACT GAP
 
-Coordinator = AGREED WITH REVISED TECHNICAL MODEL
+Coordinator = AGREED WITH REVISED A3-R2 MODEL
               PENDING ARCHITECT EXACT RE-REVIEW
 
-Architect = CHANGES REQUIRED on prior blob
+Architect = CHANGES REQUIRED on A3-R1 blob 94a987f
             PENDING EXACT REVIEW of revised blob
 
 Replacement ADR = REQUIRED
