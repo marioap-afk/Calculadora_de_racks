@@ -13,22 +13,30 @@ namespace RackCad.Application.Expressions
     /// <para>
     /// Parsing decides SYNTAX only. Whether a name exists, is reserved or is ambiguous, whether a function exists and
     /// takes those arguments, what a unit converts to and whether the tree is within the normative limits are decided
-    /// after binding, against a context this type never sees. That is why <c>MIN</c>, <c>Rack.Frentes</c> or
+    /// by the binder, against a context this type never sees. That is why <c>MIN</c>, <c>Rack.Frentes</c> or
     /// <c>UNKNOWN(A)</c> parse: the parser hands over the form, and the binder owns the answer.
     /// </para>
     /// <para>
-    /// Pipeline, each step fail-closed: text guard → blank check → lexer (every lexical error is collected) → parser
-    /// (stops at the first syntax error). A lexical error stops the pipeline before parsing, so a user sees what was
-    /// mistyped rather than the consequences of the mistake.
+    /// Pipeline, each step fail-closed: blank check → lexer (the syntactic token guard runs while lexing; every lexical
+    /// error is collected) → parser (stops at the first syntax error). A lexical error stops the pipeline before parsing,
+    /// so a user sees what was mistyped rather than the consequences of the mistake.
+    /// </para>
+    /// <para>
+    /// There is no limit on the number of CHARACTERS (Amendment A1.1, ADR-0040 D8): a legal name has no maximum length,
+    /// so any finite character guard would reject the canonical text of a legal tree and break P2.5. The parser is
+    /// protected by the number of tokens and by the syntactic nesting instead.
     /// </para>
     /// </summary>
     public static class ExpressionParser
     {
         /// <summary>
-        /// Parser guard on the text, in Unicode characters (code points), never below 4000 (P1.9). It protects the
-        /// parser only: it is not a limit of the tree, and a qualified reference alone is 37 characters long.
+        /// Parser guard on the number of lexemes (Amendment A1.2–A1.4). An implementation value, initially 4096 and never
+        /// below 6 × the normative maximum of nodes (1536), so the canonical text of any legal tree —at most 6n - 3 tokens
+        /// (A1 §4)— always lexes. Every lexeme counts one, whatever its length: a numeral, a unit suffix, a whole bare name
+        /// with all its words, a whole braced name, a qualifier, each operator, parenthesis, comma and namespace dot, and
+        /// each malformed lexeme. Whitespace and the internal end-of-text mark do not count.
         /// </summary>
-        public const int MaxTextLength = 4000;
+        public const int MaxSyntacticTokens = 4096;
 
         /// <summary>
         /// Parser guard on nested parentheses, unary operators and calls, checked BEFORE descending (P1.9). An
@@ -42,19 +50,6 @@ namespace RackCad.Application.Expressions
             if (text == null)
             {
                 throw new ArgumentNullException(nameof(text));
-            }
-
-            if (TryFindTextExcess(text, out var excessStart))
-            {
-                return ExpressionParseResult.Failure(
-                    text,
-                    new[]
-                    {
-                        ExpressionDiagnostic.LimitExceeded(
-                            ExpressionLimitKind.TextLength,
-                            MaxTextLength,
-                            SourceSpan.FromBounds(excessStart, text.Length)),
-                    });
             }
 
             if (IsBlank(text))
@@ -72,40 +67,6 @@ namespace RackCad.Application.Expressions
             }
 
             return ExpressionSyntaxParser.Parse(text, lexed.Tokens);
-        }
-
-        /// <summary>
-        /// Finds where the text goes past <see cref="MaxTextLength"/> characters, counting a surrogate pair as one
-        /// character. It never reads beyond that point, so an arbitrarily long input costs a bounded scan.
-        /// </summary>
-        private static bool TryFindTextExcess(string text, out int excessStart)
-        {
-            excessStart = -1;
-
-            if (text.Length <= MaxTextLength)
-            {
-                return false;
-            }
-
-            var characters = 0;
-
-            for (var index = 0; index < text.Length; index++)
-            {
-                if (characters == MaxTextLength)
-                {
-                    excessStart = index;
-                    return true;
-                }
-
-                characters++;
-
-                if (char.IsHighSurrogate(text[index]) && index + 1 < text.Length && char.IsLowSurrogate(text[index + 1]))
-                {
-                    index++;
-                }
-            }
-
-            return false;
         }
 
         private static bool IsBlank(string text)

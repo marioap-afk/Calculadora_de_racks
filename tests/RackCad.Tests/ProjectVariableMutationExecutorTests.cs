@@ -345,8 +345,8 @@ namespace RackCad.Tests
         ///
         /// <para>
         /// I-49 G5 (V6 P28.4, guarda G5) la extiende al núcleo de expresiones, <c>RackCad.Application.Expressions</c>,
-        /// entero y con sus subcarpetas: parsear, enlazar y evaluar también son capa pura. La autoridad neutral de
-        /// unidades todavía no existe; cuando G6 la cree, entra aquí.
+        /// entero y con sus subcarpetas: parsear, enlazar y evaluar también son capa pura. I-49 G6 la extiende a la
+        /// autoridad neutral de unidades, <c>RackCad.Application.Units</c>, que el núcleo consume.
         /// </para>
         /// </summary>
         [Fact]
@@ -354,14 +354,20 @@ namespace RackCad.Tests
         {
             var application = Path.Combine(RepoRoot().FullName, "src", "RackCad.Application");
             var nucleo = Path.Combine(application, "Expressions");
+            var unidades = Path.Combine(application, "Units");
 
             Assert.True(Directory.Exists(nucleo), "No existe el núcleo de expresiones: " + nucleo);
+            Assert.True(Directory.Exists(unidades), "No existe la autoridad de unidades: " + unidades);
 
             var archivosDelNucleo = Directory.GetFiles(nucleo, "*.cs", SearchOption.AllDirectories);
             Assert.NotEmpty(archivosDelNucleo);
 
+            var archivosDeUnidades = Directory.GetFiles(unidades, "*.cs", SearchOption.AllDirectories);
+            Assert.NotEmpty(archivosDeUnidades);
+
             var archivos = Directory.GetFiles(Path.Combine(application, "ProjectVariables"), "*.cs")
-                .Concat(archivosDelNucleo);
+                .Concat(archivosDelNucleo)
+                .Concat(archivosDeUnidades);
 
             foreach (var file in archivos)
             {
