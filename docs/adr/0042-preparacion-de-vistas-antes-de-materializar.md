@@ -1,13 +1,15 @@
 # ADR-0042: Preparar la vista antes de materializarla: primera vista libre, varias vistas de un rack en un flujo y colocación de grupo que conserva la identidad
 
 - **Estado:** propuesto
-- **Fecha:** 2026-09-14 (propuesto; revisado con las Proposals V2 y V3 de I-55)
+- **Fecha:** 2026-09-14 (propuesto; revisado con las Proposals V2, V3 y V4 de I-55)
 - **Decisores:** pendiente. Solo el Owner del repositorio acepta o rechaza. Coordinador de I-55: **CHANGES REQUIRED** sobre las
-  Proposals V1 y V2 y **REVIEW REQUIRED** sobre la V3; Arquitecto formal: **PENDING**; sin consenso técnico. Claude (redacción)
+  Proposals V1 y V2, decisión CQ-01 sobre la V3 (redibujo atómico de hermanas) y **REVIEW REQUIRED** sobre la V4; Arquitecto formal:
+  **PENDING**; sin consenso técnico. Claude (redacción)
 - **Iniciativa relacionada:** I-55 — `feature/creacion-de-vistas`
   ([contrato](../initiatives/I-55-creacion-de-vistas.md), [Discovery](../initiatives/I-55-discovery.md),
-  [Proposal V3](../initiatives/I-55-proposal-v3.md), [mapa de implementación V3](../initiatives/I-55-implementation-map-v3.md),
-  Proposals [V1](../initiatives/I-55-proposal-v1.md) y [V2](../initiatives/I-55-proposal-v2.md) como registro,
+  [Proposal V4](../initiatives/I-55-proposal-v4.md), [mapa de implementación V4](../initiatives/I-55-implementation-map-v4.md),
+  Proposals [V1](../initiatives/I-55-proposal-v1.md), [V2](../initiatives/I-55-proposal-v2.md) y [V3](../initiatives/I-55-proposal-v3.md)
+  como registro,
   [registro de I-55](../automation/decisions/I-55.md))
 - **No reemplaza a ninguna ADR.** **Complementa** a [ADR-0010](0010-actualizar-redibuja-insertar-liga-vistas.md), que sigue `aceptado`
   (ver «Relación con ADR-0010»)
@@ -20,7 +22,7 @@
 > 2. **M-01 resuelta**: la semántica de colocación de grupo expuesta, el marco fuente, el marco destino, el modo por par de vistas, los
 >    tipos y familias mezclados y la variante en misma clase (OD-6.b/c/d, OD-7.a/b/c/d y OD-2.b) son material abierto.
 > 3. Decisiones del Owner OD-1..OD-8.
-> 4. Reconciliación con I-52 de las autoridades compartidas del punto 9, registrada por ambas iniciativas ([V11-D10], [V12-D11], [V13-D08]).
+> 4. Reconciliación con I-52 de las autoridades compartidas del punto 9, registrada por ambas iniciativas ([V11-D10], [V12-D11], [V13-D08], [V14-D08], [V14-D14]).
 >
 > El texto final incorporará lo que se decida.
 >
@@ -50,7 +52,7 @@ La Discovery de I-55 auditó `ba497f1` y lo volvió a medir sobre `dad4e77`:
 - la planta y las elevaciones usan ejes locales distintos, así que las posiciones de un layout en planta no son posiciones de elevación.
 
 El Owner fijó ID17, ID18 e ID19, que comparten una necesidad: **preparar la representación de una vista antes de materializarla**. La
-Proposal V13 de I-52 (`RACKMIRROR`, sin consenso) necesita autoridades de la misma familia y las declara provisionales hasta
+Proposal V14 de I-52 (`RACKMIRROR`, sin consenso) necesita autoridades de la misma familia y las declara provisionales hasta
 reconciliarlas con I-55.
 
 ## Decisión
@@ -85,17 +87,21 @@ reconciliarlas con I-55.
    - La edición conserva la curación vigente de un `Id` en blanco (`IsNullOrWhiteSpace`).
    - Los defectos que impiden el contrato (poste por posición de lista en Push Back; visibilidad de la planta Cantilever, corregida solo
      en el Plugin) se corrigen en prerrequisitos aislados **antes** de la foundation.
-6. **Varias vistas de un rack en un flujo.**
+6. **Varias vistas de un rack en un flujo.** Redibujar las hermanas existentes y colocar las vistas nuevas son dos operaciones distintas.
    - En un rack existente, la variante de cada vista nueva se elige antes de comprobar las hermanas y de redibujarlas.
-   - Todo lo de las vistas nuevas, y el plan y el payload de cada hermana, se prepara antes de la primera escritura.
-   - El redibujo previo de las hermanas conserva su confirmación por vista. Si falla el redibujo de una hermana propia del dibujo (las
-     dependientes de una referencia externa las gobierna su dibujo de origen), se detiene, **no se crea
-     ninguna vista nueva**, los redibujos ya confirmados permanecen y se informa cuáles se actualizaron y cuál falló. No hay transacción
-     global ni rollback de lo confirmado, por prescripción del Coordinador; la alternativa de una sola transacción es técnicamente
-     viable y está pendiente de su decisión.
-   - Las vistas huérfanas se borran solo si todos los redibujos confirman, con borrado verificado; si eran las únicas vistas del rack,
-     se borran dentro de la transacción que coloca la primera vista nueva.
-   - Cada colocación se confirma por separado, ninguna transacción de escritura queda abierta entre jigs, y Esc o Enter detienen la cola.
+   - **Redibujo atómico de hermanas antes de Insertar.** Las hermanas propias del dibujo se clasifican antes de escribir: las que se
+     redibujan, las huérfanas y, aparte, las dependientes de una referencia externa, que gobierna su dibujo de origen y no se tocan. Todo
+     lo que el redibujo necesita se prepara sin escribir estado del rack (solo se importan definiciones de biblioteca). Después, **una**
+     transacción redibuja todas las hermanas y borra las huérfanas, y se confirma una sola vez; la purga, los renombres cosméticos y la
+     regeneración van después del commit. Si algo falla al preparar, no se escribe nada del rack; si falla dentro de la transacción, no se
+     aplica ninguna actualización a las vistas existentes y no se inserta ninguna vista.
+   - Si no queda ninguna hermana propia que redibujar, las huérfanas se borran dentro de la transacción que coloca la primera vista nueva,
+     para no destruir la identidad del rack si esa colocación se cancela.
+   - Los controles previos vigentes de cada editor siguen antes de todo, y la vista elegida que el flujo vigente añade cuando su `Id` está
+     en blanco se redibuja con el `Id` curado, como hoy.
+   - **Colocación de vistas nuevas**, solo tras el commit del redibujo: cada colocación se confirma por separado, ninguna transacción de
+     escritura queda abierta entre jigs, y Esc o Enter detienen la cola conservando el redibujo y las vistas ya colocadas.
+   - Actualizar conserva su comportamiento vigente.
 7. **Ninguna hermana nace distinta de las demás.**
    - Antes de crear una vista en un rack existente se comprueban, **acotadas a ese `RackId`**, las propiedades personalizadas del sobre
      elegido y de las hermanas conocidas, con la igualdad canónica de I-54; la vista nueva hereda la colección común.
@@ -145,7 +151,7 @@ promete capacidades multivista para todos los editores.» Este registro no revie
 
    Así, las vistas 2..N del lote de un rack nuevo no necesitan fingir que provienen de un rack físicamente colocado.
 2. **Añade precondiciones al flujo de Insertar**, que ADR-0010 delega en «su flujo implementado»: la comprobación de propiedades
-   personalizadas acotada al `RackId` (punto 7) y la regla del redibujo fallido (punto 6).
+   personalizadas acotada al `RackId` (punto 7) y el redibujo atómico de las hermanas antes de colocar (punto 6).
 
 **Todo lo demás de ADR-0010 sigue vigente:**
 - Actualizar reconstruye y redefine en sitio sin crear otro rack ni insertar vistas.
@@ -166,10 +172,14 @@ complemento declarado (ADR-0028, ADR-0029) y de nota posterior que enlaza un ADR
 - **Registro lógico persistente de racks**: formato nuevo en el dibujo y migración de todos los DWG.
 - **Segundo enum de vista con mapeo**: dos taxonomías para un concepto.
 - **Acuñar el `RackId` al abrir el editor o en la primera colocación**: GUIDs sin uso, o identidad inventada en el Plugin.
-- **Una transacción para todo el lote, o preparar cada vista justo antes**: transacción abierta durante jigs, o fallos tras colocar.
-- **Una transacción global alrededor de los redibujos de hermanas** (PREPARE, una MUTATE, POST): no adoptada por prescripción del
-  Coordinador, no por inviabilidad. El primitivo ya existe y lo usa la mutación de variables de proyecto; faltan envoltorios de
-  preparación en tres sistemas. Pendiente de decisión del Coordinador.
+- **Una transacción para todo el lote, incluidos los jigs, o preparar cada vista justo antes**: dejaría sin confirmar el redibujo y todas
+  las vistas colocadas a lo largo de varias interacciones del usuario y convertiría Esc en rollback de vistas ya colocadas, o fallaría
+  tras colocar.
+- **Confirmar el redibujo de cada hermana por separado y detenerse ante un fallo** (versión anterior de este registro): dejaba un
+  subconjunto de hermanas confirmado con el diseño nuevo. Sustituida por el redibujo atómico, que reutiliza el primitivo de redefinir en
+  la transacción del llamador que ya usa la mutación de variables de proyecto.
+- **Renombrar dentro de la transacción del redibujo**: el nombre es cosmético por contrato vigente; después del commit no corre si hay
+  rollback.
 - **Resolver con el camino del BOM tal cual**: no expone el sistema ni un resultado tipado.
 - **Codec que consulta el sistema resuelto**: mezcla sintaxis y disponibilidad e impide compartirlo.
 - **Verificar solo la unión de nombres de bloque**: una pieza sin nombre desaparece de la unión.
@@ -199,9 +209,12 @@ complemento declarado (ADR-0028, ADR-0029) y de nota posterior que enlaza un ADR
 **Negativas / costos aceptados.**
 - Se re-enrutan todas las inserciones y los handlers del BOM delegan su resolución, con goldens y validación del Owner.
 - Cambian a propósito censos y guardas.
-- Insertar en un rack con propiedades divergentes o ilegibles, o con un redibujo fallido, falla con remedio. Un redibujo fallido puede
-  dejar el rack redibujado en parte, sin rollback de lo confirmado.
-- En Insertar, el prompt de variante pasa a antes del redibujo.
+- Insertar en un rack con propiedades divergentes o ilegibles falla con remedio; un redibujo fallido no aplica ninguna actualización ni
+  inserta ninguna vista.
+- En Insertar, el prompt de variante pasa a antes del redibujo, y las hermanas dependientes de una referencia externa dejan de
+  redibujarse.
+- Una transacción de escritura para todas las hermanas de un rack; las definiciones de biblioteca importadas al preparar no se revierten.
+- Actualizar sigue redibujando vista por vista y puede quedar redibujado en parte, como hoy.
 - En la proyección ortográfica, el sentido del eje común lo decide la mayoría de referencias: girar racks puede invertir el orden de la
   elevación.
 - El remedio puede exigir reparar antes lo que deja `RACKPROPIEDADES` en solo lectura.
@@ -225,10 +238,14 @@ complemento declarado (ADR-0028, ADR-0029) y de nota posterior que enlaza un ADR
 
 ## Referencias
 
-- [Proposal V3 de I-55](../initiatives/I-55-proposal-v3.md): §0, §4.4-§4.6, §7.3, §9, §11, §12, §17.2 y §22 (D-01..D-19, OD-1..OD-8,
-  M-01, X-1..X-8).
-- Proposals [V1](../initiatives/I-55-proposal-v1.md) y [V2](../initiatives/I-55-proposal-v2.md) de I-55: registro histórico.
-- [Mapa de implementación V3](../initiatives/I-55-implementation-map-v3.md).
+- [Proposal V4 de I-55](../initiatives/I-55-proposal-v4.md): §0, §4.4-§4.6, §7.3, §9, §11, §12, §17.2 y §22 (D-01..D-19, OD-1..OD-8,
+  M-01, X-1..X-8, CQ-01).
+- Proposals [V1](../initiatives/I-55-proposal-v1.md), [V2](../initiatives/I-55-proposal-v2.md) y [V3](../initiatives/I-55-proposal-v3.md)
+  de I-55: registro histórico.
+- [Mapa de implementación V4](../initiatives/I-55-implementation-map-v4.md).
+- [`SystemBlockWriter`](../../src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs) (`RedefineInTransaction`) y
+  [`ProjectVariableMutationExecutor`](../../src/RackCad.Plugin/ProjectVariableMutationExecutor.cs): precedente de PREPARE, una MUTATE y
+  POST.
 - [`Transform2D`](../../src/RackCad.Application/Geometry/Transform2D.cs),
   [`CustomPropertiesCanonicalForm`](../../src/RackCad.Application/CustomProperties/CustomPropertiesCanonicalForm.cs),
   [`RackEmbedDocument`](../../src/RackCad.Application/Persistence/RackEmbedDocument.cs),
