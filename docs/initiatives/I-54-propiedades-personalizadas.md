@@ -26,9 +26,8 @@ automation:
 
 # I-54 — ID24 — Custom Properties Foundation
 
-> **Fase actual: G7 — comando `RACKPROPIEDADES` (alias `RPR`) y editor de propiedades, autorizado por el Coordinador.
-> G7A registra la decision del Owner sobre el nombre del comando; G7B implementa el comando y la UI. G8+ no esta
-> autorizado.**
+> **Fase actual: G7 COMPLETO y aceptado por el Coordinador —comando `RACKPROPIEDADES` (alias `RPR`) y editor de
+> propiedades—, sincronizado en G7-CLOSE. G8 (Candidato) no esta autorizado.**
 >
 > - Discovery: [I-54-discovery.md](I-54-discovery.md) (G1 `195964b`, equivalente post-rebase `97e27ea`).
 > - Proposal consensuada, inmutable: [I-54-proposal-v5.md](I-54-proposal-v5.md) @
@@ -39,7 +38,8 @@ automation:
 > - ADR: [ADR-0039](../adr/0039-custom-properties-persistencia-autoridad.md), `aceptado` (nacio `propuesto` en
 >   `d84f480`). Registro de decisiones: [decisions/I-54.md](../automation/decisions/I-54.md), §11 para la aceptacion,
 >   §12 para la traza del freeze, §13 para el cierre de G3, §14 para el cierre de G4 y el rebase, §15 para el cierre
->   de G5, §16 para el cierre de G6 y §17 para la decision del Owner sobre el nombre del comando.
+>   de G5, §16 para el cierre de G6, §17 para la decision del Owner sobre el nombre del comando y §18 para el cierre
+>   de G7, con la desviacion de proceso de G7A y el rebase sobre `104ef3a`.
 > - Paquete de la ultima revision exact-SHA (G2J), limitado a AR-54-V4-01 / C-F3:
 >   [I-54-architect-review-package.md](I-54-architect-review-package.md).
 > - G2B cerrado: `Architect Review V1 = AGREED WITH CHANGES` (cambios V2-1..V2-22), incorporados en V2.
@@ -69,6 +69,14 @@ automation:
 >   Cierre documental `b4e99e4`, CI 34788418383 en verde.
 > - Decision del Owner sobre el nombre del comando, transmitida por el Coordinador: «Acepto RACKPROPIEDADES con alias
 >   RPR.» (2026-09-13). El Coordinador autoriza G7; G7A la registra antes de cualquier codigo de producto.
+> - G7 hecho, por orden del Coordinador, que lo acepta (G7 COMPLETE):
+>   - **G7A**, solo documentacion. Se commiteo primero como `e25d159`, sobre la base anterior `1b091be`, aunque `main`
+>     ya habia avanzado a `104ef3a` despues del preflight: **desviacion de proceso**, corregida antes de cualquier
+>     codigo de producto. La historia previa queda en `archive/i-54-g7a-pre-rebase-e25d159`; la rama entera se rebaso
+>     sobre `104ef3a`, y el equivalente de G7A es `5c16ae8`, CI 34789745328 en verde.
+>   - **G7B**, producto: el comando `RACKPROPIEDADES` con alias `RPR`, `RackCustomPropertiesWindow` (arquetipo C), la
+>     ayuda, los censos, U-01..U-10 y T-GRD-08; `18cf2dc`, sobre esa misma historia rebasada, CI 34792787919 en verde.
+>   - **G7-CLOSE**: esta sincronizacion documental.
 >
 > ```text
 > G2J                   = CLOSED
@@ -87,8 +95,8 @@ automation:
 > G3_CI                 = 34759032979 success
 > G4A_SHA               = dcc404853cad549708738488966920331e884fee   (CI 34771155216 success)
 > G4_SHA                = 78e6696e64db50ffcfbcd7e87d7dfe0a9ca78417   (CI 34772215008 success)
-> Pre-rebase archive    = archive/i-54-g4-pre-rebase-78e6696 -> 78e6696e64db50ffcfbcd7e87d7dfe0a9ca78417
-> Rebase base           = 1b091bedafceb67ca57054a9eb3bf5259efff774   (main, merge de I-53 E1)
+> G4 pre-rebase archive = archive/i-54-g4-pre-rebase-78e6696 -> 78e6696e64db50ffcfbcd7e87d7dfe0a9ca78417
+> G4 rebase base        = 1b091bedafceb67ca57054a9eb3bf5259efff774   (main, merge de I-53 E1; base hasta el rebase de G7A)
 > REBASED_G4A_SHA       = b568bef50fc2e9db0ddfc65d882669db6dc036ef
 > REBASED_G4_SHA        = 7b0f6a9ca849044acd5326f4bbcc68b6aa8fa5f0   (CI 34773339064 success)
 > G4_CLOSE_SHA          = 477c149fb0d57bbd263d38c87b3d29467ac27816   (CI 34773953746 success)
@@ -98,22 +106,30 @@ automation:
 > G6 authorization      = Coordinator
 > G6_SHA                = ca7196268ceb73d8c5223b508bbe9570698b38d7   (CI 34787646732 success)
 > G6_CLOSE_SHA          = b4e99e4cbd11d3ed50a6f6b4551f592b9dc723f0   (CI 34788418383 success)
-> Coordinator Review    = G3 ACCEPTED; G4 ACCEPTED / COMPLETE; G5 ACCEPTED / COMPLETE; G6 ACCEPTED / COMPLETE
 > Owner Command Naming Decision = ACCEPTED
 > Primary Command       = RACKPROPIEDADES
 > Alias                 = RPR
 > Owner wording         = "Acepto RACKPROPIEDADES con alias RPR."   (2026-09-13)
+> G7 authorization      = Coordinator
+> G7A original          = e25d159ef03993c1e886f1a322afda07e7f4bb82   (base anterior 1b091be; CI 34789277774 success)
+> G7A archive           = archive/i-54-g7a-pre-rebase-e25d159 -> e25d159ef03993c1e886f1a322afda07e7f4bb82
+> Current base          = 104ef3a1b1df249d6e0a56dc4ad3846912b24f12   (main, merge de I-53S E2)
+> G7A post-rebase       = 5c16ae8a8134e3b956459bd91ba15d097a24fc34   (CI 34789745328 success)
+> G7_SHA                = 18cf2dcc55c1eb0f0c826e1716a43a2ae0a7cf71   (CI 34792787919 success, 4/4)
+> G7A process deviation = CORRECTED / NON-MATERIAL / CLOSED
+> Coordinator Review    = G3 ACCEPTED; G4 ACCEPTED / COMPLETE; G5 ACCEPTED / COMPLETE; G6 ACCEPTED / COMPLETE;
+>                         G7 ACCEPTED / COMPLETE
 > G3                    = COMPLETE
 > G4                    = COMPLETE
 > G5                    = COMPLETE
 > G6                    = COMPLETE
+> G7                    = COMPLETE
 > Implementation        = STARTED
-> G7                    = AUTHORIZED BY COORDINATOR
-> G8+                   = NOT AUTHORIZED
+> G8                    = NOT AUTHORIZED
 > Owner Validation      = NOT STARTED
 > ```
 >
-> **G3, G4, G5 y G6 son los gates de implementacion ejecutados.** G3 entrego el nucleo puro de Custom Properties en
+> **G3, G4, G5, G6 y G7 son los gates de implementacion ejecutados.** G3 entrego el nucleo puro de Custom Properties en
 > Application:
 >
 > - **Modelo y documento puro**: `CustomPropertiesDocument` `{SchemaVersion, Entries[{Id, Name, Value}]}` y
@@ -235,6 +251,28 @@ automation:
 > - **Pruebas y guardas**: T-PRJ-01..04 y T-GRD-04..07, en verde. El Plugin no se carga en ninguna suite (ADR-0003):
 >   el borde se fija por su forma, con guardas estructurales demostradas en rojo, y por el contrato puro que consume.
 >
+> G7 entrego la superficie de usuario —comando, ventana, ayuda y censos—, sin cambiar la semantica de G3..G6:
+>
+> - **Comando** (`src/RackCad.Plugin/RackPropiedadesCommands.cs`): `[CommandMethod("RACKPROPIEDADES")]` y
+>   `[CommandMethod("RPR")]`, con el mismo comportamiento (el alias llama al mismo metodo), y la interaccion «Selecciona
+>   un rack o [Proyecto]».
+>   - **Proyecto**: `ReadProject` → ventana → intent → `ExecuteProject` → relectura. No existe API de preflight temprano
+>     de Proyecto; el ejecutor relee en su transaccion fisica y sigue siendo la autoridad.
+>   - **Rack**: eleccion → resolucion de la definicion → `ReadRack` → instantanea de lo mostrado → ventana → preflight
+>     (`ForRack` o `ForRackUnify`) → `ExecuteRack` o `ExecuteRackUnify` → relectura.
+>   - La lectura y la escritura de las dos ramas pasan por `CustomPropertiesExecutor`; el comando no llama a la
+>     autoridad ni al commit.
+> - **Ventana** `RackCustomPropertiesWindow`, arquetipo C, la misma para Rack y Proyecto:
+>   - editable: crear, renombrar, cambiar valor y eliminar por id estable;
+>   - solo lectura desde la apertura, con su motivo, en todos los estados de D-09 y D-13;
+>   - `Divergent`: solo resumenes por vista, sin filas del rack;
+>   - unificar: solo con las opciones que da Application, sin origen por defecto, una vista `Absent` como «vacío / sin
+>     propiedades» y con confirmacion;
+>   - sin descarte, sin `MessageBox` y sin integracion en los editores de sistema.
+> - **Ayuda**: el par `RACKPROPIEDADES`/`RPR` en `RackCommandReference`.
+> - **Censos**: comandos 33 → 35, ventanas 29 → 30 (arquetipo C 11 → 12) y pares de ayuda 14 → 15.
+> - **Pruebas y guardas**: U-01..U-10 y T-GRD-08, en verde. La interaccion fisica del comando es de G9.
+>
 > **G3 NO toco** el sobre exterior (`RackEmbedDocument`), `Compose`, la autoridad por `RackId`, Plugin, el NOD fisico,
 > UI ni AutoCAD; tampoco Domain ni las pruebas existentes. **G4 NO toco** Plugin (ni `RackEnvelopeRestamp`, ni
 > `RackCloner`, ni los llamadores de `Compose`), `RackEmbedStore`, `SchemaVersionPolicy`, la autoridad por `RackId`, el
@@ -245,17 +283,24 @@ automation:
 > restamp, `ScanEnvelopes`, el registro de handlers, Project Variables, la biblioteca ni las pruebas existentes.
 >
 > **G6 NO añadio** ningun `[CommandMethod]`, nombre de comando, alias, WPF, XAML ni ayuda, y no hizo Owner Validation:
-> el censo de comandos sigue en 33 → 33. Tampoco toco Application, Domain, UI, `ProjectVariables*`, `RackBlockFinder`,
-> `RackBlockData`, `RackEnvelopeRestamp`, `RackCloner`, el codigo de G3..G5 ni las pruebas existentes. G7 esta
-> autorizado por el Coordinador, con la decision del Owner sobre el nombre del comando ya registrada (§12); G8..G10 no
-> se inician sin orden propia del Coordinador.
+> el censo de comandos quedo en 33 → 33. Tampoco toco Application, Domain, UI, `ProjectVariables*`, `RackBlockFinder`,
+> `RackBlockData`, `RackEnvelopeRestamp`, `RackCloner`, el codigo de G3..G5 ni las pruebas existentes.
 >
-> La rama esta rebasada sobre `origin/main` @ `1b091be` (merge de I-53 E1) desde G4-REBASE-CLOSE; antes lo estaba
-> sobre `f8deb67`, desde G2G. `main` avanzo a mitad de la sesion de G4, despues de su preflight, y el rebase se hizo en
-> la sesion siguiente con la historia previa preservada en `archive/i-54-g4-pre-rebase-78e6696`. G5, G5-CLOSE, G6 y
-> G6-CLOSE no rebasan: `main` sigue en `1b091be`. Los SHAs citados en este contrato son los **originales**: siguen
-> siendo la autoridad de su evidencia y no se sustituyen; su equivalente post-rebase esta en §14. Los veredictos
-> pertenecen a sus SHAs y no se transfieren.
+> **G7 NO toco** Domain, Application, el codigo de G3..G6 (incluidos `CustomPropertiesData` y
+> `CustomPropertiesExecutor`), el sobre, el compositor, Project Variables, `RackSelectiveWindow` ni ningun otro editor
+> de sistema, ni la biblioteca, y no hizo Owner Validation ni trabajo de Candidato. G8..G10 no se inician sin orden
+> propia del Coordinador.
+>
+> La rama esta rebasada sobre `origin/main` @ `104ef3a` (merge de I-53S E2) desde la correccion de G7A; antes lo estuvo
+> sobre `1b091be` (merge de I-53 E1), desde G4-REBASE-CLOSE, y sobre `f8deb67`, desde G2G. `main` avanzo a mitad de la
+> sesion de G4, despues de su preflight, y el rebase se hizo en la sesion siguiente con la historia previa preservada en
+> `archive/i-54-g4-pre-rebase-78e6696`. G5, G5-CLOSE, G6 y G6-CLOSE no rebasaron. En G7, `main` avanzo a `104ef3a`
+> despues del preflight de G7A, y G7A se commiteo igualmente sobre la base anterior (`e25d159`): fue una **desviacion
+> de proceso**, corregida antes de cualquier codigo de G7B con el tag `archive/i-54-g7a-pre-rebase-e25d159`, el rebase
+> de toda la rama sobre `104ef3a` (G7A = `5c16ae8`) y CI en verde. G7B (`18cf2dc`) y G7-CLOSE van sobre esa misma
+> historia rebasada. Los SHAs citados en este contrato son los **originales** de cada gate: siguen siendo la autoridad
+> de su evidencia y no se sustituyen. Sus equivalentes estan en el registro de decisiones: §14 para el rebase de G4 y
+> §18 para el de G7. Los veredictos pertenecen a sus SHAs y no se transfieren.
 
 > **Apertura por autorizacion explicita del Owner sin fila previa**, transmitida por el Coordinador de
 > I-54 — caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2. Esa autorizacion sustituye **unicamente** la
@@ -293,8 +338,9 @@ validaciones y mutaciones por id) con sus pruebas Core. G4 entrego la segunda: e
 el sobre de cada vista sin que el sobre lo interprete. G5 entrego la tercera, tambien en Application pura: la autoridad
 por `RackId` sobre la proyeccion plana, el workspace, el preflight y el commit fresco con su plan completo. G6 entrego
 la cuarta, en el Plugin: el borde fisico (la entrada del NOD de Proyecto y los ejecutores de Proyecto y de Rack), sin
-comando ni UI. La fundacion no esta completa: falta G7, ya autorizado y con el nombre del comando decidido por el Owner
-(`RACKPROPIEDADES`, alias `RPR`), y faltan G8..G10, cada uno con su propia orden.
+comando ni UI. G7 entrego la quinta: el comando `RACKPROPIEDADES` (alias `RPR`, nombres decididos por el Owner), la
+ventana `RackCustomPropertiesWindow` para Rack y Proyecto, la ayuda y los censos. La fundacion no esta completa: faltan
+G8..G10 —Candidato, validacion del Owner e integracion—, cada uno con su propia orden.
 
 ## 2. Problema
 
@@ -353,21 +399,22 @@ darlos por ciertos:
    con las ramas activas; decisiones materiales; riesgos; recomendacion de ADR si/no; y un **paquete
    autonomo** para la revision de Arquitecto.
 5. **Implementacion**: sus gates son los de la Proposal V5 §14 (G3..G10), congelados por el consenso de G2J. Esta
-   **iniciada**: con el freeze completo y su CI en verde, el Coordinador autorizo G3, G4, G5 y G6, en ese orden; los
-   cuatro estan **COMPLETOS** (§8 y §14). **G7 esta autorizado**, con la decision del Owner sobre el nombre del comando
-   ya tomada (D-18.1, OQ-03: `RACKPROPIEDADES` con alias `RPR`). **G8..G10 no estan autorizados**: cada gate exige su
-   propia orden del Coordinador.
+   **iniciada**: con el freeze completo y su CI en verde, el Coordinador autorizo G3, G4, G5, G6 y G7, en ese orden; los
+   cinco estan **COMPLETOS** (§8 y §14). G7 se ejecuto con la decision del Owner sobre el nombre del comando (D-18.1,
+   OQ-03: `RACKPROPIEDADES` con alias `RPR`). **G8..G10 no estan autorizados**: cada gate exige su propia orden del
+   Coordinador.
 
 ## 4. Fuera de alcance
 
 - **Cualquier cambio de produccion en G0, G1 y G2**: nada en `src/`, `tests/`, `assets/`, `eng/`,
-  `deploy/` ni `.github/`. Cada gate de implementacion, por orden propia, se limito a lo suyo, con pruebas Core nuevas:
+  `deploy/` ni `.github/`. Cada gate de implementacion, por orden propia, se limito a lo suyo, con pruebas nuevas:
   - G3, G4 y G5 solo tocaron Application: el nucleo puro; en G4, `RackEmbedDocument` y `RackEmbedComposer`; en G5,
     archivos nuevos de autoridad, workspace y commit.
   - G6 solo añadio dos archivos nuevos del Plugin: el borde fisico, sin comando ni UI.
+  - G7 solo añadio el comando, la ventana independiente, la ayuda, los censos y sus pruebas de UI y Core, sin controles
+    de propiedades en ningun editor de sistema.
 
-  **G7 esta autorizado; G8+ no se inicia sin orden del Coordinador.** G7 se limita al comando, a la ventana
-  independiente, a la ayuda, a los censos y a sus pruebas: no añade controles de propiedades a ningun editor de sistema.
+  **G8+ no se inicia sin orden del Coordinador.**
 - `docs/HANDOFF.md`: prohibido por la orden y por [WORKFLOW](../WORKFLOW.md) seccion 2.
 - **La semantica de Project Variables** (I-47, ADR-0034) y de la **edicion vinculable** (I-48): una
   propiedad personalizada no es una variable de proyecto, y esta iniciativa no reabre esa semantica.
@@ -526,8 +573,9 @@ darlos por ciertos:
   Ninguna paralela toca `RackBlockFinder`, `RackBlockData`, `KindHandlerRegistry`, la infraestructura de transacciones
   del Plugin, `ProjectVariablesData`, `ProjectVariablesRegistry`, su ejecutor ni Custom Properties. G6 no añade comandos
   (el censo sigue en 33) ni llamadas a `Compose` (siguen 7). `conflicts_with` sigue vacio.
-- **Paralelas al abrir G7** ([decisions/I-54.md](../automation/decisions/I-54.md) §17). `main` sigue en `1b091be`,
-  sin rebase.
+- **Paralelas al abrir G7** ([decisions/I-54.md](../automation/decisions/I-54.md) §17 y §18). En el preflight de G7A,
+  `main` estaba en `1b091be`. **Correccion (G7-CLOSE):** despues de ese preflight `main` avanzo a `104ef3a` (merge de
+  I-53S E2), y G7A se commiteo igualmente sobre la base anterior; la rama se rebaso sobre `104ef3a` antes de G7B (§18).
   - I-49 @ `2eeeab1`: un commit solo de documentacion desde `c5b9ede`, en el que el Owner acepta ADR-0040, que
     reemplaza a ADR-0038.
   - I-52 @ `b70b5bf`: sin cambios.
@@ -536,6 +584,19 @@ darlos por ciertos:
     `RackSelectiveWindow`.
   - Ninguna toca `RackCommandReference`, `DialogWindowChrome`, `EditorActions`, los censos de comandos o de ventanas ni
     Custom Properties. Las tres mantienen el censo de comandos en 33. `conflicts_with` sigue vacio.
+- **Paralelas en G7B y G7-CLOSE** ([decisions/I-54.md](../automation/decisions/I-54.md) §18). `main` sigue en `104ef3a`
+  desde el rebase de G7A: sin rebase nuevo.
+  - I-53S: integrada en `main` (`104ef3a`); su rama remota se retiro.
+  - I-49 @ `8ed15f7`: publicada rebasada sobre `104ef3a` (su historia previa, en su propio tag
+    `archive/i-49-a1r3-pre-rebase-2eeeab1`), con un commit nuevo solo de documentacion: nuevo Consensus Freeze sobre su
+    Proposal V6, el Amendment A1 y ADR-0040.
+  - I-52 @ `e0a779f`: un commit solo de documentacion desde `b70b5bf` (Proposal V8, ADR-0036 actualizado y su registro).
+  - I-53D @ `aa0f817` (`feature/cabeceras-multidestino-dinamico`, nueva, sobre `104ef3a`): reclamo y bootstrap, solo
+    documentacion. Sera dueña de la UI del Dinamico, que G7 no toca.
+  - Ninguna toca `RackCommandReference`, `DialogWindowChrome`, `EditorActions`, los censos de comandos, ventanas o ayuda
+    ni Custom Properties, y `main` mantiene 33 `[CommandMethod]`. El cruce textual ya previsto con I-52 (censo de
+    comandos y ayuda) queda ahora fijado por nombre: quien integre despues clasifica sus registros en T-GRD-08.
+    `conflicts_with` sigue vacio.
 - **Cruce medido en G1** ([Discovery](I-54-discovery.md) §2 y §13): cruce **productivo** actual con I-49,
   I-50, I-52 e I-53 = **cero archivos** mientras I-54 no toque DTO ni Domain de sistema, editores de sistema,
   `RackEnvelopeRestamp` ni `RackCloner`. Cruce **documental** previsto con las cuatro (fila de ROADMAP tras I-51,
@@ -572,13 +633,18 @@ G5-CLOSE toca solo este contrato, el registro de decisiones y, por orden del Coo
 corregir un hecho temporal del parrafo de I-54. G6 crea dos archivos de produccion en `src/RackCad.Plugin/`
 (`CustomPropertiesData.cs` y `CustomPropertiesExecutor.cs`) y dos de pruebas Core (`CustomPropertiesProjectTests.cs` y
 `CustomPropertiesEdgeGuardTests.cs`), sin modificar ningun archivo existente. G6-CLOSE toca solo este contrato y el
-registro de decisiones, igual que G7A. G7B, por categorias de la orden del Coordinador:
-- nuevos: la ventana `RackCustomPropertiesWindow` en `src/RackCad.UI/`, la superficie de comando del Plugin y pruebas de
-  UI y Core;
-- modificados: la ayuda (`RackCommandReference`) y las guardas de censo de comandos y ventanas.
+registro de decisiones, igual que G7A. El rebase de G7 solo reaplica los 20 commits de I-54 sobre `104ef3a`; sus dos
+conflictos, documentales (`docs/ROADMAP.md` en el bootstrap e `ideas-futuras.md` en el freeze), se resuelven
+conservando los dos lados. G7B toca exactamente diez archivos:
+- nuevos: `src/RackCad.Plugin/RackPropiedadesCommands.cs`, `src/RackCad.UI/RackCustomPropertiesWindow.xaml` y su
+  `.xaml.cs`, `tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs` y, en `tests/RackCad.UI.Tests/`,
+  `CustomPropertiesWindowTests.cs`, `CustomPropertiesWindowTestKit.cs` y `CustomPropertiesHelpCensusTests.cs`;
+- modificados: `src/RackCad.UI/RackCommandReference.cs` (la entrada de ayuda) y las guardas de censo
+  `tests/RackCad.Tests/SelectiveEditorOpenTests.cs` y `tests/RackCad.UI.Tests/WindowCensusGuardTests.cs`.
 
-No toca Domain, la semantica de G3..G6, el sobre ni el compositor, Project Variables, los editores de sistema ni la
-biblioteca. **Una desviacion material frente a esto obliga a detenerse.**
+G7B no toca Domain, Application, la semantica de G3..G6, el sobre ni el compositor, Project Variables, los editores de
+sistema ni la biblioteca. G7-CLOSE toca solo este contrato y el registro de decisiones. **Una desviacion material
+frente a esto obliga a detenerse.**
 
 ## 8. Fases
 
@@ -587,7 +653,7 @@ biblioteca. **Una desviacion material frente a esto obliga a detenerse.**
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** — bootstrap `f908b2f` |
 | G1 | Discovery | [I-54-discovery.md](I-54-discovery.md): informe por archivo/simbolo, H-1..H-8, mapa de cruces, riesgos y hallazgos fuera de alcance | **HECHA** — `195964b` |
 | G2 | Proposal y consenso | **G2A**: [Proposal V1](I-54-proposal-v1.md) y paquete de Arquitecto. **G2B**: Architect Review de V1. **G2C**: [Proposal V2](I-54-proposal-v2.md) y paquete reescrito. **G2D**: revision exact-SHA de V2. **G2E**: [Proposal V3](I-54-proposal-v3.md) y paquete reescrito. **G2F**: revision exact-SHA de V3, limitada a C-1..C-8. **G2G**: rebase obligatorio sobre `origin/main` y [Proposal V4](I-54-proposal-v4.md) con paquete reescrito para la revision exact-SHA (su SHA es el del commit que introduce la V4). **G2H**: revision exact-SHA post-rebase de V4, limitada a C-F1, C-F2 y la integridad del rebase. **G2I**: [Proposal V5](I-54-proposal-v5.md) (C-F3) y paquete reescrito para la revision final exact-SHA (su SHA es el del commit que introduce la V5). **G2J**: revision final exact-SHA de V5 por Coordinador y Arquitecto, limitada a AR-54-V4-01 / C-F3. **G2-FREEZE**: consenso, ADR `propuesto` y aprobacion del Owner. Cada una con orden propia. SHAs pre-rebase y sus equivalentes en la V5 §2.2 | **G2A HECHA** (`7c197af`); **G2B CERRADA** (AGREED WITH CHANGES sobre `7c197af`); **G2C HECHA** (`36c337b`); **G2D CERRADA** (AGREED WITH CHANGES sobre `36c337b`); **G2E HECHA** (`5d25da8`); **G2F CERRADA** (AGREED WITH CHANGES sobre `5d25da8`); **G2G HECHA** (`8bc991c`); **G2H CERRADA** (AGREED WITH CHANGES sobre `8bc991c`); **G2I HECHA** (`26ca923`); **G2J CERRADA** (Coordinator AGREED y Architect AGREED sobre `26ca923`); **G2-FREEZE PREP HECHA** (`d84f480`, CI 34748982744 verde); **G2-FREEZE COMPLETION HECHA** (`3866252`, CI 34750208424 verde): ADR-0039 aceptado por el Owner (“Acepto”), Consensus Freeze COMPLETE |
-| G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates G3..G10 de la [Proposal V5](I-54-proposal-v5.md) §14, congelados por el consenso de G2J | **iniciada**: **G3 HECHA** (`57f2b4e`, CI 34759032979 verde; aceptada por el Coordinador), G3 COMPLETE; **G3-CLOSE**: sincronizacion documental; **G4 HECHA** (G4A `dcc4048`, CI 34771155216; G4B `78e6696`, CI 34772215008; aceptada por el Coordinador), G4 COMPLETE; **G4-REBASE-CLOSE**: tag `archive/i-54-g4-pre-rebase-78e6696`, rebase sobre `1b091be`, equivalentes `b568bef` y `7b0f6a9` (CI 34773339064 verde), y cierre documental (`477c149`, CI 34773953746 verde); **G5 HECHA** (`3cf0d35`, CI 34778231177 verde; aceptada por el Coordinador), G5 COMPLETE; **G5-CLOSE**: sincronizacion documental y correccion factual del indice de ADR (`6b438be`, CI 34779470825 verde); **G6 HECHA** (`ca71962`, CI 34787646732 verde; aceptada por el Coordinador), G6 COMPLETE; **G6-CLOSE**: sincronizacion documental (`b4e99e4`, CI 34788418383 verde); **G7 AUTHORIZED BY COORDINATOR**: G7A registra la decision del Owner (`RACKPROPIEDADES`, alias `RPR`; Owner Command Naming Decision ACCEPTED) y G7B implementa el comando y la UI; **G8..G10 NOT AUTHORIZED**, cada uno con su propia orden del Coordinador; Owner Validation NOT STARTED |
+| G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates G3..G10 de la [Proposal V5](I-54-proposal-v5.md) §14, congelados por el consenso de G2J | **iniciada**: **G3 HECHA** (`57f2b4e`, CI 34759032979 verde; aceptada por el Coordinador), G3 COMPLETE; **G3-CLOSE**: sincronizacion documental; **G4 HECHA** (G4A `dcc4048`, CI 34771155216; G4B `78e6696`, CI 34772215008; aceptada por el Coordinador), G4 COMPLETE; **G4-REBASE-CLOSE**: tag `archive/i-54-g4-pre-rebase-78e6696`, rebase sobre `1b091be`, equivalentes `b568bef` y `7b0f6a9` (CI 34773339064 verde), y cierre documental (`477c149`, CI 34773953746 verde); **G5 HECHA** (`3cf0d35`, CI 34778231177 verde; aceptada por el Coordinador), G5 COMPLETE; **G5-CLOSE**: sincronizacion documental y correccion factual del indice de ADR (`6b438be`, CI 34779470825 verde); **G6 HECHA** (`ca71962`, CI 34787646732 verde; aceptada por el Coordinador), G6 COMPLETE; **G6-CLOSE**: sincronizacion documental (`b4e99e4`, CI 34788418383 verde); **G7 HECHA** (aceptada por el Coordinador), G7 COMPLETE: **G7A** registra la decision del Owner (`RACKPROPIEDADES`, alias `RPR`), commiteada primero como `e25d159` sobre la base anterior `1b091be` (CI 34789277774), desviacion de proceso corregida con el tag `archive/i-54-g7a-pre-rebase-e25d159` y el rebase de la rama sobre `104ef3a` (equivalente `5c16ae8`, CI 34789745328 verde); **G7B**: comando, ventana, ayuda, censos, U-01..U-10 y T-GRD-08 (`18cf2dc`, CI 34792787919 verde); **G7-CLOSE**: sincronizacion documental; **G8..G10 NOT AUTHORIZED**, cada uno con su propia orden del Coordinador; Owner Validation NOT STARTED |
 
 Ninguna fase posterior arranca sin que la anterior tenga evidencia revisable.
 
@@ -599,12 +665,15 @@ builds Debug de UI y de Plugin (AGENTS.md, «Pruebas — definicion de terminado
 evidencia es documental. G3, G4, G5 y G6 si producen codigo, y su evidencia es la suite Core en local mas la CI verde
 sobre su SHA exacto (§14); G6, que toca el Plugin, añade el build Debug del Plugin en local. Tras el rebase de
 G4-REBASE-CLOSE, la evidencia de G3 y G4 se volvio a medir sobre `7b0f6a9`: los SHAs anteriores no la transfieren. La de
-G5 se midio sobre `3cf0d35` y la de G6 sobre `ca71962`.
+G5 se midio sobre `3cf0d35` y la de G6 sobre `ca71962`. G7 toca UI y Plugin: su evidencia, medida sobre `18cf2dc`,
+despues del rebase de G7A, es la suite Core completa, la de UI completa segun LC-UI, las pruebas de UI afectadas, los
+builds Debug de UI y de Plugin en local y la CI 4/4 sobre ese SHA exacto (§14).
 
-Ninguna suite carga el Plugin (ADR-0003): el borde de G6 se prueba por su forma, con guardas estructurales, y por el
-contrato puro que consume, sin ejecutar AutoCAD. Ninguno de estos gates es Candidato: por LC-UI, su evidencia de UI es
-la de la CI. La UI Full local y el build Debug de UI en local no se ejecutaron; se exigen sobre el SHA del Candidato,
-igual que el build Debug del Plugin.
+Ninguna suite carga el Plugin (ADR-0003): el borde de G6 y el comando de G7 se prueban por su forma, con guardas
+estructurales, y por el contrato puro que consumen, sin ejecutar AutoCAD. Ninguno de estos gates es Candidato. De G3 a
+G6, por LC-UI, la evidencia de UI fue la de la CI, sin UI Full ni build Debug de UI en local; G7 si los ejecuto en
+local, porque toca UI. Aun asi, las dos suites y los builds Debug de UI y de Plugin se vuelven a exigir sobre el SHA
+del Candidato (G8).
 
 ## 10. Validacion manual
 
@@ -612,9 +681,10 @@ igual que el build Debug del Plugin.
 `RACKEDITAR`, a la duplicacion y a guardar/reabrir cambia el comportamiento del dibujo (AGENTS.md,
 punto 5). El **checklist concreto** es OV-01..OV-14 de la Proposal V5 §12.8, en G9. G0, G1 y G2 **no** la
 requieren: no tocan producto. G3, G4 y G5 tampoco: son nucleo puro, sobre y autoridad de Application, sin AutoCAD. G6
-tampoco: es un borde fisico que ningun comando alcanza todavia. Nada de lo que G6 escribe o lee tiene aun comportamiento
-observado en AutoCAD —el NOD real, `PURGE` y `AUDIT`, `UNDO`, las xref ni las transacciones reales—, y no se afirma:
-es de G9. **Owner Validation = NOT STARTED.**
+tampoco: era un borde fisico que ningun comando alcanzaba. G7 conecta ese borde a un comando y a una ventana, pero no
+ejecuto AutoCAD: la interaccion fisica del comando —prompt, eleccion, lectura y escritura reales— sigue sin validar.
+Nada de lo que G6 y G7 leen o escriben tiene aun comportamiento observado en AutoCAD —el NOD real, `PURGE` y `AUDIT`,
+`UNDO`, las xref ni las transacciones reales—, y no se afirma: es de G9. **Owner Validation = NOT STARTED.**
 
 ## 11. Criterios de aceptacion
 
@@ -632,20 +702,13 @@ limite expreso de la orden:
 
 ## 12. Condiciones para detenerse
 
-- **COMPUERTA VIGENTE — G7, comando y UI, autorizado por el Coordinador, en dos fases ordenadas.**
-  - **G7A, solo documentacion**: registra en este contrato y en el registro de decisiones la decision del Owner sobre el
-    nombre del comando. Se commitea aparte y su CI tiene que estar en verde antes de G7B.
-  - **G7B, producto**: exactamente `[CommandMethod("RACKPROPIEDADES")]` y `[CommandMethod("RPR")]`, con el mismo
-    comportamiento; la interaccion «Selecciona un rack o [Proyecto]»; `RackCustomPropertiesWindow` (arquetipo C); los
-    intents por id; la presentacion de solo lectura, de `Divergent` y de la unificacion segura; la ayuda; los censos
-    de comandos, ventanas y ayuda; U-01..10 y T-GRD-08. G7B no inventa ni cambia los nombres.
-  - Sin tocar la Proposal V5, ADR-0039, el Discovery, `docs/ideas-futuras.md`, `docs/HANDOFF.md` ni `docs/ROADMAP.md`;
-    sin controles de propiedades en ningun editor de sistema (`RackSelectiveWindow` incluida); sin cambiar la semantica
-    de G3..G6.
-  - Sin Candidato (G8), sin validacion del Owner (G9) y sin integracion (G10).
+- **COMPUERTA VIGENTE — G8 NOT AUTHORIZED.** G7 esta COMPLETO y aceptado por el Coordinador, y G7-CLOSE lo sincroniza.
+  G8 (Candidato) no se inicia sin una orden propia del Coordinador; sin ella no hay Candidato, ni SHA de Candidato, ni
+  validacion del Owner (G9), ni integracion (G10).
 
   (El freeze quedo en `d84f480` y `3866252`; G3 en `57f2b4e`; G4 en `dcc4048` y `78e6696`, preservados en
-  `archive/i-54-g4-pre-rebase-78e6696`; G5 en `3cf0d35`; G6 en `ca71962`.)
+  `archive/i-54-g4-pre-rebase-78e6696`; G5 en `3cf0d35`; G6 en `ca71962`; G7A en `e25d159`, preservado en
+  `archive/i-54-g7a-pre-rebase-e25d159`, con equivalente rebasado `5c16ae8`; G7B en `18cf2dc`.)
 - **Condiciones para iniciar la implementacion**, todas **cumplidas**:
   - `Coordinator = AGREED` y `Architect = AGREED` sobre la **misma** Proposal: **cumplida** en G2J, sobre `26ca923`;
   - aceptacion **explicita** de ADR-0039 por el Owner: **cumplida** (“Acepto”, 2026-09-13);
@@ -658,7 +721,7 @@ limite expreso de la orden:
 - **Cada gate posterior, de G8 a G10, exige su propia orden del Coordinador.** Sin ella, G8+ no se inicia.
 - **El nombre del comando esta decidido** (D-18.1, OQ-03). G6-CLOSE lo dejo `PENDING`, con `RACKPROPIEDADES` y `RPR`
   como nombres de trabajo. El Owner lo decidio antes de G7, de forma explicita y definitiva para la V1 de I-54, y el
-  Coordinador lo transmite con la orden de G7:
+  Coordinador lo transmitio con la orden de G7:
 
   ```text
   Owner Command Naming Decision = ACCEPTED
@@ -670,7 +733,7 @@ limite expreso de la orden:
   ```
 
   No hay otros alias, ni comandos separados por alcance: un solo comando atiende Rack y Proyecto. El boton de menu sigue
-  fuera de V1 (D-18.8).
+  fuera de V1 (D-18.8). G7B los registro exactamente asi en `18cf2dc`, y T-GRD-08 los fija por nombre.
 - Si G1 encuentra **archivos productivos compartidos materiales con I-49, I-50 o I-52**: reportarlo antes
   de continuar.
 - Si la Proposal exige cambiar el **formato persistido existente** (major de `RackEmbedDocument`, forma de
@@ -1169,8 +1232,10 @@ Owner Validation              = NOT STARTED
 Sin compilacion ni pruebas nuevas en G6-CLOSE: es un commit documental. Su SHA y su CI se reportan al Coordinador.
 
 **G7A — decision del Owner sobre el nombre del comando.** Primera fase de G7, por orden del Coordinador (`G7 IS
-AUTHORIZED`; G8, G9 y G10 NOT AUTHORIZED). Solo documentacion y antes de cualquier codigo de producto. Sin rebase:
-`origin/main` sigue en `1b091be`.
+AUTHORIZED`; G8, G9 y G10 NOT AUTHORIZED). Solo documentacion y antes de cualquier codigo de producto. En su preflight,
+`origin/main` estaba en `1b091be`. **Correccion (G7-CLOSE):** `main` avanzo a `104ef3a` despues de ese preflight, y
+G7A se commiteo igualmente sobre la base anterior como `e25d159`, incumpliendo la disciplina de rebasar antes de
+escribir. La correccion esta mas abajo, en «G7A — correccion de la base», y en el registro de decisiones, §18.
 
 - **G6-CLOSE verificado**: `b4e99e4cbd11d3ed50a6f6b4551f592b9dc723f0`, igual a su upstream; CI 34788418383 (push)
   `success` sobre ese SHA exacto, con los cuatro jobs en verde.
@@ -1201,5 +1266,114 @@ Owner Validation              = NOT STARTED
 
 Sin compilacion ni pruebas nuevas en G7A: es un commit documental. Su SHA y su CI se reportan al Coordinador, y G7B no
 empieza hasta que esa CI este en verde.
+
+**G7A — correccion de la base (desviacion de proceso).** Hecha antes de cualquier codigo de producto de G7B:
+
+- **Hechos**:
+  1. G7 abrio con `origin/main` = `1b091bedafceb67ca57054a9eb3bf5259efff774`.
+  2. Despues del preflight de apertura, `main` avanzo a `104ef3a1b1df249d6e0a56dc4ad3846912b24f12` (merge de I-53S E2).
+  3. G7A se commiteo igualmente sobre la base anterior, como `e25d159ef03993c1e886f1a322afda07e7f4bb82` (CI 34789277774
+     `success`).
+  4. Eso incumplio la disciplina obligatoria de rebasar antes de escribir ([WORKFLOW](../WORKFLOW.md) §4.2 y la orden
+     de G7). El G7A original no fue conforme.
+- **Correccion**, antes de G7B:
+  - tag `archive/i-54-g7a-pre-rebase-e25d159`, que preserva el commit original sin reescribirlo;
+  - rebase de toda la rama de I-54 (20 commits) sobre `104ef3a`;
+  - comprobacion de las costuras de la lista de STOP de la orden de G7, ninguna afectada;
+  - equivalencia verificada;
+  - publicacion con `--force-with-lease`;
+  - G7A post-rebase = `5c16ae8a8134e3b956459bd91ba15d097a24fc34`, CI 34789745328 `success` 4/4.
+
+  Detalle, mapa de SHAs y equivalencia en el registro de decisiones, §18.
+- **Clasificacion del Coordinador**: `PROCESS DEVIATION = CORRECTED / NON-MATERIAL / CLOSED`.
+
+**G7B — comando `RACKPROPIEDADES` y editor de propiedades.** Segunda fase de G7, por orden del Coordinador (`G7 IS
+AUTHORIZED`; G8, G9 y G10 NOT AUTHORIZED), sobre G7A `5c16ae8` y `main` @ `104ef3a`, sin rebase nuevo.
+
+- **Producto** (sintesis en la cabecera de este contrato):
+  - **Comando**: `RACKPROPIEDADES` y `RPR`, el mismo comportamiento y el prompt de Rack o `[Proyecto]`.
+  - **Proyecto**: `ReadProject` → ventana → intent → `ExecuteProject` → relectura, sin preflight temprano de Proyecto
+    (no existe esa API); el ejecutor fresco sigue siendo la autoridad.
+  - **Rack**: eleccion → resolucion de la definicion → `ReadRack` → instantanea de lo mostrado → ventana → preflight →
+    `ExecuteRack` o `ExecuteRackUnify` → relectura.
+  - **Ventana** `RackCustomPropertiesWindow`, arquetipo C: CRUD por id estable si es editable; solo lectura en todos los
+    estados de D-09 y D-13; `Divergent` con resumenes por vista; unificacion con las opciones de Application, sin
+    origen por defecto, `Absent` como «vacío / sin propiedades» y confirmacion; sin descarte, sin `MessageBox` y sin
+    integracion en los editores de sistema.
+- **Censos**, medidos al abrir (post-rebase, `5c16ae8`) y al cerrar:
+
+  | Censo | Apertura | Final | Delta |
+  |---|---|---|---|
+  | `[CommandMethod]` | 33 | 35 | +2: `RACKPROPIEDADES` y `RPR` |
+  | Ventanas de producto | 29 (A 6, B 6, C 11, D 6) | 30 (A 6, B 6, C 12, D 6) | +1: `RackCustomPropertiesWindow`, +1 del arquetipo C |
+  | Pares comando/alias de la ayuda | 14 | 15 | +1: `RACKPROPIEDADES`/`RPR` |
+
+- **Pruebas por ID**, todas en PASS:
+
+  | ID | Casos | | ID | Casos |
+  |---|---|---|---|---|
+  | U-01 | 4 | | U-06 | 22 |
+  | U-02 | 14 | | U-07 | 2 |
+  | U-03 | 19 | | U-08 | 2 |
+  | U-04 | 7 | | U-09 | 23 |
+  | U-05 | 5 | | U-10 | 21 |
+  | T-GRD-08 (Core) | 42 | | T-GRD-08 (UI: ayuda 10, ventanas 1) | 11 |
+
+- **RED**:
+  - con las pruebas y sin producto: Core, 33 de las 43 pruebas de G7 en rojo (nombres ausentes en el censo, archivo del
+    comando ausente y censo 33 frente a 35); UI sin compilar, porque la ventana no existia;
+  - con una ventana esqueleto sin comportamiento, nunca versionada: Core 33 de 43 y UI 120 de 137 en rojo;
+  - violaciones temporales en archivos reales, nunca versionadas: 10 de 10 en rojo, restauradas con hash verificado.
+- **GREEN local** (SDK 8.0.423):
+  - UI focal 137/137;
+  - guardas Core de G7 y G6 95/95;
+  - CustomProperties Core 789/789;
+  - Core completa 7240/7240, 0 omitidas, antes del commit y otra vez sobre `18cf2dc` con el arbol limpio;
+  - impacto de UI: 297 PASS, 9 omitidas y 0 fallidas;
+  - UI completa: 1524 PASS, 17 omitidas y 0 fallidas, las mismas 17 omitidas de la base, antes del commit y otra vez
+    sobre `18cf2dc`.
+- **Builds Debug**: UI con 0 avisos y 0 errores; Plugin con 0 errores y los 2 avisos MSB3277 de la base.
+- **Commit** `18cf2dcc55c1eb0f0c826e1716a43a2ae0a7cf71`; CI 34792787919 (push) `success` sobre ese head_sha exacto, con
+  los cuatro jobs en verde.
+- **No toco** Domain, Application, el codigo de G3..G6, el sobre, el compositor, Project Variables, los editores de
+  sistema, la biblioteca ni la documentacion. Sin Candidato, sin AutoCAD y sin integracion.
+- **Revision del Coordinador**: G7 = ACCEPTED / COMPLETE, con cuatro disposiciones sobre el diseño, en el registro de
+  decisiones, §18:
+  - resolucion de la eleccion en una transaccion de solo lectura: aceptada;
+  - Proyecto sin preflight temprano: aceptado;
+  - censo de la ayuda: aceptado;
+  - `docs/guias/despliegue.md`: diferido y no bloqueante.
+
+**G7-CLOSE — sincronizacion documental tras G7.** Solo documentacion, sin rebase: `main` sigue en `104ef3a`.
+
+- **G7 verificado**: la rama esta en `18cf2dcc55c1eb0f0c826e1716a43a2ae0a7cf71`, igual a su upstream, y la CI
+  34792787919 dio `success` sobre ese SHA exacto, con los cuatro jobs en verde. La CI 34789745328 de G7A post-rebase
+  tambien es `success`.
+- **Contrato**: este archivo registra G7 COMPLETE, Implementation STARTED, G8 NOT AUTHORIZED y Owner Validation NOT
+  STARTED, con la sintesis factual de G7. Corrige el texto de estado que G7A dejo afirmando que `main` seguia en
+  `1b091be`, que no hubo rebase y que la rama seguia sobre la base anterior. Las entradas historicas se conservan.
+- **[decisions/I-54.md](../automation/decisions/I-54.md) §18**: traza de G7 COMPLETION —desviacion de proceso y su
+  correccion, SHAs de G7A antes y despues del rebase, SHA y CI exactos de G7, evidencia, censos y las cuatro
+  disposiciones del Coordinador—. De §17 solo se corrige su verificacion de `main`.
+- No cambian `src/`, `tests/`, `docs/adr/`, la Proposal V5, ADR-0039, el Discovery, `ideas-futuras.md`,
+  `docs/guias/despliegue.md`, `ROADMAP.md` ni `HANDOFF.md`.
+
+```text
+Consensus Freeze              = COMPLETE
+ADR-0039                      = ACCEPTED
+Owner Command Naming Decision = ACCEPTED
+Primary Command               = RACKPROPIEDADES
+Alias                         = RPR
+G3                            = COMPLETE
+G4                            = COMPLETE
+G5                            = COMPLETE
+G6                            = COMPLETE
+G7                            = COMPLETE
+Implementation                = STARTED
+G8                            = NOT AUTHORIZED
+Owner Validation              = NOT STARTED
+```
+
+Sin compilacion ni pruebas nuevas en G7-CLOSE: es un commit documental. Su SHA y su CI se reportan al Coordinador.
 
 El resto de la evidencia se acumula al cerrar cada fase.
