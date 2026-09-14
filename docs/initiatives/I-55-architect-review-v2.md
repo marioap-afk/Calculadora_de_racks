@@ -1,5 +1,14 @@
 # I-55 — Revision del Arquitecto sobre la Proposal V2
 
+> **Correccion de estado (G2D, 2026-09-14).** El Coordinador reclasifica este documento como **revision tecnica adversarial
+> de la Proposal V2**: la hizo la misma sesion que redacto V2, asi que **no** es el veredicto formal de un Arquitecto
+> independiente. Estado vigente: `Coordinator = CHANGES REQUIRED → V3` · `Architect formal = PENDING` ·
+> `Technical adversarial review V2 = CHANGES REQUIRED` · `Consensus = NOT REACHED` · `Implementation = BLOCKED`. Donde el
+> bloque siguiente dice `Architect = CHANGES REQUIRED — PROPOSAL V3` o «AGREED» por pregunta, debe leerse como resultado de
+> esa revision tecnica, no como veredicto del Arquitecto. Sus hallazgos (AR2-01..AR2-20) se aceptan como evidencia tecnica y
+> se incorporan en `I-55-proposal-v3.md` §0.4. El veredicto formal lo emitira un Arquitecto independiente con
+> `I-55-architect-review-package-v3.md`. El resto del documento se conserva sin cambios como historial.
+
 ```text
 Objeto de la revision  = docs/initiatives/I-55-proposal-v2.md @ f84f303adc132a7d72ebc3e2c5cf3d7bf9faf6e1
                          (con el mapa de implementacion V2 y ADR-0042 del mismo commit)
