@@ -1,0 +1,98 @@
+<Window x:Class="RackCad.UI.RackCustomPropertiesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:RackCad.UI.Shell"
+        Title="Propiedades personalizadas"
+        Width="760"
+        Height="640"
+        MinWidth="620"
+        MinHeight="500"
+        WindowStartupLocation="CenterOwner">
+    <!-- Arquetipo C (ADR-0029): el fondo y la tipografia los pone DialogWindowChrome desde el code-behind, no esta raiz. -->
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="Propiedades personalizadas" FontSize="18" FontWeight="SemiBold"
+                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+            <TextBlock x:Name="ScopeText" FontSize="13" FontWeight="SemiBold" Margin="0,2,0,0"
+                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+            <TextBlock Text="Nombre y valor de texto guardados en el dibujo. Cada propiedad conserva su identidad aunque cambie de nombre."
+                       FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1">
+            <shell:EditorStatusPresenter x:Name="StateBanner" Margin="0,0,0,8" />
+            <shell:EditorStatusPresenter x:Name="RepeatedNamesPresenter" Margin="0,0,0,8" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <Grid x:Name="CollectionPanel">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <DockPanel Grid.Column="0">
+                        <TextBlock DockPanel.Dock="Top" Text="Propiedades" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,2"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <ListBox x:Name="PropertiesList" Height="240" SelectionChanged="PropertiesList_SelectionChanged">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="2" TextWrapping="Wrap">
+                                        <Run Text="{Binding Text, Mode=OneWay}" />
+                                        <Run Text="{Binding Marker, Mode=OneWay}" Foreground="{DynamicResource ShellStatusWarningBrush}" />
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DockPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Nombre" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <TextBox x:Name="NameBox" Margin="0,2,0,8" />
+
+                        <TextBlock Text="Valor" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <TextBox x:Name="ValueBox" Margin="0,2,0,8" TextWrapping="Wrap" />
+
+                        <WrapPanel x:Name="ActionsPanel" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel x:Name="ViewsPanel" Margin="0,14,0,0" Visibility="Collapsed">
+                    <TextBlock Text="Contenido de cada vista" FontSize="12" FontWeight="SemiBold"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <StackPanel x:Name="SummariesList" Margin="0,4,0,0" />
+                </StackPanel>
+
+                <Border x:Name="UnifyPanel" Margin="0,14,0,0" Padding="10" BorderThickness="1" Visibility="Collapsed"
+                        BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}">
+                    <StackPanel>
+                        <TextBlock Text="Unificar las vistas" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <TextBlock Text="Elige la vista cuyo contenido pasará a todas las demás. Ninguna viene elegida."
+                                   FontSize="12" Margin="0,2,0,6" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <StackPanel x:Name="UnifySourcesPanel" />
+                        <CheckBox x:Name="UnifyConfirmCheck" Margin="0,8,0,6" Checked="UnifyConfirm_Changed" Unchecked="UnifyConfirm_Changed">
+                            <TextBlock TextWrapping="Wrap"
+                                       Text="He revisado el contenido de cada vista y entiendo que todas pasarán a tener el de la vista elegida." />
+                        </CheckBox>
+                        <WrapPanel x:Name="UnifyActionsPanel" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <DockPanel Grid.Row="3" Margin="0,12,0,0">
+            <StackPanel x:Name="CloseActionsPanel" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" />
+            <shell:EditorStatusPresenter x:Name="StatusPresenter" VerticalAlignment="Center" Margin="0,0,12,0" />
+        </DockPanel>
+    </Grid>
+</Window>

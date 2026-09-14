@@ -37,6 +37,7 @@ namespace RackCad.UI
 
             new RackCommandInfo("Editar y copiar", "RACKEDITAR", "RED", "Reabrir el editor de un rack dibujado; al confirmar redibuja todas sus vistas."),
             new RackCommandInfo("Editar y copiar", "RACKDUPLICAR", "RD", "Copiar un rack como INDEPENDIENTE, estilo COPY: punto base → destinos (múltiple por defecto)."),
+            new RackCommandInfo("Editar y copiar", "RACKPROPIEDADES", "RPR", "Propiedades personalizadas estables (nombre y valor) de un rack o del Proyecto; lo que no se puede escribir se ve en solo lectura con su motivo, y las vistas de un rack que difieren se pueden unificar."),
 
             new RackCommandInfo("Almacén (layout)", "RACKLAYOUT", "RLY", "Replica un rack en una rejilla: filas × columnas + pasillos + numeración; back-to-back y verificar encaje."),
             new RackCommandInfo("Almacén (layout)", "RACKRELLENAR", "RR", "Auto-rellena el área con racks: contorno + columnas en la capa RACKCAD_SITIO; calcula la rejilla máxima que cabe."),

@@ -52,7 +52,12 @@ namespace RackCad.UI.Tests
             // I-47 G16: la ventana central de variables de proyecto. Es C y no D porque NO es consulta: edita
             // una seleccion, acepta o cancela y devuelve una operacion. No corre sesion de rack ni tiene
             // preview, que es justo lo que separa este arquetipo del A.
-            "RackProjectVariablesWindow"
+            "RackProjectVariablesWindow",
+
+            // I-54 G7 (Proposal V5 D-18.4): el editor de propiedades personalizadas de RACKPROPIEDADES, para un rack o
+            // para el Proyecto. Es C por lo mismo que la de variables: presenta un workspace, devuelve UNA operacion
+            // por id o una unificacion confirmada y cierra; no corre sesion de rack, no tiene preview y no escribe.
+            "RackCustomPropertiesWindow"
         };
 
         /// <summary>D — utility window: navigation, consultation, help, lists or BOM, with no transactional editing
@@ -159,16 +164,34 @@ namespace RackCad.UI.Tests
             // I-47 G16 sube el reparto a 6 + 6 + 11 + 6 = 29: anade EXACTAMENTE una ventana de producto, la
             // superficie central de variables de proyecto que faltaba desde G7. Lo que ADR-0029 D2 exige es que
             // toda ventana declare su arquetipo, y eso es lo que se hace aqui; el numero no es el invariante.
+            //
+            // I-54 G7 lo sube a 6 + 6 + 12 + 6 = 30: anade EXACTAMENTE RackCustomPropertiesWindow, clasificada en C.
+            // La prueba de abajo la fija por NOMBRE en ese arquetipo, asi que el total no es lo que la sostiene.
             Assert.Empty(Infrastructure);
 
             var product = RichEditors.Concat(BoundedEditors).Concat(ConfigurationDialogs).Concat(Utilities).ToList();
 
             Assert.Equal(6, RichEditors.Length);
             Assert.Equal(6, BoundedEditors.Length);
-            Assert.Equal(11, ConfigurationDialogs.Length);
+            Assert.Equal(12, ConfigurationDialogs.Length);
             Assert.Equal(6, Utilities.Length);
-            Assert.Equal(29, product.Count);
+            Assert.Equal(30, product.Count);
             Assert.Equal(product.Count, ConcreteWindows().Count);
+        }
+
+        [Fact]
+        public void TGrd08_RackCustomPropertiesWindowEsLaUnicaVentanaNuevaDeG7_YEsDelArquetipoC()
+        {
+            // I-54 G7, T-GRD-08: la ventana de RACKPROPIEDADES existe como tipo concreto de producto, esta censada UNA vez
+            // y lo esta en C, no en A, B ni D. Con la del Proyecto no hay una segunda ventana: el alcance es un dato del
+            // workspace, no un tipo.
+            var found = ConcreteWindows().Select(t => t.Name).ToList();
+
+            Assert.Contains("RackCustomPropertiesWindow", found);
+            Assert.Contains("RackCustomPropertiesWindow", ConfigurationDialogs);
+            Assert.DoesNotContain("RackCustomPropertiesWindow", RichEditors.Concat(BoundedEditors).Concat(Utilities).Concat(Infrastructure));
+            Assert.Single(found, name => name.Contains("CustomProperties", StringComparison.Ordinal));
+            Assert.Equal("RackCad.UI", ConcreteWindows().Single(t => t.Name == "RackCustomPropertiesWindow").Namespace);
         }
 
         [Fact]
