@@ -1,164 +1,178 @@
-# ADR-0042: Preparar la vista antes de materializarla: primera vista libre, varias vistas de un rack en un flujo y proyección multi-rack que conserva la identidad
+# ADR-0042: Preparar la vista antes de materializarla: primera vista libre, varias vistas de un rack en un flujo y colocación de grupo que conserva la identidad
 
 - **Estado:** propuesto
-- **Fecha:** 2026-09-14 (propuesto)
-- **Decisores:** pendiente. Solo el Owner del repositorio acepta o rechaza. Coordinador de I-55 y Arquitecto de I-55:
-  **REVIEW REQUIRED** sobre la Proposal V1; sin consenso técnico. Claude (redacción)
+- **Fecha:** 2026-09-14 (propuesto; revisado con la Proposal V2 de I-55)
+- **Decisores:** pendiente. Solo el Owner del repositorio acepta o rechaza. Coordinador de I-55: **CHANGES REQUIRED** sobre la
+  Proposal V1 y **REVIEW REQUIRED** sobre la V2; Arquitecto de I-55: **REVIEW REQUIRED**; sin consenso técnico. Claude (redacción)
 - **Iniciativa relacionada:** I-55 — `feature/creacion-de-vistas`
   ([contrato](../initiatives/I-55-creacion-de-vistas.md), [Discovery](../initiatives/I-55-discovery.md),
-  [Proposal V1](../initiatives/I-55-proposal-v1.md), [mapa de implementación V1](../initiatives/I-55-implementation-map-v1.md),
-  [registro de I-55](../automation/decisions/I-55.md))
-- **Reemplazaría a:** [ADR-0010](0010-actualizar-redibuja-insertar-liga-vistas.md), si el Owner lo acepta (ver «Relación con
+  [Proposal V2](../initiatives/I-55-proposal-v2.md), [mapa de implementación V2](../initiatives/I-55-implementation-map-v2.md),
+  [Proposal V1](../initiatives/I-55-proposal-v1.md) como registro, [registro de I-55](../automation/decisions/I-55.md))
+- **No reemplaza por completo a ninguna ADR.** **Complementa y enmienda reglas acotadas de**
+  [ADR-0010](0010-actualizar-redibuja-insertar-liga-vistas.md): cuándo puede existir una vista adicional y dos precondiciones nuevas de
+  Insertar. El resto de ADR-0010 sigue vigente; la forma de registrar la relación queda para revisión del Arquitecto (ver «Relación con
   otros ADR»)
 
-> **Estado de este registro.** Nace `propuesto` junto con la Proposal V1 de I-55. **No** hay consenso técnico
-> (Coordinator = REVIEW REQUIRED, Architect = REVIEW REQUIRED, Consensus = NOT REACHED) y **no** autoriza implementación.
-> Puede editarse libremente hasta que el Owner lo acepte o lo rechace.
+> **Estado de este registro.** `propuesto`. **No** hay consenso técnico (Coordinator = REVIEW REQUIRED, Architect = REVIEW REQUIRED,
+> Consensus = NOT REACHED), **no** autoriza implementación y puede editarse hasta que el Owner lo acepte o lo rechace.
 >
-> **Precondición de aceptación.** Este registro fija decisiones de arquitectura. Las elecciones de producto que las
-> parametrizan —nombre del comando (OD-1), variante de la proyección (OD-2), miembro no soportado (OD-3), Esc en un lote (OD-4),
-> orden del lote (OD-5), orientación de las vistas proyectadas (OD-6), significado del layout relativo (OD-7) y presentación de
-> las vistas proyectadas (OD-8)— son **decisiones del Owner** registradas en la Proposal V1 §22.2. Deben estar decididas antes
-> de aceptar este ADR, y su texto final las incorporará tal como se decidan.
+> **Precondiciones de aceptación.** (1) Consenso técnico sobre la misma versión del plan. (2) **M-01 resuelta**: la semántica de
+> colocación de grupo expuesta, el marco fuente, el marco destino, el modo por par de vistas, los tipos y familias mezclados y la
+> variante en misma clase (OD-6.b/c/d, OD-7.a/b/c/d y OD-2.b de la Proposal V2) son material abierto. (3) Decisiones del Owner
+> OD-1..OD-8. (4) Reconciliación registrada con I-52 de las autoridades compartidas del punto 8 (Proposal V11 de I-52, [V11-D10]).
+> El texto final incorporará lo que se decida.
 >
-> **Numeración.** Se redactó como 0041, número que I-49 publicó en su rama (`8cefd59`) antes del primer commit de este
-> registro; por eso es 0042, que no figuraba en ninguna rama, etiqueta ni índice en el re-fetch previo al commit. Si otra rama
-> integrara antes un 0042, este registro tomaría el siguiente número libre antes de integrarse.
+> **Numeración.** Se redactó como 0041, número que I-49 publicó en su rama (`8cefd59`) antes del primer commit de este registro; por eso
+> es 0042. Si otra rama integrara antes un 0042, este registro tomaría el siguiente número libre antes de integrarse.
 
 ## Contexto
 
-RackCad modela un rack lógico como el conjunto de definiciones de bloque cuyos sobres comparten `RackEmbedDocument.Id`
-(ADR-0009); cada definición contiene una vista (`View`) y, cuando aplica, una sección (`Section`), y cada referencia es una
-colocación. ADR-0010 fija que, desde `RACKEDITAR`, **Actualizar** redibuja las representaciones existentes e **Insertar**
-agrega una representación ligada con el mismo GUID, y que «una vista adicional solo se inserta desde un rack ya existente».
+RackCad modela un rack lógico como el conjunto de definiciones de bloque cuyos sobres comparten `RackEmbedDocument.Id` (ADR-0009); cada
+definición es una vista y cada referencia una colocación. ADR-0010 fija que, desde `RACKEDITAR`, **Actualizar** redibuja las
+representaciones existentes e **Insertar** agrega una representación ligada con el mismo GUID, y que «Una vista adicional solo se
+inserta desde un rack ya existente, para que disponga de diseño e identidad fuente.»
 
-La Discovery de I-55 auditó el código de `ba497f1` y lo volvió a medir sobre `dad4e77` tras integrarse I-53D:
+La Discovery de I-55 auditó `ba497f1` y lo volvió a medir sobre `dad4e77`:
 
-- la primera vista está restringida por la interfaz y no por la persistencia: el Selectivo solo empieza por la frontal, el
-  Dinámico y la cabecera por la lateral, mientras Push Back y Cantilever ya empiezan por cualquiera;
-- cada gesto inserta **una** vista; la variante la decide el Plugin por prompt o la ventana, y en Push Back la lateral usa la
-  posición de la lista como número de poste;
-- el payload de cada vista se compone por comando en el Plugin, y la definición se confirma antes del jig;
-- no existe forma de generar una clase de vista para varios racks existentes: las copias crean identidad nueva, y las celdas
-  enlazadas de `RACKLAYOUT` son referencias de una definición con el mismo `Id`;
-- la planta y las elevaciones de un rack usan ejes locales distintos (en los sistemas de rack la planta dibuja la profundidad
-  en X y la corrida en Y; el Cantilever proyecta con los ejes rotados y reflejados respecto de ellos), así que las posiciones de
-  un layout en planta no son posiciones de elevación.
+- la primera vista está restringida por la interfaz (Selectivo solo frontal; Dinámico y cabecera solo lateral), no por la persistencia;
+- cada gesto inserta una vista; la variante la decide el Plugin o la ventana, y en Push Back la lateral usa la posición de una lista;
+- el payload se compone por comando en el Plugin y la definición se confirma antes del jig, que solo fija la posición;
+- no existe forma de generar una clase de vista para varios racks existentes conservando su identidad; las celdas enlazadas de
+  `RACKLAYOUT` son referencias de una definición con el mismo `Id`;
+- una vista nueva copia las propiedades personalizadas de la vista elegida sin compararlas con sus hermanas, y el redibujo previo a
+  Insertar ignora los fallos;
+- la planta y las elevaciones usan ejes locales distintos, así que las posiciones de un layout en planta no son posiciones de elevación.
 
-El Owner fijó tres capacidades (ID17, ID18, ID19) que comparten una necesidad: **preparar la representación de una vista antes
-de materializarla**. En paralelo, la Proposal V10 de I-52 (`RACKMIRROR`, sin consenso) propone autoridades de plan por vista,
-lectura de `View`/`Section`, comparación authored por kind y materialización, y registra el riesgo de duplicarlas con I-55.
+El Owner fijó ID17, ID18 e ID19, que comparten una necesidad: **preparar la representación de una vista antes de materializarla**. La
+Proposal V11 de I-52 (`RACKMIRROR`, sin consenso) propone autoridades compartidas de taxonomía de tipo de vista, lectura de
+`View`/`Section`, plan por vista, comparación authored, materialización y transformaciones de colocación, y exige reconciliar su
+propiedad con I-55 antes de congelar cualquiera de los dos contratos.
 
 ## Decisión
 
-1. **Preparación y colocación son capas distintas.** La preparación vive en Application, es pura y produce, a partir de la
-   identidad, el authored o diseño, el **sistema ya resuelto**, el tipo de vista y la variante, todo lo que la colocación
-   necesita. La colocación vive en el Plugin: importa bloques, crea la definición, escribe el sobre, coloca y limpia la
-   definición si no llega a colocarse, **también ante una excepción**. Los builders siguen siendo la única autoridad geométrica.
-2. **Una sola taxonomía de tipo de vista.** `Frontal`, `Lateral` y `Planta` son `RackViewKind`, renombre de `DimensionViewKind`
-   sin cambio de miembros ni de la política de ADR-0035. La representación dentro del tipo es una **variante tipada y
-   semántica**, nunca un índice de interfaz. **Un solo codec** traduce entre la dirección y `(View, Section)`, reproduce las
-   lecturas vigentes y devuelve su disposición para que cada consumidor aplique su política. **La persistencia no cambia.**
-3. **Vista soportada.** Un sistema soporta una dirección si tiene builder, el codec la codifica, la edición la reconoce y la
-   redibuja entre sus hermanas, y existe en el sistema resuelto. Una matriz normativa por sistema fija con qué vistas empieza un
-   rack, cuáles recibe después, cuáles admiten lote y cuáles proyección. La cama de rodamiento no admite hermanas.
-4. **Identidad.** Un rack nuevo recibe su `RackId` **una vez**, al aceptarse la intención de insertar una o varias vistas, y
-   todas las vistas de esa aceptación lo comparten; una vista hermana hereda el del rack, y la edición conserva la curación
-   vigente de un `Id` en blanco; la proyección conserva el `RackId` de cada rack. Los defectos que impiden este contrato
-   —poste por posición de lista en Push Back, visibilidad de la planta Cantilever e `Id` interior del Cantilever— se corrigen en
-   prerrequisitos aislados **antes** de la foundation.
-5. **Varias vistas de un rack en un flujo.** Todas las vistas pedidas se preparan antes de la primera escritura; cada colocación
-   se confirma por separado y ninguna transacción de escritura queda abierta entre dos jigs. En un rack existente se prepara,
-   después se redibuja y, si algún redibujo falla, no se inserta ninguna vista nueva. La política ante Esc y el orden del lote
-   son los que decida el Owner.
-6. **Autoridad entre hermanas.** Ninguna operación de I-55 crea authored divergente: en la edición, el flujo vigente unifica el
-   authored de todas las hermanas y un redibujo fallido impide insertar; fuera del editor, solo se proyecta un rack cuya
-   autoridad authored sobre **todas** sus hermanas es única. Las propiedades personalizadas de una vista nueva son las del sobre
-   fuente, así que no aparece un valor nuevo; I-55 no introduce un bloqueo por propiedades personalizadas.
-7. **Proyección multi-rack.** Las referencias seleccionadas se agrupan por `RackId`; dentro de un grupo deben ser colocaciones de
-   una misma definición, y cada grupo recibe **una** definición nueva de la vista pedida y **una** referencia nueva por
-   referencia seleccionada. El layout relativo se preserva con **una transformación común aplicada en el marco físico de los
-   racks** (corrida, profundidad, altura): cada vista declara qué eje físico representa cada eje local y dónde cae su origen
-   físico —descriptores caracterizados contra la salida de los builders—, y la transformación conserva el eje compartido entre la
-   vista fuente y la pedida, alinea las vistas sobre el eje común y colapsa el descartado con aviso. Este significado del layout
-   relativo, la orientación de las vistas proyectadas y su presentación dependen de OD-6, OD-7 y OD-8. Todo se valida antes de
-   pedir puntos, se prepara y verifica —incluidos los bloques de biblioteca— antes de escribir, y se materializa en **una**
-   transacción, sin identidad nueva, sin re-estampado y sin regeneración.
-8. **Una autoridad por responsabilidad entre iniciativas.** Selección y agrupación, paso «sistema resuelto → plan por vista»,
-   lectura de `View`/`Section`, comparación authored por kind y el primitivo de materialización en la transacción del llamador
-   tienen **una** autoridad cada una, compartida con I-52 y extraída una sola vez; las políticas de cada comando quedan en el
-   llamador.
+1. **Preparación y colocación son capas distintas.** La preparación vive en Application, es pura y parte del sistema ya resuelto; la
+   colocación vive en el Plugin, importa, crea, escribe, coloca y limpia la definición si no llega a colocarse, **también ante una
+   excepción**. Los builders siguen siendo la única autoridad geométrica.
+2. **Una sola taxonomía de tipo de vista y una variante tipada.** `RackViewKind` (renombre de `DimensionViewKind`, sin cambio de la
+   política de ADR-0035); la representación dentro del tipo es una variante semántica, nunca un índice de interfaz. **Un solo codec**
+   devuelve la dirección y su disposición (`Canonical`, `Canonicalizable`, `Coerced`, `Invalid`); cada consumidor aplica su política:
+   `RACKEDITAR` conserva su lectura, y **la colocación de grupo acepta solo `Canonical` y `Canonicalizable`** (interpretada sin reescribir
+   la fuente) y falla cerrado ante `Coerced`, `Invalid` y variantes que ya no existen en el sistema resuelto. **La persistencia no
+   cambia.**
+3. **Vista soportada** = builder + codec y edición que la reconocen + existencia en el sistema resuelto; una matriz normativa por sistema.
+   La cama de rodamiento no admite hermanas.
+4. **Identidad.** Un rack nuevo recibe su `RackId` una vez, al aceptarse la intención de insertar una o varias vistas; una hermana hereda
+   el del rack; la edición conserva la curación vigente de un `Id` en blanco; la colocación de grupo conserva el `RackId` de cada rack.
+   Los defectos que impiden el contrato (poste por posición de lista en Push Back; visibilidad de la planta Cantilever, corregida solo en
+   el Plugin) se corrigen en prerrequisitos aislados **antes** de la foundation.
+5. **Varias vistas de un rack en un flujo.** Todo se prepara antes de la primera escritura; cada colocación se confirma por separado y
+   ninguna transacción de escritura queda abierta entre jigs; en un rack existente, un redibujo fallido de una hermana impide insertar.
+6. **Ninguna hermana nace distinta de las demás.** Antes de crear una vista en un rack existente se comprueban, **acotadas a ese
+   `RackId`**, las propiedades personalizadas del sobre elegido o fuente y de las hermanas conocidas (sobres interpretables, no
+   dependientes de xref, con ese `Id`), con la igualdad canónica de I-54; la vista nueva hereda la colección común. Tipos distintos,
+   colecciones no escribibles, propiedades divergentes o un payload no interpretable **cuyo `Id` de nivel superior sea legible y coincida**
+   fallan cerrado con remedio. Un payload no interpretable con el `Id` de otro rack, o sin `Id` legible, no bloquea; un barrido que la
+   lectura hace fallar sigue fallando. Fuera del editor, la autoridad authored de todas las hermanas debe ser única. No se reabre ADR-0039 ni cambia
+   `RACKPROPIEDADES`.
+7. **Colocación de grupo.** Una ejecución proyecta **una selección**: sus referencias se agrupan por `RackId` y cada grupo recibe una
+   definición nueva, con una referencia por referencia seleccionada (varias definiciones fuente de un mismo `RackId`: según M-01). La **foundation** es **una sola
+   transformación rígida común por ejecución** entre un **marco fuente** y un **marco destino** (traslación y rotación comunes, escala 1,
+   sin cizalla, nunca una transformación por rack ni por grupo), aplicada al ancla física de cada referencia, que cada vista declara
+   mediante descriptores de marco caracterizados contra los builders; la diferencia entre las anclas destino de cualquier par de
+   referencias es la rotación común de la diferencia de sus anclas fuente. Sobre ella hay **políticas**: **rígida** (el layout de anclas
+   se reproduce rotado y trasladado y cada vista gira con la rotación común) y **ortográfica** (se conserva el eje físico compartido entre
+   la vista fuente y la pedida, conservando su sentido respecto de cada vista, se alinea el común y se colapsa el descartado con aviso).
+   Qué pares, modos y variantes se exponen, y cómo se orientan los marcos, **lo decide M-01**. Todo se resuelve, valida y planifica
+   antes de pedir puntos, se importa y verifica antes de escribir, y se materializa en una transacción, sin identidad nueva,
+   re-estampado ni regeneración.
+8. **Una autoridad por responsabilidad entre iniciativas.** Selección, paso «sistema resuelto → plan», lectura de `View`/`Section`,
+   comparación authored, primitivo de materialización, valor de colocación sobre `Transform2D` y origen y tramo del eje de una vista
+   tienen una autoridad cada uno, compartida con I-52 y extraída una sola vez; las políticas quedan en cada llamador.
 
-### Semántica de edición que se conserva de ADR-0010
+### Reglas de ADR-0010 que se enmiendan
 
-Desde `RACKEDITAR`, **Actualizar** reconstruye el diseño y redefine en sitio las representaciones existentes, conserva el GUID,
-no crea otro rack lógico ni inserta vistas; las referencias que comparten una definición reflejan la redefinición. **Insertar**
-crea representaciones adicionales ligadas al rack existente con su mismo GUID, después de sincronizar las existentes según el
-flujo de cada editor. `View` y `Section` distinguen la representación sin convertirla en otro rack; la definición contiene la
-geometría y el sobre; la referencia solo la coloca. La cama de rodamiento solo redibuja su vista.
+ADR-0010 dice, literal: «Una vista adicional solo se inserta desde un rack ya existente, para que disponga de diseño e identidad
+fuente.» Con este registro, **una hermana adicional requiere**:
 
-**Lo que cambia respecto de ADR-0010:** una vista adicional puede insertarse **también en el flujo que crea el rack**, siempre
-que comparta el diseño y la identidad acuñada una sola vez en ese flujo; Insertar puede agregar **varias** vistas en un gesto; la
-inserción inicial deja de estar restringida a una vista de entrada por sistema; y un redibujo fallido impide insertar.
+- **A.** un rack lógico **ya materializado**; **o**
+- **B.** una **única intención de creación aceptada** que ya tenga `RackId` único, autoridad authored, sistema resuelto y el conjunto de
+  vistas preparado.
+
+Así, las vistas 2..N del lote de un rack nuevo no necesitan fingir que provienen de un rack físicamente colocado.
+
+ADR-0010 dice también: «Insertar una vista crea una representación adicional ligada al rack existente y conserva su identidad. Cada
+editor puede sincronizar previamente las representaciones existentes según su flujo implementado.» Con este registro, **Insertar sobre
+un rack existente gana dos precondiciones**: (1) la comprobación de propiedades personalizadas acotada al `RackId` del punto 6; y (2) si
+el redibujo previo de una hermana falla, no se inserta ninguna vista nueva.
+
+**Todo lo demás de ADR-0010 sigue vigente**: Actualizar reconstruye y redefine en sitio sin crear otro rack ni insertar vistas; Insertar
+crea representaciones ligadas con el mismo GUID mediante el flujo de colocación; `View` y `Section` distinguen la representación sin
+convertirla en otro rack; la definición contiene la geometría y el sobre, y la referencia solo la coloca; la cama solo redibuja su vista
+lateral. ADR-0010 declara que no cambia la inserción inicial de un rack nuevo; este registro la gobierna (puntos 3 a 5) sin contradecirlo.
 
 ## Alternativas consideradas
 
-- **Seguir por sistema con `View` como texto y `Section` como entero.** Repite el defecto de índice de interfaz, duplica la
-  preparación de lotes y proyecciones por comando y deja lógica nueva en el Plugin, que no se puede probar sin AutoCAD.
-- **Un framework genérico de proveedores y materializadores.** Extensibilidad sin segundo cliente real.
-- **Un registro lógico persistente de racks fuera de los bloques.** Formato nuevo en el dibujo, sincronización ante COPY,
-  WBLOCK, xref y UNDO, y migración de todos los DWG; contradice la identidad embebida por definición.
-- **Un segundo enum de vista con mapeo a `DimensionViewKind`.** Dos taxonomías para el mismo concepto.
-- **Acuñar el `RackId` al abrir el editor o en la primera colocación.** GUIDs sin uso, o identidad inventada en el Plugin.
-- **Una transacción para todo el lote, o preparar cada vista justo antes de colocarla.** Transacción abierta durante varios
-  jigs, o fallos de preparación después de colocar.
-- **Proyectar con una traslación literal de las posiciones de las referencias.** Trivial, pero apila y superpone las
-  elevaciones de un layout en planta porque los ejes de planta y elevación no coinciden; queda como opción del Owner (OD-7).
-- **Separar filas distintas en la proyección con un espaciado.** Dejaría de ser una transformación común.
-- **Bloquear las vistas nuevas cuando las propiedades personalizadas de las hermanas no son únicas.** No evita ningún valor
-  nuevo y contradice que un rack existente pueda recibir cualquier hermana soportada (un payload ilegible en cualquier parte
-  del dibujo bloquearía todos los racks).
-- **Elegir una hermana ganadora o reconciliar automáticamente** cuando el authored diverge: deciden por el usuario o escriben
-  hermanas no tocadas.
-- **Un ADR complementario que conserve ADR-0010.** Más corto, pero dejaría vigente la frase literal de ADR-0010 que el lote de
-  un rack nuevo contradice.
+- **Seguir por sistema con `View` como texto y `Section` como entero**: repite el defecto de índice de interfaz y deja lógica no probable.
+- **Framework genérico de proveedores**: sin segundo cliente real.
+- **Registro lógico persistente de racks**: formato nuevo en el dibujo y migración de todos los DWG.
+- **Segundo enum de vista con mapeo**: dos taxonomías para un concepto.
+- **Acuñar el `RackId` al abrir el editor o en la primera colocación**: GUIDs sin uso, o identidad inventada en el Plugin.
+- **Una transacción para todo el lote, o preparar cada vista justo antes**: transacción abierta durante jigs, o fallos tras colocar.
+- **Traslación literal como única semántica de grupo**: apila elevaciones de un layout en planta; queda representable como caso rígido.
+- **Proyección ortográfica como única semántica de grupo** (versión anterior de este registro): no representa misma clase, frontal ↔
+  lateral, orientaciones distintas ni un marco destino orientable.
+- **Una transformación por grupo `RackId`**: no conserva el layout entre racks.
+- **Transformación afín general**: escala y cizalla carecen de sentido para vistas 1:1.
+- **Usar la autoridad global de propiedades de I-54**: un payload ilegible no relacionado bloquearía cualquier rack.
+- **Copiar la colección de la vista elegida sin comparar** (versión anterior): permite que una hermana nazca distinta.
+- **Reemplazar ADR-0010 por completo** (versión anterior): reescribe decisiones que no cambian.
 
 ## Consecuencias
 
-- Positivas: un rack empieza por cualquier vista que su sistema soporte; varias vistas se colocan en un flujo con un solo
-  `RackId`; varios racks reciben una clase de vista alineada con su layout físico y conservando su identidad; la variante deja
-  de depender de posiciones de interfaz; las reglas nuevas son puras y se prueban sin AutoCAD; `RACKLISTA` y `RACKBOMTOTAL`
-  siguen contando racks y copias; no hay migración de dibujos.
-- Negativas / costos aceptados: se re-enrutan todas las inserciones, con riesgo de regresión que exige goldens y validación del
-  Owner; cambian a propósito censos y guardas existentes; la proyección depende de descriptores de marco que deben seguir a los
-  builders (sus caracterizaciones fallan si un builder mueve un origen); en V1 no se proyectan juntos sistemas de familias de
-  marco distintas ni racks con orientaciones distintas; la extracción de autoridades compartidas exige secuenciar con I-52; los
-  bloques de biblioteca importados durante una preparación que después falla siguen quedando en el dibujo, como hoy.
+- Positivas: un rack empieza por cualquier vista soportada; varias vistas se colocan en un flujo con un `RackId`; varios racks reciben
+  una clase de vista con una transformación común y conservando su identidad; ninguna hermana nueva nace distinta; las reglas son puras y
+  probables sin AutoCAD; conteos intactos; sin migración de dibujos.
+- Negativas / costos aceptados: se re-enrutan todas las inserciones (goldens y validación del Owner); cambian a propósito censos y
+  guardas; Insertar en un rack con propiedades divergentes o ilegibles, o con un redibujo fallido, falla con remedio, y ese remedio puede
+  exigir reparar antes lo que deja `RACKPROPIEDADES` en solo lectura; la colocación de grupo depende de descriptores que deben seguir a los
+  builders; un payload ilegible sin `Id` atribuible que sí pertenezca al rack no se detecta; la extracción de autoridades compartidas exige
+  secuenciar con I-52.
 
 ## Relación con otros ADR
 
-- [ADR-0009](0009-identidad-guid-embebida-en-dwg.md): se conserva; este registro precisa cuándo nace el GUID de un rack creado
-  con varias vistas y que la proyección no crea identidad.
-- [ADR-0010](0010-actualizar-redibuja-insertar-liga-vistas.md): al aceptarse este registro pasaría a `reemplazado por ADR-0042`;
-  su semántica de Actualizar e Insertar se conserva arriba.
+- [ADR-0009](0009-identidad-guid-embebida-en-dwg.md): se conserva y se precisa.
+- [ADR-0010](0010-actualizar-redibuja-insertar-liga-vistas.md): **complementado y enmendado solo en las reglas citadas**. El índice de ADR
+  dice que un aceptado es inmutable en su contenido, que admite una sección final «Notas posteriores» con fecha y que, para cambiar la
+  decisión, se escribe un ADR que lo reemplace ([README](README.md), «Cuándo modificar / reemplazar»). Formas de registrar la relación,
+  para revisión del Arquitecto:
+  - **(a) Complemento con nota posterior fechada en ADR-0010** que enlace las reglas enmendadas; ADR-0010 sigue `aceptado`. La relación
+    de complemento y enmienda es la que pide CR-08 del [registro de I-55](../automation/decisions/I-55.md); la nota fechada es la forma
+    propuesta de registrarla. Hay precedentes de complemento sin reemplazo
+    (ADR-0028 y ADR-0029 en su cabecera) y de nota posterior fechada que enlaza un ADR posterior en un aceptado que no queda reemplazado
+    ([ADR-0005](0005-estrategia-de-unidades.md), nota del 2026-07-27 sobre ADR-0021); a diferencia de esos casos, aquí sí cambia una
+    regla.
+  - **(b) Reemplazo acotado**: ADR-0010 pasaría a `reemplazado por ADR-0042` con una nota fechada que diga qué sigue vigente, como
+    [ADR-0008](0008-secciones-unificadas-por-rol.md) frente a ADR-0020 (reemplazo de autoridad conceptual, no de comportamiento). Solo si el
+    sistema de ADR exige reemplazo para cambiar una regla; no es la forma preferida.
 - [ADR-0011](0011-parametros-dinamicos-con-patron-array.md): sin cambio.
-- [ADR-0029](0029-contrato-funcional-comun-de-ventanas-wpf.md): el diálogo de varias vistas pertenece al arquetipo C.
-- [ADR-0034](0034-project-variables-autoridad-drawing-level.md): el registro de variables se lee una vez por comando.
+- [ADR-0029](0029-contrato-funcional-comun-de-ventanas-wpf.md): el diálogo de varias vistas es del arquetipo C.
+- [ADR-0034](0034-project-variables-autoridad-drawing-level.md): registro de variables leído una vez por comando.
 - [ADR-0035](0035-visibilidad-de-cotas-por-tipo-de-vista.md): sin cambio de política; el tipo de vista cambia de nombre.
-- [ADR-0037](0037-reutilizacion-de-cabecera-por-copia-y-distribucion-por-lotes.md): precedente de preparación completa antes de
-  escribir.
-- [ADR-0039](0039-custom-properties-persistencia-autoridad.md): sin cambio; I-55 no consulta ni amplía su borde.
-- ADR-0036 (propuesto en la rama de I-52): las autoridades compartidas del punto 8 se acuerdan con esa iniciativa.
+- [ADR-0037](0037-reutilizacion-de-cabecera-por-copia-y-distribucion-por-lotes.md): precedente de preparación completa antes de escribir.
+- [ADR-0039](0039-custom-properties-persistencia-autoridad.md): sin cambio; I-55 solo consume su lectura y su igualdad canónica.
+- ADR-0036 (propuesto en la rama de I-52): autoridades compartidas del punto 8, cuya propiedad se reconcilia entre I-52 e I-55, sin
+  duplicarlas, antes de congelar cualquiera de los dos contratos.
 
 ## Referencias
 
-- [Proposal V1 de I-55](../initiatives/I-55-proposal-v1.md): §4-§17 y §22 (D-01..D-17, OD-1..OD-8, X-1..X-6).
-- [Discovery de I-55](../initiatives/I-55-discovery.md): matriz sistema × vista × variante, cancelación, hallazgos H-01..H-12.
-- [Mapa de implementación V1](../initiatives/I-55-implementation-map-v1.md): gates G3..G16, pruebas y validación del Owner.
-- [`RackEmbedComposer`](../../src/RackCad.Application/Persistence/RackEmbedComposer.cs),
+- [Proposal V2 de I-55](../initiatives/I-55-proposal-v2.md): §0, §7.3, §9, §12, §17.2 y §22 (D-01..D-18, OD-1..OD-8, M-01, X-1..X-8).
+- [Proposal V1 de I-55](../initiatives/I-55-proposal-v1.md): registro histórico.
+- [Mapa de implementación V2](../initiatives/I-55-implementation-map-v2.md).
+- [`Transform2D`](../../src/RackCad.Application/Geometry/Transform2D.cs),
+  [`CustomPropertiesCanonicalForm`](../../src/RackCad.Application/CustomProperties/CustomPropertiesCanonicalForm.cs),
+  [`RackEmbedDocument`](../../src/RackCad.Application/Persistence/RackEmbedDocument.cs),
+  [`RackEmbedComposer`](../../src/RackCad.Application/Persistence/RackEmbedComposer.cs),
   [`BlockPlacement`](../../src/RackCad.Plugin/Drawing/BlockPlacement.cs),
   [`RackLayoutCommands`](../../src/RackCad.Plugin/RackLayoutCommands.cs),
-  [`RackDuplicationPlan`](../../src/RackCad.Application/Persistence/RackDuplicationPlan.cs),
-  [`DimensionViewPolicy`](../../src/RackCad.Application/Systems/Shared/DimensionViewPolicy.cs),
   [`SelectivePlantaBuilder`](../../src/RackCad.Application/Systems/Selective/SelectivePlantaBuilder.cs),
   [`CantileverViewPlanBuilder`](../../src/RackCad.Application/Systems/Cantilever/CantileverViewPlanBuilder.cs).
