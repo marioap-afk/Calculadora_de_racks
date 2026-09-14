@@ -43,7 +43,7 @@ Contrato       = docs/initiatives/I-55-creacion-de-vistas.md
 | R-9 | **BOM y listado** consolidan por `Id`. El BOM **no lee `View` ni `Section`**, pero depende del **conjunto** de vistas: copias = maximo de referencias; representante = primera definicion del escaneo. | 14 |
 | R-10 | `RACKLAYOUT` y `RACKRELLENAR` **exigen la planta**; las copias independientes son **racks nuevos con solo planta**. **Ninguna** de las cinco rutas de inventario/copia **materializa** una vista desde un diseno. | 15, 16 |
 | R-11 | `RACKDUPLICAR` (I-51) copia **solo lo seleccionado**, con **un `RackId` nuevo por rack logico por destino**; cada destino es atomico y los anteriores permanecen. | 16 |
-| R-12 | **Cancelar** nunca deja un sobre huerfano: el jig cancelado borra la definicion recien creada. Lo que si queda depende del punto (seccion 17). | 17 |
+| R-12 | Un **jig cancelado** borra la definicion recien creada, asi que la cancelacion normal no deja un sobre huerfano; una **excepcion** entre crear la definicion y colocarla no pasa por esa limpieza. Lo que queda en cada punto esta en la seccion 17. | 17 |
 
 ## 2. Preflight y ramas paralelas
 
@@ -81,7 +81,7 @@ Hay **tres registros** distintos y ninguno declara que vistas soporta un sistema
 `Kind` del sobre; Larguero ausente a proposito, `:52-53`). El menu usa un cuarto, `U/Editor/EditorModuleRegistry.cs`
 (siete modulos) [A].
 
-| `RackSystemKind` | `Kind` del sobre | Handler (RACKEDITAR/BOM/copia) | Comando(s) que crean | Modulo de menu (`U/Editor/EditorModules.cs`) | Editor |
+| `RackSystemKind` | `Kind` del sobre | Handler (RACKEDITAR/BOM/copia) | Comando propio que crea (ademas de `RACKCAD`) | Modulo de menu (`U/Editor/EditorModules.cs`) | Editor |
 |---|---|---|---|---|---|
 | `SelectiveRack` | `selective` (`A/Persistence/RackEmbedDocument.cs:16`) | `SelectiveKindHandler` | `RACKSELECTIVO`/`RS` (`P/RackSelectivoCommands.cs:22-45`) | `SelectiveEditorModule` `:35-56` | `RackSelectiveWindow` |
 | `PalletFlow` | `dynamic` (`:17`) | `DynamicKindHandler` | `RACKSISTEMADINAMICO`/`RSD`, demostracion **sin ventana** (`P/RackDinamicoCommands.cs:24-80`) | `DynamicEditorModule` `:73-95` | `RackDynamicSystemWindow` |
@@ -359,7 +359,7 @@ los sincroniza al editar.
 
 ### 9.4 Quien crea definiciones [E]
 
-Solo cuatro sitios crean un `BlockTableRecord` de vista o pieza: `P/Drawing/LateralHeaderDrawer.cs:242` (via
+Solo cuatro archivos crean un `BlockTableRecord` de vista o de pieza: `P/Drawing/LateralHeaderDrawer.cs:242` (via
 `SystemBlockWriter` y `LateralHeaderDrawService`), `P/Drawing/Cantilever/CantileverViewMaterializer.cs:45` y `:108`,
 `P/Drawing/StructuralSections/StructuralSectionMaterializer.cs:53` y `P/RackCloner.cs:34`. `RackCloner` **copia** la
 geometria ya dibujada de otra definicion (cotas incluidas) y solo reescribe el sobre [A] (`P/RackCloner.cs:38-66`):
@@ -480,7 +480,8 @@ las copias independientes **no** se re-materializan desde el diseno.
 | Cierra la ventana de un rack nuevo sin pedir | Nada en el dibujo | `P/RackSelectivoCommands.cs:34`; `P/RackPushBackCommands.cs:48-51`; `P/RackCantileverCommands.cs:65-68`; `P/RackCabeceraCommands.cs:37`; `P/RackMenuCommands.cs:53` [E] |
 | Prompt de fondo (Selectivo) o de poste (Dinamico) de un rack nuevo | Nada; la definicion aun no existe; sin mensaje | `P/RackSelectivoCommands.cs:485-489`; `P/RackDinamicoCommands.cs:326-330` [E] |
 | Jig de un rack nuevo (Esc) | La definicion ya confirmada **se borra** con sus anidadas privadas; mensaje «bloque '…' creado, pero la insercion se cancelo» (H-05); Cantilever: «no se dejo nada en el dibujo» | `P/Drawing/BlockPlacement.cs:37-42`, `:123-170`; `P/RackCommandSupport.cs:182-185`; `P/RackCantileverCommands.cs:163-167` [E] |
-| Idem, definiciones de biblioteca importadas antes del jig | Importadas en su propia transaccion antes de crear (`SystemBlockWriter.cs:25`); la limpieza solo purga las anidadas directas de la definicion borrada: pueden **quedar** importadas | `P/Systems/Shared/SystemBlockWriter.cs:23-39`; `P/Drawing/BlockLibraryImporter.cs:24-60`; `BlockPlacement.cs:139-162` [I] |
+| Excepcion entre crear la definicion y terminar el jig | La limpieza solo corre si el jig **devuelve** sin punto; una excepcion va al `catch` y la definicion ya confirmada, con su sobre, puede quedar sin referencias y ser hallada por `FindRackBlocks` | `P/Drawing/BlockPlacement.cs:33-52`; `P/RackCantileverCommands.cs:142-177`; `P/RackCommandSupport.cs:109-134` [I] |
+| Jig de un rack nuevo (Esc): definiciones de biblioteca importadas antes del jig | Importadas en su propia transaccion antes de crear (`SystemBlockWriter.cs:25`); la limpieza solo purga las anidadas directas de la definicion borrada: pueden **quedar** importadas | `P/Systems/Shared/SystemBlockWriter.cs:23-39`; `P/Drawing/BlockLibraryImporter.cs:24-60`; `BlockPlacement.cs:139-162` [I] |
 | `RACKEDITAR`: seleccion, ventana cerrada sin pedir, o preflight | Nada modificado | seccion 7.1, pasos 1-4 [E] |
 | `RACKEDITAR` → Insertar: prompt de fondo/poste o jig de la vista nueva | **Las vistas existentes ya quedaron redibujadas y confirmadas** (y las obsoletas borradas); la nueva no se crea | `P/RackSelectivoCommands.cs:241-259`; `P/RackDinamicoCommands.cs:273-282`; `P/RackPushBackCommands.cs:319-331`; `P/RackCantileverCommands.cs:355-367`; `P/RackCabeceraCommands.cs:289-316` [E] |
 | `RACKEDITAR`: fallo a mitad del redibujo multivista | Vistas anteriores confirmadas; sin reversion | seccion 7.2 [I] |
@@ -542,9 +543,10 @@ cambios (la fija G2):
 
 - **A-1 Contrato de identidad de vista**: si la terna `(RackId, View, Section)` pasa a ser clave con reglas
   (unicidad, `View` nulo F-04, codificacion de `Section` por sistema) o sigue siendo descriptiva.
-- **A-2 Contrato de materializacion compartido**: hoy cinco rutas de insercion con prompts en el Plugin o en la
-  ventana y dos formas de colocar (`ViewBlockDraw` y Cantilever); cualquier unificacion cruza el
-  `MaterializationContext` de **I-52** y el censo de `Compose` de I-54.
+- **A-2 Contrato de materializacion compartido**: hoy seis rutas de insercion, una por sistema que dibuja, con
+  prompts en el Plugin o en la ventana, y dos primitivas de colocacion (`BlockPlacement.PlaceAndReport`, que usan
+  `ViewBlockDraw` y `LateralHeaderDrawService`, y `BlockPlacement.PlaceDefinition`, del Cantilever); cualquier
+  unificacion cruza el `MaterializationContext` de **I-52** y el censo de `Compose` de I-54.
 - **A-3 Atomicidad multivista**: redibujo por vista con commit propio frente a PREPARE/MUTATE de una transaccion, que
   ya existe para `RACKVARIABLES` (7.2, 13).
 - **A-4 Correspondencia vista → `DimensionViewKind`**: implicita por builder (11); una variante nueva no tiene guarda.
