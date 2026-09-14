@@ -1,18 +1,29 @@
 # I-55 — Discovery (G1): creacion de vistas de rack en todos los sistemas
 
-> **G1, solo documentacion.** Este informe describe el codigo de `BASE_SHA`; no toma decisiones de producto ni de
-> arquitectura, no autoriza implementar y no reabre ningun ADR aceptado. Lo que G1 no puede cerrar con evidencia
-> queda como pregunta abierta (seccion 20) para el Owner, el Coordinador y el Arquitecto, antes de la Proposal.
+> **G1, solo documentacion.** Este informe describe el codigo de la base; no toma decisiones de producto ni de
+> arquitectura, no autoriza implementar y no reabre ningun ADR aceptado.
+
+> **Correccion G1.1 (2026-09-13).** I-55 es **View Placement & Projection** y agrupa **ID17 — FIRST-VIEW FREEDOM**,
+> **ID18 — MULTI-VIEW QUEUE / BATCH** e **ID19 — MULTI-RACK PROJECTION** (decisiones CD-01..CD-09 en
+> [`docs/automation/decisions/I-55.md`](../automation/decisions/I-55.md)). La version G1 de este informe decia que la
+> orden de apertura no fijaba producto ni ID del Owner: **esa lectura queda retirada**. La **evidencia tecnica no se
+> reescribe**; G1.1 solo (a) reclasifica OQ-1..OQ-7 (seccion 20), (b) registra la re-medicion tras el rebase sobre
+> `dad4e77` (seccion 2.1) y (c) actualiza las lineas citadas de los dos archivos que I-53D movio.
 
 ```text
-Initiative     = I-55 — Creacion de vistas de rack en todos los sistemas
-Branch         = feature/creacion-de-vistas
-BASE_SHA       = ba497f14581d81e83a27514852d6ec082ff57635   (origin/main, merge de I-54)
-CLAIM_SHA      = 24bb9cad77d945fecc00ec41f46ba0d0a7abb1de   (Claim-Id f96a4b1f-40ff-40d0-b3cf-e2cfad778cc7)
-BOOTSTRAP_SHA  = 5f774b459eb8b13732e4ae5c4e93a909874a10c5
-Codigo auditado = BASE_SHA (la rama no difiere de el en src/, tests/ ni assets/)
-Owner ID       = NO FIJADO por la orden de apertura (seccion 20, OQ-1)
-Contrato       = docs/initiatives/I-55-creacion-de-vistas.md
+Initiative      = I-55 — View Placement & Projection (ID17 + ID18 + ID19)
+Branch          = feature/creacion-de-vistas
+BASE_SHA        = ba497f14581d81e83a27514852d6ec082ff57635   (base auditada en G1: merge de I-54)
+CURRENT_BASE    = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093   (merge de I-53D; rebase de G1.1)
+CLAIM_SHA       = 24bb9cad… → 6976262c6376fbda0c5b68afa2c3d3bdb95e8dc6 tras el rebase (Claim-Id f96a4b1f-40ff-40d0-b3cf-e2cfad778cc7)
+BOOTSTRAP_SHA   = 5f774b45… → 5b5c4f6624bbd2d58d8419de071493d3735a6230
+DISCOVERY_SHA   = cf207b95… → 2d0f9bf03e70b8411ef4104b06609c542c5d71ff
+G1_CLOSE_SHA    = 96f6444f… → 717a38d2cc5b809cbcaab1e2748ae150070a85bf
+Codigo auditado = BASE_SHA; entre los archivos citados, en CURRENT_BASE solo difieren RackDynamicSystemWindow.xaml.cs y
+                  DynamicShellMigrationTests.cs (lineas actualizadas en G1.1, comportamiento de creacion de vistas
+                  identico) y docs/ROADMAP.md, cuya linea 471 citada sigue siendo la fila de I-53S (seccion 2.1)
+Owner IDs       = ID17 + ID18 + ID19 (CD-01, vinculante)
+Contrato        = docs/initiatives/I-55-creacion-de-vistas.md
 ```
 
 ## 0. Metodo y clases de evidencia
@@ -25,7 +36,8 @@ Contrato       = docs/initiatives/I-55-creacion-de-vistas.md
 - **Limites.** Sin AutoCAD: jig, prompts, cancelaciones y `UNDO` se deducen del codigo. Ninguna suite ejecuta el
   Plugin (solo guardas de texto de fuente), asi que todo comportamiento de dibujo aqui descrito es de codigo, no de
   ejecucion. G1 no corre pruebas: no hay cambio de codigo que validar.
-- Rutas relativas a la raiz del repositorio; lineas en `BASE_SHA`. Prefijos usados en tablas: `P/` =
+- Rutas relativas a la raiz del repositorio; lineas en `BASE_SHA`, que coinciden con `CURRENT_BASE` salvo las de los
+  archivos que movio I-53D, ya actualizadas en G1.1. Prefijos usados en tablas: `P/` =
   `src/RackCad.Plugin/`, `A/` = `src/RackCad.Application/`, `D/` = `src/RackCad.Domain/`, `U/` = `src/RackCad.UI/`.
 
 ## 1. Respuestas cortas
@@ -48,7 +60,8 @@ Contrato       = docs/initiatives/I-55-creacion-de-vistas.md
 ## 2. Preflight y ramas paralelas
 
 Medido con `git fetch --all --prune` y `git ls-remote --heads origin` al reclamar y repetido al cerrar G1; `main` no se
-movio (`ba497f1`) y solo I-49 avanzo, con un commit de documentacion.
+movio (`ba497f1`) y solo I-49 avanzo, con un commit de documentacion. **Es la medicion historica de G1; el estado
+vigente esta en la seccion 2.1.**
 
 | Rama | Iniciativa | Punta | Main…rama (detras/delante) | CI de `push` sobre la punta | Archivos tocados | Cruce con la superficie de creacion de vistas |
 |---|---|---|---|---|---|---|
@@ -72,6 +85,37 @@ el mismo resultado: 0, 0 y los mismos 2 archivos de I-53D.
   (`docs/initiatives/I-52-proposal-v9.md:79`, `:373`, `:1978` en `deb08cd`). Es el mismo territorio que la
   **materializacion** de esta auditoria (seccion 9): I-55 lo describe y **no** fija semantica propia.
 - `docs/ORCHESTRATION.md` no existe: manda [WORKFLOW](../WORKFLOW.md).
+
+### 2.1 Re-medicion en G1.1 (tras el rebase sobre `dad4e77`)
+
+Al abrir G1.1 (`git fetch --all --prune`): `origin/main` = `dad4e77`, **merge de I-53D** (CI de `push` success). Arbol
+limpio, sin stash ni operaciones Git en curso. I-49 sigue en `5a3714f` e I-52 en `deb08cd`.
+
+- **I-53D deja de ser paralela**: esta integrada y su ventana del Dinamico ya es parte de la base.
+- **Rebase de I-55** exigido por [WORKFLOW](../WORKFLOW.md) §4.2, **sin conflictos** (`git rebase --keep-empty
+  origin/main`): `range-diff` con reclamo, Discovery y cierre de G1 identicos (`=`) y el bootstrap cambiado solo en el
+  contexto de `docs/ROADMAP.md` (la fila nueva de I-53D encima de la de I-54). Publicado con `--force-with-lease`
+  sobre `96f6444`; la punta previa queda en el tag `archive/i-55-creacion-de-vistas-pre-rebase-96f6444`.
+- **Cruce con la superficie**: I-49 **0**, I-52 **0** (cruce semantico en materializacion sin cambio).
+
+**Re-auditoria del Dinamico** [E]. I-53D cambio `RackDynamicSystemWindow.xaml(.cs)` (+683/−182 lineas en el
+code-behind) y `DynamicEditorDesignAssembler.cs`. Ningun hunk de su diff toca `RequestDraw`, `UpdateDrawButtons`,
+`isEditingExisting`, las llamadas de la sesion, la identidad, `LoadExisting`, `LoadDesignForNew` ni la peticion
+`DynamicInsertionRequest`:
+
+| Simbolo | Lineas en `ba497f1` | Lineas en `dad4e77` | Comportamiento para la creacion de vistas |
+|---|---|---|---|
+| `UpdateDrawButtons` | `:183-233` | `:182-232` | igual: el lateral se habilita para un rack nuevo; frontal, planta y Actualizar exigen `isEditingExisting` |
+| botones `Insert*_Click` / `UpdateExisting_Click` | `:2924-2937` | `:3371-3384` | igual |
+| `RequestDraw` | `:2939-2982` | `:3386-3429` | igual; la puerta de primera vista pasa de `:2947` a `:3394` y el aviso de `:2949-2955` a `:3396-3402` |
+| `Close()` tras la peticion | `:2981` | `:3428` | igual |
+| `Recompose(bool forceRebuild = false)` | `:435` | `:434` | `RequestDraw` sigue llamandolo antes de pedir (`:3412`); desde I-53D, si `MustRebuild`, la reconstruccion pasa por `DynamicRackRebuild` (`:510-533`). La peticion captura el estado recompuesto, como antes |
+| `LoadExisting` / `LoadDesignForNew` | — | `:3333-3351` / `:3355-3369` | igual: adoptar identidad y editar frente a plantilla sin id |
+
+El lote de cabeceras de I-53D (ID6/ID7) **no** participa en la peticion de dibujo: la ventana cierra al pedir y la
+peticion es la misma. La prueba `DynamicWindow_InsertLateralEnabled_WhenOpenedFromAutoCad_WithItsRealTooltip` pasa de
+`tests/RackCad.UI.Tests/DynamicShellMigrationTests.cs:151` a `:159`. **Las filas D1-D3 de la seccion 5 y las secciones
+6.2, 6.3 y 8.2 siguen valiendo**; solo se actualizaron sus lineas.
 
 ## 3. Inventario de sistemas
 
@@ -174,8 +218,8 @@ marca.
 | S1 | Selectivo | `frontal` | un bloque por **fondo**: `Section` = fondo (0..n-1); legado `-1` → fondo 0 | Frontal | **Si, unica** | Si | **Plugin**: pregunta el fondo si hay mas de uno; con uno, 0 | redibuja cada frontal con su fondo; fondo ≥ n ⇒ obsoleta | `P/RackSelectivoCommands.cs:155-184`, `:461-500`; `U/Systems/Selective/RackSelectiveWindow.xaml.cs:2560-2570` |
 | S2 | Selectivo | `lateral` | un bloque por **corte**: `Section` = `PostIndex` sobre la reticula del fondo maestro; un corte cubre los fondos que alcanzan ese poste | Lateral | No | Si | **Plugin**: pregunta el poste | se empareja por `PostIndex`; sin corte ⇒ obsoleta | `P/RackSelectivoCommands.cs:186-210`, `:519-576` |
 | S3 | Selectivo | `planta` | un bloque con todos los fondos; `-1` | Planta | No | Si | — | redibujo | `P/RackSelectivoCommands.cs:212-223`, `:444-450` |
-| D1 | Dinamico | `lateral` | un bloque por **poste**; la ventana manda `-1`; legado sin `View`/`Section` → poste 0 | Lateral | **Si, unica** | Si | **Plugin**: pregunta el poste | por `PostIndex`; sin corte ⇒ obsoleta | `P/RackDinamicoCommands.cs:102-107`, `:234-265`, `:294-358`; `U/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs:2947-2956` |
-| D2 | Dinamico | `frontal` | **extremo**: `0` salida, `1` entrada; todo valor ≠ 1 ⇒ salida | Frontal (los dos extremos) | No | Si | Ventana (boton) | reescribe `(int)end` | `P/RackDinamicoCommands.cs:115-123`, `:220-233`, `:392-393`; ventana `:2927-2931` |
+| D1 | Dinamico | `lateral` | un bloque por **poste**; la ventana manda `-1`; legado sin `View`/`Section` → poste 0 | Lateral | **Si, unica** | Si | **Plugin**: pregunta el poste | por `PostIndex`; sin corte ⇒ obsoleta | `P/RackDinamicoCommands.cs:102-107`, `:234-265`, `:294-358`; `U/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs:3394-3403` |
+| D2 | Dinamico | `frontal` | **extremo**: `0` salida, `1` entrada; todo valor ≠ 1 ⇒ salida | Frontal (los dos extremos) | No | Si | Ventana (boton) | reescribe `(int)end` | `P/RackDinamicoCommands.cs:115-123`, `:220-233`, `:392-393`; ventana `:3374-3378` |
 | D3 | Dinamico | `planta` | `-1` | Planta | No | Si | — | redibujo | `P/RackDinamicoCommands.cs:111-114`, `:209-219` |
 | P1 | Push Back | `lateral` | un bloque por **poste**; lados A y B en el mismo bloque | Lateral | Si | Si | **Ventana** (combo de cortes): manda la **posicion en la lista**; el prompt del Plugin solo corre con `-1`, que la ventana no envia | por `PostIndex`; sin corte ⇒ obsoleta | `U/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:3036-3043`, `:3065`; `P/RackPushBackCommands.cs:92-97`, `:118-122`, `:280-302`; ver H-01 |
 | P2 | Push Back | `frontal` | **corte × lado**: `EncodeSection = (int)extremo + (B ? 2 : 0)` ⇒ 0 EntradaSalida-A, 1 Posterior-A, 2 EntradaSalida-B, 3 Posterior-B; 2-3 solo en compuesto | Frontal (los cuatro cortes) | Si | Si | Ventana (vista + selector de lado) | reescribe la seccion tal cual, lado incluido | `A/Systems/PushBack/PushBackSystemFrontalBuilder.cs:18-25`, `:138-155`; ventana `:3054-3067`; `P/RackPushBackCommands.cs:105-117`, `:253-279` |
@@ -220,7 +264,7 @@ marca.
 | Ventana | Condicion | Efecto | Prueba que la fija |
 |---|---|---|---|
 | Selectivo | `!isEditingExisting && (updateOnly \|\| view == lateral \|\| view == planta)` (`RackSelectiveWindow.xaml.cs:2560`) | aviso «Primero inserta la vista frontal…» y no pide nada (`:2561-2570`); los botones lateral/planta/Actualizar se apagan (`:274-292`); «Insertar frontal» nunca se apaga | `SelectiveWindow_DisabledDrawActions_KeepReasonAndShowOnDisabled` y `SelectiveWindow_DrawActionsEnabled_WhenEditingExistingFromAutoCad_WithTheirRealTooltips` (`tests/RackCad.UI.Tests/SelectiveShellMigrationTests.cs:156`, `:179`) |
-| Dinamico | `!isEditingExisting && (updateOnly \|\| view != lateral)` (`RackDynamicSystemWindow.xaml.cs:2947`) | aviso «Primero inserta la vista lateral…» (`:2949-2955`); frontal, planta y Actualizar se apagan (`:190-195`) | `DynamicWindow_InsertLateralEnabled_WhenOpenedFromAutoCad_WithItsRealTooltip` (`tests/RackCad.UI.Tests/DynamicShellMigrationTests.cs:151`); `NewSystem_InsertLateral_ViaButton_MintsGuid_AndBuildsTheRealPayload` (`tests/RackCad.UI.Tests/DynamicEditorWindowTests.cs:175`) |
+| Dinamico | `!isEditingExisting && (updateOnly \|\| view != lateral)` (`RackDynamicSystemWindow.xaml.cs:3394`) | aviso «Primero inserta la vista lateral…» (`:3396-3402`); frontal, planta y Actualizar se apagan (`:189-194`) | `DynamicWindow_InsertLateralEnabled_WhenOpenedFromAutoCad_WithItsRealTooltip` (`tests/RackCad.UI.Tests/DynamicShellMigrationTests.cs:159`); `NewSystem_InsertLateral_ViaButton_MintsGuid_AndBuildsTheRealPayload` (`tests/RackCad.UI.Tests/DynamicEditorWindowTests.cs:175`) |
 | Cabecera | planta con `!IsEditingExisting` (`RackFrameConfiguratorWindow.xaml.cs:269-279`) | aviso «Primero inserta la cabecera lateral…»; Actualizar y planta se apagan al cargar (`:84-95`) | [A] no se localizo prueba especifica |
 | Push Back | solo `updateOnly && !isEditingExisting` (`RackPushBackSystemWindow.xaml.cs:3272-3276`) | **cualquier vista** puede ser la primera; solo Actualizar exige `RACKEDITAR` (`:3464-3468`) | `LateralPreview_UsesTheSelectedCorte_AndInsertSectionMatches` (`tests/RackCad.UI.Tests/PushBackEditorWindowTests.cs:403-426`) |
 | Cantilever | solo `updateOnly && !isEditingExisting` (`RackCantileverWindow.xaml.cs:1291-1295`) | **cualquier vista** puede ser la primera (`:1389-1396`) | [A] `CantileverEditorWindowTests.cs:380-438` pulsa las tres |
@@ -238,7 +282,7 @@ adicionales solo se insertan desde un rack existente», [ARCHITECTURE](../ARCHIT
 ### 6.3 Una vista por gesto [E]
 
 Cada `RequestDraw` termina en `Close()` tras pedir **una** vista: Selectivo `RackSelectiveWindow.xaml.cs:2598`,
-Dinamico `RackDynamicSystemWindow.xaml.cs:2981`, Push Back `RackPushBackSystemWindow.xaml.cs:3319`, Cantilever
+Dinamico `RackDynamicSystemWindow.xaml.cs:3428`, Push Back `RackPushBackSystemWindow.xaml.cs:3319`, Cantilever
 `RackCantileverWindow.xaml.cs:1328`; la Cabecera cierra en su propio `RequestDraw` [A]
 (`RackFrameConfiguratorWindow.xaml.cs:338-341`). Cada peticion lleva **una** `View` y **una** `Section`
 (`U/Editor/RackInsertionRequest.cs:60-230`), y cada rama del Plugin dibuja **un** bloque con **un** jig. No existe
@@ -309,7 +353,7 @@ describiendo `Section` como `(int)PushBackFrontalEnd`, hoy 0-3), `CantileverInse
 | Ventana | Firma | Llamadas | Antes de pedir | Evidencia |
 |---|---|---|---|---|
 | Selectivo | `RequestDraw(view, updateOnly)` | frontal, lateral, planta, Actualizar | puerta de primera vista; confirmar editores pendientes y celdas sin aplicar; `BuildSystem` | `RackSelectiveWindow.xaml.cs:2537-2599` [E] |
-| Dinamico | `RequestDraw(view, section, updateOnly)` | lateral `-1`, frontal `0`/`1`, planta `-1`, Actualizar | puerta; sistema presente; opcionales validos; `Recompose` | `RackDynamicSystemWindow.xaml.cs:2924-2982` [E] |
+| Dinamico | `RequestDraw(view, section, updateOnly)` | lateral `-1`, frontal `0`/`1`, planta `-1`, Actualizar | puerta; sistema presente; opcionales validos; `Recompose` | `RackDynamicSystemWindow.xaml.cs:3371-3429` [E] |
 | Push Back | `RequestDraw(view, section, updateOnly)` | «Insertar vista actual» y cuatro atajos por vista, Actualizar | confirmar la sesion de modulos; recalculo sincrono; modelo valido; puerta de salida bloqueada | `RackPushBackSystemWindow.xaml.cs:3262-3320` [E]; atajos `:3177-3232` [A] |
 | Cantilever | `RequestDraw(view, section, updateOnly)` | frontal `-1`, lateral estacion, planta `-1`, Actualizar | recalculo; linea valida; estacion en rango | `RackCantileverWindow.xaml.cs:1283-1329` [E] |
 | Cabecera | `RequestDraw(view, updateOnly)` | `"lateral"`, `"planta"` (solo editando), Actualizar | modo rapido: confirmar descarte; modelo inconsistente: confirmar | `RackFrameConfiguratorWindow.xaml.cs:258-282` [E]; `:288-341` [A] |
@@ -519,7 +563,7 @@ cambios (la fija G2):
 | Grupo | Archivos | Activas que los tocan |
 |---|---|---|
 | Contrato UI → Plugin | `U/Editor/RackEditorSession.cs`, `RackInsertionRequest.cs`, `RackEditorIdentity.cs`, `EditorModules.cs`; `U/RackMainMenuWindow.xaml.cs` | ninguna |
-| Ventanas (tres son archivos calientes) | `U/Systems/Selective/RackSelectiveWindow.xaml(.cs)`, `U/Systems/Dynamic/RackDynamicSystemWindow.xaml(.cs)`, `U/Systems/PushBack/RackPushBackSystemWindow.xaml(.cs)`, `U/Systems/Cantilever/RackCantileverWindow.xaml(.cs)`, `U/RackFrames/RackFrameConfiguratorWindow.xaml(.cs)`, `U/Systems/FlowBed/RackFlowBedWindow.xaml.cs` | **I-53D** (Dinamico, hoy); **I-49** G10 previsto (Selectivo, `docs/ROADMAP.md:471`) |
+| Ventanas (tres son archivos calientes) | `U/Systems/Selective/RackSelectiveWindow.xaml(.cs)`, `U/Systems/Dynamic/RackDynamicSystemWindow.xaml(.cs)`, `U/Systems/PushBack/RackPushBackSystemWindow.xaml(.cs)`, `U/Systems/Cantilever/RackCantileverWindow.xaml(.cs)`, `U/RackFrames/RackFrameConfiguratorWindow.xaml(.cs)`, `U/Systems/FlowBed/RackFlowBedWindow.xaml.cs` | **I-53D** integrada en `dad4e77`: la ventana del Dinamico ya es la suya (2.1); **I-49** G10 previsto (Selectivo, `docs/ROADMAP.md:471`) |
 | Comandos por sistema (calientes) | `P/RackSelectivoCommands.cs`, `RackDinamicoCommands.cs`, `RackPushBackCommands.cs`, `RackCantileverCommands.cs`, `RackCabeceraCommands.cs`, `RackCamaCommands.cs`, `RackMenuCommands.cs`, `RackCommandSupport.cs` | ninguna hoy |
 | Materializacion | `P/Systems/Shared/ViewBlockDraw.cs`, `SystemBlockWriter.cs`, `P/Drawing/BlockPlacement.cs`, `LateralHeaderDrawService.cs`, `Cantilever/CantileverViewMaterializer.cs` | ninguna hoy; **I-52** caracteriza su contexto de creacion |
 | Identidad e inventario | `A/Persistence/RackEmbedDocument.cs`, `RackEmbedComposer.cs`, `RackListBuilder.cs`, `RackDuplicationPlan.cs`; `A/Bom/BomAuthoredAuthority.cs`; `P/RackBlockFinder.cs`, `RackInventarioCommands*.cs`, `RackLayoutCommands*.cs`, `RackDuplicarCommands.cs`, `RackEnvelopeRestamp.cs`, `RackCloner.cs` | ninguna hoy; **I-52** (RACKMIRROR) reutilizara la copia |
@@ -527,17 +571,19 @@ cambios (la fija G2):
 
 ## 20. Preguntas abiertas
 
-**Para el Owner (producto).** El codigo y los contratos vigentes **no** determinan estas respuestas.
+**Para el Owner (producto).** En G1 estas preguntas se formularon porque el codigo y los contratos no las
+determinaban. **G1.1 las reclasifico con caracter vinculante** (CD-06 en
+[`docs/automation/decisions/I-55.md`](../automation/decisions/I-55.md)); la columna «Base» conserva la evidencia de G1.
 
-| # | Pregunta | Por que G1 no puede cerrarla |
-|---|---|---|
-| OQ-1 | ¿Que resultado de producto persigue I-55? ¿Corresponde a **ID17** (*first-view freedom*), **ID18** (*multi-view queue*), **ID19** (*multi-rack projection*), a varios o a otro? | La orden no cita ningun ID; esos tres solo aparecen como exclusiones de I-50 (`docs/initiatives/I-50-cotas-independientes-por-vista.md:154-156`) y su texto no esta versionado |
-| OQ-2 | ¿La primera vista de un rack nuevo debe ser **uniforme** entre sistemas, y cual? | Hoy Selectivo, Dinamico y Cabecera la restringen y Push Back y Cantilever no (6.2); ADR-0010 excluye la insercion inicial |
-| OQ-3 | ¿Una operacion debe poder crear **varias vistas** de un rack (o de varios racks)? Si si, ¿que queda si el usuario cancela a mitad? | Hoy una vista por gesto (6.3) |
-| OQ-4 | ¿Debe impedirse, advertirse o permitirse una segunda vista con la **misma** `(RackId, View, Section)`? | Hoy es legal y silenciosa (4.4) |
-| OQ-5 | Al insertar una vista enlazada, ¿debe exigirse que las hermanas coincidan (authored del Selectivo, `CustomProperties`) o basta con copiar las de la vista elegida? | Hoy se copia sin comparar (10, 12) |
-| OQ-6 | ¿«Insertar» debe ser atomico con el redibujo de las existentes (cancelar la nueva ⇒ no redibujar)? | Hoy no lo es (7.2, 17) |
-| OQ-7 | ¿I-55 debe ofrecer **completar vistas** de un rack que nacio con una sola, como las celdas independientes de `RACKLAYOUT` (solo planta)? | Hoy solo `RACKEDITAR` (15) |
+| # | Pregunta de G1 | Base (evidencia de G1) | Estado tras G1.1 |
+|---|---|---|---|
+| OQ-1 | ¿Que resultado de producto persigue I-55? | ID17, ID18 e ID19 aparecen como exclusiones de I-50 (`docs/initiatives/I-50-cotas-independientes-por-vista.md:154-156`) | **CLOSED**: I-55 = **ID17 + ID18 + ID19** (View Placement & Projection). La lectura de G1 «la orden no fija producto» queda **retirada** |
+| OQ-2 | ¿La primera vista de un rack nuevo debe ser **uniforme** entre sistemas? | Selectivo, Dinamico y Cabecera la restringen; Push Back y Cantilever no (6.2); ADR-0010 excluye la insercion inicial | **CLOSED**: **no** se busca uniformidad; cada sistema puede empezar por **cualquiera de SUS vistas realmente soportadas** |
+| OQ-3 | ¿Una operacion debe poder crear **varias vistas**? | Una vista por gesto (6.3) | **CLOSED en producto**: ID18 exige multi-vista en un flujo e ID19 proyeccion multi-rack; **solo la semantica de cancelacion** sigue siendo diseno (OQ-6) |
+| OQ-4 | ¿Unicidad de `(RackId, View, Section)`? | Legal y silenciosa (4.4) | **FUERA DEL OBJETIVO**: no introducir unicidad incidentalmente; preservar el legacy salvo necesidad contractual demostrada |
+| OQ-5 | ¿Las hermanas deben coincidir al insertar? | Se copia sin comparar (10, 12) | **CLOSED en resultado**: las hermanas conservan **autoridad authored equivalente**; el mecanismo lo fija la Proposal |
+| OQ-6 | ¿«Insertar» atomico con el redibujo? | No lo es (7.2, 17) | **OPEN para Proposal**: atomicidad y semantica de cancelacion |
+| OQ-7 | ¿Completar vistas de un rack parcial? | Solo `RACKEDITAR` (15) | **CLOSED**: un rack existente puede recibir **cualquier** vista hermana soportada, incluso uno que hoy solo tenga Planta |
 
 **Candidatas a decision arquitectonica material (para Arquitecto, antes de G2)**, solo si la Proposal toca el area:
 
@@ -578,8 +624,8 @@ confirmado en 9.1).
 - **Produccion**: intacta. El commit de G1 solo toca `docs/initiatives/I-55-*.md`.
 - **Estado**: `SUBSTANTIVE IMPLEMENTATION: BLOCKED`. La Proposal y el consenso Coordinador ↔ Arquitecto requieren
   orden propia.
-- **Escalado**: OQ-1..OQ-7 al Owner via Coordinador **antes** de G2; A-1..A-4 al Arquitecto si la Proposal toca esas
-  areas; H-01 y H-02 son posibles defectos de dibujo que conviene que el Coordinador valore por separado, sin
-  corregirlos en esta iniciativa sin una decision explicita.
-- **Cruces**: I-53D material si G2 toca la ventana del Dinamico; I-49 G10 previsto sobre la ventana del Selectivo;
-  I-52 semantico en materializacion. Se re-miden al abrir G2.
+- **Escalado** (actualizado en G1.1): OQ-1, OQ-2, OQ-3, OQ-5 y OQ-7 cerradas por el Coordinador; OQ-4 fuera del
+  objetivo; **OQ-6 abierta para la Proposal**. A-1..A-4 al Arquitecto con la Proposal. H-01 y H-02 son posibles
+  defectos de dibujo que el Coordinador valora por separado; no se corrigen en I-55 sin una decision explicita (CD-07).
+- **Cruces** (actualizado en G1.1): I-53D **integrada** en `dad4e77` y ya en la base; I-49 G10 previsto sobre la
+  ventana del Selectivo; I-52 semantico en materializacion. Se re-miden antes de cada gate material.
