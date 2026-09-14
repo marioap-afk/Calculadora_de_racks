@@ -1,14 +1,12 @@
 # ADR-0041: Motor de expresiones paramétricas, edición de fórmulas e identidad textual con cualificador de clave exacta
 
-- **Estado:** propuesto
-- **Fecha:** 2026-09-13 (propuesto)
-- **Decisores:** Mario Pérez, Owner del repositorio (aceptación **PENDIENTE**); Coordinador de I-49 y Arquitecto de
+- **Estado:** aceptado
+- **Fecha:** 2026-09-13 (propuesto) · 2026-09-14 (aceptado)
+- **Decisores:** Mario Pérez, Owner del repositorio (**acepta**, 2026-09-14); Coordinador de I-49 y Arquitecto de
   I-49 (consenso técnico **AGREED WITH V6** sobre la Proposal V6, blob `ef4db3aa400483ff25a8f39b2beb93708fa43d1a`;
   **AGREED WITH A1** sobre el Amendment A1, blob `d62019088b9e7a140d5066799afe6ace6db303ba`; y **AGREED WITH A2** sobre
   el Amendment A2, blob `49a925336dd3775929a35b0f40b73cb7f8c487f7`); Claude (redacción)
-- **Sucesor propuesto de:** [ADR-0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md). Lo
-  reemplazará solo cuando el Owner acepte este ADR de forma explícita; mientras siga `propuesto`, ADR-0040 sigue
-  `aceptado` y vigente
+- **Reemplaza a:** [ADR-0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md)
 - **Iniciativa relacionada:** I-49 — `architecture/motor-expresiones-parametricas`
   ([contrato](../initiatives/I-49-motor-expresiones-parametricas.md),
   [Discovery](../initiatives/I-49-discovery.md), [Proposal V6](../initiatives/I-49-proposal-v6.md),
@@ -17,11 +15,30 @@
   Proposals [V1](../initiatives/I-49-proposal-v1.md) a [V5](../initiatives/I-49-proposal-v5.md) como registro de sus
   rondas; [registro de I-49](../automation/decisions/I-49.md))
 
-> **Sucesor propuesto de ADR-0040.** Este registro nace `propuesto` el 2026-09-13. **No** afirma ninguna aceptación
-> del Owner: la solicita. Mientras siga `propuesto`,
-> [ADR-0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md) es el ADR aceptado y vigente de
-> I-49 y **no** se edita. Solo después de que el Owner acepte este ADR de forma explícita, un commit posterior cambiará
-> el estado de ADR-0040 a `reemplazado por ADR-0041` ([README](README.md)).
+> **Aceptación del Owner (2026-09-14).** El Owner, Mario Pérez, acepta esta decisión de forma **explícita** en el
+> canal del Coordinador de I-49, con la respuesta literal
+> «**Acepto ADR-0041 para I-49 sobre Proposal V6 + Amendments A1 + A2.**». La respuesta es **inequívoca**: nombra este
+> ADR, la iniciativa y la base técnica sobre la que se acepta. Registro durable en
+> [`docs/automation/decisions/I-49.md`](../automation/decisions/I-49.md) §15.
+>
+> **Dos actos, dos autoridades.** El Coordinador y el Arquitecto aportaron el **consenso técnico**, ambos **AGREED WITH
+> V6**, **AGREED WITH A1** y **AGREED WITH A2** —el Coordinador, con `AGREED WITH A2 / E1`—: la decisión estaba
+> **lista**. La **aceptación** es un acto distinto que **solo el dueño del repositorio** ejerce ([README](README.md)).
+> Este registro **nació `propuesto`** el 2026-09-13 en `8cefd591bffaf0ac9099796d858a643f3df1e28c` y pasa a
+> **`aceptado`** el 2026-09-14; la trazabilidad de los dos estados se conserva a propósito.
+>
+> **Contenido aceptado.** Es **exactamente** el que este registro tiene en `8cefd591bffaf0ac9099796d858a643f3df1e28c`
+> (blob `7689f82c3e915d49c7bd3e1b8a92e56b8ce63fc4`). Al aceptarlo solo cambian este encabezado, con su preámbulo, y el
+> bloque «Decisión del Owner»: Contexto, Decisión (D1–D25), Alternativas consideradas, Consecuencias, Relación con otros
+> ADR y Referencias quedan idénticos y, desde ahora, **inmutables** ([README](README.md)). Por eso conservan la
+> redacción de la propuesta: lo que la Relación con otros ADR y las Referencias condicionan a que este ADR siga
+> `propuesto` describe el estado anterior a esta aceptación, y esa condición ya no se cumple.
+>
+> **Reemplaza a ADR-0040.** La aceptación cumple la condición del reemplazo: en el mismo commit que versiona esta
+> decisión, [ADR-0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md) pasa a
+> `reemplazado por ADR-0041` con solo su Estado cambiado y una nota posterior fechada ([README](README.md)). ADR-0040
+> queda como historial, reemplazado **entero** por este ADR: su contenido y su aceptación del Owner del 2026-09-13,
+> registrada en [`decisions/I-49.md`](../automation/decisions/I-49.md) §13, no se alteran.
 >
 > **Por qué un sucesor completo y no una enmienda.** Un ADR aceptado es inmutable en su contenido, y cambiar su decisión
 > exige un ADR nuevo que la reemplace; el estado `reemplazado por` se aplica al ADR **entero** ([README](README.md)). Por
@@ -56,16 +73,17 @@
 > ADR conserva de ADR-0040 —en D8, en D18 y en Alternativas consideradas— se lee como `Q(clave)` en la salida y como
 > cualquiera de las dos formas del cualificador de D7 en la entrada. La misma regla rige la lectura de V6 (A2 §7).
 >
-> **Lo que esta propuesta autoriza — y lo que no.** Nada por sí sola. El candidato de G6 existe y su CI estuvo verde:
+> **Lo que esta aceptación autoriza — y lo que no.** Cumple los dos primeros pasos de la secuencia que fijaba la
+> propuesta: (1) el Owner acepta este ADR y (2) ADR-0040 pasa a `reemplazado por ADR-0041`. Por sí sola **no** cierra
+> G6, **no** corrige su candidato y **no** desbloquea G7. El candidato de G6 existe y su CI estuvo verde:
 > `5f969cc87acb6cbd8572af3e2b517ba3468e5c41`, CI 34795083053; tras el rebase de A2-R1 está en
 > `988ab9c30c2f90fbf72363f5c237e098d6ff2e95`, con los mismos blobs. Pero **G6 no está cerrado**: el candidato
 > implementa la regla de clave solo D anterior a A2. La corrección acotada de G6 (A2 §9) sigue **bloqueada** hasta que
-> se cumpla, en este orden: (1) el Owner acepta este ADR; (2) ADR-0040 pasa a `reemplazado por ADR-0041`; (3) se
-> versiona un **nuevo** Consensus Freeze con la Proposal V6, los Amendments A1 y A2 y este ADR aceptado; (4) la CI de
-> ese freeze está verde; y (5) solo entonces corre la corrección acotada de G6. G7 sigue **bloqueado**. Ni el Consensus
-> Freeze histórico ni el Consensus Freeze V6 + A1 se reescriben: el hallazgo que A2 resuelve activó la regla de
-> invalidación del segundo, que ya no autoriza seguir implementando. Esta propuesta **no** declara implementación
-> hecha, pruebas verdes de la corrección ni validación en AutoCAD.
+> (3) se versione un **nuevo** Consensus Freeze con la Proposal V6, los Amendments A1 y A2 y este ADR aceptado y (4) la
+> CI de ese freeze esté verde; (5) solo entonces corre esa corrección. G7 sigue **bloqueado** hasta que esa corrección
+> cierre G6. Ni el Consensus Freeze histórico ni el Consensus Freeze V6 + A1 se reescriben: el hallazgo que A2 resuelve
+> activó la regla de invalidación del segundo, que ya no autoriza seguir implementando. Esta aceptación **no** declara
+> implementación hecha, pruebas verdes de la corrección ni validación en AutoCAD.
 >
 > **Autoridad normativa.** El contrato técnico es la **Proposal V6** tal como existe en el blob
 > `ef4db3aa400483ff25a8f39b2beb93708fa43d1a`, **leída con** el **Amendment A1**, blob
@@ -109,15 +127,19 @@ A2 commit         = 5a3714f06aa695e22db0f16455a1ea8dce5195b6   (revisado)
 Coordinator       = AGREED WITH V6 · AGREED WITH A1 · AGREED WITH A2 / E1
 Architect         = AGREED WITH V6 · AGREED WITH A1 · AGREED WITH A2
 
-Owner decision    = PENDING
+Owner decision    = ACCEPTED
 Owner             = Mario Pérez
+Fecha             = 2026-09-14
+Canal             = Coordinador I-49
+Respuesta literal = "Acepto ADR-0041 para I-49 sobre Proposal V6 + Amendments A1 + A2."
 
-ADR-0040          = ACCEPTED — vigente hasta que el Owner acepte este ADR
-G6                = NOT CLOSED
-G7                = BLOCKED
+ADR-0040          = REPLACED BY ADR-0041
 ```
 
-La aceptación que se solicita incluye el conjunto **D1–D25** de este ADR y, de forma expresa:
+La respuesta es inequívoca: nombra este ADR, la iniciativa I-49 y la base técnica, Proposal V6 + Amendments A1 + A2,
+sobre la que se acepta.
+
+La aceptación cubre el conjunto **D1–D25** completo y, de forma expresa:
 
 - la Proposal V6 (blob `ef4db3aa400483ff25a8f39b2beb93708fa43d1a`), contrato técnico base;
 - el Amendment A1 (blob `d62019088b9e7a140d5066799afe6ace6db303ba`), que manda en el único tema que enmienda;
@@ -136,9 +158,11 @@ La aceptación que se solicita incluye el conjunto **D1–D25** de este ADR y, d
   Amendment A2);
 - P2.5 fuerte e incondicional para toda identidad vigente de `VariableId` (D4, D6; Amendment A2, A2 §5).
 
-Mientras esta decisión esté pendiente, ADR-0040 sigue siendo el ADR aceptado de I-49 —aceptación del Owner del
-2026-09-13, «Acepto», registrada en [`docs/automation/decisions/I-49.md`](../automation/decisions/I-49.md) §13— y la
-implementación sigue bloqueada.
+Este bloque registraba `Owner decision = PENDING`, `ADR-0040 = ACCEPTED — vigente hasta que el Owner acepte este ADR`,
+`G6 = NOT CLOSED` y `G7 = BLOCKED` en `8cefd591bffaf0ac9099796d858a643f3df1e28c`; ese estado de la propuesta se
+conserva en [`docs/automation/decisions/I-49.md`](../automation/decisions/I-49.md) §14. La aceptación no cierra G6 ni
+desbloquea G7: al aceptarse este ADR, G6 sigue sin cerrar y G7, bloqueado, según la secuencia del preámbulo. La
+decisión queda registrada en el §15 de ese mismo registro.
 
 ## Contexto
 
