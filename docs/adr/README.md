@@ -261,9 +261,9 @@ I-52 e I-49 en sus ramas y aún no figuran en él. Registro en
 [`docs/automation/decisions/I-54.md`](../automation/decisions/I-54.md).
 
 Iniciativa I-55 (`feature/creacion-de-vistas`): **ADR-0042 nace `propuesto` el 2026-09-14** con la Proposal V1 de I-55 y
-se revisa, todavía `propuesto`, con la Proposal V2, sin consenso técnico y sin aceptación del Owner; no autoriza
-implementación. Su aceptación exige antes el consenso, la resolución de M-01 (semántica de colocación de grupo) y las
-decisiones del Owner OD-1..OD-8. **Complementa y enmienda solo reglas acotadas de ADR-0010** (cuándo puede existir una
-vista adicional y dos precondiciones nuevas de Insertar), que seguiría `aceptado`; la forma de registrar esa relación queda
-para revisión del Arquitecto. Al redactarlo, 0036, 0038, 0040 y 0041 siguen tomados por I-52 e I-49 en sus ramas (I-49
+se revisa, todavía `propuesto`, con las Proposals V2 y V3, sin consenso técnico y sin aceptación del Owner; no autoriza
+implementación. Su aceptación exige antes el consenso, la resolución de M-01 (semántica de colocación de grupo), las
+decisiones del Owner OD-1..OD-8 y la reconciliación con I-52. **Complementa a ADR-0010**, que sigue `aceptado`: generaliza
+el origen válido de una vista hermana y añade precondiciones al flujo de Insertar; la nota posterior fechada en ADR-0010
+solo se escribirá si el Owner acepta ADR-0042. Al redactarlo, 0036, 0038, 0040 y 0041 siguen tomados por I-52 e I-49 en sus ramas (I-49
 tomó 0041 mientras se redactaba este registro) y 0042 no figuraba en ninguna rama ni etiqueta. Registro en [`docs/automation/decisions/I-55.md`](../automation/decisions/I-55.md).
