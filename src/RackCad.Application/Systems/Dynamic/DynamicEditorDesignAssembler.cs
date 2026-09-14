@@ -11,10 +11,14 @@ namespace RackCad.Application.Systems.Dynamic
 {
     /// <summary>
     /// The dynamic editor's recompute core, extracted from the window (I-21): it decides when a full rebuild is needed,
-    /// preserves the user's per-header fondos across a rebuild, updates calculated cabecera heights in place, and assembles
-    /// the persisted <see cref="DynamicRackDesign"/> from the resolved system, the editable <see cref="DynamicFrontMatrix"/>
-    /// and the scalar inputs. It composes the existing builder/resolver instead of duplicating their geometry. The window
-    /// keeps only WPF: reading fields, choosing the header height, and drawing. No behavior changes vs. the inline version.
+    /// updates calculated cabecera heights in place, and assembles the persisted <see cref="DynamicRackDesign"/> from the
+    /// resolved system, the editable <see cref="DynamicFrontMatrix"/> and the scalar inputs. It composes the existing
+    /// builder/resolver instead of duplicating their geometry. The window keeps only WPF: reading fields, choosing the header
+    /// height, and drawing.
+    /// <para>
+    /// A rebuild itself, and what the user's customizations become across it, is <see cref="DynamicRackRebuild"/> (I-53,
+    /// OD-2.b): the ordinal pair that carried only the per-header fondos was retired by I-53D.
+    /// </para>
     /// </summary>
     public sealed class DynamicEditorDesignAssembler
     {
@@ -54,65 +58,6 @@ namespace RackCad.Application.Systems.Dynamic
                 && Math.Abs(a.Depth - b.Depth) < 1e-6
                 && Math.Abs(a.Height - b.Height) < 1e-6
                 && Math.Abs(a.Weight - b.Weight) < 1e-6;
-        }
-
-        /// <summary>Snapshot each header module's custom fondo, in header order (null = default), so a full rebuild can
-        /// restore the user's per-header fondos afterwards.</summary>
-        public IReadOnlyList<double?> SnapshotHeaderFondos(DynamicRackSystem system)
-        {
-            var fondos = new List<double?>();
-            if (system == null)
-            {
-                return fondos;
-            }
-
-            foreach (var module in system.Modules.Where(m => m.IsHeader))
-            {
-                fondos.Add(module.IsManualOverride && module.Length > 0.0 ? module.Length : (double?)null);
-            }
-
-            return fondos;
-        }
-
-        /// <summary>Re-apply snapshot fondos to the freshly-rebuilt header modules by header order (only where the header
-        /// still exists), rebuilding each restored cabecera at the NEW height. Returns how many were restored.</summary>
-        public int RestoreHeaderFondos(
-            DynamicRackSystem system,
-            IReadOnlyList<double?> savedFondos,
-            double newHeight,
-            string postId)
-        {
-            if (savedFondos == null || savedFondos.Count == 0 || system == null)
-            {
-                return 0;
-            }
-
-            var ordinal = 0;
-            var restored = 0;
-
-            foreach (var module in system.Modules.Where(m => m.IsHeader))
-            {
-                if (ordinal < savedFondos.Count && savedFondos[ordinal].HasValue)
-                {
-                    var fondo = savedFondos[ordinal].Value;
-                    module.Length = fondo;
-                    module.IsManualOverride = true;
-                    module.IsCalculated = false;
-                    module.UseCalculatedHeaderConfiguration = true;
-                    module.AssociatedFrameConfiguration = factory.Build(RackFrameTemplateCatalog.Default, postId, newHeight, fondo);
-                    restored++;
-                }
-
-                ordinal++;
-            }
-
-            if (restored > 0)
-            {
-                system.RecalculatePositions();
-                builder.Refresh(system);
-            }
-
-            return restored;
         }
 
         /// <summary>Update calculated cabeceras on the EXISTING modules to a new height. Custom cabeceras remain untouched,

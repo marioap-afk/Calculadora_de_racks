@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
@@ -180,17 +181,22 @@ namespace RackCad.Tests
             Assert.False(state.LastModuleReconciliation.LostAnything);
         }
 
-        /// <summary>The DINAMICO keeps the historical ordinal, fondo-only reconciliation: I-35 fixed Push Back by
-        /// composing a different one, not by changing the pair the dynamic editor uses.</summary>
+        /// <summary>
+        /// I-53D (D-39) — REAPUNTADA desde el par ordinal <c>SnapshotHeaderFondos</c> / <c>RestoreHeaderFondos</c>, que G7
+        /// retiro, al contrato vigente de reconstruccion del DINAMICO: <see cref="DynamicRackRebuild"/> (OD-2.b). Mismo
+        /// escenario —una cabecera con fondo manual y configuracion propia, y otro numero de fondos que reconstruye— y la
+        /// garantia sigue apuntando a la autoridad que el editor del Dinamico usa de verdad. Antes fijaba que el par devolvia
+        /// solo el fondo y re-estampaba la procedencia; ahora fija que la reconstruccion conserva fondo, configuracion y
+        /// procedencia por <c>ModuleId + Kind</c>, que lo informa, y que la ventana ya no reconcilia por ordinal. Volver al
+        /// emparejamiento por ordinal, en Application o en la ventana, falla aqui.
+        /// </summary>
         [Fact]
-        public void Fact5_TheDynamicPair_IsUnchanged_StillFondoOnlyAndStillReStampsAsCalculated()
+        public void Fact5_TheDynamicRebuild_NowKeepsFondoConfigurationAndProvenance_ByModuleIdAndKind()
         {
             var catalog = Catalog;
-            var assembler = new DynamicEditorDesignAssembler(
-                catalog,
-                new DynamicRackSystemBuilder(catalog),
-                new DynamicRackSystemResolver(catalog));
-            var system = new PushBackResolver(catalog).Resolve(new PushBackDesign { Structure = Structure() }).Structure;
+            var builder = new DynamicRackSystemBuilder(catalog);
+            var resolver = new DynamicRackSystemResolver(catalog);
+            var system = resolver.Resolve(Structure()).System;
 
             var header = system.Modules.First(module => module.IsHeader);
             header.Length = 55.0;
@@ -199,28 +205,54 @@ namespace RackCad.Tests
             header.UseCalculatedHeaderConfiguration = false;
             header.AssociatedFrameConfiguration.PanelClear = 40.0;
 
-            var fondos = assembler.SnapshotHeaderFondos(system);
-            var rebuilt = new PushBackResolver(catalog).Resolve(new PushBackDesign { Structure = Structure(8) }).Structure;
-            assembler.RestoreHeaderFondos(rebuilt, fondos, 120.0, catalog.Defaults?.Post);
+            var result = DynamicRackRebuild.Rebuild(
+                system,
+                new DynamicHeaderBatchState(),
+                new DynamicRackRebuildRequest
+                {
+                    Pallet = system.Pallet,
+                    DepthLayout = DynamicDepthGeometry.Resolve(new[] { new DynamicRackFrontDesign { PalletsDeep = 8 } }, 8),
+                    HeaderPostCatalogId = catalog.Defaults?.Post,
+                    HeaderHeight = 120.0,
+                    PostPeralte = system.PostPeralte,
+                    LoadLevels = 2,
+                    FirstLevelHeight = 6.0,
+                    BeamDepth = 4.0
+                },
+                builder,
+                resolver);
 
-            var restored = rebuilt.Modules.First(module => module.IsHeader);
-            Assert.Equal(55.0, restored.Length, 6);                       // the fondo comes back...
-            Assert.True(restored.UseCalculatedHeaderConfiguration);       // ...and the provenance is re-stamped
-            Assert.NotEqual(40.0, restored.AssociatedFrameConfiguration.PanelClear);
+            var restored = result.System.Modules.First(module => module.IsHeader);
+            Assert.Equal(header.ModuleId, restored.ModuleId);
+            Assert.Equal(55.0, restored.Length, 6);                                   // the fondo comes back...
+            Assert.False(restored.UseCalculatedHeaderConfiguration);                  // ...with its provenance...
+            Assert.Equal(40.0, restored.AssociatedFrameConfiguration.PanelClear, 4); // ...and its configuration
+            Assert.Contains(header.ModuleId, result.Reconciliation.Preserved);
+            Assert.False(result.Reconciliation.LostAnything);
+
+            // And the DINAMICO editor rebuilds through that authority —its one rebuild route—, never through an ordinal pair
+            // and never by building a default sequence of its own.
+            var dynamicWindow = File.ReadAllText(UiSourcePath("RackDynamicSystemWindow.xaml.cs"));
+            Assert.Single(Regex.Matches(dynamicWindow, @"DynamicRackRebuild\.Rebuild\("));
+            Assert.DoesNotContain("BuildDefault(", dynamicWindow);
+            Assert.DoesNotContain("SnapshotHeaderFondos", dynamicWindow);
+            Assert.DoesNotContain("RestoreHeaderFondos", dynamicWindow);
         }
 
-        /// <summary>The snapshot the reconciliation is built on carries the FONDO and nothing else — the direct cause
-        /// of the defect above, pinned at its source so the fix has an unambiguous target.</summary>
+        /// <summary>
+        /// I-53D (D-39) — REAPUNTADA desde <c>SnapshotHeaderFondos</c> a las INTENCIONES de la reconstruccion del Dinamico. Antes
+        /// fijaba en su origen la causa del defecto: la instantanea del par ordinal era una lista de fondos que no podia llevar
+        /// configuracion ni procedencia. Ahora fija, en el mismo origen, que ese objetivo se cumplio: la reconstruccion parte de
+        /// <see cref="DynamicRackSystemResolver.Snapshot"/>, cuyas intenciones llevan el fondo manual, la configuracion y la
+        /// procedencia, y el par que solo podia llevar el fondo ya no existe.
+        /// </summary>
         [Fact]
-        public void Fact5_SnapshotHeaderFondos_CapturesOnlyManualFondos_NotConfigurationsNorProvenance()
+        public void Fact5_TheDynamicRebuildIntents_CarryTheManualFondo_TheConfigurationAndTheProvenance()
         {
             const double manualFondo = 55.0;
             var catalog = Catalog;
-            var assembler = new DynamicEditorDesignAssembler(
-                catalog,
-                new DynamicRackSystemBuilder(catalog),
-                new DynamicRackSystemResolver(catalog));
-            var system = new PushBackResolver(catalog).Resolve(new PushBackDesign { Structure = Structure() }).Structure;
+            var resolver = new DynamicRackSystemResolver(catalog);
+            var system = resolver.Resolve(Structure()).System;
 
             var header = system.Modules.First(module => module.IsHeader);
             header.Length = manualFondo;
@@ -229,12 +261,23 @@ namespace RackCad.Tests
             header.UseCalculatedHeaderConfiguration = false;      // fully custom
             header.AssociatedFrameConfiguration.PanelClear = 40.0;
 
-            var fondos = assembler.SnapshotHeaderFondos(system);
+            var intents = resolver.Snapshot(system, 2, 6.0, 4.0, catalog.Defaults?.Post).Modules;
 
-            // The snapshot is a list of nullable doubles: it CANNOT carry a configuration or a provenance flag.
-            Assert.Equal(system.Modules.Count(module => module.IsHeader), fondos.Count);
-            Assert.Equal(manualFondo, fondos[0].Value, 4);
-            Assert.All(fondos.Skip(1), fondo => Assert.False(fondo.HasValue));
+            Assert.Equal(system.Modules.Count, intents.Count);
+            var intent = intents.Single(module => module.ModuleId == header.ModuleId);
+            Assert.Equal(manualFondo, intent.Length, 4);
+            Assert.True(intent.IsManualOverride);
+            Assert.False(intent.UseCalculatedHeaderConfiguration);
+            Assert.Equal(40.0, intent.HeaderConfiguration.PanelClear, 4);
+            Assert.All(intents.Where(module => module.IsHeader && module.ModuleId != header.ModuleId), other =>
+            {
+                Assert.False(other.IsManualOverride);
+                Assert.True(other.UseCalculatedHeaderConfiguration);
+            });
+
+            // The ordinal pair, which could carry nothing but the fondo, is gone from the Dinamico's assembler.
+            Assert.Null(typeof(DynamicEditorDesignAssembler).GetMethod("SnapshotHeaderFondos"));
+            Assert.Null(typeof(DynamicEditorDesignAssembler).GetMethod("RestoreHeaderFondos"));
         }
 
         // ===== Fact 6 — the resolver's clone is not the canonical one (INERT defect) ============================
@@ -347,6 +390,9 @@ namespace RackCad.Tests
             Assert.Contains("RequestStandardRestore()", pushBackWindow);
             Assert.Contains("StandardRestoreRequested", assembler);          // the assembler translates the intent
             Assert.Contains("forceRebuild: true", dynamicWindow);            // the dynamic editor keeps its own literal
+            // I-53D (D-39): ...and that flag now reaches the Dinamico's rebuild authority as «Restaurar estándar», a rebuild
+            // WITHOUT intents (DynamicRackRebuild), instead of a bare BuildDefault.
+            Assert.Contains("RestoreStandard = forceRebuild", dynamicWindow);
 
             // The window never PASSES the flag: it names the mechanism only in prose. Matching the named-argument
             // form is what distinguishes a call from a comment.

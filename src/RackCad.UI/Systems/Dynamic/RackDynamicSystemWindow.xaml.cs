@@ -22,6 +22,7 @@ using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
 using RackCad.UI.Preview;
 using RackCad.UI.RackFrames;
+using RackCad.UI.Shell;
 using RackCad.UI.Systems.Selective;
 
 namespace RackCad.UI.Systems.Dynamic
@@ -76,7 +77,6 @@ namespace RackCad.UI.Systems.Dynamic
         private const string AutoDimStyle = "(Automático)";
 
         private const string ConfigCalculated = "Calculada";
-        private readonly List<HeaderPreset> headerPresets = new List<HeaderPreset>();
         private bool suppressConfigSelection;
         private bool suppressRecompose;
 
@@ -171,7 +171,6 @@ namespace RackCad.UI.Systems.Dynamic
             }
             LoadSelectedFrontEditor();
             RenderFrontMatrix();
-            RefreshConfigBox();
             UpdateDrawButtons();
             Recompose();
         }
@@ -434,6 +433,7 @@ namespace RackCad.UI.Systems.Dynamic
         /// </summary>
         private bool Recompose(bool forceRebuild = false)
         {
+            RecomputeCount++; // I-53D (D-32): every recomposition of the window is a recompute of the rack
             var recomputed = RecomposeCore(forceRebuild);
 
             // Solo es «obsoleto» si hay algo anterior que mirar: sin modelo previo el lienzo está vacío y el estado
@@ -509,22 +509,32 @@ namespace RackCad.UI.Systems.Dynamic
                 // (custom fondo/length, cabeceras) survive instead of reverting to the calculated defaults.
                 var mustRebuild = forceRebuild || DynamicEditorDesignAssembler.MustRebuild(system, pallet, depthLayout);
 
-                // A pallet/fondos change forces a full rebuild that would discard the custom fondos the user set on
-                // headers. Snapshot them (in header order) so they survive — UNLESS this is an explicit "restaurar
-                // estandar" (forceRebuild), which is meant to reset everything.
-                var savedFondos = mustRebuild && !forceRebuild ? assembler.SnapshotHeaderFondos(system) : null;
-                var restoredFondos = 0;
-
+                // I-53D (OD-2.b): a pallet/fondos change rebuilds the module sequence through Application's rebuild with
+                // reconciliation —the previous intents by the resolver's snapshot, BuildDefault, and every customization
+                // carried by ModuleId + Kind, adapted or reported lost— which also advances the batch generation and drops a
+                // remembered source and explicit destinations. An explicit «Restaurar estándar» (forceRebuild) rebuilds
+                // WITHOUT intents: it is meant to reset everything.
+                DynamicRackRebuildResult rebuild = null;
                 if (mustRebuild)
                 {
-                    system = builder.BuildDefault(
-                        pallet,
-                        depthLayout,
-                        RackFrameTemplateCatalog.Default,
-                        SelectedPostId(),
-                        computedHeaderHeight,
-                        postPeralte);
-                    restoredFondos = assembler.RestoreHeaderFondos(system, savedFondos, computedHeaderHeight, SelectedPostId());
+                    rebuild = DynamicRackRebuild.Rebuild(
+                        system,
+                        headerBatch,
+                        new DynamicRackRebuildRequest
+                        {
+                            Pallet = pallet,
+                            DepthLayout = depthLayout,
+                            HeaderPostCatalogId = SelectedPostId(),
+                            HeaderHeight = computedHeaderHeight,
+                            PostPeralte = postPeralte,
+                            LoadLevels = levels,
+                            FirstLevelHeight = firstLevel,
+                            BeamDepth = beamDepth,
+                            RestoreStandard = forceRebuild
+                        },
+                        builder,
+                        resolver);
+                    system = rebuild.System;
                 }
                 else
                 {
@@ -558,10 +568,15 @@ namespace RackCad.UI.Systems.Dynamic
                 UpdateSelectedPanel();
                 UpdateSummary();
                 DrawSideView();
-                SetStatus(
-                    !mustRebuild ? "Altura actualizada; se conservaron los módulos (fondos y cabeceras)."
-                    : restoredFondos > 0 ? "Vista recalculada; se conservaron los fondos personalizados de las cabeceras."
-                    : "Vista recalculada (layout estándar).", false);
+                if (rebuild == null)
+                {
+                    SetStatus("Altura actualizada; se conservaron los módulos (fondos y cabeceras).", false);
+                }
+                else
+                {
+                    ReportRebuild(rebuild, forceRebuild);
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -569,6 +584,7 @@ namespace RackCad.UI.Systems.Dynamic
                 system = null;
                 ModulesGrid.ItemsSource = null;
                 PreviewCanvas.Children.Clear();
+                RefreshHeaderBatchPanel();
                 SetStatus("No se pudo generar el sistema: " + ex.Message, true);
                 return false;
             }
@@ -725,7 +741,7 @@ namespace RackCad.UI.Systems.Dynamic
                 selectedModule.UseCalculatedHeaderConfiguration = true;
             }
 
-            builder.Refresh(system);
+            RefreshModules();
             BindModules();
             UpdateSelectedPanel();
             UpdateSummary();
@@ -733,69 +749,527 @@ namespace RackCad.UI.Systems.Dynamic
             SetStatus("Módulo actualizado.", false);
         }
 
+        /// <summary>
+        /// «Editar cabecera» — EDIT, the degenerate case of DISTRIBUTE (Proposal V2 §7.4, §7.12; L-1).
+        /// <para>
+        /// The configurator never sees the live cabecera: it opens on a COPY (the canonical clone, I-17), in the advanced editor
+        /// when the cabecera is already custom, and what it leaves when it closes —<c>window.Configuration</c>, read after the
+        /// rack-wide peralte is stamped on it— is the data of the EDIT. The window decides nothing else: whether the cabecera
+        /// becomes custom, its manual length, the copy and the commit are Application's, through the same gesture as
+        /// «Aplicar origen a destinos». Closing the configurator without a change is not an operation.
+        /// </para>
+        /// </summary>
         private void EditHeader_Click(object sender, RoutedEventArgs e)
         {
-            if (selectedModule == null || !selectedModule.IsHeader)
+            BeginHeaderBatchGesture("editar");
+            if (system == null || selectedModule == null || !selectedModule.IsHeader)
             {
+                HeaderBatchLog.Add("sin-cabecera");
                 SetStatus("Selecciona un módulo de cabecera para editarlo.", true);
                 return;
             }
 
-            if (selectedModule.AssociatedFrameConfiguration == null)
+            // L-1: a copy of the configuration in force (or a fresh calculated one when the module has none), never the live
+            // instance, so nothing the configurator does reaches the rack before the commit.
+            var live = selectedModule.AssociatedFrameConfiguration;
+            var seed = live != null ? Clone(live) : BuildHeaderConfig(Math.Max(selectedModule.Length, 1.0));
+            var alreadyCustom = live != null && !selectedModule.UseCalculatedHeaderConfiguration;
+
+            // Snapshot before the dialog: closing it without editing is not an edit.
+            var beforeEdit = new RackProjectStore().Serialize(RackProject.ForSelective(seed));
+
+            var edited = ShowHeaderConfigurator(seed, alreadyCustom);
+            if (edited == null)
             {
-                selectedModule.AssociatedFrameConfiguration = BuildHeaderConfig(Math.Max(selectedModule.Length, 1.0));
-            }
-
-            // Snapshot before the dialog: closing it without editing must NOT accumulate a duplicate
-            // "Personalizada N" preset on every open.
-            var beforeEdit = new RackProjectStore().Serialize(RackProject.ForSelective(selectedModule.AssociatedFrameConfiguration));
-
-            var window = new RackFrameConfiguratorWindow(selectedModule.AssociatedFrameConfiguration) { Owner = this };
-            window.ShowDialog();
-
-            // The dynamic editor owns one rack-wide post PERALTE. The individual header editor may display it, but
-            // cannot create a conflicting value for just one module.
-            if (TryNum(PostPeralteBox?.Text, out var globalPostPeralte) && globalPostPeralte > 0.0)
-            {
-                selectedModule.AssociatedFrameConfiguration.PostPeralte = globalPostPeralte;
-            }
-
-            var afterEdit = new RackProjectStore().Serialize(RackProject.ForSelective(selectedModule.AssociatedFrameConfiguration));
-            if (afterEdit == beforeEdit)
-            {
+                HeaderBatchLog.Add("sin-cambios");
                 SetStatus("Cabecera sin cambios.", false);
                 return;
             }
 
-            selectedModule.UseCalculatedHeaderConfiguration = false;
-
-            // The header's depth (fondo) edited in the configurator becomes the module length.
-            var editedDepth = selectedModule.AssociatedFrameConfiguration.Depth;
-            if (editedDepth > 0 && Math.Abs(editedDepth - selectedModule.Length) > 0.0001)
+            // The dynamic editor owns one rack-wide post PERALTE. The individual header editor may display it, but cannot
+            // create a conflicting value for just one module: it is stamped on the RESULT before comparing (§7.12.6).
+            if (TryNum(PostPeralteBox?.Text, out var globalPostPeralte) && globalPostPeralte > 0.0)
             {
-                selectedModule.Length = editedDepth;
-                selectedModule.IsManualOverride = true;
-                selectedModule.IsCalculated = false;
+                edited.PostPeralte = globalPostPeralte;
             }
 
-            // Save the edited header as a reusable preset ("Personalizada N") for the configuration dropdown.
-            headerPresets.Add(new HeaderPreset(
-                "Personalizada " + (headerPresets.Count + 1).ToString(CultureInfo.InvariantCulture),
-                Clone(selectedModule.AssociatedFrameConfiguration)));
-            RefreshConfigBox();
+            if (new RackProjectStore().Serialize(RackProject.ForSelective(edited)) == beforeEdit)
+            {
+                HeaderBatchLog.Add("sin-cambios");
+                SetStatus("Cabecera sin cambios.", false);
+                return;
+            }
 
-            builder.Refresh(system);
-            BindModules();
-            UpdateSelectedPanel();
-            UpdateSummary();
-            DrawSideView();
-            SetStatus("Cabecera del módulo actualizada (fondo " + editedDepth.ToString("0.##", CultureInfo.InvariantCulture) + " in).", false);
+            RunHeaderBatch(DynamicHeaderBatchRequest.Edit(edited, selectedModule.ModuleId));
+        }
+
+        /// <summary>
+        /// Open the shared configurator on <paramref name="copy"/> and return the configuration that is ACTUALLY effective when
+        /// it closes (L-1): read off the window, never assumed to be the instance handed in, because the ViewModel REPLACES its
+        /// configuration on «Aplicar» of the quick mode, «Restaurar estándar» and opening a project. An already custom cabecera
+        /// opens in the ADVANCED editor: the quick mode's «Aplicar» rebuilds the cabecera from the template and would drop
+        /// everything else the user had confirmed. The mode is chosen through the ViewModel's public property; the shared
+        /// window is not touched.
+        /// </summary>
+        private RackFrameConfiguration ShowHeaderConfigurator(RackFrameConfiguration copy, bool alreadyCustom)
+        {
+            var window = new RackFrameConfiguratorWindow(copy) { Owner = this };
+            window.ViewModel.IsAdvancedEditor = alreadyCustom;
+
+            if (HeaderConfiguratorPresenter != null)
+            {
+                HeaderConfiguratorPresenter(window);
+            }
+            else
+            {
+                window.ShowDialog();
+            }
+
+            return window.Configuration;
         }
 
         private void RestoreDefault_Click(object sender, RoutedEventArgs e)
         {
             // Explicit "restore standard": a full rebuild that DOES discard the per-module overrides.
             Recompose(forceRebuild: true);
+        }
+
+        // ---- I-53D: reutilizar y distribuir cabeceras de modulo (ID6 REUSE + ID7 BATCH DISTRIBUTION; ADR-0037) ----
+
+        /// <summary>
+        /// The runtime state Application keeps for the cabecera batch of this editor (Proposal V2 §7.5, §7.6): the rebuild
+        /// generation, the remembered source ADDRESS and «Cabeceras destino». The window owns one and only hands it to
+        /// Application, which advances the generation on every rebuild and drops what named the previous sequence. Nothing in
+        /// it is persisted, and loading another design forgets the source and the chosen destinations.
+        /// </summary>
+        private readonly DynamicHeaderBatchState headerBatch = new DynamicHeaderBatchState();
+
+        /// <summary>True while «Cabeceras destino» is rebuilt, so repopulating its boxes does not look like clicks.</summary>
+        private bool buildingModuleTargets;
+
+        /// <summary>
+        /// Test seam: how the configurator window is SHOWN. Production shows it modally; a test drives the REAL window and its
+        /// REAL ViewModel without a modal loop. The mode choice and the read-back are not part of the seam, so a test exercises
+        /// the statements production runs (the pattern of Push Back, I-40, and of the Selectivo, I-53S).
+        /// </summary>
+        internal Action<RackFrameConfiguratorWindow> HeaderConfiguratorPresenter { get; set; }
+
+        /// <summary>Test seam: the batch state (generation, remembered source, module targets).</summary>
+        internal DynamicHeaderBatchState HeaderBatchStateForTest => headerBatch;
+
+        /// <summary>Test seam: the Outcome Application produced for the last cabecera gesture; null when the gesture ended with
+        /// no outcome (no source, no cabecera selected, the configurator closed without changes, or no resolved system).</summary>
+        internal HeaderBatchOutcome<DynamicHeaderAddress> LastHeaderBatchOutcome { get; private set; }
+
+        /// <summary>
+        /// Test seam: the phases the last cabecera gesture went through, in order — <c>gesto:*</c>, <c>sin-cabecera</c>,
+        /// <c>sin-cambios</c>, <c>sin-origen</c>, <c>fin:*</c>, <c>plan:*</c>, <c>recompute:aplicacion</c>, <c>outcome:*</c>.
+        /// Cleared at the start of every gesture.
+        /// </summary>
+        internal List<string> HeaderBatchLog { get; } = new List<string>();
+
+        /// <summary>
+        /// Test seam (D-32): how many recomputes of the rack ran, counted where each one happens — every recomposition of the
+        /// window (<see cref="Recompose(bool)"/>), every refresh of the modules the window runs itself, and the one Application
+        /// runs inside a committed MUTATE. Application has no counter of its own and its builder is sealed, so its recompute is
+        /// counted at the only place that runs it: <see cref="DynamicHeaderBatch.Apply"/> recomputes once after a commit and
+        /// never otherwise.
+        /// </summary>
+        internal int RecomputeCount { get; private set; }
+
+        /// <summary>Test seam (D-33): the result of the last rebuild, as Application reported it; null before any rebuild of the
+        /// rack shown (a loaded design has not been rebuilt).</summary>
+        internal DynamicRackRebuildResult LastRebuildResult { get; private set; }
+
+        /// <summary>
+        /// «Tomar como origen»: remember the ADDRESS of the selected cabecera module, signed with the sequence in force. It copies
+        /// nothing, changes no geometry and recomputes nothing: the configuration is captured when the user applies, so an edit
+        /// of the source made in between is what gets distributed. Whether the module can be a source is decided then.
+        /// </summary>
+        private void TakeHeaderSource_Click(object sender, RoutedEventArgs e)
+        {
+            if (system == null || selectedModule == null || !selectedModule.IsHeader)
+            {
+                SetStatus("Selecciona un módulo de cabecera para tomarlo como origen.", true);
+                return;
+            }
+
+            headerBatch.RememberSource(system, selectedModule.ModuleId);
+            RefreshHeaderSource();
+            SetStatus("Origen: " + selectedModule.ModuleId + ". Al aplicar se usa la cabecera que ese módulo tenga en ese momento.", false);
+        }
+
+        /// <summary>
+        /// «Aplicar origen a destinos» — DISTRIBUTE: the remembered source to «Cabeceras destino» as they stand. «Actual» is the
+        /// module selected now; every recomposition clears the selection, and the window hands that as it is —Application
+        /// answers <c>NoTargets</c>— instead of re-aiming it at a module that merely looks like the previous one.
+        /// </summary>
+        private void ApplyHeaderBatch_Click(object sender, RoutedEventArgs e)
+        {
+            BeginHeaderBatchGesture("distribuir");
+            if (headerBatch.Source == null)
+            {
+                HeaderBatchLog.Add("sin-origen");
+                SetStatus("Primero toma una cabecera como origen con «Tomar como origen».", true);
+                return;
+            }
+
+            RunHeaderBatch(DynamicHeaderBatchRequest.Distribute(headerBatch.Source, headerBatch.Targets, selectedModule?.ModuleId));
+        }
+
+        private void BeginHeaderBatchGesture(string kind)
+        {
+            HeaderBatchLog.Clear();
+            LastHeaderBatchOutcome = null;
+            HeaderBatchLog.Add("gesto:" + kind);
+        }
+
+        /// <summary>
+        /// The ONE cabecera gesture of the Dinamico (Proposal V2 §7.8), shared by EDIT («Editar cabecera») and DISTRIBUTE
+        /// («Aplicar origen a destinos»):
+        /// <code>
+        /// request → PREPARE (pure) → no plan | Rejected | Prepared → MUTATE + the ONE recompute (both Application's) → Outcome
+        /// </code>
+        /// There is no confirmation step: the plan of the Dinamico carries no notice (G6), so nothing is ever asked and no gesture
+        /// can end cancelled. Nothing runs between PREPARE and MUTATE, and MUTATE still verifies the signature before its first
+        /// write. The window sets no flag and runs no recompute of its own: after a commit it only shows what Application left.
+        /// </summary>
+        private void RunHeaderBatch(DynamicHeaderBatchRequest request)
+        {
+            var preparation = DynamicHeaderBatch.Prepare(system, headerBatch, request);
+            if (preparation.PreconditionFailure.HasValue)
+            {
+                HeaderBatchLog.Add("fin:" + preparation.PreconditionFailure.Value);
+                SetStatus("No se aplicó nada: el rack todavía no tiene geometría resuelta. Corrige primero los datos del rack.", true);
+                return;
+            }
+
+            HeaderBatchLog.Add("plan:" + DescribePlan(preparation.Plan));
+            var outcome = DynamicHeaderBatch.Apply(preparation, system, headerBatch, builder);
+            if (outcome is HeaderBatchOutcome<DynamicHeaderAddress>.Committed)
+            {
+                // Application ran the recompute inside this MUTATE (ApplyPostPeralte + Refresh): exactly one per commit.
+                RecomputeCount++;
+                HeaderBatchLog.Add("recompute:aplicacion");
+                BindModules();
+                UpdateSelectedPanel();
+                UpdateSummary();
+                DrawSideView();
+            }
+
+            HeaderBatchLog.Add("outcome:" + DescribeOutcome(outcome));
+            LastHeaderBatchOutcome = outcome;
+            ReportHeaderBatch(outcome, request.Operation);
+        }
+
+        /// <summary>
+        /// What the gesture tells the user, from the Outcome Application produced: the modules that received a copy and every
+        /// omission with its reason, or the rejection in words. It goes to the status band, which is always visible and never
+        /// modal.
+        /// </summary>
+        private void ReportHeaderBatch(HeaderBatchOutcome<DynamicHeaderAddress> outcome, DynamicHeaderBatchOperation operation)
+        {
+            switch (outcome)
+            {
+                case HeaderBatchOutcome<DynamicHeaderAddress>.Committed committed:
+                    var applied = string.Join(", ", committed.Applied.Select(address => address.ModuleId));
+                    var edited = operation == DynamicHeaderBatchOperation.Edit
+                        ? system?.Modules.FirstOrDefault(module => module.ModuleId == applied)
+                        : null;
+                    var text = operation == DynamicHeaderBatchOperation.Edit
+                        ? "Cabecera del módulo " + applied + " actualizada"
+                          + (edited == null ? "." : " (fondo " + edited.Length.ToString("0.##", CultureInfo.InvariantCulture) + " in).")
+                        : string.Format(
+                            CultureInfo.InvariantCulture,
+                            "Cabecera aplicada en {0} módulo(s): {1}.",
+                            committed.Applied.Count,
+                            applied);
+                    if (committed.Omitted.Count > 0)
+                    {
+                        text += " Omitidos: " + string.Join("; ", committed.Omitted.Select(omission =>
+                            omission.Address.ModuleId + " (" + DescribeOmission(omission.Reason) + ")")) + ".";
+                    }
+
+                    // Leaving out the source itself is expected; leaving out a destination that is not drawn is worth noticing.
+                    SetStatus(text, committed.Omitted.Any(omission => omission.Reason != HeaderOmissionReason.IsSource));
+                    break;
+                case HeaderBatchOutcome<DynamicHeaderAddress>.Rejected rejected:
+                    SetStatus(DescribeRejection(rejected.Code, operation), true);
+                    break;
+                case HeaderBatchOutcome<DynamicHeaderAddress>.Cancelled _:
+                    SetStatus("Cancelado: no se aplicó ninguna copia de la cabecera.", false);
+                    break;
+            }
+        }
+
+        private static string DescribeOmission(HeaderOmissionReason reason)
+        {
+            switch (reason)
+            {
+                case HeaderOmissionReason.IsSource:
+                    return "es el origen";
+                case HeaderOmissionReason.NotPhysicallyPresent:
+                    return "no se dibuja";
+                default:
+                    return "no existe";
+            }
+        }
+
+        private static string DescribeRejection(HeaderRejectionCode code, DynamicHeaderBatchOperation operation)
+        {
+            switch (code)
+            {
+                case HeaderRejectionCode.StaleTargets:
+                    return "No se aplicó nada: el rack cambió desde que elegiste el origen o los destinos. Vuelve a elegirlos.";
+                case HeaderRejectionCode.SourceNotFound:
+                    return "No se aplicó nada: el origen ya no es una cabecera del rack. Toma otro origen.";
+                case HeaderRejectionCode.SourceUnusable:
+                    return operation == DynamicHeaderBatchOperation.Edit
+                        ? "No se aplicó nada: la cabecera editada no es utilizable."
+                        : "No se aplicó nada: el origen no es una cabecera personalizada utilizable. Personalízala primero o toma otra.";
+                case HeaderRejectionCode.NoTargets:
+                    return "No se aplicó nada: no hay destinos. Selecciona una cabecera o elige «Cabeceras destino».";
+                case HeaderRejectionCode.MalformedTarget:
+                    return "No se aplicó nada: uno de los destinos no es una cabecera del rack.";
+                case HeaderRejectionCode.NoApplicableTargets:
+                    return "No se aplicó nada: ningún destino puede recibirla (el único destino es el origen o no se dibuja).";
+                default:
+                    return "No se aplicó nada: un destino tiene una longitud inválida.";
+            }
+        }
+
+        private static string DescribePlan(HeaderBatchPlan<DynamicHeaderAddress> plan)
+        {
+            switch (plan)
+            {
+                case HeaderBatchPlan<DynamicHeaderAddress>.Prepared prepared:
+                    return string.Format(
+                        CultureInfo.InvariantCulture,
+                        "preparado:{0}|omitidos:{1}|confirmacion={2}",
+                        string.Join(",", prepared.Targets.Select(address => address.ModuleId)),
+                        string.Join(",", prepared.Omitted.Select(omission => omission.Address.ModuleId + ":" + omission.Reason)),
+                        prepared.RequiresConfirmation);
+                case HeaderBatchPlan<DynamicHeaderAddress>.Rejected rejected:
+                    return "rechazado:" + rejected.Code;
+                default:
+                    return "desconocido";
+            }
+        }
+
+        private static string DescribeOutcome(HeaderBatchOutcome<DynamicHeaderAddress> outcome)
+        {
+            switch (outcome)
+            {
+                case HeaderBatchOutcome<DynamicHeaderAddress>.Committed committed:
+                    return "committed:" + string.Join(",", committed.Applied.Select(address => address.ModuleId));
+                case HeaderBatchOutcome<DynamicHeaderAddress>.Rejected rejected:
+                    return "rechazado:" + rejected.Code;
+                default:
+                    return "cancelado";
+            }
+        }
+
+        /// <summary>
+        /// The window's own refresh of the module sequence (an in-place module edit, «Calculada», a derived-post option): the
+        /// builder's <c>Refresh</c>, counted like every other recompute of the rack (D-32).
+        /// </summary>
+        private void RefreshModules()
+        {
+            RecomputeCount++;
+            builder.Refresh(system);
+        }
+
+        /// <summary>
+        /// What a rebuild tells the user (OD-2.b): Application's own sentence (<see cref="DynamicRackRebuildResult.Describe"/>)
+        /// on the status line and in the rebuild report, which stays visible after other messages replace the status line; a
+        /// customization lost against the user's wish (<c>LostAnything</c>) is shown as a warning.
+        /// </summary>
+        private void ReportRebuild(DynamicRackRebuildResult rebuild, bool restoreStandard)
+        {
+            LastRebuildResult = rebuild;
+            ShowRebuildReport(rebuild);
+
+            var report = rebuild.Describe();
+            if (string.IsNullOrEmpty(report))
+            {
+                SetStatus("Vista recalculada (layout estándar).", false);
+                return;
+            }
+
+            var text = (restoreStandard ? "Vista recalculada (layout estándar): " : "Vista recalculada: ") + report + ".";
+            if (rebuild.Reconciliation.LostAnything)
+            {
+                UiSupport.SetStatus(StatusText, text, EditorStatusSeverity.Warning);
+            }
+            else
+            {
+                SetStatus(text, false);
+            }
+        }
+
+        /// <summary>The report of the last rebuild, or nothing: collapsed when that rebuild had nothing to say.</summary>
+        private void ShowRebuildReport(DynamicRackRebuildResult rebuild)
+        {
+            if (RebuildReportText == null)
+            {
+                return;
+            }
+
+            var report = rebuild?.Describe();
+            if (string.IsNullOrEmpty(report))
+            {
+                RebuildReportText.Text = string.Empty;
+                RebuildReportText.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            UiSupport.SetStatus(
+                RebuildReportText,
+                "Última reconstrucción: " + report + ".",
+                rebuild.Reconciliation.LostAnything ? EditorStatusSeverity.Warning : EditorStatusSeverity.Info);
+            RebuildReportText.Visibility = Visibility.Visible;
+        }
+
+        /// <summary>The source caption and «Cabeceras destino», refreshed whenever the modules shown change.</summary>
+        private void RefreshHeaderBatchPanel()
+        {
+            RefreshHeaderSource();
+            RefreshModuleTargets();
+        }
+
+        /// <summary>
+        /// The caption of the remembered source. It reads the rack in force to SAY what that address designates today —a custom
+        /// cabecera, a calculated one, or nothing usable because the sequence changed—; whether it can be a source is decided by
+        /// PREPARE when the user applies.
+        /// </summary>
+        private void RefreshHeaderSource()
+        {
+            if (HeaderSourceText == null)
+            {
+                return;
+            }
+
+            var source = headerBatch.Source;
+            if (source == null)
+            {
+                HeaderSourceText.Text = "Sin origen.";
+                return;
+            }
+
+            var moduleId = source.Address.ModuleId;
+            var module = system?.Modules.FirstOrDefault(candidate => candidate.ModuleId == moduleId);
+            var condition = system == null
+                ? "sin rack resuelto"
+                : source.Signature != DynamicHeaderBatch.SequenceSignature(system, headerBatch.Generation)
+                    ? "el rack cambió: vuelve a tomarlo"
+                    : module == null || !module.IsHeader
+                        ? "ya no es una cabecera"
+                        : !module.UseCalculatedHeaderConfiguration && module.AssociatedFrameConfiguration != null
+                            ? "personalizada"
+                            : "calculada: todavía no sirve de origen";
+            HeaderSourceText.Text = "Origen: " + moduleId + " (" + condition + ").";
+        }
+
+        /// <summary>
+        /// Rebuild «Cabeceras destino» from <see cref="DynamicModuleTargets"/>, with the popup grammar of the Selectivo: «Actual»
+        /// and «Todas» are actions, and there is one box per cabecera module of the rack shown. A box shows what the choice names
+        /// —none for «Actual», every cabecera for «Todas», the chosen ones otherwise— and a toggle hands exactly the boxes that
+        /// are on to Application, signed with the sequence in force. Choosing destinations changes no geometry: no recompute.
+        /// </summary>
+        private void RefreshModuleTargets()
+        {
+            if (ModuleTargetsList == null || ModuleTargetsButton == null)
+            {
+                return;
+            }
+
+            buildingModuleTargets = true;
+            try
+            {
+                ModuleTargetsList.Children.Clear();
+                var targets = headerBatch.Targets;
+                var isCurrent = targets.Mode == DynamicModuleTargetMode.FollowCurrent;
+                var isAll = targets.Mode == DynamicModuleTargetMode.All;
+
+                var actual = new Button
+                {
+                    Content = isCurrent ? "✓ Actual" : "Actual",
+                    HorizontalContentAlignment = HorizontalAlignment.Left,
+                    Margin = new Thickness(0, 0, 0, 4),
+                    Padding = new Thickness(6, 2, 6, 2),
+                    ToolTip = "Solo la cabecera seleccionada; sigue a la selección."
+                };
+                actual.Click += (s, e) =>
+                {
+                    if (!buildingModuleTargets)
+                    {
+                        headerBatch.Targets.FollowCurrentModule();
+                        RefreshModuleTargets();
+                    }
+                };
+                ModuleTargetsList.Children.Add(actual);
+
+                var all = new Button
+                {
+                    Content = isAll ? "✓ Todas" : "Todas",
+                    HorizontalContentAlignment = HorizontalAlignment.Left,
+                    Margin = new Thickness(0, 0, 0, 6),
+                    Padding = new Thickness(6, 2, 6, 2),
+                    ToolTip = "Todas las cabeceras del rack; crece con el rack."
+                };
+                all.Click += (s, e) =>
+                {
+                    if (!buildingModuleTargets)
+                    {
+                        headerBatch.Targets.FollowAllModules();
+                        RefreshModuleTargets();
+                    }
+                };
+                ModuleTargetsList.Children.Add(all);
+
+                var headers = system?.Modules.Where(module => module != null && module.IsHeader).OrderBy(module => module.Index).ToList()
+                              ?? new List<DynamicRackModule>();
+                foreach (var header in headers)
+                {
+                    var box = new CheckBox
+                    {
+                        Content = header.ModuleId,
+                        IsChecked = isAll || targets.ExplicitModuleIds.Contains(header.ModuleId),
+                        Margin = new Thickness(0, 0, 0, 2)
+                    };
+                    box.Checked += ModuleTarget_Toggled;
+                    box.Unchecked += ModuleTarget_Toggled;
+                    ModuleTargetsList.Children.Add(box);
+                }
+
+                var chosen = targets.ExplicitModuleIds;
+                ModuleTargetsButton.Content = isCurrent
+                    ? "Actual"
+                    : isAll
+                        ? "Todas"
+                        : chosen.Count == 0
+                            ? "Ninguna"
+                            : string.Join(", ", chosen);
+            }
+            finally
+            {
+                buildingModuleTargets = false;
+            }
+        }
+
+        private void ModuleTarget_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (buildingModuleTargets || system == null)
+            {
+                return;
+            }
+
+            var chosen = ModuleTargetsList.Children.OfType<CheckBox>()
+                .Where(box => box.IsChecked == true)
+                .Select(box => box.Content as string)
+                .ToList();
+            headerBatch.Targets.SetTargetModules(chosen, system, headerBatch.Generation);
+            RefreshModuleTargets();
         }
 
         private RackFrameConfiguration BuildHeaderConfig(double depth)
@@ -1790,6 +2264,8 @@ namespace RackCad.UI.Systems.Dynamic
                 selectedModule = system.Modules.FirstOrDefault(m => m.ModuleId == selectedId);
                 ModulesGrid.SelectedItem = selectedModule;
             }
+
+            RefreshHeaderBatchPanel();
         }
 
         private void UpdateSelectedPanel()
@@ -1801,8 +2277,9 @@ namespace RackCad.UI.Systems.Dynamic
                 ModuleLengthBox.Text = string.Empty;
                 ApplyModuleButton.IsEnabled = false;
                 EditHeaderButton.IsEnabled = false;
+                TakeHeaderSourceButton.IsEnabled = false;
                 ConfigBox.IsEnabled = false;
-                SelectConfigCalculated();
+                SelectConfigProvenance();
                 return;
             }
 
@@ -1819,21 +2296,27 @@ namespace RackCad.UI.Systems.Dynamic
             ModuleLengthBox.Text = selectedModule.Length.ToString("0.##", CultureInfo.InvariantCulture);
             ApplyModuleButton.IsEnabled = true;
             EditHeaderButton.IsEnabled = selectedModule.IsHeader;
+            TakeHeaderSourceButton.IsEnabled = selectedModule.IsHeader;
             ConfigBox.IsEnabled = selectedModule.IsHeader;
-            SelectConfigCalculated();
+            SelectConfigProvenance();
         }
 
-        // ---- Header configuration presets ----
+        // ---- «Configuración de cabecera»: la procedencia del modulo y el restablecimiento a «Calculada» ----
 
-        private void RefreshConfigBox()
+        /// <summary>
+        /// «Configuración de cabecera» shows the PROVENANCE of the selected cabecera (I-53D; follow-up N-03): «Calculada» or
+        /// «Personalizada». It is not a list of configurations: since OD-8 the only reuse of an authored cabecera is «Tomar como
+        /// origen» + «Aplicar origen a destinos», and «Personalizada» cannot be chosen —it becomes true through «Editar cabecera»
+        /// or a distribution—. Shown without raising a selection change.
+        /// </summary>
+        private void SelectConfigProvenance()
         {
             suppressConfigSelection = true;
             try
             {
-                var items = new List<string> { ConfigCalculated };
-                items.AddRange(headerPresets.Select(preset => preset.Name));
-                ConfigBox.ItemsSource = items;
-                ConfigBox.SelectedIndex = 0;
+                ConfigBox.SelectedIndex = selectedModule == null || !selectedModule.IsHeader
+                    ? -1
+                    : selectedModule.UseCalculatedHeaderConfiguration || selectedModule.AssociatedFrameConfiguration == null ? 0 : 1;
             }
             finally
             {
@@ -1841,24 +2324,10 @@ namespace RackCad.UI.Systems.Dynamic
             }
         }
 
-        private void SelectConfigCalculated()
-        {
-            if (ConfigBox.Items.Count == 0)
-            {
-                return;
-            }
-
-            suppressConfigSelection = true;
-            try
-            {
-                ConfigBox.SelectedIndex = 0;
-            }
-            finally
-            {
-                suppressConfigSelection = false;
-            }
-        }
-
+        /// <summary>
+        /// Choosing «Calculada» for a custom cabecera: the historical per-module reset, kept as it was (N-02). It is not a preset
+        /// and not a reuse: it regenerates the cabecera from the rack inputs and clears the module's manual-length mark.
+        /// </summary>
         private void ConfigBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (suppressConfigSelection || selectedModule == null || !selectedModule.IsHeader || system == null)
@@ -1866,32 +2335,14 @@ namespace RackCad.UI.Systems.Dynamic
                 return;
             }
 
-            if (!(ConfigBox.SelectedItem is string name))
+            if (ConfigBox.SelectedIndex != 0)
             {
                 return;
             }
 
-            RackFrameConfiguration applied;
-
-            if (name == ConfigCalculated)
-            {
-                applied = BuildHeaderConfig(Math.Max(selectedModule.Length, 1.0));
-                selectedModule.IsManualOverride = false;
-                selectedModule.UseCalculatedHeaderConfiguration = true;
-            }
-            else
-            {
-                var preset = headerPresets.FirstOrDefault(p => p.Name == name);
-                if (preset == null)
-                {
-                    return;
-                }
-
-                // Copy the configuration only — keep the module's own length (Refresh sets Depth = Length).
-                applied = Clone(preset.Config);
-                selectedModule.IsManualOverride = true;
-                selectedModule.UseCalculatedHeaderConfiguration = false;
-            }
+            var applied = BuildHeaderConfig(Math.Max(selectedModule.Length, 1.0));
+            selectedModule.IsManualOverride = false;
+            selectedModule.UseCalculatedHeaderConfiguration = true;
 
             if (TryNum(PostPeralteBox?.Text, out var globalPostPeralte) && globalPostPeralte > 0.0)
             {
@@ -1899,12 +2350,12 @@ namespace RackCad.UI.Systems.Dynamic
             }
 
             selectedModule.AssociatedFrameConfiguration = applied;
-            builder.Refresh(system);
+            RefreshModules();
             BindModules();
             UpdateSelectedPanel();
             UpdateSummary();
             DrawSideView();
-            SetStatus("Configuración '" + name + "' aplicada al módulo.", false);
+            SetStatus("Configuración '" + ConfigCalculated + "' aplicada al módulo.", false);
         }
 
         // The single canonical deep-clone shared by every editor (initiative I-17): RackFrameProjectStore.DeepCopy.
@@ -1912,18 +2363,6 @@ namespace RackCad.UI.Systems.Dynamic
         // overrides DeepCopy re-attaches; no hand-maintained per-field clone.
         private static RackFrameConfiguration Clone(RackFrameConfiguration configuration)
             => new RackFrameProjectStore().DeepCopy(configuration);
-
-        private sealed class HeaderPreset
-        {
-            public HeaderPreset(string name, RackFrameConfiguration config)
-            {
-                Name = name;
-                Config = config;
-            }
-
-            public string Name { get; }
-            public RackFrameConfiguration Config { get; }
-        }
 
         private void UpdateSummary()
         {
@@ -2506,7 +2945,7 @@ namespace RackCad.UI.Systems.Dynamic
 
             // Just a scalar option — apply it without a rebuild so per-module overrides survive.
             ApplyDerivedPostOptions();
-            builder.Refresh(system);
+            RefreshModules();
             UpdateSummary();
             DrawSideView();
         }
@@ -2819,6 +3258,14 @@ namespace RackCad.UI.Systems.Dynamic
             system = resolution.System;
             system.Name = NameBox?.Text?.Trim();
             selectedModule = null;
+
+            // I-53D: another rack. A remembered source or a set of destinations named modules of the previous one, and ids are
+            // positional, so they are forgotten here rather than aimed at whatever inherited their ids; the last rebuild
+            // report belonged to the previous rack too.
+            headerBatch.ForgetSource();
+            headerBatch.Targets.FollowCurrentModule();
+            LastRebuildResult = null;
+            ShowRebuildReport(null);
             suppressRecompose = true;
             try
             {

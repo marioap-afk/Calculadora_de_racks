@@ -42,7 +42,12 @@ namespace RackCad.UI.Tests
             "EditHeaderButton", "SummaryText", "StatusText", "DynamicMatrixGrid", "PreviewLateralRadio",
             "PreviewExitRadio", "PreviewEntranceRadio", "PreviewLateralPostLabel", "PreviewLateralPostBox",
             "PreviewHint", "PreviewCanvas", "UpdateButton", "InsertLateralButton", "InsertExitButton",
-            "InsertEntranceButton", "InsertPlantaButton"
+            "InsertEntranceButton", "InsertPlantaButton",
+            // I-53D G7: reutilizar una cabecera de modulo (origen por ModuleId + «Cabeceras destino» + aplicar) y el informe
+            // de la ultima reconstruccion. No desaparece ningun x:Name: los presets «Personalizada N» retirados eran entradas
+            // sin nombre de ConfigBox, que se queda como «Configuración de cabecera» (Calculada / Personalizada).
+            "HeaderBatchPanel", "HeaderSourceText", "TakeHeaderSourceButton", "ModuleTargetsButton", "ModuleTargetsPopup",
+            "ModuleTargetsList", "ApplyHeaderBatchButton", "RebuildReportText"
         };
 
         // The five draw actions that carry a show-on-disabled reason (they gate on the AutoCAD origin / editing state).
@@ -77,7 +82,8 @@ namespace RackCad.UI.Tests
                 return AllNamedControls.Where(name => window.FindName(name) == null).ToArray();
             });
 
-            Assert.Empty(missing); // all 66 named elements still resolve in the window's name scope after the migration
+            Assert.Equal(74, AllNamedControls.Length); // 66 of the migration + 8 of I-53D G7, none removed
+            Assert.Empty(missing); // all 74 named elements still resolve in the window's name scope
         }
 
         // ---- 3. each control lands in the correct neutral slot ----
@@ -93,7 +99,8 @@ namespace RackCad.UI.Tests
                 // Sidebar: inputs + per-cell editor + module table live in the scrolling side panel.
                 foreach (var name in new[] { "NameBox", "DepthBox", "PostBox", "FrontCountBox", "SelectedPositionsBox",
                     "FrontBox", "SafetyButton", "AdvancedPanel", "ModulesGrid", "ConfigBox", "SelectedFrontText",
-                    "DimensionsFrontalCheck", "DimensionsLateralCheck", "DimensionsPlantaCheck" })
+                    "DimensionsFrontalCheck", "DimensionsLateralCheck", "DimensionsPlantaCheck",
+                    "HeaderBatchPanel", "HeaderSourceText", "TakeHeaderSourceButton", "ModuleTargetsButton", "ApplyHeaderBatchButton" })
                 {
                     AssertInSlot(shell.SidePanelContent, window, name, "SidePanelContent");
                 }
@@ -111,6 +118,7 @@ namespace RackCad.UI.Tests
                 // Status: summary + status line, in the always-visible band.
                 AssertInSlot(shell.StatusContent, window, "SummaryText", "StatusContent");
                 AssertInSlot(shell.StatusContent, window, "StatusText", "StatusContent");
+                AssertInSlot(shell.StatusContent, window, "RebuildReportText", "StatusContent"); // I-53D: always visible, never modal
 
                 // Actions, by neutral category.
                 Assert.Equal("Restaurar layout", ((Button)shell.LeadingActions).Content); // Leading = reset

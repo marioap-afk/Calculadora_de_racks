@@ -481,6 +481,9 @@ no implementados, con lo que ya se sabe de cada uno:
      la configuración completa del usuario» (su propio XML-doc) y el snapshot no la preserva. El Dinámico
      convive con esto desde siempre; corregirlo **allí** cambiaría el Dinámico, así que la decisión de si
      Push Back diverge a propósito es del Owner (pregunta *b* de la sección 12 del contrato de I-35).
+     **Resuelto**: en Push Back, por I-35 (reconciliación por `ModuleId + Kind`); en el Dinámico, por I-53D
+     (2026-09-13), que reconstruye por `DynamicRackRebuild` y retiró el par ordinal. Los comentarios de código que
+     aún lo citan quedan en **N-05**, más abajo.
   2. **El clon del resolver no es el clon canónico de I-17.**
      `DynamicRackSystemResolver.CloneHeader` es `RackFrameProjectDocument.FromConfiguration(...)
      .ToConfiguration()`, no `RackFrameProjectStore.DeepCopy`. El documento **no persiste**
@@ -1086,7 +1089,8 @@ Encontrados en el Discovery de I-53 ([I-53-discovery.md](initiatives/I-53-discov
 ([Proposal V2](initiatives/I-53-proposal-v2.md) §17), y declarados **fuera de alcance** en el freeze de G2
 ([decisiones de I-53](automation/decisions/I-53.md) §10.10; [contrato](initiatives/I-53-cabeceras-configurables-multidestino.md)
 §4). **Ninguno está corregido**: siguen vivos en `main`. Las líneas de L-2..L-14 se refieren a `46fcac2`; las de
-N-02 y N-03, a `f8deb67`. L-1 y L-7 no figuran aquí: están dentro de la línea I-53.
+N-02 y N-03, a `f8deb67`. L-1 y L-7 no figuran aquí: están dentro de la línea I-53. *(2026-09-13: N-03 quedó resuelto por
+I-53D; ver su entrada.)*
 
 ### L-2 — Push Back: `RACKBOMTOTAL` cotizaría sin celosía las cabeceras con override por línea
 
@@ -1163,12 +1167,22 @@ reutilización: I-53 lo **caracteriza sin cambiarlo** (prueba D-26).
 **Qué habría que decidir**: si restablecer la cabecera a «Calculada» debe conservar la longitud manual, ya que
 ADR-0037 fija que `IsManualOverride` significa longitud manual.
 
-### N-03 — Dinámico: el desplegable de configuración muestra siempre «Calculada»
+**Sigue vigente tras I-53D (2026-09-13).** G7 conserva sin cambios la rama «Calculada» —en `a57bd50`,
+`ConfigBox_SelectionChanged` en `RackDynamicSystemWindow.xaml.cs:2331-2358`, con la asignación en `:2344`— y la
+caracteriza con `D26_Calculada_RegeneraLaCabecera_YQuitaLaLongitudManual_ComoAntes`. La decisión sigue pendiente.
+
+### N-03 — Dinámico: el desplegable de configuración muestra siempre «Calculada» — **RESUELTO por I-53D G7 (2026-09-13)**
 
 Al seleccionar un módulo, `UpdateSelectedPanel` llama a `SelectConfigCalculated`
 (`RackDynamicSystemWindow.xaml.cs:1823`), que pone el índice 0 sin mirar la procedencia (`:1844-1860`): un
 módulo personalizado aparece como «Calculada». Es una lectura engañosa, no una reutilización. I-53D decidirá la
 forma de ese control al retirar los presets «Personalizada N» (OD-8).
+
+**Cómo quedó.** Al retirar los presets (OD-8), «Configuración de cabecera» pasó a mostrar la **procedencia** del módulo:
+«Calculada» o «Personalizada», esta última no seleccionable, porque solo se obtiene editando la cabecera o aplicándole un
+origen (`SelectConfigProvenance`, `RackDynamicSystemWindow.xaml.cs:2312-2325` en `a57bd50`; ítems en
+`RackDynamicSystemWindow.xaml:311-312`). Un módulo personalizado ya no aparece como «Calculada»; lo fija
+`D26_LaPersonalizacionSeVeComoProcedencia_NoComoLongitudManual`.
 
 ## I-53S — hallazgo fuera de alcance (2026-09-13, registrado sin corregir)
 
@@ -1186,6 +1200,50 @@ viene de I-43 y quedó desfasado con el G5 de I-53S.
 
 **Qué habría que hacer**: alinear ese comentario con PREPARE, sin cambio de comportamiento, en la próxima iniciativa que
 toque la ventana.
+
+## I-53D — hallazgos fuera de alcance (2026-09-13, registrados sin corregir)
+
+Detectados en G7 y en el Candidato de I-53D (E3-C.1, sobre `a57bd50`) y registrados en su cierre
+([decisiones de I-53](automation/decisions/I-53.md) §13). **No están corregidos**: el Candidato validado ya estaba fijado y
+el cierre de E3 no admite cambios en `src` ni en `tests`. Continúa la numeración de hallazgos de la línea I-53; las líneas
+se refieren a `a57bd50`.
+
+### N-05 — Comentarios y XML-doc que siguen citando el par ordinal retirado
+
+I-53D retiró `DynamicEditorDesignAssembler.SnapshotHeaderFondos` / `RestoreHeaderFondos`, pero varios textos siguen
+hablando de él como vigente:
+
+- `src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs:17-22`: el resumen de la clase enlaza con
+  `<see cref>` los dos métodos, que ya no existen; `:117` describe una reconstrucción que restaura los fondos «by ordinal»,
+  y `:307-310` dice que el par «is also the dynamic editor's».
+- `src/RackCad.Application/Systems/Shared/RackModuleReconciliation.cs:81-86`, `:94-96` y `:104-105`: presenta el par como la
+  reconciliación «base» del Dinámico y dice que cambiarlo cambiaría ese editor.
+- `src/RackCad.Application/Systems/Dynamic/DynamicRackRebuild.cs:118-119`: «G6 does not wire the window, which keeps its
+  historical ordinal pair until G7».
+- Pruebas: el `<see cref>` de `tests/RackCad.Tests/PushBackEditorCorrectionTests.cs:356` y el comentario de `:219`; en
+  `tests/RackCad.Tests/PushBackModuleEditorCharacterizationTests.cs`, la documentación del `Fact5` de Push Back
+  (`:146-154`, «El DINAMICO conserva el comportamiento historico»), el comentario de `Fact3` (`:361`) y la documentación de
+  `Fact7` (`:465-467`, que aún justifica el snapshot `beforeEdit` por el preset «Personalizada N»); el resumen de
+  `tests/RackCad.Tests/DynamicHeaderBatchReconciliationTests.cs:16`; y `tests/RackCad.Tests/RackModuleEditSessionTests.cs:550-551`.
+
+Es solo documentación en código, sin efecto en el comportamiento: las aserciones de esas pruebas siguen vigentes y verdes.
+
+**Qué habría que hacer**: alinear esos textos con `DynamicRackRebuild`, sin cambio de comportamiento, en la próxima
+iniciativa que toque esos archivos. Los textos históricos de `docs/` —el contrato, el estado y la entrada del índice de
+I-35, el contrato de I-21 y el Discovery de I-53— describen el estado de su momento y no se corrigen.
+
+### N-06 — Dinámico: tras un fallo de recomposición, la reconstrucción siguiente no tiene intenciones que conservar
+
+Si `RecomposeCore` lanza, su `catch` pone `system = null` (`RackDynamicSystemWindow.xaml.cs:582-590`). La recomposición
+siguiente reconstruye —`DynamicEditorDesignAssembler.MustRebuild` es verdadero sin sistema (`:44-45`)— y
+`DynamicRackRebuild` solo toma las intenciones del sistema previo si existe (`DynamicRackRebuild.cs:151`): sin él
+reconstruye desde cero, así que las personalizaciones de módulos —cabeceras personalizadas y longitudes manuales— se
+pierden y el informe de reconciliación no tiene nada que nombrar. *(Traza sobre el código; no ejecutada.)* Es comportamiento
+previo a I-53D: el par ordinal tampoco tenía qué restaurar sin sistema. I-53D **no** lo cambia ni amplía su alcance para
+incluirlo.
+
+**Qué habría que decidir**: si una recomposición fallida debe conservar el último sistema válido, o reconstruir desde el
+último diseño que la ventana conserva, para que la reconstrucción siguiente conserve e informe lo que pueda.
 
 ## I-54 — hallazgos fuera de alcance (2026-09-13, registrados sin corregir)
 
