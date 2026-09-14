@@ -224,10 +224,78 @@ namespace RackCad.Tests
 
             Assert.Equal(ExpressionSyntaxKind.Reference, reference.Kind);
             Assert.Null(reference.Name);
-            Assert.Equal(Guid.Parse(Guid1), reference.Qualifier.Id);
-            Assert.Equal(mayusculas, reference.Qualifier.Text);
+            Assert.Equal(mayusculas, reference.Qualifier.Key);
             Assert.Equal(new SourceSpan(0, 37), reference.Qualifier.Span);
             Assert.Equal(new SourceSpan(0, 37), reference.Span);
+        }
+
+        /// <summary>
+        /// Amendment A2 §3.3 y §3.4 (ADR-0041 D7): <c>qualifier = "#" , ( guid-d | braced-key )</c>. Dentro de <c>#{…}</c>
+        /// todo carácter es dato —comas, espacios, espacio en blanco Unicode, paréntesis, llaves anidadas, <c>0x</c> y
+        /// <c>+</c>— salvo <c>}}</c>, que es una <c>}</c>; la llave sin duplicar cierra. La sintaxis lleva la clave
+        /// DESESCAPADA tal como se tecleó, y la posición del lexema entero.
+        /// </summary>
+        public static TheoryData<string, string, string, int> CualificadoresDeClaveExacta
+        {
+            get
+            {
+                var data = new TheoryData<string, string, string, int>();
+
+                void Fila(string name, string nameText, string key)
+                    => data.Add(nameText + Llaves(key), name, key, nameText.Length);
+
+                Fila(null, string.Empty, ClaveN);
+                Fila("Holgura", "Holgura", ClaveN);
+                Fila("Nombre complejo", "{Nombre complejo}", ClaveNMayusculas);
+                Fila("Holgura", "Holgura", ClaveB);
+                Fila(null, string.Empty, ClaveP);
+                Fila("Holgura", "Holgura", ClaveX);
+                Fila("Holgura", "Holgura", ClaveXMayusculas);
+                Fila("Holgura", "Holgura", ClaveXConEspacios);
+                Fila("Holgura", "Holgura", ClaveXConEspacioDuro);
+                Fila("a}b", "{a}}b}", ClaveXConSeparadorDeLinea);
+                Fila("Holgura", "Holgura", ClaveDCompatSigno);
+                Fila("Holgura", "Holgura", ClaveBCompatHex);
+                Fila("Holgura", "Holgura", ClaveDMayusculas);
+                Fila(null, string.Empty, "{0x" + new string('0', 4000) + "3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}");
+                return data;
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CualificadoresDeClaveExacta))]
+        public void EL_CUALIFICADOR_DE_CLAVE_EXACTA_LLEVA_LA_CLAVE_DESESCAPADA(string text, string name, string key, int qualifierStart)
+        {
+            var reference = Assert.IsType<ReferenceSyntax>(ParseOk(text));
+
+            Assert.Equal(name, reference.Name?.Text);
+            Assert.Equal(key, reference.Qualifier.Key);
+            Assert.Equal(new SourceSpan(qualifierStart, text.Length - qualifierStart), reference.Qualifier.Span);
+            Assert.Equal(new SourceSpan(0, text.Length), reference.Span);
+        }
+
+        /// <summary>
+        /// A2 §3.6 y prueba F de A2 §9.3: la clave B se teclea <c>#{{d}}}</c> y recupera <c>{d}</c>, mientras que
+        /// <c>#{d}</c> recupera la clave D: dos claves distintas, sin colisión. Escapar y desescapar devuelve la misma clave
+        /// también con llaves anidadas.
+        /// </summary>
+        [Fact]
+        public void LA_CLAVE_B_ESCAPADA_NO_COLISIONA_CON_LA_CLAVE_D_ENTRE_LLAVES()
+        {
+            var b = Assert.IsType<ReferenceSyntax>(ParseOk("#{{" + ClaveD + "}}}"));
+            var d = Assert.IsType<ReferenceSyntax>(ParseOk("#{" + ClaveD + "}"));
+
+            Assert.Equal(ClaveB, b.Qualifier.Key);
+            Assert.Equal(ClaveD, d.Qualifier.Key);
+            Assert.NotEqual(SymbolId.ProjectVariable(b.Qualifier.Key), SymbolId.ProjectVariable(d.Qualifier.Key));
+
+            foreach (var key in new[] { ClaveB, ClaveX, ClaveXMayusculas, ClaveXConEspacios, ClaveBCompatHex })
+            {
+                var qualified = Assert.IsType<ReferenceSyntax>(Assert.IsType<BinaryExpressionSyntax>(ParseOk("Holgura" + Llaves(key) + " + 1")).Left);
+
+                Assert.Equal(key, qualified.Qualifier.Key);
+                Assert.True(SymbolNamespaces.KeyComparer(SymbolNamespace.ProjectVariable).Equals(key, qualified.Qualifier.Key));
+            }
         }
 
         /// <summary>
@@ -250,8 +318,7 @@ namespace RackCad.Tests
             Assert.Equal("Holgura General", qualified.Name.Text);
             Assert.False(qualified.Name.IsBraced);
             Assert.Equal(new SourceSpan(9, 15), qualified.Name.Span);
-            Assert.Equal(Guid.Parse(Guid1), qualified.Qualifier.Id);
-            Assert.Equal(Guid1, qualified.Qualifier.Text);
+            Assert.Equal(Guid1, qualified.Qualifier.Key);
             Assert.Equal(new SourceSpan(24, 37), qualified.Qualifier.Span);
             Assert.Equal(new SourceSpan(9, 52), qualified.Span);
         }

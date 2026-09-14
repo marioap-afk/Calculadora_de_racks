@@ -94,7 +94,7 @@ namespace RackCad.Application.Expressions
             }
 
             lexer.CheckContext();
-            lexer.Add(ExpressionTokenKind.EndOfText, text.Length, 0, null, 0, Guid.Empty, true);
+            lexer.Add(ExpressionTokenKind.EndOfText, text.Length, 0, null, 0, true);
             return new Result(lexer._tokens, lexer._diagnostics);
         }
 
@@ -212,7 +212,7 @@ namespace RackCad.Application.Expressions
 
                 if (!double.IsInfinity(value) && !double.IsNaN(value))
                 {
-                    Add(ExpressionTokenKind.Number, start, lexeme.Length, lexeme, value, Guid.Empty, true);
+                    Add(ExpressionTokenKind.Number, start, lexeme.Length, lexeme, value, true);
                     return;
                 }
 
@@ -291,7 +291,7 @@ namespace RackCad.Application.Expressions
             }
 
             Report(ExpressionDiagnosticCode.AmbiguousDecimalComma, digitsBefore, _position - digitsBefore);
-            Add(ExpressionTokenKind.Invalid, commaStart, _position - commaStart, null, 0, Guid.Empty, false);
+            Add(ExpressionTokenKind.Invalid, commaStart, _position - commaStart, null, 0, false);
         }
 
         /// <summary><c>word {" " word}</c>: exactly one space joins two words; anything else ends the name.</summary>
@@ -306,7 +306,7 @@ namespace RackCad.Application.Expressions
                 SkipWord();
             }
 
-            Add(ExpressionTokenKind.Name, start, _position - start, _text.Substring(start, _position - start), 0, Guid.Empty, true);
+            Add(ExpressionTokenKind.Name, start, _position - start, _text.Substring(start, _position - start), 0, true);
         }
 
         /// <summary><c>"{" {char - "}" | "}}"} "}"</c>: every character is part of the name, and <c>}}</c> is one <c>}</c>.</summary>
@@ -330,7 +330,7 @@ namespace RackCad.Application.Expressions
                     }
 
                     _position++;
-                    Add(ExpressionTokenKind.BracedName, start, _position - start, name.ToString(), 0, Guid.Empty, true);
+                    Add(ExpressionTokenKind.BracedName, start, _position - start, name.ToString(), 0, true);
                     return;
                 }
 
@@ -342,25 +342,33 @@ namespace RackCad.Application.Expressions
         }
 
         /// <summary>
-        /// <c>"#" guid</c> in full D form, hexadecimal in any case (P3.9). A fragment is never parsed: anything but
-        /// exactly 36 D-format characters glued to the <c>#</c>, and not glued to a further letter, digit or underscore,
-        /// is <see cref="ExpressionDiagnosticCode.InvalidQualifier"/>. A hyphen after a complete GUID is an operator.
+        /// <c>qualifier = "#" , ( guid-d | braced-key )</c> (P3.9 with Amendment A2 §3.3 and §3.4; ADR-0041 D7). The short
+        /// form is exactly 36 D-format characters glued to the <c>#</c>, hexadecimal in any case and not glued to a further
+        /// letter, digit or underscore; a hyphen after it is an operator. <c>#{</c> starts the exact-key form
+        /// (<see cref="ScanBracedKey"/>). A fragment is never parsed, and anything else after <c>#</c> is
+        /// <see cref="ExpressionDiagnosticCode.InvalidQualifier"/>. Either form is ONE token, and its text is the key.
         /// </summary>
         private void ScanQualifier()
         {
             var start = _position;
             _position++;
 
-            if (IsDFormatGuidAt(_position) && (_position + 36 == _text.Length || WordPartLength(_position + 36) == 0))
+            if (IsDFormatGuidAt(_text, _position) && (_position + 36 == _text.Length || WordPartLength(_position + 36) == 0))
             {
-                var guid = _text.Substring(_position, 36);
+                var key = _text.Substring(_position, 36);
                 _position += 36;
-                Add(ExpressionTokenKind.Qualifier, start, _position - start, guid, 0, Guid.ParseExact(guid, "D"), true);
+                Add(ExpressionTokenKind.Qualifier, start, _position - start, key, 0, true);
                 return;
             }
 
-            // Whatever was meant as the identity — a fragment, a GUID after a space, a GUID pasted in braces or in
-            // parentheses — belongs to this one diagnostic instead of being read as numerals and names.
+            if (Current == '{')
+            {
+                ScanBracedKey(start);
+                return;
+            }
+
+            // Whatever was meant as the identity — a fragment, a GUID after a space, a GUID in parentheses or in braces
+            // after a space — belongs to this one diagnostic instead of being read as numerals and names.
             var probe = _position;
             while (probe < _text.Length && IsInsignificantWhitespace(_text[probe]))
             {
@@ -392,6 +400,53 @@ namespace RackCad.Application.Expressions
         }
 
         /// <summary>
+        /// <c>"#" braced-key</c>, <c>braced-key = "{" {char - "}" | "}}"} "}"</c> (Amendment A2 §3.3, §3.4): read exactly
+        /// like a braced name —every character is data and <c>}}</c> is one <c>}</c>— up to the brace that is not doubled.
+        /// The unescaped content is the key, and it has to be a valid key (<see cref="SymbolId.IsValidProjectVariableKey"/>);
+        /// if it is not, the whole lexeme is <see cref="ExpressionDiagnosticCode.InvalidQualifier"/>. Unclosed, it is
+        /// <see cref="ExpressionDiagnosticCode.UnterminatedName"/>. One scan, linear in the length of the key (A1 §5).
+        /// </summary>
+        private void ScanBracedKey(int start)
+        {
+            var key = new StringBuilder();
+            _position++;
+
+            while (_position < _text.Length)
+            {
+                var character = _text[_position];
+
+                if (character == '}')
+                {
+                    if (_position + 1 < _text.Length && _text[_position + 1] == '}')
+                    {
+                        key.Append('}');
+                        _position += 2;
+                        continue;
+                    }
+
+                    _position++;
+                    var text = key.ToString();
+
+                    if (SymbolId.IsValidProjectVariableKey(text))
+                    {
+                        Add(ExpressionTokenKind.Qualifier, start, _position - start, text, 0, true);
+                    }
+                    else
+                    {
+                        Invalid(ExpressionTokenKind.Qualifier, start, ExpressionDiagnosticCode.InvalidQualifier);
+                    }
+
+                    return;
+                }
+
+                key.Append(character);
+                _position++;
+            }
+
+            Invalid(ExpressionTokenKind.Qualifier, start, ExpressionDiagnosticCode.UnterminatedName);
+        }
+
+        /// <summary>
         /// <c>"[" unit "]"</c>. Brackets are reserved for units (P1.6), so what they enclose is read as a unit and
         /// judged in the context checks. A unit is a word: when the word is not followed by <c>]</c>, the bracket still
         /// counts as a unit if it closes before anything structural (<c>100[1/2]</c> is an unknown unit); otherwise it
@@ -415,7 +470,7 @@ namespace RackCad.Application.Expressions
             {
                 var content = _text.Substring(contentStart, close - contentStart).Trim(' ', '\t', '\r', '\n');
                 _position = close + 1;
-                Add(ExpressionTokenKind.UnitSuffix, start, _position - start, content, 0, Guid.Empty, true);
+                Add(ExpressionTokenKind.UnitSuffix, start, _position - start, content, 0, true);
                 return;
             }
 
@@ -425,7 +480,7 @@ namespace RackCad.Application.Expressions
                 Report(ExpressionDiagnosticCode.UnexpectedToken, _position, _position < _text.Length ? 1 : 0);
             }
 
-            Add(ExpressionTokenKind.UnitSuffix, start, _position - start, null, 0, Guid.Empty, false);
+            Add(ExpressionTokenKind.UnitSuffix, start, _position - start, null, 0, false);
         }
 
         private void ScanUnexpectedCharacter()
@@ -434,12 +489,12 @@ namespace RackCad.Application.Expressions
             var length = IsSurrogatePairAt(_position) ? 2 : 1;
             _position += length;
             Report(ExpressionDiagnosticCode.UnexpectedCharacter, start, length);
-            Add(ExpressionTokenKind.Invalid, start, length, null, 0, Guid.Empty, false);
+            Add(ExpressionTokenKind.Invalid, start, length, null, 0, false);
         }
 
         private void Punctuation(ExpressionTokenKind kind)
         {
-            Add(kind, _position, 1, null, 0, Guid.Empty, true);
+            Add(kind, _position, 1, null, 0, true);
             _position++;
         }
 
@@ -686,16 +741,23 @@ namespace RackCad.Application.Expressions
             return WordPartLength(index - 1) == 1;
         }
 
-        private bool IsDFormatGuidAt(int index)
+        /// <summary>
+        /// Whether <paramref name="key"/> has the EXACT D shape of the short qualifier: 36 characters, hyphens at 8, 13, 18
+        /// and 23, ASCII hexadecimal digits in any case elsewhere. A lexical shape, never a parsed GUID value: the formatter
+        /// asks the same question here, so <c>Q(key)</c> writes the short form exactly when this lexer reads it back.
+        /// </summary>
+        internal static bool IsDFormatGuid(string key) => key != null && key.Length == 36 && IsDFormatGuidAt(key, 0);
+
+        private static bool IsDFormatGuidAt(string text, int index)
         {
-            if (index + 36 > _text.Length)
+            if (index + 36 > text.Length)
             {
                 return false;
             }
 
             for (var offset = 0; offset < 36; offset++)
             {
-                var character = _text[index + offset];
+                var character = text[index + offset];
                 var isHyphenPosition = offset == 8 || offset == 13 || offset == 18 || offset == 23;
 
                 if (isHyphenPosition ? character != '-' : !IsAsciiHexDigit(character))
@@ -735,7 +797,7 @@ namespace RackCad.Application.Expressions
         private void Invalid(ExpressionTokenKind kind, int start, ExpressionDiagnosticCode code)
         {
             Report(code, start, _position - start);
-            Add(kind, start, _position - start, null, 0, Guid.Empty, false);
+            Add(kind, start, _position - start, null, 0, false);
         }
 
         private void Report(ExpressionDiagnosticCode code, int start, int length)
@@ -744,7 +806,7 @@ namespace RackCad.Application.Expressions
         private void Report(ExpressionDiagnosticCode code, SourceSpan span)
             => _diagnostics.Add(new ExpressionDiagnostic(code, span));
 
-        private void Add(ExpressionTokenKind kind, int start, int length, string text, double value, Guid id, bool isValid)
+        private void Add(ExpressionTokenKind kind, int start, int length, string text, double value, bool isValid)
         {
             if (kind != ExpressionTokenKind.EndOfText && _tokens.Count == ExpressionParser.MaxSyntacticTokens)
             {
@@ -753,7 +815,7 @@ namespace RackCad.Application.Expressions
                 return;
             }
 
-            _tokens.Add(new ExpressionToken(kind, new SourceSpan(start, length), text, value, id, _whitespaceBefore, isValid));
+            _tokens.Add(new ExpressionToken(kind, new SourceSpan(start, length), text, value, _whitespaceBefore, isValid));
             _whitespaceBefore = false;
         }
     }

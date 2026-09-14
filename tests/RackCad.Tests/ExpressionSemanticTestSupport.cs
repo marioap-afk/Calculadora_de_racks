@@ -28,6 +28,10 @@ namespace RackCad.Tests
         internal static SymbolEntry Variable(int n, string name, double literal = 1, SymbolScope scope = SymbolScope.Project)
             => new SymbolEntry(Id(n), scope, name, SymbolDefinition.FromLiteral(literal));
 
+        /// <summary>Una variable con la clave textual exacta que se indica, en cualquier grafía válida (Amendment A2 §3.2).</summary>
+        internal static SymbolEntry VariableKey(string key, string name, double literal = 1, SymbolScope scope = SymbolScope.Project)
+            => new SymbolEntry(SymbolId.ProjectVariable(key), scope, name, SymbolDefinition.FromLiteral(literal));
+
         internal static SymbolTable Table(params SymbolEntry[] entries) => SymbolTable.Create(entries);
 
         internal static ExpressionContext Context(params SymbolEntry[] entries) => ExpressionContext.Create(Table(entries));

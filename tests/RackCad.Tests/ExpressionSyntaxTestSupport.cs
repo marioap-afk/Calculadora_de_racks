@@ -25,6 +25,66 @@ namespace RackCad.Tests
 
         internal const string Guid2 = "8c1d7e20-4b5a-4c6d-9e7f-102132435465";
 
+        // ================================================================ Amendment A2: grafías de una clave
+
+        /// <summary>
+        /// El GUID de las tablas de A2 §3.6 y §4 en las grafías que acepta <c>Guid.TryParse</c> (A2 §2.1). Cada grafía es
+        /// una identidad textual DISTINTA (A2 §3.1); solo las variantes de mayúsculas son la misma identidad.
+        /// </summary>
+        internal const string ClaveD = "3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b";
+
+        internal const string ClaveDMayusculas = "3F2B1C9E-8A4D-4E6F-9B0A-1C2D3E4F5A6B";
+
+        internal const string ClaveN = "3f2b1c9e8a4d4e6f9b0a1c2d3e4f5a6b";
+
+        internal const string ClaveNMayusculas = "3F2B1C9E8A4D4E6F9B0A1C2D3E4F5A6B";
+
+        internal const string ClaveB = "{3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b}";
+
+        internal const string ClaveP = "(3f2b1c9e-8a4d-4e6f-9b0a-1c2d3e4f5a6b)";
+
+        internal const string ClaveX = "{0x3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}";
+
+        internal const string ClaveXMayusculas = "{0X3F2B1C9E,0X8A4D,0X4E6F,{0X9B,0X0A,0X1C,0X2D,0X3E,0X4F,0X5A,0X6B}}";
+
+        internal const string ClaveXGrupoCorto = "{0x3f2b1c9e,0x8a4d,0x4e6f,{0x9b,0xa,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}";
+
+        internal const string ClaveXConCeros = "{0x00003f2b1c9e,0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}";
+
+        internal const string ClaveXConEspacios = "{0x3f2b1c9e, 0x8a4d, 0x4e6f, {0x9b, 0x0a, 0x1c, 0x2d, 0x3e, 0x4f, 0x5a, 0x6b}}";
+
+        /// <summary>Disposiciones de compatibilidad: <c>+</c> o <c>0x</c> dentro de un grupo de D, B o P (A2 §2.1).</summary>
+        internal const string ClaveDCompatSigno = "+03f2b1c-8a4d-4e6f-9b0a-1c2d3e4f5a6b";
+
+        internal const string ClaveDCompatHex = "3f2b1c9e-0x8a-4e6f-9b0a-1c2d3e4f5a6b";
+
+        internal const string ClaveBCompatHex = "{0x3f2b1c-8a4d-4e6f-9b0a-1c2d3e4f5a6b}";
+
+        internal const string ClavePCompatSigno = "(+03f2b1c-8a4d-4e6f-9b0a-1c2d3e4f5a6b)";
+
+        /// <summary>X con un espacio duro y con un separador de línea dentro, construidas por su punto de código.</summary>
+        internal static readonly string ClaveXConEspacioDuro =
+            "{0x3f2b1c9e," + (char)0x00A0 + "0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}";
+
+        internal static readonly string ClaveXConSeparadorDeLinea =
+            "{0x3f2b1c9e," + (char)0x2028 + "0x8a4d,0x4e6f,{0x9b,0x0a,0x1c,0x2d,0x3e,0x4f,0x5a,0x6b}}";
+
+        /// <summary>La familia de seis identidades del mismo GUID de A2 §4, en su orden.</summary>
+        internal static readonly string[] FamiliaA2 =
+        {
+            ClaveD, ClaveN, ClaveX, ClaveXGrupoCorto, ClaveXConCeros, ClaveXConEspacios,
+        };
+
+        /// <summary>Todas las grafías válidas de estas pruebas, cada una una identidad distinta de todas las demás.</summary>
+        internal static readonly string[] ClavesDistintasA2 =
+        {
+            ClaveD, ClaveN, ClaveB, ClaveP, ClaveX, ClaveXGrupoCorto, ClaveXConCeros, ClaveXConEspacios, ClaveXConEspacioDuro,
+            ClaveXConSeparadorDeLinea, ClaveDCompatSigno, ClaveDCompatHex, ClaveBCompatHex, ClavePCompatSigno,
+        };
+
+        /// <summary>El texto <c>#{…}</c> que se TECLEA para una clave: cada <c>}</c> se duplica (A2 §3.3).</summary>
+        internal static string Llaves(string key) => "#{" + key.Replace("}", "}}") + "}";
+
         /// <summary>Analiza un texto que DEBE ser sintaxis válida y devuelve su árbol.</summary>
         internal static ExpressionSyntax ParseOk(string text)
         {
@@ -113,7 +173,7 @@ namespace RackCad.Tests
 
                     if (reference.Qualifier != null)
                     {
-                        builder.Append(" #").Append(reference.Qualifier.Id.ToString("D"));
+                        builder.Append(" #").Append(reference.Qualifier.Key);
                     }
 
                     builder.Append(')');

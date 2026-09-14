@@ -114,30 +114,34 @@ namespace RackCad.Application.Expressions
         public SourceSpan Span { get; }
     }
 
-    /// <summary><c>"#" guid</c> in full D form (P3.9): the identity the binder validates the name against.</summary>
+    /// <summary>
+    /// <c>qualifier = "#" , ( guid-d | braced-key )</c> (P3.9 with Amendment A2 §3.3; ADR-0041 D7): the identity the binder
+    /// validates the name against. Its only semantic content is the KEY TEXT (A2 §3.5): no GUID value is kept, so none can
+    /// resolve an identity.
+    /// </summary>
     public sealed class QualifierSyntax
     {
-        internal QualifierSyntax(Guid id, string text, SourceSpan span)
+        internal QualifierSyntax(string key, SourceSpan span)
         {
-            Id = id;
-            Text = text;
+            Key = key;
             Span = span;
         }
 
-        public Guid Id { get; }
+        /// <summary>
+        /// The key as typed: the 36 characters of <c>#&lt;d&gt;</c> in whatever case they were typed, or what <c>#{…}</c>
+        /// encloses with every <c>}}</c> already unescaped to <c>}</c>.
+        /// </summary>
+        public string Key { get; }
 
-        /// <summary>The 36 characters as typed, in whatever case they were typed.</summary>
-        public string Text { get; }
-
-        /// <summary>Including the <c>#</c>.</summary>
+        /// <summary>The whole lexeme: the <c>#</c> and, for the exact-key form, both braces.</summary>
         public SourceSpan Span { get; }
     }
 
     /// <summary>
-    /// <c>reference = [ name ] qualifier | name</c>: <c>Nombre</c>, <c>{Nombre}</c>, <c>Nombre#GUID</c>,
-    /// <c>{Nombre}#GUID</c> or <c>#GUID</c>. Nothing is resolved here: <c>UnknownSymbol</c>, <c>AmbiguousName</c>,
-    /// <c>ReservedName</c>, <c>NameRequired</c>, <c>QualifiedNameMismatch</c> and <c>BrokenReference</c> are binding
-    /// results (P7.1).
+    /// <c>reference = [ name ] qualifier | name</c>: <c>Nombre</c>, <c>{Nombre}</c>, <c>Nombre#&lt;d&gt;</c>,
+    /// <c>Nombre#{clave}</c>, <c>{Nombre}#…</c> or a qualifier alone. Nothing is resolved here: <c>UnknownSymbol</c>,
+    /// <c>AmbiguousName</c>, <c>ReservedName</c>, <c>NameRequired</c>, <c>QualifiedNameMismatch</c> and
+    /// <c>BrokenReference</c> are binding results (P7.1).
     /// </summary>
     public sealed class ReferenceSyntax : ExpressionSyntax
     {
@@ -152,7 +156,7 @@ namespace RackCad.Application.Expressions
 
         public override ExpressionSyntaxKind Kind => ExpressionSyntaxKind.Reference;
 
-        /// <summary>Null only for <c>#GUID</c>.</summary>
+        /// <summary>Null only for a qualifier written without a name.</summary>
         public NameSyntax Name { get; }
 
         /// <summary>Null for an unqualified name.</summary>

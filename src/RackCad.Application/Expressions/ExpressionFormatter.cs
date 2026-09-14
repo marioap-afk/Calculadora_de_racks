@@ -86,9 +86,10 @@ namespace RackCad.Application.Expressions
     /// <item><description>one space on each side of a binary operator; <c>MIN(a, b)</c>, functions upper case;</description></item>
     /// <item><description>the minimum parentheses that keep the exact tree: a left operand of the same precedence needs
     /// none, a right one does, because the parser associates to the left;</description></item>
-    /// <item><description>each reference in its minimum unambiguous form within the snapshot: <c>#id</c> for an absent id,
-    /// <c>Name</c> for a unique safe name, <c>{Name}</c> with <c>}}</c> for any other or reserved name, and the name form
-    /// plus <c>#id</c> for a homonym, with the complete D-form GUID in lower case.</description></item>
+    /// <item><description>each reference in its minimum unambiguous form within the snapshot: <c>Q(key)</c> alone for an
+    /// absent id, <c>Name</c> for a unique safe name, <c>{Name}</c> with <c>}}</c> for any other or reserved name, and the
+    /// name form plus <c>Q(key)</c> for a homonym, where <c>Q(key)</c> is <c>#</c> and the key for a key with the exact D
+    /// shape and <c>#{key}</c> with <c>}}</c> for any other, in ASCII lower case (Amendment A2 §3.6).</description></item>
     /// </list>
     ///
     /// <para>
@@ -191,8 +192,8 @@ namespace RackCad.Application.Expressions
         }
 
         /// <summary>
-        /// The qualified form of a symbol —its name form plus <c>#id</c>— whatever its homonyms: the form a homonym is
-        /// written in, and how every candidate of <c>AmbiguousName</c> is shown (P7.1, §4.2 rule 7).
+        /// The qualified form of a symbol —its name form plus <c>Q(key)</c>— whatever its homonyms: the form a homonym is
+        /// written in, and how every candidate of <c>AmbiguousName</c> is shown (P7.1, §4.2 rule 7; Amendment A2 §3.7).
         /// </summary>
         public static string FormatQualifiedReference(SymbolEntry entry)
         {
@@ -201,7 +202,21 @@ namespace RackCad.Application.Expressions
                 throw new ArgumentNullException(nameof(entry));
             }
 
-            return NameForm(entry.DisplayName) + "#" + entry.Id.Key.ToLowerInvariant();
+            return NameForm(entry.DisplayName) + FormatQualifier(entry.Id.Key);
+        }
+
+        /// <summary>
+        /// <c>Q(key)</c> of Amendment A2 §3.6 (ADR-0041 D6), the one text of a qualifier: <c>#</c> and the key when the key
+        /// has the exact D shape the lexer reads after <c>#</c>; otherwise <c>#{</c>, the key with every <c>}</c> doubled,
+        /// and <c>}</c>. Both in ASCII lower case, which maps only <c>A</c>–<c>Z</c>: the key comparer already ignores case,
+        /// so the identity does not change, and no layout or GUID value is rewritten. Keys that differ under that comparer
+        /// get different texts, and the lexer reads each text back as its key (A2 §4).
+        /// </summary>
+        internal static string FormatQualifier(string key)
+        {
+            var lower = AsciiLower(key);
+
+            return ExpressionLexer.IsDFormatGuid(key) ? "#" + lower : "#{" + lower.Replace("}", "}}") + "}";
         }
 
         /// <summary>
@@ -255,7 +270,7 @@ namespace RackCad.Application.Expressions
             if (!symbols.TryGet(id, out var entry))
             {
                 // P4.5: the absent id alone, without taking a name from anywhere else. It displays, it never binds.
-                return "#" + id.Key.ToLowerInvariant();
+                return FormatQualifier(id.Key);
             }
 
             return symbols.FindByDisplayName(entry.DisplayName).Count > 1
@@ -265,6 +280,21 @@ namespace RackCad.Application.Expressions
 
         private static string NameForm(string name)
             => IsSafeBareName(name) ? name : "{" + name.Replace("}", "}}") + "}";
+
+        private static string AsciiLower(string text)
+        {
+            var characters = text.ToCharArray();
+
+            for (var index = 0; index < characters.Length; index++)
+            {
+                if (characters[index] >= 'A' && characters[index] <= 'Z')
+                {
+                    characters[index] = (char)(characters[index] + ('a' - 'A'));
+                }
+            }
+
+            return new string(characters);
+        }
 
         /// <summary>Whether the core lexer reads the name alone as ONE bare-name token covering it all, and it is not reserved.</summary>
         internal static bool IsSafeBareName(string name)

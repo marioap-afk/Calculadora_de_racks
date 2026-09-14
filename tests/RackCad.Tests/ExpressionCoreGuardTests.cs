@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using RackCad.Application.Expressions;
 using RackCad.Application.Units;
 using Xunit;
@@ -218,6 +219,37 @@ namespace RackCad.Tests
             {
                 Assert.DoesNotContain(declared, name => name.Contains(concept, StringComparison.Ordinal));
             }
+        }
+
+        // ================================================================ identidad textual (Amendment A2 §3.2, §3.5, §3.6)
+
+        /// <summary>
+        /// A2 §3.2 y §3.5 (ADR-0041 D5): el valor <c>System.Guid</c> nunca es identidad. En el CÓDIGO del núcleo el único uso
+        /// de <c>Guid</c> es <c>Guid.TryParse</c>, que solo decide si una clave es admisible; ningún tipo del núcleo lleva un
+        /// <c>Guid</c> en su superficie, así que ni la sintaxis, ni los tokens, ni el binder pueden resolver por él. Y
+        /// <c>Q(clave)</c> baja solo A–Z (A2 §3.6): el formatter no usa <c>ToLower</c> de ningún tipo.
+        /// </summary>
+        [Fact]
+        public void EL_NUCLEO_NO_USA_EL_VALOR_GUID_COMO_IDENTIDAD()
+        {
+            var usos = CoreSources()
+                .SelectMany(path => Regex.Matches(Code(path), @"\bGuid\b.{0,10}")
+                    .Select(match => Path.GetFileName(path) + ": " + match.Value))
+                .ToList();
+
+            Assert.True(
+                usos.Count == 1 && usos[0].StartsWith("SymbolId.cs: Guid.TryParse", StringComparison.Ordinal),
+                "Usos de Guid en el código del núcleo:\n" + string.Join("\n", usos));
+
+            var offenders = TypesOf(CoreNamespace)
+                .Where(type => Signatures(type).SelectMany(Expand).Contains(typeof(Guid)))
+                .Select(type => type.FullName)
+                .ToList();
+
+            Assert.True(offenders.Count == 0, "Tipos del núcleo con Guid en su superficie:\n" + string.Join("\n", offenders));
+
+            var formatter = CoreSources().Single(path => Path.GetFileName(path) == "ExpressionFormatter.cs");
+            Assert.DoesNotContain("ToLower", Code(formatter), StringComparison.Ordinal);
         }
 
         /// <summary>Todos los tipos que un tipo declara en su superficie, incluidos los miembros no públicos.</summary>

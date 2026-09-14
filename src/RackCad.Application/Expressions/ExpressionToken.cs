@@ -1,5 +1,3 @@
-using System;
-
 namespace RackCad.Application.Expressions
 {
     internal enum ExpressionTokenKind
@@ -13,7 +11,9 @@ namespace RackCad.Application.Expressions
         /// <summary>A braced name, already unescaped.</summary>
         BracedName,
 
-        /// <summary><c>#</c> and a complete D-format GUID.</summary>
+        /// <summary>
+        /// <c>#</c> and a complete D-format GUID, or <c>#{</c> and an exact key (Amendment A2 §3.3); its text is the key.
+        /// </summary>
         Qualifier,
 
         /// <summary><c>[</c> unit <c>]</c>; its text is the trimmed content between the brackets.</summary>
@@ -52,7 +52,6 @@ namespace RackCad.Application.Expressions
             SourceSpan span,
             string text,
             double value,
-            Guid id,
             bool precededByWhitespace,
             bool isValid)
         {
@@ -60,7 +59,6 @@ namespace RackCad.Application.Expressions
             Span = span;
             Text = text;
             Value = value;
-            Id = id;
             PrecededByWhitespace = precededByWhitespace;
             IsValid = isValid;
         }
@@ -69,14 +67,14 @@ namespace RackCad.Application.Expressions
 
         internal SourceSpan Span { get; }
 
-        /// <summary>The numeral, the name, the unit content or the GUID as typed; null for punctuation.</summary>
+        /// <summary>
+        /// The numeral, the name, the unit content or the key of a qualifier —as typed, with <c>}}</c> already unescaped—;
+        /// null for punctuation.
+        /// </summary>
         internal string Text { get; }
 
         /// <summary>The invariant value of a valid numeral.</summary>
         internal double Value { get; }
-
-        /// <summary>The identity of a valid qualifier.</summary>
-        internal Guid Id { get; }
 
         internal bool PrecededByWhitespace { get; }
 
