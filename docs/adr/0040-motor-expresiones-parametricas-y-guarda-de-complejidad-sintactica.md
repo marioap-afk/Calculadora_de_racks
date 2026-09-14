@@ -1,6 +1,6 @@
 # ADR-0040: Motor de expresiones paramétricas (ID22B, Expression Engine), edición de fórmulas y guarda de complejidad sintáctica
 
-- **Estado:** aceptado
+- **Estado:** reemplazado por [ADR-0041](0041-motor-expresiones-parametricas-identidad-textual-y-cualificador-clave-exacta.md)
 - **Fecha:** 2026-09-13 (propuesto) · 2026-09-13 (aceptado)
 - **Decisores:** Mario Pérez, Owner del repositorio (**acepta**, 2026-09-13); Coordinador de I-49 y Arquitecto de
   I-49 (consenso técnico **AGREED WITH V6** sobre la Proposal V6, blob `ef4db3aa400483ff25a8f39b2beb93708fa43d1a`, y
@@ -1510,3 +1510,13 @@ implementación** sin modificar V6.
   [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md),
   [ADR-0025](0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) y
   [ADR-0035](0035-visibilidad-de-cotas-por-tipo-de-vista.md).
+
+## Notas posteriores
+
+- **2026-09-14 — Reemplazado por [ADR-0041](0041-motor-expresiones-parametricas-identidad-textual-y-cualificador-clave-exacta.md)**
+  (I-49), que el Owner aceptó ese mismo día. ADR-0041 conserva D1–D4 y D9–D25 sin cambiar su semántica, y la guarda de
+  complejidad sintáctica de D8 (Amendment A1). Con el Amendment A2, añade a D5 la validez neutral de la clave de
+  `projectVariable`; en D6 y D7, junto a la forma corta `#<d>`, admite el cualificador de clave exacta
+  `#{<clave exacta>}` y fija su formatter `Q(clave)`; y en D8 cambia solo la redacción del cualificador. La identidad
+  textual de `VariableId` no cambia. El contenido de este registro, incluida su aceptación del 2026-09-13, no se altera:
+  un ADR aceptado es inmutable. Registro en [`docs/automation/decisions/I-49.md`](../automation/decisions/I-49.md) §15.
