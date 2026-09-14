@@ -1,4 +1,5 @@
 using System;
+using RackCad.Application.Units;
 
 namespace RackCad.Application.StructuralSections
 {
@@ -16,7 +17,7 @@ namespace RackCad.Application.StructuralSections
     public static class StructuralSectionUnits
     {
         /// <summary>Exact: 1 in = 25.4 mm.</summary>
-        public const double InchesToMillimeters = 25.4;
+        public const double InchesToMillimeters = LengthUnits.MillimetersPerInch;
 
         /// <summary>Exact: 1 in.² = 645.16 mm².</summary>
         public const double SquareInchesToSquareMillimeters = 645.16;
@@ -24,7 +25,7 @@ namespace RackCad.Application.StructuralSections
         /// <summary>Exact quotient 0.45359237 kg / 0.3048 m. Computed, so no digit is lost to a literal.</summary>
         public static readonly double PoundsPerFootToKilogramsPerMeter = 0.45359237d / 0.3048d;
 
-        private const double InchesPerFoot = 12d;
+        private const double InchesPerFoot = LengthUnits.InchesPerFoot;
         private const double MillimetersPerMeter = 1000d;
 
         public static double ToKilogramsPerMeter(double poundsPerFoot) =>

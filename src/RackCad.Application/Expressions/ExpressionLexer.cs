@@ -2,13 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using RackCad.Application.Units;
 
 namespace RackCad.Application.Expressions
 {
     /// <summary>
-    /// The one lexer that recognises units, names and qualifiers (P1.10). It reads the whole text, diagnoses every
-    /// malformed lexeme, then runs the context checks that need the previous token; the parser only ever sees a
+    /// The one lexer that recognises units, names and qualifiers (P1.10). It reads the text lexeme by lexeme, diagnoses
+    /// every malformed lexeme, then runs the context checks that need the previous token; the parser only ever sees a
     /// token stream that produced no diagnostic.
+    ///
+    /// <para>
+    /// The syntactic token guard runs WHILE lexing (Amendment A1.4): as soon as the lexer would delimit token
+    /// <see cref="ExpressionParser.MaxSyntacticTokens"/> + 1 it stops, the context checks and the parser do not run, and
+    /// the result has exactly one diagnostic, <c>LimitExceeded(SyntacticTokenCount)</c>, from the start of that token to
+    /// the end of the text. Nothing is truncated, no more tokens than the guard admits are ever kept, and a lexeme costs
+    /// time linear in its length, one scan, whatever it contains (A1 §5).
+    /// </para>
     ///
     /// <para>
     /// Deliberately strict character classes, all culture-independent:
@@ -27,19 +36,21 @@ namespace RackCad.Application.Expressions
     /// diagnostic, so an error is not reported again through the errors it would cause.
     /// </para>
     /// <para>
-    /// The unit tokens are the syntactic table of P1.6, compared ordinally. Converting a unit is not the lexer's job:
-    /// the numeric meaning belongs to the neutral units authority (P9), which does not exist in G5.
+    /// The unit tokens are not declared here: the lexer consumes the closed table of the neutral units authority
+    /// (<see cref="LengthUnits"/>, P1.6 and P9.7), compared ordinally, so there is one table of <c>mm</c>, <c>in</c> and
+    /// <c>ft</c>. Converting a unit is not the lexer's job either: that numeric meaning belongs to the same authority.
     /// </para>
     /// </summary>
     internal sealed class ExpressionLexer
     {
-        private static readonly string[] UnitTokens = { "mm", "in", "ft" };
-
         private readonly string _text;
         private readonly List<ExpressionToken> _tokens = new List<ExpressionToken>();
         private readonly List<ExpressionDiagnostic> _diagnostics = new List<ExpressionDiagnostic>();
         private int _position;
         private bool _whitespaceBefore;
+
+        /// <summary>Where the token that exceeds the syntactic token guard starts; -1 while the guard holds.</summary>
+        private int _excessStart = -1;
 
         private ExpressionLexer(string text)
         {
@@ -54,7 +65,10 @@ namespace RackCad.Application.Expressions
                 Diagnostics = diagnostics;
             }
 
-            /// <summary>The tokens, always ending with <see cref="ExpressionTokenKind.EndOfText"/>.</summary>
+            /// <summary>
+            /// The tokens, ending with <see cref="ExpressionTokenKind.EndOfText"/>. Empty when the syntactic token guard
+            /// tripped: that result has nothing a parser could use.
+            /// </summary>
             internal IReadOnlyList<ExpressionToken> Tokens { get; }
 
             internal IReadOnlyList<ExpressionDiagnostic> Diagnostics { get; }
@@ -64,6 +78,21 @@ namespace RackCad.Application.Expressions
         {
             var lexer = new ExpressionLexer(text);
             lexer.Scan();
+
+            if (lexer._excessStart >= 0)
+            {
+                // A1.4: one diagnostic, and none of the lexical findings made before the guard tripped.
+                return new Result(
+                    Array.Empty<ExpressionToken>(),
+                    new[]
+                    {
+                        ExpressionDiagnostic.LimitExceeded(
+                            ExpressionLimitKind.SyntacticTokenCount,
+                            ExpressionParser.MaxSyntacticTokens,
+                            SourceSpan.FromBounds(lexer._excessStart, text.Length)),
+                    });
+            }
+
             lexer.CheckContext();
             lexer.Add(ExpressionTokenKind.EndOfText, text.Length, 0, null, 0, Guid.Empty, true);
             return new Result(lexer._tokens, lexer._diagnostics);
@@ -76,7 +105,7 @@ namespace RackCad.Application.Expressions
 
         private void Scan()
         {
-            while (_position < _text.Length)
+            while (_excessStart < 0 && _position < _text.Length)
             {
                 var character = _text[_position];
 
@@ -679,14 +708,14 @@ namespace RackCad.Application.Expressions
         }
 
         private static bool IsUnitToken(string text)
-            => Array.IndexOf(UnitTokens, text) >= 0;
+            => LengthUnits.Authority.TryParseToken(text, out _);
 
         /// <summary>A unit token written without brackets, in any case: the notation that P1.6 does not support.</summary>
         private static bool IsUnitWord(string text)
         {
-            foreach (var unit in UnitTokens)
+            foreach (var unit in LengthUnits.Authority.Units)
             {
-                if (string.Equals(unit, text, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(LengthUnits.Authority.Token(unit), text, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -717,6 +746,13 @@ namespace RackCad.Application.Expressions
 
         private void Add(ExpressionTokenKind kind, int start, int length, string text, double value, Guid id, bool isValid)
         {
+            if (kind != ExpressionTokenKind.EndOfText && _tokens.Count == ExpressionParser.MaxSyntacticTokens)
+            {
+                // This lexeme would be token MaxSyntacticTokens + 1 (A1.2–A1.4): it is not kept and scanning stops.
+                _excessStart = start;
+                return;
+            }
+
             _tokens.Add(new ExpressionToken(kind, new SourceSpan(start, length), text, value, id, _whitespaceBefore, isValid));
             _whitespaceBefore = false;
         }

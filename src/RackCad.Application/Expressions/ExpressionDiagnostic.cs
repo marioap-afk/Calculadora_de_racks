@@ -1,11 +1,26 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace RackCad.Application.Expressions
 {
-    /// <summary>The classes of the diagnostic catalogue (P15.3). G5 produces only the syntax-and-limits class.</summary>
+    /// <summary>
+    /// The classes of the closed diagnostic catalogue (P15.3). The lexer and the parser produce only
+    /// <see cref="SyntaxAndLimits"/>; the binder adds <see cref="Binding"/>, <c>BrokenReference</c> and
+    /// <c>InvalidArguments</c>, plus <c>LimitExceeded</c> for the normative limits of the bound tree; the evaluator adds
+    /// <see cref="Semantic"/> results. <see cref="BoundaryContract"/> (<c>OutOfRange</c>) belongs to the Project Variables
+    /// adapter and to property consumers, never to the core.
+    /// </summary>
     public enum ExpressionDiagnosticClass
     {
         SyntaxAndLimits = 1,
+
+        Binding = 2,
+
+        Semantic = 3,
+
+        BoundaryContract = 4,
     }
 
     /// <summary>
@@ -17,22 +32,38 @@ namespace RackCad.Application.Expressions
     }
 
     /// <summary>
-    /// Which bound a <see cref="ExpressionDiagnosticCode.LimitExceeded"/> refers to. The two members here are the
-    /// PARSER guards of P1.9; the normative limits of the bound tree (nodes, depth, arguments) are validated after
-    /// binding and are not parser guards.
+    /// Which bound a <see cref="ExpressionDiagnosticCode.LimitExceeded"/> refers to. <see cref="SyntacticNesting"/> and
+    /// <see cref="SyntacticTokenCount"/> are the PARSER guards; <see cref="NodeCount"/>, <see cref="BoundExpressionDepth"/>
+    /// and <see cref="ArgumentCount"/> are the NORMATIVE limits of the bound tree, validated after binding (P1.9, P7.5,
+    /// Amendment A1.5). A parser guard never replaces a normative limit.
+    ///
+    /// <para>
+    /// Value 1 was <c>TextLength</c>, the character guard of G5. Amendment A1 removed it from the contract (A1 §6, option
+    /// A) and the value is never reused for another kind of limit.
+    /// </para>
     /// </summary>
     public enum ExpressionLimitKind
     {
-        /// <summary>The text is longer than <see cref="ExpressionParser.MaxTextLength"/> characters.</summary>
-        TextLength = 1,
-
         /// <summary>Parentheses, unary operators and calls nest deeper than <see cref="ExpressionParser.MaxSyntacticNesting"/>.</summary>
         SyntacticNesting = 2,
+
+        /// <summary>The text has more lexemes than <see cref="ExpressionParser.MaxSyntacticTokens"/> (Amendment A1.2).</summary>
+        SyntacticTokenCount = 3,
+
+        /// <summary>The bound tree has more than <see cref="ExpressionLimits.MaxNodeCount"/> nodes.</summary>
+        NodeCount = 4,
+
+        /// <summary>The bound tree is deeper than <see cref="ExpressionLimits.MaxBoundExpressionDepth"/>.</summary>
+        BoundExpressionDepth = 5,
+
+        /// <summary>A call has more than <see cref="ExpressionLimits.MaxArgumentCount"/> arguments.</summary>
+        ArgumentCount = 6,
     }
 
     /// <summary>
-    /// One typed finding about an expression: a stable code, its class and severity, the position while writing and
-    /// the data a text layer needs. It deliberately carries NO message (P15.4).
+    /// One typed finding about an expression: a stable code, its class and severity, the position while writing, the
+    /// identities it concerns and, for a limit, which limit. It deliberately carries NO message (P15.4): the Spanish text
+    /// is produced by one text layer outside the core.
     ///
     /// <para>
     /// There is no owner either. The owner of a diagnostic is a project variable or a rack property, and the core
@@ -41,8 +72,10 @@ namespace RackCad.Application.Expressions
     /// </summary>
     public sealed class ExpressionDiagnostic
     {
+        private static readonly IReadOnlyList<SymbolId> NoSymbols = new ReadOnlyCollection<SymbolId>(Array.Empty<SymbolId>());
+
         internal ExpressionDiagnostic(ExpressionDiagnosticCode code, SourceSpan span)
-            : this(code, span, null, null)
+            : this(code, span, null, null, null)
         {
             if (code == ExpressionDiagnosticCode.LimitExceeded)
             {
@@ -50,13 +83,21 @@ namespace RackCad.Application.Expressions
             }
         }
 
-        private ExpressionDiagnostic(ExpressionDiagnosticCode code, SourceSpan? span, ExpressionLimitKind? limit, int? limitMaximum)
+        private ExpressionDiagnostic(
+            ExpressionDiagnosticCode code,
+            SourceSpan? span,
+            ExpressionLimitKind? limit,
+            int? limitMaximum,
+            IEnumerable<SymbolId> relatedSymbols)
         {
             Code = code;
             Class = ClassOf(code);
             Span = span;
             Limit = limit;
             LimitMaximum = limitMaximum;
+            RelatedSymbols = relatedSymbols == null
+                ? NoSymbols
+                : new ReadOnlyCollection<SymbolId>(relatedSymbols.ToList());
         }
 
         public ExpressionDiagnosticCode Code { get; }
@@ -65,7 +106,7 @@ namespace RackCad.Application.Expressions
 
         public ExpressionDiagnosticSeverity Severity => ExpressionDiagnosticSeverity.Error;
 
-        /// <summary>Where, in the text being written. Every syntax diagnostic has one.</summary>
+        /// <summary>Where, in the text being written. Every diagnostic of writing has one; evaluating a tree has no text.</summary>
         public SourceSpan? Span { get; }
 
         /// <summary>For <see cref="ExpressionDiagnosticCode.LimitExceeded"/>, the bound that was exceeded; otherwise null.</summary>
@@ -74,8 +115,26 @@ namespace RackCad.Application.Expressions
         /// <summary>For <see cref="ExpressionDiagnosticCode.LimitExceeded"/>, the largest value the bound admits; otherwise null.</summary>
         public int? LimitMaximum { get; }
 
+        /// <summary>
+        /// The identities the finding is about (P15.1): the absent id of <c>BrokenReference</c>, the id a qualifier named,
+        /// the symbol out of scope, or EVERY candidate of <c>AmbiguousName</c> in deterministic order, whose qualified form
+        /// the formatter writes. Empty when there is none.
+        /// </summary>
+        public IReadOnlyList<SymbolId> RelatedSymbols { get; }
+
         internal static ExpressionDiagnostic LimitExceeded(ExpressionLimitKind limit, int maximum, SourceSpan span)
-            => new ExpressionDiagnostic(ExpressionDiagnosticCode.LimitExceeded, span, limit, maximum);
+            => new ExpressionDiagnostic(ExpressionDiagnosticCode.LimitExceeded, span, limit, maximum, null);
+
+        /// <summary>A binding or semantic finding, with or without a position and with the identities it concerns.</summary>
+        internal static ExpressionDiagnostic About(ExpressionDiagnosticCode code, SourceSpan? span, IEnumerable<SymbolId> relatedSymbols)
+        {
+            if (code == ExpressionDiagnosticCode.LimitExceeded)
+            {
+                throw new ArgumentException("A limit diagnostic must say which limit; use LimitExceeded.", nameof(code));
+            }
+
+            return new ExpressionDiagnostic(code, span, null, null, relatedSymbols);
+        }
 
         /// <summary>
         /// The deterministic order of P15.7: position first, then the catalogue order of the code, then the length.
@@ -106,10 +165,18 @@ namespace RackCad.Application.Expressions
             return left.Span.HasValue ? left.Span.Value.Length.CompareTo(right.Span.Value.Length) : 0;
         }
 
+        /// <summary>Stable sort by <see cref="Compare"/>: findings that compare equal keep the order in which they were found.</summary>
+        internal static IReadOnlyList<ExpressionDiagnostic> Ordered(IEnumerable<ExpressionDiagnostic> diagnostics, int? cap)
+        {
+            var sorted = diagnostics.OrderBy(diagnostic => diagnostic, Comparer<ExpressionDiagnostic>.Create(Compare));
+            var list = cap.HasValue ? sorted.Take(cap.Value).ToList() : sorted.ToList();
+            return new ReadOnlyCollection<ExpressionDiagnostic>(list);
+        }
+
         public override string ToString() => Span.HasValue ? Code + "@" + Span.Value : Code.ToString();
 
         /// <summary>A closed classification: a code that is not classified here is a programming error, not a default.</summary>
-        private static ExpressionDiagnosticClass ClassOf(ExpressionDiagnosticCode code)
+        internal static ExpressionDiagnosticClass ClassOf(ExpressionDiagnosticCode code)
         {
             switch (code)
             {
@@ -126,6 +193,29 @@ namespace RackCad.Application.Expressions
                 case ExpressionDiagnosticCode.InvalidQualifier:
                 case ExpressionDiagnosticCode.LimitExceeded:
                     return ExpressionDiagnosticClass.SyntaxAndLimits;
+
+                case ExpressionDiagnosticCode.UnknownSymbol:
+                case ExpressionDiagnosticCode.AmbiguousName:
+                case ExpressionDiagnosticCode.UnknownNamespace:
+                case ExpressionDiagnosticCode.UnknownFunction:
+                case ExpressionDiagnosticCode.ScopeViolation:
+                case ExpressionDiagnosticCode.ReservedName:
+                case ExpressionDiagnosticCode.NameRequired:
+                case ExpressionDiagnosticCode.QualifiedNameMismatch:
+                case ExpressionDiagnosticCode.OperatorInName:
+                    return ExpressionDiagnosticClass.Binding;
+
+                case ExpressionDiagnosticCode.BrokenReference:
+                case ExpressionDiagnosticCode.Cycle:
+                case ExpressionDiagnosticCode.DependencyFailed:
+                case ExpressionDiagnosticCode.InvalidArguments:
+                case ExpressionDiagnosticCode.DivisionByZero:
+                case ExpressionDiagnosticCode.NonFiniteResult:
+                case ExpressionDiagnosticCode.NonCanonicalForm:
+                    return ExpressionDiagnosticClass.Semantic;
+
+                case ExpressionDiagnosticCode.OutOfRange:
+                    return ExpressionDiagnosticClass.BoundaryContract;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(code), code, "Unclassified expression diagnostic code.");
