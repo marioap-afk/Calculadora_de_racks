@@ -26,8 +26,9 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: F0 — claim y bootstrap documental.** El Owner autorizo la iniciativa neutral independiente.
-> Este contrato no abre F1, no acepta el ADR neutral y no autoriza produccion.
+> **Fase actual: revision de Proposal V1. F0 esta aceptado y cerrado.** Discovery, Proposal, mapa, R2,
+> ADR-0044 propuesto y paquetes de revision estan publicados. Este contrato no abre F1, no acepta el ADR y no
+> autoriza produccion.
 
 ```text
 Initiative        = I-57 — Shared View Foundation
@@ -38,15 +39,17 @@ CLAIM_SHA         = 869cf464129da65323781dbebe2425083f21915f
 CLAIM_ID          = 3e77d0e4-67de-4c3a-b3ed-ee65f0ac7cd3
 Owner             = autorizacion explicita registrada en decisions/I-57.md
 Consumers         = I-52 RACKMIRROR · I-55 View Placement & Projection
-Foundation ADR    = PROPOSED · NUMBER PENDING
+Foundation ADR    = ADR-0044 · PROPOSED
 SVF reconciliation= R1 @ aa37264381e7d386339305d11030314ffd219d63
 R1 blob           = 2faa5a316680aa92306c7bce75c42cc311f96a26
-R1 status         = I-55 REGISTERED · I-52 NOT REGISTERED · NOT EFFECTIVE
+R1 status         = SUPERSEDED FOR REVIEW BY R2 · NEVER EFFECTIVE
+R2 status         = I-57 REGISTERED · I-52/I-55 NOT REGISTERED · NOT EFFECTIVE
 
 Foundation Coordinator = REVIEW REQUIRED
-Foundation Architect   = PENDING
+Foundation Architect   = REVIEW REQUIRED
 Foundation Consensus   = NOT REACHED
 Foundation Implementation = BLOCKED
+F0 = ACCEPTED / CLOSED
 F1 = NOT OPEN
 ```
 
@@ -139,7 +142,7 @@ Ningun archivo de `src/`, `tests/`, `assets/`, `.github/`, `eng/` o `deploy/` pe
 
 | Gate | Alcance preliminar | Estado tras F0 |
 |---|---|---|
-| F0 | Claim remoto + bootstrap documental | EN CURSO hasta commit, push y CI del bootstrap |
+| F0 | Claim remoto + bootstrap documental | ACCEPTED / CLOSED |
 | F1 | Caracterizacion | NOT OPEN |
 | F2 | Taxonomia + codec sintactico | BLOCKED |
 | F3 | Marco y tramo | BLOCKED |
