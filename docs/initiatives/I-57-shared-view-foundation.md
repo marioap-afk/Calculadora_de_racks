@@ -26,7 +26,7 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: revision de Proposal V3. F0 esta aceptado y cerrado.** Discovery, Proposal V3, mapa V3, R3,
+> **Fase actual: revision de Proposal V4. F0 esta aceptado y cerrado.** Discovery, Proposal V4, mapa V4, R3,
 > ADR-0044 propuesto y paquetes de revision estan publicados. Este contrato no abre F1, no acepta el ADR y no
 > autoriza produccion.
 
@@ -35,7 +35,7 @@ Initiative        = I-57 — Shared View Foundation
 Branch            = architecture/shared-view-foundation
 Worktree          = ~/.codex/worktrees/architecture-shared-view-foundation
 BASE_SHA          = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093
-PROPOSAL_V3_SHA   = 68a56b2a3c64ce261787224753ed43b2b8e328a3
+PROPOSAL_V4_SHA   = 2a142f224fb8d8a0c16bd7f7334dc48be3be9eef
 CLAIM_SHA         = 869cf464129da65323781dbebe2425083f21915f
 CLAIM_ID          = 3e77d0e4-67de-4c3a-b3ed-ee65f0ac7cd3
 Owner             = autorizacion explicita registrada en decisions/I-57.md
