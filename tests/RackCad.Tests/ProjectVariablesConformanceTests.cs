@@ -177,7 +177,7 @@ namespace RackCad.Tests
         /// comportamiento y sin renombrar nada para esquivarla: <c>ExpressionParser</c> pasa a permitirse SOLO en
         /// Application —el núcleo de expresiones y sus adaptadores— y sigue prohibido en Plugin y UI.
         /// <c>RackPropertyReference</c>, <c>rackProperty</c> y <c>FormulaParser</c> siguen prohibidos en las tres
-        /// capas. <c>DependencyGraph</c> también sigue prohibido en las tres: su evolución es de G7.
+        /// capas. I-49 G7 permite <c>DependencyGraph</c> solo en Application; Plugin y UI siguen sin poseer el grafo.
         /// </para>
         /// </summary>
         [Fact]
@@ -186,7 +186,6 @@ namespace RackCad.Tests
             AssertAbsentFrom(
                 "RackCad.Application",
                 "FormulaParser",
-                "DependencyGraph",
                 "RackPropertyReference",
                 "rackProperty");
 
