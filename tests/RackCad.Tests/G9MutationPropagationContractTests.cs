@@ -197,6 +197,38 @@ namespace RackCad.Tests
         public void UNRELATED_REGISTRY_CHANGE_OUTSIDE_OBSERVATIONS_DOES_NOT_ABORT_COMMIT()
             => RequireCommitComparison();
 
+        [Fact, Trait("Gate", "G9-Contract")]
+        public void CHAIN_ONLY_CHANGE_MISMATCHES_SYMBOL_RESULT_BUT_MATCHES_UPSTREAM_ROOTS_T_A3_19()
+            => RequireComparableObservationSurface("T-A3-19 chain-only comparison");
+
+        [Fact, Trait("Gate", "G9-Contract")]
+        public void ROOTS_SWAPPED_BETWEEN_READ_VARIABLES_MISMATCH_UPSTREAM_T_A3_60()
+            => RequireRepairDecisionSurface("T-A3-60 roots remain attached to each read variable");
+
+        [Fact, Trait("Gate", "G9-Contract")]
+        public void SAME_RECOVERY_UNIT_WITH_A_DIFFERENT_SIGNATURE_MISMATCHES_UPSTREAM_T_A3_53()
+            => RequireRepairDecisionSurface("T-A3-53 same unit different stable signature");
+
+        [Theory]
+        [InlineData("T-A3-17", "root disappeared")]
+        [InlineData("T-A3-18", "root appeared")]
+        [InlineData("T-A3-35", "upstream symbol recovered")]
+        [Trait("Gate", "G9-Contract")]
+        public void ANY_ROOT_SET_CHANGE_MISMATCHES(string caseId, string _)
+            => RequireComparableObservationSurface(caseId + " root-set change");
+
+        [Fact, Trait("Gate", "G9-Contract")]
+        public void MISSINGTARGET_MATCHES_ONLY_THE_SAME_COMPLETE_ORDERED_MISSING_ID_SET()
+            => RequireRepairDecisionSurface("MissingTarget stable missing-id set");
+
+        [Fact, Trait("Gate", "G9-Contract")]
+        public void INTRINSIC_MATCHES_ONLY_THE_SAME_CODE_AND_STABLE_DIAGNOSTIC_DATA()
+            => RequireRepairDecisionSurface("Intrinsic stable diagnostic signature");
+
+        [Fact, Trait("Gate", "G9-Contract")]
+        public void DOMAIN_MATCHES_DOMAIN_BUT_MISMATCHES_WHEN_THE_SOURCE_RETURNS_TO_A_VALID_DOMAIN()
+            => RequireRepairDecisionSurface("Domain reason without localized text or numeric value");
+
         private static void AssertZeroObservations(MutationPlan plan)
         {
             var readSet = PlanReadSet(plan);
