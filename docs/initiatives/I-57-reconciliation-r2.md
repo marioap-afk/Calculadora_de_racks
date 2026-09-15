@@ -24,12 +24,21 @@ efectiva cuando I-52, I-55 e I-57 registran este mismo commit exacto; aun entonc
 | X-7 placement | 08 / I-57 | Transform2D+facts; tolerancia inyectada | reflexion/policy/valor | rigidez/anclaje/Z |
 | X-8 frame | 05 / I-57 | un span y centro exacto | c/delta CT-06 | K_min/K_max por policy |
 
-## CR-SVF-I52-01..06
+## Solicitudes autorales CR-SVF-I52-01..06
 
-1. La tolerancia es entrada del consumidor y CT-GEO registra la usada.
-2. I-57 es titular neutral de 06/07/08/13; producto queda fuera.
-3. Gates consumidores requieren Integration SHA alcanzable desde `origin/main`.
-4. CT-04/05/16 son I-57; CT-06 permanece I-52.
+1. X-2 se extrae una sola vez bajo claim/gates de I-57 antes de cualquier consumidor.
+2. X-8 y CT-05 tienen una sola autoridad/owner en I-57; no existe carrera entre gates de producto.
+3. Las frases product-first de V17/R1 quedan `PROVISIONAL / SUPERSEDED AT RECONCILIATION`; no se editan atras.
+4. Ownership queda fijado en I-57; path, namespace y API concreta siguen pendientes de consenso de Proposal/F1.
+5. Ninguna autoridad se consume sin Integration SHA alcanzable desde `origin/main`.
+6. I-52 e I-55 tienen prohibido duplicar una autoridad neutral mientras la reconciliacion no sea efectiva.
+
+## Solicitudes originales CR-SVF-01..06 de R1
+
+1. Tolerancia de escala: entrada del consumidor; CT-GEO registra la usada.
+2. Titularidad X-1/X-3/X-7: I-57 para hechos neutrales; producto queda fuera.
+3. Gates consumidores requieren Integration SHA en `origin/main`.
+4. CT-04/05/16 pertenecen a I-57; CT-06 permanece I-52.
 5. `c=(K_min+K_max)/2`, sin forma afin ni delta absorbida.
 6. Query observa despues de `EnsureForPlan`; consultar no importa e importar no declara cumplimiento.
 

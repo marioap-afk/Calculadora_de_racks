@@ -129,8 +129,10 @@ Ningun gate se abre al publicar la Proposal. Un rebase crea SHA nuevo y exige ev
 
 ## 8. Compatibilidad, ADR y validacion
 
-R2 incorpora CR-SVF-I52-01..06: tolerancia inyectada; I-57 titular neutral de X-1/X-3/X-7; consumo solo
-Integrated; CT-04/05/16 en I-57; centro comun; query separado de importer. I-52 conserva reflexion, read-set,
+R2 incorpora las solicitudes autorales CR-SVF-I52-01..06: ownership neutral de X-2 y X-8/CT-05; carreras previas
+marcadas provisionales; path/namespace/API sujetos al consenso; consumo solo Integrated; y prohibicion bilateral de
+duplicar. Por separado resuelve CR-SVF-01..06 de R1: tolerancia inyectada; I-57 titular neutral de X-1/X-3/X-7;
+CT compartidas en I-57; centro comun; y query separado de importer. I-52 conserva reflexion, read-set,
 exposicion y AUTH-15. I-55 conserva ID17/18/19, anclaje, cola, UX y materializacion.
 
 ADR-0044 se publica **propuesto** y gobierna solo ownership, hechos neutrales, capas y consumo desde main. Solo el
