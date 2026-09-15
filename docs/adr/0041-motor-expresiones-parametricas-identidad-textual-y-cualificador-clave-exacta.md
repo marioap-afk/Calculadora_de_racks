@@ -1,6 +1,6 @@
 # ADR-0041: Motor de expresiones paramétricas, edición de fórmulas e identidad textual con cualificador de clave exacta
 
-- **Estado:** aceptado
+- **Estado:** reemplazado por [ADR-0043](0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md)
 - **Fecha:** 2026-09-13 (propuesto) · 2026-09-14 (aceptado)
 - **Decisores:** Mario Pérez, Owner del repositorio (**acepta**, 2026-09-14); Coordinador de I-49 y Arquitecto de
   I-49 (consenso técnico **AGREED WITH V6** sobre la Proposal V6, blob `ef4db3aa400483ff25a8f39b2beb93708fa43d1a`;
@@ -1744,3 +1744,13 @@ implementación** sin modificar V6.
   [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md),
   [ADR-0025](0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) y
   [ADR-0035](0035-visibilidad-de-cotas-por-tipo-de-vista.md).
+
+## Notas posteriores
+
+- **2026-09-15 — Reemplazado por [ADR-0043](0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md)**
+  (I-49), que el Owner aceptó ese mismo día sobre Proposal V6 + Amendments A1 + A2 + A3-R2. ADR-0043 conserva las
+  decisiones no afectadas de este ADR e incorpora las causas múltiples de `DependencyFailed`, `RootCauses` por SCC,
+  la distinción de `RecoveryUnit`, la recuperación segura de ciclos, la precondición de descubrimiento y los datos
+  estables de `SymbolResult`, `Upstream` y `RepairDecisionObservation` acordados en A3-R2. El contenido técnico y la
+  aceptación del Owner registrados en este ADR permanecen inmutables. Registro en
+  [`docs/automation/decisions/I-49.md`](../automation/decisions/I-49.md) §18.
