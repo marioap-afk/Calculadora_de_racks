@@ -1,14 +1,16 @@
 # ADR-0045: Workflow V2 — Initiative lifecycle, evidence and integration governance
 
-- **Estado:** **propuesto**
+- **Estado:** **aceptado**
 - **Fecha:** 2026-09-15
-- **Decisor:** Owner del repositorio (**aceptacion de este ADR pendiente**)
+- **Decisor:** Owner del repositorio
 - **Iniciativa relacionada:** I-56 — Initiative Workflow V2
 
 ## Status
 
-**PROPOSED.** El Owner aprobo la politica de Proposal V4, pero todavia debe aceptar explicitamente
-este ADR real. Publicarlo no lo acepta ni activa Workflow V2.
+**ACCEPTED.** El Owner acepto explicitamente este ADR real el 2026-09-15, tras revisar su
+materializacion en el commit `5da6feef2b528aaa44ed5ce581f976ea63251609` y el blob
+`0a74817ae1d48bb8a7f7ada8dfd6abeb173878af`. La aceptacion confirma la decision durable de Proposal
+V4; no activa Workflow V2 ni asigna `WORKFLOW_V2_EFFECTIVE_SHA`.
 
 ## Contexto
 
