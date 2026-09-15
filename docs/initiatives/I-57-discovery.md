@@ -147,8 +147,9 @@ solo con Integration SHA; y prohibicion bilateral de duplicar mientras no haya r
 `CR-SVF-01..06` de R1 son otro conjunto: tolerancia, titularidad X-1/X-3/X-7, precondiciones Integrated, ownership de
 CT-04/05/16, centro compartido y query de bloques. Ademas, este Discovery
 cambia disposiciones materiales frente al borrador: reutiliza AUTH-01 y AUTH-08, reduce AUTH-07 y adapta AUTH-10.
-Por ello hace falta **R2**, publicada por I-57 sin editar R1. R2 no sera efectiva hasta que I-52, I-55 e I-57 registren
-el mismo commit exacto.
+Por ello hacia falta **R2**, publicada por I-57 sin editar R1. La primera R2 atribuyo mal los dos conjuntos de CR y
+quedo inmutable; la correccion se publica como **R3**. R3 no sera efectiva hasta que I-52, I-55 e I-57 registren el
+mismo commit exacto.
 
 ## 9. Revision adversarial
 
