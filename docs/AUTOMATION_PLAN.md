@@ -1,9 +1,10 @@
 # Plan del ejecutor nocturno
 
-Este documento es la fuente principal para las ejecuciones automatizadas de iniciativas de
-RackCad. El ejecutor prepara trabajo revisable y publicado; nunca integra cambios. `ROADMAP.md`
-continua siendo el indice global, `WORKFLOW.md` define el proceso Git y cada archivo en
-`docs/initiatives/` define el contrato detallado de una iniciativa.
+Este documento define solamente el ejecutor de iniciativas. El ejecutor prepara trabajo revisable y
+publicado; nunca integra cambios. `WORKFLOW.md` gobierna Git, integración, transición y clasificación;
+`INITIATIVE_LIFECYCLE.md` gobierna Discovery, diseño, Freeze/A-n, READY y conformidad; `AGENTS.md`
+gobierna composición Full, clases de evidencia y SHA exacto. Este plan no compite con esas fuentes,
+con ADR aceptados, Freeze+A-n ni decisiones del Owner dentro de su alcance.
 
 El estado operativo legible por el ejecutor se versiona en
 `docs/automation/state/<initiative>.yml`. Las decisiones del dueno que resuelven gates pueden
@@ -15,6 +16,10 @@ Request es una copia opcional: nunca sustituye el archivo de estado de la rama.
 La infraestructura documental, los contratos, estados, decisiones y evidencias quedaron preparados
 por I-06, pero **no existe actualmente una automatizacion nocturna activa**. I-06 no programa tareas,
 horarios, recordatorios ni ejecuciones recurrentes.
+
+Workflow V2 está materializado pero **no es efectivo** hasta que `WORKFLOW_V2_EFFECTIVE_SHA` exista
+según `WORKFLOW.md` §11. Este documento no lo activa, no inicia la pausa de activación y no reclasifica
+reclamos V1. Los scripts descritos por I-56 P-21 siguen siendo solo diseño; no existe implementación.
 
 La variante Git-only fue un mecanismo acotado de bootstrap y cierre manual de I-06. Demostro que
 commit, push y estado versionado no dependen de GitHub CLI, pero no sustituye una integracion capaz
@@ -79,23 +84,22 @@ trabajo de esa iniciativa. Esa version no puede cambiar unilateralmente concurre
 reclamo, reintentos, gates, seguridad ni ninguna otra regla global. Ante una contradiccion se aplican
 las reglas de `origin/main` y se detiene el punto conflictivo para revision.
 
-### Precedencia obligatoria
+### Autoridad y referencias obligatorias
 
-De mayor a menor autoridad, el ejecutor aplica:
+El ejecutor consulta `WORKFLOW.md` §10 para el dueño único de cada dominio. En particular:
 
-1. Estado real de Git y resultados verificables, incluidos ramas, commits, checks y builds.
-2. `AGENTS.md` para convenciones tecnicas.
-3. `docs/WORKFLOW.md` para el proceso.
-4. ADRs aceptados.
-5. `docs/AUTOMATION_PLAN.md`.
-6. Contrato detallado de la iniciativa.
-7. Decisiones versionadas del dueno bajo `docs/automation/decisions/`, dentro de su alcance.
-8. Estado operativo versionado bajo `docs/automation/state/`.
-9. Cuerpo del Pull Request y su copia opcional de `automation_state`.
+- clasificación V1/V2, Claim-Id, transición, snapshots y mecánica Git: `WORKFLOW.md`;
+- ciclo de diseño, materialidad, Discovery, Freeze/A-n, READY y conformidad:
+  `INITIATIVE_LIFECYCLE.md`;
+- composición de pruebas, clases de evidencia e invalidadores: `AGENTS.md`;
+- escenarios y ejecución de Owner Validation: `docs/guias/validacion-manual-autocad.md`;
+- alcance congelado: Freeze+A-n; decisiones del Owner: su registro versionado.
 
-El modo bootstrap cambia la ubicacion temporal desde la que se lee el plan, no esta precedencia.
-Una contradiccion material obliga a detenerse y reportar las fuentes en conflicto; el ejecutor no
-elige silenciosamente una interpretacion.
+Este plan solo decide selección y operación del ejecutor dentro de esas reglas. El estado real puede
+desmentir una afirmación factual, pero no cambia por sí mismo lo que una autoridad exige. Una
+contradicción material obliga a detenerse, citar las fuentes y acudir al dueño del dominio; el
+ejecutor no elige una interpretación silenciosa. El modo bootstrap solo cambia desde dónde se leen
+los archivos.
 
 ## 3. Limites de seguridad
 

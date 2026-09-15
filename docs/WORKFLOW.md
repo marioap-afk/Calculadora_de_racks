@@ -6,6 +6,11 @@
 > herramienta ([ADR-0001](adr/0001-ramas-por-iniciativa.md)). El plan de iniciativas vive en
 > [ROADMAP.md](ROADMAP.md); la migración inicial ya se ejecutó (nota en la sección 9).
 
+> **Estado de transición.** Las secciones 1–10 describen Workflow V1, que sigue siendo el proceso
+> efectivo. La sección 11 materializa Workflow V2, pero no entra en vigor hasta que exista
+> `WORKFLOW_V2_EFFECTIVE_SHA` según §11.2. I-56 y los reclamos formales existentes de I-49, I-52 e
+> I-55 siguen gobernados por V1. La presencia del texto V2 no inicia la pausa de activación.
+
 ## 1. Estrategia de ramas
 
 **Esta tabla es LA fuente de la convención de prefijos** (los demás documentos remiten aquí, no la copian):
@@ -358,7 +363,7 @@ misma rama**.
 | Cierre de sesión intermedia (sin integrar) | Cuerpo del commit + push de la rama | Nunca `HANDOFF.md`, y nunca la fila de OTRA iniciativa en `ROADMAP.md`. La propia fila sí, pero solo en los tres momentos de la sección 2 — jamás para marcar «en curso» |
 | Cambia el proceso mismo | Este documento + ADR si es decisión de fondo | Antes de aplicar el proceso nuevo |
 | Hallazgo fuera de alcance de la iniciativa | `docs/ideas-futuras.md` | Al detectarlo |
-| Conteos de tests / hashes de commit | SOLO `docs/HANDOFF.md` §12 | Nunca copiarlos a otros docs; en ROADMAP la marca de cierre es `integrada (fecha)`, sin hash |
+| Conteos de tests / hashes de commit | Mientras V1 sea efectivo: SOLO `docs/HANDOFF.md` §12. Para una unidad clasificada V2 después de la activación: archivo de evidencia y tag de integración (§11.4) | Nunca se copian a contratos, ROADMAP, índices o documentos normativos |
 
 ## 9. Migración inicial — ejecutada el 2026-07-17
 
@@ -376,9 +381,214 @@ preservada en el tag `archive/dinamico-modular-pre-rebase-9f19a8c` (no se elimin
 y la limpieza de I-02, ninguna rama activa por-herramienta forma parte del flujo. `main` continúa
 siendo el trunk único. Toda rama nueva sigue la convención de la sección 1.
 
-## 10. Precedencia de documentos
+## 10. Autoridad por dominio
 
-Normas: `AGENTS.md` (convenciones de código/arquitectura) y este `WORKFLOW.md` (proceso) — si se
-contradicen entre sí, gana AGENTS y se corrige aquí. Después: `docs/HANDOFF.md` (estado) >
-`docs/ROADMAP.md` (plan) > `README.md` > guías temáticas > documentos históricos/archivo.
-Y por encima de todos: el estado real del repo (`git log`, `dotnet test`).
+Los hechos de Git, código, CI, pruebas y builds describen lo ocurrido y vencen una afirmación factual
+falsa. Cada regla tiene un solo dueño:
+
+| Dominio | Autoridad | Referencias subordinadas |
+|---|---|---|
+| Git, reclamo, worktrees, integración, cierre, cadencia documental y transición | Este `WORKFLOW.md` y ADR de proceso aceptado dentro de su alcance | Contratos y lifecycle enlazan |
+| Composición Full, clases de evidencia, SHA exacto e invalidadores | `AGENTS.md` | WORKFLOW y guías enlazan |
+| Ciclo de diseño, Discovery, Architect, Freeze/A-n, gates funcionales, READY y conformidad | [INITIATIVE_LIFECYCLE.md](INITIATIVE_LIFECYCLE.md) cuando V2 sea efectivo | WORKFLOW y plantillas enlazan |
+| Procedimiento de Owner Validation | [validacion-manual-autocad.md](guias/validacion-manual-autocad.md) | Freeze asigna escenarios; lifecycle verifica asignación |
+| Arquitectura | `AGENTS.md`, ADR aceptado y Freeze+A-n dentro de su alcance | [FOUNDATIONS.md](FOUNDATIONS.md) solo resume hechos verificados |
+| Prompts | [PROMPT_TEMPLATES.md](initiatives/PROMPT_TEMPLATES.md) | Siempre subordinadas a los dueños anteriores |
+| Decisiones del Owner | `docs/automation/decisions/<I>.md`, dentro del alcance registrado | Contrato y evidencia enlazan |
+| Estado y plan | `HANDOFF.md` y `ROADMAP.md` | No crean política normativa |
+
+Un conflicto dentro de un dominio detiene el gate y cita ambas fuentes. Un ADR aceptado solo desplaza
+una convención general cuando declara la excepción en su alcance; cualquier otro conflicto llega al
+Owner. Los documentos históricos y ADR propuestos no son precedente normativo.
+
+## 11. Workflow V2 materializado — todavía no efectivo
+
+Esta sección materializa la política aprobada por ADR-0045. Hasta la activación definida en §11.2,
+solo sirve para preparar y verificar el único merge normativo; no gobierna I-56 ni reclamos V1.
+Arquetipos, Discovery, revisión, Freeze/A-n, gates funcionales, READY y conformidad pertenecen a
+[INITIATIVE_LIFECYCLE.md](INITIATIVE_LIFECYCLE.md). La composición Full y las clases de evidencia
+pertenecen a `AGENTS.md`. La ejecución de Owner Validation pertenece a la guía manual.
+
+### 11.1 Identidad del reclamo y clasificación estable
+
+El primer push aceptado del commit de reclamo crea un `Claim-Id` UUID estable. Clasificación y
+Claim-Id se conservan aunque cambien el tip o el nombre de rama y aunque un rebase incorpore el SHA
+efectivo. Una clasificación durable nunca se vuelve a derivar por ascendencia actual.
+
+### 11.2 Merge normativo y `WORKFLOW_V2_EFFECTIVE_SHA`
+
+Exactamente un commit de I-56 lleva el trailer `Workflow-V2-Normative: I-56`. El merge normativo es
+el primer merge, en orden first-parent de `origin/main`, cuyo segundo padre alcanza ese commit y cuyo
+primer padre no lo alcanza. El trailer debe ser único en esa historia; ausencia, duplicidad o forma
+estructural distinta detiene la identificación.
+
+`WORKFLOW_V2_EFFECTIVE_SHA` es el SHA de ese merge `--no-ff`. Workflow V2 entra en vigor cuando el
+remoto acepta el push de `main` que lo publica. El merge local, la pausa, CI posterior, un tag, una
+limpieza o una corrección no crean otro SHA efectivo. **`WORKFLOW_V2_EFFECTIVE_SHA` no está aún
+establecido hasta que el merge normativo sea publicado remotamente.** No se escribe el SHA dentro de
+su propio commit.
+
+No hay activación parcial: todas las normas aprobadas entran en ese único merge o la activación se
+detiene. I-56 conserva Workflow V1 durante toda su integración.
+
+No existe rollback automático. Una desactivación futura exige Proposal aprobada explícitamente por
+el Owner y un evento durable que establezca su alcance. El SHA efectivo histórico no se borra ni se
+redefine, y los reclamos no se reclasifican retroactivamente por cambios posteriores de ascendencia.
+
+### 11.3 Snapshots PRE/POST y tabla de transición
+
+La integración V1 de I-56 conserva dos snapshots completos de `git ls-remote --heads origin`:
+
+- **PRE:** inmediatamente antes de publicar el merge normativo. Comando, salida, fecha UTC, main
+  observado y tabla `ref / tip / commit de reclamo / Claim-Id` van en el cuerpo del merge. Si la
+  preparación se retrasa o cambia, se repite PRE y se regenera el merge.
+- **POST:** inmediatamente después de que el remoto acepte el push. La misma tabla y el registro
+  ordenado del push aceptado se conservan en el informe post-merge y en `integration/I-56`.
+
+Claim-Id es la clave de unión. Una rama presente solo en POST tiene orden ambiguo y cae en T6. PRE
+incompleto, Claim-Id ausente/duplicado o identidad contradictoria nunca recibe un valor inventado.
+
+| ID | Condición comprobada | Clasificación y acción |
+|---|---|---|
+| T1 | PRE o prueba temporal válida de anterioridad; pausa respetada | V1 definitivo por Claim-Id |
+| T2 | Anterior probado; reclamo durante la pausa antes de vigencia | V1; desviación sujeta a suspensión o excepción, sin reclasificar |
+| T3 | Posterior probado; pausa activa | V2; STOP hasta fin durable o excepción explícita, nunca V1 por infringir la pausa |
+| T4 | Posterior probado; base original contiene el efectivo; sin pausa | V2 normal |
+| T5 | Posterior confirmado desde T6 con base original obsoleta | V2; desviación y STOP hasta rebase y tratamiento de pausa aplicable |
+| T6 | Orden o identidad desconocidos/contradictorios, incluido solo POST | Sin clasificar; STOP y Owner con evidencia, sin default V1 |
+| T7 | Unidad nueva posterior que consume diseño V1 fuera de I-49/I-52/I-55 | V2; contrato delta propio, sin reescribir la fuente V1 |
+| T8 | Unidad nueva posterior conceptualmente perteneciente a I-49/I-52/I-55 | **T8-A:** V2 con reclamo, contrato, Freeze delta/A-n y evidencia propios; no hereda V1 |
+
+Para probar anterioridad fuera de PRE se requiere un registro ordenado del primer push aceptado y un
+fetch posterior que aún no contenga el SHA efectivo, contrastado con las corridas `push` de la rama y
+de main. Base obsoleta, registro incompleto, contraste ausente o incoherencia caen en T6. Los reclamos
+formales existentes de I-49, I-52 e I-55 y el de I-56 son V1.
+
+Tras activación, una unidad V1 lee `main` actual. Solo las cláusulas modificadas por el merge normativo
+se consultan en `WORKFLOW_V2_EFFECTIVE_SHA^1`; el mapa de esas cláusulas se conserva en la integración.
+No se congelan archivos completos y los cambios V1 compatibles posteriores se leen desde main actual.
+
+### 11.4 Superficies documentales y evidencia V2
+
+Workflow V2 separa tres superficies:
+
+1. **Contrato mutable** `docs/initiatives/<unidad>-<slug>.md`: estado, alcance resumido y enlaces;
+   workflow, agrupación, arquetipo/materialidad, coordinación y `Consumes/Extends/Introduces`. No
+   contiene tips, corridas, conteos ni hashes cambiantes.
+2. **Freeze inmutable**: Proposal congelada, `<I>-freeze.md` o `<unidad>-freeze-delta.md`; contiene
+   alcance, no-objetivos, invariantes y matriz OV. Los cambios posteriores son A-n append-only.
+3. **Evidencia por unidad** `docs/automation/evidence/<unit>-evidence.md`: hechos verificables de la
+   unidad. Los hechos posteriores al merge pertenecen al tag anotado de §11.6.
+
+Esqueleto mínimo del archivo de evidencia:
+
+```text
+Unit / Initiative / Workflow / Claim-Id
+Claim base and transition classification evidence
+Discovery and Freeze identity; Freeze delta and A-n references
+Candidate rounds: base, FINAL_CANDIDATE_SHA, clean tree, resolved SDK
+Required local Full/build evidence and exact push-CI references
+Conformance result and reviewed SHA
+Owner Validation: assignment, scenarios, DLL identity and verdict
+Metrics row with UNKNOWN explicit where unavailable
+Integration tag reference
+```
+
+No hay commit ceremonial `-CLOSE` obligatorio por gate. El cierre puede quedar acreditado por el SHA,
+informe y archivo de evidencia del gate. Las guías de comportamiento visible se actualizan en el
+último gate de implementación antes del Candidato; el ADR nace antes de implementar su decisión. El
+commit de cierre concentra HANDOFF, ROADMAP, índices, hallazgos fuera de alcance, entradas FOUNDATIONS
+ya conformadas y evidencia final. ROADMAP conserva únicamente sus tres momentos de §2 y HANDOFF solo
+se edita al integrar/cerrar. No se reescriben registros históricos.
+
+Hashes, corridas y conteos de una unidad V2 viven en cuerpos de commit, su archivo de evidencia y su
+tag; HANDOFF enlaza. Contrato, ROADMAP, índices y documentos normativos no los copian.
+
+### 11.5 Integración V2 y ruta R
+
+La integración sigue siendo manual y serializada, sin commits directos a main ni merges automáticos.
+Después de READY: rebase final; push del Candidato solo; Full obligatorio y evidencia exacta sobre ese
+SHA, más Owner Validation aplicable;
+cierre documental con CI propio; `fetch` inmediatamente antes del merge; merge `--no-ff`; CI de
+`event=push`, `ref=refs/heads/main`, `head_sha=MERGE_SHA` con cobertura; comprobación diferida de
+cobertura del Candidato; limpieza segura; y tag §11.6. Las suites que componen Full y los invalidadores
+se consultan en `AGENTS.md`. La guía manual gobierna los escenarios del Owner.
+
+Si main se mueve después del cierre se aplica **ruta R**:
+
+1. conservar la ronda anterior en evidencia;
+2. retirar el cierre anterior del tip activo de producto sin borrar la evidencia conservada;
+3. rebasar el producto sobre main;
+4. publicar el Candidato rebasado **solo**, antes de recrear cierre;
+5. repetir READY, conformidad, Full, CI y Owner Validation que correspondan sobre los nuevos SHAs;
+6. crear y publicar un cierre nuevo, con evidencia propia;
+7. volver a verificar main e integrar.
+
+La CI del cierre nunca sustituye la CI del Candidato. Igualdad de árbol no permite reutilizar evidencia.
+Una corrección posterior al merge vuelve por la rama y por una ronda completa; nunca se arregla main
+directamente. Cobertura, exact-SHA, post-merge CI y limpieza posterior a ambas verificaciones se conservan.
+La población y la política de cobertura no cambian.
+
+### 11.6 Tag de integración
+
+Cada unidad V2 termina con un tag **anotado** `integration/<unit>`. Una ronda correctiva usa
+`integration/<unit>-corr<N>`, donde N es entero positivo sin ceros iniciales y aumenta por orden
+numérico. Los tags publicados nunca se mueven, sobrescriben ni fuerzan. Una corrección contiene el
+bloque completo, `Corrects` con el tag/objeto anterior y `Correction reason`.
+
+`MERGE_SHA` significa únicamente el merge de la ronda verificada y es el commit destino del tag.
+Merges anteriores no verificados se enumeran aparte con candidate, closure y motivo. El mensaje exige,
+una vez cada una:
+
+```text
+Initiative: <I>
+Unit: <unit>
+Workflow: V2
+Claim-Id: <uuid>
+FINAL_CANDIDATE_SHA: <40 hex>
+CLOSURE_SHA: <40 hex>
+MERGE_SHA: <40 hex de la ronda verificada>
+Unverified merges: none | <merge / candidate / closure / motivo>
+Post-merge CI: run=<id> event=push ref=refs/heads/main head_sha=<MERGE_SHA> jobs=<resultados> coverage-artifact=<identidad>
+Candidate coverage: run=<id> event=workflow_dispatch candidate_sha=<FINAL_CANDIDATE_SHA> measured-sha=<mismo SHA> artifact=<identidad>
+Cleanup: local-branch=<resultado> remote-branch=<resultado> worktree=<resultado> date=<fecha>
+Evidence: docs/automation/evidence/<unit>-evidence.md
+Corrects: none | <tag anterior y objeto>
+Correction reason: none | <razon verificable>
+```
+
+La validación comprueba tipo `tag`, regex anclada del nombre, destino en first-parent de main, padres
+del merge, ascendencia del Candidato, claves únicas, evidencia y cadena de correcciones. Tag ausente,
+ligero, malformado, con destino incorrecto o cadena inválida es desviación de proceso; datos no
+recuperables son `UNKNOWN` y se escalan. Una corrida disparada por `refs/tags/*` no acredita evidencia
+de Candidate, rama ni post-merge.
+
+La protección activa contra actualización y borrado de `integration/*`, incluido patrón, restricciones
+y bypass, es **obligatoria antes de la activación**. Su creación/verificación es una acción
+administrativa separada; esta sección no crea el ruleset.
+
+`integration/I-56` es el registro excepcional de activación autorizado bajo Workflow V1. Conserva el
+bloque completo anterior con `Workflow: V1` y añade, una vez cada uno:
+
+```text
+WORKFLOW_V2_EFFECTIVE_SHA: <merge normativo derivado según §11.2>
+PRE: <referencia al snapshot completo en el cuerpo del merge normativo>
+POST: <snapshot y tabla completos>
+Claim pause: none | start=<fecha/registro> end=<fecha/registro> decision=docs/automation/decisions/I-56.md
+```
+
+El tag se crea después de las compuertas V1 4.5.6/4.5.7 y de la limpieza. Su destino `MERGE_SHA`
+puede ser el merge de una ronda correctiva, pero `WORKFLOW_V2_EFFECTIVE_SHA` sigue siendo el primer
+merge normativo derivado por §11.2; el tag lo registra y nunca lo redefine. Para I-56, `POST` completo
+y el fin de la pausa son contenido obligatorio del mensaje durable.
+
+### 11.7 Pausa obligatoria de activación
+
+La existencia de esta sección **no inicia la pausa**. Su inicio se registra de forma durable en
+`docs/automation/decisions/I-56.md` antes del paso V1 4.5.1 de la integración normativa. Desde ese
+momento se suspenden los reclamos nuevos ordinarios. Solo puede continuar una excepción de
+emergencia/fix aprobada explícitamente por el Owner.
+
+La pausa termina únicamente después de completar y verificar los pasos V1 4.5.6 y 4.5.7 y registrar
+durablemente su fin en el registro de activación `integration/I-56`. Un bloqueo prolongado vuelve al
+Owner; no autoriza relajar la pausa. Hasta el registro durable de fin, la pausa sigue activa.

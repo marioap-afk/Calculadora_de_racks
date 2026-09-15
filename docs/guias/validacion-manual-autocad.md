@@ -5,6 +5,10 @@ canónicos y la definición de terminado viven en [AGENTS.md](../../AGENTS.md); 
 integración, en [WORKFLOW.md](../WORKFLOW.md). Un build verde demuestra que el código compila y que
 las pruebas automatizadas pasan; **no demuestra que AutoCAD dibuje, edite o persista correctamente**.
 
+> **Transicion:** estas reglas de Owner Validation se materializan para Workflow V2, pero no cambian
+> por si mismas la clasificacion de I-56 ni de reclamos V1. Workflow V2 solo sera efectivo cuando
+> exista `WORKFLOW_V2_EFFECTIVE_SHA` conforme a [WORKFLOW §11](../WORKFLOW.md).
+
 ## 1. Preparar el entorno
 
 Requisitos:
@@ -343,9 +347,10 @@ ensamblado, así que el binario validado y el binario nuevo **no son el mismo bi
 
 ### 7.1 Declarar un Candidato
 
-Un **Candidato** es el SHA exacto que se entrega para validar o integrar. No es un archivo ni un
-registro central: es **este bloque, escrito junto a la evidencia de la ronda** —en el contrato de la
-iniciativa, o en el cuerpo del commit que la registra, igual que el veredicto (§8.5)—.
+Un **Candidato** es el SHA exacto que se entrega para validar o integrar. En Workflow V2, este bloque
+vive junto a la evidencia de la ronda en
+`docs/automation/evidence/<unit>-evidence.md`; el cuerpo del commit puede enlazarlo. Los contratos V1
+y sus registros historicos conservan su forma y no se reescriben.
 
 ```text
 Candidate SHA:        <sha exacto>
@@ -399,6 +404,41 @@ Reglas, y son cortas:
 
 - Los hashes van aquí, en el registro de la ronda, donde ya viven el commit y el SHA-256 del DLL. No
   se copian a documentos normativos.
+
+### 7.2 Matriz y asignacion de Owner Validation
+
+La matriz OV es **aditiva** al checklist de §§5–7 y a los criterios de aprobación: nunca los sustituye
+ni reduce. Vive en el Freeze, Freeze delta o una enmienda A-n, con esta forma minima:
+
+```text
+OV-id | Escenario | Disparador de aplicabilidad | Sistemas | Datos nuevo/legacy |
+Resultado esperado | Unidad(es) asignada(s) | Hito intermedio adicional: si/no
+```
+
+- La aplicabilidad se decide por el comportamiento que cambia. Los campos
+  `requires_owner_validation: false` o `requires_autocad: false` no crean una exencion.
+- Cada escenario conceptual tiene al menos una unidad asignada y cada unidad ejecuta todos los
+  escenarios que le aplican. READY-08 verifica la asignacion completa antes del Candidato.
+- El Coordinator puede añadir escenarios mediante A-n. Retirar o sustituir un escenario, o retirar
+  su ultima asignacion, exige decision explicita del Owner. Reasignar exige A-n.
+- Todos los escenarios aplicables, incluidos los de esta guia, se ejecutan sobre el
+  `FINAL_CANDIDATE_SHA`. Una validacion intermedia es adicional.
+- Una ronda intermedia solo cubre la final si su SHA sigue siendo exactamente
+  `FINAL_CANDIDATE_SHA`, conserva proposito y alcance y cumple las condiciones de reutilizacion de
+  AGENTS: misma version de AutoCAD y misma biblioteca, sin otro invalidante aplicable.
+
+Antes de entregar el DLL al Owner, el Executor verifica que fue construido desde el Candidato y
+registra ambas identidades:
+
+```powershell
+$dll = '<worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll'
+[System.Diagnostics.FileVersionInfo]::GetVersionInfo($dll).ProductVersion  # InformationalVersion; debe identificar FINAL_CANDIDATE_SHA
+(Get-FileHash -LiteralPath $dll -Algorithm SHA256).Hash
+```
+
+El registro de entrega incluye `FINAL_CANDIDATE_SHA`, la `InformationalVersion` observada y el
+SHA-256 del DLL antes de NETLOAD. Un valor ausente o que no identifica ese Candidato detiene la
+entrega; no se completa por nombre de archivo, fecha o igualdad de arbol.
 
 ## 8. Duración activa del dueño (métrica EXPERIMENTAL de I-45)
 

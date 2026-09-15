@@ -7,8 +7,8 @@ Workflow V2 mientras no exista `WORKFLOW_V2_EFFECTIVE_SHA`. Nunca prevalece sobr
 ni sobre un ADR aceptado o un Freeze integrado y sus enmiendas aplicables.
 
 Quien consuma o extienda una entrada debe volver a verificarla en su base actual mediante
-[DC-08](INITIATIVE_LIFECYCLE.md#3-discovery-obligatorio). Todo desacuerdo activa
-[EXP-01](INITIATIVE_LIFECYCLE.md#3-discovery-obligatorio); el tratamiento completo de consumo,
+[DC-08](INITIATIVE_LIFECYCLE.md#4-discovery-core-y-expansiones). Todo desacuerdo activa
+[EXP-01](INITIATIVE_LIFECYCLE.md#4-discovery-core-y-expansiones); el tratamiento completo de consumo,
 discrepancias y cambios materiales vive en
 [INITIATIVE_LIFECYCLE](INITIATIVE_LIFECYCLE.md#41-interaccion-con-foundations).
 
