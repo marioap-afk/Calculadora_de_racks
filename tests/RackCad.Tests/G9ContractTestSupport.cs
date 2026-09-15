@@ -56,7 +56,10 @@ namespace RackCad.Tests
                 BeamPeralte = 4.5,
             });
             design.Bays.Add(bay);
-            var document = SelectivePalletDesignDocument.From(design, rackId, "Rack " + rackId.Substring(0, 4));
+            var document = SelectivePalletDesignDocument.From(
+                design,
+                rackId,
+                "Rack " + rackId.Substring(0, Math.Min(4, rackId.Length)));
 
             if (directVariable != null || expression != null)
             {

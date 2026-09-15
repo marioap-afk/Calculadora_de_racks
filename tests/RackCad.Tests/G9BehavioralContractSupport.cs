@@ -27,6 +27,42 @@ namespace RackCad.Tests
             internal string[] Units => Strings(Raw, "RecoveryUnits", "Units");
             internal string[] Reasons => Strings(Raw, "BlockingReasons", "Reasons");
             internal string[] ReasonData => Strings(Raw, "BlockingReasonData", "ReasonData", "Details");
+            internal string[] SourceRoots => Strings(Raw, "SourceRoots", "Roots");
+            internal string[] AbortCauses => Strings(Raw, "DiscoveryAbortCauses", "AbortCauses");
+            internal string[] StructuredAbortCauses
+                => Items(Member(Raw, "DiscoveryAbortCauses", "AbortCauses")).Select(StructuredAbortCause).ToArray();
+            internal string Classification => Text(Raw, "SourceClassification", "Classification", "InspectionOutcome");
+            internal string RackRepairability => Text(Raw, "RackRepairability", "Repairability", "RackState");
+            internal bool HasRepairPlan => Bool(Raw, "HasRepairPlan", "CanRepair", "IsRepairable");
+
+            internal string StableSignature => string.Join("|", new[]
+            {
+                "candidate=" + IsCandidate,
+                "candidateValue=" + Candidate,
+                "units=" + string.Join(",", Units),
+                "reasons=" + string.Join(",", Reasons),
+                "roots=" + string.Join(",", SourceRoots),
+                "abort=" + string.Join(",", StructuredAbortCauses),
+                "repairability=" + RackRepairability,
+                "repairPlan=" + HasRepairPlan,
+            });
+        }
+
+        internal sealed class AttemptFailureView
+        {
+            internal AttemptFailureView(VariableMutationPreflightResult result)
+            {
+                Result = result;
+                RawFailure = Member(result, "AttemptedStateFailure", "AttemptFailure", "Failure");
+            }
+
+            internal VariableMutationPreflightResult Result { get; }
+            internal object RawFailure { get; }
+            internal string RackId => Text(RawFailure, "RackId", "FailedRackId");
+            internal string Category => Text(RawFailure, "Category", "Code", "Classification");
+            internal string[] DiagnosticCodes => Strings(RawFailure, "DiagnosticCodes", "Diagnostics");
+            internal bool HasRecoveryCandidate => Bool(RawFailure, "HasRecoveryCandidate", "RecoveryCandidatePresent");
+            internal string[] PriorBlockingReasons => Strings(Result, "PriorBlockingReasons", "PriorStateReasons");
         }
 
         internal sealed class CommitView
@@ -57,6 +93,11 @@ namespace RackCad.Tests
             var raw = method.Invoke(null, new object[] { registry, id, definition, entries });
             return raw as VariableMutationPreflightResult ?? throw Missing("ChangeDefinition result");
         }
+
+        internal static AttemptFailureView ChangeDefinitionAttempt(
+            ProjectVariablesDocument registry, VariableId id, VariableDefinition definition,
+            IReadOnlyList<ProjectVariableScanEntry> entries)
+            => new AttemptFailureView(ChangeDefinition(registry, id, definition, entries));
 
         internal static RegistrySymbolResult Success(double value)
             => new RegistrySymbolResult(true, value, Array.Empty<RegistryDiagnostic>(), Array.Empty<RootSignature>());
@@ -216,11 +257,31 @@ namespace RackCad.Tests
             throw Missing(target.GetType().Name + "." + string.Join("/", names));
         }
 
+        private static object MemberOrNull(object target, params string[] names)
+        {
+            foreach (var name in names)
+            {
+                var property = target.GetType().GetProperty(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (property != null) return property.GetValue(target);
+            }
+            return null;
+        }
+
+        private static string StructuredAbortCause(object cause)
+        {
+            var kind = MemberOrNull(cause, "Kind", "Code", "Cause")?.ToString() ?? cause.GetType().Name;
+            var identity = MemberOrNull(cause, "DefinitionId", "RackId", "Identity")?.ToString() ?? string.Empty;
+            var unitsValue = MemberOrNull(cause, "RecoveryUnits", "Units");
+            var units = unitsValue == null ? Array.Empty<string>() : Items(unitsValue).Select(value => value.ToString()).ToArray();
+            return kind + "(" + identity + "){" + string.Join(",", units) + "}";
+        }
+
         private static bool Bool(object target, params string[] names) => Convert.ToBoolean(Member(target, names));
         private static int Int(object target, params string[] names) => Convert.ToInt32(Member(target, names));
         private static string Text(object target, params string[] names) => Member(target, names)?.ToString();
         private static string[] Strings(object target, params string[] names)
             => ((IEnumerable)Member(target, names)).Cast<object>().Select(value => value.ToString()).ToArray();
+        private static IEnumerable<object> Items(object value) => ((IEnumerable)value).Cast<object>();
         private static XunitException Missing(string detail) => new XunitException("G9 behavioral RED: product is missing " + detail + ".");
     }
 }
