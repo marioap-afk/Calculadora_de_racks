@@ -1,14 +1,73 @@
 # ADR-0043: Motor de expresiones paramétricas, edición de fórmulas, identidad textual y recuperación segura con causas múltiples
 
-- **Estado:** propuesto
-- **Fecha:** 2026-09-15 (ADR-0043-P1)
-- **Decisores:** Mario Pérez, Owner del repositorio (decisión **PENDING**); Coordinador y Arquitecto de I-49
-  (revisión exacta de este ADR **PENDIENTE**); Codex (redacción).
-- **Propone reemplazar a:** [ADR-0041](0041-motor-expresiones-parametricas-identidad-textual-y-cualificador-clave-exacta.md),
-  **entero y únicamente si el Owner acepta ADR-0043**. Mientras tanto, ADR-0041 permanece **aceptado y vigente**.
+- **Estado:** aceptado
+- **Fecha:** 2026-09-15 (propuesto, ADR-0043-P1) · 2026-09-15 (aceptado, ADR-0043-P4)
+- **Decisores:** Mario Pérez, Owner del repositorio (**acepta**, 2026-09-15); Coordinador y Arquitecto de I-49
+  (**AGREED WITH ADR-0043** sobre el blob propuesto exacto `164ac166080d0b2be660473ec721110301a46dbf`);
+  Codex (redacción).
+- **Reemplaza a:** [ADR-0041](0041-motor-expresiones-parametricas-identidad-textual-y-cualificador-clave-exacta.md),
+  entero; ADR-0041 queda como autoridad histórica, `reemplazado por ADR-0043`.
 - **Iniciativa relacionada:** I-49 — `architecture/motor-expresiones-parametricas`
   ([contrato](../initiatives/I-49-motor-expresiones-parametricas.md),
   [Discovery](../initiatives/I-49-discovery.md), [registro](../automation/decisions/I-49.md)).
+
+> **Aceptación del Owner (2026-09-15).** El Owner, Mario Pérez, acepta esta decisión de forma explícita en el canal
+> del Coordinador de I-49, con la respuesta literal: «**Acepto ADR-0043 para I-49 sobre Proposal V6 + Amendments A1 +
+> A2 + A3-R2.**». La respuesta nombra el ADR, la iniciativa y la base técnica completa. El registro durable está en
+> [`docs/automation/decisions/I-49.md`](../automation/decisions/I-49.md) §18.
+>
+> **Dos actos, dos autoridades.** El Coordinador y el Arquitecto aportaron el consenso técnico exacto, ambos
+> `AGREED WITH ADR-0043`, sobre la propuesta versionada en
+> `d54a8d7db830d763af293ab87ccd981c478c6272`, blob `164ac166080d0b2be660473ec721110301a46dbf`,
+> sin hallazgos materiales en la revisión exacta del Arquitecto. El Owner ejerce aquí el acto distinto de aceptación.
+>
+> **Contenido aceptado.** Es exactamente el contenido técnico de la propuesta indicada: Proposal V6, blob
+> `ef4db3aa400483ff25a8f39b2beb93708fa43d1a`, leída con Amendment A1, blob
+> `d62019088b9e7a140d5066799afe6ace6db303ba`; Amendment A2, blob
+> `49a925336dd3775929a35b0f40b73cb7f8c487f7`; y Amendment A3-R2, blob
+> `4da6ef3caa21dcf31140983c6db7e23f02aa3e18`. La aceptación cubre D1–D25 completos, P2.5, la identidad textual de
+> `VariableId`, `Q(key)`, la guarda del parser, las causas múltiples, `RootCauses`, `RecoveryUnit`, la recuperación de
+> ciclos, `PlanReadSet`/`Upstream`, `RepairDecisionObservation` y Schema V-0.
+>
+> **Inmutabilidad del contenido técnico.** En esta aceptación solo cambian el encabezado, este preámbulo y el bloque
+> «Decisión del Owner». Desde «Base exacta y frontera de decisión» hasta el final, el texto de la propuesta permanece
+> byte a byte y desde ahora es inmutable ([README](README.md)). Por eso conserva en su contexto histórico expresiones
+> condicionadas a que ADR-0043 siguiera `propuesto`; esa condición ya no se cumple.
+>
+> **Reemplazo y gates.** La aceptación hace efectivo el reemplazo entero de ADR-0041 por ADR-0043. En el mismo commit,
+> ADR-0041 cambia solo su metadata de sucesión y recibe una nota posterior fechada. G6 permanece cerrado. G7 sigue
+> bloqueado hasta que un nuevo Consensus Freeze sobre V6 + A1 + A2 + A3-R2 + ADR-0043 aceptado se versione y su CI
+> sobre el SHA exacto quede verde; G8 permanece bloqueado. Esta aceptación no implementa G7 ni crea todavía el freeze.
+
+## Decisión del Owner
+
+```text
+Proposal Version  = V6 + Amendment A1 + Amendment A2 + Amendment A3-R2
+V6 blob           = ef4db3aa400483ff25a8f39b2beb93708fa43d1a
+A1 blob           = d62019088b9e7a140d5066799afe6ace6db303ba
+A2 blob           = 49a925336dd3775929a35b0f40b73cb7f8c487f7
+A3-R2 blob        = 4da6ef3caa21dcf31140983c6db7e23f02aa3e18
+
+ADR proposal SHA  = d54a8d7db830d763af293ab87ccd981c478c6272
+ADR proposal blob = 164ac166080d0b2be660473ec721110301a46dbf
+
+Coordinator       = AGREED WITH ADR-0043
+Architect         = AGREED WITH ADR-0043
+
+Owner decision    = ACCEPTED
+Owner             = Mario Pérez
+Fecha             = 2026-09-15
+Canal             = Coordinador I-49
+Respuesta literal = "Acepto ADR-0043 para I-49 sobre Proposal V6 + Amendments A1 + A2 + A3-R2."
+
+ADR-0041          = REPLACED BY ADR-0043
+G6                = CLOSED
+G7                = BLOCKED UNTIL NEW CONSENSUS FREEZE IS VERSIONED AND GREEN
+G8                = BLOCKED
+```
+
+La respuesta es inequívoca y vinculante: nombra ADR-0043, I-49 y la base técnica V6 + A1 + A2 + A3-R2 sobre la que
+se acepta. El contenido normativo aceptado es D1–D25 completo con la precedencia declarada por esos cuatro documentos.
 
 ## Base exacta y frontera de decisión
 
