@@ -180,7 +180,8 @@ observable demostrada, reconciliacion exacta y ausencia de productores legacy no
 ## 12. Condiciones para detenerse
 
 - Cualquier intento de abrir F1 sin revision y consenso propios.
-- R1 sigue `NOT EFFECTIVE`, una CR material no resuelta o titularidad duplicada.
+- La latest reconciliation Rn sigue `NOT EFFECTIVE`, tiene una CR material abierta o deja titularidad duplicada;
+  hoy latest Rn = R3.
 - Cambios productivos durante F0 o expansion hacia politica de I-52/I-55.
 - Conflicto de archivos con una iniciativa activa sin serializacion.
 - Necesidad de numerar o aceptar el ADR sin decision correspondiente.
