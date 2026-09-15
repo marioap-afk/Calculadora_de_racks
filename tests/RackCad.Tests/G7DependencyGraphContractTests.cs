@@ -38,8 +38,8 @@ namespace RackCad.Tests
             AssertIds(new[] { 2, 3 }, evaluation.DirectDependencies(1));
             AssertIds(new[] { 1 }, evaluation.DirectDependents(2));
             AssertIds(new[] { 1 }, evaluation.DirectDependents(3));
-            AssertIds(new[] { 1, 2, 3, 4 }, evaluation.TransitiveDependencies(1));
-            AssertIds(new[] { 1, 2, 4 }, evaluation.TransitiveDependents(4));
+            AssertIds(new[] { 2, 3, 4 }, evaluation.TransitiveDependencies(1));
+            AssertIds(new[] { 1, 2 }, evaluation.TransitiveDependents(4));
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace RackCad.Tests
             var evaluation = Evaluate(Expression(1, Ref(99)), Literal(2));
 
             AssertIds(new[] { 99 }, evaluation.DirectDependencies(1));
-            AssertIds(new[] { 1 }, evaluation.TransitiveDependencies(1));
+            Assert.Empty(evaluation.TransitiveDependencies(1));
             Assert.DoesNotContain(evaluation.Cycles.SelectMany(cycle => cycle), id => id == Id(99));
         }
 
@@ -76,6 +76,8 @@ namespace RackCad.Tests
             Assert.Equal(new[] { ExpressionDiagnosticCode.Cycle }, two.Result(2).Diagnostics.Select(diagnostic => diagnostic.Code));
             AssertIds(new[] { 1, 2 }, two.TransitiveDependencies(1));
             AssertIds(new[] { 1, 2 }, two.TransitiveDependents(1));
+            AssertIds(new[] { 1, 2 }, two.TransitiveDependencies(2));
+            AssertIds(new[] { 1, 2 }, two.TransitiveDependents(2));
 
             var three = Evaluate(Expression(1, Ref(2)), Expression(2, Ref(3)), Expression(3, Ref(1)));
             AssertCycles(three, new[] { new[] { 1, 2, 3 } });
@@ -130,7 +132,7 @@ namespace RackCad.Tests
                 Expression(2, Ref(1)),
                 Expression(3, Ref(1)),
                 Literal(4));
-            AssertIds(new[] { 4 }, withCycle.EvaluationOrder);
+            AssertIds(new[] { 3, 4 }, withCycle.EvaluationOrder);
             Assert.False(withCycle.Result(3).Succeeded);
         }
 
