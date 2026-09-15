@@ -4,7 +4,8 @@
 - **Fecha:** 2026-09-15
 - **Decisor:** Owner del repositorio
 - **Iniciativa:** I-57 — Shared View Foundation
-- **Proposal:** `docs/initiatives/I-57-proposal-v1.md`
+- **Proposal:** `docs/initiatives/I-57-proposal-v3.md`
+- **Reconciliacion:** `docs/initiatives/I-57-reconciliation-r3.md` · blob `cd42db03becff42f98b047e61c46689c17a69670`
 
 ## Contexto
 
