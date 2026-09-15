@@ -113,17 +113,21 @@ Foundation integration   = NONE
 ```
 
 Despues de publicar el Discovery, I-57 avanzo a `ee0274d3cdc04705bf1a22008ecb4dad3acfd888`. Proposal V1 y R2 fueron
-publicadas en `f5dad131799f792053714e3e4a9eae8762c09ed4`; el blob exacto de R2 es
-`5a3921ef091b01f41e926119e5f44a3c01bffb49`. R2 declara `I-52 NOT REGISTERED`, `I-55 NOT REGISTERED`,
-`NOT EFFECTIVE`, `Integration SHA = —` y F1 `NOT OPEN`; Coordinator y Architect de I-57 siguen en revision.
+publicadas en `f5dad131799f792053714e3e4a9eae8762c09ed4`; el primer blob publicado de R2 fue
+`5a3921ef091b01f41e926119e5f44a3c01bffb49`. Ese objeto confundia las solicitudes originales de R1 con
+`CR-SVF-I52-01..06` y no podia registrarse por I-52.
 
-R2 no puede registrarse por I-52 en su forma publicada. Su seccion titulada `CR-SVF-I52-01..06` enumera seis asuntos
-distintos de la lista exacta de §2: solo el punto 3 corresponde directamente a `CR-SVF-I52-05`; la tabla X asigna
-titularidad neutral a X-2/X-8, pero la lista omite el tratamiento expreso de `CR-SVF-I52-01`, `-02`, `-03`, `-04` y
-`-06`. El mismo resumen incorrecto ya aparecia en Discovery §8. La autoridad de la posicion I-52 sigue siendo §2.
-Como R2 se declara inmutable y exige nueva version ante cambios, I-57 debe publicar R3 que cite y resuelva o escale
-las seis solicitudes exactas. Discrepancia **OPEN / MATERIAL FOR COORDINATION**; I-52 registration permanece
-`NOT REGISTERED` y no se abre F1.
+I-57 avanzo despues a `fcb2e492da2390a641d90645065bc4e7e3dd7bfd`. En
+`595d8db283cc88e035b33e84cb8c9fcffa51c966` corrigio el mismo archivo R2 y cambio su blob a
+`97b4e6952f62344a16ea33dc7492aca3f7951772`; el nuevo contenido separa las dos familias y reproduce las seis
+solicitudes exactas de §2. Los paquetes de revision quedaron reapuntados a ese objeto, con Coordinator y Architect
+`REVIEW REQUIRED`, consenso `NOT REACHED`, F1 `NOT OPEN` e `Integration SHA = —`.
+
+La correccion semantica no resuelve la identidad de version: el propio R2 declara que es inmutable desde publicacion y
+que cualquier cambio crea R3, pero I-57 reemplazo el blob de R2 despues de su primera publicacion. I-52 no registra
+ninguno de los dos blobs bajo una identidad ambigua. I-57 debe publicar el contenido corregido como R3 y someter ese
+SHA exacto a las revisiones y registros requeridos. Discrepancia **OPEN / MATERIAL FOR COORDINATION**; I-52
+registration permanece `NOT REGISTERED` y no se abre F1.
 
 Permanecen pendientes y fuera de la autoridad de este gate:
 
@@ -182,9 +186,9 @@ I-56 avanzo durante el gate de `4b04b23f8661d0d8a2a656985339c48796861966` a
 `5ecb19f122d8267e6c201bb2bcfbf032831610db`, que publica la revision arquitectonica exacta de Proposal V3 como
 `CHANGES REQUIRED — PROPOSAL V4`; despues a `94a4e446b76ff28d8a434252fb859c071cf11db5`, que publica Proposal V4; y
 finalmente a `e9740119ad029483deb73b7f8dd3451a55768919`, cuya revision de Arquitecto acuerda la V4 exacta y registra
-Technical Consensus `REACHED`. El Owner no fue solicitado, el dry-run no esta completo y Workflow V2 sigue
-`NOT EFFECTIVE`; no existe `WORKFLOW_V2_EFFECTIVE_SHA`. I-52 permanece grandfathered. Impacto para este gate:
-**NON-MATERIAL**.
+Technical Consensus `REACHED`. En `2654646bf1743bb0d53106c090a90cb29a168b91` el dry-run historico obligatorio
+termina `PASS` y conserva ese consenso. El Owner no fue solicitado y Workflow V2 sigue `NOT EFFECTIVE`; no existe
+`WORKFLOW_V2_EFFECTIVE_SHA`. I-52 permanece grandfathered. Impacto para este gate: **NON-MATERIAL**.
 
 ## 7. Revision requerida y estado de salida
 
