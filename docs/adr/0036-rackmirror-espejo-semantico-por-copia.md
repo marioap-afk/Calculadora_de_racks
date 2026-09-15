@@ -3,11 +3,11 @@
 - **Estado:** **propuesto**
 - **Fecha:** 2026-09-12 (propuesto; borrador corregido con Proposal V2 y con Proposal V3 el mismo día, y con
   Proposal V4, Proposal V5, Proposal V6, Proposal V7, Proposal V8, Proposal V9 y Proposal V10 el 2026-09-13, y con
-  Proposal V11, Proposal V12, Proposal V13, Proposal V14, Proposal V15 y Proposal V16 el 2026-09-14)
+  Proposal V11, Proposal V12, Proposal V13, Proposal V14, Proposal V15 y Proposal V16 el 2026-09-14; Proposal V17 el 2026-09-15)
 - **Decisores:** Mario Pérez, Owner del repositorio (**acepta o rechaza**; pendiente). La aceptación **no** es
   precondición de la caracterización (G3): se pide **después de G3**, si G3 no contradice materialmente el contrato (si
-  lo contradice, se abre una Proposal V17), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
-  (consenso técnico **pendiente** sobre la Proposal); Claude (redacción)
+  lo contradice, se abre una Proposal V18), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
+  (consenso técnico **pendiente** sobre la Proposal); Claude (borradores anteriores); Codex (ejecutor de V17)
 - **Iniciativa relacionada:** I-52 — `feature/rackmirror-espejo-semantico`
   ([contrato](../initiatives/I-52-rackmirror-espejo-semantico.md), [Discovery](../initiatives/I-52-discovery.md),
   [Proposal V1](../initiatives/I-52-proposal-v1.md), [Proposal V2](../initiatives/I-52-proposal-v2.md),
@@ -17,7 +17,8 @@
   [Proposal V9](../initiatives/I-52-proposal-v9.md), [Proposal V10](../initiatives/I-52-proposal-v10.md),
   [Proposal V11](../initiatives/I-52-proposal-v11.md), [Proposal V12](../initiatives/I-52-proposal-v12.md),
   [Proposal V13](../initiatives/I-52-proposal-v13.md), [Proposal V14](../initiatives/I-52-proposal-v14.md),
-  [Proposal V15](../initiatives/I-52-proposal-v15.md) (historial), [Proposal V16](../initiatives/I-52-proposal-v16.md),
+  [Proposal V15](../initiatives/I-52-proposal-v15.md) (historial), [Proposal V16](../initiatives/I-52-proposal-v16.md) (historial),
+  [Proposal V17](../initiatives/I-52-proposal-v17.md),
   [decisiones](../automation/decisions/I-52.md))
 
 > **Numeración.** Un número de ADR queda reclamado por su primera publicación observable en un ref remoto. Este ADR se
@@ -26,11 +27,12 @@
 > sin publicación anterior de otro 0036 en ningún ref. ADR-0035 (I-50), ADR-0037 (I-53) y ADR-0039 (I-54), ya
 > integradas, están aceptados en `main`; ADR-0038 (I-49) se aceptó en su rama y lo reemplazó ADR-0040, aceptado en la
 > misma y reemplazado a su vez por ADR-0041, también aceptado allí; ADR-0042 (I-55) está propuesto en su rama, y el
-> Amendment A3 de I-49, revisado por A3-R1, anuncia un ADR de reemplazo de ADR-0041 aún sin número. Los seis posteriores
+> Amendment A3-R2 de I-49 tiene consenso técnico exacto registrado en A3-R3, pero el ADR sucesor completo,
+> su aceptación del Owner y el nuevo freeze siguen pendientes. El sucesor de ADR-0041 aún no tiene número publicado. Los seis posteriores
 > a 0036 se publicaron después y con otro número: no hay colisión. Antes de pedir la aceptación del Owner se vuelve a
 > buscar 0036 en todos los refs; si apareciera una publicación anterior, este ADR se renumera antes de la aceptación.
 > Una vez `aceptado` no se renumera, y dos ADR aceptados con el mismo número detienen el trabajo hasta que decida el
-> Owner (Proposal V16 §16).
+> Owner (Proposal V17 §16).
 
 ## Contexto
 
@@ -96,7 +98,9 @@ definición al cerrar la sesión, probando un bloque en su ventana de prueba o e
 asociativa, donde los objetos fuente se editan en el espacio modelo y los objetos nuevos pueden pasar a formar parte de
 la matriz; puede haber otros modos de edición en sitio, cuya ausencia solo puede demostrarse con autoridades observables
 que la caracterización establezca para un producto y una versión concretos; y otras aplicaciones cargadas pueden
-registrar overrules o reactores que cambian cómo se dibujan los objetos sin cambiar su geometría en la base de datos; un
+registrar overrules que alteran dibujo, transformación o extensiones de modelo sin que la geometría almacenada
+sea autoridad suficiente. Los reactores que ya escribieron están reflejados en la DB actual y los que escribirán
+después son mutaciones/ediciones futuras, no señales de representación externa; un
 objeto borrado puede restaurarse después con OOPS; y el contorno o el marco de un recorte puede quedar fuera del
 contenido recortado y hacerse visible. Borrar, restaurar o editar el contenido más adelante (redefinir un bloque, editar
 un texto, editar el objeto al que se refiere un campo o editar y recargar el archivo de una referencia externa) es
@@ -130,7 +134,7 @@ ruta sin cambiar de contenido.
    de los builders queda pendiente de caracterización; una contradicción reabre la Proposal, no se parchea. Al cerrar la
    caracterización **ninguna** propiedad puede quedar pendiente: cada una queda verificada o reclasificada `UNKNOWN` o
    `REQUIRES_MODEL_CHANGE` con fallo cerrado, y una reclasificación que cambie materialmente el alcance, este ADR, una
-   regla de reflexión o la arquitectura abre una Proposal V17. Una holgura gráfica anclada a un lado ya demostrada en
+   regla de reflexión o la arquitectura abre una Proposal V18. Una holgura gráfica anclada a un lado ya demostrada en
    código (tope del Selectivo, tope posterior activo de Push Back) es `UNKNOWN` y falla cerrado hasta que se apruebe una
    regla explícita.
 6. **Reflectores puros en Application sobre el sustrato real de cada kind**, despachados por kind fuera del comando.
@@ -191,27 +195,33 @@ ruta sin cambiar de contenido.
    asimétrica falla cerrado y los drawers existentes no cambian. Una guarda estructural con dos lados vigila a esos
    productores: los productores declarados —si alguno empieza o deja de asignar una propiedad visual, cambia el uso de
    capas, estilos o valores por defecto, crea una clase de entidad relevante nueva o cambia la resolución de estilos— y
-   un censo de todos los sitios del camino de materialización hecho por familias de símbolos de la API —no solo por la
-   construcción sintáctica de entidades o por añadirlas al espacio: también importaciones de dibujos, clonados, copias
-   transformadas y explosiones; altas en las tablas de símbolos (bloques, capas, tipos de línea, estilos de texto y de
-   cota); lecturas de las propiedades de cabecera y de los valores por defecto de la base de datos y de las variables
-   del sistema; reevaluaciones gráficas de cotas, sombreados o tablas y transformaciones relevantes; atributos añadidos
-   a una referencia; construcción por reflexión; rutas de comando o COM; delegación en ayudantes o factorías; y
-   **escritura o mutación de objetos o contexto existentes**: aperturas para escritura (también al promover un objeto
-   abierto para lectura o con transacciones de apertura y cierre), cambios de la presentación de una entidad (capa,
-   color, tipo de línea y su escala, grosor, transparencia, visibilidad, estilo de trazado, copia de propiedades desde
-   otra entidad o transformación donde sea material), cambios de registros de símbolo existentes (capas, tipos de línea,
-   estilos de texto y de cota) y escrituras de estado global (variables del sistema y valores actuales de la base de
-   datos); **mutadores internos de AutoCAD**, que escriben objetos sin que el llamador los abra para escritura
-   (sincronización de atributos, restauración de estados de capa, recarga, resolución o enlace de referencias externas,
-   evaluación de redes asociativas, auditoría, restablecimiento o conversión a estático de bloques dinámicos y
-   equivalentes); y **registros de overrules o reactores** (overrules de dibujo, de objeto o de transformación y
-   suscripciones a eventos de la base de datos, del documento o del editor que puedan causar escrituras diferidas)—, con
-   cada punto de llamada relevante declarado o excluido con motivo; cinco pruebas deben demostrar que un productor por
-   clonado, una lectura de cabecera, una mutación de presentación de un objeto existente, un mutador interno y el
-   registro de un overrule o de un reactor sin clasificar detienen el trabajo. Un punto de llamada nuevo sin clasificar
-   o un cambio de un productor declarado detienen el trabajo hasta que se actualicen la caracterización, las
-   observaciones consumidas y las pruebas, sin depender de los nombres de archivos o clases ni de hashes.
+   **AutoCadApiCallCensus** mecánicamente cerrado sobre **todas** las invocaciones de miembros de la API de
+   AutoCAD alcanzables desde producción de RackCad.Plugin, los caminos de materialización y los helpers/factories
+   transitivamente utilizados. Incluye constructores, métodos, getters/setters, accesores de eventos, operadores,
+   inicializadores, callbacks y handlers, llamadas indirectas, reflexión y wrappers de comando/COM. CT-50 captura
+   el censo inicial con miembro/firma resueltos, sitio, cadena de alcance, efecto y justificación. Cada invocación
+   es READ_ONLY, DECLARED_MUTATOR o EXCLUDED_WITH_REASON; UNCLASSIFIED, incluso una llamada arbitraria ajena a
+   las familias enumeradas, pone G-M24 en RED. Una llamada indirecta no resuelta no desaparece del universo.
+   La igualdad mecánica entre sitios descubiertos y filas clasificadas impide huecos o filas obsoletas que
+   encubran otro sitio; una exclusión permanece visible y justificada. READ_ONLY no exime el lado A si cambia
+   el consumo. El cierre no depende de nombres actuales de archivos/clases ni hashes de texto.
+
+   Las familias enumeradas hasta V16 siguen como fixtures obligatorios, **no como mecanismo de cierre**:
+   construcción/alta de entidades, importación/clonado, tablas de símbolos, cabeceras/defaults, evaluación
+   gráfica, atributos, comandos/COM, aperturas para escritura, mutación de presentación/registros/contexto,
+   mutadores internos, overrules y delegación. Se añaden explícitamente Database.EvaluateFields, Field.Evaluate,
+   DataLinkManager.Update*, Table.UpdateDataLink, Database.UnloadXrefs/DetachXref/AttachXref/OverlayXref,
+   LayoutManager.*, Database.UpdateExt y eventos de Application y DocumentCollection. CT-50 resuelve las firmas
+   reales en AutoCAD 2025 y documenta equivalentes o ausencias; los nombres no afirman disponibilidad demostrada.
+
+   Cada registro/suscripción de **RackCad** a Database, Document, Editor, Application o DocumentCollection cuyo
+   handler pueda mutar o programar escrituras diferidas queda DECLARED o EXCLUDED_WITH_REASON, con el handler y
+   el trabajo diferido transitivos censados. DECLARED enlaza el efecto DECLARED_MUTATOR cuando corresponda;
+   la suscripción no es READ_ONLY solo porque el callback no se haya ejecutado. Esto es guarda de código y no
+   una regla runtime de representación para reactores de terceros. T-M75 conserva los casos anteriores y exige
+   RED para campos, DataLink, XREF, eventos y una invocación arbitraria de API sin clasificar. El cambio de un
+   productor declarado o sitio sin clasificar detiene el trabajo hasta actualizar CT-50, observaciones
+   consumidas, FootprintInputFingerprint y pruebas (Proposal V17 §0.5).
 8. **Colocación canónica.** Con la reflexión de la hoja `G`, la colocación efectiva de la fuente
    `P = T(p)·R(θ)·S(s,s)·T(−o)` —donde `o` es el `Origin` de su definición— y la reflexión local de la vista `F`, la
    referencia nueva es `P' = G·P·F`, con determinante positivo y la escala uniforme de la fuente. Para una vista
@@ -271,8 +281,16 @@ ruta sin cambiar de contenido.
     que cada sesión de edición en sitio o alternativa es segura por caracterización o bloquea la operación, y que se
     evalúa con una **autoridad observable**: un conjunto finito de detectores —variables de estado de edición de solo
     lectura, autoridades de transacción larga y de conjunto de trabajo y autoridades de comando y de sesión— que la
-    caracterización establece con un método de descubrimiento cerrado para el producto, la vertical y la versión
-    caracterizados, y que se congela con el contrato. La ejecución no descubre modos desconocidos: la operación continúa
+    caracterización establece **después** de construir un catálogo cerrado de MODOS persistentes: comandos y
+    estados documentados, entornos/pestañas contextuales, pares apertura/cierre, long transactions, fuentes
+    asociativas y block authoring/testing. Mínimos REFEDIT/REFCLOSE, BEDIT/BCLOSE, ARRAYEDIT Source/ARRAYCLOSE y
+    BTESTBLOCK con su lifecycle. Cada modo tiene detector fiable o autoridad genérica con predicado, ámbito y
+    cobertura demostrados; sin ellos CT-49 STOP. Active-command state no cubre por sí solo modos persistentes.
+    LongTransactionManager prueba existencia de long transaction para document/database; working set prueba
+    pertenencia al conjunto activo in-place, no ausencia global. La fuente fiable de product, vertical/host y
+    major/API también debe demostrarse: si no existe, CT-49 STOP → Proposal V18. Solo después se congela el
+    conjunto observable; E12 runtime por identidad se reserva para lectura fallida o host/version fuera del conjunto ya
+    caracterizado (Proposal V17 §0.4). La ejecución no descubre modos desconocidos: la operación continúa
     solo si el entorno es el caracterizado, todos los detectores se leen con éxito, ninguno de los que bloquean está
     activo y ninguna autoridad genérica reporta una sesión de edición activa; un entorno no caracterizado o una lectura
     que falla, no está disponible o devuelve un estado no clasificable bloquean la operación, nunca cuentan como
@@ -313,12 +331,25 @@ ruta sin cambiar de contenido.
     conservadora para todos los resultados que puede alcanzar solo por cambios de estado, nunca por su valor actual: un
     cambio del resultado causado por la edición del contenido al que se refiere el campo es una edición, aunque el campo
     solo se reevalúe después, y en un campo que depende a la vez de contenido editable y de estado, las entradas que
-    dependen de la edición quedan fijas en su valor actual y solo varían las que dependen del estado; y los atributos
+    dependen de la edición quedan fijas en su valor actual y solo varían las que dependen del estado. Esto es
+    recursivo en campos nested: se clasifican hojas, no se congela un campo mixto completo. Ciclos sin finite
+    conservative bound demostrada ⇒ UNKNOWN. Attribute value/content mutation es EDIT por defecto; Dimension
+    measured value por geometry edit es EDIT y apariencia/valor por estado/style/sysvar explícitamente admitido
+    es STATE solo donde se caracterice. DataLink conserva su excepción STATE (Proposal V17 §0.6); y los atributos
     invisibles y su modo de visualización, los objetos ocultos o aislados, los proxies cuyos gráficos no se muestran y
     los vínculos de datos y las fórmulas de tabla siguen la misma regla: método latente conservador o no clasificable; y
-    un objeto cuya representación dibujada puede estar alterada por un overrule o un reactor activo de otra aplicación,
-    sin equivalencia ni ocupación conservadora demostradas, es no clasificable, sin inspeccionar los internos de esa
-    aplicación. El orden persiste si cualquiera de esos mecanismos cambia. Esa garantía cubre el **estado** —visibilidad
+    un overrule de terceros FOOTPRINT_RELEVANT, aplicable al sujeto/clase y sin soporte conservador, deja
+    VisualFootprint UNKNOWN. CT-49 clasifica familias según dibujo, transformación o extents/ocupación de modelo:
+    Drawable/Geometry/Transform son potencialmente relevantes; Grip/Osnap/Highlight/Properties solo se consideran
+    FOOTPRINT_IRRELEVANT con demostración; todas las equivalentes halladas se clasifican, o quedan UNKNOWN.
+    Se prefiere HasOverrule(subject, RXClass de la familia de overrule) o equivalente, caracterizando filtros,
+    herencia y granularidad real. Una familia demostrada irrelevante o un overrule demostrado no aplicable no
+    penalizan. Una clasificación/aplicabilidad UNKNOWN falla cerrado donde no pueda descartarse efecto relevante.
+    Overruling == true por sí solo no significa EVERYTHING UNKNOWN. Solo si CT-49 demuestra que únicamente hay
+    autoridad global se amplía conservadoramente el fallo, con su alcance expuesto en O-1/L-34/M-35/R-58.
+    No se inspeccionan internals de plugins. **Reactores de terceros no son representation blockers**: escrituras
+    pasadas constan en DB actual y escrituras futuras son mutación/edición futura; permanecen las relecturas y
+    la frescura existentes (Proposal V17 §0.3). El orden persiste si cualquiera de esos mecanismos cambia. Esa garantía cubre el **estado** —visibilidad
     (capas, objetos invisibles y representaciones anotativas), carga y descarga de referencias externas, que el mismo
     contenido cargado vuelva a estar disponible por un estado, con cualquier ruta, carga bajo demanda, recortes con sus
     marcos, solo la visibilidad dinámica, evaluación de campos cuyo resultado cambia solo por un estado, refresco de
@@ -492,19 +523,22 @@ ruta sin cambiar de contenido.
     presentación resuelta en el dibujo destino, las huellas visuales de ocupación de modelo en el dibujo destino con la
     transformación de sus anchos, también con magnitud uniforme reflejada, y su recálculo tras importar, la regla del
     entorno en las huellas de la propia copia, la completitud de la base de datos y de la enumeración, con las API
-    exactas y la detección fiable de la apertura parcial y de las sesiones de edición, con el método de descubrimiento
-    cerrado y el conjunto de detectores de solo lectura (edición de referencia en curso, transacción larga, Editor de
+    exactas y la detección fiable de la apertura parcial y de las sesiones de edición, con catálogo cerrado de
+    MODOS previo a señales, mapping modo→detector, semántica/ámbito y cobertura demostrada de cada autoridad
+    genérica, fuentes fiables de product/vertical-host/major-API (ausencia ⇒ CT-49 STOP) y detectores de solo lectura (edición de referencia en curso, transacción larga, Editor de
     bloques, ventana de prueba de bloques, edición de la fuente de una matriz asociativa y demás autoridades de
     transacción, de comando y de sesión), la identidad del entorno caracterizado y el fallo ante una lectura que no
     puede hacerse, la frontera entre estado y edición futura, con la precedencia causal de los campos, sus dependencias
-    mixtas y la regla del contenido cargado actual de las referencias externas, la autoridad sobre overrules y reactores
-    activos de otras aplicaciones, los marcos de recorte, la política de huellas por tipo exacto y por mecanismo de los
+    mixtas, nested/cyclic y cotas finitas, Attribute y Dimension por causa, y la regla del contenido cargado actual
+    de las referencias externas, la relevancia por familia y aplicabilidad por sujeto/clase de overrules de terceros
+    (sin política de representación para reactores de terceros), los marcos de recorte, la política de huellas por tipo exacto y por mecanismo de los
     objetos del dibujo —visibilidad, disponibilidad y carga bajo demanda de las referencias externas, recortes, estados
     de visibilidad dinámica, campos, atributos invisibles, aislamiento de objetos, visualización de proxies y datos
     externos de tabla— con su independencia del entorno, la cola completa de objetos posteriores, el contexto de
-    materialización que consume cada productor con su cierre transitivo, el censo inicial de sitios productores por las
-    familias ampliadas de símbolos de la API, incluidos los sitios de escritura, los mutadores internos y los registros
-    de overrules o reactores, y la postcondición del dibujo y de la caché; la evaluación productiva nace en el Plugin
+    materialización que consume cada productor con su cierre transitivo, AutoCadApiCallCensus inicial de CT-50
+    mecánicamente cerrado, familias heredadas como fixtures más EvaluateFields/Field.Evaluate, DataLink, XREF,
+    LayoutManager, UpdateExt y eventos de Application/DocumentCollection, junto con los de Database/Document/Editor,
+    registros de overrules o reactores de RackCad y handlers diferidos, y la postcondición del dibujo y de la caché; la evaluación productiva nace en el Plugin
     durante la implementación. La confirmación visual del Owner es confirmación, nunca la única prueba.
 14. **Verificación dinámica por rack sobre todas las vistas admisibles.** Antes de pedir la línea, cada rack lógico
     verifica sobre su diseño reflejado: la ausencia de metadata semántica desconocida en el payload y en el exterior; la
@@ -517,6 +551,14 @@ ruta sin cambiar de contenido.
     rack concreto, en cualquier vista que la copia pueda generar, no llega a mutar.
 
 ## Alternativas consideradas
+
+- **Reactores de terceros como blockers de representación** — retirada por V17: escrituras pasadas en DB,
+  futuras como EDIT; registros de RackCad siguen bajo G-M24.
+- **Overruling global ⇒ EVERYTHING UNKNOWN** — descartada: primero relevancia y aplicabilidad; fallback global
+  solo con limitación demostrada y expuesta.
+- **Cerrar sesiones desde señales, o cerrar G-M24 desde familias enumeradas** — descartadas: catálogo de modos
+  antes de detectores y censo mecánico de todas las invocaciones, respectivamente.
+
 
 - **Espejo de entidades o referencia con escala negativa** — descartada: el diseño embebido no cambia y todas las
   autoridades lo contradicen; los textos quedan al revés y la escala se propaga.
@@ -741,17 +783,18 @@ ruta sin cambiar de contenido.
     operaciones con una edición de referencia en curso, una transacción larga, el Editor de bloques o la ventana de
     prueba de bloques abiertos, la edición de la fuente de una matriz asociativa en curso, un entorno de AutoCAD no
     caracterizado, la lectura fallida de un detector o una autoridad genérica con una sesión activa —y, si la
-    caracterización no logra un conjunto cerrado de detectores fiables, podrían fallar todas y el alcance se reevalúa en
-    una Proposal posterior—; fallan también las que tienen después de alguna fuente un objeto cuya representación puede
-    estar alterada por un overrule o reactor de otra aplicación sin soporte conservador, lo que puede afectar a
-    estaciones enteras; fallan también las que tienen después de alguna fuente un objeto recortado cuyo marco no puede
+    caracterización no logra catálogo de modos, mapping, cobertura genérica o fuente fiable de identidad,
+    CT-49 se detiene y exige Proposal V18 antes de implementar—; fallan también las que tienen después de alguna fuente un objeto cuya representación puede
+    estar alterada por un overrule footprint-relevant aplicable sin soporte conservador; solo una autoridad
+    global demostrada puede ampliar ese fallo, y se expone en O-1/L-34/M-35/R-58; familias irrelevantes o
+    overrules no aplicables demostrados no penalizan, y reactores de terceros no bloquean representación; fallan también las que tienen después de alguna fuente un objeto recortado cuyo marco no puede
     acotarse; y el orden no se garantiza frente a ediciones futuras del contenido, incluidos los objetos borrados que se
     restauran con OOPS, la edición del objeto al que se refiere un campo y la resolución de una referencia externa a un
     contenido distinto, mientras que un campo que solo cambia por estado sin cota conservadora hace fallar la operación;
   - la copia regenera sus piezas internas, anotaciones y cotas como Actualizar: los drawers no asignan explícitamente
     determinadas propiedades, la caracterización establece qué mecanismo aplica AutoCAD y qué observaciones consume cada
     productor, con su cierre transitivo (estilos de texto, bloques de flecha, tipos de línea y fuentes de los estilos de
-    cota y de texto), una guarda con censo de sitios productores por familias de símbolos de la API detiene el trabajo
+    cota y de texto), una guarda con AutoCadApiCallCensus mecánicamente cerrado de invocaciones de API detiene el trabajo
     si un productor cambia lo que consume o aparece uno sin clasificar, también un sitio que escribe o muta objetos o
     contexto existentes, que invoca un mutador interno de AutoCAD o que registra un overrule o un reactor, la copia
     puede verse distinta de una fuente dibujada con otro contexto, y si la huella de sus anotaciones o cotas depende del
@@ -791,7 +834,7 @@ ruta sin cambiar de contenido.
     integrarse;
   - la aceptación de este ADR espera a la caracterización (G3), lo que añade una ronda del Owner antes de implementar;
     si G3 contradice materialmente el contrato o reduce materialmente el alcance que el Owner aceptó, se abre una
-    Proposal V17 antes de pedirla.
+    Proposal V18 antes de pedirla.
 - Vigilar: cada kind o vista nueva debe declarar su reflector, su decodificación de sección, su conjunto de vistas
   admisibles y su exposición; todo miembro nuevo y toda propiedad vinculable nueva necesitan clasificación antes de
   integrarse; todo offset gráfico nuevo de un builder de vista admitida debe caracterizarse; toda variante de clase o
@@ -821,12 +864,9 @@ ruta sin cambiar de contenido.
   cambios el `PlanReadSet` (D19) y la identidad textual de `VariableId` es un hecho histórico anterior al Amendment A3;
   su D19 no es la autoridad vigente de las lecturas transitivas del espejo; G5 sintáctico, G6 con enlace y evaluación y
   la corrección G6-C2 del cualificador de clave exacta, solo en `Expressions`, sin `PlanReadSet` ni dominio integrados;
-  el Amendment A3, solo documentación, recibió en su revisión exacta cambios requeridos y su revisión A3-R1, pendiente
-  de nueva revisión exacta, anuncia un ADR de reemplazo sin número y un nuevo freeze: cambia la semántica futura de las
-  observaciones de símbolo del `PlanReadSet` —todos los diagnósticos de un símbolo no evaluado, su orden, la cadena de
-  cada dependencia fallida y el conjunto de causas raíz por componente fuertemente conexo; según A3-R1, D19 se lee con
-  la enmienda y su texto aceptado sigue siendo cierto— y el dato `Upstream` de D20, que el espejo no consume, junto con
-  la sugerencia de recuperación de D18 y la ruptura de ciclos de D14; antes de congelar este contrato debe estar
+  A3-R2 tiene consenso técnico exacto de Coordinador y Arquitecto registrado en A3-R3. El ADR sucesor completo,
+  su aceptación del Owner y el nuevo freeze siguen pendientes; no se adopta semántica intermedia del amendment
+  como autoridad final de I-52. Antes de congelar este contrato debe estar
   disponible la autoridad final acordada, aceptada y congelada de I-49, o el freeze queda bloqueado, también si I-49 se
   cancela sin una decisión del Coordinador): `PlanReadSet` y dominio del consumidor declarado por el descriptor; guardas
   de texto de `ProjectVariablesConformanceTests` y autoridad de unidades de longitud (`LengthUnitsAuthorityGuardTests`).
@@ -863,7 +903,7 @@ ruta sin cambiar de contenido.
   (ARRAYEDIT, ARRAYCLOSE), campos de propiedad de objeto, resolución de referencias externas por ruta, rutas de búsqueda
   y proyecto (`PROJECTNAME`), escritura de objetos y variables del sistema, variable de estado de edición de matrices
   (`ARRAYEDITSTATE`), transacciones largas y conjunto de trabajo, identidad del producto y de la versión, overrules
-  activos (`Overrule.Overruling`), mutadores internos (sincronización de atributos, estados de capa, recarga, resolución
+  aplicables por sujeto/clase (`Overrule.HasOverrule` o equivalente; `Overruling` global no basta), mutadores internos (sincronización de atributos, estados de capa, recarga, resolución
   y enlace de referencias externas, redes asociativas, auditoría, bloques dinámicos) y eventos de la base de datos,
   restauración de objetos borrados (OOPS) y marcos de recorte (`XCLIPFRAME`, `FRAME`, `IMAGEFRAME`, `WIPEOUTFRAME`,
   `PDFFRAME`, `DWFFRAME`, `DGNFRAME`, `POINTCLOUDCLIPFRAME`).
@@ -1121,7 +1161,7 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
     I-49 se cancela, descartadas; revisión A3-R1 de I-49 y D19 como hecho histórico; revisión no formal de I-55 y su
     Proposal V4 con el redibujo atómico de las hermanas; Proposal V1 de I-56 sin consenso; API de AutoCAD 2025 a
     confirmar.
-- **Borrador V16** — este texto, con Proposal V16. Cambios respecto del V15, por la revisión de Arquitecto de
+- **Borrador V16** — histórico, con Proposal V16. Cambios respecto del V15, por la revisión de Arquitecto de
   Proposal V15 (`Architect: CHANGES REQUIRED — PROPOSAL V16`) y la orden del Coordinador:
   - decisión 11: autoridad observable de la política de sesiones (conjunto cerrado de detectores fijado por la
     caracterización, sin descubrir modos en ejecución), entorno caracterizado, lectura fallida que bloquea, overrules y
@@ -1138,3 +1178,14 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
     Proposal V2 de I-56 sin consenso; API de AutoCAD 2025 a confirmar.
 
   Sigue **propuesto**: su aceptación se pide después de G3 y antes de G4.
+
+
+- **Borrador V17** — vigente, por la revisión de V16 CHANGES REQUIRED — PROPOSAL V17 transmitida en el relevo:
+  - decisión 7: AutoCadApiCallCensus cerrado, clasificaciones, fixtures y registros de los cinco ámbitos de eventos;
+  - decisión 11: solo overrules relevantes/aplicables de terceros, fallback global demostrado; sin reactores como
+    blockers de representación; catálogo de modos, cobertura genérica e identidad fiable;
+  - decisión 13: evidencia de lo anterior y nested/cyclic fields, Attribute/Dimension; CT-49/CT-50 pendientes;
+  - contexto, consecuencias y limitaciones O-1 alineados con L-34/M-35/R-57/R-58; A3-R2 de I-49 con consenso exacto,
+    pero sucesor/Owner/freeze pendientes y RS-3 bloquea el freeze de I-52;
+  - V17 NOT CONSENSUS, ADR PROPOSED, O-1 PENDING, G3 NOT OPEN; contradicción material ⇒ Proposal V18.
+  El historial anterior registra lo que se propuso, no conserva las reglas sustituidas por V17.
