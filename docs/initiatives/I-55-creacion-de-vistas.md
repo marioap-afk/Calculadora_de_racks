@@ -26,22 +26,19 @@ automation:
 
 # I-55 — View Placement & Projection
 
-> **Fase actual: G2E — Proposal V4 en revision** ([Proposal V4](I-55-proposal-v4.md) @ `fe70d7a`).
+> **Fase actual: G2F — Proposal V5 para revision.** [Proposal V5](I-55-proposal-v5.md),
+> [mapa V5](I-55-implementation-map-v5.md), [Shared View Foundation](../architecture/shared-view-foundation/specification.md).
 >
-> - **Proposal V3** (`8e35a51`): el Coordinador decidio CQ-01 (redibujo atomico de hermanas en Insertar) → Proposal V4.
-> - **Proposal V4:** Coordinator = `REVIEW REQUIRED` ([paquete](I-55-coordinator-review-package-v4.md)); Architect formal = `PENDING`
->   ([paquete para un Arquitecto independiente](I-55-architect-review-package-v4.md)); Owner = `PENDING`.
-> - **Open Material:** M-01 (decision del Owner pendiente) y adopcion de X-1..X-8 por I-52 (Proposal V4 §17.2.1).
+> - V4: Coordinator **CHANGES REQUIRED → V5**. AR4-01..50 es entrada tecnica vinculante aceptada por el Coordinador;
+>   no es una revision formal independiente. V1..V4 permanecen historicas.
+> - V5: Coordinator **REVIEW REQUIRED**; Architect formal **PENDING**; Owner **PENDING**; Consensus **NOT REACHED**.
+> - Open Material: SVF-MECH/FOUNDATION_ID; reconciliacion exacta con I-52; X-2/X-8 proceso; ownership/tolerancia;
+>   M-01, OD y aceptacion separada de ADR neutral y ADR-0042.
+> - Dependencia nueva propuesta: foundation neutral integrada en main antes de producto; ID aun PENDING, por eso
+>   no se inventa una referencia YAML en depends_on. AUTH-15 es dependencia adicional de G15, segun CR-SVF-08.
+> - El SHA exacto de V5, artefacto y paquetes se registra en decisiones G2F al publicar. No hay nuevo reclamo.
 >
-> No hay una sola linea de produccion escrita; la implementacion esta **BLOQUEADA** (seccion 12).
->
-> ```text
-> SUBSTANTIVE IMPLEMENTATION: BLOCKED
-> Coordinator: REVIEW REQUIRED
-> Architect:   PENDING (formal, independiente)
-> Owner:       PENDING
-> Consensus:   NOT REACHED
-> ```
+> **SUBSTANTIVE IMPLEMENTATION: BLOCKED.** Sin freeze ni integracion autorizada por esta publicacion.
 
 ```text
 Initiative     = I-55 — View Placement & Projection
@@ -182,7 +179,7 @@ implementacion, ambos **sin consenso**. Una desviacion material frente a lo acor
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
 | G1 | Discovery | [I-55-discovery.md](I-55-discovery.md): matriz sistema × ViewKind × variante | **HECHA** |
 | G1.1 | Correccion contractual | Framing ID17 + ID18 + ID19, OQ reclasificadas, rebase y reconciliacion | **HECHA** (commit de esta correccion) |
-| G2 | Proposal y consenso | [Proposal V1](I-55-proposal-v1.md), [V2](I-55-proposal-v2.md) y [V3](I-55-proposal-v3.md) (historicas) con sus mapas y paquetes; en G2E, [Proposal V4](I-55-proposal-v4.md), [mapa V4](I-55-implementation-map-v4.md), ADR-0042 complementario y paquetes V4 ([Coordinador](I-55-coordinator-review-package-v4.md), [Arquitecto independiente](I-55-architect-review-package-v4.md)); veredictos de Coordinador y Arquitecto | **V1: Coordinator = CHANGES REQUIRED. V2 (`f84f303`): Coordinator = CHANGES REQUIRED → V3; Architect formal = PENDING ([revision tecnica adversarial](I-55-architect-review-v2.md)). V3 (`8e35a51`): decision CQ-01 → V4. V4 (`fe70d7a`): Coordinator = REVIEW REQUIRED; Architect formal = PENDING; M-01 abierta** |
+| G2 | Proposal y consenso | V1..V4 historicas; G2F: [Proposal V5](I-55-proposal-v5.md), [mapa V5](I-55-implementation-map-v5.md), spec/map/reconciliacion/ADR neutral, ADR-0042 propuesto; paquetes autonomos de revision en publicacion siguiente | V4 CHANGES REQUIRED → V5; V5 Coordinator REVIEW REQUIRED, Architect formal PENDING, Owner PENDING; sin consenso |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates del mapa de implementacion **tras el consenso** | **bloqueada** |
 
 ## 9. Pruebas y builds
@@ -219,8 +216,8 @@ en G2 y se **ejecuta** solo sobre el Candidato. G0..G2 no la requieren.
 ## 12. Condiciones para detenerse
 
 - **Implementacion bloqueada** hasta `Coordinator = AGREED` y `Architect = AGREED` sobre la **misma** Proposal.
-- **M-01 abierta**: sin consenso posible sobre la Proposal V4 hasta resolverla (CR-02). Sin la reconciliacion obligatoria con I-52 de las
-  autoridades compartidas no hay Consensus Freeze (Proposal V4 §17.2).
+- **M-01 abierta**: sin consenso posible sobre la Proposal V5 hasta resolverla (CR-02). Sin la reconciliacion obligatoria con I-52 de las
+  autoridades compartidas no hay Consensus Freeze (Proposal V5 §2.6 y §7.1).
 - Contradiccion material no resoluble con evidencia; decision del Owner no contestada por las decisiones vigentes;
   necesidad de veredicto del Arquitecto; conflicto Git o semantico ambiguo; fallo que invalide evidencia previa.
 - Cruce material con archivos de produccion de I-49 o I-52 al fijar los archivos de G2: reportarlo antes de continuar.
@@ -295,3 +292,7 @@ avance; I-52 avanzo a `e59bc89` (Proposal V14, releida para X-1..X-8 y CQ-01, si
 pase de verificacion, no dejo BLOCKER ni HIGH abiertos (Proposal V4 §23). Los paquetes V4 citan ese SHA exacto. Sin decisiones del Owner
 registradas. Proposals V1, V2 y V3, sus mapas y sus paquetes quedan como registro historico. Solo documentacion; HANDOFF y ROADMAP sin
 tocar.
+
+**G2F — Takeover aceptado (2026-09-15).** Se preservan los ocho borradores locales legitimos, se reconcilian con I-52 V17
+publicada y se separa foundation neutral de producto. Matriz AR4 completa con pendientes explicitados; mecanismo B recomendado,
+sin asignar ID ni ADR. Registro y evidencia exacta: decisiones G2F. CQ-01 permanece; Actualizar conserva su conducta.
