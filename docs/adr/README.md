@@ -82,7 +82,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0041](0041-motor-expresiones-parametricas-identidad-textual-y-cualificador-clave-exacta.md) | Motor de expresiones paramétricas, edición de fórmulas e identidad textual con cualificador de clave exacta | reemplazado por [ADR-0043](0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md) |
 | [0043](0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md) | Motor de expresiones paramétricas, edición de fórmulas, identidad textual y recuperación segura con causas múltiples | aceptado |
 | [0045](0045-workflow-v2-ciclo-evidencia-e-integracion.md) | Workflow V2 — Initiative lifecycle, evidence and integration governance | aceptado |
-| [0044](0044-hechos-neutrales-de-vistas-compartidas.md) | Hechos neutrales de vistas compartidas y consumo desde main | propuesto |
+| [0044](0044-hechos-neutrales-de-vistas-compartidas.md) | Hechos neutrales de vistas compartidas y consumo desde main | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,

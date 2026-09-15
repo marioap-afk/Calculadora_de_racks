@@ -1,6 +1,6 @@
 # ADR-0044: Hechos neutrales de vistas compartidas y consumo desde main
 
-- **Estado:** **propuesto**
+- **Estado:** **aceptado**
 - **Fecha:** 2026-09-15
 - **Decisor:** Owner del repositorio
 - **Iniciativa:** I-57 — Shared View Foundation
@@ -14,7 +14,7 @@ transformaciones, resolucion, preparacion, nombres, requisitos de bloque y autor
 dos autoridades; consumir una rama paralela contradice el modelo de integracion. Ya existen builders, handlers,
 `DimensionViewKind` y `Transform2D` maduros que no deben reemplazarse por simetria.
 
-## Decision propuesta
+## Decision
 
 1. I-57 es titular estable de AUTH-01..14 segun su Proposal y reconciliacion.
 2. Foundation expresa hechos/contratos puros en Application; AutoCAD permanece en adapters Plugin.
@@ -36,4 +36,10 @@ Validation por cambiar rutas de dibujo.
 Alternativas descartadas: extraer en una rama de producto, duplicar contratos, reemplazar builders con plan
 universal, mover handlers a Application o incluir policy de producto.
 
-Este ADR sigue **propuesto**. Publicarlo no lo acepta, no alcanza consenso, no abre F1 ni autoriza codigo.
+## Aceptacion
+
+El Owner acepto explicitamente este ADR el 2026-09-15 sobre Proposal V4 exacta
+`2a142f224fb8d8a0c16bd7f7334dc48be3be9eef` y R3 exacta, blob
+`cd42db03becff42f98b047e61c46689c17a69670`. Coordinator y Architect estan `AGREED`; Technical Consensus esta
+`REACHED`; R3 esta `EFFECTIVE` y no existe CR material abierta. La aceptacion abre F1 exclusivamente para
+caracterizacion. No abre F2 ni autoriza extraer AUTH-01..14 o cambiar comportamiento observable.
