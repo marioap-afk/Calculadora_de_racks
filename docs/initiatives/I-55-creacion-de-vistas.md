@@ -36,7 +36,7 @@ automation:
 >   M-01, OD y aceptacion separada de ADR neutral y ADR-0042.
 > - Dependencia nueva propuesta: foundation neutral integrada en main antes de producto; ID aun PENDING, por eso
 >   no se inventa una referencia YAML en depends_on. AUTH-15 es dependencia adicional de G15, segun CR-SVF-08.
-> - Proposal V5 exacta: `f49671e29c6cc817166c720fe3f975deb92d4c3b`. Reconciliacion R1 ancla ese commit; recibo G2F registra su SHA y los de paquetes. No hay nuevo reclamo.
+> - Proposal V5 exacta: `f49671e29c6cc817166c720fe3f975deb92d4c3b`. Reconciliacion R1 y paquetes en `aa37264381e7d386339305d11030314ffd219d63`; recibo G2F registra blobs y CI. R1 registrada por I55, no por I52; NOT EFFECTIVE. No hay nuevo reclamo.
 > - Paquetes: [Coordinador](I-55-coordinator-review-package-v5.md) y [Arquitecto independiente](I-55-architect-review-package-v5.md).
 >
 > **SUBSTANTIVE IMPLEMENTATION: BLOCKED.** Sin freeze ni integracion autorizada por esta publicacion.
@@ -297,3 +297,8 @@ tocar.
 **G2F — Takeover aceptado (2026-09-15).** Se preservan los ocho borradores locales legitimos, se reconcilian con I-52 V17
 publicada y se separa foundation neutral de producto. Matriz AR4 completa con pendientes explicitados; mecanismo B recomendado,
 sin asignar ID ni ADR. Registro y evidencia exacta: decisiones G2F. CQ-01 permanece; Actualizar conserva su conducta.
+
+**Recibo G2F:** Proposal/spec `f49671e29c6cc817166c720fe3f975deb92d4c3b`; R1 y ambos paquetes `aa37264381e7d386339305d11030314ffd219d63`. CI de A y B verdes por push exacto,
+con cuatro trabajos success cada una. Registro literal SVF-RECONCILIATION en decisiones; no EFFECTIVE sin I52. La CI del recibo se
+entrega tras su push; no se infiere. Coordinator REVIEW REQUIRED, Architect formal PENDING, Owner PENDING, Consensus NOT REACHED,
+SUBSTANTIVE IMPLEMENTATION BLOCKED.
