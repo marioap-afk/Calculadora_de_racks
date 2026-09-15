@@ -1,66 +1,95 @@
-# I-57 — Paquete de revision del Architect — Proposal V4
+# I-57 — Paquete de revision del Architect — Proposal V5
 
 ## Objeto exacto
 
 ```text
-Branch        = architecture/shared-view-foundation
-BASE_SHA      = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093
-DISCOVERY_SHA = a3341068137931203de00fc769e4675db7b7d3a8
-PROPOSAL_SHA  = 2a142f224fb8d8a0c16bd7f7334dc48be3be9eef
-Proposal blob = 5cf5e00310bd8d40c0ef0686209c41e6aa954c70
-Map blob      = 1e36ec60e695bb635c0664babe3f927a233f97b9
-R3 blob       = cd42db03becff42f98b047e61c46689c17a69670
-ADR blob      = 9f1d4e94f06f4de6e19c8668fe0c8092ac12c933
+Branch             = architecture/shared-view-foundation
+CURRENT_MAIN       = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093
+F2_START_SHA       = 6448af15b07eddc9ca784d3cf3a67a7923ea1e78
+PROPOSAL_V5_SHA    = 91a3d1ca779e57a5c47f474d9ae18d5a01e3f8ca
+Proposal blob      = c50141f425d191a07c608693b099e5a018fd15e0
+Delivery Map blob  = 40161e384201ec4bb1420b76e95cbd8ce6ac1529
+CT-04 V2 blob      = cbdca0eb7f16daa0d44319899c4d143452d530af
+Correction blob    = c5f5791796b31d382e9fb6ca85611ac1008cb97a
+R3 blob            = cd42db03becff42f98b047e61c46689c17a69670
+ADR-0044 blob      = 30eacca0dc43263100ee03b0cd3972b175a879b9
+CI push run        = 35035083116 · 4/4 SUCCESS · exact head SHA
 ```
 
-Revisar contra el codigo de BASE_SHA y el Discovery. V4 es V3 mas el cierre acotado de I57-AR3-01 y preserva
-I57-AR-01/02 cerrados. La revision no implementa, acepta ADR-0044, declara consenso ni abre F1.
+Revisar contra el codigo productivo del mismo SHA. V5 corrige exclusivamente AUTH-03/CT-04 tras el STOP material
+de F2. No contiene extraccion productiva. La review no acepta de nuevo ADR-0044, modifica R3, abre F2 ni declara
+consenso.
 
-## Traza de V3 y foco de V4
+## Contrato focal
 
 ```text
-Reviewed V3 SHA = 68a56b2a3c64ce261787224753ed43b2b8e328a3
-Architect V3    = CHANGES REQUIRED
-I57-AR3-01      = HIGH / MATERIAL
-I57-AR-01/02    = CLOSED
-Coordinator     = ACCEPTS I57-AR3-01
-Architect V4    = REVIEW REQUIRED
+Decode(persisted original syntax)
+    -> SemanticAddress? + Disposition + CoercionCode?
+
+successful decode + resolved system
+    -> AUTH-04 availability facts
+
+decoded facts + availability
+    -> consumer policy
 ```
 
-La re-review puede concentrarse en I57-AR3-01 y en una regression check de los contratos previos. El Architect
-conserva el derecho a detectar una contradiccion material nueva.
+Canonical, Canonicalizable y Coerced llevan address; Invalid no. Coerced conserva original syntax y codigo.
+Encode produce forma canonica y no reescribe DWG. Interactive requests no se confunden con persisted syntax.
 
 ## Ataques obligatorios
 
-1. **AR3-01 / orden:** con import permitido, `Ensure/import` precede al query de availability definitiva.
-2. **Sin import:** el query directo es definitivo y no dispara importacion implicita.
-3. **Pureza:** query no importa, crea, repara, normaliza, sanitiza ni muta `Database`.
-4. **Resultado final:** un `MISSING` preliminar no queda sticky; intento de import no implica `FOUND`.
-5. **CT-BLK:** BLK-AVAILABILITY-01..03 son falsables ante import exitoso, flujo sin import e import fallido.
-6. **Import parcial:** facts finales por requirement y cero false success global.
-7. **Identidades:** BLK-ID-1..6 y BLK-IDENTITY-01..03 permanecen integros; importer/query nunca reciben BaseName.
-8. **Regresion AUTH:** 01..14, payload, codec/availability/policy, frame, Resolve/Plan, selection y comparators
-   conservan V3; AUTH-15 sigue fuera.
-9. **ADR-0034:** una resolucion efectiva por rack dentro del handler; no aparece segunda autoridad.
-10. **F1/gates:** solo caracterizaciones; contradiccion material fuerza STOP y Proposal V5; F1-F8 intactos.
-11. **R3/ADR:** R3 conserva blob y orden; ADR-0044 referencia V4 y R3, sigue `PROPOSED`.
-12. **Estado:** ambos reviewers deben emitir `AGREED` sobre este SHA; R3 debe ser efectiva y ADR aceptada antes de
-    F1.
+1. unknown Selective view;
+2. null Selective view;
+3. Selective Section -1 y menor que -1;
+4. Selective Fondo imposible: syntax Canonical, availability VariantNotPresent;
+5. unknown Dynamic view;
+6. Dynamic missing/blank view;
+7. Dynamic Entrance=1 y Exit=0;
+8. Dynamic frontal unknown Section -> coerced Exit;
+9. redraw Dynamic Post(0) frente a prompt/whole-system insertion;
+10. Cabecera unknown/null/whitespace;
+11. Cama historical no View y descriptor alterno ignorado;
+12. Push Back side/end 0..3 y DecodeSection fallback inalcanzable;
+13. Cantilever Station base 0 y AdapterSection excluida;
+14. valid syntax unavailable variant;
+15. consumer que rechaza Coerced aunque otro consumer lo acepte;
+16. prompt, messages, erase, abort o resolved state dentro del codec;
+17. canonical encode after coercion y ausencia de escritura automatica;
+18. whitespace/case y precedencia Coerced sobre Canonicalizable;
+19. future token por kind, sin generalizacion;
+20. unknown/null/blank/whitespace kind y case-only frente al dispatch ordinal;
+21. AUTH-04 no llama resolver ni elige otra address;
+22. R3 ownership y blob intactos;
+23. ADR-0044 syntax/availability/policy compatible e inalterado;
+24. regression de AUTH-01..02, AUTH-04..14, BLK-ID/AVAILABILITY, ADR-0034 y gates.
 
 ## Formato solicitado
 
 ```text
-Architect Re-review — I-57 Proposal V4
-Reviewed SHA = 2a142f224fb8d8a0c16bd7f7334dc48be3be9eef
+Architect Re-review — I-57 Proposal V5
+Reviewed SHA = 91a3d1ca779e57a5c47f474d9ae18d5a01e3f8ca
 GLOBAL VERDICT = AGREED | AGREED WITH CHANGES | CHANGES REQUIRED
-A1..A12 = YES | NO
-I57-AR3-01 = CLOSED | OPEN
-Regression = PASS | FAIL
-R3 = REGISTER | CHANGES REQUIRED
-ADR-0044 = ACCEPTABLE | CHANGES REQUIRED
-Findings = NONE | [BLOCKER | HIGH | MEDIUM | LOW] I57-AR-XX — evidencia — cambio — Material YES/NO
+A1 coercion semantics = YES | NO
+A2 original syntax/address/code = YES | NO
+A3 policy boundary = YES | NO
+A4 Dynamic route split = YES | NO
+A5 invalid vs unavailable = YES | NO
+A6 round-trip/canonicalization = YES | NO
+A7 PushBack/Cantilever strictness = YES | NO
+A8 six-kind/eight-reader coverage = YES | NO
+A9 AUTH-04 boundary = YES | NO
+A10 ADR-0044 compatibility = YES | NO
+A11 R3 compatibility = YES | NO
+A12 regression = PASS | FAIL
+Material contradiction = RESOLVED | OPEN
+CT-04 V2 = ACCEPTABLE | CHANGES REQUIRED
+R3 = REMAINS EFFECTIVE | R4 REQUIRED
+ADR-0044 = COMPATIBLE | CHANGES REQUIRED
+Findings = NONE | [BLOCKER | HIGH | MEDIUM | LOW] I57-AR5-XX — section — finding — evidence — required change — Material YES/NO
 Architect = AGREED | REVIEW REQUIRED
 Consensus = NOT REACHED
 Implementation = BLOCKED
-F1 = NOT OPEN
+F1 = COMPLETE
+F2 = BLOCKED
+F3 = NOT OPEN
 ```
