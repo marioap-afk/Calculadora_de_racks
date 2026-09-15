@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using RackCad.Application.Expressions;
 using RackCad.Application.Persistence;
 
 namespace RackCad.Application.ProjectVariables
@@ -36,6 +38,7 @@ namespace RackCad.Application.ProjectVariables
 
         public VariableType Type { get; }
 
+        /// <summary>The current effective value; the property name is retained for the existing window contract.</summary>
         public double LiteralValue { get; }
 
         /// <summary>The racks bound to it, named so the user can act on them.</summary>
@@ -276,6 +279,7 @@ namespace RackCad.Application.ProjectVariables
             }
 
             var usable = accreditation.Registry;
+            var evaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(usable));
 
             // A definition that is NOT placed is not in the drawing, so it cannot be a consumer of anything.
             // Dropping it here is what keeps an old, unplaced, unreadable leftover from blocking the register.
@@ -299,6 +303,16 @@ namespace RackCad.Application.ProjectVariables
             // document on its own, which is how a listing and a resolution could disagree.
             foreach (var target in usable.Targets())
             {
+                var evaluated = evaluation.Result(SymbolId.ProjectVariable(target.VariableId.Value));
+                if (!evaluated.Succeeded)
+                {
+                    return Blocked(
+                        "La variable de proyecto '" + target.VariableId + "' no tiene un valor efectivo: " +
+                        string.Join(", ", evaluated.Diagnostics.Select(diagnostic => diagnostic.Code.ToString())) + ".",
+                        broken,
+                        repairs.Unresolvable);
+                }
+
                 var discovery = ProjectVariableConsumerDiscovery.DiscoverConsumers(present, target.VariableId);
 
                 if (!discovery.IsSuccess)
@@ -311,7 +325,7 @@ namespace RackCad.Application.ProjectVariables
                     target.VariableId,
                     target.Name,
                     target.VariableType,
-                    target.LiteralValue,
+                    evaluated.Value,
                     ProjectVariableMutationPreflight.Summarize(discovery.Consumers, target.VariableId)));
             }
 

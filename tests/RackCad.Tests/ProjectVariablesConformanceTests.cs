@@ -201,15 +201,15 @@ namespace RackCad.Tests
             }
         }
 
-        /// <summary>El valor de una variable sigue teniendo exactamente una procedencia declarada.</summary>
+        /// <summary>G8 abre exactamente Literal y Expression; Formula y cualquier tercer caso siguen prohibidos.</summary>
         [Fact]
-        public void LA_DEFINICION_DE_UNA_VARIABLE_SIGUE_TENIENDO_UN_SOLO_CASO()
+        public void LA_DEFINICION_DE_UNA_VARIABLE_TIENE_SOLO_LITERAL_Y_EXPRESSION()
         {
             var definition = File.ReadAllText(Path.Combine(
                 RepoRoot().FullName, "src", "RackCad.Application", "ProjectVariables", "VariableDefinition.cs"));
 
             Assert.Contains("Literal = 1", definition);
-            Assert.DoesNotContain("Expression = ", definition);
+            Assert.Contains("Expression = 2", definition);
             Assert.DoesNotContain("Formula = ", definition);
         }
 

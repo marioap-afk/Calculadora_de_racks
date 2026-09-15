@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using RackCad.Application.ProjectVariables;
+using RackCad.Application.Expressions;
 
 namespace RackCad.Application.Persistence
 {
@@ -105,11 +106,16 @@ namespace RackCad.Application.Persistence
                         (entry.Type ?? "<null>") + "').");
                 }
 
+                var definition = string.Equals(
+                    entry.Definition.Kind, "literal", System.StringComparison.OrdinalIgnoreCase)
+                    ? VariableDefinition.Literal(entry.Definition.Value.Value)
+                    : VariableDefinition.Expression(entry.Definition.Expression);
+
                 variables.Add(ProjectVariable.Create(
                     VariableId.Parse(entry.VariableId),
                     entry.Name,
                     type,
-                    VariableDefinition.Literal(entry.Definition.Value.Value)));
+                    definition));
             }
 
             return variables;
@@ -143,7 +149,30 @@ namespace RackCad.Application.Persistence
 
         public double? Value { get; set; }
 
+        /// <summary>The persisted semantic tree for <c>Kind = expression</c>.</summary>
+        public BoundExpression Expression { get; set; }
+
         [JsonExtensionData]
         public IDictionary<string, JsonElement> ExtensionData { get; set; }
+
+        public static ProjectVariableDefinitionDocument From(VariableDefinition definition)
+        {
+            if (definition == null)
+            {
+                throw new System.ArgumentNullException(nameof(definition));
+            }
+
+            return definition.Kind == VariableDefinitionKind.Literal
+                ? new ProjectVariableDefinitionDocument
+                {
+                    Kind = "literal",
+                    Value = definition.LiteralValue,
+                }
+                : new ProjectVariableDefinitionDocument
+                {
+                    Kind = "expression",
+                    Expression = definition.ExpressionValue,
+                };
+        }
     }
 }

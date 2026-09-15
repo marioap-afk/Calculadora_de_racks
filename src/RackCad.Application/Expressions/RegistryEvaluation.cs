@@ -131,7 +131,7 @@ namespace RackCad.Application.Expressions
                 }
 
                 diagnostics.AddRange(state.InvalidArguments.Select(RegistryDiagnostic.Invalid));
-                if (IsNonCanonical(expression))
+                if (BoundExpressionSemanticValidation.IsNonCanonical(expression))
                 {
                     diagnostics.Add(RegistryDiagnostic.Intrinsic(ExpressionDiagnosticCode.NonCanonicalForm));
                 }
@@ -331,12 +331,6 @@ namespace RackCad.Application.Expressions
 
             return new ReadOnlyCollection<InvalidArgumentSignature>(invalid.ToList());
         }
-
-        private static bool IsNonCanonical(BoundExpression expression)
-            => expression is BoundNumber number && !number.Unit.HasValue
-               || expression is BoundNegate negate
-               && negate.Operand is BoundNumber negatedNumber
-               && !negatedNumber.Unit.HasValue;
 
         private static IReadOnlyList<T> ReadOnly<T>(IEnumerable<T> values)
             => new ReadOnlyCollection<T>(values.ToList());

@@ -95,7 +95,7 @@ namespace RackCad.Application.ProjectVariables
             try
             {
                 ProjectVariable.Create(
-                    variableId, newName, target.VariableType, VariableDefinition.Literal(target.LiteralValue));
+                    variableId, newName, target.VariableType, target.Definition);
             }
             catch (ArgumentException ex)
             {

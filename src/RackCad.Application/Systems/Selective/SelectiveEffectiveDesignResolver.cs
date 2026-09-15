@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using RackCad.Application.Expressions;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Domain.Systems.Selective;
@@ -127,41 +129,123 @@ namespace RackCad.Application.Systems.Selective
                 throw new ArgumentNullException(nameof(descriptors));
             }
 
-            var inspections = SelectiveLinkedPropertyKernel.InspectBindings(authored, descriptors, registry);
             var rack = Describe(authored);
+            var context = ProjectVariablesExpressionAdapter.From(registry);
+            var evaluation = RegistryEvaluation.Evaluate(context);
+            var effectiveValues = new List<(SelectiveLinkedPropertyDescriptor Descriptor, double Value)>();
+            var tokens = authored.PropertyValues == null
+                ? new List<string>()
+                : authored.PropertyValues.Keys.OrderBy(token => token, StringComparer.Ordinal).ToList();
 
-            foreach (var inspection in inspections)
+            foreach (var token in tokens)
             {
-                if (!inspection.IsHealthy)
+                if (!PropertyId.TryParse(token, out var propertyId) ||
+                    !descriptors.TryGetDescriptor(propertyId, out var descriptor))
                 {
                     return SelectiveEffectiveResolution.Failure(
-                        OutcomeOf(inspection),
-                        inspection.PropertyId,
-                        rack + ", " + inspection.Detail,
-                        inspection.RawVariableId);
+                        SelectiveEffectiveOutcome.UnknownPropertyId,
+                        propertyId,
+                        rack + ": la propiedad '" + (token ?? "<null>") + "' no es conocida.");
                 }
+
+                var source = authored.PropertyValues[token];
+                double value;
+                if (source != null && string.Equals(
+                        source.Kind, SelectivePropertyValueDocument.ProjectVariableKind, StringComparison.Ordinal))
+                {
+                    var inspection = LinkedPropertyInspection.InspectBinding(token, source, descriptors, registry);
+                    if (!inspection.IsHealthy)
+                    {
+                        return SelectiveEffectiveResolution.Failure(
+                            OutcomeOf(inspection),
+                            inspection.PropertyId,
+                            rack + ", " + inspection.Detail,
+                            inspection.RawVariableId);
+                    }
+
+                    var result = evaluation.Result(SymbolId.ProjectVariable(inspection.VariableId.Value));
+                    if (!result.Succeeded)
+                    {
+                        return SelectiveEffectiveResolution.Failure(
+                            SelectiveEffectiveOutcome.BrokenProjectVariableReference,
+                            propertyId,
+                            rack + ", propiedad '" + propertyId + "': la variable fallo: " + Describe(result),
+                            inspection.VariableId.Value);
+                    }
+
+                    value = result.Value;
+                }
+                else if (source != null && string.Equals(
+                             source.Kind, SelectivePropertyValueDocument.ExpressionKind, StringComparison.Ordinal) &&
+                         source.Expression != null)
+                {
+                    if (BoundExpressionSemanticValidation.IsNonCanonical(source.Expression))
+                    {
+                        return SelectiveEffectiveResolution.Failure(
+                            SelectiveEffectiveOutcome.BrokenProjectVariableReference,
+                            propertyId,
+                            rack + ", propiedad '" + propertyId + "': la expresion fallo: " +
+                            ExpressionDiagnosticCode.NonCanonicalForm);
+                    }
+
+                    var inputs = new Dictionary<SymbolId, double>();
+                    foreach (var dependency in BoundExpressionDependencies.DirectDependencies(source.Expression))
+                    {
+                        if (!context.Symbols.TryGet(dependency, out _))
+                        {
+                            continue;
+                        }
+
+                        var dependencyResult = evaluation.Result(dependency);
+                        if (!dependencyResult.Succeeded)
+                        {
+                            return SelectiveEffectiveResolution.Failure(
+                                SelectiveEffectiveOutcome.BrokenProjectVariableReference,
+                                propertyId,
+                                rack + ", propiedad '" + propertyId + "': una dependencia fallo: " +
+                                Describe(dependencyResult),
+                                dependency.Key);
+                        }
+
+                        inputs.Add(dependency, dependencyResult.Value);
+                    }
+
+                    var result = ExpressionEvaluator.Evaluate(source.Expression, context, inputs);
+                    if (!result.Succeeded)
+                    {
+                        return SelectiveEffectiveResolution.Failure(
+                            SelectiveEffectiveOutcome.BrokenProjectVariableReference,
+                            propertyId,
+                            rack + ", propiedad '" + propertyId + "': la expresion fallo: " +
+                            string.Join(", ", result.Diagnostics.Select(diagnostic => diagnostic.Code.ToString())));
+                    }
+
+                    value = result.Value;
+                }
+                else
+                {
+                    return SelectiveEffectiveResolution.Failure(
+                        SelectiveEffectiveOutcome.UnknownReferenceKind,
+                        propertyId,
+                        rack + ", propiedad '" + propertyId + "': la fuente es desconocida ('" +
+                        (source?.Kind ?? "<null>") + "').",
+                        source?.VariableId);
+                }
+
+                effectiveValues.Add((descriptor, value));
             }
 
             var design = authored.ToDomain();
-
-            foreach (var inspection in inspections)
+            foreach (var effective in effectiveValues)
             {
-                if (!descriptors.TryGetDescriptor(inspection.PropertyId, out var descriptor))
-                {
-                    // Unreachable: HEALTHY means the descriptor was found. Reaching it is an invariant
-                    // violation, not a state to reinterpret.
-                    return SelectiveEffectiveResolution.Failure(
-                        SelectiveEffectiveOutcome.UnknownPropertyId,
-                        inspection.PropertyId,
-                        rack + ": la propiedad '" + inspection.PropertyId + "' resolvio sin descriptor.",
-                        inspection.RawVariableId);
-                }
-
-                descriptor.WriteEffective(design, inspection.Target.LiteralValue);
+                effective.Descriptor.WriteEffective(design, effective.Value);
             }
 
             return SelectiveEffectiveResolution.Success(design);
         }
+
+        private static string Describe(RegistrySymbolResult result)
+            => string.Join(", ", result.Diagnostics.Select(diagnostic => diagnostic.Code.ToString()));
 
         /// <summary>Maps an inspection failure onto the outcome vocabulary this resolver already published.</summary>
         private static SelectiveEffectiveOutcome OutcomeOf(BindingInspection inspection)
