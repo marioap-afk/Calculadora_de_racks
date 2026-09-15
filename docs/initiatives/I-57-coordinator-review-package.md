@@ -1,58 +1,69 @@
-# I-57 — Paquete de revision del Coordinator — Proposal V4
+# I-57 — Paquete de revision del Coordinator — Proposal V5
 
 ## Objeto exacto
 
 ```text
-Branch        = architecture/shared-view-foundation
-BASE_SHA      = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093
-DISCOVERY_SHA = a3341068137931203de00fc769e4675db7b7d3a8
-PROPOSAL_SHA  = 2a142f224fb8d8a0c16bd7f7334dc48be3be9eef
-Proposal blob = 5cf5e00310bd8d40c0ef0686209c41e6aa954c70
-Map blob      = 1e36ec60e695bb635c0664babe3f927a233f97b9
-R3 blob       = cd42db03becff42f98b047e61c46689c17a69670
-ADR blob      = 9f1d4e94f06f4de6e19c8668fe0c8092ac12c933
+Branch             = architecture/shared-view-foundation
+CURRENT_MAIN       = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093
+F2_START_SHA       = 6448af15b07eddc9ca784d3cf3a67a7923ea1e78
+PROPOSAL_V5_SHA    = 91a3d1ca779e57a5c47f474d9ae18d5a01e3f8ca
+Proposal blob      = c50141f425d191a07c608693b099e5a018fd15e0
+Delivery Map blob  = 40161e384201ec4bb1420b76e95cbd8ce6ac1529
+CT-04 V2 blob      = cbdca0eb7f16daa0d44319899c4d143452d530af
+Correction blob    = c5f5791796b31d382e9fb6ca85611ac1008cb97a
+R3 blob            = cd42db03becff42f98b047e61c46689c17a69670
+ADR-0044 blob      = 30eacca0dc43263100ee03b0cd3972b175a879b9
+CI push run        = 35035083116 · 4/4 SUCCESS · exact head SHA
 ```
 
-Revisar Proposal V4, Delivery Map V4, R3 y ADR-0044 en ese commit exacto. V4 es V3 mas el cierre acotado de
-I57-AR3-01 HIGH/MATERIAL; preserva I57-AR-01/02 cerrados. El Coordinator acepto el nuevo hallazgo, pero todavia
-debe emitir su veredicto formal sobre el SHA exacto de V4. La revision no implementa, acepta el ADR, declara
-consenso ni abre F1.
+Revisar Proposal V5, Delivery Map V5, CT-04 V2, correction evidence, R3 y ADR-0044 en ese commit exacto.
+La revision no implementa AUTH, migra readers, reabre F2, modifica R3/ADR ni declara consenso.
 
-## Traza de V3 y foco de V4
+## Trigger y alcance del cambio
 
-```text
-Reviewed V3 SHA = 68a56b2a3c64ce261787224753ed43b2b8e328a3
-Architect V3    = CHANGES REQUIRED
-I57-AR3-01      = HIGH / MATERIAL
-I57-AR-01/02    = CLOSED
-Coordinator     = ACCEPTS I57-AR3-01; V4 FORMAL REVIEW PENDING
-```
+F1 permanece `COMPLETE`. Al abrir F2, CT-04 contradijo coerciones productivas vigentes. La sesion ejecuto el
+STOP de V4 antes de modificar produccion. V5 preserva toda la arquitectura V4 salvo el contrato derivado de
+AUTH-03/CT-04:
 
-La re-review puede concentrarse en I57-AR3-01 y en verificar que los cierres y contratos previos no retrocedieron.
-El Coordinator conserva el derecho a detectar cualquier contradiccion material nueva.
+- define Canonical, Canonicalizable, Coerced e Invalid;
+- conserva original syntax, address opcional y coercion code;
+- separa persisted decode de solicitudes interactivas;
+- mueve existencia de Fondo/Post/Station a AUTH-04;
+- mantiene toda decision de accept/reject/prompt/erase/abort en el consumer;
+- no cambia schema ni comportamiento legacy.
 
-## Preguntas
+## Preguntas obligatorias
 
-1. ¿el flujo con import produce availability definitiva solo despues de `Ensure/import -> query`?
-2. ¿el flujo sin import usa el query directo como resultado definitivo y sin side effects?
-3. ¿el query permanece puro y separado del importer, incluido ante import fallido o parcial?
-4. ¿BLK-AVAILABILITY-01..03 detectan `MISSING` sticky, false success y mutacion del query?
-5. ¿V4 preserva BLK-ID-1..6 y el resto de contratos/gates de V3 sin reabrir I57-AR-01/02?
-6. ¿ADR-0044 apunta a Proposal V4 y R3 exacta, que permanece inmutable y no efectiva?
+1. ¿CT-04 V2 describe fielmente Selectivo, Dinamico, Push Back, Cantilever, Cabecera y Cama?
+2. ¿los ocho readers censados estan cubiertos y las rutas interactivas quedan separadas?
+3. ¿cada `Coerced` tiene address y codigo estable; cada `Invalid` carece de address?
+4. ¿unknown/null/blank/whitespace/case se clasifican por kind segun el reader real, sin regla global falsa?
+5. ¿Dynamic redraw a Post(0) queda separado de prompt/whole-system insertion?
+6. ¿syntax valida con variante inexistente llega a AUTH-04 como `VariantNotPresent`?
+7. ¿encode canonico despues de coercion no promete round-trip literal ni reescribe DWG?
+8. ¿consumer policy permanece fuera del codec y availability?
+9. ¿R3 conserva ownership, blob y efectividad sin requerir R4?
+10. ¿ADR-0044 sigue compatible y aceptado sin cambio de decision?
+11. ¿V5 no reabre payload, BLK-ID/AVAILABILITY, ADR-0034, frames, Resolve/Plan, selection o comparators?
+12. ¿F2 permanece bloqueado hasta ambos veredictos AGREED sobre este SHA?
 
 ## Formato solicitado
 
 ```text
-Coordinator Review — I-57 Proposal V4
-Reviewed SHA = 2a142f224fb8d8a0c16bd7f7334dc48be3be9eef
+Coordinator Review — I-57 Proposal V5
+Reviewed SHA = 91a3d1ca779e57a5c47f474d9ae18d5a01e3f8ca
 GLOBAL VERDICT = AGREED | AGREED WITH CHANGES | NOT AGREED
-Q1..Q6 = YES | NO
-I57-AR3-01 = CLOSED | OPEN
+Q1..Q12 = YES | NO
+Material contradiction = RESOLVED | OPEN
+CT-04 V2 = ACCEPTED | CHANGES REQUIRED
+R3 = REMAINS EFFECTIVE | R4 REQUIRED
+ADR-0044 = COMPATIBLE | CHANGES REQUIRED
 Regression = PASS | FAIL
-R3 = CONCEPTUALLY ACCEPTED, REGISTRATION PENDING | CHANGES REQUIRED
-Findings = NONE | [BLOCKER | MATERIAL | MINOR] I57-COORD-XX — evidencia — cambio
+Findings = NONE | [BLOCKER | MATERIAL | MINOR] I57-COORD5-XX — evidence — required change
 Coordinator = AGREED | REVIEW REQUIRED
 Consensus = NOT REACHED
 Implementation = BLOCKED
-F1 = NOT OPEN
+F1 = COMPLETE
+F2 = BLOCKED
+F3 = NOT OPEN
 ```
