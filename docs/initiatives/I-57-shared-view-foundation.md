@@ -1,0 +1,193 @@
+---
+schema: rackcad-initiative/v1
+id: I-57
+title: "Shared View Foundation"
+type: architecture
+status: claimed
+branch: architecture/shared-view-foundation
+base_branch: main
+priority:
+size:
+depends_on: []
+conflicts_with: [I-49, I-52, I-55]
+context_packs: [architecture-kernel, persistence, autocad-plugin, documentation-governance, delivery-validation]
+automation_state_path:
+decision_paths: [docs/automation/decisions/I-57.md]
+requires_ci: true
+requires_plugin_build: true
+requires_autocad: true
+requires_owner_decision: true
+requires_owner_validation: true
+automation:
+  enabled: false
+  auto_merge: false
+  max_attempts: 3
+---
+
+# I-57 — Shared View Foundation
+
+> **Fase actual: F0 — claim y bootstrap documental.** El Owner autorizo la iniciativa neutral independiente.
+> Este contrato no abre F1, no acepta el ADR neutral y no autoriza produccion.
+
+```text
+Initiative        = I-57 — Shared View Foundation
+Branch            = architecture/shared-view-foundation
+Worktree          = ~/.codex/worktrees/architecture-shared-view-foundation
+BASE_SHA          = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093
+CLAIM_SHA         = 869cf464129da65323781dbebe2425083f21915f
+CLAIM_ID          = 3e77d0e4-67de-4c3a-b3ed-ee65f0ac7cd3
+Owner             = autorizacion explicita registrada en decisions/I-57.md
+Consumers         = I-52 RACKMIRROR · I-55 View Placement & Projection
+Foundation ADR    = PROPOSED · NUMBER PENDING
+SVF reconciliation= R1 @ aa37264381e7d386339305d11030314ffd219d63
+R1 blob           = 2faa5a316680aa92306c7bce75c42cc311f96a26
+R1 status         = I-55 REGISTERED · I-52 NOT REGISTERED · NOT EFFECTIVE
+
+Foundation Coordinator = REVIEW REQUIRED
+Foundation Architect   = PENDING
+Foundation Consensus   = NOT REACHED
+Foundation Implementation = BLOCKED
+F1 = NOT OPEN
+```
+
+## 1. Objetivo
+
+Extraer una infraestructura neutral e integrable en `main` antes de sus consumidores, con una sola
+autoridad compartida para I-52 e I-55. La foundation expresa hechos y contratos reutilizados por ambos
+productos sin incorporar politicas de `RACKMIRROR` ni de View Placement & Projection.
+
+Resultado esperado tras F8: las autoridades neutrales acordadas viven en `main`; I-52 e I-55 rebasan
+segun WORKFLOW y consumen esa implementacion integrada, sin copiar codigo entre ramas.
+
+## 2. Problema
+
+I-52 e I-55 necesitan la misma taxonomia de vistas, lectura persistida, marcos, resolucion, planes y
+otras autoridades. Extraerlas dentro de cualquiera de las dos ramas de producto obligaria a la otra a
+esperar una integracion ajena o a duplicar contratos. I-55 Proposal V5 recomienda una iniciativa neutral;
+el Owner acepto ese mecanismo y autorizo I-57.
+
+R1 sigue sin efecto porque I-52 publico solo una respuesta con solicitudes de cambio y no lo registro.
+Una autoridad con `Integration SHA` vacio no es consumible.
+
+## 3. Alcance propuesto
+
+F0 registra, sin implementar, el alcance que una Proposal posterior debe revisar:
+
+| AUTH | Contrato neutral | Caracterizacion compartida |
+|---|---|---|
+| AUTH-01 | `RackViewKind` | CT-04 |
+| AUTH-02 | `RackViewAddress` / `RackViewVariant` | CT-04 |
+| AUTH-03 | Codec sintactico | CT-04 |
+| AUTH-04 | Hechos de disponibilidad | CT-04 |
+| AUTH-05 | `RackViewFrame`, `[K_min,K_max]`, centro `c` | CT-05 |
+| AUTH-06 | Hechos compartidos de barrido y clasificacion | CT-SCAN, CT-04 |
+| AUTH-07 | Nucleo neutral de seleccion | CT-16 |
+| AUTH-08 | Valor de colocacion y hechos de transformacion | CT-GEO |
+| AUTH-09 | Contrato `Resolve` | CT-RES |
+| AUTH-10 | Contrato `Plan` | CT-PLAN |
+| AUTH-11 | Autoridad de nombre base | CT-NAME |
+| AUTH-12 | `LibraryBlockRequirement` y contrato de consulta | CT-BLK |
+| AUTH-13 | Contrato del comparador authored | CT-AUTH |
+| AUTH-14 | Caracterizaciones compartidas | CT-04, CT-05, CT-16 y auxiliares anteriores |
+
+La fuente tecnica propuesta es I-55 Proposal V5 y su specification publicada en
+`f49671e29c6cc817166c720fe3f975deb92d4c3b`. I-57 no copia esos borradores en F0: registra sus objetos
+exactos como entrada para Discovery/Proposal propios. Todo contrato puede refinarse antes del consenso.
+
+## 4. Fuera de alcance
+
+- `RACKPROYECTAR`, `RACKMIRROR` y los comandos o UX de producto.
+- ID17, la cola de ID18 y las politicas `Rigid`/`Orthographic` de ID19.
+- Relative Frame Window, reflexion del espejo, mirror read-set y decisiones OD de producto.
+- CQ-01, redibujo atomico de hermanas y flujo productivo de Insertar.
+- AUTH-15 de creacion caller-owned, mientras R1 lo conserve fuera.
+- Implementar AUTH-01..AUTH-14, tests RED, refactors o extraccion durante F0.
+- Modificar ADR-0034 o cualquier ADR aceptado.
+- Cambiar productivamente I-52 o I-55, o integrar esta rama.
+
+No es un framework generico: sus consumidores reales y obligatorios son I-52 e I-55.
+
+## 5. Contexto requerido
+
+- `AGENTS.md`, `README.md`, `docs/HANDOFF.md`, `docs/ARCHITECTURE.md`, `docs/WORKFLOW.md` y `docs/ROADMAP.md`.
+- Context packs declarados en la cabecera; sus globs orientan y no amplian alcance.
+- ADR-0034 aceptado e intacto: Selectivo → adaptador → autoridad vigente del handler, una resolucion efectiva por rack.
+- I-55 Proposal V5 `f49671e29c6cc817166c720fe3f975deb92d4c3b` y R1 exacta.
+- Respuesta I-52 a R1 publicada en `4158f5c56482cc33f5083e8e4e9ff72465c566ce`.
+
+## 6. Dependencias y gobierno
+
+I-57 nace directamente de `origin/main`; no depende de integrar I-52 o I-55. I-49, I-52 e I-55 son
+coordinaciones/conflictos por archivos y autoridades, no bases para copiar codigo. Antes de fijar archivos de
+produccion se repite el preflight remoto y se serializan los archivos calientes.
+
+```text
+Owner → Coordinator I-57 ↔ Architect I-57 → consenso propio → implementacion
+```
+
+F1 requiere revision del alcance, Proposal de I-57, veredictos `AGREED` de Coordinator y Architect sobre la
+misma version, ADR neutral aceptado cuando corresponda y reconciliacion con estado suficiente. La autorizacion
+de F0 no sustituye ninguna de esas compuertas.
+
+## 7. Archivos esperados
+
+F0 solo crea este contrato y `docs/automation/decisions/I-57.md`, y agrega la fila I-57 a ROADMAP.
+Discovery/Proposal posteriores pueden reexpresar la especificacion exacta de I-55 y fijar el mapa de archivos.
+Ningun archivo de `src/`, `tests/`, `assets/`, `.github/`, `eng/` o `deploy/` pertenece a F0.
+
+## 8. Gates preliminares
+
+| Gate | Alcance preliminar | Estado tras F0 |
+|---|---|---|
+| F0 | Claim remoto + bootstrap documental | EN CURSO hasta commit, push y CI del bootstrap |
+| F1 | Caracterizacion | NOT OPEN |
+| F2 | Taxonomia + codec sintactico | BLOCKED |
+| F3 | Marco y tramo | BLOCKED |
+| F4 | Seleccion neutral + hechos de colocacion | BLOCKED |
+| F5 | Resolve, Plan, adaptadores y nombre | BLOCKED |
+| F6 | Comparador authored + requisitos/consulta de biblioteca | BLOCKED |
+| F7 | Candidato | BLOCKED |
+| F8 | Integracion en `main` | BLOCKED |
+
+La Proposal de I-57 puede refinar estos gates. F0 no abre F1 automaticamente.
+
+## 9. Pruebas y builds
+
+F0 es exclusivamente documental. Su evidencia es `git diff --check`, alcance de archivos y CI del SHA exacto
+de cada push. No se ejecutan suites locales ni builds como sustituto de esa CI.
+
+En F7 se aplicara la definicion de Candidato vigente: arbol limpio, Core y UI completos en local, Debug UI y
+Plugin, CI de push exacta y validacion del Owner en AutoCAD cuando el cambio observable lo requiera.
+
+## 10. Validacion manual
+
+No aplica a F0. La implementacion neutral puede cambiar rutas internas de dibujo/BOM y por eso el plan final
+debe decidir y ejecutar la validacion del Owner sobre el Candidato exacto; este contrato no la da por cumplida.
+
+## 11. Criterios de aceptacion
+
+F0 queda completo cuando: claim valido publicado, contrato y decisiones versionados, fila propia en ROADMAP,
+CI verde del claim y bootstrap, refs remotos exactos registrados y todos los worktrees tocados limpios.
+
+La iniciativa completa exige una sola implementacion neutral integrada, consumidores desde `main`, paridad
+observable demostrada, reconciliacion exacta y ausencia de productores legacy no gobernados.
+
+## 12. Condiciones para detenerse
+
+- Cualquier intento de abrir F1 sin revision y consenso propios.
+- R1 sigue `NOT EFFECTIVE`, una CR material no resuelta o titularidad duplicada.
+- Cambios productivos durante F0 o expansion hacia politica de I-52/I-55.
+- Conflicto de archivos con una iniciativa activa sin serializacion.
+- Necesidad de numerar o aceptar el ADR sin decision correspondiente.
+- CI roja o discrepancia entre SHA local y remoto.
+
+## 13. Estado versionado y entrega
+
+No hay archivo de automation state ni Pull Request. La automatizacion esta deshabilitada y el auto-merge
+prohibido. El estado vivo se deriva de `origin/architecture/shared-view-foundation`; las decisiones estan en
+`docs/automation/decisions/I-57.md`. Push de rama no equivale a integracion.
+
+## 14. Evidencia F0
+
+Se completa en el registro de decisiones y en el reporte de cierre tras observar la CI de claim/bootstrap.
+`main` no se modifica y HANDOFF no se toca.
