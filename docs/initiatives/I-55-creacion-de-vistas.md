@@ -314,3 +314,12 @@ iniciativa neutral independiente, acepta Relative Frame Window para M-01 y manti
 Coordinador emite `AGREED` sobre la Proposal V5 exacta `f49671e29c6cc817166c720fe3f975deb92d4c3b`. La Proposal permanece inmutable;
 el detalle durable vive en decisiones G2G. Architect formal PENDING; ADR-0042 PROPOSED; Foundation ADR PROPOSED / NUMBER PENDING;
 R1 aceptada por I-55 pero NOT EFFECTIVE; Consensus NOT REACHED; SUBSTANTIVE IMPLEMENTATION BLOCKED. I-57 completa solo F0 y F1 no se abre.
+
+**G2H — registro exacto de R3 (2026-09-15).** I-55 registra la publicacion inmutable R3
+`e7baa255bd7c2632b071c90b84130c7ca35805fe`, blob `cd42db03becff42f98b047e61c46689c17a69670`. I-52 ya registro
+el mismo objeto en `ebc6634137d57283514fdeb0670ff7918ec5eb40`; I-57 tambien lo tiene registrado. No hay CR material
+abierta contra R3. Al publicarse este registro, R3 queda `EFFECTIVE` por coincidencia de los tres registros, aunque
+sigue sin ser consumible mientras el Integration SHA de I-57 este vacio. I-57 posee solo AUTH-01..14 y hechos
+neutrales; I-55 conserva ID17–19, Relative Frame Window, CQ-01, anchoring, queue, UX y materialization policy.
+Proposal V5 queda inmutable. ADR-0042 y ADR-0044 siguen `PROPOSED`; la implementacion sustantiva permanece
+`BLOCKED`.
