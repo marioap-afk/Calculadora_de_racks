@@ -36,7 +36,8 @@ automation:
 >   M-01, OD y aceptacion separada de ADR neutral y ADR-0042.
 > - Dependencia nueva propuesta: foundation neutral integrada en main antes de producto; ID aun PENDING, por eso
 >   no se inventa una referencia YAML en depends_on. AUTH-15 es dependencia adicional de G15, segun CR-SVF-08.
-> - El SHA exacto de V5, artefacto y paquetes se registra en decisiones G2F al publicar. No hay nuevo reclamo.
+> - Proposal V5 exacta: `f49671e29c6cc817166c720fe3f975deb92d4c3b`. Reconciliacion R1 ancla ese commit; recibo G2F registra su SHA y los de paquetes. No hay nuevo reclamo.
+> - Paquetes: [Coordinador](I-55-coordinator-review-package-v5.md) y [Arquitecto independiente](I-55-architect-review-package-v5.md).
 >
 > **SUBSTANTIVE IMPLEMENTATION: BLOCKED.** Sin freeze ni integracion autorizada por esta publicacion.
 
@@ -179,7 +180,7 @@ implementacion, ambos **sin consenso**. Una desviacion material frente a lo acor
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
 | G1 | Discovery | [I-55-discovery.md](I-55-discovery.md): matriz sistema × ViewKind × variante | **HECHA** |
 | G1.1 | Correccion contractual | Framing ID17 + ID18 + ID19, OQ reclasificadas, rebase y reconciliacion | **HECHA** (commit de esta correccion) |
-| G2 | Proposal y consenso | V1..V4 historicas; G2F: [Proposal V5](I-55-proposal-v5.md), [mapa V5](I-55-implementation-map-v5.md), spec/map/reconciliacion/ADR neutral, ADR-0042 propuesto; paquetes autonomos de revision en publicacion siguiente | V4 CHANGES REQUIRED → V5; V5 Coordinator REVIEW REQUIRED, Architect formal PENDING, Owner PENDING; sin consenso |
+| G2 | Proposal y consenso | V1..V4 historicas; G2F: [Proposal V5](I-55-proposal-v5.md), [mapa V5](I-55-implementation-map-v5.md), spec/map/reconciliacion/ADR neutral, ADR-0042 propuesto; [paquete Coordinador V5](I-55-coordinator-review-package-v5.md) y [paquete Architect V5](I-55-architect-review-package-v5.md) | V4 CHANGES REQUIRED → V5; V5 Coordinator REVIEW REQUIRED, Architect formal PENDING, Owner PENDING; sin consenso |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates del mapa de implementacion **tras el consenso** | **bloqueada** |
 
 ## 9. Pruebas y builds
