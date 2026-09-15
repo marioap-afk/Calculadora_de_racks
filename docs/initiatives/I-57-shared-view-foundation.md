@@ -26,7 +26,7 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: revision de Proposal V1. F0 esta aceptado y cerrado.** Discovery, Proposal, mapa, R3,
+> **Fase actual: revision de Proposal V2. F0 esta aceptado y cerrado.** Discovery, Proposal V2, mapa V2, R3,
 > ADR-0044 propuesto y paquetes de revision estan publicados. Este contrato no abre F1, no acepta el ADR y no
 > autoriza produccion.
 
@@ -129,8 +129,9 @@ produccion se repite el preflight remoto y se serializan los archivos calientes.
 Owner → Coordinator I-57 ↔ Architect I-57 → consenso propio → implementacion
 ```
 
-F1 requiere revision del alcance, Proposal de I-57, veredictos `AGREED` de Coordinator y Architect sobre la
-misma version, ADR neutral aceptado cuando corresponda y reconciliacion con estado suficiente. La autorizacion
+F1 requiere Proposal exacta con veredictos `AGREED` de Coordinator y Architect sobre la misma version;
+ADR-0044 `ACCEPTED`; y la latest reconciliation Rn `EFFECTIVE`, con el mismo SHA exacto registrado por I-52,
+I-55 e I-57 y ninguna CR material abierta contra ese Rn. Hoy latest Rn = R3 y no es efectiva. La autorizacion
 de F0 no sustituye ninguna de esas compuertas.
 
 ## 7. Archivos esperados
