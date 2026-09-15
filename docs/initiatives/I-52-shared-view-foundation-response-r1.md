@@ -158,11 +158,13 @@ I-52 sigue bloqueado ademas por la reconciliacion SVF no efectiva**.
 
 ## 6. I-56 — avance no material
 
-I-56 avanzo durante el preflight de `4b04b23f8661d0d8a2a656985339c48796861966` a
+I-56 avanzo durante el gate de `4b04b23f8661d0d8a2a656985339c48796861966` a
 `5ecb19f122d8267e6c201bb2bcfbf032831610db`, que publica la revision arquitectonica exacta de Proposal V3 como
-`CHANGES REQUIRED — PROPOSAL V4`, y despues a `94a4e446b76ff28d8a434252fb859c071cf11db5`, que publica Proposal V4.
-V4 requiere revision de Coordinator y Architect, Technical Consensus no existe, el Owner no fue solicitado y
-Workflow V2 sigue `NOT EFFECTIVE`. I-52 permanece grandfathered. Impacto para este gate: **NON-MATERIAL**.
+`CHANGES REQUIRED — PROPOSAL V4`; despues a `94a4e446b76ff28d8a434252fb859c071cf11db5`, que publica Proposal V4; y
+finalmente a `e9740119ad029483deb73b7f8dd3451a55768919`, cuya revision de Arquitecto acuerda la V4 exacta y registra
+Technical Consensus `REACHED`. El Owner no fue solicitado, el dry-run no esta completo y Workflow V2 sigue
+`NOT EFFECTIVE`; no existe `WORKFLOW_V2_EFFECTIVE_SHA`. I-52 permanece grandfathered. Impacto para este gate:
+**NON-MATERIAL**.
 
 ## 7. Revision requerida y estado de salida
 
