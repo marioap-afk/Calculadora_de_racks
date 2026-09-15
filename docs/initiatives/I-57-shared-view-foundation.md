@@ -26,8 +26,8 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: consenso tecnico alcanzado sobre Proposal V4; F0 esta aceptado y cerrado.** R3 esta efectiva por
-> triple registro. ADR-0044 permanece propuesto; este contrato no abre F1, no acepta el ADR y no autoriza produccion.
+> **Fase actual: ADR-0044 aceptado y F1 abierto exclusivamente para caracterizacion.** Proposal V4 tiene consenso
+> tecnico y R3 esta efectiva. F2 permanece cerrado; no se autoriza extraccion productiva ni cambio observable.
 
 ```text
 Initiative        = I-57 — Shared View Foundation
@@ -39,7 +39,7 @@ CLAIM_SHA         = 869cf464129da65323781dbebe2425083f21915f
 CLAIM_ID          = 3e77d0e4-67de-4c3a-b3ed-ee65f0ac7cd3
 Owner             = autorizacion explicita registrada en decisions/I-57.md
 Consumers         = I-52 RACKMIRROR · I-55 View Placement & Projection
-Foundation ADR    = ADR-0044 · PROPOSED
+Foundation ADR    = ADR-0044 · ACCEPTED
 SVF reconciliation= R1 @ aa37264381e7d386339305d11030314ffd219d63
 R1 blob           = 2faa5a316680aa92306c7bce75c42cc311f96a26
 R1 status         = SUPERSEDED FOR REVIEW BY R2 · NEVER EFFECTIVE
@@ -53,7 +53,8 @@ Technical Consensus   = REACHED
 Full Initiative Consensus = NOT DECLARED
 Foundation Implementation = BLOCKED
 F0 = ACCEPTED / CLOSED
-F1 = NOT OPEN
+F1 = OPEN / CHARACTERIZATION ONLY
+F2 = NOT OPEN
 ```
 
 ## 1. Objetivo
@@ -134,7 +135,7 @@ Owner → Coordinator I-57 ↔ Architect I-57 → consenso propio → implementa
 F1 requiere Proposal exacta con veredictos `AGREED` de Coordinator y Architect sobre la misma version;
 ADR-0044 `ACCEPTED`; y la latest reconciliation Rn `EFFECTIVE`, con el mismo SHA exacto registrado por I-52,
 I-55 e I-57 y ninguna CR material abierta contra ese Rn. Latest Rn = R3 y esta efectiva, sin CR material abierta;
-ADR-0044 sigue `PROPOSED`, por lo que F1 permanece `NOT OPEN`. La autorizacion de F0 no sustituye esa compuerta.
+ADR-0044 esta `ACCEPTED`; todas las precondiciones de apertura de F1 estan satisfechas. F1 queda abierto solo para caracterizacion.
 
 ## 7. Archivos esperados
 
@@ -147,7 +148,7 @@ Ningun archivo de `src/`, `tests/`, `assets/`, `.github/`, `eng/` o `deploy/` pe
 | Gate | Alcance preliminar | Estado tras F0 |
 |---|---|---|
 | F0 | Claim remoto + bootstrap documental | ACCEPTED / CLOSED |
-| F1 | Caracterizacion | NOT OPEN |
+| F1 | Caracterizacion | OPEN / CHARACTERIZATION ONLY |
 | F2 | Taxonomia + codec sintactico | BLOCKED |
 | F3 | Marco y tramo | BLOCKED |
 | F4 | Seleccion neutral + hechos de colocacion | BLOCKED |
