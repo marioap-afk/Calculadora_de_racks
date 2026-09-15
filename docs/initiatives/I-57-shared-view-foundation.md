@@ -26,9 +26,8 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: ADR-0044 aceptado y F1 completado exclusivamente con caracterizacion.** Proposal V4 tiene consenso
-> tecnico y R3 esta efectiva. F2 permanece cerrado hasta revision del Coordinator; no se autoriza extraccion
-> productiva ni cambio observable.
+> **Fase actual: MATERIAL CONTRADICTION registrada al abrir F2.** F1 permanece completa, Proposal V5 corrige CT-04
+> sin tocar producto y requiere review exacta de Coordinator y Architect. F2 esta bloqueado; F3 no esta abierto.
 
 ```text
 Initiative        = I-57 — Shared View Foundation
@@ -36,6 +35,7 @@ Branch            = architecture/shared-view-foundation
 Worktree          = ~/.codex/worktrees/architecture-shared-view-foundation
 BASE_SHA          = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093
 PROPOSAL_V4_SHA   = 2a142f224fb8d8a0c16bd7f7334dc48be3be9eef
+PROPOSAL_V5       = REVIEW REQUIRED
 CLAIM_SHA         = 869cf464129da65323781dbebe2425083f21915f
 CLAIM_ID          = 3e77d0e4-67de-4c3a-b3ed-ee65f0ac7cd3
 Owner             = autorizacion explicita registrada en decisions/I-57.md
@@ -48,14 +48,15 @@ R2 status         = SUPERSEDED FOR REVIEW BY R3 · NEVER EFFECTIVE
 R3 status         = EFFECTIVE · I-57/I-52/I-55 REGISTERED SAME EXACT OBJECT
 R3 blob           = cd42db03becff42f98b047e61c46689c17a69670
 
-Foundation Coordinator = AGREED
-Foundation Architect   = AGREED
-Technical Consensus   = REACHED
+Foundation Coordinator = REVIEW REQUIRED ON V5
+Foundation Architect   = REVIEW REQUIRED ON V5
+Technical Consensus   = NOT REACHED ON V5
 Full Initiative Consensus = NOT DECLARED
 Foundation Implementation = BLOCKED
 F0 = ACCEPTED / CLOSED
 F1 = COMPLETE / CHARACTERIZATION ONLY
-F2 = NOT OPEN
+F2 = BLOCKED
+F3 = NOT OPEN
 ```
 
 ## 1. Objetivo
@@ -150,7 +151,7 @@ Ningun archivo de `src/`, `tests/`, `assets/`, `.github/`, `eng/` o `deploy/` pe
 |---|---|---|
 | F0 | Claim remoto + bootstrap documental | ACCEPTED / CLOSED |
 | F1 | Caracterizacion | COMPLETE / 10 CT GREEN / ZERO PRODUCTION CHANGES |
-| F2 | Taxonomia + codec sintactico | BLOCKED |
+| F2 | Taxonomia + codec sintactico + availability | BLOCKED / CT-04 V2 + PROPOSAL V5 REVIEW REQUIRED |
 | F3 | Marco y tramo | BLOCKED |
 | F4 | Seleccion neutral + hechos de colocacion | BLOCKED |
 | F5 | Resolve, Plan, adaptadores y nombre | BLOCKED |
