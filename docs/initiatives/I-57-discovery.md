@@ -141,8 +141,11 @@ porque usa AutoCAD. **No existe conflicto material y no se reabre ADR-0034.**
 ## 8. Reconciliacion R1 y necesidad de R2
 
 R1 es inmutable y describe una foundation aun sin ID ni claim. I-52 ya publico una respuesta que acepta el mecanismo
-neutral pero solicita seis cambios: tolerancia de escala como entrada; titularidad neutral de X-1/X-3/X-7; precondicion
-Integrated; CT-04/05/16 en I-57; centro del frame compartido; y query de bloques reconciliada. Ademas, este Discovery
+neutral pero solicita seis cambios propios: ownership neutral de X-2; ownership neutral de X-8/CT-05; marcar como
+provisionales las carreras de extraccion anteriores; mantener path/namespace/API pendientes hasta consenso; consumo
+solo con Integration SHA; y prohibicion bilateral de duplicar mientras no haya reconciliacion. Las solicitudes
+`CR-SVF-01..06` de R1 son otro conjunto: tolerancia, titularidad X-1/X-3/X-7, precondiciones Integrated, ownership de
+CT-04/05/16, centro compartido y query de bloques. Ademas, este Discovery
 cambia disposiciones materiales frente al borrador: reutiliza AUTH-01 y AUTH-08, reduce AUTH-07 y adapta AUTH-10.
 Por ello hace falta **R2**, publicada por I-57 sin editar R1. R2 no sera efectiva hasta que I-52, I-55 e I-57 registren
 el mismo commit exacto.
@@ -156,7 +159,7 @@ Se atacaron los veinte riesgos pedidos. Correcciones BLOCKER/HIGH incorporadas:
 - se redujo AUTH-07 para no absorber identidad/duplicacion y se reutilizo `Transform2D`;
 - se fijo la frontera handler/adaptador de ADR-0034 y la responsabilidad Plugin de scans/AutoCAD;
 - se exigio CT-05 por familia para legacy Selectivo/Dynamic, PostIndex Push Back, visibilidad Cantilever y Cama;
-- se convirtieron las CR de I-52 en cambios R2 y se mantuvo consumo solo desde `main` integrado.
+- se separaron las CR originales de R1 de `CR-SVF-I52-01..06`, y se mantuvo consumo solo desde `main` integrado.
 
 No queda BLOCKER/HIGH documental conocido. Quedan abiertas las mediciones que deliberadamente pertenecen a F1.
 
