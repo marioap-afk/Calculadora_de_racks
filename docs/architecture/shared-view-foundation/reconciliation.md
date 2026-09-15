@@ -1,7 +1,7 @@
 # Shared View Foundation — Artefacto de reconciliacion
 
 ```text
-RECONCILIATION_VERSION = R0
+RECONCILIATION_VERSION = R1
 DATE                  = 2026-09-15
 Foundation claim      = UNCLAIMED (ningun commit de reclamo autorizado)
 STATUS                 = PROPOSED by I-55 (G2F) · NOT REGISTERED by I-52 · NOT EFFECTIVE
@@ -9,8 +9,8 @@ FOUNDATION_ID          = PENDING (Owner)
 Mecanismo              = PENDING (Owner) · recomendado B (Proposal V5 de I-55 §2)
 
 I-52 Proposal SHA      = b7a6d9fe897dae4d29ae29ada7f60127bca365e5   (Proposal V17)
-I-55 Proposal SHA      = commit que publica este archivo en R0 (PROPOSAL_V5_SHA; decisions/I-55.md §G2F lo registra)
-Foundation spec SHA    = el mismo commit, ruta docs/architecture/shared-view-foundation/specification.md
+I-55 Proposal SHA      = f49671e29c6cc817166c720fe3f975deb92d4c3b (commit; docs/initiatives/I-55-proposal-v5.md)
+Foundation spec SHA    = f49671e29c6cc817166c720fe3f975deb92d4c3b (commit; docs/architecture/shared-view-foundation/specification.md)
 Base de codigo         = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093
 ```
 
@@ -30,9 +30,9 @@ Base de codigo         = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093
 | REC-7 | **Autoria de versiones.** Antes de F0, I-55 publica las versiones; I-52 aporta solicitudes CR-SVF para evitar dos autores de Rn. Tras F0, las publica la iniciativa de la foundation |
 | REC-8 | **Consumo.** Una fila con `Integration SHA` vacio no es consumible (CLM-3 de la especificacion) |
 
-## 2. Tabla X-1..X-8 (R0)
+## 2. Tabla X-1..X-8 (R1)
 
-| X | Autoridad | Contrato (spec) | AUTH | Authority owner | Characterization owner | Extraction claim | Integration SHA | Politica de I-52 (V17) | Politica de I-55 (V5) | Estado R0 |
+| X | Autoridad | Contrato (spec) | AUTH | Authority owner | Characterization owner | Extraction claim | Integration SHA | Politica de I-52 (V17) | Politica de I-55 (V5) | Estado R1 |
 |---|---|---|---|---|---|---|---|---|---|---|
 | X-1 | Nucleo neutral de seleccion | §3.7 | AUTH-07 | FOUNDATION_ID (propuesto; FQ-02) | FOUNDATION_ID (CT-16) | UNCLAIMED | — | ST-*; payload antes del filtro de Model Space; `Origin ≠ 0` falla; asignador de identidad T-M05 (propio) | Orden estable; `RackId` en blanco falla; kind con `TryResolve` sensible a mayusculas | I-55: PROPOSED · I-52: V17 dice «custodio I-52; extrae I-52 G4» → requiere Proposal posterior |
 | X-2 | Taxonomia, direccion, codec, disponibilidad, clasificador del barrido, `Resolve`, `Plan`, nombre base | §3.1-§3.6, §3.9-§3.11 | AUTH-01..06, 09..11 | FOUNDATION_ID | FOUNDATION_ID (CT-04, CT-RES, CT-PLAN, CT-NAME, CT-SCAN) | UNCLAIMED | — | σ′; fallo cerrado; `Expone`, `F`, filtro μ_k; `A_k` = disponible ∩ expuesto; `Build` = `Resolve` + `Plan` sobre el diseño reflejado; PRE-06/07/08/11; E4, E6 | ID19 acepta `Canonical`/`Canonicalizable` + `Available` + `Resolved` sin `OutputBlocking` y con forma aceptada; `RACKEDITAR` conserva su lectura; BOM sin cambio | **MATERIAL CONFLICT DE PROCESO** (V17 «extrae la primera que llegue», CT-04 «primer G3 que llegue») |
@@ -44,12 +44,12 @@ Base de codigo         = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093
 | X-8 | Marco y tramo de una vista (`RackViewFrame`, `[K_min, K_max]`, centro `c`, desplazamientos) | §3.5 | AUTH-05 | FOUNDATION_ID | FOUNDATION_ID (CT-05) | UNCLAIMED | — | `c` = `Center` del marco; sin forma afin; δ registrado por CT-06 (propio), nunca ajustado | Anclas por `K_min`/`K_max` segun σ; superposicion por tramos | **MATERIAL CONFLICT DE PROCESO** (V17 «extrae la primera», CT-05 «primer G3 que llegue») |
 
 **Clasificacion vinculante del Coordinador de I-55 para V5:** X-1, X-3, X-5, X-6 compatibles; X-4 y X-7 compatibles con precisiones; X-2 y
-X-8 MATERIAL CONFLICT DE PROCESO hasta que ambas iniciativas acuerden el mecanismo y el orden de integracion. La columna «Estado R0» añade
+X-8 MATERIAL CONFLICT DE PROCESO hasta que ambas iniciativas acuerden el mecanismo y el orden de integracion. La columna «Estado R1» añade
 lo que la relectura de V17 muestra: las clausulas de extraccion de V17 para X-1, X-3 y X-7 («extrae I-52 G4», «I-52 G5 o I-55 G14»)
 tambien quedan subordinadas al mecanismo; su contenido es compatible. Si I-52 no acuerda la entrega neutral, FQ-02 bloquea F1;
 no se habilita extraerlas dentro del producto I-52 ni se duplica CT-16.
 
-## 3. Registro de reclamos (R0)
+## 3. Registro de reclamos (R1)
 
 | AUTH | Authority | Foundation initiative/branch | Claim SHA | Owner | Consumers | Characterization owner | Integration SHA | Consumer policy refs | Status |
 |---|---|---|---|---|---|---|---|---|---|
@@ -114,7 +114,11 @@ solo sus helpers de nombres `SuggestName`/`Sanitize`, sin cambiar creacion, rede
 
 | Version | SHA | Autor | Registrada por | Estado |
 |---|---|---|---|---|
-| R0 | commit de G2F de I-55 (decisions/I-55.md §G2F) | I-55 (Proposal V5) | I-55: propuesta, no registrada como EFFECTIVE; I-52: no | PROPOSED |
+| R0 | f49671e29c6cc817166c720fe3f975deb92d4c3b | I-55 (Proposal V5) | Ninguna; version historica inmutable en A | PROPOSED, reemplazada por R1 para revision |
+| R1 | Commit B de publicacion; su blob exacto consta en ambos paquetes V5; recibo G2F registra el commit literal | I-55 | I-55 registra el commit literal en el recibo posterior; I-52 NO | PROPOSED; NOT EFFECTIVE |
+
+**Cambio R0 → R1:** solo anclaje literal de Proposal y especificacion al commit A publicado. Contratos, X, titulares y CR sin cambio.
+Los paquetes citan el blob exacto de R1; el recibo posterior fija su commit de publicacion. No cambia a EFFECTIVE por estar publicado.
 
 ## 7. Plantilla para versiones siguientes
 
