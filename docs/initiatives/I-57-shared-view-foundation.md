@@ -26,7 +26,7 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: revision de Proposal V1. F0 esta aceptado y cerrado.** Discovery, Proposal, mapa, R2,
+> **Fase actual: revision de Proposal V1. F0 esta aceptado y cerrado.** Discovery, Proposal, mapa, R3,
 > ADR-0044 propuesto y paquetes de revision estan publicados. Este contrato no abre F1, no acepta el ADR y no
 > autoriza produccion.
 
@@ -43,7 +43,8 @@ Foundation ADR    = ADR-0044 · PROPOSED
 SVF reconciliation= R1 @ aa37264381e7d386339305d11030314ffd219d63
 R1 blob           = 2faa5a316680aa92306c7bce75c42cc311f96a26
 R1 status         = SUPERSEDED FOR REVIEW BY R2 · NEVER EFFECTIVE
-R2 status         = I-57 REGISTERED · I-52/I-55 NOT REGISTERED · NOT EFFECTIVE
+R2 status         = SUPERSEDED FOR REVIEW BY R3 · NEVER EFFECTIVE
+R3 status         = I-57 REGISTRATION PENDING RECEIPT · I-52/I-55 NOT REGISTERED · NOT EFFECTIVE
 
 Foundation Coordinator = REVIEW REQUIRED
 Foundation Architect   = REVIEW REQUIRED
