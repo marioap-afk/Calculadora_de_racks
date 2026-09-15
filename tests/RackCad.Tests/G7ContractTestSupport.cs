@@ -396,21 +396,26 @@ namespace RackCad.Tests
 
         internal static string RootKey(object root)
         {
+            var code = Code(RequiredMember(root, "Code"));
             var members = OptionalMember(root, "Members", "CycleMembers");
-            if (members != null)
+            if (code == ExpressionDiagnosticCode.Cycle && members != null)
             {
                 return "CycleRoot[" + string.Join(",", Ids(members).Select(G7ContractTestSupport.IdKey)) + "]";
             }
 
             var owner = RequiredMember(root, "Owner", "Symbol", "OwnerId") as SymbolId
                 ?? throw new XunitException("G7 projection: an intrinsic root must expose its owner SymbolId.");
-            var code = Code(RequiredMember(root, "Code"));
             var missing = OptionalMember(root, "MissingSymbols", "RelatedSymbols");
+            var invalidArguments = OptionalMember(root, "InvalidArguments", "InvalidArgumentPairs");
             var functionToken = OptionalMember(root, "FunctionToken", "Token");
             var argumentCount = OptionalMember(root, "ArgumentCount", "Arity");
-            var data = missing != null
+            var data = code == ExpressionDiagnosticCode.BrokenReference && missing != null
                 ? string.Join("+", Ids(missing).Select(G7ContractTestSupport.IdKey))
-                : functionToken != null
+                : code == ExpressionDiagnosticCode.InvalidArguments && invalidArguments != null
+                    ? string.Join("+", Items(invalidArguments).Select(item =>
+                        RequiredMember(item, "Token", "FunctionToken") + "/"
+                        + Convert.ToInt32(RequiredMember(item, "ArgumentCount", "Arity"), System.Globalization.CultureInfo.InvariantCulture)))
+                : code == ExpressionDiagnosticCode.InvalidArguments && functionToken != null
                     ? functionToken + "/" + Convert.ToInt32(argumentCount, System.Globalization.CultureInfo.InvariantCulture)
                     : string.Empty;
             return G7ContractTestSupport.RootKey(int.Parse(owner.Key.Substring(owner.Key.Length - 12), System.Globalization.NumberStyles.HexNumber), code, data);
