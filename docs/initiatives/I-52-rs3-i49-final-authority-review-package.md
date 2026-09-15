@@ -14,7 +14,8 @@ I-55, I-56 o I-57.
 | Fuente | Identidad exacta |
 |---|---|
 | I-52 antes del registro | `ebc6634137d57283514fdeb0670ff7918ec5eb40` |
-| I-49 observado | `c12ec84a41b5cc33bb115917a5f24f70c4d429e0` |
+| I-49 observado al iniciar | `c12ec84a41b5cc33bb115917a5f24f70c4d429e0` |
+| I-49 en el re-fetch final | `0651fecdda7999f8cbcc943c92beaf3ce137e04f` |
 | I-49 Consensus Freeze | `239f47c40a6b4a9246dd4ec9e928b7fbe03f79b6` |
 | Blob del freeze | `cba59b7fad9d7af66e9571d95e9ba799ae41b4d9` |
 | Proposal V6 | `ef4db3aa400483ff25a8f39b2beb93708fa43d1a` |
@@ -43,10 +44,12 @@ normativa es enlazar el contrato anterior con los objetos exactos congelados.
 
 ## 4. Separacion de autoridad e implementacion
 
-La autoridad final existe y esta disponible aunque la implementacion de I-49 siga incompleta. El tip observado de
-I-49 conserva los blobs congelados y esta en `G7-A1 RED`: 20/20 pruebas focales fallan de forma esperada por la
-capacidad productiva ausente; el sentinel existente queda 649/649 verde. La corrida exacta `35002543406` termina
-en failure por ese estado RED. Ninguno de esos hechos invalida el freeze arquitectonico.
+La autoridad final existe y esta disponible con independencia del avance de implementacion. I-49 estaba en
+`G7-A1 RED` al iniciar este gate. Durante su publicacion avanzo a G7-B en
+`0651fecdda7999f8cbcc943c92beaf3ce137e04f`, con implementacion productiva del grafo y evaluacion del registro,
+contrato G7 20/20 verde, sentinel 649/649 verde y CI exacta `35008926342` en `success`. El tip nuevo conserva todos
+los blobs congelados. Este avance no invalida ni sustituye el freeze arquitectonico y no implementa `PlanReadSet`
+en I-52.
 
 Por tanto:
 
@@ -54,7 +57,7 @@ Por tanto:
 I-49 final authority availability = SATISFIED
 I-52 authority consumption         = SATISFIED
 RS-3                               = SATISFIED / FINAL AUTHORITY CONSUMED AND REGISTERED
-I-49 implementation                = G7-A1 RED
+I-49 implementation                = G7-B / G7 CONTRACT GREEN
 I-52 substantive implementation    = BLOCKED / NOT STARTED
 ```
 
@@ -88,7 +91,8 @@ El Coordinador y el Arquitecto deben intentar refutar, sobre el SHA y blobs exac
 4. que se preservan completitud por SCC y la precedencia limitada de A3-R2;
 5. que el registro consume por referencia y no copia ni reinterpreta la arquitectura I-49;
 6. que autoridad disponible no se presenta como implementacion completada;
-7. que `G7-A1 RED` no se usa para invalidar el freeze documental ni se oculta;
+7. que la transicion observada de `G7-A1 RED` a G7-B con contrato G7 verde no se usa para sustituir o invalidar el
+   freeze documental;
 8. que RS-3 satisfecho no abre el freeze mientras SVF siga sin efectividad e Integration SHA;
 9. que Workflow V2 sigue sin efecto sobre I-52;
 10. que O-1 y G3 permanecen cerrados y la implementacion sustantiva bloqueada.
