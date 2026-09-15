@@ -106,27 +106,33 @@ ADR neutral de I-55 ni decide AUTH-15.
 
 ## 5. I-49 — compatibilidad tecnica y autoridad final
 
-Objeto leido: `ac42ab9da2a9a830e98881d11a9e2f05e43a1254`.
+Objeto inicial leido: `ac42ab9da2a9a830e98881d11a9e2f05e43a1254`. Durante la CI de la primera publicacion de
+esta respuesta, I-49 avanzo a `f6b123414621d8e4b1b8aee36eef0ce22f19eb48`. El delta es documental y registra la
+aceptacion explicita del Owner.
 
 ```text
 ADR-0043 technical consensus = EXACT
-ADR-0043                     = PROPOSED
-Owner                        = PENDING
-ADR-0041                     = ACCEPTED / CURRENT
-Replacement                  = NOT EFFECTIVE
+ADR-0043                     = ACCEPTED
+Owner                        = ACCEPTED ADR-0043
+ADR-0041                     = REPLACED BY ADR-0043
+Replacement                  = EFFECTIVE / RECORDED
 New I-49 Consensus Freeze    = NOT CREATED
 G7 / G8                      = BLOCKED
 I-52 RS-3                    = PENDING I-49 FINAL AUTHORITY
 ```
 
-I-52 clasifica I-49 como **TECHNICALLY COMPATIBLE / FINAL AUTHORITY PENDING** y no copia la semantica intermedia
-de A3-R2. Antes de consumir `PlanReadSet`, deben cumplirse todos estos requisitos:
+I-52 mantiene la clasificacion **TECHNICALLY COMPATIBLE / FINAL AUTHORITY PENDING** y no copia la semantica
+intermedia de A3-R2. El avance satisface los tres primeros requisitos de autoridad final:
 
-1. el Owner acepta ADR-0043;
-2. ADR-0041 pasa al estado reemplazado conforme al proceso de I-49;
-3. el reemplazo queda registrado;
-4. I-49 crea un nuevo Consensus Freeze;
-5. I-52 relee el estado de implementacion y la autoridad final resultante.
+1. **SATISFIED:** el Owner acepto ADR-0043 sobre V6 + A1 + A2 + A3-R2;
+2. **SATISFIED:** ADR-0041 paso al estado reemplazado por ADR-0043 conforme al proceso de I-49;
+3. **SATISFIED:** el reemplazo quedo registrado en ADR-0041, ADR-0043, el indice y `decisions/I-49`;
+4. **PENDING:** I-49 debe crear y versionar un nuevo Consensus Freeze con CI verde sobre su SHA exacto;
+5. **PENDING:** I-52 debe releer el estado de implementacion y la autoridad final resultante despues de ese freeze.
+
+ADR-0043 aceptado tiene blob `1cf7b92760e6d357bcc953c58f179be3d5467c40`; ADR-0041 reemplazado tiene blob
+`31202b3474696bbd0ad7952a953b3c28217538d1`. Como el nuevo freeze aun no existe y G7 sigue bloqueado, I-52 no
+consume todavia `PlanReadSet`; **RS-3 y el freeze de I-52 permanecen bloqueados**.
 
 ## 6. I-56 — avance no material
 
