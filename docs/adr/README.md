@@ -77,6 +77,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0035](0035-visibilidad-de-cotas-por-tipo-de-vista.md) | Visibilidad de cotas por tipo de vista del rack | aceptado |
 | [0037](0037-reutilizacion-de-cabecera-por-copia-y-distribucion-por-lotes.md) | Reutilizar una configuración de cabecera es copiarla y distribuirla por lotes: destinos por sistema, preparación todo-o-nada y autoridades de normalización propias | aceptado |
 | [0039](0039-custom-properties-persistencia-autoridad.md) | Contrato de persistencia y autoridad de Custom Properties | aceptado |
+| [0044](0044-hechos-neutrales-de-vistas-compartidas.md) | Hechos neutrales de vistas compartidas y consumo desde main | propuesto |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,

@@ -1,0 +1,149 @@
+# I-57 — Shared View Foundation — Proposal V1
+
+```text
+Estado                    = PROPOSAL V1 — NOT CONSENSUS
+Foundation Coordinator    = REVIEW REQUIRED
+Foundation Architect      = REVIEW REQUIRED
+Foundation Consensus      = NOT REACHED
+Foundation Implementation = BLOCKED
+F1                        = NOT OPEN
+ADR                       = ADR-0044 · PROPOSED
+Reconciliation            = R2 · PROPOSED BY I-57 · NOT EFFECTIVE
+```
+
+## 1. Resultado y frontera
+
+I-57 integrara en `main` una autoridad pequena para describir, resolver y preparar vistas existentes como
+hechos neutrales. I-52 consumira esos hechos para el espejo e I-55 para colocacion/proyeccion. Ningun contrato
+decide que vista exponer, aceptar, omitir, reflejar, superponer o materializar. Dibujo, BOM, nombres,
+persistencia y comportamiento legacy permanecen iguales. Los builders y handlers existentes conservan su
+autoridad geometrica y de sistema.
+
+## 2. Alcance final
+
+| AUTH | Decision | Entrega minima |
+|---|---|---|
+| 01 | REUSE | `DimensionViewKind`; mapeos totales para tokens y camaras |
+| 02 | EXTRACT | address y variantes por valor, base 0, sin indices de UI |
+| 03 | EXTRACT | codec total `View/Section` hacia address+disposition; sin policy |
+| 04 | EXTRACT | availability sobre sistema resuelto mediante adapters por kind |
+| 05 | EXTRACT | frame fisico, spans, centro y offset medidos por CT-05 |
+| 06 | ADAPT | snapshot/clasificador puro; probe AutoCAD permanece Plugin |
+| 07 | ADAPT | nucleo minimo; `RackDuplicationPlan` retiene COPY, identidad, grupos y nombres |
+| 08 | REUSE+ADAPT | `Transform2D` mas resultado tipado de transform facts |
+| 09 | KEEP IN PLACE BEHIND PORT | contrato comun; handler/resolver por kind no se mueve |
+| 10 | ADAPT | preparation delega a builders y conserva payload tipado existente |
+| 11 | EXTRACT | nombre base puro; colision sigue en Plugin |
+| 12 | EXTRACT+PORT | requirements puros; query AutoCAD separado; importer intacto |
+| 13 | ADAPT | comparator port por kind; reutiliza autoridad Selectiva |
+| 14 | CHARACTERIZE ONLY | diez CT sin duplicar suites existentes |
+
+AUTH-15 permanece fuera: crear definiciones caller-owned sigue propuesto a I-52.
+
+## 3. Arquitectura minima
+
+```text
+View/Section -> syntax codec -> semantic address + disposition
+resolved design + address -> availability facts
+kind adapter -> existing resolver -> resolved result
+resolved result + address -> existing builder -> typed plan payload
+preparation result = address + frame + payload + base name + block requirements
+consumer policy -> Plugin materializer/transaction
+```
+
+- **Application/Shared o Application/Views:** values, codec, facts, frames, classifier, ports, registry, names y
+  requirements; cero WPF/AutoCAD.
+- **Application/Systems/<Kind>:** adapters hacia resolvers, builders y comparators vigentes.
+- **Plugin:** probes `Database/ObjectId`, `BlockTable`, importacion, materializacion y transacciones.
+- **Consumidores/UI:** exposicion, seleccion, anclaje, espejo, UX y mensajes.
+
+El plan preparado usa un sobre discriminado: no convierte `HeaderRunPlan` y `CantileverViewPlan` a un modelo
+geometrico artificial. Un kind sin adapter falla de forma tipada.
+
+## 4. Contratos centrales
+
+`RackViewAddress` combina `DimensionViewKind` con Whole, Fondo, Post, FlowEnd, PushBackCut o Station.
+`AdapterSection` Cantilever no es vista de rack. El codec es total y devuelve `Canonical`, `Canonicalizable`,
+`Coerced` o `Invalid`; reporta hechos, nunca permiso para continuar. Availability devuelve Available,
+VariantNotPresent, SystemDoesNotSupportKind o Unavailable con codigo estable.
+
+`RackViewFrame` contiene mapa de ejes locales a R/D/H, origen fisico local, spans, convencion de extremos,
+centro exacto `(min+max)/2`, offset de variante y bounds dibujados cuando difieren. I-52 e I-55 consumen el mismo
+descriptor y eligen su punto por policy propia.
+
+Plugin proyecta entidades a snapshots sin perder Unknown/Unreadable/Xref/space/identity; Application clasifica.
+El nucleo neutral no asigna RackId, nombres ni cantidad de copias. `Transform2D` permanece intacto; la tolerancia
+de descomposicion se inyecta desde el consumidor.
+
+`Resolve` es port/result, no algoritmo universal. El adapter Selectivo delega desde el handler y conserva una
+resolucion efectiva por rack conforme ADR-0034. `PrepareView` llama al builder existente una vez. El nombre base
+se calcula puro; `UniqueBlockName` consulta AutoCAD. Requirements puros se separan de query e importacion.
+
+El comparator port devuelve Single, Divergent o Unreadable. Cada kind controla DTO/schema; Selectivo reutiliza su
+comparacion estructural include-by-default. Nunca se elige una hermana.
+
+## 5. Caracterizacion y estrategia de pruebas
+
+F1 implementara CT-04, CT-05, CT-16, CT-RES, CT-PLAN, CT-NAME, CT-SCAN, CT-GEO, CT-BLK y CT-AUTH tal como las
+disena el Discovery. Se amplian pruebas existentes cuando ya expresan el comportamiento. Guardas textuales solo
+para fronteras que Core no puede cargar: API AutoCAD, delegacion Plugin y ausencia de productores legacy.
+
+| Nivel | Evidencia |
+|---|---|
+| T0 focal | pruebas afectadas con conteo esperado mayor que cero |
+| T1 impacto | sistemas afectados, Core local y UI segun LC-UI |
+| T2 candidato | Core/UI Full locales, Debug UI/Plugin y CI push 4/4 sobre SHA exacto limpio |
+| T3 integracion | CI y cobertura del merge SHA conforme WORKFLOW |
+| T4 Owner | AutoCAD 2025 sobre SHA exacto cuando cambien rutas observables |
+
+Una CT sin expected demostrable bloquea su AUTH. No se cambia producto para concordar con la tabla.
+
+## 6. Migracion y rollback
+
+1. Caracterizar sin mover productores.
+2. Introducir values/codec/availability y delegar lectores uno por uno.
+3. Crear frames solo desde CT-05.
+4. Separar snapshots/clasificacion y transform facts.
+5. Introducir Resolve/PrepareView adapters y centralizar nombres.
+6. Agregar requirements/query y comparators.
+7. Demostrar cero productores paralelos y producir Candidato.
+8. Integrar I-57; despues I-52/I-55 rebasan desde `main`.
+
+Cada cambio de consumidor retira su productor legacy en el mismo commit verde. El rollback revierte el gate
+completo. No hay schema nuevo ni migracion de DWG; `View/Section` permanece persistido.
+
+## 7. Gates refinados
+
+| Gate | Contenido | Salida |
+|---|---|---|
+| F1 | diez caracterizaciones | Proposal exacta AGREED por ambos revisores, ADR-0044 aceptado y R2 registrado por tres partes como entrada; CT verdes, cero producto cambiado |
+| F2 | AUTH-01..04 | taxonomia reutilizada, address/codec/availability unicos |
+| F3 | AUTH-05 | frames por seis kinds, CT-05 y OV-FND-01 |
+| F4 | AUTH-06..08 | scan/selection/placement neutrales, CT-16/SCAN/GEO |
+| F5 | AUTH-09..11 y 10 | Resolve/PrepareView/names, ADR-0034 intacto, CT-RES/PLAN/NAME, OV-FND-02/03 |
+| F6 | AUTH-12..13 | requirements/query/comparators, CT-BLK/AUTH |
+| F7 | Candidato | productores unicos, T2 y OV-FND completa |
+| F8 | integracion | rebase si aplica, merge autorizado, T3 y recibo con Integration SHA |
+
+Ningun gate se abre al publicar la Proposal. Un rebase crea SHA nuevo y exige evidencia nueva.
+
+## 8. Compatibilidad, ADR y validacion
+
+R2 incorpora CR-SVF-I52-01..06: tolerancia inyectada; I-57 titular neutral de X-1/X-3/X-7; consumo solo
+Integrated; CT-04/05/16 en I-57; centro comun; query separado de importer. I-52 conserva reflexion, read-set,
+exposicion y AUTH-15. I-55 conserva ID17/18/19, anclaje, cola, UX y materializacion.
+
+ADR-0044 se publica **propuesto** y gobierna solo ownership, hechos neutrales, capas y consumo desde main. Solo el
+Owner puede aceptarlo. Aunque la meta sea paridad, F3/F5/F7 requieren Owner Validation porque cambian rutas de
+dibujo. El Candidato se crea limpio antes de T2/T4.
+
+## 9. Open Material y preguntas
+
+Material: forma concreta del payload discriminado; matriz CT-04; extremos CT-05; comparators no Selectivos; lista
+exacta de productores a retirar. Minor: nombres de namespaces/tipos, codigos diagnosticos y ubicacion de fixtures.
+
+**Coordinator:** confirmar frontera de producto, resolucion de CR y precondiciones de F1.
+
+**Architect:** confirmar capas/ADR-0034, ausencia de segunda autoridad de plan y falsabilidad de las CT.
+
+Hasta veredictos `AGREED` sobre el mismo SHA: Consensus NOT REACHED, Implementation BLOCKED, F1 NOT OPEN.
