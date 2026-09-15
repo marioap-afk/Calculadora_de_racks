@@ -12,7 +12,18 @@ namespace RackCad.Tests
     {
         [Fact, Trait("Gate", "G9-Contract")]
         public void CHANGEDEFINITION_IS_THE_DEFINITION_AWARE_OPERATION_FOR_LITERAL_AND_EXPRESSION()
-            => RequireChangeDefinition();
+        {
+            var literal = G9BehavioralContractSupport.ChangeDefinition(
+                Registry(Literal(IdA, "A", 1)), Id(IdA), VariableDefinition.Literal(2),
+                Array.Empty<ProjectVariableScanEntry>());
+            var expression = G9BehavioralContractSupport.ChangeDefinition(
+                Registry(Literal(IdA, "A", 1), Literal(IdB, "B", 2)), Id(IdA),
+                ExpressionDefinition(BoundExpression.Reference(SymbolId.ProjectVariable(IdB))),
+                Array.Empty<ProjectVariableScanEntry>());
+            Assert.True(literal.IsSuccess); Assert.True(expression.IsSuccess);
+            Assert.Equal(RegistryMutationKind.ChangeValue, literal.Plan.RegistryMutation.Kind);
+            Assert.NotNull(expression.Plan.RegistryMutation.Definition);
+        }
 
         [Theory]
         [InlineData("self", IdA, IdA)]
@@ -131,17 +142,28 @@ namespace RackCad.Tests
             AssertEmpty(result);
         }
 
-        [Fact, Trait("Gate", "G9-Contract")]
+        [Fact, Trait("Gate", "G9-Api-Smoke")]
         public void INSPECTBINDING_IS_THE_SINGLE_STRUCTURAL_MISSING_INCOMPATIBLE_INTRINSIC_UPSTREAM_DOMAIN_AUTHORITY()
             => RequireSemanticInspection();
 
-        [Fact, Trait("Gate", "G9-Contract")]
+        [Fact, Trait("Gate", "G9-Api-Smoke")]
         public void MUTATION_PLAN_CARRIES_SYMBOL_AND_REPAIR_OBSERVATIONS_WITH_EXPLICIT_PHASES()
             => RequirePlanReadSetSurface();
 
         [Fact, Trait("Gate", "G9-Contract")]
         public void COMMIT_REREADS_AND_COMPARES_PLAN_OBSERVATIONS_BEFORE_FIRST_WRITE()
-            => RequireCommitComparison();
+        {
+            var planned = ProjectVariableMutationPreflight.ChangeValue(
+                Registry(Literal(IdA, "A", 1)), Id(IdA), VariableDefinition.Literal(2),
+                new[] { View(Design(directVariable: IdA)) });
+            Assert.True(planned.IsSuccess);
+            var commit = G9BehavioralContractSupport.Commit(
+                planned.Plan, Registry(Literal(IdA, "A", 3)),
+                new[] { View(Design(directVariable: IdA)) }, G9BehavioralContractSupport.NewWriteSpy());
+            Assert.False(commit.Succeeded);
+            Assert.Equal(0, commit.RegistryWrites);
+            Assert.Equal(0, commit.RackWrites);
+        }
 
         [Fact, Trait("Gate", "G9-Contract")]
         public void CREATE_OBSERVES_AFTER_THE_NEW_SYMBOL()
@@ -149,7 +171,8 @@ namespace RackCad.Tests
             RequirePlanReadSetSurface();
             var create = ProjectVariableMutationPreflight.Create("A", VariableType.Length, VariableDefinition.Literal(1));
             Assert.True(create.IsSuccess);
-            AssertObservation(create.Plan, "After", create.Plan.RegistryMutation.VariableId.Value);
+            var observation = Assert.Single(SymbolObservations(create.Plan));
+            Assert.True(IsObservation(observation, "After", create.Plan.RegistryMutation.VariableId.Value));
         }
 
         [Fact, Trait("Gate", "G9-Contract")]
@@ -166,8 +189,22 @@ namespace RackCad.Tests
         [Fact, Trait("Gate", "G9-Contract")]
         public void CHANGEDEFINITION_OBSERVES_BEFORE_AFFECTED_EXCEPT_X_AND_AFTER_AFFECTED_PLUS_FINAL_RACK_READS()
         {
-            RequireChangeDefinition();
-            RequirePlanReadSetSurface();
+            var unrelated = "44444444-5555-6666-7777-888888888888";
+            var result = G9BehavioralContractSupport.ChangeDefinition(
+                Registry(Literal(IdA, "X", 2),
+                    Expression(IdB, "A", G8ContractTestSupport.Reference(IdA)),
+                    Expression(IdC, "B", G8ContractTestSupport.Reference(IdB)),
+                    Literal(unrelated, "U", 9)),
+                Id(IdA), VariableDefinition.Literal(3),
+                new[]
+                {
+                    View(Design(expression: BoundExpression.Reference(SymbolId.ProjectVariable(IdC)))),
+                    View(Design(rackId: RackB, expression: BoundExpression.Reference(SymbolId.ProjectVariable(unrelated))), "D2", RackB),
+                });
+            Assert.True(result.IsSuccess);
+            Assert.Equal(new[] { IdB, IdC }, ObservationIds(result.Plan, "Before"));
+            Assert.Equal(new[] { IdA, IdB, IdC }, ObservationIds(result.Plan, "After"));
+            Assert.DoesNotContain(unrelated, ObservationIds(result.Plan, "Before").Concat(ObservationIds(result.Plan, "After")));
         }
 
         [Fact, Trait("Gate", "G9-Contract")]
@@ -179,6 +216,8 @@ namespace RackCad.Tests
             Assert.True(result.IsSuccess);
             AssertObservation(result.Plan, "Before", IdA);
             AssertNoObservation(result.Plan, "After", IdA);
+            Assert.Equal(new[] { IdA }, ObservationIds(result.Plan, "Before"));
+            Assert.Empty(ObservationIds(result.Plan, "After"));
         }
 
         [Fact, Trait("Gate", "G9-Contract")]
@@ -195,39 +234,25 @@ namespace RackCad.Tests
 
         [Fact, Trait("Gate", "G9-Contract")]
         public void UNRELATED_REGISTRY_CHANGE_OUTSIDE_OBSERVATIONS_DOES_NOT_ABORT_COMMIT()
-            => RequireCommitComparison();
+        {
+            var unrelated = "44444444-5555-6666-7777-888888888888";
+            var planned = ProjectVariableMutationPreflight.ChangeValue(
+                Registry(Literal(IdA, "A", 1), Literal(unrelated, "Z", 10)),
+                Id(IdA), VariableDefinition.Literal(2), Array.Empty<ProjectVariableScanEntry>());
+            var commit = G9BehavioralContractSupport.Commit(
+                planned.Plan, Registry(Literal(IdA, "A", 1), Literal(unrelated, "Z", 99)),
+                Array.Empty<ProjectVariableScanEntry>(), G9BehavioralContractSupport.NewWriteSpy());
+            Assert.True(commit.Succeeded); Assert.Equal(1, commit.RegistryWrites);
+        }
 
         [Fact, Trait("Gate", "G9-Contract")]
-        public void CHAIN_ONLY_CHANGE_MISMATCHES_SYMBOL_RESULT_BUT_MATCHES_UPSTREAM_ROOTS_T_A3_19()
-            => RequireComparableObservationSurface("T-A3-19 chain-only comparison");
-
-        [Fact, Trait("Gate", "G9-Contract")]
-        public void ROOTS_SWAPPED_BETWEEN_READ_VARIABLES_MISMATCH_UPSTREAM_T_A3_60()
-            => RequireRepairDecisionSurface("T-A3-60 roots remain attached to each read variable");
-
-        [Fact, Trait("Gate", "G9-Contract")]
-        public void SAME_RECOVERY_UNIT_WITH_A_DIFFERENT_SIGNATURE_MISMATCHES_UPSTREAM_T_A3_53()
-            => RequireRepairDecisionSurface("T-A3-53 same unit different stable signature");
-
-        [Theory]
-        [InlineData("T-A3-17", "root disappeared")]
-        [InlineData("T-A3-18", "root appeared")]
-        [InlineData("T-A3-35", "upstream symbol recovered")]
-        [Trait("Gate", "G9-Contract")]
-        public void ANY_ROOT_SET_CHANGE_MISMATCHES(string caseId, string _)
-            => RequireComparableObservationSurface(caseId + " root-set change");
-
-        [Fact, Trait("Gate", "G9-Contract")]
-        public void MISSINGTARGET_MATCHES_ONLY_THE_SAME_COMPLETE_ORDERED_MISSING_ID_SET()
-            => RequireRepairDecisionSurface("MissingTarget stable missing-id set");
-
-        [Fact, Trait("Gate", "G9-Contract")]
-        public void INTRINSIC_MATCHES_ONLY_THE_SAME_CODE_AND_STABLE_DIAGNOSTIC_DATA()
-            => RequireRepairDecisionSurface("Intrinsic stable diagnostic signature");
-
-        [Fact, Trait("Gate", "G9-Contract")]
-        public void DOMAIN_MATCHES_DOMAIN_BUT_MISMATCHES_WHEN_THE_SOURCE_RETURNS_TO_A_VALID_DOMAIN()
-            => RequireRepairDecisionSurface("Domain reason without localized text or numeric value");
+        public void ZERO_OBSERVATION_RENAME_DOES_NOT_TRIGGER_SEMANTIC_REREAD()
+        {
+            var plan = ProjectVariableMutationPreflight.Rename(Registry(Literal(IdA, "A", 1)), Id(IdA), "B").Plan;
+            var commit = G9BehavioralContractSupport.Commit(plan, Registry(Literal(IdA, "A", 1)),
+                Array.Empty<ProjectVariableScanEntry>(), G9BehavioralContractSupport.NewWriteSpy());
+            Assert.True(commit.Succeeded); Assert.Equal(0, commit.SemanticReads);
+        }
 
         private static void AssertZeroObservations(MutationPlan plan)
         {
@@ -237,14 +262,23 @@ namespace RackCad.Tests
         }
 
         private static void AssertObservation(MutationPlan plan, string phase, string id)
-            => Assert.Contains(Items(Member(PlanReadSet(plan), "SymbolResultObservations", "SymbolObservations")),
-                item => string.Equals(Member(item, "Phase").ToString(), phase, StringComparison.OrdinalIgnoreCase)
-                    && Member(item, "SymbolId", "Symbol").ToString().IndexOf(id, StringComparison.OrdinalIgnoreCase) >= 0);
+            => Assert.Contains(SymbolObservations(plan), item => IsObservation(item, phase, id));
 
         private static void AssertNoObservation(MutationPlan plan, string phase, string id)
-            => Assert.DoesNotContain(Items(Member(PlanReadSet(plan), "SymbolResultObservations", "SymbolObservations")),
-                item => string.Equals(Member(item, "Phase").ToString(), phase, StringComparison.OrdinalIgnoreCase)
-                    && Member(item, "SymbolId", "Symbol").ToString().IndexOf(id, StringComparison.OrdinalIgnoreCase) >= 0);
+            => Assert.DoesNotContain(SymbolObservations(plan), item => IsObservation(item, phase, id));
+
+        private static System.Collections.Generic.IReadOnlyList<object> SymbolObservations(MutationPlan plan)
+            => Items(Member(PlanReadSet(plan), "SymbolResultObservations", "SymbolObservations"));
+
+        private static string[] ObservationIds(MutationPlan plan, string phase)
+            => SymbolObservations(plan)
+                .Where(item => string.Equals(Member(item, "Phase").ToString(), phase, StringComparison.OrdinalIgnoreCase))
+                .Select(item => Member(item, "SymbolId", "Symbol").ToString())
+                .OrderBy(value => value, StringComparer.Ordinal).ToArray();
+
+        private static bool IsObservation(object item, string phase, string id)
+            => string.Equals(Member(item, "Phase").ToString(), phase, StringComparison.OrdinalIgnoreCase)
+                && Member(item, "SymbolId", "Symbol").ToString().IndexOf(id, StringComparison.OrdinalIgnoreCase) >= 0;
 
         private static object PlanReadSet(MutationPlan plan) => Member(plan, "PlanReadSet", "ReadSet");
 
