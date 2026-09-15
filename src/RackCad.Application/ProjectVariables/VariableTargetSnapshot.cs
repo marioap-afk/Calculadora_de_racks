@@ -27,11 +27,11 @@ namespace RackCad.Application.ProjectVariables
     internal sealed class VariableTargetSnapshot
     {
         private VariableTargetSnapshot(
-            VariableId variableId, VariableType variableType, double literalValue, string name)
+            VariableId variableId, VariableType variableType, VariableDefinition definition, string name)
         {
             VariableId = variableId;
             VariableType = variableType;
-            LiteralValue = literalValue;
+            Definition = definition;
             Name = name;
         }
 
@@ -39,7 +39,9 @@ namespace RackCad.Application.ProjectVariables
 
         internal VariableType VariableType { get; }
 
-        internal double LiteralValue { get; }
+        internal VariableDefinition Definition { get; }
+
+        internal double LiteralValue => Definition.LiteralValue;
 
         /// <summary>
         /// The label a person reads. It travels here so that the surface SHOWING a name and the surface
@@ -75,11 +77,39 @@ namespace RackCad.Application.ProjectVariables
                 return false;
             }
 
-            snapshot = new VariableTargetSnapshot(variableId, variableType, literalValue, name);
+            snapshot = new VariableTargetSnapshot(
+                variableId, variableType, VariableDefinition.Literal(literalValue), name);
+            return true;
+        }
+
+        internal static bool TryCreate(
+            VariableId variableId,
+            VariableType variableType,
+            VariableDefinition definition,
+            out VariableTargetSnapshot snapshot,
+            out string error,
+            string name = null)
+        {
+            snapshot = null;
+            error = null;
+
+            if (variableId.IsEmpty)
+            {
+                error = "Un target de variable de proyecto necesita un VariableId; el id vacio no es identidad.";
+                return false;
+            }
+
+            if (definition == null)
+            {
+                error = "La variable de proyecto " + variableId + " no declara una definicion.";
+                return false;
+            }
+
+            snapshot = new VariableTargetSnapshot(variableId, variableType, definition, name);
             return true;
         }
 
         public override string ToString()
-            => VariableId + " (" + VariableType + ") = " + LiteralValue;
+            => VariableId + " (" + VariableType + ") = " + Definition;
     }
 }

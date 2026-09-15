@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using RackCad.Application.ProjectVariables;
 
 namespace RackCad.Application.Persistence
 {
@@ -59,7 +60,56 @@ namespace RackCad.Application.Persistence
                 throw new InvalidOperationException("El diseño del selectivo no tiene frentes (¿archivo vacío o incompleto?).");
             }
 
+            ValidatePropertyValues(document);
+
             return document;
+        }
+
+        private static void ValidatePropertyValues(SelectivePalletDesignDocument document)
+        {
+            if (document.PropertyValues == null)
+            {
+                return;
+            }
+
+            foreach (var pair in document.PropertyValues)
+            {
+                var source = pair.Value;
+                if (source == null)
+                {
+                    // Historical documents may carry an explicit null. Presence still freezes the authored
+                    // literal, and the resolver classifies it as an unknown source rather than the store
+                    // rewriting or discarding it.
+                    continue;
+                }
+
+                if (string.Equals(source.Kind, SelectivePropertyValueDocument.ProjectVariableKind, StringComparison.Ordinal))
+                {
+                    if (!VariableId.TryParse(source.VariableId, out _) || source.Expression != null)
+                    {
+                        throw new InvalidOperationException(
+                            "La propiedad '" + pair.Key + "' contiene una referencia de variable mal formada.");
+                    }
+
+                    continue;
+                }
+
+                if (string.Equals(source.Kind, SelectivePropertyValueDocument.ExpressionKind, StringComparison.Ordinal))
+                {
+                    if (source.Expression == null || source.VariableId != null ||
+                        (source.ExtensionData != null && source.ExtensionData.Count > 0))
+                    {
+                        throw new InvalidOperationException(
+                            "La propiedad '" + pair.Key + "' contiene una expresion mal formada.");
+                    }
+
+                    continue;
+                }
+
+                throw new InvalidOperationException(
+                    "La propiedad '" + pair.Key + "' declara una fuente desconocida ('" +
+                    (source.Kind ?? "<null>") + "').");
+            }
         }
 
         private static JsonSerializerOptions CreateOptions()
@@ -74,6 +124,7 @@ namespace RackCad.Application.Persistence
             };
 
             options.Converters.Add(new JsonStringEnumConverter());
+            PersistedBoundExpressionJson.AddConverter(options);
             return options;
         }
     }

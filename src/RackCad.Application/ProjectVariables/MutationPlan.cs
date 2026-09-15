@@ -98,11 +98,7 @@ namespace RackCad.Application.ProjectVariables
                         VariableId = VariableId.Value,
                         Name = Name,
                         Type = Type.ToString(),
-                        Definition = new ProjectVariableDefinitionDocument
-                        {
-                            Kind = "literal",
-                            Value = Definition.LiteralValue,
-                        },
+                        Definition = ProjectVariableDefinitionDocument.From(Definition),
                     });
                     break;
 
@@ -121,11 +117,7 @@ namespace RackCad.Application.ProjectVariables
 
                     if (toChange != null)
                     {
-                        toChange.Definition = new ProjectVariableDefinitionDocument
-                        {
-                            Kind = "literal",
-                            Value = Definition.LiteralValue,
-                        };
+                        toChange.Definition = ProjectVariableDefinitionDocument.From(Definition);
                     }
 
                     break;
@@ -240,11 +232,18 @@ namespace RackCad.Application.ProjectVariables
     /// </summary>
     internal static class ProjectVariableCloning
     {
-        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
+        private static readonly JsonSerializerOptions Options = CreateOptions();
+
+        private static JsonSerializerOptions CreateOptions()
         {
-            WriteIndented = false,
-            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-        };
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = false,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+            };
+            PersistedBoundExpressionJson.AddConverter(options);
+            return options;
+        }
 
         internal static ProjectVariablesDocument Clone(ProjectVariablesDocument document)
             => document == null

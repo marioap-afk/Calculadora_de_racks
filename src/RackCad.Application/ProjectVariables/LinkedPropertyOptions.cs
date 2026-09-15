@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using RackCad.Application.Expressions;
 
 namespace RackCad.Application.ProjectVariables
 {
@@ -10,8 +11,8 @@ namespace RackCad.Application.ProjectVariables
     /// <para>
     /// Three data with three different jobs, and mixing them up is the whole risk:
     /// <see cref="VariableId"/> is IDENTITY and the only thing a selection carries;
-    /// <see cref="Name"/> is a label a person reads and text FILTERS against; <see cref="LiteralValue"/> is
-    /// shown so a decision is informed. Nothing here ever supports the reverse lookup name → id.
+    /// <see cref="Name"/> is a label a person reads and text FILTERS against; <see cref="LiteralValue"/> carries
+    /// the effective numeric value under its historical API name. Nothing here ever supports reverse lookup name → id.
     /// </para>
     /// <para>
     /// <see cref="Disambiguator"/> is MANDATORY and not decoration. Duplicate names are allowed, and two
@@ -43,6 +44,7 @@ namespace RackCad.Application.ProjectVariables
 
         public VariableType VariableType { get; }
 
+        /// <summary>The evaluated value offered for binding; the property name is retained for API compatibility.</summary>
         public double LiteralValue { get; }
 
         /// <summary>
@@ -102,6 +104,7 @@ namespace RackCad.Application.ProjectVariables
             }
 
             var options = new List<LinkedPropertyOption>();
+            var evaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(registry));
 
             foreach (var target in registry.Targets())
             {
@@ -112,8 +115,14 @@ namespace RackCad.Application.ProjectVariables
                     continue;
                 }
 
+                var result = evaluation.Result(SymbolId.ProjectVariable(target.VariableId.Value));
+                if (!result.Succeeded)
+                {
+                    continue;
+                }
+
                 options.Add(new LinkedPropertyOption(
-                    target.VariableId, target.Name, target.VariableType, target.LiteralValue));
+                    target.VariableId, target.Name, target.VariableType, result.Value));
             }
 
             return options;

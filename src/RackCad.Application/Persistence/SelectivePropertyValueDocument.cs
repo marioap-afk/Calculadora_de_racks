@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using RackCad.Application.Expressions;
 
 namespace RackCad.Application.Persistence
 {
@@ -24,11 +25,17 @@ namespace RackCad.Application.Persistence
         /// <summary>The only kind ID22A implements: the property is governed by a drawing-level variable.</summary>
         public const string ProjectVariableKind = "projectVariable";
 
+        /// <summary>The property is governed by an already-bound semantic expression.</summary>
+        public const string ExpressionKind = "expression";
+
         /// <summary>The discriminator. Compared exactly; an unrecognised value is a state this build cannot resolve.</summary>
         public string Kind { get; set; }
 
         /// <summary>The referenced variable, as a GUID string.</summary>
         public string VariableId { get; set; }
+
+        /// <summary>The persisted semantic tree for <c>Kind = expression</c>.</summary>
+        public BoundExpression Expression { get; set; }
 
         [JsonExtensionData]
         public IDictionary<string, JsonElement> ExtensionData { get; set; }
@@ -36,5 +43,12 @@ namespace RackCad.Application.Persistence
         /// <summary>A reference to a drawing-level project variable.</summary>
         public static SelectivePropertyValueDocument ToProjectVariable(string variableId)
             => new SelectivePropertyValueDocument { Kind = ProjectVariableKind, VariableId = variableId };
+
+        public static SelectivePropertyValueDocument FromExpression(BoundExpression expression)
+            => new SelectivePropertyValueDocument
+            {
+                Kind = ExpressionKind,
+                Expression = expression ?? throw new System.ArgumentNullException(nameof(expression)),
+            };
     }
 }

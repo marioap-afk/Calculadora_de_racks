@@ -267,6 +267,51 @@ namespace RackCad.Tests
 
         [Fact]
         [Trait("Gate", "G8-Contract")]
+        public void RENAME_PREFLIGHT_PRESERVES_AN_EXPRESSION_DEFINITION()
+        {
+            var registry = G8ContractTestSupport.ReadRegistry(RegistryWithExpression(
+                G8ContractTestSupport.IdA, "Antes", G8ContractTestSupport.Number(100.0, "mm")));
+            var renamed = ProjectVariableMutationPreflight.Rename(
+                registry, VariableId.Parse(G8ContractTestSupport.IdA), "Despues");
+
+            Assert.True(renamed.IsSuccess);
+            var result = renamed.Plan.RegistryMutation.ApplyTo(registry).ToProjectVariables().Single();
+            Assert.Equal("Despues", result.Name);
+            Assert.Equal(VariableDefinitionKind.Expression, result.Definition.Kind);
+            Assert.Equal(BoundExpression.Number(100.0, LengthUnit.Millimeter), result.Definition.ExpressionValue);
+        }
+
+        [Fact]
+        [Trait("Gate", "G8-Contract")]
+        public void LINK_OPTIONS_USE_THE_EVALUATED_EXPRESSION_VALUE()
+        {
+            var read = ProjectVariablesReadResult.Readable(G8ContractTestSupport.ReadRegistry(
+                RegistryWithExpression(
+                    G8ContractTestSupport.IdA, "Calculada", G8ContractTestSupport.Number(100.0, "mm"))));
+
+            var result = LinkedPropertyOptions.ForProperty(
+                ProjectPropertyIds.SelectiveVerticalClearance, read);
+
+            Assert.True(result.IsUsable);
+            Assert.Equal(100.0 / 25.4, Assert.Single(result.Options).LiteralValue, 12);
+        }
+
+        [Fact]
+        [Trait("Gate", "G8-Contract")]
+        public void WORKSPACE_PROJECTS_THE_EVALUATED_EXPRESSION_VALUE()
+        {
+            var read = ProjectVariablesReadResult.Readable(G8ContractTestSupport.ReadRegistry(
+                RegistryWithExpression(
+                    G8ContractTestSupport.IdA, "Calculada", G8ContractTestSupport.Number(100.0, "mm"))));
+
+            var workspace = ProjectVariablesWorkspace.Build(read, new ProjectVariableScanEntry[0]);
+
+            Assert.True(workspace.IsEditable);
+            Assert.Equal(100.0 / 25.4, Assert.Single(workspace.Variables).LiteralValue, 12);
+        }
+
+        [Fact]
+        [Trait("Gate", "G8-Contract")]
         public void SCHEMA_V0_PRESERVES_1_0_WHEN_EXPRESSION_EXISTS_AND_AFTER_IT_IS_REMOVED()
         {
             var store = new ProjectVariablesStore();
