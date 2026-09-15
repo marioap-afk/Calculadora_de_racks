@@ -1,4 +1,4 @@
-# I-57 — Paquete de revision del Architect — Proposal V1
+# I-57 — Paquete de revision del Architect — Proposal V2
 
 ## Objeto exacto
 
@@ -6,10 +6,9 @@
 Branch        = architecture/shared-view-foundation
 BASE_SHA      = dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093
 DISCOVERY_SHA = a3341068137931203de00fc769e4675db7b7d3a8
-PROPOSAL_SHA  = e7baa255bd7c2632b071c90b84130c7ca35805fe
-Proposal blob = 5a54221b495f936459066713556ebdc9d4c3ef28
-Map blob      = 22acbb94c4c33b583753acd704ef812208d4eb1c
-R2 blob       = 5a3921ef091b01f41e926119e5f44a3c01bffb49
+PROPOSAL_SHA  = 71f87db0c4ee980976c25573f217173b139bc166
+Proposal blob = bfa7a0e317f6d26dc5ad98d39561bc542e8dc3c9
+Map blob      = 1ba59ac559a3e21eff24465be5f1da67b7cd3a2b
 R3 blob       = cd42db03becff42f98b047e61c46689c17a69670
 ADR blob      = 93614be7ce0859241d6a00cb2f9940d3895eb95b
 ```
@@ -27,16 +26,18 @@ Revisar contra el codigo de BASE_SHA y el Discovery. La revision no implementa, 
 7. Selection/transform: COPY e identidad quedan fuera; `Transform2D` se reutiliza.
 8. Blocks/names/authored: base vs colision, requirement vs query/import, comparator por kind.
 9. Testabilidad: CT puras donde aplica y guardas solo en fronteras Plugin.
-10. Integracion: I-57 antes de consumidores y R2 sin ciclo de relectura.
+10. Integracion: latest Rn efectiva sin hardcode eterno; hoy R3, sin ciclo de relectura.
+11. F1: solo caracterizaciones; contradiccion material fuerza STOP y Proposal V3.
+12. Payload: carrier tipado/discriminado, sin geometria universal, JSON/reflection u `object` opaco.
 
 ## Formato solicitado
 
 ```text
-Architect Review — I-57 Proposal V1
-Reviewed SHA = e7baa255bd7c2632b071c90b84130c7ca35805fe
+Architect Review — I-57 Proposal V2
+Reviewed SHA = 71f87db0c4ee980976c25573f217173b139bc166
 GLOBAL VERDICT = AGREED | AGREED WITH CHANGES | NOT AGREED
-A1..A10 = VERIFIED | DEFECT
-R2 = REGISTER | CHANGES REQUIRED
+A1..A12 = VERIFIED | DEFECT
+R3 = REGISTER | CHANGES REQUIRED
 ADR-0044 = READY FOR OWNER | CHANGES REQUIRED
 Findings = NONE | [BLOCKER | MATERIAL | MINOR] I57-ARCH-XX — evidencia — cambio
 Architect = AGREED | REVIEW REQUIRED
