@@ -26,9 +26,8 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: revision de Proposal V4. F0 esta aceptado y cerrado.** Discovery, Proposal V4, mapa V4, R3,
-> ADR-0044 propuesto y paquetes de revision estan publicados. Este contrato no abre F1, no acepta el ADR y no
-> autoriza produccion.
+> **Fase actual: consenso tecnico alcanzado sobre Proposal V4; F0 esta aceptado y cerrado.** R3 esta efectiva por
+> triple registro. ADR-0044 permanece propuesto; este contrato no abre F1, no acepta el ADR y no autoriza produccion.
 
 ```text
 Initiative        = I-57 — Shared View Foundation
@@ -45,11 +44,13 @@ SVF reconciliation= R1 @ aa37264381e7d386339305d11030314ffd219d63
 R1 blob           = 2faa5a316680aa92306c7bce75c42cc311f96a26
 R1 status         = SUPERSEDED FOR REVIEW BY R2 · NEVER EFFECTIVE
 R2 status         = SUPERSEDED FOR REVIEW BY R3 · NEVER EFFECTIVE
-R3 status         = I-57 REGISTERED @ e7baa255bd7c2632b071c90b84130c7ca35805fe · I-52/I-55 NOT REGISTERED · NOT EFFECTIVE
+R3 status         = EFFECTIVE · I-57/I-52/I-55 REGISTERED SAME EXACT OBJECT
+R3 blob           = cd42db03becff42f98b047e61c46689c17a69670
 
-Foundation Coordinator = REVIEW REQUIRED
-Foundation Architect   = REVIEW REQUIRED
-Foundation Consensus   = NOT REACHED
+Foundation Coordinator = AGREED
+Foundation Architect   = AGREED
+Technical Consensus   = REACHED
+Full Initiative Consensus = NOT DECLARED
 Foundation Implementation = BLOCKED
 F0 = ACCEPTED / CLOSED
 F1 = NOT OPEN
@@ -71,8 +72,8 @@ otras autoridades. Extraerlas dentro de cualquiera de las dos ramas de producto 
 esperar una integracion ajena o a duplicar contratos. I-55 Proposal V5 recomienda una iniciativa neutral;
 el Owner acepto ese mecanismo y autorizo I-57.
 
-R1 sigue sin efecto porque I-52 publico solo una respuesta con solicitudes de cambio y no lo registro.
-Una autoridad con `Integration SHA` vacio no es consumible.
+R1 nunca fue efectiva y quedo superada por R3. R3 esta efectiva tras el registro exacto de I-57, I-52 e I-55.
+La autoridad aun no es consumible porque su `Integration SHA` permanece vacio.
 
 ## 3. Alcance propuesto
 
@@ -132,8 +133,8 @@ Owner → Coordinator I-57 ↔ Architect I-57 → consenso propio → implementa
 
 F1 requiere Proposal exacta con veredictos `AGREED` de Coordinator y Architect sobre la misma version;
 ADR-0044 `ACCEPTED`; y la latest reconciliation Rn `EFFECTIVE`, con el mismo SHA exacto registrado por I-52,
-I-55 e I-57 y ninguna CR material abierta contra ese Rn. Hoy latest Rn = R3 y no es efectiva. La autorizacion
-de F0 no sustituye ninguna de esas compuertas.
+I-55 e I-57 y ninguna CR material abierta contra ese Rn. Latest Rn = R3 y esta efectiva, sin CR material abierta;
+ADR-0044 sigue `PROPOSED`, por lo que F1 permanece `NOT OPEN`. La autorizacion de F0 no sustituye esa compuerta.
 
 ## 7. Archivos esperados
 
@@ -181,8 +182,8 @@ observable demostrada, reconciliacion exacta y ausencia de productores legacy no
 ## 12. Condiciones para detenerse
 
 - Cualquier intento de abrir F1 sin revision y consenso propios.
-- La latest reconciliation Rn sigue `NOT EFFECTIVE`, tiene una CR material abierta o deja titularidad duplicada;
-  hoy latest Rn = R3.
+- La latest reconciliation Rn queda `NOT EFFECTIVE`, tiene una CR material abierta o deja titularidad duplicada.
+  Hoy latest Rn = R3, `EFFECTIVE`, sin CR material abierta y con titularidad unica.
 - Cambios productivos durante F0 o expansion hacia politica de I-52/I-55.
 - Conflicto de archivos con una iniciativa activa sin serializacion.
 - Necesidad de numerar o aceptar el ADR sin decision correspondiente.
