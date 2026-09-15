@@ -253,3 +253,12 @@ de I-57 observada en `16664f5b8dfb24f91baaa0a5ee21c37e5d28923a` sigue `NOT CONSE
 I-49 avanzo a `c12ec84a41b5cc33bb115917a5f24f70c4d429e0` dentro de G7-A RED, sin cambiar el freeze final
 `239f47c40a6b4a9246dd4ec9e928b7fbe03f79b6`. Su autoridad final esta disponible, pero este gate no consume ni
 registra `PlanReadSet`: `RS-3 = PENDING CONSUMPTION / REGISTRATION`.
+
+## 9. Recibo de efectividad de R3
+
+I-52 conserva como registro de adopcion `ebc6634137d57283514fdeb0670ff7918ec5eb40`. Tras el registro I-55
+`c20173cb254030c6abfcb0018a279a693fce812c` y el recibo de consenso I-57
+`14435a33f3e270db71289fc061cba0f856c198e5`, las tres iniciativas apuntan a la publicacion R3
+`e7baa255bd7c2632b071c90b84130c7ca35805fe`, blob `cd42db03becff42f98b047e61c46689c17a69670`. No hay CR material
+abierta contra ese objeto; R3 queda `EFFECTIVE`. Su Integration SHA permanece vacio, por lo que aun no es
+consumible y la implementacion sustantiva de I-52 no se abre.
