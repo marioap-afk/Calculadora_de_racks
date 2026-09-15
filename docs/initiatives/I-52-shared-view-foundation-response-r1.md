@@ -89,8 +89,10 @@ Shared authority consumption = BLOCKED WHILE INTEGRATION SHA IS EMPTY
 
 ## 4. Estado y decisiones pendientes de la foundation
 
-Durante la CI final de I-52, I-55 avanzo a `87be2f09642f558a508aea7bfc3f3ad20bddbd43` e I-57 quedo publicada en
-`623aa8042c004cdca44ed519ed2256d932edcc1e`. El Owner eligio la iniciativa neutral independiente, asigno
+Durante las corridas de CI de I-52, I-55 avanzo a `87be2f09642f558a508aea7bfc3f3ad20bddbd43` e I-57 quedo publicada en
+`623aa8042c004cdca44ed519ed2256d932edcc1e` y despues avanzo a
+`a3341068137931203de00fc769e4675db7b7d3a8` con su Discovery documental. El Owner eligio la iniciativa neutral
+independiente, asigno
 `FOUNDATION_ID = I-57` y autorizo su apertura. El claim remoto
 `869cf464129da65323781dbebe2425083f21915f` es valido y F0 esta completo. Estos puntos satisfacen las tres
 primeras condiciones de `CR-SVF-I52-04`, pero no incorporan la solicitud a una nueva `Rn` ni vuelven efectiva R1.
@@ -102,11 +104,18 @@ Foundation branch        = architecture/shared-view-foundation
 Foundation claim         = VALID @ 869cf464129da65323781dbebe2425083f21915f
 Foundation bootstrap     = 623aa8042c004cdca44ed519ed2256d932edcc1e
 Foundation F0            = COMPLETE
+Foundation Discovery     = COMPLETE @ a3341068137931203de00fc769e4675db7b7d3a8
 Foundation F1            = NOT OPEN
+Foundation Proposal      = NOT PUBLISHED
 Foundation ADR           = PROPOSED / NUMBER PENDING
 Foundation consensus     = NOT REACHED
 Foundation integration   = NONE
 ```
+
+El Discovery de I-57 confirma que hace falta R2 y que no sera efectiva hasta que I-52, I-55 e I-57 registren el mismo
+commit exacto. Sin embargo, su §8 atribuye a la respuesta I-52 seis solicitudes que no corresponden a
+`CR-SVF-I52-01..06`. La autoridad de esta posicion sigue siendo la lista exacta de §2; R2 debe citarla y resolverla o
+escalarla sin sustituirla por ese resumen. La discrepancia queda **OPEN / MATERIAL FOR COORDINATION** y no abre F1.
 
 Permanecen pendientes y fuera de la autoridad de este gate:
 
@@ -118,7 +127,7 @@ Permanecen pendientes y fuera de la autoridad de este gate:
 - `Integration SHA` alcanzable desde `origin/main` y CI posterior verde.
 
 I-57 fue creada por su propia autoridad y rama paralela, no por esta respuesta. Este gate no crea ni modifica su
-iniciativa, rama, worktree, ADR o claim. Tampoco acepta el borrador de ADR neutral ni decide AUTH-15.
+iniciativa, rama, worktree, ADR, claim o Discovery. Tampoco acepta el borrador de ADR neutral ni decide AUTH-15.
 
 ## 5. I-49 — compatibilidad tecnica y autoridad final
 
