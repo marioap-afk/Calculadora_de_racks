@@ -112,10 +112,18 @@ Foundation consensus     = NOT REACHED
 Foundation integration   = NONE
 ```
 
-El Discovery de I-57 confirma que hace falta R2 y que no sera efectiva hasta que I-52, I-55 e I-57 registren el mismo
-commit exacto. Sin embargo, su §8 atribuye a la respuesta I-52 seis solicitudes que no corresponden a
-`CR-SVF-I52-01..06`. La autoridad de esta posicion sigue siendo la lista exacta de §2; R2 debe citarla y resolverla o
-escalarla sin sustituirla por ese resumen. La discrepancia queda **OPEN / MATERIAL FOR COORDINATION** y no abre F1.
+Despues de publicar el Discovery, I-57 avanzo a `ee0274d3cdc04705bf1a22008ecb4dad3acfd888`. Proposal V1 y R2 fueron
+publicadas en `f5dad131799f792053714e3e4a9eae8762c09ed4`; el blob exacto de R2 es
+`5a3921ef091b01f41e926119e5f44a3c01bffb49`. R2 declara `I-52 NOT REGISTERED`, `I-55 NOT REGISTERED`,
+`NOT EFFECTIVE`, `Integration SHA = —` y F1 `NOT OPEN`; Coordinator y Architect de I-57 siguen en revision.
+
+R2 no puede registrarse por I-52 en su forma publicada. Su seccion titulada `CR-SVF-I52-01..06` enumera seis asuntos
+distintos de la lista exacta de §2: solo el punto 3 corresponde directamente a `CR-SVF-I52-05`; la tabla X asigna
+titularidad neutral a X-2/X-8, pero la lista omite el tratamiento expreso de `CR-SVF-I52-01`, `-02`, `-03`, `-04` y
+`-06`. El mismo resumen incorrecto ya aparecia en Discovery §8. La autoridad de la posicion I-52 sigue siendo §2.
+Como R2 se declara inmutable y exige nueva version ante cambios, I-57 debe publicar R3 que cite y resuelva o escale
+las seis solicitudes exactas. Discrepancia **OPEN / MATERIAL FOR COORDINATION**; I-52 registration permanece
+`NOT REGISTERED` y no se abre F1.
 
 Permanecen pendientes y fuera de la autoridad de este gate:
 
@@ -131,9 +139,12 @@ iniciativa, rama, worktree, ADR, claim o Discovery. Tampoco acepta el borrador d
 
 ## 5. I-49 — compatibilidad tecnica y autoridad final
 
-Objeto inicial leido: `ac42ab9da2a9a830e98881d11a9e2f05e43a1254`. Durante las dos corridas de CI de esta
+Objeto inicial leido: `ac42ab9da2a9a830e98881d11a9e2f05e43a1254`. Durante las corridas de CI de esta
 respuesta, I-49 avanzo primero a `f6b123414621d8e4b1b8aee36eef0ce22f19eb48`, que registra la aceptacion explicita
 del Owner, y despues a `239f47c40a6b4a9246dd4ec9e928b7fbe03f79b6`, que crea el nuevo Consensus Freeze.
+Finalmente avanzo a `63a58895e0a4acd8ca4134f6b17870e7f954d3ca`, que abre G7-A con tres archivos de pruebas:
+20 pruebas focales fallan RED de forma esperada por implementacion ausente y la regresion existente queda verde
+649/649. No agrega codigo productivo ni cambia la autoridad final congelada.
 
 ```text
 ADR-0043 technical consensus = EXACT
@@ -143,7 +154,7 @@ ADR-0041                     = REPLACED BY ADR-0043
 Replacement                  = EFFECTIVE / RECORDED
 New I-49 Consensus Freeze    = 239f47c40a6b4a9246dd4ec9e928b7fbe03f79b6
 Freeze exact push CI         = 34995261917 / SUCCESS 4 OF 4
-G7                           = READY / NOT STARTED
+G7                           = STARTED / G7-A RED
 G8                           = BLOCKED UNTIL G7 CLOSES
 I-49 final authority         = AVAILABLE
 I-52 RS-3                    = PENDING CONSUMPTION / REGISTRATION
@@ -157,7 +168,7 @@ PENDING** y no copia la semantica intermedia de A3-R2. El avance satisface los c
 3. **SATISFIED:** el reemplazo quedo registrado en ADR-0041, ADR-0043, el indice y `decisions/I-49`;
 4. **SATISFIED:** I-49 creo y versiono el nuevo Consensus Freeze en `239f47c4` y su CI exacta de push
    `34995261917` termino `success` en los cuatro jobs;
-5. **SATISFIED AS READ:** I-52 relee que G7 queda `READY / NOT STARTED` y G8 permanece bloqueado hasta que G7 cierre.
+5. **SATISFIED AS READ:** I-52 relee que G7 esta `STARTED / G7-A RED` y G8 permanece bloqueado hasta que G7 cierre.
 
 ADR-0043 aceptado tiene blob `1cf7b92760e6d357bcc953c58f179be3d5467c40`; ADR-0041 reemplazado tiene blob
 `31202b3474696bbd0ad7952a953b3c28217538d1`. La autoridad final de I-49 ya esta disponible, pero este gate solo
