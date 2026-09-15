@@ -12,7 +12,7 @@ depends_on: []
 conflicts_with: []
 context_packs: [documentation-governance]
 automation_state_path:
-decision_paths: []
+decision_paths: [docs/automation/decisions/I-56.md]
 requires_ci: true
 requires_plugin_build: false
 requires_autocad: false
@@ -26,14 +26,16 @@ automation:
 
 # I-56 — Initiative Workflow V2
 
-> **Fase actual: RECLAMADA Y BOOTSTRAPEADA (G0), CONTRATO CORREGIDO (G0.1).** I-56 es **solo documentacion y
-> proceso**. No hay Evidence Audit, no hay Proposal y **no se ha cambiado ninguna norma de proceso**. La sesion de
-> apertura estuvo autorizada **solo para G0** y la de correccion **solo para G0.1** (seccion 12).
+> **Fase actual: CONSENSUS V4 ALCANZADO, DRY-RUN PASS Y OWNER APPROVED.** I-56 sigue siendo **solo
+> documentacion y proceso** y continua gobernada por Workflow V1. La materializacion normativa no ha
+> comenzado y **no se ha cambiado ninguna norma de proceso**.
 >
 > ```text
 > I-56 IS DOCUMENTATION / PROCESS ONLY
-> EVIDENCE AUDIT:            NOT STARTED          (requiere orden propia)
-> PROPOSAL:                  NOT STARTED          (requiere orden propia)
+> EVIDENCE AUDIT:            CLOSED
+> PROPOSAL V4:               CONSENSUS REACHED
+> DRY-RUN:                   PASS
+> OWNER:                     APPROVED — PROPOSAL V4
 > WORKFLOW V2:               NOT EFFECTIVE        (seccion 0.2)
 > WORKFLOW_V2_EFFECTIVE_SHA: DOES NOT EXIST YET   (no se inventa)
 > ```
@@ -51,10 +53,11 @@ Claim-Id   = 82946e97-508a-4e0e-9b9c-09b9936be121
 > identifican por su SHA en los cuerpos de los commits de reclamo, de bootstrap y de correccion, que son la fuente.
 
 > **Apertura por autorizacion explicita sin fila previa** — caso (d) de [WORKFLOW](../WORKFLOW.md) seccion 2. La
-> autorizacion es la **orden directa** recibida en la sesion de apertura («I-56 — G0 only»). Sustituye
+> autorizacion fue la **orden directa** recibida en la sesion de apertura («I-56 — G0 only»). Sustituye
 > **unicamente** la preexistencia de la fila en ROADMAP: la fila durable y este contrato nacen en el bootstrap
-> inmediatamente posterior al reclamo atomico. **No existe** `docs/automation/decisions/I-56.md` y el caso (d)
-> **no lo exige**, asi que `decision_paths` queda vacio.
+> inmediatamente posterior al reclamo atomico. En aquel bootstrap no existia un registro de decisiones porque
+> el caso (d) no lo exige. La aprobacion posterior de Proposal V4 ya se registra en
+> `docs/automation/decisions/I-56.md`, y `decision_paths` apunta a ese canal durable.
 
 ## 0. Invariantes vinculantes
 
@@ -189,8 +192,8 @@ hecho que la orden mando verificar:
   - `requires_owner_decision: true`. **Decision**: la aprobacion de politica del Owner (`Owner = APPROVED`) sobre la
     version de Workflow V2 en la que `Coordinator = AGREED` y `Architect = AGREED`. **Punto en que se necesita**:
     antes de que cualquier politica normativa de la V2 entre en vigor (seccion 0.2). Asi identifica la decision y su
-    punto, como pide [AUTOMATION_PLAN](../AUTOMATION_PLAN.md) seccion 11. Hoy no existe
-    `docs/automation/decisions/I-56.md`, asi que `decision_paths` sigue vacio.
+    punto, como pide [AUTOMATION_PLAN](../AUTOMATION_PLAN.md) seccion 11. La decision ya esta aprobada y
+    registrada en `docs/automation/decisions/I-56.md`; no activa por si sola Workflow V2.
   - `requires_owner_validation: false`. I-56 **no** requiere validacion del Owner en AutoCAD ni de producto: no cambia
     comportamiento de dibujo ([AGENTS.md](../../AGENTS.md), punto 5). Esa metadata es monotonica
     ([AUTOMATION_PLAN](../AUTOMATION_PLAN.md) seccion 11): `false` no cancela ninguna obligacion que venga de otro
@@ -208,9 +211,11 @@ los fija la Proposal. **Una desviacion material frente a esto obliga a detenerse
 |---|---|---|---|
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
 | G0.1 | Correccion del contrato de bootstrap | S-1 confirmado, metadata del Owner e invariantes de la seccion 0 | **HECHA** |
-| — | Evidence Audit | Lo fija su orden | pendiente — **no autorizada** |
-| — | Proposal | Lo fija su orden | pendiente — **no autorizada** |
-| — | Posteriores | Se definen tras la Proposal; ninguna politica entra en vigor sin la seccion 0.2 | bloqueadas |
+| G1 | Evidence Audit | Auditoria aceptada y cerrada | **HECHA** |
+| G2–G7 | Proposal y consenso | Proposal V4 exacta con Coordinator + Architect AGREED | **HECHA** |
+| G8 | Dry-run historico | Tres casos PASS; ninguna captura material perdida | **HECHA** |
+| G9 | Paquete y decision del Owner | 17 selecciones + aprobacion exacta de Proposal V4 | **HECHA** |
+| — | Materializacion normativa | ADR, normas, controles e integracion segun Proposal V4 | pendiente — requiere ordenes propias |
 
 Ninguna fase arranca sin que la anterior tenga evidencia revisable.
 
@@ -255,8 +260,7 @@ seccion 0.2.
 
 ## 12. Condiciones para detenerse
 
-- **COMPUERTA DE ESTA SESION — G0.1, solo la correccion de este contrato.** Evidence Audit y Proposal no se inician.
-- Toda fase posterior exige **orden propia**.
+- Toda fase de materializacion posterior exige **orden propia**. La aprobacion del Owner no la inicia por si sola.
 - Si una fase necesitara tocar algo **fuera de `docs/**`** (por ejemplo `AGENTS.md` o `CLAUDE.md`, que viven en la
   raiz), se declara en la Proposal y se detiene hasta que su orden lo autorice.
 - Si una fase pretendiera aplicar la V2 a una iniciativa grandfathered, o reescribir el contrato de una iniciativa
