@@ -507,12 +507,20 @@ tag; HANDOFF enlaza. Contrato, ROADMAP, índices y documentos normativos no los 
 ### 11.5 Integración V2 y ruta R
 
 La integración sigue siendo manual y serializada, sin commits directos a main ni merges automáticos.
-Después de READY: rebase final; push del Candidato solo; Full obligatorio y evidencia exacta sobre ese
-SHA, más Owner Validation aplicable;
-cierre documental con CI propio; `fetch` inmediatamente antes del merge; merge `--no-ff`; CI de
-`event=push`, `ref=refs/heads/main`, `head_sha=MERGE_SHA` con cobertura; comprobación diferida de
-cobertura del Candidato; limpieza segura; y tag §11.6. Las suites que componen Full y los invalidadores
-se consultan en `AGENTS.md`. La guía manual gobierna los escenarios del Owner.
+Primero se ejecuta READY-01..09 conforme a
+[INITIATIVE_LIFECYCLE §8](INITIATIVE_LIFECYCLE.md#8-ready-y-frontera-del-candidato): el fetch, preflight
+y rebase finales son **READY-04**, no una operación posterior a READY; READY-05 verifica focales,
+relevantes y CI exacto de rama sobre el SHA rebasado; READY-06 realiza la conformidad completa de
+Architect + Coordinator; y READY-07..09 completan la preparación restante. Solo después de satisfacer
+las nueve condiciones se fija `FINAL_CANDIDATE_SHA` y se completa sobre ese SHA la evidencia final que
+define `AGENTS.md`: Core y UI Full locales, builds Debug de UI y Plugin, CI exacto requerido, cobertura
+según la política vigente y Owner Validation aplicable según la guía manual. La punta de producto se
+publica sola; nunca se agrupa con el cierre documental.
+
+Después siguen: cierre documental con CI propio; `fetch` inmediatamente antes del merge y ruta R si
+main avanzó; merge manual `--no-ff`; CI de `event=push`, `ref=refs/heads/main`,
+`head_sha=MERGE_SHA` con cobertura; comprobación diferida de cobertura del Candidato; limpieza segura;
+y tag §11.6. Las suites que componen Full y los invalidadores se consultan en `AGENTS.md`.
 
 Si main se mueve después del cierre se aplica **ruta R**:
 
@@ -574,13 +582,20 @@ bloque completo anterior con `Workflow: V1` y añade, una vez cada uno:
 WORKFLOW_V2_EFFECTIVE_SHA: <merge normativo derivado según §11.2>
 PRE: <referencia al snapshot completo en el cuerpo del merge normativo>
 POST: <snapshot y tabla completos>
-Claim pause: none | start=<fecha/registro> end=<fecha/registro> decision=docs/automation/decisions/I-56.md
+Claim pause:
+  start=<registro durable y fecha de inicio>
+  end=<registro durable y fecha de fin>
+  decision=docs/automation/decisions/I-56.md
 ```
 
 El tag se crea después de las compuertas V1 4.5.6/4.5.7 y de la limpieza. Su destino `MERGE_SHA`
 puede ser el merge de una ronda correctiva, pero `WORKFLOW_V2_EFFECTIVE_SHA` sigue siendo el primer
 merge normativo derivado por §11.2; el tag lo registra y nunca lo redefine. Para I-56, `POST` completo
-y el fin de la pausa son contenido obligatorio del mensaje durable.
+y los tres valores de `Claim pause` son contenido obligatorio del mensaje durable. `start` debe
+acreditar un inicio anterior al paso V1 4.5.1; `end` solo puede registrarse tras completar y verificar
+V1 4.5.6/4.5.7. Ausencia de inicio o fin es `UNKNOWN` y registro no conforme, nunca `none`. Mientras la
+pausa esté activa solo proceden excepciones de emergencia/fix aprobadas explícitamente por el Owner;
+un bloqueo prolongado vuelve al Owner conforme a §11.7.
 
 ### 11.7 Pausa obligatoria de activación
 
