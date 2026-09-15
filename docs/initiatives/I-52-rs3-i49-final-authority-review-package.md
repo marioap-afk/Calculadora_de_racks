@@ -72,8 +72,9 @@ Integration SHA     = EMPTY
 ```
 
 RS-3 satisfecho no elimina ese bloqueo: `FREEZE = BLOCKED BY SVF`. I-56 esta en
-`382ee08b7c0829d4f796fdd17e2883fb3752115b`; la decision del Owner sigue sin registrarse, Workflow V2 permanece
-`NOT EFFECTIVE` e I-52 sigue grandfathered. El impacto para este gate es `NON-MATERIAL`.
+`a6f5b3daf2ef8024061c128db755d8a9464faf5f` y registra la aprobacion del Owner sobre Proposal V4. La decision
+declara `WORKFLOW V2 = NOT EFFECTIVE` y `WORKFLOW_V2_EFFECTIVE_SHA = DOES NOT EXIST`; OWN-E/T8-A conserva I-52
+grandfathered y la materializacion normativa no ha comenzado. El impacto para este gate es `NON-MATERIAL`.
 
 Proposal V17 y ADR-0036 quedan intactos. ADR-0036 sigue `PROPOSED`; no se presentan resultados de G3 como hechos.
 
