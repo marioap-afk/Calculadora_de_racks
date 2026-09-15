@@ -8,7 +8,7 @@ branch: feature/creacion-de-vistas
 base_branch: main
 priority:
 size:
-depends_on: []
+depends_on: [I-57]
 conflicts_with: []
 context_packs: [autocad-plugin, ui-editors, persistence, architecture-kernel, system-selective, system-dynamic-flowbed]
 automation_state_path:
@@ -26,16 +26,22 @@ automation:
 
 # I-55 — View Placement & Projection
 
-> **Fase actual: G2F — Proposal V5 para revision.** [Proposal V5](I-55-proposal-v5.md),
-> [mapa V5](I-55-implementation-map-v5.md), [Shared View Foundation](../architecture/shared-view-foundation/specification.md).
+> **Fase actual: G2G — Proposal V5 acordada por el Coordinador; Architect formal pendiente.**
+> [Proposal V5](I-55-proposal-v5.md), [mapa V5](I-55-implementation-map-v5.md),
+> contrato I-57 `docs/initiatives/I-57-shared-view-foundation.md` en su branch y
+> [borrador tecnico previo de Shared View Foundation](../architecture/shared-view-foundation/specification.md).
 >
 > - V4: Coordinator **CHANGES REQUIRED → V5**. AR4-01..50 es entrada tecnica vinculante aceptada por el Coordinador;
 >   no es una revision formal independiente. V1..V4 permanecen historicas.
-> - V5: Coordinator **REVIEW REQUIRED**; Architect formal **PENDING**; Owner **PENDING**; Consensus **NOT REACHED**.
-> - Open Material: SVF-MECH/FOUNDATION_ID; reconciliacion exacta con I-52; X-2/X-8 proceso; ownership/tolerancia;
->   M-01, OD y aceptacion separada de ADR neutral y ADR-0042.
-> - Dependencia nueva propuesta: foundation neutral integrada en main antes de producto; ID aun PENDING, por eso
->   no se inventa una referencia YAML en depends_on. AUTH-15 es dependencia adicional de G15, segun CR-SVF-08.
+> - V5 exacta `f49671e29c6cc817166c720fe3f975deb92d4c3b`: Coordinator **AGREED**; Architect formal **PENDING**;
+>   Owner product decisions **ACCEPTED**; Consensus **NOT REACHED**.
+> - Owner: Shared View Foundation independiente = aceptada; OD-1..OD-8 = opciones recomendadas aceptadas;
+>   M-01 = **Relative Frame Window** (OD-7.e A). ADR-0042 sigue **PROPOSED**.
+> - Dependencia: I-57 `architecture/shared-view-foundation`, claim `869cf464129da65323781dbebe2425083f21915f`,
+>   bootstrap `623aa8042c004cdca44ed519ed2256d932edcc1e`. Debe integrarse en `main` antes del producto I-55.
+>   AUTH-15 es dependencia adicional de G15, segun CR-SVF-08.
+> - Open Material: revision formal del Architect; reconciliacion exacta con I-52; X-2/X-8 proceso;
+>   ownership/tolerancia; aceptacion separada del ADR neutral y ADR-0042; integracion de I-57.
 > - Proposal V5 exacta: `f49671e29c6cc817166c720fe3f975deb92d4c3b`. Reconciliacion R1 y paquetes en `aa37264381e7d386339305d11030314ffd219d63`; recibo G2F registra blobs y CI. R1 registrada por I55, no por I52; NOT EFFECTIVE. No hay nuevo reclamo.
 > - Paquetes: [Coordinador](I-55-coordinator-review-package-v5.md) y [Arquitecto independiente](I-55-architect-review-package-v5.md).
 >
@@ -180,7 +186,7 @@ implementacion, ambos **sin consenso**. Una desviacion material frente a lo acor
 | G0 | Reclamo + bootstrap | Reclamo atomico publicado, contrato y fila en ROADMAP | **HECHA** |
 | G1 | Discovery | [I-55-discovery.md](I-55-discovery.md): matriz sistema × ViewKind × variante | **HECHA** |
 | G1.1 | Correccion contractual | Framing ID17 + ID18 + ID19, OQ reclasificadas, rebase y reconciliacion | **HECHA** (commit de esta correccion) |
-| G2 | Proposal y consenso | V1..V4 historicas; G2F: [Proposal V5](I-55-proposal-v5.md), [mapa V5](I-55-implementation-map-v5.md), spec/map/reconciliacion/ADR neutral, ADR-0042 propuesto; [paquete Coordinador V5](I-55-coordinator-review-package-v5.md) y [paquete Architect V5](I-55-architect-review-package-v5.md) | V4 CHANGES REQUIRED → V5; V5 Coordinator REVIEW REQUIRED, Architect formal PENDING, Owner PENDING; sin consenso |
+| G2 | Proposal y consenso | V1..V4 historicas; G2F: [Proposal V5](I-55-proposal-v5.md), [mapa V5](I-55-implementation-map-v5.md), spec/map/reconciliacion/ADR neutral, ADR-0042 propuesto; [paquete Coordinador V5](I-55-coordinator-review-package-v5.md) y [paquete Architect V5](I-55-architect-review-package-v5.md). G2G registra decisiones del Owner y veredicto del Coordinador sin modificar V5 | V5 exacta `f49671e`: Coordinator AGREED; Architect formal PENDING; Owner product decisions ACCEPTED; ADR-0042 PROPOSED; Consensus NOT REACHED |
 | G3+ | Implementacion, Candidato, validacion del Owner, integracion | Gates del mapa de implementacion **tras el consenso** | **bloqueada** |
 
 ## 9. Pruebas y builds
@@ -217,8 +223,8 @@ en G2 y se **ejecuta** solo sobre el Candidato. G0..G2 no la requieren.
 ## 12. Condiciones para detenerse
 
 - **Implementacion bloqueada** hasta `Coordinator = AGREED` y `Architect = AGREED` sobre la **misma** Proposal.
-- **M-01 abierta**: sin consenso posible sobre la Proposal V5 hasta resolverla (CR-02). Sin la reconciliacion obligatoria con I-52 de las
-  autoridades compartidas no hay Consensus Freeze (Proposal V5 §2.6 y §7.1).
+- **M-01 resuelta por el Owner** con Relative Frame Window y las opciones recomendadas. Sin la reconciliacion obligatoria con I-52 de las
+  autoridades compartidas, la integracion de I-57 y el veredicto formal del Architect no hay Consensus Freeze (Proposal V5 §2.6 y §7.1).
 - Contradiccion material no resoluble con evidencia; decision del Owner no contestada por las decisiones vigentes;
   necesidad de veredicto del Arquitecto; conflicto Git o semantico ambiguo; fallo que invalide evidencia previa.
 - Cruce material con archivos de produccion de I-49 o I-52 al fijar los archivos de G2: reportarlo antes de continuar.
@@ -302,3 +308,9 @@ sin asignar ID ni ADR. Registro y evidencia exacta: decisiones G2F. CQ-01 perman
 con cuatro trabajos success cada una. Registro literal SVF-RECONCILIATION en decisiones; no EFFECTIVE sin I52. La CI del recibo se
 entrega tras su push; no se infiere. Coordinator REVIEW REQUIRED, Architect formal PENDING, Owner PENDING, Consensus NOT REACHED,
 SUBSTANTIVE IMPLEMENTATION BLOCKED.
+
+**G2G — decisiones del Owner y veredicto del Coordinador (2026-09-15).** El Owner autoriza y acepta I-57 Shared View Foundation como
+iniciativa neutral independiente, acepta Relative Frame Window para M-01 y mantiene las opciones recomendadas de OD-1..OD-8. El
+Coordinador emite `AGREED` sobre la Proposal V5 exacta `f49671e29c6cc817166c720fe3f975deb92d4c3b`. La Proposal permanece inmutable;
+el detalle durable vive en decisiones G2G. Architect formal PENDING; ADR-0042 PROPOSED; Foundation ADR PROPOSED / NUMBER PENDING;
+R1 aceptada por I-55 pero NOT EFFECTIVE; Consensus NOT REACHED; SUBSTANTIVE IMPLEMENTATION BLOCKED. I-57 completa solo F0 y F1 no se abre.
