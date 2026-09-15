@@ -26,8 +26,9 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: ADR-0044 aceptado y F1 abierto exclusivamente para caracterizacion.** Proposal V4 tiene consenso
-> tecnico y R3 esta efectiva. F2 permanece cerrado; no se autoriza extraccion productiva ni cambio observable.
+> **Fase actual: ADR-0044 aceptado y F1 completado exclusivamente con caracterizacion.** Proposal V4 tiene consenso
+> tecnico y R3 esta efectiva. F2 permanece cerrado hasta revision del Coordinator; no se autoriza extraccion
+> productiva ni cambio observable.
 
 ```text
 Initiative        = I-57 — Shared View Foundation
@@ -53,7 +54,7 @@ Technical Consensus   = REACHED
 Full Initiative Consensus = NOT DECLARED
 Foundation Implementation = BLOCKED
 F0 = ACCEPTED / CLOSED
-F1 = OPEN / CHARACTERIZATION ONLY
+F1 = COMPLETE / CHARACTERIZATION ONLY
 F2 = NOT OPEN
 ```
 
@@ -148,7 +149,7 @@ Ningun archivo de `src/`, `tests/`, `assets/`, `.github/`, `eng/` o `deploy/` pe
 | Gate | Alcance preliminar | Estado tras F0 |
 |---|---|---|
 | F0 | Claim remoto + bootstrap documental | ACCEPTED / CLOSED |
-| F1 | Caracterizacion | OPEN / CHARACTERIZATION ONLY |
+| F1 | Caracterizacion | COMPLETE / 10 CT GREEN / ZERO PRODUCTION CHANGES |
 | F2 | Taxonomia + codec sintactico | BLOCKED |
 | F3 | Marco y tramo | BLOCKED |
 | F4 | Seleccion neutral + hechos de colocacion | BLOCKED |
