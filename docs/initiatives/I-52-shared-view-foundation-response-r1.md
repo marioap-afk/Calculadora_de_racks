@@ -9,9 +9,12 @@ I-52 V17 rebased       = bfc2549d2447cb14847f2bab8df62b1bc6344bee
 I-55 Proposal V5       = f49671e29c6cc817166c720fe3f975deb92d4c3b
 SVF R1 publication     = aa37264381e7d386339305d11030314ffd219d63
 SVF R1 blob            = 2faa5a316680aa92306c7bce75c42cc311f96a26
+SVF R3 publication     = e7baa255bd7c2632b071c90b84130c7ca35805fe
+SVF R3 blob            = cd42db03becff42f98b047e61c46689c17a69670
 I-55 R1 registration   = REGISTERED
 I-52 R1 registration   = NOT REGISTERED
-I-52 response          = FORMAL POSITION FOR EXACT REVIEW
+I-52 response          = COORDINATOR AGREED
+I-52 R3 registration   = REGISTERED
 Reconciliation         = NOT EFFECTIVE
 Foundation mechanism   = NEUTRAL INDEPENDENT INITIATIVE (OWNER DECIDED)
 FOUNDATION_ID           = I-57
@@ -190,20 +193,63 @@ Technical Consensus `REACHED`. En `2654646bf1743bb0d53106c090a90cb29a168b91` el 
 termina `PASS` y conserva ese consenso. El Owner no fue solicitado y Workflow V2 sigue `NOT EFFECTIVE`; no existe
 `WORKFLOW_V2_EFFECTIVE_SHA`. I-52 permanece grandfathered. Impacto para este gate: **NON-MATERIAL**.
 
-## 7. Revision requerida y estado de salida
+## 7. Revision exacta y estado de salida
 
-Esta publicacion requiere revision exacta del Coordinador de I-52 y, por los conflictos materiales de proceso
-en X-2/X-8, del Arquitecto o la autoridad contraparte de reconciliacion. No acredita acuerdo bilateral.
+El Coordinador de I-52 reviso la respuesta exacta y declaro `AGREED WITH RECONCILIATION RESPONSE`; tambien reviso
+el contenido exacto de R3 y declaro `AGREED`. Una revision independiente del Arquitecto o autoridad contraparte
+verifico el mismo objeto R3 sin hallazgos `BLOCKER`, `HIGH`, `MEDIUM` o `LOW` y concluyo `AGREED WITH R3`.
+Esto autoriza el registro I-52 de R3, pero no acredita registro I-55, efectividad ni integracion.
 
 ```text
 Technical Consensus V17       = PRESERVED
 Rebase                        = COMPLETE
-I-52 response to I-55 R1      = PUBLISHED FOR EXACT REVIEW
+I-52 response to I-55 R1      = COORDINATOR AGREED
 I-52 R1 adoption registration = NOT REGISTERED
-Reconciliation                = NOT EFFECTIVE
+R3 I-57 registration          = REGISTERED
+R3 I-52 registration          = REGISTERED
+R3 I-55 registration          = NOT REGISTERED
+R3 effective                  = NO
+Integration SHA               = EMPTY
 I-49 final authority          = AVAILABLE / I-52 CONSUMPTION PENDING
 I-52 freeze                   = BLOCKED
 O-1                           = PENDING
 G3                            = NOT OPEN
 Substantive implementation    = BLOCKED
 ```
+
+## 8. Registro exacto I-52 de R3
+
+Objeto revisado y registrado:
+
+```text
+R3 publication          = e7baa255bd7c2632b071c90b84130c7ca35805fe
+R3 blob                 = cd42db03becff42f98b047e61c46689c17a69670
+I-57 current observed   = 16664f5b8dfb24f91baaa0a5ee21c37e5d28923a
+I-57 registration       = REGISTERED
+I-52 Coordinator        = AGREED
+Independent counterpart = AGREED WITH R3
+I-52 registration       = REGISTERED
+I-55 registration       = NOT REGISTERED
+R3 effective            = NO
+Integration SHA         = EMPTY
+Foundation consensus    = NOT REACHED
+F1                      = NOT OPEN
+```
+
+| Solicitud | Verificacion exacta en R3 | Resultado I-52 |
+|---|---|---|
+| `CR-SVF-I52-01` | X-2 se extrae una sola vez bajo claim y gates de I-57, antes de cualquier consumidor. | SATISFIED |
+| `CR-SVF-I52-02` | X-8 y CT-05 tienen una sola autoridad y un solo owner en I-57; no hay carrera de gates. | SATISFIED |
+| `CR-SVF-I52-03` | El wording product-first queda sustituido prospectivamente; Proposal V17 permanece intacta. | SATISFIED |
+| `CR-SVF-I52-04` | I-57 posee la autoridad neutral; path, namespace y API concreta quedan pendientes del consenso Proposal/F1. | SATISFIED |
+| `CR-SVF-I52-05` | El consumo exige Integration SHA alcanzable desde `origin/main`. | SATISFIED |
+| `CR-SVF-I52-06` | I-52 e I-55 no pueden duplicar implementacion neutral mientras la reconciliacion no sea efectiva. | SATISFIED |
+
+El registro cierra las seis solicitudes para el objeto R3 exacto desde la autoridad I-52. No vuelve R3 efectiva:
+I-55 aun no registro el mismo objeto, la foundation no alcanzo consenso y no existe Integration SHA. La Proposal V2
+de I-57 observada en `16664f5b8dfb24f91baaa0a5ee21c37e5d28923a` sigue `NOT CONSENSUS`, con Coordinator y Architect
+`REVIEW REQUIRED`, ADR-0044 `PROPOSED` y F1 `NOT OPEN`.
+
+I-49 avanzo a `c12ec84a41b5cc33bb115917a5f24f70c4d429e0` dentro de G7-A RED, sin cambiar el freeze final
+`239f47c40a6b4a9246dd4ec9e928b7fbe03f79b6`. Su autoridad final esta disponible, pero este gate no consume ni
+registra `PlanReadSet`: `RS-3 = PENDING CONSUMPTION / REGISTRATION`.
