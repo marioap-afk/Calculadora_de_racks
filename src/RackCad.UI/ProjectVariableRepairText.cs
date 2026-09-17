@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 using RackCad.Application.ProjectVariables;
 
 namespace RackCad.UI
@@ -20,8 +22,127 @@ namespace RackCad.UI
     /// touch", and the two answers would eventually disagree.
     /// </para>
     /// </summary>
-    internal static class ProjectVariableRepairText
+    public static class ProjectVariableRepairText
     {
+        public static string DescribeFailure(VariableMutationPreflightResult result)
+        {
+            if (result == null || result.IsSuccess)
+            {
+                return string.Empty;
+            }
+
+            if (result.AttemptedStateFailure != null)
+            {
+                return DescribeAttemptedFailure(
+                    result.AttemptedStateFailure,
+                    result.PriorBlockingReasons,
+                    result.AttemptedStateFailure.RackId);
+            }
+
+            return result.Error ?? string.Join(", ", result.PresentationFailure?.DiagnosticCodes ?? new string[0]);
+        }
+
+        internal static string DescribeRecovery(
+            RecoveryAssessment assessment,
+            string rackId,
+            bool repairWillAbort = false)
+        {
+            if (assessment == null)
+            {
+                return string.Empty;
+            }
+
+            if (assessment.RackRepairability == RackRepairability.Blocked)
+            {
+                return "El rack está bloqueado; primero debe resolverse su autoridad antes de ofrecer una reparación.";
+            }
+
+            var parts = new List<string>();
+            if (assessment.IsCandidate)
+            {
+                parts.Add("Corregir " + assessment.Candidate + " permitiría recuperar esta fuente.");
+            }
+
+            foreach (var reason in assessment.BlockingReasons)
+            {
+                switch (reason)
+                {
+                    case RecoveryBlockingReason.OtherInvalidSources:
+                        var racks = assessment.BlockingReasonData
+                            .Where(item => item.StartsWith("rack=", System.StringComparison.Ordinal))
+                            .Select(item => item.Substring(5).Split(';')[0])
+                            .Distinct(System.StringComparer.OrdinalIgnoreCase)
+                            .ToArray();
+                        if (racks.Any(item => string.Equals(item, rackId, System.StringComparison.OrdinalIgnoreCase)))
+                        {
+                            parts.Add("Hay otras fuentes inválidas en este rack.");
+                        }
+                        else if (racks.Length > 0)
+                        {
+                            parts.Add("Hay otras fuentes inválidas en los racks " + string.Join(", ", racks) + ".");
+                        }
+
+                        break;
+                    case RecoveryBlockingReason.SeveralRecoveryUnits:
+                        parts.Add("No puede garantizarse la recuperación con un solo cambio; intervienen " +
+                                  string.Join(", ", assessment.RecoveryUnits) + ".");
+                        break;
+                    case RecoveryBlockingReason.NonSimpleCycle:
+                        parts.Add("El ciclo no es simple: " + string.Join(", ", assessment.SourceRoots) +
+                                  ". No puede garantizarse la recuperación con un solo cambio.");
+                        break;
+                    case RecoveryBlockingReason.DiscoveryIndeterminate:
+                        var aborts = assessment.BlockingReasonData
+                            .Where(item => !item.StartsWith("remove:", System.StringComparison.Ordinal))
+                            .ToArray();
+                        parts.Add("No se pudo completar el descubrimiento" +
+                                  (aborts.Length == 0 ? "." : ": " + string.Join(", ", aborts) + "."));
+                        break;
+                }
+            }
+
+            if (assessment.RackRepairability == RackRepairability.Repairable && !repairWillAbort)
+            {
+                var removals = assessment.BlockingReasonData
+                    .Where(item => item.StartsWith("remove:", System.StringComparison.Ordinal))
+                    .Select(item => item.Substring("remove:".Length))
+                    .ToArray();
+                if (removals.Length > 0)
+                {
+                    parts.Add("Reparar el rack eliminará estas fórmulas: " + string.Join("; ", removals) + ".");
+                }
+            }
+
+            return string.Join(" ", parts);
+        }
+
+        internal static string DescribeAttemptedFailure(
+            AttemptedStateFailure attempted,
+            IReadOnlyList<string> priorBlockingReasons,
+            string rackId)
+        {
+            if (attempted == null)
+            {
+                return string.Empty;
+            }
+
+            var text = new StringBuilder();
+            text.Append(attempted.Category);
+            if (attempted.DiagnosticCodes.Count > 0)
+            {
+                text.Append(": ").Append(string.Join(", ", attempted.DiagnosticCodes));
+            }
+
+            text.Append(" en el estado intentado del rack ").Append(attempted.RackId ?? rackId).Append('.');
+            if (priorBlockingReasons != null && priorBlockingReasons.Count > 0)
+            {
+                text.Append(" Contexto antes de la corrección: ")
+                    .Append(string.Join("; ", priorBlockingReasons)).Append('.');
+            }
+
+            return text.ToString();
+        }
+
         /// <summary>
         /// The disclosure for the selected row. Names the RACK, the size of the complete set, and every
         /// binding that will be removed with the literal that governs afterwards.

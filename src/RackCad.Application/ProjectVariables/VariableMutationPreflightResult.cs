@@ -46,6 +46,11 @@ namespace RackCad.Application.ProjectVariables
             BlockingConsumers = blockingConsumers;
             AttemptedStateFailure = attemptedStateFailure;
             PriorBlockingReasons = priorBlockingReasons ?? new string[0];
+            PresentationFailure = outcome == VariableMutationOutcome.Success
+                ? null
+                : new VariableMutationPresentationFailure(
+                    attemptedStateFailure?.Category ?? outcome.ToString(),
+                    attemptedStateFailure?.DiagnosticCodes ?? new[] { error ?? outcome.ToString() });
         }
 
         public VariableMutationOutcome Outcome { get; }
@@ -62,6 +67,8 @@ namespace RackCad.Application.ProjectVariables
         public AttemptedStateFailure AttemptedStateFailure { get; }
 
         public IReadOnlyList<string> PriorBlockingReasons { get; }
+
+        public VariableMutationPresentationFailure PresentationFailure { get; }
 
         public bool IsSuccess => Outcome == VariableMutationOutcome.Success;
 
@@ -85,6 +92,22 @@ namespace RackCad.Application.ProjectVariables
                 MutationPlan.Empty,
                 error,
                 consumers ?? NoConsumers);
+    }
+
+    /// <summary>The structured reason every rejected variable intent can pass to a presentation layer.</summary>
+    public sealed class VariableMutationPresentationFailure
+    {
+        internal VariableMutationPresentationFailure(string category, IEnumerable<string> diagnosticCodes)
+        {
+            Category = category;
+            DiagnosticCodes = (diagnosticCodes ?? Enumerable.Empty<string>())
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .Distinct()
+                .ToArray();
+        }
+
+        public string Category { get; }
+        public IReadOnlyList<string> DiagnosticCodes { get; }
     }
 
     /// <summary>The exact attempted rack state that made a definition change inadmissible.</summary>

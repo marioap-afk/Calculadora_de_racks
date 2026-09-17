@@ -17,6 +17,8 @@ namespace RackCad.Application.ProjectVariables
         UnlinkAllAndDelete = 5,
 
         RepairBroken = 6,
+
+        ChangeDefinition = 7,
     }
 
     /// <summary>
@@ -41,7 +43,8 @@ namespace RackCad.Application.ProjectVariables
             double value,
             string rackId,
             string propertyId,
-            bool confirmed)
+            bool confirmed,
+            VariableDefinition definition = null)
         {
             Kind = kind;
             VariableId = variableId;
@@ -50,6 +53,7 @@ namespace RackCad.Application.ProjectVariables
             RackId = rackId;
             PropertyId = propertyId;
             Confirmed = confirmed;
+            Definition = definition;
         }
 
         public ProjectVariableIntentKind Kind { get; }
@@ -70,14 +74,42 @@ namespace RackCad.Application.ProjectVariables
         /// <summary>Whether the user confirmed an irreversible action. False by default, always.</summary>
         public bool Confirmed { get; }
 
+        public VariableDefinition Definition { get; }
+
         public static ProjectVariableIntent Create(string name, double value)
             => new ProjectVariableIntent(ProjectVariableIntentKind.Create, default, name, value, null, null, false);
+
+        public static ProjectVariableIntent Create(string name, VariableDefinition definition)
+            => new ProjectVariableIntent(
+                ProjectVariableIntentKind.Create,
+                default,
+                name,
+                definition != null && definition.Kind == VariableDefinitionKind.Literal
+                    ? definition.LiteralValue
+                    : 0.0,
+                null,
+                null,
+                false,
+                definition ?? throw new System.ArgumentNullException(nameof(definition)));
 
         public static ProjectVariableIntent Rename(VariableId variableId, string name)
             => new ProjectVariableIntent(ProjectVariableIntentKind.Rename, variableId, name, 0.0, null, null, false);
 
         public static ProjectVariableIntent ChangeValue(VariableId variableId, double value)
             => new ProjectVariableIntent(ProjectVariableIntentKind.ChangeValue, variableId, null, value, null, null, false);
+
+        public static ProjectVariableIntent ChangeDefinition(VariableId variableId, VariableDefinition definition)
+            => new ProjectVariableIntent(
+                ProjectVariableIntentKind.ChangeDefinition,
+                variableId,
+                null,
+                definition != null && definition.Kind == VariableDefinitionKind.Literal
+                    ? definition.LiteralValue
+                    : 0.0,
+                null,
+                null,
+                false,
+                definition ?? throw new System.ArgumentNullException(nameof(definition)));
 
         public static ProjectVariableIntent Delete(VariableId variableId)
             => new ProjectVariableIntent(ProjectVariableIntentKind.Delete, variableId, null, 0.0, null, null, false);
@@ -125,7 +157,9 @@ namespace RackCad.Application.ProjectVariables
             {
                 case ProjectVariableIntentKind.Create:
                     return ProjectVariableMutationPreflight.Create(
-                        intent.Name, VariableType.Length, VariableDefinition.Literal(intent.Value));
+                        intent.Name,
+                        VariableType.Length,
+                        intent.Definition ?? VariableDefinition.Literal(intent.Value));
 
                 case ProjectVariableIntentKind.Rename:
                     return ProjectVariableMutationPreflight.Rename(registry, intent.VariableId, intent.Name);
@@ -133,6 +167,10 @@ namespace RackCad.Application.ProjectVariables
                 case ProjectVariableIntentKind.ChangeValue:
                     return ProjectVariableMutationPreflight.ChangeValue(
                         registry, intent.VariableId, VariableDefinition.Literal(intent.Value), entries);
+
+                case ProjectVariableIntentKind.ChangeDefinition:
+                    return ProjectVariableMutationPreflight.ChangeDefinition(
+                        registry, intent.VariableId, intent.Definition, entries);
 
                 case ProjectVariableIntentKind.Delete:
                     return ProjectVariableMutationPreflight.Delete(registry, intent.VariableId, entries);

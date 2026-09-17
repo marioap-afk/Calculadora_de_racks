@@ -203,7 +203,7 @@ namespace RackCad.Application.ProjectVariables
             // variable's value over the literal the user froze.
             descriptor.WriteAuthored(authored, state.CommittedLiteral);
 
-            if (!state.IsReference)
+            if (state.Source.Kind == LinkedPropertySourceKind.Literal)
             {
                 authored.PropertyValues?.Remove(descriptor.PropertyId.Value);
                 return true;
@@ -211,7 +211,9 @@ namespace RackCad.Application.ProjectVariables
 
             authored.PropertyValues ??= new Dictionary<string, SelectivePropertyValueDocument>();
             authored.PropertyValues[descriptor.PropertyId.Value] =
-                SelectivePropertyValueDocument.ToProjectVariable(state.Source.VariableId.Value);
+                state.IsReference
+                    ? SelectivePropertyValueDocument.ToProjectVariable(state.Source.VariableId.Value)
+                    : SelectivePropertyValueDocument.FromExpression(state.Source.Expression);
 
             // A document that carries a binding is on the promoted line: an older build must refuse it rather
             // than read it as an unbound rack (I-47 G10).

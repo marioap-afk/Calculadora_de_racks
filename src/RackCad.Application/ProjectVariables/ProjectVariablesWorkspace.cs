@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using RackCad.Application.Expressions;
 using RackCad.Application.Persistence;
@@ -17,17 +18,43 @@ namespace RackCad.Application.ProjectVariables
     /// <summary>One variable as the window presents it, with the racks that depend on it.</summary>
     public sealed class ProjectVariableRow
     {
+        private readonly double? _evaluatedValue;
+
         public ProjectVariableRow(
             VariableId id,
             string name,
             VariableType type,
             double literalValue,
             IReadOnlyList<VariableConsumerSummary> consumers)
+            : this(
+                id,
+                name,
+                type,
+                VariableDefinition.Literal(literalValue),
+                literalValue.ToString("G17", CultureInfo.InvariantCulture),
+                literalValue,
+                null,
+                consumers)
+        {
+        }
+
+        internal ProjectVariableRow(
+            VariableId id,
+            string name,
+            VariableType type,
+            VariableDefinition definition,
+            string definitionText,
+            double? evaluatedValue,
+            string evaluationDiagnostic,
+            IReadOnlyList<VariableConsumerSummary> consumers)
         {
             Id = id;
             Name = name;
             Type = type;
-            LiteralValue = literalValue;
+            Definition = definition;
+            DefinitionText = definitionText;
+            _evaluatedValue = evaluatedValue;
+            EvaluationDiagnostic = evaluationDiagnostic;
             Consumers = consumers ?? new VariableConsumerSummary[0];
         }
 
@@ -39,7 +66,20 @@ namespace RackCad.Application.ProjectVariables
         public VariableType Type { get; }
 
         /// <summary>The current effective value; the property name is retained for the existing window contract.</summary>
-        public double LiteralValue { get; }
+        public double LiteralValue => EvaluatedValue;
+
+        public VariableDefinition Definition { get; }
+
+        public string DefinitionText { get; }
+
+        public bool EvaluationSucceeded => _evaluatedValue.HasValue;
+
+        public double EvaluatedValue
+            => EvaluationSucceeded
+                ? _evaluatedValue.Value
+                : throw new System.InvalidOperationException("La variable no tiene valor evaluado.");
+
+        public string EvaluationDiagnostic { get; }
 
         /// <summary>The racks bound to it, named so the user can act on them.</summary>
         public IReadOnlyList<VariableConsumerSummary> Consumers { get; }
@@ -279,7 +319,8 @@ namespace RackCad.Application.ProjectVariables
             }
 
             var usable = accreditation.Registry;
-            var evaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(usable));
+            var expressionContext = ProjectVariablesExpressionAdapter.From(usable);
+            var evaluation = RegistryEvaluation.Evaluate(expressionContext);
 
             // A definition that is NOT placed is not in the drawing, so it cannot be a consumer of anything.
             // Dropping it here is what keeps an old, unplaced, unreadable leftover from blocking the register.
@@ -304,14 +345,6 @@ namespace RackCad.Application.ProjectVariables
             foreach (var target in usable.Targets())
             {
                 var evaluated = evaluation.Result(SymbolId.ProjectVariable(target.VariableId.Value));
-                if (!evaluated.Succeeded)
-                {
-                    return Blocked(
-                        "La variable de proyecto '" + target.VariableId + "' no tiene un valor efectivo: " +
-                        string.Join(", ", evaluated.Diagnostics.Select(diagnostic => diagnostic.Code.ToString())) + ".",
-                        broken,
-                        repairs.Unresolvable);
-                }
 
                 var discovery = ProjectVariableConsumerDiscovery.DiscoverConsumers(present, target.VariableId);
 
@@ -325,7 +358,14 @@ namespace RackCad.Application.ProjectVariables
                     target.VariableId,
                     target.Name,
                     target.VariableType,
-                    evaluated.Value,
+                    target.Definition,
+                    target.Definition.Kind == VariableDefinitionKind.Literal
+                        ? target.Definition.LiteralValue.ToString("G17", CultureInfo.InvariantCulture)
+                        : "=" + ExpressionFormatter.Format(target.Definition.ExpressionValue, expressionContext.Symbols),
+                    evaluated.Succeeded ? evaluated.Value : (double?)null,
+                    evaluated.Succeeded
+                        ? null
+                        : string.Join(", ", evaluated.Diagnostics.Select(diagnostic => diagnostic.Code.ToString())),
                     ProjectVariableMutationPreflight.Summarize(discovery.Consumers, target.VariableId)));
             }
 

@@ -2997,7 +2997,7 @@ namespace RackCad.UI.Systems.Selective
             clearanceBound =
                 linkedEditors.TryGetValue(ProjectPropertyIds.SelectiveVerticalClearance, out var clearance) &&
                 clearance.FinalState != null &&
-                clearance.FinalState.IsReference;
+                clearance.FinalState.Source.Kind != LinkedPropertySourceKind.Literal;
         }
 
         private string Describe(PropertyId propertyId, string label)
@@ -3009,7 +3009,7 @@ namespace RackCad.UI.Systems.Selective
 
             var state = editor.FinalState;
 
-            if (!state.IsReference)
+            if (state.Source.Kind == LinkedPropertySourceKind.Literal)
             {
                 return label + " · literal: el valor es de este rack.";
             }
@@ -3018,7 +3018,9 @@ namespace RackCad.UI.Systems.Selective
                 ? value.ToString("0.###", CultureInfo.InvariantCulture)
                 : "(no disponible)";
 
-            return label + " · variable: " + editor.Session.Text.TrimStart('=') + " = " + efectivo
+            var sourceLabel = state.IsExpression ? "formula" : "variable";
+            var sourceText = state.IsExpression ? editor.Session.Text : editor.Session.Text.TrimStart('=');
+            return label + " · " + sourceLabel + ": " + sourceText + " = " + efectivo
                    + " · el literal de este rack queda congelado en "
                    + state.CommittedLiteral.ToString("0.###", CultureInfo.InvariantCulture) + ".";
         }

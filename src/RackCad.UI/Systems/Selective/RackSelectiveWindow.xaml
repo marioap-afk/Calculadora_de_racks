@@ -199,7 +199,7 @@
                                        Margin="0,2,0,0" />
                             <TextBlock x:Name="ClearanceHintText" Foreground="#617080" FontSize="11" TextWrapping="Wrap"
                                        Margin="0,2,0,0"
-                                       Text="Escribe un numero para que el valor sea de este rack, o &quot;=&quot; y elige una variable de la lista para que ella lo gobierne. Enter confirma; Escape cancela." />
+                                       Text="Escribe un numero, una variable (=Nombre) o una formula (=A + 2). Enter confirma; Escape cancela." />
                         </StackPanel>
                     </Border>
 

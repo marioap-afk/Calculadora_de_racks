@@ -61,7 +61,7 @@ namespace RackCad.Plugin
 
                     if (!preflight.IsSuccess)
                     {
-                        editor.WriteMessage("\nRackCad: " + preflight.Error);
+                        editor.WriteMessage("\nRackCad: " + ProjectVariableRepairText.DescribeFailure(preflight));
 
                         foreach (var consumer in preflight.BlockingConsumers)
                         {

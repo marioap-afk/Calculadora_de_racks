@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
@@ -213,10 +214,24 @@ namespace RackCad.Application.Systems.Selective
             {
                 var literal = descriptor.ReadAuthored(authored);
 
-                states[descriptor.PropertyId] =
-                    authored.TryGetBinding(descriptor.PropertyId, out var variableId)
-                        ? LinkedPropertyEditState.Reference(literal, variableId)
-                        : LinkedPropertyEditState.Literal(literal);
+                if (authored.TryGetBinding(descriptor.PropertyId, out var variableId))
+                {
+                    states[descriptor.PropertyId] = LinkedPropertyEditState.Reference(literal, variableId);
+                }
+                else if (authored.PropertyValues != null &&
+                         authored.PropertyValues.TryGetValue(descriptor.PropertyId.Value, out var source) &&
+                         source != null &&
+                         string.Equals(
+                             source.Kind,
+                             SelectivePropertyValueDocument.ExpressionKind,
+                             StringComparison.Ordinal))
+                {
+                    states[descriptor.PropertyId] = LinkedPropertyEditState.Expression(literal, source.Expression);
+                }
+                else
+                {
+                    states[descriptor.PropertyId] = LinkedPropertyEditState.Literal(literal);
+                }
             }
 
             return SelectiveEditorOpenResult.Open(
