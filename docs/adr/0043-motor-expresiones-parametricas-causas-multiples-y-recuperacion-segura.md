@@ -2,7 +2,7 @@
 
 - **Estado:** aceptado
 - **Fecha:** 2026-09-15 (propuesto, ADR-0043-P1) · 2026-09-15 (aceptado, ADR-0043-P4)
-- **Decisores:** Mario Pérez, Owner del repositorio (**acepta**, 2026-09-15); Coordinador y Arquitecto de I-49
+- **Decisores:** Owner del proyecto (**acepta**, 2026-09-15); Coordinador y Arquitecto de I-49
   (**AGREED WITH ADR-0043** sobre el blob propuesto exacto `164ac166080d0b2be660473ec721110301a46dbf`);
   Codex (redacción).
 - **Reemplaza a:** [ADR-0041](0041-motor-expresiones-parametricas-identidad-textual-y-cualificador-clave-exacta.md),
@@ -11,7 +11,7 @@
   ([contrato](../initiatives/I-49-motor-expresiones-parametricas.md),
   [Discovery](../initiatives/I-49-discovery.md), [registro](../automation/decisions/I-49.md)).
 
-> **Aceptación del Owner (2026-09-15).** El Owner, Mario Pérez, acepta esta decisión de forma explícita en el canal
+> **Aceptación del Owner (2026-09-15).** El Owner del proyecto acepta esta decisión de forma explícita en el canal
 > del Coordinador de I-49, con la respuesta literal: «**Acepto ADR-0043 para I-49 sobre Proposal V6 + Amendments A1 +
 > A2 + A3-R2.**». La respuesta nombra el ADR, la iniciativa y la base técnica completa. El registro durable está en
 > [`docs/automation/decisions/I-49.md`](../automation/decisions/I-49.md) §18.
@@ -55,7 +55,7 @@ Coordinator       = AGREED WITH ADR-0043
 Architect         = AGREED WITH ADR-0043
 
 Owner decision    = ACCEPTED
-Owner             = Mario Pérez
+Owner             = Owner del proyecto
 Fecha             = 2026-09-15
 Canal             = Coordinador I-49
 Respuesta literal = "Acepto ADR-0043 para I-49 sobre Proposal V6 + Amendments A1 + A2 + A3-R2."
