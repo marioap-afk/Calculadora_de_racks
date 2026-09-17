@@ -5,7 +5,7 @@ using RackCad.Application.Persistence;
 namespace RackCad.Application.ProjectVariables
 {
     /// <summary>Whether a rack can be repaired, over its COMPLETE set of bindings.</summary>
-    internal enum RackRepairability
+    public enum RackRepairability
     {
         /// <summary>No missing target and no fatal state. Nothing to repair.</summary>
         Healthy = 1,

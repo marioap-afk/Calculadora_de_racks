@@ -66,7 +66,7 @@ namespace RackCad.Tests
                 document.PropertyValues = new Dictionary<string, SelectivePropertyValueDocument>();
                 document.PropertyValues[ProjectPropertyIds.SelectiveVerticalClearanceToken] = directVariable != null
                     ? SelectivePropertyValueDocument.ToProjectVariable(directVariable)
-                    : G8ContractTestSupport.ExpressionPropertyDocument(PersistedNode(expression));
+                    : SelectivePropertyValueDocument.FromExpression(expression);
                 document.SchemaVersion = SelectivePalletDesignDocument.PromotedSchemaVersion;
             }
 
@@ -166,16 +166,6 @@ namespace RackCad.Tests
             {
                 throw Missing(capability);
             }
-        }
-
-        private static string PersistedNode(BoundExpression expression)
-        {
-            if (expression is BoundReference reference)
-            {
-                return G8ContractTestSupport.Reference(reference.Symbol.Key);
-            }
-
-            throw new XunitException("G9 fixture only persists the reference node required by these discovery tests.");
         }
 
         private static XunitException Missing(string capability)

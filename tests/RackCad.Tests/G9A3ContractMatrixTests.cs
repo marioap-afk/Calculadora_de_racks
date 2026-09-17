@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using RackCad.Application.Expressions;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
@@ -510,9 +511,10 @@ namespace RackCad.Tests
             => AssessRecovery(registry, entries, rackId, ProjectPropertyIds.SelectivePalletToleranceToken);
 
         private static bool EquivalentAuthored(SelectivePalletDesignDocument left, SelectivePalletDesignDocument right)
-            => left.PropertyValues.Count == right.PropertyValues.Count
-                && left.PropertyValues.Keys.OrderBy(value => value, StringComparer.Ordinal)
-                    .SequenceEqual(right.PropertyValues.Keys.OrderBy(value => value, StringComparer.Ordinal));
+            => string.Equals(
+                new SelectivePalletDesignStore().Serialize(left),
+                new SelectivePalletDesignStore().Serialize(right),
+                StringComparison.Ordinal);
 
         private static void AssertPermutationInvariant(
             ProjectVariablesDocument registry,
@@ -533,10 +535,26 @@ namespace RackCad.Tests
         private static SelectivePalletDesignDocument Document(string rackId, string primary, string sibling, bool unknown)
         {
             var document = Design(rackId: rackId); document.SchemaVersion = SelectivePalletDesignDocument.PromotedSchemaVersion;
-            document.PropertyValues = new Dictionary<string, SelectivePropertyValueDocument> { [ProjectPropertyIds.SelectivePalletToleranceToken] = G8ContractTestSupport.ExpressionPropertyDocument(primary) };
-            if (sibling != null) document.PropertyValues[ProjectPropertyIds.SelectiveVerticalClearanceToken] = G8ContractTestSupport.ExpressionPropertyDocument(sibling);
-            if (unknown) document.PropertyValues["unknown.property"] = G8ContractTestSupport.ExpressionPropertyDocument(Num(1));
+            document.PropertyValues = new Dictionary<string, SelectivePropertyValueDocument> { [ProjectPropertyIds.SelectivePalletToleranceToken] = Source(primary) };
+            if (sibling != null) document.PropertyValues[ProjectPropertyIds.SelectiveVerticalClearanceToken] = Source(sibling);
+            if (unknown) document.PropertyValues["unknown.property"] = Source(Num(1));
             return document;
         }
+
+        private static SelectivePropertyValueDocument Source(string node)
+        {
+            var source = SelectivePropertyValueDocument.FromExpression(ReadBound(node));
+            source.ExtensionData = new Dictionary<string, JsonElement>
+            {
+                ["FixtureExpression"] = JsonDocument.Parse(node).RootElement.Clone(),
+            };
+            return source;
+        }
+
+        private static BoundExpression ReadBound(string node)
+            => G8ContractTestSupport.DefinitionExpression(
+                G8ContractTestSupport.ReadSingleVariable(
+                    G8ContractTestSupport.RegistryJson(
+                        G8ContractTestSupport.VariableJson(IdD, "fixture", G8ContractTestSupport.ExpressionDefinition(node)))).Definition);
     }
 }

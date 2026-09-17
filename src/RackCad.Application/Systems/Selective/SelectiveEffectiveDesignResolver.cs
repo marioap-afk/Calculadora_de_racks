@@ -149,90 +149,18 @@ namespace RackCad.Application.Systems.Selective
                 }
 
                 var source = authored.PropertyValues[token];
-                double value;
-                if (source != null && string.Equals(
-                        source.Kind, SelectivePropertyValueDocument.ProjectVariableKind, StringComparison.Ordinal))
-                {
-                    var inspection = LinkedPropertyInspection.InspectBinding(token, source, descriptors, registry);
-                    if (!inspection.IsHealthy)
-                    {
-                        return SelectiveEffectiveResolution.Failure(
-                            OutcomeOf(inspection),
-                            inspection.PropertyId,
-                            rack + ", " + inspection.Detail,
-                            inspection.RawVariableId);
-                    }
-
-                    var result = evaluation.Result(SymbolId.ProjectVariable(inspection.VariableId.Value));
-                    if (!result.Succeeded)
-                    {
-                        return SelectiveEffectiveResolution.Failure(
-                            SelectiveEffectiveOutcome.BrokenProjectVariableReference,
-                            propertyId,
-                            rack + ", propiedad '" + propertyId + "': la variable fallo: " + Describe(result),
-                            inspection.VariableId.Value);
-                    }
-
-                    value = result.Value;
-                }
-                else if (source != null && string.Equals(
-                             source.Kind, SelectivePropertyValueDocument.ExpressionKind, StringComparison.Ordinal) &&
-                         source.Expression != null)
-                {
-                    if (BoundExpressionSemanticValidation.IsNonCanonical(source.Expression))
-                    {
-                        return SelectiveEffectiveResolution.Failure(
-                            SelectiveEffectiveOutcome.BrokenProjectVariableReference,
-                            propertyId,
-                            rack + ", propiedad '" + propertyId + "': la expresion fallo: " +
-                            ExpressionDiagnosticCode.NonCanonicalForm);
-                    }
-
-                    var inputs = new Dictionary<SymbolId, double>();
-                    foreach (var dependency in BoundExpressionDependencies.DirectDependencies(source.Expression))
-                    {
-                        if (!context.Symbols.TryGet(dependency, out _))
-                        {
-                            continue;
-                        }
-
-                        var dependencyResult = evaluation.Result(dependency);
-                        if (!dependencyResult.Succeeded)
-                        {
-                            return SelectiveEffectiveResolution.Failure(
-                                SelectiveEffectiveOutcome.BrokenProjectVariableReference,
-                                propertyId,
-                                rack + ", propiedad '" + propertyId + "': una dependencia fallo: " +
-                                Describe(dependencyResult),
-                                dependency.Key);
-                        }
-
-                        inputs.Add(dependency, dependencyResult.Value);
-                    }
-
-                    var result = ExpressionEvaluator.Evaluate(source.Expression, context, inputs);
-                    if (!result.Succeeded)
-                    {
-                        return SelectiveEffectiveResolution.Failure(
-                            SelectiveEffectiveOutcome.BrokenProjectVariableReference,
-                            propertyId,
-                            rack + ", propiedad '" + propertyId + "': la expresion fallo: " +
-                            string.Join(", ", result.Diagnostics.Select(diagnostic => diagnostic.Code.ToString())));
-                    }
-
-                    value = result.Value;
-                }
-                else
+                var inspection = LinkedPropertyInspection.InspectBinding(
+                    token, source, descriptors, registry, evaluation);
+                if (!inspection.IsHealthy || !inspection.EffectiveValue.HasValue)
                 {
                     return SelectiveEffectiveResolution.Failure(
-                        SelectiveEffectiveOutcome.UnknownReferenceKind,
-                        propertyId,
-                        rack + ", propiedad '" + propertyId + "': la fuente es desconocida ('" +
-                        (source?.Kind ?? "<null>") + "').",
-                        source?.VariableId);
+                        OutcomeOf(inspection),
+                        inspection.PropertyId,
+                        rack + ", " + inspection.Detail,
+                        inspection.RawVariableId);
                 }
 
-                effectiveValues.Add((descriptor, value));
+                var value = inspection.EffectiveValue.Value;                effectiveValues.Add((descriptor, value));
             }
 
             var design = authored.ToDomain();

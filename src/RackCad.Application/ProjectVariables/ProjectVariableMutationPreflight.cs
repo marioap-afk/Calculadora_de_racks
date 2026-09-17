@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using RackCad.Application.Expressions;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Selective;
 
@@ -43,8 +45,12 @@ namespace RackCad.Application.ProjectVariables
                 return VariableMutationPreflightResult.Failed(ex.Message);
             }
 
+            var evaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(new[] { variable }));
+            var symbol = SymbolId.ProjectVariable(variable.Id.Value);
+            var reads = new PlanReadSet(
+                new[] { SymbolResultObservation.Capture(symbol, SymbolObservationPhase.After, evaluation.Result(symbol)) }, null);
             return VariableMutationPreflightResult.Success(
-                MutationPlan.Of(RegistryMutation.Add(variable), null));
+                MutationPlan.Of(RegistryMutation.Add(variable), null, reads));
         }
 
         /// <summary>
@@ -123,36 +129,77 @@ namespace RackCad.Application.ProjectVariables
             VariableId variableId,
             VariableDefinition definition,
             IReadOnlyList<ProjectVariableScanEntry> entries)
+            => ChangeDefinition(registry, variableId, definition, entries);
+
+        /// <summary>Changes either a literal or expression definition and validates its complete dependent closure.</summary>
+        public static VariableMutationPreflightResult ChangeDefinition(
+            ProjectVariablesDocument registry,
+            VariableId variableId,
+            VariableDefinition definition,
+            IReadOnlyList<ProjectVariableScanEntry> entries)
         {
             if (!TryAccredit(registry, out var usable, out var failure))
             {
                 return failure;
             }
 
-            if (!usable.TryGetTarget(variableId, out _))
+            if (!usable.TryGetTarget(variableId, out var currentTarget))
             {
                 return Missing(variableId);
             }
 
-            var discovery = ProjectVariableConsumerDiscovery.DiscoverConsumers(entries, variableId);
-
-            if (!discovery.IsSuccess)
-            {
-                return VariableMutationPreflightResult.Failed(discovery.Error);
-            }
-
-            var mutation = RegistryMutation.ChangeValue(variableId, definition);
+            var mutation = RegistryMutation.ChangeValue(variableId, definition, currentTarget.Definition);
 
             if (!TryAccredit(mutation.ApplyTo(registry), out var after, out var afterFailure))
             {
                 return afterFailure;
             }
 
+            var beforeEvaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(usable));
+            var afterEvaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(after));
+            var changed = SymbolId.ProjectVariable(variableId.Value);
+            var affected = new[] { changed }.Concat(afterEvaluation.DependencyGraph.TransitiveDependents(changed))
+                .Distinct().OrderBy(symbol => symbol).ToArray();
+
+            if (afterEvaluation.DependencyGraph.Cycles.Any(cycle => cycle.Members.Contains(changed)))
+            {
+                return VariableMutationPreflightResult.Failed("Cycle nueva en la definicion de " + variableId + ".");
+            }
+
+            foreach (var symbol in affected)
+            {
+                var beforeResult = beforeEvaluation.Result(symbol);
+                var afterResult = afterEvaluation.Result(symbol);
+                if (beforeResult.Succeeded && !afterResult.Succeeded)
+                {
+                    return VariableMutationPreflightResult.Failed(
+                        "La definicion hace fallar a " + symbol + ": " +
+                        string.Join(", ", afterResult.Diagnostics.Select(item => item.Code.ToString())));
+                }
+            }
+
+            var closure = affected.Select(symbol => VariableId.Parse(symbol.Key)).ToArray();
+            var discovery = ProjectVariableConsumerDiscovery.DiscoverConsumers(entries, closure);
+            if (!discovery.IsSuccess)
+            {
+                return VariableMutationPreflightResult.Failed(discovery.Error);
+            }
+
             var racks = new List<RackMutation>();
+            var finalReads = new HashSet<SymbolId>();
 
             foreach (var consumer in discovery.Consumers)
             {
                 var authored = ProjectVariableCloning.Clone(consumer.Authored);
+                var failed = FirstFailedBinding(authored, after, afterEvaluation);
+                if (failed != null)
+                {
+                    var prior = PriorReasons(consumer.Authored, usable, beforeEvaluation, failed.PropertyId);
+                    return VariableMutationPreflightResult.Failed(
+                        failed.Detail,
+                        new AttemptedStateFailure(consumer.RackId, FailureCategory(failed), FailureCodes(failed)),
+                        prior);
+                }
                 var effective = Resolver.ResolveAgainst(authored, after);
 
                 if (!effective.IsSuccess)
@@ -160,10 +207,23 @@ namespace RackCad.Application.ProjectVariables
                     return VariableMutationPreflightResult.Failed(effective.Error);
                 }
 
+                finalReads.UnionWith(ReadSymbols(authored));
+
                 racks.Add(new RackMutation(consumer.RackId, authored, effective.Design, consumer.Siblings));
             }
 
-            return VariableMutationPreflightResult.Success(MutationPlan.Of(mutation, racks));
+            var observations = new List<SymbolResultObservation>();
+            foreach (var symbol in affected.Where(symbol => !symbol.Equals(changed)))
+            {
+                observations.Add(SymbolResultObservation.Capture(symbol, SymbolObservationPhase.Before, beforeEvaluation.Result(symbol)));
+            }
+            foreach (var symbol in affected.Concat(finalReads).Distinct().OrderBy(symbol => symbol))
+            {
+                observations.Add(SymbolResultObservation.Capture(symbol, SymbolObservationPhase.After, afterEvaluation.Result(symbol)));
+            }
+
+            return VariableMutationPreflightResult.Success(
+                MutationPlan.Of(mutation, racks, new PlanReadSet(observations, null)));
         }
 
         /// <summary>
@@ -183,6 +243,15 @@ namespace RackCad.Application.ProjectVariables
             if (!usable.TryGetTarget(variableId, out _))
             {
                 return Missing(variableId);
+            }
+
+            var evaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(usable));
+            var dependents = evaluation.DependencyGraph.DirectDependents(SymbolId.ProjectVariable(variableId.Value));
+            if (dependents.Count > 0)
+            {
+                return VariableMutationPreflightResult.Blocked(
+                    "No se puede borrar: las definiciones " + string.Join(", ", dependents) + " dependen de " + variableId + ".",
+                    Array.Empty<VariableConsumerSummary>());
             }
 
             var discovery = ProjectVariableConsumerDiscovery.DiscoverConsumers(entries, variableId);
@@ -232,11 +301,33 @@ namespace RackCad.Application.ProjectVariables
                 return Missing(variableId);
             }
 
+            var beforeEvaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(usable));
+            var symbol = SymbolId.ProjectVariable(variableId.Value);
+            var definitionDependents = beforeEvaluation.DependencyGraph.DirectDependents(symbol);
+            if (definitionDependents.Count > 0)
+            {
+                return VariableMutationPreflightResult.Blocked(
+                    "No se puede borrar: las definiciones " + string.Join(", ", definitionDependents) + " dependen de " + variableId + ".",
+                    Array.Empty<VariableConsumerSummary>());
+            }
+
             var discovery = ProjectVariableConsumerDiscovery.DiscoverConsumers(entries, variableId);
 
             if (!discovery.IsSuccess)
             {
                 return VariableMutationPreflightResult.Failed(discovery.Error);
+            }
+
+            foreach (var consumer in discovery.Consumers)
+            {
+                if (consumer.Authored.PropertyValues != null && consumer.Authored.PropertyValues.Values.Any(source =>
+                    source != null && string.Equals(source.Kind, SelectivePropertyValueDocument.ExpressionKind, StringComparison.Ordinal) &&
+                    source.Expression != null && BoundExpressionDependencies.DirectDependencies(source.Expression).Contains(symbol)))
+                {
+                    return VariableMutationPreflightResult.Blocked(
+                        "No se puede sustituir una dependencia dentro de una expresion de propiedad.",
+                        new[] { new VariableConsumerSummary(consumer.RackId, consumer.Authored.Name, Array.Empty<string>()) });
+                }
             }
 
             var mutation = RegistryMutation.Remove(variableId);
@@ -248,6 +339,7 @@ namespace RackCad.Application.ProjectVariables
 
             var descriptors = SelectiveLinkedProperties.All;
             var racks = new List<RackMutation>();
+            var retainedReads = new HashSet<SymbolId>();
 
             foreach (var consumer in discovery.Consumers)
             {
@@ -291,10 +383,19 @@ namespace RackCad.Application.ProjectVariables
                     return VariableMutationPreflightResult.Failed(effective.Error);
                 }
 
+                retainedReads.UnionWith(ReadSymbols(authored));
                 racks.Add(new RackMutation(consumer.RackId, authored, effective.Design, consumer.Siblings));
             }
 
-            return VariableMutationPreflightResult.Success(MutationPlan.Of(mutation, racks));
+            var observations = new List<SymbolResultObservation>
+            {
+                SymbolResultObservation.Capture(symbol, SymbolObservationPhase.Before, beforeEvaluation.Result(symbol)),
+            };
+            var afterEvaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(after));
+            observations.AddRange(retainedReads.Where(read => !read.Equals(symbol)).Select(read =>
+                SymbolResultObservation.Capture(read, SymbolObservationPhase.After, afterEvaluation.Result(read))));
+            var reads = new PlanReadSet(observations, null);
+            return VariableMutationPreflightResult.Success(MutationPlan.Of(mutation, racks, reads));
         }
 
         // ------------------------------------------------------------------ target-rack (family B)
@@ -356,12 +457,16 @@ namespace RackCad.Application.ProjectVariables
             authored.SchemaVersion = SelectiveDesignSchema.ResolveWriteVersion(authored.SchemaVersion, true);
 
             var effective = Resolver.ResolveAgainst(authored, usable);
+            var evaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(usable));
+            var linkReads = new PlanReadSet(ReadSymbols(authored).Select(read =>
+                SymbolResultObservation.Capture(read, SymbolObservationPhase.After, evaluation.Result(read))), null);
 
             return effective.IsSuccess
                 ? VariableMutationPreflightResult.Success(
                     MutationPlan.Of(
                         RegistryMutation.None,
-                        new[] { new RackMutation(consumer.RackId, authored, effective.Design, consumer.Siblings) }))
+                        new[] { new RackMutation(consumer.RackId, authored, effective.Design, consumer.Siblings) },
+                        linkReads))
                 : VariableMutationPreflightResult.Failed(effective.Error);
         }
 
@@ -417,6 +522,7 @@ namespace RackCad.Application.ProjectVariables
             }
 
             var authored = ProjectVariableCloning.Clone(consumer.Authored);
+            var removedSource = consumer.Authored.PropertyValues[propertyId.Value];
 
             // The ACTIVE step, now per property. Leaving the old literal here is the same as never having
             // bound the rack; writing another property's field would move the wrong geometry.
@@ -424,12 +530,26 @@ namespace RackCad.Application.ProjectVariables
             authored.PropertyValues.Remove(propertyId.Value);
 
             var effective = Resolver.ResolveAgainst(authored, usable);
+            var evaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(usable));
+            var removedDocument = new SelectivePalletDesignDocument
+            {
+                PropertyValues = new Dictionary<string, SelectivePropertyValueDocument>
+                {
+                    [propertyId.Value] = removedSource,
+                },
+            };
+            var unlinkObservations = ReadSymbols(removedDocument).Select(read =>
+                    SymbolResultObservation.Capture(read, SymbolObservationPhase.Before, evaluation.Result(read)))
+                .Concat(ReadSymbols(authored).Select(read =>
+                    SymbolResultObservation.Capture(read, SymbolObservationPhase.After, evaluation.Result(read))));
+            var unlinkReads = new PlanReadSet(unlinkObservations, null);
 
             return effective.IsSuccess
                 ? VariableMutationPreflightResult.Success(
                     MutationPlan.Of(
                         RegistryMutation.None,
-                        new[] { new RackMutation(consumer.RackId, authored, effective.Design, consumer.Siblings) }))
+                        new[] { new RackMutation(consumer.RackId, authored, effective.Design, consumer.Siblings) },
+                        unlinkReads))
                 : VariableMutationPreflightResult.Failed(effective.Error);
         }
 
@@ -521,15 +641,119 @@ namespace RackCad.Application.ProjectVariables
 
             var effective = Resolver.ResolveAgainst(authored, usable);
 
+            var decisions = assessment.Missing.Select(item => RepairDecisionObservation.Capture(
+                consumer.RackId, item.PropertyId, consumer.Authored.PropertyValues[item.PropertyToken], item.RepairReason)).ToArray();
+            var evaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(usable));
+            var retainedObservations = ReadSymbols(authored).Select(read =>
+                SymbolResultObservation.Capture(read, SymbolObservationPhase.After, evaluation.Result(read)));
+
             return effective.IsSuccess
                 ? VariableMutationPreflightResult.Success(
                     MutationPlan.Of(
                         RegistryMutation.None,
-                        new[] { new RackMutation(consumer.RackId, authored, effective.Design, consumer.Siblings) }))
+                        new[] { new RackMutation(consumer.RackId, authored, effective.Design, consumer.Siblings) },
+                        new PlanReadSet(retainedObservations, decisions)))
                 : VariableMutationPreflightResult.Failed(effective.Error);
         }
 
         // ------------------------------------------------------------------ helpers
+
+        private static IReadOnlyList<SymbolId> ReadSymbols(SelectivePalletDesignDocument authored)
+        {
+            var symbols = new SortedSet<SymbolId>();
+            if (authored?.PropertyValues == null)
+            {
+                return symbols.ToArray();
+            }
+            foreach (var source in authored.PropertyValues.Values)
+            {
+                if (source == null)
+                {
+                    continue;
+                }
+                if (string.Equals(source.Kind, SelectivePropertyValueDocument.ProjectVariableKind, StringComparison.Ordinal) &&
+                    VariableId.TryParse(source.VariableId, out var variableId))
+                {
+                    symbols.Add(SymbolId.ProjectVariable(variableId.Value));
+                }
+                else if (string.Equals(source.Kind, SelectivePropertyValueDocument.ExpressionKind, StringComparison.Ordinal) &&
+                         source.Expression != null)
+                {
+                    symbols.UnionWith(BoundExpressionDependencies.DirectDependencies(source.Expression));
+                }
+            }
+            return symbols.ToArray();
+        }
+
+        private static BindingInspection FirstFailedBinding(
+            SelectivePalletDesignDocument authored,
+            UsableProjectVariablesRegistry registry,
+            RegistryEvaluation evaluation)
+        {
+            if (authored?.PropertyValues == null)
+            {
+                return null;
+            }
+
+            foreach (var entry in authored.PropertyValues.OrderBy(item => item.Key, StringComparer.Ordinal))
+            {
+                var inspection = LinkedPropertyInspection.InspectBinding(
+                    entry.Key, entry.Value, SelectiveLinkedProperties.All, registry, evaluation);
+                if (!inspection.IsHealthy)
+                {
+                    return inspection;
+                }
+            }
+            return null;
+        }
+
+        private static IEnumerable<string> PriorReasons(
+            SelectivePalletDesignDocument authored,
+            UsableProjectVariablesRegistry registry,
+            RegistryEvaluation evaluation,
+            PropertyId attemptedProperty)
+        {
+            if (authored?.PropertyValues == null)
+            {
+                return Array.Empty<string>();
+            }
+            var otherInvalid = authored.PropertyValues.Any(entry =>
+            {
+                var inspection = LinkedPropertyInspection.InspectBinding(
+                    entry.Key, entry.Value, SelectiveLinkedProperties.All, registry, evaluation);
+                return !inspection.PropertyId.Equals(attemptedProperty) && !inspection.IsHealthy;
+            });
+            return otherInvalid ? new[] { "OtherInvalidSources" } : Array.Empty<string>();
+        }
+
+        private static string FailureCategory(BindingInspection inspection)
+        {
+            if (inspection.Outcome == BindingInspectionOutcome.RepairableDomain)
+            {
+                return "OutOfRange";
+            }
+            if (inspection.RepairReason?.StableData.Any(value => value.IndexOf("DivisionByZero", StringComparison.Ordinal) >= 0) == true)
+            {
+                return "DivisionByZero";
+            }
+            if (inspection.RepairReason?.FailedReads.Values.SelectMany(value => value)
+                .Any(root => root.Code == ExpressionDiagnosticCode.DivisionByZero) == true)
+            {
+                return "DivisionByZero";
+            }
+            return inspection.Outcome.ToString();
+        }
+
+        private static IEnumerable<string> FailureCodes(BindingInspection inspection)
+        {
+            if (inspection.Outcome == BindingInspectionOutcome.RepairableDomain)
+            {
+                return new[] { "OutOfRange" };
+            }
+            var stable = inspection.RepairReason?.StableData ?? Array.Empty<string>();
+            return stable.Concat(inspection.RepairReason?.FailedReads.Values.SelectMany(value => value)
+                .Select(root => root.Code.ToString()) ?? Array.Empty<string>());
+        }
 
         private static readonly SelectiveEffectiveDesignResolver Resolver = new SelectiveEffectiveDesignResolver();
 
@@ -595,5 +819,10 @@ namespace RackCad.Application.ProjectVariables
         private static VariableMutationPreflightResult NotBound(string rackId, PropertyId propertyId)
             => VariableMutationPreflightResult.Failed(
                 "La propiedad '" + propertyId + "' del rack " + rackId + " no está vinculada a ninguna variable.");
+    }
+
+    /// <summary>Marker for a property expression that prevents destructive substitution during delete.</summary>
+    public sealed class ExpressionDependent
+    {
     }
 }

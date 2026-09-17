@@ -203,7 +203,7 @@ namespace RackCad.Tests
                 });
             Assert.True(result.IsSuccess);
             Assert.Equal(new[] { IdB, IdC }, ObservationIds(result.Plan, "Before"));
-            Assert.Equal(new[] { IdA, IdB, IdC }, ObservationIds(result.Plan, "After"));
+            Assert.Equal(new[] { IdA, IdB, IdC }.OrderBy(value => value, StringComparer.Ordinal), ObservationIds(result.Plan, "After"));
             Assert.DoesNotContain(unrelated, ObservationIds(result.Plan, "Before").Concat(ObservationIds(result.Plan, "After")));
         }
 

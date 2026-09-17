@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using RackCad.Application.Expressions;
 using RackCad.Application.Persistence;
 
 namespace RackCad.Application.ProjectVariables
@@ -27,11 +30,15 @@ namespace RackCad.Application.ProjectVariables
     public sealed class RegistryCommitPreparation
     {
         private RegistryCommitPreparation(
-            RegistryCommitOutcome outcome, ProjectVariablesDocument changed, string error)
+            RegistryCommitOutcome outcome, ProjectVariablesDocument changed, string error,
+            int registryWrites = 0, int rackWrites = 0, int semanticReads = 0)
         {
             Outcome = outcome;
             Changed = changed;
             Error = error;
+            RegistryWrites = registryWrites;
+            RackWrites = rackWrites;
+            SemanticReads = semanticReads;
         }
 
         public RegistryCommitOutcome Outcome { get; }
@@ -46,11 +53,20 @@ namespace RackCad.Application.ProjectVariables
 
         public bool IsBlocked => Outcome == RegistryCommitOutcome.Blocked;
 
+        public bool Succeeded => !IsBlocked;
+        public int RegistryWrites { get; }
+        public int RackWrites { get; }
+        public int SemanticReads { get; }
+
         internal static RegistryCommitPreparation Unchanged()
             => new RegistryCommitPreparation(RegistryCommitOutcome.Unchanged, null, null);
 
         internal static RegistryCommitPreparation Ready(ProjectVariablesDocument changed)
-            => new RegistryCommitPreparation(RegistryCommitOutcome.Ready, changed, null);
+            => new RegistryCommitPreparation(RegistryCommitOutcome.Ready, changed, null, 1);
+
+        internal static RegistryCommitPreparation Completed(
+            RegistryCommitOutcome outcome, ProjectVariablesDocument changed, int registryWrites, int rackWrites, int semanticReads)
+            => new RegistryCommitPreparation(outcome, changed, null, registryWrites, rackWrites, semanticReads);
 
         internal static RegistryCommitPreparation Blocked(string error)
             => new RegistryCommitPreparation(RegistryCommitOutcome.Blocked, null, error);
@@ -104,6 +120,98 @@ namespace RackCad.Application.ProjectVariables
             }
 
             return RegistryCommitPreparation.Ready(mutation.ApplyTo(accreditation.Document));
+        }
+
+        /// <summary>Reaccredits every semantic observation before exposing the first permitted write.</summary>
+        public static RegistryCommitPreparation Prepare(
+            MutationPlan plan,
+            ProjectVariablesDocument currentRegistry,
+            IReadOnlyList<ProjectVariableScanEntry> currentRacks)
+            => Prepare(
+                plan,
+                currentRegistry == null ? ProjectVariablesReadResult.Absent() : ProjectVariablesReadResult.Readable(currentRegistry),
+                currentRacks);
+
+        /// <summary>Read-result form used by the physical executor inside its transaction.</summary>
+        public static RegistryCommitPreparation Prepare(
+            MutationPlan plan,
+            ProjectVariablesReadResult lastRead,
+            IReadOnlyList<ProjectVariableScanEntry> currentRacks)
+        {
+            if (plan == null)
+            {
+                throw new ArgumentNullException(nameof(plan));
+            }
+
+            var needsRegistry = plan.RegistryMutation.Kind != RegistryMutationKind.None || !plan.PlanReadSet.IsEmpty;
+            if (!needsRegistry)
+            {
+                return RegistryCommitPreparation.Completed(
+                    RegistryCommitOutcome.Unchanged, null, 0, plan.RackMutations.Count, 0);
+            }
+
+            var accreditation = UsableProjectVariablesRegistry.Accredit(lastRead);
+            if (!accreditation.IsUsable)
+            {
+                return RegistryCommitPreparation.Blocked(accreditation.Error);
+            }
+
+            var before = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(accreditation.Registry));
+            if (plan.RegistryMutation.Kind == RegistryMutationKind.ChangeValue &&
+                plan.RegistryMutation.ExpectedDefinition != null &&
+                (!accreditation.Registry.TryGetTarget(plan.RegistryMutation.VariableId, out var currentTarget) ||
+                 !plan.RegistryMutation.ExpectedDefinition.Equals(currentTarget.Definition)))
+            {
+                return RegistryCommitPreparation.Blocked(
+                    "La definicion objetivo cambio despues de crear el plan.");
+            }
+            ProjectVariablesDocument changed = accreditation.Document;
+            UsableProjectVariablesRegistry afterRegistry = accreditation.Registry;
+            RegistryEvaluation after = before;
+            if (plan.RegistryMutation.Kind != RegistryMutationKind.None)
+            {
+                changed = plan.RegistryMutation.ApplyTo(accreditation.Document);
+                var afterAccreditation = UsableProjectVariablesRegistry.Accredit(ProjectVariablesReadResult.Readable(changed));
+                if (!afterAccreditation.IsUsable)
+                {
+                    return RegistryCommitPreparation.Blocked(afterAccreditation.Error);
+                }
+                afterRegistry = afterAccreditation.Registry;
+                after = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(afterRegistry));
+            }
+
+            foreach (var observation in plan.PlanReadSet.SymbolResultObservations)
+            {
+                var evaluation = observation.Phase == SymbolObservationPhase.Before ? before : after;
+                if (!evaluation.Results.TryGetValue(observation.Symbol, out var actual) || !observation.Matches(actual))
+                {
+                    return RegistryCommitPreparation.Blocked(
+                        "El estado semantico observado cambio antes del commit: " + observation.SymbolId + ".");
+                }
+            }
+
+            foreach (var observation in plan.PlanReadSet.RepairDecisionObservations)
+            {
+                var target = ProjectVariableConsumerDiscovery.ResolveTargetRack(currentRacks, observation.RackId);
+                if (!target.IsSuccess || target.Consumers.Count != 1 ||
+                    target.Consumers[0].Authored.PropertyValues == null ||
+                    !target.Consumers[0].Authored.PropertyValues.TryGetValue(observation.PropertyId.Value, out var source))
+                {
+                    return RegistryCommitPreparation.Blocked("El origen reparado cambio antes del commit.");
+                }
+                var inspection = LinkedPropertyInspection.InspectBinding(
+                    observation.PropertyId.Value, source, SelectiveLinkedProperties.All, afterRegistry, after);
+                if (inspection.RepairReason == null || !observation.Matches(inspection.RepairReason))
+                {
+                    return RegistryCommitPreparation.Blocked("La razon de reparacion cambio antes del commit.");
+                }
+            }
+
+            var registryWrites = plan.RegistryMutation.Kind == RegistryMutationKind.None ? 0 : 1;
+            var outcome = registryWrites == 0 ? RegistryCommitOutcome.Unchanged : RegistryCommitOutcome.Ready;
+            return RegistryCommitPreparation.Completed(
+                outcome, registryWrites == 0 ? null : changed,
+                registryWrites, plan.RackMutations.Count, plan.PlanReadSet.IsEmpty ? 0 : 1);
         }
     }
 }

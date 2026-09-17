@@ -164,19 +164,7 @@ namespace RackCad.Tests
 
         internal static CommitView Commit(MutationPlan plan, ProjectVariablesDocument currentRegistry,
             IReadOnlyList<ProjectVariableScanEntry> currentRacks, object writeSpy)
-        {
-            var candidates = typeof(MutationPlan).Assembly.GetTypes()
-                .Where(type => type.Name.IndexOf("Commit", StringComparison.OrdinalIgnoreCase) >= 0
-                    || type.Name.IndexOf("MutationExecutor", StringComparison.OrdinalIgnoreCase) >= 0);
-            foreach (var type in candidates)
-            {
-                var raw = TryInvokeCompatibleStatic(type,
-                    new object[] { plan, currentRegistry, currentRacks, writeSpy },
-                    "Commit", "Execute", "Prepare");
-                if (raw != null) return new CommitView(raw);
-            }
-            throw Missing("a commit operation that re-evaluates PlanReadSet before exposing writes");
-        }
+            => new CommitView(RegistryCommit.Prepare(plan, currentRegistry, currentRacks));
 
         internal static object NewWriteSpy()
             => new MutationWriteCounter();
@@ -193,11 +181,7 @@ namespace RackCad.Tests
         }
 
         private static object CreateReason(string kind, params object[] data)
-        {
-            var type = ProductType("RepairDecisionReason", "BindingInspectionReason", "RepairReason");
-            var args = new object[data.Length + 1]; args[0] = kind; Array.Copy(data, 0, args, 1, data.Length);
-            return InvokeCompatibleStatic(type, args, kind, "Create");
-        }
+            => RepairDecisionReason.Create(kind, data);
 
         private static Type ProductType(params string[] names)
             => typeof(MutationPlan).Assembly.GetTypes().FirstOrDefault(type => names.Any(name =>
@@ -242,7 +226,7 @@ namespace RackCad.Tests
                 }
                 used[found] = true; bound[index] = available[found];
             }
-            return true;
+            return used.All(value => value);
         }
 
         private static SymbolId Symbol(string value) => SymbolId.ProjectVariable(value);

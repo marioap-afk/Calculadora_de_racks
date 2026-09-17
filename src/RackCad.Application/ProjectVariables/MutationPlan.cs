@@ -32,13 +32,15 @@ namespace RackCad.Application.ProjectVariables
             VariableId variableId,
             string name,
             VariableType type,
-            VariableDefinition definition)
+            VariableDefinition definition,
+            VariableDefinition expectedDefinition = null)
         {
             Kind = kind;
             VariableId = variableId;
             Name = name;
             Type = type;
             Definition = definition;
+            ExpectedDefinition = expectedDefinition;
         }
 
         public RegistryMutationKind Kind { get; }
@@ -52,6 +54,8 @@ namespace RackCad.Application.ProjectVariables
 
         /// <summary>The definition to write. Set for <see cref="RegistryMutationKind.Add"/> and <see cref="RegistryMutationKind.ChangeValue"/>.</summary>
         public VariableDefinition Definition { get; }
+
+        internal VariableDefinition ExpectedDefinition { get; }
 
         public static RegistryMutation None { get; } =
             new RegistryMutation(RegistryMutationKind.None, default, null, VariableType.Length, null);
@@ -69,6 +73,11 @@ namespace RackCad.Application.ProjectVariables
 
         public static RegistryMutation ChangeValue(VariableId id, VariableDefinition definition)
             => new RegistryMutation(RegistryMutationKind.ChangeValue, id, null, VariableType.Length, definition);
+
+        internal static RegistryMutation ChangeValue(
+            VariableId id, VariableDefinition definition, VariableDefinition expectedDefinition)
+            => new RegistryMutation(
+                RegistryMutationKind.ChangeValue, id, null, VariableType.Length, definition, expectedDefinition);
 
         public static RegistryMutation Remove(VariableId id)
             => new RegistryMutation(RegistryMutationKind.Remove, id, null, VariableType.Length, null);
@@ -184,23 +193,35 @@ namespace RackCad.Application.ProjectVariables
     {
         private static readonly RackMutation[] NoRacks = new RackMutation[0];
 
-        private MutationPlan(RegistryMutation registryMutation, IReadOnlyList<RackMutation> rackMutations)
+        private MutationPlan(
+            RegistryMutation registryMutation,
+            IReadOnlyList<RackMutation> rackMutations,
+            PlanReadSet planReadSet)
         {
             RegistryMutation = registryMutation;
             RackMutations = rackMutations;
+            PlanReadSet = planReadSet;
         }
 
         public RegistryMutation RegistryMutation { get; }
 
         public IReadOnlyList<RackMutation> RackMutations { get; }
 
+        public PlanReadSet PlanReadSet { get; }
+
         public bool IsEmpty
             => RegistryMutation.Kind == RegistryMutationKind.None && RackMutations.Count == 0;
 
-        public static MutationPlan Empty { get; } = new MutationPlan(RegistryMutation.None, NoRacks);
+        public static MutationPlan Empty { get; } = new MutationPlan(RegistryMutation.None, NoRacks, PlanReadSet.Empty);
 
         public static MutationPlan Of(RegistryMutation registry, IReadOnlyList<RackMutation> racks)
-            => new MutationPlan(registry ?? RegistryMutation.None, racks ?? NoRacks);
+            => new MutationPlan(registry ?? RegistryMutation.None, racks ?? NoRacks, PlanReadSet.Empty);
+
+        public static MutationPlan Of(
+            RegistryMutation registry,
+            IReadOnlyList<RackMutation> racks,
+            PlanReadSet planReadSet)
+            => new MutationPlan(registry ?? RegistryMutation.None, racks ?? NoRacks, planReadSet ?? PlanReadSet.Empty);
     }
 
     /// <summary>

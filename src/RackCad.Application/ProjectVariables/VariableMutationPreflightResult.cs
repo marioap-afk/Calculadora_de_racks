@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RackCad.Application.ProjectVariables
 {
@@ -35,12 +36,16 @@ namespace RackCad.Application.ProjectVariables
             VariableMutationOutcome outcome,
             MutationPlan plan,
             string error,
-            IReadOnlyList<VariableConsumerSummary> blockingConsumers)
+            IReadOnlyList<VariableConsumerSummary> blockingConsumers,
+            AttemptedStateFailure attemptedStateFailure = null,
+            IReadOnlyList<string> priorBlockingReasons = null)
         {
             Outcome = outcome;
             Plan = plan;
             Error = error;
             BlockingConsumers = blockingConsumers;
+            AttemptedStateFailure = attemptedStateFailure;
+            PriorBlockingReasons = priorBlockingReasons ?? new string[0];
         }
 
         public VariableMutationOutcome Outcome { get; }
@@ -54,6 +59,10 @@ namespace RackCad.Application.ProjectVariables
         /// <summary>The racks preventing a delete. Empty unless the outcome is <see cref="VariableMutationOutcome.BlockedByConsumers"/>.</summary>
         public IReadOnlyList<VariableConsumerSummary> BlockingConsumers { get; }
 
+        public AttemptedStateFailure AttemptedStateFailure { get; }
+
+        public IReadOnlyList<string> PriorBlockingReasons { get; }
+
         public bool IsSuccess => Outcome == VariableMutationOutcome.Success;
 
         public static VariableMutationPreflightResult Success(MutationPlan plan)
@@ -61,6 +70,12 @@ namespace RackCad.Application.ProjectVariables
 
         public static VariableMutationPreflightResult Failed(string error)
             => new VariableMutationPreflightResult(VariableMutationOutcome.Error, MutationPlan.Empty, error, NoConsumers);
+
+        internal static VariableMutationPreflightResult Failed(
+            string error, AttemptedStateFailure attempted, IEnumerable<string> priorReasons)
+            => new VariableMutationPreflightResult(
+                VariableMutationOutcome.Error, MutationPlan.Empty, error, NoConsumers, attempted,
+                (priorReasons ?? Enumerable.Empty<string>()).Distinct().OrderBy(value => value).ToArray());
 
         public static VariableMutationPreflightResult Blocked(
             string error,
@@ -70,5 +85,21 @@ namespace RackCad.Application.ProjectVariables
                 MutationPlan.Empty,
                 error,
                 consumers ?? NoConsumers);
+    }
+
+    /// <summary>The exact attempted rack state that made a definition change inadmissible.</summary>
+    public sealed class AttemptedStateFailure
+    {
+        internal AttemptedStateFailure(string rackId, string category, IEnumerable<string> diagnosticCodes)
+        {
+            RackId = rackId;
+            Category = category;
+            DiagnosticCodes = (diagnosticCodes ?? Enumerable.Empty<string>()).Distinct().OrderBy(value => value).ToArray();
+        }
+
+        public string RackId { get; }
+        public string Category { get; }
+        public IReadOnlyList<string> DiagnosticCodes { get; }
+        public bool HasRecoveryCandidate => false;
     }
 }
