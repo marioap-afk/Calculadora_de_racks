@@ -1,12 +1,18 @@
 # Contratos de iniciativas
 
+> Workflow V1 sigue efectivo hasta que exista `WORKFLOW_V2_EFFECTIVE_SHA`. Para futuras unidades V2:
+> [INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) define Discovery, diseño, Freeze/A-n, READY y
+> conformidad; [PROMPT_TEMPLATES](PROMPT_TEMPLATES.md) ofrece procedimientos subordinados; y
+> [TEMPLATE](TEMPLATE.md) define los campos del contrato mutable. Los contratos V1/grandfathered no se
+> migran ni se reclasifican por estos enlaces.
+
 `docs/ROADMAP.md` es el indice global de fases, dependencias, conflictos y estado integrado. No se
 usa para guardar el estado transitorio "en curso": ese estado se deriva de Git y se registra para el
 ejecutor en `docs/automation/state/<initiative>.yml`.
 
-`docs/AUTOMATION_PLAN.md` gobierna la seleccion automatica, los limites de concurrencia, el reclamo
-atomico, los reintentos y las condiciones de detencion. Cada archivo de esta carpeta es el contrato
-detallado de una iniciativa y define su alcance, contexto, validaciones y entrega.
+`docs/AUTOMATION_PLAN.md` gobierna la seleccion y limites del ejecutor; [WORKFLOW](../WORKFLOW.md)
+gobierna reclamo, Git, integracion y transicion. Cada archivo de esta carpeta es el contrato mutable
+de una iniciativa o unidad y enlaza sus fuentes congeladas, decisiones y evidencia.
 
 `docs/HANDOFF.md` conserva unicamente el estado vivo del proyecto. Los contratos no copian el
 historial general, conteos de pruebas ni hashes: enlazan a las fuentes correspondientes.

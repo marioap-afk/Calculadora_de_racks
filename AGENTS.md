@@ -89,20 +89,11 @@ declarada por el (guia de validacion manual §8).
 
 Proceso completo (ramas, worktrees, integracion, archivos calientes, limpieza): [docs/WORKFLOW.md](docs/WORKFLOW.md).
 Plan de iniciativas: [docs/ROADMAP.md](docs/ROADMAP.md). Decisiones: [docs/adr/](docs/adr/README.md).
-Reglas rapidas: las ramas se nombran por INICIATIVA, nunca por herramienta (ADR-0001; la lista de
-prefijos vive en WORKFLOW seccion 1 — no la copies); 1 iniciativa = 1 rama = 1 worktree (el MISMO
-worktree toda la vida de la iniciativa, con sesiones secuenciales y relevo entre herramientas —
-nunca dos sesiones activas a la vez); abrir = bifurcar de `origin/<trunk>` tras fetch + commit
-vacio de reclamo (ID de iniciativa + Claim-Id UUID + Co-Authored-By) + `git push -u` sin force —
-el primer push ACEPTADO es el reclamo; si el remoto ya tiene la rama, no forzar: borrar el reclamo
-local y elegir otra iniciativa; rebase al abrir sesion si el trunk avanzo (republicar con
-`--force-with-lease`); push de la rama al cerrar CADA sesion (push de rama != integrar); la
-integracion es serializada (rebase final + CI + validacion + merge --no-ff + **CI posterior al merge**,
-WORKFLOW seccion 4.5); al cerrar, borrado SEGURO: `git branch -d` (nunca `-D` salvo los casos de
-WORKFLOW seccion 3) y el remoto solo tras confirmar el merge en `main` **y que su CI posterior este
-verde** —limpiar antes declara terminada una integracion que aun no lo esta—; todo commit de agente lleva trailer de identificacion
-(Co-Authored-By), tambien los de Codex. No copiar conteos de tests ni hashes de commit fuera de
-`docs/HANDOFF.md` (seccion 12): los numeros copiados divergen.
+`WORKFLOW.md` es la autoridad de reclamo, ramas/worktrees, sesiones/rebase, ubicacion de evidencia,
+cadencia documental, integracion, ruta R, post-merge, transicion, tags y limpieza. No se copian aqui
+sus procedimientos. El ciclo de Discovery, arquetipos, Freeze/A-n, gates, READY y conformidad vive en
+[docs/INITIATIVE_LIFECYCLE.md](docs/INITIATIVE_LIFECYCLE.md). Todo commit de agente conserva el trailer
+de identificacion (`Co-Authored-By`), tambien los de Codex.
 
 ## Dependencias
 
@@ -115,6 +106,14 @@ de tests usa paquetes (xunit, Test SDK). No agregar dependencias sin acuerdo exp
 
 ## Pruebas — definicion de terminado
 
+**Autoridad y vigencia.** Esta seccion gobierna clases de prueba/evidencia, composicion Full,
+identidad exact-SHA, reutilizacion e invalidadores. Workflow V1 sigue efectivo hasta que
+`WORKFLOW_V2_EFFECTIVE_SHA` exista conforme a [WORKFLOW §11](docs/WORKFLOW.md). Las reglas marcadas
+V2 quedan materializadas pero dormidas hasta entonces y solo se aplican a unidades clasificadas V2;
+I-56 y los reclamos formales existentes de I-49, I-52 e I-55 conservan V1. Las salvaguardas no
+marcadas por workflow —Full del Candidato, clases separadas, exact-SHA, seleccion mayor que cero y
+prueba conductual— se aplican siempre.
+
 Un cambio de comportamiento esta terminado cuando:
 
 1. **Validacion automatizada completa** verde: **suite Core + suite UI**, todas las pruebas y no solo
@@ -124,17 +123,27 @@ Un cambio de comportamiento esta terminado cuando:
    regla, pero sigue en estado `propuesto`: vale como origen, no como autoridad, y este punto **se
    sostiene solo**. Donde ambos difieran, **manda este punto**, que es el mas estricto de los dos.)
 
-   | Momento | suite Core en local | suite UI en local |
-   |---|---|---|
-   | **Iteracion ordinaria** | sin cambio: LC-UI **no toca el nucleo** | **NO obligatoria** antes del push |
-   | **Candidato** | **obligatoria** | **obligatoria** |
-   | **Cierre, o cualquier gate que exija Full** | **obligatoria** | **obligatoria** |
+   | Momento | Core local V1 (vigente) | Core local V2 (tras activacion) | UI local V1/V2 |
+   |---|---|---|---|
+   | **Push interno de implementacion** | Full antes de cada push de comportamiento | Focales/relevantes; Core Full **no obligatorio** antes de cada push interno | UI Full **no obligatoria** antes del push por LC-UI; pruebas UI focales/relevantes siguen segun el comportamiento |
+   | **Cierre de gate funcional V2** | No aplica como regla V2 | **Core Full obligatorio**, despues del commit, con arbol limpio y sobre el SHA de cierre | LC-UI se conserva; UI Full solo si el gate exige Full |
+   | **`FINAL_CANDIDATE_SHA`** | **Core Full obligatorio** | **Core Full obligatorio** | **UI Full obligatoria** |
+   | **Cierre documental de iniciativa** | **Core Full obligatorio** | **Core Full obligatorio** | **UI Full obligatoria** |
+   | **Punto que exija Full** | **obligatoria** | **obligatoria** | **obligatoria** |
 
-   **Iteracion ordinaria (LC-UI).** La suite completa de UI deja de ser obligatoria en local en cada
-   iteracion: la evidencia intermedia de UI la aporta el CI. Es un **reparto de responsabilidad
-   declarado, no una equivalencia**: la corrida local de UI y la del CI **no son la misma clase de
-   evidencia**, y fuera de esta regla ninguna sustituye a la otra. «Opcional en local» significa
-   **opcional en local**, no «UI opcional»: la suite se ejecuta igual, en el CI.
+   **Iteracion interna V2.** Exige pruebas focales del comportamiento en curso con RED→GREEN y conteo,
+   pruebas relevantes del sistema/componente y los builds/guardias que aporten evidencia necesaria.
+   El CI completo sigue corriendo en cada push. Esta cadencia moderada termina en Core Full local al
+   cierre de **cada** gate funcional; no adopta el modelo «Core Full solo en el Candidato».
+   El cierre documental conserva el Full que exige `WORKFLOW.md`: una corrida anterior solo se reutiliza
+   si el cierre es literalmente el mismo SHA y cumple clase, proposito, alcance e invalidadores; un SHA
+   de cierre nuevo repite la evidencia requerida.
+
+   **LC-UI se conserva.** La suite completa de UI no es obligatoria en local antes de cada push. Es un
+   **reparto de responsabilidad declarado, no una equivalencia**: UI local y UI del CI son clases
+   distintas, y fuera de esta regla ninguna sustituye a la otra. «UI Full local no obligatoria» no
+   significa «UI no se valida»: se ejecutan las pruebas focales/relevantes que correspondan y el CI
+   ejecuta la suite UI completa sobre cada punta empujada.
 
    **El nucleo queda fuera de esta regla, y no por olvido.** Core local y Core del CI son clases
    distintas —el CI corre en ubuntu y el bucle local en Windows, y hay pruebas cuyo resultado depende
@@ -147,26 +156,34 @@ Un cambio de comportamiento esta terminado cuando:
    se queda sin evidencia de UI** y hay que resolverlo antes de que pueda ser Candidato. No se
    posterga la validacion: se traslada de canal.
 
-   **Que cuenta como evidencia de UI del CI**, y solo esto, las cuatro condiciones a la vez:
+   **Evidencia CI de rama y Candidato.** Una corrida acredita el SHA solo cuando se verifican juntas:
 
    ```
-   event      = push
-   job        = ui-tests            (publicado como "UI Tests (WPF controls, net8.0-windows)")
-   conclusion = success
-   head_sha   = el SHA empujado, exacto
+   event               = push
+   ref                 = refs/heads/<rama exacta>
+   head_sha            = el SHA evaluado, exacto
+   jobs requeridos     = success
    ```
 
-   NO basta el workflow en verde si ese job no corrio, ni el mismo SHA en otra rama, ni un commit
-   anterior, ni uno posterior.
+   La `ref` se consulta en la corrida; no se infiere del `head_sha`. Para evidencia UI, entre esos jobs
+   debe estar `ui-tests` (publicado como "UI Tests (WPF controls, net8.0-windows)") en `success`. NO
+   basta el workflow en verde si un job requerido no corrio, ni el mismo SHA en otra rama, ni un commit
+   anterior o posterior. Una corrida de `refs/tags/*` no acredita rama, Candidato ni post-merge. El
+   criterio post-merge de `main` pertenece a `WORKFLOW.md` y solo se referencia desde aqui.
+   Los jobs requeridos actuales son `Tests (Domain + Application)`,
+   `UI Tests (WPF controls, net8.0-windows)`, `Build UI (WPF, valida API de Application)` y
+   `Build Plugin without AutoCAD`; todos deben terminar en `success`.
 
    **`event = push` no es un detalle.** Es lo unico que ata la ejecucion al `head_sha`. Una corrida de
    **`workflow_dispatch`** lleva como `head_sha` la punta del ref despachado y ejecuta el commit que
    le pasaron por input: su `head_sha` **no es el SHA medido**. Por eso una corrida de despacho **NO
    acredita evidencia de UI a ningun SHA por su `head_sha`** —ni al tip, ni al medido—, no sustituye a
    la corrida de `push` del Candidato y no se propaga. Mide cobertura; eso es todo lo que hace.
+   La politica, poblacion, disparadores, cadencia y semantica de dispatch de cobertura quedan **sin
+   cambio**.
 
    **Push agrupado: la evidencia no se propaga.** Si un push lleva `A → B → C` y Actions corre solo
-   sobre `C`, solo `C` recibe evidencia; `A` y `B` tienen **evidencia de UI del CI = NINGUNA**. No se
+   sobre `C`, solo `C` recibe evidencia de CI de rama; `A` y `B` no reciben ninguna. No se
    hereda hacia atras ni hacia delante. No es formalismo: I-45 midio que los commits sin corrida
    propia son, en su mayoria, fases **rojas** de TDD empujadas junto a su verde — heredarles el verde
    del tip afirmaria que un commit rojo por diseno estaba verde.
@@ -176,11 +193,12 @@ Un cambio de comportamiento esta terminado cuando:
    tener evidencia de UI del CI no convierte a un SHA en Candidato — para eso hace falta ademas todo
    lo del parrafo siguiente, **incluida la UI Full local**.
 
-   **Candidato** es el SHA exacto que se entrega para validar o integrar. Exige, sobre **ese** SHA:
-   Core Full local, **UI Full local**, build Debug de UI, build Debug de Plugin y CI verde sobre el
-   SHA exacto; mas la validacion del dueño en AutoCAD donde aplique. LC-UI **no reduce el Candidato**,
-   no reduce el cierre y no reduce el Full final: solo retira la repeticion local intermedia. La forma
-   de declararlo esta en
+   **`FINAL_CANDIDATE_SHA`** es el SHA exacto que se entrega para validar o integrar. Exige, sobre
+   **ese** SHA: Core Full local, **UI Full local**, build Debug de UI, build Debug de Plugin, CI de
+   push de la rama exacta con todos los jobs requeridos verdes, la cobertura vigente y Owner Validation
+   donde aplique. CI no sustituye suites locales; suites locales no sustituyen CI; Owner Validation no
+   sustituye evidencia automatizada. LC-UI **no reduce el Candidato** ni el Full final. La forma de
+   declararlo esta en
    [docs/guias/validacion-manual-autocad.md](docs/guias/validacion-manual-autocad.md) §7.1.
 
    **LC-UI no cambia QUE valida el dueño.** «Sobre ese SHA» rige para las cuatro evidencias
@@ -190,29 +208,20 @@ Un cambio de comportamiento esta terminado cuando:
 2. Todo bugfix lleva **test de regresion verificado FALLANDO** con el fix desactivado (un test que nunca se
    vio fallar no prueba nada).
 3. Build de UI + Plugin en Debug con 0 errores (el usuario prueba via NETLOAD del Debug, no del Release).
-4. Documentacion tocada si cambio comportamiento visible (`docs/guias/catalogos-y-plantillas.md` para catalogos
-   y elementos). `docs/HANDOFF.md` secciones 8-12 se actualizan **al INTEGRAR la iniciativa** (ultimo
-   commit de la rama, en la sesion de integracion — docs/WORKFLOW.md seccion 4.5), nunca desde ramas
-   paralelas; el cierre de una sesion intermedia se registra en el cuerpo del commit.
-5. **No INTEGRAR features al trunk sin la verificacion manual del usuario en AutoCAD** (el dibujo real es
-   el criterio final; los tests no ven los bloques DWG reales). El push de la RAMA de iniciativa es
-   respaldo y se hace al cerrar CADA sesion (push de rama != integrado); la integracion a `main` espera
-   la confirmacion del usuario (docs/WORKFLOW.md secciones 4 y 6). El disparador es **la naturaleza del
-   cambio**, no un campo declarado: `requires_owner_validation: false` en el contrato de una iniciativa
-   **no exime** de esta obligacion cuando el cambio la activa — esa metadata solo puede ANADIR
-   (docs/AUTOMATION_PLAN.md, «La metadata de validacion del dueno es MONOTONICA»). Cuando el dueño **ejecute** una de
-   esas validaciones, preguntale en el mismo turno su duracion activa y registrala junto al veredicto:
-   la definicion completa, la pregunta exacta y sus limites viven en
-   [docs/guias/validacion-manual-autocad.md](docs/guias/validacion-manual-autocad.md) §8.
-   Es una **metrica experimental de I-45 y NO es parte de este punto 5**: que el dato falte —o que
-   nadie lo preguntara— no invalida la validacion, no cambia su veredicto, **no impide que el cambio
-   este terminado y no bloquea la integracion**. No preguntar no incumple esta lista.
+4. Documentacion de comportamiento visible actualizada. Su momento, ubicacion, cierre y evidencia se
+   rigen exclusivamente por [WORKFLOW §8 y §11.4](docs/WORKFLOW.md).
+5. Owner Validation sigue siendo una clase independiente cuando la naturaleza del cambio la activa;
+   metadata `false` no exime. Escenarios, ejecucion sobre `FINAL_CANDIDATE_SHA`, reutilizacion manual,
+   identidad del DLL y registro pertenecen a la
+   [guia de validacion manual](docs/guias/validacion-manual-autocad.md). La secuencia de integracion
+   pertenece a `WORKFLOW.md`.
 
 ### Reutilizacion de evidencia: **SHA exacto, y nada mas**
 
 Una evidencia ya producida se reutiliza **solo** si recae sobre **el mismo SHA exacto**. No autorizan
 reutilizar nada: el mismo arbol, los mismos archivos, el mismo diff, la misma rama, que `main` no
-haya avanzado, ni que `tree(merge) == tree(segundo padre)`.
+haya avanzado, ni que `tree(merge) == tree(segundo padre)`. No existe atajo por `patch-id`, `tree-id`
+o equivalencia de contenido.
 
 **Por que.** `Directory.Build.targets` estampa el SHA del commit en `InformationalVersion` —siempre
 que el build vea el repositorio; el fallback documentado para un build fuera de un checkout deja la
@@ -221,7 +230,7 @@ version sin sufijo, y ese caso no es el nuestro—. Dos commits con el mismo arb
 reutilizara por arbol estaria afirmando de un binario algo que solo se comprobo de otro.
 
 **La regla.** Si una evidencia requerida (1) ya existe sobre ese mismo SHA exacto, (2) es de la misma
-clase, (3) sigue valiendo para el mismo proposito y (4) no la invalido nada de la lista de abajo,
+clase y alcance, (3) sigue valiendo para el mismo proposito y (4) no la invalido nada de la lista de abajo,
 entonces **cruzar otro gate administrativo no obliga a repetirla por ceremonia**. El objetivo es
 **una ejecucion de suite completa por Candidato**, salvo invalidacion explicita.
 
@@ -241,6 +250,12 @@ inferida, y **no se generaliza**.
 
 La lista no se amplia especulativamente.
 
+Cambiar codigo de producto, pruebas, entradas de build o configuracion sensible versionada crea otro
+SHA: la evidencia permanece en el commit que midio y no se traslada al nuevo. Cambiar el
+`FINAL_CANDIDATE_SHA` invalida por identidad todas las afirmaciones ligadas al Candidato anterior,
+aunque el arbol, patch-id o contenido fuente resulten equivalentes. Los cambios externos se tratan
+por la clase afectada y los invalidadores enumerados, nunca mediante equivalencia de contenido.
+
 **Validacion del dueño.** Se reutiliza si y solo si: **mismo SHA exacto** + **misma version de
 AutoCAD** + **misma biblioteca de bloques**, y para el mismo proposito y alcance. Si cambia el SHA,
 **no es reutilizable automaticamente**, aunque el arbol sea identico.
@@ -253,6 +268,11 @@ obligatorio**, aunque `tree(Y) == tree(X)`.
 hereda** la evidencia del anterior. La politica puede exigir sobre el **menos clases** de evidencia
 —eso es una regla de que se exige, proporcional al cambio—, pero **no se llama reutilizacion** y no
 se apoya en que «el binario no cambia», porque cambia.
+
+En particular, un hijo documental o commit de cierre no hace que el Candidato padre adquiera evidencia
+nueva: el CI del cierre mide y acredita solo el SHA del cierre, nunca al padre. El cierre cumple las
+clases que `WORKFLOW.md` exija para el contenido real; solo reutiliza una ejecucion previa cuando
+coinciden literalmente SHA, clase, proposito y alcance y no existe invalidante.
 
 **Orden para la evidencia local de un Candidato**, en este orden y no en otro:
 
@@ -286,8 +306,8 @@ porcentaje.
 
 ### Una seleccion de pruebas que no selecciona nada es un FALLO
 
-Toda invocacion **filtrada o seleccionada** de pruebas —`--filter`, o cualquier mecanismo futuro de
-seleccion— debe **demostrar que selecciono al menos una prueba esperada**.
+Toda invocacion **filtrada o seleccionada** de pruebas —focal, de sistema, relevante, `--filter` o
+cualquier mecanismo futuro de seleccion— debe **demostrar que selecciono al menos una prueba esperada**.
 
 ```
 0 pruebas seleccionadas = FALLO
@@ -305,6 +325,18 @@ cumplir.** I-45 lo dejo asi a proposito y no construyo uno —el unico sitio don
 automatica es `eng/validation/measure-validation.ps1`, y solo sobre sus propias corridas de
 medicion—. Queda registrado como deuda en [`docs/ideas-futuras.md`](docs/ideas-futuras.md); un gate
 futuro puede tomarlo, pero **ninguno lo tiene asignado**.
+
+### Guardia de fuente y prueba de comportamiento
+
+Una guardia de fuente, busqueda textual, inspeccion de IL o prueba estructural puede proteger una
+frontera estatica, pero **no sustituye una prueba de comportamiento** cuando el invariante es
+conductual. Una prueba cuyo oraculo no puede fallar al violar el invariante es un **oraculo ciego** y
+no satisface la obligacion, aunque quede verde.
+
+Cuando un gate introduce comportamiento nuevo, su RED→GREEN debe mostrar primero una condicion real
+fallando antes de implementar la correccion o comportamiento, y despues el verde con la implementacion.
+El Freeze/A-n define la obligacion invariante→prueba y el lifecycle define gates, READY y conformidad;
+esta seccion define que evidencia de prueba cuenta.
 
 - No hay secretos, tokens ni variables de entorno en este repo. Mantenerlo asi.
 - `blocks-library.dwg` (biblioteca de bloques del usuario) NO se versiona; su ruta vive en

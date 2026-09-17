@@ -10,6 +10,8 @@ Fuentes de apoyo:
 - el estado vivo y la última evidencia están en [HANDOFF.md](HANDOFF.md);
 - las iniciativas y dependencias están en [ROADMAP.md](ROADMAP.md);
 - las decisiones aceptadas están en [adr/](adr/README.md);
+- las fundaciones verificadas se resumen en [FOUNDATIONS.md](FOUNDATIONS.md), un registro descriptivo
+  que enlaza su ADR/Freeze y nunca sustituye esas autoridades ni los hechos del código;
 - los términos del dominio están en [guias/glosario.md](guias/glosario.md).
 
 ## 1. Principios vigentes

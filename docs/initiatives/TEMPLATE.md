@@ -1,18 +1,34 @@
 ---
-schema: rackcad-initiative/v1
+schema: rackcad-initiative/v2
 id:
 title:
 type:
 status:
+workflow: V2
+conceptual_initiative:
+delivery_unit:
+archetype:
+materiality: []
 branch:
 base_branch: main
 priority:
 size:
 depends_on: []
 conflicts_with: []
+hot_files: []
+coordination_strategy:
 context_packs: []
+consumes: []
+extends: []
+introduces: []
+discovery_ref:
+freeze_ref:
+freeze_delta_ref:
+amendment_refs: []
+ov_assignment_ref:
+decision_refs: []
+evidence_ref:
 automation_state_path:
-decision_paths: []
 requires_ci: true
 requires_plugin_build:
 requires_autocad:
@@ -24,48 +40,84 @@ automation:
   max_attempts: 3
 ---
 
-# Titulo de la iniciativa
+# Titulo de la unidad
 
-## 1. Objetivo
+> Esta plantilla es para reclamos V2 posteriores a la activacion. Los contratos V1 y grandfathered
+> conservan su schema y su forma: no se reescriben para adoptar estos campos. La clasificacion real se
+> determina por Claim-Id y `WORKFLOW.md` §11, no por elegir manualmente el valor de `workflow`.
 
-Resultado verificable que debe producir la iniciativa.
+## 1. Identidad y agrupacion
 
-## 2. Problema
+Indicar iniciativa conceptual, unidad de entrega, arquetipo y disparadores `M-nn`. Explicar por que la
+agrupacion satisface el contrato conjuntivo de `INITIATIVE_LIFECYCLE.md` §2. El contrato es mutable y
+no contiene puntas vivas, hashes cambiantes ni conteos de pruebas.
 
-Problema actual y evidencia que justifica resolverlo.
+## 2. Objetivo
 
-## 3. Alcance
+Resultado verificable que debe producir esta unidad.
 
-Cambios autorizados por el ROADMAP, sin ampliaciones laterales.
+## 3. Problema
 
-## 4. Fuera de alcance
+Problema actual y evidencia que justifica resolverlo. Enlazar Discovery; no copiarlo.
 
-Cambios relacionados que esta iniciativa no debe realizar.
+## 4. Alcance y no-objetivos
 
-## 5. Contexto requerido
+Resumir el alcance autorizado y enlazar Freeze, Freeze delta y A-n aplicables. El artefacto congelado
+es la autoridad de alcance, invariantes, no-objetivos y matriz OV.
 
-Documentos, Context Packs, ADRs y codigo que deben leerse antes de editar.
+## 5. Fundaciones y evolucion
 
-## 6. Dependencias
+```text
+Consumes:
+Extends:
+Introduces:
+```
 
-Dependencias que deben estar integradas, conflictos que deben permanecer inactivos y entradas del
-dueno que deben existir.
+Para cada entrada, enlazar `docs/FOUNDATIONS.md` y registrar la comprobacion DC-08 en Discovery. Un
+contrato V1 sin estos campos significa `UNKNOWN`, no ausencia de evolucion.
 
-## 7. Archivos esperados
+## 6. Discovery, decisiones y Freeze
 
-Archivos o areas que se espera crear, modificar o mover. Una desviacion material exige detenerse.
+- Discovery: `<ruta>`
+- Freeze: `<ruta>`
+- Freeze delta: `<ruta o no aplica>`
+- A-n: `<rutas o ninguna>`
+- Decisiones del Owner: `<rutas o ninguna>`
 
-## 8. Fases
+La semantica de Discovery, Architect, Freeze/A-n y conformidad vive en
+`docs/INITIATIVE_LIFECYCLE.md`.
 
-Secuencia de trabajo acotada. Cada fase debe terminar con evidencia revisable.
+## 7. Dependencias, archivos calientes y coordinacion
 
-## 9. Pruebas y builds
+Enumerar dependencias integradas, conflictos activos, archivos calientes y estrategia concreta para
+serializar o dividir el trabajo. Las puntas observadas se registran en el informe/cuerpo de commit, no
+en este contrato.
 
-Comandos automatizados, CI y builds locales requeridos.
+## 8. Gates funcionales
 
-## 10. Validacion manual
+Secuencia de gates acotados con comportamiento y evidencia esperada. No existe commit ceremonial
+`-CLOSE` obligatorio por gate. La composicion Full y las clases de evidencia se referencian desde
+`AGENTS.md`; no se copian aqui.
 
-Checklist del dueno, incluido AutoCAD cuando corresponda. Especificar `no aplica` si no se requiere.
+## 9. Owner Validation
+
+- Asignacion OV: `<Freeze / Freeze delta / A-n>`
+- Requiere AutoCAD: `<si/no, con disparador>`
+- Requiere Owner Validation: `<si/no, con disparador>`
+
+La matriz OV vive en Freeze/delta/A-n. Este contrato solo enlaza su asignacion; no mantiene una copia
+mutable. El procedimiento y la identidad del DLL viven en
+`docs/guias/validacion-manual-autocad.md`.
+
+## 10. Evidencia y entrega
+
+- Evidencia por unidad: `docs/automation/evidence/<unit>-evidence.md`
+- Estado transitorio del ejecutor: `docs/automation/state/<unit>.yml`
+- Tag esperado: `integration/<unit>`
+
+El archivo de evidencia conserva clasificacion, identidad de Freeze, rondas de Candidato,
+conformidad, Owner Validation y metricas. Este contrato no copia SHAs, corridas ni conteos. La
+integracion es manual, serializada y sin auto-merge conforme a `WORKFLOW.md`.
 
 ## 11. Criterios de aceptacion
 
@@ -73,49 +125,9 @@ Condiciones observables para considerar completa la implementacion, sin confundi
 
 ## 12. Condiciones para detenerse
 
-Decisiones, dependencias, conflictos, fallos o expansiones de alcance que obligan a pausar.
+Decisiones, dependencias, conflictos, discrepancias EXP-01, fallos o ampliaciones de alcance que
+obligan a detener el gate.
 
-## 13. Estado versionado y entrega del Pull Request
+## 13. Hallazgos fuera de alcance
 
-Ruta de `docs/automation/state/<initiative>.yml`, titulo y numero del Pull Request existente, estado
-draft conocido y decisiones requeridas. El merge automatico esta prohibido. La incapacidad de
-actualizar la descripcion del Pull Request no bloquea commit y push cuando el estado versionado queda
-publicado.
-
-El archivo de estado canonico contiene:
-
-```yaml
-schema: rackcad-automation-state/v1
-automation_state:
-  initiative:
-  branch:
-  claim_id:
-  current_phase:
-  state:
-  gate:
-  attempts:
-  next_action:
-  last_evidence_commit:
-```
-
-`initiative`, `branch` y `claim_id` se copian del reclamo y no cambian. `state` usa `claimed`,
-`implementing`, `validating`, `ci-failed`, `waiting`, `review-ready`, `integration-ready` o
-`completed`. `gate` usa `none`, `owner-decision`, `owner-validation`, `autocad`, `plugin-build`,
-`ci`, `dependency`, `conflict`, `permissions` o `scope`.
-
-El archivo es estado transitorio: Git y los resultados verificables prevalecen si lo contradicen.
-`current_phase` apunta a la siguiente fase pendiente o a la actualmente detenida; `attempts` solo
-aumenta al intentar corregir un fallo; `last_evidence_commit` es el SHA completo que respalda el
-estado. El ejecutor actualiza el archivo al terminar cada ejecucion. El Pull Request puede contener
-una copia opcional del bloque; no se requiere GitHub CLI para leerla o escribirla y su falta de
-actualizacion no invalida el estado publicado. Nunca se abre un segundo Pull Request para la
-iniciativa. `completed` no significa integrada: la integracion sigue siendo manual.
-
-Las decisiones del dueno pueden llegar por `docs/automation/decisions/<initiative>.md`. Antes de
-resolver un gate se verifica que la decision provenga de la rama remota, cubra todos los IDs exigidos
-y autorice el alcance siguiente.
-
-## 14. Evidencia final
-
-Commits, archivos, pruebas, builds, checks, validaciones pendientes, intentos y confirmacion de que
-`main` no fue modificada.
+Lista local que se transfiere a `docs/ideas-futuras.md` en el cierre concentrado.
