@@ -131,6 +131,29 @@ This file was omitted from the original closure and is being materialized throug
 branch corrective round. It is factual evidence, introduces no policy, does not modify Proposal V4 or
 ADR-0045, and does not redefine the effective merge.
 
+### Corrective Candidate
+
+| Field | Evidence |
+|---|---|
+| `CORR_CANDIDATE_SHA` | `06aa6f4d4f6928a606d28b416b1645580733d3bd` |
+| Correction reason | The canonical evidence file required by WORKFLOW section 11.4 was missing from the original closure |
+| Changed scope | Exactly `docs/automation/evidence/I-56-evidence.md` |
+| Core Full local | **7240 PASS / 0 FAIL / 0 SKIP** |
+| UI Full local | **1568 PASS / 0 FAIL / 17 SKIP / 1585 total** |
+| Debug UI build | **PASS**, 0 errors and 0 warnings |
+| Debug Plugin build | **PASS**, 0 errors; 2 documented `MSB3277` warnings |
+| Exact branch push CI | Run `35276150157`; `push`; branch `docs/initiative-workflow-v2`; exact corrective Candidate SHA; four required jobs **success** |
+| Architect conformance | **CONFORMING** on the exact corrective Candidate SHA |
+| Coordinator conformance | **CONFORMING** on the exact corrective Candidate SHA |
+| Owner Validation | **NOT APPLICABLE**: the corrective diff is documentation-only and changes no product, drawing, AutoCAD command, block, catalog, persistence path or product DLL behavior |
+
+The corrective documentary closure is created by the commit containing this update. Its SHA cannot be
+embedded in its own tree and is therefore recorded at this point as:
+
+```text
+CORR_CLOSURE_SHA = pending until this commit exists
+```
+
 Post-merge facts may be referenced here, but this file does not replace the final annotated tag. The
 final `integration/I-56` record remains authoritative for the complete POST snapshot/table, corrective
 merge identity, cleanup results, and durable activation-pause END.

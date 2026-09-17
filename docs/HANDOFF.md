@@ -12,12 +12,14 @@ RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar ra
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
 
-**I-56 — Initiative Workflow V2 — LISTA PARA INTEGRACIÓN NORMATIVA** el **2026-09-17**
-(`docs/initiative-workflow-v2`, gobernada y cerrada bajo **Workflow V1**). La materialización normativa,
-la conformidad global y la evidencia del Candidato están completas. El cierre documental es este commit,
-estrictamente documental; todavía faltan el merge manual `--no-ff` y todas sus compuertas posteriores.
-**Workflow V2 NO está efectivo**, `WORKFLOW_V2_EFFECTIVE_SHA` todavía no existe y la pausa obligatoria
-de reclamos permanece **ACTIVE**.
+**I-56 — Initiative Workflow V2 — EFFECTIVE; RONDA CORRECTIVA V1 ABIERTA** el **2026-09-17**
+(`docs/initiative-workflow-v2`, todavía gobernada por **Workflow V1**). Workflow V2 está efectivo desde
+el merge normativo `8a021fb67c16dfccd6afc18448ea7e6a71a32364`; las verificaciones V1 §4.5.6 y
+§4.5.7 pasaron. La limpieza y el tag final quedaron bloqueados porque el cierre original omitió
+`docs/automation/evidence/I-56-evidence.md`. El Candidato correctivo
+`06aa6f4d4f6928a606d28b416b1645580733d3bd` está **PASS**; este commit prepara su cierre documental.
+La integración correctiva y su verificación post-merge siguen pendientes, y la pausa obligatoria de
+reclamos permanece **ACTIVE**.
 
 **Entregado.** Evidence Audit; Proposal V4 exacta con consenso Coordinator + Architect; aprobación del
 Owner y sus 17 selecciones; ADR-0045 aceptado; dry-run histórico PASS; `INITIATIVE_LIFECYCLE.md`,
@@ -27,7 +29,7 @@ marcador normativo único; y registro durable del START de la pausa de activaci�
 
 | Evidencia de I-56 | Resultado |
 |---|---|
-| Candidato final | `039f0446b4546f489a1b6f7206a06d1af4389fea` |
+| Candidato original | `039f0446b4546f489a1b6f7206a06d1af4389fea` |
 | Core Full local | **7240 PASS / 0 FAIL / 0 SKIP** |
 | UI Full local | **1568 PASS / 0 FAIL / 17 SKIP / 1585 total** |
 | Builds Debug | UI **PASS**, 0 errores y 0 advertencias; Plugin **PASS**, 0 errores y solo los dos `MSB3277` documentados |
@@ -37,12 +39,15 @@ marcador normativo único; y registro durable del START de la pausa de activaci�
 | Marcador normativo | commit `afd1077cba90ace890ac253bbe34a234b6691540`; trailer exacto `Workflow-V2-Normative: I-56`; una ocurrencia en I-56 y cero en `main` |
 | Pausa de activación | **ACTIVE** desde el push aceptado el `2026-09-17T17:47:01Z` |
 | Protección de tags | ruleset **23505961**, `refs/tags/integration/*`, `update + deletion`, **active** |
+| Merge normativo / `WORKFLOW_V2_EFFECTIVE_SHA` | `8a021fb67c16dfccd6afc18448ea7e6a71a32364`, **UNCHANGED** |
+| Verificación original post-merge | V1 §4.5.6 corrida **35270828410 PASS**; V1 §4.5.7 despacho **35271447976 PASS** |
+| Candidato correctivo | `06aa6f4d4f6928a606d28b416b1645580733d3bd`; evidencia local completa, CI **35276150157** 4/4 y conformidad Architect + Coordinator **PASS** |
+| Evidencia canónica | materializada en `docs/automation/evidence/I-56-evidence.md` |
 
-**Todavía pendiente.** CI exacto propio de este cierre documental; fetch inmediatamente anterior al
-merge; captura PRE; merge manual `--no-ff`; derivación de `WORKFLOW_V2_EFFECTIVE_SHA`; captura POST;
-CI posterior al merge y artifact de cobertura (V1 §4.5.6); cobertura diferida del Candidato (V1
-§4.5.7); limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa.
-Nada de este bloque declara I-56 completamente cerrada ni Workflow V2 efectivo.
+**Todavía pendiente.** SHA y CI exacto propios de este cierre documental; fetch inmediatamente anterior
+al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge correctivo; captura POST;
+limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
+correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
 El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, dinámico modular y cama
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
@@ -1348,14 +1353,13 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
-**I-56 (2026-09-17) — CANDIDATO PASS; Owner Validation NOT APPLICABLE.** El Candidato final
-`039f0446b4546f489a1b6f7206a06d1af4389fea` quedó fijado después de READY-04..09 con Architect y
-Coordinator **CONFORMING** sobre ese SHA. En árbol limpio y SDK **8.0.423**: Core Full **7240 PASS / 0
-FAIL / 0 SKIP**; UI Full **1568 PASS / 0 FAIL / 17 SKIP**; UI Debug **PASS**, 0 errores y 0
-advertencias; Plugin Debug **PASS**, 0 errores y solo los dos `MSB3277` conocidos; CI de `push`
-**35254836487**, exacto al Candidato, **4/4 `success`**. No aplica validación en AutoCAD porque el diff
-completo solo cambia documentación y proceso y no cambia producto, dibujo, pruebas ni comportamiento
-del DLL. Este cierre documental es otro SHA y exige evidencia propia; no hereda esta evidencia.
+**I-56 (2026-09-17) — CANDIDATO CORRECTIVO PASS; Owner Validation NOT APPLICABLE.** El Candidato
+correctivo `06aa6f4d4f6928a606d28b416b1645580733d3bd` materializa únicamente el archivo canónico omitido.
+En árbol limpio y SDK **8.0.423**: Core Full **7240 PASS / 0 FAIL / 0 SKIP**; UI Full **1568 PASS / 0
+FAIL / 17 SKIP**; UI Debug **PASS**, 0 errores y 0 advertencias; Plugin Debug **PASS**, 0 errores y solo
+los dos `MSB3277` conocidos; CI de `push` **35276150157**, exacto al Candidato, **4/4 `success`**;
+Architect y Coordinator **CONFORMING**. No aplica validación en AutoCAD porque el diff es exclusivamente
+documental. Este cierre correctivo es otro SHA y exige evidencia propia; no hereda la del Candidato.
 
 **I-53D E3 (2026-09-13) — PASS.** El Owner validó el candidato funcional `a57bd506172bc70e6f415146dae245662baabd28` —el
 G7 ya rebasado sobre la integración de I-54— sobre el DLL Debug construido exactamente desde ese SHA
@@ -1848,27 +1852,24 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-56 está lista para la integración normativa; Workflow V2 todavía NO está efectivo
+### I-56 necesita cerrar e integrar su ronda correctiva V1; Workflow V2 ya está efectivo
 
-El siguiente paso es verificar el CI exacto del cierre documental y, solo si `origin/main` continúa en
-`dad4e77f4f267b9fa248ecb0c8bfd8a74bbab093`, ejecutar el fetch inmediatamente anterior al merge,
-capturar PRE y publicar el merge manual `--no-ff`. Después son obligatorios el CI de `main` sobre el
-`MERGE_SHA` con su artifact de cobertura, la cobertura diferida del Candidato, POST, la limpieza segura,
-el tag anotado y protegido `integration/I-56` y el END durable de la pausa.
+El siguiente paso es verificar el CI exacto de este cierre documental y después ejecutar el fetch
+inmediatamente anterior al merge correctivo, capturar PRE y publicar el merge manual `--no-ff`. Después
+son obligatorios el CI de `main` sobre el merge correctivo, POST, la limpieza segura, el tag anotado y
+protegido `integration/I-56` y el END durable de la pausa.
 
 ```text
-FINAL_CANDIDATE_SHA          = 039f0446b4546f489a1b6f7206a06d1af4389fea
-CLOSURE_SHA                  = este mismo commit documental
-PRE                          = NOT CAPTURED YET
-MERGE_SHA                    = DOES NOT EXIST
-WORKFLOW_V2_EFFECTIVE_SHA    = DOES NOT EXIST
+CORR_CANDIDATE_SHA           = 06aa6f4d4f6928a606d28b416b1645580733d3bd
+CORR_CLOSURE_SHA             = este mismo commit documental
+CORRECTIVE MERGE             = PENDING
+WORKFLOW_V2_EFFECTIVE_SHA    = 8a021fb67c16dfccd6afc18448ea7e6a71a32364
 ACTIVATION PAUSE             = ACTIVE
-WORKFLOW V2                  = NOT EFFECTIVE
+WORKFLOW V2                  = EFFECTIVE
 ```
 
-Si `main` avanza antes del merge, se aplica la ruta R completa: se preserva esta ronda, se vuelve por
-READY sobre el SHA rebasado, se fija otro Candidato y se crea otro cierre documental. No se reutiliza
-evidencia entre SHAs.
+Si `main` avanza antes del merge correctivo, se aplica la ruta V1 correspondiente sin redefinir el SHA
+efectivo histórico y sin reutilizar evidencia entre SHAs.
 
 ### I-53D E3 quedó INTEGRADA y, con ella, la línea I-53 queda COMPLETA. Las demás iniciativas abiertas siguen en sus ramas.
 
@@ -3637,20 +3638,21 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline preparada de I-56 — 2026-09-17** (pendiente de merge y compuertas posteriores):
+**Baseline correctiva de I-56 — 2026-09-17** (pendiente de cierre, merge y verificación post-merge):
 
-- Candidato final: `039f0446b4546f489a1b6f7206a06d1af4389fea`; READY-04..09 PASS; Architect y
-  Coordinator **CONFORMING**; CI de `push` **35254836487**, SHA exacto y 4/4 `success`;
+- Workflow V2 **EFFECTIVE** desde `8a021fb67c16dfccd6afc18448ea7e6a71a32364`; V1 §4.5.6 y §4.5.7
+  originales **PASS**; ese SHA histórico no cambia con la corrección;
+- Candidato correctivo: `06aa6f4d4f6928a606d28b416b1645580733d3bd`; Architect y Coordinator
+  **CONFORMING**; CI de `push` **35276150157**, SHA exacto y 4/4 `success`;
 - Core Full **7240/7240**, UI Full **1568 PASS / 17 omitidas / 1585 total**, UI Debug sin errores ni
   advertencias y Plugin Debug sin errores, solo los dos `MSB3277` conocidos;
 - Owner Validation **NOT APPLICABLE**, determinado por el diff real exclusivamente documental;
-- cierre documental previo a la integración: este commit, separado del Candidato y sin sustituirlo;
-- marcador normativo único en `afd1077cba90ace890ac253bbe34a234b6691540`; trailer exacto
-  `Workflow-V2-Normative: I-56`; cero ocurrencias en `origin/main`;
+- archivo canónico materializado; cierre documental correctivo: este commit, separado del Candidato y
+  sin sustituirlo;
 - pausa de activación **ACTIVE** desde `2026-09-17T17:47:01Z`; ruleset **23505961** activo; ningún tag
-  `integration/I-56`; Workflow V2 **NOT EFFECTIVE** y sin `WORKFLOW_V2_EFFECTIVE_SHA`;
-- compuertas pendientes: CI propio del cierre; PRE; merge; CI post-merge con cobertura; cobertura
-  diferida del Candidato; POST; limpieza; tag de integración y END durable de la pausa.
+  `integration/I-56`;
+- compuertas pendientes: CI propio del cierre; PRE; merge correctivo; CI post-merge; POST; limpieza;
+  tag de integración y END durable de la pausa.
 
 **Baseline integrada de I-53D E3 — 2026-09-13** (la vigente):
 
@@ -4944,8 +4946,8 @@ documento no inventa el SHA futuro del merge de `main`.
 2026-09-15** (iniciativa I-56). El Owner aceptó el ADR materializado en
 `5da6feef2b528aaa44ed5ce581f976ea63251609`, blob revisado
 `0a74817ae1d48bb8a7f7ada8dfd6abeb173878af`, como decisión durable correspondiente a la Proposal V4
-aprobada. Su aceptación no activa Workflow V2: la efectividad depende del merge normativo y de las
-compuertas de activación registradas por I-56.
+aprobada. Su aceptación no activó por sí sola Workflow V2; la efectividad llegó después, con el merge
+normativo y las compuertas de activación registradas por I-56.
 
 Las trece decisiones que esta sección conservaba temporalmente quedaron retro-documentadas y
 **aceptadas** por el dueño el **2026-07-22** («Sí, apruebo») como **ADR-0006 a ADR-0018** (iniciativa
