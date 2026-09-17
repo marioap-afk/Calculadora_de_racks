@@ -129,18 +129,19 @@ namespace RackCad.Tests
             => RegistryDiagnostic.Intrinsic(code);
 
         internal static bool SymbolMatches(RegistrySymbolResult expected, RegistrySymbolResult actual)
-            => InvokeObservation("SymbolResultObservation", expected, actual);
+            => SymbolResultObservation.Capture(
+                Symbol(G9ContractTestSupport.IdA), SymbolObservationPhase.Before, expected).Matches(actual);
 
         internal static bool UpstreamMatches(
             IReadOnlyDictionary<SymbolId, RegistrySymbolResult> expected,
             IReadOnlyDictionary<SymbolId, RegistrySymbolResult> actual)
-            => InvokeObservation("RepairDecisionObservation", expected, actual, "Upstream");
+            => RepairDecisionReason.Upstream(expected).Equals(RepairDecisionReason.Upstream(actual));
 
         internal static bool RepairReasonMatches(object expected, object actual, string reason)
-            => InvokeObservation("RepairDecisionObservation", expected, actual, reason);
+            => ((RepairDecisionReason)expected).Equals((RepairDecisionReason)actual);
 
         internal static object MissingTarget(params string[] missing)
-            => CreateReason("MissingTarget", missing.OrderBy(value => value, StringComparer.Ordinal).ToArray());
+            => CreateReason("MissingTarget", missing);
 
         internal static object IntrinsicReason(params object[] signatures)
             => CreateReason("Intrinsic", signatures);
@@ -168,17 +169,6 @@ namespace RackCad.Tests
 
         internal static object NewWriteSpy()
             => new MutationWriteCounter();
-
-        private static bool InvokeObservation(string typeName, object expected, object actual, string reason = null)
-        {
-            var type = ProductType(typeName);
-            var observation = TryInvokeCompatibleStatic(type, reason == null ? new[] { expected } : new[] { expected, reason },
-                "Capture", "From", "Create", "Observe");
-            if (observation == null)
-                throw Missing(typeName + " factory over the real observed state");
-            var result = TryInvokeCompatibleInstance(observation, new[] { actual }, "Matches", "IsMatch", "Compare");
-            return result is bool matched ? matched : throw Missing(typeName + " behavioral comparer");
-        }
 
         private static object CreateReason(string kind, params object[] data)
             => RepairDecisionReason.Create(kind, data);

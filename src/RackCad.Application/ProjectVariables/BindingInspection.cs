@@ -431,7 +431,8 @@ namespace RackCad.Application.ProjectVariables
                     BindingInspectionOutcome.RepairableIntrinsic,
                     token,
                     propertyId,
-                    RepairDecisionReason.Intrinsic(numeric.Diagnostics.Select(item => item.Code.ToString())),
+                    RepairDecisionReason.Intrinsic(numeric.Diagnostics.Select(item =>
+                        IntrinsicDiagnosticSignature.ForCode(item.Code))),
                     reads,
                     "propiedad '" + propertyId + "': la expresion tiene un fallo numerico: " +
                     string.Join(", ", numeric.Diagnostics.Select(item => item.Code.ToString())) + ".");
@@ -451,9 +452,9 @@ namespace RackCad.Application.ProjectVariables
             return BindingInspection.Healthy(token, propertyId, default, null, numeric.Value, reads);
         }
 
-        private static IReadOnlyList<string> StaticFailures(BoundExpression expression, FunctionRegistry functions)
+        private static IReadOnlyList<IntrinsicDiagnosticSignature> StaticFailures(BoundExpression expression, FunctionRegistry functions)
         {
-            var failures = new SortedSet<string>(StringComparer.Ordinal);
+            var failures = new SortedSet<IntrinsicDiagnosticSignature>();
             var pending = new Stack<BoundExpression>();
             pending.Push(expression);
             while (pending.Count > 0)
@@ -470,8 +471,8 @@ namespace RackCad.Application.ProjectVariables
                     case BoundCall call:
                         if (!functions.AcceptsArity(call.Function, call.Arguments.Count))
                         {
-                            failures.Add("InvalidArguments:" + functions.Token(call.Function) + ":" +
-                                call.Arguments.Count.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                            failures.Add(IntrinsicDiagnosticSignature.InvalidArguments(
+                                functions.Token(call.Function), call.Arguments.Count));
                         }
                         for (var index = call.Arguments.Count - 1; index >= 0; index--)
                         {
@@ -483,10 +484,10 @@ namespace RackCad.Application.ProjectVariables
 
             if (BoundExpressionSemanticValidation.IsNonCanonical(expression))
             {
-                failures.Add(ExpressionDiagnosticCode.NonCanonicalForm.ToString());
+                failures.Add(IntrinsicDiagnosticSignature.ForCode(ExpressionDiagnosticCode.NonCanonicalForm));
             }
 
-            return new ReadOnlyCollection<string>(failures.ToArray());
+            return new ReadOnlyCollection<IntrinsicDiagnosticSignature>(failures.ToArray());
         }
 
         private static bool AcceptsDomain(double value) => value > 0.0;

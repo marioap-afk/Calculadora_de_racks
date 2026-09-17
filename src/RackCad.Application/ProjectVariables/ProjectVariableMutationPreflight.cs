@@ -732,7 +732,8 @@ namespace RackCad.Application.ProjectVariables
             {
                 return "OutOfRange";
             }
-            if (inspection.RepairReason?.StableData.Any(value => value.IndexOf("DivisionByZero", StringComparison.Ordinal) >= 0) == true)
+            if (inspection.RepairReason?.IntrinsicSignatures.Any(value =>
+                value.Code == ExpressionDiagnosticCode.DivisionByZero) == true)
             {
                 return "DivisionByZero";
             }
@@ -750,8 +751,9 @@ namespace RackCad.Application.ProjectVariables
             {
                 return new[] { "OutOfRange" };
             }
-            var stable = inspection.RepairReason?.StableData ?? Array.Empty<string>();
-            return stable.Concat(inspection.RepairReason?.FailedReads.Values.SelectMany(value => value)
+            var intrinsic = inspection.RepairReason?.IntrinsicSignatures.Select(value => value.Code.ToString())
+                ?? Array.Empty<string>();
+            return intrinsic.Concat(inspection.RepairReason?.FailedReads.Values.SelectMany(value => value)
                 .Select(root => root.Code.ToString()) ?? Array.Empty<string>());
         }
 

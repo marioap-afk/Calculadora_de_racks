@@ -29,14 +29,76 @@ namespace RackCad.Application.ProjectVariables
         public SymbolObservationPhase Phase { get; }
         public RegistrySymbolResult ExpectedResult { get; }
 
-        public static SymbolResultObservation Capture(RegistrySymbolResult expected)
-            => new SymbolResultObservation(RackCad.Application.Expressions.SymbolId.ProjectVariable(Guid.Empty.ToString()), SymbolObservationPhase.Before, expected);
-
         internal static SymbolResultObservation Capture(
             SymbolId symbolId, SymbolObservationPhase phase, RegistrySymbolResult expected)
             => new SymbolResultObservation(symbolId, phase, expected);
 
         public bool Matches(RegistrySymbolResult actual) => RegistryResultComparer.Equals(ExpectedResult, actual);
+    }
+
+    /// <summary>Stable structured identity of an intrinsic property-expression failure.</summary>
+    public sealed class IntrinsicDiagnosticSignature : IEquatable<IntrinsicDiagnosticSignature>, IComparable<IntrinsicDiagnosticSignature>
+    {
+        private IntrinsicDiagnosticSignature(
+            ExpressionDiagnosticCode code,
+            string functionToken,
+            int? argumentCount)
+        {
+            if (code == ExpressionDiagnosticCode.InvalidArguments)
+            {
+                FunctionToken = functionToken ?? throw new ArgumentNullException(nameof(functionToken));
+                ArgumentCount = argumentCount ?? throw new ArgumentNullException(nameof(argumentCount));
+            }
+            else if (functionToken != null || argumentCount.HasValue)
+            {
+                throw new ArgumentException("Only InvalidArguments carries function and arity data.");
+            }
+
+            Code = code;
+        }
+
+        public ExpressionDiagnosticCode Code { get; }
+        public string FunctionToken { get; }
+        public int? ArgumentCount { get; }
+
+        public static IntrinsicDiagnosticSignature InvalidArguments(string functionToken, int argumentCount)
+            => new IntrinsicDiagnosticSignature(ExpressionDiagnosticCode.InvalidArguments, functionToken, argumentCount);
+
+        public static IntrinsicDiagnosticSignature ForCode(ExpressionDiagnosticCode code)
+        {
+            if (code != ExpressionDiagnosticCode.DivisionByZero &&
+                code != ExpressionDiagnosticCode.NonFiniteResult &&
+                code != ExpressionDiagnosticCode.NonCanonicalForm)
+            {
+                throw new ArgumentOutOfRangeException(nameof(code), code, "This intrinsic diagnostic requires structured data or is not a source-local failure.");
+            }
+            return new IntrinsicDiagnosticSignature(code, null, null);
+        }
+
+        public int CompareTo(IntrinsicDiagnosticSignature other)
+        {
+            if (other == null)
+            {
+                return 1;
+            }
+
+            var byCode = ((int)Code).CompareTo((int)other.Code);
+            if (byCode != 0 || Code != ExpressionDiagnosticCode.InvalidArguments)
+            {
+                return byCode;
+            }
+
+            var byToken = string.CompareOrdinal(FunctionToken, other.FunctionToken);
+            return byToken != 0 ? byToken : ArgumentCount.Value.CompareTo(other.ArgumentCount.Value);
+        }
+
+        public bool Equals(IntrinsicDiagnosticSignature other) => other != null && CompareTo(other) == 0;
+        public override bool Equals(object obj) => obj is IntrinsicDiagnosticSignature other && Equals(other);
+        public override int GetHashCode() => HashCode.Combine((int)Code, FunctionToken, ArgumentCount);
+        public override string ToString()
+            => Code == ExpressionDiagnosticCode.InvalidArguments
+                ? Code + ":" + FunctionToken + ":" + ArgumentCount.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                : Code.ToString();
     }
 
     /// <summary>The stable semantic reason why a property source may be removed by explicit rack repair.</summary>
@@ -45,34 +107,36 @@ namespace RackCad.Application.ProjectVariables
         private RepairDecisionReason(
             string kind,
             IReadOnlyList<string> stableData,
-            IReadOnlyDictionary<SymbolId, IReadOnlyList<RootSignature>> failedReads)
+            IReadOnlyDictionary<SymbolId, IReadOnlyList<RootSignature>> failedReads,
+            IReadOnlyList<IntrinsicDiagnosticSignature> intrinsicSignatures = null)
         {
             Kind = kind;
             StableData = stableData;
             FailedReads = failedReads;
+            IntrinsicSignatures = intrinsicSignatures ?? Array.Empty<IntrinsicDiagnosticSignature>();
         }
 
         public string Kind { get; }
         public IReadOnlyList<string> StableData { get; }
         public IReadOnlyDictionary<SymbolId, IReadOnlyList<RootSignature>> FailedReads { get; }
+        public IReadOnlyList<IntrinsicDiagnosticSignature> IntrinsicSignatures { get; }
 
         public static RepairDecisionReason Create(string kind)
             => new RepairDecisionReason(kind, Array.Empty<string>(), EmptyFailedReads());
 
         public static RepairDecisionReason Create(string kind, string[] values)
-            => new RepairDecisionReason(
-                kind,
-                new ReadOnlyCollection<string>((values ?? Array.Empty<string>()).OrderBy(value => value, StringComparer.Ordinal).ToArray()),
-                EmptyFailedReads());
+            => Create(kind, (IReadOnlyList<object>)(values ?? Array.Empty<string>()).Cast<object>().ToArray());
 
         public static RepairDecisionReason Create(string kind, string code)
-            => new RepairDecisionReason(kind, new[] { code }, EmptyFailedReads());
+            => string.Equals(kind, "Intrinsic", StringComparison.Ordinal)
+                ? Intrinsic(new[] { ParseIntrinsic(code) })
+                : new RepairDecisionReason(kind, new[] { code }, EmptyFailedReads());
 
         public static RepairDecisionReason Create(string kind, string code, string token, int argumentCount)
-            => new RepairDecisionReason(
-                kind,
-                new[] { code, token, argumentCount.ToString(System.Globalization.CultureInfo.InvariantCulture) },
-                EmptyFailedReads());
+            => string.Equals(kind, "Intrinsic", StringComparison.Ordinal) &&
+               string.Equals(code, ExpressionDiagnosticCode.InvalidArguments.ToString(), StringComparison.Ordinal)
+                ? Intrinsic(new[] { IntrinsicDiagnosticSignature.InvalidArguments(token, argumentCount) })
+                : new RepairDecisionReason(kind, new[] { code, token, argumentCount.ToString(System.Globalization.CultureInfo.InvariantCulture) }, EmptyFailedReads());
 
         public static RepairDecisionReason Create(string kind, double presentationValue, string presentation)
             => new RepairDecisionReason(kind, Array.Empty<string>(), EmptyFailedReads());
@@ -83,26 +147,45 @@ namespace RackCad.Application.ProjectVariables
             {
                 return Domain();
             }
-            var values = (data ?? Array.Empty<object>()).Select(value => value?.ToString() ?? string.Empty);
             if (string.Equals(kind, "MissingTarget", StringComparison.Ordinal))
             {
-                values = values.OrderBy(value => value, StringComparer.Ordinal);
+                return MissingTarget((data ?? Array.Empty<object>()).Select(value =>
+                    SymbolId.ProjectVariable(value?.ToString() ?? string.Empty)));
             }
+            if (string.Equals(kind, "Intrinsic", StringComparison.Ordinal))
+            {
+                return Intrinsic(ParseIntrinsicData(data));
+            }
+            var values = (data ?? Array.Empty<object>()).Select(value => value?.ToString() ?? string.Empty);
             return new RepairDecisionReason(kind, new ReadOnlyCollection<string>(values.ToArray()), EmptyFailedReads());
         }
 
         internal static RepairDecisionReason MissingTarget(IEnumerable<SymbolId> missing)
-            => new RepairDecisionReason(
-                "MissingTarget",
-                new ReadOnlyCollection<string>(missing.Select(id => id.Key).Distinct(StringComparer.Ordinal)
-                    .OrderBy(value => value, StringComparer.Ordinal).ToArray()),
-                EmptyFailedReads());
+        {
+            var canonical = new Dictionary<SymbolId, SymbolId>();
+            foreach (var id in missing ?? Array.Empty<SymbolId>())
+            {
+                if (!canonical.TryGetValue(id, out var stored) || string.CompareOrdinal(id.Key, stored.Key) < 0)
+                {
+                    canonical[id] = id;
+                }
+            }
 
-        internal static RepairDecisionReason Intrinsic(IEnumerable<string> signatures)
-            => new RepairDecisionReason(
-                "Intrinsic",
-                new ReadOnlyCollection<string>(signatures.OrderBy(value => value, StringComparer.Ordinal).ToArray()),
+            return new RepairDecisionReason(
+                "MissingTarget",
+                new ReadOnlyCollection<string>(canonical.Values.OrderBy(id => id).Select(id => id.Key).ToArray()),
                 EmptyFailedReads());
+        }
+
+        internal static RepairDecisionReason Intrinsic(IEnumerable<IntrinsicDiagnosticSignature> signatures)
+        {
+            var canonical = (signatures ?? Array.Empty<IntrinsicDiagnosticSignature>()).Distinct().OrderBy(value => value).ToArray();
+            return new RepairDecisionReason(
+                "Intrinsic",
+                new ReadOnlyCollection<string>(canonical.Select(value => value.ToString()).ToArray()),
+                EmptyFailedReads(),
+                new ReadOnlyCollection<IntrinsicDiagnosticSignature>(canonical));
+        }
 
         internal static RepairDecisionReason Upstream(
             IEnumerable<KeyValuePair<SymbolId, RegistrySymbolResult>> failedReads)
@@ -124,7 +207,9 @@ namespace RackCad.Application.ProjectVariables
         public bool Equals(RepairDecisionReason other)
         {
             if (other == null || !string.Equals(Kind, other.Kind, StringComparison.Ordinal) ||
-                !StableData.SequenceEqual(other.StableData, StringComparer.Ordinal) || FailedReads.Count != other.FailedReads.Count)
+                !StableData.SequenceEqual(other.StableData, StringComparer.Ordinal) ||
+                !IntrinsicSignatures.SequenceEqual(other.IntrinsicSignatures) ||
+                FailedReads.Count != other.FailedReads.Count)
             {
                 return false;
             }
@@ -149,6 +234,38 @@ namespace RackCad.Application.ProjectVariables
         private static IReadOnlyDictionary<SymbolId, IReadOnlyList<RootSignature>> EmptyFailedReads()
             => new ReadOnlyDictionary<SymbolId, IReadOnlyList<RootSignature>>(
                 new Dictionary<SymbolId, IReadOnlyList<RootSignature>>());
+
+        private static IEnumerable<IntrinsicDiagnosticSignature> ParseIntrinsicData(IReadOnlyList<object> data)
+        {
+            var values = data ?? Array.Empty<object>();
+            if (values.Count == 3 &&
+                string.Equals(values[0]?.ToString(), ExpressionDiagnosticCode.InvalidArguments.ToString(), StringComparison.Ordinal) &&
+                int.TryParse(values[2]?.ToString(), System.Globalization.NumberStyles.Integer,
+                    System.Globalization.CultureInfo.InvariantCulture, out var count))
+            {
+                return new[] { IntrinsicDiagnosticSignature.InvalidArguments(values[1]?.ToString() ?? string.Empty, count) };
+            }
+
+            return values.Select(value => value as IntrinsicDiagnosticSignature ?? ParseIntrinsic(value?.ToString() ?? string.Empty));
+        }
+
+        private static IntrinsicDiagnosticSignature ParseIntrinsic(string value)
+        {
+            var parts = (value ?? string.Empty).Split(':');
+            if (parts.Length == 3 &&
+                string.Equals(parts[0], ExpressionDiagnosticCode.InvalidArguments.ToString(), StringComparison.Ordinal) &&
+                int.TryParse(parts[2], System.Globalization.NumberStyles.Integer,
+                    System.Globalization.CultureInfo.InvariantCulture, out var count))
+            {
+                return IntrinsicDiagnosticSignature.InvalidArguments(parts[1], count);
+            }
+
+            if (!Enum.TryParse(value, ignoreCase: false, out ExpressionDiagnosticCode code))
+            {
+                throw new ArgumentException("Unknown intrinsic diagnostic code: " + value, nameof(value));
+            }
+            return IntrinsicDiagnosticSignature.ForCode(code);
+        }
     }
 
     /// <summary>A comparable decision to remove one persisted property source.</summary>
@@ -170,14 +287,6 @@ namespace RackCad.Application.ProjectVariables
         public PropertyId PropertyId { get; }
         public SelectivePropertyValueDocument Source { get; }
         public RepairDecisionReason ExpectedRepairReason { get; }
-
-        public static RepairDecisionObservation Capture(
-            IReadOnlyDictionary<SymbolId, RegistrySymbolResult> expected, string reason)
-            => new RepairDecisionObservation(null, default, null,
-                RepairDecisionReason.Upstream(expected.OrderBy(pair => pair.Key)));
-
-        public static RepairDecisionObservation Capture(RepairDecisionReason expected, string reason)
-            => new RepairDecisionObservation(null, default, null, expected);
 
         internal static RepairDecisionObservation Capture(
             string rackId, PropertyId propertyId, SelectivePropertyValueDocument source, RepairDecisionReason expected)

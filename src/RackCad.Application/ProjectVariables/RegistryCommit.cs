@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RackCad.Application.Expressions;
 using RackCad.Application.Persistence;
 
@@ -85,9 +86,10 @@ namespace RackCad.Application.ProjectVariables
     /// entries.
     /// </para>
     /// <para>
-    /// The order is <b>read, accredit that read, apply to the accredited document, write</b>. It is enforced by
-    /// construction and not by comment: <see cref="RegistryMutation.ApplyTo"/> is internal, so the Plugin cannot
-    /// call it, and the document it is applied to here is the one the accreditation vouches for.
+    /// The order is <b>read, accredit that read, validate repair decisions and Before observations, apply purely,
+    /// validate After observations, write</b>. It is enforced by construction and not by comment:
+    /// <see cref="RegistryMutation.ApplyTo"/> is internal, so the Plugin cannot call it, and the document it is
+    /// applied to here is the one the accreditation vouches for.
     /// </para>
     /// <para>
     /// A plan with <see cref="RegistryMutationKind.None"/> returns <see cref="RegistryCommitOutcome.Unchanged"/>
@@ -156,7 +158,6 @@ namespace RackCad.Application.ProjectVariables
                 return RegistryCommitPreparation.Blocked(accreditation.Error);
             }
 
-            var before = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(accreditation.Registry));
             if (plan.RegistryMutation.Kind == RegistryMutationKind.ChangeValue &&
                 plan.RegistryMutation.ExpectedDefinition != null &&
                 (!accreditation.Registry.TryGetTarget(plan.RegistryMutation.VariableId, out var currentTarget) ||
@@ -165,32 +166,19 @@ namespace RackCad.Application.ProjectVariables
                 return RegistryCommitPreparation.Blocked(
                     "La definicion objetivo cambio despues de crear el plan.");
             }
-            ProjectVariablesDocument changed = accreditation.Document;
-            UsableProjectVariablesRegistry afterRegistry = accreditation.Registry;
-            RegistryEvaluation after = before;
-            if (plan.RegistryMutation.Kind != RegistryMutationKind.None)
+
+            var repairObservations = plan.PlanReadSet.RepairDecisionObservations;
+            var beforeObservations = plan.PlanReadSet.SymbolResultObservations
+                .Where(observation => observation.Phase == SymbolObservationPhase.Before).ToArray();
+            var afterObservations = plan.PlanReadSet.SymbolResultObservations
+                .Where(observation => observation.Phase == SymbolObservationPhase.After).ToArray();
+            RegistryEvaluation before = null;
+            if (repairObservations.Count > 0 || beforeObservations.Length > 0)
             {
-                changed = plan.RegistryMutation.ApplyTo(accreditation.Document);
-                var afterAccreditation = UsableProjectVariablesRegistry.Accredit(ProjectVariablesReadResult.Readable(changed));
-                if (!afterAccreditation.IsUsable)
-                {
-                    return RegistryCommitPreparation.Blocked(afterAccreditation.Error);
-                }
-                afterRegistry = afterAccreditation.Registry;
-                after = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(afterRegistry));
+                before = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(accreditation.Registry));
             }
 
-            foreach (var observation in plan.PlanReadSet.SymbolResultObservations)
-            {
-                var evaluation = observation.Phase == SymbolObservationPhase.Before ? before : after;
-                if (!evaluation.Results.TryGetValue(observation.Symbol, out var actual) || !observation.Matches(actual))
-                {
-                    return RegistryCommitPreparation.Blocked(
-                        "El estado semantico observado cambio antes del commit: " + observation.SymbolId + ".");
-                }
-            }
-
-            foreach (var observation in plan.PlanReadSet.RepairDecisionObservations)
+            foreach (var observation in repairObservations)
             {
                 var target = ProjectVariableConsumerDiscovery.ResolveTargetRack(currentRacks, observation.RackId);
                 if (!target.IsSuccess || target.Consumers.Count != 1 ||
@@ -200,10 +188,47 @@ namespace RackCad.Application.ProjectVariables
                     return RegistryCommitPreparation.Blocked("El origen reparado cambio antes del commit.");
                 }
                 var inspection = LinkedPropertyInspection.InspectBinding(
-                    observation.PropertyId.Value, source, SelectiveLinkedProperties.All, afterRegistry, after);
+                    observation.PropertyId.Value, source, SelectiveLinkedProperties.All, accreditation.Registry, before);
                 if (inspection.RepairReason == null || !observation.Matches(inspection.RepairReason))
                 {
                     return RegistryCommitPreparation.Blocked("La razon de reparacion cambio antes del commit.");
+                }
+            }
+
+            foreach (var observation in beforeObservations)
+            {
+                if (!before.Results.TryGetValue(observation.Symbol, out var actual) || !observation.Matches(actual))
+                {
+                    return RegistryCommitPreparation.Blocked(
+                        "El estado semantico observado cambio antes del commit: " + observation.SymbolId + ".");
+                }
+            }
+
+            ProjectVariablesDocument changed = accreditation.Document;
+            UsableProjectVariablesRegistry afterRegistry = accreditation.Registry;
+            if (plan.RegistryMutation.Kind != RegistryMutationKind.None)
+            {
+                changed = plan.RegistryMutation.ApplyTo(accreditation.Document);
+                var afterAccreditation = UsableProjectVariablesRegistry.Accredit(ProjectVariablesReadResult.Readable(changed));
+                if (!afterAccreditation.IsUsable)
+                {
+                    return RegistryCommitPreparation.Blocked(afterAccreditation.Error);
+                }
+                afterRegistry = afterAccreditation.Registry;
+            }
+
+            if (afterObservations.Length > 0)
+            {
+                var after = plan.RegistryMutation.Kind == RegistryMutationKind.None && before != null
+                    ? before
+                    : RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(afterRegistry));
+                foreach (var observation in afterObservations)
+                {
+                    if (!after.Results.TryGetValue(observation.Symbol, out var actual) || !observation.Matches(actual))
+                    {
+                        return RegistryCommitPreparation.Blocked(
+                            "El estado semantico observado cambio antes del commit: " + observation.SymbolId + ".");
+                    }
                 }
             }
 
