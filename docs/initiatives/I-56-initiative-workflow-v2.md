@@ -26,10 +26,10 @@ automation:
 
 # I-56 — Initiative Workflow V2
 
-> **Fase actual: MATERIALIZACION NORMATIVA Y CONFORMIDAD COMPLETAS; CANDIDATO Y CIERRE DOCUMENTAL
-> LISTOS PARA INTEGRAR.** I-56 sigue siendo **solo documentacion y proceso** y continua gobernada por
-> Workflow V1. La pausa de activacion esta **ACTIVE**; el merge normativo y las compuertas posteriores
-> siguen pendientes, por lo que Workflow V2 **NO esta efectivo**.
+> **Fase actual: WORKFLOW V2 EFFECTIVE; RONDA CORRECTIVA V1 EN CIERRE DOCUMENTAL.** I-56 sigue siendo
+> **solo documentacion y proceso** y continua gobernada por Workflow V1 hasta completar esta correccion.
+> El Candidato correctivo esta **PASS**; su cierre, integracion correctiva y verificacion post-merge siguen
+> pendientes. La pausa de activacion permanece **ACTIVE**.
 >
 > ```text
 > I-56 IS DOCUMENTATION / PROCESS ONLY
@@ -37,8 +37,8 @@ automation:
 > PROPOSAL V4:               CONSENSUS REACHED
 > DRY-RUN:                   PASS
 > OWNER:                     APPROVED — PROPOSAL V4
-> WORKFLOW V2:               NOT EFFECTIVE        (seccion 0.2)
-> WORKFLOW_V2_EFFECTIVE_SHA: DOES NOT EXIST YET   (no se inventa)
+> WORKFLOW V2:               EFFECTIVE             (seccion 0.2)
+> CORRECTIVE ROUND:          CANDIDATE PASS; CLOSURE PENDING
 > ```
 
 ```text
@@ -83,6 +83,8 @@ I-56 must not rewrite active initiative contracts to apply V2 retroactively.
 
 ### 0.2 Invariante de vigencia
 
+Estado registrado en G0.1, antes de la materializacion normativa:
+
 ```text
 No normative Workflow V2 policy becomes effective until:
 
@@ -100,6 +102,9 @@ WORKFLOW_V2_EFFECTIVE_SHA does not exist yet.
   este redactada, versionada o acordada por una sola de las partes.
 - La aprobacion del Owner es la **decision** que declara `requires_owner_decision: true` (seccion 6); no es una
   validacion de producto.
+
+La compuerta ya se cumplio y Workflow V2 esta **EFFECTIVE**. La identidad exacta del primer merge normativo vive en
+`docs/HANDOFF.md` y en `docs/automation/evidence/I-56-evidence.md`; esta ronda correctiva no la redefine.
 
 ## 1. Objetivo
 
@@ -216,7 +221,7 @@ los fija la Proposal. **Una desviacion material frente a esto obliga a detenerse
 | G2–G7 | Proposal y consenso | Proposal V4 exacta con Coordinator + Architect AGREED | **HECHA** |
 | G8 | Dry-run historico | Tres casos PASS; ninguna captura material perdida | **HECHA** |
 | G9 | Paquete y decision del Owner | 17 selecciones + aprobacion exacta de Proposal V4 | **HECHA** |
-| — | Materializacion normativa | ADR, normas, controles e integracion segun Proposal V4 | **HECHA hasta cierre documental** — materializacion, controles, conformidad y Candidato completos; merge y compuertas posteriores pendientes |
+| — | Materializacion normativa | ADR, normas, controles e integracion segun Proposal V4 | **HECHA Y EFFECTIVE** — merge normativo y compuertas V1 4.5.6/4.5.7 completos; ronda correctiva V1 abierta por la omision del archivo de evidencia canonica, con Candidato PASS y cierre/integracion correctiva pendientes |
 
 Ninguna fase arranca sin que la anterior tenga evidencia revisable.
 
@@ -295,4 +300,6 @@ punta del bootstrap **sin rebase** —`origin/main` no avanzo desde la base, asi
 4.2 no lo exige— y **sin force**; el historial de reclamo y bootstrap se conserva. La punta previa consta en el cuerpo
 de su commit.
 
-El resto de la evidencia se acumula al cerrar cada fase.
+**Estado actual.** Workflow V2 esta **EFFECTIVE**. La ronda correctiva V1 por la omision del archivo canonico tiene
+Candidato **PASS**; el cierre documental, la integracion correctiva y su verificacion post-merge siguen pendientes,
+y la pausa de activacion permanece **ACTIVE**.
