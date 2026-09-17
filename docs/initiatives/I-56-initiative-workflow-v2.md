@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-56
 title: "Initiative Workflow V2"
 type: docs
-status: claimed
+status: integration-ready
 branch: docs/initiative-workflow-v2
 base_branch: main
 priority:
@@ -26,9 +26,10 @@ automation:
 
 # I-56 — Initiative Workflow V2
 
-> **Fase actual: CONSENSUS V4 ALCANZADO, DRY-RUN PASS Y OWNER APPROVED.** I-56 sigue siendo **solo
-> documentacion y proceso** y continua gobernada por Workflow V1. La materializacion normativa no ha
-> comenzado y **no se ha cambiado ninguna norma de proceso**.
+> **Fase actual: MATERIALIZACION NORMATIVA Y CONFORMIDAD COMPLETAS; CANDIDATO Y CIERRE DOCUMENTAL
+> LISTOS PARA INTEGRAR.** I-56 sigue siendo **solo documentacion y proceso** y continua gobernada por
+> Workflow V1. La pausa de activacion esta **ACTIVE**; el merge normativo y las compuertas posteriores
+> siguen pendientes, por lo que Workflow V2 **NO esta efectivo**.
 >
 > ```text
 > I-56 IS DOCUMENTATION / PROCESS ONLY
@@ -215,7 +216,7 @@ los fija la Proposal. **Una desviacion material frente a esto obliga a detenerse
 | G2–G7 | Proposal y consenso | Proposal V4 exacta con Coordinator + Architect AGREED | **HECHA** |
 | G8 | Dry-run historico | Tres casos PASS; ninguna captura material perdida | **HECHA** |
 | G9 | Paquete y decision del Owner | 17 selecciones + aprobacion exacta de Proposal V4 | **HECHA** |
-| — | Materializacion normativa | ADR, normas, controles e integracion segun Proposal V4 | pendiente — requiere ordenes propias |
+| — | Materializacion normativa | ADR, normas, controles e integracion segun Proposal V4 | **HECHA hasta cierre documental** — materializacion, controles, conformidad y Candidato completos; merge y compuertas posteriores pendientes |
 
 Ninguna fase arranca sin que la anterior tenga evidencia revisable.
 
