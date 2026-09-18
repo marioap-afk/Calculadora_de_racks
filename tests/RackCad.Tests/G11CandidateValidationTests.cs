@@ -77,11 +77,11 @@ namespace RackCad.Tests
             var broken = Registry(10.0);
             broken.Variables.RemoveAt(0); // Y still names X; X is absent.
 
-            AssertNoDownstream(authored, RoundTripRegistry(broken));
+            AssertNoDownstream(authored, RoundTripRegistry(broken), expectCycle: false);
 
             var cyclic = Registry(10.0);
             cyclic.Variables[0].Definition = ExpressionDefinition(Reference(Y));
-            AssertNoDownstream(authored, RoundTripRegistry(cyclic));
+            AssertNoDownstream(authored, RoundTripRegistry(cyclic), expectCycle: true);
 
             Assert.Equal(6.0, authored.VerticalClearance); // frozen authored values were never fallback output.
             Assert.Equal(4.0, authored.PalletTolerance);
@@ -118,8 +118,16 @@ namespace RackCad.Tests
 
         private static void AssertNoDownstream(
             SelectivePalletDesignDocument authored,
-            ProjectVariablesReadResult registry)
+            ProjectVariablesReadResult registry,
+            bool expectCycle)
         {
+            var accreditation = UsableProjectVariablesRegistry.Accredit(registry);
+            Assert.True(accreditation.IsUsable, accreditation.Error);
+            var evaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(accreditation.Registry));
+            Assert.Contains(evaluation.Results.Values, result =>
+                !result.Succeeded && (result.Diagnostics.Count > 0 || result.RootCauses.Count > 0));
+            Assert.Equal(expectCycle, evaluation.Cycles.Count > 0);
+
             var result = new SelectiveEffectiveDesignResolver().ResolveAccredited(authored, registry);
             Assert.False(result.IsSuccess);
             Assert.Null(result.Design);
