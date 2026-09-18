@@ -157,6 +157,7 @@ namespace RackCad.Application.ProjectVariables
             {
                 case ProjectVariableIntentKind.Create:
                     return ProjectVariableMutationPreflight.Create(
+                        registry,
                         intent.Name,
                         VariableType.Length,
                         intent.Definition ?? VariableDefinition.Literal(intent.Value));

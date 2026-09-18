@@ -110,17 +110,36 @@ namespace RackCad.Application.ProjectVariables
         public IReadOnlyList<string> DiagnosticCodes { get; }
     }
 
-    /// <summary>The exact attempted rack state that made a definition change inadmissible.</summary>
+    /// <summary>The exact attempted target state that made a variable operation inadmissible.</summary>
     public sealed class AttemptedStateFailure
     {
         internal AttemptedStateFailure(string rackId, string category, IEnumerable<string> diagnosticCodes)
+            : this(rackId, null, category, diagnosticCodes)
+        {
+        }
+
+        internal AttemptedStateFailure(
+            RackCad.Application.Expressions.SymbolId attemptedSymbol,
+            string category,
+            IEnumerable<string> diagnosticCodes)
+            : this(null, attemptedSymbol?.Key, category, diagnosticCodes)
+        {
+        }
+
+        private AttemptedStateFailure(
+            string rackId,
+            string attemptedSymbolId,
+            string category,
+            IEnumerable<string> diagnosticCodes)
         {
             RackId = rackId;
+            AttemptedSymbolId = attemptedSymbolId;
             Category = category;
             DiagnosticCodes = (diagnosticCodes ?? Enumerable.Empty<string>()).Distinct().OrderBy(value => value).ToArray();
         }
 
         public string RackId { get; }
+        public string AttemptedSymbolId { get; }
         public string Category { get; }
         public IReadOnlyList<string> DiagnosticCodes { get; }
         public bool HasRecoveryCandidate => false;

@@ -28,12 +28,29 @@ namespace RackCad.Application.ProjectVariables
     {
         // ------------------------------------------------------------------ registry-only
 
-        /// <summary>Creates a variable. It can have no consumers — it did not exist a moment ago.</summary>
+        /// <summary>Creates a variable against an absent register. Retained for the original literal-only callers.</summary>
         public static VariableMutationPreflightResult Create(
             string name,
             VariableType type,
             VariableDefinition definition)
+            => Create(null, name, type, definition);
+
+        /// <summary>
+        /// Creates a variable after evaluating the proposed addition in the current accredited register.
+        /// It can have no consumers — it did not exist a moment ago — but its definition may read existing
+        /// variables, so evaluating it in isolation would describe a different attempted state than the commit.
+        /// </summary>
+        public static VariableMutationPreflightResult Create(
+            ProjectVariablesDocument registry,
+            string name,
+            VariableType type,
+            VariableDefinition definition)
         {
+            if (!TryAccredit(registry, out _, out var registryFailure))
+            {
+                return registryFailure;
+            }
+
             ProjectVariable variable;
 
             try
@@ -45,12 +62,40 @@ namespace RackCad.Application.ProjectVariables
                 return VariableMutationPreflightResult.Failed(ex.Message);
             }
 
-            var evaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(new[] { variable }));
+            var mutation = RegistryMutation.Add(variable);
+            if (!TryAccredit(mutation.ApplyTo(registry), out var attempted, out var attemptedFailure))
+            {
+                return attemptedFailure;
+            }
+
+            var evaluation = RegistryEvaluation.Evaluate(ProjectVariablesExpressionAdapter.From(attempted));
             var symbol = SymbolId.ProjectVariable(variable.Id.Value);
+            var result = evaluation.Result(symbol);
+
+            if (!result.Succeeded)
+            {
+                var codes = result.Diagnostics.Select(item => item.Code.ToString())
+                    .Concat(result.RootCauses.Select(item => item.Code.ToString()))
+                    .Distinct()
+                    .ToArray();
+                return VariableMutationPreflightResult.Failed(
+                    "La definición de la nueva variable no se puede evaluar: " + string.Join(", ", codes) + ".",
+                    new AttemptedStateFailure(symbol, "Evaluation", codes),
+                    Array.Empty<string>());
+            }
+
+            if (double.IsNaN(result.Value) || double.IsInfinity(result.Value) || result.Value <= 0.0)
+            {
+                return VariableMutationPreflightResult.Failed(
+                    "El valor resultante de la nueva variable tiene que ser mayor que cero.",
+                    new AttemptedStateFailure(symbol, "Domain", new[] { "Domain" }),
+                    Array.Empty<string>());
+            }
+
             var reads = new PlanReadSet(
-                new[] { SymbolResultObservation.Capture(symbol, SymbolObservationPhase.After, evaluation.Result(symbol)) }, null);
+                new[] { SymbolResultObservation.Capture(symbol, SymbolObservationPhase.After, result) }, null);
             return VariableMutationPreflightResult.Success(
-                MutationPlan.Of(RegistryMutation.Add(variable), null, reads));
+                MutationPlan.Of(mutation, null, reads));
         }
 
         /// <summary>
