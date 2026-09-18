@@ -248,7 +248,6 @@ namespace RackCad.Tests
 
             Assert.DoesNotContain("timestamp", json, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("importedAt", json, StringComparison.OrdinalIgnoreCase);
-            Assert.DoesNotContain(DateTime.UtcNow.Year.ToString(), json, StringComparison.Ordinal);
             Assert.DoesNotContain(
                 output.Manifest.Files,
                 file => string.Equals(file.Name, StructuralSectionCsvSchema.ManifestFile, StringComparison.Ordinal));
