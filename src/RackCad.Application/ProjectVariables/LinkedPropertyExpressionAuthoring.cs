@@ -23,11 +23,26 @@ namespace RackCad.Application.ProjectVariables
     public sealed class LinkedPropertyEditDiagnostic
     {
         internal LinkedPropertyEditDiagnostic(LinkedPropertyEditDiagnosticCode code)
+            : this(code, null, null)
+        {
+        }
+
+        internal LinkedPropertyEditDiagnostic(
+            LinkedPropertyEditDiagnosticCode code,
+            SymbolId failedSymbol,
+            RegistrySymbolResult registryResult)
         {
             Code = code;
+            FailedSymbol = failedSymbol;
+            RegistryResult = registryResult;
         }
 
         public LinkedPropertyEditDiagnosticCode Code { get; }
+
+        public SymbolId FailedSymbol { get; }
+
+        /// <summary>The original G7 result; diagnostics and root causes are never reconstructed from text.</summary>
+        public RegistrySymbolResult RegistryResult { get; }
     }
 
     /// <summary>
@@ -40,6 +55,7 @@ namespace RackCad.Application.ProjectVariables
         private readonly ExpressionContext _context;
         private readonly IReadOnlyDictionary<SymbolId, double> _values;
         private readonly HashSet<SymbolId> _failed;
+        private readonly IReadOnlyDictionary<SymbolId, RegistrySymbolResult> _failedResults;
 
         internal LinkedPropertyExpressionAuthoring(IReadOnlyList<LinkedPropertyOption> options)
         {
@@ -51,24 +67,45 @@ namespace RackCad.Application.ProjectVariables
             foreach (var option in _options)
             {
                 var id = SymbolId.ProjectVariable(option.VariableId.Value);
-                var finite = !double.IsNaN(option.LiteralValue) && !double.IsInfinity(option.LiteralValue);
                 entries.Add(new SymbolEntry(
                     id,
                     SymbolScope.Project,
                     option.Name ?? string.Empty,
-                    SymbolDefinition.FromLiteral(finite ? option.LiteralValue : 0.0)));
-                if (finite)
-                {
-                    values.Add(id, option.LiteralValue);
-                }
-                else
-                {
-                    _failed.Add(id);
-                }
+                    SymbolDefinition.FromLiteral(option.LiteralValue)));
+                values.Add(id, option.LiteralValue);
             }
 
             _context = ExpressionContext.Create(SymbolTable.Create(entries));
             _values = new ReadOnlyDictionary<SymbolId, double>(values);
+            _failedResults = new ReadOnlyDictionary<SymbolId, RegistrySymbolResult>(
+                new Dictionary<SymbolId, RegistrySymbolResult>());
+        }
+
+        internal LinkedPropertyExpressionAuthoring(LinkedPropertyAuthoringContext authoringContext)
+        {
+            if (authoringContext == null) throw new ArgumentNullException(nameof(authoringContext));
+
+            _options = Array.Empty<LinkedPropertyOption>();
+            _context = authoringContext.ExpressionContext;
+            var values = new Dictionary<SymbolId, double>();
+            _failed = new HashSet<SymbolId>();
+            var failedResults = new Dictionary<SymbolId, RegistrySymbolResult>();
+            foreach (var symbol in authoringContext.Symbols)
+            {
+                var id = SymbolId.ProjectVariable(symbol.VariableId.Value);
+                if (symbol.Evaluation.Succeeded)
+                {
+                    values.Add(id, symbol.Evaluation.Value);
+                }
+                else
+                {
+                    _failed.Add(id);
+                    failedResults.Add(id, symbol.Evaluation);
+                }
+            }
+
+            _values = new ReadOnlyDictionary<SymbolId, double>(values);
+            _failedResults = new ReadOnlyDictionary<SymbolId, RegistrySymbolResult>(failedResults);
         }
 
         internal SymbolTable Symbols => _context.Symbols;
@@ -94,9 +131,17 @@ namespace RackCad.Application.ProjectVariables
             }
 
             var expression = bound.Expression;
-            if (BoundExpressionDependencies.DirectDependencies(expression).Any(id => _failed.Contains(id)))
+            var failedDependency = BoundExpressionDependencies.DirectDependencies(expression)
+                .FirstOrDefault(id => _failed.Contains(id));
+            if (failedDependency != null)
             {
-                return LinkedPropertyAuthoringResult.Failure(LinkedPropertyEditDiagnosticCode.DependencyFailed);
+                return _failedResults.TryGetValue(failedDependency, out var failedResult)
+                    ? LinkedPropertyAuthoringResult.Failure(
+                        new LinkedPropertyEditDiagnostic(
+                            LinkedPropertyEditDiagnosticCode.DependencyFailed,
+                            failedDependency,
+                            failedResult))
+                    : LinkedPropertyAuthoringResult.Failure(LinkedPropertyEditDiagnosticCode.DependencyFailed);
             }
 
             var evaluated = ExpressionEvaluator.Evaluate(expression, _context, _values);
@@ -180,6 +225,13 @@ namespace RackCad.Application.ProjectVariables
 
         internal static LinkedPropertyAuthoringResult Failure(LinkedPropertyEditDiagnosticCode code)
             => Failure(new[] { code });
+
+        internal static LinkedPropertyAuthoringResult Failure(LinkedPropertyEditDiagnostic diagnostic)
+            => new LinkedPropertyAuthoringResult(
+                null,
+                0.0,
+                null,
+                new ReadOnlyCollection<LinkedPropertyEditDiagnostic>(new[] { diagnostic }));
 
         internal static LinkedPropertyAuthoringResult Failure(IEnumerable<LinkedPropertyEditDiagnosticCode> codes)
             => new LinkedPropertyAuthoringResult(

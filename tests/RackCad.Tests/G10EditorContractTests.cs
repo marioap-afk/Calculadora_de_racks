@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using RackCad.Application.Expressions;
+using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using Xunit;
 using static RackCad.Tests.G10ContractTestSupport;
@@ -10,6 +13,7 @@ namespace RackCad.Tests
     {
         private static readonly VariableId A = VariableId.Parse("3f2b1c9e-6d4a-4f38-9b71-0c2a5e8d1f44");
         private static readonly VariableId B = VariableId.Parse("5d9e2a10-77b4-4c31-8e06-2f9a4b7c1d38");
+        private const string Missing = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
 
         [Fact, Trait("Gate", "G10-Editor")]
         public void FORMULA_TEXT_IS_A_DRAFT_EXPRESSION_AND_DOES_NOT_MUTATE_COMMITTED_SOURCE()
@@ -158,11 +162,95 @@ namespace RackCad.Tests
         [Fact, Trait("Gate", "G10-Editor")]
         public void FAILED_PROJECT_VARIABLE_READ_REJECTS_PROPERTY_FORMULA_WITH_STRUCTURED_ROOT_CAUSE()
         {
-            var session = Session(LinkedPropertyEditState.Literal(6), failedA: true);
+            var projection = PropertyProjection(
+                VariableDefinition.Expression(BoundExpression.Reference(SymbolId.ProjectVariable(Missing))));
+            var session = new LinkedPropertyEditSession(
+                LinkedPropertyEditState.Literal(6), projection.Options, projection.AuthoringContext);
             session.Type("=A + 2");
             Assert.False(session.TryCommitByEnter(out _));
             Assert.Equal("DependencyFailed", DiagnosticCode(session));
+            Assert.Contains(Assert.Single(session.Diagnostics).RegistryResult.RootCauses,
+                root => root.Code == ExpressionDiagnosticCode.BrokenReference);
             Assert.Equal("Literal", SourceKind(session));
+        }
+
+        [Fact, Trait("Gate", "G10-Editor")]
+        public void PRODUCTIVE_PROPERTY_AUTHORING_PRESERVES_EXISTING_FAILED_SYMBOL_IDENTITY()
+        {
+            var document = ProjectVariablesDocument.CreateNew();
+            document.Variables = new List<ProjectVariableDocument>
+            {
+                new ProjectVariableDocument
+                {
+                    VariableId = A.Value,
+                    Name = "A",
+                    Type = "Length",
+                    Definition = new ProjectVariableDefinitionDocument
+                    {
+                        Kind = "expression",
+                        Expression = BoundExpression.Reference(SymbolId.ProjectVariable(Missing)),
+                    },
+                },
+            };
+            var projection = LinkedPropertyOptions.ForProperty(
+                ProjectPropertyIds.SelectiveVerticalClearance,
+                ProjectVariablesReadResult.Readable(document));
+            Assert.True(projection.IsUsable, projection.Error);
+
+            var session = new LinkedPropertyEditSession(
+                LinkedPropertyEditState.Literal(6), projection.Options, projection.AuthoringContext);
+            session.Type("=A + 2");
+
+            Assert.False(session.TryCommitByEnter(out _));
+            Assert.Equal("DependencyFailed", DiagnosticCode(session));
+            var diagnostic = Assert.Single(session.Diagnostics);
+            Assert.Equal(SymbolId.ProjectVariable(A.Value), diagnostic.FailedSymbol);
+            Assert.Contains(diagnostic.RegistryResult.RootCauses,
+                root => root.Code == ExpressionDiagnosticCode.BrokenReference);
+            Assert.Equal("Literal", SourceKind(session));
+            Assert.Equal(6, session.Committed.CommittedLiteral);
+            Assert.Empty(projection.Options);
+
+            session.Type("=A");
+            Assert.False(session.TryCommitByEnter(out _));
+            Assert.Equal("DependencyFailed", DiagnosticCode(session));
+
+            session.Type("=Unknown");
+            Assert.False(session.TryCommitByEnter(out _));
+            Assert.Equal("UnknownSymbol", DiagnosticCode(session));
+        }
+
+        [Fact, Trait("Gate", "G10-Editor")]
+        public void FAILED_EXISTING_EXPRESSION_REOPENS_WITH_IDENTITY_AND_RECOVERS_AFTER_VARIABLE_FIX()
+        {
+            var expression = BoundExpression.Binary(
+                BoundBinaryOperator.Add,
+                BoundExpression.Reference(SymbolId.ProjectVariable(A.Value)),
+                BoundExpression.Number(2));
+            var failed = PropertyProjection(
+                VariableDefinition.Expression(BoundExpression.Reference(SymbolId.ProjectVariable(Missing))));
+            var reopened = new LinkedPropertyEditSession(
+                LinkedPropertyEditState.Expression(6, expression),
+                failed.Options,
+                failed.AuthoringContext);
+
+            Assert.Same(expression, Expression(reopened));
+            Assert.Equal("=A + 2", reopened.Text);
+            Assert.False(reopened.TryGetEffectiveValue(out _));
+            reopened.Type("=Unknown + 1");
+            reopened.Cancel();
+            Assert.Equal("=A + 2", reopened.Text);
+            Assert.Same(expression, Expression(reopened));
+
+            var healthy = PropertyProjection(VariableDefinition.Literal(10));
+            var recovered = new LinkedPropertyEditSession(
+                reopened.Committed,
+                healthy.Options,
+                healthy.AuthoringContext);
+            Assert.Same(expression, Expression(recovered));
+            Assert.Equal("=A + 2", recovered.Text);
+            Assert.True(recovered.TryGetEffectiveValue(out var value));
+            Assert.Equal(12, value);
         }
 
         [Fact, Trait("Gate", "G10-Editor")]
@@ -193,15 +281,35 @@ namespace RackCad.Tests
         }
 
         private static LinkedPropertyEditSession Session(
-            LinkedPropertyEditState state, bool homonyms = false, bool failedA = false)
+            LinkedPropertyEditState state, bool homonyms = false)
         {
             var options = new[]
             {
-                new LinkedPropertyOption(A, homonyms ? "Same" : "A", VariableType.Length,
-                    failedA ? double.NaN : 10),
+                new LinkedPropertyOption(A, homonyms ? "Same" : "A", VariableType.Length, 10),
                 new LinkedPropertyOption(B, homonyms ? "Same" : "B", VariableType.Length, 12),
             };
             return new LinkedPropertyEditSession(state, options);
+        }
+
+        private static LinkedPropertyOptionsResult PropertyProjection(VariableDefinition definition)
+        {
+            var document = ProjectVariablesDocument.CreateNew();
+            document.Variables = new List<ProjectVariableDocument>
+            {
+                new ProjectVariableDocument
+                {
+                    VariableId = A.Value,
+                    Name = "A",
+                    Type = "Length",
+                    Definition = ProjectVariableDefinitionDocument.From(definition),
+                },
+            };
+
+            var projection = LinkedPropertyOptions.ForProperty(
+                ProjectPropertyIds.SelectiveVerticalClearance,
+                ProjectVariablesReadResult.Readable(document));
+            Assert.True(projection.IsUsable, projection.Error);
+            return projection;
         }
     }
 }

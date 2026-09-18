@@ -116,6 +116,22 @@ namespace RackCad.Application.ProjectVariables
             _text = DisplayOf(committed);
         }
 
+        /// <summary>
+        /// Opens over two deliberate projections of one accredited snapshot: healthy direct-reference choices and
+        /// every expression-visible compatible symbol, including those whose G7 evaluation failed.
+        /// </summary>
+        public LinkedPropertyEditSession(
+            LinkedPropertyEditState committed,
+            IReadOnlyList<LinkedPropertyOption> options,
+            LinkedPropertyAuthoringContext authoringContext)
+        {
+            _committed = committed ?? throw new ArgumentNullException(nameof(committed));
+            _options = options ?? new LinkedPropertyOption[0];
+            _authoring = new LinkedPropertyExpressionAuthoring(
+                authoringContext ?? throw new ArgumentNullException(nameof(authoringContext)));
+            _text = DisplayOf(committed);
+        }
+
         /// <summary>The last COMMITTED state. A draft never shows through here.</summary>
         public LinkedPropertyEditState Committed => _committed;
 

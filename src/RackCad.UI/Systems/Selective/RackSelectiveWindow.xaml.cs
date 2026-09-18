@@ -2860,6 +2860,7 @@ namespace RackCad.UI.Systems.Selective
         /// editor; it never looks anything up in them.
         /// </summary>
         private IReadOnlyList<LinkedPropertyOption> linkedOptions = new LinkedPropertyOption[0];
+        private LinkedPropertyAuthoringContext linkedAuthoringContext;
 
         /// <summary>
         /// Los editores vinculables de esta ventana, por <see cref="PropertyId"/> (I-48 G4E).
@@ -2894,6 +2895,28 @@ namespace RackCad.UI.Systems.Selective
         public void SetProjectVariables(IReadOnlyList<LinkedPropertyOption> options)
         {
             linkedOptions = options ?? new LinkedPropertyOption[0];
+            linkedAuthoringContext = null;
+
+            ReseedLinkedEditors();
+        }
+
+        /// <summary>
+        /// Receives the two Application-owned projections of one accredited snapshot: healthy choices for direct
+        /// selection and the wider expression symbol context. The window only transports both into the pure session.
+        /// </summary>
+        public void SetProjectVariables(LinkedPropertyOptionsResult projection)
+        {
+            if (projection == null) throw new ArgumentNullException(nameof(projection));
+            if (!projection.IsUsable) throw new ArgumentException("La proyección debe ser utilizable.", nameof(projection));
+
+            linkedOptions = projection.Options ?? new LinkedPropertyOption[0];
+            linkedAuthoringContext = projection.AuthoringContext;
+
+            ReseedLinkedEditors();
+        }
+
+        private void ReseedLinkedEditors()
+        {
 
             // Re-sembrar CONSERVA el estado comprometido de cada editor: cambiar las opciones no es una carga.
             var committed = new Dictionary<PropertyId, LinkedPropertyEditState>();
@@ -2950,7 +2973,9 @@ namespace RackCad.UI.Systems.Selective
                     continue;
                 }
 
-                pair.Value.Attach(new LinkedPropertyEditSession(committed, linkedOptions));
+                pair.Value.Attach(linkedAuthoringContext == null
+                    ? new LinkedPropertyEditSession(committed, linkedOptions)
+                    : new LinkedPropertyEditSession(committed, linkedOptions, linkedAuthoringContext));
             }
 
             UpdateLinkedPropertyState();
