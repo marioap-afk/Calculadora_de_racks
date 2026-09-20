@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Selective;
@@ -165,8 +166,14 @@ namespace RackCad.Plugin
             var updatedFrontal = 0;
             foreach (var fb in frontalBlocks)
             {
-                var fondo = fb.Embed != null && fb.Embed.Section >= 0 ? fb.Embed.Section : 0;
-                if (fondo >= fondoCount)
+                var decoded = RackCommandSupport.DecodeView(fb.Embed);
+                var fondo = decoded.HasAddress && decoded.Address.Variant.Kind == RackViewVariantKind.Fondo
+                    ? decoded.Address.Variant.Index
+                    : 0;
+                var availability = RackViewAvailability.Evaluate(
+                    decoded,
+                    new SelectiveViewAvailabilityFacts(fondoCount, System.Array.Empty<int>()));
+                if (availability.Status == RackViewAvailabilityStatus.VariantNotPresent)
                 {
                     staleViewBlocks.Add(fb.BlockId); // this fondo is gone — erase the phantom frontal
                     continue;
@@ -189,9 +196,18 @@ namespace RackCad.Plugin
             {
                 var cortes = new SelectiveLateralBuilder().Cortes(system, LateralHeaderDrawService.LoadCatalog());
                 var lateralService = new LateralHeaderDrawService();
+                var availabilityFacts = new SelectiveViewAvailabilityFacts(
+                    fondoCount, cortes.Select(item => item.PostIndex));
                 foreach (var lat in lateralBlocks)
                 {
-                    var corte = cortes.FirstOrDefault(c => c.PostIndex == lat.Embed.Section);
+                    var decoded = RackCommandSupport.DecodeView(lat.Embed);
+                    var postIndex = decoded.HasAddress && decoded.Address.Variant.Kind == RackViewVariantKind.Post
+                        ? decoded.Address.Variant.Index
+                        : lat.Embed.Section;
+                    var availability = RackViewAvailability.Evaluate(decoded, availabilityFacts);
+                    var corte = availability.Status == RackViewAvailabilityStatus.Available
+                        ? cortes.FirstOrDefault(c => c.PostIndex == postIndex)
+                        : null;
                     if (corte == null)
                     {
                         staleViewBlocks.Add(lat.BlockId); // this section is gone — erase the phantom lateral (see note above)
@@ -327,7 +343,9 @@ namespace RackCad.Plugin
 
         /// <summary>True when a view-block draws the LATERAL view (so it is a section of the system, not the frontal).</summary>
         private static bool IsLateralView(RackEmbedDocument embed) =>
-            embed != null && string.Equals(embed.View, RackEmbedDocument.ViewLateral, System.StringComparison.OrdinalIgnoreCase);
+            embed != null
+            && RackViewCodec.TryDecodeViewKind(embed.View, out var kind)
+            && kind == DimensionViewKind.Lateral;
 
         /// <summary>
         /// Wraps an ALREADY-SERIALIZED authored document in the uniform embed envelope (kind + id + name + view

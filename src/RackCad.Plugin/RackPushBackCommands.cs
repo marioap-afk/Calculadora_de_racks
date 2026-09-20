@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
@@ -237,10 +238,13 @@ namespace RackCad.Plugin
             var staleViewBlocks = new System.Collections.Generic.List<ObjectId>();
             var catalog = LateralHeaderDrawService.LoadCatalog();
             var lateralCortes = new PushBackSystemLateralBuilder().Cortes(system, catalog);
+            var availabilityFacts = new PushBackViewAvailabilityFacts(
+                lateralCortes.Select(item => item.PostIndex), system.IsComposite);
             foreach (var viewBlock in blocks)
             {
                 HeaderPlacementResult result;
-                if (RackCommandSupport.IsPlantaView(viewBlock.Embed))
+                var decoded = RackCommandSupport.DecodeView(viewBlock.Embed);
+                if (decoded.Address.Kind == DimensionViewKind.Planta)
                 {
                     var payload = BuildPushBackPayload(design, id, name, RackEmbedDocument.ViewPlanta, -1, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
                     result = new PushBackPlantaDrawService().RedrawInPlace(document, viewBlock.BlockId, system, payload, regen: false);
@@ -250,20 +254,24 @@ namespace RackCad.Plugin
                         updatedPlanta++;
                     }
                 }
-                else if (IsPushBackFrontal(viewBlock.Embed))
+                else if (decoded.Address.Kind == DimensionViewKind.Frontal)
                 {
-                    var frontal = PushBackSystemFrontalBuilder.DecodeSection(viewBlock.Embed.Section);
-                    var end = frontal.End;
+                    var end = decoded.Address.Variant.PushBackEnd == RackPushBackEnd.Posterior
+                        ? PushBackFrontalEnd.Posterior
+                        : PushBackFrontalEnd.EntradaSalida;
+                    var side = decoded.Address.Variant.PushBackSide == RackPushBackSide.B
+                        ? PushBackSide.B
+                        : PushBackSide.A;
                     // I-42: la seccion se RE-ESCRIBE tal cual venia (corte + lado), no como el ordinal del corte:
                     // en un rack compuesto perder el lado mandaria los dos cortes de B al descriptor de A.
                     var payload = BuildPushBackPayload(design, id, name, RackEmbedDocument.ViewFrontal, viewBlock.Embed.Section, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
-                    result = new PushBackFrontalDrawService().RedrawInPlace(document, viewBlock.BlockId, system, end, payload, regen: false, side: frontal.Side);
+                    result = new PushBackFrontalDrawService().RedrawInPlace(document, viewBlock.BlockId, system, end, payload, regen: false, side: side);
                     if (result != null && result.Success)
                     {
                         var suffix = end == PushBackFrontalEnd.Posterior ? " - frontal posterior" : " - frontal entrada-salida";
                         if (system != null && system.IsComposite)
                         {
-                            suffix += frontal.Side == PushBackSide.B ? " B" : " A";
+                            suffix += side == PushBackSide.B ? " B" : " A";
                         }
 
                         RackBlockRenamer.SyncName(document, viewBlock.BlockId, baseName == null ? null : baseName + suffix);
@@ -281,8 +289,11 @@ namespace RackCad.Plugin
                 {
                     // Lateral: the descriptor preflight guarantees View == ViewLateral && Section >= 0. Redraw the cut for
                     // THIS post index; a post that no longer exists becomes stale (never redraw it at another index).
-                    var postIndex = viewBlock.Embed.Section;
-                    var corte = lateralCortes.FirstOrDefault(item => item.PostIndex == postIndex);
+                    var postIndex = decoded.Address.Variant.Index;
+                    var availability = RackViewAvailability.Evaluate(decoded, availabilityFacts);
+                    var corte = availability.Status == RackViewAvailabilityStatus.Available
+                        ? lateralCortes.FirstOrDefault(item => item.PostIndex == postIndex)
+                        : null;
                     if (corte == null)
                     {
                         staleViewBlocks.Add(viewBlock.BlockId);
@@ -419,34 +430,18 @@ namespace RackCad.Plugin
         }
 
         private static bool IsPushBackFrontal(RackEmbedDocument embed)
-            => embed != null && string.Equals(embed.View, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase);
+        {
+            var decoded = RackCommandSupport.DecodeView(embed);
+            return decoded.HasAddress && decoded.Address.Kind == DimensionViewKind.Frontal;
+        }
 
         /// <summary>True when the envelope carries a well-formed Push Back view descriptor: planta (section -1), frontal
         /// (section exactly EntradaSalida/Posterior) or lateral (section >= 0, a post index). Anything else is corrupt and
         /// aborts the edit — it is never coerced into another view.</summary>
         private static bool IsValidPushBackDescriptor(RackEmbedDocument embed)
         {
-            if (embed == null)
-            {
-                return false;
-            }
-
-            if (string.Equals(embed.View, RackEmbedDocument.ViewPlanta, StringComparison.OrdinalIgnoreCase))
-            {
-                return embed.Section == -1;
-            }
-
-            if (string.Equals(embed.View, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase))
-            {
-                return PushBackSystemFrontalBuilder.IsValidSection(embed.Section);
-            }
-
-            if (string.Equals(embed.View, RackEmbedDocument.ViewLateral, StringComparison.OrdinalIgnoreCase))
-            {
-                return embed.Section >= 0;
-            }
-
-            return false;
+            var decoded = RackCommandSupport.DecodeView(embed);
+            return decoded.HasAddress && decoded.SystemKind == RackSystemKind.PushBack;
         }
     }
 }

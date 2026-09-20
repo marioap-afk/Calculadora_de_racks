@@ -7,6 +7,7 @@ using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
+using RackCad.Application.Systems.Shared;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Selective;
 using RackCad.Plugin.Systems.Shared;
@@ -178,18 +179,30 @@ namespace RackCad.Plugin
                         foreach (var view in views)
                         {
                             var embed = view.Embed;
-                            var isLateral = embed != null && string.Equals(
-                                embed.View, RackEmbedDocument.ViewLateral, StringComparison.OrdinalIgnoreCase);
-                            var isPlanta = RackCommandSupport.IsPlantaView(embed);
+                            var decoded = RackCommandSupport.DecodeView(embed);
+                            var isLateral = decoded.HasAddress
+                                ? decoded.Address.Kind == DimensionViewKind.Lateral
+                                : embed != null
+                                  && RackViewCodec.TryDecodeViewKind(embed.View, out var tokenKind)
+                                  && tokenKind == DimensionViewKind.Lateral;
+                            var isPlanta = decoded.HasAddress && decoded.Address.Kind == DimensionViewKind.Planta;
 
                             // A legacy frontal block with Section = -1 draws fondo 0 (same reading as the editor).
-                            var fondo = embed != null && embed.Section >= 0 ? embed.Section : 0;
+                            var fondo = decoded.HasAddress && decoded.Address.Variant.Kind == RackViewVariantKind.Fondo
+                                ? decoded.Address.Variant.Index
+                                : 0;
                             SelectiveCorte corte = null;
 
                             if (isLateral)
                             {
                                 cortes = cortes ?? new SelectiveLateralBuilder().Cortes(system, catalog);
-                                corte = FindCorte(cortes, embed.Section);
+                                var availability = RackViewAvailability.Evaluate(
+                                    decoded,
+                                    new SelectiveViewAvailabilityFacts(
+                                        fondoCount, System.Linq.Enumerable.Select(cortes, item => item.PostIndex)));
+                                corte = availability.Status == RackViewAvailabilityStatus.Available
+                                    ? FindCorte(cortes, decoded.Address.Variant.Index)
+                                    : null;
 
                                 if (corte == null)
                                 {
@@ -199,7 +212,10 @@ namespace RackCad.Plugin
                                     return MutationExecutionResult.Aborted(Orphan(rack.RackId, "lateral", embed.Section));
                                 }
                             }
-                            else if (!isPlanta && fondo >= fondoCount)
+                            else if (!isPlanta && RackViewAvailability.Evaluate(
+                                         decoded,
+                                         new SelectiveViewAvailabilityFacts(fondoCount, Array.Empty<int>())).Status
+                                     == RackViewAvailabilityStatus.VariantNotPresent)
                             {
                                 return MutationExecutionResult.Aborted(Orphan(rack.RackId, "frontal", fondo));
                             }

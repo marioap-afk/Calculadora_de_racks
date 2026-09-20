@@ -180,7 +180,9 @@ namespace RackCad.Tests
         {
             var body = EditBody();
 
-            Assert.Contains("station >= line.Stations.Count", body, StringComparison.Ordinal);
+            Assert.Contains("RackViewAvailability.Evaluate", body, StringComparison.Ordinal);
+            Assert.Contains("new CantileverViewAvailabilityFacts(line.Stations.Count)", body, StringComparison.Ordinal);
+            Assert.Contains("RackViewAvailabilityStatus.VariantNotPresent", body, StringComparison.Ordinal);
             Assert.Contains("staleViewBlocks.Add(viewBlock.BlockId)", body, StringComparison.Ordinal);
             Assert.Contains("survivors > 0", body, StringComparison.Ordinal);
         }
@@ -192,10 +194,11 @@ namespace RackCad.Tests
 
             Assert.Contains("internal static bool IsValidCantileverDescriptor(", commands, StringComparison.Ordinal);
 
-            // Frontal and planta are views of the whole LINE (section −1); only a lateral carries a station.
-            Assert.Contains("kind == CantileverViewKind.Lateral", commands, StringComparison.Ordinal);
-            Assert.Contains("embed.Section >= 0", commands, StringComparison.Ordinal);
-            Assert.Contains("embed.Section == -1", commands, StringComparison.Ordinal);
+            // The shared codec owns the exact descriptor grammar; this reader must require a successful
+            // Cantilever decode instead of manufacturing a fallback view locally.
+            Assert.Contains("RackCommandSupport.DecodeView(embed)", commands, StringComparison.Ordinal);
+            Assert.Contains("decoded.HasAddress", commands, StringComparison.Ordinal);
+            Assert.Contains("decoded.SystemKind == RackSystemKind.Cantilever", commands, StringComparison.Ordinal);
         }
 
         [Fact]

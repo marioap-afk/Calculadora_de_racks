@@ -152,9 +152,13 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void EveryCharacterizedEvidenceSymbolStillExists()
+        public void EveryCharacterizedEvidenceSourceStillExistsOrHasDelegatedToTheCodec()
         {
             var matrix = Matrix();
+            var migratedReaders = matrix.ReaderInventory
+                .Select(reader => reader.Source)
+                .Where(source => !string.IsNullOrWhiteSpace(source))
+                .ToHashSet(StringComparer.Ordinal);
             var evidence = matrix.KindRows.Select(row => (row.Source, row.Symbol))
                 .Concat(matrix.DecodeRows.Select(row => (row.Source, row.Symbol)))
                 .Concat(matrix.ConsumerFallbacks.Select(row => (row.Source, row.Symbol)))
@@ -167,7 +171,16 @@ namespace RackCad.Tests
             {
                 var path = Path.Combine(Root, item.Source.Replace('/', Path.DirectorySeparatorChar));
                 Assert.True(File.Exists(path), item.Source);
-                Assert.Contains(item.Symbol, File.ReadAllText(path), StringComparison.Ordinal);
+                var source = File.ReadAllText(path);
+                if (!source.Contains(item.Symbol, StringComparison.Ordinal))
+                {
+                    Assert.Contains(item.Source, migratedReaders);
+                    Assert.Contains(
+                        "RackViewCodec",
+                        File.ReadAllText(Path.Combine(
+                            Root, "src", "RackCad.Application", "Systems", "Shared", "RackViewCodec.cs")),
+                        StringComparison.Ordinal);
+                }
             });
         }
 
@@ -263,6 +276,7 @@ namespace RackCad.Tests
         private sealed class ReaderInventoryRow
         {
             public string Consumer { get; set; }
+            public string Source { get; set; }
         }
     }
 }

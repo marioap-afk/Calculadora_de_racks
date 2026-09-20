@@ -11,6 +11,7 @@ using RackCad.Application.Persistence;
 using RackCad.Application.StructuralSections;
 using RackCad.Application.StructuralSections.Geometry;
 using RackCad.Application.Systems.Cantilever;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Cantilever;
 using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
@@ -294,16 +295,23 @@ namespace RackCad.Plugin
 
             foreach (var viewBlock in blocks)
             {
-                if (!TryViewKind(viewBlock.Embed.View, out var kind))
+                var decoded = RackCommandSupport.DecodeView(viewBlock.Embed);
+                if (!decoded.HasAddress)
                 {
                     continue; // the descriptor preflight already rejected anything unknown
                 }
 
-                var station = kind == CantileverViewKind.Lateral ? viewBlock.Embed.Section : -1;
+                var kind = ToCantileverViewKind(decoded.Address.Kind);
+                var station = decoded.Address.Variant.Kind == RackViewVariantKind.Station
+                    ? decoded.Address.Variant.Index
+                    : -1;
 
                 // A lateral of a station the line no longer has becomes STALE. It is never redrawn at another
                 // index: that would silently show a different station under the same block.
-                if (kind == CantileverViewKind.Lateral && station >= line.Stations.Count)
+                var availability = RackViewAvailability.Evaluate(
+                    decoded,
+                    new CantileverViewAvailabilityFacts(line.Stations.Count));
+                if (availability.Status == RackViewAvailabilityStatus.VariantNotPresent)
                 {
                     staleViewBlocks.Add(viewBlock.BlockId);
                     continue;
@@ -500,21 +508,9 @@ namespace RackCad.Plugin
         /// <summary>The envelope's view token as the Application view kind. False for anything else.</summary>
         internal static bool TryViewKind(string view, out CantileverViewKind kind)
         {
-            if (string.Equals(view, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase))
+            if (RackViewCodec.TryDecodeViewKind(view, out var sharedKind))
             {
-                kind = CantileverViewKind.Frontal;
-                return true;
-            }
-
-            if (string.Equals(view, RackEmbedDocument.ViewLateral, StringComparison.OrdinalIgnoreCase))
-            {
-                kind = CantileverViewKind.Lateral;
-                return true;
-            }
-
-            if (string.Equals(view, RackEmbedDocument.ViewPlanta, StringComparison.OrdinalIgnoreCase))
-            {
-                kind = CantileverViewKind.Planta;
+                kind = ToCantileverViewKind(sharedKind);
                 return true;
             }
 
@@ -529,14 +525,19 @@ namespace RackCad.Plugin
         /// </summary>
         internal static bool IsValidCantileverDescriptor(RackEmbedDocument embed)
         {
-            if (embed == null || !TryViewKind(embed.View, out var kind))
-            {
-                return false;
-            }
+            var decoded = RackCommandSupport.DecodeView(embed);
+            return decoded.HasAddress && decoded.SystemKind == RackSystemKind.Cantilever;
+        }
 
-            return kind == CantileverViewKind.Lateral
-                ? embed.Section >= 0
-                : embed.Section == -1;
+        private static CantileverViewKind ToCantileverViewKind(DimensionViewKind kind)
+        {
+            switch (kind)
+            {
+                case DimensionViewKind.Frontal: return CantileverViewKind.Frontal;
+                case DimensionViewKind.Lateral: return CantileverViewKind.Lateral;
+                case DimensionViewKind.Planta: return CantileverViewKind.Planta;
+                default: throw new ArgumentOutOfRangeException(nameof(kind));
+            }
         }
 
         /// <summary>The block name of one view, so a rename on edit says the same thing an insert said.</summary>
