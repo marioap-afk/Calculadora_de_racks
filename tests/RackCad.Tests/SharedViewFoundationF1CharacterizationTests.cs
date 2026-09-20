@@ -7,6 +7,7 @@ using RackCad.Application;
 using RackCad.Application.Drawing;
 using RackCad.Application.Geometry;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Shared;
 using RackCad.Application.ProjectVariables;
 using Xunit;
 
@@ -106,14 +107,14 @@ namespace RackCad.Tests
             var id = Guid.NewGuid().ToString();
             var payload = store.Serialize(new RackEmbedDocument
                 { Kind = RackEmbedDocument.KindDynamic, Id = id, Name = " Rack A ", Design = "{}" });
-            var definitions = new[] { new RackDuplicationDefinitionSnapshot("D1", payload, "DEF") };
+            var definitions = new[] { new RackPhysicalDefinitionSnapshot("D1", payload, "DEF") };
             var selection = new[]
             {
-                new RackDuplicationSelectedReference("non-block", false, true, null),
-                new RackDuplicationSelectedReference("paper", true, false, "missing"),
-                new RackDuplicationSelectedReference("R1", true, true, "D1"),
-                new RackDuplicationSelectedReference("R1", true, true, "D1"),
-                new RackDuplicationSelectedReference("R2", true, true, "D1"),
+                new RackPhysicalReferenceSnapshot("non-block", false, true, null),
+                new RackPhysicalReferenceSnapshot("paper", true, false, "missing"),
+                new RackPhysicalReferenceSnapshot("R1", true, true, "D1"),
+                new RackPhysicalReferenceSnapshot("R1", true, true, "D1"),
+                new RackPhysicalReferenceSnapshot("R2", true, true, "D1"),
             };
 
             var plan = RackDuplicationPlan.Build(selection, definitions,

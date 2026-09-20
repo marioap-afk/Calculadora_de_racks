@@ -7,7 +7,9 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
+using RackCad.Application.Geometry;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Shared;
 using RackCad.Plugin.KindHandlers;
 using RackCad.Plugin.Systems.Shared;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -183,21 +185,27 @@ namespace RackCad.Plugin
 
                     if (!(transaction.GetObject(id, OpenMode.ForRead) is BlockReference reference))
                     {
-                        snapshot.Selection.Add(new RackDuplicationSelectedReference(key, false, false, null));
+                        snapshot.Selection.Add(new RackPhysicalReferenceSnapshot(key, false, false, null));
                         continue;
                     }
 
                     if (reference.OwnerId != modelSpaceId)
                     {
                         // PD-7: the plan filters it before looking at its definition, so the definition is not read.
-                        snapshot.Selection.Add(new RackDuplicationSelectedReference(key, true, false, null));
+                        snapshot.Selection.Add(new RackPhysicalReferenceSnapshot(key, true, false, null));
                         continue;
                     }
 
                     var definitionId = reference.BlockTableRecord;
                     var definitionKey = definitionId.Handle.ToString();
 
-                    snapshot.Selection.Add(new RackDuplicationSelectedReference(key, true, true, definitionKey));
+                    snapshot.Selection.Add(new RackPhysicalReferenceSnapshot(
+                        key,
+                        true,
+                        RackPhysicalSpace.ModelSpace,
+                        false,
+                        definitionKey,
+                        new Point2D(reference.Position.X, reference.Position.Y)));
                     snapshot.ReferencesByKey[key] = new SourceReference
                     {
                         Position = reference.Position,
@@ -214,7 +222,7 @@ namespace RackCad.Plugin
                     var definition = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
                     var payload = RackBlockData.Read(transaction, definitionId);
 
-                    snapshot.DefinitionSnapshots.Add(new RackDuplicationDefinitionSnapshot(definitionKey, payload, definition.Name));
+                    snapshot.DefinitionSnapshots.Add(new RackPhysicalDefinitionSnapshot(definitionKey, payload, definition.Name));
                     snapshot.DefinitionsByKey.Add(definitionKey, new SourceDefinition
                     {
                         DefinitionId = definitionId,
@@ -330,10 +338,10 @@ namespace RackCad.Plugin
         private sealed class DuplicationSnapshot
         {
             /// <summary>Planner input: every selected entity, in selection order.</summary>
-            public readonly List<RackDuplicationSelectedReference> Selection = new List<RackDuplicationSelectedReference>();
+            public readonly List<RackPhysicalReferenceSnapshot> Selection = new List<RackPhysicalReferenceSnapshot>();
 
             /// <summary>Planner input: one snapshot per distinct definition referenced from Model Space.</summary>
-            public readonly List<RackDuplicationDefinitionSnapshot> DefinitionSnapshots = new List<RackDuplicationDefinitionSnapshot>();
+            public readonly List<RackPhysicalDefinitionSnapshot> DefinitionSnapshots = new List<RackPhysicalDefinitionSnapshot>();
 
             /// <summary>AutoCAD side: the placement of every Model Space block reference, by its handle.</summary>
             public readonly Dictionary<string, SourceReference> ReferencesByKey = new Dictionary<string, SourceReference>(StringComparer.Ordinal);

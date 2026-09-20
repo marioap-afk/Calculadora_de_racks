@@ -3,55 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using RackCad.Application.ProjectVariables;
+using RackCad.Application.Systems.Shared;
 
 namespace RackCad.Application.Persistence
 {
-    /// <summary>
-    /// One entity the user selected for RACKDUPLICAR, as the Plugin measured it (I-51). Plain data: the keys are
-    /// opaque strings (AutoCAD handles in production) and nothing here is a live AutoCAD object.
-    /// </summary>
-    public sealed class RackDuplicationSelectedReference
-    {
-        public RackDuplicationSelectedReference(string referenceKey, bool isBlockReference, bool isInModelSpace, string definitionKey)
-        {
-            ReferenceKey = referenceKey;
-            IsBlockReference = isBlockReference;
-            IsInModelSpace = isInModelSpace;
-            DefinitionKey = definitionKey;
-        }
-
-        /// <summary>Identity of the selected entity. A key selected twice counts once.</summary>
-        public string ReferenceKey { get; }
-
-        /// <summary>False for anything that is not a block reference: it is ignored with a notice.</summary>
-        public bool IsBlockReference { get; }
-
-        /// <summary>False for a reference outside Model Space: it is filtered with a notice BEFORE classification.</summary>
-        public bool IsInModelSpace { get; }
-
-        /// <summary>The block definition the reference points at. Required for a block reference in Model Space.</summary>
-        public string DefinitionKey { get; }
-    }
-
-    /// <summary>One distinct block definition behind the selection, with its raw RackCad payload (or none).</summary>
-    public sealed class RackDuplicationDefinitionSnapshot
-    {
-        public RackDuplicationDefinitionSnapshot(string definitionKey, string rawPayload, string definitionName)
-        {
-            DefinitionKey = definitionKey;
-            RawPayload = rawPayload;
-            DefinitionName = definitionName;
-        }
-
-        public string DefinitionKey { get; }
-
-        /// <summary>The envelope text as read from the definition; null or empty when the block carries no RackCad data.</summary>
-        public string RawPayload { get; }
-
-        /// <summary>The block definition's name: the only human handle on a definition whose envelope cannot be read.</summary>
-        public string DefinitionName { get; }
-    }
-
     /// <summary>Which of the two variants a <see cref="RackDuplicationSourceKey"/> is.</summary>
     public enum RackDuplicationSourceKeyKind
     {
@@ -124,8 +79,8 @@ namespace RackCad.Application.Persistence
             RackDuplicationSourceKey key,
             string kind,
             string baseName,
-            IReadOnlyList<RackDuplicationDefinitionSnapshot> definitions,
-            IReadOnlyList<RackDuplicationSelectedReference> references)
+            IReadOnlyList<RackPhysicalDefinitionSnapshot> definitions,
+            IReadOnlyList<RackPhysicalReferenceSnapshot> references)
         {
             Key = key;
             Kind = kind;
@@ -143,10 +98,10 @@ namespace RackCad.Application.Persistence
         public string BaseName { get; }
 
         /// <summary>The distinct definitions to clone, in order of first selection.</summary>
-        public IReadOnlyList<RackDuplicationDefinitionSnapshot> Definitions { get; }
+        public IReadOnlyList<RackPhysicalDefinitionSnapshot> Definitions { get; }
 
         /// <summary>Every selected reference of the group, in selection order.</summary>
-        public IReadOnlyList<RackDuplicationSelectedReference> References { get; }
+        public IReadOnlyList<RackPhysicalReferenceSnapshot> References { get; }
     }
 
     /// <summary>
@@ -223,8 +178,8 @@ namespace RackCad.Application.Persistence
         /// <param name="definitions">One snapshot per distinct definition referenced from Model Space.</param>
         /// <param name="isKnownKind">Whether this build has a handler for an envelope kind (looked up case-insensitively).</param>
         public static RackDuplicationPlan Build(
-            IReadOnlyList<RackDuplicationSelectedReference> selection,
-            IReadOnlyList<RackDuplicationDefinitionSnapshot> definitions,
+            IReadOnlyList<RackPhysicalReferenceSnapshot> selection,
+            IReadOnlyList<RackPhysicalDefinitionSnapshot> definitions,
             Func<string, bool> isKnownKind)
         {
             if (selection == null)
@@ -242,71 +197,54 @@ namespace RackCad.Application.Persistence
                 throw new ArgumentNullException(nameof(isKnownKind));
             }
 
-            var snapshots = IndexDefinitions(definitions);
-            var classified = new Dictionary<string, Classification>(StringComparer.Ordinal);
-            var seenReferences = new HashSet<string>(StringComparer.Ordinal);
+            // CT-16 legacy symbol: seenReferences is now owned by RackPhysicalSelection; COPY consumes its stable,
+            // deduplicated facts and retains grouping, identity, naming and destination policy below.
+            var physical = RackPhysicalSelection.Classify(
+                selection,
+                definitions,
+                kind => isKnownKind(kind) ? RackPhysicalKindDisposition.Known : RackPhysicalKindDisposition.Unknown);
             var builders = new List<GroupBuilder>();
             var byKey = new Dictionary<RackDuplicationSourceKey, GroupBuilder>();
             var sourceRackIds = new HashSet<Guid>();
+            var reportedDefinitions = new HashSet<string>(StringComparer.Ordinal);
             var errors = new List<string>();
             int ignoredNonBlock = 0, ignoredOutside = 0, ignoredWithoutData = 0;
 
-            foreach (var reference in selection)
+            foreach (var facts in physical.Members)
             {
-                if (reference == null || string.IsNullOrEmpty(reference.ReferenceKey))
+                switch (facts.Disposition)
                 {
-                    throw new ArgumentException("Every selected entity needs a reference key.", nameof(selection));
+                    case RackPhysicalMemberDisposition.NotBlock:
+                        ignoredNonBlock++;
+                        continue;
+                    case RackPhysicalMemberDisposition.WrongSpace:
+                    case RackPhysicalMemberDisposition.Xref:
+                        ignoredOutside++;
+                        continue;
+                    case RackPhysicalMemberDisposition.MissingDefinition:
+                        throw new ArgumentException(
+                            "The block reference '" + facts.PhysicalKey + "' has no definition snapshot.", nameof(definitions));
+                    case RackPhysicalMemberDisposition.MissingRackData:
+                        ignoredWithoutData++;
+                        continue;
                 }
 
-                if (!seenReferences.Add(reference.ReferenceKey))
+                if (!facts.IsSelected)
                 {
-                    continue; // the same physical entity selected twice counts once
-                }
-
-                if (!reference.IsBlockReference)
-                {
-                    ignoredNonBlock++;
-                    continue;
-                }
-
-                if (!reference.IsInModelSpace)
-                {
-                    ignoredOutside++; // PD-7: filtered before its definition is even looked at
-                    continue;
-                }
-
-                if (string.IsNullOrEmpty(reference.DefinitionKey) ||
-                    !snapshots.TryGetValue(reference.DefinitionKey, out var snapshot))
-                {
-                    throw new ArgumentException(
-                        "The block reference '" + reference.ReferenceKey + "' has no definition snapshot.", nameof(definitions));
-                }
-
-                if (!classified.TryGetValue(snapshot.DefinitionKey, out var classification))
-                {
-                    classification = Classify(snapshot, isKnownKind);
-                    classified.Add(snapshot.DefinitionKey, classification);
-
-                    if (classification.Error != null)
+                    if (reportedDefinitions.Add(facts.DefinitionKey))
                     {
-                        errors.Add(classification.Error);
+                        errors.Add(Unusable(facts.Definition, facts.RackId, FailureReason(facts)));
                     }
-                }
 
-                if (classification.Error != null)
-                {
-                    continue; // already reported once for this definition
-                }
-
-                if (classification.Envelope == null)
-                {
-                    ignoredWithoutData++;
                     continue;
                 }
 
-                var key = KeyOf(snapshot, classification.Envelope);
+                var snapshot = facts.Definition;
+                var envelope = facts.Envelope;
 
-                if (Guid.TryParse(classification.Envelope.Id, out var sourceRackId))
+                var key = KeyOf(snapshot, envelope);
+
+                if (Guid.TryParse(envelope.Id, out var sourceRackId))
                 {
                     sourceRackIds.Add(sourceRackId); // a copy may never reuse the identity of any selected source
                 }
@@ -318,7 +256,7 @@ namespace RackCad.Application.Persistence
                     builders.Add(builder);
                 }
 
-                builder.Add(snapshot, classification.Envelope, reference);
+                builder.Add(snapshot, envelope, facts.Reference);
             }
 
             if (errors.Count == 0 && builders.Count == 0)
@@ -367,76 +305,29 @@ namespace RackCad.Application.Persistence
             return new RackDuplicationDestinationAssigner(Groups, sourceRackIds, newRackId);
         }
 
-        private static Dictionary<string, RackDuplicationDefinitionSnapshot> IndexDefinitions(
-            IReadOnlyList<RackDuplicationDefinitionSnapshot> definitions)
+        private static string FailureReason(RackPhysicalMemberFacts facts)
         {
-            var index = new Dictionary<string, RackDuplicationDefinitionSnapshot>(StringComparer.Ordinal);
+            if (facts.Failure == RackPhysicalFailure.EnvelopeUnreadable)
+                return "el sobre no se puede leer (JSON invalido o version posterior a esta)";
+            if (facts.Failure == RackPhysicalFailure.MissingKind)
+                return "no declara tipo de rack";
+            if (facts.Disposition == RackPhysicalMemberDisposition.UnknownKind)
+                return "tipo de rack no reconocido (" + facts.Kind + ")";
+            if (facts.Failure == RackPhysicalFailure.MissingDesign)
+                return "no lleva diseno";
 
-            foreach (var definition in definitions)
-            {
-                if (definition == null || string.IsNullOrEmpty(definition.DefinitionKey))
-                {
-                    throw new ArgumentException("Every definition snapshot needs a definition key.", nameof(definitions));
-                }
-
-                if (index.ContainsKey(definition.DefinitionKey))
-                {
-                    throw new ArgumentException(
-                        "The definition '" + definition.DefinitionKey + "' was snapshotted twice.", nameof(definitions));
-                }
-
-                index.Add(definition.DefinitionKey, definition);
-            }
-
-            return index;
+            return "la clasificacion fisica no esta disponible";
         }
 
-        private static Classification Classify(RackDuplicationDefinitionSnapshot snapshot, Func<string, bool> isKnownKind)
-        {
-            // No RackCad text at all: the same convention as the drawing-wide envelope scan.
-            if (string.IsNullOrEmpty(snapshot.RawPayload))
-            {
-                return Classification.WithoutRackData;
-            }
-
-            var envelope = new RackEmbedStore().Deserialize(snapshot.RawPayload);
-
-            if (envelope == null)
-            {
-                return Classification.Unusable(Unusable(snapshot, null,
-                    "el sobre no se puede leer (JSON invalido o version posterior a esta)"));
-            }
-
-            var rackId = string.IsNullOrWhiteSpace(envelope.Id) ? null : envelope.Id;
-
-            if (string.IsNullOrWhiteSpace(envelope.Kind))
-            {
-                return Classification.Unusable(Unusable(snapshot, rackId, "no declara tipo de rack"));
-            }
-
-            if (!isKnownKind(envelope.Kind))
-            {
-                return Classification.Unusable(Unusable(snapshot, rackId,
-                    "tipo de rack no reconocido (" + envelope.Kind + ")"));
-            }
-
-            if (string.IsNullOrWhiteSpace(envelope.Design))
-            {
-                return Classification.Unusable(Unusable(snapshot, rackId, "no lleva diseno"));
-            }
-
-            return Classification.Valid(envelope);
-        }
-
-        private static string Unusable(RackDuplicationDefinitionSnapshot snapshot, string rackId, string reason)
+        private static string Unusable(RackPhysicalDefinitionSnapshot snapshot, string rackId, string reason)
             => "La definicion de bloque '" + DisplayName(snapshot) + "'" +
                (rackId == null ? string.Empty : " del rack " + rackId) +
                " lleva datos de RackCad que esta version no puede usar: " + reason + ". No se duplico nada.";
 
-        private static string DisplayName(RackDuplicationDefinitionSnapshot snapshot)
+        private static string DisplayName(RackPhysicalDefinitionSnapshot snapshot)
             => string.IsNullOrWhiteSpace(snapshot.DefinitionName) ? snapshot.DefinitionKey : snapshot.DefinitionName;
 
-        private static RackDuplicationSourceKey KeyOf(RackDuplicationDefinitionSnapshot snapshot, RackEmbedDocument envelope)
+        private static RackDuplicationSourceKey KeyOf(RackPhysicalDefinitionSnapshot snapshot, RackEmbedDocument envelope)
             => string.IsNullOrWhiteSpace(envelope.Id)
                 ? RackDuplicationSourceKey.ForDefinition(snapshot.DefinitionKey)
                 : RackDuplicationSourceKey.ForRackId(envelope.Id);
@@ -465,37 +356,18 @@ namespace RackCad.Application.Persistence
 
         private static string Count(int value) => value.ToString(CultureInfo.InvariantCulture);
 
-        private sealed class Classification
-        {
-            private Classification(RackEmbedDocument envelope, string error)
-            {
-                Envelope = envelope;
-                Error = error;
-            }
-
-            public RackEmbedDocument Envelope { get; }
-
-            public string Error { get; }
-
-            public static Classification WithoutRackData { get; } = new Classification(null, null);
-
-            public static Classification Unusable(string error) => new Classification(null, error);
-
-            public static Classification Valid(RackEmbedDocument envelope) => new Classification(envelope, null);
-        }
-
         private sealed class GroupBuilder
         {
-            private readonly List<RackDuplicationDefinitionSnapshot> definitions = new List<RackDuplicationDefinitionSnapshot>();
+            private readonly List<RackPhysicalDefinitionSnapshot> definitions = new List<RackPhysicalDefinitionSnapshot>();
             private readonly List<RackEmbedDocument> envelopes = new List<RackEmbedDocument>();
             private readonly HashSet<string> definitionKeys = new HashSet<string>(StringComparer.Ordinal);
-            private readonly List<RackDuplicationSelectedReference> references = new List<RackDuplicationSelectedReference>();
+            private readonly List<RackPhysicalReferenceSnapshot> references = new List<RackPhysicalReferenceSnapshot>();
 
             public GroupBuilder(RackDuplicationSourceKey key) => Key = key;
 
             public RackDuplicationSourceKey Key { get; }
 
-            public void Add(RackDuplicationDefinitionSnapshot snapshot, RackEmbedDocument envelope, RackDuplicationSelectedReference reference)
+            public void Add(RackPhysicalDefinitionSnapshot snapshot, RackEmbedDocument envelope, RackPhysicalReferenceSnapshot reference)
             {
                 if (definitionKeys.Add(snapshot.DefinitionKey))
                 {
