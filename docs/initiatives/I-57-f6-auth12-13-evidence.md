@@ -5,12 +5,12 @@ Gate                  = F6 / AUTH-12..13 ONLY
 F6_START_SHA          = c7c685202a1a6817825a002ce937b95244ba23fd
 F6_IMPLEMENTATION_SHA = 415953fefa5484b9d23829eb3b7b3b18b55b4389
 F6_VALIDATION_SHA     = 415953fefa5484b9d23829eb3b7b3b18b55b4389
-F6_FINAL_SHA          = NOT CREATED
+F6_FINAL_SHA          = THIS CLOSURE COMMIT
 Proposal              = V5 @ 91a3d1ca779e57a5c47f474d9ae18d5a01e3f8ca
 R3                     = EFFECTIVE / UNCHANGED
 ADR-0034               = ACCEPTED / INTACT
 ADR-0044               = ACCEPTED / UNCHANGED
-F6 result              = BLOCKED ONLY BY OV-FND-03 IMPORTATION
+F6 result              = COMPLETE
 F7                     = NOT OPEN
 ```
 
@@ -106,8 +106,8 @@ El adapter Selective proyecta los mismos tres outcomes y la misma instancia auth
 
 El diff F6 no toca DTO de persistencia, `RackEmbedDocument`, schema, catalogos, assets, builders geometricos,
 resolvers, comandos, BOM, materializers, I-52, I-55 ni ADR. `schema diff = NONE`; `observable behavior diff =
-NONE EXPECTED`, sujeto a OV-FND-03 importation real. AUTH-15, creacion caller-owned y consumer policy permanecen
-fuera de alcance.
+NONE`, confirmado por OV-FND-03 importation. AUTH-15, creacion caller-owned y consumer policy permanecen fuera
+de alcance.
 
 ## DLL y biblioteca para OV-FND-03
 
@@ -119,7 +119,8 @@ Library path   = D:\Base_de_datos_AutoCAD_V.0.dwg
 Library SHA-256= B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8
 ```
 
-La matriz manual A-E esta preparada en
-[`I-57-f6-owner-validation.md`](I-57-f6-owner-validation.md). No se inventa su resultado. Proposal V5 y el mapa
-de gates exigen OV-FND-03 importation dentro de la validacion completa antes del Candidato; F6 queda
-`BLOCKED ONLY BY OV-FND-03 IMPORTATION`. AUTH-15 no fue implementada y F7 no fue abierta.
+La matriz manual A-E y su resultado durable estan en
+[`I-57-f6-owner-validation.md`](I-57-f6-owner-validation.md). El Owner ejecuto los cinco casos sobre el SHA,
+DLL, AutoCAD 2025 y biblioteca identificados: A-E, names, geometry, BOM y save/reopen quedaron `PASS`, sin
+regresion visible. El build exacto de AutoCAD no fue suministrado y no se infiere. AUTH-12/13 y F6 quedan
+`COMPLETE`; AUTH-15 no fue implementada y F7 no fue abierta.

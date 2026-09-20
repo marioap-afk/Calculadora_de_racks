@@ -4,7 +4,7 @@
 Audit basis       = F6_VALIDATION_SHA 415953fefa5484b9d23829eb3b7b3b18b55b4389
 Workflow          = V1 grandfathered; WORKFLOW_V2_EFFECTIVE_SHA exists at 8a021fb67c16dfccd6afc18448ea7e6a71a32364
 F7 gate           = NOT OPEN
-F7 readiness      = PREPARED / BLOCKED BY F6 OWNER VALIDATION AND COORDINATOR GATE
+F7 readiness      = READY FOR COORDINATOR REVIEW
 Candidate         = NOT DECLARED
 Integration       = NOT AUTHORIZED
 ```
@@ -24,7 +24,7 @@ Integration       = NOT AUTHORIZED
 | 09 | `IRackResolvePort` por kind | resolvers/handlers | KEEP / DELEGATED | CT-RES; OV-FND-02 PASS en F5 SHA |
 | 10 | `RackPreparedView<TPayload>` | builders por kind | KEEP / DELEGATED | CT-PLAN; OV-FND-03 names/geometry PASS en F5 SHA |
 | 11 | `RackViewBaseName` | strings duplicadas | DELEGATED / REMOVED | CT-NAME; OV-FND-03 names PASS en F5 SHA |
-| 12 | requirements + query + importer boundary | `EnsureForPlan` | DELEGATED; importer KEEP Plugin | CT-BLK; OV-FND-03 importation pendiente |
+| 12 | requirements + query + importer boundary | `EnsureForPlan` | DELEGATED; importer KEEP Plugin | CT-BLK; OV-FND-03 importation PASS |
 | 13 | comparator port por kind | `SelectiveAuthoredAuthority` | KEEP / DELEGATED; otros Unreadable | CT-AUTH; OV-FND-04 pendiente |
 
 AUTH-15 sigue fuera. El barrido estatico no encontro codec, frame, scan, transform decomposition, resolve, builder,
@@ -33,7 +33,7 @@ seleccion/exposicion de vistas, COPY/restamp, naming final, materializacion, acc
 
 ## Matriz de Candidato F7 preparada
 
-1. Coordinator cierra F6 tras `OV-FND-03 importation = PASS` y abre F7 explicitamente.
+1. Coordinator revisa el cierre F6, con `OV-FND-03 importation = PASS`, y abre F7 explicitamente.
 2. `git fetch --all --prune`; clasificar drift de `main`, I-52 e I-55; rebase solo conforme WORKFLOW.
 3. Auditar cero productores paralelos AUTH-01..13 y ningun AUTH-15.
 4. Crear el commit Candidato; confirmar arbol limpio y SHA exacto.
@@ -65,8 +65,8 @@ seleccion/exposicion de vistas, COPY/restamp, naming final, materializacion, acc
 
 ## Riesgos y blockers
 
-- **Blocker actual:** OV-FND-03 importation A-E pendiente del Owner sobre `415953fe...`.
-- **Gate:** F7 no tiene autorizacion del Coordinator.
+- **Owner gate F6:** cerrado; OV-FND-03 importation A-E = PASS sobre `415953fe...`.
+- **Blocker actual:** F7 no tiene autorizacion del Coordinator.
 - **Candidate:** no existe; cualquier rebase o cambio crea SHA y evidencia nuevos.
 - **Drift al preparar:** `main=a61850a...`, I-52=`ebdb358b...`, I-55=`c20173cb...`; ninguno cambio durante F6.
 - **Material contradictions:** NONE.

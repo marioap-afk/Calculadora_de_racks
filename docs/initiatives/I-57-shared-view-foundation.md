@@ -26,8 +26,9 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: F6 BLOCKED ONLY BY OV-FND-03 IMPORTATION.** AUTH-12/13 y toda su evidencia automatizada estan
-> verdes sobre `415953fe...`; F7 permanece NOT OPEN. Proposal V5, R3, ADR-0034 y ADR-0044 siguen intactos.
+> **Fase actual: F6 COMPLETE.** AUTH-12/13, evidencia automatizada y OV-FND-03 importation estan completos sobre
+> `415953fe...`; F7 permanece NOT OPEN y listo para revision del Coordinator. Proposal V5, R3, ADR-0034 y
+> ADR-0044 siguen intactos.
 
 ```text
 Initiative        = I-57 — Shared View Foundation
@@ -52,14 +53,14 @@ Foundation Coordinator = AGREED ON V5
 Foundation Architect   = AGREED ON V5
 Technical Consensus   = REACHED ON V5
 Full Initiative Consensus = NOT DECLARED
-Foundation Implementation = AUTH-01..13 IMPLEMENTED; F6 AWAITING OWNER VALIDATION
+Foundation Implementation = AUTH-01..13 IMPLEMENTED; F6 COMPLETE
 F0 = ACCEPTED / CLOSED
 F1 = COMPLETE / CHARACTERIZATION ONLY
 F2 = COMPLETE / AUTH-01..04 ONLY
 F3 = COMPLETE / AUTH-05 ONLY
 F4 = COMPLETE / AUTH-06..08 ONLY
 F5 = COMPLETE / AUTH-09..11 ONLY
-F6 = BLOCKED ONLY BY OV-FND-03 IMPORTATION
+F6 = COMPLETE / AUTH-12..13 ONLY
 F7 = NOT OPEN
 ```
 
@@ -168,8 +169,9 @@ F6 implemento exclusivamente AUTH-12..13. El recibo
 `F6_VALIDATION_SHA = 415953fefa5484b9d23829eb3b7b3b18b55b4389`, BLK-ID-1..6,
 BLK-AVAILABILITY-01..03, CT-BLK/CT-AUTH, ambas suites Full locales, builds Debug y CI exacta. Requirements se
 extraen solo de payloads tipados; el query puro y el importer permanecen separados en Plugin; el comparator
-Selective reutiliza su autoridad vigente y los otros kinds fallan `Unreadable`. La porcion importation de
-OV-FND-03 esta preparada pero pendiente del Owner, por lo que F6 no esta completo y F7 no esta abierto.
+Selective reutiliza su autoridad vigente y los otros kinds fallan `Unreadable`. El Owner ejecuto OV-FND-03
+importation sobre ese SHA y su DLL exacta: A-E, names, geometry, BOM y save/reopen quedaron `PASS`, sin regresion
+visible. F6 esta completo; F7 no esta abierto y queda listo para revision formal del Coordinator.
 
 ## 7. Archivos esperados
 
@@ -187,7 +189,7 @@ Ningun archivo de `src/`, `tests/`, `assets/`, `.github/`, `eng/` o `deploy/` pe
 | F3 | Marco y tramo | COMPLETE / AUTH-05 ONLY; validation `3102368ba54190e93cc6daf1d6d7e1ef72ba4266`; OV-FND-01 PASS 6/6 |
 | F4 | Seleccion neutral + hechos de colocacion | COMPLETE / AUTH-06..08 ONLY; implementation `7994b8038f0f28d824677e74591a5a6114e426c5` |
 | F5 | Resolve, Plan, adaptadores y nombre | COMPLETE / AUTH-09..11 ONLY; validation `696a06f482e89bac7d254c27597cd53d49123e5c` |
-| F6 | Comparador authored + requisitos/consulta de biblioteca | BLOCKED ONLY BY OV-FND-03 IMPORTATION; validation `415953fefa5484b9d23829eb3b7b3b18b55b4389` |
+| F6 | Comparador authored + requisitos/consulta de biblioteca | COMPLETE; validation `415953fefa5484b9d23829eb3b7b3b18b55b4389`; OV-FND-03 importation PASS |
 | F7 | Candidato | BLOCKED |
 | F8 | Integracion en `main` | BLOCKED |
 
