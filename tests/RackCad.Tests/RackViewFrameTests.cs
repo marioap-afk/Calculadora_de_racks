@@ -6,6 +6,7 @@ using RackCad.Application.StructuralSections;
 using RackCad.Application.StructuralSections.Geometry;
 using RackCad.Application.Systems.Cantilever;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.PushBack;
 using RackCad.Application.Systems.Selective;
 using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
@@ -89,7 +90,7 @@ namespace RackCad.Tests
             AssertFrame(FlowBedViewFrameAdapter.Resolve(bed, RackViewAddress.Whole(DimensionViewKind.Lateral)),
                 RackPhysicalAxis.Depth, RackPhysicalAxis.Height, 0.0, 100.0);
 
-            var (line, plan) = Cantilever();
+            var (line, plan, _) = Cantilever();
             var cantilever = CantileverViewFrameAdapter.Resolve(
                 line, plan, RackViewAddress.Whole(DimensionViewKind.Frontal));
             Assert.True(cantilever.IsAvailable);
@@ -150,9 +151,79 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void PushBackKeepsRealPostAndExplicitSideEndIdentity()
+        {
+            var structure = DynamicSystem();
+            var system = new PushBackSystem { Structure = structure };
+            var cut = new PushBackSystemLateralBuilder().Cortes(system, Catalog).Single(item => item.PostIndex == 1);
+            var lateral = PushBackViewFrameAdapter.Resolve(system, Catalog, RackViewAddress.Post(1));
+            Assert.True(lateral.IsAvailable);
+            Assert.Equal(cut.PostX, lateral.Frame.VariantOffset.Run, 6);
+            Assert.NotEqual(1.0, lateral.Frame.VariantOffset.Run);
+
+            system.Composite = new PushBackCompositeSystem
+            {
+                SideA = new PushBackSideSystem { Side = PushBackSide.A, IsPresent = true, OuterX = 0.0, InnerX = 80.0 },
+                SideB = new PushBackSideSystem { Side = PushBackSide.B, IsPresent = true, OuterX = 180.0, InnerX = 100.0 }
+            };
+            var aOuter = PushBackViewFrameAdapter.Resolve(system, Catalog,
+                RackViewAddress.PushBackCut(RackPushBackEnd.EntradaSalida, RackPushBackSide.A));
+            var aInner = PushBackViewFrameAdapter.Resolve(system, Catalog,
+                RackViewAddress.PushBackCut(RackPushBackEnd.Posterior, RackPushBackSide.A));
+            var bOuter = PushBackViewFrameAdapter.Resolve(system, Catalog,
+                RackViewAddress.PushBackCut(RackPushBackEnd.EntradaSalida, RackPushBackSide.B));
+            var bInner = PushBackViewFrameAdapter.Resolve(system, Catalog,
+                RackViewAddress.PushBackCut(RackPushBackEnd.Posterior, RackPushBackSide.B));
+
+            Assert.Equal(0.0, aOuter.Frame.VariantOffset.Depth);
+            Assert.Equal(80.0, aInner.Frame.VariantOffset.Depth);
+            Assert.Equal(180.0, bOuter.Frame.VariantOffset.Depth);
+            Assert.Equal(100.0, bInner.Frame.VariantOffset.Depth);
+        }
+
+        [Fact]
+        public void CabeceraAndCamaExposeOnlyTheirRealViews()
+        {
+            var header = new RackFrameConfiguration { Depth = 48.0 };
+            Assert.Equal(RackPhysicalAxis.Height,
+                CabeceraViewFrameAdapter.Resolve(header, RackViewAddress.Whole(DimensionViewKind.Lateral))
+                    .Frame.AxisMap.LocalY);
+            Assert.Equal(RackPhysicalAxis.Run,
+                CabeceraViewFrameAdapter.Resolve(header, RackViewAddress.Whole(DimensionViewKind.Planta))
+                    .Frame.AxisMap.LocalY);
+
+            var bed = new FlowBedConfiguration { LaneDepth = 100.0 };
+            Assert.True(FlowBedViewFrameAdapter.Resolve(
+                bed, RackViewAddress.Whole(DimensionViewKind.Lateral)).IsAvailable);
+            Assert.Equal(RackViewFrameFailure.UnsupportedAddress,
+                FlowBedViewFrameAdapter.Resolve(
+                    bed, RackViewAddress.Whole(DimensionViewKind.Planta)).Failure);
+        }
+
+        [Fact]
+        public void CantileverStationUsesStationOriginAndPhysicalDepthSpan()
+        {
+            var fixture = Cantilever();
+            var plan = CantileverViewPlanBuilder.Build(
+                fixture.Line, CantileverViewKind.Lateral, fixture.Factory, stationIndex: 1);
+            var result = CantileverViewFrameAdapter.Resolve(fixture.Line, plan, RackViewAddress.Station(1));
+            var placement = fixture.Line.Stations.Single(item => item.Index == 1);
+            var envelope = placement.Station.Envelope.Value;
+
+            Assert.True(result.IsAvailable);
+            Assert.Equal(placement.OriginX, result.Frame.PhysicalOrigin.Run, 6);
+            Assert.Equal(placement.OriginX, result.Frame.VariantOffset.Run, 6);
+            Assert.Equal(envelope.MinY, result.Frame.KMin, 6);
+            Assert.Equal(envelope.MaxY, result.Frame.KMax, 6);
+            Assert.Equal(plan.Bounds, result.Frame.DrawnBounds.Value);
+        }
+
+        [Fact]
         public void CantileverPhysicalSpan_DoesNotComeFromProjectedBounds()
         {
-            var (line, plan) = Cantilever();
+            var fixture = Cantilever();
+            var line = fixture.Line;
+            var plan = fixture.Plan;
             var result = CantileverViewFrameAdapter.Resolve(
                 line, plan, RackViewAddress.Whole(DimensionViewKind.Frontal));
 
@@ -161,6 +232,7 @@ namespace RackCad.Tests
             Assert.Equal(envelope.MinX, result.Frame.KMin);
             Assert.Equal(envelope.MaxX, result.Frame.KMax);
             Assert.Equal(plan.Bounds, result.Frame.DrawnBounds.Value);
+            Assert.True(result.Frame.KMin != plan.Bounds.MinX || result.Frame.KMax != plan.Bounds.MaxX);
         }
 
         private static void AssertFrame(
@@ -195,7 +267,7 @@ namespace RackCad.Tests
             return new DynamicRackSystemResolver(Catalog).Resolve(design).System;
         }
 
-        private static (CantileverLineAssembly Line, CantileverViewPlan Plan) Cantilever()
+        private static (CantileverLineAssembly Line, CantileverViewPlan Plan, StructuralSectionGeometryFactory Factory) Cantilever()
         {
             var catalog = new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve()).Load();
             var factory = new StructuralSectionGeometryFactory(catalog);
@@ -240,7 +312,7 @@ namespace RackCad.Tests
                 CantileverCataloguePolicies.ColumnBase(catalog),
                 CantileverCataloguePolicies.Arm(catalog));
             Assert.False(line.IsBlocked, string.Join(" | ", line.Diagnostics.Select(item => item.Message)));
-            return (line, CantileverViewPlanBuilder.Build(line, CantileverViewKind.Frontal, factory));
+            return (line, CantileverViewPlanBuilder.Build(line, CantileverViewKind.Frontal, factory), factory);
         }
     }
 }
