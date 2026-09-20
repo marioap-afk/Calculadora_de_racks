@@ -26,8 +26,8 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: F3 COMPLETE sobre AUTH-05; F4 NOT OPEN.** Proposal V5, R3 y ADR-0044 permanecen intactos. AUTH-05
-> tiene evidencia automatizada exacta y `OV-FND-01 = PASS 6/6` sobre su SHA validado. F1 y F2 permanecen completas.
+> **Fase actual: F4 COMPLETE sobre AUTH-06..08; F5 NOT OPEN.** Proposal V5, R3 y ADR-0044 permanecen intactos.
+> AUTH-06..08 tienen evidencia automatizada exacta; F1, F2 y F3 permanecen completas.
 
 ```text
 Initiative        = I-57 — Shared View Foundation
@@ -52,12 +52,13 @@ Foundation Coordinator = AGREED ON V5
 Foundation Architect   = AGREED ON V5
 Technical Consensus   = REACHED ON V5
 Full Initiative Consensus = NOT DECLARED
-Foundation Implementation = F3 COMPLETE / AUTH-01..05 ONLY
+Foundation Implementation = F4 COMPLETE / AUTH-01..08 ONLY
 F0 = ACCEPTED / CLOSED
 F1 = COMPLETE / CHARACTERIZATION ONLY
 F2 = COMPLETE / AUTH-01..04 ONLY
 F3 = COMPLETE / AUTH-05 ONLY
-F4 = NOT OPEN
+F4 = COMPLETE / AUTH-06..08 ONLY
+F5 = NOT OPEN
 ```
 
 ## 1. Objetivo
@@ -149,6 +150,11 @@ F3 implemento exclusivamente AUTH-05. El recibo [`I-57-f3-auth05-evidence.md`](I
 acredita `F3_VALIDATION_SHA = 3102368ba54190e93cc6daf1d6d7e1ef72ba4266`, CT-05 y pruebas focales, ambas suites
 Full locales, builds, CI exacta 4/4 y `OV-FND-01 = PASS 6/6` en AutoCAD 2025. El build exacto de AutoCAD no fue
 suministrado por el Owner y queda registrado literalmente; la guia manual §7 exige la version, que si fue provista.
+F4 implemento exclusivamente AUTH-06..08. El recibo
+[`I-57-f4-auth06-08-evidence.md`](I-57-f4-auth06-08-evidence.md) acredita el SHA productivo
+`7994b8038f0f28d824677e74591a5a6114e426c5`, CT-16/SCAN/GEO, paridad de `RackDuplicationPlan`, Core Full local,
+build Debug y CI exacta 4/4. El probe AutoCAD permanece en Plugin, `Transform2D` se reutiliza intacto y las policies
+de COPY, mirror y projection permanecen en sus consumers.
 
 ## 7. Archivos esperados
 
@@ -164,7 +170,7 @@ Ningun archivo de `src/`, `tests/`, `assets/`, `.github/`, `eng/` o `deploy/` pe
 | F1 | Caracterizacion | COMPLETE / 10 CT GREEN / ZERO PRODUCTION CHANGES |
 | F2 | Taxonomia + codec sintactico + availability | COMPLETE / AUTH-01..04 ONLY; implementation `2f63da6259aa9fd23ce7f42ee786c63eebae25b7` |
 | F3 | Marco y tramo | COMPLETE / AUTH-05 ONLY; validation `3102368ba54190e93cc6daf1d6d7e1ef72ba4266`; OV-FND-01 PASS 6/6 |
-| F4 | Seleccion neutral + hechos de colocacion | NOT OPEN / PENDING COORDINATOR REVIEW |
+| F4 | Seleccion neutral + hechos de colocacion | COMPLETE / AUTH-06..08 ONLY; implementation `7994b8038f0f28d824677e74591a5a6114e426c5` |
 | F5 | Resolve, Plan, adaptadores y nombre | BLOCKED |
 | F6 | Comparador authored + requisitos/consulta de biblioteca | BLOCKED |
 | F7 | Candidato | BLOCKED |
