@@ -26,9 +26,9 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: Proposal V5 con consenso tecnico y CT-04 V2 aceptada.** F1 permanece completa y F2 esta abierto
-> exclusivamente para AUTH-01..04. Su implementacion esta pausada antes de produccion por serializacion con I-49;
-> F3 no esta abierto.
+> **Fase actual: F2 en ejecucion sobre AUTH-01..04.** Proposal V5 y CT-04 V2 permanecen aceptadas; el relevo
+> posterior a I-49 fue clasificado `MATERIAL BUT COMPATIBLE` y acreditado sobre el SHA exacto de inicio. F1
+> permanece completa y F3 no esta abierto.
 
 ```text
 Initiative        = I-57 — Shared View Foundation
@@ -53,10 +53,10 @@ Foundation Coordinator = AGREED ON V5
 Foundation Architect   = AGREED ON V5
 Technical Consensus   = REACHED ON V5
 Full Initiative Consensus = NOT DECLARED
-Foundation Implementation = F2 AUTHORIZED / PAUSED BY I-49 SERIALIZATION
+Foundation Implementation = F2 IN PROGRESS / AUTH-01..04 ONLY
 F0 = ACCEPTED / CLOSED
 F1 = COMPLETE / CHARACTERIZATION ONLY
-F2 = OPEN / AUTH-01..04 ONLY
+F2 = IN PROGRESS / AUTH-01..04 ONLY
 F3 = NOT OPEN
 ```
 
@@ -139,8 +139,10 @@ Proposal V5 tiene veredictos `AGREED` de Coordinator y Architect sobre el SHA ex
 `91a3d1ca779e57a5c47f474d9ae18d5a01e3f8ca`; ADR-0044 permanece `ACCEPTED`; latest Rn = R3 permanece
 `EFFECTIVE`, con el mismo objeto registrado por I-52, I-55 e I-57 y ninguna CR material abierta. CT-04 V2 resuelve
 la contradiccion material y gobierna F2 donde el fixture historico de F1 contradiga V2. F2 queda abierto solo para
-AUTH-01..04. El preflight de apertura encontro trabajo productivo local activo de I-49 en `ProjectVariables`:
-la implementacion de F2 se pausa antes de tocar `src/` hasta serializar ese relevo.
+AUTH-01..04. El relevo posterior a I-49 esta registrado en `I-57-post-i49-rebase-f2-resume.md`: el avance se
+clasifico `MATERIAL BUT COMPATIBLE`, los objetos normativos conservaron sus blobs y el SHA exacto
+`b0f36cdbf404cca82e29d1e3ca933b4ed4b4671d` obtuvo pruebas focales verdes y CI `push` 4/4 verde. Ese SHA es
+`F2_START_SHA`; la implementacion conserva la concurrencia de I-49 y migra `ProjectVariableMutationExecutor` al final.
 
 ## 7. Archivos esperados
 
@@ -154,7 +156,7 @@ Ningun archivo de `src/`, `tests/`, `assets/`, `.github/`, `eng/` o `deploy/` pe
 |---|---|---|
 | F0 | Claim remoto + bootstrap documental | ACCEPTED / CLOSED |
 | F1 | Caracterizacion | COMPLETE / 10 CT GREEN / ZERO PRODUCTION CHANGES |
-| F2 | Taxonomia + codec sintactico + availability | OPEN / AUTH-01..04 ONLY; IMPLEMENTATION PAUSED BY I-49 SERIALIZATION |
+| F2 | Taxonomia + codec sintactico + availability | IN PROGRESS / AUTH-01..04 ONLY; F2_START_SHA = b0f36cdbf404cca82e29d1e3ca933b4ed4b4671d |
 | F3 | Marco y tramo | NOT OPEN |
 | F4 | Seleccion neutral + hechos de colocacion | BLOCKED |
 | F5 | Resolve, Plan, adaptadores y nombre | BLOCKED |
