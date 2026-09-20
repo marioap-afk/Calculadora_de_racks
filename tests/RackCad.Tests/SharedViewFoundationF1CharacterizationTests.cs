@@ -216,11 +216,20 @@ namespace RackCad.Tests
         [Fact]
         public void CTBLK_IdentityKeysComeOnlyFromTypedInstancesAndNamingCannotRewriteThem()
         {
+            var extractor = Source("src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs");
+            Assert.Equal(2, Count(extractor, ".Select(instance => instance.BlockName)"));
+            Assert.Contains("new LibraryBlockRequirement(key)", extractor);
+            Assert.DoesNotContain("BlockNaming", extractor);
+            Assert.DoesNotContain("BaseName", extractor);
+
             var importer = Source("src/RackCad.Plugin/Drawing/BlockLibraryImporter.cs");
-            Assert.Equal(2, Count(importer, ".Select(i => i.BlockName)"));
-            Assert.Contains(".Distinct(StringComparer.OrdinalIgnoreCase)", importer);
+            Assert.Contains("EnsureRequirements", importer);
             Assert.DoesNotContain("BlockNaming", importer);
             Assert.DoesNotContain("SanitizeBlockName", importer);
+
+            var query = Source("src/RackCad.Plugin/Drawing/AutoCadLibraryBlockQuery.cs");
+            Assert.Contains("blockTable.Has(requirement.Key)", query);
+            Assert.DoesNotContain("BlockLibraryImporter", query);
 
             var writer = Source("src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs");
             Assert.True(writer.IndexOf("EnsureForPlan(database, plan)", StringComparison.Ordinal) <

@@ -119,7 +119,8 @@ namespace RackCad.Tests
                     calls++;
                     throw new InvalidOperationException("builder fallo");
                 },
-                address => address.Kind == DimensionViewKind.Frontal);
+                address => address.Kind == DimensionViewKind.Frontal,
+                RackBlockRequirementExtractors.HeaderRun);
 
             var unsupported = port.Prepare(
                 new Marker("resolved"),
@@ -148,14 +149,14 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void AUTH10_PAYLOAD_CONTRACT_IS_GENERIC_AND_HAS_NO_OBJECT_JSON_OR_REQUIREMENTS_PLACEHOLDER()
+        public void AUTH10_PAYLOAD_CONTRACT_IS_GENERIC_AND_HAS_NO_OBJECT_OR_JSON_ESCAPE()
         {
             var prepared = typeof(RackPreparedView<>);
             Assert.True(prepared.IsGenericTypeDefinition);
             Assert.DoesNotContain(prepared.GetProperties(), property => property.PropertyType == typeof(object));
             Assert.DoesNotContain(prepared.GetProperties(), property =>
-                property.Name.Contains("Json", StringComparison.OrdinalIgnoreCase)
-                || property.Name.Contains("Requirement", StringComparison.OrdinalIgnoreCase));
+                property.Name.Contains("Json", StringComparison.OrdinalIgnoreCase));
+            Assert.Contains(prepared.GetProperties(), property => property.Name == "BlockRequirements");
         }
 
         [Fact]
@@ -262,12 +263,12 @@ namespace RackCad.Tests
             bool Supports(RackViewAddress address) => address.Kind == DimensionViewKind.Frontal;
             switch (kind)
             {
-                case "selective": return RackViewPreparationPorts.Selective(builder, Supports);
-                case "dynamic": return RackViewPreparationPorts.Dynamic(builder, Supports);
-                case "pushback": return RackViewPreparationPorts.PushBack(builder, Supports);
-                case "cantilever": return RackViewPreparationPorts.Cantilever(builder, Supports);
-                case "cabecera": return RackViewPreparationPorts.Cabecera(builder, Supports);
-                case "cama": return RackViewPreparationPorts.Cama(builder, Supports);
+                case "selective": return RackViewPreparationPorts.Selective(builder, Supports, RackBlockRequirementExtractors.HeaderRun);
+                case "dynamic": return RackViewPreparationPorts.Dynamic(builder, Supports, RackBlockRequirementExtractors.HeaderRun);
+                case "pushback": return RackViewPreparationPorts.PushBack(builder, Supports, RackBlockRequirementExtractors.HeaderRun);
+                case "cantilever": return RackViewPreparationPorts.Cantilever(builder, Supports, RackBlockRequirementExtractors.HeaderRun);
+                case "cabecera": return RackViewPreparationPorts.Cabecera(builder, Supports, RackBlockRequirementExtractors.HeaderRun);
+                case "cama": return RackViewPreparationPorts.Cama(builder, Supports, RackBlockRequirementExtractors.HeaderRun);
                 default: throw new ArgumentOutOfRangeException(nameof(kind));
             }
         }

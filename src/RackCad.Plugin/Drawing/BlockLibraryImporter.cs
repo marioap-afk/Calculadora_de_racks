@@ -6,6 +6,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Drawing;
+using RackCad.Application.Systems.Shared;
 
 namespace RackCad.Plugin.Drawing
 {
@@ -23,15 +24,27 @@ namespace RackCad.Plugin.Drawing
 
         public static int EnsureForPlan(Database db, HeaderRunPlan plan)
         {
-            if (plan == null)
+            if (db == null || plan == null)
             {
                 return 0;
             }
 
-            var names = plan.LooseInstances.Select(i => i.BlockName)
-                .Concat(plan.Headers.SelectMany(g => g.Instances).Select(i => i.BlockName));
-            return EnsureBlocks(db, names);
+            var requirements = RackBlockRequirementExtractors.HeaderRun.Extract(plan);
+            var result = LibraryBlockAvailabilityFlow.Observe(
+                requirements,
+                allowImport: true,
+                new AutoCadLibraryBlockQuery(db),
+                new ImportAdapter(db));
+            return result.Import.ImportedCount;
         }
+
+        /// <summary>Imports the exact library identities extracted by Application from a typed plan.</summary>
+        public static int EnsureRequirements(
+            Database db,
+            IReadOnlyList<LibraryBlockRequirement> requirements)
+            => db == null || requirements == null
+                ? 0
+                : EnsureBlocks(db, requirements.Select(requirement => requirement.Key));
 
         /// <summary>Clones every requested block that the drawing lacks from the library DWG. Returns the count imported.</summary>
         public static int EnsureBlocks(Database db, IEnumerable<string> blockNames)
@@ -167,6 +180,16 @@ namespace RackCad.Plugin.Drawing
                 cachedLength = length;
                 return cachedLibrary;
             }
+        }
+
+        private sealed class ImportAdapter : ILibraryBlockImporter
+        {
+            private readonly Database database;
+
+            internal ImportAdapter(Database database) => this.database = database;
+
+            public LibraryBlockImportResult Ensure(IReadOnlyList<LibraryBlockRequirement> requirements)
+                => new LibraryBlockImportResult(true, EnsureRequirements(database, requirements));
         }
     }
 }

@@ -13,8 +13,8 @@ namespace RackCad.Application.Systems.Shared
     }
 
     /// <summary>
-    /// Intermediate F5 carrier. The generic payload is the existing per-kind plan type. Library requirements are
-    /// deliberately absent until AUTH-12; an empty collection here would falsely claim they were evaluated.
+    /// Final typed prepared-view carrier. The payload remains the existing per-kind plan type and requirements
+    /// are extracted from that payload, never from the generated view name.
     /// </summary>
     public sealed class RackPreparedView<TPayload>
     {
@@ -23,12 +23,14 @@ namespace RackCad.Application.Systems.Shared
             RackViewAddress address,
             RackViewFrame frame,
             string baseName,
+            System.Collections.Generic.IReadOnlyList<LibraryBlockRequirement> blockRequirements,
             TPayload payload)
         {
             Kind = kind;
             Address = address;
             Frame = frame;
             BaseName = baseName;
+            BlockRequirements = blockRequirements;
             Payload = payload;
         }
 
@@ -36,6 +38,7 @@ namespace RackCad.Application.Systems.Shared
         public RackViewAddress Address { get; }
         public RackViewFrame Frame { get; }
         public string BaseName { get; }
+        public System.Collections.Generic.IReadOnlyList<LibraryBlockRequirement> BlockRequirements { get; }
         public TPayload Payload { get; }
     }
 
@@ -91,15 +94,18 @@ namespace RackCad.Application.Systems.Shared
     {
         private readonly Func<TResolved, RackViewAddress, TPayload> builder;
         private readonly Func<RackViewAddress, bool> supports;
+        private readonly IRackBlockRequirementExtractor<TPayload> requirements;
 
         internal RackViewPreparationAdapter(
             string kind,
             Func<TResolved, RackViewAddress, TPayload> builder,
-            Func<RackViewAddress, bool> supports)
+            Func<RackViewAddress, bool> supports,
+            IRackBlockRequirementExtractor<TPayload> requirements)
         {
             if (string.IsNullOrWhiteSpace(kind)) throw new ArgumentException("A preparation adapter needs a kind.", nameof(kind));
             this.builder = builder ?? throw new ArgumentNullException(nameof(builder));
             this.supports = supports ?? throw new ArgumentNullException(nameof(supports));
+            this.requirements = requirements ?? throw new ArgumentNullException(nameof(requirements));
             Kind = kind;
         }
 
@@ -146,8 +152,9 @@ namespace RackCad.Application.Systems.Shared
                         "The builder did not produce a typed plan.");
                 }
 
+                var blockRequirements = requirements.Extract(payload);
                 return RackViewPreparationResult<TPayload>.Success(
-                    new RackPreparedView<TPayload>(Kind, address, frame.Frame, baseName, payload));
+                    new RackPreparedView<TPayload>(Kind, address, frame.Frame, baseName, blockRequirements, payload));
             }
             catch (Exception ex)
             {
@@ -164,38 +171,45 @@ namespace RackCad.Application.Systems.Shared
     {
         public static RackViewPreparationAdapter<TResolved, TPayload> Selective<TResolved, TPayload>(
             Func<TResolved, RackViewAddress, TPayload> builder,
-            Func<RackViewAddress, bool> supports)
-            => Create(RackEmbedDocument.KindSelective, builder, supports);
+            Func<RackViewAddress, bool> supports,
+            IRackBlockRequirementExtractor<TPayload> requirements)
+            => Create(RackEmbedDocument.KindSelective, builder, supports, requirements);
 
         public static RackViewPreparationAdapter<TResolved, TPayload> Dynamic<TResolved, TPayload>(
             Func<TResolved, RackViewAddress, TPayload> builder,
-            Func<RackViewAddress, bool> supports)
-            => Create(RackEmbedDocument.KindDynamic, builder, supports);
+            Func<RackViewAddress, bool> supports,
+            IRackBlockRequirementExtractor<TPayload> requirements)
+            => Create(RackEmbedDocument.KindDynamic, builder, supports, requirements);
 
         public static RackViewPreparationAdapter<TResolved, TPayload> PushBack<TResolved, TPayload>(
             Func<TResolved, RackViewAddress, TPayload> builder,
-            Func<RackViewAddress, bool> supports)
-            => Create(RackEmbedDocument.KindPushBack, builder, supports);
+            Func<RackViewAddress, bool> supports,
+            IRackBlockRequirementExtractor<TPayload> requirements)
+            => Create(RackEmbedDocument.KindPushBack, builder, supports, requirements);
 
         public static RackViewPreparationAdapter<TResolved, TPayload> Cantilever<TResolved, TPayload>(
             Func<TResolved, RackViewAddress, TPayload> builder,
-            Func<RackViewAddress, bool> supports)
-            => Create(RackEmbedDocument.KindCantilever, builder, supports);
+            Func<RackViewAddress, bool> supports,
+            IRackBlockRequirementExtractor<TPayload> requirements)
+            => Create(RackEmbedDocument.KindCantilever, builder, supports, requirements);
 
         public static RackViewPreparationAdapter<TResolved, TPayload> Cabecera<TResolved, TPayload>(
             Func<TResolved, RackViewAddress, TPayload> builder,
-            Func<RackViewAddress, bool> supports)
-            => Create(RackEmbedDocument.KindCabecera, builder, supports);
+            Func<RackViewAddress, bool> supports,
+            IRackBlockRequirementExtractor<TPayload> requirements)
+            => Create(RackEmbedDocument.KindCabecera, builder, supports, requirements);
 
         public static RackViewPreparationAdapter<TResolved, TPayload> Cama<TResolved, TPayload>(
             Func<TResolved, RackViewAddress, TPayload> builder,
-            Func<RackViewAddress, bool> supports)
-            => Create(RackEmbedDocument.KindCama, builder, supports);
+            Func<RackViewAddress, bool> supports,
+            IRackBlockRequirementExtractor<TPayload> requirements)
+            => Create(RackEmbedDocument.KindCama, builder, supports, requirements);
 
         private static RackViewPreparationAdapter<TResolved, TPayload> Create<TResolved, TPayload>(
             string kind,
             Func<TResolved, RackViewAddress, TPayload> builder,
-            Func<RackViewAddress, bool> supports)
-            => new RackViewPreparationAdapter<TResolved, TPayload>(kind, builder, supports);
+            Func<RackViewAddress, bool> supports,
+            IRackBlockRequirementExtractor<TPayload> requirements)
+            => new RackViewPreparationAdapter<TResolved, TPayload>(kind, builder, supports, requirements);
     }
 }
