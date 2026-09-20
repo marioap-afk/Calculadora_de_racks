@@ -217,7 +217,7 @@ namespace RackCad.Plugin
                         document, viewBlock.BlockId, system, payload, regen: false);
                     if (result != null && result.Success)
                     {
-                        RackBlockRenamer.SyncName(document, viewBlock.BlockId, baseName == null ? null : baseName + " - planta");
+                        RackBlockRenamer.SyncName(document, viewBlock.BlockId, RackViewBaseName.LinkedPlanta(baseName));
                         updatedPlanta++;
                     }
                 }
@@ -232,8 +232,12 @@ namespace RackCad.Plugin
                         document, viewBlock.BlockId, system, end, payload, regen: false);
                     if (result != null && result.Success)
                     {
-                        var suffix = end == DynamicRackEnd.Entrance ? " - frontal entrada" : " - frontal salida";
-                        RackBlockRenamer.SyncName(document, viewBlock.BlockId, baseName == null ? null : baseName + suffix);
+                        RackBlockRenamer.SyncName(
+                            document,
+                            viewBlock.BlockId,
+                            RackViewBaseName.LinkedFlowEnd(
+                                baseName,
+                                end == DynamicRackEnd.Entrance ? RackFlowEnd.Entrance : RackFlowEnd.Exit));
                         updatedFrontal++;
                     }
                 }
@@ -266,9 +270,7 @@ namespace RackCad.Plugin
                         RackBlockRenamer.SyncName(
                             document,
                             viewBlock.BlockId,
-                            baseName == null
-                                ? null
-                                : baseName + " - lateral " + (postIndex + 1).ToString(CultureInfo.InvariantCulture));
+                            RackViewBaseName.LinkedLateral(baseName, postIndex));
                         updatedLateral++;
                     }
                 }
@@ -346,7 +348,7 @@ namespace RackCad.Plugin
             }
 
             var baseName = string.IsNullOrWhiteSpace(name) ? "Dinamico" : name.Trim();
-            var sectionName = baseName + " - lateral " + pick.Value.ToString(CultureInfo.InvariantCulture);
+            var sectionName = RackViewBaseName.LinkedLateral(baseName, pick.Value - 1);
             var payload = BuildDynamicPayload(
                 design,
                 id,

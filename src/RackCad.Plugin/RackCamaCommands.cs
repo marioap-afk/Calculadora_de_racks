@@ -236,7 +236,7 @@ namespace RackCad.Plugin
 
             if (result != null && result.Success)
             {
-                RackBlockRenamer.SyncName(document, blockId, string.IsNullOrWhiteSpace(window.RackName) ? null : window.RackName.Trim());
+                RackBlockRenamer.SyncName(document, blockId, RackViewBaseName.LinkedBase(window.RackName));
             }
 
             editor.WriteMessage(result != null && result.Success

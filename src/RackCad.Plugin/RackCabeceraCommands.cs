@@ -8,6 +8,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
@@ -270,7 +271,7 @@ namespace RackCad.Plugin
                     document, lat.BlockId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral, lat.Embed, preflight.ResolvedByBlock[lat.BlockId]), regen: false);
                 if (r != null && r.Success)
                 {
-                    RackBlockRenamer.SyncName(document, lat.BlockId, baseName);
+                    RackBlockRenamer.SyncName(document, lat.BlockId, RackViewBaseName.LinkedBase(baseName));
                     updated++;
                 }
             }
@@ -281,7 +282,7 @@ namespace RackCad.Plugin
                     document, pb.BlockId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta, pb.Embed, preflight.ResolvedByBlock[pb.BlockId]), regen: false);
                 if (r != null && r.Success)
                 {
-                    RackBlockRenamer.SyncName(document, pb.BlockId, baseName == null ? null : baseName + " - planta");
+                    RackBlockRenamer.SyncName(document, pb.BlockId, RackViewBaseName.LinkedPlanta(baseName));
                     updated++;
                 }
             }

@@ -542,22 +542,7 @@ namespace RackCad.Plugin
 
         /// <summary>The block name of one view, so a rename on edit says the same thing an insert said.</summary>
         private static string ViewBlockName(string baseName, CantileverViewKind kind, int station)
-        {
-            if (baseName == null)
-            {
-                return null;
-            }
-
-            switch (kind)
-            {
-                case CantileverViewKind.Lateral:
-                    return baseName + " - lateral " + (station + 1).ToString(CultureInfo.InvariantCulture);
-                case CantileverViewKind.Planta:
-                    return baseName + " - planta";
-                default:
-                    return baseName + " - frontal";
-            }
-        }
+            => RackViewBaseName.CantileverViewLabel(baseName, kind, station);
 
         /// <summary>
         /// The section geometry factory, over the catalogue loaded FAIL CLOSED by the Plugin's single owner of that

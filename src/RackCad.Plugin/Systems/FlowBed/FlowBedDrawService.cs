@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Drawing;
 using RackCad.Application.Systems.FlowBed;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.FlowBed;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Shared;
@@ -46,17 +46,6 @@ namespace RackCad.Plugin.Systems.FlowBed
                 regen: true);
 
         private static string BlockName(FlowBedConfiguration config, string rackName)
-        {
-            if (!string.IsNullOrWhiteSpace(rackName))
-            {
-                return rackName.Trim();
-            }
-
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                "Cama {0} - fondo {1:0.##}",
-                config.BedType == FlowBedType.Pushback ? "pushback" : "dinamica",
-                config.LaneDepth);
-        }
+            => RackViewBaseName.Cama(config, rackName);
     }
 }

@@ -1,9 +1,9 @@
 using System;
-using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Shared;
@@ -59,17 +59,6 @@ namespace RackCad.Plugin.Systems.Dynamic
                 regen);
 
         private static string BlockName(DynamicRackSystem system, string rackName)
-        {
-            if (!string.IsNullOrWhiteSpace(rackName))
-            {
-                return rackName.Trim();
-            }
-
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                "Sistema dinamico - {0} fondos - L{1:0.##}",
-                system.PalletsDeep,
-                system.TotalLength);
-        }
+            => RackViewBaseName.DynamicLateral(system, rackName);
     }
 }

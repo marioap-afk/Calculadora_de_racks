@@ -250,7 +250,7 @@ namespace RackCad.Plugin
                     result = new PushBackPlantaDrawService().RedrawInPlace(document, viewBlock.BlockId, system, payload, regen: false);
                     if (result != null && result.Success)
                     {
-                        RackBlockRenamer.SyncName(document, viewBlock.BlockId, baseName == null ? null : baseName + " - planta");
+                        RackBlockRenamer.SyncName(document, viewBlock.BlockId, RackViewBaseName.LinkedPlanta(baseName));
                         updatedPlanta++;
                     }
                 }
@@ -268,13 +268,16 @@ namespace RackCad.Plugin
                     result = new PushBackFrontalDrawService().RedrawInPlace(document, viewBlock.BlockId, system, end, payload, regen: false, side: side);
                     if (result != null && result.Success)
                     {
-                        var suffix = end == PushBackFrontalEnd.Posterior ? " - frontal posterior" : " - frontal entrada-salida";
-                        if (system != null && system.IsComposite)
-                        {
-                            suffix += side == PushBackSide.B ? " B" : " A";
-                        }
-
-                        RackBlockRenamer.SyncName(document, viewBlock.BlockId, baseName == null ? null : baseName + suffix);
+                        RackBlockRenamer.SyncName(
+                            document,
+                            viewBlock.BlockId,
+                            RackViewBaseName.LinkedPushBackCut(
+                                baseName,
+                                end == PushBackFrontalEnd.Posterior
+                                    ? RackPushBackEnd.Posterior
+                                    : RackPushBackEnd.EntradaSalida,
+                                side == PushBackSide.B ? RackPushBackSide.B : RackPushBackSide.A,
+                                system != null && system.IsComposite));
                         if (end == PushBackFrontalEnd.Posterior)
                         {
                             updatedFrontalPosterior++;
@@ -307,7 +310,7 @@ namespace RackCad.Plugin
                         RackBlockRenamer.SyncName(
                             document,
                             viewBlock.BlockId,
-                            baseName == null ? null : baseName + " - lateral " + (postIndex + 1).ToString(CultureInfo.InvariantCulture));
+                            RackViewBaseName.LinkedLateral(baseName, postIndex));
                         updatedLateral++;
                     }
                 }

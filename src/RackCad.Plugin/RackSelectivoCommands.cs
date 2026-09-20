@@ -185,7 +185,10 @@ namespace RackCad.Plugin
                 var r = new SelectiveFrontalDrawService().RedrawInPlace(document, fb.BlockId, fondoView, payload, regen: false);
                 if (r != null && r.Success)
                 {
-                    RackBlockRenamer.SyncName(document, fb.BlockId, FrontalName(baseName, fondo, fondoCount));
+                    RackBlockRenamer.SyncName(
+                        document,
+                        fb.BlockId,
+                        RackViewBaseName.LinkedSelectiveFrontal(baseName, fondo, fondoCount));
                     updatedFrontal++;
                 }
             }
@@ -218,8 +221,10 @@ namespace RackCad.Plugin
                     var r = lateralService.RedrawInPlace(document, lat.BlockId, corte.Cabecera, payload, corte.Largueros, regen: false);
                     if (r != null && r.Success)
                     {
-                        RackBlockRenamer.SyncName(document, lat.BlockId,
-                            baseName == null ? null : baseName + " - lateral " + (corte.PostIndex + 1).ToString(CultureInfo.InvariantCulture));
+                        RackBlockRenamer.SyncName(
+                            document,
+                            lat.BlockId,
+                            RackViewBaseName.LinkedLateral(baseName, corte.PostIndex));
                         updatedLateral++;
                     }
                 }
@@ -233,7 +238,7 @@ namespace RackCad.Plugin
                 var r = new SelectivePlantaDrawService().RedrawInPlace(document, pb.BlockId, system, payload, regen: false);
                 if (r != null && r.Success)
                 {
-                    RackBlockRenamer.SyncName(document, pb.BlockId, baseName == null ? null : baseName + " - planta");
+                    RackBlockRenamer.SyncName(document, pb.BlockId, RackViewBaseName.LinkedPlanta(baseName));
                     updatedPlanta++;
                 }
             }
@@ -519,14 +524,7 @@ namespace RackCad.Plugin
 
         /// <summary>Block/definition name for a fondo's frontal: the base name, plus a "frente F{n}" suffix only when the rack has more than one fondo.</summary>
         private static string FrontalName(string baseName, int fondo, int fondoCount)
-        {
-            if (string.IsNullOrWhiteSpace(baseName))
-            {
-                return baseName;
-            }
-
-            return fondoCount > 1 ? baseName + " - frente F" + (fondo + 1).ToString(CultureInfo.InvariantCulture) : baseName;
-        }
+            => RackViewBaseName.LinkedSelectiveFrontal(baseName, fondo, fondoCount);
 
         /// <summary>
         /// Inserts ONE lateral "corte" (cross-section), chosen by post number, and jig-places it. The section carries
@@ -584,7 +582,7 @@ namespace RackCad.Plugin
             }
 
             var baseName = string.IsNullOrWhiteSpace(name) ? "Selectivo" : name.Trim();
-            var sectionName = baseName + " - lateral " + pick.Value.ToString(CultureInfo.InvariantCulture);
+            var sectionName = RackViewBaseName.LinkedLateral(baseName, pick.Value - 1);
             var payload = BuildSelectivePayload(authoredJson, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex, source);
 
             var result = new LateralHeaderDrawService().DrawAndPlace(document, corte.Cabecera, payload, sectionName, corte.Largueros);

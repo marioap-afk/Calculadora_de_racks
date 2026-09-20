@@ -1,7 +1,7 @@
-using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Shared;
@@ -60,16 +60,6 @@ namespace RackCad.Plugin.Systems.PushBack
         /// "- lateral N" suffix is added EXACTLY ONCE, here.
         /// </summary>
         internal static string BlockName(PushBackSystem system, string rackName, int postIndex)
-        {
-            var section = postIndex >= 0
-                ? " - lateral " + (postIndex + 1).ToString(CultureInfo.InvariantCulture)
-                : string.Empty;
-            if (!string.IsNullOrWhiteSpace(rackName))
-            {
-                return rackName.Trim() + section;
-            }
-
-            return string.Format(CultureInfo.InvariantCulture, "Push Back{0} - {1} frentes", section, system.Fronts?.Count ?? 0);
-        }
+            => RackViewBaseName.PushBackLateral(system, rackName, postIndex);
     }
 }

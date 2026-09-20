@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
-using RackCad.Application;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Drawing;
 using RackCad.Application.RackFrames;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
 using RackCad.Plugin.Systems.Shared;
 
@@ -43,7 +42,7 @@ namespace RackCad.Plugin.Drawing
                 var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
                 var catalog = LoadCatalog();
                 var layout = Merge(builder.Build(configuration, parameters, catalog), extraInstances);
-                var blockName = string.IsNullOrWhiteSpace(rackName) ? BuildBlockName(catalog, configuration) : rackName.Trim();
+                var blockName = RackViewBaseName.CabeceraLateral(catalog, configuration, rackName);
 
                 return PlaceLayout(document, catalog, layout, blockName, payloadJson);
             }
@@ -177,7 +176,7 @@ namespace RackCad.Plugin.Drawing
                 var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
                 var catalog = LoadCatalog();
                 var layout = builder.Build(configuration, parameters, catalog);
-                var blockName = string.IsNullOrWhiteSpace(rackName) ? BuildBlockName(catalog, configuration) : rackName.Trim();
+                var blockName = RackViewBaseName.CabeceraLateral(catalog, configuration, rackName);
 
                 var block = CreateBlock(document, layout, blockName, payloadJson);
                 var placedId = BlockPlacement.AppendReference(document, block.DefinitionId, insertion);
@@ -288,23 +287,6 @@ namespace RackCad.Plugin.Drawing
                 RackLog.Exception("Leer nombre de bloque", ex);
                 return "Corte";
             }
-        }
-
-        private static string BuildBlockName(RackCatalog catalog, RackFrameConfiguration configuration)
-        {
-            var post = BlockNaming.NormalizeWhitespace(catalog.DescribeId(configuration.LeftPost?.PostCatalogId));
-
-            if (string.IsNullOrWhiteSpace(post))
-            {
-                post = "cabecera";
-            }
-
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                "Cabecera {0} - F{1:0.##} A{2:0.##}",
-                post,
-                configuration.Depth,
-                configuration.Height);
         }
 
         /// <summary>Facade over <see cref="BlockPlacement.DescribeMissing"/> (I-16 F2); kept so SystemBlockWriter
