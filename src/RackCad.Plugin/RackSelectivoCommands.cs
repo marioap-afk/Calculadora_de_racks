@@ -86,7 +86,7 @@ namespace RackCad.Plugin
                 return;
             }
 
-            window.SetProjectVariables(options.Options);
+            window.SetProjectVariables(options);
             window.LoadExisting(saved, open.Design, open.LinkedPropertyStates);
             AcApplication.ShowModalWindow(window);
 

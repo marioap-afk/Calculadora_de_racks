@@ -147,7 +147,7 @@ namespace RackCad.Application.ProjectVariables
             {
                 if (!VariableId.TryParse(entry?.VariableId, out var id) ||
                     !VariableTypes.TryParseToken(entry.Type, out var type) ||
-                    entry.Definition?.Value == null)
+                    entry.Definition == null)
                 {
                     // The store accredited this document, so reaching here is an invariant violation, not a
                     // state to reinterpret. Fail loud rather than silently dropping an entry: a registry
@@ -158,8 +158,32 @@ namespace RackCad.Application.ProjectVariables
                         (entry?.VariableId ?? "<null>") + "').");
                 }
 
+                VariableDefinition definition;
+                if (string.Equals(entry.Definition.Kind, "literal", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!entry.Definition.Value.HasValue)
+                    {
+                        return ProjectVariablesAccreditation.Failed(
+                            ProjectVariablesAccreditationOutcome.NotReadable,
+                            "El registro fue aceptado pero una definicion literal no contiene valor.");
+                    }
+
+                    definition = VariableDefinition.Literal(entry.Definition.Value.Value);
+                }
+                else if (string.Equals(entry.Definition.Kind, "expression", System.StringComparison.OrdinalIgnoreCase) &&
+                         entry.Definition.Expression != null)
+                {
+                    definition = VariableDefinition.Expression(entry.Definition.Expression);
+                }
+                else
+                {
+                    return ProjectVariablesAccreditation.Failed(
+                        ProjectVariablesAccreditationOutcome.NotReadable,
+                        "El registro fue aceptado pero una definicion no se puede proyectar.");
+                }
+
                 if (!VariableTargetSnapshot.TryCreate(
-                        id, type, entry.Definition.Value.Value, out var snapshot, out var error, entry.Name))
+                        id, type, definition, out var snapshot, out var error, entry.Name))
                 {
                     return ProjectVariablesAccreditation.Failed(
                         ProjectVariablesAccreditationOutcome.NotReadable, error);

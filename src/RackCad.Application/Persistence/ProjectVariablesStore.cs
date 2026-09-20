@@ -27,6 +27,7 @@ namespace RackCad.Application.Persistence
     public sealed class ProjectVariablesStore
     {
         private const string LiteralKind = "literal";
+        private const string ExpressionKind = "expression";
 
         private static readonly JsonSerializerOptions SerializerOptions = CreateOptions();
 
@@ -190,17 +191,32 @@ namespace RackCad.Application.Persistence
                     return "La variable de proyecto " + id + " no declara definición.";
                 }
 
-                if (!string.Equals(entry.Definition.Kind, LiteralKind, StringComparison.OrdinalIgnoreCase))
+                var isLiteral = string.Equals(
+                    entry.Definition.Kind, LiteralKind, StringComparison.OrdinalIgnoreCase);
+                var isExpression = string.Equals(
+                    entry.Definition.Kind, ExpressionKind, StringComparison.OrdinalIgnoreCase);
+
+                if (!isLiteral && !isExpression)
                 {
                     return "La variable de proyecto " + id + " declara una definición de clase desconocida ('" +
                            (entry.Definition.Kind ?? "<null>") + "').";
                 }
 
-                if (!entry.Definition.Value.HasValue ||
-                    double.IsNaN(entry.Definition.Value.Value) ||
-                    double.IsInfinity(entry.Definition.Value.Value))
+                if (isLiteral &&
+                    (!entry.Definition.Value.HasValue ||
+                     double.IsNaN(entry.Definition.Value.Value) ||
+                     double.IsInfinity(entry.Definition.Value.Value) ||
+                     entry.Definition.Expression != null))
                 {
                     return "La variable de proyecto " + id + " no declara un valor literal finito.";
+                }
+
+                if (isExpression &&
+                    (entry.Definition.Expression == null ||
+                     entry.Definition.Value.HasValue ||
+                     (entry.Definition.ExtensionData != null && entry.Definition.ExtensionData.Count > 0)))
+                {
+                    return "La variable de proyecto " + id + " no declara una expresion persistida valida.";
                 }
             }
 
@@ -258,6 +274,7 @@ namespace RackCad.Application.Persistence
             };
 
             options.Converters.Add(new JsonStringEnumConverter());
+            PersistedBoundExpressionJson.AddConverter(options);
             return options;
         }
     }

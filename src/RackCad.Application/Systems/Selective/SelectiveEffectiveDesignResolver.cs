@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using RackCad.Application.Expressions;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Domain.Systems.Selective;
@@ -127,12 +129,29 @@ namespace RackCad.Application.Systems.Selective
                 throw new ArgumentNullException(nameof(descriptors));
             }
 
-            var inspections = SelectiveLinkedPropertyKernel.InspectBindings(authored, descriptors, registry);
             var rack = Describe(authored);
+            var context = ProjectVariablesExpressionAdapter.From(registry);
+            var evaluation = RegistryEvaluation.Evaluate(context);
+            var effectiveValues = new List<(SelectiveLinkedPropertyDescriptor Descriptor, double Value)>();
+            var tokens = authored.PropertyValues == null
+                ? new List<string>()
+                : authored.PropertyValues.Keys.OrderBy(token => token, StringComparer.Ordinal).ToList();
 
-            foreach (var inspection in inspections)
+            foreach (var token in tokens)
             {
-                if (!inspection.IsHealthy)
+                if (!PropertyId.TryParse(token, out var propertyId) ||
+                    !descriptors.TryGetDescriptor(propertyId, out var descriptor))
+                {
+                    return SelectiveEffectiveResolution.Failure(
+                        SelectiveEffectiveOutcome.UnknownPropertyId,
+                        propertyId,
+                        rack + ": la propiedad '" + (token ?? "<null>") + "' no es conocida.");
+                }
+
+                var source = authored.PropertyValues[token];
+                var inspection = LinkedPropertyInspection.InspectBinding(
+                    token, source, descriptors, registry, evaluation);
+                if (!inspection.IsHealthy || !inspection.EffectiveValue.HasValue)
                 {
                     return SelectiveEffectiveResolution.Failure(
                         OutcomeOf(inspection),
@@ -140,28 +159,21 @@ namespace RackCad.Application.Systems.Selective
                         rack + ", " + inspection.Detail,
                         inspection.RawVariableId);
                 }
+
+                var value = inspection.EffectiveValue.Value;                effectiveValues.Add((descriptor, value));
             }
 
             var design = authored.ToDomain();
-
-            foreach (var inspection in inspections)
+            foreach (var effective in effectiveValues)
             {
-                if (!descriptors.TryGetDescriptor(inspection.PropertyId, out var descriptor))
-                {
-                    // Unreachable: HEALTHY means the descriptor was found. Reaching it is an invariant
-                    // violation, not a state to reinterpret.
-                    return SelectiveEffectiveResolution.Failure(
-                        SelectiveEffectiveOutcome.UnknownPropertyId,
-                        inspection.PropertyId,
-                        rack + ": la propiedad '" + inspection.PropertyId + "' resolvio sin descriptor.",
-                        inspection.RawVariableId);
-                }
-
-                descriptor.WriteEffective(design, inspection.Target.LiteralValue);
+                effective.Descriptor.WriteEffective(design, effective.Value);
             }
 
             return SelectiveEffectiveResolution.Success(design);
         }
+
+        private static string Describe(RegistrySymbolResult result)
+            => string.Join(", ", result.Diagnostics.Select(diagnostic => diagnostic.Code.ToString()));
 
         /// <summary>Maps an inspection failure onto the outcome vocabulary this resolver already published.</summary>
         private static SelectiveEffectiveOutcome OutcomeOf(BindingInspection inspection)

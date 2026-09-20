@@ -70,7 +70,10 @@ namespace RackCad.UI
             if (row != null)
             {
                 NameBox.Text = row.Name ?? string.Empty;
-                ValueBox.Text = row.LiteralValue.ToString("0.###", CultureInfo.InvariantCulture);
+                ValueBox.Text = row.DefinitionText ?? string.Empty;
+                StatusText.Text = row.EvaluationSucceeded
+                    ? "Valor evaluado: " + row.EvaluatedValue.ToString("0.###", CultureInfo.InvariantCulture) + " in"
+                    : "Sin valor evaluado: " + row.EvaluationDiagnostic;
             }
 
             ConsumersText.Text = DescribeConsumers(row);
@@ -135,12 +138,12 @@ namespace RackCad.UI
 
         private void New_Click(object sender, RoutedEventArgs e)
         {
-            if (!Editable || !TryValue(out var value))
+            if (!Editable || !TryDefinition(out var definition))
             {
                 return;
             }
 
-            Ask(ProjectVariableIntent.Create(NameBox.Text?.Trim(), value));
+            Ask(ProjectVariableIntent.Create(NameBox.Text?.Trim(), definition));
         }
 
         private void Rename_Click(object sender, RoutedEventArgs e)
@@ -159,12 +162,12 @@ namespace RackCad.UI
         {
             var row = Selected;
 
-            if (!Editable || row == null || !TryValue(out var value))
+            if (!Editable || row == null || !TryDefinition(out var definition))
             {
                 return;
             }
 
-            Ask(ProjectVariableIntent.ChangeValue(row.Id, value));
+            Ask(ProjectVariableIntent.ChangeDefinition(row.Id, definition));
         }
 
         private void Delete_Click(object sender, RoutedEventArgs e)
@@ -212,14 +215,18 @@ namespace RackCad.UI
             Close();
         }
 
-        private bool TryValue(out double value)
+        private bool TryDefinition(out VariableDefinition definition)
         {
-            if (UiSupport.TryNum(ValueBox.Text, out value) && value > 0.0)
+            if (ProjectVariableDefinitionAuthoring.TryCreate(
+                    ValueBox.Text,
+                    workspace?.Variables,
+                    out definition,
+                    out var error))
             {
                 return true;
             }
 
-            StatusText.Text = "El valor tiene que ser un número mayor que cero.";
+            StatusText.Text = error;
             return false;
         }
 

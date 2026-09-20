@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using RackCad.Application.Expressions;
 using RackCad.Application.Persistence;
 
 namespace RackCad.Application.ProjectVariables
@@ -50,6 +53,12 @@ namespace RackCad.Application.ProjectVariables
         /// <see cref="ConsumerProbeOutcome.Indeterminate"/> — never an empty map.
         /// </summary>
         public static ConsumerProbeOutcome Probe(SelectivePalletDesignDocument authored, VariableId target)
+            => Probe(authored, new[] { target });
+
+        /// <summary>Probes a complete affected closure in one pass.</summary>
+        public static ConsumerProbeOutcome Probe(
+            SelectivePalletDesignDocument authored,
+            IReadOnlyCollection<VariableId> targets)
         {
             if (authored == null)
             {
@@ -76,17 +85,44 @@ namespace RackCad.Application.ProjectVariables
 
                 var reference = entry.Value;
 
-                if (reference == null ||
-                    !string.Equals(reference.Kind, SelectivePropertyValueDocument.ProjectVariableKind, StringComparison.Ordinal) ||
-                    !VariableId.TryParse(reference.VariableId, out var variableId))
+                if (reference == null)
                 {
                     return ConsumerProbeOutcome.Indeterminate;
                 }
 
-                if (variableId.Equals(target))
+                if (string.Equals(reference.Kind, SelectivePropertyValueDocument.ProjectVariableKind, StringComparison.Ordinal))
                 {
-                    found = true;
+                    if (!VariableId.TryParse(reference.VariableId, out var variableId))
+                    {
+                        return ConsumerProbeOutcome.Indeterminate;
+                    }
+
+                    if (targets.Contains(variableId))
+                    {
+                        found = true;
+                    }
+                    continue;
                 }
+
+                if (string.Equals(reference.Kind, SelectivePropertyValueDocument.ExpressionKind, StringComparison.Ordinal) &&
+                    reference.Expression != null)
+                {
+                    foreach (var dependency in BoundExpressionDependencies.DirectDependencies(reference.Expression))
+                    {
+                        if (!VariableId.TryParse(dependency.Key, out var variableId))
+                        {
+                            return ConsumerProbeOutcome.Indeterminate;
+                        }
+
+                        if (targets.Contains(variableId))
+                        {
+                            found = true;
+                        }
+                    }
+                    continue;
+                }
+
+                return ConsumerProbeOutcome.Indeterminate;
             }
 
             return found ? ConsumerProbeOutcome.Positive : ConsumerProbeOutcome.Negative;
@@ -100,5 +136,11 @@ namespace RackCad.Application.ProjectVariables
             => entry == null || !entry.OuterEnvelopeInterpretable || !entry.AuthoredReadable
                 ? ConsumerProbeOutcome.Indeterminate
                 : Probe(entry.Authored, target);
+
+        internal static ConsumerProbeOutcome Probe(
+            ProjectVariableScanEntry entry, IReadOnlyCollection<VariableId> targets)
+            => entry == null || !entry.OuterEnvelopeInterpretable || !entry.AuthoredReadable
+                ? ConsumerProbeOutcome.Indeterminate
+                : Probe(entry.Authored, targets);
     }
 }

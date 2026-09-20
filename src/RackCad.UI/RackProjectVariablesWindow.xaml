@@ -51,8 +51,8 @@
                             <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
                             <TextBlock Foreground="#617080" FontSize="11">
                                 <Run Text="{Binding Type, Mode=OneWay}" />
-                                <Run Text=" · valor " />
-                                <Run Text="{Binding LiteralValue, Mode=OneWay}" />
+                                <Run Text=" · definición " />
+                                <Run Text="{Binding DefinitionText, Mode=OneWay}" />
                                 <Run Text=" · racks: " />
                                 <Run Text="{Binding ConsumerCount, Mode=OneWay}" />
                             </TextBlock>
@@ -65,13 +65,13 @@
                 <TextBlock Text="Nombre" Foreground="#617080" FontSize="12" FontWeight="SemiBold" />
                 <TextBox x:Name="NameBox" Margin="0,2,0,8" />
 
-                <TextBlock Text="Valor (in)" Foreground="#617080" FontSize="12" FontWeight="SemiBold" />
+                <TextBlock Text="Valor o fórmula (=...)" Foreground="#617080" FontSize="12" FontWeight="SemiBold" />
                 <TextBox x:Name="ValueBox" Margin="0,2,0,8" />
 
                 <WrapPanel Margin="0,4,0,8">
                     <Button x:Name="NewButton" Content="Nueva" Width="112" Margin="0,0,8,6" Click="New_Click" />
                     <Button x:Name="RenameButton" Content="Renombrar" Width="112" Margin="0,0,8,6" Click="Rename_Click" />
-                    <Button x:Name="ChangeValueButton" Content="Cambiar valor" Width="112" Margin="0,0,8,6" Click="ChangeValue_Click" />
+                    <Button x:Name="ChangeValueButton" Content="Cambiar definición" Width="132" Margin="0,0,8,6" Click="ChangeValue_Click" />
                     <Button x:Name="DeleteButton" Content="Eliminar" Width="112" Margin="0,0,8,6" Click="Delete_Click" />
                 </WrapPanel>
 

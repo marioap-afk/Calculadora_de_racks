@@ -100,6 +100,12 @@ namespace RackCad.Application.ProjectVariables
         public static ConsumerDiscoveryResult DiscoverConsumers(
             IReadOnlyList<ProjectVariableScanEntry> entries,
             VariableId target)
+            => DiscoverConsumers(entries, new[] { target });
+
+        /// <summary>Discovers consumers of any member of one affected variable closure.</summary>
+        public static ConsumerDiscoveryResult DiscoverConsumers(
+            IReadOnlyList<ProjectVariableScanEntry> entries,
+            IReadOnlyCollection<VariableId> targets)
         {
             var unclassifiable = FirstUnclassifiable(entries);
 
@@ -116,7 +122,7 @@ namespace RackCad.Application.ProjectVariables
 
                 foreach (var sibling in group.Value)
                 {
-                    probes.Add(ProjectVariableConsumerProbe.Probe(sibling, target));
+                    probes.Add(ProjectVariableConsumerProbe.Probe(sibling, targets));
                 }
 
                 if (probes.Contains(ConsumerProbeOutcome.Indeterminate))

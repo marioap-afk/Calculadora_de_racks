@@ -215,7 +215,7 @@ namespace RackCad.Tests
             Assert.DoesNotContain("lastRead.Document", source);
 
             // Y lo que si hace: pasa por el seam que acredita primero.
-            Assert.Contains("RegistryCommit.Prepare(plan.RegistryMutation, lastRead)", source);
+            Assert.Contains("RegistryCommit.Prepare(plan, lastRead, currentEntries)", source);
             Assert.Contains("commit.IsBlocked", source);
         }
 

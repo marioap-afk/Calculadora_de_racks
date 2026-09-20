@@ -1,37 +1,49 @@
 using System;
+using RackCad.Application.Expressions;
 
 namespace RackCad.Application.ProjectVariables
 {
-    /// <summary>WHERE a project variable's value comes from. ID22A has one case; a formula would add another.</summary>
+    /// <summary>WHERE a project variable's value comes from: a literal or an already-bound expression.</summary>
     public enum VariableDefinitionKind
     {
         /// <summary>The value is written down.</summary>
         Literal = 1,
+
+        /// <summary>The value is computed from the persisted bound semantic tree.</summary>
+        Expression = 2,
     }
 
     /// <summary>
     /// The definition of a project variable, discriminated by <see cref="Kind"/> from day one.
     ///
     /// <para>
-    /// This is the extension point a later initiative occupies: persisting it discriminated now is what lets
-    /// an <c>Expression</c> arrive as one more case — additive, without raising the major schema and without
-    /// touching how a property references a variable. ID22A implements NONE of that: no formulas, no parser,
-    /// no AST, no dependency graph.
+    /// Expression is additive over the historical literal case: it does not raise the major schema and does
+    /// not change how a property references a variable. The tree is already bound semantic authority; this
+    /// union carries no formula text and performs no name lookup.
     /// </para>
     /// <para>
     /// It is a class, not a struct, so there is no default-constructed instance declaring a kind nobody set.
-    /// Equality is by value, because two literals of the same number ARE the same definition.
+    /// Equality is by value for both closed cases.
     /// </para>
     /// </summary>
     public sealed class VariableDefinition : IEquatable<VariableDefinition>
     {
         private readonly double _literal;
+        private readonly BoundExpression _expression;
 
-        private VariableDefinition(VariableDefinitionKind kind, double literal)
+        private VariableDefinition(VariableDefinitionKind kind, double literal, BoundExpression expression)
         {
             Kind = kind;
             _literal = literal;
+            _expression = expression;
         }
+
+        /// <summary>The bound expression. Throws when this definition is a literal.</summary>
+        public BoundExpression ExpressionValue
+            => Kind == VariableDefinitionKind.Expression
+                ? _expression
+                : throw new InvalidOperationException(
+                    "La definicion de la variable es un literal: no contiene una expresion.");
 
         public VariableDefinitionKind Kind { get; }
 
@@ -60,16 +72,33 @@ namespace RackCad.Application.ProjectVariables
                     nameof(value));
             }
 
-            return new VariableDefinition(VariableDefinitionKind.Literal, value);
+            return new VariableDefinition(VariableDefinitionKind.Literal, value, null);
         }
 
+        /// <summary>A definition whose semantic authority is an already-bound expression.</summary>
+        public static VariableDefinition Expression(BoundExpression expression)
+            => new VariableDefinition(
+                VariableDefinitionKind.Expression,
+                0,
+                expression ?? throw new ArgumentNullException(nameof(expression)));
+
         public bool Equals(VariableDefinition other)
-            => other != null && Kind == other.Kind && _literal.Equals(other._literal);
+            => other != null &&
+               Kind == other.Kind &&
+               (Kind == VariableDefinitionKind.Literal
+                   ? _literal.Equals(other._literal)
+                   : _expression.Equals(other._expression));
 
         public override bool Equals(object obj) => Equals(obj as VariableDefinition);
 
-        public override int GetHashCode() => (Kind, _literal).GetHashCode();
+        public override int GetHashCode()
+            => Kind == VariableDefinitionKind.Literal
+                ? (Kind, _literal).GetHashCode()
+                : (Kind, _expression).GetHashCode();
 
-        public override string ToString() => Kind + "(" + _literal.ToString(System.Globalization.CultureInfo.InvariantCulture) + ")";
+        public override string ToString()
+            => Kind == VariableDefinitionKind.Literal
+                ? Kind + "(" + _literal.ToString(System.Globalization.CultureInfo.InvariantCulture) + ")"
+                : Kind + "(" + _expression + ")";
     }
 }

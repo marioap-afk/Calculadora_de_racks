@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-17**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-19**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -48,6 +48,42 @@ marcador normativo único; y registro durable del START de la pausa de activaci�
 al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge correctivo; captura POST;
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
+
+**I-49 — Motor de expresiones paramétricas (ID22B) — CANDIDATO FINAL APROBADO; CIERRE DOCUMENTAL
+PREPARADO PARA INTEGRACIÓN** el **2026-09-19**. I-49 conserva **Workflow V1** y Claim-Id
+`06aec3d0-0d07-48d4-8b78-d56daeebe903`; Workflow V2 ya está efectivo, pero no reclasifica este reclamo
+formal preactivación. Este cierre todavía no afirma el merge ni su evidencia posterior: G12-B2 debe publicar
+este SHA documental, obtener su CI propio, volver a comprobar que `origin/main` sigue en
+`ac64b0f5b9b71fca1aae1c075c2caf63b2993097`, integrar manualmente con `--no-ff` y completar CI y cobertura
+post-merge antes de limpiar la rama.
+
+**Alcance entregado.** Las variables del dibujo admiten definiciones literales o expresiones tipadas sobre
+otras variables, con identidad estable por `VariableId`, enlace por nombre y cualificador exacto cuando hay
+homónimos, grafo determinista, ciclos y causas raíz estructuradas. El registro se evalúa como una unidad;
+persistencia, mutaciones, propagación, concurrencia y reparación fallan cerradas y conservan la última
+autoridad confirmada. `RACKVARIABLES` permite crear, renombrar, cambiar la definición y reparar vínculos;
+`RACKEDITAR` admite tanto la referencia directa `=Variable` como fórmulas, muestra el valor efectivo y
+conserva el literal congelado. Geometría, BOM, duplicación y guardar/reabrir consumen la misma autoridad.
+La guía de uso está en [variables-y-formulas.md](guias/variables-y-formulas.md).
+
+| Evidencia final de I-49 | Resultado |
+|---|---|
+| `FINAL_CANDIDATE_SHA` | `589e3db5536ae9cc9af9c051e694b4c1803f0196` |
+| Core Full local | **8137/8137 PASS** |
+| UI Full local | **1581 PASS / 17 SKIP históricos / 0 FAIL / 1598 total** |
+| Builds Debug | UI **PASS**, 0 errores y 0 advertencias; Plugin **PASS**, 0 errores y solo los dos `MSB3277` conocidos |
+| Integración y focales | Plugin **140/140**; G12-A1 **8/8**; G11 **2/2**; G10 **39/39**; G9 **83/83**; G8 **62/62**; G7 **20/20**; G6 **649/649** |
+| CI de `push` del Candidato | corrida **35382477978**, `head_sha` exacto, **4/4 `success`** |
+| Cobertura del Candidato | corrida **35383529269**; solicitado, checkout, `SourceRevisionId` y `measured_sha` = Candidato; artefacto `rackcad-coverage-cobertura` **10562158544** |
+| Owner Validation | AutoCAD **2025**, **OV-01..OV-18 = 18/18 PASS**, `OWNER_OVERALL = APPROVED` |
+| DLL validado | SHA-256 `CBD3C6230F4B246E278B41F88EFA4D7169A07AD9A6DCF0CACD2C5A2B4C9D43F6`; `SourceRevisionId` = Candidato |
+| Autoridad técnica | Corrective Freeze blob `440ae61abe93458261944d9d3df3dfa5fe04d94a`; Proposal V6 `ef4db3aa400483ff25a8f39b2beb93708fa43d1a`; A1 `d62019088b9e7a140d5066799afe6ace6db303ba`; A2 `49a925336dd3775929a35b0f40b73cb7f8c487f7`; A3-R2 `4da6ef3caa21dcf31140983c6db7e23f02aa3e18`; ADR-0043 corregido `dd88bf06fe5b59a5b7683cb513a4a42460d71438` |
+
+**Historia del correctivo G12-A1.** `10b2fa704ce9190972cc1dba315f0efe1cc829c7` fue rechazado porque OV-01
+no evaluaba una variable nueva contra las variables ya existentes; `de314315bdaac8c1ea1c95ef64e625b77b5bd1f5`
+fue el candidato corregido y aprobado antes del rebase. El rebase final creó otra identidad de ensamblado, por
+lo que aquella validación quedó histórica y el Owner repitió los 18 escenarios sobre `589e3db...`. No queda
+ningún blocker funcional ni documental conocido de I-49; solo restan las compuertas de integración de este G12-B2.
 
 El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, dinámico modular y cama
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El

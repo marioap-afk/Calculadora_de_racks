@@ -249,21 +249,29 @@ namespace RackCad.Plugin
 
                     using (var transaction = database.TransactionManager.StartTransaction())
                     {
-                        if (plan.RegistryMutation.Kind != RegistryMutationKind.None)
+                        if (plan.RegistryMutation.Kind != RegistryMutationKind.None || !plan.PlanReadSet.IsEmpty)
                         {
                             var lastRead = ProjectVariablesRegistry.Read(transaction, database);
+                            var currentEntries = new List<ProjectVariableScanEntry>();
+                            foreach (var envelope in RackBlockFinder.ScanEnvelopes(
+                                         transaction, database, includeReferenceCount: true))
+                            {
+                                currentEntries.Add(ProjectVariableScanProjection.Project(
+                                    envelope.DefinitionId.Handle.ToString(), envelope.Embed, envelope.DirectReferenceCount));
+                            }
 
                             // The re-read is a DIFFERENT document from the one the plan was decided against, so
                             // it gets its own accreditation. Application owns that order — the raw result never
                             // becomes the thing a change is applied to.
-                            var commit = RegistryCommit.Prepare(plan.RegistryMutation, lastRead);
+                            var commit = RegistryCommit.Prepare(plan, lastRead, currentEntries);
 
                             if (commit.IsBlocked)
                             {
                                 return MutationExecutionResult.Aborted(commit.Error);
                             }
 
-                            if (!ProjectVariablesRegistry.TryWrite(
+                            if (plan.RegistryMutation.Kind != RegistryMutationKind.None &&
+                                !ProjectVariablesRegistry.TryWrite(
                                     transaction, database, lastRead, commit.Changed, out var registryError))
                             {
                                 // Leaving without confirming: the transaction unwinds and the drawing is
@@ -271,7 +279,7 @@ namespace RackCad.Plugin
                                 return MutationExecutionResult.Aborted(registryError);
                             }
 
-                            registryWritten = true;
+                            registryWritten = plan.RegistryMutation.Kind != RegistryMutationKind.None;
                         }
 
                         foreach (var destination in prepared)

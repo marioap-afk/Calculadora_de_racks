@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using RackCad.Application.Expressions;
 
 namespace RackCad.Application.ProjectVariables
 {
@@ -10,8 +11,8 @@ namespace RackCad.Application.ProjectVariables
     /// <para>
     /// Three data with three different jobs, and mixing them up is the whole risk:
     /// <see cref="VariableId"/> is IDENTITY and the only thing a selection carries;
-    /// <see cref="Name"/> is a label a person reads and text FILTERS against; <see cref="LiteralValue"/> is
-    /// shown so a decision is informed. Nothing here ever supports the reverse lookup name → id.
+    /// <see cref="Name"/> is a label a person reads and text FILTERS against; <see cref="LiteralValue"/> carries
+    /// the effective numeric value under its historical API name. Nothing here ever supports reverse lookup name → id.
     /// </para>
     /// <para>
     /// <see cref="Disambiguator"/> is MANDATORY and not decoration. Duplicate names are allowed, and two
@@ -43,6 +44,7 @@ namespace RackCad.Application.ProjectVariables
 
         public VariableType VariableType { get; }
 
+        /// <summary>The evaluated value offered for binding; the property name is retained for API compatibility.</summary>
         public double LiteralValue { get; }
 
         /// <summary>
@@ -101,22 +103,7 @@ namespace RackCad.Application.ProjectVariables
                 throw new ArgumentNullException(nameof(registry));
             }
 
-            var options = new List<LinkedPropertyOption>();
-
-            foreach (var target in registry.Targets())
-            {
-                // Compatibility is the descriptor's requirement against the target's accredited type. Nothing
-                // is re-parsed here: the type already survived the store's grammar and the accreditation.
-                if (target.VariableType != descriptor.VariableType)
-                {
-                    continue;
-                }
-
-                options.Add(new LinkedPropertyOption(
-                    target.VariableId, target.Name, target.VariableType, target.LiteralValue));
-            }
-
-            return options;
+            return LinkedPropertyAuthoringContext.For(descriptor, registry).DirectSelectionOptions();
         }
 
         /// <summary>
@@ -135,9 +122,13 @@ namespace RackCad.Application.ProjectVariables
 
             var accreditation = UsableProjectVariablesRegistry.Accredit(read);
 
-            return accreditation.IsUsable
-                ? LinkedPropertyOptionsResult.Usable(For(descriptor, accreditation.Registry))
-                : LinkedPropertyOptionsResult.Failed(accreditation.Error);
+            if (!accreditation.IsUsable)
+            {
+                return LinkedPropertyOptionsResult.Failed(accreditation.Error);
+            }
+
+            var authoring = LinkedPropertyAuthoringContext.For(descriptor, accreditation.Registry);
+            return LinkedPropertyOptionsResult.Usable(authoring.DirectSelectionOptions(), authoring);
         }
     }
 
@@ -145,10 +136,14 @@ namespace RackCad.Application.ProjectVariables
     public sealed class LinkedPropertyOptionsResult
     {
         private LinkedPropertyOptionsResult(
-            bool isUsable, IReadOnlyList<LinkedPropertyOption> options, string error)
+            bool isUsable,
+            IReadOnlyList<LinkedPropertyOption> options,
+            LinkedPropertyAuthoringContext authoringContext,
+            string error)
         {
             IsUsable = isUsable;
             Options = options;
+            AuthoringContext = authoringContext;
             Error = error;
         }
 
@@ -156,12 +151,20 @@ namespace RackCad.Application.ProjectVariables
 
         public IReadOnlyList<LinkedPropertyOption> Options { get; }
 
+        /// <summary>
+        /// Every compatible expression symbol from the same accredited snapshot, including failed symbols. This is
+        /// deliberately distinct from <see cref="Options"/>, whose entries are healthy direct-reference choices.
+        /// </summary>
+        public LinkedPropertyAuthoringContext AuthoringContext { get; }
+
         public string Error { get; }
 
-        internal static LinkedPropertyOptionsResult Usable(IReadOnlyList<LinkedPropertyOption> options)
-            => new LinkedPropertyOptionsResult(true, options, null);
+        internal static LinkedPropertyOptionsResult Usable(
+            IReadOnlyList<LinkedPropertyOption> options,
+            LinkedPropertyAuthoringContext authoringContext)
+            => new LinkedPropertyOptionsResult(true, options, authoringContext, null);
 
         internal static LinkedPropertyOptionsResult Failed(string error)
-            => new LinkedPropertyOptionsResult(false, new LinkedPropertyOption[0], error);
+            => new LinkedPropertyOptionsResult(false, new LinkedPropertyOption[0], null, error);
     }
 }

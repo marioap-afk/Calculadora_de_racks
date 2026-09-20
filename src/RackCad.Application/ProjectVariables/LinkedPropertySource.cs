@@ -1,4 +1,5 @@
 using System;
+using RackCad.Application.Expressions;
 
 namespace RackCad.Application.ProjectVariables
 {
@@ -11,9 +12,7 @@ namespace RackCad.Application.ProjectVariables
     /// would have to be rewritten — and the ones nobody remembered would silently answer "literal" for a
     /// source they cannot read. Adding a member here makes those call sites a compile-time decision instead.
     /// </para>
-    /// <para>
-    /// No future kind is modelled now: this initiative persists nothing new.
-    /// </para>
+    /// <para>The expression case carries its bound semantic tree; display text is never authority.</para>
     /// </summary>
     public enum LinkedPropertySourceKind
     {
@@ -22,6 +21,9 @@ namespace RackCad.Application.ProjectVariables
 
         /// <summary>A project variable governs it, addressed by <see cref="VariableId"/>.</summary>
         ProjectVariableReference = 2,
+
+        /// <summary>A bound formula governs it.</summary>
+        Expression = 3,
     }
 
     /// <summary>
@@ -36,11 +38,13 @@ namespace RackCad.Application.ProjectVariables
     public sealed class LinkedPropertySource : IEquatable<LinkedPropertySource>
     {
         private readonly VariableId _variableId;
+        private readonly BoundExpression _expression;
 
-        private LinkedPropertySource(LinkedPropertySourceKind kind, VariableId variableId)
+        private LinkedPropertySource(LinkedPropertySourceKind kind, VariableId variableId, BoundExpression expression = null)
         {
             Kind = kind;
             _variableId = variableId;
+            _expression = expression;
         }
 
         public LinkedPropertySourceKind Kind { get; }
@@ -65,6 +69,13 @@ namespace RackCad.Application.ProjectVariables
 
         public bool IsReference => Kind == LinkedPropertySourceKind.ProjectVariableReference;
 
+        public bool IsExpression => Kind == LinkedPropertySourceKind.Expression;
+
+        public BoundExpression Expression
+            => IsExpression
+                ? _expression
+                : throw new InvalidOperationException("La fuente de la propiedad no es una expresión.");
+
         public static LinkedPropertySource Literal { get; } =
             new LinkedPropertySource(LinkedPropertySourceKind.Literal, default);
 
@@ -80,21 +91,29 @@ namespace RackCad.Application.ProjectVariables
             return new LinkedPropertySource(LinkedPropertySourceKind.ProjectVariableReference, variableId);
         }
 
+        public static LinkedPropertySource FromExpression(BoundExpression expression)
+            => new LinkedPropertySource(
+                LinkedPropertySourceKind.Expression,
+                default,
+                expression ?? throw new ArgumentNullException(nameof(expression)));
+
         public bool Equals(LinkedPropertySource other)
             => other != null &&
                other.Kind == Kind &&
-               (Kind != LinkedPropertySourceKind.ProjectVariableReference || other._variableId.Equals(_variableId));
+               (Kind == LinkedPropertySourceKind.Literal ||
+                Kind == LinkedPropertySourceKind.ProjectVariableReference && other._variableId.Equals(_variableId) ||
+                Kind == LinkedPropertySourceKind.Expression && other._expression.Equals(_expression));
 
         public override bool Equals(object obj) => Equals(obj as LinkedPropertySource);
 
         public override int GetHashCode()
             => Kind == LinkedPropertySourceKind.ProjectVariableReference
                 ? _variableId.GetHashCode()
-                : (int)Kind;
+                : Kind == LinkedPropertySourceKind.Expression ? _expression.GetHashCode() : (int)Kind;
 
         public override string ToString()
             => Kind == LinkedPropertySourceKind.ProjectVariableReference
                 ? "Reference(" + _variableId + ")"
-                : "Literal";
+                : Kind == LinkedPropertySourceKind.Expression ? "Expression(" + _expression + ")" : "Literal";
     }
 }

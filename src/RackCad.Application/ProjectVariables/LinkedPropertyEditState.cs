@@ -8,7 +8,7 @@ namespace RackCad.Application.ProjectVariables
     /// <para>
     /// Two fields and no more. <see cref="CommittedLiteral"/> is the last literal the user actually
     /// COMMITTED: with <see cref="LinkedPropertySourceKind.Literal"/> it is the value in force, and with a
-    /// reference it is the literal frozen behind it. That single meaning is what makes the 20.13 rule one rule
+    /// reference or expression it is the literal frozen behind it. That single meaning is what makes the 20.13 rule one rule
     /// instead of a special case — linking freezes <see cref="CommittedLiteral"/>, whatever it happens to be.
     /// </para>
     /// <para>
@@ -33,6 +33,8 @@ namespace RackCad.Application.ProjectVariables
 
         public bool IsReference => Source.IsReference;
 
+        public bool IsExpression => Source.IsExpression;
+
         /// <summary>The number belongs to the rack.</summary>
         public static LinkedPropertyEditState Literal(double value) => Create(value, LinkedPropertySource.Literal);
 
@@ -42,6 +44,9 @@ namespace RackCad.Application.ProjectVariables
         /// </summary>
         public static LinkedPropertyEditState Reference(double frozenLiteral, VariableId variableId)
             => Create(frozenLiteral, LinkedPropertySource.Reference(variableId));
+
+        public static LinkedPropertyEditState Expression(double frozenLiteral, RackCad.Application.Expressions.BoundExpression expression)
+            => Create(frozenLiteral, LinkedPropertySource.FromExpression(expression));
 
         public static LinkedPropertyEditState Create(double committedLiteral, LinkedPropertySource source)
         {

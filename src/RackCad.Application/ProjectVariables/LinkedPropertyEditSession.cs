@@ -16,6 +16,9 @@ namespace RackCad.Application.ProjectVariables
         /// <summary>A reference QUERY (it starts with '='). It filters; it resolves nothing.</summary>
         DraftReferenceQuery = 3,
 
+        /// <summary>A formula beginning with '='; it remains text until Enter accepts the whole pipeline.</summary>
+        DraftExpression = 5,
+
         /// <summary>Text that is neither a number nor a reference query.</summary>
         InvalidDraft = 4,
     }
@@ -75,8 +78,8 @@ namespace RackCad.Application.ProjectVariables
     /// <item><b><c>LostFocus</c> never changes <see cref="LinkedPropertySource"/></b> (V3-R06). It may commit a
     /// literal over a literal, because that keeps the source; it can never create, replace or remove a
     /// reference.</item>
-    /// <item><b>A reference is only ever committed by explicit selection</b> (V3-R08). Typing filters. Enter
-    /// with nothing selected resolves nothing — not by name, not "the only one", not the best match.</item>
+    /// <item><b>A source is committed only by an explicit gesture.</b> Typing filters or creates a draft;
+    /// Enter runs the expression pipeline and an explicit list selection preserves the direct-reference case.</item>
     /// </list>
     /// <para>
     /// It validates the SHAPE of a literal (a finite number) and not its domain range. The range belongs to
@@ -85,18 +88,19 @@ namespace RackCad.Application.ProjectVariables
     /// </para>
     /// <para>
     /// It never consults the register. The options arrive already accredited and type-compatible from
-    /// Application, so the session cannot resolve an identity, cannot judge compatibility, and cannot turn a
-    /// name into a <see cref="VariableId"/>.
+    /// Application; the expression binder resolves their presentation names to the identities carried by those options.
     /// </para>
     /// </summary>
     public sealed class LinkedPropertyEditSession
     {
         private readonly IReadOnlyList<LinkedPropertyOption> _options;
+        private readonly LinkedPropertyExpressionAuthoring _authoring;
         private LinkedPropertyEditState _committed;
         private string _text;
         private bool _dirty;
         private double _stagedLiteral;
         private bool _staged;
+        private IReadOnlyList<LinkedPropertyEditDiagnostic> _diagnostics = Array.Empty<LinkedPropertyEditDiagnostic>();
 
         /// <param name="committed">The state the property starts in.</param>
         /// <param name="options">
@@ -108,6 +112,23 @@ namespace RackCad.Application.ProjectVariables
         {
             _committed = committed ?? throw new ArgumentNullException(nameof(committed));
             _options = options ?? new LinkedPropertyOption[0];
+            _authoring = new LinkedPropertyExpressionAuthoring(_options);
+            _text = DisplayOf(committed);
+        }
+
+        /// <summary>
+        /// Opens over two deliberate projections of one accredited snapshot: healthy direct-reference choices and
+        /// every expression-visible compatible symbol, including those whose G7 evaluation failed.
+        /// </summary>
+        public LinkedPropertyEditSession(
+            LinkedPropertyEditState committed,
+            IReadOnlyList<LinkedPropertyOption> options,
+            LinkedPropertyAuthoringContext authoringContext)
+        {
+            _committed = committed ?? throw new ArgumentNullException(nameof(committed));
+            _options = options ?? new LinkedPropertyOption[0];
+            _authoring = new LinkedPropertyExpressionAuthoring(
+                authoringContext ?? throw new ArgumentNullException(nameof(authoringContext)));
             _text = DisplayOf(committed);
         }
 
@@ -128,7 +149,9 @@ namespace RackCad.Application.ProjectVariables
 
                 if (IsQuery(_text))
                 {
-                    return LinkedPropertyDraftKind.DraftReferenceQuery;
+                    return LooksLikeFormula(_text)
+                        ? LinkedPropertyDraftKind.DraftExpression
+                        : LinkedPropertyDraftKind.DraftReferenceQuery;
                 }
 
                 return TryParseLiteral(_text, out _)
@@ -143,6 +166,8 @@ namespace RackCad.Application.ProjectVariables
         /// </summary>
         public bool IsDirty => _dirty;
 
+        public IReadOnlyList<LinkedPropertyEditDiagnostic> Diagnostics => _diagnostics;
+
         /// <summary>
         /// The pending draft would change <see cref="LinkedPropertySource"/>. It decides what
         /// <c>LostFocus</c> and a generic write boundary may do.
@@ -154,12 +179,13 @@ namespace RackCad.Application.ProjectVariables
                 switch (Draft)
                 {
                     case LinkedPropertyDraftKind.DraftReferenceQuery:
+                    case LinkedPropertyDraftKind.DraftExpression:
                         // It would create or replace a reference, whatever the committed source is.
                         return true;
 
                     case LinkedPropertyDraftKind.DraftLiteral:
                         // Over a literal it is the same source; over a reference it would unlink.
-                        return _committed.IsReference;
+                        return _committed.Source.Kind != LinkedPropertySourceKind.Literal;
 
                     default:
                         return false;
@@ -180,7 +206,7 @@ namespace RackCad.Application.ProjectVariables
                     return _options;
                 }
 
-                var query = _text.Substring(1).Trim();
+                var query = _text.Substring(_text.IndexOf('=') + 1).Trim();
 
                 if (query.Length == 0)
                 {
@@ -193,7 +219,9 @@ namespace RackCad.Application.ProjectVariables
                 {
                     // The text FILTERS. It is compared against the label because that is what a person is
                     // typing; the match never becomes a resolution, because committing needs TrySelect.
-                    if ((option.Name ?? string.Empty).IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                    if ((option.Name ?? string.Empty).IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        Draft == LinkedPropertyDraftKind.DraftExpression &&
+                        query.IndexOf(option.Name ?? string.Empty, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         matches.Add(option);
                     }
@@ -204,7 +232,8 @@ namespace RackCad.Application.ProjectVariables
         }
 
         /// <summary>The reference query is open, so a surface should be offering candidates.</summary>
-        public bool IsQuerying => Draft == LinkedPropertyDraftKind.DraftReferenceQuery;
+        public bool IsQuerying => Draft == LinkedPropertyDraftKind.DraftReferenceQuery ||
+                                  Draft == LinkedPropertyDraftKind.DraftExpression;
 
         /// <summary>
         /// The value IN FORCE for the committed state: the literal itself, or the referenced variable's value.
@@ -217,6 +246,11 @@ namespace RackCad.Application.ProjectVariables
         /// </summary>
         public bool TryGetEffectiveValue(out double value)
         {
+            if (_committed.IsExpression)
+            {
+                return _authoring.TryEvaluate(_committed.Source.Expression, out value);
+            }
+
             if (!_committed.IsReference)
             {
                 value = _committed.CommittedLiteral;
@@ -244,6 +278,7 @@ namespace RackCad.Application.ProjectVariables
             _text = text ?? string.Empty;
             _dirty = true;
             _staged = false;
+            _diagnostics = Array.Empty<LinkedPropertyEditDiagnostic>();
         }
 
         /// <summary>
@@ -267,8 +302,50 @@ namespace RackCad.Application.ProjectVariables
                     return true;
 
                 case LinkedPropertyDraftKind.DraftReferenceQuery:
-                    error = "Elige una variable de la lista: el texto solo filtra, no la resuelve.";
-                    return false;
+                case LinkedPropertyDraftKind.DraftExpression:
+                    var authored = _authoring.Run(_text);
+                    _diagnostics = authored.Diagnostics;
+                    if (!authored.Succeeded)
+                    {
+                        error = "La fórmula no es válida: " + authored.Diagnostics[0].Code + ".";
+                        if (Draft == LinkedPropertyDraftKind.DraftReferenceQuery &&
+                            authored.Diagnostics[0].Code == LinkedPropertyEditDiagnosticCode.UnknownSymbol)
+                        {
+                            error += " Elige una variable de la lista.";
+                        }
+
+                        return false;
+                    }
+
+                    // Preserve the inherited phrase-query interaction: a bare multi-word label remains an
+                    // autocomplete query until the user explicitly selects its identity. This check happens only
+                    // after the engine established that the whole input is one direct reference.
+                    if (authored.Shape.Kind == RackCad.Application.Expressions.CanonicalShapeKind.DirectReference &&
+                        Draft == LinkedPropertyDraftKind.DraftReferenceQuery &&
+                        _text.Substring(_text.IndexOf('=') + 1).Trim().IndexOf(' ') >= 0)
+                    {
+                        error = "Elige una variable de la lista: el texto solo filtra, no la resuelve.";
+                        return false;
+                    }
+
+                    switch (authored.Shape.Kind)
+                    {
+                        case RackCad.Application.Expressions.CanonicalShapeKind.Literal:
+                            CommitState(LinkedPropertyEditState.Literal(authored.Shape.LiteralValue));
+                            break;
+                        case RackCad.Application.Expressions.CanonicalShapeKind.DirectReference:
+                            CommitState(LinkedPropertyEditState.Reference(
+                                _committed.CommittedLiteral,
+                                VariableId.Parse(authored.Shape.Reference.Key)));
+                            break;
+                        default:
+                            CommitState(LinkedPropertyEditState.Expression(
+                                _committed.CommittedLiteral,
+                                authored.Shape.Expression));
+                            break;
+                    }
+
+                    return true;
 
                 default:
                     error = "'" + _text + "' no es un numero valido.";
@@ -348,6 +425,7 @@ namespace RackCad.Application.ProjectVariables
 
                 case LinkedPropertyDraftKind.DraftLiteral:
                 case LinkedPropertyDraftKind.DraftReferenceQuery:
+                case LinkedPropertyDraftKind.DraftExpression:
                     // A generic boundary must never turn a source change into a commit on its own (V3-R07).
                     return LinkedPropertyStageResult.Blocked(SourceChangeMessage);
 
@@ -380,6 +458,11 @@ namespace RackCad.Application.ProjectVariables
                 return string.Empty;
             }
 
+            if (state.IsExpression)
+            {
+                return "=" + _authoring.Format(state.Source.Expression);
+            }
+
             if (!state.IsReference)
             {
                 return state.CommittedLiteral.ToString("0.###", CultureInfo.InvariantCulture);
@@ -391,7 +474,9 @@ namespace RackCad.Application.ProjectVariables
             {
                 if (option.VariableId.Equals(id) && !string.IsNullOrWhiteSpace(option.Name))
                 {
-                    return "=" + option.Name;
+                    var symbol = RackCad.Application.Expressions.SymbolId.ProjectVariable(option.VariableId.Value);
+                    return "=" + RackCad.Application.Expressions.ExpressionFormatter.Format(
+                        RackCad.Application.Expressions.BoundExpression.Reference(symbol), _authoring.Symbols);
                 }
             }
 
@@ -425,11 +510,19 @@ namespace RackCad.Application.ProjectVariables
         {
             _dirty = false;
             _staged = false;
+            _diagnostics = Array.Empty<LinkedPropertyEditDiagnostic>();
             _text = DisplayOf(_committed);
         }
 
         private static bool IsQuery(string text)
             => text != null && text.TrimStart().StartsWith("=", StringComparison.Ordinal);
+
+        private static bool LooksLikeFormula(string text)
+        {
+            var source = (text ?? string.Empty).TrimStart();
+            source = source.StartsWith("=", StringComparison.Ordinal) ? source.Substring(1) : source;
+            return source.IndexOfAny(new[] { '+', '-', '*', '/', '(', ')', ',', '[', ']', '{', '}', '#' }) >= 0;
+        }
 
         /// <summary>
         /// A literal is a finite number in the invariant culture. It deliberately does NOT judge the range: a

@@ -273,11 +273,15 @@ comando completo o cambia el atajo en `RackFrameCommands.Aliases.cs`.
 | `QUICKCAMA` | `QCM` | Cama de rodamiento. |
 | `RACKSELECTIVO` | `RS` | Editor de rack selectivo (matriz frentes × niveles). |
 | `RACKEDITAR` | `RED` | Seleccionar un rack ya dibujado y reabrir su editor; al confirmar redibuja todas sus vistas. |
+| `RACKVARIABLES` | `RVA` | Administrar las variables del dibujo: crear, renombrar, usar un literal o una fórmula, cambiar la definición y reparar referencias rotas. |
 | `RACKDUPLICAR` | `RD` | Copiar **uno o varios racks** como **independientes** (GUID nuevo por rack; editar la copia no afecta al original), **al estilo COPY**: selección múltiple → punto base → puntos de destino con liga elástica, **copia múltiple por defecto** (Enter/Esc termina; `Unica` cambia a una sola). Solo se copian las **vistas físicamente seleccionadas**: una vista no arrastra a sus hermanas. En cada destino el grupo **conserva su disposición relativa** (también con UCS girado); cada rack copiado es independiente, y sus vistas comparten un GUID nuevo y un nombre ("… - copia N"). Las referencias **enlazadas** entre sí siguen enlazadas dentro de la copia. Lo que no es un rack, o está fuera del espacio modelo, se ignora con aviso; un rack que no se puede copiar detiene el comando antes del punto base, sin dibujar nada, y cada destino se coloca entero o no se coloca. |
 | `RACKLISTA` | `RL` | Tabla de todos los racks del dibujo (nombre, tipo, vistas presentes, nº de copias) con zoom al seleccionado. |
 | `RACKBOMTOTAL` | `RB` | BOM consolidado de todo el dibujo (desglose por rack × copias + gran total por componente). |
 | `RACKLAYOUT` | `RLY` | Replica la vista en **planta** de un rack en una rejilla de almacén: filas × columnas + pasillos + numeración automática (A1, B2…). Copias **enlazadas** (un bloque, editar una edita todas; el BOM las cuenta) o **independientes** (GUID/nombre propio por copia). Opcional: hileras **espalda-con-espalda** (pares con flue, pasillo solo entre pares) y **verificar encaje** contra un edificio (ancho × largo) — avisa si la rejilla no cabe. La orientación se hereda del rack (rótalo antes para girar la rejilla). |
 | `RACKRELLENAR` | `RR` | **Rellena automáticamente** el área disponible con un rack: dibuja el contorno de la nave como **polilínea cerrada** en la capa `RACKCAD_SITIO` (acepta formas en L; los arcos se aproximan por vértices) y las **columnas** ahí mismo (círculos, rectángulos o bloques — se libran por su caja + holgura). Calcula la rejilla máxima que cabe (prueba ambas orientaciones, opcional espalda-con-espalda), reporta cuántos racks caben y cuántas celdas se omiten, y al confirmar coloca las copias **enlazadas** + etiquetas. |
+
+Para crear expresiones y distinguir una referencia directa de una fórmula, consulta la
+[guía de variables de proyecto y fórmulas](variables-y-formulas.md).
 
 ---
 

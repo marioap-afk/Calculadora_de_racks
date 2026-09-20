@@ -342,13 +342,34 @@ namespace RackCad.Tests
         /// <summary>
         /// La promesa que hace demostrable "cero mutación en fallo": el plan describe, no toca. Si un
         /// <c>ObjectId</c> entrara en la capa pura, la mitad del contrato dejaría de poder probarse aquí.
+        ///
+        /// <para>
+        /// I-49 G5 (V6 P28.4, guarda G5) la extiende al núcleo de expresiones, <c>RackCad.Application.Expressions</c>,
+        /// entero y con sus subcarpetas: parsear, enlazar y evaluar también son capa pura. I-49 G6 la extiende a la
+        /// autoridad neutral de unidades, <c>RackCad.Application.Units</c>, que el núcleo consume.
+        /// </para>
         /// </summary>
         [Fact]
         public void LA_CAPA_PURA_SIGUE_SIN_CONOCER_EL_DIBUJO()
         {
-            var carpeta = Path.Combine(RepoRoot().FullName, "src", "RackCad.Application", "ProjectVariables");
+            var application = Path.Combine(RepoRoot().FullName, "src", "RackCad.Application");
+            var nucleo = Path.Combine(application, "Expressions");
+            var unidades = Path.Combine(application, "Units");
 
-            foreach (var file in Directory.GetFiles(carpeta, "*.cs"))
+            Assert.True(Directory.Exists(nucleo), "No existe el núcleo de expresiones: " + nucleo);
+            Assert.True(Directory.Exists(unidades), "No existe la autoridad de unidades: " + unidades);
+
+            var archivosDelNucleo = Directory.GetFiles(nucleo, "*.cs", SearchOption.AllDirectories);
+            Assert.NotEmpty(archivosDelNucleo);
+
+            var archivosDeUnidades = Directory.GetFiles(unidades, "*.cs", SearchOption.AllDirectories);
+            Assert.NotEmpty(archivosDeUnidades);
+
+            var archivos = Directory.GetFiles(Path.Combine(application, "ProjectVariables"), "*.cs")
+                .Concat(archivosDelNucleo)
+                .Concat(archivosDeUnidades);
+
+            foreach (var file in archivos)
             {
                 // Sin los comentarios: la prohibición es sobre el CÓDIGO. Nombrar lo que no se usa —«no lleva
                 // ObjectId»— es justamente la documentación de esta regla.
