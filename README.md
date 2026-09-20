@@ -36,6 +36,7 @@ Después ejecuta `RACKCAD`. El procedimiento completo y el formato de evidencia 
 | `QUICKCAMA` | Dibujar una cama de rodamiento. |
 | `RACKSELECTIVO` | Diseñar un rack selectivo. |
 | `RACKEDITAR` | Reabrir y actualizar un rack existente. |
+| `RACKVARIABLES` | Administrar variables del dibujo, literales o fórmulas; alias `RVA`. |
 | `RACKDUPLICAR` | Copiar uno o varios racks seleccionados como racks independientes (GUID nuevo), al estilo COPY. |
 | `RACKPROPIEDADES` | Administrar propiedades personalizadas (nombre y valor) de un rack o del Proyecto; alias `RPR`. |
 | `RACKLISTA` | Listar racks, vistas y copias del dibujo. |
@@ -43,6 +44,9 @@ Después ejecuta `RACKCAD`. El procedimiento completo y el formato de evidencia 
 | `RACKLAYOUT` / `RACKRELLENAR` | Colocar racks en una rejilla o sitio. |
 | `RACKSECCION` | Ver una sección estructural del catálogo AISC e insertarla como geometría. También desde `RACKCAD` → «Generar perfil estructural». |
 | `RACKAYUDA` | Consultar comandos y alias dentro de AutoCAD. |
+
+Las variables y fórmulas que consumen las propiedades vinculables de `RACKEDITAR` se explican en la
+[guía de variables de proyecto y fórmulas](docs/guias/variables-y-formulas.md).
 
 ## Documentación
 
