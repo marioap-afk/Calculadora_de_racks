@@ -129,7 +129,8 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var plan = CantileverViewPlanBuilder.Build(line, kind, factory, section < 0 ? 0 : section);
+            var plan = CantileverViewPlanBuilder.Build(
+                line, kind, factory, section < 0 ? 0 : section, design.PlantaVisibility);
 
             if (plan.IsEmpty)
             {
@@ -317,7 +318,8 @@ namespace RackCad.Plugin
                     continue;
                 }
 
-                var plan = CantileverViewPlanBuilder.Build(line, kind, factory, station < 0 ? 0 : station);
+                var plan = CantileverViewPlanBuilder.Build(
+                    line, kind, factory, station < 0 ? 0 : station, design.PlantaVisibility);
                 var payload = BuildCantileverPayload(
                     design, id, name, viewBlock.Embed.View, viewBlock.Embed.Section,
                     viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);

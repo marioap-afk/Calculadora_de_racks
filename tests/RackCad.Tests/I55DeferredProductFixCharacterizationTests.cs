@@ -15,11 +15,11 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Pr2_CantileverPluginCurrentlyOmitsPlantaVisibilityAtBothPlanCalls()
+        public void Pr2_CantileverPluginForwardsPlantaVisibilityAtBothPlanCalls()
         {
             var source = I55ProductCharacterizationTestSupport.Code("src", "RackCad.Plugin", "RackCantileverCommands.cs");
-            Assert.Equal(2, I55ProductCharacterizationTestSupport.Count(source, "CantileverViewPlanBuilder.Build(line, kind, factory,"));
-            Assert.DoesNotContain("PlantaVisibility", source);
+            Assert.Equal(2, I55ProductCharacterizationTestSupport.Count(source, "CantileverViewPlanBuilder.Build("));
+            Assert.Equal(2, I55ProductCharacterizationTestSupport.Count(source, "design.PlantaVisibility"));
         }
 
         [Fact]
