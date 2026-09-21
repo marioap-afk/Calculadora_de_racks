@@ -1,10 +1,10 @@
 # ADR-0042: Preparar la vista antes de materializarla: primera vista libre, varias vistas de un rack en un flujo y colocación de grupo que conserva la identidad
 
-- **Estado:** propuesto
-- **Fecha:** 2026-09-14 (propuesto; revisado con las Proposals V2, V3, V4 y V5 de I-55)
-- **Decisores:** pendiente. Solo el Owner del repositorio acepta o rechaza. Coordinador de I-55: **CHANGES REQUIRED** sobre las
-  Proposals V1 y V2, decisión CQ-01 sobre la V3 (redibujo atómico de hermanas), revisión técnica aceptada como entrada vinculante sobre la
-  V4 (CHANGES REQUIRED hacia V5) y **REVIEW REQUIRED** sobre la V5; Arquitecto formal: **PENDING**; sin consenso técnico. Claude (borrador inicial); Codex (reconciliación del takeover)
+- **Estado:** aceptado
+- **Fecha:** 2026-09-14 (propuesto); 2026-09-21 (aceptado)
+- **Decisores:** Owner del repositorio: **ACCEPTED** el 2026-09-21. Coordinador de I-55: **AGREED** sobre Proposal V5;
+  Arquitecto formal independiente: **AGREED** sobre Proposal V5 + reconciliación G2I. Claude (borrador inicial);
+  Codex (reconciliación del takeover)
 - **Iniciativa relacionada:** I-55 — `feature/creacion-de-vistas`
   ([contrato](../initiatives/I-55-creacion-de-vistas.md), [Discovery](../initiatives/I-55-discovery.md),
   [Proposal V5](../initiatives/I-55-proposal-v5.md), [mapa de implementación V5](../initiatives/I-55-implementation-map-v5.md),
@@ -14,20 +14,18 @@
   (ver «Relación con ADR-0010»)
 - **Es un ADR de producto.** Los hechos y contratos neutrales que consume (tipo y dirección de vista, codec, disponibilidad, marco y
   tramo, resolución sin editor, plan, nombre base, requisito de bloques, selección y valor de colocación) los fija la
-  [VIEW FOUNDATION ADR](../architecture/shared-view-foundation/adr-draft.md) (propuesta, número pendiente); este registro no los
+  [ADR-0044](0044-hechos-neutrales-de-vistas-compartidas.md), aceptado e integrado mediante `integration/I-57`; este registro no los
   redefine.
 
-> **Estado de este registro.** `propuesto`. **No** hay consenso técnico (Coordinator = REVIEW REQUIRED, Architect formal = PENDING,
-> Consensus = NOT REACHED), **no** autoriza implementación y puede editarse hasta que el Owner lo acepte o lo rechace.
+> **Estado de este registro.** `aceptado`. Coordinator = AGREED, Architect formal = AGREED, Owner = ACCEPTED y
+> Technical Consensus = REACHED sobre Proposal V5 + reconciliación G2I. La implementación se rige por sus gates; la aceptación abre
+> únicamente G3, caracterización de producto sin cambios de producción.
 >
-> **Precondiciones de aceptación.**
-> 1. Consenso técnico sobre la misma versión del plan.
-> 2. **M-01 resuelta**: modos por par de vistas, marcos fuente y destino, tipos y familias mezclados, variante en misma clase y sentido
->    del eje común de la proyección ortográfica (OD-6.b/c/d, OD-7.a/b/c/d/e y OD-2.b).
-> 3. Decisiones del Owner OD-1..OD-8.
-> 4. La VIEW FOUNDATION ADR aceptada.
->
-> El texto final incorporará lo que se decida.
+> **Precondiciones cumplidas.**
+> 1. Consenso técnico sobre Proposal V5 y el receipt G2I.
+> 2. **M-01 resuelta** como Relative Frame Window, incluidas OD-6.b/c/d, OD-7.a/b/c/d/e y OD-2.b.
+> 3. Decisiones del Owner OD-1..OD-8 aceptadas.
+> 4. ADR-0044 aceptado e I-57 integrado y consumible desde `main`.
 >
 > **Numeración.** Se redactó como 0041, número que I-49 publicó en su rama (`8cefd59`) antes del primer commit de este registro; por eso
 > es 0042. La publicación previa de un número en una rama también cuenta al censar; no se espera al merge. Este número ya publicado por I-55 se conserva; el ADR neutral sigue sin número.
@@ -53,7 +51,7 @@ La Discovery de I-55 auditó `ba497f1` y lo volvió a medir sobre `dad4e77`:
 - la planta y las elevaciones usan ejes locales distintos, así que las posiciones de un layout en planta no son posiciones de elevación.
 
 El Owner fijó ID17, ID18 e ID19, que comparten una necesidad: **preparar la representación de una vista antes de materializarla**, sobre los
-hechos neutrales de la VIEW FOUNDATION ADR.
+hechos neutrales de ADR-0044 y Shared View Foundation.
 
 ## Decisión
 
@@ -236,8 +234,8 @@ complemento declarado (ADR-0028, ADR-0029) y de nota posterior que enlaza un ADR
 - [ADR-0035](0035-visibilidad-de-cotas-por-tipo-de-vista.md): sin cambio de política.
 - [ADR-0037](0037-reutilizacion-de-cabecera-por-copia-y-distribucion-por-lotes.md): precedente de preparación completa antes de escribir.
 - [ADR-0039](0039-custom-properties-persistencia-autoridad.md): sin cambio; I-55 solo consume su lectura y su igualdad canónica.
-- [VIEW FOUNDATION ADR](../architecture/shared-view-foundation/adr-draft.md) (propuesta, número pendiente): autoridad de los hechos que
-  este registro consume.
+- [ADR-0044](0044-hechos-neutrales-de-vistas-compartidas.md): autoridad aceptada de los hechos que este registro consume, integrada
+  mediante el recibo `integration/I-57`.
 - ADR-0036 (propuesto, espejo semántico): consumidor de la misma fundación.
 
 ## Referencias
