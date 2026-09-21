@@ -77,3 +77,6 @@ históricas ni quedan autorizadas por este ADR.
 ## Notas posteriores
 
 - **2026-07-22 — Aceptado por Mario Pérez**, dueño del repositorio («Sí, apruebo»). La aceptación recae sobre este registro tal como está en el candidato `600b22e`; no atribuye fecha ni decisores históricos ausentes y conserva las limitaciones documentadas. Decisión versionada en [`docs/automation/decisions/I-07.md`](../automation/decisions/I-07.md).
+- **2026-09-21 — Complementado por [ADR-0042](0042-preparacion-de-vistas-antes-de-materializar.md).** ADR-0010 permanece
+  `aceptado` y no es reemplazado. ADR-0042 generaliza el origen válido de una vista hermana y añade preparación, colocación por lotes y
+  proyección multi-rack con identidad conservada; las decisiones originales de Actualizar e Insertar de este registro siguen vigentes.

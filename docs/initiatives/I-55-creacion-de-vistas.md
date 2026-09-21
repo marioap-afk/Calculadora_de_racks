@@ -26,27 +26,37 @@ automation:
 
 # I-55 — View Placement & Projection
 
-> **Fase actual: G2I — reconciliada con I-57 integrada; Architect formal pendiente.**
+> **Fase actual: G3 OPEN — caracterización de producto exclusivamente; producción sin cambios.**
 > [Proposal V5](I-55-proposal-v5.md), [mapa V5](I-55-implementation-map-v5.md),
 > [contrato I-57 integrado](I-57-shared-view-foundation.md) y recibo `integration/I-57`.
 >
 > - V4: Coordinator **CHANGES REQUIRED → V5**. AR4-01..50 es entrada tecnica vinculante aceptada por el Coordinador;
 >   no es una revision formal independiente. V1..V4 permanecen historicas.
-> - V5 exacta `f49671e29c6cc817166c720fe3f975deb92d4c3b`: Coordinator **AGREED**; Architect formal **PENDING**;
->   Owner product decisions **ACCEPTED**; Consensus **NOT REACHED**.
+> - V5 exacta `f49671e29c6cc817166c720fe3f975deb92d4c3b`: **GOVERNING / FROZEN FOR IMPLEMENTATION**;
+>   Coordinator **AGREED**; Architect formal **AGREED**; Owner **ACCEPTED**; Technical Consensus **REACHED**.
 > - Owner: Shared View Foundation independiente = aceptada; OD-1..OD-8 = opciones recomendadas aceptadas;
->   M-01 = **Relative Frame Window** (OD-7.e A). ADR-0042 sigue **PROPOSED**.
+>   M-01 = **Relative Frame Window** (OD-7.e A). ADR-0042 = **ACCEPTED** el 2026-09-21.
 > - Dependencia neutral: I-57 esta integrada en `main` por `7097057cf8685bf5ecc09083cba37379d4a4aae8` y su
 >   recibo anotado `integration/I-57` fue verificado en G2I. AUTH-01..13 y AUTH-14 como caracterizaciones estan
 >   disponibles para consumo. AUTH-15 sigue fuera de I-57 y bloquea solamente G15.
-> - Open Material: revision formal del Architect sobre Proposal V5 + receipt G2I y aceptacion posterior de
->   ADR-0042 por el Owner. No hay gap material en la Foundation integrada.
+> - Foundation gaps: **NONE**. Proposal V6: **NOT REQUIRED**. AUTH-15 permanece bajo I-52 y no bloquea G3..G14.
 > - Proposal V5 exacta: `f49671e29c6cc817166c720fe3f975deb92d4c3b`. R1 queda historica; R3 es `EFFECTIVE`
 >   con blob `cd42db03becff42f98b047e61c46689c17a69670` y el tag de integracion es la senal consumible.
 > - Paquetes: [Coordinador](I-55-coordinator-review-package-v5.md), [Arquitecto independiente](I-55-architect-review-package-v5.md)
 >   y [reconciliacion G2I post-I-57](I-55-post-i57-reconciliation.md).
 >
-> **SUBSTANTIVE IMPLEMENTATION: BLOCKED.** Sin freeze ni integracion autorizada por esta publicacion.
+> **Consensus Freeze: COMPLETE. G3: OPEN.** G3 solo puede añadir caracterizaciones de producto y no puede cambiar
+> producción. G4, G5 y G6+ permanecen `NOT OPEN`.
+
+### Alcance abierto de G3
+
+G3 caracteriza exclusivamente seams y comportamiento de producto de I-55: primera vista vigente por sistema,
+matriz de exposición, Insertar y update/redraw actuales, pertenencia de hermanas, gate de Custom Properties, ciclo de
+vida de `RackId`, seams actuales de colocación/materialización, cancelación, informes, paridad BOM/listado, baselines
+PR-1/PR-2 y colocación fuente/referencia de ID19. No modifica producción.
+
+G3 no duplica CT-04, CT-05, CT-16, CT-RES, CT-PLAN, CT-NAME, CT-SCAN, CT-GEO, CT-BLK ni CT-AUTH; esas
+caracterizaciones pertenecen a I-57.
 
 ```text
 Initiative     = I-55 — View Placement & Projection
