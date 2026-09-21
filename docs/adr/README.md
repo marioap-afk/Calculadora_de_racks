@@ -80,7 +80,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0039](0039-custom-properties-persistencia-autoridad.md) | Contrato de persistencia y autoridad de Custom Properties | aceptado |
 | [0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md) | Motor de expresiones paramétricas (ID22B, Expression Engine), edición de fórmulas y guarda de complejidad sintáctica | reemplazado por [ADR-0041](0041-motor-expresiones-parametricas-identidad-textual-y-cualificador-clave-exacta.md) |
 | [0041](0041-motor-expresiones-parametricas-identidad-textual-y-cualificador-clave-exacta.md) | Motor de expresiones paramétricas, edición de fórmulas e identidad textual con cualificador de clave exacta | reemplazado por [ADR-0043](0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md) |
-| [0042](0042-preparacion-de-vistas-antes-de-materializar.md) | Preparar la vista antes de materializarla: primera vista libre, varias vistas de un rack en un flujo y colocación de grupo que conserva la identidad | propuesto |
+| [0042](0042-preparacion-de-vistas-antes-de-materializar.md) | Preparar la vista antes de materializarla: primera vista libre, varias vistas de un rack en un flujo y colocación de grupo que conserva la identidad | aceptado |
 | [0043](0043-motor-expresiones-parametricas-causas-multiples-y-recuperacion-segura.md) | Motor de expresiones paramétricas, edición de fórmulas, identidad textual y recuperación segura con causas múltiples | aceptado |
 | [0045](0045-workflow-v2-ciclo-evidencia-e-integracion.md) | Workflow V2 — Initiative lifecycle, evidence and integration governance | aceptado |
 | [0044](0044-hechos-neutrales-de-vistas-compartidas.md) | Hechos neutrales de vistas compartidas y consumo desde main | aceptado |
@@ -260,12 +260,10 @@ número 0037 ya figura en este índice, desde la integración de I-53 (E1) en `m
 I-52 e I-49 en sus ramas y aún no figuran en él. Registro en
 [`docs/automation/decisions/I-54.md`](../automation/decisions/I-54.md).
 
-Iniciativa I-55 (`feature/creacion-de-vistas`): **ADR-0042 nace `propuesto` el 2026-09-14** con la Proposal V1 de I-55 y
-se revisa, todavía `propuesto`, con las Proposals V2, V3, V4 y V5, sin consenso técnico y sin aceptación del Owner; no autoriza
-implementación. Desde la Proposal V5 es un **ADR de producto**: los hechos y contratos neutrales de vistas que consume los fija un
-borrador de VIEW FOUNDATION ADR, **propuesto y sin número**, que no figura en este índice
-([borrador](../architecture/shared-view-foundation/adr-draft.md)). Su aceptación exige antes el consenso, la resolución de M-01
-(semántica de colocación de grupo), las decisiones del Owner OD-1..OD-8 y la VIEW FOUNDATION ADR aceptada. **Complementa a ADR-0010**, que sigue `aceptado`: generaliza
-el origen válido de una vista hermana y añade precondiciones al flujo de Insertar; la nota posterior fechada en ADR-0010
-solo se escribirá si el Owner acepta ADR-0042. Al redactarlo, 0036, 0038, 0040 y 0041 siguen tomados por I-52 e I-49 en sus ramas (I-49
-tomó 0041 mientras se redactaba este registro) y 0042 no figuraba en ninguna rama ni etiqueta. Registro en [`docs/automation/decisions/I-55.md`](../automation/decisions/I-55.md).
+Iniciativa I-55 (`feature/creacion-de-vistas`): **ADR-0042 nació `propuesto` el 2026-09-14 y quedó `aceptado` el
+2026-09-21**. La aceptación recae sobre Proposal V5 y la reconciliación G2I, después de `Coordinator = AGREED`,
+`Architect = AGREED`, M-01/OD-1..OD-8 aceptadas y [ADR-0044](0044-hechos-neutrales-de-vistas-compartidas.md) integrado
+mediante `integration/I-57`. Es un ADR de producto y no redefine los hechos neutrales de Shared View Foundation.
+**Complementa a ADR-0010**, que sigue `aceptado` y recibió una nota posterior fechada; no lo reemplaza. La aceptación
+completa el Consensus Freeze y abre únicamente G3 de I-55, caracterización de producto sin cambios de producción.
+Registro en [`docs/automation/decisions/I-55.md`](../automation/decisions/I-55.md).
