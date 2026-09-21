@@ -334,3 +334,9 @@ sigue sin ser consumible mientras el Integration SHA de I-57 este vacio. I-57 po
 neutrales; I-55 conserva ID17–19, Relative Frame Window, CQ-01, anchoring, queue, UX y materialization policy.
 Proposal V5 queda inmutable. ADR-0042 y ADR-0044 siguen `PROPOSED`; la implementacion sustantiva permanece
 `BLOCKED`.
+
+# Estado G3 (2026-09-21)
+
+El Consensus Freeze de Proposal V5 permanece vigente. G3 caracteriza producto sin modificar produccion; su receipt durable es
+[`I-55-g3-product-characterization.md`](I-55-g3-product-characterization.md). PR-1 y PR-2 quedan abiertos y caracterizados para G4 y G5,
+respectivamente. G4 solo abre cuando Full, builds Debug y CI exacta del SHA de cierre de G3 queden verdes; G5 permanece cerrado.
