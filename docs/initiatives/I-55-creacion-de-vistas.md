@@ -340,3 +340,10 @@ Proposal V5 queda inmutable. ADR-0042 y ADR-0044 siguen `PROPOSED`; la implement
 El Consensus Freeze de Proposal V5 permanece vigente. G3 caracteriza producto sin modificar produccion; su receipt durable es
 [`I-55-g3-product-characterization.md`](I-55-g3-product-characterization.md). PR-1 y PR-2 quedan abiertos y caracterizados para G4 y G5,
 respectivamente. G4 solo abre cuando Full, builds Debug y CI exacta del SHA de cierre de G3 queden verdes; G5 permanece cerrado.
+
+# Estado G4 (2026-09-21)
+
+G4 corrige solo PR-1: la lateral Push Back persiste el `PostIndex` fisico del item seleccionado y la vista previa busca
+el mismo corte por esa identidad. El receipt durable es
+[`I-55-g4-pr1-pushback-postindex.md`](I-55-g4-pr1-pushback-postindex.md). PR-2 permanece abierto y caracterizado; G4
+queda completo y G5 abierto. La validacion manual OV-G4 queda diferida al Candidato.
