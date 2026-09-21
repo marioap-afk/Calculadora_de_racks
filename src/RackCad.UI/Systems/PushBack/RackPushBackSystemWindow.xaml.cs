@@ -184,6 +184,35 @@ namespace RackCad.UI.Systems.PushBack
         internal bool CurrentInputsAreValid => currentInputsAreValid;
         internal IReadOnlyList<SelectiveSafetySelection> SafetySelections => safetySelections;
 
+        internal sealed class LateralViewOption
+        {
+            internal LateralViewOption(string label, int postIndex)
+            {
+                Label = label;
+                PostIndex = postIndex;
+            }
+
+            public string Label { get; }
+            public int PostIndex { get; }
+        }
+
+        internal static IReadOnlyList<LateralViewOption> LateralViewOptions(IReadOnlyList<DynamicLateralCorte> cortes)
+            => (cortes ?? Array.Empty<DynamicLateralCorte>())
+                .Select((corte, index) => new LateralViewOption(
+                    (index + 1).ToString(CultureInfo.InvariantCulture),
+                    corte.PostIndex))
+                .ToList();
+
+        internal static int PhysicalPostIndex(object selectedItem)
+            => selectedItem is LateralViewOption option ? option.PostIndex : -1;
+
+        internal static int RestoredLateralSelectionIndex(
+            IReadOnlyList<LateralViewOption> options,
+            LateralViewOption previous)
+            => previous == null
+                ? (options.Count > 0 ? 0 : -1)
+                : options.ToList().FindIndex(option => option.PostIndex == previous.PostIndex);
+
         /// <summary>The safety families offered by the dialog: every applicable family EXCEPT entrance guides (GUIA) and walk
         /// grids (PARRILLA), which Push Back never admits (PB-VAL-06) — so neither is even a visible option. The exclusion is
         /// authoritative in <see cref="PushBackSafetyAuthority"/>; hiding them here keeps the UI from offering what the build
@@ -3033,14 +3062,15 @@ namespace RackCad.UI.Systems.PushBack
         private void UpdateViewSelector()
         {
             // Populate from the cortes the assembler already computed; never re-invoke a builder to recompute geometry.
-            var count = lastComputation?.LateralCortes?.Count ?? 0;
             var wasSuppressed = suppressSync;
             suppressSync = true;
             try
             {
-                var previous = LateralSectionBox.SelectedIndex;
-                LateralSectionBox.ItemsSource = Enumerable.Range(1, Math.Max(1, count)).Select(i => i.ToString(CultureInfo.InvariantCulture)).ToList();
-                LateralSectionBox.SelectedIndex = count > 0 ? Math.Max(0, Math.Min(previous, count - 1)) : 0;
+                var previous = LateralSectionBox.SelectedItem as LateralViewOption;
+                var options = LateralViewOptions(lastComputation?.LateralCortes);
+                LateralSectionBox.DisplayMemberPath = nameof(LateralViewOption.Label);
+                LateralSectionBox.ItemsSource = options;
+                LateralSectionBox.SelectedIndex = RestoredLateralSelectionIndex(options, previous);
                 LateralSectionBox.Visibility = ViewBox.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
                 LateralSectionLabel.Visibility = LateralSectionBox.Visibility;
             }
@@ -3062,7 +3092,7 @@ namespace RackCad.UI.Systems.PushBack
                 case 2: return (RackEmbedDocument.ViewFrontal, PushBackSystemFrontalBuilder.EncodeSection(
                     PushBackFrontalEnd.Posterior, frontalSide));
                 case 3: return (RackEmbedDocument.ViewPlanta, -1);
-                default: return (RackEmbedDocument.ViewLateral, Math.Max(0, LateralSectionBox.SelectedIndex));
+                default: return (RackEmbedDocument.ViewLateral, PhysicalPostIndex(LateralSectionBox.SelectedItem));
             }
         }
 
@@ -3151,10 +3181,10 @@ namespace RackCad.UI.Systems.PushBack
             var cortes = lastComputation.LateralCortes;
             if (cortes != null && cortes.Count > 0)
             {
-                return cortes[Math.Max(0, Math.Min(section, cortes.Count - 1))].Plan;
+                return cortes.FirstOrDefault(corte => corte.PostIndex == section)?.Plan;
             }
 
-            return lastComputation.LateralPlan;
+            return null;
         }
 
         private static string ViewLabel(string view, int section)
