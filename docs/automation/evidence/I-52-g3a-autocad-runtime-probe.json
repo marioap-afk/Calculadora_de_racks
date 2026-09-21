@@ -1,0 +1,6288 @@
+{
+  "CapturedAtUtc": "2026-09-21T22:34:08.3688806+00:00",
+  "ProcessPath": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\accoreconsole.exe",
+  "ApplicationVersion": "25.0.0.0",
+  "HostType": "Autodesk.AutoCAD.DatabaseServices.ImpHostApplicationServices",
+  "HostProduct": "AutoCAD",
+  "HostProgram": "acad",
+  "HostMarketVersion": "2025",
+  "HostCompany": "Autodesk, Inc.",
+  "MachineRegistryProductRootKey": "Software\\Autodesk\\AutoCAD\\R25.0\\ACAD-8101:409",
+  "UserRegistryProductRootKey": "Software\\Autodesk\\AutoCAD\\R25.0\\ACAD-8101:409",
+  "DocumentName": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Autodesk\\AutoCAD 2025\\R25.0\\enu\\Template\\acad.dwt",
+  "CommandInProgress": "I52G3APROBE",
+  "EditorIsQuiescent": "False",
+  "ApplicationIsQuiescent": "False",
+  "CurrentLongTransaction": "(0)",
+  "ModeSignals": {
+    "REFEDITNAME": "",
+    "BLOCKEDITOR": "0",
+    "BLOCKTESTWINDOW": "0",
+    "ARRAYEDITSTATE": "0",
+    "CMDNAMES": "I52G3APROBE",
+    "CMDACTIVE": "5",
+    "XLOADCTL": "2",
+    "INDEXCTL": "0",
+    "ACADVER": "25.0",
+    "PRODUCT": "AutoCAD",
+    "PLATFORM": "Microsoft Windows NT Version 10.0 (x64)",
+    "VERNUM": "ERROR Exception: eInvalidInput"
+  },
+  "SystemVariables": [
+    {
+      "Name": "3DCONVERSIONMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "3DDWFPREC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "3DSELECTIONMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ACADLSPASDOC",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ACADPREFIX",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ACADVER",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ACTPATH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ACTRECORDERSTATE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ACTUI",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AFLAGS",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ANGBASE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ANGDIR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ANNOALLVISIBLE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ANNOAUTOSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ANNOTATIVEDWG",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "APBOX",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "APERTURE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AREA",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ATTDIA",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ATTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ATTREQ",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AUDITCTL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AUNITS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AUPREC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AUTODWFPUBLISH",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AUTOMATICPUB",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AUTOSNAP",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BACKGROUNDPLOT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BACKZ",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BACTIONBARMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BACTIONCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BCONSTATUSMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BDEPENDENCYHIGHLIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BGRIPOBJCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BGRIPOBJSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BINDTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLIPMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKEDITLOCK",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKEDITOR",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BPARAMETERCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BPARAMETERFONT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BPARAMETERSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BTMARKDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BVMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CAMERADISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CAMERAHEIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CANNOSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CANNOSCALEVALUE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CDATE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CDYNDISPLAYMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CECOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CELTSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CELTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CELWEIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CENTERMT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CETRANSPARENCY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CGEOCS",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CHAMFERA",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CHAMFERB",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CHAMFERC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CHAMFERD",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CHAMMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CIRCLERAD",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CLAYER",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CLAYOUT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMATERIAL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMDACTIVE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMDDIA",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMDECHO",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMDINPUTHISTORYMAX",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMDNAMES",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMLEADERSTYLE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMLJUST",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMLSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMLSTYLE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPASS",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CONSTRAINTBARMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CONSTRAINTNAMEFORMAT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CONSTRAINTRELAX",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CONSTRAINTSOLVEMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COORDS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COPYMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CPLOTSTYLE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CPROFILE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CTAB",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CTABLESTYLE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CURSORSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CVIEWDETAILSTYLE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CVIEWSECTIONSTYLE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DATALINKNOTIFY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DATE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DBLCLKEDIT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DBMOD",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DCTCUST",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DCTMAIN",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DEFAULTGIZMO",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DEFAULTLIGHTING",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DEFAULTLIGHTINGTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DEFLPLSTYLE",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DEFPLSTYLE",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DELOBJ",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DEMANDLOAD",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DGNFRAME",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DGNIMPORTMAX",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DGNMAPPINGPATH",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DGNOSNAP",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIASTAT",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMADEC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMALT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMALTD",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMALTF",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMALTRND",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMALTTD",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMALTTZ",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMALTU",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMALTZ",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMANNO",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMAPOST",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMARCSYM",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMASO",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMASSOC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMASZ",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMATFIT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMAUNIT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMAZIN",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMBLK",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMBLK1",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMBLK2",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMCEN",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMCLRD",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMCLRE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMCLRT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMDEC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMDLE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMDLI",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMDSEP",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMEXE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMEXO",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMFIT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMFRAC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMFXL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMFXLON",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMGAP",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMJOGANG",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMJUST",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMLDRBLK",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMLFAC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMLIM",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMLTEX1",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMLTEX2",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMLTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMLUNIT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMLWD",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMLWE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMPOST",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMRND",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMSAH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMSD1",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMSD2",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMSE1",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMSE2",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMSHO",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMSOXD",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMSTYLE",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTAD",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTDEC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTFAC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTFILL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTFILLCLR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTIH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTIX",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTM",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTMOVE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTOFL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTOH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTOL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTOLJ",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTP",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTSZ",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTVP",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTXSTY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTXT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTXTDIRECTION",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTZIN",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMUNIT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMUPT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMZIN",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DISPSILH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DISTANCE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHBOXHEIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHBOXLENGTH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHBOXWIDTH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHCONEAXIS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHCONEBASE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHCONEHEIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHCYLAXIS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHCYLBASE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHCYLHEIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHPYRBASE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHPYRHEIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHPYRLENGTH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHSPHEREAXIS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHSPHEREHEIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHTORUSPATH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHTORUSSECTION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHWEDGEBASE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHWEDGEHEIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHWEDGELENGTH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHWEDGESLOPE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIVMESHWEDGEWIDTH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DONUTID",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DONUTOD",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DRAGMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DRAGP1",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DRAGP2",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DRAGVS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DRAWORDERCTL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DTEXTED",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DWFFRAME",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DWFOSNAP",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DWGCHECK",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DWGCODEPAGE",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DWGNAME",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DWGPREFIX",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DWGTITLED",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DXEVAL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DYNCONSTRAINTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DYNDIGRIP",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DYNDIVIS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DYNPICOORDS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DYNPIFORMAT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DYNPIVIS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DYNPROMPT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DYNTOOLTIPS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EDGEMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ELEVATION",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ENTERPRISEMENU",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EXPERT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EXPLMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EXPVALUE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EXPWHITEBALANCE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EXTMAX",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EXTMIN",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EXTNAMES",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETERMAXGRID",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETERMESHTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETERMINUGRID",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETERMINVGRID",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETERPRIMITIVEMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETERSMOOTHLEV",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETRATIO",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETRES",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FIELDDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FIELDEVAL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FILEDIA",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FILLETRAD",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FILLMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FONTALT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FONTMAP",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FRONTZ",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FULLOPEN",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FULLPLOTPATH",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GEOLATLONGFORMAT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GEOMARKERVISIBILITY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GFANG",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GFCLR1",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GFCLR2",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GFCLRLUM",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GFCLRSTATE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GFNAME",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GFSHIFT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIDDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIDMAJOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIDMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIDUNIT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPBLOCK",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPCONTOUR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPDYNCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPHOT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPHOVER",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPOBJLIMIT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPSUBOBJMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPTIPS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GTAUTO",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GTDEFAULT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GTLOCATION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HALOGAP",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HANDLES",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HIDEPRECISION",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HIDETEXT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HIDEXREFSCALES",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HIGHLIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPANG",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPANNOTATIVE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPASSOC",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPBOUND",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPBOUNDRETAIN",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPDOUBLE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPDRAWORDER",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPGAPTOL",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPINHERIT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPISLANDDETECTION",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPISLANDDETECTIONMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPMAXLINES",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPNAME",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPOBJWARNING",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPORIGIN",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPORIGINMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPORIGINSTOREASDEFAULT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPQUICKPREVTIMEOUT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPSEPARATE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPSPACE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HYPERLINKBASE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "IMAGEHLT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "IMPLIEDFACE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INDEXCTL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INETLOCATION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INPUTHISTORYMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INSBASE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INSNAME",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INSUNITS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INSUNITSDEFSOURCE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INSUNITSDEFTARGET",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INTELLIGENTUPDATE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INTERFERECOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INTERFEREOBJVS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INTERFEREVPVS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INTERSECTIONCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INTERSECTIONDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ISAVEBAK",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ISAVEPERCENT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ISOLINES",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LARGEOBJECTSUPPORT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LASTANGLE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LASTPOINT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LASTPROMPT",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LATITUDE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LAYERDLGMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LAYEREVAL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LAYEREVALCTL",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LAYERFILTERALERT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LAYERNOTIFY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LAYLOCKFADECTL",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LAYOUTREGENCTL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LEGACYCTRLPICK",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LENSLENGTH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LIGHTGLYPHDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LIGHTINGUNITS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LIGHTSINBLOCKS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LIMCHECK",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LIMMAX",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LIMMIN",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOCALE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOCALROOTPREFIX",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOCKUI",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOFTANG1",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOFTANG2",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOFTMAG1",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOFTMAG2",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOFTNORMALS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOFTPARAM",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOGFILEMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOGFILENAME",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOGFILEPATH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LOGINNAME",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LONGITUDE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LTSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LUNITS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LUPREC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LWDEFAULT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LWDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LWUNITS",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MAXACTVP",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MAXSORT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MBUTTONPAN",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MEASUREINIT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MEASUREMENT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MENUBAR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MENUCTL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MENUECHO",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MENUNAME",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MIRRTEXT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MLEADERSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MODEMACRO",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MSLTSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MSOLESCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MTEXTCOLUMN",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MTEXTED",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MTEXTFIXED",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MTEXTTOOLBAR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MTJIGSTRING",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MYDOCUMENTSPREFIX",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NAVSWHEELMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NAVSWHEELOPACITYBIG",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NAVSWHEELOPACITYMINI",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NAVSWHEELSIZEBIG",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NAVSWHEELSIZEMINI",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NAVVCUBEDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NAVVCUBELOCATION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NAVVCUBEOPACITY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NAVVCUBEORIENT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NAVVCUBESIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NOMUTT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NORTHDIRECTION",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OBSCUREDCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OBSCUREDLTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OFFSETDIST",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OFFSETGAPTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OLEFRAME",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OLEHIDE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OLESTARTUP",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ORTHOMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OSMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OSNAPCOORD",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OSNAPHATCH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OSNAPZ",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OSOPTIONS",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PDFFRAME",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PDMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PDSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PEDITACCEPT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PELLIPSE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PERIMETER",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PERSPECTIVE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PERSPECTIVECLIP",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PFACEVMAX",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PICKADD",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PICKBOX",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PICKDRAG",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PICKSTYLE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PLATFORM",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PLINECONVERTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PLINEGEN",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PLINETYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PLINEWID",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PLOTOFFSET",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PLOTROTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POLARADDANG",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POLARDIST",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POLYSIDES",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POPUPS",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PREVIEWFILTER",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PREVIEWTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PROJECTNAME",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PROJMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PROXYGRAPHICS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PROXYNOTICE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PROXYSHOW",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PSLTSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PSOLHEIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PSOLWIDTH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PSPROLOG",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PSQUALITY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PSTYLEMODE",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PSVPSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PUBLISHALLSHEETS",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PUBLISHCOLLATE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PUBLISHHATCH",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PUCSBASE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "QPLOCATION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "QPMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "QTEXTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "QVDRAWINGPIN",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "QVLAYOUTPIN",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RASTERDPI",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RECOVERYMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REFEDITNAME",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REGENMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REMEMBERFOLDERS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RENDERUSERLIGHTS",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REPORTERROR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ROAMABLEROOTPREFIX",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ROLLOVERTIPS",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RTDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SAVEFIDELITY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SAVEFILE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SAVEFILEPATH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SAVENAME",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SAVETIME",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SCREENBOXES",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SCREENMODE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SCREENSIZE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SELECTIONANNODISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SELECTIONPREVIEW",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SETBYLAYERMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHADEDGE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHADEDIF",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHADOWPLANELOCATION",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHORTCUTMENU",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHORTCUTMENUDURATION",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHOWHIST",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHOWLAYERUSAGE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHOWMOTIONPIN",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHPNAME",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SIGWARN",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SKETCHINC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SKPOLY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SKYSTATUS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SMOOTHMESHGRID",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SMOOTHMESHMAXFACE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SMOOTHMESHMAXLEV",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SNAPANG",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SNAPBASE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SNAPISOPAIR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SNAPMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SNAPSTYL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SNAPTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SNAPUNIT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SOLIDHIST",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SORTENTS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SPLFRAME",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SPLINESEGS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SPLINETYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SSFOUND",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SSLOCATE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SSMAUTOOPEN",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SSMPOLLTIME",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SSMSHEETSTATUS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "STANDARDSVIOLATION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "STARTINFOLDER",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "STEPSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "STEPSPERSEC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "STUDENTDRAWING",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SUNSTATUS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFTAB1",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFTAB2",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFU",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFV",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SYSCODEPAGE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TABLEINDICATOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TABLETOOLBAR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TABMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TARGET",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TDCREATE",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TDINDWG",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TDUCREATE",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TDUPDATE",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TDUSRTIMER",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TDUUPDATE",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEMPPREFIX",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTED",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTEVAL",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTFILL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTOUTPUTFILEFORMAT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTQLTY",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTSTYLE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "THICKNESS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "THUMBSAVE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "THUMBSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TILEMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TIMEZONE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TOOLTIPMERGE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRACEWID",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRACKPATH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TREEDEPTH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TREEMAX",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRIMMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TSPACEFAC",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TSPACETYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TSTACKALIGN",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TSTACKSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSAXISANG",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSBASE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSDETECT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSFOLLOW",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSICON",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSNAME",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSORG",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSORTHO",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSVIEW",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSVP",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSXDIR",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSYDIR",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UNDOCTL",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UNDOMARKS",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UNITMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UPDATETHUMBNAIL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWCTR",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWDIR",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWMODE",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWSIZE",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWTWIST",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VISRETAIN",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VPLAYEROVERRIDES",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VPLAYEROVERRIDESMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VPMAXIMIZEDSTATE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VPROTATEASSOC",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSBACKGROUNDS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSEDGECOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSEDGEJITTER",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSEDGELEX",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSEDGEOVERHANG",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSEDGES",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSEDGESMOOTH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSFACECOLORMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSFACEHIGHLIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSFACEOPACITY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSFACESTYLE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSHALOGAP",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSHIDEPRECISION",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSINTERSECTIONCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSINTERSECTIONEDGES",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSINTERSECTIONLTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSISOONTOP",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSLIGHTINGQUALITY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSMATERIALMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSMAX",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSMIN",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSMONOCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSOBSCUREDCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSOBSCUREDEDGES",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSOBSCUREDLTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSOCCLUDEDCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSOCCLUDEDEDGES",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSOCCLUDEDLTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSSHADOWS",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSSILHEDGES",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSSILHWIDTH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VTDURATION",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VTENABLE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VTFPS",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WMFBKGND",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WMFFOREGND",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WORKINGFOLDER",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WORLDUCS",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WORLDVIEW",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WRITESTAT",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XCLIPFRAME",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XDWGFADECTL",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XEDIT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XFADECTL",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XLOADCTL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XLOADPATH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XREFCTL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XREFNOTIFY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XREFTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ZOOMFACTOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ZOOMWHEEL",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "3DOSMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ACTIVITYINSIGHTSPATH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ACTIVITYINSIGHTSSUPPORT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ACTIVITYINSIGHTSVIEWEDLOGGING",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ACTRECPATH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AEC3DDWFEDGE",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECCBPASTEAVAILABILITY",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECCLASSIFICATIONMERGEBEHAVIOR",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECEIPINPROGRESS",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECENABLEASSOCANCHOR",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECENABLESECTIONCLEANUP",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECFORCEDEFAULTMODELVIEW",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECFORCEDISPLAYBYSIZEDISABLED",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECFORCEEXPLODETOSOLID",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECOBJECTISOLATEMODE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECPSDAUTOATTACH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECPSDVISIBILITY",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AECUSENEWTOTALCALC",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ANNOMONITOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ANNOSCALEZOOM",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "APPAUTOLOAD",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "APPFRAMERESOURCES",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "APPLYGLOBALOPACITIES",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ARRAYASSOCIATIVITY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ARRAYCREATION",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ARRAYEDITSTATE",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ARRAYTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ASMOUTVER",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ATTIPE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ATTMULTI",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "AUTOPLACEMENT",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BCONVERTINCLUDEEXISTINGBLOCKS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BGCOREPUBLISH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKCREATEMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKEXCLUDECOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKINCLUDECOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKMRULIST",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKNAVIGATE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKREDEFINEMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKSDATACOLLECTION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKSRECENTFOLDER",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKSYNCFOLDER",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKTARGETCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BLOCKTESTWINDOW",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "BPTEXTHORIZONTAL",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CACHEMAXFILES",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CACHEMAXTOTALSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CALCINPUT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CAPTURETHUMBNAILS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CBARTRANSPARENCY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CCONSTRAINTFORM",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CENTERCROSSGAP",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CENTERCROSSSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CENTEREXE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CENTERLAYER",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CENTERLTSCALE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CENTERLTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CENTERLTYPEFILE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CENTERMARKEXE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CLASSICKEYS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CLEANSCREENSTATE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CLIPROMPTLINES",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CLIPROMPTUPDATE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CLOUDCOLLABMODIFIEDOPTION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CLOUDCOLLABSYNCLOCKOPTION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMFADECOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMFADEOPACITY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CMOSNAP",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COLORTHEME",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMMANDPREVIEW",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMMENTHIGHLIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARECOLOR1",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARECOLOR2",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARECOLORCOMMON",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPAREFRONT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPAREHATCH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPAREPROPS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARERCMARGIN",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARERCSHAPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARESHOW1",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARESHOW2",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARESHOWCOMMON",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARESHOWCONTEXT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARESHOWRC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARETEXT",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPARETOLERANCE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COMPLEXLTPREVIEW",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CONSOLIDATIONMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CONSTRAINTBARDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CONSTRAINTCURSORDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CONSTRAINTINFER",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COUNTCHECK",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COUNTCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COUNTERRORCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COUNTERRORNUM",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COUNTMODE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COUNTNUMBER",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COUNTPALETTESTATE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "COUNTSERVICE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CROSSINGAREACOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CULLINGOBJ",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CULLINGOBJSELECTION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CURSORBADGE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CURSORTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "CVPORT",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DEFAULTINDEX",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DETECTPALETTESTATE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DGNIMPORTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DGNIMPORTUNITCONVERSION",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIGITIZER",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMCONSTRAINTICON",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMCONTINUEMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMLAYER",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMPICKBOX",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DIMTXTRULER",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DISPLAYVIEWCUBEIN2D",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DISPLAYVIEWCUBEIN3D",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DISPSILHBLOCKS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DRAGCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DWGCOMPAREMODE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DX12FRAMERATEUNLIMITED",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DYNCONSTRAINTDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DYNINFOTIPS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "DYNMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ENABLEDSTLOCK",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ENABLESYNCPDF",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ERHIGHLIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EXPORTEPLOTFORMAT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EXPORTMODELSPACE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EXPORTPAGESETUP",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "EXPORTPAPERSPACE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETERDEVNORMAL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETERDEVSURFACE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETERGRIDRATIO",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FACETERMAXEDGELENGTH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FASTSHADEDMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FIBERWORLD",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FILETABPREVIEW",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FILETABSTATE",
+      "IsReadOnly": "True",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FILETABTHUMBHOVER",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FILLETPOLYARC",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FILLETRAD3D",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FRAME",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "FRAMESELECTION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GALLERYVIEW",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GEOLOCATEMODE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GEOMAPMODE",
+      "IsReadOnly": "True",
+      "Storage": "PerViewport",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GEOMARKPOSITIONSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GLOBALOPACITY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIDSTYLE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPMULTIFUNCTIONAL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GRIPSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GROUPDISPLAYMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "GSTHREADING",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HATCHBOUNDSET",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HATCHCREATION",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HATCHTYPE",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HELPPREFIX",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPBACKGROUNDCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPDLGMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPDRAWMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPLASTPATTERN",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPLAYER",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPLINETYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPMAXAREAS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPMAXLOOPS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPMAXPATTERNCACHETIME",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPPATHALIGNMENT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPPATHWIDTH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPPICKMODE",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPQUICKPREVIEW",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPRELATIVEPS",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "HPTRANSPARENCY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "IBLENVIRONMENT",
+      "IsReadOnly": "False",
+      "Storage": "PerViewport",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "IMAGEFRAME",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "INPUTSEARCHDELAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "JIGZOOMMAX",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "JIGZOOMMIN",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LAYEROVERRIDEHIGHLIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LAYOUTCREATEVIEWPORT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LAYOUTTAB",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LEGACYCODESEARCH",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LINEFADING",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LINEFADINGLEVEL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LISPSYS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "LTGAPSELECTION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MACRONOTIFY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MARKUPASSISTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MARKUPPAPERDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MARKUPPAPERTRANSPARENCY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MARKUPSELECTIONMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MAXINTERSECTIONCURVEPOINTS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MAXTOUCHES",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MESHTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MIRRHATCH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MLEADERLAYER",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MTEXTAUTOSTACK",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MTEXTDETECTSPACE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MTEXTEDENCODING",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "MVIEWPREVIEW",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NAVBARDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "NEXTFIBERWORLD",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OBJECTISOLATIONMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OLEQUALITY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "OMITFROZENVPEXTENTFORPLOT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ONLINEUSERID",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ONLINEUSERNAME",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ORBITAUTOTARGET",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PALETTEOPAQUE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PAPERUPDATE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PARAMETERCOPYMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PASTESPECMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PCMSTATE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PDFIMPORTFILTER",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PDFIMPORTIMAGEPATH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PDFIMPORTLAYERS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PDFIMPORTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PDFOSNAP",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PDFSHX",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PICKAUTO",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PICKFIRST",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PLINEGCENMAX",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PLINEREVERSEWIDTHS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PLOTTRANSPARENCYOVERRIDE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PLQUIET",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUD2DVSDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDAUTOUPDATE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDBOUNDARY",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDCACHESIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDCLIPFRAME",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDDENSITY",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDLIGHTING",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDLIGHTSOURCE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDLOD",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDPOINTMAX",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDPOINTMAXLEGACY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDPOINTSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDRTDENSITY",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDSHADING",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POINTCLOUDVISRETAIN",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POLARANG",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "POLARMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PRESELECTIONEFFECT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PREVIEWCREATIONTRANSPARENCY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PREVIEWDELAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PROPERTYPREVIEW",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PROPOBJLIMIT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PROPPREVTIMEOUT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "PSTYLEPOLICY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RASTERPERCENT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RASTERTHRESHOLD",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REBUILD2DCV",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REBUILD2DDEGREE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REBUILD2DOPTION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REBUILDDEGREEU",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REBUILDDEGREEV",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REBUILDOPTIONS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REBUILDU",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REBUILDV",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RECOVERAUTO",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REFPATHTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RENDERLEVEL",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RENDERLIGHTCALC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RENDERTARGET",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RENDERTIME",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REVCLOUDARCVARIANCE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REVCLOUDCREATEMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "REVCLOUDGRIPS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RIBBONBGLOAD",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RIBBONCONTEXTSELLIM",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RIBBONDOCKEDHEIGHT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RIBBONICONRESIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RIBBONSELECTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RIBBONSTATE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "ROLLOVEROPACITY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "RTREGENAUTO",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SAFEMODE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SCREENMENU",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SECTIONOFFSETINC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SECTIONTHICKNESSINC",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SECURELOAD",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SECUREREMOTEACCESS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SELECTIONAREA",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SELECTIONAREAOPACITY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SELECTIONCYCLING",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SELECTIONEFFECT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SELECTIONEFFECTCOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SELECTIONOFFSCREEN",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SELECTIONPREVIEWLIMIT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SELECTSIMILARMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHAREDVIEWSTATE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHAREVIEWPROPERTIES",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHAREVIEWTYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SHOWPAGESETUPFORNEWLAYOUTS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SKETCHHLTRANSPARENCY",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SKETCHHLWIDTH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SKTOLERANCE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SMOOTHMESHCONVERT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SMSTATE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SNAPGRIDLEGACY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SOLIDCHECK",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SORTORDER",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SPLDEGREE",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SPLINE_FASTDRAW",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SPLKNOTS",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SPLMETHOD",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SPLPERIODIC",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SSMDETECTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "STARTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "STARTUP",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "STATUSBAR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "STYLUSFORCETHRESHOLD",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SUBOBJSELECTIONMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SUPPRESSALERTS",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFACEASSOCIATIVITY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFACEASSOCIATIVITYDRAG",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFACEAUTOTRIM",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFACEMODELINGMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFOFFSETCONNECT",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFTRIMAUTOEXTEND",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SURFTRIMPROJECTION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SYSFLOATING",
+      "IsReadOnly": "False",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "SYSMON",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TBSHOWSHORTCUTS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEMPOVERRIDES",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTALIGNMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTALIGNSPACING",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTALLCAPS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTAUTOCORRECTCAPS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTEDITMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTEDITOR",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTGAPSELECTION",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTJUSTIFY",
+      "IsReadOnly": "True",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TEXTLAYER",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "THUMBSIZE2D",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TOOLTIPS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TOOLTIPSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TOOLTIPTRANSPARENCY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TOUCHMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRACEFADECTL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRACEMARKUPFADECTL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRACEOSNAP",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRACEPAPERCTL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRACEVPSUPPORT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRANSPARENCYDISPLAY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRAYICONS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRAYNOTIFY",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRAYTIMEOUT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRIMEDGES",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRIMEXTENDMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerUser",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "TRUSTEDPATHS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCS2DDISPLAYSETTING",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCS3DPARADISPLAYSETTING",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCS3DPERPDISPLAYSETTING",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UCSSELECTMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "UOSNAP",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "USERNAME",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWBACKSTATUS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWCREATION",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWDETAILCREATION",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWDETAILEDITOR",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWEDITOR",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWFWDSTATUS",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWSECTIONCREATION",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWSECTIONEDITOR",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWSKETCHMODE",
+      "IsReadOnly": "True",
+      "Storage": "PerSession",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VIEWUPDATEAUTO",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VISRETAINMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VPCONTROL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSACURVATUREHIGH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSACURVATURELOW",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSACURVATURETYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSADRAFTANGLEHIGH",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSADRAFTANGLELOW",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSAZEBRACOLOR1",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSAZEBRACOLOR2",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSAZEBRADIRECTION",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSAZEBRASIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "VSAZEBRATYPE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WBDEFAULTBROWSER",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WBHELPONLINE",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WBHELPTYPE",
+      "IsReadOnly": "True",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WBLOCKCREATEMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WINDOWAREACOLOR",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WIPEOUTFRAME",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WORKSPACELABEL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WSAUTOSAVE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "WSCURRENT",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XCOMPAREBAKPATH",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XCOMPAREBAKSIZE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XCOMPARECOLORMODE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XCOMPAREENABLE",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XREFLAYER",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XREFOVERRIDE",
+      "IsReadOnly": "False",
+      "Storage": "PerDatabase",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    },
+    {
+      "Name": "XREFREGAPPCTL",
+      "IsReadOnly": "False",
+      "Storage": "PerProfile",
+      "Value": "ERROR Exception: eNotImplementedYet"
+    }
+  ],
+  "OverruleProbe": {
+    "Families": [
+      {
+        "Family": "Drawable",
+        "FamilyRxClass": "AcGiDrawableOverrule",
+        "LineA": true,
+        "LineB": true,
+        "Circle": false,
+        "Error": ""
+      }
+    ],
+    "CustomApplicabilityLineA": true,
+    "CustomApplicabilityLineB": false,
+    "CustomApplicabilityCircle": false
+  }
+}
