@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DotnetFormatPath>$(MSBuildSDKsPath)\..\DotnetTools\dotnet-format</DotnetFormatPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Build.Locator" HintPath="$(DotnetFormatPath)\Microsoft.Build.Locator.dll" Private="true" />
+    <Reference Include="Microsoft.CodeAnalysis" HintPath="$(DotnetFormatPath)\Microsoft.CodeAnalysis.dll" Private="true" />
+    <Reference Include="Microsoft.CodeAnalysis.CSharp" HintPath="$(DotnetFormatPath)\Microsoft.CodeAnalysis.CSharp.dll" Private="true" />
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces" HintPath="$(DotnetFormatPath)\Microsoft.CodeAnalysis.Workspaces.dll" Private="true" />
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" HintPath="$(DotnetFormatPath)\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" Private="true" />
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" HintPath="$(DotnetFormatPath)\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll" Private="true" />
+    <Content Include="$(DotnetFormatPath)\BuildHost-netcore\**\*">
+      <Link>BuildHost-netcore\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>
