@@ -6,12 +6,12 @@ namespace RackCad.Tests
     public sealed class I55DeferredProductFixCharacterizationTests
     {
         [Fact]
-        public void Pr1_PushBackCurrentlyPersistsTheUiListPositionInsteadOfPhysicalPostIndex()
+        public void Pr1_PushBackPersistsTheSelectedPhysicalPostIndex()
         {
             var source = I55ProductCharacterizationTestSupport.Code("src", "RackCad.UI", "Systems", "PushBack", "RackPushBackSystemWindow.xaml.cs");
-            Assert.Contains("default: return (RackEmbedDocument.ViewLateral, Math.Max(0, LateralSectionBox.SelectedIndex))", source);
-            Assert.Contains("lastComputation?.LateralCortes?.Count", source);
-            Assert.DoesNotContain("LateralCortes[LateralSectionBox.SelectedIndex].PostIndex", source);
+            Assert.Contains("PhysicalPostIndex(LateralSectionBox.SelectedItem)", source);
+            Assert.Contains("corte.PostIndex == section", source);
+            Assert.DoesNotContain("Math.Max(0, LateralSectionBox.SelectedIndex)", source);
         }
 
         [Fact]
