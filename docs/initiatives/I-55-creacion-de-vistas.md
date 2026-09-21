@@ -26,10 +26,9 @@ automation:
 
 # I-55 — View Placement & Projection
 
-> **Fase actual: G2G — Proposal V5 acordada por el Coordinador; Architect formal pendiente.**
+> **Fase actual: G2I — reconciliada con I-57 integrada; Architect formal pendiente.**
 > [Proposal V5](I-55-proposal-v5.md), [mapa V5](I-55-implementation-map-v5.md),
-> contrato I-57 `docs/initiatives/I-57-shared-view-foundation.md` en su branch y
-> [borrador tecnico previo de Shared View Foundation](../architecture/shared-view-foundation/specification.md).
+> [contrato I-57 integrado](I-57-shared-view-foundation.md) y recibo `integration/I-57`.
 >
 > - V4: Coordinator **CHANGES REQUIRED → V5**. AR4-01..50 es entrada tecnica vinculante aceptada por el Coordinador;
 >   no es una revision formal independiente. V1..V4 permanecen historicas.
@@ -37,13 +36,15 @@ automation:
 >   Owner product decisions **ACCEPTED**; Consensus **NOT REACHED**.
 > - Owner: Shared View Foundation independiente = aceptada; OD-1..OD-8 = opciones recomendadas aceptadas;
 >   M-01 = **Relative Frame Window** (OD-7.e A). ADR-0042 sigue **PROPOSED**.
-> - Dependencia: I-57 `architecture/shared-view-foundation`, claim `869cf464129da65323781dbebe2425083f21915f`,
->   bootstrap `623aa8042c004cdca44ed519ed2256d932edcc1e`. Debe integrarse en `main` antes del producto I-55.
->   AUTH-15 es dependencia adicional de G15, segun CR-SVF-08.
-> - Open Material: revision formal del Architect; reconciliacion exacta con I-52; X-2/X-8 proceso;
->   ownership/tolerancia; aceptacion separada del ADR neutral y ADR-0042; integracion de I-57.
-> - Proposal V5 exacta: `f49671e29c6cc817166c720fe3f975deb92d4c3b`. Reconciliacion R1 y paquetes en `aa37264381e7d386339305d11030314ffd219d63`; recibo G2F registra blobs y CI. R1 registrada por I55, no por I52; NOT EFFECTIVE. No hay nuevo reclamo.
-> - Paquetes: [Coordinador](I-55-coordinator-review-package-v5.md) y [Arquitecto independiente](I-55-architect-review-package-v5.md).
+> - Dependencia neutral: I-57 esta integrada en `main` por `7097057cf8685bf5ecc09083cba37379d4a4aae8` y su
+>   recibo anotado `integration/I-57` fue verificado en G2I. AUTH-01..13 y AUTH-14 como caracterizaciones estan
+>   disponibles para consumo. AUTH-15 sigue fuera de I-57 y bloquea solamente G15.
+> - Open Material: revision formal del Architect sobre Proposal V5 + receipt G2I y aceptacion posterior de
+>   ADR-0042 por el Owner. No hay gap material en la Foundation integrada.
+> - Proposal V5 exacta: `f49671e29c6cc817166c720fe3f975deb92d4c3b`. R1 queda historica; R3 es `EFFECTIVE`
+>   con blob `cd42db03becff42f98b047e61c46689c17a69670` y el tag de integracion es la senal consumible.
+> - Paquetes: [Coordinador](I-55-coordinator-review-package-v5.md), [Arquitecto independiente](I-55-architect-review-package-v5.md)
+>   y [reconciliacion G2I post-I-57](I-55-post-i57-reconciliation.md).
 >
 > **SUBSTANTIVE IMPLEMENTATION: BLOCKED.** Sin freeze ni integracion autorizada por esta publicacion.
 
