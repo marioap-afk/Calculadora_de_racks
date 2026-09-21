@@ -16,7 +16,7 @@ IMPLEMENTATION_MAP_V5_BLOB = 17f6969ad2272dca5530d8533b6cbfd2afc05d23
 ADR_0042_BLOB = a5088a3aa1422e081abc612cea793379c2fba3bc
 R3_BLOB = cd42db03becff42f98b047e61c46689c17a69670
 ADR_0044_BLOB = 30eacca0dc43263100ee03b0cd3972b175a879b9
-I52_REMOTE_TIP = ebdb358ba21df3a1dde457239361756f1526a416
+I52_REMOTE_TIP = 766841f8f9d5d29f807966d6796cd08c2363676d
 ```
 
 El tag de archivo es anotado y apunta exactamente a `PRE_REBASE_TIP`. El rebase conserva 19 commits propios antes y
@@ -83,8 +83,9 @@ AUTH-15 sigue fuera de I-57 y no esta integrado en `main`. `SystemBlockWriter` e
 **redefinicion**, pero `CreateBlock` todavia toma lock, importa, abre y confirma su propia transaccion; no existe el
 primitivo caller-owned de **creacion** que exige AUTH-15.
 
-I-52 permanece en `ebdb358ba21df3a1dde457239361756f1526a416`. Su delta actual contra `main` es solo documental; no
-entrega `CreateInTransaction` ni AUTH-15. Por tanto:
+I-52 avanzo durante G2I a `766841f8f9d5d29f807966d6796cd08c2363676d`: rebaso sobre I-57 y publico su propia
+reconciliacion de consumo. El commit nuevo toca solo `ROADMAP`, decisiones I-52 y su receipt; declara AUTH-15 bajo
+ownership de I-52, pero no entrega `CreateInTransaction` ni implementacion productiva. Por tanto:
 
 - G15 = **BLOCKED BY AUTH-15 / I-52**.
 - G9b no queda bloqueado: conserva el modo 2 historico con R-25 mientras AUTH-15 no este integrado.
