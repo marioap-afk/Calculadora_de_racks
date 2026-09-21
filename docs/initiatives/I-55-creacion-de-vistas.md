@@ -347,3 +347,10 @@ G4 corrige solo PR-1: la lateral Push Back persiste el `PostIndex` fisico del it
 el mismo corte por esa identidad. El receipt durable es
 [`I-55-g4-pr1-pushback-postindex.md`](I-55-g4-pr1-pushback-postindex.md). PR-2 permanece abierto y caracterizado; G4
 queda completo y G5 abierto. La validacion manual OV-G4 queda diferida al Candidato.
+
+# Estado G5 (2026-09-21)
+
+G5 corrige solo PR-2: los dos callers Plugin de Cantilever entregan `design.PlantaVisibility` al builder existente, de
+modo que insercion y redibujo materializan la seleccion persistida. El receipt durable es
+[`I-55-g5-pr2-cantilever-plantavisibility.md`](I-55-g5-pr2-cantilever-plantavisibility.md). PR-1 permanece resuelto;
+PR-2 queda resuelto, G5 completo y G6 abierto. La validacion manual OV-G5 queda diferida al Candidato.
