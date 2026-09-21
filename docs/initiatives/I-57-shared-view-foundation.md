@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-57
 title: "Shared View Foundation"
 type: architecture
-status: claimed
+status: integration-ready
 branch: architecture/shared-view-foundation
 base_branch: main
 priority:
@@ -26,9 +26,9 @@ automation:
 
 # I-57 — Shared View Foundation
 
-> **Fase actual: F6 COMPLETE.** AUTH-12/13, evidencia automatizada y OV-FND-03 importation estan completos sobre
-> `415953fe...`; F7 permanece NOT OPEN y listo para revision del Coordinator. Proposal V5, R3, ADR-0034 y
-> ADR-0044 siguen intactos.
+> **Fase actual: F7 COMPLETE; F8 OPEN.** Candidate exacto `419bf7d8...` con evidencia automatizada completa y
+> Owner Validation PASS en AutoCAD 2025. El cierre documental esta preparado para integracion; Proposal V5, R3,
+> ADR-0034 y ADR-0044 siguen intactos.
 
 ```text
 Initiative        = I-57 — Shared View Foundation
@@ -53,7 +53,7 @@ Foundation Coordinator = AGREED ON V5
 Foundation Architect   = AGREED ON V5
 Technical Consensus   = REACHED ON V5
 Full Initiative Consensus = NOT DECLARED
-Foundation Implementation = AUTH-01..13 IMPLEMENTED; F6 COMPLETE
+Foundation Implementation = AUTH-01..13 IMPLEMENTED / CONFORMING; F7 COMPLETE
 F0 = ACCEPTED / CLOSED
 F1 = COMPLETE / CHARACTERIZATION ONLY
 F2 = COMPLETE / AUTH-01..04 ONLY
@@ -61,7 +61,11 @@ F3 = COMPLETE / AUTH-05 ONLY
 F4 = COMPLETE / AUTH-06..08 ONLY
 F5 = COMPLETE / AUTH-09..11 ONLY
 F6 = COMPLETE / AUTH-12..13 ONLY
-F7 = NOT OPEN
+F7 = COMPLETE
+F8 = OPEN / INTEGRATION PENDING
+FINAL_CANDIDATE_SHA = 419bf7d82569bc0740db3db39bf6b3ee8fd788d5
+CLOSURE_SHA = THIS COMMIT
+Integration SHA = PENDING REAL MERGE
 ```
 
 ## 1. Objetivo
@@ -81,7 +85,8 @@ esperar una integracion ajena o a duplicar contratos. I-55 Proposal V5 recomiend
 el Owner acepto ese mecanismo y autorizo I-57.
 
 R1 nunca fue efectiva y quedo superada por R3. R3 esta efectiva tras el registro exacto de I-57, I-52 e I-55.
-La autoridad aun no es consumible porque su `Integration SHA` permanece vacio.
+La autoridad aun no es consumible. I-52 e I-55 deben esperar el tag anotado `integration/I-57`, apuntando al
+`MERGE_SHA` verificado y alcanzable desde `origin/main`; R3 conserva inmutable su campo historico vacio.
 
 ## 3. Alcance propuesto
 
