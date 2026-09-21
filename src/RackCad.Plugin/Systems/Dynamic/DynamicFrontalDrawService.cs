@@ -1,8 +1,8 @@
 using System;
-using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Shared;
@@ -48,10 +48,9 @@ namespace RackCad.Plugin.Systems.Dynamic
                 regen);
 
         private static string BlockName(DynamicRackSystem system, string rackName, DynamicRackEnd end)
-        {
-            var suffix = end == DynamicRackEnd.Entrance ? "frontal entrada" : "frontal salida";
-            if (!string.IsNullOrWhiteSpace(rackName)) return rackName.Trim() + " - " + suffix;
-            return string.Format(CultureInfo.InvariantCulture, "Dinamico {0} - {1} frentes", suffix, system.Fronts.Count);
-        }
+            => RackViewBaseName.DynamicFrontal(
+                system,
+                rackName,
+                end == DynamicRackEnd.Entrance ? RackFlowEnd.Entrance : RackFlowEnd.Exit);
     }
 }

@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Selective;
@@ -165,8 +166,14 @@ namespace RackCad.Plugin
             var updatedFrontal = 0;
             foreach (var fb in frontalBlocks)
             {
-                var fondo = fb.Embed != null && fb.Embed.Section >= 0 ? fb.Embed.Section : 0;
-                if (fondo >= fondoCount)
+                var decoded = RackCommandSupport.DecodeView(fb.Embed);
+                var fondo = decoded.HasAddress && decoded.Address.Variant.Kind == RackViewVariantKind.Fondo
+                    ? decoded.Address.Variant.Index
+                    : 0;
+                var availability = RackViewAvailability.Evaluate(
+                    decoded,
+                    new SelectiveViewAvailabilityFacts(fondoCount, System.Array.Empty<int>()));
+                if (availability.Status == RackViewAvailabilityStatus.VariantNotPresent)
                 {
                     staleViewBlocks.Add(fb.BlockId); // this fondo is gone — erase the phantom frontal
                     continue;
@@ -178,7 +185,10 @@ namespace RackCad.Plugin
                 var r = new SelectiveFrontalDrawService().RedrawInPlace(document, fb.BlockId, fondoView, payload, regen: false);
                 if (r != null && r.Success)
                 {
-                    RackBlockRenamer.SyncName(document, fb.BlockId, FrontalName(baseName, fondo, fondoCount));
+                    RackBlockRenamer.SyncName(
+                        document,
+                        fb.BlockId,
+                        RackViewBaseName.LinkedSelectiveFrontal(baseName, fondo, fondoCount));
                     updatedFrontal++;
                 }
             }
@@ -189,9 +199,18 @@ namespace RackCad.Plugin
             {
                 var cortes = new SelectiveLateralBuilder().Cortes(system, LateralHeaderDrawService.LoadCatalog());
                 var lateralService = new LateralHeaderDrawService();
+                var availabilityFacts = new SelectiveViewAvailabilityFacts(
+                    fondoCount, cortes.Select(item => item.PostIndex));
                 foreach (var lat in lateralBlocks)
                 {
-                    var corte = cortes.FirstOrDefault(c => c.PostIndex == lat.Embed.Section);
+                    var decoded = RackCommandSupport.DecodeView(lat.Embed);
+                    var postIndex = decoded.HasAddress && decoded.Address.Variant.Kind == RackViewVariantKind.Post
+                        ? decoded.Address.Variant.Index
+                        : lat.Embed.Section;
+                    var availability = RackViewAvailability.Evaluate(decoded, availabilityFacts);
+                    var corte = availability.Status == RackViewAvailabilityStatus.Available
+                        ? cortes.FirstOrDefault(c => c.PostIndex == postIndex)
+                        : null;
                     if (corte == null)
                     {
                         staleViewBlocks.Add(lat.BlockId); // this section is gone — erase the phantom lateral (see note above)
@@ -202,8 +221,10 @@ namespace RackCad.Plugin
                     var r = lateralService.RedrawInPlace(document, lat.BlockId, corte.Cabecera, payload, corte.Largueros, regen: false);
                     if (r != null && r.Success)
                     {
-                        RackBlockRenamer.SyncName(document, lat.BlockId,
-                            baseName == null ? null : baseName + " - lateral " + (corte.PostIndex + 1).ToString(CultureInfo.InvariantCulture));
+                        RackBlockRenamer.SyncName(
+                            document,
+                            lat.BlockId,
+                            RackViewBaseName.LinkedLateral(baseName, corte.PostIndex));
                         updatedLateral++;
                     }
                 }
@@ -217,7 +238,7 @@ namespace RackCad.Plugin
                 var r = new SelectivePlantaDrawService().RedrawInPlace(document, pb.BlockId, system, payload, regen: false);
                 if (r != null && r.Success)
                 {
-                    RackBlockRenamer.SyncName(document, pb.BlockId, baseName == null ? null : baseName + " - planta");
+                    RackBlockRenamer.SyncName(document, pb.BlockId, RackViewBaseName.LinkedPlanta(baseName));
                     updatedPlanta++;
                 }
             }
@@ -327,7 +348,9 @@ namespace RackCad.Plugin
 
         /// <summary>True when a view-block draws the LATERAL view (so it is a section of the system, not the frontal).</summary>
         private static bool IsLateralView(RackEmbedDocument embed) =>
-            embed != null && string.Equals(embed.View, RackEmbedDocument.ViewLateral, System.StringComparison.OrdinalIgnoreCase);
+            embed != null
+            && RackViewCodec.TryDecodeViewKind(embed.View, out var kind)
+            && kind == DimensionViewKind.Lateral;
 
         /// <summary>
         /// Wraps an ALREADY-SERIALIZED authored document in the uniform embed envelope (kind + id + name + view
@@ -501,14 +524,7 @@ namespace RackCad.Plugin
 
         /// <summary>Block/definition name for a fondo's frontal: the base name, plus a "frente F{n}" suffix only when the rack has more than one fondo.</summary>
         private static string FrontalName(string baseName, int fondo, int fondoCount)
-        {
-            if (string.IsNullOrWhiteSpace(baseName))
-            {
-                return baseName;
-            }
-
-            return fondoCount > 1 ? baseName + " - frente F" + (fondo + 1).ToString(CultureInfo.InvariantCulture) : baseName;
-        }
+            => RackViewBaseName.LinkedSelectiveFrontal(baseName, fondo, fondoCount);
 
         /// <summary>
         /// Inserts ONE lateral "corte" (cross-section), chosen by post number, and jig-places it. The section carries
@@ -566,7 +582,7 @@ namespace RackCad.Plugin
             }
 
             var baseName = string.IsNullOrWhiteSpace(name) ? "Selectivo" : name.Trim();
-            var sectionName = baseName + " - lateral " + pick.Value.ToString(CultureInfo.InvariantCulture);
+            var sectionName = RackViewBaseName.LinkedLateral(baseName, pick.Value - 1);
             var payload = BuildSelectivePayload(authoredJson, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex, source);
 
             var result = new LateralHeaderDrawService().DrawAndPlace(document, corte.Cabecera, payload, sectionName, corte.Largueros);

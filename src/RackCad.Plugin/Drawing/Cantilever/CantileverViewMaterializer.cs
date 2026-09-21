@@ -5,6 +5,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.Geometry;
 using RackCad.Application.Systems.Cantilever;
+using RackCad.Application.Systems.Shared;
 
 namespace RackCad.Plugin.Drawing.Cantilever
 {
@@ -24,9 +25,6 @@ namespace RackCad.Plugin.Drawing.Cantilever
     /// </summary>
     internal static class CantileverViewMaterializer
     {
-        /// <summary>Prefix of the internal block name. It is a label for a human, never a key.</summary>
-        internal const string BlockNamePrefix = "RACKCAD_CANTILEVER_";
-
         /// <summary>
         /// Creates the block definition for a view and returns its id.
         ///
@@ -285,14 +283,7 @@ namespace RackCad.Plugin.Drawing.Cantilever
 
         /// <summary>A readable name built from the rack, the view and the station. Nothing resolves a block by it.</summary>
         private static string SuggestName(CantileverViewPlan plan, string rackName)
-        {
-            var name = string.IsNullOrWhiteSpace(rackName) ? "LINEA" : rackName.Trim();
-            var suffix = plan.View == CantileverViewKind.Lateral && plan.StationIndex >= 0
-                ? "_E" + (plan.StationIndex + 1).ToString(CultureInfo.InvariantCulture)
-                : string.Empty;
-
-            return Sanitize(BlockNamePrefix + name + "_" + plan.View.ToString().ToUpperInvariant() + suffix);
-        }
+            => RackViewBaseName.CantileverGenerated(plan.View, plan.StationIndex, rackName);
 
         /// <summary>Keeps only what an AutoCAD symbol name accepts.</summary>
         private static string Sanitize(string name)

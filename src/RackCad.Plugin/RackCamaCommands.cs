@@ -6,6 +6,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.FlowBed;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.FlowBed;
@@ -202,6 +203,12 @@ namespace RackCad.Plugin
         internal static void EditCama(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;
+            var decodedView = RackCommandSupport.DecodeView(embed);
+            if (!decodedView.HasAddress)
+            {
+                editor.WriteMessage("\nRackCad: descriptor de vista de cama invalido.");
+                return;
+            }
 
             // Read the whole source document (with its ExtensionData) so the re-save can preserve unknown FlowBed fields.
             var sourceDesign = new FlowBedConfigurationStore().DeserializeDocument(embed.Design);
@@ -229,7 +236,7 @@ namespace RackCad.Plugin
 
             if (result != null && result.Success)
             {
-                RackBlockRenamer.SyncName(document, blockId, string.IsNullOrWhiteSpace(window.RackName) ? null : window.RackName.Trim());
+                RackBlockRenamer.SyncName(document, blockId, RackViewBaseName.LinkedBase(window.RackName));
             }
 
             editor.WriteMessage(result != null && result.Success

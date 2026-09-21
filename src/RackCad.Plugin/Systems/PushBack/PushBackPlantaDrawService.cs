@@ -1,7 +1,7 @@
-using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Shared;
@@ -48,13 +48,6 @@ namespace RackCad.Plugin.Systems.PushBack
                 regen);
 
         internal static string BlockName(PushBackSystem system, string rackName)
-        {
-            if (!string.IsNullOrWhiteSpace(rackName))
-            {
-                return rackName.Trim() + " - planta";
-            }
-
-            return string.Format(CultureInfo.InvariantCulture, "Push Back planta - {0} frentes", system.Fronts?.Count ?? 0);
-        }
+            => RackViewBaseName.PushBackPlanta(system, rackName);
     }
 }

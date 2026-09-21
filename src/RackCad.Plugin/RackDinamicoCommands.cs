@@ -8,6 +8,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
@@ -203,41 +204,53 @@ namespace RackCad.Plugin
             var staleViewBlocks = new System.Collections.Generic.List<ObjectId>();
             var catalog = LateralHeaderDrawService.LoadCatalog();
             var lateralCortes = new DynamicSystemLateralBuilder().Cortes(system, catalog);
+            var availabilityFacts = new DynamicViewAvailabilityFacts(
+                lateralCortes.Select(item => item.PostIndex));
             foreach (var viewBlock in blocks)
             {
                 HeaderPlacementResult result;
-                if (RackCommandSupport.IsPlantaView(viewBlock.Embed))
+                var decoded = RackCommandSupport.DecodeView(viewBlock.Embed);
+                if (decoded.HasAddress && decoded.Address.Kind == DimensionViewKind.Planta)
                 {
                     var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewPlanta, -1, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
                     result = new DynamicPlantaDrawService().RedrawInPlace(
                         document, viewBlock.BlockId, system, payload, regen: false);
                     if (result != null && result.Success)
                     {
-                        RackBlockRenamer.SyncName(document, viewBlock.BlockId, baseName == null ? null : baseName + " - planta");
+                        RackBlockRenamer.SyncName(document, viewBlock.BlockId, RackViewBaseName.LinkedPlanta(baseName));
                         updatedPlanta++;
                     }
                 }
-                else if (IsDynamicFrontal(viewBlock.Embed))
+                else if (decoded.HasAddress && decoded.Address.Kind == DimensionViewKind.Frontal)
                 {
-                    var end = DynamicEnd(viewBlock.Embed.Section);
+                    var end = decoded.Address.Variant.FlowEnd == RackFlowEnd.Entrance
+                        ? DynamicRackEnd.Entrance
+                        : DynamicRackEnd.Exit;
                     var section = (int)end;
                     var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewFrontal, section, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
                     result = new DynamicFrontalDrawService().RedrawInPlace(
                         document, viewBlock.BlockId, system, end, payload, regen: false);
                     if (result != null && result.Success)
                     {
-                        var suffix = end == DynamicRackEnd.Entrance ? " - frontal entrada" : " - frontal salida";
-                        RackBlockRenamer.SyncName(document, viewBlock.BlockId, baseName == null ? null : baseName + suffix);
+                        RackBlockRenamer.SyncName(
+                            document,
+                            viewBlock.BlockId,
+                            RackViewBaseName.LinkedFlowEnd(
+                                baseName,
+                                end == DynamicRackEnd.Entrance ? RackFlowEnd.Entrance : RackFlowEnd.Exit));
                         updatedFrontal++;
                     }
                 }
                 else
                 {
                     // Legacy dynamic embeds did not carry View/Section; they become the first post's linked cut.
-                    var postIndex = viewBlock.Embed != null && viewBlock.Embed.Section >= 0
-                        ? viewBlock.Embed.Section
-                        : 0;
-                    var corte = lateralCortes.FirstOrDefault(item => item.PostIndex == postIndex);
+                    var postIndex = decoded.HasAddress && decoded.Address.Variant.Kind == RackViewVariantKind.Post
+                        ? decoded.Address.Variant.Index
+                        : System.Math.Max(0, viewBlock.Embed?.Section ?? -1);
+                    var availability = RackViewAvailability.Evaluate(decoded, availabilityFacts);
+                    var corte = availability.Status == RackViewAvailabilityStatus.Available
+                        ? lateralCortes.FirstOrDefault(item => item.PostIndex == postIndex)
+                        : null;
                     if (corte == null)
                     {
                         staleViewBlocks.Add(viewBlock.BlockId);
@@ -257,9 +270,7 @@ namespace RackCad.Plugin
                         RackBlockRenamer.SyncName(
                             document,
                             viewBlock.BlockId,
-                            baseName == null
-                                ? null
-                                : baseName + " - lateral " + (postIndex + 1).ToString(CultureInfo.InvariantCulture));
+                            RackViewBaseName.LinkedLateral(baseName, postIndex));
                         updatedLateral++;
                     }
                 }
@@ -337,7 +348,7 @@ namespace RackCad.Plugin
             }
 
             var baseName = string.IsNullOrWhiteSpace(name) ? "Dinamico" : name.Trim();
-            var sectionName = baseName + " - lateral " + pick.Value.ToString(CultureInfo.InvariantCulture);
+            var sectionName = RackViewBaseName.LinkedLateral(baseName, pick.Value - 1);
             var payload = BuildDynamicPayload(
                 design,
                 id,
@@ -384,12 +395,18 @@ namespace RackCad.Plugin
         }
 
         private static bool IsDynamicFrontal(RackEmbedDocument embed)
-            => embed != null && string.Equals(
-                embed.View,
-                RackEmbedDocument.ViewFrontal,
-                System.StringComparison.OrdinalIgnoreCase);
+        {
+            var decoded = RackCommandSupport.DecodeView(embed);
+            return decoded.HasAddress && decoded.Address.Kind == DimensionViewKind.Frontal;
+        }
 
         private static DynamicRackEnd DynamicEnd(int section)
-            => section == (int)DynamicRackEnd.Entrance ? DynamicRackEnd.Entrance : DynamicRackEnd.Exit;
+        {
+            // Historical rule characterized by CT-04 V2: section == (int)DynamicRackEnd.Entrance ? Entrance : Exit.
+            var decoded = RackViewCodec.Decode(RackEmbedDocument.KindDynamic, RackEmbedDocument.ViewFrontal, section);
+            return decoded.Address.Variant.FlowEnd == RackFlowEnd.Entrance
+                ? DynamicRackEnd.Entrance
+                : DynamicRackEnd.Exit;
+        }
     }
 }

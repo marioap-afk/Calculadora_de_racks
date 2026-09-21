@@ -4,6 +4,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Shared;
@@ -98,9 +99,16 @@ namespace RackCad.Plugin
             return true;
         }
 
-        /// <summary>True when a cabecera view-block draws the PLANTA view (so it is the top view, not the lateral).</summary>
-        public static bool IsPlantaView(RackEmbedDocument embed) =>
-            embed != null && string.Equals(embed.View, RackEmbedDocument.ViewPlanta, System.StringComparison.OrdinalIgnoreCase);
+        /// <summary>The single persisted view decode used by Plugin readers.</summary>
+        public static DecodedRackView DecodeView(RackEmbedDocument embed) => RackViewCodec.Decode(
+            embed?.Kind, embed?.View, embed?.Section ?? -1);
+
+        /// <summary>True when the semantic address is PLANTA. Legacy implementation used string.Equals(embed.View.</summary>
+        public static bool IsPlantaView(RackEmbedDocument embed)
+        {
+            var decoded = DecodeView(embed);
+            return decoded.HasAddress && decoded.Address.Kind == DimensionViewKind.Planta;
+        }
 
         /// <summary>
         /// Every rack block DEFINITION in the drawing whose embedded payload has the given rack id — i.e. all the

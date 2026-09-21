@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-19**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-21**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -48,6 +48,20 @@ marcador normativo único; y registro durable del START de la pausa de activaci�
 al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge correctivo; captura POST;
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
+
+**I-57 — Shared View Foundation — F7 COMPLETE; F8 OPEN; CIERRE DOCUMENTAL PREPARADO PARA
+INTEGRACION** el **2026-09-21**. Candidate final
+`419bf7d82569bc0740db3db39bf6b3ee8fd788d5`, con AUTH-01..13 `CONFORMING`, AUTH-15 fuera, evidencia
+automatizada completa y Owner Validation real PASS en AutoCAD 2025. Proposal V5, R3 `EFFECTIVE`, ADR-0034 y
+ADR-0044 `ACCEPTED` permanecen intactos. La Foundation entrega autoridades neutrales unicas para address/codec,
+availability, frame/span, clasificacion y seleccion fisica, transform facts, Resolve, preparation tipada,
+BaseName, block requirements/query y comparator authored; builders, handlers, geometria y policy de producto
+permanecen en sus consumidores.
+
+Este cierre todavia no afirma merge, T3, coverage, tag ni cleanup. I-52 e I-55 solo pueden consumir despues de
+que exista el tag anotado `integration/I-57`, apuntando al `MERGE_SHA` verificado y alcanzable desde
+`origin/main`. R3 conserva byte-for-byte su campo `Integration SHA = —` y su blob
+`cd42db03becff42f98b047e61c46689c17a69670`.
 
 **I-49 — Motor de expresiones paramétricas (ID22B) — CANDIDATO FINAL APROBADO; CIERRE DOCUMENTAL
 PREPARADO PARA INTEGRACIÓN** el **2026-09-19**. I-49 conserva **Workflow V1** y Claim-Id
@@ -1389,6 +1403,14 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-57 (2026-09-21) — CANDIDATE PASS.** El Owner valido en AutoCAD 2025 el Candidate exacto
+`419bf7d82569bc0740db3db39bf6b3ee8fd788d5`; no suministro el build exacto. Selectivo, Dinamico, Push Back,
+Cantilever, Cabecera, Cama, BOM / `RACKLISTA`, importacion, `RACKDUPLICAR`, save/reopen, commands/messages y
+RackId/identity quedaron PASS, sin regresion visible inesperada. OV-FND-01..04 y el resultado global quedaron PASS.
+Sobre ese SHA: T0 **71/71**, T1 **571/571**, Core Full **8236/8236**, UI Full **1581 PASS / 17 skip historicos**,
+Debug UI y Plugin PASS, y CI de `push` **35528278845**, exacta, **4/4 success**. Evidencia en
+[I-57-f7-candidate-evidence.md](initiatives/I-57-f7-candidate-evidence.md).
+
 **I-56 (2026-09-17) — CANDIDATO CORRECTIVO PASS; Owner Validation NOT APPLICABLE.** El Candidato
 correctivo `06aa6f4d4f6928a606d28b416b1645580733d3bd` materializa únicamente el archivo canónico omitido.
 En árbol limpio y SDK **8.0.423**: Core Full **7240 PASS / 0 FAIL / 0 SKIP**; UI Full **1568 PASS / 0
@@ -1806,6 +1828,10 @@ veredicto.
 
 ## 3. Problemas y riesgos activos
 
+- **I-57 integrada aun NO.** AUTH-15 permanece fuera. I-52 conserva reflection, mirror read-set y policy de
+  RACKMIRROR; I-55 conserva ID17/18/19, Relative Frame Window, Rigid/Orthographic, CQ-01, placement policy, UX y
+  materializacion. Ningun consumidor se desbloquea antes del tag `integration/I-57` valido.
+
 - **Reconstrucción del Dinámico tras un fallo de recomposición (N-06; preexistente, NO corregido; registrado por I-53D).**
   Si `RecomposeCore` lanza, su `catch` descarta el sistema (`system = null`). La recomposición siguiente reconstruye desde
   cero —`MustRebuild` es verdadero sin sistema— y `DynamicRackRebuild` no tiene intenciones previas que conservar, así que
@@ -1887,6 +1913,18 @@ veredicto.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### I-57 debe publicar este cierre, integrar y verificar su recibo V1 excepcional
+
+Publicar el Closure SHA documental y exigir su CI exacta 4/4. Despues: fetch final con `origin/main` aun en
+`a61850a6095cf8ebc7d9d92eab6dbbcc2343a6d1`, merge manual `--no-ff`, push de `main`, T3 sobre el `MERGE_SHA`,
+coverage del merge, cobertura diferida del Candidate, tag anotado e inmutable `integration/I-57`, desbloqueo de
+I-52/I-55 y cleanup seguro. Si cualquier compuerta falla, conservar rama/worktree y reparar desde I-57; nunca
+force-push ni commit directo en `main`.
+
+Compatibilidad documental: I-57 es grandfathered V1, pero las secciones HANDOFF 8–12 citadas por ese workflow ya
+no existen. Este cierre usa las secciones vivas 1 resultado/estado, 2 evidencia/Owner, 3 limites/riesgos,
+4 integracion/consumers/cleanup y 5 verificacion/recuperacion, sin recrear numeracion historica artificial.
 
 ### I-56 necesita cerrar e integrar su ronda correctiva V1; Workflow V2 ya está efectivo
 
@@ -3673,6 +3711,17 @@ visualmente** y no debe presentarse como tal.
 la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
+
+**Baseline Candidate de I-57 — 2026-09-21** (pendiente de Closure CI e integracion):
+
+- `FINAL_CANDIDATE_SHA`: `419bf7d82569bc0740db3db39bf6b3ee8fd788d5`;
+- T0 **71/71**, T1 **571/571**, Core Full **8236/8236**, UI Full **1581 PASS / 17 skip historicos**;
+- Debug UI y Plugin PASS; CI de `push` **35528278845**, SHA exacto, **4/4 success**;
+- Owner Validation real PASS en AutoCAD 2025; build exacto no suministrado; OV-FND-01..04 PASS;
+- AUTH-01..13 `CONFORMING`; AUTH-15 no implementada;
+- compuertas pendientes: CI propia del Closure, merge, T3, ambas coberturas, tag `integration/I-57` y cleanup;
+- recuperacion: preservar cualquier `MERGE_SHA` fallido, no limpiar, corregir en I-57 y repetir una ronda completa
+  si cambia producto.
 
 **Baseline correctiva de I-56 — 2026-09-17** (pendiente de cierre, merge y verificación post-merge):
 

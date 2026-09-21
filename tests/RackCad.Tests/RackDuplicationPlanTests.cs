@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Selective;
 using Xunit;
 
@@ -53,18 +54,18 @@ namespace RackCad.Tests
                 Design = design,
             });
 
-        private static RackDuplicationSelectedReference Ref(string referenceKey, string definitionKey, bool inModelSpace = true)
-            => new RackDuplicationSelectedReference(referenceKey, isBlockReference: true, isInModelSpace: inModelSpace, definitionKey);
+        private static RackPhysicalReferenceSnapshot Ref(string referenceKey, string definitionKey, bool inModelSpace = true)
+            => new RackPhysicalReferenceSnapshot(referenceKey, isBlockReference: true, isInModelSpace: inModelSpace, definitionKey);
 
-        private static RackDuplicationSelectedReference NotABlock(string referenceKey)
-            => new RackDuplicationSelectedReference(referenceKey, isBlockReference: false, isInModelSpace: true, definitionKey: null);
+        private static RackPhysicalReferenceSnapshot NotABlock(string referenceKey)
+            => new RackPhysicalReferenceSnapshot(referenceKey, isBlockReference: false, isInModelSpace: true, definitionKey: null);
 
-        private static RackDuplicationDefinitionSnapshot Def(string key, string payload, string name = null)
-            => new RackDuplicationDefinitionSnapshot(key, payload, name ?? "BLOQUE_" + key);
+        private static RackPhysicalDefinitionSnapshot Def(string key, string payload, string name = null)
+            => new RackPhysicalDefinitionSnapshot(key, payload, name ?? "BLOQUE_" + key);
 
         private static RackDuplicationPlan Build(
-            IEnumerable<RackDuplicationSelectedReference> selection,
-            IEnumerable<RackDuplicationDefinitionSnapshot> definitions)
+            IEnumerable<RackPhysicalReferenceSnapshot> selection,
+            IEnumerable<RackPhysicalDefinitionSnapshot> definitions)
             => RackDuplicationPlan.Build(selection.ToList(), definitions.ToList(), KnownKind);
 
         /// <summary>A deterministic generator that also counts how many ids it handed out.</summary>

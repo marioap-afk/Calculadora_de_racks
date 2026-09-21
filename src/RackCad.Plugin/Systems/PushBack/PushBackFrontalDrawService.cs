@@ -1,7 +1,7 @@
-using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Shared;
@@ -58,19 +58,12 @@ namespace RackCad.Plugin.Systems.PushBack
         /// </summary>
         internal static string BlockName(
             PushBackSystem system, string rackName, PushBackFrontalEnd end, PushBackSide side = PushBackSide.A)
-        {
-            var suffix = end == PushBackFrontalEnd.Posterior ? "frontal posterior" : "frontal entrada-salida";
-            if (system != null && system.IsComposite)
-            {
-                suffix += side == PushBackSide.B ? " B" : " A";
-            }
-
-            if (!string.IsNullOrWhiteSpace(rackName))
-            {
-                return rackName.Trim() + " - " + suffix;
-            }
-
-            return string.Format(CultureInfo.InvariantCulture, "Push Back {0} - {1} frentes", suffix, system.Fronts?.Count ?? 0);
-        }
+            => RackViewBaseName.PushBackFrontal(
+                system,
+                rackName,
+                end == PushBackFrontalEnd.Posterior
+                    ? RackPushBackEnd.Posterior
+                    : RackPushBackEnd.EntradaSalida,
+                side == PushBackSide.B ? RackPushBackSide.B : RackPushBackSide.A);
     }
 }

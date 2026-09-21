@@ -4,6 +4,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Drawing;
 using RackCad.Application.RackFrames;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
 using RackCad.Plugin.Systems.Selective;
 using RackCad.Plugin.Systems.Shared;
@@ -43,6 +44,6 @@ namespace RackCad.Plugin.Drawing
                 regen);
 
         private static string BlockName(string rackName)
-            => string.IsNullOrWhiteSpace(rackName) ? "Cabecera planta" : rackName.Trim() + " - planta";
+            => RackViewBaseName.CabeceraPlanta(rackName);
     }
 }
