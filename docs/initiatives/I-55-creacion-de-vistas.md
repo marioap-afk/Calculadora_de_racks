@@ -26,7 +26,7 @@ automation:
 
 # I-55 — View Placement & Projection
 
-> **Fase actual: G3 OPEN — caracterización de producto exclusivamente; producción sin cambios.**
+> **Fase actual: G7 OPEN — Prepare de producto. G6 completo.**
 > [Proposal V5](I-55-proposal-v5.md), [mapa V5](I-55-implementation-map-v5.md),
 > [contrato I-57 integrado](I-57-shared-view-foundation.md) y recibo `integration/I-57`.
 >
@@ -45,8 +45,8 @@ automation:
 > - Paquetes: [Coordinador](I-55-coordinator-review-package-v5.md), [Arquitecto independiente](I-55-architect-review-package-v5.md)
 >   y [reconciliacion G2I post-I-57](I-55-post-i57-reconciliation.md).
 >
-> **Consensus Freeze: COMPLETE. G3: OPEN.** G3 solo puede añadir caracterizaciones de producto y no puede cambiar
-> producción. G4, G5 y G6+ permanecen `NOT OPEN`.
+> **Consensus Freeze: COMPLETE. G6: COMPLETE. G7: OPEN.** G6 materializo solo politica pura de producto sobre
+> codec, availability y exposure de Foundation; no agrego consumers ni cambio UX, dibujo o persistencia.
 
 ### Alcance abierto de G3
 
@@ -354,3 +354,11 @@ G5 corrige solo PR-2: los dos callers Plugin de Cantilever entregan `design.Plan
 modo que insercion y redibujo materializan la seleccion persistida. El receipt durable es
 [`I-55-g5-pr2-cantilever-plantavisibility.md`](I-55-g5-pr2-cantilever-plantavisibility.md). PR-1 permanece resuelto;
 PR-2 queda resuelto, G5 completo y G6 abierto. La validacion manual OV-G5 queda diferida al Candidato.
+
+# Estado G6 (2026-09-21)
+
+G6 agrega decisiones puras `Accept`, `AcceptCanonicalized` y `Reject` sobre `RackViewCodec`,
+`RackViewAvailability` y una matriz de exposure separada por operacion. Los seis sistemas productivos quedan
+explicitamente cubiertos; Flow Bed solo expone `CreateFirst`. El receipt durable es
+[`I-55-g6-codec-availability-policy.md`](I-55-g6-codec-availability-policy.md). Foundation, schema, UI, Plugin,
+ID17, ID18, ID19 y AUTH-15 permanecen sin cambios. G6 queda completo y G7 abierto.
