@@ -56,6 +56,8 @@ namespace RackCad.UI.Tests
             var request = Assert.IsType<SelectiveInsertionRequest>(session.InsertionRequest);
             Assert.Equal("GID", request.RackId);
             Assert.Equal("frontal", request.View);
+            Assert.Single(request.Views);
+            Assert.Equal(request.Views, session.InsertViews);
         }
 
         [Fact]
@@ -82,6 +84,7 @@ namespace RackCad.UI.Tests
             Assert.Null(captured.View);
             Assert.True(captured.UpdateOnly);
             Assert.Equal(1, raised);
+            Assert.Empty(session.InsertViews);
         }
 
         [Fact]
