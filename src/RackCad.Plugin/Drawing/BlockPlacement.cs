@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.Geometry;
 using RackCad.Application;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Diagnostics;
+using RackCad.Application.Views.Placement;
 using RackCad.Plugin.Systems.Shared;
 
 namespace RackCad.Plugin.Drawing
@@ -48,6 +49,7 @@ namespace RackCad.Plugin.Drawing
             }
             catch (Exception ex)
             {
+                TryCleanupDefinition(document, block.DefinitionId);
                 return HeaderPlacementResult.Failure(ex.Message);
             }
         }
@@ -63,7 +65,16 @@ namespace RackCad.Plugin.Drawing
         /// </summary>
         internal static ObjectId PlaceDefinition(Document document, ObjectId definitionId, string prompt = null)
         {
-            var placedId = PlaceBlockWithJig(document, definitionId, prompt);
+            ObjectId placedId;
+            try
+            {
+                placedId = PlaceBlockWithJig(document, definitionId, prompt);
+            }
+            catch
+            {
+                TryCleanupDefinition(document, definitionId);
+                throw;
+            }
 
             if (placedId.IsNull)
             {
@@ -73,6 +84,25 @@ namespace RackCad.Plugin.Drawing
             }
 
             return placedId;
+        }
+
+        /// <summary>Jig only. G8 owns cancellation/exception cleanup so it can return a structured outcome.</summary>
+        internal static ObjectId PlaceDefinitionWithoutCleanup(Document document, ObjectId definitionId, string prompt = null)
+            => PlaceBlockWithJig(document, definitionId, prompt);
+
+        /// <summary>Best-effort orphan cleanup with an observable result for the G8 single-view seam.</summary>
+        internal static RackSingleViewCleanupResult TryCleanupDefinition(Document document, ObjectId definitionId)
+        {
+            try
+            {
+                EraseUnreferencedDefinitionCore(document, definitionId);
+                return new RackSingleViewCleanupResult(true);
+            }
+            catch (Exception ex)
+            {
+                RackLog.Exception("Limpiar definiciones tras insercion cancelada", ex);
+                return new RackSingleViewCleanupResult(false, ex.Message);
+            }
         }
 
         /// <summary>Append a reference to a block definition at a fixed point (no jig); returns the reference id.</summary>
@@ -122,50 +152,41 @@ namespace RackCad.Plugin.Drawing
         /// the block table. Best effort.</summary>
         private static void EraseUnreferencedDefinition(Document document, ObjectId definitionId)
         {
-            if (definitionId.IsNull)
-            {
-                return;
-            }
+            TryCleanupDefinition(document, definitionId);
+        }
 
-            try
-            {
-                var database = document.Database;
-                var nestedDefs = new List<ObjectId>();
+        private static void EraseUnreferencedDefinitionCore(Document document, ObjectId definitionId)
+        {
+            if (definitionId.IsNull) return;
 
-                using (document.LockDocument())
+            var database = document.Database;
+            var nestedDefs = new List<ObjectId>();
+
+            using (document.LockDocument())
+            {
+                using (var transaction = database.TransactionManager.StartTransaction())
                 {
-                    using (var transaction = database.TransactionManager.StartTransaction())
+                    var record = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
+                    var references = record.GetBlockReferenceIds(directOnly: true, forceValidity: false);
+
+                    if (references == null || references.Count == 0)
                     {
-                        var record = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
-                        var references = record.GetBlockReferenceIds(directOnly: true, forceValidity: false);
-
-                        if (references == null || references.Count == 0)
+                        foreach (ObjectId id in record)
                         {
-                            // Capture the nested header defs this block referenced BEFORE erasing it, so they can be
-                            // purged too (a cancelled grouped insert would otherwise leave them unreferenced).
-                            foreach (ObjectId id in record)
+                            if (transaction.GetObject(id, OpenMode.ForRead) is BlockReference nested && !nested.BlockTableRecord.IsNull)
                             {
-                                if (transaction.GetObject(id, OpenMode.ForRead) is BlockReference nested && !nested.BlockTableRecord.IsNull)
-                                {
-                                    nestedDefs.Add(nested.BlockTableRecord);
-                                }
+                                nestedDefs.Add(nested.BlockTableRecord);
                             }
-
-                            record.UpgradeOpen();
-                            record.Erase();
                         }
 
-                        transaction.Commit();
+                        record.UpgradeOpen();
+                        record.Erase();
                     }
 
-                    // Post-commit: with the top-level def's references erased, its private nested defs are now purgeable.
-                    LateralHeaderDrawer.PurgeUnreferenced(database, nestedDefs);
+                    transaction.Commit();
                 }
-            }
-            catch (Exception ex)
-            {
-                // Best effort: a leftover definition is preferable to failing the whole command here.
-                RackLog.Exception("Limpiar definiciones tras insercion cancelada", ex);
+
+                LateralHeaderDrawer.PurgeUnreferenced(database, nestedDefs);
             }
         }
 
