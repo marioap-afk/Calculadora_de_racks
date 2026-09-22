@@ -90,6 +90,14 @@ namespace RackCad.Plugin.Drawing
         internal static ObjectId PlaceDefinitionWithoutCleanup(Document document, ObjectId definitionId, string prompt = null)
             => PlaceBlockWithJig(document, definitionId, prompt);
 
+        /// <summary>Mode-2 placement: prepared sibling writes share the first jig transaction after OK.</summary>
+        internal static ObjectId PlaceDefinitionWithoutCleanup(
+            Document document,
+            ObjectId definitionId,
+            Action<Transaction> beforeCommit,
+            string prompt = null)
+            => PlaceBlockWithJig(document, definitionId, prompt, beforeCommit);
+
         /// <summary>Best-effort orphan cleanup with an observable result for the G8 single-view seam.</summary>
         internal static RackSingleViewCleanupResult TryCleanupDefinition(Document document, ObjectId definitionId)
         {
@@ -192,7 +200,11 @@ namespace RackCad.Plugin.Drawing
 
         /// <summary>Drag a reference of the block under the cursor; commit it where the user clicks. Returns the
         /// appended reference's id (or <see cref="ObjectId.Null"/> if the user cancelled) so the caller can tag it.</summary>
-        private static ObjectId PlaceBlockWithJig(Document document, ObjectId blockDefinitionId, string prompt = null)
+        private static ObjectId PlaceBlockWithJig(
+            Document document,
+            ObjectId blockDefinitionId,
+            string prompt = null,
+            Action<Transaction> beforeCommit = null)
         {
             var database = document.Database;
             var editor = document.Editor;
@@ -210,6 +222,8 @@ namespace RackCad.Plugin.Drawing
                     transaction.Commit(); // nothing added; the block definition remains for later reuse
                     return ObjectId.Null;
                 }
+
+                beforeCommit?.Invoke(transaction);
 
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);

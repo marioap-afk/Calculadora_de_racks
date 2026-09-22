@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Systems.PushBack;
@@ -46,6 +47,15 @@ namespace RackCad.Plugin.Systems.PushBack
                 catalog => builder.BuildPlan(system, catalog),
                 payloadJson,
                 regen);
+
+        internal PreparedViewRedraw PrepareRedraw(Database database, ObjectId blockId, PushBackSystem system, string payloadJson)
+            => ViewBlockDraw.PrepareRedraw(database, blockId, system != null && !blockId.IsNull,
+                "No hay sistema Push Back para actualizar.", drawer,
+                catalog => builder.BuildPlan(system, catalog), payloadJson);
+
+        internal LateralHeaderDrawOutcome RedrawInTransaction(Database database, Transaction transaction,
+            PreparedViewRedraw prepared, out IReadOnlyCollection<ObjectId> staleDefinitions)
+            => ViewBlockDraw.RedrawInTransaction(database, transaction, prepared, out staleDefinitions);
 
         internal static string BlockName(PushBackSystem system, string rackName)
             => RackViewBaseName.PushBackPlanta(system, rackName);

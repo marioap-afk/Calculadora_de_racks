@@ -695,8 +695,8 @@ namespace RackCad.Tests
 
         /// <summary>
         /// <c>Compose(null)</c> solo en rack nuevo e importacion de biblioteca (D-21). En <c>src/</c> ninguna llamada pasa un
-        /// <c>null</c> literal: seis constructores de payload y el compositor puro de G7 reciben el sobre como parametro, y la
-        /// propagacion de variables pasa <c>view.Embed</c> (T-GRD-02). Quien llama a esos constructores sin sobre queda fuera
+        /// <c>null</c> literal: seis constructores de payload y los compositores puros de G7/G9b
+        /// reciben el sobre como parametro, y la propagacion de variables pasa <c>view.Embed</c> (T-GRD-02). Quien llama a esos constructores sin sobre queda fuera
         /// del alcance de Core,
         /// declarado en D-21: OV-03, OV-04, OV-07, OV-11 y OV-13.
         /// </summary>
@@ -705,13 +705,15 @@ namespace RackCad.Tests
         {
             var calls = EnvelopeSourceGuards.ComposeCallsOutsideComposer(EnvelopeSourceGuards.ProductionSources());
 
-            Assert.Equal(8, calls.Count);
+            Assert.Equal(9, calls.Count);
             Assert.DoesNotContain(calls, call => call.FirstArgument == "null");
             Assert.Equal(6, calls.Count(call => call.Member.StartsWith("Build", StringComparison.Ordinal) || call.Member == "WrapSelectivePayload"));
             Assert.Single(calls, call => call.Path == "src/RackCad.Application/Views/Preparation/RackViewEnvelopeComposition.cs"
                                          && call.Member == "Compose"
                                          && call.FirstArgument == "source");
             Assert.Single(calls, call => call.FirstArgument == "view.Embed");
+            Assert.Single(calls, call => call.Path == "src/RackCad.Plugin/RackSelectivoInsertIntegration.cs"
+                                         && call.Member == "ComposeEnvelope" && call.FirstArgument == "source");
             Assert.Empty(EnvelopeSourceGuards.ConstructionsOutsideComposer(EnvelopeSourceGuards.ProductionSources()));
         }
 
