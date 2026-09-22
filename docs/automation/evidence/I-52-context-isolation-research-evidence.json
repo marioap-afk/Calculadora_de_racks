@@ -1,0 +1,63 @@
+{
+  "schema": "I-52-context-isolation-research-evidence/v1",
+  "capturedAtUtc": "2026-09-22T03:16:18.2885781+00:00",
+  "startingSha": "89ae56137adac138acc522fae0717d4ef75abbe3",
+  "hostScope": "EXACT_BUILD_STATIC_INSPECTION",
+  "host": {
+    "product": "AutoCAD 2025",
+    "program": "acad",
+    "managedApiVersion": "25.0.0.0",
+    "exactDllBuild": "25.0.171.0.0",
+    "installDirectory": "C:\\Program Files\\Autodesk\\AutoCAD 2025",
+    "files": [
+      {
+        "name": "acad.exe",
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe",
+        "fileVersion": "R25.0.171.0.0",
+        "length": 5704536,
+        "sha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422"
+      },
+      {
+        "name": "AcCoreMgd.dll",
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\AcCoreMgd.dll",
+        "fileVersion": "25.0.171.0.0",
+        "length": 978776,
+        "sha256": "31025BC01ABC2CB398040AC82A5018E4FCD7A80FE8A2012DE0329E7F8ED746AA"
+      },
+      {
+        "name": "AcDbMgd.dll",
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\AcDbMgd.dll",
+        "fileVersion": "25.0.171.0.0",
+        "length": 6527320,
+        "sha256": "C360186CC0702E210635895B7608D1D8BD5FEEC6A00612B7581EF160FE09CEDE"
+      },
+      {
+        "name": "AcMgd.dll",
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\AcMgd.dll",
+        "fileVersion": "25.0.171.0.0",
+        "length": 3488088,
+        "sha256": "7AA8BF5F79F3F980DCC9F4CF9483F8438E773F6BF7C05EC3B263449B2846BC8C"
+      }
+    ]
+  },
+  "probe": {
+    "tool": "PowerShell 7 file/version/hash inspection plus repository and Autodesk documentation audit",
+    "acadProcess": "NOT_RUNNING",
+    "objectArxSdkHeaderSearch": "accmd.h NOT_FOUND under C:\\Autodesk and C:\\Program Files\\Autodesk",
+    "newAutoCadRuntimeProbeExecuted": false,
+    "reason": "The research question is contractual coverage. Starting acad or accoreconsole could observe one state but cannot prove absence of contextual channels. Historical G3A runtime evidence remains separately cited and is not transferred."
+  },
+  "historicalEvidence": {
+    "g3aSha": "560ec72a1cef16e18da5dd92a92eb5fb2af26469",
+    "runtimeArtifact": "docs/automation/evidence/I-52-g3a-autocad-runtime-probe.json",
+    "reuse": "HISTORICAL_REFERENCE_ONLY"
+  },
+  "limitations": [
+    "Static file identity does not prove runtime isolation.",
+    "No ObjectARX SDK headers were installed locally.",
+    "No interactive acad.exe process was running, so no module snapshot was captured.",
+    "Module snapshots and managed assembly lists are not coverage proofs and can change after inspection.",
+    "No result proves ContextIsolationAuthority or executes CT-49R."
+  ],
+  "result": "PARTIAL_ONLY"
+}
