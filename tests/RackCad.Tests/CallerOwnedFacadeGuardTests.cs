@@ -221,5 +221,31 @@ namespace RackCad.Tests
                 Assert.Contains("ViewBlockDraw.RedrawInPlace", Source(path));
             }
         }
+
+        [Fact]
+        public void G9A_ADAPTER_RECIBE_UNIDADES_PREPARADAS_Y_NO_REPLANIFICA()
+        {
+            var units = Source("Systems", "Shared", "SiblingRedrawUnits.cs");
+            var transaction = Source("Systems", "Shared", "SiblingRedrawTransaction.cs");
+            var body = units + transaction;
+
+            Assert.Contains("SiblingRedrawUnit", units);
+            Assert.DoesNotContain("Resolve(", body);
+            Assert.DoesNotContain("PrepareRedraw(", body);
+            Assert.DoesNotContain("EnsureForPlan", body);
+            Assert.DoesNotContain("Guid.NewGuid", body);
+            Assert.DoesNotContain("RackId =", body);
+        }
+
+        [Fact]
+        public void G9A_UNIDAD_CALLER_OWNED_NO_POSEE_TRANSACCION_COMMIT_REGEN_O_IMPORT()
+        {
+            var body = Body(Source("Systems", "Shared", "SiblingRedrawUnits.cs"), " Apply(");
+            Assert.DoesNotContain("StartTransaction", body);
+            Assert.DoesNotContain("Commit()", body);
+            Assert.DoesNotContain("Regen", body);
+            Assert.DoesNotContain("EnsureForPlan", body);
+            Assert.DoesNotContain("BlockLibraryImporter", body);
+        }
     }
 }
