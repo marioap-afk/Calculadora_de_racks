@@ -1,13 +1,11 @@
 # ADR-0036: RACKMIRROR es un espejo semántico por copia: reflexión canónica por kind, vistas admisibles y colocación sin escala negativa
 
 - **Estado:** **propuesto**
-- **Fecha:** 2026-09-12 (propuesto; borrador corregido con Proposal V2 y con Proposal V3 el mismo día, y con
-  Proposal V4, Proposal V5, Proposal V6, Proposal V7, Proposal V8, Proposal V9 y Proposal V10 el 2026-09-13, y con
-  Proposal V11, Proposal V12, Proposal V13, Proposal V14, Proposal V15 y Proposal V16 el 2026-09-14; Proposal V17 el 2026-09-15)
-- **Decisores:** Mario Pérez, Owner del repositorio (**acepta o rechaza**; pendiente). La aceptación **no** es
-  precondición de la caracterización (G3): se pide **después de G3**, si G3 no contradice materialmente el contrato (si
-  lo contradice, se abre una Proposal V18), y **es precondición de G4**. Coordinador de I-52 y Arquitecto de I-52
-  (consenso técnico **pendiente** sobre la Proposal); Claude (borradores anteriores); Codex (ejecutor de V17)
+- **Fecha:** 2026-09-12 (propuesto; borradores V2–V17 hasta 2026-09-15; enmienda V18/ALT-E el 2026-09-22)
+- **Decisores:** Mario Pérez, Owner del repositorio (**acepta o rechaza el ADR**; pendiente). En O-1 V18 aceptó la
+  disposición diferida y autorizó una investigación separada de `ContextIsolationAuthority`; esa decisión no acepta
+  este ADR, no ejecuta CT-49R y no reabre G3. Coordinador y Arquitecto de I-52 alcanzaron consenso técnico exacto sobre
+  Proposal V18 y Consensus Freeze V18. Claude (borradores anteriores); Codex (ejecutor de la enmienda V18)
 - **Iniciativa relacionada:** I-52 — `feature/rackmirror-espejo-semantico`
   ([contrato](../initiatives/I-52-rackmirror-espejo-semantico.md), [Discovery](../initiatives/I-52-discovery.md),
   [Proposal V1](../initiatives/I-52-proposal-v1.md), [Proposal V2](../initiatives/I-52-proposal-v2.md),
@@ -19,6 +17,8 @@
   [Proposal V13](../initiatives/I-52-proposal-v13.md), [Proposal V14](../initiatives/I-52-proposal-v14.md),
   [Proposal V15](../initiatives/I-52-proposal-v15.md) (historial), [Proposal V16](../initiatives/I-52-proposal-v16.md) (historial),
   [Proposal V17](../initiatives/I-52-proposal-v17.md),
+  [Proposal V18](../initiatives/I-52-proposal-v18.md),
+  [Consensus Freeze V18](../initiatives/I-52-consensus-freeze-v18.md),
   [decisiones](../automation/decisions/I-52.md))
 
 > **Numeración.** Un número de ADR queda reclamado por su primera publicación observable en un ref remoto. Este ADR se
@@ -33,6 +33,70 @@
 > buscar 0036 en todos los refs; si apareciera una publicación anterior, este ADR se renumera antes de la aceptación.
 > Una vez `aceptado` no se renumera, y dos ADR aceptados con el mismo número detienen el trabajo hasta que decida el
 > Owner (Proposal V17 §16).
+
+## Enmienda V18 / ALT-E — 2026-09-22
+
+Esta enmienda mantiene la decisión central de este ADR: RACKMIRROR es un espejo semántico **por copia**, con
+reconstrucción semántica, identidad nueva y reflexión canónica por `kind`; `MIRROR` de AutoCAD y la escala negativa no
+son autoridad. Proposal V17 conserva el contrato de producto no sustituido. Proposal V18, SHA
+`1e9d7e39a50e5c6322e1d32823aa9f3130a2d0ae`, blob `827559b504ec6bc8b5f780267a40766c3fa6db8c`, gobierna exclusivamente
+el delta CT-49/sesión-contexto. Consensus Freeze V18, SHA `faaf709bf6401dcda91b07f41afe44f490fb916a`, blob
+`c12fa65f5b6203061e8d717d1ceed595c4fed1f4`, está completo y gobierna ese delta. Freeze V17 permanece
+`HISTORICAL / IMMUTABLE / SUPERSEDED ONLY FOR AFFECTED CT-49 CONTRACT`.
+
+Las afirmaciones prospectivas de borradores anteriores que dependían de un catálogo finito o cerrado de modos
+persistentes, de `EditingSessionAuthoritySet` como conjunto completo, de completitud modo→detector, de cerrar CT-49
+enumerando todos los modos o de producir E12 en runtime desde ese conjunto quedan **SUPERSEDED BY V18 / ALT-E**. No se
+borran como historia; dejan de ser autoridad prospectiva. V18 selecciona `ALT-E` y establece el estado actual
+`NO SUPPORTED EXECUTION ENVIRONMENT`. La autoridad prospectiva es el predicado completo:
+
+```text
+SafeOperationalState(D,H,S,O,C) =
+    HostExact(H)
+  ∧ CurrentDocumentOwned(D)
+  ∧ CommandBoundaryCompatible(S)
+  ∧ KnownDetectorsInactive(S)
+  ∧ NoLongTransaction(S)
+  ∧ DatabaseComplete(D)
+  ∧ ReadSetStable(D)
+  ∧ OverrulesBounded(O)
+  ∧ ContextIsolationAuthority(D,H,S,C)
+```
+
+Todo término `FALSE` o `UNKNOWN` bloquea la admisión. Hoy `ContextIsolationAuthority = UNKNOWN`; por tanto,
+`SafeOperationalState = FALSE_FOR_ADMISSION`, RACKMIRROR queda `DEFERRED` y no existe un entorno de ejecución
+soportado. Esto describe la evidencia actual y no afirma imposibilidad universal.
+
+`ContextIsolationAuthority` es una **obligación arquitectónica**, no una API existente. Una autoridad futura debe
+probar que todo canal contextual capaz de alterar la base de datos fuente, la representación observada, la resolución
+de símbolos o la semántica consumida de la API de AutoCAD queda: (A) excluido o demostrado imposible, (B) detectado
+con semántica completa, o (C) incorporado explícitamente al read-set/footprint. La prueba debe identificar fuente,
+predicado exacto, scope de host/build, semántica de error, canales cubiertos y argumento de cobertura, e incluir casos
+nested, transparent, modeless, between-command, verticales, extensiones y un caso adversarial de contexto desconocido.
+Sin esa cobertura, `CT-49R = STOP`.
+
+G3A, SHA `560ec72a1cef16e18da5dd92a92eb5fb2af26469`, caracterizó `HOST_AUTHORITY` y
+`OVERRULE_GRANULARITY` dentro de su scope exacto. Su censo histórico G-M24 registró 790 `READ_ONLY`, 340
+`DECLARED_MUTATOR`, 229 `EXCLUDED_WITH_REASON`, 0 `UNCLASSIFIED`, total 1,359; fields/XREF y el mecanismo de
+descubrimiento T-M75 quedaron caracterizados allí. Son resultados históricos exact-SHA y no se transfieren
+automáticamente a una implementación futura, un gate posterior ni un Candidate.
+
+La decisión durable O-1 V18 de I-52 §117 está `ACCEPTED / REGISTERED`: acepta el estado diferido y autoriza por
+separado investigar una autoridad verificable. Esa autorización no ejecuta CT-49R, no autoriza implementación, no
+acepta este ADR y no reabre G3. La secuencia futura no admite atajos:
+
+```text
+nueva autoridad o autoridad externa
+→ caracterización exacta CT-49R
+→ ContextIsolationAuthority demostrada
+→ compatibilidad completa de SafeOperationalState
+→ decisión explícita de reapertura
+→ G3B / CT-50
+```
+
+Estado tras esta enmienda: `ADR-0036 = PROPOSED / AMENDED FOR V18`, `G3 = STOPPED`, `G3B = NOT OPEN`,
+`CT-50 = NOT EXECUTED` y `SUBSTANTIVE IMPLEMENTATION = BLOCKED`. La aceptación del ADR sigue siendo un acto futuro
+separado.
 
 ## Contexto
 
@@ -277,37 +341,23 @@ ruta sin cambiar de contenido.
     trazado; por eso el orden entre dos objetos que solo se tocan por el grosor de línea visible no se garantiza. Antes
     de evaluar ese orden hay que demostrar la **completitud de la base de datos y de la enumeración**, en dos partes.
     Los **prerrequisitos globales**, que se conocen antes de saber cuáles son las fuentes, se comprueban antes de pedir
-    la línea: el dibujo no está abierto parcialmente y se cumple una **política cerrada de sesiones de edición**, en la
-    que cada sesión de edición en sitio o alternativa es segura por caracterización o bloquea la operación, y que se
-    evalúa con una **autoridad observable**: un conjunto finito de detectores —variables de estado de edición de solo
-    lectura, autoridades de transacción larga y de conjunto de trabajo y autoridades de comando y de sesión— que la
-    caracterización establece **después** de construir un catálogo cerrado de MODOS persistentes: comandos y
-    estados documentados, entornos/pestañas contextuales, pares apertura/cierre, long transactions, fuentes
-    asociativas y block authoring/testing. Mínimos REFEDIT/REFCLOSE, BEDIT/BCLOSE, ARRAYEDIT Source/ARRAYCLOSE y
-    BTESTBLOCK con su lifecycle. Cada modo tiene detector fiable o autoridad genérica con predicado, ámbito y
-    cobertura demostrados; sin ellos CT-49 STOP. Active-command state no cubre por sí solo modos persistentes.
-    LongTransactionManager prueba existencia de long transaction para document/database; working set prueba
-    pertenencia al conjunto activo in-place, no ausencia global. La fuente fiable de product, vertical/host y
-    major/API también debe demostrarse: si no existe, CT-49 STOP → Proposal V18. Solo después se congela el
-    conjunto observable; E12 runtime por identidad se reserva para lectura fallida o host/version fuera del conjunto ya
-    caracterizado (Proposal V17 §0.4). La ejecución no descubre modos desconocidos: la operación continúa
-    solo si el entorno es el caracterizado, todos los detectores se leen con éxito, ninguno de los que bloquean está
-    activo y ninguna autoridad genérica reporta una sesión de edición activa; un entorno no caracterizado o una lectura
-    que falla, no está disponible o devuelve un estado no clasificable bloquean la operación, nunca cuentan como
-    inactivos. En el primer corte bloquean la edición de referencia en curso, una transacción larga, el Editor de
-    bloques, la ventana de prueba de bloques y la edición de la fuente de una matriz asociativa, sin razonar sobre la
-    geometría temporal de esa fuente ni sobre su replicación. Que un modo no esté caracterizado es un resultado de la
-    caracterización, no una comprobación en ejecución: si la caracterización descubre un modo relevante sin detector
-    fiable propio ni autoridad genérica fiable que lo cubra, el trabajo se detiene y se abre una Proposal posterior; si
-    alguno falla, la operación termina con un mensaje propio de esa causa, y los prerrequisitos se vuelven a comprobar
-    antes de la decisión definitiva y al empezar a mutar. El espejo no carga lo que falta, no fuerza cargas, no cierra
-    la edición de referencia, el Editor de bloques, la ventana de prueba ni la edición de la matriz, no mueve sus
-    objetos de trabajo, no cambia capas ni variables y no modifica el dibujo ni la sesión para completarlos. La
+    la línea. La arquitectura V17 que pretendía cerrar ese requisito con un catálogo finito de modos persistentes,
+    `EditingSessionAuthoritySet`, completitud modo→detector y E12 runtime derivado de ese conjunto queda
+    **SUPERSEDED BY V18 / ALT-E**. Los detectores conocidos —REFEDIT, long transaction, BEDIT/BTESTBLOCK, ARRAYEDIT
+    Source y demás señales caracterizadas— son condiciones necesarias y deben leerse sin convertir un fallo o un
+    estado no clasificable en inactividad, pero no prueban por sí solos ausencia de otros canales contextuales.
+    `LongTransactionManager` prueba existencia de long transaction para document/database y working set prueba
+    pertenencia al conjunto activo in-place; ninguno prueba ausencia contextual universal. La admisión futura exige el
+    `SafeOperationalState` completo de la enmienda V18, incluida una `ContextIsolationAuthority` demostrada. Mientras
+    esa autoridad sea `UNKNOWN`, `SafeOperationalState = FALSE_FOR_ADMISSION`: la operación no se ofrece en ningún
+    entorno. El espejo tampoco completa la prueba forzando estado: no carga lo que falta, no cierra ediciones, no mueve
+    objetos de trabajo, no cambia capas ni variables y no modifica el dibujo ni la sesión para hacerlos admisibles. La
     **completitud relativa a cada fuente** —la cola de objetos posteriores y su contenido relevante— se evalúa después
     de conocer las fuentes y la línea: una evaluación temprana solo puede rechazar, y la decisión definitiva se toma
-    sobre la cola enumerada de nuevo, antes de decidir el orden. La caracterización confirma las API, el conjunto
-    cerrado de detectores y la detección fiable de la apertura parcial y de las sesiones de edición y, mientras no lo
-    haga, la completitud no se demuestra. Que un objeto no esté cargado o no aparezca en la base de datos **nunca**
+    sobre la cola enumerada de nuevo, antes de decidir el orden. Una CT-49R futura debe confirmar las API, las
+    autoridades que satisfacen cada término del predicado, su semántica y su cobertura contextual; mientras no lo
+    haga, la admisión no se demuestra. La completitud de la base de datos y de la enumeración conserva su obligación
+    independiente. Que un objeto no esté cargado o no aparezca en la base de datos **nunca**
     significa que no ocupa; los objetos borrados no forman parte de la enumeración, porque borrarlos y restaurarlos es
     una edición. La clasificación sigue un orden fijo —completitud de la base de datos, completitud de la enumeración,
     tipo exacto, componentes, disponibilidad del contenido, mecanismos, política y huella—, y una etapa que falla deja
@@ -522,13 +572,14 @@ ruta sin cambiar de contenido.
     orden visual dentro de la pieza y entre piezas, la presentación y el orden de las referencias, la elegibilidad de la
     presentación resuelta en el dibujo destino, las huellas visuales de ocupación de modelo en el dibujo destino con la
     transformación de sus anchos, también con magnitud uniforme reflejada, y su recálculo tras importar, la regla del
-    entorno en las huellas de la propia copia, la completitud de la base de datos y de la enumeración, con las API
-    exactas y la detección fiable de la apertura parcial y de las sesiones de edición, con catálogo cerrado de
-    MODOS previo a señales, mapping modo→detector, semántica/ámbito y cobertura demostrada de cada autoridad
-    genérica, fuentes fiables de product/vertical-host/major-API (ausencia ⇒ CT-49 STOP) y detectores de solo lectura (edición de referencia en curso, transacción larga, Editor de
-    bloques, ventana de prueba de bloques, edición de la fuente de una matriz asociativa y demás autoridades de
-    transacción, de comando y de sesión), la identidad del entorno caracterizado y el fallo ante una lectura que no
-    puede hacerse, la frontera entre estado y edición futura, con la precedencia causal de los campos, sus dependencias
+    entorno en las huellas de la propia copia y la completitud independiente de la base de datos y de la enumeración.
+    La exigencia V17 de catálogo cerrado de MODOS, mapping modo→detector y completitud de un conjunto finito queda
+    **SUPERSEDED BY V18 / ALT-E**. CT-49R debe demostrar cada término de `SafeOperationalState`, con API y fuente
+    exactas, predicado, scope host/build, semántica de error, canales cubiertos, argumento de cobertura y los casos
+    nested, transparent, modeless, between-command, verticales, extensiones y contexto adversarial desconocido; debe
+    conservar fuentes fiables de product/vertical-host/major-API y los detectores conocidos como condiciones
+    necesarias, sin tratarlos como prueba completa de aislamiento. Sin cobertura, `CT-49R = STOP`. Debe demostrar
+    además la frontera entre estado y edición futura, con la precedencia causal de los campos, sus dependencias
     mixtas, nested/cyclic y cotas finitas, Attribute y Dimension por causa, y la regla del contenido cargado actual
     de las referencias externas, la relevancia por familia y aplicabilidad por sujeto/clase de overrules de terceros
     (sin política de representación para reactores de terceros), los marcos de recorte, la política de huellas por tipo exacto y por mecanismo de los
@@ -556,8 +607,9 @@ ruta sin cambiar de contenido.
   futuras como EDIT; registros de RackCad siguen bajo G-M24.
 - **Overruling global ⇒ EVERYTHING UNKNOWN** — descartada: primero relevancia y aplicabilidad; fallback global
   solo con limitación demostrada y expuesta.
-- **Cerrar sesiones desde señales, o cerrar G-M24 desde familias enumeradas** — descartadas: catálogo de modos
-  antes de detectores y censo mecánico de todas las invocaciones, respectivamente.
+- **Cerrar sesiones desde señales conocidas** — descartada y **SUPERSEDED BY V18 / ALT-E**: los detectores conocidos
+  no prueban aislamiento contextual completo. **Cerrar G-M24 desde familias enumeradas** sigue descartado: exige el
+  censo mecánico de todas las invocaciones alcanzables.
 
 
 - **Espejo de entidades o referencia con escala negativa** — descartada: el diseño embebido no cambia y todas las
@@ -717,9 +769,9 @@ ruta sin cambiar de contenido.
 - **Desbloquear el freeze o retirar las lecturas transitivas del registro si I-49 se cancela** — descartada: la salida
   la decide el Coordinador en una Proposal (retirar ese soporte, adoptar otra autoridad integrada o mantener el
   bloqueo).
-- **Descubrir en ejecución los modos de edición desconocidos, o exigir en ejecución que se demuestre su ausencia** —
-  descartada: lo primero no es posible y lo segundo haría fallar siempre la operación; la ausencia se demuestra con un
-  conjunto cerrado de detectores fijado por la caracterización.
+- **Descubrir en ejecución los modos contextuales desconocidos o inferir su ausencia desde detectores conocidos** —
+  descartada y **SUPERSEDED BY V18 / ALT-E** como mecanismo de clausura. Una autoridad futura debe demostrar la
+  cobertura contextual exigida por `ContextIsolationAuthority`; mientras sea `UNKNOWN`, no hay admisión.
 - **Tratar como inactivo un detector que no puede leerse** — descartada: una lectura fallida no demuestra ausencia.
 - **Suponer que una vertical o una versión distinta se comporta como la caracterizada** — descartada: sus modos de
   edición y sus autoridades pueden ser otros.
@@ -780,11 +832,11 @@ ruta sin cambiar de contenido.
     demostrar completa su enumeración o que tienen después de alguna fuente una referencia externa cargada bajo demanda
     con contenido que puede no estar en memoria —aunque figure como cargada—, atributos invisibles, objetos ocultos o
     aislados, proxies o tablas con datos externos sin método latente conservador; fallan antes de pedir la línea las
-    operaciones con una edición de referencia en curso, una transacción larga, el Editor de bloques o la ventana de
-    prueba de bloques abiertos, la edición de la fuente de una matriz asociativa en curso, un entorno de AutoCAD no
-    caracterizado, la lectura fallida de un detector o una autoridad genérica con una sesión activa —y, si la
-    caracterización no logra catálogo de modos, mapping, cobertura genérica o fuente fiable de identidad,
-    CT-49 se detiene y exige Proposal V18 antes de implementar—; fallan también las que tienen después de alguna fuente un objeto cuya representación puede
+    operaciones donde un detector conocido reporte edición de referencia, long transaction, BEDIT/BTESTBLOCK o
+    ARRAYEDIT Source, o donde su lectura falle. Esas señales son necesarias, no una autoridad completa. V18 deja
+    `ContextIsolationAuthority = UNKNOWN` y `SafeOperationalState = FALSE_FOR_ADMISSION`; por ello no existe entorno
+    soportado y RACKMIRROR permanece diferido. Solo una CT-49R futura con cobertura completa puede cambiar ese estado;
+    sin cobertura, `CT-49R = STOP`. Fallan también las que tienen después de alguna fuente un objeto cuya representación puede
     estar alterada por un overrule footprint-relevant aplicable sin soporte conservador; solo una autoridad
     global demostrada puede ampliar ese fallo, y se expone en O-1/L-34/M-35/R-58; familias irrelevantes o
     overrules no aplicables demostrados no penalizan, y reactores de terceros no bloquean representación; fallan también las que tienen después de alguna fuente un objeto recortado cuyo marco no puede
@@ -1177,10 +1229,12 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
     verticales iguales, inspeccionar plugins de terceros y comparar identidades de referencias externas, descartadas;
     Proposal V2 de I-56 sin consenso; API de AutoCAD 2025 a confirmar.
 
-  Sigue **propuesto**: su aceptación se pide después de G3 y antes de G4.
+  Sigue **propuesto**. La posterior decisión O-1 V18 no acepta este ADR; su aceptación continúa como acto futuro
+  separado.
 
 
-- **Borrador V17** — vigente, por la revisión de V16 CHANGES REQUIRED — PROPOSAL V17 transmitida en el relevo:
+- **Borrador V17** — histórico salvo el contrato de producto heredado expresamente por V18, por la revisión de V16
+  CHANGES REQUIRED — PROPOSAL V17 transmitida en el relevo:
   - decisión 7: AutoCadApiCallCensus cerrado, clasificaciones, fixtures y registros de los cinco ámbitos de eventos;
   - decisión 11: solo overrules relevantes/aplicables de terceros, fallback global demostrado; sin reactores como
     blockers de representación; catálogo de modos, cobertura genérica e identidad fiable;
@@ -1189,3 +1243,10 @@ Mientras este ADR sea `propuesto` puede editarse (adr/README.md). Para no perder
     pero sucesor/Owner/freeze pendientes y RS-3 bloquea el freeze de I-52;
   - V17 NOT CONSENSUS, ADR PROPOSED, O-1 PENDING, G3 NOT OPEN; contradicción material ⇒ Proposal V18.
   El historial anterior registra lo que se propuso, no conserva las reglas sustituidas por V17.
+
+- **Enmienda V18 / ALT-E** — Proposal V18 y Consensus Freeze V18 sustituyen únicamente la autoridad prospectiva
+  CT-49/sesión-contexto. `ALT-E = SELECTED`; `ContextIsolationAuthority = UNKNOWN` y
+  `SafeOperationalState = FALSE_FOR_ADMISSION`, sin afirmar imposibilidad universal. O-1 V18 acepta el estado diferido
+  y autoriza investigación separada; no acepta el ADR, no ejecuta CT-49R y no reabre G3. El núcleo de espejo semántico
+  por copia, Foundation, PlanReadSet/I-49, AUTH-15 y el contrato V17 no sustituido permanecen. ADR-0036 sigue
+  **propuesto**.
