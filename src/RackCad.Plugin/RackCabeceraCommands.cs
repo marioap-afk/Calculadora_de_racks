@@ -13,6 +13,7 @@ using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
+using RackCad.Plugin.Views;
 using RackCad.UI;
 using RackCad.UI.RackFrames;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -231,9 +232,17 @@ namespace RackCad.Plugin
             // Editing the cabecera redraws BOTH its views (lateral + planta), found by the shared GUID — the same
             // multi-view round-trip as the selective. The planta is a separate block that links to this cabecera.
             var config = window.Configuration;
-            var id = string.IsNullOrEmpty(embed.Id) ? System.Guid.NewGuid().ToString() : embed.Id;
             var name = string.IsNullOrWhiteSpace(config?.Name) ? embed.Name : config.Name;
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+
+            if (!window.UpdateOnly)
+            {
+                var insertId = string.IsNullOrWhiteSpace(embed.Id) ? System.Guid.NewGuid().ToString() : embed.Id;
+                RackUnsupportedSiblingInsert.Reject(document, blockId, embed, insertId);
+                return;
+            }
+
+            var id = string.IsNullOrEmpty(embed.Id) ? System.Guid.NewGuid().ToString() : embed.Id;
 
             // Keep each block's own Embed (not just its id) so its per-view unknown metadata is preserved on redraw (I-11).
             var blocks = RackCommandSupport.FindRackBlocks(document, id);

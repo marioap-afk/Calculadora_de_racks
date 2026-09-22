@@ -20,6 +20,12 @@ namespace RackCad.Plugin.Views
     {
         internal static RackSingleViewPlacementResult<ObjectId> PlaceSelective(Document document, RackPreparedProductView<HeaderRunPlan> product)
             => PlaceHeader(document, product, RackEmbedDocument.KindSelective);
+        internal static RackSingleViewPlacementResult<ObjectId> PlaceSelective(
+            Document document,
+            RackPreparedProductView<HeaderRunPlan> product,
+            Action<Transaction> beforeCommit,
+            Action afterCommit)
+            => PlaceHeader(document, product, RackEmbedDocument.KindSelective, beforeCommit, afterCommit);
         internal static RackSingleViewPlacementResult<ObjectId> PlaceDynamic(Document document, RackPreparedProductView<HeaderRunPlan> product)
             => PlaceHeader(document, product, RackEmbedDocument.KindDynamic);
         internal static RackSingleViewPlacementResult<ObjectId> PlacePushBack(Document document, RackPreparedProductView<HeaderRunPlan> product)
@@ -33,9 +39,11 @@ namespace RackCad.Plugin.Views
                 new CantileverMaterializer(document, RackEmbedDocument.KindCantilever));
 
         private static RackSingleViewPlacementResult<ObjectId> PlaceHeader(
-            Document document, RackPreparedProductView<HeaderRunPlan> product, string kind)
+            Document document, RackPreparedProductView<HeaderRunPlan> product, string kind,
+            Action<Transaction> beforeCommit = null,
+            Action afterCommit = null)
             => RackSingleViewPlacement.Place(product, new HeaderRequirements(document),
-                new HeaderMaterializer(document, kind));
+                new HeaderMaterializer(document, kind, beforeCommit, afterCommit));
 
         private sealed class HeaderRequirements : IRackSingleViewRequirementEvaluator<HeaderRunPlan>
         {
@@ -79,7 +87,11 @@ namespace RackCad.Plugin.Views
         private sealed class HeaderMaterializer : IRackSingleViewMaterializer<HeaderRunPlan, ObjectId, ObjectId>
         {
             private readonly Document document;
-            internal HeaderMaterializer(Document document, string kind) { this.document = document; ExpectedKind = kind; }
+            private readonly Action<Transaction> beforeCommit;
+            private readonly Action afterCommit;
+            internal HeaderMaterializer(Document document, string kind,
+                Action<Transaction> beforeCommit, Action afterCommit)
+            { this.document = document; ExpectedKind = kind; this.beforeCommit = beforeCommit; this.afterCommit = afterCommit; }
             public string ExpectedKind { get; }
             public bool CanPlace(RackPreparedProductView<HeaderRunPlan> product, out string diagnostic)
             { diagnostic = document == null ? "NO_ACTIVE_DOCUMENT" : null; return document != null; }
@@ -92,13 +104,18 @@ namespace RackCad.Plugin.Views
             }
             public RackSingleViewReference<ObjectId> Place(RackSingleViewDefinition<ObjectId> definition)
             {
-                var id = BlockPlacement.PlaceDefinitionWithoutCleanup(document, definition.Handle);
+                var id = beforeCommit == null
+                    ? BlockPlacement.PlaceDefinitionWithoutCleanup(document, definition.Handle)
+                    : BlockPlacement.PlaceDefinitionWithoutCleanup(document, definition.Handle, beforeCommit);
                 return id.IsNull ? RackSingleViewReference<ObjectId>.Cancelled() : RackSingleViewReference<ObjectId>.Placed(id);
             }
             public RackSingleViewCleanupResult Cleanup(RackSingleViewDefinition<ObjectId> definition)
                 => BlockPlacement.TryCleanupDefinition(document, definition.Handle);
             public void Complete(RackPreparedProductView<HeaderRunPlan> product, ObjectId reference)
-                => SystemBlockWriter.ApplyRegen(document, true);
+            {
+                if (afterCommit == null) SystemBlockWriter.ApplyRegen(document, true);
+                else afterCommit();
+            }
         }
 
         private sealed class CantileverMaterializer : IRackSingleViewMaterializer<CantileverViewPlan, ObjectId, ObjectId>

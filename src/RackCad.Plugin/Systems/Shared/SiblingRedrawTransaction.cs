@@ -17,23 +17,8 @@ namespace RackCad.Plugin.Systems.Shared
             {
                 using (var transaction = document.Database.TransactionManager.StartTransaction())
                 {
-                    for (var index = 0; index < units.Count; index++)
-                    {
-                        var unit = units[index];
-                        if (unit == null)
-                        {
-                            return RackSiblingMutationResult.Discarded(null, "NULL_UNIT");
-                        }
-
-#if DEBUG
-                        SiblingRedrawDebugFaultInjection.ThrowIfRequested(index + 1);
-#endif
-                        var result = unit.Apply(transaction);
-                        if (result == null || result.Kind == RackSiblingMutationKind.Discarded)
-                        {
-                            return result ?? RackSiblingMutationResult.Discarded(unit.DefinitionKey, "UNIT_RETURNED_NULL");
-                        }
-                    }
+                    var result = ApplyInTransaction(transaction, units);
+                    if (result.Kind == RackSiblingMutationKind.Discarded) return result;
 
                     transaction.Commit();
                     return RackSiblingMutationResult.Committed();
@@ -43,6 +28,28 @@ namespace RackCad.Plugin.Systems.Shared
             {
                 return RackSiblingMutationResult.Discarded(null, ex.Message);
             }
+        }
+
+        /// <summary>Mode-2 first-jig seam: applies prepared units inside the placement transaction without owning it.</summary>
+        internal static RackSiblingMutationResult ApplyInTransaction(
+            Transaction transaction, IReadOnlyList<SiblingRedrawUnit> units)
+        {
+            if (transaction == null) return RackSiblingMutationResult.Discarded(null, "TRANSACTION_REQUIRED");
+            if (units == null) return RackSiblingMutationResult.Discarded(null, "UNITS_REQUIRED");
+
+            for (var index = 0; index < units.Count; index++)
+            {
+                var unit = units[index];
+                if (unit == null) return RackSiblingMutationResult.Discarded(null, "NULL_UNIT");
+#if DEBUG
+                SiblingRedrawDebugFaultInjection.ThrowIfRequested(index + 1);
+#endif
+                var result = unit.Apply(transaction);
+                if (result == null || result.Kind == RackSiblingMutationKind.Discarded)
+                    return result ?? RackSiblingMutationResult.Discarded(unit.DefinitionKey, "UNIT_RETURNED_NULL");
+            }
+
+            return RackSiblingMutationResult.Committed();
         }
 
         internal static void Post(Document document, IReadOnlyList<SiblingRedrawUnit> units)
