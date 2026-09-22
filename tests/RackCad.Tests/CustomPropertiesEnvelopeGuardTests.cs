@@ -62,12 +62,12 @@ namespace RackCad.Tests
         // ================================================================ T-GRD-02 censo de Compose
 
         /// <summary>
-        /// Las siete llamadas de D-21, por archivo y con su clasificacion. Un llamador nuevo falla aqui y obliga a clasificar
-        /// su origen en D-21 (Proposal V5): un rack existente compone con su sobre real; <c>Compose(null)</c> solo es de un
-        /// rack nuevo o de una importacion de biblioteca.
+        /// Las siete llamadas historicas de D-21 mas la composicion pura autorizada por I-55 G7, por archivo y con su
+        /// clasificacion. Un llamador nuevo falla aqui y obliga a clasificar su origen: un rack existente compone con su sobre
+        /// real; <c>Compose(null)</c> solo es de un rack nuevo o de una importacion de biblioteca.
         /// </summary>
         [Fact]
-        public void TGrd02_CensoDeCompose_SonLasSieteLlamadasDeD21_PorArchivo()
+        public void TGrd02_CensoDeCompose_IncluyeD21YLaComposicionPuraDeG7_PorArchivo()
         {
             var calls = EnvelopeSourceGuards.ComposeCallsOutsideComposer(EnvelopeSourceGuards.ProductionSources());
 
@@ -75,7 +75,8 @@ namespace RackCad.Tests
         }
 
         /// <summary>
-        /// Clasificacion de cada origen. Seis constructores de payload reciben el sobre como PARAMETRO y lo pasan tal cual: el
+        /// Clasificacion de cada origen. Seis constructores de payload y el compositor puro de G7 reciben el sobre como
+        /// PARAMETRO y lo pasan tal cual: el
         /// redibujo y la vista nueva les dan el sobre real, y solo el rack nuevo y la importacion les dan <c>null</c> (cinco por
         /// omision del parametro opcional; la cama, por su sobrecarga sin sobre). Esos llamadores quedan fuera del alcance de
         /// la guarda, como declara D-21: OV-03, OV-04, OV-07, OV-11 y OV-13. La propagacion de variables compone con
@@ -181,9 +182,10 @@ namespace RackCad.Tests
 
         internal sealed record ComposeCall(string Path, string Member, string FirstArgument);
 
-        /// <summary>Las siete llamadas de D-21 (Proposal V5), medidas en la rama antes de G4B y ordenadas por archivo.</summary>
+        /// <summary>Las llamadas de D-21 y la composicion pura autorizada por I-55 G7, ordenadas por archivo.</summary>
         internal static readonly IReadOnlyList<ComposeCall> ExpectedComposeCensus = new[]
         {
+            new ComposeCall("src/RackCad.Application/Views/Preparation/RackViewEnvelopeComposition.cs", "Compose", "source"),
             new ComposeCall("src/RackCad.Plugin/ProjectVariableMutationExecutor.cs", "Execute", "view.Embed"),
             new ComposeCall("src/RackCad.Plugin/RackCabeceraCommands.cs", "BuildCabeceraPayload", "source"),
             new ComposeCall("src/RackCad.Plugin/RackCamaCommands.cs", "BuildCamaPayload", "sourceEmbed"),
