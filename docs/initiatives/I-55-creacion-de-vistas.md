@@ -409,3 +409,15 @@ transaccion del primer jig sin implementar AUTH-15. Missing blocks de ID17/ID18 
 El receipt durable es [`I-55-g9b-insertar-integration.md`](I-55-g9b-insertar-integration.md). Foundation y schema no
 cambian. Owner Validation queda diferida al Candidato. G9b queda completo y G10 abierto; G10 no se inicia en esta
 sesion.
+
+# Estado G10 (2026-09-22)
+
+G10 entrega ID17: Selective, Dynamic y Cabecera permiten iniciar un rack desde cualquier vista que su exposure
+`CreateFirst` realmente publica. La UI consume la policy G6, una intencion aceptada conserva un solo RackId y el
+request de Cabecera transporta identidad y direccion tipada hasta los builders existentes. Push Back y Cantilever no
+cambian; Flow Bed no adquiere sisters.
+
+La colocacion sigue siendo individual por G8 y `RACKEDITAR -> Insertar` sigue por G9b con la misma identidad. No se
+implementaron ID18, ID19 ni AUTH-15. Foundation y schema permanecen intactos. El receipt durable es
+[`I-55-g10-id17-first-view-freedom.md`](I-55-g10-id17-first-view-freedom.md). Owner Validation `OV-ID17` queda
+diferida al Candidato. G10 queda completo y G11 abierto; G11 no se inicia en esta sesion.
