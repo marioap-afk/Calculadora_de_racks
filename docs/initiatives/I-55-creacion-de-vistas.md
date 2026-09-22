@@ -378,3 +378,19 @@ durable es [`I-55-g7-product-prepare.md`](I-55-g7-product-prepare.md).
 No hay AutoCAD, UI, materializacion, persistencia, schema ni cambio productivo de Foundation. ID17 completo, ID18,
 ID19 y AUTH-15 permanecen fuera. Owner Validation no es requerida para este gate. G7 queda completo y G8 abierto; G8
 no se inicia en esta sesion.
+
+# Estado G9a (2026-09-22)
+
+G9a agrega un seam reusable, todavia no cableado, para clasificar y redibujar hermanas existentes de forma atomica.
+Una sola funcion produce `Redraw`, `Erase`, `ReadOnly`, `NotMember` y `BlockingUnreadable`, conserva el snapshot del
+barrido y comparte exactamente el conjunto mutable con los gates futuros. Una superviviente exige referencia directa
+de layout; las referencias anidadas no bastan.
+
+Prepare completa planes y preflight de layers antes de escribir. Mutate posee una sola transaccion y un commit para
+todas las unidades; fallo tipado o excepcion descartan todo. Post solo corre tras commit y concentra un unico regen.
+El caso solo-huerfanas se difiere a la primera colocacion de G9b. El receipt durable es
+[`I-55-g9a-atomic-redraw-seam.md`](I-55-g9a-atomic-redraw-seam.md).
+
+No se conectan comandos, no se colocan vistas y no se implementan ID17, ID18, ID19 o AUTH-15. Foundation,
+persistencia y schema no cambian. Owner Validation no es requerida para este gate. G9a queda completo y G9b abierto;
+G9b no se inicia en esta sesion.
