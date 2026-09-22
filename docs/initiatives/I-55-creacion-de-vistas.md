@@ -394,3 +394,18 @@ El caso solo-huerfanas se difiere a la primera colocacion de G9b. El receipt dur
 No se conectan comandos, no se colocan vistas y no se implementan ID17, ID18, ID19 o AUTH-15. Foundation,
 persistencia y schema no cambian. Owner Validation no es requerida para este gate. G9a queda completo y G9b abierto;
 G9b no se inicia en esta sesion.
+
+# Estado G9b (2026-09-22)
+
+G9b cablea `RACKEDITAR -> Insertar` con un barrido unico, membership reusable, gates de Custom Properties y authored,
+Resolve/Prepare, el seam atomico G9a y la colocacion individual G8. Selective completa la operacion y comparte el Id
+curado con hermanas y vista nueva. Los otros cuatro kinds con sisters consumen los comparators AUTH-13 vigentes y
+fallan cerrados mientras Foundation los mantenga como no demostrados. Flow Bed permanece fuera.
+
+Actualizar no entra al nuevo driver. Xrefs no se escriben; layers bloqueadas detienen antes de Mutate; rollback evita
+placement; Post ocurre tras commit y `TopTransaction` debe quedar null. El caso solo-huerfanas usa modo 2 dentro de la
+transaccion del primer jig sin implementar AUTH-15. Missing blocks de ID17/ID18 conservan place + report.
+
+El receipt durable es [`I-55-g9b-insertar-integration.md`](I-55-g9b-insertar-integration.md). Foundation y schema no
+cambian. Owner Validation queda diferida al Candidato. G9b queda completo y G10 abierto; G10 no se inicia en esta
+sesion.
