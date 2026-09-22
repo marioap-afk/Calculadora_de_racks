@@ -8,6 +8,7 @@ using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Insertion;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Selective;
@@ -18,7 +19,7 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 namespace RackCad.Plugin
 {
     /// <summary>Selective-rack commands + their draw/edit/payload helpers (frontal / lateral corte / planta), plus alias.</summary>
-    public sealed class RackSelectivoCommands
+    public sealed partial class RackSelectivoCommands
     {
         [CommandMethod("RS")] public void AliasRackSelectivo() => RackSelectivo();        // RACKSELECTIVO
 
@@ -117,11 +118,34 @@ namespace RackCad.Plugin
             // client name may have been edited in the window.
             var design = window.DesignToInsert;
             var system = window.SystemToInsert;
-            var id = string.IsNullOrEmpty(embed.Id) ? window.RackId : embed.Id;
             var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
             system.Name = name; // the "Colocar nombre de rack" annotation draws this
             // Base name for syncing the block-definition names across views (null = keep each view's descriptive default).
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+
+            if (!window.UpdateOnly)
+            {
+                // G9b keeps Insertar's whitespace cure entirely outside Actualizar's historical identity path.
+                var insertId = string.IsNullOrWhiteSpace(embed.Id) ? window.RackId : embed.Id;
+                var insertReconciled = LinkedPropertyReconciler.Reconcile(
+                    saved, design, window.LinkedPropertyFinalStates, registry, insertId, name);
+                if (!insertReconciled.IsSuccess)
+                {
+                    editor.WriteMessage("\nRackCad: " + insertReconciled.Error);
+                    return;
+                }
+
+                var designJson = SerializeSelectiveAuthored(insertReconciled.Authored);
+                var insertion = RackSiblingInsertRun.Execute(
+                    new SelectiveInsertPort(document, blockId, embed, system, designJson, insertId, name, window.InsertView));
+                editor.WriteMessage("\nRackCad: " + insertion.Outcome
+                    + (insertion.RedrawOutcome.HasValue ? " / " + insertion.RedrawOutcome.Value : string.Empty)
+                    + (string.IsNullOrWhiteSpace(insertion.Diagnostic) ? string.Empty : " — " + insertion.Diagnostic));
+                return;
+            }
+
+            // Actualizar retains the exact empty-only identity predicate it had before G9b.
+            var id = string.IsNullOrEmpty(embed.Id) ? window.RackId : embed.Id;
 
             var blocks = RackCommandSupport.FindRackBlocks(document, id);
             var frontalBlocks = blocks.Where(b => !IsLateralView(b.Embed) && !RackCommandSupport.IsPlantaView(b.Embed)).ToList();
@@ -151,7 +175,7 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var designJson = new SelectivePalletDesignStore().Serialize(reconciled.Authored);
+            var updateDesignJson = new SelectivePalletDesignStore().Serialize(reconciled.Authored);
 
             // Each frontal block draws ONE fondo's face (its Section = fondo index; a legacy block with -1 = fondo 0).
             // Every loop below redraws with regen:false and the drawing regenerates ONCE at the end — a full
@@ -181,7 +205,7 @@ namespace RackCad.Plugin
 
                 var fondoView = SelectiveDepthLayout.FondoSystemView(system, fondo);
                 fondoView.Name = name;
-                var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewFrontal, fondo, fb.Embed);
+                var payload = WrapSelectivePayload(updateDesignJson, id, name, RackEmbedDocument.ViewFrontal, fondo, fb.Embed);
                 var r = new SelectiveFrontalDrawService().RedrawInPlace(document, fb.BlockId, fondoView, payload, regen: false);
                 if (r != null && r.Success)
                 {
@@ -217,7 +241,7 @@ namespace RackCad.Plugin
                         continue;
                     }
 
-                    var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex, lat.Embed);
+                    var payload = WrapSelectivePayload(updateDesignJson, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex, lat.Embed);
                     var r = lateralService.RedrawInPlace(document, lat.BlockId, corte.Cabecera, payload, corte.Largueros, regen: false);
                     if (r != null && r.Success)
                     {
@@ -234,7 +258,7 @@ namespace RackCad.Plugin
             var updatedPlanta = 0;
             foreach (var pb in plantaBlocks)
             {
-                var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewPlanta, source: pb.Embed);
+                var payload = WrapSelectivePayload(updateDesignJson, id, name, RackEmbedDocument.ViewPlanta, source: pb.Embed);
                 var r = new SelectivePlantaDrawService().RedrawInPlace(document, pb.BlockId, system, payload, regen: false);
                 if (r != null && r.Success)
                 {
@@ -276,7 +300,7 @@ namespace RackCad.Plugin
                 // estado que ninguna operacion puede resolver eligiendo una vista.
                 //
                 // A NEW view inserted during an edit inherits the initiating (picked) envelope's metadata (I-11).
-                DrawSelectiveViewFromAuthored(window.InsertView, system, designJson, id, name, embed);
+                DrawSelectiveViewFromAuthored(window.InsertView, system, updateDesignJson, id, name, embed);
                 return;
             }
 
@@ -593,5 +617,8 @@ namespace RackCad.Plugin
 
         private static string DescribeSelective(HeaderPlacementResult result)
             => RackCommandSupport.DescribePlacement(result, "el selectivo", "selectivo insertado");
+
+        private static string SerializeSelectiveAuthored(SelectivePalletDesignDocument authored)
+            => new SelectivePalletDesignStore().Serialize(authored);
     }
 }
