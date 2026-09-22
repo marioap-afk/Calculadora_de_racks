@@ -62,5 +62,21 @@ namespace RackCad.UI.Tests
             Assert.Equal("Sel", request.RackName);
             Assert.Equal("frontal", request.View);
         }
+
+        [Fact]
+        public void EveryHistoricalSingleViewInsertExposesExactlyOneOrderedView()
+        {
+            RackInsertionRequest[] requests =
+            {
+                new HeaderInsertionRequest(null, null, "H", RackViewAddress.Whole(DimensionViewKind.Planta)),
+                new DynamicInsertionRequest(null, null, "D", "", "frontal", 1, null),
+                new FlowBedInsertionRequest(new FlowBedConfiguration(), "F", "", null),
+                new PushBackInsertionRequest(null, null, "P", "", "lateral", 2, null),
+                new CantileverInsertionRequest(null, null, "C", "", "lateral", 3, null),
+                new SelectiveInsertionRequest(null, null, "S", "", "frontal")
+            };
+
+            Assert.All(requests, request => Assert.Single(request.Views));
+        }
     }
 }
