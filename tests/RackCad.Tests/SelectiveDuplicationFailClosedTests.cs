@@ -602,7 +602,7 @@ namespace RackCad.Tests
 
         private static readonly Regex Signature = new Regex(
             @"\b(?:public|private|internal|protected)\s+(?:(?:static|override|virtual|sealed|async|unsafe|extern)\s+)*"
-            + @"(?<type>[\w.]+(?:<[^<>()]*>)?[?\[\]]*)\s+(?<name>\w+)\s*\((?<parameters>[^()]*(?:\([^()]*\)[^()]*)*)\)\s*(?<open>\{|=>)");
+            + @"(?<type>[\w.]+(?:<[^<>()]*>)?[?\[\]]*)\s+(?<name>\w+)(?:<[^<>()]*>)?\s*\((?<parameters>[^()]*(?:\([^()]*\)[^()]*)*)\)\s*(?<open>\{|=>)");
 
         private static readonly Regex Parameter = new Regex(
             @"^(?:(?:this|ref|out|in|params)\s+)*(?<type>.+?)\s+(?<name>\w+)$", RegexOptions.Singleline);
