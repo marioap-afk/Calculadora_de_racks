@@ -28,13 +28,13 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void SelectiveKeepsFrontalEnabledAndGatesOnlyLinkedViewsOutsideAutoCad()
+        public void SelectiveExposesEverySupportedFirstViewThroughTheSharedPolicy()
         {
             var source = Read("src", "RackCad.UI", "Systems", "Selective", "RackSelectiveWindow.xaml.cs");
-            Assert.Contains("var enabled = isEditingExisting && canInsertInAutoCad", source);
-            Assert.Contains("InsertLateralButton.IsEnabled = enabled", source);
-            Assert.Contains("InsertPlantaButton.IsEnabled = enabled", source);
-            Assert.DoesNotContain("InsertFrontalButton.IsEnabled = canInsertInAutoCad", source);
+            Assert.Contains("RackViewExposure.IsExposed", source);
+            Assert.Contains("RackViewAddress.Post(0)", source);
+            Assert.Contains("RackViewAddress.Whole(DimensionViewKind.Planta)", source);
+            Assert.DoesNotContain("Primero inserta la vista frontal", source);
         }
 
         [Fact]

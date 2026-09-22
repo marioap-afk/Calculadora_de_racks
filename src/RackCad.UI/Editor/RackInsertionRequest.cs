@@ -1,6 +1,7 @@
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Cantilever;
 using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Cantilever;
 using RackCad.Domain.Systems.Dynamic;
@@ -35,17 +36,27 @@ namespace RackCad.UI.Editor
     /// </summary>
     public sealed class HeaderInsertionRequest : RackInsertionRequest
     {
-        public HeaderInsertionRequest(RackFrameConfiguration configuration, RackProject sourceProject)
+        public HeaderInsertionRequest(
+            RackFrameConfiguration configuration,
+            RackProject sourceProject,
+            string rackId,
+            RackViewAddress initialAddress)
         {
             // No null-guard on the payload: a module only builds a request when the editor asked to insert (so it is set),
             // and the Plugin's Draw* already returns early on a null payload — matching the old "null → no draw" behavior.
             Configuration = configuration;
             SourceProject = sourceProject; // null for a brand-new header; the library carries the loaded project (I-11)
+            RackId = rackId;
+            InitialAddress = initialAddress;
         }
 
         public override RackSystemKind Kind => RackSystemKind.Selective;
 
         public RackFrameConfiguration Configuration { get; }
+
+        public string RackId { get; }
+
+        public RackViewAddress InitialAddress { get; }
 
         /// <summary>The loaded library project (its unknown JSON fields + schema version) so the new embed preserves them
         /// (I-11). Null for a brand-new header, where the downstream <c>WithSourceMetadataFrom</c> is a no-op.</summary>

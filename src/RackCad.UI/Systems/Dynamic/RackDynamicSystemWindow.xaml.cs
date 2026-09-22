@@ -15,6 +15,7 @@ using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Policy;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Selective;
@@ -186,12 +187,16 @@ namespace RackCad.UI.Systems.Dynamic
                 return;
             }
 
-            InsertLateralButton.IsEnabled = canInsertInAutoCad && !previewIsStale;
-            var linked = canInsertInAutoCad && isEditingExisting && !previewIsStale;
-            UpdateButton.IsEnabled = linked;
-            InsertExitButton.IsEnabled = linked;
-            InsertEntranceButton.IsEnabled = linked;
-            InsertPlantaButton.IsEnabled = linked;
+            var canDraw = canInsertInAutoCad && !previewIsStale;
+            InsertLateralButton.IsEnabled = canDraw
+                && (isEditingExisting || IsFirstViewExposed(RackViewAddress.Post(0)));
+            UpdateButton.IsEnabled = canDraw && isEditingExisting;
+            InsertExitButton.IsEnabled = canDraw
+                && (isEditingExisting || IsFirstViewExposed(RackViewAddress.FlowEnd(RackFlowEnd.Exit)));
+            InsertEntranceButton.IsEnabled = canDraw
+                && (isEditingExisting || IsFirstViewExposed(RackViewAddress.FlowEnd(RackFlowEnd.Entrance)));
+            InsertPlantaButton.IsEnabled = canDraw
+                && (isEditingExisting || IsFirstViewExposed(RackViewAddress.Whole(DimensionViewKind.Planta)));
 
             if (!canInsertInAutoCad)
             {
@@ -216,11 +221,11 @@ namespace RackCad.UI.Systems.Dynamic
             }
             else if (!isEditingExisting)
             {
-                const string reason = "Primero inserta la vista lateral; después usa RACKEDITAR para agregar las vistas enlazadas.";
-                UpdateButton.ToolTip = reason;
-                InsertExitButton.ToolTip = reason;
-                InsertEntranceButton.ToolTip = reason;
-                InsertPlantaButton.ToolTip = reason;
+                UpdateButton.ToolTip = "Actualizar requiere abrir un rack existente con RACKEDITAR.";
+                InsertLateralButton.ToolTip = "Pide el número de poste e inserta ese corte lateral como primera vista.";
+                InsertExitButton.ToolTip = "Inserta el corte frontal de salida como primera vista.";
+                InsertEntranceButton.ToolTip = "Inserta el corte frontal de entrada como primera vista.";
+                InsertPlantaButton.ToolTip = "Inserta la vista planta como primera vista.";
             }
             else
             {
@@ -231,6 +236,12 @@ namespace RackCad.UI.Systems.Dynamic
                 InsertPlantaButton.ToolTip = "Inserta la vista planta de la estructura, sin camas.";
             }
         }
+
+        private static bool IsFirstViewExposed(RackViewAddress address)
+            => RackViewExposure.IsExposed(
+                RackSystemKind.PalletFlow,
+                address,
+                RackViewProductOperation.CreateFirst);
 
         public void SetDimensionStyles(IEnumerable<string> styleNames)
         {
@@ -3391,14 +3402,15 @@ namespace RackCad.UI.Systems.Dynamic
                 return;
             }
 
-            if (!isEditingExisting && (updateOnly || view != RackEmbedDocument.ViewLateral))
+            if (!isEditingExisting && updateOnly)
             {
-                MessageBox.Show(
-                    this,
-                    "Primero inserta la vista lateral. Luego selecciónala con RACKEDITAR para actualizar el sistema o agregar las vistas frontal y planta enlazadas.",
-                    "Vistas del sistema dinámico",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                SetStatus("Actualizar requiere abrir un rack existente con RACKEDITAR.", true);
+                return;
+            }
+
+            if (!isEditingExisting && !IsFirstViewExposed(FirstViewAddress(view, section)))
+            {
+                SetStatus("La vista elegida no está disponible como primera vista del sistema dinámico.", true);
                 return;
             }
 
@@ -3426,6 +3438,22 @@ namespace RackCad.UI.Systems.Dynamic
             }
 
             Close();
+        }
+
+        private static RackViewAddress FirstViewAddress(string view, int section)
+        {
+            if (string.Equals(view, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase))
+            {
+                return RackViewAddress.FlowEnd(
+                    section == (int)DynamicRackEnd.Entrance ? RackFlowEnd.Entrance : RackFlowEnd.Exit);
+            }
+
+            if (string.Equals(view, RackEmbedDocument.ViewPlanta, StringComparison.OrdinalIgnoreCase))
+            {
+                return RackViewAddress.Whole(DimensionViewKind.Planta);
+            }
+
+            return RackViewAddress.Post(Math.Max(0, section));
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
