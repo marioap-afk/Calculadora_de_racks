@@ -10,6 +10,9 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using RackCad.Domain.RackFrames;
+using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Policy;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
 using RackCad.UI.Shell;
 
@@ -33,6 +36,7 @@ namespace RackCad.UI.RackFrames
         private bool syncingTreeSelection;
         private bool syncingGridSelection;
         private readonly bool canInsertInAutoCad;
+        private readonly RackEditorIdentity insertionIdentity = new RackEditorIdentity();
 
         /// <summary>True when the user asked to draw the header in AutoCAD; the host inserts it after this
         /// window closes (the placement jig needs the editor free, so it cannot run while the modal is open).</summary>
@@ -40,6 +44,12 @@ namespace RackCad.UI.RackFrames
 
         /// <summary>Which view the user asked to insert ("lateral" default, or "planta").</summary>
         public string InsertView { get; private set; } = "lateral";
+
+        /// <summary>The typed first-view address accepted by the product policy.</summary>
+        public RackViewAddress? InsertAddress { get; private set; }
+
+        /// <summary>One identity minted for the accepted creation, independent of its first view.</summary>
+        public string RackId => insertionIdentity.Id;
 
         /// <summary>True when the user chose "Actualizar" (redraw existing views in place, insert nothing).</summary>
         public bool UpdateOnly { get; private set; }
@@ -80,17 +90,18 @@ namespace RackCad.UI.RackFrames
             ApplySavedLayout();
             SyncSelectedSegments();
 
-            // "Actualizar" (redraw existing in place) and the planta view link to an EXISTING cabecera: both are
-            // disabled (with the reason on hover) unless the window was opened via RACKEDITAR inside AutoCAD.
-            if (!IsEditingExisting || !canInsertInAutoCad)
+            UpdateButton.IsEnabled = IsEditingExisting && canInsertInAutoCad;
+            InsertPlantaButton.IsEnabled = canInsertInAutoCad
+                && (IsEditingExisting || IsFirstViewExposed(RackViewAddress.Whole(DimensionViewKind.Planta)));
+            if (!canInsertInAutoCad)
             {
-                var reason = !canInsertInAutoCad
-                    ? "Disponible solo cuando el configurador se abre desde AutoCAD."
-                    : "Primero inserta la cabecera lateral; luego selecciónala con RACKEDITAR y actualiza o agrega la planta desde ahí.";
-                UpdateButton.IsEnabled = false;
+                const string reason = "Disponible solo cuando el configurador se abre desde AutoCAD.";
                 UpdateButton.ToolTip = reason;
-                InsertPlantaButton.IsEnabled = false;
                 InsertPlantaButton.ToolTip = reason;
+            }
+            else if (!IsEditingExisting)
+            {
+                UpdateButton.ToolTip = "Actualizar requiere abrir una cabecera existente con RACKEDITAR.";
             }
 
             DrawPreview();
@@ -263,23 +274,7 @@ namespace RackCad.UI.RackFrames
         private void UpdateExisting_Click(object sender, RoutedEventArgs e) => RequestDraw(view: null, updateOnly: true);
 
         private void InsertPlanta_Click(object sender, RoutedEventArgs e)
-        {
-            // The planta is a view OF the cabecera: it must link to an existing lateral. Inserting it on a brand-new
-            // cabecera would orphan it, so require inserting the lateral first and adding the planta via RACKEDITAR.
-            if (!IsEditingExisting)
-            {
-                MessageBox.Show(
-                    this,
-                    "Primero inserta la cabecera lateral. Luego selecciónala con RACKEDITAR y desde ahí agrega la vista "
-                        + "planta: así queda ligada a la misma cabecera (si la insertas sola quedaría huérfana).",
-                    "Vista planta",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-                return;
-            }
-
-            RequestDraw("planta", updateOnly: false);
-        }
+            => RequestDraw("planta", updateOnly: false);
 
         /// <summary>
         /// Close asking AutoCAD to draw. <paramref name="updateOnly"/> = redraw existing views only (Actualizar);
@@ -295,6 +290,17 @@ namespace RackCad.UI.RackFrames
                     "Insertar en AutoCAD",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
+                return;
+            }
+
+            if (!IsEditingExisting && updateOnly)
+            {
+                return;
+            }
+
+            var address = updateOnly ? (RackViewAddress?)null : FirstViewAddress(view);
+            if (!IsEditingExisting && !IsFirstViewExposed(address.Value))
+            {
                 return;
             }
 
@@ -337,9 +343,25 @@ namespace RackCad.UI.RackFrames
             // command draws the block and runs the jig once every modal window is gone.
             UpdateOnly = updateOnly;
             InsertView = updateOnly ? null : view;
+            InsertAddress = address;
+            if (!updateOnly)
+            {
+                insertionIdentity.EnsureId();
+            }
             InsertRequested = true;
             Close();
         }
+
+        private static RackViewAddress FirstViewAddress(string view)
+            => string.Equals(view, "planta", StringComparison.OrdinalIgnoreCase)
+                ? RackViewAddress.Whole(DimensionViewKind.Planta)
+                : RackViewAddress.Whole(DimensionViewKind.Lateral);
+
+        private static bool IsFirstViewExposed(RackViewAddress address)
+            => RackViewExposure.IsExposed(
+                RackSystemKind.Selective,
+                address,
+                RackViewProductOperation.CreateFirst);
 
         private void SaveProject_Click(object sender, RoutedEventArgs e)
         {

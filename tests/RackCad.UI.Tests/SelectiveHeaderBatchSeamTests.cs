@@ -175,9 +175,8 @@ namespace RackCad.UI.Tests
         {
             var source = WindowSource();
 
-            // El censo de modales directos de la ventana NO crece: los cuatro MessageBox y los cuatro ShowDialog que ya
-            // existian (medio frente, configurador, seguridad, BOM; cambios sin aplicar y vistas ligadas).
-            Assert.Equal(4, Regex.Matches(source, @"MessageBox\.Show\(").Count);
+            // I-55 G10 retira el modal que obligaba a crear primero la frontal. Los otros tres siguen congelados.
+            Assert.Equal(3, Regex.Matches(source, @"MessageBox\.Show\(").Count);
             Assert.Equal(4, Regex.Matches(source, @"\.ShowDialog\(").Count);
 
             foreach (var signature in new[]
