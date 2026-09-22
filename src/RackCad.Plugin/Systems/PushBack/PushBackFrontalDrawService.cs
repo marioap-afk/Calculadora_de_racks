@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Systems.PushBack;
@@ -51,6 +52,16 @@ namespace RackCad.Plugin.Systems.PushBack
                 catalog => builder.BuildPlan(system, catalog, end, side),
                 payloadJson,
                 regen);
+
+        internal PreparedViewRedraw PrepareRedraw(Database database, ObjectId blockId, PushBackSystem system,
+            PushBackFrontalEnd end, string payloadJson, PushBackSide side = PushBackSide.A)
+            => ViewBlockDraw.PrepareRedraw(database, blockId, system != null && !blockId.IsNull,
+                "No hay sistema Push Back para actualizar.", drawer,
+                catalog => builder.BuildPlan(system, catalog, end, side), payloadJson);
+
+        internal LateralHeaderDrawOutcome RedrawInTransaction(Database database, Transaction transaction,
+            PreparedViewRedraw prepared, out IReadOnlyCollection<ObjectId> staleDefinitions)
+            => ViewBlockDraw.RedrawInTransaction(database, transaction, prepared, out staleDefinitions);
 
         /// <summary>
         /// I-42: el nombre del bloque lleva el LADO cuando el rack tiene dos, para que los cuatro cortes frontales de

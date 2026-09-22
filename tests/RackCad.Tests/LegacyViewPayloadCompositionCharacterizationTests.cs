@@ -25,8 +25,8 @@ namespace RackCad.Tests
         {
             var source = I55ProductCharacterizationTestSupport.Code("src", "RackCad.Plugin", "RackSelectivoCommands.cs");
             var edit = I55ProductCharacterizationTestSupport.Body(source, "internal static void EditSelective(");
-            Assert.Contains("var designJson = new SelectivePalletDesignStore().Serialize(reconciled.Authored)", edit);
-            Assert.True(I55ProductCharacterizationTestSupport.Count(edit, "WrapSelectivePayload(designJson") >= 3);
+            Assert.Contains("var updateDesignJson = new SelectivePalletDesignStore().Serialize(reconciled.Authored)", edit);
+            Assert.True(I55ProductCharacterizationTestSupport.Count(edit, "WrapSelectivePayload(updateDesignJson") >= 3);
             Assert.Equal(1, I55ProductCharacterizationTestSupport.Count(edit, "SelectivePalletDesignStore().Serialize"));
         }
 

@@ -13,6 +13,7 @@ using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.PushBack;
 using RackCad.Plugin.Systems.Shared;
+using RackCad.Plugin.Views;
 using RackCad.UI;
 using RackCad.UI.Editor;
 using RackCad.UI.Systems.PushBack;
@@ -181,6 +182,12 @@ namespace RackCad.Plugin
             var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
             system.Name = name;
+
+            if (!window.UpdateOnly)
+            {
+                RackUnsupportedSiblingInsert.Reject(document, blockId, embed, id);
+                return;
+            }
 
             var blocks = RackCommandSupport.FindRackBlocks(document, id);
             if (blocks.Count == 0)

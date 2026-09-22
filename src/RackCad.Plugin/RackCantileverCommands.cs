@@ -17,6 +17,7 @@ using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Drawing.Cantilever;
 using RackCad.Plugin.Systems.Shared;
+using RackCad.Plugin.Views;
 using RackCad.UI.Editor;
 using RackCad.UI.Systems.Cantilever;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -232,6 +233,12 @@ namespace RackCad.Plugin
             var id = string.IsNullOrWhiteSpace(embed.Id) ? window.RackId : embed.Id;
             var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+
+            if (!window.UpdateOnly)
+            {
+                RackUnsupportedSiblingInsert.Reject(document, blockId, embed, id);
+                return;
+            }
 
             var blocks = RackCommandSupport.FindRackBlocks(document, id);
 

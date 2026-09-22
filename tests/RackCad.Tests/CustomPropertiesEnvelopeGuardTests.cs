@@ -62,7 +62,7 @@ namespace RackCad.Tests
         // ================================================================ T-GRD-02 censo de Compose
 
         /// <summary>
-        /// Las siete llamadas historicas de D-21 mas la composicion pura autorizada por I-55 G7, por archivo y con su
+        /// Las siete llamadas historicas de D-21 mas las composiciones puras autorizadas por I-55 G7 y G9b, por archivo y con su
         /// clasificacion. Un llamador nuevo falla aqui y obliga a clasificar su origen: un rack existente compone con su sobre
         /// real; <c>Compose(null)</c> solo es de un rack nuevo o de una importacion de biblioteca.
         /// </summary>
@@ -75,7 +75,7 @@ namespace RackCad.Tests
         }
 
         /// <summary>
-        /// Clasificacion de cada origen. Seis constructores de payload y el compositor puro de G7 reciben el sobre como
+        /// Clasificacion de cada origen. Seis constructores de payload y los compositores puros de G7/G9b reciben el sobre como
         /// PARAMETRO y lo pasan tal cual: el
         /// redibujo y la vista nueva les dan el sobre real, y solo el rack nuevo y la importacion les dan <c>null</c> (cinco por
         /// omision del parametro opcional; la cama, por su sobrecarga sin sobre). Esos llamadores quedan fuera del alcance de
@@ -182,7 +182,7 @@ namespace RackCad.Tests
 
         internal sealed record ComposeCall(string Path, string Member, string FirstArgument);
 
-        /// <summary>Las llamadas de D-21 y la composicion pura autorizada por I-55 G7, ordenadas por archivo.</summary>
+        /// <summary>Las llamadas de D-21 y las composiciones puras autorizadas por I-55 G7/G9b, ordenadas por archivo.</summary>
         internal static readonly IReadOnlyList<ComposeCall> ExpectedComposeCensus = new[]
         {
             new ComposeCall("src/RackCad.Application/Views/Preparation/RackViewEnvelopeComposition.cs", "Compose", "source"),
@@ -193,6 +193,7 @@ namespace RackCad.Tests
             new ComposeCall("src/RackCad.Plugin/RackDinamicoCommands.cs", "BuildDynamicPayload", "source"),
             new ComposeCall("src/RackCad.Plugin/RackPushBackCommands.cs", "BuildPushBackPayload", "source"),
             new ComposeCall("src/RackCad.Plugin/RackSelectivoCommands.cs", "WrapSelectivePayload", "source"),
+            new ComposeCall("src/RackCad.Plugin/RackSelectivoInsertIntegration.cs", "ComposeEnvelope", "source"),
         };
 
         private static readonly Regex ExplicitConstruction = new Regex(
