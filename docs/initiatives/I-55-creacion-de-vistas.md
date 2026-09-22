@@ -362,3 +362,19 @@ G6 agrega decisiones puras `Accept`, `AcceptCanonicalized` y `Reject` sobre `Rac
 explicitamente cubiertos; Flow Bed solo expone `CreateFirst`. El receipt durable es
 [`I-55-g6-codec-availability-policy.md`](I-55-g6-codec-availability-policy.md). Foundation, schema, UI, Plugin,
 ID17, ID18, ID19 y AUTH-15 permanecen sin cambios. G6 queda completo y G7 abierto.
+
+# Estado G7 (2026-09-21)
+
+G7 agrega una frontera pura de Product Prepare en Application. Las intenciones `NewRack` y `ExistingRack` son
+explicitas; la aceptacion aplica primero las policies G6 y concentra el lifecycle de `RackId`. Un contexto nuevo
+aceptado acuña una sola identidad y la comparte entre sus vistas; un rechazo no acuña ninguna; un rack existente
+conserva su identidad. Prepare no genera identidades.
+
+El flujo consume `IRackResolvePort`, `IRackViewPreparationPort`, `RackPreparedView<TPayload>`, BaseName,
+requirements y comparator authored de Foundation. Resolve y Prepare ocurren una vez; payload, BaseName y requirements
+permanecen tipados. Existing falla cerrado ante authored divergente, ilegible o sin comparator demostrado. El receipt
+durable es [`I-55-g7-product-prepare.md`](I-55-g7-product-prepare.md).
+
+No hay AutoCAD, UI, materializacion, persistencia, schema ni cambio productivo de Foundation. ID17 completo, ID18,
+ID19 y AUTH-15 permanecen fuera. Owner Validation no es requerida para este gate. G7 queda completo y G8 abierto; G8
+no se inicia en esta sesion.
