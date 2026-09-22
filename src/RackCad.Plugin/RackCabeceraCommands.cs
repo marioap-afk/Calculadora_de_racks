@@ -9,6 +9,7 @@ using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Policy;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
@@ -40,7 +41,11 @@ namespace RackCad.Plugin
                 {
                     // I-05: warn once if the drawing is not in inches, before drawing the new header.
                     RackUnitsGuard.WarnIfNotInches(AcApplication.DocumentManager.MdiActiveDocument);
-                    DrawAndPlace(window.Configuration);
+                    DrawAndPlace(
+                        window.Configuration,
+                        sourceProject: null,
+                        rackId: window.RackId,
+                        initialAddress: window.InsertAddress.Value);
                 }
             }
             catch (System.Exception ex)
@@ -107,7 +112,11 @@ namespace RackCad.Plugin
 
                 // I-05: warn once if the drawing is not in inches, before placing the new header.
                 RackUnitsGuard.WarnIfNotInches(document);
-                DrawAndPlace(configuration);
+                DrawAndPlace(
+                    configuration,
+                    sourceProject: null,
+                    rackId: null,
+                    initialAddress: RackViewAddress.Whole(DimensionViewKind.Lateral));
             }
             catch (System.Exception ex)
             {
@@ -163,7 +172,11 @@ namespace RackCad.Plugin
         /// <summary>Builds the header block and runs the placement jig, then reports the outcome. <paramref name="sourceProject"/>
         /// is the library project when a cabecera is inserted from a RackProject wrapper, so the embed's inner design keeps its
         /// metadata (I-11); a bare legacy header passes null and fabricates none.</summary>
-        internal static void DrawAndPlace(RackFrameConfiguration configuration, RackProject sourceProject = null)
+        internal static void DrawAndPlace(
+            RackFrameConfiguration configuration,
+            RackProject sourceProject,
+            string rackId,
+            RackViewAddress initialAddress)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -172,8 +185,27 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var payload = BuildCabeceraPayload(configuration, System.Guid.NewGuid().ToString(), configuration.Name, innerSource: sourceProject);
-            var result = new LateralHeaderDrawService().DrawAndPlace(document, configuration, payload, configuration.Name);
+            var address = initialAddress;
+            if (!RackViewExposure.IsExposed(
+                    RackSystemKind.Selective,
+                    address,
+                    RackViewProductOperation.CreateFirst))
+            {
+                document.Editor.WriteMessage("\nRackCad: la vista elegida no está expuesta para crear una cabecera.");
+                return;
+            }
+
+            var syntax = RackViewCodec.Encode(RackSystemKind.Selective, address);
+            var id = string.IsNullOrWhiteSpace(rackId) ? System.Guid.NewGuid().ToString() : rackId;
+            var payload = BuildCabeceraPayload(
+                configuration,
+                id,
+                configuration.Name,
+                syntax.View,
+                innerSource: sourceProject);
+            var result = address.Kind == DimensionViewKind.Planta
+                ? new PlantaHeaderDrawService().DrawAndPlace(document, configuration, payload, configuration.Name)
+                : new LateralHeaderDrawService().DrawAndPlace(document, configuration, payload, configuration.Name);
             document.Editor.WriteMessage("\n" + Describe(result));
         }
 

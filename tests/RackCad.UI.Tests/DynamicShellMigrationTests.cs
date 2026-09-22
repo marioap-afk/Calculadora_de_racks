@@ -164,7 +164,7 @@ namespace RackCad.UI.Tests
                 var insert = (Button)window.FindName("InsertLateralButton");
                 Assert.True(insert.IsEnabled); // lateral is the entry point: enabled as soon as the window comes from AutoCAD
                 Assert.True(ToolTipService.GetShowOnDisabled(insert));
-                Assert.Equal("Pide el número de poste e inserta ese corte lateral enlazado al sistema.", insert.ToolTip);
+                Assert.Equal("Pide el número de poste e inserta ese corte lateral como primera vista.", insert.ToolTip);
             });
         }
 
