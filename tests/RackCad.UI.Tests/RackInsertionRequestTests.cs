@@ -1,5 +1,6 @@
 using RackCad.Domain.Systems.FlowBed;
 using RackCad.Domain.Systems.Shared;
+using RackCad.Application.Systems.Shared;
 using RackCad.UI.Editor;
 using Xunit;
 
@@ -12,10 +13,17 @@ namespace RackCad.UI.Tests
         [Fact]
         public void Header_HasSelectiveKind_AndCarriesConfigAndSource()
         {
-            var request = new HeaderInsertionRequest(configuration: null, sourceProject: null);
+            var address = RackViewAddress.Whole(DimensionViewKind.Lateral);
+            var request = new HeaderInsertionRequest(
+                configuration: null,
+                sourceProject: null,
+                rackId: "H-1",
+                initialAddress: address);
 
             Assert.Equal(RackSystemKind.Selective, request.Kind); // "Selective" is the historic cabecera kind
             Assert.IsAssignableFrom<RackInsertionRequest>(request);
+            Assert.Equal("H-1", request.RackId);
+            Assert.Equal(address, request.InitialAddress);
         }
 
         [Fact]

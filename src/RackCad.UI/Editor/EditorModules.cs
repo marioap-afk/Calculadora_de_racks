@@ -193,7 +193,9 @@ namespace RackCad.UI.Editor
             var configuration = new HardcodedStandardRackFrameService().CreateDefault();
             var window = new RackFrameConfiguratorWindow(configuration, context.CanInsertInAutoCad) { Owner = context.Owner };
             window.ShowDialog();
-            return window.InsertRequested ? new HeaderInsertionRequest(window.Configuration, sourceProject: null) : null;
+            return window.InsertRequested
+                ? new HeaderInsertionRequest(window.Configuration, sourceProject: null, window.RackId, window.InsertAddress.Value)
+                : null;
         }
 
         public RackInsertionRequest OpenFromLibrary(RackProject project, RackDesignLibraryEntry entry, RackEditorLaunchContext context)
@@ -202,7 +204,9 @@ namespace RackCad.UI.Editor
             window.ShowDialog();
             // Carry the wrapper metadata when the header came from a RackProject wrapper; a bare legacy header's project has
             // no source document, so WithSourceMetadataFrom downstream is a no-op (I-11).
-            return window.InsertRequested ? new HeaderInsertionRequest(window.Configuration, sourceProject: project) : null;
+            return window.InsertRequested
+                ? new HeaderInsertionRequest(window.Configuration, sourceProject: project, window.RackId, window.InsertAddress.Value)
+                : null;
         }
     }
 

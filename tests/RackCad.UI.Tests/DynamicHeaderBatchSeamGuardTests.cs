@@ -14,8 +14,8 @@ namespace RackCad.UI.Tests
     /// COSTURAS o por superficies de la propia ventana, nunca por un modal real. Una prueba que abriera un modal colgaria el
     /// hilo STA compartido de la suite, y un dialogo que no se puede sustituir es un dialogo que no se puede probar.
     /// <para>
-    /// Guarda de fuentes: el censo de modales directos de la ventana no crece —un <c>MessageBox</c> (vistas enlazadas sin
-    /// lateral) y cinco <c>ShowDialog</c> (seguridad, configurador, exportar BOM, lista de materiales, abrir proyecto)—, los
+    /// Guarda de fuentes: I-55 G10 retira el modal historico de primera vista; permanecen cinco <c>ShowDialog</c>
+    /// (seguridad, configurador, exportar BOM, lista de materiales, abrir proyecto), y los
     /// gestos nuevos no abren ninguno y el configurador se presenta detras de la costura, con su <c>ShowDialog</c> como camino
     /// de produccion.
     /// </para>
@@ -27,7 +27,7 @@ namespace RackCad.UI.Tests
         {
             var source = W.Source("RackDynamicSystemWindow.xaml.cs");
 
-            Assert.Single(Regex.Matches(source, @"MessageBox\.Show\("));
+            Assert.Empty(Regex.Matches(source, @"MessageBox\.Show\(").Cast<Match>());
             Assert.Equal(5, Regex.Matches(source, @"\.ShowDialog\(").Count);
 
             foreach (var signature in new[]

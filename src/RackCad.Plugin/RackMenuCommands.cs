@@ -54,7 +54,11 @@ namespace RackCad.Plugin
                 {
                     case HeaderInsertionRequest header:
                         // Transport-only (I-11): carry the library source metadata into the new DWG embed. No handler change.
-                        RackCabeceraCommands.DrawAndPlace(header.Configuration, header.SourceProject);
+                        RackCabeceraCommands.DrawAndPlace(
+                            header.Configuration,
+                            header.SourceProject,
+                            header.RackId,
+                            header.InitialAddress);
                         break;
                     case DynamicInsertionRequest dynamic:
                         RackDinamicoCommands.DrawDynamicView(
