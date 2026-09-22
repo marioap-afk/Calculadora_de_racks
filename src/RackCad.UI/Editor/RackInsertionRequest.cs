@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Cantilever;
 using RackCad.Application.Systems.PushBack;
@@ -22,12 +24,50 @@ namespace RackCad.UI.Editor
     /// </summary>
     public abstract class RackInsertionRequest
     {
+        private IReadOnlyList<RackViewAddress> views = Array.Empty<RackViewAddress>();
+
         private protected RackInsertionRequest()
         {
         }
 
         /// <summary>The canonical system kind this request draws (used by the Plugin host to dispatch).</summary>
         public abstract RackSystemKind Kind { get; }
+
+        /// <summary>Ordered semantic views in one insertion intent. Historical insertion requests expose one item;
+        /// updates expose none. G11 only transports this contract; no current Plugin entry point consumes a batch.</summary>
+        public IReadOnlyList<RackViewAddress> Views => views;
+
+        internal void SetViews(IReadOnlyList<RackViewAddress> requested)
+        {
+            if (requested == null) throw new ArgumentNullException(nameof(requested));
+            if (requested.Count == 0) throw new ArgumentException("An insertion batch needs at least one view.", nameof(requested));
+            var copy = new RackViewAddress[requested.Count];
+            for (var index = 0; index < requested.Count; index++) copy[index] = requested[index];
+            views = Array.AsReadOnly(copy);
+        }
+
+        protected void SetSingleView(RackViewAddress address) => SetViews(new[] { address });
+
+        protected void SetLegacySingleView(RackSystemKind kind, string view, int section)
+        {
+            if (string.IsNullOrWhiteSpace(view)) return;
+            var decoded = RackViewCodec.Decode(KindToken(kind), view, section);
+            if (decoded.HasAddress) SetSingleView(decoded.Address);
+        }
+
+        private static string KindToken(RackSystemKind kind)
+        {
+            switch (kind)
+            {
+                case RackSystemKind.SelectiveRack: return "selective";
+                case RackSystemKind.PalletFlow: return "dynamic";
+                case RackSystemKind.PushBack: return "pushback";
+                case RackSystemKind.Cantilever: return "cantilever";
+                case RackSystemKind.Selective: return "cabecera";
+                case RackSystemKind.Cama: return "cama";
+                default: throw new ArgumentOutOfRangeException(nameof(kind));
+            }
+        }
     }
 
     /// <summary>
@@ -48,6 +88,7 @@ namespace RackCad.UI.Editor
             SourceProject = sourceProject; // null for a brand-new header; the library carries the loaded project (I-11)
             RackId = rackId;
             InitialAddress = initialAddress;
+            SetSingleView(initialAddress);
         }
 
         public override RackSystemKind Kind => RackSystemKind.Selective;
@@ -81,6 +122,7 @@ namespace RackCad.UI.Editor
             View = view;
             Section = section;
             SourceProject = sourceProject; // library wrapper metadata to carry into the embed (I-11); null for a new design
+            SetLegacySingleView(Kind, view, section);
         }
 
         public override RackSystemKind Kind => RackSystemKind.PalletFlow;
@@ -113,6 +155,7 @@ namespace RackCad.UI.Editor
             RackId = rackId;
             RackName = rackName;
             SourceDocument = sourceDocument; // source FlowBed document (unknown fields + version) to carry into the embed (I-11)
+            SetLegacySingleView(Kind, RackEmbedDocument.ViewLateral, -1);
         }
 
         public override RackSystemKind Kind => RackSystemKind.Cama;
@@ -145,6 +188,7 @@ namespace RackCad.UI.Editor
             View = view;
             Section = section;
             SourceProject = sourceProject; // library wrapper metadata to carry into the embed (I-11); null for a new design
+            SetLegacySingleView(Kind, view, section);
         }
 
         public override RackSystemKind Kind => RackSystemKind.PushBack;
@@ -189,6 +233,7 @@ namespace RackCad.UI.Editor
             View = view;
             Section = section;
             SourceProject = sourceProject; // library wrapper metadata to carry into the embed (I-11); null for a new design
+            SetLegacySingleView(Kind, view, section);
         }
 
         public override RackSystemKind Kind => RackSystemKind.Cantilever;
@@ -225,6 +270,7 @@ namespace RackCad.UI.Editor
             RackId = rackId;
             RackName = rackName;
             View = view;
+            SetLegacySingleView(Kind, view, -1);
         }
 
         public override RackSystemKind Kind => RackSystemKind.SelectiveRack;

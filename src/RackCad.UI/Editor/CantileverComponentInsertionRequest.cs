@@ -68,7 +68,7 @@ namespace RackCad.UI.Editor
         public CantileverComponentKind Component { get; }
 
         /// <summary>The plans the preview drew. The host materialises exactly these.</summary>
-        public IReadOnlyList<CantileverViewPlan> Views { get; }
+        public new IReadOnlyList<CantileverViewPlan> Views { get; }
 
         /// <summary>A short human label — the section designation, normally. Never a key.</summary>
         public string Designation { get; }

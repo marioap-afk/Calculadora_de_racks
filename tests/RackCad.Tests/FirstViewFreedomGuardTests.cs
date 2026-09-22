@@ -27,7 +27,9 @@ namespace RackCad.Tests
             Assert.Contains("public string RackId { get; }", request);
             Assert.Contains("public RackViewAddress InitialAddress { get; }", request);
             Assert.Contains("window.RackId, window.InsertAddress.Value", modules);
-            Assert.DoesNotContain("IReadOnlyList<RackViewAddress>", request);
+            // G11 adds the ordered batch contract to the common request while G10's Header request keeps its one
+            // explicit identity/address pair. Visible multi-view activation remains owned by G12.
+            Assert.Contains("public IReadOnlyList<RackViewAddress> Views", request);
         }
 
         [Fact]
