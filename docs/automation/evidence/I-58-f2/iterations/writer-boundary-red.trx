@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7858d217-2f53-402f-be48-c3a90310ba4f" name="alejandra-mendoza@IMING-2 2026-09-23 13:32:29" runUser="IMSA\alejandra-mendoza" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-23T13:32:29.6399681-06:00" queuing="2026-09-23T13:32:29.6399685-06:00" start="2026-09-23T13:32:25.4779479-06:00" finish="2026-09-23T13:32:29.6489804-06:00" />
+  <TestSettings name="default" id="8d7a0580-ecd5-42d9-a776-73cbdc089349">
+    <Deployment runDeploymentRoot="alejandra-mendoza_IMING-2_2026-09-23_13_32_29" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="21fe2377-26cd-4727-9ece-27ee411975c1" testId="9d0da71c-b105-200a-7b69-677348c2fbc8" testName="RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: &quot;PushBack.LegacyHighEndBeamPeralte&quot;, value: &quot;0&quot;)" computerName="IMING-2" duration="00:00:00.0648048" startTime="2026-09-23T13:32:29.5007440-06:00" endTime="2026-09-23T13:32:29.5007570-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="21fe2377-26cd-4727-9ece-27ee411975c1">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(String path, String value) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs:line 53&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7a5272b3-5187-43f4-8fd8-582421e8185f" testId="676aab90-948e-ad89-be36-a624db44ee14" testName="RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: &quot;PushBack.RearTopeSaque&quot;, value: &quot;0&quot;)" computerName="IMING-2" duration="00:00:00.0122533" startTime="2026-09-23T13:32:29.5270514-06:00" endTime="2026-09-23T13:32:29.5270518-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7a5272b3-5187-43f4-8fd8-582421e8185f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(String path, String value) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs:line 53&#xD;
+   at InvokeStub_I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3c66688f-47f7-48e4-816b-bb41ab960337" testId="d80e33a1-640c-0289-d261-af409bb33186" testName="RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: &quot;PushBack.SideB.LegacyHighEndBeamPeralte&quot;, value: &quot;0&quot;)" computerName="IMING-2" duration="00:00:00.0174349" startTime="2026-09-23T13:32:29.5451143-06:00" endTime="2026-09-23T13:32:29.5451144-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3c66688f-47f7-48e4-816b-bb41ab960337">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(String path, String value) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs:line 53&#xD;
+   at InvokeStub_I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4ea278fa-755c-44c1-985b-96531b1d08af" testId="b56b4647-e162-bd49-12f4-54bdd084e000" testName="RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: &quot;PushBack.SideB.RearTopeSaque&quot;, value: &quot;0&quot;)" computerName="IMING-2" duration="00:00:00.0168395" startTime="2026-09-23T13:32:29.5146426-06:00" endTime="2026-09-23T13:32:29.5146430-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4ea278fa-755c-44c1-985b-96531b1d08af">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(String path, String value) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs:line 53&#xD;
+   at InvokeStub_I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: &quot;PushBack.SideB.LegacyHighEndBeamPeralte&quot;, value: &quot;0&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="d80e33a1-640c-0289-d261-af409bb33186">
+      <Execution id="3c66688f-47f7-48e4-816b-bb41ab960337" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2BoundaryTests" name="Writer_loss_is_rejected_before_accreditation" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: &quot;PushBack.LegacyHighEndBeamPeralte&quot;, value: &quot;0&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="9d0da71c-b105-200a-7b69-677348c2fbc8">
+      <Execution id="21fe2377-26cd-4727-9ece-27ee411975c1" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2BoundaryTests" name="Writer_loss_is_rejected_before_accreditation" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: &quot;PushBack.SideB.RearTopeSaque&quot;, value: &quot;0&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="b56b4647-e162-bd49-12f4-54bdd084e000">
+      <Execution id="4ea278fa-755c-44c1-985b-96531b1d08af" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2BoundaryTests" name="Writer_loss_is_rejected_before_accreditation" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: &quot;PushBack.RearTopeSaque&quot;, value: &quot;0&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="676aab90-948e-ad89-be36-a624db44ee14">
+      <Execution id="7a5272b3-5187-43f4-8fd8-582421e8185f" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2BoundaryTests" name="Writer_loss_is_rejected_before_accreditation" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9d0da71c-b105-200a-7b69-677348c2fbc8" executionId="21fe2377-26cd-4727-9ece-27ee411975c1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="676aab90-948e-ad89-be36-a624db44ee14" executionId="7a5272b3-5187-43f4-8fd8-582421e8185f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d80e33a1-640c-0289-d261-af409bb33186" executionId="3c66688f-47f7-48e4-816b-bb41ab960337" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b56b4647-e162-bd49-12f4-54bdd084e000" executionId="4ea278fa-755c-44c1-985b-96531b1d08af" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Resultados sin formato de lista" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Todos los resultados cargados" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="4" executed="4" passed="0" failed="4" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)&#xD;
+[xUnit.net 00:00:00.15]   Discovering: RackCad.Tests&#xD;
+[xUnit.net 00:00:03.35]   Discovered:  RackCad.Tests&#xD;
+[xUnit.net 00:00:03.37]   Starting:    RackCad.Tests&#xD;
+[xUnit.net 00:00:03.48]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:03.48]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:03.48]       Actual:   Single&#xD;
+[xUnit.net 00:00:03.48]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.48]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs(53,0): at RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(String path, String value)&#xD;
+[xUnit.net 00:00:03.48]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:03.48]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:03.49]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:03.49]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:03.49]       Actual:   Single&#xD;
+[xUnit.net 00:00:03.49]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.49]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs(53,0): at RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(String path, String value)&#xD;
+[xUnit.net 00:00:03.49]            at InvokeStub_I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(Object, Span`1)&#xD;
+[xUnit.net 00:00:03.49]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:03.51]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:03.51]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:03.51]       Actual:   Single&#xD;
+[xUnit.net 00:00:03.51]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.51]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs(53,0): at RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(String path, String value)&#xD;
+[xUnit.net 00:00:03.51]            at InvokeStub_I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(Object, Span`1)&#xD;
+[xUnit.net 00:00:03.51]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:03.52]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:03.53]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:03.53]       Actual:   Single&#xD;
+[xUnit.net 00:00:03.53]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.53]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs(53,0): at RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(String path, String value)&#xD;
+[xUnit.net 00:00:03.53]            at InvokeStub_I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(Object, Span`1)&#xD;
+[xUnit.net 00:00:03.53]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:03.53]   Finished:    RackCad.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:32:29.4989183-06:00">
+        <Text>[xUnit.net 00:00:03.48]     RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: "PushBack.LegacyHighEndBeamPeralte", value: "0") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:32:29.5146243-06:00">
+        <Text>[xUnit.net 00:00:03.49]     RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: "PushBack.SideB.RearTopeSaque", value: "0") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:32:29.5269311-06:00">
+        <Text>[xUnit.net 00:00:03.51]     RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: "PushBack.RearTopeSaque", value: "0") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:32:29.5447008-06:00">
+        <Text>[xUnit.net 00:00:03.52]     RackCad.Tests.I58F2BoundaryTests.Writer_loss_is_rejected_before_accreditation(path: "PushBack.SideB.LegacyHighEndBeamPeralte", value: "0") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

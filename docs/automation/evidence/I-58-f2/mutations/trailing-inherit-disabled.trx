@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="332ca642-5f13-403b-b4c6-8f2edbd06fe7" name="alejandra-mendoza@IMING-2 2026-09-23 13:31:02" runUser="IMSA\alejandra-mendoza" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-23T13:31:02.1859677-06:00" queuing="2026-09-23T13:31:02.1859680-06:00" start="2026-09-23T13:30:58.2276012-06:00" finish="2026-09-23T13:31:02.1944416-06:00" />
+  <TestSettings name="default" id="9bb6e2f6-e767-4d8e-bf68-9442ccbd6468">
+    <Deployment runDeploymentRoot="alejandra-mendoza_IMING-2_2026-09-23_13_31_02" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="c723ed6b-2d2b-446d-9a63-d2afb813d48c" testId="9238e9f4-48c3-ffd2-13dc-2f06d234ee4d" testName="RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(field: &quot;PalletsDeepOverrides&quot;, before: &quot;[null,4]&quot;, after: &quot;[null,4,null]&quot;)" computerName="IMING-2" duration="00:00:00.0114289" startTime="2026-09-23T13:31:02.0868109-06:00" endTime="2026-09-23T13:31:02.0868110-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c723ed6b-2d2b-446d-9a63-d2afb813d48c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Single&#xD;
+Actual:   Divergent</Message>
+          <StackTrace>   at RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(String field, String before, String after) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs:line 21&#xD;
+   at InvokeStub_I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9eded4c4-044f-4bc6-b188-a02a9b5627a4" testId="48dca105-7bf8-6440-d094-0aa07e0c9036" testName="RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(field: &quot;HighEndBeamPeraltes&quot;, before: &quot;[null,4]&quot;, after: &quot;[null,4,null]&quot;)" computerName="IMING-2" duration="00:00:00.0122867" startTime="2026-09-23T13:31:02.1050550-06:00" endTime="2026-09-23T13:31:02.1050552-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9eded4c4-044f-4bc6-b188-a02a9b5627a4">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Single&#xD;
+Actual:   Divergent</Message>
+          <StackTrace>   at RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(String field, String before, String after) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs:line 21&#xD;
+   at InvokeStub_I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="392c30fe-b48c-4e52-a1e9-118116a70113" testId="9f8ec7f6-7fa5-bce1-61eb-5bba36f98709" testName="RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(field: &quot;DrawPallets&quot;, before: &quot;[false,true]&quot;, after: &quot;[false,true,null]&quot;)" computerName="IMING-2" duration="00:00:00.0665543" startTime="2026-09-23T13:31:02.0782026-06:00" endTime="2026-09-23T13:31:02.0782212-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="392c30fe-b48c-4e52-a1e9-118116a70113">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Single&#xD;
+Actual:   Divergent</Message>
+          <StackTrace>   at RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(String field, String before, String after) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs:line 21&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(field: &quot;PalletsDeepOverrides&quot;, before: &quot;[null,4]&quot;, after: &quot;[null,4,null]&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="9238e9f4-48c3-ffd2-13dc-2f06d234ee4d">
+      <Execution id="c723ed6b-2d2b-446d-9a63-d2afb813d48c" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2BoundaryTests" name="F09_trailing_inherit_outside_levels_has_no_new_intent" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(field: &quot;HighEndBeamPeraltes&quot;, before: &quot;[null,4]&quot;, after: &quot;[null,4,null]&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="48dca105-7bf8-6440-d094-0aa07e0c9036">
+      <Execution id="9eded4c4-044f-4bc6-b188-a02a9b5627a4" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2BoundaryTests" name="F09_trailing_inherit_outside_levels_has_no_new_intent" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(field: &quot;DrawPallets&quot;, before: &quot;[false,true]&quot;, after: &quot;[false,true,null]&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="9f8ec7f6-7fa5-bce1-61eb-5bba36f98709">
+      <Execution id="392c30fe-b48c-4e52-a1e9-118116a70113" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2BoundaryTests" name="F09_trailing_inherit_outside_levels_has_no_new_intent" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9238e9f4-48c3-ffd2-13dc-2f06d234ee4d" executionId="c723ed6b-2d2b-446d-9a63-d2afb813d48c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="48dca105-7bf8-6440-d094-0aa07e0c9036" executionId="9eded4c4-044f-4bc6-b188-a02a9b5627a4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9f8ec7f6-7fa5-bce1-61eb-5bba36f98709" executionId="392c30fe-b48c-4e52-a1e9-118116a70113" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Resultados sin formato de lista" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Todos los resultados cargados" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="3" executed="3" passed="0" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)&#xD;
+[xUnit.net 00:00:00.14]   Discovering: RackCad.Tests&#xD;
+[xUnit.net 00:00:03.12]   Discovered:  RackCad.Tests&#xD;
+[xUnit.net 00:00:03.13]   Starting:    RackCad.Tests&#xD;
+[xUnit.net 00:00:03.24]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:03.24]       Expected: Single&#xD;
+[xUnit.net 00:00:03.24]       Actual:   Divergent&#xD;
+[xUnit.net 00:00:03.24]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.24]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs(21,0): at RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(String field, String before, String after)&#xD;
+[xUnit.net 00:00:03.24]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:03.24]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:03.25]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:03.25]       Expected: Single&#xD;
+[xUnit.net 00:00:03.25]       Actual:   Divergent&#xD;
+[xUnit.net 00:00:03.25]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.25]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs(21,0): at RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(String field, String before, String after)&#xD;
+[xUnit.net 00:00:03.25]            at InvokeStub_I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(Object, Span`1)&#xD;
+[xUnit.net 00:00:03.25]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:03.27]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:03.27]       Expected: Single&#xD;
+[xUnit.net 00:00:03.27]       Actual:   Divergent&#xD;
+[xUnit.net 00:00:03.27]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.27]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2BoundaryTests.cs(21,0): at RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(String field, String before, String after)&#xD;
+[xUnit.net 00:00:03.27]            at InvokeStub_I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(Object, Span`1)&#xD;
+[xUnit.net 00:00:03.27]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:03.28]   Finished:    RackCad.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:31:02.0765384-06:00">
+        <Text>[xUnit.net 00:00:03.24]     RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(field: "DrawPallets", before: "[false,true]", after: "[false,true,null]") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:31:02.0868738-06:00">
+        <Text>[xUnit.net 00:00:03.25]     RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(field: "PalletsDeepOverrides", before: "[null,4]", after: "[null,4,null]") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:31:02.0995119-06:00">
+        <Text>[xUnit.net 00:00:03.27]     RackCad.Tests.I58F2BoundaryTests.F09_trailing_inherit_outside_levels_has_no_new_intent(field: "HighEndBeamPeraltes", before: "[null,4]", after: "[null,4,null]") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

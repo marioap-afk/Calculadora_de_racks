@@ -26,10 +26,10 @@ public sealed class I58F1CharacterizationTests
     {
         if(c.Expected!=RackAuthoredComparisonOutcome.Unreadable)
             foreach(var s in c.Input.Siblings) Assert.NotNull(I58F1Fixtures.Store.Deserialize(s.RawDesign));
-        I58F1Oracles.AssertBaseline(c);
+        I58F1Oracles.AssertFuture(c);
         output.WriteLine(c.Expected==RackAuthoredComparisonOutcome.Unreadable
-            ? "VACUOUS BASELINE PASS: no reader/schema/unknown accreditation"
-            : "BASELINE ONLY; future "+c.Expected+" requires RED overlay");
+            ? "F2: implemented raw gate; causal controls in I58F2ReaderTests"
+            : "F2: real authored "+c.Expected);
     }
     [Fact]
     public void Matrix_manifest_has_unique_identities_and_all_rows()
@@ -41,9 +41,9 @@ public sealed class I58F1CharacterizationTests
         foreach(string k in new[]{"P","C","H"})foreach(int n in Enumerable.Range(1,8)) Assert.Contains($"MM-{k}{n:00}",rows);
         foreach(string n in new[]{"01","02","03","04","05","06","07","08","09a","09b","09c","09d","09e","10"})Assert.Contains("MM-D"+n,rows);
         var manifest=cases.Select(c=>new {c.Id,c.Kind,c.Rows,Expected=c.Expected.ToString(),c.Stimulus,
-            Test="I58F1CharacterizationTests.Frozen_matrix_against_current_port",F1Status=c.Expected==RackAuthoredComparisonOutcome.Unreadable?"VACUOUS BASELINE PASS":"BASELINE GREEN / FUTURE RED",FixtureSha256=Hash(JsonSerializer.Serialize(c.Input))}).ToArray();
-        Directory.CreateDirectory(Path.Combine(Path.GetTempPath(),"I58-F1-results"));
-        File.WriteAllText(Path.Combine(Path.GetTempPath(),"I58-F1-results","matrix.json"),JsonSerializer.Serialize(manifest,new JsonSerializerOptions{WriteIndented=true}));
+            Test="I58F1CharacterizationTests.Frozen_matrix_against_current_port",F2Status="PRODUCT ORACLE: "+c.Expected,FixtureSha256=Hash(JsonSerializer.Serialize(c.Input))}).ToArray();
+        Directory.CreateDirectory(Path.Combine(Path.GetTempPath(),"I58-F2-results"));
+        File.WriteAllText(Path.Combine(Path.GetTempPath(),"I58-F2-results","matrix.json"),JsonSerializer.Serialize(manifest,new JsonSerializerOptions{WriteIndented=true}));
     }
     private static string Hash(string text)=>Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(text))).ToLowerInvariant();
 }

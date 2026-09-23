@@ -21,38 +21,43 @@ using static RackCad.Tests.I58F1Fixtures;
 using O=RackCad.Application.Systems.Shared.RackAuthoredComparisonOutcome;
 namespace RackCad.Tests;
 
-// Future executable assertions. The evidence patch activates these against the real unsupported ports.
-// Expected snapshots and diagnostic projections are test data, not a comparator/reader implementation.
+// F1 executable oracles, now bound to the four concrete production ports by F2.
+// Expected snapshots remain independent test data, never a comparator/reader implementation.
 internal static partial class I58F1Oracles
 {
+    internal static RackAuthoredInput ProductInput(I58F1Input input, string kind)
+        => input == null ? null : new RackAuthoredInput(input.RackId,
+            input.Siblings?.Select(s => s == null ? null : new RackAuthoredSibling(s.SourceIdentity, kind, s.RawEnvelope, s.RawDesign)).ToArray(),
+            input.IsComplete, input.CompletenessEvidence);
+
     public static void AssertFuture(I58F1Case c)
     {
         switch(c.Kind) {
-            case "dynamic":Future(c,RackAuthoredComparatorPorts.Dynamic<I58F1Input,DynamicRackDesign>(),
+            case "dynamic":Future(c,RackAuthoredComparatorPorts.Dynamic(),
                 raw=>Expected(Store.Deserialize(raw).DynamicDesign),I58F1DomainOracle.Values,I58F1DomainOracle.Separate,I58F1DomainOracle.Mutate,
                 (raw,a)=>DynamicParity(Store.Deserialize(raw).DynamicDesign,a),DynamicSeam);break;
-            case "pushback":Future(c,RackAuthoredComparatorPorts.PushBack<I58F1Input,PushBackDesign>(),
+            case "pushback":Future(c,RackAuthoredComparatorPorts.PushBack(),
                 raw=>Expected(Store.Deserialize(raw).PushBackDesign),I58F1DomainOracle.Values,I58F1DomainOracle.Separate,I58F1DomainOracle.Mutate,
                 (raw,a)=>PushBackParity(Store.Deserialize(raw).PushBackDesign,a),PushBackSeam);break;
-            case "cantilever":Future(c,RackAuthoredComparatorPorts.Cantilever<I58F1Input,CantileverLineDesign>(),
+            case "cantilever":Future(c,RackAuthoredComparatorPorts.Cantilever(),
                 raw=>Store.Deserialize(raw).CantileverLineDesign,I58F1DomainOracle.Values,I58F1DomainOracle.Separate,I58F1DomainOracle.Mutate,
                 (_,__)=>{},CantileverSeam);break;
-            case "cabecera":Future(c,RackAuthoredComparatorPorts.Cabecera<I58F1Input,RackFrameConfiguration>(),
+            case "cabecera":Future(c,RackAuthoredComparatorPorts.Cabecera(),
                 raw=>Store.Deserialize(raw).Header,I58F1DomainOracle.Values,I58F1DomainOracle.Separate,I58F1DomainOracle.Mutate,
                 (_,__)=>{},HeaderSeam);break;
             default:throw new ArgumentException(c.Kind);
         }
     }
-    private static void Future<T>(I58F1Case c,IRackAuthoredComparatorPort<I58F1Input,T> port,Func<string,T> expected,
+    private static void Future<T>(I58F1Case c,IRackAuthoredComparatorPort<RackAuthoredInput,T> port,Func<string,T> expected,
         Action<T,T> values,Action<T,T> separate,Action<T> mutate,Action<string,T> parity,Action<T> seam) where T:class
     {
-        var result=port.Compare(c.Input);
+        var result=port.Compare(ProductInput(c.Input, c.Kind));
         Assert.Equal(c.Expected,result.Outcome); // FUTURE_OUTCOME: the only admissible F1 RED cause.
         if(c.Expected!=O.Single){Assert.Null(result.Authored);return;}
         Assert.NotNull(result.Authored);
         foreach(var sibling in c.Input.Siblings){values(expected(sibling.RawDesign),result.Authored);parity(sibling.RawDesign,result.Authored);}
-        var again=port.Compare(c.Input);Assert.Equal(O.Single,again.Outcome);
-        var permuted=port.Compare(c.Input with {Siblings=c.Input.Siblings.Reverse().ToArray()});Assert.Equal(O.Single,permuted.Outcome);
+        var again=port.Compare(ProductInput(c.Input, c.Kind));Assert.Equal(O.Single,again.Outcome);
+        var permuted=port.Compare(ProductInput(c.Input with {Siblings=c.Input.Siblings.Reverse().ToArray()}, c.Kind));Assert.Equal(O.Single,permuted.Outcome);
         values(result.Authored,again.Authored);values(result.Authored,permuted.Authored);
         separate(result.Authored,again.Authored);separate(result.Authored,permuted.Authored);
         // CT25 uses resolvable fixtures; fidelity mutants may deliberately carry catalog-independent
@@ -60,7 +65,7 @@ internal static partial class I58F1Oracles
         if(c.Rows.Contains("CT58-25") || c.Rows.Contains("CT58-29"))seam(result.Authored);
         values(expected(c.Input.Siblings[0].RawDesign),result.Authored);
         mutate(result.Authored); // Every mutable subtree in the explicit domain inventory.
-        var after=port.Compare(c.Input);Assert.Equal(O.Single,after.Outcome);
+        var after=port.Compare(ProductInput(c.Input, c.Kind));Assert.Equal(O.Single,after.Outcome);
         foreach(var sibling in c.Input.Siblings){values(expected(sibling.RawDesign),again.Authored);values(expected(sibling.RawDesign),after.Authored);}
     }
     public static DynamicRackDesign Expected(DynamicRackDesign d)

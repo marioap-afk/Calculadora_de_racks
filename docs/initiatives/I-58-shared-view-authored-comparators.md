@@ -48,11 +48,12 @@ integrar esta fundacion antes de I-55 G12 (excepcion de separacion, lifecycle §
 
 ## Alcance autorizado
 
-Esta ejecucion: F1 — CHARACTERIZATION / RED ONLY, autorizado tras Consensus Freeze V3.
-Fixtures reproducibles, CT58-01..32 y mutation matrix, baseline Unsupported, oraculos futuros y RED
-temporal por assertions; restauracion a GREEN y evidencia exact-SHA antes de entregar al Coordinator.
-Sin produccion. No se abren F2, Cama, AUTH-15, geometria/BOM, policies ni cambios de persistencia.
-No tocar main, I-55, I-52, I-57, R3, Freeze o Characterization acordada.
+Esta ejecucion: F2 — IMPLEMENT AUTH-13 FOR FOUR KINDS / RED -> GREEN.
+F1 = COMPLETE / COORDINATOR AGREED, incluido F1-CR-01 RESOLVED. Se autorizan unicamente los
+comparators Dynamic, PushBack, Cantilever y Cabecera bajo Consensus Freeze V3, con carrier raw,
+lectura estricta local, igualdad tipada y materializacion de dominio profunda.
+F3 no abierto. Sin Candidate, integracion ni desbloqueo I-55 G12. No se modifican Domain,
+DTOs, stores, resolvers, UI, Plugin, main, I-55, I-52, I-57, R3 ni los anexos congelados.
 
 ## Autoridades por referencia
 
@@ -69,14 +70,16 @@ CR58-01/02 RESOLVED; EXP-01 CLASS B FOR I-58 ONLY / CONFIRMED; M-03 ACTIVATED.
 
 F1 tiene [evidencia propia](../automation/evidence/I-58-f1/README.md), con manifiestos CT/MM,
 carriers TEST-ONLY, oraculos tipados, control de sabotajes, RED por kind y PASS vacuos separados.
-Los resultados se atribuyen a su identidad exacta. Coordinator debe revisar F1 antes de otro gate.
+F1 esta acordado por Coordinator. F2 tiene [evidencia propia](../automation/evidence/I-58-f2/README.md);
+los resultados se atribuyen a su identidad exacta y F3 requiere una revision posterior de Coordinator.
 La entrada FOUNDATIONS futura solo se publicara al cierre con conformidad; no se modifica ahora.
 
-Coordinator = AGREED ON V3 / F1 REVIEW PENDING
+Coordinator = AGREED ON V3 / F1 AGREED
 Architect = AGREED ON V3
 AR58-V2-01 = RESOLVED BY ARCHITECT
 Frozen = YES
-F1 = COMPLETE / COORDINATOR REVIEW REQUIRED
-F2 = NOT OPEN
+F1 = COMPLETE / COORDINATOR AGREED
+F2 = OPEN / IMPLEMENTATION AUTHORIZED
+F3 = NOT OPEN
 I-55 G12 = NOT UNBLOCKED
-IMPLEMENTATION AUTHORIZATION = NO
+IMPLEMENTATION AUTHORIZATION = YES — F2 ONLY

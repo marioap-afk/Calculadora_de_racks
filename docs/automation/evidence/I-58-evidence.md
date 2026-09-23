@@ -344,3 +344,12 @@ F1 = COMPLETE / COORDINATOR AGREED
 F2 = READY TO OPEN / NOT YET EXECUTED
 I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO
+
+
+## F2 — implementacion AUTH-13 para cuatro kinds
+
+F2_START_SHA = `d1921dc90abdc3b24e7f05c8beca9ab14a502c49`. F1 COMPLETE / COORDINATOR AGREED.
+Ejecucion F2 autorizada por Owner; [evidencia propia](I-58-f2/README.md) con RED de entrada, conversion
+vacuous, controles de reader/materializacion, CT32/MM38 y alcance productivo. Freeze V3 y anexos intactos.
+Este registro de iteracion no acredita Core Full/builds/CI de un commit futuro; el recibo de cierre exacto
+se publicara despues de observar esas clases. F3 NOT OPEN; I-55 G12 NOT UNBLOCKED.

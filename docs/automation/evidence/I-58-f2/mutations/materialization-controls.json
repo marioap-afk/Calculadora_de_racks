@@ -1,0 +1,38 @@
+[
+  {
+    "mutation": "header-null",
+    "body": "foreach (var m in d.Modules) if (m.IsHeader) m.HeaderConfiguration = null;",
+    "selected": 3,
+    "expected_assertion_failures": 3,
+    "command_filter": "FullyQualifiedName~Real_Single_keeps_fallback_local_parity_and_provenance",
+    "production_before_sha256": "0233681b8102a18dd58fb3bd103e0f766b69d1f848c112bc0c824df9b16822e3",
+    "mutant_sha256": "3be9f0bc8068810103dcdd3073fdef375fe160f6a892e5478869cc38a4937cd1"
+  },
+  {
+    "mutation": "global-promoted",
+    "body": "d.PostPeralte = 7;",
+    "selected": 3,
+    "expected_assertion_failures": 3,
+    "command_filter": "FullyQualifiedName~Real_Single_keeps_fallback_local_parity_and_provenance",
+    "production_before_sha256": "0233681b8102a18dd58fb3bd103e0f766b69d1f848c112bc0c824df9b16822e3",
+    "mutant_sha256": "4c326df4e930e982dc0d76238e5544c19fbf29d5e2d91a77c68aa425f4e41006"
+  },
+  {
+    "mutation": "module",
+    "body": "d.Modules[0].ModuleId = \"wrong-module\";",
+    "selected": 3,
+    "expected_assertion_failures": 3,
+    "command_filter": "FullyQualifiedName~Real_Single_keeps_fallback_local_parity_and_provenance",
+    "production_before_sha256": "0233681b8102a18dd58fb3bd103e0f766b69d1f848c112bc0c824df9b16822e3",
+    "mutant_sha256": "7c409770d2a81d3ac493e9a210a547ea0ef8d7fdb5584c88d49ec8b08377c612"
+  },
+  {
+    "mutation": "provenance",
+    "body": "foreach (var m in d.Modules) m.UseCalculatedHeaderConfiguration = !m.UseCalculatedHeaderConfiguration;",
+    "selected": 3,
+    "expected_assertion_failures": 3,
+    "command_filter": "FullyQualifiedName~Real_Single_keeps_fallback_local_parity_and_provenance",
+    "production_before_sha256": "0233681b8102a18dd58fb3bd103e0f766b69d1f848c112bc0c824df9b16822e3",
+    "mutant_sha256": "c1492f8fcdb8bed10a793387f76734db667bcf68ef76ac4eb2b872c23a018f5f"
+  }
+]
