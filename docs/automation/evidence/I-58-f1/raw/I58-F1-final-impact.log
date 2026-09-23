@@ -1,0 +1,14 @@
+  Determinando los proyectos que se van a restaurar...
+  Todos los proyectos están actualizados para la restauración.
+  RackCad.Domain -> C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\src\RackCad.Domain\bin\Debug\net8.0\RackCad.Domain.dll
+  RackCad.Application -> C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\src\RackCad.Application\bin\Debug\net8.0\RackCad.Application.dll
+  RackCad.StructuralSections.Import -> C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tools\RackCad.StructuralSections.Import\bin\Debug\net8.0\RackCad.StructuralSections.Import.dll
+  RackCad.Tests -> C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll
+Serie de pruebas para C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+Versión 17.11.1 (x64) de VSTest
+
+Iniciando la ejecución de pruebas, espere...
+1 archivos de prueba en total coincidieron con el patrón especificado.
+Archivo de resultados: C:\Users\alejandra-mendoza\AppData\Local\Temp\I58-F1-results\I58-F1-final-impact.trx
+
+Correctas! - Con error:     0, Superado:    86, Omitido:     0, Total:    86, Duración: 74 ms - RackCad.Tests.dll (net8.0)

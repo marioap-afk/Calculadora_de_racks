@@ -1,0 +1,20 @@
+{
+  "label": "final-focal",
+  "executable": "dotnet",
+  "clean_after": true,
+  "wall_seconds": 26.0522004,
+  "exit": 0,
+  "sha": "13381b6c04d886f0478e2b264145d417ce95228f",
+  "clean_before": true,
+  "arguments": [
+    "test",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "--filter",
+    "FullyQualifiedName~I58F1",
+    "--logger",
+    "trx;LogFileName=I58-F1-final-focal.trx",
+    "--results-directory",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp/I58-F1-results"
+  ],
+  "sdk": "8.0.423"
+}

@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-58
 title: Shared View Foundation Authored Comparators
 type: architecture
-status: discovery
+status: in-progress
 workflow: V2
 conceptual_initiative: I-58
 delivery_unit: I-58
@@ -48,10 +48,11 @@ integrar esta fundacion antes de I-55 G12 (excepcion de separacion, lifecycle §
 
 ## Alcance autorizado
 
-Esta ejecucion: D/F0 y preparacion F1 solamente. Discovery delta de Dynamic, PushBack, Cantilever y
-Cabecera; matrices tipadas, schema/unknown, characterization, borrador completo y paquete Architect.
-Sin produccion. Cama, AUTH-15, geometria/BOM, policy de producto y cambios de persistencia quedan fuera.
-No tocar main, I-55, I-57, R3, Proposal V5 historica ni integration/I-57.
+Esta ejecucion: F1 — CHARACTERIZATION / RED ONLY, autorizado tras Consensus Freeze V3.
+Fixtures reproducibles, CT58-01..32 y mutation matrix, baseline Unsupported, oraculos futuros y RED
+temporal por assertions; restauracion a GREEN y evidencia exact-SHA antes de entregar al Coordinator.
+Sin produccion. No se abren F2, Cama, AUTH-15, geometria/BOM, policies ni cambios de persistencia.
+No tocar main, I-55, I-52, I-57, R3, Freeze o Characterization acordada.
 
 ## Autoridades por referencia
 
@@ -62,19 +63,20 @@ Extends: AUTH-13, conservando ownership neutral de I-57. Introduces: ninguna aut
 
 ## Entregables y revision
 
-Discovery, Freeze draft y paquete Architect se enlazan desde la evidencia canonica.
-D/F0 produce material revisable, no declara consenso. F1 queda preparado, no abierto como gate funcional.
+Consensus Freeze V3 y anexos permanecen intactos. Los acuerdos V3 y la resolucion Architect de AR58-V2-01
+son el estado de entrada comunicado por el Owner; esta ejecucion no emite nuevos veredictos de diseño.
+CR58-01/02 RESOLVED; EXP-01 CLASS B FOR I-58 ONLY / CONFIRMED; M-03 ACTIVATED.
+
+F1 tiene [evidencia propia](../automation/evidence/I-58-f1/README.md), con manifiestos CT/MM,
+carriers TEST-ONLY, oraculos tipados, control de sabotajes, RED por kind y PASS vacuos separados.
+Los resultados se atribuyen a su identidad exacta. Coordinator debe revisar F1 antes de otro gate.
 La entrada FOUNDATIONS futura solo se publicara al cierre con conformidad; no se modifica ahora.
 
-Continuacion actual: AR58-V2-01 CORRECTION — DISCOVERY / CHARACTERIZATION / FREEZE V3 ONLY.
-Misma rama/worktree/claim. CR58-01/02 RESOLVED y EXP-01 B confirmado SOLO I-58. No reabrir sin evidencia
-materialmente nueva. M-03 ACTIVATED por perdida de fallback al materializar. Ver Discovery/Freeze V3
-completos y diagnostico propio; ningun cambio de produccion, gate funcional ni cierre de iniciativa.
-
-AR58-V2-01 = CORRECTION PROPOSED / ARCHITECT RE-REVIEW REQUIRED
-Coordinator = REVIEW REQUIRED ON V3
-Architect = CHANGES REQUIRED ON V2 / PENDING V3
-Frozen = NO
-F1 = NOT OPEN
+Coordinator = AGREED ON V3 / F1 REVIEW PENDING
+Architect = AGREED ON V3
+AR58-V2-01 = RESOLVED BY ARCHITECT
+Frozen = YES
+F1 = VALIDATION IN PROGRESS
+F2 = NOT OPEN
 I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO

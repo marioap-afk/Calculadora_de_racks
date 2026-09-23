@@ -1,0 +1,18 @@
+{
+  "label": "final-core",
+  "executable": "dotnet",
+  "clean_after": true,
+  "wall_seconds": 99.0306711,
+  "exit": 0,
+  "sha": "13381b6c04d886f0478e2b264145d417ce95228f",
+  "clean_before": true,
+  "arguments": [
+    "test",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "--logger",
+    "trx;LogFileName=I58-F1-final-core.trx",
+    "--results-directory",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp/I58-F1-results"
+  ],
+  "sdk": "8.0.423"
+}
