@@ -124,5 +124,22 @@ foreach(double global in new[]{0d,8d}) foreach(bool calc in new[]{true,false}) f
     Check(output.Structure.PostPeralte==global,"composite no promotion");
     Console.WriteLine($"PushBackComposite|global={global}|calc={calc}|headers={string.Join(",",d.Structure.Modules.Where(m=>m.IsHeader).Select(m=>$"{m.ModuleId}:{Val(m.HeaderConfiguration?.PostPeralte)}"))}|resolved={before.Structure.PostPeralte}|A={before.Composite.SideA.Local.Structure.PostPeralte}|B={before.Composite.SideB.Local.Structure.PostPeralte}|projected={after.Structure.PostPeralte}");
 }
+foreach(double global in new[]{0d,8d}) foreach(bool calcA in new[]{true,false}) {
+    selected++; var d=Composite(); d.Structure.PostPeralte=global;
+    foreach(var m in d.Structure.Modules.Where(m=>m.IsHeader)) {
+        bool sideB=m.ModuleId.StartsWith("B:",StringComparison.Ordinal);
+        m.UseCalculatedHeaderConfiguration=sideB ? !calcA : calcA;
+        m.HeaderConfiguration=Header(sideB ? 9 : 7);
+    }
+    var before=pushResolver.Resolve(d); var output=PushBackDesignDocument.FromDomain(d).ToDomain(); Proposed(output.Structure);
+    var after=pushResolver.Resolve(output);
+    Check(before.Structure.PostPeralte==after.Structure.PostPeralte,"mixed composite parity");
+    Check(before.Composite.SideA.Local.Structure.PostPeralte==(global>0?global:7),"mixed A fallback");
+    Check(before.Composite.SideB.Local.Structure.PostPeralte==(global>0?global:9),"mixed B fallback");
+    Check(before.Composite.SideA.Local.Structure.PostPeralte==after.Composite.SideA.Local.Structure.PostPeralte,"mixed A parity");
+    Check(before.Composite.SideB.Local.Structure.PostPeralte==after.Composite.SideB.Local.Structure.PostPeralte,"mixed B parity");
+    Check(output.Structure.PostPeralte==global,"mixed no promotion");
+    Console.WriteLine($"PushBackComposite|mixed|global={global}|calcA={calcA}|A-headers=7|B-headers=9|resolved={before.Structure.PostPeralte}|A={before.Composite.SideA.Local.Structure.PostPeralte}|B={before.Composite.SideB.Local.Structure.PostPeralte}|projected={after.Structure.PostPeralte}");
+}
 Check(selected>0,"nonzero selection");
 Console.WriteLine($"SELECTED={selected}; ASSERTIONS={assertions}; NEGATIVE_CONTROLS={negativeControls}; DIAGNOSTIC_PASS; AUTH13_GREEN=NO");
