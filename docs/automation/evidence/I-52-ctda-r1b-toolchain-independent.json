@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "R1B_TOOLCHAIN_INDEPENDENT_IMPLEMENTATION",
+  "baselineV34": "d99dafeda20bcb48e3fc4af7093e9982d60b9288",
+  "entrySha": "35accc9625f6e450811ef68534d66e68eaf280e3",
+  "implementationSha": "a0b7ae14fefd4f614a3395c9852978f0d9b4933f",
+  "contract": {
+    "contractedProbes": 100,
+    "implementationDescriptors": 100,
+    "readyForNativeLink": 100,
+    "stubs": 0,
+    "reachableCallbacks": 26,
+    "nativeHandlerMappings": 26,
+    "primaryPaths": 26,
+    "schedulers": 3,
+    "supportActions": 7
+  },
+  "managed": {
+    "controlPlane": {
+      "result": "SUCCESS",
+      "bytes": 76288,
+      "sha256": "C1BE36D3E2A156B24F8FAC8669F967B5282B49F385577FF4FBD2D7EFAF1FE3E2"
+    },
+    "harness": {
+      "result": "SUCCESS",
+      "warnings": 0,
+      "errors": 0,
+      "bytes": 21504,
+      "sha256": "D178586A1296518379C475682AAB387A6F741A4ED48F4B3D741CDB3C55DD1700"
+    },
+    "researchTests": {
+      "passed": 14,
+      "failed": 0,
+      "selected": 14
+    }
+  },
+  "nativeSource": {
+    "status": "SOURCE_IMPLEMENTED / UNCOMPILED",
+    "dispatchEntries": 100,
+    "eventMappings": 26,
+    "schedulerSymbols": 3,
+    "supportActionSymbols": 7,
+    "balancedBraces": true,
+    "headerCallbackSignaturesVerified": 26,
+    "headerSchedulerSignaturesVerified": 3,
+    "headerSupportSignaturesVerified": 7,
+    "runtimeSourceSha256": "ECD21D5FC6810496920FFA05F9FEA737768EFD6B463A22D618892A583C7F1E70",
+    "fixtureSourceSha256": "45E12E25FBED4B57E2F532F970E3C756357B2614E5845F19FAA4565C7C1160BE",
+    "dispatchTableSha256": "F85960BFDD48E8549D330F85F782E636552EBBA94D294819EF34117F565DD536",
+    "compileAuthority": "NOT EVALUATED / MSVC V143 ENVIRONMENT BLOCKED"
+  },
+  "fixture": {
+    "status": "FIXTURE_SPEC_READY / RUNTIME_MATERIALIZATION_PENDING",
+    "objects": 7,
+    "sha256": "11411BA8858A4CCA1AB638645FEC5D2C0AA3263C239BC9F0C8A10153AF6AD9FA"
+  },
+  "traceability": {
+    "status": "COMPLETE",
+    "rows": 100,
+    "missingProbeIds": 0,
+    "sha256": "FC9C61CC47D053EA4E5AFB50FCDEA9A7DA088F7624D07B846E526357CA2E6B97"
+  },
+  "subsystems": {
+    "totalOrderLogger": "IMPLEMENTED / SYNTHETIC TEST PASS",
+    "evidenceSerializer": "IMPLEMENTED / SYNTHETIC TEST PASS",
+    "cleanupStateMachine": "IMPLEMENTED / SYNTHETIC TEST PASS",
+    "tupleCollector": "IMPLEMENTED / NATIVE FIELDS FAIL-CLOSED",
+    "processController": "IMPLEMENTED / HARMLESS CHILD PROCESS TEST PASS",
+    "externalBuildPackage": {
+      "status": "READY",
+      "sha256": "CF239B5D3A883B5D3DF17A213F25D8544153FADC451687913ECCEA10DD1E2207"
+    }
+  },
+  "validation": {
+    "researchSuite": "14/14 PASS",
+    "coreFullLocal": "8236/8236 PASS",
+    "coreSkipped": 0,
+    "mechanicalV34": "PASS",
+    "productDiff": "NONE",
+    "autoCadStarted": false
+  },
+  "tupleModel": {
+    "buildMachineToolchainTuple": "NATIVE_TOOLCHAIN_BLOCKED",
+    "hostExecutionTuple": "NOT COLLECTED / AUTOCAD NOT STARTED",
+    "bridge": "FUTURE EXACT NATIVE HELPER SHA256"
+  },
+  "nativeBuild": "ENVIRONMENT_BLOCKED",
+  "ctdaHostPass": "NOT EVALUATED",
+  "limitedCtda": "RESUMED / NATIVE BUILD ENVIRONMENT BLOCKED"
+}
