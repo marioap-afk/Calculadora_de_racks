@@ -278,3 +278,39 @@ Frozen = NO
 F1 = NOT OPEN
 I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO
+
+## Identidades V3
+
+V3_PACKAGE_SHA: 387504097c3ca7d7dad601467d2e7fc292af96b6. Versiones COMPLETAS; Frozen NO.
+
+| Ruta | Blob en V3_PACKAGE_SHA |
+|---|---|
+| docs/initiatives/I-58-freeze-draft.md | de052bc650f0735886adba058ea2e9107fa32758 |
+| docs/initiatives/I-58-characterization.md | 97e15d6d7c00e02495f8d4159477272d00af6880 |
+| docs/initiatives/I-58-discovery.md | f07c9b6c6f6c278c6f7d37b3b68921eac7a1c5b8 |
+| docs/initiatives/I-58-architect-review-package.md | 443bb3c9747c3ab949be4bf9f8afdd34b6a536d0 |
+| docs/automation/evidence/I-58-v3-fallback.md | e846dcd950a2489888fbefe116c816cbdeb0bc7b |
+| docs/automation/evidence/I-58-v3-probe/Program.cs | b0ecb93bd3e8a998479410709bbb4f040f48cd09 |
+
+Freeze V3 enlaza esta fila exacta de Characterization V3; el acuerdo exige commit/ruta/blob de AMBOS
+mas Discovery (incluida matriz schema) y paquete Architect. No se permite sustituir anexos por enlaces
+mutables despues del acuerdo. Este hijo publica identidades sin cambiar esos seis blobs.
+
+Ultimo fetch: origin/main7097057cf8685bf5ecc09083cba37379d4a4aae8; upstream I-58 aun054606ac
+antes del push; tag integration/I-57 objeto/target intactos. Diff054606ac..V3_PACKAGE_SHA limitado a
+archivos propios I-58 bajo docs/; src/tests/assets/eng/.github/deploy y ROADMAP sin cambios.
+Sin rebase/merge, sin PR, sin tag nuevo. git diff --check PASS; enlaces documentales y CT01..32/F01..13
+presentes. Estas comprobaciones documentales no son pruebas conductuales del comparator.
+
+HEAD_FINAL de publicacion es el commit cuyo cuerpo contiene este manifiesto (no hash autorreferente).
+CI de la nueva publicacion pendiente al crear este registro; solo acreditara su head_sha exacto y rama
+con event=push y cuatro jobs requeridos success. No propagara evidencia al paquete padre ni al probe.
+No Candidate ni cierre documental de iniciativa; evidencia local de caracterizacion permanece en c978fdea.
+
+AR58-V2-01 = CORRECTION PROPOSED / ARCHITECT RE-REVIEW REQUIRED
+Coordinator = REVIEW REQUIRED ON V3
+Architect = CHANGES REQUIRED ON V2 / PENDING V3
+Frozen = NO
+F1 = NOT OPEN
+I-55 G12 = NOT UNBLOCKED
+IMPLEMENTATION AUTHORIZATION = NO
