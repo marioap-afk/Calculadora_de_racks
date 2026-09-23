@@ -10,6 +10,7 @@ using RackCad.Application.Systems.Cantilever;
 using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Cantilever;
 using RackCad.UI.Editor;
+using RackCad.UI.Controls;
 using RackCad.UI.Systems.Cantilever;
 
 internal static class Program
@@ -52,6 +53,8 @@ internal static class Program
         if (source == null)
         {
             var template = design.StationTopology.ColumnBaseTemplate;
+            template.Connection.Punches.ColumnBottomPlateEndOffset = 1.5;
+            template.Connection.Punches.ColumnTopPunchOffset = 4.0;
             template.ColumnSectionId = "AISC-W-W10X33";
             template.Base = new CantileverBaseDesign { SectionId = "AISC-W-W12X26", Length = 48 };
             design.DefaultArmTemplate = new CantileverArmTemplateDesign {
@@ -59,10 +62,16 @@ internal static class Program
                 MountingPlate = new CantileverArmMountingPlateTemplateDesign { VerticalPunchCount = 2, VerticalEndOffset = 1.5 }
             };
         }
+        foreach (var field in new[] { ("StationCountBox", 3.0), ("SpacingBox", 96.0), ("LevelCountBox", 3.0), ("ClearHeightBox", 24.0) })
+        {
+            var control = (NumericField)w.FindName(field.Item1);
+            control.SetNumber(field.Item2);
+            control.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, control));
+        }
         ((TextBox)w.FindName("NameBox")).Text = "Fixture";
         var button = (Button)w.FindName(reopen ? "InsertPlantaButton" : "InsertFrontalButton");
         button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent, button));
-        Require(w.InsertionRequest is CantileverInsertionRequest, label + " real WPF insertion request absent");
+        Require(w.InsertionRequest is CantileverInsertionRequest, label + " real WPF insertion request absent: " + ((TextBlock)w.FindName("StatusText")).Text);
         var request = (CantileverInsertionRequest)w.InsertionRequest;
         Require(request.Design.Id == innerBefore, label + " editor changed inner");
         Console.WriteLine($"{label}: real WPF request outer={request.RackId}; inner={request.Design.Id}; innerPreserved=True");
