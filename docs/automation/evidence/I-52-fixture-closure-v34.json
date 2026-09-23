@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "proposal": "V34",
+  "baseline": "d1506ac68bddf5880fdf934ca39cf824d9d64a40",
+  "sdk": {
+    "root": "D:\\Downloads\\CDROM1",
+    "version": "25.0.58.0",
+    "platform": "x64",
+    "toolset": "v143"
+  },
+  "host": {
+    "version": "R25.0.171.0.0"
+  },
+  "mechanical": {
+    "exactMembers": 220,
+    "memberHeaderMatch": 213,
+    "memberHeaderDrift": 7,
+    "reachableCallbacks": 26,
+    "primaryCoverage": "26/26",
+    "probeCount": 100,
+    "uniqueProbeIds": 100,
+    "fieldsPerRowViolations": 0,
+    "contractIdsReferenced": 91,
+    "missingContractRefs": 0,
+    "expectedStateDeterministic": "10/10",
+    "cleanupUnresolved": 0,
+    "eventIds": 27,
+    "eventProjection": 237,
+    "schedulerIds": 3,
+    "schedulerProjection": 63,
+    "supportActions": 7,
+    "supportActionUnknown": 0,
+    "fixtureTriggerUnknown": 0,
+    "appctxMissingLock": 0,
+    "appctxMissingTransaction": 0,
+    "eraseOriginUsingErasedProtectedTarget": 0,
+    "commandCancelledUndocumentedCausality": 0,
+    "appctxRows": 28
+  },
+  "predicates": {
+    "FixtureExecutionContractClosed": true,
+    "ActualHeaderReconciliationComplete": true,
+    "NativeCallbackCapabilitySetClosed": true,
+    "SchedulerDefinitionClosed": true,
+    "SchedulerDeliveryFixtureClosed": true,
+    "T16NativeSchedulerSetClosed": true,
+    "NativeReactorClassSetClosed": true,
+    "NativeProbeCatalogClosed": true,
+    "EventCatalogClosed": true,
+    "HostFixtureContractClosed": true,
+    "CTDA_HOST_PASS": "NOT EVALUATED"
+  }
+}
