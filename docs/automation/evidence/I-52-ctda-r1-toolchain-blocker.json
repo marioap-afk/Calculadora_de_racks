@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "R1_RESEARCH_IMPLEMENTATION_SKELETON_BUILD",
+  "observedAtUtc": "2026-09-23T21:21:40.9410068Z",
+  "baselineV34": "d99dafeda20bcb48e3fc4af7093e9982d60b9288",
+  "consensusRegistrationSha": "78c04c910ff917b8c90e7f1f2f53273b9b9f4708",
+  "implementationSha": "c86ea2daae90301664c38b762b5d1283c2ed75ca",
+  "productDiff": {
+    "paths": [],
+    "status": "NONE"
+  },
+  "mechanicalValidation": {
+    "ProbeCount": 100,
+    "UniqueProbeIds": 100,
+    "FieldsPerRowViolations": 0,
+    "EventIds": 27,
+    "ReachableEventIds": 26,
+    "PrimaryCoveredEventIds": 26,
+    "EventProjection": 237,
+    "SchedulerIds": 3,
+    "SchedulerProjection": 63,
+    "AppctxMissingLock": 0,
+    "AppctxMissingTransaction": 0,
+    "SupportActions": 7,
+    "ContractIdsExpected": 91,
+    "ExpectedStateDeterministic": "10/10",
+    "CleanupUnresolved": 0,
+    "IsValid": true
+  },
+  "managedHarness": {
+    "build": "SUCCESS",
+    "errors": 0,
+    "sha256": "A064927D9AA171C053549239D7558170CFB77D2BCA1B2A38A4F0307BC441FF6E",
+    "path": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\eng\\research\\I52Ctda\\harness\\bin\\Release\\net8.0-windows\\I52Ctda.Harness.dll",
+    "warnings": 0,
+    "bytes": 34816
+  },
+  "nativeHelper": {
+    "build": "BLOCKED",
+    "error": "Versión de MSBuild 18.9.1+a81b43525 para .NET Framework\n\nC:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\eng\\research\\I52Ctda\\native\\I52CtdaNative.vcxproj(16,3): error MSB4019: No se encontró el proyecto \"C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Microsoft\\VC\\v180\\Microsoft.Cpp.Default.props\" importado. Confirme que la expresión de la declaración Import \"$(VCTargetsPath)\\Microsoft.Cpp.Default.props\", que se evaluó como \"C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Microsoft\\VC\\v180\\\\Microsoft.Cpp.Default.props\", es correcta y que el archivo existe en el disco.",
+    "clExePresent": false,
+    "toolsetRequired": "v143",
+    "cppTargetsPresent": false,
+    "outputPath": null,
+    "classification": "ENVIRONMENT_INVALID",
+    "sha256": null,
+    "errorCode": "MSB4019"
+  },
+  "sdk": {
+    "version": "25.0.58.0",
+    "toolset": "v143",
+    "platform": "x64",
+    "status": "VALID",
+    "root": "D:\\Downloads\\CDROM1"
+  },
+  "host": {
+    "acadExe": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe",
+    "sha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+    "fileVersion": "R25.0.171.0.0"
+  },
+  "plannedLibraries": [
+    {
+      "sha256": "8FA74034FB35496F6122EA43F7D3CD8E3CB1F32760A0944CE8D3E592756B10D9",
+      "name": "rxapi.lib"
+    },
+    {
+      "sha256": "8E6C83AD3306A2DC59D8E7C3096A86837B729DFEA7449B19ADE44FA71D052EAE",
+      "name": "acad.lib"
+    },
+    {
+      "sha256": "893BC5275F4EFF2797E0F43F66560880C723E6DBF318D3CE2BCECE86F044D121",
+      "name": "accore.lib"
+    },
+    {
+      "sha256": "0A4749A9942D7DB38CCC351A2BFE88989A36504247B35FF367C2A8655499FABA",
+      "name": "acdb25.lib"
+    }
+  ],
+  "linkedLibraries": [],
+  "sourceArtifacts": [
+    {
+      "path": "eng/research/I52Ctda/native/I52CtdaNative.cpp",
+      "sha256": "02263A6C73863108798B7F8C47F3374A836884F04F4FB73FDBF39ECAADB213A1",
+      "bytes": 4004
+    },
+    {
+      "path": "eng/research/I52Ctda/native/I52CtdaNative.vcxproj",
+      "sha256": "FE2322A5C6C7740F6B31C729845C346116DB333A00531C9263916EBF71D15E38",
+      "bytes": 2787
+    },
+    {
+      "path": "eng/research/I52Ctda/harness/Program.cs",
+      "sha256": "67D717FD5ECD63E15C2E2C4CDFA9019B205F3D8A066FFB51641E40629AC19A70",
+      "bytes": 11153
+    },
+    {
+      "path": "eng/research/I52Ctda/harness/I52Ctda.Harness.csproj",
+      "sha256": "2B25FF7A3044F1E79ED975787FDEB86E3BFF7B00EA2247818CFF7730D23BF3C8",
+      "bytes": 301
+    },
+    {
+      "path": "eng/research/I52Ctda/build.ps1",
+      "sha256": "A4AC3B272544C1A39CF1ABB34EB084D340EA614A7877C4D28B4E605A1575F36E",
+      "bytes": 905
+    }
+  ],
+  "autoCadExecution": {
+    "started": false,
+    "reason": "Native helper build gate not satisfied"
+  },
+  "ctdaHostPass": "NOT EVALUATED",
+  "limitedCtda": "RESUMED / BLOCKED AT R1 NATIVE TOOLCHAIN",
+  "requiredUserAction": "Install the MSVC C++ build targets and v143 x64 toolset in Visual Studio, then resume the unchanged V34 implementation."
+}
