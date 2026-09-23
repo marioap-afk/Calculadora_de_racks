@@ -75,3 +75,62 @@ Metrics: Owner active time UNKNOWN; gate F1 time UNKNOWN; defects escaped UNKNOW
 Integration tag I-58: NOT CREATED. Consumer I-55 G12: NOT UNLOCKED BY THIS DELIVERY.
 
 IMPLEMENTATION AUTHORIZATION = NO
+
+## Evidencia publicada de D/F0 (no Candidate ni cierre de iniciativa)
+
+PACKAGE_SHA / PROBE_VALIDATION_SHA: 33c553d96a70c5edad3c683fe9e2aaf4e78c0a03.
+Antes y despues del probe: `git status --porcelain` vacio. SDK resuelto 8.0.423.
+Comando: `dotnet run --project docs/automation/evidence/I-58-probe/I58.Probe.csproj`.
+Resultado: exit 1 esperado, 68 seleccionados, 32 RED de Single/Divergent y 36 Unreadable/null;
+17.6117919 segundos de wall-clock. No fallo de build/setup. Log: I-58-probe-observed.txt.
+El log repetido es identico al ya publicado en PACKAGE_SHA; se verifico por hash de archivo.
+
+| Kind | Seleccionados | RED | Unreadable/null | Root payload unknown preservado por store | Nested unknown preservado |
+|---|---:|---:|---:|---|---|
+| Dynamic | 17 | 8 | 9 | NO | NO |
+| PushBack | 17 | 8 | 9 | SI | NO |
+| Cantilever | 17 | 8 | 9 | SI | NO |
+| Cabecera | 17 | 8 | 9 | NO | NO |
+
+Cantilever IntervalCountSerialized=True observado. Estos hechos son de stores ACTUALES, no del reader futuro.
+La preservacion root de PushBack/Cantilever no implica preservacion del arbol. No hubo GREEN funcional ni
+implementacion de comparator. El probe diagnostico no acredita cierre F1 ni sustituye RED->GREEN definitivo.
+
+## Ultimo preflight y publicacion
+
+Fetch --all --prune repetido 2026-09-23T03:16:21Z: origin/main sigue BASE_SHA; main local limpio e identico.
+I-55 sigue 08e45e0a2521a2e7feb4cf7c8d3fc7fc574aa74d. I-52 avanzo independientemente a
+e4e506303f81370db75e8e7e8bf1000c0e7920c3; diff del comparator y Persistence contra main sigue vacio.
+No se modifico esa rama. integration/I-57 sigue objeto/target esperados; R3 mismo blob exacto.
+Diff acumulado contra base en src/tests/assets/eng/.github/deploy = VACIO. Main no se modifica.
+`git diff --check BASE HEAD` = PASS. Docs propias y fila propia ROADMAP son el unico delta, mas probe documental.
+
+CI del CLAIM_SHA: run 35812632578, event=push, ref=refs/heads/architecture/shared-view-authored-comparators,
+head_sha=e59bfda6c7e6696f0eafdc2e99797f9957553338, jobs requeridos 4/4 success (consultados).
+Esta evidencia pertenece SOLO al claim. Bootstrap/package no heredan esa CI. El push agrupado siguiente
+correra solo sobre su punta: no se atribuye retrospectivamente verde a PACKAGE_SHA.
+CI de la punta de entrega: pendiente al preparar este registro; no se declara gate cerrado ni Candidate.
+
+## Identidades exactas de revision
+
+Version completa para revision: PACKAGE_SHA, rutas y blobs:
+
+| Artefacto | Blob |
+|---|---|
+| docs/initiatives/I-58-freeze-draft.md | 5b528fcca0b5f41e35acbc0a32f4b595179ae978 |
+| docs/initiatives/I-58-discovery.md | 18bfec73e1eaf53cb179d26bdbd6e8b2251753a6 |
+| docs/initiatives/I-58-characterization.md | aa94e5688b312a10ce9a1a5f3425f0da56622c8f |
+
+Los dos acuerdos deben identificar este Freeze exacto y sus anexos, o pedir una version completa nueva.
+No se emitio acuerdo ni se cambio Frozen. Los blobs de TODOS los artefactos de entrega (incluido este archivo)
+se registran en el cuerpo del commit de publicacion calculados desde el index; asi se evita auto-hash imposible.
+`git show <DELIVERY_SHA>` contiene el manifiesto; `git ls-tree -r <DELIVERY_SHA>` verifica cada entrada.
+La evidencia local anterior sigue atribuida a BASE_SHA o PACKAGE_SHA, nunca a este hijo documental.
+
+Coordinator = PENDING
+Architect = PENDING
+F0 = PREPARED FOR REVIEW (no consenso declarado)
+F1 = PREPARED / NOT OPEN AS FUNCTIONAL GATE
+I-55 G12 CONSUMER UNLOCK = NO
+FINAL_CANDIDATE_SHA = NOT DECLARED
+IMPLEMENTATION AUTHORIZATION = NO
