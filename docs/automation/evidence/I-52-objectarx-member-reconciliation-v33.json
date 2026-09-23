@@ -1,0 +1,3895 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "proposal": "V33",
+  "sourceBaseline": "a216c8c546a7bae9be95f53ad3d0d0684c72e089",
+  "sdk": {
+    "root": "D:\\Downloads\\CDROM1",
+    "version": "25.0.58.0",
+    "platform": "x64",
+    "toolset": "v143"
+  },
+  "host": {
+    "version": "R25.0.171.0.0",
+    "acadExeSha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422"
+  },
+  "headers": {
+    "dbmain.h": "5B79A74DEF06A768B849D2C88F979BF4C15C307EA88D4ACF8FE2A8EE4CA586CD",
+    "dbtrans.h": "D3EBB73E88FB37E3205611818143D1643A24933815452C6B807E46D8C44999C6",
+    "dbObject.h": "A4EAF108D93FB7F30590EA059ACD5FC7DAA55C639F7807833974B0BB77D8E515",
+    "aced.h": "C28C3974BBA868B49B9946F052957700CCC1655E7FB17689FEBE46AA15B319AD",
+    "acdocman.h": "4B71C08BA578F81FC67898AC3519D0D5069C638A74F52D256DD539D02BDE422D",
+    "rxdlinkr.h": "CD6D76037BC2DBA192D3ECDBC703ACCFBD2E67D9AB5AC130901C6A3EA4308F3A",
+    "acedads.h": "1B5E3B525389BEB4A20730ECF7054E597362E8A1418922394561B88ADFA33370",
+    "rxregsvc.h": "CABD20D3CD27C3DFAF2F7E6B111903C87AA725FD54DA8C120E12EA526A2C34C3"
+  },
+  "scope": {
+    "rule": "Every callable declaration in the eight named classes, both AcEditorReactor aliases, and directly required registration/load APIs. Overloads are distinct members. Data fields and nested type fields are not callable API members."
+  },
+  "summary": {
+    "exactMembers": 216,
+    "headerMatch": 209,
+    "headerDrift": 7,
+    "reachableCallbacks": 26,
+    "mutationCapableCallbacks": 26,
+    "deferredCapableCallbacks": 26,
+    "observationOnlyCallbacks": 0,
+    "outCallbacks": 126,
+    "unknownCallbacks": 0,
+    "newlyRecognized": 11,
+    "observationOnlyMembers": 10,
+    "outByOperationMembers": 165,
+    "unknownMembers": 0
+  },
+  "members": [
+    {
+      "memberId": "AcDbObjectReactor::AcDbObjectReactor#1",
+      "class": "AcDbObjectReactor",
+      "member": "AcDbObjectReactor",
+      "overload": 1,
+      "declaration": "ACDBCORE2D_PORT virtual ~AcDbObjectReactor();",
+      "header": "dbmain.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbObjectReactor::cancelled#1",
+      "class": "AcDbObjectReactor",
+      "member": "cancelled",
+      "overload": 1,
+      "declaration": "virtual void cancelled (const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-OBJ-CANCEL",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcDbObjectReactor::copied#1",
+      "class": "AcDbObjectReactor",
+      "member": "copied",
+      "overload": 1,
+      "declaration": "virtual void copied (const AcDbObject* , const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbObjectReactor::erased#1",
+      "class": "AcDbObjectReactor",
+      "member": "erased",
+      "overload": 1,
+      "declaration": "virtual void erased (const AcDbObject* , bool ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-OBJ-ERASE",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcDbObjectReactor::goodbye#1",
+      "class": "AcDbObjectReactor",
+      "member": "goodbye",
+      "overload": 1,
+      "declaration": "virtual void goodbye (const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbObjectReactor::openedForModify#1",
+      "class": "AcDbObjectReactor",
+      "member": "openedForModify",
+      "overload": 1,
+      "declaration": "virtual void openedForModify(const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-OBJ-OPEN",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcDbObjectReactor::modified#1",
+      "class": "AcDbObjectReactor",
+      "member": "modified",
+      "overload": 1,
+      "declaration": "virtual void modified (const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-OBJ-MOD",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcDbObjectReactor::subObjModified#1",
+      "class": "AcDbObjectReactor",
+      "member": "subObjModified",
+      "overload": 1,
+      "declaration": "virtual void subObjModified (const AcDbObject* , const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbObjectReactor::modifyUndone#1",
+      "class": "AcDbObjectReactor",
+      "member": "modifyUndone",
+      "overload": 1,
+      "declaration": "virtual void modifyUndone (const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-OBJ-UNDO",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcDbObjectReactor::modifiedXData#1",
+      "class": "AcDbObjectReactor",
+      "member": "modifiedXData",
+      "overload": 1,
+      "declaration": "virtual void modifiedXData (const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbObjectReactor::unappended#1",
+      "class": "AcDbObjectReactor",
+      "member": "unappended",
+      "overload": 1,
+      "declaration": "virtual void unappended (const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbObjectReactor::reappended#1",
+      "class": "AcDbObjectReactor",
+      "member": "reappended",
+      "overload": 1,
+      "declaration": "virtual void reappended (const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbObjectReactor::objectClosed#1",
+      "class": "AcDbObjectReactor",
+      "member": "objectClosed",
+      "overload": 1,
+      "declaration": "virtual void objectClosed (const AcDbObjectId ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-OBJ-CLOSED",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcDbObjectReactor::AcDbObjectReactor#2",
+      "class": "AcDbObjectReactor",
+      "member": "AcDbObjectReactor",
+      "overload": 2,
+      "declaration": "protected: ACDBCORE2D_PORT AcDbObjectReactor();",
+      "header": "dbmain.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbEntityReactor::AcDbEntityReactor#1",
+      "class": "AcDbEntityReactor",
+      "member": "AcDbEntityReactor",
+      "overload": 1,
+      "declaration": "ACDBCORE2D_PORT ~AcDbEntityReactor();",
+      "header": "dbmain.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbEntityReactor::modifiedGraphics#1",
+      "class": "AcDbEntityReactor",
+      "member": "modifiedGraphics",
+      "overload": 1,
+      "declaration": "virtual void modifiedGraphics(const AcDbEntity* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-ENT-GFX",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcDbEntityReactor::dragCloneToBeDeleted#1",
+      "class": "AcDbEntityReactor",
+      "member": "dragCloneToBeDeleted",
+      "overload": 1,
+      "declaration": "virtual void dragCloneToBeDeleted (const AcDbEntity* , const AcDbEntity* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbEntityReactor::AcDbEntityReactor#2",
+      "class": "AcDbEntityReactor",
+      "member": "AcDbEntityReactor",
+      "overload": 2,
+      "declaration": "protected: ACDBCORE2D_PORT AcDbEntityReactor();",
+      "header": "dbmain.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbDatabaseReactor::AcDbDatabaseReactor#1",
+      "class": "AcDbDatabaseReactor",
+      "member": "AcDbDatabaseReactor",
+      "overload": 1,
+      "declaration": "ACDBCORE2D_PORT virtual ~AcDbDatabaseReactor();",
+      "header": "dbmain.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbDatabaseReactor::objectAppended#1",
+      "class": "AcDbDatabaseReactor",
+      "member": "objectAppended",
+      "overload": 1,
+      "declaration": "virtual void objectAppended (const AcDbDatabase* , const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "DRIFT",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_NEWLY_RECOGNIZED",
+      "authorityId": "N-DB-APPEND",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcDbDatabaseReactor::objectUnAppended#1",
+      "class": "AcDbDatabaseReactor",
+      "member": "objectUnAppended",
+      "overload": 1,
+      "declaration": "virtual void objectUnAppended (const AcDbDatabase* , const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbDatabaseReactor::objectReAppended#1",
+      "class": "AcDbDatabaseReactor",
+      "member": "objectReAppended",
+      "overload": 1,
+      "declaration": "virtual void objectReAppended (const AcDbDatabase* , const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbDatabaseReactor::objectOpenedForModify#1",
+      "class": "AcDbDatabaseReactor",
+      "member": "objectOpenedForModify",
+      "overload": 1,
+      "declaration": "virtual void objectOpenedForModify(const AcDbDatabase* , const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-DB-OPEN",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcDbDatabaseReactor::objectModified#1",
+      "class": "AcDbDatabaseReactor",
+      "member": "objectModified",
+      "overload": 1,
+      "declaration": "virtual void objectModified (const AcDbDatabase* , const AcDbObject* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-DB-MOD",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcDbDatabaseReactor::objectErased#1",
+      "class": "AcDbDatabaseReactor",
+      "member": "objectErased",
+      "overload": 1,
+      "declaration": "virtual void objectErased (const AcDbDatabase* , const AcDbObject* , bool ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-DB-ERASE",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcDbDatabaseReactor::headerSysVarWillChange#1",
+      "class": "AcDbDatabaseReactor",
+      "member": "headerSysVarWillChange",
+      "overload": 1,
+      "declaration": "virtual void headerSysVarWillChange(const AcDbDatabase* , const ACHAR* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbDatabaseReactor::headerSysVarChanged#1",
+      "class": "AcDbDatabaseReactor",
+      "member": "headerSysVarChanged",
+      "overload": 1,
+      "declaration": "virtual void headerSysVarChanged (const AcDbDatabase* , const ACHAR* , bool ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbDatabaseReactor::proxyResurrectionCompleted#1",
+      "class": "AcDbDatabaseReactor",
+      "member": "proxyResurrectionCompleted",
+      "overload": 1,
+      "declaration": "virtual void proxyResurrectionCompleted(const AcDbDatabase* , const ACHAR* , AcDbObjectIdArray& ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcDbDatabaseReactor::goodbye#1",
+      "class": "AcDbDatabaseReactor",
+      "member": "goodbye",
+      "overload": 1,
+      "declaration": "virtual void goodbye (const AcDbDatabase* ) {}",
+      "header": "dbmain.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcTransactionReactor::AcTransactionReactor#1",
+      "class": "AcTransactionReactor",
+      "member": "AcTransactionReactor",
+      "overload": 1,
+      "declaration": "ACDBCORE2D_PORT virtual ~AcTransactionReactor();",
+      "header": "dbtrans.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcTransactionReactor::transactionAboutToStart#1",
+      "class": "AcTransactionReactor",
+      "member": "transactionAboutToStart",
+      "overload": 1,
+      "declaration": "virtual void transactionAboutToStart (int& , AcDbTransactionManager* ) {}",
+      "header": "dbtrans.h",
+      "kind": "callback",
+      "headerReconciliation": "DRIFT",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_NEWLY_RECOGNIZED",
+      "authorityId": "N-TR-ABOUT-START",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcTransactionReactor::transactionStarted#1",
+      "class": "AcTransactionReactor",
+      "member": "transactionStarted",
+      "overload": 1,
+      "declaration": "virtual void transactionStarted (int& , AcDbTransactionManager* ) {}",
+      "header": "dbtrans.h",
+      "kind": "callback",
+      "headerReconciliation": "DRIFT",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_NEWLY_RECOGNIZED",
+      "authorityId": "N-TR-STARTED",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcTransactionReactor::transactionAboutToEnd#1",
+      "class": "AcTransactionReactor",
+      "member": "transactionAboutToEnd",
+      "overload": 1,
+      "declaration": "virtual void transactionAboutToEnd (int& , AcDbTransactionManager* ) {}",
+      "header": "dbtrans.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-TR-ABOUT-END",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcTransactionReactor::transactionEnded#1",
+      "class": "AcTransactionReactor",
+      "member": "transactionEnded",
+      "overload": 1,
+      "declaration": "virtual void transactionEnded (int& , AcDbTransactionManager* ) {}",
+      "header": "dbtrans.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-TR-ENDED",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcTransactionReactor::transactionAboutToAbort#1",
+      "class": "AcTransactionReactor",
+      "member": "transactionAboutToAbort",
+      "overload": 1,
+      "declaration": "virtual void transactionAboutToAbort (int& , AcDbTransactionManager* ) {}",
+      "header": "dbtrans.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-TR-ABOUT-ABORT",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcTransactionReactor::transactionAborted#1",
+      "class": "AcTransactionReactor",
+      "member": "transactionAborted",
+      "overload": 1,
+      "declaration": "virtual void transactionAborted (int& , AcDbTransactionManager* ) {}",
+      "header": "dbtrans.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_NEWLY_RECOGNIZED",
+      "authorityId": "N-TR-ABORTED",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcTransactionReactor::endCalledOnOutermostTransaction#1",
+      "class": "AcTransactionReactor",
+      "member": "endCalledOnOutermostTransaction",
+      "overload": 1,
+      "declaration": "virtual void endCalledOnOutermostTransaction (int& , AcDbTransactionManager* ) {}",
+      "header": "dbtrans.h",
+      "kind": "callback",
+      "headerReconciliation": "DRIFT",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-TR-OUTERMOST-END-CALLED",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcTransactionReactor::objectIdSwapped#1",
+      "class": "AcTransactionReactor",
+      "member": "objectIdSwapped",
+      "overload": 1,
+      "declaration": "virtual void objectIdSwapped (const AcDbObject* , const AcDbObject* , AcDbTransactionManager* ) {}",
+      "header": "dbtrans.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::AcEditorReactor#1",
+      "class": "AcEditorReactor",
+      "member": "AcEditorReactor",
+      "overload": 1,
+      "declaration": "AcEditorReactor() {}",
+      "header": "aced.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::AcEditorReactor#2",
+      "class": "AcEditorReactor",
+      "member": "AcEditorReactor",
+      "overload": 2,
+      "declaration": "ACCORE_PORT virtual ~AcEditorReactor();",
+      "header": "aced.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::unknownCommand#1",
+      "class": "AcEditorReactor",
+      "member": "unknownCommand",
+      "overload": 1,
+      "declaration": "virtual void unknownCommand (const ACHAR* , AcDbVoidPtrArray * ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::commandWillStart#1",
+      "class": "AcEditorReactor",
+      "member": "commandWillStart",
+      "overload": 1,
+      "declaration": "virtual void commandWillStart(const ACHAR* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_NEWLY_RECOGNIZED",
+      "authorityId": "N-ED-WILL",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcEditorReactor::commandEnded#1",
+      "class": "AcEditorReactor",
+      "member": "commandEnded",
+      "overload": 1,
+      "declaration": "virtual void commandEnded (const ACHAR* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-ED-END",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcEditorReactor::commandCancelled#1",
+      "class": "AcEditorReactor",
+      "member": "commandCancelled",
+      "overload": 1,
+      "declaration": "virtual void commandCancelled(const ACHAR* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_NEWLY_RECOGNIZED",
+      "authorityId": "N-ED-CANCEL",
+      "reason": "The controlled lock-veto path names command cancellation as a lifecycle event; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcEditorReactor::commandFailed#1",
+      "class": "AcEditorReactor",
+      "member": "commandFailed",
+      "overload": 1,
+      "declaration": "virtual void commandFailed (const ACHAR* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "authorityId": "N-ED-FAIL",
+      "reason": "The bounded HF command path is success-only; transaction-abort characterization does not cancel or fail the command. These callbacks remain exact-member OUT and receive no closure credit."
+    },
+    {
+      "memberId": "AcEditorReactor::lispWillStart#1",
+      "class": "AcEditorReactor",
+      "member": "lispWillStart",
+      "overload": 1,
+      "declaration": "virtual void lispWillStart (const ACHAR* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::lispEnded#1",
+      "class": "AcEditorReactor",
+      "member": "lispEnded",
+      "overload": 1,
+      "declaration": "virtual void lispEnded () {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::lispCancelled#1",
+      "class": "AcEditorReactor",
+      "member": "lispCancelled",
+      "overload": 1,
+      "declaration": "virtual void lispCancelled () {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginDxfIn#1",
+      "class": "AcEditorReactor",
+      "member": "beginDxfIn",
+      "overload": 1,
+      "declaration": "void beginDxfIn (AcDbDatabase*) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::abortDxfIn#1",
+      "class": "AcEditorReactor",
+      "member": "abortDxfIn",
+      "overload": 1,
+      "declaration": "void abortDxfIn (AcDbDatabase*) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::dxfInComplete#1",
+      "class": "AcEditorReactor",
+      "member": "dxfInComplete",
+      "overload": 1,
+      "declaration": "void dxfInComplete (AcDbDatabase*) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginDxfOut#1",
+      "class": "AcEditorReactor",
+      "member": "beginDxfOut",
+      "overload": 1,
+      "declaration": "void beginDxfOut (AcDbDatabase*) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::abortDxfOut#1",
+      "class": "AcEditorReactor",
+      "member": "abortDxfOut",
+      "overload": 1,
+      "declaration": "void abortDxfOut (AcDbDatabase*) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::dxfOutComplete#1",
+      "class": "AcEditorReactor",
+      "member": "dxfOutComplete",
+      "overload": 1,
+      "declaration": "void dxfOutComplete (AcDbDatabase*) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginDwgOpen#1",
+      "class": "AcEditorReactor",
+      "member": "beginDwgOpen",
+      "overload": 1,
+      "declaration": "virtual void beginDwgOpen (const ACHAR* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::endDwgOpen#1",
+      "class": "AcEditorReactor",
+      "member": "endDwgOpen",
+      "overload": 1,
+      "declaration": "virtual void endDwgOpen (const ACHAR* , AcDbDatabase* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::initialDwgFileOpenComplete#1",
+      "class": "AcEditorReactor",
+      "member": "initialDwgFileOpenComplete",
+      "overload": 1,
+      "declaration": "void initialDwgFileOpenComplete(AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::curDocOpenUpgraded#1",
+      "class": "AcEditorReactor",
+      "member": "curDocOpenUpgraded",
+      "overload": 1,
+      "declaration": "virtual void curDocOpenUpgraded(AcDbDatabase* , const CAdUiPathname& ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::curDocOpenDowngraded#1",
+      "class": "AcEditorReactor",
+      "member": "curDocOpenDowngraded",
+      "overload": 1,
+      "declaration": "virtual void curDocOpenDowngraded(AcDbDatabase* , const CAdUiPathname& ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::databaseConstructed#1",
+      "class": "AcEditorReactor",
+      "member": "databaseConstructed",
+      "overload": 1,
+      "declaration": "void databaseConstructed(AcDbDatabase*) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::databaseToBeDestroyed#1",
+      "class": "AcEditorReactor",
+      "member": "databaseToBeDestroyed",
+      "overload": 1,
+      "declaration": "void databaseToBeDestroyed(AcDbDatabase*) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginSave#1",
+      "class": "AcEditorReactor",
+      "member": "beginSave",
+      "overload": 1,
+      "declaration": "void beginSave (AcDbDatabase*, const ACHAR* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::saveComplete#1",
+      "class": "AcEditorReactor",
+      "member": "saveComplete",
+      "overload": 1,
+      "declaration": "void saveComplete (AcDbDatabase*, const ACHAR* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::abortSave#1",
+      "class": "AcEditorReactor",
+      "member": "abortSave",
+      "overload": 1,
+      "declaration": "void abortSave (AcDbDatabase*) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginInsert#1",
+      "class": "AcEditorReactor",
+      "member": "beginInsert",
+      "overload": 1,
+      "declaration": "void beginInsert(AcDbDatabase* , const ACHAR* , AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginInsert#2",
+      "class": "AcEditorReactor",
+      "member": "beginInsert",
+      "overload": 2,
+      "declaration": "void beginInsert(AcDbDatabase* , const AcGeMatrix3d& , AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::otherInsert#1",
+      "class": "AcEditorReactor",
+      "member": "otherInsert",
+      "overload": 1,
+      "declaration": "void otherInsert(AcDbDatabase* , AcDbIdMapping& , AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::abortInsert#1",
+      "class": "AcEditorReactor",
+      "member": "abortInsert",
+      "overload": 1,
+      "declaration": "void abortInsert(AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::endInsert#1",
+      "class": "AcEditorReactor",
+      "member": "endInsert",
+      "overload": 1,
+      "declaration": "void endInsert (AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::wblockNotice#1",
+      "class": "AcEditorReactor",
+      "member": "wblockNotice",
+      "overload": 1,
+      "declaration": "void wblockNotice(AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginWblock#1",
+      "class": "AcEditorReactor",
+      "member": "beginWblock",
+      "overload": 1,
+      "declaration": "void beginWblock( AcDbDatabase* , AcDbDatabase* , const AcGePoint3d*& ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginWblock#2",
+      "class": "AcEditorReactor",
+      "member": "beginWblock",
+      "overload": 2,
+      "declaration": "void beginWblock( AcDbDatabase* , AcDbDatabase* , AcDbObjectId ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginWblock#3",
+      "class": "AcEditorReactor",
+      "member": "beginWblock",
+      "overload": 3,
+      "declaration": "void beginWblock( AcDbDatabase* , AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::otherWblock#1",
+      "class": "AcEditorReactor",
+      "member": "otherWblock",
+      "overload": 1,
+      "declaration": "void otherWblock( AcDbDatabase* , AcDbIdMapping&, AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::abortWblock#1",
+      "class": "AcEditorReactor",
+      "member": "abortWblock",
+      "overload": 1,
+      "declaration": "void abortWblock(AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::endWblock#1",
+      "class": "AcEditorReactor",
+      "member": "endWblock",
+      "overload": 1,
+      "declaration": "void endWblock (AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginDeepClone#1",
+      "class": "AcEditorReactor",
+      "member": "beginDeepClone",
+      "overload": 1,
+      "declaration": "void beginDeepClone (AcDbDatabase* , AcDbIdMapping&) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginDeepCloneXlation#1",
+      "class": "AcEditorReactor",
+      "member": "beginDeepCloneXlation",
+      "overload": 1,
+      "declaration": "void beginDeepCloneXlation(AcDbIdMapping&, Acad::ErrorStatus*) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::abortDeepClone#1",
+      "class": "AcEditorReactor",
+      "member": "abortDeepClone",
+      "overload": 1,
+      "declaration": "void abortDeepClone (AcDbIdMapping&) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::endDeepClone#1",
+      "class": "AcEditorReactor",
+      "member": "endDeepClone",
+      "overload": 1,
+      "declaration": "void endDeepClone (AcDbIdMapping&) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::sysVarChanged#1",
+      "class": "AcEditorReactor",
+      "member": "sysVarChanged",
+      "overload": 1,
+      "declaration": "virtual void sysVarChanged (const ACHAR* , bool ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::sysVarChanged#2",
+      "class": "AcEditorReactor",
+      "member": "sysVarChanged",
+      "overload": 2,
+      "declaration": "virtual void sysVarChanged (const ACHAR*, int) final { }",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::sysVarWillChange#1",
+      "class": "AcEditorReactor",
+      "member": "sysVarWillChange",
+      "overload": 1,
+      "declaration": "virtual void sysVarWillChange (const ACHAR* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginAttach#1",
+      "class": "AcEditorReactor",
+      "member": "beginAttach",
+      "overload": 1,
+      "declaration": "void beginAttach ( AcDbDatabase* , const ACHAR*, AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::otherAttach#1",
+      "class": "AcEditorReactor",
+      "member": "otherAttach",
+      "overload": 1,
+      "declaration": "void otherAttach (AcDbDatabase* , AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::abortAttach#1",
+      "class": "AcEditorReactor",
+      "member": "abortAttach",
+      "overload": 1,
+      "declaration": "void abortAttach (AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::endAttach#1",
+      "class": "AcEditorReactor",
+      "member": "endAttach",
+      "overload": 1,
+      "declaration": "void endAttach (AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::redirected#1",
+      "class": "AcEditorReactor",
+      "member": "redirected",
+      "overload": 1,
+      "declaration": "void redirected (AcDbObjectId , AcDbObjectId ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::comandeered#1",
+      "class": "AcEditorReactor",
+      "member": "comandeered",
+      "overload": 1,
+      "declaration": "void comandeered ( AcDbDatabase* , AcDbObjectId , AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginRestore#1",
+      "class": "AcEditorReactor",
+      "member": "beginRestore",
+      "overload": 1,
+      "declaration": "void beginRestore( AcDbDatabase* , const ACHAR*, AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::abortRestore#1",
+      "class": "AcEditorReactor",
+      "member": "abortRestore",
+      "overload": 1,
+      "declaration": "void abortRestore(AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::endRestore#1",
+      "class": "AcEditorReactor",
+      "member": "endRestore",
+      "overload": 1,
+      "declaration": "void endRestore (AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::xrefSubcommandBindItem#1",
+      "class": "AcEditorReactor",
+      "member": "xrefSubcommandBindItem",
+      "overload": 1,
+      "declaration": "void xrefSubcommandBindItem (AcDbDatabase* , int , AcDbObjectId ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::xrefSubcommandAttachItem#1",
+      "class": "AcEditorReactor",
+      "member": "xrefSubcommandAttachItem",
+      "overload": 1,
+      "declaration": "void xrefSubcommandAttachItem (AcDbDatabase* , int , const ACHAR* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::xrefSubcommandOverlayItem#1",
+      "class": "AcEditorReactor",
+      "member": "xrefSubcommandOverlayItem",
+      "overload": 1,
+      "declaration": "void xrefSubcommandOverlayItem(AcDbDatabase* , int , const ACHAR* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::xrefSubcommandDetachItem#1",
+      "class": "AcEditorReactor",
+      "member": "xrefSubcommandDetachItem",
+      "overload": 1,
+      "declaration": "void xrefSubcommandDetachItem (AcDbDatabase* , int , AcDbObjectId ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::xrefSubcommandPathItem#1",
+      "class": "AcEditorReactor",
+      "member": "xrefSubcommandPathItem",
+      "overload": 1,
+      "declaration": "void xrefSubcommandPathItem ( int , AcDbObjectId , const ACHAR* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::xrefSubcommandReloadItem#1",
+      "class": "AcEditorReactor",
+      "member": "xrefSubcommandReloadItem",
+      "overload": 1,
+      "declaration": "void xrefSubcommandReloadItem (AcDbDatabase* , int , AcDbObjectId ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::xrefSubcommandUnloadItem#1",
+      "class": "AcEditorReactor",
+      "member": "xrefSubcommandUnloadItem",
+      "overload": 1,
+      "declaration": "void xrefSubcommandUnloadItem (AcDbDatabase* , int , AcDbObjectId ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::undoSubcommandAuto#1",
+      "class": "AcEditorReactor",
+      "member": "undoSubcommandAuto",
+      "overload": 1,
+      "declaration": "virtual void undoSubcommandAuto (int , bool ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::undoSubcommandAuto#2",
+      "class": "AcEditorReactor",
+      "member": "undoSubcommandAuto",
+      "overload": 2,
+      "declaration": "virtual void undoSubcommandAuto (int, int) final { }",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::undoSubcommandControl#1",
+      "class": "AcEditorReactor",
+      "member": "undoSubcommandControl",
+      "overload": 1,
+      "declaration": "virtual void undoSubcommandControl (int , int ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::undoSubcommandBegin#1",
+      "class": "AcEditorReactor",
+      "member": "undoSubcommandBegin",
+      "overload": 1,
+      "declaration": "virtual void undoSubcommandBegin (int ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::undoSubcommandEnd#1",
+      "class": "AcEditorReactor",
+      "member": "undoSubcommandEnd",
+      "overload": 1,
+      "declaration": "virtual void undoSubcommandEnd (int ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::undoSubcommandMark#1",
+      "class": "AcEditorReactor",
+      "member": "undoSubcommandMark",
+      "overload": 1,
+      "declaration": "virtual void undoSubcommandMark (int ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::undoSubcommandBack#1",
+      "class": "AcEditorReactor",
+      "member": "undoSubcommandBack",
+      "overload": 1,
+      "declaration": "virtual void undoSubcommandBack (int ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::undoSubcommandNumber#1",
+      "class": "AcEditorReactor",
+      "member": "undoSubcommandNumber",
+      "overload": 1,
+      "declaration": "virtual void undoSubcommandNumber (int , int ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::redoSubcommandNumber#1",
+      "class": "AcEditorReactor",
+      "member": "redoSubcommandNumber",
+      "overload": 1,
+      "declaration": "virtual void redoSubcommandNumber(int , int ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::undoWriteBoundary#1",
+      "class": "AcEditorReactor",
+      "member": "undoWriteBoundary",
+      "overload": 1,
+      "declaration": "virtual void undoWriteBoundary(int ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::subcommandsWillBeUndone#1",
+      "class": "AcEditorReactor",
+      "member": "subcommandsWillBeUndone",
+      "overload": 1,
+      "declaration": "virtual void subcommandsWillBeUndone(int ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::pickfirstModified#1",
+      "class": "AcEditorReactor",
+      "member": "pickfirstModified",
+      "overload": 1,
+      "declaration": "virtual void pickfirstModified() {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::layoutSwitched#1",
+      "class": "AcEditorReactor",
+      "member": "layoutSwitched",
+      "overload": 1,
+      "declaration": "virtual void layoutSwitched(const ACHAR* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::layoutToBeSwitched#1",
+      "class": "AcEditorReactor",
+      "member": "layoutToBeSwitched",
+      "overload": 1,
+      "declaration": "virtual void layoutToBeSwitched (const ACHAR * , const ACHAR * ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::dwgViewResized#1",
+      "class": "AcEditorReactor",
+      "member": "dwgViewResized",
+      "overload": 1,
+      "declaration": "virtual void dwgViewResized (Adesk::LongPtr ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::fullRegenEnded#1",
+      "class": "AcEditorReactor",
+      "member": "fullRegenEnded",
+      "overload": 1,
+      "declaration": "virtual void fullRegenEnded(AcDbDatabase* , const AcDbIntArray & ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::docFrameMovedOrResized#1",
+      "class": "AcEditorReactor",
+      "member": "docFrameMovedOrResized",
+      "overload": 1,
+      "declaration": "virtual void docFrameMovedOrResized(Adesk::LongPtr , bool ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::mainFrameMovedOrResized#1",
+      "class": "AcEditorReactor",
+      "member": "mainFrameMovedOrResized",
+      "overload": 1,
+      "declaration": "virtual void mainFrameMovedOrResized(Adesk::LongPtr , bool ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginDoubleClick#1",
+      "class": "AcEditorReactor",
+      "member": "beginDoubleClick",
+      "overload": 1,
+      "declaration": "virtual void beginDoubleClick(const AcGePoint3d& ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginRightClick#1",
+      "class": "AcEditorReactor",
+      "member": "beginRightClick",
+      "overload": 1,
+      "declaration": "virtual void beginRightClick(const AcGePoint3d& ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::toolbarBitmapSizeWillChange#1",
+      "class": "AcEditorReactor",
+      "member": "toolbarBitmapSizeWillChange",
+      "overload": 1,
+      "declaration": "virtual void toolbarBitmapSizeWillChange(bool ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::toolbarBitmapSizeChanged#1",
+      "class": "AcEditorReactor",
+      "member": "toolbarBitmapSizeChanged",
+      "overload": 1,
+      "declaration": "virtual void toolbarBitmapSizeChanged(bool ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::toolbarBitmapSizeWillChange#2",
+      "class": "AcEditorReactor",
+      "member": "toolbarBitmapSizeWillChange",
+      "overload": 2,
+      "declaration": "virtual void toolbarBitmapSizeWillChange(int ) final { }",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::toolbarBitmapSizeChanged#2",
+      "class": "AcEditorReactor",
+      "member": "toolbarBitmapSizeChanged",
+      "overload": 2,
+      "declaration": "virtual void toolbarBitmapSizeChanged(int ) final { }",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginWblockObjects#1",
+      "class": "AcEditorReactor",
+      "member": "beginWblockObjects",
+      "overload": 1,
+      "declaration": "void beginWblockObjects (AcDbDatabase* , AcDbIdMapping& ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::partialOpenNotice#1",
+      "class": "AcEditorReactor",
+      "member": "partialOpenNotice",
+      "overload": 1,
+      "declaration": "void partialOpenNotice(AcDbDatabase* ) override {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::objectsLazyLoaded#1",
+      "class": "AcEditorReactor",
+      "member": "objectsLazyLoaded",
+      "overload": 1,
+      "declaration": "virtual void objectsLazyLoaded(const AcDbObjectIdArray& ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginDocClose#1",
+      "class": "AcEditorReactor",
+      "member": "beginDocClose",
+      "overload": 1,
+      "declaration": "virtual void beginDocClose(AcDbDatabase* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::docCloseAborted#1",
+      "class": "AcEditorReactor",
+      "member": "docCloseAborted",
+      "overload": 1,
+      "declaration": "virtual void docCloseAborted(AcDbDatabase* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::docCloseWillStart#1",
+      "class": "AcEditorReactor",
+      "member": "docCloseWillStart",
+      "overload": 1,
+      "declaration": "virtual void docCloseWillStart(AcDbDatabase* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginCloseAll#1",
+      "class": "AcEditorReactor",
+      "member": "beginCloseAll",
+      "overload": 1,
+      "declaration": "virtual void beginCloseAll() {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::beginQuit#1",
+      "class": "AcEditorReactor",
+      "member": "beginQuit",
+      "overload": 1,
+      "declaration": "virtual void beginQuit() {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::quitAborted#1",
+      "class": "AcEditorReactor",
+      "member": "quitAborted",
+      "overload": 1,
+      "declaration": "virtual void quitAborted() {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::quitWillStart#1",
+      "class": "AcEditorReactor",
+      "member": "quitWillStart",
+      "overload": 1,
+      "declaration": "virtual void quitWillStart() {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::modelessOperationWillStart#1",
+      "class": "AcEditorReactor",
+      "member": "modelessOperationWillStart",
+      "overload": 1,
+      "declaration": "virtual void modelessOperationWillStart(const ACHAR* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::modelessOperationEnded#1",
+      "class": "AcEditorReactor",
+      "member": "modelessOperationEnded",
+      "overload": 1,
+      "declaration": "virtual void modelessOperationEnded(const ACHAR* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::cmdIUnkModified#1",
+      "class": "AcEditorReactor",
+      "member": "cmdIUnkModified",
+      "overload": 1,
+      "declaration": "virtual void cmdIUnkModified(const ACHAR* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::xrefSubCommandStart#1",
+      "class": "AcEditorReactor",
+      "member": "xrefSubCommandStart",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus xrefSubCommandStart( AcXrefSubCommand , const AcDbObjectIdArray& , const ACHAR* const * , const ACHAR* const * ) { return Acad::eOk; }",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::preXrefLockFile#1",
+      "class": "AcEditorReactor",
+      "member": "preXrefLockFile",
+      "overload": 1,
+      "declaration": "virtual void preXrefLockFile(AcDbObjectId ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::viewChanged#1",
+      "class": "AcEditorReactor",
+      "member": "viewChanged",
+      "overload": 1,
+      "declaration": "virtual void viewChanged() {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::fullRegenWillStart#1",
+      "class": "AcEditorReactor",
+      "member": "fullRegenWillStart",
+      "overload": 1,
+      "declaration": "virtual void fullRegenWillStart(AcDbDatabase* ) {}",
+      "header": "aced.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcEditorReactor::veto#1",
+      "class": "AcEditorReactor",
+      "member": "veto",
+      "overload": 1,
+      "declaration": "protected: ACCORE_PORT Acad::ErrorStatus veto();",
+      "header": "aced.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::AcApDocManagerReactor#1",
+      "class": "AcApDocManagerReactor",
+      "member": "AcApDocManagerReactor",
+      "overload": 1,
+      "declaration": "ACCORE_PORT virtual ~AcApDocManagerReactor();",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentCreateStarted#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentCreateStarted",
+      "overload": 1,
+      "declaration": "virtual void documentCreateStarted(AcApDocument* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentCreated#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentCreated",
+      "overload": 1,
+      "declaration": "virtual void documentCreated(AcApDocument* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentToBeDestroyed#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentToBeDestroyed",
+      "overload": 1,
+      "declaration": "virtual void documentToBeDestroyed(AcApDocument* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentDestroyed#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentDestroyed",
+      "overload": 1,
+      "declaration": "virtual void documentDestroyed(const ACHAR* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentCreateCanceled#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentCreateCanceled",
+      "overload": 1,
+      "declaration": "virtual void documentCreateCanceled(AcApDocument* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentLockModeWillChange#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentLockModeWillChange",
+      "overload": 1,
+      "declaration": "virtual void documentLockModeWillChange(AcApDocument* , AcAp::DocLockMode , AcAp::DocLockMode , AcAp::DocLockMode , const ACHAR* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-DOC-LOCK-WILL",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentLockModeChangeVetoed#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentLockModeChangeVetoed",
+      "overload": 1,
+      "declaration": "virtual void documentLockModeChangeVetoed(AcApDocument* , const ACHAR* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-DOC-LOCK-VETO",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentLockModeChanged#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentLockModeChanged",
+      "overload": 1,
+      "declaration": "virtual void documentLockModeChanged(AcApDocument* , AcAp::DocLockMode , AcAp::DocLockMode , AcAp::DocLockMode , const ACHAR* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "N-DOC-LOCK-CHANGED",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentBecameCurrent#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentBecameCurrent",
+      "overload": 1,
+      "declaration": "virtual void documentBecameCurrent(AcApDocument* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentToBeActivated#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentToBeActivated",
+      "overload": 1,
+      "declaration": "virtual void documentToBeActivated(AcApDocument* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentToBeDeactivated#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentToBeDeactivated",
+      "overload": 1,
+      "declaration": "virtual void documentToBeDeactivated(AcApDocument* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentActivationModified#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentActivationModified",
+      "overload": 1,
+      "declaration": "virtual void documentActivationModified(bool ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentActivated#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentActivated",
+      "overload": 1,
+      "declaration": "virtual void documentActivated(AcApDocument* ) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::documentTitleUpdated#1",
+      "class": "AcApDocManagerReactor",
+      "member": "documentTitleUpdated",
+      "overload": 1,
+      "declaration": "virtual void documentTitleUpdated(AcApDocument*) {}",
+      "header": "acdocman.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::AcApDocManagerReactor#2",
+      "class": "AcApDocManagerReactor",
+      "member": "AcApDocManagerReactor",
+      "overload": 2,
+      "declaration": "protected: AcApDocManagerReactor() {}",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManagerReactor::veto#1",
+      "class": "AcApDocManagerReactor",
+      "member": "veto",
+      "overload": 1,
+      "declaration": "Acad::ErrorStatus veto();",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::curDocument#1",
+      "class": "AcApDocManager",
+      "member": "curDocument",
+      "overload": 1,
+      "declaration": "virtual AcApDocument* curDocument() const = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE_READ",
+      "capabilities": [
+        "OBSERVATION_ONLY_BY_AUTHORITY"
+      ],
+      "threats": [],
+      "disposition": "OBSERVATION_ONLY",
+      "reason": "Return/query member used only to observe context or document state."
+    },
+    {
+      "memberId": "AcApDocManager::mdiActiveDocument#1",
+      "class": "AcApDocManager",
+      "member": "mdiActiveDocument",
+      "overload": 1,
+      "declaration": "virtual AcApDocument* mdiActiveDocument() const = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE_READ",
+      "capabilities": [
+        "OBSERVATION_ONLY_BY_AUTHORITY"
+      ],
+      "threats": [],
+      "disposition": "OBSERVATION_ONLY",
+      "reason": "Return/query member used only to observe context or document state."
+    },
+    {
+      "memberId": "AcApDocManager::isApplicationContext#1",
+      "class": "AcApDocManager",
+      "member": "isApplicationContext",
+      "overload": 1,
+      "declaration": "virtual bool isApplicationContext() const = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE_READ",
+      "capabilities": [
+        "OBSERVATION_ONLY_BY_AUTHORITY"
+      ],
+      "threats": [],
+      "disposition": "OBSERVATION_ONLY",
+      "reason": "Return/query member used only to observe context or document state."
+    },
+    {
+      "memberId": "AcApDocManager::document#1",
+      "class": "AcApDocManager",
+      "member": "document",
+      "overload": 1,
+      "declaration": "virtual AcApDocument* document(const AcDbDatabase* ) const = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE_READ",
+      "capabilities": [
+        "OBSERVATION_ONLY_BY_AUTHORITY"
+      ],
+      "threats": [],
+      "disposition": "OBSERVATION_ONLY",
+      "reason": "Return/query member used only to observe context or document state."
+    },
+    {
+      "memberId": "AcApDocManager::lockDocument#1",
+      "class": "AcApDocManager",
+      "member": "lockDocument",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus lockDocument(AcApDocument* pDoc, AcAp::DocLockMode = AcAp::kWrite, const ACHAR* pGlobalCmdName = NULL, const ACHAR* pLocalCmdName = NULL, bool prompt = true) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::unlockDocument#1",
+      "class": "AcApDocManager",
+      "member": "unlockDocument",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus unlockDocument(AcApDocument* pDoc) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::newAcApDocumentIterator#1",
+      "class": "AcApDocManager",
+      "member": "newAcApDocumentIterator",
+      "overload": 1,
+      "declaration": "ADESK_DEPRECATE_FOR_INTERNAL_USE virtual AcApDocumentIterator* newAcApDocumentIterator() = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE_READ",
+      "capabilities": [
+        "OBSERVATION_ONLY_BY_AUTHORITY"
+      ],
+      "threats": [],
+      "disposition": "OBSERVATION_ONLY",
+      "reason": "Return/query member used only to observe context or document state."
+    },
+    {
+      "memberId": "AcApDocManager::getDocumentIterator#1",
+      "class": "AcApDocManager",
+      "member": "getDocumentIterator",
+      "overload": 1,
+      "declaration": "auto getDocumentIterator() { ADESK_SUPPRESS_DEPRECATED return std::unique_ptr<AcApDocumentIterator>(newAcApDocumentIterator()); }",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE_READ",
+      "capabilities": [
+        "OBSERVATION_ONLY_BY_AUTHORITY"
+      ],
+      "threats": [],
+      "disposition": "OBSERVATION_ONLY",
+      "reason": "Return/query member used only to observe context or document state."
+    },
+    {
+      "memberId": "AcApDocManager::addReactor#1",
+      "class": "AcApDocManager",
+      "member": "addReactor",
+      "overload": 1,
+      "declaration": "virtual void addReactor(AcApDocManagerReactor* ) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::removeReactor#1",
+      "class": "AcApDocManager",
+      "member": "removeReactor",
+      "overload": 1,
+      "declaration": "virtual void removeReactor(AcApDocManagerReactor* ) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::setDefaultFormatForSave#1",
+      "class": "AcApDocManager",
+      "member": "setDefaultFormatForSave",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus setDefaultFormatForSave( AcApDocument::SaveFormat format) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::defaultFormatForSave#1",
+      "class": "AcApDocManager",
+      "member": "defaultFormatForSave",
+      "overload": 1,
+      "declaration": "virtual AcApDocument::SaveFormat defaultFormatForSave() const = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE_READ",
+      "capabilities": [
+        "OBSERVATION_ONLY_BY_AUTHORITY"
+      ],
+      "threats": [],
+      "disposition": "OBSERVATION_ONLY",
+      "reason": "Return/query member used only to observe context or document state."
+    },
+    {
+      "memberId": "AcApDocManager::setCurDocument#1",
+      "class": "AcApDocManager",
+      "member": "setCurDocument",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus setCurDocument(AcApDocument* pDoc, AcAp::DocLockMode = AcAp::kNone, bool activate = false) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::activateDocument#1",
+      "class": "AcApDocManager",
+      "member": "activateDocument",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus activateDocument(AcApDocument* pAcTargetDocument, bool bPassScript = false) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::sendStringToExecute#1",
+      "class": "AcApDocManager",
+      "member": "sendStringToExecute",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus sendStringToExecute(AcApDocument* pAcTargetDocument, const ACHAR * pszExecute, bool bActivate = true, bool bWrapUpInactiveDoc = false, bool bEchoString = true) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T16"
+      ],
+      "disposition": "IN_RETAINED",
+      "authorityId": "NS-SEND",
+      "reason": "Exact AcApDocManager scheduling member used by the bounded T16 contract."
+    },
+    {
+      "memberId": "AcApDocManager::appContextNewDocument#1",
+      "class": "AcApDocManager",
+      "member": "appContextNewDocument",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus appContextNewDocument(const ACHAR *pszTemplateName) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::appContextOpenDocument#1",
+      "class": "AcApDocManager",
+      "member": "appContextOpenDocument",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus appContextOpenDocument(const ACHAR *pszDrawingName) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::appContextRecoverDocument#1",
+      "class": "AcApDocManager",
+      "member": "appContextRecoverDocument",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus appContextRecoverDocument(const ACHAR *pszDrawingName) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::appContextPromptNewDocument#1",
+      "class": "AcApDocManager",
+      "member": "appContextPromptNewDocument",
+      "overload": 1,
+      "declaration": "ACCORE_PORT Acad::ErrorStatus appContextPromptNewDocument();",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::appContextPromptOpenDocument#1",
+      "class": "AcApDocManager",
+      "member": "appContextPromptOpenDocument",
+      "overload": 1,
+      "declaration": "ACCORE_PORT Acad::ErrorStatus appContextPromptOpenDocument();",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::appContextCloseDocument#1",
+      "class": "AcApDocManager",
+      "member": "appContextCloseDocument",
+      "overload": 1,
+      "declaration": "ACCORE_PORT Acad::ErrorStatus appContextCloseDocument(AcApDocument* pDoc);",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::appContextOpenDocument#2",
+      "class": "AcApDocManager",
+      "member": "appContextOpenDocument",
+      "overload": 2,
+      "declaration": "virtual Acad::ErrorStatus appContextOpenDocument(const DocOpenParams *pParams) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::newDocument#1",
+      "class": "AcApDocManager",
+      "member": "newDocument",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus newDocument() = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::openDocument#1",
+      "class": "AcApDocManager",
+      "member": "openDocument",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus openDocument() = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::closeDocument#1",
+      "class": "AcApDocManager",
+      "member": "closeDocument",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus closeDocument(AcApDocument* pAcTargetDocument) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::inputPending#1",
+      "class": "AcApDocManager",
+      "member": "inputPending",
+      "overload": 1,
+      "declaration": "virtual int inputPending(AcApDocument* pAcTargetDocument) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE_READ",
+      "capabilities": [
+        "OBSERVATION_ONLY_BY_AUTHORITY"
+      ],
+      "threats": [],
+      "disposition": "OBSERVATION_ONLY",
+      "reason": "Return/query member used only to observe context or document state."
+    },
+    {
+      "memberId": "AcApDocManager::disableDocumentActivation#1",
+      "class": "AcApDocManager",
+      "member": "disableDocumentActivation",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus disableDocumentActivation() = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::enableDocumentActivation#1",
+      "class": "AcApDocManager",
+      "member": "enableDocumentActivation",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus enableDocumentActivation() = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::isDocumentActivationEnabled#1",
+      "class": "AcApDocManager",
+      "member": "isDocumentActivationEnabled",
+      "overload": 1,
+      "declaration": "virtual bool isDocumentActivationEnabled() = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE_READ",
+      "capabilities": [
+        "OBSERVATION_ONLY_BY_AUTHORITY"
+      ],
+      "threats": [],
+      "disposition": "OBSERVATION_ONLY",
+      "reason": "Return/query member used only to observe context or document state."
+    },
+    {
+      "memberId": "AcApDocManager::executeInApplicationContext#1",
+      "class": "AcApDocManager",
+      "member": "executeInApplicationContext",
+      "overload": 1,
+      "declaration": "virtual void executeInApplicationContext(void (*procAddr)(void *), void *pData ) const = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE"
+      ],
+      "threats": [
+        "T13"
+      ],
+      "disposition": "IN_NEWLY_RECOGNIZED",
+      "authorityId": "NX-APPCTX-SYNC",
+      "reason": "Synchronous application-context bridge; not a deferred scheduler."
+    },
+    {
+      "memberId": "AcApDocManager::beginExecuteInCommandContext#1",
+      "class": "AcApDocManager",
+      "member": "beginExecuteInCommandContext",
+      "overload": 1,
+      "declaration": "ACCORE_PORT Acad::ErrorStatus beginExecuteInCommandContext(void (*procAddr)(void *), void *pData);",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T16"
+      ],
+      "disposition": "IN_NEWLY_RECOGNIZED",
+      "authorityId": "NS-BEGIN-CMDCTX",
+      "reason": "Exact AcApDocManager scheduling member used by the bounded T16 contract."
+    },
+    {
+      "memberId": "AcApDocManager::beginExecuteInApplicationContext#1",
+      "class": "AcApDocManager",
+      "member": "beginExecuteInApplicationContext",
+      "overload": 1,
+      "declaration": "ACCORE_PORT Acad::ErrorStatus beginExecuteInApplicationContext(void(*procAddr)(void *), void *pData);",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T16"
+      ],
+      "disposition": "IN_NEWLY_RECOGNIZED",
+      "authorityId": "NS-BEGIN-APPCTX",
+      "reason": "Exact AcApDocManager scheduling member used by the bounded T16 contract."
+    },
+    {
+      "memberId": "AcApDocManager::documentCount#1",
+      "class": "AcApDocManager",
+      "member": "documentCount",
+      "overload": 1,
+      "declaration": "virtual int documentCount() const = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE_READ",
+      "capabilities": [
+        "OBSERVATION_ONLY_BY_AUTHORITY"
+      ],
+      "threats": [],
+      "disposition": "OBSERVATION_ONLY",
+      "reason": "Return/query member used only to observe context or document state."
+    },
+    {
+      "memberId": "AcApDocManager::pushAcadResourceHandle#1",
+      "class": "AcApDocManager",
+      "member": "pushAcadResourceHandle",
+      "overload": 1,
+      "declaration": "virtual void pushAcadResourceHandle() = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::popResourceHandle#1",
+      "class": "AcApDocManager",
+      "member": "popResourceHandle",
+      "overload": 1,
+      "declaration": "virtual void popResourceHandle() = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::sendModelessInterrupt#1",
+      "class": "AcApDocManager",
+      "member": "sendModelessInterrupt",
+      "overload": 1,
+      "declaration": "virtual Acad::ErrorStatus sendModelessInterrupt(AcApDocument* pAcTargetDocument) = 0;",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcApDocManager::setHost#1",
+      "class": "AcApDocManager",
+      "member": "setHost",
+      "overload": 1,
+      "declaration": "ACCORE_PORT void setHost(IAcApDocManagerHost* pHost);",
+      "header": "acdocman.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcRxDLinkerReactor::AcRxDLinkerReactor#1",
+      "class": "AcRxDLinkerReactor",
+      "member": "AcRxDLinkerReactor",
+      "overload": 1,
+      "declaration": "ACDBCORE2D_PORT virtual ~AcRxDLinkerReactor();",
+      "header": "rxdlinkr.h",
+      "kind": "member",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcRxDLinkerReactor::rxAppWillBeLoaded#1",
+      "class": "AcRxDLinkerReactor",
+      "member": "rxAppWillBeLoaded",
+      "overload": 1,
+      "declaration": "virtual void rxAppWillBeLoaded(const ACHAR * ) {}",
+      "header": "rxdlinkr.h",
+      "kind": "callback",
+      "headerReconciliation": "DRIFT",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_NEWLY_RECOGNIZED",
+      "authorityId": "N-RX-WILL-LOAD",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcRxDLinkerReactor::rxAppLoaded#1",
+      "class": "AcRxDLinkerReactor",
+      "member": "rxAppLoaded",
+      "overload": 1,
+      "declaration": "virtual void rxAppLoaded(const ACHAR * ) {}",
+      "header": "rxdlinkr.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "REACHABLE",
+      "capabilities": [
+        "PRIMARY_MUTATION_CAPABLE",
+        "DEFERRED_SCHEDULER_CAPABLE"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "disposition": "IN_NEWLY_RECOGNIZED",
+      "authorityId": "N-RX-LOADED",
+      "reason": "Callback executes controlled helper code on an HF-reachable operation; exact header does not prove observation-only behavior."
+    },
+    {
+      "memberId": "AcRxDLinkerReactor::rxAppLoadAborted#1",
+      "class": "AcRxDLinkerReactor",
+      "member": "rxAppLoadAborted",
+      "overload": 1,
+      "declaration": "virtual void rxAppLoadAborted(const ACHAR * ) {}",
+      "header": "rxdlinkr.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcRxDLinkerReactor::rxAppWillBeUnloaded#1",
+      "class": "AcRxDLinkerReactor",
+      "member": "rxAppWillBeUnloaded",
+      "overload": 1,
+      "declaration": "virtual void rxAppWillBeUnloaded(const ACHAR * ) {}",
+      "header": "rxdlinkr.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcRxDLinkerReactor::rxAppUnloaded#1",
+      "class": "AcRxDLinkerReactor",
+      "member": "rxAppUnloaded",
+      "overload": 1,
+      "declaration": "virtual void rxAppUnloaded(const ACHAR * ) {}",
+      "header": "rxdlinkr.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "AcRxDLinkerReactor::rxAppUnloadAborted#1",
+      "class": "AcRxDLinkerReactor",
+      "member": "rxAppUnloadAborted",
+      "overload": 1,
+      "declaration": "virtual void rxAppUnloadAborted(const ACHAR * ) {}",
+      "header": "rxdlinkr.h",
+      "kind": "callback",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "The bounded fixture does not perform the operation that triggers or invokes this member during the measured interval."
+    },
+    {
+      "memberId": "ALIAS-AER2",
+      "class": "AcEditorReactor2",
+      "member": "alias",
+      "overload": 1,
+      "declaration": "#define AcEditorReactor2 AcEditorReactor",
+      "header": "aced.h",
+      "kind": "alias",
+      "headerReconciliation": "DRIFT",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "ALIAS-AER3",
+      "class": "AcEditorReactor3",
+      "member": "alias",
+      "overload": 1,
+      "declaration": "#define AcEditorReactor3 AcEditorReactor",
+      "header": "aced.h",
+      "kind": "alias",
+      "headerReconciliation": "DRIFT",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "REG-DB-ADD",
+      "class": "AcDbDatabase",
+      "member": "addReactor",
+      "overload": 1,
+      "declaration": "Acad::ErrorStatus addReactor(AcDbDatabaseReactor*) const",
+      "header": "dbmain.h",
+      "kind": "support_api",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "SETUP_CLEANUP",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "IN_RETAINED",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "REG-DB-REMOVE",
+      "class": "AcDbDatabase",
+      "member": "removeReactor",
+      "overload": 1,
+      "declaration": "Acad::ErrorStatus removeReactor(AcDbDatabaseReactor*) const",
+      "header": "dbmain.h",
+      "kind": "support_api",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "SETUP_CLEANUP",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "IN_RETAINED",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "REG-OBJ-ADD",
+      "class": "AcDbObject",
+      "member": "addReactor",
+      "overload": 1,
+      "declaration": "Acad::ErrorStatus addReactor(AcDbObjectReactor*) const",
+      "header": "dbObject.h",
+      "kind": "support_api",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "SETUP_CLEANUP",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "IN_RETAINED",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "REG-OBJ-REMOVE",
+      "class": "AcDbObject",
+      "member": "removeReactor",
+      "overload": 1,
+      "declaration": "Acad::ErrorStatus removeReactor(AcDbObjectReactor*) const",
+      "header": "dbObject.h",
+      "kind": "support_api",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "SETUP_CLEANUP",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "IN_RETAINED",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "REG-TX-ADD",
+      "class": "AcDbTransactionManager",
+      "member": "addReactor",
+      "overload": 1,
+      "declaration": "void addReactor(AcTransactionReactor*)",
+      "header": "dbtrans.h",
+      "kind": "support_api",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "SETUP_CLEANUP",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "IN_RETAINED",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "REG-TX-REMOVE",
+      "class": "AcDbTransactionManager",
+      "member": "removeReactor",
+      "overload": 1,
+      "declaration": "void removeReactor(AcTransactionReactor*)",
+      "header": "dbtrans.h",
+      "kind": "support_api",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "SETUP_CLEANUP",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "IN_RETAINED",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "REG-ED-ADD",
+      "class": "AcEditor",
+      "member": "addReactor",
+      "overload": 1,
+      "declaration": "void addReactor(AcRxEventReactor*)",
+      "header": "aced.h",
+      "kind": "support_api",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "SETUP_CLEANUP",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "IN_RETAINED",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "REG-ED-REMOVE",
+      "class": "AcEditor",
+      "member": "removeReactor",
+      "overload": 1,
+      "declaration": "void removeReactor(AcRxEventReactor*)",
+      "header": "aced.h",
+      "kind": "support_api",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "SETUP_CLEANUP",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "IN_RETAINED",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "REG-RX-ADD",
+      "class": "AcRxDynamicLinker",
+      "member": "addReactor",
+      "overload": 1,
+      "declaration": "void addReactor(AcRxDLinkerReactor*)",
+      "header": "rxdlinkr.h",
+      "kind": "support_api",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "SETUP_CLEANUP",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "IN_RETAINED",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "REG-RX-REMOVE",
+      "class": "AcRxDynamicLinker",
+      "member": "removeReactor",
+      "overload": 1,
+      "declaration": "void removeReactor(AcRxDLinkerReactor*)",
+      "header": "rxdlinkr.h",
+      "kind": "support_api",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "SETUP_CLEANUP",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [],
+      "disposition": "IN_RETAINED",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "LOAD-ACED",
+      "class": "free",
+      "member": "acedArxLoad",
+      "overload": 1,
+      "declaration": "int acedArxLoad(const ACHAR*)",
+      "header": "acedads.h",
+      "kind": "free_function",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "SETUP_CLEANUP",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [
+        "T15"
+      ],
+      "disposition": "IN_RETAINED",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    },
+    {
+      "memberId": "LOAD-ACRX",
+      "class": "free",
+      "member": "acrxLoadApp",
+      "overload": 1,
+      "declaration": "bool acrxLoadApp(const ACHAR*,bool=false)",
+      "header": "rxregsvc.h",
+      "kind": "free_function",
+      "headerReconciliation": "MATCH",
+      "hfReachability": "NOT_TRIGGERED_DURING_HF",
+      "capabilities": [
+        "OUT_BY_OPERATION"
+      ],
+      "threats": [
+        "T15"
+      ],
+      "disposition": "OUT_BY_OPERATION",
+      "reason": "Exact alias/support API accounted individually; registration/load is fixture setup or a bounded T15 action, not an unlisted callback."
+    }
+  ],
+  "execution": "NOT_STARTED",
+  "ctdaHostPass": "NOT_EVALUATED",
+  "contract": {
+    "probeCount": 94,
+    "uniqueProbeIds": 94,
+    "fieldsPerProbe": 24,
+    "invalidFieldRows": 0,
+    "contractIdCount": 76,
+    "expectedAfterCount": 10,
+    "expectedAfterDeterministic": 10,
+    "cleanupIdsUsed": [
+      "CLEAN-APPCTX-PROCESS",
+      "CLEAN-BASE",
+      "CLEAN-C15-PROCESS",
+      "CLEAN-CHAIN-PROCESS",
+      "CLEAN-CMDCTX-PROCESS",
+      "CLEAN-DEFER",
+      "CLEAN-DOC",
+      "CLEAN-DOC-DEFER",
+      "CLEAN-OBJ",
+      "CLEAN-OBJ-DEFER"
+    ],
+    "unresolvedCleanup": 0,
+    "eventIdCount": 27,
+    "eventProjectionTriples": 234,
+    "schedulerIdCount": 3,
+    "schedulerProjectionPairs": 63,
+    "execution": "NOT_STARTED",
+    "ctdaHostPass": "NOT_EVALUATED"
+  }
+}
