@@ -1,0 +1,22 @@
+[
+  {
+    "command": "dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug -v:minimal",
+    "sha": "5386a211e49ae9c8a22eacc8cdcc3227cd95b584",
+    "clean_after": true,
+    "exit_code": 0,
+    "name": "UI Debug",
+    "elapsed_seconds": 25.4683082,
+    "clean_before": true,
+    "sdk": "8.0.423"
+  },
+  {
+    "command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -v:minimal",
+    "sha": "5386a211e49ae9c8a22eacc8cdcc3227cd95b584",
+    "clean_after": true,
+    "exit_code": 0,
+    "name": "Plugin Debug",
+    "elapsed_seconds": 14.3760028,
+    "clean_before": true,
+    "sdk": "8.0.423"
+  }
+]

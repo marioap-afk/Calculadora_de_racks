@@ -1,0 +1,11 @@
+{
+  "clean_before": true,
+  "sdk": "8.0.423",
+  "command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger trx;LogFileName=core-full.trx --results-directory C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\I58-F2-closure-39bb0b14fac7853cbcb431a7d9f82dc226d600a5",
+  "elapsed_seconds": 101.1730661,
+  "exit_code": 1,
+  "clean_after": true,
+  "name": "Core Full local",
+  "log": "core-full.log",
+  "sha": "39bb0b14fac7853cbcb431a7d9f82dc226d600a5"
+}

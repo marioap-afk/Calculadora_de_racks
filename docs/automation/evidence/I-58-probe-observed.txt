@@ -1,0 +1,78 @@
+FIXTURE dynamic: real store save/reopen OK
+RED dynamic/view expected=Single actual=Unreadable authoredNull=True
+RED dynamic/placement expected=Single actual=Unreadable authoredNull=True
+RED dynamic/effective-context expected=Single actual=Unreadable authoredNull=True
+RED dynamic/authored-mutation expected=Divergent actual=Unreadable authoredNull=True
+PASS dynamic/malformed-sibling expected=Unreadable actual=Unreadable authoredNull=True
+PASS dynamic/future-major expected=Unreadable actual=Unreadable authoredNull=True
+PASS dynamic/future-minor expected=Unreadable actual=Unreadable authoredNull=True
+PASS dynamic/malformed-version expected=Unreadable actual=Unreadable authoredNull=True
+RED dynamic/permuted expected=Single actual=Unreadable authoredNull=True
+RED dynamic/first-different expected=Divergent actual=Unreadable authoredNull=True
+RED dynamic/majority-same expected=Divergent actual=Unreadable authoredNull=True
+RED dynamic/save-reopen expected=Single actual=Unreadable authoredNull=True
+PASS dynamic/wrong-kind expected=Unreadable actual=Unreadable authoredNull=True
+PASS dynamic/unknown-payload expected=Unreadable actual=Unreadable authoredNull=True
+PASS dynamic/unknown-nested expected=Unreadable actual=Unreadable authoredNull=True
+OBSERVED dynamic: payloadUnknownPreserved=False; nestedUnknownPreserved=False
+PASS dynamic/unreadable-precedence expected=Unreadable actual=Unreadable authoredNull=True
+PASS dynamic/unreadable-precedence-permuted expected=Unreadable actual=Unreadable authoredNull=True
+FIXTURE pushback: real store save/reopen OK
+RED pushback/view expected=Single actual=Unreadable authoredNull=True
+RED pushback/placement expected=Single actual=Unreadable authoredNull=True
+RED pushback/effective-context expected=Single actual=Unreadable authoredNull=True
+RED pushback/authored-mutation expected=Divergent actual=Unreadable authoredNull=True
+PASS pushback/malformed-sibling expected=Unreadable actual=Unreadable authoredNull=True
+PASS pushback/future-major expected=Unreadable actual=Unreadable authoredNull=True
+PASS pushback/future-minor expected=Unreadable actual=Unreadable authoredNull=True
+PASS pushback/malformed-version expected=Unreadable actual=Unreadable authoredNull=True
+RED pushback/permuted expected=Single actual=Unreadable authoredNull=True
+RED pushback/first-different expected=Divergent actual=Unreadable authoredNull=True
+RED pushback/majority-same expected=Divergent actual=Unreadable authoredNull=True
+RED pushback/save-reopen expected=Single actual=Unreadable authoredNull=True
+PASS pushback/wrong-kind expected=Unreadable actual=Unreadable authoredNull=True
+PASS pushback/unknown-payload expected=Unreadable actual=Unreadable authoredNull=True
+PASS pushback/unknown-nested expected=Unreadable actual=Unreadable authoredNull=True
+OBSERVED pushback: payloadUnknownPreserved=True; nestedUnknownPreserved=False
+PASS pushback/unreadable-precedence expected=Unreadable actual=Unreadable authoredNull=True
+PASS pushback/unreadable-precedence-permuted expected=Unreadable actual=Unreadable authoredNull=True
+FIXTURE cantilever: real store save/reopen OK
+RED cantilever/view expected=Single actual=Unreadable authoredNull=True
+RED cantilever/placement expected=Single actual=Unreadable authoredNull=True
+RED cantilever/effective-context expected=Single actual=Unreadable authoredNull=True
+RED cantilever/authored-mutation expected=Divergent actual=Unreadable authoredNull=True
+PASS cantilever/malformed-sibling expected=Unreadable actual=Unreadable authoredNull=True
+PASS cantilever/future-major expected=Unreadable actual=Unreadable authoredNull=True
+PASS cantilever/future-minor expected=Unreadable actual=Unreadable authoredNull=True
+PASS cantilever/malformed-version expected=Unreadable actual=Unreadable authoredNull=True
+RED cantilever/permuted expected=Single actual=Unreadable authoredNull=True
+RED cantilever/first-different expected=Divergent actual=Unreadable authoredNull=True
+RED cantilever/majority-same expected=Divergent actual=Unreadable authoredNull=True
+RED cantilever/save-reopen expected=Single actual=Unreadable authoredNull=True
+PASS cantilever/wrong-kind expected=Unreadable actual=Unreadable authoredNull=True
+PASS cantilever/unknown-payload expected=Unreadable actual=Unreadable authoredNull=True
+PASS cantilever/unknown-nested expected=Unreadable actual=Unreadable authoredNull=True
+OBSERVED cantilever: payloadUnknownPreserved=True; nestedUnknownPreserved=False
+OBSERVED cantilever: IntervalCountSerialized=True
+PASS cantilever/unreadable-precedence expected=Unreadable actual=Unreadable authoredNull=True
+PASS cantilever/unreadable-precedence-permuted expected=Unreadable actual=Unreadable authoredNull=True
+FIXTURE cabecera: real store save/reopen OK
+RED cabecera/view expected=Single actual=Unreadable authoredNull=True
+RED cabecera/placement expected=Single actual=Unreadable authoredNull=True
+RED cabecera/effective-context expected=Single actual=Unreadable authoredNull=True
+RED cabecera/authored-mutation expected=Divergent actual=Unreadable authoredNull=True
+PASS cabecera/malformed-sibling expected=Unreadable actual=Unreadable authoredNull=True
+PASS cabecera/future-major expected=Unreadable actual=Unreadable authoredNull=True
+PASS cabecera/future-minor expected=Unreadable actual=Unreadable authoredNull=True
+PASS cabecera/malformed-version expected=Unreadable actual=Unreadable authoredNull=True
+RED cabecera/permuted expected=Single actual=Unreadable authoredNull=True
+RED cabecera/first-different expected=Divergent actual=Unreadable authoredNull=True
+RED cabecera/majority-same expected=Divergent actual=Unreadable authoredNull=True
+RED cabecera/save-reopen expected=Single actual=Unreadable authoredNull=True
+PASS cabecera/wrong-kind expected=Unreadable actual=Unreadable authoredNull=True
+PASS cabecera/unknown-payload expected=Unreadable actual=Unreadable authoredNull=True
+PASS cabecera/unknown-nested expected=Unreadable actual=Unreadable authoredNull=True
+OBSERVED cabecera: payloadUnknownPreserved=False; nestedUnknownPreserved=False
+PASS cabecera/unreadable-precedence expected=Unreadable actual=Unreadable authoredNull=True
+PASS cabecera/unreadable-precedence-permuted expected=Unreadable actual=Unreadable authoredNull=True
+SELECTED=68; EXPECTATION_FAILURES=32; BASELINE=UNSUPPORTED; NOT_F1_GATE_EVIDENCE

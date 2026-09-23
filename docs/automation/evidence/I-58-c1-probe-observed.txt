@@ -1,0 +1,12 @@
+A-new: real WPF request outer=10000000-0000-0000-0000-000000000001; inner=7722e18c-f448-471a-bfc3-5be5d4031755; innerPreserved=True
+A-new: envelope=10000000-0000-0000-0000-000000000001; Line.Id=7722e18c-f448-471a-bfc3-5be5d4031755; outerEqualsInner=False; siblingOuterEqual=True; siblingInnerEqual=True; AUTH09input=CantileverLineDesign:7722e18c-f448-471a-bfc3-5be5d4031755; assemblerCalls=1
+AUTH10: source-inspected only; typed resolved input, no envelope Id parameter. I55 membership: source-inspected only; outer RackId/ProbeId, not inner. Future AUTH13 outcome NOT MEASURED.
+B-library: real WPF request outer=20000000-0000-0000-0000-000000000002; inner=7722e18c-f448-471a-bfc3-5be5d4031755; innerPreserved=True
+B-library: envelope=20000000-0000-0000-0000-000000000002; Line.Id=7722e18c-f448-471a-bfc3-5be5d4031755; outerEqualsInner=False; siblingOuterEqual=True; siblingInnerEqual=True; AUTH09input=CantileverLineDesign:7722e18c-f448-471a-bfc3-5be5d4031755; assemblerCalls=1
+AUTH10: source-inspected only; typed resolved input, no envelope Id parameter. I55 membership: source-inspected only; outer RackId/ProbeId, not inner. Future AUTH13 outcome NOT MEASURED.
+C-reopen: real WPF request outer=20000000-0000-0000-0000-000000000002; inner=7722e18c-f448-471a-bfc3-5be5d4031755; innerPreserved=True
+C-reopen-new-sibling: envelope=20000000-0000-0000-0000-000000000002; Line.Id=7722e18c-f448-471a-bfc3-5be5d4031755; outerEqualsInner=False; siblingOuterEqual=True; siblingInnerEqual=True; AUTH09input=CantileverLineDesign:7722e18c-f448-471a-bfc3-5be5d4031755; assemblerCalls=1
+AUTH10: source-inspected only; typed resolved input, no envelope Id parameter. I55 membership: source-inspected only; outer RackId/ProbeId, not inner. Future AUTH13 outcome NOT MEASURED.
+D-restamp-reconstructed: envelope=40000000-0000-0000-0000-000000000004; Line.Id=40000000-0000-0000-0000-000000000004; outerEqualsInner=True; siblingOuterEqual=True; siblingInnerEqual=True; AUTH09input=CantileverLineDesign:40000000-0000-0000-0000-000000000004; assemblerCalls=1
+AUTH10: source-inspected only; typed resolved input, no envelope Id parameter. I55 membership: source-inspected only; outer RackId/ProbeId, not inner. Future AUTH13 outcome NOT MEASURED.
+SELECTED=4; FAILED=0; comparator implemented/executed=NO; AutoCAD executed=NO

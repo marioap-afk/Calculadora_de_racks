@@ -1,0 +1,10 @@
+{
+  "clean_before": true,
+  "clean_after": true,
+  "elapsed_seconds": 253.5272561,
+  "exit_code": 0,
+  "name": "Core Full local",
+  "sha": "860be16486883301b475594f9738f154a3ca3e12",
+  "command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger trx;LogFileName=core-full.trx --results-directory <receipt directory>",
+  "sdk": "8.0.423"
+}

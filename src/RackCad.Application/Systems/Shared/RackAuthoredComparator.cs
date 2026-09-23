@@ -62,7 +62,7 @@ namespace RackCad.Application.Systems.Shared
     /// Per-kind authored comparators. Selective delegates to its existing include-by-default structural
     /// authority. Kinds without demonstrated authored equivalence fail closed; no sibling is selected.
     /// </summary>
-    public static class RackAuthoredComparatorPorts
+    public static partial class RackAuthoredComparatorPorts
     {
         public static IRackAuthoredComparatorPort<SelectiveAuthoredComparisonInput, SelectivePalletDesignDocument>
             Selective() => new SelectiveComparator();

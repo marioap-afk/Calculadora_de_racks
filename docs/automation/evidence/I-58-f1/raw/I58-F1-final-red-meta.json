@@ -1,0 +1,9 @@
+{
+  "clean_tree": false,
+  "exit": 1,
+  "sdk": "8.0.423",
+  "patch_sha256": "5706a7b13841dbb1e0e25a92a4243164ae0e9cb46851c728bce8db5087f2bac6",
+  "base_sha": "26e52b84b55afb902977144be3373efd78c6b1b3",
+  "command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter FullyQualifiedName~I58F1CharacterizationTests.Frozen_matrix_against_current_port --logger 'trx;LogFileName=I58-F1-final-red.trx' --results-directory <TEMP>/I58-F1-results",
+  "wall_seconds": 20.135723
+}

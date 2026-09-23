@@ -1,0 +1,17 @@
+{
+  "label": "final-ui-build",
+  "executable": "dotnet",
+  "clean_after": true,
+  "wall_seconds": 6.7604115,
+  "exit": 0,
+  "sha": "13381b6c04d886f0478e2b264145d417ce95228f",
+  "clean_before": true,
+  "arguments": [
+    "build",
+    "src/RackCad.UI/RackCad.UI.csproj",
+    "-c",
+    "Debug",
+    "-v:minimal"
+  ],
+  "sdk": "8.0.423"
+}

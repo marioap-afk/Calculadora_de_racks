@@ -1,0 +1,174 @@
+{
+  "Gate": "F1 / CHARACTERIZATION + RED",
+  "F1_START_SHA": "fd13dd8d57da5c27889dec93dd288ae5259fc318",
+  "F1_CLOSURE_SHA": "13381b6c04d886f0478e2b264145d417ce95228f",
+  "production_diff": "NONE",
+  "freeze_blob": "f89671cfe9f1036e24211287514414b3f555182a",
+  "sdk": "8.0.423",
+  "local": [
+    {
+      "label": "final-focal",
+      "executable": "dotnet",
+      "clean_after": true,
+      "wall_seconds": 26.0522004,
+      "exit": 0,
+      "sha": "13381b6c04d886f0478e2b264145d417ce95228f",
+      "clean_before": true,
+      "arguments": [
+        "test",
+        "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "--filter",
+        "FullyQualifiedName~I58F1",
+        "--logger",
+        "trx;LogFileName=I58-F1-final-focal.trx",
+        "--results-directory",
+        "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp/I58-F1-results"
+      ],
+      "sdk": "8.0.423",
+      "counts": {
+        "total": "1912",
+        "executed": "1912",
+        "passed": "1912",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    },
+    {
+      "label": "final-impact",
+      "executable": "dotnet",
+      "clean_after": true,
+      "wall_seconds": 11.0594039,
+      "exit": 0,
+      "sha": "13381b6c04d886f0478e2b264145d417ce95228f",
+      "clean_before": true,
+      "arguments": [
+        "test",
+        "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "--filter",
+        "FullyQualifiedName~SharedViewFoundationF5Tests|FullyQualifiedName~SharedViewFoundationF6Tests|FullyQualifiedName~SelectiveAuthored",
+        "--logger",
+        "trx;LogFileName=I58-F1-final-impact.trx",
+        "--results-directory",
+        "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp/I58-F1-results"
+      ],
+      "sdk": "8.0.423",
+      "counts": {
+        "total": "86",
+        "executed": "86",
+        "passed": "86",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    },
+    {
+      "label": "final-core",
+      "executable": "dotnet",
+      "clean_after": true,
+      "wall_seconds": 99.0306711,
+      "exit": 0,
+      "sha": "13381b6c04d886f0478e2b264145d417ce95228f",
+      "clean_before": true,
+      "arguments": [
+        "test",
+        "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "--logger",
+        "trx;LogFileName=I58-F1-final-core.trx",
+        "--results-directory",
+        "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp/I58-F1-results"
+      ],
+      "sdk": "8.0.423",
+      "counts": {
+        "total": "10148",
+        "executed": "10148",
+        "passed": "10148",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    },
+    {
+      "label": "final-ui-build",
+      "executable": "dotnet",
+      "clean_after": true,
+      "wall_seconds": 6.7604115,
+      "exit": 0,
+      "sha": "13381b6c04d886f0478e2b264145d417ce95228f",
+      "clean_before": true,
+      "arguments": [
+        "build",
+        "src/RackCad.UI/RackCad.UI.csproj",
+        "-c",
+        "Debug",
+        "-v:minimal"
+      ],
+      "sdk": "8.0.423"
+    },
+    {
+      "label": "final-plugin-build",
+      "executable": "dotnet",
+      "clean_after": true,
+      "wall_seconds": 4.7086646,
+      "exit": 0,
+      "sha": "13381b6c04d886f0478e2b264145d417ce95228f",
+      "clean_before": true,
+      "arguments": [
+        "build",
+        "src/RackCad.Plugin/RackCad.Plugin.csproj",
+        "-c",
+        "Debug",
+        "-v:minimal"
+      ],
+      "sdk": "8.0.423"
+    }
+  ],
+  "CI": {
+    "run": 35903546574,
+    "event": "push",
+    "head_sha": "13381b6c04d886f0478e2b264145d417ce95228f",
+    "head_branch": "architecture/shared-view-authored-comparators",
+    "ref": "refs/heads/architecture/shared-view-authored-comparators",
+    "required_jobs": {
+      "Tests (Domain + Application)": "success",
+      "UI Tests (WPF controls, net8.0-windows)": "success",
+      "Build UI (WPF, valida API de Application)": "success",
+      "Build Plugin without AutoCAD": "success"
+    },
+    "url": "https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35903546574",
+    "full_record": "ci-closure.json"
+  },
+  "RED_identity": "26e52b84b55afb902977144be3373efd78c6b1b3 + captured overlay; never attributed to clean closure SHA",
+  "disposition": "F1 COMPLETE / COORDINATOR REVIEW REQUIRED",
+  "publication": "Subsequent documentation-only commit; local closure evidence remains on F1_CLOSURE_SHA, never inherited."
+}

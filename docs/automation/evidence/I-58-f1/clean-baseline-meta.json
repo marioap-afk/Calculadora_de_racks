@@ -1,0 +1,9 @@
+{
+  "clean_before": true,
+  "exit": 0,
+  "wall_seconds": 31.5386801,
+  "sha": "42c49cc2bfe815fec6a27ece5234e04e4dfdc457",
+  "sdk": "8.0.423",
+  "clean_after": true,
+  "command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter FullyQualifiedName~I58F1 --logger trx;LogFileName=I58-F1-clean-baseline.trx --results-directory <TEMP>/I58-F1-results"
+}

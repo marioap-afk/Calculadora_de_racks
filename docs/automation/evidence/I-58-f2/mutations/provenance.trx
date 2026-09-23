@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="c87883a4-0ed5-4e42-81c4-e1bda2b218f8" name="alejandra-mendoza@IMING-2 2026-09-23 13:29:19" runUser="IMSA\alejandra-mendoza" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-23T13:29:19.3629014-06:00" queuing="2026-09-23T13:29:19.3629018-06:00" start="2026-09-23T13:29:14.9391932-06:00" finish="2026-09-23T13:29:19.3751202-06:00" />
+  <TestSettings name="default" id="9247d516-4906-4479-8fb5-d207f3ef798e">
+    <Deployment runDeploymentRoot="alejandra-mendoza_IMING-2_2026-09-23_13_29_19" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="38752f9f-0b71-41e1-9548-bddd444cd68d" testId="edc02d22-6e0f-0f96-b1fe-5e5916a41ab7" testName="RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(mode: &quot;pushback-composite&quot;)" computerName="IMING-2" duration="00:00:00.0419630" startTime="2026-09-23T13:29:19.2634315-06:00" endTime="2026-09-23T13:29:19.2634322-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="38752f9f-0b71-41e1-9548-bddd444cd68d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty&#xD;
+Collection: ["PROVENANCE", "PROVENANCE", "PROVENANCE", "PROVENANCE", "PROVENANCE", ···]</Message>
+          <StackTrace>   at RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(String mode) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2MaterializationTests.cs:line 40&#xD;
+   at InvokeStub_I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a5993b04-004c-4775-81eb-02265f9d2e69" testId="d8324658-aed2-67fb-3fa2-c0c64d5851a2" testName="RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(mode: &quot;pushback-simple&quot;)" computerName="IMING-2" duration="00:00:00.0510961" startTime="2026-09-23T13:29:19.2252188-06:00" endTime="2026-09-23T13:29:19.2252323-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a5993b04-004c-4775-81eb-02265f9d2e69">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty&#xD;
+Collection: ["PROVENANCE", "PROVENANCE"]</Message>
+          <StackTrace>   at RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(String mode) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2MaterializationTests.cs:line 40&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="548a6a6b-bc46-41bb-a4c5-f23e10164642" testId="52cf3fa4-5ef2-2b94-b64c-9ebea721016c" testName="RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(mode: &quot;dynamic&quot;)" computerName="IMING-2" duration="00:00:00.0044084" startTime="2026-09-23T13:29:19.2678128-06:00" endTime="2026-09-23T13:29:19.2678128-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="548a6a6b-bc46-41bb-a4c5-f23e10164642">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty&#xD;
+Collection: ["PROVENANCE", "PROVENANCE"]</Message>
+          <StackTrace>   at RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(String mode) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2MaterializationTests.cs:line 28&#xD;
+   at InvokeStub_I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(mode: &quot;pushback-composite&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="edc02d22-6e0f-0f96-b1fe-5e5916a41ab7">
+      <Execution id="38752f9f-0b71-41e1-9548-bddd444cd68d" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2MaterializationTests" name="Real_Single_keeps_fallback_local_parity_and_provenance" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(mode: &quot;dynamic&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="52cf3fa4-5ef2-2b94-b64c-9ebea721016c">
+      <Execution id="548a6a6b-bc46-41bb-a4c5-f23e10164642" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2MaterializationTests" name="Real_Single_keeps_fallback_local_parity_and_provenance" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(mode: &quot;pushback-simple&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="d8324658-aed2-67fb-3fa2-c0c64d5851a2">
+      <Execution id="a5993b04-004c-4775-81eb-02265f9d2e69" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2MaterializationTests" name="Real_Single_keeps_fallback_local_parity_and_provenance" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="edc02d22-6e0f-0f96-b1fe-5e5916a41ab7" executionId="38752f9f-0b71-41e1-9548-bddd444cd68d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d8324658-aed2-67fb-3fa2-c0c64d5851a2" executionId="a5993b04-004c-4775-81eb-02265f9d2e69" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="52cf3fa4-5ef2-2b94-b64c-9ebea721016c" executionId="548a6a6b-bc46-41bb-a4c5-f23e10164642" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Resultados sin formato de lista" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Todos los resultados cargados" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="3" executed="3" passed="0" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)&#xD;
+[xUnit.net 00:00:00.15]   Discovering: RackCad.Tests&#xD;
+[xUnit.net 00:00:03.51]   Discovered:  RackCad.Tests&#xD;
+[xUnit.net 00:00:03.52]   Starting:    RackCad.Tests&#xD;
+[xUnit.net 00:00:03.63]       Assert.Empty() Failure: Collection was not empty&#xD;
+[xUnit.net 00:00:03.63]       Collection: ["PROVENANCE", "PROVENANCE"]&#xD;
+[xUnit.net 00:00:03.63]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.63]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2MaterializationTests.cs(40,0): at RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(String mode)&#xD;
+[xUnit.net 00:00:03.63]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:03.63]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:03.67]       Assert.Empty() Failure: Collection was not empty&#xD;
+[xUnit.net 00:00:03.67]       Collection: ["PROVENANCE", "PROVENANCE", "PROVENANCE", "PROVENANCE", "PROVENANCE", ···]&#xD;
+[xUnit.net 00:00:03.67]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.67]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2MaterializationTests.cs(40,0): at RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(String mode)&#xD;
+[xUnit.net 00:00:03.67]            at InvokeStub_I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(Object, Span`1)&#xD;
+[xUnit.net 00:00:03.67]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:03.68]       Assert.Empty() Failure: Collection was not empty&#xD;
+[xUnit.net 00:00:03.68]       Collection: ["PROVENANCE", "PROVENANCE"]&#xD;
+[xUnit.net 00:00:03.68]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.68]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2MaterializationTests.cs(28,0): at RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(String mode)&#xD;
+[xUnit.net 00:00:03.68]            at InvokeStub_I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(Object, Span`1)&#xD;
+[xUnit.net 00:00:03.68]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:03.68]   Finished:    RackCad.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:29:19.2226270-06:00">
+        <Text>[xUnit.net 00:00:03.63]     RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(mode: "pushback-simple") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:29:19.2634302-06:00">
+        <Text>[xUnit.net 00:00:03.67]     RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(mode: "pushback-composite") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:29:19.2679302-06:00">
+        <Text>[xUnit.net 00:00:03.68]     RackCad.Tests.I58F2MaterializationTests.Real_Single_keeps_fallback_local_parity_and_provenance(mode: "dynamic") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

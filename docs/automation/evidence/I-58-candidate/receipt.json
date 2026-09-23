@@ -1,0 +1,49 @@
+{
+  "initiative": "I-58",
+  "final_candidate_sha": "85d746f0f760608b60e4c992e76c33287e197bdc",
+  "candidate_validation": "complete",
+  "sdk": "8.0.423",
+  "local": {
+    "core_full": { "passed": 11221, "failed": 0, "skipped": 0 },
+    "ui_full": { "passed": 1581, "failed": 0, "historical_skips": 17, "total": 1598 },
+    "focal_relevant": { "passed": 3104, "failed": 0, "skipped": 0 },
+    "debug_ui": "pass",
+    "debug_plugin": "pass_with_two_historical_MSB3277"
+  },
+  "plugin": {
+    "product_version": "1.0.0+85d746f0f760608b60e4c992e76c33287e197bdc",
+    "informational_version": "1.0.0+85d746f0f760608b60e4c992e76c33287e197bdc"
+  },
+  "push_ci": {
+    "run_id": 35921562865,
+    "event": "push",
+    "branch": "architecture/shared-view-authored-comparators",
+    "head_sha": "85d746f0f760608b60e4c992e76c33287e197bdc",
+    "required_jobs": "4/4_success"
+  },
+  "coverage": {
+    "run_id": 35925861392,
+    "event": "workflow_dispatch",
+    "requested_candidate_sha": "85d746f0f760608b60e4c992e76c33287e197bdc",
+    "measured_sha": "85d746f0f760608b60e4c992e76c33287e197bdc",
+    "artifact": "rackcad-coverage-cobertura",
+    "artifact_id": 10778927120,
+    "artifact_digest": "sha256:6a099a97c9efba70bc355bdcba9b8ba886140ea13a4cab42795dc33c88d1436d",
+    "lines": { "covered": 46074, "valid": 50863 },
+    "branches": { "covered": 18854, "valid": 23897 }
+  },
+  "conformance": {
+    "coordinator": "conforming",
+    "architect": "conforming",
+    "reviewed_sha": "85d746f0f760608b60e4c992e76c33287e197bdc",
+    "ready_01_09": "satisfied",
+    "open_required": 0,
+    "amendments": "none"
+  },
+  "owner_validation": {
+    "ov58_04_applicable": false,
+    "disposition": "not_applicable"
+  },
+  "integration": "pending",
+  "i55_g12": "not_unblocked"
+}

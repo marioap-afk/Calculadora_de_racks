@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="593bbd72-7b9b-4673-a9d4-1b2d8a5c52b9" name="alejandra-mendoza@IMING-2 2026-09-23 12:09:54" runUser="IMSA\alejandra-mendoza" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-23T12:09:54.8925889-06:00" queuing="2026-09-23T12:09:54.8925895-06:00" start="2026-09-23T12:09:51.7085375-06:00" finish="2026-09-23T12:09:56.7610391-06:00" />
+  <TestSettings name="default" id="90a7a44e-9bf9-4fad-88ac-a942263a75a1">
+    <Deployment runDeploymentRoot="alejandra-mendoza_IMING-2_2026-09-23_12_09_54" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="1cf73f8d-1f11-416d-8739-12b157df5e40" testId="4dd3f94b-5dec-c029-40d1-e22a1c5753f0" testName="RackCad.Tests.I58F1OracleChecks.Materialization_sabotage_is_observable_beyond_internal_equality(attack: &quot;payload-moved&quot;)" computerName="IMING-2" duration="00:00:00.0010984" startTime="2026-09-23T12:09:55.6684991-06:00" endTime="2026-09-23T12:09:55.6684993-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1cf73f8d-1f11-416d-8739-12b157df5e40" />
+    <UnitTestResult executionId="51907df7-376b-4e6c-9126-dca658a34544" testId="8120b766-f6a9-ed75-8b9e-65962ff051e7" testName="RackCad.Tests.I58F1OracleChecks.Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN(kind: &quot;cabecera&quot;)" computerName="IMING-2" duration="00:00:00.0326352" startTime="2026-09-23T12:09:55.5098210-06:00" endTime="2026-09-23T12:09:55.5098216-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="51907df7-376b-4e6c-9126-dca658a34544" />
+    <UnitTestResult executionId="abc3ea69-1333-4bac-93ed-88a03652be2c" testId="dc423cc6-bf29-348f-e833-c3fe8ae08739" testName="RackCad.Tests.I58F1OracleChecks.Materialization_sabotage_is_observable_beyond_internal_equality(attack: &quot;global&quot;)" computerName="IMING-2" duration="00:00:00.0044242" startTime="2026-09-23T12:09:55.6735851-06:00" endTime="2026-09-23T12:09:55.6735855-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="abc3ea69-1333-4bac-93ed-88a03652be2c" />
+    <UnitTestResult executionId="c7d0889d-600c-47cc-b487-99eee1017d69" testId="a9c99666-4f90-e824-a29a-ccd4b267b1f0" testName="RackCad.Tests.I58F1OracleChecks.Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN(kind: &quot;pushback&quot;)" computerName="IMING-2" duration="00:00:00.0976936" startTime="2026-09-23T12:09:55.6672631-06:00" endTime="2026-09-23T12:09:55.6672636-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c7d0889d-600c-47cc-b487-99eee1017d69" />
+    <UnitTestResult executionId="54dcab16-a441-480f-958c-295e9de31028" testId="f12286c5-581f-3305-b722-a9b7b7fdaf30" testName="RackCad.Tests.I58F1OracleChecks.Composite_fixture_resolves_rack_and_local_A_B(global: 0, calcA: True)" computerName="IMING-2" duration="00:00:00.0411226" startTime="2026-09-23T12:09:54.8050986-06:00" endTime="2026-09-23T12:09:54.8050990-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="54dcab16-a441-480f-958c-295e9de31028" />
+    <UnitTestResult executionId="2c71583e-fddd-4a8a-a893-9a2f0368ff53" testId="0df1122f-f245-bb3b-81ca-0dc71278f12d" testName="RackCad.Tests.I58F1OracleChecks.V2_header_null_sabotage_breaks_real_resolution_parity(push: True, peralte: 9)" computerName="IMING-2" duration="00:00:00.0066166" startTime="2026-09-23T12:09:54.8337252-06:00" endTime="2026-09-23T12:09:54.8337256-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2c71583e-fddd-4a8a-a893-9a2f0368ff53" />
+    <UnitTestResult executionId="95ab957b-1350-4800-9f64-f4d176d2f93e" testId="827e13ea-f83b-ea34-f720-242e19e4f5ec" testName="RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(kind: &quot;pushback&quot;)" computerName="IMING-2" duration="00:00:00.3445205" startTime="2026-09-23T12:09:56.3836799-06:00" endTime="2026-09-23T12:09:56.3836803-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="95ab957b-1350-4800-9f64-f4d176d2f93e">
+      <Output>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset</Message>
+          <StackTrace>   at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__M|5_0(String row, String path, String value, RackAuthoredComparisonOutcome expected, &lt;&gt;c__DisplayClass5_0&amp;) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 128&#xD;
+   at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__C|5_2(String row, String path, String v, RackAuthoredComparisonOutcome e, &lt;&gt;c__DisplayClass5_0&amp;) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 164&#xD;
+   at RackCad.Tests.I58F1Matrix.AddMutations(List`1 cases, String k, String a) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 167&#xD;
+   at RackCad.Tests.I58F1Matrix.Build() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 78&#xD;
+   at RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(String kind) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1OracleChecks.cs:line 102&#xD;
+   at InvokeStub_I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7b28d6f1-851f-4b94-b616-ae18b3377093" testId="dac09d64-a587-569f-6d53-3a7597af0816" testName="RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(kind: &quot;dynamic&quot;)" computerName="IMING-2" duration="00:00:00.3620080" startTime="2026-09-23T12:09:56.0380557-06:00" endTime="2026-09-23T12:09:56.0380560-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7b28d6f1-851f-4b94-b616-ae18b3377093">
+      <Output>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset</Message>
+          <StackTrace>   at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__M|5_0(String row, String path, String value, RackAuthoredComparisonOutcome expected, &lt;&gt;c__DisplayClass5_0&amp;) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 128&#xD;
+   at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__C|5_2(String row, String path, String v, RackAuthoredComparisonOutcome e, &lt;&gt;c__DisplayClass5_0&amp;) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 164&#xD;
+   at RackCad.Tests.I58F1Matrix.AddMutations(List`1 cases, String k, String a) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 167&#xD;
+   at RackCad.Tests.I58F1Matrix.Build() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 78&#xD;
+   at RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(String kind) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1OracleChecks.cs:line 102&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8631b6b2-f27d-4374-92b5-11f1635332a8" testId="5daac44c-2fc9-2e37-4a3e-b538f3abf4fe" testName="RackCad.Tests.I58F1OracleChecks.Materialization_sabotage_is_observable_beyond_internal_equality(attack: &quot;module&quot;)" computerName="IMING-2" duration="00:00:00.0000927" startTime="2026-09-23T12:09:55.6765266-06:00" endTime="2026-09-23T12:09:55.6765267-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8631b6b2-f27d-4374-92b5-11f1635332a8" />
+    <UnitTestResult executionId="ea3ca751-743f-4390-ba2c-8839b2dca896" testId="07f0a710-00df-0ff5-30bd-c8645f5ea67d" testName="RackCad.Tests.I58F1OracleChecks.V2_header_null_sabotage_breaks_real_resolution_parity(push: False, peralte: 7)" computerName="IMING-2" duration="00:00:00.0060375" startTime="2026-09-23T12:09:54.8207817-06:00" endTime="2026-09-23T12:09:54.8207834-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea3ca751-743f-4390-ba2c-8839b2dca896" />
+    <UnitTestResult executionId="9fcef38d-11ee-4915-8cd9-ca20ea374203" testId="0cd43dd4-ae32-cca4-6c9b-ae96f65d998d" testName="RackCad.Tests.I58F1CharacterizationTests.Matrix_manifest_has_unique_identities_and_all_rows" computerName="IMING-2" duration="00:00:00.3411159" startTime="2026-09-23T12:09:54.9981439-06:00" endTime="2026-09-23T12:09:54.9981444-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9fcef38d-11ee-4915-8cd9-ca20ea374203">
+      <Output>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset</Message>
+          <StackTrace>   at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__M|5_0(String row, String path, String value, RackAuthoredComparisonOutcome expected, &lt;&gt;c__DisplayClass5_0&amp;) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 128&#xD;
+   at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__C|5_2(String row, String path, String v, RackAuthoredComparisonOutcome e, &lt;&gt;c__DisplayClass5_0&amp;) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 164&#xD;
+   at RackCad.Tests.I58F1Matrix.AddMutations(List`1 cases, String k, String a) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 167&#xD;
+   at RackCad.Tests.I58F1Matrix.Build() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 78&#xD;
+   at RackCad.Tests.I58F1CharacterizationTests.Matrix_manifest_has_unique_identities_and_all_rows() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1CharacterizationTests.cs:line 37&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="27a30231-3228-417a-b88b-45d21764e263" testId="00de54e8-a852-12e0-c953-ceccb411e72a" testName="RackCad.Tests.I58F1OracleChecks.CT58_22_arbitrary_marker_and_Cama_remain_unsupported" computerName="IMING-2" duration="00:00:00.0092035" startTime="2026-09-23T12:09:54.6481990-06:00" endTime="2026-09-23T12:09:54.6482218-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="27a30231-3228-417a-b88b-45d21764e263" />
+    <UnitTestResult executionId="25dc71b3-2c06-42b6-af1a-eee9024d1d66" testId="dca87c79-17dc-731a-fbe3-1c510a21d853" testName="RackCad.Tests.I58F1OracleChecks.Composite_fixture_resolves_rack_and_local_A_B(global: 8, calcA: False)" computerName="IMING-2" duration="00:00:00.0220216" startTime="2026-09-23T12:09:54.7637545-06:00" endTime="2026-09-23T12:09:54.7637553-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="25dc71b3-2c06-42b6-af1a-eee9024d1d66" />
+    <UnitTestResult executionId="c738a68b-f5a4-43dc-9db9-c0bbb11c4315" testId="de427a3b-5d74-0098-7fbd-87a0f9ba4049" testName="RackCad.Tests.I58F1OracleChecks.Composite_fixture_resolves_rack_and_local_A_B(global: 0, calcA: False)" computerName="IMING-2" duration="00:00:00.0722395" startTime="2026-09-23T12:09:54.7206167-06:00" endTime="2026-09-23T12:09:54.7206171-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c738a68b-f5a4-43dc-9db9-c0bbb11c4315" />
+    <UnitTestResult executionId="39442593-cd24-4c9b-922c-d5aab5003f3e" testId="88dd045b-fcd3-8d65-89b2-c2b29cee46e6" testName="RackCad.Tests.I58F1OracleChecks.V2_header_null_sabotage_breaks_real_resolution_parity(push: True, peralte: 7)" computerName="IMING-2" duration="00:00:00.0093179" startTime="2026-09-23T12:09:54.8146120-06:00" endTime="2026-09-23T12:09:54.8146123-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="39442593-cd24-4c9b-922c-d5aab5003f3e" />
+    <UnitTestResult executionId="e5845f97-7df3-4cab-9985-f8c46857dd29" testId="b6ba6df4-3aad-2b95-97a0-3f4374241374" testName="RackCad.Tests.I58F1OracleChecks.Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN(kind: &quot;dynamic&quot;)" computerName="IMING-2" duration="00:00:00.0595337" startTime="2026-09-23T12:09:55.5693867-06:00" endTime="2026-09-23T12:09:55.5693871-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e5845f97-7df3-4cab-9985-f8c46857dd29" />
+    <UnitTestResult executionId="9e17477d-a1e3-4399-8ddf-e41b983239e1" testId="0eea961c-1c4c-cfe9-d79c-b5e3b2ab1c4c" testName="RackCad.Tests.I58F1OracleChecks.Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN(kind: &quot;cantilever&quot;)" computerName="IMING-2" duration="00:00:00.6428859" startTime="2026-09-23T12:09:55.4768968-06:00" endTime="2026-09-23T12:09:55.4768974-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9e17477d-a1e3-4399-8ddf-e41b983239e1" />
+    <UnitTestResult executionId="2a0b003e-8b2c-4175-84c5-c93494f20580" testId="26617b57-410d-92be-0329-b9b1ea529513" testName="RackCad.Tests.I58F1OracleChecks.Oracle_fixture_consistency_NOT_AUTH13_GREEN" computerName="IMING-2" duration="00:00:00.0010000" startTime="2026-09-23T12:09:56.6674577-06:00" endTime="2026-09-23T12:09:56.6674581-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2a0b003e-8b2c-4175-84c5-c93494f20580">
+      <Output>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset</Message>
+          <StackTrace>   at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__M|5_0(String row, String path, String value, RackAuthoredComparisonOutcome expected, &lt;&gt;c__DisplayClass5_0&amp;) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 128&#xD;
+   at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__C|5_2(String row, String path, String v, RackAuthoredComparisonOutcome e, &lt;&gt;c__DisplayClass5_0&amp;) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 164&#xD;
+   at RackCad.Tests.I58F1Matrix.AddMutations(List`1 cases, String k, String a) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 167&#xD;
+   at RackCad.Tests.I58F1Matrix.Build() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 78&#xD;
+   at RackCad.Tests.I58F1OracleChecks.Singles() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1OracleChecks.cs:line 18&#xD;
+   at InvokeStub_I58F1OracleChecks.Singles(Object, Object, IntPtr*)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="12995403-5673-40a4-9e37-b19dd913498a" testId="f5582540-91c7-f485-4783-5726302573c3" testName="RackCad.Tests.I58F1OracleChecks.Materialization_sabotage_is_observable_beyond_internal_equality(attack: &quot;provenance&quot;)" computerName="IMING-2" duration="00:00:00.0004002" startTime="2026-09-23T12:09:55.6689889-06:00" endTime="2026-09-23T12:09:55.6689889-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="12995403-5673-40a4-9e37-b19dd913498a" />
+    <UnitTestResult executionId="6402bd6f-c8cf-482b-a426-7f8a43e490f6" testId="54930bea-7c60-7217-7f81-4c180ef34866" testName="RackCad.Tests.I58F1OracleChecks.V2_header_null_sabotage_breaks_real_resolution_parity(push: False, peralte: 9)" computerName="IMING-2" duration="00:00:00.0060213" startTime="2026-09-23T12:09:54.8270226-06:00" endTime="2026-09-23T12:09:54.8270228-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6402bd6f-c8cf-482b-a426-7f8a43e490f6" />
+    <UnitTestResult executionId="8ca6f60e-beb8-49dc-81c1-fbbe48526f21" testId="53c97d62-f9c3-ac8d-2bf6-4def895e57b4" testName="RackCad.Tests.I58F1CharacterizationTests.Frozen_matrix_against_current_port" computerName="IMING-2" duration="00:00:00.0010000" startTime="2026-09-23T12:09:55.3750402-06:00" endTime="2026-09-23T12:09:55.3750404-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8ca6f60e-beb8-49dc-81c1-fbbe48526f21">
+      <Output>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset</Message>
+          <StackTrace>   at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__M|5_0(String row, String path, String value, RackAuthoredComparisonOutcome expected, &lt;&gt;c__DisplayClass5_0&amp;) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 128&#xD;
+   at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__C|5_2(String row, String path, String v, RackAuthoredComparisonOutcome e, &lt;&gt;c__DisplayClass5_0&amp;) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 164&#xD;
+   at RackCad.Tests.I58F1Matrix.AddMutations(List`1 cases, String k, String a) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 167&#xD;
+   at RackCad.Tests.I58F1Matrix.Build() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs:line 78&#xD;
+   at RackCad.Tests.I58F1CharacterizationTests.Matrix() in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1CharacterizationTests.cs:line 22&#xD;
+   at InvokeStub_I58F1CharacterizationTests.Matrix(Object, Object, IntPtr*)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ea92a9fb-53b8-4702-afb8-34143303326c" testId="c04b60c9-61e6-8004-b891-756469c0ab5f" testName="RackCad.Tests.I58F1OracleChecks.Composite_fixture_resolves_rack_and_local_A_B(global: 8, calcA: True)" computerName="IMING-2" duration="00:00:00.0220977" startTime="2026-09-23T12:09:54.7416270-06:00" endTime="2026-09-23T12:09:54.7416272-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea92a9fb-53b8-4702-afb8-34143303326c" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Composite_fixture_resolves_rack_and_local_A_B(global: 8, calcA: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="dca87c79-17dc-731a-fbe3-1c510a21d853">
+      <Execution id="25dc71b3-2c06-42b6-af1a-eee9024d1d66" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Composite_fixture_resolves_rack_and_local_A_B" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.V2_header_null_sabotage_breaks_real_resolution_parity(push: True, peralte: 9)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="0df1122f-f245-bb3b-81ca-0dc71278f12d">
+      <Execution id="2c71583e-fddd-4a8a-a893-9a2f0368ff53" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="V2_header_null_sabotage_breaks_real_resolution_parity" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN(kind: &quot;cantilever&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="0eea961c-1c4c-cfe9-d79c-b5e3b2ab1c4c">
+      <Execution id="9e17477d-a1e3-4399-8ddf-e41b983239e1" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Materialization_sabotage_is_observable_beyond_internal_equality(attack: &quot;provenance&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="f5582540-91c7-f485-4783-5726302573c3">
+      <Execution id="12995403-5673-40a4-9e37-b19dd913498a" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Materialization_sabotage_is_observable_beyond_internal_equality" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.V2_header_null_sabotage_breaks_real_resolution_parity(push: False, peralte: 9)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="54930bea-7c60-7217-7f81-4c180ef34866">
+      <Execution id="6402bd6f-c8cf-482b-a426-7f8a43e490f6" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="V2_header_null_sabotage_breaks_real_resolution_parity" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Materialization_sabotage_is_observable_beyond_internal_equality(attack: &quot;global&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="dc423cc6-bf29-348f-e833-c3fe8ae08739">
+      <Execution id="abc3ea69-1333-4bac-93ed-88a03652be2c" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Materialization_sabotage_is_observable_beyond_internal_equality" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.V2_header_null_sabotage_breaks_real_resolution_parity(push: False, peralte: 7)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="07f0a710-00df-0ff5-30bd-c8645f5ea67d">
+      <Execution id="ea3ca751-743f-4390-ba2c-8839b2dca896" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="V2_header_null_sabotage_breaks_real_resolution_parity" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.V2_header_null_sabotage_breaks_real_resolution_parity(push: True, peralte: 7)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="88dd045b-fcd3-8d65-89b2-c2b29cee46e6">
+      <Execution id="39442593-cd24-4c9b-922c-d5aab5003f3e" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="V2_header_null_sabotage_breaks_real_resolution_parity" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Composite_fixture_resolves_rack_and_local_A_B(global: 0, calcA: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="f12286c5-581f-3305-b722-a9b7b7fdaf30">
+      <Execution id="54dcab16-a441-480f-958c-295e9de31028" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Composite_fixture_resolves_rack_and_local_A_B" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN(kind: &quot;cabecera&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="8120b766-f6a9-ed75-8b9e-65962ff051e7">
+      <Execution id="51907df7-376b-4e6c-9126-dca658a34544" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.CT58_22_arbitrary_marker_and_Cama_remain_unsupported" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="00de54e8-a852-12e0-c953-ceccb411e72a">
+      <Execution id="27a30231-3228-417a-b88b-45d21764e263" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="CT58_22_arbitrary_marker_and_Cama_remain_unsupported" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(kind: &quot;pushback&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="827e13ea-f83b-ea34-f720-242e19e4f5ec">
+      <Execution id="95ab957b-1350-4800-9f64-f4d176d2f93e" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Ordered_first_positive_and_conservative_payload_are_distinct_obligations" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN(kind: &quot;dynamic&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="b6ba6df4-3aad-2b95-97a0-3f4374241374">
+      <Execution id="e5845f97-7df3-4cab-9985-f8c46857dd29" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Oracle_fixture_consistency_NOT_AUTH13_GREEN" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="26617b57-410d-92be-0329-b9b1ea529513">
+      <Execution id="2a0b003e-8b2c-4175-84c5-c93494f20580" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Oracle_fixture_consistency_NOT_AUTH13_GREEN" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN(kind: &quot;pushback&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="a9c99666-4f90-e824-a29a-ccd4b267b1f0">
+      <Execution id="c7d0889d-600c-47cc-b487-99eee1017d69" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1CharacterizationTests.Frozen_matrix_against_current_port" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="53c97d62-f9c3-ac8d-2bf6-4def895e57b4">
+      <Execution id="8ca6f60e-beb8-49dc-81c1-fbbe48526f21" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1CharacterizationTests" name="Frozen_matrix_against_current_port" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Composite_fixture_resolves_rack_and_local_A_B(global: 0, calcA: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="de427a3b-5d74-0098-7fbd-87a0f9ba4049">
+      <Execution id="c738a68b-f5a4-43dc-9db9-c0bbb11c4315" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Composite_fixture_resolves_rack_and_local_A_B" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Materialization_sabotage_is_observable_beyond_internal_equality(attack: &quot;payload-moved&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="4dd3f94b-5dec-c029-40d1-e22a1c5753f0">
+      <Execution id="1cf73f8d-1f11-416d-8739-12b157df5e40" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Materialization_sabotage_is_observable_beyond_internal_equality" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Materialization_sabotage_is_observable_beyond_internal_equality(attack: &quot;module&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="5daac44c-2fc9-2e37-4a3e-b538f3abf4fe">
+      <Execution id="8631b6b2-f27d-4374-92b5-11f1635332a8" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Materialization_sabotage_is_observable_beyond_internal_equality" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(kind: &quot;dynamic&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="dac09d64-a587-569f-6d53-3a7597af0816">
+      <Execution id="7b28d6f1-851f-4b94-b616-ae18b3377093" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Ordered_first_positive_and_conservative_payload_are_distinct_obligations" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1OracleChecks.Composite_fixture_resolves_rack_and_local_A_B(global: 8, calcA: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="c04b60c9-61e6-8004-b891-756469c0ab5f">
+      <Execution id="ea92a9fb-53b8-4702-afb8-34143303326c" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1OracleChecks" name="Composite_fixture_resolves_rack_and_local_A_B" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F1CharacterizationTests.Matrix_manifest_has_unique_identities_and_all_rows" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="0cd43dd4-ae32-cca4-6c9b-ae96f65d998d">
+      <Execution id="9fcef38d-11ee-4915-8cd9-ca20ea374203" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F1CharacterizationTests" name="Matrix_manifest_has_unique_identities_and_all_rows" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="4dd3f94b-5dec-c029-40d1-e22a1c5753f0" executionId="1cf73f8d-1f11-416d-8739-12b157df5e40" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8120b766-f6a9-ed75-8b9e-65962ff051e7" executionId="51907df7-376b-4e6c-9126-dca658a34544" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dc423cc6-bf29-348f-e833-c3fe8ae08739" executionId="abc3ea69-1333-4bac-93ed-88a03652be2c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a9c99666-4f90-e824-a29a-ccd4b267b1f0" executionId="c7d0889d-600c-47cc-b487-99eee1017d69" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f12286c5-581f-3305-b722-a9b7b7fdaf30" executionId="54dcab16-a441-480f-958c-295e9de31028" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0df1122f-f245-bb3b-81ca-0dc71278f12d" executionId="2c71583e-fddd-4a8a-a893-9a2f0368ff53" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="827e13ea-f83b-ea34-f720-242e19e4f5ec" executionId="95ab957b-1350-4800-9f64-f4d176d2f93e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dac09d64-a587-569f-6d53-3a7597af0816" executionId="7b28d6f1-851f-4b94-b616-ae18b3377093" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5daac44c-2fc9-2e37-4a3e-b538f3abf4fe" executionId="8631b6b2-f27d-4374-92b5-11f1635332a8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="07f0a710-00df-0ff5-30bd-c8645f5ea67d" executionId="ea3ca751-743f-4390-ba2c-8839b2dca896" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0cd43dd4-ae32-cca4-6c9b-ae96f65d998d" executionId="9fcef38d-11ee-4915-8cd9-ca20ea374203" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="00de54e8-a852-12e0-c953-ceccb411e72a" executionId="27a30231-3228-417a-b88b-45d21764e263" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dca87c79-17dc-731a-fbe3-1c510a21d853" executionId="25dc71b3-2c06-42b6-af1a-eee9024d1d66" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="de427a3b-5d74-0098-7fbd-87a0f9ba4049" executionId="c738a68b-f5a4-43dc-9db9-c0bbb11c4315" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="88dd045b-fcd3-8d65-89b2-c2b29cee46e6" executionId="39442593-cd24-4c9b-922c-d5aab5003f3e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b6ba6df4-3aad-2b95-97a0-3f4374241374" executionId="e5845f97-7df3-4cab-9985-f8c46857dd29" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0eea961c-1c4c-cfe9-d79c-b5e3b2ab1c4c" executionId="9e17477d-a1e3-4399-8ddf-e41b983239e1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="26617b57-410d-92be-0329-b9b1ea529513" executionId="2a0b003e-8b2c-4175-84c5-c93494f20580" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f5582540-91c7-f485-4783-5726302573c3" executionId="12995403-5673-40a4-9e37-b19dd913498a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="54930bea-7c60-7217-7f81-4c180ef34866" executionId="6402bd6f-c8cf-482b-a426-7f8a43e490f6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="53c97d62-f9c3-ac8d-2bf6-4def895e57b4" executionId="8ca6f60e-beb8-49dc-81c1-fbbe48526f21" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c04b60c9-61e6-8004-b891-756469c0ab5f" executionId="ea92a9fb-53b8-4702-afb8-34143303326c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Resultados sin formato de lista" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Todos los resultados cargados" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="22" executed="22" passed="17" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)&#xD;
+[xUnit.net 00:00:00.19]   Discovering: RackCad.Tests&#xD;
+[xUnit.net 00:00:02.13]   Discovered:  RackCad.Tests&#xD;
+[xUnit.net 00:00:02.16]   Starting:    RackCad.Tests&#xD;
+[xUnit.net 00:00:02.56]       System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset&#xD;
+[xUnit.net 00:00:02.56]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.56]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(128,0): at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__M|5_0(String row, String path, String value, RackAuthoredComparisonOutcome expected, &lt;&gt;c__DisplayClass5_0&amp;)&#xD;
+[xUnit.net 00:00:02.56]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(164,0): at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__C|5_2(String row, String path, String v, RackAuthoredComparisonOutcome e, &lt;&gt;c__DisplayClass5_0&amp;)&#xD;
+[xUnit.net 00:00:02.56]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(167,0): at RackCad.Tests.I58F1Matrix.AddMutations(List`1 cases, String k, String a)&#xD;
+[xUnit.net 00:00:02.56]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(78,0): at RackCad.Tests.I58F1Matrix.Build()&#xD;
+[xUnit.net 00:00:02.56]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1CharacterizationTests.cs(37,0): at RackCad.Tests.I58F1CharacterizationTests.Matrix_manifest_has_unique_identities_and_all_rows()&#xD;
+[xUnit.net 00:00:02.56]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:02.56]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:02.94]       System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset&#xD;
+[xUnit.net 00:00:02.94]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.94]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(128,0): at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__M|5_0(String row, String path, String value, RackAuthoredComparisonOutcome expected, &lt;&gt;c__DisplayClass5_0&amp;)&#xD;
+[xUnit.net 00:00:02.94]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(164,0): at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__C|5_2(String row, String path, String v, RackAuthoredComparisonOutcome e, &lt;&gt;c__DisplayClass5_0&amp;)&#xD;
+[xUnit.net 00:00:02.94]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(167,0): at RackCad.Tests.I58F1Matrix.AddMutations(List`1 cases, String k, String a)&#xD;
+[xUnit.net 00:00:02.94]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(78,0): at RackCad.Tests.I58F1Matrix.Build()&#xD;
+[xUnit.net 00:00:02.94]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1CharacterizationTests.cs(22,0): at RackCad.Tests.I58F1CharacterizationTests.Matrix()&#xD;
+[xUnit.net 00:00:02.94]            at InvokeStub_I58F1CharacterizationTests.Matrix(Object, Object, IntPtr*)&#xD;
+[xUnit.net 00:00:02.94]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:03.60]       System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset&#xD;
+[xUnit.net 00:00:03.60]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.60]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(128,0): at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__M|5_0(String row, String path, String value, RackAuthoredComparisonOutcome expected, &lt;&gt;c__DisplayClass5_0&amp;)&#xD;
+[xUnit.net 00:00:03.60]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(164,0): at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__C|5_2(String row, String path, String v, RackAuthoredComparisonOutcome e, &lt;&gt;c__DisplayClass5_0&amp;)&#xD;
+[xUnit.net 00:00:03.60]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(167,0): at RackCad.Tests.I58F1Matrix.AddMutations(List`1 cases, String k, String a)&#xD;
+[xUnit.net 00:00:03.60]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(78,0): at RackCad.Tests.I58F1Matrix.Build()&#xD;
+[xUnit.net 00:00:03.60]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1OracleChecks.cs(102,0): at RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(String kind)&#xD;
+[xUnit.net 00:00:03.60]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:03.60]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:03.95]       System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset&#xD;
+[xUnit.net 00:00:03.95]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.95]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(128,0): at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__M|5_0(String row, String path, String value, RackAuthoredComparisonOutcome expected, &lt;&gt;c__DisplayClass5_0&amp;)&#xD;
+[xUnit.net 00:00:03.95]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(164,0): at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__C|5_2(String row, String path, String v, RackAuthoredComparisonOutcome e, &lt;&gt;c__DisplayClass5_0&amp;)&#xD;
+[xUnit.net 00:00:03.95]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(167,0): at RackCad.Tests.I58F1Matrix.AddMutations(List`1 cases, String k, String a)&#xD;
+[xUnit.net 00:00:03.95]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(78,0): at RackCad.Tests.I58F1Matrix.Build()&#xD;
+[xUnit.net 00:00:03.95]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1OracleChecks.cs(102,0): at RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(String kind)&#xD;
+[xUnit.net 00:00:03.95]            at InvokeStub_I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(Object, Span`1)&#xD;
+[xUnit.net 00:00:03.95]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.23]       System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset&#xD;
+[xUnit.net 00:00:04.23]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.23]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(128,0): at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__M|5_0(String row, String path, String value, RackAuthoredComparisonOutcome expected, &lt;&gt;c__DisplayClass5_0&amp;)&#xD;
+[xUnit.net 00:00:04.23]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(164,0): at RackCad.Tests.I58F1Matrix.&lt;AddMutations&gt;g__C|5_2(String row, String path, String v, RackAuthoredComparisonOutcome e, &lt;&gt;c__DisplayClass5_0&amp;)&#xD;
+[xUnit.net 00:00:04.23]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(167,0): at RackCad.Tests.I58F1Matrix.AddMutations(List`1 cases, String k, String a)&#xD;
+[xUnit.net 00:00:04.23]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1Matrix.cs(78,0): at RackCad.Tests.I58F1Matrix.Build()&#xD;
+[xUnit.net 00:00:04.23]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F1OracleChecks.cs(18,0): at RackCad.Tests.I58F1OracleChecks.Singles()&#xD;
+[xUnit.net 00:00:04.23]            at InvokeStub_I58F1OracleChecks.Singles(Object, Object, IntPtr*)&#xD;
+[xUnit.net 00:00:04.23]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:04.24]   Finished:    RackCad.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T12:09:54.9913300-06:00">
+        <Text>[xUnit.net 00:00:02.55]     RackCad.Tests.I58F1CharacterizationTests.Matrix_manifest_has_unique_identities_and_all_rows [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T12:09:55.3742164-06:00">
+        <Text>[xUnit.net 00:00:02.94]     RackCad.Tests.I58F1CharacterizationTests.Frozen_matrix_against_current_port [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T12:09:56.0371002-06:00">
+        <Text>[xUnit.net 00:00:03.60]     RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(kind: "dynamic") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T12:09:56.3820400-06:00">
+        <Text>[xUnit.net 00:00:03.95]     RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(kind: "pushback") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T12:09:56.6659242-06:00">
+        <Text>[xUnit.net 00:00:04.23]     RackCad.Tests.I58F1OracleChecks.Oracle_fixture_consistency_NOT_AUTH13_GREEN [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

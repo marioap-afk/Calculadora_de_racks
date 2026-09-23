@@ -1,0 +1,71 @@
+{
+  "rejected_sha": "2e141b034b485f5faa55d412b476e99ebad23c5c",
+  "CONF58_01_CLOSURE_SHA": "860be16486883301b475594f9738f154a3ca3e12",
+  "core_full": {
+    "total": "11221",
+    "executed": "11221",
+    "passed": "11221",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "local": [
+    {
+      "clean_before": true,
+      "clean_after": true,
+      "elapsed_seconds": 253.5272561,
+      "exit_code": 0,
+      "name": "Core Full local",
+      "sha": "860be16486883301b475594f9738f154a3ca3e12",
+      "command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger trx;LogFileName=core-full.trx --results-directory <receipt directory>",
+      "sdk": "8.0.423"
+    },
+    {
+      "elapsed_seconds": 23.2692379,
+      "exit_code": 0,
+      "clean_after": true,
+      "command": "dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug -v:minimal",
+      "clean_before": true,
+      "name": "UI Debug",
+      "sha": "860be16486883301b475594f9738f154a3ca3e12",
+      "sdk": "8.0.423"
+    },
+    {
+      "elapsed_seconds": 16.8657384,
+      "exit_code": 0,
+      "clean_after": true,
+      "command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -v:minimal",
+      "clean_before": true,
+      "name": "Plugin Debug",
+      "sha": "860be16486883301b475594f9738f154a3ca3e12",
+      "sdk": "8.0.423"
+    }
+  ],
+  "plugin_debug_informational_version": "1.0.0+860be16486883301b475594f9738f154a3ca3e12",
+  "production_diff": "AuthoredRawReader.Schema only: require string then Trim for version interpretation",
+  "status": "CONF58-01 = CORRECTED / COORDINATOR RE-REVIEW REQUIRED",
+  "notes": "Local proof applies only to closure SHA. Subsequent documentary proposal requires its own focal/impact and exact push CI; no evidence inheritance.",
+  "ci": {
+    "run": 35920493102,
+    "event": "push",
+    "ref": "refs/heads/architecture/shared-view-authored-comparators",
+    "head_sha": "860be16486883301b475594f9738f154a3ca3e12",
+    "required_jobs": {
+      "Tests (Domain + Application)": "success",
+      "UI Tests (WPF controls, net8.0-windows)": "success",
+      "Build UI (WPF, valida API de Application)": "success",
+      "Build Plugin without AutoCAD": "success"
+    },
+    "url": "https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35920493102"
+  }
+}

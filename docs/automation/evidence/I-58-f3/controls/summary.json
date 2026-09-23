@@ -1,0 +1,210 @@
+{
+  "original_sha256": "0b4c40c28112a6f55db7e17747f9ea7a978a88a1c0a75ce3d92ab1410dd4fd71",
+  "restored": true,
+  "controls": [
+    {
+      "name": "double-authority",
+      "expected_failed": 14,
+      "counters": {
+        "total": "56",
+        "executed": "56",
+        "passed": "42",
+        "failed": "14",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "command": [
+        "dotnet",
+        "test",
+        "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "--filter",
+        "FullyQualifiedName~I58F3SeamTests",
+        "--logger",
+        "trx;LogFileName=double-authority.trx",
+        "--results-directory",
+        "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-shared-view-authored-comparators\\docs\\automation\\evidence\\I-58-f3\\controls"
+      ],
+      "edits": [
+        [
+          "authorityCalls++; return authority(d);",
+          "authorityCalls++; authority(d); authorityCalls++; return authority(d);"
+        ]
+      ],
+      "mutant_sha256": "afc47da89a568cfc0b261a624abe746d108451d6214707b06dd0ba8e46730a37"
+    },
+    {
+      "name": "prepare-reresolve",
+      "expected_failed": 14,
+      "counters": {
+        "total": "56",
+        "executed": "56",
+        "passed": "42",
+        "failed": "14",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "command": [
+        "dotnet",
+        "test",
+        "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "--filter",
+        "FullyQualifiedName~I58F3SeamTests",
+        "--logger",
+        "trx;LogFileName=prepare-reresolve.trx",
+        "--results-directory",
+        "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-shared-view-authored-comparators\\docs\\automation\\evidence\\I-58-f3\\controls"
+      ],
+      "edits": [
+        [
+          "builderCalls++;",
+          "resolveCalls++; var extra = resolve.Resolve(working); Assert.True(extra.IsSuccess, extra.Diagnostic); builderCalls++;"
+        ]
+      ],
+      "mutant_sha256": "dd439ab59d8b09030b6770c7a77dbc5c829bc3874af4dbed1a62dc59a5912a77"
+    },
+    {
+      "name": "double-builder",
+      "expected_failed": 14,
+      "counters": {
+        "total": "56",
+        "executed": "56",
+        "passed": "42",
+        "failed": "14",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "command": [
+        "dotnet",
+        "test",
+        "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "--filter",
+        "FullyQualifiedName~I58F3SeamTests",
+        "--logger",
+        "trx;LogFileName=double-builder.trx",
+        "--results-directory",
+        "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-shared-view-authored-comparators\\docs\\automation\\evidence\\I-58-f3\\controls"
+      ],
+      "edits": [
+        [
+          "built = builder(r);",
+          "builder(r); builderCalls++; built = builder(r);"
+        ]
+      ],
+      "mutant_sha256": "6e43e3489daaef41c78e87adf11a2981bb56c7fb98f970103ad1e56bea092532"
+    },
+    {
+      "name": "without-working-copy",
+      "expected_failed": 14,
+      "counters": {
+        "total": "56",
+        "executed": "56",
+        "passed": "42",
+        "failed": "14",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "command": [
+        "dotnet",
+        "test",
+        "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "--filter",
+        "FullyQualifiedName~I58F3SeamTests",
+        "--logger",
+        "trx;LogFileName=without-working-copy.trx",
+        "--results-directory",
+        "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-shared-view-authored-comparators\\docs\\automation\\evidence\\I-58-f3\\controls"
+      ],
+      "edits": [
+        [
+          "working = copy(comparison.Authored);",
+          "working = comparison.Authored;"
+        ],
+        [
+          "separate(comparison.Authored, working);",
+          "// Allow the real mutation to reach the value/isolation oracle."
+        ]
+      ],
+      "mutant_sha256": "32964522848ad020420e546f3c74eeda47c071ffffe47d8c576c73d7a3fb069a"
+    },
+    {
+      "name": "resolve-on-failure",
+      "expected_failed": 42,
+      "counters": {
+        "total": "56",
+        "executed": "56",
+        "passed": "14",
+        "failed": "42",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "command": [
+        "dotnet",
+        "test",
+        "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "--filter",
+        "FullyQualifiedName~I58F3SeamTests",
+        "--logger",
+        "trx;LogFileName=resolve-on-failure.trx",
+        "--results-directory",
+        "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-shared-view-authored-comparators\\docs\\automation\\evidence\\I-58-f3\\controls"
+      ],
+      "edits": [
+        [
+          "Assert.Null(comparison.Authored);",
+          "resolveCalls++; resolve.Resolve(comparison.Authored); Assert.Null(comparison.Authored);"
+        ]
+      ],
+      "mutant_sha256": "1e9959245d19a71c5ca06ccfd36c211fe608f6e5c276e12d300b6b2b6c8502a1"
+    }
+  ]
+}

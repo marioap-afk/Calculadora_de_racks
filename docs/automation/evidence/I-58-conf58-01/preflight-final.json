@@ -1,0 +1,22 @@
+{
+  "refs": {
+    "HEAD": "2e141b034b485f5faa55d412b476e99ebad23c5c",
+    "@{upstream}": "2e141b034b485f5faa55d412b476e99ebad23c5c",
+    "origin/main": "7097057cf8685bf5ecc09083cba37379d4a4aae8",
+    "origin/feature/creacion-de-vistas": "08e45e0a2521a2e7feb4cf7c8d3fc7fc574aa74d",
+    "origin/feature/rackmirror-espejo-semantico": "d99dafeda20bcb48e3fc4af7093e9982d60b9288",
+    "integration/I-57": "a5bc02210f740839e2fac37e63fc00512e5ccee6",
+    "integration/I-57^{}": "7097057cf8685bf5ecc09083cba37379d4a4aae8"
+  },
+  "blobs": {
+    "I-58-freeze-draft.md": "f89671cfe9f1036e24211287514414b3f555182a",
+    "I-58-characterization.md": "97e15d6d7c00e02495f8d4159477272d00af6880",
+    "I-58-discovery.md": "f07c9b6c6f6c278c6f7d37b3b68921eac7a1c5b8"
+  },
+  "branch": "architecture/shared-view-authored-comparators",
+  "entry_tree": "clean",
+  "entry_stash": "empty",
+  "final_overlay": "only declared reader fix plus own tests/evidence/state",
+  "remote_intersections": "none since F3; no remote tip advanced",
+  "rebase": "not required; main unchanged and ancestor"
+}

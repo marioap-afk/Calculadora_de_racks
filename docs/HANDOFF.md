@@ -63,6 +63,17 @@ que exista el tag anotado `integration/I-57`, apuntando al `MERGE_SHA` verificad
 `origin/main`. R3 conserva byte-for-byte su campo `Integration SHA = —` y su blob
 `cd42db03becff42f98b047e61c46689c17a69670`.
 
+**I-58 — Shared View Foundation Authored Comparators — CANDIDATE VALIDADO; CIERRE DOCUMENTAL
+PREPARADO PARA INTEGRACION** el **2026-09-23**. AUTH-13 acredita hermanas authored para Dynamic,
+PushBack, Cantilever y Cabecera, conserva Selective y mantiene Cama/factories genericas fail-closed.
+F1/F2/F3, READY-01..09 y la conformidad Coordinator + Architect estan completos; Owner Validation no
+aplica al diff Application puro sin consumidor visible. El cierre publica la entrada factual de Foundation
+y registra la [evidencia durable](automation/evidence/I-58-evidence.md).
+
+Todavia faltan revision del Coordinator sobre el SHA de cierre, integracion serializada, CI post-merge,
+limpieza y tag `integration/I-58`. I-55 G12 permanece bloqueado hasta que ese tag valido apunte al merge
+verificado y alcanzable desde `origin/main`.
+
 **I-49 — Motor de expresiones paramétricas (ID22B) — CANDIDATO FINAL APROBADO; CIERRE DOCUMENTAL
 PREPARADO PARA INTEGRACIÓN** el **2026-09-19**. I-49 conserva **Workflow V1** y Claim-Id
 `06aec3d0-0d07-48d4-8b78-d56daeebe903`; Workflow V2 ya está efectivo, pero no reclasifica este reclamo

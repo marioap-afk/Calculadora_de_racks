@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="90dea1fa-b0b1-49db-af07-e73175bbd8db" name="alejandra-mendoza@IMING-2 2026-09-23 13:25:25" runUser="IMSA\alejandra-mendoza" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-23T13:25:25.6999448-06:00" queuing="2026-09-23T13:25:25.6999452-06:00" start="2026-09-23T13:25:19.8691564-06:00" finish="2026-09-23T13:25:25.7835420-06:00" />
+  <TestSettings name="default" id="b74e806d-2c04-4239-b4c9-99550f027666">
+    <Deployment runDeploymentRoot="alejandra-mendoza_IMING-2_2026-09-23_13_25_25" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d677d2da-00a0-4296-afdc-f93869d197a0" testId="389e8106-1d20-590b-5be9-b6b8eec11823" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cabecera&quot;, mutation: &quot;root&quot;)" computerName="IMING-2" duration="00:00:00.0025316" startTime="2026-09-23T13:25:25.6096968-06:00" endTime="2026-09-23T13:25:25.6096976-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d677d2da-00a0-4296-afdc-f93869d197a0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="01b28d73-8437-4b1f-b30c-4e460c339cb0" testId="72639f98-944f-04ce-09c9-60bcb4828a65" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cantilever&quot;, mutation: &quot;root&quot;)" computerName="IMING-2" duration="00:00:00.0022700" startTime="2026-09-23T13:25:25.7034051-06:00" endTime="2026-09-23T13:25:25.7034054-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="01b28d73-8437-4b1f-b30c-4e460c339cb0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cdff7663-b72c-4882-9591-ffc8e468fc7f" testId="bc1f74fe-8f84-7092-820f-94a9ef0115f7" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cabecera&quot;, mutation: &quot;nested&quot;)" computerName="IMING-2" duration="00:00:00.0325757" startTime="2026-09-23T13:25:25.5464431-06:00" endTime="2026-09-23T13:25:25.5464579-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cdff7663-b72c-4882-9591-ffc8e468fc7f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="deeb2d25-7e56-4762-8dee-e3be497f6fce" testId="7150518e-a2c2-a799-3423-04d6c8d506a2" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;pushback&quot;, mutation: &quot;duplicate&quot;)" computerName="IMING-2" duration="00:00:00.0168526" startTime="2026-09-23T13:25:25.7009641-06:00" endTime="2026-09-23T13:25:25.7009643-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="deeb2d25-7e56-4762-8dee-e3be497f6fce">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6ee12e85-0653-4f94-a8fa-791e57fd5fba" testId="a76ffdc8-f358-b79c-844e-3b4adbedca6a" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;pushback&quot;, mutation: &quot;schema&quot;)" computerName="IMING-2" duration="00:00:00.0199243" startTime="2026-09-23T13:25:25.6550744-06:00" endTime="2026-09-23T13:25:25.6550746-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6ee12e85-0653-4f94-a8fa-791e57fd5fba" />
+    <UnitTestResult executionId="174459bf-bf0e-4784-926d-52f76afd7a64" testId="2ab605de-96e6-cdd0-76c6-15ddbd95cdf8" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cabecera&quot;, mutation: &quot;duplicate&quot;)" computerName="IMING-2" duration="00:00:00.0010668" startTime="2026-09-23T13:25:25.7045357-06:00" endTime="2026-09-23T13:25:25.7045363-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="174459bf-bf0e-4784-926d-52f76afd7a64">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e2ca5821-8758-41d1-9e43-35fe9b8eb773" testId="e243d2f5-f197-4009-86da-760b557a6c55" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cantilever&quot;, mutation: &quot;schema&quot;)" computerName="IMING-2" duration="00:00:00.0009335" startTime="2026-09-23T13:25:25.6350603-06:00" endTime="2026-09-23T13:25:25.6350607-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e2ca5821-8758-41d1-9e43-35fe9b8eb773" />
+    <UnitTestResult executionId="56c543a0-e1f5-4693-81bd-da1663984d86" testId="ba72ce14-5d4e-3b3e-d4da-4a066a40cbcb" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;pushback&quot;, mutation: &quot;nested&quot;)" computerName="IMING-2" duration="00:00:00.0362182" startTime="2026-09-23T13:25:25.6071201-06:00" endTime="2026-09-23T13:25:25.6071204-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="56c543a0-e1f5-4693-81bd-da1663984d86">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="29bd0b32-96bb-40b3-870e-86dcfb3a37f5" testId="29da7b12-890a-b903-a51d-5418fc682208" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cabecera&quot;, mutation: &quot;schema&quot;)" computerName="IMING-2" duration="00:00:00.0018982" startTime="2026-09-23T13:25:25.6343829-06:00" endTime="2026-09-23T13:25:25.6343832-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="29bd0b32-96bb-40b3-870e-86dcfb3a37f5" />
+    <UnitTestResult executionId="8d699c93-5951-4c3d-ad35-1ff09b4e9cb7" testId="d44cfb0d-dd8d-b3b7-0ad7-416dc72a6735" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;pushback&quot;, mutation: &quot;root&quot;)" computerName="IMING-2" duration="00:00:00.0156528" startTime="2026-09-23T13:25:25.6807476-06:00" endTime="2026-09-23T13:25:25.6807478-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8d699c93-5951-4c3d-ad35-1ff09b4e9cb7">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c9071c00-7ce4-4c15-b8b6-b2fd555b4648" testId="db91f93c-caec-9903-645b-1c2e806bc070" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;dynamic&quot;, mutation: &quot;nested&quot;)" computerName="IMING-2" duration="00:00:00.0266760" startTime="2026-09-23T13:25:25.5702358-06:00" endTime="2026-09-23T13:25:25.5702360-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c9071c00-7ce4-4c15-b8b6-b2fd555b4648">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="65066e74-ee9e-4596-8cf9-c6e9412df5e5" testId="bb8c4fe7-a8a1-aa83-9365-ccb7ee9836fc" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;dynamic&quot;, mutation: &quot;root&quot;)" computerName="IMING-2" duration="00:00:00.0049356" startTime="2026-09-23T13:25:25.6614233-06:00" endTime="2026-09-23T13:25:25.6614243-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="65066e74-ee9e-4596-8cf9-c6e9412df5e5">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e8df675a-1650-46b7-8c87-2d98d2c4a793" testId="4e503aa0-b8b0-a4a1-f03b-1645e7af2ea9" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cantilever&quot;, mutation: &quot;duplicate&quot;)" computerName="IMING-2" duration="00:00:00.0226690" startTime="2026-09-23T13:25:25.6325908-06:00" endTime="2026-09-23T13:25:25.6325916-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e8df675a-1650-46b7-8c87-2d98d2c4a793">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c57dfb6c-5846-4eb9-a09a-913ba79c1875" testId="5c9ded72-ccd0-4263-4b0d-576c9001ad1b" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;dynamic&quot;, mutation: &quot;schema&quot;)" computerName="IMING-2" duration="00:00:00.0031960" startTime="2026-09-23T13:25:25.6833272-06:00" endTime="2026-09-23T13:25:25.6833274-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c57dfb6c-5846-4eb9-a09a-913ba79c1875" />
+    <UnitTestResult executionId="ffa63e29-e6b4-4530-80ca-c40ae1151914" testId="162f5e9f-09bb-1332-dcf7-aaa5a3981597" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;dynamic&quot;, mutation: &quot;duplicate&quot;)" computerName="IMING-2" duration="00:00:00.0037585" startTime="2026-09-23T13:25:25.6700225-06:00" endTime="2026-09-23T13:25:25.6700227-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ffa63e29-e6b4-4530-80ca-c40ae1151914">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9481706d-7829-4f5e-a13b-8017d6cd7e7e" testId="4f991a13-bae1-e89e-af05-7a123562731a" testName="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cantilever&quot;, mutation: &quot;nested&quot;)" computerName="IMING-2" duration="00:00:00.0017714" startTime="2026-09-23T13:25:25.7067230-06:00" endTime="2026-09-23T13:25:25.7067232-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9481706d-7829-4f5e-a13b-8017d6cd7e7e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Unreadable&#xD;
+Actual:   Single</Message>
+          <StackTrace>   at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs:line 86&#xD;
+   at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;pushback&quot;, mutation: &quot;schema&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="a76ffdc8-f358-b79c-844e-3b4adbedca6a">
+      <Execution id="6ee12e85-0653-4f94-a8fa-791e57fd5fba" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;pushback&quot;, mutation: &quot;root&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="d44cfb0d-dd8d-b3b7-0ad7-416dc72a6735">
+      <Execution id="8d699c93-5951-4c3d-ad35-1ff09b4e9cb7" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cabecera&quot;, mutation: &quot;nested&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="bc1f74fe-8f84-7092-820f-94a9ef0115f7">
+      <Execution id="cdff7663-b72c-4882-9591-ffc8e468fc7f" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;dynamic&quot;, mutation: &quot;duplicate&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="162f5e9f-09bb-1332-dcf7-aaa5a3981597">
+      <Execution id="ffa63e29-e6b4-4530-80ca-c40ae1151914" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cantilever&quot;, mutation: &quot;root&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="72639f98-944f-04ce-09c9-60bcb4828a65">
+      <Execution id="01b28d73-8437-4b1f-b30c-4e460c339cb0" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cabecera&quot;, mutation: &quot;root&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="389e8106-1d20-590b-5be9-b6b8eec11823">
+      <Execution id="d677d2da-00a0-4296-afdc-f93869d197a0" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cantilever&quot;, mutation: &quot;nested&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="4f991a13-bae1-e89e-af05-7a123562731a">
+      <Execution id="9481706d-7829-4f5e-a13b-8017d6cd7e7e" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;dynamic&quot;, mutation: &quot;root&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="bb8c4fe7-a8a1-aa83-9365-ccb7ee9836fc">
+      <Execution id="65066e74-ee9e-4596-8cf9-c6e9412df5e5" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;pushback&quot;, mutation: &quot;duplicate&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="7150518e-a2c2-a799-3423-04d6c8d506a2">
+      <Execution id="deeb2d25-7e56-4762-8dee-e3be497f6fce" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cabecera&quot;, mutation: &quot;duplicate&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="2ab605de-96e6-cdd0-76c6-15ddbd95cdf8">
+      <Execution id="174459bf-bf0e-4784-926d-52f76afd7a64" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;dynamic&quot;, mutation: &quot;nested&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="db91f93c-caec-9903-645b-1c2e806bc070">
+      <Execution id="c9071c00-7ce4-4c15-b8b6-b2fd555b4648" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cantilever&quot;, mutation: &quot;schema&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="e243d2f5-f197-4009-86da-760b557a6c55">
+      <Execution id="e2ca5821-8758-41d1-9e43-35fe9b8eb773" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;pushback&quot;, mutation: &quot;nested&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="ba72ce14-5d4e-3b3e-d4da-4a066a40cbcb">
+      <Execution id="56c543a0-e1f5-4693-81bd-da1663984d86" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cantilever&quot;, mutation: &quot;duplicate&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="4e503aa0-b8b0-a4a1-f03b-1645e7af2ea9">
+      <Execution id="e8df675a-1650-46b7-8c87-2d98d2c4a793" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;dynamic&quot;, mutation: &quot;schema&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="5c9ded72-ccd0-4263-4b0d-576c9001ad1b">
+      <Execution id="c57dfb6c-5846-4eb9-a09a-913ba79c1875" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: &quot;cabecera&quot;, mutation: &quot;schema&quot;)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="29da7b12-890a-b903-a51d-5418fc682208">
+      <Execution id="29bd0b32-96bb-40b3-870e-86dcfb3a37f5" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F2ReaderTests" name="Raw_gate_negative_control" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="389e8106-1d20-590b-5be9-b6b8eec11823" executionId="d677d2da-00a0-4296-afdc-f93869d197a0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="72639f98-944f-04ce-09c9-60bcb4828a65" executionId="01b28d73-8437-4b1f-b30c-4e460c339cb0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bc1f74fe-8f84-7092-820f-94a9ef0115f7" executionId="cdff7663-b72c-4882-9591-ffc8e468fc7f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7150518e-a2c2-a799-3423-04d6c8d506a2" executionId="deeb2d25-7e56-4762-8dee-e3be497f6fce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a76ffdc8-f358-b79c-844e-3b4adbedca6a" executionId="6ee12e85-0653-4f94-a8fa-791e57fd5fba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ab605de-96e6-cdd0-76c6-15ddbd95cdf8" executionId="174459bf-bf0e-4784-926d-52f76afd7a64" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e243d2f5-f197-4009-86da-760b557a6c55" executionId="e2ca5821-8758-41d1-9e43-35fe9b8eb773" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ba72ce14-5d4e-3b3e-d4da-4a066a40cbcb" executionId="56c543a0-e1f5-4693-81bd-da1663984d86" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="29da7b12-890a-b903-a51d-5418fc682208" executionId="29bd0b32-96bb-40b3-870e-86dcfb3a37f5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d44cfb0d-dd8d-b3b7-0ad7-416dc72a6735" executionId="8d699c93-5951-4c3d-ad35-1ff09b4e9cb7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="db91f93c-caec-9903-645b-1c2e806bc070" executionId="c9071c00-7ce4-4c15-b8b6-b2fd555b4648" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bb8c4fe7-a8a1-aa83-9365-ccb7ee9836fc" executionId="65066e74-ee9e-4596-8cf9-c6e9412df5e5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4e503aa0-b8b0-a4a1-f03b-1645e7af2ea9" executionId="e8df675a-1650-46b7-8c87-2d98d2c4a793" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5c9ded72-ccd0-4263-4b0d-576c9001ad1b" executionId="c57dfb6c-5846-4eb9-a09a-913ba79c1875" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="162f5e9f-09bb-1332-dcf7-aaa5a3981597" executionId="ffa63e29-e6b4-4530-80ca-c40ae1151914" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4f991a13-bae1-e89e-af05-7a123562731a" executionId="9481706d-7829-4f5e-a13b-8017d6cd7e7e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Resultados sin formato de lista" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Todos los resultados cargados" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="16" executed="16" passed="4" failed="12" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)&#xD;
+[xUnit.net 00:00:00.31]   Discovering: RackCad.Tests&#xD;
+[xUnit.net 00:00:04.27]   Discovered:  RackCad.Tests&#xD;
+[xUnit.net 00:00:04.28]   Starting:    RackCad.Tests&#xD;
+[xUnit.net 00:00:04.37]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.37]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.37]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.37]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.37]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.37]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:04.37]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:04.39]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.39]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.39]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.39]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.39]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.39]            at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+[xUnit.net 00:00:04.39]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.43]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.43]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.43]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.43]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.43]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.43]            at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+[xUnit.net 00:00:04.43]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.43]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.43]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.43]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.43]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.43]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.43]            at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+[xUnit.net 00:00:04.43]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.46]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.46]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.46]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.46]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.46]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.46]            at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+[xUnit.net 00:00:04.46]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.49]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.49]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.49]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.49]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.49]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.49]            at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+[xUnit.net 00:00:04.49]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.49]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.49]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.49]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.49]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.49]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.49]            at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+[xUnit.net 00:00:04.49]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.51]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.51]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.51]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.51]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.51]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.51]            at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+[xUnit.net 00:00:04.51]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.53]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.53]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.53]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.53]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.53]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.53]            at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+[xUnit.net 00:00:04.53]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.53]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.53]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.53]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.53]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.53]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.53]            at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+[xUnit.net 00:00:04.53]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.53]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.53]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.53]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.53]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.53]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.53]            at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+[xUnit.net 00:00:04.53]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.53]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.53]       Expected: Unreadable&#xD;
+[xUnit.net 00:00:04.53]       Actual:   Single&#xD;
+[xUnit.net 00:00:04.53]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.53]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F2ReaderTests.cs(86,0): at RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(String kind, String mutation)&#xD;
+[xUnit.net 00:00:04.53]            at InvokeStub_I58F2ReaderTests.Raw_gate_negative_control(Object, Span`1)&#xD;
+[xUnit.net 00:00:04.53]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:04.54]   Finished:    RackCad.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.5447855-06:00">
+        <Text>[xUnit.net 00:00:04.37]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "cabecera", mutation: "nested") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.5703696-06:00">
+        <Text>[xUnit.net 00:00:04.39]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "dynamic", mutation: "nested") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.6069206-06:00">
+        <Text>[xUnit.net 00:00:04.43]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "pushback", mutation: "nested") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.6095070-06:00">
+        <Text>[xUnit.net 00:00:04.43]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "cabecera", mutation: "root") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.6324869-06:00">
+        <Text>[xUnit.net 00:00:04.46]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "cantilever", mutation: "duplicate") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.6608005-06:00">
+        <Text>[xUnit.net 00:00:04.49]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "dynamic", mutation: "root") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.7124374-06:00">
+        <Text>[xUnit.net 00:00:04.49]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "dynamic", mutation: "duplicate") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.7125021-06:00">
+        <Text>[xUnit.net 00:00:04.50]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "pushback", mutation: "root") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.7125624-06:00">
+        <Text>[xUnit.net 00:00:04.53]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "pushback", mutation: "duplicate") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.7126171-06:00">
+        <Text>[xUnit.net 00:00:04.53]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "cantilever", mutation: "root") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.7126708-06:00">
+        <Text>[xUnit.net 00:00:04.53]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "cabecera", mutation: "duplicate") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T13:25:25.7127304-06:00">
+        <Text>[xUnit.net 00:00:04.53]     RackCad.Tests.I58F2ReaderTests.Raw_gate_negative_control(kind: "cantilever", mutation: "nested") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
