@@ -1,0 +1,688 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7b5d5a4a-78d7-45b6-9730-14afe9bd6bd4" name="alejandra-mendoza@IMING-2 2026-09-23 14:14:43" runUser="IMSA\alejandra-mendoza" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-23T14:14:43.1286448-06:00" queuing="2026-09-23T14:14:43.1286456-06:00" start="2026-09-23T14:14:34.1733115-06:00" finish="2026-09-23T14:14:44.4478015-06:00" />
+  <TestSettings name="default" id="19b24e5c-8cb4-405c-9bdc-f84384775bf5">
+    <Deployment runDeploymentRoot="alejandra-mendoza_IMING-2_2026-09-23_14_14_43" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="06c623ed-4af6-4728-a265-cd69f005c137" testId="fe5f0d86-dffb-8a2e-e84a-d886d4ca1d78" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0108467" startTime="2026-09-23T14:14:44.2731963-06:00" endTime="2026-09-23T14:14:44.2731968-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="06c623ed-4af6-4728-a265-cd69f005c137" />
+    <UnitTestResult executionId="ca1b36b8-4d06-4647-a46d-300e27cde747" testId="b56fb751-a9ea-5c88-53b5-549b487bd633" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Single&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0143490" startTime="2026-09-23T14:14:43.3912219-06:00" endTime="2026-09-23T14:14:43.3912223-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ca1b36b8-4d06-4647-a46d-300e27cde747">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 48&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="776e7d25-b1fd-45e4-8375-9eaded2b89bb" testId="928844c7-d491-6658-8829-fa98ef0024dd" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0142489" startTime="2026-09-23T14:14:42.4114917-06:00" endTime="2026-09-23T14:14:42.4114922-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="776e7d25-b1fd-45e4-8375-9eaded2b89bb" />
+    <UnitTestResult executionId="5ae436db-6543-45ae-96e7-a837feb8d0e4" testId="dc3cbb94-5ade-2f9b-fde5-a14ea6ab2c02" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0264574" startTime="2026-09-23T14:14:44.0735447-06:00" endTime="2026-09-23T14:14:44.0735453-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5ae436db-6543-45ae-96e7-a837feb8d0e4" />
+    <UnitTestResult executionId="0cb356a7-9584-4ab7-9119-6b8dcd57703a" testId="86af406a-7b22-9107-660a-87419184a0e7" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0081686" startTime="2026-09-23T14:14:43.3301766-06:00" endTime="2026-09-23T14:14:43.3301769-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0cb356a7-9584-4ab7-9119-6b8dcd57703a" />
+    <UnitTestResult executionId="7eb4ea0f-7873-46ea-ba6e-fdcf4a2e7a8b" testId="0c6c792c-fe20-1642-8c07-b2fcf008cca8" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Single&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0118531" startTime="2026-09-23T14:14:43.0821570-06:00" endTime="2026-09-23T14:14:43.0821573-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7eb4ea0f-7873-46ea-ba6e-fdcf4a2e7a8b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 48&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1e71bac3-1a5e-49ec-9e41-949c886f37e3" testId="d18e189b-2f33-5daf-54f8-6aed548ea556" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0324821" startTime="2026-09-23T14:14:43.9883875-06:00" endTime="2026-09-23T14:14:43.9883880-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1e71bac3-1a5e-49ec-9e41-949c886f37e3" />
+    <UnitTestResult executionId="433fa973-dfdd-462b-8cfc-2ef405daf123" testId="ae05cf5f-51af-e48c-5185-97a8110e180d" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0087609" startTime="2026-09-23T14:14:43.9557004-06:00" endTime="2026-09-23T14:14:43.9557010-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="433fa973-dfdd-462b-8cfc-2ef405daf123" />
+    <UnitTestResult executionId="2ef3d90c-0cdb-4ccd-8704-873baff61104" testId="5ca8fc80-db81-620a-c5e2-717aa6213b7a" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Divergent&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0124916" startTime="2026-09-23T14:14:44.0057417-06:00" endTime="2026-09-23T14:14:44.0057422-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2ef3d90c-0cdb-4ccd-8704-873baff61104" />
+    <UnitTestResult executionId="7f77a7cf-6c8b-4b22-b966-f4db03d7ba42" testId="48364192-d80c-1121-4ad2-e743f5d38170" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0031015" startTime="2026-09-23T14:14:43.4331609-06:00" endTime="2026-09-23T14:14:43.4331612-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f77a7cf-6c8b-4b22-b966-f4db03d7ba42" />
+    <UnitTestResult executionId="7d33cb01-4c0a-4707-b714-4f527f409302" testId="8d626fda-8251-abc6-7f7a-4fdd71fdaa25" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0044582" startTime="2026-09-23T14:14:43.9930445-06:00" endTime="2026-09-23T14:14:43.9930449-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d33cb01-4c0a-4707-b714-4f527f409302" />
+    <UnitTestResult executionId="af2165d8-e889-4681-bfee-40ab2e9c92f1" testId="7def3361-8942-c4e3-1a8a-ebf095125116" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Divergent&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.2408860" startTime="2026-09-23T14:14:42.6523686-06:00" endTime="2026-09-23T14:14:42.6523691-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="af2165d8-e889-4681-bfee-40ab2e9c92f1" />
+    <UnitTestResult executionId="59c4a1d6-59f6-409e-bb77-3379c481605b" testId="9f7bf403-f66d-bc4a-e838-bb875b007df2" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Single&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0381197" startTime="2026-09-23T14:14:43.2234569-06:00" endTime="2026-09-23T14:14:43.2234579-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="59c4a1d6-59f6-409e-bb77-3379c481605b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 63&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1217366c-90b5-446f-9aea-54d0b5ac11cd" testId="3b9d6591-31cf-19b7-55e4-249936572a5d" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0104403" startTime="2026-09-23T14:14:43.3135131-06:00" endTime="2026-09-23T14:14:43.3135136-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1217366c-90b5-446f-9aea-54d0b5ac11cd" />
+    <UnitTestResult executionId="579acba2-2ef7-46ef-8848-956452e30d20" testId="08c08668-0cdf-5a32-8365-4d072a0d063e" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0109629" startTime="2026-09-23T14:14:44.2621476-06:00" endTime="2026-09-23T14:14:44.2621482-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="579acba2-2ef7-46ef-8848-956452e30d20" />
+    <UnitTestResult executionId="30cff486-ffc7-4178-9078-ee6b9b7c9039" testId="41385d6a-e0bb-9500-5b08-17390da396f2" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Divergent&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0286795" startTime="2026-09-23T14:14:44.2508409-06:00" endTime="2026-09-23T14:14:44.2508414-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="30cff486-ffc7-4178-9078-ee6b9b7c9039" />
+    <UnitTestResult executionId="39728b21-3215-4a81-8987-0fd105761aa1" testId="1efd7273-2509-2208-3452-a89cbe7bcb53" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Divergent&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0080350" startTime="2026-09-23T14:14:42.6662038-06:00" endTime="2026-09-23T14:14:42.6662041-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="39728b21-3215-4a81-8987-0fd105761aa1" />
+    <UnitTestResult executionId="824ccbb1-0bc5-45f6-8bd0-5a3c124e2e06" testId="b74fb373-8d5b-b285-0555-1ed9ad6007d1" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Divergent&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0052810" startTime="2026-09-23T14:14:43.3571597-06:00" endTime="2026-09-23T14:14:43.3571601-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="824ccbb1-0bc5-45f6-8bd0-5a3c124e2e06" />
+    <UnitTestResult executionId="cfb41dd5-f151-4b7b-8234-625a13764867" testId="8d79305b-3637-fbd2-b2bf-4388a666b5e7" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Divergent&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0112304" startTime="2026-09-23T14:14:44.0171230-06:00" endTime="2026-09-23T14:14:44.0171239-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cfb41dd5-f151-4b7b-8234-625a13764867" />
+    <UnitTestResult executionId="102f7699-ea21-4ced-ae97-e758a9658b41" testId="28c6fde1-e393-1d52-cdeb-e1f16f1786b6" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Single&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0922858" startTime="2026-09-23T14:14:43.1837143-06:00" endTime="2026-09-23T14:14:43.1837147-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="102f7699-ea21-4ced-ae97-e758a9658b41">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 63&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="57bf7d37-552d-4f33-ad72-5d773aedb6f0" testId="80fb6728-27b8-1bc2-b8eb-8e13d68bed8a" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0116040" startTime="2026-09-23T14:14:43.4556515-06:00" endTime="2026-09-23T14:14:43.4556520-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="57bf7d37-552d-4f33-ad72-5d773aedb6f0" />
+    <UnitTestResult executionId="19bc24ae-9e6a-4767-9b07-d1b2769b665d" testId="c1455b2f-e140-13f3-96c9-20468e23c259" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0066366" startTime="2026-09-23T14:14:43.9466216-06:00" endTime="2026-09-23T14:14:43.9466219-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="19bc24ae-9e6a-4767-9b07-d1b2769b665d" />
+    <UnitTestResult executionId="6b9b132c-93ea-4a79-ba62-b8670d83ca60" testId="43cb8356-a8a8-afd0-3d3f-f286dcac4991" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0098753" startTime="2026-09-23T14:14:44.2832506-06:00" endTime="2026-09-23T14:14:44.2832516-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6b9b132c-93ea-4a79-ba62-b8670d83ca60" />
+    <UnitTestResult executionId="063c55c3-3f15-428b-a970-926d73deb9a2" testId="54c06764-d5a4-ddc5-98b9-5a3d160ad5ac" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Divergent&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0046530" startTime="2026-09-23T14:14:43.4030035-06:00" endTime="2026-09-23T14:14:43.4030039-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="063c55c3-3f15-428b-a970-926d73deb9a2" />
+    <UnitTestResult executionId="85a1661a-a42e-44cc-b415-9662f80b9100" testId="ea6ea679-62f8-c38a-9c82-947a562730af" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0081777" startTime="2026-09-23T14:14:43.3218707-06:00" endTime="2026-09-23T14:14:43.3218711-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="85a1661a-a42e-44cc-b415-9662f80b9100" />
+    <UnitTestResult executionId="071850b0-4360-4415-aa19-7d2f2519a76a" testId="bc64f83b-9ebf-7a29-b254-4ed3da9293c1" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Single&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.2541993" startTime="2026-09-23T14:14:42.9992275-06:00" endTime="2026-09-23T14:14:42.9992279-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="071850b0-4360-4415-aa19-7d2f2519a76a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 63&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9353a492-56ce-40cf-b736-4ea421d37231" testId="69dee854-138f-644c-4849-ff0f0adb4d30" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Divergent&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0055444" startTime="2026-09-23T14:14:42.6580021-06:00" endTime="2026-09-23T14:14:42.6580024-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9353a492-56ce-40cf-b736-4ea421d37231" />
+    <UnitTestResult executionId="d4af938d-bd94-4289-878e-1f3d605dc5bb" testId="2eebb99e-66fe-4212-278d-f42f696067a9" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0106170" startTime="2026-09-23T14:14:43.4439402-06:00" endTime="2026-09-23T14:14:43.4439408-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d4af938d-bd94-4289-878e-1f3d605dc5bb" />
+    <UnitTestResult executionId="7c9b2079-823a-4489-9bb2-bc15c93ba823" testId="bfe0b889-cd13-2054-667a-50885adac840" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Divergent&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0376483" startTime="2026-09-23T14:14:43.2651929-06:00" endTime="2026-09-23T14:14:43.2651939-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7c9b2079-823a-4489-9bb2-bc15c93ba823" />
+    <UnitTestResult executionId="0cc49445-9e87-4feb-b26d-ffaa3711cd04" testId="ddefd3b9-623c-159f-47ac-036a5167787a" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Single&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0181748" startTime="2026-09-23T14:14:44.0371429-06:00" endTime="2026-09-23T14:14:44.0371437-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0cc49445-9e87-4feb-b26d-ffaa3711cd04">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 48&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8c9f89ee-b9f9-447a-b1ed-573edb73fa32" testId="8b04f731-90a4-88e9-6ac2-30d7834c2adc" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Single&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0132450" startTime="2026-09-23T14:14:43.3530662-06:00" endTime="2026-09-23T14:14:43.3530668-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8c9f89ee-b9f9-447a-b1ed-573edb73fa32">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 48&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5d48e2c0-8022-4e7e-b03d-3f7f2ea11a16" testId="7d887cc4-70c3-10e7-2ad4-911f289bf87a" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Single&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0166930" startTime="2026-09-23T14:14:43.3766705-06:00" endTime="2026-09-23T14:14:43.3766708-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5d48e2c0-8022-4e7e-b03d-3f7f2ea11a16">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 48&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b9c48f5f-7284-424a-8110-e72e8916372f" testId="96a23857-6866-941a-9797-9d288fb36942" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0069577" startTime="2026-09-23T14:14:44.2089393-06:00" endTime="2026-09-23T14:14:44.2089399-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b9c48f5f-7284-424a-8110-e72e8916372f" />
+    <UnitTestResult executionId="c0bebbb6-8023-422a-8633-6396a829ef24" testId="10718f94-0956-4424-411c-ff7ce98ab8cf" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Divergent&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0136025" startTime="2026-09-23T14:14:43.2904855-06:00" endTime="2026-09-23T14:14:43.2904864-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c0bebbb6-8023-422a-8633-6396a829ef24" />
+    <UnitTestResult executionId="8ff58bd0-9419-4134-a23d-b408fc06861e" testId="bb3e6953-427f-c2c7-663b-4fd2a41467ea" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0053768" startTime="2026-09-23T14:14:42.6716808-06:00" endTime="2026-09-23T14:14:42.6716810-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8ff58bd0-9419-4134-a23d-b408fc06861e" />
+    <UnitTestResult executionId="85db880a-316a-4ffb-a56a-9bf5dfc14f2f" testId="d75278a1-3b4d-ef68-9c50-a98da6e3a1fc" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Single&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0126719" startTime="2026-09-23T14:14:44.2228515-06:00" endTime="2026-09-23T14:14:44.2228522-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="85db880a-316a-4ffb-a56a-9bf5dfc14f2f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 48&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ab9cc06a-a040-412f-8961-ff45b24456f8" testId="83fe1824-b0f5-8dfc-7484-2f153a5ddf5b" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Divergent&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0074633" startTime="2026-09-23T14:14:43.3379931-06:00" endTime="2026-09-23T14:14:43.3379936-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab9cc06a-a040-412f-8961-ff45b24456f8" />
+    <UnitTestResult executionId="655f6107-b490-4a55-8dee-804280697220" testId="410b8cf2-1d99-0707-9808-35fb34e783f9" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Single&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0075193" startTime="2026-09-23T14:14:43.4647717-06:00" endTime="2026-09-23T14:14:43.4647721-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="655f6107-b490-4a55-8dee-804280697220">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 99&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4db48c93-0cca-437e-9ca6-f0873703e4b9" testId="48d4e741-b063-b6c6-9663-fdfd550c6f8d" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Single&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0679714" startTime="2026-09-23T14:14:44.1440047-06:00" endTime="2026-09-23T14:14:44.1440060-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4db48c93-0cca-437e-9ca6-f0873703e4b9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 85&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="21eca68a-f59f-45a0-92ed-5ca22f7cd4ec" testId="5fba96b0-9372-1e70-e6f8-496712b49e63" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Divergent&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0036224" startTime="2026-09-23T14:14:43.0899070-06:00" endTime="2026-09-23T14:14:43.0899075-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="21eca68a-f59f-45a0-92ed-5ca22f7cd4ec" />
+    <UnitTestResult executionId="26461b56-ac03-4f4a-bb63-4521d14c7456" testId="dee4799b-7720-bdc1-34f5-af6e6789ab82" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0059338" startTime="2026-09-23T14:14:43.2272022-06:00" endTime="2026-09-23T14:14:43.2272030-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="26461b56-ac03-4f4a-bb63-4521d14c7456" />
+    <UnitTestResult executionId="31250419-5759-462c-b019-003b2ec51758" testId="bdafd36d-57e5-c73f-b89e-6b3fef05be5d" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0077556" startTime="2026-09-23T14:14:43.4715661-06:00" endTime="2026-09-23T14:14:43.4715666-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="31250419-5759-462c-b019-003b2ec51758" />
+    <UnitTestResult executionId="c2b2affe-0a02-4d0b-9f66-cfb94e7fc41d" testId="3c046a08-4a1c-09bd-105b-bbe888d24724" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0123770" startTime="2026-09-23T14:14:43.3029331-06:00" endTime="2026-09-23T14:14:43.3029336-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c2b2affe-0a02-4d0b-9f66-cfb94e7fc41d" />
+    <UnitTestResult executionId="76d495a4-5c6e-405d-93bf-6d60a08a22aa" testId="bad1749d-9277-acf6-a8de-ff225e5ae944" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Single&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.4678912" startTime="2026-09-23T14:14:43.9414475-06:00" endTime="2026-09-23T14:14:43.9414478-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="76d495a4-5c6e-405d-93bf-6d60a08a22aa">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 85&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9e97a019-ba1e-451b-bbbc-c1b035aa5e7d" testId="a6c202e2-96f2-df66-afe5-60c1215a4c89" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0039671" startTime="2026-09-23T14:14:43.0699657-06:00" endTime="2026-09-23T14:14:43.0699659-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9e97a019-ba1e-451b-bbbc-c1b035aa5e7d" />
+    <UnitTestResult executionId="25fc3813-d106-425e-a2c3-6e8b985b790c" testId="904595fe-be55-f9a7-367e-f18d546796ad" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Divergent&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0112974" startTime="2026-09-23T14:14:43.2765542-06:00" endTime="2026-09-23T14:14:43.2765549-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="25fc3813-d106-425e-a2c3-6e8b985b790c" />
+    <UnitTestResult executionId="415b986b-137d-4b44-a159-240334d28f70" testId="a6232144-fe5a-1b68-591e-8ef22664b0a8" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Single&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0124310" startTime="2026-09-23T14:14:43.0712149-06:00" endTime="2026-09-23T14:14:43.0712151-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="415b986b-137d-4b44-a159-240334d28f70">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 99&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8848139f-3a09-4998-994d-9f574f5d4005" testId="83ef3279-9d75-8325-3df2-e577b3ea7f37" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0049460" startTime="2026-09-23T14:14:44.2883954-06:00" endTime="2026-09-23T14:14:44.2883962-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8848139f-3a09-4998-994d-9f574f5d4005" />
+    <UnitTestResult executionId="afca9694-318b-46b0-9a7e-4972d10dfc50" testId="3d2e0d6d-8da6-37c6-078c-bff67fd6a607" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Divergent&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.0164278" startTime="2026-09-23T14:14:43.0065189-06:00" endTime="2026-09-23T14:14:43.0065194-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="afca9694-318b-46b0-9a7e-4972d10dfc50" />
+    <UnitTestResult executionId="5b67a051-4dde-4abe-bde0-946d2e292cd9" testId="1d2e8994-3991-0732-edbd-77955bff352c" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0449543" startTime="2026-09-23T14:14:43.0518786-06:00" endTime="2026-09-23T14:14:43.0518792-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5b67a051-4dde-4abe-bde0-946d2e292cd9" />
+    <UnitTestResult executionId="b559ac38-9bb6-4afc-bbf7-b1541ee70654" testId="96aa4a6e-65b8-4b8d-e853-b7cfa047e8df" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0267425" startTime="2026-09-23T14:14:43.4299491-06:00" endTime="2026-09-23T14:14:43.4299496-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b559ac38-9bb6-4afc-bbf7-b1541ee70654" />
+    <UnitTestResult executionId="6934e08c-27fe-4bbd-96a9-9c4ac6c74d16" testId="afdba2ba-da6a-3419-48bf-beed7d1d83ea" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0087696" startTime="2026-09-23T14:14:43.3981946-06:00" endTime="2026-09-23T14:14:43.3981954-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6934e08c-27fe-4bbd-96a9-9c4ac6c74d16" />
+    <UnitTestResult executionId="e41d7947-b669-42de-a65d-64470e708439" testId="65c547a5-ea71-d346-ee03-2c7fa15f5057" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Single&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0592430" startTime="2026-09-23T14:14:44.2031386-06:00" endTime="2026-09-23T14:14:44.2031390-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e41d7947-b669-42de-a65d-64470e708439">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   2</Message>
+          <StackTrace>   at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 194&#xD;
+   at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse) in C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs:line 63&#xD;
+   at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b9eafe33-aa39-4f34-8c00-24093addf1ed" testId="46844f8a-1091-9e03-ef24-101511ba35cd" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0048438" startTime="2026-09-23T14:14:43.0861303-06:00" endTime="2026-09-23T14:14:43.0861308-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b9eafe33-aa39-4f34-8c00-24093addf1ed" />
+    <UnitTestResult executionId="92d5626c-1922-45ed-b626-20bc9b00606d" testId="b32c5b06-76ff-3452-f02f-719af71e3ace" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" computerName="IMING-2" duration="00:00:00.1224463" startTime="2026-09-23T14:14:42.3979354-06:00" endTime="2026-09-23T14:14:42.3979760-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="92d5626c-1922-45ed-b626-20bc9b00606d" />
+    <UnitTestResult executionId="d2efc714-156f-4227-a23d-790db44e20c1" testId="d3542065-b64f-5eb6-d26b-90cf40cb49c8" testName="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" computerName="IMING-2" duration="00:00:00.0103274" startTime="2026-09-23T14:14:44.0468982-06:00" endTime="2026-09-23T14:14:44.0468993-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d2efc714-156f-4227-a23d-790db44e20c1" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Single&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="bad1749d-9277-acf6-a8de-ff225e5ae944">
+      <Execution id="76d495a4-5c6e-405d-93bf-6d60a08a22aa" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Divergent&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="904595fe-be55-f9a7-367e-f18d546796ad">
+      <Execution id="25fc3813-d106-425e-a2c3-6e8b985b790c" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Divergent&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="8d79305b-3637-fbd2-b2bf-4388a666b5e7">
+      <Execution id="cfb41dd5-f151-4b7b-8234-625a13764867" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Single&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="65c547a5-ea71-d346-ee03-2c7fa15f5057">
+      <Execution id="e41d7947-b669-42de-a65d-64470e708439" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="fe5f0d86-dffb-8a2e-e84a-d886d4ca1d78">
+      <Execution id="06c623ed-4af6-4728-a265-cd69f005c137" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="bb3e6953-427f-c2c7-663b-4fd2a41467ea">
+      <Execution id="8ff58bd0-9419-4134-a23d-b408fc06861e" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="d18e189b-2f33-5daf-54f8-6aed548ea556">
+      <Execution id="1e71bac3-1a5e-49ec-9e41-949c886f37e3" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="c1455b2f-e140-13f3-96c9-20468e23c259">
+      <Execution id="19bc24ae-9e6a-4767-9b07-d1b2769b665d" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="96aa4a6e-65b8-4b8d-e853-b7cfa047e8df">
+      <Execution id="b559ac38-9bb6-4afc-bbf7-b1541ee70654" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Single&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="8b04f731-90a4-88e9-6ac2-30d7834c2adc">
+      <Execution id="8c9f89ee-b9f9-447a-b1ed-573edb73fa32" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="83ef3279-9d75-8325-3df2-e577b3ea7f37">
+      <Execution id="8848139f-3a09-4998-994d-9f574f5d4005" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="d3542065-b64f-5eb6-d26b-90cf40cb49c8">
+      <Execution id="d2efc714-156f-4227-a23d-790db44e20c1" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="3b9d6591-31cf-19b7-55e4-249936572a5d">
+      <Execution id="1217366c-90b5-446f-9aea-54d0b5ac11cd" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="80fb6728-27b8-1bc2-b8eb-8e13d68bed8a">
+      <Execution id="57bf7d37-552d-4f33-ad72-5d773aedb6f0" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="1d2e8994-3991-0732-edbd-77955bff352c">
+      <Execution id="5b67a051-4dde-4abe-bde0-946d2e292cd9" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="43cb8356-a8a8-afd0-3d3f-f286dcac4991">
+      <Execution id="6b9b132c-93ea-4a79-ba62-b8670d83ca60" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Divergent&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="b74fb373-8d5b-b285-0555-1ed9ad6007d1">
+      <Execution id="824ccbb1-0bc5-45f6-8bd0-5a3c124e2e06" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="3c046a08-4a1c-09bd-105b-bbe888d24724">
+      <Execution id="c2b2affe-0a02-4d0b-9f66-cfb94e7fc41d" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Divergent&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="5ca8fc80-db81-620a-c5e2-717aa6213b7a">
+      <Execution id="2ef3d90c-0cdb-4ccd-8704-873baff61104" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="8d626fda-8251-abc6-7f7a-4fdd71fdaa25">
+      <Execution id="7d33cb01-4c0a-4707-b714-4f527f409302" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="96a23857-6866-941a-9797-9d288fb36942">
+      <Execution id="b9c48f5f-7284-424a-8110-e72e8916372f" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Divergent&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="69dee854-138f-644c-4849-ff0f0adb4d30">
+      <Execution id="9353a492-56ce-40cf-b736-4ea421d37231" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Single&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="28c6fde1-e393-1d52-cdeb-e1f16f1786b6">
+      <Execution id="102f7699-ea21-4ced-ae97-e758a9658b41" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="86af406a-7b22-9107-660a-87419184a0e7">
+      <Execution id="0cb356a7-9584-4ab7-9119-6b8dcd57703a" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Divergent&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="5fba96b0-9372-1e70-e6f8-496712b49e63">
+      <Execution id="21eca68a-f59f-45a0-92ed-5ca22f7cd4ec" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Single&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="48d4e741-b063-b6c6-9663-fdfd550c6f8d">
+      <Execution id="4db48c93-0cca-437e-9ca6-f0873703e4b9" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Single&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="d75278a1-3b4d-ef68-9c50-a98da6e3a1fc">
+      <Execution id="85db880a-316a-4ffb-a56a-9bf5dfc14f2f" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="928844c7-d491-6658-8829-fa98ef0024dd">
+      <Execution id="776e7d25-b1fd-45e4-8375-9eaded2b89bb" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Single&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="7d887cc4-70c3-10e7-2ad4-911f289bf87a">
+      <Execution id="5d48e2c0-8022-4e7e-b03d-3f7f2ea11a16" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Single&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="b56fb751-a9ea-5c88-53b5-549b487bd633">
+      <Execution id="ca1b36b8-4d06-4647-a46d-300e27cde747" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Single&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="a6232144-fe5a-1b68-591e-8ef22664b0a8">
+      <Execution id="415b986b-137d-4b44-a159-240334d28f70" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="dc3cbb94-5ade-2f9b-fde5-a14ea6ab2c02">
+      <Execution id="5ae436db-6543-45ae-96e7-a837feb8d0e4" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="bdafd36d-57e5-c73f-b89e-6b3fef05be5d">
+      <Execution id="31250419-5759-462c-b019-003b2ec51758" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="afdba2ba-da6a-3419-48bf-beed7d1d83ea">
+      <Execution id="6934e08c-27fe-4bbd-96a9-9c4ac6c74d16" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Divergent&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="3d2e0d6d-8da6-37c6-078c-bff67fd6a607">
+      <Execution id="afca9694-318b-46b0-9a7e-4972d10dfc50" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Single&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="0c6c792c-fe20-1642-8c07-b2fcf008cca8">
+      <Execution id="7eb4ea0f-7873-46ea-ba6e-fdcf4a2e7a8b" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Divergent&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="bfe0b889-cd13-2054-667a-50885adac840">
+      <Execution id="7c9b2079-823a-4489-9bb2-bc15c93ba823" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="46844f8a-1091-9e03-ef24-101511ba35cd">
+      <Execution id="b9eafe33-aa39-4f34-8c00-24093addf1ed" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Divergent&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="10718f94-0956-4424-411c-ff7ce98ab8cf">
+      <Execution id="c0bebbb6-8023-422a-8633-6396a829ef24" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="ae05cf5f-51af-e48c-5185-97a8110e180d">
+      <Execution id="433fa973-dfdd-462b-8cfc-2ef405daf123" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Single&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="bc64f83b-9ebf-7a29-b254-4ed3da9293c1">
+      <Execution id="071850b0-4360-4415-aa19-7d2f2519a76a" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Single&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="410b8cf2-1d99-0707-9808-35fb34e783f9">
+      <Execution id="655f6107-b490-4a55-8dee-804280697220" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="ea6ea679-62f8-c38a-9c82-947a562730af">
+      <Execution id="85a1661a-a42e-44cc-b415-9662f80b9100" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Divergent&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="7def3361-8942-c4e3-1a8a-ebf095125116">
+      <Execution id="af2165d8-e889-4681-bfee-40ab2e9c92f1" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="b32c5b06-76ff-3452-f02f-719af71e3ace">
+      <Execution id="92d5626c-1922-45ed-b626-20bc9b00606d" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="dee4799b-7720-bdc1-34f5-af6e6789ab82">
+      <Execution id="26461b56-ac03-4f4a-bb63-4521d14c7456" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-composite&quot;, outcome: &quot;Divergent&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="41385d6a-e0bb-9500-5b08-17390da396f2">
+      <Execution id="30cff486-ffc7-4178-9078-ee6b9b7c9039" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Single&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="ddefd3b9-623c-159f-47ac-036a5167787a">
+      <Execution id="0cc49445-9e87-4feb-b26d-ffaa3711cd04" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="08c08668-0cdf-5a32-8365-4d072a0d063e">
+      <Execution id="579acba2-2ef7-46ef-8848-956452e30d20" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;pushback-simple&quot;, outcome: &quot;Single&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="9f7bf403-f66d-bc4a-e838-bb875b007df2">
+      <Execution id="59c4a1d6-59f6-409e-bb77-3379c481605b" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Unreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="48364192-d80c-1121-4ad2-e743f5d38170">
+      <Execution id="7f77a7cf-6c8b-4b22-b966-f4db03d7ba42" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-positive&quot;, outcome: &quot;Divergent&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="83fe1824-b0f5-8dfc-7484-2f153a5ddf5b">
+      <Execution id="ab9cc06a-a040-412f-8961-ff45b24456f8" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cantilever&quot;, outcome: &quot;MixedUnreadable&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="a6c202e2-96f2-df66-afe5-60c1215a4c89">
+      <Execution id="9e97a019-ba1e-451b-bbbc-c1b035aa5e7d" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic-custom&quot;, outcome: &quot;Unreadable&quot;, reverse: False)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="2eebb99e-66fe-4212-278d-f42f696067a9">
+      <Execution id="d4af938d-bd94-4289-878e-1f3d605dc5bb" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;cabecera&quot;, outcome: &quot;Divergent&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="54c06764-d5a4-ddc5-98b9-5a3d160ad5ac">
+      <Execution id="063c55c3-3f15-428b-a970-926d73deb9a2" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+    <UnitTest name="RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: &quot;dynamic&quot;, outcome: &quot;Divergent&quot;, reverse: True)" storage="c:\users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\rackcad.tests\bin\debug\net8.0\rackcad.tests.dll" id="1efd7273-2509-2208-3452-a89cbe7bcb53">
+      <Execution id="39728b21-3215-4a81-8987-0fd105761aa1" />
+      <TestMethod codeBase="C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="RackCad.Tests.I58F3SeamTests" name="Real_authorities_preserve_authored_across_the_complete_seam" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="fe5f0d86-dffb-8a2e-e84a-d886d4ca1d78" executionId="06c623ed-4af6-4728-a265-cd69f005c137" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b56fb751-a9ea-5c88-53b5-549b487bd633" executionId="ca1b36b8-4d06-4647-a46d-300e27cde747" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="928844c7-d491-6658-8829-fa98ef0024dd" executionId="776e7d25-b1fd-45e4-8375-9eaded2b89bb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dc3cbb94-5ade-2f9b-fde5-a14ea6ab2c02" executionId="5ae436db-6543-45ae-96e7-a837feb8d0e4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="86af406a-7b22-9107-660a-87419184a0e7" executionId="0cb356a7-9584-4ab7-9119-6b8dcd57703a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0c6c792c-fe20-1642-8c07-b2fcf008cca8" executionId="7eb4ea0f-7873-46ea-ba6e-fdcf4a2e7a8b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d18e189b-2f33-5daf-54f8-6aed548ea556" executionId="1e71bac3-1a5e-49ec-9e41-949c886f37e3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ae05cf5f-51af-e48c-5185-97a8110e180d" executionId="433fa973-dfdd-462b-8cfc-2ef405daf123" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5ca8fc80-db81-620a-c5e2-717aa6213b7a" executionId="2ef3d90c-0cdb-4ccd-8704-873baff61104" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="48364192-d80c-1121-4ad2-e743f5d38170" executionId="7f77a7cf-6c8b-4b22-b966-f4db03d7ba42" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8d626fda-8251-abc6-7f7a-4fdd71fdaa25" executionId="7d33cb01-4c0a-4707-b714-4f527f409302" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7def3361-8942-c4e3-1a8a-ebf095125116" executionId="af2165d8-e889-4681-bfee-40ab2e9c92f1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9f7bf403-f66d-bc4a-e838-bb875b007df2" executionId="59c4a1d6-59f6-409e-bb77-3379c481605b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b9d6591-31cf-19b7-55e4-249936572a5d" executionId="1217366c-90b5-446f-9aea-54d0b5ac11cd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="08c08668-0cdf-5a32-8365-4d072a0d063e" executionId="579acba2-2ef7-46ef-8848-956452e30d20" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="41385d6a-e0bb-9500-5b08-17390da396f2" executionId="30cff486-ffc7-4178-9078-ee6b9b7c9039" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1efd7273-2509-2208-3452-a89cbe7bcb53" executionId="39728b21-3215-4a81-8987-0fd105761aa1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b74fb373-8d5b-b285-0555-1ed9ad6007d1" executionId="824ccbb1-0bc5-45f6-8bd0-5a3c124e2e06" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8d79305b-3637-fbd2-b2bf-4388a666b5e7" executionId="cfb41dd5-f151-4b7b-8234-625a13764867" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="28c6fde1-e393-1d52-cdeb-e1f16f1786b6" executionId="102f7699-ea21-4ced-ae97-e758a9658b41" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="80fb6728-27b8-1bc2-b8eb-8e13d68bed8a" executionId="57bf7d37-552d-4f33-ad72-5d773aedb6f0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c1455b2f-e140-13f3-96c9-20468e23c259" executionId="19bc24ae-9e6a-4767-9b07-d1b2769b665d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="43cb8356-a8a8-afd0-3d3f-f286dcac4991" executionId="6b9b132c-93ea-4a79-ba62-b8670d83ca60" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="54c06764-d5a4-ddc5-98b9-5a3d160ad5ac" executionId="063c55c3-3f15-428b-a970-926d73deb9a2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ea6ea679-62f8-c38a-9c82-947a562730af" executionId="85a1661a-a42e-44cc-b415-9662f80b9100" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bc64f83b-9ebf-7a29-b254-4ed3da9293c1" executionId="071850b0-4360-4415-aa19-7d2f2519a76a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="69dee854-138f-644c-4849-ff0f0adb4d30" executionId="9353a492-56ce-40cf-b736-4ea421d37231" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2eebb99e-66fe-4212-278d-f42f696067a9" executionId="d4af938d-bd94-4289-878e-1f3d605dc5bb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bfe0b889-cd13-2054-667a-50885adac840" executionId="7c9b2079-823a-4489-9bb2-bc15c93ba823" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ddefd3b9-623c-159f-47ac-036a5167787a" executionId="0cc49445-9e87-4feb-b26d-ffaa3711cd04" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8b04f731-90a4-88e9-6ac2-30d7834c2adc" executionId="8c9f89ee-b9f9-447a-b1ed-573edb73fa32" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7d887cc4-70c3-10e7-2ad4-911f289bf87a" executionId="5d48e2c0-8022-4e7e-b03d-3f7f2ea11a16" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96a23857-6866-941a-9797-9d288fb36942" executionId="b9c48f5f-7284-424a-8110-e72e8916372f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10718f94-0956-4424-411c-ff7ce98ab8cf" executionId="c0bebbb6-8023-422a-8633-6396a829ef24" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bb3e6953-427f-c2c7-663b-4fd2a41467ea" executionId="8ff58bd0-9419-4134-a23d-b408fc06861e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d75278a1-3b4d-ef68-9c50-a98da6e3a1fc" executionId="85db880a-316a-4ffb-a56a-9bf5dfc14f2f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="83fe1824-b0f5-8dfc-7484-2f153a5ddf5b" executionId="ab9cc06a-a040-412f-8961-ff45b24456f8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="410b8cf2-1d99-0707-9808-35fb34e783f9" executionId="655f6107-b490-4a55-8dee-804280697220" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="48d4e741-b063-b6c6-9663-fdfd550c6f8d" executionId="4db48c93-0cca-437e-9ca6-f0873703e4b9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5fba96b0-9372-1e70-e6f8-496712b49e63" executionId="21eca68a-f59f-45a0-92ed-5ca22f7cd4ec" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dee4799b-7720-bdc1-34f5-af6e6789ab82" executionId="26461b56-ac03-4f4a-bb63-4521d14c7456" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bdafd36d-57e5-c73f-b89e-6b3fef05be5d" executionId="31250419-5759-462c-b019-003b2ec51758" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3c046a08-4a1c-09bd-105b-bbe888d24724" executionId="c2b2affe-0a02-4d0b-9f66-cfb94e7fc41d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bad1749d-9277-acf6-a8de-ff225e5ae944" executionId="76d495a4-5c6e-405d-93bf-6d60a08a22aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a6c202e2-96f2-df66-afe5-60c1215a4c89" executionId="9e97a019-ba1e-451b-bbbc-c1b035aa5e7d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="904595fe-be55-f9a7-367e-f18d546796ad" executionId="25fc3813-d106-425e-a2c3-6e8b985b790c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a6232144-fe5a-1b68-591e-8ef22664b0a8" executionId="415b986b-137d-4b44-a159-240334d28f70" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="83ef3279-9d75-8325-3df2-e577b3ea7f37" executionId="8848139f-3a09-4998-994d-9f574f5d4005" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3d2e0d6d-8da6-37c6-078c-bff67fd6a607" executionId="afca9694-318b-46b0-9a7e-4972d10dfc50" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d2e8994-3991-0732-edbd-77955bff352c" executionId="5b67a051-4dde-4abe-bde0-946d2e292cd9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96aa4a6e-65b8-4b8d-e853-b7cfa047e8df" executionId="b559ac38-9bb6-4afc-bbf7-b1541ee70654" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="afdba2ba-da6a-3419-48bf-beed7d1d83ea" executionId="6934e08c-27fe-4bbd-96a9-9c4ac6c74d16" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="65c547a5-ea71-d346-ee03-2c7fa15f5057" executionId="e41d7947-b669-42de-a65d-64470e708439" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="46844f8a-1091-9e03-ef24-101511ba35cd" executionId="b9eafe33-aa39-4f34-8c00-24093addf1ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b32c5b06-76ff-3452-f02f-719af71e3ace" executionId="92d5626c-1922-45ed-b626-20bc9b00606d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d3542065-b64f-5eb6-d26b-90cf40cb49c8" executionId="d2efc714-156f-4227-a23d-790db44e20c1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Resultados sin formato de lista" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Todos los resultados cargados" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="56" executed="56" passed="42" failed="14" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.29)&#xD;
+[xUnit.net 00:00:00.34]   Discovering: RackCad.Tests&#xD;
+[xUnit.net 00:00:06.87]   Discovered:  RackCad.Tests&#xD;
+[xUnit.net 00:00:06.90]   Starting:    RackCad.Tests&#xD;
+[xUnit.net 00:00:07.67]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:07.67]       Expected: 1&#xD;
+[xUnit.net 00:00:07.67]       Actual:   2&#xD;
+[xUnit.net 00:00:07.67]       Stack Trace:&#xD;
+[xUnit.net 00:00:07.67]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:07.67]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(63,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:07.67]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:07.67]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:07.74]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:07.74]       Expected: 1&#xD;
+[xUnit.net 00:00:07.74]       Actual:   2&#xD;
+[xUnit.net 00:00:07.74]       Stack Trace:&#xD;
+[xUnit.net 00:00:07.74]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:07.74]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(99,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:07.74]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:07.74]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:07.75]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:07.75]       Expected: 1&#xD;
+[xUnit.net 00:00:07.75]       Actual:   2&#xD;
+[xUnit.net 00:00:07.75]       Stack Trace:&#xD;
+[xUnit.net 00:00:07.75]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:07.75]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(48,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:07.76]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:07.76]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:07.86]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:07.86]       Expected: 1&#xD;
+[xUnit.net 00:00:07.86]       Actual:   2&#xD;
+[xUnit.net 00:00:07.86]       Stack Trace:&#xD;
+[xUnit.net 00:00:07.86]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:07.86]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(63,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:07.86]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:07.86]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:07.89]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:07.90]       Expected: 1&#xD;
+[xUnit.net 00:00:07.90]       Actual:   2&#xD;
+[xUnit.net 00:00:07.90]       Stack Trace:&#xD;
+[xUnit.net 00:00:07.90]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:07.90]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(63,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:07.90]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:07.90]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:08.03]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:08.03]       Expected: 1&#xD;
+[xUnit.net 00:00:08.03]       Actual:   2&#xD;
+[xUnit.net 00:00:08.03]       Stack Trace:&#xD;
+[xUnit.net 00:00:08.03]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:08.03]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(48,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:08.03]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:08.03]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:08.05]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:08.05]       Expected: 1&#xD;
+[xUnit.net 00:00:08.05]       Actual:   2&#xD;
+[xUnit.net 00:00:08.05]       Stack Trace:&#xD;
+[xUnit.net 00:00:08.05]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:08.05]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(48,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:08.05]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:08.05]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:08.06]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:08.06]       Expected: 1&#xD;
+[xUnit.net 00:00:08.06]       Actual:   2&#xD;
+[xUnit.net 00:00:08.06]       Stack Trace:&#xD;
+[xUnit.net 00:00:08.06]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:08.06]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(48,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:08.06]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:08.06]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:08.14]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:08.14]       Expected: 1&#xD;
+[xUnit.net 00:00:08.14]       Actual:   2&#xD;
+[xUnit.net 00:00:08.14]       Stack Trace:&#xD;
+[xUnit.net 00:00:08.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:08.14]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(99,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:08.14]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:08.14]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:08.61]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:08.61]       Expected: 1&#xD;
+[xUnit.net 00:00:08.61]       Actual:   2&#xD;
+[xUnit.net 00:00:08.61]       Stack Trace:&#xD;
+[xUnit.net 00:00:08.61]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:08.61]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(85,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:08.61]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:08.61]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:08.71]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:08.71]       Expected: 1&#xD;
+[xUnit.net 00:00:08.71]       Actual:   2&#xD;
+[xUnit.net 00:00:08.71]       Stack Trace:&#xD;
+[xUnit.net 00:00:08.71]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:08.71]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(48,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:08.71]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:08.71]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:08.82]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:08.82]       Expected: 1&#xD;
+[xUnit.net 00:00:08.82]       Actual:   2&#xD;
+[xUnit.net 00:00:08.82]       Stack Trace:&#xD;
+[xUnit.net 00:00:08.82]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:08.82]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(85,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:08.82]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:08.82]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:08.88]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:08.88]       Expected: 1&#xD;
+[xUnit.net 00:00:08.88]       Actual:   2&#xD;
+[xUnit.net 00:00:08.88]       Stack Trace:&#xD;
+[xUnit.net 00:00:08.88]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:08.88]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(63,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:08.88]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:08.88]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:08.90]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:08.90]       Expected: 1&#xD;
+[xUnit.net 00:00:08.90]       Actual:   2&#xD;
+[xUnit.net 00:00:08.90]       Stack Trace:&#xD;
+[xUnit.net 00:00:08.90]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(194,0): at RackCad.Tests.I58F3SeamTests.Exercise[TAuthored,TResolved,TPlan](RackAuthoredInput input, String wanted, IRackAuthoredComparatorPort`2 comparator, Func`2 copy, Func`3 resolveFactory, Func`2 authority, Func`4 preparationFactory, Func`2 builder, IRackBlockRequirementExtractor`1 extractor, Action`2 values, Action`2 separate, Action`1 mutateWorking, Action`1 mutateEffective, Action`1 authoredInvariant, Action`1 resolvedInvariant, Action`1 planInvariant, DimensionViewKind view)&#xD;
+[xUnit.net 00:00:08.90]         C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\tests\RackCad.Tests\I58F3SeamTests.cs(48,0): at RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(String mode, String outcome, Boolean reverse)&#xD;
+[xUnit.net 00:00:08.90]            at InvokeStub_I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(Object, Span`1)&#xD;
+[xUnit.net 00:00:08.90]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)&#xD;
+[xUnit.net 00:00:08.97]   Finished:    RackCad.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:42.9953117-06:00">
+        <Text>[xUnit.net 00:00:07.67]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "pushback-simple", outcome: "Single", reverse: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:43.1486011-06:00">
+        <Text>[xUnit.net 00:00:07.74]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "cabecera", outcome: "Single", reverse: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:43.1487467-06:00">
+        <Text>[xUnit.net 00:00:07.75]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "dynamic", outcome: "Single", reverse: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:43.1833380-06:00">
+        <Text>[xUnit.net 00:00:07.86]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "pushback-composite", outcome: "Single", reverse: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:43.2220904-06:00">
+        <Text>[xUnit.net 00:00:07.89]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "pushback-simple", outcome: "Single", reverse: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:43.3526348-06:00">
+        <Text>[xUnit.net 00:00:08.02]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "dynamic", outcome: "Single", reverse: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:43.3757437-06:00">
+        <Text>[xUnit.net 00:00:08.05]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "dynamic-custom", outcome: "Single", reverse: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:43.3900473-06:00">
+        <Text>[xUnit.net 00:00:08.06]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "dynamic-positive", outcome: "Single", reverse: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:43.4643260-06:00">
+        <Text>[xUnit.net 00:00:08.14]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "cabecera", outcome: "Single", reverse: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:43.9407143-06:00">
+        <Text>[xUnit.net 00:00:08.61]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "cantilever", outcome: "Single", reverse: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:44.0365231-06:00">
+        <Text>[xUnit.net 00:00:08.71]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "dynamic-custom", outcome: "Single", reverse: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:44.1430637-06:00">
+        <Text>[xUnit.net 00:00:08.82]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "cantilever", outcome: "Single", reverse: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:44.2024411-06:00">
+        <Text>[xUnit.net 00:00:08.88]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "pushback-composite", outcome: "Single", reverse: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="IMING-2" outcome="Error" timestamp="2026-09-23T14:14:44.2224452-06:00">
+        <Text>[xUnit.net 00:00:08.90]     RackCad.Tests.I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam(mode: "dynamic-positive", outcome: "Single", reverse: False) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -48,12 +48,12 @@ integrar esta fundacion antes de I-55 G12 (excepcion de separacion, lifecycle §
 
 ## Alcance autorizado
 
-Resultado entregado: F2 — IMPLEMENT AUTH-13 FOR FOUR KINDS / RED -> GREEN.
-F1 = COMPLETE / COORDINATOR AGREED, incluido F1-CR-01 RESOLVED. Se implementaron unicamente los
-comparators Dynamic, PushBack, Cantilever y Cabecera bajo Consensus Freeze V3, con carrier raw,
-lectura estricta local, igualdad tipada y materializacion de dominio profunda.
-F3 no abierto. Sin Candidate, integracion ni desbloqueo I-55 G12. No se modifican Domain,
-DTOs, stores, resolvers, UI, Plugin, main, I-55, I-52, I-57, R3 ni los anexos congelados.
+Ejecucion autorizada: F3 — SEAM INTEGRATION / COMPATIBILITY / CONFORMANCE / READY.
+F1 y F2 = COMPLETE / COORDINATOR AGREED, comunicados por Owner en la orden F3.
+La seam consume AUTH-13 -> AUTH-09 -> AUTH-10 mediante composicion pura de autoridades existentes;
+no vuelve a implementar igualdad ni agrega un consumer visible. Sin Candidate hasta READY completo y
+conformidad exacta de Coordinator + Architect. Sin integracion ni desbloqueo I-55 G12.
+Domain, DTOs, stores, resolvers, UI, Plugin, I-52, I-55, I-57, R3 y anexos congelados no se modifican.
 
 ## Autoridades por referencia
 
@@ -71,15 +71,16 @@ CR58-01/02 RESOLVED; EXP-01 CLASS B FOR I-58 ONLY / CONFIRMED; M-03 ACTIVATED.
 F1 tiene [evidencia propia](../automation/evidence/I-58-f1/README.md), con manifiestos CT/MM,
 carriers TEST-ONLY, oraculos tipados, control de sabotajes, RED por kind y PASS vacuos separados.
 F1 esta acordado por Coordinator. F2 tiene [evidencia propia](../automation/evidence/I-58-f2/README.md);
-los resultados se atribuyen a su identidad exacta y F3 requiere una revision posterior de Coordinator.
+F2 fue acordado por Coordinator. F3 prepara [evidencia y conformidad](../automation/evidence/I-58-f3/README.md)
+sobre la seam completa y la entrada factual FOUNDATIONS, sin publicar esta ultima antes del cierre.
 La entrada FOUNDATIONS futura solo se publicara al cierre con conformidad; no se modifica ahora.
 
-Coordinator = AGREED ON V3 / F1 AGREED
+Coordinator = AGREED ON V3 / F1 AGREED / F2 AGREED
 Architect = AGREED ON V3
 AR58-V2-01 = RESOLVED BY ARCHITECT
 Frozen = YES
 F1 = COMPLETE / COORDINATOR AGREED
-F2 = COMPLETE / COORDINATOR REVIEW REQUIRED
-F3 = NOT OPEN
+F2 = COMPLETE / COORDINATOR AGREED
+F3 = OPEN / IMPLEMENTATION AUTHORIZED
 I-55 G12 = NOT UNBLOCKED
-IMPLEMENTATION AUTHORIZATION = NO
+IMPLEMENTATION AUTHORIZATION = YES — F3 ONLY

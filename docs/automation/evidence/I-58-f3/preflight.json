@@ -1,0 +1,35 @@
+{
+  "refs": {
+    "HEAD": "13a1be8c51a61fcc8f0810963fdd867d2a32a05f",
+    "@{upstream}": "13a1be8c51a61fcc8f0810963fdd867d2a32a05f",
+    "origin/main": "7097057cf8685bf5ecc09083cba37379d4a4aae8",
+    "integration/I-57": "a5bc02210f740839e2fac37e63fc00512e5ccee6",
+    "integration/I-57^{}": "7097057cf8685bf5ecc09083cba37379d4a4aae8",
+    "origin/feature/creacion-de-vistas": "08e45e0a2521a2e7feb4cf7c8d3fc7fc574aa74d",
+    "origin/feature/rackmirror-espejo-semantico": "d99dafeda20bcb48e3fc4af7093e9982d60b9288"
+  },
+  "blobs": {
+    "docs/initiatives/I-58-freeze-draft.md": "f89671cfe9f1036e24211287514414b3f555182a",
+    "docs/initiatives/I-58-characterization.md": "97e15d6d7c00e02495f8d4159477272d00af6880",
+    "docs/initiatives/I-58-discovery.md": "f07c9b6c6f6c278c6f7d37b3b68921eac7a1c5b8"
+  },
+  "entry_clean": true,
+  "entry_stash_empty": true,
+  "no_incomplete_git_operation": true,
+  "final_worktree": "only declared F3 test/docs overlay pending own commit",
+  "main_is_ancestor": true,
+  "rebase": "not needed; main did not advance",
+  "scope": "F3 product diff NONE; accumulated product diff seven permitted Shared files",
+  "intersections": "I-55 unchanged; I-52 advanced V34 documents only. Proposal V34 section 10 explicitly retains Foundation AUTH01..13 unchanged; no material contradiction",
+  "i52_delta": [
+    "docs/automation/decisions/I-52.md",
+    "docs/automation/evidence/I-52-fixture-closure-v34.json",
+    "docs/initiatives/I-52-architect-review-package-v34.md",
+    "docs/initiatives/I-52-fixture-execution-contract-v34.md",
+    "docs/initiatives/I-52-native-event-catalog-v34.md",
+    "docs/initiatives/I-52-native-probe-matrix-v34.md",
+    "docs/initiatives/I-52-native-scheduler-catalog-v34.md",
+    "docs/initiatives/I-52-objectarx-member-capability-v34.md",
+    "docs/initiatives/I-52-proposal-v34.md"
+  ]
+}

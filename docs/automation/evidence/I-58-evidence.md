@@ -363,3 +363,15 @@ builds UI/Plugin Debug sin errores, CI propia de push 35911641905 con 4/4 requir
 no hereda ni propaga evidencia entre SHAs. Freeze y anexos intactos; sin findings materiales abiertos.
 F1 COMPLETE / COORDINATOR AGREED; F2 COMPLETE / COORDINATOR REVIEW REQUIRED; F3 NOT OPEN;
 I-55 G12 NOT UNBLOCKED; IMPLEMENTATION AUTHORIZATION NO.
+
+
+## F3 — seam y conformidad completa
+
+F3_START_SHA = `13a1be8c51a61fcc8f0810963fdd867d2a32a05f`. Owner comunica F1/F2
+COMPLETE / COORDINATOR AGREED y autoriza solo F3. [Paquete completo](I-58-f3/README.md),
+[matriz F-01..13 y OV](I-58-f3/conformance.md), [CT32/MM38](I-58-f3/ct-mm-matrix.md) y
+[draft FOUNDATIONS](I-58-f3/FOUNDATIONS-draft.md), sin publicar FOUNDATIONS antes del cierre.
+F3 no modifica produccion: composicion pura de AUTH13 -> AUTH09 -> autoridad real una vez -> AUTH10.
+56 seam GREEN; 98 fallos causales en cinco controles; impacto 2524/2524 GREEN, 0 skips.
+Core Full/builds y CI de cierre pendientes de su identidad limpia; no heredan evidencia F2.
+READY-06 requiere veredictos externos exactos; Candidate no declarado, I-55 G12 no desbloqueado.
