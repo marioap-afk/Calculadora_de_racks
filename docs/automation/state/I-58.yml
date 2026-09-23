@@ -1,6 +1,8 @@
 initiative: I-58
 workflow: V2
-status: discovery
-phase: D/F0
+status: awaiting_design_review
+phase: D/F0-delivery-and-F1-preparation
 implementation_authorization: false
-next_action: completar Discovery delta y entregar Freeze draft a Coordinator y Architect
+coordinator: pending
+architect: pending
+next_action: revisar Discovery EXP y Freeze draft exactos; no implementar produccion

@@ -8,12 +8,12 @@ workflow: V2
 conceptual_initiative: I-58
 delivery_unit: I-58
 archetype: FOUNDATION EVOLUTION
-materiality: [M-04, M-05, M-06]
+materiality: [M-02, M-04, M-05, M-06]
 branch: architecture/shared-view-authored-comparators
 base_branch: main
 depends_on: [I-57]
 conflicts_with: [I-55, I-52]
-hot_files: [src/RackCad.Application/Views/RackAuthoredComparator.cs]
+hot_files: [src/RackCad.Application/Systems/Shared/RackAuthoredComparator.cs]
 coordination_strategy: Foundation integrada antes de consumo I-55 G12; sin cambios en ramas consumidoras.
 context_packs: [architecture-kernel, persistence, documentation-governance]
 consumes: [Shared View Foundation, Authored vs Effective]
@@ -24,7 +24,7 @@ freeze_ref: docs/initiatives/I-58-freeze-draft.md
 freeze_delta_ref:
 amendment_refs: []
 ov_assignment_ref: docs/initiatives/I-58-freeze-draft.md
-decision_refs: []
+decision_refs: [docs/automation/decisions/I-58.md]
 evidence_ref: docs/automation/evidence/I-58-evidence.md
 requires_ci: true
 requires_plugin_build: true

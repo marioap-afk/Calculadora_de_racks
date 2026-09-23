@@ -41,3 +41,37 @@ Metrics: duracion Owner UNKNOWN; sin mediciones inferidas.
 Integration tag I-58: inexistente / no solicitado.
 
 IMPLEMENTATION AUTHORIZATION = NO
+
+## Baseline y alcance de pruebas
+
+Core local BASE_SHA, main limpio al arrancar, SDK 8.0.423: 8236 PASS, 0 FAIL, 0 SKIP;
+wall-clock 213.0769571 s; runner 2 m 26 s; exit 0. Log I-58-base-core.txt.
+No se atribuye esta corrida a hijos documentales. UI Full no ejecutada en este preflight; no se declara
+Full combinado ni Candidato. Warnings xUnit preexistentes quedan registrados en el log, no corregidos.
+
+BOOTSTRAP_SHA: fc633365523e1907fd50482107d6d286f67cc6e8; bootstrap versionado antes de Discovery.
+
+## Paquete D/F0 / preparacion F1
+
+- Discovery: docs/initiatives/I-58-discovery.md (DC-01..09, matriz authored/schema, M/EXP).
+- Freeze completo: docs/initiatives/I-58-freeze-draft.md, DRAFT V1, Frozen NO.
+- Anexo congelable: docs/initiatives/I-58-characterization.md.
+- Architect: docs/initiatives/I-58-architect-review-package.md; veredicto NO emitido.
+- Inventario: I-58-source-inventory.txt (busqueda textual de lectores y arboles, no equality).
+- Probe: I-58-probe/Program.cs + I58.Probe.csproj + README.md, fuera de la solucion.
+
+Primer probe de trabajo: fixture Dynamic sin Modules fallo en setup; descartado como RED.
+Fixture corregido: 68 escenarios seleccionados, 32 expectativas incumplidas (Single/Divergent),
+36 Unreadable/null observados; exit 1, 5.8915302 s. Arbol con artefactos sin commit: diagnostico de
+trabajo, NO evidencia local exact-SHA reutilizable. Se repetira tras commit limpio para identidad publicada.
+No hubo fix productivo; no hay GREEN de cuatro comparadores. PASS Unreadable no demuestra reader.
+
+Lifecycle: Owner autoriza characterization cuando proceda; probe diagnostico D/F0 sin implementacion,
+no se declara F1 abierto ni gate funcional cerrado. Coordinator pre-review y EXP positivas pendientes;
+Architect review pendiente. Agreement requerido sobre Freeze + anexos exactos antes de implementacion.
+
+Conformance: NOT REQUESTED / no Candidate. Owner Validation: plan/asignacion en Freeze §8; no ejecutada.
+Metrics: Owner active time UNKNOWN; gate F1 time UNKNOWN; defects escaped UNKNOWN. No ahorro inferido.
+Integration tag I-58: NOT CREATED. Consumer I-55 G12: NOT UNLOCKED BY THIS DELIVERY.
+
+IMPLEMENTATION AUTHORIZATION = NO

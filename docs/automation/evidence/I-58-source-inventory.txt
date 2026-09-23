@@ -1,0 +1,469 @@
+I-58 scoped source inventory; generated with rg, not an equality implementation.
+DC-05 search: source references to the four authored documents and AUTH-13; all layers, no generated output.
+src\RackCad.Application\Systems\Shared\SystemRegistry.Default.cs:69:                ? DynamicRackSystemDocument.From(project.DynamicDesign)
+src\RackCad.Application\Systems\Shared\SystemRegistry.Default.cs:70:                : DynamicRackSystemDocument.From(project.DynamicSystem);
+src\RackCad.Application\Systems\Shared\SystemRegistry.Default.cs:168:            document.PushBack = PushBackDesignDocument.FromDomain(project.PushBackDesign, project.SourceDocument?.PushBack);
+src\RackCad.Application\Systems\Shared\SystemRegistry.Default.cs:175:            SchemaGuard.CheckReadable(document.PushBack.SchemaVersion, PushBackDesignDocument.CurrentSchemaVersion, "El sistema Push Back");
+src\RackCad.Application\Systems\Shared\SystemRegistry.Default.cs:220:            document.Cantilever = CantileverLineDocument.FromDomain(
+src\RackCad.Application\Systems\Shared\SystemRegistry.Default.cs:239:                CantileverLineDocument.CurrentSchemaVersion,
+src\RackCad.UI\Systems\Selective\RackSelectiveWindow.xaml.cs:1248:        /// both copy the same <c>RackFrameProjectDocument</c> source of truth, rebuild the derived members and reject an
+src\RackCad.UI\RackFrames\RackFrameConfiguratorViewModel.cs:2211:        // model is owned by RackFrameProjectDocument (no hand-maintained per-field clone that drifts out of sync as
+src\RackCad.Application\Systems\Shared\RackAuthoredComparator.cs:41:    public interface IRackAuthoredComparatorPort<in TInput, TAuthored>
+src\RackCad.Application\Systems\Shared\RackAuthoredComparator.cs:65:    public static class RackAuthoredComparatorPorts
+src\RackCad.Application\Systems\Shared\RackAuthoredComparator.cs:67:        public static IRackAuthoredComparatorPort<SelectiveAuthoredComparisonInput, SelectivePalletDesignDocument>
+src\RackCad.Application\Systems\Shared\RackAuthoredComparator.cs:70:        public static IRackAuthoredComparatorPort<TInput, TAuthored> Dynamic<TInput, TAuthored>()
+src\RackCad.Application\Systems\Shared\RackAuthoredComparator.cs:73:        public static IRackAuthoredComparatorPort<TInput, TAuthored> PushBack<TInput, TAuthored>()
+src\RackCad.Application\Systems\Shared\RackAuthoredComparator.cs:76:        public static IRackAuthoredComparatorPort<TInput, TAuthored> Cantilever<TInput, TAuthored>()
+src\RackCad.Application\Systems\Shared\RackAuthoredComparator.cs:79:        public static IRackAuthoredComparatorPort<TInput, TAuthored> Cabecera<TInput, TAuthored>()
+src\RackCad.Application\Systems\Shared\RackAuthoredComparator.cs:82:        public static IRackAuthoredComparatorPort<TInput, TAuthored> Cama<TInput, TAuthored>()
+src\RackCad.Application\Systems\Shared\RackAuthoredComparator.cs:85:        private static IRackAuthoredComparatorPort<TInput, TAuthored> Unsupported<TInput, TAuthored>(string kind)
+src\RackCad.Application\Systems\Shared\RackAuthoredComparator.cs:89:            : IRackAuthoredComparatorPort<SelectiveAuthoredComparisonInput, SelectivePalletDesignDocument>
+src\RackCad.Application\Systems\Shared\RackAuthoredComparator.cs:116:            : IRackAuthoredComparatorPort<TInput, TAuthored>
+src\RackCad.Application\Persistence\DynamicRackSystemDocument.cs:14:    public sealed class DynamicRackSystemDocument
+src\RackCad.Application\Persistence\DynamicRackSystemDocument.cs:78:        public static DynamicRackSystemDocument From(DynamicRackSystem system)
+src\RackCad.Application\Persistence\DynamicRackSystemDocument.cs:81:            var document = new DynamicRackSystemDocument
+src\RackCad.Application\Persistence\DynamicRackSystemDocument.cs:141:        public static DynamicRackSystemDocument From(DynamicRackDesign design)
+src\RackCad.Application\Persistence\DynamicRackSystemDocument.cs:143:            var document = new DynamicRackSystemDocument
+src\RackCad.Application\Persistence\DynamicRackSystemDocument.cs:760:        public RackFrameProjectDocument Header { get; set; }
+src\RackCad.Application\Persistence\DynamicRackSystemDocument.cs:777:                    Header = RackFrameProjectDocument.FromConfiguration(item.Header)
+src\RackCad.Application\Persistence\DynamicRackSystemDocument.cs:802:        public RackFrameProjectDocument Header { get; set; }
+src\RackCad.Application\Persistence\DynamicRackSystemDocument.cs:817:                    : RackFrameProjectDocument.FromConfiguration(module.AssociatedFrameConfiguration)
+src\RackCad.Application\Persistence\DynamicRackSystemDocument.cs:834:                    : RackFrameProjectDocument.FromConfiguration(module.HeaderConfiguration)
+src\RackCad.Application\Persistence\CantileverLineDocument.cs:11:    /// It follows the FLAT, self-versioned pattern of <see cref="PushBackDesignDocument"/> and
+src\RackCad.Application\Persistence\CantileverLineDocument.cs:32:    public sealed class CantileverLineDocument
+src\RackCad.Application\Persistence\CantileverLineDocument.cs:49:        public static CantileverLineDocument FromDomain(CantileverLineDesign design) =>
+src\RackCad.Application\Persistence\CantileverLineDocument.cs:57:        public static CantileverLineDocument FromDomain(
+src\RackCad.Application\Persistence\CantileverLineDocument.cs:58:            CantileverLineDesign design, CantileverLineDocument source)
+src\RackCad.Application\Persistence\CantileverLineDocument.cs:60:            return new CantileverLineDocument
+src\RackCad.Application\Persistence\SelectivePalletDesignDocument.cs:82:        public List<RackFrameProjectDocument> PostCabeceras { get; set; } = new List<RackFrameProjectDocument>();
+src\RackCad.Application\Persistence\SelectivePalletDesignDocument.cs:90:        public List<List<RackFrameProjectDocument>> ExtraFondoPostCabeceras { get; set; }
+src\RackCad.Application\Persistence\SelectivePalletDesignDocument.cs:254:                document.PostCabeceras.Add(cabecera == null ? null : RackFrameProjectDocument.FromConfiguration(cabecera));
+src\RackCad.Application\Persistence\SelectivePalletDesignDocument.cs:261:                document.ExtraFondoPostCabeceras = new List<List<RackFrameProjectDocument>>();
+src\RackCad.Application\Persistence\SelectivePalletDesignDocument.cs:266:                        : row.Select(cabecera => cabecera == null ? null : RackFrameProjectDocument.FromConfiguration(cabecera)).ToList());
+src\RackCad.Application\Persistence\SelectivePalletDesignDocument.cs:386:            foreach (var cabecera in PostCabeceras ?? Enumerable.Empty<RackFrameProjectDocument>())
+src\RackCad.Application\Persistence\SelectivePalletDesignDocument.cs:393:            foreach (var row in ExtraFondoPostCabeceras ?? Enumerable.Empty<List<RackFrameProjectDocument>>())
+src\RackCad.Application\Persistence\RackProjectStore.cs:57:                document.Header = project.Header == null ? null : RackFrameProjectDocument.FromConfiguration(project.Header);
+src\RackCad.Application\Persistence\RackProjectStore.cs:187:                    : RackFrameProjectDocument.CurrentSchemaVersion;
+src\RackCad.Application\Persistence\RackProjectStore.cs:315:            RackFrameProjectDocument document;
+src\RackCad.Application\Persistence\RackProjectStore.cs:319:                document = JsonSerializer.Deserialize<RackFrameProjectDocument>(json, SerializerOptions);
+src\RackCad.Application\Persistence\RackProjectStore.cs:326:            SchemaGuard.CheckReadable(document?.SchemaVersion, RackFrameProjectDocument.CurrentSchemaVersion, "La cabecera");
+src\RackCad.Application\Persistence\PushBackDesignDocument.cs:13:    /// (<see cref="DynamicRackSystemDocument"/>) for the shared structure and adds Push Back's own fields, including the
+src\RackCad.Application\Persistence\PushBackDesignDocument.cs:17:    /// source via <see cref="FromDomain(PushBackDesign, PushBackDesignDocument)"/>, the schema version is never silently
+src\RackCad.Application\Persistence\PushBackDesignDocument.cs:20:    public sealed class PushBackDesignDocument
+src\RackCad.Application\Persistence\PushBackDesignDocument.cs:27:        public DynamicRackSystemDocument Structure { get; set; }
+src\RackCad.Application\Persistence\PushBackDesignDocument.cs:78:        public static PushBackDesignDocument FromDomain(PushBackDesign design) => FromDomain(design, null);
+src\RackCad.Application\Persistence\PushBackDesignDocument.cs:92:        public static PushBackDesignDocument FromDomain(PushBackDesign design, PushBackDesignDocument source)
+src\RackCad.Application\Persistence\PushBackDesignDocument.cs:94:            var document = new PushBackDesignDocument
+src\RackCad.Application\Persistence\PushBackDesignDocument.cs:105:            document.Structure = DynamicRackSystemDocument.From(design.Structure ?? new DynamicRackDesign());
+src\RackCad.Application\Persistence\PushBackDesignDocument.cs:244:    /// propiedad unica del rack y viaja en <see cref="PushBackDesignDocument.Structure"/>. Repetirla haria posible
+src\RackCad.Application\Persistence\RackProjectDocument.cs:20:        public RackFrameProjectDocument Header { get; set; }
+src\RackCad.Application\Persistence\RackProjectDocument.cs:21:        public DynamicRackSystemDocument DynamicSystem { get; set; }
+src\RackCad.Application\Persistence\RackProjectDocument.cs:34:        public PushBackDesignDocument PushBack { get; set; }
+src\RackCad.Application\Persistence\RackProjectDocument.cs:44:        public CantileverLineDocument Cantilever { get; set; }
+src\RackCad.Application\Persistence\RackProject.cs:105:            var design = system == null ? null : DynamicRackSystemDocument.From(system).ToDesign();
+src\RackCad.Application\Persistence\RackProject.cs:111:            var resolved = system ?? (design == null ? null : DynamicRackSystemDocument.From(design).ToDomain());
+src\RackCad.Application\Persistence\RackFrameProjectDocument.cs:12:    public sealed class RackFrameProjectDocument
+src\RackCad.Application\Persistence\RackFrameProjectDocument.cs:44:        public static RackFrameProjectDocument FromConfiguration(RackFrameConfiguration configuration)
+src\RackCad.Application\Persistence\RackFrameProjectDocument.cs:46:            var document = new RackFrameProjectDocument
+src\RackCad.Application\Persistence\RackFrameProjectStore.cs:30:            return JsonSerializer.Serialize(RackFrameProjectDocument.FromConfiguration(configuration), SerializerOptions);
+src\RackCad.Application\Persistence\RackFrameProjectStore.cs:40:            RackFrameProjectDocument document;
+src\RackCad.Application\Persistence\RackFrameProjectStore.cs:44:                document = JsonSerializer.Deserialize<RackFrameProjectDocument>(json, SerializerOptions);
+src\RackCad.Application\Persistence\RackFrameProjectStore.cs:59:            SchemaGuard.CheckReadable(document.SchemaVersion, RackFrameProjectDocument.CurrentSchemaVersion, "El proyecto");
+src\RackCad.Application\Persistence\RackFrameProjectStore.cs:75:        /// preserved the moment it is added to <see cref="RackFrameProjectDocument"/> (the audit's U4). The
+src\RackCad.Application\Systems\Dynamic\DynamicRackSystemResolver.cs:518:                : RackFrameProjectDocument.FromConfiguration(configuration).ToConfiguration();
+Persisted typed property inventory (includes nested types; semantic exclusions are in Freeze draft):
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:24:        public string SchemaVersion { get; set; } = CurrentSchemaVersion;
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:27:        public DynamicRackSystemDocument Structure { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:30:        public List<PushBackFrontDocument> Fronts { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:33:        public double? LegacyHighEndBeamPeralte { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:36:        public double? RearTopeSaque { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:42:        public string RearTopePieceId { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:50:        public string DefensePieceId { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:53:        public List<PushBackCellDocument> RearTopeOffCells { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:64:        public PushBackSideDocument SideB { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:72:        public PushBackCompositeDocument Composite { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:76:        public Dictionary<string, JsonElement> ExtensionData { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:78:        public static PushBackDesignDocument FromDomain(PushBackDesign design) => FromDomain(design, null);
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:229:        public List<double?> HighEndBeamPeraltes { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:232:        public int? DefaultPalletsDeep { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:235:        public List<int?> PalletsDeepOverrides { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:238:        public List<bool?> DrawPallets { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:249:        public bool? IsPresent { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:250:        public int? LoadLevels { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:251:        public double? FirstLevelHeight { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:252:        public double? LegacyHighEndBeamPeralte { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:255:        public List<DynamicRackFrontDocument> Fronts { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:258:        public List<PushBackFrontDocument> FrontConfigs { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:260:        public double? RearTopeSaque { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:261:        public string RearTopePieceId { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:264:        public string DefensePieceId { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:266:        public List<PushBackCellDocument> RearTopeOffCells { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:402:        public double? Gap { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:403:        public bool? CentralSeparator { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:404:        public int? StructureOverrideA { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:405:        public int? StructureOverrideB { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:406:        public string DefaultTopology { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:407:        public string DefaultDirection { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:408:        public List<PushBackTopologyCellDocument> Topologies { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:411:        public List<int> AbsentSlotsA { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:418:        public List<int> AbsentSlotsB { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:530:        public int Frente { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:531:        public int Level { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:532:        public string Topology { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:533:        public string Direction { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:539:        public int? CorridaDepth { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:545:        public int Frente { get; set; }
+src/RackCad.Application/Persistence/PushBackDesignDocument.cs:546:        public int Level { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:16:        public double PalletFront { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:17:        public double PalletDepth { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:18:        public double PalletHeight { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:19:        public double PalletWeight { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:20:        public string PalletWeightUnit { get; set; } = "kg";
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:21:        public int PalletsDeep { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:22:        public int? LoadLevels { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:23:        public double? FirstLevelHeight { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:31:        public int? FirstLevelDatum { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:32:        public double? BeamDepth { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:33:        public List<double> IntermediateBeamDepths { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:34:        public double? PalletTolerance { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:35:        public string InOutBeamCatalogId { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:36:        public string HeaderPostCatalogId { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:37:        public double? PostPeralte { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:38:        public int? SeparatorCountOverride { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:39:        public double? SeparatorSpacingOverride { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:40:        public bool DerivedPostReinforced { get; set; } = true;
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:41:        public double? DerivedPostReinforcementHeight { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:45:        public double? DerivedPostHeight { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:52:        public List<DynamicHeaderLineOverrideDocument> HeaderLineOverrides { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:56:        public List<DynamicDerivedPostLineOverrideDocument> DerivedPostLineOverrides { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:57:        public double? ManualHeaderHeightOverride { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:58:        public bool? NumberFronts { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:59:        public bool? NumberLevels { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:60:        public bool? DrawRackName { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:61:        public double? AnnotationScale { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:62:        public int? Dimensions { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:71:        public int? DimensionViews { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:73:        public string DimensionStyle { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:74:        public List<SafetySelectionDocument> SafetySelections { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:75:        public List<DynamicRackFrontDocument> Fronts { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:76:        public List<DynamicRackModuleDocument> Modules { get; set; } = new List<DynamicRackModuleDocument>();
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:447:        public bool? IsActive { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:449:        public int PalletCount { get; set; } = DynamicRackDefaults.DefaultPalletsWide;
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:450:        public int? LoadLevels { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:451:        public int? PalletsDeep { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:452:        public int? DepthStartPosition { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:453:        public double? BeamLengthOverride { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:454:        public double? FirstLevelHeight { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:455:        public double? Bfr { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:456:        public List<double> IntermediateBeamDepths { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:457:        public List<DynamicRackLevelDocument> Levels { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:626:        public double? PalletFront { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:627:        public double? PalletHeight { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:628:        public double? PalletWeight { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:629:        public double? ClearHeight { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:630:        public string InOutBeamCatalogId { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:631:        public double? InOutBeamDepth { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:632:        public double? BeamLengthOverride { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:633:        public string IntermediateBeamCatalogId { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:634:        public double? IntermediateBeamDepth { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:729:        public int PostIndex { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:730:        public double Height { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:758:        public int PostIndex { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:759:        public string ModuleId { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:760:        public RackFrameProjectDocument Header { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:795:        public string ModuleId { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:796:        public DynamicRackModuleKind Kind { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:797:        public double Length { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:798:        public bool IsCalculated { get; set; } = true;
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:799:        public bool IsManualOverride { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:800:        public bool? UseCalculatedHeaderConfiguration { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:801:        public string Notes { get; set; }
+src/RackCad.Application/Persistence/DynamicRackSystemDocument.cs:802:        public RackFrameProjectDocument Header { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:17:        public string SchemaVersion { get; set; } = CurrentSchemaVersion;
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:18:        public string Name { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:19:        public string Units { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:20:        public double Height { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:21:        public double Depth { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:24:        public double? PostPeralte { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:27:        public int? CelosiaStartTroquel { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:28:        public int? DiagonalStartOffsetTroqueles { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:29:        public int? DiagonalEndOffsetTroqueles { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:30:        public int? DiagonalDoubleSpacingTroqueles { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:31:        public int? HorizontalDoubleOffsetTroqueles { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:32:        public double? PasoTroquel { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:33:        public double? PanelClear { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:35:        public string StandardBaselineId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:36:        public string StandardBaselineVersion { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:37:        public PostDocument LeftPost { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:38:        public PostDocument RightPost { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:39:        public PlateDocument LeftBasePlate { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:40:        public PlateDocument RightBasePlate { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:41:        public List<HorizontalDocument> Horizontals { get; set; } = new List<HorizontalDocument>();
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:42:        public List<PanelDocument> Panels { get; set; } = new List<PanelDocument>();
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:125:        public string PostCatalogId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:126:        public string Description { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:127:        public bool HasReinforcement { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:128:        public string ReinforcementCatalogId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:129:        public double ReinforcementHeight { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:159:        public string PlateCatalogId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:160:        public string Description { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:161:        public string ConnectionPointId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:164:        public double? PeralteOverride { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:192:        public string Id { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:193:        public int Number { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:194:        public double Elevation { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:195:        public string ProfileId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:196:        public int Quantity { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:197:        public FrameSide MountingFace { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:198:        public FrameComponentState State { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:199:        public string Notes { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:200:        public bool IsStandard { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:237:        public string PanelId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:238:        public int Number { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:239:        public string LowerHorizontalId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:240:        public string UpperHorizontalId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:241:        public BracingPattern Arrangement { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:242:        public FrameSide MountingFace { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:243:        public string DiagonalProfileId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:244:        public DiagonalDirection DiagonalDirection { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:245:        public string StartConnectionPointId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:246:        public string EndConnectionPointId { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:247:        public bool IsStandard { get; set; }
+src/RackCad.Application/Persistence/RackFrameProjectDocument.cs:248:        public bool IsException { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:69:        public CantileverArmBodyArrangement Arrangement { get; set; } = CantileverArmBodyArrangement.Single;
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:72:        public string SectionId { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:81:        public double CutLength { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:88:        public double SlopeRisePer12 { get; set; } = CantileverDefaults.ArmSlopeRisePer12;
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:90:        public CantileverArmBodyDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:110:        public double Thickness { get; set; } = CantileverDefaults.PlateThickness;
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:115:        public int LowerColumnPunchIndex { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:121:        public int VerticalPunchCount { get; set; } = CantileverDefaults.ArmVerticalPunchCount;
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:130:        public double? VerticalEndOffset { get; set; } = CantileverDefaults.ArmMountingPlateVerticalEndOffset;
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:132:        public CantileverArmMountingPlateDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:148:        public CantileverArmEndPlateMode Mode { get; set; } = CantileverArmEndPlateMode.None;
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:151:        public double Thickness { get; set; } = CantileverDefaults.PlateThickness;
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:158:        public double ExtraStopHeight { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:160:        public CantileverArmEndPlateDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:182:        public CantileverArmSide Side { get; set; } = CantileverArmSide.PositiveY;
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:184:        public CantileverArmBodyDesign Body { get; set; } = new CantileverArmBodyDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:186:        public CantileverArmMountingPlateDesign MountingPlate { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:189:        public CantileverArmEndPlateDesign EndPlate { get; set; } = new CantileverArmEndPlateDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverArmDesign.cs:191:        public CantileverArmDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverBaseDesign.cs:18:        public string SectionId { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverBaseDesign.cs:21:        public double Length { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverBaseDesign.cs:24:        public CantileverPlateDesign FrontPlate { get; set; } = new CantileverPlateDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverBaseDesign.cs:31:        public CantileverPlateDesign RearPlate { get; set; } = new CantileverPlateDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverBaseDesign.cs:34:        public CantileverGussetDesign Gusset { get; set; } = new CantileverGussetDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverBaseDesign.cs:36:        public CantileverBaseDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverColumnBaseConnectionDesign.cs:35:        public CantileverColumnBaseVariantKind Variant { get; set; } = CantileverColumnBaseVariantKind.WFlangeConnected;
+src/RackCad.Domain/Systems/Cantilever\CantileverColumnBaseConnectionDesign.cs:38:        public CantileverPunchParameters Punches { get; set; } = new CantileverPunchParameters();
+src/RackCad.Domain/Systems/Cantilever\CantileverColumnBaseConnectionDesign.cs:40:        public CantileverColumnBaseConnectionDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverColumnBaseDesign.cs:18:        public CantileverColumnDesign Column { get; set; } = new CantileverColumnDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverColumnBaseDesign.cs:20:        public CantileverBaseDesign Base { get; set; } = new CantileverBaseDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverColumnBaseDesign.cs:22:        public CantileverColumnBaseConnectionDesign Connection { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverColumnBaseDesign.cs:25:        public CantileverColumnBaseDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverColumnDesign.cs:19:        public string SectionId { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverColumnDesign.cs:22:        public double Height { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverColumnDesign.cs:25:        public CantileverPlateDesign BottomPlate { get; set; } = new CantileverPlateDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverColumnDesign.cs:27:        public CantileverColumnDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:44:        public double Diameter { get; set; } = CantileverLineDefaults.ColdRolledBraceDiameter;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:46:        public CantileverColdRolledBraceDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:66:        public string SeparatorSectionId { get; set; } = CantileverLineDefaults.SeparatorSectionId;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:68:        public CantileverBracedPanelCountMode PanelCountMode { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:77:        public int? ManualPanelCount { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:80:        public double BracedPanelHeight { get; set; } = CantileverLineDefaults.BracedPanelHeight;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:83:        public double CentralEmptySpaceHeight { get; set; } = CantileverLineDefaults.CentralEmptySpaceHeight;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:85:        public CantileverBraceBodyKind BraceKind { get; set; } = CantileverBraceBodyKind.ColdRolledRound;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:93:        public string BraceSectionId { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:95:        public CantileverColdRolledBraceDesign ColdRolled { get; set; } = new CantileverColdRolledBraceDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:105:        public CantileverPanelLayoutMode PanelLayoutMode { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:109:        public List<CantileverPanelSegmentDesign> AdvancedPanelSegments { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:112:        public CantileverBracingDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:167:        public double StartElevation { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:170:        public double EndElevation { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:172:        public CantileverPanelBracingMode BracingMode { get; set; } = CantileverPanelBracingMode.None;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:182:        public double Height => EndElevation - StartElevation;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:184:        public CantileverPanelSegmentDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:206:        public CantileverStationFaceMode FaceMode { get; set; } = CantileverStationFaceMode.Single;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:209:        public CantileverArmSide SingleSide { get; set; } = CantileverArmSide.PositiveY;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:212:        public CantileverStationColumnBaseTemplateDesign ColumnBaseTemplate { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:216:        public int LevelCount { get; set; } = 1;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:219:        public int FirstLevelPunchIndex { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:222:        public double RequestedClearHeight { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:225:        public double TopClearFactor { get; set; } = CantileverStationDefaults.TopClearFactor;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:228:        public CantileverStationColumnHeightDesign ColumnHeight { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:231:        public CantileverLineStationTopologyDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:255:        public int StationIndex { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:257:        public int LevelIndex { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:259:        public CantileverArmSide Side { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:261:        public CantileverArmTemplateDesign Arm { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:263:        public CantileverArmCellOverride DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:306:        public bool ShowArms { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:309:        public bool ShowBraces { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:318:        public static CantileverPlantaVisibilityDesign ShowingEverything =>
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:321:        public CantileverPlantaVisibilityDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:333:        public Guid Id { get; set; } = Guid.NewGuid();
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:336:        public string Name { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:339:        public int StationCount { get; set; } = CantileverLineDefaults.MinimumStationCount;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:347:        public double ColumnCentreSpacing { get; set; } = CantileverLineDefaults.ColumnCentreSpacing;
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:350:        public CantileverLineStationTopologyDesign StationTopology { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:354:        public CantileverArmTemplateDesign DefaultArmTemplate { get; set; } = new CantileverArmTemplateDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:357:        public List<CantileverArmCellOverride> ArmCellOverrides { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:360:        public CantileverBracingDesign Bracing { get; set; } = new CantileverBracingDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:363:        public CantileverPlantaVisibilityDesign PlantaVisibility { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:367:        public int IntervalCount => Math.Max(0, StationCount - 1);
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:382:        public CantileverLineDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:430:        public CantileverArmTemplateDesign OverrideFor(int stationIndex, int levelIndex, CantileverArmSide side) =>
+src/RackCad.Domain/Systems/Cantilever\CantileverLineDesign.cs:444:        public CantileverArmTemplateDesign EffectiveArm(int stationIndex, int levelIndex, CantileverArmSide side) =>
+src/RackCad.Domain/Systems/Cantilever\CantileverPlateDesign.cs:27:        public double Thickness { get; set; } = CantileverDefaults.PlateThickness;
+src/RackCad.Domain/Systems/Cantilever\CantileverPlateDesign.cs:29:        public CantileverPlateDesign DeepCopy() => new CantileverPlateDesign(Thickness);
+src/RackCad.Domain/Systems/Cantilever\CantileverPlateDesign.cs:51:        public double Thickness { get; set; } = CantileverDefaults.PlateThickness;
+src/RackCad.Domain/Systems/Cantilever\CantileverPlateDesign.cs:53:        public CantileverGussetDesign DeepCopy() => new CantileverGussetDesign(Thickness);
+src/RackCad.Domain/Systems/Cantilever\CantileverPunchParameters.cs:18:        public double Diameter { get; set; } = CantileverDefaults.PunchDiameter;
+src/RackCad.Domain/Systems/Cantilever\CantileverPunchParameters.cs:21:        public double HorizontalEndOffset { get; set; } = CantileverDefaults.PunchHorizontalEndOffset;
+src/RackCad.Domain/Systems/Cantilever\CantileverPunchParameters.cs:24:        public double ConnectionPitch { get; set; } = CantileverDefaults.ConnectionPunchPitch;
+src/RackCad.Domain/Systems/Cantilever\CantileverPunchParameters.cs:27:        public double RearPlateVerticalEndOffset { get; set; } = CantileverDefaults.RearPlateVerticalEndOffset;
+src/RackCad.Domain/Systems/Cantilever\CantileverPunchParameters.cs:30:        public double RegularColumnPitch { get; set; } = CantileverDefaults.RegularColumnPunchPitch;
+src/RackCad.Domain/Systems/Cantilever\CantileverPunchParameters.cs:33:        public int ConnectionPunchesAboveBase { get; set; } = CantileverDefaults.ConnectionPunchesAboveBase;
+src/RackCad.Domain/Systems/Cantilever\CantileverPunchParameters.cs:36:        public double ColumnBottomPlatePitch { get; set; } = CantileverDefaults.ColumnBottomPlatePunchPitch;
+src/RackCad.Domain/Systems/Cantilever\CantileverPunchParameters.cs:51:        public double? ColumnBottomPlateEndOffset { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverPunchParameters.cs:59:        public double? ColumnTopPunchOffset { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverPunchParameters.cs:61:        public CantileverPunchParameters DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:42:        public CantileverStationColumnHeightMode Mode { get; set; } = CantileverStationColumnHeightMode.Automatic;
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:51:        public double? ManualHeight { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:53:        public CantileverStationColumnHeightDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:72:        public string ColumnSectionId { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:75:        public CantileverPlateDesign ColumnBottomPlate { get; set; } = new CantileverPlateDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:82:        public CantileverBaseDesign Base { get; set; } = new CantileverBaseDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:85:        public CantileverColumnBaseConnectionDesign Connection { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:101:        public bool BaseFollowsColumn { get; set; } = true;
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:103:        public CantileverStationColumnBaseTemplateDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:119:        public CantileverColumnBaseDesign ToColumnBaseDesign(double resolvedColumnHeight) =>
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:142:        public double Thickness { get; set; } = CantileverDefaults.PlateThickness;
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:145:        public int VerticalPunchCount { get; set; } = CantileverDefaults.ArmVerticalPunchCount;
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:151:        public double? VerticalEndOffset { get; set; } = CantileverDefaults.ArmMountingPlateVerticalEndOffset;
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:153:        public CantileverArmMountingPlateTemplateDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:170:        public CantileverArmBodyDesign Body { get; set; } = new CantileverArmBodyDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:172:        public CantileverArmMountingPlateTemplateDesign MountingPlate { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:175:        public CantileverArmEndPlateDesign EndPlate { get; set; } = new CantileverArmEndPlateDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:177:        public CantileverArmTemplateDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:206:        public CantileverArmTemplateDesign PositiveYOverride { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:209:        public CantileverArmTemplateDesign NegativeYOverride { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:211:        public CantileverStationLevelDesign DeepCopy() =>
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:279:        public CantileverStationFaceMode FaceMode { get; set; } = CantileverStationFaceMode.Single;
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:288:        public CantileverArmSide SingleSide { get; set; } = CantileverArmSide.PositiveY;
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:291:        public CantileverStationColumnBaseTemplateDesign ColumnBaseTemplate { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:300:        public int FirstLevelPunchIndex { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:308:        public double RequestedClearHeight { get; set; }
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:314:        public double TopClearFactor { get; set; } = CantileverStationDefaults.TopClearFactor;
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:317:        public CantileverStationColumnHeightDesign ColumnHeight { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:321:        public CantileverArmTemplateDesign DefaultArmTemplate { get; set; } = new CantileverArmTemplateDesign();
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:330:        public List<CantileverStationLevelDesign> Levels { get; set; } =
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:334:        public int LevelCount => Levels?.Count ?? 0;
+src/RackCad.Domain/Systems/Cantilever\CantileverStationDesign.cs:336:        public CantileverStationDesign DeepCopy() =>
+Protecting test references:
+tests\RackCad.Tests\BlankFrontBoundaryTests.cs
+tests\RackCad.Tests\BlankFrontTests.cs
+tests\RackCad.UI.Tests\PushBackBootUiFlowTests.cs
+tests\RackCad.UI.Tests\PushBackCompositeLifecycleWiringTests.cs
+tests\RackCad.UI.Tests\PushBackCompositeLoadExistingModulesTests.cs
+tests\RackCad.UI.Tests\PushBackDefenseSideSectionsTests.cs
+tests\RackCad.UI.Tests\PushBackDefensePerPostEndToEndTests.cs
+tests\RackCad.UI.Tests\PushBackDormantRestoreTests.cs
+tests\RackCad.UI.Tests\PushBackDefenseTypePerSideTests.cs
+tests\RackCad.UI.Tests\PushBackDormantTailTransactionTests.cs
+tests\RackCad.Tests\DimensionViewsCopySitesTests.cs
+tests\RackCad.Tests\DynamicDepthGeometryTests.cs
+tests\RackCad.UI.Tests\PushBackRearTopePerSideAndNoneTests.cs
+tests\RackCad.Tests\DynamicDimensionViewsDocumentTests.cs
+tests\RackCad.Tests\HeaderConfigurationSnapshotTests.cs
+tests\RackCad.Tests\PushBackA1PersistenceTests.cs
+tests\RackCad.Tests\PushBackBlankFrontAuthorityTests.cs
+tests\RackCad.Tests\PushBackBlankSideBDeclarationTests.cs
+tests\RackCad.Tests\PushBackBlankSlotIdentityTests.cs
+tests\RackCad.Tests\PushBackCellConfigurationCharacterizationTests.cs
+tests\RackCad.Tests\PushBackCellConfigurationDeliveryTests.cs
+tests\RackCad.Tests\PushBackCellDepthTests.cs
+tests\RackCad.Tests\PushBackCellPalletTests.cs
+tests\RackCad.Tests\PushBackCompositeAuditTests.cs
+tests\RackCad.Tests\PushBackCompositeCharacterizationTests.cs
+tests\RackCad.Tests\PushBackCompositeCorrectionTests.cs
+tests\RackCad.Tests\PushBackCompositeCorridaAuthorityTests.cs
+tests\RackCad.Tests\PushBackCompositeEditingContractTests.cs
+tests\RackCad.Tests\PushBackCompositeModelTests.cs
+tests\RackCad.Tests\PushBackCompositeModuleSequenceTests.cs
+tests\RackCad.Tests\PushBackCompositeRoundTripTests.cs
+tests\RackCad.Tests\PushBackCompositeTopeTests.cs
+tests\RackCad.Tests\PushBackCoreTests.cs
+tests\RackCad.Tests\PushBackDefensePerPostTests.cs
+tests\RackCad.Tests\PushBackDerivedPostAndLineTests.cs
+tests\RackCad.Tests\PushBackDesviadorCellKeyTests.cs
+tests\RackCad.Tests\PushBackFirstLevelDatumTransportTests.cs
+tests\RackCad.Tests\PushBackHeaderEnvelopeTests.cs
+tests\RackCad.Tests\PushBackIntermediateBeamPeralteAuthorityTests.cs
+tests\RackCad.Tests\PushBackIntermediateBeamPeralteTests.cs
+tests\RackCad.Tests\PushBackModuleEditorCharacterizationTests.cs
+tests\RackCad.Tests\PushBackRearTopePieceTests.cs
+tests\RackCad.Tests\PushBackRearTopeRunAuthorityTests.cs
+tests\RackCad.Tests\PushBackSafetyPerPostTests.cs
+tests\RackCad.Tests\RackFirstLevelDatumTests.cs
+tests\RackCad.Tests\RackFrameConfigurationDeepCopyTests.cs
+tests\RackCad.Tests\RackFrameProjectStoreTests.cs
+tests\RackCad.Tests\RackProjectStoreTests.cs
+tests\RackCad.Tests\SharedViewFoundationF6Tests.cs
+tests\RackCad.Tests\SystemKindPersistenceCharacterizationTests.cs
+Nested safety DTO actually lives here:
+Exact safety nested closure, starting at SafetySelectionDocument:
+1:    public sealed class SafetySelectionDocument
+3:        public string ElementId { get; set; }
+4:        public int Quantity { get; set; }
+5:        public int? Side { get; set; }
+6:        public List<PostSideDocument> PostSides { get; set; }
+10:        public bool? TopeShared { get; set; }
+11:        public double? TopeSaque { get; set; }
+12:        public bool? TopeFrontal { get; set; }
+13:        public int? TopeFondo { get; set; }
+14:        public List<GridCellDocument> TopeOffCells { get; set; }
+15:        public double? DesviadorLongitud { get; set; }
+16:        public double? DesviadorPrimerNivelAltura { get; set; }
+17:        public List<GridCellDocument> DesviadorOffCells { get; set; }
+18:        public List<PostDefenseDocument> DefensaPosts { get; set; }
+19:        public List<GridCellDocument> GuiaEntradaOffCells { get; set; }
+20:        public bool? ParrillaFrontal { get; set; }
+21:        public bool? ParrillaLateral { get; set; }
+22:        public double? ParrillaFrente { get; set; }
+23:        public int? ParrillaCantidad { get; set; }
+24:        public List<GridCellDocument> ParrillaOffCells { get; set; }
+31:        public int? BotaPlacement { get; set; }
+33:        public List<BootPostDocument> BotaPosts { get; set; }
+40:        public int? BotaBPlacement { get; set; }
+42:        public List<BootPostDocument> BotaBPosts { get; set; }
+48:        public bool? BotaSidesDeclared { get; set; }
+55:        public string BotaPieceId { get; set; }
+57:        public string BotaBPieceId { get; set; }
+69:        public int? AuthoredSide { get; set; }
+77:        public List<PostSideDocument> DerivedAisles { get; set; }
+201:    public static class BootPostDocumentMapping
+220:    public sealed class BootPostDocument
+222:        public int PostIndex { get; set; }
+224:        public int Placement { get; set; }
+228:    public sealed class GridCellDocument
+230:        public int Frente { get; set; }
+231:        public int Level { get; set; }
+235:    public sealed class PostSideDocument
+237:        public int PostIndex { get; set; }
+238:        public int? Side { get; set; }
+242:    public sealed class PostDefenseDocument
+244:        public int PostIndex { get; set; }
+245:        public double? ExitLength { get; set; }
+246:        public double? EntranceLength { get; set; }
+253:        public bool? ExitAuto { get; set; }
+256:        public bool? EntranceAuto { get; set; }
+260:    public sealed class SelectiveCellDocument
+262:        public double Frente { get; set; }
+263:        public double Alto { get; set; }
+264:        public int PalletCount { get; set; }
+265:        public string BeamId { get; set; }
+266:        public double BeamPeralte { get; set; }
+267:        public double? BeamLengthOverride { get; set; }
+268:        public double? ClearOverride { get; set; }
