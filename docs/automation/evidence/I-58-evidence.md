@@ -186,3 +186,30 @@ Architect = PENDING
 F1 = NOT OPEN
 I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO
+
+## Identidades exactas C1 / V2 para revision
+
+V2_PACKAGE_SHA: 24d3a33355ae242e6eb880244b95c0b9c674ad29. Versiones COMPLETAS, Frozen NO.
+
+| Ruta | Blob en V2_PACKAGE_SHA |
+|---|---|
+| docs/initiatives/I-58-freeze-draft.md | cce4ce54bdd19fe390460853e1be2d1cb24c763c |
+| docs/initiatives/I-58-characterization.md | e25340a141ceafc1b099b4c443f279f85ea3ccb3 |
+| docs/initiatives/I-58-discovery.md | 664d2e07281dbb4e8c640008848b7a27389af45c |
+| docs/initiatives/I-58-architect-review-package.md | 718efacc1e795541a4035171e610fdcf3770622d |
+
+CR58-01/02 y EXP/M: disposiciones individuales dentro del Discovery de ese blob.
+Diagnostico y logs exact-SHA forman parte del mismo paquete; ver I-58-c1-identity.md.
+Ultimo fetch antes de publicar: origin/main sigue BASE_SHA; upstream I-58 sigue HEAD_INICIAL;
+integration/I-57 conserva objeto y target. Diff C1 limitado a documentos/probe propios I-58;
+src/tests/assets/eng/.github/deploy y ROADMAP sin cambio. git diff --check HEAD_INICIAL HEAD PASS.
+Este registro hijo solo publica identidades, no cambia los cuatro blobs anteriores ni hereda pruebas.
+HEAD final de publicacion se obtiene del commit cuyo cuerpo lleva el manifiesto completo; no se intenta
+escribir su propio hash dentro de su contenido. CI de esta nueva publicacion pendiente; no se declara
+verde, gate cerrado ni Candidate. El push agrupado no acredita sus padres con la CI de la punta.
+
+Coordinator = CHANGES REQUIRED ON V1 / REVIEW REQUIRED ON V2
+Architect = PENDING
+F1 = NOT OPEN
+I-55 G12 = NOT UNBLOCKED
+IMPLEMENTATION AUTHORIZATION = NO
