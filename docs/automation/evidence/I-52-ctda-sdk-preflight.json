@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "gate": "LIMITED_CT_DA_RESEARCH_AUTHORIZATION_SDK_PREFLIGHT",
+  "observedAtUtc": "2026-09-23T16:36:50Z",
+  "baseline": {
+    "proposalV31Sha": "6b94e438982fc1e5cebe26591a61d3ecf2681fd0",
+    "authorizationRegistrationSha": "802d27e9f65774edd69a7a9bdf109f63302c5e33",
+    "originMain": "7097057cf8685bf5ecc09083cba37379d4a4aae8",
+    "i55": "08e45e0a2521a2e7feb4cf7c8d3fc7fc574aa74d",
+    "i57Object": "a5bc02210f740839e2fac37e63fc00512e5ccee6",
+    "i57Target": "7097057cf8685bf5ecc09083cba37379d4a4aae8"
+  },
+  "autoCad": {
+    "installed": true,
+    "acadExe": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe",
+    "fileVersion": "R25.0.171.0.0",
+    "productVersion": "R25.0.171.0.0",
+    "sha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422"
+  },
+  "objectArx2025": {
+    "status": "USER_ACTION_REQUIRED",
+    "sdkPath": null,
+    "version": null,
+    "platform": null,
+    "toolset": null,
+    "headersObserved": [],
+    "librariesObserved": [],
+    "headerHashes": [],
+    "libraryHashes": [],
+    "matchingEnvironmentVariables": [],
+    "registrySdkIdentity": null,
+    "requiredFiles": [
+      "dbmain.h",
+      "dbtrans.h",
+      "aced.h",
+      "acdocman.h",
+      "rxdlinkr.h",
+      "acedads.h",
+      "rxregsvc.h"
+    ]
+  },
+  "search": {
+    "recursivelyInspected": [
+      "C:\\Autodesk",
+      "C:\\Program Files\\Autodesk",
+      "C:\\Program Files (x86)\\Autodesk",
+      "C:\\Users\\alejandra-mendoza\\Documents",
+      "C:\\Users\\alejandra-mendoza\\OneDrive",
+      "C:\\Users\\alejandra-mendoza\\OneDrive - Industrias Montilla SA de CV",
+      "C:\\Users\\alejandra-mendoza\\source",
+      "D:\\Autodesk",
+      "D:\\Downloads",
+      "D:\\Program Files",
+      "D:\\Codex",
+      "D:\\Documentos",
+      "D:\\alejandra-mendoza"
+    ],
+    "explicitAbsentRoots": [
+      "C:\\ObjectARX 2025",
+      "C:\\ObjectARX2025",
+      "D:\\ObjectARX 2025",
+      "D:\\ObjectARX2025"
+    ],
+    "configuredSdkReferencesFound": 0,
+    "matchingHeadersLibrariesOrInstallersFound": 0,
+    "note": "Mapped Y drive is not a local SDK installation and no ObjectARX/SDK/Autodesk candidate was present at its root. No configured path points there."
+  },
+  "stop": {
+    "reason": "Official ObjectARX 2025 SDK headers and libraries are not locally available.",
+    "implementationStarted": false,
+    "helperStarted": false,
+    "harnessStarted": false,
+    "fixtureStarted": false,
+    "probesExecuted": false,
+    "ctdaExecution": "NOT_STARTED",
+    "minimumUserAction": "Download/install or otherwise make the official ObjectARX 2025 SDK available locally after accepting Autodesk's terms yourself."
+  }
+}
