@@ -48,8 +48,8 @@ integrar esta fundacion antes de I-55 G12 (excepcion de separacion, lifecycle §
 
 ## Alcance autorizado
 
-Esta ejecucion: F2 — IMPLEMENT AUTH-13 FOR FOUR KINDS / RED -> GREEN.
-F1 = COMPLETE / COORDINATOR AGREED, incluido F1-CR-01 RESOLVED. Se autorizan unicamente los
+Resultado entregado: F2 — IMPLEMENT AUTH-13 FOR FOUR KINDS / RED -> GREEN.
+F1 = COMPLETE / COORDINATOR AGREED, incluido F1-CR-01 RESOLVED. Se implementaron unicamente los
 comparators Dynamic, PushBack, Cantilever y Cabecera bajo Consensus Freeze V3, con carrier raw,
 lectura estricta local, igualdad tipada y materializacion de dominio profunda.
 F3 no abierto. Sin Candidate, integracion ni desbloqueo I-55 G12. No se modifican Domain,
@@ -79,7 +79,7 @@ Architect = AGREED ON V3
 AR58-V2-01 = RESOLVED BY ARCHITECT
 Frozen = YES
 F1 = COMPLETE / COORDINATOR AGREED
-F2 = OPEN / IMPLEMENTATION AUTHORIZED
+F2 = COMPLETE / COORDINATOR REVIEW REQUIRED
 F3 = NOT OPEN
 I-55 G12 = NOT UNBLOCKED
-IMPLEMENTATION AUTHORIZATION = YES — F2 ONLY
+IMPLEMENTATION AUTHORIZATION = NO

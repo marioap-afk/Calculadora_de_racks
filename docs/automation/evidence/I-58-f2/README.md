@@ -1,5 +1,7 @@
 # I-58 F2 — implementacion AUTH-13
 
+## Apertura historica
+
 F2_START_SHA = d1921dc90abdc3b24e7f05c8beca9ab14a502c49
 Freeze blob = f89671cfe9f1036e24211287514414b3f555182a
 Characterization blob = 97e15d6d7c00e02495f8d4159477272d00af6880
@@ -116,3 +118,36 @@ seis archivos, sin cambio de comportamiento ni debilitamiento de la guarda. El S
 propio Core Full limpio/builds/CI; no hereda nada del intento rechazado.
 
 Focal correctivo (NamespaceFolderGuardTests + I58F2): 444/444 PASS, 0 skips; iterations/namespace-focal-green.trx.
+
+
+## Recibo de cierre F2 para revision Coordinator
+
+F2_CLOSURE_SHA = `e27df1be2fbca55303c6cde6d6f27c5f35ba6b10`.
+[Recibo exacto](closure-receipt.json), [CI leida](ci-closure.json) y [corrida 35911641905](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35911641905).
+Todas las clases locales empezaron y terminaron con arbol limpio en ese SHA; SDK resuelto 8.0.423.
+
+| Clase sobre F2_CLOSURE_SHA | Resultado | Duracion de comando medida |
+|---|---|---:|
+| Core Full local | 10585/10585 PASS, 0 FAIL, 0 SKIP | 103.7474497 s |
+| UI Debug build | 0 errores, 0 advertencias | 9.290486 s |
+| Plugin Debug build | 0 errores, solo 2 MSB3277 conocidos | 5.3087884 s |
+| CI push de rama exacta | 4/4 required jobs SUCCESS | consultar timestamps de corrida |
+
+Core Full incluye el focal F2 completo, CT32/MM38, conversion causal de 389 vacuos y regresiones
+Foundation/Selective/Cama/generic unsupported. Version informativa Plugin Debug: `1.0.0+e27df1be2fbca55303c6cde6d6f27c5f35ba6b10`.
+Logs/TRX locales originales en `closure/`. No se repitio UI local: no hay cambios UI ni consumer;
+la CI propia de cierre si incluye UI Full. No Owner Validation ni Candidate.
+
+La publicacion de este recibo es otro SHA documental: no hereda Core/builds ni transfiere su CI al cierre.
+Requiere CI propia y se entrega identificada separadamente. Una incidencia del helper prepush (nombre de
+encoding utf8-sig) se corrigio antes del push; no cambio codigo ni evidencia local y no genero SHA nuevo.
+No findings materiales abiertos ni A-n. Corregida la guarda de namespaces; los intentos descartados quedan
+registrados arriba. El alcance productivo sigue limitado a siete archivos Shared; Domain, DTOs, stores,
+resolvers, UI y Plugin intactos; Freeze/Characterization/Discovery byte-for-byte intactos.
+
+Consensus Freeze V3 = INTACT
+F1 = COMPLETE / COORDINATOR AGREED
+F2 = COMPLETE / COORDINATOR REVIEW REQUIRED
+F3 = NOT OPEN
+I-55 G12 = NOT UNBLOCKED
+IMPLEMENTATION AUTHORIZATION = NO

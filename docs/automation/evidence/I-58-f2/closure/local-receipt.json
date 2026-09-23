@@ -1,0 +1,35 @@
+[
+  {
+    "elapsed_seconds": 103.7474497,
+    "exit_code": 0,
+    "name": "Core Full local",
+    "sdk": "8.0.423",
+    "log": "core-full.log",
+    "clean_before": true,
+    "command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger trx;LogFileName=core-full.trx --results-directory C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\I58-F2-closure-e27df1be2fbca55303c6cde6d6f27c5f35ba6b10",
+    "clean_after": true,
+    "sha": "e27df1be2fbca55303c6cde6d6f27c5f35ba6b10"
+  },
+  {
+    "elapsed_seconds": 9.290486,
+    "exit_code": 0,
+    "name": "Build UI Debug",
+    "sdk": "8.0.423",
+    "log": "ui-debug.log",
+    "clean_before": true,
+    "command": "dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug -v:minimal",
+    "clean_after": true,
+    "sha": "e27df1be2fbca55303c6cde6d6f27c5f35ba6b10"
+  },
+  {
+    "elapsed_seconds": 5.3087884,
+    "exit_code": 0,
+    "name": "Build Plugin Debug",
+    "sdk": "8.0.423",
+    "log": "plugin-debug.log",
+    "clean_before": true,
+    "command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -v:minimal",
+    "clean_after": true,
+    "sha": "e27df1be2fbca55303c6cde6d6f27c5f35ba6b10"
+  }
+]

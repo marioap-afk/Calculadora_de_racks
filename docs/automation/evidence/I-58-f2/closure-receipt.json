@@ -1,0 +1,80 @@
+{
+  "F2_START_SHA": "d1921dc90abdc3b24e7f05c8beca9ab14a502c49",
+  "F2_CLOSURE_SHA": "e27df1be2fbca55303c6cde6d6f27c5f35ba6b10",
+  "freeze_blob": "f89671cfe9f1036e24211287514414b3f555182a",
+  "characterization_blob": "97e15d6d7c00e02495f8d4159477272d00af6880",
+  "discovery_blob": "f07c9b6c6f6c278c6f7d37b3b68921eac7a1c5b8",
+  "sdk": "8.0.423",
+  "core_full": {
+    "total": "10585",
+    "executed": "10585",
+    "passed": "10585",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "local": [
+    {
+      "elapsed_seconds": 103.7474497,
+      "exit_code": 0,
+      "name": "Core Full local",
+      "sdk": "8.0.423",
+      "log": "core-full.log",
+      "clean_before": true,
+      "command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger trx;LogFileName=core-full.trx --results-directory C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\I58-F2-closure-e27df1be2fbca55303c6cde6d6f27c5f35ba6b10",
+      "clean_after": true,
+      "sha": "e27df1be2fbca55303c6cde6d6f27c5f35ba6b10"
+    },
+    {
+      "elapsed_seconds": 9.290486,
+      "exit_code": 0,
+      "name": "Build UI Debug",
+      "sdk": "8.0.423",
+      "log": "ui-debug.log",
+      "clean_before": true,
+      "command": "dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug -v:minimal",
+      "clean_after": true,
+      "sha": "e27df1be2fbca55303c6cde6d6f27c5f35ba6b10"
+    },
+    {
+      "elapsed_seconds": 5.3087884,
+      "exit_code": 0,
+      "name": "Build Plugin Debug",
+      "sdk": "8.0.423",
+      "log": "plugin-debug.log",
+      "clean_before": true,
+      "command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -v:minimal",
+      "clean_after": true,
+      "sha": "e27df1be2fbca55303c6cde6d6f27c5f35ba6b10"
+    }
+  ],
+  "ui_focal_local": "not applicable; pure unconsumed authority, no UI behavior changed",
+  "owner_validation": "not activated by this diff; no manual PASS claimed",
+  "ci": {
+    "run": 35911641905,
+    "event": "push",
+    "head_branch": "architecture/shared-view-authored-comparators",
+    "ref": "refs/heads/architecture/shared-view-authored-comparators",
+    "head_sha": "e27df1be2fbca55303c6cde6d6f27c5f35ba6b10",
+    "required_jobs": {
+      "Tests (Domain + Application)": "success",
+      "UI Tests (WPF controls, net8.0-windows)": "success",
+      "Build UI (WPF, valida API de Application)": "success",
+      "Build Plugin without AutoCAD": "success"
+    },
+    "url": "https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35911641905"
+  },
+  "notes": "Evidence applies only to F2_CLOSURE_SHA. Publishing this receipt creates another SHA and does not transfer local evidence.",
+  "plugin_debug_informational_version": "1.0.0+e27df1be2fbca55303c6cde6d6f27c5f35ba6b10",
+  "status": "F2 COMPLETE / COORDINATOR REVIEW REQUIRED"
+}
