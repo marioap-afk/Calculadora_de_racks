@@ -67,7 +67,7 @@ void Run(string label, DynamicRackDesign original, bool push) {
         }
         // Check the reconstructed physical header, beyond rack PostPeralte, for eligible positive-global exclusions.
         var a=actual.Modules[i].AssociatedFrameConfiguration; var b=baseline.Modules[i].AssociatedFrameConfiguration;
-        if(a!=null && b!=null) Check(a.Height==b.Height && a.Depth==b.Depth && a.PostPeralte==b.PostPeralte && a.Horizontals.Count==b.Horizontals.Count && a.Panels.Count==b.Panels.Count,label+" reconstructed header");
+        if(a!=null && b!=null) Check(a.Height==b.Height && a.Depth==b.Depth && a.PostPeralte==b.PostPeralte && a.Horizontals.Count==b.Horizontals.Count && a.BracingPanels.Count==b.BracingPanels.Count,label+" reconstructed header");
     }
     bool accredited=!original.Modules.Any(m=>!m.UseCalculatedHeaderConfiguration && m.HeaderConfiguration==null);
     if(accredited) {
