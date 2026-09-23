@@ -98,3 +98,28 @@ READY-06 = PENDING
 FINAL_CANDIDATE_SHA = NOT DECLARED
 I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO
+
+
+## Recibo de cierre de la correccion
+
+CONF58_01_CLOSURE_SHA = `860be16486883301b475594f9738f154a3ca3e12`.
+[Recibo exacto](closure-receipt.json), [CI leida](ci-closure.json),
+[corrida 35920493102](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35920493102).
+Core Full local limpio 11221/11221 PASS, 0 FAIL, 0 SKIP, SDK 8.0.423, 253.5272561 s de comando.
+UI Debug sin errores/advertencias; Plugin Debug sin errores, solo dos MSB3277 conocidos.
+Duraciones exactas y orden de comandos en closure/build-receipts.json. Cada clase comenzo/termino limpia.
+Plugin ProductVersion = `1.0.0+860be16486883301b475594f9738f154a3ca3e12`.
+CI propia del cierre: event push, rama exacta, head_sha exacto, cuatro required jobs SUCCESS.
+Rebase final confirmo up to date; no altero identidad. UI focal no aplicable, UI Full cubierto por CI;
+no se declara UI Full local de Candidate ni validacion manual.
+
+Esta publicacion del recibo es otro SHA documental y no hereda Core/builds del cierre. El nuevo SHA
+propuesto para READY-06 se entrega en el informe final, despues de focal/impacto limpio y CI propios.
+Coordinator debe re-revisar CONF58-01 y ambos roles emitir conformidad sobre la nueva punta exacta;
+no se anticipa ninguno de esos veredictos. READY-06 PENDING y Candidate no declarado.
+
+
+Fetch anterior a publicar recibo: I-52 avanzo a `78c04c910ff917b8c90e7f1f2f53273b9b9f4708`,
+solo docs/automation/decisions/I-52.md (dos commits). Se inspecciono el delta completo: registra consenso
+V34 y reanudacion acotada de investigacion CT-DA; producto, AUTH15 y KindContracts siguen sin autorizacion.
+Sin codigo ni interseccion AUTH09/10/13. main e I-55 intactos. Ver prepublication.json.

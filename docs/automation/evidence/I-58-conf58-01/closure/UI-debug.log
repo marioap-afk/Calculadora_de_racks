@@ -1,0 +1,11 @@
+  Determinando los proyectos que se van a restaurar...
+  Todos los proyectos están actualizados para la restauración.
+  RackCad.Domain -> C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\src\RackCad.Domain\bin\Debug\net8.0\RackCad.Domain.dll
+  RackCad.Application -> C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\src\RackCad.Application\bin\Debug\net8.0\RackCad.Application.dll
+  RackCad.UI -> C:\Users\alejandra-mendoza\.codex\worktrees\architecture-shared-view-authored-comparators\src\RackCad.UI\bin\Debug\net8.0-windows\RackCad.UI.dll
+
+Compilación correcta.
+    0 Advertencia(s)
+    0 Errores
+
+Tiempo transcurrido 00:00:22.39

@@ -1,0 +1,12 @@
+{
+  "refs": {
+    "HEAD": "860be16486883301b475594f9738f154a3ca3e12",
+    "@{upstream}": "860be16486883301b475594f9738f154a3ca3e12",
+    "origin/main": "7097057cf8685bf5ecc09083cba37379d4a4aae8",
+    "origin/feature/creacion-de-vistas": "08e45e0a2521a2e7feb4cf7c8d3fc7fc574aa74d",
+    "origin/feature/rackmirror-espejo-semantico": "78c04c910ff917b8c90e7f1f2f53273b9b9f4708"
+  },
+  "i52_delta": "Only docs/automation/decisions/I-52.md: V34 consensus and LIMITED CT-DA research resumption; product remains blocked, AUTH15 and KindContracts not authorized. No AUTH09/10/13 intersection.",
+  "product_tests_diff_since_closure": "",
+  "main_unchanged": true
+}
