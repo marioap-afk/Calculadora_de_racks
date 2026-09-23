@@ -421,3 +421,18 @@ La colocacion sigue siendo individual por G8 y `RACKEDITAR -> Insertar` sigue po
 implementaron ID18, ID19 ni AUTH-15. Foundation y schema permanecen intactos. El receipt durable es
 [`I-55-g10-id17-first-view-freedom.md`](I-55-g10-id17-first-view-freedom.md). Owner Validation `OV-ID17` queda
 diferida al Candidato. G10 queda completo y G11 abierto; G11 no se inicia en esta sesion.
+
+# Estado G11 (2026-09-22)
+
+G11 entrega el contrato puro ID18 para una cola ordenada de vistas de un solo rack. Selecciona variantes y prepara toda
+la cola antes de escribir, representa una sola ejecucion del sibling redraw para racks existentes y coloca cada vista
+como paso independiente. Cancelacion o fallo parcial conservan redraw y placements previamente confirmados.
+
+Una intencion nueva comparte un solo RackId; una existente conserva el suyo. `RackInsertionRequest.Views` agrega la
+lista ordenada sin romper las solicitudes single-view. Flow Bed multivista se rechaza y missing requirements conserva
+`place + report`. El receipt durable es
+[`I-55-g11-id18-batch-contract.md`](I-55-g11-id18-batch-contract.md).
+
+No hay UI visible, dialogo, comando o driver Plugin. ID18 queda `CONTRACT COMPLETE / NOT YET USER-VISIBLE`; ID19 y
+AUTH-15 permanecen fuera. Foundation y schema no cambian. Owner Validation no es requerida para este gate. G11 queda
+completo y G12 abierto; G12 no se inicia en esta sesion.
