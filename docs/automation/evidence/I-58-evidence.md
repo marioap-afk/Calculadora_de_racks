@@ -401,3 +401,38 @@ Core Full local limpio 11221/11221 PASS, 0 skips; UI/Plugin Debug sin errores; C
 event push de rama exacta. [Recibo](I-58-conf58-01/closure-receipt.json). Publicacion posterior documental
 requiere su propio focal/impacto y CI; no hereda Core/builds. CONF58-01 CORRECTED / COORDINATOR RE-REVIEW
 REQUIRED, READY-06 PENDING, Candidate no declarado, I-55 G12 no desbloqueado, autorizacion NO.
+
+
+## Candidate final y cierre documental
+
+FINAL_CANDIDATE_SHA: `85d746f0f760608b60e4c992e76c33287e197bdc`. SDK local: 8.0.423.
+READY-01..09 SATISFIED; Coordinator CONFORMING y Architect CONFORMING sobre ese SHA exacto.
+CONF58-01 RESOLVED; A-n NONE; cero REQUIRED o decisiones pendientes. OV58-04 y Owner Validation:
+NOT APPLICABLE para este Candidate Application puro sin consumidor visible, cambio de UI/Plugin,
+store/resolver ni comportamiento AutoCAD ejecutable nuevo.
+
+Evidencia local ejecutada con arbol limpio antes/despues y HEAD exacto:
+
+| Clase | Resultado |
+|---|---|
+| Core Full | 11221 PASS / 0 FAIL / 0 SKIP |
+| UI Full | 1581 PASS / 0 FAIL / 17 skips historicos / 1598 total |
+| Focal/relevant I58 + Foundation/Selective | 3104 PASS / 0 FAIL / 0 SKIP |
+| Debug UI | PASS; 0 errores, 0 advertencias |
+| Debug Plugin | PASS; 0 errores, dos MSB3277 historicos |
+| Plugin ProductVersion / InformationalVersion | `1.0.0+85d746f0f760608b60e4c992e76c33287e197bdc` |
+
+CI push [35921562865](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35921562865):
+event push, rama `architecture/shared-view-authored-comparators`, head_sha exacto y cuatro jobs requeridos
+SUCCESS (Core, UI, Build UI y Build Plugin).
+
+Candidate coverage [35925861392](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35925861392):
+workflow_dispatch con `candidate_sha` solicitado y checkout/`measured-sha.txt` iguales al Candidate.
+Artifact `rackcad-coverage-cobertura`, id `10778927120`, digest
+`sha256:6a099a97c9efba70bc355bdcba9b8ba886140ea13a4cab42795dc33c88d1436d`.
+Cobertura observada: 46074/50863 lineas y 18854/23897 ramas. El dispatch acredita cobertura y no sustituye
+la CI push. [Recibo estructurado](I-58-candidate/receipt.json).
+
+El cierre documental es un SHA posterior docs-only y no redefine ni recibe las suites del Candidate.
+La integracion, CI post-merge, cleanup y tag `integration/I-58` permanecen pendientes. I-55 G12 sigue
+NOT UNBLOCKED hasta completar esa secuencia.

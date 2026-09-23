@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-58
 title: Shared View Foundation Authored Comparators
 type: architecture
-status: in-progress
+status: candidate-validated-closure
 workflow: V2
 conceptual_initiative: I-58
 delivery_unit: I-58
@@ -48,11 +48,11 @@ integrar esta fundacion antes de I-55 G12 (excepcion de separacion, lifecycle §
 
 ## Alcance autorizado
 
-Resultado entregado: F3 — SEAM INTEGRATION / COMPATIBILITY / CONFORMANCE / READY.
-F1 y F2 = COMPLETE / COORDINATOR AGREED, comunicados por Owner en la orden F3.
+Resultado entregado: F1, F2 y F3 completos; READY-01..09 y conformidad completa satisfechos.
+El Candidate fue validado y el cierre documental queda preparado para revision del Coordinator.
 La seam consume AUTH-13 -> AUTH-09 -> AUTH-10 mediante composicion pura de autoridades existentes;
-no vuelve a implementar igualdad ni agrega un consumer visible. Sin Candidate hasta READY completo y
-conformidad exacta de Coordinator + Architect. Sin integracion ni desbloqueo I-55 G12.
+no vuelve a implementar igualdad ni agrega un consumer visible. La integracion permanece pendiente y
+I-55 G12 sigue bloqueado hasta que exista una integracion completa y su tag valido.
 Domain, DTOs, stores, resolvers, UI, Plugin, I-52, I-55, I-57, R3 y anexos congelados no se modifican.
 
 ## Autoridades por referencia
@@ -71,18 +71,20 @@ CR58-01/02 RESOLVED; EXP-01 CLASS B FOR I-58 ONLY / CONFIRMED; M-03 ACTIVATED.
 F1 tiene [evidencia propia](../automation/evidence/I-58-f1/README.md), con manifiestos CT/MM,
 carriers TEST-ONLY, oraculos tipados, control de sabotajes, RED por kind y PASS vacuos separados.
 F1 esta acordado por Coordinator. F2 tiene [evidencia propia](../automation/evidence/I-58-f2/README.md);
-F2 fue acordado por Coordinator. F3 prepara [evidencia y conformidad](../automation/evidence/I-58-f3/README.md)
-sobre la seam completa y la entrada factual FOUNDATIONS, sin publicar esta ultima antes del cierre.
-La entrada FOUNDATIONS futura solo se publicara al cierre con conformidad; no se modifica ahora.
+F2 fue acordado por Coordinator. F3 tiene [evidencia y conformidad](../automation/evidence/I-58-f3/README.md)
+sobre la seam completa. Coordinator y Architect revisaron conformes el mismo Candidate y la entrada factual
+FOUNDATIONS conformada se publica en este cierre documental.
 
-Coordinator = AGREED ON V3 / F1 AGREED / F2 AGREED
-Architect = AGREED ON V3
+Coordinator = CONFORMING
+Architect = CONFORMING
 AR58-V2-01 = RESOLVED BY ARCHITECT
 Frozen = YES
 F1 = COMPLETE / COORDINATOR AGREED
 F2 = COMPLETE / COORDINATOR AGREED
-F3 = COMPLETE / COORDINATOR REVIEW REQUIRED
-READY-06 = PENDING CONFORMANCE REVIEW
-FINAL_CANDIDATE_SHA = NOT DECLARED
+F3 = COMPLETE / COORDINATOR AGREED
+READY-01..09 = SATISFIED
+FINAL CANDIDATE = VALIDATED
+CLOSURE = PREPARED / COORDINATOR REVIEW REQUIRED
+INTEGRATION = PENDING
 I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO

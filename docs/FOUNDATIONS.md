@@ -69,6 +69,17 @@ Protecting tests: `ProjectVariablesDocumentTests`, `ProjectVariablesWorkspaceTes
 Known limitations: el registro no ofrece control general de concurrencia entre preflight y commit; una relectura debe acreditarse por si misma.
 Last changed by: I-48
 
+Name: Shared View Foundation — AUTH-13 Authored Comparators
+Status: STABLE
+Authority: `RackAuthoredComparatorPorts` conserva AUTH-13 neutral. Selective delega a `SelectiveAuthoredAuthority.Resolve`; Dynamic, PushBack, Cantilever y Cabecera acreditan todas las hermanas raw antes de comparar y materializar. Los outcomes son `Single`, `Divergent` y `Unreadable`; Cama y factories genericas arbitrarias permanecen unsupported/fail-closed.
+Persistence: no cambia formatos, DTOs, serializers ni stores. `RackAuthoredInput` transporta pertenencia exterior, snapshot completo, source y raw original de envelope/Design; el reader local cierra forma, schema y unknowns antes de cualquier mapper. Selective conserva su contrato historico; los otros Singles publican `DynamicRackDesign`, `PushBackDesign`, `CantileverLineDesign` y `RackFrameConfiguration`.
+Mutation contract: la igualdad es tipada y no llama resolver ni catalogo; cada Single nuevo es profundo e independiente. AUTH-09 opera sobre una copia de trabajo y llama una vez a la autoridad vigente; AUTH-10 prepara el effective tipado sin re-resolver, y el effective nunca sustituye authored.
+Extension point: consumidores usan el puerto concreto por kind y las seams AUTH-09/10 existentes, acreditan captura completa y conservan metadata del envelope y sus gates propios. No existe registry o conversor universal.
+Decision source: Consensus Freeze V3 [I-58](initiatives/I-58-freeze-draft.md), Characterization V3 y [ADR-0044](adr/0044-hechos-neutrales-de-vistas-compartidas.md), sobre AUTH-13 de I-57.
+Protecting tests: `I58F1CharacterizationTests`, `I58F1OracleChecks`, `I58F2ReaderTests`, `I58F2BoundaryTests`, `I58F2MaterializationTests`, `I58F3SeamTests`, `I58Conf58SchemaWhitespaceTests`, `SharedViewFoundationF5Tests`, `SharedViewFoundationF6Tests` y `SelectiveAuthored*`.
+Known limitations: con PostPeralte global 0 conserva y compara cada Header persistible completo por orden, modulo y provenance, lo que puede producir Divergent conservador aunque el peralte efectivo coincida. CustomProperties mantiene autoridad separada. En Cantilever, membership exterior y `Line.Id` interior son distintos y no se corrige D58-CANT-ID/I-37. Cama, AUTH-15, captura AutoCAD, remedios de divergence y consumo I-55 G12 quedan fuera; G12 sigue bloqueado hasta integracion completa y tag `integration/I-58` valido.
+Last changed by: I-58
+
 Name: Authored vs Effective
 Status: STABLE
 Authority: `SelectiveAuthoredAuthority` obtiene un authored logico por RackId; `SelectiveEffectiveDesignResolver` es el punto unico de authored + variables a effective.
