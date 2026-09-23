@@ -48,7 +48,7 @@ integrar esta fundacion antes de I-55 G12 (excepcion de separacion, lifecycle §
 
 ## Alcance autorizado
 
-Ejecucion autorizada: F3 — SEAM INTEGRATION / COMPATIBILITY / CONFORMANCE / READY.
+Resultado entregado: F3 — SEAM INTEGRATION / COMPATIBILITY / CONFORMANCE / READY.
 F1 y F2 = COMPLETE / COORDINATOR AGREED, comunicados por Owner en la orden F3.
 La seam consume AUTH-13 -> AUTH-09 -> AUTH-10 mediante composicion pura de autoridades existentes;
 no vuelve a implementar igualdad ni agrega un consumer visible. Sin Candidate hasta READY completo y
@@ -81,6 +81,8 @@ AR58-V2-01 = RESOLVED BY ARCHITECT
 Frozen = YES
 F1 = COMPLETE / COORDINATOR AGREED
 F2 = COMPLETE / COORDINATOR AGREED
-F3 = OPEN / IMPLEMENTATION AUTHORIZED
+F3 = COMPLETE / COORDINATOR REVIEW REQUIRED
+READY-06 = PENDING CONFORMANCE REVIEW
+FINAL_CANDIDATE_SHA = NOT DECLARED
 I-55 G12 = NOT UNBLOCKED
-IMPLEMENTATION AUTHORIZATION = YES — F3 ONLY
+IMPLEMENTATION AUTHORIZATION = NO

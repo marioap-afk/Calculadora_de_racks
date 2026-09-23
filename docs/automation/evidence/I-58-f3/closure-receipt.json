@@ -1,0 +1,74 @@
+{
+  "F3_START_SHA": "13a1be8c51a61fcc8f0810963fdd867d2a32a05f",
+  "F3_CLOSURE_SHA": "5386a211e49ae9c8a22eacc8cdcc3227cd95b584",
+  "core_full": {
+    "total": "10641",
+    "executed": "10641",
+    "passed": "10641",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "local": [
+    {
+      "clean_before": true,
+      "command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger trx;LogFileName=core-full.trx --results-directory <receipt directory>",
+      "clean_after": true,
+      "name": "Core Full local",
+      "sha": "5386a211e49ae9c8a22eacc8cdcc3227cd95b584",
+      "exit_code": 0,
+      "sdk": "8.0.423",
+      "elapsed_seconds": 352.3275381
+    },
+    {
+      "command": "dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug -v:minimal",
+      "sha": "5386a211e49ae9c8a22eacc8cdcc3227cd95b584",
+      "clean_after": true,
+      "exit_code": 0,
+      "name": "UI Debug",
+      "elapsed_seconds": 25.4683082,
+      "clean_before": true,
+      "sdk": "8.0.423"
+    },
+    {
+      "command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -v:minimal",
+      "sha": "5386a211e49ae9c8a22eacc8cdcc3227cd95b584",
+      "clean_after": true,
+      "exit_code": 0,
+      "name": "Plugin Debug",
+      "elapsed_seconds": 14.3760028,
+      "clean_before": true,
+      "sdk": "8.0.423"
+    }
+  ],
+  "plugin_debug_informational_version": "1.0.0+5386a211e49ae9c8a22eacc8cdcc3227cd95b584",
+  "production_diff_f3": "NONE",
+  "owner_validation": "OV58-04 applicable at Candidate = NO for current pure unconsumed diff; no manual PASS",
+  "ui_focal": "not applicable to unchanged UI; own CI must run UI Full",
+  "rebase": "git rebase origin/main confirmed up to date without new identity",
+  "notes": "Local evidence applies only to F3_CLOSURE_SHA. Publication and conformance SHA needs its own focal/CI; no inheritance by equal tree.",
+  "ci": {
+    "run": 35916303385,
+    "event": "push",
+    "ref": "refs/heads/architecture/shared-view-authored-comparators",
+    "head_sha": "5386a211e49ae9c8a22eacc8cdcc3227cd95b584",
+    "required_jobs": {
+      "Tests (Domain + Application)": "success",
+      "UI Tests (WPF controls, net8.0-windows)": "success",
+      "Build UI (WPF, valida API de Application)": "success",
+      "Build Plugin without AutoCAD": "success"
+    },
+    "url": "https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35916303385"
+  },
+  "status": "F3 COMPLETE / COORDINATOR REVIEW REQUIRED"
+}

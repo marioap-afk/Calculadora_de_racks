@@ -96,3 +96,34 @@ SHA; no se atribuyen retrospectivamente a iteraciones con overlay. El SHA propue
 sera la punta publicada con CI propia y focales propios, nunca una identidad inferida por igualdad de arbol.
 Core Full/builds de F3_CLOSURE_SHA solo acreditan ese SHA; una publicacion documental no los hereda.
 READY-06 espera Coordinator + Architect CONFORMING exactos; FINAL_CANDIDATE_SHA no declarado.
+
+
+## Recibo funcional exacto F3
+
+F3_CLOSURE_SHA = `5386a211e49ae9c8a22eacc8cdcc3227cd95b584`.
+[Recibo](closure-receipt.json), [CI exacta](ci-closure.json), [run 35916303385](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35916303385).
+Arbol limpio antes/despues de cada clase local, SDK 8.0.423. Rebase final sin cambio de identidad:
+`git rebase origin/main` informa up to date. Core incluye 56 seam, 1271 fixtures y 389 causas reader, todos PASS.
+
+| Clase sobre F3_CLOSURE_SHA | Resultado | Segundos de comando medidos |
+|---|---|---:|
+| Core Full local | 10641/10641 PASS, 0 FAIL, 0 SKIP | 352.3275381 |
+| UI Debug build | 0 errores / 0 advertencias | 25.4683082 |
+| Plugin Debug build | 0 errores / solo 2 MSB3277 conocidos | 14.3760028 |
+| CI push rama exacta | 4/4 required jobs SUCCESS | timestamps en ci-closure.json |
+
+DLL Plugin ProductVersion: `1.0.0+5386a211e49ae9c8a22eacc8cdcc3227cd95b584`.
+Los logs/TRX originales estan en closure/. El run de CI incluye UI Full; no se afirma UI Full local ni OV manual.
+
+La publicacion de este recibo crea otra identidad documental; NO hereda Core/builds del cierre. Esa punta
+es la propuesta para full conformance review y requiere su propio focal/impacto limpio y CI 4/4 antes de
+entrega. Su SHA y corrida se leen y entregan en el informe final, sin crear una cadena infinita de recibos.
+Los veredictos externos deben citar ESA punta exacta, no inferir acuerdo de un padre por igualdad de arbol.
+
+F1 = COMPLETE / COORDINATOR AGREED
+F2 = COMPLETE / COORDINATOR AGREED
+F3 = COMPLETE / COORDINATOR REVIEW REQUIRED
+READY-06 = PENDING CONFORMANCE REVIEW
+FINAL_CANDIDATE_SHA = NOT DECLARED
+I-55 G12 = NOT UNBLOCKED
+IMPLEMENTATION AUTHORIZATION = NO

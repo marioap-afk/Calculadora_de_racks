@@ -82,17 +82,30 @@ se reevalua contra su nueva identidad y se prepara OV aplicable; no se reutiliza
 ## READY, en orden
 
 1. READY-01: PASS factual — Freeze completo, alcance cerrado, A-n NONE.
-2. READY-02: F1/F2 acordados. F3 resultado funcional/evidencia se entrega para revision Coordinator;
+2. READY-02: F1/F2 acordados. F3 COMPLETE / COORDINATOR REVIEW REQUIRED, cierre funcional acreditado;
    documentos propios y draft FOUNDATIONS versionados. El cierre formal de Coordinator sigue reservado.
 3. READY-03: PASS factual — cero REQUIRED material, EXP-01 A o decisiones de producto pendientes.
 4. READY-04: PASS factual — fetch/preflight final en preflight.json; main no avanzo y es ancestro.
    No rebase necesario. I-52 avanzo solo documentacion V34, sin contradiccion material.
-5. READY-05: focal/impacto y CI exacta del SHA propuesto se registran al terminar; no heredar CI/local por arbol.
+5. READY-05: cierre funcional con Core Full limpio y CI 4/4 acreditados en closure-receipt.json.
+   La punta documental propuesta se entrega solo tras focal/impacto limpio y CI propios; identidad final
+   en informe de entrega. No hereda evidencia local por arbol.
 6. READY-06: PENDING CONFORMANCE REVIEW — Coordinator + Architect deben revisar el MISMO SHA completo.
-7. READY-07: comprobacion factual de arbol limpio al entregar; no constituye avance formal sobre READY-06.
+7. READY-07: arbol limpio exigido y comprobado en entrega, con HEAD identificado; no constituye
+   avance formal sobre READY-06.
 8. READY-08: matriz OV preparada completa arriba; evaluacion OV58-04 NO para diff actual a confirmar en review.
 9. READY-09: comprobar blobs, acuerdo de entrada comunicado, A-n NONE y diff permitido contra main; identidad
    propuesta en recibo. No emitir acuerdos de conformidad ajenos ni declarar completada la secuencia READY.
 
 La frontera externa READY-06 detiene Candidate. Los checks posteriores solo se preparan/inspeccionan:
 no se declara READY global ni se anticipa Coordinator/Architect = CONFORMING.
+
+
+## Paquete entregado y acuerdos que faltan
+
+Cierre funcional: `5386a211e49ae9c8a22eacc8cdcc3227cd95b584`, recibo Core/builds/CI propio versionado.
+La punta documental que contiene este paquete, identificada en el informe final y su CI de push,
+es el SHA propuesto para conformidad completa. F1/F2 acordados por Coordinator (estado de entrada).
+F3 se entrega para revision Coordinator, conjuntamente con la conformidad global requerida de ambos roles.
+Coordinator = CONFORMANCE REVIEW REQUIRED. Architect = CONFORMANCE REVIEW REQUIRED.
+No se emite CONFORMING ni se declara Candidate. El significado formal/orden de READY permanece intacto.
