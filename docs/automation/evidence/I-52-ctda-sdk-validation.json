@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "gate": "LIMITED_CT_DA_OBJECTARX_2025_DEFINITION_DRIFT",
+  "observedAtUtc": "2026-09-23T18:00:21Z",
+  "baseline": {
+    "i52": "a59eee6dcd4f7ea7b598a28a62c349304ba517a9",
+    "proposalV31Sha": "6b94e438982fc1e5cebe26591a61d3ecf2681fd0",
+    "proposalV31Blob": "b6ef60d7fada01f461b1d170ee8ff2c0606bf893",
+    "npmV31Blob": "a288c3fc3efaa1dc65f477acb57ad07cb7b6ebe8",
+    "necV30Blob": "f9536fdfc6b97dcb7051f958b6c4dcea5f6d3c32",
+    "originMain": "7097057cf8685bf5ecc09083cba37379d4a4aae8",
+    "i55": "08e45e0a2521a2e7feb4cf7c8d3fc7fc574aa74d",
+    "i57Object": "a5bc02210f740839e2fac37e63fc00512e5ccee6",
+    "i57Target": "7097057cf8685bf5ecc09083cba37379d4a4aae8"
+  },
+  "sdk": {
+    "status": "INVALID_DEFINITION_DRIFT",
+    "root": "D:\\Downloads\\CDROM1",
+    "installer": {
+      "path": "D:\\Downloads\\objectarx-for-autocad-2025-win-64bit-dlm.sfx.exe",
+      "product": "Autodesk AutoCAD 2025 Object ARX SDK and Documentation",
+      "fileVersion": "25.0.58.0",
+      "productVersion": "25.0.58.0",
+      "bytes": 121327232,
+      "sha256": "1E896DA27B69AE4B1EBCA744245B77BE1C7AE7856A3BDC7A9E0EDB65FD3B66C5"
+    },
+    "platform": "x64",
+    "toolset": "v143",
+    "includePath": "D:\\Downloads\\CDROM1\\inc",
+    "includeX64Path": "D:\\Downloads\\CDROM1\\inc-x64",
+    "libraryPath": "D:\\Downloads\\CDROM1\\lib-x64",
+    "headers": [
+      {
+        "name": "dbmain.h",
+        "bytes": 112252,
+        "sha256": "5B79A74DEF06A768B849D2C88F979BF4C15C307EA88D4ACF8FE2A8EE4CA586CD"
+      },
+      {
+        "name": "dbtrans.h",
+        "bytes": 6250,
+        "sha256": "D3EBB73E88FB37E3205611818143D1643A24933815452C6B807E46D8C44999C6"
+      },
+      {
+        "name": "aced.h",
+        "bytes": 49935,
+        "sha256": "C28C3974BBA868B49B9946F052957700CCC1655E7FB17689FEBE46AA15B319AD"
+      },
+      {
+        "name": "acdocman.h",
+        "bytes": 22109,
+        "sha256": "4B71C08BA578F81FC67898AC3519D0D5069C638A74F52D256DD539D02BDE422D"
+      },
+      {
+        "name": "rxdlinkr.h",
+        "bytes": 6308,
+        "sha256": "CD6D76037BC2DBA192D3ECDBC703ACCFBD2E67D9AB5AC130901C6A3EA4308F3A"
+      },
+      {
+        "name": "acedads.h",
+        "bytes": 26008,
+        "sha256": "1B5E3B525389BEB4A20730ECF7054E597362E8A1418922394561B88ADFA33370"
+      },
+      {
+        "name": "rxregsvc.h",
+        "bytes": 5775,
+        "sha256": "CABD20D3CD27C3DFAF2F7E6B111903C87AA725FD54DA8C120E12EA526A2C34C3"
+      }
+    ],
+    "candidateLibrariesNotLinked": [
+      {
+        "name": "acdb25.lib",
+        "sha256": "0A4749A9942D7DB38CCC351A2BFE88989A36504247B35FF367C2A8655499FABA"
+      },
+      {
+        "name": "accore.lib",
+        "sha256": "893BC5275F4EFF2797E0F43F66560880C723E6DBF318D3CE2BCECE86F044D121"
+      },
+      {
+        "name": "acad.lib",
+        "sha256": "8E6C83AD3306A2DC59D8E7C3096A86837B729DFEA7449B19ADE44FA71D052EAE"
+      },
+      {
+        "name": "rxapi.lib",
+        "sha256": "8FA74034FB35496F6122EA43F7D3CD8E3CB1F32760A0944CE8D3E592756B10D9"
+      }
+    ]
+  },
+  "autoCad": {
+    "acadExe": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe",
+    "fileVersion": "R25.0.171.0.0",
+    "sha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+    "managedAssemblies": [
+      {
+        "name": "AcCoreMgd.dll",
+        "fileVersion": "25.0.171.0.0",
+        "sha256": "31025BC01ABC2CB398040AC82A5018E4FCD7A80FE8A2012DE0329E7F8ED746AA"
+      },
+      {
+        "name": "AcDbMgd.dll",
+        "fileVersion": "25.0.171.0.0",
+        "sha256": "C360186CC0702E210635895B7608D1D8BD5FEEC6A00612B7581EF160FE09CEDE"
+      },
+      {
+        "name": "AcMgd.dll",
+        "fileVersion": "25.0.171.0.0",
+        "sha256": "7AA8BF5F79F3F980DCC9F4CF9483F8438E773F6BF7C05EC3B263449B2846BC8C"
+      }
+    ]
+  },
+  "definitionDrift": {
+    "value": true,
+    "normativeAuthority": "OA-V28-1 section 5.2 and Proposal V28 state that endCalledOnOutermostTransaction does not appear in the inspected 2025 authority and model 09N-B as transactionAboutToEnd with count==1.",
+    "actualHeader": "D:\\Downloads\\CDROM1\\inc\\dbtrans.h",
+    "actualLines": "144-145",
+    "actualDeclaration": "virtual void endCalledOnOutermostTransaction(int&, AcDbTransactionManager*) {}",
+    "affectedProbeIds": [
+      "09N-B"
+    ],
+    "affectedEventIds": [
+      "N-TR-ABOUT-END",
+      "NEW_EXACT_EVENT_ID_REQUIRED_FOR_REVIEW"
+    ],
+    "affectedThreats": [
+      "T2",
+      "T4",
+      "T2+T4"
+    ],
+    "affectedProperties": [
+      "P2",
+      "P3",
+      "P6"
+    ],
+    "affectedClosures": [
+      "NativeReactorClassSetClosed(HF-V29-1)",
+      "NativeProbeCatalogClosed(NEC-V30-1,NPM-V31-1)",
+      "EventCatalogClosed",
+      "HostFixtureContractClosed(HF-V31-1)"
+    ],
+    "requiredCorrection": "Coordinator and Architect must review whether the exact callback becomes a new NativeEventId and whether it replaces or augments 09N-B; NEC/NPM projections, threat mapping and derived closure predicates must then be recalculated before implementation."
+  },
+  "stop": {
+    "reason": "Material actual-header mismatch with the normative ObjectARX 2025 authority.",
+    "reconciliationScope": "Stopped at the first material mismatch; remaining callback/signature reconciliation is not credited as complete.",
+    "implementationStarted": false,
+    "helperStarted": false,
+    "harnessStarted": false,
+    "fixtureStarted": false,
+    "probesExecuted": false,
+    "ctdaExecution": "NOT_STARTED",
+    "architectureReviewRequired": true
+  }
+}
