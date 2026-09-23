@@ -1,0 +1,13 @@
+diff --git a/tests/RackCad.Tests/I58F1CharacterizationTests.cs b/tests/RackCad.Tests/I58F1CharacterizationTests.cs
+index b5797581..d4941177 100644
+--- a/tests/RackCad.Tests/I58F1CharacterizationTests.cs
++++ b/tests/RackCad.Tests/I58F1CharacterizationTests.cs
+@@ -26,7 +26,7 @@ public sealed class I58F1CharacterizationTests
+     {
+         if(c.Expected!=RackAuthoredComparisonOutcome.Unreadable)
+             foreach(var s in c.Input.Siblings) Assert.NotNull(I58F1Fixtures.Store.Deserialize(s.RawDesign));
+-        I58F1Oracles.AssertBaseline(c);
++        I58F1Oracles.AssertFuture(c);
+         output.WriteLine(c.Expected==RackAuthoredComparisonOutcome.Unreadable
+             ? "VACUOUS BASELINE PASS: no reader/schema/unknown accreditation"
+             : "BASELINE ONLY; future "+c.Expected+" requires RED overlay");

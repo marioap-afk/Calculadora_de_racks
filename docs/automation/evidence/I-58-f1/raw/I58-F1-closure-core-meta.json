@@ -1,0 +1,18 @@
+{
+  "exit": 0,
+  "label": "closure-core",
+  "clean_before": true,
+  "arguments": [
+    "test",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "--logger",
+    "trx;LogFileName=I58-F1-closure-core.trx",
+    "--results-directory",
+    "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp/I58-F1-results"
+  ],
+  "wall_seconds": 96.2296904,
+  "sdk": "8.0.423",
+  "clean_after": true,
+  "executable": "dotnet",
+  "sha": "26e52b84b55afb902977144be3373efd78c6b1b3"
+}

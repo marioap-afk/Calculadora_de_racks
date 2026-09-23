@@ -1,0 +1,17 @@
+{
+  "exit": 0,
+  "label": "closure-ui-build",
+  "clean_before": true,
+  "arguments": [
+    "build",
+    "src/RackCad.UI/RackCad.UI.csproj",
+    "-c",
+    "Debug",
+    "-v:minimal"
+  ],
+  "wall_seconds": 11.5402396,
+  "sdk": "8.0.423",
+  "clean_after": true,
+  "executable": "dotnet",
+  "sha": "26e52b84b55afb902977144be3373efd78c6b1b3"
+}

@@ -1,0 +1,334 @@
+{
+  "conclusion": "failure",
+  "event": "push",
+  "headBranch": "architecture/shared-view-authored-comparators",
+  "headSha": "26e52b84b55afb902977144be3373efd78c6b1b3",
+  "jobs": [
+    {
+      "completedAt": "2026-09-23T18:30:47Z",
+      "conclusion": "success",
+      "databaseId": 107322312717,
+      "name": "UI Tests (WPF controls, net8.0-windows)",
+      "startedAt": "2026-09-23T18:27:42Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-09-23T18:27:44Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-09-23T18:27:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:27:57Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4",
+          "number": 2,
+          "startedAt": "2026-09-23T18:27:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:28:29Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-dotnet@v4",
+          "number": 3,
+          "startedAt": "2026-09-23T18:27:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:30:42Z",
+          "conclusion": "success",
+          "name": "dotnet test UI controls (TRX + blame-hang)",
+          "number": 4,
+          "startedAt": "2026-09-23T18:28:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:30:44Z",
+          "conclusion": "success",
+          "name": "Upload UI test diagnostics (TRX + blame)",
+          "number": 5,
+          "startedAt": "2026-09-23T18:30:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:30:44Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-dotnet@v4",
+          "number": 9,
+          "startedAt": "2026-09-23T18:30:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:30:45Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4",
+          "number": 10,
+          "startedAt": "2026-09-23T18:30:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:30:45Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-09-23T18:30:45Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35902613338/job/107322312717"
+    },
+    {
+      "completedAt": "2026-09-23T18:29:00Z",
+      "conclusion": "success",
+      "databaseId": 107322313109,
+      "name": "Build UI (WPF, valida API de Application)",
+      "startedAt": "2026-09-23T18:27:41Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-09-23T18:27:43Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-09-23T18:27:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:27:50Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4",
+          "number": 2,
+          "startedAt": "2026-09-23T18:27:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:28:33Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-dotnet@v4",
+          "number": 3,
+          "startedAt": "2026-09-23T18:27:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:28:55Z",
+          "conclusion": "success",
+          "name": "dotnet build UI",
+          "number": 4,
+          "startedAt": "2026-09-23T18:28:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:28:55Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-dotnet@v4",
+          "number": 7,
+          "startedAt": "2026-09-23T18:28:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:28:58Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4",
+          "number": 8,
+          "startedAt": "2026-09-23T18:28:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:28:58Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 9,
+          "startedAt": "2026-09-23T18:28:58Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35902613338/job/107322313109"
+    },
+    {
+      "completedAt": "2026-09-23T18:29:08Z",
+      "conclusion": "success",
+      "databaseId": 107322313309,
+      "name": "Tests (Domain + Application)",
+      "startedAt": "2026-09-23T18:27:42Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-09-23T18:27:45Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-09-23T18:27:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:27:45Z",
+          "conclusion": "success",
+          "name": "Cadencia de cobertura y SHA objetivo",
+          "number": 2,
+          "startedAt": "2026-09-23T18:27:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:27:47Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4",
+          "number": 3,
+          "startedAt": "2026-09-23T18:27:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:27:47Z",
+          "conclusion": "success",
+          "name": "Verificar que el checkout es el SHA pedido",
+          "number": 4,
+          "startedAt": "2026-09-23T18:27:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:27:48Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-dotnet@v4",
+          "number": 5,
+          "startedAt": "2026-09-23T18:27:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:29:04Z",
+          "conclusion": "success",
+          "name": "dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)",
+          "number": 6,
+          "startedAt": "2026-09-23T18:27:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:29:04Z",
+          "conclusion": "skipped",
+          "name": "Normalize coverage path",
+          "number": 7,
+          "startedAt": "2026-09-23T18:29:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:29:04Z",
+          "conclusion": "skipped",
+          "name": "Upload Cobertura coverage",
+          "number": 8,
+          "startedAt": "2026-09-23T18:29:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:29:06Z",
+          "conclusion": "success",
+          "name": "Upload Core test diagnostics (TRX + blame)",
+          "number": 9,
+          "startedAt": "2026-09-23T18:29:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:29:06Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-dotnet@v4",
+          "number": 17,
+          "startedAt": "2026-09-23T18:29:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:29:06Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4",
+          "number": 18,
+          "startedAt": "2026-09-23T18:29:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:29:06Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 19,
+          "startedAt": "2026-09-23T18:29:06Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35902613338/job/107322313309"
+    },
+    {
+      "completedAt": "2026-09-23T18:30:38Z",
+      "conclusion": "failure",
+      "databaseId": 107322891600,
+      "name": "Build Plugin without AutoCAD",
+      "startedAt": "2026-09-23T18:29:10Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-09-23T18:29:12Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-09-23T18:29:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:29:19Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4",
+          "number": 2,
+          "startedAt": "2026-09-23T18:29:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:29:48Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-dotnet@v4",
+          "number": 3,
+          "startedAt": "2026-09-23T18:29:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:29:49Z",
+          "conclusion": "success",
+          "name": "Prepare isolated build paths",
+          "number": 4,
+          "startedAt": "2026-09-23T18:29:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:30:34Z",
+          "conclusion": "failure",
+          "name": "Verify AutoCAD compile references",
+          "number": 5,
+          "startedAt": "2026-09-23T18:29:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:30:34Z",
+          "conclusion": "skipped",
+          "name": "Post Run actions/setup-dotnet@v4",
+          "number": 9,
+          "startedAt": "2026-09-23T18:30:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:30:36Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4",
+          "number": 10,
+          "startedAt": "2026-09-23T18:30:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-09-23T18:30:36Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-09-23T18:30:36Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35902613338/job/107322891600"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35902613338"
+}

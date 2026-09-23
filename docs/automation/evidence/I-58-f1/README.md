@@ -1,4 +1,4 @@
-# I-58 — F1 / CHARACTERIZATION + RED
+# I-58 â€” F1 / CHARACTERIZATION + RED
 
 F1_START_SHA = fd13dd8d57da5c27889dec93dd288ae5259fc318
 Freeze blob = f89671cfe9f1036e24211287514414b3f555182a
@@ -41,7 +41,7 @@ ebcc58b18473a077cccdfeec0104d3449618217be11f1ac0cf0adde2b02ede51.
 No se atribuye ese RED a arbol limpio. Seleccion 1.005: 624 FAIL por FUTURE_OUTCOME, 381 PASS vacuos, 0 skips.
 Todos los fallos: Assert.Equal, esperado Single/Divergent, actual Unreadable. Cero errores de compilacion/setup
 ni fallos ajenos en esa corrida. [Assertions por nombre/caso/causa](red-round1-assertions.json),
-[comando/SDK/base/patch/tiempo](red-meta.json), [TRX y logs originales comprimidos](initial-runs.zip).
+[comando/SDK/base/patch/tiempo](red-meta.json), [TRX y logs originales en texto plano](raw/).
 Restauracion byte a byte confirmada, arbol limpio; ningun SHA deliberadamente rojo.
 
 La matriz final agrega permutaciones de identidad y pares iguales de los payloads mutados para CT26/28.
@@ -63,7 +63,7 @@ global positivo excluye solo calculated Header elegible, siempre despues del gat
 La paridad diagnostica comprueba Structure y locales A/B, con catalogo fijo FUERA del comparator.
 La seam CT25 prueba AUTH09 con cuatro autoridades reales y AUTH10 sin re-resolve; builders test-only
 expresan la frontera de AUTH10, no wiring productivo. Los mutants CT26 de intencion inactiva no exigen
-que el catalogo resuelva ese diseño para reconocer su payload; no se agrega una condicion de admision.
+que el catalogo resuelva ese diseÃ±o para reconocer su payload; no se agrega una condicion de admision.
 
 ## Cierre exact-SHA
 
@@ -85,3 +85,23 @@ F1 = VALIDATION IN PROGRESS
 F2 = NOT OPEN
 I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO
+
+## Ronda de validacion 26e52b84 (no cierra F1)
+
+SHA 26e52b84b55afb902977144be3373efd78c6b1b3: baseline final 1.912/1.912; RED final 882/1.271
+por assertion FUTURE_OUTCOME, 389 VACUOUS BASELINE PASS; 0 fallos ajenos y 0 skips. Overlay retirado.
+Focal restaurado 1.912/1.912, impacto 86/86, Core Full local 10.148/10.148, builds Debug UI y Plugin
+0 errores; UI 0 avisos, Plugin solo 2 MSB3277 conocidos. Evidencia limpia y SDK 8.0.423 en
+[recibo de esa ronda](round-26e52b84-receipt.json). Estos resultados NO acreditan el SHA siguiente.
+
+CI push 35902613338 sobre esa identidad y rama exactas: Core, UI Tests y Build UI SUCCESS;
+Build Plugin without AutoCAD FAILURE. La compilacion y publish Release habian pasado; la guardia
+Assert-NoAutodeskOutputs rechazo los ZIP de evidencia agregados por F1. Se retiran ambos ZIP y
+se conservan todos sus miembros como texto plano UTF-8 (logs, TRX, metadata y patches) en raw/.
+No se toca la guardia, eng/, .github/, dependencias ni produccion. No es una contradiccion del Freeze.
+[CI completa](ci-26e52b84-failed.json). La nueva identidad repetira las evidencias de cierre requeridas.
+
+El [patch RED final](red-final.patch) esta normalizado a LF para el repositorio; la captura exacta
+original y su SHA-256 permanecen en raw/I58-F1-final-red.patch y en el recibo. git apply --check PASS.
+No se aplica como prueba activa. RED por kind (Single / Divergent / vacuos): Dynamic 168/71/101;
+PushBack 339/127/129; Cantilever 61/37/91; Cabecera 49/30/68.
