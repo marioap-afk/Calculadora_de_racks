@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "R2_TOOLCHAIN_REDISCOVERY_BLOCKED",
+  "baselineV34": "d99dafeda20bcb48e3fc4af7093e9982d60b9288",
+  "entrySha": "d441df8c20fb1f56ae658b5dcb00f7dc0654ca96",
+  "branch": "feature/rackmirror-espejo-semantico",
+  "toolchain": {
+    "visualStudio": {
+      "displayName": "Visual Studio Community 2026",
+      "installationVersion": "18.9.12128.139",
+      "installationPath": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community"
+    },
+    "msbuild": {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+      "version": "18.9.1+a81b43525"
+    },
+    "vctargetsPath": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Microsoft\\VC\\v180",
+    "cppDefaultProps": {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Microsoft\\VC\\v180\\Microsoft.Cpp.Default.props",
+      "present": false
+    },
+    "clExePresent": false,
+    "linkExePresent": false,
+    "nativeDesktopWorkloadDiscoverable": false,
+    "v143ComponentDiscoverable": false,
+    "v143Present": false,
+    "x64CompilerAvailable": false,
+    "windowsSdkIncludeLibPresent": false,
+    "classification": "ENVIRONMENT_INVALID"
+  },
+  "nativeBuild": {
+    "project": "eng/research/I52Ctda/native/I52CtdaNative.vcxproj",
+    "configuration": "Release|x64",
+    "requestedToolset": "v143",
+    "result": "BLOCKED",
+    "exitCode": 1,
+    "errorCode": "MSB4019",
+    "outputPath": null,
+    "sha256": null,
+    "actuallyLinkedLibraries": []
+  },
+  "managedHarness": {
+    "result": "SUCCESS",
+    "errors": 0,
+    "warnings": 0,
+    "path": "eng/research/I52Ctda/harness/bin/Release/net8.0-windows/I52Ctda.Harness.dll",
+    "bytes": 34816,
+    "sha256": "9730742EAA2AB9BB05820732A6FBEAAB6921BEECD8BD5091DD453764C7BE3BE3"
+  },
+  "mechanicalValidation": {
+    "ProbeCount": 100,
+    "UniqueProbeIds": 100,
+    "FieldsPerRowViolations": 0,
+    "EventIds": 27,
+    "ReachableEventIds": 26,
+    "PrimaryCoveredEventIds": 26,
+    "EventProjection": 237,
+    "SchedulerIds": 3,
+    "SchedulerProjection": 63,
+    "AppctxMissingLock": 0,
+    "AppctxMissingTransaction": 0,
+    "SupportActions": 7,
+    "ContractIdsExpected": 91,
+    "ExpectedStateDeterministic": "10/10",
+    "CleanupUnresolved": 0,
+    "IsValid": true
+  },
+  "researchImplementation": {
+    "contractedProbes": 100,
+    "implementedGoverningProbes": 0,
+    "dispatchableGoverningProbes": 0,
+    "stubsRemaining": 100,
+    "smokeCommandSkeletonPresent": true,
+    "scratchFixtureBootstrapPresent": false
+  },
+  "productDiff": "NONE",
+  "autoCadExecution": {
+    "started": false,
+    "smokeAttempted": false,
+    "reason": "Native build prerequisite failed"
+  },
+  "r2PreRunTuple": "NOT DECLARED",
+  "ctdaHostPass": "NOT EVALUATED",
+  "limitedCtda": "RESUMED / BLOCKED AT R2 TOOLCHAIN REDISCOVERY",
+  "requiredAction": "Install or repair a discoverable Native Desktop C++ workload with Microsoft.Cpp targets, MSVC v143 x64/x86 tools, and Windows SDK include/lib files."
+}
