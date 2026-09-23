@@ -1,7 +1,7 @@
 initiative: I-58
 workflow: V2
 status: conformance_review_required
-phase: F3-seam-conformance-ready
+phase: CONF58-01-schema-whitespace
 implementation_authorization: false
 coordinator: agreed_v3_f1_f2
 architect: agreed_v3
@@ -13,9 +13,10 @@ m_03: activated
 frozen: true
 f1_cr_01: resolved
 f1: complete_coordinator_agreed
-f2: complete_coordinator_agreed
-f3: complete_coordinator_review_required
-ready_06: pending_conformance_review
+f2: complete_correction_applied
+f3: complete_conformance_re_review_required
+ready_06: pending
+conf58_01: corrected_coordinator_re_review_required
 final_candidate: not_declared
 ov58_04_applicable_current_diff: false
-next_action: Coordinator y Architect revisan conformidad completa del SHA publicado; no Candidate antes de ambos CONFORMING
+next_action: Re-review Coordinator de CONF58-01 y conformidad completa del nuevo SHA; no Candidate

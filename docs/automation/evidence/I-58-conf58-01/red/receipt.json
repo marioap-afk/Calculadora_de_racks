@@ -1,0 +1,29 @@
+{
+  "sha": "2e141b034b485f5faa55d412b476e99ebad23c5c",
+  "overlay": "new regression tests only; product unchanged",
+  "reader_blob": "e68513bdf9c0a2da87c355824b75630b621a1531",
+  "counters": {
+    "total": "84",
+    "executed": "84",
+    "passed": "0",
+    "failed": "84",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "all_failures": "Assert.Equal expected Single actual Unreadable at padded pair assertion; valid baseline assertion passed",
+  "test_sha256": "f107ae378d71bc1640e5d9d46115c4f3983053f556d5d1f5a9629c6e9dcaeb32",
+  "boundaries": 28,
+  "padding_forms": 3,
+  "red_commit_created": false,
+  "command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter FullyQualifiedName~Known_schema_with_exterior_whitespace_is_Single --logger trx;LogFileName=whitespace-red.trx --results-directory docs/automation/evidence/I-58-conf58-01/red"
+}

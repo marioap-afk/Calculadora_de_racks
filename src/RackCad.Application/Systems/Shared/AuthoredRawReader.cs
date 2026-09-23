@@ -133,8 +133,10 @@ namespace RackCad.Application.Systems.Shared
         private static void Schema(JsonElement value, string path, bool wrapper)
         {
             if (value.ValueKind == JsonValueKind.Null) return;
-            if (value.ValueKind != JsonValueKind.String ||
-                !(value.GetString() == "1.0" || (wrapper && value.GetString() == "2.0")))
+            if (value.ValueKind != JsonValueKind.String)
+                throw Invalid(path, "unrecognized schema");
+            var version = value.GetString().Trim();
+            if (!(version == "1.0" || (wrapper && version == "2.0")))
                 throw Invalid(path, "unrecognized schema");
         }
         private static void Nullable(JsonElement value, string path, Action<JsonElement, string> check)

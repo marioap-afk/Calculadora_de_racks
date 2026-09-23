@@ -33,7 +33,7 @@ Los IDs de CT/MM se expanden a fixtures y tests reales en [matriz](ct-mm-matrix.
 | F-07 inventario authored | AuthoredTypedValues por campo, lista y subarbol | F1 CT11..16, MM38; I58F1DomainOracle | F2 coverage + impacto F3 | PASS |
 | F-08 authored/effective | AuthoredCanonical: exclusiones acreditadas; global0 Header completo | F1 CT18/19,29..32; F2 materialization; F3 dynamic positive/custom y PB composite | F2 12 sabotajes + F3 parity/isolation | PASS |
 | F-09 legacy/nullable/orden | defaults acotados y rechazo de perdida; sin sort/dedup | F1 CT11..16/20; F2BoundaryTests y writer roundtrip | F1/F2 + impacto F3 | PASS |
-| F-10 schema | AuthoredRawReader admite solo versiones conocidas/legacy | F1 CT09/17; F2 Reader causa y control positivo | F2 16 sabotajes raw + impacto F3 | PASS |
+| F-10 schema | AuthoredRawReader.Schema exige string y aplica Trim solo al interpretar version conocida/legacy | I58Conf58SchemaWhitespaceTests (28 fronteras); F1 CT09/17; F2 Reader | [CONF58-01 RED/GREEN](../I-58-conf58-01/README.md) y nuevo recibo exacto | CORRECTED / COORDINATOR RE-REVIEW REQUIRED |
 | F-11 unknown/duplicados | Shapes recursivo cerrado, antes de exclusion/mapper | F1 CT10/17; F2 strict shape/unknown/duplicate | F2 controles causales + impacto F3 | PASS |
 | F-12/12a Single/parity | materializacion dominio nueva, profunda, fiel, sin resolver | F1 CT26..32; F2MaterializationTests; F3 value/isolation y parity original | F2 y F3 mutation controls | PASS |
 | F-13 seam | AUTH09 RackResolvePorts + AUTH10 RackViewPreparationPorts originales, composicion pura | I58F3SeamTests.Real_authorities_preserve_authored_across_the_complete_seam | F3 56 escenarios + controles reales | PASS |
@@ -84,7 +84,8 @@ se reevalua contra su nueva identidad y se prepara OV aplicable; no se reutiliza
 1. READY-01: PASS factual — Freeze completo, alcance cerrado, A-n NONE.
 2. READY-02: F1/F2 acordados. F3 COMPLETE / COORDINATOR REVIEW REQUIRED, cierre funcional acreditado;
    documentos propios y draft FOUNDATIONS versionados. El cierre formal de Coordinator sigue reservado.
-3. READY-03: PASS factual — cero REQUIRED material, EXP-01 A o decisiones de producto pendientes.
+3. READY-03: CONF58-01 corregido, pendiente de re-review del Coordinator; el Executor no lo declara
+   RESOLVED ni emite conformidad. Sin nueva decision de contrato ni A-n.
 4. READY-04: PASS factual — fetch/preflight final en preflight.json; main no avanzo y es ancestro.
    No rebase necesario. I-52 avanzo solo documentacion V34, sin contradiccion material.
 5. READY-05: cierre funcional con Core Full limpio y CI 4/4 acreditados en closure-receipt.json.
@@ -109,3 +110,19 @@ es el SHA propuesto para conformidad completa. F1/F2 acordados por Coordinator (
 F3 se entrega para revision Coordinator, conjuntamente con la conformidad global requerida de ambos roles.
 Coordinator = CONFORMANCE REVIEW REQUIRED. Architect = CONFORMANCE REVIEW REQUIRED.
 No se emite CONFORMING ni se declara Candidate. El significado formal/orden de READY permanece intacto.
+
+
+## CONF58-01 — nueva ronda de conformidad
+
+El Owner rechazo `2e141b034b485f5faa55d412b476e99ebad23c5c` para READY-06 por SchemaVersion con
+whitespace exterior. El PASS factual anterior de F-10 fue insuficiente y queda corregido por la fila
+actual y [paquete de correccion](../I-58-conf58-01/README.md). No se reescribe evidencia historica.
+La nueva interpretacion aplica el contrato ya congelado: Trim solo sobre el string de version antes de
+compararlo con versiones conocidas. Version vacia/blanca/futura y tipos no string siguen Unreadable.
+
+Las identidades F3 anteriores son historicas, no la punta propuesta de esta ronda. El recibo nuevo y
+el informe final identifican el SHA de cierre de CONF58-01 y la publicacion propuesta para READY-06;
+esta ultima exige focal/impacto y CI propios. Coordinator y Architect deben revisar esa identidad exacta.
+Freeze/Characterization/Discovery intactos, A-n NONE. CONF58-01 = CORRECTED / COORDINATOR RE-REVIEW REQUIRED.
+F2 = COMPLETE / CORRECTION APPLIED; F3 = COMPLETE / CONFORMANCE RE-REVIEW REQUIRED; READY-06 = PENDING.
+FINAL_CANDIDATE_SHA = NOT DECLARED; IMPLEMENTATION AUTHORIZATION = NO.

@@ -383,3 +383,14 @@ Recibo F3: `5386a211e49ae9c8a22eacc8cdcc3227cd95b584`, Core Full local limpio 10
 no hereda Core/builds; su SHA propuesto para conformidad exige focal/CI propios, entregados en informe final.
 F3 COMPLETE / COORDINATOR REVIEW REQUIRED; READY-06 PENDING CONFORMANCE REVIEW;
 FINAL_CANDIDATE_SHA NOT DECLARED; I-55 G12 NOT UNBLOCKED; IMPLEMENTATION AUTHORIZATION NO.
+
+
+## CONF58-01 — correccion de conformidad SchemaVersion
+
+READY-06 rechaza `2e141b034b485f5faa55d412b476e99ebad23c5c` por no aceptar whitespace exterior
+permitido por Discovery V3/F-10. [Evidencia propia](I-58-conf58-01/README.md), RED previo al fix,
+84 expected Single/actual Unreadable; 28 fronteras. Cambio unico AuthoredRawReader.Schema, Trim local.
+Focal reader/schema 988/988 GREEN, incluidos malformed/future, authored strings y CT58-06/07/08.
+Nueva identidad requiere Core Full/builds/CI propios; evidencia anterior no se propaga.
+CONF58-01 = CORRECTED / COORDINATOR RE-REVIEW REQUIRED. F2 COMPLETE / CORRECTION APPLIED;
+F3 COMPLETE / CONFORMANCE RE-REVIEW REQUIRED; READY-06 PENDING; Candidate no declarado.
