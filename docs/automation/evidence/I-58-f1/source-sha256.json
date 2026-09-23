@@ -1,0 +1,9 @@
+{
+  "tests/RackCad.Tests/I58F1AdditionalMatrix.cs": "af6df599a79cfd9cebd5a831f91c9e1cd05564850a90e13a0578293cbf44e43b",
+  "tests/RackCad.Tests/I58F1CharacterizationTests.cs": "7d2618a8e37444f06dca0eb29708ef958a2dc15e657414e1ffb9f60ee16459db",
+  "tests/RackCad.Tests/I58F1DomainOracle.cs": "664ef3ea1c4f5b65baa21cb5c51037c3b3ea8436eaaac7bbc40a795b5be62f8e",
+  "tests/RackCad.Tests/I58F1Fixtures.cs": "afd876488188f6cca8aacaba860c6577ca410e602c08f557f63a2caad6501983",
+  "tests/RackCad.Tests/I58F1FutureOracles.cs": "1da09909db565c75614764da2f28c84de30ded88350355a5a110a9d363ecd449",
+  "tests/RackCad.Tests/I58F1Matrix.cs": "cbbd7f42df82c0a9e61db320247e67da2f336b10e38b777f1cc34f626eb6721e",
+  "tests/RackCad.Tests/I58F1OracleChecks.cs": "dc7df1421f248f464729304308be35d752a81f37d84bc3eca1f3d9d6d1c7efeb"
+}

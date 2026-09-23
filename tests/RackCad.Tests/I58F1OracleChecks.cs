@@ -25,8 +25,10 @@ public sealed class I58F1OracleChecks
         foreach(var sibling in c.Input.Siblings) {
             var e=Store.Deserialize(c.OriginalDesign);var a=Store.Deserialize(sibling.RawDesign);
             switch(c.Kind) {
-                case "dynamic":I58F1DomainOracle.Values(Expected(e.DynamicDesign),Expected(a.DynamicDesign));break;
-                case "pushback":I58F1DomainOracle.Values(Expected(e.PushBackDesign),Expected(a.PushBackDesign));break;
+                case "dynamic":I58F1DomainOracle.Values(Expected(e.DynamicDesign),Expected(a.DynamicDesign));
+                    DynamicParity(Store.Deserialize(sibling.RawDesign).DynamicDesign,a.DynamicDesign);break;
+                case "pushback":I58F1DomainOracle.Values(Expected(e.PushBackDesign),Expected(a.PushBackDesign));
+                    PushBackParity(Store.Deserialize(sibling.RawDesign).PushBackDesign,a.PushBackDesign);break;
                 case "cantilever":I58F1DomainOracle.Values(e.CantileverLineDesign,a.CantileverLineDesign);break;
                 case "cabecera":I58F1DomainOracle.Values(e.Header,a.Header);break;
             }

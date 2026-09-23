@@ -1,0 +1,74 @@
+[
+  {
+    "run": "stimulus",
+    "classification": "SETUP FAILURE DISCARDED; NOT F1 RED",
+    "counts": {
+      "total": "22",
+      "executed": "22",
+      "passed": "17",
+      "failed": "5",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "failures": [
+      {
+        "test": "RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(kind: \"pushback\")",
+        "message": "System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset"
+      },
+      {
+        "test": "RackCad.Tests.I58F1OracleChecks.Ordered_first_positive_and_conservative_payload_are_distinct_obligations(kind: \"dynamic\")",
+        "message": "System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset"
+      },
+      {
+        "test": "RackCad.Tests.I58F1CharacterizationTests.Matrix_manifest_has_unique_identities_and_all_rows",
+        "message": "System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset"
+      },
+      {
+        "test": "RackCad.Tests.I58F1OracleChecks.Oracle_fixture_consistency_NOT_AUTH13_GREEN",
+        "message": "System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset"
+      },
+      {
+        "test": "RackCad.Tests.I58F1CharacterizationTests.Frozen_matrix_against_current_port",
+        "message": "System.InvalidOperationException : No-op fixture mutation: cantilever/Cantilever.Line.DefaultArmTemplate.MountingPlate.VerticalEndOffset"
+      }
+    ]
+  },
+  {
+    "run": "stimulus-corrected",
+    "classification": "SETUP FAILURE DISCARDED; NOT F1 RED",
+    "counts": {
+      "total": "1347",
+      "executed": "1347",
+      "passed": "1346",
+      "failed": "1",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "failures": [
+      {
+        "test": "RackCad.Tests.I58F1OracleChecks.Typed_oracle_and_seam_selfcheck_NOT_AUTH13_GREEN(kind: \"cantilever\")",
+        "message": "La estacion 1 de la linea no se pudo resolver."
+      }
+    ]
+  }
+]

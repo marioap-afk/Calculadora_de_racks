@@ -1,0 +1,9 @@
+{
+  "sdk": "8.0.423",
+  "command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter FullyQualifiedName~I58F1CharacterizationTests.Frozen_matrix_against_current_port --logger 'trx;LogFileName=I58-F1-red.trx' --results-directory <TEMP>/I58-F1-results",
+  "clean_tree": false,
+  "exit": 1,
+  "base_sha": "42c49cc2bfe815fec6a27ece5234e04e4dfdc457",
+  "wall_seconds": 21.8263587,
+  "overlay_sha256": "ebcc58b18473a077cccdfeec0104d3449618217be11f1ac0cf0adde2b02ede51"
+}

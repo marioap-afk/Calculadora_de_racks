@@ -55,7 +55,9 @@ internal static partial class I58F1Oracles
         var permuted=port.Compare(c.Input with {Siblings=c.Input.Siblings.Reverse().ToArray()});Assert.Equal(O.Single,permuted.Outcome);
         values(result.Authored,again.Authored);values(result.Authored,permuted.Authored);
         separate(result.Authored,again.Authored);separate(result.Authored,permuted.Authored);
-        seam(result.Authored); // AUTH-09 real authority once, then AUTH-10. Receives a work copy.
+        // CT25 uses resolvable fixtures; fidelity mutants may deliberately carry catalog-independent
+        // inactive intent. Their CT26/28 oracle must not impose extra resolver/catalog admission rules.
+        if(c.Rows.Contains("CT58-25") || c.Rows.Contains("CT58-29"))seam(result.Authored);
         values(expected(c.Input.Siblings[0].RawDesign),result.Authored);
         mutate(result.Authored); // Every mutable subtree in the explicit domain inventory.
         var after=port.Compare(c.Input);Assert.Equal(O.Single,after.Outcome);

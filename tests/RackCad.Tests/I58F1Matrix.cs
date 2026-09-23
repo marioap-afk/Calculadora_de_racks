@@ -79,6 +79,14 @@ internal static partial class I58F1Matrix
         }
         Fallback(cases);
         ExtraCases(cases);
+        foreach(var c in cases.Where(x=>x.Rows.Contains("CT58-24")).ToArray())
+            cases.Add(c with {Id=c.Id+"/identity-siblings-reversed",Input=c.Input with {Siblings=c.Input.Siblings.Reverse().ToArray()}});
+        // Each accredited divergent payload also gets an equal pair: CT26 must inspect the changed
+        // value in a returned domain, not merely observe Divergent and a null failure payload.
+        foreach(var c in cases.Where(x=>x.Expected==O.Divergent && x.Input.Siblings.Count==2).ToArray()) {
+            string raw=c.Input.Siblings[1].RawDesign;
+            cases.Add(Pair(c.Id+"/materialized-mutant",c.Kind,new[]{"CT58-26","CT58-28"},O.Single,raw,raw));
+        }
         return cases;
     }
     private static IEnumerable<string[]> Permutations(string[] items)

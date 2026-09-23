@@ -314,3 +314,8 @@ Frozen = NO
 F1 = NOT OPEN
 I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO
+
+## F1 — characterization y RED autorizado
+
+La autoridad vigente es Consensus Freeze V3; ver [evidencia propia F1](I-58-f1/README.md).
+Registros V3 anteriores conservan su estado historico. F1 no implementa produccion ni abre F2.
