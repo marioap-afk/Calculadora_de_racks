@@ -1,5 +1,9 @@
 # I-58 — Evidencia canonica
 
+> Estado vigente: correccion AR58-V2-01 / paquete V3 al final de este archivo. Secciones V1/C1/V2 son
+> registro historico; no prevalecen sobre CR58-01/02 RESOLVED, EXP-01 B CONFIRMED y M-03 ACTIVATED.
+
+
 Vigencia: la seccion C1/V2 al final actualiza el estado; registros D/F0 V1 anteriores son historia, no acuerdo vigente.
 
 Unit / Initiative: I-58 / I-58
@@ -210,6 +214,67 @@ verde, gate cerrado ni Candidate. El push agrupado no acredita sus padres con la
 
 Coordinator = CHANGES REQUIRED ON V1 / REVIEW REQUIRED ON V2
 Architect = PENDING
+F1 = NOT OPEN
+I-55 G12 = NOT UNBLOCKED
+IMPLEMENTATION AUTHORIZATION = NO
+
+## Continuacion AR58-V2-01 / V3 — evidencia de entrada y alcance
+
+HEAD_INICIAL: 054606ac5bf0ecf75ccaf4c52a7b9752989230f6, coincidente con upstream al continuar.
+Rama existente: architecture/shared-view-authored-comparators.
+Worktree existente: C:/Users/alejandra-mendoza/.codex/worktrees/architecture-shared-view-authored-comparators.
+Preflight: fetch --all --prune; status limpio, stash vacio; log10 revisado; sin MERGE_HEAD, CHERRY_PICK_HEAD,
+rebase-merge ni rebase-apply. No claim nuevo, no worktree nuevo, no cambio de rama ni rebase.
+origin/main:7097057cf8685bf5ecc09083cba37379d4a4aae8. I-55:08e45e0a2521a2e7feb4cf7c8d3fc7fc574aa74d.
+I-52 observado:0c7007685edae1bc17603029212fd415534322dc (avance ajeno a esta ejecucion).
+integration/I-57 objeto a5bc02210f740839e2fac37e63fc00512e5ccee6; target BASE_SHA sin cambio.
+R3 conserva blob cd42db03becff42f98b047e61c46689c17a69670. Claim original e59bfda6 permanece.
+
+Entrada vinculante Owner: CR58-01/02 RESOLVED; EXP-01 CLASS B FOR I-58 ONLY / CONFIRMED por Coordinator
++ Architect. No reabrir sin evidencia materialmente nueva. AR58-V2-01 REQUIRED / ACCEPTED BY COORDINATOR.
+Revision Architect V2: SAME-SESSION ROLE, revisor=autor SI; CHANGES REQUIRED ON V2. No revision independiente
+inventada. M-03 ACTIVATED. Correccion autorizada exclusivamente Discovery/Characterization/Freeze DRAFT V3.
+
+Paquete revisado V2:24d3a33355ae242e6eb880244b95c0b9c674ad29 y cuatro blobs de tabla C1 anterior.
+CI de su PUBLICACION054606ac verificada: [run35816061903](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35816061903),
+event=push, ref=refs/heads/architecture/shared-view-authored-comparators (headBranch consultada),
+head_sha=054606ac5bf0ecf75ccaf4c52a7b9752989230f6, completed/success,4/4 requeridos SUCCESS:
+Tests (Domain + Application); UI Tests (WPF controls, net8.0-windows);
+Build UI (WPF, valida API de Application); Build Plugin without AutoCAD.
+Ultimo job termino2026-09-23T03:56:18Z. [Consulta guardada](I-58-v2-ci-054606ac.json).
+NO acredita V2_PACKAGE_SHA padre ni ningun SHA V3: exact-SHA, sin propagacion.
+
+## Resultado diagnostico V3, materialidad y disposicion
+
+[Matriz y metodo completo](I-58-v3-fallback.md); [source/catalog blobs](I-58-v3-source-identities.txt).
+PROBE_VALIDATION_SHA:c978fdeadd840f40f53a9ab6bb1e46d74c4b2c36; SDK8.0.423; limpio antes/despues.
+Probe124 casos,1205 assertions,4 controles negativos V2 detectados; exit0,wall7.1721519s.
+Core focal69/69,0 fallos,0 omitidos; exit0,wall17.7357463s, mismo SHA limpio. No Full ni CI sobre ese SHA
+reclamados. Intento de compilacion fallido y corrida previa120 estan separados por identidad en matriz.
+No AUTH13 GREEN, no pruebas de nuevo comparator, no F1 abierto ni producto modificado.
+
+Regla propuesta: global>0 excluye Header calculado tras raw gate; global0 conserva payload persistible
+completo tipado POR MODULO en orden y procedencia. No promover fallback a global ni elegir first sibling.
+Custom siempre completo; unknown nested siempre Unreadable. Misma paridad del peralte al resolver
+original/returned con catalogo fijo; en PushBack incluye localesA/B. Conservative Divergent para diferencias
+en header/global0 aunque hoy peralte efectivo coincida; coste pendiente acuerdo explicito, no minimalidad probada.
+CT58-25/26 ampliados y29..32 futuros exigen output saboteado, permutations y aislamiento completo.
+
+DC-09 V3: M-01 no; M-02 activo; M-03 ACTIVATED por efecto observable de materializacion V2; M-04/05/06
+activos; M-07 no (regla especifica, sin nueva autoridad universal); M-08 activo conservador.
+EXP-01 B confirmado;02/05/06/08 ampliados por fallback;03 negativa acotada;04 positiva conservada;
+07 negativa actual;09 positiva para revisar omission deM03 y suficiencia/coste de correccion acotada.
+Pregunta explicitada y respondida en Discovery: ¿qué expansión debió activarse y todavía no está activada?
+AR58-V2-01 sigue REQUIRED; CORRECTION PROPOSED, no cerrado por el Executor; re-review requerida.
+
+Esta es una entrega documental D/F0, NO cierre documental de iniciativa ni FINAL_CANDIDATE_SHA.
+La evidencia local queda en sus SHAs medidos. El commit del paquete y su publicacion no la heredan.
+Sus identidades se publican a continuacion mediante manifiesto hijo, sin escribir un SHA autorreferente.
+
+AR58-V2-01 = CORRECTION PROPOSED / ARCHITECT RE-REVIEW REQUIRED
+Coordinator = REVIEW REQUIRED ON V3
+Architect = CHANGES REQUIRED ON V2 / PENDING V3
+Frozen = NO
 F1 = NOT OPEN
 I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO

@@ -1,8 +1,8 @@
-# I-58 — Characterization V2 y preparacion F1
+# I-58 — Characterization V3 y preparacion F1
 
 Estado: plan completo para revision. Probe D/F0 ejecutable en evidencia; no sustituye la suite F1 sobre
 carriers definitivos. No se implementa produccion. Identidad y resultados observados en
-[I-58-evidence.md](../automation/evidence/I-58-evidence.md). Anexo congelable con Freeze draft V2.
+[I-58-evidence.md](../automation/evidence/I-58-evidence.md). Anexo congelable con Freeze draft V3.
 
 ## Escenarios por kind
 
@@ -57,7 +57,11 @@ subtipo en F1; la lista representativa no exime el inventario de F-07. No usar r
 | MM-D05 | Dynamic | BeamLengthOverride null->valor explicitado; FirstLevelDatum null->valor; DimensionViews null->0 | Divergent, heritage/legacy distinto de override |
 | MM-D06 | Dynamic | SafetySelections.AuthoredSide; PostSides; TopeOffCells; BotaBPosts; BotaPieceId | Divergent; evitar effective side leakage y omisiones |
 | MM-D07 | Dynamic | Bfr conocido cambia sin authored; Source Members/StartX cambian fuera del input | Single; excluidos derivados, sin geometria |
-| MM-D09 | Dynamic/PushBack | Module.Header distinto con procedencia calculada; mismo cambio con custom | Single en calculada; Divergent en custom; unknown nested siempre Unreadable |
+| MM-D09a | Dynamic/PushBack | global positivo, header calculado: variar PostPeralte/Height/Name/posts conocidos reconstruidos | Single con resto igual; Header retornado null, global/flag/orden intactos; parity real |
+| MM-D09b | Dynamic/PushBack | global 0; calculada 7 vs 9, null vs 7, [7,9] vs [9,7], mezcla calc/custom | Divergent; fallback diferente nunca Single |
+| MM-D09c | Dynamic/PushBack | global 0; [7,9] vs [7,0], Header ausente vs presente con 0, o metadata distinta | Divergent CONSERVADOR por payload completo; mismo peralte actual no acredita equivalencia authored. Coste requiere revision expresa |
+| MM-D09d | Dynamic/PushBack | header custom: mutar cualquier authored, con global positivo o cero | Divergent aun si global oculta su peralte; custom+null explicito Unreadable |
+| MM-D09e | Dynamic/PushBack | unknown nested o schema futuro en header calculado/custom bajo cualquier global | Unreadable antes de excluir; no sanar por reconstruccion |
 | MM-D10 | Dynamic/PushBack | Side effective distinto, AuthoredSide igual; luego cambiar AuthoredSide | Single en primero; Divergent en segundo; DerivedAisles no vacio ilegible |
 | MM-D08 | Dynamic | peralte negativo que ToDesign descartaria; unknown nested en Module.Header | Unreadable; no comparar despues de saneamiento |
 | MM-P01 | PushBack | Structure.Pallet/Fronts/Modules/Safety mutaciones MM-D | Divergent; estructura no es todo PushBack |
@@ -109,12 +113,17 @@ No se agregan tests rojos a las suites canonicas ni se marcan omitidos para fing
 | CT58-26 | todos los valores de F-07/09 y MM acreditados reaparecen en el dominio retornado; defaults/exclusiones F-08/09 simetricos | sabotear materializador de salida dejando igualdad intacta debe fallar; dos canonicals iguales no autorizan salida distinta, mapper que pierda override/null/orden falla |
 | CT58-27 | unknown/schema futuro/malformed en raw antes de ToDomain/ToDesign; probar miembros que estos mappers borran | desactivar gate produce falso Single y debe fallar; no usar round-trip previo para fabricar fixture ilegible |
 | CT58-28 | mutar CADA subarbol del dominio retornado y del snapshot de trabajo del resolver, repetir y permutar input | ningun cambio en hermana, otro resultado ni intencion retornada; salida efectiva o referencias compartidas falla |
+| CT58-29 | cada fila diagnostica V3 sobre raw acreditado: global 8/0/ausente/null; calc/custom; Header null/0/7/9; resolver real Dynamic y PushBack | con global 0 output no pierde ni promueve fallback; inspeccionar tipo, flag, indice, presencia y global. Custom+null del diagnostico NO se acredita: Unreadable |
+| CT58-30 | [7,9]/[9,7], [0,7]/[7,0], mezclas calc/custom; permutar HERMANAS y separadamente MODULOS; compuesto A=7/B=9 | hermanas invariantes; cambio de modulos conserva orden distinto y primer positivo observable; no copiar solo primero del rack; locales A/B preservados |
+| CT58-31 | canonical igual pero materializador saboteado: Header=null con global0, global=7 promovido, flag false, Header al modulo vecino | F-12a debe fallar incluso con outcome Single; catalogo fijo y resolver real, no validar solo igualdad interna. Global promovido puede pasar parity y debe fallar assert de authored |
+| CT58-32 | global8 variantes calculadas reconstruidas vs global0 payload completo conservador, guardar/reabrir y mutar salida profunda | CT58-25/26 incluyen ambos casos: Single solo donde F-08 permite; Divergent conservador en MM-D09c, custom completo y unknown Unreadable; ninguna llamada al catalogo durante comparacion |
 
 CT58-25 se escribe por separado para cada tipo concreto y autoridad F-13, sin usar Marker como sustituto.
 Cabecera prueba RefreshPhysicalModel sobre copia de trabajo, fuera del comparator; Cantilever prueba el
 assembler y evita llamar despues al resolver otra vez. Los conteos son por invocacion de autoridad externa,
 no por los pasos internos ya existentes de cada resolver. Ninguna prueba necesita un conversor universal.
-CT58-26 inspecciona el DOMINIO retornado, no solo el DTO canonical ni el outcome. Incluye custom headers,
+CT58-25/26 incorporan F-12a y CT58-29..32: resolver returned domain con contexto fijo, sin promover global
+ni perder fallback por modulo. CT58-26 inspecciona el DOMINIO retornado, no solo el DTO canonical ni el outcome. Incluye custom headers,
 Safety.AuthoredSide, override null vs explicitado, SideB holes, Composite, templates/overrides Cantilever,
 placas/paneles Cabecera. Ante valor no representable, Unreadable/finding; no inventar miembro de DTO/Domain.
 
@@ -127,5 +136,19 @@ C usa LoadExisting/InsertPlanta real. Scan/transaccion DWG, comandos RACKEDITAR/
 NO ejecutados. No confundir estas observaciones con CT58-23..28 verdes: AUTH13 sigue unsupported.
 El probe V1 queda como historia de la version V1, no evidencia de los tipos publicos V2 ni GREEN funcional.
 
-EXP-01 efectivo CLASS A OPEN / STOP. Propuesta B limitada pendiente Coordinator + Architect.
-CR58-01/02 requieren revision de V2; F1 NOT OPEN; IMPLEMENTATION AUTHORIZATION = NO.
+## Diagnostico V3 actual y limites
+
+[I-58-v3-fallback.md](../automation/evidence/I-58-v3-fallback.md) contiene matriz Dynamic, PushBack simple
+y compuesto, 124 casos/1205 asserts y 4 controles negativos sobre SHA limpio identificado alli. Son
+observaciones de resolvers vigentes y transform local propuesto, NO CT58-29..32 verdes ni implementacion
+AUTH-13. La suite futura debera comparar raw siblings con API final, probar permutations y cada subarbol.
+La prueba actual no establece minimalidad del payload completo ni demuestra igualdad de toda geometria/BOM.
+
+CR58-01/02 RESOLVED. EXP-01 CLASS B FOR I-58 ONLY / CONFIRMED. M-03 ACTIVATED.
+AR58-V2-01 = CORRECTION PROPOSED / ARCHITECT RE-REVIEW REQUIRED
+Coordinator = REVIEW REQUIRED ON V3
+Architect = CHANGES REQUIRED ON V2 / PENDING V3
+Frozen = NO
+F1 = NOT OPEN
+I-55 G12 = NOT UNBLOCKED
+IMPLEMENTATION AUTHORIZATION = NO

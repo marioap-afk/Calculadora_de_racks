@@ -1,9 +1,9 @@
-# I-58 — Consensus Freeze DRAFT V2
+# I-58 — Consensus Freeze DRAFT V3
 
 Frozen: NO
 Status: DRAFT FOR COORDINATOR + ARCHITECT REVIEW
-Coordinator: CHANGES REQUIRED ON V1 / REVIEW REQUIRED ON V2
-Architect: PENDING
+Coordinator: REVIEW REQUIRED ON V3
+Architect: CHANGES REQUIRED ON V2 / PENDING V3
 IMPLEMENTATION AUTHORIZATION = NO
 
 Este documento completo es la version a revisar. Su identidad commit/ruta/blob vive en
@@ -14,14 +14,15 @@ Solo despues de ambos AGREED sobre la misma identidad procede el commit de Freez
 Lineas de cabecera candidatas a cambio administrativo: `Frozen: NO` y `Status: DRAFT FOR COORDINATOR + ARCHITECT REVIEW`.
 Los revisores deben enumerar literalmente lo permitido en el acuerdo. Ninguna clausula cambia en ese commit.
 
-## Delta C1 y estado de revision
+## Delta V3 y estado de revision
 
-Version COMPLETA V2; sustituye V1 para revision, no borra su historia Git. CR58-01 corrige F-03 y
-la compatibilidad Cantilever; CR58-02 separa F-06/F-12 y explicita la seam F-13. Anexo V2 incluye
-contrapruebas de identidad y de materializacion del resultado. Disposiciones individuales en Discovery.
-EXP-01 = CLASS A OPEN / STOP efectivo. Se propone B SOLO para I-58, PENDING COORDINATOR + ARCHITECT
-CONFIRMATION, con evidencia acotada DC-02..06; no se declara rebajado ni resuelto el defecto de I-37.
-I-58 no repara identidad, restampa ni migra documentos. F1 no abre con esta propuesta pendiente.
+Version COMPLETA V3; conserva V2 salvo AR58-V2-01 y sus disposiciones derivadas. CR58-01/02 = RESOLVED,
+comunicado por Owner; EXP-01 = CLASS B FOR I-58 ONLY / CONFIRMED por Coordinator + Architect.
+No reabrir identidad Cantilever sin evidencia materialmente nueva; deuda I-37 fuera de alcance.
+AR58-V2-01 = REQUIRED / ACCEPTED BY COORDINATOR; correccion propuesta, pendiente re-review Architect.
+V2 descartaba el fallback persistido de cabeceras calculadas. F-08/12/13 lo preservan y exigen resolution parity.
+M-03 ACTIVATED; M-02/04/05/06/08 permanecen activos; M-01/07 no activados. DC-09 y EXP-01..09 completos
+estan en Discovery V3 del mismo paquete. No se modifica produccion, DTO, store, schema ni resolver.
 
 ## 1. Resultado, ownership y limites
 
@@ -49,7 +50,7 @@ ser GUID valido no vacio y participar en igualdad authored entre hermanas. NO ex
 Un Line.Id valido diferente entre hermanas legibles es Divergent; ausente/malformado/vacio es Unreadable.
 La falta de igualdad exterior/interior por si sola no vuelve ilegible un documento. No mezclar racks
 exteriores diferentes porque compartan el Id interior de una plantilla; esa mezcla es Unreadable.
-Esta clausula es propuesta de compatibilidad acotada, condicionada a la confirmacion B de EXP-01;
+Esta clausula conserva la compatibilidad acotada de EXP-01 B, confirmada SOLO para I-58;
 no sustituye la decision vinculante I-37 §12.46 ni convierte su incumplimiento en contrato de creacion.
 La pertenencia fisica la acredita el consumidor; Foundation valida la coherencia de todas las entradas dadas.
 
@@ -134,7 +135,9 @@ F-08. Exclusiones cerradas:
 |---|---|
 | Envelope View/Section y transformacion fisica | contexto de vista/placement, fuera de igualdad |
 | Catalogos, ProjectVariables/effective result, builders, Members | inputs/resultados de resolver; no forman parte del carrier authored |
-| Dynamic Module.Header con UseCalculatedHeaderConfiguration=true | snapshot recalculado por DynamicRackSystemResolver desde catalogo; validar schema/unknown primero, canonicalizar Header=null sin llamar builder. Con flag legacy ausente y Header presente es personalizada: comparar completa |
+| Dynamic/PushBack Module.IsHeader y procedencia calculada, global PostPeralte > 0 | despues del gate completo schema/unknown, Header=null canonical y materializado; resolver usa global y reconstruye toda esa cabecera. No modifica ModuleId, orden, Length ni flag |
+| Dynamic/PushBack Module.IsHeader y procedencia calculada, global PostPeralte = 0 (incluye legacy ausente/null) | conservar presencia y payload persistible COMPLETO tipado de Header por modulo, incluido PostPeralte; comparar toda esa forma bajo F-09. No sustituir por null ni por cabecera minima inventada |
+| Module.Header personalizada o Header fuera de un modulo IsHeader | conservar y comparar payload authored completo. Legacy flag ausente con Header presente es custom; custom explicita sin Header es Unreadable |
 | Safety.Side con AuthoredSide presente | PushBackSafetyAuthority.RestrictToLowEnd conserva authored y colapsa Side; comparar lado elegido AuthoredSide ?? Side con fallback legacy conocido. Canonical Side y AuthoredSide reflejan ese unico lado authored; diferencia solo en Side efectivo no diverge |
 | Safety.DerivedAisles no vacio en payload | From no lo emite con contenido y ToDomain no lo restaura: estado conocido pero no acreditado; Unreadable antes de mapper, nunca ignorarlo. Ausente/null/vacio sin intencion son admitidos |
 | Dynamic Front.Bfr | ToDesign no lo usa; From(design) lo calcula; reconocer key y tipo pero canonicalizar a ausente sin calcular geometria |
@@ -144,6 +147,30 @@ F-08. Exclusiones cerradas:
 | Cantilever PanelSegment.Height | JsonIgnore, derivado; no incluir ni emitir en canonical; si aparece como key desconocida, Unreadable |
 | Cantilever Connection.Punches.ColumnBottomPlateEndOffset y ColumnTopPunchOffset | retirados explicitamente por store; admitir solo en esa ruta con tipo legacy, omitir y fijar a default retirado; no extrapolar a otros unknowns |
 | SchemaVersion | controla legibilidad, no es authored una vez admitida version conocida; salida usa version corriente conocida |
+
+F-08a. Fallback observado: global positivo; si no, primer modulo IsHeader en ORDEN con
+HeaderConfiguration.PostPeralte positivo, sin filtrar procedencia; despues ancho de perfil/catalogo o default.
+El global negativo no es un legacy admitido: resolver lo rechaza; F-09 lo trata Unreadable. No finitos ilegibles.
+Header.PostPeralte ausente/null equivale 0 dentro de una cabecera presente conforme mapper de cabecera;
+Header AUSENTE no se equipara a una cabecera PRESENTE con peralte 0 en el caso global 0.
+
+Decision conservadora V3: comparar cada cabecera persistible completa en global 0, por indice/ModuleId y
+procedencia; NO solo el primer positivo ni el valor resuelto. [7,9] y [9,7] son Divergent y cambian fallback;
+[7,9] y [7,0] tambien son Divergent aunque Dynamic hoy resuelva 7 en ambos. No ordenar, deduplicar, votar,
+compactar o elegir una hermana. PushBack divide/invierte secuencias por lado: un segundo fallback del rack
+puede ser primero local. Cada Header sigue en SU modulo; no promover 7 heredado a global authored 7.
+
+El payload completo es una eleccion tipada conservadora, NO una afirmacion de minimalidad ni de que cada
+campo influya el peralte actual. Retiene mas que la secuencia de peraltes: diferencias de Name/Height/posts
+con global 0 pueden producir Divergent conservador. Se exige acuerdo explicito sobre ese coste antes de
+Freeze; no hay autorizacion para reducirlo por conveniencia en F1. La copia/edicion existente transporta
+cabeceras completas y valida alto/fondo/postes; un stub de solo peralte no acredita esos caminos. Conservar
+el payload evita inventar dimensiones, reparar procedencia o seleccionar metadata de la primera hermana.
+Con global positivo el resolver vigente reconstruye la cabecera calculada; ahi las diferencias de esos
+campos conocidos son Single si TODO el resto coincide. Unknown/schema se valida ANTES, tambien en esa rama.
+No hay igualdad por resolver ni por catalogo: el comparator solo usa global authored y datos tipados.
+Members/Exceptions runtime siguen excluidos; esta regla no agrega campos persistidos ni los interpreta como authored.
+Evidencia y limites: diagnostico V3 de fallback enlazado desde evidencia canonica; CT58-29..32 son obligaciones futuras.
 
 Envelope Id/Kind acreditan identidad, no se usan para elegir hermana. Envelope Name es authored de rack:
 nombres distintos -> Divergent. Cantilever.Name y Header.Name interiores tambien se comparan, no se
@@ -209,6 +236,18 @@ Schema validado pertenece a la lectura/formas internas; Single devuelve dominio,
 runtime de persistencia. No instruye al consumidor a guardar perdiendo metadata.
 Consumidor conserva sobre acreditado y aplica su propia persistencia; AUTH-13 no compone ni escribe sobres.
 
+F-12a. Invariante conductual obligatorio, ademas de canonical equality: para CADA original accredited
+y contexto FIJO (mismo catalogo y demas inputs externos),
+`Resolve(original).PostPeralte == Resolve(Single.Authored).PostPeralte` en Dynamic; en PushBack exigir
+igualdad de `Structure.PostPeralte` y, si compuesto, tambien de las estructuras LOCALES A/B presentes.
+Verificar global heredado sigue 0, procedencia se conserva, Header/peralte siguen en el modulo correcto,
+orden y nulabilidad F-09 y deep isolation. Permutar hermanas no cambia ninguno de estos valores.
+Sabotear SOLO la materializacion de salida (Header=null, promover global, mover modulo, cambiar flag)
+con canonical equality intacta DEBE hacer fallar el oracle. Esta prueba llama autoridades reales FUERA
+del comparator; una comparacion de canonicals o un spy de llamadas por si solos no prueba fidelidad.
+La salida global 0 contiene copia completa profunda de los headers acreditados; global positivo elimina
+solo cabeceras calculadas elegibles F-08. Nunca usar Snapshot de sistema resuelto como materializador.
+
 F-13. Seam obligatoria (diseño, NO implementacion ni conexion existente en main):
 
 `raw siblings -> schema/unknown/forma -> typed canonical interno -> Single<TAuthored> -> AUTH-09 -> autoridad existente una vez -> AUTH-10`
@@ -226,15 +265,17 @@ resuelto y contexto de vista, sin elegir otra hermana ni re-resolver. Los delega
 son composicion propuesta sobre autoridades existentes, no wiring de producto ya realizado.
 Divergent/Unreadable cortan antes de resolver. En Single, un spy y la autoridad real verifican una invocacion
 por operacion, tipo exacto y valores authored preservados; despues se prepara la vista sin volver a resolver.
-Comparar no resuelve. Resolver puede producir estado effective en su snapshot de trabajo sin cambiar la
+Comparar no resuelve. F-12a se verifica en esta seam sobre copias de trabajo, incluyendo locales PushBack.
+Resolver puede producir estado effective en su snapshot de trabajo sin cambiar la
 intencion ni referencias del resultado de comparacion. No devolver como authored ese estado effective.
 Para Cantilever AUTH-09 consume Line.Id interior sin sustituirlo por el envelope; la pertenencia sigue
 siendo exterior. AUTH-10 no tiene parametro de identidad exterior ni funcion de reconciliar estos GUID.
 
 ## 7. Obligaciones invariante -> prueba, RED y gates
 
-La [matriz F1](I-58-characterization.md) asigna CT58-01..28 y MM por kind. Es anexo normativo de diseño,
-congelable junto a este draft; hechos observados y hashes solo en evidencia. Antes de Freeze, los revisores
+La [matriz F1](I-58-characterization.md) asigna CT58-01..32 y MM por kind. Es anexo normativo de diseño,
+congelable junto a este draft; hechos observados y hashes solo en evidencia.
+La identidad EXACTA commit/ruta/blob de Characterization V3 se fija en [Identidades V3](../automation/evidence/I-58-evidence.md#identidades-v3). El acuerdo debe citar esa fila, no solo el enlace al archivo mutable. Antes de Freeze, los revisores
 acuerdan tambien la identidad de este anexo y Discovery §matriz schema; no existe clausula mutable indirecta.
 
 | Invariante | Obligacion conductual | RED esperado antes de implementacion |
@@ -247,6 +288,7 @@ acuerdan tambien la identidad de este anexo y Discovery §matriz schema; no exis
 | F-10/11 | cada schema layer, future minor sin unknown, unknown nested y root | reader tolerante produce Single incorrecto |
 | F-12 | resultado de DOMINIO tipado determinista, null failures, deep isolation | retorno de DTO, primera instancia o Guid generado falla |
 | F-03 identidad | CT58-23/24 con A/B/C/D y control inner divergente | imponer outer==inner rechaza fixtures legibles; ignorar diferencia interior da Single falso |
+| F-08/12a/13 | CT58-29..32 Dynamic y PushBack: global positivo/cero, orden, fallback local y output saboteado | eliminar fallback, promover global o conservar solo primero hacen fallar parity/provenance |
 | F-06/12/13 | CT58-25..28: cuatro tipos reales, canonical vs salida, resolver una vez, aislamiento | mapper con perdida, DTO publico o doble resolve hacen fallar oracle |
 
 D/F0 (esta ejecucion): bootstrap + Discovery + draft + review package + probe diagnostico actual. Sin declarar
@@ -278,8 +320,10 @@ I-55 G12 solo consume tras integracion COMPLETA de I-58 en main, verificacion po
 I-55 conserva batches, transacciones, remedio de divergence, mensajes y policies. I-52 conserva RACKMIRROR
 policy y AUTH-15. I-58 no implementa ninguno. No merge en esta ejecucion.
 
-Coordinator = CHANGES REQUIRED ON V1 / REVIEW REQUIRED ON V2
-Architect = PENDING
+AR58-V2-01 = CORRECTION PROPOSED / ARCHITECT RE-REVIEW REQUIRED
+Coordinator = REVIEW REQUIRED ON V3
+Architect = CHANGES REQUIRED ON V2 / PENDING V3
+Frozen = NO
 F1 = NOT OPEN
 I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO

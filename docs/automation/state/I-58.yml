@@ -1,11 +1,15 @@
 initiative: I-58
 workflow: V2
 status: coordinator_review_required
-phase: C1-discovery-freeze-draft-v2
+phase: AR58-V2-01-discovery-characterization-freeze-draft-v3
 implementation_authorization: false
-coordinator: changes_required_v1_review_required_v2
-architect: pending
-exp_01_effective: class_a_open_stop
-exp_01_proposal: class_b_for_i58_pending_coordinator_and_architect_confirmation
+coordinator: review_required_v3
+architect: changes_required_v2_pending_v3
+exp_01_effective: class_b_for_i58_only_confirmed
+cr58_01: resolved
+cr58_02: resolved
+ar58_v2_01: correction_proposed_architect_re_review_required
+m_03: activated
+frozen: false
 f1: not_open
-next_action: revisar V2 y disposiciones CR58-01/02; confirmar o rechazar B; no implementar produccion
+next_action: revisar V3 y conservacion completa del header en global0; no implementar produccion
