@@ -37,7 +37,7 @@ Siete archivos productivos, todos en `src/RackCad.Application/Systems/Shared/`:
 Canonical privado apoyado en DTOs; nunca se retorna. Las funciones ToDesign/ToDomain/ToConfiguration
 existentes se usan solo DESPUES de raw y acreditacion de cada perdida/default conocido; construyen dominio
 campo a campo sin resolver. Cantilever se copia explicitamente sin sanar identidad/subarboles. No hay
-From(ToDomain(raw)), igualdad JSON, reflection runtime, catalogo, geometria, BOM, AutoCAD ni WPF.
+From(ToDomain(raw)), igualdad JSON, reflection equality, catalogo, geometria, BOM, AutoCAD ni WPF.
 La inspeccion de propiedades usada al escribir el inventario fue tooling externo; la autoridad productiva
 es el codigo tipado explicito, no ese tooling. Unknown futuro se rechaza antes de deserializar.
 
@@ -103,3 +103,16 @@ ROADMAP/HANDOFF, I-55/I-52, A-n, Candidate ni integracion. F3 no abierto; G12 no
 UI focal local: no aplica a este diff de autoridad pura sin consumer UI; builds y CI UI siguen requeridos.
 Owner Validation: no activada por este diff sin comportamiento visible; no se declara validacion manual.
 Sin findings materiales abiertos ni desviacion semantica. Revision Coordinator pendiente de F2 completo.
+
+
+## Primer SHA de implementacion rechazado por guarda estructural
+
+`39bb0b14fac7853cbcb431a7d9f82dc226d600a5` ejecuto Core Full local limpio, SDK 8.0.423:
+10584 PASS / 1 FAIL / 0 SKIP, 10585 total, 101.1730661 s de comando. Fallo exclusivamente
+`NamespaceFolderGuardTests.EveryProductionFile_DeclaresExactlyOneBlockScopedNamespace`:
+los seis archivos nuevos usaban namespace file-scoped. No se empujo como cierre ni se continuaron builds.
+[Recibo y TRX exactos](rejected-39bb0b14/local-receipt.json). Correccion: namespaces con llaves en esos
+seis archivos, sin cambio de comportamiento ni debilitamiento de la guarda. El SHA nuevo requiere su
+propio Core Full limpio/builds/CI; no hereda nada del intento rechazado.
+
+Focal correctivo (NamespaceFolderGuardTests + I58F2): 444/444 PASS, 0 skips; iterations/namespace-focal-green.trx.
