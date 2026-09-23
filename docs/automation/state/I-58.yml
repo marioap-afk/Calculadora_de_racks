@@ -11,6 +11,6 @@ cr58_02: resolved
 ar58_v2_01: resolved_by_architect
 m_03: activated
 frozen: true
-f1: validation_in_progress
+f1: complete_coordinator_review_required
 f2: not_open
-next_action: completar evidencia exact-SHA F1 y entregar al Coordinator; no implementar produccion
+next_action: Coordinator review de F1; F2 no abierto y sin autorizacion productiva

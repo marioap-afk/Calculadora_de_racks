@@ -81,7 +81,7 @@ RED: --filter FullyQualifiedName~I58F1CharacterizationTests.Frozen_matrix_agains
 Cada corrida conserva comando, SDK, identidad, conteo y log/TRX; ningun filtro cero se acepta.
 
 Consensus Freeze V3 = INTACT
-F1 = VALIDATION IN PROGRESS
+F1 = COMPLETE / COORDINATOR REVIEW REQUIRED
 F2 = NOT OPEN
 I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO
@@ -105,3 +105,43 @@ El [patch RED final](red-final.patch) esta normalizado a LF para el repositorio;
 original y su SHA-256 permanecen en raw/I58-F1-final-red.patch y en el recibo. git apply --check PASS.
 No se aplica como prueba activa. RED por kind (Single / Divergent / vacuos): Dynamic 168/71/101;
 PushBack 339/127/129; Cantilever 61/37/91; Cabecera 49/30/68.
+
+## Cierre F1 acreditado
+
+F1_CLOSURE_SHA = 13381b6c04d886f0478e2b264145d417ce95228f.
+[Recibo exacto](closure-receipt.json), [CI](ci-closure.json), logs/TRX de cierre en raw/I58-F1-final-*.
+Todas las corridas locales siguientes comenzaron y terminaron con arbol limpio en ESE SHA; SDK 8.0.423.
+
+| Evidencia | Resultado | Tiempo de comando medido |
+|---|---|---:|
+| Focal F1 | 1.912/1.912, 0 skip | 26.0522004 s |
+| Impacto Foundation/Selective | 86/86, 0 skip | 11.0594039 s |
+| Core Full local | 10.148/10.148, 0 skip | 99.0306711 s |
+| Build UI Debug | 0 errores, 0 avisos | 6.7604115 s |
+| Build Plugin Debug | 0 errores; solo 2 MSB3277 conocidos | 4.7086646 s |
+
+CI propia [35903546574](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/35903546574):
+event=push, head_branch=architecture/shared-view-authored-comparators,
+ref=refs/heads/architecture/shared-view-authored-comparators, head_sha=F1_CLOSURE_SHA exacto.
+Tests Domain/Application, UI Tests WPF, Build UI y Build Plugin without AutoCAD: 4/4 SUCCESS, leidos.
+No se atribuye la CI al padre. La publicacion del recibo es otro SHA documental y no hereda Core/builds.
+Su CI se consulta por su propia identidad; no reemplaza la de cierre. No Candidate ni integracion.
+
+RED final en 26e52b84 + overlay (no atribuido a arbol limpio ni al cierre): 882 ASSERTION FAIL,
+389 VACUOUS BASELINE PASS, 0 skips y 0 fallos ajenos. Cada kind tiene Single y Divergent RED observados.
+[Cada assertion](red-final-assertions.json). [Bytes originales de patches](captured-patch-bytes.json)
+incluyen SHA-256 y Base64 para evitar conversion Git LF/CRLF; la version .patch LF es aplicable.
+
+Ultimo preflight: main y integration/I-57 intactos; I-55 permanece 08e45e0a;
+I-52 avanzo a bd32692f761ed889c49a11312b0145013c36e3c9 solo en decisiones/evidencia, sin cambiar autoridades.
+Freeze, Characterization, Discovery, Architect package y fallback evidence conservan sus blobs acordados.
+Production diff = NONE. Sin A-n, hallazgo material, decision semantica pendiente ni autorizacion productiva.
+Incidencias resueltas: dos preparaciones de fixture descartadas y CI rechazada por ZIP de evidencia.
+El primer hijo de publicacion guardo el recibo; el siguiente completa el estado y la sintesis UTF-8.
+No hay skip nuevo, expected cambiado de I-57, ni test deliberadamente rojo versionado. No Owner Validation.
+
+Consensus Freeze V3 = INTACT
+F1 = COMPLETE / COORDINATOR REVIEW REQUIRED
+F2 = NOT OPEN
+I-55 G12 = NOT UNBLOCKED
+IMPLEMENTATION AUTHORIZATION = NO

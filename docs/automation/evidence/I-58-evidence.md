@@ -319,3 +319,9 @@ IMPLEMENTATION AUTHORIZATION = NO
 
 La autoridad vigente es Consensus Freeze V3; ver [evidencia propia F1](I-58-f1/README.md).
 Registros V3 anteriores conservan su estado historico. F1 no implementa produccion ni abre F2.
+
+Cierre F1 acreditado: 13381b6c04d886f0478e2b264145d417ce95228f; Core Full local 10148/10148, builds Debug
+sin errores, CI push propia 35903546574 con cuatro jobs success. Detalle y RED historico exacto en
+[recibo F1](I-58-f1/closure-receipt.json). Publicar este recibo no propaga evidencia a otro SHA.
+F1 COMPLETE / COORDINATOR REVIEW REQUIRED; F2 NOT OPEN; I-55 G12 NOT UNBLOCKED;
+IMPLEMENTATION AUTHORIZATION NO.
