@@ -8,7 +8,7 @@ workflow: V2
 conceptual_initiative: I-58
 delivery_unit: I-58
 archetype: FOUNDATION EVOLUTION
-materiality: [M-02, M-03, M-05, M-06, M-08]
+materiality: [M-02, M-03, M-04, M-05, M-06, M-08]
 branch: architecture/shared-view-authored-comparators
 base_branch: main
 depends_on: [I-57]

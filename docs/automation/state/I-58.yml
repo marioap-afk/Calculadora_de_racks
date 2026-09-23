@@ -1,9 +1,9 @@
 initiative: I-58
 workflow: V2
-status: coordinator_review_required
+status: f1_complete_coordinator_agreed
 phase: F1-characterization-red
 implementation_authorization: false
-coordinator: agreed_v3_f1_review_pending
+coordinator: agreed_v3_and_f1
 architect: agreed_v3
 exp_01_effective: class_b_for_i58_only_confirmed
 cr58_01: resolved
@@ -11,6 +11,7 @@ cr58_02: resolved
 ar58_v2_01: resolved_by_architect
 m_03: activated
 frozen: true
-f1: complete_coordinator_review_required
-f2: not_open
-next_action: Coordinator review de F1; F2 no abierto y sin autorizacion productiva
+f1_cr_01: resolved
+f1: complete_coordinator_agreed
+f2: ready_to_open_not_yet_executed
+next_action: F2 listo para apertura posterior; no ejecutado y sin autorizacion productiva

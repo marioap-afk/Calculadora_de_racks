@@ -325,3 +325,22 @@ sin errores, CI push propia 35903546574 con cuatro jobs success. Detalle y RED h
 [recibo F1](I-58-f1/closure-receipt.json). Publicar este recibo no propaga evidencia a otro SHA.
 F1 COMPLETE / COORDINATOR REVIEW REQUIRED; F2 NOT OPEN; I-55 G12 NOT UNBLOCKED;
 IMPLEMENTATION AUTHORIZATION NO.
+
+## F1-CR-01 — correccion documental y acuerdo de F1
+
+HEAD de entrada: `825aa05c877b674063c53ade553eaa0346270f6a`.
+Se incorpora M-04 a materiality del contrato mutable: M-02, M-03, M-04, M-05, M-06 y M-08,
+ya activos en Consensus Freeze V3 y Discovery V3. No cambia ninguna decision ni se crea A-n.
+Freeze conserva blob `f89671cfe9f1036e24211287514414b3f555182a` y Characterization conserva
+blob `97e15d6d7c00e02495f8d4159477272d00af6880`; produccion y tests sin cambios.
+La correccion se limita a contrato, state y evidencia propios de I-58; no modifica ROADMAP ni HANDOFF.
+Por instruccion expresa del Owner no se repite Core Full para esta correccion documental.
+La punta nueva requiere CI propia de push con los cuatro jobs requeridos SUCCESS; su SHA y run
+se entregan tras verificarla, sin trasladar evidencia del cierre F1 ni de la publicacion anterior.
+El estado siguiente registra el acuerdo de Coordinator comunicado por el Owner:
+
+F1-CR-01 = RESOLVED
+F1 = COMPLETE / COORDINATOR AGREED
+F2 = READY TO OPEN / NOT YET EXECUTED
+I-55 G12 = NOT UNBLOCKED
+IMPLEMENTATION AUTHORIZATION = NO
