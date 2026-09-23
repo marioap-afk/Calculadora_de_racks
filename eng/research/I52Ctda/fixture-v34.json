@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "contract": "FEC-V34-1",
+  "materialization": "RUNTIME_MATERIALIZATION_PENDING",
+  "objects": [
+    { "id": "F-TRIGGER-MOD", "role": "database modification trigger", "initial": "live/unmodified", "disposable": true, "guard": "RG-DB-MOD" },
+    { "id": "F-TRIGGER-ERASE-DB", "role": "database erasure trigger", "initial": "live/not-erased", "disposable": true, "guard": "RG-DB-ERASE" },
+    { "id": "F-TRIGGER-ERASE-OBJ", "role": "object reactor erasure trigger", "initial": "live/not-erased", "disposable": true, "guard": "RG-OBJ-ERASE" },
+    { "id": "F-XR", "role": "protected semantic Xrecord", "initial": "STATE-S-0", "disposable": false },
+    { "id": "F-REF-B", "role": "protected material reference", "initial": "STATE-M-0", "disposable": false },
+    { "id": "F-REF-A", "role": "protected mixed sibling A", "initial": "STATE-SM-0", "disposable": false },
+    { "id": "F-REF-C", "role": "protected mixed sibling C", "initial": "absent", "disposable": false }
+  ],
+  "cleanup": [
+    "abort owned T_APP/T_CMD",
+    "release owned document lock",
+    "unregister retained reactors",
+    "drain SEND/APPCTX/CMDCTX or terminate scratch process",
+    "reset reentrancy guards",
+    "close scratch drawing without save",
+    "verify exact scratch PID exit"
+  ]
+}

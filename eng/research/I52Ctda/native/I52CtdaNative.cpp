@@ -1,6 +1,7 @@
 #include "aced.h"
 #include "acdocman.h"
 #include "rxregsvc.h"
+#include "I52CtdaRuntime.h"
 
 #include <Windows.h>
 
@@ -118,8 +119,10 @@ extern "C" AcRx::AppRetCode acrxEntryPoint(AcRx::AppMsgCode message, void* packe
         acrxDynamicLinker->unlockApplication(packet);
         acrxRegisterAppMDIAware(packet);
         acedRegCmds->addCommand(kCommandGroup, kSmokeCommand, kSmokeCommand, ACRX_CMD_MODAL, writeSmokeReport);
+        I52CtdaRuntime::instance().registerReactors();
         break;
     case AcRx::kUnloadAppMsg:
+        I52CtdaRuntime::instance().unregisterReactors();
         acedRegCmds->removeGroup(kCommandGroup);
         break;
     default:

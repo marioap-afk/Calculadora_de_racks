@@ -48,6 +48,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="I52CtdaNative.cpp" />
+    <ClCompile Include="I52CtdaRuntime.cpp" />
+    <ClCompile Include="I52CtdaFixture.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="I52CtdaRuntime.h" />
+    <ClInclude Include="I52CtdaFixture.h" />
+    <ClInclude Include="ProbeDispatchTable.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
