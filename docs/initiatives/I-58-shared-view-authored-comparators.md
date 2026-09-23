@@ -8,7 +8,7 @@ workflow: V2
 conceptual_initiative: I-58
 delivery_unit: I-58
 archetype: FOUNDATION EVOLUTION
-materiality: [M-02, M-04, M-05, M-06]
+materiality: [M-02, M-04, M-05, M-06, M-08]
 branch: architecture/shared-view-authored-comparators
 base_branch: main
 depends_on: [I-57]
@@ -66,6 +66,12 @@ Discovery, Freeze draft y paquete Architect se enlazan desde la evidencia canoni
 D/F0 produce material revisable, no declara consenso. F1 queda preparado, no abierto como gate funcional.
 La entrada FOUNDATIONS futura solo se publicara al cierre con conformidad; no se modifica ahora.
 
-Coordinator = PENDING
+Coordinator = CHANGES REQUIRED ON V1 / REVIEW REQUIRED ON V2
 Architect = PENDING
+F1 = NOT OPEN
+I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO
+
+Continuacion C1: correccion documental exclusiva sobre claim/rama/worktree existentes. EXP-01 efectivo
+CLASS A OPEN / STOP; propuesta B acotada pendiente ambas confirmaciones. CR58-01/02 y V2 requieren
+revision. F1 no abre y no hay autorizacion de producto; ver Discovery y evidencia propia.

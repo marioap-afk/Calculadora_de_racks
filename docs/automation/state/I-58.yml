@@ -1,8 +1,11 @@
 initiative: I-58
 workflow: V2
-status: awaiting_design_review
-phase: D/F0-delivery-and-F1-preparation
+status: coordinator_review_required
+phase: C1-discovery-freeze-draft-v2
 implementation_authorization: false
-coordinator: pending
+coordinator: changes_required_v1_review_required_v2
 architect: pending
-next_action: revisar Discovery EXP y Freeze draft exactos; no implementar produccion
+exp_01_effective: class_a_open_stop
+exp_01_proposal: class_b_for_i58_pending_coordinator_and_architect_confirmation
+f1: not_open
+next_action: revisar V2 y disposiciones CR58-01/02; confirmar o rechazar B; no implementar produccion

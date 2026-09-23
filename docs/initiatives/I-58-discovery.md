@@ -1,6 +1,6 @@
-# I-58 — Discovery DELTA de AUTH-13
+# I-58 — Discovery DELTA de AUTH-13 — correccion C1 / V2
 
-Estado: D/F0 entregado para revision; F1 preparado, no cerrado. Toda afirmacion de diseño es
+Estado: D/F0 corregido para revision V2; EXP-01 CLASS A OPEN / STOP efectivo; F1 NOT OPEN. Toda afirmacion de diseño es
 INFERENCE/propuesta hasta el acuerdo exacto; MEASURED identifica lectura de codigo o ejecucion.
 Identidades de base, recibos, pruebas y blobs: [evidencia canonica](../automation/evidence/I-58-evidence.md).
 Autoridades: WORKFLOW §§10-11; INITIATIVE_LIFECYCLE §§3-6; ADR-0034 §§5,8,9; ADR-0044;
@@ -22,7 +22,7 @@ sus PASS de Unreadable son vacuos respecto de lectura/schema y NO validan un rea
 
 ## DC-02 — autoridades verificadas (MEASURED / diseño INFERENCE)
 
-| Kind | Authored authority | Canonical typed form propuesta | Schema gate | Unknown-member gate | Equality method | Expected Single/Divergent/Unreadable |
+| Kind | Authored authority | Canonical INTERNA propuesta (no salida publica) | Schema gate | Unknown-member gate | Equality method | Expected Single/Divergent/Unreadable |
 |---|---|---|---|---|---|---|
 | Dynamic | `DynamicRackDesign`; `RackProject.DynamicDesign` | snapshot profundo `DynamicRackSystemDocument` de authored, sin Bfr derivado | Envelope 1.0; wrapper 1.0/2.0; headers 1.0; Dynamic NO tiene schema propio | raw input completo antes del DTO; wrapper/envelope ExtensionData vacia y cierre recursivo | comparacion explicita tipada de escalares/nullables y secuencias; exclusiones listadas en Freeze | todos iguales / cambio authored / cualquier ilegible |
 | PushBack | `PushBackDesign`, incluyendo Structure, SideB, Composite | snapshot profundo `PushBackDesignDocument`, Structure bajo regla Dynamic | anteriores + payload 1.0 | ExtensionData de payload vacia; validar Structure, lados y topologias antes de ToDomain | comparacion tipada explicita por subarbol, sin resolver estructura compuesta | iguales / cambio authored incluso minoritario / schema o unknown inseguro |
@@ -30,7 +30,10 @@ sus PASS de Unreadable son vacuos respecto de lectura/schema y NO validan un rea
 | Cabecera | `RackFrameConfiguration` persistible | snapshot profundo `RackFrameProjectDocument` | envelope/wrapper + Header 1.0; formato legacy plano 1.0 | no ExtensionData en Header; rechazo previo a Deserialize | campos tipados de posts/plates/horizontals/panels; sin Members/Exceptions | iguales / cambio authored / documento inseguro |
 
 Ownership neutral sigue I-57/Shared View Foundation (ADR-0044); I-58 extiende AUTH-13 por entrega propia,
-no transfiere authority a I-55 ni crea un segundo comparador. La forma tipada es propuesta, no codigo nuevo.
+no transfiere authority a I-55 ni crea un segundo comparador. La forma interna es propuesta, no codigo nuevo.
+CR58-02: el TAuthored PUBLICO es respectivamente DynamicRackDesign, PushBackDesign,
+CantileverLineDesign y RackFrameConfiguration. Los DTO de la tabla NO son la autoridad retornada.
+F-06/F-12/F-13 definen materializacion fiel despues del gate raw y seam hacia autoridad existente.
 
 ## DC-03 — persistencia y perdidas reales (MEASURED)
 
@@ -127,6 +130,50 @@ El source envelope que I-55 reusa para compose debe estar acreditado en la misma
 CustomProperties y atomicidad siguen autoridades consumidoras. Esta entrega solo documenta ese precontrato.
 No se copia codigo de la rama I-55 ni se implementa driver, UI, policy Insertar/ID18/ID19.
 
+## DC-02..06 — expansion C1 de identidad Cantilever (acotada)
+
+MEASURED por fuente: decision vinculante I-37 §12.46 y XML-doc de CantileverLineDesign.Id exigen una
+identidad de linea comun a vistas. Constructor inicializa Guid.NewGuid. RackEditorIdentity.EnsureId
+usa otro factory; LoadNew/LoadDesignForNew no sincronizan; RequestDraw pasa ctx.Id separado del
+lastComputation.Design. BuildCantileverPayload serializa diseño y compone envelope con el argumento id.
+LoadExisting adopta envelope.Id y DeepCopy preserva Line.Id. CantileverKindHandler.RestampDesign asigna
+el nuevo GUID interior; RackEnvelopeRestamp pasa el mismo texto a exterior e interior. Es contradiccion
+real consumida por F-03 V1, no simple encabezado historico: EXP-01 inicialmente CLASS A / STOP.
+
+MEASURED de ejecucion WPF y RECONSTRUCTED de writer/restamp: cuatro escenarios en
+[I-58-c1-identity.md](../automation/evidence/I-58-c1-identity.md), que separa cada identidad, pertenencia,
+AUTH09/10, impacto y limites. A/B/C outer!=inner; hermanas conservan ambos por separado. D reconstruido
+outer==inner nuevo compartido. Biblioteca puede reutilizar inner entre racks exteriores diferentes.
+No se ejecutaron comandos/transacciones AutoCAD ni se auditaron DWG historicos no aportados.
+
+MEASURED por fuente I-55: RackSiblingScan llena RackSiblingScanFact con envelope.Id y probe exterior;
+RackSiblingMembership.Classify compara RackId/ProbeId con conjunto exterior atribuible, no lee Line.Id.
+Su rama se inspecciona solamente. PrepareExisting pasa comparison.Authored a AUTH09 sin conversion de
+DTO, y conserva source.Id exterior para componer; no reinterpreta identidad interior. En main AUTH09
+acepta delegate tipado; AUTH10 recibe resolved/address/frame/baseName sin parametro exterior Id.
+El probe invoca AUTH09<CantileverLineDesign,...> y assembler existente una vez, conserva inner. No prueba
+que el wiring completo de I-55 este implementado ni usa una guardia textual como test de comportamiento.
+
+INFERENCE/propuesta B SOLO para alcance I-58: la igualdad authored dentro de un conjunto de pertenencia
+exterior coherente necesita inner valido/equivalente ENTRE hermanas, no outer==inner. F-03 V1 hubiera
+rechazado documentos producidos por A/B/C; V2 retira esa precondicion. Inner distinto entre hermanas es
+Divergent; inner ausente/invalido es Unreadable; exterior mezclado es Unreadable aun con inner comun.
+La falta de igualdad exterior/interior no requiere reparacion para comparar el conjunto. Esto no prueba
+que la identidad sea correcta para todos los demas consumidores ni cura incumplimiento de I-37.
+Deuda D58-CANT-ID registrada en evidencia propia, fuera del alcance de reparacion. Sin restamp/migracion.
+
+Clasificacion efectiva: EXP-01 = CLASS A OPEN / STOP. Rebaja propuesta a B = PENDING COORDINATOR +
+ARCHITECT CONFIRMATION. Ambos deben evaluar suficiencia DC-02..06, incluidos limites reconstruidos.
+Si no la confirman o aparece caso que requiera reparar para comparar, conservar A; no inventar solucion.
+COORDINATOR REVIEW = REQUIRED. EXP-08 conserva dos hallazgos: unknowns perdidos e identidad preexistente.
+
+CR58-02 (INFERENCE de diseño): raw siblings -> validacion schema/unknown/forma -> canonical INTERNA ->
+Single de DOMINIO profundo -> AUTH09 -> autoridad vigente una vez -> AUTH10. F-13 enumera
+DynamicRackSystemResolver, PushBackResolver, CantileverLineEditorAssembler y BracingPanelMemberBuilder.
+No es una promesa de mappers actuales sin perdida: CT58-26 exige comprobar valor retornado por subarbol,
+incluso cuando canonical igual ya dio Single. Si ToDomain/ToDesign pierde intencion, no puede usarse para
+materializar ese caso. Foundation no obliga a I-55 a arreglarlo con otro conversor/resolver.
+
 ## DC-06 — protecciones y huecos (MEASURED)
 
 I-57: SharedViewFoundationF6Tests protege unsupported, Selective Single/Divergent/Unreadable, resultado null,
@@ -159,14 +206,14 @@ I-58 sigue doctrine ADR-0034 y ownership ADR-0044; no reinterpreta historia de I
 
 | ID | Estado | Evidencia / riesgo / disposicion |
 |---|---|---|
-| M-01 | no activado | owner AUTH-13 permanece Foundation/I-57; evitar autoridad paralela en consumidor |
-| M-02 | activado | cambia trato de unknown/future en NUEVO lector de autoridad; wire, DTO, store y fallback persistido intactos; revisar cada descarte |
-| M-03 | no activado | delta pedido precisamente soporta cuatro kinds; Cama/Selective y rutas actuales no cambian |
-| M-04 | activado | Unreadable incondicional pasa a tres outcomes; precedencia y fallo cerrado son invariantes |
-| M-05 | activado | I-55 consume interfaz tipada existente con nuevos carriers concretos; no presuponer que TInput actual basta |
-| M-06 | activado | nuevos adapters tipados en punto de extension AUTH-13; evitar generico semanticamente incompleto |
-| M-07 | no activado | sin kernel/registry/reflection comparer/resolver universal; cuatro readers/equalities tipados acotados |
-| M-08 | no activado | ADR-0034/0044 y R3 conservados; no cambia autoridad, ni product policy |
+| M-01 | no activado | AUTH-13 conserva owner Foundation/I-57; canonical privado no es segunda autoridad publica; F-06/13 lo explicitan |
+| M-02 | activado | nuevo gate raw de unknown/schema y compatibilidad F-09; no cambios de wire/DTO/store; CT58-27 antes de mappers |
+| M-03 | no activado en propuesta V2 acotada | V1 outer==inner introducia rechazo fuera de lo pedido sobre A/B/C. V2 elimina esa precondicion, no repara ni migra; soporte de cuatro kinds es lo pedido. Si un mapper cambia intencion o se exige reparar, reevaluar M-03/EXP-08 antes de Freeze |
+| M-04 | activado | unsupported pasa a tres outcomes; precedencia y validacion de inner entre hermanas explicitas |
+| M-05 | activado | contrato publico a consumidores usa cuatro diseños de DOMINIO exactos; DTO canonical no escapa; seam AUTH13->AUTH09 sin reconversion I-55 |
+| M-06 | activado | adapters concretos amplian AUTH-13 manteniendo genericos unsupported; materializacion por kind dentro del limite existente |
+| M-07 | no activado | ningun converter/kernel/registry/equality universal; contrato generico vigente no se sustituye |
+| M-08 | activado conservador para revision | V2 admite comparar documentos que incumplen decision integrada I-37 §12.46. Aunque no modifica esa decision ni la creacion, su tratamiento requiere acuerdo explicito, no afirmar inocuidad porque I-37 no esta en el diff; EXP-01 A efectivo |
 
 FOUNDATION EVOLUTION propuesto; Coordinator confirma, Architect puede elevar (lifecycle §3).
 Riesgos centrales: effective->authored por ToDomain; minor futuro aceptado por store; unknown nested perdido;
@@ -177,16 +224,32 @@ comparator generico que ignora input. Todos tienen obligaciones en Freeze/matriz
 
 | EXP | Evaluacion | Pregunta acotada y salida / autoridad pendiente |
 |---|---|---|
-| 01 | negativa | discrepancias de encabezados historicos resueltas por merge/recibo y registros; ninguna contradiccion consumida A encontrada |
-| 02 | positiva, hallazgo delimitado | DTO authored comparte campos derivados Bfr y getters; decidir exclusiones exactas con Coordinator/Architect; propuesta en Freeze §3 |
-| 03 | negativa | wrapper y cabecera plana localizados; fixture historico externo no inventado |
-| 04 | positiva | uso futuro PrepareExisting de I-55 mas scan/composer; limite documentado, aprobacion Coordinator pendiente |
-| 05 | positiva | igualdad nueva sin tests protectores; matriz y probe definidos; cierre conductual real en F1/F2 despues de acuerdo |
-| 06 | positiva | ToDomain y parser de version normalizan en silencio; estrategia raw preflight tipado propuesta; revision pendiente |
-| 07 | negativa actual | no interseccion del comparator/DTO con diff observado de I-55; repetir antes de implementar |
-| 08 | positiva | nested unknowns se pierden en caminos antiguos; NO repararlos globalmente, rechazar antes en AUTH-13; revisar impacto legacy |
-| 09 | negativa | M clasificados, sin UNKNOWN material; pendientes son veredictos, no hechos rellenados |
+| 01 | POSITIVA; CLASS A OPEN / STOP efectivo | CR58-01 contradice I-37 §12.46. Propuesta B SOLO I-58 respaldada DC-02..06; PENDING COORDINATOR + ARCHITECT CONFIRMATION. No cerrada |
+| 02 | positiva; delimitada, pendiente revision | separar autoridad publica dominio de canonical interno (CR58-02) y exclusiones effective F-08; no hay autoridad nueva |
+| 03 | negativa acotada | wrapper/cabecera legacy y cuatro caminos Cantilever localizados; DWG externos no aportados siguen UNKNOWN, no afirmar compatibilidad universal |
+| 04 | positiva; pendiente revision | I-55 membership exterior + PrepareExisting/Resolve/Prepare; F-13 evita reinterpretar DTO en consumidor; inspeccion read-only |
+| 05 | positiva; pendiente cierre futuro | CT58-23..28 añaden invariantes identidad/tipos/seam/materializacion; diagnostico actual no prueba comparator ni cierra F1 |
+| 06 | positiva; pendiente revision | raw preflight obligatorio antes de mappers con perdida; tambien validar fidelidad canonical->dominio, sin saneamiento silencioso |
+| 07 | negativa actual | preflight: no cambio de autoridad/DTO en ramas observadas; no ediciones cruzadas; repetir antes de implementar |
+| 08 | POSITIVA; pendiente revision | unknowns perdidos + D58-CANT-ID preexistente; V1 lo haria visible como rechazo; V2 propone no exigir igualdad exterior/interior; reparacion fuera de alcance |
+| 09 | negativa tras esta evaluacion conservadora | M-08 se trata activado, no UNKNOWN oculto; M-03 tiene evidencia acotada y condicion de reapertura. Veredictos A/B pendientes no son hechos inventados. Nueva incertidumbre material activara EXP-09 |
 
 No se autoautoriza una expansion general. El Owner solicito expresamente estas preguntas de codigo;
 se entregan hallazgos acotados y propuestas. Coordinator debe autorizar/cerrar formalmente EXP positivas y
 preguntar cual debio activarse y no se activo. Discovery no se declara CLOSED ni F0 AGREED sin esa revision.
+
+## Disposicion individual de findings Coordinator C1
+
+| ID | Disposicion del Executor sobre V2 | Evidencia / pendiente |
+|---|---|---|
+| CR58-01 | CORRECTION PROPOSED; REQUIRED sigue abierto para su emisor | EXP-01 corregida A/STOP; A/B/C/D delimitados; F-03/MM-C01/CT58-23/24; deuda fuera de alcance. Propuesta B no confirmada por el autor |
+| CR58-02 | CORRECTION PROPOSED; REQUIRED sigue abierto para su emisor | F-06/12/13, tabla dominio vs canonical, CT58-25..28 y ataques Architect; ningun DTO devuelto como autoridad |
+
+V1 = CHANGES REQUIRED conforme C1 del Coordinator comunicado por Owner. V2 = REVIEW REQUIRED;
+no AGREED, no cierre de findings en nombre del emisor. Freeze sigue DRAFT/Frozen NO.
+
+Coordinator = CHANGES REQUIRED ON V1 / REVIEW REQUIRED ON V2
+Architect = PENDING
+F1 = NOT OPEN
+I-55 G12 = NOT UNBLOCKED
+IMPLEMENTATION AUTHORIZATION = NO

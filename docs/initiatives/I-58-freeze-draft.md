@@ -1,8 +1,8 @@
-# I-58 — Consensus Freeze DRAFT V1
+# I-58 — Consensus Freeze DRAFT V2
 
 Frozen: NO
 Status: DRAFT FOR COORDINATOR + ARCHITECT REVIEW
-Coordinator: PENDING
+Coordinator: CHANGES REQUIRED ON V1 / REVIEW REQUIRED ON V2
 Architect: PENDING
 IMPLEMENTATION AUTHORIZATION = NO
 
@@ -13,6 +13,15 @@ INITIATIVE_LIFECYCLE §§3-8; WORKFLOW §§4,10,11; AGENTS (pruebas/evidencia).
 Solo despues de ambos AGREED sobre la misma identidad procede el commit de Freeze previsto en lifecycle §6.
 Lineas de cabecera candidatas a cambio administrativo: `Frozen: NO` y `Status: DRAFT FOR COORDINATOR + ARCHITECT REVIEW`.
 Los revisores deben enumerar literalmente lo permitido en el acuerdo. Ninguna clausula cambia en ese commit.
+
+## Delta C1 y estado de revision
+
+Version COMPLETA V2; sustituye V1 para revision, no borra su historia Git. CR58-01 corrige F-03 y
+la compatibilidad Cantilever; CR58-02 separa F-06/F-12 y explicita la seam F-13. Anexo V2 incluye
+contrapruebas de identidad y de materializacion del resultado. Disposiciones individuales en Discovery.
+EXP-01 = CLASS A OPEN / STOP efectivo. Se propone B SOLO para I-58, PENDING COORDINATOR + ARCHITECT
+CONFIRMATION, con evidencia acotada DC-02..06; no se declara rebajado ni resuelto el defecto de I-37.
+I-58 no repara identidad, restampa ni migra documentos. F1 no abre con esta propuesta pendiente.
 
 ## 1. Resultado, ownership y limites
 
@@ -35,7 +44,13 @@ embebido con Design; no basta un DTO ya deserializado porque habria perdido nest
 runtime de Application, no formato persistido ni scan AutoCAD nuevo. Nombres de tipos no congelados.
 Sin prueba de completitud, entrada null/vacia, hermana null, envelope/payload ausente, mezcla de RackId/kind,
 lectura fallida, ambiguedad por duplicados o estado unsafe: Unreadable. No omitir hermanas silenciosamente.
-RackId se exige no vacio y coherente; Cantilever.Line.Id requiere GUID no vacio y concordancia con envelope.
+RackId exterior se exige no vacio y coherente entre hermanas. Cantilever.Line.Id debe estar presente,
+ser GUID valido no vacio y participar en igualdad authored entre hermanas. NO exigir outer Id == Line.Id.
+Un Line.Id valido diferente entre hermanas legibles es Divergent; ausente/malformado/vacio es Unreadable.
+La falta de igualdad exterior/interior por si sola no vuelve ilegible un documento. No mezclar racks
+exteriores diferentes porque compartan el Id interior de una plantilla; esa mezcla es Unreadable.
+Esta clausula es propuesta de compatibilidad acotada, condicionada a la confirmacion B de EXP-01;
+no sustituye la decision vinculante I-37 §12.46 ni convierte su incumplimiento en contrato de creacion.
 La pertenencia fisica la acredita el consumidor; Foundation valida la coherencia de todas las entradas dadas.
 
 F-04. Secuencia: capturar snapshot inmutable -> validar envelope y forma de wrapper -> schema/unknown
@@ -53,16 +68,25 @@ ultima y mayoria no otorgan autoridad. Duplicados del mismo payload no votan ni 
 
 ## 3. Canonical forms TIPADAS y frontera authored/effective
 
-F-06. Tabla de salida (todos snapshots independientes, sin mutar input):
+F-06. Separar autoridad PUBLICA de representacion INTERNA. Cada `Single<TAuthored>` devuelve exactamente
+el tipo de dominio de esta tabla, nuevo y profundo; las formas canonical nunca salen como autoridad publica.
 
-| Kind | Forma authored tipada | Construccion y comparacion |
+| Kind | TAuthored PUBLICO | Forma canonical INTERNA para igualdad completa |
 |---|---|---|
-| Dynamic | `DynamicRackSystemDocument` canonical | copia explicita de intencion persistida; scalar/nullables/listas tipadas; excluir derivados enumerados en F-08 |
-| PushBack | `PushBackDesignDocument` canonical | Structure bajo F-06 Dynamic; Fronts, SideB, Composite y restantes campos completos; ExtensionData vacia acreditada |
-| Cantilever | `CantileverLineDesign` canonical, fuente `CantileverLineDocument.Line` | copia explicita del arbol authored; no defaults aleatorios ni DeepCopy que sanee antes del gate; metadata de schema se valida fuera |
-| Cabecera | `RackFrameProjectDocument` canonical | posts, plates, horizontals, panels y parametros completos; sin RefreshPhysicalModel |
+| Dynamic | `DynamicRackDesign` | snapshot tipado apoyado en `DynamicRackSystemDocument`, sin Bfr; preserva intencion de subarboles |
+| PushBack | `PushBackDesign` | snapshot tipado apoyado en `PushBackDesignDocument`, Structure bajo reglas Dynamic; SideB y Composite completos |
+| Cantilever | `CantileverLineDesign` | snapshot authored tipado de `CantileverLineDocument.Line`, sin generar/sanear identidad; schema fuera del valor |
+| Cabecera | `RackFrameConfiguration` | snapshot tipado apoyado en `RackFrameProjectDocument`, posts/plates/horizontals/panels; sin RefreshPhysicalModel |
 
-Los DTO existentes son carrier tipado, no una promesa de que Equals compare valores. Implementar equality
+Las formas internas pueden ser DTO o snapshots privados por kind; no se añaden campos a los DTO existentes.
+No convertir con ToDomain/ToDesign/ToConfiguration antes de validar raw original, schema/unknown y formas
+que esos mappers podrian perder. Tampoco basta validar unknown y luego aplicar un mapper con perdida
+conocida: la salida debe conservar TODOS los valores canonical authored acreditados. La materializacion
+final es explicita por kind, sin resolver, y debe probarse contra cada nullable, override y coleccion.
+Un valor no representable con fidelidad en TAuthored no puede producir Single; falla cerrado y requiere
+finding/revision si contradice un caso aceptado del Freeze. No repararlo ni ampliar equivalencia en silencio.
+
+Los DTO existentes son carriers INTERNOS, no autoridad retornada ni promesa de que Equals compare valores. Implementar equality
 explicita por kind y subestructura; no `object.Equals`, reference equality, reflection equality ni conversion
 a JSON para comparar. Sin geometria, tolerancia de coordenadas ni redondeo de dimensiones. Numeros finitos
 se comparan por su valor tipado exacto (0 y -0 son iguales); strings authored Ordinal, sin Trim/upper arbitrario.
@@ -181,12 +205,35 @@ valores, nunca seleccionarlo antes de validar todo ni retornarlo como representa
 Salida reconstruida campo a campo con los valores acreditados y normalizaciones F-08/09; no SourceEnvelope,
 no ExtensionData, no catalogo, no Guid.NewGuid, hora o random. Permutar hermanas mantiene outcome y todos
 los valores tipados retornados. Mutar resultado no cambia input, otra salida ni otra hermana.
-Schema de salida corriente solo en documento runtime; no instruye al consumidor a guardar perdiendo metadata.
+Schema validado pertenece a la lectura/formas internas; Single devuelve dominio, nunca un documento
+runtime de persistencia. No instruye al consumidor a guardar perdiendo metadata.
 Consumidor conserva sobre acreditado y aplica su propia persistencia; AUTH-13 no compone ni escribe sobres.
+
+F-13. Seam obligatoria (diseño, NO implementacion ni conexion existente en main):
+
+`raw siblings -> schema/unknown/forma -> typed canonical interno -> Single<TAuthored> -> AUTH-09 -> autoridad existente una vez -> AUTH-10`
+
+| Kind | Entrada exacta a AUTH-09 | Autoridad existente que recibe el diseño, sin reconvertir DTO |
+|---|---|---|
+| Dynamic | `DynamicRackDesign` | `DynamicRackSystemResolver.Resolve(design)` una vez |
+| PushBack | `PushBackDesign` | `PushBackResolver.Resolve(design)` una vez; su composicion interna vigente no se reescribe |
+| Cantilever | `CantileverLineDesign` | `CantileverLineEditorAssembler.Build(design)` una vez, que invoca `CantileverLineResolver.Resolve` una vez; no llamar ambos en el adapter |
+| Cabecera | `RackFrameConfiguration` | `BracingPanelMemberBuilder.RefreshPhysicalModel(configuration)` una vez sobre snapshot de trabajo aislado; es la autoridad vigente, no existe que inventar otro resolver |
+
+AUTH-09 conserva su adapter generico existente y su delegate por kind. No crear un segundo resolver,
+un conversor universal ni exigir a I-55 reinterpretar DTO persistidos. AUTH-10 recibe el resultado tipado
+resuelto y contexto de vista, sin elegir otra hermana ni re-resolver. Los delegates concretos de esta tabla
+son composicion propuesta sobre autoridades existentes, no wiring de producto ya realizado.
+Divergent/Unreadable cortan antes de resolver. En Single, un spy y la autoridad real verifican una invocacion
+por operacion, tipo exacto y valores authored preservados; despues se prepara la vista sin volver a resolver.
+Comparar no resuelve. Resolver puede producir estado effective en su snapshot de trabajo sin cambiar la
+intencion ni referencias del resultado de comparacion. No devolver como authored ese estado effective.
+Para Cantilever AUTH-09 consume Line.Id interior sin sustituirlo por el envelope; la pertenencia sigue
+siendo exterior. AUTH-10 no tiene parametro de identidad exterior ni funcion de reconciliar estos GUID.
 
 ## 7. Obligaciones invariante -> prueba, RED y gates
 
-La [matriz F1](I-58-characterization.md) asigna CT58-01..22 y MM por kind. Es anexo normativo de diseño,
+La [matriz F1](I-58-characterization.md) asigna CT58-01..28 y MM por kind. Es anexo normativo de diseño,
 congelable junto a este draft; hechos observados y hashes solo en evidencia. Antes de Freeze, los revisores
 acuerdan tambien la identidad de este anexo y Discovery §matriz schema; no existe clausula mutable indirecta.
 
@@ -198,7 +245,9 @@ acuerdan tambien la identidad de este anexo y Discovery §matriz schema; no exis
 | F-06/07 | mutation matrix escalares/listas/nested/nullable de cada kind | omitir cada campo mutado produce Single incorrecto |
 | F-08/09 | vista/placement/context independientes; fallbacks y legacy save/reopen | comparar effective o raw serializado produce falso Divergent |
 | F-10/11 | cada schema layer, future minor sin unknown, unknown nested y root | reader tolerante produce Single incorrecto |
-| F-12 | resultado tipado determinista, null failures, deep isolation | retorno de primera instancia o Guid generado falla |
+| F-12 | resultado de DOMINIO tipado determinista, null failures, deep isolation | retorno de DTO, primera instancia o Guid generado falla |
+| F-03 identidad | CT58-23/24 con A/B/C/D y control inner divergente | imponer outer==inner rechaza fixtures legibles; ignorar diferencia interior da Single falso |
+| F-06/12/13 | CT58-25..28: cuatro tipos reales, canonical vs salida, resolver una vez, aislamiento | mapper con perdida, DTO publico o doble resolve hacen fallar oracle |
 
 D/F0 (esta ejecucion): bootstrap + Discovery + draft + review package + probe diagnostico actual. Sin declarar
 consenso, gate funcional cerrado o autorizacion productiva. F1: solo despues del acuerdo exacto, materializar
@@ -229,6 +278,8 @@ I-55 G12 solo consume tras integracion COMPLETA de I-58 en main, verificacion po
 I-55 conserva batches, transacciones, remedio de divergence, mensajes y policies. I-52 conserva RACKMIRROR
 policy y AUTH-15. I-58 no implementa ninguno. No merge en esta ejecucion.
 
-Coordinator = PENDING
+Coordinator = CHANGES REQUIRED ON V1 / REVIEW REQUIRED ON V2
 Architect = PENDING
+F1 = NOT OPEN
+I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO

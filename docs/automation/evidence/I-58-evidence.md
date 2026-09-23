@@ -1,5 +1,7 @@
 # I-58 — Evidencia canonica
 
+Vigencia: la seccion C1/V2 al final actualiza el estado; registros D/F0 V1 anteriores son historia, no acuerdo vigente.
+
 Unit / Initiative: I-58 / I-58
 Workflow: V2, T4; FOUNDATION EVOLUTION propuesto
 Claim-Id: a17726b2-dee1-44b6-a3d7-3366dc4a21b4
@@ -133,4 +135,54 @@ F0 = PREPARED FOR REVIEW (no consenso declarado)
 F1 = PREPARED / NOT OPEN AS FUNCTIONAL GATE
 I-55 G12 CONSUMER UNLOCK = NO
 FINAL_CANDIDATE_SHA = NOT DECLARED
+IMPLEMENTATION AUTHORIZATION = NO
+
+## C1 / V2 — continuacion correctiva
+
+HEAD_INICIAL: 49fa607cde5635fc58f4a5e78b22fd6e1a46b7ea.
+Mismos Claim-Id/BASE/CLAIM/rama/worktree; no claim ni worktree nuevos. Fetch --all --prune realizado;
+origin/main y main local permanecen 7097057cf8685bf5ecc09083cba37379d4a4aae8, limpios. I-58 inicial
+igual a upstream, limpio; sin stashes ni operaciones merge/rebase/cherry-pick/revert/bisect/sequencer.
+I-55 observado 08e45e0a2521a2e7feb4cf7c8d3fc7fc574aa74d; I-52 e4e506303f81370db75e8e7e8bf1000c0e7920c3.
+integration/I-57: mismo objeto tag a5bc02210f740839e2fac37e63fc00512e5ccee6 y target BASE_SHA.
+R3 mismo blob cd42db03becff42f98b047e61c46689c17a69670. No se modifican.
+
+V1 revisada en HEAD_INICIAL: Freeze blob 5b528fcca0b5f41e35acbc0a32f4b595179ae978;
+characterization aa94e5688b312a10ce9a1a5f3425f0da56622c8f; Discovery 18bfec73e1eaf53cb179d26bdbd6e8b2251753a6.
+CI HISTORICA VERIFICADA con gh run view: run 35813721629, event=push,
+ref=refs/heads/architecture/shared-view-authored-comparators (headBranch exacta),
+head_sha=49fa607cde5635fc58f4a5e78b22fd6e1a46b7ea, completed/success, requeridos 4/4 SUCCESS:
+Tests (Domain + Application); UI Tests (WPF controls, net8.0-windows);
+Build UI (WPF, valida API de Application); Build Plugin without AutoCAD.
+No se atribuye esa CI a ningun SHA nuevo ni a los padres de la publicacion V1.
+
+C1 diagnostico: [I-58-c1-identity.md](I-58-c1-identity.md) y [fuentes exactas](I-58-c1-source-identities.txt).
+PROBE_VALIDATION_SHA: 5d69a0670a6576fe344a983c45c6187a5bb280ec; arbol limpio antes/despues,
+SDK 8.0.423. Probe 4 escenarios, exit 0; Core focal 66/66 y UI focal 28/28, todos sin omitidos.
+Comandos (desde worktree):
+
+```powershell
+dotnet run --project docs/automation/evidence/I-58-c1-probe/I58.C1.Probe.csproj
+dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter 'FullyQualifiedName~SharedViewFoundationF5Tests|FullyQualifiedName~SharedViewFoundationF6Tests|FullyQualifiedName~CantileverPersistenceAndViewTests' --logger 'trx;LogFileName=I58-c1-core.trx' --results-directory "$env:TEMP/I58-c1-results"
+dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter 'FullyQualifiedName~CantileverEditorWindowTests|FullyQualifiedName~RackEditorSessionTests' --logger 'trx;LogFileName=I58-c1-ui.trx' --results-directory "$env:TEMP/I58-c1-results"
+```
+
+Duraciones/limites/fallos setup descartados en diagnostico. Log bruto de cada corrida exitosa versionado.
+No Full ni Candidate; sin validacion Owner/AutoCAD. No hay GREEN de comparadores ni se abrio F1.
+La evidencia permanece en PROBE_VALIDATION_SHA; hijos documentales no la heredan.
+
+CR58-01: CORRECTION PROPOSED / emisor debe revisar; EXP-01 A OPEN STOP efectivo con B propuesto SOLO
+para I-58 PENDING COORDINATOR + ARCHITECT CONFIRMATION. D58-CANT-ID se registra fuera de alcance.
+CR58-02: CORRECTION PROPOSED / emisor debe revisar; TAuthored dominio separado de canonical interno,
+materializacion fiel y seam AUTH13->AUTH09 explicita. DC-09 M-02/04/05/06/08 activos, M-01/03/07 no activos
+bajo limites V2. EXP-01..09 y razones individuales en Discovery. Ningun REQUIRED auto-cerrado.
+
+Paquete completo V2: Freeze draft, Characterization, Discovery corregido y paquete Architect actualizado.
+Identidades exactas del commit de contenido V2 se registran en la siguiente publicacion y en su mensaje;
+no existe Freeze aprobado, A-n, Candidate, conformidad, cierre de iniciativa, merge ni tag integration/I-58.
+
+Coordinator = CHANGES REQUIRED ON V1 / REVIEW REQUIRED ON V2
+Architect = PENDING
+F1 = NOT OPEN
+I-55 G12 = NOT UNBLOCKED
 IMPLEMENTATION AUTHORIZATION = NO

@@ -1,8 +1,8 @@
-# I-58 — Characterization y preparacion F1
+# I-58 — Characterization V2 y preparacion F1
 
 Estado: plan completo para revision. Probe D/F0 ejecutable en evidencia; no sustituye la suite F1 sobre
 carriers definitivos. No se implementa produccion. Identidad y resultados observados en
-[I-58-evidence.md](../automation/evidence/I-58-evidence.md). Anexo congelable con Freeze draft V1.
+[I-58-evidence.md](../automation/evidence/I-58-evidence.md). Anexo congelable con Freeze draft V2.
 
 ## Escenarios por kind
 
@@ -68,7 +68,7 @@ subtipo en F1; la lista representativa no exime el inventario de F-07. No usar r
 | MM-P06 | PushBack | AbsentSlotsA/B y RearTopeOffCells colecciones; DefensePieceId/RearTopePieceId | Divergent; campos fuera de Structure |
 | MM-P07 | PushBack | DefaultTopology='FutureTopology', Direction futuro | Unreadable; mapper tolerant no acredita authored |
 | MM-P08 | PushBack | SideB.Structure inventado o nested unknown en topologia | Unreadable; no duplicar estructura ni perder extension |
-| MM-C01 | Cantilever | Name, StationCount, ColumnCentreSpacing | Divergent; Id distinto al rack -> Unreadable |
+| MM-C01 | Cantilever | Name, StationCount, ColumnCentreSpacing | Divergent; Line.Id valido distinto ENTRE hermanas -> Divergent; outer!=inner por si solo admisible; Id interior ausente/vacio/malformado -> Unreadable |
 | MM-C02 | Cantilever | StationTopology.FaceMode/SingleSide/ColumnHeight.Mode/ManualHeight | Divergent; modo manual y valor incluso inactivo |
 | MM-C03 | Cantilever | DefaultArmTemplate.Body.CutLength/SectionId/Arrangement; MountingPlate.VerticalEndOffset null->valor | Divergent; arbol authored completo |
 | MM-C04 | Cantilever | ArmCellOverrides agrega/quita/reordena; cambia StationIndex/Side/Arm.EndPlate | Divergent, nested/coleccion |
@@ -98,3 +98,34 @@ Probe de esta entrega no usa equality alternativa; llama ports reales con output
 El intento preliminar con fixture Dynamic sin Modules fallo durante setup (no RED admisible), fue corregido
 agregando modulo authored. La corrida observada valida cada fixture con el store real antes del primer assert.
 No se agregan tests rojos a las suites canonicas ni se marcan omitidos para fingir verde.
+
+## C1 — identidad y seam publica (obligaciones futuras, NO ejecutadas contra AUTH-13)
+
+| ID | Estimulo y oracle obligatorio | RED que debe ser observable en F1/F2 |
+|---|---|---|
+| CT58-23 | A nueva, B biblioteca, C reabierta+nueva hermana: mismo outer entre hermanas, mismo inner valido, outer!=inner. D restamp: ambos iguales. Con resto authored igual, Single en los cuatro | validar outer==inner indebidamente hace fallar A/B/C; no llamar al comparator actual un reader validado |
+| CT58-24 | mismo outer con dos inner validos distintos -> Divergent; inner ausente/vacio/malformado -> Unreadable; dos outer distintos con inner igual de biblioteca -> Unreadable | ignorar inner, acuñar Id o agrupar por inner produce Single falso; permutar todos los casos |
+| CT58-25 | cada kind raw original -> validacion -> canonical interna -> Single del tipo publico -> AUTH09 -> autoridad real de F-13 una vez -> AUTH10 sin re-resolve | compilar prueba con DynamicRackDesign/PushBackDesign/CantileverLineDesign/RackFrameConfiguration; devolver DTO incompatible no satisface contrato; spy de authority cuenta 1, fallos cuentan 0 |
+| CT58-26 | todos los valores de F-07/09 y MM acreditados reaparecen en el dominio retornado; defaults/exclusiones F-08/09 simetricos | sabotear materializador de salida dejando igualdad intacta debe fallar; dos canonicals iguales no autorizan salida distinta, mapper que pierda override/null/orden falla |
+| CT58-27 | unknown/schema futuro/malformed en raw antes de ToDomain/ToDesign; probar miembros que estos mappers borran | desactivar gate produce falso Single y debe fallar; no usar round-trip previo para fabricar fixture ilegible |
+| CT58-28 | mutar CADA subarbol del dominio retornado y del snapshot de trabajo del resolver, repetir y permutar input | ningun cambio en hermana, otro resultado ni intencion retornada; salida efectiva o referencias compartidas falla |
+
+CT58-25 se escribe por separado para cada tipo concreto y autoridad F-13, sin usar Marker como sustituto.
+Cabecera prueba RefreshPhysicalModel sobre copia de trabajo, fuera del comparator; Cantilever prueba el
+assembler y evita llamar despues al resolver otra vez. Los conteos son por invocacion de autoridad externa,
+no por los pasos internos ya existentes de cada resolver. Ninguna prueba necesita un conversor universal.
+CT58-26 inspecciona el DOMINIO retornado, no solo el DTO canonical ni el outcome. Incluye custom headers,
+Safety.AuthoredSide, override null vs explicitado, SideB holes, Composite, templates/overrides Cantilever,
+placas/paneles Cabecera. Ante valor no representable, Unreadable/finding; no inventar miembro de DTO/Domain.
+
+## Diagnostico C1 actual y limites
+
+El probe separado I-58-c1-probe ejecuta cuatro escenarios A/B/C/D y AUTH09 con assembler actual;
+resultados, SHA y procedencia en evidencia. A/B/C usan WPF real sin AutoCAD; writer y restamp son metodos
+puros extraidos con control de drift, despacho de kind limitado en harness. Hermanas A/B sintetizadas;
+C usa LoadExisting/InsertPlanta real. Scan/transaccion DWG, comandos RACKEDITAR/RACKDUPLICAR y AUTH10
+NO ejecutados. No confundir estas observaciones con CT58-23..28 verdes: AUTH13 sigue unsupported.
+El probe V1 queda como historia de la version V1, no evidencia de los tipos publicos V2 ni GREEN funcional.
+
+EXP-01 efectivo CLASS A OPEN / STOP. Propuesta B limitada pendiente Coordinator + Architect.
+CR58-01/02 requieren revision de V2; F1 NOT OPEN; IMPLEMENTATION AUTHORIZATION = NO.

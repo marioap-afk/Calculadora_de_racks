@@ -1,0 +1,18 @@
+I-58 C1 source provenance. Inspection != behavioral test.
+Own SHA 5d69a0670a6576fe344a983c45c6187a5bb280ec
+109b2291a22a402af1be12e02b0231d84d28bd2d src/RackCad.Domain/Systems/Cantilever/CantileverLineDesign.cs
+3a14d6901dc88f72ed2a4efa221acc06d0510bbf src/RackCad.UI/Editor/RackEditorIdentity.cs
+ada2266a1782563f53c2b8afec3a93771811232d src/RackCad.UI/Editor/RackEditorSession.cs
+c5f95ddf96893507b4177620864ef5498fe7b542 src/RackCad.UI/Editor/EditorModules.cs
+f33ad6c0b3586af20125a4e43f1f4fa06c57c8cf src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs
+c8b3de14cf6c64983e2f0ea7909eba3c5bd13650 src/RackCad.Plugin/RackCantileverCommands.cs
+0eec97bf66abebdf14632844247c90fe807acd2c src/RackCad.Plugin/KindHandlers/CantileverKindHandler.cs
+d9efc74b9c8be48a2dc8bff86d2724a970498ebc src/RackCad.Plugin/RackEnvelopeRestamp.cs
+59e002d50ceea5ea91c52faff3bba27bf3667300 src/RackCad.Application/Systems/Cantilever/CantileverLineEditorAssembler.cs
+5ee4148b3404a78d7c6596d9bcc2cdd31213d232 src/RackCad.Application/Systems/Shared/RackResolveContract.cs
+85b4a1274211a5f6108d8b71cc14ed88c47d82a2 src/RackCad.Application/Systems/Shared/RackViewPreparation.cs
+a7e99aa84bb1c7ea73ac77f4510a8359573af58a docs/automation/decisions/I-37.md
+I-55 read-only SHA 08e45e0a2521a2e7feb4cf7c8d3fc7fc574aa74d
+42334b7c2ba35524806d6763d28797209d9ccc6a src/RackCad.Plugin/Views/RackSiblingScan.cs
+f830c221ad8156c3f06a50bf27e179984e3f1ca9 src/RackCad.Application/Views/Redraw/RackSiblingMembership.cs
+c5c86c96c1070ad7874e07ed1a04b683b67ccb54 src/RackCad.Application/Views/Preparation/RackProductPrepare.cs
