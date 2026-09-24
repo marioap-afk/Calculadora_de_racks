@@ -57,7 +57,11 @@ namespace RackCad.UI.Tests
             // I-54 G7 (Proposal V5 D-18.4): el editor de propiedades personalizadas de RACKPROPIEDADES, para un rack o
             // para el Proyecto. Es C por lo mismo que la de variables: presenta un workspace, devuelve UNA operacion
             // por id o una unificacion confirmada y cierra; no corre sesion de rack, no tiene preview y no escribe.
-            "RackCustomPropertiesWindow"
+            "RackCustomPropertiesWindow",
+
+            // I-55 G12: transaccion de seleccion pura. Ordena una cola tipada y devuelve aceptar/cancelar;
+            // no abre una sesion de rack ni prepara o dibuja geometria.
+            "RackViewBatchDialog"
         };
 
         /// <summary>D — utility window: navigation, consultation, help, lists or BOM, with no transactional editing
@@ -173,9 +177,9 @@ namespace RackCad.UI.Tests
 
             Assert.Equal(6, RichEditors.Length);
             Assert.Equal(6, BoundedEditors.Length);
-            Assert.Equal(12, ConfigurationDialogs.Length);
+            Assert.Equal(13, ConfigurationDialogs.Length);
             Assert.Equal(6, Utilities.Length);
-            Assert.Equal(30, product.Count);
+            Assert.Equal(31, product.Count);
             Assert.Equal(product.Count, ConcreteWindows().Count);
         }
 

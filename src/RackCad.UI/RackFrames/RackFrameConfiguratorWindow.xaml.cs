@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -47,6 +48,8 @@ namespace RackCad.UI.RackFrames
 
         /// <summary>The typed first-view address accepted by the product policy.</summary>
         public RackViewAddress? InsertAddress { get; private set; }
+        public IReadOnlyList<RackViewAddress> InsertViews { get; private set; } = System.Array.Empty<RackViewAddress>();
+        private IReadOnlyList<RackViewAddress> pendingBatchViews;
 
         /// <summary>One identity minted for the accepted creation, independent of its first view.</summary>
         public string RackId => insertionIdentity.Id;
@@ -276,6 +279,19 @@ namespace RackCad.UI.RackFrames
         private void InsertPlanta_Click(object sender, RoutedEventArgs e)
             => RequestDraw("planta", updateOnly: false);
 
+        private void InsertBatch_Click(object sender, RoutedEventArgs e)
+        {
+            var options = new[]
+            {
+                new Views.RackViewBatchOption("Lateral", RackViewAddress.Whole(DimensionViewKind.Lateral)),
+                new Views.RackViewBatchOption("Planta", RackViewAddress.Whole(DimensionViewKind.Planta))
+            };
+            if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.Selective, options, out var views)) return;
+            pendingBatchViews = views;
+            var syntax = RackViewCodec.Encode(RackSystemKind.Selective, views[0]);
+            RequestDraw(syntax.View, updateOnly: false);
+        }
+
         /// <summary>
         /// Close asking AutoCAD to draw. <paramref name="updateOnly"/> = redraw existing views only (Actualizar);
         /// otherwise insert a new linked view-block of <paramref name="view"/> AND refresh the existing ones.
@@ -344,6 +360,9 @@ namespace RackCad.UI.RackFrames
             UpdateOnly = updateOnly;
             InsertView = updateOnly ? null : view;
             InsertAddress = address;
+            InsertViews = updateOnly
+                ? System.Array.Empty<RackViewAddress>()
+                : pendingBatchViews ?? new[] { address.Value };
             if (!updateOnly)
             {
                 insertionIdentity.EnsureId();

@@ -233,14 +233,16 @@ namespace RackCad.Plugin
             var id = string.IsNullOrWhiteSpace(embed.Id) ? window.RackId : embed.Id;
             var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            RackAuthorizedSiblingBatch authorized = null;
 
             if (!window.UpdateOnly)
             {
-                RackUnsupportedSiblingInsert.Reject(document, blockId, embed, id);
-                return;
+                if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out authorized)) return;
             }
 
-            var blocks = RackCommandSupport.FindRackBlocks(document, id);
+            var blocks = !window.UpdateOnly
+                ? new List<(ObjectId BlockId, RackEmbedDocument Embed)>(authorized.Blocks)
+                : RackCommandSupport.FindRackBlocks(document, id);
 
             if (blocks.Count == 0)
             {
@@ -289,6 +291,23 @@ namespace RackCad.Plugin
             if (!window.UpdateOnly)
             {
                 RackUnitsGuard.WarnIfNotInches(document);
+            }
+
+            RackViewBatchProductSession<CantileverLineDesign, CantileverLineAssembly, CantileverViewPlan> batchProducts = null;
+            RackCad.Application.Views.Batch.RackViewBatchRequest batchRequest = null;
+            if (!window.UpdateOnly)
+            {
+                batchProducts = RackViewBatchProducts.Cantilever(
+                    document, line, design, factory, id, name, embed, project, authorized.AuthoredInput);
+                batchRequest = RackViewBatchProductSession<CantileverLineDesign, CantileverLineAssembly,
+                    CantileverViewPlan>.Request(
+                        RackCad.Application.Views.Preparation.RackProductSourceKind.ExistingRack,
+                        RackSystemKind.Cantilever, id, window.InsertionRequest.Views);
+                if (!batchProducts.PrepareAll(batchRequest, out var batchDiagnostic))
+                {
+                    editor.WriteMessage("\nRackCad: no se preparo la cola ID18; no se modifico ningun bloque. " + batchDiagnostic);
+                    return;
+                }
             }
 
             // --- Multiview redraw. The line is NEVER recomputed here; only projected, once per view. ---
@@ -376,11 +395,8 @@ namespace RackCad.Plugin
 
             if (!window.UpdateOnly)
             {
-                // The NEW view inherits the picked envelope AND the inner wrapper (I-11): same GUID, current name,
-                // unknown envelope metadata + unknown/non-degraded inner-project version.
-                DrawCantileverView(
-                    window.InsertView, window.InsertSection, line, design, id, name,
-                    source: embed, innerSource: project);
+                RackViewBatchExecution.Run(document, batchProducts, batchRequest,
+                    _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
                 return;
             }
 
@@ -558,7 +574,7 @@ namespace RackCad.Plugin
         /// policy. A Cantilever view is projected from real section geometry, so an invalid catalogue means there
         /// is nothing trustworthy to draw.
         /// </summary>
-        private static bool TryGeometryFactory(Editor editor, out StructuralSectionGeometryFactory factory)
+        internal static bool TryGeometryFactory(Editor editor, out StructuralSectionGeometryFactory factory)
         {
             factory = null;
 

@@ -13,6 +13,7 @@ namespace RackCad.Application.Views.Placement
         Placed,
         PlacedWithReport,
         Cancelled,
+        Stopped,
         DefinitionFailed,
         PlacementFailed,
         CleanupFailed
@@ -110,20 +111,23 @@ namespace RackCad.Application.Views.Placement
 
     public readonly struct RackSingleViewReference<TReference>
     {
-        private RackSingleViewReference(bool placed, bool cancelled, TReference handle, string diagnostic)
+        private RackSingleViewReference(bool placed, bool cancelled, bool stopped, TReference handle, string diagnostic)
         {
             IsPlaced = placed;
             IsCancelled = cancelled;
+            IsStopped = stopped;
             Handle = handle;
             Diagnostic = diagnostic;
         }
         public bool IsPlaced { get; }
         public bool IsCancelled { get; }
+        public bool IsStopped { get; }
         public TReference Handle { get; }
         public string Diagnostic { get; }
-        public static RackSingleViewReference<TReference> Placed(TReference handle) => new RackSingleViewReference<TReference>(true, false, handle, null);
-        public static RackSingleViewReference<TReference> Cancelled() => new RackSingleViewReference<TReference>(false, true, default, null);
-        public static RackSingleViewReference<TReference> Failed(string diagnostic) => new RackSingleViewReference<TReference>(false, false, default, diagnostic);
+        public static RackSingleViewReference<TReference> Placed(TReference handle) => new RackSingleViewReference<TReference>(true, false, false, handle, null);
+        public static RackSingleViewReference<TReference> Cancelled() => new RackSingleViewReference<TReference>(false, true, false, default, null);
+        public static RackSingleViewReference<TReference> Stopped() => new RackSingleViewReference<TReference>(false, false, true, default, null);
+        public static RackSingleViewReference<TReference> Failed(string diagnostic) => new RackSingleViewReference<TReference>(false, false, false, default, diagnostic);
     }
 
     public readonly struct RackSingleViewCleanupResult
@@ -221,7 +225,9 @@ namespace RackCad.Application.Views.Placement
             {
                 var status = placed.IsCancelled
                     ? RackSingleViewPlacementStatus.Cancelled
-                    : RackSingleViewPlacementStatus.PlacementFailed;
+                    : placed.IsStopped
+                        ? RackSingleViewPlacementStatus.Stopped
+                        : RackSingleViewPlacementStatus.PlacementFailed;
                 return AfterFailedPlacement(materializer, definition, report, placed.Diagnostic, status);
             }
 

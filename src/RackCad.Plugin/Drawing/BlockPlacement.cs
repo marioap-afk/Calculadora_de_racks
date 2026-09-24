@@ -23,6 +23,17 @@ namespace RackCad.Plugin.Drawing
     /// </summary>
     internal static class BlockPlacement
     {
+        internal readonly struct JigPlacementResult
+        {
+            internal JigPlacementResult(PromptStatus status, ObjectId referenceId)
+            {
+                Status = status;
+                ReferenceId = referenceId;
+            }
+
+            internal PromptStatus Status { get; }
+            internal ObjectId ReferenceId { get; }
+        }
         /// <summary>Jig-place an already-created block and report the outcome (missing blocks by display name).</summary>
         internal static HeaderPlacementResult PlaceAndReport(Document document, RackCatalog catalog, LateralHeaderBlockResult block)
         {
@@ -89,6 +100,11 @@ namespace RackCad.Plugin.Drawing
         /// <summary>Jig only. G8 owns cancellation/exception cleanup so it can return a structured outcome.</summary>
         internal static ObjectId PlaceDefinitionWithoutCleanup(Document document, ObjectId definitionId, string prompt = null)
             => PlaceBlockWithJig(document, definitionId, prompt);
+
+        /// <summary>ID18 placement seam that preserves OK, Cancel, None and Error instead of collapsing them to a null id.</summary>
+        internal static JigPlacementResult PlaceDefinitionWithStatus(
+            Document document, ObjectId definitionId, string prompt = null)
+            => PlaceBlockWithJigStatus(document, definitionId, prompt, null);
 
         /// <summary>Mode-2 placement: prepared sibling writes share the first jig transaction after OK.</summary>
         internal static ObjectId PlaceDefinitionWithoutCleanup(
@@ -206,6 +222,15 @@ namespace RackCad.Plugin.Drawing
             string prompt = null,
             Action<Transaction> beforeCommit = null)
         {
+            return PlaceBlockWithJigStatus(document, blockDefinitionId, prompt, beforeCommit).ReferenceId;
+        }
+
+        private static JigPlacementResult PlaceBlockWithJigStatus(
+            Document document,
+            ObjectId blockDefinitionId,
+            string prompt,
+            Action<Transaction> beforeCommit)
+        {
             var database = document.Database;
             var editor = document.Editor;
 
@@ -220,7 +245,7 @@ namespace RackCad.Plugin.Drawing
                 {
                     reference.Dispose();
                     transaction.Commit(); // nothing added; the block definition remains for later reuse
-                    return ObjectId.Null;
+                    return new JigPlacementResult(result.Status, ObjectId.Null);
                 }
 
                 beforeCommit?.Invoke(transaction);
@@ -231,7 +256,7 @@ namespace RackCad.Plugin.Drawing
                 transaction.AddNewlyCreatedDBObject(reference, true);
                 var placedId = reference.ObjectId;
                 transaction.Commit();
-                return placedId;
+                return new JigPlacementResult(PromptStatus.OK, placedId);
             }
         }
 
