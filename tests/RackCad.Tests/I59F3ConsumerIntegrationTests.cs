@@ -68,7 +68,7 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void F3_V2_BRIDGE_QUERIES_ONE_IO_KEY_AND_REATTACHES_MULTIPLE_IDENTITIES()
+        public void F3_V2_INDEPENDENT_LIBRARY_QUERY_USES_ONE_IO_KEY_AND_REATTACHES_MULTIPLE_IDENTITIES()
         {
             var events = new List<string>();
             var requirements = new[]
@@ -76,12 +76,11 @@ namespace RackCad.Tests
                 new LibraryPieceRequirement("piece-a", RackViewAddress.Fondo(0), RequirementRole.Required, "SAME"),
                 new LibraryPieceRequirement("piece-b", RackViewAddress.Fondo(1), RequirementRole.OptionalVisual, "same"),
             };
-            var bridge = CreateBridge(
-                new SequencedV1Query(events, LibraryBlockAvailability.Found),
-                LibraryAvailability.Ok);
+            var libraryQuery = new IndependentLibraryQuery(
+                events, LibraryAvailability.Ok, LibraryBlockPresence.Present);
 
             var result = LibraryPieceAvailabilityFlowV2.Observe(
-                requirements, false, bridge, new RecordingImporter(events));
+                requirements, false, libraryQuery, new RecordingImporter(events));
 
             Assert.Equal(new[] { "query:SAME" }, events);
             Assert.Equal(new[] { "piece-a", "piece-b" },
@@ -94,18 +93,11 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void F3_V2_BRIDGE_REQUIRES_EXPLICIT_LIBRARY_EVIDENCE_BEFORE_DECLARING_BLOCK_MISSING()
+        public void F3_V1_DRAWING_QUERY_IS_NOT_EXPOSED_AS_A_V2_EXTERNAL_LIBRARY_OBSERVER()
         {
-            var requirement = new[] { new LibraryBlockRequirement("BLOCK-A") };
-            var missing = new SequencedV1Query(new List<string>(), LibraryBlockAvailability.Missing);
-
-            var knownLibrary = CreateBridge(missing, LibraryAvailability.Ok).Query(requirement);
-            var unknownLibrary = CreateBridge(missing, LibraryAvailability.Unknown).Query(requirement);
-            var missingLibrary = CreateBridge(missing, LibraryAvailability.FileMissing).Query(requirement);
-
-            Assert.Equal(LibraryBlockPresence.BlockMissing, Assert.Single(knownLibrary).BlockPresence);
-            Assert.Equal(LibraryBlockPresence.Unknown, Assert.Single(unknownLibrary).BlockPresence);
-            Assert.Equal(LibraryBlockPresence.Unknown, Assert.Single(missingLibrary).BlockPresence);
+            Assert.Null(typeof(LibraryPieceRequirement).Assembly.GetType(
+                "RackCad.Application.Systems.Shared.LibraryPieceAvailabilityQueryV1Adapter",
+                throwOnError: false));
         }
 
         [Fact]
@@ -148,18 +140,6 @@ namespace RackCad.Tests
             Assert.DoesNotContain("RackTransformFacts", source);
             Assert.DoesNotContain("Accepted", source);
             Assert.DoesNotContain("Remedy", source);
-        }
-
-        private static ILibraryPieceAvailabilityQuery CreateBridge(
-            ILibraryBlockQuery query,
-            LibraryAvailability libraryAvailability)
-        {
-            var type = typeof(LibraryPieceRequirement).Assembly.GetType(
-                "RackCad.Application.Systems.Shared.LibraryPieceAvailabilityQueryV1Adapter",
-                throwOnError: false);
-            Assert.NotNull(type);
-            var instance = Activator.CreateInstance(type, query, libraryAvailability);
-            return Assert.IsAssignableFrom<ILibraryPieceAvailabilityQuery>(instance);
         }
 
         private static HeaderRunPlan Plan(params HeaderBlockInstance[] pieces)
@@ -217,6 +197,32 @@ namespace RackCad.Tests
                 events.Add("query:" + string.Join(",", requirements.Select(item => item.Key)));
                 return requirements
                     .Select(item => new LibraryBlockAvailabilityFact(item, availability))
+                    .ToArray();
+            }
+        }
+
+        private sealed class IndependentLibraryQuery : ILibraryPieceAvailabilityQuery
+        {
+            private readonly List<string> events;
+            private readonly LibraryAvailability availability;
+            private readonly LibraryBlockPresence presence;
+
+            public IndependentLibraryQuery(
+                List<string> events,
+                LibraryAvailability availability,
+                LibraryBlockPresence presence)
+            {
+                this.events = events;
+                this.availability = availability;
+                this.presence = presence;
+            }
+
+            public IReadOnlyList<LibraryKeyAvailabilityObservation> Query(
+                IReadOnlyList<LibraryBlockRequirement> requirements)
+            {
+                events.Add("query:" + string.Join(",", requirements.Select(item => item.Key)));
+                return requirements
+                    .Select(item => new LibraryKeyAvailabilityObservation(item.Key, availability, presence))
                     .ToArray();
             }
         }
