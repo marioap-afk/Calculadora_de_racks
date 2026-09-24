@@ -1,6 +1,6 @@
 # I-59 — Shared View Foundation Placement & Block Requirement Facts
 
-Status: F2 COMPLETE / COORDINATOR ACCEPTED; F3 COMPLETE / COORDINATOR ACCEPTED; F4 COMPLETE / PENDING COORDINATOR FINAL ACCEPTANCE; READY NOT OPEN
+Status: F2 COMPLETE / COORDINATOR ACCEPTED; F3 COMPLETE / COORDINATOR ACCEPTED; F4 COMPLETE / COORDINATOR ACCEPTED; READY-01..05 COMPLETE; READY-06 NOT STARTED
 
 Workflow: V2
 
@@ -107,9 +107,9 @@ Implementation authorization requires, on the same Freeze:
 - Coordinator = AGREED
 - Architect = AGREED
 
-Both agreements exist on the validated Consensus Freeze V3. Implementation authorization is active
-only for gates explicitly opened by the Coordinator; F2 and F3 were accepted, F4 is complete pending
-Coordinator review and READY remains closed.
+Both agreements exist on the validated Consensus Freeze V3. Implementation authorization was active
+only for gates explicitly opened by the Coordinator; F2, F3 and F4 are accepted. READY is open,
+READY-01..05 are complete and READY-06 has not started.
 
 ## Functional gates
 
@@ -142,6 +142,7 @@ I-55 then reconciles against new main and resumes G14 without cherry-pick.
 - CT59-17 FOUNDATIONS draft: [FOUNDATIONS-auth08-auth12-draft.md](../automation/evidence/I-59-f4/FOUNDATIONS-auth08-auth12-draft.md)
 - A-1 Owner Validation assignment: [I-59-A-1.md](I-59-A-1.md)
 - CR59-F4-01 complementary evidence: [I-59-cr59-f4-01-amendment.md](../automation/evidence/I-59-f4/I-59-cr59-f4-01-amendment.md)
+- READY-01..05 review package: [I-59-ready-01-05-review-package.md](../automation/evidence/I-59-ready/I-59-ready-01-05-review-package.md)
 
 ```text
 F1 RED = ESTABLISHED
@@ -163,8 +164,16 @@ OWNER VALIDATION = REQUIRED / FUTURE CANDIDATE
 CR59-F4-01 = RESOLVED
 amendment_refs = A-1
 A-n = A-1
-F4 = COMPLETE / PENDING COORDINATOR FINAL ACCEPTANCE
-READY = NOT OPEN
+F4 = COMPLETE / COORDINATOR ACCEPTED
+READY-01 = PASS
+READY-02 = PASS
+READY-03 = PASS
+READY-04 = PASS / REBASE NONE
+READY_PRODUCT_SHA = d905572e9d3faf7bedcb6c22abe51c36da6e11eb
+CT59-17 CANDIDATE-PREPARATION RE-VERIFICATION = PASS
+READY-05 = PASS
+READY-06 = NOT STARTED
 FINAL_CANDIDATE_SHA = DOES NOT EXIST
-IMPLEMENTATION AUTHORIZATION = NO / READY NOT AUTHORIZED
+OWNER VALIDATION = REQUIRED / NOT EXECUTED
+IMPLEMENTATION AUTHORIZATION = NO / READY-06 NOT STARTED
 ```
