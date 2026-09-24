@@ -1,6 +1,6 @@
 # I-59 — Shared View Foundation Placement & Block Requirement Facts
 
-Status: F2 COMPLETE / COORDINATOR ACCEPTED; F3 COMPLETE / COORDINATOR ACCEPTED; F4 COMPLETE / PENDING COORDINATOR REVIEW; READY NOT OPEN
+Status: F2 COMPLETE / COORDINATOR ACCEPTED; F3 COMPLETE / COORDINATOR ACCEPTED; F4 COMPLETE / PENDING COORDINATOR FINAL ACCEPTANCE; READY NOT OPEN
 
 Workflow: V2
 
@@ -13,6 +13,10 @@ BASE_SHA: `c75e7434a909d396c05e55c39a140ba53be9e98c`
 CLAIM_SHA: `ec6ccc459532c71e0ed85e0b410f6a0c6ab7f25f`
 
 Claim-Id: `9d3b2b65-7d0b-4db0-9233-0b6d63f3d63a`
+
+amendment_refs: [A-1](I-59-A-1.md)
+
+A-n: A-1
 
 Trigger: I-55 G14 / ID19 Multi-Rack Projection.
 
@@ -136,6 +140,8 @@ I-55 then reconciles against new main and resumes G14 without cherry-pick.
 - F4 conformance package: [I-59-f4-conformance-package.md](../automation/evidence/I-59-f4/I-59-f4-conformance-package.md)
 - F4 closure evidence: [I-59-f4-closure.md](../automation/evidence/I-59-f4/I-59-f4-closure.md)
 - CT59-17 FOUNDATIONS draft: [FOUNDATIONS-auth08-auth12-draft.md](../automation/evidence/I-59-f4/FOUNDATIONS-auth08-auth12-draft.md)
+- A-1 Owner Validation assignment: [I-59-A-1.md](I-59-A-1.md)
+- CR59-F4-01 complementary evidence: [I-59-cr59-f4-01-amendment.md](../automation/evidence/I-59-f4/I-59-cr59-f4-01-amendment.md)
 
 ```text
 F1 RED = ESTABLISHED
@@ -154,7 +160,10 @@ CT59-17 = PASS / CANDIDATE RE-VERIFICATION REQUIRED
 I-55 G14 FOUNDATION READINESS = READY TO CONSUME AFTER I-59 INTEGRATION
 I-55 G14 = NOT UNBLOCKED
 OWNER VALIDATION = REQUIRED / FUTURE CANDIDATE
-F4 = COMPLETE / PENDING COORDINATOR REVIEW
+CR59-F4-01 = RESOLVED
+amendment_refs = A-1
+A-n = A-1
+F4 = COMPLETE / PENDING COORDINATOR FINAL ACCEPTANCE
 READY = NOT OPEN
 FINAL_CANDIDATE_SHA = DOES NOT EXIST
 IMPLEMENTATION AUTHORIZATION = NO / READY NOT AUTHORIZED
