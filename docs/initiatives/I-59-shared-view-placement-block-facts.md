@@ -1,6 +1,6 @@
 # I-59 — Shared View Foundation Placement & Block Requirement Facts
 
-Status: D/F0 — F1 CLOSED / ACCEPTED; Proposal V3 published; Coordinator review and Architect re-review pending
+Status: D/F0 — F1 CLOSED / ACCEPTED; Consensus V3 reached; Freeze materialization pending
 
 Workflow: V2
 
@@ -134,12 +134,12 @@ I-55 then reconciles against new main and resumes G14 without cherry-pick.
 ```text
 F1 RED = ESTABLISHED
 F1 CLOSURE = ACCEPTED
-Proposal V3 = PUBLISHED / PENDING COORDINATOR REVIEW
-AR59-V2-24 = OPEN UNTIL ARCHITECT RE-REVIEW
-AR59-V2-25 = OPEN UNTIL ARCHITECT RE-REVIEW
-Freeze = DRAFT / NOT FROZEN
-Architect V2 = CHANGES REQUIRED / RE-REVIEW PENDING
-Coordinator = PENDING V3 REVIEW
+Proposal V3 = AGREED / FREEZE MATERIALIZATION PENDING
+AR59-V2-24 = RESOLVED
+AR59-V2-25 = RESOLVED
+Freeze = DRAFT / MATERIALIZATION PENDING
+Architect = AGREED
+Coordinator = AGREED
 F2 = NOT OPEN
 IMPLEMENTATION AUTHORIZATION = NO
 ```

@@ -209,3 +209,42 @@ reflection XY: primero clasificar signos por eje y, para inputs no degenerados, 
 los signos X/Y son opuestos, sin aplicar una segunda tolerancia al producto. OPTIONAL-01 corrige que
 los carriers 3D no rechazan por constructor valores no finitos. OPTIONAL-02 mantiene el contrato mutable
 en su superficie de estado, enlaces y coordinacion.
+
+## Consensus V3 — Architect re-review y Coordinator
+
+La re-review Architect V3 y el acuerdo Coordinator recaen sobre la misma identidad exacta:
+
+```text
+Reviewed Proposal commit = fae4a9cf3099b49f88d5f15230cc5eff453f390b
+Reviewed Proposal path   = docs/initiatives/I-59-proposal-v3.md
+Reviewed Proposal blob   = 5020deb749cfb46df449734d38a519b76a18e6a3
+Review-package tip       = 125265de303c23d6770483e915fff954b55d5833
+
+Role                     = SEPARATE SESSION
+Reviewer and author same person = YES
+GLOBAL VERDICT           = AGREED
+
+AR59-V2-24               = RESOLVED
+AR59-V2-25               = RESOLVED
+CR59-V1-01               = RESOLVED
+CR59-V1-02               = RESOLVED
+CR59-V1-03               = RESOLVED
+OPTIONAL-01              = INCORPORATED
+OPTIONAL-02              = INCORPORATED
+
+Discovery/EXP/M          = ACCEPTABLE
+AUTH-08                  = ACCEPTABLE
+AUTH-12                  = ACCEPTABLE
+Compatibility            = ACCEPTABLE
+Invariants/gates/OV      = ACCEPTABLE
+
+REQUIRED FINDINGS        = NONE
+OPTIONAL FINDINGS        = NONE
+Omitted Discovery expansion = NONE
+Owner decision required  = NO
+Architect                = AGREED
+Coordinator              = AGREED
+```
+
+El consenso autoriza exclusivamente materializar como Freeze la Proposal V3 identificada. No abre F2,
+no autoriza implementacion y no altera el cierre F1 aceptado.
