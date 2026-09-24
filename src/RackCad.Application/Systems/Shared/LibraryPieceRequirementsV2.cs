@@ -12,73 +12,73 @@ namespace RackCad.Application.Systems.Shared
         NotApplicable
     }
 
-    public enum HeaderBlockRequirementClassificationOutcome
+    public enum RackHeaderBlockRequirementClassificationOutcome
     {
         Classified,
         UnknownSourceRole
     }
 
-    public readonly struct HeaderBlockRequirementRoleResult
+    public readonly struct RackHeaderBlockRequirementRoleResult
     {
-        private HeaderBlockRequirementRoleResult(
-            HeaderBlockRequirementClassificationOutcome outcome,
+        private RackHeaderBlockRequirementRoleResult(
+            RackHeaderBlockRequirementClassificationOutcome outcome,
             RequirementRole role)
         {
             Outcome = outcome;
             Role = role;
         }
 
-        public HeaderBlockRequirementClassificationOutcome Outcome { get; }
-        public bool HasRole => Outcome == HeaderBlockRequirementClassificationOutcome.Classified;
+        public RackHeaderBlockRequirementClassificationOutcome Outcome { get; }
+        public bool HasRole => Outcome == RackHeaderBlockRequirementClassificationOutcome.Classified;
         public RequirementRole Role { get; }
 
-        internal static HeaderBlockRequirementRoleResult Classified(RequirementRole role)
-            => new HeaderBlockRequirementRoleResult(HeaderBlockRequirementClassificationOutcome.Classified, role);
+        internal static RackHeaderBlockRequirementRoleResult Classified(RequirementRole role)
+            => new RackHeaderBlockRequirementRoleResult(RackHeaderBlockRequirementClassificationOutcome.Classified, role);
 
-        internal static HeaderBlockRequirementRoleResult Unknown()
-            => new HeaderBlockRequirementRoleResult(HeaderBlockRequirementClassificationOutcome.UnknownSourceRole, default);
+        internal static RackHeaderBlockRequirementRoleResult Unknown()
+            => new RackHeaderBlockRequirementRoleResult(RackHeaderBlockRequirementClassificationOutcome.UnknownSourceRole, default);
     }
 
-    public static class HeaderBlockRequirementRoleClassifier
+    public static class RackHeaderBlockRequirementRoleClassifier
     {
-        public static HeaderBlockRequirementRoleResult Classify(HeaderBlockRole source)
+        public static RackHeaderBlockRequirementRoleResult Classify(HeaderBlockRole source)
         {
             switch (source)
             {
                 case HeaderBlockRole.BasePlate:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Post:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Horizontal:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Diagonal:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.ClosingHorizontal:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Separator:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Rail:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Roller:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Brake:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Stop:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Beam:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Annotation:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.NotApplicable);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.NotApplicable);
                 case HeaderBlockRole.Dimension:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.NotApplicable);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.NotApplicable);
                 case HeaderBlockRole.Safety:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Tope:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.Required);
                 case HeaderBlockRole.Pallet:
-                    return HeaderBlockRequirementRoleResult.Classified(RequirementRole.OptionalVisual);
+                    return RackHeaderBlockRequirementRoleResult.Classified(RequirementRole.OptionalVisual);
                 default:
-                    return HeaderBlockRequirementRoleResult.Unknown();
+                    return RackHeaderBlockRequirementRoleResult.Unknown();
             }
         }
     }
@@ -148,11 +148,11 @@ namespace RackCad.Application.Systems.Shared
     }
 
     /// <summary>V2 extraction preserves every header piece and receives view authority from preparation.</summary>
-    public sealed class HeaderPieceRequirementExtractorV2 : IRackPieceRequirementExtractor<HeaderRunPlan>
+    public sealed class RackHeaderPieceRequirementExtractorV2 : IRackPieceRequirementExtractor<HeaderRunPlan>
     {
-        public static HeaderPieceRequirementExtractorV2 Instance { get; } = new HeaderPieceRequirementExtractorV2();
+        public static RackHeaderPieceRequirementExtractorV2 Instance { get; } = new RackHeaderPieceRequirementExtractorV2();
 
-        private HeaderPieceRequirementExtractorV2()
+        private RackHeaderPieceRequirementExtractorV2()
         {
         }
 
@@ -169,7 +169,7 @@ namespace RackCad.Application.Systems.Shared
             var requirements = new List<LibraryPieceRequirement>();
             foreach (var instance in instances)
             {
-                var classification = HeaderBlockRequirementRoleClassifier.Classify(instance.Role);
+                var classification = RackHeaderBlockRequirementRoleClassifier.Classify(instance.Role);
                 if (!classification.HasRole)
                 {
                     return PieceRequirementExtractionResult.UnknownSourceRole();

@@ -208,7 +208,7 @@ namespace RackCad.Tests
         public void CT59_11_ALL_CURRENT_SOURCE_ROLES_HAVE_THE_FROZEN_TOTAL_MAPPING(
             HeaderBlockRole source, string expected)
         {
-            var result = Call(Shared + "HeaderBlockRequirementRoleClassifier", "Classify", source);
+            var result = Call(Shared + "RackHeaderBlockRequirementRoleClassifier", "Classify", source);
             Assert.Equal("Classified", Name(Property(result, "Outcome")));
             Assert.Equal(expected, Name(Property(result, "Role")));
         }
@@ -216,7 +216,7 @@ namespace RackCad.Tests
         [Fact]
         public void CT59_11_UNKNOWN_SOURCE_ROLE_FAILS_VISIBLY()
         {
-            var result = Call(Shared + "HeaderBlockRequirementRoleClassifier", "Classify", (HeaderBlockRole)999);
+            var result = Call(Shared + "RackHeaderBlockRequirementRoleClassifier", "Classify", (HeaderBlockRole)999);
             Assert.Equal("UnknownSourceRole", Name(Property(result, "Outcome")));
             Assert.False(Boolean(result, "HasRole"));
         }
@@ -247,7 +247,7 @@ namespace RackCad.Tests
                 (_, __) => Plan(Piece("piece", "KEY", HeaderBlockRole.Beam, "not-the-address")),
                 candidate => candidate.Kind == DimensionViewKind.Frontal,
                 RackBlockRequirementExtractors.HeaderRun);
-            var extractorType = RequireType(Shared + "HeaderPieceRequirementExtractorV2");
+            var extractorType = RequireType(Shared + "RackHeaderPieceRequirementExtractorV2");
             var extractor = extractorType.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)?.GetValue(null);
             Assert.NotNull(extractor);
             var method = adapter.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
@@ -366,7 +366,7 @@ namespace RackCad.Tests
         }
 
         private static object Extract(HeaderRunPlan plan, RackViewAddress address)
-            => Call(Shared + "HeaderPieceRequirementExtractorV2", "Extract", plan, address);
+            => Call(Shared + "RackHeaderPieceRequirementExtractorV2", "Extract", plan, address);
 
         private static HeaderRunPlan Plan(params HeaderBlockInstance[] pieces)
             => new HeaderRunPlan(Array.Empty<HeaderGroup>(), pieces);
