@@ -15,9 +15,17 @@ This package definition contains references and instructions only. It does not r
 
 ```powershell
 msbuild eng/research/I52Ctda/native/I52CtdaNative.vcxproj `
-  /m /p:Configuration=Release /p:Platform=x64 `
-  /p:ObjectArxSdkRoot=D:\Downloads\CDROM1 /v:minimal
+  /m /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143 `
+  /p:PreferredToolArchitecture=x64 `
+  /p:ObjectArxSdkRoot=D:\CDROM1 /v:minimal
 ```
+
+`PreferredToolArchitecture=x64` selects the `Hostx64\x64` compiler and linker; without it MSBuild may pick
+`HostX86\x64`. Pass the SDK root explicitly; the project default is only a fallback.
+
+The ObjectARX `inc` and `inc-x64` directories are external headers (`/external:W0`): SDK header warnings
+such as C4201 in `AcString.h` are not RackCad findings, while `/W4 /WX` still governs the helper sources.
+The fixture's `AcGeMatrix3d::translation` requires `acge25.lib` in addition to the four ObjectARX core libraries.
 
 Expected output: `eng/research/I52Ctda/native/bin/x64/Release/I52CtdaNative.arx`.
 

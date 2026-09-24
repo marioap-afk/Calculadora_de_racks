@@ -23,7 +23,7 @@ public static class ExactTupleCollector
             ["AcMgd"] = Describe(Path.Combine(acad, "AcMgd.dll")),
             ["objectArxSdk"] = "25.0.58.0/x64/v143",
             ["headers"] = new[] { "dbmain.h", "dbtrans.h", "dbObject.h", "aced.h", "acdocman.h", "rxdlinkr.h", "acedads.h", "rxregsvc.h" }.Select(x => Describe(Path.Combine(sdk, "inc", x))).ToArray(),
-            ["libraries"] = new[] { "rxapi.lib", "acad.lib", "accore.lib", "acdb25.lib" }.Select(x => Describe(Path.Combine(sdk, "lib-x64", x))).ToArray(),
+            ["libraries"] = new[] { "rxapi.lib", "acad.lib", "accore.lib", "acdb25.lib", "acge25.lib" }.Select(x => Describe(Path.Combine(sdk, "lib-x64", x))).ToArray(),
             ["nativeHelper"] = nativeHelper is null ? new FileIdentity("", "NATIVE_TOOLCHAIN_BLOCKED", null, null, null) : Describe(nativeHelper),
             ["npm"] = Describe(Path.Combine(repository, "docs/initiatives/I-52-native-probe-matrix-v34.md")),
             ["nec"] = Describe(Path.Combine(repository, "docs/initiatives/I-52-native-event-catalog-v34.md")),
