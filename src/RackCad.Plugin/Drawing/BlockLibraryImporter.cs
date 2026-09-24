@@ -92,8 +92,8 @@ namespace RackCad.Plugin.Drawing
 
             try
             {
-                // The parsed library DWG is cached across draws (see AcquireLibrary); we only clone out of it here.
-                var source = AcquireLibrary(path);
+                // The parsed library DWG is shared with the neutral external-library observer.
+                var source = BlockLibraryDatabaseCache.Acquire(path);
                 if (source == null)
                 {
                     return 0;
@@ -128,57 +128,6 @@ namespace RackCad.Plugin.Drawing
                 // Best-effort: a locked/invalid library must not abort the drawing; missing blocks are reported as before.
                 RackLog.Exception("Importar bloques de la biblioteca DWG", ex);
                 return 0;
-            }
-        }
-
-        // ---- Session cache of the parsed library DWG ----
-        // Reading blocks-library.dwg into a side Database (ReadDwgFile) is the dominant cost of an import, and drawing
-        // several racks — or a selective's many cortes — would otherwise re-parse the same unchanged file each time.
-        // Keep the parsed Database alive, keyed by the file's signature (path + last-write + size), and reuse it until
-        // the file is edited or the chosen library path changes; then drop the stale parse and read a fresh one.
-        // AutoCAD document operations are single-threaded, but the lock keeps the swap safe against any reentrancy.
-        private static readonly object CacheGate = new object();
-        private static string cachedPath;
-        private static DateTime cachedWriteUtc;
-        private static long cachedLength;
-        private static Database cachedLibrary;
-
-        private static Database AcquireLibrary(string path)
-        {
-            lock (CacheGate)
-            {
-                var info = new FileInfo(path);
-                var writeUtc = info.LastWriteTimeUtc;
-                var length = info.Length;
-
-                if (cachedLibrary != null
-                    && string.Equals(cachedPath, path, StringComparison.OrdinalIgnoreCase)
-                    && cachedWriteUtc == writeUtc
-                    && cachedLength == length)
-                {
-                    return cachedLibrary; // same file, unchanged — reuse the already-parsed database
-                }
-
-                var fresh = new Database(false, true);
-                try
-                {
-                    // OpenForReadAndAllShare so it works even if the library DWG is open in AutoCAD.
-                    fresh.ReadDwgFile(path, FileOpenMode.OpenForReadAndAllShare, allowCPConversion: true, password: null);
-                }
-                catch (Exception ex)
-                {
-                    // Best-effort: a locked/invalid library DWG must not abort the drawing (missing blocks reported).
-                    RackLog.Exception("Leer blocks-library.dwg (" + path + ")", ex);
-                    fresh.Dispose();
-                    return null;
-                }
-
-                cachedLibrary?.Dispose(); // the prior parse (if any) is stale now; the last clone out of it already finished
-                cachedLibrary = fresh;
-                cachedPath = path;
-                cachedWriteUtc = writeUtc;
-                cachedLength = length;
-                return cachedLibrary;
             }
         }
 

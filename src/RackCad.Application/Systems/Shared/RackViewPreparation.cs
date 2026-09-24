@@ -74,6 +74,63 @@ namespace RackCad.Application.Systems.Shared
             => new RackViewPreparationResult<TPayload>(false, null, failure, code, diagnostic);
     }
 
+    public enum RackViewPreparationV2Failure
+    {
+        None,
+        V1PreparationFailed,
+        UnknownSourceRole
+    }
+
+    public sealed class RackPreparedViewV2<TPayload>
+    {
+        internal RackPreparedViewV2(
+            RackPreparedView<TPayload> prepared,
+            System.Collections.Generic.IReadOnlyList<LibraryPieceRequirement> pieceRequirements)
+        {
+            PreparedV1 = prepared;
+            PieceRequirements = pieceRequirements;
+        }
+
+        public RackPreparedView<TPayload> PreparedV1 { get; }
+        public string Kind => PreparedV1.Kind;
+        public RackViewAddress Address => PreparedV1.Address;
+        public RackViewFrame Frame => PreparedV1.Frame;
+        public string BaseName => PreparedV1.BaseName;
+        public System.Collections.Generic.IReadOnlyList<LibraryBlockRequirement> BlockRequirements =>
+            PreparedV1.BlockRequirements;
+        public System.Collections.Generic.IReadOnlyList<LibraryPieceRequirement> PieceRequirements { get; }
+        public TPayload Payload => PreparedV1.Payload;
+    }
+
+    public readonly struct RackViewPreparationV2Result<TPayload>
+    {
+        private RackViewPreparationV2Result(
+            bool isSuccess,
+            RackPreparedViewV2<TPayload> prepared,
+            RackViewPreparationV2Failure failure,
+            RackViewPreparationFailure v1Failure)
+        {
+            IsSuccess = isSuccess;
+            Prepared = prepared;
+            Failure = failure;
+            V1Failure = v1Failure;
+        }
+
+        public bool IsSuccess { get; }
+        public RackPreparedViewV2<TPayload> Prepared { get; }
+        public RackViewPreparationV2Failure Failure { get; }
+        public RackViewPreparationFailure V1Failure { get; }
+
+        internal static RackViewPreparationV2Result<TPayload> Success(RackPreparedViewV2<TPayload> prepared)
+            => new RackViewPreparationV2Result<TPayload>(true, prepared, RackViewPreparationV2Failure.None, default);
+
+        internal static RackViewPreparationV2Result<TPayload> FailedV1(RackViewPreparationFailure failure)
+            => new RackViewPreparationV2Result<TPayload>(false, null, RackViewPreparationV2Failure.V1PreparationFailed, failure);
+
+        internal static RackViewPreparationV2Result<TPayload> UnknownSourceRole()
+            => new RackViewPreparationV2Result<TPayload>(false, null, RackViewPreparationV2Failure.UnknownSourceRole, default);
+    }
+
     public interface IRackViewPreparationPort<in TResolved, TPayload>
     {
         string Kind { get; }
@@ -163,6 +220,35 @@ namespace RackCad.Application.Systems.Shared
                     "BUILDER_FAILED",
                     ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Additive V2 preparation. The typed address already validated by V1 is passed directly to the
+        /// per-instance extractor; names, payload strings and UI indices never become view authority.
+        /// </summary>
+        public RackViewPreparationV2Result<TPayload> PrepareV2(
+            TResolved resolved,
+            RackViewAddress address,
+            RackViewFrameResult frame,
+            string baseName,
+            IRackPieceRequirementExtractor<TPayload> pieceRequirements)
+        {
+            if (pieceRequirements == null) throw new ArgumentNullException(nameof(pieceRequirements));
+
+            var prepared = Prepare(resolved, address, frame, baseName);
+            if (!prepared.IsSuccess)
+            {
+                return RackViewPreparationV2Result<TPayload>.FailedV1(prepared.Failure);
+            }
+
+            var extraction = pieceRequirements.Extract(prepared.Prepared.Payload, prepared.Prepared.Address);
+            if (!extraction.IsSuccess)
+            {
+                return RackViewPreparationV2Result<TPayload>.UnknownSourceRole();
+            }
+
+            return RackViewPreparationV2Result<TPayload>.Success(
+                new RackPreparedViewV2<TPayload>(prepared.Prepared, extraction.Requirements));
         }
     }
 
