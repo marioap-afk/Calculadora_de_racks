@@ -255,64 +255,49 @@ namespace RackCad.Application.Systems.Shared
             IReadOnlyList<LibraryBlockRequirement> requirements);
     }
 
-    /// <summary>
-    /// Bridges the existing observational query into V2 without turning drawing presence into evidence about
-    /// the external library. The caller supplies the independently observed library state.
-    /// </summary>
-    public sealed class LibraryPieceAvailabilityQueryV1Adapter : ILibraryPieceAvailabilityQuery
+    public enum ExternalLibraryBlockObservation
     {
-        private readonly ILibraryBlockQuery query;
-        private readonly LibraryAvailability libraryAvailability;
+        NotObserved,
+        Present,
+        Missing
+    }
 
-        public LibraryPieceAvailabilityQueryV1Adapter(
-            ILibraryBlockQuery query,
-            LibraryAvailability libraryAvailability)
+    /// <summary>
+    /// Builds neutral external-library facts only from an independent observation of that library. Drawing
+    /// presence is deliberately not an input and therefore cannot be mistaken for library evidence.
+    /// </summary>
+    public static class ExternalLibraryAvailabilityFacts
+    {
+        public static LibraryKeyAvailabilityObservation Observe(
+            string key,
+            LibraryAvailability libraryAvailability,
+            ExternalLibraryBlockObservation blockObservation)
         {
-            this.query = query ?? throw new ArgumentNullException(nameof(query));
             if (!Enum.IsDefined(typeof(LibraryAvailability), libraryAvailability))
             {
                 throw new ArgumentOutOfRangeException(nameof(libraryAvailability));
             }
 
-            this.libraryAvailability = libraryAvailability;
-        }
-
-        public IReadOnlyList<LibraryKeyAvailabilityObservation> Query(
-            IReadOnlyList<LibraryBlockRequirement> requirements)
-        {
-            if (requirements == null) throw new ArgumentNullException(nameof(requirements));
-
-            var facts = query.Query(requirements) ?? Array.Empty<LibraryBlockAvailabilityFact>();
-            var observations = new List<LibraryKeyAvailabilityObservation>(facts.Count);
-            foreach (var fact in facts)
+            if (!Enum.IsDefined(typeof(ExternalLibraryBlockObservation), blockObservation))
             {
-                if (fact.Requirement == null)
-                {
-                    throw new InvalidOperationException("The V1 query returned a fact without a requirement.");
-                }
-
-                switch (fact.Availability)
-                {
-                    case LibraryBlockAvailability.Found:
-                        observations.Add(new LibraryKeyAvailabilityObservation(
-                            fact.Requirement.Key,
-                            libraryAvailability,
-                            LibraryBlockPresence.Present));
-                        break;
-                    case LibraryBlockAvailability.Missing:
-                        observations.Add(new LibraryKeyAvailabilityObservation(
-                            fact.Requirement.Key,
-                            libraryAvailability,
-                            libraryAvailability == LibraryAvailability.Ok
-                                ? LibraryBlockPresence.BlockMissing
-                                : LibraryBlockPresence.Unknown));
-                        break;
-                    default:
-                        throw new InvalidOperationException("The V1 query returned an unknown availability value.");
-                }
+                throw new ArgumentOutOfRangeException(nameof(blockObservation));
             }
 
-            return observations;
+            if (libraryAvailability != LibraryAvailability.Ok
+                && blockObservation != ExternalLibraryBlockObservation.NotObserved)
+            {
+                throw new InvalidOperationException(
+                    "An unavailable external library cannot publish a block-presence observation.");
+            }
+
+            var blockPresence = blockObservation switch
+            {
+                ExternalLibraryBlockObservation.Present => LibraryBlockPresence.Present,
+                ExternalLibraryBlockObservation.Missing => LibraryBlockPresence.BlockMissing,
+                _ => LibraryBlockPresence.Unknown
+            };
+
+            return new LibraryKeyAvailabilityObservation(key, libraryAvailability, blockPresence);
         }
     }
 
