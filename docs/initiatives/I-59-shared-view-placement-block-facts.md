@@ -1,6 +1,6 @@
 # I-59 — Shared View Foundation Placement & Block Requirement Facts
 
-Status: F2 COMPLETE / COORDINATOR ACCEPTED; F3 COMPLETE / PENDING COORDINATOR REVIEW; F4 NOT OPEN
+Status: F2 COMPLETE / COORDINATOR ACCEPTED; F3 COMPLETE / COORDINATOR ACCEPTED; F4 COMPLETE / PENDING COORDINATOR REVIEW; READY NOT OPEN
 
 Workflow: V2
 
@@ -104,8 +104,8 @@ Implementation authorization requires, on the same Freeze:
 - Architect = AGREED
 
 Both agreements exist on the validated Consensus Freeze V3. Implementation authorization is active
-only for gates explicitly opened by the Coordinator; F2 was accepted, F3 is complete pending review
-and F4 remains closed.
+only for gates explicitly opened by the Coordinator; F2 and F3 were accepted, F4 is complete pending
+Coordinator review and READY remains closed.
 
 ## Functional gates
 
@@ -133,6 +133,9 @@ I-55 then reconciles against new main and resumes G14 without cherry-pick.
 - F2 evidence: [I-59-f2-neutral-model-extraction.md](../automation/evidence/I-59-f2/I-59-f2-neutral-model-extraction.md)
 - F3 evidence: [I-59-f3-consumer-compatible-integration.md](../automation/evidence/I-59-f3/I-59-f3-consumer-compatible-integration.md)
 - F3 corrective evidence: [I-59-f3-cr59-f3-01-correction.md](../automation/evidence/I-59-f3/I-59-f3-cr59-f3-01-correction.md)
+- F4 conformance package: [I-59-f4-conformance-package.md](../automation/evidence/I-59-f4/I-59-f4-conformance-package.md)
+- F4 closure evidence: [I-59-f4-closure.md](../automation/evidence/I-59-f4/I-59-f4-closure.md)
+- CT59-17 FOUNDATIONS draft: [FOUNDATIONS-auth08-auth12-draft.md](../automation/evidence/I-59-f4/FOUNDATIONS-auth08-auth12-draft.md)
 
 ```text
 F1 RED = ESTABLISHED
@@ -145,8 +148,14 @@ Architect = AGREED
 Coordinator = AGREED
 F2 = COMPLETE / COORDINATOR ACCEPTED
 CR59-F3-01 = RESOLVED
-NEW F3_CLOSURE_SHA = aef8bd2c9d9a74ca1d1a1fd03624aa3207ee12f1
-F3 = COMPLETE / PENDING COORDINATOR REVIEW
-F4 = NOT OPEN
-IMPLEMENTATION AUTHORIZATION = NO / F4 NOT AUTHORIZED
+F3 = COMPLETE / COORDINATOR ACCEPTED
+CT59-16 = PASS
+CT59-17 = PASS / CANDIDATE RE-VERIFICATION REQUIRED
+I-55 G14 FOUNDATION READINESS = READY TO CONSUME AFTER I-59 INTEGRATION
+I-55 G14 = NOT UNBLOCKED
+OWNER VALIDATION = REQUIRED / FUTURE CANDIDATE
+F4 = COMPLETE / PENDING COORDINATOR REVIEW
+READY = NOT OPEN
+FINAL_CANDIDATE_SHA = DOES NOT EXIST
+IMPLEMENTATION AUTHORIZATION = NO / READY NOT AUTHORIZED
 ```
