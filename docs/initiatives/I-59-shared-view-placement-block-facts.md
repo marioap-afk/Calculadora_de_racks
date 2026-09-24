@@ -1,6 +1,6 @@
 # I-59 — Shared View Foundation Placement & Block Requirement Facts
 
-Status: F2 COMPLETE / PENDING COORDINATOR REVIEW; F3 NOT OPEN
+Status: F2 COMPLETE / COORDINATOR ACCEPTED; F3 COMPLETE / PENDING COORDINATOR REVIEW; F4 NOT OPEN
 
 Workflow: V2
 
@@ -104,7 +104,8 @@ Implementation authorization requires, on the same Freeze:
 - Architect = AGREED
 
 Both agreements exist on the validated Consensus Freeze V3. Implementation authorization is active
-only for gates explicitly opened by the Coordinator; F2 is complete and F3 remains closed.
+only for gates explicitly opened by the Coordinator; F2 was accepted, F3 is complete pending review
+and F4 remains closed.
 
 ## Functional gates
 
@@ -130,6 +131,7 @@ I-55 then reconciles against new main and resumes G14 without cherry-pick.
 - Architect review package V3: [I-59-architect-review-package-v3.md](I-59-architect-review-package-v3.md)
 - F1 evidence: [I-59-f1-characterization.md](../automation/evidence/I-59-f1-characterization.md)
 - F2 evidence: [I-59-f2-neutral-model-extraction.md](../automation/evidence/I-59-f2/I-59-f2-neutral-model-extraction.md)
+- F3 evidence: [I-59-f3-consumer-compatible-integration.md](../automation/evidence/I-59-f3/I-59-f3-consumer-compatible-integration.md)
 
 ```text
 F1 RED = ESTABLISHED
@@ -140,7 +142,8 @@ AR59-V2-25 = RESOLVED
 Freeze = VALIDATED / IMMUTABLE
 Architect = AGREED
 Coordinator = AGREED
-F2 = COMPLETE / PENDING COORDINATOR REVIEW
-F3 = NOT OPEN
-IMPLEMENTATION AUTHORIZATION = YES / F3 NOT AUTHORIZED
+F2 = COMPLETE / COORDINATOR ACCEPTED
+F3 = COMPLETE / PENDING COORDINATOR REVIEW
+F4 = NOT OPEN
+IMPLEMENTATION AUTHORIZATION = NO / F4 NOT AUTHORIZED
 ```
