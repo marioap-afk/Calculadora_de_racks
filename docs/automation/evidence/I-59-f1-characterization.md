@@ -177,3 +177,35 @@ Fecha: 2026-09-23, mismo worktree exclusivo.
 
 La evidencia Core Full exact-SHA y el CI propio de la punta publicada se leen despues del commit de
 entrega, conforme a la regla de identidad. Si no quedan verdes, F1 closure no se presenta al Coordinator.
+
+## Revision Architect V2 durable
+
+Esta seccion conserva literalmente la disposicion minima emitida sobre V2; no añade conclusiones al
+Architect ni reabre F1.
+
+```text
+Reviewed Proposal commit = ca54fca27cf639908d890e940e3d1d5b313780d3
+Reviewed Proposal path   = docs/initiatives/I-59-proposal-v2.md
+Reviewed Proposal blob   = d4949ac420fa66a2b542575a5ee9e7a0d48eaae0
+Review-package tip       = 49ed90daa9264c37167657ec36ac8cb1280d1a0b
+Role                     = SEPARATE SESSION
+Reviewer and author same person = YES
+GLOBAL VERDICT           = CHANGES REQUIRED
+CR59-V1-01               = RESOLVED
+CR59-V1-02               = RESOLVED
+CR59-V1-03               = RESOLVED
+AR59-V2-24               = REQUIRED
+AR59-V2-25               = REQUIRED
+OPTIONAL-01              = precision de finitud de Point3D/Vector3D
+OPTIONAL-02              = actualizar contrato mutable I-59
+Omitted Discovery expansion = NONE
+Owner decision required  = NO
+Architect                = CHANGES REQUIRED
+```
+
+AR59-V2-24 exige planificar y verificar la entrada factual AUTH-08/AUTH-12 de `docs/FOUNDATIONS.md`
+antes de READY-04 y publicarla solo en el cierre documental. AR59-V2-25 exige una unica semantica de
+reflection XY: primero clasificar signos por eje y, para inputs no degenerados, reflection si y solo si
+los signos X/Y son opuestos, sin aplicar una segunda tolerancia al producto. OPTIONAL-01 corrige que
+los carriers 3D no rechazan por constructor valores no finitos. OPTIONAL-02 mantiene el contrato mutable
+en su superficie de estado, enlaces y coordinacion.

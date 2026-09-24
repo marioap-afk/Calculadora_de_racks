@@ -1,6 +1,6 @@
 # I-59 — Shared View Foundation Placement & Block Requirement Facts
 
-Status: D/F0 — Proposal V1 published; F1 RED established; reviews pending
+Status: D/F0 — F1 CLOSED / ACCEPTED; Proposal V3 published; Coordinator review and Architect re-review pending
 
 Workflow: V2
 
@@ -127,15 +127,19 @@ I-55 then reconciles against new main and resumes G14 without cherry-pick.
 
 ## Review artifacts
 
-- Complete Proposal V1 / Freeze DRAFT: [I-59-proposal-v1.md](I-59-proposal-v1.md)
-- Architect review package: [I-59-architect-review-package-v1.md](I-59-architect-review-package-v1.md)
+- Complete Proposal V3 / Freeze DRAFT: [I-59-proposal-v3.md](I-59-proposal-v3.md)
+- Architect review package V3: [I-59-architect-review-package-v3.md](I-59-architect-review-package-v3.md)
 - F1 evidence: [I-59-f1-characterization.md](../automation/evidence/I-59-f1-characterization.md)
 
 ```text
 F1 RED = ESTABLISHED
-F1 CLOSURE = PENDING COORDINATOR REVIEW
+F1 CLOSURE = ACCEPTED
+Proposal V3 = PUBLISHED / PENDING COORDINATOR REVIEW
+AR59-V2-24 = OPEN UNTIL ARCHITECT RE-REVIEW
+AR59-V2-25 = OPEN UNTIL ARCHITECT RE-REVIEW
 Freeze = DRAFT / NOT FROZEN
-Architect = PENDING
+Architect V2 = CHANGES REQUIRED / RE-REVIEW PENDING
+Coordinator = PENDING V3 REVIEW
 F2 = NOT OPEN
 IMPLEMENTATION AUTHORIZATION = NO
 ```
