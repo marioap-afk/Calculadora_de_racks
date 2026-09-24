@@ -132,6 +132,7 @@ I-55 then reconciles against new main and resumes G14 without cherry-pick.
 - F1 evidence: [I-59-f1-characterization.md](../automation/evidence/I-59-f1-characterization.md)
 - F2 evidence: [I-59-f2-neutral-model-extraction.md](../automation/evidence/I-59-f2/I-59-f2-neutral-model-extraction.md)
 - F3 evidence: [I-59-f3-consumer-compatible-integration.md](../automation/evidence/I-59-f3/I-59-f3-consumer-compatible-integration.md)
+- F3 corrective evidence: [I-59-f3-cr59-f3-01-correction.md](../automation/evidence/I-59-f3/I-59-f3-cr59-f3-01-correction.md)
 
 ```text
 F1 RED = ESTABLISHED
@@ -143,6 +144,8 @@ Freeze = VALIDATED / IMMUTABLE
 Architect = AGREED
 Coordinator = AGREED
 F2 = COMPLETE / COORDINATOR ACCEPTED
+CR59-F3-01 = RESOLVED
+NEW F3_CLOSURE_SHA = aef8bd2c9d9a74ca1d1a1fd03624aa3207ee12f1
 F3 = COMPLETE / PENDING COORDINATOR REVIEW
 F4 = NOT OPEN
 IMPLEMENTATION AUTHORIZATION = NO / F4 NOT AUTHORIZED
