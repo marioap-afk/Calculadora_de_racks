@@ -1,6 +1,10 @@
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Preparation;
+using RackCad.Application.Views.Policy;
 using RackCad.Plugin.KindHandlers;
+using RackCad.Plugin.Views;
 using RackCad.UI;
 using RackCad.UI.Editor;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -53,23 +57,22 @@ namespace RackCad.Plugin
                 switch (menu.InsertionRequest)
                 {
                     case HeaderInsertionRequest header:
-                        // Transport-only (I-11): carry the library source metadata into the new DWG embed. No handler change.
-                        RackCabeceraCommands.DrawAndPlace(
-                            header.Configuration,
-                            header.SourceProject,
-                            header.RackId,
-                            header.InitialAddress);
+                        var headerProducts = RackViewBatchProducts.Header(document, header.Configuration,
+                            header.RackId, header.Configuration?.Name, null, header.SourceProject, null);
+                        RackViewBatchExecution.Run(document, headerProducts,
+                            RackViewBatchProductSession<RackCad.Domain.RackFrames.RackFrameConfiguration,
+                                RackCad.Domain.RackFrames.RackFrameConfiguration,
+                                RackCad.Application.Drawing.HeaderRunPlan>.Request(
+                                    RackProductSourceKind.NewRack, header.Kind, header.RackId, header.Views));
                         break;
                     case DynamicInsertionRequest dynamic:
-                        RackDinamicoCommands.DrawDynamicView(
-                            dynamic.View,
-                            dynamic.Section,
-                            dynamic.System,
-                            dynamic.Design,
-                            dynamic.RackId,
-                            dynamic.RackName,
-                            source: null,
-                            innerSource: dynamic.SourceProject);
+                        var dynamicProducts = RackViewBatchProducts.Dynamic(document, dynamic.System, dynamic.Design,
+                            dynamic.RackId, dynamic.RackName, null, dynamic.SourceProject, null);
+                        RackViewBatchExecution.Run(document, dynamicProducts,
+                            RackViewBatchProductSession<RackCad.Domain.Systems.Dynamic.DynamicRackDesign,
+                                RackCad.Domain.Systems.Dynamic.DynamicRackSystem,
+                                RackCad.Application.Drawing.HeaderRunPlan>.Request(
+                                    RackProductSourceKind.NewRack, dynamic.Kind, dynamic.RackId, dynamic.Views));
                         break;
                     case FlowBedInsertionRequest cama:
                         RackCamaCommands.DrawAndPlaceBed(
@@ -78,34 +81,37 @@ namespace RackCad.Plugin
                             cama.RackName);
                         break;
                     case SelectiveInsertionRequest selective:
-                        RackSelectivoCommands.DrawSelectiveView(
-                            selective.View, selective.System, selective.Design, selective.RackId, selective.RackName);
+                        var selectiveProducts = RackViewBatchProducts.SelectiveNew(document, selective.System,
+                            selective.Design, selective.RackId, selective.RackName);
+                        RackViewBatchExecution.Run(document, selectiveProducts,
+                            RackViewBatchProductSession<RackCad.Application.Persistence.SelectivePalletDesignDocument,
+                                RackCad.Domain.Systems.Selective.SelectiveRackSystem,
+                                RackCad.Application.Drawing.HeaderRunPlan>.Request(
+                                    RackProductSourceKind.NewRack, selective.Kind, selective.RackId, selective.Views));
                         break;
                     // The component case comes FIRST: it is a loose piece, not a line, and it writes no envelope.
                     case CantileverComponentInsertionRequest component:
                         RackCantileverCommands.DrawCantileverComponent(component);
                         break;
                     case CantileverInsertionRequest cantilever:
-                        RackCantileverCommands.DrawCantileverView(
-                            cantilever.View,
-                            cantilever.Section,
-                            cantilever.Line,
-                            cantilever.Design,
-                            cantilever.RackId,
-                            cantilever.RackName,
-                            source: null,
-                            innerSource: cantilever.SourceProject);
+                        if (!RackCantileverCommands.TryGeometryFactory(document.Editor, out var geometry)) break;
+                        var cantileverProducts = RackViewBatchProducts.Cantilever(document, cantilever.Line,
+                            cantilever.Design, geometry, cantilever.RackId, cantilever.RackName,
+                            null, cantilever.SourceProject, null);
+                        RackViewBatchExecution.Run(document, cantileverProducts,
+                            RackViewBatchProductSession<RackCad.Domain.Systems.Cantilever.CantileverLineDesign,
+                                RackCad.Application.Systems.Cantilever.CantileverLineAssembly,
+                                RackCad.Application.Systems.Cantilever.CantileverViewPlan>.Request(
+                                    RackProductSourceKind.NewRack, cantilever.Kind, cantilever.RackId, cantilever.Views));
                         break;
                     case PushBackInsertionRequest pushBack:
-                        RackPushBackCommands.DrawPushBackView(
-                            pushBack.View,
-                            pushBack.Section,
-                            pushBack.System,
-                            pushBack.Design,
-                            pushBack.RackId,
-                            pushBack.RackName,
-                            source: null,
-                            innerSource: pushBack.SourceProject);
+                        var pushBackProducts = RackViewBatchProducts.PushBack(document, pushBack.System, pushBack.Design,
+                            pushBack.RackId, pushBack.RackName, null, pushBack.SourceProject, null);
+                        RackViewBatchExecution.Run(document, pushBackProducts,
+                            RackViewBatchProductSession<RackCad.Domain.Systems.PushBack.PushBackDesign,
+                                RackCad.Domain.Systems.PushBack.PushBackSystem,
+                                RackCad.Application.Drawing.HeaderRunPlan>.Request(
+                                    RackProductSourceKind.NewRack, pushBack.Kind, pushBack.RackId, pushBack.Views));
                         break;
                 }
             }

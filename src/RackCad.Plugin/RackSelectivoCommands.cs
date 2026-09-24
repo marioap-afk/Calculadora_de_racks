@@ -9,9 +9,15 @@ using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
 using RackCad.Application.Systems.Shared;
 using RackCad.Application.Views.Insertion;
+using RackCad.Application.Views.Batch;
+using RackCad.Application.Views.Placement;
+using RackCad.Application.Views.Preparation;
+using RackCad.Application.Views.Redraw;
 using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Selective;
+using RackCad.Plugin.Views;
 using RackCad.UI;
 using RackCad.UI.Systems.Selective;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -136,11 +142,69 @@ namespace RackCad.Plugin
                 }
 
                 var designJson = SerializeSelectiveAuthored(insertReconciled.Authored);
-                var insertion = RackSiblingInsertRun.Execute(
-                    new SelectiveInsertPort(document, blockId, embed, system, designJson, insertId, name, window.InsertView));
-                editor.WriteMessage("\nRackCad: " + insertion.Outcome
-                    + (insertion.RedrawOutcome.HasValue ? " / " + insertion.RedrawOutcome.Value : string.Empty)
-                    + (string.IsNullOrWhiteSpace(insertion.Diagnostic) ? string.Empty : " — " + insertion.Diagnostic));
+                var requested = window.InsertionRequest.Views;
+                var firstSyntax = RackViewCodec.Encode(RackSystemKind.SelectiveRack, requested[0]);
+                var port = new SelectiveInsertPort(document, blockId, embed, system, designJson, insertId, name,
+                    firstSyntax.View, requested[0]);
+                var membership = port.ScanAndClassifyOnce();
+                var properties = port.CheckCustomProperties(membership);
+                if (!properties.Accepted)
+                {
+                    editor.WriteMessage("\nRackCad: SIBLING_GATE_FAILED — " + properties.Diagnostic);
+                    return;
+                }
+
+                var prepared = new System.Collections.Generic.Dictionary<RackViewAddress,
+                    RackPreparedProductView<RackCad.Application.Drawing.HeaderRunPlan>>();
+                foreach (var address in requested)
+                {
+                    if (prepared.ContainsKey(address)) continue;
+                    if (!port.TryPrepare(address, membership, out var product, out var diagnostic))
+                    {
+                        editor.WriteMessage("\nRackCad: PREPARE_FAILED — " + diagnostic);
+                        return;
+                    }
+                    prepared.Add(address, product);
+                }
+
+                var redrawPort = port.CreateRedrawPort(prepared[requested[0]]);
+                var redraw = RackSiblingRedrawRun.Execute(membership, redrawPort);
+                if (redraw.Outcome == RackSiblingRedrawOutcome.PrepareFailed
+                    || redraw.Outcome == RackSiblingRedrawOutcome.Discarded)
+                {
+                    editor.WriteMessage("\nRackCad: REDRAW_ROLLED_BACK — " + redraw.Diagnostic);
+                    return;
+                }
+                if (redraw.Plan?.Disposition == RackSiblingRedrawDisposition.DeferToFirstPlacement)
+                {
+                    var units = redraw.Plan.RedrawUnits.Select(item => item.Unit)
+                        .Concat(redraw.Plan.EraseUnits.Select(item => item.Unit)).ToList();
+                    var mutation = redrawPort.Mutate(units);
+                    if (mutation == null || mutation.Kind == RackSiblingMutationKind.Discarded)
+                    {
+                        editor.WriteMessage("\nRackCad: REDRAW_ROLLED_BACK — " + mutation?.Diagnostic);
+                        return;
+                    }
+                    redrawPort.Post(redraw.Plan, mutation);
+                }
+
+                var request = RackViewBatchProductSession<SelectivePalletDesignDocument, SelectiveRackSystem,
+                    RackCad.Application.Drawing.HeaderRunPlan>.Request(
+                        RackProductSourceKind.ExistingRack, RackSystemKind.SelectiveRack, insertId, requested);
+                var driver = new RackViewBatchDriver<RackPreparedProductView<RackCad.Application.Drawing.HeaderRunPlan>>(
+                    document.Database.TransactionManager,
+                    item => RackViewBatchPreparation<RackPreparedProductView<RackCad.Application.Drawing.HeaderRunPlan>>
+                        .Success(prepared[item.Address]),
+                    _ => RackViewBatchGateResult.Accept(),
+                    _ => redraw.Outcome == RackSiblingRedrawOutcome.Committed
+                        || redraw.Plan?.Disposition == RackSiblingRedrawDisposition.DeferToFirstPlacement
+                            ? RackViewBatchRedrawResult.Applied()
+                            : RackViewBatchRedrawResult.NotRequired(),
+                    (_, product) => RackViewPlacement.PlaceSelective(document, product, regen: false));
+                var batch = driver.Execute(request);
+                if (batch.Report.PlacedCount > 0) editor.Regen();
+                editor.WriteMessage("\nRackCad ID18: " + batch.Outcome + " ("
+                    + batch.Report.PlacedCount + "/" + batch.Report.RequestedCount + ").");
                 return;
             }
 

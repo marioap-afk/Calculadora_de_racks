@@ -779,6 +779,8 @@
                           ToolTip="De qu&#233; lado son los dos cortes frontales de al lado. Es independiente del lado que se est&#233; editando." />
                 <Button x:Name="InsertPlantaButton" Content="Planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="{StaticResource ActionGroupGap}"
                         ToolTipService.ShowOnDisabled="True" Click="InsertPlanta_Click" ToolTip="Inserta la vista en planta." />
+                <Button x:Name="InsertBatchButton" Content="Insertar varias…" Style="{StaticResource PrimaryButtonStyle}" MinWidth="135" Margin="{StaticResource ActionGap}"
+                        ToolTipService.ShowOnDisabled="True" Click="InsertBatch_Click" ToolTip="Elige y ordena varias vistas del mismo rack." />
                 <Button x:Name="InsertButton" Content="Insertar vista actual" Style="{StaticResource PrimaryButtonStyle}" MinWidth="152" Margin="{StaticResource ActionLast}"
                         ToolTipService.ShowOnDisabled="True" Click="Insert_Click" ToolTip="Inserta la vista seleccionada en el previsualizador." />
             </StackPanel>
