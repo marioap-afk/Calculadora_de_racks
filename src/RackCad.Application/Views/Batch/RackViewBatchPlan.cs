@@ -182,15 +182,21 @@ namespace RackCad.Application.Views.Batch
 
     public readonly struct RackViewBatchPlacementResult
     {
-        private RackViewBatchPlacementResult(RackViewBatchPlacementResultKind kind)
+        private RackViewBatchPlacementResult(RackViewBatchPlacementResultKind kind,
+            IReadOnlyList<RackViewBatchWarning> warnings)
         {
             Kind = kind;
+            Warnings = warnings ?? Array.Empty<RackViewBatchWarning>();
         }
 
         public RackViewBatchPlacementResultKind Kind { get; }
-        public static RackViewBatchPlacementResult Placed() => new RackViewBatchPlacementResult(RackViewBatchPlacementResultKind.Placed);
-        public static RackViewBatchPlacementResult Cancelled() => new RackViewBatchPlacementResult(RackViewBatchPlacementResultKind.Cancelled);
-        public static RackViewBatchPlacementResult Stopped() => new RackViewBatchPlacementResult(RackViewBatchPlacementResultKind.Stopped);
+        public IReadOnlyList<RackViewBatchWarning> Warnings { get; }
+        public static RackViewBatchPlacementResult Placed(IReadOnlyList<RackViewBatchWarning> warnings = null) =>
+            new RackViewBatchPlacementResult(RackViewBatchPlacementResultKind.Placed, warnings);
+        public static RackViewBatchPlacementResult Cancelled(IReadOnlyList<RackViewBatchWarning> warnings = null) =>
+            new RackViewBatchPlacementResult(RackViewBatchPlacementResultKind.Cancelled, warnings);
+        public static RackViewBatchPlacementResult Stopped(IReadOnlyList<RackViewBatchWarning> warnings = null) =>
+            new RackViewBatchPlacementResult(RackViewBatchPlacementResultKind.Stopped, warnings);
     }
 
     public interface IRackViewBatchPort<TPrepared>
@@ -373,6 +379,8 @@ namespace RackCad.Application.Views.Batch
                     return Finish(RackViewBatchOutcome.PLACEMENT_FAILED_PARTIAL_BATCH, accepted, prepared,
                         placed, item.Address, redrawState, RackViewBatchStopReason.PLACEMENT_FAILED, ex.Message, warnings);
                 }
+
+                warnings.AddRange(placement.Warnings);
 
                 if (placement.Kind != RackViewBatchPlacementResultKind.Placed)
                     return Finish(RackViewBatchOutcome.PLACEMENT_CANCELLED_PARTIAL_BATCH, accepted, prepared,

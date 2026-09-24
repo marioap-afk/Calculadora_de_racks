@@ -35,7 +35,8 @@ namespace RackCad.Tests
             Assert.Contains("if (result.Status != PromptStatus.OK)", source);
             Assert.Contains("reference.Dispose()", source);
             Assert.Contains("transaction.Commit()", source);
-            Assert.Contains("return ObjectId.Null", source);
+            Assert.Contains("new JigPlacementResult(result.Status, ObjectId.Null)", source);
+            Assert.Contains("PlaceDefinitionWithStatus", source);
         }
 
         [Fact]

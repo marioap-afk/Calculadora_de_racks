@@ -87,13 +87,16 @@ namespace RackCad.Tests
         // ---- Typed host dispatch ----
 
         [Fact]
-        public void Menu_HasTheTypedPushBackCase_DelegatingToDrawPushBackView_WithoutAKindSwitch()
+        public void Menu_HasTheTypedPushBackCase_DelegatingToTheBatchComposition_WithoutAKindSwitch()
         {
             var src = Menu;
             Assert.Contains("case PushBackInsertionRequest", src);
 
             var caseIdx = src.IndexOf("case PushBackInsertionRequest", StringComparison.Ordinal);
-            Assert.Contains("RackPushBackCommands.DrawPushBackView", src.Substring(caseIdx, Math.Min(500, src.Length - caseIdx)));
+            var typedCase = src.Substring(caseIdx, Math.Min(1300, src.Length - caseIdx));
+            Assert.Contains("RackViewBatchProducts.PushBack", typedCase);
+            Assert.Contains("pushBack.Views", typedCase);
+            Assert.Contains("RackViewBatchExecution.Run", typedCase);
 
             Assert.DoesNotContain("case RackSystemKind.PushBack", src);      // dispatch stays TYPED on the request
             Assert.DoesNotContain("switch (menu.InsertionRequest.Kind", src);

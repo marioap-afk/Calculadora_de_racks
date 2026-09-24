@@ -23,7 +23,7 @@ namespace RackCad.Tests
         [InlineData("RackCantileverCommands.cs")]
         [InlineData("RackCabeceraCommands.cs")]
         public void Unsupported_comparators_enter_the_one_scan_fail_closed_edge(string command)
-            => Assert.Contains("RackUnsupportedSiblingInsert.Reject(", Source("src", "RackCad.Plugin", command));
+            => Assert.Contains("RackUnsupportedSiblingInsert.TryAuthorize(", Source("src", "RackCad.Plugin", command));
 
         private static int Count(string text, string value)
         {

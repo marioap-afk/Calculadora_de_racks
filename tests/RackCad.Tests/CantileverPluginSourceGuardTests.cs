@@ -250,7 +250,9 @@ namespace RackCad.Tests
         {
             Assert.Contains("new CantileverKindHandler()", Registry, StringComparison.Ordinal);
             Assert.Contains("case CantileverInsertionRequest cantilever:", Menu, StringComparison.Ordinal);
-            Assert.Contains("RackCantileverCommands.DrawCantileverView(", Menu, StringComparison.Ordinal);
+            Assert.Contains("RackViewBatchProducts.Cantilever(", Menu, StringComparison.Ordinal);
+            Assert.Contains("cantilever.Views", Menu, StringComparison.Ordinal);
+            Assert.Contains("RackViewBatchExecution.Run", Menu, StringComparison.Ordinal);
         }
 
         [Fact]

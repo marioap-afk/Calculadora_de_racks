@@ -3291,6 +3291,35 @@ namespace RackCad.UI.Systems.PushBack
 
         private void Update_Click(object sender, RoutedEventArgs e) => RequestDraw(null, -1, updateOnly: true);
 
+        private void InsertBatch_Click(object sender, RoutedEventArgs e)
+        {
+            if (moduleOwner.ModuleSession.HasPendingChanges) moduleOwner.CommitModuleEdits();
+            RequestRecompute();
+            if (!currentInputsAreValid || lastComputation?.System == null
+                || OutputBlockedAfterRecompute("Corrige los datos: no se puede dibujar un modelo bloqueado.")) return;
+            var options = new System.Collections.Generic.List<Views.RackViewBatchOption>
+            {
+                new Views.RackViewBatchOption("Frontal · entrada/salida A", RackViewAddress.PushBackCut(RackCad.Application.Systems.Shared.RackPushBackEnd.EntradaSalida, RackCad.Application.Systems.Shared.RackPushBackSide.A)),
+                new Views.RackViewBatchOption("Frontal · posterior A", RackViewAddress.PushBackCut(RackCad.Application.Systems.Shared.RackPushBackEnd.Posterior, RackCad.Application.Systems.Shared.RackPushBackSide.A)),
+                new Views.RackViewBatchOption("Frontal · entrada/salida B", RackViewAddress.PushBackCut(RackCad.Application.Systems.Shared.RackPushBackEnd.EntradaSalida, RackCad.Application.Systems.Shared.RackPushBackSide.B)),
+                new Views.RackViewBatchOption("Frontal · posterior B", RackViewAddress.PushBackCut(RackCad.Application.Systems.Shared.RackPushBackEnd.Posterior, RackCad.Application.Systems.Shared.RackPushBackSide.B)),
+                new Views.RackViewBatchOption("Planta", RackViewAddress.Whole(DimensionViewKind.Planta))
+            };
+            foreach (var cut in new PushBackSystemLateralBuilder().Cortes(lastComputation.System, catalog))
+                options.Insert(0, new Views.RackViewBatchOption(
+                    "Lateral · poste " + (cut.PostIndex + 1), RackViewAddress.Post(cut.PostIndex)));
+            if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.PushBack, options, out var views)) return;
+            session.Identity.SetName(NameBox.Text?.Trim());
+            session.SetModel(lastComputation.Design, lastComputation.System);
+            session.RequestInsertViews(views, ctx =>
+            {
+                var syntax = RackViewCodec.Encode(RackSystemKind.PushBack, ctx.Views[0]);
+                return new PushBackInsertionRequest(lastComputation.System, lastComputation.Design,
+                    ctx.Id, ctx.Name, syntax.View, syntax.Section, sourceProject);
+            });
+            Close();
+        }
+
         private void RequestDraw(string view, int section, bool updateOnly)
         {
             if (!canInsertInAutoCad)

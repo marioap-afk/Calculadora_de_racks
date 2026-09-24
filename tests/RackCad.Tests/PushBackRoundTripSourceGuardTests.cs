@@ -252,9 +252,9 @@ namespace RackCad.Tests
         public void EditPushBack_UsesResolvedByBlockPerView_AndAdditionalViewCarriesEmbedAndProject()
         {
             Assert.Contains("preflight.ResolvedByBlock[viewBlock.BlockId]", Commands);
-            Assert.Contains(
-                "DrawPushBackView(window.InsertView, window.InsertSection, system, design, id, name, source: embed, innerSource: project)",
-                Commands);
+            Assert.Contains("RackSystemKind.PushBack, id, window.InsertionRequest.Views", Commands);
+            Assert.Contains("batchProducts.PrepareAll(batchRequest", Commands);
+            Assert.Contains("RackViewBatchExecution.Run(document, batchProducts, batchRequest", Commands);
         }
 
         [Fact]
@@ -383,8 +383,10 @@ namespace RackCad.Tests
             Assert.True(start >= 0 && end > start, "could not isolate the RACKPUSHBACK command body");
             Assert.Contains("DrawPushBackView(", Commands.Substring(start, end - start));
 
-            // ...and so does the RACKCAD menu's typed case: one draw path, not two.
-            Assert.Contains("RackPushBackCommands.DrawPushBackView", Menu);
+            // The typed menu now composes the same Foundation preparation and G8 placement through the ID18 driver.
+            Assert.Contains("RackViewBatchProducts.PushBack", Menu);
+            Assert.Contains("pushBack.Views", Menu);
+            Assert.Contains("RackViewBatchExecution.Run", Menu);
         }
     }
 }
