@@ -113,3 +113,67 @@ El requisito de origen no es especulativo: el consumidor actual I-55 en
 `Origin != 0`, Position con Z, rotacion no nula, escala `(+1,+1,+1)` y `(-1,-1,+1)`, Normal +Z y
 mutaciones que fallen si se ignora Origin. Ese hallazgo justifica incluir origin en la matriz neutral,
 pero I-55 no se modifica ni se convierte en autoridad de I-59.
+
+## Correccion del harness y conservacion durable del RED
+
+El RED historico sigue siendo evidencia inmutable del commit
+`cbe817e73c9dc731ce44ec530c35f1e8c37fdc2b`: **36 selected / 6 PASS / 30 FAIL / 0 SKIP**.
+Esta seccion no reemplaza, reinterpreta ni oculta ese resultado. La fuente exacta del harness ejecutado
+queda recuperable sin depender del tip:
+
+```powershell
+git show cbe817e73c9dc731ce44ec530c35f1e8c37fdc2b:tests/RackCad.Tests/I59F1CharacterizationTests.cs
+```
+
+Disposicion de findings:
+
+| Finding | Correccion aplicada al harness activo | Obligacion futura |
+|---|---|---|
+| CR59-F1-01 | el caso `(2,3)` comprueba M11=2, M22=3, determinant=6 y `NonUniformScale`; se retiro `sqrt(6)` | V2 debe conservar X/Y/Z + `IsUniformScale=false`, sin scalar uniforme inventado |
+| CR59-F1-02 | se retiraron `SharedPublicTypes`, scans de namespace y busquedas de cualquier property/enum | cada CT59 se compilara contra el carrier acordado al abrir F2; hasta entonces es RED documental |
+| CR59-F1-03 | se retiraron nombres `UnitHalfTurn`, `UnitReflectionXY`, `UnitNegativeZ` y el mapping presentado como historia | Proposal V1 separa unit/uniform/reflection/half-turn/negative-Z; la tabla de roles es propuesta a revisar |
+
+Matriz corregida del contrato actual:
+
+| Area | Casos activos | Oraculo concreto |
+|---|---|---|
+| AUTH-08 supported | identity, rotation/translation/uniform, half-turn matrix, reflection matrix | `RackTransformFacts.Describe` / `RackTransformDescription` |
+| AUTH-08 non-uniform | ejes 2/3, determinant 6, failure typed | `Transform2D` + `RackTransformFailure.NonUniformScale` |
+| AUTH-08 angle | `-pi` actual queda `-pi` como gap medido | `RackTransformDescription.RotationRadians` |
+| AUTH-08 tolerance | NaN, +Infinity, negativa | `RackTransformFailure.InvalidTolerance` |
+| AUTH-12 extraction | blank omitido y key deduplicada V1 | `RackBlockRequirementExtractors.HeaderRun` |
+| AUTH-12 trace source | PieceId/View/Role/key blank antes de extraction | `HeaderBlockInstance` |
+| AUTH-12 requirement | blank rechazado; equality por key | `LibraryBlockRequirement` |
+| AUTH-12 availability | Found/Missing y import antes de query final | contracts V1 concretos |
+
+Corrida focal del harness corregido:
+
+```powershell
+dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter `
+  FullyQualifiedName~I59F1CharacterizationTests --no-restore -v:minimal
+```
+
+Resultado: **14 seleccionadas; 14 PASS; 0 FAIL; 0 SKIP**. La seleccion mayor que cero queda demostrada.
+No se añadieron skips ni tests activos intencionalmente rojos.
+
+La Proposal V1 completa vive en `docs/initiatives/I-59-proposal-v1.md`. Congela solo como propuesta,
+`Frozen: NO`, los carriers, facts independientes, failure semantics, compatibility, invariantes y gates.
+Los 30 fallos historicos no se declaran resueltos por este verde: demuestran gaps candidatos; los oraculos
+defectuosos se sustituyen por CT59 verificables contra una API aun pendiente de acuerdo.
+
+## Preflight de la sesion de correccion
+
+Fecha: 2026-09-23, mismo worktree exclusivo.
+
+| Hecho | Resultado |
+|---|---|
+| fetch/prune/tags | PASS |
+| HEAD inicial | `cbe817e73c9dc731ce44ec530c35f1e8c37fdc2b` |
+| upstream | `origin/architecture/shared-view-placement-block-facts`; `0/0` |
+| arbol / stash / operaciones incompletas | limpio / vacio / ninguna |
+| `origin/main` | `c75e7434a909d396c05e55c39a140ba53be9e98c`, igual a BASE_SHA; no avanzo |
+| `origin/main...HEAD` | `0` detras / `4` delante |
+| Claim-Id | verificado exactamente en claim, bootstrap y tip |
+
+La evidencia Core Full exact-SHA y el CI propio de la punta publicada se leen despues del commit de
+entrega, conforme a la regla de identidad. Si no quedan verdes, F1 closure no se presenta al Coordinator.

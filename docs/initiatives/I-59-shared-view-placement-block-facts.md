@@ -1,6 +1,6 @@
 # I-59 — Shared View Foundation Placement & Block Requirement Facts
 
-Status: D/F0 — bootstrap and focused Discovery only
+Status: D/F0 — Proposal V1 published; F1 RED established; reviews pending
 
 Workflow: V2
 
@@ -124,3 +124,18 @@ Do not create micro-gates for individual classes.
 I-55 G14 may be declared UNBLOCKED by this unit only after I-59 is integrated, post-merge CI is verified and `integration/I-59` is a valid annotated receipt reachable from `origin/main`.
 
 I-55 then reconciles against new main and resumes G14 without cherry-pick.
+
+## Review artifacts
+
+- Complete Proposal V1 / Freeze DRAFT: [I-59-proposal-v1.md](I-59-proposal-v1.md)
+- Architect review package: [I-59-architect-review-package-v1.md](I-59-architect-review-package-v1.md)
+- F1 evidence: [I-59-f1-characterization.md](../automation/evidence/I-59-f1-characterization.md)
+
+```text
+F1 RED = ESTABLISHED
+F1 CLOSURE = PENDING COORDINATOR REVIEW
+Freeze = DRAFT / NOT FROZEN
+Architect = PENDING
+F2 = NOT OPEN
+IMPLEMENTATION AUTHORIZATION = NO
+```
