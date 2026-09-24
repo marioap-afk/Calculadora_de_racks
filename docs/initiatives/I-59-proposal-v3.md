@@ -1,12 +1,12 @@
 # I-59 — Proposal V3 / Consensus Freeze DRAFT
 
-Frozen: NO
+Frozen: YES
 
-Status: PUBLISHED / PENDING COORDINATOR REVIEW
+Status: CONSENSUS FREEZE V3
 
-Coordinator: PENDING V3 REVIEW
+Coordinator: AGREED
 
-Architect: CHANGES REQUIRED / RE-REVIEW PENDING
+Architect: AGREED
 
 F1 RED: ESTABLISHED
 
