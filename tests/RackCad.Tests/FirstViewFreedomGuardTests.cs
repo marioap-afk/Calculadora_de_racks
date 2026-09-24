@@ -41,7 +41,9 @@ namespace RackCad.Tests
 
             Assert.Contains("initialAddress: window.InsertAddress", commands);
             Assert.Contains("address.Kind == DimensionViewKind.Planta", commands);
-            Assert.Contains("header.InitialAddress", menu);
+            Assert.Contains("RackViewBatchProducts.Header", menu);
+            Assert.Contains("header.Views", menu);
+            Assert.Contains("RackViewBatchExecution.Run", menu);
             Assert.DoesNotContain("DimensionViewKind", modules);
         }
 

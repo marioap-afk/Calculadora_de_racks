@@ -266,18 +266,20 @@ namespace RackCad.Plugin
             var config = window.Configuration;
             var name = string.IsNullOrWhiteSpace(config?.Name) ? embed.Name : config.Name;
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            // Insertar keeps G9b's whitespace cure and the editor session's accepted identity. Actualizar keeps the
+            // historic empty-only predicate so this visible ID18 path does not broaden the update contract.
+            var id = !window.UpdateOnly && string.IsNullOrWhiteSpace(embed.Id)
+                ? window.RackId
+                : string.IsNullOrEmpty(embed.Id) ? System.Guid.NewGuid().ToString() : embed.Id;
+            RackAuthorizedSiblingBatch authorized = null;
 
             if (!window.UpdateOnly)
             {
-                var insertId = string.IsNullOrWhiteSpace(embed.Id) ? System.Guid.NewGuid().ToString() : embed.Id;
-                RackUnsupportedSiblingInsert.Reject(document, blockId, embed, insertId);
-                return;
+                if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out authorized)) return;
             }
 
-            var id = string.IsNullOrEmpty(embed.Id) ? System.Guid.NewGuid().ToString() : embed.Id;
-
             // Keep each block's own Embed (not just its id) so its per-view unknown metadata is preserved on redraw (I-11).
-            var blocks = RackCommandSupport.FindRackBlocks(document, id);
+            var blocks = !window.UpdateOnly ? authorized.Blocks.ToList() : RackCommandSupport.FindRackBlocks(document, id);
             var lateralBlocks = blocks.Where(b => !RackCommandSupport.IsPlantaView(b.Embed)).ToList();
             var plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).ToList();
 
@@ -302,6 +304,24 @@ namespace RackCad.Plugin
             if (!window.UpdateOnly)
             {
                 RackUnitsGuard.WarnIfNotInches(document);
+            }
+
+            RackViewBatchProductSession<RackFrameConfiguration, RackFrameConfiguration,
+                RackCad.Application.Drawing.HeaderRunPlan> batchProducts = null;
+            RackCad.Application.Views.Batch.RackViewBatchRequest batchRequest = null;
+            if (!window.UpdateOnly)
+            {
+                batchProducts = RackViewBatchProducts.Header(
+                    document, config, id, name, embed, project, authorized.AuthoredInput);
+                batchRequest = RackViewBatchProductSession<RackFrameConfiguration, RackFrameConfiguration,
+                    RackCad.Application.Drawing.HeaderRunPlan>.Request(
+                        RackCad.Application.Views.Preparation.RackProductSourceKind.ExistingRack,
+                        RackSystemKind.Selective, id, window.InsertViews);
+                if (!batchProducts.PrepareAll(batchRequest, out var batchDiagnostic))
+                {
+                    editor.WriteMessage("\nRackCad: no se preparo la cola ID18; no se modifico ningun bloque. " + batchDiagnostic);
+                    return;
+                }
             }
 
             // Redraw with regen:false and regenerate ONCE below — a full drawing regen per view-block is pure waste.
@@ -337,24 +357,8 @@ namespace RackCad.Plugin
             // requested view via the jig. "Actualizar" (UpdateOnly) inserts nothing.
             if (!window.UpdateOnly)
             {
-                if (window.InsertView == RackEmbedDocument.ViewPlanta)
-                {
-                    // A NEW view inserted during an edit inherits the initiating (picked) envelope AND inner wrapper (I-11).
-                    var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta, embed, project);
-                    var inserted = new PlantaHeaderDrawService().DrawAndPlace(document, config, payload, name);
-                    editor.WriteMessage(inserted != null && inserted.Success
-                        ? "\nRackCad: vista planta insertada y ligada a la cabecera; RACKEDITAR sobre cualquier vista edita ambas."
-                        : "\nRackCad: no se pudo insertar la planta. " + (inserted?.ErrorMessage ?? string.Empty));
-                }
-                else
-                {
-                    var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral, embed, project);
-                    var inserted = new LateralHeaderDrawService().DrawAndPlace(document, config, payload, name);
-                    editor.WriteMessage(inserted != null && inserted.Success
-                        ? "\nRackCad: cabecera lateral insertada y ligada al mismo rack (mismo GUID)."
-                        : "\nRackCad: no se pudo insertar la cabecera. " + (inserted?.ErrorMessage ?? string.Empty));
-                }
-
+                RackViewBatchExecution.Run(document, batchProducts, batchRequest,
+                    _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
                 return;
             }
 

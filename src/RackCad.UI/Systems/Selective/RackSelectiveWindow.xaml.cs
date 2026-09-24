@@ -182,6 +182,7 @@ namespace RackCad.UI.Systems.Selective
 
         /// <summary>Insert/update contract, backed by the shared session (I-15).</summary>
         public bool InsertRequested => session.InsertRequested;
+        public RackInsertionRequest InsertionRequest => session.InsertionRequest;
 
         public SelectiveRackSystem SystemToInsert => (session.InsertionRequest as SelectiveInsertionRequest)?.System;
 
@@ -2543,6 +2544,26 @@ namespace RackCad.UI.Systems.Selective
         private void InsertLateral_Click(object sender, RoutedEventArgs e) => RequestDraw(RackEmbedDocument.ViewLateral, updateOnly: false);
 
         private void InsertPlanta_Click(object sender, RoutedEventArgs e) => RequestDraw(RackEmbedDocument.ViewPlanta, updateOnly: false);
+
+        private void InsertBatch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CommitPendingEditors() || !ConfirmPendingCellEdits()) return;
+            var system = BuildSystem(out var design, out var error);
+            if (system == null) { SetStatus(error, true); return; }
+            var options = new System.Collections.Generic.List<Views.RackViewBatchOption>();
+            for (var i = 0; i < SelectiveDepthLayout.Count(system); i++)
+                options.Add(new Views.RackViewBatchOption("Frontal · fondo " + (i + 1), RackViewAddress.Fondo(i)));
+            var cuts = new SelectiveLateralBuilder().Cortes(system, session.Catalog);
+            foreach (var cut in cuts)
+                options.Add(new Views.RackViewBatchOption("Lateral · poste " + (cut.PostIndex + 1), RackViewAddress.Post(cut.PostIndex)));
+            options.Add(new Views.RackViewBatchOption("Planta", RackViewAddress.Whole(DimensionViewKind.Planta)));
+            if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.SelectiveRack, options, out var views)) return;
+            session.Identity.SetName(NameBox.Text?.Trim());
+            session.SetModel(design, system);
+            session.RequestInsertViews(views, ctx => new SelectiveInsertionRequest(system, design, ctx.Id, ctx.Name,
+                RackViewCodec.Encode(RackSystemKind.SelectiveRack, ctx.Views[0]).View));
+            Close();
+        }
 
         /// <summary>"Actualizar": redraw the rack's already-drawn views in place with the current edits, inserting nothing.</summary>
         private void UpdateExisting_Click(object sender, RoutedEventArgs e) => RequestDraw(view: null, updateOnly: true);

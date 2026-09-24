@@ -6,11 +6,38 @@ using RackCad.Application.Views.Insertion;
 
 namespace RackCad.Plugin.Views
 {
-    /// <summary>Fail-closed G9b edge for kinds whose AUTH-13 comparator is not yet demonstrated.</summary>
+    internal sealed class RackAuthorizedSiblingBatch
+    {
+        internal RackAuthorizedSiblingBatch(
+            RackAuthoredInput authoredInput,
+            System.Collections.Generic.IReadOnlyList<(ObjectId BlockId, RackEmbedDocument Embed)> blocks)
+        {
+            AuthoredInput = authoredInput;
+            Blocks = blocks;
+        }
+
+        internal RackAuthoredInput AuthoredInput { get; }
+        internal System.Collections.Generic.IReadOnlyList<(ObjectId BlockId, RackEmbedDocument Embed)> Blocks { get; }
+    }
+
+    /// <summary>I-55 consumer of the demonstrated I-58 AUTH-13 comparators.</summary>
     internal static class RackUnsupportedSiblingInsert
     {
-        internal static void Reject(Document document, ObjectId selected, RackEmbedDocument source, string rackId)
+        internal static bool TryAuthorize(Document document, ObjectId selected, RackEmbedDocument source, string rackId)
         {
+            if (!TryAuthorize(document, selected, source, rackId, out var authorized)) return false;
+            var comparison = CompareWithFoundationAuthority(source?.Kind, authorized.AuthoredInput);
+            if (comparison.outcome == RackAuthoredComparisonOutcome.Single) return true;
+            document.Editor.WriteMessage("\nRackCad: no se inserto ninguna vista: "
+                + comparison.outcome + ": " + comparison.diagnostic);
+            return false;
+        }
+
+        internal static bool TryAuthorize(
+            Document document, ObjectId selected, RackEmbedDocument source, string rackId,
+            out RackAuthorizedSiblingBatch authorized)
+        {
+            authorized = null;
             var originalIdentityIsAttributable = string.Equals(source?.Kind, RackEmbedDocument.KindCabecera,
                 System.StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(source?.Id);
             var snapshot = RackSiblingScan.Capture(document, selected, rackId, source?.Id,
@@ -19,36 +46,59 @@ namespace RackCad.Plugin.Views
             if (!properties.Accepted)
             {
                 document.Editor.WriteMessage("\nRackCad: no se inserto ninguna vista: " + properties.Diagnostic);
-                return;
+                return false;
             }
 
-            document.Editor.WriteMessage("\nRackCad: no se inserto ninguna vista: "
-                + CompareWithFoundationAuthority(source?.Kind));
+            var siblings = new System.Collections.Generic.List<RackAuthoredSibling>();
+            var store = new RackEmbedStore();
+            foreach (var member in snapshot.Membership.AuthoredGateMembers)
+            {
+                if (!snapshot.Envelopes.TryGetValue(member.Fact.DefinitionKey, out var envelope))
+                {
+                    document.Editor.WriteMessage("\nRackCad: no se inserto ninguna vista: AUTH-13: unreadable sibling envelope.");
+                    return false;
+                }
+                siblings.Add(new RackAuthoredSibling(
+                    member.Fact.DefinitionKey,
+                    envelope.Kind,
+                    store.Serialize(envelope),
+                    envelope.Design));
+            }
+            var complete = true;
+            foreach (var member in snapshot.Membership.Members)
+                if (member.Kind == RackCad.Application.Views.Redraw.RackSiblingMembershipKind.BlockingUnreadable)
+                    complete = false;
+            var blocks = new System.Collections.Generic.List<(ObjectId BlockId, RackEmbedDocument Embed)>();
+            foreach (var member in snapshot.Membership.Members)
+                if (snapshot.Definitions.TryGetValue(member.Fact.DefinitionKey, out var definition)
+                    && snapshot.Envelopes.TryGetValue(member.Fact.DefinitionKey, out var envelope))
+                    blocks.Add((definition, envelope));
+            if (blocks.Count == 0 && source != null) blocks.Add((selected, source));
+            authorized = new RackAuthorizedSiblingBatch(
+                new RackAuthoredInput(rackId, siblings, complete, "RackSiblingScan/Capture"), blocks);
+            return true;
         }
 
-        private static string CompareWithFoundationAuthority(string kind)
+        private static (RackAuthoredComparisonOutcome outcome, string diagnostic) CompareWithFoundationAuthority(
+            string kind, RackAuthoredInput input)
         {
-            IRackAuthoredComparatorPort<object, object> comparator;
             switch (kind)
             {
                 case RackEmbedDocument.KindDynamic:
-                    comparator = RackAuthoredComparatorPorts.Dynamic<object, object>();
-                    break;
+                    return Outcome(RackAuthoredComparatorPorts.Dynamic().Compare(input));
                 case RackEmbedDocument.KindPushBack:
-                    comparator = RackAuthoredComparatorPorts.PushBack<object, object>();
-                    break;
+                    return Outcome(RackAuthoredComparatorPorts.PushBack().Compare(input));
                 case RackEmbedDocument.KindCantilever:
-                    comparator = RackAuthoredComparatorPorts.Cantilever<object, object>();
-                    break;
+                    return Outcome(RackAuthoredComparatorPorts.Cantilever().Compare(input));
                 case RackEmbedDocument.KindCabecera:
-                    comparator = RackAuthoredComparatorPorts.Cabecera<object, object>();
-                    break;
+                    return Outcome(RackAuthoredComparatorPorts.Cabecera().Compare(input));
                 default:
-                    return "AUTHORED_UNREADABLE: tipo sin comparador AUTH-13 demostrado.";
+                    return (RackAuthoredComparisonOutcome.Unreadable,
+                        "AUTH-13: tipo sin comparador demostrado.");
             }
-
-            var comparison = comparator.Compare(null);
-            return comparison.Outcome + ": " + comparison.Diagnostic;
         }
+
+        private static (RackAuthoredComparisonOutcome outcome, string diagnostic) Outcome<T>(
+            RackAuthoredComparisonResult<T> result) => (result.Outcome, result.Diagnostic);
     }
 }

@@ -174,6 +174,19 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void PlacementWarningsAreAggregatedWithoutChangingCompletedOutcome()
+        {
+            var port = new Port { PlacementWarningAt = 1 };
+            var plan = RackViewBatchPlan<string>.Execute(New(Front, Lateral), port);
+
+            Assert.Equal(RackViewBatchOutcome.COMPLETED, plan.Outcome);
+            var warning = Assert.Single(plan.Report.Warnings);
+            Assert.Equal("MISSING_REQUIRED_BLOCK", warning.Code);
+            Assert.Equal(Lateral, warning.Address);
+            Assert.Equal(2, plan.Report.PlacedCount);
+        }
+
+        [Fact]
         public void FlowBedMultiViewIsRejectedBeforeCallbacks()
         {
             var port = new Port();
@@ -236,6 +249,7 @@ namespace RackCad.Tests
             public int StopPlacementAt { get; set; } = -1;
             public int ThrowPlacementAt { get; set; } = -1;
             public int WarningAt { get; set; } = -1;
+            public int PlacementWarningAt { get; set; } = -1;
             public bool GateAccepted { get; set; } = true;
             public int RedrawCalls { get; private set; }
             public RackViewBatchRedrawResult Redraw { get; set; } = RackViewBatchRedrawResult.Applied();
@@ -281,7 +295,9 @@ namespace RackCad.Tests
                 if (index == CancelPlacementAt) return RackViewBatchPlacementResult.Cancelled();
                 if (index == StopPlacementAt) return RackViewBatchPlacementResult.Stopped();
                 Placed.Add(item.Address);
-                return RackViewBatchPlacementResult.Placed();
+                return RackViewBatchPlacementResult.Placed(index == PlacementWarningAt
+                    ? new[] { new RackViewBatchWarning("MISSING_REQUIRED_BLOCK", item.Address, "KEY") }
+                    : null);
             }
         }
     }

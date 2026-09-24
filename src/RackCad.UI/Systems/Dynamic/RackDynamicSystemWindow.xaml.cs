@@ -89,6 +89,7 @@ namespace RackCad.UI.Systems.Dynamic
         /// <summary>Set when the user asks to draw the system in AutoCAD; the host command draws it after this
         /// window (and the menu) close, so the placement jig has the editor free. Backed by the shared session (I-15).</summary>
         public bool InsertRequested => session.InsertRequested;
+        public RackInsertionRequest InsertionRequest => session.InsertionRequest;
 
         public DynamicRackSystem SystemToInsert => (session.InsertionRequest as DynamicInsertionRequest)?.System;
 
@@ -3390,6 +3391,31 @@ namespace RackCad.UI.Systems.Dynamic
 
         private void InsertPlanta_Click(object sender, RoutedEventArgs e)
             => RequestDraw(RackEmbedDocument.ViewPlanta, -1, updateOnly: false);
+
+        private void InsertBatch_Click(object sender, RoutedEventArgs e)
+        {
+            if (system == null) { SetStatus("Genera la vista antes de insertar en AutoCAD.", true); return; }
+            if (!TryValidateOptionalInputs(out var invalid)) { SetStatus(invalid, true); return; }
+            if (!Recompose()) return;
+            var options = new System.Collections.Generic.List<Views.RackViewBatchOption>
+            {
+                new Views.RackViewBatchOption("Frontal · salida", RackViewAddress.FlowEnd(RackFlowEnd.Exit)),
+                new Views.RackViewBatchOption("Frontal · entrada", RackViewAddress.FlowEnd(RackFlowEnd.Entrance)),
+                new Views.RackViewBatchOption("Planta", RackViewAddress.Whole(DimensionViewKind.Planta))
+            };
+            foreach (var cut in new DynamicSystemLateralBuilder().Cortes(system, catalog))
+                options.Insert(options.Count - 1, new Views.RackViewBatchOption(
+                    "Lateral · poste " + (cut.PostIndex + 1), RackViewAddress.Post(cut.PostIndex)));
+            if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.PalletFlow, options, out var views)) return;
+            session.Identity.SetName(NameBox?.Text?.Trim());
+            session.SetModel(design, system);
+            session.RequestInsertViews(views, ctx =>
+            {
+                var syntax = RackViewCodec.Encode(RackSystemKind.PalletFlow, ctx.Views[0]);
+                return new DynamicInsertionRequest(system, design, ctx.Id, ctx.Name, syntax.View, syntax.Section, SourceProjectToInsert);
+            });
+            Close();
+        }
 
         private void UpdateExisting_Click(object sender, RoutedEventArgs e)
             => RequestDraw(null, -1, updateOnly: true);

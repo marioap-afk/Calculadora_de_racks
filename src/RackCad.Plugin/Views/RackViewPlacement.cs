@@ -21,6 +21,9 @@ namespace RackCad.Plugin.Views
         internal static RackSingleViewPlacementResult<ObjectId> PlaceSelective(Document document, RackPreparedProductView<HeaderRunPlan> product)
             => PlaceHeader(document, product, RackEmbedDocument.KindSelective);
         internal static RackSingleViewPlacementResult<ObjectId> PlaceSelective(
+            Document document, RackPreparedProductView<HeaderRunPlan> product, bool regen)
+            => PlaceHeader(document, product, RackEmbedDocument.KindSelective, regen: regen);
+        internal static RackSingleViewPlacementResult<ObjectId> PlaceSelective(
             Document document,
             RackPreparedProductView<HeaderRunPlan> product,
             Action<Transaction> beforeCommit,
@@ -28,22 +31,32 @@ namespace RackCad.Plugin.Views
             => PlaceHeader(document, product, RackEmbedDocument.KindSelective, beforeCommit, afterCommit);
         internal static RackSingleViewPlacementResult<ObjectId> PlaceDynamic(Document document, RackPreparedProductView<HeaderRunPlan> product)
             => PlaceHeader(document, product, RackEmbedDocument.KindDynamic);
+        internal static RackSingleViewPlacementResult<ObjectId> PlaceDynamic(Document document, RackPreparedProductView<HeaderRunPlan> product, bool regen)
+            => PlaceHeader(document, product, RackEmbedDocument.KindDynamic, regen: regen);
         internal static RackSingleViewPlacementResult<ObjectId> PlacePushBack(Document document, RackPreparedProductView<HeaderRunPlan> product)
             => PlaceHeader(document, product, RackEmbedDocument.KindPushBack);
+        internal static RackSingleViewPlacementResult<ObjectId> PlacePushBack(Document document, RackPreparedProductView<HeaderRunPlan> product, bool regen)
+            => PlaceHeader(document, product, RackEmbedDocument.KindPushBack, regen: regen);
         internal static RackSingleViewPlacementResult<ObjectId> PlaceHeader(Document document, RackPreparedProductView<HeaderRunPlan> product)
             => PlaceHeader(document, product, RackEmbedDocument.KindCabecera);
+        internal static RackSingleViewPlacementResult<ObjectId> PlaceHeader(Document document, RackPreparedProductView<HeaderRunPlan> product, bool regen)
+            => PlaceHeader(document, product, RackEmbedDocument.KindCabecera, regen: regen);
         internal static RackSingleViewPlacementResult<ObjectId> PlaceFlowBed(Document document, RackPreparedProductView<HeaderRunPlan> product)
             => PlaceHeader(document, product, RackEmbedDocument.KindCama);
         internal static RackSingleViewPlacementResult<ObjectId> PlaceCantilever(Document document, RackPreparedProductView<CantileverViewPlan> product)
             => RackSingleViewPlacement.Place(product, new NoRequirements(),
                 new CantileverMaterializer(document, RackEmbedDocument.KindCantilever));
+        internal static RackSingleViewPlacementResult<ObjectId> PlaceCantilever(Document document, RackPreparedProductView<CantileverViewPlan> product, bool regen)
+            => RackSingleViewPlacement.Place(product, new NoRequirements(),
+                new CantileverMaterializer(document, RackEmbedDocument.KindCantilever, regen));
 
         private static RackSingleViewPlacementResult<ObjectId> PlaceHeader(
             Document document, RackPreparedProductView<HeaderRunPlan> product, string kind,
             Action<Transaction> beforeCommit = null,
-            Action afterCommit = null)
+            Action afterCommit = null,
+            bool regen = true)
             => RackSingleViewPlacement.Place(product, new HeaderRequirements(document),
-                new HeaderMaterializer(document, kind, beforeCommit, afterCommit));
+                new HeaderMaterializer(document, kind, beforeCommit, afterCommit, regen));
 
         private sealed class HeaderRequirements : IRackSingleViewRequirementEvaluator<HeaderRunPlan>
         {
@@ -89,9 +102,10 @@ namespace RackCad.Plugin.Views
             private readonly Document document;
             private readonly Action<Transaction> beforeCommit;
             private readonly Action afterCommit;
+            private readonly bool regen;
             internal HeaderMaterializer(Document document, string kind,
-                Action<Transaction> beforeCommit, Action afterCommit)
-            { this.document = document; ExpectedKind = kind; this.beforeCommit = beforeCommit; this.afterCommit = afterCommit; }
+                Action<Transaction> beforeCommit, Action afterCommit, bool regen)
+            { this.document = document; ExpectedKind = kind; this.beforeCommit = beforeCommit; this.afterCommit = afterCommit; this.regen = regen; }
             public string ExpectedKind { get; }
             public bool CanPlace(RackPreparedProductView<HeaderRunPlan> product, out string diagnostic)
             { diagnostic = document == null ? "NO_ACTIVE_DOCUMENT" : null; return document != null; }
@@ -104,16 +118,25 @@ namespace RackCad.Plugin.Views
             }
             public RackSingleViewReference<ObjectId> Place(RackSingleViewDefinition<ObjectId> definition)
             {
-                var id = beforeCommit == null
-                    ? BlockPlacement.PlaceDefinitionWithoutCleanup(document, definition.Handle)
-                    : BlockPlacement.PlaceDefinitionWithoutCleanup(document, definition.Handle, beforeCommit);
-                return id.IsNull ? RackSingleViewReference<ObjectId>.Cancelled() : RackSingleViewReference<ObjectId>.Placed(id);
+                if (beforeCommit != null)
+                {
+                    var id = BlockPlacement.PlaceDefinitionWithoutCleanup(document, definition.Handle, beforeCommit);
+                    return id.IsNull ? RackSingleViewReference<ObjectId>.Cancelled() : RackSingleViewReference<ObjectId>.Placed(id);
+                }
+                var result = BlockPlacement.PlaceDefinitionWithStatus(document, definition.Handle);
+                if (result.Status == Autodesk.AutoCAD.EditorInput.PromptStatus.OK)
+                    return RackSingleViewReference<ObjectId>.Placed(result.ReferenceId);
+                if (result.Status == Autodesk.AutoCAD.EditorInput.PromptStatus.None)
+                    return RackSingleViewReference<ObjectId>.Stopped();
+                if (result.Status == Autodesk.AutoCAD.EditorInput.PromptStatus.Cancel)
+                    return RackSingleViewReference<ObjectId>.Cancelled();
+                return RackSingleViewReference<ObjectId>.Failed("PROMPT_STATUS_" + result.Status);
             }
             public RackSingleViewCleanupResult Cleanup(RackSingleViewDefinition<ObjectId> definition)
                 => BlockPlacement.TryCleanupDefinition(document, definition.Handle);
             public void Complete(RackPreparedProductView<HeaderRunPlan> product, ObjectId reference)
             {
-                if (afterCommit == null) SystemBlockWriter.ApplyRegen(document, true);
+                if (afterCommit == null) SystemBlockWriter.ApplyRegen(document, regen);
                 else afterCommit();
             }
         }
@@ -121,7 +144,9 @@ namespace RackCad.Plugin.Views
         private sealed class CantileverMaterializer : IRackSingleViewMaterializer<CantileverViewPlan, ObjectId, ObjectId>
         {
             private readonly Document document;
-            internal CantileverMaterializer(Document document, string kind) { this.document = document; ExpectedKind = kind; }
+            private readonly bool regen;
+            internal CantileverMaterializer(Document document, string kind, bool regen = true)
+            { this.document = document; ExpectedKind = kind; this.regen = regen; }
             public string ExpectedKind { get; }
             public bool CanPlace(RackPreparedProductView<CantileverViewPlan> product, out string diagnostic)
             { diagnostic = document == null ? "NO_ACTIVE_DOCUMENT" : null; return document != null; }
@@ -139,13 +164,19 @@ namespace RackCad.Plugin.Views
             }
             public RackSingleViewReference<ObjectId> Place(RackSingleViewDefinition<ObjectId> definition)
             {
-                var id = BlockPlacement.PlaceDefinitionWithoutCleanup(document, definition.Handle);
-                return id.IsNull ? RackSingleViewReference<ObjectId>.Cancelled() : RackSingleViewReference<ObjectId>.Placed(id);
+                var result = BlockPlacement.PlaceDefinitionWithStatus(document, definition.Handle, "\nPunto de insercion de la vista Cantilever: ");
+                if (result.Status == Autodesk.AutoCAD.EditorInput.PromptStatus.OK)
+                    return RackSingleViewReference<ObjectId>.Placed(result.ReferenceId);
+                if (result.Status == Autodesk.AutoCAD.EditorInput.PromptStatus.None)
+                    return RackSingleViewReference<ObjectId>.Stopped();
+                if (result.Status == Autodesk.AutoCAD.EditorInput.PromptStatus.Cancel)
+                    return RackSingleViewReference<ObjectId>.Cancelled();
+                return RackSingleViewReference<ObjectId>.Failed("PROMPT_STATUS_" + result.Status);
             }
             public RackSingleViewCleanupResult Cleanup(RackSingleViewDefinition<ObjectId> definition)
                 => BlockPlacement.TryCleanupDefinition(document, definition.Handle);
             public void Complete(RackPreparedProductView<CantileverViewPlan> product, ObjectId reference)
-                => SystemBlockWriter.ApplyRegen(document, true);
+                => SystemBlockWriter.ApplyRegen(document, regen);
         }
     }
 }

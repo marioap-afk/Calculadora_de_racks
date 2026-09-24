@@ -16,6 +16,7 @@ using RackCad.Application.Views.Placement;
 using RackCad.Application.Views.Preparation;
 using RackCad.Application.Views.Redraw;
 using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Selective;
 using RackCad.Plugin.Systems.Shared;
@@ -36,12 +37,16 @@ namespace RackCad.Plugin
             private readonly string rackId;
             private readonly string rackName;
             private readonly string requestedView;
+            private readonly RackViewAddress? requestedAddress;
             private readonly string baseName;
             private readonly SelectiveViewAvailabilityFacts availability;
+            private readonly IRackAuthoredComparatorPort<SelectiveAuthoredComparisonInput, SelectivePalletDesignDocument> comparator;
+            private readonly RackProductPreparer<SelectivePalletDesignDocument, SelectiveRackSystem, HeaderRunPlan> preparer;
             private RackSiblingScanSnapshot snapshot;
 
             internal SelectiveInsertPort(Document document, ObjectId selected, RackEmbedDocument source,
-                SelectiveRackSystem system, string authoredJson, string rackId, string rackName, string requestedView)
+                SelectiveRackSystem system, string authoredJson, string rackId, string rackName, string requestedView,
+                RackViewAddress? requestedAddress = null)
             {
                 this.document = document;
                 this.selected = selected;
@@ -51,11 +56,24 @@ namespace RackCad.Plugin
                 this.rackId = rackId;
                 this.rackName = rackName;
                 this.requestedView = requestedView;
+                this.requestedAddress = requestedAddress;
                 baseName = string.IsNullOrWhiteSpace(rackName) ? null : rackName.Trim();
                 var catalog = LateralHeaderDrawService.LoadCatalog();
                 availability = new SelectiveViewAvailabilityFacts(
                     SelectiveDepthLayout.Count(system),
                     new SelectiveLateralBuilder().Cortes(system, catalog).Select(cut => cut.PostIndex));
+                comparator = new CachedComparator(RackAuthoredComparatorPorts.Selective());
+                preparer = new RackProductPreparer<SelectivePalletDesignDocument, SelectiveRackSystem, HeaderRunPlan>(
+                    new CachedResolve(RackResolvePorts.Selective<SelectivePalletDesignDocument, SelectiveRackSystem>(_ => system)),
+                    RackViewPreparationPorts.Selective<SelectiveRackSystem, HeaderRunPlan>(
+                        (resolved, target) => BuildPlan(resolved, target, catalog),
+                        target => target.Kind == DimensionViewKind.Planta && target.Variant.Kind == RackViewVariantKind.Whole
+                            || target.Kind == DimensionViewKind.Frontal && target.Variant.Kind == RackViewVariantKind.Fondo
+                               && target.Variant.Index < availability.FondoCount
+                            || target.Kind == DimensionViewKind.Lateral && target.Variant.Kind == RackViewVariantKind.Post,
+                        RackBlockRequirementExtractors.HeaderRun),
+                    (resolved, target) => SelectiveViewFrameAdapter.Resolve(resolved, catalog, target),
+                    (resolved, target) => ViewName(resolved, target));
             }
 
             public RackSiblingMembershipSnapshot ScanAndClassifyOnce()
@@ -71,6 +89,13 @@ namespace RackCad.Plugin
 
             public bool TryChooseVariant(out RackViewAddress variant)
             {
+                if (requestedAddress.HasValue)
+                {
+                    variant = requestedAddress.Value;
+                    var syntax = RackViewCodec.Encode(RackSystemKind.SelectiveRack, variant);
+                    var decoded = RackViewCodec.Decode(syntax.Kind, syntax.View, syntax.Section);
+                    return RackViewAvailability.Evaluate(decoded, availability).Status == RackViewAvailabilityStatus.Available;
+                }
                 if (string.Equals(requestedView, RackEmbedDocument.ViewPlanta, StringComparison.OrdinalIgnoreCase))
                 {
                     variant = RackViewAddress.Whole(DimensionViewKind.Planta);
@@ -127,19 +152,7 @@ namespace RackCad.Plugin
                 if (!accepted.IsAccepted)
                 { prepared = null; diagnostic = accepted.CauseCode; return false; }
 
-                var catalog = LateralHeaderDrawService.LoadCatalog();
-                var preparer = new RackProductPreparer<SelectivePalletDesignDocument, SelectiveRackSystem, HeaderRunPlan>(
-                    RackResolvePorts.Selective<SelectivePalletDesignDocument, SelectiveRackSystem>(_ => system),
-                    RackViewPreparationPorts.Selective<SelectiveRackSystem, HeaderRunPlan>(
-                        (resolved, target) => BuildPlan(resolved, target, catalog),
-                        target => target.Kind == DimensionViewKind.Planta && target.Variant.Kind == RackViewVariantKind.Whole
-                            || target.Kind == DimensionViewKind.Frontal && target.Variant.Kind == RackViewVariantKind.Fondo
-                               && target.Variant.Index < availability.FondoCount
-                            || target.Kind == DimensionViewKind.Lateral && target.Variant.Kind == RackViewVariantKind.Post,
-                        RackBlockRequirementExtractors.HeaderRun),
-                    (resolved, target) => SelectiveViewFrameAdapter.Resolve(resolved, catalog, target),
-                    (resolved, target) => ViewName(resolved, target));
-                var result = preparer.PrepareExisting(accepted.Intent, RackAuthoredComparatorPorts.Selective());
+                var result = preparer.PrepareExisting(accepted.Intent, comparator);
                 prepared = result.Product;
                 diagnostic = result.IsSuccess ? null : result.CauseCode + ": " + result.Diagnostic;
                 return result.IsSuccess;
@@ -279,6 +292,33 @@ namespace RackCad.Plugin
                 RackEmbedDocument source, string rackId, string rackName, string view, int section, string design)
                 => RackEmbedComposer.Compose(source, RackEmbedDocument.KindSelective, rackId, rackName,
                     view, section, design);
+
+            private sealed class CachedComparator
+                : IRackAuthoredComparatorPort<SelectiveAuthoredComparisonInput, SelectivePalletDesignDocument>
+            {
+                private readonly IRackAuthoredComparatorPort<SelectiveAuthoredComparisonInput, SelectivePalletDesignDocument> inner;
+                private RackAuthoredComparisonResult<SelectivePalletDesignDocument> result;
+                internal CachedComparator(IRackAuthoredComparatorPort<SelectiveAuthoredComparisonInput, SelectivePalletDesignDocument> inner)
+                    => this.inner = inner;
+                public string Kind => inner.Kind;
+                public RackAuthoredComparisonResult<SelectivePalletDesignDocument> Compare(SelectiveAuthoredComparisonInput input)
+                    => result ?? (result = inner.Compare(input));
+            }
+
+            private sealed class CachedResolve : IRackResolvePort<SelectivePalletDesignDocument, SelectiveRackSystem>
+            {
+                private readonly IRackResolvePort<SelectivePalletDesignDocument, SelectiveRackSystem> inner;
+                private RackResolveResult<SelectiveRackSystem> result;
+                private bool hasResult;
+                internal CachedResolve(IRackResolvePort<SelectivePalletDesignDocument, SelectiveRackSystem> inner)
+                    => this.inner = inner;
+                public string Kind => inner.Kind;
+                public RackResolveResult<SelectiveRackSystem> Resolve(SelectivePalletDesignDocument input)
+                {
+                    if (!hasResult) { result = inner.Resolve(input); hasResult = true; }
+                    return result;
+                }
+            }
         }
     }
 }
