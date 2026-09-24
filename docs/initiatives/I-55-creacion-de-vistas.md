@@ -436,3 +436,15 @@ lista ordenada sin romper las solicitudes single-view. Flow Bed multivista se re
 No hay UI visible, dialogo, comando o driver Plugin. ID18 queda `CONTRACT COMPLETE / NOT YET USER-VISIBLE`; ID19 y
 AUTH-15 permanecen fuera. Foundation y schema no cambian. Owner Validation no es requerida para este gate. G11 queda
 completo y G12 abierto; G12 no se inicia en esta sesion.
+
+# Estado G12 (2026-09-23)
+
+G12 hace visible ID18 para Selective, Dynamic, Push Back, Cantilever y Cabecera mediante un dialogo/presenter tipado y
+un driver Plugin que consume el contrato G11. La cola conserva orden y variantes, prepara todo antes de escribir,
+reutiliza AUTH-13/Resolve, ejecuta una fase de redraw de hermanas y coloca cada vista por G8. Cancel/None/Error quedan
+separados; missing blocks conserva `place + report`. Flow Bed no adquiere batch.
+
+I-58 resuelve `G12-CR-01`; I-55 consume los comparators Foundation sin duplicarlos. El receipt durable es
+[`I-55-g12-id18-ui-driver.md`](I-55-g12-id18-ui-driver.md). Foundation y schema permanecen intactos; ID19 y AUTH-15
+siguen fuera. Owner Validation `OV-ID18` queda diferida al Candidato. G12 queda completo y G14 abierto; G14 no se
+inicia en esta sesion. G15 permanece bloqueado por AUTH-15/I-52.
