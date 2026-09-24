@@ -1,6 +1,6 @@
 # I-59 — Shared View Foundation Placement & Block Requirement Facts
 
-Status: F2 COMPLETE / COORDINATOR ACCEPTED; F3 COMPLETE / COORDINATOR ACCEPTED; F4 COMPLETE / COORDINATOR ACCEPTED; READY-01..05 COMPLETE; READY-06 NOT STARTED
+Status: FINAL CANDIDATE VALIDATED / OWNER APPROVED; DOCUMENTARY CLOSURE PREPARED; INTEGRATION PENDING
 
 Workflow: V2
 
@@ -107,9 +107,10 @@ Implementation authorization requires, on the same Freeze:
 - Coordinator = AGREED
 - Architect = AGREED
 
-Both agreements exist on the validated Consensus Freeze V3. Implementation authorization was active
-only for gates explicitly opened by the Coordinator; F2, F3 and F4 are accepted. READY is open,
-READY-01..05 are complete and READY-06 has not started.
+Both agreements exist on the validated Consensus Freeze V3. Implementation authorization was active only
+for gates explicitly opened by the Coordinator. F2, F3, F4 and READY-01..09 are complete; Coordinator and
+Architect found the same Candidate CONFORMING, and Owner Validation assigned by A-1 is PASS. No
+implementation authorization remains open.
 
 ## Functional gates
 
@@ -143,6 +144,9 @@ I-55 then reconciles against new main and resumes G14 without cherry-pick.
 - A-1 Owner Validation assignment: [I-59-A-1.md](I-59-A-1.md)
 - CR59-F4-01 complementary evidence: [I-59-cr59-f4-01-amendment.md](../automation/evidence/I-59-f4/I-59-cr59-f4-01-amendment.md)
 - READY-01..05 review package: [I-59-ready-01-05-review-package.md](../automation/evidence/I-59-ready/I-59-ready-01-05-review-package.md)
+- READY-07..09 Candidate declaration: [I-59-ready-07-09-candidate-declaration.md](../automation/evidence/I-59-ready/I-59-ready-07-09-candidate-declaration.md)
+- Candidate automation and Owner Validation: [I-59-final-candidate-owner-validation-package.md](../automation/evidence/I-59-ready/I-59-final-candidate-owner-validation-package.md)
+- Canonical final evidence: [I-59-evidence.md](../automation/evidence/I-59-evidence.md)
 
 ```text
 F1 RED = ESTABLISHED
@@ -157,10 +161,10 @@ F2 = COMPLETE / COORDINATOR ACCEPTED
 CR59-F3-01 = RESOLVED
 F3 = COMPLETE / COORDINATOR ACCEPTED
 CT59-16 = PASS
-CT59-17 = PASS / CANDIDATE RE-VERIFICATION REQUIRED
+CT59-17 = PASS / CANDIDATE RE-VERIFICATION COMPLETE
 I-55 G14 FOUNDATION READINESS = READY TO CONSUME AFTER I-59 INTEGRATION
 I-55 G14 = NOT UNBLOCKED
-OWNER VALIDATION = REQUIRED / FUTURE CANDIDATE
+OWNER VALIDATION = PASS
 CR59-F4-01 = RESOLVED
 amendment_refs = A-1
 A-n = A-1
@@ -172,8 +176,12 @@ READY-04 = PASS / REBASE NONE
 READY_PRODUCT_SHA = d905572e9d3faf7bedcb6c22abe51c36da6e11eb
 CT59-17 CANDIDATE-PREPARATION RE-VERIFICATION = PASS
 READY-05 = PASS
-READY-06 = NOT STARTED
-FINAL_CANDIDATE_SHA = DOES NOT EXIST
-OWNER VALIDATION = REQUIRED / NOT EXECUTED
-IMPLEMENTATION AUTHORIZATION = NO / READY-06 NOT STARTED
+READY-06 = COMPLETE / COORDINATOR + ARCHITECT CONFORMING
+READY-07 = PASS
+READY-08 = PASS
+READY-09 = PASS
+FINAL CANDIDATE = VALIDATED
+CLOSURE = PREPARED / OWN EVIDENCE REQUIRED
+INTEGRATION = PENDING
+IMPLEMENTATION AUTHORIZATION = NO
 ```

@@ -235,3 +235,27 @@ FOUNDATIONS PUBLICATION = NOT PERFORMED
 INTEGRATION = NOT STARTED
 TAG = NOT CREATED
 ```
+
+## Resultado recibido del Owner — cierre de la asignacion A-1
+
+Esta seccion append-only sustituye el estado pendiente anterior sin reescribir la preparacion ni la
+evidencia historica. El Owner comunico explicitamente el siguiente veredicto para el Candidate, DLL,
+AutoCAD y biblioteca identificados en este documento:
+
+```text
+OV-I59-01 = PASS
+OV-I59-02 = PASS
+OV-I59-03 = PASS
+OV-I59-04 = PASS
+
+Owner verdict = APPROVED
+OWNER VALIDATION = PASS
+Failures observed = NONE
+Owner active duration = UNKNOWN / NOT SUPPLIED; no inferida
+```
+
+La validacion corresponde a AutoCAD 2025, al DLL con InformationalVersion
+`1.0.0+d905572e9d3faf7bedcb6c22abe51c36da6e11eb` y SHA-256
+`FA8E1BBA74E5EEC17A2D98905B11F238B2921EBA890D0D684183E908E495FEEC`, y a la biblioteca
+`D:\Base_de_datos_AutoCAD_V.0.dwg` con SHA-256
+`B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8`.

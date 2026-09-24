@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-21**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-24**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -11,6 +11,20 @@
 RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar racks industriales
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
+
+**I-59 — Shared View Foundation Placement & Block Requirement Facts — CANDIDATE VALIDADO;
+OWNER APPROVED; CIERRE DOCUMENTAL PREPARADO PARA INTEGRACION** el **2026-09-24**. AUTH-08 publica
+hechos neutrales de placement/source-transform capturados en Plugin y clasificados en Application;
+AUTH-12 conserva requisitos por pieza y `RackViewAddress` tipada y separa presencia del dibujo activo de
+disponibilidad/presencia en la biblioteca externa. V1 coexiste, persistence/schema son NONE, AUTH-15 y
+policy de consumidor permanecen fuera. F1..F4, READY-01..09 y conformidad Coordinator + Architect estan
+completos; la evidencia automatizada, cobertura exacta y OV-I59-01..04 quedaron PASS sobre el mismo
+Candidate. La [evidencia canonica](automation/evidence/I-59-evidence.md) conserva identidades y resultados.
+
+Este cierre publica la entrada conformada en FOUNDATIONS. Todavia faltan su evidencia propia, merge
+serializado, CI post-merge con cobertura, verificacion diferida de cobertura del Candidate, cleanup y el
+receipt anotado `integration/I-59`. I-55 G14 permanece bloqueado hasta que ese tag valido apunte al merge
+verificado y alcanzable desde `origin/main`.
 
 **I-56 — Initiative Workflow V2 — EFFECTIVE; RONDA CORRECTIVA V1 ABIERTA** el **2026-09-17**
 (`docs/initiative-workflow-v2`, todavía gobernada por **Workflow V1**). Workflow V2 está efectivo desde
@@ -1414,6 +1428,13 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-59 (2026-09-24) — CANDIDATE PASS / OWNER APPROVED.** Core Full y UI Full locales, builds Debug
+de UI y Plugin, CI exacta de push y cobertura exacta del Candidate quedaron PASS. El Owner aprobo en
+AutoCAD 2025 OV-I59-01..04 sobre el DLL y la biblioteca externa identificados en la
+[evidencia canonica](automation/evidence/I-59-evidence.md), sin fallos observados. La duracion activa del
+Owner no fue suministrada y permanece UNKNOWN; no se infiere. Esta evidencia no acredita el futuro SHA
+documental de cierre, que requiere sus propias suites, builds y CI antes del merge.
+
 **I-57 (2026-09-21) — CANDIDATE PASS.** El Owner valido en AutoCAD 2025 el Candidate exacto
 `419bf7d82569bc0740db3db39bf6b3ee8fd788d5`; no suministro el build exacto. Selectivo, Dinamico, Push Back,
 Cantilever, Cabecera, Cama, BOM / `RACKLISTA`, importacion, `RACKDUPLICAR`, save/reopen, commands/messages y
@@ -1839,6 +1860,10 @@ veredicto.
 
 ## 3. Problemas y riesgos activos
 
+- **I-59 aun NO integrada.** Su Candidate y Owner Validation estan completos, pero I-55 G14 no puede
+  consumir la Foundation hasta que pasen evidencia propia del cierre, merge, CI post-merge, cobertura,
+  cleanup y un receipt anotado `integration/I-59` valido. AUTH-15 y la policy I-55 permanecen fuera.
+
 - **I-57 integrada aun NO.** AUTH-15 permanece fuera. I-52 conserva reflection, mirror read-set y policy de
   RACKMIRROR; I-55 conserva ID17/18/19, Relative Frame Window, Rigid/Orthographic, CQ-01, placement policy, UX y
   materializacion. Ningun consumidor se desbloquea antes del tag `integration/I-57` valido.
@@ -1924,6 +1949,14 @@ veredicto.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### I-59 debe acreditar este cierre e integrar con Workflow V2
+
+Ejecutar Core Full, UI Full y builds Debug sobre el SHA limpio de cierre, publicar la rama y exigir su CI
+exacta 4/4. Despues: fetch final conservando `origin/main` en la base verificada, merge manual `--no-ff`,
+CI de push de `main` con cobertura, revalidacion de cobertura del Candidate, cleanup seguro y tag anotado
+`integration/I-59`. Si `main` avanza antes del merge, aplicar ruta R; si falla CI post-merge, conservar rama
+y worktrees y corregir desde I-59. I-55 G14 no consume por cherry-pick y sigue bloqueado hasta el receipt.
 
 ### I-57 debe publicar este cierre, integrar y verificar su recibo V1 excepcional
 
@@ -3722,6 +3755,17 @@ visualmente** y no debe presentarse como tal.
 la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
+
+**Baseline Candidate de I-59 — 2026-09-24** (pendiente de evidencia propia del cierre e integracion):
+
+- F1..F4 y READY-01..09 completos; Coordinator y Architect CONFORMING sobre el mismo Candidate;
+- Core Full, UI Full, builds Debug UI/Plugin y CI exacta de push PASS;
+- cobertura exacta del Candidate PASS y artifact identificado en la evidencia canonica;
+- Owner Validation OV-I59-01..04 PASS en AutoCAD 2025, veredicto APPROVED y cero fallos comunicados;
+- FOUNDATIONS conformada publicada por este cierre; Freeze V3 y A-1 permanecen inmutables;
+- compuertas pendientes: Full/builds/CI del cierre, fetch final, merge, CI+coverage post-merge, cleanup y
+  `integration/I-59`;
+- recuperacion: ruta R si avanza main; si falla post-merge, no limpiar ni etiquetar y corregir desde I-59.
 
 **Baseline Candidate de I-57 — 2026-09-21** (pendiente de Closure CI e integracion):
 
