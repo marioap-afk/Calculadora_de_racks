@@ -255,6 +255,67 @@ namespace RackCad.Application.Systems.Shared
             IReadOnlyList<LibraryBlockRequirement> requirements);
     }
 
+    /// <summary>
+    /// Bridges the existing observational query into V2 without turning drawing presence into evidence about
+    /// the external library. The caller supplies the independently observed library state.
+    /// </summary>
+    public sealed class LibraryPieceAvailabilityQueryV1Adapter : ILibraryPieceAvailabilityQuery
+    {
+        private readonly ILibraryBlockQuery query;
+        private readonly LibraryAvailability libraryAvailability;
+
+        public LibraryPieceAvailabilityQueryV1Adapter(
+            ILibraryBlockQuery query,
+            LibraryAvailability libraryAvailability)
+        {
+            this.query = query ?? throw new ArgumentNullException(nameof(query));
+            if (!Enum.IsDefined(typeof(LibraryAvailability), libraryAvailability))
+            {
+                throw new ArgumentOutOfRangeException(nameof(libraryAvailability));
+            }
+
+            this.libraryAvailability = libraryAvailability;
+        }
+
+        public IReadOnlyList<LibraryKeyAvailabilityObservation> Query(
+            IReadOnlyList<LibraryBlockRequirement> requirements)
+        {
+            if (requirements == null) throw new ArgumentNullException(nameof(requirements));
+
+            var facts = query.Query(requirements) ?? Array.Empty<LibraryBlockAvailabilityFact>();
+            var observations = new List<LibraryKeyAvailabilityObservation>(facts.Count);
+            foreach (var fact in facts)
+            {
+                if (fact.Requirement == null)
+                {
+                    throw new InvalidOperationException("The V1 query returned a fact without a requirement.");
+                }
+
+                switch (fact.Availability)
+                {
+                    case LibraryBlockAvailability.Found:
+                        observations.Add(new LibraryKeyAvailabilityObservation(
+                            fact.Requirement.Key,
+                            libraryAvailability,
+                            LibraryBlockPresence.Present));
+                        break;
+                    case LibraryBlockAvailability.Missing:
+                        observations.Add(new LibraryKeyAvailabilityObservation(
+                            fact.Requirement.Key,
+                            libraryAvailability,
+                            libraryAvailability == LibraryAvailability.Ok
+                                ? LibraryBlockPresence.BlockMissing
+                                : LibraryBlockPresence.Unknown));
+                        break;
+                    default:
+                        throw new InvalidOperationException("The V1 query returned an unknown availability value.");
+                }
+            }
+
+            return observations;
+        }
+    }
+
     public sealed class LibraryPieceAvailabilityFact
     {
         internal LibraryPieceAvailabilityFact(
