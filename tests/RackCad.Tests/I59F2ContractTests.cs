@@ -134,6 +134,40 @@ namespace RackCad.Tests
             Assert.False(Boolean(result, "HasFacts"));
         }
 
+        [Fact]
+        public void CT59_06_07_EVERY_AXIS_AND_NORMAL_ON_THE_ZERO_BOUNDARY_ARE_DEGENERATE()
+        {
+            var tolerance = Tolerance(scale: 0.01, normal: 0.01);
+            var results = new[]
+            {
+                Classify(Input(scaleX: 0.01), tolerance),
+                Classify(Input(scaleY: -0.01), tolerance),
+                Classify(Input(scaleZ: 0.009), tolerance),
+                Classify(Input(normalX: 0.01, normalY: 0, normalZ: 0), tolerance)
+            };
+
+            Assert.All(results, result =>
+            {
+                Assert.Equal("Degenerate", Name(Property(result, "Outcome")));
+                Assert.False(Boolean(result, "HasFacts"));
+            });
+        }
+
+        [Fact]
+        public void CT59_08_EVERY_REQUIRED_RAW_DOUBLE_IS_CHECKED_BEFORE_A_SNAPSHOT_IS_PUBLISHED()
+        {
+            var finite = new[] { 1d, 2d, 3d, 0.25d, 2d, 3d, 4d, 0d, 1d, 0d, 21d, 22d, 23d };
+            for (var index = 0; index < finite.Length; index++)
+            {
+                var raw = (double[])finite.Clone();
+                raw[index] = double.NaN;
+                var result = Classify(New(Shared + "RackSourcePlacementInput", raw.Cast<object>().ToArray()), Tolerance());
+
+                Assert.Equal("NonFinite", Name(Property(result, "Outcome")));
+                Assert.False(Boolean(result, "HasFacts"));
+            }
+        }
+
         [Theory]
         [InlineData(-0.1, 0, 0)]
         [InlineData(0, -0.1, 0)]
@@ -152,6 +186,9 @@ namespace RackCad.Tests
             var factsType = RequireType(Shared + "RackSourceTransformFactsV2");
             Assert.Null(factsType.GetProperty("PlanarTransform", BindingFlags.Public | BindingFlags.Instance));
             Assert.Null(factsType.GetProperty("Transform", BindingFlags.Public | BindingFlags.Instance));
+            Assert.DoesNotContain(
+                factsType.GetProperties(BindingFlags.Public | BindingFlags.Instance),
+                property => property.PropertyType == typeof(Transform2D));
         }
 
         public static IEnumerable<object[]> CurrentRoles()
@@ -423,7 +460,7 @@ namespace RackCad.Tests
 
         private static void AssertVector(object vector, double x, double y, double z) => AssertPoint(vector, x, y, z);
 
-        public sealed class AvailabilityQueryProxy : DispatchProxy
+        public class AvailabilityQueryProxy : DispatchProxy
         {
             public Func<object[], object> Handler { get; set; }
 
