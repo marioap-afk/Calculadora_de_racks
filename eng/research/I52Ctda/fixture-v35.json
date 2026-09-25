@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 2,
+  "contract": "FEC-V35-1",
+  "materialization": "RUNTIME_MATERIALIZATION_PENDING",
+  "identities": [
+    {
+      "id": "F-TRIGGER-MOD",
+      "kind": "PersistentFixtureIdentity",
+      "object": "AcDbPoint in Model Space at (1000,0,0) on layer 0",
+      "initial": "live, position (1000,0,0)",
+      "disposable": true,
+      "guard": "RG-DB-MOD / RG-DB-OPEN",
+      "role": "database modification and open-for-modify trigger; notifier A of 02N"
+    },
+    {
+      "id": "F-TRIGGER-ERASE-DB",
+      "kind": "PersistentFixtureIdentity",
+      "object": "AcDbPoint in Model Space at (1010,0,0) on layer 0",
+      "initial": "live, not erased",
+      "disposable": true,
+      "guard": "RG-DB-ERASE",
+      "role": "database erasure trigger"
+    },
+    {
+      "id": "F-TRIGGER-ERASE-OBJ",
+      "kind": "PersistentFixtureIdentity",
+      "object": "AcDbPoint in Model Space at (1020,0,0) on layer 0",
+      "initial": "live, not erased",
+      "disposable": true,
+      "guard": "RG-OBJ-ERASE",
+      "role": "object-reactor erasure trigger"
+    },
+    {
+      "id": "F-TRIGGER-XR",
+      "kind": "PersistentFixtureIdentity",
+      "object": "AcDbXrecord in NOD key RACKCAD_CTDA_V35_F-TRIGGER-XR, one kDxfText resbuf",
+      "initial": "bytes HFV35:TRIGGER-XR:0",
+      "disposable": true,
+      "guard": "RG-ONESHOT",
+      "role": "semantic notifier A of 02NO-S; distinct from F-XR"
+    },
+    {
+      "id": "F-XR",
+      "kind": "PersistentFixtureIdentity",
+      "object": "AcDbXrecord in NOD key RACKCAD_CTDA_V34_F-XR",
+      "initial": "STATE-S-0",
+      "disposable": false,
+      "guard": null,
+      "role": "protected semantic Xrecord (MUT-S target)"
+    },
+    {
+      "id": "F-REF-B",
+      "kind": "PersistentFixtureIdentity",
+      "object": "AcDbBlockReference of RACKCAD_CTDA_V34_REF",
+      "initial": "STATE-M-0",
+      "disposable": false,
+      "guard": null,
+      "role": "protected material reference (MUT-M target)"
+    },
+    {
+      "id": "F-REF-A",
+      "kind": "PersistentFixtureIdentity",
+      "object": "AcDbBlockReference of RACKCAD_CTDA_V34_REF",
+      "initial": "STATE-SM-0 member",
+      "disposable": false,
+      "guard": null,
+      "role": "protected mixed sibling A"
+    },
+    {
+      "id": "F-REF-C",
+      "kind": "PersistentFixtureIdentity",
+      "object": "AcDbBlockReference of RACKCAD_CTDA_V34_REF appended by MUT-SM",
+      "initial": "absent",
+      "disposable": false,
+      "guard": null,
+      "role": "protected mixed sibling C, declared absent"
+    }
+  ],
+  "nonIdentityResources": [
+    {
+      "id": "R-SM-LINK",
+      "kind": "StateCarrier"
+    },
+    {
+      "id": "F-TRIGGER-APPEND",
+      "kind": "DisposableTriggerResource"
+    },
+    {
+      "id": "R-PAYLOAD-ARX",
+      "kind": "PayloadResource"
+    }
+  ],
+  "bootstrap": "BOOT-01",
+  "cleanup": "CleanupAction entries of EXEC-CATALOG-V35-1; exactly one terminal CLN-BASE per row"
+}

@@ -49,24 +49,34 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; R3 EXECUTOR IMPLEMENTATION STOPPED PENDING ARCHITECTURE REVIEW.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 DRAFT = ARCHITECTURE CANDIDATE; R3 IMPLEMENTATION BLOCKED PENDING ARCHITECT REVIEW.**
 Research-only en `eng/research/I52Ctda`. Los bindings V34 de SM-LINK y OPEN-SM-B están implementados (§164–§165).
 El ARX canónico (`7F9C9C05…9ED421`, source `8bf3733f`, tuple de build `375B3D5C…46E25`) pasó el smoke host en
-`IMING-2` (§166). Esas identidades siguen vigentes porque R3 no cambió código.
+`IMING-2` (§166). Esas identidades siguen vigentes: desde entonces no cambió código nativo.
 
-El gate R3, executor gobernado de las 100 filas, se **detuvo antes de implementar** (§167). El inventario mecánico
-parsea 100/100 filas.
+El discovery R3 se detuvo antes de implementar (§167). La revisión del Arquitecto R3 (§168) concluyó que V34 no es un
+contrato ejecutable cerrado: 42/100 filas con bloqueo duro y 0/100 planes cerrados. Exigió V35 y el Coordinador la
+aceptó.
 
-- **32/100** filas tienen bloqueo duro en los grupos R3-B01..R3-B10: F-TRIGGER-APPEND, notifier A/target B, módulo
-  de carga controlada, CLEAN-OBJ/goodbye, observadores OR-*/ER-REF-A, 02NO-CLOSE-SM frente a OPEN-SM-B, "if
-  legal", lock/T de callbacks directos, MARK-APPCTX-RETURN y marcador VETO sin veto.
-- R3-C01 y R3-C02 quedan disputados.
-- Las 68 filas restantes tampoco son ejecutables sin formalizar Setup, Trigger, PASS y FAIL.
+V35 está redactada como borrador (§169): un catálogo de ejecución normativo
+([I-52-execution-catalog-v35.json](initiatives/I-52-execution-catalog-v35.json)) y
+[NPM-V35](initiatives/I-52-native-probe-matrix-v35.md), cuyas 100 filas de 34 campos son solo identificadores, más
+NEC/NSC/FEC-V35, `fixture-v35.json` (8 identidades) y `traceability-v35.json`. El validador estático
+`eng/research/I52Ctda/validate-v35-catalog.ps1` reporta:
 
-La evidencia está en
-[I-52-r3-governed-executor-discovery.json](automation/evidence/I-52-r3-governed-executor-discovery.json). La
-clasificación de gobierno está pendiente de Coordinador y Arquitecto, y el siguiente paso es la revisión del
-Arquitecto.
+- 100/100 planes derivados;
+- 0 identificadores sin ligar, 0 texto libre ejecutable, 0 cláusulas D y 0 contradicciones;
+- 26 callbacks, 3 schedulers, 7 support actions y 8 identidades de fixture;
+- 0 grupos de bloqueo abiertos (R3-B01..B12, R3-C02);
+- 24/24 controles negativos detectados.
+
+Antes de publicar, dos revisores adversariales encontraron 6 BLOCKING y 13 MAJOR, y todos se corrigieron. La
+evidencia está en [I-52-v35-mechanical-validation.json](automation/evidence/I-52-v35-mechanical-validation.json).
+
+Siguiente paso: la revisión del Arquitecto con el
+[paquete V35](initiatives/I-52-architect-review-package-v35.md), incluidas las 13 decisiones que V35 introduce
+(Proposal V35 §4). Si la acuerda, se abre el gate de implementación R3: executor, módulo de payload, observador managed
+y migración a fixture/traceability V35.
 
 Probes gobernados: **0**; `CTDA_HOST_PASS` **NOT EVALUATED**; producto **BLOCKED**; V18 gobierna; G3 **STOPPED**,
 G3B **NOT OPEN**, CT-50 **NOT EXECUTED**.
