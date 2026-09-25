@@ -1,10 +1,11 @@
 {
   "schemaVersion": 1,
-  "revision": "V35-A1",
+  "revision": "V35-A2",
   "harness": "eng/research/I52Ctda/validate-v35-negative-controls.ps1",
+  "inputEol": "LF",
   "baselinePass": true,
-  "total": 93,
-  "detected": 93,
+  "total": 98,
+  "detected": 98,
   "controls": [
     {
       "control": "BASELINE",
@@ -1192,7 +1193,8 @@
       "expectedCheck": "CATALOG-APPROVAL",
       "expectedCheckFired": true,
       "checksFired": [
-        "CATALOG-APPROVAL"
+        "CATALOG-APPROVAL",
+        "FINISH-FENCE-READ-ABI"
       ],
       "detected": true,
       "ok": true,
@@ -1323,6 +1325,71 @@
       "expectedCheckFired": true,
       "checksFired": [
         "INPUT-PIN"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "M1a fence read export removed",
+      "exit": 1,
+      "expectedCheck": "FINISH-FENCE-READ-ABI",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "FINISH-FENCE-READ-ABI"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "M1b fence read export renamed, coherent",
+      "exit": 1,
+      "expectedCheck": "FINISH-FENCE-READ-ABI",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "FINISH-FENCE-READ-ABI"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "M1c fence setter exported",
+      "exit": 1,
+      "expectedCheck": "FINISH-FENCE-READ-ABI",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "FINISH-FENCE-READ-ABI"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "M1d managed observer cannot read the fence",
+      "exit": 1,
+      "expectedCheck": "FINISH-FENCE-READ-ABI",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "FINISH-FENCE-READ-ABI"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "M1e payload imports a function LOG-SEQ-01 does not export",
+      "exit": 1,
+      "expectedCheck": "FINISH-FENCE-READ-ABI",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "FINISH-FENCE-READ-ABI"
       ],
       "detected": true,
       "ok": true,

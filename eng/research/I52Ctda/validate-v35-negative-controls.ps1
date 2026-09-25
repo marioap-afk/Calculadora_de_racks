@@ -1,4 +1,4 @@
-# I-52 V35-A1 negative controls for validate-v35-catalog.ps1. Each control copies the validator inputs to a temporary
+# I-52 V35-A1/V35-A2 negative controls for validate-v35-catalog.ps1. Each control copies the validator inputs to a temporary
 # directory, applies one deliberate corruption and runs the validator there. Every control must make the validator fail
 # (exit code 1) without a script error. Static only: no AutoCAD, no build, no runtime semantics.
 param(
@@ -33,7 +33,7 @@ function EditRow([string]$probe, [string]$col, [scriptblock]$fn) {
     $hit = $false
     for ($i = 0; $i -lt $lines.Count; $i++) {
         $f = $lines[$i].TrimEnd("`r").Split(';')
-        if ($f.Count -eq $cols.Count -and $f[0] -eq $probe) { $j = [Array]::IndexOf($cols, $col); $f[$j] = & $fn $f[$j]; $lines[$i] = $f -join ';'; $hit = $true }
+        if ($f.Count -eq $cols.Count -and $f[0] -eq $probe) { $cr = if ($lines[$i].EndsWith("`r")) { "`r" } else { '' }; $j = [Array]::IndexOf($cols, $col); $f[$j] = & $fn $f[$j]; $lines[$i] = ($f -join ';') + $cr; $hit = $true }
     }
     if (-not $hit) { throw "row $probe not found" }
     [IO.File]::WriteAllText((T $npmPath), ($lines -join "`n"))
@@ -46,9 +46,15 @@ function EditLineage([string]$probe, [string]$column, [scriptblock]$fn) {
 function EditTrace([string]$probe, [scriptblock]$fn) {
     $d = @(ReadJ $tracePath); foreach ($r in $d) { if ($r['ProbeId'] -eq $probe) { & $fn $r } }; WriteJ $tracePath $d
 }
+# V35-A2 (Architect MINOR M2): exact text edits work on LF-normalized text and write back with the input's own line ending,
+# so the same controls run on an LF or a CRLF (core.autocrlf=true) checkout.
 function EditText([string]$rel, [string]$find, [string]$replace) {
-    $t = [IO.File]::ReadAllText((T $rel)); if (-not $t.Contains($find)) { throw "text not found in $rel" }
-    $i = $t.IndexOf($find); [IO.File]::WriteAllText((T $rel), $t.Substring(0, $i) + $replace + $t.Substring($i + $find.Length))
+    $raw = [IO.File]::ReadAllText((T $rel)); $crlf = $raw.Contains("`r`n")
+    $t = $raw.Replace("`r`n", "`n"); $find = $find.Replace("`r`n", "`n"); $replace = $replace.Replace("`r`n", "`n")
+    if (-not $t.Contains($find)) { throw "text not found in $rel" }
+    $i = $t.IndexOf($find); $t = $t.Substring(0, $i) + $replace + $t.Substring($i + $find.Length)
+    if ($crlf) { $t = $t.Replace("`n", "`r`n") }
+    [IO.File]::WriteAllText((T $rel), $t)
 }
 function Swap([string]$list, [string]$old, [string]$new) { (@($list.Split(',') | ForEach-Object { if ($_ -eq $old) { $new } else { $_ } })) -join ',' }
 function Drop([string]$list, [string]$old) { $v = @($list.Split(',') | Where-Object { $_ -ne $old }); if ($v.Count) { $v -join ',' } else { 'NONE' } }
@@ -178,7 +184,7 @@ $controls['X11 approval hash replaced in the oracle'] = { $o = ReadJ 'eng/resear
 $controls['X12 FP-STATE removed from every row and lineage'] = {
     $cols = [string[]](ReadJ $catalogPath)['rowSchema']; $j = [Array]::IndexOf($cols, 'FailPredicateIds')
     $lines = [IO.File]::ReadAllText((T $npmPath)).Split("`n")
-    for ($i = 0; $i -lt $lines.Count; $i++) { $f = $lines[$i].TrimEnd("`r").Split(';'); if ($f.Count -eq $cols.Count -and $f[0] -ne 'ProbeId') { $f[$j] = Drop $f[$j] 'FP-STATE'; $lines[$i] = $f -join ';' } }
+    for ($i = 0; $i -lt $lines.Count; $i++) { $cr = if ($lines[$i].EndsWith("`r")) { "`r" } else { '' }; $f = $lines[$i].TrimEnd("`r").Split(';'); if ($f.Count -eq $cols.Count -and $f[0] -ne 'ProbeId') { $f[$j] = Drop $f[$j] 'FP-STATE'; $lines[$i] = ($f -join ';') + $cr } }
     [IO.File]::WriteAllText((T $npmPath), ($lines -join "`n"))
     $d = ReadJ $linPath; foreach ($r in $d['rows']) { foreach ($rec in $r['lineage']) { if ($rec['column'] -eq 'FAIL') { $rec['v35'] = @($rec['v35'] | Where-Object { $_ -ne 'FP-STATE' }) } } }; WriteJ $linPath $d }
 $controls['X13 APPCTX driver disarms before obligations'] = { EditCatalog { param($c) $c['entries']['DRIVER-APP-01']['phaseOrder'] = @('ENQUEUE', 'DELIVERY', 'ARM', 'TRIGGER', 'CALLBACK-WINDOW', 'DISARM', 'POST-TRIGGER-OBLIGATIONS', 'OUTCOME-RECORD', 'TOKEN') } }
@@ -255,7 +261,23 @@ $expect['V4q setup reordered'] = 'SETUP-ORDER'; $expect['V4h extra locks'] = 'EX
 $expect['V4f lineage record emptied'] = 'LINEAGE-EMPTY'; $expect['V4g traceability event forged'] = 'TRACE'
 $expect['V6 lock-release token on the FINISH stage'] = 'LOCK-RELEASE-BINDING'; $expect['V7 oracle source edited'] = 'INPUT-PIN'
 
+# V35-A2 controls (Architect MINOR M1): FINISH-FENCE-01 read ABI.
+$controls['M1a fence read export removed'] = { EditCatalog { param($c) $c['entries']['LOG-SEQ-01']['exports'] = @($c['entries']['LOG-SEQ-01']['exports'] | Where-Object { $_ -ne 'I52Ctda_FinishFenceIsSet' }) } }
+$controls['M1b fence read export renamed, coherent'] = { EditCatalog { param($c)
+        foreach ($id in 'LOG-SEQ-01', 'FINISH-FENCE-01', 'R-PAYLOAD-ARX', 'R-MANAGED-OBSERVER') {
+            $e = $c['entries'][$id]
+            foreach ($a in @($e.Keys)) {
+                if ($e[$a] -is [string]) { $e[$a] = $e[$a].Replace('I52Ctda_FinishFenceIsSet', 'I52Ctda_FenceQuery') }
+                elseif ($e[$a] -is [System.Collections.IList] -and $e[$a].Count -and $e[$a][0] -is [string]) { $e[$a] = @($e[$a] | ForEach-Object { $_.Replace('I52Ctda_FinishFenceIsSet', 'I52Ctda_FenceQuery') }) }
+            } } } }
+$controls['M1c fence setter exported'] = { EditCatalog { param($c) $c['entries']['LOG-SEQ-01']['exports'] = @($c['entries']['LOG-SEQ-01']['exports']) + 'I52Ctda_FinishFenceSet' } }
+$controls['M1d managed observer cannot read the fence'] = { EditCatalog { param($c) $c['entries']['R-MANAGED-OBSERVER']['imports'] = @($c['entries']['R-MANAGED-OBSERVER']['imports'] | Where-Object { $_ -ne 'I52Ctda_FinishFenceIsSet' }) } }
+$controls['M1e payload imports a function LOG-SEQ-01 does not export'] = { EditCatalog { param($c) $c['entries']['R-PAYLOAD-ARX']['imports'] = @($c['entries']['R-PAYLOAD-ARX']['imports']) + 'I52Ctda_FinishFenceSet' } }
+foreach ($m in 'M1a fence read export removed', 'M1b fence read export renamed, coherent', 'M1c fence setter exported', 'M1d managed observer cannot read the fence', 'M1e payload imports a function LOG-SEQ-01 does not export') { $expect[$m] = 'FINISH-FENCE-READ-ABI' }
+
 $validator = 'eng/research/I52Ctda/validate-v35-catalog.ps1'
+$inputEol = if ([IO.File]::ReadAllText((Join-Path $Repository $npmPath)).Contains("`r`n")) { 'CRLF' } else { 'LF' }
+"INPUT EOL = $inputEol"
 $results = [System.Collections.Generic.List[object]]::new()
 $root = Join-Path ([IO.Path]::GetTempPath()) ("i52-v35-nc-" + [Guid]::NewGuid().ToString('N'))
 try {
@@ -286,7 +308,7 @@ $baselineOk = @($results | Where-Object { $_.control -eq 'BASELINE' -and $_.ok }
 "BASELINE PASS = $baselineOk"
 "NEGATIVE CONTROLS DETECTED = $caught/$total"
 if ($EvidencePath) {
-    $ev = [ordered]@{ schemaVersion = 1; revision = 'V35-A1'; harness = 'eng/research/I52Ctda/validate-v35-negative-controls.ps1'; baselinePass = $baselineOk; total = $total; detected = $caught; controls = $results }
+    $ev = [ordered]@{ schemaVersion = 1; revision = 'V35-A2'; harness = 'eng/research/I52Ctda/validate-v35-negative-controls.ps1'; inputEol = $inputEol; baselinePass = $baselineOk; total = $total; detected = $caught; controls = $results }
     [IO.File]::WriteAllText((Join-Path $Repository $EvidencePath), ($ev | ConvertTo-Json -Depth 6) + "`n")
 }
 if (-not $baselineOk -or $caught -ne $total) { exit 1 }

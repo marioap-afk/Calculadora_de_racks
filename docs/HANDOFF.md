@@ -49,7 +49,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35-A1 READY FOR ARCHITECT DELTA REVIEW; R3 IMPLEMENTATION BLOCKED.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35-A2 COMPLETE; V35 READY FOR COORDINATOR FREEZE; R3 IMPLEMENTATION BLOCKED.**
 Research-only en `eng/research/I52Ctda`. El ARX canónico (`7F9C9C05…9ED421`, tuple de build `375B3D5C…46E25`) sigue
 vigente: desde el smoke host de §166 no cambió código nativo.
 
@@ -75,18 +75,29 @@ El validador `validate-v35-catalog.ps1` reporta:
 - 26/3/7/8;
 - los siete predicados de cierre en TRUE.
 
-El arnés `validate-v35-negative-controls.ps1` detecta 93/93 corrupciones, cada una por la comprobación que declara.
 Tres revisiones adversariales previas a la publicación encontraron hallazgos BLOCKING y MAJOR, y todos se corrigieron.
+
+La revisión delta del Arquitecto sobre V35-A1 (`34b3b05b`) dictaminó **AGREED WITH SMALL CORRECTIONS**: 14/14 RC
+cerrados, 0 BLOCKER, 0 MAJOR, 4 MINOR, oráculo y hashes de aprobación aprobados. V35-A2 aplica esas cuatro erratas (§171):
+
+- M1: el fence de FINISH se lee con la exportación `I52Ctda_FinishFenceIsSet` de LOG-SEQ-01; el setter es interno.
+- M2: el arnés funciona igual en checkouts LF y CRLF.
+- M3: la Proposal ya no contradice A1 (36 campos, regla de resultado de cinco pasos).
+- M4: la tabla RC-14 declara su criterio (UNKNOWN estructural frente a defensivo); siguen las mismas 15 filas.
+
+Solo cambiaron los hashes de aprobación de cuatro entradas del catálogo (FINISH-FENCE-01, LOG-SEQ-01, R-PAYLOAD-ARX,
+R-MANAGED-OBSERVER) y el pin del oráculo; 0 hashes de fila. El validador sigue en PASS con los siete predicados TRUE, y el
+arnés detecta 98/98 corrupciones (93 anteriores más 5 de M1) tanto en LF como en CRLF.
 
 Evidencia:
 
+- [cierre de erratas A2](automation/evidence/I-52-v35-a2-errata-closure.json);
 - [cierre de RCs](automation/evidence/I-52-v35-a1-rc-closure.json);
 - [validación](automation/evidence/I-52-v35-mechanical-validation.json);
 - [controles negativos](automation/evidence/I-52-v35-negative-controls.json).
 
-Siguiente paso: la **revisión delta del Arquitecto** con el
-[paquete V35](initiatives/I-52-architect-review-package-v35.md), que incluye aprobar el pin del oráculo y los hashes de
-aprobación. V35 no está congelada. Solo después, y con consenso del Coordinador, se abriría la implementación R3.
+Siguiente paso: la **congelación de V35 por el Coordinador**. La implementación R3 sigue bloqueada hasta esa congelación
+y el consenso del Coordinador.
 
 Probes gobernados: **0**; `CTDA_HOST_PASS` **NOT EVALUATED**; producto **BLOCKED**; V18 gobierna; G3 **STOPPED**,
 G3B **NOT OPEN**, CT-50 **NOT EXECUTED**.
