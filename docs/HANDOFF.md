@@ -49,17 +49,27 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V34 BINDING CLARIFICATIONS IMPLEMENTADAS; HOST SMOKE PASS.**
-Research-only en `eng/research/I52Ctda`. El consenso Coordinador ↔ Arquitecto cerró como *V34 binding
-clarification* (sin V35 ni cambio de NPM/NEC/FEC): el linkage de STATE-SM-0 vive en el Xrecord NOD
-`RACKCAD_CTDA_V34_SM-LINK`, que no es identidad de fixture (siguen 7), y OPEN-SM-B fija que F-REF-B sigue viva
-como target M y sale del conjunto hermano solo por la relación, mientras F-REF-C no existe hasta MUT-SM. El nuevo
-ARX canónico (`7F9C9C05…9ED421`, 430080 bytes, source `8bf3733f`) y su tuple de build (`375B3D5C…46E25`) están en
-[decisions/I-52.md](automation/decisions/I-52.md) §164–§165; el ARX `B7016A34…` queda superado y el tuple pre-run
-`F32CB140…` anulado. El smoke host del nuevo ARX pasó en `IMING-2` (§166: fixture 7/7, F-REF-C ausente, SM-LINK
-en `A,B`, carrier retirado en el cleanup, DWG scratch intacto). Siguiente gate: lo abre el Coordinador. Probes gobernados:
-**0**; `CTDA_HOST_PASS` **NOT EVALUATED**; producto **BLOCKED**; V18 gobierna; G3 **STOPPED**, G3B **NOT OPEN**,
-CT-50 **NOT EXECUTED**.
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; R3 EXECUTOR IMPLEMENTATION STOPPED PENDING ARCHITECTURE REVIEW.**
+Research-only en `eng/research/I52Ctda`. Los bindings V34 de SM-LINK y OPEN-SM-B están implementados (§164–§165).
+El ARX canónico (`7F9C9C05…9ED421`, source `8bf3733f`, tuple de build `375B3D5C…46E25`) pasó el smoke host en
+`IMING-2` (§166). Esas identidades siguen vigentes porque R3 no cambió código.
+
+El gate R3, executor gobernado de las 100 filas, se **detuvo antes de implementar** (§167). El inventario mecánico
+parsea 100/100 filas.
+
+- **32/100** filas tienen bloqueo duro en los grupos R3-B01..R3-B10: F-TRIGGER-APPEND, notifier A/target B, módulo
+  de carga controlada, CLEAN-OBJ/goodbye, observadores OR-*/ER-REF-A, 02NO-CLOSE-SM frente a OPEN-SM-B, "if
+  legal", lock/T de callbacks directos, MARK-APPCTX-RETURN y marcador VETO sin veto.
+- R3-C01 y R3-C02 quedan disputados.
+- Las 68 filas restantes tampoco son ejecutables sin formalizar Setup, Trigger, PASS y FAIL.
+
+La evidencia está en
+[I-52-r3-governed-executor-discovery.json](automation/evidence/I-52-r3-governed-executor-discovery.json). La
+clasificación de gobierno está pendiente de Coordinador y Arquitecto, y el siguiente paso es la revisión del
+Arquitecto.
+
+Probes gobernados: **0**; `CTDA_HOST_PASS` **NOT EVALUATED**; producto **BLOCKED**; V18 gobierna; G3 **STOPPED**,
+G3B **NOT OPEN**, CT-50 **NOT EXECUTED**.
 
 **I-57 — Shared View Foundation — F7 COMPLETE; F8 OPEN; CIERRE DOCUMENTAL PREPARADO PARA
 INTEGRACION** el **2026-09-21**. Candidate final
