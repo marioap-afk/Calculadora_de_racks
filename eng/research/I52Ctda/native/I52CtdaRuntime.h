@@ -55,6 +55,9 @@ public:
     int ownedLocks() const { return ownedLocks_; }
     int queuedWork() const { return queuedWork_; }
     size_t activeGuards() const;
+    // LINK-CARRIER-REMOVED obligation: set when the SM-LINK carrier is bound, cleared only after its verified removal.
+    void setLinkCarrierOutstanding(bool outstanding) { std::scoped_lock lock(mutex_); linkCarrierOutstanding_ = outstanding; }
+    bool linkCarrierOutstanding() const { std::scoped_lock lock(mutex_); return linkCarrierOutstanding_; }
 
 private:
     I52CtdaRuntime();
@@ -92,4 +95,5 @@ private:
     int ownedTransactions_{};
     int ownedLocks_{};
     int queuedWork_{};
+    bool linkCarrierOutstanding_{};
 };

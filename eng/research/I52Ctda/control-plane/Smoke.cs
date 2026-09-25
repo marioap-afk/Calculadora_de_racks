@@ -128,7 +128,8 @@ public sealed record NativeSmokeReport(
     string? CommandIdentity, string? CompletionToken, string? Result, IReadOnlyList<string> Failures, int ProcessId,
     bool LoggerReady, string? EventLog, long SequenceFirst, long SequenceLast, bool FixtureBound, int DeclaredIdentities,
     int ResolvedIdentities, string FixtureSnapshot, bool CleanupComplete, bool FixtureReactorsAttached, int OwnedTransactions,
-    int OwnedLocks, int QueuedWork, int ActiveGuards, int GovernedProbesDispatched)
+    int OwnedLocks, int QueuedWork, int ActiveGuards, int GovernedProbesDispatched,
+    string? SmLinkBinding, SmFacts? SmPrecondition, bool LinkCarrierRemoved)
 {
     public static NativeSmokeReport Parse(string json)
     {
@@ -144,7 +145,10 @@ public sealed record NativeSmokeReport(
             fixture.GetProperty("resolvedIdentities").GetInt32(), fixture.GetProperty("snapshot").GetString() ?? "",
             cleanup.GetProperty("cleanupComplete").GetBoolean(), cleanup.GetProperty("fixtureReactorsAttached").GetBoolean(),
             cleanup.GetProperty("ownedTransactions").GetInt32(), cleanup.GetProperty("ownedLocks").GetInt32(), cleanup.GetProperty("queuedWork").GetInt32(),
-            cleanup.GetProperty("activeGuards").GetInt32(), root.GetProperty("governedProbesDispatched").GetInt32());
+            cleanup.GetProperty("activeGuards").GetInt32(), root.GetProperty("governedProbesDispatched").GetInt32(),
+            fixture.TryGetProperty("smLinkBinding", out JsonElement binding) ? binding.GetString() : null,
+            fixture.TryGetProperty("smPrecondition", out JsonElement sm) ? SmFacts.Parse(sm) : null,
+            cleanup.TryGetProperty("linkCarrierRemoved", out JsonElement removed) && removed.GetBoolean());
     }
 
     public string SnapshotSha256 => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(FixtureSnapshot)));
@@ -203,6 +207,13 @@ public static class SmokeEvaluator
             if (report.FixtureReactorsAttached) failures.Add("FIXTURE_REACTORS_ATTACHED");
             if (report.OwnedTransactions != 0 || report.OwnedLocks != 0 || report.QueuedWork != 0 || report.ActiveGuards != 0) failures.Add("CLEANUP_OBLIGATION_OPEN");
             if (report.GovernedProbesDispatched != 0) failures.Add("GOVERNED_PROBE_DISPATCHED");
+            // V34 binding (section 164): SM-LINK at A,B with C absent before any trigger, a resolved non-identity
+            // binding line, and the carrier removed by cleanup.
+            if (report.SmLinkBinding != "RESOLVED") failures.Add("SM_LINK_BINDING_UNRESOLVED");
+            if (report.SmPrecondition is null) failures.Add("SM_PRECONDITION_MISSING");
+            else if (SmRules.ClassifyPrecondition(report.SmPrecondition) is var pre && pre != SmRules.Ok) failures.Add("SM_PRECONDITION_" + pre);
+            if (SmRules.SnapshotShape(report.FixtureSnapshot) is { } shape) failures.Add(shape);
+            if (!report.LinkCarrierRemoved) failures.Add("LINK_CARRIER_NOT_REMOVED");
         }
         if (log is null) failures.Add("EVENT_LOG_MISSING");
         else

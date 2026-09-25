@@ -88,6 +88,24 @@ I52CtdaFixture& smokeFixture()
 
 std::string statusText(Acad::ErrorStatus status) { return std::to_string(static_cast<int>(status)); }
 
+const char* flag(bool value) { return value ? "true" : "false"; }
+
+// Raw pre-trigger SM facts; the managed SmRules own their classification.
+std::string smFactsJson(const I52SmFacts& facts)
+{
+    std::ostringstream text;
+    text << "{\"link\": {\"keyPresent\": " << flag(facts.link.keyPresent) << ", \"identityMatches\": " << flag(facts.link.identityMatches)
+         << ", \"erased\": " << flag(facts.link.erased) << ", \"isXrecord\": " << flag(facts.link.isXrecord)
+         << ", \"resbufCount\": " << facts.link.resbufCount << ", \"isText\": " << flag(facts.link.isText)
+         << ", \"carriersFound\": " << facts.link.carriersFound << ", \"value\": \"" << jsonEscape(facts.link.value) << "\"}"
+         << ", \"anchorALive\": " << flag(facts.anchorALive) << ", \"bRead\": " << flag(facts.bRead) << ", \"bLive\": " << flag(facts.bLive)
+         << ", \"foreignReferenceInserts\": " << facts.foreignReferenceInserts << ", \"cBound\": " << flag(facts.cBound)
+         << ", \"cFound\": " << flag(facts.cFound) << ", \"cLive\": " << flag(facts.cLive)
+         << ", \"cAtCreationPosition\": " << flag(facts.cAtCreationPosition)
+         << ", \"aEvidence\": \"" << jsonEscape(facts.aEvidence) << "\", \"cEvidence\": \"" << jsonEscape(facts.cEvidence) << "\"}";
+    return text.str();
+}
+
 // Smoke only: materializes and binds the FEC-V34 fixture in its own bootstrap transaction, resolves the seven
 // identities and evaluates cleanup from runtime state. It never dispatches a governed ProbeId.
 void runSmoke()
@@ -115,6 +133,8 @@ void runSmoke()
     std::string materializeStatus = "NOT_ATTEMPTED";
     std::string registerStatus = "NOT_ATTEMPTED";
     int activeTransactionsObserved = -1;
+    I52SmFacts smFacts{};
+    bool linkCarrierRemoved = false;
 
     if (!loggerReady) failures.push_back("BOOTSTRAP_SKIPPED_LOGGER_UNAVAILABLE");
     else if (database == nullptr) failures.push_back("NO_SCRATCH_DATABASE");
@@ -135,13 +155,30 @@ void runSmoke()
             else
             {
                 fixture.bind(ids);
+                runtime.setLinkCarrierOutstanding(true);
                 const Acad::ErrorStatus registered = runtime.registerFixtureObjects(ids.triggerEraseObject, ids.siblingA);
                 registerStatus = statusText(registered);
                 runtime.mark("MARK-SMOKE-FIXTURE-BOUND", "registerFixtureObjects=" + registerStatus);
                 if (registered != Acad::eOk) failures.push_back("FIXTURE_REACTOR_REGISTRATION_FAILED:" + registerStatus);
                 resolution = fixture.resolve();
-                runtime.mark("MARK-SMOKE-FIXTURE-RESOLVED", std::to_string(resolution.resolved) + "/" + std::to_string(resolution.declared));
+                smFacts = fixture.captureSm(true);
+                runtime.mark("MARK-SMOKE-FIXTURE-RESOLVED", std::to_string(resolution.resolved) + "/" + std::to_string(resolution.declared)
+                    + " binding=" + (resolution.bindingResolved ? "RESOLVED" : "MISMATCH"));
                 if (resolution.resolved != I52CtdaFixture::kDeclaredIdentities) failures.push_back("FIXTURE_IDENTITIES_UNRESOLVED:" + std::to_string(resolution.resolved));
+                if (!resolution.bindingResolved) failures.push_back("SM_LINK_BINDING_UNRESOLVED");
+
+                // Cleanup of the SM-LINK binding in its own transaction; the obligation clears only after verification.
+                if (runtime.startTransaction(manager) == nullptr) failures.push_back("CLEANUP_TRANSACTION_UNAVAILABLE");
+                else
+                {
+                    const Acad::ErrorStatus removed = fixture.removeSmResources(manager);
+                    const Acad::ErrorStatus ended = removed == Acad::eOk ? runtime.endTransaction(manager) : runtime.abortTransaction(manager);
+                    linkCarrierRemoved = removed == Acad::eOk && ended == Acad::eOk && fixture.linkCarrierRemoved();
+                    if (linkCarrierRemoved) runtime.setLinkCarrierOutstanding(false);
+                    runtime.mark("MARK-SMOKE-LINK-CARRIER-REMOVED", "remove=" + statusText(removed) + " transactionClose=" + statusText(ended)
+                        + " verified=" + (linkCarrierRemoved ? "true" : "false"));
+                    if (!linkCarrierRemoved) failures.push_back("LINK_CARRIER_NOT_REMOVED");
+                }
             }
         }
         activeTransactionsObserved = manager == nullptr ? -1 : manager->numActiveTransactions();
@@ -174,7 +211,7 @@ void runSmoke()
 
     std::ofstream stream(path, std::ios::binary | std::ios::trunc);
     stream << "{\n"
-           << "  \"schemaVersion\": 2,\n"
+           << "  \"schemaVersion\": 3,\n"
            << "  \"instrument\": \"I52CtdaNative\",\n"
            << "  \"stage\": \"A_SMOKE\",\n"
            << "  \"commandIdentity\": \"" << kSmokeIdentity << "\",\n"
@@ -198,6 +235,8 @@ void runSmoke()
            << "    \"bound\": " << (fixture.isBound() ? "true" : "false") << ",\n"
            << "    \"declaredIdentities\": " << resolution.declared << ",\n"
            << "    \"resolvedIdentities\": " << resolution.resolved << ",\n"
+           << "    \"smLinkBinding\": \"" << (resolution.bindingResolved ? "RESOLVED" : "MISMATCH") << "\",\n"
+           << "    \"smPrecondition\": " << smFactsJson(smFacts) << ",\n"
            << "    \"snapshot\": \"" << jsonEscape(resolution.snapshot) << "\"\n"
            << "  },\n"
            << "  \"cleanup\": {\n"
@@ -207,6 +246,7 @@ void runSmoke()
            << "    \"activeGuards\": " << runtime.activeGuards() << ",\n"
            << "    \"fixtureReactorsAttached\": " << (fixtureReactorsAttached ? "true" : "false") << ",\n"
            << "    \"activeTransactionsObserved\": " << activeTransactionsObserved << ",\n"
+           << "    \"linkCarrierRemoved\": " << (linkCarrierRemoved ? "true" : "false") << ",\n"
            << "    \"cleanupComplete\": " << (cleanupComplete ? "true" : "false") << ",\n"
            << "    \"globalReactors\": \"RETAINED_UNTIL_ARX_UNLOAD\"\n"
            << "  },\n"
