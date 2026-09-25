@@ -1,0 +1,480 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "V34_BINDING_HOST_SMOKE",
+  "result": "PASS",
+  "publicationShaBefore": "40a591e7b4977dab29d9aaca1dd99dec7559f04c",
+  "harnessExecutionSourceSha": "40a591e7b4977dab29d9aaca1dd99dec7559f04c",
+  "nativeBuildSourceSha": "8bf3733f07ebaa2724a1c72335f100acad8905e4",
+  "nativeBuildSourceCi": {
+    "run": 36088192900,
+    "result": "success 4/4"
+  },
+  "baselineV34": "d99dafeda20bcb48e3fc4af7093e9982d60b9288",
+  "governance": "V34 BINDING CLARIFICATION (SM-LINK storage + OPEN-SM-B, decisions 164-165); no V35; NPM/NEC/FEC/NSC unchanged",
+  "buildTupleHash": "375B3D5C5E1EBD42D2920B628DAF0AC1F538A8DC367FF956C9D7C08DF7D46E25",
+  "nativeArx": {
+    "path": "D:\\I52-CTDA-R2H\\40a591e7\\transfer\\I52CtdaNative.arx",
+    "bytes": 430080,
+    "sha256": "7F9C9C052D83A12FCFCEB5ED57F8FC28C25290FC0A347310F46E3D48BE9ED421",
+    "peFormat": "PE32+",
+    "peMagic": "0x020B",
+    "peMachine": "0x8664",
+    "zipEntrySha256": "7F9C9C052D83A12FCFCEB5ED57F8FC28C25290FC0A347310F46E3D48BE9ED421",
+    "sha256SumsMatch": true,
+    "transferPackage": {
+      "path": "D:\\I52-CTDA-R2H\\40a591e7\\transfer\\I-52-V34-BINDING-HOST-TRANSFER.zip",
+      "bytes": 1668683,
+      "sha256": "59482280214539A9031E975D125E995A73A4D01ACE293243D3EAFDF09F9ACA94",
+      "note": "package already staged in the new host generation; D:\\RackCad-transfer does not exist on the host"
+    },
+    "tupleCanonicalSha256": "375B3D5C5E1EBD42D2920B628DAF0AC1F538A8DC367FF956C9D7C08DF7D46E25",
+    "rebuildEvidenceBlobMatchesTransfer": "AED8715161081550CE5E1934916FC534F8548EEAD1FD24EBFC51094E8B5A651F",
+    "sizeNote": "214016 -> 430080 bytes recorded by the build evidence; runtime load succeeded without loader diagnostics"
+  },
+  "hostExecutionTuple": {
+    "machine": {
+      "name": "IMING-2",
+      "os": "Microsoft Windows 11 Pro",
+      "osVersion": "10.0.26200",
+      "displayVersion": "25H2",
+      "build": "26200.9550",
+      "architecture": "x64"
+    },
+    "repository": {
+      "name": "marioap-afk/Calculadora_de_racks",
+      "branch": "feature/rackmirror-espejo-semantico",
+      "repoHeadSha": "40a591e7b4977dab29d9aaca1dd99dec7559f04c",
+      "harnessExecutionSourceSha": "40a591e7b4977dab29d9aaca1dd99dec7559f04c",
+      "nativeBuildSourceSha": "8bf3733f07ebaa2724a1c72335f100acad8905e4",
+      "nativeBuildSourceCi": "36088192900 success 4/4",
+      "baselineV34": "d99dafeda20bcb48e3fc4af7093e9982d60b9288",
+      "nativeSourceIdenticalToBuildSource": true
+    },
+    "autocad": {
+      "acad.exe": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe",
+        "version": "R25.0.171.0.0",
+        "bytes": 5704536,
+        "sha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422"
+      },
+      "AcCoreMgd.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\AcCoreMgd.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 978776,
+        "sha256": "31025BC01ABC2CB398040AC82A5018E4FCD7A80FE8A2012DE0329E7F8ED746AA"
+      },
+      "AcDbMgd.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\AcDbMgd.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 6527320,
+        "sha256": "C360186CC0702E210635895B7608D1D8BD5FEEC6A00612B7581EF160FE09CEDE"
+      },
+      "AcMgd.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\AcMgd.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 3488088,
+        "sha256": "7AA8BF5F79F3F980DCC9F4CF9483F8438E773F6BF7C05EC3B263449B2846BC8C"
+      },
+      "accore.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\accore.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 14489944,
+        "sha256": "19CC6C29ABFB2D8ADA845E07A97E3009C4B2E092478D960086CDD95E73A7B94E"
+      },
+      "acdb25.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acdb25.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 18983768,
+        "sha256": "95F97BD2E19F60B22A7BEA55A3445FB06BCA10463E555023A02D4E68847947AF"
+      },
+      "AcGe25.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\AcGe25.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 1527640,
+        "sha256": "A2B535DE027C90DA6F12DFD8A7913AD2B151A49AADC15FC6DD43F2022A17B7A1"
+      }
+    },
+    "vcRuntime": {
+      "status": "PRESENT",
+      "MSVCP140.dll": {
+        "path": "C:\\Windows\\System32\\MSVCP140.dll",
+        "version": "14.50.35719.0",
+        "bytes": 553552,
+        "sha256": "DEF46AA6A8F72F27BAFAC0C43334419486A4D1DCDB6C479A8EF7034B3E1FA4CB"
+      },
+      "VCRUNTIME140.dll": {
+        "path": "C:\\Windows\\System32\\VCRUNTIME140.dll",
+        "version": "14.50.35719.0",
+        "bytes": 123472,
+        "sha256": "184146852727A9DB4EEA06178716BEC3CDBB1015C911F6B0F915B184AD7775B2"
+      },
+      "VCRUNTIME140_1.dll": {
+        "path": "C:\\Windows\\System32\\VCRUNTIME140_1.dll",
+        "version": "14.50.35719.0",
+        "bytes": 47264,
+        "sha256": "E6BFB3662AB4B1969A73441DBE35C96D51441B6BFF8CF1FE7430BD5B246CA605"
+      }
+    },
+    "canonicalArx": {
+      "path": "D:\\I52-CTDA-R2H\\40a591e7\\transfer\\I52CtdaNative.arx",
+      "bytes": 430080,
+      "sha256": "7F9C9C052D83A12FCFCEB5ED57F8FC28C25290FC0A347310F46E3D48BE9ED421",
+      "peFormat": "PE32+",
+      "peMachine": "0x8664",
+      "status": "CANONICAL (V34 binding rebuild)",
+      "transferPackageSha256": "59482280214539A9031E975D125E995A73A4D01ACE293243D3EAFDF09F9ACA94",
+      "zipEntrySha256": "7F9C9C052D83A12FCFCEB5ED57F8FC28C25290FC0A347310F46E3D48BE9ED421"
+    },
+    "buildMachineToolchainTupleHash": "375B3D5C5E1EBD42D2920B628DAF0AC1F538A8DC367FF956C9D7C08DF7D46E25",
+    "scratchRoot": "D:\\I52-CTDA-R2H\\40a591e7",
+    "researchSourceBlobs": {
+      "eng/research/I52Ctda/EXTERNAL-BUILD.md": "f3eb8a5cdbcfdda2a2b445446d1e6fb0b257b69a",
+      "eng/research/I52Ctda/README.md": "1f6bfc04fa79a4904cd6a3ac13a70cbef00ba504",
+      "eng/research/I52Ctda/build.ps1": "8200ea43b6dacadf79b26651dc223896f8240a1d",
+      "eng/research/I52Ctda/control-plane/Contracts.cs": "ca31197325c106590553c16982632383f6f1fb72",
+      "eng/research/I52Ctda/control-plane/Evidence.cs": "1e7a7e323422ae3bafb08349427456ce08d80fc3",
+      "eng/research/I52Ctda/control-plane/Fixture.cs": "0720f462edc582ac66bddc60a5225a00f06b4284",
+      "eng/research/I52Ctda/control-plane/HeaderAuthorityValidator.cs": "613298d981ba064e88314137968dfb7bc22f79d6",
+      "eng/research/I52Ctda/control-plane/I52Ctda.ControlPlane.csproj": "1e5e140144658902fcedf226eb8f407199a17bc3",
+      "eng/research/I52Ctda/control-plane/Runtime.cs": "1add43d6399d324f40a0856e3d1aca851449b909",
+      "eng/research/I52Ctda/control-plane/SmBinding.cs": "a67a29b3cc70e2003da47e8e1437f35973aef7f1",
+      "eng/research/I52Ctda/control-plane/Smoke.cs": "b68a2ddc866bf7312f551e029b5fb7415b935f0b",
+      "eng/research/I52Ctda/control-plane/StaticNativeValidator.cs": "a7e802f2802b094c147ec6890a0e1c0e4bae2552",
+      "eng/research/I52Ctda/control-plane/TupleCollector.cs": "9ccdb3007db3659cadd50ff34d3b07d6111815ab",
+      "eng/research/I52Ctda/fixture-v34.json": "4507c34e277df99306dc1f60a044b47f6bff6dd2",
+      "eng/research/I52Ctda/harness/I52Ctda.Harness.csproj": "1e44cf1a51c16c622b09c568ecfc01d0e79f6828",
+      "eng/research/I52Ctda/harness/Program.cs": "cebf634301118552eadb834c0e3a8258d2d81de8",
+      "eng/research/I52Ctda/native/I52CtdaFixture.cpp": "ed8a84d606cfb3f35003dcc4cf7c4a93ef501adb",
+      "eng/research/I52Ctda/native/I52CtdaFixture.h": "6abf641eff1f6b1ab7b19c2e164e5a8423819412",
+      "eng/research/I52Ctda/native/I52CtdaNative.cpp": "12ca96df0bf3ca13248bb06dcdc58b1ec27889df",
+      "eng/research/I52Ctda/native/I52CtdaNative.vcxproj": "5f406fd14ada57122addefad383c82ffe3896ba8",
+      "eng/research/I52Ctda/native/I52CtdaRuntime.cpp": "c86a2acb46984148d4c05c41fc4743743c8b032f",
+      "eng/research/I52Ctda/native/I52CtdaRuntime.h": "a6e1106e5748ec013e62bb3bf2eb87bf623c172e",
+      "eng/research/I52Ctda/native/ProbeDispatchTable.inc": "aadaf1a3ece4f00c37fc674687ca46ec03c4fd4b",
+      "eng/research/I52Ctda/tests/I52Ctda.Tests.csproj": "d1681b9db34ad56cfc1d09505a0e291b1733ab0c",
+      "eng/research/I52Ctda/tests/Program.cs": "50efb41334853e50156287e549fd2a4623fc0c2b",
+      "eng/research/I52Ctda/traceability-v34.json": "0424c0b6788cbbacf5deaf533317f9202f305482",
+      "eng/research/I52Ctda/validate-r1b.ps1": "7ce6e51d5c7baf8bba7c4cf9dd1a21e2a143e3cc"
+    },
+    "managedHarness": {
+      "sourceSha": "40a591e7b4977dab29d9aaca1dd99dec7559f04c",
+      "build": "dotnet 8.0.423 Release, 0 warnings, 0 errors; research tests 40/40 PASS",
+      "I52Ctda.Harness.dll": {
+        "path": "eng\\research\\I52Ctda\\harness\\bin\\Release\\net8.0-windows\\I52Ctda.Harness.dll",
+        "bytes": 33792,
+        "sha256": "83E9E1B664DAFB2226BEA92A11244FAA129116FAFCC20EF8295193CDC3DDCA50"
+      },
+      "I52Ctda.ControlPlane.dll": {
+        "path": "eng\\research\\I52Ctda\\harness\\bin\\Release\\net8.0-windows\\I52Ctda.ControlPlane.dll",
+        "bytes": 125952,
+        "sha256": "913CA65C4D423C4417B52CC3F49C1FF5442ECB79FA285D90571276676D3B6356"
+      },
+      "I52Ctda.Tests.dll": {
+        "path": "eng\\research\\I52Ctda\\tests\\bin\\Release\\net8.0\\I52Ctda.Tests.dll",
+        "bytes": 53248,
+        "sha256": "FFE4E89186AF8063B45207BA5C55423942FB5D3921911F240D1FB902092303C1"
+      }
+    },
+    "scratchDwg": {
+      "path": "D:\\I52-CTDA-R2H\\40a591e7\\scratch\\I52CtdaSmokeScratch.dwg",
+      "bytes": 31665,
+      "sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+      "lastWriteUtc": "2024-02-02T02:56:37.0000000Z",
+      "backupPresentBeforeRun": false,
+      "origin": "fresh byte copy of the stock AutoCAD 2025 enu acad.dwt (AC1032); no RackCad state"
+    },
+    "loadingSecurityState": {
+      "profile": "ACAD-8101:409 / <<Unnamed Profile>>",
+      "SECURELOAD": 1,
+      "TRUSTEDPATHS": "D:\\I52-CTDA-R2H\\cf302acd\\transfer;D:\\I52-CTDA-R2H;D:\\I52-CTDA-R2H\\40a591e7\\transfer",
+      "arxLocationTrusted": true,
+      "arxLocationEntry": "D:\\I52-CTDA-R2H\\40a591e7\\transfer",
+      "trustedBy": "Owner (TRUSTEDPATHS)",
+      "autocadRunningBeforeGate": false
+    }
+  },
+  "hostExecutionTupleHash": "7DE0BC3B2BD6BDC6D345AA62B1D645ED52DF84589A90B5D07E6E10AFE58A5C42",
+  "r2PreRunTuple": {
+    "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "375B3D5C5E1EBD42D2920B628DAF0AC1F538A8DC367FF956C9D7C08DF7D46E25",
+    "ARX_SHA256": "7F9C9C052D83A12FCFCEB5ED57F8FC28C25290FC0A347310F46E3D48BE9ED421",
+    "HOST_EXECUTION_TUPLE_HASH": "7DE0BC3B2BD6BDC6D345AA62B1D645ED52DF84589A90B5D07E6E10AFE58A5C42"
+  },
+  "r2PreRunTupleHash": "3FB9E0F9E8F7532BB3BD07770C1577487C034E97003694D9265977BAEECEF639",
+  "tupleHashMethod": "SHA-256 over UTF-8 compact JSON with keys sorted ordinally at every level",
+  "tuplesBoundBeforeAutoCad": true,
+  "hostDrift": "NONE (acad.exe, six AutoCAD DLLs and three VC runtime DLLs identical to the R2H tuple)",
+  "supersededTupleHashes": {
+    "hostExecutionTuple": "CB732C0E0067EF1638F0B87D8A30A7C7A5E40AB349E2EB0B022921D42B947621 (HISTORICAL)",
+    "r2PreRunTuple": "F32CB140B88306894CC322B96104C476068570B5295EE3FA0B3F54337228DDF2 (VOID)"
+  },
+  "trustedPath": {
+    "SECURELOAD": 1,
+    "arxFolder": "D:\\I52-CTDA-R2H\\40a591e7\\transfer",
+    "status": "TRUSTED BY OWNER",
+    "firstAttempt": "STOPPED BEFORE AUTOCAD: ENVIRONMENT_PREREQUISITE = TRUSTEDPATH_REQUIRED (only D:\\I52-CTDA-R2H and cf302acd\\transfer were listed; a parent entry without \\... does not trust subfolders)",
+    "TRUSTEDPATHS": "D:\\I52-CTDA-R2H\\cf302acd\\transfer;D:\\I52-CTDA-R2H;D:\\I52-CTDA-R2H\\40a591e7\\transfer"
+  },
+  "script": [
+    "_.FILEDIA",
+    "0",
+    "(arxload \"D:/I52-CTDA-R2H/40a591e7/transfer/I52CtdaNative.arx\")",
+    "I52CTDA_SMOKE",
+    "(arxunload \"I52CtdaNative.arx\")",
+    "_.QUIT",
+    "_Y"
+  ],
+  "process": {
+    "ProcessId": 21588,
+    "StartedAtUtc": "2026-09-25T03:27:46.5297192+00:00",
+    "ExitedAtUtc": "2026-09-25T03:27:59.7893224+00:00",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "ProcessGone": true,
+    "Executable": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe",
+    "executableSha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+    "Arguments": "\"D:\\I52-CTDA-R2H\\40a591e7\\scratch\\I52CtdaSmokeScratch.dwg\" /nologo /nossm /b \"D:\\I52-CTDA-R2H\\40a591e7\\output\\native-smoke.scr\"",
+    "preexistingAcadProcessIds": [],
+    "newProcess": true
+  },
+  "externalPidVerification": {
+    "pid": 21588,
+    "present": false,
+    "checkedAtLocal": "2026-09-24T21:28:32-06:00",
+    "acadProcessesAfter": 0,
+    "acadProcessesBefore": 0
+  },
+  "arxLoad": "PASS (native arxload from trusted folder; no NETLOAD; no security dialog; N-RX-LOADED observed)",
+  "commandDiscovery": "PASS (I52CTDA_SMOKE executed, completion token I52CTDA_SMOKE_COMPLETE)",
+  "nativeReport": {
+    "schemaVersion": 3,
+    "result": "PASS",
+    "failures": [],
+    "processId": 21588,
+    "threadId": 22268,
+    "applicationContext": false,
+    "documentName": "D:\\I52-CTDA-R2H\\40a591e7\\scratch\\I52CtdaSmokeScratch.dwg",
+    "loggerReady": true,
+    "fixture": {
+      "materializeStatus": "0",
+      "registerFixtureObjectsStatus": "0",
+      "bound": true,
+      "declaredIdentities": 7,
+      "resolvedIdentities": 7,
+      "smLinkBinding": "RESOLVED",
+      "smPrecondition": {
+        "link": {
+          "keyPresent": true,
+          "identityMatches": true,
+          "erased": false,
+          "isXrecord": true,
+          "resbufCount": 1,
+          "isText": true,
+          "carriersFound": 1,
+          "value": "HFV30:LINK:A,B"
+        },
+        "anchorALive": true,
+        "bRead": true,
+        "bLive": true,
+        "foreignReferenceInserts": 0,
+        "cBound": false,
+        "cFound": false,
+        "cLive": false,
+        "cAtCreationPosition": false,
+        "aEvidence": "matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1;layer=24F",
+        "cEvidence": ""
+      }
+    },
+    "cleanup": {
+      "ownedTransactions": 0,
+      "ownedLocks": 0,
+      "queuedWork": 0,
+      "activeGuards": 0,
+      "fixtureReactorsAttached": false,
+      "activeTransactionsObserved": 0,
+      "linkCarrierRemoved": true,
+      "cleanupComplete": true,
+      "globalReactors": "RETAINED_UNTIL_ARX_UNLOAD"
+    },
+    "governedProbesDispatched": 0
+  },
+  "fixture": {
+    "declaredIdentities": 7,
+    "resolvedIdentities": 7,
+    "fRefC": {
+      "snapshotLine": "F-REF-C|NULL|ABSENT|declared absent (not created)|RESOLVED",
+      "cBound": false,
+      "cFound": false,
+      "foreignReferenceInserts": 0,
+      "status": "ABSENT: not created and not erased"
+    },
+    "smLinkCarrier": {
+      "key": "RACKCAD_CTDA_V34_SM-LINK",
+      "owner": "scratch NOD",
+      "handle": "25B",
+      "snapshotLine": "BINDING:SM-LINK|25B|PRESENT|STATE-SM-0|RESOLVED",
+      "fixtureIdentity": false,
+      "payload": "HFV30:LINK:A,B",
+      "payloadUtf8Hex": "48465633303A4C494E4B3A412C42",
+      "isXrecord": true,
+      "resbufCount": 1,
+      "isText": true,
+      "carriersFound": 1,
+      "identityMatchesBoundObjectId": true,
+      "erased": false
+    },
+    "smPrecondition": {
+      "classification": "OK",
+      "facts": {
+        "link": {
+          "keyPresent": true,
+          "identityMatches": true,
+          "erased": false,
+          "isXrecord": true,
+          "resbufCount": 1,
+          "isText": true,
+          "carriersFound": 1,
+          "value": "HFV30:LINK:A,B"
+        },
+        "anchorALive": true,
+        "bRead": true,
+        "bLive": true,
+        "foreignReferenceInserts": 0,
+        "cBound": false,
+        "cFound": false,
+        "cLive": false,
+        "cAtCreationPosition": false,
+        "aEvidence": "matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1;layer=24F",
+        "cEvidence": ""
+      }
+    },
+    "snapshot": "F-TRIGGER-MOD|255|PRESENT|AcDbPoint|RESOLVED\nF-TRIGGER-ERASE-DB|256|PRESENT|AcDbPoint|RESOLVED\nF-TRIGGER-ERASE-OBJ|257|PRESENT|AcDbPoint|RESOLVED\nF-XR|25A|PRESENT|STATE-S-0|RESOLVED\nF-REF-B|259|PRESENT|STATE-M-0|RESOLVED\nF-REF-A|258|PRESENT|STATE-SM-0 sibling A|RESOLVED\nF-REF-C|NULL|ABSENT|declared absent (not created)|RESOLVED\nBINDING:SM-LINK|25B|PRESENT|STATE-SM-0|RESOLVED\n",
+    "snapshotSha256": "8436A545DADA95B492332B437E7AB22717E2BA91894ED960E99AD1DD7D9F3B99",
+    "snapshotShape": "7 identity lines + 1 non-identity BINDING:SM-LINK line"
+  },
+  "eventLog": {
+    "records": 102,
+    "sequence": "1..102 contiguous",
+    "timestampsMonotonic": true,
+    "processIds": [
+      21588
+    ],
+    "threadIds": [
+      22268
+    ],
+    "documentIdentities": [
+      "0000016B09A39790"
+    ],
+    "databaseIdentities": [
+      "0000016B038C9AE0"
+    ],
+    "commandIdentity": "I52CTDA_SMOKE",
+    "markers": [
+      "MARK-SMOKE-BEGIN",
+      "MARK-SMOKE-FIXTURE-MATERIALIZED",
+      "MARK-SMOKE-FIXTURE-BOUND",
+      "MARK-SMOKE-FIXTURE-RESOLVED",
+      "MARK-SMOKE-LINK-CARRIER-REMOVED",
+      "MARK-SMOKE-END",
+      "MARK-UNLOAD-REACTORS"
+    ],
+    "probeEvents": 0,
+    "readOnlyTransactionsAborted": 2,
+    "note": "the two N-TR-ABORTED are the read-only captureSm transactions (resolve and smoke precondition); the single N-DB-ERASE is the SM-LINK carrier erased in the cleanup transaction"
+  },
+  "cleanup": {
+    "linkCarrierRemoved": true,
+    "cleanupComplete": true,
+    "ownedTransactions": 0,
+    "ownedLocks": 0,
+    "queuedWork": 0,
+    "activeGuards": 0,
+    "fixtureReactorsAttached": false,
+    "globalReactorUnload": "PASS (MARK-UNLOAD-REACTORS)"
+  },
+  "scratchDwg": {
+    "before": {
+      "Path": "D:\\I52-CTDA-R2H\\40a591e7\\scratch\\I52CtdaSmokeScratch.dwg",
+      "Exists": true,
+      "Bytes": 31665,
+      "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+      "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+      "BackupPath": "D:\\I52-CTDA-R2H\\40a591e7\\scratch\\I52CtdaSmokeScratch.bak",
+      "BackupExists": false,
+      "BackupBytes": null,
+      "BackupSha256": null
+    },
+    "after": {
+      "Path": "D:\\I52-CTDA-R2H\\40a591e7\\scratch\\I52CtdaSmokeScratch.dwg",
+      "Exists": true,
+      "Bytes": 31665,
+      "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+      "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+      "BackupPath": "D:\\I52-CTDA-R2H\\40a591e7\\scratch\\I52CtdaSmokeScratch.bak",
+      "BackupExists": false,
+      "BackupBytes": null,
+      "BackupSha256": null
+    },
+    "unchanged": true,
+    "backupCreated": false
+  },
+  "scratchDwgExternalRecheck": {
+    "bytes": 31665,
+    "sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+    "lastWriteUtc": "2024-02-02T02:56:37.0000000Z",
+    "bakExists": false
+  },
+  "artifacts": [
+    {
+      "path": "D:\\I52-CTDA-R2H\\40a591e7\\output\\native-smoke.json",
+      "bytes": 2014,
+      "sha256": "9B513EE12E7D3A955F2AA4AD3EF50FA7113FF14C2D33D666590CF93C86C8B92E"
+    },
+    {
+      "path": "D:\\I52-CTDA-R2H\\40a591e7\\output\\native-smoke.json.events.jsonl",
+      "bytes": 32179,
+      "sha256": "9E265D811A46E4392C97A42DF172FC8B5BDB129C25FBFAF3E97B0F1F7DBD6E61"
+    },
+    {
+      "path": "D:\\I52-CTDA-R2H\\40a591e7\\output\\native-smoke.scr",
+      "bytes": 132,
+      "sha256": "67798C2DD33A5855D21BC8D4AF8C8760D7403353E891D92A7CB34B2A15CAC95A"
+    },
+    {
+      "path": "D:\\I52-CTDA-R2H\\40a591e7\\output\\smoke-result.json",
+      "bytes": 4278,
+      "sha256": "1E7B0E078C60A32E2D19C75731A67DEBDF2C02FA8132E348AF8F1A33F1ABDABB"
+    },
+    {
+      "path": "D:\\I52-CTDA-R2H\\40a591e7\\logs\\harness-console.log",
+      "bytes": 80,
+      "sha256": "7DF936D72E2CDCFE1C99C8FD9829E3F370FF9013B67D2B1D0C1040D14A9C94A7"
+    },
+    {
+      "path": "D:\\I52-CTDA-R2H\\40a591e7\\evidence\\tuples.json",
+      "bytes": 9042,
+      "sha256": "30CC7FD01300E85F0E517EC993A1AB880CB52A61345A5329033FC77A5898CE3F"
+    }
+  ],
+  "autocadConsole": "m_kernelList still has 2 entries. (AutoCAD shutdown diagnostic, as in R2H)",
+  "checks": {
+    "arxLoad": "PASS",
+    "fixtureIdentities": "7/7",
+    "fRefCAbsent": "PASS",
+    "smLinkPresent": "PASS",
+    "smLinkStateSm0": "HFV30:LINK:A,B",
+    "smLinkNotFixtureIdentity": "PASS",
+    "smPrecondition": "OK",
+    "logger": "PASS",
+    "linkCarrierRemoved": true,
+    "cleanup": "PASS",
+    "unload": "PASS",
+    "processFence": "PASS",
+    "scratchDwgUnchanged": true,
+    "scratchBakCreated": false
+  },
+  "governingProbesExecuted": 0,
+  "ctdaHostPass": "NOT EVALUATED",
+  "productDiff": "NONE",
+  "arxVersioned": false
+}
