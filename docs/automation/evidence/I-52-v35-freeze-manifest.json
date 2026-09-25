@@ -1,0 +1,300 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "kind": "V35 consensus freeze manifest",
+  "V35_FREEZE_SHA": "86089886f37da05c2de5dcf9e237044a3deeada3",
+  "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+  "freezePackageHashRule": "SHA-256 (upper-case hex) of the ASCII canonical serialization (oracle_predicates.canon = validator Canon: keys sorted ordinally, no whitespace, \\uXXXX outside 0x20..0x7E) of the object `package` below. `package` binds git blob ids read at V35_FREEZE_SHA, the approval identities, the frozen contract entry hashes, the structural/defensive UNKNOWN sets, the frozen counts and the closure predicates. It excludes this manifest, commit SHAs and governance documents.",
+  "governance": {
+    "architectR3Verdict": "V35 REQUIRED (decision 168)",
+    "v35Candidate": "0c609269b47adedd0f29d8b4cbbc010fae91d2e0 (decision 169)",
+    "architectV35Review": "AGREED WITH CORRECTIONS, 14 RC (decision 170)",
+    "v35A1": "34b3b05b2dc4b32b9b04defe15def3d0fcc9a9c3 (decision 170)",
+    "architectDeltaReview": "AGREED WITH SMALL CORRECTIONS - V35-A1; ORACLE AUTHORITY and APPROVAL HASH SET approved; 0 BLOCKER, 0 MAJOR, 4 MINOR",
+    "v35A2": "86089886f37da05c2de5dcf9e237044a3deeada3 (decision 171)",
+    "coordinator": "AGREED - V35 APPROVED FOR FREEZE",
+    "a2Condition": "freeze without another full review if the hash delta stays in the M1 scope: satisfied (4/381 entries, 0/100 rows, 0/3 freeze blobs, 0 unexpected)",
+    "architectApprovesOracleAuthority": true,
+    "architectApprovesApprovalHashSet": true
+  },
+  "preV35RuntimeArtifacts": {
+    "arxSha256": "7F9C9C052D83A12FCFCEB5ED57F8FC28C25290FC0A347310F46E3D48BE9ED421",
+    "buildTupleHash": "375B3D5C5E1EBD42D2920B628DAF0AC1F538A8DC367FF956C9D7C08DF7D46E25",
+    "r2PreRunTupleHash": "3FB9E0F9E8F7532BB3BD07770C1577487C034E97003694D9265977BAEECEF639",
+    "status": "canonical only as the last verified V34-era runtime artifacts; they do not implement V35; superseded by the R3 rebuild, not by this freeze"
+  },
+  "invalidation": {
+    "invalidatedBy": [
+      "any change to the semantics of a normative catalog entry (any approval hash in approval.approvalHashSetSha256)",
+      "any NPM-V35 row (any row approval hash)",
+      "the normative meaning of NEC-V35, NSC-V35 or FEC-V35",
+      "fixture identities (fixture-v35.json)",
+      "the traceability semantic mapping (traceability-v35.json)",
+      "the oracle approval tables (v35-oracle.json) or their source",
+      "RESULT-RULE-V35 and its predicates",
+      "the runtime module architecture contracts",
+      "completion-token semantics"
+    ],
+    "notInvalidatedBy": [
+      "implementation code that conforms to V35 (executor, payload ARX, managed observer, sequencer, finish gate, control plane, harness)",
+      "evidence or documentation updates that do not modify normative authority"
+    ],
+    "reopen": "a change in invalidatedBy reopens Architect review; implementation must conform to the frozen contract instead"
+  },
+  "implementationBoundary": {
+    "r3Implementation": "AUTHORIZED after this freeze is published with green exact-SHA CI",
+    "scope": [
+      "native governed executor",
+      "payload ARX (R-PAYLOAD-ARX)",
+      "managed observer (R-MANAGED-OBSERVER)",
+      "global log sequencer (LOG-SEQ-01, incl. I52Ctda_FinishFenceIsSet)",
+      "finish gate (FIN-GATE-01, CMD-FINISH, FINISH-FENCE-01)",
+      "external result integration (CONTROL-PLANE-RESULT-01)",
+      "fixture-v35 migration",
+      "traceability-v35 consumption",
+      "single-ProbeId harness path"
+    ],
+    "governingProbes": "BLOCKED until R3 implementation, rebuild and host smoke",
+    "unknownOutcomes": "an UNKNOWN on a structural row is an expected outcome of a correct run, not an architecture failure"
+  },
+  "package": {
+    "initiative": "I-52",
+    "contract": "EXEC-CATALOG-V35-1",
+    "revision": "V35-A2",
+    "blobs": {
+      "normative": {
+        "docs/initiatives/I-52-execution-catalog-v35.json": "567eab9b19ac21a95b51485c39fada449d6b7c6b",
+        "docs/initiatives/I-52-native-probe-matrix-v35.md": "4a78d508424a2c218d3e6779c48be971ba347820",
+        "docs/initiatives/I-52-native-event-catalog-v35.md": "4ad103a12d93114d4e005138792b35698a0bf328",
+        "docs/initiatives/I-52-native-scheduler-catalog-v35.md": "94a8b66034dc78e5d3b1cd469a4635a91523416c",
+        "docs/initiatives/I-52-fixture-execution-contract-v35.md": "358ab9ccdb9dc5d18f32abadfe2db975dcc40fdb",
+        "eng/research/I52Ctda/fixture-v35.json": "d75c046d898969437170bc965ed56a988f689e9c",
+        "eng/research/I52Ctda/traceability-v35.json": "b8de74b27469f514aa0a0f837aa7e0803aab86bc"
+      },
+      "explanatory": {
+        "docs/initiatives/I-52-proposal-v35.md": "dd7a873f3001eeee9a41a42c00029f69e99b1f05",
+        "docs/initiatives/I-52-execution-catalog-v35.md": "2126fa294af92673fc027dea82a2a366ab1b2aea",
+        "docs/initiatives/I-52-architect-review-package-v35.md": "0dcb041720a64edbf2a309476c892d7e793d0f1d"
+      },
+      "lineage": {
+        "docs/automation/evidence/I-52-v35-clause-lineage.json": "f39abf2d7af667a3a978aaf34132482c05b86f6c"
+      },
+      "oracle": {
+        "eng/research/I52Ctda/v35-oracle.json": "0171e5de9e79ce99cf70d97777346f4aacd9da05",
+        "eng/research/I52Ctda/oracle/make_oracle.py": "e90aa1dc921d0778e6be36a1b1183abe83a289f2",
+        "eng/research/I52Ctda/oracle/oracle_predicates.py": "78c750d863240b99bcc6621ef9289320d725cc97"
+      },
+      "validation": {
+        "eng/research/I52Ctda/validate-v35-catalog.ps1": "d726f65e1cef36ead081b54ebc3398f786b9d8f9",
+        "eng/research/I52Ctda/validate-v35-negative-controls.ps1": "722fa97a075a6267c9237c12a0d6dc1e3ccd4d0a"
+      },
+      "evidence": {
+        "docs/automation/evidence/I-52-v35-mechanical-validation.json": "32fcb341b9b2b1b363ae3818f76d09e605e9a450",
+        "docs/automation/evidence/I-52-v35-negative-controls.json": "ef6ea206e1cfb97af77c1661136c98634795dc4a",
+        "docs/automation/evidence/I-52-v35-a1-rc-closure.json": "413bda3cc12c3695c1022453e2c6587da6b3ffbc",
+        "docs/automation/evidence/I-52-v35-a2-errata-closure.json": "453e5dcc4846da39fecc157aa625c6019f2457b2"
+      },
+      "pinnedV34Inputs": {
+        "docs/initiatives/I-52-native-probe-matrix-v34.md": "7a29a1c11d308879488e43dc460602df1426697b",
+        "docs/initiatives/I-52-native-event-catalog-v34.md": "1f16dd0641c1706e6874a68b9136406c19e33848",
+        "eng/research/I52Ctda/traceability-v34.json": "0424c0b6788cbbacf5deaf533317f9202f305482",
+        "docs/automation/evidence/I-52-r3-governed-executor-discovery.json": "38104836975dc4e0adc5c930e8550fc0abab5ae0"
+      }
+    },
+    "approval": {
+      "oracleBlob": "0171e5de9e79ce99cf70d97777346f4aacd9da05",
+      "oracleSourceBlobs": {
+        "eng/research/I52Ctda/oracle/make_oracle.py": "e90aa1dc921d0778e6be36a1b1183abe83a289f2",
+        "eng/research/I52Ctda/oracle/oracle_predicates.py": "78c750d863240b99bcc6621ef9289320d725cc97"
+      },
+      "approvalHashSetSha256": "9FBFD3FAA2CAEEB9312731C73D29225A300ADFD329E7464EA51C8462322C94C1",
+      "approvalCatalogEntries": 381,
+      "approvalRows": 100,
+      "approvalBlobs": {
+        "docs/automation/evidence/I-52-v35-clause-lineage.json": "f39abf2d7af667a3a978aaf34132482c05b86f6c",
+        "eng/research/I52Ctda/traceability-v35.json": "b8de74b27469f514aa0a0f837aa7e0803aab86bc",
+        "eng/research/I52Ctda/fixture-v35.json": "d75c046d898969437170bc965ed56a988f689e9c"
+      },
+      "finishFenceAbiSha256": "BFF91C0553592DA55124FE385B1170A4EFC7B03028EBAC63B76F8BC2217CF401",
+      "finishFenceAbi": {
+        "fence": "FINISH-FENCE-01",
+        "owner": "R-NATIVE-ARX",
+        "readApi": "I52Ctda_FinishFenceIsSet",
+        "setter": "INTERNAL-R-NATIVE-ARX",
+        "setterExported": false,
+        "readers": [
+          "R-PAYLOAD-ARX",
+          "R-MANAGED-OBSERVER"
+        ]
+      },
+      "oracleTablesSha256": {
+        "A_bodyObserver": "F46AF4C16E11B2646BE4984FF7C7ABB45304B5A14B995CFB3B7A0AFCFFFED4AA",
+        "B_resourceTypes": "633E7EAF41E7C5E72A08649E656BF6FFC094959DC5ED051F001822AFCE597C3A",
+        "C_failPredicateApplicability": "B23CE5B895783883B788DF9BF1FAFDADDCD4E0C8DE1F13976CC31209E9D7E224",
+        "D_retainedAuthority": "9B0E5C13B44052FD6245626C5B2DF1AF0CA6BE554369CEF8B947F5A9FCBF406F",
+        "E_triggerTargetClass": "663E70475E9969122358602410B5AB25910376C8B7B05692B39512A525203F6D",
+        "F_markerStageBindings": "484B5FA82797B6EA19730A0A5BE3F464776B8B6E0153A50101F85EE9316C584D",
+        "F_markerStages": "D175AA04CFF67F911F3C5F3D72A8B45BF347D7420458C6D2AC2F37E7ACC74105",
+        "F_stageNamespace": "20BADA5B82D9FF51BB69D5E05787A6324B79432E90694918F54381219682BE3E",
+        "G_completionTokens": "DBB04186F3AC36D2B53B506BD87F3378276AF987635546FB5E0E8BF27B4DC18F",
+        "H_processFence": "88540BD8043D252621E00E70D9A0A8E5FDE203445E5D438B5DDDA57F0539ABA3",
+        "P_rowPredicatesAndTrigger": "D596A08D3AE2C5338E1096CE361433452014201B246BF7B8555656B9BB25DE80",
+        "V34_inputBlobPins": "2A80BF28541FD39C2B7AFBB67E1073516D2EF6DC33AF004CDC0682EB1DEB2D80",
+        "guardKeySchema": "315170DE9F08E650BC4EC858AF3C4129F67CC9E3580E956EAB8D6A2AFB1F93C9",
+        "guardKeyOneShot": "462D5234411961FBCFD38365F4BF9FB8C7805FECE6C8AECE33E7D1809EE07025",
+        "driverPhaseOrder": "E6601186CD42B2E7C2AB6A79D8B525D661AF84052101080DF24DD65B1B6E75DC",
+        "setupOrder": "C8B47647F56C06A4B723E92C67CBC0A7F4ED061854F2E3495B5BDD4445C25683",
+        "allowedCleanupExtension": "ECA255BC084FAD773EF3502B7F29DC3DE3EBEB2696F713B00D9680B3F95F2D54",
+        "payloadReactorRows": "3A225811BAF52697EA8DEADF0E5B106E3AF0D22CAE4CFF1D2EBC0A1C5DC28E31",
+        "Z_approvalFreeze": "9FBFD3FAA2CAEEB9312731C73D29225A300ADFD329E7464EA51C8462322C94C1",
+        "cancelStaging": "EDAD1C0D1AA3F45CDC0824C67F5E71DA5F5680262A6AD8B6D6F7941FCE1ADBE0",
+        "appendTransaction": "491F93A7D0FC43546C5EF1399AEBB4FCF601173768ADB68BB37AFBBA87186D5C",
+        "managedHost": "B54C93AE23F80935389A398409BB94ABEE1CD3B2CFA3B78478761802B49D71A5",
+        "payloadRows": "A7EB5866B210D5B325912E7CF23E05AB23116D749F21A0411D28EE1C11A7EF3F",
+        "resultAuthority": "A93ED22BA8938AE62F7816C24CE1AA4A4EBC7BB7673B0CE6A4269E12D012CEA5",
+        "finishGate": "F34AC78FA48A7FE4FCD4F05AEBBD5F7FA4544DC066713BBB5396FF39DDB5DE42",
+        "lockReleaseAnchor": "5A0A893EA931802953BF6E2925E506D43A7440A4E6962C1FC58BD03246B7B2DE",
+        "payloadModule": "1BBA46162E6111E5611687FECB85B3D56103EE615EC6C630CEB8047C9A11A3AC",
+        "finishFenceAbi": "BFF91C0553592DA55124FE385B1170A4EFC7B03028EBAC63B76F8BC2217CF401",
+        "syncStageIncludesCallerReturn": "B5BEA41B6C623F7C09F1BF24DCAE58EBAB3C0CDD90AD966BC43A45B44867E12B",
+        "cleanupSafetyScope": "B3D6A2016EB002795E09C2B1D266E551F6D6BCD8ABF96F9AF7AFF639389E130B"
+      }
+    },
+    "contracts": {
+      "resultRule": {
+        "RESULT-RULE-V35": "57758F2D8BA6C8C567EFEB30BA5EABCF681AB3190BE055575C5D3BE17679D6BD",
+        "EVIDENCE-COMPLETE": "F45FC2665ECFC9017E5A1952FC29D50DBE1875B3C74333D878F6AD7DA1A3A2A2",
+        "SAFETY-EVIDENCE-COMPLETE": "E110FB918932217D1206A54C84F956EC7F7990AD0C372199FB1CAC57A2BF8C2E",
+        "FP-CLEANUP-SAFETY": "732DF416316B499AFBE051303CDC7C5D421265FA39EA234058910ED12BA74FEF",
+        "FENCED-RETENTION-SAFE": "EF25FA95863144576CB734158E7FBCC07AAD1DA4CAC57848A555FEF7E608C78A",
+        "CONTROL-PLANE-RESULT-01": "CA44E92E888B4DC13260312B9024BAF99AD999A9E2B9F17139CB5B675C41184B",
+        "CMD-FINISH": "6CBD3076343933C898AB98C2F57EA505CE11E2C6377CB8123998602A5D74B88C"
+      },
+      "runtimeModules": {
+        "R-NATIVE-ARX": "4A988E0859ECFF5F2C93508E9F10606EF1C6B5283E2F63622CA6F82B2E333468",
+        "R-PAYLOAD-ARX": "ED6401051AF503F598172ED6C0151B75C2666300A7FF077D6678349AD055D762",
+        "R-MANAGED-OBSERVER": "DC38BE5CBB36F38F84CBDFD67CEEFAC3E8EE74FD6AED095C24B9F2E72DB18ABE",
+        "LOG-SEQ-01": "5B5077EF8F5F18FDC964BC980C4A0A7907D1EE3D17F4123876FC18BE86B511E8",
+        "LOG-RECORD-01": "E76321D0AE1FAEE0A352895EFBA227E79723BBF2647A13EAFC3587FA9D692E62",
+        "FINISH-FENCE-01": "66684683838974174BEE2D5DC18379249A1C3B87CB1B406BACFF9CACDB8AA4B1",
+        "FIN-GATE-01": "0DE91E1FFEB9D048423F3C460031A7C2947B4696F75AD43EF65B4ADEA1733601",
+        "PAYLOAD-DB-BINDING": "0CBFD009D7DE0DA8EDF05C1A9E8F4B16E5B4838C8A88445E7D02947A0BCF72FC"
+      },
+      "completionTokens": {
+        "TOK-APPCTX-DELIVERY-DONE": "4D27E618BAB002EA0ED8469EE0F7AE60B5D12450C07072BC55B5D9875FBEA9D9",
+        "TOK-CANCEL-CMDCTX-DONE": "1123EB637B799ED2F4FA8405B5A629F0C6F3AC60CB397B360398104AF9135073",
+        "TOK-CANCEL-OBSERVED": "8C3A32101CF919BE168F65FB499CC28220A82AC2787C84A8148D90CD426F8C33",
+        "TOK-CMDCTX-DELIVERY-DONE": "E532BBBCEAAACFA1B9D9F63C883ED636EB3531B20A55B63051507454CE6DFF17",
+        "TOK-DRIVER-APP-DONE": "56155A6951D9EE7525290FBF7C089B88D88F804CF429044159074D8A004EB10B",
+        "TOK-ENQUEUE-APPCTX": "4ECDFE9535A2240D73D007972C813F0185525FE8694827E049542E63F351CF10",
+        "TOK-ENQUEUE-CMDCTX": "5B16ED7DA024F4470610AF33ABB4955A4F1545B132F07B468993553DEB73A337",
+        "TOK-ENQUEUE-SEND": "A1BE0A3AC507E00620B8ED0872C2A4ABED9F858B0ED3FE7A1CF6517A8CC0BE3C",
+        "TOK-EXEC-DONE": "78D08E29BE2344677858BBA44A572552E0FE1DD0633EA79A946237FB581B7DB8",
+        "TOK-FIXTURE-CMD-END": "AB7323108E8C56FB07AED264D82B8A6CCA70CABA2A459E7B66DA0A2E2E4BE20D",
+        "TOK-LOCK-RELEASE": "6FD1320D314B8BCD67A750D465809F9D3A4C94722A10595BD4C5F8087DC66B89",
+        "TOK-MANAGED-CMD-END": "8E4D5161F3DDCCFCA2D6E9B749C97E1572B9B8EE895F788176FF0ACABC3BDD9C",
+        "TOK-OUTCOME": "ADF27A52D1FF0F101453F87E30726F2148E12C57AEFB8EE14D2015975CE24179",
+        "TOK-PAYLOAD-LOAD-RESULT": "71082ED678575AAF89B2023336DDC35DD8F94EDFEA6810093F671E44AB337B1B",
+        "TOK-PROBE-RETURN": "F3F42CF4A2F37D0232633D3E492E4217973B69130CED3CE72004149C7E998418",
+        "TOK-SEND-CMD-END": "F48B775455DA1061C131D2FE37339EFE6A9DFD82A303F77807B8DC981802EE7C",
+        "TOK-SYNC-RETURN": "D228E649E4774BCA3B81CAC7DB9426611122698E4AC0373DD7E8D66DCDA6B139"
+      }
+    },
+    "structuralUnknownRows": [
+      "10NDOC-WILL-SM",
+      "02NEDW-ALL",
+      "02NEDC-ALL",
+      "13A-SM",
+      "02NTAS-ALL",
+      "02NTA-ALL",
+      "02NAPP-SM",
+      "04NO-S",
+      "04NO-UNDO-S",
+      "COBJUNDO16SND-ALL",
+      "COBJUNDO16APP-ALL",
+      "09N-D",
+      "10N-S",
+      "10N-M",
+      "10N-SM"
+    ],
+    "defensiveUnknownRows": [
+      "02NRXL-ALL",
+      "02NRXW-ALL",
+      "02NTS-ALL",
+      "10NDOC-CHANGED-SM",
+      "16A-M",
+      "16A-S",
+      "16A-SM",
+      "16C-M",
+      "16C-S",
+      "16C-SM",
+      "C2APP2CMD-ALL",
+      "CAPP16APP-ALL",
+      "CDBERASE16APP-ALL",
+      "CDBERASE16SND-ALL",
+      "CDBOPEN16APP-ALL",
+      "CDBOPEN16SND-ALL",
+      "CDOCLOCKCHANGED16APP-ALL",
+      "CDOCLOCKVETO16APP-ALL",
+      "CDOCLOCKVETO16SND-ALL",
+      "CDOCLOCKWILL16APP-ALL",
+      "CEDC16APP-ALL",
+      "CEDC16SND-ALL",
+      "CEDEND16APP-ALL",
+      "CEDEND16SND-ALL",
+      "CEDW16APP-ALL",
+      "CENTGFX16APP-ALL",
+      "COBJCANCEL16APP-ALL",
+      "COBJCANCEL16SND-ALL",
+      "COBJCLOSED16APP-ALL",
+      "COBJCLOSED16SND-ALL",
+      "COBJERASE16APP-ALL",
+      "COBJERASE16SND-ALL",
+      "COBJMOD16APP-ALL",
+      "COBJOPEN16APP-ALL",
+      "COBJOPEN16SND-ALL",
+      "CRXL16APP-ALL",
+      "CRXW16APP-ALL",
+      "CTA16APP-ALL",
+      "CTAS16APP-ALL",
+      "CTRABOUTABORT16APP-ALL",
+      "CTRABOUTABORT16SND-ALL",
+      "CTRABOUTEND16APP-ALL",
+      "CTRABOUTEND16SND-ALL",
+      "CTRENDED16APP-ALL",
+      "CTRENDED16SND-ALL",
+      "CTROUTERMOSTENDCALLED16APP-ALL",
+      "CTROUTERMOSTENDCALLED16SND-ALL",
+      "CTS16APP-ALL"
+    ],
+    "frozenCounts": {
+      "probeIds": 100,
+      "eventIds": 27,
+      "reachableCallbacks": 26,
+      "schedulers": 3,
+      "supportActions": 7,
+      "fixtureIdentities": 8,
+      "rows": 100,
+      "fields": 36,
+      "catalogEntries": 381,
+      "derivedPlans": 100,
+      "unboundIds": 0,
+      "executableFreeText": 0,
+      "classD": 0,
+      "contradictions": 0,
+      "eventRelations": 237,
+      "schedulerPairs": 63,
+      "closurePredicatesTrue": 7,
+      "negativeControls": 98
+    },
+    "closurePredicates": {
+      "ExecutionCatalogClosed": true,
+      "TriggerAuthorityClosed": true,
+      "SetupAuthorityClosed": true,
+      "PredicateAuthorityClosed": true,
+      "ResourceAuthorityClosed": true,
+      "FixtureExecutionContractClosedV35": true,
+      "PlanDerivationClosed": true
+    }
+  }
+}
