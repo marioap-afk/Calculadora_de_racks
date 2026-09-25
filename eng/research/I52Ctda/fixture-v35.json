@@ -1,6 +1,7 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "contract": "FEC-V35-1",
+  "revision": "V35-A1",
   "materialization": "RUNTIME_MATERIALIZATION_PENDING",
   "identities": [
     {
@@ -88,6 +89,14 @@
     {
       "id": "R-PAYLOAD-ARX",
       "kind": "PayloadResource"
+    },
+    {
+      "id": "R-NATIVE-ARX",
+      "kind": "RuntimeModule"
+    },
+    {
+      "id": "R-MANAGED-OBSERVER",
+      "kind": "RuntimeModule"
     }
   ],
   "bootstrap": "BOOT-01",

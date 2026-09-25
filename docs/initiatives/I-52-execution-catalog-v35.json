@@ -1,8 +1,15 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "contract": "EXEC-CATALOG-V35-1",
+  "revision": "V35-A1",
   "initiative": "I-52",
-  "status": "DRAFT / ARCHITECTURE CANDIDATE / NOT EXECUTED",
+  "status": "DRAFT / V35-A1 READY FOR ARCHITECT DELTA REVIEW / NOT EXECUTED",
+  "retainedStatusVocabulary": [
+    "RETAINED-UNCHANGED",
+    "RETAINED-EXTENDED",
+    "SUPERSEDED",
+    "UNUSED"
+  ],
   "parents": {
     "proposal": "aec39a7599e6c76613b247b21a8bf6e7f446bafa",
     "npm": "7a29a1c11d308879488e43dc460602df1426697b",
@@ -14,6 +21,16 @@
     "fixture": "4507c34e277df99306dc1f60a044b47f6bff6dd2",
     "traceability": "0424c0b6788cbbacf5deaf533317f9202f305482",
     "discovery": "38104836975dc4e0adc5c930e8550fc0abab5ae0"
+  },
+  "revisionParent": {
+    "commit": "0c609269b47adedd0f29d8b4cbbc010fae91d2e0",
+    "catalog": "8f833404b9f54d15ae9d676eb89413edfed03ec1",
+    "npm": "54143fa0ecb02900c7d3ee04506ac353b6f4dba1",
+    "nec": "b700dbd7d1e3e62d9ab3a906aca3f8f2165c7da8",
+    "nsc": "35204403f3415c89439735fbe6922033c0b0a752",
+    "fec": "6588ec82966eb210277a2b6dc6d31f377dce3631",
+    "proposal": "0d7052c92d1df3b954444337a2317adfc65df0d6",
+    "validator": "5fc5389778f097385da30f77f6ff8317ebd84e97"
   },
   "rowSchema": [
     "ProbeId",
@@ -41,6 +58,7 @@
     "ExpectedAfter",
     "VerifierIds",
     "Markers",
+    "MarkerStageBindings",
     "ObservationPredicateIds",
     "UnknownPredicateIds",
     "FailPredicateIds",
@@ -48,6 +66,7 @@
     "FailClass",
     "CleanupActionId",
     "CompletionFence",
+    "CompletionTokenIds",
     "Threats",
     "DA-P/H-P"
   ],
@@ -58,14 +77,13 @@
     "-": "MUST_BE_ABSENT"
   },
   "markerBinding": {
-    "N-ED-WILL/N-ED-END": "bind to I52CTDA_QUEUED when ExecutionContext is SEND-EXEC-01; to I52CTDA_FIXTURE when Trigger is TRG-RUN-FIXTURE-CMD; to HFV34_CANCEL when Trigger is TRG-CANCEL-CMDCTX; to the unique commandWillStart/commandEnded pair whose interval contains the CMDCTX delivery entry (EP-CMDCTX) and its completion token, excluding I52CTDA_BOOT, I52CTDA_PROBE, I52CTDA_FIXTURE, I52CTDA_QUEUED, I52CTDA_FINISH and HFV34_CANCEL (zero or several such pairs are UNKNOWN; the name is recorded) when ExecutionContext is CMDCTX-EXEC-01; otherwise to I52CTDA_PROBE",
+    "all bound markers": "MARKER-STAGE-BIND-01 (per-row MarkerStageBindings column)",
+    "MARK-LOCK-RELEASE": "LOCK-RELEASE-BIND-01",
     "N-DOC-*": "exact scratch document",
     "N-DB-*": "scratch database",
     "N-TR-*": "scratch database transaction manager",
-    "N-OBJ-*/N-ENT-GFX": "an object/entity reactor registered by the row",
-    "N-RX-*": "exact NL-ARX-PATH module",
-    "MARK-LOCK-RELEASE": "documentLockModeChanged of the scratch document to an unlocked mode after the row's last delivery",
-    "MARK-MANAGED-CMD-END": "RR-MANAGED-CMD CommandEnded for the same command bound for N-ED-END"
+    "N-OBJ-*/N-ENT-GFX": "an object/entity reactor registered by the row on its notifier",
+    "N-RX-*": "exact NL-ARX-PATH module"
   },
   "invariants": {
     "INV-TRIGGER-DISJOINT": "For rows whose body executes inside the trigger's callback (CB-PRIMARY-01, CB-EXEC-01, EDC-EXEC-01), the trigger target identity is not in the MutationActionId write set.",
@@ -73,7 +91,11 @@
     "INV-SINGLE-TERMINAL-BASE": "Every CleanupAction contains exactly one CLN-BASE and nothing but CLN-PROCESS-EXIT after it (R3-C02).",
     "INV-MARKER-OBSERVER": "Every marker has an observer registration of its family in the row.",
     "INV-BODY-OBSERVER": "A row that runs a probe body names exactly one BodyObserverId, registered by the row, whose family matches the body callback (PrimaryAuthority or ScheduleOrigin EventId), plus the family guard; every other registration of the row is observation-only.",
-    "INV-MARKER-PRODUCER": "Every + marker that is an EventId is a candidate product (produces attribute, per exact header semantics) of the row's driver, setup, trigger, scheduler chain, execution context or mutation; an object/entity marker additionally requires that producer to touch an object watched by one of the row's object/entity observers (touches attribute: trigger target, staged F-XR for TRG-ABORT-PRIMARY-T, mutation write set); runtime absence remains UNKNOWN."
+    "INV-MARKER-PRODUCER": "Every + marker that is an EventId is a candidate product (produces attribute, per exact header semantics) of the row's driver, setup, trigger, scheduler chain, execution context or mutation; an object/entity marker additionally requires that producer to touch an object watched by one of the row's object/entity observers (touches attribute: trigger target, staged F-XR for TRG-ABORT-PRIMARY-T, mutation write set); runtime absence remains UNKNOWN.",
+    "INV-FINISH-GATED": "I52CTDA_FINISH is entered only through FIN-GATE-01 after every CompletionTokenId of the row, or in FINISH-MODE-DRAIN (UNKNOWN).",
+    "INV-DRIVER-MARKER-DISJOINT": "No governed marker binds to a DRIVER or INFRA stage; DRIVER-APP-01 emits only MARK-DRIVER-APP-*.",
+    "INV-APPEND-TRANSACTION": "A CB-PRIMARY-01 row whose mutation appends to Model Space uses a Model-Space trigger in openMode T-PRIMARY.",
+    "INV-CONTROL-PLANE-RESULT": "Only CONTROL-PLANE-RESULT-01 classifies, after the process exited."
   },
   "instrumentationMarkers": [
     "MARK-ORIGIN-RETURN",
@@ -248,6 +270,21 @@
       "member": "RTNORM",
       "header": "adscodes.h",
       "pattern": "#define RTNORM\\s+5100"
+    },
+    {
+      "member": "acedRegisterOnIdleWinMsg",
+      "header": "core_rxmfcapi.h",
+      "pattern": "ACCORE_PORT bool acedRegisterOnIdleWinMsg\\(const AcedOnIdleMsgFn pfn\\);"
+    },
+    {
+      "member": "acedRemoveOnIdleWinMsg",
+      "header": "core_rxmfcapi.h",
+      "pattern": "ACCORE_PORT bool acedRemoveOnIdleWinMsg\\(const AcedOnIdleMsgFn pfn\\);"
+    },
+    {
+      "member": "AcApDocument::isQuiescent",
+      "header": "acdocman.h",
+      "pattern": "virtual bool\\s+isQuiescent\\(\\) const = 0;"
     }
   ],
   "frozenCounts": {
@@ -261,8 +298,11 @@
   "entries": {
     "RUN-ENV-01": {
       "kind": "RunEnvironment",
-      "definition": "Every ProbeId execution runs in its own dedicated scratch AutoCAD 2025 process (one ProbeId per PID), never in the user's active session. The process opens a scratch DWG created for the run, loads the canonical research ARX, executes DRIVER-SCRIPT-01 and exits. The append-only event log records a monotonic sequence number, thread id, document/application context, database identity and transaction count for every observation. Process exit is externally verified by exact PID.",
+      "definition": "Every ProbeId execution runs in its own dedicated scratch AutoCAD 2025 process (one ProbeId per PID), started by the external control plane with the dedicated scratch profile, never in the user's active session. The process opens a scratch DWG created for the run, runs DRIVER-SCRIPT-01, loads R-NATIVE-ARX (and R-MANAGED-OBSERVER when the row registers RR-MANAGED-CMD), and exits through FIN-GATE-01 and CMD-FINISH. All modules log through LOG-SEQ-01 with LOG-RECORD-01 records. The control plane records the exact PID, verifies its exit and then runs CONTROL-PLANE-RESULT-01. Process exit never substitutes for CLN-BASE verification, except for state retained by CLN-OBJ-RETAIN-FENCED.",
       "section": "run",
+      "amendedBy": [
+        "RC-07"
+      ],
       "authority": "V35"
     },
     "BOOT-01": {
@@ -279,8 +319,21 @@
     },
     "DRIVER-SCRIPT-01": {
       "kind": "DriverScript",
-      "definition": "Fixed script order: `I52CTDA_BOOT`; `I52CTDA_PROBE <ProbeId>`; then `I52CTDA_FIXTURE` only when TriggerActionId is TRG-RUN-FIXTURE-CMD, or `HFV34_CANCEL` only when TriggerActionId is TRG-CANCEL-CMDCTX; then `I52CTDA_FINISH <ProbeId>`; then close the scratch DWG without save and exit. No keyboard or human input. I52CTDA_FINISH requires every completion token of the row; a missing token is UNKNOWN (no waiting, no retry). The script is not a scheduler and grants no scheduler credit.",
+      "definition": "Fixed script, the only human-free input of the run: `_.FILEDIA` `0`; `(arxload \"<RunDir>/I52CtdaNative.arx\")`; `_.NETLOAD` `<RunDir>\\I52Ctda.ManagedObserver.dll` only when the row registers RR-MANAGED-CMD; `I52CTDA_BOOT`; `I52CTDA_PROBE <ProbeId>`; then `I52CTDA_FIXTURE` only when TriggerActionId is TRG-RUN-FIXTURE-CMD, or `HFV34_CANCEL` only when TriggerActionId is TRG-CANCEL-CMDCTX. The script contains neither I52CTDA_FINISH nor QUIT: FIN-GATE-01 issues FINISH, and CMD-FINISH issues the exit. The script is not a scheduler and grants no scheduler credit.",
       "section": "run",
+      "scriptSteps": [
+        "_.FILEDIA 0",
+        "(arxload \"<RunDir>/I52CtdaNative.arx\")",
+        "_.NETLOAD <RunDir>\\I52Ctda.ManagedObserver.dll (only rows registering RR-MANAGED-CMD)",
+        "I52CTDA_BOOT",
+        "I52CTDA_PROBE <ProbeId>",
+        "I52CTDA_FIXTURE (only TRG-RUN-FIXTURE-CMD)",
+        "HFV34_CANCEL (only TRG-CANCEL-CMDCTX)"
+      ],
+      "containsFinish": false,
+      "amendedBy": [
+        "RC-01"
+      ],
       "authority": "V35"
     },
     "DRIVER-CMD-01": {
@@ -290,8 +343,34 @@
         "N-ED-WILL",
         "N-ED-END"
       ],
-      "definition": "I52CTDA_PROBE (CMD-PROBE, modal) runs in document command context and must observe a write-capable host command lock at entry (otherwise UNKNOWN, nothing is executed). It registers the row's ObserverRegistrationIds in catalog order (except RR-PAYLOAD-DB, which R-PAYLOAD-ARX registers itself during SET-LOAD-PAYLOAD), executes the row's SetupActionIds in order, arms the row's GuardIds (a guard whose armTarget is a resource created by the trigger, RG-DB-APPEND, is armed by that trigger immediately before the append), executes TriggerActionId, runs post-trigger obligations fixed by setup and returns. Guards are disarmed in finally when TriggerActionId returns, except for the script-issued triggers TRG-RUN-FIXTURE-CMD and TRG-CANCEL-CMDCTX: their guards stay armed after I52CTDA_PROBE returns, their callback identity is bound to the exact command name of markerBinding (I52CTDA_FIXTURE, HFV34_CANCEL) and I52CTDA_FINISH disarms them. The driver exclusively owns T-PRIMARY/T-NESTED/T-CONTROLLED when setup or trigger creates them.",
+      "definition": "I52CTDA_PROBE (CMD-PROBE, modal) runs in document command context and must observe a write-capable host command lock at entry (otherwise UNKNOWN, nothing is executed). Fixed phase order: REGISTER the row's ObserverRegistrationIds in catalog order (except RR-PAYLOAD-DB, which R-PAYLOAD-ARX registers itself during SET-LOAD-PAYLOAD) and FIN-GATE-01; SETUP (SetupActionIds in order); ARM the GuardIds (RG-DB-APPEND is armed by its trigger immediately before the append); TRIGGER; CALLBACK-WINDOW (every synchronous callback of the trigger returns); POST-TRIGGER-OBLIGATIONS (SET-OUTCOME-COMMIT and any other obligation fixed by setup); OUTCOME-RECORD (the driver transaction outcome is logged); DISARM (in finally, never before the obligations complete); TOKEN (TOK-OUTCOME when applicable, then TOK-PROBE-RETURN). For the script-issued triggers TRG-RUN-FIXTURE-CMD and TRG-CANCEL-CMDCTX the guards stay armed after I52CTDA_PROBE returns, their callback identity is bound to the exact command name, and CMD-FINISH disarms them as its first action (FINISH-ENTRY). The driver exclusively owns T-PRIMARY/T-NESTED/T-CONTROLLED when setup or trigger creates them.",
       "section": "run",
+      "phaseOrder": [
+        "REGISTER",
+        "SETUP",
+        "ARM",
+        "TRIGGER",
+        "CALLBACK-WINDOW",
+        "POST-TRIGGER-OBLIGATIONS",
+        "OUTCOME-RECORD",
+        "DISARM",
+        "TOKEN"
+      ],
+      "scriptTriggerDisarm": "FINISH-ENTRY",
+      "amendedBy": [
+        "RC-12"
+      ],
+      "setupOrder": [
+        "SET-OPEN-PRIMARY-T",
+        "SET-OPEN-NESTED-T",
+        "SET-STAGE-S-IN-PRIMARY",
+        "SET-PAYLOAD-PATH",
+        "SET-LOAD-PAYLOAD",
+        "SET-RETAIN-CALLBACK-DATA",
+        "SET-RETAIN-TWO-STAGE-DATA",
+        "SET-ARM-VETO",
+        "SET-OUTCOME-COMMIT"
+      ],
       "authority": "V35"
     },
     "DRIVER-APP-01": {
@@ -302,9 +381,23 @@
         "N-ED-WILL",
         "N-ED-END"
       ],
-      "definition": "I52CTDA_PROBE registers observers, runs setup and then calls beginExecuteInApplicationContext(driverBody, data) once (driver infrastructure, SchedulerUse=DRIVER-INFRA, no scheduler credit, no NS pair). Non-eOk enqueue is UNKNOWN. At delivery isApplicationContext()==true must be observed (otherwise UNKNOWN); driverBody resolves the exact scratch document D, arms guards, executes TriggerActionId, disarms guards in finally and emits the DRIVER-APP completion token.",
+      "definition": "I52CTDA_PROBE registers observers, runs setup and calls beginExecuteInApplicationContext(driverBody, data) once (driver infrastructure, SchedulerUse=DRIVER-INFRA, no scheduler credit, no NS pair; non-eOk enqueue is UNKNOWN). driverBody runs in stage STG-DRIVER-APP: it records MARK-DRIVER-APP-ENTRY, requires isApplicationContext()==true (otherwise UNKNOWN), resolves the exact scratch document D, arms guards, executes TriggerActionId, disarms guards after the trigger returned, records MARK-DRIVER-APP-RETURN and sets TOK-DRIVER-APP-DONE. It never emits a governed marker; the governed stages it hosts (STG-TRIGGER, STG-SYNC-APPCTX, origin callbacks) record their own StageId.",
       "usesSupport": [],
       "section": "run",
+      "phaseOrder": [
+        "ENQUEUE",
+        "DELIVERY",
+        "ARM",
+        "TRIGGER",
+        "CALLBACK-WINDOW",
+        "POST-TRIGGER-OBLIGATIONS",
+        "OUTCOME-RECORD",
+        "DISARM",
+        "TOKEN"
+      ],
+      "amendedBy": [
+        "RC-03"
+      ],
       "authority": "V35"
     },
     "F-TRIGGER-MOD": {
@@ -410,8 +503,22 @@
     },
     "R-PAYLOAD-ARX": {
       "kind": "PayloadResource",
-      "definition": "Architect B03: second research module I52CtdaPayload.arx, built with the research ARX and recorded by SHA-256 in the build tuple. NL-ARX-PATH = absolute path <RunDir>\\I52CtdaPayload.arx of the dedicated run directory. Loaded only with acedArxLoad(NL-ARX-PATH). On kInitAppMsg it registers RR-PAYLOAD-DB on the scratch database and appends one MARK-REGISTRATION record; its reactor applies RG-DB-MOD semantics and acts only when the main module exported the C15 arm record, otherwise it is inert. Load success = acedArxLoad returned RTNORM, the module is reported loaded by the dynamic linker, and N-RX-LOADED names the exact module. No in-process unload is ever attempted; process exit is the residency fence.",
+      "definition": "Architect B03 + RC-08. Second research module I52CtdaPayload.arx, owned by eng/research/I52Ctda (separate vcxproj), research-only, never deployed. NL-ARX-PATH = absolute path <RunDir>\\I52CtdaPayload.arx of the dedicated run directory, SHA-256 pinned in the build tuple. Loaded only with acedArxLoad(NL-ARX-PATH) (stage STG-PAYLOAD-LOAD). At kInitAppMsg (stage STG-PAYLOAD-INIT) it binds LOG-SEQ-01 (else it registers nothing: UNK-LOG-BINDING) and evaluates PAYLOAD-DB-BINDING; only if it holds does it call I52Ctda_QueryC15Arm; only an armed answer (C15N16N-SM) naming F-TRIGGER-MOD and the retained callback data makes it register RR-PAYLOAD-DB on that database, append one MARK-REGISTRATION record and run the C15 origin body with RG-DB-MOD semantics; unarmed rows register no reactor. The exported I52CtdaPayload_RemoveReactor removes RR-PAYLOAD-DB while the database is live and returns its status; CLN-BASE calls it and any non-eOk forbids PASS (UNKNOWN). Load success = acedArxLoad returned RTNORM, the dynamic linker reports the module loaded, and N-RX-LOADED names the exact module. No in-process unload; process exit is the residency fence.",
       "section": "resource",
+      "dbBinding": "PAYLOAD-DB-BINDING",
+      "sourcePath": "eng/research/I52Ctda/payload/I52CtdaPayload.vcxproj (planned for R3, separate native project)",
+      "artifact": "I52CtdaPayload.arx",
+      "toolchain": "x64, MSVC v143 14.44.35207, ObjectARX 2025 SDK 25.0.58.0 (D:\\CDROM1), same flags as R-NATIVE-ARX",
+      "identity": "SHA-256 recorded in the R3 build tuple next to R-NATIVE-ARX; SET-PAYLOAD-PATH compares it before load",
+      "interface": "imports the LOG-SEQ-01 C ABI of R-NATIVE-ARX (I52Ctda_LogAppend, I52Ctda_TokenSet, I52Ctda_QueryC15Arm, I52Ctda_FinishFenceSet) through GetModuleHandleW + GetProcAddress; exports I52CtdaPayload_RemoveReactor, which R-NATIVE-ARX binds with GetModuleHandleW(L\"I52CtdaPayload.arx\") + GetProcAddress and calls in CLN-BASE",
+      "researchOnly": true,
+      "amendedBy": [
+        "RC-08"
+      ],
+      "exports": [
+        "I52CtdaPayload_RemoveReactor"
+      ],
+      "registersOnlyWhenArmed": true,
       "authority": "V35"
     },
     "CMD-BOOT": {
@@ -452,8 +559,14 @@
     "CMD-FINISH": {
       "kind": "CommandResource",
       "commandName": "I52CTDA_FINISH",
-      "definition": "Command `I52CTDA_FINISH` registered by the research ARX at load: modal; checks completion tokens, runs VerifierIds, runs CleanupActionId, flushes the log.",
+      "definition": "Command `I52CTDA_FINISH` registered by R-NATIVE-ARX, entered only through FIN-GATE-01. First action: set FINISH-FENCE-01, then disarm any guard still armed (script-issued triggers) and record FINISH-MODE-NORMAL or FINISH-MODE-DRAIN. NORMAL: run the row's VerifierIds, then CleanupActionId. DRAIN (timeout or FINISH-EARLY): record UNK-FINISH-TIMEOUT, run no verifier comparison, run CleanupActionId (CLN-DEFER-DRAIN records any undrained work). Flush the log. FINISH never declares PASS, FAIL or UNKNOWN; CONTROL-PLANE-RESULT-01 does, outside the process. Last action: `_.QUIT` `_Y` through FINISH-INFRA, which discards and closes the scratch document and exits AutoCAD; the scratch document is never closed from inside FINISH.",
       "section": "resource",
+      "neverClassifies": true,
+      "amendedBy": [
+        "RC-01"
+      ],
+      "firstAction": "FINISH-FENCE-01",
+      "exitAction": "QUIT-DISCARD",
       "authority": "V35"
     },
     "OR-XR": {
@@ -612,36 +725,86 @@
         "MARK-MANAGED-CMD-END"
       ],
       "objectReactor": false,
-      "definition": "managed CommandEnded observer of HEC-V27-C1 row 09E (M-DOC-END), hosted by the managed research module I52CtdaManagedObserver.dll loaded by RUN-ENV-01 at process start; the driver subscribes it for the scratch document through the module's exported registration entry when the row lists it; it writes into the same append-only log. Registration: driver subscription through the managed module; failure is UNKNOWN. The instance is retained until its cleanup step; its callbacks always log; they run the probe body only when the row names it as BodyObserverId and the body guard is armed; otherwise the registration is observation-only.",
+      "definition": "Managed CommandEnded observer of HEC-V27-C1 row 09E (M-DOC-END). ObserverRegistration hosted by the RuntimeModule R-MANAGED-OBSERVER (I52Ctda.ManagedObserver.dll), which DRIVER-SCRIPT-01 loads with _.NETLOAD only when the row lists it. The driver subscribes it for the scratch document through the module's exported registration entry (failure is UNKNOWN); it records through LOG-SEQ-01 and sets TOK-MANAGED-CMD-END. It is a marker source (MARK-MANAGED-CMD-END), not a native EventId: it changes no event, callback, scheduler or support-action count. CLN-BASE unsubscribes it; the assembly stays resident until process exit and then holds no governed state. Its callbacks never run a probe body.",
       "section": "observer",
+      "hostModule": "R-MANAGED-OBSERVER",
+      "amendedBy": [
+        "RC-07"
+      ],
       "authority": "V35"
     },
     "RG-DB-MOD": {
       "kind": "Guard",
       "family": "N-DB-MOD",
       "armTarget": "F-TRIGGER-MOD",
-      "definition": "V34 §8 unchanged: arm only for exact F-TRIGGER-MOD ObjectId; log nested notifications, suppress probe-body re-entry; other recursion UNKNOWN; disarm in finally.",
+      "definition": "NPM-V34 text (verbatim): Arm only for exact F-TRIGGER-MOD ObjectId; log nested notifications caused by protected-target writes but suppress re-entry into the probe body; other recursion is UNKNOWN; disarm in finally. V35 delta (supersedes the V34 clauses it contradicts): V34 §8 unchanged: arm only for exact F-TRIGGER-MOD ObjectId; log nested notifications, suppress probe-body re-entry; other recursion UNKNOWN; disarm in finally.",
       "section": "guard",
+      "keySchema": [
+        "ProbeId",
+        "GuardId",
+        "DatabaseId",
+        "EventId",
+        "CallbackMember",
+        "TargetObjectId",
+        "StageId"
+      ],
+      "amendedBy": [
+        "RC-11"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §8"
+      "supersedes": "NPM-V34 §8",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "Arm only for exact F-TRIGGER-MOD ObjectId; log nested notifications caused by protected-target writes but suppress re-entry into the probe body; other recursion is UNKNOWN; disarm in finally.",
+      "v35Delta": "V34 §8 unchanged: arm only for exact F-TRIGGER-MOD ObjectId; log nested notifications, suppress probe-body re-entry; other recursion UNKNOWN; disarm in finally."
     },
     "RG-DB-ERASE": {
       "kind": "Guard",
       "family": "N-DB-ERASE",
       "armTarget": "F-TRIGGER-ERASE-DB",
-      "definition": "V34 §8 unchanged: arm only for disposable F-TRIGGER-ERASE-DB; protected targets stay live; suppress body re-entry; unexpected recursion UNKNOWN.",
+      "definition": "NPM-V34 text (verbatim): Arm only for disposable F-TRIGGER-ERASE-DB; protected targets remain live; log nested notifications, suppress body re-entry, and make unexpected recursion UNKNOWN. V35 delta (supersedes the V34 clauses it contradicts): V34 §8 unchanged: arm only for disposable F-TRIGGER-ERASE-DB; protected targets stay live; suppress body re-entry; unexpected recursion UNKNOWN.",
       "section": "guard",
+      "keySchema": [
+        "ProbeId",
+        "GuardId",
+        "DatabaseId",
+        "EventId",
+        "CallbackMember",
+        "TargetObjectId",
+        "ErasingFlag",
+        "StageId"
+      ],
+      "amendedBy": [
+        "RC-11"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §8"
+      "supersedes": "NPM-V34 §8",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "Arm only for disposable F-TRIGGER-ERASE-DB; protected targets remain live; log nested notifications, suppress body re-entry, and make unexpected recursion UNKNOWN.",
+      "v35Delta": "V34 §8 unchanged: arm only for disposable F-TRIGGER-ERASE-DB; protected targets stay live; suppress body re-entry; unexpected recursion UNKNOWN."
     },
     "RG-OBJ-ERASE": {
       "kind": "Guard",
       "family": "N-OBJ-ERASE",
       "armTarget": "F-TRIGGER-ERASE-OBJ",
-      "definition": "V34 §8 unchanged: same one-shot rule for disposable F-TRIGGER-ERASE-OBJ; no protected target is erased.",
+      "definition": "NPM-V34 text (verbatim): Same one-shot rule for disposable F-TRIGGER-ERASE-OBJ; no protected target is erased. V35 delta (supersedes the V34 clauses it contradicts): V34 §8 unchanged: same one-shot rule for disposable F-TRIGGER-ERASE-OBJ; no protected target is erased.",
       "section": "guard",
+      "keySchema": [
+        "ProbeId",
+        "GuardId",
+        "ReactorInstance",
+        "EventId",
+        "CallbackMember",
+        "TargetObjectId",
+        "StageId"
+      ],
+      "amendedBy": [
+        "RC-11"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §8"
+      "supersedes": "NPM-V34 §8",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "Same one-shot rule for disposable F-TRIGGER-ERASE-OBJ; no protected target is erased.",
+      "v35Delta": "V34 §8 unchanged: same one-shot rule for disposable F-TRIGGER-ERASE-OBJ; no protected target is erased."
     },
     "RG-DB-APPEND": {
       "kind": "Guard",
@@ -649,6 +812,18 @@
       "armTarget": "F-TRIGGER-APPEND",
       "definition": "Architect B01: armed with the in-memory instance pointer of F-TRIGGER-APPEND before it is appended; the body runs once for objectAppended of that exact instance; other appends are logged only; recursion into the body is UNKNOWN; disarm in finally.",
       "section": "guard",
+      "keySchema": [
+        "ProbeId",
+        "GuardId",
+        "DatabaseId",
+        "EventId",
+        "CallbackMember",
+        "TargetInstancePointer",
+        "StageId"
+      ],
+      "amendedBy": [
+        "RC-11"
+      ],
       "authority": "V35"
     },
     "RG-DB-OPEN": {
@@ -657,6 +832,18 @@
       "armTarget": "TRIGGER-TARGET",
       "definition": "Architect B02: arm only for objectOpenedForModify of the exact ObjectId targeted by the row's TriggerActionId (F-TRIGGER-MOD in 02N; F-XR in CDBOPEN16SND-ALL/CDBOPEN16APP-ALL, as NPM-V34 names it); one body execution; nested notifications logged, body re-entry suppressed; other recursion UNKNOWN; disarm in finally.",
       "section": "guard",
+      "keySchema": [
+        "ProbeId",
+        "GuardId",
+        "DatabaseId",
+        "EventId",
+        "CallbackMember",
+        "TargetObjectId",
+        "StageId"
+      ],
+      "amendedBy": [
+        "RC-11"
+      ],
       "authority": "V35"
     },
     "RG-TX": {
@@ -665,14 +852,94 @@
       "armTarget": "CALLBACK-IDENTITY",
       "definition": "Architect B08: one-shot for the exact transaction-reactor callback identity of the row; notifications caused by the body's own actions (T_CB lifecycle, writes) are logged and never re-enter the body; any other re-entry into the body is UNKNOWN; disarm per DRIVER-CMD-01.",
       "section": "guard",
+      "keySchema": [
+        "ProbeId",
+        "GuardId",
+        "TransactionManagerId",
+        "EventId",
+        "CallbackMember",
+        "TransactionIdentity",
+        "StageId"
+      ],
+      "amendedBy": [
+        "RC-11"
+      ],
       "authority": "V35"
     },
     "RG-ONESHOT": {
       "kind": "Guard",
       "family": "*",
       "armTarget": "CALLBACK-IDENTITY",
-      "definition": "V35 generic one-shot for any other body-running callback identity (object, entity, editor, document, dynamic-linker, payload database reactor, and the SA-VETO body). One guard instance exists per armed callback identity = (retained reactor instance, callback member, exact notifier, and for editor callbacks the command name bound by markerBinding); the SA-VETO body and an origin body in the same row are distinct instances. The first matching callback runs its body once; notifications caused by the body's own actions (writes, the OBS-EWASNOTIFYING attempt) are logged and never re-enter the body; later matching callbacks are logged only; any other re-entry into the body is UNKNOWN; disarm per DRIVER-CMD-01.",
+      "definition": "V35 generic one-shot, parameterized per family by keySchema (object/entity: reactor instance + notifier ObjectId; editor: DocumentId + exact bound CommandName; document: DocumentId + the exact TRG-LOCK-* RequestId; dynamic linker: exact ModulePath NL-ARX-PATH, never the linker singleton; payload database reactor: reactor instance + DatabaseId + F-TRIGGER-MOD; SA-VETO body: DocumentId + RequestId). One guard instance exists per full key; the SA-VETO body and an origin body in the same row are distinct instances. The first callback matching the full key runs its body once; notifications caused by the body's own actions are logged and never re-enter the body; later matching callbacks are logged only; callbacks that differ in any key component never consume the guard; any other re-entry into the body is UNKNOWN; disarm per DRIVER-CMD-01 phase order.",
       "section": "guard",
+      "keySchema": {
+        "N-OBJ-": [
+          "ProbeId",
+          "GuardId",
+          "ReactorInstance",
+          "EventId",
+          "CallbackMember",
+          "TargetObjectId",
+          "StageId"
+        ],
+        "N-ENT-": [
+          "ProbeId",
+          "GuardId",
+          "ReactorInstance",
+          "EventId",
+          "CallbackMember",
+          "TargetObjectId",
+          "StageId"
+        ],
+        "N-ED-": [
+          "ProbeId",
+          "GuardId",
+          "DocumentId",
+          "EventId",
+          "CallbackMember",
+          "CommandName",
+          "StageId"
+        ],
+        "N-DOC-": [
+          "ProbeId",
+          "GuardId",
+          "DocumentId",
+          "EventId",
+          "CallbackMember",
+          "RequestId",
+          "StageId"
+        ],
+        "N-RX-": [
+          "ProbeId",
+          "GuardId",
+          "EventId",
+          "CallbackMember",
+          "ModulePath",
+          "StageId"
+        ],
+        "N-DB-": [
+          "ProbeId",
+          "GuardId",
+          "ReactorInstance",
+          "DatabaseId",
+          "EventId",
+          "CallbackMember",
+          "TargetObjectId",
+          "StageId"
+        ],
+        "SA-VETO": [
+          "ProbeId",
+          "GuardId",
+          "DocumentId",
+          "EventId",
+          "CallbackMember",
+          "RequestId",
+          "StageId"
+        ]
+      },
+      "amendedBy": [
+        "RC-11"
+      ],
       "authority": "V35"
     },
     "SET-OPEN-PRIMARY-T": {
@@ -804,6 +1071,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "acdbOpenObject(F-TRIGGER-MOD, kForWrite); setPosition((1000,1,0)); close(). Open/close, never through T-PRIMARY.",
       "section": "trigger",
+      "targetClass": "F-TRIGGER-MOD",
+      "openMode": "OPEN-CLOSE",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-ASSERT-WRITE-TRIGGER-XR": {
@@ -823,6 +1093,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "acdbOpenObject(F-TRIGGER-XR, kForWrite); assertWriteEnabled(); write bytes HFV35:TRIGGER-XR:1; close().",
       "section": "trigger",
+      "targetClass": "F-TRIGGER-XR",
+      "openMode": "OPEN-CLOSE",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-ERASE-TRIGGER-DB": {
@@ -838,6 +1111,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "acdbOpenObject(F-TRIGGER-ERASE-DB, kForWrite); erase(true); close().",
       "section": "trigger",
+      "targetClass": "F-TRIGGER-ERASE-DB",
+      "openMode": "OPEN-CLOSE",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-ERASE-TRIGGER-OBJ": {
@@ -854,6 +1130,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "acdbOpenObject(F-TRIGGER-ERASE-OBJ, kForWrite); erase(true); close().",
       "section": "trigger",
+      "targetClass": "F-TRIGGER-ERASE-OBJ",
+      "openMode": "OPEN-CLOSE",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-ERASE-REF-B": {
@@ -871,6 +1150,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "02NO-SM only: acdbOpenObject(F-REF-B, kForWrite); erase(true); close(). F-REF-B is never reopened afterwards (V34 binding §164).",
       "section": "trigger",
+      "targetClass": "F-REF-B",
+      "openMode": "OPEN-CLOSE",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-APPEND-TRIGGER": {
@@ -887,6 +1169,12 @@
       "driver": "DRIVER-CMD-01",
       "definition": "Create F-TRIGGER-APPEND in memory, arm RG-DB-APPEND with its instance pointer, open Model Space kForWrite with acdbOpenObject, appendAcDbEntity, close the point and Model Space.",
       "section": "trigger",
+      "openMode": "OPEN-CLOSE",
+      "modelSpaceWrite": true,
+      "amendedBy": [
+        "RC-10"
+      ],
+      "targetClass": "F-TRIGGER-APPEND",
       "authority": "V35"
     },
     "TRG-OPEN-FOR-MODIFY-XR": {
@@ -903,6 +1191,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "acdbOpenObject(F-XR, kForWrite); assertWriteEnabled(); no byte is changed; close().",
       "section": "trigger",
+      "targetClass": "F-XR",
+      "openMode": "OPEN-CLOSE",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-MODIFY-CLOSE-REF-A": {
@@ -923,6 +1214,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "acdbOpenObject(F-REF-A, kForWrite); assertWriteEnabled() with its default arguments (the graphics-modified flag is left as it sets it); no property value changes; close().",
       "section": "trigger",
+      "targetClass": "F-REF-A",
+      "openMode": "OPEN-CLOSE",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-TRANSFORM-CLOSE-REF-A": {
@@ -943,6 +1237,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "acdbOpenObject(F-REF-A, kForWrite); transformBy(AcGeMatrix3d::kIdentity); close().",
       "section": "trigger",
+      "targetClass": "F-REF-A",
+      "openMode": "OPEN-CLOSE",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-CANCEL-OPEN-XR": {
@@ -952,14 +1249,24 @@
         "F-XR"
       ],
       "produces": [
+        "N-OBJ-OPEN",
+        "N-DB-OPEN",
+        "N-OBJ-MOD",
         "N-OBJ-CANCEL",
         "N-OBJ-UNDO",
         "N-OBJ-CLOSED"
       ],
       "usesSupport": [],
       "driver": "DRIVER-CMD-01",
-      "definition": "acdbOpenObject(F-XR, kForWrite); assertWriteEnabled(); no byte is changed; cancel().",
+      "definition": "acdbOpenObject(F-XR, kForWrite); assertWriteEnabled(); write exactly one kDxfText resbuf `HFV35:XR:CANCEL-STAGED` (trigger-only staging value, never a STATE value); cancel(). Then, before the origin body's scheduled delivery can run, open F-XR kForRead and record its bytes (OBS-CANCEL-RESTORED). The staged value is never an ExpectedBefore/ExpectedAfter value.",
       "section": "trigger",
+      "stagedBytes": "HFV35:XR:CANCEL-STAGED",
+      "amendedBy": [
+        "RC-09"
+      ],
+      "targetClass": "F-XR",
+      "openMode": "OPEN-CLOSE",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-START-OUTER-T": {
@@ -980,6 +1287,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "Require active count 0 (otherwise UNKNOWN); SA-TX-START T-CONTROLLED as outermost; after it returns SA-TX-END T-CONTROLLED.",
       "section": "trigger",
+      "targetClass": "T-CONTROLLED",
+      "openMode": "N/A",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-ABORT-PRIMARY-T": {
@@ -1001,6 +1311,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "SA-TX-ABORT on driver-owned T-PRIMARY.",
       "section": "trigger",
+      "targetClass": "T-PRIMARY",
+      "openMode": "N/A",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-END-NESTED-T": {
@@ -1017,6 +1330,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "SA-TX-END on T-NESTED while T-PRIMARY is active (count 2 -> 1). T-PRIMARY is ended only by SET-OUTCOME-COMMIT.",
       "section": "trigger",
+      "targetClass": "T-NESTED",
+      "openMode": "N/A",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-END-PRIMARY-T": {
@@ -1034,6 +1350,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "SA-TX-END on driver-owned T-PRIMARY with active count 1 (commit/end).",
       "section": "trigger",
+      "targetClass": "T-PRIMARY",
+      "openMode": "N/A",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-RUN-FIXTURE-CMD": {
@@ -1048,6 +1367,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "DRIVER-SCRIPT-01 issues `I52CTDA_FIXTURE` (CMD-FIXTURE) after I52CTDA_PROBE returned; the command succeeds without database writes.",
       "section": "trigger",
+      "targetClass": "CMD:I52CTDA_FIXTURE",
+      "openMode": "N/A",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-LOCK-CYCLE": {
@@ -1065,6 +1387,9 @@
       "driver": "DRIVER-APP-01",
       "definition": "Architect B11: in DRIVER-APP-01 delivery with the document reactor already registered, SA-LOCK(D, kWrite, L\"RACKCAD_CTDA_V35\", L\"RACKCAD_CTDA_V35\", false); eOk creates one DRIVER-LOCK-01 obligation; then SA-UNLOCK(D) explicitly.",
       "section": "trigger",
+      "targetClass": "DOC-LOCK",
+      "openMode": "N/A",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-LOCK-VETO": {
@@ -1082,6 +1407,9 @@
       "driver": "DRIVER-APP-01",
       "definition": "Architect B11: as TRG-LOCK-CYCLE with SET-ARM-VETO; the WILL callback vetoes; lockDocument is expected non-eOk and creates no obligation. An eOk result creates the obligation, is released by SA-UNLOCK in finally and is evidence for FP-VETO-BYPASS.",
       "section": "trigger",
+      "targetClass": "DOC-LOCK",
+      "openMode": "N/A",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-APPCTX-SYNC": {
@@ -1091,8 +1419,14 @@
       "produces": [],
       "usesSupport": [],
       "driver": "DRIVER-CMD-01",
-      "definition": "From DRIVER-CMD-01 document context call executeInApplicationContext(cb, retained data) synchronously (NX-APPCTX-SYNC); cb emits MARK-APPCTX-ENTRY, runs APPCTX-EXEC-01 and returns; the caller logs MARK-APPCTX-RETURN.",
+      "definition": "From DRIVER-CMD-01 document context call executeInApplicationContext(cb, retained data) synchronously (NX-APPCTX-SYNC); cb emits MARK-APPCTX-ENTRY, runs APPCTX-EXEC-01 and returns; the caller then logs MARK-APPCTX-RETURN with StageId STG-SYNC-APPCTX (same activation).",
       "section": "trigger",
+      "targetClass": "SYNC-APPCTX",
+      "openMode": "N/A",
+      "modelSpaceWrite": false,
+      "amendedBy": [
+        "RC-03"
+      ],
       "authority": "V35"
     },
     "TRG-APPCTX-SYNC-BEGIN-CMDCTX": {
@@ -1102,8 +1436,14 @@
       "produces": [],
       "usesSupport": [],
       "driver": "DRIVER-APP-01",
-      "definition": "From DRIVER-APP-01 delivery (no outstanding command) call executeInApplicationContext(cb) synchronously; cb emits MARK-APPCTX-ENTRY, observes isApplicationContext()==true, calls beginExecuteInCommandContext(cmdcb, retained data) capturing its status at SP-CMDCTX and returns; the caller logs MARK-APPCTX-RETURN.",
+      "definition": "From DRIVER-APP-01 delivery (no outstanding command) call executeInApplicationContext(cb) synchronously; cb emits MARK-APPCTX-ENTRY, observes isApplicationContext()==true, calls beginExecuteInCommandContext(cmdcb, retained data) capturing its status at SP-CMDCTX and returns; the caller then logs MARK-APPCTX-RETURN with StageId STG-SYNC-APPCTX (same activation).",
       "section": "trigger",
+      "targetClass": "SYNC-APPCTX",
+      "openMode": "N/A",
+      "modelSpaceWrite": false,
+      "amendedBy": [
+        "RC-03"
+      ],
       "authority": "V35"
     },
     "TRG-CANCEL-CMDCTX": {
@@ -1118,6 +1458,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "CANCEL-CMDCTX-01 unchanged: DRIVER-SCRIPT-01 issues HFV34_CANCEL; its body synchronously enters application context and calls beginExecuteInCommandContext(completion callback); the exact acdocman.h guarantee cancels outstanding commands before delivery; N-ED-CANCEL for HFV34_CANCEL must precede the queued delivery. SchedulerUse=TRIGGER-INFRA, no scheduler credit.",
       "section": "trigger",
+      "targetClass": "CMD:HFV34_CANCEL",
+      "openMode": "N/A",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "TRG-LOAD-PAYLOAD": {
@@ -1134,6 +1477,9 @@
       "driver": "DRIVER-CMD-01",
       "definition": "acedArxLoad(NL-ARX-PATH) once; record the return value and loaded state as MARK-LOAD-RESULT. No unload.",
       "section": "trigger",
+      "targetClass": "R-PAYLOAD-ARX",
+      "openMode": "N/A",
+      "modelSpaceWrite": false,
       "authority": "V35"
     },
     "CHAIN-NONE": {
@@ -1271,10 +1617,13 @@
         "N-TR-OUTERMOST-END-CALLED",
         "N-TR-ENDED"
       ],
-      "definition": "V34 §8: APPCTX entry -> D -> APPCTX-LOCK-01 -> APPCTX-TX-01 -> mutation -> end/abort -> APPCTX-UNLOCK-01 -> completion token. The APPCTX entry is the asynchronous NS-BEGIN-APPCTX delivery or, for 13A-SM only, the synchronous NX-APPCTX-SYNC callback of TRG-APPCTX-SYNC (NPM-V34 already binds APPCTX-EXEC-01 there).",
+      "definition": "NPM-V34 text (verbatim): APPCTX delivery -> D -> APPCTX-LOCK-01 -> APPCTX-TX-01 -> mutation -> end/abort -> APPCTX-UNLOCK-01 -> completion token. V35 delta (supersedes the V34 clauses it contradicts): V34 §8: APPCTX entry -> D -> APPCTX-LOCK-01 -> APPCTX-TX-01 -> mutation -> end/abort -> APPCTX-UNLOCK-01 -> completion token. The APPCTX entry is the asynchronous NS-BEGIN-APPCTX delivery or, for 13A-SM only, the synchronous NX-APPCTX-SYNC callback of TRG-APPCTX-SYNC (NPM-V34 already binds APPCTX-EXEC-01 there).",
       "section": "exec",
       "authority": "V35",
-      "supersedes": "NPM-V34 §8"
+      "supersedes": "NPM-V34 §8",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "APPCTX delivery -> D -> APPCTX-LOCK-01 -> APPCTX-TX-01 -> mutation -> end/abort -> APPCTX-UNLOCK-01 -> completion token.",
+      "v35Delta": "V34 §8: APPCTX entry -> D -> APPCTX-LOCK-01 -> APPCTX-TX-01 -> mutation -> end/abort -> APPCTX-UNLOCK-01 -> completion token. The APPCTX entry is the asynchronous NS-BEGIN-APPCTX delivery or, for 13A-SM only, the synchronous NX-APPCTX-SYNC callback of TRG-APPCTX-SYNC (NPM-V34 already binds APPCTX-EXEC-01 there)."
     },
     "CMDCTX-EXEC-01": {
       "kind": "ExecutionContext",
@@ -1295,10 +1644,13 @@
         "N-TR-OUTERMOST-END-CALLED",
         "N-TR-ENDED"
       ],
-      "definition": "V34 §8 unchanged: CMDCTX delivery -> D -> CMDCTX-LOCK-01 -> CMDCTX-TX-01 -> mutation -> end/abort -> completion token.",
+      "definition": "NPM-V34 text (verbatim): CMDCTX delivery -> D -> CMDCTX-LOCK-01 -> CMDCTX-TX-01 -> mutation -> end/abort -> completion token. V35 delta (supersedes the V34 clauses it contradicts): V34 §8 unchanged: CMDCTX delivery -> D -> CMDCTX-LOCK-01 -> CMDCTX-TX-01 -> mutation -> end/abort -> completion token.",
       "section": "exec",
       "authority": "V35",
-      "supersedes": "NPM-V34 §8"
+      "supersedes": "NPM-V34 §8",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "CMDCTX delivery -> D -> CMDCTX-LOCK-01 -> CMDCTX-TX-01 -> mutation -> end/abort -> completion token.",
+      "v35Delta": "V34 §8 unchanged: CMDCTX delivery -> D -> CMDCTX-LOCK-01 -> CMDCTX-TX-01 -> mutation -> end/abort -> completion token."
     },
     "EDC-EXEC-01": {
       "kind": "ExecutionContext",
@@ -1319,10 +1671,13 @@
         "N-TR-OUTERMOST-END-CALLED",
         "N-TR-ENDED"
       ],
-      "definition": "V34 §8 unchanged: in N-ED-CANCEL resolve exact scratch D, require observed write-capable command lock, own fresh T_CANCEL, mutate and end/abort before return; absent authority is UNKNOWN.",
+      "definition": "NPM-V34 text (verbatim): In N-ED-CANCEL resolve exact scratch D, require observed write-capable command lock, own fresh T_CANCEL through D->transactionManager(), mutate and end/abort before return; absent authority is UNKNOWN. V35 delta (supersedes the V34 clauses it contradicts): V34 §8 unchanged: in N-ED-CANCEL resolve exact scratch D, require observed write-capable command lock, own fresh T_CANCEL, mutate and end/abort before return; absent authority is UNKNOWN.",
       "section": "exec",
       "authority": "V35",
-      "supersedes": "NPM-V34 §8"
+      "supersedes": "NPM-V34 §8",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "In N-ED-CANCEL resolve exact scratch D, require observed write-capable command lock, own fresh T_CANCEL through D->transactionManager(), mutate and end/abort before return; absent authority is UNKNOWN.",
+      "v35Delta": "V34 §8 unchanged: in N-ED-CANCEL resolve exact scratch D, require observed write-capable command lock, own fresh T_CANCEL, mutate and end/abort before return; absent authority is UNKNOWN."
     },
     "SEND-EXEC-01": {
       "kind": "ExecutionContext",
@@ -1349,10 +1704,13 @@
     },
     "T-PRIMARY": {
       "kind": "TransactionId",
-      "definition": "driver-owned outermost transaction opened by SET-OPEN-PRIMARY-T",
+      "definition": "NPM-V34 text (verbatim): exact primary transaction id; top id logged at callback V35 delta (supersedes the V34 clauses it contradicts): driver-owned outermost transaction opened by SET-OPEN-PRIMARY-T",
       "section": "transaction",
       "authority": "V35",
-      "supersedes": "NPM-V34 §4"
+      "supersedes": "NPM-V34 §4",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "exact primary transaction id; top id logged at callback",
+      "v35Delta": "driver-owned outermost transaction opened by SET-OPEN-PRIMARY-T"
     },
     "T-NESTED": {
       "kind": "TransactionId",
@@ -1362,10 +1720,13 @@
     },
     "T-ABORTING": {
       "kind": "TransactionId",
-      "definition": "T-PRIMARY while TRG-ABORT-PRIMARY-T aborts it; callback active count logged",
+      "definition": "NPM-V34 text (verbatim): primary T requested to abort; callback active count logged V35 delta (supersedes the V34 clauses it contradicts): T-PRIMARY while TRG-ABORT-PRIMARY-T aborts it; callback active count logged",
       "section": "transaction",
       "authority": "V35",
-      "supersedes": "NPM-V34 §4"
+      "supersedes": "NPM-V34 §4",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "primary T requested to abort; callback active count logged",
+      "v35Delta": "T-PRIMARY while TRG-ABORT-PRIMARY-T aborts it; callback active count logged"
     },
     "T-ENDED": {
       "kind": "TransactionId",
@@ -1465,10 +1826,13 @@
     },
     "LOCK-OBS": {
       "kind": "DocumentLockAuthority",
-      "definition": "V34 unchanged: actual lock mode logged; no permission inferred",
+      "definition": "NPM-V34 text (verbatim): actual lock mode logged; no permission inferred V35 delta (supersedes the V34 clauses it contradicts): V34 unchanged: actual lock mode logged; no permission inferred",
       "section": "lock",
       "authority": "V35",
-      "supersedes": "NPM-V34 §4"
+      "supersedes": "NPM-V34 §4",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "actual lock mode logged; no permission inferred",
+      "v35Delta": "V34 unchanged: actual lock mode logged; no permission inferred"
     },
     "CB-LOCK-01": {
       "kind": "DocumentLockAuthority",
@@ -1478,17 +1842,26 @@
     },
     "APPCTX-LOCK-01": {
       "kind": "DocumentLockAuthority",
-      "definition": "V34 §8 unchanged (with APPCTX-UNLOCK-01 obligation)",
+      "definition": "NPM-V34 text (verbatim): At APPCTX delivery resolve exact scratch D and call lockDocument(D,kWrite,L\"RACKCAD_CTDA_V34\",L\"RACKCAD_CTDA_V34\",false). Only eOk creates one fixture-owned unlock obligation; no mutation precedes success. V35 delta (supersedes the V34 clauses it contradicts): V35 extension of NPM-V34 §8 APPCTX-LOCK-01. At APPCTX entry (the asynchronous NS-BEGIN-APPCTX delivery, or for 13A-SM only the synchronous NX-APPCTX-SYNC callback that NPM-V34 binds to APPCTX-EXEC-01) resolve the exact scratch D and call lockDocument(D, kWrite, L\"RACKCAD_CTDA_V34\", L\"RACKCAD_CTDA_V34\", false). Only eOk creates one fixture-owned unlock obligation (APPCTX-UNLOCK-01); no mutation precedes success; any other status is UNKNOWN.",
       "section": "lock",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "amendedBy": [
+        "RC-06"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §8"
+      "supersedes": "NPM-V34 §8",
+      "v34Definition": "At APPCTX delivery resolve exact scratch D and call lockDocument(D,kWrite,L\"RACKCAD_CTDA_V34\",L\"RACKCAD_CTDA_V34\",false). Only eOk creates one fixture-owned unlock obligation; no mutation precedes success.",
+      "v35Delta": "V35 extension of NPM-V34 §8 APPCTX-LOCK-01. At APPCTX entry (the asynchronous NS-BEGIN-APPCTX delivery, or for 13A-SM only the synchronous NX-APPCTX-SYNC callback that NPM-V34 binds to APPCTX-EXEC-01) resolve the exact scratch D and call lockDocument(D, kWrite, L\"RACKCAD_CTDA_V34\", L\"RACKCAD_CTDA_V34\", false). Only eOk creates one fixture-owned unlock obligation (APPCTX-UNLOCK-01); no mutation precedes success; any other status is UNKNOWN."
     },
     "CMDCTX-LOCK-01": {
       "kind": "DocumentLockAuthority",
-      "definition": "V34 §8 unchanged",
+      "definition": "NPM-V34 text (verbatim): At queued command callback resolve MDI active D and require observed write-capable host command lock. APPCTX ownership never transfers; absence is UNKNOWN. V35 delta (supersedes the V34 clauses it contradicts): V34 §8 unchanged",
       "section": "lock",
       "authority": "V35",
-      "supersedes": "NPM-V34 §8"
+      "supersedes": "NPM-V34 §8",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "At queued command callback resolve MDI active D and require observed write-capable host command lock. APPCTX ownership never transfers; absence is UNKNOWN.",
+      "v35Delta": "V34 §8 unchanged"
     },
     "EDC-LOCK-01": {
       "kind": "DocumentLockAuthority",
@@ -1520,10 +1893,13 @@
         "N-OBJ-MOD",
         "N-OBJ-CLOSED"
       ],
-      "definition": "NPM-V34 MUT-S with the §164 write set ['F-XR']",
+      "definition": "NPM-V34 text (verbatim): open distinct F-XR target in declared T; write exactly STATE-S-1 V35 delta (supersedes the V34 clauses it contradicts): NPM-V34 MUT-S with the §164 write set ['F-XR']",
       "section": "mutation",
       "authority": "V35",
-      "supersedes": "NPM-V34 §2"
+      "supersedes": "NPM-V34 §2",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "open distinct F-XR target in declared T; write exactly STATE-S-1",
+      "v35Delta": "NPM-V34 MUT-S with the §164 write set ['F-XR']"
     },
     "MUT-M": {
       "kind": "MutationAction",
@@ -1538,10 +1914,13 @@
         "N-ENT-GFX",
         "N-OBJ-CLOSED"
       ],
-      "definition": "NPM-V34 MUT-M with the §164 write set ['F-REF-B']",
+      "definition": "NPM-V34 text (verbatim): open distinct F-REF-B; set exactly STATE-M-1 V35 delta (supersedes the V34 clauses it contradicts): NPM-V34 MUT-M with the §164 write set ['F-REF-B']",
       "section": "mutation",
       "authority": "V35",
-      "supersedes": "NPM-V34 §2"
+      "supersedes": "NPM-V34 §2",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "open distinct F-REF-B; set exactly STATE-M-1",
+      "v35Delta": "NPM-V34 MUT-M with the §164 write set ['F-REF-B']"
     },
     "MUT-SM": {
       "kind": "MutationAction",
@@ -1554,10 +1933,13 @@
         "N-DB-MOD",
         "N-DB-APPEND"
       ],
-      "definition": "NPM-V34 MUT-SM with the §164 write set ['R-SM-LINK', 'F-REF-C']",
+      "definition": "NPM-V34 text (verbatim): create/erase exact sibling to reach STATE-SM-1 and write exact linkage bytes V35 delta (supersedes the V34 clauses it contradicts): NPM-V34 MUT-SM with the §164 write set ['R-SM-LINK', 'F-REF-C']",
       "section": "mutation",
       "authority": "V35",
-      "supersedes": "NPM-V34 §2"
+      "supersedes": "NPM-V34 §2",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "create/erase exact sibling to reach STATE-SM-1 and write exact linkage bytes",
+      "v35Delta": "NPM-V34 MUT-SM with the §164 write set ['R-SM-LINK', 'F-REF-C']"
     },
     "MUT-ALL": {
       "kind": "MutationAction",
@@ -1576,10 +1958,13 @@
         "N-ENT-GFX",
         "N-OBJ-CLOSED"
       ],
-      "definition": "NPM-V34 MUT-ALL with the §164 write set ['F-XR', 'F-REF-B', 'R-SM-LINK', 'F-REF-C']",
+      "definition": "NPM-V34 text (verbatim): execute MUT-S, MUT-M and MUT-SM on distinct protected targets under one-shot recursion guard V35 delta (supersedes the V34 clauses it contradicts): NPM-V34 MUT-ALL with the §164 write set ['F-XR', 'F-REF-B', 'R-SM-LINK', 'F-REF-C']",
       "section": "mutation",
       "authority": "V35",
-      "supersedes": "NPM-V34 §2"
+      "supersedes": "NPM-V34 §2",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "execute MUT-S, MUT-M and MUT-SM on distinct protected targets under one-shot recursion guard",
+      "v35Delta": "NPM-V34 MUT-ALL with the §164 write set ['F-XR', 'F-REF-B', 'R-SM-LINK', 'F-REF-C']"
     },
     "MUT-NONE": {
       "kind": "MutationAction",
@@ -1591,10 +1976,13 @@
     },
     "VER-SM": {
       "kind": "RetainedContract",
-      "definition": "V34 binding §164 (supersedes the NPM-V34 §2 wording 'VER-S + VER-M + enumeration'): fresh transaction; read R-SM-LINK by its NOD key and cross-check its bound ObjectId; read F-REF-A and F-REF-C freshly and record their Matrix3d/LayerId as evidence; enumerate Model Space again without opening F-REF-B; SmRules classifies (UNKNOWN / FAIL-SM / OK). VER-SM never opens F-REF-B; only VER-M reads F-REF-B.",
+      "definition": "NPM-V34 text (verbatim): VER-S + VER-M + independent enumeration of exact sibling ObjectIds V35 delta (supersedes the V34 clauses it contradicts): V34 binding §164 (supersedes the NPM-V34 §2 wording 'VER-S + VER-M + enumeration'): fresh transaction; read R-SM-LINK by its NOD key and cross-check its bound ObjectId; read F-REF-A and F-REF-C freshly and record their Matrix3d/LayerId as evidence; enumerate Model Space again without opening F-REF-B; SmRules classifies (UNKNOWN / FAIL-SM / OK). VER-SM never opens F-REF-B; only VER-M reads F-REF-B.",
       "section": "retained",
       "authority": "V35",
-      "supersedes": "NPM-V34 §2"
+      "supersedes": "NPM-V34 §2",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "VER-S + VER-M + independent enumeration of exact sibling ObjectIds",
+      "v35Delta": "V34 binding §164 (supersedes the NPM-V34 §2 wording 'VER-S + VER-M + enumeration'): fresh transaction; read R-SM-LINK by its NOD key and cross-check its bound ObjectId; read F-REF-A and F-REF-C freshly and record their Matrix3d/LayerId as evidence; enumerate Model Space again without opening F-REF-B; SmRules classifies (UNKNOWN / FAIL-SM / OK). VER-SM never opens F-REF-B; only VER-M reads F-REF-B."
     },
     "MARK-APPCTX-CALLBACK-RETURN": {
       "kind": "Marker",
@@ -1982,26 +2370,49 @@
     },
     "FP-CLEANUP-SAFETY": {
       "kind": "FailPredicate",
-      "definition": "cleanup establishes a safety contradiction (retained reactor fired on a destroyed notifier, module residency outlived the process fence).",
+      "definition": "V34 §5 safety exception. With SAFETY-EVIDENCE-COMPLETE, from the first step of CleanupActionId to process exit, any of: (a) a record whose StageId is in the GOVERNED namespace shows a probe body executing, a write to a fixture resource, a retained reactor opening or dereferencing its notifier (FENCED-RETENTION-SAFE false), or a module record after its fence point; (b) a LATE-DELIVERY record under FINISH-FENCE-01 for a reactor instance whose eOk removal is already recorded, or for a module past its recorded fence point. Cleanup records carry StageId STG-FINISH (INFRA namespace) and are never counted; any other LATE-DELIVERY record is UNK-LATE-DELIVERY. Cleanup that is merely incomplete or unobserved is not this predicate (it is UNKNOWN).",
       "section": "fail",
+      "amendedBy": [
+        "RC-04"
+      ],
+      "scope": "GOVERNED-NAMESPACE-ONLY",
+      "windowStart": "CleanupActionId",
+      "lateDeliveryRule": "COUNTED-WHEN-REMOVAL-OR-FENCE-RECORDED",
       "authority": "V35"
     },
     "PASS-T": {
       "kind": "ResultClass",
-      "definition": "V35 result class for S/M transaction-observation rows: all required observation predicates hold, the fresh VER-T+VER-S equals ExpectedAfter and cleanup completes.",
+      "definition": "V35 result class for the S/M transaction-observation rows (09N-A, 09N-B, 09N-O, 09N-C), applied by RESULT-RULE-V35 step 4: every ObservationPredicateId is true and the verifier comparison of RESULT-RULE-V35 holds, where STATE-T-NESTED-PREEND, STATE-T-OUTERMOST-PREEND and STATE-T-OUTERMOST-END-CALLED are compared against the callback-time VER-T event evidence and STATE-S-0 against the fresh FINISH VER-S read, and STATE-T-ENDED against fresh FINISH reads; cleanup and fence complete.",
       "section": "result",
+      "amendedBy": [
+        "RC-05"
+      ],
       "authority": "V35"
     },
     "FAIL-T": {
       "kind": "ResultClass",
-      "definition": "V35 result class for S/M transaction-observation rows: complete evidence and a listed FailPredicate holds.",
+      "definition": "V35 result class for the same four rows, applied by RESULT-RULE-V35 step 1 or step 3: EVIDENCE-COMPLETE (or SAFETY-EVIDENCE-COMPLETE for FP-CLEANUP-SAFETY) and a listed FailPredicateId holds.",
       "section": "result",
+      "amendedBy": [
+        "RC-05"
+      ],
       "authority": "V35"
     },
     "RESULT-RULE-V35": {
       "kind": "ResultRule",
-      "definition": "UNKNOWN iff UNKNOWN-COMMON, any UnknownPredicateId, or any required ObservationPredicateId unavailable. Otherwise FAIL iff evidence is complete and any FailPredicateId holds. Otherwise PASS iff PassClass holds, every ObservationPredicateId holds, the verifier equals ExpectedAfter and the CleanupActionId plus CompletionFence complete. Otherwise UNKNOWN (an available but false observation predicate without a matching FailPredicate establishes no contrary host property). For ExpectedAfter STATE-T-NESTED-PREEND, STATE-T-OUTERMOST-PREEND and STATE-T-OUTERMOST-END-CALLED the comparison uses the callback-time VER-T record (OBS-COUNT, OBS-VISIBILITY) and the FINISH verifier additionally requires STATE-S-0 unchanged. Precedence UNKNOWN > FAIL > PASS; the three are disjoint and exhaustive.",
+      "definition": "Evaluated only by CONTROL-PLANE-RESULT-01 after the CompletionFence evidence exists. Step 1 (safety): if SAFETY-EVIDENCE-COMPLETE and FP-CLEANUP-SAFETY holds, the result is the row's FailClass. Step 2 (UNKNOWN): otherwise, if EVIDENCE-COMPLETE is false, or UNKNOWN-COMMON, or any UnknownPredicateId holds, or any ObservationPredicateId is unavailable, the result is UNKNOWN. Step 3 (FAIL): otherwise, if any other FailPredicateId holds, the result is the row's FailClass. Step 4 (PASS): otherwise, if the PassClass holds, every ObservationPredicateId is true, the verifier comparison equals ExpectedAfter and the CleanupActionId and CompletionFence completed, the result is the row's PassClass. Step 5: otherwise UNKNOWN (an available but false observation without a matching FailPredicate establishes no contrary host property). Verifier comparison: for ExpectedAfter STATE-T-NESTED-PREEND, STATE-T-OUTERMOST-PREEND and STATE-T-OUTERMOST-END-CALLED the STATE-T part is event evidence (the VER-T record captured at the primary callback: transaction ids, active count, pre-end read through the ending transaction) and the STATE-S part is the fresh VER-S read at FINISH, which must equal STATE-S-0; every other ExpectedAfter is compared only with fresh FINISH reads. The results are disjoint; the steps are exhaustive.",
       "section": "result",
+      "evaluationOrder": [
+        "SAFETY-FAIL",
+        "UNKNOWN",
+        "FAIL",
+        "PASS",
+        "UNKNOWN-RESIDUAL"
+      ],
+      "resultAuthority": "CONTROL-PLANE-RESULT-01",
+      "amendedBy": [
+        "RC-05"
+      ],
       "authority": "V35"
     },
     "CLN-OBJ-REMOVE": {
@@ -2024,20 +2435,31 @@
     },
     "CLN-DEFER-DRAIN": {
       "kind": "CleanupStep",
-      "definition": "after the delivery token, unregister the origin reactor unless an earlier step of the same CleanupAction already removed it, and verify no queued command/callback remains; inability to prove drain is UNKNOWN",
+      "definition": "after the delivery token, unregister the origin reactor unless an earlier step of the same CleanupAction already removed it, and verify no queued command/callback remains; in FINISH-MODE-DRAIN, undrained deferred work is recorded (never waited for) and is ended by the process fence; inability to prove drain is UNKNOWN",
       "section": "cleanupStep",
+      "amendedBy": [
+        "RC-01"
+      ],
       "authority": "V35"
     },
     "CLN-BASE": {
       "kind": "CleanupStep",
-      "definition": "single terminal step: abort any owned open T; verify no outstanding driver or APPCTX lock obligation; unregister each remaining registered observer except those retained by CLN-OBJ-RETAIN-FENCED (an object/entity reactor still registered is removed as CLN-OBJ-REMOVE prescribes, openErased=true only for a disposable erase trigger); erase each live fixture resource incl. F-TRIGGER-APPEND, never reopening an object the trigger erased (F-REF-B in 02NO-SM, the disposable erase triggers); remove R-SM-LINK (LINK-CARRIER-REMOVED); disarm any guard still armed; close the scratch DWG without save; flush the log; verify each step",
+      "definition": "single terminal step, run inside CMD-FINISH with StageId STG-FINISH: abort any owned open T; verify no outstanding driver or APPCTX lock obligation; call the R-PAYLOAD-ARX removal export when the payload registered RR-PAYLOAD-DB; unregister each remaining registered observer except those retained by CLN-OBJ-RETAIN-FENCED (an object/entity reactor still registered is removed as CLN-OBJ-REMOVE prescribes, openErased=true only for a disposable erase trigger); erase each live fixture resource incl. F-TRIGGER-APPEND, never reopening an object the trigger erased (F-REF-B in 02NO-SM, the disposable erase triggers); remove R-SM-LINK (LINK-CARRIER-REMOVED); disarm any guard still armed; flush the log; verify each step. CLN-BASE never closes the scratch document: CMD-FINISH's final `_.QUIT` `_Y` discards and closes it after the flush, and the control plane checks the scratch-DWG integrity externally.",
       "section": "cleanupStep",
+      "closesDocument": false,
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35"
     },
     "CLN-PROCESS-EXIT": {
       "kind": "CleanupStep",
-      "definition": "request clean process exit, externally verify the exact PID exited (so no retained callback data, reactor instance or module residency remains) and delete/quarantine scratch artifacts",
+      "definition": "control-plane step, not in-process: after CMD-FINISH's QUIT-DISCARD, the control plane verifies that the exact PID exited within FIN-GATE-01.postFinishDeadlineSeconds (otherwise it terminates the PID and the row is UNKNOWN), verifies the scratch-DWG integrity and deletes or quarantines the scratch artifacts",
       "section": "cleanupStep",
+      "executor": "CONTROL-PLANE",
+      "amendedBy": [
+        "RC-05"
+      ],
       "authority": "V35"
     },
     "CLEAN-BASE": {
@@ -2046,10 +2468,16 @@
         "CLN-BASE"
       ],
       "fence": "FENCE-CLEANUP-TOKEN",
-      "definition": "Ordered steps CLN-BASE; fence FENCE-CLEANUP-TOKEN. V35 CLEAN-BASE.",
+      "definition": "NPM-V34 text (verbatim): abort any owned open T; unregister exact live reactor; delete fixture objects/resources in scratch DB; close scratch DWG without save; flush log; verify each step V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-BASE; fence FENCE-CLEANUP-TOKEN. V35 CLEAN-BASE. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §5"
+      "supersedes": "NPM-V34 §5",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "abort any owned open T; unregister exact live reactor; delete fixture objects/resources in scratch DB; close scratch DWG without save; flush log; verify each step",
+      "v35Delta": "Ordered steps CLN-BASE; fence FENCE-CLEANUP-TOKEN. V35 CLEAN-BASE. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "CLEAN-OBJ": {
       "kind": "CleanupAction",
@@ -2058,10 +2486,16 @@
         "CLN-BASE"
       ],
       "fence": "FENCE-CLEANUP-TOKEN",
-      "definition": "Ordered steps CLN-OBJ-REMOVE -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. B04: no goodbye dependency.",
+      "definition": "NPM-V34 text (verbatim): if N-OBJ-GOODBYE was not observed, remove the same retained object/entity reactor before fixture deletion; if it was observed, verify association is dead and never access notifier; then CLEAN-BASE V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-OBJ-REMOVE -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. B04: no goodbye dependency. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §5"
+      "supersedes": "NPM-V34 §5",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "if N-OBJ-GOODBYE was not observed, remove the same retained object/entity reactor before fixture deletion; if it was observed, verify association is dead and never access notifier; then CLEAN-BASE",
+      "v35Delta": "Ordered steps CLN-OBJ-REMOVE -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. B04: no goodbye dependency. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "CLEAN-OBJ-FENCED": {
       "kind": "CleanupAction",
@@ -2071,8 +2505,11 @@
         "CLN-PROCESS-EXIT"
       ],
       "fence": "FENCE-PROCESS-EXIT",
-      "definition": "Ordered steps CLN-OBJ-RETAIN-FENCED -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. new for 02NO-SM (Architect confirmation requested).",
+      "definition": "Ordered steps CLN-OBJ-RETAIN-FENCED -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. new for 02NO-SM (Architect confirmation requested). V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35"
     },
     "CLEAN-DEFER": {
@@ -2082,10 +2519,16 @@
         "CLN-BASE"
       ],
       "fence": "FENCE-CLEANUP-TOKEN",
-      "definition": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. V34 unchanged.",
+      "definition": "NPM-V34 text (verbatim): unregister exact origin reactor and queued research command after delivery; verify no queued work remains; then CLEAN-BASE; inability to prove drain/removal is UNKNOWN V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-DEFER-DRAIN -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. V34 unchanged. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §5"
+      "supersedes": "NPM-V34 §5",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "unregister exact origin reactor and queued research command after delivery; verify no queued work remains; then CLEAN-BASE; inability to prove drain/removal is UNKNOWN",
+      "v35Delta": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. V34 unchanged. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "CLEAN-DOC": {
       "kind": "CleanupAction",
@@ -2094,10 +2537,16 @@
         "CLN-BASE"
       ],
       "fence": "FENCE-CLEANUP-TOKEN",
-      "definition": "Ordered steps CLN-DOC-REMOVE -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. V34 unchanged.",
+      "definition": "NPM-V34 text (verbatim): remove the same retained document-manager reactor, verify removal, then CLEAN-BASE V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-DOC-REMOVE -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. V34 unchanged. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §5"
+      "supersedes": "NPM-V34 §5",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "remove the same retained document-manager reactor, verify removal, then CLEAN-BASE",
+      "v35Delta": "Ordered steps CLN-DOC-REMOVE -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. V34 unchanged. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "CLEAN-OBJ-DEFER": {
       "kind": "CleanupAction",
@@ -2107,10 +2556,16 @@
         "CLN-BASE"
       ],
       "fence": "FENCE-CLEANUP-TOKEN",
-      "definition": "Ordered steps CLN-OBJ-REMOVE -> CLN-DEFER-DRAIN -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. C02: one terminal CLN-BASE.",
+      "definition": "NPM-V34 text (verbatim): execute CLEAN-OBJ followed by CLEAN-DEFER and verify both V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-OBJ-REMOVE -> CLN-DEFER-DRAIN -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. C02: one terminal CLN-BASE. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §5"
+      "supersedes": "NPM-V34 §5",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "execute CLEAN-OBJ followed by CLEAN-DEFER and verify both",
+      "v35Delta": "Ordered steps CLN-OBJ-REMOVE -> CLN-DEFER-DRAIN -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. C02: one terminal CLN-BASE. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "CLEAN-DOC-DEFER": {
       "kind": "CleanupAction",
@@ -2120,10 +2575,16 @@
         "CLN-BASE"
       ],
       "fence": "FENCE-CLEANUP-TOKEN",
-      "definition": "Ordered steps CLN-DOC-REMOVE -> CLN-DEFER-DRAIN -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. C02: one terminal CLN-BASE.",
+      "definition": "NPM-V34 text (verbatim): execute CLEAN-DOC followed by CLEAN-DEFER and verify both V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-DOC-REMOVE -> CLN-DEFER-DRAIN -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. C02: one terminal CLN-BASE. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §5"
+      "supersedes": "NPM-V34 §5",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "execute CLEAN-DOC followed by CLEAN-DEFER and verify both",
+      "v35Delta": "Ordered steps CLN-DOC-REMOVE -> CLN-DEFER-DRAIN -> CLN-BASE; fence FENCE-CLEANUP-TOKEN. C02: one terminal CLN-BASE. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "CLEAN-APPCTX-PROCESS": {
       "kind": "CleanupAction",
@@ -2133,10 +2594,16 @@
         "CLN-PROCESS-EXIT"
       ],
       "fence": "FENCE-PROCESS-EXIT",
-      "definition": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics; T_APP unwound and APPCTX-UNLOCK-01 satisfied before CLN-BASE.",
+      "definition": "NPM-V34 text (verbatim): unwind T_APP; satisfy APPCTX-UNLOCK-01; require callback completion token; flush log; close without save; terminate exact PID and externally verify no retained callback data remains; any incomplete T/lock/drain is UNKNOWN V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics; T_APP unwound and APPCTX-UNLOCK-01 satisfied before CLN-BASE. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §5"
+      "supersedes": "NPM-V34 §5",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "unwind T_APP; satisfy APPCTX-UNLOCK-01; require callback completion token; flush log; close without save; terminate exact PID and externally verify no retained callback data remains; any incomplete T/lock/drain is UNKNOWN",
+      "v35Delta": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics; T_APP unwound and APPCTX-UNLOCK-01 satisfied before CLN-BASE. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "CLEAN-APPCTX-LOCK-PROCESS": {
       "kind": "CleanupAction",
@@ -2146,10 +2613,16 @@
         "CLN-PROCESS-EXIT"
       ],
       "fence": "FENCE-PROCESS-EXIT",
-      "definition": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. CLEAN-APPCTX-PROCESS plus explicit active-T count zero and no owned lock obligation (V34 §8).",
+      "definition": "NPM-V34 text (verbatim): CLEAN-APPCTX-PROCESS plus explicit active-T count zero and no owned lock obligation. V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. CLEAN-APPCTX-PROCESS plus explicit active-T count zero and no owned lock obligation (V34 §8). V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §8"
+      "supersedes": "NPM-V34 §8",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "CLEAN-APPCTX-PROCESS plus explicit active-T count zero and no owned lock obligation.",
+      "v35Delta": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. CLEAN-APPCTX-PROCESS plus explicit active-T count zero and no owned lock obligation (V34 §8). V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "CLEAN-CMDCTX-PROCESS": {
       "kind": "CleanupAction",
@@ -2159,10 +2632,16 @@
         "CLN-PROCESS-EXIT"
       ],
       "fence": "FENCE-PROCESS-EXIT",
-      "definition": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics.",
+      "definition": "NPM-V34 text (verbatim): dedicated scratch process; unregister queued research command after delivery, verify command/input drain, close without save and externally verify exact PID exit; inability to prove drain is UNKNOWN V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §5"
+      "supersedes": "NPM-V34 §5",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "dedicated scratch process; unregister queued research command after delivery, verify command/input drain, close without save and externally verify exact PID exit; inability to prove drain is UNKNOWN",
+      "v35Delta": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "CLEAN-CHAIN-PROCESS": {
       "kind": "CleanupAction",
@@ -2172,10 +2651,16 @@
         "CLN-PROCESS-EXIT"
       ],
       "fence": "FENCE-PROCESS-EXIT",
-      "definition": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics; all stage tokens; retained object/document reactors removed inside CLN-BASE.",
+      "definition": "NPM-V34 text (verbatim): unwind any T_APP/T_CMD; satisfy owned unlock obligation; require all stage tokens; remove retained reactors/commands; close without save; flush and externally verify exact PID exit; any active T, owned lock or undrained stage is UNKNOWN V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics; all stage tokens; retained object/document reactors removed inside CLN-BASE. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §5"
+      "supersedes": "NPM-V34 §5",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "unwind any T_APP/T_CMD; satisfy owned unlock obligation; require all stage tokens; remove retained reactors/commands; close without save; flush and externally verify exact PID exit; any active T, owned lock or undrained stage is UNKNOWN",
+      "v35Delta": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics; all stage tokens; retained object/document reactors removed inside CLN-BASE. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "CLEAN-C15-PROCESS": {
       "kind": "CleanupAction",
@@ -2184,10 +2669,16 @@
         "CLN-PROCESS-EXIT"
       ],
       "fence": "FENCE-PROCESS-EXIT",
-      "definition": "Ordered steps CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics: retained-reactor removal attempted while notifier live and recorded, non-success forbids PASS; no in-process unload.",
+      "definition": "NPM-V34 text (verbatim): run C15 in a dedicated scratch AutoCAD process; flush append-only log; attempt exact retained-reactor removal while notifier is live and record its status; any non-success forbids PASS; close scratch DWG without save; request clean process exit; verify exact PID exited; delete/quarantine scratch artifacts externally; process termination is the module-residency cleanup boundary and no in-process unload is attempted V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics: retained-reactor removal attempted while notifier live and recorded, non-success forbids PASS; no in-process unload. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §5"
+      "supersedes": "NPM-V34 §5",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "run C15 in a dedicated scratch AutoCAD process; flush append-only log; attempt exact retained-reactor removal while notifier is live and record its status; any non-success forbids PASS; close scratch DWG without save; request clean process exit; verify exact PID exited; delete/quarantine scratch artifacts externally; process termination is the module-residency cleanup boundary and no in-process unload is attempted",
+      "v35Delta": "Ordered steps CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics: retained-reactor removal attempted while notifier live and recorded, non-success forbids PASS; no in-process unload. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "CLEAN-CANCEL-PROCESS": {
       "kind": "CleanupAction",
@@ -2197,15 +2688,24 @@
         "CLN-PROCESS-EXIT"
       ],
       "fence": "FENCE-PROCESS-EXIT",
-      "definition": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics.",
+      "definition": "NPM-V34 text (verbatim): Require exact N-ED-CANCEL and queued CMDCTX completion tokens, unwind T_CANCEL/T_CMD, drain commands, close without save and externally verify exact scratch PID exit. V35 delta (supersedes the V34 clauses it contradicts): Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded.",
       "section": "cleanup",
+      "amendedBy": [
+        "RC-04"
+      ],
       "authority": "V35",
-      "supersedes": "NPM-V34 §8"
+      "supersedes": "NPM-V34 §8",
+      "retainedStatus": "RETAINED-EXTENDED",
+      "v34Definition": "Require exact N-ED-CANCEL and queued CMDCTX completion tokens, unwind T_CANCEL/T_CMD, drain commands, close without save and externally verify exact scratch PID exit.",
+      "v35Delta": "Ordered steps CLN-DEFER-DRAIN -> CLN-BASE -> CLN-PROCESS-EXIT; fence FENCE-PROCESS-EXIT. V34 semantics. V35-A1: the scratch DWG is never closed by a cleanup step; CMD-FINISH's QUIT-DISCARD closes it without saving after the flush, and any V34 wording that places the close inside cleanup is superseded."
     },
     "FENCE-CLEANUP-TOKEN": {
       "kind": "CompletionFence",
-      "definition": "In-process cleanup token after the terminal CLN-BASE; DRIVER-SCRIPT-01 then exits the process.",
+      "definition": "All governed runtime state is released and verified in-process by the terminal CLN-BASE; CMD-FINISH then exits AutoCAD with QUIT-DISCARD. The exact-PID exit is evidence completeness (EVIDENCE-COMPLETE item 6), not a PASS condition of its own.",
       "section": "fence",
+      "amendedBy": [
+        "RC-05"
+      ],
       "authority": "V35"
     },
     "FENCE-PROCESS-EXIT": {
@@ -2276,383 +2776,1154 @@
       "section": "surface",
       "authority": "V35"
     },
+    "R-NATIVE-ARX": {
+      "kind": "RuntimeModule",
+      "amendedBy": [
+        "RC-07"
+      ],
+      "sourcePath": "eng/research/I52Ctda/native/I52CtdaNative.vcxproj",
+      "artifact": "I52CtdaNative.arx",
+      "toolchain": "x64, MSVC v143 14.44.35207, ObjectARX 2025 SDK 25.0.58.0 (D:\\CDROM1), flags /p:PreferredToolArchitecture=x64 /p:ObjectArxSdkRoot=D:\\CDROM1",
+      "identity": "SHA-256 recorded in the R3 build tuple (canonical today: 7F9C9C05…9ED421, rebuilt in R3)",
+      "loadMechanism": "DRIVER-SCRIPT-01 line `(arxload \"<RunDir>/I52CtdaNative.arx\")`",
+      "unload": "never unloaded while a row runs; residency ends at process exit",
+      "researchOnly": true,
+      "definition": "Main research ARX (existing). Owns LOG-SEQ-01, the completion-token table, FIN-GATE-01, the commands of CommandResource and every native observer except RR-PAYLOAD-DB. Research-only; never deployed with RackCad.",
+      "section": "resource",
+      "authority": "V35"
+    },
+    "R-MANAGED-OBSERVER": {
+      "kind": "RuntimeModule",
+      "amendedBy": [
+        "RC-07"
+      ],
+      "sourcePath": "eng/research/I52Ctda/managed-observer/I52Ctda.ManagedObserver.csproj (planned for R3)",
+      "artifact": "I52Ctda.ManagedObserver.dll",
+      "toolchain": ".NET SDK 8.0.425, net8.0-windows, x64, references AcCoreMgd/AcDbMgd/AcMgd 25.0 from the ObjectARX 2025 SDK inc folder (Copy Local = false)",
+      "identity": "SHA-256 recorded in the R3 build tuple; mismatch at load is UNKNOWN",
+      "loadMechanism": "DRIVER-SCRIPT-01 line `_.NETLOAD` + `<RunDir>\\I52Ctda.ManagedObserver.dll`, only when the row registers RR-MANAGED-CMD; RUN-ENV-01 starts AutoCAD with the dedicated scratch profile whose TRUSTEDPATHS contains <RunDir> (no other setting is changed)",
+      "unload": "managed assemblies are never unloaded; residency ends at process exit; after CLN-BASE unsubscribes RR-MANAGED-CMD the module holds no governed state",
+      "researchOnly": true,
+      "definition": "Managed research host module of RR-MANAGED-CMD (HEC-V27-C1 row 09E, M-DOC-END). It subscribes Autodesk.AutoCAD.ApplicationServices.Document.CommandEnded for the scratch document when the driver calls its registration entry, and writes every record through LOG-SEQ-01 (P/Invoke into R-NATIVE-ARX). Research-only; not part of RackCad, not in deploy/, not referenced by src/.",
+      "section": "resource",
+      "authority": "V35"
+    },
+    "LOG-SEQ-01": {
+      "kind": "LoggingAuthority",
+      "amendedBy": [
+        "RC-07",
+        "RC-08"
+      ],
+      "owner": "R-NATIVE-ARX",
+      "definition": "One process-wide log and one sequencer. R-NATIVE-ARX exports the C ABI `I52Ctda_LogAppend(const I52CtdaRecord*)`, `I52Ctda_TokenSet(const wchar_t* tokenId, uint64_t deliveryId)` and `I52Ctda_QueryC15Arm(I52CtdaC15Arm*)`. `I52Ctda_LogAppend` assigns Sequence with one InterlockedIncrement64 on a single process-global counter inside the log critical section and appends the record to the single append-only log. R-PAYLOAD-ARX binds with GetModuleHandleW(L\"I52CtdaNative.arx\") + GetProcAddress; R-MANAGED-OBSERVER binds with [DllImport(\"I52CtdaNative.arx\")], which resolves the already-loaded module. No module keeps its own counter or log file. A module that cannot bind LOG-SEQ-01 records nothing and the row is UNKNOWN (UNK-LOG-BINDING).",
+      "section": "run",
+      "authority": "V35"
+    },
+    "LOG-RECORD-01": {
+      "kind": "LoggingAuthority",
+      "amendedBy": [
+        "RC-03",
+        "RC-07"
+      ],
+      "fields": [
+        "Sequence",
+        "ProbeId",
+        "StageId",
+        "DeliveryId",
+        "DriverId|SchedulerId",
+        "ModuleId",
+        "PID",
+        "TID",
+        "DocumentId",
+        "DatabaseId",
+        "CommandIdentity",
+        "EventOrMarkerId",
+        "Payload"
+      ],
+      "definition": "Every log record carries Sequence (LOG-SEQ-01), ProbeId, StageId, DeliveryId (monotonic instance id of the stage activation), DriverId or SchedulerId, ModuleId, PID, TID, DocumentId, DatabaseId, CommandIdentity, EventOrMarkerId and a typed payload. A record missing any field is malformed evidence (EVIDENCE-COMPLETE false).",
+      "section": "run",
+      "authority": "V35"
+    },
+    "TOK-PROBE-RETURN": {
+      "kind": "CompletionToken",
+      "stage": "STG-PROBE-CMD",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "I52CTDA_PROBE returned after its post-trigger obligations and guard disarm (or guard hand-over to CMD-FINISH for script-issued triggers). Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-DRIVER-APP-DONE": {
+      "kind": "CompletionToken",
+      "stage": "STG-DRIVER-APP",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "DRIVER-APP-01 delivery returned (trigger done, guards disarmed, driver lock obligation settled). Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-FIXTURE-CMD-END": {
+      "kind": "CompletionToken",
+      "stage": "STG-FIXTURE-CMD",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "commandEnded of I52CTDA_FIXTURE observed by RR-ED. Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-CANCEL-OBSERVED": {
+      "kind": "CompletionToken",
+      "stage": "STG-CANCEL-CMD",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "commandCancelled(L\"HFV34_CANCEL\") observed by RR-ED. Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-CANCEL-CMDCTX-DONE": {
+      "kind": "CompletionToken",
+      "stage": "STG-CANCEL-CMD",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "the CANCEL-CMDCTX-01 command-context completion callback returned. Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-PAYLOAD-LOAD-RESULT": {
+      "kind": "CompletionToken",
+      "stage": "STG-PAYLOAD-LOAD",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "acedArxLoad(NL-ARX-PATH) returned and MARK-LOAD-RESULT was recorded. Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-ENQUEUE-SEND": {
+      "kind": "CompletionToken",
+      "stage": "STG-ORIGIN",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "NS-SEND returned in the origin body (success or rejection recorded). Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-SEND-CMD-END": {
+      "kind": "CompletionToken",
+      "stage": "STG-SEND-DELIVERY",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "commandEnded of I52CTDA_QUEUED observed after SEND-EXEC-01 finished. Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-ENQUEUE-APPCTX": {
+      "kind": "CompletionToken",
+      "stage": "STG-ORIGIN",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "NS-BEGIN-APPCTX returned in the origin body (success or rejection recorded). Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-APPCTX-DELIVERY-DONE": {
+      "kind": "CompletionToken",
+      "stage": "STG-APPCTX-DELIVERY",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "the probe APPCTX delivery callback returned. Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-ENQUEUE-CMDCTX": {
+      "kind": "CompletionToken",
+      "stage": "STG-SYNC-APPCTX|STG-APPCTX-DELIVERY",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "NS-BEGIN-CMDCTX returned in its caller (success or rejection recorded). Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-CMDCTX-DELIVERY-DONE": {
+      "kind": "CompletionToken",
+      "stage": "STG-CMDCTX-DELIVERY",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "the CMDCTX delivery callback returned. Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-SYNC-RETURN": {
+      "kind": "CompletionToken",
+      "stage": "STG-SYNC-APPCTX",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "executeInApplicationContext returned to its caller. Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-EXEC-DONE": {
+      "kind": "CompletionToken",
+      "stage": "STG-EXEC",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "the ExecutionContextId finished: execution transaction ended or aborted and any owned lock released. Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-OUTCOME": {
+      "kind": "CompletionToken",
+      "stage": "STG-PROBE-CMD",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "the driver transaction lifecycle finished: SET-OUTCOME-COMMIT or the trigger's own end/abort of T-PRIMARY/T-NESTED/T-CONTROLLED returned. Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-MANAGED-CMD-END": {
+      "kind": "CompletionToken",
+      "stage": "STG-FIXTURE-CMD",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "RR-MANAGED-CMD recorded Document.CommandEnded of I52CTDA_FIXTURE. Set by the stage through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "TOK-LOCK-RELEASE": {
+      "kind": "CompletionToken",
+      "stage": "BOUND:MARK-LOCK-RELEASE",
+      "amendedBy": [
+        "RC-01",
+        "RC-02"
+      ],
+      "definition": "MARK-LOCK-RELEASE resolved by LOCK-RELEASE-BIND-01 at the anchor of the row's bound stage (COMMAND-END-WINDOW or APPCTX-UNLOCK-01-CALL). Set through LOG-SEQ-01 (`I52Ctda_TokenSet`); FIN-GATE-01 reads the in-process token table.",
+      "section": "token",
+      "authority": "V35"
+    },
+    "FIN-GATE-01": {
+      "kind": "FinishGate",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "schedulerUse": "FINISH-INFRA",
+      "timeoutSeconds": 120,
+      "externalDeadlineSeconds": 300,
+      "mechanism": "acedRegisterOnIdleWinMsg idle hook plus a 1000 ms SetTimer on the AutoCAD main thread (so idle notifications keep arriving)",
+      "definition": "FINISH gate, driver infrastructure owned by R-NATIVE-ARX and registered by I52CTDA_PROBE before its trigger. On each idle notification it checks, in application context, (a) every CompletionTokenId of the row is set in the token table and (b) the scratch document isQuiescent() (no command, script, LISP or ARX command active). When both hold it removes the idle hook and timer and issues `I52CTDA_FINISH <ProbeId>` with sendStringToExecute(D, ..., false, false, false) in FINISH-MODE-NORMAL. If 120 s have passed since TOK-PROBE-RETURN and the document is quiescent, it issues FINISH in FINISH-MODE-DRAIN (UNK-FINISH-TIMEOUT). If the control plane sees no FINISH record 300 s after process start it terminates the PID: UNKNOWN. This use of sendStringToExecute is FINISH-INFRA: no SchedulerId, no scheduler pair, no scheduler credit; FINISH and QUIT are excluded from every marker binding. Nothing else may issue I52CTDA_FINISH; a FINISH entered with any required token missing (FINISH-EARLY) runs in FINISH-MODE-DRAIN. After the FINISH record, the control plane waits at most 120 s (postFinishDeadlineSeconds) for the exact PID to exit; otherwise it terminates the PID and the row is UNKNOWN. A command-context delivery that cancels the queued QUIT therefore ends as UNKNOWN, never as a hung process.",
+      "section": "run",
+      "postFinishDeadlineSeconds": 120,
+      "authority": "V35"
+    },
+    "UNK-FINISH-TIMEOUT": {
+      "kind": "UnknownPredicate",
+      "amendedBy": [
+        "RC-01"
+      ],
+      "definition": "FIN-GATE-01 timed out, FINISH ran in FINISH-MODE-DRAIN (including FINISH-EARLY), or the control plane terminated the PID before a FINISH record -> UNKNOWN.",
+      "section": "unknown",
+      "authority": "V35"
+    },
+    "UNK-LOG-BINDING": {
+      "kind": "UnknownPredicate",
+      "amendedBy": [
+        "RC-07"
+      ],
+      "definition": "a module could not bind LOG-SEQ-01, or a record is malformed under LOG-RECORD-01 -> UNKNOWN.",
+      "section": "unknown",
+      "authority": "V35"
+    },
+    "STG-PROBE-CMD": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "always",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: activation of I52CTDA_PROBE. Namespace GOVERNED. Every record of this stage carries StageId=STG-PROBE-CMD and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-TRIGGER": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "always",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: execution of TriggerActionId. Namespace GOVERNED. Every record of this stage carries StageId=STG-TRIGGER and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-PRIMARY-CALLBACK": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "primaryBody",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: the body-running PrimaryAuthority callback. Namespace GOVERNED. Every record of this stage carries StageId=STG-PRIMARY-CALLBACK and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-ORIGIN": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "origin",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: the ScheduleOrigin callback. Namespace GOVERNED. Every record of this stage carries StageId=STG-ORIGIN and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-SEND-DELIVERY": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "chain:NS-SEND",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: activation of I52CTDA_QUEUED (NS-SEND delivery). Namespace GOVERNED. Every record of this stage carries StageId=STG-SEND-DELIVERY and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-APPCTX-DELIVERY": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "chain:NS-BEGIN-APPCTX",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: the probe's NS-BEGIN-APPCTX delivery (the only stage of CHAIN-APPCTX; stage 1 of CHAIN-APPCTX-CMDCTX). Namespace GOVERNED. Every record of this stage carries StageId=STG-APPCTX-DELIVERY and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-CMDCTX-DELIVERY": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "chain:NS-BEGIN-CMDCTX",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: the NS-BEGIN-CMDCTX delivery. Namespace GOVERNED. Every record of this stage carries StageId=STG-CMDCTX-DELIVERY and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-SYNC-APPCTX": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "syncEntry",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: one activation spans from the executeInApplicationContext call to its return in the caller; the callback records (MARK-APPCTX-ENTRY) and the caller's post-return record (MARK-APPCTX-RETURN, TOK-SYNC-RETURN) carry StageId=STG-SYNC-APPCTX and the same DeliveryId. Covers the NX-APPCTX-SYNC entry of the row's chain and the HFV34_CANCEL entry of CANCEL-CMDCTX-01. Namespace GOVERNED.",
+      "section": "stage",
+      "includesCallerReturn": true,
+      "authority": "V35"
+    },
+    "STG-FIXTURE-CMD": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "trigger:TRG-RUN-FIXTURE-CMD",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: activation of I52CTDA_FIXTURE. Namespace GOVERNED. Every record of this stage carries StageId=STG-FIXTURE-CMD and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-CANCEL-CMD": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "trigger:TRG-CANCEL-CMDCTX",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: activation of HFV34_CANCEL. Namespace GOVERNED. Every record of this stage carries StageId=STG-CANCEL-CMD and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-PAYLOAD-LOAD": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "payload",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: the acedArxLoad(NL-ARX-PATH) call. Namespace GOVERNED. Every record of this stage carries StageId=STG-PAYLOAD-LOAD and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-PAYLOAD-INIT": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "payload",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: R-PAYLOAD-ARX kInitAppMsg. Namespace GOVERNED. Every record of this stage carries StageId=STG-PAYLOAD-INIT and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-EXEC": {
+      "kind": "Stage",
+      "namespace": "GOVERNED",
+      "requires": "exec",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: the ExecutionContextId activation. Namespace GOVERNED. Every record of this stage carries StageId=STG-EXEC and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-DRIVER-APP": {
+      "kind": "Stage",
+      "namespace": "DRIVER",
+      "requires": "driver:DRIVER-APP-01",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: DRIVER-APP-01 delivery (driver namespace). Namespace DRIVER. Every record of this stage carries StageId=STG-DRIVER-APP and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-FIN-GATE": {
+      "kind": "Stage",
+      "namespace": "INFRA",
+      "requires": "always",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: FIN-GATE-01 idle checks. Namespace INFRA. Every record of this stage carries StageId=STG-FIN-GATE and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "STG-FINISH": {
+      "kind": "Stage",
+      "namespace": "INFRA",
+      "requires": "always",
+      "amendedBy": [
+        "RC-01",
+        "RC-03"
+      ],
+      "definition": "Stage identity: activation of I52CTDA_FINISH and the exit. Namespace INFRA. Every record of this stage carries StageId=STG-FINISH and a DeliveryId.",
+      "section": "stage",
+      "authority": "V35"
+    },
+    "MARK-DRIVER-APP-ENTRY": {
+      "kind": "Marker",
+      "namespace": "DRIVER",
+      "amendedBy": [
+        "RC-03"
+      ],
+      "definition": "DRIVER-APP-01 delivery entry (driver namespace). Never listed in a row's Markers and never satisfies a governed marker.",
+      "section": "marker",
+      "authority": "V35"
+    },
+    "MARK-DRIVER-APP-RETURN": {
+      "kind": "Marker",
+      "namespace": "DRIVER",
+      "amendedBy": [
+        "RC-03"
+      ],
+      "definition": "DRIVER-APP-01 delivery return (driver namespace). Never listed in a row's Markers and never satisfies a governed marker.",
+      "section": "marker",
+      "authority": "V35"
+    },
+    "MARKER-STAGE-BIND-01": {
+      "kind": "MarkerBindingRule",
+      "amendedBy": [
+        "RC-03"
+      ],
+      "markerStages": {
+        "MARK-ORIGIN-RETURN": [
+          "STG-ORIGIN"
+        ],
+        "MARK-APPCTX-ENTRY": [
+          "STG-SYNC-APPCTX"
+        ],
+        "MARK-APPCTX-RETURN": [
+          "STG-SYNC-APPCTX"
+        ],
+        "MARK-APPCTX-DELIVERY": [
+          "STG-APPCTX-DELIVERY"
+        ],
+        "MARK-APPCTX-CALLBACK-RETURN": [
+          "STG-APPCTX-DELIVERY"
+        ],
+        "MARK-LOAD-RESULT": [
+          "STG-PAYLOAD-LOAD"
+        ],
+        "MARK-REGISTRATION": [
+          "STG-PAYLOAD-INIT"
+        ],
+        "MARK-MANAGED-CMD-END": [
+          "STG-FIXTURE-CMD"
+        ],
+        "MARK-LOCK-RELEASE": [
+          "STG-SEND-DELIVERY",
+          "STG-APPCTX-DELIVERY",
+          "STG-SYNC-APPCTX",
+          "STG-CMDCTX-DELIVERY",
+          "STG-FIXTURE-CMD"
+        ],
+        "N-ED-WILL": [
+          "STG-SEND-DELIVERY",
+          "STG-FIXTURE-CMD",
+          "STG-CANCEL-CMD",
+          "STG-CMDCTX-DELIVERY",
+          "STG-PROBE-CMD"
+        ],
+        "N-ED-END": [
+          "STG-SEND-DELIVERY",
+          "STG-FIXTURE-CMD",
+          "STG-CANCEL-CMD",
+          "STG-CMDCTX-DELIVERY",
+          "STG-PROBE-CMD"
+        ]
+      },
+      "definition": "A bound marker `M@S` in MarkerStageBindings is satisfied only by a LOG-RECORD-01 record with EventOrMarkerId M, StageId S, the row's ProbeId and a DeliveryId of the row's own activation of S. Records of DRIVER or INFRA stages never satisfy a governed marker; DRIVER-APP-01 emits only MARK-DRIVER-APP-ENTRY/RETURN. Every MARK-* marker and every N-ED-* marker of a row has exactly one binding; zero matching records is marker absence, two or more is UNK-MARKER-BINDING. N-ED-WILL/N-ED-END bind to the command of the bound stage (I52CTDA_QUEUED, I52CTDA_FIXTURE, HFV34_CANCEL, the unique command enclosing EP-CMDCTX and its token excluding I52CTDA_BOOT/PROBE/FIXTURE/QUEUED/FINISH and HFV34_CANCEL, or I52CTDA_PROBE). MARK-MANAGED-CMD-END@STG-FIXTURE-CMD binds to Document.CommandEnded of I52CTDA_FIXTURE.",
+      "section": "binding",
+      "authority": "V35"
+    },
+    "LOCK-RELEASE-BIND-01": {
+      "kind": "MarkerBindingRule",
+      "amendedBy": [
+        "RC-02"
+      ],
+      "windowEnd": "COMMAND-END-WINDOW: next commandWillStart on the scratch document; APPCTX-UNLOCK-01-CALL: return of that unlockDocument call",
+      "definition": "MARK-LOCK-RELEASE@S has two anchor kinds, fixed per stage by `anchors`. COMMAND-END-WINDOW (STG-SEND-DELIVERY, STG-FIXTURE-CMD, STG-CMDCTX-DELIVERY): the FIRST documentLockModeChanged of the scratch document to an unlocked mode strictly after commandEnded of the stage's command and strictly before the next commandWillStart on the scratch document; FINISH's activation closes the window at the latest, so a FINISH unlock can never satisfy it. APPCTX-UNLOCK-01-CALL (STG-APPCTX-DELIVERY, STG-SYNC-APPCTX): the documentLockModeChanged of the scratch document emitted between entry and return of the stage's own APPCTX-UNLOCK-01 unlockDocument call (for 13A-SM the new mode is the enclosing I52CTDA_PROBE command lock, not necessarily unlocked); it precedes the stage's completion token, so TOK-LOCK-RELEASE never waits on a later event. No candidate is marker absence (UNKNOWN); two candidates in one window are UNK-MARKER-BINDING.",
+      "section": "binding",
+      "anchors": {
+        "STG-SEND-DELIVERY": "COMMAND-END-WINDOW",
+        "STG-FIXTURE-CMD": "COMMAND-END-WINDOW",
+        "STG-CMDCTX-DELIVERY": "COMMAND-END-WINDOW",
+        "STG-APPCTX-DELIVERY": "APPCTX-UNLOCK-01-CALL",
+        "STG-SYNC-APPCTX": "APPCTX-UNLOCK-01-CALL"
+      },
+      "authority": "V35"
+    },
+    "OBS-LOCK-RELEASE-BOUND": {
+      "kind": "ObservationPredicate",
+      "amendedBy": [
+        "RC-02"
+      ],
+      "definition": "MARK-LOCK-RELEASE resolved by LOCK-RELEASE-BIND-01 to exactly one transition of the scratch document inside its window",
+      "section": "observation",
+      "authority": "V35"
+    },
+    "UNK-MARKER-BINDING": {
+      "kind": "UnknownPredicate",
+      "amendedBy": [
+        "RC-02",
+        "RC-03"
+      ],
+      "definition": "a bound marker matched two or more records of its stage window, or a record lacks the stage/delivery identity required by MARKER-STAGE-BIND-01 -> UNKNOWN.",
+      "section": "unknown",
+      "authority": "V35"
+    },
+    "EVIDENCE-COMPLETE": {
+      "kind": "ResultPredicate",
+      "amendedBy": [
+        "RC-05"
+      ],
+      "definition": "Closed predicate, TRUE iff all hold: (1) the phase records of RUN-ENV-01, I52CTDA_BOOT, I52CTDA_PROBE, the script-issued trigger command if any, FIN-GATE-01 and I52CTDA_FINISH are present; (2) every CompletionTokenId of the row is set; (3) every + marker resolved to exactly one bound record and every - marker was absent over the whole run window; (4) every VerifierId read completed; (5) every cleanup step recorded success or a classified failure; (6) the control plane holds the exact-PID exit evidence and the scratch-DWG integrity evidence; (7) Sequence is contiguous from 1 to the last record with no gap and records from every loaded module; (8) every record is well formed under LOG-RECORD-01 and every authority id in it resolves in EXEC-CATALOG-V35-1.",
+      "section": "result",
+      "authority": "V35"
+    },
+    "SAFETY-EVIDENCE-COMPLETE": {
+      "kind": "ResultPredicate",
+      "amendedBy": [
+        "RC-04"
+      ],
+      "definition": "TRUE iff items (6), (7) and (8) of EVIDENCE-COMPLETE hold for the records from the start of CleanupActionId to process exit, and every CleanupStep of the row has a start record.",
+      "section": "result",
+      "authority": "V35"
+    },
+    "FENCED-RETENTION-SAFE": {
+      "kind": "ResultPredicate",
+      "amendedBy": [
+        "RC-04"
+      ],
+      "definition": "For a reactor retained by CLN-OBJ-RETAIN-FENCED: every notification it receives after CLN-BASE starts (including goodbye and other callbacks outside the 26) is only logged with NotifierAccess=NONE; it runs no body, opens no object and dereferences no notifier. When this holds, such notifications are not FP-CLEANUP-SAFETY.",
+      "section": "result",
+      "authority": "V35"
+    },
+    "CONTROL-PLANE-RESULT-01": {
+      "kind": "ResultAuthority",
+      "amendedBy": [
+        "RC-05"
+      ],
+      "inputs": [
+        "native log (all modules, LOG-SEQ-01)",
+        "exact-PID exit evidence",
+        "scratch-DWG integrity evidence",
+        "cleanup and fence records",
+        "run manifest (ProbeId, build tuple, module SHA-256 values)"
+      ],
+      "definition": "The only authority that classifies a row. It runs in the external research control plane (eng/research/I52Ctda/control-plane) after the scratch process has exited (or was terminated) and applies RESULT-RULE-V35 to its inputs: the single LOG-SEQ-01 log (records of R-NATIVE-ARX, R-PAYLOAD-ARX and R-MANAGED-OBSERVER), the exact-PID exit evidence, the scratch-DWG integrity evidence (the drawing was not saved) and the cleanup/fence records. In-process code, including CMD-FINISH, only prepares evidence.",
+      "section": "result",
+      "authority": "V35"
+    },
+    "PAYLOAD-DB-BINDING": {
+      "kind": "ResultPredicate",
+      "amendedBy": [
+        "RC-08"
+      ],
+      "definition": "At R-PAYLOAD-ARX kInitAppMsg, acdbHostApplicationServices()->workingDatabase() is the exact scratch database recorded by BOOT-01 for this ProbeId and acDocManager->curDocument() is the exact scratch document; otherwise the payload registers nothing and the row is UNKNOWN (UNK-PAYLOAD-DB) with no governed execution.",
+      "section": "result",
+      "authority": "V35"
+    },
+    "OBS-PAYLOAD-DB-BINDING": {
+      "kind": "ObservationPredicate",
+      "amendedBy": [
+        "RC-08"
+      ],
+      "definition": "PAYLOAD-DB-BINDING recorded TRUE at STG-PAYLOAD-INIT",
+      "section": "observation",
+      "authority": "V35"
+    },
+    "UNK-PAYLOAD-DB": {
+      "kind": "UnknownPredicate",
+      "amendedBy": [
+        "RC-08"
+      ],
+      "definition": "PAYLOAD-DB-BINDING false or not recorded -> UNKNOWN.",
+      "section": "unknown",
+      "authority": "V35"
+    },
+    "OBS-CANCEL-RESTORED": {
+      "kind": "ObservationPredicate",
+      "amendedBy": [
+        "RC-09"
+      ],
+      "definition": "after cancel() returned, F-XR read kForRead holds STATE-S-0 bytes (HFV30:S:0) and not `HFV35:XR:CANCEL-STAGED`",
+      "section": "observation",
+      "authority": "V35"
+    },
+    "UNK-CANCEL-STAGING": {
+      "kind": "UnknownPredicate",
+      "amendedBy": [
+        "RC-09"
+      ],
+      "definition": "the cancel staging write or its read-back did not complete -> UNKNOWN.",
+      "section": "unknown",
+      "authority": "V35"
+    },
+    "TRG-APPEND-TRIGGER-IN-PRIMARY": {
+      "kind": "TriggerAction",
+      "amendedBy": [
+        "RC-10"
+      ],
+      "target": "F-TRIGGER-APPEND",
+      "touches": [
+        "F-TRIGGER-APPEND"
+      ],
+      "produces": [
+        "N-DB-APPEND",
+        "N-DB-MOD"
+      ],
+      "usesSupport": [],
+      "driver": "DRIVER-CMD-01",
+      "openMode": "T-PRIMARY",
+      "modelSpaceWrite": true,
+      "definition": "02NAPP-SM only. Phase order: T-PRIMARY is open (SET-OPEN-PRIMARY-T); create F-TRIGGER-APPEND in memory and arm RG-DB-APPEND with its instance pointer; getObject(Model Space, kForWrite) through T-PRIMARY; appendAcDbEntity(F-TRIGGER-APPEND); objectAppended fires and the body (CB-PRIMARY-01) runs MUT-SM through the same T-PRIMARY (getObject of Model Space again through T-PRIMARY is the same transaction's ownership, and appends F-REF-C, which is a different object from F-TRIGGER-APPEND); the nested objectAppended of F-REF-C is logged and never runs the body; the callback returns; addNewlyCreatedDBRObject(F-TRIGGER-APPEND); the trigger returns; SET-OUTCOME-COMMIT ends T-PRIMARY; the guard is disarmed; postconditions are read at FINISH.",
+      "section": "trigger",
+      "targetClass": "F-TRIGGER-APPEND",
+      "authority": "V35"
+    },
+    "FINISH-FENCE-01": {
+      "kind": "FinishGate",
+      "amendedBy": [
+        "RC-01",
+        "RC-04"
+      ],
+      "definition": "Process-wide fence flag owned by R-NATIVE-ARX (exported with LOG-SEQ-01 as I52Ctda_FinishFenceSet) and set as the first action of CMD-FINISH. Every governed delivery or body entry (origin and primary callbacks, SEND/APPCTX/CMDCTX deliveries, EDC, RR-PAYLOAD-DB, RR-MANAGED-CMD) checks it first; when it is set the entry only appends one LATE-DELIVERY record (ReactorInstance or ModuleId, NotifierAccess=NONE; no lock, no transaction, no write, no scheduler call) and returns. A LATE-DELIVERY record whose reactor instance already has a recorded eOk removal, or whose module already passed its recorded fence point, is counted by FP-CLEANUP-SAFETY (the host delivered to something the contract had removed); every other LATE-DELIVERY record makes the row UNKNOWN (UNK-LATE-DELIVERY).",
+      "section": "run",
+      "lateDeliverySafety": "COUNTED-WHEN-REMOVAL-OR-FENCE-RECORDED",
+      "authority": "V35"
+    },
+    "UNK-LATE-DELIVERY": {
+      "kind": "UnknownPredicate",
+      "amendedBy": [
+        "RC-01",
+        "RC-04"
+      ],
+      "definition": "a governed delivery or body entry arrived after FINISH-FENCE-01 was set (LATE-DELIVERY record) -> UNKNOWN.",
+      "section": "unknown",
+      "authority": "V35"
+    },
     "STATE-S-0": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "F-XR destination ResultBuffer bytes UTF-8 `HFV30:S:0`"
+      "definition": "F-XR destination ResultBuffer bytes UTF-8 `HFV30:S:0`",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-S-1": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "F-XR destination ResultBuffer bytes UTF-8 `HFV30:S:1`"
+      "definition": "F-XR destination ResultBuffer bytes UTF-8 `HFV30:S:1`",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-M-0": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "F-REF-B displacement `(10,20,0)` and LayerId of `RACKCAD_CTDA_V30_A`"
+      "definition": "F-REF-B displacement `(10,20,0)` and LayerId of `RACKCAD_CTDA_V30_A`",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-M-1": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "F-REF-B displacement `(110,220,0)` and LayerId of `RACKCAD_CTDA_V30_B`"
+      "definition": "F-REF-B displacement `(110,220,0)` and LayerId of `RACKCAD_CTDA_V30_B`",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-SM-0": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "sibling ObjectIds `{F-REF-A,F-REF-B}` and linkage bytes `HFV30:LINK:A,B`"
+      "definition": "sibling ObjectIds `{F-REF-A,F-REF-B}` and linkage bytes `HFV30:LINK:A,B`",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-SM-1": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "sibling ObjectIds `{F-REF-A,F-REF-C}` and linkage bytes `HFV30:LINK:A,C`"
+      "definition": "sibling ObjectIds `{F-REF-A,F-REF-C}` and linkage bytes `HFV30:LINK:A,C`",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-T-OPEN": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "primary/top T opaque ids, active count and before bytes/entities captured before trigger"
+      "definition": "primary/top T opaque ids, active count and before bytes/entities captured before trigger",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-T-ABORT": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "STATE-S-0 restored after abort in a fresh verification T"
+      "definition": "STATE-S-0 restored after abort in a fresh verification T",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-T-NESTED-PREEND": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "nested T remains visible while outer T is active and active count is greater than one"
+      "definition": "nested T remains visible while outer T is active and active count is greater than one",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-T-OUTERMOST-PREEND": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "final pre-end state is visible and active count equals one"
+      "definition": "final pre-end state is visible and active count equals one",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-T-OUTERMOST-END-CALLED": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "exact outermost `EndTransaction` notification observed for the controlled outermost T; STATE-S-0 remains unchanged; no commit, durability or success is inferred"
+      "definition": "exact outermost `EndTransaction` notification observed for the controlled outermost T; STATE-S-0 remains unchanged; no commit, durability or success is inferred",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-T-ENDED": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "ended T is absent from active count and a fresh legal DB read is recorded"
+      "definition": "ended T is absent from active count and a fresh legal DB read is recorded",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "VER-S": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "fresh independent DB read of Xrecord bytes plus total-order log"
+      "definition": "fresh independent DB read of Xrecord bytes plus total-order log",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "VER-M": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "fresh independent DB read of Matrix3d/LayerId plus total-order log"
+      "definition": "fresh independent DB read of Matrix3d/LayerId plus total-order log",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "VER-T": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "primary/top T ids, active count, commit/abort result and fresh DB reread"
+      "definition": "primary/top T ids, active count, commit/abort result and fresh DB reread",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-ALL-0": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "immutable conjunction STATE-S-0 + STATE-M-0 + STATE-SM-0"
+      "definition": "immutable conjunction STATE-S-0 + STATE-M-0 + STATE-SM-0",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "STATE-ALL-1": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "immutable conjunction STATE-S-1 + STATE-M-1 + STATE-SM-1"
+      "definition": "immutable conjunction STATE-S-1 + STATE-M-1 + STATE-SM-1",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "VER-ALL": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §2",
-      "definition": "execute VER-S, VER-M and VER-SM independently against STATE-ALL-1"
+      "definition": "execute VER-S, VER-M and VER-SM independently against STATE-ALL-1",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "PASS-S": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §3",
-      "definition": "all required callbacks and markers occur in total order; semantic DB state equals ExpectedAfter; VER-S and required T/lifecycle checks succeed; cleanup completes"
+      "definition": "all required callbacks and markers occur in total order; semantic DB state equals ExpectedAfter; VER-S and required T/lifecycle checks succeed; cleanup completes",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "PASS-M": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §3",
-      "definition": "all required callbacks and markers occur in total order; physical DB state equals ExpectedAfter; VER-M and required T/lifecycle checks succeed; cleanup completes"
+      "definition": "all required callbacks and markers occur in total order; physical DB state equals ExpectedAfter; VER-M and required T/lifecycle checks succeed; cleanup completes",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "PASS-SM": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §3",
-      "definition": "PASS-S and PASS-M both hold, exact sibling/linkage state equals ExpectedAfter, required lifecycle checks succeed and cleanup completes"
+      "definition": "PASS-S and PASS-M both hold, exact sibling/linkage state equals ExpectedAfter, required lifecycle checks succeed and cleanup completes",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "FAIL-S": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §3",
-      "definition": "observable host behavior contradicts the required semantic rollback, persistence, lifecycle or accepted-boundary property"
+      "definition": "observable host behavior contradicts the required semantic rollback, persistence, lifecycle or accepted-boundary property",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "FAIL-M": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §3",
-      "definition": "observable host behavior contradicts the required physical rollback, persistence, lifecycle or accepted-boundary property"
+      "definition": "observable host behavior contradicts the required physical rollback, persistence, lifecycle or accepted-boundary property",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "FAIL-SM": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §3",
-      "definition": "observable host behavior contradicts either required semantic or material/linkage property"
+      "definition": "observable host behavior contradicts either required semantic or material/linkage property",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "PASS-ALL": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §3",
-      "definition": "PASS-S, PASS-M and PASS-SM all hold for the distinct protected targets and cleanup completes"
+      "definition": "PASS-S, PASS-M and PASS-SM all hold for the distinct protected targets and cleanup completes",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "FAIL-ALL": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §3",
-      "definition": "at least one required S, M or SM property has an observable contradiction"
+      "definition": "at least one required S, M or SM property has an observable contradiction",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "UNKNOWN-COMMON": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §3",
-      "definition": "callback, field, T, lock or order unavailable; illegal/unobservable write; verifier or cleanup incomplete; no contrary host property established"
+      "definition": "callback, field, T, lock or order unavailable; illegal/unobservable write; verifier or cleanup incomplete; no contrary host property established",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "H-DB": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact AH-V32 `dbmain.h` database-reactor authority"
+      "definition": "exact AH-V32 `dbmain.h` database-reactor authority",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "H-OBJ": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact AH-V32 `dbmain.h`/`dbObject.h` object/entity-reactor authority"
+      "definition": "exact AH-V32 `dbmain.h`/`dbObject.h` object/entity-reactor authority",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "H-TX": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact AH-V32 `dbtrans.h` transaction-reactor authority"
+      "definition": "exact AH-V32 `dbtrans.h` transaction-reactor authority",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "H-ED": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact AH-V32 `aced.h` editor-reactor authority"
+      "definition": "exact AH-V32 `aced.h` editor-reactor authority",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "H-DOC": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact AH-V32 `acdocman.h` document-manager-reactor authority"
+      "definition": "exact AH-V32 `acdocman.h` document-manager-reactor authority",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "H-SEND": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact AH-V32 `acdocman.h::sendStringToExecute` authority"
+      "definition": "exact AH-V32 `acdocman.h::sendStringToExecute` authority",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "H-LOAD": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact AH-V32 `acedads.h` + `rxdlinkr.h` authority"
+      "definition": "exact AH-V32 `acedads.h` + `rxdlinkr.h` authority",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "H-APPCTX": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact `acdocman.h` authority for `executeInApplicationContext` and `beginExecuteInApplicationContext`"
+      "definition": "exact `acdocman.h` authority for `executeInApplicationContext` and `beginExecuteInApplicationContext`",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "H-CMDCTX": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact `acdocman.h` authority for `beginExecuteInCommandContext`"
+      "definition": "exact `acdocman.h` authority for `beginExecuteInCommandContext`",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "NX-APPCTX-SYNC": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "direct synchronous context action `executeInApplicationContext`; never a scheduler"
+      "definition": "direct synchronous context action `executeInApplicationContext`; never a scheduler",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "T-FRESH": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "short explicit callback transaction, ended or aborted before callback return"
+      "definition": "short explicit callback transaction, ended or aborted before callback return",
+      "retainedStatus": "SUPERSEDED",
+      "supersededBy": "T_CB"
     },
     "CTX-CALLBACK": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "native thread id, document/application context and database identity logged"
+      "definition": "native thread id, document/application context and database identity logged",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "CTX-COMMAND": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "delivered native research command context and thread logged"
+      "definition": "delivered native research command context and thread logged",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "CTX-APPLICATION": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "application context and thread logged; `isApplicationContext()==true` must be observed"
+      "definition": "application context and thread logged; `isApplicationContext()==true` must be observed",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "SP-IMMEDIATE": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "immediately before trigger operation/callback dispatch"
+      "definition": "immediately before trigger operation/callback dispatch",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "SP-SEND": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "immediately before NS-SEND; enqueue `Acad::ErrorStatus` captured"
+      "definition": "immediately before NS-SEND; enqueue `Acad::ErrorStatus` captured",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "SP-APPCTX": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "immediately before `beginExecuteInApplicationContext`; enqueue status captured"
+      "definition": "immediately before `beginExecuteInApplicationContext`; enqueue status captured",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "SP-CMDCTX": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "inside observed application context immediately before `beginExecuteInCommandContext`; enqueue status captured"
+      "definition": "inside observed application context immediately before `beginExecuteInCommandContext`; enqueue status captured",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "EP-CALLBACK": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "first instruction of exact callback"
+      "definition": "first instruction of exact callback",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "EP-COMMAND": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "first instruction of exact queued research command"
+      "definition": "first instruction of exact queued research command",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "EP-APPCTX": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "first instruction of exact application-context callback"
+      "definition": "first instruction of exact application-context callback",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "MARK-APPCTX-ENTRY": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "synchronous `executeInApplicationContext` callback entry"
+      "definition": "synchronous `executeInApplicationContext` callback entry",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "MARK-APPCTX-RETURN": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "synchronous `executeInApplicationContext` callback and caller return sequence"
+      "definition": "synchronous `executeInApplicationContext` callback and caller return sequence",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "MARK-APPCTX-DELIVERY": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "asynchronous `beginExecuteInApplicationContext` callback entry after scheduling caller return"
+      "definition": "asynchronous `beginExecuteInApplicationContext` callback entry after scheduling caller return",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "MARK-MANAGED-CMD-END": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact managed CommandEnded observation from HEC-V27-C1"
+      "definition": "exact managed CommandEnded observation from HEC-V27-C1",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "MARK-LOCK-RELEASE": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact scratch-document lock release observation"
+      "definition": "exact scratch-document lock release observation",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "MARK-ORIGIN-RETURN": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "return of the exact ScheduleOriginEventId callback"
+      "definition": "return of the exact ScheduleOriginEventId callback",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "MARK-REGISTRATION": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "exact payload reactor registration record `(event,object,database,reactor instance)`"
+      "definition": "exact payload reactor registration record `(event,object,database,reactor instance)`",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "MARK-LOAD-RESULT": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §4",
-      "definition": "NL-ARX-PATH result plus N-RX-LOADED identity record"
+      "definition": "NL-ARX-PATH result plus N-RX-LOADED identity record",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "OBSERVED-ORDER-COMPLETE": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §7",
-      "definition": "every required B/O/C callback observation has an immutable monotonic sequence number, callback identity, transaction count and state record; no relative sequence is selected after observation"
+      "definition": "every required B/O/C callback observation has an immutable monotonic sequence number, callback identity, transaction count and state record; no relative sequence is selected after observation",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "EXPECTED-ORDER-INVARIANT-09N-O": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §7",
-      "definition": "exact header requires the O callback identity and signature only; it defines no relative B/O/C order, commit, durability or success boundary"
+      "definition": "exact header requires the O callback identity and signature only; it defines no relative B/O/C order, commit, durability or success boundary",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "CANCEL-CMDCTX-01": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §8",
-      "definition": "Start exact HFV34_CANCEL scratch command; synchronously enter application context and call beginExecuteInCommandContext. Exact acdocman.h authority says all outstanding commands are cancelled before queued delivery. Require N-ED-CANCEL for exact identity before delivery; absence is UNKNOWN; lock veto is unrelated."
+      "definition": "Start exact HFV34_CANCEL scratch command; synchronously enter application context and call beginExecuteInCommandContext. Exact acdocman.h authority says all outstanding commands are cancelled before queued delivery. Require N-ED-CANCEL for exact identity before delivery; absence is UNKNOWN; lock veto is unrelated.",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "APPCTX-TX-01": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §8",
-      "definition": "After APPCTX-LOCK-01 use D->transactionManager(), require non-null startTransaction T_APP, record ids, endTransaction eOk on success or abortTransaction during unwind; no origin T is inherited."
+      "definition": "After APPCTX-LOCK-01 use D->transactionManager(), require non-null startTransaction T_APP, record ids, endTransaction eOk on success or abortTransaction during unwind; no origin T is inherited.",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "APPCTX-UNLOCK-01": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §8",
-      "definition": "After T_APP ends/aborts call unlockDocument(D) once for the successful acquisition; non-eOk or outstanding obligation is UNKNOWN."
+      "definition": "After T_APP ends/aborts call unlockDocument(D) once for the successful acquisition; non-eOk or outstanding obligation is UNKNOWN.",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "CMDCTX-TX-01": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §8",
-      "definition": "After CMDCTX-LOCK-01 use D->transactionManager(), own fresh T_CMD and end/abort it before return; failure is UNKNOWN."
+      "definition": "After CMDCTX-LOCK-01 use D->transactionManager(), own fresh T_CMD and end/abort it before return; failure is UNKNOWN.",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "EP-CMDCTX": {
       "kind": "RetainedContract",
       "section": "retained",
       "authority": "NPM-V34 §8",
-      "definition": "First instruction of the exact queued command-context callback; distinct from enqueue and APPCTX entry."
+      "definition": "First instruction of the exact queued command-context callback; distinct from enqueue and APPCTX entry.",
+      "retainedStatus": "RETAINED-UNCHANGED"
     },
     "N-DB-APPEND": {
       "kind": "EventId",
@@ -2986,6 +4257,30 @@
       "section": "invariant",
       "authority": "V35",
       "definition": "Every + marker that is an EventId is a candidate product (produces attribute, per exact header semantics) of the row's driver, setup, trigger, scheduler chain, execution context or mutation; an object/entity marker additionally requires that producer to touch an object watched by one of the row's object/entity observers (touches attribute: trigger target, staged F-XR for TRG-ABORT-PRIMARY-T, mutation write set); runtime absence remains UNKNOWN."
+    },
+    "INV-FINISH-GATED": {
+      "kind": "Invariant",
+      "section": "invariant",
+      "authority": "V35",
+      "definition": "I52CTDA_FINISH is entered only through FIN-GATE-01 after every CompletionTokenId of the row, or in FINISH-MODE-DRAIN (UNKNOWN)."
+    },
+    "INV-DRIVER-MARKER-DISJOINT": {
+      "kind": "Invariant",
+      "section": "invariant",
+      "authority": "V35",
+      "definition": "No governed marker binds to a DRIVER or INFRA stage; DRIVER-APP-01 emits only MARK-DRIVER-APP-*."
+    },
+    "INV-APPEND-TRANSACTION": {
+      "kind": "Invariant",
+      "section": "invariant",
+      "authority": "V35",
+      "definition": "A CB-PRIMARY-01 row whose mutation appends to Model Space uses a Model-Space trigger in openMode T-PRIMARY."
+    },
+    "INV-CONTROL-PLANE-RESULT": {
+      "kind": "Invariant",
+      "section": "invariant",
+      "authority": "V35",
+      "definition": "Only CONTROL-PLANE-RESULT-01 classifies, after the process exited."
     },
     "NOT_APPLICABLE(no scheduler)": {
       "kind": "Sentinel",

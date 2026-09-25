@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "initiative": "I-52",
-  "milestone": "V35 clause lineage (NPM-V34 -> NPM-V35)",
+  "milestone": "V35 clause lineage (NPM-V34 -> NPM-V35), revision V35-A1",
   "classes": {
     "A": "already a bound V34 ContractId, kept or relocated",
     "B": "natural language formalized by a V35 catalog identifier",
@@ -166,6 +166,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -173,6 +182,17 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -406,6 +426,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -419,7 +448,10 @@
           "clause": "UNKNOWN-RULE-V35",
           "class": "B",
           "v35": [
-            "UNK-STAGING"
+            "UNK-STAGING",
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
           ],
           "note": "UNKNOWN obligations of the row's setup/execution context"
         },
@@ -676,6 +708,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -683,6 +724,17 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -942,6 +994,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -949,6 +1010,17 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -1192,6 +1264,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including missing callback or incomplete order capture",
           "class": "B",
@@ -1201,6 +1282,17 @@
             "UNK-ORDER-INCOMPLETE"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -1429,6 +1521,15 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=N-ED-END@STG-PROBE-CMD"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "callback,count,reread and cleanup exact",
           "class": "B",
@@ -1462,6 +1563,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -1469,6 +1579,18 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -1719,6 +1841,16 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-MANAGED-CMD-END@STG-FIXTURE-CMD",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-FIXTURE-CMD"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-S requires N-ED-END,T-FRESH,MUT-S,successful commit/end,callback return after T completion,STATE-S-1,lifecycle order and cleanup",
           "class": "B",
@@ -1737,7 +1869,8 @@
           "v35": [
             "OBS-MARKERS",
             "OBS-GUARD-RESET",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -1753,6 +1886,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON includes illegal T start,MUT-S or commit unavailable/unobserved",
           "class": "B",
@@ -1763,6 +1905,18 @@
             "UNK-T-END"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -2012,6 +2166,16 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-MANAGED-CMD-END@STG-FIXTURE-CMD",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-FIXTURE-CMD"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-S with candidate-boundary classification",
           "class": "B",
@@ -2030,7 +2194,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-PRIMARY-CALLBACK",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -2045,6 +2210,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -2052,6 +2226,18 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -2299,6 +2485,16 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-MANAGED-CMD-END@STG-FIXTURE-CMD",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-FIXTURE-CMD"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-M with candidate-boundary classification",
           "class": "B",
@@ -2317,7 +2513,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-PRIMARY-CALLBACK",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -2332,6 +2529,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -2339,6 +2545,18 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -2596,6 +2814,16 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-MANAGED-CMD-END@STG-FIXTURE-CMD",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-FIXTURE-CMD"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-SM with candidate-boundary classification",
           "class": "B",
@@ -2614,7 +2842,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-PRIMARY-CALLBACK",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -2629,6 +2858,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -2636,6 +2874,18 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -2871,6 +3121,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-S with enqueue and delivery exact",
           "class": "B",
@@ -2893,7 +3155,8 @@
             "OBS-ORIGIN-CALLBACK",
             "OBS-CAUSAL-ORDER",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -2909,6 +3172,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including nondelivery",
           "class": "B",
@@ -2917,6 +3189,18 @@
             "UNK-NONDELIVERY"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -3152,6 +3436,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-M with enqueue and delivery exact",
           "class": "B",
@@ -3174,7 +3470,8 @@
             "OBS-ORIGIN-CALLBACK",
             "OBS-CAUSAL-ORDER",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -3190,6 +3487,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including nondelivery",
           "class": "B",
@@ -3198,6 +3504,18 @@
             "UNK-NONDELIVERY"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -3442,6 +3760,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-SM with enqueue and delivery exact",
           "class": "B",
@@ -3464,7 +3794,8 @@
             "OBS-ORIGIN-CALLBACK",
             "OBS-CAUSAL-ORDER",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -3480,6 +3811,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including nondelivery",
           "class": "B",
@@ -3488,6 +3828,18 @@
             "UNK-NONDELIVERY"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -3809,6 +4161,19 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-LOAD-RESULT@STG-PAYLOAD-LOAD",
+            "MarkerStageBindings=MARK-REGISTRATION@STG-PAYLOAD-INIT",
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-SM requires load,registration,event,enqueue,execution,state,order and CLEAN-C15-PROCESS",
           "class": "B",
@@ -3833,7 +4198,8 @@
             "OBS-OUTCOME-COMMIT",
             "OBS-DELIVERY",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-PAYLOAD-DB-BINDING"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -3861,6 +4227,19 @@
             "UNK-CLEANUP-PROOF"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING",
+            "UNK-PAYLOAD-DB"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -4118,6 +4497,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -4125,6 +4513,17 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -4388,6 +4787,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -4395,6 +4803,17 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -4649,6 +5068,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -4656,6 +5084,17 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -4903,6 +5342,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -4910,6 +5358,17 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -5169,6 +5628,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -5182,7 +5650,10 @@
           "clause": "UNKNOWN-RULE-V35",
           "class": "B",
           "v35": [
-            "UNK-STAGING"
+            "UNK-STAGING",
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
           ],
           "note": "UNKNOWN obligations of the row's setup/execution context"
         },
@@ -5436,6 +5907,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -5449,7 +5929,10 @@
           "clause": "UNKNOWN-RULE-V35",
           "class": "B",
           "v35": [
-            "UNK-STAGING"
+            "UNK-STAGING",
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
           ],
           "note": "UNKNOWN obligations of the row's setup/execution context"
         },
@@ -5706,6 +6189,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -5713,6 +6205,17 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -5970,6 +6473,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON when legal mutation context cannot be obtained",
           "class": "B",
@@ -5979,6 +6491,17 @@
             "UNK-NO-WRITE-LOCK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -6236,6 +6759,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON when legal mutation context cannot be obtained",
           "class": "B",
@@ -6245,6 +6777,17 @@
             "UNK-NO-WRITE-LOCK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -6490,6 +7033,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON",
           "class": "A",
@@ -6497,6 +7049,17 @@
             "UNKNOWN-COMMON"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -6745,6 +7308,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-S with enqueue,delivery,state and order exact",
           "class": "B",
@@ -6783,6 +7357,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including nondelivery",
           "class": "B",
@@ -6791,6 +7374,18 @@
             "UNK-NONDELIVERY"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -7042,6 +7637,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-M with enqueue,delivery,state and order exact",
           "class": "B",
@@ -7080,6 +7686,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including nondelivery",
           "class": "B",
@@ -7088,6 +7703,18 @@
             "UNK-NONDELIVERY"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -7339,6 +7966,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-SM with enqueue,delivery,state and order exact",
           "class": "B",
@@ -7377,6 +8015,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including nondelivery",
           "class": "B",
@@ -7385,6 +8032,18 @@
             "UNK-NONDELIVERY"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -7637,6 +8296,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-M with enqueue,delivery,state and order exact",
           "class": "B",
@@ -7675,6 +8345,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including nondelivery",
           "class": "B",
@@ -7683,6 +8362,18 @@
             "UNK-NONDELIVERY"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -7927,6 +8618,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-SM with enqueue,delivery,state,lock/order and cleanup exact",
           "class": "B",
@@ -7965,6 +8667,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including illegal enqueue or nondelivery",
           "class": "B",
@@ -7974,6 +8685,18 @@
             "UNK-NONDELIVERY"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -8219,6 +8942,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-SM with enqueue,delivery,state,lock/order and cleanup exact",
           "class": "B",
@@ -8257,6 +8991,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including illegal enqueue or nondelivery",
           "class": "B",
@@ -8266,6 +9009,18 @@
             "UNK-NONDELIVERY"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -8515,6 +9270,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-APPCTX-ENTRY@STG-SYNC-APPCTX",
+            "MarkerStageBindings=MARK-APPCTX-RETURN@STG-SYNC-APPCTX",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SYNC-APPCTX"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires synchronous entry,mutation,return,state and cleanup",
           "class": "B",
@@ -8532,7 +9298,8 @@
           "v35": [
             "OBS-MARKERS",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -8549,6 +9316,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON if legal application-context mutation cannot be established",
           "class": "B",
@@ -8558,6 +9334,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -8808,6 +9596,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-S requires enqueue,post-return delivery,legal context,state and cleanup",
           "class": "B",
@@ -8829,7 +9628,8 @@
             "OBS-GUARD-RESET",
             "OBS-ORIGIN-CALLBACK",
             "OBS-CAUSAL-ORDER",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -8846,6 +9646,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or illegal DB context, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -8857,6 +9666,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -9109,6 +9930,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-M requires enqueue,post-return delivery,legal context,state and cleanup",
           "class": "B",
@@ -9130,7 +9962,8 @@
             "OBS-GUARD-RESET",
             "OBS-ORIGIN-CALLBACK",
             "OBS-CAUSAL-ORDER",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -9147,6 +9980,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or illegal DB context, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -9158,6 +10000,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -9410,6 +10264,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-SM requires enqueue,post-return delivery,legal context,state and cleanup",
           "class": "B",
@@ -9431,7 +10296,8 @@
             "OBS-GUARD-RESET",
             "OBS-ORIGIN-CALLBACK",
             "OBS-CAUSAL-ORDER",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -9448,6 +10314,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or illegal DB context, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -9459,6 +10334,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -9729,6 +10616,19 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-APPCTX-ENTRY@STG-SYNC-APPCTX",
+            "MarkerStageBindings=MARK-APPCTX-RETURN@STG-SYNC-APPCTX",
+            "MarkerStageBindings=N-ED-WILL@STG-CMDCTX-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-CMDCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-CMDCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-S requires legal application origin,enqueue,command delivery,state and cleanup",
           "class": "B",
@@ -9749,7 +10649,8 @@
             "OBS-MARKERS",
             "OBS-CAUSAL-ORDER",
             "OBS-SYNC-ENTRY-RETURN",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -9765,6 +10666,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including invalid application context,rejection or nondelivery, absent write-capable command lock or T_CMD failure is UNKNOWN",
           "class": "B",
@@ -9777,6 +10687,18 @@
             "UNK-T-CMD-FAILURE"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -10046,6 +10968,19 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-APPCTX-ENTRY@STG-SYNC-APPCTX",
+            "MarkerStageBindings=MARK-APPCTX-RETURN@STG-SYNC-APPCTX",
+            "MarkerStageBindings=N-ED-WILL@STG-CMDCTX-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-CMDCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-CMDCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-M requires legal application origin,enqueue,command delivery,state and cleanup",
           "class": "B",
@@ -10066,7 +11001,8 @@
             "OBS-MARKERS",
             "OBS-CAUSAL-ORDER",
             "OBS-SYNC-ENTRY-RETURN",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -10082,6 +11018,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including invalid application context,rejection or nondelivery, absent write-capable command lock or T_CMD failure is UNKNOWN",
           "class": "B",
@@ -10094,6 +11039,18 @@
             "UNK-T-CMD-FAILURE"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -10363,6 +11320,19 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-APPCTX-ENTRY@STG-SYNC-APPCTX",
+            "MarkerStageBindings=MARK-APPCTX-RETURN@STG-SYNC-APPCTX",
+            "MarkerStageBindings=N-ED-WILL@STG-CMDCTX-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-CMDCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-CMDCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-SM requires legal application origin,enqueue,command delivery,state and cleanup",
           "class": "B",
@@ -10383,7 +11353,8 @@
             "OBS-MARKERS",
             "OBS-CAUSAL-ORDER",
             "OBS-SYNC-ENTRY-RETURN",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -10399,6 +11370,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including invalid application context,rejection or nondelivery, absent write-capable command lock or T_CMD failure is UNKNOWN",
           "class": "B",
@@ -10411,6 +11391,18 @@
             "UNK-T-CMD-FAILURE"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -10667,6 +11659,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including recursive callback not contained by one-shot guard",
           "class": "B",
@@ -10675,6 +11676,17 @@
             "UNK-RECURSION"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -10930,6 +11942,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including recursive callback not contained by one-shot guard",
           "class": "B",
@@ -10938,6 +11959,17 @@
             "UNK-RECURSION"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -11060,7 +12092,7 @@
           "clause": "append exact F-TRIGGER-APPEND object",
           "class": "B",
           "v35": [
-            "TRG-APPEND-TRIGGER"
+            "TRG-APPEND-TRIGGER-IN-PRIMARY"
           ],
           "note": "trigger family by body/origin EventId and exact operation"
         },
@@ -11080,9 +12112,9 @@
           "class": "B",
           "v35": [
             "F-TRIGGER-APPEND",
-            "TRG-APPEND-TRIGGER"
+            "TRG-APPEND-TRIGGER-IN-PRIMARY"
           ],
-          "note": "Architect B01"
+          "note": "Architect B01; RC-10: append through T-PRIMARY"
         },
         {
           "column": "Setup",
@@ -11193,6 +12225,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including recursive callback not contained by one-shot guard",
           "class": "B",
@@ -11201,6 +12242,17 @@
             "UNK-RECURSION"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -11446,6 +12498,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON when legal mutation context is unavailable",
           "class": "B",
@@ -11455,6 +12516,17 @@
             "UNK-NO-WRITE-LOCK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -11701,6 +12773,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON when legal mutation context is unavailable",
           "class": "B",
@@ -11710,6 +12791,17 @@
             "UNK-NO-WRITE-LOCK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -11966,6 +13058,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON when legal mutation context is unavailable",
           "class": "B",
@@ -11981,6 +13082,9 @@
           "clause": "UNKNOWN-RULE-V35",
           "class": "B",
           "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
             "UNK-NESTED-IN-ABORT"
           ],
           "note": "UNKNOWN obligations of the row's setup/execution context"
@@ -12214,6 +13318,15 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-LOAD-RESULT@STG-PAYLOAD-LOAD"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires callback,legal mutation,state and cleanup",
           "class": "B",
@@ -12232,7 +13345,8 @@
             "OBS-MARKERS",
             "OBS-GUARD-RESET",
             "OBS-T-AFFILIATION",
-            "OBS-LOAD"
+            "OBS-LOAD",
+            "OBS-PAYLOAD-DB-BINDING"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -12248,6 +13362,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON when legal mutation context is unavailable",
           "class": "B",
@@ -12257,6 +13380,19 @@
             "UNK-NO-WRITE-LOCK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING",
+            "UNK-PAYLOAD-DB"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -12496,6 +13632,15 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-LOAD-RESULT@STG-PAYLOAD-LOAD"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires callback,legal mutation,state and cleanup",
           "class": "B",
@@ -12514,7 +13659,8 @@
             "OBS-MARKERS",
             "OBS-GUARD-RESET",
             "OBS-T-AFFILIATION",
-            "OBS-LOAD"
+            "OBS-LOAD",
+            "OBS-PAYLOAD-DB-BINDING"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -12530,6 +13676,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON when legal mutation context is unavailable",
           "class": "B",
@@ -12539,6 +13694,19 @@
             "UNK-NO-WRITE-LOCK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING",
+            "UNK-PAYLOAD-DB"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -12752,6 +13920,15 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=N-ED-END@STG-FIXTURE-CMD"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires callback,legal mutation,state and cleanup",
           "class": "B",
@@ -12785,6 +13962,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON when legal mutation context is unavailable",
           "class": "B",
@@ -12794,6 +13980,18 @@
             "UNK-NO-WRITE-LOCK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -13056,6 +14254,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -13077,7 +14287,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -13094,6 +14305,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or undrained work",
           "class": "B",
@@ -13104,6 +14324,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -13365,6 +14597,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,post-return delivery,state,causal order and cleanup",
           "class": "B",
@@ -13386,7 +14629,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -13403,6 +14647,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or illegal DB context, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -13414,6 +14667,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -13677,6 +14942,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -13698,7 +14975,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -13715,6 +14993,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or undrained work",
           "class": "B",
@@ -13725,6 +15012,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -13986,6 +15285,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,post-return delivery,state,causal order and cleanup",
           "class": "B",
@@ -14007,7 +15317,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -14024,6 +15335,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or illegal DB context, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -14035,6 +15355,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -14298,6 +15630,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -14319,7 +15663,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -14336,6 +15681,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or undrained work",
           "class": "B",
@@ -14346,6 +15700,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -14607,6 +15973,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,post-return delivery,state,causal order and cleanup",
           "class": "B",
@@ -14628,7 +16005,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -14645,6 +16023,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or illegal DB context, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -14656,6 +16043,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -14919,6 +16318,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -14940,7 +16351,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -14957,6 +16369,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or undrained work",
           "class": "B",
@@ -14967,6 +16388,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -15228,6 +16661,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,post-return delivery,state,causal order and cleanup",
           "class": "B",
@@ -15249,7 +16693,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -15266,6 +16711,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or illegal DB context, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -15277,6 +16731,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -15540,6 +17006,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -15562,7 +17040,9 @@
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
             "OBS-T-AFFILIATION",
-            "OBS-LOAD"
+            "OBS-LOAD",
+            "OBS-LOCK-RELEASE-BOUND",
+            "OBS-PAYLOAD-DB-BINDING"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -15579,6 +17059,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or undrained work",
           "class": "B",
@@ -15589,6 +17078,19 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING",
+            "UNK-PAYLOAD-DB"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -15850,6 +17352,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,post-return delivery,state,causal order and cleanup",
           "class": "B",
@@ -15872,7 +17385,9 @@
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
             "OBS-T-AFFILIATION",
-            "OBS-LOAD"
+            "OBS-LOAD",
+            "OBS-LOCK-RELEASE-BOUND",
+            "OBS-PAYLOAD-DB-BINDING"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -15889,6 +17404,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or illegal DB context, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -15900,6 +17424,19 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING",
+            "UNK-PAYLOAD-DB"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -16163,6 +17700,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -16185,7 +17734,9 @@
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
             "OBS-T-AFFILIATION",
-            "OBS-LOAD"
+            "OBS-LOAD",
+            "OBS-LOCK-RELEASE-BOUND",
+            "OBS-PAYLOAD-DB-BINDING"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -16202,6 +17753,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or undrained work",
           "class": "B",
@@ -16212,6 +17772,19 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING",
+            "UNK-PAYLOAD-DB"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -16473,6 +18046,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,post-return delivery,state,causal order and cleanup",
           "class": "B",
@@ -16495,7 +18079,9 @@
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
             "OBS-T-AFFILIATION",
-            "OBS-LOAD"
+            "OBS-LOAD",
+            "OBS-LOCK-RELEASE-BOUND",
+            "OBS-PAYLOAD-DB-BINDING"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -16512,6 +18098,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or illegal DB context, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -16523,6 +18118,19 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING",
+            "UNK-PAYLOAD-DB"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -16786,6 +18394,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -16807,7 +18427,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -16824,6 +18445,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or undrained work",
           "class": "B",
@@ -16834,6 +18464,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -17095,6 +18737,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires origin,enqueue,post-return delivery,state,causal order and cleanup",
           "class": "B",
@@ -17116,7 +18769,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -17133,6 +18787,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery or illegal DB context, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -17144,6 +18807,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -17434,6 +19109,20 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-APPCTX-CALLBACK-RETURN@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=N-ED-WILL@STG-CMDCTX-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-CMDCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-CMDCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires both enqueue legs,three contexts,state,causal order and cleanup",
           "class": "B",
@@ -17455,7 +19144,8 @@
             "OBS-MARKERS",
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -17472,6 +19162,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including either rejection,nondelivery or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN, absent write-capable command lock or T_CMD failure is UNKNOWN",
           "class": "B",
@@ -17485,6 +19184,18 @@
             "UNK-T-CMD-FAILURE"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -17765,6 +19476,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -17786,7 +19509,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -17803,6 +19527,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -17814,6 +19547,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -18075,6 +19820,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -18096,7 +19853,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -18113,6 +19871,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -18124,6 +19891,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -18386,6 +20165,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -18408,7 +20199,8 @@
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
             "OBS-T-AFFILIATION",
-            "OBS-VETO-OK"
+            "OBS-VETO-OK",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -18425,6 +20217,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -18436,6 +20237,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -18697,6 +20510,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -18718,7 +20543,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -18735,6 +20561,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -18746,6 +20581,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -19007,6 +20854,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -19028,7 +20887,9 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND",
+            "OBS-CANCEL-RESTORED"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -19045,6 +20906,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -19056,6 +20926,19 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING",
+            "UNK-CANCEL-STAGING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -19317,6 +21200,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -19338,7 +21233,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -19355,6 +21251,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -19366,6 +21271,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -19645,6 +21562,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -19666,7 +21595,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -19683,6 +21613,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -19694,6 +21633,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -19955,6 +21906,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -19976,7 +21939,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -19993,6 +21957,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -20004,6 +21977,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -20265,6 +22250,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -20286,7 +22283,9 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND",
+            "OBS-CANCEL-RESTORED"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -20303,6 +22302,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -20314,6 +22322,19 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING",
+            "UNK-CANCEL-STAGING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -20575,6 +22596,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -20596,7 +22629,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -20613,6 +22647,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -20624,6 +22667,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -20885,6 +22940,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -20906,7 +22973,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -20923,6 +22991,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -20934,6 +23011,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -21195,6 +23284,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -21216,7 +23317,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -21233,6 +23335,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -21244,6 +23355,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -21505,6 +23628,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -21526,7 +23661,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -21543,6 +23679,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -21554,6 +23699,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -21832,6 +23989,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -21853,7 +24021,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -21870,6 +24039,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -21882,6 +24060,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -22142,6 +24332,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -22163,7 +24364,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -22180,6 +24382,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -22192,6 +24403,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -22453,6 +24676,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -22474,7 +24708,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -22491,6 +24726,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -22503,6 +24747,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -22764,6 +25020,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -22786,7 +25053,8 @@
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
             "OBS-T-AFFILIATION",
-            "OBS-VETO-OK"
+            "OBS-VETO-OK",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -22803,6 +25071,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -22815,6 +25092,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -23076,6 +25365,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -23097,7 +25397,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -23114,6 +25415,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -23126,6 +25436,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -23386,6 +25708,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -23407,7 +25740,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -23424,6 +25758,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -23436,6 +25779,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -23696,6 +26051,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -23717,7 +26083,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -23734,6 +26101,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -23746,6 +26122,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -24006,6 +26394,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -24027,7 +26426,9 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND",
+            "OBS-CANCEL-RESTORED"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -24044,6 +26445,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -24056,6 +26466,19 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING",
+            "UNK-CANCEL-STAGING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -24316,6 +26739,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -24337,7 +26771,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -24354,6 +26789,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -24366,6 +26810,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -24644,6 +27100,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -24665,7 +27132,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -24682,6 +27150,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -24694,6 +27171,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -24954,6 +27443,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -24975,7 +27475,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -24992,6 +27493,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -25004,6 +27514,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -25264,6 +27786,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -25285,7 +27818,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -25302,6 +27836,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -25314,6 +27857,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -25574,6 +28129,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -25595,7 +28161,9 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND",
+            "OBS-CANCEL-RESTORED"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -25612,6 +28180,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -25624,6 +28201,19 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING",
+            "UNK-CANCEL-STAGING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -25884,6 +28474,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -25905,7 +28506,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -25922,6 +28524,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -25934,6 +28545,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -26194,6 +28817,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -26215,7 +28849,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -26232,6 +28867,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -26244,6 +28888,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -26504,6 +29160,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -26525,7 +29192,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -26542,6 +29210,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -26554,6 +29231,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -26814,6 +29503,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires exact origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -26835,7 +29535,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -26852,6 +29553,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -26864,6 +29574,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -27111,6 +29833,16 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-APPCTX-ENTRY@STG-SYNC-APPCTX",
+            "MarkerStageBindings=N-ED-WILL@STG-CANCEL-CMD"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires cancellation callback,legal mutation,state and cleanup",
           "class": "B",
@@ -27145,6 +29877,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON when cancellation or legal mutation context is unavailable, missing command lock or T_CANCEL is UNKNOWN",
           "class": "B",
@@ -27156,6 +29897,18 @@
             "UNK-T-CANCEL-FAILURE"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -27416,6 +30169,18 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=N-ED-WILL@STG-SEND-DELIVERY",
+            "MarkerStageBindings=N-ED-END@STG-SEND-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires cancel origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -27438,7 +30203,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -27455,6 +30221,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work",
           "class": "B",
@@ -27466,6 +30241,18 @@
             "UNK-UNDRAINED"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -27725,6 +30512,17 @@
           "note": ""
         },
         {
+          "column": "LifecycleMarkers",
+          "clause": "MARKER-BINDING-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "MarkerStageBindings=MARK-ORIGIN-RETURN@STG-ORIGIN",
+            "MarkerStageBindings=MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+            "MarkerStageBindings=MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+          ],
+          "note": "RC-02/RC-03 stage binding of bound markers"
+        },
+        {
           "column": "PASS",
           "clause": "PASS-ALL requires cancel origin,enqueue,delivery,state,causal order and cleanup",
           "class": "B",
@@ -27747,7 +30545,8 @@
             "OBS-EXEC-COMPLETE",
             "OBS-GUARD-RESET",
             "OBS-CONTEXT",
-            "OBS-T-AFFILIATION"
+            "OBS-T-AFFILIATION",
+            "OBS-LOCK-RELEASE-BOUND"
           ],
           "note": "universal PASS formalization of NPM-V34 §3 PASS-x (required callbacks, markers, T/lifecycle checks)"
         },
@@ -27764,6 +30563,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including rejection,nondelivery,illegal context or undrained work, lock/document/T/end/unlock rejection or leak is UNKNOWN",
           "class": "B",
@@ -27776,6 +30584,18 @@
             "UNK-LOCK-DOC-T-LEAK"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY",
+            "UNK-MARKER-BINDING"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -28048,6 +30868,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including illegal mutation or unexpected recursion",
           "class": "B",
@@ -28057,6 +30886,17 @@
             "UNK-RECURSION"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -28328,6 +31168,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including illegal mutation or unexpected recursion",
           "class": "B",
@@ -28337,6 +31186,17 @@
             "UNK-RECURSION"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -28608,6 +31468,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including illegal mutation or unexpected recursion",
           "class": "B",
@@ -28617,6 +31486,17 @@
             "UNK-RECURSION"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -28888,6 +31768,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including illegal mutation or unexpected recursion",
           "class": "B",
@@ -28897,6 +31786,17 @@
             "UNK-RECURSION"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -29168,6 +32068,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including illegal mutation or unexpected recursion",
           "class": "B",
@@ -29177,6 +32086,17 @@
             "UNK-RECURSION"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -29448,6 +32368,15 @@
           "note": "prose bound to FailPredicateIds"
         },
         {
+          "column": "FAIL",
+          "clause": "FAIL-RULE-V35-A1",
+          "class": "B",
+          "v35": [
+            "FP-CLEANUP-SAFETY"
+          ],
+          "note": "RC-04: NPM-V34 §5 cleanup safety exception applies to every row"
+        },
+        {
           "column": "UNKNOWN",
           "clause": "UNKNOWN-COMMON including illegal mutation or unexpected recursion",
           "class": "B",
@@ -29457,6 +32386,17 @@
             "UNK-RECURSION"
           ],
           "note": ""
+        },
+        {
+          "column": "UNKNOWN",
+          "clause": "UNKNOWN-RULE-V35",
+          "class": "B",
+          "v35": [
+            "UNK-FINISH-TIMEOUT",
+            "UNK-LOG-BINDING",
+            "UNK-LATE-DELIVERY"
+          ],
+          "note": "UNKNOWN obligations of the row's setup/execution context"
         },
         {
           "column": "Cleanup",
@@ -29547,7 +32487,7 @@
   ],
   "classCounts": {
     "A": 1874,
-    "B": 1096,
+    "B": 1364,
     "C": 16,
     "D": 0
   }
