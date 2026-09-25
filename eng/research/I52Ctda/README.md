@@ -16,5 +16,22 @@ product project or by `RackCad.sln`.
 
 Run `validate-r1b.ps1` to build and test every toolchain-independent component. This never starts AutoCAD.
 
+## Host smoke
+
+```powershell
+dotnet run --project eng/research/I52Ctda/harness -c Release -- smoke <repo> <output-dir> <I52CtdaNative.arx> <scratch.dwg> [profile]
+```
+
+The caller supplies a fresh scratch DWG; the harness starts one dedicated AutoCAD process on it, loads the helper,
+runs `I52CTDA_SMOKE`, unloads the helper and quits without saving. `I52CTDA_SMOKE` materializes the seven FEC-V34
+fixture identities in its own bootstrap transaction, binds them, attaches the fixture reactors and detaches them
+again; it dispatches no governed ProbeId. The event log defaults to `<output-dir>/native-smoke.json.events.jsonl`.
+`smoke-result.json` is `PASS` only when the native report, the ordered event log and the external PID fence agree.
+The helper does not change AutoCAD security settings: the helper folder must already be trusted, or a dedicated
+profile passed as `profile`.
+
+The FEC-V34 fixture declares the STATE-SM-0 linkage bytes `HFV30:LINK:A,B` but no storage for them; the smoke does
+not materialize linkage bytes, and governed SM/ALL probes need that storage decided first.
+
 The instrument must not run against a user's working AutoCAD process or project DWG. Runtime results are not
 product evidence and cannot close a product KindContract.

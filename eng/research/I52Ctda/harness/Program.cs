@@ -13,7 +13,7 @@ internal static class HarnessProgram
 
     public static async Task<int> RunAsync(string[] args)
     {
-        if (args.Length < 2) { Console.Error.WriteLine("Usage: validate|inventory|static-native|headers|generate|tuple|smoke <repo> [arguments]"); return 2; }
+        if (args.Length < 2) { Console.Error.WriteLine("Usage: validate|inventory|static-native|headers|generate|tuple <repo> [arguments] | smoke <repo> <output-dir> <helper.arx> <scratch.dwg> [profile]"); return 2; }
         string command = args[0];
         string repo = Path.GetFullPath(args[1]);
         ContractCatalog catalog = ContractCatalog.Load(repo);
@@ -25,7 +25,7 @@ internal static class HarnessProgram
             "headers" => Headers(repo),
             "generate" when args.Length == 4 => Generate(catalog, repo, args[2], args[3]),
             "tuple" when args.Length == 4 => WriteTuple(repo, args[2], args[3]),
-            "smoke" when args.Length == 4 => await SmokeAsync(repo, args[2], args[3]),
+            "smoke" when args.Length is 5 or 6 => await SmokeAsync(repo, args[2], args[3], args[4], args.Length == 6 ? args[5] : null),
             _ => 2
         };
     }
@@ -101,27 +101,49 @@ internal static class HarnessProgram
         return 0;
     }
 
-    private static async Task<int> SmokeAsync(string repo, string outputDirectory, string nativeHelper)
+    // Smoke only: one dedicated AutoCAD process on an explicit scratch DWG; no governed ProbeId is dispatched.
+    // The event log is left to the helper's derivation rule so the fallback itself is exercised.
+    private static async Task<int> SmokeAsync(string repo, string outputDirectory, string nativeHelper, string scratchDrawing, string? profile)
     {
-        string outputRoot = Path.GetFullPath(outputDirectory);
-        Directory.CreateDirectory(outputRoot);
-        string report = Path.Combine(outputRoot, "native-smoke.json");
-        string script = Path.Combine(outputRoot, "native-smoke.scr");
-        string acad = @"C:\Program Files\Autodesk\AutoCAD 2025\acad.exe";
-        string helper = Path.GetFullPath(nativeHelper).Replace('\\', '/');
-        await File.WriteAllTextAsync(script, $"_.FILEDIA\n0\n(arxload \"{helper}\")\nI52CTDA_SMOKE\n_.QUIT\n_N\n", new UTF8Encoding(false));
-        using var process = new Process { StartInfo = new ProcessStartInfo(acad, $"/nologo /nossm /b \"{script}\"") { UseShellExecute = false, WorkingDirectory = outputRoot } };
-        process.StartInfo.Environment["I52_CTDA_OUTPUT"] = report;
-        process.StartInfo.Environment["I52_CTDA_REPO"] = repo;
-        process.Start();
-        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(3));
-        try { await process.WaitForExitAsync(timeout.Token); }
-        catch (OperationCanceledException)
+        const string acad = @"C:\Program Files\Autodesk\AutoCAD 2025\acad.exe";
+        SmokeLaunchPlan plan;
+        try { plan = SmokeLaunchPlan.Create(acad, nativeHelper, scratchDrawing, outputDirectory, profile); }
+        catch (Exception e) when (e is ArgumentException or FileNotFoundException) { Console.Error.WriteLine(e.Message); return 2; }
+        Directory.CreateDirectory(plan.OutputRoot);
+        if (File.Exists(plan.ReportPath) || File.Exists(plan.EventLogPath)) { Console.Error.WriteLine("Smoke output directory already holds a report or event log."); return 2; }
+        await File.WriteAllTextAsync(plan.ScriptPath, plan.Script, new UTF8Encoding(false));
+
+        int[] acadBefore = Process.GetProcessesByName("acad").Select(p => p.Id).ToArray();
+        string drawingBefore = ScratchProcessController.Sha256(plan.ScratchDrawing);
+        var environment = new Dictionary<string, string?>
         {
-            if (!process.HasExited) process.Kill(entireProcessTree: true);
-            await process.WaitForExitAsync();
-            return 1;
-        }
-        return File.Exists(report) ? 0 : 1;
+            ["I52_CTDA_OUTPUT"] = plan.ReportPath,
+            ["I52_CTDA_REPO"] = repo,
+            ["I52_CTDA_EVENT_LOG"] = null
+        };
+        SmokeProcessRun run = await SmokeProcessRunner.RunAsync(plan.AcadExecutable, plan.Arguments, plan.OutputRoot, environment, TimeSpan.FromMinutes(5));
+
+        NativeSmokeReport? report = File.Exists(plan.ReportPath) ? NativeSmokeReport.Parse(await File.ReadAllTextAsync(plan.ReportPath)) : null;
+        EventLogSummary? log = File.Exists(plan.EventLogPath) ? EventLogSummary.Read(await File.ReadAllLinesAsync(plan.EventLogPath)) : null;
+        SmokeVerdict verdict = SmokeEvaluator.Evaluate(report, log, run);
+        var result = new
+        {
+            schemaVersion = 1,
+            commandIdentity = SmokeContract.CommandIdentity,
+            result = verdict.Result,
+            failures = verdict.Failures,
+            process = new { run.ProcessId, run.StartedAtUtc, run.ExitedAtUtc, run.ExitCode, run.TimedOut, run.ProcessGone, run.Executable, executableSha256 = ScratchProcessController.Sha256(plan.AcadExecutable), run.Arguments, preexistingAcadProcessIds = acadBefore, newProcess = !acadBefore.Contains(run.ProcessId) },
+            nativeHelper = new { path = plan.NativeHelper, sha256 = ScratchProcessController.Sha256(plan.NativeHelper) },
+            scratchDrawing = new { path = plan.ScratchDrawing, sha256Before = drawingBefore, sha256After = ScratchProcessController.Sha256(plan.ScratchDrawing) },
+            report = plan.ReportPath,
+            eventLog = plan.EventLogPath,
+            eventLogSummary = log,
+            fixtureSnapshotSha256 = report?.SnapshotSha256,
+            nativeReport = report,
+            governedProbesExecuted = report?.GovernedProbesDispatched
+        };
+        await File.WriteAllTextAsync(Path.Combine(plan.OutputRoot, "smoke-result.json"), JsonSerializer.Serialize(result, JsonOptions), new UTF8Encoding(false));
+        Console.WriteLine(JsonSerializer.Serialize(new { verdict.Result, verdict.Failures }, JsonOptions));
+        return verdict.Pass ? 0 : 1;
     }
 }
