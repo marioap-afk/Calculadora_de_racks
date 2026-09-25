@@ -631,6 +631,17 @@ foreach ($a in 'loadMechanism', 'unload') { if (-not (Attr 'R-MANAGED-OBSERVER' 
 if (-not ((@(Attr 'DRIVER-SCRIPT-01' 'scriptSteps') -join '|') -match 'NETLOAD')) { C 'MANAGED-HOST' 'DRIVER-SCRIPT-01' 'no NETLOAD step for R-MANAGED-OBSERVER' }
 if ((Attr 'R-PAYLOAD-ARX' 'dbBinding') -ne 'PAYLOAD-DB-BINDING' -or -not (Attr 'R-PAYLOAD-ARX' 'interface')) { C 'PAYLOAD-DB-BINDING' 'R-PAYLOAD-ARX' 'db binding / interface' }
 if ((Attr 'LOG-SEQ-01' 'owner') -ne 'R-NATIVE-ARX') { C 'LOG-SEQUENCE' 'LOG-SEQ-01' 'sequencer owner' }
+# V35-A2 (Architect MINOR M1): FINISH-FENCE-01 is read through one LOG-SEQ-01 export; its setter is internal and never exported
+$ff = $oracle['finishFenceAbi']; $readApi = [string]$ff['readApi']; $logExports = @(Attr 'LOG-SEQ-01' 'exports')
+if ($logExports -notcontains $readApi -or (Attr 'LOG-SEQ-01' 'fenceRead') -ne $readApi -or -not ([string](Attr 'LOG-SEQ-01' 'definition')).Contains($readApi)) { C 'FINISH-FENCE-READ-ABI' 'LOG-SEQ-01' "read export $readApi missing" }
+if ((Attr 'LOG-SEQ-01' 'fenceSetterExported') -ne $ff['setterExported'] -or @($logExports | Where-Object { $_ -match 'FinishFence' -and $_ -ne $readApi }).Count) { C 'FINISH-FENCE-READ-ABI' 'LOG-SEQ-01' 'the fence setter must not be exported' }
+if ((Attr $ff['fence'] 'readApi') -ne $readApi -or (Attr $ff['fence'] 'setter') -ne $ff['setter'] -or -not ([string](Attr $ff['fence'] 'definition')).Contains($readApi)) { C 'FINISH-FENCE-READ-ABI' $ff['fence'] 'the fence must name its read export and its internal setter' }
+foreach ($m in @($ff['readers'])) {
+    $imp = @(Attr $m 'imports')
+    if ($imp -notcontains $readApi -or -not ([string](Attr $m 'interface')).Contains($readApi)) { C 'FINISH-FENCE-READ-ABI' $m "does not import $readApi" }
+    foreach ($x in $imp) { if ($logExports -notcontains $x) { C 'FINISH-FENCE-READ-ABI' $m "imports $x, which LOG-SEQ-01 does not export" } }
+}
+foreach ($id in $Cat.Keys) { if (($Cat[$id] | ConvertTo-Json -Depth 20 -Compress) -match 'I52Ctda_FinishFenceSet') { C 'FINISH-FENCE-READ-ABI' $id 'names a fence setter as ABI' } }
 foreach ($f in 'Sequence', 'ProbeId', 'StageId', 'DeliveryId', 'ModuleId', 'PID', 'TID', 'DocumentId', 'DatabaseId', 'CommandIdentity') { if (@(Attr 'LOG-RECORD-01' 'fields') -notcontains $f) { C 'LOG-SEQUENCE' 'LOG-RECORD-01' "field $f missing" } }
 $cs = $oracle['cancelStaging']['TRG-CANCEL-OPEN-XR']; $staged = [string](Attr 'TRG-CANCEL-OPEN-XR' 'stagedBytes')
 if ($staged -ne $cs['stagedBytes']) { C 'CANCEL-STAGING-DISTINCT' 'TRG-CANCEL-OPEN-XR' "staged $staged vs oracle" }
@@ -685,13 +696,13 @@ function Canon($v) {
     if ($v -is [System.Collections.IEnumerable]) { return '[' + ((@($v) | ForEach-Object { Canon $_ }) -join ',') + ']' }
     return [string]$v
 }
-# Pinned inputs: the V34 baseline blobs at 0c609269 and the architecture-review oracle approved for the V35-A1 delta review.
+# Pinned inputs: the V34 baseline blobs at 0c609269 and the architecture-review oracle approved in the V35-A1 delta review, re-pinned by the V35-A2 errata (M1 only).
 $pins = [ordered]@{
     'docs/initiatives/I-52-native-probe-matrix-v34.md'                  = '7a29a1c11d308879488e43dc460602df1426697b'
     'docs/initiatives/I-52-native-event-catalog-v34.md'                 = '1f16dd0641c1706e6874a68b9136406c19e33848'
     'eng/research/I52Ctda/traceability-v34.json'                        = '0424c0b6788cbbacf5deaf533317f9202f305482'
     'docs/automation/evidence/I-52-r3-governed-executor-discovery.json' = '38104836975dc4e0adc5c930e8550fc0abab5ae0'
-    'eng/research/I52Ctda/v35-oracle.json'                              = '002d538f9e91b342851672269a295ee8cd017290'
+    'eng/research/I52Ctda/v35-oracle.json'                              = '0171e5de9e79ce99cf70d97777346f4aacd9da05'
 }
 foreach ($k in $pins.Keys) { if ((GitBlobId $k) -ne $pins[$k]) { C 'INPUT-PIN' $k "git blob $(GitBlobId $k) is not the pinned $($pins[$k])" } }
 foreach ($k in $oracle['V34_inputBlobPins'].Keys) { if ($pins[$k] -ne $oracle['V34_inputBlobPins'][$k]) { C 'INPUT-PIN' $k 'oracle pin differs from the validator pin' } }
@@ -751,7 +762,7 @@ foreach ($probe in $rawRows.Keys) {
     if ($h -ne $freeze['rows'][$probe]) { C 'ROW-APPROVAL' $probe 'row differs from the approved row' }
 }
 foreach ($k in $freeze['blobs'].Keys) { if ((GitBlobId $k) -ne $freeze['blobs'][$k]) { C 'INPUT-PIN' $k 'differs from the approved blob' } }
-$oracleSources = [ordered]@{ 'eng/research/I52Ctda/oracle/make_oracle.py' = '0d03fd4822bc3ca288b5a3a99ce54c083bd14175'; 'eng/research/I52Ctda/oracle/oracle_predicates.py' = '78c750d863240b99bcc6621ef9289320d725cc97' }
+$oracleSources = [ordered]@{ 'eng/research/I52Ctda/oracle/make_oracle.py' = 'e90aa1dc921d0778e6be36a1b1183abe83a289f2'; 'eng/research/I52Ctda/oracle/oracle_predicates.py' = '78c750d863240b99bcc6621ef9289320d725cc97' }
 foreach ($k in $oracleSources.Keys) { if ((GitBlobId $k) -ne $oracleSources[$k]) { C 'INPUT-PIN' $k 'oracle source differs from the pinned source' } }
 foreach ($d in 'DRIVER-CMD-01', 'DRIVER-APP-01') {
     if ((@(Attr $d 'phaseOrder') -join '>') -ne (@($oracle['driverPhaseOrder'][$d]) -join '>')) { C 'GUARD-DISARM-AFTER-OBLIGATIONS' $d 'phase order differs from the oracle sequence' }
@@ -837,14 +848,14 @@ $pred = [ordered]@{
     TriggerAuthorityClosed = ($unbound -eq 0) -and -not ($contra.Keys | Where-Object { $_ -like 'CANCEL-STAGING-*' -or $_ -in 'DRIVER-TRIGGER', 'TRIGGER-PRODUCES', 'TRIGGER-DISJOINT', 'ERASE-TRIGGER-DISJOINT', 'MARKER-PRODUCER', 'GUARD-TARGET', 'TRIGGER-TARGET', 'BODY-NOTIFIER', 'APPEND-TRANSACTION-COMPATIBILITY', 'TRIGGER-ACTION' })
     SetupAuthorityClosed = $zero -and -not ($contra.Keys | Where-Object { $_ -like 'GUARD-KEY-*' -or $_ -in 'PRIMARY-T', 'OUTCOME-COMMIT', 'NESTED-T', 'STAGE-T', 'CHAIN-DATA', 'PAYLOAD-PATH', 'GUARD-DISARM-AFTER-OBLIGATIONS', 'SETUP-ORDER', 'EXEC-LOCK', 'GUARD-FAMILY', 'LINEAGE-EMPTY' })
     PredicateAuthorityClosed = $zero -and -not ($contra.Keys | Where-Object { $_ -in 'PASS-RULE', 'UNKNOWN-RULE', 'CANDIDATE-BOUNDARY', 'VETO-FAIL', 'RESULT-CLASS', 'EXPECTED-DETERMINISM', 'MARKER-STAGE-BINDING', 'DRIVER-MARKER-DISJOINT', 'ASYNC-BOUNDARY-BINDING', 'LOCK-RELEASE-BINDING', 'SAFETY-PRECEDENCE', 'FP-APPLICABILITY', 'FINISH-TIMEOUT', 'CONTROL-PLANE-RESULT', 'PREDICATE-SET' })
-    ResourceAuthorityClosed = $zero -and -not ($contra.Keys | Where-Object { $_ -like 'TRACE*' -or $_ -in 'FIXTURE', 'BODY-OBSERVER', 'MARKER-OBSERVER', 'RESOURCE-TYPE', 'MANAGED-HOST', 'PAYLOAD-DB-BINDING', 'LOG-SEQUENCE' })
+    ResourceAuthorityClosed = $zero -and -not ($contra.Keys | Where-Object { $_ -like 'TRACE*' -or $_ -in 'FIXTURE', 'BODY-OBSERVER', 'MARKER-OBSERVER', 'RESOURCE-TYPE', 'MANAGED-HOST', 'PAYLOAD-DB-BINDING', 'LOG-SEQUENCE', 'FINISH-FENCE-READ-ABI' })
     FixtureExecutionContractClosedV35 = $zero -and ($contradictions -eq 0) -and ($openBlockers -eq 0) -and $countsOk
     PlanDerivationClosed = ($plans -eq $rows.Count) -and ($rows.Count -eq 100) -and $zero -and -not ($contra.Keys | Where-Object { $_ -in 'FINISH-TOKEN-SET', 'FINISH-ORDER', 'FINISH-DRAIN', 'PROCESS-FENCE' })
 }
 $result = if (@($pred.Values | Where-Object { -not $_ }).Count -eq 0 -and $findings.Count -eq 0) { 'PASS' } else { 'FAIL' }
 
 $report = [ordered]@{
-    schemaVersion = 2; revision = 'V35-A1'; validator = 'eng/research/I52Ctda/validate-v35-catalog.ps1'; oracle = 'eng/research/I52Ctda/v35-oracle.json'; scope = 'documents/catalog only; no runtime semantics'
+    schemaVersion = 2; revision = 'V35-A2'; validator = 'eng/research/I52Ctda/validate-v35-catalog.ps1'; oracle = 'eng/research/I52Ctda/v35-oracle.json'; scope = 'documents/catalog only; no runtime semantics'
     result = $result; counts = $counts; frozenCountsHold = $countsOk; contradictionsByCheck = $contra; blockerClosure = $closure
     apiHeaderCheck = $api; predicates = $pred; findings = $findings
 }

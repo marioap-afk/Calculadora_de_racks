@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "revision": "V35-A2",
+  "errataOf": {
+    "revision": "V35-A1",
+    "commit": "34b3b05b2dc4b32b9b04defe15def3d0fcc9a9c3"
+  },
+  "architectVerdict": {
+    "review": "Architect delta review of V35-A1",
+    "verdict": "AGREED WITH SMALL CORRECTIONS - V35-A1",
+    "rcsClosed": "14/14",
+    "blocker": 0,
+    "major": 0,
+    "minor": 4,
+    "approved": [
+      "ORACLE AUTHORITY",
+      "APPROVAL HASH SET (re-hash limited to M1 entries)"
+    ]
+  },
+  "scope": "docs, catalog, oracle approval metadata, validator, negative-control harness, evidence, decisions, HANDOFF; no runtime code, no AutoCAD, no ProbeId",
+  "closures": {
+    "M1": {
+      "status": "CLOSED",
+      "readApi": "int32_t I52Ctda_FinishFenceIsSet(void)",
+      "setter": "INTERNAL-R-NATIVE-ARX (CMD-FINISH only), not exported",
+      "readers": [
+        "R-PAYLOAD-ARX",
+        "R-MANAGED-OBSERVER"
+      ],
+      "entries": [
+        "FINISH-FENCE-01",
+        "LOG-SEQ-01",
+        "R-MANAGED-OBSERVER",
+        "R-PAYLOAD-ARX"
+      ],
+      "validatorRule": "FINISH-FENCE-READ-ABI",
+      "controls": {
+        "M1a fence read export removed": {
+          "expectedCheck": "FINISH-FENCE-READ-ABI",
+          "fired": true,
+          "exit": 1
+        },
+        "M1b fence read export renamed, coherent": {
+          "expectedCheck": "FINISH-FENCE-READ-ABI",
+          "fired": true,
+          "exit": 1
+        },
+        "M1c fence setter exported": {
+          "expectedCheck": "FINISH-FENCE-READ-ABI",
+          "fired": true,
+          "exit": 1
+        },
+        "M1d managed observer cannot read the fence": {
+          "expectedCheck": "FINISH-FENCE-READ-ABI",
+          "fired": true,
+          "exit": 1
+        },
+        "M1e payload imports a function LOG-SEQ-01 does not export": {
+          "expectedCheck": "FINISH-FENCE-READ-ABI",
+          "fired": true,
+          "exit": 1
+        }
+      },
+      "oracleRule": "finishFenceAbi"
+    },
+    "M2": {
+      "status": "CLOSED",
+      "fix": "EditText normalizes CRLF to LF for the exact match and writes back with the input's line ending; EditRow/X12 keep each line's CR",
+      "lf": {
+        "inputEol": "LF",
+        "baselinePass": true,
+        "total": 98,
+        "detected": 98,
+        "controlsNotOk": []
+      },
+      "crlf": {
+        "inputEol": "CRLF",
+        "baselinePass": true,
+        "total": 98,
+        "detected": 98,
+        "controlsNotOk": []
+      },
+      "sameControlSet": true,
+      "checkouts": "scratch clones of the A2 content: core.autocrlf=false (LF) and core.autocrlf=true (CRLF); no global Git setting changed"
+    },
+    "M3": {
+      "status": "CLOSED",
+      "file": "docs/initiatives/I-52-proposal-v35.md",
+      "fixes": [
+        "header and §4 reference §6",
+        "§2 marked SUPERSEDED BY §6 where A1 changed it",
+        "§2 row schema 36 fields",
+        "§2 result rule = five-step RESULT-RULE-V35 (safety first, control-plane classification)"
+      ]
+    },
+    "M4": {
+      "status": "CLOSED",
+      "rule": "STRUCTURAL UNKNOWN only where the architecture knowingly depends on a host fact that may legitimately be unavailable when the plan is correctly implemented; DEFENSIVE UNKNOWN predicates are excluded",
+      "structuralRows": [
+        "10NDOC-WILL-SM",
+        "02NEDW-ALL",
+        "02NEDC-ALL",
+        "13A-SM",
+        "02NTAS-ALL",
+        "02NTA-ALL",
+        "02NAPP-SM",
+        "04NO-S",
+        "04NO-UNDO-S",
+        "COBJUNDO16SND-ALL",
+        "COBJUNDO16APP-ALL",
+        "09N-D",
+        "10N-S",
+        "10N-M",
+        "10N-SM"
+      ],
+      "structuralRowsEqualExpected": true,
+      "unknownPathsPresentInRows": {
+        "10NDOC-WILL-SM": {
+          "through": [
+            "UNK-NO-WRITE-LOCK",
+            "UNK-ILLEGAL-CONTEXT"
+          ],
+          "presentInRow": true
+        },
+        "02NEDW-ALL": {
+          "through": [
+            "UNK-NO-WRITE-LOCK",
+            "UNK-ILLEGAL-CONTEXT"
+          ],
+          "presentInRow": true
+        },
+        "02NEDC-ALL": {
+          "through": [
+            "UNK-NO-WRITE-LOCK",
+            "UNK-T-CANCEL-FAILURE"
+          ],
+          "presentInRow": true
+        },
+        "13A-SM": {
+          "through": [
+            "UNK-LOCK-DOC-T-LEAK",
+            "UNK-ILLEGAL-CONTEXT"
+          ],
+          "presentInRow": true
+        },
+        "02NTAS-ALL": {
+          "through": [
+            "UNK-ILLEGAL-CONTEXT"
+          ],
+          "presentInRow": true
+        },
+        "02NTA-ALL": {
+          "through": [
+            "UNK-NESTED-IN-ABORT"
+          ],
+          "presentInRow": true
+        },
+        "02NAPP-SM": {
+          "through": [
+            "UNKNOWN-COMMON"
+          ],
+          "presentInRow": true
+        },
+        "04NO-S": {
+          "through": [
+            "OBS-PRIMARY-CALLBACK"
+          ],
+          "presentInRow": true
+        },
+        "04NO-UNDO-S": {
+          "through": [
+            "OBS-PRIMARY-CALLBACK"
+          ],
+          "presentInRow": true
+        },
+        "COBJUNDO16SND-ALL": {
+          "through": [
+            "OBS-ORIGIN-CALLBACK"
+          ],
+          "presentInRow": true
+        },
+        "COBJUNDO16APP-ALL": {
+          "through": [
+            "OBS-ORIGIN-CALLBACK"
+          ],
+          "presentInRow": true
+        },
+        "09N-D": {
+          "through": [
+            "UNKNOWN-COMMON"
+          ],
+          "presentInRow": true
+        },
+        "10N-S": {
+          "through": [
+            "UNKNOWN-COMMON",
+            "OBS-CANDIDATE-BOUNDARY"
+          ],
+          "presentInRow": true
+        },
+        "10N-M": {
+          "through": [
+            "UNKNOWN-COMMON",
+            "OBS-CANDIDATE-BOUNDARY"
+          ],
+          "presentInRow": true
+        },
+        "10N-SM": {
+          "through": [
+            "UNKNOWN-COMMON",
+            "OBS-CANDIDATE-BOUNDARY"
+          ],
+          "presentInRow": true
+        }
+      },
+      "defensiveRowsNotListed": 48,
+      "defensiveRows": [
+        "02NRXL-ALL",
+        "02NRXW-ALL",
+        "02NTS-ALL",
+        "10NDOC-CHANGED-SM",
+        "16A-M",
+        "16A-S",
+        "16A-SM",
+        "16C-M",
+        "16C-S",
+        "16C-SM",
+        "C2APP2CMD-ALL",
+        "CAPP16APP-ALL",
+        "CDBERASE16APP-ALL",
+        "CDBERASE16SND-ALL",
+        "CDBOPEN16APP-ALL",
+        "CDBOPEN16SND-ALL",
+        "CDOCLOCKCHANGED16APP-ALL",
+        "CDOCLOCKVETO16APP-ALL",
+        "CDOCLOCKVETO16SND-ALL",
+        "CDOCLOCKWILL16APP-ALL",
+        "CEDC16APP-ALL",
+        "CEDC16SND-ALL",
+        "CEDEND16APP-ALL",
+        "CEDEND16SND-ALL",
+        "CEDW16APP-ALL",
+        "CENTGFX16APP-ALL",
+        "COBJCANCEL16APP-ALL",
+        "COBJCANCEL16SND-ALL",
+        "COBJCLOSED16APP-ALL",
+        "COBJCLOSED16SND-ALL",
+        "COBJERASE16APP-ALL",
+        "COBJERASE16SND-ALL",
+        "COBJMOD16APP-ALL",
+        "COBJOPEN16APP-ALL",
+        "COBJOPEN16SND-ALL",
+        "CRXL16APP-ALL",
+        "CRXW16APP-ALL",
+        "CTA16APP-ALL",
+        "CTAS16APP-ALL",
+        "CTRABOUTABORT16APP-ALL",
+        "CTRABOUTABORT16SND-ALL",
+        "CTRABOUTEND16APP-ALL",
+        "CTRABOUTEND16SND-ALL",
+        "CTRENDED16APP-ALL",
+        "CTRENDED16SND-ALL",
+        "CTROUTERMOSTENDCALLED16APP-ALL",
+        "CTROUTERMOSTENDCALLED16SND-ALL",
+        "CTS16APP-ALL"
+      ],
+      "reverificationCorrections": [
+        "RC-14 table: 09N-D and 10N-S/M/SM do not carry UNK-NO-WRITE-LOCK; their lock-absent path is UNKNOWN-COMMON through CB-LOCK-01 (plus OBS-CANDIDATE-BOUNDARY=UNAVAILABLE for 10N-S/M/SM). Proposal wording corrected; rows unchanged.",
+        "The delta review counted 41 unlisted defensive rows; the exact count is 48 (56 rows carry a defensive-class predicate, 8 of them are structural rows)."
+      ]
+    }
+  },
+  "hashDelta": {
+    "catalogEntriesTotal": 381,
+    "catalogEntriesChanged": [
+      "FINISH-FENCE-01",
+      "LOG-SEQ-01",
+      "R-MANAGED-OBSERVER",
+      "R-PAYLOAD-ARX"
+    ],
+    "catalogEntriesUnchanged": 377,
+    "authorizedChangedEntries": [
+      "FINISH-FENCE-01",
+      "LOG-SEQ-01",
+      "R-MANAGED-OBSERVER",
+      "R-PAYLOAD-ARX"
+    ],
+    "rowsTotal": 100,
+    "rowsChanged": [],
+    "npmRowSectionIdenticalToA1": true,
+    "freezeBlobsChanged": [],
+    "oracleTopLevelChanged": [
+      "finishFenceAbi",
+      "provenance",
+      "revision"
+    ],
+    "oracleBlob": {
+      "a1": "002d538f9e91b342851672269a295ee8cd017290",
+      "a2": "0171e5de9e79ce99cf70d97777346f4aacd9da05"
+    },
+    "makeOracleBlob": {
+      "a1": "0d03fd4822bc3ca288b5a3a99ce54c083bd14175",
+      "a2": "e90aa1dc921d0778e6be36a1b1183abe83a289f2"
+    },
+    "oraclePredicatesBlob": {
+      "a1": "78c750d863240b99bcc6621ef9289320d725cc97",
+      "a2": "78c750d863240b99bcc6621ef9289320d725cc97"
+    },
+    "catalogBlob": {
+      "a1": "3e50d2545039d54bd0499ef1b9dd2dd1f665eb64",
+      "a2": "567eab9b19ac21a95b51485c39fada449d6b7c6b"
+    },
+    "unexpectedChanges": 0,
+    "unexpected": []
+  },
+  "validator": {
+    "result": "PASS",
+    "predicates": {
+      "ExecutionCatalogClosed": true,
+      "TriggerAuthorityClosed": true,
+      "SetupAuthorityClosed": true,
+      "PredicateAuthorityClosed": true,
+      "ResourceAuthorityClosed": true,
+      "FixtureExecutionContractClosedV35": true,
+      "PlanDerivationClosed": true
+    },
+    "counts": {
+      "inputRowsV34": 100,
+      "inputRowsV35": 100,
+      "parsed": 100,
+      "derivedPlans": 100,
+      "unboundIds": 0,
+      "executableFreeText": 0,
+      "classD": 0,
+      "lineageMissing": 0,
+      "contradictions": 0,
+      "identifiersChecked": 6198,
+      "eventIds": 27,
+      "reachableCallbacks": 26,
+      "primaryCoverage": "26/26",
+      "eventRelations": 237,
+      "eventRelationsRuleOnV34": "237/237",
+      "schedulers": 3,
+      "schedulerPairs": 63,
+      "supportActions": 7,
+      "supportActionsUsed": 7,
+      "fixtureIdentities": 8,
+      "openBlockerGroups": 0
+    }
+  },
+  "harnessInputsMatchCommittedContent": true,
+  "researchTests": "40/40 PASS (eng/research/I52Ctda/tests, Release)",
+  "minorOpen": 0,
+  "blocker": 0,
+  "major": 0,
+  "semanticDeltaOutsideA2Scope": 0,
+  "status": "V35-A2 COMPLETE / V35 READY FOR COORDINATOR FREEZE / R3 IMPLEMENTATION BLOCKED UNTIL FREEZE"
+}

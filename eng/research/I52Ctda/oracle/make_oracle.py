@@ -207,7 +207,7 @@ PINS = {k: subprocess.check_output(["git", "-C", REPO, "rev-parse", f"{BASE}:{p}
     "docs/initiatives/I-52-native-event-catalog-v34.md": "docs/initiatives/I-52-native-event-catalog-v34.md",
     "eng/research/I52Ctda/traceability-v34.json": "eng/research/I52Ctda/traceability-v34.json",
     "docs/automation/evidence/I-52-r3-governed-executor-discovery.json": "docs/automation/evidence/I-52-r3-governed-executor-discovery.json"}.items()}
-# Z: approval freeze of the reviewed V35-A1 package (verification round V3/V4). These values are a snapshot of the exact
+# Z: approval freeze of the reviewed V35-A1 package (verification round V3/V4) plus the V35-A2 errata (Architect MINOR M1). These values are a snapshot of the exact
 # texts submitted to the Architect, not an independent derivation; the independent tables are A-H and P above.
 def git_blob_of(path):
     return subprocess.check_output(["git", "-C", REPO, "hash-object", path]).decode().strip()
@@ -225,9 +225,9 @@ FREEZE = collections.OrderedDict([
 ])
 state_bytes = sorted(set(re.findall(r"HFV30:[A-Z]+:[A-Z0-9,]+", npm)))
 oracle = collections.OrderedDict([
-    ("schemaVersion", 1), ("initiative", "I-52"), ("revision", "V35-A1"),
+    ("schemaVersion", 1), ("initiative", "I-52"), ("revision", "V35-A2"),
     ("purpose", "Architecture-review oracle data (Architect RC-13). The validator compares the V35 package against these frozen tables and never regenerates them from NPM-V35 or the catalog."),
-    ("provenance", "Derived from NPM-V34 at " + BASE + " and the Architect decisions B01-B12, C02 and RC-01..RC-14 written as literal rules; only approvedSha256 values were read from the V35-A1 catalog when the oracle was frozen."),
+    ("provenance", "Derived from NPM-V34 at " + BASE + " and the Architect decisions B01-B12, C02 and RC-01..RC-14 written as literal rules; only approvedSha256 values were read from the V35-A1 catalog when the oracle was frozen; V35-A2 adds the Architect MINOR M1 fence-read ABI rule."),
     ("A_bodyObserver", A), ("B_resourceTypes", B), ("C_failPredicateApplicability", C), ("D_retainedAuthority", D),
     ("E_triggerTargetClass", E), ("F_markerStageBindings", F), ("F_markerStages", MARKER_STAGES), ("F_stageNamespace", STAGE_NAMESPACE),
     ("G_completionTokens", G), ("H_processFence", H), ("P_rowPredicatesAndTrigger", P), ("V34_inputBlobPins", PINS),
@@ -258,6 +258,9 @@ oracle = collections.OrderedDict([
     ("lockReleaseAnchor", {"STG-SEND-DELIVERY": "COMMAND-END-WINDOW", "STG-FIXTURE-CMD": "COMMAND-END-WINDOW", "STG-CMDCTX-DELIVERY": "COMMAND-END-WINDOW",
                            "STG-APPCTX-DELIVERY": "APPCTX-UNLOCK-01-CALL", "STG-SYNC-APPCTX": "APPCTX-UNLOCK-01-CALL"}),
     ("payloadModule", {"exports": ["I52CtdaPayload_RemoveReactor"], "registersOnlyWhenArmed": True}),
+    # Architect delta review of V35-A1, MINOR M1: the fence is read through one LOG-SEQ-01 export; its setter is never exported.
+    ("finishFenceAbi", {"fence": "FINISH-FENCE-01", "owner": "R-NATIVE-ARX", "readApi": "I52Ctda_FinishFenceIsSet", "setter": "INTERNAL-R-NATIVE-ARX",
+                        "setterExported": False, "readers": ["R-PAYLOAD-ARX", "R-MANAGED-OBSERVER"]}),
     ("syncStageIncludesCallerReturn", True),
     ("cleanupSafetyScope", "GOVERNED-NAMESPACE-ONLY"),
 ])

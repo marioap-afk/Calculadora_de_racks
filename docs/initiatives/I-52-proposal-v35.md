@@ -1,7 +1,9 @@
 # I-52 — Proposal V35 — mechanically executable probe matrix
 
-> **DRAFT, revision V35-A1 / READY FOR ARCHITECT DELTA REVIEW / NOT EXECUTED.** V35 candidate `0c609269b47adedd0f29d8b4cbbc010fae91d2e0`
-> was reviewed by the Architect (AGREED WITH CORRECTIONS, 14 required corrections, decision §170); V35-A1 applies RC-01..RC-14 (§7).
+> **DRAFT, revision V35-A2 / READY FOR COORDINATOR FREEZE / NOT EXECUTED.** V35 candidate `0c609269b47adedd0f29d8b4cbbc010fae91d2e0`
+> was reviewed by the Architect (AGREED WITH CORRECTIONS, 14 required corrections, decision §170); V35-A1 applies RC-01..RC-14 (§6).
+> The Architect delta review of V35-A1 (`34b3b05b2dc4b32b9b04defe15def3d0fcc9a9c3`) concluded AGREED WITH SMALL CORRECTIONS
+> (0 BLOCKER, 0 MAJOR, 4 MINOR); V35-A2 applies the errata M1..M4 (§6, decision §171).
 > Baseline I-52 `5c4521c7d8f51e96f128188fd4f52b6437ca9bce`
 > (main `016bf46715cec45e644f88a22ef091b311a2bef1`, I-55 `53d5d99103ae79cb8258016fa3aee16b1dcd75cc`). Parent V34 blobs:
 > Proposal `aec39a7599e6c76613b247b21a8bf6e7f446bafa`, NPM `7a29a1c11d308879488e43dc460602df1426697b`, NEC `1f16dd0641c1706e6874a68b9136406c19e33848`, NSC `3ca54ef1992c3b15d2382a42f09693cd02cabdb6`, FEC `9976806e301d3f060a8d99bd0fa12ecfa90e44cb`. V35 is an incremental evolution of V34:
@@ -17,12 +19,16 @@ given a cleanup order, and zero of 100 rows had a closed execution plan. The Coo
 
 ## 2. What V35 changes
 
+> This section describes V35 as first published (`0c609269`). Where V35-A1 changed it, the text is **SUPERSEDED BY §6**
+> and by the normative catalog; the row count and the result rule below are stated as they hold after V35-A1.
+
 - **Execution catalog.** `I-52-execution-catalog-v35.json` (EXEC-CATALOG-V35-1) is the single normative source for every
   execution identifier: run environment and drivers, resources, observer registrations, guards, setup and trigger
   actions, scheduler chains, execution contexts, transaction/top/lock authorities, mutation actions, observation, UNKNOWN
   and FAIL predicates, result classes, cleanup steps and actions, completion fences and surfaces. Retained V34
   ContractIds, the 27 EventIds, 3 SchedulerIds and 7 support actions are imported as entries with their authority.
-- **Row schema.** NPM-V35 rows have 34 fields instead of 24, including `BodyObserverId`, the only registration that runs
+- **Row schema.** NPM-V35 rows have 36 fields instead of 24 (34 in V35; V35-A1 added `MarkerStageBindings` and
+  `CompletionTokenIds`, SUPERSEDED BY §6), including `BodyObserverId`, the only registration that runs
   the probe body. Setup, Trigger, transaction, lock, mutation, PASS, FAIL and
   UNKNOWN prose is replaced by identifier lists; markers carry polarity (`+` MUST_BE_PRESENT, `-` MUST_BE_ABSENT). The
   columns PrimaryAuthorityId, ScheduleOriginEventId, HeaderAuthority, Surface, SchedulePoint, ExecutionPoint,
@@ -30,9 +36,13 @@ given a cleanup order, and zero of 100 rows had a closed execution plan. The Coo
 - **Lineage.** Every V34 executable clause of every row is recorded in `I-52-v35-clause-lineage.json` with class A
   (bound V34 ContractId, kept or relocated), B (natural language formalized by a catalog id) or C (explanatory clause
   enforced by a named invariant). Class D (unresolved) is zero.
-- **Result rule.** `RESULT-RULE-V35`: UNKNOWN iff UNKNOWN-COMMON, a listed UnknownPredicate, or any required observation
-  predicate unavailable; otherwise FAIL iff evidence is complete and a listed FailPredicate holds; otherwise PASS iff the
-  PassClass, every ObservationPredicate, the fresh verifier against ExpectedAfter and the cleanup plus fence all hold.
+- **Result rule (V35-A1, SUPERSEDED BY §6).** `RESULT-RULE-V35` is evaluated only by `CONTROL-PLANE-RESULT-01`, outside the
+  scratch process and after the CompletionFence, in five ordered steps: (1) safety: with SAFETY-EVIDENCE-COMPLETE,
+  `FP-CLEANUP-SAFETY` (the V34 §5 cleanup-safety exception) gives the row's FailClass; (2) UNKNOWN if EVIDENCE-COMPLETE is
+  false, UNKNOWN-COMMON, a listed UnknownPredicate holds or a required observation is unavailable; (3) FAIL if another listed
+  FailPredicate holds; (4) PASS if the PassClass, every ObservationPredicate, the fresh verifier against ExpectedAfter and
+  the cleanup plus fence all hold; (5) otherwise UNKNOWN. The catalog entry `RESULT-RULE-V35` is normative. The V35 wording
+  (UNKNOWN first, no safety step) no longer applies.
 - **Closure is proven, not asserted.** No V35 document declares a closure predicate TRUE by definition. The static
   validator `eng/research/I52Ctda/validate-v35-catalog.ps1` computes them from the published files.
 
@@ -59,7 +69,7 @@ New guards are exactly those named by the Architect (`RG-DB-APPEND`, `RG-DB-OPEN
 
 ## 4. Decisions introduced by V35 (Architect verdicts)
 
-Architect V35 review verdicts: 4, 6, 9 AGREE; all others AGREE WITH CORRECTION, applied by V35-A1 (§7): 1 by RC-04/RC-05,
+Architect V35 review verdicts: 4, 6, 9 AGREE; all others AGREE WITH CORRECTION, applied by V35-A1 (§6): 1 by RC-04/RC-05,
 2 by RC-07, 3 by RC-01/RC-03, 5 by RC-11, 7 by RC-05, 8 by RC-09, 10 by RC-10, 11 by RC-01/RC-12, 12 by RC-06, 13 by RC-14.
 
 These are formalizations the Architect's decisions did not fix literally. Each is fully defined in the catalog; none
@@ -120,9 +130,10 @@ ResourceAuthorityClosed, FixtureExecutionContractClosedV35, PlanDerivationClosed
 ```
 
 The NEC derivation rule still reproduces NEC-V34's 237 relations exactly when applied to NPM-V34. The negative-control
-harness `eng/research/I52Ctda/validate-v35-negative-controls.ps1` runs 93 controls against temporary copies: the 24 V35
-controls, the Architect's C1-C7, 20 RC-specific controls, and 42 controls added by the V35-A1 pre-publication reviews
-(L1-L6, X1-X13 without X10, N2-N10, V1-V7). Each control declares the validator check it must trigger; every control fails
+harness `eng/research/I52Ctda/validate-v35-negative-controls.ps1` runs 98 controls against temporary copies: the 24 V35
+controls, the Architect's C1-C7, 20 RC-specific controls, 42 controls added by the V35-A1 pre-publication reviews
+(L1-L6, X1-X13 without X10, N2-N10, V1-V7) and 5 V35-A2 controls for the fence read ABI (M1a-M1e). Since V35-A2 (M2) it runs
+unchanged on an LF or a CRLF (`core.autocrlf=true`) checkout. Each control declares the validator check it must trigger; every control fails
 the validator through its declared check and the unmodified baseline passes
 (`docs/automation/evidence/I-52-v35-negative-controls.json`). RC-01..RC-14 closure, with rules, controls, affected rows
 and remaining assumptions per RC, is in `docs/automation/evidence/I-52-v35-a1-rc-closure.json`. The V35 pre-publication review
@@ -163,10 +174,19 @@ was corrected before publication:
 The oracle and the generator still share one author; the approval hashes and pins are the author's proposal and need the
 Architect's approval in the delta review.
 
+**V35-A2 errata (Architect delta review of V35-A1: 0 BLOCKER, 0 MAJOR, 4 MINOR).**
+- M1: FINISH-FENCE-01 is read through the LOG-SEQ-01 export `int32_t I52Ctda_FinishFenceIsSet(void)`; the setter is internal
+  to R-NATIVE-ARX (CMD-FINISH only) and is not exported; R-PAYLOAD-ARX and R-MANAGED-OBSERVER import the read export
+  (`imports`, `interface`). Only FINISH-FENCE-01, LOG-SEQ-01, R-PAYLOAD-ARX and R-MANAGED-OBSERVER changed; validator rule
+  FINISH-FENCE-READ-ABI.
+- M2: the negative-control harness normalizes line endings for exact text edits and runs on LF and CRLF checkouts.
+- M3: this Proposal's references and §2 now agree with V35-A1 (36 fields, five-step result rule).
+- M4: the RC-14 table below states its inclusion rule (structural versus defensive UNKNOWN).
+
 **Global logging and sequencing (LOG-SEQ-01).** One process-wide log and one sequencer owned by `R-NATIVE-ARX`:
 `I52Ctda_LogAppend` assigns Sequence with a single InterlockedIncrement64 inside the log critical section. The payload
 binds it with GetModuleHandleW + GetProcAddress, the managed observer with `[DllImport("I52CtdaNative.arx")]`. No module
-keeps its own counter. Every record carries Sequence, ProbeId, StageId, DeliveryId, DriverId or SchedulerId, ModuleId, PID,
+keeps its own counter. Both read FINISH-FENCE-01 through `I52Ctda_FinishFenceIsSet` (V35-A2, M1). Every record carries Sequence, ProbeId, StageId, DeliveryId, DriverId or SchedulerId, ModuleId, PID,
 TID, DocumentId, DatabaseId, CommandIdentity and EventOrMarkerId (LOG-RECORD-01).
 
 **Result authority (CONTROL-PLANE-RESULT-01).** The external research control plane classifies each row after the scratch
@@ -174,7 +194,18 @@ process exited, from the single log, the exact-PID exit evidence, the scratch-DW
 fence records. I52CTDA_FINISH only prepares evidence and never declares PASS, FAIL or UNKNOWN.
 
 **Rows that may legitimately classify UNKNOWN (RC-14).** Every plan below is mechanically complete; the open fact is host
-behavior. V35 records its absence as UNKNOWN rather than adding authority the Architect excluded (for example SA-LOCK in a
+behavior.
+
+Inclusion rule (V35-A2, M4). The STRUCTURAL UNKNOWN table contains only rows where the architecture knowingly depends on a
+host fact that may legitimately be unavailable even when the plan is correctly implemented: the execution context, trigger
+or callback is one the Architect accepted as candidate-hostile, so UNKNOWN is an expected outcome of a correct run. It
+excludes DEFENSIVE UNKNOWN predicates: `UNK-NO-WRITE-LOCK`, `UNK-ILLEGAL-CONTEXT`, `UNK-LOCK-DOC-T-LEAK` and similar
+predicates on rows whose required authority is expected under normal execution (the SEND, APPCTX and CMDCTX deliveries,
+02NTS-ALL, 02NRXW-ALL, 02NRXL-ALL, 10NDOC-CHANGED-SM after the lock is granted, and every other row carrying such a predicate).
+Those predicates protect against unexpected host or runtime failure and are not listed; they do not make a row structurally
+UNKNOWN. Applied to all 100 rows, the rule keeps exactly the 15 rows below and adds none. V35-A2 also reverified the last
+column against each row: 09N-D and 10N-S/M/SM do not list UNK-NO-WRITE-LOCK, so their lock-absent path is UNKNOWN-COMMON
+through CB-LOCK-01 (the V35-A1 wording named UNK-NO-WRITE-LOCK; the rows are unchanged). V35 records its absence as UNKNOWN rather than adding authority the Architect excluded (for example SA-LOCK in a
 callback, B08). This does not make the architecture incomplete, and no row is claimed to reach PASS before host evidence.
 
 | Row | Reason | Conditional host fact | UNKNOWN through |
@@ -188,7 +219,8 @@ callback, B08). This does not make the architecture incomplete, and no row is cl
 | 02NAPP-SM | MUT-SM appends F-REF-C to Model Space inside objectAppended of the F-TRIGGER-APPEND append, in the same T-PRIMARY (RC-10) | a nested append to the same block table record is accepted inside objectAppended | UNKNOWN-COMMON (CB-PRIMARY-01 step failure) |
 | 04NO-S, 04NO-UNDO-S | the primary callback is cancelled/modifyUndone produced by aborting T-PRIMARY over a staged write | the abort delivers cancelled/modifyUndone to OR-XR | OBS-PRIMARY-CALLBACK unavailable (RESULT-RULE-V35 step 2) |
 | COBJUNDO16SND-ALL, COBJUNDO16APP-ALL | the origin is modifyUndone produced by cancel() after the RC-09 staging write | cancel() sends modifyUndone | OBS-ORIGIN-CALLBACK unavailable (step 2) |
-| 09N-D, 10N-S, 10N-M, 10N-SM | CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE; candidate boundary (B12) | the command lock is still held at commandEnded | UNK-NO-WRITE-LOCK; for 10N-S/M/SM also OBS-CANDIDATE-BOUNDARY = UNAVAILABLE |
+| 09N-D | CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE | the command lock is still held at commandEnded | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation; RESULT-RULE-V35 step 2) |
+| 10N-S, 10N-M, 10N-SM | CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE; candidate boundary (B12) | the command lock is still held at commandEnded | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) |
 
 ## 7. Non-claims
 

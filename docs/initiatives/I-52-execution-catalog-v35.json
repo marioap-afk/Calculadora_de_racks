@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "contract": "EXEC-CATALOG-V35-1",
-  "revision": "V35-A1",
+  "revision": "V35-A2",
   "initiative": "I-52",
-  "status": "DRAFT / V35-A1 READY FOR ARCHITECT DELTA REVIEW / NOT EXECUTED",
+  "status": "DRAFT / V35-A2 ERRATA (Architect MINOR M1..M4) / READY FOR COORDINATOR FREEZE / NOT EXECUTED",
   "retainedStatusVocabulary": [
     "RETAINED-UNCHANGED",
     "RETAINED-EXTENDED",
@@ -31,6 +31,13 @@
     "fec": "6588ec82966eb210277a2b6dc6d31f377dce3631",
     "proposal": "0d7052c92d1df3b954444337a2317adfc65df0d6",
     "validator": "5fc5389778f097385da30f77f6ff8317ebd84e97"
+  },
+  "errataParent": {
+    "revision": "V35-A1",
+    "commit": "34b3b05b2dc4b32b9b04defe15def3d0fcc9a9c3",
+    "catalog": "3e50d2545039d54bd0499ef1b9dd2dd1f665eb64",
+    "architectVerdict": "AGREED WITH SMALL CORRECTIONS - V35-A1 (MINOR M1..M4)",
+    "scope": "M1 changes FINISH-FENCE-01, LOG-SEQ-01, R-PAYLOAD-ARX, R-MANAGED-OBSERVER only"
   },
   "rowSchema": [
     "ProbeId",
@@ -510,16 +517,23 @@
       "artifact": "I52CtdaPayload.arx",
       "toolchain": "x64, MSVC v143 14.44.35207, ObjectARX 2025 SDK 25.0.58.0 (D:\\CDROM1), same flags as R-NATIVE-ARX",
       "identity": "SHA-256 recorded in the R3 build tuple next to R-NATIVE-ARX; SET-PAYLOAD-PATH compares it before load",
-      "interface": "imports the LOG-SEQ-01 C ABI of R-NATIVE-ARX (I52Ctda_LogAppend, I52Ctda_TokenSet, I52Ctda_QueryC15Arm, I52Ctda_FinishFenceSet) through GetModuleHandleW + GetProcAddress; exports I52CtdaPayload_RemoveReactor, which R-NATIVE-ARX binds with GetModuleHandleW(L\"I52CtdaPayload.arx\") + GetProcAddress and calls in CLN-BASE",
+      "interface": "imports the LOG-SEQ-01 C ABI of R-NATIVE-ARX (I52Ctda_LogAppend, I52Ctda_TokenSet, I52Ctda_QueryC15Arm, I52Ctda_FinishFenceIsSet) through GetModuleHandleW + GetProcAddress; every RR-PAYLOAD-DB callback calls I52Ctda_FinishFenceIsSet first (FINISH-FENCE-01) and never sets the fence; exports I52CtdaPayload_RemoveReactor, which R-NATIVE-ARX binds with GetModuleHandleW(L\"I52CtdaPayload.arx\") + GetProcAddress and calls in CLN-BASE",
       "researchOnly": true,
       "amendedBy": [
-        "RC-08"
+        "RC-08",
+        "M1"
       ],
       "exports": [
         "I52CtdaPayload_RemoveReactor"
       ],
       "registersOnlyWhenArmed": true,
-      "authority": "V35"
+      "authority": "V35",
+      "imports": [
+        "I52Ctda_LogAppend",
+        "I52Ctda_TokenSet",
+        "I52Ctda_QueryC15Arm",
+        "I52Ctda_FinishFenceIsSet"
+      ]
     },
     "CMD-BOOT": {
       "kind": "CommandResource",
@@ -2795,7 +2809,8 @@
     "R-MANAGED-OBSERVER": {
       "kind": "RuntimeModule",
       "amendedBy": [
-        "RC-07"
+        "RC-07",
+        "M1"
       ],
       "sourcePath": "eng/research/I52Ctda/managed-observer/I52Ctda.ManagedObserver.csproj (planned for R3)",
       "artifact": "I52Ctda.ManagedObserver.dll",
@@ -2806,18 +2821,33 @@
       "researchOnly": true,
       "definition": "Managed research host module of RR-MANAGED-CMD (HEC-V27-C1 row 09E, M-DOC-END). It subscribes Autodesk.AutoCAD.ApplicationServices.Document.CommandEnded for the scratch document when the driver calls its registration entry, and writes every record through LOG-SEQ-01 (P/Invoke into R-NATIVE-ARX). Research-only; not part of RackCad, not in deploy/, not referenced by src/.",
       "section": "resource",
-      "authority": "V35"
+      "authority": "V35",
+      "imports": [
+        "I52Ctda_LogAppend",
+        "I52Ctda_TokenSet",
+        "I52Ctda_FinishFenceIsSet"
+      ],
+      "interface": "binds the LOG-SEQ-01 C ABI of R-NATIVE-ARX (I52Ctda_LogAppend, I52Ctda_TokenSet, I52Ctda_FinishFenceIsSet) with [DllImport(\"I52CtdaNative.arx\")] P/Invoke declarations, resolved against the already-loaded module; every RR-MANAGED-CMD callback calls I52Ctda_FinishFenceIsSet first (FINISH-FENCE-01) and never sets the fence; a failed binding is UNK-LOG-BINDING"
     },
     "LOG-SEQ-01": {
       "kind": "LoggingAuthority",
       "amendedBy": [
         "RC-07",
-        "RC-08"
+        "RC-08",
+        "M1"
       ],
       "owner": "R-NATIVE-ARX",
-      "definition": "One process-wide log and one sequencer. R-NATIVE-ARX exports the C ABI `I52Ctda_LogAppend(const I52CtdaRecord*)`, `I52Ctda_TokenSet(const wchar_t* tokenId, uint64_t deliveryId)` and `I52Ctda_QueryC15Arm(I52CtdaC15Arm*)`. `I52Ctda_LogAppend` assigns Sequence with one InterlockedIncrement64 on a single process-global counter inside the log critical section and appends the record to the single append-only log. R-PAYLOAD-ARX binds with GetModuleHandleW(L\"I52CtdaNative.arx\") + GetProcAddress; R-MANAGED-OBSERVER binds with [DllImport(\"I52CtdaNative.arx\")], which resolves the already-loaded module. No module keeps its own counter or log file. A module that cannot bind LOG-SEQ-01 records nothing and the row is UNKNOWN (UNK-LOG-BINDING).",
+      "definition": "One process-wide log and one sequencer. R-NATIVE-ARX exports the C ABI `I52Ctda_LogAppend(const I52CtdaRecord*)`, `I52Ctda_TokenSet(const wchar_t* tokenId, uint64_t deliveryId)`, `I52Ctda_QueryC15Arm(I52CtdaC15Arm*)` and `int32_t I52Ctda_FinishFenceIsSet(void)`. `I52Ctda_FinishFenceIsSet` (V35-A2, M1) is the read-only query of FINISH-FENCE-01: an interlocked read of the process-wide fence flag that returns 1 when the fence is set and 0 otherwise, with no side effect and no log record. The fence setter is internal to R-NATIVE-ARX, called only by CMD-FINISH, and is not exported. `I52Ctda_LogAppend` assigns Sequence with one InterlockedIncrement64 on a single process-global counter inside the log critical section and appends the record to the single append-only log. R-PAYLOAD-ARX binds with GetModuleHandleW(L\"I52CtdaNative.arx\") + GetProcAddress; R-MANAGED-OBSERVER binds with [DllImport(\"I52CtdaNative.arx\")], which resolves the already-loaded module. No module keeps its own counter, log file or fence flag. A module that cannot bind every LOG-SEQ-01 function it imports records nothing and the row is UNKNOWN (UNK-LOG-BINDING).",
       "section": "run",
-      "authority": "V35"
+      "authority": "V35",
+      "exports": [
+        "I52Ctda_LogAppend",
+        "I52Ctda_TokenSet",
+        "I52Ctda_QueryC15Arm",
+        "I52Ctda_FinishFenceIsSet"
+      ],
+      "fenceRead": "I52Ctda_FinishFenceIsSet",
+      "fenceSetterExported": false
     },
     "LOG-RECORD-01": {
       "kind": "LoggingAuthority",
@@ -3466,12 +3496,15 @@
       "kind": "FinishGate",
       "amendedBy": [
         "RC-01",
-        "RC-04"
+        "RC-04",
+        "M1"
       ],
-      "definition": "Process-wide fence flag owned by R-NATIVE-ARX (exported with LOG-SEQ-01 as I52Ctda_FinishFenceSet) and set as the first action of CMD-FINISH. Every governed delivery or body entry (origin and primary callbacks, SEND/APPCTX/CMDCTX deliveries, EDC, RR-PAYLOAD-DB, RR-MANAGED-CMD) checks it first; when it is set the entry only appends one LATE-DELIVERY record (ReactorInstance or ModuleId, NotifierAccess=NONE; no lock, no transaction, no write, no scheduler call) and returns. A LATE-DELIVERY record whose reactor instance already has a recorded eOk removal, or whose module already passed its recorded fence point, is counted by FP-CLEANUP-SAFETY (the host delivered to something the contract had removed); every other LATE-DELIVERY record makes the row UNKNOWN (UNK-LATE-DELIVERY).",
+      "definition": "Process-wide fence flag owned by R-NATIVE-ARX. It is set only by CMD-FINISH, as its first action, through a setter internal to R-NATIVE-ARX that is not exported; every module reads it through the LOG-SEQ-01 read export `I52Ctda_FinishFenceIsSet` (R-NATIVE-ARX may read the flag directly). Every governed delivery or body entry (origin and primary callbacks, SEND/APPCTX/CMDCTX deliveries, EDC, RR-PAYLOAD-DB in R-PAYLOAD-ARX, RR-MANAGED-CMD in R-MANAGED-OBSERVER) checks it first; when it is set the entry only appends one LATE-DELIVERY record (ReactorInstance or ModuleId, NotifierAccess=NONE; no lock, no transaction, no write, no scheduler call) and returns. A LATE-DELIVERY record whose reactor instance already has a recorded eOk removal, or whose module already passed its recorded fence point, is counted by FP-CLEANUP-SAFETY (the host delivered to something the contract had removed); every other LATE-DELIVERY record makes the row UNKNOWN (UNK-LATE-DELIVERY).",
       "section": "run",
       "lateDeliverySafety": "COUNTED-WHEN-REMOVAL-OR-FENCE-RECORDED",
-      "authority": "V35"
+      "authority": "V35",
+      "readApi": "I52Ctda_FinishFenceIsSet",
+      "setter": "INTERNAL-R-NATIVE-ARX"
     },
     "UNK-LATE-DELIVERY": {
       "kind": "UnknownPredicate",

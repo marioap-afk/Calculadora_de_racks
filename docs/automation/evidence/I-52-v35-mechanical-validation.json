@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "revision": "V35-A1",
+  "revision": "V35-A2",
   "validator": "eng/research/I52Ctda/validate-v35-catalog.ps1",
   "oracle": "eng/research/I52Ctda/v35-oracle.json",
   "scope": "documents/catalog only; no runtime semantics",
