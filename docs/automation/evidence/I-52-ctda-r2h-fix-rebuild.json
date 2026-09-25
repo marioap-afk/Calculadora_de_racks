@@ -1,0 +1,370 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "R2H_FIX_BUILD_SIDE_REBUILD",
+  "baselineV34": "d99dafeda20bcb48e3fc4af7093e9982d60b9288",
+  "entrySha": "c096ca1f1bc2d0c845839f9e97fbe14e483b728e",
+  "defects": {
+    "R2H-D1": "I52CTDA_SMOKE materializes the FEC-V34 fixture in its own runtime-owned bootstrap transaction (F-TRIGGER-MOD/ERASE-DB/ERASE-OBJ, F-XR in NOD at STATE-S-0, F-REF-A, F-REF-B at STATE-M-0, F-REF-C declared absent as an erased reference, layers RACKCAD_CTDA_V30_A/B), calls I52CtdaFixture::bind and registerFixtureObjects (now by ObjectId), resolves the 7 identities and emits a deterministic snapshot",
+    "R2H-D2": "result and cleanup computed from runtime state: fixture bound, 7/7 resolved, logger ready, cleanupComplete(), fixture reactors detached, owned transactions/locks/queued work/guards zero, governed dispatch zero; no literal PASS or cleanup text",
+    "R2H-D3": "ordered logger honors I52_CTDA_EVENT_LOG, otherwise derives <I52_CTDA_OUTPUT>.events.jsonl, fails closed with neither; every record carries sequence, timestamp, PID, TID, document, database, application context, command identity and detail; smoke markers BEGIN/MATERIALIZED/BOUND/RESOLVED/END carry cleanup state; unload writes MARK-UNLOAD-REACTORS",
+    "R2H-D4": "harness smoke requires an explicit existing scratch DWG, starts one dedicated AutoCAD process on it, records PID/start/exit/executable/arguments, unloads the helper and quits without saving, verifies the exact PID is gone, times out fail-closed and evaluates PASS only when native report, event log and process fence agree"
+  },
+  "additionalCorrection": "registerFixtureObjects stored raw object pointers and unregisterReactors called removeReactor on closed objects; reactors are now attached/detached by ObjectId with the target open for read, and an undetachable fixture reactor is leaked instead of deleted",
+  "filesChanged": [
+    "eng/research/I52Ctda/native/I52CtdaFixture.h",
+    "eng/research/I52Ctda/native/I52CtdaFixture.cpp",
+    "eng/research/I52Ctda/native/I52CtdaRuntime.h",
+    "eng/research/I52Ctda/native/I52CtdaRuntime.cpp",
+    "eng/research/I52Ctda/native/I52CtdaNative.cpp",
+    "eng/research/I52Ctda/control-plane/Smoke.cs",
+    "eng/research/I52Ctda/harness/Program.cs",
+    "eng/research/I52Ctda/tests/Program.cs",
+    "eng/research/I52Ctda/README.md"
+  ],
+  "testsAdded": [
+    "smoke pass control",
+    "smoke rejects unbound fixture",
+    "smoke rejects fixture count",
+    "smoke rejects incomplete cleanup",
+    "smoke rejects unavailable logger",
+    "logger fallback path",
+    "smoke command identity",
+    "smoke event log checks",
+    "harness requires scratch dwg",
+    "harness process fence",
+    "smoke rejects governed dispatch"
+  ],
+  "materializationBindings": {
+    "normative": "STATE-S-0 bytes HFV30:S:0; STATE-M-0 displacement (10,20,0) and layer RACKCAD_CTDA_V30_A; STATE-SM-0 siblings {F-REF-A,F-REF-B}; F-REF-C absent; layer RACKCAD_CTDA_V30_B for STATE-M-1",
+    "nonNormative": "reference block RACKCAD_CTDA_V34_REF (one AcDbPoint); F-XR NOD key RACKCAD_CTDA_V34_F-XR; triggers are AcDbPoint entities on layer 0 at (1000|1010|1020,0,0); F-REF-A at (0,0,0); F-REF-C at (20,20,0) then erased; smoke reactors: object reactor on F-TRIGGER-ERASE-OBJ, entity reactor on F-REF-A",
+    "openItem": "STATE-SM-0 linkage bytes HFV30:LINK:A,B have no storage defined in NPM/FEC-V34; not materialized; Coordinator/Architect decision required before governed SM/ALL probes"
+  },
+  "buildSourceSha": "bf738b1d959e76881ffb96eed17acf9bd4f8d478",
+  "sourceCommitCi": "run 36080825232 success 4/4",
+  "finalBuild": {
+    "result": "SUCCESS",
+    "exitCode": 0,
+    "target": "Rebuild",
+    "cleanWorktree": true,
+    "warnings": [
+      "LNK4099: rxapi.pdb not found for rxapi.lib(libinit.obj)"
+    ],
+    "compilerInvoked": "D:\\Visual Studio\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe",
+    "linkerInvoked": "D:\\Visual Studio\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe"
+  },
+  "buildMachineToolchainTuple": {
+    "compiler": {
+      "bytes": 677776,
+      "path": "D:\\Visual Studio\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "sha256": "FE251EF50A1545B1B0835EE17B1E785459712B38D79E45B5C1D3D28970A36619",
+      "version": "19.44.35229.0"
+    },
+    "kind": "BUILD_MACHINE_TOOLCHAIN_TUPLE",
+    "linkedObjectArxLibraries": [
+      {
+        "bytes": 472786,
+        "name": "rxapi.lib",
+        "participation": "LINKED / STATIC OBJECT CONTRIBUTED (rxapi.lib(libinit.obj), LNK4099)",
+        "path": "D:\\CDROM1\\lib-x64\\rxapi.lib",
+        "sha256": "8FA74034FB35496F6122EA43F7D3CD8E3CB1F32760A0944CE8D3E592756B10D9"
+      },
+      {
+        "bytes": 248658,
+        "name": "acad.lib",
+        "participation": "READ BY LINKER / NO IMPORT CONTRIBUTED (acad.exe absent from PE imports)",
+        "path": "D:\\CDROM1\\lib-x64\\acad.lib",
+        "sha256": "8E6C83AD3306A2DC59D8E7C3096A86837B729DFEA7449B19ADE44FA71D052EAE"
+      },
+      {
+        "bytes": 2969920,
+        "name": "accore.lib",
+        "participation": "LINKED / IMPORT accore.dll",
+        "path": "D:\\CDROM1\\lib-x64\\accore.lib",
+        "sha256": "893BC5275F4EFF2797E0F43F66560880C723E6DBF318D3CE2BCECE86F044D121"
+      },
+      {
+        "bytes": 8959142,
+        "name": "acdb25.lib",
+        "participation": "LINKED / IMPORT acdb25.dll",
+        "path": "D:\\CDROM1\\lib-x64\\acdb25.lib",
+        "sha256": "0A4749A9942D7DB38CCC351A2BFE88989A36504247B35FF367C2A8655499FABA"
+      },
+      {
+        "bytes": 1313616,
+        "name": "acge25.lib",
+        "participation": "LINKED / IMPORT AcGe25.dll",
+        "path": "D:\\CDROM1\\lib-x64\\acge25.lib",
+        "sha256": "1D004B5F3893369AA4929EEC5D8DE84AE9DF9F5FDEAE6E1B03F62F04B48A8ED7"
+      }
+    ],
+    "linkedSystemLibraries": [
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UCRT\\X64\\UCRT.LIB",
+        "sha256": "7EF4EAC926BF597D2F243F16CDFED7E0DB22CB3CA34A1D7E088A84C994A03D66"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\ADVAPI32.LIB",
+        "sha256": "0D890015525A519938685C761A8E112F71025403DC145C857AA7C3381D5581F0"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\COMDLG32.LIB",
+        "sha256": "6E57F01AC5BA027BDD0672C5CE8CCB325C22AD11CA07A6586E24BAAB1BE5619A"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\GDI32.LIB",
+        "sha256": "2B251AA910B8AF489363CEF8137105625087304E15B88D8438C78922B1DC7DB4"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\KERNEL32.LIB",
+        "sha256": "8BA8DAB9ADEC752047D4F136852E8136D01836BFF39BBB56A20AC5F2D56415D8"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\ODBC32.LIB",
+        "sha256": "769F192AD4FD8384E71D0F66A9472ABEE53D9A29B4CE5DE2FEA8D0BB430EDD4B"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\ODBCCP32.LIB",
+        "sha256": "001319EC338A29C3B635BECA0F4C5C4DD7D6BF4A775C1940C4815FBFED81079A"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\OLE32.LIB",
+        "sha256": "37DCB6D96C4A7BE843BA59537B34D6DB3DC56B997AD03217571305707B36E9BA"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\OLEAUT32.LIB",
+        "sha256": "E58A80EA00248085E77F094FFD5FB492F0C69C6960D05A7D995025CA9D84B2AA"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\SHELL32.LIB",
+        "sha256": "378C97F367FB84E30DA9C5E8344C1CA6082CFF083481FEF0FE219D556F2B18D0"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\USER32.LIB",
+        "sha256": "2D61CF1C120CF8C58D70A883232C65F3EBDE0C7D9657F5BB37FA74C879D456AF"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\UUID.LIB",
+        "sha256": "FAC14893078884F4C0B9A9FA65B8772BB3619DBE26F9FA5975C36E2FD9E93DDD"
+      },
+      {
+        "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\WINSPOOL.LIB",
+        "sha256": "9C4808E49393CF8BC21809F71C8AC80C6D275E1BF016F5932DC47D58A157B8C6"
+      },
+      {
+        "path": "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCPRT.LIB",
+        "sha256": "59D3AB1065F0A14BD9B27DEBEF4008A91EAFBC7411290013F61091BF12DFCA0F"
+      },
+      {
+        "path": "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCRT.LIB",
+        "sha256": "07670951A39739B6D1B50421AE61707EF23C8DFF50CDF35F99408711478F3A7C"
+      },
+      {
+        "path": "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\OLDNAMES.LIB",
+        "sha256": "35BD82CFB02A0146FF9C0CA6BF7DBDE61D49C6D4F3493BEFE584218C370FF41D"
+      },
+      {
+        "path": "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\VCRUNTIME.LIB",
+        "sha256": "1ACBD98B43A4BE8373E25C65DCAE4412F36F6111D6B64E47E4A2A97A1D16B27B"
+      }
+    ],
+    "linker": {
+      "bytes": 3252616,
+      "path": "D:\\Visual Studio\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe",
+      "sha256": "A364AF801A8539E4324D9489313DBF001D959128451FC99A27B24676BBAC058F",
+      "version": "14.44.35229.0"
+    },
+    "machine": {
+      "architecture": "x64",
+      "build": "26200.9550",
+      "computerName": "LAPTOP-DUE09V8C",
+      "displayVersion": "25H2",
+      "version": "10.0.26200",
+      "windows": "Microsoft Windows 11 Home Single Language"
+    },
+    "managed": {
+      "controlPlane": {
+        "bytes": 104448,
+        "path": "D:\\Calculadora de racks\\.claude\\worktrees\\feature-rackmirror-espejo-semantico\\eng\\research\\I52Ctda\\control-plane\\bin\\Release\\net8.0\\I52Ctda.ControlPlane.dll",
+        "sha256": "229B0ED72B71E4AF209B256A8964DFE7B0C55F9EC5CB0F6817D184B20CCD60F1",
+        "version": "1.0.0.0"
+      },
+      "harness": {
+        "bytes": 33280,
+        "path": "D:\\Calculadora de racks\\.claude\\worktrees\\feature-rackmirror-espejo-semantico\\eng\\research\\I52Ctda\\harness\\bin\\Release\\net8.0-windows\\I52Ctda.Harness.dll",
+        "sha256": "C400FAE9D3BAC2ED423D2B6454F86B2DE49E6D993E25AB8B4805913B0EBA9DF4",
+        "version": "1.0.0.0"
+      },
+      "informationalVersion": "1.0.0+bf738b1d959e76881ffb96eed17acf9bd4f8d478",
+      "researchTests": {
+        "bytes": 32256,
+        "path": "D:\\Calculadora de racks\\.claude\\worktrees\\feature-rackmirror-espejo-semantico\\eng\\research\\I52Ctda\\tests\\bin\\Release\\net8.0\\I52Ctda.Tests.dll",
+        "sha256": "EC76ECDE9C72E61157A5913711299DD8400B311CCD95D29AAB5766B993A61F54",
+        "version": "1.0.0.0"
+      }
+    },
+    "msbuild": {
+      "path": "D:\\Visual Studio\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+      "version": "18.10.1.42706"
+    },
+    "msvcVersion": "14.44.35207",
+    "nativeHelper": {
+      "architecture": "x64 (PE32+)",
+      "bytes": 214016,
+      "configuration": "Release|x64",
+      "imports": [
+        "accore.dll",
+        "acdb25.dll",
+        "AcGe25.dll",
+        "KERNEL32.dll",
+        "MSVCP140.dll",
+        "VCRUNTIME140.dll",
+        "VCRUNTIME140_1.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll"
+      ],
+      "path": "D:\\Calculadora de racks\\.claude\\worktrees\\feature-rackmirror-espejo-semantico\\eng\\research\\I52Ctda\\native\\bin\\x64\\Release\\I52CtdaNative.arx",
+      "peMachine": "0x8664",
+      "peOptionalHeaderMagic": "0x20B",
+      "sha256": "B7016A3469F0BA9786691493F051A015EAB94E0DC5A631990E1C2ED97531B22A"
+    },
+    "nativeSource": {
+      "I52CtdaFixture.cpp": {
+        "gitBlob": "896d6fb14612674c525a07aa6494f34cbc530750",
+        "workingTreeSha256": "D360706A2280B63455FF5CFE9D0279099A84C3D78D4B1C755C56AE4B1DA8032C"
+      },
+      "I52CtdaFixture.h": {
+        "gitBlob": "6e5d792db2373adf91bee23810489c59e2550b1d",
+        "workingTreeSha256": "4C88B6BDDD3B6FC8129F3632A28D76359E894F2DBD98F039595D2E923E08263B"
+      },
+      "I52CtdaNative.cpp": {
+        "gitBlob": "1e3055c393fc1f678c1f5ef933ce66836ae51e92",
+        "workingTreeSha256": "4235328CE7330540D39C81C0A580ED6A3B01C9B37A8111608E9AD78A385BBC62"
+      },
+      "I52CtdaNative.vcxproj": {
+        "gitBlob": "5f406fd14ada57122addefad383c82ffe3896ba8",
+        "workingTreeSha256": "30B1288A9D446985451D1FB0B7DA675783977317B796C0CCCBF24A5C3007AB3A"
+      },
+      "I52CtdaRuntime.cpp": {
+        "gitBlob": "45b7008485850062a9118cbf3c02e0625dd955e6",
+        "workingTreeSha256": "320E9DF112FF36CDFF57BAEF4B11890DF5E59CE3C64FD6A99714E0C671858495"
+      },
+      "I52CtdaRuntime.h": {
+        "gitBlob": "82443468d7654cf4d2de3d7a0e0b75668d0ca045",
+        "workingTreeSha256": "72AB1CF05B58760E5F0695AE3E637DD5C48EB7D20CB705D94BED2367DE75CB2D"
+      },
+      "ProbeDispatchTable.inc": {
+        "gitBlob": "aadaf1a3ece4f00c37fc674687ca46ec03c4fd4b",
+        "workingTreeSha256": "F85960BFDD48E8549D330F85F782E636552EBBA94D294819EF34117F565DD536"
+      }
+    },
+    "objectArx": {
+      "headers": {
+        "acdocman.h": "4B71C08BA578F81FC67898AC3519D0D5069C638A74F52D256DD539D02BDE422D",
+        "aced.h": "C28C3974BBA868B49B9946F052957700CCC1655E7FB17689FEBE46AA15B319AD",
+        "acedads.h": "1B5E3B525389BEB4A20730ECF7054E597362E8A1418922394561B88ADFA33370",
+        "dbmain.h": "5B79A74DEF06A768B849D2C88F979BF4C15C307EA88D4ACF8FE2A8EE4CA586CD",
+        "dbObject.h": "A4EAF108D93FB7F30590EA059ACD5FC7DAA55C639F7807833974B0BB77D8E515",
+        "dbtrans.h": "D3EBB73E88FB37E3205611818143D1643A24933815452C6B807E46D8C44999C6",
+        "rxdlinkr.h": "CD6D76037BC2DBA192D3ECDBC703ACCFBD2E67D9AB5AC130901C6A3EA4308F3A",
+        "rxregsvc.h": "CABD20D3CD27C3DFAF2F7E6B111903C87AA725FD54DA8C120E12EA526A2C34C3"
+      },
+      "platform": "x64",
+      "root": "D:\\CDROM1",
+      "version": "25.0.58.0"
+    },
+    "platformToolset": "v143",
+    "platformToolsetRegistration": "D:\\Visual Studio\\Community\\MSBuild\\Microsoft\\VC\\v170\\Platforms\\x64\\PlatformToolsets\\v143\\Toolset.props",
+    "preferredToolArchitecture": "x64",
+    "repository": {
+      "baselineV34": "d99dafeda20bcb48e3fc4af7093e9982d60b9288",
+      "branch": "feature/rackmirror-espejo-semantico",
+      "buildSourceSha": "bf738b1d959e76881ffb96eed17acf9bd4f8d478",
+      "r1bImplementationSha": "a0b7ae14fefd4f614a3395c9852978f0d9b4933f",
+      "r1bPublicationSha": "c27b6354476ed3afce3591ea9c477d4493ee8a9e"
+    },
+    "researchArtifacts": {
+      "control-plane/Smoke.cs": {
+        "gitBlob": "e0e5d46307c290a8265f9d125a75044bf95f832c",
+        "workingTreeSha256": "A47F68E16B3EC6D678589CE8D5E6597A1A6FACBC8B8F79279D94E6B0F9BB4BBB"
+      },
+      "control-plane/TupleCollector.cs": {
+        "gitBlob": "9ccdb3007db3659cadd50ff34d3b07d6111815ab",
+        "workingTreeSha256": "6688266CB0D2B5A9D8DEE26F5861E5A63E15D036ED68A30968A215FFB550A3E0"
+      },
+      "EXTERNAL-BUILD.md": {
+        "gitBlob": "f3eb8a5cdbcfdda2a2b445446d1e6fb0b257b69a",
+        "workingTreeSha256": "E146459B6902B754B356F08AEB6AEED7CD477FC89B9456CEC7EA6C78B635731D"
+      },
+      "fixture-v34.json": {
+        "gitBlob": "4507c34e277df99306dc1f60a044b47f6bff6dd2",
+        "workingTreeSha256": "7EDB8C1449EC1824AE593741C2E000A489A42EB97A0D324AF54B8C7AD2610838"
+      },
+      "harness/Program.cs": {
+        "gitBlob": "559f06941f985ec5a054a6947afb1b1ca3ea2467",
+        "workingTreeSha256": "3E1BC418186CB5AF4027EE0DA9AF777838B9C8D107FAB859A6CCE2BC2F010421"
+      },
+      "README.md": {
+        "gitBlob": "e04480fa26509e21437092a8d453213576888364",
+        "workingTreeSha256": "76274D1E9568A75743C755E62C47EA0253090D845F338CA176275E6B630D9C55"
+      },
+      "tests/Program.cs": {
+        "gitBlob": "89be9ffcfb36eb4c62a61ddcc5ec5fadd107c745",
+        "workingTreeSha256": "FAB10FD86801AC6D0BBA52437B33BCD4DE11D5375B712E3CF3ED6B1520ED89FA"
+      },
+      "traceability-v34.json": {
+        "gitBlob": "0424c0b6788cbbacf5deaf533317f9202f305482",
+        "workingTreeSha256": "FC9C61CC47D053EA4E5AFB50FCDEA9A7DA088F7624D07B846E526357CA2E6B97"
+      }
+    },
+    "vcTargetsPath": "D:\\Visual Studio\\Community\\MSBuild\\Microsoft\\VC\\v170\\",
+    "visualStudio": {
+      "displayName": "Visual Studio Community 2026",
+      "installationPath": "D:\\Visual Studio\\Community",
+      "installationVersion": "18.10.12217.157"
+    },
+    "windowsSdk": {
+      "root": "C:\\Program Files (x86)\\Windows Kits\\10\\",
+      "version": "10.0.28000.0",
+      "windowsTargetPlatformVersion": "10.0"
+    }
+  },
+  "buildTupleHash": "D9F580399369E8164DCF146824137B45654908E86A2B752B22F18F7D57C43826",
+  "buildTupleHashMethod": "SHA-256 over UTF-8 compact JSON of buildMachineToolchainTuple with keys sorted ordinally at every level",
+  "validation": {
+    "validateR1b": "PASS",
+    "probeIds": 100,
+    "implementationDescriptors": 100,
+    "stubs": 0,
+    "callbackMappings": 26,
+    "schedulers": 3,
+    "supportActions": 7,
+    "fixtureObjects": 7,
+    "headerSignatures": "26/3/7 verified",
+    "staticNative": "DispatchEntries 100, EventMappings 26, SchedulerSymbols 3, SupportActionSymbols 7, BalancedBraces true",
+    "researchTests": "25/25 PASS (14 existing + 11 smoke)",
+    "generatedArtifactsReproduced": "traceability-v34.json and ProbeDispatchTable.inc byte-identical after generate",
+    "objectArxHeaders": "8/8 MATCH V34"
+  },
+  "superseded": {
+    "oldArxSha256": "D6AAAAFD7A742F1EFC6A0C9209A0B65724435C1A3E59F076F6D87E68495969D8",
+    "oldArxStatus": "SUPERSEDED / NOT AUTHORIZED FOR NEXT HOST SMOKE",
+    "oldBuildSourceSha": "61530da3fed11583b24837bab00760375e716217",
+    "oldBuildTupleHash": "20B5C70EC67ECF3C1EA1E7CBC89752986826871F361C55CF6EC580C98E7914E6",
+    "oldR2PreRunTupleHash": "0372BB25EA392EF9D3C22294EF7FD393489545F87755C3307C0C412BC9238C42",
+    "oldR2PreRunTupleStatus": "VOID",
+    "historicalHostExecutionTupleHash": "B68404597260A80539509CD64B58036C17960D2419AF6926B851EBBD57A56F76",
+    "historicalHostExecutionTupleStatus": "HISTORICAL HOST IDENTITY EVIDENCE; host must reverify and bind a new R2_PRE_RUN_TUPLE"
+  },
+  "productDiff": "NONE",
+  "autoCadStartedOnBuildMachine": false,
+  "hostSmoke": "PENDING RE-RUN",
+  "governingProbesExecuted": 0,
+  "ctdaHostPass": "NOT EVALUATED",
+  "arxVersioned": false
+}
