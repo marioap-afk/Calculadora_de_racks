@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "D-1 FIX AFTER FIRST CANARY",
+  "entrySha": "3ed85b432f51765764b4b773efe49a109a357f36",
+  "sourceSha": "c403709853c86d500f88f0182a408be743b215e3",
+  "sourceCi": "36197664301 success",
+  "change": "native/I52CtdaExecutor.cpp subjectDepth: N-TR-ENDED returns n (was n + 1); N-TR-ABOUT-START and N-TR-ABORTED stay n + 1; every other transaction event stays n",
+  "regressionTest": "r3 D-1 N-TR-ENDED subject depth matches the qualified host (fails on the pre-D-1 mapping, passes on the fix)",
+  "unchanged": [
+    "V35 frozen contract (freeze Holds 43DCE809...B6DF, 24 blobs)",
+    "Q6 architecture (TransactionIdentity by subject depth)",
+    "plans (100/100, generated drift 0)",
+    "N-TR-ABORTED mapping",
+    "other transaction mappings",
+    "product code"
+  ],
+  "tests": {
+    "researchTests": "66/66",
+    "validateV35Catalog": "PASS",
+    "validateR1b": "PASS",
+    "conformanceV35": "Holds"
+  },
+  "artifacts": {
+    "R-NATIVE-ARX": {
+      "bytes": 832512,
+      "sha256": "B9ABB835BC743338BC27DF89BBF56476374AA05A65395676C25301C409C3FBB7",
+      "machine": "x64 (0x8664)",
+      "exports": [
+        "I52Ctda_BindManagedObserver",
+        "I52Ctda_FinishFenceIsSet",
+        "I52Ctda_LogAppend",
+        "I52Ctda_QueryC15Arm",
+        "I52Ctda_TokenSet",
+        "acrxEntryPoint",
+        "acrxGetApiVersion"
+      ],
+      "pdbSha256": "384E820FC49D8588D823336EBF00D5781438D4F02585127E9FEA4639F5540DF6"
+    },
+    "R-PAYLOAD-ARX": {
+      "bytes": 81920,
+      "sha256": "E0597A956D6CB62560BDCB56D280A49D03A1AFC78F358236F5C042051E71BBCB",
+      "machine": "x64 (0x8664)",
+      "exports": [
+        "I52CtdaPayload_RemoveReactor",
+        "acrxEntryPoint",
+        "acrxGetApiVersion"
+      ],
+      "pdbSha256": "EAEF92EA9303514D8F85C57E4295DA3709A7D7638FA2681A72CD90F14839AE2D"
+    },
+    "R-MANAGED-OBSERVER": {
+      "bytes": 15360,
+      "sha256": "29AE4FE7191F89D294B858C1B19D40CD1E62125DB6159CD3F6AD37191652663E",
+      "informationalVersion": "1.0.0+c403709853c86d500f88f0182a408be743b215e3"
+    },
+    "managedHarness": {
+      "I52Ctda.ControlPlane.dll": "E1B62CEA45A5B2E6F6875F9B9F2AC764D319B7186784D635F424568B9B555989",
+      "I52Ctda.Harness.dll": "C61A85F1BA69A1AB71FD232ED4C2CEB9E39B54D40541E602884C4D3697118B95"
+    }
+  },
+  "buildTupleHash": "0CD753F7B3EEE754E8263796C5CE6C6513CD5C03C8750DC53C9F3BF684F9FE5F",
+  "buildTupleHashMethod": "SHA-256 over UTF-8 compact JSON of buildMachineToolchainTuple with keys sorted ordinally at every level",
+  "transferPackage": {
+    "directory": "D:\\I52-CTDA-R3\\c4037098",
+    "zip": "D:\\I52-CTDA-R3\\c4037098.zip",
+    "zipSha256": "71F8D32AE122695FC76864F70F58440B94F595DFBBE40F467A28C984DE132416",
+    "sha256sums": "SHA256SUMS (40 entries)",
+    "metadata": "TRANSFER-METADATA.json"
+  },
+  "superseded": {
+    "package": "D:\\I52-CTDA-R3\\6e445fa8 (+ .zip FDD9D39E...D5D9), retained, not overwritten",
+    "buildTupleHash": "F6E5A55978DE8EC405F658A882A912B0F24057659AF219C9169297C3752FDCE5",
+    "status": "SUPERSEDED"
+  },
+  "canaryEvidence": "docs/automation/evidence/I-52-r3-canary-09N-B.json",
+  "productDiff": "NONE",
+  "autoCadStartedOnBuildMachine": false,
+  "hostSmokeOfNewPackage": "PENDING",
+  "governingProbesExecuted": 1,
+  "ctdaHostPass": "NOT EVALUATED"
+}
