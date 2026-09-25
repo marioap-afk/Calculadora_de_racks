@@ -1,0 +1,6651 @@
+[
+  {
+    "ProbeId": "02N",
+    "HandlerId": "Probe_02N",
+    "PrimaryAuthorityId": "N-DB-OPEN",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DB-OPEN",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NAPP-M",
+    "HandlerId": "Probe_02NAPP_M",
+    "PrimaryAuthorityId": "N-DB-APPEND",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DB-APPEND",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-APPEND-TRIGGER",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-APPEND",
+        "kind": "DisposableTriggerResource"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-M+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NAPP-S",
+    "HandlerId": "Probe_02NAPP_S",
+    "PrimaryAuthorityId": "N-DB-APPEND",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DB-APPEND",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-APPEND-TRIGGER",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-APPEND",
+        "kind": "DisposableTriggerResource"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NAPP-SM",
+    "HandlerId": "Probe_02NAPP_SM",
+    "PrimaryAuthorityId": "N-DB-APPEND",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DB-APPEND",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-APPEND-TRIGGER",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-APPEND",
+        "kind": "DisposableTriggerResource"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NDBERASE-M",
+    "HandlerId": "Probe_02NDBERASE_M",
+    "PrimaryAuthorityId": "N-DB-ERASE",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DB-ERASE",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ERASE-TRIGGER-DB",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-ERASE-DB",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-M",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NDBERASE-S",
+    "HandlerId": "Probe_02NDBERASE_S",
+    "PrimaryAuthorityId": "N-DB-ERASE",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DB-ERASE",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ERASE-TRIGGER-DB",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-ERASE-DB",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NDBERASE-SM",
+    "HandlerId": "Probe_02NDBERASE_SM",
+    "PrimaryAuthorityId": "N-DB-ERASE",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DB-ERASE",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ERASE-TRIGGER-DB",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-ERASE-DB",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NDBMOD-M",
+    "HandlerId": "Probe_02NDBMOD_M",
+    "PrimaryAuthorityId": "N-DB-MOD",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DB-MOD",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-M",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NDBMOD-S",
+    "HandlerId": "Probe_02NDBMOD_S",
+    "PrimaryAuthorityId": "N-DB-MOD",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DB-MOD",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NDBMOD-SM",
+    "HandlerId": "Probe_02NDBMOD_SM",
+    "PrimaryAuthorityId": "N-DB-MOD",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DB-MOD",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NE-M",
+    "HandlerId": "Probe_02NE_M",
+    "PrimaryAuthorityId": "N-ENT-GFX",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-ENT-GFX",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-TRANSFORM-CLOSE-REF-A",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "ER-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-M+VER-T",
+    "Cleanup": "CLEAN-OBJ",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NEDC-ALL",
+    "HandlerId": "Probe_02NEDC_ALL",
+    "PrimaryAuthorityId": "N-ED-CANCEL",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-ED-CANCEL",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-CMDCTX",
+        "class": "TRIGGER-INFRA"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-CANCEL-CMDCTX",
+    "ExecutionContextId": "EDC-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-CANCEL",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CANCEL-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NEDW-ALL",
+    "HandlerId": "Probe_02NEDW_ALL",
+    "PrimaryAuthorityId": "N-ED-WILL",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-ED-WILL",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FIXTURE",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NO-CLOSE-SM",
+    "HandlerId": "Probe_02NO_CLOSE_SM",
+    "PrimaryAuthorityId": "N-OBJ-CLOSED",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-OBJ-CLOSED",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-CLOSE-REF-A",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-OBJ",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NO-M",
+    "HandlerId": "Probe_02NO_M",
+    "PrimaryAuthorityId": "N-OBJ-MOD",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-OBJ-MOD",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-CLOSE-REF-A",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "ER-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-M+VER-T",
+    "Cleanup": "CLEAN-OBJ",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NO-S",
+    "HandlerId": "Probe_02NO_S",
+    "PrimaryAuthorityId": "N-OBJ-OPEN",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-OBJ-OPEN",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ASSERT-WRITE-TRIGGER-XR",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-TXR",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S+VER-T",
+    "Cleanup": "CLEAN-OBJ",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NO-SM",
+    "HandlerId": "Probe_02NO_SM",
+    "PrimaryAuthorityId": "N-OBJ-ERASE",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-OBJ-ERASE",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ERASE-REF-B",
+    "ExecutionContextId": "CB-PRIMARY-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-REF-B",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-OBJ-FENCED",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NRXL-ALL",
+    "HandlerId": "Probe_02NRXL_ALL",
+    "PrimaryAuthorityId": "N-RX-LOADED",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-RX-LOADED",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-LOAD-PAYLOAD",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-PAYLOAD-ARX",
+        "kind": "PayloadResource"
+      },
+      {
+        "id": "RR-DLINK",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-C15-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NRXW-ALL",
+    "HandlerId": "Probe_02NRXW_ALL",
+    "PrimaryAuthorityId": "N-RX-WILL-LOAD",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-RX-WILL-LOAD",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-LOAD-PAYLOAD",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-PAYLOAD-ARX",
+        "kind": "PayloadResource"
+      },
+      {
+        "id": "RR-DLINK",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-C15-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NTA-ALL",
+    "HandlerId": "Probe_02NTA_ALL",
+    "PrimaryAuthorityId": "N-TR-ABORTED",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-TR-ABORTED",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ABORT-PRIMARY-T",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NTAS-ALL",
+    "HandlerId": "Probe_02NTAS_ALL",
+    "PrimaryAuthorityId": "N-TR-ABOUT-START",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-TR-ABOUT-START",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-START-OUTER-T",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "02NTS-ALL",
+    "HandlerId": "Probe_02NTS_ALL",
+    "PrimaryAuthorityId": "N-TR-STARTED",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-TR-STARTED",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-START-OUTER-T",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "04N",
+    "HandlerId": "Probe_04N",
+    "PrimaryAuthorityId": "N-TR-ABOUT-ABORT",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-TR-ABOUT-ABORT",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ABORT-PRIMARY-T",
+    "ExecutionContextId": "EXEC-OBSERVE",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-T+VER-S",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "04NO-S",
+    "HandlerId": "Probe_04NO_S",
+    "PrimaryAuthorityId": "N-OBJ-CANCEL",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-OBJ-CANCEL",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ABORT-PRIMARY-T",
+    "ExecutionContextId": "EXEC-OBSERVE",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "OR-XR",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S+VER-T",
+    "Cleanup": "CLEAN-OBJ",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "04NO-UNDO-S",
+    "HandlerId": "Probe_04NO_UNDO_S",
+    "PrimaryAuthorityId": "N-OBJ-UNDO",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-OBJ-UNDO",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ABORT-PRIMARY-T",
+    "ExecutionContextId": "EXEC-OBSERVE",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "OR-XR",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S+VER-T",
+    "Cleanup": "CLEAN-OBJ",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "09N-A",
+    "HandlerId": "Probe_09N_A",
+    "PrimaryAuthorityId": "N-TR-ABOUT-END",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-TR-ABOUT-END",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-END-NESTED-T",
+    "ExecutionContextId": "EXEC-OBSERVE",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-T+VER-S",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "09N-B",
+    "HandlerId": "Probe_09N_B",
+    "PrimaryAuthorityId": "N-TR-ABOUT-END",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-TR-ABOUT-END",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-END-PRIMARY-T",
+    "ExecutionContextId": "EXEC-OBSERVE",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-T+VER-S",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "09N-C",
+    "HandlerId": "Probe_09N_C",
+    "PrimaryAuthorityId": "N-TR-ENDED",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-TR-ENDED",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-END-PRIMARY-T",
+    "ExecutionContextId": "EXEC-OBSERVE",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-T+VER-S",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "09N-D",
+    "HandlerId": "Probe_09N_D",
+    "PrimaryAuthorityId": "N-ED-END",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-ED-END",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-MANAGED-CMD",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FIXTURE",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "09N-O",
+    "HandlerId": "Probe_09N_O",
+    "PrimaryAuthorityId": "N-TR-OUTERMOST-END-CALLED",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-TR-OUTERMOST-END-CALLED",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-END-PRIMARY-T",
+    "ExecutionContextId": "EXEC-OBSERVE",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-T+VER-S",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "10N-M",
+    "HandlerId": "Probe_10N_M",
+    "PrimaryAuthorityId": "N-ED-END",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-ED-END",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-MANAGED-CMD",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FIXTURE",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-M+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "10N-S",
+    "HandlerId": "Probe_10N_S",
+    "PrimaryAuthorityId": "N-ED-END",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-ED-END",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-MANAGED-CMD",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FIXTURE",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "10N-SM",
+    "HandlerId": "Probe_10N_SM",
+    "PrimaryAuthorityId": "N-ED-END",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-ED-END",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-MANAGED-CMD",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FIXTURE",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-BASE",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "10NDOC-CHANGED-SM",
+    "HandlerId": "Probe_10NDOC_CHANGED_SM",
+    "PrimaryAuthorityId": "N-DOC-LOCK-CHANGED",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DOC-LOCK-CHANGED",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-LOCK-CYCLE",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-DOC",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "10NDOC-VETO-SM",
+    "HandlerId": "Probe_10NDOC_VETO_SM",
+    "PrimaryAuthorityId": "N-DOC-LOCK-VETO",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DOC-LOCK-VETO",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-LOCK-VETO",
+    "ExecutionContextId": "EXEC-OBSERVE",
+    "SupportActions": [
+      "SA-VETO",
+      "SA-LOCK",
+      "SA-UNLOCK"
+    ],
+    "Resources": [
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM",
+    "Cleanup": "CLEAN-DOC",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "10NDOC-WILL-SM",
+    "HandlerId": "Probe_10NDOC_WILL_SM",
+    "PrimaryAuthorityId": "N-DOC-LOCK-WILL",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": "N-DOC-LOCK-WILL",
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-NONE",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-LOCK-CYCLE",
+    "ExecutionContextId": "CB-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-DOC",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "13A-SM",
+    "HandlerId": "Probe_13A_SM",
+    "PrimaryAuthorityId": "NX-APPCTX-SYNC",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(no scheduler)",
+    "EventId": null,
+    "SchedulerId": null,
+    "SchedulerChainId": "CHAIN-SYNC",
+    "SchedulerUse": [],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-APPCTX-SYNC",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-APPCTX-LOCK-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "16A-M",
+    "HandlerId": "Probe_16A_M",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-DB-MOD",
+    "EventId": "N-DB-MOD",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-M+VER-T",
+    "Cleanup": "CLEAN-APPCTX-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "16A-S",
+    "HandlerId": "Probe_16A_S",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-DB-MOD",
+    "EventId": "N-DB-MOD",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S+VER-T",
+    "Cleanup": "CLEAN-APPCTX-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "16A-SM",
+    "HandlerId": "Probe_16A_SM",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-DB-MOD",
+    "EventId": "N-DB-MOD",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-APPCTX-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "16C-M",
+    "HandlerId": "Probe_16C_M",
+    "PrimaryAuthorityId": "NS-BEGIN-CMDCTX",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(origin NX-APPCTX-SYNC)",
+    "EventId": null,
+    "SchedulerId": "NS-BEGIN-CMDCTX",
+    "SchedulerChainId": "CHAIN-SYNC-CMDCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-BEGIN-CMDCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-APPCTX-SYNC-BEGIN-CMDCTX",
+    "ExecutionContextId": "CMDCTX-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-M+VER-T",
+    "Cleanup": "CLEAN-CMDCTX-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "16C-S",
+    "HandlerId": "Probe_16C_S",
+    "PrimaryAuthorityId": "NS-BEGIN-CMDCTX",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(origin NX-APPCTX-SYNC)",
+    "EventId": null,
+    "SchedulerId": "NS-BEGIN-CMDCTX",
+    "SchedulerChainId": "CHAIN-SYNC-CMDCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-BEGIN-CMDCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-APPCTX-SYNC-BEGIN-CMDCTX",
+    "ExecutionContextId": "CMDCTX-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S+VER-T",
+    "Cleanup": "CLEAN-CMDCTX-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "16C-SM",
+    "HandlerId": "Probe_16C_SM",
+    "PrimaryAuthorityId": "NS-BEGIN-CMDCTX",
+    "ScheduleOriginEventId": "NOT_APPLICABLE(origin NX-APPCTX-SYNC)",
+    "EventId": null,
+    "SchedulerId": "NS-BEGIN-CMDCTX",
+    "SchedulerChainId": "CHAIN-SYNC-CMDCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-BEGIN-CMDCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-APPCTX-SYNC-BEGIN-CMDCTX",
+    "ExecutionContextId": "CMDCTX-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-CMDCTX-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "16N-M",
+    "HandlerId": "Probe_16N_M",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-DB-MOD",
+    "EventId": "N-DB-MOD",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-M+VER-T",
+    "Cleanup": "CLEAN-DEFER",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "16N-S",
+    "HandlerId": "Probe_16N_S",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-DB-MOD",
+    "EventId": "N-DB-MOD",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S+VER-T",
+    "Cleanup": "CLEAN-DEFER",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "16N-SM",
+    "HandlerId": "Probe_16N_SM",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-DB-MOD",
+    "EventId": "N-DB-MOD",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-DEFER",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "C15N16N-SM",
+    "HandlerId": "Probe_C15N16N_SM",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-DB-MOD",
+    "EventId": "N-DB-MOD",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DLINK",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-PAYLOAD-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-PAYLOAD-ARX",
+        "kind": "PayloadResource"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-C15-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "C2APP2CMD-ALL",
+    "HandlerId": "Probe_C2APP2CMD_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-CMDCTX",
+    "ScheduleOriginEventId": "N-DB-MOD",
+    "EventId": "N-DB-MOD",
+    "SchedulerId": "NS-BEGIN-CMDCTX",
+    "SchedulerChainId": "CHAIN-APPCTX-CMDCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "CHAIN-STAGE"
+      },
+      {
+        "scheduler": "NS-BEGIN-CMDCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
+    "ExecutionContextId": "CMDCTX-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-MOD",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "C2DOCC16N-SM",
+    "HandlerId": "Probe_C2DOCC16N_SM",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-DOC-LOCK-CHANGED",
+    "EventId": "N-DOC-LOCK-CHANGED",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-LOCK-CYCLE",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-DOC-DEFER",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "C2DOCW16N-SM",
+    "HandlerId": "Probe_C2DOCW16N_SM",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-DOC-LOCK-WILL",
+    "EventId": "N-DOC-LOCK-WILL",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-LOCK-CYCLE",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-DOC-DEFER",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "C2ENT16N-M",
+    "HandlerId": "Probe_C2ENT16N_M",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-ENT-GFX",
+    "EventId": "N-ENT-GFX",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-TRANSFORM-CLOSE-REF-A",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "ER-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-M+VER-T",
+    "Cleanup": "CLEAN-OBJ-DEFER",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "C2OBJ16N-M",
+    "HandlerId": "Probe_C2OBJ16N_M",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-OBJ-MOD",
+    "EventId": "N-OBJ-MOD",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-CLOSE-REF-A",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-M+VER-T",
+    "Cleanup": "CLEAN-OBJ-DEFER",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "C2OBJ16N-S",
+    "HandlerId": "Probe_C2OBJ16N_S",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-OBJ-MOD",
+    "EventId": "N-OBJ-MOD",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-CLOSE-REF-A",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-S+VER-T",
+    "Cleanup": "CLEAN-OBJ-DEFER",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "C2OBJ16N-SM",
+    "HandlerId": "Probe_C2OBJ16N_SM",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-OBJ-MOD",
+    "EventId": "N-OBJ-MOD",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-CLOSE-REF-A",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-OBJ-DEFER",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CAPP16APP-ALL",
+    "HandlerId": "Probe_CAPP16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-DB-APPEND",
+    "EventId": "N-DB-APPEND",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-APPEND-TRIGGER",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-APPEND",
+        "kind": "DisposableTriggerResource"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CAPP16SND-ALL",
+    "HandlerId": "Probe_CAPP16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-DB-APPEND",
+    "EventId": "N-DB-APPEND",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-APPEND-TRIGGER",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-APPEND",
+        "kind": "DisposableTriggerResource"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CDBERASE16APP-ALL",
+    "HandlerId": "Probe_CDBERASE16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-DB-ERASE",
+    "EventId": "N-DB-ERASE",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ERASE-TRIGGER-DB",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-ERASE-DB",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CDBERASE16SND-ALL",
+    "HandlerId": "Probe_CDBERASE16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-DB-ERASE",
+    "EventId": "N-DB-ERASE",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ERASE-TRIGGER-DB",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-ERASE-DB",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CDBOPEN16APP-ALL",
+    "HandlerId": "Probe_CDBOPEN16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-DB-OPEN",
+    "EventId": "N-DB-OPEN",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-OPEN-FOR-MODIFY-XR",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CDBOPEN16SND-ALL",
+    "HandlerId": "Probe_CDBOPEN16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-DB-OPEN",
+    "EventId": "N-DB-OPEN",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-OPEN-FOR-MODIFY-XR",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DB",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CDOCLOCKCHANGED16APP-ALL",
+    "HandlerId": "Probe_CDOCLOCKCHANGED16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-DOC-LOCK-CHANGED",
+    "EventId": "N-DOC-LOCK-CHANGED",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-LOCK-CYCLE",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CDOCLOCKVETO16APP-ALL",
+    "HandlerId": "Probe_CDOCLOCKVETO16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-DOC-LOCK-VETO",
+    "EventId": "N-DOC-LOCK-VETO",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-LOCK-VETO",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-VETO",
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CDOCLOCKVETO16SND-ALL",
+    "HandlerId": "Probe_CDOCLOCKVETO16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-DOC-LOCK-VETO",
+    "EventId": "N-DOC-LOCK-VETO",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-LOCK-VETO",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-VETO",
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CDOCLOCKWILL16APP-ALL",
+    "HandlerId": "Probe_CDOCLOCKWILL16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-DOC-LOCK-WILL",
+    "EventId": "N-DOC-LOCK-WILL",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-LOCK-CYCLE",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CEDC16APP-ALL",
+    "HandlerId": "Probe_CEDC16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-ED-CANCEL",
+    "EventId": "N-ED-CANCEL",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-BEGIN-CMDCTX",
+        "class": "TRIGGER-INFRA"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-CANCEL-CMDCTX",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-CANCEL",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CANCEL-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CEDC16SND-ALL",
+    "HandlerId": "Probe_CEDC16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-ED-CANCEL",
+    "EventId": "N-ED-CANCEL",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-CMDCTX",
+        "class": "TRIGGER-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-CANCEL-CMDCTX",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-CANCEL",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CANCEL-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CEDEND16APP-ALL",
+    "HandlerId": "Probe_CEDEND16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-ED-END",
+    "EventId": "N-ED-END",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FIXTURE",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CEDEND16SND-ALL",
+    "HandlerId": "Probe_CEDEND16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-ED-END",
+    "EventId": "N-ED-END",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FIXTURE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CEDW16APP-ALL",
+    "HandlerId": "Probe_CEDW16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-ED-WILL",
+    "EventId": "N-ED-WILL",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FIXTURE",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CEDW16SND-ALL",
+    "HandlerId": "Probe_CEDW16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-ED-WILL",
+    "EventId": "N-ED-WILL",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FIXTURE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CENTGFX16APP-ALL",
+    "HandlerId": "Probe_CENTGFX16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-ENT-GFX",
+    "EventId": "N-ENT-GFX",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-TRANSFORM-CLOSE-REF-A",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "ER-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "COBJCANCEL16APP-ALL",
+    "HandlerId": "Probe_COBJCANCEL16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-OBJ-CANCEL",
+    "EventId": "N-OBJ-CANCEL",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-CANCEL-OPEN-XR",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-XR",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "COBJCANCEL16SND-ALL",
+    "HandlerId": "Probe_COBJCANCEL16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-OBJ-CANCEL",
+    "EventId": "N-OBJ-CANCEL",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-CANCEL-OPEN-XR",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-XR",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "COBJCLOSED16APP-ALL",
+    "HandlerId": "Probe_COBJCLOSED16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-OBJ-CLOSED",
+    "EventId": "N-OBJ-CLOSED",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-CLOSE-REF-A",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "COBJCLOSED16SND-ALL",
+    "HandlerId": "Probe_COBJCLOSED16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-OBJ-CLOSED",
+    "EventId": "N-OBJ-CLOSED",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-CLOSE-REF-A",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "COBJERASE16APP-ALL",
+    "HandlerId": "Probe_COBJERASE16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-OBJ-ERASE",
+    "EventId": "N-OBJ-ERASE",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ERASE-TRIGGER-OBJ",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-ERASE-OBJ",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-TEO",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "COBJERASE16SND-ALL",
+    "HandlerId": "Probe_COBJERASE16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-OBJ-ERASE",
+    "EventId": "N-OBJ-ERASE",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ERASE-TRIGGER-OBJ",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-TRIGGER-ERASE-OBJ",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-TEO",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "COBJMOD16APP-ALL",
+    "HandlerId": "Probe_COBJMOD16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-OBJ-MOD",
+    "EventId": "N-OBJ-MOD",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-MODIFY-CLOSE-REF-A",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-REF-A",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "COBJOPEN16APP-ALL",
+    "HandlerId": "Probe_COBJOPEN16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-OBJ-OPEN",
+    "EventId": "N-OBJ-OPEN",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-OPEN-FOR-MODIFY-XR",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-XR",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "COBJOPEN16SND-ALL",
+    "HandlerId": "Probe_COBJOPEN16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-OBJ-OPEN",
+    "EventId": "N-OBJ-OPEN",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-OPEN-FOR-MODIFY-XR",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-XR",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "COBJUNDO16APP-ALL",
+    "HandlerId": "Probe_COBJUNDO16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-OBJ-UNDO",
+    "EventId": "N-OBJ-UNDO",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-CANCEL-OPEN-XR",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-XR",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "COBJUNDO16SND-ALL",
+    "HandlerId": "Probe_COBJUNDO16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-OBJ-UNDO",
+    "EventId": "N-OBJ-UNDO",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-CANCEL-OPEN-XR",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "OR-XR",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CRXL16APP-ALL",
+    "HandlerId": "Probe_CRXL16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-RX-LOADED",
+    "EventId": "N-RX-LOADED",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-LOAD-PAYLOAD",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-PAYLOAD-ARX",
+        "kind": "PayloadResource"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DLINK",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CRXL16SND-ALL",
+    "HandlerId": "Probe_CRXL16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-RX-LOADED",
+    "EventId": "N-RX-LOADED",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-LOAD-PAYLOAD",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-PAYLOAD-ARX",
+        "kind": "PayloadResource"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DLINK",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CRXW16APP-ALL",
+    "HandlerId": "Probe_CRXW16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-RX-WILL-LOAD",
+    "EventId": "N-RX-WILL-LOAD",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-LOAD-PAYLOAD",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-PAYLOAD-ARX",
+        "kind": "PayloadResource"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DLINK",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CRXW16SND-ALL",
+    "HandlerId": "Probe_CRXW16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-RX-WILL-LOAD",
+    "EventId": "N-RX-WILL-LOAD",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-LOAD-PAYLOAD",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-PAYLOAD-ARX",
+        "kind": "PayloadResource"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DLINK",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTA16APP-ALL",
+    "HandlerId": "Probe_CTA16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-TR-ABORTED",
+    "EventId": "N-TR-ABORTED",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ABORT-PRIMARY-T",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTA16SND-ALL",
+    "HandlerId": "Probe_CTA16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-TR-ABORTED",
+    "EventId": "N-TR-ABORTED",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ABORT-PRIMARY-T",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTAS16APP-ALL",
+    "HandlerId": "Probe_CTAS16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-TR-ABOUT-START",
+    "EventId": "N-TR-ABOUT-START",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-START-OUTER-T",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTAS16SND-ALL",
+    "HandlerId": "Probe_CTAS16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-TR-ABOUT-START",
+    "EventId": "N-TR-ABOUT-START",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-START-OUTER-T",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTRABOUTABORT16APP-ALL",
+    "HandlerId": "Probe_CTRABOUTABORT16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-TR-ABOUT-ABORT",
+    "EventId": "N-TR-ABOUT-ABORT",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ABORT-PRIMARY-T",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTRABOUTABORT16SND-ALL",
+    "HandlerId": "Probe_CTRABOUTABORT16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-TR-ABOUT-ABORT",
+    "EventId": "N-TR-ABOUT-ABORT",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-ABORT-PRIMARY-T",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTRABOUTEND16APP-ALL",
+    "HandlerId": "Probe_CTRABOUTEND16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-TR-ABOUT-END",
+    "EventId": "N-TR-ABOUT-END",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-END-PRIMARY-T",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTRABOUTEND16SND-ALL",
+    "HandlerId": "Probe_CTRABOUTEND16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-TR-ABOUT-END",
+    "EventId": "N-TR-ABOUT-END",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-END-PRIMARY-T",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTRENDED16APP-ALL",
+    "HandlerId": "Probe_CTRENDED16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-TR-ENDED",
+    "EventId": "N-TR-ENDED",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-END-PRIMARY-T",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTRENDED16SND-ALL",
+    "HandlerId": "Probe_CTRENDED16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-TR-ENDED",
+    "EventId": "N-TR-ENDED",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-END-PRIMARY-T",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTROUTERMOSTENDCALLED16APP-ALL",
+    "HandlerId": "Probe_CTROUTERMOSTENDCALLED16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-TR-OUTERMOST-END-CALLED",
+    "EventId": "N-TR-OUTERMOST-END-CALLED",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-END-PRIMARY-T",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTROUTERMOSTENDCALLED16SND-ALL",
+    "HandlerId": "Probe_CTROUTERMOSTENDCALLED16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-TR-OUTERMOST-END-CALLED",
+    "EventId": "N-TR-OUTERMOST-END-CALLED",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-END-PRIMARY-T",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTS16APP-ALL",
+    "HandlerId": "Probe_CTS16APP_ALL",
+    "PrimaryAuthorityId": "NS-BEGIN-APPCTX",
+    "ScheduleOriginEventId": "N-TR-STARTED",
+    "EventId": "N-TR-STARTED",
+    "SchedulerId": "NS-BEGIN-APPCTX",
+    "SchedulerChainId": "CHAIN-APPCTX",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-START-OUTER-T",
+    "ExecutionContextId": "APPCTX-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  },
+  {
+    "ProbeId": "CTS16SND-ALL",
+    "HandlerId": "Probe_CTS16SND_ALL",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-TR-STARTED",
+    "EventId": "N-TR-STARTED",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-CMD-01",
+    "TriggerActionId": "TRG-START-OUTER-T",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "F-XR",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "F-REF-B",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-TX",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      }
+    ],
+    "Verifier": "VER-ALL+VER-T",
+    "Cleanup": "CLEAN-CHAIN-PROCESS",
+    "CompletionFence": "FENCE-PROCESS-EXIT",
+    "Status": "ContractCandidateV35"
+  }
+]
