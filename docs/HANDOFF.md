@@ -49,9 +49,22 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35-A2 COMPLETE; V35 READY FOR COORDINATOR FREEZE; R3 IMPLEMENTATION BLOCKED.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 IMPLEMENTATION OPEN; GOVERNING PROBES REMAIN BLOCKED.**
 Research-only en `eng/research/I52Ctda`. El ARX canónico (`7F9C9C05…9ED421`, tuple de build `375B3D5C…46E25`) sigue
-vigente: desde el smoke host de §166 no cambió código nativo.
+vigente solo como último artefacto verificado de la era V34: no implementa V35 y lo reemplazará el rebuild de R3. Desde el
+smoke host de §166 no cambió código nativo.
+
+**Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
+- `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
+- `V35_FREEZE_PACKAGE_HASH` = `43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF`; liga 24 blobs, oráculo,
+  hashes de aprobación, contratos, conjuntos UNKNOWN, conteos y predicados
+  ([manifiesto](automation/evidence/I-52-v35-freeze-manifest.json)).
+- Invalida la congelación cualquier cambio en la autoridad normativa V35 (catálogo, filas, NEC/NSC/FEC, fixture,
+  traceability, oráculo, regla de resultado, contratos de módulos o tokens). El código de implementación conforme no la
+  invalida.
+- **R3 IMPLEMENTATION = AUTHORIZED**: executor, payload ARX, observer managed, secuenciador, gate de FINISH, resultado
+  externo, migración a fixture-v35 / traceability-v35 y harness de un solo ProbeId.
+- Los **probes gobernantes siguen bloqueados** hasta la implementación, el rebuild y el smoke en el host.
 
 El discovery R3 se detuvo (§167). El Arquitecto exigió V35 (§168), V35 se publicó como candidata en `0c609269` (§169) y
 el Arquitecto la revisó con resultado **AGREED WITH CORRECTIONS**: 14 correcciones obligatorias.
@@ -91,13 +104,14 @@ arnés detecta 98/98 corrupciones (93 anteriores más 5 de M1) tanto en LF como 
 
 Evidencia:
 
+- [manifiesto de congelación](automation/evidence/I-52-v35-freeze-manifest.json);
 - [cierre de erratas A2](automation/evidence/I-52-v35-a2-errata-closure.json);
 - [cierre de RCs](automation/evidence/I-52-v35-a1-rc-closure.json);
 - [validación](automation/evidence/I-52-v35-mechanical-validation.json);
 - [controles negativos](automation/evidence/I-52-v35-negative-controls.json).
 
-Siguiente paso: la **congelación de V35 por el Coordinador**. La implementación R3 sigue bloqueada hasta esa congelación
-y el consenso del Coordinador.
+Siguiente paso: el **gate de implementación R3** conforme a V35 congelada. Después vendrán el rebuild del ARX y el smoke en
+el host; solo entonces podrán desbloquearse los probes gobernantes.
 
 Probes gobernados: **0**; `CTDA_HOST_PASS` **NOT EVALUATED**; producto **BLOCKED**; V18 gobierna; G3 **STOPPED**,
 G3B **NOT OPEN**, CT-50 **NOT EXECUTED**.
