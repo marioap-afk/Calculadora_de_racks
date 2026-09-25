@@ -49,7 +49,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B PASS-T; D-1 FIXED; HOST SMOKE OF NEW PACKAGE PENDING.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B PASS-T; D-1 FIXED; R3 HOST SMOKE c4037098 PASS.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -104,10 +104,17 @@ managed del fence. `6e445fa8` añade ambas coberturas, solo research y sin cambi
 - `6e445fa8` y el tuple `F6E5A559…DCE5` quedan SUPERSEDED.
 - [Evidencia](automation/evidence/I-52-r3-d1-fix.json).
 
-**Siguiente gate: HOST SMOKE OF NEW PACKAGE** (`smoke-v35` en el host con `c4037098`, cero ProbeIds).
+**R3 host smoke c4037098 (§177): PASS** en `IMING-2` (PID 14628, cero ProbeIds).
+- Tuple de build `0CD753F7…FE5F`; D-1 confirmado estáticamente (`subjectDepth(N-TR-ENDED) = n`).
+- Fixture 8/8, secuenciador, FIN-GATE, ABI del fence (nativo, payload, managed), cleanup, PID fence y scratch: PASS.
+- `R3_PRE_RUN_TUPLE_HASH` = `A3493A86383ACC87A741AB1806095352726F994C5AB183D99E6B5E2F28F7FB83`.
+- [Evidencia](automation/evidence/I-52-r3-host-smoke-c4037098.json).
+
+**Siguiente gate: SECOND GOVERNED CANARY AUTHORIZATION** (Coordinador).
 - Probes gobernados ejecutados: 1.
 - `CTDA_HOST_PASS` NOT EVALUATED.
-- Ningún otro ProbeId autorizado.
+- Ningún otro ProbeId autorizado; sigue la exclusión de las seis filas RX con payload y de 10NDOC-WILL-SM /
+  10NDOC-CHANGED-SM.
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
