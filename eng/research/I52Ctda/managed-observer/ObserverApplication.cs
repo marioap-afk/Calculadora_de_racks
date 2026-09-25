@@ -41,6 +41,7 @@ public sealed class ObserverApplication : IExtensionApplication
             foreach (Document candidate in CoreApplication.DocumentManager)
                 if ((ulong)candidate.UnmanagedObject.ToInt64() == documentId) document = candidate;
             ulong database = document is null ? 0 : (ulong)document.Database.UnmanagedObject.ToInt64();
+            if (subscribe == ManagedCommandObserver.SmokeFenceRead) return observer.OnSmokeFenceRead(documentId, database);
             if (subscribe == 1)
             {
                 if (document is null || subscribedDocument is not null) { observer.OnSubscribed(documentId, database, false); return 1; }

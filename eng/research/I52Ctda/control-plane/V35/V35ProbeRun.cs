@@ -158,7 +158,8 @@ public static class V35ProbeHarness
 }
 
 // Zero-ProbeId R3 host smoke (next gate): modules load, shared sequencer, fence read ABI, fixture-v35 bootstrap 8/8,
-// payload and managed lifecycle, cleanup, PID fence and an unchanged scratch DWG.
+// FIN-GATE-01 initialization without CMD-FINISH or tokens, payload and managed lifecycle, the managed fence read,
+// cleanup, PID fence and an unchanged scratch DWG. The smoke classifies no ProbeId result.
 public sealed record V35SmokeLaunch(string AcadExecutable, string RunDirectory, string NativeHelper, string PayloadArx, string ManagedObserver, string ScratchDrawing,
     string OutputRoot, string ReportPath, string EventLog, string ScriptPath, string? Profile)
 {
@@ -207,6 +208,13 @@ public static class V35SmokeEvaluator
             if (r.GetProperty("processId").GetInt32() != processId) failures.Add("REPORT_FROM_OTHER_PROCESS");
             if (r.GetProperty("governedProbesDispatched").GetInt32() != 0) failures.Add("GOVERNED_PROBE_DISPATCHED");
             if (r.GetProperty("fixture").GetProperty("declared").GetInt32() != 8) failures.Add("FIXTURE_DECLARED_NOT_8");
+            JsonElement gate = r.TryGetProperty("finGate", out JsonElement g) ? g : default;
+            if (!True(gate, "idleHook") || Num(gate, "timer") <= 0 || Num(gate, "stageDelivery") <= 0 || Num(gate, "registeredRecords") != 1) failures.Add("FIN_GATE_NOT_INITIALIZED");
+            if (!False(gate, "finishIssued") || Num(gate, "finishRecords") != 0) failures.Add("SPONTANEOUS_FINISH");
+            if (Num(gate, "tokensAccepted") != 0) failures.Add("TOKEN_FABRICATED");
+            if (!True(gate, "hookRemoved") || !True(gate, "timerKilled")) failures.Add("FIN_GATE_TEARDOWN");
+            JsonElement managed = r.TryGetProperty("managed", out JsonElement m) ? m : default;
+            if (Num(managed, "fenceReadBefore") != 0 || Num(managed, "fenceReadAfter") != 1 || Num(managed, "fenceReadRecords") != 2) failures.Add("MANAGED_FENCE_READ_NOT_OBSERVED");
         }
         if (records.Count == 0) failures.Add("EVENT_LOG_MISSING");
         else
@@ -217,7 +225,21 @@ public static class V35SmokeEvaluator
             if (!records.Any(x => x.ModuleId == "R-PAYLOAD-ARX")) failures.Add("PAYLOAD_NOT_IN_SHARED_LOG");
             if (!records.Any(x => x.ModuleId == "R-MANAGED-OBSERVER")) failures.Add("MANAGED_NOT_IN_SHARED_LOG");
             if (records.Any(x => x.Malformed)) failures.Add("EVENT_LOG_MALFORMED");
+            // The log itself (not only the native self-report) shows the gate initialized, no FINISH, no token accepted
+            // and the managed observer reading the fence unset, then set.
+            if (!records.Any(x => x.ModuleId == "R-NATIVE-ARX" && x.EventOrMarkerId == "FIN-GATE-01" && x.StageId == "STG-FIN-GATE" && x.Is("phase", "REGISTERED")
+                && x.Is("idleHook", "1") && x.P("timer") is not ("" or "0"))) failures.Add("FIN_GATE_NOT_IN_LOG");
+            if (records.Any(x => x.EventOrMarkerId == "CMD-FINISH" || x.EventOrMarkerId == "FIN-GATE-01" && x.Is("phase", "ISSUE") || x.EventOrMarkerId == "FINISH-FENCE-01" && x.Is("phase", "SET")))
+                failures.Add("SPONTANEOUS_FINISH_IN_LOG");
+            if (records.Any(x => x.EventOrMarkerId.StartsWith("TOK-", StringComparison.Ordinal) && x.Is("status", "ACCEPTED"))) failures.Add("TOKEN_FABRICATED_IN_LOG");
+            string[] managedFence = records.Where(x => x.ModuleId == "R-MANAGED-OBSERVER" && x.EventOrMarkerId == "FINISH-FENCE-01" && x.Is("phase", "SMOKE-READ"))
+                .OrderBy(x => x.Sequence).Select(x => x.P("fenceIsSet")).ToArray();
+            if (!managedFence.SequenceEqual(["0", "1"])) failures.Add("MANAGED_FENCE_READ_NOT_IN_LOG");
         }
         return new(failures.Count == 0 ? "PASS" : "FAIL", failures);
     }
+
+    private static bool True(JsonElement o, string name) => o.ValueKind == JsonValueKind.Object && o.TryGetProperty(name, out JsonElement e) && e.ValueKind == JsonValueKind.True;
+    private static bool False(JsonElement o, string name) => o.ValueKind == JsonValueKind.Object && o.TryGetProperty(name, out JsonElement e) && e.ValueKind == JsonValueKind.False;
+    private static long Num(JsonElement o, string name) => o.ValueKind == JsonValueKind.Object && o.TryGetProperty(name, out JsonElement e) && e.ValueKind == JsonValueKind.Number ? e.GetInt64() : -1;
 }

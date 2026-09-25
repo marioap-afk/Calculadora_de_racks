@@ -38,6 +38,7 @@ public:
     // and only with a DeliveryId of an activation of the token's own stage (TOK-LOCK-RELEASE: a lock-release stage).
     int32_t setToken(I52Id token, uint64_t deliveryId, std::wstring& reason);
     bool tokenSet(I52Id token) const;
+    size_t tokenCount() const;
     std::vector<I52Id> missingTokens(const I52RowPlan& plan) const;
 
     // FINISH-FENCE-01. setFence() is internal (CMD-FINISH only); fenceIsSet() backs the read export.

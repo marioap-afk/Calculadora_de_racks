@@ -34,6 +34,8 @@ internal static class R3Tests
         ("r3 managed observer fence and marker", ManagedObserverLogic),
         ("r3 managed record layout matches the C ABI", ManagedRecordLayout),
         ("r3 smoke evaluator", SmokeEvaluator),
+        ("r3 smoke FIN-GATE initializes without FINISH, tokens or classification", SmokeFinishGate),
+        ("r3 smoke managed observer reads the fence", SmokeManagedFenceRead),
     ];
 
     private static void Require(bool value, string message) { if (!value) throw new InvalidDataException(message); }
@@ -375,21 +377,102 @@ internal static class R3Tests
 
     private static void ManagedRecordLayout(string repo) => Require(NativeLogSequencer.RecordSize == 88, "I52CtdaRecord size " + NativeLogSequencer.RecordSize);
 
+    // Synthetic R3 smoke evidence (native report schema 5 plus the shared log) that the evaluator must accept.
+    private const string SmokeGate = "\"finGate\":{\"idleHook\":true,\"timer\":17,\"stageDelivery\":2,\"registeredRecords\":1,\"finishIssued\":false,\"finishRecords\":0,\"tokensAccepted\":0,\"hookRemoved\":true,\"timerKilled\":true}";
+    private const string SmokeManaged = "\"managed\":{\"fenceReadBefore\":0,\"fenceReadAfter\":1,\"fenceReadRecords\":2}";
+    private static string SmokeReport(string gate = SmokeGate, string managed = SmokeManaged) =>
+        "{\"result\":\"PASS\",\"processId\":4242,\"governedProbesDispatched\":0,\"fixture\":{\"declared\":8}," + gate + "," + managed + "}";
+
+    private static V35LogRecord SmokeRecord(long sequence, string stage, string module, string eventId, string payload = "")
+    {
+        var fields = payload.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(kv => kv.Split('=', 2)).ToDictionary(kv => kv[0], kv => kv[1], StringComparer.Ordinal);
+        return new(sequence, "I52CTDA_SMOKE", stage, 1, "DRIVER-CMD-01", module, 4242, 1, "0x1", "0x2", "I52CTDA_SMOKE", eventId, fields, sequence, false);
+    }
+
+    private static List<V35LogRecord> SmokeLog() =>
+    [
+        SmokeRecord(1, "STG-PROBE-CMD", "R-NATIVE-ARX", "RUN-ENV-01", "smoke=1"),
+        SmokeRecord(2, "STG-FIN-GATE", "R-NATIVE-ARX", "FIN-GATE-01", "phase=REGISTERED;idleHook=1;timer=17;timeoutSeconds=120;schedulerUse=FINISH-INFRA"),
+        SmokeRecord(3, "STG-PAYLOAD-INIT", "R-PAYLOAD-ARX", "PAYLOAD-DB-BINDING"),
+        SmokeRecord(4, "STG-PROBE-CMD", "R-MANAGED-OBSERVER", "RR-MANAGED-CMD", "phase=SUBSCRIBED"),
+        SmokeRecord(5, "STG-PROBE-CMD", "R-MANAGED-OBSERVER", "FINISH-FENCE-01", "smoke=1;phase=SMOKE-READ;reader=R-MANAGED-OBSERVER;fenceIsSet=0"),
+        SmokeRecord(6, "STG-FIN-GATE", "R-NATIVE-ARX", "FIN-GATE-01", "smoke=1;phase=UNREGISTERED;hookRemoved=1;timerKilled=1;finishIssued=0;tokensAccepted=0"),
+        SmokeRecord(7, "STG-PROBE-CMD", "R-MANAGED-OBSERVER", "FINISH-FENCE-01", "smoke=1;phase=SMOKE-READ;reader=R-MANAGED-OBSERVER;fenceIsSet=1"),
+        SmokeRecord(8, "STG-PROBE-CMD", "R-NATIVE-ARX", "FINISH-FENCE-01", "smoke=1;before=0;after=1;setterExported=0"),
+    ];
+
+    private static readonly ScratchDrawingState SmokeScratch = new("x.dwg", true, 1, "A", DateTimeOffset.UnixEpoch, "x.bak", false, null, null);
+    private static V35SmokeVerdict JudgeSmoke(string report, IReadOnlyList<V35LogRecord> records) =>
+        V35SmokeEvaluator.Evaluate(JsonDocument.Parse(report).RootElement, records, 4242, true, false, new(SmokeScratch, SmokeScratch));
+    private static void RequireSmokeFailure(V35SmokeVerdict v, string failure) =>
+        Require(v.Result == "FAIL" && v.Failures.Contains(failure), $"expected {failure}: {v.Result} {string.Join(",", v.Failures)}");
+    private static List<V35LogRecord> Renumber(IEnumerable<V35LogRecord> records) => records.Select((r, i) => r with { Sequence = i + 1 }).ToList();
+
     private static void SmokeEvaluator(string repo)
     {
-        string report = """{"result":"PASS","processId":4242,"governedProbesDispatched":0,"fixture":{"declared":8}}""";
-        var records = new[]
-        {
-            new V35LogRecord(1, "I52CTDA_SMOKE", "STG-PROBE-CMD", 1, "DRIVER-CMD-01", "R-NATIVE-ARX", 4242, 1, "0x1", "0x2", "I52CTDA_SMOKE", "RUN-ENV-01", new Dictionary<string, string>(), 1, false),
-            new V35LogRecord(2, "I52CTDA_SMOKE", "STG-PAYLOAD-INIT", 2, "DRIVER-CMD-01", "R-PAYLOAD-ARX", 4242, 1, "0x1", "0x2", "I52CTDA_SMOKE", "PAYLOAD-DB-BINDING", new Dictionary<string, string>(), 2, false),
-            new V35LogRecord(3, "I52CTDA_SMOKE", "STG-PROBE-CMD", 1, "DRIVER-CMD-01", "R-MANAGED-OBSERVER", 4242, 1, "0x1", "0x2", "I52CTDA_SMOKE", "RR-MANAGED-CMD", new Dictionary<string, string>(), 3, false),
-        };
-        ScratchDrawingState s = new("x.dwg", true, 1, "A", DateTimeOffset.UnixEpoch, "x.bak", false, null, null);
-        var ok = V35SmokeEvaluator.Evaluate(JsonDocument.Parse(report).RootElement, records, 4242, true, false, new(s, s));
+        var ok = JudgeSmoke(SmokeReport(), SmokeLog());
         Require(ok.Result == "PASS", "smoke pass: " + string.Join(",", ok.Failures));
-        var noManaged = V35SmokeEvaluator.Evaluate(JsonDocument.Parse(report).RootElement, records.Take(2).ToArray(), 4242, true, false, new(s, s));
-        Require(noManaged.Failures.Contains("MANAGED_NOT_IN_SHARED_LOG"), "managed missing");
-        var mutated = V35SmokeEvaluator.Evaluate(JsonDocument.Parse(report).RootElement, records, 4242, true, false, new(s, s with { Sha256 = "B" }));
-        Require(mutated.Failures.Contains("SCRATCH_DWG_MUTATED"), "scratch mutation");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), Renumber(SmokeLog().Where(r => r.ModuleId != "R-MANAGED-OBSERVER"))), "MANAGED_NOT_IN_SHARED_LOG");
+        var mutated = V35SmokeEvaluator.Evaluate(JsonDocument.Parse(SmokeReport()).RootElement, SmokeLog(), 4242, true, false, new(SmokeScratch, SmokeScratch with { Sha256 = "B" }));
+        RequireSmokeFailure(mutated, "SCRATCH_DWG_MUTATED");
+    }
+
+    // Smoke coverage 1: FIN-GATE-01 registers its idle hook and timer with zero ProbeIds, never issues CMD-FINISH,
+    // accepts no token and the smoke classifies no result.
+    private static void SmokeFinishGate(string repo)
+    {
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(gate: "\"finGate\":{}"), SmokeLog()), "FIN_GATE_NOT_INITIALIZED");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(gate: SmokeGate.Replace("\"idleHook\":true", "\"idleHook\":false")), SmokeLog()), "FIN_GATE_NOT_INITIALIZED");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(gate: SmokeGate.Replace("\"timer\":17", "\"timer\":0")), SmokeLog()), "FIN_GATE_NOT_INITIALIZED");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), Renumber(SmokeLog().Where(r => !r.Is("phase", "REGISTERED")))), "FIN_GATE_NOT_IN_LOG");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), SmokeLog().Select(r => r.Is("phase", "REGISTERED") ? r with { StageId = "STG-PROBE-CMD" } : r).ToList()), "FIN_GATE_NOT_IN_LOG");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(gate: SmokeGate.Replace("\"finishIssued\":false", "\"finishIssued\":true")), SmokeLog()), "SPONTANEOUS_FINISH");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(9, "STG-FIN-GATE", "R-NATIVE-ARX", "FIN-GATE-01", "phase=ISSUE;mode=FINISH-MODE-DRAIN")]), "SPONTANEOUS_FINISH_IN_LOG");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(9, "STG-FINISH", "R-NATIVE-ARX", "CMD-FINISH", "phase=ENTRY")]), "SPONTANEOUS_FINISH_IN_LOG");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(gate: SmokeGate.Replace("\"tokensAccepted\":0", "\"tokensAccepted\":1")), SmokeLog()), "TOKEN_FABRICATED");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(9, "STG-PROBE-CMD", "R-NATIVE-ARX", "TOK-EXEC-DONE", "status=ACCEPTED")]), "TOKEN_FABRICATED_IN_LOG");
+        Require(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(9, "STG-PROBE-CMD", "R-NATIVE-ARX", "TOK-EXEC-DONE", "status=NOT-IN-ROW")]).Result == "PASS", "a rejected token is not fabricated");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(gate: SmokeGate.Replace("\"timerKilled\":true", "\"timerKilled\":false")), SmokeLog()), "FIN_GATE_TEARDOWN");
+
+        // Native smoke source: the gate is registered after BOOT-01 and removed before the fence is set; the smoke never
+        // selects a plan, issues FINISH or sets a token, and onIdle() returns without a plan (no spontaneous FINISH).
+        string driver = File.ReadAllText(Path.Combine(repo, "eng", "research", "I52Ctda", "native", "I52CtdaDriver.cpp"));
+        string smoke = driver[driver.IndexOf("void I52Executor::smoke()", StringComparison.Ordinal)..];
+        int register = smoke.IndexOf("registerFinishGate()", StringComparison.Ordinal), unregister = smoke.IndexOf("phase=UNREGISTERED", StringComparison.Ordinal),
+            fenceSet = smoke.IndexOf("I52FinishFence::set()", StringComparison.Ordinal);
+        Require(smoke.IndexOf("boot();", StringComparison.Ordinal) < register && register < unregister && unregister < fenceSet, "gate lifecycle order in smoke");
+        Require(smoke.Contains("acedRemoveOnIdleWinMsg(idleThunk)", StringComparison.Ordinal) && smoke.Contains("KillTimer(nullptr, gateTimer_)", StringComparison.Ordinal) && smoke.Contains("gateRegistered_ = false;", StringComparison.Ordinal), "gate teardown");
+        foreach (string forbidden in new[] { "issueFinish(", "setPlan(", "I52Ctda_TokenSet", "setToken(", "runVerifiers(" })
+            Require(!smoke.Contains(forbidden, StringComparison.Ordinal), "smoke must not call " + forbidden);
+        string onIdle = driver[driver.IndexOf("void I52Executor::onIdle()", StringComparison.Ordinal)..driver.IndexOf("void I52Executor::issueFinish(", StringComparison.Ordinal)];
+        Require(onIdle.Contains("if (!gateRegistered_ || finishIssued_ || plan_ == nullptr) return;", StringComparison.Ordinal), "onIdle must return without a plan");
+        string command = File.ReadAllText(Path.Combine(repo, "eng", "research", "I52Ctda", "harness", "V35SmokeCommand.cs"));
+        Require(!command.Contains("V35ResultEngine", StringComparison.Ordinal) && !command.Contains("ProbeResult", StringComparison.Ordinal), "smoke-v35 classifies no result");
+    }
+
+    // Smoke coverage 2: R-MANAGED-OBSERVER reads I52Ctda_FinishFenceIsSet through the smoke-only entry mode and records
+    // the observed value (unset, then set) in the shared log.
+    private static void SmokeManagedFenceRead(string repo)
+    {
+        var log = new FakeSequencer();
+        var observer = new ManagedCommandObserver(log, "I52CTDA_SMOKE");
+        Require(observer.OnSmokeFenceRead(1, 2) == 0, "unset fence read");
+        log.Fence = 1;
+        Require(observer.OnSmokeFenceRead(1, 2) == 1, "set fence read");
+        Require(log.Records.Count == 2 && log.Records.All(r => r.ModuleId == "R-MANAGED-OBSERVER" && r.EventOrMarkerId == "FINISH-FENCE-01" && r.StageId == "*")
+            && log.Records[0].Payload.EndsWith("fenceIsSet=0", StringComparison.Ordinal) && log.Records[1].Payload.EndsWith("fenceIsSet=1", StringComparison.Ordinal)
+            && log.Records.All(r => r.Payload.Contains("phase=SMOKE-READ", StringComparison.Ordinal) && !r.Payload.Contains("LATE-DELIVERY", StringComparison.Ordinal)), "managed fence read records");
+        Require(log.Tokens.Count == 0 && !observer.Subscribed, "the fence read sets no token and subscribes nothing");
+
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(managed: "\"managed\":{}"), SmokeLog()), "MANAGED_FENCE_READ_NOT_OBSERVED");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(managed: SmokeManaged.Replace("\"fenceReadAfter\":1", "\"fenceReadAfter\":0")), SmokeLog()), "MANAGED_FENCE_READ_NOT_OBSERVED");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), Renumber(SmokeLog().Where(r => !r.Is("phase", "SMOKE-READ")))), "MANAGED_FENCE_READ_NOT_IN_LOG");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), SmokeLog().Select(r => r.Is("phase", "SMOKE-READ") ? r with { Payload = new Dictionary<string, string>(r.Payload) { ["fenceIsSet"] = r.Sequence == 5 ? "1" : "0" } } : r).ToList()), "MANAGED_FENCE_READ_NOT_IN_LOG");
+
+        // The entry mode is shared by both sides and used only by the smoke; the governed executor never passes it.
+        string research = Path.Combine(repo, "eng", "research", "I52Ctda");
+        Require(File.ReadAllText(Path.Combine(research, "native", "I52CtdaAbi.h")).Contains("#define I52CTDA_MANAGED_SMOKE_FENCE_READ " + ManagedCommandObserver.SmokeFenceRead, StringComparison.Ordinal), "entry mode value");
+        Require(!File.ReadAllText(Path.Combine(research, "native", "I52CtdaExecutor.cpp")).Contains("I52CTDA_MANAGED_SMOKE_FENCE_READ", StringComparison.Ordinal), "governed executor must not use the smoke fence read");
+        Require(File.ReadAllText(Path.Combine(research, "managed-observer", "ObserverApplication.cs")).Contains("if (subscribe == ManagedCommandObserver.SmokeFenceRead) return observer.OnSmokeFenceRead(", StringComparison.Ordinal), "managed entry routes the smoke fence read");
     }
 }

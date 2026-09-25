@@ -1062,6 +1062,14 @@ void I52Executor::smoke()
     fact(I52Id::BOOT_01, bootFacts_);
     if (bootFailed_) failures.push_back(L"BOOT_FAILED");
 
+    // FIN-GATE-01 initialization: idle hook, 1000 ms timer and the STG-FIN-GATE activation. With no ProbeId there is no
+    // plan, so onIdle() returns before any check and the gate cannot issue CMD-FINISH; the smoke removes it below.
+    const bool gateHooked = registerFinishGate();
+    const uintptr_t gateTimer = gateTimer_;
+    const uint64_t gateDelivery = gateDelivery_;
+    const int gateRecords = log.countOf(L"R-NATIVE-ARX", L"FIN-GATE-01");
+    if (!gateHooked || gateTimer == 0 || gateDelivery == 0 || gateRecords != 1) failures.push_back(L"FIN_GATE_NOT_INITIALIZED");
+
     // Fence read ABI from the export table; the setter must not be exported.
     HMODULE self = GetModuleHandleW(L"I52CtdaNative.arx");
     auto fenceRead = self == nullptr ? nullptr : reinterpret_cast<I52CtdaFinishFenceIsSetFn>(GetProcAddress(self, "I52Ctda_FinishFenceIsSet"));
@@ -1099,6 +1107,8 @@ void I52Executor::smoke()
     if (entry == nullptr) failures.push_back(L"MANAGED_ENTRY_UNBOUND");
     if (subscribed != 0 || unsubscribed != 0) failures.push_back(L"MANAGED_LIFECYCLE");
     if (managedRecords < 2) failures.push_back(L"MANAGED_SEQUENCER_BINDING");
+    // Smoke-only managed fence read (unset here); read again after the fence is set.
+    const int32_t managedFenceBefore = entry == nullptr ? -1 : entry(I52CTDA_MANAGED_SMOKE_FENCE_READ, reinterpret_cast<uint64_t>(document_), log.probeId().c_str());
 
     // Cleanup: every fixture resource and R-SM-LINK removed in its own transaction.
     AcTransactionManager* tm = document_ == nullptr ? nullptr : document_->transactionManager();
@@ -1110,10 +1120,27 @@ void I52Executor::smoke()
     fact(I52Id::CLN_BASE, L"smoke=1;status=" + status(removed) + L";transactionClose=" + status(closed) + L";erased=" + std::to_wstring(erased) + L";linkCarrierRemoved=" + flag(carrierRemoved));
     if (removed != Acad::eOk || closed != Acad::eOk || !carrierRemoved) failures.push_back(L"CLEANUP");
 
-    // Fence: set through the internal setter, read back through the export.
+    // FIN-GATE-01 teardown: the gate issued no CMD-FINISH and no completion token was accepted.
+    const bool finishIssued = finishIssued_;
+    const int finishRecords = log.countOf(L"R-NATIVE-ARX", L"CMD-FINISH");
+    const size_t tokensAccepted = log.tokenCount();
+    const bool hookRemoved = gateRegistered_ && acedRemoveOnIdleWinMsg(idleThunk);
+    const bool timerKilled = gateTimer_ != 0 && KillTimer(nullptr, gateTimer_) != FALSE;
+    gateTimer_ = 0;
+    gateRegistered_ = false;
+    fact(I52Id::FIN_GATE_01, L"smoke=1;phase=UNREGISTERED;hookRemoved=" + flag(hookRemoved) + L";timerKilled=" + flag(timerKilled) + L";finishIssued=" + flag(finishIssued)
+        + L";tokensAccepted=" + std::to_wstring(tokensAccepted), I52Id::STG_FIN_GATE, gateDelivery);
+    if (finishIssued || finishRecords != 0) failures.push_back(L"SPONTANEOUS_FINISH");
+    if (tokensAccepted != 0) failures.push_back(L"TOKEN_FABRICATED");
+    if (!hookRemoved || !timerKilled) failures.push_back(L"FIN_GATE_TEARDOWN");
+
+    // Fence: set through the internal setter, read back through the export and by the managed observer.
     I52FinishFence::set();
     const int32_t fenceAfter = fenceRead == nullptr ? -1 : fenceRead();
     if (fenceAfter != 1) failures.push_back(L"FENCE_READ_AFTER_SET");
+    const int32_t managedFenceAfter = entry == nullptr ? -1 : entry(I52CTDA_MANAGED_SMOKE_FENCE_READ, reinterpret_cast<uint64_t>(document_), log.probeId().c_str());
+    const int managedFenceRecords = log.countOf(L"R-MANAGED-OBSERVER", L"FINISH-FENCE-01");
+    if (managedFenceBefore != 0 || managedFenceAfter != 1 || managedFenceRecords != 2) failures.push_back(L"MANAGED_FENCE_READ");
     fact(I52Id::FINISH_FENCE_01, L"smoke=1;before=" + std::to_wstring(fenceBefore) + L";after=" + std::to_wstring(fenceAfter) + L";setterExported=" + flag(setterExported));
     const uint64_t last = log.lastSequence();
     pop(I52Id::STG_PROBE_CMD);
@@ -1121,14 +1148,18 @@ void I52Executor::smoke()
     std::ostringstream failureList;
     for (size_t i = 0; i < failures.size(); ++i) failureList << (i == 0 ? "" : ",") << '"' << utf8(failures[i]) << '"';
     std::ofstream stream(output, std::ios::binary | std::ios::trunc);
-    stream << "{\n  \"schemaVersion\": 4,\n  \"instrument\": \"I52CtdaNative\",\n  \"stage\": \"R3_SMOKE\",\n  \"commandIdentity\": \"I52CTDA_SMOKE\",\n"
+    stream << "{\n  \"schemaVersion\": 5,\n  \"instrument\": \"I52CtdaNative\",\n  \"stage\": \"R3_SMOKE\",\n  \"commandIdentity\": \"I52CTDA_SMOKE\",\n"
            << "  \"result\": \"" << (failures.empty() ? "PASS" : "FAIL") << "\",\n  \"failures\": [" << failureList.str() << "],\n"
            << "  \"processId\": " << GetCurrentProcessId() << ",\n  \"loggerReady\": " << (log.ready() ? "true" : "false") << ",\n"
            << "  \"sequenceFirst\": " << first << ",\n  \"sequenceLast\": " << last << ",\n"
            << "  \"fixture\": { \"declared\": " << I52CtdaFixture::kDeclaredIdentities << ", \"bootFacts\": \"" << jsonEscape(utf8(bootFacts_)) << "\", \"snapshot\": \"" << jsonEscape(utf8(bootSnapshot_)) << "\" },\n"
            << "  \"payload\": { \"path\": \"" << jsonEscape(utf8(payloadPath_)) << "\", \"sha256\": \"" << utf8(payloadSha) << "\", \"loaded\": " << (payloadOk ? "true" : "false")
            << ", \"records\": " << payloadRecords << ", \"bindingRecords\": " << payloadBinding << ", \"registrations\": " << payloadRegistrations << ", \"removeResult\": " << removeResult << " },\n"
-           << "  \"managed\": { \"entryBound\": " << (entry != nullptr ? "true" : "false") << ", \"subscribe\": " << subscribed << ", \"unsubscribe\": " << unsubscribed << ", \"records\": " << managedRecords << " },\n"
+           << "  \"managed\": { \"entryBound\": " << (entry != nullptr ? "true" : "false") << ", \"subscribe\": " << subscribed << ", \"unsubscribe\": " << unsubscribed << ", \"records\": " << managedRecords
+           << ", \"fenceReadBefore\": " << managedFenceBefore << ", \"fenceReadAfter\": " << managedFenceAfter << ", \"fenceReadRecords\": " << managedFenceRecords << " },\n"
+           << "  \"finGate\": { \"idleHook\": " << (gateHooked ? "true" : "false") << ", \"timer\": " << gateTimer << ", \"stageDelivery\": " << gateDelivery
+           << ", \"registeredRecords\": " << gateRecords << ", \"finishIssued\": " << (finishIssued ? "true" : "false") << ", \"finishRecords\": " << finishRecords
+           << ", \"tokensAccepted\": " << tokensAccepted << ", \"hookRemoved\": " << (hookRemoved ? "true" : "false") << ", \"timerKilled\": " << (timerKilled ? "true" : "false") << " },\n"
            << "  \"fence\": { \"readExport\": " << (fenceRead != nullptr ? "true" : "false") << ", \"setterExported\": " << (setterExported ? "true" : "false")
            << ", \"before\": " << fenceBefore << ", \"after\": " << fenceAfter << " },\n"
            << "  \"cleanup\": { \"erased\": " << erased << ", \"linkCarrierRemoved\": " << (carrierRemoved ? "true" : "false") << " },\n"

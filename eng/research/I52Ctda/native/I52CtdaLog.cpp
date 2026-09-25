@@ -267,6 +267,15 @@ bool I52Log::tokenSet(I52Id token) const
     return set;
 }
 
+size_t I52Log::tokenCount() const
+{
+    auto* section = static_cast<CRITICAL_SECTION*>(section_);
+    EnterCriticalSection(section);
+    const size_t count = tokens_.size();
+    LeaveCriticalSection(section);
+    return count;
+}
+
 std::vector<I52Id> I52Log::missingTokens(const I52RowPlan& plan) const
 {
     std::vector<I52Id> missing;
