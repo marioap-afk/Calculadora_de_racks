@@ -145,12 +145,13 @@ const wchar_t* member(I52Id event)
 }
 
 // Depth of the transaction a transaction-reactor callback is about, from the reactor-supplied count: the subject is
-// the new transaction for about-to-start, and the removed one for ended/aborted.
+// the new transaction for about-to-start and the removed one for aborted. D-1 (09N-B canary on the qualified host):
+// transactionEnded reports numTransactions = 1 while the active count is already 0, so the ended subject is n.
 int subjectDepth(I52Id event, int n)
 {
     switch (event)
     {
-    case I52Id::N_TR_ABOUT_START: case I52Id::N_TR_ENDED: case I52Id::N_TR_ABORTED: return n + 1;
+    case I52Id::N_TR_ABOUT_START: case I52Id::N_TR_ABORTED: return n + 1;
     default: return n;
     }
 }

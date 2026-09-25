@@ -36,6 +36,7 @@ internal static class R3Tests
         ("r3 smoke evaluator", SmokeEvaluator),
         ("r3 smoke FIN-GATE initializes without FINISH, tokens or classification", SmokeFinishGate),
         ("r3 smoke managed observer reads the fence", SmokeManagedFenceRead),
+        ("r3 D-1 N-TR-ENDED subject depth matches the qualified host", TransactionEndedDepth),
     ];
 
     private static void Require(bool value, string message) { if (!value) throw new InvalidDataException(message); }
@@ -474,5 +475,44 @@ internal static class R3Tests
         Require(File.ReadAllText(Path.Combine(research, "native", "I52CtdaAbi.h")).Contains("#define I52CTDA_MANAGED_SMOKE_FENCE_READ " + ManagedCommandObserver.SmokeFenceRead, StringComparison.Ordinal), "entry mode value");
         Require(!File.ReadAllText(Path.Combine(research, "native", "I52CtdaExecutor.cpp")).Contains("I52CTDA_MANAGED_SMOKE_FENCE_READ", StringComparison.Ordinal), "governed executor must not use the smoke fence read");
         Require(File.ReadAllText(Path.Combine(research, "managed-observer", "ObserverApplication.cs")).Contains("if (subscribe == ManagedCommandObserver.SmokeFenceRead) return observer.OnSmokeFenceRead(", StringComparison.Ordinal), "managed entry routes the smoke fence read");
+    }
+
+    // subjectDepth(event, n) as implemented by R-NATIVE-ARX: events in the `return n + 1` case, n otherwise.
+    private static int NativeSubjectDepth(string executor, string eventId, int n)
+    {
+        int start = executor.IndexOf("int subjectDepth(I52Id event, int n)", StringComparison.Ordinal);
+        string body = executor[start..executor.IndexOf("\n}\n", start, StringComparison.Ordinal)];
+        Require(body.Contains("default: return n;", StringComparison.Ordinal), "subjectDepth default");
+        string plusOne = body.Split('\n').Single(l => l.Contains("return n + 1;", StringComparison.Ordinal));
+        return plusOne.Contains("case I52Id::" + V35PlanCompiler.NativeName(eventId) + ":", StringComparison.Ordinal) ? n + 1 : n;
+    }
+
+    // D-1 (first governed canary 09N-B): on the qualified host transactionEnded reports numTransactions = 1 while the
+    // active count is already 0, so the ended subject is the outermost transaction (depth n = 1), the depth RG-TX arms
+    // for TRG-END-PRIMARY-T. N-TR-ABORTED and every other transaction mapping are unchanged.
+    private static void TransactionEndedDepth(string repo)
+    {
+        string research = Path.Combine(repo, "eng", "research", "I52Ctda");
+        string executor = File.ReadAllText(Path.Combine(research, "native", "I52CtdaExecutor.cpp")).Replace("\r\n", "\n");
+        string driver = File.ReadAllText(Path.Combine(research, "native", "I52CtdaDriver.cpp"));
+        const int hostNumTransactions = 1, hostActiveCountAfterEnd = 0;
+        int ended = NativeSubjectDepth(executor, "N-TR-ENDED", hostNumTransactions);
+        Require(ended == hostNumTransactions && ended == hostActiveCountAfterEnd + 1, $"N-TR-ENDED subjectDepth {ended} for the host numTransactions=1");
+        Require(driver.Contains("extra = L\"depth:\" + std::to_wstring(plan_->trigger == I52Id::TRG_END_NESTED_T ? 2 : 1);", StringComparison.Ordinal), "RG-TX arming depth");
+        V35Authority a = Authority(repo);
+        foreach (string probe in new[] { "CTRENDED16SND-ALL", "CTRENDED16APP-ALL" })
+        {
+            V35RowPlan row = a.ByProbe[probe];
+            Require(row.ScheduleOriginEventId == "N-TR-ENDED" && row.TriggerActionId == "TRG-END-PRIMARY-T" && row.GuardIds.Contains("RG-TX") && row.BodyObserverId == "RR-TX", probe + " shape");
+            // The pre-D-1 mapping (n + 1) keyed the host callback as depth 2, so RG-TX never admitted it (false UNKNOWN).
+            Require($"depth:{ended}" == "depth:1", probe + ": the N-TR-ENDED key must match the armed RG-TX depth");
+        }
+        // Unchanged: about-to-start and aborted are n + 1; started, about-to-end and outermost-end are n.
+        Require(NativeSubjectDepth(executor, "N-TR-ABOUT-START", 0) == 1 && NativeSubjectDepth(executor, "N-TR-ABORTED", 1) == 2, "about-start/aborted unchanged");
+        foreach (string e in new[] { "N-TR-STARTED", "N-TR-ABOUT-END", "N-TR-OUTERMOST-END-CALLED" })
+            Require(NativeSubjectDepth(executor, e, 1) == 1, e + " unchanged");
+        // FP-ORDER pairs N-TR by manager and subject depth: the host about-start (n = 0) and ended (n = 1) of one
+        // transaction now share the identity.
+        Require(NativeSubjectDepth(executor, "N-TR-ABOUT-START", 0) == NativeSubjectDepth(executor, "N-TR-ENDED", 1), "about-start/ended identity");
     }
 }
