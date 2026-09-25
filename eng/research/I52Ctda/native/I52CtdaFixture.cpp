@@ -16,19 +16,22 @@
 
 namespace
 {
-// Normative values come from NPM-V34 section 2 (STATE-S-0, STATE-M-0, STATE-SM-0/1). The SM-LINK carrier and
-// the F-REF-C lifecycle follow the V34 binding clarifications of decisions section 164. Names without a V34 value
-// (block, NOD keys, trigger entities, positions) are materialization bindings only.
+// Normative values: NPM-V34 section 2 (STATE-S-0/1, STATE-M-0/1, STATE-SM-0/1, retained by V35) and fixture-v35.json.
+// The SM-LINK carrier and the F-REF-C lifecycle follow the V34 binding clarifications of decisions section 164.
 constexpr const ACHAR* kLayerA = L"RACKCAD_CTDA_V30_A";
 constexpr const ACHAR* kLayerB = L"RACKCAD_CTDA_V30_B";
 constexpr const ACHAR* kReferenceBlock = L"RACKCAD_CTDA_V34_REF";
 constexpr const ACHAR* kSemanticKey = L"RACKCAD_CTDA_V34_F-XR";
+constexpr const ACHAR* kTriggerXrKey = L"RACKCAD_CTDA_V35_F-TRIGGER-XR";
+constexpr const ACHAR* kTriggerXr0 = L"HFV35:TRIGGER-XR:0";
 constexpr const ACHAR* kStateS0 = L"HFV30:S:0";
+constexpr const ACHAR* kStateS1 = L"HFV30:S:1";
 constexpr const ACHAR* kLinkKey = L"RACKCAD_CTDA_V34_SM-LINK";
 constexpr const ACHAR* kLinkPrefix = L"HFV30:LINK:";
 constexpr const ACHAR* kLinkSm0 = L"HFV30:LINK:A,B";
 constexpr const ACHAR* kLinkSm1 = L"HFV30:LINK:A,C";
 const AcGePoint3d kStateM0Displacement(10.0, 20.0, 0.0);
+const AcGeVector3d kStateM1Displacement(110.0, 220.0, 0.0);
 const AcGePoint3d kSiblingAPosition(0.0, 0.0, 0.0);
 const AcGePoint3d kSiblingCCreationPosition(20.0, 20.0, 0.0);
 
@@ -75,6 +78,15 @@ Acad::ErrorStatus writeText(AcDbXrecord* record, const ACHAR* text)
     return record->setFromRbChain(value);
 }
 
+Acad::ErrorStatus addNodXrecord(AcDbDictionary* nod, AcTransactionManager* manager, const ACHAR* key, const ACHAR* text, AcDbObjectId& id)
+{
+    auto* record = new AcDbXrecord();
+    Acad::ErrorStatus status = nod->setAt(key, record, id);
+    if (status != Acad::eOk) { delete record; return status; }
+    if ((status = manager->addNewlyCreatedDBRObject(record)) != Acad::eOk) return status;
+    return writeText(record, text);
+}
+
 std::string ascii(const ACHAR* text)
 {
     std::string result;
@@ -89,7 +101,6 @@ std::string handleText(const AcDbObjectId& id)
     return ascii(buffer);
 }
 
-// Counts the resbufs of an Xrecord and reports whether it is exactly one text resbuf and its value.
 void readPayload(const AcDbXrecord* record, int& count, bool& singleText, std::string& value)
 {
     count = 0; singleText = false; value.clear();
@@ -102,13 +113,6 @@ void readPayload(const AcDbXrecord* record, int& count, bool& singleText, std::s
         value = ascii(chain->resval.rstring);
     }
     if (chain != nullptr) acutRelRb(chain);
-}
-
-bool semanticStateIsS0(const AcDbXrecord* record)
-{
-    int count = 0; bool text = false; std::string value;
-    readPayload(record, count, text, value);
-    return text && value == ascii(kStateS0);
 }
 
 bool linkHolds(const I52SmLinkFacts& facts, const ACHAR* expected)
@@ -128,13 +132,56 @@ std::string describe(const AcDbBlockReference* reference)
     return text.str();
 }
 
-// Reads the SM-LINK relation through the NOD key and cross-checks the bound ObjectId. Never opens erased objects:
-// an erased carrier is detected by eWasErased.
-I52SmLinkFacts readLinkFacts(AcDbTransactionManager* manager, AcDbDatabase* database, AcDbObjectId bound)
+// Model Space inserts of the reference block other than A and B, identified without opening A or B.
+int countForeignInserts(AcDbTransactionManager* manager, AcDbDatabase* database, const I52FixtureIds& ids, I52SmFacts* facts)
+{
+    int count = 0;
+    AcDbObject* object = nullptr;
+    AcDbBlockTableRecord* modelSpace = nullptr;
+    AcDbBlockTableRecordIterator* entities = nullptr;
+    if (manager->getObject(reinterpret_cast<AcDbObject*&>(modelSpace), ids.modelSpace, AcDb::kForRead) != Acad::eOk) return -1;
+    if (database == nullptr || modelSpace->newIterator(entities, true, true) != Acad::eOk) return -1;
+    for (; !entities->done(); entities->step())
+    {
+        AcDbObjectId id;
+        if (entities->getEntityId(id) != Acad::eOk) continue;
+        if (id == ids.siblingA || id == ids.materialReference) continue;
+        if (manager->getObject(object, id, AcDb::kForRead) != Acad::eOk) continue;
+        const AcDbBlockReference* reference = AcDbBlockReference::cast(object);
+        if (reference == nullptr || reference->blockTableRecord() != ids.referenceBlock) continue;
+        ++count;
+        if (facts != nullptr && id == ids.siblingC)
+        {
+            facts->cFound = true;
+            facts->cLive = true;
+            facts->cAtCreationPosition = reference->position() == kSiblingCCreationPosition;
+            facts->cEvidence = describe(reference);
+        }
+    }
+    delete entities;
+    return count;
+}
+
+AcDbTransactionManager* databaseManager(const I52FixtureIds& ids)
+{
+    AcDbDatabase* database = ids.siblingA.database();
+    return database == nullptr ? nullptr : database->transactionManager();
+}
+}
+
+const ACHAR* const I52CtdaFixture::kCancelStagedBytes = L"HFV35:XR:CANCEL-STAGED";
+const ACHAR* const I52CtdaFixture::kTriggerXrWritten = L"HFV35:TRIGGER-XR:1";
+const AcGePoint3d I52CtdaFixture::kTriggerModifiedPosition(1000.0, 1.0, 0.0);
+const AcGePoint3d I52CtdaFixture::kTriggerAppendPosition(1030.0, 0.0, 0.0);
+
+// Reads the SM-LINK relation through the NOD key in the caller's active transaction and cross-checks the bound
+// ObjectId. Never opens erased objects: an erased carrier is detected by eWasErased.
+I52SmLinkFacts I52CtdaFixture::readLink(AcDbTransactionManager* manager) const
 {
     I52SmLinkFacts facts{};
+    AcDbDatabase* database = ids_.linkCarrier.database();
     AcDbObject* object = nullptr;
-    if (manager->getObject(object, database->namedObjectsDictionaryId(), AcDb::kForRead) != Acad::eOk) return facts;
+    if (database == nullptr || manager->getObject(object, database->namedObjectsDictionaryId(), AcDb::kForRead) != Acad::eOk) return facts;
     AcDbDictionary* nod = AcDbDictionary::cast(object);
     if (nod == nullptr) return facts;
     AcDbDictionaryIterator* entries = nod->newIterator();
@@ -152,7 +199,7 @@ I52SmLinkFacts readLinkFacts(AcDbTransactionManager* manager, AcDbDatabase* data
     AcDbObjectId id;
     facts.keyPresent = nod->getAt(kLinkKey, id) == Acad::eOk;
     if (!facts.keyPresent) return facts;
-    facts.identityMatches = !bound.isNull() && id == bound;
+    facts.identityMatches = !ids_.linkCarrier.isNull() && id == ids_.linkCarrier;
     AcDbObject* carrier = nullptr;
     const Acad::ErrorStatus status = manager->getObject(carrier, id, AcDb::kForRead);
     facts.erased = status == Acad::eWasErased;
@@ -161,7 +208,6 @@ I52SmLinkFacts readLinkFacts(AcDbTransactionManager* manager, AcDbDatabase* data
     facts.isXrecord = record != nullptr;
     if (record != nullptr) readPayload(record, facts.resbufCount, facts.isText, facts.value);
     return facts;
-}
 }
 
 Acad::ErrorStatus I52CtdaFixture::materialize(AcDbDatabase* database, AcTransactionManager* manager, I52FixtureIds& ids)
@@ -185,10 +231,9 @@ Acad::ErrorStatus I52CtdaFixture::materialize(AcDbDatabase* database, AcTransact
     AcDbObjectId markerId;
     if ((status = appendEntity(definition, manager, new AcDbPoint(AcGePoint3d::kOrigin), markerId)) != Acad::eOk) return status;
 
-    AcDbObjectId modelSpaceId;
-    if ((status = blocks->getAt(ACDB_MODEL_SPACE, modelSpaceId)) != Acad::eOk) return status;
+    if ((status = blocks->getAt(ACDB_MODEL_SPACE, created.modelSpace)) != Acad::eOk) return status;
     AcDbBlockTableRecord* modelSpace = nullptr;
-    if ((status = manager->getObject(reinterpret_cast<AcDbObject*&>(modelSpace), modelSpaceId, AcDb::kForWrite)) != Acad::eOk) return status;
+    if ((status = manager->getObject(reinterpret_cast<AcDbObject*&>(modelSpace), created.modelSpace, AcDb::kForWrite)) != Acad::eOk) return status;
 
     if ((status = appendTrigger(database, modelSpace, manager, 1000.0, created.triggerModify)) != Acad::eOk) return status;
     if ((status = appendTrigger(database, modelSpace, manager, 1010.0, created.triggerEraseDatabase)) != Acad::eOk) return status;
@@ -199,15 +244,10 @@ Acad::ErrorStatus I52CtdaFixture::materialize(AcDbDatabase* database, AcTransact
 
     AcDbDictionary* nod = nullptr;
     if ((status = manager->getObject(reinterpret_cast<AcDbObject*&>(nod), database->namedObjectsDictionaryId(), AcDb::kForWrite)) != Acad::eOk) return status;
-    if (nod->has(kSemanticKey) || nod->has(kLinkKey)) return Acad::eDuplicateRecordName;
-    auto* semantic = new AcDbXrecord();
-    if ((status = nod->setAt(kSemanticKey, semantic, created.semanticXrecord)) != Acad::eOk) { delete semantic; return status; }
-    if ((status = manager->addNewlyCreatedDBRObject(semantic)) != Acad::eOk) return status;
-    if ((status = writeText(semantic, kStateS0)) != Acad::eOk) return status;
-    auto* link = new AcDbXrecord();
-    if ((status = nod->setAt(kLinkKey, link, created.linkCarrier)) != Acad::eOk) { delete link; return status; }
-    if ((status = manager->addNewlyCreatedDBRObject(link)) != Acad::eOk) return status;
-    if ((status = writeText(link, kLinkSm0)) != Acad::eOk) return status;
+    if (nod->has(kSemanticKey) || nod->has(kTriggerXrKey) || nod->has(kLinkKey)) return Acad::eDuplicateRecordName;
+    if ((status = addNodXrecord(nod, manager, kSemanticKey, kStateS0, created.semanticXrecord)) != Acad::eOk) return status;
+    if ((status = addNodXrecord(nod, manager, kTriggerXrKey, kTriggerXr0, created.triggerXrecord)) != Acad::eOk) return status;
+    if ((status = addNodXrecord(nod, manager, kLinkKey, kLinkSm0, created.linkCarrier)) != Acad::eOk) return status;
 
     ids = created;
     return Acad::eOk;
@@ -218,10 +258,10 @@ I52SmFacts I52CtdaFixture::captureSm(bool includeB) const
     I52SmFacts facts{};
     if (!bound_) return facts;
     AcDbDatabase* database = ids_.siblingA.database();
-    AcDbTransactionManager* manager = database == nullptr ? nullptr : database->transactionManager();
+    AcDbTransactionManager* manager = databaseManager(ids_);
     if (manager == nullptr || manager->startTransaction() == nullptr) return facts;
 
-    facts.link = readLinkFacts(manager, database, ids_.linkCarrier);
+    facts.link = readLink(manager);
     AcDbObject* object = nullptr;
     if (manager->getObject(object, ids_.siblingA, AcDb::kForRead) == Acad::eOk)
     {
@@ -235,38 +275,73 @@ I52SmFacts I52CtdaFixture::captureSm(bool includeB) const
         facts.bLive = manager->getObject(object, ids_.materialReference, AcDb::kForRead) == Acad::eOk;
     }
     facts.cBound = !ids_.siblingC.isNull();
+    facts.foreignReferenceInserts = countForeignInserts(manager, database, ids_, &facts);
+    manager->abortTransaction();
+    return facts;
+}
 
-    AcDbBlockTable* blocks = nullptr;
-    AcDbObjectId modelSpaceId;
-    AcDbBlockTableRecord* modelSpace = nullptr;
-    AcDbBlockTableRecordIterator* entities = nullptr;
-    if (manager->getObject(reinterpret_cast<AcDbObject*&>(blocks), database->blockTableId(), AcDb::kForRead) == Acad::eOk
-        && blocks->getAt(ACDB_MODEL_SPACE, modelSpaceId) == Acad::eOk
-        && manager->getObject(reinterpret_cast<AcDbObject*&>(modelSpace), modelSpaceId, AcDb::kForRead) == Acad::eOk
-        && modelSpace->newIterator(entities, true, true) == Acad::eOk)
+std::string I52CtdaFixture::readSemanticFresh() const
+{
+    AcDbTransactionManager* manager = databaseManager(ids_);
+    if (!bound_ || manager == nullptr || manager->startTransaction() == nullptr) return "<UNAVAILABLE>";
+    std::string text;
+    if (readXrecordText(manager, ids_.semanticXrecord, text) != Acad::eOk) text = "<UNAVAILABLE>";
+    manager->abortTransaction();
+    return text;
+}
+
+std::string I52CtdaFixture::readTriggerXrFresh() const
+{
+    AcDbTransactionManager* manager = databaseManager(ids_);
+    if (!bound_ || manager == nullptr || manager->startTransaction() == nullptr) return "<UNAVAILABLE>";
+    std::string text;
+    if (readXrecordText(manager, ids_.triggerXrecord, text) != Acad::eOk) text = "<UNAVAILABLE>";
+    manager->abortTransaction();
+    return text;
+}
+
+// VER-M: the only reader of F-REF-B (VER-SM never opens it).
+I52MaterialFacts I52CtdaFixture::readMaterialFresh() const
+{
+    I52MaterialFacts facts{};
+    AcDbTransactionManager* manager = databaseManager(ids_);
+    if (!bound_ || manager == nullptr || manager->startTransaction() == nullptr) return facts;
+    AcDbObject* object = nullptr;
+    if (manager->getObject(object, ids_.materialReference, AcDb::kForRead) == Acad::eOk)
     {
-        for (; !entities->done(); entities->step())
+        if (const AcDbBlockReference* reference = AcDbBlockReference::cast(object))
         {
-            AcDbObjectId id;
-            if (entities->getEntityId(id) != Acad::eOk) continue;
-            // A and B are identified without being opened here, so a post-trigger capture never touches F-REF-B.
-            if (id == ids_.siblingA || id == ids_.materialReference) continue;
-            if (manager->getObject(object, id, AcDb::kForRead) != Acad::eOk) continue;
-            const AcDbBlockReference* reference = AcDbBlockReference::cast(object);
-            if (reference == nullptr || reference->blockTableRecord() != ids_.referenceBlock) continue;
-            ++facts.foreignReferenceInserts;
-            if (id == ids_.siblingC)
-            {
-                facts.cFound = true;
-                facts.cLive = true;
-                facts.cAtCreationPosition = reference->position() == kSiblingCCreationPosition;
-                facts.cEvidence = describe(reference);
-            }
+            facts.live = true;
+            const AcGePoint3d p = reference->position();
+            facts.x = p.x; facts.y = p.y; facts.z = p.z;
+            facts.layer = reference->layerId() == ids_.layerA ? "RACKCAD_CTDA_V30_A" : reference->layerId() == ids_.layerB ? "RACKCAD_CTDA_V30_B" : "OTHER";
         }
-        delete entities;
     }
     manager->abortTransaction();
     return facts;
+}
+
+Acad::ErrorStatus I52CtdaFixture::writeXrecordText(AcDbTransactionManager* manager, AcDbObjectId id, const ACHAR* text)
+{
+    if (manager == nullptr || manager->numActiveTransactions() == 0) return Acad::eNoActiveTransactions;
+    AcDbObject* object = nullptr;
+    Acad::ErrorStatus status = manager->getObject(object, id, AcDb::kForWrite);
+    if (status != Acad::eOk) return status;
+    AcDbXrecord* record = AcDbXrecord::cast(object);
+    return record == nullptr ? Acad::eWrongObjectType : writeText(record, text);
+}
+
+Acad::ErrorStatus I52CtdaFixture::readXrecordText(AcDbTransactionManager* manager, AcDbObjectId id, std::string& text)
+{
+    if (manager == nullptr || manager->numActiveTransactions() == 0) return Acad::eNoActiveTransactions;
+    AcDbObject* object = nullptr;
+    Acad::ErrorStatus status = manager->getObject(object, id, AcDb::kForRead);
+    if (status != Acad::eOk) return status;
+    const AcDbXrecord* record = AcDbXrecord::cast(object);
+    if (record == nullptr) return Acad::eWrongObjectType;
+    int count = 0; bool single = false;
+    readPayload(record, count, single, text);
+    return single ? Acad::eOk : Acad::eInvalidInput;
 }
 
 I52FixtureResolution I52CtdaFixture::resolve() const
@@ -289,16 +364,10 @@ I52FixtureResolution I52CtdaFixture::resolve() const
     trigger("F-TRIGGER-MOD", ids_.triggerModify);
     trigger("F-TRIGGER-ERASE-DB", ids_.triggerEraseDatabase);
     trigger("F-TRIGGER-ERASE-OBJ", ids_.triggerEraseObject);
-    {
-        AcDbObjectPointer<AcDbXrecord> record(ids_.semanticXrecord, AcDb::kForRead);
-        line("F-XR", ids_.semanticXrecord, "PRESENT", record.openStatus() == Acad::eOk && !record->isErased() && semanticStateIsS0(record.object()), "STATE-S-0");
-    }
-    {
-        AcDbObjectPointer<AcDbBlockReference> reference(ids_.materialReference, AcDb::kForRead);
-        const bool ok = reference.openStatus() == Acad::eOk && !reference->isErased()
-            && reference->position() == kStateM0Displacement && reference->layerId() == ids_.layerA;
-        line("F-REF-B", ids_.materialReference, "PRESENT", ok, "STATE-M-0");
-    }
+    line("F-TRIGGER-XR", ids_.triggerXrecord, "PRESENT", readTriggerXrFresh() == ascii(kTriggerXr0), "HFV35:TRIGGER-XR:0");
+    line("F-XR", ids_.semanticXrecord, "PRESENT", readSemanticFresh() == ascii(kStateS0), "STATE-S-0");
+    const I52MaterialFacts m = readMaterialFresh();
+    line("F-REF-B", ids_.materialReference, "PRESENT", m.live && m.x == kStateM0Displacement.x && m.y == kStateM0Displacement.y && m.z == kStateM0Displacement.z && m.layer == "RACKCAD_CTDA_V30_A", "STATE-M-0");
     line("F-REF-A", ids_.siblingA, "PRESENT", sm.anchorALive, "STATE-SM-0 sibling A");
     line("F-REF-C", ids_.siblingC, "ABSENT", !sm.cBound && sm.foreignReferenceInserts == 0, "declared absent (not created)");
     result.bindingResolved = linkHolds(sm.link, kLinkSm0) && sm.anchorALive && sm.bLive && !sm.cBound && sm.foreignReferenceInserts == 0;
@@ -308,24 +377,25 @@ I52FixtureResolution I52CtdaFixture::resolve() const
     return result;
 }
 
+// MUT-S: exactly STATE-S-1 on F-XR through the caller's active top transaction.
 Acad::ErrorStatus I52CtdaFixture::mutateSemantic()
 {
     if (!bound_ || ids_.semanticXrecord.isNull()) return Acad::eNullObjectId;
-    AcDbObjectPointer<AcDbXrecord> record(ids_.semanticXrecord, AcDb::kForWrite);
-    if (record.openStatus() != Acad::eOk) return record.openStatus();
-    resbuf value{};
-    value.restype = AcDb::kDxfText;
-    value.resval.rstring = const_cast<ACHAR*>(L"HFV30:S:1");
-    return record->setFromRbChain(value);
+    return writeXrecordText(databaseManager(ids_), ids_.semanticXrecord, kStateS1);
 }
 
+// MUT-M: exactly STATE-M-1 on F-REF-B (displacement (110,220,0), layer RACKCAD_CTDA_V30_B) through the top transaction.
 Acad::ErrorStatus I52CtdaFixture::mutateMaterial()
 {
     if (!bound_ || ids_.materialReference.isNull() || ids_.layerB.isNull()) return Acad::eNullObjectId;
-    AcDbObjectPointer<AcDbBlockReference> reference(ids_.materialReference, AcDb::kForWrite);
-    if (reference.openStatus() != Acad::eOk) return reference.openStatus();
-    Acad::ErrorStatus status = reference->setBlockTransform(AcGeMatrix3d::translation(AcGeVector3d(110.0, 220.0, 0.0)));
+    AcDbTransactionManager* manager = databaseManager(ids_);
+    if (manager == nullptr || manager->numActiveTransactions() == 0) return Acad::eNoActiveTransactions;
+    AcDbObject* object = nullptr;
+    Acad::ErrorStatus status = manager->getObject(object, ids_.materialReference, AcDb::kForWrite);
     if (status != Acad::eOk) return status;
+    AcDbBlockReference* reference = AcDbBlockReference::cast(object);
+    if (reference == nullptr) return Acad::eWrongObjectType;
+    if ((status = reference->setBlockTransform(AcGeMatrix3d::translation(kStateM1Displacement))) != Acad::eOk) return status;
     return reference->setLayer(ids_.layerB);
 }
 
@@ -337,17 +407,15 @@ Acad::ErrorStatus I52CtdaFixture::mutateMixed()
     if (!bound_ || ids_.linkCarrier.isNull() || ids_.referenceBlock.isNull() || ids_.layerA.isNull()) return Acad::eNullObjectId;
     if (!ids_.siblingC.isNull()) return Acad::eInvalidInput;
     AcDbDatabase* database = ids_.siblingA.database();
-    AcDbTransactionManager* manager = database == nullptr ? nullptr : database->transactionManager();
+    AcDbTransactionManager* manager = databaseManager(ids_);
     if (manager == nullptr || manager->numActiveTransactions() == 0) return Acad::eNoActiveTransactions;
-    const I52SmFacts before = captureSm(false);
-    if (!linkHolds(before.link, kLinkSm0) || !before.anchorALive || before.foreignReferenceInserts != 0) return Acad::eInvalidInput;
+    const I52SmLinkFacts before = readLink(manager);
+    AcDbObject* anchor = nullptr;
+    const bool anchorLive = manager->getObject(anchor, ids_.siblingA, AcDb::kForRead) == Acad::eOk;
+    if (!linkHolds(before, kLinkSm0) || !anchorLive || countForeignInserts(manager, database, ids_, nullptr) != 0) return Acad::eInvalidInput;
 
-    AcDbBlockTable* blocks = nullptr;
-    Acad::ErrorStatus status = manager->getObject(reinterpret_cast<AcDbObject*&>(blocks), database->blockTableId(), AcDb::kForRead);
-    AcDbObjectId modelSpaceId;
-    if (status == Acad::eOk) status = blocks->getAt(ACDB_MODEL_SPACE, modelSpaceId);
     AcDbBlockTableRecord* modelSpace = nullptr;
-    if (status == Acad::eOk) status = manager->getObject(reinterpret_cast<AcDbObject*&>(modelSpace), modelSpaceId, AcDb::kForWrite);
+    Acad::ErrorStatus status = manager->getObject(reinterpret_cast<AcDbObject*&>(modelSpace), ids_.modelSpace, AcDb::kForWrite);
     if (status != Acad::eOk) return status;
     AcDbObjectId created;
     if ((status = appendReference(database, modelSpace, manager, kSiblingCCreationPosition, ids_.referenceBlock, ids_.layerA, created)) != Acad::eOk) return status;
@@ -371,25 +439,39 @@ Acad::ErrorStatus I52CtdaFixture::mutateAll()
     return mutateMixed();
 }
 
-Acad::ErrorStatus I52CtdaFixture::removeSmResources(AcTransactionManager* manager)
+Acad::ErrorStatus I52CtdaFixture::removeFixtureResources(AcTransactionManager* manager, int& erased, int& skippedErased)
 {
-    if (!bound_ || manager == nullptr || ids_.linkCarrier.isNull()) return Acad::eNullObjectId;
+    erased = 0; skippedErased = 0;
+    if (!bound_ || manager == nullptr) return Acad::eNullObjectId;
     AcDbDatabase* database = ids_.linkCarrier.database();
     if (database == nullptr) return Acad::eNullPtr;
-    AcDbObject* object = nullptr;
     Acad::ErrorStatus status = Acad::eOk;
-    if (!ids_.siblingC.isNull())
+    // Entities: an id reported erased (the trigger's own erase) is never reopened.
+    const AcDbObjectId entities[] = { ids_.triggerModify, ids_.triggerEraseDatabase, ids_.triggerEraseObject, ids_.triggerAppend, ids_.materialReference, ids_.siblingA, ids_.siblingC };
+    for (const AcDbObjectId& id : entities)
     {
-        if ((status = manager->getObject(object, ids_.siblingC, AcDb::kForWrite)) != Acad::eOk) return status;
+        if (id.isNull()) continue;
+        if (id.isErased()) { ++skippedErased; continue; }
+        AcDbObject* object = nullptr;
+        if ((status = manager->getObject(object, id, AcDb::kForWrite)) != Acad::eOk) return status;
         if ((status = object->erase()) != Acad::eOk) return status;
+        ++erased;
     }
     AcDbDictionary* nod = nullptr;
     if ((status = manager->getObject(reinterpret_cast<AcDbObject*&>(nod), database->namedObjectsDictionaryId(), AcDb::kForWrite)) != Acad::eOk) return status;
-    AcDbObjectId removed;
-    if ((status = nod->remove(kLinkKey, removed)) != Acad::eOk) return status;
-    if (removed != ids_.linkCarrier) return Acad::eInvalidInput;
-    if ((status = manager->getObject(object, ids_.linkCarrier, AcDb::kForWrite)) != Acad::eOk) return status;
-    return object->erase();
+    const struct { const ACHAR* key; AcDbObjectId id; } records[] = { { kSemanticKey, ids_.semanticXrecord }, { kTriggerXrKey, ids_.triggerXrecord }, { kLinkKey, ids_.linkCarrier } };
+    for (const auto& record : records)
+    {
+        AcDbObjectId removed;
+        if ((status = nod->remove(record.key, removed)) != Acad::eOk) return status;
+        if (removed != record.id) return Acad::eInvalidInput;
+        if (record.id.isErased()) { ++skippedErased; continue; }
+        AcDbObject* object = nullptr;
+        if ((status = manager->getObject(object, record.id, AcDb::kForWrite)) != Acad::eOk) return status;
+        if ((status = object->erase()) != Acad::eOk) return status;
+        ++erased;
+    }
+    return Acad::eOk;
 }
 
 bool I52CtdaFixture::linkCarrierRemoved() const
@@ -399,11 +481,5 @@ bool I52CtdaFixture::linkCarrierRemoved() const
     if (database == nullptr) return false;
     AcDbObjectPointer<AcDbDictionary> nod(database->namedObjectsDictionaryId(), AcDb::kForRead);
     if (nod.openStatus() != Acad::eOk || nod->has(kLinkKey)) return false;
-    AcDbObjectPointer<AcDbObject> carrier(ids_.linkCarrier, AcDb::kForRead);
-    return carrier.openStatus() == Acad::eWasErased;
-}
-
-bool I52CtdaFixture::protectedTargetsAreLive() const
-{
-    return bound_ && !ids_.semanticXrecord.isNull() && !ids_.materialReference.isNull() && !ids_.siblingA.isNull() && !ids_.linkCarrier.isNull();
+    return ids_.linkCarrier.isErased();
 }

@@ -1,5 +1,13 @@
 # I-52 CT-DA native external build
 
+R3 (frozen V35): the canonical build is `eng/research/I52Ctda/build-r3.ps1 -SourceSha <committed sha>`. It refuses a
+dirty tree or a HEAD that differs from the SHA, verifies the V35 freeze and the generated authority, rebuilds
+`native/I52CtdaNative.vcxproj` and `payload/I52CtdaPayload.vcxproj` (Release|x64, v143, `PreferredToolArchitecture=x64`,
+VC tools `14.44.35207`, ObjectARX `25.0.58.0`), builds the managed observer and publishes the harness, records dumpbin
+headers/imports/exports and the linker read tlogs, computes the new build tuple (`harness tuple-v35`) and writes a new
+versioned package with `SHA256SUMS` and `TRANSFER-METADATA.json` outside the repository. Existing packages are never
+overwritten. The sections below describe the historical V34 single-helper build.
+
 This package definition contains references and instructions only. It does not redistribute Autodesk or Microsoft files.
 
 ## Required build-machine tuple
