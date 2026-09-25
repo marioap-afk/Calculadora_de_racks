@@ -59,8 +59,10 @@ typedef int32_t (*I52CtdaFinishFenceIsSetFn)(void);
 
 // Registration entry of R-MANAGED-OBSERVER (RR-MANAGED-CMD). Implementation helper, not part of LOG-SEQ-01: the
 // managed module hands the entry to R-NATIVE-ARX when it is loaded; DRIVER-CMD-01 calls it during REGISTER
-// (subscribe=1) and CLN-BASE calls it again (subscribe=0). Returns 0 on success.
+// (subscribe=1) and CLN-BASE calls it again (subscribe=0). Returns 0 on success. The R3 smoke alone also calls it with
+// I52CTDA_MANAGED_SMOKE_FENCE_READ: the managed module reads I52Ctda_FinishFenceIsSet(), records the value and returns it.
 typedef int32_t (__stdcall *I52CtdaManagedEntryFn)(int32_t subscribe, uint64_t documentId, const wchar_t* probeId);
+#define I52CTDA_MANAGED_SMOKE_FENCE_READ 2
 
 // Payload removal export of R-PAYLOAD-ARX (bound by R-NATIVE-ARX in CLN-BASE). Returns the Acad::ErrorStatus of
 // removeReactor as int32 (0 = eOk); I52CTDA_PAYLOAD_NOTHING_REGISTERED when RR-PAYLOAD-DB was never registered.

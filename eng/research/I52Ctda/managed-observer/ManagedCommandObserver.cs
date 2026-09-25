@@ -24,6 +24,7 @@ public sealed class ManagedCommandObserver(ILogSequencer log, string probeId)
     public const ulong DeliveryNew = ulong.MaxValue;
     public const string StageCurrent = "*";
     public const string CommandCurrent = "*";
+    public const int SmokeFenceRead = 2;  // I52CTDA_MANAGED_SMOKE_FENCE_READ: registration-entry mode used only by I52CTDA_SMOKE
 
     public bool Subscribed { get; private set; }
 
@@ -54,6 +55,14 @@ public sealed class ManagedCommandObserver(ILogSequencer log, string probeId)
         // MARK-MANAGED-CMD-END@STG-FIXTURE-CMD binds to Document.CommandEnded of I52CTDA_FIXTURE.
         Append("STG-FIXTURE-CMD", DeliveryCurrent, documentId, databaseId, "MARK-MANAGED-CMD-END", $"command={command};source=Document.CommandEnded");
         log.TokenSet("TOK-MANAGED-CMD-END", DeliveryCurrent);
+    }
+
+    // R3 smoke only: reads FINISH-FENCE-01 through I52Ctda_FinishFenceIsSet, records the observed value and returns it.
+    public int OnSmokeFenceRead(ulong documentId, ulong databaseId)
+    {
+        int fence = log.FinishFenceIsSet();
+        Append(StageCurrent, DeliveryCurrent, documentId, databaseId, "FINISH-FENCE-01", $"smoke=1;phase=SMOKE-READ;reader={ModuleId};fenceIsSet={fence}");
+        return fence;
     }
 
     private void Append(string stage, ulong delivery, ulong documentId, ulong databaseId, string eventOrMarker, string payload) =>
