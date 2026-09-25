@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "R3 IMPLEMENTATION - BUILD SIDE",
+  "governingFreeze": {
+    "V35_FREEZE_SHA": "86089886f37da05c2de5dcf9e237044a3deeada3",
+    "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+    "freezeManifest": "docs/automation/evidence/I-52-v35-freeze-manifest.json",
+    "revision": "V35-A2",
+    "verifiedAtBuild": true
+  },
+  "entrySha": "6a39728f49c7cf29fd6a6d6675cffbe91d406d10",
+  "sourceSha": "9323e55a5eb9637c7d94a57bef65b3a5234ec8bb",
+  "sourceCi": "36184280179 success",
+  "sourceCommits": [
+    {
+      "sha": "d13982535b0f2d341b570bdb980cc44a1f3c812b",
+      "role": "R3 implementation (native, payload, managed observer, control plane, harness, tests)",
+      "ci": "36183398992 success"
+    },
+    {
+      "sha": "9323e55a5eb9637c7d94a57bef65b3a5234ec8bb",
+      "role": "tuple collection fix (build-r3.ps1, V35TupleCommand); canonical build source",
+      "ci": "36184280179 success"
+    }
+  ],
+  "failedBuildAttempts": [
+    {
+      "sourceSha": "d13982535b0f2d341b570bdb980cc44a1f3c812b",
+      "directory": "D:/I52-CTDA-R3/d1398253",
+      "failure": "tuple-v35 hashed logs/tuple.log while build-r3.ps1 was writing the command's own output into it",
+      "status": "INCOMPLETE; no TRANSFER-METADATA, SHA256SUMS, tuple or zip; retained, not overwritten, not canonical"
+    }
+  ],
+  "components": {
+    "R-NATIVE-ARX": "native/ governed plan interpreter: LOG-SEQ-01, stage activations, 17 completion tokens, guards by keySchema, 22 triggers, 9 setup actions, 7 execution contexts, 5 mutations, 6 cleanup steps, FIN-GATE-01, CMD-FINISH, FINISH-FENCE-01",
+    "R-PAYLOAD-ARX": "payload/ separate vcxproj: PAYLOAD-DB-BINDING, C15 handshake, RR-PAYLOAD-DB (fence read first), I52CtdaPayload_RemoveReactor",
+    "R-MANAGED-OBSERVER": "managed-observer/ net8.0-windows x64: RR-MANAGED-CMD, MARK-MANAGED-CMD-END, TOK-MANAGED-CMD-END",
+    "CONTROL-PLANE-RESULT-01": "control-plane/V35/V35ResultEngine.cs: RESULT-RULE-V35 five steps, EVIDENCE-COMPLETE (8 items), SAFETY-EVIDENCE-COMPLETE, FP-CLEANUP-SAFETY",
+    "authority": "control-plane/V35: freeze guard, plan compiler; generated native/V35Ids.inc, V35PlanTable.inc, V35Authority.inc and runtime-plan-v35.json",
+    "harness": "freeze-v35, generate-v35, check-generated-v35, plan, conformance-v35, probe (single ProbeId), smoke-v35, result-v35, tuple-v35"
+  },
+  "runtimePlans": {
+    "resolved": 100,
+    "rowHashesEqualApprovedZ": 100,
+    "unknownProbeIdFallbacks": 0,
+    "generatedDrift": 0
+  },
+  "frozenCounts": {
+    "probeIds": 100,
+    "eventIds": 27,
+    "reachableCallbacks": 26,
+    "schedulers": 3,
+    "supportActions": 7,
+    "fixtureIdentities": 8
+  },
+  "abi": {
+    "exports": [
+      "I52Ctda_LogAppend",
+      "I52Ctda_TokenSet",
+      "I52Ctda_QueryC15Arm",
+      "I52Ctda_FinishFenceIsSet"
+    ],
+    "fenceRead": "int32_t I52Ctda_FinishFenceIsSet(void)",
+    "fenceSetterExported": false,
+    "implementationHelperExport": "I52Ctda_BindManagedObserver (RR-MANAGED-CMD registration entry; not LOG-SEQ-01)",
+    "payloadExports": [
+      "I52CtdaPayload_RemoveReactor"
+    ]
+  },
+  "artifacts": {
+    "R-NATIVE-ARX": {
+      "bytes": 828416,
+      "sha256": "251ED291B2005539227562B8AC7B8133D68863576860A4B27DE63BDBADA0BFF7",
+      "machine": "x64 (0x8664)",
+      "importedDlls": [
+        "accore.dll",
+        "acdb25.dll",
+        "acge25.dll",
+        "acpal.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "bcrypt.dll",
+        "kernel32.dll",
+        "msvcp140.dll",
+        "user32.dll",
+        "vcruntime140.dll",
+        "vcruntime140_1.dll"
+      ],
+      "exports": [
+        "I52Ctda_BindManagedObserver",
+        "I52Ctda_FinishFenceIsSet",
+        "I52Ctda_LogAppend",
+        "I52Ctda_QueryC15Arm",
+        "I52Ctda_TokenSet",
+        "acrxEntryPoint",
+        "acrxGetApiVersion"
+      ],
+      "pdbSha256": "2F3EA2CED022DBA9BA1629E05748FD441A738E9A4D5764A29A279D953F750772"
+    },
+    "R-PAYLOAD-ARX": {
+      "bytes": 81920,
+      "sha256": "B665D01AA8A6AF7A0CA2970FE19AC560797766582F7A1E45A89080FAA2E9101E",
+      "machine": "x64 (0x8664)",
+      "importedDlls": [
+        "accore.dll",
+        "acdb25.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "kernel32.dll",
+        "msvcp140.dll",
+        "vcruntime140.dll",
+        "vcruntime140_1.dll"
+      ],
+      "exports": [
+        "I52CtdaPayload_RemoveReactor",
+        "acrxEntryPoint",
+        "acrxGetApiVersion"
+      ],
+      "pdbSha256": "93A02CD2D3D00773FC6C530DFA0711FF02E89E2C43AB0815B3FA5E68F30251DD"
+    },
+    "R-MANAGED-OBSERVER": {
+      "bytes": 15360,
+      "sha256": "EB7DC35BEB20156D169FC4F5A503BDD26BAFFFCC995CE3E83D42CA5C64F1234F",
+      "targetFramework": ".NETCoreApp,Version=v8.0",
+      "informationalVersion": "1.0.0+9323e55a5eb9637c7d94a57bef65b3a5234ec8bb"
+    }
+  },
+  "linkedLibraries": {
+    "nativeHelper": [
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UCRT\\X64\\UCRT.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\ADVAPI32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\BCRYPT.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\COMDLG32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\GDI32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\KERNEL32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\ODBC32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\ODBCCP32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\OLE32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\OLEAUT32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\SHELL32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\USER32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\UUID.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\WINSPOOL.LIB",
+      "D:\\CDROM1\\LIB-X64\\ACAD.LIB",
+      "D:\\CDROM1\\LIB-X64\\ACCORE.LIB",
+      "D:\\CDROM1\\LIB-X64\\ACDB25.LIB",
+      "D:\\CDROM1\\LIB-X64\\ACGE25.LIB",
+      "D:\\CDROM1\\LIB-X64\\ACPAL.LIB",
+      "D:\\CDROM1\\LIB-X64\\RXAPI.LIB",
+      "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCPRT.LIB",
+      "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCRT.LIB",
+      "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\OLDNAMES.LIB",
+      "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\VCRUNTIME.LIB"
+    ],
+    "payload": [
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UCRT\\X64\\UCRT.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\ADVAPI32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\COMDLG32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\GDI32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\KERNEL32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\ODBC32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\ODBCCP32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\OLE32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\OLEAUT32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\SHELL32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\USER32.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\UUID.LIB",
+      "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.28000.0\\UM\\X64\\WINSPOOL.LIB",
+      "D:\\CDROM1\\LIB-X64\\ACAD.LIB",
+      "D:\\CDROM1\\LIB-X64\\ACCORE.LIB",
+      "D:\\CDROM1\\LIB-X64\\ACDB25.LIB",
+      "D:\\CDROM1\\LIB-X64\\RXAPI.LIB",
+      "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCPRT.LIB",
+      "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCRT.LIB",
+      "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\OLDNAMES.LIB",
+      "D:\\VISUAL STUDIO\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\VCRUNTIME.LIB"
+    ]
+  },
+  "toolchain": {
+    "compiler": {
+      "bytes": 677776,
+      "path": "D:\\Visual Studio\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "sha256": "FE251EF50A1545B1B0835EE17B1E785459712B38D79E45B5C1D3D28970A36619",
+      "version": "19.44.35229.0"
+    },
+    "linker": {
+      "bytes": 3252616,
+      "path": "D:\\Visual Studio\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe",
+      "sha256": "A364AF801A8539E4324D9489313DBF001D959128451FC99A27B24676BBAC058F",
+      "version": "14.44.35229.0"
+    },
+    "msbuild": {
+      "bytes": 376112,
+      "path": "D:\\Visual Studio\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "sha256": "3B6653078E066A29358E7B81E0DA45A22BF8F6E782899E5F79EAD399AA5097DF",
+      "version": "18.10.1.42706"
+    },
+    "platformToolset": "v143",
+    "vcToolsVersion": "14.44.35207",
+    "dotnetSdk": "8.0.425",
+    "objectArxSdk": {
+      "root": "D:\\CDROM1",
+      "version": "25.0.58.0"
+    }
+  },
+  "buildTupleHash": "CAF823A9AFC21B13FF063F0F92B37CD928505E279A59B861A0F9089EFAA64B64",
+  "buildTupleHashMethod": "SHA-256 over UTF-8 compact JSON of buildMachineToolchainTuple with keys sorted ordinally at every level",
+  "transferPackage": {
+    "directory": "D:/I52-CTDA-R3/9323e55a",
+    "zip": "D:/I52-CTDA-R3/9323e55a.zip",
+    "zipSha256": "83DED475708275D4B5AFB89D5E81D3CEB541F1E1502924AADE7482625487E620",
+    "sha256sums": "SHA256SUMS",
+    "metadata": "TRANSFER-METADATA.json"
+  },
+  "superseded": {
+    "oldArxSha256": "7F9C9C052D83A12FCFCEB5ED57F8FC28C25290FC0A347310F46E3D48BE9ED421",
+    "oldArxStatus": "SUPERSEDED (historical V34-era canonical; not reusable)",
+    "oldBuildTupleHash": "375B3D5C5E1EBD42D2920B628DAF0AC1F538A8DC367FF956C9D7C08DF7D46E25",
+    "oldBuildTupleStatus": "SUPERSEDED",
+    "oldR2PreRunTupleHash": "3FB9E0F9E8F7532BB3BD07770C1577487C034E97003694D9265977BAEECEF639",
+    "oldR2PreRunTupleStatus": "VOID",
+    "oldBuildSourceSha": "8bf3733f07ebaa2724a1c72335f100acad8905e4 (reproducible from history; research test 'native source matches canonical build')"
+  },
+  "implementationInterpretations": [
+    "Q1 pre-PROBE phase facts (RUN-ENV-01, BOOT-01) are emitted as records inside the STG-PROBE-CMD activation; the catalog has no boot stage and nothing is logged before I52CTDA_PROBE",
+    "Q2 PAYLOAD-DB-BINDING local check: workingDatabase()==curDocument()->database() and curDocument file == I52_CTDA_SCRATCH_DWG; I52Ctda_QueryC15Arm re-checks the BOOT-01 database identity",
+    "Q3 RR-MANAGED-CMD registration entry handed to R-NATIVE-ARX through the helper export I52Ctda_BindManagedObserver",
+    "Q4 sequencer conventions for foreign modules: DeliveryId 0 = current, ~0 = new activation; StageId/CommandIdentity '*' = stamped by R-NATIVE-ARX",
+    "Q5 after I52CTDA_PROBE returns and before FINISH, records with no active governed stage carry the INFRA stage STG-FIN-GATE",
+    "Q6 RG-TX TransactionIdentity = subject transaction depth derived from the reactor numTransactions argument (host semantics to be confirmed by evidence)"
+  ],
+  "tests": {
+    "researchTests": "63/63 (40 existing incl. 4 migrated from the superseded V34 native binding, 23 new R3)",
+    "validateV35Catalog": "PASS (7/7 TRUE)",
+    "conformanceV35": "Holds",
+    "validateR1b": "PASS"
+  },
+  "productDiff": "NONE",
+  "autoCadStartedOnBuildMachine": false,
+  "hostSmoke": "PENDING (next gate R3 HOST SMOKE / ZERO PROBES)",
+  "governingProbesExecuted": 0,
+  "ctdaHostPass": "NOT EVALUATED"
+}
