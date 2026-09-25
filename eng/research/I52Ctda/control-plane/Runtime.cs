@@ -14,7 +14,8 @@ public enum CleanupObligation
     CmdCtxDrained,
     ReentrancyGuardsReset,
     ScratchProcessExited,
-    FixtureAccounted
+    FixtureAccounted,
+    LinkCarrierRemoved
 }
 
 public sealed class CleanupStateMachine

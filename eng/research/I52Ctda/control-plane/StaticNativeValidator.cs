@@ -2,9 +2,9 @@ using System.Text.RegularExpressions;
 
 namespace I52Ctda.ControlPlane;
 
-public sealed record StaticNativeValidation(int DispatchEntries, int EventMappings, int SchedulerSymbols, int SupportActionSymbols, bool BalancedBraces, IReadOnlyList<string> MissingTokens)
+public sealed record StaticNativeValidation(int DispatchEntries, int EventMappings, int SchedulerSymbols, int SupportActionSymbols, bool BalancedBraces, IReadOnlyList<string> MissingTokens, IReadOnlyList<string> SmBindingViolations)
 {
-    public bool IsValid => DispatchEntries == 100 && EventMappings == 26 && SchedulerSymbols == 3 && SupportActionSymbols == 7 && BalancedBraces && MissingTokens.Count == 0;
+    public bool IsValid => DispatchEntries == 100 && EventMappings == 26 && SchedulerSymbols == 3 && SupportActionSymbols == 7 && BalancedBraces && MissingTokens.Count == 0 && SmBindingViolations.Count == 0;
 }
 
 public static class StaticNativeValidator
@@ -28,6 +28,8 @@ public static class StaticNativeValidator
             schedulers.Count(s => source.Contains(s, StringComparison.Ordinal)),
             actions.Count(a => source.Contains(a, StringComparison.Ordinal)),
             opens == closes,
-            missing);
+            missing,
+            SmBindingGuard.Check(File.ReadAllText(Path.Combine(native, "I52CtdaFixture.cpp")))
+                .Concat(SmBindingGuard.CheckHeader(File.ReadAllText(Path.Combine(native, "I52CtdaFixture.h")))).ToArray());
     }
 }

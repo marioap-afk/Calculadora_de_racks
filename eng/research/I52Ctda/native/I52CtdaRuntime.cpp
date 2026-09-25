@@ -245,5 +245,5 @@ Acad::ErrorStatus I52CtdaRuntime::endTransaction(AcTransactionManager* m) { cons
 Acad::ErrorStatus I52CtdaRuntime::abortTransaction(AcTransactionManager* m) { const auto s = m == nullptr ? Acad::eNullPtr : m->abortTransaction(); if (s == Acad::eOk) --ownedTransactions_; return s; }
 bool I52CtdaRuntime::armGuard(const char* id) { std::scoped_lock lock(mutex_); return guards_.insert(id).second; }
 void I52CtdaRuntime::disarmGuard(const char* id) { std::scoped_lock lock(mutex_); guards_.erase(id); }
-bool I52CtdaRuntime::cleanupComplete() const { std::scoped_lock lock(mutex_); return ownedTransactions_ == 0 && ownedLocks_ == 0 && queuedWork_ == 0 && guards_.empty(); }
+bool I52CtdaRuntime::cleanupComplete() const { std::scoped_lock lock(mutex_); return ownedTransactions_ == 0 && ownedLocks_ == 0 && queuedWork_ == 0 && guards_.empty() && !linkCarrierOutstanding_; }
 size_t I52CtdaRuntime::activeGuards() const { std::scoped_lock lock(mutex_); return guards_.size(); }

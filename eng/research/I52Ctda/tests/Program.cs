@@ -18,7 +18,12 @@ var tests = new (string Name, Action Run)[]
     ("smoke rejects governed dispatch", SmokeRejectsGovernedDispatch),
     ("quit script discards changes", QuitScriptDiscardsChanges), ("smoke rejects mutated scratch dwg", SmokeRejectsMutatedScratchDrawing),
     ("smoke rejects new scratch bak", SmokeRejectsNewScratchBackup), ("smoke passes with untouched scratch", SmokePassesWithUntouchedScratch),
-    ("scratch integrity capture", ScratchIntegrityCapture), ("native source matches canonical build", NativeSourceMatchesCanonicalBuild)
+    ("scratch integrity capture", ScratchIntegrityCapture), ("native source matches canonical build", NativeSourceMatchesCanonicalBuild),
+    ("sm precondition accepts SM-0", SmPreconditionAcceptsSm0), ("sm carrier anomalies are unknown", SmCarrierAnomaliesAreUnknown),
+    ("sm precondition requires C absent and B live", SmPreconditionRequiresCAbsent), ("ver-sm classification", VerSmClassification),
+    ("smoke requires sm-link binding", SmokeRequiresSmLinkBinding), ("snapshot shape", SnapshotShapeChecks),
+    ("sm binding source guards", SmBindingSourceGuards), ("cleanup requires link carrier removal", CleanupRequiresLinkCarrierRemoval),
+    ("fixture spec unchanged", FixtureSpecUnchanged)
 };
 int passed = 0;
 foreach ((string name, Action run) in tests) { run(); Console.WriteLine($"PASS {name}"); passed++; }
@@ -47,7 +52,7 @@ EvidenceRecord Evidence(ResultState state, bool complete) => new(new("P", 1, "T"
 // Smoke fixtures mirror the native I52CTDA_SMOKE report and event-log formats written by I52CtdaNative.cpp/I52CtdaRuntime.cpp.
 NativeSmokeReport SmokeReport() => NativeSmokeReport.Parse("""
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "instrument": "I52CtdaNative",
   "stage": "A_SMOKE",
   "commandIdentity": "I52CTDA_SMOKE",
@@ -71,7 +76,9 @@ NativeSmokeReport SmokeReport() => NativeSmokeReport.Parse("""
     "bound": true,
     "declaredIdentities": 7,
     "resolvedIdentities": 7,
-    "snapshot": "F-TRIGGER-MOD|2A|PRESENT|AcDbPoint|RESOLVED\n"
+    "smLinkBinding": "RESOLVED",
+    "smPrecondition": {"link": {"keyPresent": true, "identityMatches": true, "erased": false, "isXrecord": true, "resbufCount": 1, "isText": true, "carriersFound": 1, "value": "HFV30:LINK:A,B"}, "anchorALive": true, "bRead": true, "bLive": true, "foreignReferenceInserts": 0, "cBound": false, "cFound": false, "cLive": false, "cAtCreationPosition": false, "aEvidence": "matrix=1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1;layer=2B", "cEvidence": ""},
+    "snapshot": "F-TRIGGER-MOD|2E|PRESENT|AcDbPoint|RESOLVED\nF-TRIGGER-ERASE-DB|2F|PRESENT|AcDbPoint|RESOLVED\nF-TRIGGER-ERASE-OBJ|30|PRESENT|AcDbPoint|RESOLVED\nF-XR|33|PRESENT|STATE-S-0|RESOLVED\nF-REF-B|32|PRESENT|STATE-M-0|RESOLVED\nF-REF-A|31|PRESENT|STATE-SM-0 sibling A|RESOLVED\nF-REF-C|NULL|ABSENT|declared absent (not created)|RESOLVED\nBINDING:SM-LINK|34|PRESENT|STATE-SM-0|RESOLVED\n"
   },
   "cleanup": {
     "ownedTransactions": 0,
@@ -80,6 +87,7 @@ NativeSmokeReport SmokeReport() => NativeSmokeReport.Parse("""
     "activeGuards": 0,
     "fixtureReactorsAttached": false,
     "activeTransactionsObserved": 0,
+    "linkCarrierRemoved": true,
     "cleanupComplete": true,
     "globalReactors": "RETAINED_UNTIL_ARX_UNLOAD"
   },
@@ -243,16 +251,16 @@ void ScratchIntegrityCapture()
 }
 void NativeSourceMatchesCanonicalBuild()
 {
-    // SHA-256 of the LF-normalized native sources of build source bf738b1d, which produced ARX
-    // B7016A3469F0BA9786691493F051A015EAB94E0DC5A631990E1C2ED97531B22A. A managed-only fix must leave them identical.
+    // SHA-256 of the LF-normalized native sources of the V34 binding rebuild (decisions section 164); the canonical
+    // ARX built from them is recorded in I-52-ctda-v34-binding-rebuild.json. A managed-only fix must leave them identical.
     var canonical = new Dictionary<string, string>(StringComparer.Ordinal)
     {
-        ["I52CtdaFixture.cpp"] = "34833A9BD0F331A4F1290610048913704401ACD9D0073A09CDDE58B3FB414075",
-        ["I52CtdaFixture.h"] = "E455190867F06A698AF88EF0A9E355DD12BC6E18C902493C73CAB955118273C0",
-        ["I52CtdaNative.cpp"] = "66D4195C0F93F7C35A608959559CE532C550CC1D0D6E72126BD9113771AF0BB0",
+        ["I52CtdaFixture.cpp"] = "0C014E27C7AC1C6810EFC88A03B34A69E3B781059F1760246C8CFBF94328628D",
+        ["I52CtdaFixture.h"] = "3E690E43ED3673ED920A37D20CF9F5F33AEB8593E66D638CE3E74AEB998FDE59",
+        ["I52CtdaNative.cpp"] = "648A4FB838B94E100077B316042874DDF1E1E6EE5F44FF218E9C5A7ACB6540DA",
         ["I52CtdaNative.vcxproj"] = "C0762B295E91736EC22EFBD63087E357FA74EEDCFF796DAE5A4D99BA0B2592FF",
-        ["I52CtdaRuntime.cpp"] = "21D86B4B2010262DC1FB345D51E9E3BDB8049FF06781F0BFBC55DB6FBE3DB9F9",
-        ["I52CtdaRuntime.h"] = "514148E07FE3E1C84ECF10EBC0CADB38A89F1E3CBF5CD8E3876FA0003BB020D4",
+        ["I52CtdaRuntime.cpp"] = "D194DF58FB17A4678E53DE0725C4B6257FCFB40CB9B538D03451F6D4807B0BB6",
+        ["I52CtdaRuntime.h"] = "C09F5D1011CF3CC087691DE383B4967EA5B36B2ADCDE23994DF85698ABEC38AB",
         ["ProbeDispatchTable.inc"] = "4F8ACD9F06F35ED59B9D385058FFEDAA19951F4D5A5683A78089F18EFF285A0A"
     };
     string native = Path.Combine(repo, "eng", "research", "I52Ctda", "native");
@@ -264,5 +272,132 @@ void NativeSourceMatchesCanonicalBuild()
         return Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(normalized.ToArray()));
     }, StringComparer.Ordinal);
     Require(actual.Count == canonical.Count && canonical.All(kv => actual.TryGetValue(kv.Key, out string? h) && h == kv.Value),
-        "native source differs from canonical build source bf738b1d: " + string.Join(',', canonical.Keys.Where(k => !actual.TryGetValue(k, out string? h) || h != canonical[k])));
+        "native source differs from canonical build source: " + string.Join(',', canonical.Keys.Where(k => !actual.TryGetValue(k, out string? h) || h != canonical[k])));
+}
+
+// V34 binding clarifications (decisions section 164): SM-LINK storage and OPEN-SM-B.
+SmFacts Sm0() => new(SmLinkFacts.Valid(SmBindingContract.StateSm0), true, true, true, 0, false, false, false, false, "", "");
+SmFacts Sm1() => new(SmLinkFacts.Valid(SmBindingContract.StateSm1), true, false, false, 1, true, true, true, true, "", "");
+void SmPreconditionAcceptsSm0() => Require(SmRules.ClassifyPrecondition(Sm0()) == SmRules.Ok, "SM-0 precondition");
+void SmCarrierAnomaliesAreUnknown()
+{
+    SmLinkFacts valid = SmLinkFacts.Valid(SmBindingContract.StateSm0);
+    var anomalies = new (SmLinkFacts Link, string Code)[]
+    {
+        (valid with { KeyPresent = false }, "UNKNOWN:LINK-MISSING"),
+        (valid with { Erased = true }, "UNKNOWN:LINK-ERASED"),
+        (valid with { IsXrecord = false }, "UNKNOWN:LINK-WRONG-TYPE"),
+        (valid with { ResbufCount = 2 }, "UNKNOWN:LINK-WRONG-TYPE"),
+        (valid with { IsText = false }, "UNKNOWN:LINK-WRONG-TYPE"),
+        (valid with { CarriersFound = 2 }, "UNKNOWN:LINK-DUPLICATE"),
+        (valid with { IdentityMatches = false }, "UNKNOWN:LINK-IDENTITY-DRIFT"),
+        (valid with { Value = SmBindingContract.StateSm1 }, "UNKNOWN:LINK-PRECONDITION-MISMATCH"),
+        (valid with { Value = "HFV30:LINK:A,B " }, "UNKNOWN:LINK-PRECONDITION-MISMATCH")
+    };
+    foreach ((SmLinkFacts link, string code) in anomalies)
+    {
+        string actual = SmRules.ClassifyPrecondition(Sm0() with { Link = link });
+        Require(actual == code, $"precondition {code} classified {actual}");
+        RequireFailure(Judge(SmokeReport() with { SmPrecondition = Sm0() with { Link = link } }), "SM_PRECONDITION_" + code);
+        if (code != "UNKNOWN:LINK-PRECONDITION-MISMATCH")
+            Require(SmRules.ClassifyAfter(Sm1() with { Link = link with { Value = SmBindingContract.StateSm1 } }) == code, $"post-mutation {code} must stay UNKNOWN");
+    }
+}
+void SmPreconditionRequiresCAbsent()
+{
+    Require(SmRules.ClassifyPrecondition(Sm0() with { CFound = true, ForeignReferenceInserts = 1 }) == "UNKNOWN:C-PRESENT", "C present");
+    Require(SmRules.ClassifyPrecondition(Sm0() with { CBound = true }) == "UNKNOWN:C-PRESENT", "C bound");
+    Require(SmRules.ClassifyPrecondition(Sm0() with { ForeignReferenceInserts = 1 }) == "UNKNOWN:C-PRESENT", "extra REF insert");
+    Require(SmRules.ClassifyPrecondition(Sm0() with { BLive = false }) == "UNKNOWN:B-NOT-LIVE", "B not live");
+    Require(SmRules.ClassifyPrecondition(Sm0() with { BRead = false }) == "UNKNOWN:B-NOT-LIVE", "B unread");
+    Require(SmRules.ClassifyPrecondition(Sm0() with { AnchorALive = false }) == "UNKNOWN:A-NOT-LIVE", "A not live");
+}
+void VerSmClassification()
+{
+    Require(SmRules.ClassifyAfter(Sm1()) == SmRules.Ok, "valid SM-1");
+    Require(SmRules.ClassifyAfter(Sm1() with { Link = SmLinkFacts.Valid(SmBindingContract.StateSm0) }) == "FAIL-SM:LINK-VALUE", "wrong bytes on valid structure is FAIL-SM");
+    var anomalies = new (SmFacts Facts, string Code)[]
+    {
+        (Sm1() with { ForeignReferenceInserts = 0, CFound = false, CLive = false }, "UNKNOWN:C-NONE"),
+        (Sm1() with { ForeignReferenceInserts = 2 }, "UNKNOWN:C-MULTIPLE"),
+        (Sm1() with { CFound = false }, "UNKNOWN:C-IDENTITY-DRIFT"),
+        (Sm1() with { CBound = false }, "UNKNOWN:C-IDENTITY-DRIFT"),
+        (Sm1() with { CAtCreationPosition = false }, "UNKNOWN:C-IDENTITY-DRIFT"),
+        (Sm1() with { CLive = false }, "UNKNOWN:C-NOT-LIVE"),
+        (Sm1() with { AnchorALive = false }, "UNKNOWN:A-NOT-LIVE"),
+        (Sm1() with { BRead = true, BLive = true }, "UNKNOWN:B-OPENED-AFTER-TRIGGER"),
+        (Sm1() with { Link = SmLinkFacts.Valid(SmBindingContract.StateSm1) with { KeyPresent = false } }, "UNKNOWN:LINK-MISSING"),
+        (Sm1() with { Link = SmLinkFacts.Valid(SmBindingContract.StateSm1) with { CarriersFound = 2 } }, "UNKNOWN:LINK-DUPLICATE"),
+        (Sm1() with { Link = SmLinkFacts.Valid(SmBindingContract.StateSm1) with { IdentityMatches = false } }, "UNKNOWN:LINK-IDENTITY-DRIFT")
+    };
+    foreach ((SmFacts facts, string code) in anomalies)
+    {
+        string actual = SmRules.ClassifyAfter(facts);
+        Require(actual == code, $"VER-SM {code} classified {actual}");
+        Require(actual != SmRules.Ok, $"anomaly {code} reached OK");
+        Require(SmRules.ClassifyAfter(facts with { Link = facts.Link with { Value = SmBindingContract.StateSm0 } }) != SmRules.Ok, $"anomaly {code} with wrong bytes reached OK");
+    }
+}
+void SmokeRequiresSmLinkBinding()
+{
+    RequireFailure(Judge(SmokeReport() with { SmLinkBinding = "MISMATCH" }), "SM_LINK_BINDING_UNRESOLVED");
+    RequireFailure(Judge(SmokeReport() with { SmLinkBinding = null }), "SM_LINK_BINDING_UNRESOLVED");
+    RequireFailure(Judge(SmokeReport() with { SmPrecondition = null }), "SM_PRECONDITION_MISSING");
+    RequireFailure(Judge(SmokeReport() with { LinkCarrierRemoved = false }), "LINK_CARRIER_NOT_REMOVED");
+    RequireFailure(Judge(SmokeReport() with { SmPrecondition = Sm0() with { CFound = true, ForeignReferenceInserts = 1 } }), "SM_PRECONDITION_UNKNOWN:C-PRESENT");
+}
+void SnapshotShapeChecks()
+{
+    string good = SmokeReport().FixtureSnapshot;
+    Require(SmRules.SnapshotShape(good) is null, "valid snapshot: " + SmRules.SnapshotShape(good));
+    string binding = "BINDING:SM-LINK|34|PRESENT|STATE-SM-0|RESOLVED\n";
+    RequireFailure(Judge(SmokeReport() with { FixtureSnapshot = good.Replace(binding, "F-SM-LINK|34|PRESENT|STATE-SM-0|RESOLVED\n") }), "SNAPSHOT_IDENTITY_LINES");
+    RequireFailure(Judge(SmokeReport() with { FixtureSnapshot = good.Replace(binding, "") }), "SNAPSHOT_BINDING_LINES");
+    RequireFailure(Judge(SmokeReport() with { FixtureSnapshot = good + binding }), "SNAPSHOT_BINDING_LINES");
+    RequireFailure(Judge(SmokeReport() with { FixtureSnapshot = good.Replace("|STATE-SM-0|RESOLVED", "|STATE-SM-0|MISMATCH") }), "SNAPSHOT_BINDING_INVALID");
+    RequireFailure(Judge(SmokeReport() with { FixtureSnapshot = good.Replace("F-REF-C|NULL|ABSENT|", "F-REF-C|35|PRESENT|") }), "SNAPSHOT_C_NOT_ABSENT");
+    Require(FixtureSpecification.Objects.Count == 7 && FixtureSpecification.Objects.All(o => !o.Id.Contains("LINK", StringComparison.Ordinal)), "carrier counted as fixture identity");
+}
+void SmBindingSourceGuards()
+{
+    string native = Path.Combine(repo, "eng", "research", "I52Ctda", "native");
+    string source = File.ReadAllText(Path.Combine(native, "I52CtdaFixture.cpp"));
+    string header = File.ReadAllText(Path.Combine(native, "I52CtdaFixture.h"));
+    Require(SmBindingGuard.Check(source).Count == 0, "current source: " + string.Join(';', SmBindingGuard.Check(source)));
+    Require(SmBindingGuard.CheckHeader(header).Count == 0, "current header");
+    string mixed = "Acad::ErrorStatus I52CtdaFixture::mutateMixed()";
+    void Detects(string mutated, string violation)
+    {
+        IReadOnlyList<string> found = SmBindingGuard.Check(mutated);
+        Require(found.Contains(violation), $"guard missed '{violation}': {string.Join(';', found)}");
+    }
+    Require(source.Contains(mixed + "\n{", StringComparison.Ordinal) || source.Contains(mixed + "\r\n{", StringComparison.Ordinal), "mutateMixed definition not found");
+    string Inject(string statement) => System.Text.RegularExpressions.Regex.Replace(source, System.Text.RegularExpressions.Regex.Escape(mixed) + @"\r?\n\{", m => m.Value + "\n    " + statement);
+    Detects(Inject("AcDbObjectPointer<AcDbBlockReference> b(ids_.materialReference, AcDb::kForWrite); b->erase(true);"), "MUT-SM erases an object");
+    Detects(Inject("AcDbObjectPointer<AcDbBlockReference> b(ids_.materialReference, AcDb::kForRead);"), "MUT-SM references F-REF-B");
+    Detects(Inject("AcDbObjectPointer<AcDbObject> c(ids_.siblingC, AcDb::kForWrite, true);"), "MUT-SM opens erased objects");
+    Detects(Inject("mutateSemantic();"), "MUT-SM writes F-XR");
+    Detects(Inject("AcDbObjectPointer<AcDbXrecord> x(ids_.semanticXrecord, AcDb::kForWrite);"), "MUT-SM writes F-XR");
+    Detects(Inject("AcDbObjectId extra; appendReference(database, nullptr, nullptr, kSiblingCCreationPosition, ids_.referenceBlock, ids_.layerA, extra);"), "MUT-SM must append exactly one reference");
+    Detects(source.Replace("    Acad::ErrorStatus status = mutateSemantic();", "    Acad::ErrorStatus status = mutateSemantic();\n    mutateSemantic();"), "MUT-ALL must run MUT-S, MUT-M and MUT-SM exactly once");
+    Detects(source.Replace("    // F-REF-C is declared absent: it is not created here; MUT-SM appends it.",
+        "    if ((status = appendReference(database, modelSpace, manager, kSiblingCCreationPosition, created.referenceBlock, created.layerA, created.siblingC)) != Acad::eOk) return status;"), "bootstrap precreates F-REF-C");
+    Require(SmBindingGuard.CheckHeader(header.Replace("kDeclaredIdentities = 7;", "kDeclaredIdentities = 8;")).Count == 1, "identity count guard");
+}
+void CleanupRequiresLinkCarrierRemoval()
+{
+    var cleanup = new CleanupStateMachine();
+    foreach (CleanupObligation item in Enum.GetValues<CleanupObligation>().Where(o => o != CleanupObligation.LinkCarrierRemoved)) cleanup.Satisfy(item);
+    Require(!cleanup.Snapshot().Complete, "cleanup complete without LINK-CARRIER-REMOVED");
+    cleanup.Satisfy(CleanupObligation.LinkCarrierRemoved);
+    Require(cleanup.Snapshot().Complete, "cleanup incomplete after LINK-CARRIER-REMOVED");
+    string runtime = File.ReadAllText(Path.Combine(repo, "eng", "research", "I52Ctda", "native", "I52CtdaRuntime.cpp"));
+    Require(System.Text.RegularExpressions.Regex.IsMatch(runtime, @"cleanupComplete\(\) const \{[^}]*!linkCarrierOutstanding_"), "native cleanupComplete ignores LINK-CARRIER-REMOVED");
+}
+void FixtureSpecUnchanged()
+{
+    byte[] bytes = File.ReadAllBytes(Path.Combine(repo, "eng", "research", "I52Ctda", "fixture-v34.json"));
+    var normalized = new List<byte>(bytes.Length);
+    for (int i = 0; i < bytes.Length; i++) if (!(bytes[i] == 13 && i + 1 < bytes.Length && bytes[i + 1] == 10)) normalized.Add(bytes[i]);
+    Require(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(normalized.ToArray())) == "11411BA8858A4CCA1AB638645FEC5D2C0AA3263C239BC9F0C8A10153AF6AD9FA", "fixture-v34.json changed");
 }

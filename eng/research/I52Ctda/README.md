@@ -32,8 +32,23 @@ the scratch DWG integrity agree: after the PID is gone the DWG hash must equal t
 The helper does not change AutoCAD security settings: the helper folder must already be trusted, or a dedicated
 profile passed as `profile`.
 
-The FEC-V34 fixture declares the STATE-SM-0 linkage bytes `HFV30:LINK:A,B` but no storage for them; the smoke does
-not materialize linkage bytes, and governed SM/ALL probes need that storage decided first.
+## V34 binding clarifications (decisions §164)
+
+- **SM-LINK storage.** The STATE-SM-0/1 linkage bytes live in one `AcDbXrecord` owned by the scratch NOD under
+  `RACKCAD_CTDA_V34_SM-LINK`, with exactly one `kDxfText` resbuf: `HFV30:LINK:A,B` at SM-0, `HFV30:LINK:A,C` at
+  SM-1. The carrier is created in the bootstrap transaction, is not a fixture identity (the count stays 7) and is
+  removed by cleanup (`LINK-CARRIER-REMOVED`).
+- **OPEN-SM-B.** Sibling membership is the SM-LINK relation plus liveness of the named members. F-REF-B is the M
+  target and stays live; it leaves the sibling set only relationally. F-REF-C does not exist at bootstrap; MUT-SM
+  appends exactly one `RACKCAD_CTDA_V34_REF` insert at `(20,20,0)` on `RACKCAD_CTDA_V30_A` and writes the carrier,
+  in the caller's transaction. MUT-SM never erases, opens erased, or opens F-REF-B, and never writes F-XR.
+- The native helper captures raw SM facts; `SmRules` (control plane) is their only classifier: structural
+  anomalies are UNKNOWN, a valid carrier with wrong post-mutation bytes is FAIL-SM, and no anomaly reaches OK.
+  `SmBindingGuard` checks the MUT-SM, MUT-ALL and bootstrap source bodies in `static-native`.
+
+The smoke additionally requires C absent after bootstrap, SM-LINK at `A,B`, one resolved
+`BINDING:SM-LINK|<handle>|PRESENT|STATE-SM-0|RESOLVED` snapshot line besides the seven identity lines, and the
+carrier removed by cleanup.
 
 The instrument must not run against a user's working AutoCAD process or project DWG. Runtime results are not
 product evidence and cannot close a product KindContract.
