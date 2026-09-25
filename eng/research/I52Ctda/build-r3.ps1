@@ -80,8 +80,11 @@ $toolchain = [ordered]@{
 $toolchain | ConvertTo-Json -Depth 8 | Out-File (Join-Path $OutputRoot 'evidence\toolchain.json') -Encoding utf8
 
 # New build tuple, then transfer metadata and checksums.
-& (Join-Path $OutputRoot 'harness\I52Ctda.Harness.exe') tuple-v35 $repo $OutputRoot $SourceSha | Tee-Object -Variable tupleOutput | Out-File (Join-Path $OutputRoot 'logs\tuple.log') -Encoding utf8
-if ($LASTEXITCODE -ne 0) { throw 'tuple collection failed' }
+# The tuple hashes logs\, so its own output is written only after the command exits and outside logs\.
+$tupleOutput = & (Join-Path $OutputRoot 'harness\I52Ctda.Harness.exe') tuple-v35 $repo $OutputRoot $SourceSha 2>&1
+$tupleExit = $LASTEXITCODE
+$tupleOutput | Out-File (Join-Path $OutputRoot 'evidence\tuple-command.txt') -Encoding utf8
+if ($tupleExit -ne 0) { throw 'tuple collection failed' }
 $tupleHash = (($tupleOutput | Select-String 'NEW_BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH=') -replace '.*=', '').Trim()
 $metadata = [ordered]@{
     schemaVersion = 1
