@@ -16,6 +16,7 @@ internal static class HarnessProgram
         if (args.Length < 2) { Console.Error.WriteLine("Usage: validate|inventory|static-native|headers|generate|tuple <repo> [arguments] | smoke <repo> <output-dir> <helper.arx> <scratch.dwg> [profile]"); return 2; }
         string command = args[0];
         string repo = Path.GetFullPath(args[1]);
+        if (V35Commands.Handles(command)) return await V35Commands.RunAsync(command, repo, args[2..]);
         ContractCatalog catalog = ContractCatalog.Load(repo);
         return command switch
         {

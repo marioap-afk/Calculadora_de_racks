@@ -122,7 +122,8 @@ public static class SmBindingGuard
     public static IReadOnlyList<string> CheckHeader(string fixtureHeader)
     {
         var violations = new List<string>();
-        if (!Regex.IsMatch(fixtureHeader, @"kDeclaredIdentities\s*=\s*7;")) violations.Add("declared identity count is not 7");
+        // fixture-v35.json: eight persistent identities (F-TRIGGER-XR added by V35); R-SM-LINK is still not one.
+        if (!Regex.IsMatch(fixtureHeader, @"kDeclaredIdentities\s*=\s*8;")) violations.Add("declared identity count is not 8");
         return violations;
     }
 

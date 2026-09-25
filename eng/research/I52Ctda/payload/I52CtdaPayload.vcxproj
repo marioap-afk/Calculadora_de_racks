@@ -7,9 +7,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A8524DA3-8C8C-4D39-B704-8AD3CB1D5D34}</ProjectGuid>
+    <ProjectGuid>{5B0E4C71-2E8F-4B7B-9C5E-52A0D2C35A15}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>I52CtdaNative</RootNamespace>
+    <RootNamespace>I52CtdaPayload</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ObjectArxSdkRoot Condition="'$(ObjectArxSdkRoot)' == ''">D:\Downloads\CDROM1</ObjectArxSdkRoot>
   </PropertyGroup>
@@ -22,7 +22,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup>
-    <TargetName>I52CtdaNative</TargetName>
+    <TargetName>I52CtdaPayload</TargetName>
     <TargetExt>.arx</TargetExt>
     <OutDir>$(MSBuildProjectDirectory)\bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(MSBuildProjectDirectory)\obj\$(Platform)\$(Configuration)\</IntDir>
@@ -41,7 +41,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ObjectArxSdkRoot)\lib-x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>rxapi.lib;acad.lib;accore.lib;acdb25.lib;acge25.lib;AcPal.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>rxapi.lib;acad.lib;accore.lib;acdb25.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>$(ObjectArxSdkRoot)\inc\AcRxDefault.def</ModuleDefinitionFile>
       <TargetMachine>MachineX64</TargetMachine>
       <SubSystem>Windows</SubSystem>
@@ -49,24 +49,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="I52CtdaNative.cpp" />
-    <ClCompile Include="I52CtdaLog.cpp" />
-    <ClCompile Include="I52CtdaPlan.cpp" />
-    <ClCompile Include="I52CtdaAuthority.cpp" />
-    <ClCompile Include="I52CtdaFixture.cpp" />
-    <ClCompile Include="I52CtdaExecutor.cpp" />
-    <ClCompile Include="I52CtdaDriver.cpp" />
+    <ClCompile Include="I52CtdaPayload.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="I52CtdaAbi.h" />
-    <ClInclude Include="I52CtdaAuthority.h" />
-    <ClInclude Include="I52CtdaExecutor.h" />
-    <ClInclude Include="I52CtdaFixture.h" />
-    <ClInclude Include="I52CtdaLog.h" />
-    <ClInclude Include="I52CtdaPlan.h" />
-    <ClInclude Include="V35Authority.inc" />
-    <ClInclude Include="V35Ids.inc" />
-    <ClInclude Include="V35PlanTable.inc" />
+    <ClInclude Include="..
+ative\I52CtdaAbi.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

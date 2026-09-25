@@ -27,7 +27,8 @@ var tests = new (string Name, Action Run)[]
 };
 int passed = 0;
 foreach ((string name, Action run) in tests) { run(); Console.WriteLine($"PASS {name}"); passed++; }
-Console.WriteLine($"TOTAL {passed}/{tests.Length}");
+foreach ((string name, Action<string> run) in R3Tests.All) { run(repo); Console.WriteLine($"PASS {name}"); passed++; }
+Console.WriteLine($"TOTAL {passed}/{tests.Length + R3Tests.All.Length}");
 return;
 
 ContractCatalog Catalog() => ContractCatalog.Load(repo);
@@ -49,7 +50,7 @@ void HeaderAuthority() { Require(HeaderAuthorityValidator.Validate(repo, @"D:\Do
 TotalOrderRecord Template() => new(0, 0, Environment.ProcessId, Environment.CurrentManagedThreadId, "D", "DB", "P", "E", "", "T", 1, "LOCK", "CTX", "SP", "EP", [], "STATE", "CLEAN");
 EvidenceRecord Evidence(ResultState state, bool complete) => new(new("P", 1, "T"), null, state, FailureClassification.None, "E", "A", [], new(new Dictionary<string, bool> { ["x"] = complete }, complete), new Dictionary<string, string>());
 
-// Smoke fixtures mirror the native I52CTDA_SMOKE report and event-log formats written by I52CtdaNative.cpp/I52CtdaRuntime.cpp.
+// Smoke fixtures mirror the legacy V34 I52CTDA_SMOKE report and event-log formats (V34 harness smoke contract, historical).
 NativeSmokeReport SmokeReport() => NativeSmokeReport.Parse("""
 {
   "schemaVersion": 3,
@@ -129,8 +130,12 @@ void LoggerFallbackPath()
 {
     Require(SmokeContract.EventLogFor(@"D:\s\native-smoke.json", null) == @"D:\s\native-smoke.json.events.jsonl", "derived path");
     Require(SmokeContract.EventLogFor(@"D:\s\native-smoke.json", @"D:\x\explicit.jsonl") == @"D:\x\explicit.jsonl", "explicit path honored");
-    string header = File.ReadAllText(Path.Combine(repo, "eng/research/I52Ctda/native/I52CtdaRuntime.h"));
-    Require(header.Contains($"kEventLogSuffix = L\"{SmokeContract.EventLogSuffix}\"", StringComparison.Ordinal), "native and harness derivation rules differ");
+    // R3: the V35 native log path is only the explicit I52_CTDA_EVENT_LOG of RUN-ENV-01 (no derived fallback), and every
+    // V35 launch plan sets it; the derivation rule above remains the legacy V34 smoke harness contract.
+    string log = File.ReadAllText(Path.Combine(repo, "eng/research/I52Ctda/native/I52CtdaLog.cpp"));
+    Require(log.Contains("path_ = environment(L\"I52_CTDA_EVENT_LOG\");", StringComparison.Ordinal) && !log.Contains("kEventLogSuffix", StringComparison.Ordinal), "V35 native log path");
+    string run = File.ReadAllText(Path.Combine(repo, "eng/research/I52Ctda/control-plane/V35/V35ProbeRun.cs"));
+    Require(System.Text.RegularExpressions.Regex.Matches(run, @"\[""I52_CTDA_EVENT_LOG""\] = EventLog").Count == 2, "V35 launch plans must set I52_CTDA_EVENT_LOG");
 }
 void SmokeCommandIdentity()
 {
@@ -251,8 +256,9 @@ void ScratchIntegrityCapture()
 }
 void NativeSourceMatchesCanonicalBuild()
 {
-    // SHA-256 of the LF-normalized native sources of the V34 binding rebuild (decisions section 164); the canonical
-    // ARX built from them is recorded in I-52-ctda-v34-binding-rebuild.json. A managed-only fix must leave them identical.
+    // SHA-256 of the LF-normalized native sources of the V34 binding rebuild (decisions section 164); the pre-V35 canonical
+    // ARX (7F9C9C05...9ED421) was built from them at 8bf3733f. R3 supersedes those sources in the working tree, so the
+    // binding is now checked against git history: the historical canonical build stays exactly reproducible.
     var canonical = new Dictionary<string, string>(StringComparer.Ordinal)
     {
         ["I52CtdaFixture.cpp"] = "0C014E27C7AC1C6810EFC88A03B34A69E3B781059F1760246C8CFBF94328628D",
@@ -263,16 +269,23 @@ void NativeSourceMatchesCanonicalBuild()
         ["I52CtdaRuntime.h"] = "C09F5D1011CF3CC087691DE383B4967EA5B36B2ADCDE23994DF85698ABEC38AB",
         ["ProbeDispatchTable.inc"] = "4F8ACD9F06F35ED59B9D385058FFEDAA19951F4D5A5683A78089F18EFF285A0A"
     };
-    string native = Path.Combine(repo, "eng", "research", "I52Ctda", "native");
-    var actual = Directory.GetFiles(native).ToDictionary(f => Path.GetFileName(f)!, f =>
+    const string canonicalBuildSource = "8bf3733f07ebaa2724a1c72335f100acad8905e4";
+    string Historical(string file)
     {
-        byte[] bytes = File.ReadAllBytes(f);
+        var git = new System.Diagnostics.ProcessStartInfo("git", $"-C \"{repo}\" show {canonicalBuildSource}:eng/research/I52Ctda/native/{file}") { RedirectStandardOutput = true, UseShellExecute = false };
+        using var process = System.Diagnostics.Process.Start(git)!;
+        using var memory = new MemoryStream();
+        process.StandardOutput.BaseStream.CopyTo(memory);
+        process.WaitForExit();
+        byte[] bytes = memory.ToArray();
         var normalized = new List<byte>(bytes.Length);
         for (int i = 0; i < bytes.Length; i++) if (!(bytes[i] == 13 && i + 1 < bytes.Length && bytes[i + 1] == 10)) normalized.Add(bytes[i]);
-        return Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(normalized.ToArray()));
-    }, StringComparer.Ordinal);
-    Require(actual.Count == canonical.Count && canonical.All(kv => actual.TryGetValue(kv.Key, out string? h) && h == kv.Value),
-        "native source differs from canonical build source: " + string.Join(',', canonical.Keys.Where(k => !actual.TryGetValue(k, out string? h) || h != canonical[k])));
+        return process.ExitCode == 0 ? Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(normalized.ToArray())) : "MISSING";
+    }
+    Require(canonical.All(kv => Historical(kv.Key) == kv.Value), "historical canonical build source changed: " + string.Join(',', canonical.Keys.Where(k => Historical(k) != canonical[k])));
+    // R3 superseded the V34 runtime and dispatch table in the working tree.
+    string native = Path.Combine(repo, "eng", "research", "I52Ctda", "native");
+    Require(!File.Exists(Path.Combine(native, "I52CtdaRuntime.cpp")) && !File.Exists(Path.Combine(native, "ProbeDispatchTable.inc")), "superseded V34 runtime still present");
 }
 
 // V34 binding clarifications (decisions section 164): SM-LINK storage and OPEN-SM-B.
@@ -382,7 +395,7 @@ void SmBindingSourceGuards()
     Detects(source.Replace("    Acad::ErrorStatus status = mutateSemantic();", "    Acad::ErrorStatus status = mutateSemantic();\n    mutateSemantic();"), "MUT-ALL must run MUT-S, MUT-M and MUT-SM exactly once");
     Detects(source.Replace("    // F-REF-C is declared absent: it is not created here; MUT-SM appends it.",
         "    if ((status = appendReference(database, modelSpace, manager, kSiblingCCreationPosition, created.referenceBlock, created.layerA, created.siblingC)) != Acad::eOk) return status;"), "bootstrap precreates F-REF-C");
-    Require(SmBindingGuard.CheckHeader(header.Replace("kDeclaredIdentities = 7;", "kDeclaredIdentities = 8;")).Count == 1, "identity count guard");
+    Require(SmBindingGuard.CheckHeader(header.Replace("kDeclaredIdentities = 8;", "kDeclaredIdentities = 7;")).Count == 1, "identity count guard");
 }
 void CleanupRequiresLinkCarrierRemoval()
 {
@@ -391,8 +404,9 @@ void CleanupRequiresLinkCarrierRemoval()
     Require(!cleanup.Snapshot().Complete, "cleanup complete without LINK-CARRIER-REMOVED");
     cleanup.Satisfy(CleanupObligation.LinkCarrierRemoved);
     Require(cleanup.Snapshot().Complete, "cleanup incomplete after LINK-CARRIER-REMOVED");
-    string runtime = File.ReadAllText(Path.Combine(repo, "eng", "research", "I52Ctda", "native", "I52CtdaRuntime.cpp"));
-    Require(System.Text.RegularExpressions.Regex.IsMatch(runtime, @"cleanupComplete\(\) const \{[^}]*!linkCarrierOutstanding_"), "native cleanupComplete ignores LINK-CARRIER-REMOVED");
+    // R3: CLN-BASE verifies R-SM-LINK removal (LINK-CARRIER-REMOVED) as part of its success condition.
+    string driver = File.ReadAllText(Path.Combine(repo, "eng", "research", "I52Ctda", "native", "I52CtdaDriver.cpp"));
+    Require(System.Text.RegularExpressions.Regex.IsMatch(driver, @"const bool carrierRemoved = fixture_\.linkCarrierRemoved\(\);[\s\S]*ok = ok && removed == Acad::eOk && closed == Acad::eOk && carrierRemoved;"), "native CLN-BASE ignores LINK-CARRIER-REMOVED");
 }
 void FixtureSpecUnchanged()
 {
