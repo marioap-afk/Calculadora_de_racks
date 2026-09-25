@@ -7,7 +7,12 @@
     "EventId": "N-DB-OPEN",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -41,12 +46,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NAPP-M",
@@ -56,7 +72,12 @@
     "EventId": "N-DB-APPEND",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-APPEND-TRIGGER",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -90,12 +111,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-M+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NAPP-S",
@@ -105,7 +137,12 @@
     "EventId": "N-DB-APPEND",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-APPEND-TRIGGER",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -139,12 +176,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NAPP-SM",
@@ -154,9 +202,14 @@
     "EventId": "N-DB-APPEND",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
-    "TriggerActionId": "TRG-APPEND-TRIGGER",
+    "TriggerActionId": "TRG-APPEND-TRIGGER-IN-PRIMARY",
     "ExecutionContextId": "CB-PRIMARY-01",
     "SupportActions": [
       "SA-TX-RESOLVE",
@@ -196,12 +249,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NDBERASE-M",
@@ -211,7 +275,12 @@
     "EventId": "N-DB-ERASE",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-ERASE-TRIGGER-DB",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -245,12 +314,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-M",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NDBERASE-S",
@@ -260,7 +340,12 @@
     "EventId": "N-DB-ERASE",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-ERASE-TRIGGER-DB",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -294,12 +379,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NDBERASE-SM",
@@ -309,7 +405,12 @@
     "EventId": "N-DB-ERASE",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-ERASE-TRIGGER-DB",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -351,12 +452,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NDBMOD-M",
@@ -366,7 +478,12 @@
     "EventId": "N-DB-MOD",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -400,12 +517,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-M",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NDBMOD-S",
@@ -415,7 +543,12 @@
     "EventId": "N-DB-MOD",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -449,12 +582,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NDBMOD-SM",
@@ -464,7 +608,12 @@
     "EventId": "N-DB-MOD",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-MODIFY-TRIGGER-MOD",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -506,12 +655,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NE-M",
@@ -521,7 +681,12 @@
     "EventId": "N-ENT-GFX",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-TRANSFORM-CLOSE-REF-A",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -555,12 +720,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-M+VER-T",
     "Cleanup": "CLEAN-OBJ",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NEDC-ALL",
@@ -574,6 +750,10 @@
       {
         "scheduler": "NS-BEGIN-CMDCTX",
         "class": "TRIGGER-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -625,12 +805,27 @@
       {
         "id": "CMD-CANCEL",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CANCEL-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-CANCEL-OBSERVED",
+      "TOK-CANCEL-CMDCTX-DONE",
+      "TOK-EXEC-DONE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-APPCTX-ENTRY@STG-SYNC-APPCTX",
+      "N-ED-WILL@STG-CANCEL-CMD"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NEDW-ALL",
@@ -640,7 +835,12 @@
     "EventId": "N-ED-WILL",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
     "ExecutionContextId": "CB-EXEC-01",
@@ -690,12 +890,25 @@
       {
         "id": "CMD-FIXTURE",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-FIXTURE-CMD-END",
+      "TOK-EXEC-DONE"
+    ],
+    "MarkerStageBindings": [
+      "N-ED-END@STG-FIXTURE-CMD"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NO-CLOSE-SM",
@@ -705,7 +918,12 @@
     "EventId": "N-OBJ-CLOSED",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-MODIFY-CLOSE-REF-A",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -743,12 +961,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-OBJ",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NO-M",
@@ -758,7 +987,12 @@
     "EventId": "N-OBJ-MOD",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-MODIFY-CLOSE-REF-A",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -796,12 +1030,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-M+VER-T",
     "Cleanup": "CLEAN-OBJ",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NO-S",
@@ -811,7 +1056,12 @@
     "EventId": "N-OBJ-OPEN",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-ASSERT-WRITE-TRIGGER-XR",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -845,12 +1095,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S+VER-T",
     "Cleanup": "CLEAN-OBJ",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NO-SM",
@@ -860,7 +1121,12 @@
     "EventId": "N-OBJ-ERASE",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-ERASE-REF-B",
     "ExecutionContextId": "CB-PRIMARY-01",
@@ -906,12 +1172,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-OBJ-FENCED",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NRXL-ALL",
@@ -921,7 +1198,12 @@
     "EventId": "N-RX-LOADED",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-LOAD-PAYLOAD",
     "ExecutionContextId": "CB-EXEC-01",
@@ -971,12 +1253,25 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-C15-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-PAYLOAD-LOAD-RESULT",
+      "TOK-EXEC-DONE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-LOAD-RESULT@STG-PAYLOAD-LOAD"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NRXW-ALL",
@@ -986,7 +1281,12 @@
     "EventId": "N-RX-WILL-LOAD",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-LOAD-PAYLOAD",
     "ExecutionContextId": "CB-EXEC-01",
@@ -1036,12 +1336,25 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-C15-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-PAYLOAD-LOAD-RESULT",
+      "TOK-EXEC-DONE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-LOAD-RESULT@STG-PAYLOAD-LOAD"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NTA-ALL",
@@ -1051,7 +1364,12 @@
     "EventId": "N-TR-ABORTED",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-ABORT-PRIMARY-T",
     "ExecutionContextId": "CB-EXEC-01",
@@ -1097,12 +1415,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NTAS-ALL",
@@ -1112,7 +1441,12 @@
     "EventId": "N-TR-ABOUT-START",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-START-OUTER-T",
     "ExecutionContextId": "CB-EXEC-01",
@@ -1158,12 +1492,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "02NTS-ALL",
@@ -1173,7 +1518,12 @@
     "EventId": "N-TR-STARTED",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-START-OUTER-T",
     "ExecutionContextId": "CB-EXEC-01",
@@ -1219,12 +1569,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "04N",
@@ -1234,7 +1595,12 @@
     "EventId": "N-TR-ABOUT-ABORT",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-ABORT-PRIMARY-T",
     "ExecutionContextId": "EXEC-OBSERVE",
@@ -1259,12 +1625,22 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-T+VER-S",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "04NO-S",
@@ -1274,7 +1650,12 @@
     "EventId": "N-OBJ-CANCEL",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-ABORT-PRIMARY-T",
     "ExecutionContextId": "EXEC-OBSERVE",
@@ -1303,12 +1684,22 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S+VER-T",
     "Cleanup": "CLEAN-OBJ",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "04NO-UNDO-S",
@@ -1318,7 +1709,12 @@
     "EventId": "N-OBJ-UNDO",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-ABORT-PRIMARY-T",
     "ExecutionContextId": "EXEC-OBSERVE",
@@ -1347,12 +1743,22 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S+VER-T",
     "Cleanup": "CLEAN-OBJ",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "09N-A",
@@ -1362,7 +1768,12 @@
     "EventId": "N-TR-ABOUT-END",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-END-NESTED-T",
     "ExecutionContextId": "EXEC-OBSERVE",
@@ -1388,12 +1799,22 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-T+VER-S",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "09N-B",
@@ -1403,7 +1824,12 @@
     "EventId": "N-TR-ABOUT-END",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-END-PRIMARY-T",
     "ExecutionContextId": "EXEC-OBSERVE",
@@ -1429,12 +1855,22 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-T+VER-S",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "09N-C",
@@ -1444,7 +1880,12 @@
     "EventId": "N-TR-ENDED",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-END-PRIMARY-T",
     "ExecutionContextId": "EXEC-OBSERVE",
@@ -1474,12 +1915,24 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-T+VER-S",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [
+      "N-ED-END@STG-PROBE-CMD"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "09N-D",
@@ -1489,7 +1942,12 @@
     "EventId": "N-ED-END",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
     "ExecutionContextId": "CB-EXEC-01",
@@ -1535,12 +1993,32 @@
       {
         "id": "CMD-FIXTURE",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
+      },
+      {
+        "id": "R-MANAGED-OBSERVER",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-FIXTURE-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-MANAGED-CMD-END",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-MANAGED-CMD-END@STG-FIXTURE-CMD",
+      "MARK-LOCK-RELEASE@STG-FIXTURE-CMD"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "09N-O",
@@ -1550,7 +2028,12 @@
     "EventId": "N-TR-OUTERMOST-END-CALLED",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-END-PRIMARY-T",
     "ExecutionContextId": "EXEC-OBSERVE",
@@ -1576,12 +2059,22 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-T+VER-S",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "10N-M",
@@ -1591,7 +2084,12 @@
     "EventId": "N-ED-END",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
     "ExecutionContextId": "CB-EXEC-01",
@@ -1637,12 +2135,32 @@
       {
         "id": "CMD-FIXTURE",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
+      },
+      {
+        "id": "R-MANAGED-OBSERVER",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-M+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-FIXTURE-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-MANAGED-CMD-END",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-MANAGED-CMD-END@STG-FIXTURE-CMD",
+      "MARK-LOCK-RELEASE@STG-FIXTURE-CMD"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "10N-S",
@@ -1652,7 +2170,12 @@
     "EventId": "N-ED-END",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
     "ExecutionContextId": "CB-EXEC-01",
@@ -1698,12 +2221,32 @@
       {
         "id": "CMD-FIXTURE",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
+      },
+      {
+        "id": "R-MANAGED-OBSERVER",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-FIXTURE-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-MANAGED-CMD-END",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-MANAGED-CMD-END@STG-FIXTURE-CMD",
+      "MARK-LOCK-RELEASE@STG-FIXTURE-CMD"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "10N-SM",
@@ -1713,7 +2256,12 @@
     "EventId": "N-ED-END",
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-NONE",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-RUN-FIXTURE-CMD",
     "ExecutionContextId": "CB-EXEC-01",
@@ -1771,12 +2319,32 @@
       {
         "id": "CMD-FIXTURE",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
+      },
+      {
+        "id": "R-MANAGED-OBSERVER",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-BASE",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-FIXTURE-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-MANAGED-CMD-END",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-MANAGED-CMD-END@STG-FIXTURE-CMD",
+      "MARK-LOCK-RELEASE@STG-FIXTURE-CMD"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "10NDOC-CHANGED-SM",
@@ -1790,6 +2358,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-APP-01",
@@ -1831,12 +2403,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-DOC",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE",
+      "TOK-EXEC-DONE"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "10NDOC-VETO-SM",
@@ -1850,6 +2433,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-APP-01",
@@ -1884,12 +2471,22 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM",
     "Cleanup": "CLEAN-DOC",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "10NDOC-WILL-SM",
@@ -1903,6 +2500,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-APP-01",
@@ -1944,12 +2545,23 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-DOC",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE",
+      "TOK-EXEC-DONE"
+    ],
+    "MarkerStageBindings": [],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "13A-SM",
@@ -1959,7 +2571,12 @@
     "EventId": null,
     "SchedulerId": null,
     "SchedulerChainId": "CHAIN-SYNC",
-    "SchedulerUse": [],
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      }
+    ],
     "DriverId": "DRIVER-CMD-01",
     "TriggerActionId": "TRG-APPCTX-SYNC",
     "ExecutionContextId": "APPCTX-EXEC-01",
@@ -2007,12 +2624,28 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-APPCTX-LOCK-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-SYNC-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-APPCTX-ENTRY@STG-SYNC-APPCTX",
+      "MARK-APPCTX-RETURN@STG-SYNC-APPCTX",
+      "MARK-LOCK-RELEASE@STG-SYNC-APPCTX"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "16A-M",
@@ -2026,6 +2659,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -2067,12 +2704,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-M+VER-T",
     "Cleanup": "CLEAN-APPCTX-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "16A-S",
@@ -2086,6 +2740,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -2127,12 +2785,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S+VER-T",
     "Cleanup": "CLEAN-APPCTX-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "16A-SM",
@@ -2146,6 +2821,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -2195,12 +2874,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-APPCTX-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "16C-M",
@@ -2218,6 +2914,10 @@
       {
         "scheduler": "NS-BEGIN-CMDCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-APP-01",
@@ -2253,12 +2953,33 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-M+VER-T",
     "Cleanup": "CLEAN-CMDCTX-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE",
+      "TOK-ENQUEUE-CMDCTX",
+      "TOK-CMDCTX-DELIVERY-DONE",
+      "TOK-SYNC-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-APPCTX-ENTRY@STG-SYNC-APPCTX",
+      "MARK-APPCTX-RETURN@STG-SYNC-APPCTX",
+      "N-ED-WILL@STG-CMDCTX-DELIVERY",
+      "N-ED-END@STG-CMDCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-CMDCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "16C-S",
@@ -2276,6 +2997,10 @@
       {
         "scheduler": "NS-BEGIN-CMDCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-APP-01",
@@ -2311,12 +3036,33 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S+VER-T",
     "Cleanup": "CLEAN-CMDCTX-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE",
+      "TOK-ENQUEUE-CMDCTX",
+      "TOK-CMDCTX-DELIVERY-DONE",
+      "TOK-SYNC-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-APPCTX-ENTRY@STG-SYNC-APPCTX",
+      "MARK-APPCTX-RETURN@STG-SYNC-APPCTX",
+      "N-ED-WILL@STG-CMDCTX-DELIVERY",
+      "N-ED-END@STG-CMDCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-CMDCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "16C-SM",
@@ -2334,6 +3080,10 @@
       {
         "scheduler": "NS-BEGIN-CMDCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-APP-01",
@@ -2377,12 +3127,33 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-CMDCTX-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE",
+      "TOK-ENQUEUE-CMDCTX",
+      "TOK-CMDCTX-DELIVERY-DONE",
+      "TOK-SYNC-RETURN",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-APPCTX-ENTRY@STG-SYNC-APPCTX",
+      "MARK-APPCTX-RETURN@STG-SYNC-APPCTX",
+      "N-ED-WILL@STG-CMDCTX-DELIVERY",
+      "N-ED-END@STG-CMDCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-CMDCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "16N-M",
@@ -2393,6 +3164,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -2443,12 +3218,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-M+VER-T",
     "Cleanup": "CLEAN-DEFER",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "16N-S",
@@ -2459,6 +3253,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -2509,12 +3307,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S+VER-T",
     "Cleanup": "CLEAN-DEFER",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "16N-SM",
@@ -2525,6 +3342,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -2583,12 +3404,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-DEFER",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "C15N16N-SM",
@@ -2599,6 +3439,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -2661,12 +3505,32 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-C15-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-PAYLOAD-LOAD-RESULT",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [
+      "MARK-LOAD-RESULT@STG-PAYLOAD-LOAD",
+      "MARK-REGISTRATION@STG-PAYLOAD-INIT",
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "C2APP2CMD-ALL",
@@ -2684,6 +3548,10 @@
       {
         "scheduler": "NS-BEGIN-CMDCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -2743,12 +3611,34 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-ENQUEUE-CMDCTX",
+      "TOK-CMDCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-APPCTX-CALLBACK-RETURN@STG-APPCTX-DELIVERY",
+      "N-ED-WILL@STG-CMDCTX-DELIVERY",
+      "N-ED-END@STG-CMDCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-CMDCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "C2DOCC16N-SM",
@@ -2765,75 +3655,7 @@
       },
       {
         "scheduler": "NS-SEND",
-        "class": "PRIMARY"
-      }
-    ],
-    "DriverId": "DRIVER-APP-01",
-    "TriggerActionId": "TRG-LOCK-CYCLE",
-    "ExecutionContextId": "SEND-EXEC-01",
-    "SupportActions": [
-      "SA-LOCK",
-      "SA-UNLOCK",
-      "SA-TX-RESOLVE",
-      "SA-TX-START",
-      "SA-TX-END",
-      "SA-TX-ABORT"
-    ],
-    "Resources": [
-      {
-        "id": "R-SM-LINK",
-        "kind": "StateCarrier"
-      },
-      {
-        "id": "F-REF-C",
-        "kind": "PersistentFixtureIdentity"
-      },
-      {
-        "id": "RR-ED",
-        "kind": "ObserverRegistration"
-      },
-      {
-        "id": "RR-DOC",
-        "kind": "ObserverRegistration"
-      },
-      {
-        "id": "F-REF-A",
-        "kind": "PersistentFixtureIdentity"
-      },
-      {
-        "id": "CMD-BOOT",
-        "kind": "CommandResource"
-      },
-      {
-        "id": "CMD-PROBE",
-        "kind": "CommandResource"
-      },
-      {
-        "id": "CMD-FINISH",
-        "kind": "CommandResource"
-      },
-      {
-        "id": "CMD-QUEUED",
-        "kind": "CommandResource"
-      }
-    ],
-    "Verifier": "VER-SM+VER-T",
-    "Cleanup": "CLEAN-DOC-DEFER",
-    "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
-  },
-  {
-    "ProbeId": "C2DOCW16N-SM",
-    "HandlerId": "Probe_C2DOCW16N_SM",
-    "PrimaryAuthorityId": "NS-SEND",
-    "ScheduleOriginEventId": "N-DOC-LOCK-WILL",
-    "EventId": "N-DOC-LOCK-WILL",
-    "SchedulerId": "NS-SEND",
-    "SchedulerChainId": "CHAIN-SEND",
-    "SchedulerUse": [
-      {
-        "scheduler": "NS-BEGIN-APPCTX",
-        "class": "DRIVER-INFRA"
+        "class": "FINISH-INFRA"
       },
       {
         "scheduler": "NS-SEND",
@@ -2887,12 +3709,122 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-DOC-DEFER",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
+  },
+  {
+    "ProbeId": "C2DOCW16N-SM",
+    "HandlerId": "Probe_C2DOCW16N_SM",
+    "PrimaryAuthorityId": "NS-SEND",
+    "ScheduleOriginEventId": "N-DOC-LOCK-WILL",
+    "EventId": "N-DOC-LOCK-WILL",
+    "SchedulerId": "NS-SEND",
+    "SchedulerChainId": "CHAIN-SEND",
+    "SchedulerUse": [
+      {
+        "scheduler": "NS-BEGIN-APPCTX",
+        "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "PRIMARY"
+      }
+    ],
+    "DriverId": "DRIVER-APP-01",
+    "TriggerActionId": "TRG-LOCK-CYCLE",
+    "ExecutionContextId": "SEND-EXEC-01",
+    "SupportActions": [
+      "SA-LOCK",
+      "SA-UNLOCK",
+      "SA-TX-RESOLVE",
+      "SA-TX-START",
+      "SA-TX-END",
+      "SA-TX-ABORT"
+    ],
+    "Resources": [
+      {
+        "id": "R-SM-LINK",
+        "kind": "StateCarrier"
+      },
+      {
+        "id": "F-REF-C",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "RR-ED",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "RR-DOC",
+        "kind": "ObserverRegistration"
+      },
+      {
+        "id": "F-REF-A",
+        "kind": "PersistentFixtureIdentity"
+      },
+      {
+        "id": "CMD-BOOT",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-PROBE",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-FINISH",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "CMD-QUEUED",
+        "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
+      }
+    ],
+    "Verifier": "VER-SM+VER-T",
+    "Cleanup": "CLEAN-DOC-DEFER",
+    "CompletionFence": "FENCE-CLEANUP-TOKEN",
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "C2ENT16N-M",
@@ -2903,6 +3835,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -2949,12 +3885,29 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-M+VER-T",
     "Cleanup": "CLEAN-OBJ-DEFER",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "C2OBJ16N-M",
@@ -2965,6 +3918,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -3011,12 +3968,29 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-M+VER-T",
     "Cleanup": "CLEAN-OBJ-DEFER",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "C2OBJ16N-S",
@@ -3027,6 +4001,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -3073,12 +4051,29 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-S+VER-T",
     "Cleanup": "CLEAN-OBJ-DEFER",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "C2OBJ16N-SM",
@@ -3089,6 +4084,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -3139,12 +4138,29 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-SM+VER-T",
     "Cleanup": "CLEAN-OBJ-DEFER",
     "CompletionFence": "FENCE-CLEANUP-TOKEN",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CAPP16APP-ALL",
@@ -3158,6 +4174,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -3215,12 +4235,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CAPP16SND-ALL",
@@ -3231,6 +4268,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -3297,12 +4338,30 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CDBERASE16APP-ALL",
@@ -3316,6 +4375,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -3373,12 +4436,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CDBERASE16SND-ALL",
@@ -3389,6 +4469,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -3455,12 +4539,30 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CDBOPEN16APP-ALL",
@@ -3474,6 +4576,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -3527,12 +4633,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CDBOPEN16SND-ALL",
@@ -3543,6 +4666,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -3605,12 +4732,30 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CDOCLOCKCHANGED16APP-ALL",
@@ -3628,6 +4773,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-APP-01",
@@ -3677,12 +4826,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CDOCLOCKVETO16APP-ALL",
@@ -3700,6 +4867,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-APP-01",
@@ -3750,12 +4921,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CDOCLOCKVETO16SND-ALL",
@@ -3769,6 +4958,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "DRIVER-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       },
       {
         "scheduler": "NS-SEND",
@@ -3831,12 +5024,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CDOCLOCKWILL16APP-ALL",
@@ -3854,6 +5066,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-APP-01",
@@ -3903,12 +5119,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-DRIVER-APP-DONE",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CEDC16APP-ALL",
@@ -3926,6 +5160,10 @@
       {
         "scheduler": "NS-BEGIN-CMDCTX",
         "class": "TRIGGER-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -3983,12 +5221,31 @@
       {
         "id": "CMD-CANCEL",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CANCEL-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-CANCEL-OBSERVED",
+      "TOK-CANCEL-CMDCTX-DONE",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CEDC16SND-ALL",
@@ -4005,6 +5262,10 @@
       },
       {
         "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
+      {
+        "scheduler": "NS-SEND",
         "class": "PRIMARY"
       }
     ],
@@ -4065,12 +5326,32 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CANCEL-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-CANCEL-OBSERVED",
+      "TOK-CANCEL-CMDCTX-DONE",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CEDEND16APP-ALL",
@@ -4084,6 +5365,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -4141,12 +5426,30 @@
       {
         "id": "CMD-FIXTURE",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-FIXTURE-CMD-END",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CEDEND16SND-ALL",
@@ -4157,6 +5460,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -4219,12 +5526,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-FIXTURE-CMD-END",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CEDW16APP-ALL",
@@ -4238,6 +5564,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -4295,12 +5625,30 @@
       {
         "id": "CMD-FIXTURE",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-FIXTURE-CMD-END",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CEDW16SND-ALL",
@@ -4311,6 +5659,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -4373,12 +5725,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-FIXTURE-CMD-END",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CENTGFX16APP-ALL",
@@ -4392,6 +5763,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -4445,12 +5820,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "COBJCANCEL16APP-ALL",
@@ -4464,6 +5856,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -4517,12 +5913,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "COBJCANCEL16SND-ALL",
@@ -4533,6 +5946,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -4595,12 +6012,30 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "COBJCLOSED16APP-ALL",
@@ -4614,6 +6049,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -4667,12 +6106,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "COBJCLOSED16SND-ALL",
@@ -4683,6 +6139,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -4745,12 +6205,30 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "COBJERASE16APP-ALL",
@@ -4764,6 +6242,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -4821,12 +6303,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "COBJERASE16SND-ALL",
@@ -4837,6 +6336,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -4903,12 +6406,30 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "COBJMOD16APP-ALL",
@@ -4922,6 +6443,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -4975,12 +6500,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "COBJOPEN16APP-ALL",
@@ -4994,6 +6536,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -5047,12 +6593,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "COBJOPEN16SND-ALL",
@@ -5063,6 +6626,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -5125,12 +6692,30 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "COBJUNDO16APP-ALL",
@@ -5144,6 +6729,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -5197,12 +6786,29 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "COBJUNDO16SND-ALL",
@@ -5213,6 +6819,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -5275,12 +6885,30 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CRXL16APP-ALL",
@@ -5294,6 +6922,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -5351,12 +6983,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-PAYLOAD-LOAD-RESULT",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CRXL16SND-ALL",
@@ -5367,6 +7017,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -5433,12 +7087,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-PAYLOAD-LOAD-RESULT",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CRXW16APP-ALL",
@@ -5452,6 +7125,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -5509,12 +7186,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-PAYLOAD-LOAD-RESULT",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CRXW16SND-ALL",
@@ -5525,6 +7220,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -5591,12 +7290,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-PAYLOAD-LOAD-RESULT",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTA16APP-ALL",
@@ -5610,6 +7328,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -5663,12 +7385,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTA16SND-ALL",
@@ -5679,6 +7419,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -5741,12 +7485,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTAS16APP-ALL",
@@ -5760,6 +7523,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -5813,12 +7580,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTAS16SND-ALL",
@@ -5829,6 +7614,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -5891,12 +7680,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTRABOUTABORT16APP-ALL",
@@ -5910,6 +7718,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -5963,12 +7775,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTRABOUTABORT16SND-ALL",
@@ -5979,6 +7809,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -6041,12 +7875,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTRABOUTEND16APP-ALL",
@@ -6060,6 +7913,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -6113,12 +7970,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTRABOUTEND16SND-ALL",
@@ -6129,6 +8004,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -6191,12 +8070,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTRENDED16APP-ALL",
@@ -6210,6 +8108,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -6263,12 +8165,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTRENDED16SND-ALL",
@@ -6279,6 +8199,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -6341,12 +8265,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTROUTERMOSTENDCALLED16APP-ALL",
@@ -6360,6 +8303,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -6413,12 +8360,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTROUTERMOSTENDCALLED16SND-ALL",
@@ -6429,6 +8394,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -6491,12 +8460,31 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTS16APP-ALL",
@@ -6510,6 +8498,10 @@
       {
         "scheduler": "NS-BEGIN-APPCTX",
         "class": "PRIMARY"
+      },
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
       }
     ],
     "DriverId": "DRIVER-CMD-01",
@@ -6563,12 +8555,30 @@
       {
         "id": "CMD-FINISH",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-APPCTX",
+      "TOK-APPCTX-DELIVERY-DONE",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "MARK-APPCTX-DELIVERY@STG-APPCTX-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-APPCTX-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   },
   {
     "ProbeId": "CTS16SND-ALL",
@@ -6579,6 +8589,10 @@
     "SchedulerId": "NS-SEND",
     "SchedulerChainId": "CHAIN-SEND",
     "SchedulerUse": [
+      {
+        "scheduler": "NS-SEND",
+        "class": "FINISH-INFRA"
+      },
       {
         "scheduler": "NS-SEND",
         "class": "PRIMARY"
@@ -6641,11 +8655,30 @@
       {
         "id": "CMD-QUEUED",
         "kind": "CommandResource"
+      },
+      {
+        "id": "R-NATIVE-ARX",
+        "kind": "RuntimeModule"
       }
     ],
     "Verifier": "VER-ALL+VER-T",
     "Cleanup": "CLEAN-CHAIN-PROCESS",
     "CompletionFence": "FENCE-PROCESS-EXIT",
-    "Status": "ContractCandidateV35"
+    "CompletionTokenIds": [
+      "TOK-PROBE-RETURN",
+      "TOK-ENQUEUE-SEND",
+      "TOK-SEND-CMD-END",
+      "TOK-EXEC-DONE",
+      "TOK-OUTCOME",
+      "TOK-LOCK-RELEASE"
+    ],
+    "MarkerStageBindings": [
+      "MARK-ORIGIN-RETURN@STG-ORIGIN",
+      "N-ED-WILL@STG-SEND-DELIVERY",
+      "N-ED-END@STG-SEND-DELIVERY",
+      "MARK-LOCK-RELEASE@STG-SEND-DELIVERY"
+    ],
+    "ResultAuthority": "CONTROL-PLANE-RESULT-01",
+    "Status": "ContractCandidateV35-A1"
   }
 ]

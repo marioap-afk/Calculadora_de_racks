@@ -49,34 +49,44 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 DRAFT = ARCHITECTURE CANDIDATE; R3 IMPLEMENTATION BLOCKED PENDING ARCHITECT REVIEW.**
-Research-only en `eng/research/I52Ctda`. Los bindings V34 de SM-LINK y OPEN-SM-B están implementados (§164–§165).
-El ARX canónico (`7F9C9C05…9ED421`, source `8bf3733f`, tuple de build `375B3D5C…46E25`) pasó el smoke host en
-`IMING-2` (§166). Esas identidades siguen vigentes: desde entonces no cambió código nativo.
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35-A1 READY FOR ARCHITECT DELTA REVIEW; R3 IMPLEMENTATION BLOCKED.**
+Research-only en `eng/research/I52Ctda`. El ARX canónico (`7F9C9C05…9ED421`, tuple de build `375B3D5C…46E25`) sigue
+vigente: desde el smoke host de §166 no cambió código nativo.
 
-El discovery R3 se detuvo antes de implementar (§167). La revisión del Arquitecto R3 (§168) concluyó que V34 no es un
-contrato ejecutable cerrado: 42/100 filas con bloqueo duro y 0/100 planes cerrados. Exigió V35 y el Coordinador la
-aceptó.
+El discovery R3 se detuvo (§167). El Arquitecto exigió V35 (§168), V35 se publicó como candidata en `0c609269` (§169) y
+el Arquitecto la revisó con resultado **AGREED WITH CORRECTIONS**: 14 correcciones obligatorias.
 
-V35 está redactada como borrador (§169): un catálogo de ejecución normativo
-([I-52-execution-catalog-v35.json](initiatives/I-52-execution-catalog-v35.json)) y
-[NPM-V35](initiatives/I-52-native-probe-matrix-v35.md), cuyas 100 filas de 34 campos son solo identificadores, más
-NEC/NSC/FEC-V35, `fixture-v35.json` (8 identidades) y `traceability-v35.json`. El validador estático
-`eng/research/I52Ctda/validate-v35-catalog.ps1` reporta:
+V35-A1 aplica RC-01..RC-14 sobre el mismo paquete V35 (§170):
 
-- 100/100 planes derivados;
-- 0 identificadores sin ligar, 0 texto libre ejecutable, 0 cláusulas D y 0 contradicciones;
-- 26 callbacks, 3 schedulers, 7 support actions y 8 identidades de fixture;
-- 0 grupos de bloqueo abiertos (R3-B01..B12, R3-C02);
-- 24/24 controles negativos detectados.
+- FINISH queda condicionado a tokens de finalización por fila.
+- Hay vinculación de etapa para MARK-LOCK-RELEASE y para los marcadores de instrumentación.
+- La excepción de seguridad de V34 §5 se aplica antes de UNKNOWN.
+- Solo el plano de control externo clasifica.
+- Cada ContractId de V34 tiene su estado de retención.
+- El módulo managed y el payload quedan especificados, con un único secuenciador de log.
+- Se incorporan el staging de cancel, el append por T-PRIMARY en 02NAPP-SM, las claves de guarda y el orden de fases.
+- Hay un oráculo de revisión en `eng/research/I52Ctda/v35-oracle.json`, versionado y fijado.
+- La Proposal §6 lista las filas que pueden terminar en UNKNOWN por el host.
 
-Antes de publicar, dos revisores adversariales encontraron 6 BLOCKING y 13 MAJOR, y todos se corrigieron. La
-evidencia está en [I-52-v35-mechanical-validation.json](automation/evidence/I-52-v35-mechanical-validation.json).
+El validador `validate-v35-catalog.ps1` reporta:
 
-Siguiente paso: la revisión del Arquitecto con el
-[paquete V35](initiatives/I-52-architect-review-package-v35.md), incluidas las 13 decisiones que V35 introduce
-(Proposal V35 §4). Si la acuerda, se abre el gate de implementación R3: executor, módulo de payload, observador managed
-y migración a fixture/traceability V35.
+- 100/100 planes;
+- 0 IDs sin ligar, 0 texto libre, 0 cláusulas D y 0 contradicciones;
+- 26/3/7/8;
+- los siete predicados de cierre en TRUE.
+
+El arnés `validate-v35-negative-controls.ps1` detecta 93/93 corrupciones, cada una por la comprobación que declara.
+Tres revisiones adversariales previas a la publicación encontraron hallazgos BLOCKING y MAJOR, y todos se corrigieron.
+
+Evidencia:
+
+- [cierre de RCs](automation/evidence/I-52-v35-a1-rc-closure.json);
+- [validación](automation/evidence/I-52-v35-mechanical-validation.json);
+- [controles negativos](automation/evidence/I-52-v35-negative-controls.json).
+
+Siguiente paso: la **revisión delta del Arquitecto** con el
+[paquete V35](initiatives/I-52-architect-review-package-v35.md), que incluye aprobar el pin del oráculo y los hashes de
+aprobación. V35 no está congelada. Solo después, y con consenso del Coordinador, se abriría la implementación R3.
 
 Probes gobernados: **0**; `CTDA_HOST_PASS` **NOT EVALUATED**; producto **BLOCKED**; V18 gobierna; G3 **STOPPED**,
 G3B **NOT OPEN**, CT-50 **NOT EXECUTED**.

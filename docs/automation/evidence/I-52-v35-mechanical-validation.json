@@ -1,6 +1,8 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "revision": "V35-A1",
   "validator": "eng/research/I52Ctda/validate-v35-catalog.ps1",
+  "oracle": "eng/research/I52Ctda/v35-oracle.json",
   "scope": "documents/catalog only; no runtime semantics",
   "result": "PASS",
   "counts": {
@@ -13,7 +15,7 @@
     "classD": 0,
     "lineageMissing": 0,
     "contradictions": 0,
-    "identifiersChecked": 4932,
+    "identifiersChecked": 6198,
     "eventIds": 27,
     "reachableCallbacks": 26,
     "primaryCoverage": "26/26",
@@ -84,7 +86,7 @@
   },
   "apiHeaderCheck": {
     "checked": true,
-    "members": 19,
+    "members": 22,
     "missing": 0
   },
   "predicates": {
@@ -96,161 +98,5 @@
     "FixtureExecutionContractClosedV35": true,
     "PlanDerivationClosed": true
   },
-  "findings": [],
-  "negativeControls": {
-    "note": "Added by a scratch negative-control harness, not by the validator: each control copies the published inputs to a temporary directory, applies one deliberate corruption and runs the validator with -Repository pointing there. Every control must make the validator exit non-zero.",
-    "total": 24,
-    "caught": 24,
-    "controls": [
-      {
-        "corruption": "free-text trigger",
-        "validatorResult": "FAIL",
-        "firstFinding": "[UNBOUND] 02N: TriggerActionId=modify DB notifier A"
-      },
-      {
-        "corruption": "or NONE alternative in T",
-        "validatorResult": "FAIL",
-        "firstFinding": "[UNBOUND] CAPP16SND-ALL: PrimaryTransactionId=origin T or NONE"
-      },
-      {
-        "corruption": "drop body observer",
-        "validatorResult": "FAIL",
-        "firstFinding": "[LINEAGE-ROW-AGREEMENT] 02NO-M: Setup -> OR-REF-A not in ObserverRegistrationIds"
-      },
-      {
-        "corruption": "wrong guard family",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CONTRADICTION/GUARD-FAMILY] 02NDBMOD-S: expected RG-DB-MOD"
-      },
-      {
-        "corruption": "missing marker observer",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CONTRADICTION/MARKER-OBSERVER] 16N-S: no observer for +MARK-LOCK-RELEASE"
-      },
-      {
-        "corruption": "SA-LOCK in callback (B08)",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CONTRADICTION/EXEC-TRANSACTION] 02NTAS-ALL: APPCTX-EXEC-01 vs T_CB"
-      },
-      {
-        "corruption": "veto polarity reverted (B10)",
-        "validatorResult": "FAIL",
-        "firstFinding": "[LINEAGE-ROW-AGREEMENT] 10NDOC-WILL-SM: LifecycleMarkers -> -N-DOC-LOCK-VETO not in Markers"
-      },
-      {
-        "corruption": "retained column drift",
-        "validatorResult": "FAIL",
-        "firstFinding": "[RETAINED-DRIFT] 09N-O: ExpectedAfter"
-      },
-      {
-        "corruption": "PASS obligation removed",
-        "validatorResult": "FAIL",
-        "firstFinding": "[LINEAGE-ROW-AGREEMENT] CDBOPEN16SND-ALL: PASS -> OBS-DELIVERY not in ObservationPredicateIds"
-      },
-      {
-        "corruption": "candidate boundary removed (B12)",
-        "validatorResult": "FAIL",
-        "firstFinding": "[LINEAGE-ROW-AGREEMENT] 10N-M: PASS -> OBS-CANDIDATE-BOUNDARY not in ObservationPredicateIds"
-      },
-      {
-        "corruption": "fence mismatch",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CONTRADICTION/FENCE] 02NO-SM: CLEAN-OBJ-FENCED"
-      },
-      {
-        "corruption": "double CLN-BASE (C02)",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CONTRADICTION/TERMINAL-BASE] C2OBJ16N-S: CLEAN-OBJ-DEFER"
-      },
-      {
-        "corruption": "ninth identity",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CONTRADICTION/FIXTURE] fixture-v35: identities 8/9"
-      },
-      {
-        "corruption": "trigger does not produce body event",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CONTRADICTION/TRIGGER-PRODUCES] 02NAPP-S: TRG-APPEND-TRIGGER does not produce N-DB-APPEND"
-      },
-      {
-        "corruption": "dangling catalog reference",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CATALOG-REF] CB-EXEC-01: unresolved CB-LOCK-99"
-      },
-      {
-        "corruption": "class D lineage",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CLASS-D] 02N: Trigger: modify DB notifier A"
-      },
-      {
-        "corruption": "NEC relation dropped",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CONTRADICTION/NEC-PROJECTION] NEC-V35: table 236 vs derived 237"
-      },
-      {
-        "corruption": "trigger disjointness",
-        "validatorResult": "FAIL",
-        "firstFinding": "[LINEAGE-ROW-AGREEMENT] 02NO-M: Mutation -> MUT-M not in MutationActionId"
-      },
-      {
-        "corruption": "marker without producer (reviewer B2)",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CONTRADICTION/MARKER-PRODUCER] 02NO-M: no producer of +N-OBJ-OPEN touches a watched object (F-REF-A,F-REF-A)"
-      },
-      {
-        "corruption": "second body observer (reviewer B3)",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CONTRADICTION/BODY-OBSERVER] C15N16N-SM: BodyObserverId RR-DB does not observe N-DB-MOD"
-      },
-      {
-        "corruption": "staging UNKNOWN dropped (reviewer R2-6)",
-        "validatorResult": "FAIL",
-        "firstFinding": "[LINEAGE-ROW-AGREEMENT] 04N: UNKNOWN -> UNK-STAGING not in UnknownPredicateIds"
-      },
-      {
-        "corruption": "nested-in-abort UNKNOWN dropped (reviewer R2-2)",
-        "validatorResult": "FAIL",
-        "firstFinding": "[LINEAGE-ROW-AGREEMENT] 02NTA-ALL: UNKNOWN -> UNK-NESTED-IN-ABORT not in UnknownPredicateIds"
-      },
-      {
-        "corruption": "guard arm target mismatch",
-        "validatorResult": "FAIL",
-        "firstFinding": "[LINEAGE-ROW-AGREEMENT] CDBERASE16SND-ALL: Trigger -> TRG-ERASE-TRIGGER-DB not in TriggerActionId"
-      },
-      {
-        "corruption": "body observer on observation row",
-        "validatorResult": "FAIL",
-        "firstFinding": "[CONTRADICTION/BODY-OBSERVER] 09N-B: BodyObserverId RR-TX on a row without a probe body"
-      }
-    ]
-  },
-  "prePublicationReview": {
-    "method": "Two independent read-only adversarial reviewers over the uncommitted draft: (1) triggers, observers, guards, drivers and contexts against the exact SDK headers; (2) V34->V35 fidelity, result semantics, cleanup and lineage.",
-    "reported": {
-      "BLOCKING": 6,
-      "MAJOR": 13,
-      "MINOR": 5,
-      "overlapping": 3
-    },
-    "corrected": [
-      "script-issued triggers (TRG-RUN-FIXTURE-CMD, TRG-CANCEL-CMDCTX): guards stay armed until I52CTDA_FINISH, callback identity bound to the command name",
-      "02NO-M: TRG-MODIFY-CLOSE-REF-A no longer suppresses graphics; produces N-OBJ-OPEN and N-ENT-GFX; single BodyObserverId",
-      "C15N16N-SM: RR-DB removed; RR-PAYLOAD-DB is the only body observer, registered by the payload; origin instance must equal MARK-REGISTRATION",
-      "new column BodyObserverId (INV-BODY-OBSERVER); RG-ONESHOT is one instance per callback identity and suppresses self-caused nesting",
-      "04NO-S N-OBJ-MOD producer declared (SET-STAGE-S-IN-PRIMARY); INV-MARKER-PRODUCER added, object events must touch a watched object",
-      "RR-MANAGED-CMD registered by the driver through the managed module, not by BOOT",
-      "13A-SM: APPCTX-EXEC-01 and SA-LOCK legal context name the synchronous NX-APPCTX-SYNC entry",
-      "02NO-SM: CLN-BASE never reopens trigger-erased objects nor removes fenced reactors; VER-SM bound to the §164 definition (never opens F-REF-B)",
-      "CMDCTX marker binding fixed to the unique command pair enclosing EP-CMDCTX and its token",
-      "02NTA-ALL: CB-EXEC-01 nested in an aborting transaction is UNKNOWN (UNK-NESTED-IN-ABORT)",
-      "FP-AFFILIATION no longer selects commit/abort at runtime",
-      "RESULT-RULE-V35 is exhaustive (otherwise UNKNOWN); OBS-CANDIDATE-BOUNDARY (i)-false branch added",
-      "staging proven by OBS-STAGED / UNK-STAGING",
-      "OBS-VISIBILITY defined for both pre-end states; callback-time comparison stated in RESULT-RULE-V35",
-      "INV-ERASE-TRIGGER-DISJOINT cited by the erase-trigger lineage clauses",
-      "composite cleanup: no double origin removal; CLEAN-APPCTX-LOCK-PROCESS includes CLEAN-APPCTX-PROCESS steps; erased disposable notifiers removed with openErased",
-      "minor: 09N-A single T-PRIMARY end, RG-DB-APPEND armed by its trigger, BOOT-01 in SA-TX-START legal context"
-    ],
-    "validatorHardening": "Checks added after the review: BODY-OBSERVER, MARKER-PRODUCER (object-aware), GUARD-TARGET, ERASE-TRIGGER-DISJOINT, UNKNOWN-RULE, LINEAGE-ROW-AGREEMENT."
-  }
+  "findings": []
 }

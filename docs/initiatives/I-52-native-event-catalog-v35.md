@@ -1,6 +1,6 @@
 # I-52 — Native Event Catalog V35
 
-> **NEC-V35-1 / DRAFT / ARCHITECTURE CANDIDATE / NOT EXECUTED.** Generated from NPM-V35-1. Parent NEC-V34-1 blob
+> **NEC-V35-1, revision V35-A1 / DRAFT / NOT EXECUTED.** Generated from NPM-V35-1 (V35-A1). V35-A1 changes no event relation. Parent NEC-V34-1 blob
 > `1f16dd0641c1706e6874a68b9136406c19e33848`. The event universe is unchanged; the projection adds `MARKER_ABSENT_FOR` for markers of polarity `-`.
 
 ## 1. Exact event and capability inventory

@@ -1,0 +1,1332 @@
+{
+  "schemaVersion": 1,
+  "revision": "V35-A1",
+  "harness": "eng/research/I52Ctda/validate-v35-negative-controls.ps1",
+  "baselinePass": true,
+  "total": 93,
+  "detected": 93,
+  "controls": [
+    {
+      "control": "BASELINE",
+      "exit": 0,
+      "expectedCheck": null,
+      "expectedCheckFired": true,
+      "checksFired": [],
+      "detected": false,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-01 free-text trigger",
+      "exit": 1,
+      "expectedCheck": "UNBOUND",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BLOCKER/R3-B02",
+        "LINEAGE-ROW-AGREEMENT",
+        "ROW-APPROVAL",
+        "TRIGGER-ACTION",
+        "UNBOUND"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-02 or-NONE alternative in T",
+      "exit": 1,
+      "expectedCheck": "UNBOUND",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "LINEAGE-ROW-AGREEMENT",
+        "PRIMARY-T",
+        "ROW-APPROVAL",
+        "UNBOUND"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-03 drop body observer",
+      "exit": 1,
+      "expectedCheck": "BODY-OBSERVER",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BODY-OBSERVER",
+        "LINEAGE-ROW-AGREEMENT",
+        "ROW-APPROVAL",
+        "TRACE-RESOURCE-SET"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-04 wrong guard family",
+      "exit": 1,
+      "expectedCheck": "GUARD-FAMILY",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "GUARD-FAMILY",
+        "GUARD-TARGET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-05 missing marker observer",
+      "exit": 1,
+      "expectedCheck": "MARKER-OBSERVER",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "MARKER-OBSERVER",
+        "ROW-APPROVAL",
+        "TRACE-RESOURCE-SET"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-06 SA-LOCK in callback (B08)",
+      "exit": 1,
+      "expectedCheck": "EXEC-TRANSACTION",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BLOCKER/R3-B08",
+        "CHAIN-POINTS",
+        "CLEANUP-PROCESS",
+        "EXEC-LOCK",
+        "EXEC-TRANSACTION",
+        "ROW-APPROVAL",
+        "TRACE",
+        "TRACE-SUPPORT",
+        "TRACE-SUPPORT-SET"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-07 veto polarity reverted (B10)",
+      "exit": 1,
+      "expectedCheck": "NEC-PROJECTION",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BLOCKER/R3-B10",
+        "LINEAGE-ROW-AGREEMENT",
+        "MARKER-PRODUCER",
+        "NEC-PROJECTION",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-08 retained column drift",
+      "exit": 1,
+      "expectedCheck": "RETAINED-DRIFT",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "RETAINED-DRIFT",
+        "ROW-APPROVAL",
+        "SURFACE-STATE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-09 PASS obligation removed",
+      "exit": 1,
+      "expectedCheck": "PREDICATE-SET",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "LINEAGE-ROW-AGREEMENT",
+        "PASS-RULE",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-10 candidate boundary removed",
+      "exit": 1,
+      "expectedCheck": "CANDIDATE-BOUNDARY",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BLOCKER/R3-B12",
+        "CANDIDATE-BOUNDARY",
+        "LINEAGE-ROW-AGREEMENT",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-11 fence mismatch",
+      "exit": 1,
+      "expectedCheck": "FENCE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "FENCE",
+        "PROCESS-FENCE",
+        "ROW-APPROVAL",
+        "TRACE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-12 double CLN-BASE (C02)",
+      "exit": 1,
+      "expectedCheck": "TERMINAL-BASE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BLOCKER/R3-C02",
+        "CATALOG-APPROVAL",
+        "RETAINED-EXTENSION-COMPATIBILITY",
+        "TERMINAL-BASE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-13 ninth identity",
+      "exit": 1,
+      "expectedCheck": "FIXTURE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "FIXTURE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-14 trigger does not produce body",
+      "exit": 1,
+      "expectedCheck": "TRIGGER-PRODUCES",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "TRIGGER-PRODUCES"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-15 dangling catalog reference",
+      "exit": 1,
+      "expectedCheck": "CATALOG-REF",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "CATALOG-REF",
+        "EXEC-LOCK"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-16 class D lineage",
+      "exit": 1,
+      "expectedCheck": "CLASS-D",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CLASS-D",
+        "INPUT-PIN"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-17 NEC relation dropped",
+      "exit": 1,
+      "expectedCheck": "NEC-PROJECTION",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "NEC-PROJECTION"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-18 trigger disjointness",
+      "exit": 1,
+      "expectedCheck": "TRIGGER-DISJOINT",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "RETAINED-EXTENSION-COMPATIBILITY",
+        "TRACE-RESOURCE-SET",
+        "TRIGGER-DISJOINT"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-19 marker without producer",
+      "exit": 1,
+      "expectedCheck": "MARKER-PRODUCER",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "MARKER-PRODUCER"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-20 second body observer",
+      "exit": 1,
+      "expectedCheck": "BODY-OBSERVER",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BODY-NOTIFIER",
+        "BODY-OBSERVER",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-21 staging UNKNOWN dropped",
+      "exit": 1,
+      "expectedCheck": "UNKNOWN-RULE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "LINEAGE-ROW-AGREEMENT",
+        "PREDICATE-SET",
+        "ROW-APPROVAL",
+        "UNKNOWN-RULE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-22 nested-in-abort UNKNOWN dropped",
+      "exit": 1,
+      "expectedCheck": "UNKNOWN-RULE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "LINEAGE-ROW-AGREEMENT",
+        "PREDICATE-SET",
+        "ROW-APPROVAL",
+        "UNKNOWN-RULE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-23 guard arm target mismatch",
+      "exit": 1,
+      "expectedCheck": "GUARD-TARGET",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "GUARD-TARGET",
+        "LINEAGE-ROW-AGREEMENT",
+        "ROW-APPROVAL",
+        "TRACE",
+        "TRACE-RESOURCE-SET",
+        "TRIGGER-ACTION",
+        "TRIGGER-TARGET"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V35-24 body observer on observation row",
+      "exit": 1,
+      "expectedCheck": "BODY-OBSERVER",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BODY-NOTIFIER",
+        "BODY-OBSERVER",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "C1 semantic wrong target, coherent",
+      "exit": 1,
+      "expectedCheck": "BODY-NOTIFIER",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BODY-NOTIFIER",
+        "INPUT-PIN",
+        "ROW-APPROVAL",
+        "TRACE-RESOURCE-SET",
+        "TRIGGER-ACTION",
+        "TRIGGER-TARGET"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "C2 coherent wrong resource category",
+      "exit": 1,
+      "expectedCheck": "RESOURCE-TYPE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "INPUT-PIN",
+        "RESOURCE-TYPE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "C3 semantically invalid FailPredicate",
+      "exit": 1,
+      "expectedCheck": "FP-APPLICABILITY",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "FP-APPLICABILITY",
+        "INPUT-PIN",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "C4 degraded cleanup, coherent",
+      "exit": 1,
+      "expectedCheck": "CLEANUP-OBJ",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BLOCKER/R3-B04",
+        "CLEANUP-OBJ",
+        "INPUT-PIN",
+        "RETAINED-DRIFT",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "C5 retained authority rewritten",
+      "exit": 1,
+      "expectedCheck": "RETAINED-V34-DRIFT",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "RETAINED-V34-DRIFT"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "C6 changed ObservationPredicate",
+      "exit": 1,
+      "expectedCheck": "PREDICATE-SET",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "PASS-RULE",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "C7 lock trigger removed from APPCTX driver",
+      "exit": 1,
+      "expectedCheck": "SA-LEGAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BLOCKER/R3-B11",
+        "CATALOG-APPROVAL",
+        "INPUT-PIN",
+        "ROW-APPROVAL",
+        "SA-LEGAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-01a FINISH before final delivery",
+      "exit": 1,
+      "expectedCheck": "FINISH-TOKEN-SET",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "FINISH-TOKEN-SET",
+        "INPUT-PIN",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-01b FINISH issued by the script",
+      "exit": 1,
+      "expectedCheck": "FINISH-ORDER",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "FINISH-ORDER"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-02a wrong unlock satisfies MARK-LOCK-RELEASE",
+      "exit": 1,
+      "expectedCheck": "MARKER-STAGE-BINDING",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "MARKER-STAGE-BINDING",
+        "ROW-APPROVAL",
+        "TRACE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-02b FINISH unlock satisfies MARK-LOCK-RELEASE",
+      "exit": 1,
+      "expectedCheck": "MARKER-STAGE-BINDING",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "DRIVER-MARKER-DISJOINT",
+        "INPUT-PIN",
+        "MARKER-STAGE-BINDING",
+        "ROW-APPROVAL",
+        "TRACE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-03 driver APPCTX marker satisfies probe delivery",
+      "exit": 1,
+      "expectedCheck": "DRIVER-MARKER-DISJOINT",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "ASYNC-BOUNDARY-BINDING",
+        "CATALOG-APPROVAL",
+        "DRIVER-MARKER-DISJOINT",
+        "INPUT-PIN",
+        "MARKER-STAGE-BINDING",
+        "ROW-APPROVAL",
+        "TRACE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-04a cleanup safety hidden by UNKNOWN",
+      "exit": 1,
+      "expectedCheck": "SAFETY-PRECEDENCE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "SAFETY-PRECEDENCE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-04b safety exception removed from a row",
+      "exit": 1,
+      "expectedCheck": "SAFETY-PRECEDENCE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "LINEAGE-EMPTY",
+        "PREDICATE-SET",
+        "ROW-APPROVAL",
+        "SAFETY-PRECEDENCE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-05a incomplete evidence reaches FAIL/PASS",
+      "exit": 1,
+      "expectedCheck": "PLAN",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "PLAN",
+        "SAFETY-PRECEDENCE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-05b in-process FINISH classifies",
+      "exit": 1,
+      "expectedCheck": "CONTROL-PLANE-RESULT",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "CONTROL-PLANE-RESULT"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-06 unauthorized retained extension",
+      "exit": 1,
+      "expectedCheck": "RETAINED-AUTHORITY-STATUS",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "RETAINED-AUTHORITY-STATUS",
+        "RETAINED-V34-DRIFT"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-07a managed host unclassified",
+      "exit": 1,
+      "expectedCheck": "RESOURCE-TYPE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "INPUT-PIN",
+        "MANAGED-HOST",
+        "RESOURCE-TYPE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-07b managed host never loaded",
+      "exit": 1,
+      "expectedCheck": "MANAGED-HOST",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "MANAGED-HOST"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-08a payload bound to any database",
+      "exit": 1,
+      "expectedCheck": "PAYLOAD-DB-BINDING",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "PAYLOAD-DB-BINDING"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-08b payload DB observation dropped",
+      "exit": 1,
+      "expectedCheck": "PAYLOAD-DB-BINDING",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "PAYLOAD-DB-BINDING",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-09 cancel staging equals ExpectedAfter bytes",
+      "exit": 1,
+      "expectedCheck": "CANCEL-STAGING-DISTINCT",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CANCEL-STAGING-DISTINCT",
+        "CANCEL-STAGING-NOT-EXPECTED",
+        "CATALOG-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-10 02NAPP-SM competing Model Space transaction",
+      "exit": 1,
+      "expectedCheck": "APPEND-TRANSACTION-COMPATIBILITY",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "APPEND-TRANSACTION-COMPATIBILITY",
+        "INPUT-PIN",
+        "ROW-APPROVAL",
+        "TRIGGER-ACTION"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-11a dynamic-linker guard key without module path",
+      "exit": 1,
+      "expectedCheck": "GUARD-KEY-SCHEMA",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "GUARD-KEY-SCHEMA"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-11b open guard key without target",
+      "exit": 1,
+      "expectedCheck": "GUARD-KEY-SCHEMA",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "GUARD-KEY-SCHEMA"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-12 guard disarmed before obligations",
+      "exit": 1,
+      "expectedCheck": "GUARD-DISARM-AFTER-OBLIGATIONS",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "GUARD-DISARM-AFTER-OBLIGATIONS"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "RC-13 body notifier coherently corrupted",
+      "exit": 1,
+      "expectedCheck": "BODY-NOTIFIER",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BODY-NOTIFIER",
+        "CATALOG-APPROVAL",
+        "MARKER-PRODUCER",
+        "TRACE-RESOURCE-SET"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "L1 APPCTX lock release anchored after the stage token",
+      "exit": 1,
+      "expectedCheck": "LOCK-RELEASE-BINDING",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "LOCK-RELEASE-BINDING"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "L2 cleanup closes the document inside FINISH",
+      "exit": 1,
+      "expectedCheck": "FINISH-ORDER",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "FINISH-ORDER"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "L3 late delivery not fenced",
+      "exit": 1,
+      "expectedCheck": "FINISH-DRAIN",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "FINISH-DRAIN"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "L4 payload reactor not removable",
+      "exit": 1,
+      "expectedCheck": "PAYLOAD-DB-BINDING",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "PAYLOAD-DB-BINDING"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "L5 sync caller return outside its stage",
+      "exit": 1,
+      "expectedCheck": "MARKER-STAGE-BINDING",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "MARKER-STAGE-BINDING"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "L6 cleanup records counted as safety violations",
+      "exit": 1,
+      "expectedCheck": "SAFETY-PRECEDENCE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "SAFETY-PRECEDENCE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X1 drop FP-STATE, row and lineage",
+      "exit": 1,
+      "expectedCheck": "PREDICATE-SET",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X2 drop OBS-ORDER-RULES, row and lineage",
+      "exit": 1,
+      "expectedCheck": "PREDICATE-SET",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X3 drop UNKNOWN predicates, row and lineage",
+      "exit": 1,
+      "expectedCheck": "PREDICATE-SET",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X4 same-class trigger swap, coherent",
+      "exit": 1,
+      "expectedCheck": "TRIGGER-ACTION",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "ROW-APPROVAL",
+        "TRIGGER-ACTION"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X5 traceability resource dropped",
+      "exit": 1,
+      "expectedCheck": "TRACE-RESOURCE-SET",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "TRACE-RESOURCE-SET"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X6 traceability bindings forged",
+      "exit": 1,
+      "expectedCheck": "TRACE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "TRACE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X7 token dropped in row, trace and oracle",
+      "exit": 1,
+      "expectedCheck": "INPUT-PIN",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X8 V34 baseline and catalog rewritten together",
+      "exit": 1,
+      "expectedCheck": "INPUT-PIN",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "INPUT-PIN",
+        "RETAINED-V34-DRIFT"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X9 APPCTX unlock support removed",
+      "exit": 1,
+      "expectedCheck": "SA-LEGAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "RETAINED-EXTENSION-COMPATIBILITY",
+        "SA-LEGAL",
+        "TRACE-SUPPORT-SET"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X11 approval hash replaced in the oracle",
+      "exit": 1,
+      "expectedCheck": "INPUT-PIN",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "RETAINED-EXTENSION-COMPATIBILITY"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X12 FP-STATE removed from every row and lineage",
+      "exit": 1,
+      "expectedCheck": "PREDICATE-SET",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "X13 APPCTX driver disarms before obligations",
+      "exit": 1,
+      "expectedCheck": "GUARD-DISARM-AFTER-OBLIGATIONS",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "GUARD-DISARM-AFTER-OBLIGATIONS"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "N2 erase trigger target in a write set",
+      "exit": 1,
+      "expectedCheck": "ERASE-TRIGGER-DISJOINT",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "BLOCKER/R3-B06",
+        "CATALOG-APPROVAL",
+        "ERASE-TRIGGER-DISJOINT",
+        "RETAINED-EXTENSION-COMPATIBILITY",
+        "TRACE-RESOURCE-SET",
+        "TRIGGER-DISJOINT"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "N3 extended entry text changed",
+      "exit": 1,
+      "expectedCheck": "RETAINED-EXTENSION-COMPATIBILITY",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "RETAINED-EXTENSION-COMPATIBILITY"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "N4 deferred cleanup without drain",
+      "exit": 1,
+      "expectedCheck": "FINISH-DRAIN",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "CLEANUP-DEFER",
+        "FINISH-DRAIN",
+        "RETAINED-EXTENSION-COMPATIBILITY"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "N5 FINISH timeout UNKNOWN dropped",
+      "exit": 1,
+      "expectedCheck": "FINISH-TIMEOUT",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "FINISH-TIMEOUT",
+        "INPUT-PIN",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "N6 document guard key needs a module path",
+      "exit": 1,
+      "expectedCheck": "GUARD-KEY-TARGET",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "GUARD-KEY-TARGET"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "N7 transaction guard key without stage",
+      "exit": 1,
+      "expectedCheck": "GUARD-KEY-STAGE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "GUARD-KEY-SCHEMA",
+        "GUARD-KEY-STAGE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "N8 lock-release observation dropped",
+      "exit": 1,
+      "expectedCheck": "LOCK-RELEASE-BINDING",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "LOCK-RELEASE-BINDING",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "N9 cancel restoration observation dropped",
+      "exit": 1,
+      "expectedCheck": "CANCEL-STAGING-RESTORED",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CANCEL-STAGING-RESTORED",
+        "INPUT-PIN",
+        "PREDICATE-SET",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "N10 staging value becomes an expected state",
+      "exit": 1,
+      "expectedCheck": "CANCEL-STAGING-NOT-EXPECTED",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CANCEL-STAGING-NOT-EXPECTED",
+        "CATALOG-APPROVAL",
+        "RETAINED-V34-DRIFT"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V1 late deliveries after removal no longer counted",
+      "exit": 1,
+      "expectedCheck": "SAFETY-PRECEDENCE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "SAFETY-PRECEDENCE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V2a APPCTX driver phases rotated",
+      "exit": 1,
+      "expectedCheck": "GUARD-DISARM-AFTER-OBLIGATIONS",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "GUARD-DISARM-AFTER-OBLIGATIONS"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V2b command driver registers last",
+      "exit": 1,
+      "expectedCheck": "GUARD-DISARM-AFTER-OBLIGATIONS",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "GUARD-DISARM-AFTER-OBLIGATIONS"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V3a cleanup text closes the drawing again",
+      "exit": 1,
+      "expectedCheck": "CATALOG-APPROVAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V3b finish fence text ignored by deliveries",
+      "exit": 1,
+      "expectedCheck": "CATALOG-APPROVAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V3c payload reactor on an unarmed row",
+      "exit": 1,
+      "expectedCheck": "PAYLOAD-DB-BINDING",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "PAYLOAD-DB-BINDING",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V3d lock-release rule rewritten",
+      "exit": 1,
+      "expectedCheck": "CATALOG-APPROVAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V4m cleanup family changed, coherent",
+      "exit": 1,
+      "expectedCheck": "RETAINED-DRIFT",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "RETAINED-DRIFT",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V4q setup reordered",
+      "exit": 1,
+      "expectedCheck": "SETUP-ORDER",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "ROW-APPROVAL",
+        "SETUP-ORDER"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V4h extra locks",
+      "exit": 1,
+      "expectedCheck": "EXEC-LOCK",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "EXEC-LOCK",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V4n extra guard",
+      "exit": 1,
+      "expectedCheck": "GUARD-FAMILY",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "GUARD-FAMILY",
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V4f lineage record emptied",
+      "exit": 1,
+      "expectedCheck": "LINEAGE-EMPTY",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "LINEAGE-EMPTY"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V4g traceability event forged",
+      "exit": 1,
+      "expectedCheck": "TRACE",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN",
+        "TRACE"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V6 lock-release token on the FINISH stage",
+      "exit": 1,
+      "expectedCheck": "LOCK-RELEASE-BINDING",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL",
+        "LOCK-RELEASE-BINDING"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "V7 oracle source edited",
+      "exit": 1,
+      "expectedCheck": "INPUT-PIN",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "INPUT-PIN"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    }
+  ]
+}

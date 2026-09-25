@@ -1,6 +1,6 @@
 # I-52 — Native Scheduler Catalog V35
 
-> **NSC-V35-1 / DRAFT / ARCHITECTURE CANDIDATE / NOT EXECUTED.** Parent NSC-V34-1 blob `3ca54ef1992c3b15d2382a42f09693cd02cabdb6`. The scheduler
+> **NSC-V35-1, revision V35-A1 / DRAFT / NOT EXECUTED.** Parent NSC-V34-1 blob `3ca54ef1992c3b15d2382a42f09693cd02cabdb6`. The scheduler
 > universe remains three. V35 names the NS-SEND delivery contract and separates probe scheduler pairs from infrastructure use.
 
 ## 1. Exact scheduler universe
@@ -21,6 +21,7 @@
 | `CHAIN-STAGE` | an earlier stage of the row's SchedulerChainId (C2APP2CMD-ALL stage 1) | 1 |
 | `DRIVER-INFRA` | DRIVER-APP-01 delivery used by Architect B11 lock triggers and 16C | 12 |
 | `TRIGGER-INFRA` | CANCEL-CMDCTX-01 (TRG-CANCEL-CMDCTX) | 3 |
+| `FINISH-INFRA` | FIN-GATE-01 issues I52CTDA_FINISH and CMD-FINISH issues the exit with sendStringToExecute (V35-A1, RC-01) | 100 |
 
 Only `PRIMARY` creates scheduler pairs. Infrastructure uses are listed per ProbeId in `traceability-v35.json`.
 
