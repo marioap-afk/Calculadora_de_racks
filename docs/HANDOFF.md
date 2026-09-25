@@ -54,8 +54,9 @@ Research-only en `eng/research/I52Ctda`. El consenso Coordinador ↔ Arquitecto 
 clarification* (sin V35 ni cambio de NPM/NEC/FEC): el linkage de STATE-SM-0 vive en el Xrecord NOD
 `RACKCAD_CTDA_V34_SM-LINK`, que no es identidad de fixture (siguen 7), y OPEN-SM-B fija que F-REF-B sigue viva
 como target M y sale del conjunto hermano solo por la relación, mientras F-REF-C no existe hasta MUT-SM. El nuevo
-ARX canónico y su tuple de build están en [decisions/I-52.md](automation/decisions/I-52.md) §164–§165; el ARX
-anterior queda superado y el tuple pre-run anterior anulado. Siguiente gate: nuevo smoke host. Probes gobernados:
+ARX canónico (`7F9C9C05…9ED421`, 430080 bytes, source `8bf3733f`) y su tuple de build (`375B3D5C…46E25`) están en
+[decisions/I-52.md](automation/decisions/I-52.md) §164–§165; el ARX `B7016A34…` queda superado y el tuple pre-run
+`F32CB140…` anulado. Siguiente gate: nuevo smoke host. Probes gobernados:
 **0**; `CTDA_HOST_PASS` **NOT EVALUATED**; producto **BLOCKED**; V18 gobierna; G3 **STOPPED**, G3B **NOT OPEN**,
 CT-50 **NOT EXECUTED**.
 
