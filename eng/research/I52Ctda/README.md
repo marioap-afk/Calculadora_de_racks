@@ -23,10 +23,12 @@ dotnet run --project eng/research/I52Ctda/harness -c Release -- smoke <repo> <ou
 ```
 
 The caller supplies a fresh scratch DWG; the harness starts one dedicated AutoCAD process on it, loads the helper,
-runs `I52CTDA_SMOKE`, unloads the helper and quits without saving. `I52CTDA_SMOKE` materializes the seven FEC-V34
+runs `I52CTDA_SMOKE`, unloads the helper and quits answering Yes to QUIT's "discard all changes" prompt. `I52CTDA_SMOKE` materializes the seven FEC-V34
 fixture identities in its own bootstrap transaction, binds them, attaches the fixture reactors and detaches them
 again; it dispatches no governed ProbeId. The event log defaults to `<output-dir>/native-smoke.json.events.jsonl`.
-`smoke-result.json` is `PASS` only when the native report, the ordered event log and the external PID fence agree.
+`smoke-result.json` is `PASS` only when the native report, the ordered event log, the external PID fence and
+the scratch DWG integrity agree: after the PID is gone the DWG hash must equal the pre-run hash and no new
+`<scratch>.bak` may exist (`SCRATCH_DWG_MUTATED`, `SCRATCH_BAK_CREATED`). Use a fresh scratch DWG per run.
 The helper does not change AutoCAD security settings: the helper folder must already be trusted, or a dedicated
 profile passed as `profile`.
 

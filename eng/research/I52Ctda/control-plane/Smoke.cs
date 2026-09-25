@@ -11,6 +11,9 @@ public static class SmokeContract
     public const string CompletionToken = "I52CTDA_SMOKE_COMPLETE";
     public const int DeclaredFixtureIdentities = 7;
 
+    // Answer to QUIT's command-line prompt "Really want to discard all changes to drawing?": Yes discards.
+    public const string DiscardAllChangesAnswer = "_Y";
+
     // Same rule as I52CtdaRuntime::eventLogPath: an explicit I52_CTDA_EVENT_LOG wins, otherwise the path is derived
     // from I52_CTDA_OUTPUT; with neither the logger is unavailable and the smoke fails closed.
     public const string EventLogSuffix = ".events.jsonl";
@@ -39,10 +42,38 @@ public sealed record SmokeLaunchPlan(string AcadExecutable, string NativeHelper,
     }
 
     // FILEDIA 0 keeps the run non-interactive; the helper is unloaded before QUIT so global reactors are removed
-    // explicitly, and QUIT discards the scratch drawing without saving.
-    public string Script => $"_.FILEDIA\n0\n(arxload \"{NativeHelper.Replace('\\', '/')}\")\n{SmokeContract.CommandIdentity}\n(arxunload \"{Path.GetFileName(NativeHelper)}\")\n_.QUIT\n_N\n";
+    // explicitly. The smoke modifies the scratch database, so in a script QUIT asks at the command line whether to
+    // discard all changes; the first host run answered No and AutoCAD saved the scratch DWG and wrote a .bak.
+    // The answer must therefore be Yes (discard); SmokeEvaluator still fails closed if the scratch DWG changes.
+    public string Script => $"_.FILEDIA\n0\n(arxload \"{NativeHelper.Replace('\\', '/')}\")\n{SmokeContract.CommandIdentity}\n(arxunload \"{Path.GetFileName(NativeHelper)}\")\n_.QUIT\n{SmokeContract.DiscardAllChangesAnswer}\n";
 
     public string Arguments => $"\"{ScratchDrawing}\" /nologo /nossm" + (Profile is null ? "" : $" /p \"{Profile}\"") + $" /b \"{ScriptPath}\"";
+}
+
+// Identity of the scratch DWG and of AutoCAD's sibling backup (<scratch-base>.bak) at one instant. The smoke must
+// leave both exactly as they were before AutoCAD started.
+public sealed record ScratchDrawingState(string Path, bool Exists, long? Bytes, string? Sha256, DateTimeOffset? LastWriteUtc, string BackupPath, bool BackupExists, long? BackupBytes, string? BackupSha256)
+{
+    public static string BackupPathFor(string drawing) => System.IO.Path.ChangeExtension(drawing, ".bak");
+
+    public static ScratchDrawingState Capture(string drawing)
+    {
+        string path = System.IO.Path.GetFullPath(drawing);
+        string backup = BackupPathFor(path);
+        var file = new FileInfo(path);
+        var bak = new FileInfo(backup);
+        return new(path, file.Exists, file.Exists ? file.Length : null, file.Exists ? Hash(path) : null,
+            file.Exists ? new DateTimeOffset(file.LastWriteTimeUtc, TimeSpan.Zero) : null,
+            backup, bak.Exists, bak.Exists ? bak.Length : null, bak.Exists ? Hash(backup) : null);
+    }
+
+    private static string Hash(string path) => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
+}
+
+public sealed record ScratchDrawingIntegrity(ScratchDrawingState Before, ScratchDrawingState After)
+{
+    public bool Unchanged => Before.Exists && After.Exists && Before.Sha256 == After.Sha256 && Before.Bytes == After.Bytes;
+    public bool BackupCreated => After.BackupExists && (!Before.BackupExists || Before.BackupSha256 != After.BackupSha256);
 }
 
 public sealed record SmokeProcessRun(int ProcessId, DateTimeOffset StartedAtUtc, DateTimeOffset? ExitedAtUtc, int? ExitCode, bool TimedOut, bool ProcessGone, string Executable, string Arguments);
@@ -145,10 +176,17 @@ public sealed record SmokeVerdict(string Result, IReadOnlyList<string> Failures)
 
 public static class SmokeEvaluator
 {
-    // PASS only when the native report, the ordered event log and the external process fence all agree.
-    public static SmokeVerdict Evaluate(NativeSmokeReport? report, EventLogSummary? log, SmokeProcessRun run)
+    // PASS only when the native report, the ordered event log, the external process fence and the scratch DWG
+    // integrity (unchanged, no new .bak) all agree. Missing integrity evidence fails closed.
+    public static SmokeVerdict Evaluate(NativeSmokeReport? report, EventLogSummary? log, SmokeProcessRun run, ScratchDrawingIntegrity? scratch)
     {
         var failures = new List<string>();
+        if (scratch is null) failures.Add("SCRATCH_INTEGRITY_UNVERIFIED");
+        else
+        {
+            if (!scratch.Unchanged || scratch.BackupCreated) failures.Add("SCRATCH_DWG_MUTATED");
+            if (scratch.BackupCreated) failures.Add("SCRATCH_BAK_CREATED");
+        }
         if (run.TimedOut) failures.Add("PROCESS_TIMEOUT");
         if (!run.ProcessGone) failures.Add("PROCESS_STILL_PRESENT");
         if (report is null) failures.Add("NATIVE_REPORT_MISSING");

@@ -113,8 +113,9 @@ internal static class HarnessProgram
         if (File.Exists(plan.ReportPath) || File.Exists(plan.EventLogPath)) { Console.Error.WriteLine("Smoke output directory already holds a report or event log."); return 2; }
         await File.WriteAllTextAsync(plan.ScriptPath, plan.Script, new UTF8Encoding(false));
 
+        ScratchDrawingState drawingBefore = ScratchDrawingState.Capture(plan.ScratchDrawing);
+        if (drawingBefore.BackupExists) { Console.Error.WriteLine("A fresh scratch DWG is required: its .bak sibling already exists."); return 2; }
         int[] acadBefore = Process.GetProcessesByName("acad").Select(p => p.Id).ToArray();
-        string drawingBefore = ScratchProcessController.Sha256(plan.ScratchDrawing);
         var environment = new Dictionary<string, string?>
         {
             ["I52_CTDA_OUTPUT"] = plan.ReportPath,
@@ -125,7 +126,9 @@ internal static class HarnessProgram
 
         NativeSmokeReport? report = File.Exists(plan.ReportPath) ? NativeSmokeReport.Parse(await File.ReadAllTextAsync(plan.ReportPath)) : null;
         EventLogSummary? log = File.Exists(plan.EventLogPath) ? EventLogSummary.Read(await File.ReadAllLinesAsync(plan.EventLogPath)) : null;
-        SmokeVerdict verdict = SmokeEvaluator.Evaluate(report, log, run);
+        // Recomputed only after the exact PID is gone, so AutoCAD can no longer write the scratch DWG or its .bak.
+        var scratch = new ScratchDrawingIntegrity(drawingBefore, ScratchDrawingState.Capture(plan.ScratchDrawing));
+        SmokeVerdict verdict = SmokeEvaluator.Evaluate(report, log, run, scratch);
         var result = new
         {
             schemaVersion = 1,
@@ -134,7 +137,7 @@ internal static class HarnessProgram
             failures = verdict.Failures,
             process = new { run.ProcessId, run.StartedAtUtc, run.ExitedAtUtc, run.ExitCode, run.TimedOut, run.ProcessGone, run.Executable, executableSha256 = ScratchProcessController.Sha256(plan.AcadExecutable), run.Arguments, preexistingAcadProcessIds = acadBefore, newProcess = !acadBefore.Contains(run.ProcessId) },
             nativeHelper = new { path = plan.NativeHelper, sha256 = ScratchProcessController.Sha256(plan.NativeHelper) },
-            scratchDrawing = new { path = plan.ScratchDrawing, sha256Before = drawingBefore, sha256After = ScratchProcessController.Sha256(plan.ScratchDrawing) },
+            scratchDrawing = new { before = scratch.Before, after = scratch.After, unchanged = scratch.Unchanged, backupCreated = scratch.BackupCreated },
             report = plan.ReportPath,
             eventLog = plan.EventLogPath,
             eventLogSummary = log,
