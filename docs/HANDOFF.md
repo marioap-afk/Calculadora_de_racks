@@ -49,10 +49,32 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 IMPLEMENTATION OPEN; GOVERNING PROBES REMAIN BLOCKED.**
-Research-only en `eng/research/I52Ctda`. El ARX canónico (`7F9C9C05…9ED421`, tuple de build `375B3D5C…46E25`) sigue
-vigente solo como último artefacto verificado de la era V34: no implementa V35 y lo reemplazará el rebuild de R3. Desde el
-smoke host de §166 no cambió código nativo.
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; HOST SMOKE PENDING; GOVERNING PROBES REMAIN BLOCKED.**
+Research-only en `eng/research/I52Ctda`.
+
+**R3 build side (§173).** R3 implementa exactamente V35-A2:
+- R-NATIVE-ARX, R-PAYLOAD-ARX y R-MANAGED-OBSERVER;
+- LOG-SEQ-01, FIN-GATE-01 y FINISH-FENCE-01 (`int32_t I52Ctda_FinishFenceIsSet(void)`, setter interno);
+- CONTROL-PLANE-RESULT-01, fixture-v35 con 8 identidades y traceability-v35;
+- el harness de un solo ProbeId.
+
+Resultados:
+- Fuente `9323e55a` (implementación en `d1398253`), CI **36184280179**.
+- Pruebas research 63/63; validador V35 PASS; conformidad estática **Holds** (100/100).
+- Build canónico en `D:\I52-CTDA-R3\9323e55a` y su zip:
+  - ARX nativo `251ED291…A0BFF7`;
+  - payload `B665D01A…E9101E`;
+  - observer `EB7DC35B…F1234F`.
+- `NEW_BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH` = `CAF823A9AFC21B13FF063F0F92B37CD928505E279A59B861A0F9089EFAA64B64`.
+- [Evidencia](automation/evidence/I-52-r3-build-side.json).
+
+Estado de los artefactos anteriores:
+- ARX `7F9C9C05…9ED421` y tuple `375B3D5C…46E25`: **SUPERSEDED**.
+- Tuple pre-run R2 `3FB9E0F9…EF639`: **VOID**.
+- `D:\I52-CTDA-R3\d1398253` es un intento de build incompleto; no es canónico.
+
+**Siguiente gate: R3 HOST SMOKE / ZERO PROBES** (`smoke-v35` en el host con el paquete `9323e55a`). No se ejecutó AutoCAD
+ni ningún ProbeId; `CTDA_HOST_PASS` NOT EVALUATED.
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
