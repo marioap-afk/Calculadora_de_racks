@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "R3 SMOKE COVERAGE FIX - BUILD SIDE",
+  "entrySha": "b4fc14662f9682d0cb48d5025ecf813b3851f8fc",
+  "trigger": "First R3 host smoke operationally clean but INCOMPLETE: FIN-GATE initialization not exercised; managed observer fence read not observed",
+  "sourceSha": "6e445fa8ddcf6544a5e5108329520164d283ece1",
+  "sourceCi": "36190013732 success",
+  "changes": {
+    "native": "I52CTDA_SMOKE registers FIN-GATE-01 (idle hook, 1000 ms timer, STG-FIN-GATE activation) after BOOT-01 and removes it before the fence is set; no plan, so onIdle() returns before any check and cannot issue CMD-FINISH; report schema 5 carries finGate {idleHook, timer, stageDelivery, registeredRecords, finishIssued, finishRecords, tokensAccepted, hookRemoved, timerKilled}; I52Log::tokenCount() read-only helper",
+    "managed": "smoke-only registration-entry mode I52CTDA_MANAGED_SMOKE_FENCE_READ = 2: R-MANAGED-OBSERVER reads I52Ctda_FinishFenceIsSet() and records FINISH-FENCE-01 phase=SMOKE-READ fenceIsSet=<value>; native reads it before (0) and after (1) the fence is set",
+    "controlPlane": "V35SmokeEvaluator: FIN_GATE_NOT_INITIALIZED, FIN_GATE_NOT_IN_LOG, SPONTANEOUS_FINISH, SPONTANEOUS_FINISH_IN_LOG, TOKEN_FABRICATED, TOKEN_FABRICATED_IN_LOG, FIN_GATE_TEARDOWN, MANAGED_FENCE_READ_NOT_OBSERVED, MANAGED_FENCE_READ_NOT_IN_LOG; smoke classifies no result"
+  },
+  "unchanged": [
+    "frozen V35 semantics (freeze holds, 43DCE809...B6DF, 24 blobs)",
+    "runtime plans (100/100, no generated drift)",
+    "governed executor behavior (entry mode 2 never passed by I52CtdaExecutor.cpp)",
+    "ProbeId behavior",
+    "Q1-Q6",
+    "product code"
+  ],
+  "tests": {
+    "researchTests": "65/65 (2 new: smoke FIN-GATE, smoke managed fence read)",
+    "validateV35Catalog": "PASS",
+    "validateR1b": "PASS",
+    "conformanceV35": "Holds"
+  },
+  "artifacts": {
+    "R-NATIVE-ARX": {
+      "bytes": 832000,
+      "sha256": "08760906144BBB62183F54DF640E5B09881AD0655F27BFA6E59C084BFFC3D5E3",
+      "machine": "x64 (0x8664)",
+      "exports": [
+        "I52Ctda_BindManagedObserver",
+        "I52Ctda_FinishFenceIsSet",
+        "I52Ctda_LogAppend",
+        "I52Ctda_QueryC15Arm",
+        "I52Ctda_TokenSet",
+        "acrxEntryPoint",
+        "acrxGetApiVersion"
+      ],
+      "pdbSha256": "B62D553A9BA5115A11AEF5608C6C764A42E0D39A1EFFB4C0F80BE43EF4F46856"
+    },
+    "R-PAYLOAD-ARX": {
+      "bytes": 81920,
+      "sha256": "A21289D6139E105150E2D08AE3EA1F7D1C33137E538985C925E374FBDAA79982",
+      "machine": "x64 (0x8664)",
+      "exports": [
+        "I52CtdaPayload_RemoveReactor",
+        "acrxEntryPoint",
+        "acrxGetApiVersion"
+      ],
+      "pdbSha256": "726A17E31E98C30E0C071AA8A30BB47BE184C7250708934568330DC9A6D99966"
+    },
+    "R-MANAGED-OBSERVER": {
+      "bytes": 15360,
+      "sha256": "E28BA703619D79453A3C3086889402BD066FEFB7DD7B9BE4648353722000991F",
+      "informationalVersion": "1.0.0+6e445fa8ddcf6544a5e5108329520164d283ece1"
+    },
+    "managedHarness": {
+      "I52Ctda.ControlPlane.dll": "36C0239C4169128C52B6015AC2FC115951D5F65689DFB14320E6EC874A822EE6",
+      "I52Ctda.Harness.dll": "3F8A170468B7D289420388D240E70106C38DB6C81F6B120DB868DB1B8B2DD82B"
+    }
+  },
+  "payloadNote": "payload source unchanged since 9323e55a; its bytes differ because the link embeds a timestamp and PDB identity",
+  "buildTupleHash": "F6E5A55978DE8EC405F658A882A912B0F24057659AF219C9169297C3752FDCE5",
+  "buildTupleHashMethod": "SHA-256 over UTF-8 compact JSON of buildMachineToolchainTuple with keys sorted ordinally at every level",
+  "transferPackage": {
+    "directory": "D:\\I52-CTDA-R3\\6e445fa8",
+    "zip": "D:\\I52-CTDA-R3\\6e445fa8.zip",
+    "zipSha256": "FDD9D39EEB8DDB1469BC522C8AAE6FA31FABF670E26D81C6992B09359D83D5D9",
+    "sha256sums": "SHA256SUMS (40 entries)",
+    "metadata": "TRANSFER-METADATA.json"
+  },
+  "superseded": {
+    "package": "D:\\I52-CTDA-R3\\9323e55a (+ .zip 83DED475...E620), retained, not overwritten",
+    "buildTupleHash": "CAF823A9AFC21B13FF063F0F92B37CD928505E279A59B861A0F9089EFAA64B64",
+    "status": "SUPERSEDED"
+  },
+  "productDiff": "NONE",
+  "autoCadStartedOnBuildMachine": false,
+  "hostSmoke": "PENDING (rerun smoke-v35 with package 6e445fa8)",
+  "governingProbesExecuted": 0,
+  "ctdaHostPass": "NOT EVALUATED"
+}
