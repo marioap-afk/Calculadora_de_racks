@@ -72,8 +72,14 @@ internal static class V35TupleCommand
         {
             ["path"] = relativeTo is null ? file.FullName : Path.GetRelativePath(relativeTo, file.FullName).Replace('\\', '/'),
             ["bytes"] = file.Length,
-            ["sha256"] = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))),
+            ["sha256"] = Sha256(path),
         };
+    }
+
+    private static string Sha256(string path)
+    {
+        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+        return Convert.ToHexString(SHA256.HashData(stream));
     }
 
     // PE identity: machine, sections from the header and the dumpbin import/export lists captured by build-r3.ps1.
