@@ -49,7 +49,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; HOST SMOKE PENDING; GOVERNING PROBES REMAIN BLOCKED.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; GOVERNING PROBES REMAIN BLOCKED.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -79,8 +79,19 @@ managed del fence. `6e445fa8` añade ambas coberturas, solo research y sin cambi
 - Tuple `F6E5A55978DE8EC405F658A882A912B0F24057659AF219C9169297C3752FDCE5`.
 - `9323e55a` y el tuple `CAF823A9…4B64` quedan SUPERSEDED.
 
-**Siguiente gate: R3 HOST SMOKE / ZERO PROBES** (repetir `smoke-v35` en el host con el paquete `6e445fa8`). No se ejecutó AutoCAD
-ni ningún ProbeId; `CTDA_HOST_PASS` NOT EVALUATED.
+**R3 host smoke (§175): PASS** con el paquete `6e445fa8` en `IMING-2` (PID 24180, cero ProbeIds).
+- Los tres módulos cargan, con fixture 8/8 y F-TRIGGER-XR.
+- SM-LINK A,B inicial y F-REF-C ausente.
+- Secuenciador compartido de 14 registros.
+- FIN-GATE registrado y retirado, sin FINISH ni tokens.
+- Fence leído en 0 y luego en 1 desde el nativo y el managed; el payload lo lee en 0 en INIT.
+- Cleanup completo; PID cerrado y scratch intacto.
+- `R3_PRE_RUN_TUPLE_HASH` = `3AD3D587709738BD0ECEAA36CDDA4218BA5ECD1754823848AB648E9B67D4951D`.
+- [Evidencia](automation/evidence/I-52-r3-host-smoke.json), con Q1–Q6 marcadas por observabilidad.
+
+**Siguiente gate:** revisión de conformidad de implementación Q1–Q6 por el Arquitecto y autorización del primer canary
+por el Coordinador. No se ejecutó ningún ProbeId; `CTDA_HOST_PASS` NOT EVALUATED; probes gobernantes siguen
+bloqueados.
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.

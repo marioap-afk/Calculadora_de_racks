@@ -1,0 +1,883 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "R3_HOST_SMOKE_ZERO_PROBES",
+  "result": "PASS",
+  "status": "R3_HOST_SMOKE = PASS",
+  "publicationShaBefore": "5b08cef06aaf27cd47151a906c83ed803ce63c5e",
+  "r3SourceSha": "6e445fa8ddcf6544a5e5108329520164d283ece1",
+  "sourceCi": "36190013732",
+  "v35FreezeSha": "86089886f37da05c2de5dcf9e237044a3deeada3",
+  "v35FreezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+  "buildTupleHash": "F6E5A55978DE8EC405F658A882A912B0F24057659AF219C9169297C3752FDCE5",
+  "package": {
+    "hostCopy": "D:\\I52-CTDA-R2H\\6e445fa8",
+    "canonical": "D:\\I52-CTDA-R3\\6e445fa8 (build machine)",
+    "zipSha256": "FDD9D39EEB8DDB1469BC522C8AAE6FA31FABF670E26D81C6992B09359D83D5D9",
+    "sha256Sums": "40/40 OK",
+    "nestedExtractionIdentical": true,
+    "buildTupleRecomputed": "F6E5A55978DE8EC405F658A882A912B0F24057659AF219C9169297C3752FDCE5 (System.Text.Json default escaping reproduced)"
+  },
+  "artifacts": {
+    "R-NATIVE-ARX": {
+      "path": "D:\\I52-CTDA-R2H\\6e445fa8\\run\\I52CtdaNative.arx",
+      "bytes": 832000,
+      "sha256": "08760906144BBB62183F54DF640E5B09881AD0655F27BFA6E59C084BFFC3D5E3"
+    },
+    "R-PAYLOAD-ARX": {
+      "path": "D:\\I52-CTDA-R2H\\6e445fa8\\run\\I52CtdaPayload.arx",
+      "bytes": 81920,
+      "sha256": "A21289D6139E105150E2D08AE3EA1F7D1C33137E538985C925E374FBDAA79982"
+    },
+    "R-MANAGED-OBSERVER": {
+      "path": "D:\\I52-CTDA-R2H\\6e445fa8\\run\\I52Ctda.ManagedObserver.dll",
+      "bytes": 15360,
+      "sha256": "E28BA703619D79453A3C3086889402BD066FEFB7DD7B9BE4648353722000991F"
+    }
+  },
+  "staticExports": {
+    "R-NATIVE-ARX": [
+      "I52Ctda_BindManagedObserver",
+      "I52Ctda_FinishFenceIsSet",
+      "I52Ctda_LogAppend",
+      "I52Ctda_QueryC15Arm",
+      "I52Ctda_TokenSet",
+      "acrxEntryPoint",
+      "acrxGetApiVersion"
+    ],
+    "fenceSetterExported": false,
+    "R-PAYLOAD-ARX": [
+      "I52CtdaPayload_RemoveReactor",
+      "acrxEntryPoint",
+      "acrxGetApiVersion"
+    ]
+  },
+  "hostPrecheck": {
+    "freezeV35": "Holds 24/24",
+    "checkGeneratedV35": "100 plans, drift 0",
+    "conformanceV35": "Holds (100 plans, 27 EventIds, 26 callbacks, 3 schedulers, 7 support actions, 8 identities, 0 violations)",
+    "researchTests": "65/65 from source 5b08cef",
+    "hostDrift": "NONE"
+  },
+  "r3HostExecutionTuple": {
+    "kind": "R3_HOST_EXECUTION_TUPLE",
+    "machine": {
+      "name": "IMING-2",
+      "os": "Microsoft Windows 11 Pro",
+      "displayVersion": "25H2",
+      "build": "26200.9550",
+      "architecture": "x64",
+      "culture": "es-MX",
+      "uiCulture": "es-MX"
+    },
+    "repository": {
+      "name": "marioap-afk/Calculadora_de_racks",
+      "branch": "feature/rackmirror-espejo-semantico",
+      "repoHeadSha": "5b08cef06aaf27cd47151a906c83ed803ce63c5e",
+      "r3SourceSha": "6e445fa8ddcf6544a5e5108329520164d283ece1",
+      "supersedesPackage": "9323e55a (smoke coverage gap: FIN-GATE registration and managed fence read)",
+      "v35FreezeSha": "86089886f37da05c2de5dcf9e237044a3deeada3",
+      "v35FreezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "freezeVerifiedOnHost": "freeze-v35 Holds 24/24; check-generated-v35 drift 0; conformance-v35 Holds; research tests 65/65"
+    },
+    "autocad": {
+      "acad.exe": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe",
+        "version": "R25.0.171.0.0",
+        "bytes": 5704536,
+        "sha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422"
+      },
+      "AcCoreMgd.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\AcCoreMgd.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 978776,
+        "sha256": "31025BC01ABC2CB398040AC82A5018E4FCD7A80FE8A2012DE0329E7F8ED746AA"
+      },
+      "AcDbMgd.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\AcDbMgd.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 6527320,
+        "sha256": "C360186CC0702E210635895B7608D1D8BD5FEEC6A00612B7581EF160FE09CEDE"
+      },
+      "AcMgd.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\AcMgd.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 3488088,
+        "sha256": "7AA8BF5F79F3F980DCC9F4CF9483F8438E773F6BF7C05EC3B263449B2846BC8C"
+      },
+      "accore.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\accore.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 14489944,
+        "sha256": "19CC6C29ABFB2D8ADA845E07A97E3009C4B2E092478D960086CDD95E73A7B94E"
+      },
+      "acdb25.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acdb25.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 18983768,
+        "sha256": "95F97BD2E19F60B22A7BEA55A3445FB06BCA10463E555023A02D4E68847947AF"
+      },
+      "AcGe25.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\AcGe25.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 1527640,
+        "sha256": "A2B535DE027C90DA6F12DFD8A7913AD2B151A49AADC15FC6DD43F2022A17B7A1"
+      },
+      "acpal.dll": {
+        "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acpal.dll",
+        "version": "25.0.171.0.0",
+        "bytes": 3107160,
+        "sha256": "BC8F0777A0039946DD1C883B531E7026BFA2866E197CF67474A7FA9707D1A2B5"
+      },
+      "objectArxHostVersion": "AutoCAD 2025 R25.0 (ObjectARX 2025 SDK 25.0.58.0 on the build machine)"
+    },
+    "systemRuntime": {
+      "MSVCP140.dll": {
+        "path": "C:\\Windows\\System32\\MSVCP140.dll",
+        "version": "14.50.35719.0",
+        "bytes": 553552,
+        "sha256": "DEF46AA6A8F72F27BAFAC0C43334419486A4D1DCDB6C479A8EF7034B3E1FA4CB"
+      },
+      "VCRUNTIME140.dll": {
+        "path": "C:\\Windows\\System32\\VCRUNTIME140.dll",
+        "version": "14.50.35719.0",
+        "bytes": 123472,
+        "sha256": "184146852727A9DB4EEA06178716BEC3CDBB1015C911F6B0F915B184AD7775B2"
+      },
+      "VCRUNTIME140_1.dll": {
+        "path": "C:\\Windows\\System32\\VCRUNTIME140_1.dll",
+        "version": "14.50.35719.0",
+        "bytes": 47264,
+        "sha256": "E6BFB3662AB4B1969A73441DBE35C96D51441B6BFF8CF1FE7430BD5B246CA605"
+      },
+      "bcrypt.dll": {
+        "path": "C:\\Windows\\System32\\bcrypt.dll",
+        "version": "10.0.26100.7306",
+        "bytes": 195080,
+        "sha256": "9956C503E5ADFEF784F57CEB361EEC14B5E2C83B4308405459590F96C797A471"
+      }
+    },
+    "package": {
+      "root": "D:\\I52-CTDA-R2H\\6e445fa8",
+      "zipSha256": "FDD9D39EEB8DDB1469BC522C8AAE6FA31FABF670E26D81C6992B09359D83D5D9",
+      "zipBytes": 3095888,
+      "sha256Sums": "40/40 OK",
+      "canonicalBuildSource": "D:\\I52-CTDA-R3\\6e445fa8 (build machine)",
+      "notUsed": "D:\\I52-CTDA-R3\\d1398253"
+    },
+    "artifacts": {
+      "R-NATIVE-ARX": {
+        "path": "D:\\I52-CTDA-R2H\\6e445fa8\\run\\I52CtdaNative.arx",
+        "bytes": 832000,
+        "sha256": "08760906144BBB62183F54DF640E5B09881AD0655F27BFA6E59C084BFFC3D5E3"
+      },
+      "R-PAYLOAD-ARX": {
+        "path": "D:\\I52-CTDA-R2H\\6e445fa8\\run\\I52CtdaPayload.arx",
+        "bytes": 81920,
+        "sha256": "A21289D6139E105150E2D08AE3EA1F7D1C33137E538985C925E374FBDAA79982"
+      },
+      "R-MANAGED-OBSERVER": {
+        "path": "D:\\I52-CTDA-R2H\\6e445fa8\\run\\I52Ctda.ManagedObserver.dll",
+        "bytes": 15360,
+        "sha256": "E28BA703619D79453A3C3086889402BD066FEFB7DD7B9BE4648353722000991F"
+      }
+    },
+    "buildMachineToolchainTupleHash": "F6E5A55978DE8EC405F658A882A912B0F24057659AF219C9169297C3752FDCE5",
+    "harness": {
+      "I52Ctda.Harness.exe": {
+        "path": "D:\\I52-CTDA-R2H\\6e445fa8\\harness\\I52Ctda.Harness.exe",
+        "bytes": 151552,
+        "sha256": "F3CAAB8D97AD0D203015F78187390CF48EECFAE020C5A2DE361FA1B8CEB55AFD"
+      },
+      "I52Ctda.Harness.dll": {
+        "path": "D:\\I52-CTDA-R2H\\6e445fa8\\harness\\I52Ctda.Harness.dll",
+        "bytes": 58368,
+        "sha256": "3F8A170468B7D289420388D240E70106C38DB6C81F6B120DB868DB1B8B2DD82B"
+      },
+      "I52Ctda.ControlPlane.dll": {
+        "path": "D:\\I52-CTDA-R2H\\6e445fa8\\harness\\I52Ctda.ControlPlane.dll",
+        "bytes": 303104,
+        "sha256": "36C0239C4169128C52B6015AC2FC115951D5F65689DFB14320E6EC874A822EE6"
+      },
+      "origin": "package harness (part of the build tuple managedHarness)"
+    },
+    "researchSourceBlobs": {
+      "eng/research/I52Ctda/EXTERNAL-BUILD.md": "5ad8ea69c53f2bfe75ed3474b26d4a8020c1de50",
+      "eng/research/I52Ctda/README.md": "e8cd6df4ac04d5f991ab07f655778a1ee2162661",
+      "eng/research/I52Ctda/build-r3.ps1": "0521cd8b1e24c6921c2a6e95c68e5c5b484375ac",
+      "eng/research/I52Ctda/build.ps1": "8200ea43b6dacadf79b26651dc223896f8240a1d",
+      "eng/research/I52Ctda/control-plane/Contracts.cs": "ca31197325c106590553c16982632383f6f1fb72",
+      "eng/research/I52Ctda/control-plane/Evidence.cs": "1e7a7e323422ae3bafb08349427456ce08d80fc3",
+      "eng/research/I52Ctda/control-plane/Fixture.cs": "0720f462edc582ac66bddc60a5225a00f06b4284",
+      "eng/research/I52Ctda/control-plane/HeaderAuthorityValidator.cs": "613298d981ba064e88314137968dfb7bc22f79d6",
+      "eng/research/I52Ctda/control-plane/I52Ctda.ControlPlane.csproj": "1e5e140144658902fcedf226eb8f407199a17bc3",
+      "eng/research/I52Ctda/control-plane/Runtime.cs": "1add43d6399d324f40a0856e3d1aca851449b909",
+      "eng/research/I52Ctda/control-plane/SmBinding.cs": "8980183570c64c1b4063046f2aa658f992b0daa8",
+      "eng/research/I52Ctda/control-plane/Smoke.cs": "b68a2ddc866bf7312f551e029b5fb7415b935f0b",
+      "eng/research/I52Ctda/control-plane/StaticNativeValidator.cs": "912a71bbd9329bbf4dda7f65329fb6f4cd265a1e",
+      "eng/research/I52Ctda/control-plane/TupleCollector.cs": "9ccdb3007db3659cadd50ff34d3b07d6111815ab",
+      "eng/research/I52Ctda/control-plane/V35/V35Authority.cs": "517e2dbaf65221c3f5633606c2e1ef7c9ced006c",
+      "eng/research/I52Ctda/control-plane/V35/V35Conformance.cs": "366dc706b62e46b68d56c0fdc666d83e5965a29a",
+      "eng/research/I52Ctda/control-plane/V35/V35Evidence.cs": "976d092d203ae5b91784df248fa7796fc3f2960f",
+      "eng/research/I52Ctda/control-plane/V35/V35Freeze.cs": "ca9b4091e2c9a10a5414820df0e186ddd7bdafa3",
+      "eng/research/I52Ctda/control-plane/V35/V35PlanCompiler.cs": "eb4e81a2a32e0728ffd47641f304de3337424038",
+      "eng/research/I52Ctda/control-plane/V35/V35ProbeRun.cs": "5fe7f39c7d59b89d0d9d621319138c7ea17c8cae",
+      "eng/research/I52Ctda/control-plane/V35/V35ResultEngine.cs": "8cdf944df5bb8cbe0d0b392de38302e5af8bfa84",
+      "eng/research/I52Ctda/fixture-v34.json": "4507c34e277df99306dc1f60a044b47f6bff6dd2",
+      "eng/research/I52Ctda/fixture-v35.json": "d75c046d898969437170bc965ed56a988f689e9c",
+      "eng/research/I52Ctda/harness/I52Ctda.Harness.csproj": "1e44cf1a51c16c622b09c568ecfc01d0e79f6828",
+      "eng/research/I52Ctda/harness/Program.cs": "3652d8886b20a8b8742a14b90a52c2ee260f131b",
+      "eng/research/I52Ctda/harness/V35Commands.cs": "62822d54454a2848dbd1479cc50cc7613ca993b3",
+      "eng/research/I52Ctda/harness/V35SmokeCommand.cs": "bb5c0c08ddcacfe018c0a4b6ff6f64b6a7ce12b9",
+      "eng/research/I52Ctda/harness/V35TupleCommand.cs": "c86a48ce047fe134c04ac38fdae9305bc92c28a5",
+      "eng/research/I52Ctda/managed-observer/I52Ctda.ManagedObserver.csproj": "25ac1abef588e052746f452240d7c913a05609de",
+      "eng/research/I52Ctda/managed-observer/ManagedCommandObserver.cs": "30cdd4b6a52d3c36dc98334ecdfed58d3025b4e0",
+      "eng/research/I52Ctda/managed-observer/NativeLogSequencer.cs": "37688f5350b9b7a41e60272397529198bc81672f",
+      "eng/research/I52Ctda/managed-observer/ObserverApplication.cs": "7482a3f56b045f46814f63ee070ff10948e1b10e",
+      "eng/research/I52Ctda/native/I52CtdaAbi.h": "3f5b59622c89398a312c3d2106f1fd3645bba319",
+      "eng/research/I52Ctda/native/I52CtdaAuthority.cpp": "68c164f117d7da6b9900ae8d0c5a1b81f7d1f2e5",
+      "eng/research/I52Ctda/native/I52CtdaAuthority.h": "92d2420ae4760dd73afda368001fb52205468fee",
+      "eng/research/I52Ctda/native/I52CtdaDriver.cpp": "143d9842aa423fc51ff8146198c315fdef0c8fdf",
+      "eng/research/I52Ctda/native/I52CtdaExecutor.cpp": "e8d9034852c43cb03fc8fda9a5030c832d8fdc05",
+      "eng/research/I52Ctda/native/I52CtdaExecutor.h": "eae843ccc79cf8d338613164f0cdbbff5ebefb61",
+      "eng/research/I52Ctda/native/I52CtdaFixture.cpp": "970f5f912e4bdabe07d9fbd39ed376f7b010d5cd",
+      "eng/research/I52Ctda/native/I52CtdaFixture.h": "209a514356befd91a95dd61861a4a46a40dfcce2",
+      "eng/research/I52Ctda/native/I52CtdaLog.cpp": "9df162ca1744e98c8a3d5248b2ef91d912d7f6de",
+      "eng/research/I52Ctda/native/I52CtdaLog.h": "e0918c4b719cd203baf4936fd4737e0161a9e4e1",
+      "eng/research/I52Ctda/native/I52CtdaNative.cpp": "034d67e90341a2fb6d3d2544897edd2ae0b5e739",
+      "eng/research/I52Ctda/native/I52CtdaNative.vcxproj": "c56b9ded4a67ba79decc723fa976493904c5bbae",
+      "eng/research/I52Ctda/native/I52CtdaPlan.cpp": "575020da4f1def19fe28a1bdaf37f69cf139d2bf",
+      "eng/research/I52Ctda/native/I52CtdaPlan.h": "45024896420f91432f2e76ec682e28ff731c9a2d",
+      "eng/research/I52Ctda/native/V35Authority.inc": "18671ef78f65419b7de5b164cb4ca38c5f0d677d",
+      "eng/research/I52Ctda/native/V35Ids.inc": "54cca1b401ecf0339bd51b8c31a70f7f0c91b433",
+      "eng/research/I52Ctda/native/V35PlanTable.inc": "1782c7faa0d631989e51e23a7b530395b37d52a4",
+      "eng/research/I52Ctda/oracle/make_oracle.py": "e90aa1dc921d0778e6be36a1b1183abe83a289f2",
+      "eng/research/I52Ctda/oracle/oracle_predicates.py": "78c750d863240b99bcc6621ef9289320d725cc97",
+      "eng/research/I52Ctda/payload/I52CtdaPayload.cpp": "5f0eaff58c4f82a84c96f00ff0b6775ce5c6a352",
+      "eng/research/I52Ctda/payload/I52CtdaPayload.vcxproj": "7d8c32741305b005fad9c8db8d7b76fb3a884454",
+      "eng/research/I52Ctda/runtime-plan-v35.json": "10f5a4d4d33cb6c2bf2404b3e08389e6b4db97d8",
+      "eng/research/I52Ctda/tests/I52Ctda.Tests.csproj": "2df1ed62215e57001d0adb81ecfff1a33c20a36c",
+      "eng/research/I52Ctda/tests/Program.cs": "dfddbe4e9d6beced93fb2b218b63699159f4ec98",
+      "eng/research/I52Ctda/tests/R3Tests.cs": "697bf90921c0faddeacf65c01c6c0022ead0ce97",
+      "eng/research/I52Ctda/traceability-v34.json": "0424c0b6788cbbacf5deaf533317f9202f305482",
+      "eng/research/I52Ctda/traceability-v35.json": "b8de74b27469f514aa0a0f837aa7e0803aab86bc",
+      "eng/research/I52Ctda/v35-oracle.json": "0171e5de9e79ce99cf70d97777346f4aacd9da05",
+      "eng/research/I52Ctda/validate-r1b.ps1": "7e659bbc73b614a7d866af7bc2e535cb676715f9",
+      "eng/research/I52Ctda/validate-v35-catalog.ps1": "d726f65e1cef36ead081b54ebc3398f786b9d8f9",
+      "eng/research/I52Ctda/validate-v35-negative-controls.ps1": "722fa97a075a6267c9237c12a0d6dc1e3ccd4d0a"
+    },
+    "scratchDwg": {
+      "path": "D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.dwg",
+      "bytes": 31665,
+      "sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+      "lastWriteUtc": "2024-02-02T02:56:37.0000000Z",
+      "backupPresentBeforeRun": false,
+      "origin": "fresh byte copy of the stock AutoCAD 2025 enu acad.dwt (AC1032)"
+    },
+    "loadingSecurityState": {
+      "profile": "ACAD-8101:409 / <<Unnamed Profile>>",
+      "SECURELOAD": 1,
+      "TRUSTEDPATHS": "D:\\I52-CTDA-R2H\\cf302acd\\transfer;D:\\I52-CTDA-R2H;D:\\I52-CTDA-R2H\\40a591e7\\transfer;D:\\I52-CTDA-R2H\\9323e55a;D:\\I52-CTDA-R2H\\9323e55a\\run;D:\\I52-CTDA-R2H\\6e445fa8\\run",
+      "runDirectoryTrustedExactly": "D:\\I52-CTDA-R2H\\6e445fa8\\run",
+      "trustedBy": "Owner (TRUSTEDPATHS)",
+      "autocadRunningBeforeGate": false
+    }
+  },
+  "r3HostExecutionTupleHash": "3930A3505BE8783425C292DFDD0311ECED4AD226F1F3423BB00665D8ED291558",
+  "r3PreRunTuple": {
+    "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+    "R3_SOURCE_SHA": "6e445fa8ddcf6544a5e5108329520164d283ece1",
+    "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "F6E5A55978DE8EC405F658A882A912B0F24057659AF219C9169297C3752FDCE5",
+    "R_NATIVE_ARX_SHA256": "08760906144BBB62183F54DF640E5B09881AD0655F27BFA6E59C084BFFC3D5E3",
+    "R_PAYLOAD_ARX_SHA256": "A21289D6139E105150E2D08AE3EA1F7D1C33137E538985C925E374FBDAA79982",
+    "R_MANAGED_OBSERVER_SHA256": "E28BA703619D79453A3C3086889402BD066FEFB7DD7B9BE4648353722000991F",
+    "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+    "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+    "R3_HOST_EXECUTION_TUPLE_HASH": "3930A3505BE8783425C292DFDD0311ECED4AD226F1F3423BB00665D8ED291558"
+  },
+  "R3_PRE_RUN_TUPLE_HASH": "3AD3D587709738BD0ECEAA36CDDA4218BA5ECD1754823848AB648E9B67D4951D",
+  "tupleHashMethod": "SHA-256 over UTF-8 compact JSON with keys sorted ordinally at every level (Python ensure_ascii=False)",
+  "tuplesBoundBeforeAutoCad": true,
+  "trustedPath": {
+    "SECURELOAD": 1,
+    "runDirectory": "D:\\I52-CTDA-R2H\\6e445fa8\\run",
+    "trustedExactly": true,
+    "trustedBy": "Owner"
+  },
+  "script": [
+    "_.FILEDIA",
+    "0",
+    "(arxload \"D:/I52-CTDA-R2H/6e445fa8/run/I52CtdaNative.arx\")",
+    "_.NETLOAD",
+    "D:\\I52-CTDA-R2H\\6e445fa8\\run\\I52Ctda.ManagedObserver.dll",
+    "I52CTDA_SMOKE",
+    "_.QUIT",
+    "_Y"
+  ],
+  "process": {
+    "ProcessId": 24180,
+    "StartedAtUtc": "2026-09-25T21:30:57.4706034+00:00",
+    "ExitedAtUtc": "2026-09-25T21:31:16.4369183+00:00",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "ProcessGone": true,
+    "Executable": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe",
+    "Arguments": "\"D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.dwg\" /nologo /nossm /b \"D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\output\\r3-smoke.scr\""
+  },
+  "externalPidVerification": {
+    "pid": 24180,
+    "present": false,
+    "acadProcessesBefore": 0,
+    "acadProcessesAfter": 0,
+    "checkedAtLocal": "2026-09-25T15:31:36-06:00"
+  },
+  "nativeReport": {
+    "schemaVersion": 5,
+    "instrument": "I52CtdaNative",
+    "stage": "R3_SMOKE",
+    "commandIdentity": "I52CTDA_SMOKE",
+    "result": "PASS",
+    "failures": [],
+    "processId": 24180,
+    "loggerReady": true,
+    "sequenceFirst": 1,
+    "sequenceLast": 14,
+    "fixture": {
+      "declared": 8,
+      "bootFacts": "status=OK;transaction=0x1A3039CEC10;materialize=0;transactionClose=0;declared=8;resolved=8;smLinkBinding=RESOLVED;document=0x1A30236CD30;database=0x1E3BA206420;observerRegistrations=0",
+      "snapshot": "F-TRIGGER-MOD|255|PRESENT|AcDbPoint|RESOLVED\nF-TRIGGER-ERASE-DB|256|PRESENT|AcDbPoint|RESOLVED\nF-TRIGGER-ERASE-OBJ|257|PRESENT|AcDbPoint|RESOLVED\nF-TRIGGER-XR|25B|PRESENT|HFV35:TRIGGER-XR:0|RESOLVED\nF-XR|25A|PRESENT|STATE-S-0|RESOLVED\nF-REF-B|259|PRESENT|STATE-M-0|RESOLVED\nF-REF-A|258|PRESENT|STATE-SM-0 sibling A|RESOLVED\nF-REF-C|NULL|ABSENT|declared absent (not created)|RESOLVED\nBINDING:SM-LINK|25C|PRESENT|STATE-SM-0|RESOLVED\n"
+    },
+    "payload": {
+      "path": "d:\\i52-ctda-r2h\\6e445fa8\\run\\I52CtdaPayload.arx",
+      "sha256": "A21289D6139E105150E2D08AE3EA1F7D1C33137E538985C925E374FBDAA79982",
+      "loaded": true,
+      "records": 3,
+      "bindingRecords": 1,
+      "registrations": 0,
+      "removeResult": -1
+    },
+    "managed": {
+      "entryBound": true,
+      "subscribe": 0,
+      "unsubscribe": 0,
+      "records": 2,
+      "fenceReadBefore": 0,
+      "fenceReadAfter": 1,
+      "fenceReadRecords": 2
+    },
+    "finGate": {
+      "idleHook": true,
+      "timer": 30300,
+      "stageDelivery": 2,
+      "registeredRecords": 1,
+      "finishIssued": false,
+      "finishRecords": 0,
+      "tokensAccepted": 0,
+      "hookRemoved": true,
+      "timerKilled": true
+    },
+    "fence": {
+      "readExport": true,
+      "setterExported": false,
+      "before": 0,
+      "after": 1
+    },
+    "cleanup": {
+      "erased": 8,
+      "linkCarrierRemoved": true
+    },
+    "governedProbesDispatched": 0
+  },
+  "harnessVerdict": {
+    "Result": "PASS",
+    "Failures": [],
+    "records": 14,
+    "modules": {
+      "native": "08760906144BBB62183F54DF640E5B09881AD0655F27BFA6E59C084BFFC3D5E3",
+      "payload": "A21289D6139E105150E2D08AE3EA1F7D1C33137E538985C925E374FBDAA79982",
+      "managed": "E28BA703619D79453A3C3086889402BD066FEFB7DD7B9BE4648353722000991F"
+    }
+  },
+  "checks": {
+    "nativeLoad": "PASS (arxload from trusted run directory, no security dialog)",
+    "payloadLoad": "PASS (MARK-LOAD-RESULT rtnorm=1; identity A21289D6...; PAYLOAD-DB-BINDING holds; C15 armed=0; registrations 0; RemoveReactor = -1 NOTHING_REGISTERED)",
+    "managedLoad": "PASS (NETLOAD; entry bound; subscribe 0; unsubscribe 0)",
+    "sharedSequencer": "PASS (14 records, 1..14 contiguous, one PID/TID, modules R-NATIVE-ARX, R-PAYLOAD-ARX, R-MANAGED-OBSERVER, 0 malformed)",
+    "fenceAbi": "PASS (native read 0 -> 1 via internal setter; payload INIT fenceIsSet=0; managed SMOKE-READ 0 then 1; setter not exported)",
+    "managedFenceRead": {
+      "before": {
+        "smoke": "1",
+        "phase": "SMOKE-READ",
+        "reader": "R-MANAGED-OBSERVER",
+        "fenceIsSet": "0"
+      },
+      "after": {
+        "smoke": "1",
+        "phase": "SMOKE-READ",
+        "reader": "R-MANAGED-OBSERVER",
+        "fenceIsSet": "1"
+      },
+      "sequences": [
+        10,
+        13
+      ]
+    },
+    "finGate": {
+      "registered": {
+        "phase": "REGISTERED",
+        "idleHook": "1",
+        "timer": "30300",
+        "timeoutSeconds": "120",
+        "schedulerUse": "FINISH-INFRA"
+      },
+      "unregistered": {
+        "smoke": "1",
+        "phase": "UNREGISTERED",
+        "hookRemoved": "1",
+        "timerKilled": "1",
+        "finishIssued": "0",
+        "tokensAccepted": "0"
+      },
+      "stage": "STG-FIN-GATE",
+      "delivery": 2,
+      "finishRecords": 0,
+      "tokensAccepted": 0,
+      "timerInterval": "1000 ms (SetTimer constant in registerFinishGate; the log records the timer id, not the interval)"
+    },
+    "fixture": {
+      "declared": 8,
+      "resolved": 8,
+      "fTriggerXr": "PRESENT HFV35:TRIGGER-XR:0",
+      "nonIdentities": [
+        "F-TRIGGER-APPEND",
+        "R-SM-LINK (BINDING line)",
+        "R-PAYLOAD-ARX"
+      ]
+    },
+    "smLinkInitial": {
+      "line": "BINDING:SM-LINK|25C|PRESENT|STATE-SM-0|RESOLVED",
+      "membership": "A,B",
+      "fRefB": "PRESENT STATE-M-0",
+      "fRefC": "ABSENT (not created)"
+    },
+    "cleanup": "PASS (8 erased, linkCarrierRemoved, managed unsubscribed, FIN-GATE hook removed and timer killed, payload resident until process exit per V35 lifecycle)",
+    "processFence": "PASS",
+    "scratch": {
+      "before": {
+        "Path": "D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.dwg",
+        "Exists": true,
+        "Bytes": 31665,
+        "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+        "BackupPath": "D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.bak",
+        "BackupExists": false,
+        "BackupBytes": null,
+        "BackupSha256": null
+      },
+      "after": {
+        "Path": "D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.dwg",
+        "Exists": true,
+        "Bytes": 31665,
+        "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+        "BackupPath": "D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.bak",
+        "BackupExists": false,
+        "BackupBytes": null,
+        "BackupSha256": null
+      },
+      "unchanged": true,
+      "bakCreated": false
+    },
+    "controlPlane": "PASS (V35RunEvidence parsed 14 records; smoke verdict only; no ProbeId result row)"
+  },
+  "eventLog": [
+    {
+      "Sequence": 1,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x0",
+      "DatabaseId": "0x0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "RUN-ENV-01",
+      "Payload": {
+        "smoke": "1",
+        "pid": "24180",
+        "runDirectory": "d:\\i52-ctda-r2h\\6e445fa8\\run"
+      },
+      "TimestampUnixMicros": 1790371872904635
+    },
+    {
+      "Sequence": 2,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "BOOT-01",
+      "Payload": {
+        "status": "OK",
+        "transaction": "0x1A3039CEC10",
+        "materialize": "0",
+        "transactionClose": "0",
+        "declared": "8",
+        "resolved": "8",
+        "smLinkBinding": "RESOLVED",
+        "document": "0x1A30236CD30",
+        "database": "0x1E3BA206420",
+        "observerRegistrations": "0"
+      },
+      "TimestampUnixMicros": 1790371872934988
+    },
+    {
+      "Sequence": 3,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-FIN-GATE",
+      "DeliveryId": 2,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "FIN-GATE-01",
+      "Payload": {
+        "phase": "REGISTERED",
+        "idleHook": "1",
+        "timer": "30300",
+        "timeoutSeconds": "120",
+        "schedulerUse": "FINISH-INFRA"
+      },
+      "TimestampUnixMicros": 1790371872941325
+    },
+    {
+      "Sequence": 4,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PAYLOAD-INIT",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-PAYLOAD-ARX",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "R-PAYLOAD-ARX",
+      "Payload": {
+        "phase": "INIT",
+        "logSeqBound": "1",
+        "fenceIsSet": "0"
+      },
+      "TimestampUnixMicros": 1790371872960053
+    },
+    {
+      "Sequence": 5,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PAYLOAD-INIT",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-PAYLOAD-ARX",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "PAYLOAD-DB-BINDING",
+      "Payload": {
+        "holds": "1",
+        "workingDatabase": "0x1E3BA206420",
+        "curDocument": "0x1A30236CD30",
+        "documentMatchesScratch": "1"
+      },
+      "TimestampUnixMicros": 1790371872960175
+    },
+    {
+      "Sequence": 6,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PAYLOAD-INIT",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-PAYLOAD-ARX",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "R-PAYLOAD-ARX",
+      "Payload": {
+        "phase": "C15-ARM",
+        "armed": "0",
+        "databaseMatches": "1"
+      },
+      "TimestampUnixMicros": 1790371872960209
+    },
+    {
+      "Sequence": 7,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PAYLOAD-LOAD",
+      "DeliveryId": 3,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "MARK-LOAD-RESULT",
+      "Payload": {
+        "result": "5100",
+        "rtnorm": "1",
+        "loaded": "1",
+        "module": "d:\\i52-ctda-r2h\\6e445fa8\\run\\i52ctdapayload.arx"
+      },
+      "TimestampUnixMicros": 1790371872960970
+    },
+    {
+      "Sequence": 8,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-MANAGED-OBSERVER",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "RR-MANAGED-CMD",
+      "Payload": {
+        "phase": "SUBSCRIBED",
+        "source": "Document.CommandEnded"
+      },
+      "TimestampUnixMicros": 1790371872967009
+    },
+    {
+      "Sequence": 9,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-MANAGED-OBSERVER",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "RR-MANAGED-CMD",
+      "Payload": {
+        "phase": "UNSUBSCRIBED"
+      },
+      "TimestampUnixMicros": 1790371872967363
+    },
+    {
+      "Sequence": 10,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-MANAGED-OBSERVER",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "FINISH-FENCE-01",
+      "Payload": {
+        "smoke": "1",
+        "phase": "SMOKE-READ",
+        "reader": "R-MANAGED-OBSERVER",
+        "fenceIsSet": "0"
+      },
+      "TimestampUnixMicros": 1790371872967699
+    },
+    {
+      "Sequence": 11,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "CLN-BASE",
+      "Payload": {
+        "smoke": "1",
+        "status": "0",
+        "transactionClose": "0",
+        "erased": "8",
+        "linkCarrierRemoved": "1"
+      },
+      "TimestampUnixMicros": 1790371872967997
+    },
+    {
+      "Sequence": 12,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-FIN-GATE",
+      "DeliveryId": 2,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "FIN-GATE-01",
+      "Payload": {
+        "smoke": "1",
+        "phase": "UNREGISTERED",
+        "hookRemoved": "1",
+        "timerKilled": "1",
+        "finishIssued": "0",
+        "tokensAccepted": "0"
+      },
+      "TimestampUnixMicros": 1790371872968124
+    },
+    {
+      "Sequence": 13,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-MANAGED-OBSERVER",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "FINISH-FENCE-01",
+      "Payload": {
+        "smoke": "1",
+        "phase": "SMOKE-READ",
+        "reader": "R-MANAGED-OBSERVER",
+        "fenceIsSet": "1"
+      },
+      "TimestampUnixMicros": 1790371872968202
+    },
+    {
+      "Sequence": 14,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 24180,
+      "TID": 19908,
+      "DocumentId": "0x1A30236CD30",
+      "DatabaseId": "0x1E3BA206420",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "FINISH-FENCE-01",
+      "Payload": {
+        "smoke": "1",
+        "before": "0",
+        "after": "1",
+        "setterExported": "0"
+      },
+      "TimestampUnixMicros": 1790371872968241
+    }
+  ],
+  "logSummary": {
+    "records": 14,
+    "stagesAndDeliveries": {
+      "STG-PROBE-CMD": 1,
+      "STG-FIN-GATE": 2,
+      "STG-PAYLOAD-LOAD": 3,
+      "STG-PAYLOAD-INIT": 4
+    },
+    "probeIdField": "I52CTDA_SMOKE (not one of the 100 V35 ProbeIds)",
+    "governedProbeIdRecords": 0,
+    "tokRecords": 0,
+    "cmdFinish": 0,
+    "cmdProbe": 0,
+    "mutationRecords": 0,
+    "resultClassifications": 0,
+    "note": "MARK-LOAD-RESULT is the payload load marker, not a result classification"
+  },
+  "q1q6": {
+    "Q1": {
+      "mark": "SUPPORTED BY SMOKE",
+      "evidence": "RUN-ENV-01 and BOOT-01 are emitted inside STG-PROBE-CMD delivery 1 (seq 1-2)",
+      "note": "RUN-ENV-01 carries DocumentId/DatabaseId 0x0 because it precedes the BOOT-01 scratch binding"
+    },
+    "Q2": {
+      "mark": "SUPPORTED BY SMOKE (unarmed path)",
+      "evidence": "PAYLOAD-DB-BINDING holds=1 with the BOOT-01 document and database; C15-ARM armed=0 databaseMatches=1; armed path NOT OBSERVABLE WITHOUT PROBE"
+    },
+    "Q3": {
+      "mark": "SUPPORTED BY SMOKE",
+      "evidence": "I52Ctda_BindManagedObserver delivers the registration entry; it produced only RR-MANAGED-CMD subscribe/unsubscribe and smoke-only fence reads; no tokens or markers"
+    },
+    "Q4": {
+      "mark": "SUPPORTED BY SMOKE",
+      "evidence": "managed and payload records resolved '*' / 0 (current) and ~0 (new activation) to deliveries 1-4 from one per-process counter; unresolved 0 is flagged malformed and none occurred"
+    },
+    "Q5": {
+      "mark": "STATIC ONLY",
+      "evidence": "STG-FIN-GATE observed as an explicit activation (delivery 2); no record fell outside an active stage, so the default path was not exercised; 0 tokens accepted, 0 TOK records"
+    },
+    "Q6": {
+      "mark": "NOT OBSERVABLE WITHOUT PROBE",
+      "evidence": "RG-TX TransactionIdentity by depth appears only in source (I52CtdaExecutor.cpp subjectDepth)"
+    }
+  },
+  "previousRun": {
+    "package": "9323e55a",
+    "pid": 14828,
+    "harnessVerdict": "PASS",
+    "gateVerdict": "INCOMPLETE / NOT PUBLISHED: FIN-GATE registration and managed fence read not exercised; fixed by 6e445fa8 (section 174)",
+    "r3PreRunTupleHash": "23829E09627D69C5A4F1A384F8B0F9CFC5D05030F81A7F191521178D20F476BB",
+    "governingProbesExecuted": 0
+  },
+  "artifactsProduced": [
+    {
+      "path": "D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\output\\events.jsonl",
+      "bytes": 6086,
+      "sha256": "705F0C2787EF797B0BCF71BA0E658E215CBD0CE4007268252B470A40B0361CFD"
+    },
+    {
+      "path": "D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\output\\r3-smoke.json",
+      "bytes": 1711,
+      "sha256": "C8F787B5D9D6AB8AEDA42A46B7D62D5B0C4642DCFC3BB288DDB0432A0783B798"
+    },
+    {
+      "path": "D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\output\\r3-smoke-result.json",
+      "bytes": 1945,
+      "sha256": "CD0920F3AD1F25598D341B3B2E6A1D4899E69999088723ABB662CEE0427A9408"
+    },
+    {
+      "path": "D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\output\\r3-smoke.scr",
+      "bytes": 162,
+      "sha256": "BEFA59A932507DAAE64C1EF777CCA592ABF73813170C1D576EBBB403CA5C60A1"
+    },
+    {
+      "path": "D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\logs\\harness-console.log",
+      "bytes": 68,
+      "sha256": "A32D58866BC53A2B037E10A9ABFA44F5856C2F3B8CEBFCBEF047278BA5BDBD0A"
+    },
+    {
+      "path": "D:\\I52-CTDA-R2H\\6e445fa8\\r3-smoke\\evidence\\tuples.json",
+      "bytes": 14412,
+      "sha256": "4D0F2B46A152DB312D283190D8DA79E286D83657ECF763E790C9593396332A8C"
+    }
+  ],
+  "autocadConsole": "m_kernelList still has 2 entries. (AutoCAD shutdown diagnostic, as in earlier smokes)",
+  "governingProbesExecuted": 0,
+  "governedMutationsExecuted": 0,
+  "resultClassifications": 0,
+  "ctdaHostPass": "NOT EVALUATED",
+  "governingProbes": "STILL BLOCKED",
+  "productDiff": "NONE",
+  "nextGate": "Architect implementation-conformance review Q1-Q6 + Coordinator first-canary authorization"
+}
