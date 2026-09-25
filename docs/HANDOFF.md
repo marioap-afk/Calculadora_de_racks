@@ -49,7 +49,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; HOST SMOKE PENDING; GOVERNING PROBES REMAIN BLOCKED.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; HOST SMOKE PENDING; GOVERNING PROBES REMAIN BLOCKED.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -73,7 +73,13 @@ Estado de los artefactos anteriores:
 - Tuple pre-run R2 `3FB9E0F9…EF639`: **VOID**.
 - `D:\I52-CTDA-R3\d1398253` es un intento de build incompleto; no es canónico.
 
-**Siguiente gate: R3 HOST SMOKE / ZERO PROBES** (`smoke-v35` en el host con el paquete `9323e55a`). No se ejecutó AutoCAD
+**Cobertura del smoke (§174).** El primer smoke en el host quedó INCOMPLETE: no ejercitó FIN-GATE ni la lectura
+managed del fence. `6e445fa8` añade ambas coberturas, solo research y sin cambiar V35, planes, executor ni ProbeIds.
+- Paquete nuevo `D:\I52-CTDA-R3\6e445fa8` (zip `FDD9D39E…D5D9`).
+- Tuple `F6E5A55978DE8EC405F658A882A912B0F24057659AF219C9169297C3752FDCE5`.
+- `9323e55a` y el tuple `CAF823A9…4B64` quedan SUPERSEDED.
+
+**Siguiente gate: R3 HOST SMOKE / ZERO PROBES** (repetir `smoke-v35` en el host con el paquete `6e445fa8`). No se ejecutó AutoCAD
 ni ningún ProbeId; `CTDA_HOST_PASS` NOT EVALUATED.
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
