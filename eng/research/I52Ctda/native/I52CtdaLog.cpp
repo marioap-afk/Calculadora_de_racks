@@ -323,9 +323,11 @@ extern "C" __declspec(dllexport) int32_t I52Ctda_TokenSet(const wchar_t* tokenId
     const int32_t accepted = log.setToken(token, delivery, reason);
     const I52Id deliveryStage = log.stageOf(delivery);
     const std::wstring payload = L"status=" + reason;
+    // D-2: commandIdentity() returns by value; the named copy keeps record.commandIdentity valid through log.append().
+    const std::wstring command = log.commandIdentity();
     I52CtdaRecord record{ sizeof(I52CtdaRecord), log.probeId().c_str(), I52Plan::text(deliveryStage), delivery,
         log.plan() == nullptr ? L"NONE" : I52Plan::text(log.plan()->driver), L"R-NATIVE-ARX", log.scratchDocument(), log.scratchDatabase(),
-        log.commandIdentity().c_str(), tokenId == nullptr ? L"" : tokenId, payload.c_str() };
+        command.c_str(), tokenId == nullptr ? L"" : tokenId, payload.c_str() };
     log.append(record);
     return accepted;
 }

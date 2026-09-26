@@ -29,3 +29,7 @@ if ($LASTEXITCODE -ne 0) { throw "ObjectARX header authority validation failed: 
 
 dotnet run --project $tests -c Release -- $Repository
 if ($LASTEXITCODE -ne 0) { throw "Research tests failed: $LASTEXITCODE" }
+
+# Native LOG-SEQ-01 regression (D-2 token CommandIdentity lifetime) over the real R-NATIVE-ARX log sources.
+pwsh -NoProfile -File (Join-Path $PSScriptRoot 'tests\native\run-native-tests.ps1')
+if ($LASTEXITCODE -ne 0) { throw "Native regression tests failed: $LASTEXITCODE" }

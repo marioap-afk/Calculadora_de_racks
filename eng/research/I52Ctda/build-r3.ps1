@@ -36,6 +36,12 @@ if ($LASTEXITCODE -ne 0) { throw 'V35 freeze does not hold: STOP' }
 dotnet run --project (Join-Path $research 'harness') -c Release --no-build -- check-generated-v35 $repo | Out-File (Join-Path $OutputRoot 'evidence\check-generated-v35.json') -Encoding utf8
 if ($LASTEXITCODE -ne 0) { throw 'generated V35 authority drifted: STOP' }
 
+# Native LOG-SEQ-01 regression tests (D-2) must pass before the canonical native build.
+$nativeTests = & pwsh -NoProfile -File (Join-Path $research 'tests\native\run-native-tests.ps1') -MSBuild $MSBuild -VcToolsVersion $VcToolsVersion 2>&1
+$nativeTestsExit = $LASTEXITCODE
+$nativeTests | Out-File (Join-Path $OutputRoot 'logs\native-tests.log') -Encoding utf8
+if ($nativeTestsExit -ne 0) { throw 'native regression tests failed' }
+
 # Native modules: Rebuild, Release|x64, v143, Hostx64 tools, exact ObjectARX 2025 SDK.
 foreach ($project in @(@{ Name = 'I52CtdaNative'; Path = 'native\I52CtdaNative.vcxproj'; Dir = 'native' }, @{ Name = 'I52CtdaPayload'; Path = 'payload\I52CtdaPayload.vcxproj'; Dir = 'payload' })) {
     $log = Join-Path $OutputRoot "logs\$($project.Name).msbuild.log"
