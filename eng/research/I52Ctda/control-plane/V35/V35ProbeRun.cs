@@ -225,6 +225,7 @@ public static class V35SmokeEvaluator
             if (!records.Any(x => x.ModuleId == "R-PAYLOAD-ARX")) failures.Add("PAYLOAD_NOT_IN_SHARED_LOG");
             if (!records.Any(x => x.ModuleId == "R-MANAGED-OBSERVER")) failures.Add("MANAGED_NOT_IN_SHARED_LOG");
             if (records.Any(x => x.Malformed)) failures.Add("EVENT_LOG_MALFORMED");
+            if (records.Any(x => x.CommandIdentity is not ("I52CTDA_SMOKE" or "NONE"))) failures.Add("EVENT_LOG_COMMAND_IDENTITY");  // D-2
             // The log itself (not only the native self-report) shows the gate initialized, no FINISH, no token accepted
             // and the managed observer reading the fence unset, then set.
             if (!records.Any(x => x.ModuleId == "R-NATIVE-ARX" && x.EventOrMarkerId == "FIN-GATE-01" && x.StageId == "STG-FIN-GATE" && x.Is("phase", "REGISTERED")

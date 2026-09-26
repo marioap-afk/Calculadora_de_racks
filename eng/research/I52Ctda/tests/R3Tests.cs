@@ -37,6 +37,10 @@ internal static class R3Tests
         ("r3 smoke FIN-GATE initializes without FINISH, tokens or classification", SmokeFinishGate),
         ("r3 smoke managed observer reads the fence", SmokeManagedFenceRead),
         ("r3 D-1 N-TR-ENDED subject depth matches the qualified host", TransactionEndedDepth),
+        ("r3 D-2 corrupted or unknown CommandIdentity is never PASS", CorruptedCommandIdentity),
+        ("r3 D-2 host canary token records keep I52CTDA_PROBE", HostCanaryTokenIdentity),
+        ("r3 D-2 no record field points into a by-value temporary", NoTemporaryRecordPointers),
+        ("r3 D-2 smoke rejects an unknown CommandIdentity", SmokeCommandIdentity),
     ];
 
     private static void Require(bool value, string message) { if (!value) throw new InvalidDataException(message); }
@@ -138,6 +142,7 @@ internal static class R3Tests
     {
         private readonly List<(string Event, string Stage, long Delivery, string Payload, string Module, int Pid)> items = [];
         public string ProbeId = "02N";
+        public Func<string, string, string>? CommandFor;  // (event, payload) -> CommandIdentity; I52CTDA_PROBE by default
         public Log Add(string e, string stage, long delivery, string payload = "", string module = "R-NATIVE-ARX", int pid = 4242) { items.Add((e, stage, delivery, payload, module, pid)); return this; }
         public Log Remove(Func<string, string, bool> match) { items.RemoveAll(i => match(i.Event, i.Payload)); return this; }
         public Log Replace(string e, string oldPayload, string newPayload) { for (int i = 0; i < items.Count; i++) if (items[i].Event == e && items[i].Payload == oldPayload) items[i] = items[i] with { Payload = newPayload }; return this; }
@@ -161,7 +166,7 @@ internal static class R3Tests
                 var r = new JsonObject
                 {
                     ["Sequence"] = seq, ["ProbeId"] = ProbeId, ["StageId"] = i.Stage, ["DeliveryId"] = i.Delivery, ["DriverOrSchedulerId"] = "DRIVER-CMD-01", ["ModuleId"] = i.Module,
-                    ["PID"] = i.Pid, ["TID"] = 1, ["DocumentId"] = "0x1", ["DatabaseId"] = "0x2", ["CommandIdentity"] = "I52CTDA_PROBE", ["EventOrMarkerId"] = i.Event,
+                    ["PID"] = i.Pid, ["TID"] = 1, ["DocumentId"] = "0x1", ["DatabaseId"] = "0x2", ["CommandIdentity"] = CommandFor?.Invoke(i.Event, i.Payload) ?? "I52CTDA_PROBE", ["EventOrMarkerId"] = i.Event,
                     ["Payload"] = payload, ["TimestampUnixMicros"] = seq,
                 };
                 text.Append(r.ToJsonString()).Append('\n');
@@ -514,5 +519,100 @@ internal static class R3Tests
         // FP-ORDER pairs N-TR by manager and subject depth: the host about-start (n = 0) and ended (n = 1) of one
         // transaction now share the identity.
         Require(NativeSubjectDepth(executor, "N-TR-ABOUT-START", 0) == NativeSubjectDepth(executor, "N-TR-ENDED", 1), "about-start/ended identity");
+    }
+
+    // D-2 (second canary 02NDBMOD-S): I52Ctda_TokenSet pointed CommandIdentity into a destroyed temporary, so token
+    // records carried corrupted text. A record whose CommandIdentity is not NONE, a governed CommandResource or a host
+    // command recorded by N-ED-WILL at or before it is malformed: evidence incomplete, UNKNOWN, never PASS.
+    private static readonly string[] CorruptedIdentities = ["\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD", "\u00DD\u00DD\u00DD\u00DD", "I52CTDA_PROBX", "i52ctda_probe", "I52CTDA_PROBE\u0001"];
+
+    private static void CorruptedCommandIdentity(string repo)
+    {
+        Require(Evaluate(repo, Pass02N()).Result == "PASS", "baseline 02N must PASS");
+        foreach (string bad in CorruptedIdentities)
+        {
+            Log log = Pass02N();
+            log.CommandFor = (e, _) => e.StartsWith("TOK-", StringComparison.Ordinal) ? bad : "I52CTDA_PROBE";
+            V35Result r = Evaluate(repo, log);
+            Require(r.Result == "UNKNOWN" && !r.EvidenceComplete && r.EvidenceGaps.Count(g => g.Contains("CommandIdentity", StringComparison.Ordinal)) == 3,
+                $"token CommandIdentity '{bad}' gave {r.Result}: {string.Join(" | ", r.EvidenceGaps)}");
+        }
+        // One corrupted record anywhere, including the cleanup window, is enough.
+        Log cleanup = Pass02N();
+        cleanup.CommandFor = (e, p) => e == "CLN-BASE" && p.StartsWith("step=VERIFY", StringComparison.Ordinal) ? "\uFFFD\uFFFD" : "I52CTDA_FINISH";
+        V35Result c = Evaluate(repo, cleanup);
+        Require(c.Result != "PASS" && !c.EvidenceComplete && !c.SafetyEvidenceComplete, $"corrupted cleanup record gave {c.Result}");
+        // Known identities stay valid: NONE, every CommandResource and a host command after its commandWillStart.
+        Log known = Pass02N()
+            .InsertBefore("TRG-MODIFY-TRIGGER-MOD", "phase=BEGIN", ("N-ED-WILL", "STG-PROBE-CMD", 1, "registration=RR-ED;command=REGEN"))
+            .InsertBefore("TRG-MODIFY-TRIGGER-MOD", "phase=BEGIN", ("N-ED-END", "STG-PROBE-CMD", 1, "registration=RR-ED;command=REGEN"));
+        known.CommandFor = (e, p) => e.StartsWith("N-ED-", StringComparison.Ordinal) ? "REGEN" : e == "FIN-GATE-01" ? "NONE" : e.StartsWith("CMD-FINISH", StringComparison.Ordinal) ? "I52CTDA_FINISH" : "I52CTDA_PROBE";
+        V35Result k = Evaluate(repo, known);
+        Require(k.EvidenceGaps.All(g => !g.Contains("CommandIdentity", StringComparison.Ordinal)), "known identities rejected: " + string.Join(" | ", k.EvidenceGaps));
+        // A host command identity before its own commandWillStart is not known yet.
+        Log early = Pass02N()
+            .InsertBefore("TRG-MODIFY-TRIGGER-MOD", "phase=BEGIN", ("N-ED-WILL", "STG-PROBE-CMD", 1, "registration=RR-ED;command=REGEN"));
+        early.CommandFor = (e, _) => e == "SA-TX-START" || e == "N-ED-WILL" ? "REGEN" : "I52CTDA_PROBE";
+        V35Result x = Evaluate(repo, early);
+        Require(x.Result != "PASS" && x.EvidenceGaps.Any(g => g.Contains("CommandIdentity REGEN", StringComparison.Ordinal)), "identity before its commandWillStart accepted");
+    }
+
+    // The published host log of the first canary (09N-B, package 6e445fa8): every token record carries exactly
+    // I52CTDA_PROBE and the log stays PASS-T under the stricter rule; the same records corrupted as in D-2 are UNKNOWN.
+    private static void HostCanaryTokenIdentity(string repo)
+    {
+        JsonObject canary = JsonNode.Parse(File.ReadAllText(Path.Combine(repo, "docs", "automation", "evidence", "I-52-r3-canary-09N-B.json")))!.AsObject();
+        JsonArray events = canary["hostRecord"]!["eventLog"]!.AsArray();
+        var tokens = events.Where(e => e!["EventOrMarkerId"]!.GetValue<string>().StartsWith("TOK-", StringComparison.Ordinal)).ToArray();
+        Require(tokens.Length == 2 && tokens.All(t => t!["CommandIdentity"]!.GetValue<string>() == "I52CTDA_PROBE"), "09N-B token records keep I52CTDA_PROBE");
+        V35Authority a = Authority(repo);
+        V35Result Judge(Func<JsonNode, JsonNode> map)
+        {
+            string path = Path.GetTempFileName();
+            try
+            {
+                File.WriteAllLines(path, events.Select(e => map(e!.DeepClone()).ToJsonString()));
+                var evidence = V35RunEvidence.Load(path, new V35ProcessEvidence(27448, true, false, false, true), new V35ScratchEvidence(true, true, false));
+                return new V35ResultEngine(a).Evaluate(a.ByProbe["09N-B"], evidence);
+            }
+            finally { File.Delete(path); }
+        }
+        V35Result host = Judge(e => e);
+        Require(host.Result == "PASS" && host.ResultClass == "PASS-T", $"09N-B host log gave {host.Result}: {string.Join(" | ", host.EvidenceGaps)}");
+        V35Result corrupted = Judge(e => { if (e["EventOrMarkerId"]!.GetValue<string>().StartsWith("TOK-", StringComparison.Ordinal)) e["CommandIdentity"] = "\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD"; return e; });
+        Require(corrupted.Result == "UNKNOWN" && corrupted.EvidenceGaps.Count(g => g.Contains("CommandIdentity", StringComparison.Ordinal)) == 2, $"corrupted 09N-B tokens gave {corrupted.Result}");
+    }
+
+    // Static guard for the D-2 class of defect: no LOG-RECORD initializer takes .c_str() of a call that returns
+    // std::wstring by value (the temporary dies before append). Covers R-NATIVE-ARX and R-PAYLOAD-ARX.
+    private static void NoTemporaryRecordPointers(string repo)
+    {
+        string research = Path.Combine(repo, "eng", "research", "I52Ctda");
+        string[] files = Directory.GetFiles(Path.Combine(research, "native"), "*.*").Where(f => f.EndsWith(".cpp", StringComparison.Ordinal) || f.EndsWith(".h", StringComparison.Ordinal))
+            .Append(Path.Combine(research, "payload", "I52CtdaPayload.cpp")).ToArray();
+        string all = string.Join('\n', files.Select(File.ReadAllText));
+        var byValue = System.Text.RegularExpressions.Regex.Matches(all, @"^\s*(?:static\s+|inline\s+)?(?:const\s+)?std::wstring\s+(?:\w+::)?(\w+)\s*\([^;{]*\)\s*(?:const\s*)?(?:\{|;)", System.Text.RegularExpressions.RegexOptions.Multiline)
+            .Select(m => m.Groups[1].Value).ToHashSet(StringComparer.Ordinal);
+        Require(byValue.Contains("commandIdentity"), "commandIdentity() must be found as a by-value accessor");
+        foreach (string file in files)
+        {
+            string text = File.ReadAllText(file);
+            foreach (System.Text.RegularExpressions.Match record in System.Text.RegularExpressions.Regex.Matches(text, @"I52CtdaRecord\s+\w+\s*\{[^;]*\};", System.Text.RegularExpressions.RegexOptions.Singleline))
+                foreach (string name in byValue)
+                    Require(!System.Text.RegularExpressions.Regex.IsMatch(record.Value, @"\b" + name + @"\([^()]*\)\.c_str\(\)"), $"{Path.GetFileName(file)}: record field points into temporary {name}()");
+        }
+        string log = File.ReadAllText(Path.Combine(research, "native", "I52CtdaLog.cpp"));
+        int tokenSet = log.IndexOf("I52Ctda_TokenSet(const wchar_t* tokenId", StringComparison.Ordinal);
+        string body = log[tokenSet..log.IndexOf("return accepted;", tokenSet, StringComparison.Ordinal)];
+        Require(body.IndexOf("const std::wstring command = log.commandIdentity();", StringComparison.Ordinal) is var named && named > 0
+            && named < body.IndexOf("I52CtdaRecord record", StringComparison.Ordinal) && body.Contains("command.c_str()", StringComparison.Ordinal)
+            && body.IndexOf("log.append(record);", StringComparison.Ordinal) > named, "I52Ctda_TokenSet keeps CommandIdentity in a named local through append");
+    }
+
+    private static void SmokeCommandIdentity(string repo)
+    {
+        Require(JudgeSmoke(SmokeReport(), SmokeLog()).Result == "PASS", "smoke baseline");
+        foreach (string bad in CorruptedIdentities)
+            RequireSmokeFailure(JudgeSmoke(SmokeReport(), SmokeLog().Select(r => r.Sequence == 5 ? r with { CommandIdentity = bad } : r).ToList()), "EVENT_LOG_COMMAND_IDENTITY");
     }
 }

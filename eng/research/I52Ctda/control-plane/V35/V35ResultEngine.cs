@@ -151,11 +151,29 @@ public sealed class V35ResultEngine(V35Authority authority)
             if (ManagedRegistered && !all.Any(r => r.ModuleId == "R-MANAGED-OBSERVER")) yield return "no record from R-MANAGED-OBSERVER";
         }
 
+        // LOG-RECORD-01 CommandIdentity (D-2): the executor's no-command sentinel NONE, a governed CommandResource
+        // commandName, or a host command whose commandWillStart (N-ED-WILL command=X) this log recorded at or before the
+        // record. Anything else (a corrupted or unknown identity) makes the record malformed: evidence incomplete.
+        private Dictionary<string, long>? commandFirstSeen;
+        private bool KnownCommandIdentity(V35LogRecord r)
+        {
+            if (commandFirstSeen is null)
+            {
+                commandFirstSeen = new(StringComparer.Ordinal) { ["NONE"] = 0 };
+                foreach (string id in authority.IdsOfKind("CommandResource"))
+                    if (authority[id].Raw["commandName"]?.GetValue<string>() is { Length: > 0 } name) commandFirstSeen[name] = 0;
+                foreach (V35LogRecord will in log.All.Where(x => x.EventOrMarkerId == "N-ED-WILL" && x.P("command").Length > 0))
+                    commandFirstSeen.TryAdd(will.P("command"), will.Sequence);
+            }
+            return commandFirstSeen.TryGetValue(r.CommandIdentity, out long since) && since <= r.Sequence;
+        }
+
         private IEnumerable<string> Malformed(IEnumerable<V35LogRecord> records)
         {
             foreach (V35LogRecord r in records)
             {
                 if (r.Malformed || r.DeliveryId <= 0 || r.ProbeId.Length == 0 || r.CommandIdentity.Length == 0) { yield return $"record {r.Sequence} malformed"; continue; }
+                if (!KnownCommandIdentity(r)) yield return $"record {r.Sequence} CommandIdentity {r.CommandIdentity}";
                 if (!authority.Entries.TryGetValue(r.StageId, out V35Entry? stage) || stage.Kind != "Stage") yield return $"record {r.Sequence} StageId {r.StageId}";
                 if (!authority.Entries.ContainsKey(r.EventOrMarkerId)) yield return $"record {r.Sequence} EventOrMarkerId {r.EventOrMarkerId}";
                 if (!authority.Entries.ContainsKey(r.DriverOrSchedulerId)) yield return $"record {r.Sequence} DriverOrSchedulerId {r.DriverOrSchedulerId}";
