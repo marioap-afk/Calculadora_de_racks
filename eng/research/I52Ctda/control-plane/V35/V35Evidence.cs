@@ -27,7 +27,8 @@ public sealed record V35LogRecord(
 }
 
 // Process fence and scratch-DWG evidence held by the control plane (CLN-PROCESS-EXIT, EVIDENCE-COMPLETE item 6).
-public sealed record V35ProcessEvidence(int ProcessId, bool ProcessGone, bool TerminatedByControlPlane, bool TimedOut, bool ExitedWithinPostFinishDeadline);
+public sealed record V35ProcessEvidence(int ProcessId, bool ProcessGone, bool TerminatedByControlPlane, bool TimedOut, bool ExitedWithinPostFinishDeadline,
+    bool InteractiveStateObserved = false);
 public sealed record V35ScratchEvidence(bool Captured, bool Unchanged, bool BackupCreated);
 
 public sealed record V35RunEvidence(IReadOnlyList<V35LogRecord> Records, V35ProcessEvidence? Process, V35ScratchEvidence? Scratch, IReadOnlyList<string> ParseErrors)

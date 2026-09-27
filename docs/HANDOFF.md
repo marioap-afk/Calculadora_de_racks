@@ -49,7 +49,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B PASS-T; D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 OPEN.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED (SOURCE); VALID GOVERNED RESULTS = 0.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -89,7 +89,7 @@ managed del fence. `6e445fa8` añade ambas coberturas, solo research y sin cambi
 - `R3_PRE_RUN_TUPLE_HASH` = `3AD3D587709738BD0ECEAA36CDDA4218BA5ECD1754823848AB648E9B67D4951D`.
 - [Evidencia](automation/evidence/I-52-r3-host-smoke.json), con Q1–Q6 marcadas por observabilidad.
 
-**Primer canary gobernado 09N-B (§176): PASS-T.** Se ejecutó en `IMING-2` con el paquete `6e445fa8` y el PID 27448.
+**Primer canary gobernado 09N-B (§176): motor PASS-T; resultado gobernado NOT VALID (§181, intervención humana).** Se ejecutó en `IMING-2` con el paquete `6e445fa8` y el PID 27448.
 - Tuple pre-run `72E60E1E7F65E750DC15582389C5BA9E01C17646C834477FCD706D29A7B7A83A`.
 - 56 registros; tokens 2/2; cleanup y PID fence PASS; scratch intacto.
 - La máquina de build verificó todo y reevaluó el log de forma independiente
@@ -141,11 +141,24 @@ managed del fence. `6e445fa8` añade ambas coberturas, solo research y sin cambi
 - `R3_PRE_RUN_TUPLE_HASH` = `13F84A87BC58A1249A733369673B301EF1B3C4249ECAADDF413DFF88BC1AAEB5`.
 - [Evidencia](automation/evidence/I-52-r3-canary-02NDBMOD-S-rerun.json).
 
-**Siguiente gate: D-3 EXIT-AUTOMATION FIX** (salida sin diálogos ni intervención humana).
+**Dictamen del Coordinador y D-3 (§181).**
+- 09N-B: el motor dio PASS-T, pero el resultado gobernado es NOT VALID porque el operador descartó el diálogo de guardado a mano.
+- La primera corrida de 02NDBMOD-S ya era NOT ACCEPTED (D-2) y el re-run es UNKNOWN / NOT VALID (D-3).
+- Los smokes sin ProbeIds no se reclasifican.
+- **Resultados gobernados válidos: 0.**
+
+Fix de D-3 (solo research):
+- BOOT-01 hace `pushDbmod()` y la salida de CMD-FINISH hace `popDbmod()`; `_.QUIT` `_Y` solo se encola si `$DBMOD` queda
+  en 0, así que no hay nada que guardar ni diálogo. Si no, queda `EXIT-BLOCKED` y el resultado es UNKNOWN.
+- El plano de control termina el PID ante un estado modal y exige la salida automática en el ítem 6 de EVIDENCE-COMPLETE.
+- El smoke sale por el mismo camino.
+- Research 74/74. La congelación V35 sigue válida.
+
+**Siguiente gate: ZERO-PROBE HOST SMOKE OF D-3-FIXED PACKAGE** (el paquete canónico se construye desde el SHA del fix).
 - Probes gobernados ejecutados: 3.
+- Resultados gobernados válidos: 0.
 - `CTDA_HOST_PASS` NOT EVALUATED.
-- Ningún otro ProbeId autorizado; sigue la exclusión de las seis filas RX con payload y de 10NDOC-WILL-SM /
-  10NDOC-CHANGED-SM.
+- Ningún ProbeId autorizado.
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.

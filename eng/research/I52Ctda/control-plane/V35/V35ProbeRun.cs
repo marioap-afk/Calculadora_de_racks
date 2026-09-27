@@ -65,15 +65,18 @@ public static class V35Files
     public static string Sha256(string path) => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
 }
 
-public sealed record V35ProcessRun(int ProcessId, DateTimeOffset StartedAtUtc, DateTimeOffset? ExitedAtUtc, int? ExitCode, bool FinishRecordSeen, bool TerminatedByControlPlane, bool ProcessGone, bool ExitedWithinPostFinishDeadline);
+public sealed record V35ProcessRun(int ProcessId, DateTimeOffset StartedAtUtc, DateTimeOffset? ExitedAtUtc, int? ExitCode, bool FinishRecordSeen, bool TerminatedByControlPlane, bool ProcessGone, bool ExitedWithinPostFinishDeadline,
+    bool InteractiveStateObserved = false, string? InteractiveState = null);
 
 // External fence: FIN-GATE-01.externalDeadlineSeconds without a FINISH record, or postFinishDeadlineSeconds after it,
-// terminates the exact PID (UNKNOWN).
+// terminates the exact PID (UNKNOWN). D-3: an interactive (modal) state terminates it at once, before anyone can answer.
 public static class V35ProcessRunner
 {
     public static async Task<V35ProcessRun> RunAsync(string executable, string arguments, string workingDirectory, IReadOnlyDictionary<string, string?> environment,
-        string eventLog, TimeSpan externalDeadline, TimeSpan postFinishDeadline)
+        string eventLog, TimeSpan externalDeadline, TimeSpan postFinishDeadline, Func<Process, V35WindowSnapshot>? windows = null)
     {
+        windows ??= V35Windows.Snapshot;
+        var watch = new V35InteractiveWatch();
         var start = new ProcessStartInfo(executable, arguments) { UseShellExecute = false, WorkingDirectory = workingDirectory };
         foreach ((string key, string? value) in environment) { if (value is null) start.Environment.Remove(key); else start.Environment[key] = value; }
         using var process = new Process { StartInfo = start };
@@ -84,10 +87,12 @@ public static class V35ProcessRunner
         bool terminated = false;
         while (!process.HasExited)
         {
-            await Task.Delay(1000);
+            await Task.Delay(250);
             if (finishSeen is null && FinishRecorded(eventLog)) finishSeen = DateTimeOffset.UtcNow;
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            if ((finishSeen is null && now - started > externalDeadline) || (finishSeen is not null && now - finishSeen > postFinishDeadline))
+            bool interactive = false;
+            try { interactive = !process.HasExited && watch.Sample(windows(process)); } catch (InvalidOperationException) { }
+            if (interactive || (finishSeen is null && now - started > externalDeadline) || (finishSeen is not null && now - finishSeen > postFinishDeadline))
             {
                 terminated = true;
                 if (!process.HasExited) process.Kill(entireProcessTree: true);
@@ -97,7 +102,8 @@ public static class V35ProcessRunner
         if (finishSeen is null && FinishRecorded(eventLog)) finishSeen = DateTimeOffset.UtcNow;
         DateTimeOffset exited = new(process.ExitTime.ToUniversalTime(), TimeSpan.Zero);
         bool withinDeadline = finishSeen is not null && !terminated;
-        return new(pid, started, exited, process.ExitCode, finishSeen is not null, terminated, ProcessExitVerifier.IsGone(pid, started), withinDeadline);
+        return new(pid, started, exited, process.ExitCode, finishSeen is not null, terminated, ProcessExitVerifier.IsGone(pid, started), withinDeadline,
+            watch.Observed is not null, watch.Observed);
     }
 
     private static bool FinishRecorded(string eventLog)
@@ -135,7 +141,7 @@ public static class V35ProbeHarness
         // CLN-PROCESS-EXIT: scratch integrity only after the exact PID is gone.
         var scratch = new ScratchDrawingIntegrity(before, ScratchDrawingState.Capture(launch.ScratchDrawing));
         var evidence = V35RunEvidence.Load(launch.EventLog,
-            new V35ProcessEvidence(run.ProcessId, run.ProcessGone, run.TerminatedByControlPlane, false, run.ExitedWithinPostFinishDeadline),
+            new V35ProcessEvidence(run.ProcessId, run.ProcessGone, run.TerminatedByControlPlane, false, run.ExitedWithinPostFinishDeadline, run.InteractiveStateObserved),
             new V35ScratchEvidence(true, scratch.Unchanged, scratch.BackupCreated));
         V35Result result = new V35ResultEngine(authority).Evaluate(authority.ByProbe[launch.ProbeId], evidence);
         var manifest = new
@@ -178,7 +184,8 @@ public sealed record V35SmokeLaunch(string AcadExecutable, string RunDirectory, 
         return new(acadExecutable, run, native, payload, managed, drawing, root, Path.Combine(root, "r3-smoke.json"), Path.Combine(root, "events.jsonl"), Path.Combine(root, "r3-smoke.scr"), profile);
     }
 
-    public string Script => "_.FILEDIA\n0\n(arxload \"" + NativeHelper.Replace('\\', '/') + "\")\n_.NETLOAD\n" + ManagedObserver + "\nI52CTDA_SMOKE\n_.QUIT\n_Y\n";
+    // D-3: no QUIT in the script; I52CTDA_SMOKE leaves through CMD-FINISH's automated QUIT-DISCARD after the script returned.
+    public string Script => "_.FILEDIA\n0\n(arxload \"" + NativeHelper.Replace('\\', '/') + "\")\n_.NETLOAD\n" + ManagedObserver + "\nI52CTDA_SMOKE\n";
     public string Arguments => $"\"{ScratchDrawing}\" /nologo /nossm" + (Profile is null ? "" : $" /p \"{Profile}\"") + $" /b \"{ScriptPath}\"";
 
     public IReadOnlyDictionary<string, string?> Environment => new Dictionary<string, string?>
@@ -195,11 +202,13 @@ public sealed record V35SmokeVerdict(string Result, IReadOnlyList<string> Failur
 
 public static class V35SmokeEvaluator
 {
-    public static V35SmokeVerdict Evaluate(JsonElement? report, IReadOnlyList<V35LogRecord> records, int processId, bool processGone, bool timedOut, ScratchDrawingIntegrity scratch)
+    public static V35SmokeVerdict Evaluate(JsonElement? report, IReadOnlyList<V35LogRecord> records, int processId, bool processGone, bool timedOut, ScratchDrawingIntegrity scratch,
+        bool interactiveStateObserved = false)
     {
         var failures = new List<string>();
         if (!scratch.Unchanged || scratch.BackupCreated) failures.Add("SCRATCH_DWG_MUTATED");
         if (timedOut) failures.Add("PROCESS_TIMEOUT");
+        if (interactiveStateObserved) failures.Add("INTERACTIVE_STATE");
         if (!processGone) failures.Add("PROCESS_STILL_PRESENT");
         if (report is not { } r) failures.Add("NATIVE_REPORT_MISSING");
         else
@@ -215,6 +224,7 @@ public static class V35SmokeEvaluator
             if (!True(gate, "hookRemoved") || !True(gate, "timerKilled")) failures.Add("FIN_GATE_TEARDOWN");
             JsonElement managed = r.TryGetProperty("managed", out JsonElement m) ? m : default;
             if (Num(managed, "fenceReadBefore") != 0 || Num(managed, "fenceReadAfter") != 1 || Num(managed, "fenceReadRecords") != 2) failures.Add("MANAGED_FENCE_READ_NOT_OBSERVED");
+            if (!True(r.TryGetProperty("exit", out JsonElement x) ? x : default, "queued")) failures.Add("EXIT_NOT_QUEUED");
         }
         if (records.Count == 0) failures.Add("EVENT_LOG_MISSING");
         else
@@ -230,8 +240,12 @@ public static class V35SmokeEvaluator
             // and the managed observer reading the fence unset, then set.
             if (!records.Any(x => x.ModuleId == "R-NATIVE-ARX" && x.EventOrMarkerId == "FIN-GATE-01" && x.StageId == "STG-FIN-GATE" && x.Is("phase", "REGISTERED")
                 && x.Is("idleHook", "1") && x.P("timer") is not ("" or "0"))) failures.Add("FIN_GATE_NOT_IN_LOG");
-            if (records.Any(x => x.EventOrMarkerId == "CMD-FINISH" || x.EventOrMarkerId == "FIN-GATE-01" && x.Is("phase", "ISSUE") || x.EventOrMarkerId == "FINISH-FENCE-01" && x.Is("phase", "SET")))
+            if (records.Any(x => x.EventOrMarkerId == "CMD-FINISH" && !x.P("phase").StartsWith("EXIT-", StringComparison.Ordinal) || x.EventOrMarkerId == "FIN-GATE-01" && x.Is("phase", "ISSUE")
+                || x.EventOrMarkerId == "FINISH-FENCE-01" && x.Is("phase", "SET")))
                 failures.Add("SPONTANEOUS_FINISH_IN_LOG");
+            // D-3: the process left through the automated QUIT-DISCARD, queued over an unmodified drawing.
+            var exits = records.Where(x => x.EventOrMarkerId == "CMD-FINISH" && x.P("phase").StartsWith("EXIT-", StringComparison.Ordinal)).ToArray();
+            if (exits.Length != 1 || !exits[0].Is("phase", "EXIT-QUEUED") || !exits[0].Is("status", "0") || !exits[0].Is("dbmodAfter", "0")) failures.Add("EXIT_NOT_AUTOMATED");
             if (records.Any(x => x.EventOrMarkerId.StartsWith("TOK-", StringComparison.Ordinal) && x.Is("status", "ACCEPTED"))) failures.Add("TOKEN_FABRICATED_IN_LOG");
             string[] managedFence = records.Where(x => x.ModuleId == "R-MANAGED-OBSERVER" && x.EventOrMarkerId == "FINISH-FENCE-01" && x.Is("phase", "SMOKE-READ"))
                 .OrderBy(x => x.Sequence).Select(x => x.P("fenceIsSet")).ToArray();
