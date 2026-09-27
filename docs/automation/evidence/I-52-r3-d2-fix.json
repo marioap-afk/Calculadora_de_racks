@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "D-2 FIX AFTER SECOND CANARY",
+  "entrySha": "5f15f7d5dc5a40e657334aabe9e81c8cafb2dbf3",
+  "sourceSha": "2887d6c569765634d7cea68a336878e882226d7b",
+  "sourceCi": "36279247181 success",
+  "changes": {
+    "native": "I52CtdaLog.cpp I52Ctda_TokenSet: const std::wstring command = log.commandIdentity(); record.commandIdentity = command.c_str(), valid through log.append(record)",
+    "controlPlane": "V35ResultEngine well-formedness (EVIDENCE-COMPLETE item 8 / UNK-LOG-BINDING): CommandIdentity must be NONE, a governed CommandResource commandName, or a host command recorded by N-ED-WILL at or before the record; otherwise the record is malformed (evidence incomplete, UNKNOWN, never PASS). V35SmokeEvaluator: CommandIdentity must be I52CTDA_SMOKE or NONE (EVENT_LOG_COMMAND_IDENTITY)"
+  },
+  "tests": {
+    "native": "tests/native (Debug CRT, real I52CtdaLog.cpp without ObjectARX): every token record of 02NDBMOD-S (7), 09N-B (5) and CTRENDED16SND-ALL (13) keeps CommandIdentity = I52CTDA_PROBE; reproduces D-2 on the pre-fix code; runs in validate-r1b and before the canonical native build (logs/native-tests.log)",
+    "research": "70/70 (4 new: corrupted/unknown CommandIdentity never PASS; host canary 09N-B token identity; no record field points into a by-value temporary; smoke rejects an unknown identity); each fails with its fix removed",
+    "validateV35Catalog": "PASS",
+    "validateR1b": "PASS",
+    "conformanceV35": "Holds"
+  },
+  "unchanged": [
+    "V35 frozen contract (freeze Holds 43DCE809...B6DF, 24 blobs)",
+    "runtime plans (100/100, drift 0)",
+    "token semantics",
+    "RESULT-RULE-V35 semantics",
+    "product code"
+  ],
+  "artifacts": {
+    "R-NATIVE-ARX": {
+      "bytes": 832512,
+      "sha256": "B4D3F11B0E05FA0D17C8ABD98D4FD5A24DFE85142409BB0527CA04153CBC9A28",
+      "machine": "x64 (0x8664)",
+      "exports": [
+        "I52Ctda_BindManagedObserver",
+        "I52Ctda_FinishFenceIsSet",
+        "I52Ctda_LogAppend",
+        "I52Ctda_QueryC15Arm",
+        "I52Ctda_TokenSet",
+        "acrxEntryPoint",
+        "acrxGetApiVersion"
+      ],
+      "pdbSha256": "265E3599F9EC3041CCA873CEE30E3FA2164FC8798951F221BC61C25D867F65CE"
+    },
+    "R-PAYLOAD-ARX": {
+      "bytes": 81920,
+      "sha256": "AE30E4CACC6CA4B9E1510581E6BD7FCFA7CB7AD0A3D0B33D5CAE3F6C7BE165D9",
+      "machine": "x64 (0x8664)",
+      "exports": [
+        "I52CtdaPayload_RemoveReactor",
+        "acrxEntryPoint",
+        "acrxGetApiVersion"
+      ],
+      "pdbSha256": "98915FC33DFB2B26B613FCE3190CE298F81A0060C011E38A88485A75ABE5DD2C"
+    },
+    "R-MANAGED-OBSERVER": {
+      "bytes": 15360,
+      "sha256": "2B22B7C69704D77D6BBEA7D7E4C5A369342E7612F1EEAACD10018E4FE2C046DD",
+      "informationalVersion": "1.0.0+2887d6c569765634d7cea68a336878e882226d7b"
+    },
+    "managedHarness": {
+      "I52Ctda.ControlPlane.dll": "FF6F0FB110BEA1710EBF03992C17C25A52B718DF65ED8BE28EC4B6EB69B1A44B",
+      "I52Ctda.Harness.dll": "BA337F9DF082FB55E828C721BFAD498F9BB2CF0697DC2C3920CECD8A554DCDB6"
+    }
+  },
+  "buildTupleHash": "7CDB656F2F164F19E8EACD81CB20266FF620CCA9290E41F7A32B511AD97CF218",
+  "buildTupleHashMethod": "SHA-256 over UTF-8 compact JSON of buildMachineToolchainTuple with keys sorted ordinally at every level",
+  "transferPackage": {
+    "directory": "D:\\I52-CTDA-R3\\2887d6c5",
+    "zip": "D:\\I52-CTDA-R3\\2887d6c5.zip",
+    "zipSha256": "DA82AFD7763B3765D71AE12F9FCE9A29088DD0148A49BBBFC9F4847699E67025",
+    "sha256sums": "SHA256SUMS (41 entries)",
+    "metadata": "TRANSFER-METADATA.json"
+  },
+  "superseded": {
+    "package": "D:\\I52-CTDA-R3\\c4037098 (+ .zip 71F8D32A...2416), retained, not overwritten",
+    "buildTupleHash": "0CD753F7B3EEE754E8263796C5CE6C6513CD5C03C8750DC53C9F3BF684F9FE5F",
+    "status": "SUPERSEDED"
+  },
+  "canaryEvidence": "docs/automation/evidence/I-52-r3-canary-02NDBMOD-S.json",
+  "productDiff": "NONE",
+  "autoCadStartedOnBuildMachine": false,
+  "hostSmokeOfNewPackage": "PENDING",
+  "governingProbesExecutedTotal": 2,
+  "ctdaHostPass": "NOT EVALUATED"
+}

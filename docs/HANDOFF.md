@@ -117,7 +117,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B PASS-T; D-1 FIXED; R3 HOST SMOKE c4037098 PASS.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B PASS-T; D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; HOST SMOKE OF D-2-FIXED PACKAGE PENDING.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -178,8 +178,23 @@ managed del fence. `6e445fa8` añade ambas coberturas, solo research y sin cambi
 - `R3_PRE_RUN_TUPLE_HASH` = `A3493A86383ACC87A741AB1806095352726F994C5AB183D99E6B5E2F28F7FB83`.
 - [Evidencia](automation/evidence/I-52-r3-host-smoke-c4037098.json).
 
-**Siguiente gate: SECOND GOVERNED CANARY AUTHORIZATION** (Coordinador).
-- Probes gobernados ejecutados: 1.
+**Segundo canary gobernado 02NDBMOD-S (§178): NOT ACCEPTED.** Se ejecutó en `IMING-2` con el paquete `c4037098` y el PID 29908.
+- El motor del host dio PASS-S, pero los registros de token 38 y 44 llevan un CommandIdentity corrupto (D-2).
+- Tuple pre-run `E7E1DD355C3849EED35CCC47184547B71C6A856FE598CCA5366B3BF73B3E5755`.
+- [Evidencia](automation/evidence/I-52-r3-canary-02NDBMOD-S.json).
+
+**D-2 (§178).** `I52Ctda_TokenSet` tomaba `c_str()` de un `std::wstring` temporal devuelto por valor: un use-after-free.
+- Fix `2887d6c5`, CI 36279247181: copia nombrada que vive hasta `append`.
+- El plano de control exige un CommandIdentity conocido (`NONE`, un CommandResource o un comando del host ya visto en
+  `N-ED-WILL`); si no, la evidencia queda incompleta y el resultado es UNKNOWN.
+- Con el motor nuevo, el log real de 02NDBMOD-S da UNKNOWN (paso 2, registros 38 y 44) y ya no puede dar PASS-S.
+- Pruebas: nativa Debug más research 70/70. La congelación V35 sigue válida.
+- Paquete nuevo `D:\I52-CTDA-R3\2887d6c5` (zip `DA82AFD7…7025`), tuple `7CDB656F2F164F19E8EACD81CB20266FF620CCA9290E41F7A32B511AD97CF218`.
+- `c4037098` y el tuple `0CD753F7…FE5F` quedan SUPERSEDED.
+- [Evidencia](automation/evidence/I-52-r3-d2-fix.json).
+
+**Siguiente gate: HOST SMOKE OF D-2-FIXED PACKAGE** (`smoke-v35` en el host con `2887d6c5`, cero ProbeIds).
+- Probes gobernados ejecutados: 2.
 - `CTDA_HOST_PASS` NOT EVALUATED.
 - Ningún otro ProbeId autorizado; sigue la exclusión de las seis filas RX con payload y de 10NDOC-WILL-SM /
   10NDOC-CHANGED-SM.
