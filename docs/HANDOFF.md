@@ -49,7 +49,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B PASS-T; D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; HOST SMOKE OF D-2-FIXED PACKAGE PENDING.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B PASS-T; D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -125,7 +125,13 @@ managed del fence. `6e445fa8` añade ambas coberturas, solo research y sin cambi
 - `c4037098` y el tuple `0CD753F7…FE5F` quedan SUPERSEDED.
 - [Evidencia](automation/evidence/I-52-r3-d2-fix.json).
 
-**Siguiente gate: HOST SMOKE OF D-2-FIXED PACKAGE** (`smoke-v35` en el host con `2887d6c5`, cero ProbeIds).
+**R3 host smoke 2887d6c5 (§179): PASS** en `IMING-2` (PID 26664, cero ProbeIds).
+- Tuple de build `7CDB656F…F218`; D-2 confirmado estáticamente y en el log (los 14 CommandIdentity son `I52CTDA_SMOKE`).
+- Fixture 8/8, secuenciador, FIN-GATE, ABI del fence (nativo, payload, managed), cleanup, PID fence y scratch: PASS.
+- `R3_PRE_RUN_TUPLE_HASH` = `8B82584CE02DFA9D325ECD5256B2B5C51D3CB0B92A328A83F882B988BED3DE64`.
+- [Evidencia](automation/evidence/I-52-r3-host-smoke-2887d6c5.json).
+
+**Siguiente gate: RE-RUN 02NDBMOD-S AUTHORIZATION** (Coordinador).
 - Probes gobernados ejecutados: 2.
 - `CTDA_HOST_PASS` NOT EVALUATED.
 - Ningún otro ProbeId autorizado; sigue la exclusión de las seis filas RX con payload y de 10NDOC-WILL-SM /
