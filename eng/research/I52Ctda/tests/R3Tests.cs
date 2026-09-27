@@ -41,6 +41,10 @@ internal static class R3Tests
         ("r3 D-2 host canary token records keep I52CTDA_PROBE", HostCanaryTokenIdentity),
         ("r3 D-2 no record field points into a by-value temporary", NoTemporaryRecordPointers),
         ("r3 D-2 smoke rejects an unknown CommandIdentity", SmokeCommandIdentity),
+        ("r3 D-3 automated discard exit is required evidence", AutomatedDiscardExit),
+        ("r3 D-3 native exit needs no human input and cannot save", NativeExitNeedsNoHuman),
+        ("r3 D-3 interactive state is terminated and stays UNKNOWN", InteractiveStateFailsClosed),
+        ("r3 D-3 smoke leaves through the automated exit", SmokeAutomatedExit),
     ];
 
     private static void Require(bool value, string message) { if (!value) throw new InvalidDataException(message); }
@@ -215,15 +219,16 @@ internal static class R3Tests
         .Add("CLN-BASE", "STG-FINISH", 6, "step=VERIFY;ok=1")
         .Add("CLN-BASE", "STG-FINISH", 6, "phase=END;ok=1")
         .Add("CLEAN-BASE", "STG-FINISH", 6, "phase=END;ok=1")
-        .Add("CMD-FINISH", "STG-FINISH", 6, "phase=FLUSH");
+        .Add("CMD-FINISH", "STG-FINISH", 6, "phase=FLUSH")
+        .Add("CMD-FINISH", "STG-FINISH", 6, "phase=EXIT-QUEUED;exitAction=QUIT-DISCARD;status=0;origin=CMD-FINISH;dbmodAtBoot=0;dbmodBefore=1;popStatus=0;dbmodAfter=0;schedulerUse=FINISH-INFRA");
 
-    private static V35Result Evaluate(string repo, Log log, string probe = "02N", V35ProcessEvidence? process = null, long skip = -1)
+    private static V35Result Evaluate(string repo, Log log, string probe = "02N", V35ProcessEvidence? process = null, long skip = -1, V35ScratchEvidence? scratch = null)
     {
         V35Authority a = Authority(repo);
         string path = log.Write(skip);
         try
         {
-            var evidence = V35RunEvidence.Load(path, process ?? new V35ProcessEvidence(4242, true, false, false, true), new V35ScratchEvidence(true, true, false));
+            var evidence = V35RunEvidence.Load(path, process ?? new V35ProcessEvidence(4242, true, false, false, true), scratch ?? new V35ScratchEvidence(true, true, false));
             return new V35ResultEngine(a).Evaluate(a.ByProbe[probe], evidence);
         }
         finally { File.Delete(path); }
@@ -387,7 +392,7 @@ internal static class R3Tests
     private const string SmokeGate = "\"finGate\":{\"idleHook\":true,\"timer\":17,\"stageDelivery\":2,\"registeredRecords\":1,\"finishIssued\":false,\"finishRecords\":0,\"tokensAccepted\":0,\"hookRemoved\":true,\"timerKilled\":true}";
     private const string SmokeManaged = "\"managed\":{\"fenceReadBefore\":0,\"fenceReadAfter\":1,\"fenceReadRecords\":2}";
     private static string SmokeReport(string gate = SmokeGate, string managed = SmokeManaged) =>
-        "{\"result\":\"PASS\",\"processId\":4242,\"governedProbesDispatched\":0,\"fixture\":{\"declared\":8}," + gate + "," + managed + "}";
+        "{\"result\":\"PASS\",\"processId\":4242,\"governedProbesDispatched\":0,\"fixture\":{\"declared\":8}," + gate + "," + managed + ",\"exit\":{\"queued\":true,\"dbmodAtBoot\":0}}";
 
     private static V35LogRecord SmokeRecord(long sequence, string stage, string module, string eventId, string payload = "")
     {
@@ -405,6 +410,7 @@ internal static class R3Tests
         SmokeRecord(6, "STG-FIN-GATE", "R-NATIVE-ARX", "FIN-GATE-01", "smoke=1;phase=UNREGISTERED;hookRemoved=1;timerKilled=1;finishIssued=0;tokensAccepted=0"),
         SmokeRecord(7, "STG-PROBE-CMD", "R-MANAGED-OBSERVER", "FINISH-FENCE-01", "smoke=1;phase=SMOKE-READ;reader=R-MANAGED-OBSERVER;fenceIsSet=1"),
         SmokeRecord(8, "STG-PROBE-CMD", "R-NATIVE-ARX", "FINISH-FENCE-01", "smoke=1;before=0;after=1;setterExported=0"),
+        SmokeRecord(9, "STG-PROBE-CMD", "R-NATIVE-ARX", "CMD-FINISH", "phase=EXIT-QUEUED;exitAction=QUIT-DISCARD;status=0;origin=I52CTDA_SMOKE;dbmodAtBoot=0;dbmodBefore=1;popStatus=0;dbmodAfter=0"),
     ];
 
     private static readonly ScratchDrawingState SmokeScratch = new("x.dwg", true, 1, "A", DateTimeOffset.UnixEpoch, "x.bak", false, null, null);
@@ -433,11 +439,11 @@ internal static class R3Tests
         RequireSmokeFailure(JudgeSmoke(SmokeReport(), Renumber(SmokeLog().Where(r => !r.Is("phase", "REGISTERED")))), "FIN_GATE_NOT_IN_LOG");
         RequireSmokeFailure(JudgeSmoke(SmokeReport(), SmokeLog().Select(r => r.Is("phase", "REGISTERED") ? r with { StageId = "STG-PROBE-CMD" } : r).ToList()), "FIN_GATE_NOT_IN_LOG");
         RequireSmokeFailure(JudgeSmoke(SmokeReport(gate: SmokeGate.Replace("\"finishIssued\":false", "\"finishIssued\":true")), SmokeLog()), "SPONTANEOUS_FINISH");
-        RequireSmokeFailure(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(9, "STG-FIN-GATE", "R-NATIVE-ARX", "FIN-GATE-01", "phase=ISSUE;mode=FINISH-MODE-DRAIN")]), "SPONTANEOUS_FINISH_IN_LOG");
-        RequireSmokeFailure(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(9, "STG-FINISH", "R-NATIVE-ARX", "CMD-FINISH", "phase=ENTRY")]), "SPONTANEOUS_FINISH_IN_LOG");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(10, "STG-FIN-GATE", "R-NATIVE-ARX", "FIN-GATE-01", "phase=ISSUE;mode=FINISH-MODE-DRAIN")]), "SPONTANEOUS_FINISH_IN_LOG");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(10, "STG-FINISH", "R-NATIVE-ARX", "CMD-FINISH", "phase=ENTRY")]), "SPONTANEOUS_FINISH_IN_LOG");
         RequireSmokeFailure(JudgeSmoke(SmokeReport(gate: SmokeGate.Replace("\"tokensAccepted\":0", "\"tokensAccepted\":1")), SmokeLog()), "TOKEN_FABRICATED");
-        RequireSmokeFailure(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(9, "STG-PROBE-CMD", "R-NATIVE-ARX", "TOK-EXEC-DONE", "status=ACCEPTED")]), "TOKEN_FABRICATED_IN_LOG");
-        Require(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(9, "STG-PROBE-CMD", "R-NATIVE-ARX", "TOK-EXEC-DONE", "status=NOT-IN-ROW")]).Result == "PASS", "a rejected token is not fabricated");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(10, "STG-PROBE-CMD", "R-NATIVE-ARX", "TOK-EXEC-DONE", "status=ACCEPTED")]), "TOKEN_FABRICATED_IN_LOG");
+        Require(JudgeSmoke(SmokeReport(), [.. SmokeLog(), SmokeRecord(10, "STG-PROBE-CMD", "R-NATIVE-ARX", "TOK-EXEC-DONE", "status=NOT-IN-ROW")]).Result == "PASS", "a rejected token is not fabricated");
         RequireSmokeFailure(JudgeSmoke(SmokeReport(gate: SmokeGate.Replace("\"timerKilled\":true", "\"timerKilled\":false")), SmokeLog()), "FIN_GATE_TEARDOWN");
 
         // Native smoke source: the gate is registered after BOOT-01 and removed before the fence is set; the smoke never
@@ -558,7 +564,8 @@ internal static class R3Tests
     }
 
     // The published host log of the first canary (09N-B, package 6e445fa8): every token record carries exactly
-    // I52CTDA_PROBE and the log stays PASS-T under the stricter rule; the same records corrupted as in D-2 are UNKNOWN.
+    // I52CTDA_PROBE and no CommandIdentity gap appears; the same records corrupted as in D-2 add exactly two. Since D-3 the
+    // log is UNKNOWN through its pre-D-3 exit only (Coordinator ruling: 09N-B is not a valid governed result).
     private static void HostCanaryTokenIdentity(string repo)
     {
         JsonObject canary = JsonNode.Parse(File.ReadAllText(Path.Combine(repo, "docs", "automation", "evidence", "I-52-r3-canary-09N-B.json")))!.AsObject();
@@ -578,7 +585,8 @@ internal static class R3Tests
             finally { File.Delete(path); }
         }
         V35Result host = Judge(e => e);
-        Require(host.Result == "PASS" && host.ResultClass == "PASS-T", $"09N-B host log gave {host.Result}: {string.Join(" | ", host.EvidenceGaps)}");
+        Require(host.Result == "UNKNOWN" && host.EvidenceGaps.Count > 0 && host.EvidenceGaps.All(g => g.StartsWith("(6) automated exit", StringComparison.Ordinal)),
+            $"09N-B host log gave {host.Result}: {string.Join(" | ", host.EvidenceGaps)}");
         V35Result corrupted = Judge(e => { if (e["EventOrMarkerId"]!.GetValue<string>().StartsWith("TOK-", StringComparison.Ordinal)) e["CommandIdentity"] = "\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD"; return e; });
         Require(corrupted.Result == "UNKNOWN" && corrupted.EvidenceGaps.Count(g => g.Contains("CommandIdentity", StringComparison.Ordinal)) == 2, $"corrupted 09N-B tokens gave {corrupted.Result}");
     }
@@ -614,5 +622,138 @@ internal static class R3Tests
         Require(JudgeSmoke(SmokeReport(), SmokeLog()).Result == "PASS", "smoke baseline");
         foreach (string bad in CorruptedIdentities)
             RequireSmokeFailure(JudgeSmoke(SmokeReport(), SmokeLog().Select(r => r.Sequence == 5 ? r with { CommandIdentity = bad } : r).ToList()), "EVENT_LOG_COMMAND_IDENTITY");
+    }
+
+    // D-3: the exit is required evidence. PASS needs the automated QUIT-DISCARD queued over an unmodified drawing, a PID
+    // that left by itself within the post-FINISH deadline, no interactive state, an unchanged scratch and no .bak.
+    private static void AutomatedDiscardExit(string repo)
+    {
+        Require(Evaluate(repo, Pass02N()).Result == "PASS", "automated discard exit must PASS");
+        void Unknown(V35Result r, string what, string gap)
+        {
+            Require(r.Result != "PASS", what + " reached PASS");
+            Require(r.Result == "UNKNOWN" && r.EvidenceGaps.Concat(r.Reasons).Any(g => g.Contains(gap, StringComparison.Ordinal)), $"{what}: {r.Result} {string.Join(" | ", r.EvidenceGaps.Concat(r.Reasons))}");
+        }
+        Unknown(Evaluate(repo, Pass02N(), scratch: new V35ScratchEvidence(true, false, false)), "scratch mutated", "");
+        Unknown(Evaluate(repo, Pass02N(), scratch: new V35ScratchEvidence(true, true, true)), "scratch .bak created", "");
+        Unknown(Evaluate(repo, Pass02N(), process: new V35ProcessEvidence(4242, true, true, false, false)), "PID terminated after FINISH", "(6) automated exit: PID terminated");
+        Unknown(Evaluate(repo, Pass02N(), process: new V35ProcessEvidence(4242, true, false, false, false)), "PID not gone within the post-FINISH deadline", "(6) automated exit: PID not gone");
+        Unknown(Evaluate(repo, Pass02N(), process: new V35ProcessEvidence(4242, true, true, false, false, InteractiveStateObserved: true)), "interactive state", "(6) automated exit: interactive");
+        Unknown(Evaluate(repo, Pass02N().Remove((e, p) => e == "CMD-FINISH" && p.StartsWith("phase=EXIT-", StringComparison.Ordinal))), "no exit record", "(6) automated exit: no CMD-FINISH exit record");
+        Unknown(Evaluate(repo, Pass02N().Replace("CMD-FINISH", "phase=EXIT-QUEUED;exitAction=QUIT-DISCARD;status=0;origin=CMD-FINISH;dbmodAtBoot=0;dbmodBefore=1;popStatus=0;dbmodAfter=0;schedulerUse=FINISH-INFRA",
+            "phase=EXIT-BLOCKED;exitAction=QUIT-DISCARD;reason=DRAWING-MODIFIED;origin=CMD-FINISH;dbmodAtBoot=1;dbmodBefore=1;popStatus=0;dbmodAfter=1")), "exit blocked", "EXIT-BLOCKED");
+        Unknown(Evaluate(repo, Pass02N().Replace("CMD-FINISH", "phase=EXIT-QUEUED;exitAction=QUIT-DISCARD;status=0;origin=CMD-FINISH;dbmodAtBoot=0;dbmodBefore=1;popStatus=0;dbmodAfter=0;schedulerUse=FINISH-INFRA",
+            "phase=EXIT-QUEUED;exitAction=QUIT-DISCARD;status=0")), "pre-D-3 QUIT over a modified drawing", "dbmodAfter=");
+    }
+
+    // D-3 native path: BOOT-01 pushes $DBMOD before the fixture changes the drawing; CMD-FINISH ends with the one exit
+    // routine, which pops $DBMOD and queues `_.QUIT` `_Y` only when the drawing reads unmodified (QUIT then has nothing to
+    // save and no dialog); otherwise nothing is queued. No script holds QUIT and nothing but the ProbeId is read as input.
+    private static void NativeExitNeedsNoHuman(string repo)
+    {
+        string research = Path.Combine(repo, "eng", "research", "I52Ctda");
+        string driver = File.ReadAllText(Path.Combine(research, "native", "I52CtdaDriver.cpp")).Replace("\r\n", "\n");
+        string Body(string signature) { int at = driver.IndexOf(signature, StringComparison.Ordinal); Require(at >= 0, "missing " + signature); return driver[at..driver.IndexOf("\n}\n", at, StringComparison.Ordinal)]; }
+        string boot = Body("void I52Executor::boot()");
+        Require(boot.IndexOf("document_->pushDbmod();", StringComparison.Ordinal) is var push && push > 0 && push < boot.IndexOf("materialize(", StringComparison.Ordinal), "BOOT-01 pushes $DBMOD before materializing");
+        string finish = Body("void I52Executor::finish()");
+        Require(finish.TrimEnd().EndsWith("queueDiscardExit(L\"CMD-FINISH\");", StringComparison.Ordinal) && !finish.Contains("sendStringToExecute", StringComparison.Ordinal), "CMD-FINISH ends with the discard exit");
+        string exit = Body("bool I52Executor::queueDiscardExit(");
+        int pop = exit.IndexOf("popDbmod()", StringComparison.Ordinal), guard = exit.IndexOf("if (popped != Acad::eOk || after != 0)", StringComparison.Ordinal),
+            blocked = exit.IndexOf("return false;", StringComparison.Ordinal), quit = exit.IndexOf("sendStringToExecute(document_, L\"_.QUIT\\n_Y\\n\"", StringComparison.Ordinal);
+        Require(pop > 0 && pop < guard && guard < blocked && blocked < quit, "QUIT is queued only after $DBMOD was popped to 0");
+        Require(driver.Split('\n').Count(line => line.Contains("_.QUIT", StringComparison.Ordinal) && !line.TrimStart().StartsWith("//", StringComparison.Ordinal)) == 1, "one QUIT in the native module");
+        string smoke = Body("void I52Executor::smoke()");
+        Require(smoke.Contains("queueDiscardExit(L\"I52CTDA_SMOKE\")", StringComparison.Ordinal), "smoke leaves through the same exit");
+        string native = string.Join('\n', Directory.GetFiles(Path.Combine(research, "native"), "*.cpp").Select(File.ReadAllText));
+        foreach (string input in new[] { "acedGetKword", "acedGetInt", "acedGetReal", "acedGetPoint", "acedGetFileD", "acedGetFileNavDialog", "acedInitGet", "acedAlert", "MessageBox" })
+            Require(!native.Contains(input, StringComparison.Ordinal), "interactive input API in R-NATIVE-ARX: " + input);
+        Require(System.Text.RegularExpressions.Regex.Matches(native, @"acedGetString\(").Count == 2, "acedGetString only reads the ProbeId argument of PROBE and FINISH");
+        V35Authority a = Authority(repo);
+        foreach (V35RowPlan r in a.Rows)
+            Require(!V35ProbeLaunch.DriverScript(r, @"C:\run", r.ObserverRegistrationIds.Contains("RR-MANAGED-CMD")).Contains("QUIT", StringComparison.OrdinalIgnoreCase), r.ProbeId + " script quits");
+        string temp = Path.Combine(Path.GetTempPath(), "i52-d3-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(temp);
+        try
+        {
+            foreach (string f in new[] { V35ProbeLaunch.NativeFile, V35ProbeLaunch.PayloadFile, V35ProbeLaunch.ManagedFile, "scratch.dwg" }) File.WriteAllText(Path.Combine(temp, f), "x");
+            V35SmokeLaunch launch = V35SmokeLaunch.Create("acad.exe", Path.Combine(temp, V35ProbeLaunch.NativeFile), Path.Combine(temp, "scratch.dwg"), Path.Combine(temp, "out"), null);
+            Require(!launch.Script.Contains("QUIT", StringComparison.OrdinalIgnoreCase) && launch.Script.EndsWith("I52CTDA_SMOKE\n", StringComparison.Ordinal), "smoke script holds no QUIT");
+        }
+        finally { Directory.Delete(temp, true); }
+    }
+
+    // D-3 fail-closed: a main window kept disabled by a modal window is an interactive state; the control plane terminates
+    // the exact PID at once and the row stays UNKNOWN. Covers the watch, the runner with a scripted window source, and a
+    // real WinForms owner window disabled by a modal dialog (no AutoCAD).
+    private static void InteractiveStateFailsClosed(string repo)
+    {
+        var watch = new V35InteractiveWatch();
+        V35WindowSnapshot enabled = new(false, ["Afx:main"]), modal = new(true, ["Afx:main disabled", "#32770:'AutoCAD'"]), hidden = new(false, []);
+        foreach (V35WindowSnapshot s in new[] { hidden, hidden, modal, modal, modal, enabled, modal, modal, modal }) Require(!watch.Sample(s), "transient or hidden states are not interactive");
+        Require(watch.Sample(modal) && watch.Observed!.Contains("#32770", StringComparison.Ordinal) && watch.Sample(enabled), "four consecutive modal samples are interactive (sticky)");
+
+        string shell = Path.Combine(Environment.SystemDirectory, "cmd.exe");
+        string log = Path.GetTempFileName();
+        try
+        {
+            int samples = 0;
+            var clock = System.Diagnostics.Stopwatch.StartNew();
+            V35ProcessRun run = V35ProcessRunner.RunAsync(shell, "/c ping -n 60 127.0.0.1 >nul", repo, new Dictionary<string, string?>(), log, TimeSpan.FromSeconds(50), TimeSpan.FromSeconds(50),
+                _ => ++samples > 2 ? modal : enabled).GetAwaiter().GetResult();
+            Require(run.InteractiveStateObserved && run.TerminatedByControlPlane && run.ProcessGone && !run.ExitedWithinPostFinishDeadline && clock.Elapsed < TimeSpan.FromSeconds(20),
+                $"scripted modal state not terminated at once ({clock.Elapsed})");
+            V35Result r = Evaluate(repo, Pass02N(), process: new V35ProcessEvidence(run.ProcessId, run.ProcessGone, run.TerminatedByControlPlane, false, run.ExitedWithinPostFinishDeadline, run.InteractiveStateObserved) with { ProcessId = 4242 });
+            Require(r.Result == "UNKNOWN", "interactive run must stay UNKNOWN, got " + r.Result);
+            V35ProcessRun quiet = V35ProcessRunner.RunAsync(shell, "/c exit 0", repo, new Dictionary<string, string?>(), log, TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(20)).GetAwaiter().GetResult();
+            Require(!quiet.InteractiveStateObserved && !quiet.TerminatedByControlPlane && quiet.ExitCode == 0, "a process without windows is not interactive");
+
+            // Real modal window: a WinForms owner (off screen) disabled by ShowDialog of an owned form.
+            string script = Path.Combine(Path.GetTempPath(), "i52-d3-modal-" + Guid.NewGuid().ToString("N") + ".ps1");
+            File.WriteAllText(script, """
+                Add-Type -AssemblyName System.Windows.Forms
+                function Offscreen($f, $title) { $f.StartPosition = 'Manual'; $f.Location = New-Object System.Drawing.Point(-3000, -3000); $f.ShowInTaskbar = $false; $f.Text = $title }
+                $owner = New-Object System.Windows.Forms.Form; Offscreen $owner 'i52-d3-owner'
+                $owner.Add_Shown({ $dialog = New-Object System.Windows.Forms.Form; Offscreen $dialog 'i52-d3-modal'; [void]$dialog.ShowDialog($owner) })
+                [System.Windows.Forms.Application]::Run($owner)
+                """);
+            clock.Restart();
+            V35ProcessRun real;
+            try
+            {
+                real = V35ProcessRunner.RunAsync("pwsh.exe", $"-NoProfile -NonInteractive -File \"{script}\"", repo, new Dictionary<string, string?>(), log,
+                    TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(60)).GetAwaiter().GetResult();
+            }
+            finally { File.Delete(script); }
+            Require(real.InteractiveStateObserved && real.TerminatedByControlPlane && real.ProcessGone && clock.Elapsed < TimeSpan.FromSeconds(45) && real.InteractiveState!.Contains("i52-d3-modal", StringComparison.Ordinal),
+                $"real modal window not detected ({clock.Elapsed}): {real.InteractiveState}");
+
+            // Real non-modal window that closes itself after 3 s: never interactive, exits on its own.
+            File.WriteAllText(script, """
+                Add-Type -AssemblyName System.Windows.Forms
+                $owner = New-Object System.Windows.Forms.Form; $owner.StartPosition = 'Manual'; $owner.Location = New-Object System.Drawing.Point(-3000, -3000); $owner.Text = 'i52-d3-plain'
+                $timer = New-Object System.Windows.Forms.Timer; $timer.Interval = 3000; $timer.Add_Tick({ $owner.Close() }); $timer.Start()
+                [System.Windows.Forms.Application]::Run($owner)
+                """);
+            try
+            {
+                V35ProcessRun plain = V35ProcessRunner.RunAsync("pwsh.exe", $"-NoProfile -NonInteractive -File \"{script}\"", repo, new Dictionary<string, string?>(), log,
+                    TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(60)).GetAwaiter().GetResult();
+                Require(!plain.InteractiveStateObserved && !plain.TerminatedByControlPlane && plain.ExitCode == 0, $"non-modal window flagged: {plain.InteractiveState}");
+            }
+            finally { File.Delete(script); }
+        }
+        finally { File.Delete(log); }
+    }
+
+    private static void SmokeAutomatedExit(string repo)
+    {
+        Require(JudgeSmoke(SmokeReport(), SmokeLog()).Result == "PASS", "smoke with the automated exit must PASS");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), Renumber(SmokeLog().Where(r => r.EventOrMarkerId != "CMD-FINISH"))), "EXIT_NOT_AUTOMATED");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport(), SmokeLog().Select(r => r.EventOrMarkerId == "CMD-FINISH" ? r with { Payload = new Dictionary<string, string>(r.Payload) { ["phase"] = "EXIT-BLOCKED", ["dbmodAfter"] = "1" } } : r).ToList()), "EXIT_NOT_AUTOMATED");
+        RequireSmokeFailure(JudgeSmoke(SmokeReport().Replace("\"queued\":true", "\"queued\":false"), SmokeLog()), "EXIT_NOT_QUEUED");
+        RequireSmokeFailure(V35SmokeEvaluator.Evaluate(JsonDocument.Parse(SmokeReport()).RootElement, SmokeLog(), 4242, true, false, new(SmokeScratch, SmokeScratch), interactiveStateObserved: true), "INTERACTIVE_STATE");
+        RequireSmokeFailure(V35SmokeEvaluator.Evaluate(JsonDocument.Parse(SmokeReport()).RootElement, SmokeLog(), 4242, true, true, new(SmokeScratch, SmokeScratch)), "PROCESS_TIMEOUT");
+        RequireSmokeFailure(V35SmokeEvaluator.Evaluate(JsonDocument.Parse(SmokeReport()).RootElement, SmokeLog(), 4242, true, false, new(SmokeScratch, SmokeScratch with { BackupExists = true })), "SCRATCH_DWG_MUTATED");
     }
 }

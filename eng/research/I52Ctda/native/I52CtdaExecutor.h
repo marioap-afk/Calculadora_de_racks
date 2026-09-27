@@ -103,6 +103,8 @@ private:
     // Driver phases.
     bool registerObserver(I52Id registration);
     bool registerFinishGate();
+    // D-3: CMD-FINISH's QUIT-DISCARD (and the smoke's) queued only over an unmodified drawing; false when not queued.
+    bool queueDiscardExit(const std::wstring& origin);
     bool runSetup();
     bool runSetupAction(I52Id setup);
     void armGuards(bool includeAppend);
@@ -153,6 +155,9 @@ private:
     bool booted_{};
     bool bootFailed_{};
     std::wstring bootFacts_;
+    // D-3: $DBMOD of the scratch document at BOOT-01, pushed before the fixture is materialized and popped by the exit.
+    int dbmodAtBoot_{ -1 };
+    bool dbmodPushed_{};
     std::wstring bootSnapshot_;
     bool recording_{};
     bool aborted_{};

@@ -33,6 +33,13 @@ std::wstring status(Acad::ErrorStatus s) { return std::to_wstring(static_cast<in
 std::wstring ptr(const void* p) { return I52Hex(reinterpret_cast<uint64_t>(p)); }
 std::wstring oid(const AcDbObjectId& id) { return I52Hex(static_cast<uint64_t>(id.asOldId())); }
 std::wstring flag(bool b) { return b ? L"1" : L"0"; }
+
+// $DBMOD of the current document (acedGetVar); -1 when it cannot be read.
+int dbmod()
+{
+    resbuf value{};
+    return acedGetVar(L"DBMOD", &value) == RTNORM && value.restype == RTSHORT ? value.resval.rint : -1;
+}
 std::wstring lower(std::wstring value) { for (wchar_t& c : value) c = static_cast<wchar_t>(std::towlower(c)); return value; }
 
 std::wstring environment(const wchar_t* name)
@@ -144,6 +151,10 @@ void I52Executor::boot()
     std::wostringstream facts;
     if (booted_) { bootFailed_ = true; bootFacts_ = L"status=DUPLICATE-BOOT"; return; }
     booted_ = true;
+    // D-3: push $DBMOD of the freshly opened scratch before anything changes the drawing; the exit pops it so QUIT finds
+    // nothing to save and cannot raise the save-changes dialog.
+    dbmodAtBoot_ = dbmod();
+    if (document_ != nullptr) { document_->pushDbmod(); dbmodPushed_ = true; }
     AcTransactionManager* tm = document_ == nullptr ? nullptr : document_->transactionManager();
     AcTransaction* t = tm == nullptr ? nullptr : tm->startTransaction();
     Acad::ErrorStatus materialized = Acad::eNullPtr, closed = Acad::eNullPtr;
@@ -164,7 +175,7 @@ void I52Executor::boot()
     facts << L"status=" << (bootFailed_ ? L"FAILED" : L"OK") << L";transaction=" << ptr(t) << L";materialize=" << static_cast<int>(materialized)
           << L";transactionClose=" << static_cast<int>(closed) << L";declared=" << I52CtdaFixture::kDeclaredIdentities << L";resolved=" << resolution.resolved
           << L";smLinkBinding=" << (resolution.bindingResolved ? L"RESOLVED" : L"MISMATCH") << L";document=" << ptr(document_) << L";database=" << ptr(database_)
-          << L";observerRegistrations=0";
+          << L";observerRegistrations=0;dbmodAtBoot=" << dbmodAtBoot_ << L";dbmodPushed=" << (dbmodPushed_ ? 1 : 0);
     bootFacts_ = facts.str();
     bootSnapshot_.assign(resolution.snapshot.begin(), resolution.snapshot.end());
     acutPrintf(bootFailed_ ? L"\nI52 CT-DA BOOT-01 failed.\n" : L"\nI52 CT-DA BOOT-01 complete.\n");
@@ -898,8 +909,29 @@ void I52Executor::finish()
     runCleanup(drain);
     selfAction_ = false;
     fact(I52Id::CMD_FINISH, L"phase=FLUSH;lastSequence=" + std::to_wstring(I52Log::instance().lastSequence()));
+    queueDiscardExit(L"CMD-FINISH");
+}
+
+// D-3 exit. The last action stays `_.QUIT` `_Y` through FINISH-INFRA, but only over an unmodified drawing: the $DBMOD
+// pushed at BOOT-01 is popped first, so QUIT has nothing to save and raises no save dialog whether or not the startup
+// script is still running. When the drawing cannot be made unmodified nothing is queued: no human is ever asked, the
+// PID stays for the control plane, whose post-FINISH deadline terminates it, and the row is UNKNOWN.
+bool I52Executor::queueDiscardExit(const std::wstring& origin)
+{
+    const int before = dbmod();
+    const Acad::ErrorStatus popped = dbmodPushed_ && document_ != nullptr ? document_->popDbmod() : Acad::eNotApplicable;
+    if (popped == Acad::eOk) dbmodPushed_ = false;
+    const int after = dbmod();
+    const std::wstring facts = L";origin=" + origin + L";dbmodAtBoot=" + std::to_wstring(dbmodAtBoot_) + L";dbmodBefore=" + std::to_wstring(before)
+        + L";popStatus=" + status(popped) + L";dbmodAfter=" + std::to_wstring(after);
+    if (popped != Acad::eOk || after != 0)
+    {
+        fact(I52Id::CMD_FINISH, L"phase=EXIT-BLOCKED;exitAction=QUIT-DISCARD;reason=DRAWING-MODIFIED" + facts + L";schedulerUse=FINISH-INFRA");
+        return false;
+    }
     const Acad::ErrorStatus s = acDocManager->sendStringToExecute(document_, L"_.QUIT\n_Y\n", false, false, false);
-    fact(I52Id::CMD_FINISH, L"phase=EXIT-QUEUED;exitAction=QUIT-DISCARD;status=" + status(s) + L";schedulerUse=FINISH-INFRA");
+    fact(I52Id::CMD_FINISH, L"phase=EXIT-QUEUED;exitAction=QUIT-DISCARD;status=" + status(s) + facts + L";schedulerUse=FINISH-INFRA");
+    return s == Acad::eOk;
 }
 
 void I52Executor::runVerifiers()
@@ -1142,13 +1174,16 @@ void I52Executor::smoke()
     const int managedFenceRecords = log.countOf(L"R-MANAGED-OBSERVER", L"FINISH-FENCE-01");
     if (managedFenceBefore != 0 || managedFenceAfter != 1 || managedFenceRecords != 2) failures.push_back(L"MANAGED_FENCE_READ");
     fact(I52Id::FINISH_FENCE_01, L"smoke=1;before=" + std::to_wstring(fenceBefore) + L";after=" + std::to_wstring(fenceAfter) + L";setterExported=" + flag(setterExported));
+    // D-3: the smoke leaves through the same exit as CMD-FINISH (its script holds no QUIT), after the script returned.
+    const bool exitQueued = queueDiscardExit(L"I52CTDA_SMOKE");
+    if (!exitQueued) failures.push_back(L"EXIT_NOT_QUEUED");
     const uint64_t last = log.lastSequence();
     pop(I52Id::STG_PROBE_CMD);
 
     std::ostringstream failureList;
     for (size_t i = 0; i < failures.size(); ++i) failureList << (i == 0 ? "" : ",") << '"' << utf8(failures[i]) << '"';
     std::ofstream stream(output, std::ios::binary | std::ios::trunc);
-    stream << "{\n  \"schemaVersion\": 5,\n  \"instrument\": \"I52CtdaNative\",\n  \"stage\": \"R3_SMOKE\",\n  \"commandIdentity\": \"I52CTDA_SMOKE\",\n"
+    stream << "{\n  \"schemaVersion\": 6,\n  \"instrument\": \"I52CtdaNative\",\n  \"stage\": \"R3_SMOKE\",\n  \"commandIdentity\": \"I52CTDA_SMOKE\",\n"
            << "  \"result\": \"" << (failures.empty() ? "PASS" : "FAIL") << "\",\n  \"failures\": [" << failureList.str() << "],\n"
            << "  \"processId\": " << GetCurrentProcessId() << ",\n  \"loggerReady\": " << (log.ready() ? "true" : "false") << ",\n"
            << "  \"sequenceFirst\": " << first << ",\n  \"sequenceLast\": " << last << ",\n"
@@ -1163,6 +1198,7 @@ void I52Executor::smoke()
            << "  \"fence\": { \"readExport\": " << (fenceRead != nullptr ? "true" : "false") << ", \"setterExported\": " << (setterExported ? "true" : "false")
            << ", \"before\": " << fenceBefore << ", \"after\": " << fenceAfter << " },\n"
            << "  \"cleanup\": { \"erased\": " << erased << ", \"linkCarrierRemoved\": " << (carrierRemoved ? "true" : "false") << " },\n"
+           << "  \"exit\": { \"queued\": " << (exitQueued ? "true" : "false") << ", \"dbmodAtBoot\": " << dbmodAtBoot_ << " },\n"
            << "  \"governedProbesDispatched\": 0\n}\n";
     commands_.pop_back();
     acutPrintf(failures.empty() ? L"\nI52 CT-DA R3 smoke PASS.\n" : L"\nI52 CT-DA R3 smoke FAIL.\n");

@@ -124,6 +124,7 @@ public sealed class V35ResultEngine(V35Authority authority)
             // (6) exact-PID exit and scratch integrity evidence
             if (evidence.Process is null || !evidence.Process.ProcessGone) gaps.Add("(6) exact-PID exit evidence");
             if (evidence.Scratch is null || !evidence.Scratch.Captured) gaps.Add("(6) scratch-DWG integrity evidence");
+            gaps.AddRange(AutomatedExitGaps().Select(g => "(6) " + g));
             // (7) contiguous Sequence from 1 and records from every loaded module
             gaps.AddRange(SequenceGaps(log.All).Select(g => "(7) " + g));
             // (8) well-formed records whose authority ids resolve
@@ -138,6 +139,23 @@ public sealed class V35ResultEngine(V35Authority authority)
             if (SequenceGaps(log.All).Any()) return false;
             if (Malformed(log.All.Where(r => r.Sequence >= CleanupStart)).Any()) return false;
             return CleanupSteps.All(step => log.Any(step, r => r.Is("phase", "START")));
+        }
+
+        // D-3 exact-PID exit: the automated QUIT-DISCARD only. FIN-GATE-01 makes a PID the control plane terminated after
+        // FINISH UNKNOWN; an interactive (modal) state means a human could have answered; CMD-FINISH queues QUIT only over
+        // an unmodified drawing ($DBMOD 0), so QUIT had nothing to save and no dialog to raise.
+        private IEnumerable<string> AutomatedExitGaps()
+        {
+            if (evidence.Process is { } p)
+            {
+                if (p.TerminatedByControlPlane || p.TimedOut) yield return "automated exit: PID terminated by the control plane";
+                else if (!p.ExitedWithinPostFinishDeadline) yield return "automated exit: PID not gone within the post-FINISH deadline";
+                if (p.InteractiveStateObserved) yield return "automated exit: interactive modal state observed";
+            }
+            V35LogRecord? exit = log.Of("CMD-FINISH").LastOrDefault(r => r.P("phase").StartsWith("EXIT-", StringComparison.Ordinal));
+            if (exit is null) yield return "automated exit: no CMD-FINISH exit record";
+            else if (!exit.Is("phase", "EXIT-QUEUED") || !exit.Is("status", "0") || !exit.Is("dbmodAfter", "0"))
+                yield return $"automated exit: QUIT-DISCARD not queued over an unmodified drawing ({exit.P("phase")}, dbmodAfter={exit.P("dbmodAfter")})";
         }
 
         private IEnumerable<string> SequenceGaps(IReadOnlyList<V35LogRecord> all)
