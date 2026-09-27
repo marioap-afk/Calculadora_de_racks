@@ -117,7 +117,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B PASS-T; D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B PASS-T; D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 OPEN.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -199,8 +199,18 @@ managed del fence. `6e445fa8` añade ambas coberturas, solo research y sin cambi
 - `R3_PRE_RUN_TUPLE_HASH` = `8B82584CE02DFA9D325ECD5256B2B5C51D3CB0B92A328A83F882B988BED3DE64`.
 - [Evidencia](automation/evidence/I-52-r3-host-smoke-2887d6c5.json).
 
-**Siguiente gate: RE-RUN 02NDBMOD-S AUTHORIZATION** (Coordinador).
-- Probes gobernados ejecutados: 2.
+**Re-run 02NDBMOD-S (§180): UNKNOWN / NOT VALID** con el paquete `2887d6c5` (PID 25444).
+- Validación D-2 en ejecución: PASS (los tokens llevan `I52CTDA_PROBE`; ningún CommandIdentity desconocido).
+- **D-3:** en la salida de CMD-FINISH (`_.QUIT` + `_Y`) apareció el diálogo de guardar cambios; el operador pulsó
+  Guardar, el DWG scratch cambió y se creó un `.bak`. La corrida no fue libre de intervención humana.
+- El operador declara que el diálogo también aparecía en las otras pruebas y que elegía «No guardar»; falta
+  confirmar el alcance. 09N-B: intervención humana **UNKNOWN / REQUIRES CONFIRMATION**; su PASS-T no se reclasifica
+  sin decisión del Coordinador.
+- `R3_PRE_RUN_TUPLE_HASH` = `13F84A87BC58A1249A733369673B301EF1B3C4249ECAADDF413DFF88BC1AAEB5`.
+- [Evidencia](automation/evidence/I-52-r3-canary-02NDBMOD-S-rerun.json).
+
+**Siguiente gate: D-3 EXIT-AUTOMATION FIX** (salida sin diálogos ni intervención humana).
+- Probes gobernados ejecutados: 3.
 - `CTDA_HOST_PASS` NOT EVALUATED.
 - Ningún otro ProbeId autorizado; sigue la exclusión de las seis filas RX con payload y de 10NDOC-WILL-SM /
   10NDOC-CHANGED-SM.
