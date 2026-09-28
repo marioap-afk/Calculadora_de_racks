@@ -45,6 +45,8 @@
     <ClCompile Include="..\..\native\I52CtdaLog.cpp" />
     <ClCompile Include="..\..\native\I52CtdaPlan.cpp" />
     <ClCompile Include="..\..\native\I52CtdaAuthority.cpp" />
+    <ClCompile Include="..\..\native\I52CtdaLockRelease.cpp" />
+    <ClCompile Include="I52CtdaLockReleaseTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

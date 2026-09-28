@@ -56,11 +56,13 @@
     <ClCompile Include="I52CtdaFixture.cpp" />
     <ClCompile Include="I52CtdaExecutor.cpp" />
     <ClCompile Include="I52CtdaDriver.cpp" />
+    <ClCompile Include="I52CtdaLockRelease.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="I52CtdaAbi.h" />
     <ClInclude Include="I52CtdaAuthority.h" />
     <ClInclude Include="I52CtdaExecutor.h" />
+    <ClInclude Include="I52CtdaLockRelease.h" />
     <ClInclude Include="I52CtdaFixture.h" />
     <ClInclude Include="I52CtdaLog.h" />
     <ClInclude Include="I52CtdaPlan.h" />

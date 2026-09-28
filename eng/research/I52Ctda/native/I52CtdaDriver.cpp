@@ -205,7 +205,7 @@ void I52Executor::probe()
         + L";probeEnvironment=" + log.probeId() + L";payloadSha256Expected=" + environment(L"I52_CTDA_PAYLOAD_SHA256"));
     fact(I52Id::BOOT_01, bootFacts_.empty() ? L"status=NOT-RUN" : bootFacts_);
     fact(I52Id::CMD_PROBE, L"phase=ENTRY;probe=" + std::wstring(argument) + L";rowApprovalHash=" + plan_->rowApprovalHash
-        + L";freezePackageHash=43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF");
+        + L";freezePackageHash=D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554");
     if (!booted_ || bootFailed_) { aborted_ = true; abortReason_ = L"BOOT-01"; fact(I52Id::UNKNOWN_COMMON, L"step=BOOT-01"); }
 
     // DRIVER-CMD-01 entry: a write-capable host command lock must be observed, otherwise nothing is executed.

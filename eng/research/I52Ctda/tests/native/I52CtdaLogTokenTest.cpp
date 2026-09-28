@@ -6,6 +6,7 @@
 //   I52CtdaNativeTests.exe write <ProbeId> <log.jsonl>   appends the row's token records and checks the log handle
 //                                                        (readable while open, not inheritable)
 //   I52CtdaNativeTests.exe check <ProbeId> <log.jsonl>   verifies every token record
+//   I52CtdaNativeTests.exe lockrelease                   D-4 COMMAND-END-WINDOW classification (I52CtdaLockReleaseTest.cpp)
 #include "I52CtdaAuthority.h"
 #include "I52CtdaLog.h"
 
@@ -120,8 +121,11 @@ size_t check(const std::wstring& path)
 }
 }
 
+int runLockReleaseTests();
+
 int wmain(int argc, wchar_t** argv)
 {
+    if (argc == 2 && std::wstring(argv[1]) == L"lockrelease") return runLockReleaseTests();
     if (argc != 4) { std::printf("usage: write|check <ProbeId> <log.jsonl>\n"); return 2; }
     const std::wstring mode = argv[1], probe = argv[2], path = argv[3];
     const I52RowPlan* plan = I52Plan::find(probe.c_str());

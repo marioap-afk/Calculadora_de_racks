@@ -199,6 +199,84 @@ public sealed class V35ResultEngine(V35Authority authority)
             }
         }
 
+        // ---------------------------------------------------------------- LOCK-RELEASE-BIND-01, COMMAND-END-WINDOW (V35-A3, A3-D4)
+        // CONTROL-PLANE-RESULT-01 recomputes the binding from the recorded RR-ED and RR-DOC transitions, independently of the
+        // native classification: the stage command C (commandWillStart of the stage's own activation), the window from
+        // commandEnded of C to strictly before the next commandWillStart (FINISH closes it at the latest), the scratch document,
+        // the unlocked mode and the `#` + C identity (ASCII case-insensitive). Exactly one eligible release and no identity
+        // inconsistency bind; the native MARK-LOCK-RELEASE must name that release (Sequence and global command) or the window
+        // is UNK-MARKER-BINDING. Foreign transitions are neither candidates nor blocking.
+        private sealed record LockWindow(bool Applies, string Command, long Open, long Close, IReadOnlyList<V35LogRecord> Eligible,
+            IReadOnlyList<string> Inconsistent, string? Disagreement)
+        {
+            public bool Bound => Applies && Eligible.Count == 1 && Inconsistent.Count == 0 && Disagreement is null;
+            public bool Ambiguous => Applies && (Eligible.Count >= 2 || Inconsistent.Count > 0 || Disagreement is not null);
+            public string Reason => Eligible.Count >= 2 ? $"{Eligible.Count} eligible releases (sequences {string.Join(",", Eligible.Select(e => e.Sequence))})"
+                : Inconsistent.Count > 0 ? "identity-inconsistent window: " + string.Join("; ", Inconsistent) : Disagreement ?? "";
+        }
+
+        private const int NotLocked = 2;  // AcAp::kNotLocked
+        private LockWindow? commandEndWindow;
+        private LockWindow CommandEndWindow() => commandEndWindow ??= ComputeCommandEndWindow();
+
+        private static bool AsciiEquals(string a, string b)
+        {
+            if (a.Length != b.Length) return false;
+            for (int i = 0; i < a.Length; i++)
+            {
+                char x = a[i] is >= 'a' and <= 'z' ? (char)(a[i] - 32) : a[i], y = b[i] is >= 'a' and <= 'z' ? (char)(b[i] - 32) : b[i];
+                if (x != y) return false;
+            }
+            return true;
+        }
+
+        private LockWindow ComputeCommandEndWindow()
+        {
+            V35MarkerBinding? binding = plan.MarkerStageBindings.FirstOrDefault(b => b.Marker == "MARK-LOCK-RELEASE");
+            string anchor = binding is null ? "" : authority["LOCK-RELEASE-BIND-01"].Raw["anchors"]?[binding.Stage]?.GetValue<string>() ?? "";
+            if (binding is null || anchor != "COMMAND-END-WINDOW") return new(false, "", 0, 0, [], [], null);
+            IReadOnlyList<V35LogRecord> all = log.All;
+            var inconsistent = new List<string>();
+            V35LogRecord[] wills = all.Where(r => r.EventOrMarkerId == "N-ED-WILL" && r.StageId == binding.Stage && r.Is("registration", "RR-ED")).ToArray();
+            string c = wills.Length == 1 ? wills[0].P("command") : "";
+            if (wills.Length > 1) inconsistent.Add($"{wills.Length} activations of {binding.Stage}");
+            if (c.Length == 0) inconsistent.Add("(a) stage command C is empty");
+            V35LogRecord[] marks = all.Where(r => r.EventOrMarkerId == "MARK-LOCK-RELEASE" && r.StageId == binding.Stage).ToArray();
+            V35LogRecord? ended = c.Length == 0 ? null
+                : all.FirstOrDefault(r => r.EventOrMarkerId == "N-ED-END" && r.Is("registration", "RR-ED") && r.Sequence > wills[0].Sequence && AsciiEquals(r.P("command"), c));
+            if (ended is null)
+                return new(true, c, 0, 0, [], inconsistent, marks.Length > 0 ? "native MARK-LOCK-RELEASE without a commandEnded of the stage command" : null);
+            long open = ended.Sequence;
+            long close = new[]
+            {
+                all.FirstOrDefault(r => r.EventOrMarkerId == "N-ED-WILL" && r.Is("registration", "RR-ED") && r.Sequence > open)?.Sequence,
+                all.FirstOrDefault(r => r.EventOrMarkerId == "FINISH-FENCE-01" && r.Is("phase", "SET") && r.Sequence > open)?.Sequence,
+                all.FirstOrDefault(r => r.EventOrMarkerId == "CMD-FINISH" && r.Is("phase", "ENTRY") && r.Sequence > open)?.Sequence,
+            }.Where(x => x is not null).Select(x => x!.Value).DefaultIfEmpty(long.MaxValue).Min();
+            var eligible = new List<V35LogRecord>();
+            foreach (V35LogRecord t in all.Where(r => r.EventOrMarkerId == "N-DOC-LOCK-CHANGED" && r.Is("registration", "RR-DOC") && r.Sequence > open && r.Sequence < close))
+            {
+                if (t.P("document").Length == 0 || t.P("document") != t.DocumentId) continue;   // not the scratch document
+                string g = t.P("globalCommand");
+                bool unlocked = Int(t.P("current")) == NotLocked;
+                bool own = c.Length > 0 && AsciiEquals(g, "#" + c);
+                if (own && unlocked) eligible.Add(t);
+                else if (own) inconsistent.Add($"(c) {g} at {t.Sequence} does not end unlocked");
+                else if (c.Length > 0 && AsciiEquals(g, c)) inconsistent.Add($"(b) {g} re-acquired the lock at {t.Sequence}");
+            }
+            string? disagreement = null;
+            if (eligible.Count == 1)
+            {
+                V35LogRecord e = eligible[0];
+                if (marks.Length != 1) disagreement = $"{marks.Length} native MARK-LOCK-RELEASE records for the one eligible release {e.Sequence}";
+                else if (marks[0].P("sourceSequence") != e.Sequence.ToString(CultureInfo.InvariantCulture) || marks[0].P("sourceGlobalCommand") != e.P("globalCommand") || marks[0].Sequence < e.Sequence)
+                    disagreement = $"native MARK-LOCK-RELEASE names {marks[0].P("sourceSequence")}/{marks[0].P("sourceGlobalCommand")}; recomputed {e.Sequence}/{e.P("globalCommand")}";
+            }
+            else if (eligible.Count == 0 && marks.Length > 0)
+                disagreement = $"native MARK-LOCK-RELEASE {marks[0].P("sourceSequence")}/{marks[0].P("sourceGlobalCommand")} without an eligible release (foreign, other document, other command or outside the window)";
+            return new(true, c, open, close, eligible, inconsistent, disagreement);
+        }
+
         // ---------------------------------------------------------------- markers (MARKER-STAGE-BIND-01)
         private bool Bound(string marker) => plan.MarkerStageBindings.Any(b => b.Marker == marker);
 
@@ -262,6 +340,7 @@ public sealed class V35ResultEngine(V35Authority authority)
             case "UNK-MARKER-BINDING":
                 foreach (V35MarkerBinding b in plan.MarkerStageBindings)
                     if (MarkerMatches(b.Marker).Count() >= 2) { why = $"{b.Marker}@{b.Stage} matched twice"; return true; }
+                if (CommandEndWindow() is { Ambiguous: true } w) { why = "LOCK-RELEASE-BIND-01 COMMAND-END-WINDOW: " + w.Reason; return true; }
                 if (log.Any("MARK-LOCK-RELEASE", r => r.Is("candidate", "SECOND") && plan.MarkerStageBindings.Any(b => b.Marker == "MARK-LOCK-RELEASE" && b.Stage == r.StageId)))
                 { why = "second lock-release candidate in the bound window"; return true; }
                 return false;
@@ -488,6 +567,8 @@ public sealed class V35ResultEngine(V35Authority authority)
             {
                 V35MarkerBinding? binding = plan.MarkerStageBindings.FirstOrDefault(b => b.Marker == "MARK-LOCK-RELEASE");
                 if (binding is null) return V35Tri.Unavailable;
+                // V35-A3: COMMAND-END-WINDOW is recomputed from the recorded transitions; APPCTX-UNLOCK-01-CALL is unchanged.
+                if (CommandEndWindow() is { Applies: true } w) return w.Bound ? V35Tri.True : V35Tri.Unavailable;
                 int n = MarkerMatches("MARK-LOCK-RELEASE").Count();
                 bool second = log.Any("MARK-LOCK-RELEASE", r => r.Is("candidate", "SECOND") && r.StageId == binding.Stage);
                 return n == 1 && !second ? V35Tri.True : V35Tri.Unavailable;

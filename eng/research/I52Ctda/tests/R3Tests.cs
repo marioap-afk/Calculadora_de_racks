@@ -49,6 +49,13 @@ internal static class R3Tests
         ("r3 harness permanent log lock fails closed", LogReadPermanentLockFailsClosed),
         ("r3 harness process evidence survives a log failure", ProcessEvidenceSurvivesLogFailure),
         ("r3 harness interactive-state evidence is preserved", InteractiveEvidencePreserved),
+        ("r3 D-4 E1 clean 16N-S adapted to A3 binds the own release (PASS-S)", D4E1CleanSixteenNS),
+        ("r3 D-4 E2-E6 foreign-only, duplicate and identity-inconsistent windows", D4E2ToE6),
+        ("r3 D-4 E7-E10 native marker, document and window boundaries", D4E7ToE10),
+        ("r3 D-4 E11 ASCII case-insensitive own command", D4E11CaseInsensitive),
+        ("r3 D-4 E12 APPCTX-UNLOCK-01-CALL unchanged", D4E12Appctx),
+        ("r3 D-4 historical A2 16N-S logs stay UNKNOWN", D4HistoricalSixteenNS),
+        ("r3 D-4 prior valid results unchanged offline", D4PriorValidResults),
     ];
 
     private static void Require(bool value, string message) { if (!value) throw new InvalidDataException(message); }
@@ -903,5 +910,270 @@ internal static class R3Tests
             }
         }
         finally { Directory.Delete(dir, true); }
+    }
+
+    // ---------------------------------------------------------------- D-4 (V35-A3 LOCK-RELEASE-BIND-01 COMMAND-END-WINDOW)
+    private static JsonObject Evidence(string repo, string file) =>
+        JsonNode.Parse(File.ReadAllText(Path.Combine(repo, "docs", "automation", "evidence", file)))!.AsObject();
+
+    private static List<JsonObject> EventLog(JsonObject evidence) => evidence["eventLog"]!.AsArray().Select(r => r!.DeepClone().AsObject()).ToList();
+
+    private static JsonObject P(JsonObject r) => r["Payload"]!.AsObject();
+    private static string Ev(JsonObject r) => r["EventOrMarkerId"]!.GetValue<string>();
+    private static string Pv(JsonObject r, string key) => P(r)[key]?.GetValue<string>() ?? "";
+    private static bool AsciiEq(string a, string b) => a.Length == b.Length && a.Zip(b).All(x => char.ToUpperInvariant(x.First) == char.ToUpperInvariant(x.Second) && (x.First < 128 || x.First == x.Second));
+
+    private static JsonObject Copy(JsonObject template, string eventId, string payload)
+    {
+        JsonObject r = template.DeepClone().AsObject();
+        r["EventOrMarkerId"] = eventId;
+        var p = new JsonObject();
+        foreach (string pair in payload.Split(';', StringSplitOptions.RemoveEmptyEntries)) { string[] kv = pair.Split('=', 2); p[kv[0]] = kv.Length > 1 ? kv[1] : ""; }
+        r["Payload"] = p;
+        return r;
+    }
+
+    // What the V35-A3 native module records for a window: each scratch transition inside the native window is followed by
+    // MARK-LOCK-RELEASE (first own `#`+C unlock, with source Sequence and global command, then TOK-LOCK-RELEASE) or by a
+    // LOCK-RELEASE-BIND-01 FOREIGN / ELIGIBLE-DUPLICATE / INCONSISTENT record. A2 markers and tokens are dropped and
+    // regenerated; sequences are renumbered and source references remapped. Mirrors I52CommandEndWindow (tested natively).
+    private static List<JsonObject> AdaptToA3(List<JsonObject> raw)
+    {
+        string c = raw.Where(r => Ev(r) == "N-ED-WILL" && r["StageId"]!.GetValue<string>() == "STG-SEND-DELIVERY").Select(r => Pv(r, "command")).FirstOrDefault() ?? "";
+        JsonObject token = raw.First(r => Ev(r) == "TOK-LOCK-RELEASE");
+        var outList = new List<JsonObject>();
+        var sources = new Dictionary<JsonObject, JsonObject>(ReferenceEqualityComparer.Instance);
+        bool inWindow = false;
+        JsonObject? windowRecord = null;
+        int eligible = 0, foreign = 0, inconsistent = c.Length == 0 ? 1 : 0;
+        JsonObject? bound = null;
+        foreach (JsonObject r in raw)
+        {
+            string e = Ev(r);
+            if (e is "MARK-LOCK-RELEASE" or "TOK-LOCK-RELEASE") continue;
+            if (e == "LOCK-RELEASE-BIND-01" && Pv(r, "phase") == "WINDOW-OPEN")
+            {
+                inWindow = true; windowRecord = r;
+                outList.Add(Copy(r, e, "phase=WINDOW-OPEN;anchor=COMMAND-END-WINDOW;stageCommand=" + c + (c.Length == 0 ? ";inconsistent=EMPTY-STAGE-COMMAND" : "") + ";stage=STG-SEND-DELIVERY"));
+                continue;
+            }
+            if (e == "LOCK-RELEASE-BIND-01" && Pv(r, "phase") == "WINDOW-CLOSE")
+            {
+                inWindow = false;
+                JsonObject close = Copy(r, e, $"phase=WINDOW-CLOSE;reason={Pv(r, "reason")};resolved={(eligible == 1 && inconsistent == 0 ? 1 : 0)};eligible={eligible};foreign={foreign};inconsistent={inconsistent};boundSequence=0;stageCommand={c}");
+                if (bound is not null) sources[close] = bound;
+                outList.Add(close);
+                continue;
+            }
+            outList.Add(r);
+            if (!inWindow || e != "N-DOC-LOCK-CHANGED" || Pv(r, "document") != r["DocumentId"]!.GetValue<string>()) continue;
+            string g = Pv(r, "globalCommand");
+            bool unlocked = Pv(r, "current") == "2";
+            bool own = c.Length > 0 && AsciiEq(g, "#" + c);
+            string rawPart = $"sourceSequence=0;sourceGlobalCommand={g};stageCommand={c};current={Pv(r, "current")};myNew={Pv(r, "myNew")}";
+            JsonObject added;
+            if (own && unlocked && ++eligible == 1)
+            {
+                bound = r;
+                added = Copy(windowRecord!, "MARK-LOCK-RELEASE", "anchor=COMMAND-END-WINDOW;" + rawPart);
+                added["CommandIdentity"] = r["CommandIdentity"]!.GetValue<string>();
+                sources[added] = r;
+                outList.Add(added);
+                JsonObject tok = token.DeepClone().AsObject();
+                outList.Add(tok);
+                continue;
+            }
+            if (own && unlocked) added = Copy(windowRecord!, "LOCK-RELEASE-BIND-01", "phase=ELIGIBLE-DUPLICATE;anchor=COMMAND-END-WINDOW;" + rawPart);
+            else if (own) { inconsistent++; added = Copy(windowRecord!, "LOCK-RELEASE-BIND-01", "phase=INCONSISTENT;reason=OWN-RELEASE-NOT-UNLOCKED;anchor=COMMAND-END-WINDOW;" + rawPart); }
+            else if (c.Length > 0 && AsciiEq(g, c)) { inconsistent++; added = Copy(windowRecord!, "LOCK-RELEASE-BIND-01", "phase=INCONSISTENT;reason=STAGE-COMMAND-REACQUIRED;anchor=COMMAND-END-WINDOW;" + rawPart); }
+            else { foreign++; added = Copy(windowRecord!, "LOCK-RELEASE-BIND-01", "phase=FOREIGN;anchor=COMMAND-END-WINDOW;" + rawPart); }
+            added["CommandIdentity"] = r["CommandIdentity"]!.GetValue<string>();
+            sources[added] = r;
+            outList.Add(added);
+        }
+        for (int k = 0; k < outList.Count; k++) outList[k]["Sequence"] = (long)(k + 1);
+        foreach ((JsonObject rec, JsonObject src) in sources)
+        {
+            string key = Ev(rec) == "LOCK-RELEASE-BIND-01" && Pv(rec, "phase") == "WINDOW-CLOSE" ? "boundSequence" : "sourceSequence";
+            P(rec)[key] = src["Sequence"]!.GetValue<long>().ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+        return outList;
+    }
+
+    private static List<JsonObject> Renumber(List<JsonObject> records)
+    {
+        for (int k = 0; k < records.Count; k++) records[k]["Sequence"] = (long)(k + 1);
+        return records;
+    }
+
+    private static V35Result JudgeRecords(string repo, string probe, IEnumerable<JsonObject> records, JsonObject evidence)
+    {
+        JsonObject process = (evidence["processRun"]?["process"] ?? evidence["probeResultManifest"]?["process"])!.AsObject();
+        JsonObject scratch = (evidence["processRun"]?["scratch"] ?? evidence["probeResultManifest"]?["scratch"])!.AsObject();
+        string path = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllLines(path, records.Select(r => r.ToJsonString()));
+            V35Authority a = Authority(repo);
+            var ev = V35RunEvidence.Load(path,
+                new V35ProcessEvidence(process["ProcessId"]!.GetValue<int>(), process["ProcessGone"]!.GetValue<bool>(), process["TerminatedByControlPlane"]!.GetValue<bool>(), false,
+                    process["ExitedWithinPostFinishDeadline"]!.GetValue<bool>(), process["InteractiveStateObserved"]?.GetValue<bool>() ?? false),
+                new V35ScratchEvidence(true, scratch["Unchanged"]!.GetValue<bool>(), scratch["BackupCreated"]!.GetValue<bool>()));
+            return new V35ResultEngine(a).Evaluate(a.ByProbe[probe], ev);
+        }
+        finally { File.Delete(path); }
+    }
+
+    private static string Show(V35Result r) => $"{r.Result}/{r.ResultClass} step {r.Step}: {string.Join(" | ", r.Reasons.Concat(r.EvidenceGaps))}";
+    private static JsonObject Rerun16NS(string repo) => Evidence(repo, "I-52-r3-canary-16N-S-rerun.json");
+    private static JsonObject Seq(List<JsonObject> log, long sequence) => log.Single(r => r["Sequence"]!.GetValue<long>() == sequence);
+
+    private static void RequireUnknown(V35Result r, string what, string? reason = null)
+    {
+        Require(r.Result == "UNKNOWN", what + " must be UNKNOWN: " + Show(r));
+        if (reason is not null) Require(r.Reasons.Concat(r.EvidenceGaps).Any(x => x.Contains(reason, StringComparison.Ordinal)), $"{what}: expected reason '{reason}': {Show(r)}");
+    }
+
+    // E1: the clean re-run: own #I52CTDA_QUEUED release (69), foreign empty/# cycles (73/75, 78/80) and FINISH's acquisition (85).
+    private static void D4E1CleanSixteenNS(string repo)
+    {
+        JsonObject ev = Rerun16NS(repo);
+        List<JsonObject> a3 = AdaptToA3(EventLog(ev));
+        Require(a3.Count(r => Ev(r) == "MARK-LOCK-RELEASE") == 1 && a3.Count(r => Ev(r) == "LOCK-RELEASE-BIND-01" && Pv(r, "phase") == "FOREIGN") == 5, "adapted A3 log shape");
+        JsonObject mark = a3.Single(r => Ev(r) == "MARK-LOCK-RELEASE");
+        Require(Pv(mark, "sourceGlobalCommand") == "#I52CTDA_QUEUED" && Pv(Seq(a3, long.Parse(Pv(mark, "sourceSequence"))), "globalCommand") == "#I52CTDA_QUEUED", "MARK names the own release");
+        V35Result r = JudgeRecords(repo, "16N-S", a3, ev);
+        Require(r.Result == "PASS" && r.ResultClass == "PASS-S" && r.Observations["OBS-LOCK-RELEASE-BOUND"] == V35Tri.True, "E1: " + Show(r));
+    }
+
+    private static List<JsonObject> Mutate(string repo, Action<List<JsonObject>> raw, Action<List<JsonObject>>? native = null)
+    {
+        List<JsonObject> log = EventLog(Rerun16NS(repo));
+        raw(log);
+        List<JsonObject> a3 = AdaptToA3(Renumber(log));
+        native?.Invoke(a3);
+        return a3;
+    }
+
+    private static void D4E2ToE6(string repo)
+    {
+        JsonObject ev = Rerun16NS(repo);
+        // E2: only foreign cycles (the own release becomes `#`): marker absence, no eligible release.
+        RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, l => P(Seq(l, 69))["globalCommand"] = "#"), ev), "E2 foreign cycles only", "OBS-LOCK-RELEASE-BOUND: unavailable");
+        // E3: two eligible #C releases.
+        RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, l => P(Seq(l, 75))["globalCommand"] = "#I52CTDA_QUEUED"), ev), "E3 two eligible releases", "2 eligible releases");
+        // E4: C re-acquires the lock after commandEnded.
+        RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, l => P(Seq(l, 73))["globalCommand"] = "I52CTDA_QUEUED"), ev), "E4 re-acquisition", "(b) I52CTDA_QUEUED re-acquired");
+        // E5: #C transition that does not end unlocked.
+        RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, l => P(Seq(l, 78))["globalCommand"] = "#I52CTDA_QUEUED"), ev), "E5 #C not unlocked", "(c) #I52CTDA_QUEUED");
+        // E6: empty C (the stage activation reports no command): identity-inconsistent; `#` alone is never eligible.
+        List<JsonObject> empty = Mutate(repo, l => { foreach (JsonObject r in l.Where(r => Ev(r) is "N-ED-WILL" or "N-ED-END" && Pv(r, "command") == "I52CTDA_QUEUED")) P(r)["command"] = ""; });
+        Require(!empty.Any(r => Ev(r) == "MARK-LOCK-RELEASE"), "E6: `#` alone never marks");
+        RequireUnknown(JudgeRecords(repo, "16N-S", empty, ev), "E6 empty C", "(a) stage command C is empty");
+    }
+
+    private static void D4E7ToE10(string repo)
+    {
+        JsonObject ev = Rerun16NS(repo);
+        // E7: native MARK names a FOREIGN transition, or the wrong global command.
+        RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, _ => { }, a3 =>
+        {
+            JsonObject foreign = a3.First(r => Ev(r) == "LOCK-RELEASE-BIND-01" && Pv(r, "phase") == "FOREIGN");
+            P(a3.Single(r => Ev(r) == "MARK-LOCK-RELEASE"))["sourceSequence"] = Pv(foreign, "sourceSequence");
+        }), ev), "E7 MARK on a foreign transition", "native MARK-LOCK-RELEASE names");
+        RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, _ => { }, a3 => P(a3.Single(r => Ev(r) == "MARK-LOCK-RELEASE"))["sourceGlobalCommand"] = "#"), ev),
+            "E7 MARK with the wrong command", "native MARK-LOCK-RELEASE names");
+        // E8: the own release happens on another document: not eligible (the native module ignores it; a lying MARK disagrees).
+        RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, l => P(Seq(l, 69))["document"] = "0xOTHER"), ev), "E8 other document", "OBS-LOCK-RELEASE-BOUND: unavailable");
+        RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, l => P(Seq(l, 69))["document"] = "0xOTHER", a3 =>
+        {
+            JsonObject raw = a3.First(r => Ev(r) == "N-DOC-LOCK-CHANGED" && Pv(r, "document") == "0xOTHER");
+            JsonObject window = a3.First(r => Ev(r) == "LOCK-RELEASE-BIND-01" && Pv(r, "phase") == "WINDOW-OPEN");
+            int at = a3.IndexOf(raw) + 1;
+            a3.Insert(at, Copy(window, "MARK-LOCK-RELEASE", $"anchor=COMMAND-END-WINDOW;sourceSequence={raw["Sequence"]};sourceGlobalCommand=#I52CTDA_QUEUED;stageCommand=I52CTDA_QUEUED;current=2;myNew=2"));
+            Renumber(a3);
+            P(a3[at])["sourceSequence"] = raw["Sequence"]!.GetValue<long>().ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }), ev), "E8 MARK on another document", "without an eligible release");
+        // E9 / E10: an own unlock before commandEnded of C, or after the next commandWillStart (FINISH): outside the window.
+        foreach ((string name, long anchor, bool before) in new[] { ("E9 before commandEnded", 65L, true), ("E10 after the next commandWillStart", 87L, false) })
+        {
+            RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, l =>
+            {
+                JsonObject own = Seq(l, 69).DeepClone().AsObject();
+                P(Seq(l, 69))["globalCommand"] = "#";
+                int at = l.IndexOf(Seq(l, anchor)) + (before ? 0 : 1);
+                l.Insert(at, own);
+            }), ev), name, "OBS-LOCK-RELEASE-BOUND: unavailable");
+            RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, l =>
+            {
+                JsonObject own = Seq(l, 69).DeepClone().AsObject();
+                P(own)["requestId"] = "OUTSIDE";
+                P(Seq(l, 69))["globalCommand"] = "#";
+                l.Insert(l.IndexOf(Seq(l, anchor)) + (before ? 0 : 1), own);
+            }, a3 =>
+            {
+                JsonObject outside = a3.Single(r => Pv(r, "requestId") == "OUTSIDE");
+                JsonObject window = a3.First(r => Ev(r) == "LOCK-RELEASE-BIND-01" && Pv(r, "phase") == "WINDOW-OPEN");
+                a3.Insert(a3.IndexOf(window) + 1, Copy(window, "MARK-LOCK-RELEASE", "anchor=COMMAND-END-WINDOW;sourceSequence=0;sourceGlobalCommand=#I52CTDA_QUEUED;stageCommand=I52CTDA_QUEUED;current=2;myNew=2"));
+                Renumber(a3);
+                P(a3[a3.IndexOf(window) + 1])["sourceSequence"] = outside["Sequence"]!.GetValue<long>().ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }), ev), name + " with a MARK naming it", "without an eligible release");
+        }
+    }
+
+    // E11: `#i52ctda_Queued` differs from `#` + C only by ASCII case: eligible; the MARK names the recorded spelling.
+    private static void D4E11CaseInsensitive(string repo)
+    {
+        JsonObject ev = Rerun16NS(repo);
+        List<JsonObject> a3 = Mutate(repo, l => P(Seq(l, 69))["globalCommand"] = "#i52ctda_Queued");
+        Require(Pv(a3.Single(r => Ev(r) == "MARK-LOCK-RELEASE"), "sourceGlobalCommand") == "#i52ctda_Queued", "E11 MARK spelling");
+        V35Result r = JudgeRecords(repo, "16N-S", a3, ev);
+        Require(r.Result == "PASS" && r.ResultClass == "PASS-S", "E11: " + Show(r));
+        // A non-ASCII case variant is not the own command.
+        RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, l => P(Seq(l, 69))["globalCommand"] = "#I52CTDA_QUEUE\u00D0"), ev), "E11 non-ASCII variant");
+    }
+
+    // E12: APPCTX-UNLOCK-01-CALL keeps its A2 behaviour: one MARK in the bound stage is bound, a second candidate is
+    // UNK-MARKER-BINDING, none is unavailable; command-window records have no effect on an APPCTX row.
+    private static void D4E12Appctx(string repo)
+    {
+        V35Authority a = Authority(repo);
+        V35RowPlan plan = a.ByProbe["16A-S"];
+        V35MarkerBinding b = plan.MarkerStageBindings.Single(x => x.Marker == "MARK-LOCK-RELEASE");
+        Require(b.Stage == "STG-APPCTX-DELIVERY", "16A-S binds MARK-LOCK-RELEASE to STG-APPCTX-DELIVERY");
+        V35Result Judge(Log log) => Evaluate(repo, log, "16A-S");
+        Log One() { Log l = Pass02N(); l.ProbeId = "16A-S"; return l
+            .InsertBefore("FIN-GATE-01", "phase=ISSUE", ("N-ED-WILL", "STG-APPCTX-DELIVERY", 9, "registration=RR-ED;command=REGEN"))
+            .InsertBefore("FIN-GATE-01", "phase=ISSUE", ("N-DOC-LOCK-CHANGED", "STG-FIN-GATE", 2, "registration=RR-DOC;document=0x1;current=2;globalCommand=#"))
+            .InsertBefore("FIN-GATE-01", "phase=ISSUE", ("MARK-LOCK-RELEASE", "STG-APPCTX-DELIVERY", 9, "anchor=APPCTX-UNLOCK-01-CALL;current=2")); }
+        V35Result one = Judge(One());
+        Require(one.Observations["OBS-LOCK-RELEASE-BOUND"] == V35Tri.True && !one.UnknownsHolding.Contains("UNK-MARKER-BINDING")
+            && !one.Reasons.Any(x => x.Contains("COMMAND-END-WINDOW", StringComparison.Ordinal)), "E12 one APPCTX release is bound: " + Show(one));
+        V35Result second = Judge(One().InsertBefore("FIN-GATE-01", "phase=ISSUE", ("MARK-LOCK-RELEASE", "STG-APPCTX-DELIVERY", 9, "anchor=APPCTX-UNLOCK-01-CALL;candidate=SECOND;current=2")));
+        Require(second.Observations["OBS-LOCK-RELEASE-BOUND"] == V35Tri.Unavailable && second.UnknownsHolding.Contains("UNK-MARKER-BINDING"), "E12 second APPCTX candidate: " + Show(second));
+        Log none = Pass02N(); none.ProbeId = "16A-S";
+        Require(Judge(none).Observations["OBS-LOCK-RELEASE-BOUND"] == V35Tri.Unavailable, "E12 no APPCTX release is unavailable");
+    }
+
+    // The two 16N-S executions under A2 are historical UNKNOWN and stay UNKNOWN (their A2 markers carry no source).
+    private static void D4HistoricalSixteenNS(string repo)
+    {
+        foreach (string file in new[] { "I-52-r3-canary-16N-S-rerun.json", "I-52-r3-canary-16N-S-restart.json" })
+        {
+            JsonObject ev = Evidence(repo, file);
+            RequireUnknown(JudgeRecords(repo, "16N-S", EventLog(ev), ev), file, "UNK-MARKER-BINDING");
+        }
+    }
+
+    // The three valid governed results classify exactly as recorded, offline, under the D-4 engine.
+    private static void D4PriorValidResults(string repo)
+    {
+        foreach ((string file, string probe, string cls) in new[] { ("I-52-r3-canary-09N-B-restart.json", "09N-B", "PASS-T"),
+                     ("I-52-r3-canary-02NDBMOD-S-restart.json", "02NDBMOD-S", "PASS-S"), ("I-52-r3-canary-02NO-S-restart.json", "02NO-S", "PASS-S") })
+        {
+            JsonObject ev = Evidence(repo, file);
+            V35Result r = JudgeRecords(repo, probe, EventLog(ev), ev);
+            Require(r.Result == "PASS" && r.ResultClass == cls && r.Step == 4, $"{probe} offline: {Show(r)}");
+        }
     }
 }
