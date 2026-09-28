@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "revision": "V35-A2",
+  "revision": "V35-A3-DRAFT",
   "harness": "eng/research/I52Ctda/validate-v35-negative-controls.ps1",
   "inputEol": "LF",
   "baselinePass": true,
-  "total": 98,
-  "detected": 98,
+  "total": 106,
+  "detected": 106,
   "controls": [
     {
       "control": "BASELINE",
@@ -1390,6 +1390,102 @@
       "checksFired": [
         "CATALOG-APPROVAL",
         "FINISH-FENCE-READ-ABI"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "NC-D4-1 first unlock wins restored",
+      "exit": 1,
+      "expectedCheck": "CATALOG-APPROVAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "NC-D4-2 own-command qualification removed",
+      "exit": 1,
+      "expectedCheck": "CATALOG-APPROVAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "NC-D4-3 two-or-more eligible clause removed",
+      "exit": 1,
+      "expectedCheck": "CATALOG-APPROVAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "NC-D4-4 identity-inconsistency clauses removed",
+      "exit": 1,
+      "expectedCheck": "CATALOG-APPROVAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "NC-D4-5 own-command qualification extended to APPCTX anchors",
+      "exit": 1,
+      "expectedCheck": "CATALOG-APPROVAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "NC-D4-6 window end moved past FINISH commandWillStart",
+      "exit": 1,
+      "expectedCheck": "CATALOG-APPROVAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "NC-D4-7a row hash changed",
+      "exit": 1,
+      "expectedCheck": "ROW-APPROVAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "ROW-APPROVAL"
+      ],
+      "detected": true,
+      "ok": true,
+      "scriptErrors": 0
+    },
+    {
+      "control": "NC-D4-7b catalog entry outside the three changed",
+      "exit": 1,
+      "expectedCheck": "CATALOG-APPROVAL",
+      "expectedCheckFired": true,
+      "checksFired": [
+        "CATALOG-APPROVAL"
       ],
       "detected": true,
       "ok": true,

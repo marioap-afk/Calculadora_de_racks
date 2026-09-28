@@ -696,13 +696,14 @@ function Canon($v) {
     if ($v -is [System.Collections.IEnumerable]) { return '[' + ((@($v) | ForEach-Object { Canon $_ }) -join ',') + ']' }
     return [string]$v
 }
-# Pinned inputs: the V34 baseline blobs at 0c609269 and the architecture-review oracle approved in the V35-A1 delta review, re-pinned by the V35-A2 errata (M1 only).
+# Pinned inputs: the V34 baseline blobs at 0c609269 and the architecture-review oracle approved in the V35-A1 delta review, re-pinned by the V35-A2 errata (M1 only)
+# and by the V35-A3 draft (A3-D4: three catalog approval hashes only).
 $pins = [ordered]@{
     'docs/initiatives/I-52-native-probe-matrix-v34.md'                  = '7a29a1c11d308879488e43dc460602df1426697b'
     'docs/initiatives/I-52-native-event-catalog-v34.md'                 = '1f16dd0641c1706e6874a68b9136406c19e33848'
     'eng/research/I52Ctda/traceability-v34.json'                        = '0424c0b6788cbbacf5deaf533317f9202f305482'
     'docs/automation/evidence/I-52-r3-governed-executor-discovery.json' = '38104836975dc4e0adc5c930e8550fc0abab5ae0'
-    'eng/research/I52Ctda/v35-oracle.json'                              = '0171e5de9e79ce99cf70d97777346f4aacd9da05'
+    'eng/research/I52Ctda/v35-oracle.json'                              = '2dd4615a180b5f794856394111dda5f86e224f55'
 }
 foreach ($k in $pins.Keys) { if ((GitBlobId $k) -ne $pins[$k]) { C 'INPUT-PIN' $k "git blob $(GitBlobId $k) is not the pinned $($pins[$k])" } }
 foreach ($k in $oracle['V34_inputBlobPins'].Keys) { if ($pins[$k] -ne $oracle['V34_inputBlobPins'][$k]) { C 'INPUT-PIN' $k 'oracle pin differs from the validator pin' } }
@@ -855,7 +856,7 @@ $pred = [ordered]@{
 $result = if (@($pred.Values | Where-Object { -not $_ }).Count -eq 0 -and $findings.Count -eq 0) { 'PASS' } else { 'FAIL' }
 
 $report = [ordered]@{
-    schemaVersion = 2; revision = 'V35-A2'; validator = 'eng/research/I52Ctda/validate-v35-catalog.ps1'; oracle = 'eng/research/I52Ctda/v35-oracle.json'; scope = 'documents/catalog only; no runtime semantics'
+    schemaVersion = 2; revision = 'V35-A3-DRAFT'; validator = 'eng/research/I52Ctda/validate-v35-catalog.ps1'; oracle = 'eng/research/I52Ctda/v35-oracle.json'; scope = 'documents/catalog only; no runtime semantics'
     result = $result; counts = $counts; frozenCountsHold = $countsOk; contradictionsByCheck = $contra; blockerClosure = $closure
     apiHeaderCheck = $api; predicates = $pred; findings = $findings
 }

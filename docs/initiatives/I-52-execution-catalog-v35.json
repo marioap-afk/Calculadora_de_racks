@@ -3,7 +3,7 @@
   "contract": "EXEC-CATALOG-V35-1",
   "revision": "V35-A2",
   "initiative": "I-52",
-  "status": "DRAFT / V35-A2 ERRATA (Architect MINOR M1..M4) / READY FOR COORDINATOR FREEZE / NOT EXECUTED",
+  "status": "DRAFT / V35-A3 AMENDMENT (A3-D4: LOCK-RELEASE-BIND-01, OBS-LOCK-RELEASE-BOUND, UNK-MARKER-BINDING) OVER THE V35-A2 FREEZE / AWAITING ARCHITECT DELTA REVIEW AND NEW FREEZE",
   "retainedStatusVocabulary": [
     "RETAINED-UNCHANGED",
     "RETAINED-EXTENDED",
@@ -3349,10 +3349,11 @@
     "LOCK-RELEASE-BIND-01": {
       "kind": "MarkerBindingRule",
       "amendedBy": [
-        "RC-02"
+        "RC-02",
+        "A3-D4"
       ],
       "windowEnd": "COMMAND-END-WINDOW: next commandWillStart on the scratch document; APPCTX-UNLOCK-01-CALL: return of that unlockDocument call",
-      "definition": "MARK-LOCK-RELEASE@S has two anchor kinds, fixed per stage by `anchors`. COMMAND-END-WINDOW (STG-SEND-DELIVERY, STG-FIXTURE-CMD, STG-CMDCTX-DELIVERY): the FIRST documentLockModeChanged of the scratch document to an unlocked mode strictly after commandEnded of the stage's command and strictly before the next commandWillStart on the scratch document; FINISH's activation closes the window at the latest, so a FINISH unlock can never satisfy it. APPCTX-UNLOCK-01-CALL (STG-APPCTX-DELIVERY, STG-SYNC-APPCTX): the documentLockModeChanged of the scratch document emitted between entry and return of the stage's own APPCTX-UNLOCK-01 unlockDocument call (for 13A-SM the new mode is the enclosing I52CTDA_PROBE command lock, not necessarily unlocked); it precedes the stage's completion token, so TOK-LOCK-RELEASE never waits on a later event. No candidate is marker absence (UNKNOWN); two candidates in one window are UNK-MARKER-BINDING.",
+      "definition": "MARK-LOCK-RELEASE@S has two anchor kinds, fixed per stage by `anchors`. COMMAND-END-WINDOW (STG-SEND-DELIVERY, STG-FIXTURE-CMD, STG-CMDCTX-DELIVERY). The stage command C is the global command name reported by commandWillStart for the stage's own activation: I52CTDA_QUEUED, I52CTDA_FIXTURE, or, for STG-CMDCTX-DELIVERY, the unique command enclosing EP-CMDCTX as fixed by MARKER-STAGE-BIND-01. The window opens at commandEnded of C and closes strictly before the next commandWillStart on the scratch document. FINISH's activation closes the window at the latest, so a FINISH unlock can never satisfy it. An eligible candidate is a documentLockModeChanged of the scratch document, inside the window, to an unlocked mode, whose global command name equals `#` followed by C, compared case-insensitively for ASCII. Every other lock-mode transition inside the window is foreign. A foreign transition is recorded, is never a candidate, and neither satisfies nor blocks the binding. This includes the lock acquisition of the command that closes the window. The window is identity-inconsistent when: (a) C is empty; or (b) a transition inside the window has global command name C, meaning C re-acquired the lock after its commandEnded; or (c) a transition inside the window named `#` followed by C has a new mode that is not unlocked. MARK-LOCK-RELEASE@S binds to the single eligible candidate. Zero eligible candidates is marker absence (UNKNOWN). Two or more eligible candidates, or an identity-inconsistent window, are UNK-MARKER-BINDING. The binding is decided on the recorded transitions. The MARK-LOCK-RELEASE record names the Sequence and the global command name of the transition it binds, and CONTROL-PLANE-RESULT-01 recomputes eligibility from the recorded transitions. Any disagreement is UNK-MARKER-BINDING. Choosing the first unlock is not a binding rule. APPCTX-UNLOCK-01-CALL (STG-APPCTX-DELIVERY, STG-SYNC-APPCTX): the documentLockModeChanged of the scratch document emitted between entry and return of the stage's own APPCTX-UNLOCK-01 unlockDocument call (for 13A-SM the new mode is the enclosing I52CTDA_PROBE command lock, not necessarily unlocked); it precedes the stage's completion token, so TOK-LOCK-RELEASE never waits on a later event. No candidate is marker absence (UNKNOWN); two candidates in one window are UNK-MARKER-BINDING.",
       "section": "binding",
       "anchors": {
         "STG-SEND-DELIVERY": "COMMAND-END-WINDOW",
@@ -3366,9 +3367,10 @@
     "OBS-LOCK-RELEASE-BOUND": {
       "kind": "ObservationPredicate",
       "amendedBy": [
-        "RC-02"
+        "RC-02",
+        "A3-D4"
       ],
-      "definition": "MARK-LOCK-RELEASE resolved by LOCK-RELEASE-BIND-01 to exactly one transition of the scratch document inside its window",
+      "definition": "MARK-LOCK-RELEASE resolved by LOCK-RELEASE-BIND-01 to exactly one eligible transition of the scratch document inside its window, with the window not identity-inconsistent. For COMMAND-END-WINDOW the eligible transition is the single release named `#` followed by the stage command; for APPCTX-UNLOCK-01-CALL it is the transition emitted by the stage's own unlockDocument call.",
       "section": "observation",
       "authority": "V35"
     },
@@ -3376,9 +3378,10 @@
       "kind": "UnknownPredicate",
       "amendedBy": [
         "RC-02",
-        "RC-03"
+        "RC-03",
+        "A3-D4"
       ],
-      "definition": "a bound marker matched two or more records of its stage window, or a record lacks the stage/delivery identity required by MARKER-STAGE-BIND-01 -> UNKNOWN.",
+      "definition": "a bound marker matched two or more records of its stage window, or a record lacks the stage/delivery identity required by MARKER-STAGE-BIND-01, or LOCK-RELEASE-BIND-01 finds two or more eligible candidates or an identity-inconsistent COMMAND-END-WINDOW, or the recorded MARK-LOCK-RELEASE disagrees with the eligibility recomputed from the recorded transitions -> UNKNOWN.",
       "section": "unknown",
       "authority": "V35"
     },

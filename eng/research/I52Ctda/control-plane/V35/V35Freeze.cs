@@ -81,18 +81,27 @@ public sealed record V35FreezeVerification(string ExpectedPackageHash, string Ma
 // the package hash is recomputed from the manifest and every bound file is compared with its frozen git blob id.
 public static class V35Freeze
 {
+    // Governing freeze: the R3 runtime artifacts and the generated authority bind it until V35-A3 is frozen.
     public const string PackageHash = "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF";
     public const string FreezeSha = "86089886f37da05c2de5dcf9e237044a3deeada3";
     public const string Revision = "V35-A2";
     public const int PackageBlobCount = 24;
     public const string ManifestPath = "docs/automation/evidence/I-52-v35-freeze-manifest.json";
 
+    // V35-A3 draft (decision 187, A3-D4: LOCK-RELEASE-BIND-01, OBS-LOCK-RELEASE-BOUND, UNK-MARKER-BINDING). The repository
+    // carries this candidate package while the Architect reviews the delta; it is not a freeze. Its manifest also keeps the
+    // V35-A2 package it amends, which must still hash to the governing PackageHash.
+    public const string DraftRevision = "V35-A3-DRAFT";
+    public const string DraftPackageHash = "8D5E0005043162A9B8665C0F54C94733796ADDF54AA673D7D5AAC37ACF7EF11E";
+
     public static V35FreezeVerification Verify(string repository)
     {
         var mismatches = new List<string>();
         JsonObject manifest = JsonNode.Parse(File.ReadAllText(Path.Combine(repository, ManifestPath)))!.AsObject();
-        string manifestHash = manifest["V35_FREEZE_PACKAGE_HASH"]!.GetValue<string>();
         JsonObject package = manifest["package"]!.AsObject();
+        bool draft = package["revision"]?.GetValue<string>() == DraftRevision;
+        string expected = draft ? DraftPackageHash : PackageHash;
+        string manifestHash = (draft ? manifest["V35_A3_DRAFT"]?["V35_A3_DRAFT_PACKAGE_HASH"] : manifest["V35_FREEZE_PACKAGE_HASH"])?.GetValue<string>() ?? "";
         string computed = V35Canon.Sha256(package);
         int blobs = 0;
         foreach ((string group, JsonNode? entries) in package["blobs"]!.AsObject())
@@ -106,8 +115,11 @@ public static class V35Freeze
                 if (actual != blob!.GetValue<string>()) mismatches.Add($"{group}:{path}: blob {actual} differs from frozen {blob.GetValue<string>()}");
             }
         }
-        if (package["revision"]?.GetValue<string>() != Revision) mismatches.Add("package revision is not " + Revision);
-        return new(PackageHash, manifestHash, computed, blobs, mismatches);
+        if (package["revision"]?.GetValue<string>() is not (Revision or DraftRevision)) mismatches.Add($"package revision is not {Revision} or {DraftRevision}");
+        if (draft && (manifest["V35_FREEZE_PACKAGE_HASH"]?.GetValue<string>() != PackageHash || manifest["governingPackageV35A2"] is not JsonObject governing
+            || V35Canon.Sha256(governing) != PackageHash))
+            mismatches.Add("the V35-A2 package the draft amends does not hash to the governing freeze " + PackageHash);
+        return new(expected, manifestHash, computed, blobs, mismatches);
     }
 
     public static void AssertHolds(string repository)

@@ -1,6 +1,6 @@
 # I-52 — Execution Catalog V35
 
-> **EXEC-CATALOG-V35-1, revision V35-A2 / DRAFT / NOT EXECUTED.** Human-readable render of
+> **EXEC-CATALOG-V35-1, revision V35-A2 with the V35-A3 draft amendment A3-D4 / DRAFT / NOT EXECUTED.** Human-readable render of
 > `I-52-execution-catalog-v35.json`, which is the normative source. Every identifier used by NPM-V35 resolves to exactly one
 > entry. Retained V34 ContractIds (NPM-V34 §2-§4, §7, §8), the 27 EventIds, 3 SchedulerIds and 7 support actions are imported
 > as entries of the JSON catalog with their authority.
@@ -234,7 +234,7 @@
 | `OBS-EWASNOTIFYING` | ObservationPredicate | inside the body callback, before the mutation, acdbOpenObject(F-REF-A, kForWrite) is attempted once and its ErrorStatus recorded (closed at once without change if eOk); the value never classifies |
 | `OBS-STAGED` | ObservationPredicate | SET-STAGE-S-IN-PRIMARY read back HFV30:S:1 through T-PRIMARY before the trigger |
 | `OBS-EXEC-COMPLETE` | ObservationPredicate | every step of ExecutionContextId succeeded and every completion token of the row is present |
-| `OBS-LOCK-RELEASE-BOUND` | ObservationPredicate | MARK-LOCK-RELEASE resolved by LOCK-RELEASE-BIND-01 to exactly one transition of the scratch document inside its window (amendedBy: RC-02) |
+| `OBS-LOCK-RELEASE-BOUND` | ObservationPredicate | MARK-LOCK-RELEASE resolved by LOCK-RELEASE-BIND-01 to exactly one eligible transition of the scratch document inside its window, with the window not identity-inconsistent. For COMMAND-END-WINDOW the eligible transition is the single release named `#` followed by the stage command; for APPCTX-UNLOCK-01-CALL it is the transition emitted by the stage's own unlockDocument call. (amendedBy: RC-02, A3-D4) |
 | `OBS-PAYLOAD-DB-BINDING` | ObservationPredicate | PAYLOAD-DB-BINDING recorded TRUE at STG-PAYLOAD-INIT (amendedBy: RC-08) |
 | `OBS-CANCEL-RESTORED` | ObservationPredicate | after cancel() returned, F-XR read kForRead holds STATE-S-0 bytes (HFV30:S:0) and not `HFV35:XR:CANCEL-STAGED` (amendedBy: RC-09) |
 
@@ -267,7 +267,7 @@
 | `UNK-STAGING` | UnknownPredicate | SET-STAGE-S-IN-PRIMARY could not open, write or read back the staged bytes -> UNKNOWN. |
 | `UNK-FINISH-TIMEOUT` | UnknownPredicate | FIN-GATE-01 timed out, FINISH ran in FINISH-MODE-DRAIN (including FINISH-EARLY), or the control plane terminated the PID before a FINISH record -> UNKNOWN. (amendedBy: RC-01) |
 | `UNK-LOG-BINDING` | UnknownPredicate | a module could not bind LOG-SEQ-01, or a record is malformed under LOG-RECORD-01 -> UNKNOWN. (amendedBy: RC-07) |
-| `UNK-MARKER-BINDING` | UnknownPredicate | a bound marker matched two or more records of its stage window, or a record lacks the stage/delivery identity required by MARKER-STAGE-BIND-01 -> UNKNOWN. (amendedBy: RC-02, RC-03) |
+| `UNK-MARKER-BINDING` | UnknownPredicate | a bound marker matched two or more records of its stage window, or a record lacks the stage/delivery identity required by MARKER-STAGE-BIND-01, or LOCK-RELEASE-BIND-01 finds two or more eligible candidates or an identity-inconsistent COMMAND-END-WINDOW, or the recorded MARK-LOCK-RELEASE disagrees with the eligibility recomputed from the recorded transitions -> UNKNOWN. (amendedBy: RC-02, RC-03, A3-D4) |
 | `UNK-PAYLOAD-DB` | UnknownPredicate | PAYLOAD-DB-BINDING false or not recorded -> UNKNOWN. (amendedBy: RC-08) |
 | `UNK-CANCEL-STAGING` | UnknownPredicate | the cancel staging write or its read-back did not complete -> UNKNOWN. (amendedBy: RC-09) |
 | `UNK-LATE-DELIVERY` | UnknownPredicate | a governed delivery or body entry arrived after FINISH-FENCE-01 was set (LATE-DELIVERY record) -> UNKNOWN. (amendedBy: RC-01, RC-04) |
@@ -397,7 +397,7 @@
 | Id | Kind | Definition |
 |---|---|---|
 | `MARKER-STAGE-BIND-01` | MarkerBindingRule | A bound marker `M@S` in MarkerStageBindings is satisfied only by a LOG-RECORD-01 record with EventOrMarkerId M, StageId S, the row's ProbeId and a DeliveryId of the row's own activation of S. Records of DRIVER or INFRA stages never satisfy a governed marker; DRIVER-APP-01 emits only MARK-DRIVER-APP-ENTRY/RETURN. Every MARK-* marker and every N-ED-* marker of a row has exactly one binding; zero matching records is marker absence, two or more is UNK-MARKER-BINDING. N-ED-WILL/N-ED-END bind to the command of the bound stage (I52CTDA_QUEUED, I52CTDA_FIXTURE, HFV34_CANCEL, the unique command enclosing EP-CMDCTX and its token excluding I52CTDA_BOOT/PROBE/FIXTURE/QUEUED/FINISH and HFV34_CANCEL, or I52CTDA_PROBE). MARK-MANAGED-CMD-END@STG-FIXTURE-CMD binds to Document.CommandEnded of I52CTDA_FIXTURE. (amendedBy: RC-03) |
-| `LOCK-RELEASE-BIND-01` | MarkerBindingRule | MARK-LOCK-RELEASE@S has two anchor kinds, fixed per stage by `anchors`. COMMAND-END-WINDOW (STG-SEND-DELIVERY, STG-FIXTURE-CMD, STG-CMDCTX-DELIVERY): the FIRST documentLockModeChanged of the scratch document to an unlocked mode strictly after commandEnded of the stage's command and strictly before the next commandWillStart on the scratch document; FINISH's activation closes the window at the latest, so a FINISH unlock can never satisfy it. APPCTX-UNLOCK-01-CALL (STG-APPCTX-DELIVERY, STG-SYNC-APPCTX): the documentLockModeChanged of the scratch document emitted between entry and return of the stage's own APPCTX-UNLOCK-01 unlockDocument call (for 13A-SM the new mode is the enclosing I52CTDA_PROBE command lock, not necessarily unlocked); it precedes the stage's completion token, so TOK-LOCK-RELEASE never waits on a later event. No candidate is marker absence (UNKNOWN); two candidates in one window are UNK-MARKER-BINDING. (amendedBy: RC-02) |
+| `LOCK-RELEASE-BIND-01` | MarkerBindingRule | MARK-LOCK-RELEASE@S has two anchor kinds, fixed per stage by `anchors`. COMMAND-END-WINDOW (STG-SEND-DELIVERY, STG-FIXTURE-CMD, STG-CMDCTX-DELIVERY). The stage command C is the global command name reported by commandWillStart for the stage's own activation: I52CTDA_QUEUED, I52CTDA_FIXTURE, or, for STG-CMDCTX-DELIVERY, the unique command enclosing EP-CMDCTX as fixed by MARKER-STAGE-BIND-01. The window opens at commandEnded of C and closes strictly before the next commandWillStart on the scratch document. FINISH's activation closes the window at the latest, so a FINISH unlock can never satisfy it. An eligible candidate is a documentLockModeChanged of the scratch document, inside the window, to an unlocked mode, whose global command name equals `#` followed by C, compared case-insensitively for ASCII. Every other lock-mode transition inside the window is foreign. A foreign transition is recorded, is never a candidate, and neither satisfies nor blocks the binding. This includes the lock acquisition of the command that closes the window. The window is identity-inconsistent when: (a) C is empty; or (b) a transition inside the window has global command name C, meaning C re-acquired the lock after its commandEnded; or (c) a transition inside the window named `#` followed by C has a new mode that is not unlocked. MARK-LOCK-RELEASE@S binds to the single eligible candidate. Zero eligible candidates is marker absence (UNKNOWN). Two or more eligible candidates, or an identity-inconsistent window, are UNK-MARKER-BINDING. The binding is decided on the recorded transitions. The MARK-LOCK-RELEASE record names the Sequence and the global command name of the transition it binds, and CONTROL-PLANE-RESULT-01 recomputes eligibility from the recorded transitions. Any disagreement is UNK-MARKER-BINDING. Choosing the first unlock is not a binding rule. APPCTX-UNLOCK-01-CALL (STG-APPCTX-DELIVERY, STG-SYNC-APPCTX): the documentLockModeChanged of the scratch document emitted between entry and return of the stage's own APPCTX-UNLOCK-01 unlockDocument call (for 13A-SM the new mode is the enclosing I52CTDA_PROBE command lock, not necessarily unlocked); it precedes the stage's completion token, so TOK-LOCK-RELEASE never waits on a later event. No candidate is marker absence (UNKNOWN); two candidates in one window are UNK-MARKER-BINDING. (amendedBy: RC-02, A3-D4) |
 
 ## 26. Invariants and marker binding
 
@@ -452,3 +452,19 @@ Checked against the exact SDK headers by the validator when `-SdkRoot` is given.
 | `acedRegisterOnIdleWinMsg` | `core_rxmfcapi.h` |
 | `acedRemoveOnIdleWinMsg` | `core_rxmfcapi.h` |
 | `AcApDocument::isQuiescent` | `acdocman.h` |
+
+## V35-A3 draft amendment A3-D4 (decision §187)
+
+D-4 (decision §186) is a V35 contract defect: the COMMAND-END-WINDOW of `LOCK-RELEASE-BIND-01` took the FIRST unlock and
+counted AutoCAD's own post-command lock cycles on the scratch document as second candidates, so the frozen rule turned a
+correct run into `UNK-MARKER-BINDING`. The Architect's normative amendment (verdict CHANGES REQUIRED, direction AGREED;
+accepted by the Coordinator) changes exactly three entries, rendered above with `amendedBy: A3-D4`:
+
+| Entry | A3-D4 change |
+|---|---|
+| `LOCK-RELEASE-BIND-01` | COMMAND-END-WINDOW binds only the release of the stage command C (`#` + C, ASCII case-insensitive); every other lock-mode transition in the window is foreign (recorded, never a candidate, never blocks); identity-inconsistent windows (a)-(c); exactly one eligible candidate binds, zero is marker absence, two or more or an identity-inconsistent window is `UNK-MARKER-BINDING`; the record names the Sequence and global command name of the bound transition and CONTROL-PLANE-RESULT-01 recomputes eligibility; "first unlock" is not a binding rule. APPCTX-UNLOCK-01-CALL text, `anchors` and `windowEnd` unchanged. |
+| `OBS-LOCK-RELEASE-BOUND` | Exactly one eligible transition, window not identity-inconsistent; COMMAND-END-WINDOW: the single `#` + stage-command release; APPCTX-UNLOCK-01-CALL: the transition of the stage's own unlockDocument call. |
+| `UNK-MARKER-BINDING` | Adds: two or more eligible candidates, an identity-inconsistent COMMAND-END-WINDOW, or a recorded MARK-LOCK-RELEASE that disagrees with the recomputed eligibility. |
+
+`TOK-LOCK-RELEASE` and `MARK-LOCK-RELEASE` are unchanged and keep referencing the rule. Hash delta: 3 / 381 catalog
+entries, 0 / 100 rows, 0 / 3 approval blobs, oracle sources unchanged. Affected rows: 32 (24 SEND, 4 FIXTURE, 4 CMDCTX).
