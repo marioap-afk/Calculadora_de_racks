@@ -92,11 +92,17 @@ $tupleExit = $LASTEXITCODE
 $tupleOutput | Out-File (Join-Path $OutputRoot 'evidence\tuple-command.txt') -Encoding utf8
 if ($tupleExit -ne 0) { throw 'tuple collection failed' }
 $tupleHash = (($tupleOutput | Select-String 'NEW_BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH=') -replace '.*=', '').Trim()
+# The governing freeze identity comes from the tuple (V35Freeze at the source SHA), never from a literal in this script.
+$tupleDoc = Get-Content -Raw (Join-Path $OutputRoot 'tuple\build-machine-toolchain-tuple.json') | ConvertFrom-Json
+$freezeHash = [string]$tupleDoc.buildMachineToolchainTuple.v35FreezePackageHash
+$freezeSha = [string]$tupleDoc.buildMachineToolchainTuple.v35FreezeSha
+if ($freezeHash -notmatch '^[0-9A-F]{64}$') { throw 'tuple carries no V35 freeze package hash' }
 $metadata = [ordered]@{
     schemaVersion = 1
     initiative = 'I-52'
     milestone = 'R3 build side (V35 frozen contract); host smoke pending'
-    v35FreezePackageHash = '43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF'
+    v35FreezePackageHash = $freezeHash
+    v35FreezeSha = $freezeSha
     sourceSha = $SourceSha
     buildTupleHash = $tupleHash
     runDirectory = 'run (R-NATIVE-ARX, R-PAYLOAD-ARX and R-MANAGED-OBSERVER must stay together: NL-ARX-PATH and NETLOAD resolve from this directory)'
