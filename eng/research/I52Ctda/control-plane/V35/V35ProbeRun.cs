@@ -63,6 +63,30 @@ public sealed record V35ProbeLaunch(
 public static class V35Files
 {
     public static string Sha256(string path) => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
+    public static string? Sha256OrNull(string path) => File.Exists(path) ? Sha256(path) : null;
+}
+
+// The process-run evidence (exit code, control-plane termination, PID gone, post-FINISH deadline, interactive state)
+// and the scratch integrity are persisted as soon as the PID is gone, before events.jsonl is read, so they survive any
+// failure to read or parse the log.
+public static class V35RunArtifacts
+{
+    public const string ProcessRunFile = "process-run.json";
+    private static readonly JsonSerializerOptions Json = new() { WriteIndented = true };
+
+    public static string WriteProcessRun(string outputRoot, V35ProcessRun run, ScratchDrawingIntegrity scratch)
+    {
+        string path = Path.Combine(outputRoot, ProcessRunFile);
+        var evidence = new
+        {
+            schemaVersion = 1,
+            persistedBefore = "events.jsonl read",
+            process = run,
+            scratch = new { scratch.Before, scratch.After, scratch.Unchanged, scratch.BackupCreated },
+        };
+        File.WriteAllText(path, JsonSerializer.Serialize(evidence, Json), new UTF8Encoding(false));
+        return path;
+    }
 }
 
 public sealed record V35ProcessRun(int ProcessId, DateTimeOffset StartedAtUtc, DateTimeOffset? ExitedAtUtc, int? ExitCode, bool FinishRecordSeen, bool TerminatedByControlPlane, bool ProcessGone, bool ExitedWithinPostFinishDeadline,
@@ -140,9 +164,17 @@ public static class V35ProbeHarness
         V35ProcessRun run = await V35ProcessRunner.RunAsync(launch.AcadExecutable, launch.Arguments, launch.OutputRoot, launch.Environment, launch.EventLog, external, postFinish);
         // CLN-PROCESS-EXIT: scratch integrity only after the exact PID is gone.
         var scratch = new ScratchDrawingIntegrity(before, ScratchDrawingState.Capture(launch.ScratchDrawing));
+        return (0, await CompleteAsync(authority, launch, run, scratch));
+    }
+
+    // Evidence first, then the log: process-run.json is written before events.jsonl is read (retry-safe); an unreadable
+    // log leaves the evidence incomplete, so the result is UNKNOWN and never PASS.
+    public static async Task<V35Result> CompleteAsync(V35Authority authority, V35ProbeLaunch launch, V35ProcessRun run, ScratchDrawingIntegrity scratch, V35LogReadOptions? options = null)
+    {
+        V35RunArtifacts.WriteProcessRun(launch.OutputRoot, run, scratch);
         var evidence = V35RunEvidence.Load(launch.EventLog,
             new V35ProcessEvidence(run.ProcessId, run.ProcessGone, run.TerminatedByControlPlane, false, run.ExitedWithinPostFinishDeadline, run.InteractiveStateObserved),
-            new V35ScratchEvidence(true, scratch.Unchanged, scratch.BackupCreated));
+            new V35ScratchEvidence(true, scratch.Unchanged, scratch.BackupCreated), options);
         V35Result result = new V35ResultEngine(authority).Evaluate(authority.ByProbe[launch.ProbeId], evidence);
         var manifest = new
         {
@@ -150,16 +182,18 @@ public static class V35ProbeHarness
             probeId = launch.ProbeId,
             freezePackageHash = V35Freeze.PackageHash,
             rowApprovalHash = authority.ByProbe[launch.ProbeId].RowApprovalHash,
-            modules = new { native = V35Files.Sha256(launch.NativeHelper), payload = V35Files.Sha256(launch.PayloadArx), managed = launch.LoadsManaged ? V35Files.Sha256(launch.ManagedObserver) : null },
-            acadExecutableSha256 = V35Files.Sha256(launch.AcadExecutable),
+            modules = new { native = V35Files.Sha256OrNull(launch.NativeHelper), payload = V35Files.Sha256OrNull(launch.PayloadArx), managed = launch.LoadsManaged ? V35Files.Sha256OrNull(launch.ManagedObserver) : null },
+            acadExecutableSha256 = V35Files.Sha256OrNull(launch.AcadExecutable),
+            processRunEvidence = V35RunArtifacts.ProcessRunFile,
             process = run,
             scratch = new { before = scratch.Before, after = scratch.After, scratch.Unchanged, scratch.BackupCreated },
             eventLog = launch.EventLog,
+            logRead = new { evidence.LogRead?.Readable, evidence.LogRead?.Attempts, evidence.LogRead?.Error },
             records = evidence.Records.Count,
             result,
         };
         await File.WriteAllTextAsync(Path.Combine(launch.OutputRoot, "probe-result.json"), JsonSerializer.Serialize(manifest, Json), new UTF8Encoding(false));
-        return (0, result);
+        return result;
     }
 }
 
@@ -203,9 +237,10 @@ public sealed record V35SmokeVerdict(string Result, IReadOnlyList<string> Failur
 public static class V35SmokeEvaluator
 {
     public static V35SmokeVerdict Evaluate(JsonElement? report, IReadOnlyList<V35LogRecord> records, int processId, bool processGone, bool timedOut, ScratchDrawingIntegrity scratch,
-        bool interactiveStateObserved = false)
+        bool interactiveStateObserved = false, string? logError = null)
     {
         var failures = new List<string>();
+        if (logError is not null) failures.Add("EVENT_LOG_UNREADABLE");
         if (!scratch.Unchanged || scratch.BackupCreated) failures.Add("SCRATCH_DWG_MUTATED");
         if (timedOut) failures.Add("PROCESS_TIMEOUT");
         if (interactiveStateObserved) failures.Add("INTERACTIVE_STATE");
@@ -257,4 +292,34 @@ public static class V35SmokeEvaluator
     private static bool True(JsonElement o, string name) => o.ValueKind == JsonValueKind.Object && o.TryGetProperty(name, out JsonElement e) && e.ValueKind == JsonValueKind.True;
     private static bool False(JsonElement o, string name) => o.ValueKind == JsonValueKind.Object && o.TryGetProperty(name, out JsonElement e) && e.ValueKind == JsonValueKind.False;
     private static long Num(JsonElement o, string name) => o.ValueKind == JsonValueKind.Object && o.TryGetProperty(name, out JsonElement e) && e.ValueKind == JsonValueKind.Number ? e.GetInt64() : -1;
+}
+
+// Smoke completion: process-run evidence first, then the native report and events.jsonl (both retry-safe), then the
+// verdict. An unreadable log or report fails the smoke; it is never silently ignored.
+public static class V35SmokeCompletion
+{
+    private static readonly JsonSerializerOptions Json = new() { WriteIndented = true };
+
+    public static async Task<V35SmokeVerdict> CompleteAsync(V35SmokeLaunch launch, V35ProcessRun run, ScratchDrawingIntegrity scratch, V35LogReadOptions? options = null)
+    {
+        V35RunArtifacts.WriteProcessRun(launch.OutputRoot, run, scratch);
+        JsonElement? report = null;
+        V35LogRead reportRead = V35LogReader.Read(launch.ReportPath, options);
+        if (reportRead.Readable)
+            try { report = JsonDocument.Parse(string.Join('\n', reportRead.Lines)).RootElement.Clone(); } catch (JsonException) { }
+        V35RunEvidence evidence = V35RunEvidence.Load(launch.EventLog, null, null, options);
+        string? logError = evidence.LogRead is { Readable: false } read ? read.Error : evidence.ParseErrors.Count > 0 ? string.Join("; ", evidence.ParseErrors) : null;
+        V35SmokeVerdict verdict = V35SmokeEvaluator.Evaluate(report, evidence.Records, run.ProcessId, run.ProcessGone, run.TerminatedByControlPlane, scratch, run.InteractiveStateObserved, logError);
+        var result = new
+        {
+            schemaVersion = 2, stage = "R3_SMOKE", verdict.Result, verdict.Failures, run,
+            processRunEvidence = V35RunArtifacts.ProcessRunFile,
+            logRead = new { evidence.LogRead?.Readable, evidence.LogRead?.Attempts, evidence.LogRead?.Error, parseErrors = evidence.ParseErrors },
+            reportRead = new { reportRead.Readable, reportRead.Attempts, reportRead.Error },
+            modules = new { native = V35Files.Sha256OrNull(launch.NativeHelper), payload = V35Files.Sha256OrNull(launch.PayloadArx), managed = V35Files.Sha256OrNull(launch.ManagedObserver) },
+            scratch = new { scratch.Before, scratch.After, scratch.Unchanged, scratch.BackupCreated }, records = evidence.Records.Count, governedProbesExecuted = 0,
+        };
+        await File.WriteAllTextAsync(Path.Combine(launch.OutputRoot, "r3-smoke-result.json"), JsonSerializer.Serialize(result, Json), new UTF8Encoding(false));
+        return verdict;
+    }
 }

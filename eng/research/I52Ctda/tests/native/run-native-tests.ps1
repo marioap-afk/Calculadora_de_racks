@@ -5,7 +5,8 @@ param(
 )
 
 # Build-machine native regression tests (no AutoCAD, no ObjectARX): D-2 token CommandIdentity lifetime over the real
-# LOG-SEQ-01 sources, for rows with completion tokens. Every governed row's token records must carry I52CTDA_PROBE.
+# LOG-SEQ-01 sources, for rows with completion tokens. Every governed row's token records must carry I52CTDA_PROBE,
+# and the log handle must be readable by others while open and not inheritable (harness defect after the D-3 smoke).
 $ErrorActionPreference = 'Stop'
 $project = Join-Path $PSScriptRoot 'I52CtdaNativeTests.vcxproj'
 & $MSBuild $project /t:Rebuild /p:Configuration=Debug /p:Platform=x64 "/p:VCToolsVersion=$VcToolsVersion" /v:minimal /nologo

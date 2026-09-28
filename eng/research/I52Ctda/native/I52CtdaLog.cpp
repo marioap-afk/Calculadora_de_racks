@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <cstdio>
+#include <share.h>
 #include <cwchar>
 #include <sstream>
 
@@ -96,8 +97,10 @@ void I52Log::configure()
     path_ = environment(L"I52_CTDA_EVENT_LOG");
     if (!path_.empty() && file_ == nullptr)
     {
-        FILE* stream = nullptr;
-        if (_wfopen_s(&stream, path_.c_str(), L"ab") == 0) file_ = stream;
+        // Same append stream as before; the handle is non-inheritable ("N": no AutoCAD child process keeps the log open
+        // after the PID exits) and readable by others (_SH_DENYWR: the control plane can read while AutoCAD writes).
+        FILE* stream = _wfsopen(path_.c_str(), L"abN", _SH_DENYWR);
+        if (stream != nullptr) file_ = stream;
     }
     ready_ = file_ != nullptr && !probeId_.empty();
     LeaveCriticalSection(static_cast<CRITICAL_SECTION*>(section_));

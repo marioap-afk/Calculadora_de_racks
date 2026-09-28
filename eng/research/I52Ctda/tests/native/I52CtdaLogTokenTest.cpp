@@ -3,16 +3,19 @@
 // CommandIdentity that was current (I52CTDA_PROBE). Built with the Debug CRT, which overwrites freed heap blocks, so a
 // CommandIdentity pointer into a destroyed temporary is corrupted deterministically instead of by chance.
 //
-//   I52CtdaNativeTests.exe write <ProbeId> <log.jsonl>   appends the row's token records (the log handle is not
-//                                                        sharable, so it is read only after this process exits)
+//   I52CtdaNativeTests.exe write <ProbeId> <log.jsonl>   appends the row's token records and checks the log handle
+//                                                        (readable while open, not inheritable)
 //   I52CtdaNativeTests.exe check <ProbeId> <log.jsonl>   verifies every token record
 #include "I52CtdaAuthority.h"
 #include "I52CtdaLog.h"
 
 #include <Windows.h>
 
+#include <crtdbg.h>
 #include <cstdio>
+#include <cstdlib>
 #include <fstream>
+#include <io.h>
 #include <string>
 
 namespace
@@ -62,6 +65,41 @@ size_t write(const I52RowPlan& plan)
     return records + 1;
 }
 
+void ignoreInvalidParameter(const wchar_t*, const wchar_t*, const wchar_t*, unsigned int, uintptr_t) {}
+
+// Harness-defect regression: while R-NATIVE-ARX holds the log open, another process can read it (FILE_SHARE_READ), and
+// the CRT handle behind the log is not inheritable, so no child process keeps it open after the PID exits.
+void checkLogHandle(const std::wstring& path)
+{
+    HANDLE reader = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    require(reader != INVALID_HANDLE_VALUE, "log readable while the writer holds it (error " + std::to_string(GetLastError()) + ")");
+    if (reader != INVALID_HANDLE_VALUE)
+    {
+        char buffer[64]{};
+        DWORD read = 0;
+        require(ReadFile(reader, buffer, sizeof(buffer), &read, nullptr) && read > 0, "shared read returns the log bytes");
+        CloseHandle(reader);
+    }
+    wchar_t wanted[MAX_PATH]{};
+    GetFullPathNameW(path.c_str(), MAX_PATH, wanted, nullptr);
+    _set_thread_local_invalid_parameter_handler(ignoreInvalidParameter);
+    _CrtSetReportMode(_CRT_ASSERT, 0);
+    int found = 0;
+    for (int fd = 0; fd < 256; ++fd)
+    {
+        const intptr_t os = _get_osfhandle(fd);
+        if (os == -1 || os == -2) continue;
+        wchar_t name[MAX_PATH + 8]{};
+        if (GetFinalPathNameByHandleW(reinterpret_cast<HANDLE>(os), name, MAX_PATH + 8, FILE_NAME_NORMALIZED) == 0) continue;
+        const std::wstring final = name;
+        if (final.size() < wcslen(wanted) || _wcsicmp(final.c_str() + final.size() - wcslen(wanted), wanted) != 0) continue;
+        DWORD flags = 0;
+        require(GetHandleInformation(reinterpret_cast<HANDLE>(os), &flags) != 0 && (flags & HANDLE_FLAG_INHERIT) == 0, "log handle is not inheritable");
+        ++found;
+    }
+    require(found == 1, "exactly one CRT handle holds the log (" + std::to_string(found) + ")");
+}
+
 size_t check(const std::wstring& path)
 {
     std::ifstream stream(path, std::ios::binary);
@@ -98,6 +136,7 @@ int wmain(int argc, wchar_t** argv)
         I52Log::instance().configure();
         require(I52Log::instance().ready(), "log ready");
         require(write(*plan) == expected, "token records appended");
+        checkLogHandle(path);
     }
     else
     {
