@@ -77,31 +77,29 @@ public sealed record V35FreezeVerification(string ExpectedPackageHash, string Ma
     public bool Holds => Mismatches.Count == 0 && ComputedPackageHash == ExpectedPackageHash && ManifestPackageHash == ExpectedPackageHash && Blobs == V35Freeze.PackageBlobCount;
 }
 
-// The governing V35 freeze (decision 172). Every consumer of V35 authority verifies it before reading a plan:
-// the package hash is recomputed from the manifest and every bound file is compared with its frozen git blob id.
+// The governing V35 freeze: V35-A3 (decision 188), the Architect-reviewed A3-D4 content (FreezeSha) plus the bounded label
+// transition of the final freeze. Every consumer of V35 authority verifies it before reading a plan: the package hash is
+// recomputed from the manifest and every bound file is compared with its frozen git blob id. The manifest keeps the
+// superseded V35-A2 package (decision 172) and the reviewed V35-A3 draft package (decision 187); both must still hash to
+// their recorded identities.
 public static class V35Freeze
 {
-    // Governing freeze: the R3 runtime artifacts and the generated authority bind it until V35-A3 is frozen.
-    public const string PackageHash = "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF";
-    public const string FreezeSha = "86089886f37da05c2de5dcf9e237044a3deeada3";
-    public const string Revision = "V35-A2";
+    public const string PackageHash = "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554";
+    public const string FreezeSha = "a076c7549677f29165ffc09c71ccc31aaa3d8b0a";
+    public const string Revision = "V35-A3";
     public const int PackageBlobCount = 24;
     public const string ManifestPath = "docs/automation/evidence/I-52-v35-freeze-manifest.json";
 
-    // V35-A3 draft (decision 187, A3-D4: LOCK-RELEASE-BIND-01, OBS-LOCK-RELEASE-BOUND, UNK-MARKER-BINDING). The repository
-    // carries this candidate package while the Architect reviews the delta; it is not a freeze. Its manifest also keeps the
-    // V35-A2 package it amends, which must still hash to the governing PackageHash.
-    public const string DraftRevision = "V35-A3-DRAFT";
-    public const string DraftPackageHash = "8D5E0005043162A9B8665C0F54C94733796ADDF54AA673D7D5AAC37ACF7EF11E";
+    // Retained history: the superseded V35-A2 freeze (86089886) and the reviewed V35-A3 draft (a076c754).
+    public const string SupersededA2PackageHash = "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF";
+    public const string ReviewedDraftA3PackageHash = "8D5E0005043162A9B8665C0F54C94733796ADDF54AA673D7D5AAC37ACF7EF11E";
 
     public static V35FreezeVerification Verify(string repository)
     {
         var mismatches = new List<string>();
         JsonObject manifest = JsonNode.Parse(File.ReadAllText(Path.Combine(repository, ManifestPath)))!.AsObject();
+        string manifestHash = manifest["V35_FREEZE_PACKAGE_HASH"]!.GetValue<string>();
         JsonObject package = manifest["package"]!.AsObject();
-        bool draft = package["revision"]?.GetValue<string>() == DraftRevision;
-        string expected = draft ? DraftPackageHash : PackageHash;
-        string manifestHash = (draft ? manifest["V35_A3_DRAFT"]?["V35_A3_DRAFT_PACKAGE_HASH"] : manifest["V35_FREEZE_PACKAGE_HASH"])?.GetValue<string>() ?? "";
         string computed = V35Canon.Sha256(package);
         int blobs = 0;
         foreach ((string group, JsonNode? entries) in package["blobs"]!.AsObject())
@@ -115,11 +113,12 @@ public static class V35Freeze
                 if (actual != blob!.GetValue<string>()) mismatches.Add($"{group}:{path}: blob {actual} differs from frozen {blob.GetValue<string>()}");
             }
         }
-        if (package["revision"]?.GetValue<string>() is not (Revision or DraftRevision)) mismatches.Add($"package revision is not {Revision} or {DraftRevision}");
-        if (draft && (manifest["V35_FREEZE_PACKAGE_HASH"]?.GetValue<string>() != PackageHash || manifest["governingPackageV35A2"] is not JsonObject governing
-            || V35Canon.Sha256(governing) != PackageHash))
-            mismatches.Add("the V35-A2 package the draft amends does not hash to the governing freeze " + PackageHash);
-        return new(expected, manifestHash, computed, blobs, mismatches);
+        if (package["revision"]?.GetValue<string>() != Revision) mismatches.Add("package revision is not " + Revision);
+        if (manifest["supersededPackageV35A2"] is not JsonObject a2 || V35Canon.Sha256(a2) != SupersededA2PackageHash)
+            mismatches.Add("retained superseded V35-A2 package does not hash to " + SupersededA2PackageHash);
+        if (manifest["reviewedDraftV35A3"] is not JsonObject draft || V35Canon.Sha256(draft) != ReviewedDraftA3PackageHash)
+            mismatches.Add("retained reviewed V35-A3 draft package does not hash to " + ReviewedDraftA3PackageHash);
+        return new(PackageHash, manifestHash, computed, blobs, mismatches);
     }
 
     public static void AssertHolds(string repository)

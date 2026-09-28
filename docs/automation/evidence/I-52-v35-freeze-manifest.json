@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "initiative": "I-52",
-  "kind": "V35 consensus freeze manifest",
-  "V35_FREEZE_SHA": "86089886f37da05c2de5dcf9e237044a3deeada3",
-  "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+  "kind": "V35 consensus freeze manifest (V35-A3)",
+  "V35_FREEZE_SHA": "a076c7549677f29165ffc09c71ccc31aaa3d8b0a",
+  "V35_FREEZE_PACKAGE_HASH": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
   "freezePackageHashRule": "SHA-256 (upper-case hex) of the ASCII canonical serialization (oracle_predicates.canon = validator Canon: keys sorted ordinally, no whitespace, \\uXXXX outside 0x20..0x7E) of the object `package` below. `package` binds git blob ids read at V35_FREEZE_SHA, the approval identities, the frozen contract entry hashes, the structural/defensive UNKNOWN sets, the frozen counts and the closure predicates. It excludes this manifest, commit SHAs and governance documents.",
   "governance": {
     "architectR3Verdict": "V35 REQUIRED (decision 168)",
@@ -18,7 +18,9 @@
     "architectApprovesApprovalHashSet": true,
     "architectD4Verdict": "CHANGES REQUIRED - direction AGREED; normative text replaces the prior candidate; D-4 = V35 CONTRACT DEFECT (runtime/engine conform, fail-closed) (decision 187)",
     "coordinatorD4Ruling": "D-4 = V35 CONTRACT DEFECT; Architect direction and normative amendment ACCEPTED; governance V35-A3 amendment + NEW FREEZE, not V36 (decision 187)",
-    "v35A3Draft": "A3-D4 draft (decision 187); next gate ARCHITECT DELTA REVIEW OF V35-A3 DRAFT"
+    "v35A3Draft": "A3-D4 draft a076c7549677f29165ffc09c71ccc31aaa3d8b0a (decision 187)",
+    "architectA3DeltaReview": "AGREED - scope deviations 1-3 accepted, 4 no governance impact; catalog revision transitions to V35-A3 in the final freeze commit; APPCTX frozen text confirmed; hash-delta gate confirmed (decision 188)",
+    "coordinatorA3Freeze": "FINAL V35-A3 FREEZE authorized; D-4 runtime/native/engine implementation not authorized (decision 188)"
   },
   "preV35RuntimeArtifacts": {
     "arxSha256": "7F9C9C052D83A12FCFCEB5ED57F8FC28C25290FC0A347310F46E3D48BE9ED421",
@@ -58,21 +60,21 @@
       "single-ProbeId harness path"
     ],
     "governingProbes": "BLOCKED until R3 implementation, rebuild and host smoke",
-    "unknownOutcomes": "an UNKNOWN on a structural row is an expected outcome of a correct run, not an architecture failure"
+    "unknownOutcomes": "an UNKNOWN on a structural row is an expected outcome of a correct run, not an architecture failure",
+    "v35A3": "D-4 runtime/native/engine implementation waits for the post-freeze implementation authorization; no ProbeId and no new package until then"
   },
-  "V35_A3_DRAFT": {
-    "status": "DRAFT - awaiting Architect delta review and a new freeze; not a freeze",
-    "decision": "187",
+  "V35_A3": {
     "amendment": "A3-D4",
+    "decisions": [
+      "187 (draft)",
+      "188 (final freeze)"
+    ],
     "amendedEntries": [
       "LOCK-RELEASE-BIND-01",
       "OBS-LOCK-RELEASE-BOUND",
       "UNK-MARKER-BINDING"
     ],
-    "V35_A3_DRAFT_PACKAGE_HASH": "8D5E0005043162A9B8665C0F54C94733796ADDF54AA673D7D5AAC37ACF7EF11E",
-    "draftSha": "the commit that publishes this manifest (decision 187); recorded by the next gate",
-    "governingFreezeUntilA3Freeze": "V35-A2 (V35_FREEZE_SHA / V35_FREEZE_PACKAGE_HASH above): the R3 runtime artifacts and the generated authority keep binding it; the runtime is not rebound in this draft",
-    "hashDelta": {
+    "deltaVsV35A2": {
       "catalogEntries": "3/381",
       "rows": "0/100",
       "approvalBlobs": "0/3",
@@ -91,16 +93,83 @@
       "02NDBMOD-S": "VALID PASS-S",
       "02NO-S": "VALID PASS-S",
       "reason": "their row hashes and every catalog entry they reference are unchanged under A3",
-      "16N-S": "the two A2 executions are not regraded; they remain UNKNOWN under A2"
+      "16N-S": "the two A2 executions are historical A2 UNKNOWN; not regraded"
     },
     "affectedRows": {
       "total": 32,
       "SEND": 24,
       "FIXTURE": 4,
       "CMDCTX": 4
-    }
+    },
+    "d4Implementation": "NOT AUTHORIZED: runtime MARK-LOCK-RELEASE naming (Sequence, global command), foreign-transition recording, CONTROL-PLANE-RESULT-01 eligibility recomputation and the native freeze-hash literal wait for the post-freeze implementation gate"
   },
-  "governingPackageV35A2": {
+  "freezeTransitionFromReviewedDraft": {
+    "reviewedDraftSha": "a076c7549677f29165ffc09c71ccc31aaa3d8b0a",
+    "reviewedDraftPackageHash": "8D5E0005043162A9B8665C0F54C94733796ADDF54AA673D7D5AAC37ACF7EF11E",
+    "authority": "Architect delta review AGREED (bounded freeze transition); Coordinator final V35-A3 freeze (decision 188)",
+    "packageFieldChanges": {
+      "revision": {
+        "from": "V35-A3-DRAFT",
+        "to": "V35-A3"
+      }
+    },
+    "packageBlobChanges": {
+      "docs/initiatives/I-52-execution-catalog-v35.json": {
+        "from": "87298aab772cc5a04d6e1cac4a8190237fd65676",
+        "to": "83f1cc417db79f3be2806280dbb4d438cecbab43"
+      },
+      "eng/research/I52Ctda/validate-v35-catalog.ps1": {
+        "from": "cb0feda2ef2d1bf2280e9997d1246f5c488390d9",
+        "to": "98a146441d7155f6d67588601d67821bacd039b5"
+      },
+      "eng/research/I52Ctda/validate-v35-negative-controls.ps1": {
+        "from": "65f8a5a810fd45ab56b72b4ec1e6a85a12149af2",
+        "to": "b946a0632ab7ddcbfbcf939655c0ae35839b70f2"
+      },
+      "docs/automation/evidence/I-52-v35-mechanical-validation.json": {
+        "from": "3db8feda32fe21b69956cf27ea50472c32fe908b",
+        "to": "b3e499ea8744d3c7369c9e52237d6eba051e03af"
+      },
+      "docs/automation/evidence/I-52-v35-negative-controls.json": {
+        "from": "2b44e914e9d6ed341215fdd11f6fa986890df9e5",
+        "to": "69795a3cb2200e01aa7c3c81234a6e1497b38df3"
+      }
+    },
+    "labelChanges": [
+      "docs/initiatives/I-52-execution-catalog-v35.json: header revision V35-A2 -> V35-A3 and header status; all 381 entry hashes identical to the reviewed draft",
+      "eng/research/I52Ctda/validate-v35-catalog.ps1: evidence revision label V35-A3-DRAFT -> V35-A3 (oracle pin 2dd4615a unchanged)",
+      "eng/research/I52Ctda/validate-v35-negative-controls.ps1: evidence revision label V35-A3-DRAFT -> V35-A3 and two header comments",
+      "docs/automation/evidence/I-52-v35-mechanical-validation.json: regenerated; revision label only",
+      "docs/automation/evidence/I-52-v35-negative-controls.json: regenerated for the V35-A3 label (106/106, baseline PASS)"
+    ],
+    "outsidePackage": [
+      "eng/research/I52Ctda/control-plane/V35/V35Freeze.cs: governing constants V35-A3; draft acceptance removed; A2 and the reviewed draft verified as retained history",
+      "eng/research/I52Ctda/runtime-plan-v35.json: generated metadata (revision, freezePackageHash, freezeSha, catalogBlob and the generated-file digests); rows identical",
+      "eng/research/I52Ctda/native/V35Ids.inc, V35PlanTable.inc, V35Authority.inc: line 1 comment only; every other byte identical",
+      "eng/research/I52Ctda/tests/R3Tests.cs: FreezeHolds asserts the final identities"
+    ],
+    "unchanged": {
+      "catalogEntryHashes": "381/381 identical to the reviewed draft",
+      "oracleBlob": "2dd4615a180b5f794856394111dda5f86e224f55",
+      "approvalHashSetSha256": "71B9049F0B76064DA29507A6DAE44D5BEAB8D544C2E4A146F95C03DBC0EAF548",
+      "rows": "100/100",
+      "approvalBlobs": "3/3",
+      "oracleSources": "2/2"
+    },
+    "derivedMetadata": {
+      "field": "eng/research/I52Ctda/runtime-plan-v35.json: generated",
+      "rule": "each value is the SHA-256 (UTF-8, LF) of the committed .inc file it names; each .inc differs from the reviewed draft only in line 1",
+      "ruling": "Architect ruling on runtime-plan-v35.json.generated: ACCEPTED as derived metadata; not a runtime-plan semantic delta; boundary +1 field only; no further delta review (decision 188)"
+    },
+    "runtimePlanFieldsChanged": [
+      "revision",
+      "freezePackageHash",
+      "freezeSha",
+      "catalogBlob",
+      "generated"
+    ]
+  },
+  "supersededPackageV35A2": {
     "initiative": "I-52",
     "contract": "EXEC-CATALOG-V35-1",
     "revision": "V35-A2",
@@ -340,7 +409,7 @@
       "PlanDerivationClosed": true
     }
   },
-  "package": {
+  "reviewedDraftV35A3": {
     "initiative": "I-52",
     "contract": "EXEC-CATALOG-V35-1",
     "revision": "V35-A3-DRAFT",
@@ -374,6 +443,246 @@
       "evidence": {
         "docs/automation/evidence/I-52-v35-mechanical-validation.json": "3db8feda32fe21b69956cf27ea50472c32fe908b",
         "docs/automation/evidence/I-52-v35-negative-controls.json": "2b44e914e9d6ed341215fdd11f6fa986890df9e5",
+        "docs/automation/evidence/I-52-v35-a1-rc-closure.json": "413bda3cc12c3695c1022453e2c6587da6b3ffbc",
+        "docs/automation/evidence/I-52-v35-a2-errata-closure.json": "453e5dcc4846da39fecc157aa625c6019f2457b2"
+      },
+      "pinnedV34Inputs": {
+        "docs/initiatives/I-52-native-probe-matrix-v34.md": "7a29a1c11d308879488e43dc460602df1426697b",
+        "docs/initiatives/I-52-native-event-catalog-v34.md": "1f16dd0641c1706e6874a68b9136406c19e33848",
+        "eng/research/I52Ctda/traceability-v34.json": "0424c0b6788cbbacf5deaf533317f9202f305482",
+        "docs/automation/evidence/I-52-r3-governed-executor-discovery.json": "38104836975dc4e0adc5c930e8550fc0abab5ae0"
+      }
+    },
+    "approval": {
+      "oracleBlob": "2dd4615a180b5f794856394111dda5f86e224f55",
+      "oracleSourceBlobs": {
+        "eng/research/I52Ctda/oracle/make_oracle.py": "e90aa1dc921d0778e6be36a1b1183abe83a289f2",
+        "eng/research/I52Ctda/oracle/oracle_predicates.py": "78c750d863240b99bcc6621ef9289320d725cc97"
+      },
+      "approvalHashSetSha256": "71B9049F0B76064DA29507A6DAE44D5BEAB8D544C2E4A146F95C03DBC0EAF548",
+      "approvalCatalogEntries": 381,
+      "approvalRows": 100,
+      "approvalBlobs": {
+        "docs/automation/evidence/I-52-v35-clause-lineage.json": "f39abf2d7af667a3a978aaf34132482c05b86f6c",
+        "eng/research/I52Ctda/traceability-v35.json": "b8de74b27469f514aa0a0f837aa7e0803aab86bc",
+        "eng/research/I52Ctda/fixture-v35.json": "d75c046d898969437170bc965ed56a988f689e9c"
+      },
+      "finishFenceAbiSha256": "BFF91C0553592DA55124FE385B1170A4EFC7B03028EBAC63B76F8BC2217CF401",
+      "finishFenceAbi": {
+        "fence": "FINISH-FENCE-01",
+        "owner": "R-NATIVE-ARX",
+        "readApi": "I52Ctda_FinishFenceIsSet",
+        "setter": "INTERNAL-R-NATIVE-ARX",
+        "setterExported": false,
+        "readers": [
+          "R-PAYLOAD-ARX",
+          "R-MANAGED-OBSERVER"
+        ]
+      },
+      "oracleTablesSha256": {
+        "A_bodyObserver": "F46AF4C16E11B2646BE4984FF7C7ABB45304B5A14B995CFB3B7A0AFCFFFED4AA",
+        "B_resourceTypes": "633E7EAF41E7C5E72A08649E656BF6FFC094959DC5ED051F001822AFCE597C3A",
+        "C_failPredicateApplicability": "B23CE5B895783883B788DF9BF1FAFDADDCD4E0C8DE1F13976CC31209E9D7E224",
+        "D_retainedAuthority": "9B0E5C13B44052FD6245626C5B2DF1AF0CA6BE554369CEF8B947F5A9FCBF406F",
+        "E_triggerTargetClass": "663E70475E9969122358602410B5AB25910376C8B7B05692B39512A525203F6D",
+        "F_markerStageBindings": "484B5FA82797B6EA19730A0A5BE3F464776B8B6E0153A50101F85EE9316C584D",
+        "F_markerStages": "D175AA04CFF67F911F3C5F3D72A8B45BF347D7420458C6D2AC2F37E7ACC74105",
+        "F_stageNamespace": "20BADA5B82D9FF51BB69D5E05787A6324B79432E90694918F54381219682BE3E",
+        "G_completionTokens": "DBB04186F3AC36D2B53B506BD87F3378276AF987635546FB5E0E8BF27B4DC18F",
+        "H_processFence": "88540BD8043D252621E00E70D9A0A8E5FDE203445E5D438B5DDDA57F0539ABA3",
+        "P_rowPredicatesAndTrigger": "D596A08D3AE2C5338E1096CE361433452014201B246BF7B8555656B9BB25DE80",
+        "V34_inputBlobPins": "2A80BF28541FD39C2B7AFBB67E1073516D2EF6DC33AF004CDC0682EB1DEB2D80",
+        "guardKeySchema": "315170DE9F08E650BC4EC858AF3C4129F67CC9E3580E956EAB8D6A2AFB1F93C9",
+        "guardKeyOneShot": "462D5234411961FBCFD38365F4BF9FB8C7805FECE6C8AECE33E7D1809EE07025",
+        "driverPhaseOrder": "E6601186CD42B2E7C2AB6A79D8B525D661AF84052101080DF24DD65B1B6E75DC",
+        "setupOrder": "C8B47647F56C06A4B723E92C67CBC0A7F4ED061854F2E3495B5BDD4445C25683",
+        "allowedCleanupExtension": "ECA255BC084FAD773EF3502B7F29DC3DE3EBEB2696F713B00D9680B3F95F2D54",
+        "payloadReactorRows": "3A225811BAF52697EA8DEADF0E5B106E3AF0D22CAE4CFF1D2EBC0A1C5DC28E31",
+        "Z_approvalFreeze": "71B9049F0B76064DA29507A6DAE44D5BEAB8D544C2E4A146F95C03DBC0EAF548",
+        "cancelStaging": "EDAD1C0D1AA3F45CDC0824C67F5E71DA5F5680262A6AD8B6D6F7941FCE1ADBE0",
+        "appendTransaction": "491F93A7D0FC43546C5EF1399AEBB4FCF601173768ADB68BB37AFBBA87186D5C",
+        "managedHost": "B54C93AE23F80935389A398409BB94ABEE1CD3B2CFA3B78478761802B49D71A5",
+        "payloadRows": "A7EB5866B210D5B325912E7CF23E05AB23116D749F21A0411D28EE1C11A7EF3F",
+        "resultAuthority": "A93ED22BA8938AE62F7816C24CE1AA4A4EBC7BB7673B0CE6A4269E12D012CEA5",
+        "finishGate": "F34AC78FA48A7FE4FCD4F05AEBBD5F7FA4544DC066713BBB5396FF39DDB5DE42",
+        "lockReleaseAnchor": "5A0A893EA931802953BF6E2925E506D43A7440A4E6962C1FC58BD03246B7B2DE",
+        "payloadModule": "1BBA46162E6111E5611687FECB85B3D56103EE615EC6C630CEB8047C9A11A3AC",
+        "finishFenceAbi": "BFF91C0553592DA55124FE385B1170A4EFC7B03028EBAC63B76F8BC2217CF401",
+        "syncStageIncludesCallerReturn": "B5BEA41B6C623F7C09F1BF24DCAE58EBAB3C0CDD90AD966BC43A45B44867E12B",
+        "cleanupSafetyScope": "B3D6A2016EB002795E09C2B1D266E551F6D6BCD8ABF96F9AF7AFF639389E130B"
+      }
+    },
+    "contracts": {
+      "resultRule": {
+        "RESULT-RULE-V35": "57758F2D8BA6C8C567EFEB30BA5EABCF681AB3190BE055575C5D3BE17679D6BD",
+        "EVIDENCE-COMPLETE": "F45FC2665ECFC9017E5A1952FC29D50DBE1875B3C74333D878F6AD7DA1A3A2A2",
+        "SAFETY-EVIDENCE-COMPLETE": "E110FB918932217D1206A54C84F956EC7F7990AD0C372199FB1CAC57A2BF8C2E",
+        "FP-CLEANUP-SAFETY": "732DF416316B499AFBE051303CDC7C5D421265FA39EA234058910ED12BA74FEF",
+        "FENCED-RETENTION-SAFE": "EF25FA95863144576CB734158E7FBCC07AAD1DA4CAC57848A555FEF7E608C78A",
+        "CONTROL-PLANE-RESULT-01": "CA44E92E888B4DC13260312B9024BAF99AD999A9E2B9F17139CB5B675C41184B",
+        "CMD-FINISH": "6CBD3076343933C898AB98C2F57EA505CE11E2C6377CB8123998602A5D74B88C"
+      },
+      "runtimeModules": {
+        "R-NATIVE-ARX": "4A988E0859ECFF5F2C93508E9F10606EF1C6B5283E2F63622CA6F82B2E333468",
+        "R-PAYLOAD-ARX": "ED6401051AF503F598172ED6C0151B75C2666300A7FF077D6678349AD055D762",
+        "R-MANAGED-OBSERVER": "DC38BE5CBB36F38F84CBDFD67CEEFAC3E8EE74FD6AED095C24B9F2E72DB18ABE",
+        "LOG-SEQ-01": "5B5077EF8F5F18FDC964BC980C4A0A7907D1EE3D17F4123876FC18BE86B511E8",
+        "LOG-RECORD-01": "E76321D0AE1FAEE0A352895EFBA227E79723BBF2647A13EAFC3587FA9D692E62",
+        "FINISH-FENCE-01": "66684683838974174BEE2D5DC18379249A1C3B87CB1B406BACFF9CACDB8AA4B1",
+        "FIN-GATE-01": "0DE91E1FFEB9D048423F3C460031A7C2947B4696F75AD43EF65B4ADEA1733601",
+        "PAYLOAD-DB-BINDING": "0CBFD009D7DE0DA8EDF05C1A9E8F4B16E5B4838C8A88445E7D02947A0BCF72FC"
+      },
+      "completionTokens": {
+        "TOK-APPCTX-DELIVERY-DONE": "4D27E618BAB002EA0ED8469EE0F7AE60B5D12450C07072BC55B5D9875FBEA9D9",
+        "TOK-CANCEL-CMDCTX-DONE": "1123EB637B799ED2F4FA8405B5A629F0C6F3AC60CB397B360398104AF9135073",
+        "TOK-CANCEL-OBSERVED": "8C3A32101CF919BE168F65FB499CC28220A82AC2787C84A8148D90CD426F8C33",
+        "TOK-CMDCTX-DELIVERY-DONE": "E532BBBCEAAACFA1B9D9F63C883ED636EB3531B20A55B63051507454CE6DFF17",
+        "TOK-DRIVER-APP-DONE": "56155A6951D9EE7525290FBF7C089B88D88F804CF429044159074D8A004EB10B",
+        "TOK-ENQUEUE-APPCTX": "4ECDFE9535A2240D73D007972C813F0185525FE8694827E049542E63F351CF10",
+        "TOK-ENQUEUE-CMDCTX": "5B16ED7DA024F4470610AF33ABB4955A4F1545B132F07B468993553DEB73A337",
+        "TOK-ENQUEUE-SEND": "A1BE0A3AC507E00620B8ED0872C2A4ABED9F858B0ED3FE7A1CF6517A8CC0BE3C",
+        "TOK-EXEC-DONE": "78D08E29BE2344677858BBA44A572552E0FE1DD0633EA79A946237FB581B7DB8",
+        "TOK-FIXTURE-CMD-END": "AB7323108E8C56FB07AED264D82B8A6CCA70CABA2A459E7B66DA0A2E2E4BE20D",
+        "TOK-LOCK-RELEASE": "6FD1320D314B8BCD67A750D465809F9D3A4C94722A10595BD4C5F8087DC66B89",
+        "TOK-MANAGED-CMD-END": "8E4D5161F3DDCCFCA2D6E9B749C97E1572B9B8EE895F788176FF0ACABC3BDD9C",
+        "TOK-OUTCOME": "ADF27A52D1FF0F101453F87E30726F2148E12C57AEFB8EE14D2015975CE24179",
+        "TOK-PAYLOAD-LOAD-RESULT": "71082ED678575AAF89B2023336DDC35DD8F94EDFEA6810093F671E44AB337B1B",
+        "TOK-PROBE-RETURN": "F3F42CF4A2F37D0232633D3E492E4217973B69130CED3CE72004149C7E998418",
+        "TOK-SEND-CMD-END": "F48B775455DA1061C131D2FE37339EFE6A9DFD82A303F77807B8DC981802EE7C",
+        "TOK-SYNC-RETURN": "D228E649E4774BCA3B81CAC7DB9426611122698E4AC0373DD7E8D66DCDA6B139"
+      }
+    },
+    "structuralUnknownRows": [
+      "10NDOC-WILL-SM",
+      "02NEDW-ALL",
+      "02NEDC-ALL",
+      "13A-SM",
+      "02NTAS-ALL",
+      "02NTA-ALL",
+      "02NAPP-SM",
+      "04NO-S",
+      "04NO-UNDO-S",
+      "COBJUNDO16SND-ALL",
+      "COBJUNDO16APP-ALL",
+      "09N-D",
+      "10N-S",
+      "10N-M",
+      "10N-SM"
+    ],
+    "defensiveUnknownRows": [
+      "02NRXL-ALL",
+      "02NRXW-ALL",
+      "02NTS-ALL",
+      "10NDOC-CHANGED-SM",
+      "16A-M",
+      "16A-S",
+      "16A-SM",
+      "16C-M",
+      "16C-S",
+      "16C-SM",
+      "C2APP2CMD-ALL",
+      "CAPP16APP-ALL",
+      "CDBERASE16APP-ALL",
+      "CDBERASE16SND-ALL",
+      "CDBOPEN16APP-ALL",
+      "CDBOPEN16SND-ALL",
+      "CDOCLOCKCHANGED16APP-ALL",
+      "CDOCLOCKVETO16APP-ALL",
+      "CDOCLOCKVETO16SND-ALL",
+      "CDOCLOCKWILL16APP-ALL",
+      "CEDC16APP-ALL",
+      "CEDC16SND-ALL",
+      "CEDEND16APP-ALL",
+      "CEDEND16SND-ALL",
+      "CEDW16APP-ALL",
+      "CENTGFX16APP-ALL",
+      "COBJCANCEL16APP-ALL",
+      "COBJCANCEL16SND-ALL",
+      "COBJCLOSED16APP-ALL",
+      "COBJCLOSED16SND-ALL",
+      "COBJERASE16APP-ALL",
+      "COBJERASE16SND-ALL",
+      "COBJMOD16APP-ALL",
+      "COBJOPEN16APP-ALL",
+      "COBJOPEN16SND-ALL",
+      "CRXL16APP-ALL",
+      "CRXW16APP-ALL",
+      "CTA16APP-ALL",
+      "CTAS16APP-ALL",
+      "CTRABOUTABORT16APP-ALL",
+      "CTRABOUTABORT16SND-ALL",
+      "CTRABOUTEND16APP-ALL",
+      "CTRABOUTEND16SND-ALL",
+      "CTRENDED16APP-ALL",
+      "CTRENDED16SND-ALL",
+      "CTROUTERMOSTENDCALLED16APP-ALL",
+      "CTROUTERMOSTENDCALLED16SND-ALL",
+      "CTS16APP-ALL"
+    ],
+    "frozenCounts": {
+      "probeIds": 100,
+      "eventIds": 27,
+      "reachableCallbacks": 26,
+      "schedulers": 3,
+      "supportActions": 7,
+      "fixtureIdentities": 8,
+      "rows": 100,
+      "fields": 36,
+      "catalogEntries": 381,
+      "derivedPlans": 100,
+      "unboundIds": 0,
+      "executableFreeText": 0,
+      "classD": 0,
+      "contradictions": 0,
+      "eventRelations": 237,
+      "schedulerPairs": 63,
+      "closurePredicatesTrue": 7,
+      "negativeControls": 106
+    },
+    "closurePredicates": {
+      "ExecutionCatalogClosed": true,
+      "TriggerAuthorityClosed": true,
+      "SetupAuthorityClosed": true,
+      "PredicateAuthorityClosed": true,
+      "ResourceAuthorityClosed": true,
+      "FixtureExecutionContractClosedV35": true,
+      "PlanDerivationClosed": true
+    }
+  },
+  "package": {
+    "initiative": "I-52",
+    "contract": "EXEC-CATALOG-V35-1",
+    "revision": "V35-A3",
+    "blobs": {
+      "normative": {
+        "docs/initiatives/I-52-execution-catalog-v35.json": "83f1cc417db79f3be2806280dbb4d438cecbab43",
+        "docs/initiatives/I-52-native-probe-matrix-v35.md": "4a78d508424a2c218d3e6779c48be971ba347820",
+        "docs/initiatives/I-52-native-event-catalog-v35.md": "4ad103a12d93114d4e005138792b35698a0bf328",
+        "docs/initiatives/I-52-native-scheduler-catalog-v35.md": "94a8b66034dc78e5d3b1cd469a4635a91523416c",
+        "docs/initiatives/I-52-fixture-execution-contract-v35.md": "358ab9ccdb9dc5d18f32abadfe2db975dcc40fdb",
+        "eng/research/I52Ctda/fixture-v35.json": "d75c046d898969437170bc965ed56a988f689e9c",
+        "eng/research/I52Ctda/traceability-v35.json": "b8de74b27469f514aa0a0f837aa7e0803aab86bc"
+      },
+      "explanatory": {
+        "docs/initiatives/I-52-proposal-v35.md": "cddbb785679f3e9a271bb64828d2ddf3731ce302",
+        "docs/initiatives/I-52-execution-catalog-v35.md": "287f8ed813b4779150d8e7adfe4d451f223ecad1",
+        "docs/initiatives/I-52-architect-review-package-v35.md": "0dcb041720a64edbf2a309476c892d7e793d0f1d"
+      },
+      "lineage": {
+        "docs/automation/evidence/I-52-v35-clause-lineage.json": "f39abf2d7af667a3a978aaf34132482c05b86f6c"
+      },
+      "oracle": {
+        "eng/research/I52Ctda/v35-oracle.json": "2dd4615a180b5f794856394111dda5f86e224f55",
+        "eng/research/I52Ctda/oracle/make_oracle.py": "e90aa1dc921d0778e6be36a1b1183abe83a289f2",
+        "eng/research/I52Ctda/oracle/oracle_predicates.py": "78c750d863240b99bcc6621ef9289320d725cc97"
+      },
+      "validation": {
+        "eng/research/I52Ctda/validate-v35-catalog.ps1": "98a146441d7155f6d67588601d67821bacd039b5",
+        "eng/research/I52Ctda/validate-v35-negative-controls.ps1": "b946a0632ab7ddcbfbcf939655c0ae35839b70f2"
+      },
+      "evidence": {
+        "docs/automation/evidence/I-52-v35-mechanical-validation.json": "b3e499ea8744d3c7369c9e52237d6eba051e03af",
+        "docs/automation/evidence/I-52-v35-negative-controls.json": "69795a3cb2200e01aa7c3c81234a6e1497b38df3",
         "docs/automation/evidence/I-52-v35-a1-rc-closure.json": "413bda3cc12c3695c1022453e2c6587da6b3ffbc",
         "docs/automation/evidence/I-52-v35-a2-errata-closure.json": "453e5dcc4846da39fecc157aa625c6019f2457b2"
       },

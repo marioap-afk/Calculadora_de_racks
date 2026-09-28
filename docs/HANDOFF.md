@@ -117,7 +117,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); CANARY RESTART 09N-B VALID PASS-T (H-1 MINOR); CANARY RESTART 02NDBMOD-S VALID PASS-S; CANARY RESTART 02NO-S VALID PASS-S (H-1 RECURRED); CANARY RESTART 16N-S UNKNOWN (D-4 REPRODUCED); D-4 = V35 CONTRACT DEFECT; V35-A3 DRAFT (A3-D4) PUBLISHED; VALID GOVERNED RESULTS = 3.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN (V35-A3); R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); CANARY RESTART 09N-B VALID PASS-T (H-1 MINOR); CANARY RESTART 02NDBMOD-S VALID PASS-S; CANARY RESTART 02NO-S VALID PASS-S (H-1 RECURRED); CANARY RESTART 16N-S UNKNOWN (D-4 REPRODUCED); D-4 = V35 CONTRACT DEFECT; V35-A3 FROZEN (A3-D4); D-4 IMPLEMENTATION PENDING; VALID GOVERNED RESULTS = 3.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -286,13 +286,24 @@ Fix de D-3 (solo research):
 - Arrastre: 09N-B PASS-T, 02NDBMOD-S PASS-S y 02NO-S PASS-S siguen válidos. Los dos 16N-S bajo A2 no se regradúan.
 - Filas afectadas: 32 (24 SEND, 4 FIXTURE, 4 CMDCTX).
 
-**Siguiente gate: ARCHITECT DELTA REVIEW OF V35-A3 DRAFT.**
+**Congelación final V35-A3 (§188).** El Arquitecto dio AGREED a la revisión delta y aceptó `runtime-plan-v35.json.generated`
+como metadato derivado; el Coordinador autorizó la congelación.
+- `V35_FREEZE_SHA` = `a076c7549677f29165ffc09c71ccc31aaa3d8b0a` (contenido revisado).
+- `V35_FREEZE_PACKAGE_HASH` = `D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554`.
+- Set de aprobación `71B9049F…F548`; oráculo `2dd4615a`.
+- Delta frente a A2: 3/381 entradas, 0/100 filas, 0/3 blobs de aprobación, fuentes del oráculo 0/2.
+- Controles 106/106 (NC-D4 8/8).
+- Se retienen el paquete V35-A2 (`43DCE809…B6DF`) y el borrador (`8D5E0005…F11E`).
+- Los `.inc` solo cambian la línea 1.
+- Arrastre: 09N-B PASS-T, 02NDBMOD-S PASS-S y 02NO-S PASS-S siguen válidos; los 16N-S bajo A2 no se regradúan.
+
+**Siguiente gate: POST-FREEZE D-4 RUNTIME / ENGINE IMPLEMENTATION AUTHORIZATION.**
+- La implementación de D-4 (runtime, nativo, motor y el literal de congelación del driver) NO está autorizada todavía.
 - Probes gobernados ejecutados: 8.
-- Resultados gobernados válidos: 3 (09N-B PASS-T, 02NDBMOD-S PASS-S y 02NO-S PASS-S).
-- Sin cambios de runtime, motor ni harness hasta la congelación V35-A3.
-- H-1 (MINOR) sigue abierto como follow-up del build side.
+- Resultados gobernados válidos: 3.
+- H-1 (MINOR) sigue abierto.
 - `CTDA_HOST_PASS` NOT EVALUATED.
-- Ningún ProbeId autorizado.
+- Ningún ProbeId ni paquete autorizado.
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.

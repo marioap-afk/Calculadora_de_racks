@@ -1,4 +1,4 @@
-# I-52 V35-A1/V35-A2/V35-A3 draft negative controls for validate-v35-catalog.ps1. Each control copies the validator inputs to a temporary
+# I-52 V35-A1/V35-A2/V35-A3 negative controls for validate-v35-catalog.ps1. Each control copies the validator inputs to a temporary
 # directory, applies one deliberate corruption and runs the validator there. Every control must make the validator fail
 # (exit code 1) without a script error. Static only: no AutoCAD, no build, no runtime semantics.
 param(
@@ -275,7 +275,7 @@ $controls['M1d managed observer cannot read the fence'] = { EditCatalog { param(
 $controls['M1e payload imports a function LOG-SEQ-01 does not export'] = { EditCatalog { param($c) $c['entries']['R-PAYLOAD-ARX']['imports'] = @($c['entries']['R-PAYLOAD-ARX']['imports']) + 'I52Ctda_FinishFenceSet' } }
 foreach ($m in 'M1a fence read export removed', 'M1b fence read export renamed, coherent', 'M1c fence setter exported', 'M1d managed observer cannot read the fence', 'M1e payload imports a function LOG-SEQ-01 does not export') { $expect[$m] = 'FINISH-FENCE-READ-ABI' }
 
-# V35-A3 draft controls (Architect D-4, NC-D4-1..NC-D4-7): LOCK-RELEASE-BIND-01 own-command COMMAND-END-WINDOW binding.
+# V35-A3 controls (Architect D-4, NC-D4-1..NC-D4-7): LOCK-RELEASE-BIND-01 own-command COMMAND-END-WINDOW binding.
 function EditLockRule([scriptblock]$ruleEdit) { EditCatalog { param($c) $e = $c['entries']['LOCK-RELEASE-BIND-01']; $e['definition'] = [string](& $ruleEdit ([string]$e['definition'])) } }
 $controls['NC-D4-1 first unlock wins restored'] = { EditCatalog { param($c) $c['entries']['LOCK-RELEASE-BIND-01']['definition'] = 'MARK-LOCK-RELEASE@S has two anchor kinds, fixed per stage by `anchors`. COMMAND-END-WINDOW (STG-SEND-DELIVERY, STG-FIXTURE-CMD, STG-CMDCTX-DELIVERY): the FIRST documentLockModeChanged of the scratch document to an unlocked mode strictly after commandEnded of the stage''s command and strictly before the next commandWillStart on the scratch document; FINISH''s activation closes the window at the latest, so a FINISH unlock can never satisfy it. APPCTX-UNLOCK-01-CALL (STG-APPCTX-DELIVERY, STG-SYNC-APPCTX): the documentLockModeChanged of the scratch document emitted between entry and return of the stage''s own APPCTX-UNLOCK-01 unlockDocument call (for 13A-SM the new mode is the enclosing I52CTDA_PROBE command lock, not necessarily unlocked); it precedes the stage''s completion token, so TOK-LOCK-RELEASE never waits on a later event. No candidate is marker absence (UNKNOWN); two candidates in one window are UNK-MARKER-BINDING.' } }
 $controls['NC-D4-2 own-command qualification removed'] = { EditLockRule { param($d) $d.Replace(', whose global command name equals `#` followed by C, compared case-insensitively for ASCII', '') } }
@@ -325,7 +325,7 @@ $baselineOk = @($results | Where-Object { $_.control -eq 'BASELINE' -and $_.ok }
 "BASELINE PASS = $baselineOk"
 "NEGATIVE CONTROLS DETECTED = $caught/$total"
 if ($EvidencePath) {
-    $ev = [ordered]@{ schemaVersion = 1; revision = 'V35-A3-DRAFT'; harness = 'eng/research/I52Ctda/validate-v35-negative-controls.ps1'; inputEol = $inputEol; baselinePass = $baselineOk; total = $total; detected = $caught; controls = $results }
+    $ev = [ordered]@{ schemaVersion = 1; revision = 'V35-A3'; harness = 'eng/research/I52Ctda/validate-v35-negative-controls.ps1'; inputEol = $inputEol; baselinePass = $baselineOk; total = $total; detected = $caught; controls = $results }
     [IO.File]::WriteAllText((Join-Path $Repository $EvidencePath), ($ev | ConvertTo-Json -Depth 6) + "`n")
 }
 if (-not $baselineOk -or $caught -ne $total) { exit 1 }
