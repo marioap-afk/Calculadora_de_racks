@@ -117,7 +117,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED (SOURCE); VALID GOVERNED RESULTS = 0.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); VALID GOVERNED RESULTS = 0.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -222,7 +222,19 @@ Fix de D-3 (solo research):
 - El smoke sale por el mismo camino.
 - Research 74/74. La congelación V35 sigue válida.
 
-**Siguiente gate: ZERO-PROBE HOST SMOKE OF D-3-FIXED PACKAGE** (el paquete canónico se construye desde el SHA del fix).
+**R3 host smoke e864a093 (§182): PASS** en `IMING-2` (PID 22944, cero ProbeIds).
+- El intento previo con `229c9e65` quedó NOT PASS sin veredicto: el harness falló al leer `events.jsonl` después de que
+  AutoCAD salió. `e864a093` lo corrige (log nativo no heredable y compartido, lectura con reintento, `process-run.json`
+  antes del log).
+- D-3 validado en el host: `EXIT-QUEUED` con `dbmodAtBoot=0` y `dbmodAfter=0`, sin `EXIT-BLOCKED`, código 0, sin
+  terminación del plano de control, sin estado interactivo, scratch intacto y sin `.bak`. El operador confirma que no
+  tocó nada.
+- Race del harness: `logRead` legible al primer intento, sin error.
+- Fixture 8/8, secuenciador, FIN-GATE, ABI del fence, CommandIdentity y cleanup: PASS.
+- Tuple de build `F7414C55…14A6`; `R3_PRE_RUN_TUPLE_HASH` = `22839962875C54691101B96A308379301C65FFF0E3D477DCDD406DF823218BF0`.
+- [Evidencia](automation/evidence/I-52-r3-host-smoke-e864a093.json).
+
+**Siguiente gate: GOVERNED CANARY RESTART AUTHORIZATION** (Coordinador).
 - Probes gobernados ejecutados: 3.
 - Resultados gobernados válidos: 0.
 - `CTDA_HOST_PASS` NOT EVALUATED.
