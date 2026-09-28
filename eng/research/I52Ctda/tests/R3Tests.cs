@@ -53,9 +53,12 @@ internal static class R3Tests
         ("r3 D-4 E2-E6 foreign-only, duplicate and identity-inconsistent windows", D4E2ToE6),
         ("r3 D-4 E7-E10 native marker, document and window boundaries", D4E7ToE10),
         ("r3 D-4 E11 ASCII case-insensitive own command", D4E11CaseInsensitive),
-        ("r3 D-4 E12 APPCTX-UNLOCK-01-CALL unchanged", D4E12Appctx),
+        ("r3 m-3 APPCTX unlockDocument bracket recomputed (E12 superseded)", M3AppctxBracket),
+        ("r3 m-1 payload database identity for every payload row", M1PayloadDatabase),
+        ("r3 m-2 unbound negative marker over the whole run window", M2NegativeMarkerInfra),
+        ("r3 H-1 observed exit time; FILETIME-zero is null", H1ExitTime),
         ("r3 D-4 historical A2 16N-S logs stay UNKNOWN", D4HistoricalSixteenNS),
-        ("r3 D-4 prior valid results unchanged offline", D4PriorValidResults),
+        ("r3 prior valid governed results (6) unchanged offline", D4PriorValidResults),
     ];
 
     private static void Require(bool value, string message) { if (!value) throw new InvalidDataException(message); }
@@ -1093,7 +1096,7 @@ internal static class R3Tests
             a3.Insert(at, Copy(window, "MARK-LOCK-RELEASE", $"anchor=COMMAND-END-WINDOW;sourceSequence={raw["Sequence"]};sourceGlobalCommand=#I52CTDA_QUEUED;stageCommand=I52CTDA_QUEUED;current=2;myNew=2"));
             Renumber(a3);
             P(a3[at])["sourceSequence"] = raw["Sequence"]!.GetValue<long>().ToString(System.Globalization.CultureInfo.InvariantCulture);
-        }), ev), "E8 MARK on another document", "without an eligible release");
+        }), ev), "E8 MARK on another document", "without an eligible transition");
         // E9 / E10: an own unlock before commandEnded of C, or after the next commandWillStart (FINISH): outside the window.
         foreach ((string name, long anchor, bool before) in new[] { ("E9 before commandEnded", 65L, true), ("E10 after the next commandWillStart", 87L, false) })
         {
@@ -1117,7 +1120,7 @@ internal static class R3Tests
                 a3.Insert(a3.IndexOf(window) + 1, Copy(window, "MARK-LOCK-RELEASE", "anchor=COMMAND-END-WINDOW;sourceSequence=0;sourceGlobalCommand=#I52CTDA_QUEUED;stageCommand=I52CTDA_QUEUED;current=2;myNew=2"));
                 Renumber(a3);
                 P(a3[a3.IndexOf(window) + 1])["sourceSequence"] = outside["Sequence"]!.GetValue<long>().ToString(System.Globalization.CultureInfo.InvariantCulture);
-            }), ev), name + " with a MARK naming it", "without an eligible release");
+            }), ev), name + " with a MARK naming it", "without an eligible transition");
         }
     }
 
@@ -1131,28 +1134,6 @@ internal static class R3Tests
         Require(r.Result == "PASS" && r.ResultClass == "PASS-S", "E11: " + Show(r));
         // A non-ASCII case variant is not the own command.
         RequireUnknown(JudgeRecords(repo, "16N-S", Mutate(repo, l => P(Seq(l, 69))["globalCommand"] = "#I52CTDA_QUEUE\u00D0"), ev), "E11 non-ASCII variant");
-    }
-
-    // E12: APPCTX-UNLOCK-01-CALL keeps its A2 behaviour: one MARK in the bound stage is bound, a second candidate is
-    // UNK-MARKER-BINDING, none is unavailable; command-window records have no effect on an APPCTX row.
-    private static void D4E12Appctx(string repo)
-    {
-        V35Authority a = Authority(repo);
-        V35RowPlan plan = a.ByProbe["16A-S"];
-        V35MarkerBinding b = plan.MarkerStageBindings.Single(x => x.Marker == "MARK-LOCK-RELEASE");
-        Require(b.Stage == "STG-APPCTX-DELIVERY", "16A-S binds MARK-LOCK-RELEASE to STG-APPCTX-DELIVERY");
-        V35Result Judge(Log log) => Evaluate(repo, log, "16A-S");
-        Log One() { Log l = Pass02N(); l.ProbeId = "16A-S"; return l
-            .InsertBefore("FIN-GATE-01", "phase=ISSUE", ("N-ED-WILL", "STG-APPCTX-DELIVERY", 9, "registration=RR-ED;command=REGEN"))
-            .InsertBefore("FIN-GATE-01", "phase=ISSUE", ("N-DOC-LOCK-CHANGED", "STG-FIN-GATE", 2, "registration=RR-DOC;document=0x1;current=2;globalCommand=#"))
-            .InsertBefore("FIN-GATE-01", "phase=ISSUE", ("MARK-LOCK-RELEASE", "STG-APPCTX-DELIVERY", 9, "anchor=APPCTX-UNLOCK-01-CALL;current=2")); }
-        V35Result one = Judge(One());
-        Require(one.Observations["OBS-LOCK-RELEASE-BOUND"] == V35Tri.True && !one.UnknownsHolding.Contains("UNK-MARKER-BINDING")
-            && !one.Reasons.Any(x => x.Contains("COMMAND-END-WINDOW", StringComparison.Ordinal)), "E12 one APPCTX release is bound: " + Show(one));
-        V35Result second = Judge(One().InsertBefore("FIN-GATE-01", "phase=ISSUE", ("MARK-LOCK-RELEASE", "STG-APPCTX-DELIVERY", 9, "anchor=APPCTX-UNLOCK-01-CALL;candidate=SECOND;current=2")));
-        Require(second.Observations["OBS-LOCK-RELEASE-BOUND"] == V35Tri.Unavailable && second.UnknownsHolding.Contains("UNK-MARKER-BINDING"), "E12 second APPCTX candidate: " + Show(second));
-        Log none = Pass02N(); none.ProbeId = "16A-S";
-        Require(Judge(none).Observations["OBS-LOCK-RELEASE-BOUND"] == V35Tri.Unavailable, "E12 no APPCTX release is unavailable");
     }
 
     // The two 16N-S executions under A2 are historical UNKNOWN and stay UNKNOWN (their A2 markers carry no source).
@@ -1169,11 +1150,155 @@ internal static class R3Tests
     private static void D4PriorValidResults(string repo)
     {
         foreach ((string file, string probe, string cls) in new[] { ("I-52-r3-canary-09N-B-restart.json", "09N-B", "PASS-T"),
-                     ("I-52-r3-canary-02NDBMOD-S-restart.json", "02NDBMOD-S", "PASS-S"), ("I-52-r3-canary-02NO-S-restart.json", "02NO-S", "PASS-S") })
+                     ("I-52-r3-canary-02NDBMOD-S-restart.json", "02NDBMOD-S", "PASS-S"), ("I-52-r3-canary-02NO-S-restart.json", "02NO-S", "PASS-S"),
+                     ("I-52-r3-canary-16N-S-v35a3.json", "16N-S", "PASS-S"), ("I-52-r3-canary-10N-S-v35a3.json", "10N-S", "PASS-S"),
+                     ("I-52-r3-canary-16C-S-v35a3.json", "16C-S", "PASS-S") })
         {
             JsonObject ev = Evidence(repo, file);
             V35Result r = JudgeRecords(repo, probe, EventLog(ev), ev);
             Require(r.Result == "PASS" && r.ResultClass == cls && r.Step == 4, $"{probe} offline: {Show(r)}");
         }
+    }
+
+    // ---------------------------------------------------------------- m-1 / m-2 / m-3 / H-1 (decision 194)
+    // Writes the synthetic log, replaces payload values "@TAG" by the Sequence of the record whose payload carries tag=TAG,
+    // and evaluates it.
+    private static V35Result EvaluateTagged(string repo, Log log, string probe)
+    {
+        string path = log.Write();
+        try
+        {
+            var records = File.ReadAllLines(path).Where(l => l.Length > 0).Select(l => JsonNode.Parse(l)!.AsObject()).ToList();
+            var tags = records.Where(r => r["Payload"]!["tag"] is not null).ToDictionary(r => r["Payload"]!["tag"]!.GetValue<string>(), r => r["Sequence"]!.GetValue<long>());
+            foreach (JsonObject r in records)
+                foreach (var kv in r["Payload"]!.AsObject().ToList())
+                    if (kv.Value!.GetValue<string>() is { Length: > 1 } v && v[0] == '@') r["Payload"]![kv.Key] = tags[v[1..]].ToString(System.Globalization.CultureInfo.InvariantCulture);
+            File.WriteAllLines(path, records.Select(r => r.ToJsonString()));
+            V35Authority a = Authority(repo);
+            var evidence = V35RunEvidence.Load(path, new V35ProcessEvidence(4242, true, false, false, true), new V35ScratchEvidence(true, true, false));
+            return new V35ResultEngine(a).Evaluate(a.ByProbe[probe], evidence);
+        }
+        finally { File.Delete(path); }
+    }
+
+    private static bool LockReason(V35Result r, string text) => r.Reasons.Any(x => x.Contains("LOCK-RELEASE-BIND-01", StringComparison.Ordinal) && x.Contains(text, StringComparison.Ordinal));
+
+    // Anonymous (empty-command / `#`) lock cycles observed by the V35-A3 16C-S canary; used here outside the APPCTX bracket.
+    private static string[] SixteenCAnonymousCycles(string repo) =>
+        EventLog(Evidence(repo, "I-52-r3-canary-16C-S-v35a3.json"))
+            .Where(r => Ev(r) == "N-DOC-LOCK-CHANGED" && Pv(r, "globalCommand") is "" or "#").Take(2)
+            .Select(r => $"registration=RR-DOC;document=0x1;current={Pv(r, "current")};myNew={Pv(r, "myNew")};globalCommand={Pv(r, "globalCommand")}").ToArray();
+
+    private static Log AppctxLog(string probe, string stage, IEnumerable<(string Event, string Stage, long Delivery, string Payload)> bracket, string[] outside)
+    {
+        Log l = Pass02N();
+        l.ProbeId = probe;
+        var items = new List<(string, string, long, string)>();
+        items.Add(("N-DOC-LOCK-CHANGED", stage, 9, outside[0] + ";tag=PRE"));
+        items.AddRange(bracket.Select(x => (x.Event, x.Stage, x.Delivery, x.Payload)));
+        items.Add(("N-DOC-LOCK-CHANGED", stage, 9, outside[1] + ";tag=POST"));
+        foreach (var item in items) l.InsertBefore("FIN-GATE-01", "phase=ISSUE", item);
+        return l;
+    }
+
+    private static void M3AppctxBracket(string repo)
+    {
+        string[] anon = SixteenCAnonymousCycles(repo);
+        Require(anon.Length == 2, "16C-S anonymous cycles available");
+        const string S = "STG-APPCTX-DELIVERY";
+        (string, string, long, string) Entry(string st = S) => ("LOCK-RELEASE-BIND-01", st, 9, "phase=APPCTX-CALL-ENTRY;anchor=APPCTX-UNLOCK-01-CALL");
+        (string, string, long, string) Exit(string st = S) => ("LOCK-RELEASE-BIND-01", st, 9, "phase=APPCTX-CALL-EXIT;anchor=APPCTX-UNLOCK-01-CALL;status=0");
+        (string, string, long, string) Raw(string tag, string global, int current, string st = S) => ("N-DOC-LOCK-CHANGED", st, 9, $"registration=RR-DOC;document=0x1;current={current};myNew={current};globalCommand={global};tag={tag}");
+        (string, string, long, string) Mark(string source, string global, int current, string st = S) => ("MARK-LOCK-RELEASE", st, 9, $"anchor=APPCTX-UNLOCK-01-CALL;sourceSequence=@{source};sourceGlobalCommand={global};current={current};myNew={current}");
+
+        // One transition inside the bracket, anonymous 16C-S cycles before and after it: bound.
+        V35Result one = EvaluateTagged(repo, AppctxLog("16A-S", S, [Entry(), Raw("C1", "#I52CTDA_PROBE", 2), Mark("C1", "#I52CTDA_PROBE", 2), Exit()], anon), "16A-S");
+        Require(one.Observations["OBS-LOCK-RELEASE-BOUND"] == V35Tri.True && !LockReason(one, ""), "m-3 one candidate bound, outside cycles ignored: " + Show(one));
+        // Two transitions inside the bracket: UNK-MARKER-BINDING.
+        V35Result two = EvaluateTagged(repo, AppctxLog("16A-S", S, [Entry(), Raw("C1", "#I52CTDA_PROBE", 2), Mark("C1", "#I52CTDA_PROBE", 2), Raw("C2", "", 4),
+            ("LOCK-RELEASE-BIND-01", S, 9, "phase=APPCTX-SECOND;anchor=APPCTX-UNLOCK-01-CALL;sourceSequence=@C2;sourceGlobalCommand=;current=4;myNew=4"), Exit()], anon), "16A-S");
+        Require(two.Observations["OBS-LOCK-RELEASE-BOUND"] == V35Tri.Unavailable && two.UnknownsHolding.Contains("UNK-MARKER-BINDING") && LockReason(two, "2 eligible transitions"), "m-3 second transition: " + Show(two));
+        // No transition inside the bracket: marker absence (no MARK, no binding ambiguity).
+        V35Result zero = EvaluateTagged(repo, AppctxLog("16A-S", S, [Entry(), Exit()], anon), "16A-S");
+        Require(zero.Observations["OBS-LOCK-RELEASE-BOUND"] == V35Tri.Unavailable && !LockReason(zero, ""), "m-3 zero candidates: " + Show(zero));
+        // The native MARK names a transition outside the bracket, or the wrong command, or there is no bracket at all.
+        V35Result outsideMark = EvaluateTagged(repo, AppctxLog("16A-S", S, [Entry(), Raw("C1", "#I52CTDA_PROBE", 2), Mark("PRE", "#I52CTDA_PROBE", 2), Exit()], anon), "16A-S");
+        Require(outsideMark.UnknownsHolding.Contains("UNK-MARKER-BINDING") && LockReason(outsideMark, "native MARK-LOCK-RELEASE names"), "m-3 disagreement (sequence): " + Show(outsideMark));
+        V35Result wrongCommand = EvaluateTagged(repo, AppctxLog("16A-S", S, [Entry(), Raw("C1", "#I52CTDA_PROBE", 2), Mark("C1", "#", 2), Exit()], anon), "16A-S");
+        Require(wrongCommand.UnknownsHolding.Contains("UNK-MARKER-BINDING") && LockReason(wrongCommand, "native MARK-LOCK-RELEASE names"), "m-3 disagreement (command): " + Show(wrongCommand));
+        V35Result noBracket = EvaluateTagged(repo, AppctxLog("16A-S", S, [Raw("C1", "#I52CTDA_PROBE", 2), Mark("C1", "#I52CTDA_PROBE", 2)], anon), "16A-S");
+        Require(noBracket.UnknownsHolding.Contains("UNK-MARKER-BINDING") && LockReason(noBracket, "without an APPCTX-UNLOCK-01 call bracket"), "m-3 MARK without a bracket: " + Show(noBracket));
+        V35Result otherDoc = EvaluateTagged(repo, AppctxLog("16A-S", S, [Entry(), ("N-DOC-LOCK-CHANGED", S, 9, "registration=RR-DOC;document=0x9;current=2;globalCommand=#I52CTDA_PROBE;tag=C1"), Mark("C1", "#I52CTDA_PROBE", 2), Exit()], anon), "16A-S");
+        Require(otherDoc.UnknownsHolding.Contains("UNK-MARKER-BINDING") && LockReason(otherDoc, "without an eligible transition"), "m-3 other document is not a candidate: " + Show(otherDoc));
+        // 13A-SM (STG-SYNC-APPCTX): the candidate need not end unlocked.
+        const string Sync = "STG-SYNC-APPCTX";
+        V35Result sync = EvaluateTagged(repo, AppctxLog("13A-SM", Sync, [Entry(Sync), Raw("C1", "#I52CTDA_PROBE", 4, Sync), Mark("C1", "#I52CTDA_PROBE", 4, Sync), Exit(Sync)], anon), "13A-SM");
+        Require(sync.Observations["OBS-LOCK-RELEASE-BOUND"] == V35Tri.True && !LockReason(sync, ""), "m-3 13A-SM non-unlocked candidate accepted: " + Show(sync));
+    }
+
+    private static void M1PayloadDatabase(string repo)
+    {
+        V35Authority a = Authority(repo);
+        string probe = a.Rows.First(r => r.UnknownPredicateIds.Contains("UNK-PAYLOAD-DB")).ProbeId;
+        V35Result Judge(string binding, string arm)
+        {
+            Log l = Pass02N(); l.ProbeId = probe;
+            l.InsertBefore("TRG-MODIFY-TRIGGER-MOD", "phase=BEGIN", ("PAYLOAD-DB-BINDING", "STG-PAYLOAD-INIT", 3, binding));
+            l.InsertBefore("TRG-MODIFY-TRIGGER-MOD", "phase=BEGIN", ("R-PAYLOAD-ARX", "STG-PAYLOAD-INIT", 3, arm));
+            string path = l.Write();
+            try
+            {
+                var lines = File.ReadAllLines(path).Select(x => JsonNode.Parse(x)!.AsObject()).ToList();
+                foreach (JsonObject r in lines.Where(r => r["EventOrMarkerId"]!.GetValue<string>() is "PAYLOAD-DB-BINDING" or "R-PAYLOAD-ARX")) r["ModuleId"] = "R-PAYLOAD-ARX";
+                File.WriteAllLines(path, lines.Select(x => x.ToJsonString()));
+                var ev = V35RunEvidence.Load(path, new V35ProcessEvidence(4242, true, false, false, true), new V35ScratchEvidence(true, true, false));
+                return new V35ResultEngine(a).Evaluate(a.ByProbe[probe], ev);
+            }
+            finally { File.Delete(path); }
+        }
+        V35Result wrongUnarmed = Judge("holds=1", "phase=C15-ARM;armed=0;databaseMatches=0");
+        Require(wrongUnarmed.Result == "UNKNOWN" && wrongUnarmed.UnknownsHolding.Contains("UNK-PAYLOAD-DB") && wrongUnarmed.Reasons.Any(x => x.Contains("C15-ARM databaseMatches is not 1", StringComparison.Ordinal)),
+            "m-1 wrong DB, unarmed: " + Show(wrongUnarmed));
+        V35Result right = Judge("holds=1", "phase=C15-ARM;armed=0;databaseMatches=1");
+        Require(!right.UnknownsHolding.Contains("UNK-PAYLOAD-DB"), "m-1 correct DB: no UNK-PAYLOAD-DB: " + Show(right));
+        Require(Judge("holds=0", "phase=C15-ARM;armed=0;databaseMatches=1").UnknownsHolding.Contains("UNK-PAYLOAD-DB"), "m-1 binding false");
+        // Native payload: the database identity is checked before the unarmed return.
+        string payload = File.ReadAllText(Path.Combine(repo, "eng", "research", "I52Ctda", "payload", "I52CtdaPayload.cpp"));
+        int dbCheck = payload.IndexOf("if (arm.databaseMatches != 1)", StringComparison.Ordinal), unarmed = payload.IndexOf("if (arm.armed != 1) return;", StringComparison.Ordinal);
+        Require(dbCheck > 0 && unarmed > dbCheck, "m-1 payload checks databaseMatches before the unarmed return");
+    }
+
+    private static void M2NegativeMarkerInfra(string repo)
+    {
+        V35Authority a = Authority(repo);
+        V35RowPlan plan = a.ByProbe["10NDOC-WILL-SM"];
+        Require(plan.Markers.Any(m => !m.MustBePresent && m.Id == "N-DOC-LOCK-VETO") && plan.MarkerStageBindings.All(b => b.Marker != "N-DOC-LOCK-VETO"), "10NDOC-WILL-SM has an unbound negative marker");
+        Log clean = Pass02N(); clean.ProbeId = "10NDOC-WILL-SM";
+        V35Result baseline = Evaluate(repo, clean, "10NDOC-WILL-SM");
+        Require(!baseline.EvidenceGaps.Any(g => g.Contains("-N-DOC-LOCK-VETO", StringComparison.Ordinal)), "baseline: no negative marker");
+        foreach (string stage in new[] { "STG-FIN-GATE", "STG-DRIVER-APP", "STG-PROBE-CMD" })
+        {
+            Log l = Pass02N(); l.ProbeId = "10NDOC-WILL-SM";
+            l.InsertBefore("FIN-GATE-01", "phase=ISSUE", ("N-DOC-LOCK-VETO", stage, 2, "registration=RR-DOC;document=0x1"));
+            V35Result r = Evaluate(repo, l, "10NDOC-WILL-SM");
+            Require(r.Result == "UNKNOWN" && r.EvidenceGaps.Any(g => g.Contains("(3) -N-DOC-LOCK-VETO observed 1", StringComparison.Ordinal)) && r.Observations["OBS-MARKERS"] != V35Tri.True,
+                $"m-2 negative marker in {stage}: {Show(r)}");
+        }
+    }
+
+    private static void H1ExitTime(string repo)
+    {
+        Require(V35ProcessRunner.ExitTimeOrNull(new DateTime(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc)) is null, "FILETIME-zero is null");
+        Require(V35ProcessRunner.ExitTimeOrNull(DateTime.FromFileTimeUtc(0)) is null, "FromFileTimeUtc(0) is null");
+        Require(V35ProcessRunner.ExitTimeOrNull(new DateTime(2026, 9, 28, 4, 3, 38, DateTimeKind.Utc)) == new DateTimeOffset(2026, 9, 28, 4, 3, 38, TimeSpan.Zero), "real exit time kept");
+        string log = Path.GetTempFileName();
+        try
+        {
+            V35ProcessRun run = V35ProcessRunner.RunAsync(Path.Combine(Environment.SystemDirectory, "cmd.exe"), "/c exit 0", repo, new Dictionary<string, string?>(), log,
+                TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(20)).GetAwaiter().GetResult();
+            Require(run.ObservedExitAtUtc is { } observed && observed >= run.StartedAtUtc && (run.ExitedAtUtc is null || run.ExitedAtUtc.Value.Year > 1601) && run.ExitCode == 0,
+                $"observed exit recorded; no 1601 sentinel ({run.ExitedAtUtc}, {run.ObservedExitAtUtc})");
+        }
+        finally { File.Delete(log); }
     }
 }

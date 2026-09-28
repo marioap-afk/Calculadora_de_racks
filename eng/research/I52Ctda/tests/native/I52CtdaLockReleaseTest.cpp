@@ -117,6 +117,38 @@ void cleanSixteenNS()
     expect(marks == 1 && tokens == 1 && w.boundSequence() == 69, "one MARK and one token, bound to the own release");
     expect(has(w.close(L"NEXT-COMMAND-WILL-START"), L"resolved=1;eligible=1;foreign=5;inconsistent=0;boundSequence=69"), "clean 16N-S window resolves");
 }
+
+// m-3: APPCTX-UNLOCK-01-CALL bracket. One transition inside the unlockDocument call marks (with source Sequence and global
+// command, not necessarily unlocked for 13A-SM); a second fails closed; none leaves the bracket unresolved; transitions
+// before ENTRY or after EXIT (merely inside the APPCTX stage) and on another document are never candidates.
+void appctxBracket()
+{
+    I52AppctxUnlockBracket outside;
+    expect(outside.observe(40, true, L"", kWrite, kWrite).kind == I52LockClass::NotScratch, "cycle before the bracket is not a candidate");
+    I52AppctxUnlockBracket one;
+    expect(has(one.enter(), L"phase=APPCTX-CALL-ENTRY"), "bracket entry record");
+    expect(one.observe(41, false, L"", kNotLocked, kNotLocked).kind == I52LockClass::NotScratch, "other document inside the bracket is ignored");
+    const I52LockDecision first = one.observe(42, true, L"#I52CTDA_PROBE", kNotLocked, kNotLocked);
+    expect(first.mark && first.token && has(first.payload, L"anchor=APPCTX-UNLOCK-01-CALL;sourceSequence=42;sourceGlobalCommand=#I52CTDA_PROBE"), "one transition marks with its source");
+    expect(has(one.exit(0), L"transitions=1;boundSequence=42;resolved=1") && one.resolved(), "bracket resolves on one transition");
+    expect(one.observe(44, true, L"#", kNotLocked, kNotLocked).kind == I52LockClass::NotScratch, "cycle after the bracket is not a candidate");
+
+    I52AppctxUnlockBracket two;
+    two.enter();
+    two.observe(50, true, L"#I52CTDA_PROBE", kNotLocked, kNotLocked);
+    const I52LockDecision second = two.observe(51, true, L"", kWrite, kWrite);
+    expect(second.kind == I52LockClass::Duplicate && !second.mark && !second.token && has(second.payload, L"phase=APPCTX-SECOND;"), "second transition in the bracket is recorded, never marked");
+    expect(has(two.exit(0), L"transitions=2;boundSequence=50;resolved=0") && !two.resolved(), "two transitions do not resolve");
+
+    I52AppctxUnlockBracket none;
+    none.enter();
+    expect(has(none.exit(0), L"transitions=0;boundSequence=0;resolved=0") && !none.resolved(), "no transition: marker absence");
+
+    I52AppctxUnlockBracket sync;
+    sync.enter();
+    const I52LockDecision locked = sync.observe(60, true, L"#I52CTDA_PROBE", kWrite, kWrite);
+    expect(locked.mark && locked.token && has(locked.payload, L"current=4"), "13A-SM: the candidate need not end unlocked");
+}
 }
 
 int runLockReleaseTests()
@@ -128,6 +160,7 @@ int runLockReleaseTests()
     reacquisitionAndNotUnlocked();
     wrongDocumentAndCase();
     cleanSixteenNS();
-    std::printf("%s D-4 LOCK-RELEASE-BIND-01 COMMAND-END-WINDOW: 7 groups, %d failures\n", lockFailures == 0 ? "PASS" : "FAIL", lockFailures);
+    appctxBracket();
+    std::printf("%s D-4/m-3 LOCK-RELEASE-BIND-01 COMMAND-END-WINDOW and APPCTX bracket: 8 groups, %d failures\n", lockFailures == 0 ? "PASS" : "FAIL", lockFailures);
     return lockFailures == 0 ? 0 : 1;
 }

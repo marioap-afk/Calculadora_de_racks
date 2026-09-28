@@ -69,6 +69,39 @@ I52LockDecision I52CommandEndWindow::observe(uint64_t sourceSequence, bool scrat
     return d;
 }
 
+std::wstring I52AppctxUnlockBracket::enter()
+{
+    active_ = true;
+    transitions_ = 0;
+    bound_ = 0;
+    return L"phase=APPCTX-CALL-ENTRY;anchor=APPCTX-UNLOCK-01-CALL";
+}
+
+I52LockDecision I52AppctxUnlockBracket::observe(uint64_t sourceSequence, bool scratchDocument, const std::wstring& globalCommand, int currentMode, int myNewMode)
+{
+    I52LockDecision d{};
+    if (!active_ || !scratchDocument) { d.kind = I52LockClass::NotScratch; return d; }
+    const std::wstring raw = L"sourceSequence=" + std::to_wstring(sourceSequence) + L";sourceGlobalCommand=" + globalCommand
+        + L";current=" + std::to_wstring(currentMode) + L";myNew=" + std::to_wstring(myNewMode);
+    if (++transitions_ == 1)
+    {
+        bound_ = sourceSequence;
+        d.kind = I52LockClass::Eligible; d.mark = true; d.token = true;
+        d.payload = L"anchor=APPCTX-UNLOCK-01-CALL;" + raw;
+        return d;
+    }
+    d.kind = I52LockClass::Duplicate; d.record = true;
+    d.payload = L"phase=APPCTX-SECOND;anchor=APPCTX-UNLOCK-01-CALL;" + raw;
+    return d;
+}
+
+std::wstring I52AppctxUnlockBracket::exit(int status)
+{
+    active_ = false;
+    return L"phase=APPCTX-CALL-EXIT;anchor=APPCTX-UNLOCK-01-CALL;status=" + std::to_wstring(status) + L";transitions=" + std::to_wstring(transitions_)
+        + L";boundSequence=" + std::to_wstring(bound_) + L";resolved=" + (transitions_ == 1 ? L"1" : L"0");
+}
+
 std::wstring I52CommandEndWindow::close(const wchar_t* reason)
 {
     open_ = false;

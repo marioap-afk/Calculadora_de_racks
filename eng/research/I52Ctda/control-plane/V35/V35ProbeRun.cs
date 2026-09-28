@@ -90,7 +90,7 @@ public static class V35RunArtifacts
 }
 
 public sealed record V35ProcessRun(int ProcessId, DateTimeOffset StartedAtUtc, DateTimeOffset? ExitedAtUtc, int? ExitCode, bool FinishRecordSeen, bool TerminatedByControlPlane, bool ProcessGone, bool ExitedWithinPostFinishDeadline,
-    bool InteractiveStateObserved = false, string? InteractiveState = null);
+    bool InteractiveStateObserved = false, string? InteractiveState = null, DateTimeOffset? ObservedExitAtUtc = null);
 
 // External fence: FIN-GATE-01.externalDeadlineSeconds without a FINISH record, or postFinishDeadlineSeconds after it,
 // terminates the exact PID (UNKNOWN). D-3: an interactive (modal) state terminates it at once, before anyone can answer.
@@ -124,10 +124,25 @@ public static class V35ProcessRunner
             }
         }
         if (finishSeen is null && FinishRecorded(eventLog)) finishSeen = DateTimeOffset.UtcNow;
-        DateTimeOffset exited = new(process.ExitTime.ToUniversalTime(), TimeSpan.Zero);
+        // H-1: the runner records when it observed the exit; Process.ExitTime can be the FILETIME-zero sentinel (1601-01-01),
+        // which is reported as null. Neither value is a classification input.
+        DateTimeOffset observedExit = DateTimeOffset.UtcNow;
+        DateTimeOffset? exited = ExitTimeOrNull(process);
         bool withinDeadline = finishSeen is not null && !terminated;
         return new(pid, started, exited, process.ExitCode, finishSeen is not null, terminated, ProcessExitVerifier.IsGone(pid, started), withinDeadline,
-            watch.Observed is not null, watch.Observed);
+            watch.Observed is not null, watch.Observed, observedExit);
+    }
+
+    public static DateTimeOffset? ExitTimeOrNull(Process process)
+    {
+        try { return ExitTimeOrNull(process.ExitTime); }
+        catch (InvalidOperationException) { return null; }
+    }
+
+    public static DateTimeOffset? ExitTimeOrNull(DateTime exitTime)
+    {
+        DateTime utc = exitTime.Kind == DateTimeKind.Utc ? exitTime : exitTime.ToUniversalTime();
+        return utc.Year <= 1601 ? null : new DateTimeOffset(utc, TimeSpan.Zero);
     }
 
     private static bool FinishRecorded(string eventLog)

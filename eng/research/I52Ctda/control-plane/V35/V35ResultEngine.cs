@@ -114,7 +114,7 @@ public sealed class V35ResultEngine(V35Authority authority)
             {
                 int n = MarkerMatches(m.Id).Count();
                 if (m.MustBePresent && (Bound(m.Id) ? n != 1 : n < 1)) gaps.Add($"(3) +{m.Id} matched {n}");
-                if (!m.MustBePresent && n != 0) gaps.Add($"(3) -{m.Id} observed {n}");
+                if (!m.MustBePresent && (n = NegativeMarkerMatches(m.Id).Count()) != 0) gaps.Add($"(3) -{m.Id} observed {n}");
             }
             // (4) verifier reads
             foreach (string v in plan.VerifierIds) if (!log.Any(v, r => r.Is("phase", "FRESH"))) gaps.Add("(4) verifier " + v);
@@ -206,18 +206,68 @@ public sealed class V35ResultEngine(V35Authority authority)
         // the unlocked mode and the `#` + C identity (ASCII case-insensitive). Exactly one eligible release and no identity
         // inconsistency bind; the native MARK-LOCK-RELEASE must name that release (Sequence and global command) or the window
         // is UNK-MARKER-BINDING. Foreign transitions are neither candidates nor blocking.
-        private sealed record LockWindow(bool Applies, string Command, long Open, long Close, IReadOnlyList<V35LogRecord> Eligible,
+        private sealed record LockWindow(bool Applies, string Anchor, string Command, long Open, long Close, IReadOnlyList<V35LogRecord> Eligible,
             IReadOnlyList<string> Inconsistent, string? Disagreement)
         {
             public bool Bound => Applies && Eligible.Count == 1 && Inconsistent.Count == 0 && Disagreement is null;
             public bool Ambiguous => Applies && (Eligible.Count >= 2 || Inconsistent.Count > 0 || Disagreement is not null);
-            public string Reason => Eligible.Count >= 2 ? $"{Eligible.Count} eligible releases (sequences {string.Join(",", Eligible.Select(e => e.Sequence))})"
+            public string Reason => Eligible.Count >= 2 ? $"{Eligible.Count} eligible {(Anchor == "COMMAND-END-WINDOW" ? "releases" : "transitions in the unlockDocument bracket")} (sequences {string.Join(",", Eligible.Select(e => e.Sequence))})"
                 : Inconsistent.Count > 0 ? "identity-inconsistent window: " + string.Join("; ", Inconsistent) : Disagreement ?? "";
         }
 
         private const int NotLocked = 2;  // AcAp::kNotLocked
-        private LockWindow? commandEndWindow;
-        private LockWindow CommandEndWindow() => commandEndWindow ??= ComputeCommandEndWindow();
+        private LockWindow? lockRelease;
+        private LockWindow LockRelease() => lockRelease ??= ComputeLockRelease();
+
+        private LockWindow ComputeLockRelease()
+        {
+            V35MarkerBinding? binding = plan.MarkerStageBindings.FirstOrDefault(b => b.Marker == "MARK-LOCK-RELEASE");
+            string anchor = binding is null ? "" : authority["LOCK-RELEASE-BIND-01"].Raw["anchors"]?[binding.Stage]?.GetValue<string>() ?? "";
+            return anchor switch
+            {
+                "COMMAND-END-WINDOW" => ComputeCommandEndWindow(binding!),
+                "APPCTX-UNLOCK-01-CALL" => ComputeAppctxBracket(binding!),
+                _ => new(false, anchor, "", 0, 0, [], [], null),
+            };
+        }
+
+        // m-3: APPCTX-UNLOCK-01-CALL recomputed from the recorded unlockDocument bracket (LOCK-RELEASE-BIND-01 APPCTX-CALL-ENTRY /
+        // APPCTX-CALL-EXIT of the bound stage) and the raw RR-DOC transitions of the scratch document inside it. Every such
+        // transition is a candidate (13A-SM: the new mode need not be unlocked); transitions merely inside the stage but outside
+        // the call are not. Exactly one candidate must match the native MARK (Sequence and global command); none is marker
+        // absence; two or more, an unclosed bracket or a disagreement is UNK-MARKER-BINDING.
+        private LockWindow ComputeAppctxBracket(V35MarkerBinding binding)
+        {
+            IReadOnlyList<V35LogRecord> all = log.All;
+            var inconsistent = new List<string>();
+            V35LogRecord[] marks = all.Where(r => r.EventOrMarkerId == "MARK-LOCK-RELEASE" && r.StageId == binding.Stage).ToArray();
+            V35LogRecord[] entries = all.Where(r => r.EventOrMarkerId == "LOCK-RELEASE-BIND-01" && r.StageId == binding.Stage && r.Is("phase", "APPCTX-CALL-ENTRY")).ToArray();
+            if (entries.Length == 0)
+                return new(true, "APPCTX-UNLOCK-01-CALL", "", 0, 0, [], inconsistent, marks.Length > 0 ? "native MARK-LOCK-RELEASE without an APPCTX-UNLOCK-01 call bracket" : null);
+            if (entries.Length > 1) inconsistent.Add($"{entries.Length} unlockDocument brackets in {binding.Stage}");
+            long open = entries[0].Sequence;
+            V35LogRecord? exit = all.FirstOrDefault(r => r.EventOrMarkerId == "LOCK-RELEASE-BIND-01" && r.StageId == binding.Stage && r.Is("phase", "APPCTX-CALL-EXIT") && r.Sequence > open);
+            if (exit is null) inconsistent.Add("unlockDocument bracket not closed");
+            long close = exit?.Sequence ?? long.MaxValue;
+            var candidates = all.Where(r => r.EventOrMarkerId == "N-DOC-LOCK-CHANGED" && r.Is("registration", "RR-DOC") && r.Sequence > open && r.Sequence < close
+                && r.P("document").Length > 0 && r.P("document") == r.DocumentId).ToList();
+            return new(true, "APPCTX-UNLOCK-01-CALL", "", open, close, candidates, inconsistent, Disagreement(candidates, marks));
+        }
+
+        private static string? Disagreement(IReadOnlyList<V35LogRecord> eligible, V35LogRecord[] marks)
+        {
+            if (eligible.Count == 1)
+            {
+                V35LogRecord e = eligible[0];
+                if (marks.Length != 1) return $"{marks.Length} native MARK-LOCK-RELEASE records for the one eligible transition {e.Sequence}";
+                if (marks[0].P("sourceSequence") != e.Sequence.ToString(CultureInfo.InvariantCulture) || marks[0].P("sourceGlobalCommand") != e.P("globalCommand") || marks[0].Sequence < e.Sequence)
+                    return $"native MARK-LOCK-RELEASE names {marks[0].P("sourceSequence")}/{marks[0].P("sourceGlobalCommand")}; recomputed {e.Sequence}/{e.P("globalCommand")}";
+                return null;
+            }
+            if (eligible.Count == 0 && marks.Length > 0)
+                return $"native MARK-LOCK-RELEASE {marks[0].P("sourceSequence")}/{marks[0].P("sourceGlobalCommand")} without an eligible transition (foreign, other document, other command or outside the window)";
+            return null;
+        }
 
         private static bool AsciiEquals(string a, string b)
         {
@@ -230,11 +280,8 @@ public sealed class V35ResultEngine(V35Authority authority)
             return true;
         }
 
-        private LockWindow ComputeCommandEndWindow()
+        private LockWindow ComputeCommandEndWindow(V35MarkerBinding binding)
         {
-            V35MarkerBinding? binding = plan.MarkerStageBindings.FirstOrDefault(b => b.Marker == "MARK-LOCK-RELEASE");
-            string anchor = binding is null ? "" : authority["LOCK-RELEASE-BIND-01"].Raw["anchors"]?[binding.Stage]?.GetValue<string>() ?? "";
-            if (binding is null || anchor != "COMMAND-END-WINDOW") return new(false, "", 0, 0, [], [], null);
             IReadOnlyList<V35LogRecord> all = log.All;
             var inconsistent = new List<string>();
             V35LogRecord[] wills = all.Where(r => r.EventOrMarkerId == "N-ED-WILL" && r.StageId == binding.Stage && r.Is("registration", "RR-ED")).ToArray();
@@ -245,7 +292,7 @@ public sealed class V35ResultEngine(V35Authority authority)
             V35LogRecord? ended = c.Length == 0 ? null
                 : all.FirstOrDefault(r => r.EventOrMarkerId == "N-ED-END" && r.Is("registration", "RR-ED") && r.Sequence > wills[0].Sequence && AsciiEquals(r.P("command"), c));
             if (ended is null)
-                return new(true, c, 0, 0, [], inconsistent, marks.Length > 0 ? "native MARK-LOCK-RELEASE without a commandEnded of the stage command" : null);
+                return new(true, "COMMAND-END-WINDOW", c, 0, 0, [], inconsistent, marks.Length > 0 ? "native MARK-LOCK-RELEASE without a commandEnded of the stage command" : null);
             long open = ended.Sequence;
             long close = new[]
             {
@@ -264,21 +311,16 @@ public sealed class V35ResultEngine(V35Authority authority)
                 else if (own) inconsistent.Add($"(c) {g} at {t.Sequence} does not end unlocked");
                 else if (c.Length > 0 && AsciiEquals(g, c)) inconsistent.Add($"(b) {g} re-acquired the lock at {t.Sequence}");
             }
-            string? disagreement = null;
-            if (eligible.Count == 1)
-            {
-                V35LogRecord e = eligible[0];
-                if (marks.Length != 1) disagreement = $"{marks.Length} native MARK-LOCK-RELEASE records for the one eligible release {e.Sequence}";
-                else if (marks[0].P("sourceSequence") != e.Sequence.ToString(CultureInfo.InvariantCulture) || marks[0].P("sourceGlobalCommand") != e.P("globalCommand") || marks[0].Sequence < e.Sequence)
-                    disagreement = $"native MARK-LOCK-RELEASE names {marks[0].P("sourceSequence")}/{marks[0].P("sourceGlobalCommand")}; recomputed {e.Sequence}/{e.P("globalCommand")}";
-            }
-            else if (eligible.Count == 0 && marks.Length > 0)
-                disagreement = $"native MARK-LOCK-RELEASE {marks[0].P("sourceSequence")}/{marks[0].P("sourceGlobalCommand")} without an eligible release (foreign, other document, other command or outside the window)";
-            return new(true, c, open, close, eligible, inconsistent, disagreement);
+            return new(true, "COMMAND-END-WINDOW", c, open, close, eligible, inconsistent, Disagreement(eligible, marks));
         }
 
         // ---------------------------------------------------------------- markers (MARKER-STAGE-BIND-01)
         private bool Bound(string marker) => plan.MarkerStageBindings.Any(b => b.Marker == marker);
+
+        // m-2: absence of an unbound negative marker is required over the whole run window, INFRA and DRIVER stages included;
+        // a bound negative marker keeps its stage binding.
+        private IEnumerable<V35LogRecord> NegativeMarkerMatches(string marker) =>
+            Bound(marker) ? MarkerMatches(marker) : log.RunWindow.Where(r => r.EventOrMarkerId == marker);
 
         private IEnumerable<V35LogRecord> MarkerMatches(string marker)
         {
@@ -340,7 +382,7 @@ public sealed class V35ResultEngine(V35Authority authority)
             case "UNK-MARKER-BINDING":
                 foreach (V35MarkerBinding b in plan.MarkerStageBindings)
                     if (MarkerMatches(b.Marker).Count() >= 2) { why = $"{b.Marker}@{b.Stage} matched twice"; return true; }
-                if (CommandEndWindow() is { Ambiguous: true } w) { why = "LOCK-RELEASE-BIND-01 COMMAND-END-WINDOW: " + w.Reason; return true; }
+                if (LockRelease() is { Ambiguous: true } w) { why = $"LOCK-RELEASE-BIND-01 {w.Anchor}: {w.Reason}"; return true; }
                 if (log.Any("MARK-LOCK-RELEASE", r => r.Is("candidate", "SECOND") && plan.MarkerStageBindings.Any(b => b.Marker == "MARK-LOCK-RELEASE" && b.Stage == r.StageId)))
                 { why = "second lock-release candidate in the bound window"; return true; }
                 return false;
@@ -375,7 +417,10 @@ public sealed class V35ResultEngine(V35Authority authority)
                 if (!log.Any(plan.CleanupActionId, r => r.Is("phase", "END") && r.Is("ok", "1")) || evidence.Process is not { ProcessGone: true }) { why = "cleanup or process-exit proof missing"; return true; }
                 return false;
             case "UNK-PAYLOAD-DB":
+                // m-1: armed or not, the payload row needs both identities of the scratch database.
                 if (!log.Any("PAYLOAD-DB-BINDING", r => r.Is("holds", "1"))) { why = "PAYLOAD-DB-BINDING not TRUE"; return true; }
+                if (!log.Any("R-PAYLOAD-ARX", r => r.ModuleId == "R-PAYLOAD-ARX" && r.Is("phase", "C15-ARM") && r.Is("databaseMatches", "1")))
+                { why = "C15-ARM databaseMatches is not 1"; return true; }
                 return false;
             case "UNK-CANCELLATION-MISSING":
                 if (Observation("OBS-CANCELLATION") != V35Tri.True) { why = "exact N-ED-CANCEL not observed before the queued delivery"; return true; }
@@ -539,7 +584,7 @@ public sealed class V35ResultEngine(V35Authority authority)
                     int n = MarkerMatches(m.Id).Count();
                     if (m.MustBePresent && n == 0) return V35Tri.Unavailable;
                     if (m.MustBePresent && Bound(m.Id) && n != 1) return V35Tri.Unavailable;
-                    if (!m.MustBePresent && n != 0) return V35Tri.False;
+                    if (!m.MustBePresent && NegativeMarkerMatches(m.Id).Any()) return V35Tri.False;
                 }
                 return V35Tri.True;
             case "OBS-OUTCOME-COMMIT":
@@ -567,8 +612,8 @@ public sealed class V35ResultEngine(V35Authority authority)
             {
                 V35MarkerBinding? binding = plan.MarkerStageBindings.FirstOrDefault(b => b.Marker == "MARK-LOCK-RELEASE");
                 if (binding is null) return V35Tri.Unavailable;
-                // V35-A3: COMMAND-END-WINDOW is recomputed from the recorded transitions; APPCTX-UNLOCK-01-CALL is unchanged.
-                if (CommandEndWindow() is { Applies: true } w) return w.Bound ? V35Tri.True : V35Tri.Unavailable;
+                // V35-A3: both anchors are recomputed from the recorded transitions (COMMAND-END-WINDOW: D-4; APPCTX: m-3).
+                if (LockRelease() is { Applies: true } w) return w.Bound ? V35Tri.True : V35Tri.Unavailable;
                 int n = MarkerMatches("MARK-LOCK-RELEASE").Count();
                 bool second = log.Any("MARK-LOCK-RELEASE", r => r.Is("candidate", "SECOND") && r.StageId == binding.Stage);
                 return n == 1 && !second ? V35Tri.True : V35Tri.Unavailable;
