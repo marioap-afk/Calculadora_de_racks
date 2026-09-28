@@ -117,7 +117,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN (V35-A3); R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); CANARY RESTART 09N-B VALID PASS-T (H-1 MINOR); CANARY RESTART 02NDBMOD-S VALID PASS-S; CANARY RESTART 02NO-S VALID PASS-S (H-1 RECURRED); CANARY RESTART 16N-S UNKNOWN (D-4 REPRODUCED); D-4 = V35 CONTRACT DEFECT; V35-A3 FROZEN (A3-D4); D-4 IMPLEMENTED (RUNTIME + ENGINE); R3 HOST SMOKE afa65bc0 PASS (V35-A3 IDENTITY, D-4 HOST BASELINE); VALID GOVERNED RESULTS = 3.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN (V35-A3); R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); CANARY RESTART 09N-B VALID PASS-T (H-1 MINOR); CANARY RESTART 02NDBMOD-S VALID PASS-S; CANARY RESTART 02NO-S VALID PASS-S (H-1 RECURRED); CANARY RESTART 16N-S UNKNOWN (D-4 REPRODUCED); D-4 = V35 CONTRACT DEFECT; V35-A3 FROZEN (A3-D4); D-4 IMPLEMENTED (RUNTIME + ENGINE); R3 HOST SMOKE afa65bc0 PASS (V35-A3 IDENTITY, D-4 HOST BASELINE); 16N-S V35-A3 VALID PASS-S (D-4 HOST VALIDATION PASS); VALID GOVERNED RESULTS = 4.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -319,9 +319,25 @@ clasificaciones).
 - `R3_PRE_RUN_TUPLE_HASH` = `D13B968DC219A7576E0C12B26D5AA058376C4203540EC274399F2F1291B879F3`.
 - [Evidencia](automation/evidence/I-52-r3-host-smoke-afa65bc0.json).
 
-**Siguiente gate: 16N-S V35-A3 GOVERNED CANARY AUTHORIZATION.**
-- Probes gobernados ejecutados: 8.
-- Resultados gobernados válidos: 3.
+**Canary 16N-S bajo V35-A3 (§191): VALID PASS-S** con el paquete `afa65bc0` (PID 27696). **Validación de D-4 en el host:
+PASS.**
+- C = `I52CTDA_QUEUED`, con exactamente una liberación elegible (69, `#I52CTDA_QUEUED`). MARK-LOCK-RELEASE y
+  TOK-LOCK-RELEASE, una vez cada uno (`sourceSequence = 69`).
+- Las transiciones ajenas (dos ciclos de lock, más la adquisición de FINISH) se registran como FOREIGN y no son elegibles.
+  Cierre de la ventana: `eligible=1`, `foreign=5`, `inconsistent=0`, `boundSequence=69`.
+- El recálculo del plano de control coincide exactamente con el MARK nativo. `OBS-LOCK-RELEASE-BOUND = true` y
+  `UNK-MARKER-BINDING = false`.
+- La secuencia cruda de comandos y locks es idéntica al re-run A2 de §186. El resultado A2 sigue UNKNOWN y no se
+  regradúa.
+- Los 6 tokens aceptados, MUT-S una vez en T_SEND, verificador EQUAL y CLEAN-DEFER PASS. EVIDENCE-COMPLETE y
+  SAFETY-EVIDENCE-COMPLETE verdaderos.
+- D-2, D-3 y harness: PASS. H-1 no reapareció. El operador declara que no hubo interacción.
+- `R3_PRE_RUN_TUPLE_HASH` = `65E56B081E194629C993A84A51D21042A59A7A8C17EC401B4BDBA381F880DB41`.
+- [Evidencia](automation/evidence/I-52-r3-canary-16N-S-v35a3.json).
+
+**Siguiente gate: 10N-S V35-A3 FIXTURE-ANCHOR CHARACTERIZATION AUTHORIZATION.**
+- Probes gobernados ejecutados: 9.
+- Resultados gobernados válidos: 4 (09N-B PASS-T, 02NDBMOD-S PASS-S, 02NO-S PASS-S y 16N-S PASS-S bajo A3).
 - H-1 (MINOR) sigue abierto.
 - `CTDA_HOST_PASS` NOT EVALUATED.
 - Ningún ProbeId autorizado.
