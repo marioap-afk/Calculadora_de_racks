@@ -117,7 +117,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); CANARY RESTART 09N-B VALID PASS-T (H-1 MINOR); CANARY RESTART 02NDBMOD-S VALID PASS-S; VALID GOVERNED RESULTS = 2.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); CANARY RESTART 09N-B VALID PASS-T (H-1 MINOR); CANARY RESTART 02NDBMOD-S VALID PASS-S; CANARY RESTART 02NO-S VALID PASS-S (H-1 RECURRED); VALID GOVERNED RESULTS = 3.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -252,9 +252,17 @@ Fix de D-3 (solo research):
 - `R3_PRE_RUN_TUPLE_HASH` = `4054743895ADE4A70F9281DB767597E49580BB92EBDD223849D3E8CCD02E087A`.
 - [Evidencia](automation/evidence/I-52-r3-canary-02NDBMOD-S-restart.json).
 
-**Siguiente gate: COORDINATOR NEXT-CANARY SELECTION.**
-- Probes gobernados ejecutados: 5.
-- Resultados gobernados válidos: 2 (09N-B PASS-T y 02NDBMOD-S PASS-S).
+**Reinicio de canaries #3: 02NO-S (§185) = VALID PASS-S** con el paquete `e864a093` (PID 20700; primera ejecución).
+- Object reactor OR-TXR: RG-ONESHOT admitió una vez; cuerpo y MUT-S exactamente una vez dentro de T-PRIMARY; N-OBJ-MOD y
+  N-OBJ-CLOSED presentes; OBS-NOTIFIER-WRITE; sin reentrada; VER-S y VER-T `HFV30:S:1`, verificador EQUAL; CLEAN-OBJ PASS.
+- Regresiones D-2, D-3 y harness: PASS. El operador declara que no hubo entrada de mouse ni teclado.
+- H-1 reapareció (2 de 3 canaries); MINOR / follow-up del build side; no invalida la corrida.
+- `R3_PRE_RUN_TUPLE_HASH` = `EA635FC0A228A34E9A35B7C1F443D2D1B14ECC77CF596382D4938001484FB149`.
+- [Evidencia](automation/evidence/I-52-r3-canary-02NO-S-restart.json).
+
+**Siguiente gate: 16N-S AUTHORIZATION.**
+- Probes gobernados ejecutados: 6.
+- Resultados gobernados válidos: 3 (09N-B PASS-T, 02NDBMOD-S PASS-S y 02NO-S PASS-S).
 - H-1 (MINOR) sigue abierto como follow-up del build side.
 - `CTDA_HOST_PASS` NOT EVALUATED.
 - Ningún ProbeId autorizado.
