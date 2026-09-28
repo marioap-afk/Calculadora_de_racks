@@ -198,7 +198,8 @@ private:
     std::vector<CommandStage> commandStages_;
     // LOCK-RELEASE-BIND-01 COMMAND-END-WINDOW (V35-A3): the classification lives in I52CommandEndWindow.
     struct Window { I52CommandEndWindow rule; I52Id stage{}; uint64_t delivery{}; } window_;
-    struct AppUnlock { bool active{}; bool resolved{}; I52Id stage{}; uint64_t delivery{}; } appUnlock_;
+    // LOCK-RELEASE-BIND-01 APPCTX-UNLOCK-01-CALL (V35-A3, m-3): the unlockDocument bracket lives in I52AppctxUnlockBracket.
+    struct AppUnlock { I52AppctxUnlockBracket rule; I52Id stage{}; uint64_t delivery{}; } appUnlock_;
 
     // Document lock requests (TRG-LOCK-CYCLE / TRG-LOCK-VETO).
     int lockRequest_{};

@@ -497,11 +497,16 @@ void I52Executor::onDocument(const void* instance, I52Id event, AcApDocument* do
     // LOCK-RELEASE-BIND-01 anchors.
     if (event == I52Id::N_DOC_LOCK_CHANGED)
     {
-        if (appUnlock_.active && !appUnlock_.resolved)
+        if (appUnlock_.rule.isActive())
         {
-            appUnlock_.resolved = true;
-            fact(I52Id::MARK_LOCK_RELEASE, L"anchor=APPCTX-UNLOCK-01-CALL;current=" + std::to_wstring(current), appUnlock_.stage, appUnlock_.delivery);
-            if (rowHasToken(I52Id::TOK_LOCK_RELEASE)) I52Ctda_TokenSetNative(I52Id::TOK_LOCK_RELEASE, appUnlock_.delivery);
+            // m-3: the first transition inside the unlockDocument bracket marks; a second one is recorded and fails closed.
+            const I52LockDecision d = appUnlock_.rule.observe(sourceSequence, true, global, current, myNew);
+            if (d.mark)
+            {
+                fact(I52Id::MARK_LOCK_RELEASE, d.payload, appUnlock_.stage, appUnlock_.delivery);
+                if (d.token && rowHasToken(I52Id::TOK_LOCK_RELEASE)) I52Ctda_TokenSetNative(I52Id::TOK_LOCK_RELEASE, appUnlock_.delivery);
+            }
+            else if (d.record) fact(I52Id::LOCK_RELEASE_BIND_01, d.payload, appUnlock_.stage, appUnlock_.delivery);
         }
         else if (window_.rule.isOpen())
         {
@@ -801,11 +806,13 @@ bool I52Executor::runExecution(I52Id exec, uint64_t execDelivery)
         // APPCTX-UNLOCK-01: the lock-mode change emitted inside this call anchors MARK-LOCK-RELEASE for the stage.
         const I52Id deliveryStage = stages_.size() >= 2 ? stages_[stages_.size() - 2].stage : I52Id::None;
         const uint64_t deliveryId = stages_.size() >= 2 ? stages_[stages_.size() - 2].delivery : 0;
-        appUnlock_ = { true, false, deliveryStage, deliveryId };
+        appUnlock_.stage = deliveryStage;
+        appUnlock_.delivery = deliveryId;
+        fact(I52Id::LOCK_RELEASE_BIND_01, appUnlock_.rule.enter(), deliveryStage, deliveryId);
         const Acad::ErrorStatus unlock = acDocManager->unlockDocument(document_);
-        appUnlock_.active = false;
+        fact(I52Id::LOCK_RELEASE_BIND_01, appUnlock_.rule.exit(static_cast<int>(unlock)), deliveryStage, deliveryId);
         fact(I52Id::SA_UNLOCK, L"status=" + status(unlock) + L";authority=APPCTX-UNLOCK-01");
-        fact(I52Id::APPCTX_UNLOCK_01, L"status=" + status(unlock) + L";markerResolved=" + flag(appUnlock_.resolved));
+        fact(I52Id::APPCTX_UNLOCK_01, L"status=" + status(unlock) + L";markerResolved=" + flag(appUnlock_.rule.resolved()));
         if (unlock == Acad::eOk) --ownedLocks_; else { fact(I52Id::UNK_LOCK_DOC_T_LEAK, L"step=APPCTX-UNLOCK-01"); ok = false; }
         break;
     }

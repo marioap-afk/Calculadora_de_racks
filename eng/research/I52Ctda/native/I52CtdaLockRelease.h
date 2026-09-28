@@ -52,3 +52,25 @@ private:
     int eligible_{}, foreign_{}, inconsistent_{};
     uint64_t bound_{};
 };
+
+// APPCTX-UNLOCK-01-CALL anchor (V35-A3, m-3). The bracket is the stage's own unlockDocument call, recorded as
+// LOCK-RELEASE-BIND-01 APPCTX-CALL-ENTRY / APPCTX-CALL-EXIT. The first scratch transition inside it is the candidate (for
+// 13A-SM the new mode is the enclosing command lock, so it need not end unlocked): it marks, with its source Sequence and
+// global command name, and sets the token. Any further transition inside the same bracket is recorded as APPCTX-SECOND and
+// the binding fails closed (UNK-MARKER-BINDING). Transitions outside the bracket are never candidates.
+class I52AppctxUnlockBracket
+{
+public:
+    std::wstring enter();
+    bool isActive() const { return active_; }
+    I52LockDecision observe(uint64_t sourceSequence, bool scratchDocument, const std::wstring& globalCommand, int currentMode, int myNewMode);
+    std::wstring exit(int status);
+    int transitions() const { return transitions_; }
+    bool resolved() const { return transitions_ == 1; }
+    uint64_t boundSequence() const { return bound_; }
+
+private:
+    bool active_{};
+    int transitions_{};
+    uint64_t bound_{};
+};

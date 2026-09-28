@@ -126,8 +126,9 @@ void initialize()
     arm.databaseId = reinterpret_cast<uint64_t>(working);
     queryArm(&arm);
     record(L"STG-PAYLOAD-INIT", I52CTDA_DELIVERY_CURRENT, L"R-PAYLOAD-ARX", L"phase=C15-ARM;armed=" + std::to_wstring(arm.armed) + L";databaseMatches=" + std::to_wstring(arm.databaseMatches));
-    if (arm.armed != 1) return;  // unarmed rows register no reactor
+    // m-1: the database identity is checked for every payload row, armed or not, before the unarmed return.
     if (arm.databaseMatches != 1) { record(L"STG-PAYLOAD-INIT", I52CTDA_DELIVERY_CURRENT, L"UNK-PAYLOAD-DB", L"step=QUERY-C15-ARM"); return; }
+    if (arm.armed != 1) return;  // unarmed rows register no reactor
 
     triggerObjectOldId = arm.triggerObjectOldId;
     reactor = new PayloadDatabaseReactor();

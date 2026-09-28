@@ -117,7 +117,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN (V35-A3); R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); CANARY RESTART 09N-B VALID PASS-T (H-1 MINOR); CANARY RESTART 02NDBMOD-S VALID PASS-S; CANARY RESTART 02NO-S VALID PASS-S (H-1 RECURRED); CANARY RESTART 16N-S UNKNOWN (D-4 REPRODUCED); D-4 = V35 CONTRACT DEFECT; V35-A3 FROZEN (A3-D4); D-4 IMPLEMENTED (RUNTIME + ENGINE); R3 HOST SMOKE afa65bc0 PASS (V35-A3 IDENTITY, D-4 HOST BASELINE); 16N-S V35-A3 VALID PASS-S (D-4 HOST VALIDATION PASS); 10N-S V35-A3 VALID PASS-S (D-4 FIXTURE ANCHOR PASS); 16C-S V35-A3 VALID PASS-S (D-4 CMDCTX ANCHOR PASS); D-4 ANCHORS SEND/FIXTURE/CMDCTX PASS; VALID GOVERNED RESULTS = 6.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN (V35-A3); R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); CANARY RESTART 09N-B VALID PASS-T (H-1 MINOR); CANARY RESTART 02NDBMOD-S VALID PASS-S; CANARY RESTART 02NO-S VALID PASS-S (H-1 RECURRED); CANARY RESTART 16N-S UNKNOWN (D-4 REPRODUCED); D-4 = V35 CONTRACT DEFECT; V35-A3 FROZEN (A3-D4); D-4 IMPLEMENTED (RUNTIME + ENGINE); R3 HOST SMOKE afa65bc0 PASS (V35-A3 IDENTITY, D-4 HOST BASELINE); 16N-S V35-A3 VALID PASS-S (D-4 HOST VALIDATION PASS); 10N-S V35-A3 VALID PASS-S (D-4 FIXTURE ANCHOR PASS); 16C-S V35-A3 VALID PASS-S (D-4 CMDCTX ANCHOR PASS); D-4 ANCHORS SEND/FIXTURE/CMDCTX PASS; ARCHITECT POST-AUDIT ACCEPTED; m-1/m-2/m-3 + H-1 FIXED; VALID GOVERNED RESULTS = 6.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -363,12 +363,23 @@ PASS.**
 - `R3_PRE_RUN_TUPLE_HASH` = `89CFAD2F681BE9CF1958E03B5433FAF6C03A66846E2B7050F77A492D67ED0A67`.
 - [Evidencia](automation/evidence/I-52-r3-canary-16C-S-v35a3.json).
 
-**Siguiente gate: COORDINATOR CT-DA COVERAGE / CLOSURE ASSESSMENT.**
+**Revisión post-auditoría del Arquitecto y fixes (§194).**
+- El Coordinador aceptó la revisión y adopta la definición V35-A3 de `CTDA_HOST_PASS`; su texto literal falta
+  incorporarlo.
+- m-1, m-2 y m-3 son defectos de implementación; la congelación V35-A3 no cambia.
+- m-1: `UNK-PAYLOAD-DB` salvo que coincidan `C15-ARM databaseMatches=1` y `PAYLOAD-DB-BINDING holds=1`; el payload
+  comprueba la base antes del retorno de las filas no armadas.
+- m-2: los marcadores negativos no ligados se buscan en toda la ventana de ejecución.
+- m-3: bracket ENTRY/EXIT de la llamada `unlockDocument` APPCTX y MARK con `sourceSequence`. Una segunda transición falla
+  cerrado y el motor recalcula los candidatos; 13A-SM se conserva.
+- H-1: salida observada por el runner; el centinela 1601 pasa a null.
+- Research 88/88; los 6 resultados válidos no cambian offline.
+
+**Siguiente gate: ZERO-PROBE HOST SMOKE, THEN 16A-S AND 13A-SM CHARACTERIZATION** (paquete canónico construido desde el SHA de §194).
 - Probes gobernados ejecutados: 11.
-- Resultados gobernados válidos: 6 (09N-B PASS-T, 02NDBMOD-S PASS-S, 02NO-S PASS-S, y bajo A3 16N-S, 10N-S y 16C-S PASS-S).
-- H-1 (MINOR) sigue abierto.
+- Resultados gobernados válidos: 6.
 - `CTDA_HOST_PASS` NOT EVALUATED.
-- Ningún ProbeId autorizado.
+- Ningún ProbeId autorizado todavía.
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
