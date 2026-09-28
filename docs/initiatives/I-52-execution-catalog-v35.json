@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "contract": "EXEC-CATALOG-V35-1",
-  "revision": "V35-A2",
+  "revision": "V35-A3",
   "initiative": "I-52",
-  "status": "DRAFT / V35-A3 AMENDMENT (A3-D4: LOCK-RELEASE-BIND-01, OBS-LOCK-RELEASE-BOUND, UNK-MARKER-BINDING) OVER THE V35-A2 FREEZE / AWAITING ARCHITECT DELTA REVIEW AND NEW FREEZE",
+  "status": "FROZEN / V35-A3 (A3-D4: LOCK-RELEASE-BIND-01, OBS-LOCK-RELEASE-BOUND, UNK-MARKER-BINDING; Architect delta review AGREED; Coordinator final freeze) / NOT EXECUTED",
   "retainedStatusVocabulary": [
     "RETAINED-UNCHANGED",
     "RETAINED-EXTENDED",

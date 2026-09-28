@@ -57,10 +57,12 @@ internal static class R3Tests
     private static void FreezeHolds(string repo)
     {
         V35FreezeVerification v = V35Freeze.Verify(repo);
-        // The governing freeze stays V35-A2 (decision 172); the repository carries the V35-A3 draft (decision 187), which holds
-        // only while the V35-A2 package it amends still hashes to the governing freeze.
-        Require(V35Freeze.PackageHash == "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF" && V35Freeze.Revision == "V35-A2", "governing freeze");
-        Require(v.Holds && v.ComputedPackageHash == "8D5E0005043162A9B8665C0F54C94733796ADDF54AA673D7D5AAC37ACF7EF11E" && v.ComputedPackageHash == V35Freeze.DraftPackageHash && v.Blobs == 24,
+        // Governing freeze V35-A3 (decision 188); the manifest retains the superseded V35-A2 package and the reviewed V35-A3
+        // draft, and Verify checks both.
+        Require(V35Freeze.Revision == "V35-A3" && V35Freeze.FreezeSha == "a076c7549677f29165ffc09c71ccc31aaa3d8b0a"
+            && V35Freeze.SupersededA2PackageHash == "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF"
+            && V35Freeze.ReviewedDraftA3PackageHash == "8D5E0005043162A9B8665C0F54C94733796ADDF54AA673D7D5AAC37ACF7EF11E", "freeze identities");
+        Require(v.Holds && v.ComputedPackageHash == "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554" && v.ComputedPackageHash == V35Freeze.PackageHash && v.Blobs == 24,
             "freeze: " + string.Join(";", v.Mismatches));
     }
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "V35-A3-DRAFT",
+  "revision": "V35-A3",
   "harness": "eng/research/I52Ctda/validate-v35-negative-controls.ps1",
   "inputEol": "LF",
   "baselinePass": true,

@@ -856,7 +856,7 @@ $pred = [ordered]@{
 $result = if (@($pred.Values | Where-Object { -not $_ }).Count -eq 0 -and $findings.Count -eq 0) { 'PASS' } else { 'FAIL' }
 
 $report = [ordered]@{
-    schemaVersion = 2; revision = 'V35-A3-DRAFT'; validator = 'eng/research/I52Ctda/validate-v35-catalog.ps1'; oracle = 'eng/research/I52Ctda/v35-oracle.json'; scope = 'documents/catalog only; no runtime semantics'
+    schemaVersion = 2; revision = 'V35-A3'; validator = 'eng/research/I52Ctda/validate-v35-catalog.ps1'; oracle = 'eng/research/I52Ctda/v35-oracle.json'; scope = 'documents/catalog only; no runtime semantics'
     result = $result; counts = $counts; frozenCountsHold = $countsOk; contradictionsByCheck = $contra; blockerClosure = $closure
     apiHeaderCheck = $api; predicates = $pred; findings = $findings
 }
