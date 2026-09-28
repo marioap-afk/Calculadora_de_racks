@@ -1,0 +1,661 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "R3_HOST_SMOKE_E864A093",
+  "status": "R3 HOST SMOKE e864a093 = PASS; D-3 HOST VALIDATION = PASS; HARNESS DEFECT = FIXED",
+  "package": {
+    "id": "e864a093",
+    "zipSha256": "01A3432DB017A23A0C5836D7C9A81F9DAF6223D640B40F1D9028997E96E410F0",
+    "zipBytes": 3102144,
+    "sha256Sums": "41/41",
+    "zipEntriesMatched": "42/42",
+    "buildTupleHash": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+    "sourceSha": "e864a0936b6fb39b27401767e5a2242958ebe659",
+    "R-NATIVE": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+    "R-PAYLOAD": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+    "R-MANAGED": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F"
+  },
+  "preLaunch": {
+    "freezeV35": "Holds 24/24 (43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF)",
+    "checkGeneratedV35": "100 plans, drift 0",
+    "conformanceV35": "Holds (100, 27/26/3/7/8, 0 violations)",
+    "researchTests": "78/78 from source e864a093",
+    "trust": "D:\\I52-CTDA-R2H\\e864a093\\run exact entry; SECURELOAD=1",
+    "hostDrift": "NONE (every declared file re-hashed against disk by the tuple generator)",
+    "acadRunningBeforeLaunch": 0
+  },
+  "r3HostExecutionTupleHash": "066B334CECC7E17005FCC7C4591278B99DC9858CFE8B7B6283888E39E3A89DF1",
+  "R3_PRE_RUN_TUPLE_HASH": "22839962875C54691101B96A308379301C65FFF0E3D477DCDD406DF823218BF0",
+  "r3PreRunTuple": {
+    "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+    "R3_SOURCE_SHA": "e864a0936b6fb39b27401767e5a2242958ebe659",
+    "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+    "R_NATIVE_ARX_SHA256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+    "R_PAYLOAD_ARX_SHA256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+    "R_MANAGED_OBSERVER_SHA256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+    "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+    "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+    "R3_HOST_EXECUTION_TUPLE_HASH": "066B334CECC7E17005FCC7C4591278B99DC9858CFE8B7B6283888E39E3A89DF1"
+  },
+  "smokeScript": "_.FILEDIA\n0\n(arxload \"D:/I52-CTDA-R2H/e864a093/run/I52CtdaNative.arx\")\n_.NETLOAD\nD:\\I52-CTDA-R2H\\e864a093\\run\\I52Ctda.ManagedObserver.dll\nI52CTDA_SMOKE\n",
+  "smokeScriptHasNoQuit": true,
+  "processRun": {
+    "schemaVersion": 1,
+    "persistedBefore": "events.jsonl read",
+    "process": {
+      "ProcessId": 22944,
+      "StartedAtUtc": "2026-09-28T03:33:42.1068617+00:00",
+      "ExitedAtUtc": "2026-09-28T03:33:55.5782911+00:00",
+      "ExitCode": 0,
+      "FinishRecordSeen": true,
+      "TerminatedByControlPlane": false,
+      "ProcessGone": true,
+      "ExitedWithinPostFinishDeadline": true,
+      "InteractiveStateObserved": false,
+      "InteractiveState": null
+    },
+    "scratch": {
+      "Before": {
+        "Path": "D:\\I52-CTDA-R2H\\e864a093\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.dwg",
+        "Exists": true,
+        "Bytes": 31665,
+        "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+        "BackupPath": "D:\\I52-CTDA-R2H\\e864a093\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.bak",
+        "BackupExists": false,
+        "BackupBytes": null,
+        "BackupSha256": null
+      },
+      "After": {
+        "Path": "D:\\I52-CTDA-R2H\\e864a093\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.dwg",
+        "Exists": true,
+        "Bytes": 31665,
+        "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+        "BackupPath": "D:\\I52-CTDA-R2H\\e864a093\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.bak",
+        "BackupExists": false,
+        "BackupBytes": null,
+        "BackupSha256": null
+      },
+      "Unchanged": true,
+      "BackupCreated": false
+    }
+  },
+  "smokeResult": {
+    "schemaVersion": 2,
+    "stage": "R3_SMOKE",
+    "Result": "PASS",
+    "Failures": [],
+    "run": {
+      "ProcessId": 22944,
+      "StartedAtUtc": "2026-09-28T03:33:42.1068617+00:00",
+      "ExitedAtUtc": "2026-09-28T03:33:55.5782911+00:00",
+      "ExitCode": 0,
+      "FinishRecordSeen": true,
+      "TerminatedByControlPlane": false,
+      "ProcessGone": true,
+      "ExitedWithinPostFinishDeadline": true,
+      "InteractiveStateObserved": false,
+      "InteractiveState": null
+    },
+    "processRunEvidence": "process-run.json",
+    "logRead": {
+      "Readable": true,
+      "Attempts": 1,
+      "Error": null,
+      "parseErrors": []
+    },
+    "reportRead": {
+      "Readable": true,
+      "Attempts": 1,
+      "Error": null
+    },
+    "modules": {
+      "native": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+      "payload": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+      "managed": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F"
+    },
+    "scratch": {
+      "Before": {
+        "Path": "D:\\I52-CTDA-R2H\\e864a093\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.dwg",
+        "Exists": true,
+        "Bytes": 31665,
+        "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+        "BackupPath": "D:\\I52-CTDA-R2H\\e864a093\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.bak",
+        "BackupExists": false,
+        "BackupBytes": null,
+        "BackupSha256": null
+      },
+      "After": {
+        "Path": "D:\\I52-CTDA-R2H\\e864a093\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.dwg",
+        "Exists": true,
+        "Bytes": 31665,
+        "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+        "BackupPath": "D:\\I52-CTDA-R2H\\e864a093\\r3-smoke\\scratch\\I52CtdaR3SmokeScratch.bak",
+        "BackupExists": false,
+        "BackupBytes": null,
+        "BackupSha256": null
+      },
+      "Unchanged": true,
+      "BackupCreated": false
+    },
+    "records": 15,
+    "governedProbesExecuted": 0
+  },
+  "nativeReport": {
+    "schemaVersion": 6,
+    "instrument": "I52CtdaNative",
+    "stage": "R3_SMOKE",
+    "commandIdentity": "I52CTDA_SMOKE",
+    "result": "PASS",
+    "failures": [],
+    "processId": 22944,
+    "loggerReady": true,
+    "sequenceFirst": 1,
+    "sequenceLast": 15,
+    "fixture": {
+      "declared": 8,
+      "bootFacts": "status=OK;transaction=0x2191250E7D0;materialize=0;transactionClose=0;declared=8;resolved=8;smLinkBinding=RESOLVED;document=0x21964589F80;database=0x21923A799A0;observerRegistrations=0;dbmodAtBoot=0;dbmodPushed=1",
+      "snapshot": "F-TRIGGER-MOD|255|PRESENT|AcDbPoint|RESOLVED\nF-TRIGGER-ERASE-DB|256|PRESENT|AcDbPoint|RESOLVED\nF-TRIGGER-ERASE-OBJ|257|PRESENT|AcDbPoint|RESOLVED\nF-TRIGGER-XR|25B|PRESENT|HFV35:TRIGGER-XR:0|RESOLVED\nF-XR|25A|PRESENT|STATE-S-0|RESOLVED\nF-REF-B|259|PRESENT|STATE-M-0|RESOLVED\nF-REF-A|258|PRESENT|STATE-SM-0 sibling A|RESOLVED\nF-REF-C|NULL|ABSENT|declared absent (not created)|RESOLVED\nBINDING:SM-LINK|25C|PRESENT|STATE-SM-0|RESOLVED\n"
+    },
+    "payload": {
+      "path": "d:\\i52-ctda-r2h\\e864a093\\run\\I52CtdaPayload.arx",
+      "sha256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+      "loaded": true,
+      "records": 3,
+      "bindingRecords": 1,
+      "registrations": 0,
+      "removeResult": -1
+    },
+    "managed": {
+      "entryBound": true,
+      "subscribe": 0,
+      "unsubscribe": 0,
+      "records": 2,
+      "fenceReadBefore": 0,
+      "fenceReadAfter": 1,
+      "fenceReadRecords": 2
+    },
+    "finGate": {
+      "idleHook": true,
+      "timer": 27594,
+      "stageDelivery": 2,
+      "registeredRecords": 1,
+      "finishIssued": false,
+      "finishRecords": 0,
+      "tokensAccepted": 0,
+      "hookRemoved": true,
+      "timerKilled": true
+    },
+    "fence": {
+      "readExport": true,
+      "setterExported": false,
+      "before": 0,
+      "after": 1
+    },
+    "cleanup": {
+      "erased": 8,
+      "linkCarrierRemoved": true
+    },
+    "exit": {
+      "queued": true,
+      "dbmodAtBoot": 0
+    },
+    "governedProbesDispatched": 0
+  },
+  "eventLog": [
+    {
+      "Sequence": 1,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x0",
+      "DatabaseId": "0x0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "RUN-ENV-01",
+      "Payload": {
+        "smoke": "1",
+        "pid": "22944",
+        "runDirectory": "d:\\i52-ctda-r2h\\e864a093\\run"
+      },
+      "TimestampUnixMicros": 1790566433281121
+    },
+    {
+      "Sequence": 2,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "BOOT-01",
+      "Payload": {
+        "status": "OK",
+        "transaction": "0x2191250E7D0",
+        "materialize": "0",
+        "transactionClose": "0",
+        "declared": "8",
+        "resolved": "8",
+        "smLinkBinding": "RESOLVED",
+        "document": "0x21964589F80",
+        "database": "0x21923A799A0",
+        "observerRegistrations": "0",
+        "dbmodAtBoot": "0",
+        "dbmodPushed": "1"
+      },
+      "TimestampUnixMicros": 1790566433293414
+    },
+    {
+      "Sequence": 3,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-FIN-GATE",
+      "DeliveryId": 2,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "FIN-GATE-01",
+      "Payload": {
+        "phase": "REGISTERED",
+        "idleHook": "1",
+        "timer": "27594",
+        "timeoutSeconds": "120",
+        "schedulerUse": "FINISH-INFRA"
+      },
+      "TimestampUnixMicros": 1790566433299517
+    },
+    {
+      "Sequence": 4,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PAYLOAD-INIT",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-PAYLOAD-ARX",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "R-PAYLOAD-ARX",
+      "Payload": {
+        "phase": "INIT",
+        "logSeqBound": "1",
+        "fenceIsSet": "0"
+      },
+      "TimestampUnixMicros": 1790566433313205
+    },
+    {
+      "Sequence": 5,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PAYLOAD-INIT",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-PAYLOAD-ARX",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "PAYLOAD-DB-BINDING",
+      "Payload": {
+        "holds": "1",
+        "workingDatabase": "0x21923A799A0",
+        "curDocument": "0x21964589F80",
+        "documentMatchesScratch": "1"
+      },
+      "TimestampUnixMicros": 1790566433313263
+    },
+    {
+      "Sequence": 6,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PAYLOAD-INIT",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-PAYLOAD-ARX",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "R-PAYLOAD-ARX",
+      "Payload": {
+        "phase": "C15-ARM",
+        "armed": "0",
+        "databaseMatches": "1"
+      },
+      "TimestampUnixMicros": 1790566433313290
+    },
+    {
+      "Sequence": 7,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PAYLOAD-LOAD",
+      "DeliveryId": 3,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "MARK-LOAD-RESULT",
+      "Payload": {
+        "result": "5100",
+        "rtnorm": "1",
+        "loaded": "1",
+        "module": "d:\\i52-ctda-r2h\\e864a093\\run\\i52ctdapayload.arx"
+      },
+      "TimestampUnixMicros": 1790566433313883
+    },
+    {
+      "Sequence": 8,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-MANAGED-OBSERVER",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "RR-MANAGED-CMD",
+      "Payload": {
+        "phase": "SUBSCRIBED",
+        "source": "Document.CommandEnded"
+      },
+      "TimestampUnixMicros": 1790566433317637
+    },
+    {
+      "Sequence": 9,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-MANAGED-OBSERVER",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "RR-MANAGED-CMD",
+      "Payload": {
+        "phase": "UNSUBSCRIBED"
+      },
+      "TimestampUnixMicros": 1790566433317953
+    },
+    {
+      "Sequence": 10,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-MANAGED-OBSERVER",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "FINISH-FENCE-01",
+      "Payload": {
+        "smoke": "1",
+        "phase": "SMOKE-READ",
+        "reader": "R-MANAGED-OBSERVER",
+        "fenceIsSet": "0"
+      },
+      "TimestampUnixMicros": 1790566433318195
+    },
+    {
+      "Sequence": 11,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "CLN-BASE",
+      "Payload": {
+        "smoke": "1",
+        "status": "0",
+        "transactionClose": "0",
+        "erased": "8",
+        "linkCarrierRemoved": "1"
+      },
+      "TimestampUnixMicros": 1790566433318418
+    },
+    {
+      "Sequence": 12,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-FIN-GATE",
+      "DeliveryId": 2,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "FIN-GATE-01",
+      "Payload": {
+        "smoke": "1",
+        "phase": "UNREGISTERED",
+        "hookRemoved": "1",
+        "timerKilled": "1",
+        "finishIssued": "0",
+        "tokensAccepted": "0"
+      },
+      "TimestampUnixMicros": 1790566433318521
+    },
+    {
+      "Sequence": 13,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-MANAGED-OBSERVER",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "FINISH-FENCE-01",
+      "Payload": {
+        "smoke": "1",
+        "phase": "SMOKE-READ",
+        "reader": "R-MANAGED-OBSERVER",
+        "fenceIsSet": "1"
+      },
+      "TimestampUnixMicros": 1790566433318582
+    },
+    {
+      "Sequence": 14,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "FINISH-FENCE-01",
+      "Payload": {
+        "smoke": "1",
+        "before": "0",
+        "after": "1",
+        "setterExported": "0"
+      },
+      "TimestampUnixMicros": 1790566433318607
+    },
+    {
+      "Sequence": 15,
+      "ProbeId": "I52CTDA_SMOKE",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 22944,
+      "TID": 6156,
+      "DocumentId": "0x21964589F80",
+      "DatabaseId": "0x21923A799A0",
+      "CommandIdentity": "I52CTDA_SMOKE",
+      "EventOrMarkerId": "CMD-FINISH",
+      "Payload": {
+        "phase": "EXIT-QUEUED",
+        "exitAction": "QUIT-DISCARD",
+        "status": "0",
+        "origin": "I52CTDA_SMOKE",
+        "dbmodAtBoot": "0",
+        "dbmodBefore": "1",
+        "popStatus": "0",
+        "dbmodAfter": "0",
+        "schedulerUse": "FINISH-INFRA"
+      },
+      "TimestampUnixMicros": 1790566433319407
+    }
+  ],
+  "checks": {
+    "critical": {
+      "processRunJsonWritten": true,
+      "smokeResultJsonWritten": true,
+      "processRunBeforeLogEvaluation": "process-run.json written 03:33:55.8413639Z, r3-smoke-result.json 03:33:55.8741904Z (code order: WriteProcessRun precedes V35RunEvidence.Load)",
+      "exitCode": 0,
+      "terminatedByControlPlane": false,
+      "processGone": true,
+      "exitedWithinPostFinishDeadline": true,
+      "interactiveStateObserved": false
+    },
+    "d3": {
+      "exitQueued": "seq 15 CMD-FINISH phase=EXIT-QUEUED status=0 origin=I52CTDA_SMOKE dbmodAtBoot=0 dbmodBefore=1 popStatus=0 dbmodAfter=0",
+      "exitBlocked": false,
+      "dialog": "none observed by the control plane (InteractiveStateObserved=false)",
+      "humanInput": "none: no agent input after launch; operator statement confirms no mouse/keyboard input",
+      "scratch": "31665 bytes, 3078D590...8C7E, 2024-02-02T02:56:37Z unchanged; no .bak",
+      "exitLatency": "PID gone 2.26 s after EXIT-QUEUED with exit code 0 (no hang from trailing _Y)",
+      "trailingY": "not captured directly; indirect evidence: exit code 0 within 2.26 s of EXIT-QUEUED and no interactive state"
+    },
+    "harnessRace": {
+      "eventsJsonlReadable": true,
+      "logRead": {
+        "Readable": true,
+        "Attempts": 1,
+        "Error": null,
+        "parseErrors": []
+      },
+      "reportRead": {
+        "Readable": true,
+        "Attempts": 1,
+        "Error": null
+      },
+      "eventLogUnreadable": false
+    },
+    "normal": {
+      "fixture": "8/8",
+      "sequencer": "PASS (15 records 1..15, one PID 22944 / TID 6156)",
+      "finGate": "PASS (timer 27594, delivery 2; hook removed, timer killed; 0 FINISH, 0 tokens)",
+      "fenceAbi": "PASS (native 0->1, setter not exported; payload 0 at INIT; managed 0 then 1)",
+      "commandIdentity": "PASS (all 15 I52CTDA_SMOKE)",
+      "cleanup": "PASS (8 erased, linkCarrierRemoved)",
+      "governedProbeIds": 0,
+      "governedMutations": 0,
+      "resultClassifications": 0,
+      "zeroProbe": "0 of the 100 V35 ProbeIds in the log; no CMD-PROBE, I52CTDA_PROBE/FINISH, TOK-*, MUT-*"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "output/events.jsonl",
+      "bytes": 6639,
+      "sha256": "34CE727D781DCA094799A5FE6E701D24019E6392A7D1C9B0724E1240E3F88634"
+    },
+    {
+      "path": "output/r3-smoke.json",
+      "bytes": 1787,
+      "sha256": "D9CAEEC22C5BBE1CC34EC6C3757088CABA52AD15483647E843F7B64BEBF03C19"
+    },
+    {
+      "path": "output/r3-smoke.scr",
+      "bytes": 152,
+      "sha256": "8965EFAEC80EA05CDC95AF1D49A2038A4FF5F25913772EFFE8314537D869934F"
+    },
+    {
+      "path": "output/process-run.json",
+      "bytes": 1500,
+      "sha256": "963BEBE20D2CED55F83858E11C910A9D7D551FDAD8CD5A2F56B6889826303384"
+    },
+    {
+      "path": "output/r3-smoke-result.json",
+      "bytes": 2079,
+      "sha256": "BC796B7A4CAE81C660B5480110C6E39FC2BCDCFFDF7F4DE98DE857FAE2B6DFFF"
+    },
+    {
+      "path": "logs/harness-console.log",
+      "bytes": 68,
+      "sha256": "A32D58866BC53A2B037E10A9ABFA44F5856C2F3B8CEBFCBEF047278BA5BDBD0A"
+    },
+    {
+      "path": "evidence/tuples.json",
+      "bytes": 15019,
+      "sha256": "2B27540869F9E7E620510551878F1E06C4691BDA62FA6C5D86FAAD5816D1EE72"
+    }
+  ],
+  "governingProbesExecutedTotal": 3,
+  "validGovernedResults": 0,
+  "ctdaHostPass": "NOT EVALUATED",
+  "nextGate": "GOVERNED CANARY RESTART AUTHORIZATION",
+  "publishedFrom": {
+    "hostLocalFile": "D:\\I52-CTDA-R2H\\e864a093\\r3-smoke\\evidence\\r3-host-smoke-e864a093.LOCAL.json",
+    "sha256": "EC23A3E584909AEF897E478433369D165C0BED5F66F23E2A890829156F52EA5B"
+  },
+  "host": {
+    "machine": "IMING-2",
+    "acadExe": "R25.0.171.0.0 2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+    "hostDrift": "NONE",
+    "trustedPath": "D:\\I52-CTDA-R2H\\e864a093\\run (exact entry; SECURELOAD=1)",
+    "packageHostCopy": "D:\\I52-CTDA-R2H\\e864a093"
+  },
+  "operatorStatement": {
+    "date": "2026-09-27",
+    "text": "Confirmed: the operator did not touch anything during the run.",
+    "originalSpanish": "Confirmo, no toqué nada"
+  },
+  "priorAttempt229c9e65": {
+    "result": "NOT PASS: HARNESS_DEFECT, no verdict (not published separately; host-local evidence only)",
+    "hostLocalFile": "D:\\I52-CTDA-R2H\\229c9e65\\r3-smoke\\evidence\\r3-host-smoke-229c9e65.LOCAL.json",
+    "hostLocalSha256": "C581D04D0928FD5EB1FF6AA4908F3E88E5F5CD5456D701E91514EB2CC2AFEC5B",
+    "R3_PRE_RUN_TUPLE_HASH": "44CFCFEF7E7DDA2597B52F8A7331DBF35CD57F71CFCEB97E8AF981DBA2AE5FBD",
+    "pid": 9820,
+    "observed": "seq 15 CMD-FINISH EXIT-QUEUED status=0 origin=I52CTDA_SMOKE dbmodAtBoot=0 dbmodBefore=1 popStatus=0 dbmodAfter=0; no EXIT-BLOCKED",
+    "harnessDefect": {
+      "classification": "HARNESS_DEFECT",
+      "exception": "System.IO.IOException: The process cannot access the file events.jsonl because it is being used by another process",
+      "at": "V35RunEvidence.Load (File.ReadLines) called from V35SmokeCommand.RunAsync line 24, after V35ProcessRunner returned",
+      "effect": "harness exited -532462766 before writing r3-smoke-result.json; the process record (exit code, TerminatedByControlPlane, InteractiveStateObserved) was not persisted and no smoke verdict exists",
+      "afterwards": "events.jsonl was readable with FileShare.Read about 30 s later; 0 acad processes",
+      "hypothesis": "unconfirmed: a transient holder of the log (for example an inherited CRT handle in a short-lived child process, or antivirus scanning) at the moment the harness read it; the reader uses FileShare.Read with no retry"
+    },
+    "notProven": [
+      "PID exit code and normal exit without control-plane kill",
+      "InteractiveStateObserved = false",
+      "trailing _Y causes no extra command/error (command line not captured)"
+    ],
+    "fixedIn": "e864a0936b6fb39b27401767e5a2242958ebe659 (build machine; nothing patched on the host)"
+  }
+}
