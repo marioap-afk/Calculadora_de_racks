@@ -45,6 +45,10 @@ internal static class R3Tests
         ("r3 D-3 native exit needs no human input and cannot save", NativeExitNeedsNoHuman),
         ("r3 D-3 interactive state is terminated and stays UNKNOWN", InteractiveStateFailsClosed),
         ("r3 D-3 smoke leaves through the automated exit", SmokeAutomatedExit),
+        ("r3 harness log read retries a transient lock", LogReadTransientLock),
+        ("r3 harness permanent log lock fails closed", LogReadPermanentLockFailsClosed),
+        ("r3 harness process evidence survives a log failure", ProcessEvidenceSurvivesLogFailure),
+        ("r3 harness interactive-state evidence is preserved", InteractiveEvidencePreserved),
     ];
 
     private static void Require(bool value, string message) { if (!value) throw new InvalidDataException(message); }
@@ -755,5 +759,143 @@ internal static class R3Tests
         RequireSmokeFailure(V35SmokeEvaluator.Evaluate(JsonDocument.Parse(SmokeReport()).RootElement, SmokeLog(), 4242, true, false, new(SmokeScratch, SmokeScratch), interactiveStateObserved: true), "INTERACTIVE_STATE");
         RequireSmokeFailure(V35SmokeEvaluator.Evaluate(JsonDocument.Parse(SmokeReport()).RootElement, SmokeLog(), 4242, true, true, new(SmokeScratch, SmokeScratch)), "PROCESS_TIMEOUT");
         RequireSmokeFailure(V35SmokeEvaluator.Evaluate(JsonDocument.Parse(SmokeReport()).RootElement, SmokeLog(), 4242, true, false, new(SmokeScratch, SmokeScratch with { BackupExists = true })), "SCRATCH_DWG_MUTATED");
+    }
+
+    // Harness defect after the D-3 host smoke: events.jsonl may still be held by a closing handle after the PID exits.
+    private static readonly V35LogReadOptions FastRetry = new(MaxAttempts: 4, InitialDelayMilliseconds: 20, MaxDelayMilliseconds: 40);
+
+    private static string TempDirectory()
+    {
+        string dir = Path.Combine(Path.GetTempPath(), "i52-harness-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(dir);
+        return dir;
+    }
+
+    private static FileStream ExclusiveLock(string path) => new(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+
+    private static V35ProcessRun CleanRun(bool interactive = false) => new(4242, DateTimeOffset.UnixEpoch, DateTimeOffset.UnixEpoch.AddSeconds(30), 0, true,
+        TerminatedByControlPlane: interactive, ProcessGone: true, ExitedWithinPostFinishDeadline: !interactive, InteractiveStateObserved: interactive,
+        InteractiveState: interactive ? "modal window over a disabled owner; top-level windows: Afx:'AutoCAD' disabled | #32770:'AutoCAD'" : null);
+
+    private static (V35ProbeLaunch Launch, ScratchDrawingIntegrity Scratch, string Dir) ProbeFixture(string repo)
+    {
+        string dir = TempDirectory();
+        foreach (string f in new[] { V35ProbeLaunch.NativeFile, V35ProbeLaunch.PayloadFile }) File.WriteAllText(Path.Combine(dir, f), "x");
+        string dwg = Path.Combine(dir, "scratch.dwg");
+        File.WriteAllText(dwg, "dwg");
+        V35ProbeLaunch launch = V35ProbeLaunch.Create(Authority(repo), Path.Combine(dir, "acad-missing.exe"), Path.Combine(dir, V35ProbeLaunch.NativeFile), dwg, Path.Combine(dir, "out"), "02N", null);
+        Directory.CreateDirectory(launch.OutputRoot);
+        ScratchDrawingState state = ScratchDrawingState.Capture(dwg);
+        return (launch, new ScratchDrawingIntegrity(state, state), dir);
+    }
+
+    private static void LogReadTransientLock(string repo)
+    {
+        string dir = TempDirectory();
+        try
+        {
+            string path = Path.Combine(dir, "events.jsonl");
+            File.WriteAllText(path, "{\"a\":1}\n{\"b\":2}\n");
+            FileStream held = ExclusiveLock(path);
+            var release = Task.Run(async () => { await Task.Delay(300); held.Dispose(); });
+            V35LogRead read = V35LogReader.Read(path, new V35LogReadOptions(MaxAttempts: 10, InitialDelayMilliseconds: 50, MaxDelayMilliseconds: 400));
+            release.GetAwaiter().GetResult();
+            Require(read.Readable && read.Attempts > 1 && read.Lines.Count == 2 && read.Error is null, $"transient lock: readable={read.Readable} attempts={read.Attempts} error={read.Error}");
+            // The shared reader also reads while another writer keeps the file open with read sharing (as R-NATIVE-ARX now does).
+            using (new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Read))
+                Require(V35LogReader.Read(path, FastRetry) is { Readable: true, Attempts: 1 }, "read while a sharing writer holds the log");
+        }
+        finally { Directory.Delete(dir, true); }
+    }
+
+    private static void LogReadPermanentLockFailsClosed(string repo)
+    {
+        string path = Pass02N().Write();
+        try
+        {
+            Require(Evaluate(repo, Pass02N()).Result == "PASS", "baseline");
+            using (ExclusiveLock(path))
+            {
+                V35LogRead read = V35LogReader.Read(path, FastRetry);
+                Require(!read.Readable && read.Exists && read.Attempts == FastRetry.MaxAttempts && read.Error!.Contains("unreadable after 4 attempts", StringComparison.Ordinal), "permanent lock reported: " + read.Error);
+                V35Authority a = Authority(repo);
+                var evidence = V35RunEvidence.Load(path, new V35ProcessEvidence(4242, true, false, false, true), new V35ScratchEvidence(true, true, false), FastRetry);
+                Require(evidence.Records.Count == 0 && evidence.ParseErrors.Any(e => e.Contains("unreadable", StringComparison.Ordinal)), "unreadable log is an evidence error");
+                V35Result r = new V35ResultEngine(a).Evaluate(a.ByProbe["02N"], evidence);
+                Require(r.Result == "UNKNOWN" && !r.EvidenceComplete, "unreadable log gave " + r.Result);
+                RequireSmokeFailure(V35SmokeEvaluator.Evaluate(JsonDocument.Parse(SmokeReport()).RootElement, [], 4242, true, false, new(SmokeScratch, SmokeScratch), logError: read.Error), "EVENT_LOG_UNREADABLE");
+            }
+            V35LogRead missing = V35LogReader.Read(path + ".missing", FastRetry);
+            Require(!missing.Exists && !missing.Readable && missing.Attempts == 1, "missing log is not retried");
+        }
+        finally { File.Delete(path); }
+    }
+
+    // process-run.json is written before events.jsonl is read: with the log locked for good, the probe result is UNKNOWN,
+    // the smoke FAILs, and both keep the exact process evidence.
+    private static void ProcessEvidenceSurvivesLogFailure(string repo)
+    {
+        (V35ProbeLaunch launch, ScratchDrawingIntegrity scratch, string dir) = ProbeFixture(repo);
+        try
+        {
+            File.WriteAllText(launch.EventLog, File.ReadAllText(Pass02N().Write()));
+            V35Result result;
+            using (ExclusiveLock(launch.EventLog))
+                result = V35ProbeHarness.CompleteAsync(Authority(repo), launch, CleanRun(), scratch, FastRetry).GetAwaiter().GetResult();
+            Require(result.Result == "UNKNOWN", "locked log gave " + result.Result);
+            JsonElement process = JsonDocument.Parse(File.ReadAllText(Path.Combine(launch.OutputRoot, V35RunArtifacts.ProcessRunFile))).RootElement.GetProperty("process");
+            Require(process.GetProperty("ExitCode").GetInt32() == 0 && !process.GetProperty("TerminatedByControlPlane").GetBoolean() && process.GetProperty("ProcessGone").GetBoolean()
+                && process.GetProperty("ExitedWithinPostFinishDeadline").GetBoolean() && !process.GetProperty("InteractiveStateObserved").GetBoolean(), "probe process evidence persisted");
+            JsonElement manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(launch.OutputRoot, "probe-result.json"))).RootElement;
+            Require(!manifest.GetProperty("logRead").GetProperty("Readable").GetBoolean() && manifest.GetProperty("result").GetProperty("Result").GetString() == "UNKNOWN", "probe result records the unreadable log");
+
+            string smokeDir = Path.Combine(dir, "smoke");
+            Directory.CreateDirectory(smokeDir);
+            foreach (string f in new[] { V35ProbeLaunch.NativeFile, V35ProbeLaunch.PayloadFile, V35ProbeLaunch.ManagedFile }) File.WriteAllText(Path.Combine(smokeDir, f), "x");
+            V35SmokeLaunch smoke = V35SmokeLaunch.Create("acad-missing.exe", Path.Combine(smokeDir, V35ProbeLaunch.NativeFile), Path.Combine(dir, "scratch.dwg"), Path.Combine(smokeDir, "out"), null);
+            Directory.CreateDirectory(smoke.OutputRoot);
+            File.WriteAllText(smoke.ReportPath, SmokeReport());
+            File.WriteAllText(smoke.EventLog, "{}\n");
+            V35SmokeVerdict verdict;
+            using (ExclusiveLock(smoke.EventLog))
+                verdict = V35SmokeCompletion.CompleteAsync(smoke, CleanRun(), scratch, FastRetry).GetAwaiter().GetResult();
+            Require(verdict.Result == "FAIL" && verdict.Failures.Contains("EVENT_LOG_UNREADABLE"), "locked smoke log: " + string.Join(",", verdict.Failures));
+            Require(File.Exists(Path.Combine(smoke.OutputRoot, V35RunArtifacts.ProcessRunFile)) && File.Exists(Path.Combine(smoke.OutputRoot, "r3-smoke-result.json")), "smoke evidence persisted");
+
+            // Order in both completion paths: the process evidence is written before anything reads the report or the log,
+            // so even an unexpected read or parse failure cannot lose it.
+            string source = File.ReadAllText(Path.Combine(repo, "eng", "research", "I52Ctda", "control-plane", "V35", "V35ProbeRun.cs"));
+            foreach (string completion in new[] { "public static async Task<V35Result> CompleteAsync(", "public static async Task<V35SmokeVerdict> CompleteAsync(" })
+            {
+                int at = source.IndexOf(completion, StringComparison.Ordinal);
+                string body = source[at..source.IndexOf("\n    }", at, StringComparison.Ordinal)];
+                int persisted = body.IndexOf("V35RunArtifacts.WriteProcessRun(", StringComparison.Ordinal);
+                int firstRead = new[] { body.IndexOf("V35RunEvidence.Load(", StringComparison.Ordinal), body.IndexOf("V35LogReader.Read(", StringComparison.Ordinal) }.Where(x => x >= 0).Min();
+                Require(persisted > 0 && persisted < firstRead, completion + " persists the process evidence before reading");
+            }
+            string harness = File.ReadAllText(Path.Combine(repo, "eng", "research", "I52Ctda", "harness", "V35SmokeCommand.cs"));
+            Require(!harness.Contains("File.ReadAllText", StringComparison.Ordinal) && !harness.Contains("File.ReadLines", StringComparison.Ordinal) && harness.Contains("V35SmokeCompletion.CompleteAsync(", StringComparison.Ordinal),
+                "smoke-v35 reads nothing itself");
+        }
+        finally { Directory.Delete(dir, true); }
+    }
+
+    // An interactive state observed by the runner reaches process-run.json and probe-result.json intact, and the row is UNKNOWN.
+    private static void InteractiveEvidencePreserved(string repo)
+    {
+        (V35ProbeLaunch launch, ScratchDrawingIntegrity scratch, string dir) = ProbeFixture(repo);
+        try
+        {
+            File.WriteAllText(launch.EventLog, File.ReadAllText(Pass02N().Write()));
+            V35Result result = V35ProbeHarness.CompleteAsync(Authority(repo), launch, CleanRun(interactive: true), scratch, FastRetry).GetAwaiter().GetResult();
+            Require(result.Result == "UNKNOWN" && result.EvidenceGaps.Any(g => g.Contains("interactive modal state", StringComparison.Ordinal)), "interactive run gave " + result.Result);
+            foreach (string file in new[] { V35RunArtifacts.ProcessRunFile, "probe-result.json" })
+            {
+                JsonElement process = JsonDocument.Parse(File.ReadAllText(Path.Combine(launch.OutputRoot, file))).RootElement.GetProperty("process");
+                Require(process.GetProperty("InteractiveStateObserved").GetBoolean() && process.GetProperty("TerminatedByControlPlane").GetBoolean()
+                    && process.GetProperty("InteractiveState").GetString()!.Contains("#32770:'AutoCAD'", StringComparison.Ordinal), file + " keeps the interactive-state details");
+            }
+        }
+        finally { Directory.Delete(dir, true); }
     }
 }

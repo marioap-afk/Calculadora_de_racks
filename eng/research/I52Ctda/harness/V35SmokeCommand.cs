@@ -20,16 +20,8 @@ internal static class V35SmokeCommand
         V35ProcessRun run = await V35ProcessRunner.RunAsync(launch.AcadExecutable, launch.Arguments, launch.OutputRoot, launch.Environment, launch.EventLog,
             TimeSpan.FromSeconds(300), TimeSpan.FromSeconds(120));
         var scratch = new ScratchDrawingIntegrity(before, ScratchDrawingState.Capture(launch.ScratchDrawing));
-        JsonElement? report = File.Exists(launch.ReportPath) ? JsonDocument.Parse(await File.ReadAllTextAsync(launch.ReportPath)).RootElement.Clone() : null;
-        var records = V35RunEvidence.Load(launch.EventLog, null, null).Records;
-        V35SmokeVerdict verdict = V35SmokeEvaluator.Evaluate(report, records, run.ProcessId, run.ProcessGone, run.TerminatedByControlPlane, scratch, run.InteractiveStateObserved);
-        var result = new
-        {
-            schemaVersion = 1, stage = "R3_SMOKE", verdict.Result, verdict.Failures, run,
-            modules = new { native = V35Files.Sha256(launch.NativeHelper), payload = V35Files.Sha256(launch.PayloadArx), managed = V35Files.Sha256(launch.ManagedObserver) },
-            scratch = new { scratch.Before, scratch.After, scratch.Unchanged, scratch.BackupCreated }, records = records.Count, governedProbesExecuted = 0,
-        };
-        await File.WriteAllTextAsync(Path.Combine(launch.OutputRoot, "r3-smoke-result.json"), JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true }), new UTF8Encoding(false));
+        // Process-run evidence is persisted before the log is read; the log and report reads are retry-safe.
+        V35SmokeVerdict verdict = await V35SmokeCompletion.CompleteAsync(launch, run, scratch);
         Console.WriteLine(JsonSerializer.Serialize(verdict));
         return verdict.Result == "PASS" ? 0 : 1;
     }

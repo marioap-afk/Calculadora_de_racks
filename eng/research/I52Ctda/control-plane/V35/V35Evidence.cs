@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 
 namespace I52Ctda.ControlPlane.V35;
@@ -31,25 +32,62 @@ public sealed record V35ProcessEvidence(int ProcessId, bool ProcessGone, bool Te
     bool InteractiveStateObserved = false);
 public sealed record V35ScratchEvidence(bool Captured, bool Unchanged, bool BackupCreated);
 
-public sealed record V35RunEvidence(IReadOnlyList<V35LogRecord> Records, V35ProcessEvidence? Process, V35ScratchEvidence? Scratch, IReadOnlyList<string> ParseErrors)
+public sealed record V35RunEvidence(IReadOnlyList<V35LogRecord> Records, V35ProcessEvidence? Process, V35ScratchEvidence? Scratch, IReadOnlyList<string> ParseErrors,
+    V35LogRead? LogRead = null)
 {
-    public static V35RunEvidence Load(string logPath, V35ProcessEvidence? process, V35ScratchEvidence? scratch)
+    public static V35RunEvidence Load(string logPath, V35ProcessEvidence? process, V35ScratchEvidence? scratch, V35LogReadOptions? options = null)
     {
         var records = new List<V35LogRecord>();
         var errors = new List<string>();
-        if (File.Exists(logPath))
+        V35LogRead read = V35LogReader.Read(logPath, options);
+        if (!read.Readable) errors.Add(read.Error ?? "event log unreadable");
+        int line = 0;
+        foreach (string text in read.Lines)
         {
-            int line = 0;
-            foreach (string text in File.ReadLines(logPath))
+            line++;
+            if (string.IsNullOrWhiteSpace(text)) continue;
+            try { records.Add(V35LogRecord.Parse(text)); }
+            catch (JsonException e) { errors.Add($"line {line}: {e.Message}"); }
+        }
+        return new(records, process, scratch, errors, read);
+    }
+}
+
+// Retry-safe read of a file another process may still be closing (events.jsonl after the PID exits). A sharing or lock
+// violation is retried with bounded exponential backoff; a file that stays unreadable is reported, never ignored: the
+// run's evidence is then incomplete (EVIDENCE-COMPLETE items 7 and 8) and the result cannot be PASS.
+public sealed record V35LogReadOptions(int MaxAttempts = 10, int InitialDelayMilliseconds = 100, int MaxDelayMilliseconds = 2000);
+
+public sealed record V35LogRead(bool Exists, bool Readable, int Attempts, IReadOnlyList<string> Lines, string? Error);
+
+public static class V35LogReader
+{
+    public static V35LogRead Read(string path, V35LogReadOptions? options = null)
+    {
+        options ??= new();
+        int delay = options.InitialDelayMilliseconds;
+        string? error = null;
+        for (int attempt = 1; attempt <= options.MaxAttempts; attempt++)
+        {
+            try
             {
-                line++;
-                if (string.IsNullOrWhiteSpace(text)) continue;
-                try { records.Add(V35LogRecord.Parse(text)); }
-                catch (JsonException e) { errors.Add($"line {line}: {e.Message}"); }
+                using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+                using var reader = new StreamReader(stream, new UTF8Encoding(false), detectEncodingFromByteOrderMarks: true);
+                var lines = new List<string>();
+                string? text;
+                while ((text = reader.ReadLine()) is not null) lines.Add(text);
+                return new(true, true, attempt, lines, null);
+            }
+            catch (Exception e) when (e is FileNotFoundException or DirectoryNotFoundException) { return new(false, false, attempt, [], "event log missing"); }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+            {
+                error = $"{e.GetType().Name} 0x{e.HResult:X8}: {e.Message}";
+                if (attempt == options.MaxAttempts) break;
+                Thread.Sleep(delay);
+                delay = Math.Min(delay * 2, options.MaxDelayMilliseconds);
             }
         }
-        else errors.Add("event log missing");
-        return new(records, process, scratch, errors);
+        return new(true, false, options.MaxAttempts, [], $"event log unreadable after {options.MaxAttempts} attempts: {error}");
     }
 }
 
