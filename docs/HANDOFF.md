@@ -49,7 +49,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); CANARY RESTART 09N-B VALID PASS-T (H-1 MINOR); CANARY RESTART 02NDBMOD-S VALID PASS-S; CANARY RESTART 02NO-S VALID PASS-S (H-1 RECURRED); VALID GOVERNED RESULTS = 3.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); CANARY RESTART 09N-B VALID PASS-T (H-1 MINOR); CANARY RESTART 02NDBMOD-S VALID PASS-S; CANARY RESTART 02NO-S VALID PASS-S (H-1 RECURRED); CANARY RESTART 16N-S UNKNOWN (D-4 REPRODUCED); VALID GOVERNED RESULTS = 3.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -192,8 +192,20 @@ Fix de D-3 (solo research):
 - `R3_PRE_RUN_TUPLE_HASH` = `EA635FC0A228A34E9A35B7C1F443D2D1B14ECC77CF596382D4938001484FB149`.
 - [Evidencia](automation/evidence/I-52-r3-canary-02NO-S-restart.json).
 
-**Siguiente gate: 16N-S AUTHORIZATION.**
-- Probes gobernados ejecutados: 6.
+**Reinicio de canaries #4: 16N-S (§186) = UNKNOWN (`UNK-MARKER-BINDING`) en las dos ejecuciones.**
+- Intento 1 (PID 32600): además NOT VALID, porque el operador interactuó con el equipo durante la corrida.
+- Re-run limpio (PID 14408), sin interacción: mismo UNKNOWN, log idéntico registro por registro.
+- **D-4:** la ventana COMMAND-END-WINDOW de LOCK-RELEASE-BIND-01 liga bien el desbloqueo del propio comando encolado,
+  pero AutoCAD hace después dos ciclos de lock/unlock ajenos que caen dentro de la ventana congelada. La regla ve varios
+  candidatos y el runtime y el motor, conformes a V35, fallan cerrado.
+- Población afectada: 32 filas COMMAND-END-WINDOW. No se autoriza ninguna otra fila afectada.
+- D-2, D-3 y harness: PASS. H-1 no reapareció en el re-run limpio.
+- `R3_PRE_RUN_TUPLE_HASH` (re-run limpio) = `1412D32DFB71AE976B3AE523A58E86D4C6E7515D808038FCB54D40EA7C540D4F`.
+- Evidencia: [intento 1](automation/evidence/I-52-r3-canary-16N-S-restart.json) y
+  [re-run limpio](automation/evidence/I-52-r3-canary-16N-S-rerun.json).
+
+**Siguiente gate: ARCHITECT REVIEW OF D-4 / LOCK-RELEASE-BIND-01.**
+- Probes gobernados ejecutados: 8.
 - Resultados gobernados válidos: 3 (09N-B PASS-T, 02NDBMOD-S PASS-S y 02NO-S PASS-S).
 - H-1 (MINOR) sigue abierto como follow-up del build side.
 - `CTDA_HOST_PASS` NOT EVALUATED.
