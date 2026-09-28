@@ -117,7 +117,7 @@ al merge correctivo; captura PRE; merge manual `--no-ff`; CI posterior al merge 
 limpieza segura; creación de `integration/I-56`; y registro durable del END de la pausa. El merge
 correctivo futuro no redefine el `WORKFLOW_V2_EFFECTIVE_SHA` histórico.
 
-**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); VALID GOVERNED RESULTS = 0.**
+**I-52 — RACKMIRROR (ID16) — LIMITED CT-DA; V35 FROZEN; R3 BUILD SIDE COMPLETE; SMOKE COVERAGE FIXED; R3 HOST SMOKE PASS; FIRST CANARY 09N-B NOT VALID (HUMAN INPUT); D-1 FIXED; R3 HOST SMOKE c4037098 PASS; SECOND CANARY 02NDBMOD-S NOT ACCEPTED; D-2 FIXED; R3 HOST SMOKE 2887d6c5 PASS; 02NDBMOD-S RE-RUN NOT VALID; D-3 FIXED; R3 HOST SMOKE e864a093 PASS (D-3 HOST VALIDATED, HARNESS DEFECT FIXED); CANARY RESTART 09N-B PASS-T (H-1 MINOR, VALIDITY PENDING RULING); VALID GOVERNED RESULTS = 0.**
 Research-only en `eng/research/I52Ctda`.
 
 **R3 build side (§173).** R3 implementa exactamente V35-A2:
@@ -234,9 +234,20 @@ Fix de D-3 (solo research):
 - Tuple de build `F7414C55…14A6`; `R3_PRE_RUN_TUPLE_HASH` = `22839962875C54691101B96A308379301C65FFF0E3D477DCDD406DF823218BF0`.
 - [Evidencia](automation/evidence/I-52-r3-host-smoke-e864a093.json).
 
-**Siguiente gate: GOVERNED CANARY RESTART AUTHORIZATION** (Coordinador).
-- Probes gobernados ejecutados: 3.
-- Resultados gobernados válidos: 0.
+**Reinicio de canaries #1: 09N-B (§183) = PASS-T** con el paquete `e864a093` (PID 33948).
+- Todos los chequeos exigidos pasan: EVIDENCE-COMPLETE y SAFETY-EVIDENCE-COMPLETE, verificador EQUAL, cleanup,
+  secuencia contigua.
+- Regresiones: D-1 (`N-TR-ENDED subjectDepth=1`), D-2 (tokens con `I52CTDA_PROBE`), D-3 (`EXIT-QUEUED` con `dbmodAfter=0`,
+  código 0, sin terminación ni estado interactivo, scratch intacto) y harness (`logRead` al primer intento): PASS.
+- El operador confirma que no hubo entrada humana.
+- **H-1 (MINOR, build side):** `ExitedAtUtc` queda en el centinela 1601-01-01 aunque el PID salió con código 0; no
+  entra en la clasificación. La validez gobernada queda para el dictamen del Coordinador.
+- `R3_PRE_RUN_TUPLE_HASH` = `6846DFE5F474A419BD9FEB851E04631FAE9B545C1719C2577412FC9C5CF50176`.
+- [Evidencia](automation/evidence/I-52-r3-canary-09N-B-restart.json).
+
+**Siguiente gate: DICTAMEN DEL COORDINADOR SOBRE H-1**, luego 02NDBMOD-S RESTART AUTHORIZATION.
+- Probes gobernados ejecutados: 4.
+- Resultados gobernados válidos: 0 (1 si se acepta el PASS-T de 09N-B).
 - `CTDA_HOST_PASS` NOT EVALUATED.
 - Ningún ProbeId autorizado.
 
