@@ -1,6 +1,6 @@
 # I-52 — Proposal V35 — mechanically executable probe matrix
 
-> **DRAFT, revision V35-A2 / READY FOR COORDINATOR FREEZE / NOT EXECUTED.** V35 candidate `0c609269b47adedd0f29d8b4cbbc010fae91d2e0`
+> **DRAFT, revision V35-A2 frozen (§172) with the V35-A3 draft amendment A3-D4 (§6a, decision §187) / NOT EXECUTED.** V35 candidate `0c609269b47adedd0f29d8b4cbbc010fae91d2e0`
 > was reviewed by the Architect (AGREED WITH CORRECTIONS, 14 required corrections, decision §170); V35-A1 applies RC-01..RC-14 (§6).
 > The Architect delta review of V35-A1 (`34b3b05b2dc4b32b9b04defe15def3d0fcc9a9c3`) concluded AGREED WITH SMALL CORRECTIONS
 > (0 BLOCKER, 0 MAJOR, 4 MINOR); V35-A2 applies the errata M1..M4 (§6, decision §171).
@@ -221,6 +221,42 @@ callback, B08). This does not make the architecture incomplete, and no row is cl
 | COBJUNDO16SND-ALL, COBJUNDO16APP-ALL | the origin is modifyUndone produced by cancel() after the RC-09 staging write | cancel() sends modifyUndone | OBS-ORIGIN-CALLBACK unavailable (step 2) |
 | 09N-D | CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE | the command lock is still held at commandEnded | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation; RESULT-RULE-V35 step 2) |
 | 10N-S, 10N-M, 10N-SM | CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE; candidate boundary (B12) | the command lock is still held at commandEnded | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) |
+
+## 6a. V35-A3 draft amendment A3-D4 (decision §187)
+
+**Defect D-4 (decision §186).** Two executions of `16N-S` produced identical logs: the own release of `I52CTDA_QUEUED` bound
+correctly, and then AutoCAD's own lock/unlock cycles on the scratch document (global command empty and `#`) landed inside
+the COMMAND-END-WINDOW and became `candidate=SECOND`. The frozen rule took the FIRST unlock and treated two candidates as
+`UNK-MARKER-BINDING`; runtime and engine applied it and failed closed. The defect is in the V35 contract, not the runtime.
+
+**Architect verdict and Coordinator ruling.** Architect verdict CHANGES REQUIRED with the direction AGREED; the normative
+text below replaces the prior candidate. The Coordinator accepted D-4 as a V35 contract defect and the amendment. Governance:
+V35-A3 amendment plus a new freeze, not V36.
+
+**Normative change (amendedBy A3-D4), exactly three entries.**
+- `LOCK-RELEASE-BIND-01`: for COMMAND-END-WINDOW stages the stage command C is the command of the stage's own activation
+  (`I52CTDA_QUEUED`, `I52CTDA_FIXTURE`, or the unique command enclosing EP-CMDCTX). The window runs from commandEnded of C to
+  strictly before the next commandWillStart; FINISH closes it at the latest. Only an unlock of the scratch document whose
+  global command name is `#` + C is eligible; every other transition is foreign, recorded and neither satisfies nor blocks.
+  Identity-inconsistent windows: C empty; C re-acquired the lock; `#` + C to a mode that is not unlocked. One eligible
+  candidate binds; zero is marker absence; two or more, or an identity-inconsistent window, is `UNK-MARKER-BINDING`. The
+  MARK-LOCK-RELEASE record names the bound Sequence and global command name, and CONTROL-PLANE-RESULT-01 recomputes
+  eligibility; any disagreement is `UNK-MARKER-BINDING`. "First unlock" is not a binding rule. The APPCTX-UNLOCK-01-CALL
+  text, `anchors` and `windowEnd` are unchanged.
+- `OBS-LOCK-RELEASE-BOUND`: exactly one eligible transition in a window that is not identity-inconsistent.
+- `UNK-MARKER-BINDING`: adds the multiple-eligible, identity-inconsistent and recorded-versus-recomputed disagreement cases.
+
+**Unchanged.** Rows (0 / 100 row hashes), IDs, RESULT-RULE-V35, `TOK-LOCK-RELEASE`, `MARK-LOCK-RELEASE`, approval blobs,
+oracle sources. Affected population: 32 rows (24 SEND, 4 FIXTURE, 4 CMDCTX).
+
+**Carry-forward.** 09N-B VALID PASS-T, 02NDBMOD-S VALID PASS-S and 02NO-S VALID PASS-S remain valid under A3: their row
+hashes and every catalog entry they reference are unchanged. The two `16N-S` executions under A2 are not regraded; they remain
+UNKNOWN under A2.
+
+**Negative controls NC-D4-1..NC-D4-7.** "First unlock wins" restored; own-command qualification removed; the two-or-more
+eligible clause removed; the identity-inconsistency clauses removed; own-command qualification extended to
+APPCTX-UNLOCK-01-CALL; the window end moved past FINISH's commandWillStart; a row hash or an entry outside the three changed.
+Each must be rejected by the validator.
 
 ## 7. Non-claims
 
