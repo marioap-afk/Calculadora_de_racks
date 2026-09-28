@@ -1,0 +1,1578 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "milestone": "GOVERNED_CANARY_RESTART_3_02NO-S",
+  "status": "02NO-S RESTART = VALID PASS-S; H-1 RECURRED / MINOR / BUILD-SIDE FOLLOW-UP (does not invalidate this run); VALID GOVERNED RESULTS = 3",
+  "probeId": "02NO-S",
+  "rowApprovalHash": "10134547184A859DF1EFE2B392E6846AD48B7D108AA3B03B03CBC13A6B9AEF4D",
+  "rowApprovalHashMatchesOracle": true,
+  "firstExecutionOfThisProbeId": true,
+  "package": {
+    "id": "e864a093",
+    "zipSha256": "01A3432DB017A23A0C5836D7C9A81F9DAF6223D640B40F1D9028997E96E410F0",
+    "sha256Sums": "41/41",
+    "buildTupleHash": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+    "sourceSha": "e864a0936b6fb39b27401767e5a2242958ebe659",
+    "repoHeadSha": "d0feb1e9c6883c79d9c33eb2ff7d0e21e91b32ac"
+  },
+  "preLaunch": {
+    "freezeV35": "Holds 24/24",
+    "checkGeneratedV35": "100 plans, drift 0",
+    "conformanceV35": "Holds, 0 violations",
+    "trust": "D:\\I52-CTDA-R2H\\e864a093\\run exact entry; SECURELOAD=1",
+    "acadRunningBeforeLaunch": 0,
+    "hostDrift": "NONE (tuple generator re-hashed every declared file)",
+    "scratch": "fresh copy of acad.dwt 31665 bytes 3078D590...8C7E, no .bak",
+    "researchBlobsIdenticalTo": "e864a093",
+    "planMatchesOrder": "N-OBJ-OPEN / OR-TXR (body) / RG-ONESHOT / SET-OPEN-PRIMARY-T + SET-OUTCOME-COMMIT / TRG-ASSERT-WRITE-TRIGGER-XR / CB-PRIMARY-01 / T-PRIMARY both / MUT-S / S / STATE-S-0->STATE-S-1 / VER-S+VER-T / N-OBJ-MOD+N-OBJ-CLOSED / PASS-S / 3 tokens / CLEAN-OBJ"
+  },
+  "r3HostExecutionTupleHash": "C57CD8951187B360752C8E9ED0FCE4FDD41A9FB890B035A8DEC92171D56D5FD1",
+  "R3_PRE_RUN_TUPLE_HASH": "EA635FC0A228A34E9A35B7C1F443D2D1B14ECC77CF596382D4938001484FB149",
+  "r3PreRunTuple": {
+    "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+    "R3_SOURCE_SHA": "e864a0936b6fb39b27401767e5a2242958ebe659",
+    "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+    "R_NATIVE_ARX_SHA256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+    "R_PAYLOAD_ARX_SHA256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+    "R_MANAGED_OBSERVER_SHA256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+    "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+    "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+    "R3_HOST_EXECUTION_TUPLE_HASH": "C57CD8951187B360752C8E9ED0FCE4FDD41A9FB890B035A8DEC92171D56D5FD1",
+    "PROBE_ID": "02NO-S",
+    "ROW_APPROVAL_HASH": "10134547184A859DF1EFE2B392E6846AD48B7D108AA3B03B03CBC13A6B9AEF4D"
+  },
+  "driverScript": "_.FILEDIA\n0\n(arxload \"D:/I52-CTDA-R2H/e864a093/run/I52CtdaNative.arx\")\nI52CTDA_BOOT\nI52CTDA_PROBE 02NO-S\n",
+  "result": {
+    "ProbeId": "02NO-S",
+    "Result": "PASS",
+    "ResultClass": "PASS-S",
+    "Step": 4,
+    "EvidenceComplete": true,
+    "SafetyEvidenceComplete": true,
+    "EvidenceGaps": [],
+    "Observations": {
+      "OBS-PRIMARY-CALLBACK": "True",
+      "OBS-T-AFFILIATION": "True",
+      "OBS-GUARD-RESET": "True",
+      "OBS-MARKERS": "True",
+      "OBS-OUTCOME-COMMIT": "True",
+      "OBS-NOTIFIER-WRITE": "True",
+      "OBS-EXEC-COMPLETE": "True"
+    },
+    "UnknownsHolding": [],
+    "FailsHolding": [],
+    "VerifierComparison": "EQUAL",
+    "Reasons": []
+  },
+  "processRun": {
+    "schemaVersion": 1,
+    "persistedBefore": "events.jsonl read",
+    "process": {
+      "ProcessId": 20700,
+      "StartedAtUtc": "2026-09-28T04:19:52.3975086+00:00",
+      "ExitedAtUtc": "1601-01-01T00:00:00+00:00",
+      "ExitCode": 0,
+      "FinishRecordSeen": true,
+      "TerminatedByControlPlane": false,
+      "ProcessGone": true,
+      "ExitedWithinPostFinishDeadline": true,
+      "InteractiveStateObserved": false,
+      "InteractiveState": null
+    },
+    "scratch": {
+      "Before": {
+        "Path": "D:\\I52-CTDA-R2H\\e864a093\\canary-02NO-S\\scratch\\I52CtdaCanaryScratch.dwg",
+        "Exists": true,
+        "Bytes": 31665,
+        "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+        "BackupPath": "D:\\I52-CTDA-R2H\\e864a093\\canary-02NO-S\\scratch\\I52CtdaCanaryScratch.bak",
+        "BackupExists": false,
+        "BackupBytes": null,
+        "BackupSha256": null
+      },
+      "After": {
+        "Path": "D:\\I52-CTDA-R2H\\e864a093\\canary-02NO-S\\scratch\\I52CtdaCanaryScratch.dwg",
+        "Exists": true,
+        "Bytes": 31665,
+        "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+        "BackupPath": "D:\\I52-CTDA-R2H\\e864a093\\canary-02NO-S\\scratch\\I52CtdaCanaryScratch.bak",
+        "BackupExists": false,
+        "BackupBytes": null,
+        "BackupSha256": null
+      },
+      "Unchanged": true,
+      "BackupCreated": false
+    }
+  },
+  "probeResultManifest": {
+    "schemaVersion": 1,
+    "probeId": "02NO-S",
+    "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+    "rowApprovalHash": "10134547184A859DF1EFE2B392E6846AD48B7D108AA3B03B03CBC13A6B9AEF4D",
+    "modules": {
+      "native": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+      "payload": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+      "managed": null
+    },
+    "acadExecutableSha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+    "processRunEvidence": "process-run.json",
+    "process": {
+      "ProcessId": 20700,
+      "StartedAtUtc": "2026-09-28T04:19:52.3975086+00:00",
+      "ExitedAtUtc": "1601-01-01T00:00:00+00:00",
+      "ExitCode": 0,
+      "FinishRecordSeen": true,
+      "TerminatedByControlPlane": false,
+      "ProcessGone": true,
+      "ExitedWithinPostFinishDeadline": true,
+      "InteractiveStateObserved": false,
+      "InteractiveState": null
+    },
+    "scratch": {
+      "before": {
+        "Path": "D:\\I52-CTDA-R2H\\e864a093\\canary-02NO-S\\scratch\\I52CtdaCanaryScratch.dwg",
+        "Exists": true,
+        "Bytes": 31665,
+        "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+        "BackupPath": "D:\\I52-CTDA-R2H\\e864a093\\canary-02NO-S\\scratch\\I52CtdaCanaryScratch.bak",
+        "BackupExists": false,
+        "BackupBytes": null,
+        "BackupSha256": null
+      },
+      "after": {
+        "Path": "D:\\I52-CTDA-R2H\\e864a093\\canary-02NO-S\\scratch\\I52CtdaCanaryScratch.dwg",
+        "Exists": true,
+        "Bytes": 31665,
+        "Sha256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "LastWriteUtc": "2024-02-02T02:56:37+00:00",
+        "BackupPath": "D:\\I52-CTDA-R2H\\e864a093\\canary-02NO-S\\scratch\\I52CtdaCanaryScratch.bak",
+        "BackupExists": false,
+        "BackupBytes": null,
+        "BackupSha256": null
+      },
+      "Unchanged": true,
+      "BackupCreated": false
+    },
+    "eventLog": "D:\\I52-CTDA-R2H\\e864a093\\canary-02NO-S\\output\\events.jsonl",
+    "logRead": {
+      "Readable": true,
+      "Attempts": 1,
+      "Error": null
+    },
+    "records": 65
+  },
+  "eventLog": [
+    {
+      "Sequence": 1,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "RUN-ENV-01",
+      "Payload": {
+        "pid": "20700",
+        "runDirectory": "d:\\i52-ctda-r2h\\e864a093\\run",
+        "eventLog": "D:\\I52-CTDA-R2H\\e864a093\\canary-02NO-S\\output\\events.jsonl",
+        "probeEnvironment": "02NO-S",
+        "payloadSha256Expected": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7"
+      },
+      "TimestampUnixMicros": 1790569209873017
+    },
+    {
+      "Sequence": 2,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "BOOT-01",
+      "Payload": {
+        "status": "OK",
+        "transaction": "0x2A78A5CA460",
+        "materialize": "0",
+        "transactionClose": "0",
+        "declared": "8",
+        "resolved": "8",
+        "smLinkBinding": "RESOLVED",
+        "document": "0x2A78AA2FC00",
+        "database": "0x2A78D129DA0",
+        "observerRegistrations": "0",
+        "dbmodAtBoot": "0",
+        "dbmodPushed": "1"
+      },
+      "TimestampUnixMicros": 1790569209873192
+    },
+    {
+      "Sequence": 3,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "CMD-PROBE",
+      "Payload": {
+        "phase": "ENTRY",
+        "probe": "02NO-S",
+        "rowApprovalHash": "10134547184A859DF1EFE2B392E6846AD48B7D108AA3B03B03CBC13A6B9AEF4D",
+        "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF"
+      },
+      "TimestampUnixMicros": 1790569209879241
+    },
+    {
+      "Sequence": 4,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "DRIVER-CMD-01",
+      "Payload": {
+        "phase": "ENTRY",
+        "lockMode": "4",
+        "writeCapable": "1"
+      },
+      "TimestampUnixMicros": 1790569209879328
+    },
+    {
+      "Sequence": 5,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "DRIVER-CMD-01",
+      "Payload": {
+        "phase": "REGISTER"
+      },
+      "TimestampUnixMicros": 1790569209879371
+    },
+    {
+      "Sequence": 6,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "OR-TXR",
+      "Payload": {
+        "phase": "REGISTER",
+        "status": "0",
+        "instance": "0x2A7ADB65140",
+        "notifier": "0x2A7A41C4DB0",
+        "reactorClass": "AcDbObjectReactor"
+      },
+      "TimestampUnixMicros": 1790569209879418
+    },
+    {
+      "Sequence": 7,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FIN-GATE",
+      "DeliveryId": 2,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "FIN-GATE-01",
+      "Payload": {
+        "phase": "REGISTERED",
+        "idleHook": "1",
+        "timer": "27350",
+        "timeoutSeconds": "120",
+        "schedulerUse": "FINISH-INFRA"
+      },
+      "TimestampUnixMicros": 1790569209879488
+    },
+    {
+      "Sequence": 8,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "DRIVER-CMD-01",
+      "Payload": {
+        "phase": "SETUP"
+      },
+      "TimestampUnixMicros": 1790569209879528
+    },
+    {
+      "Sequence": 9,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "SA-TX-RESOLVE",
+      "Payload": {
+        "manager": "0x2A78A4B77E0",
+        "status": "1"
+      },
+      "TimestampUnixMicros": 1790569209879563
+    },
+    {
+      "Sequence": 10,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "SA-TX-START",
+      "Payload": {
+        "transaction": "0x2A78A5CD460",
+        "owner": "T-PRIMARY",
+        "activeTransactions": "1"
+      },
+      "TimestampUnixMicros": 1790569209879671
+    },
+    {
+      "Sequence": 11,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "SET-OPEN-PRIMARY-T",
+      "Payload": {
+        "status": "1",
+        "activeTransactions": "1"
+      },
+      "TimestampUnixMicros": 1790569209879712
+    },
+    {
+      "Sequence": 12,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "SET-OUTCOME-COMMIT",
+      "Payload": {
+        "probeOutcomeMode": "COMMIT",
+        "fixedBeforeTrigger": "1"
+      },
+      "TimestampUnixMicros": 1790569209879740
+    },
+    {
+      "Sequence": 13,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "DRIVER-CMD-01",
+      "Payload": {
+        "phase": "ARM"
+      },
+      "TimestampUnixMicros": 1790569209879767
+    },
+    {
+      "Sequence": 14,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "RG-ONESHOT",
+      "Payload": {
+        "phase": "ARM",
+        "family": "N-OBJ-",
+        "event": "N-OBJ-OPEN",
+        "key": "0x2A7A41C4DB0"
+      },
+      "TimestampUnixMicros": 1790569209879830
+    },
+    {
+      "Sequence": 15,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "DRIVER-CMD-01",
+      "Payload": {
+        "phase": "TRIGGER"
+      },
+      "TimestampUnixMicros": 1790569209879860
+    },
+    {
+      "Sequence": 16,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-TRIGGER",
+      "DeliveryId": 3,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "TRG-ASSERT-WRITE-TRIGGER-XR",
+      "Payload": {
+        "phase": "BEGIN",
+        "appContext": "0",
+        "curDocument": "0x2A78AA2FC00",
+        "lockMode": "4",
+        "activeTransactions": "1",
+        "top": "0x2A78A5CD460"
+      },
+      "TimestampUnixMicros": 1790569209879898
+    },
+    {
+      "Sequence": 17,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-TRIGGER",
+      "DeliveryId": 3,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "TRG-ASSERT-WRITE-TRIGGER-XR",
+      "Payload": {
+        "step": "acdbOpenObject",
+        "status": "0",
+        "object": "0x2A7A41C4DB0"
+      },
+      "TimestampUnixMicros": 1790569209879940
+    },
+    {
+      "Sequence": 18,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-TRIGGER",
+      "DeliveryId": 3,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "N-OBJ-OPEN",
+      "Payload": {
+        "registration": "OR-TXR",
+        "instance": "0x2A7ADB65140",
+        "object": "0x2A7A41C4DB0",
+        "erasing": "0",
+        "appContext": "0",
+        "curDocument": "0x2A78AA2FC00",
+        "lockMode": "4",
+        "activeTransactions": "1",
+        "top": "0x2A78A5CD460"
+      },
+      "TimestampUnixMicros": 1790569209880004
+    },
+    {
+      "Sequence": 19,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PRIMARY-CALLBACK",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "EP-CALLBACK",
+      "Payload": {
+        "event": "N-OBJ-OPEN",
+        "registration": "OR-TXR",
+        "object": "0x2A7A41C4DB0",
+        "erasing": "0",
+        "appContext": "0",
+        "curDocument": "0x2A78AA2FC00",
+        "lockMode": "4",
+        "activeTransactions": "1",
+        "top": "0x2A78A5CD460"
+      },
+      "TimestampUnixMicros": 1790569209880074
+    },
+    {
+      "Sequence": 20,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PRIMARY-CALLBACK",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "RG-ONESHOT",
+      "Payload": {
+        "phase": "CONSUME",
+        "event": "N-OBJ-OPEN"
+      },
+      "TimestampUnixMicros": 1790569209880168
+    },
+    {
+      "Sequence": 21,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PRIMARY-CALLBACK",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "CTX-CALLBACK",
+      "Payload": {
+        "event": "N-OBJ-OPEN",
+        "appContext": "0",
+        "curDocument": "0x2A78AA2FC00",
+        "lockMode": "4",
+        "activeTransactions": "1",
+        "top": "0x2A78A5CD460"
+      },
+      "TimestampUnixMicros": 1790569209880220
+    },
+    {
+      "Sequence": 22,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PRIMARY-CALLBACK",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "TOP-OBS",
+      "Payload": {
+        "event": "N-OBJ-OPEN",
+        "appContext": "0",
+        "curDocument": "0x2A78AA2FC00",
+        "lockMode": "4",
+        "activeTransactions": "1",
+        "top": "0x2A78A5CD460",
+        "readThroughTop": "0",
+        "bytes": "HFV30:S:0",
+        "primary": "0x2A78A5CD460",
+        "nested": "0x0",
+        "controlled": "0x0"
+      },
+      "TimestampUnixMicros": 1790569209880267
+    },
+    {
+      "Sequence": 23,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PRIMARY-CALLBACK",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "VER-T",
+      "Payload": {
+        "phase": "CALLBACK",
+        "event": "N-OBJ-OPEN",
+        "appContext": "0",
+        "curDocument": "0x2A78AA2FC00",
+        "lockMode": "4",
+        "activeTransactions": "1",
+        "top": "0x2A78A5CD460",
+        "readThroughTop": "0",
+        "bytes": "HFV30:S:0",
+        "primary": "0x2A78A5CD460",
+        "nested": "0x0",
+        "controlled": "0x0"
+      },
+      "TimestampUnixMicros": 1790569209880300
+    },
+    {
+      "Sequence": 24,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PRIMARY-CALLBACK",
+      "DeliveryId": 4,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "LOCK-OBS",
+      "Payload": {
+        "lockMode": "4",
+        "myLockMode": "4"
+      },
+      "TimestampUnixMicros": 1790569209880330
+    },
+    {
+      "Sequence": 25,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-EXEC",
+      "DeliveryId": 5,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "CB-PRIMARY-01",
+      "Payload": {
+        "phase": "ENTRY",
+        "appContext": "0",
+        "curDocument": "0x2A78AA2FC00",
+        "lockMode": "4",
+        "activeTransactions": "1",
+        "top": "0x2A78A5CD460"
+      },
+      "TimestampUnixMicros": 1790569209880365
+    },
+    {
+      "Sequence": 26,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-EXEC",
+      "DeliveryId": 5,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "CB-LOCK-01",
+      "Payload": {
+        "lockMode": "4",
+        "writeCapable": "1"
+      },
+      "TimestampUnixMicros": 1790569209880399
+    },
+    {
+      "Sequence": 27,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-EXEC",
+      "DeliveryId": 5,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "T-PRIMARY",
+      "Payload": {
+        "topIsPrimary": "1",
+        "primary": "0x2A78A5CD460"
+      },
+      "TimestampUnixMicros": 1790569209880424
+    },
+    {
+      "Sequence": 28,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-EXEC",
+      "DeliveryId": 5,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "MUT-S",
+      "Payload": {
+        "status": "0",
+        "transaction": "0x2A78A5CD460",
+        "activeTransactions": "1"
+      },
+      "TimestampUnixMicros": 1790569209880486
+    },
+    {
+      "Sequence": 29,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-EXEC",
+      "DeliveryId": 5,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "CB-PRIMARY-01",
+      "Payload": {
+        "phase": "EXIT",
+        "ok": "1"
+      },
+      "TimestampUnixMicros": 1790569209880520
+    },
+    {
+      "Sequence": 30,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-TRIGGER",
+      "DeliveryId": 3,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "N-OBJ-MOD",
+      "Payload": {
+        "registration": "OR-TXR",
+        "instance": "0x2A7ADB65140",
+        "object": "0x2A7A41C4DB0",
+        "erasing": "0",
+        "appContext": "0",
+        "curDocument": "0x2A78AA2FC00",
+        "lockMode": "4",
+        "activeTransactions": "1",
+        "top": "0x2A78A5CD460"
+      },
+      "TimestampUnixMicros": 1790569209880606
+    },
+    {
+      "Sequence": 31,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-TRIGGER",
+      "DeliveryId": 3,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "N-OBJ-CLOSED",
+      "Payload": {
+        "registration": "OR-TXR",
+        "instance": "0x2A7ADB65140",
+        "object": "0x2A7A41C4DB0",
+        "erasing": "0",
+        "appContext": "0",
+        "curDocument": "0x2A78AA2FC00",
+        "lockMode": "4",
+        "activeTransactions": "1",
+        "top": "0x2A78A5CD460"
+      },
+      "TimestampUnixMicros": 1790569209880650
+    },
+    {
+      "Sequence": 32,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-TRIGGER",
+      "DeliveryId": 3,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "TRG-ASSERT-WRITE-TRIGGER-XR",
+      "Payload": {
+        "step": "write",
+        "status": "0",
+        "close": "0"
+      },
+      "TimestampUnixMicros": 1790569209880682
+    },
+    {
+      "Sequence": 33,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-TRIGGER",
+      "DeliveryId": 3,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "TRG-ASSERT-WRITE-TRIGGER-XR",
+      "Payload": {
+        "phase": "END",
+        "ok": "1"
+      },
+      "TimestampUnixMicros": 1790569209880710
+    },
+    {
+      "Sequence": 34,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "DRIVER-CMD-01",
+      "Payload": {
+        "phase": "CALLBACK-WINDOW",
+        "synchronousCallbacksReturned": "1"
+      },
+      "TimestampUnixMicros": 1790569209880737
+    },
+    {
+      "Sequence": 35,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "SA-TX-END",
+      "Payload": {
+        "status": "0",
+        "owner": "T-PRIMARY",
+        "outcome": "COMMIT"
+      },
+      "TimestampUnixMicros": 1790569209880774
+    },
+    {
+      "Sequence": 36,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "SET-OUTCOME-COMMIT",
+      "Payload": {
+        "status": "0"
+      },
+      "TimestampUnixMicros": 1790569209880802
+    },
+    {
+      "Sequence": 37,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "DRIVER-CMD-01",
+      "Payload": {
+        "phase": "POST-TRIGGER-OBLIGATIONS",
+        "outcomeCommitted": "1",
+        "ownedTransactions": "0"
+      },
+      "TimestampUnixMicros": 1790569209880857
+    },
+    {
+      "Sequence": 38,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-EXEC",
+      "DeliveryId": 5,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "TOK-EXEC-DONE",
+      "Payload": {
+        "status": "ACCEPTED"
+      },
+      "TimestampUnixMicros": 1790569209880887
+    },
+    {
+      "Sequence": 39,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "DRIVER-CMD-01",
+      "Payload": {
+        "phase": "OUTCOME-RECORD",
+        "outcomeCommitted": "1",
+        "aborted": "0",
+        "primary": "0x0",
+        "nested": "0x0",
+        "controlled": "0x0"
+      },
+      "TimestampUnixMicros": 1790569209880955
+    },
+    {
+      "Sequence": 40,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "RG-ONESHOT",
+      "Payload": {
+        "phase": "DISARM",
+        "at": "DISARM",
+        "family": "N-OBJ-",
+        "consumed": "1"
+      },
+      "TimestampUnixMicros": 1790569209880990
+    },
+    {
+      "Sequence": 41,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "DRIVER-CMD-01",
+      "Payload": {
+        "phase": "TOKEN"
+      },
+      "TimestampUnixMicros": 1790569209881018
+    },
+    {
+      "Sequence": 42,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "TOK-OUTCOME",
+      "Payload": {
+        "status": "ACCEPTED"
+      },
+      "TimestampUnixMicros": 1790569209881044
+    },
+    {
+      "Sequence": 43,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "CMD-PROBE",
+      "Payload": {
+        "phase": "RETURN",
+        "aborted": "0"
+      },
+      "TimestampUnixMicros": 1790569209881067
+    },
+    {
+      "Sequence": 44,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-PROBE-CMD",
+      "DeliveryId": 1,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_PROBE",
+      "EventOrMarkerId": "TOK-PROBE-RETURN",
+      "Payload": {
+        "status": "ACCEPTED"
+      },
+      "TimestampUnixMicros": 1790569209881100
+    },
+    {
+      "Sequence": 45,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FIN-GATE",
+      "DeliveryId": 2,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "NONE",
+      "EventOrMarkerId": "FIN-GATE-01",
+      "Payload": {
+        "phase": "CHECK",
+        "missing": "NONE",
+        "quiescent": "1",
+        "isApplicationContext": "1"
+      },
+      "TimestampUnixMicros": 1790569210534908
+    },
+    {
+      "Sequence": 46,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FIN-GATE",
+      "DeliveryId": 2,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "NONE",
+      "EventOrMarkerId": "FIN-GATE-01",
+      "Payload": {
+        "phase": "ISSUE",
+        "mode": "FINISH-MODE-NORMAL",
+        "status": "0",
+        "schedulerUse": "FINISH-INFRA",
+        "credit": "NONE"
+      },
+      "TimestampUnixMicros": 1790569210535480
+    },
+    {
+      "Sequence": 47,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "FINISH-FENCE-01",
+      "Payload": {
+        "phase": "SET",
+        "fenceIsSet": "1"
+      },
+      "TimestampUnixMicros": 1790569210946276
+    },
+    {
+      "Sequence": 48,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CMD-FINISH",
+      "Payload": {
+        "phase": "ENTRY",
+        "mode": "FINISH-MODE-NORMAL",
+        "finishEarly": "0",
+        "enteredThroughGate": "1",
+        "missing": "NONE",
+        "probeArgument": "02NO-S",
+        "probeMatches": "1"
+      },
+      "TimestampUnixMicros": 1790569210946341
+    },
+    {
+      "Sequence": 49,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "VER-S",
+      "Payload": {
+        "phase": "FRESH",
+        "bytes": "HFV30:S:1"
+      },
+      "TimestampUnixMicros": 1790569210948448
+    },
+    {
+      "Sequence": 50,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "VER-T",
+      "Payload": {
+        "phase": "FRESH",
+        "activeTransactions": "0",
+        "reread": "HFV30:S:1",
+        "outcomeCommitted": "1"
+      },
+      "TimestampUnixMicros": 1790569210950190
+    },
+    {
+      "Sequence": 51,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "F-TRIGGER-XR",
+      "Payload": {
+        "phase": "FRESH",
+        "bytes": "HFV35:TRIGGER-XR:1"
+      },
+      "TimestampUnixMicros": 1790569210951777
+    },
+    {
+      "Sequence": 52,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CLEAN-OBJ",
+      "Payload": {
+        "phase": "START",
+        "mode": "NORMAL"
+      },
+      "TimestampUnixMicros": 1790569210951813
+    },
+    {
+      "Sequence": 53,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CLN-OBJ-REMOVE",
+      "Payload": {
+        "phase": "START"
+      },
+      "TimestampUnixMicros": 1790569210951827
+    },
+    {
+      "Sequence": 54,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "OR-TXR",
+      "Payload": {
+        "phase": "REMOVE",
+        "status": "0",
+        "instance": "0x2A7ADB65140",
+        "removed": "1"
+      },
+      "TimestampUnixMicros": 1790569210951851
+    },
+    {
+      "Sequence": 55,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CLN-OBJ-REMOVE",
+      "Payload": {
+        "phase": "END",
+        "ok": "1"
+      },
+      "TimestampUnixMicros": 1790569210951866
+    },
+    {
+      "Sequence": 56,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CLN-BASE",
+      "Payload": {
+        "phase": "START"
+      },
+      "TimestampUnixMicros": 1790569210951879
+    },
+    {
+      "Sequence": 57,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CLN-BASE",
+      "Payload": {
+        "step": "OWNED-T",
+        "ownedTransactions": "0"
+      },
+      "TimestampUnixMicros": 1790569210951892
+    },
+    {
+      "Sequence": 58,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CLN-BASE",
+      "Payload": {
+        "step": "LOCK-OBLIGATIONS",
+        "ownedLocks": "0"
+      },
+      "TimestampUnixMicros": 1790569210951905
+    },
+    {
+      "Sequence": 59,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CLN-BASE",
+      "Payload": {
+        "step": "FIXTURE-RESOURCES",
+        "status": "0",
+        "transactionClose": "0",
+        "erased": "8",
+        "skippedErased": "0"
+      },
+      "TimestampUnixMicros": 1790569210951997
+    },
+    {
+      "Sequence": 60,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "R-SM-LINK",
+      "Payload": {
+        "linkCarrierRemoved": "1"
+      },
+      "TimestampUnixMicros": 1790569210952060
+    },
+    {
+      "Sequence": 61,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CLN-BASE",
+      "Payload": {
+        "step": "VERIFY",
+        "ok": "1",
+        "activeTransactions": "0",
+        "closesDocument": "0"
+      },
+      "TimestampUnixMicros": 1790569210952078
+    },
+    {
+      "Sequence": 62,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CLN-BASE",
+      "Payload": {
+        "phase": "END",
+        "ok": "1"
+      },
+      "TimestampUnixMicros": 1790569210952092
+    },
+    {
+      "Sequence": 63,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CLEAN-OBJ",
+      "Payload": {
+        "phase": "END",
+        "ok": "1",
+        "fence": "FENCE-CLEANUP-TOKEN"
+      },
+      "TimestampUnixMicros": 1790569210952105
+    },
+    {
+      "Sequence": 64,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CMD-FINISH",
+      "Payload": {
+        "phase": "FLUSH",
+        "lastSequence": "63"
+      },
+      "TimestampUnixMicros": 1790569210952119
+    },
+    {
+      "Sequence": 65,
+      "ProbeId": "02NO-S",
+      "StageId": "STG-FINISH",
+      "DeliveryId": 6,
+      "DriverOrSchedulerId": "DRIVER-CMD-01",
+      "ModuleId": "R-NATIVE-ARX",
+      "PID": 20700,
+      "TID": 33180,
+      "DocumentId": "0x2A78AA2FC00",
+      "DatabaseId": "0x2A78D129DA0",
+      "CommandIdentity": "I52CTDA_FINISH",
+      "EventOrMarkerId": "CMD-FINISH",
+      "Payload": {
+        "phase": "EXIT-QUEUED",
+        "exitAction": "QUIT-DISCARD",
+        "status": "0",
+        "origin": "CMD-FINISH",
+        "dbmodAtBoot": "0",
+        "dbmodBefore": "1",
+        "popStatus": "0",
+        "dbmodAfter": "0",
+        "schedulerUse": "FINISH-INFRA"
+      },
+      "TimestampUnixMicros": 1790569210952202
+    }
+  ],
+  "checks": {
+    "objectReactor": "OR-TXR REGISTER status=0 (6, AcDbObjectReactor on the F-TRIGGER-XR notifier) and REMOVE removed=1 (54); RG-ONESHOT ARM 14, CONSUME 20 (admitted once), DISARM 40 consumed=1; EP-CALLBACK x1 on N-OBJ-OPEN (19); body CB-PRIMARY-01 once (25-29); N-OBJ-MOD (30) and N-OBJ-CLOSED (31) present; OBS-NOTIFIER-WRITE true; no re-entry, UNK-RECURSION 0",
+    "mutationTransaction": "MUT-S x1 (28, status 0) inside T-PRIMARY (27 topIsPrimary=1); OBS-T-AFFILIATION true; outcome COMMIT (35); VER-T CALLBACK HFV30:S:0, VER-S FRESH HFV30:S:1, VER-T FRESH reread HFV30:S:1 outcomeCommitted=1; F-TRIGGER-XR FRESH HFV35:TRIGGER-XR:1; VerifierComparison EQUAL; UNK-ILLEGAL-MUTATION 0",
+    "d2": "TOK-EXEC-DONE 38, TOK-OUTCOME 42, TOK-PROBE-RETURN 44 ACCEPTED with CommandIdentity=I52CTDA_PROBE; log values only I52CTDA_PROBE/I52CTDA_FINISH/NONE",
+    "d3": "seq 65 CMD-FINISH EXIT-QUEUED status=0 dbmodAtBoot=0 dbmodBefore=1 popStatus=0 dbmodAfter=0; no EXIT-BLOCKED; exit code 0; TerminatedByControlPlane false; ProcessGone true; ExitedWithinPostFinishDeadline true; InteractiveStateObserved false; scratch unchanged, no .bak; no human input after launch (agent and operator)",
+    "harness": "process-run.json written 22:20:13.8904 before probe-result.json 22:20:14.0655; logRead Readable true, Attempts 1, Error null; no EVENT_LOG_UNREADABLE",
+    "h1": "RECURRED: ExitedAtUtc = 1601-01-01T00:00:00Z (FILETIME zero) with ExitCode 0 and ProcessGone true; recorded per Coordinator instruction, not invalidating",
+    "other": "EvidenceComplete true; SafetyEvidenceComplete true; cleanup CLEAN-OBJ PASS (CLN-OBJ-REMOVE ok, CLN-BASE 8 erased, SM-LINK removed, 0 active transactions); sequence 1..65 contiguous, one PID 20700 / TID 33180"
+  },
+  "artifacts": [
+    {
+      "path": "output/events.jsonl",
+      "bytes": 27116,
+      "sha256": "FA743FCAA5E36D14609F3AB1D5F1D2270541A463902D7A0F7536F63E5DC12D0A"
+    },
+    {
+      "path": "output/probe-result.json",
+      "bytes": 2801,
+      "sha256": "7964DA586760C0BB22E91FC2E2290F5B5BF4BE89DB4E437EC13576C94F0EE337"
+    },
+    {
+      "path": "output/process-run.json",
+      "bytes": 1508,
+      "sha256": "7E8BEC1A74CC10F147F0B822E2D9E7B2CA719FC71373DE7F1766C6A055C9BA6E"
+    },
+    {
+      "path": "output/driver-script-01.scr",
+      "bytes": 105,
+      "sha256": "7DD61373AC1EB097D5EF190BD538F483B67669A3E71A63307E837280B885C099"
+    },
+    {
+      "path": "logs/harness-console.log",
+      "bytes": 176,
+      "sha256": "E7F4A69AE1DC835298695E73D4748FF08D93FE368CC28134D4C5440A48506393"
+    },
+    {
+      "path": "evidence/tuples.json",
+      "bytes": 15300,
+      "sha256": "D963F5BB6E69368688D749CFA5417CDB57633956A695A2EAB04903C52FDF4C41"
+    }
+  ],
+  "governingProbesExecutedTotal": 6,
+  "publishedFrom": {
+    "hostLocalFile": "D:\\I52-CTDA-R2H\\e864a093\\canary-02NO-S\\evidence\\canary-02NO-S-restart.LOCAL.json",
+    "sha256": "02D7BE00E144618CF2BAF02227E52A078209E1C6B0171F83447D731B2A4E4DD2"
+  },
+  "host": {
+    "machine": "IMING-2",
+    "acadExe": "R25.0.171.0.0 2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+    "packageHostCopy": "D:\\I52-CTDA-R2H\\e864a093",
+    "trustedPath": "D:\\I52-CTDA-R2H\\e864a093\\run (exact entry; SECURELOAD=1)"
+  },
+  "operatorStatement": {
+    "text": "No mouse/keyboard input after launch."
+  },
+  "h1": {
+    "status": "RECURRED / MINOR / BUILD-SIDE FOLLOW-UP",
+    "invalidatesThisRun": false,
+    "occurrences": "09N-B restart (section 183) and 02NO-S restart; not in 02NDBMOD-S restart (section 184)"
+  },
+  "governedValidity": "VALID PASS-S",
+  "validGovernedResults": 3,
+  "ctdaHostPass": "NOT EVALUATED",
+  "nextGate": "16N-S AUTHORIZATION"
+}
