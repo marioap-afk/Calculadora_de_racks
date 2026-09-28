@@ -12,6 +12,9 @@ $project = Join-Path $PSScriptRoot 'I52CtdaNativeTests.vcxproj'
 & $MSBuild $project /t:Rebuild /p:Configuration=Debug /p:Platform=x64 "/p:VCToolsVersion=$VcToolsVersion" /v:minimal /nologo
 if ($LASTEXITCODE -ne 0) { throw "native test build failed: $LASTEXITCODE" }
 $exe = Join-Path $PSScriptRoot 'bin\x64\Debug\I52CtdaNativeTests.exe'
+# D-4 (V35-A3): LOCK-RELEASE-BIND-01 COMMAND-END-WINDOW classification of R-NATIVE-ARX.
+& $exe lockrelease
+if ($LASTEXITCODE -ne 0) { throw 'native D-4 lock-release test failed' }
 foreach ($probe in '02NDBMOD-S', '09N-B', 'CTRENDED16SND-ALL') {
     $log = Join-Path ([IO.Path]::GetTempPath()) "i52ctda-d2-$probe-$PID.jsonl"
     try {

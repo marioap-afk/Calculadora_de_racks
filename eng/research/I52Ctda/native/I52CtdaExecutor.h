@@ -1,6 +1,7 @@
 #pragma once
 
 #include "I52CtdaFixture.h"
+#include "I52CtdaLockRelease.h"
 #include "I52CtdaLog.h"
 #include "I52CtdaPlan.h"
 
@@ -138,7 +139,7 @@ private:
     static const wchar_t* callbackMember(I52Id event);
 
     // Lock-release windows (LOCK-RELEASE-BIND-01).
-    void openCommandWindow(I52Id stage, uint64_t delivery);
+    void openCommandWindow(I52Id stage, uint64_t delivery, const std::wstring& stageCommand);
     void closeCommandWindow(const wchar_t* reason);
 
     // FIN-GATE-01 and CMD-FINISH.
@@ -195,7 +196,8 @@ private:
     // Command windows.
     struct CommandStage { std::wstring command; I52Id stage; uint64_t delivery; };
     std::vector<CommandStage> commandStages_;
-    struct Window { bool open{}; bool resolved{}; I52Id stage{}; uint64_t delivery{}; } window_;
+    // LOCK-RELEASE-BIND-01 COMMAND-END-WINDOW (V35-A3): the classification lives in I52CommandEndWindow.
+    struct Window { I52CommandEndWindow rule; I52Id stage{}; uint64_t delivery{}; } window_;
     struct AppUnlock { bool active{}; bool resolved{}; I52Id stage{}; uint64_t delivery{}; } appUnlock_;
 
     // Document lock requests (TRG-LOCK-CYCLE / TRG-LOCK-VETO).

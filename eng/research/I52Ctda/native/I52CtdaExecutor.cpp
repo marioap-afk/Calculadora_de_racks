@@ -475,7 +475,7 @@ void I52Executor::onEditor(const void* instance, I52Id event, const ACHAR* comma
         if (event == I52Id::N_ED_END && ended.stage == I52Id::STG_FIXTURE_CMD && rowHasToken(I52Id::TOK_FIXTURE_CMD_END)) I52Ctda_TokenSetNative(I52Id::TOK_FIXTURE_CMD_END, ended.delivery);
         if (event == I52Id::N_ED_CANCEL && ended.stage == I52Id::STG_CANCEL_CMD && rowHasToken(I52Id::TOK_CANCEL_OBSERVED)) I52Ctda_TokenSetNative(I52Id::TOK_CANCEL_OBSERVED, ended.delivery);
         if (ended.stage != I52Id::STG_FINISH) pop(ended.stage);
-        if (!I52Auth::lockAnchor(ended.stage).empty() && I52Auth::lockAnchor(ended.stage) == L"COMMAND-END-WINDOW") openCommandWindow(ended.stage, ended.delivery);
+        if (!I52Auth::lockAnchor(ended.stage).empty() && I52Auth::lockAnchor(ended.stage) == L"COMMAND-END-WINDOW") openCommandWindow(ended.stage, ended.delivery, ended.command);
     }
     if (!commands_.empty() && commands_.back() == command) commands_.pop_back();
     I52Log::instance().setCommandIdentity(commands_.empty() ? L"NONE" : commands_.back());
@@ -489,7 +489,7 @@ void I52Executor::onDocument(const void* instance, I52Id event, AcApDocument* do
     const bool ours = document == document_ && global == L"RACKCAD_CTDA_V35" && lockInFlight_;
     const std::wstring request = ours ? L"RACKCAD_CTDA_V35#" + std::to_wstring(lockRequest_) : L"FOREIGN:" + global;
     const bool fenced = I52Log::instance().fenceIsSet() != 0;
-    fact(event, L"registration=RR-DOC;instance=" + ptr(instance) + L";document=" + ptr(document) + L";scratch=" + flag(document == document_)
+    const uint64_t sourceSequence = fact(event, L"registration=RR-DOC;instance=" + ptr(instance) + L";document=" + ptr(document) + L";scratch=" + flag(document == document_)
         + L";myCurrent=" + std::to_wstring(myCurrent) + L";myNew=" + std::to_wstring(myNew) + L";current=" + std::to_wstring(current)
         + L";globalCommand=" + global + L";requestId=" + request + (fenced ? L";notifierAccess=NONE" : L""));
     if (document != document_) return;
@@ -503,15 +503,17 @@ void I52Executor::onDocument(const void* instance, I52Id event, AcApDocument* do
             fact(I52Id::MARK_LOCK_RELEASE, L"anchor=APPCTX-UNLOCK-01-CALL;current=" + std::to_wstring(current), appUnlock_.stage, appUnlock_.delivery);
             if (rowHasToken(I52Id::TOK_LOCK_RELEASE)) I52Ctda_TokenSetNative(I52Id::TOK_LOCK_RELEASE, appUnlock_.delivery);
         }
-        else if (window_.open && current == AcAp::kNotLocked)
+        else if (window_.rule.isOpen())
         {
-            if (!window_.resolved)
+            // V35-A3: only the unlocked release named `#` + stage command is eligible; every other transition is recorded
+            // as foreign (or as an identity inconsistency) and never marks, never sets the token and never blocks.
+            const I52LockDecision d = window_.rule.observe(sourceSequence, true, global, current, myNew, current == AcAp::kNotLocked);
+            if (d.mark)
             {
-                window_.resolved = true;
-                fact(I52Id::MARK_LOCK_RELEASE, L"anchor=COMMAND-END-WINDOW;current=" + std::to_wstring(current), window_.stage, window_.delivery);
-                if (rowHasToken(I52Id::TOK_LOCK_RELEASE)) I52Ctda_TokenSetNative(I52Id::TOK_LOCK_RELEASE, window_.delivery);
+                fact(I52Id::MARK_LOCK_RELEASE, d.payload, window_.stage, window_.delivery);
+                if (d.token && rowHasToken(I52Id::TOK_LOCK_RELEASE)) I52Ctda_TokenSetNative(I52Id::TOK_LOCK_RELEASE, window_.delivery);
             }
-            else fact(I52Id::MARK_LOCK_RELEASE, L"anchor=COMMAND-END-WINDOW;candidate=SECOND;current=" + std::to_wstring(current), window_.stage, window_.delivery);
+            else if (d.record) fact(I52Id::LOCK_RELEASE_BIND_01, d.payload, window_.stage, window_.delivery);
         }
     }
     if (fenced || selfAction_)
@@ -936,17 +938,17 @@ void I52Executor::cancelCompletion(void* data)
 }
 
 // ------------------------------------------------------------------ lock-release windows
-void I52Executor::openCommandWindow(I52Id stage, uint64_t delivery)
+void I52Executor::openCommandWindow(I52Id stage, uint64_t delivery, const std::wstring& stageCommand)
 {
-    window_ = { true, false, stage, delivery };
-    fact(I52Id::LOCK_RELEASE_BIND_01, L"phase=WINDOW-OPEN;anchor=COMMAND-END-WINDOW;stage=" + std::wstring(I52Plan::text(stage)), stage, delivery);
+    window_.stage = stage;
+    window_.delivery = delivery;
+    fact(I52Id::LOCK_RELEASE_BIND_01, window_.rule.open(stageCommand) + L";stage=" + std::wstring(I52Plan::text(stage)), stage, delivery);
 }
 
 void I52Executor::closeCommandWindow(const wchar_t* reason)
 {
-    if (!window_.open) return;
-    fact(I52Id::LOCK_RELEASE_BIND_01, std::wstring(L"phase=WINDOW-CLOSE;reason=") + reason + L";resolved=" + flag(window_.resolved), window_.stage, window_.delivery);
-    window_.open = false;
+    if (!window_.rule.isOpen()) return;
+    fact(I52Id::LOCK_RELEASE_BIND_01, window_.rule.close(reason), window_.stage, window_.delivery);
 }
 
 // ------------------------------------------------------------------ observer registrations (exact retained instances)
