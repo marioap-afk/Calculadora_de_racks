@@ -1,44 +1,72 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "initiative": "I-52",
   "kind": "CTDA_HOST_PASS coverage assessment",
   "definitionRevision": "V35-A3",
   "mode": "DOCUMENTATION / ANALYSIS ONLY (no AutoCAD, no probe executed, no source change)",
-  "inputs": {
-    "docs/initiatives/I-52-native-probe-matrix-v35.md": "79E876597C749CC634F1E75E8E4943FE549C8B762E6B4A9B0A5093F86D83991C",
+  "inputsSha256OfLfNormalizedContent": {
+    "docs/initiatives/I-52-native-probe-matrix-v35.md": "41BAE1512A9A8D1559320F427BA15879537F0FF43C972ED5E7C53D252F9DE092",
     "docs/initiatives/I-52-host-event-catalog-v27-correction.md": "D624156F3461061E62076E8C25792D966CA34A5CF4840E5868ADF4A559506E01",
     "docs/initiatives/I-52-host-event-catalog-v27.md": "357569C9C057F9C94D77C5E13A1C6E5319FBEBB4E12BDD4895F0FB2A5220F9AB",
-    "docs/initiatives/I-52-execution-catalog-v35.json": "CB858ED5BDA7D99E8F85E2A1BC06A0461162BCA57189DDF59FCBEE9128F46BA8",
-    "docs/initiatives/I-52-fixture-execution-contract-v35.md": "6E21A8E23D838751D8C1540BC7C0940F0BFF448FF8B8631DC6162A96501A477F"
+    "docs/initiatives/I-52-execution-catalog-v35.json": "428F1306DB50D1E37701912C377AF85436DB1C0E75C3DE9F209315AC14764FFA",
+    "docs/initiatives/I-52-fixture-execution-contract-v35.md": "D0F854A08A753CE60BAD3CF040BA6A776A4BC24DFF7BD1241599152FD40760CC",
+    "docs/initiatives/I-52-proposal-v35.md": "E5525B1991E6BCB7DACF100BF6BED9713A80CF17FB41358467AF55667FA9E57B",
+    "eng/research/I52Ctda/v35-oracle.json": "995D69342CE14683002133319481AA1653DD3D6E794A1BAB999BD582586F8149",
+    "docs/automation/evidence/I-52-r3-host-smoke-bef6091b.json": "E3538271ED741731750DDB65538E31E80976EA0D28FF068F61D2513372DC8F9E"
+  },
+  "stateModel": {
+    "values": [
+      "TRUE",
+      "FALSE",
+      "NOT EVALUATED"
+    ],
+    "TRUE": "all five clauses hold on governing evidence",
+    "FALSE": "terminal and monotone: a governing FAIL; a governing UNKNOWN (structural or defensive: a valid executed result that authorizes no rerun); or an explicit recorded inability determination for a required row, fixture or instrument (V26 section 9). Inability is never implicit.",
+    "NOT EVALUATED": "no disqualifier exists and at least one required row is unexecuted but still considered producible. It is NOT TRUE.",
+    "retiredTerm": "NOT EVALUABLE",
+    "terminology": "docs use exactly TRUE / FALSE / NOT EVALUATED for the host predicate; \"PASS\" is used only for row results and in the predicate name"
+  },
+  "state": {
+    "CTDA_HOST_PASS(V35-A3)": "NOT EVALUATED",
+    "notTrue": true,
+    "notFalseBecause": "no governing FAIL or UNKNOWN and no recorded inability determination exists",
+    "managedAuthority": "MISSING but presently considered IMPLEMENTABLE (not an inability determination)"
   },
   "counts": {
     "nativeRowsTotal": 100,
-    "managedRowsTotal(literal18)": 18,
+    "managedRowsRequired": 18,
+    "managedRowsOutsidePredicate": 9,
     "managedRowsInHEC-V27-C1-section2": 27,
     "native": {
       "NOT-EXECUTED": 92,
       "PASS-GOVERNED": 6,
       "DEFERRED": 2
     },
-    "managed18": {
+    "managedRequired18": {
       "NOT-EXECUTED": 18
     },
-    "managedAll27": {
-      "NOT-EXECUTED": 27
+    "managedOutsidePredicate9": {
+      "OUTSIDE-PREDICATE": 9
     },
-    "combined118": {
+    "requiredRows118": {
       "PASS-GOVERNED": 6,
       "FAIL-GOVERNED": 0,
       "UNKNOWN-GOVERNED": 0,
       "EXECUTED-NON-GOVERNING (rows with ONLY non-governing executions)": 0,
       "NOT-EXECUTED": 110,
-      "DEFERRED": 2
+      "DEFERRED": 2,
+      "NOT-EXECUTED-REQUIRED (not executed + deferred)": 112
     },
     "executions": {
       "total": 11,
       "governing": 6,
       "nonGoverning": 5,
       "distinctValidProbeIds": 6
+    },
+    "structural": {
+      "total": 15,
+      "alreadyPass": 1,
+      "remaining": 14
     }
   },
   "clauses": [
@@ -46,13 +74,17 @@
       "clause": 1,
       "name": "fixture identity",
       "status": "INCOMPLETE",
-      "why": "Native fixture-v35 / FEC-V35-1: the six governing executions ran packages whose freeze/plan identity declares the frozen V35 fixture (A3: D9FD41B4.., A2: 43DCE809..), but no evidence record carries an explicit fixture-identity field. The managed fixture HF-V31-1 with F-NOD and F-SRC (identities that exist only in the managed HF/HEC fixture contract, not in the eight native PersistentFixtureIdentity entries) has never been instantiated in any governed execution."
+      "halves": {
+        "native fixture-v35 / FEC-V35": "SATISFIED for the six governing native rows",
+        "managed HF-V31-1 incl. F-NOD and F-SRC": "NOT SATISFIED (never instantiated)"
+      },
+      "why": "Native half: each of the six governing logs records BOOT-01 declared/resolved = 8/8 and CLN-BASE FIXTURE-RESOURCES erased = 8, and binds the freeze package hash (A2 43DCE809.. or A3 D9FD41B4..) and the manifest rowApprovalHash (decisions 197.6). Managed half: HF-V31-1 with F-NOD and F-SRC (identities that exist only in the managed HF-V26 primitives, not in the eight native PersistentFixtureIdentity entries) has never been instantiated in a governed execution."
     },
     {
       "clause": 2,
       "name": "complete execution (100 native + 18 managed, exact governed identity/tuple)",
       "status": "INCOMPLETE",
-      "why": "native 6/100 executed under a governing result (92 not executed, 2 deferred); managed 0/18 executed. The three A2-package results are carried forward, not re-executed under the A3 tuple."
+      "why": "native 6/100 executed under a governing result (92 not executed, 2 deferred); managed 0/18. The three A2-package results are provisionally governing by conditional carry-forward and every governing result ran on a build other than the current baseline (decisions 197.4)."
     },
     {
       "clause": 3,
@@ -64,37 +96,37 @@
       "clause": 4,
       "name": "observability (DA-P7 / DA-P8 / DA-P10)",
       "status": "INCOMPLETE",
-      "why": "DA-P7 surfaces read in a PASS: ['S'] (missing ['M', 'SM', 'NOD']); DA-P8 needs HEC row 11 (NOT-EXECUTED); DA-P10 needs HEC rows 14 and 15 (NOT-EXECUTED)."
+      "why": "DA-P7: S SATISFIED; M, SM, NOD NOT SATISFIED; DA-P8 needs HEC row 11 (NOT-EXECUTED); DA-P10 needs HEC rows 14 and 15 (NOT-EXECUTED)."
     },
     {
       "clause": 5,
       "name": "no FAIL / UNKNOWN anywhere in the governed matrix",
       "status": "INCOMPLETE",
-      "why": "0 FAIL-GOVERNED and 0 UNKNOWN-GOVERNED among the 6 governing results; nothing disqualifying is recorded. The absence cannot be established for the 110 rows not executed and 2 deferred. The two historical A2 UNKNOWN executions of 16N-S (E07, E08) are non-governing under A3 (sections 187/188)."
+      "why": "0 FAIL-GOVERNED and 0 UNKNOWN-GOVERNED among the 6 governing results; nothing disqualifying is recorded. The absence cannot be established for the 112 required rows not executed. The two historical A2 UNKNOWN executions of 16N-S (E07, E08) remain in the execution history and are outside the governing matrix under the narrow supersession rule of decisions 197.5."
     }
   ],
-  "state": {
-    "CTDA_HOST_PASS(V35-A3)": "NOT EVALUABLE",
-    "meaning": "TRUE requires all five clauses PASS. FALSE is produced by an executed governing FAIL or UNKNOWN (clause 5 violated; the literal text: a structural UNKNOWN is a valid executed result that forces FALSE). None exists. While any clause is INCOMPLETE and none is violated, the value is NOT EVALUABLE: it is NOT TRUE, and it is not (yet) FALSE.",
-    "notTrue": true,
-    "openInterpretation": "Q1 (see the assessment): if clause 2 is read as a state predicate over the current record, the conjunction is FALSE now; that reading is not adopted here."
-  },
   "daP7": {
-    "requiredSurfaces": [
-      "S",
-      "M",
-      "SM",
-      "NOD"
-    ],
-    "readInAtLeastOnePass": [
-      "S"
-    ],
-    "missing": [
-      "M",
-      "SM",
-      "NOD"
-    ],
-    "note": "09N-B is labelled Surface S/M in NPM-V35, but its VerifierIds are VER-T,VER-S: only S (and T) is read. NOD is a surface of managed row 11 only (native rows have no NOD surface). Nothing is inferred from the S/M label."
+    "rule": "a physical surface counts only if a completed FRESH verifier read for it is recorded in the log of a governing PASS execution; catalog labels alone do not count",
+    "surfaces": {
+      "S": "SATISFIED",
+      "M": "NOT SATISFIED",
+      "SM": "NOT SATISFIED",
+      "NOD": "NOT SATISFIED"
+    },
+    "evidence": {
+      "S": [
+        "E04 09N-B",
+        "E05 02NDBMOD-S",
+        "E06 02NO-S",
+        "E09 16N-S",
+        "E10 10N-S",
+        "E11 16C-S"
+      ],
+      "M": [],
+      "SM": [],
+      "NOD": []
+    },
+    "note": "09N-B is labelled Surface S/M, but its log has VER-S and VER-T FRESH reads and no VER-M: M is not credited. NOD is a surface of managed row 11 only."
   },
   "daP8": {
     "requiredBy": "HEC row 11",
@@ -361,202 +393,1027 @@
       "satisfied": false
     }
   },
+  "managedPredicate": {
+    "required18": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09C",
+      "09E",
+      "10S",
+      "10M",
+      "10SM",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "outsidePredicate9": [
+      "16S-SEND",
+      "16M-SEND",
+      "16SM-SEND",
+      "16S-CONTEXT",
+      "16M-CONTEXT",
+      "16SM-CONTEXT",
+      "16S-IDLE",
+      "16M-IDLE",
+      "16SM-IDLE"
+    ]
+  },
+  "carryForward": [
+    {
+      "executionId": "E04",
+      "probeId": "09N-B",
+      "rowHashUnchanged": true,
+      "referencedCatalogEntriesUnchanged": true,
+      "amendedEntriesReferencedByRow": [],
+      "retainedLogReproducesResult": "YES: research test \"r3 prior valid governed results (6) unchanged offline\" (eng/research/I52Ctda/tests/R3Tests.cs, D4PriorValidResults) re-evaluates the retained log under the current engine and asserts the recorded class",
+      "originalTupleRecorded": true,
+      "carriedForwardFlag": true,
+      "provisionallyGoverning": true,
+      "beforeCtdaHostPassTrue": "must be re-executed on the campaign build OR carry an explicit Architect equivalence ruling (decisions 197.4)"
+    },
+    {
+      "executionId": "E05",
+      "probeId": "02NDBMOD-S",
+      "rowHashUnchanged": true,
+      "referencedCatalogEntriesUnchanged": true,
+      "amendedEntriesReferencedByRow": [],
+      "retainedLogReproducesResult": "YES: research test \"r3 prior valid governed results (6) unchanged offline\" (eng/research/I52Ctda/tests/R3Tests.cs, D4PriorValidResults) re-evaluates the retained log under the current engine and asserts the recorded class",
+      "originalTupleRecorded": true,
+      "carriedForwardFlag": true,
+      "provisionallyGoverning": true,
+      "beforeCtdaHostPassTrue": "must be re-executed on the campaign build OR carry an explicit Architect equivalence ruling (decisions 197.4)"
+    },
+    {
+      "executionId": "E06",
+      "probeId": "02NO-S",
+      "rowHashUnchanged": true,
+      "referencedCatalogEntriesUnchanged": true,
+      "amendedEntriesReferencedByRow": [],
+      "retainedLogReproducesResult": "YES: research test \"r3 prior valid governed results (6) unchanged offline\" (eng/research/I52Ctda/tests/R3Tests.cs, D4PriorValidResults) re-evaluates the retained log under the current engine and asserts the recorded class",
+      "originalTupleRecorded": true,
+      "carriedForwardFlag": true,
+      "provisionallyGoverning": true,
+      "beforeCtdaHostPassTrue": "must be re-executed on the campaign build OR carry an explicit Architect equivalence ruling (decisions 197.4)"
+    }
+  ],
+  "structuralCampaign": {
+    "status": "DESIGN ONLY - NOT AUTHORIZED - NOT EXECUTED (decisions 197.9)",
+    "structuralRowsTotal": 15,
+    "structuralAlreadyPass": [
+      "10N-S"
+    ],
+    "structuralRemaining": 14,
+    "orderRule": "Deterministic: ascending NPM-V35 section 5 row order (the catalog order). The corpus has no prior probability model of which host fact fails, so no risk-based order is invented. The order changes only how early a FALSE would appear, never the outcome, because FALSE is monotone; the Coordinator may reorder before authorization.",
+    "rules": [
+      "Exactly one ProbeId per AutoCAD process.",
+      "The same exact campaign build/tuple (baseline below) for every row; a build change stops the campaign for a Coordinator ruling.",
+      "No result transfer between rows, families or anchors.",
+      "No retry of an UNKNOWN or FAIL.",
+      "A governing UNKNOWN => CTDA_HOST_PASS = FALSE (terminal). A governing FAIL => CTDA_HOST_PASS = FALSE (terminal).",
+      "Stop the campaign immediately on the first governing UNKNOWN or FAIL. PASS => continue to the next row.",
+      "A run that is not a valid governed execution (operator interaction, environment/tuple/package/trust failure, harness defect, timeout) is NON-GOVERNING: the campaign halts for a Coordinator ruling; it is neither PASS nor FALSE and is never retried automatically.",
+      "Each row needs its own Coordinator authorization, the exact TRUSTEDPATHS entry, and the Owner no-touch declaration.",
+      "16A-S is NOT part of this group; 13A-SM is."
+    ],
+    "baseline": {
+      "status": "CURRENT CAMPAIGN BASELINE (intended for the structural campaign; NOT authorized to run)",
+      "campaignSourceSha": "bef6091b282495a08226bf78c9671a0abff0607a",
+      "packageId": "bef6091b",
+      "packagePath": "D:\\I52-CTDA-R2H\\bef6091b",
+      "packageZipSha256": "021F20923D60BE561C94F62AEEF390153784F1E955F862B8877D6060F09E55F7",
+      "packageZipBytes": 3120018,
+      "sha256Sums": "41/41 (41 entries)",
+      "nativeArxSha256": "1493B2FE37CD4B1C5154E31F9EA67271D71DFBCFD4FF724451EAA8CF5E0CFDEF",
+      "payloadArxSha256": "597F5BAF1DF47296B4A059CB87EB203C7636E6425050D689A5BB43B8628CAD24",
+      "managedObserverDllSha256": "3B4C7A191E2AF1FE16277210B51C9B0DC406CD2742137DBC17B40E58DD21A061",
+      "buildTupleHash": "4D80F95490DBA768D0B4160F6C3431F9C91881FF9E3E62FD1AD79EB138B1EAF0",
+      "freezeRevision": "V35-A3",
+      "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+      "acadExeSha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+      "smokePreRunTupleHash": "47B7914EE1999CA9775577D7225F31C0257334F5136218429DF50C2EBCAA1BD9",
+      "includesFixes": "m-1, m-2, m-3 and H-1 (decision 194)",
+      "supersededPackage": "bef11ce2 (A2 metadata)",
+      "note": "R3_HOST_EXECUTION_TUPLE_HASH is generated per execution (it binds ProbeId, row hash and scratch) and is not part of the baseline. Source drift since the baseline: none (eng/ and the frozen V35 documents are byte-identical between bef6091b and the published branch)."
+    },
+    "runOrder": [
+      {
+        "order": 1,
+        "probeId": "09N-D",
+        "matrixOrder": 7,
+        "anchor": "CB-EXEC-01",
+        "schedulerChain": "CHAIN-NONE",
+        "family": "H-ED",
+        "surface": "S",
+        "verifiers": [
+          "VER-S",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation; RESULT-RULE-V35 step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "the command lock is still held at commandEnded",
+        "reasonStructural": "CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 2,
+        "probeId": "10N-M",
+        "matrixOrder": 9,
+        "anchor": "CB-EXEC-01",
+        "schedulerChain": "CHAIN-NONE",
+        "family": "H-ED",
+        "surface": "M",
+        "verifiers": [
+          "VER-M",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "the command lock is still held at commandEnded",
+        "reasonStructural": "CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE; candidate boundary (B12)",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 3,
+        "probeId": "10N-SM",
+        "matrixOrder": 10,
+        "anchor": "CB-EXEC-01",
+        "schedulerChain": "CHAIN-NONE",
+        "family": "H-ED",
+        "surface": "SM",
+        "verifiers": [
+          "VER-SM",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "the command lock is still held at commandEnded",
+        "reasonStructural": "CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE; candidate boundary (B12)",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 4,
+        "probeId": "04NO-S",
+        "matrixOrder": 19,
+        "anchor": "EXEC-OBSERVE",
+        "schedulerChain": "CHAIN-NONE",
+        "family": "H-OBJ",
+        "surface": "S",
+        "verifiers": [
+          "VER-S",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through OBS-PRIMARY-CALLBACK unavailable (RESULT-RULE-V35 step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "the abort delivers cancelled/modifyUndone to OR-XR",
+        "reasonStructural": "the primary callback is cancelled/modifyUndone produced by aborting T-PRIMARY over a staged write",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 5,
+        "probeId": "04NO-UNDO-S",
+        "matrixOrder": 20,
+        "anchor": "EXEC-OBSERVE",
+        "schedulerChain": "CHAIN-NONE",
+        "family": "H-OBJ",
+        "surface": "S",
+        "verifiers": [
+          "VER-S",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through OBS-PRIMARY-CALLBACK unavailable (RESULT-RULE-V35 step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "the abort delivers cancelled/modifyUndone to OR-XR",
+        "reasonStructural": "the primary callback is cancelled/modifyUndone produced by aborting T-PRIMARY over a staged write",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 6,
+        "probeId": "10NDOC-WILL-SM",
+        "matrixOrder": 22,
+        "anchor": "CB-EXEC-01",
+        "schedulerChain": "CHAIN-NONE",
+        "family": "H-DOC",
+        "surface": "SM",
+        "verifiers": [
+          "VER-SM",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "a write-capable lock is observable before the request is granted",
+        "reasonStructural": "CB-EXEC-01 runs inside documentLockModeWillChange raised by the driver's own SA-LOCK request",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 7,
+        "probeId": "13A-SM",
+        "matrixOrder": 31,
+        "anchor": "APPCTX-EXEC-01",
+        "schedulerChain": "CHAIN-SYNC",
+        "family": "H-APPCTX",
+        "surface": "S+M+SM",
+        "verifiers": [
+          "VER-ALL",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through UNK-LOCK-DOC-T-LEAK, UNK-ILLEGAL-CONTEXT if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "the nested kWrite request returns eOk",
+        "reasonStructural": "APPCTX-LOCK-01 calls lockDocument(kWrite) in a synchronous APPCTX entry while I52CTDA_PROBE holds the command lock",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 8,
+        "probeId": "02NAPP-SM",
+        "matrixOrder": 40,
+        "anchor": "CB-PRIMARY-01",
+        "schedulerChain": "CHAIN-NONE",
+        "family": "H-DB",
+        "surface": "SM",
+        "verifiers": [
+          "VER-SM",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through UNKNOWN-COMMON (CB-PRIMARY-01 step failure) if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "a nested append to the same block table record is accepted inside objectAppended",
+        "reasonStructural": "MUT-SM appends F-REF-C to Model Space inside objectAppended of the F-TRIGGER-APPEND append, in the same T-PRIMARY (RC-10)",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 9,
+        "probeId": "02NTAS-ALL",
+        "matrixOrder": 41,
+        "anchor": "CB-EXEC-01",
+        "schedulerChain": "CHAIN-NONE",
+        "family": "H-TX",
+        "surface": "S+M+SM",
+        "verifiers": [
+          "VER-ALL",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through UNK-ILLEGAL-CONTEXT if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "the transaction manager accepts a start from that callback",
+        "reasonStructural": "CB-EXEC-01 starts T_CB inside transactionAboutToStart",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 10,
+        "probeId": "02NTA-ALL",
+        "matrixOrder": 43,
+        "anchor": "CB-EXEC-01",
+        "schedulerChain": "CHAIN-NONE",
+        "family": "H-TX",
+        "surface": "S+M+SM",
+        "verifiers": [
+          "VER-ALL",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through UNK-NESTED-IN-ABORT if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "the aborted T-PRIMARY is no longer active at the callback",
+        "reasonStructural": "CB-EXEC-01 in transactionAborted",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 11,
+        "probeId": "02NEDW-ALL",
+        "matrixOrder": 46,
+        "anchor": "CB-EXEC-01",
+        "schedulerChain": "CHAIN-NONE",
+        "family": "H-ED",
+        "surface": "S+M+SM",
+        "verifiers": [
+          "VER-ALL",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "the command lock is already held at commandWillStart",
+        "reasonStructural": "CB-EXEC-01 runs inside commandWillStart of I52CTDA_FIXTURE",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 12,
+        "probeId": "COBJUNDO16SND-ALL",
+        "matrixOrder": 70,
+        "anchor": "SEND-EXEC-01",
+        "schedulerChain": "CHAIN-SEND",
+        "family": "H-OBJ,H-SEND",
+        "surface": "S+M+SM",
+        "verifiers": [
+          "VER-ALL",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through OBS-ORIGIN-CALLBACK unavailable (step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "cancel() sends modifyUndone",
+        "reasonStructural": "the origin is modifyUndone produced by cancel() after the RC-09 staging write",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 13,
+        "probeId": "COBJUNDO16APP-ALL",
+        "matrixOrder": 87,
+        "anchor": "APPCTX-EXEC-01",
+        "schedulerChain": "CHAIN-APPCTX",
+        "family": "H-OBJ,H-APPCTX",
+        "surface": "S+M+SM",
+        "verifiers": [
+          "VER-ALL",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through OBS-ORIGIN-CALLBACK unavailable (step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "cancel() sends modifyUndone",
+        "reasonStructural": "the origin is modifyUndone produced by cancel() after the RC-09 staging write",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      },
+      {
+        "order": 14,
+        "probeId": "02NEDC-ALL",
+        "matrixOrder": 92,
+        "anchor": "EDC-EXEC-01",
+        "schedulerChain": "CHAIN-NONE",
+        "family": "H-ED",
+        "surface": "S+M+SM",
+        "verifiers": [
+          "VER-ALL",
+          "VER-T"
+        ],
+        "expectedPossibleStructuralOutcome": "UNKNOWN through UNK-NO-WRITE-LOCK, UNK-T-CANCEL-FAILURE if the conditional host fact does not hold; otherwise the row may reach its PASS class",
+        "conditionalHostFact": "a write-capable command lock is observable in commandCancelled",
+        "reasonStructural": "EDC-EXEC-01 runs inside commandCancelled of HFV34_CANCEL",
+        "whyInThisCampaign": "RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority.",
+        "state": "NOT AUTHORIZED - NOT EXECUTED"
+      }
+    ]
+  },
   "executions": [
     {
       "executionId": "E01",
       "probeId": "09N-B",
-      "package": "6e445fa8",
       "decisionsSection": "176",
       "engineResult": "PASS-T (engine)",
+      "governingStatus": "NON-GOVERNING",
       "governing": false,
       "reason": "NOT VALID: the operator confirmed that the save-changes dialog appeared and pressed 'Don't save' by hand (Coordinator ruling, section 181)",
-      "freezeRevisionOfPackage": "V35-A2 era (no tuple record in the evidence file)",
-      "freezePackageHash": null,
-      "rowApprovalHash": null,
-      "r3HostExecutionTupleHash": null,
-      "r3PreRunTupleHash": null,
-      "processId": null,
-      "startedUtc": null,
+      "packageSha": "6e445fa8",
+      "sourceSha": "6e445fa8ddcf6544a5e5108329520164d283ece1",
+      "buildBinaryIdentity": {
+        "buildTupleHash": "F6E5A55978DE8EC405F658A882A912B0F24057659AF219C9169297C3752FDCE5",
+        "nativeArxSha256": "08760906144BBB62183F54DF640E5B09881AD0655F27BFA6E59C084BFFC3D5E3",
+        "payloadArxSha256": "A21289D6139E105150E2D08AE3EA1F7D1C33137E538985C925E374FBDAA79982",
+        "managedObserverSha256": "E28BA703619D79453A3C3086889402BD066FEFB7DD7B9BE4648353722000991F",
+        "packageZipSha256": null
+      },
+      "freezeRevisionOfPackage": "V35-A2",
+      "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "originalExecutionTuple": {
+        "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+        "R3_SOURCE_SHA": "6e445fa8ddcf6544a5e5108329520164d283ece1",
+        "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "F6E5A55978DE8EC405F658A882A912B0F24057659AF219C9169297C3752FDCE5",
+        "R_NATIVE_ARX_SHA256": "08760906144BBB62183F54DF640E5B09881AD0655F27BFA6E59C084BFFC3D5E3",
+        "R_PAYLOAD_ARX_SHA256": "A21289D6139E105150E2D08AE3EA1F7D1C33137E538985C925E374FBDAA79982",
+        "R_MANAGED_OBSERVER_SHA256": "E28BA703619D79453A3C3086889402BD066FEFB7DD7B9BE4648353722000991F",
+        "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+        "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "R3_HOST_EXECUTION_TUPLE_HASH": "60B020CA23F857023ED346B08400A903A390FB383698BACEEF2E7A334C9C179A",
+        "PROBE_ID": "09N-B",
+        "ROW_APPROVAL_HASH": "653E18266B1564FC4E968BD68FC01EE572DCE317874F179DDFC5E4DEBD517185",
+        "R3_PRE_RUN_TUPLE_HASH": "72E60E1E7F65E750DC15582389C5BA9E01C17646C834477FCD706D29A7B7A83A",
+        "r3HostExecutionTupleHash": "60B020CA23F857023ED346B08400A903A390FB383698BACEEF2E7A334C9C179A"
+      },
+      "rowApprovalHash": "653E18266B1564FC4E968BD68FC01EE572DCE317874F179DDFC5E4DEBD517185",
+      "carriedForward": false,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
+      "boot01DeclaredResolved": "8/8",
+      "clnBaseErased": "8",
+      "verifierObservations": [
+        {
+          "verifier": "VER-T",
+          "phase": "CALLBACK",
+          "sequence": 19
+        },
+        {
+          "verifier": "VER-T",
+          "phase": "FRESH",
+          "sequence": 39
+        },
+        {
+          "verifier": "VER-S",
+          "phase": "FRESH",
+          "sequence": 44
+        }
+      ],
+      "freshSurfacesRead": [
+        "S"
+      ],
+      "processId": 27448,
       "evidence": "docs/automation/evidence/I-52-r3-canary-09N-B.json",
-      "evidenceSha256": "E20E4F6F2B35E721622B1A9B8A2515BC6ED301B2978E091B64BED2CF4F775EE6"
+      "evidenceSha256": "4AA40E5A28FEAC7F2016EAB28ADAB43369451B8E4B03A751E43F5120F680A1D7"
     },
     {
       "executionId": "E02",
       "probeId": "02NDBMOD-S",
-      "package": "c4037098",
       "decisionsSection": "178",
       "engineResult": "PASS-S (engine)",
+      "governingStatus": "NON-GOVERNING",
       "governing": false,
       "reason": "NOT ACCEPTED: D-2 (corrupt CommandIdentity, use-after-free in I52Ctda_TokenSet)",
-      "freezeRevisionOfPackage": "V35-A2 era (no tuple record in the evidence file)",
-      "freezePackageHash": null,
-      "rowApprovalHash": null,
-      "r3HostExecutionTupleHash": null,
-      "r3PreRunTupleHash": null,
-      "processId": null,
-      "startedUtc": null,
+      "packageSha": "c4037098",
+      "sourceSha": "c403709853c86d500f88f0182a408be743b215e3",
+      "buildBinaryIdentity": {
+        "buildTupleHash": "0CD753F7B3EEE754E8263796C5CE6C6513CD5C03C8750DC53C9F3BF684F9FE5F",
+        "nativeArxSha256": "B9ABB835BC743338BC27DF89BBF56476374AA05A65395676C25301C409C3FBB7",
+        "payloadArxSha256": "E0597A956D6CB62560BDCB56D280A49D03A1AFC78F358236F5C042051E71BBCB",
+        "managedObserverSha256": "29AE4FE7191F89D294B858C1B19D40CD1E62125DB6159CD3F6AD37191652663E",
+        "packageZipSha256": null
+      },
+      "freezeRevisionOfPackage": "V35-A2",
+      "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "originalExecutionTuple": {
+        "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+        "R3_SOURCE_SHA": "c403709853c86d500f88f0182a408be743b215e3",
+        "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "0CD753F7B3EEE754E8263796C5CE6C6513CD5C03C8750DC53C9F3BF684F9FE5F",
+        "R_NATIVE_ARX_SHA256": "B9ABB835BC743338BC27DF89BBF56476374AA05A65395676C25301C409C3FBB7",
+        "R_PAYLOAD_ARX_SHA256": "E0597A956D6CB62560BDCB56D280A49D03A1AFC78F358236F5C042051E71BBCB",
+        "R_MANAGED_OBSERVER_SHA256": "29AE4FE7191F89D294B858C1B19D40CD1E62125DB6159CD3F6AD37191652663E",
+        "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+        "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "R3_HOST_EXECUTION_TUPLE_HASH": "7C0B9E012F39900DB197EDCFD2ECC6F60526817149E4DAC95D6554D2FB2EE9B4",
+        "PROBE_ID": "02NDBMOD-S",
+        "ROW_APPROVAL_HASH": "9137ECA752B0AAE8A6696A9F87A8A81A3B4D4833C4F9F0D8E7890D3E78825B68",
+        "R3_PRE_RUN_TUPLE_HASH": "E7E1DD355C3849EED35CCC47184547B71C6A856FE598CCA5366B3BF73B3E5755",
+        "r3HostExecutionTupleHash": "7C0B9E012F39900DB197EDCFD2ECC6F60526817149E4DAC95D6554D2FB2EE9B4"
+      },
+      "rowApprovalHash": "9137ECA752B0AAE8A6696A9F87A8A81A3B4D4833C4F9F0D8E7890D3E78825B68",
+      "carriedForward": false,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
+      "boot01DeclaredResolved": "8/8",
+      "clnBaseErased": "8",
+      "verifierObservations": [
+        {
+          "verifier": "VER-S",
+          "phase": "FRESH",
+          "sequence": 49
+        }
+      ],
+      "freshSurfacesRead": [
+        "S"
+      ],
+      "processId": 29908,
       "evidence": "docs/automation/evidence/I-52-r3-canary-02NDBMOD-S.json",
-      "evidenceSha256": "B008734C25258AF15F3E80D50E9E1E8B9BF09E4D84C825776BA8F917DDF0C4E6"
+      "evidenceSha256": "3AD043A385C7C316EEEA4322F013AD48607D739DBEC79243700619EA54A42650"
     },
     {
       "executionId": "E03",
       "probeId": "02NDBMOD-S",
-      "package": "2887d6c5",
       "decisionsSection": "180",
       "engineResult": "UNKNOWN",
+      "governingStatus": "NON-GOVERNING",
       "governing": false,
       "reason": "NOT VALID: D-3 led to an interactive exit and Save changed the scratch DWG (section 181)",
+      "packageSha": "2887d6c5",
+      "sourceSha": "2887d6c569765634d7cea68a336878e882226d7b",
+      "buildBinaryIdentity": {
+        "buildTupleHash": "7CDB656F2F164F19E8EACD81CB20266FF620CCA9290E41F7A32B511AD97CF218",
+        "nativeArxSha256": "B4D3F11B0E05FA0D17C8ABD98D4FD5A24DFE85142409BB0527CA04153CBC9A28",
+        "payloadArxSha256": "AE30E4CACC6CA4B9E1510581E6BD7FCFA7CB7AD0A3D0B33D5CAE3F6C7BE165D9",
+        "managedObserverSha256": "2B22B7C69704D77D6BBEA7D7E4C5A369342E7612F1EEAACD10018E4FE2C046DD",
+        "packageZipSha256": null
+      },
       "freezeRevisionOfPackage": "V35-A2",
       "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "originalExecutionTuple": {
+        "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+        "R3_SOURCE_SHA": "2887d6c569765634d7cea68a336878e882226d7b",
+        "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "7CDB656F2F164F19E8EACD81CB20266FF620CCA9290E41F7A32B511AD97CF218",
+        "R_NATIVE_ARX_SHA256": "B4D3F11B0E05FA0D17C8ABD98D4FD5A24DFE85142409BB0527CA04153CBC9A28",
+        "R_PAYLOAD_ARX_SHA256": "AE30E4CACC6CA4B9E1510581E6BD7FCFA7CB7AD0A3D0B33D5CAE3F6C7BE165D9",
+        "R_MANAGED_OBSERVER_SHA256": "2B22B7C69704D77D6BBEA7D7E4C5A369342E7612F1EEAACD10018E4FE2C046DD",
+        "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+        "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "R3_HOST_EXECUTION_TUPLE_HASH": "7BC15FC0275C6824DE0F942B414A0980F0DF1770A2E0C3902EC849A39837C1F9",
+        "PROBE_ID": "02NDBMOD-S",
+        "ROW_APPROVAL_HASH": "9137ECA752B0AAE8A6696A9F87A8A81A3B4D4833C4F9F0D8E7890D3E78825B68",
+        "R3_PRE_RUN_TUPLE_HASH": "13F84A87BC58A1249A733369673B301EF1B3C4249ECAADDF413DFF88BC1AAEB5",
+        "r3HostExecutionTupleHash": "7BC15FC0275C6824DE0F942B414A0980F0DF1770A2E0C3902EC849A39837C1F9"
+      },
       "rowApprovalHash": "9137ECA752B0AAE8A6696A9F87A8A81A3B4D4833C4F9F0D8E7890D3E78825B68",
-      "r3HostExecutionTupleHash": "7BC15FC0275C6824DE0F942B414A0980F0DF1770A2E0C3902EC849A39837C1F9",
-      "r3PreRunTupleHash": "13F84A87BC58A1249A733369673B301EF1B3C4249ECAADDF413DFF88BC1AAEB5",
-      "processId": null,
-      "startedUtc": null,
+      "carriedForward": false,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
+      "boot01DeclaredResolved": "8/8",
+      "clnBaseErased": "8",
+      "verifierObservations": [
+        {
+          "verifier": "VER-S",
+          "phase": "FRESH",
+          "sequence": 49
+        }
+      ],
+      "freshSurfacesRead": [
+        "S"
+      ],
+      "processId": 25444,
       "evidence": "docs/automation/evidence/I-52-r3-canary-02NDBMOD-S-rerun.json",
       "evidenceSha256": "B00D0562BCB1596618693BD3077D8F4D5E0CB2CE97E70BB160B5C5B993024AD8"
     },
     {
       "executionId": "E04",
       "probeId": "09N-B",
-      "package": "e864a093",
       "decisionsSection": "183-184",
       "engineResult": "PASS-T",
+      "governingStatus": "GOVERNING",
       "governing": true,
       "reason": "VALID PASS-T (Coordinator ruling on H-1, section 184)",
+      "packageSha": "e864a093",
+      "sourceSha": "e864a0936b6fb39b27401767e5a2242958ebe659",
+      "buildBinaryIdentity": {
+        "buildTupleHash": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+        "nativeArxSha256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+        "payloadArxSha256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+        "managedObserverSha256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+        "packageZipSha256": "01A3432DB017A23A0C5836D7C9A81F9DAF6223D640B40F1D9028997E96E410F0"
+      },
       "freezeRevisionOfPackage": "V35-A2",
       "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "originalExecutionTuple": {
+        "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+        "R3_SOURCE_SHA": "e864a0936b6fb39b27401767e5a2242958ebe659",
+        "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+        "R_NATIVE_ARX_SHA256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+        "R_PAYLOAD_ARX_SHA256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+        "R_MANAGED_OBSERVER_SHA256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+        "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+        "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "R3_HOST_EXECUTION_TUPLE_HASH": "F7506504E691F139E184CBE142B2FFF2117A6E98C3175D5E739EC1AA4C513023",
+        "PROBE_ID": "09N-B",
+        "ROW_APPROVAL_HASH": "653E18266B1564FC4E968BD68FC01EE572DCE317874F179DDFC5E4DEBD517185",
+        "R3_PRE_RUN_TUPLE_HASH": "6846DFE5F474A419BD9FEB851E04631FAE9B545C1719C2577412FC9C5CF50176",
+        "r3HostExecutionTupleHash": "F7506504E691F139E184CBE142B2FFF2117A6E98C3175D5E739EC1AA4C513023"
+      },
       "rowApprovalHash": "653E18266B1564FC4E968BD68FC01EE572DCE317874F179DDFC5E4DEBD517185",
-      "r3HostExecutionTupleHash": "F7506504E691F139E184CBE142B2FFF2117A6E98C3175D5E739EC1AA4C513023",
-      "r3PreRunTupleHash": "6846DFE5F474A419BD9FEB851E04631FAE9B545C1719C2577412FC9C5CF50176",
+      "carriedForward": true,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
+      "boot01DeclaredResolved": "8/8",
+      "clnBaseErased": "8",
+      "verifierObservations": [
+        {
+          "verifier": "VER-T",
+          "phase": "CALLBACK",
+          "sequence": 19
+        },
+        {
+          "verifier": "VER-T",
+          "phase": "FRESH",
+          "sequence": 39
+        },
+        {
+          "verifier": "VER-S",
+          "phase": "FRESH",
+          "sequence": 44
+        }
+      ],
+      "freshSurfacesRead": [
+        "S"
+      ],
       "processId": 33948,
-      "startedUtc": "2026-09-28T03:52:35.5842121+00:00",
       "evidence": "docs/automation/evidence/I-52-r3-canary-09N-B-restart.json",
       "evidenceSha256": "1C4D830F726D5906B3CBE99B583F18CA4712D18C6BE0F6B4D60214F34A9F1599"
     },
     {
       "executionId": "E05",
       "probeId": "02NDBMOD-S",
-      "package": "e864a093",
       "decisionsSection": "184",
       "engineResult": "PASS-S",
+      "governingStatus": "GOVERNING",
       "governing": true,
       "reason": "VALID PASS-S",
+      "packageSha": "e864a093",
+      "sourceSha": "e864a0936b6fb39b27401767e5a2242958ebe659",
+      "buildBinaryIdentity": {
+        "buildTupleHash": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+        "nativeArxSha256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+        "payloadArxSha256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+        "managedObserverSha256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+        "packageZipSha256": "01A3432DB017A23A0C5836D7C9A81F9DAF6223D640B40F1D9028997E96E410F0"
+      },
       "freezeRevisionOfPackage": "V35-A2",
       "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "originalExecutionTuple": {
+        "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+        "R3_SOURCE_SHA": "e864a0936b6fb39b27401767e5a2242958ebe659",
+        "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+        "R_NATIVE_ARX_SHA256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+        "R_PAYLOAD_ARX_SHA256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+        "R_MANAGED_OBSERVER_SHA256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+        "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+        "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "R3_HOST_EXECUTION_TUPLE_HASH": "18249CD1F7830351CE04C7F5CFE1543B15EB50360CDE8A4A39994E33C96BFB42",
+        "PROBE_ID": "02NDBMOD-S",
+        "ROW_APPROVAL_HASH": "9137ECA752B0AAE8A6696A9F87A8A81A3B4D4833C4F9F0D8E7890D3E78825B68",
+        "R3_PRE_RUN_TUPLE_HASH": "4054743895ADE4A70F9281DB767597E49580BB92EBDD223849D3E8CCD02E087A",
+        "r3HostExecutionTupleHash": "18249CD1F7830351CE04C7F5CFE1543B15EB50360CDE8A4A39994E33C96BFB42"
+      },
       "rowApprovalHash": "9137ECA752B0AAE8A6696A9F87A8A81A3B4D4833C4F9F0D8E7890D3E78825B68",
-      "r3HostExecutionTupleHash": "18249CD1F7830351CE04C7F5CFE1543B15EB50360CDE8A4A39994E33C96BFB42",
-      "r3PreRunTupleHash": "4054743895ADE4A70F9281DB767597E49580BB92EBDD223849D3E8CCD02E087A",
+      "carriedForward": true,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
+      "boot01DeclaredResolved": "8/8",
+      "clnBaseErased": "8",
+      "verifierObservations": [
+        {
+          "verifier": "VER-S",
+          "phase": "FRESH",
+          "sequence": 49
+        }
+      ],
+      "freshSurfacesRead": [
+        "S"
+      ],
       "processId": 21532,
-      "startedUtc": "2026-09-28T04:03:22.273374+00:00",
       "evidence": "docs/automation/evidence/I-52-r3-canary-02NDBMOD-S-restart.json",
       "evidenceSha256": "0803BBE831A5972E9B6A33FFABD2B17C5004E18818BC27C59618EB9FF7E3DEE4"
     },
     {
       "executionId": "E06",
       "probeId": "02NO-S",
-      "package": "e864a093",
       "decisionsSection": "185",
       "engineResult": "PASS-S",
+      "governingStatus": "GOVERNING",
       "governing": true,
       "reason": "VALID PASS-S",
+      "packageSha": "e864a093",
+      "sourceSha": "e864a0936b6fb39b27401767e5a2242958ebe659",
+      "buildBinaryIdentity": {
+        "buildTupleHash": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+        "nativeArxSha256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+        "payloadArxSha256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+        "managedObserverSha256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+        "packageZipSha256": "01A3432DB017A23A0C5836D7C9A81F9DAF6223D640B40F1D9028997E96E410F0"
+      },
       "freezeRevisionOfPackage": "V35-A2",
       "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "originalExecutionTuple": {
+        "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+        "R3_SOURCE_SHA": "e864a0936b6fb39b27401767e5a2242958ebe659",
+        "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+        "R_NATIVE_ARX_SHA256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+        "R_PAYLOAD_ARX_SHA256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+        "R_MANAGED_OBSERVER_SHA256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+        "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+        "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "R3_HOST_EXECUTION_TUPLE_HASH": "C57CD8951187B360752C8E9ED0FCE4FDD41A9FB890B035A8DEC92171D56D5FD1",
+        "PROBE_ID": "02NO-S",
+        "ROW_APPROVAL_HASH": "10134547184A859DF1EFE2B392E6846AD48B7D108AA3B03B03CBC13A6B9AEF4D",
+        "R3_PRE_RUN_TUPLE_HASH": "EA635FC0A228A34E9A35B7C1F443D2D1B14ECC77CF596382D4938001484FB149",
+        "r3HostExecutionTupleHash": "C57CD8951187B360752C8E9ED0FCE4FDD41A9FB890B035A8DEC92171D56D5FD1"
+      },
       "rowApprovalHash": "10134547184A859DF1EFE2B392E6846AD48B7D108AA3B03B03CBC13A6B9AEF4D",
-      "r3HostExecutionTupleHash": "C57CD8951187B360752C8E9ED0FCE4FDD41A9FB890B035A8DEC92171D56D5FD1",
-      "r3PreRunTupleHash": "EA635FC0A228A34E9A35B7C1F443D2D1B14ECC77CF596382D4938001484FB149",
+      "carriedForward": true,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
+      "boot01DeclaredResolved": "8/8",
+      "clnBaseErased": "8",
+      "verifierObservations": [
+        {
+          "verifier": "VER-T",
+          "phase": "CALLBACK",
+          "sequence": 23
+        },
+        {
+          "verifier": "VER-S",
+          "phase": "FRESH",
+          "sequence": 49
+        },
+        {
+          "verifier": "VER-T",
+          "phase": "FRESH",
+          "sequence": 50
+        }
+      ],
+      "freshSurfacesRead": [
+        "S"
+      ],
       "processId": 20700,
-      "startedUtc": "2026-09-28T04:19:52.3975086+00:00",
       "evidence": "docs/automation/evidence/I-52-r3-canary-02NO-S-restart.json",
       "evidenceSha256": "0E75BDABCB94FDB85BD93FFB662FF0348BA9DE2051936C3CEAD4B9E05664330A"
     },
     {
       "executionId": "E07",
       "probeId": "16N-S",
-      "package": "e864a093",
       "decisionsSection": "186",
       "engineResult": "UNKNOWN",
+      "governingStatus": "NON-GOVERNING",
       "governing": false,
       "reason": "NOT VALID: operator interaction on the host (independent of the engine UNKNOWN)",
+      "packageSha": "e864a093",
+      "sourceSha": "e864a0936b6fb39b27401767e5a2242958ebe659",
+      "buildBinaryIdentity": {
+        "buildTupleHash": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+        "nativeArxSha256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+        "payloadArxSha256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+        "managedObserverSha256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+        "packageZipSha256": "01A3432DB017A23A0C5836D7C9A81F9DAF6223D640B40F1D9028997E96E410F0"
+      },
       "freezeRevisionOfPackage": "V35-A2",
       "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "originalExecutionTuple": {
+        "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+        "R3_SOURCE_SHA": "e864a0936b6fb39b27401767e5a2242958ebe659",
+        "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+        "R_NATIVE_ARX_SHA256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+        "R_PAYLOAD_ARX_SHA256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+        "R_MANAGED_OBSERVER_SHA256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+        "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+        "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "R3_HOST_EXECUTION_TUPLE_HASH": "CA83700D9144EE782E423751158A7B53838AE64C65BD12363531B5C4BC6A02D4",
+        "PROBE_ID": "16N-S",
+        "ROW_APPROVAL_HASH": "FD6FCD34CD85B13E442A8C023EFCCAF3D94CC54C657CB9E8D340CBDEEA9FDF06",
+        "R3_PRE_RUN_TUPLE_HASH": "BAF3ECFB94F6B950A3334DC7801AE647E0822FC14D827A8EE2AF345FB1C240ED",
+        "r3HostExecutionTupleHash": "CA83700D9144EE782E423751158A7B53838AE64C65BD12363531B5C4BC6A02D4"
+      },
       "rowApprovalHash": "FD6FCD34CD85B13E442A8C023EFCCAF3D94CC54C657CB9E8D340CBDEEA9FDF06",
-      "r3HostExecutionTupleHash": "CA83700D9144EE782E423751158A7B53838AE64C65BD12363531B5C4BC6A02D4",
-      "r3PreRunTupleHash": "BAF3ECFB94F6B950A3334DC7801AE647E0822FC14D827A8EE2AF345FB1C240ED",
+      "carriedForward": false,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
+      "boot01DeclaredResolved": "8/8",
+      "clnBaseErased": "8",
+      "verifierObservations": [
+        {
+          "verifier": "VER-T",
+          "phase": "CALLBACK",
+          "sequence": 28
+        },
+        {
+          "verifier": "VER-S",
+          "phase": "FRESH",
+          "sequence": 90
+        },
+        {
+          "verifier": "VER-T",
+          "phase": "FRESH",
+          "sequence": 91
+        }
+      ],
+      "freshSurfacesRead": [
+        "S"
+      ],
       "processId": 32600,
-      "startedUtc": "2026-09-28T04:38:41.6904128+00:00",
       "evidence": "docs/automation/evidence/I-52-r3-canary-16N-S-restart.json",
       "evidenceSha256": "1C688E3CC3A33F47730F04C1402524DFB8CDA1D64ACFA717C0FCABFB19B60B14"
     },
     {
       "executionId": "E08",
       "probeId": "16N-S",
-      "package": "e864a093",
       "decisionsSection": "186",
       "engineResult": "UNKNOWN",
+      "governingStatus": "NON-GOVERNING",
       "governing": false,
-      "reason": "Historical A2 UNKNOWN (UNK-MARKER-BINDING): D-4 was a V35 contract defect (section 187); not re-graded (section 188)",
+      "reason": "Historical A2 UNKNOWN (UNK-MARKER-BINDING): D-4 was a V35 contract defect (section 187); contract amended (A3, section 188); not re-graded. Superseded under the narrow rule of section 197.5",
+      "packageSha": "e864a093",
+      "sourceSha": "e864a0936b6fb39b27401767e5a2242958ebe659",
+      "buildBinaryIdentity": {
+        "buildTupleHash": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+        "nativeArxSha256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+        "payloadArxSha256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+        "managedObserverSha256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+        "packageZipSha256": "01A3432DB017A23A0C5836D7C9A81F9DAF6223D640B40F1D9028997E96E410F0"
+      },
       "freezeRevisionOfPackage": "V35-A2",
       "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "originalExecutionTuple": {
+        "V35_FREEZE_PACKAGE_HASH": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+        "R3_SOURCE_SHA": "e864a0936b6fb39b27401767e5a2242958ebe659",
+        "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "F7414C5517E19F96FA0584F0DEEC123F4617F624EFBEE53EEA371DD94A9E14A6",
+        "R_NATIVE_ARX_SHA256": "A8080F955CE4C829223B09659A9DC28759F02C46D74980482205D5BC19A1DD14",
+        "R_PAYLOAD_ARX_SHA256": "518D716C088E458DA49D8EBF81E3715C31D70AEA90761070214A09C6A31DEAF7",
+        "R_MANAGED_OBSERVER_SHA256": "87114CC828581E9979513305647E2654E61AE90B98DC46D23BB100F0D8A26E4F",
+        "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+        "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "R3_HOST_EXECUTION_TUPLE_HASH": "7F8D78F55731ACA1FFDFE9A09DD9ECDDF4B9D124506C4A439B0BDE832DD82EB7",
+        "PROBE_ID": "16N-S",
+        "ROW_APPROVAL_HASH": "FD6FCD34CD85B13E442A8C023EFCCAF3D94CC54C657CB9E8D340CBDEEA9FDF06",
+        "R3_PRE_RUN_TUPLE_HASH": "1412D32DFB71AE976B3AE523A58E86D4C6E7515D808038FCB54D40EA7C540D4F",
+        "r3HostExecutionTupleHash": "7F8D78F55731ACA1FFDFE9A09DD9ECDDF4B9D124506C4A439B0BDE832DD82EB7"
+      },
       "rowApprovalHash": "FD6FCD34CD85B13E442A8C023EFCCAF3D94CC54C657CB9E8D340CBDEEA9FDF06",
-      "r3HostExecutionTupleHash": "7F8D78F55731ACA1FFDFE9A09DD9ECDDF4B9D124506C4A439B0BDE832DD82EB7",
-      "r3PreRunTupleHash": "1412D32DFB71AE976B3AE523A58E86D4C6E7515D808038FCB54D40EA7C540D4F",
+      "carriedForward": false,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
+      "boot01DeclaredResolved": "8/8",
+      "clnBaseErased": "8",
+      "verifierObservations": [
+        {
+          "verifier": "VER-T",
+          "phase": "CALLBACK",
+          "sequence": 28
+        },
+        {
+          "verifier": "VER-S",
+          "phase": "FRESH",
+          "sequence": 90
+        },
+        {
+          "verifier": "VER-T",
+          "phase": "FRESH",
+          "sequence": 91
+        }
+      ],
+      "freshSurfacesRead": [
+        "S"
+      ],
       "processId": 14408,
-      "startedUtc": "2026-09-28T04:44:16.2898877+00:00",
       "evidence": "docs/automation/evidence/I-52-r3-canary-16N-S-rerun.json",
       "evidenceSha256": "A3540F8286781136FC8AEE823EB1C16A1A11464E130BEC5FF423009DDB079262"
     },
     {
       "executionId": "E09",
       "probeId": "16N-S",
-      "package": "afa65bc0",
       "decisionsSection": "191",
       "engineResult": "PASS-S",
+      "governingStatus": "GOVERNING",
       "governing": true,
       "reason": "VALID PASS-S under V35-A3 (D-4 SEND anchor)",
+      "packageSha": "afa65bc0",
+      "sourceSha": "afa65bc0bba9eb83bde7ff06266c00139c727a15",
+      "buildBinaryIdentity": {
+        "buildTupleHash": "64459EA69987EF7984A3B6A2D6FA58E6D66D138BCB1446B7B39F1118970FD7A9",
+        "nativeArxSha256": "FEBE515DF366740A58FBA2154D69F5EEC8B7A0B972A954076537F85B40123F78",
+        "payloadArxSha256": "3525D2FFF14B0D9C4385878DBC9D0242AEDB0F98DC4E2A748EDAFF4F6C846505",
+        "managedObserverSha256": "41F3EB3C239E7E1533F595E949FA9965717648D72BDA2DC3C039462AAC13BBB1",
+        "packageZipSha256": "46F11A85AA4D5FE52BCEFB4ABB29798FD688B9DE31737AAC0D5EB39615776347"
+      },
       "freezeRevisionOfPackage": "V35-A3",
       "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+      "originalExecutionTuple": {
+        "V35_FREEZE_PACKAGE_HASH": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+        "R3_SOURCE_SHA": "afa65bc0bba9eb83bde7ff06266c00139c727a15",
+        "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "64459EA69987EF7984A3B6A2D6FA58E6D66D138BCB1446B7B39F1118970FD7A9",
+        "R_NATIVE_ARX_SHA256": "FEBE515DF366740A58FBA2154D69F5EEC8B7A0B972A954076537F85B40123F78",
+        "R_PAYLOAD_ARX_SHA256": "3525D2FFF14B0D9C4385878DBC9D0242AEDB0F98DC4E2A748EDAFF4F6C846505",
+        "R_MANAGED_OBSERVER_SHA256": "41F3EB3C239E7E1533F595E949FA9965717648D72BDA2DC3C039462AAC13BBB1",
+        "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+        "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "R3_HOST_EXECUTION_TUPLE_HASH": "DBAD02491FAC7A532CE815CCDDB08E5136E4FDEF38858BD41B514E4E3CACEF2E",
+        "PROBE_ID": "16N-S",
+        "ROW_APPROVAL_HASH": "FD6FCD34CD85B13E442A8C023EFCCAF3D94CC54C657CB9E8D340CBDEEA9FDF06",
+        "R3_PRE_RUN_TUPLE_HASH": "65E56B081E194629C993A84A51D21042A59A7A8C17EC401B4BDBA381F880DB41",
+        "r3HostExecutionTupleHash": "DBAD02491FAC7A532CE815CCDDB08E5136E4FDEF38858BD41B514E4E3CACEF2E"
+      },
       "rowApprovalHash": "FD6FCD34CD85B13E442A8C023EFCCAF3D94CC54C657CB9E8D340CBDEEA9FDF06",
-      "r3HostExecutionTupleHash": "DBAD02491FAC7A532CE815CCDDB08E5136E4FDEF38858BD41B514E4E3CACEF2E",
-      "r3PreRunTupleHash": "65E56B081E194629C993A84A51D21042A59A7A8C17EC401B4BDBA381F880DB41",
+      "carriedForward": false,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
+      "boot01DeclaredResolved": "8/8",
+      "clnBaseErased": "8",
+      "verifierObservations": [
+        {
+          "verifier": "VER-T",
+          "phase": "CALLBACK",
+          "sequence": 28
+        },
+        {
+          "verifier": "VER-S",
+          "phase": "FRESH",
+          "sequence": 93
+        },
+        {
+          "verifier": "VER-T",
+          "phase": "FRESH",
+          "sequence": 94
+        }
+      ],
+      "freshSurfacesRead": [
+        "S"
+      ],
       "processId": 27696,
-      "startedUtc": "2026-09-28T18:02:40.1858405+00:00",
       "evidence": "docs/automation/evidence/I-52-r3-canary-16N-S-v35a3.json",
       "evidenceSha256": "EC826EED631711F4FB1E72CA03A41B4D868DB22F511A2EECDBE29AFE2D45573B"
     },
     {
       "executionId": "E10",
       "probeId": "10N-S",
-      "package": "afa65bc0",
       "decisionsSection": "192",
       "engineResult": "PASS-S",
+      "governingStatus": "GOVERNING",
       "governing": true,
       "reason": "VALID PASS-S under V35-A3 (D-4 FIXTURE anchor)",
+      "packageSha": "afa65bc0",
+      "sourceSha": "afa65bc0bba9eb83bde7ff06266c00139c727a15",
+      "buildBinaryIdentity": {
+        "buildTupleHash": "64459EA69987EF7984A3B6A2D6FA58E6D66D138BCB1446B7B39F1118970FD7A9",
+        "nativeArxSha256": "FEBE515DF366740A58FBA2154D69F5EEC8B7A0B972A954076537F85B40123F78",
+        "payloadArxSha256": "3525D2FFF14B0D9C4385878DBC9D0242AEDB0F98DC4E2A748EDAFF4F6C846505",
+        "managedObserverSha256": "41F3EB3C239E7E1533F595E949FA9965717648D72BDA2DC3C039462AAC13BBB1",
+        "packageZipSha256": "46F11A85AA4D5FE52BCEFB4ABB29798FD688B9DE31737AAC0D5EB39615776347"
+      },
       "freezeRevisionOfPackage": "V35-A3",
       "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+      "originalExecutionTuple": {
+        "V35_FREEZE_PACKAGE_HASH": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+        "R3_SOURCE_SHA": "afa65bc0bba9eb83bde7ff06266c00139c727a15",
+        "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "64459EA69987EF7984A3B6A2D6FA58E6D66D138BCB1446B7B39F1118970FD7A9",
+        "R_NATIVE_ARX_SHA256": "FEBE515DF366740A58FBA2154D69F5EEC8B7A0B972A954076537F85B40123F78",
+        "R_PAYLOAD_ARX_SHA256": "3525D2FFF14B0D9C4385878DBC9D0242AEDB0F98DC4E2A748EDAFF4F6C846505",
+        "R_MANAGED_OBSERVER_SHA256": "41F3EB3C239E7E1533F595E949FA9965717648D72BDA2DC3C039462AAC13BBB1",
+        "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+        "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "R3_HOST_EXECUTION_TUPLE_HASH": "70C35A6A34D6F431F0CCBBD0FE69A8CD6BFF9C751FE842A3287023E067FA55B1",
+        "PROBE_ID": "10N-S",
+        "ROW_APPROVAL_HASH": "EB696635B6F46FB83BF4EFA5F1F8D48ADB51F4A8E87B75AE675C0B88615518FD",
+        "R3_PRE_RUN_TUPLE_HASH": "4C180677A12C6820C63AC45A27119AD2BBDBFCEBE8152A2FD0C3EEF3C6DB8AA6",
+        "r3HostExecutionTupleHash": "70C35A6A34D6F431F0CCBBD0FE69A8CD6BFF9C751FE842A3287023E067FA55B1"
+      },
       "rowApprovalHash": "EB696635B6F46FB83BF4EFA5F1F8D48ADB51F4A8E87B75AE675C0B88615518FD",
-      "r3HostExecutionTupleHash": "70C35A6A34D6F431F0CCBBD0FE69A8CD6BFF9C751FE842A3287023E067FA55B1",
-      "r3PreRunTupleHash": "4C180677A12C6820C63AC45A27119AD2BBDBFCEBE8152A2FD0C3EEF3C6DB8AA6",
+      "carriedForward": false,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
+      "boot01DeclaredResolved": "8/8",
+      "clnBaseErased": "8",
+      "verifierObservations": [
+        {
+          "verifier": "VER-T",
+          "phase": "CALLBACK",
+          "sequence": 45
+        },
+        {
+          "verifier": "VER-S",
+          "phase": "FRESH",
+          "sequence": 93
+        },
+        {
+          "verifier": "VER-T",
+          "phase": "FRESH",
+          "sequence": 98
+        }
+      ],
+      "freshSurfacesRead": [
+        "S"
+      ],
       "processId": 25552,
-      "startedUtc": "2026-09-28T18:16:47.481149+00:00",
       "evidence": "docs/automation/evidence/I-52-r3-canary-10N-S-v35a3.json",
       "evidenceSha256": "77BC510BB5A1B36245D552F78526C13FAAD29B8A6B71DA32419AE1FF0CB3BE86"
     },
     {
       "executionId": "E11",
       "probeId": "16C-S",
-      "package": "afa65bc0",
       "decisionsSection": "193",
       "engineResult": "PASS-S",
+      "governingStatus": "GOVERNING",
       "governing": true,
       "reason": "VALID PASS-S under V35-A3 (D-4 CMDCTX anchor)",
+      "packageSha": "afa65bc0",
+      "sourceSha": "afa65bc0bba9eb83bde7ff06266c00139c727a15",
+      "buildBinaryIdentity": {
+        "buildTupleHash": "64459EA69987EF7984A3B6A2D6FA58E6D66D138BCB1446B7B39F1118970FD7A9",
+        "nativeArxSha256": "FEBE515DF366740A58FBA2154D69F5EEC8B7A0B972A954076537F85B40123F78",
+        "payloadArxSha256": "3525D2FFF14B0D9C4385878DBC9D0242AEDB0F98DC4E2A748EDAFF4F6C846505",
+        "managedObserverSha256": "41F3EB3C239E7E1533F595E949FA9965717648D72BDA2DC3C039462AAC13BBB1",
+        "packageZipSha256": "46F11A85AA4D5FE52BCEFB4ABB29798FD688B9DE31737AAC0D5EB39615776347"
+      },
       "freezeRevisionOfPackage": "V35-A3",
       "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+      "originalExecutionTuple": {
+        "V35_FREEZE_PACKAGE_HASH": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+        "R3_SOURCE_SHA": "afa65bc0bba9eb83bde7ff06266c00139c727a15",
+        "BUILD_MACHINE_TOOLCHAIN_TUPLE_HASH": "64459EA69987EF7984A3B6A2D6FA58E6D66D138BCB1446B7B39F1118970FD7A9",
+        "R_NATIVE_ARX_SHA256": "FEBE515DF366740A58FBA2154D69F5EEC8B7A0B972A954076537F85B40123F78",
+        "R_PAYLOAD_ARX_SHA256": "3525D2FFF14B0D9C4385878DBC9D0242AEDB0F98DC4E2A748EDAFF4F6C846505",
+        "R_MANAGED_OBSERVER_SHA256": "41F3EB3C239E7E1533F595E949FA9965717648D72BDA2DC3C039462AAC13BBB1",
+        "ACAD_EXE_SHA256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+        "SCRATCH_PRE_SHA256": "3078D590F437499B010FF228FE822D205994383DBBE73803E746F634885E8C7E",
+        "R3_HOST_EXECUTION_TUPLE_HASH": "E1DF4BA44033A298AA1DDC9BE1EE9B948489EE604B7D01B95DDB6BC98D92835C",
+        "PROBE_ID": "16C-S",
+        "ROW_APPROVAL_HASH": "468615B1E8526B757AFBC177FF958EC2C2289DA8D3E9D75205618907C8BE9BD4",
+        "R3_PRE_RUN_TUPLE_HASH": "89CFAD2F681BE9CF1958E03B5433FAF6C03A66846E2B7050F77A492D67ED0A67",
+        "r3HostExecutionTupleHash": "E1DF4BA44033A298AA1DDC9BE1EE9B948489EE604B7D01B95DDB6BC98D92835C"
+      },
       "rowApprovalHash": "468615B1E8526B757AFBC177FF958EC2C2289DA8D3E9D75205618907C8BE9BD4",
-      "r3HostExecutionTupleHash": "E1DF4BA44033A298AA1DDC9BE1EE9B948489EE604B7D01B95DDB6BC98D92835C",
-      "r3PreRunTupleHash": "89CFAD2F681BE9CF1958E03B5433FAF6C03A66846E2B7050F77A492D67ED0A67",
+      "carriedForward": false,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
+      "boot01DeclaredResolved": "8/8",
+      "clnBaseErased": "8",
+      "verifierObservations": [
+        {
+          "verifier": "VER-S",
+          "phase": "FRESH",
+          "sequence": 77
+        },
+        {
+          "verifier": "VER-T",
+          "phase": "FRESH",
+          "sequence": 78
+        }
+      ],
+      "freshSurfacesRead": [
+        "S"
+      ],
       "processId": 27432,
-      "startedUtc": "2026-09-28T18:31:18.4368319+00:00",
       "evidence": "docs/automation/evidence/I-52-r3-canary-16C-S-v35a3.json",
       "evidenceSha256": "4F25D5D8BCFE6F317EBF98BF7D059E4DDF3FE1378F19E101F696CED18568AC42"
     }
@@ -565,6 +1422,7 @@
     {
       "probeId": "02N",
       "catalog": "NPM-V35",
+      "matrixOrder": 1,
       "family": "H-DB",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -584,12 +1442,15 @@
         "P4"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -599,6 +1460,7 @@
     {
       "probeId": "04N",
       "catalog": "NPM-V35",
+      "matrixOrder": 2,
       "family": "H-TX",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "EXEC-OBSERVE",
@@ -619,12 +1481,15 @@
         "P3"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -634,6 +1499,7 @@
     {
       "probeId": "09N-A",
       "catalog": "NPM-V35",
+      "matrixOrder": 3,
       "family": "H-TX",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "EXEC-OBSERVE",
@@ -654,12 +1520,15 @@
         "P3"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -669,6 +1538,7 @@
     {
       "probeId": "09N-B",
       "catalog": "NPM-V35",
+      "matrixOrder": 4,
       "family": "H-TX",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "EXEC-OBSERVE",
@@ -689,20 +1559,23 @@
         "P6"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [
         "E01"
       ],
       "classification": "PASS-GOVERNED",
       "result": "PASS-T",
       "governingExecution": "E04",
+      "carriedForward": true,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
       "executionTuple": {
         "package": "e864a093",
+        "sourceSha": "e864a0936b6fb39b27401767e5a2242958ebe659",
         "freezeRevisionOfPackage": "V35-A2",
-        "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
         "r3HostExecutionTupleHash": "F7506504E691F139E184CBE142B2FFF2117A6E98C3175D5E739EC1AA4C513023",
         "rowApprovalHash": "653E18266B1564FC4E968BD68FC01EE572DCE317874F179DDFC5E4DEBD517185"
       },
-      "a3Validity": "carried forward from a V35-A2 package by decisions section 188 (row hash unchanged); NOT re-executed under the A3 tuple",
+      "a3Validity": "carried forward (decisions 188 / 197.4): provisional; re-execute or Architect equivalence ruling before TRUE",
       "d4Anchor": null,
       "reasonIfNotGoverning": null,
       "surfacesReadInPass": [
@@ -722,6 +1595,7 @@
     {
       "probeId": "09N-O",
       "catalog": "NPM-V35",
+      "matrixOrder": 5,
       "family": "H-TX",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "EXEC-OBSERVE",
@@ -742,12 +1616,15 @@
         "P6"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -757,6 +1634,7 @@
     {
       "probeId": "09N-C",
       "catalog": "NPM-V35",
+      "matrixOrder": 6,
       "family": "H-TX",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "EXEC-OBSERVE",
@@ -779,12 +1657,15 @@
         "P6"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -794,6 +1675,7 @@
     {
       "probeId": "09N-D",
       "catalog": "NPM-V35",
+      "matrixOrder": 7,
       "family": "H-ED",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -815,12 +1697,20 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE",
+        "conditionalHostFact": "the command lock is still held at commandEnded",
+        "unknownThrough": "UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation; RESULT-RULE-V35 step 2)"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -830,6 +1720,7 @@
     {
       "probeId": "10N-S",
       "catalog": "NPM-V35",
+      "matrixOrder": 8,
       "family": "H-ED",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -849,14 +1740,22 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE; candidate boundary (B12)",
+        "conditionalHostFact": "the command lock is still held at commandEnded",
+        "unknownThrough": "UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2)"
+      },
       "nonGoverningExecutions": [],
       "classification": "PASS-GOVERNED",
       "result": "PASS-S",
       "governingExecution": "E10",
+      "carriedForward": false,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
       "executionTuple": {
         "package": "afa65bc0",
+        "sourceSha": "afa65bc0bba9eb83bde7ff06266c00139c727a15",
         "freezeRevisionOfPackage": "V35-A3",
-        "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
         "r3HostExecutionTupleHash": "70C35A6A34D6F431F0CCBBD0FE69A8CD6BFF9C751FE842A3287023E067FA55B1",
         "rowApprovalHash": "EB696635B6F46FB83BF4EFA5F1F8D48ADB51F4A8E87B75AE675C0B88615518FD"
       },
@@ -880,6 +1779,7 @@
     {
       "probeId": "10N-M",
       "catalog": "NPM-V35",
+      "matrixOrder": 9,
       "family": "H-ED",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -900,12 +1800,20 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE; candidate boundary (B12)",
+        "conditionalHostFact": "the command lock is still held at commandEnded",
+        "unknownThrough": "UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2)"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -915,6 +1823,7 @@
     {
       "probeId": "10N-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 10,
       "family": "H-ED",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -936,12 +1845,20 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "CB-EXEC-01 in commandEnded of I52CTDA_FIXTURE; candidate boundary (B12)",
+        "conditionalHostFact": "the command lock is still held at commandEnded",
+        "unknownThrough": "UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2)"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -951,6 +1868,7 @@
     {
       "probeId": "16N-S",
       "catalog": "NPM-V35",
+      "matrixOrder": 11,
       "family": "H-SEND,H-DB",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -972,6 +1890,7 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [
         "E07",
         "E08"
@@ -979,10 +1898,12 @@
       "classification": "PASS-GOVERNED",
       "result": "PASS-S",
       "governingExecution": "E09",
+      "carriedForward": false,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
       "executionTuple": {
         "package": "afa65bc0",
+        "sourceSha": "afa65bc0bba9eb83bde7ff06266c00139c727a15",
         "freezeRevisionOfPackage": "V35-A3",
-        "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
         "r3HostExecutionTupleHash": "DBAD02491FAC7A532CE815CCDDB08E5136E4FDEF38858BD41B514E4E3CACEF2E",
         "rowApprovalHash": "FD6FCD34CD85B13E442A8C023EFCCAF3D94CC54C657CB9E8D340CBDEEA9FDF06"
       },
@@ -1006,6 +1927,7 @@
     {
       "probeId": "16N-M",
       "catalog": "NPM-V35",
+      "matrixOrder": 12,
       "family": "H-SEND,H-DB",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -1027,12 +1949,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1042,6 +1967,7 @@
     {
       "probeId": "16N-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 13,
       "family": "H-SEND,H-DB",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -1064,12 +1990,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1079,6 +2008,7 @@
     {
       "probeId": "C15N16N-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 14,
       "family": "H-LOAD,H-SEND,H-DB",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -1100,12 +2030,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1115,6 +2048,7 @@
     {
       "probeId": "02NO-S",
       "catalog": "NPM-V35",
+      "matrixOrder": 15,
       "family": "H-OBJ",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -1134,18 +2068,21 @@
         "P4"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "PASS-GOVERNED",
       "result": "PASS-S",
       "governingExecution": "E06",
+      "carriedForward": true,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
       "executionTuple": {
         "package": "e864a093",
+        "sourceSha": "e864a0936b6fb39b27401767e5a2242958ebe659",
         "freezeRevisionOfPackage": "V35-A2",
-        "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
         "r3HostExecutionTupleHash": "C57CD8951187B360752C8E9ED0FCE4FDD41A9FB890B035A8DEC92171D56D5FD1",
         "rowApprovalHash": "10134547184A859DF1EFE2B392E6846AD48B7D108AA3B03B03CBC13A6B9AEF4D"
       },
-      "a3Validity": "carried forward from a V35-A2 package by decisions section 188 (row hash unchanged); NOT re-executed under the A3 tuple",
+      "a3Validity": "carried forward (decisions 188 / 197.4): provisional; re-execute or Architect equivalence ruling before TRUE",
       "d4Anchor": null,
       "reasonIfNotGoverning": null,
       "surfacesReadInPass": [
@@ -1165,6 +2102,7 @@
     {
       "probeId": "02NO-M",
       "catalog": "NPM-V35",
+      "matrixOrder": 16,
       "family": "H-OBJ",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -1184,12 +2122,15 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1199,6 +2140,7 @@
     {
       "probeId": "02NO-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 17,
       "family": "H-OBJ",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -1220,12 +2162,15 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1235,6 +2180,7 @@
     {
       "probeId": "02NO-CLOSE-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 18,
       "family": "H-OBJ",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -1254,12 +2200,15 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1269,6 +2218,7 @@
     {
       "probeId": "04NO-S",
       "catalog": "NPM-V35",
+      "matrixOrder": 19,
       "family": "H-OBJ",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "EXEC-OBSERVE",
@@ -1288,12 +2238,20 @@
         "P3"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "the primary callback is cancelled/modifyUndone produced by aborting T-PRIMARY over a staged write",
+        "conditionalHostFact": "the abort delivers cancelled/modifyUndone to OR-XR",
+        "unknownThrough": "OBS-PRIMARY-CALLBACK unavailable (RESULT-RULE-V35 step 2)"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1303,6 +2261,7 @@
     {
       "probeId": "04NO-UNDO-S",
       "catalog": "NPM-V35",
+      "matrixOrder": 20,
       "family": "H-OBJ",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "EXEC-OBSERVE",
@@ -1322,12 +2281,20 @@
         "P3"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "the primary callback is cancelled/modifyUndone produced by aborting T-PRIMARY over a staged write",
+        "conditionalHostFact": "the abort delivers cancelled/modifyUndone to OR-XR",
+        "unknownThrough": "OBS-PRIMARY-CALLBACK unavailable (RESULT-RULE-V35 step 2)"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1337,6 +2304,7 @@
     {
       "probeId": "02NE-M",
       "catalog": "NPM-V35",
+      "matrixOrder": 21,
       "family": "H-OBJ",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -1357,12 +2325,15 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1372,6 +2343,7 @@
     {
       "probeId": "10NDOC-WILL-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 22,
       "family": "H-DOC",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -1392,12 +2364,20 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "CB-EXEC-01 runs inside documentLockModeWillChange raised by the driver's own SA-LOCK request",
+        "conditionalHostFact": "a write-capable lock is observable before the request is granted",
+        "unknownThrough": "UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1407,6 +2387,7 @@
     {
       "probeId": "10NDOC-CHANGED-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 23,
       "family": "H-DOC",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -1427,12 +2408,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1442,6 +2426,7 @@
     {
       "probeId": "10NDOC-VETO-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 24,
       "family": "H-DOC",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "EXEC-OBSERVE",
@@ -1458,12 +2443,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1473,6 +2461,7 @@
     {
       "probeId": "C2OBJ16N-S",
       "catalog": "NPM-V35",
+      "matrixOrder": 25,
       "family": "H-OBJ,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -1492,12 +2481,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1507,6 +2499,7 @@
     {
       "probeId": "C2OBJ16N-M",
       "catalog": "NPM-V35",
+      "matrixOrder": 26,
       "family": "H-OBJ,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -1526,12 +2519,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1541,6 +2537,7 @@
     {
       "probeId": "C2OBJ16N-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 27,
       "family": "H-OBJ,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -1561,12 +2558,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1576,6 +2576,7 @@
     {
       "probeId": "C2ENT16N-M",
       "catalog": "NPM-V35",
+      "matrixOrder": 28,
       "family": "H-OBJ,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -1595,12 +2596,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1610,6 +2614,7 @@
     {
       "probeId": "C2DOCW16N-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 29,
       "family": "H-DOC,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -1630,12 +2635,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1645,6 +2653,7 @@
     {
       "probeId": "C2DOCC16N-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 30,
       "family": "H-DOC,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -1665,12 +2674,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1680,6 +2692,7 @@
     {
       "probeId": "13A-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 31,
       "family": "H-APPCTX",
       "schedulerChain": "CHAIN-SYNC",
       "anchor": "APPCTX-EXEC-01",
@@ -1699,12 +2712,20 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "APPCTX-LOCK-01 calls lockDocument(kWrite) in a synchronous APPCTX entry while I52CTDA_PROBE holds the command lock",
+        "conditionalHostFact": "the nested kWrite request returns eOk",
+        "unknownThrough": "UNK-LOCK-DOC-T-LEAK, UNK-ILLEGAL-CONTEXT"
+      },
       "nonGoverningExecutions": [],
       "classification": "DEFERRED",
       "result": null,
-      "reasonIfNotGoverning": "APPCTX synchronous chain (lock/T from another context); deferred in decisions sections 194/195 and HANDOFF",
+      "reasonIfNotGoverning": "APPCTX synchronous chain (nested lock request while the command lock is held); deferred in decisions sections 194/195; IS in the structural group (not yet authorized)",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1714,6 +2735,7 @@
     {
       "probeId": "16A-S",
       "catalog": "NPM-V35",
+      "matrixOrder": 32,
       "family": "H-APPCTX,H-DB",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -1735,12 +2757,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "DEFERRED",
       "result": null,
-      "reasonIfNotGoverning": "APPCTX anchor characterization (D-4 text unchanged for APPCTX); deferred in decisions sections 194/195 and HANDOFF",
+      "reasonIfNotGoverning": "APPCTX anchor characterization (D-4 text unchanged for APPCTX); deferred in decisions sections 194/195 and HANDOFF; NOT in the structural group",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1750,6 +2775,7 @@
     {
       "probeId": "16A-M",
       "catalog": "NPM-V35",
+      "matrixOrder": 33,
       "family": "H-APPCTX,H-DB",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -1771,12 +2797,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1786,6 +2815,7 @@
     {
       "probeId": "16A-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 34,
       "family": "H-APPCTX,H-DB",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -1807,12 +2837,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1822,6 +2855,7 @@
     {
       "probeId": "16C-S",
       "catalog": "NPM-V35",
+      "matrixOrder": 35,
       "family": "H-CMDCTX,H-APPCTX",
       "schedulerChain": "CHAIN-SYNC-CMDCTX",
       "anchor": "CMDCTX-EXEC-01",
@@ -1842,14 +2876,17 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "PASS-GOVERNED",
       "result": "PASS-S",
       "governingExecution": "E11",
+      "carriedForward": false,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
       "executionTuple": {
         "package": "afa65bc0",
+        "sourceSha": "afa65bc0bba9eb83bde7ff06266c00139c727a15",
         "freezeRevisionOfPackage": "V35-A3",
-        "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
         "r3HostExecutionTupleHash": "E1DF4BA44033A298AA1DDC9BE1EE9B948489EE604B7D01B95DDB6BC98D92835C",
         "rowApprovalHash": "468615B1E8526B757AFBC177FF958EC2C2289DA8D3E9D75205618907C8BE9BD4"
       },
@@ -1873,6 +2910,7 @@
     {
       "probeId": "16C-M",
       "catalog": "NPM-V35",
+      "matrixOrder": 36,
       "family": "H-CMDCTX,H-APPCTX",
       "schedulerChain": "CHAIN-SYNC-CMDCTX",
       "anchor": "CMDCTX-EXEC-01",
@@ -1893,12 +2931,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1908,6 +2949,7 @@
     {
       "probeId": "16C-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 37,
       "family": "H-CMDCTX,H-APPCTX",
       "schedulerChain": "CHAIN-SYNC-CMDCTX",
       "anchor": "CMDCTX-EXEC-01",
@@ -1928,12 +2970,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1943,6 +2988,7 @@
     {
       "probeId": "02NAPP-S",
       "catalog": "NPM-V35",
+      "matrixOrder": 38,
       "family": "H-DB",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -1962,12 +3008,15 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -1977,6 +3026,7 @@
     {
       "probeId": "02NAPP-M",
       "catalog": "NPM-V35",
+      "matrixOrder": 39,
       "family": "H-DB",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -1996,12 +3046,15 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2011,6 +3064,7 @@
     {
       "probeId": "02NAPP-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 40,
       "family": "H-DB",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -2030,12 +3084,20 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "MUT-SM appends F-REF-C to Model Space inside objectAppended of the F-TRIGGER-APPEND append, in the same T-PRIMARY (RC-10)",
+        "conditionalHostFact": "a nested append to the same block table record is accepted inside objectAppended",
+        "unknownThrough": "UNKNOWN-COMMON (CB-PRIMARY-01 step failure)"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2045,6 +3107,7 @@
     {
       "probeId": "02NTAS-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 41,
       "family": "H-TX",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -2065,12 +3128,20 @@
         "P3"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "CB-EXEC-01 starts T_CB inside transactionAboutToStart",
+        "conditionalHostFact": "the transaction manager accepts a start from that callback",
+        "unknownThrough": "UNK-ILLEGAL-CONTEXT"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2080,6 +3151,7 @@
     {
       "probeId": "02NTS-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 42,
       "family": "H-TX",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -2100,12 +3172,15 @@
         "P3"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2115,6 +3190,7 @@
     {
       "probeId": "02NTA-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 43,
       "family": "H-TX",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -2135,12 +3211,20 @@
         "P3"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "CB-EXEC-01 in transactionAborted",
+        "conditionalHostFact": "the aborted T-PRIMARY is no longer active at the callback",
+        "unknownThrough": "UNK-NESTED-IN-ABORT"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2150,6 +3234,7 @@
     {
       "probeId": "02NRXW-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 44,
       "family": "H-LOAD",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -2170,12 +3255,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2185,6 +3273,7 @@
     {
       "probeId": "02NRXL-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 45,
       "family": "H-LOAD",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -2205,12 +3294,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2220,6 +3312,7 @@
     {
       "probeId": "02NEDW-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 46,
       "family": "H-ED",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-EXEC-01",
@@ -2240,12 +3333,20 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "CB-EXEC-01 runs inside commandWillStart of I52CTDA_FIXTURE",
+        "conditionalHostFact": "the command lock is already held at commandWillStart",
+        "unknownThrough": "UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2255,6 +3356,7 @@
     {
       "probeId": "CAPP16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 47,
       "family": "H-DB,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2276,12 +3378,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2291,6 +3396,7 @@
     {
       "probeId": "CAPP16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 48,
       "family": "H-DB,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -2312,12 +3418,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2327,6 +3436,7 @@
     {
       "probeId": "CTAS16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 49,
       "family": "H-TX,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2348,12 +3458,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2363,6 +3476,7 @@
     {
       "probeId": "CTAS16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 50,
       "family": "H-TX,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -2384,12 +3498,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2399,6 +3516,7 @@
     {
       "probeId": "CTS16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 51,
       "family": "H-TX,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2420,12 +3538,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2435,6 +3556,7 @@
     {
       "probeId": "CTS16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 52,
       "family": "H-TX,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -2456,12 +3578,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2471,6 +3596,7 @@
     {
       "probeId": "CTA16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 53,
       "family": "H-TX,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2492,12 +3618,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2507,6 +3636,7 @@
     {
       "probeId": "CTA16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 54,
       "family": "H-TX,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -2528,12 +3658,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2543,6 +3676,7 @@
     {
       "probeId": "CRXW16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 55,
       "family": "H-LOAD,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2564,12 +3698,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2579,6 +3716,7 @@
     {
       "probeId": "CRXW16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 56,
       "family": "H-LOAD,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -2600,12 +3738,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2615,6 +3756,7 @@
     {
       "probeId": "CRXL16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 57,
       "family": "H-LOAD,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2636,12 +3778,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2651,6 +3796,7 @@
     {
       "probeId": "CRXL16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 58,
       "family": "H-LOAD,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -2672,12 +3818,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2687,6 +3836,7 @@
     {
       "probeId": "CEDW16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 59,
       "family": "H-ED,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2708,12 +3858,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2723,6 +3876,7 @@
     {
       "probeId": "CEDW16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 60,
       "family": "H-ED,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -2744,12 +3898,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2759,6 +3916,7 @@
     {
       "probeId": "C2APP2CMD-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 61,
       "family": "H-DB,H-APPCTX,H-CMDCTX",
       "schedulerChain": "CHAIN-APPCTX-CMDCTX",
       "anchor": "CMDCTX-EXEC-01",
@@ -2780,12 +3938,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2795,6 +3956,7 @@
     {
       "probeId": "CDBERASE16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 62,
       "family": "H-DB,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2815,12 +3977,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2830,6 +3995,7 @@
     {
       "probeId": "CDBOPEN16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 63,
       "family": "H-DB,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2850,12 +4016,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2865,6 +4034,7 @@
     {
       "probeId": "CDOCLOCKVETO16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 64,
       "family": "H-DOC,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2885,12 +4055,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2900,6 +4073,7 @@
     {
       "probeId": "CEDEND16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 65,
       "family": "H-ED,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2920,12 +4094,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2935,6 +4112,7 @@
     {
       "probeId": "COBJCANCEL16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 66,
       "family": "H-OBJ,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2955,12 +4133,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -2970,6 +4151,7 @@
     {
       "probeId": "COBJCLOSED16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 67,
       "family": "H-OBJ,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -2990,12 +4172,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3005,6 +4190,7 @@
     {
       "probeId": "COBJERASE16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 68,
       "family": "H-OBJ,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -3025,12 +4211,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3040,6 +4229,7 @@
     {
       "probeId": "COBJOPEN16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 69,
       "family": "H-OBJ,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -3060,12 +4250,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3075,6 +4268,7 @@
     {
       "probeId": "COBJUNDO16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 70,
       "family": "H-OBJ,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -3095,12 +4289,20 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "the origin is modifyUndone produced by cancel() after the RC-09 staging write",
+        "conditionalHostFact": "cancel() sends modifyUndone",
+        "unknownThrough": "OBS-ORIGIN-CALLBACK unavailable (step 2)"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3110,6 +4312,7 @@
     {
       "probeId": "CTRABOUTABORT16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 71,
       "family": "H-TX,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -3130,12 +4333,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3145,6 +4351,7 @@
     {
       "probeId": "CTRABOUTEND16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 72,
       "family": "H-TX,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -3165,12 +4372,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3180,6 +4390,7 @@
     {
       "probeId": "CTRENDED16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 73,
       "family": "H-TX,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -3200,12 +4411,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3215,6 +4429,7 @@
     {
       "probeId": "CTROUTERMOSTENDCALLED16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 74,
       "family": "H-TX,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -3235,12 +4450,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3250,6 +4468,7 @@
     {
       "probeId": "CDBERASE16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 75,
       "family": "H-DB,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3270,12 +4489,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3285,6 +4507,7 @@
     {
       "probeId": "CDBOPEN16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 76,
       "family": "H-DB,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3305,12 +4528,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3320,6 +4546,7 @@
     {
       "probeId": "CDOCLOCKCHANGED16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 77,
       "family": "H-DOC,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3340,12 +4567,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3355,6 +4585,7 @@
     {
       "probeId": "CDOCLOCKVETO16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 78,
       "family": "H-DOC,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3375,12 +4606,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3390,6 +4624,7 @@
     {
       "probeId": "CDOCLOCKWILL16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 79,
       "family": "H-DOC,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3410,12 +4645,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3425,6 +4663,7 @@
     {
       "probeId": "CEDEND16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 80,
       "family": "H-ED,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3445,12 +4684,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3460,6 +4702,7 @@
     {
       "probeId": "CENTGFX16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 81,
       "family": "H-OBJ,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3480,12 +4723,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3495,6 +4741,7 @@
     {
       "probeId": "COBJCANCEL16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 82,
       "family": "H-OBJ,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3515,12 +4762,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3530,6 +4780,7 @@
     {
       "probeId": "COBJCLOSED16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 83,
       "family": "H-OBJ,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3550,12 +4801,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3565,6 +4819,7 @@
     {
       "probeId": "COBJERASE16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 84,
       "family": "H-OBJ,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3585,12 +4840,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3600,6 +4858,7 @@
     {
       "probeId": "COBJMOD16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 85,
       "family": "H-OBJ,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3620,12 +4879,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3635,6 +4897,7 @@
     {
       "probeId": "COBJOPEN16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 86,
       "family": "H-OBJ,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3655,12 +4918,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3670,6 +4936,7 @@
     {
       "probeId": "COBJUNDO16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 87,
       "family": "H-OBJ,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3690,12 +4957,20 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "the origin is modifyUndone produced by cancel() after the RC-09 staging write",
+        "conditionalHostFact": "cancel() sends modifyUndone",
+        "unknownThrough": "OBS-ORIGIN-CALLBACK unavailable (step 2)"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3705,6 +4980,7 @@
     {
       "probeId": "CTRABOUTABORT16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 88,
       "family": "H-TX,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3725,12 +5001,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3740,6 +5019,7 @@
     {
       "probeId": "CTRABOUTEND16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 89,
       "family": "H-TX,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3760,12 +5040,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3775,6 +5058,7 @@
     {
       "probeId": "CTRENDED16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 90,
       "family": "H-TX,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3795,12 +5079,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3810,6 +5097,7 @@
     {
       "probeId": "CTROUTERMOSTENDCALLED16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 91,
       "family": "H-TX,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3830,12 +5118,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3845,6 +5136,7 @@
     {
       "probeId": "02NEDC-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 92,
       "family": "H-ED",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "EDC-EXEC-01",
@@ -3865,12 +5157,20 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": true,
+      "structural": {
+        "reason": "EDC-EXEC-01 runs inside commandCancelled of HFV34_CANCEL",
+        "conditionalHostFact": "a write-capable command lock is observable in commandCancelled",
+        "unknownThrough": "UNK-NO-WRITE-LOCK, UNK-T-CANCEL-FAILURE"
+      },
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3880,6 +5180,7 @@
     {
       "probeId": "CEDC16SND-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 93,
       "family": "H-ED,H-SEND",
       "schedulerChain": "CHAIN-SEND",
       "anchor": "SEND-EXEC-01",
@@ -3900,12 +5201,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3915,6 +5219,7 @@
     {
       "probeId": "CEDC16APP-ALL",
       "catalog": "NPM-V35",
+      "matrixOrder": 94,
       "family": "H-ED,H-APPCTX",
       "schedulerChain": "CHAIN-APPCTX",
       "anchor": "APPCTX-EXEC-01",
@@ -3935,12 +5240,15 @@
         "P12"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -3950,6 +5258,7 @@
     {
       "probeId": "02NDBMOD-S",
       "catalog": "NPM-V35",
+      "matrixOrder": 95,
       "family": "H-DB",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -3969,6 +5278,7 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [
         "E02",
         "E03"
@@ -3976,14 +5286,16 @@
       "classification": "PASS-GOVERNED",
       "result": "PASS-S",
       "governingExecution": "E05",
+      "carriedForward": true,
+      "currentBaselineStatus": "SUPERSEDED-BUILD (baseline bef6091b)",
       "executionTuple": {
         "package": "e864a093",
+        "sourceSha": "e864a0936b6fb39b27401767e5a2242958ebe659",
         "freezeRevisionOfPackage": "V35-A2",
-        "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
         "r3HostExecutionTupleHash": "18249CD1F7830351CE04C7F5CFE1543B15EB50360CDE8A4A39994E33C96BFB42",
         "rowApprovalHash": "9137ECA752B0AAE8A6696A9F87A8A81A3B4D4833C4F9F0D8E7890D3E78825B68"
       },
-      "a3Validity": "carried forward from a V35-A2 package by decisions section 188 (row hash unchanged); NOT re-executed under the A3 tuple",
+      "a3Validity": "carried forward (decisions 188 / 197.4): provisional; re-execute or Architect equivalence ruling before TRUE",
       "d4Anchor": null,
       "reasonIfNotGoverning": null,
       "surfacesReadInPass": [
@@ -4003,6 +5315,7 @@
     {
       "probeId": "02NDBMOD-M",
       "catalog": "NPM-V35",
+      "matrixOrder": 96,
       "family": "H-DB",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -4022,12 +5335,15 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -4037,6 +5353,7 @@
     {
       "probeId": "02NDBMOD-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 97,
       "family": "H-DB",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -4056,12 +5373,15 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -4071,6 +5391,7 @@
     {
       "probeId": "02NDBERASE-S",
       "catalog": "NPM-V35",
+      "matrixOrder": 98,
       "family": "H-DB",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -4090,12 +5411,15 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -4105,6 +5429,7 @@
     {
       "probeId": "02NDBERASE-M",
       "catalog": "NPM-V35",
+      "matrixOrder": 99,
       "family": "H-DB",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -4124,12 +5449,15 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -4139,6 +5467,7 @@
     {
       "probeId": "02NDBERASE-SM",
       "catalog": "NPM-V35",
+      "matrixOrder": 100,
       "family": "H-DB",
       "schedulerChain": "CHAIN-NONE",
       "anchor": "CB-PRIMARY-01",
@@ -4158,12 +5487,15 @@
         "P11"
       ],
       "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "structuralUnknownCandidate": false,
       "nonGoverningExecutions": [],
       "classification": "NOT-EXECUTED",
       "result": null,
       "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
       "surfacesReadInPass": [],
       "evidenceRefs": [],
+      "carriedForward": false,
+      "currentBaselineStatus": null,
       "contributesTo": {
         "DA-P7": [],
         "DA-P8": false,
@@ -4192,10 +5524,10 @@
         "P2"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4229,10 +5561,10 @@
         "P4"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4266,10 +5598,10 @@
         "P3"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4303,10 +5635,10 @@
         "P4"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4343,10 +5675,10 @@
         "P4"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4381,10 +5713,10 @@
         "P4"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4417,10 +5749,10 @@
         "P4"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4453,10 +5785,10 @@
         "P5"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4492,10 +5824,10 @@
         "P2"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4534,10 +5866,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4574,10 +5906,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4612,10 +5944,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4653,10 +5985,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4688,10 +6020,10 @@
         "P8"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4725,10 +6057,10 @@
         "P9"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4764,10 +6096,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4801,10 +6133,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4840,10 +6172,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": true,
+      "predicateStatus": "REQUIRED",
       "classification": "NOT-EXECUTED",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "no executable authority exists for this managed row yet (decisions 197.3: MISSING, presently considered IMPLEMENTABLE; not an inability determination)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4880,10 +6212,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": false,
-      "classification": "NOT-EXECUTED",
+      "predicateStatus": "OUTSIDE-PREDICATE",
+      "classification": "OUTSIDE-PREDICATE",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "HEC-V27-C1 scheduler row kept in the catalog but outside the CTDA_HOST_PASS predicate (decisions 197.2)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4919,10 +6251,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": false,
-      "classification": "NOT-EXECUTED",
+      "predicateStatus": "OUTSIDE-PREDICATE",
+      "classification": "OUTSIDE-PREDICATE",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "HEC-V27-C1 scheduler row kept in the catalog but outside the CTDA_HOST_PASS predicate (decisions 197.2)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -4961,10 +6293,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": false,
-      "classification": "NOT-EXECUTED",
+      "predicateStatus": "OUTSIDE-PREDICATE",
+      "classification": "OUTSIDE-PREDICATE",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "HEC-V27-C1 scheduler row kept in the catalog but outside the CTDA_HOST_PASS predicate (decisions 197.2)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -5002,10 +6334,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": false,
-      "classification": "NOT-EXECUTED",
+      "predicateStatus": "OUTSIDE-PREDICATE",
+      "classification": "OUTSIDE-PREDICATE",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "HEC-V27-C1 scheduler row kept in the catalog but outside the CTDA_HOST_PASS predicate (decisions 197.2)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -5042,10 +6374,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": false,
-      "classification": "NOT-EXECUTED",
+      "predicateStatus": "OUTSIDE-PREDICATE",
+      "classification": "OUTSIDE-PREDICATE",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "HEC-V27-C1 scheduler row kept in the catalog but outside the CTDA_HOST_PASS predicate (decisions 197.2)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -5085,10 +6417,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": false,
-      "classification": "NOT-EXECUTED",
+      "predicateStatus": "OUTSIDE-PREDICATE",
+      "classification": "OUTSIDE-PREDICATE",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "HEC-V27-C1 scheduler row kept in the catalog but outside the CTDA_HOST_PASS predicate (decisions 197.2)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -5125,10 +6457,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": false,
-      "classification": "NOT-EXECUTED",
+      "predicateStatus": "OUTSIDE-PREDICATE",
+      "classification": "OUTSIDE-PREDICATE",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "HEC-V27-C1 scheduler row kept in the catalog but outside the CTDA_HOST_PASS predicate (decisions 197.2)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -5164,10 +6496,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": false,
-      "classification": "NOT-EXECUTED",
+      "predicateStatus": "OUTSIDE-PREDICATE",
+      "classification": "OUTSIDE-PREDICATE",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "HEC-V27-C1 scheduler row kept in the catalog but outside the CTDA_HOST_PASS predicate (decisions 197.2)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
@@ -5206,10 +6538,10 @@
         "P12"
       ],
       "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
-      "inLiteral18": false,
-      "classification": "NOT-EXECUTED",
+      "predicateStatus": "OUTSIDE-PREDICATE",
+      "classification": "OUTSIDE-PREDICATE",
       "result": null,
-      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "reasonIfNotGoverning": "HEC-V27-C1 scheduler row kept in the catalog but outside the CTDA_HOST_PASS predicate (decisions 197.2)",
       "nonGoverningExecutions": [],
       "evidenceRefs": [],
       "surfacesReadInPass": [],
