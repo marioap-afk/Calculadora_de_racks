@@ -85,18 +85,26 @@ namespace RackCad.Application.Views.Placement
             bool planAvailable,
             PieceRequirementExtractionOutcome requirementOutcome,
             IReadOnlyList<LibraryPieceAvailabilityFact> pieceFacts,
-            string planFailureCode = null)
+            string planFailureCode = null,
+            RackProjectionPreparedView preparedView = null)
         {
             PlanAvailable = planAvailable;
             RequirementOutcome = requirementOutcome;
             PieceFacts = pieceFacts ?? Array.Empty<LibraryPieceAvailabilityFact>();
             PlanFailureCode = planFailureCode;
+            PreparedView = preparedView;
         }
 
         public bool PlanAvailable { get; }
         public PieceRequirementExtractionOutcome RequirementOutcome { get; }
         public IReadOnlyList<LibraryPieceAvailabilityFact> PieceFacts { get; }
         public string PlanFailureCode { get; }
+
+        /// <summary>
+        /// What a later materialisation writes: the typed plan and the envelope already composed with the source
+        /// RackId. The pure pipeline never reads it; it only carries it to the command.
+        /// </summary>
+        public RackProjectionPreparedView PreparedView { get; }
     }
 
     /// <summary>Authorities the pure plan consumes. Every one of them is a Foundation or product authority.</summary>

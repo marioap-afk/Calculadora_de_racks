@@ -45,6 +45,12 @@ namespace RackCad.Tests
         /// <summary>Lo que G7 anade, EXACTAMENTE: el comando decidido por el Owner y su unico alias.</summary>
         internal static readonly string[] G7Commands = { "RACKPROPIEDADES", "RPR" };
 
+        /// <summary>Lo que I-55 G15 anade, EXACTAMENTE: el comando de OD-1 A y su unico alias.</summary>
+        internal static readonly string[] G15Commands = { "RACKPROYECTAR", "RPY" };
+
+        /// <summary>El censo vigente: apertura, G7 y G15, cada nombre una vez.</summary>
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).ToArray();
+
         // ================================================================ censo
 
         [Fact]
@@ -53,10 +59,11 @@ namespace RackCad.Tests
             Assert.Equal(33, OpeningCommands.Length);
             Assert.Equal(OpeningCommands.Length, OpeningCommands.Distinct(StringComparer.Ordinal).Count());
             Assert.Empty(OpeningCommands.Intersect(G7Commands, StringComparer.Ordinal));
+            Assert.Empty(OpeningCommands.Concat(G7Commands).Intersect(G15Commands, StringComparer.Ordinal));
         }
 
         [Fact]
-        public void TGrd08_ElCensoDeComandosEsElDeAperturaMasRackPropiedadesYRpr()
+        public void TGrd08_ElCensoDeComandosEsElDeAperturaMasRackPropiedadesRprRackProyectarYRpy()
         {
             Assert.Empty(CensusViolations(PluginCommandNames()));
         }
@@ -75,15 +82,21 @@ namespace RackCad.Tests
 
         public static TheoryData<string, string[]> CensusMutations() => new TheoryData<string, string[]>
         {
-            { "falta el alias", OpeningCommands.Append("RACKPROPIEDADES").ToArray() },
-            { "falta el comando", OpeningCommands.Append("RPR").ToArray() },
-            { "un alias de mas", OpeningCommands.Concat(G7Commands).Append("RPRO").ToArray() },
-            { "un comando por alcance", OpeningCommands.Concat(G7Commands).Append("RACKPROPIEDADESPROYECTO").ToArray() },
-            { "el alias con otra grafia", OpeningCommands.Append("RACKPROPIEDADES").Append("rpr").ToArray() },
-            { "el comando traducido", OpeningCommands.Append("RACKPROPERTIES").Append("RPR").ToArray() },
-            { "el alias registrado dos veces", OpeningCommands.Concat(G7Commands).Append("RPR").ToArray() },
-            { "un comando de apertura desaparecido", OpeningCommands.Where(name => name != "RVA").Concat(G7Commands).ToArray() },
-            { "solo el numero cuadra", OpeningCommands.Where(name => name != "RVA").Concat(G7Commands).Append("RPRO").ToArray() },
+            { "falta el alias RPR", Baseline.Where(name => name != "RPR").ToArray() },
+            { "falta el comando RACKPROPIEDADES", Baseline.Where(name => name != "RACKPROPIEDADES").ToArray() },
+            { "un alias de mas", Baseline.Append("RPRO").ToArray() },
+            { "un comando por alcance", Baseline.Append("RACKPROPIEDADESPROYECTO").ToArray() },
+            { "el alias con otra grafia", Baseline.Where(name => name != "RPR").Append("rpr").ToArray() },
+            { "el comando traducido", Baseline.Where(name => name != "RACKPROPIEDADES").Append("RACKPROPERTIES").ToArray() },
+            { "el alias registrado dos veces", Baseline.Append("RPR").ToArray() },
+            { "un comando de apertura desaparecido", Baseline.Where(name => name != "RVA").ToArray() },
+            { "solo el numero cuadra", Baseline.Where(name => name != "RVA").Append("RPRO").ToArray() },
+            { "falta RACKPROYECTAR", Baseline.Where(name => name != "RACKPROYECTAR").ToArray() },
+            { "falta RPY", Baseline.Where(name => name != "RPY").ToArray() },
+            { "un alias de mas de G15", Baseline.Append("RPYX").ToArray() },
+            { "una segunda familia de proyeccion", Baseline.Append("RACKPROYECTARVISTAS").ToArray() },
+            { "el alias de G15 con otra grafia", Baseline.Where(name => name != "RPY").Append("rpy").ToArray() },
+            { "RACKPROYECTAR registrado dos veces", Baseline.Append("RACKPROYECTAR").ToArray() },
         };
 
         [Theory]
@@ -175,7 +188,7 @@ namespace RackCad.Tests
         internal static IReadOnlyList<string> CensusViolations(IEnumerable<string> names)
         {
             var violations = new List<string>();
-            var expected = OpeningCommands.Concat(G7Commands).ToList();
+            var expected = Baseline.ToList();
             var found = names.ToList();
 
             foreach (var group in found.GroupBy(name => name, StringComparer.Ordinal).Where(group => group.Count() > 1))
@@ -190,7 +203,7 @@ namespace RackCad.Tests
 
             foreach (var extra in found.Except(expected, StringComparer.Ordinal))
             {
-                violations.Add("sin clasificar en el censo de G7: " + extra);
+                violations.Add("sin clasificar en el censo de G7 y G15: " + extra);
             }
 
             return violations;

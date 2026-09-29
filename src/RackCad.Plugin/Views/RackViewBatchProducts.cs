@@ -41,12 +41,7 @@ namespace RackCad.Plugin.Views
             var preparer = new RackProductPreparer<SelectivePalletDesignDocument, SelectiveRackSystem, HeaderRunPlan>(
                 Cached(RackResolvePorts.Selective<SelectivePalletDesignDocument, SelectiveRackSystem>(_ => system)), port,
                 (resolved, address) => SelectiveViewFrameAdapter.Resolve(resolved, catalog, address),
-                (resolved, address) => address.Kind == DimensionViewKind.Planta
-                    ? RackViewBaseName.SelectivePlanta(resolved, rackName)
-                    : address.Kind == DimensionViewKind.Lateral
-                        ? RackViewBaseName.LinkedLateral(baseName, address.Variant.Index)
-                        : RackViewBaseName.LinkedSelectiveFrontal(baseName, address.Variant.Index,
-                            SelectiveDepthLayout.Count(resolved)) ?? RackViewBaseName.SelectiveFrontal(resolved, rackName));
+                (resolved, address) => SelectiveName(resolved, address, rackName, baseName));
             return new RackViewBatchProductSession<SelectivePalletDesignDocument, SelectiveRackSystem, HeaderRunPlan>(
                 RackSystemKind.SelectiveRack, facts, preparer, null, null, null, authored, rackId, rackName,
                 new SelectivePalletDesignStore().Serialize(authored),
@@ -113,9 +108,7 @@ namespace RackCad.Plugin.Views
             var preparer = new RackProductPreparer<RackFrameConfiguration, RackFrameConfiguration, HeaderRunPlan>(
                 Cached(RackResolvePorts.Cabecera<RackFrameConfiguration, RackFrameConfiguration>(_ => configuration)), port,
                 CabeceraViewFrameAdapter.Resolve,
-                (resolved, address) => address.Kind == DimensionViewKind.Planta
-                    ? RackViewBaseName.CabeceraPlanta(rackName)
-                    : RackViewBaseName.CabeceraLateral(catalog, resolved, rackName));
+                (resolved, address) => HeaderName(catalog, resolved, address, rackName));
             return new RackViewBatchProductSession<RackFrameConfiguration, RackFrameConfiguration, HeaderRunPlan>(
                 RackSystemKind.Selective, facts, preparer, RackAuthoredComparatorPorts.Cabecera(), comparison,
                 source, configuration, rackId, rackName, Project(RackProject.ForSelective(configuration), innerSource),
@@ -149,7 +142,7 @@ namespace RackCad.Plugin.Views
                 product => RackViewPlacement.PlaceCantilever(document, product, regen: false));
         }
 
-        private static HeaderRunPlan DynamicPlan(DynamicRackSystem system, RackViewAddress address, RackCatalog catalog)
+        internal static HeaderRunPlan DynamicPlan(DynamicRackSystem system, RackViewAddress address, RackCatalog catalog)
         {
             if (address.Kind == DimensionViewKind.Planta) return new DynamicSystemPlantaBuilder().BuildPlan(system, catalog);
             if (address.Kind == DimensionViewKind.Frontal)
@@ -159,7 +152,7 @@ namespace RackCad.Plugin.Views
                 .First(c => c.PostIndex == address.Variant.Index).Plan;
         }
 
-        private static HeaderRunPlan SelectivePlan(
+        internal static HeaderRunPlan SelectivePlan(
             SelectiveRackSystem system, RackViewAddress address, RackCatalog catalog, string rackName)
         {
             if (address.Kind == DimensionViewKind.Planta) return new SelectivePlantaBuilder().BuildPlan(system, catalog);
@@ -173,7 +166,7 @@ namespace RackCad.Plugin.Views
             return HeaderInstanceGrouper.Group(layout.Instances.Concat(cut.Largueros).ToList(), rackName);
         }
 
-        private static HeaderRunPlan PushBackPlan(PushBackSystem system, RackViewAddress address, RackCatalog catalog)
+        internal static HeaderRunPlan PushBackPlan(PushBackSystem system, RackViewAddress address, RackCatalog catalog)
         {
             if (address.Kind == DimensionViewKind.Planta) return new PushBackSystemPlantaBuilder().BuildPlan(system, catalog);
             if (address.Kind == DimensionViewKind.Frontal)
@@ -184,7 +177,7 @@ namespace RackCad.Plugin.Views
             return new PushBackSystemLateralBuilder().Build(system, catalog, address.Variant.Index);
         }
 
-        private static HeaderRunPlan HeaderPlan(RackFrameConfiguration configuration, RackViewAddress address, RackCatalog catalog)
+        internal static HeaderRunPlan HeaderPlan(RackFrameConfiguration configuration, RackViewAddress address, RackCatalog catalog)
         {
             if (address.Kind == DimensionViewKind.Planta)
                 return HeaderInstanceGrouper.Group(new PlantaHeaderLayoutBuilder().Build(configuration, catalog),
@@ -195,31 +188,46 @@ namespace RackCad.Plugin.Views
                 RackViewBaseName.CabeceraLateral(catalog, configuration, configuration.Name));
         }
 
-        private static CantileverViewPlan CantileverPlan(CantileverLineAssembly line, CantileverLineDesign design,
+        internal static CantileverViewPlan CantileverPlan(CantileverLineAssembly line, CantileverLineDesign design,
             StructuralSectionGeometryFactory geometry, RackViewAddress address)
             => CantileverViewPlanBuilder.Build(line, CantileverKind(address), geometry,
                 address.Variant.Kind == RackViewVariantKind.Station ? address.Variant.Index : 0,
                 design.PlantaVisibility);
 
-        private static CantileverViewKind CantileverKind(RackViewAddress address)
+        internal static CantileverViewKind CantileverKind(RackViewAddress address)
             => address.Kind == DimensionViewKind.Planta ? CantileverViewKind.Planta
                 : address.Kind == DimensionViewKind.Lateral ? CantileverViewKind.Lateral
                 : CantileverViewKind.Frontal;
 
-        private static string DynamicName(DynamicRackSystem system, RackViewAddress address, string name, string baseName)
+        internal static string SelectiveName(
+            SelectiveRackSystem resolved, RackViewAddress address, string rackName, string baseName)
+            => address.Kind == DimensionViewKind.Planta
+                ? RackViewBaseName.SelectivePlanta(resolved, rackName)
+                : address.Kind == DimensionViewKind.Lateral
+                    ? RackViewBaseName.LinkedLateral(baseName, address.Variant.Index)
+                    : RackViewBaseName.LinkedSelectiveFrontal(baseName, address.Variant.Index,
+                        SelectiveDepthLayout.Count(resolved)) ?? RackViewBaseName.SelectiveFrontal(resolved, rackName);
+
+        internal static string HeaderName(
+            RackCatalog catalog, RackFrameConfiguration resolved, RackViewAddress address, string rackName)
+            => address.Kind == DimensionViewKind.Planta
+                ? RackViewBaseName.CabeceraPlanta(rackName)
+                : RackViewBaseName.CabeceraLateral(catalog, resolved, rackName);
+
+        internal static string DynamicName(DynamicRackSystem system, RackViewAddress address, string name, string baseName)
             => address.Kind == DimensionViewKind.Planta ? RackViewBaseName.DynamicPlanta(system, name)
                 : address.Kind == DimensionViewKind.Frontal ? RackViewBaseName.DynamicFrontal(system, name, address.Variant.FlowEnd)
                 : RackViewBaseName.LinkedLateral(baseName, address.Variant.Index)
                     ?? RackViewBaseName.DynamicLateral(system, name);
 
-        private static string PushBackName(PushBackSystem system, RackViewAddress address, string name, string baseName)
+        internal static string PushBackName(PushBackSystem system, RackViewAddress address, string name, string baseName)
             => address.Kind == DimensionViewKind.Planta ? RackViewBaseName.PushBackPlanta(system, name)
                 : address.Kind == DimensionViewKind.Frontal
                     ? RackViewBaseName.PushBackFrontal(system, name, address.Variant.PushBackEnd, address.Variant.PushBackSide)
                     : RackViewBaseName.LinkedLateral(baseName, address.Variant.Index)
                         ?? RackViewBaseName.PushBackLateral(system, name, address.Variant.Index);
 
-        private static DecodedRackView Decoded(RackSystemKind kind, RackViewAddress address)
+        internal static DecodedRackView Decoded(RackSystemKind kind, RackViewAddress address)
         {
             var syntax = RackViewCodec.Encode(kind, address);
             return RackViewCodec.Decode(syntax.Kind, syntax.View, syntax.Section);
