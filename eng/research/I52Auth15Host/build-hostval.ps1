@@ -30,27 +30,28 @@ if (-not $Dotnet) {
     $Dotnet = if (Test-Path -LiteralPath $userDotnet) { $userDotnet } else { 'dotnet' }
 }
 
-function Git { & git -C $repo @args; if ($LASTEXITCODE -ne 0) { throw "git $args failed" } }
+# NOT named Git: a function called Git would shadow git.exe (PowerShell command lookup is case-insensitive) and recurse.
+function Invoke-GitChecked { & git.exe -C $repo @args; if ($LASTEXITCODE -ne 0) { throw "git $args failed" } }
 
 # 1. Exact committed source.
-$head = (Git rev-parse HEAD).Trim()
+$head = (Invoke-GitChecked rev-parse HEAD).Trim()
 if ($head -ne $HarnessSha) { throw "HEAD $head is not the requested harness SHA $HarnessSha" }
-if (git -C $repo status --porcelain) { throw 'Working tree is not clean: the package is built only from committed source.' }
-Git cat-file -e "$ImplementationSha^{commit}"
-Git merge-base --is-ancestor $ImplementationSha $HarnessSha
+if (& git.exe -C $repo status --porcelain) { throw 'Working tree is not clean: the package is built only from committed source.' }
+Invoke-GitChecked cat-file -e "$ImplementationSha^{commit}"
+Invoke-GitChecked merge-base --is-ancestor $ImplementationSha $HarnessSha
 
 # 2. BINDING RULE: src/ and tests/ byte-identical to the implementation SHA. If not: STOP.
-git -C $repo diff --quiet $ImplementationSha $HarnessSha -- src tests
+& git.exe -C $repo diff --quiet $ImplementationSha $HarnessSha -- src tests
 if ($LASTEXITCODE -ne 0) { throw "STOP: src/ or tests/ differ from implementation SHA $ImplementationSha." }
-$implSrc = (Git rev-parse "${ImplementationSha}:src").Trim()
-$implTests = (Git rev-parse "${ImplementationSha}:tests").Trim()
-$harnessSrc = (Git rev-parse "${HarnessSha}:src").Trim()
-$harnessTests = (Git rev-parse "${HarnessSha}:tests").Trim()
+$implSrc = (Invoke-GitChecked rev-parse "${ImplementationSha}:src").Trim()
+$implTests = (Invoke-GitChecked rev-parse "${ImplementationSha}:tests").Trim()
+$harnessSrc = (Invoke-GitChecked rev-parse "${HarnessSha}:src").Trim()
+$harnessTests = (Invoke-GitChecked rev-parse "${HarnessSha}:tests").Trim()
 if ($implSrc -ne $harnessSrc -or $implTests -ne $harnessTests) { throw 'STOP: tree hashes of src/ or tests/ differ from the implementation SHA.' }
 $treesEqual = $true
 
 # The harness commit may only ADD the harness and touch docs.
-$outside = @(Git diff --name-only $ImplementationSha $HarnessSha | Where-Object { $_ -notmatch '^(eng/research/I52Auth15Host/|docs/)' })
+$outside = @(Invoke-GitChecked diff --name-only $ImplementationSha $HarnessSha | Where-Object { $_ -notmatch '^(eng/research/I52Auth15Host/|docs/)' })
 if ($outside.Count -gt 0) { throw "STOP: the harness commit changes files outside eng/research/I52Auth15Host/ and docs/: $($outside -join ', ')" }
 
 if (Test-Path -LiteralPath $OutputRoot) { throw "Output $OutputRoot already exists: prior packages are never overwritten." }
