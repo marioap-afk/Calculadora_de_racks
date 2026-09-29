@@ -131,3 +131,33 @@ criterios del gate G15 sin cambiar la matriz congelada 01..26.
 Cada escenario se registra con: identificador, `PASS` | `FAIL` | `NOT EXECUTED (motivo)`, observaciones y, en un fallo, su clasificacion
 (defecto de producto, de prueba o fixture, de entorno, de documentacion o contradiccion material). El veredicto global lo declara el Owner:
 **APPROVED** o **REJECTED**. Un solo `FAIL` requerido detiene la integracion.
+
+## 8. Rondas de validacion
+
+Los registros de una ronda rechazada se conservan; no se reescriben ni se reutilizan para el Candidato siguiente.
+
+### Ronda 1 — Candidato `beb9597b42d67bb118b230124946dbe9004b31ae`: REJECTED
+
+Evidencia historica del Candidato rechazado: CI de push `36638354422` (4/4), cobertura `36639301144` (medida = Candidato), Core 11723/0/0 y UI
+1621/0/17 omitidas. El Owner reporto **OV-LEG correcto** sobre ese SHA y rechazo el Candidato por las filas requeridas de OV-ID17:
+
+| Fila | Observado en `beb9597b` | Clasificacion |
+|---|---|---|
+| OV-ID17-02 | Selectivo nuevo con Lateral primero: `RackCad ID18: PREFLIGHT_FAILED (0/0). ONE_RACK_REQUIRED`; la lateral no se inserta | Defecto de producto (C16-01) |
+| OV-ID17-03..05 | Dinamico nuevo (frontal salida, entrada o planta primero) → `RACKEDITAR` → Insertar lateral: «una vista de este rack tiene un diseno interior de otro tipo» | Defecto de producto (C16-02) |
+| OV-ID17-06 | `RACKCABECERA` → planta primero → `RACKEDITAR` → Insertar lateral: el mismo error | Defecto de producto (C16-02) |
+
+**C16-01 — causa raiz.** No era un requisito de rack existente que entrara en el camino de rack nuevo: la peticion que el menu entrega al Plugin llegaba
+con la lista ordenada de vistas **vacia**. Un lateral del Selectivo lleva su poste como seccion y la peticion historica de vista unica no la tiene, asi que
+`SelectiveInsertionRequest` no producia ninguna direccion; ademas, los modulos del menu de Selectivo y Dinamico reconstruian la peticion desde el token de vista
+legado y descartaban una cola. El plan de lote veia `Count == 0` y respondia `ONE_RACK_REQUIRED` (0/0), regla que **se conserva** para rack nuevo y existente.
+Simbolos: `SelectiveInsertionRequest` (`RackInsertionRequest.cs`), `SelectiveEditorModule.Build` y `DynamicEditorModule.Build` (`EditorModules.cs`).
+
+**C16-02 — causa raiz.** El diseno interior que persisten todas las primeras vistas es correcto y del tipo esperado (oraculo con los lectores de produccion,
+para Dinamico, Cabecera, Push Back y Cantilever, en cada vista soportada, y Selectivo por su lector). Lo que fallaba era
+`RackUnsupportedSiblingInsert.TryAuthorize`: entregaba a `RACKEDITAR` las definiciones de **todos** los racks del dibujo (`membership.Members`, con los ajenos como
+`NotMember`) en lugar de las del rack que se edita (`MutableMembers`); el preflight de tipo erroneo, que no se toca, encontraba «otro tipo» en un rack ajeno. Con otro
+rack del mismo tipo en el dibujo no abortaba, pero redibujaba ese rack con el diseno del que se edita. Lo usan Dinamico, Cabecera, Push Back y Cantilever.
+
+**Correccion:** el bloque de `RACKEDITAR` sale de `MutableMembers`; el Selectivo lateral lleva el poste 0 como el Dinamico; los modulos devuelven la peticion de
+la ventana. Ver el registro de la ronda 2 en la evidencia de cierre.
