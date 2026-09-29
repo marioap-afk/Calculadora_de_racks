@@ -16,3 +16,10 @@ assets/catalogs/structural-sections-s.csv         -text
 assets/catalogs/structural-section-sources.csv    -text
 assets/catalogs/structural-section-status.csv     -text
 assets/catalogs/structural-sections-manifest.json -text
+
+# I-52-AUTH15 — evidencia cruda de RUN-3. Sus SHA-256 estan declarados en el README de la carpeta: `-text` conserva los bytes exactos.
+docs/automation/evidence/I-52-AUTH15-run3/hostval-evidence.json  -text
+docs/automation/evidence/I-52-AUTH15-run3/launcher-record.json  -text
+docs/automation/evidence/I-52-AUTH15-run3/hostval.log  -text
+docs/automation/evidence/I-52-AUTH15-run3/filedia.txt  -text
+docs/automation/evidence/I-52-AUTH15-run3/run.scr  -text
