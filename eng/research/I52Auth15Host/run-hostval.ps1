@@ -26,6 +26,12 @@ param(
 #   2 = INVALID: refusal before launch, or any launch / binding / package / evidence / process condition failed
 #   3 = the launch was valid but the harness verdict is FAIL or UNKNOWN
 # The last line printed is always: RUN_RESULT = PASS | INVALID | FAIL | UNKNOWN
+#
+# CLASSIFICATION (post RUN-2). "The run stopped early" is NOT "the run cannot be trusted". A run whose environment, package, process,
+# binding, FILEDIA and evidence identity all check out is a VALID EXECUTION; its verdict is then PASS / FAIL / UNKNOWN. The evidence
+# must be final and, to be valid without finishing all 15 cases, must record a GOVERNED stop (stopKind = deviation) with a FAIL verdict
+# after at least one case beyond HV-00 ran. A stop before any AUTH-15 call (stopKind hv00), a FILEDIA stop, an exception, a timeout,
+# a non-zero AutoCAD exit, malformed evidence or any identity mismatch stays INVALID.
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
@@ -155,12 +161,18 @@ function Invoke-Launch {
     if ($out -match '["]') { throw 'the package path must not contain a double quote' }
 
     New-Item -ItemType Directory -Force $out | Out-Null
-    foreach ($leftover in 'scratch.dwg', 'run.scr', 'filedia.txt', 'launcher-record.json') {
+    foreach ($leftover in 'scratch.dwg', 'blank-template.dwg', 'doc-cases', 'run.scr', 'filedia.txt', 'launcher-record.json') {
         if (Test-Path -LiteralPath (Join-Path $out $leftover)) { throw "out\$leftover already exists: a run is never repeated or overwritten without authorization." }
     }
     $scratch = Join-Path $out 'scratch.dwg'
     Copy-Item -LiteralPath $ScratchDrawing $scratch
     $scratchBefore = Sha256 $scratch
+
+    # The blank TEMPLATE is a second copy that is never opened: the harness copies it once per document-authority case and opens the
+    # copy (then closes it with discard), so the anchor scratch drawing above stays untouched whatever a rollback does.
+    $blankTemplate = Join-Path $out 'blank-template.dwg'
+    Copy-Item -LiteralPath $ScratchDrawing $blankTemplate
+    $blankBefore = Sha256 $blankTemplate
 
     # 3. DRIVER script from the template. The template placeholders are the only variables; anything else is refused.
     $script = Join-Path $out 'run.scr'
@@ -200,6 +212,7 @@ function Invoke-Launch {
     $checks['processExitedCleanly'] = (-not $timedOut) -and (-not $stillPresent) -and ($exitCode -eq 0)
     $checks['noOtherAcadStarted'] = ($others.Count -eq 0)
     $checks['scratchUnchanged'] = Test-Check { ((Sha256 $scratch) -eq $scratchBefore) -and -not (Get-ChildItem -LiteralPath $out -Filter 'scratch.*' | Where-Object { $_.Extension -in '.bak', '.sv$' }) }
+    $checks['blankTemplateUnchanged'] = Test-Check { (Sha256 $blankTemplate) -eq $blankBefore }
     $checks['packageUnchangedAfterRun'] = Test-Check {
         $postDrift = @($expected.Keys | Where-Object { $f = Join-Path $root ($_.Replace('/', '\')); -not (Test-Path -LiteralPath $f) -or (Sha256 $f) -ne $expected[$_] })
         $postDrift.Count -eq 0
@@ -253,18 +266,31 @@ function Invoke-Launch {
         $hostSection = Prop $evidence 'host'
         ($null -ne $hostSection.PSObject.Properties['earlyIdentityErrors']) -and (@($hostSection.earlyIdentityErrors).Count -eq 0)
     })
-    # Defence in depth: the launcher does not take the harness's word for PASS. A PASS verdict must be backed by 15 PASS cases,
-    # no problems, no leaks and no deviation in the evidence itself.
+    # Defence in depth: the launcher does not take the harness's word for its verdict. PASS must be backed by exactly the cases HV-00..HV-14,
+    # all PASS, no problems, no leaks, no deviation and no stop. FAIL must be backed by a FAIL case or a recorded deviation.
     $checks['evidenceVerdictConsistent'] = $parseable -and (Test-Check {
-        if ([string](Prop $evidence 'verdict') -ne 'PASS') { return $true }
+        $verdictText = [string](Prop $evidence 'verdict')
         $cases = @($evidence.cases)
-        ($cases.Count -eq 15) -and (@($cases | Where-Object { $_.result -ne 'PASS' }).Count -eq 0) -and (@($cases | Where-Object { $_.deviation -eq $true }).Count -eq 0) -and (@($evidence.problems).Count -eq 0) -and (@($evidence.leaks).Count -eq 0)
+        if ($verdictText -eq 'PASS') {
+            $expectedIds = (0..14 | ForEach-Object { 'HV-{0:D2}' -f $_ }) -join ','
+            return ($cases.Count -eq 15) -and ((($cases | ForEach-Object { $_.id } | Sort-Object) -join ',') -eq $expectedIds) -and (@($cases | Where-Object { $_.result -ne 'PASS' }).Count -eq 0) -and (@($cases | Where-Object { $_.deviation -eq $true }).Count -eq 0) -and (@($evidence.problems).Count -eq 0) -and (@($evidence.leaks).Count -eq 0) -and (@($evidence.deviations).Count -eq 0) -and ([string](Prop $evidence 'stopKind') -eq 'none')
+        }
+        if ($verdictText -eq 'FAIL') {
+            return (@($cases | Where-Object { $_.result -eq 'FAIL' }).Count -gt 0) -or (@($evidence.deviations).Count -gt 0)
+        }
+        return $true
     })
     $checks['evidenceHarnessShaEqualsMetadata'] = $parseable -and ((Prop $evidence 'harnessSha') -eq $meta.harnessSha)
     $checks['evidenceImplementationShaEqualsMetadata'] = $parseable -and ((Prop $evidence 'implementationSha') -eq $meta.implementationSha)
     $checks['evidenceTreesEqualMetadata'] = $parseable -and (Test-Check { ((Prop $evidence 'treesEqual') -eq $true) -and ((Prop $evidence 'srcTree') -eq $meta.implementationSrcTree) -and ((Prop $evidence 'testsTree') -eq $meta.implementationTestsTree) -and ((Prop $evidence 'harnessSrcTree') -eq $meta.harnessSrcTree) -and ((Prop $evidence 'harnessTestsTree') -eq $meta.harnessTestsTree) })
     $checks['evidenceFilediaMatchesRecord'] = $parseable -and $checks['filediaRecorded'] -and (Test-Check { ((Prop $evidence 'host', 'filediaBefore') -eq $fd.before) -and ((Prop $evidence 'host', 'filediaDuringNetload') -eq $fd.during) -and ((Prop $evidence 'host', 'filediaAfter') -eq $fd.after) -and ((Prop $evidence 'host', 'filediaLiveAtHarnessStart') -eq $fd.before) -and ((Prop $evidence 'host', 'filediaLiveAtHarnessEnd') -eq $fd.before) })
-    $checks['evidenceFinalAndCompleted'] = $parseable -and ((Prop $evidence 'state') -eq 'final') -and ((Prop $evidence 'completed') -eq $true)
+    $checks['evidenceFinal'] = $parseable -and ((Prop $evidence 'state') -eq 'final')
+    # Completed, OR a governed stop that produced a FAIL after real AUTH-15 work. Anything else that did not finish is untrustworthy.
+    $checks['evidenceRunShape'] = $parseable -and (Test-Check {
+        if ((Prop $evidence 'completed') -eq $true) { return $true }
+        $beyondHv00 = @($evidence.cases | Where-Object { $_.id -ne 'HV-00' -and $_.result -ne 'NOT_RUN' }).Count -gt 0
+        ([string](Prop $evidence 'stopKind') -eq 'deviation') -and ([string](Prop $evidence 'verdict') -eq 'FAIL') -and $beyondHv00
+    })
     foreach ($key in @($checks.Keys)) { $checks[$key] = [bool]$checks[$key] }
 
     $launchValid = -not ($checks.Values -contains $false)
@@ -290,6 +316,8 @@ function Invoke-Launch {
         exitCode = $exitCode
         scratch = [ordered]@{ signature = $magic; sha256Before = $scratchBefore; sha256After = $(try { Sha256 $scratch } catch { $null }) }
         filedia = $fd
+        blankTemplate = [ordered]@{ sha256Before = $blankBefore; sha256After = $(try { Sha256 $blankTemplate } catch { $null }) }
+        stopKind = $(if ($parseable) { [string](Prop $evidence 'stopKind') } else { $null })
         evidenceSha256 = $(if ($exists) { Sha256 $evidencePath } else { $null })
         evidenceParseError = $parseError
         checks = $checks

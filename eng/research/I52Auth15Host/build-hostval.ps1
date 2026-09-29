@@ -4,7 +4,7 @@ param(
     # The exact commit the package is built from (the harness commit). HEAD must be this SHA.
     [Parameter(Mandatory = $true)][string]$HarnessSha,
     # The AUTH-15 implementation SHA the host evidence binds to. src/ and tests/ must be byte-identical to it.
-    [string]$ImplementationSha = '2d10de705fffee3dc03473c2d4c76bff489fc13e',
+    [string]$ImplementationSha = 'a80a3801cc39eaa9656be05c080853be87ab2581',
     [string]$OutputRoot = '',
     [string]$AutoCadInstallDir = 'C:\Program Files\Autodesk\AutoCAD 2025',
     [string]$Dotnet = ''

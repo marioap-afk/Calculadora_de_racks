@@ -145,7 +145,8 @@ function Fresh([string]$Name, [string]$Trusted = '', $SecureLoad = 1) {
 try {
     Write-Host '== pure FILEDIA logic (offlineacad --selftest, real FilediaRecord)'
     $selftest = & $acad --selftest
-    Assert-That 'T00' 'FILEDIA parser/validator self-test (13 cases)' ($LASTEXITCODE -eq 0 -and @($selftest | Where-Object { $_ -like 'PASS *' }).Count -eq 13) ($selftest -join ' | ')
+    $summary = @($selftest | Where-Object { $_ -like 'SELFTEST *' })
+    Assert-That 'T00' 'pure logic self-test (FILEDIA record + transaction-end rules): every case passes' ($LASTEXITCODE -eq 0 -and @($selftest | Where-Object { $_ -like 'FAIL *' }).Count -eq 0 -and $summary.Count -eq 1 -and $summary[0] -match '^SELFTEST (\d+)/\1$' -and [int]($summary[0] -replace '^SELFTEST (\d+)/.*', '$1') -ge 20) ($selftest -join ' | ')
 
     Write-Host '== exit semantics and the record'
     $p, $r = Fresh 'T01-pass'
@@ -154,6 +155,13 @@ try {
     Assert-That 'T01' 'PASS verdict + valid launch => exit 0' ($x.Exit -eq 0) "exit=$($x.Exit)"
     Assert-That 'T01' 'RUN_RESULT = PASS is the last line' ($x.Output.Trim().EndsWith('RUN_RESULT = PASS')) $x.Output
     Assert-That 'T01' 'record: launchValid, runResult PASS, every check true' ($x.Record.launchValid -eq $true -and $x.Record.runResult -eq 'PASS' -and -not ($x.Record.checks.PSObject.Properties.Value -contains $false))
+    $ruledChecks = @('processExitedCleanly', 'noOtherAcadStarted', 'scratchUnchanged', 'blankTemplateUnchanged', 'packageUnchangedAfterRun', 'filediaRecorded', 'filediaRestored',
+        'evidenceExists', 'evidenceParseable', 'evidenceSchema', 'evidenceFromThisProcess', 'evidenceBoundToPackageSums', 'evidencePluginHash', 'evidenceApplicationHash',
+        'evidenceDomainHash', 'evidenceHarnessHash', 'evidenceProcessStart', 'evidenceOwnerNoTouchDeclared', 'evidenceScratchIdentity', 'evidenceEarlyIdentityClean',
+        'evidenceVerdictConsistent', 'evidenceHarnessShaEqualsMetadata', 'evidenceImplementationShaEqualsMetadata', 'evidenceTreesEqualMetadata',
+        'evidenceFilediaMatchesRecord', 'evidenceFinal', 'evidenceRunShape')
+    $actualChecks = @($x.Record.checks.PSObject.Properties | ForEach-Object { $_.Name } | Sort-Object)
+    Assert-That 'T01' 'the launcher evaluates EXACTLY the ruled set of 27 checks (a deleted check would otherwise go unnoticed: "all true" cannot see a missing one)' (($actualChecks -join ',') -eq (($ruledChecks | Sort-Object) -join ',')) ("missing: " + (($ruledChecks | Where-Object { $actualChecks -notcontains $_ }) -join ',') + "; extra: " + (($actualChecks | Where-Object { $ruledChecks -notcontains $_ }) -join ','))
     Assert-That 'T01' 'filedia.txt is exactly before/during/after with the original restored' ($fdText -eq "before=1`nduring=0`nafter=1`n") $fdText
 
     $p, $r = Fresh 'T02-fail'
@@ -168,7 +176,7 @@ try {
     $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'malformed' }
     Assert-That 'T04' 'malformed evidence => launcher-record.json STILL written' ($null -ne $x.Record)
     Assert-That 'T04' 'malformed evidence => evidenceParseable=false, launchValid=false, INVALID, exit 2' ($null -ne $x.Record -and $x.Record.checks.evidenceParseable -eq $false -and $x.Record.launchValid -eq $false -and $x.Record.runResult -eq 'INVALID' -and $x.Exit -eq 2) "exit=$($x.Exit)"
-    Assert-That 'T04' 'every evidence-derived check is false' ($null -ne $x.Record -and -not $x.Record.checks.evidenceSchema -and -not $x.Record.checks.evidencePluginHash -and -not $x.Record.checks.evidenceFinalAndCompleted)
+    Assert-That 'T04' 'every evidence-derived check is false' ($null -ne $x.Record -and -not $x.Record.checks.evidenceSchema -and -not $x.Record.checks.evidencePluginHash -and -not $x.Record.checks.evidenceFinal)
     Assert-That 'T04' 'LAUNCH_VALID is printed' ($x.Output -match 'LAUNCH_VALID=False')
 
     $p, $r = Fresh 'T05-noevidence'
@@ -207,6 +215,7 @@ try {
     $p, $r = Fresh 'T11-start-shift'
     $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'live-start-shift' }
     $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+    Assert-That 'T11' 'harness start: the FILEDIA stop is machine-readable (stopKind = filedia)' ($ev.stopKind -eq 'filedia')
     Assert-That 'T11' 'harness start: live FILEDIA != before => NO case runs, StoppedBy set, INVALID' ($x.Exit -eq 2 -and $ev.stoppedBy -eq 'FILEDIA not restored: INVALID RUN' -and @($ev.cases | Where-Object { $_.result -ne 'NOT_RUN' }).Count -eq 0)
 
     $p, $r = Fresh 'T12-end-shift'
@@ -319,6 +328,7 @@ try {
     $p, $r = Fresh 'T27-hv00-throws'
     $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'hv00-throws' }
     $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+    Assert-That 'T27' 'RUN-1 reproduced: the HV-00 stop is machine-readable (stopKind = hv00) and stays INVALID' ($ev.stopKind -eq 'hv00' -and $x.Record.checks.evidenceRunShape -eq $false)
     Assert-That 'T27' 'RUN-1 reproduced: HV-00 throws eInvalidInput => INVALID, exit 2, HV-01..14 NOT_RUN' ($x.Exit -eq 2 -and $ev.cases[0].result -eq 'UNKNOWN' -and $ev.cases[0].exception -match 'eInvalidInput' -and @($ev.cases | Where-Object { $_.result -eq 'NOT_RUN' }).Count -eq 14)
     Assert-That 'T27' 'yet the immutable run identity WAS persisted before HV-00: pid, process start, run folder, harness DLL, scratch hashes, expected package hashes, Owner flag' ($ev.host.pid -eq $x.Record.pid -and $ev.host.processStartUtc -and $ev.host.runFolder -and $ev.host.harnessDllSha256 -and $ev.host.scratchSha256AtHarnessStart -and $ev.host.scratchSha256DeclaredByLauncher -and $ev.host.ownerNoTouchDeclaredByLauncher -eq $true -and $ev.package.expectedPluginSha256 -and $ev.package.expectedApplicationSha256 -and $ev.package.expectedDomainSha256 -and $ev.package.expectedHarnessSha256)
     Assert-That 'T27' 'the launcher ties that early evidence to this launch (pid and process start) even though HV-00 failed' ($x.Record.checks.evidenceFromThisProcess -eq $true -and $x.Record.checks.evidenceProcessStart -eq $true -and $x.Record.checks.evidenceScratchIdentity -eq $true -and $x.Record.checks.evidenceOwnerNoTouchDeclared -eq $true)
@@ -334,6 +344,88 @@ try {
     $p, $r = Fresh 'T29-forged-pass'
     $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'forged-pass' }
     Assert-That 'T29' 'a PASS verdict not backed by the cases (a FAIL case, a leak) => launcher recomputes, INVALID, exit 2' ($x.Exit -eq 2 -and $x.Record.verdict -eq 'PASS' -and $x.Record.checks.evidenceVerdictConsistent -eq $false -and $x.Record.runResult -eq 'INVALID')
+
+    Write-Host '== classification (F-3): a governed stop after real AUTH-15 work is FAIL, not INVALID'
+    $p, $r = Fresh 'T30-deviation-continue'
+    $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'deviation-continue' }
+    $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+    Assert-That 'T30' 'HV-08 deviation: recorded, the run CONTINUES (HV-09..HV-14 executed), completed, stopKind none' ($ev.completed -eq $true -and $ev.stopKind -eq 'none' -and @($ev.deviations) -contains 'HV-08' -and @($ev.cases | Where-Object { $_.id -in 'HV-09', 'HV-10', 'HV-11', 'HV-12', 'HV-13', 'HV-14' -and $_.result -eq 'PASS' }).Count -eq 6)
+    Assert-That 'T30' 'valid launch + FAIL => RUN_RESULT FAIL, exit 3' ($x.Exit -eq 3 -and $x.Record.launchValid -eq $true -and $x.Record.runResult -eq 'FAIL')
+
+    $p, $r = Fresh 'T31-deviation-stop'
+    $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'deviation-stop' }
+    $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+    Assert-That 'T31' 'the RUN-2 shape (completed=false, stopKind=deviation, FAIL after real cases, HV-09.. NOT_RUN) is a VALID FAIL, not INVALID' ($ev.completed -eq $false -and $ev.stopKind -eq 'deviation' -and $x.Exit -eq 3 -and $x.Record.launchValid -eq $true -and $x.Record.runResult -eq 'FAIL' -and $x.Record.checks.evidenceRunShape -eq $true -and $x.Output.Trim().EndsWith('RUN_RESULT = FAIL'))
+
+    $p, $r = Fresh 'T32-exception-stop'
+    $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'exception-stop' }
+    Assert-That 'T32' 'an unfinished run stopped by an exception/environment problem stays INVALID even with a FAIL verdict' ($x.Exit -eq 2 -and $x.Record.runResult -eq 'INVALID' -and $x.Record.checks.evidenceRunShape -eq $false)
+
+    $p, $r = Fresh 'T33-unknown-stop'
+    $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'unknown-stop' }
+    Assert-That 'T33' 'an unfinished run whose verdict is not FAIL cannot borrow the governed-stop exception: INVALID' ($x.Exit -eq 2 -and $x.Record.runResult -eq 'INVALID')
+
+    $p, $r = Fresh 'T34-forged-fail'
+    $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'forged-fail' }
+    Assert-That 'T34' 'a FAIL verdict with no failing case and no deviation behind it is not believed: INVALID' ($x.Exit -eq 2 -and $x.Record.checks.evidenceVerdictConsistent -eq $false)
+
+    Write-Host '== controls, labels and abort instrumentation (evidence shape)'
+    $p, $r = Fresh 'T35-controls-leak'
+    $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'controls-leak' }
+    $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+    $rb01 = @($ev.controls | Where-Object { $_.id -eq 'RB-01' })
+    $rb01d = @($ev.controls | Where-Object { $_.id -eq 'RB-01D' })
+    Assert-That 'T35' 'a control that leaks is FAIL with its leaked keys and handles enumerated; RB-01D stays PASS' ($rb01.Count -eq 1 -and $rb01[0].result -eq 'FAIL' -and $rb01[0].dbKind -eq 'SIDE-DB' -and @($rb01[0].leaks).Count -eq 2 -and $rb01d.Count -eq 1 -and $rb01d[0].result -eq 'PASS' -and $rb01d[0].dbKind -eq 'DOCUMENT-AUTHORITY')
+    Assert-That 'T35' 'control leaks are listed at the top level (controlLeaks) and do NOT enter the HV leaks or the verdict' (@($ev.controlLeaks).Count -eq 2 -and @($ev.leaks).Count -eq 0 -and $ev.verdict -eq 'PASS' -and $x.Exit -eq 0)
+    Assert-That 'T35' 'every control of the ruling is present: RB-01, RB-01V, RB-01D, RB-02a/b/c, RB-03, RB-05' ((@($ev.controls | ForEach-Object { $_.id } | Sort-Object -Unique) -join ',') -eq 'RB-01,RB-01D,RB-01V,RB-02a,RB-02b,RB-02c,RB-03,RB-05')
+    Assert-That 'T35' 'RB-02a..05 run on BOTH the side database and the document database' (@($ev.controls | Where-Object { $_.id -eq 'RB-03' } | ForEach-Object { $_.dbKind } | Sort-Object) -join ',' -eq 'DOCUMENT-AUTHORITY,SIDE-DB')
+
+    $p, $r = Fresh 'T36-abort-throws'
+    $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'abort-throws' }
+    $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+    $rb01 = @($ev.controls | Where-Object { $_.id -eq 'RB-01' })[0]
+    Assert-That 'T36' 'an Abort that throws is captured (attempted, not succeeded, the exception text) and FAILS the control' ($rb01.result -eq 'FAIL' -and $rb01.tx[0].abortAttempted -eq $true -and $rb01.tx[0].abortSucceeded -eq $false -and $rb01.tx[0].abortError -match 'eInvalidInput' -and @($rb01.assertions | Where-Object { $_.name -like '*Abort threw*' -and $_.result -eq 'FAIL' }).Count -eq 1)
+    Assert-That 'T36' 'the transaction outcome serializes every recorded field' ($rb01.tx[0].PSObject.Properties.Name -contains 'disposeAttempted' -and $rb01.tx[0].PSObject.Properties.Name -contains 'disposeSucceeded' -and $rb01.tx[0].PSObject.Properties.Name -contains 'isDisposedAfter' -and $rb01.tx[0].PSObject.Properties.Name -contains 'activeBefore' -and $rb01.tx[0].PSObject.Properties.Name -contains 'activeAfter' -and $rb01.tx[0].PSObject.Properties.Name -contains 'topAfter')
+
+    $p, $r = Fresh 'T37-labels'
+    $x = Invoke-Launcher $p $r
+    $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+    $authority = @($ev.cases | Where-Object { $_.dbKind -eq 'DOCUMENT-AUTHORITY' } | ForEach-Object { $_.id } | Sort-Object)
+    Assert-That 'T37' 'the rollback-sensitive cases are labelled DOCUMENT-AUTHORITY and the others SIDE-DB' (($authority -join ',') -eq 'HV-01,HV-02,HV-03,HV-05,HV-08,HV-10,HV-12,HV-13,HV-14' -and @($ev.cases | Where-Object { $_.dbKind -eq 'SIDE-DB' }).Count -eq 6)
+    Assert-That 'T37' 'their side-database runs are kept apart, labelled SIDE-DB-CHARACTERIZATION, and are not among the 15 verdict cases' (@($ev.sideCharacterizations).Count -eq 9 -and @($ev.sideCharacterizations | Where-Object { $_.dbKind -ne 'SIDE-DB-CHARACTERIZATION' }).Count -eq 0 -and @($ev.cases).Count -eq 15)
+    Assert-That 'T37' 'the document-authority state is recorded' ($ev.documentAuthority.available -eq $true)
+    Assert-That 'T37' 'the launcher provided an untouched blank template for the document cases, and it is unchanged' ((Test-Path (Join-Path $x.Out 'blank-template.dwg')) -and $x.Record.checks.blankTemplateUnchanged -eq $true -and $x.Record.blankTemplate.sha256Before -eq $x.Record.blankTemplate.sha256After -and $x.Record.blankTemplate.sha256Before -eq $x.Record.scratch.sha256Before)
+
+    Write-Host '== AUTH-15 effective-name postcondition (source audit; the behaviour itself is proven only on the host)'
+    $creatorPath = Join-Path (Split-Path (Split-Path (Split-Path $harnessDir))) 'src\RackCad.Plugin\Systems\Shared\RackDefinitionCreator.cs'
+    function Test-CreatorSource([string]$Text) {
+        $code = (($Text -split "`n") | ForEach-Object { $_ -replace '//.*$', '' }) -join "`n"
+        $problems = New-Object System.Collections.Generic.List[string]
+        $entries = @([regex]::Matches($code, 'internal static RackDefinitionCreationResult CreateInTransaction\('))
+        if ($entries.Count -ne 2) { $problems.Add("expected 2 CreateInTransaction entries, found $($entries.Count)"); return , @($problems) }
+        $first = $code.Substring($entries[0].Index, $entries[1].Index - $entries[0].Index)
+        $second = $code.Substring($entries[1].Index, [Math]::Min(2500, $code.Length - $entries[1].Index))
+        foreach ($pair in @(@('HeaderRun', $first), @('Cantilever', $second))) {
+            $at = $pair[1].IndexOf('UnusableEffectiveName(')
+            $envelope = $pair[1].IndexOf('Envelope(')
+            if ($at -lt 0) { $problems.Add("$($pair[0]): the effective name is never validated") }
+            elseif ($envelope -ge 0 -and $at -gt $envelope) { $problems.Add("$($pair[0]): the effective name is validated AFTER the envelope") }
+        }
+        if ($first.IndexOf('UnusableEffectiveName(') -gt $first.IndexOf('HasMissingBlocks')) { $problems.Add('HeaderRun: the effective name is validated after the missing-blocks handling') }
+        $check = [regex]::Match($code, 'UnusableEffectiveName\(string effectiveName\)(.*?)\n        \}', 'Singleline').Value
+        if ($check -notmatch 'IsNullOrWhiteSpace\(effectiveName\)' -or $check -notmatch 'RackDefinitionCreationFailure\.WriteFailed') { $problems.Add('the postcondition does not return WriteFailed for a blank effective name') }
+        foreach ($forbidden in 'BlockNaming', 'Sanitize', 'UniqueBlockName', '.Replace(', '.Trim(') { if ($code.Contains($forbidden)) { $problems.Add("AUTH-15 references '$forbidden' (a second naming policy)") } }
+        return , @($problems)
+    }
+    $creatorText = Get-Content -Raw $creatorPath
+    Assert-That 'T38' 'AUTH-15 source: the effective name is validated in BOTH paths, before the envelope (and before the missing-blocks handling), as WriteFailed, without deriving a name' ((Test-CreatorSource $creatorText).Count -eq 0) ((Test-CreatorSource $creatorText) -join ' | ')
+    Assert-That 'T38' 'audit self-test: a creator that never validates the name is caught' ((Test-CreatorSource ($creatorText.Replace('UnusableEffectiveName(', 'Neutral('))).Count -ge 1)
+    Assert-That 'T38' 'audit self-test: a creator that derives a name (Trim) is caught' ((Test-CreatorSource ($creatorText.Replace('IsNullOrWhiteSpace(effectiveName)', 'IsNullOrWhiteSpace(effectiveName.Trim())'))).Count -ge 1)
+
+    Write-Host '== HV-08 continue rule (harness source)'
+    $commandText = Get-Content -Raw (Join-Path $harnessDir 'HostValidationCommand.cs')
+    Assert-That 'T39' 'the runner records a deviation and does NOT stop on it (no "produced a NEW DEVIATION" stop remains)' ($commandText -match 'doc\.Deviations\.Add\(record\.Id\)' -and $commandText -notmatch 'produced a NEW DEVIATION')
+    Assert-That 'T39' 'the only ways to stop are the ruled ones (hv00, filedia, an explicit StopRun, an untrustworthy environment)' ($commandText -match 'StopKind\.Hv00' -and $commandText -match 'StopKind\.Filedia' -and $commandText -match 'record\.StopRun' -and $commandText -match 'EnvironmentTrustworthy')
 
     Write-Host '== run.scr'
     $template = Get-Content -Raw (Join-Path $harnessDir 'run.scr')

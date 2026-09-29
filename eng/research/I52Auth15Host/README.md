@@ -8,7 +8,7 @@ item; nothing in `src/`, `tests/`, `RackCad.sln` or `deploy/` references it.
 ## The binding rule
 
 The harness commit leaves `src/` and `tests/` **byte-identical** to the implementation SHA
-`2d10de705fffee3dc03473c2d4c76bff489fc13e`. `build-hostval.ps1` refuses to build otherwise
+`a80a3801cc39eaa9656be05c080853be87ab2581`. `build-hostval.ps1` refuses to build otherwise
 (`git diff --quiet <implementation> HEAD -- src tests`, plus equal `git rev-parse <sha>:src` / `:tests` trees, plus:
 the harness commit may only touch `eng/research/I52Auth15Host/` and `docs/`; plus: no IGNORED source/config file
 (`.cs .csproj .props .targets .ps1 .scr .json .config .sln`) may exist under `src`, `tests`, this folder or the root
@@ -73,13 +73,70 @@ blocks a PASS.
 **Loaded** assembly facts (`binding.loaded{Plugin,Application,Domain,Harness}{Path,Sha256}`) are HV-00 observations, written only when
 observed, never fabricated earlier. The launcher requires expected == `SHA256SUMS` == `TRANSFER-METADATA` == loaded for each.
 
-## Host model
+## Host model: DOCUMENT AUTHORITY and SIDE-DB CHARACTERIZATION
 
-Each case works on a **harness-owned side database** (`new Database(true, true)`), with
-`HostApplicationServices.WorkingDatabase` pointed at it for the case and restored afterwards. A scratch `.dwg` (a
-copy of a blank drawing the Owner supplies) is opened only so that `WorkingDatabase` has a document to return to; it is
-never written and the launcher proves its hash is unchanged. The caller of AUTH-15 in every case is the harness, which
-opens, aborts or commits the transaction itself and takes SNAP before and after.
+RUN-2 (the first run in which AUTH-15 really executed) found that everything created inside a caller's transaction survived the
+caller's `Abort` on a harness-owned side database, and could not say why. A rollback claim is only meaningful on the condition the
+product uses: a **document database under `LockDocument`**. So, from RUN-3 on:
+
+- Every **rollback-sensitive** case (HV-01, 02, 03, 05, 08, 10, 12, 13, 14) runs on a **DOCUMENT** database and that run is the
+  AUTHORITATIVE one (`dbKind = DOCUMENT-AUTHORITY`). A second document is opened for each case from a copy of `out\blank-template.dwg`
+  (a copy of the Owner's blank drawing that the launcher never opens), locked, and closed with DISCARD afterwards. The anchor scratch
+  drawing is never written and the launcher proves both files unchanged.
+- The same body then runs again on a harness-owned side database (`dbKind = SIDE-DB-CHARACTERIZATION`). Those runs are kept in
+  `sideCharacterizations`, never in `cases`, never in `leaks`, and never change the verdict. Nothing is silently replaced.
+- The other cases (HV-00, 04, 06, 07, 09, 11) do not depend on the database kind and stay on side databases (`dbKind = SIDE-DB`);
+  HV-04 needs `SaveAs`/reopen.
+- If a document cannot be opened, locked or closed, the authority cases are UNKNOWN (never silently side-database), the failure is
+  recorded in `documentAuthority`. Only a working database that was not restored to the anchor stops the run
+  (`stopKind = exception`); a changed open-document count or a document that could not be closed is recorded as a Problem
+  (it blocks a PASS) and the independent cases that follow still run.
+
+Document authority is UNPROVEN on the host: RUN-3 will be the first time this code runs.
+
+## Rollback controls (RB-xx)
+
+Run right after HV-00 and before HV-01. **No AUTH-15 call** except where the name says so; each control snapshots, writes inside ONE caller
+transaction, snapshots inside (sanity: something was written), ends the transaction (recorded, see below), snapshots again and
+enumerates EVERY difference. A control's result is a **raw outcome**: it is never reinterpreted, it never changes the HV verdict, and
+its leaks are listed apart (`controlLeaks`). `dbKind` says which database it ran on.
+
+| Id | Writes | Databases |
+|---|---|---|
+| RB-01 | one block definition + one layer + one entity + extension dictionary/Xrecord, then Abort | side |
+| RB-01V | the same, but the transaction is only disposed (what a forgotten Commit does) | side, document |
+| RB-01D | the RB-01 writes on a document database under `LockDocument` (the production condition) | document |
+| RB-02a | `LateralHeaderDrawer.CreateSystemBlock` directly (no dimension/annotation), no AUTH-15 | side, document |
+| RB-02b | the same with a dimension | side, document |
+| RB-02c | `CantileverViewMaterializer.CreateBlockDefinitionNamed` directly | side, document |
+| RB-03 | a hand-made definition + `RackBlockData.Write` | side, document |
+| RB-05 | a dimension + `RecomputeDimensionBlock` only (native `Defpoints`/`*D` residue in isolation) | side, document |
+
+How the outcomes are read (not encoded anywhere in the harness or in AUTH-15): RB-01 leaks but RB-01D is clean -> the side-database
+model is the problem; both leak -> the caller-rollback premise is false in AutoCAD (Coordinator/Owner contract decision); RB-01 clean
+but an RB-02 leaks -> that family creator path; all controls clean but AUTH-15 leaks -> investigate AUTH-15; only RB-05 leaks -> native
+dimension residue isolated (still a FAIL for the HV cases until formally reclassified).
+
+## Ending a transaction is never silent
+
+`End` (abort), `EndDisposeOnly` and `EndAfterCommit` record, per transaction end: whether Abort and Dispose were attempted and
+succeeded (with the exception type and message if not), `IsDisposed` before and after, the active-transaction count before and
+after, and the identity of the top transaction after. A failed Abort or Dispose, or a transaction that is not disposed afterwards,
+FAILS the current case. RUN-2's helper swallowed every exception, which is one of the causes that could not be excluded.
+
+## Stopping, deviations and classification (`stopKind`)
+
+A **NEW DEVIATION** (for example an HV-08 result that is not `WriteFailed` + clean rollback) is recorded in `deviations`, the case is
+FAIL, and the run **continues**: the later cases are independent and stopping lost them in RUN-2. The run stops only when continuing
+would make later evidence untrustworthy, and says why in `stopKind`:
+
+| `stopKind` | Meaning | Launcher |
+|---|---|---|
+| `none` | ran to the end | normal |
+| `deviation` | a case explicitly asked to stop (nothing does today) | VALID FAIL if the verdict is FAIL and a case beyond HV-00 ran |
+| `hv00` | HV-00 was not PASS: no AUTH-15 call | INVALID |
+| `filedia` | FILEDIA was not restored | INVALID |
+| `exception` | the runner or the environment became untrustworthy | INVALID |
 
 ## SNAP
 
@@ -139,7 +196,7 @@ problems, no leaks and no deviation in the evidence itself.
 |---|---|---|
 | 0 | `PASS` | valid launch AND evidence verdict PASS |
 | 2 | `INVALID` | refusal, or any launch/binding/package/evidence/process condition failed (including a non-zero AutoCAD exit **even if the evidence says PASS**) |
-| 3 | `FAIL` / `UNKNOWN` | the launch was valid but the harness verdict is FAIL or UNKNOWN |
+| 3 | `FAIL` / `UNKNOWN` | the launch was valid but the harness verdict is FAIL or UNKNOWN. A run that did not finish is still a valid FAIL when the evidence is `final`, the verdict is FAIL, `stopKind = deviation`, and a case beyond HV-00 ran (RUN-2's shape). |
 
 `RUN_RESULT = ...` is always the last line printed. A run is never repeated automatically.
 
@@ -185,7 +242,7 @@ exercised by the HV-08 `"<>"` characterization.
 - **PASS** = HV-00..HV-14 all PASS, 0 FAIL, 0 UNKNOWN, `completed`, no `problems`, `treesEqual = true`, binding, hash and
   FILEDIA checks passed, the process exited by script (exit 0, no timeout, no second `acad.exe`), and the Owner confirms
   no interaction. A UNKNOWN (binding, structure, reflection) is not PASS. Any leak is a FAIL.
-- A **NEW DEVIATION** (a HV-08 characterization that does not come out as `WriteFailed`) stops the run and needs an Architect
+- A **NEW DEVIATION** (a HV-08 characterization that does not come out as `WriteFailed`) is recorded, makes the case FAIL and needs an Architect
   ruling. HV-00 not PASS, or FILEDIA not restored, stops the run before any AUTH-15 call.
 - Human interaction = INVALID RUN; a rerun needs authorization. A non-zero AutoCAD exit with complete PASS evidence is INVALID
   pending an Architect ruling; the launcher never reruns.

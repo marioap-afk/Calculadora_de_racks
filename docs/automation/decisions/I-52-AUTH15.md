@@ -275,10 +275,33 @@ F-2 empty effective name = CONFIRMED
   `"Cabecera"`. Cuatro mutaciones (quitar la validacion, ponerla despues del sobre, derivar el nombre con `Trim`, ponerla despues del manejo
   de faltantes) hacen fallar las guardas.
 
-## 11. Estado
+## 11. Correccion del arnes post RUN-2 (HC-9..HC-16)
+
+Sobre la implementacion `a80a3801`; `src/` y `tests/` byte-identicos. Detalle operativo en `eng/research/I52Auth15Host/README.md`.
+
+- **Transacciones nunca silenciosas.** `End`/`EndDisposeOnly`/`EndAfterCommit` registran `abort`/`dispose` (intentado, exito, excepcion),
+  `IsDisposed`, transacciones activas antes/despues e identidad de la transaccion superior; un Abort o Dispose fallido hace FAIL el caso.
+- **Autoridad DOCUMENTO.** Los casos sensibles a rollback (HV-01, 02, 03, 05, 08, 10, 12, 13, 14) corren sobre una base de datos de
+  DOCUMENTO bajo `LockDocument` (segundo documento desde una copia en blanco, cerrado con descarte) y esa corrida es la autoritativa
+  (`DOCUMENT-AUTHORITY`). La variante en base lateral se conserva solo como `SIDE-DB-CHARACTERIZATION`, sin efecto en el veredicto.
+  La autoridad de documento no esta probada en host.
+- **Controles de rollback** RB-01, RB-01V, RB-01D, RB-02a/b/c, RB-03, RB-05 tras HV-00 y antes de HV-01: resultado crudo, sin
+  reinterpretar, con fugas enumeradas aparte. El arbol de decision de lectura vive en el README; nada se codifica en produccion.
+- **Clasificacion (`stopKind`).** `none`/`deviation`/`hv00`/`filedia`/`exception`. Un FAIL con `completed=false` es ejecucion VALIDA solo si
+  el entorno, paquete, proceso y evidencia son fiables, corrio al menos un caso mas alla de HV-00, el veredicto es FAIL con `stopKind=deviation`
+  y esta respaldado por un caso FAIL o una desviacion. INVALID se conserva para entorno/vinculo/paquete/proceso/timeout/FILEDIA/evidencia
+  malformada/parada en HV-00. Codigos de salida 0/2/3 sin cambio.
+- **HV-08.** Una DESVIACION NUEVA se registra, el caso queda FAIL y la corrida CONTINUA con HV-09..HV-14. Solo se detiene por HV-00, FILEDIA,
+  una base de trabajo no restaurada o una excepcion del ejecutor; un conteo de documentos distinto o un documento que no cierra se registra como
+  problema (impide PASS) sin detener los casos independientes.
+- **RUN-3** = UNA campana completa y limpia: HV-00, controles, HV-01..HV-14. Sin reejecuciones parciales.
+- **Verificacion sin AutoCAD** (NO-EVIDENCIA-DE-HOST): rig offline con el interprete mini-LISP y las clases reales `Evidence`/`SysVarCatalog`,
+  86/86; mutaciones del lanzador (check borrado, forma de corrida siempre verdadera, FAIL sin respaldo) detectadas.
+
+## 12. Estado
 
 ```text
-IMPLEMENTATION = AUTH-15 effective-name postcondition added after RUN-2 (new implementation SHA); pending Architect exact-SHA review
+IMPLEMENTATION = a80a3801 (AUTH-15 effective-name postcondition after RUN-2); pending Architect exact-SHA review
 AUTH15_DEV_01 = ACCEPTED / CONTRACT NORMALIZATION
 RUN-1 = INVALID / HARNESS DEFECT (0 AUTH-15 calls)
 RUN-2 = VALID EXECUTION / FAIL (F-1 unresolved, F-2 confirmed); cannot be carried forward

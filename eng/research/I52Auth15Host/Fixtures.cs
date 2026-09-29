@@ -99,6 +99,18 @@ namespace I52Auth15.HostHarness
                 new List<HeaderBlockInstance> { Piece(PieceBlock, "frontal", 30.0, 0.0), annotation, dimension });
         }
 
+        /// <summary>The header group and one loose piece only: no annotation and no dimension (RB-02a isolates the native dimension
+        /// residue from everything else the family creator does).</summary>
+        public static HeaderRunPlan HeaderRunPlain()
+        {
+            var header = new HeaderGroup(
+                HeaderName,
+                new List<HeaderBlockInstance> { Piece(PieceBlock, "frontal", 0.0, 0.0), Piece(PieceBlock, "frontal", 12.0, 0.0) },
+                new List<HeaderPlacement> { new HeaderPlacement(0.0, false), new HeaderPlacement(60.0, true) });
+
+            return new HeaderRunPlan(new List<HeaderGroup> { header }, new List<HeaderBlockInstance> { Piece(PieceBlock, "frontal", 30.0, 0.0) });
+        }
+
         /// <summary>A plan whose loose pieces name a block that is not in the drawing: two of them in the same view and one
         /// in another, so the distinct (BlockName|View) representatives are exactly two.</summary>
         public static HeaderRunPlan HeaderRunWithMissing(out List<HeaderBlockInstance> firstOfEachKey)

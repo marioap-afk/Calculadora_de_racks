@@ -18,7 +18,8 @@ namespace I52Auth15.Offline
     /// command; NETLOAD; QUIT) and, when the harness command is invoked after a NETLOAD, plays the harness with the REAL
     /// FilediaRecord and EvidenceDoc. Behaviour is chosen by environment variables:
     ///   I52_OFFLINE_SCENARIO  pass | fail | unknown | malformed | noevidence | hashmismatch | nonzero-exit | timeout | sleep
-    ///                         | live-start-shift | live-end-shift
+    ///                         | live-start-shift | live-end-shift | hv00-throws | forged-pass | forged-fail
+    ///                         | deviation-continue | deviation-stop | exception-stop | unknown-stop | controls-leak | abort-throws
     ///   I52_OFFLINE_FILEDIA   the FILEDIA value AutoCAD "starts" with (default 1)
     ///   I52_OFFLINE_STICKY    all = setvar FILEDIA is always ignored; lock0 = once FILEDIA is 0 it cannot be raised (the restore fails)
     /// It is NOT AutoCAD and its output is NOT host evidence.
@@ -239,7 +240,8 @@ namespace I52Auth15.Offline
             }
 
             // HV-00, as the harness does it: every system variable it reads must be one the mock (AutoCAD 2025) knows.
-            var hv00 = new CaseRecord("HV-00", "BIND", "characterization");
+            var sensitive = new HashSet<string> { "HV-01", "HV-02", "HV-03", "HV-05", "HV-08", "HV-10", "HV-12", "HV-13", "HV-14" };
+            var hv00 = new CaseRecord("HV-00", "BIND", "characterization") { DbKind = "SIDE-DB" };
             var readNames = new List<string>(SysVarCatalog.Audited);
 
             if (_scenario == "hv00-throws")
@@ -294,15 +296,29 @@ namespace I52Auth15.Offline
 
             doc.Cases.Add(hv00);
 
-            if (failedRead)
+            if (problem != null)
+            {
+                doc.StopKind = StopKind.Filedia;
+            }
+            else if (failedRead)
             {
                 stopped = true;
+                doc.StopKind = StopKind.Hv00;
                 doc.StoppedBy = "HV-00 is not PASS: no AUTH-15 call was made";
             }
 
+            if (!stopped)
+            {
+                doc.DocumentAuthority["available"] = true;
+                AddControls(doc);
+            }
+
+            var deviationAt = _scenario == "deviation-continue" || _scenario == "deviation-stop" || _scenario == "exception-stop" || _scenario == "unknown-stop" ? "HV-08" : null;
+
             for (var i = 1; i < 15; i++)
             {
-                var c = new CaseRecord("HV-" + i.ToString("D2"), "X", "y");
+                var id = "HV-" + i.ToString("D2");
+                var c = new CaseRecord(id, "X", "y") { DbKind = sensitive.Contains(id) ? "DOCUMENT-AUTHORITY" : "SIDE-DB" };
 
                 if (!stopped)
                 {
@@ -319,10 +335,42 @@ namespace I52Auth15.Offline
                         c.Unknown("ambiguous", "x", "cannot tell");
                     }
 
+                    if (id == deviationAt && _scenario == "unknown-stop")
+                    {
+                        c.Unknown("ambiguous", "x", "cannot tell"); // an UNKNOWN verdict: no failing case and no deviation
+                    }
+                    else if (id == deviationAt)
+                    {
+                        c.Check("CHARACTERIZATION HeaderRun \"<>\" surfaces as WriteFailed", "WriteFailed", "IsSuccess=True Failure=None BlockName=", false);
+                        c.Deviation = true;
+                        doc.Deviations.Add(id);
+                    }
+
                     c.Finish();
                 }
 
                 doc.Cases.Add(c);
+
+                if (!stopped && sensitive.Contains(id))
+                {
+                    var side = new CaseRecord(id, "X", "y") { DbKind = "SIDE-DB-CHARACTERIZATION" };
+                    side.Check("a", true, true);
+                    side.Finish();
+                    doc.SideCharacterizations.Add(side);
+                }
+
+                if (!stopped && id == deviationAt && _scenario == "deviation-stop")
+                {
+                    stopped = true;
+                    doc.StopKind = StopKind.Deviation;
+                    doc.StoppedBy = id + " asked to stop: continuing would make later evidence untrustworthy";
+                }
+                else if (!stopped && id == deviationAt && (_scenario == "exception-stop" || _scenario == "unknown-stop"))
+                {
+                    stopped = true;
+                    doc.StopKind = _scenario == "exception-stop" ? StopKind.Exception : StopKind.Deviation;
+                    doc.StoppedBy = id + " stopped";
+                }
             }
 
             var liveEnd = _filedia + (_scenario == "live-end-shift" ? 1 : 0);
@@ -341,6 +389,66 @@ namespace I52Auth15.Offline
             {
                 // A harness that lied about its own verdict: the cases still say FAIL.
                 File.WriteAllText(evidencePath, File.ReadAllText(evidencePath).Replace("\"verdict\": \"FAIL\"", "\"verdict\": \"PASS\""));
+            }
+            else if (_scenario == "forged-fail")
+            {
+                // The opposite lie: a FAIL verdict with nothing (no failing case, no deviation) behind it.
+                File.WriteAllText(evidencePath, File.ReadAllText(evidencePath).Replace("\"verdict\": \"PASS\"", "\"verdict\": \"FAIL\""));
+            }
+        }
+
+        /// <summary>The rollback controls as the real harness records them: raw outcomes with a database-kind label. They never gate the verdict.</summary>
+        private static void AddControls(EvidenceDoc doc)
+        {
+            void Control(string id, string kind)
+            {
+                var r = new CaseRecord(id, "control", "raw outcome") { DbKind = kind };
+                r.Check("sanity: the control wrote something inside the transaction", "> 0 differences", "9 differences", true);
+
+                var tx = new TxOutcome
+                {
+                    Label = id + " abort",
+                    AbortAttempted = true,
+                    AbortSucceeded = _scenario != "abort-throws" || id != "RB-01",
+                    AbortError = _scenario == "abort-throws" && id == "RB-01" ? "eInvalidInput: injected" : null,
+                    DisposeAttempted = true,
+                    DisposeSucceeded = true,
+                    IsDisposedAfter = true,
+                    ActiveBefore = 1,
+                    ActiveAfter = 0,
+                    TopAfter = "null",
+                };
+                r.Tx.Add(tx);
+
+                foreach (var failure in tx.Failures(abortExpected: true))
+                {
+                    r.Check("transaction end [" + tx.Label + "]: " + failure, "Abort/Dispose succeed and the transaction is disposed", failure, false);
+                }
+
+                if (_scenario == "controls-leak" && id == "RB-01" && kind == "SIDE-DB")
+                {
+                    r.Leaks.Add("RB-01 after the caller's rollback: added BT:CTRL_RB_BLOCK = 7C");
+                    r.Leaks.Add("RB-01 after the caller's rollback: added LT:CTRL_RB_LAYER = 7D");
+                    r.Check("RB-01 after the caller's rollback: no leak (SNAP identical to before)", "identical", "added BT:CTRL_RB_BLOCK = 7C; added LT:CTRL_RB_LAYER = 7D", false);
+                }
+                else
+                {
+                    r.Check("RB after the caller's rollback: no leak (SNAP identical to before)", "identical", "identical", true);
+                }
+
+                r.Finish();
+                doc.Controls.Add(r);
+            }
+
+            Control("RB-01", "SIDE-DB");
+            Control("RB-01V", "SIDE-DB");
+            Control("RB-01V", "DOCUMENT-AUTHORITY");
+            Control("RB-01D", "DOCUMENT-AUTHORITY");
+
+            foreach (var id in new[] { "RB-02a", "RB-02b", "RB-02c", "RB-03", "RB-05" })
+            {
+                Control(id, "SIDE-DB");
+                Control(id, "DOCUMENT-AUTHORITY");
             }
         }
 
@@ -380,6 +488,48 @@ namespace I52Auth15.Offline
             Expect("unknown key", "before=1\nduring=0\nafter=1\nextra=3\n", 1, "unknown or repeated");
             Expect("garbage line", "before=one\n", 1, "unparseable");
             Expect("CRLF endings", "before=1\r\nduring=0\r\nafter=1\r\n", 1, null);
+
+            // TxOutcome: a rollback is only taken as done when Abort and Dispose succeeded and the transaction is disposed.
+            var total = 13;
+
+            void ExpectTx(string name, TxOutcome outcome, bool abortExpected, string fragment)
+            {
+                var found = outcome.Failures(abortExpected);
+                var ok = fragment == null ? found.Count == 0 : found.Any(f => f.Contains(fragment));
+                Console.WriteLine((ok ? "PASS " : "FAIL ") + name + " -> " + (found.Count == 0 ? "no failure" : string.Join(" | ", found)));
+                failures += ok ? 0 : 1;
+                total++;
+            }
+
+            TxOutcome Good() => new TxOutcome { Label = "t", AbortAttempted = true, AbortSucceeded = true, DisposeAttempted = true, DisposeSucceeded = true, IsDisposedAfter = true };
+
+            ExpectTx("tx: a clean abort and dispose", Good(), true, null);
+            var abortThrows = Good();
+            abortThrows.AbortSucceeded = false;
+            abortThrows.AbortError = "eInvalidInput: x";
+            ExpectTx("tx: Abort threw => not a rollback", abortThrows, true, "Abort threw");
+            var notAttempted = Good();
+            notAttempted.AbortAttempted = false;
+            notAttempted.AbortSucceeded = false;
+            ExpectTx("tx: Abort never attempted when expected", notAttempted, true, "not attempted");
+            var disposeThrows = Good();
+            disposeThrows.DisposeSucceeded = false;
+            disposeThrows.DisposeError = "boom";
+            ExpectTx("tx: Dispose threw", disposeThrows, true, "Dispose threw");
+            var stillAlive = Good();
+            stillAlive.IsDisposedAfter = false;
+            ExpectTx("tx: not disposed after the end", stillAlive, true, "not disposed");
+            var alreadyDisposed = Good();
+            alreadyDisposed.IsDisposedBefore = true;
+            alreadyDisposed.AbortAttempted = false;
+            alreadyDisposed.AbortSucceeded = false;
+            ExpectTx("tx: already disposed beforehand needs no Abort", alreadyDisposed, true, null);
+            var disposeOnly = Good();
+            disposeOnly.AbortAttempted = false;
+            disposeOnly.AbortSucceeded = false;
+            ExpectTx("tx: dispose-only end (abort not expected) is fine", disposeOnly, false, null);
+
+            Console.WriteLine("SELFTEST " + (total - failures) + "/" + total);
             return failures;
         }
 

@@ -10,7 +10,9 @@ using System.Runtime.Loader;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
@@ -166,7 +168,127 @@ namespace I52Auth15.HostHarness
         public static int? ReadInt(string name) => Read(name).AsInt();
     }
 
-    internal sealed class Scope : IDisposable
+    internal enum DbKind
+    {
+        Side,
+        Document,
+    }
+
+    internal interface IDbScope : IDisposable
+    {
+        Database Db { get; }
+    }
+
+    /// <summary>
+    /// The PRODUCTION condition: a document database. A second document is opened from a copy of the launcher's untouched blank
+    /// template (never the anchor scratch drawing), locked for the case, and closed with DISCARD afterwards, so a rollback that does
+    /// not roll back can neither contaminate the next case nor write anything anywhere. Any failure to lock, close or restore the
+    /// active document is recorded in <see cref="Ctx.DocErrors"/> and makes the environment untrustworthy.
+    /// </summary>
+    internal sealed class DocScope : IDbScope
+    {
+        private static int _counter;
+        private readonly Ctx _c;
+        private readonly Database _previousWorking;
+        private Document _document;
+        private DocumentLock _lock;
+        private bool _disposed;
+
+        public DocScope(Ctx c, string label, bool pieceBlock)
+        {
+            _c = c;
+            var template = Path.Combine(c.OutDir, "blank-template.dwg");
+
+            if (!File.Exists(template))
+            {
+                throw new InvalidOperationException("the launcher did not provide out/blank-template.dwg: DOCUMENT-AUTHORITY is unavailable");
+            }
+
+            var directory = Path.Combine(c.OutDir, "doc-cases");
+            Directory.CreateDirectory(directory);
+            var safe = new string(label.Select(ch => char.IsLetterOrDigit(ch) ? ch : '_').ToArray());
+            var file = Path.Combine(directory, safe + "-" + (++_counter).ToString("D2", CultureInfo.InvariantCulture) + ".dwg");
+            File.Copy(template, file, false);
+
+            try
+            {
+                _previousWorking = HostApplicationServices.WorkingDatabase;
+            }
+            catch (System.Exception)
+            {
+                _previousWorking = null;
+            }
+
+            try
+            {
+                var documents = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager;
+                _document = documents.Open(file, false);
+                documents.MdiActiveDocument = _document;
+                _lock = _document.LockDocument();
+                Db = _document.Database;
+                HostApplicationServices.WorkingDatabase = Db;
+
+                if (pieceBlock)
+                {
+                    Fixtures.CreateBlock(Db, Fixtures.PieceBlock);
+                }
+            }
+            catch (System.Exception)
+            {
+                Dispose();
+                throw;
+            }
+        }
+
+        public Database Db { get; private set; }
+
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
+
+            try
+            {
+                _lock?.Dispose();
+            }
+            catch (System.Exception ex)
+            {
+                _c.DocErrors.Add("unlock: " + ex.GetType().Name + ": " + ex.Message);
+            }
+
+            try
+            {
+                _document?.CloseAndDiscard();
+            }
+            catch (System.Exception ex)
+            {
+                _c.DocErrors.Add("close and discard: " + ex.GetType().Name + ": " + ex.Message);
+            }
+
+            try
+            {
+                if (_c.AnchorDocument != null)
+                {
+                    Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument = _c.AnchorDocument;
+                }
+
+                if (_previousWorking != null)
+                {
+                    HostApplicationServices.WorkingDatabase = _previousWorking;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                _c.DocErrors.Add("restore active document: " + ex.GetType().Name + ": " + ex.Message);
+            }
+        }
+    }
+
+    internal sealed class Scope : IDbScope
     {
         private readonly Database _previous;
 
@@ -251,6 +373,40 @@ namespace I52Auth15.HostHarness
 
         public IntPtr InitialWorking { get; set; }
 
+        /// <summary>The database kind the CURRENT case body runs on (the runner sets it per variant).</summary>
+        public DbKind Kind { get; set; } = DbKind.Side;
+
+        /// <summary>True while a SIDE-DB-CHARACTERIZATION variant runs: it must not feed the shared HV-11/13/14 logs.</summary>
+        public bool Characterizing { get; set; }
+
+        public string CurrentCase { get; set; } = "case";
+
+        public Document AnchorDocument { get; set; }
+
+        public int InitialDocCount { get; set; }
+
+        public List<string> DocErrors { get; } = new List<string>();
+
+        public bool DocumentAuthorityAvailable { get; set; }
+
+        public string DocumentAuthorityError { get; set; }
+
+        /// <summary>A scope on the database kind of the current variant (document = authority, side = characterization).</summary>
+        public IDbScope NewScope(bool pieceBlock = true)
+        {
+            if (Kind == DbKind.Document)
+            {
+                if (!DocumentAuthorityAvailable)
+                {
+                    throw new InvalidOperationException("DOCUMENT-AUTHORITY is unavailable: " + (DocumentAuthorityError ?? "not probed"));
+                }
+
+                return new DocScope(this, CurrentCase, pieceBlock);
+            }
+
+            return new Scope(pieceBlock);
+        }
+
         public Assembly PluginAssembly { get; set; }
 
         public List<(string Case, string What, bool Unchanged)> Immutability { get; } = new List<(string, string, bool)>();
@@ -276,7 +432,11 @@ namespace I52Auth15.HostHarness
             var planBefore = Fixtures.Fingerprint(plan);
             var envBefore = Fixtures.Fingerprint(env);
             var result = Bind.HeaderRun(db, tr, Drawer, plan, name, env);
-            Immutability.Add((caseId, "HeaderRun " + name, planBefore == Fixtures.Fingerprint(plan) && envBefore == Fixtures.Fingerprint(env)));
+            if (!Characterizing)
+            {
+                Immutability.Add((caseId, "HeaderRun " + name, planBefore == Fixtures.Fingerprint(plan) && envBefore == Fixtures.Fingerprint(env)));
+            }
+
             NoteLive(caseId, "HeaderRun " + name, db, tr);
             return result;
         }
@@ -286,7 +446,11 @@ namespace I52Auth15.HostHarness
             var planBefore = Fixtures.Fingerprint(CantPlan);
             var envBefore = Fixtures.Fingerprint(env);
             var result = Bind.Cantilever(db, tr, CantPlan, name, env);
-            Immutability.Add((caseId, "Cantilever " + name, planBefore == Fixtures.Fingerprint(CantPlan) && envBefore == Fixtures.Fingerprint(env)));
+            if (!Characterizing)
+            {
+                Immutability.Add((caseId, "Cantilever " + name, planBefore == Fixtures.Fingerprint(CantPlan) && envBefore == Fixtures.Fingerprint(env)));
+            }
+
             NoteLive(caseId, "Cantilever " + name, db, tr);
             return result;
         }
@@ -305,7 +469,11 @@ namespace I52Auth15.HostHarness
                 live = false;
             }
 
-            CallerOwned.Add((caseId, what, live));
+            if (!Characterizing)
+            {
+                CallerOwned.Add((caseId, what, live));
+            }
+
         }
     }
 
@@ -359,6 +527,7 @@ namespace I52Auth15.HostHarness
                 {
                     doc.Problems.Add("FILEDIA: " + filediaProblem);
                     doc.StoppedBy = "FILEDIA not restored: INVALID RUN";
+                    doc.StopKind = StopKind.Filedia;
                     stopped = true;
                     log.Info("FILEDIA INVALID: " + filediaProblem);
                 }
@@ -384,65 +553,109 @@ namespace I52Auth15.HostHarness
                     ctx.InitialWorking = IntPtr.Zero;
                 }
 
-                var cases = new List<(string Id, string Family, string Expected, Action<Ctx, CaseRecord> Body)>
+                var entries = new List<CaseEntry>
                 {
-                    ("HV-00", "BIND", "the versioned Plugin/Application are the only ones loaded; both AUTH-15 overloads resolve; B-1 fact recorded", Hv00),
-                    ("HV-01", "HeaderRun", "success: definition, nested content, exact envelope, no placement, caller-owned transaction", Hv01),
-                    ("HV-02", "Cantilever", "success: definition, role layers, exact envelope, no placement", Hv02),
-                    ("HV-03", "Both", "caller abort leaves SNAP identical to before", Hv03),
-                    ("HV-04", "Both", "caller commit persists both definitions and their envelopes across SaveAs/reopen; no references", Hv04),
-                    ("HV-05", "Both", "name collision: HeaderRun _1 policy, Cantilever _2 policy; pre-existing definitions unchanged", Hv05),
-                    ("HV-06", "Both", "TransactionMismatch (a..e), no write", Hv06),
-                    ("HV-07", "Both", "InvalidPlan, no write", Hv07),
-                    ("HV-08", "Both", "InvalidBlockName pre-write; HeaderRun \"<>\" characterization = WriteFailed + clean rollback", Hv08),
-                    ("HV-09", "Both", "InvalidEnvelope, no write", Hv09),
-                    ("HV-10", "HeaderRun", "MissingLibraryBlocks with exact distinct representatives; envelope absent; rollback clean", Hv10),
-                    ("HV-11", "Both", "plans and envelopes unchanged by successful calls", Hv11),
-                    ("HV-12", "Both", "no batch memory across independent calls in one transaction", Hv12),
-                    ("HV-13", "Both", "no reference placement in model space or any layout", Hv13),
-                    ("HV-14", "Both", "no internal commit; transaction stays caller-owned", Hv14),
+                    new CaseEntry("HV-00", "BIND", "the versioned Plugin/Application are the only ones loaded; both AUTH-15 overloads resolve; B-1 fact recorded", Hv00, false),
+                    new CaseEntry("HV-01", "HeaderRun", "success: definition, nested content, exact envelope, no placement, caller-owned transaction; caller abort leaves nothing", Hv01, true),
+                    new CaseEntry("HV-02", "Cantilever", "success: definition, role layers, exact envelope, no placement; caller abort leaves nothing", Hv02, true),
+                    new CaseEntry("HV-03", "Both", "caller abort leaves SNAP identical to before", Hv03, true),
+                    new CaseEntry("HV-04", "Both", "caller commit persists both definitions and their envelopes across SaveAs/reopen; no references", Hv04, false),
+                    new CaseEntry("HV-05", "Both", "name collision: HeaderRun _1 policy, Cantilever _2 policy; pre-existing definitions unchanged", Hv05, true),
+                    new CaseEntry("HV-06", "Both", "TransactionMismatch (a..e), no write", Hv06, false),
+                    new CaseEntry("HV-07", "Both", "InvalidPlan, no write", Hv07, false),
+                    new CaseEntry("HV-08", "Both", "InvalidBlockName pre-write; HeaderRun \"<>\" characterization = WriteFailed (effective name empty) + clean rollback", Hv08, true),
+                    new CaseEntry("HV-09", "Both", "InvalidEnvelope, no write", Hv09, false),
+                    new CaseEntry("HV-10", "HeaderRun", "MissingLibraryBlocks with exact distinct representatives; envelope absent; rollback clean", Hv10, true),
+                    new CaseEntry("HV-11", "Both", "plans and envelopes unchanged by successful calls", Hv11, false),
+                    new CaseEntry("HV-12", "Both", "no batch memory across independent calls in one transaction", Hv12, true),
+                    new CaseEntry("HV-13", "Both", "no reference placement in model space or any layout", Hv13, true),
+                    new CaseEntry("HV-14", "Both", "no internal commit; transaction stays caller-owned", Hv14, true),
                 };
+
+                try
+                {
+                    ctx.AnchorDocument = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument;
+                    ctx.InitialDocCount = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.Count;
+                }
+                catch (System.Exception)
+                {
+                    ctx.InitialDocCount = 0;
+                }
 
                 SafeWrite(doc, outDir, log);
 
-                foreach (var (id, family, expected, body) in cases)
+                foreach (var entry in entries)
                 {
-                    var record = new CaseRecord(id, family, expected);
-                    doc.Cases.Add(record);
-
                     if (stopped)
                     {
+                        doc.Cases.Add(new CaseRecord(entry.Id, entry.Family, entry.Expected));
                         continue;
                     }
 
-                    log.Info(id + " begin");
+                    // Rollback-sensitive cases are AUTHORITATIVE on the DOCUMENT database (the production condition); the same body
+                    // is then run again on a side database as CHARACTERIZATION only.
+                    var record = RunOne(ctx, log, entry, entry.RollbackSensitive ? DbKind.Document : DbKind.Side, false);
+                    doc.Cases.Add(record);
+                    doc.LastCase = record.Id;
 
-                    try
+                    if (record.Deviation)
                     {
-                        body(ctx, record);
-                    }
-                    catch (System.Exception ex)
-                    {
-                        record.Exception = ex.GetType().FullName + ": " + ex.Message;
-                        log.Info(id + " EXCEPTION " + ex);
+                        doc.Deviations.Add(record.Id);
                     }
 
-                    record.Finish();
-                    log.Info(id + " " + record.Result + (record.Deviation ? " DEVIATION" : string.Empty));
-
-                    // A crash after this point cannot erase the cases already completed: the evidence is replaced atomically.
-                    doc.LastCase = id;
                     SafeWrite(doc, outDir, log);
+                    string why;
 
-                    if (id == "HV-00" && record.Result != Outcome.Pass)
+                    if (entry.Id == "HV-00")
                     {
-                        stopped = true;
-                        doc.StoppedBy = "HV-00 is not PASS: no AUTH-15 call was made";
+                        if (record.Result != Outcome.Pass)
+                        {
+                            stopped = true;
+                            doc.StopKind = StopKind.Hv00;
+                            doc.StoppedBy = "HV-00 is not PASS: no AUTH-15 call was made";
+                        }
+                        else
+                        {
+                            ProbeDocumentAuthority(ctx);
+                            SafeWrite(doc, outDir, log);
+
+                            if (!RunControls(ctx, log, doc, outDir, out why))
+                            {
+                                stopped = true;
+                                doc.StopKind = StopKind.Exception;
+                                doc.StoppedBy = why;
+                                doc.Problems.Add(why);
+                            }
+                        }
                     }
-                    else if (record.Deviation)
+                    else if (record.StopRun)
                     {
                         stopped = true;
-                        doc.StoppedBy = id + " produced a NEW DEVIATION";
+                        doc.StopKind = StopKind.Deviation;
+                        doc.StoppedBy = entry.Id + " asked to stop: continuing would make later evidence untrustworthy";
+                    }
+
+                    if (!stopped && !EnvironmentTrustworthy(ctx, out why))
+                    {
+                        stopped = true;
+                        doc.StopKind = StopKind.Exception;
+                        doc.StoppedBy = why;
+                        doc.Problems.Add(why);
+                    }
+
+                    if (!stopped && entry.RollbackSensitive)
+                    {
+                        var side = RunOne(ctx, log, entry, DbKind.Side, true);
+                        doc.SideCharacterizations.Add(side);
+                        SafeWrite(doc, outDir, log);
+
+                        if (!EnvironmentTrustworthy(ctx, out why))
+                        {
+                            stopped = true;
+                            doc.StopKind = StopKind.Exception;
+                            doc.StoppedBy = why;
+                            doc.Problems.Add(why);
+                        }
                     }
                 }
 
@@ -466,6 +679,7 @@ namespace I52Auth15.HostHarness
             {
                 log.Info("RUNNER EXCEPTION " + ex);
                 doc.Problems.Add("runner: " + ex.GetType().FullName + ": " + ex.Message);
+                doc.StopKind = StopKind.Exception;
             }
             finally
             {
@@ -490,6 +704,129 @@ namespace I52Auth15.HostHarness
                 doc.Write(Path.Combine(outDir, "hostval-evidence.json"));
                 log.Info("evidence written; verdict " + doc.Verdict());
             }
+        }
+
+        private sealed class CaseEntry
+        {
+            public CaseEntry(string id, string family, string expected, Action<Ctx, CaseRecord> body, bool rollbackSensitive)
+            {
+                Id = id;
+                Family = family;
+                Expected = expected;
+                Body = body;
+                RollbackSensitive = rollbackSensitive;
+            }
+
+            public string Id { get; }
+
+            public string Family { get; }
+
+            public string Expected { get; }
+
+            public Action<Ctx, CaseRecord> Body { get; }
+
+            public bool RollbackSensitive { get; }
+        }
+
+        private static CaseRecord RunOne(Ctx ctx, HvLog log, CaseEntry entry, DbKind kind, bool characterizing)
+        {
+            ctx.Kind = kind;
+            ctx.Characterizing = characterizing;
+            ctx.CurrentCase = entry.Id + (characterizing ? "-side" : string.Empty);
+
+            var label = characterizing ? "SIDE-DB-CHARACTERIZATION" : (entry.RollbackSensitive ? "DOCUMENT-AUTHORITY" : "SIDE-DB");
+            var record = new CaseRecord(entry.Id, entry.Family, entry.Expected) { DbKind = label };
+            log.Info(entry.Id + " begin [" + label + "]");
+            CurrentRecord = record;
+
+            try
+            {
+                entry.Body(ctx, record);
+            }
+            catch (System.Exception ex)
+            {
+                record.Exception = ex.GetType().FullName + ": " + ex.Message;
+                log.Info(entry.Id + " EXCEPTION " + ex);
+            }
+            finally
+            {
+                CurrentRecord = null;
+            }
+
+            record.Finish();
+            log.Info(entry.Id + " [" + label + "] " + record.Result + (record.Deviation ? " DEVIATION" : string.Empty));
+            return record;
+        }
+
+        /// <summary>Whether continuing would still produce trustworthy evidence. Only a working database that was NOT restored stops the
+        /// run (later scopes would restore to the wrong place). A changed open-document count or a document that could not be closed is
+        /// recorded as a Problem, which blocks a PASS, but does not stop the independent cases that follow.</summary>
+        private static bool EnvironmentTrustworthy(Ctx ctx, out string why)
+        {
+            why = null;
+
+            try
+            {
+                var now = HostApplicationServices.WorkingDatabase?.UnmanagedObject ?? IntPtr.Zero;
+
+                if (now != ctx.InitialWorking)
+                {
+                    why = "WorkingDatabase was not restored to the anchor document's database after " + ctx.CurrentCase;
+                }
+
+                if (why == null && ctx.InitialDocCount > 0 && Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.Count != ctx.InitialDocCount)
+                {
+                    NoteProblem(ctx, "the open-document count changed after " + ctx.CurrentCase);
+                }
+
+                if (why == null && ctx.DocErrors.Count > 0)
+                {
+                    NoteProblem(ctx, "document authority error(s) up to " + ctx.CurrentCase + ": " + string.Join("; ", ctx.DocErrors));
+                }
+            }
+            catch (System.Exception ex)
+            {
+                why = "environment check failed after " + ctx.CurrentCase + ": " + ex.GetType().Name + ": " + ex.Message;
+            }
+
+            return why == null;
+        }
+
+        private static void NoteProblem(Ctx ctx, string problem)
+        {
+            if (!ctx.Doc.Problems.Contains(problem))
+            {
+                ctx.Doc.Problems.Add(problem);
+            }
+        }
+
+        /// <summary>Opens and closes ONE throw-away document from the blank template, so a missing document authority is known (and
+        /// recorded) before any case needs it. The authority cases are UNKNOWN, never silently side-database, if it is unavailable.</summary>
+        private static void ProbeDocumentAuthority(Ctx ctx)
+        {
+            var d = ctx.Doc.DocumentAuthority;
+            ctx.Kind = DbKind.Document;
+            ctx.Characterizing = false;
+            ctx.CurrentCase = "probe";
+            ctx.DocumentAuthorityAvailable = true;
+
+            try
+            {
+                using (new DocScope(ctx, "probe", false))
+                {
+                }
+
+                d["available"] = true;
+            }
+            catch (System.Exception ex)
+            {
+                ctx.DocumentAuthorityAvailable = false;
+                ctx.DocumentAuthorityError = ex.GetType().Name + ": " + ex.Message;
+                d["available"] = false;
+                d["error"] = ctx.DocumentAuthorityError;
+            }
+
+            d["documentsAtStart"] = ctx.InitialDocCount;
         }
 
         private static void SafeWrite(EvidenceDoc doc, string outDir, HvLog log)
@@ -751,31 +1088,118 @@ namespace I52Auth15.HostHarness
 
         // ================================================================ helpers
 
-        private static void End(Transaction transaction)
+        /// <summary>The record of the case currently running, so transaction ends can be attributed and can fail it.</summary>
+        internal static CaseRecord CurrentRecord;
+
+        /// <summary>
+        /// Ends a caller's transaction by ABORTING it and RECORDS what happened: whether Abort and Dispose were attempted and
+        /// succeeded (with the exception text if not), whether the transaction is disposed afterwards, and the active-transaction
+        /// count and top-transaction identity before and after. RUN-2's leaks could not be attributed because the previous helper
+        /// swallowed every exception; now a failed Abort or Dispose FAILS the current case and the rollback is never assumed.
+        /// </summary>
+        private static void End(Transaction transaction, string label = null) => EndCore(transaction, label, abort: true);
+
+        /// <summary>Ends a transaction by DISPOSING it without an explicit Abort (what a forgotten Commit does). Same recording.</summary>
+        private static void EndDisposeOnly(Transaction transaction, string label = null) => EndCore(transaction, label, abort: false);
+
+        /// <summary>After a Commit: only the dispose is recorded; there is no rollback to attribute.</summary>
+        private static void EndAfterCommit(Transaction transaction, string label = null)
+        {
+            var outcome = EndCore(transaction, label ?? "after commit", abort: false, expectRollback: false);
+        }
+
+        private static TxOutcome EndCore(Transaction transaction, string label, bool abort, bool expectRollback = true)
         {
             if (transaction == null)
             {
-                return;
+                return null;
+            }
+
+            var outcome = new TxOutcome { Label = label ?? "tx" };
+            Autodesk.AutoCAD.DatabaseServices.TransactionManager manager = null;
+
+            try
+            {
+                manager = transaction.TransactionManager;
+                outcome.ActiveBefore = manager.NumberOfActiveTransactions;
+            }
+            catch (System.Exception ex)
+            {
+                outcome.AbortError = "could not read the transaction manager: " + ex.GetType().Name + ": " + ex.Message;
             }
 
             try
             {
-                if (!transaction.IsDisposed)
-                {
-                    transaction.Abort();
-                }
+                outcome.IsDisposedBefore = transaction.IsDisposed;
             }
             catch (System.Exception)
             {
+                outcome.IsDisposedBefore = false;
             }
+
+            if (abort && !outcome.IsDisposedBefore)
+            {
+                outcome.AbortAttempted = true;
+
+                try
+                {
+                    transaction.Abort();
+                    outcome.AbortSucceeded = true;
+                }
+                catch (System.Exception ex)
+                {
+                    outcome.AbortError = ex.GetType().Name + ": " + ex.Message;
+                }
+            }
+
+            outcome.DisposeAttempted = true;
 
             try
             {
                 transaction.Dispose();
+                outcome.DisposeSucceeded = true;
+            }
+            catch (System.Exception ex)
+            {
+                outcome.DisposeError = ex.GetType().Name + ": " + ex.Message;
+            }
+
+            try
+            {
+                outcome.IsDisposedAfter = transaction.IsDisposed;
             }
             catch (System.Exception)
             {
+                outcome.IsDisposedAfter = false;
             }
+
+            try
+            {
+                if (manager != null)
+                {
+                    outcome.ActiveAfter = manager.NumberOfActiveTransactions;
+                    var top = manager.TopTransaction;
+                    outcome.TopAfter = top == null ? "null" : top.UnmanagedObject.ToString();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                outcome.TopAfter = "unreadable: " + ex.GetType().Name;
+            }
+
+            var record = CurrentRecord;
+
+            if (record != null)
+            {
+                record.Tx.Add(outcome);
+
+                foreach (var failure in outcome.Failures(abortExpected: abort && expectRollback))
+                {
+                    record.Check("transaction end [" + outcome.Label + "]: " + failure, "Abort/Dispose succeed and the transaction is disposed", failure, false);
+                }
+            }
+
+            return outcome;
         }
 
         private static bool Same(Transaction a, Transaction b) =>
@@ -950,7 +1374,11 @@ namespace I52Auth15.HostHarness
         {
             var diff = before.Diff(after, Snapshot.IsPlacementKey);
             r.Check(label + ": model space and every layout unchanged", "identical", Joined(diff), diff.Count == 0);
-            c.Placement.Add((r.Id + " " + label, diff.Count == 0));
+            if (!c.Characterizing)
+            {
+                c.Placement.Add((r.Id + " " + label, diff.Count == 0));
+            }
+
         }
 
         private static void CallerOwnedCheck(CaseRecord r, string label, Database db, Transaction tr, int activeExpected)
@@ -975,6 +1403,198 @@ namespace I52Auth15.HostHarness
                 r.Unknown(read.Name + " readable", "a value", read.Error ?? "empty");
             }
         }
+
+        // ================================================================ ROLLBACK CONTROLS (RB-xx)
+        //
+        // No AUTH-15 here unless the control says so. Each control does the same thing: snapshot, write inside ONE caller transaction,
+        // snapshot inside (sanity: something was written), end the transaction (recorded, never swallowed), snapshot again and enumerate
+        // EVERY difference. A control result is a RAW OUTCOME: nothing is reinterpreted and nothing here decides who is to blame; the
+        // controls never change the HV verdict. They exist to attribute F-1 (RUN-2: everything survived the caller's abort).
+
+        private sealed class ControlEntry
+        {
+            public ControlEntry(string id, string family, string expected, Action<Ctx, CaseRecord> body, params DbKind[] kinds)
+            {
+                Id = id;
+                Family = family;
+                Expected = expected;
+                Body = body;
+                Kinds = kinds;
+            }
+
+            public string Id { get; }
+
+            public string Family { get; }
+
+            public string Expected { get; }
+
+            public Action<Ctx, CaseRecord> Body { get; }
+
+            public DbKind[] Kinds { get; }
+        }
+
+        private static bool RunControls(Ctx ctx, HvLog log, EvidenceDoc doc, string outDir, out string why)
+        {
+            why = null;
+            var both = new[] { DbKind.Side, DbKind.Document };
+            var controls = new List<ControlEntry>
+            {
+                new ControlEntry("RB-01", "primitive writes, side database", "block + layer + entity + extension dictionary/Xrecord created then aborted: nothing survives", Rb01, DbKind.Side),
+                new ControlEntry("RB-01V", "primitive writes, dispose WITHOUT Abort", "the same, but the transaction is only disposed (a forgotten Commit): nothing survives", Rb01V, both),
+                new ControlEntry("RB-01D", "primitive writes, DOCUMENT database", "the primitive control on a document under LockDocument: the production condition", Rb01, DbKind.Document),
+                new ControlEntry("RB-02a", "LateralHeaderDrawer.CreateSystemBlock, no dimension/annotation", "the family creator alone, no AUTH-15, then abort", Rb02a, both),
+                new ControlEntry("RB-02b", "LateralHeaderDrawer.CreateSystemBlock, with dimension", "the family creator alone with a dimension, no AUTH-15, then abort", Rb02b, both),
+                new ControlEntry("RB-02c", "CantileverViewMaterializer.CreateBlockDefinitionNamed", "the Cantilever creator alone, no AUTH-15, then abort", Rb02c, both),
+                new ControlEntry("RB-03", "hand-made definition + RackBlockData.Write", "the envelope writer alone on a hand-made definition, then abort", Rb03, both),
+                new ControlEntry("RB-05", "dimension + RecomputeDimensionBlock only", "native dimension residue (Defpoints, *D) in isolation, then abort", Rb05, both),
+            };
+
+            foreach (var control in controls)
+            {
+                foreach (var kind in control.Kinds)
+                {
+                    ctx.Kind = kind;
+                    ctx.Characterizing = false;
+                    ctx.CurrentCase = control.Id;
+                    var label = kind == DbKind.Document ? "DOCUMENT-AUTHORITY" : "SIDE-DB";
+                    var record = new CaseRecord(control.Id, control.Family, control.Expected) { DbKind = label };
+                    log.Info(control.Id + " begin [" + label + "]");
+                    CurrentRecord = record;
+
+                    try
+                    {
+                        control.Body(ctx, record);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        record.Exception = ex.GetType().FullName + ": " + ex.Message;
+                        log.Info(control.Id + " EXCEPTION " + ex);
+                    }
+                    finally
+                    {
+                        CurrentRecord = null;
+                    }
+
+                    record.Finish();
+                    log.Info(control.Id + " [" + label + "] " + record.Result);
+                    doc.Controls.Add(record);
+                    SafeWrite(doc, outDir, log);
+
+                    if (!EnvironmentTrustworthy(ctx, out why))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private static void RollbackControl(Ctx c, CaseRecord r, Action<Database, Transaction> writes, bool piece, bool abort)
+        {
+            using (var scope = c.NewScope(piece))
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    writes(db, tr);
+                    var inside = baseline.Diff(Snapshot.Take(db, tr));
+                    r.Check("sanity: the control wrote something inside the transaction", "> 0 differences", inside.Count + " differences", inside.Count > 0);
+                }
+                finally
+                {
+                    if (abort)
+                    {
+                        End(tr, r.Id + " abort");
+                    }
+                    else
+                    {
+                        EndDisposeOnly(tr, r.Id + " dispose without abort");
+                    }
+                }
+
+                AbortClean(r, r.Id + " after the caller's rollback", baseline, Snapshot.Now(db));
+            }
+        }
+
+        private static void PrimitiveWrites(Database db, Transaction tr)
+        {
+            var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForWrite);
+            var block = new BlockTableRecord { Name = "CTRL_RB_BLOCK", Origin = Point3d.Origin };
+            blockTable.Add(block);
+            tr.AddNewlyCreatedDBObject(block, true);
+
+            var line = new Line(Point3d.Origin, new Point3d(10.0, 0.0, 0.0));
+            block.AppendEntity(line);
+            tr.AddNewlyCreatedDBObject(line, true);
+
+            var layers = (LayerTable)tr.GetObject(db.LayerTableId, OpenMode.ForWrite);
+            var layer = new LayerTableRecord { Name = "CTRL_RB_LAYER" };
+            layers.Add(layer);
+            tr.AddNewlyCreatedDBObject(layer, true);
+
+            block.CreateExtensionDictionary();
+            var dictionary = (DBDictionary)tr.GetObject(block.ExtensionDictionary, OpenMode.ForWrite);
+            var record = new Xrecord { Data = new ResultBuffer(new TypedValue((int)DxfCode.Text, "CTRL")) };
+            dictionary.SetAt("CTRL_RB_KEY", record);
+            tr.AddNewlyCreatedDBObject(record, true);
+        }
+
+        private static void Rb01(Ctx c, CaseRecord r) => RollbackControl(c, r, PrimitiveWrites, false, true);
+
+        private static void Rb01V(Ctx c, CaseRecord r) => RollbackControl(c, r, PrimitiveWrites, false, false);
+
+        private static void Rb02a(Ctx c, CaseRecord r) =>
+            RollbackControl(c, r, (db, tr) => c.Drawer.CreateSystemBlock(db, tr, Fixtures.HeaderRunPlain(), "CTRL_RB02A"), true, true);
+
+        private static void Rb02b(Ctx c, CaseRecord r) =>
+            RollbackControl(c, r, (db, tr) => c.Drawer.CreateSystemBlock(db, tr, Fixtures.HeaderRun(), "CTRL_RB02B"), true, true);
+
+        private static void Rb02c(Ctx c, CaseRecord r)
+        {
+            if (c.CantPlan == null || c.Bind == null || c.Bind.MaterializerNamed == null)
+            {
+                r.Unknown("Cantilever creator reachable", "the fixture plan and the internal creator", c.CantPlanError ?? "the internal creator was not found");
+                return;
+            }
+
+            RollbackControl(c, r, (db, tr) => c.Bind.CallMaterializer(db, tr, c.CantPlan, "CTRL_RB02C", out _), true, true);
+        }
+
+        private static void Rb03(Ctx c, CaseRecord r)
+        {
+            if (c.Bind == null || c.Bind.BlockDataWrite == null)
+            {
+                r.Unknown("RackBlockData.Write reachable", "the internal writer", "the internal writer was not found");
+                return;
+            }
+
+            RollbackControl(c, r, (db, tr) =>
+            {
+                var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForWrite);
+                var block = new BlockTableRecord { Name = "CTRL_RB03", Origin = Point3d.Origin };
+                var id = blockTable.Add(block);
+                tr.AddNewlyCreatedDBObject(block, true);
+                c.Bind.CallEnvelopeWrite(tr, id, new RackEmbedStore().Serialize(c.EnvH(3)));
+            }, false, true);
+        }
+
+        private static void Rb05(Ctx c, CaseRecord r) =>
+            RollbackControl(c, r, (db, tr) =>
+            {
+                var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForWrite);
+                var block = new BlockTableRecord { Name = "CTRL_RB05", Origin = Point3d.Origin };
+                blockTable.Add(block);
+                tr.AddNewlyCreatedDBObject(block, true);
+
+                var dimension = new RotatedDimension(0.0, Point3d.Origin, new Point3d(48.0, 0.0, 0.0), new Point3d(24.0, -6.0, 0.0), string.Empty, db.Dimstyle);
+                block.AppendEntity(dimension);
+                tr.AddNewlyCreatedDBObject(dimension, true);
+                dimension.RecomputeDimensionBlock(true);
+            }, false, true);
 
         // ================================================================ HV-00
 
@@ -1129,7 +1749,7 @@ namespace I52Auth15.HostHarness
 
         private static void Hv01(Ctx c, CaseRecord r)
         {
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);
@@ -1204,7 +1824,7 @@ namespace I52Auth15.HostHarness
                 return;
             }
 
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);
@@ -1272,7 +1892,7 @@ namespace I52Auth15.HostHarness
                 return;
             }
 
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);
@@ -1382,6 +2002,7 @@ namespace I52Auth15.HostHarness
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);
                 var tr = db.TransactionManager.StartTransaction();
+                var committed = false;
 
                 try
                 {
@@ -1398,10 +2019,18 @@ namespace I52Auth15.HostHarness
                     nameC = cantilever.BlockName;
                     nestedName = Inspect(c, tr, header.DefinitionId).RefTargets.FirstOrDefault(t => t.StartsWith(Fixtures.HeaderName, StringComparison.Ordinal));
                     tr.Commit(); // the CALLER commits
+                    committed = true;
                 }
                 finally
                 {
-                    End(tr);
+                    if (committed)
+                    {
+                        EndAfterCommit(tr, "HV-04 after the caller's commit");
+                    }
+                    else
+                    {
+                        End(tr);
+                    }
                 }
 
                 PlacementCheck(c, r, "after commit", baseline, Snapshot.Now(db));
@@ -1455,7 +2084,7 @@ namespace I52Auth15.HostHarness
                 return;
             }
 
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
 
@@ -1695,7 +2324,7 @@ namespace I52Auth15.HostHarness
 
         private static void Hv08(Ctx c, CaseRecord r)
         {
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);
@@ -1755,7 +2384,7 @@ namespace I52Auth15.HostHarness
                 if (!expected)
                 {
                     r.Deviation = true;
-                    r.Notes.Add("NEW DEVIATION: HeaderRun \"<>\" did not come out as ruled; the run STOPS here.");
+                    r.Notes.Add("NEW DEVIATION: HeaderRun \"<>\" did not come out as ruled. It is recorded and the case is FAIL; the run continues (HV-09..HV-14 are independent).");
                 }
 
                 AbortClean(r, "CHARACTERIZATION HeaderRun <> after the caller's abort", baseline, Snapshot.Now(db));
@@ -1817,7 +2446,7 @@ namespace I52Auth15.HostHarness
 
         private static void Hv10(Ctx c, CaseRecord r)
         {
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);
@@ -1918,7 +2547,7 @@ namespace I52Auth15.HostHarness
                 return;
             }
 
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);
@@ -1987,7 +2616,7 @@ namespace I52Auth15.HostHarness
             }
 
             // The strongest form, run once more here: both families, all their content, and the layouts compared by entity handle.
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);
@@ -2020,10 +2649,11 @@ namespace I52Auth15.HostHarness
 
         private static void Hv14(Ctx c, CaseRecord r)
         {
-            using (var scope = new Scope())
+            using (var scope = c.NewScope())
             {
                 var db = scope.Db;
                 var baseline = Snapshot.Now(db);
+                var activeBaseline = db.TransactionManager.NumberOfActiveTransactions; // whatever was active with no caller transaction
                 var tr = db.TransactionManager.StartTransaction();
 
                 try
@@ -2038,8 +2668,8 @@ namespace I52Auth15.HostHarness
                     End(tr);
                 }
 
-                r.Check("no transaction is left active after the caller's abort", "0", db.TransactionManager.NumberOfActiveTransactions.ToString(),
-                    db.TransactionManager.NumberOfActiveTransactions == 0);
+                r.Check("no transaction is left active after the caller's abort (back to the count before the caller started one)", activeBaseline.ToString(),
+                    db.TransactionManager.NumberOfActiveTransactions.ToString(), db.TransactionManager.NumberOfActiveTransactions == activeBaseline);
 
                 AbortClean(r, "nothing survived the caller's abort", baseline, Snapshot.Now(db));
             }

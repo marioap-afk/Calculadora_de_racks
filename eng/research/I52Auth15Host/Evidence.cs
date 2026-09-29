@@ -15,6 +15,80 @@ namespace I52Auth15.HostHarness
         public const string NotRun = "NOT_RUN";
     }
 
+    /// <summary>Why the run stopped early (machine-readable; the launcher classifies from it).</summary>
+    internal static class StopKind
+    {
+        public const string None = "none";
+
+        /// <summary>A case asked to stop because continuing would make later evidence untrustworthy.</summary>
+        public const string Deviation = "deviation";
+
+        /// <summary>HV-00 was not PASS: no AUTH-15 call was made.</summary>
+        public const string Hv00 = "hv00";
+
+        /// <summary>FILEDIA was not restored exactly.</summary>
+        public const string Filedia = "filedia";
+
+        /// <summary>The runner or the environment became untrustworthy.</summary>
+        public const string Exception = "exception";
+    }
+
+    /// <summary>
+    /// What ending a caller's transaction actually did. RUN-2's leaks could not be attributed because the old helper swallowed
+    /// every exception from Abort and Dispose: this records each outcome instead, and turns a failure into a FAIL (a case cannot
+    /// carry on as if the rollback had happened). Pure, so the failure rules are testable offline.
+    /// </summary>
+    internal sealed class TxOutcome
+    {
+        public string Label { get; set; }
+
+        public bool IsDisposedBefore { get; set; }
+
+        public bool AbortAttempted { get; set; }
+
+        public bool AbortSucceeded { get; set; }
+
+        public string AbortError { get; set; }
+
+        public bool DisposeAttempted { get; set; }
+
+        public bool DisposeSucceeded { get; set; }
+
+        public string DisposeError { get; set; }
+
+        public bool IsDisposedAfter { get; set; }
+
+        public int ActiveBefore { get; set; } = -1;
+
+        public int ActiveAfter { get; set; } = -1;
+
+        /// <summary>The native identity of the top transaction after the end, or "null".</summary>
+        public string TopAfter { get; set; }
+
+        /// <summary>The reasons this end cannot be taken as a successful rollback (empty = it can).</summary>
+        public System.Collections.Generic.List<string> Failures(bool abortExpected)
+        {
+            var failures = new System.Collections.Generic.List<string>();
+
+            if (abortExpected && !IsDisposedBefore && (!AbortAttempted || !AbortSucceeded))
+            {
+                failures.Add("Abort " + (AbortAttempted ? "threw: " + AbortError : "was not attempted"));
+            }
+
+            if (DisposeAttempted && !DisposeSucceeded)
+            {
+                failures.Add("Dispose threw: " + DisposeError);
+            }
+
+            if (!IsDisposedAfter)
+            {
+                failures.Add("the transaction is not disposed after the end");
+            }
+
+            return failures;
+        }
+    }
+
     internal sealed class Assertion
     {
         public string Name { get; set; }
@@ -41,6 +115,16 @@ namespace I52Auth15.HostHarness
         public string Family { get; }
 
         public string Expected { get; }
+
+        /// <summary>Which database the case ran on: DOCUMENT-AUTHORITY (the production condition), SIDE-DB-CHARACTERIZATION, or SIDE-DB
+        /// (cases and controls whose subject does not depend on the database kind).</summary>
+        public string DbKind { get; set; }
+
+        /// <summary>Every transaction end this case performed, with its Abort/Dispose outcome.</summary>
+        public System.Collections.Generic.List<TxOutcome> Tx { get; } = new System.Collections.Generic.List<TxOutcome>();
+
+        /// <summary>The case asks the runner to stop because continuing would make later evidence untrustworthy.</summary>
+        public bool StopRun { get; set; }
 
         public string Observed { get; set; }
 
@@ -224,6 +308,19 @@ namespace I52Auth15.HostHarness
 
         public List<CaseRecord> Cases { get; } = new List<CaseRecord>();
 
+        /// <summary>Rollback controls (RB-xx): raw outcomes, PASS/FAIL each, never reinterpreted and never part of the HV verdict.</summary>
+        public List<CaseRecord> Controls { get; } = new List<CaseRecord>();
+
+        /// <summary>Side-database runs of the rollback-sensitive HV cases. Characterization only: they never change the verdict.</summary>
+        public List<CaseRecord> SideCharacterizations { get; } = new List<CaseRecord>();
+
+        public Dictionary<string, object> DocumentAuthority { get; } = new Dictionary<string, object>();
+
+        /// <summary>Ids of the cases that recorded a NEW DEVIATION. The run continues after one unless it asks to stop.</summary>
+        public List<string> Deviations { get; } = new List<string>();
+
+        public string StopKind { get; set; } = HostHarness.StopKind.None;
+
         /// <summary>Observations that are not part of HV-00..HV-14 and never change the verdict.</summary>
         public List<Dictionary<string, object>> Characterizations { get; } = new List<Dictionary<string, object>>();
 
@@ -271,6 +368,13 @@ namespace I52Auth15.HostHarness
             root["binding"] = Binding;
             root["fixtures"] = Fixtures;
             root["cases"] = Cases;
+            root["controls"] = Controls;
+            root["controlLeaks"] = Controls.SelectMany(c => c.Leaks.Select(l => c.Id + " [" + c.DbKind + "] " + l)).ToList();
+            root["sideCharacterizations"] = SideCharacterizations;
+            root["sideCharacterizationLeaks"] = SideCharacterizations.SelectMany(c => c.Leaks.Select(l => c.Id + " [" + c.DbKind + "] " + l)).ToList();
+            root["documentAuthority"] = DocumentAuthority;
+            root["deviations"] = Deviations;
+            root["stopKind"] = StopKind;
             root["characterizations"] = Characterizations;
             root["notExercisable"] = NotExercisable;
             root["leaks"] = Cases.SelectMany(c => c.Leaks.Select(l => c.Id + " " + l)).ToList();

@@ -62,6 +62,13 @@ namespace I52Auth15.HostHarness
 
         public string DictKey { get; private set; }
 
+        /// <summary><c>CantileverViewMaterializer.CreateBlockDefinitionNamed</c>: the family creator AUTH-15 delegates to. Reached only by
+        /// the rollback controls (RB-02c), which call it WITHOUT AUTH-15.</summary>
+        public MethodInfo MaterializerNamed { get; private set; }
+
+        /// <summary><c>RackBlockData.Write</c>: the envelope writer AUTH-15 delegates to. Reached only by RB-03.</summary>
+        public MethodInfo BlockDataWrite { get; private set; }
+
         /// <summary>Every exactness check made while binding (name, ok, detail). HV-00 turns each into an assertion, so a
         /// binding that is merely "close enough" cannot pass.</summary>
         public List<(string Name, bool Ok, string Detail)> Findings { get; } = new List<(string, bool, string)>();
@@ -131,6 +138,14 @@ namespace I52Auth15.HostHarness
             var blockData = plugin.GetType(BlockDataTypeName, false);
             var dictKey = blockData?.GetField("DictKey", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
             binding.DictKey = dictKey?.GetRawConstantValue() as string;
+            binding.BlockDataWrite = blockData?.GetMethod(
+                "Write", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null,
+                new[] { typeof(Transaction), typeof(ObjectId), typeof(string) }, null);
+
+            binding.MaterializerNamed = plugin.GetType("RackCad.Plugin.Drawing.Cantilever.CantileverViewMaterializer", false)?.GetMethod(
+                "CreateBlockDefinitionNamed", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null,
+                new[] { typeof(Database), typeof(Transaction), typeof(CantileverViewPlan), typeof(string), typeof(string).MakeByRefType() }, null);
+
             binding._read = blockData?.GetMethod(
                 "Read", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null,
                 new[] { typeof(Transaction), typeof(ObjectId) }, null);
@@ -189,6 +204,36 @@ namespace I52Auth15.HostHarness
 
         public bool Ready =>
             Findings.Count > 0 && Findings.All(f => f.Ok) && HeaderRunOverload != null && CantileverOverload != null && _isSuccess != null && DictKey != null && _read != null;
+
+        /// <summary>Calls the Cantilever family creator directly (no AUTH-15). Exceptions propagate to the control.</summary>
+        public ObjectId CallMaterializer(Database database, Transaction transaction, CantileverViewPlan plan, string name, out string actualName)
+        {
+            var arguments = new object[] { database, transaction, plan, name, null };
+
+            try
+            {
+                var id = (ObjectId)MaterializerNamed.Invoke(null, arguments);
+                actualName = (string)arguments[4];
+                return id;
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw ex.InnerException ?? ex;
+            }
+        }
+
+        /// <summary>Calls the envelope writer directly (no AUTH-15). Exceptions propagate to the control.</summary>
+        public void CallEnvelopeWrite(Transaction transaction, ObjectId definitionId, string json)
+        {
+            try
+            {
+                BlockDataWrite.Invoke(null, new object[] { transaction, definitionId, json });
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw ex.InnerException ?? ex;
+            }
+        }
 
         /// <summary>The product's own reader (<c>RackBlockData.Read</c>) for the envelope on a definition.</summary>
         public string ReadBack(Transaction transaction, ObjectId definitionId) =>
