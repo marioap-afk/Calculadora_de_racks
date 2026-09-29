@@ -36,7 +36,8 @@ namespace RackCad.Plugin.Systems.Shared
         /// <summary>The envelope read back from the new definition differs from the serialized envelope.</summary>
         EnvelopeWriteFailed,
 
-        /// <summary>AutoCAD (or the family creator) threw while creating the definition or writing the envelope.</summary>
+        /// <summary>AutoCAD (or the family creator) threw while creating the definition or writing the envelope, or the family
+        /// created a definition whose actual name is empty. Post-write: the caller rolls back.</summary>
         WriteFailed,
     }
 
@@ -74,7 +75,7 @@ namespace RackCad.Plugin.Systems.Shared
         /// <summary>The created, enveloped definition. <see cref="ObjectId.Null"/> on failure.</summary>
         public ObjectId DefinitionId { get; }
 
-        /// <summary>The actual name after the family's uniqueness policy (it may carry a suffix). Null on failure.</summary>
+        /// <summary>The actual name after the family's uniqueness policy (it may carry a suffix). NEVER empty on success; null on failure.</summary>
         public string BlockName { get; }
 
         public RackDefinitionCreationFailure Failure { get; }

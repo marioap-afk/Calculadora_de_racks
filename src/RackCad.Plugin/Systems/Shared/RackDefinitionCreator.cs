@@ -54,6 +54,14 @@ namespace RackCad.Plugin.Systems.Shared
             {
                 var created = drawer.CreateSystemBlock(database, transaction, plan, requestedBlockName);
 
+                // The family names the definition; AUTH-15 does not. But a "success" whose actual name is empty is not a usable
+                // identity, whatever the family did to the requested name (RUN-2: "<>" came back as Success with an empty name).
+                var unnamed = UnusableEffectiveName(created.BlockName);
+                if (unnamed.HasValue)
+                {
+                    return unnamed.Value;
+                }
+
                 // A missing library block is omitted by the drawer and only reported. Here it is never silent:
                 // the caller decides what it means, and the envelope is not written on an incomplete definition.
                 if (created.Outcome.HasMissingBlocks)
@@ -90,12 +98,36 @@ namespace RackCad.Plugin.Systems.Shared
                 var definitionId = CantileverViewMaterializer.CreateBlockDefinitionNamed(
                     database, transaction, plan, requestedBlockName, out var blockName);
 
+                var unnamed = UnusableEffectiveName(blockName);
+                if (unnamed.HasValue)
+                {
+                    return unnamed.Value;
+                }
+
                 return Envelope(transaction, definitionId, blockName, payloadJson);
             }
             catch (System.Exception ex)
             {
                 return RackDefinitionCreationResult.Failed(RackDefinitionCreationFailure.WriteFailed, ex.Message);
             }
+        }
+
+        /// <summary>
+        /// POST-WRITE postcondition on AUTH-15's own result: the definition the family created must carry a non-empty actual name.
+        /// Nothing is cleaned up here (whatever was written stays in the caller's transaction for its rollback) and no naming policy
+        /// is applied or duplicated: the name is only READ, never derived. The requested name is validated as supplied (Precheck);
+        /// what the family makes of it is the family's business, and this only refuses to call an unnamed definition a success.
+        /// </summary>
+        private static RackDefinitionCreationResult? UnusableEffectiveName(string effectiveName)
+        {
+            if (!string.IsNullOrWhiteSpace(effectiveName))
+            {
+                return null;
+            }
+
+            return RackDefinitionCreationResult.Failed(
+                RackDefinitionCreationFailure.WriteFailed,
+                "la familia devolvio un nombre efectivo vacio para la definicion; lo escrito queda en la transaccion del llamador para su rollback");
         }
 
         /// <summary>

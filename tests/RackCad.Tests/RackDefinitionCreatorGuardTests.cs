@@ -403,6 +403,48 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void AUTH15_UN_NOMBRE_EFECTIVO_VACIO_NUNCA_ES_EXITO_Y_SE_DECIDE_ANTES_DEL_SOBRE()
+        {
+            // RUN-2 (host): HeaderRun with "<>" came back as Success with an EMPTY block name, because the family sanitizes the
+            // requested name to "" and AutoCAD accepts a nameless definition. AUTH-15 does not own naming, but it must not report
+            // an unusable identity as a success: the ACTUAL name is checked, post-write, before anything else is decided.
+            for (var n = 0; n < 2; n++)
+            {
+                var body = Body(CreatorCode, Entry, n);
+                var name = body.IndexOf("UnusableEffectiveName(", StringComparison.Ordinal);
+                var envelope = body.IndexOf("Envelope(", StringComparison.Ordinal);
+
+                Assert.True(name >= 0, "la familia #" + n + " no valida el nombre efectivo");
+                Assert.True(name < envelope, "la validacion del nombre debe preceder a Envelope(...) en la familia #" + n);
+            }
+
+            var header = Body(CreatorCode, Entry, 0);
+            Assert.True(
+                header.IndexOf("UnusableEffectiveName(", StringComparison.Ordinal) < header.IndexOf("HasMissingBlocks", StringComparison.Ordinal),
+                "HeaderRun valida el nombre antes de tratar los bloques faltantes");
+            Assert.Contains("UnusableEffectiveName(created.BlockName)", header);
+            Assert.Contains("UnusableEffectiveName(blockName)", Body(CreatorCode, Entry, 1));
+
+            var check = Body(CreatorCode, "private static RackDefinitionCreationResult? UnusableEffectiveName(");
+            Assert.Contains("IsNullOrWhiteSpace(effectiveName)", check);
+            Assert.Contains("RackDefinitionCreationFailure.WriteFailed", check);
+
+            // No new failure value, no cleanup: the failure is POST-WRITE and the caller rolls back.
+            Assert.DoesNotContain("BlockNameUnavailable", Code(Result));
+            Assert.DoesNotContain("Erase(", check);
+        }
+
+        [Fact]
+        public void AUTH15_NO_DERIVA_NI_DUPLICA_LA_POLITICA_DE_NOMBRES_DE_LA_FAMILIA()
+        {
+            // The check READS the name the family produced. It must never derive one: that would be a second naming policy (I-09).
+            foreach (var forbidden in new[] { "BlockNaming", "Sanitize", "UniqueBlockName", ".Replace(", ".Trim(", "\"Cabecera\"" })
+            {
+                Assert.DoesNotContain(forbidden, CreatorCode);
+            }
+        }
+
+        [Fact]
         public void AUTH15_EL_SOBRE_SE_VERIFICA_RELEYENDOLO()
         {
             var envelope = Body(CreatorCode, "private static RackDefinitionCreationResult Envelope(");

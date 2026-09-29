@@ -216,13 +216,72 @@ Scratch = UNCHANGED
   reproduccion de RUN-1; PASS falsificado.
 - **Fuera de alcance por decision:** `run.scr` no cambia (byte a byte el mismo que se probo en la corrida real).
 
-## 9. Estado
+## 9. RUN-2: segunda corrida gobernada de host (VALID EXECUTION / FAIL)
 
 ```text
-IMPLEMENTATION = CORRECTED (C-1..C-5); Architect delta re-review = APPROVED
+RUN-2 = VALID EXECUTION / FAIL
+Governing classification = VALID FAIL
+Raw launcher label = INVALID (evidenceFinalAndCompleted=false: the run stopped on a NEW DEVIATION at HV-08)
+Environment = VALID
+Binding = VALID
+Harness SHA = 20158fa5fb6bd2e4c4e95f63197f9c79ef3b9576
+Implementation SHA = 2d10de705fffee3dc03473c2d4c76bff489fc13e
+PID = 27592 ; AutoCAD R25.0.171.0.0 ; exit 0 / process gone / no timeout
+FILEDIA = RESTORED 1 -> 0 -> 1 (live 1 at harness start and end) ; scratch UNCHANGED
+HV-00 = PASS
+HV-01 = FAIL ; HV-02 = FAIL ; HV-03 = FAIL
+HV-04 = PASS
+HV-05 = FAIL
+HV-06 = PASS ; HV-07 = PASS
+HV-08 = FAIL / NEW DEVIATION
+HV-09..HV-14 = NOT RUN
+AUTH15 calls = about 30 (9 creations, 21 refusals before writing)
+F-1 rollback leaks = UNRESOLVED (84 leak entries)
+F-2 empty effective name = CONFIRMED
+```
+
+- **Clasificacion del Arquitecto.** Los 24 controles de lanzamiento, proceso, paquete, identidad y FILEDIA se cumplieron; el unico que
+  fallo (`evidenceFinalAndCompleted`) es un artefacto de clasificacion del lanzador (la corrida se detuvo a proposito). Las
+  observaciones son reales. La etiqueta cruda `INVALID` se conserva como historia y NO se reescribe.
+- **No se publica como evidencia PASS** y no cuenta para un PASS de host. **No se puede arrastrar** a un SHA de implementacion nuevo:
+  esta correccion cambia produccion, asi que habra un SHA de implementacion nuevo y la validacion de host se repite completa.
+- **F-1: fugas tras el Abort del llamador (SIN ATRIBUIR).** Todo lo creado sobrevivio al `Abort`: definiciones, anidadas, `*D`, capas
+  (incluidas `Defpoints` y las de rol de Cantilever) y sobres. Causas por descartar con controles: A) escrituras que escapan de la
+  transaccion del llamador (improbable: HV-01/02 confirman que la transaccion siguio viva y superior tras la llamada, y el codigo delegado
+  no contiene Commit/StartTransaction); B) `Transaction.Abort` no deshace lo asumido en una base de datos lateral; C) el ayudante `End()`
+  del arnes trago una excepcion de `Abort`/`Dispose`; D) efectos nativos fuera del deshacer (`Defpoints`, `*D`), que NO explican HV-02
+  (sin cotas). AUTH-15 no queda ni culpado ni exonerado. Regla de fugas intacta: cualquier fuga tras el abort es FAIL.
+- **F-2: nombre efectivo vacio (CONFIRMADO).** `HeaderRun` con `"<>"` devolvio `Success` con `BlockName = ""` y un sobre escrito sobre una
+  definicion sin nombre. Causa raiz (defecto PREEXISTENTE, fuera de esta unidad): `BlockNaming.SanitizeBlockName` promete «empty ->
+  Cabecera», pero devuelve `""` cuando la entrada no es vacia y se compone solo de caracteres invalidos; `LateralHeaderDrawer.UniqueBlockName`
+  se lo pasa a AutoCAD, que acepta una definicion sin nombre. Lo consumen tambien `RackBlockRenamer`, `RackCloner` y `RackViewBaseName`,
+  y una prueba de caracterizacion de I-57 fija su frontera «legacy» (con tres entradas, ninguna compuesta solo de caracteres invalidos). Corregir el ayudante compartido es una decision APARTE del
+  Coordinador; **no** se hace aqui.
+- **Fuera de alcance por decision:** HANDOFF sin tocar; la unidad no modifica `BlockNaming`, `SanitizeBlockName`, `UniqueBlockName`, los
+  creadores de familia ni la Foundation.
+
+## 10. Correccion post RUN-2: postcondicion de AUTH-15
+
+- **Cambio de produccion (solo AUTH-15).** Tras la creacion de la familia y ANTES del tratamiento de bloques faltantes y de cualquier
+  escritura del sobre, `RackDefinitionCreator` exige que el nombre EFECTIVO de la definicion (el que devolvio la familia: `created.BlockName`
+  en HeaderRun, `out blockName` en Cantilever) no sea nulo, vacio ni espacios. Si lo es: `WriteFailed` con diagnostico. Es POST-ESCRITURA: lo
+  escrito queda en la transaccion del llamador para su rollback (Option B sin cambios, sin limpieza interna).
+- **Lo que NO hace.** No prevalida el nombre efectivo antes de escribir (eso duplicaria la sanitizacion de la familia, I-09), no deriva ni
+  transforma nombres, no usa `BlockNaming`, no anade valores al enum de fallos.
+- **Contrato.** Un exito devuelve SIEMPRE un `BlockName` real y no vacio. `InvalidBlockName` sigue cubriendo el nombre nulo, vacio o solo
+  espacios TAL COMO SE RECIBE; un nombre no vacio que la familia reduce a vacio es `WriteFailed` post-escritura.
+- **Guardas de fuente** (`RackDefinitionCreatorGuardTests`): ambas rutas validan el nombre efectivo, antes de `Envelope(...)` y (HeaderRun)
+  antes de `HasMissingBlocks`; AUTH-15 sigue sin referenciar `BlockNaming`, `Sanitize`, `UniqueBlockName`, `Replace`, `Trim` ni el literal
+  `"Cabecera"`. Cuatro mutaciones (quitar la validacion, ponerla despues del sobre, derivar el nombre con `Trim`, ponerla despues del manejo
+  de faltantes) hacen fallar las guardas.
+
+## 11. Estado
+
+```text
+IMPLEMENTATION = AUTH-15 effective-name postcondition added after RUN-2 (new implementation SHA); pending Architect exact-SHA review
 AUTH15_DEV_01 = ACCEPTED / CONTRACT NORMALIZATION
-RUN-1 = INVALID / HARNESS DEFECT (0 AUTH-15 calls); package 9674dcc9 SUPERSEDED FOR EXECUTION
-HARNESS = CORRECTED (HC-5..HC-8); pending Architect delta re-review
-HOST_VALIDATION = NOT RUN (no valid run yet; AutoCAD not started in this gate)
-NEXT_GATE = ARCHITECT DELTA RE-REVIEW OF CORRECTED HARNESS
+RUN-1 = INVALID / HARNESS DEFECT (0 AUTH-15 calls)
+RUN-2 = VALID EXECUTION / FAIL (F-1 unresolved, F-2 confirmed); cannot be carried forward
+HOST_VALIDATION = NO VALID PASS YET (RUN-3 = one clean full campaign is required after the harness is corrected)
+NEXT_GATE = ARCHITECT EXACT-SHA REVIEW OF NEW IMPLEMENTATION + HARNESS BEFORE RUN-3
 ```

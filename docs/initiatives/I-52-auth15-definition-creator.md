@@ -1,6 +1,6 @@
 # I-52 AUTH-15 — Unidad de integracion: creacion caller-owned de definicion y sobre
 
-Status: ARCHITECT EXACT-SHA REVIEW = APPROVED (delta re-review of `2d10de70`); HOST VALIDATION = RUN-1 INVALID (harness defect, 0 AUTH-15 calls); CORRECTED HARNESS PENDING RE-REVIEW; CANDIDATE PENDING HOST PASS
+Status: POST-RUN-2 CORRECTION (effective-name postcondition) PENDING ARCHITECT EXACT-SHA REVIEW; HOST VALIDATION = RUN-1 INVALID (harness defect), RUN-2 VALID FAIL (rollback leaks unresolved, empty effective name confirmed); RUN-3 REQUIRED; CANDIDATE PENDING HOST PASS
 
 Workflow: V2
 
@@ -80,8 +80,10 @@ tipado.
     `EnvelopeWriteFailed` (el sobre se relee tras escribirlo) y `WriteFailed`.
 - **Aclaraciones:**
   - `InvalidBlockName` cubre el nombre nulo, vacio o solo espacios, antes de escribir. Un nombre no vacio que la
-    politica de la familia vuelve invalido (por ejemplo `<>` en HeaderRun) puede fallar despues, dentro del creador
-    de la familia, como `WriteFailed`. AUTH-15 no anade politica de nombres propia.
+    politica de la familia vuelve invalido (por ejemplo `<>` en HeaderRun, que la familia reduce a `""`) es `WriteFailed`
+    POST-ESCRITURA: AUTH-15 comprueba el nombre EFECTIVO que devolvio la familia y no lo da por exito si esta vacio. AUTH-15 no
+    anade ni duplica politica de nombres: solo LEE el nombre efectivo.
+  - Un exito devuelve SIEMPRE un `BlockName` real y no vacio.
   - `InvalidPlan` significa plan (o dibujante) ausente. Un plan no nulo mal formado, que debia llegar ya preparado,
     puede fallar durante la creacion como `WriteFailed`.
   - `MissingInstances` lleva una entrada por cada par distinto (BlockName|View), tal como las emite el creador
