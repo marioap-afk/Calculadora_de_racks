@@ -1,37 +1,46 @@
 # I-52 — CTDA_HOST_PASS(V35-A3): coverage assessment
 
-> **Generated** from `I-52-ctda-host-pass-coverage-v35a3.json` by `docs/automation/evidence/I-52-ctda-host-pass-coverage-v35a3.gen.py`. Documentation / analysis only: no AutoCAD, no probe, no source change.
-> The JSON is authoritative; this file is its reviewable rendering. Decision record: `docs/automation/decisions/I-52.md` sections 196 and 197.
+> **Generated** from `I-52-ctda-host-pass-coverage-v35a3.json` by `docs/automation/evidence/I-52-ctda-host-pass-coverage-v35a3.gen.py`. Documentation / analysis only: this gate ran no AutoCAD and no probe and changed no source; it renders the recorded structural-campaign results (decisions section 198).
+> The JSON is authoritative; this file is its reviewable rendering. Decision record: `docs/automation/decisions/I-52.md` sections 196, 197 and 198.
 
 ## 1. Result
 
 ```text
-CTDA_HOST_PASS(V35-A3) = NOT EVALUATED   (not TRUE; no disqualifying FAIL/UNKNOWN or recorded inability, so not FALSE)
-Clause 1 fixture identity                 INCOMPLETE   native half SATISFIED (6 rows); managed half NOT SATISFIED
-Clause 2 complete execution               INCOMPLETE   native 6/100 governing (2 deferred, 92 not executed); managed 0/18
-Clause 3 result completeness              INCOMPLETE
-Clause 4 observability DA-P7/P8/P10       INCOMPLETE   DA-P7: S satisfied; M, SM, NOD not
-Clause 5 no FAIL/UNKNOWN                  INCOMPLETE   0 FAIL, 0 UNKNOWN among the 6 governing results
+CTDA_HOST_PASS(V35-A3) = FALSE   (TERMINAL / MONOTONE; not TRUE; no rerun)
+Reason: one governing structural UNKNOWN in the required native matrix: 04NO-S (RESULT-RULE-V35 step 2). Not an inability determination.
+Clause 1 fixture identity                 INCOMPLETE   native half SATISFIED (10 governing rows); managed half NOT SATISFIED
+Clause 2 complete execution               INCOMPLETE   native 9 PASS + 1 UNKNOWN governing of 100 (89 not executed, 1 deferred); managed 0/18
+Clause 3 result completeness              NOT SATISFIED (DISQUALIFIED: governing UNKNOWN 04NO-S)
+Clause 4 observability DA-P7/P8/P10       INCOMPLETE   DA-P7: S, M, SM satisfied; NOD not; DA-P8 and DA-P10 need managed rows (not executed)
+Clause 5 no FAIL/UNKNOWN                  NOT SATISFIED (DISQUALIFIED: 0 FAIL, 1 UNKNOWN governing)
 ```
 
 Three-state model (decisions 197.1): **TRUE** — all five clauses hold on governing evidence. **FALSE** — terminal and monotone: a governing FAIL, a governing UNKNOWN, or an explicit recorded inability determination for a required row, fixture or instrument. **NOT EVALUATED** — no disqualifier exists and at least one required row is unexecuted but still considered producible. The term "NOT EVALUABLE" is retired.
+
+State history: `NOT EVALUATED` (decisions 196 / 197, until the structural campaign) → **`FALSE`** (decisions 198, after row 4 `04NO-S`). The earlier state is recorded history; it is not the current state.
+
+```text
+ContextIsolationAuthority = UNKNOWN   (not proven, not resolved, not refuted by this FALSE)
+SafeOperationalState      = FALSE_FOR_ADMISSION
+G3 = STOPPED   ALT-21C = NOT ADMISSIBLE   ALT-21E = DEFAULT FALLBACK IN EFFECT   ALT-21D = NOT SELECTED
+```
 
 ## 2. Counts
 
 | Class | Native (100) | Managed required (18) | Required 118 |
 |---|---|---|---|
-| PASS-GOVERNED | 6 | 0 | 6 |
+| PASS-GOVERNED | 9 | 0 | 9 |
 | FAIL-GOVERNED | 0 | 0 | 0 |
-| UNKNOWN-GOVERNED | 0 | 0 | 0 |
+| UNKNOWN-GOVERNED | 1 | 0 | 1 |
 | EXECUTED-NON-GOVERNING | 0 | 0 | 0 |
-| NOT-EXECUTED | 92 | 18 | 110 |
-| DEFERRED | 2 | 0 | 2 |
+| NOT-EXECUTED | 89 | 18 | 107 |
+| DEFERRED | 1 | 0 | 1 |
 
-Required rows not executed (not executed + deferred): **112** = 92 native + 2 deferred native + 18 managed. *EXECUTED-NON-GOVERNING* is counted per ROW (a row whose only executions are non-governing): there is none. Per EXECUTION: 11 governing-tuple attempts, 6 governing and 5 not (section 3).
+Required rows not executed (not executed + deferred): **108** = 89 native not executed (of which 10 were stopped before execution by the closed campaign, structural rows 5-14) + 1 deferred native (16A-S) + 18 managed. *EXECUTED-NON-GOVERNING* is counted per ROW (a row whose only executions are non-governing): there is none. Per EXECUTION: 15 attempts, 10 governing (9 PASS, 1 UNKNOWN) and 5 not (section 3).
 
 The nine `16{S,M,SM}-{SEND,CONTEXT,IDLE}` managed scheduler rows of HEC-V27-C1 are **OUTSIDE-PREDICATE** (decisions 197.2); they are listed in section 7 and are not counted above.
 
-## 3. The 11 governing-tuple executions
+## 3. The 15 executions (11 before the structural campaign, 4 campaign rows E12-E15)
 
 | Id | ProbeId | Package / source | Freeze of package | Governing | Carried fwd | Baseline status | Fixture BOOT-01 / CLN-BASE | FRESH surfaces | Engine result | Reason / ruling |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -46,9 +55,13 @@ The nine `16{S,M,SM}-{SEND,CONTEXT,IDLE}` managed scheduler rows of HEC-V27-C1 a
 | E09 | 16N-S | `afa65bc0` / `afa65bc0` | V35-A3 | GOVERNING | no | SUPERSEDED-BUILD (baseline bef6091b) | 8/8 / 8 | S | PASS-S | VALID PASS-S under V35-A3 (D-4 SEND anchor) |
 | E10 | 10N-S | `afa65bc0` / `afa65bc0` | V35-A3 | GOVERNING | no | SUPERSEDED-BUILD (baseline bef6091b) | 8/8 / 8 | S | PASS-S | VALID PASS-S under V35-A3 (D-4 FIXTURE anchor) |
 | E11 | 16C-S | `afa65bc0` / `afa65bc0` | V35-A3 | GOVERNING | no | SUPERSEDED-BUILD (baseline bef6091b) | 8/8 / 8 | S | PASS-S | VALID PASS-S under V35-A3 (D-4 CMDCTX anchor) |
+| E12 | 09N-D | `bef6091b` / `bef6091b` | V35-A3 | GOVERNING | no | CURRENT-BASELINE | 8/8 / 8 | S | PASS-S | VALID GOVERNING PASS-S (structural campaign row 1) |
+| E13 | 10N-M | `bef6091b` / `bef6091b` | V35-A3 | GOVERNING | no | CURRENT-BASELINE | 8/8 / 8 | M | PASS-M | VALID GOVERNING PASS-M (structural campaign row 2) |
+| E14 | 10N-SM | `bef6091b` / `bef6091b` | V35-A3 | GOVERNING | no | CURRENT-BASELINE | 8/8 / 9 | SM | PASS-SM | VALID GOVERNING PASS-SM (structural campaign row 3; Coordinator ruling: the raw scratch-runner label INVALID was a runner defect only, CLN-BASE erased 9 = 8 + F-REF-C) |
+| E15 | 04NO-S | `bef6091b` / `bef6091b` | V35-A3 | GOVERNING | no | CURRENT-BASELINE | 8/8 / 8 | S | UNKNOWN | VALID GOVERNING STRUCTURAL UNKNOWN (structural campaign row 4; RESULT-RULE-V35 step 2; the raw scratch-runner label INVALID is non-authoritative; no rerun) |
 
 Full tuple per execution (build tuple hash, native/payload/managed binary SHA-256, `R3_PRE_RUN_TUPLE_HASH`, `R3_HOST_EXECUTION_TUPLE_HASH`, row approval hash, verifier observations, evidence path and SHA-256) is in the JSON.
-Every governing result ran on a build **other than the current baseline** `bef6091b` (sections 197.4 and 8).
+The six earlier governing results (E04-E06, E09-E11) ran on builds **other than the current baseline** `bef6091b` (decisions 197.4); the four campaign results (E12-E15) ran on the baseline. Both facts are historical: the predicate is terminal FALSE (decisions 198).
 
 ### 3.1 Carry-forward conditions (A2 → A3, decisions 197.4), checked mechanically for E04–E06
 
@@ -58,17 +71,17 @@ Every governing result ran on a build **other than the current baseline** `bef60
 | E05 | 02NDBMOD-S | yes | none | yes (research test D4PriorValidResults) | yes | true |
 | E06 | 02NO-S | yes | none | yes (research test D4PriorValidResults) | yes | true |
 
-Provisionally governing. Before `CTDA_HOST_PASS` can be TRUE each carried or older-build result must be re-executed on the campaign build or carry an explicit Architect equivalence ruling.
+Provisionally governing. The re-execution / equivalence-ruling requirement before `CTDA_HOST_PASS` could be TRUE is moot: the predicate is terminal FALSE (decisions 198). Recorded for history.
 
 ## 4. Clause evaluation
 
 | Clause | Status | Why |
 |---|---|---|
-| 1 — fixture identity | **INCOMPLETE** | Native half: each of the six governing logs records BOOT-01 declared/resolved = 8/8 and CLN-BASE FIXTURE-RESOURCES erased = 8, and binds the freeze package hash (A2 43DCE809.. or A3 D9FD41B4..) and the manifest rowApprovalHash (decisions 197.6). Managed half: HF-V31-1 with F-NOD and F-SRC (identities that exist only in the managed HF-V26 primitives, not in the eight native PersistentFixtureIdentity entries) has never been instantiated in a governed execution. |
-| 2 — complete execution (100 native + 18 managed, exact governed identity/tuple) | **INCOMPLETE** | native 6/100 executed under a governing result (92 not executed, 2 deferred); managed 0/18. The three A2-package results are provisionally governing by conditional carry-forward and every governing result ran on a build other than the current baseline (decisions 197.4). |
-| 3 — result completeness (H-P1..H-P12, IN T1..T16, T14 OUT, every tagged row PASS) | **INCOMPLETE** | H-P satisfied: none; IN T satisfied: none (rows tagged and all PASS). No FAIL among governing results. |
-| 4 — observability (DA-P7 / DA-P8 / DA-P10) | **INCOMPLETE** | DA-P7: S SATISFIED; M, SM, NOD NOT SATISFIED; DA-P8 needs HEC row 11 (NOT-EXECUTED); DA-P10 needs HEC rows 14 and 15 (NOT-EXECUTED). |
-| 5 — no FAIL / UNKNOWN anywhere in the governed matrix | **INCOMPLETE** | 0 FAIL-GOVERNED and 0 UNKNOWN-GOVERNED among the 6 governing results; nothing disqualifying is recorded. The absence cannot be established for the 112 required rows not executed. The two historical A2 UNKNOWN executions of 16N-S (E07, E08) remain in the execution history and are outside the governing matrix under the narrow supersession rule of decisions 197.5. |
+| 1 — fixture identity | **INCOMPLETE** | Native half: each of the ten governing logs records BOOT-01 declared/resolved = 8/8 and CLN-BASE FIXTURE-RESOURCES erased = 8 (9 for 10N-SM: MUT-SM appends F-REF-C), and binds the freeze package hash (A2 43DCE809.. or A3 D9FD41B4..) and the manifest rowApprovalHash (decisions 197.6, 198). Managed half: HF-V31-1 with F-NOD and F-SRC (identities that exist only in the managed HF-V26 primitives, not in the eight native PersistentFixtureIdentity entries) has never been instantiated in a governed execution. Moot for the predicate (terminal FALSE). |
+| 2 — complete execution (100 native + 18 managed, exact governed identity/tuple) | **INCOMPLETE** | native 9/100 governing PASS + 1 governing UNKNOWN (04NO-S); 89 not executed (of which 10 stopped by the closed campaign), 1 deferred; managed 0/18. The three A2-package results are provisionally governing by conditional carry-forward. Incomplete and now unreachable for the predicate: it is terminal FALSE (decisions 198). |
+| 3 — result completeness (H-P1..H-P12, IN T1..T16, T14 OUT, every tagged row PASS, no FAIL, no UNKNOWN) | **NOT SATISFIED (DISQUALIFIED)** | A governing UNKNOWN exists in the required native matrix (04NO-S, structural, RESULT-RULE-V35 step 2). H-P satisfied: none; IN T satisfied: none (rows tagged and all PASS). |
+| 4 — observability (DA-P7 / DA-P8 / DA-P10) | **INCOMPLETE** | DA-P7: S, M, SM SATISFIED; NOD NOT SATISFIED; DA-P8 needs HEC row 11 (NOT-EXECUTED); DA-P10 needs HEC rows 14 and 15 (NOT-EXECUTED). Moot for the predicate (terminal FALSE). |
+| 5 — no FAIL / UNKNOWN anywhere in the governed matrix | **NOT SATISFIED (DISQUALIFIED)** | 0 FAIL-GOVERNED and 1 UNKNOWN-GOVERNED: 04NO-S (structural UNKNOWN: valid executed result; authorizes no rerun; implies no architecture defect; forces CTDA_HOST_PASS = FALSE, decisions 196.1 / 197.1). The two historical A2 UNKNOWN executions of 16N-S (E07, E08) remain in the execution history and are outside the governing matrix under the narrow supersession rule of decisions 197.5; that rule does not apply to 04NO-S (a genuine host-behavior UNKNOWN). |
 
 ### 4.1 DA-P7 / DA-P8 / DA-P10
 
@@ -76,12 +89,12 @@ Rule (decisions 197.7): a physical surface counts for DA-P7 only if a completed 
 
 | Surface | DA-P7 | Evidence (governing FRESH reads) |
 |---|---|---|
-| S | **SATISFIED** | E04 09N-B; E05 02NDBMOD-S; E06 02NO-S; E09 16N-S; E10 10N-S; E11 16C-S |
-| M | **NOT SATISFIED** | — |
-| SM | **NOT SATISFIED** | — |
+| S | **SATISFIED** | E04 09N-B; E05 02NDBMOD-S; E06 02NO-S; E09 16N-S; E10 10N-S; E11 16C-S; E12 09N-D |
+| M | **SATISFIED** | E13 10N-M |
+| SM | **SATISFIED** | E14 10N-SM |
 | NOD | **NOT SATISFIED** | — |
 
-- 09N-B is labelled Surface S/M, but its log has VER-S and VER-T FRESH reads and no VER-M: M is not credited. NOD is a surface of managed row 11 only.
+- 09N-B is labelled Surface S/M, but its log has VER-S and VER-T FRESH reads and no VER-M: M is not credited by that row; M is credited by 10N-M (E13) and SM by 10N-SM (E14). NOD is a surface of managed row 11 only. DA-P7 is now moot for the predicate (terminal FALSE, decisions 198).
 - DA-P8: satisfied only by HEC row 11 (F-NOD): NOT-EXECUTED.
 - DA-P10: satisfied only by HEC rows 14 and 15 (F-SRC): NOT-EXECUTED.
 
@@ -94,30 +107,30 @@ Rule (decisions 197.7): a physical surface counts for DA-P7 only if a completed 
 | P3 | 14 | 10 | 4 | 1 (09N-B) | no |
 | P4 | 7 | 2 | 5 | 1 (02NO-S) | no |
 | P5 | 1 | 0 | 1 | 0 (—) | no |
-| P6 | 85 | 81 | 4 | 5 (09N-B, 10N-S, 16N-S, 16C-S, 02NDBMOD-S) | no |
+| P6 | 85 | 81 | 4 | 7 (09N-B, 09N-D, 10N-S, 10N-SM, 16N-S, 16C-S, 02NDBMOD-S) | no |
 | P7 | 0 | 0 | 0 | 0 (—) | no (cross-cutting property, no row carries it: see 4.1) |
 | P8 | 1 | 0 | 1 | 0 (—) | no |
 | P9 | 3 | 2 | 1 | 0 (—) | no |
 | P10 | 2 | 0 | 2 | 0 (—) | no |
-| P11 | 87 | 83 | 4 | 2 (16C-S, 02NDBMOD-S) | no |
-| P12 | 82 | 75 | 7 | 3 (10N-S, 16N-S, 16C-S) | no |
+| P11 | 87 | 83 | 4 | 4 (10N-M, 10N-SM, 16C-S, 02NDBMOD-S) | no |
+| P12 | 82 | 75 | 7 | 6 (09N-D, 10N-S, 10N-M, 10N-SM, 16N-S, 16C-S) | no |
 
 ### 4.3 Threat coverage (IN T1..T16; T14 OUT). `T2-DOC`, `T2-OBJ`, `T2-ENTITY` are counted under T2.
 
 | Threat | Scope | Rows tagged | native | managed | PASS-GOVERNED | Satisfied |
 |---|---|---|---|---|---|---|
 | T1 | IN | 3 | 0 | 3 | 0 | no |
-| T2 | IN | 98 | 96 | 2 | 5 | no |
+| T2 | IN | 98 | 96 | 2 | 8 | no |
 | T3 | IN | 11 | 7 | 4 | 0 | no |
-| T4 | IN | 11 | 9 | 2 | 1 | no |
+| T4 | IN | 11 | 9 | 2 | 2 | no |
 | T5 | IN | 3 | 1 | 2 | 0 | no |
-| T6 | IN | 4 | 2 | 2 | 0 | no |
+| T6 | IN | 4 | 2 | 2 | 1 | no |
 | T7 | IN | 3 | 1 | 2 | 0 | no |
-| T8 | IN | 16 | 12 | 4 | 2 | no |
+| T8 | IN | 16 | 12 | 4 | 5 | no |
 | T9 | IN | 3 | 1 | 2 | 1 | no |
 | T10 | IN | 2 | 0 | 2 | 0 | no |
-| T11 | IN | 9 | 3 | 6 | 0 | no |
-| T12 | IN | 6 | 3 | 3 | 0 | no |
+| T11 | IN | 9 | 3 | 6 | 1 | no |
+| T12 | IN | 6 | 3 | 3 | 1 | no |
 | T13 | IN | 6 | 5 | 1 | 1 | no |
 | T14 | OUT (diagnostic only; oracle: no state change) | 0 | 0 | 0 | 0 | n/a (OUT) |
 | T15 | IN | 18 | 17 | 1 | 0 | no |
@@ -125,29 +138,35 @@ Rule (decisions 197.7): a physical surface counts for DA-P7 only if a completed 
 
 ## 5. Structural-UNKNOWN candidate rows (15; proposal V35 RC-14 / M4)
 
-UNKNOWN is a legitimate possible outcome of a correct run for these rows, not a guaranteed one: `10N-S` returned PASS-S.
+UNKNOWN is a legitimate possible outcome of a correct run for these rows, not a guaranteed one. Outcomes: `10N-S`, `09N-D`, `10N-M`, `10N-SM` returned PASS; `04NO-S` returned a governing structural UNKNOWN (the campaign stopped there); the other ten were not executed.
 
 | ProbeId | Status | Anchor | Surface | Conditional host fact | UNKNOWN through |
 |---|---|---|---|---|---|
-| 09N-D | NOT-EXECUTED | CB-EXEC-01 | S | the command lock is still held at commandEnded | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation; RESULT-RULE-V35 step 2) |
+| 09N-D | PASS-GOVERNED (E12) | CB-EXEC-01 | S | the command lock is still held at commandEnded | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation; RESULT-RULE-V35 step 2) |
 | 10N-S | PASS-GOVERNED (E10) | CB-EXEC-01 | S | the command lock is still held at commandEnded | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) |
-| 10N-M | NOT-EXECUTED | CB-EXEC-01 | M | the command lock is still held at commandEnded | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) |
-| 10N-SM | NOT-EXECUTED | CB-EXEC-01 | SM | the command lock is still held at commandEnded | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) |
-| 04NO-S | NOT-EXECUTED | EXEC-OBSERVE | S | the abort delivers cancelled/modifyUndone to OR-XR | OBS-PRIMARY-CALLBACK unavailable (RESULT-RULE-V35 step 2) |
-| 04NO-UNDO-S | NOT-EXECUTED | EXEC-OBSERVE | S | the abort delivers cancelled/modifyUndone to OR-XR | OBS-PRIMARY-CALLBACK unavailable (RESULT-RULE-V35 step 2) |
-| 10NDOC-WILL-SM | NOT-EXECUTED | CB-EXEC-01 | SM | a write-capable lock is observable before the request is granted | UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT |
-| 13A-SM | DEFERRED | APPCTX-EXEC-01 | S+M+SM | the nested kWrite request returns eOk | UNK-LOCK-DOC-T-LEAK, UNK-ILLEGAL-CONTEXT |
-| 02NAPP-SM | NOT-EXECUTED | CB-PRIMARY-01 | SM | a nested append to the same block table record is accepted inside objectAppended | UNKNOWN-COMMON (CB-PRIMARY-01 step failure) |
-| 02NTAS-ALL | NOT-EXECUTED | CB-EXEC-01 | S+M+SM | the transaction manager accepts a start from that callback | UNK-ILLEGAL-CONTEXT |
-| 02NTA-ALL | NOT-EXECUTED | CB-EXEC-01 | S+M+SM | the aborted T-PRIMARY is no longer active at the callback | UNK-NESTED-IN-ABORT |
-| 02NEDW-ALL | NOT-EXECUTED | CB-EXEC-01 | S+M+SM | the command lock is already held at commandWillStart | UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT |
-| COBJUNDO16SND-ALL | NOT-EXECUTED | SEND-EXEC-01 | S+M+SM | cancel() sends modifyUndone | OBS-ORIGIN-CALLBACK unavailable (step 2) |
-| COBJUNDO16APP-ALL | NOT-EXECUTED | APPCTX-EXEC-01 | S+M+SM | cancel() sends modifyUndone | OBS-ORIGIN-CALLBACK unavailable (step 2) |
-| 02NEDC-ALL | NOT-EXECUTED | EDC-EXEC-01 | S+M+SM | a write-capable command lock is observable in commandCancelled | UNK-NO-WRITE-LOCK, UNK-T-CANCEL-FAILURE |
+| 10N-M | PASS-GOVERNED (E13) | CB-EXEC-01 | M | the command lock is still held at commandEnded | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) |
+| 10N-SM | PASS-GOVERNED (E14) | CB-EXEC-01 | SM | the command lock is still held at commandEnded | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) |
+| 04NO-S | UNKNOWN-GOVERNED (E15) | EXEC-OBSERVE | S | the abort delivers cancelled/modifyUndone to OR-XR | OBS-MARKERS unavailable (RESULT-RULE-V35 step 2): OBS-PRIMARY-CALLBACK was AVAILABLE (N-OBJ-CANCEL / cancelled), but the required positive markers +N-OBJ-UNDO, +N-OBJ-MOD and +N-OBJ-CLOSED were absent (EVIDENCE-COMPLETE clause 3) |
+| 04NO-UNDO-S | NOT-EXECUTED - campaign stopped | EXEC-OBSERVE | S | the abort delivers cancelled/modifyUndone to OR-XR | frozen shorthand: OBS-PRIMARY-CALLBACK unavailable (RESULT-RULE-V35 step 2). NOT EXECUTED. Clarification (decisions 198.8): the shorthand names one route only; on 04NO-S the observed route was OBS-MARKERS unavailable with the primary callback available |
+| 10NDOC-WILL-SM | NOT-EXECUTED - campaign stopped | CB-EXEC-01 | SM | a write-capable lock is observable before the request is granted | UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT |
+| 13A-SM | NOT-EXECUTED - campaign stopped | APPCTX-EXEC-01 | S+M+SM | the nested kWrite request returns eOk | UNK-LOCK-DOC-T-LEAK, UNK-ILLEGAL-CONTEXT |
+| 02NAPP-SM | NOT-EXECUTED - campaign stopped | CB-PRIMARY-01 | SM | a nested append to the same block table record is accepted inside objectAppended | UNKNOWN-COMMON (CB-PRIMARY-01 step failure) |
+| 02NTAS-ALL | NOT-EXECUTED - campaign stopped | CB-EXEC-01 | S+M+SM | the transaction manager accepts a start from that callback | UNK-ILLEGAL-CONTEXT |
+| 02NTA-ALL | NOT-EXECUTED - campaign stopped | CB-EXEC-01 | S+M+SM | the aborted T-PRIMARY is no longer active at the callback | UNK-NESTED-IN-ABORT |
+| 02NEDW-ALL | NOT-EXECUTED - campaign stopped | CB-EXEC-01 | S+M+SM | the command lock is already held at commandWillStart | UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT |
+| COBJUNDO16SND-ALL | NOT-EXECUTED - campaign stopped | SEND-EXEC-01 | S+M+SM | cancel() sends modifyUndone | OBS-ORIGIN-CALLBACK unavailable (step 2) |
+| COBJUNDO16APP-ALL | NOT-EXECUTED - campaign stopped | APPCTX-EXEC-01 | S+M+SM | cancel() sends modifyUndone | OBS-ORIGIN-CALLBACK unavailable (step 2) |
+| 02NEDC-ALL | NOT-EXECUTED - campaign stopped | EDC-EXEC-01 | S+M+SM | a write-capable command lock is observable in commandCancelled | UNK-NO-WRITE-LOCK, UNK-T-CANCEL-FAILURE |
 
-## 6. Structural falsification campaign — DESIGN ONLY, NOT AUTHORIZED, NOT EXECUTED
+### 5.1 Wording clarification for `04NO-S` (decisions 198.8; documentation drift only)
 
-Rules:
+The frozen shorthand in `proposal-v35.md` (line 220) describes the 04NO rows as "UNKNOWN through OBS-PRIMARY-CALLBACK unavailable". On `04NO-S` that is **not** what occurred: `OBS-PRIMARY-CALLBACK` was **available** (`N-OBJ-CANCEL` / `cancelled`), but the required `OBS-MARKERS` positive callbacks (`+N-OBJ-UNDO`, `+N-OBJ-MOD`, `+N-OBJ-CLOSED`) were absent, so `RESULT-RULE-V35` step 2 returned UNKNOWN. The frozen row, the proposal text and `RESULT-RULE-V35` are **not** amended; only this derived rendering carries the clarification, and the JSON keeps the frozen shorthand in `unknownThroughFrozenShorthand`.
+
+## 6. Structural falsification campaign — EXECUTED, STOPPED AFTER ROW 4, CLOSED
+
+Status: EXECUTED AND CLOSED AFTER ROW 4 (decisions 198): rows 1-3 governing PASS, row 4 governing structural UNKNOWN => CTDA_HOST_PASS = FALSE (terminal); rows 5-14 NOT EXECUTED / NOT AUTHORIZED
+
+Rules as authorized:
 
 - Exactly one ProbeId per AutoCAD process.
 - The same exact campaign build/tuple (baseline below) for every row; a build change stops the campaign for a Coordinator ruling.
@@ -159,24 +178,39 @@ Rules:
 - Each row needs its own Coordinator authorization, the exact TRUSTEDPATHS entry, and the Owner no-touch declaration.
 - 16A-S is NOT part of this group; 13A-SM is.
 
+Stop rule applied: first governing UNKNOWN or FAIL => CTDA_HOST_PASS = FALSE (terminal), STOP, no rerun; INVALID or non-governing => STOP for a Coordinator ruling (never inferred FALSE).
+
 Order rule: Deterministic: ascending NPM-V35 section 5 row order (the catalog order). The corpus has no prior probability model of which host fact fails, so no risk-based order is invented. The order changes only how early a FALSE would appear, never the outcome, because FALSE is monotone; the Coordinator may reorder before authorization.
 
-| # | ProbeId | Anchor | Chain | Surface | Verifiers | Expected possible structural outcome | Why it is in this campaign |
-|---|---|---|---|---|---|---|---|
-| 1 | 09N-D | CB-EXEC-01 | CHAIN-NONE | S | VER-S,VER-T | UNKNOWN through UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation; RESULT-RULE-V35 step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 2 | 10N-M | CB-EXEC-01 | CHAIN-NONE | M | VER-M,VER-T | UNKNOWN through UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 3 | 10N-SM | CB-EXEC-01 | CHAIN-NONE | SM | VER-SM,VER-T | UNKNOWN through UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 4 | 04NO-S | EXEC-OBSERVE | CHAIN-NONE | S | VER-S,VER-T | UNKNOWN through OBS-PRIMARY-CALLBACK unavailable (RESULT-RULE-V35 step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 5 | 04NO-UNDO-S | EXEC-OBSERVE | CHAIN-NONE | S | VER-S,VER-T | UNKNOWN through OBS-PRIMARY-CALLBACK unavailable (RESULT-RULE-V35 step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 6 | 10NDOC-WILL-SM | CB-EXEC-01 | CHAIN-NONE | SM | VER-SM,VER-T | UNKNOWN through UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 7 | 13A-SM | APPCTX-EXEC-01 | CHAIN-SYNC | S+M+SM | VER-ALL,VER-T | UNKNOWN through UNK-LOCK-DOC-T-LEAK, UNK-ILLEGAL-CONTEXT if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 8 | 02NAPP-SM | CB-PRIMARY-01 | CHAIN-NONE | SM | VER-SM,VER-T | UNKNOWN through UNKNOWN-COMMON (CB-PRIMARY-01 step failure) if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 9 | 02NTAS-ALL | CB-EXEC-01 | CHAIN-NONE | S+M+SM | VER-ALL,VER-T | UNKNOWN through UNK-ILLEGAL-CONTEXT if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 10 | 02NTA-ALL | CB-EXEC-01 | CHAIN-NONE | S+M+SM | VER-ALL,VER-T | UNKNOWN through UNK-NESTED-IN-ABORT if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 11 | 02NEDW-ALL | CB-EXEC-01 | CHAIN-NONE | S+M+SM | VER-ALL,VER-T | UNKNOWN through UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 12 | COBJUNDO16SND-ALL | SEND-EXEC-01 | CHAIN-SEND | S+M+SM | VER-ALL,VER-T | UNKNOWN through OBS-ORIGIN-CALLBACK unavailable (step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 13 | COBJUNDO16APP-ALL | APPCTX-EXEC-01 | CHAIN-APPCTX | S+M+SM | VER-ALL,VER-T | UNKNOWN through OBS-ORIGIN-CALLBACK unavailable (step 2) if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
-| 14 | 02NEDC-ALL | EDC-EXEC-01 | CHAIN-NONE | S+M+SM | VER-ALL,VER-T | UNKNOWN through UNK-NO-WRITE-LOCK, UNK-T-CANCEL-FAILURE if the conditional host fact does not hold; otherwise the row may reach its PASS class | RC-14 structural-UNKNOWN candidate (proposal V35 table): the architecture depends on a host fact that may legitimately be unavailable. A governing UNKNOWN or FAIL makes CTDA_HOST_PASS FALSE (terminal) without needing the remaining ~94 native rows or the managed authority. |
+| # | ProbeId | Anchor | Chain | Surface | Verifiers | Campaign state | executed | governing | structuralUnknown | terminalForHostPass | campaignStoppedBeforeExecution | Structural route |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 09N-D | CB-EXEC-01 | CHAIN-NONE | S | VER-S,VER-T | EXECUTED - PASS-S (E12) | yes | yes | false | false | false | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation; RESULT-RULE-V35 step 2) |
+| 2 | 10N-M | CB-EXEC-01 | CHAIN-NONE | M | VER-M,VER-T | EXECUTED - PASS-M (E13) | yes | yes | false | false | false | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) |
+| 3 | 10N-SM | CB-EXEC-01 | CHAIN-NONE | SM | VER-SM,VER-T | EXECUTED - PASS-SM (E14) | yes | yes | false | false | false | UNKNOWN-COMMON (CB-LOCK-01 lock unavailable, no mutation) and OBS-CANDIDATE-BOUNDARY = UNAVAILABLE (step 2) |
+| 4 | 04NO-S | EXEC-OBSERVE | CHAIN-NONE | S | VER-S,VER-T | EXECUTED - UNKNOWN (E15) | yes | yes | true | true | false | OBS-MARKERS unavailable (RESULT-RULE-V35 step 2): OBS-PRIMARY-CALLBACK was AVAILABLE (N-OBJ-CANCEL / cancelled), but the required positive markers +N-OBJ-UNDO, +N-OBJ-MOD and +N-OBJ-CLOSED were absent (EVIDENCE-COMPLETE clause 3) |
+| 5 | 04NO-UNDO-S | EXEC-OBSERVE | CHAIN-NONE | S | VER-S,VER-T | NOT EXECUTED - CAMPAIGN STOPPED BEFORE EXECUTION (NOT AUTHORIZED) | no | no | false | false | true | frozen shorthand: OBS-PRIMARY-CALLBACK unavailable (RESULT-RULE-V35 step 2). NOT EXECUTED. Clarification (decisions 198.8): the shorthand names one route only; on 04NO-S the observed route was OBS-MARKERS unavailable with the primary callback available |
+| 6 | 10NDOC-WILL-SM | CB-EXEC-01 | CHAIN-NONE | SM | VER-SM,VER-T | NOT EXECUTED - CAMPAIGN STOPPED BEFORE EXECUTION (NOT AUTHORIZED) | no | no | false | false | true | UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT |
+| 7 | 13A-SM | APPCTX-EXEC-01 | CHAIN-SYNC | S+M+SM | VER-ALL,VER-T | NOT EXECUTED - CAMPAIGN STOPPED BEFORE EXECUTION (NOT AUTHORIZED) | no | no | false | false | true | UNK-LOCK-DOC-T-LEAK, UNK-ILLEGAL-CONTEXT |
+| 8 | 02NAPP-SM | CB-PRIMARY-01 | CHAIN-NONE | SM | VER-SM,VER-T | NOT EXECUTED - CAMPAIGN STOPPED BEFORE EXECUTION (NOT AUTHORIZED) | no | no | false | false | true | UNKNOWN-COMMON (CB-PRIMARY-01 step failure) |
+| 9 | 02NTAS-ALL | CB-EXEC-01 | CHAIN-NONE | S+M+SM | VER-ALL,VER-T | NOT EXECUTED - CAMPAIGN STOPPED BEFORE EXECUTION (NOT AUTHORIZED) | no | no | false | false | true | UNK-ILLEGAL-CONTEXT |
+| 10 | 02NTA-ALL | CB-EXEC-01 | CHAIN-NONE | S+M+SM | VER-ALL,VER-T | NOT EXECUTED - CAMPAIGN STOPPED BEFORE EXECUTION (NOT AUTHORIZED) | no | no | false | false | true | UNK-NESTED-IN-ABORT |
+| 11 | 02NEDW-ALL | CB-EXEC-01 | CHAIN-NONE | S+M+SM | VER-ALL,VER-T | NOT EXECUTED - CAMPAIGN STOPPED BEFORE EXECUTION (NOT AUTHORIZED) | no | no | false | false | true | UNK-NO-WRITE-LOCK, UNK-ILLEGAL-CONTEXT |
+| 12 | COBJUNDO16SND-ALL | SEND-EXEC-01 | CHAIN-SEND | S+M+SM | VER-ALL,VER-T | NOT EXECUTED - CAMPAIGN STOPPED BEFORE EXECUTION (NOT AUTHORIZED) | no | no | false | false | true | OBS-ORIGIN-CALLBACK unavailable (step 2) |
+| 13 | COBJUNDO16APP-ALL | APPCTX-EXEC-01 | CHAIN-APPCTX | S+M+SM | VER-ALL,VER-T | NOT EXECUTED - CAMPAIGN STOPPED BEFORE EXECUTION (NOT AUTHORIZED) | no | no | false | false | true | OBS-ORIGIN-CALLBACK unavailable (step 2) |
+| 14 | 02NEDC-ALL | EDC-EXEC-01 | CHAIN-NONE | S+M+SM | VER-ALL,VER-T | NOT EXECUTED - CAMPAIGN STOPPED BEFORE EXECUTION (NOT AUTHORIZED) | no | no | false | false | true | UNK-NO-WRITE-LOCK, UNK-T-CANCEL-FAILURE |
+
+Rows 5-14 are **not executed and not authorized**; they are not FAIL, not UNKNOWN and not deferred.
+
+### 6.0 Campaign results (canonical)
+
+| # | ProbeId | Execution | PID | Engine result | Raw scratch-runner label | Canonical status | Fresh reads | BOOT-01 / CLN-BASE | Evidence |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 09N-D | E12 | 13556 | PASS-S | PASS | GOVERNING PASS-S | VER-S,VER-T | 8/8 / 8 | `docs/automation/evidence/I-52-ctda-campaign-01-09N-D-bef6091b.json` (`89B971774AA495D0`) |
+| 2 | 10N-M | E13 | 19096 | PASS-M | PASS | GOVERNING PASS-M | VER-M,VER-T | 8/8 / 8 | `docs/automation/evidence/I-52-ctda-campaign-02-10N-M-bef6091b.json` (`C7E4929BAC073632`) |
+| 3 | 10N-SM | E14 | 32692 | PASS-SM | INVALID | GOVERNING PASS-SM | VER-SM,VER-T | 8/8 / 9 | `docs/automation/evidence/I-52-ctda-campaign-03-10N-SM-bef6091b.json` (`95ADBCFF954FC78A`) |
+| 4 | 04NO-S | E15 | 30884 | UNKNOWN | INVALID | GOVERNING STRUCTURAL UNKNOWN | VER-S,VER-T | 8/8 / 8 | `docs/automation/evidence/I-52-ctda-campaign-04-04NO-S-bef6091b.json` (`28FF7C9DBBF3F744`) |
+
+The raw scratch-runner labels are non-authoritative tooling classifications and are preserved unchanged in the evidence: row 3 `INVALID` was a runner defect (CLN-BASE erased 9 = 8 + `F-REF-C` appended by MUT-SM), row 4 `INVALID` treated `EvidenceComplete=false` as invalid, whereas a structural UNKNOWN is a valid executed result (decisions 198).
 
 ### 6.1 Campaign baseline identity (from the published zero-probe smoke evidence; package verified read-only)
 
@@ -198,7 +232,7 @@ R3_HOST_EXECUTION_TUPLE_HASH is generated per execution (it binds ProbeId, row h
 
 ## 7. Managed rows
 
-Required for CTDA_HOST_PASS(V35-A3): exactly 18 — `01`, `02`, `03`, `04`, `05`, `06`, `07`, `08`, `09C`, `09E`, `10S`, `10M`, `10SM`, `11`, `12`, `13`, `14`, `15`. Fixture `HF-V31-1`. Every required row is NOT-EXECUTED. Executable authority is MISSING but presently considered IMPLEMENTABLE (decisions 197.3).
+Required for CTDA_HOST_PASS(V35-A3): exactly 18 — `01`, `02`, `03`, `04`, `05`, `06`, `07`, `08`, `09C`, `09E`, `10S`, `10M`, `10SM`, `11`, `12`, `13`, `14`, `15`. Fixture `HF-V31-1`. Every required row is NOT-EXECUTED. Executable authority is MISSING but presently considered IMPLEMENTABLE (decisions 197.3); its purpose for this predicate is MOOT because CTDA_HOST_PASS is terminal FALSE (decisions 198). This is not an inability determination.
 
 | ProbeId | Predicate status | Class | Trigger / scheduler / direct action | Surface | Tags | Would contribute if a governing PASS |
 |---|---|---|---|---|---|---|
@@ -230,117 +264,117 @@ Required for CTDA_HOST_PASS(V35-A3): exactly 18 — `01`, `02`, `03`, `04`, `05`
 | 16M-IDLE | OUTSIDE-PREDICATE | OUTSIDE-PREDICATE | MS-IDLE | M | P11,P12 | — |
 | 16SM-IDLE | OUTSIDE-PREDICATE | OUTSIDE-PREDICATE | MS-IDLE | SM | P6,P11,P12 | — |
 
-## 8. Deferred probes
+## 8. Deferred and campaign-stopped APPCTX probes
 
 - **16A-S** — family `H-APPCTX,H-DB`, chain `CHAIN-APPCTX`, anchor `APPCTX-EXEC-01`, surface `S`, verifiers `VER-S,VER-T`, threats `T2,T8,T16`, tags `P6,P11,P12`. APPCTX anchor characterization (D-4 text unchanged for APPCTX); deferred in decisions sections 194/195 and HANDOFF; NOT in the structural group
-- **13A-SM** — family `H-APPCTX`, chain `CHAIN-SYNC`, anchor `APPCTX-EXEC-01`, surface `S+M+SM`, verifiers `VER-ALL,VER-T`, threats `T13`, tags `P6,P11,P12`. APPCTX synchronous chain (nested lock request while the command lock is held); deferred in decisions sections 194/195; IS in the structural group (not yet authorized)
+- **13A-SM** — family `H-APPCTX`, chain `CHAIN-SYNC`, anchor `APPCTX-EXEC-01`, surface `S+M+SM`, verifiers `VER-ALL,VER-T`, threats `T13`, tags `P6,P11,P12`. the structural campaign was stopped after row 4 (04NO-S governing structural UNKNOWN => CTDA_HOST_PASS = FALSE, terminal; decisions section 198): NOT EXECUTED and NOT AUTHORIZED; not FAIL, not UNKNOWN, not deferred. Previously listed DEFERRED (decisions 194/195, APPCTX chain) and then included in the authorized 14-row group at position 7
 
 ## 9. Native matrix (100 rows)
 
 Fixture identity for every native row: `fixture-v35 / FEC-V35-1`. "Anchor" is the row's `ExecutionContextId`; "family" is its `HeaderAuthority`. "S*" marks the 15 structural-UNKNOWN candidates. "D-4" is the A3 anchor characterization. Results are never transferred between families or anchors.
 
-| ProbeId | S* | Class | Family | Chain | Anchor | Surface | Tuple (pkg / source / freeze) | Carried fwd | Result | D-4 | FRESH surfaces | Non-governing exec |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 02N |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | S | — | — | — | — | — | — |
-| 04N |  | NOT-EXECUTED | H-TX | CHAIN-NONE | EXEC-OBSERVE | S | — | — | — | — | — | — |
-| 09N-A |  | NOT-EXECUTED | H-TX | CHAIN-NONE | EXEC-OBSERVE | S/M | — | — | — | — | — | — |
-| 09N-B |  | PASS-GOVERNED | H-TX | CHAIN-NONE | EXEC-OBSERVE | S/M | `e864a093` / `e864a093` / V35-A2 | yes | PASS-T | — | S | E01 |
-| 09N-O |  | NOT-EXECUTED | H-TX | CHAIN-NONE | EXEC-OBSERVE | S/M | — | — | — | — | — | — |
-| 09N-C |  | NOT-EXECUTED | H-TX | CHAIN-NONE | EXEC-OBSERVE | S/M | — | — | — | — | — | — |
-| 09N-D | S* | NOT-EXECUTED | H-ED | CHAIN-NONE | CB-EXEC-01 | S | — | — | — | — | — | — |
-| 10N-S | S* | PASS-GOVERNED | H-ED | CHAIN-NONE | CB-EXEC-01 | S | `afa65bc0` / `afa65bc0` / V35-A3 | no | PASS-S | FIXTURE | S | — |
-| 10N-M | S* | NOT-EXECUTED | H-ED | CHAIN-NONE | CB-EXEC-01 | M | — | — | — | — | — | — |
-| 10N-SM | S* | NOT-EXECUTED | H-ED | CHAIN-NONE | CB-EXEC-01 | SM | — | — | — | — | — | — |
-| 16N-S |  | PASS-GOVERNED | H-SEND,H-DB | CHAIN-SEND | SEND-EXEC-01 | S | `afa65bc0` / `afa65bc0` / V35-A3 | no | PASS-S | SEND | S | E07,E08 |
-| 16N-M |  | NOT-EXECUTED | H-SEND,H-DB | CHAIN-SEND | SEND-EXEC-01 | M | — | — | — | — | — | — |
-| 16N-SM |  | NOT-EXECUTED | H-SEND,H-DB | CHAIN-SEND | SEND-EXEC-01 | SM | — | — | — | — | — | — |
-| C15N16N-SM |  | NOT-EXECUTED | H-LOAD,H-SEND,H-DB | CHAIN-SEND | SEND-EXEC-01 | SM | — | — | — | — | — | — |
-| 02NO-S |  | PASS-GOVERNED | H-OBJ | CHAIN-NONE | CB-PRIMARY-01 | S | `e864a093` / `e864a093` / V35-A2 | yes | PASS-S | — | S | — |
-| 02NO-M |  | NOT-EXECUTED | H-OBJ | CHAIN-NONE | CB-PRIMARY-01 | M | — | — | — | — | — | — |
-| 02NO-SM |  | NOT-EXECUTED | H-OBJ | CHAIN-NONE | CB-PRIMARY-01 | SM | — | — | — | — | — | — |
-| 02NO-CLOSE-SM |  | NOT-EXECUTED | H-OBJ | CHAIN-NONE | CB-PRIMARY-01 | SM | — | — | — | — | — | — |
-| 04NO-S | S* | NOT-EXECUTED | H-OBJ | CHAIN-NONE | EXEC-OBSERVE | S | — | — | — | — | — | — |
-| 04NO-UNDO-S | S* | NOT-EXECUTED | H-OBJ | CHAIN-NONE | EXEC-OBSERVE | S | — | — | — | — | — | — |
-| 02NE-M |  | NOT-EXECUTED | H-OBJ | CHAIN-NONE | CB-PRIMARY-01 | M | — | — | — | — | — | — |
-| 10NDOC-WILL-SM | S* | NOT-EXECUTED | H-DOC | CHAIN-NONE | CB-EXEC-01 | SM | — | — | — | — | — | — |
-| 10NDOC-CHANGED-SM |  | NOT-EXECUTED | H-DOC | CHAIN-NONE | CB-EXEC-01 | SM | — | — | — | — | — | — |
-| 10NDOC-VETO-SM |  | NOT-EXECUTED | H-DOC | CHAIN-NONE | EXEC-OBSERVE | SM | — | — | — | — | — | — |
-| C2OBJ16N-S |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S | — | — | — | — | — | — |
-| C2OBJ16N-M |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | M | — | — | — | — | — | — |
-| C2OBJ16N-SM |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | SM | — | — | — | — | — | — |
-| C2ENT16N-M |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | M | — | — | — | — | — | — |
-| C2DOCW16N-SM |  | NOT-EXECUTED | H-DOC,H-SEND | CHAIN-SEND | SEND-EXEC-01 | SM | — | — | — | — | — | — |
-| C2DOCC16N-SM |  | NOT-EXECUTED | H-DOC,H-SEND | CHAIN-SEND | SEND-EXEC-01 | SM | — | — | — | — | — | — |
-| 13A-SM | S* | DEFERRED | H-APPCTX | CHAIN-SYNC | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| 16A-S |  | DEFERRED | H-APPCTX,H-DB | CHAIN-APPCTX | APPCTX-EXEC-01 | S | — | — | — | — | — | — |
-| 16A-M |  | NOT-EXECUTED | H-APPCTX,H-DB | CHAIN-APPCTX | APPCTX-EXEC-01 | M | — | — | — | — | — | — |
-| 16A-SM |  | NOT-EXECUTED | H-APPCTX,H-DB | CHAIN-APPCTX | APPCTX-EXEC-01 | SM | — | — | — | — | — | — |
-| 16C-S |  | PASS-GOVERNED | H-CMDCTX,H-APPCTX | CHAIN-SYNC-CMDCTX | CMDCTX-EXEC-01 | S | `afa65bc0` / `afa65bc0` / V35-A3 | no | PASS-S | CMDCTX | S | — |
-| 16C-M |  | NOT-EXECUTED | H-CMDCTX,H-APPCTX | CHAIN-SYNC-CMDCTX | CMDCTX-EXEC-01 | M | — | — | — | — | — | — |
-| 16C-SM |  | NOT-EXECUTED | H-CMDCTX,H-APPCTX | CHAIN-SYNC-CMDCTX | CMDCTX-EXEC-01 | SM | — | — | — | — | — | — |
-| 02NAPP-S |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | S | — | — | — | — | — | — |
-| 02NAPP-M |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | M | — | — | — | — | — | — |
-| 02NAPP-SM | S* | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | SM | — | — | — | — | — | — |
-| 02NTAS-ALL | S* | NOT-EXECUTED | H-TX | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| 02NTS-ALL |  | NOT-EXECUTED | H-TX | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| 02NTA-ALL | S* | NOT-EXECUTED | H-TX | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| 02NRXW-ALL |  | NOT-EXECUTED | H-LOAD | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| 02NRXL-ALL |  | NOT-EXECUTED | H-LOAD | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| 02NEDW-ALL | S* | NOT-EXECUTED | H-ED | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CAPP16SND-ALL |  | NOT-EXECUTED | H-DB,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CAPP16APP-ALL |  | NOT-EXECUTED | H-DB,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTAS16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTAS16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTS16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTS16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTA16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTA16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CRXW16SND-ALL |  | NOT-EXECUTED | H-LOAD,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CRXW16APP-ALL |  | NOT-EXECUTED | H-LOAD,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CRXL16SND-ALL |  | NOT-EXECUTED | H-LOAD,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CRXL16APP-ALL |  | NOT-EXECUTED | H-LOAD,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CEDW16SND-ALL |  | NOT-EXECUTED | H-ED,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CEDW16APP-ALL |  | NOT-EXECUTED | H-ED,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| C2APP2CMD-ALL |  | NOT-EXECUTED | H-DB,H-APPCTX,H-CMDCTX | CHAIN-APPCTX-CMDCTX | CMDCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CDBERASE16SND-ALL |  | NOT-EXECUTED | H-DB,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CDBOPEN16SND-ALL |  | NOT-EXECUTED | H-DB,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CDOCLOCKVETO16SND-ALL |  | NOT-EXECUTED | H-DOC,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CEDEND16SND-ALL |  | NOT-EXECUTED | H-ED,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| COBJCANCEL16SND-ALL |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| COBJCLOSED16SND-ALL |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| COBJERASE16SND-ALL |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| COBJOPEN16SND-ALL |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| COBJUNDO16SND-ALL | S* | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTRABOUTABORT16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTRABOUTEND16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTRENDED16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTROUTERMOSTENDCALLED16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CDBERASE16APP-ALL |  | NOT-EXECUTED | H-DB,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CDBOPEN16APP-ALL |  | NOT-EXECUTED | H-DB,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CDOCLOCKCHANGED16APP-ALL |  | NOT-EXECUTED | H-DOC,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CDOCLOCKVETO16APP-ALL |  | NOT-EXECUTED | H-DOC,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CDOCLOCKWILL16APP-ALL |  | NOT-EXECUTED | H-DOC,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CEDEND16APP-ALL |  | NOT-EXECUTED | H-ED,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CENTGFX16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| COBJCANCEL16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| COBJCLOSED16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| COBJERASE16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| COBJMOD16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| COBJOPEN16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| COBJUNDO16APP-ALL | S* | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTRABOUTABORT16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTRABOUTEND16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTRENDED16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CTROUTERMOSTENDCALLED16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| 02NEDC-ALL | S* | NOT-EXECUTED | H-ED | CHAIN-NONE | EDC-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CEDC16SND-ALL |  | NOT-EXECUTED | H-ED,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| CEDC16APP-ALL |  | NOT-EXECUTED | H-ED,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — |
-| 02NDBMOD-S |  | PASS-GOVERNED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | S | `e864a093` / `e864a093` / V35-A2 | yes | PASS-S | — | S | E02,E03 |
-| 02NDBMOD-M |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | M | — | — | — | — | — | — |
-| 02NDBMOD-SM |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | SM | — | — | — | — | — | — |
-| 02NDBERASE-S |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | S | — | — | — | — | — | — |
-| 02NDBERASE-M |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | M | — | — | — | — | — | — |
-| 02NDBERASE-SM |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | SM | — | — | — | — | — | — |
+| ProbeId | S* | Class | Family | Chain | Anchor | Surface | Tuple (pkg / source / freeze) | Carried fwd | Result | D-4 | FRESH surfaces | Non-governing exec | Campaign |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 02N |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | S | — | — | — | — | — | — | — |
+| 04N |  | NOT-EXECUTED | H-TX | CHAIN-NONE | EXEC-OBSERVE | S | — | — | — | — | — | — | — |
+| 09N-A |  | NOT-EXECUTED | H-TX | CHAIN-NONE | EXEC-OBSERVE | S/M | — | — | — | — | — | — | — |
+| 09N-B |  | PASS-GOVERNED | H-TX | CHAIN-NONE | EXEC-OBSERVE | S/M | `e864a093` / `e864a093` / V35-A2 | yes | PASS-T | — | S | E01 | — |
+| 09N-O |  | NOT-EXECUTED | H-TX | CHAIN-NONE | EXEC-OBSERVE | S/M | — | — | — | — | — | — | — |
+| 09N-C |  | NOT-EXECUTED | H-TX | CHAIN-NONE | EXEC-OBSERVE | S/M | — | — | — | — | — | — | — |
+| 09N-D | S* | PASS-GOVERNED | H-ED | CHAIN-NONE | CB-EXEC-01 | S | `bef6091b` / `bef6091b` / V35-A3 | no | PASS-S | — | S | — | row 1: PASS-S |
+| 10N-S | S* | PASS-GOVERNED | H-ED | CHAIN-NONE | CB-EXEC-01 | S | `afa65bc0` / `afa65bc0` / V35-A3 | no | PASS-S | FIXTURE | S | — | — |
+| 10N-M | S* | PASS-GOVERNED | H-ED | CHAIN-NONE | CB-EXEC-01 | M | `bef6091b` / `bef6091b` / V35-A3 | no | PASS-M | — | M | — | row 2: PASS-M |
+| 10N-SM | S* | PASS-GOVERNED | H-ED | CHAIN-NONE | CB-EXEC-01 | SM | `bef6091b` / `bef6091b` / V35-A3 | no | PASS-SM | — | SM | — | row 3: PASS-SM |
+| 16N-S |  | PASS-GOVERNED | H-SEND,H-DB | CHAIN-SEND | SEND-EXEC-01 | S | `afa65bc0` / `afa65bc0` / V35-A3 | no | PASS-S | SEND | S | E07,E08 | — |
+| 16N-M |  | NOT-EXECUTED | H-SEND,H-DB | CHAIN-SEND | SEND-EXEC-01 | M | — | — | — | — | — | — | — |
+| 16N-SM |  | NOT-EXECUTED | H-SEND,H-DB | CHAIN-SEND | SEND-EXEC-01 | SM | — | — | — | — | — | — | — |
+| C15N16N-SM |  | NOT-EXECUTED | H-LOAD,H-SEND,H-DB | CHAIN-SEND | SEND-EXEC-01 | SM | — | — | — | — | — | — | — |
+| 02NO-S |  | PASS-GOVERNED | H-OBJ | CHAIN-NONE | CB-PRIMARY-01 | S | `e864a093` / `e864a093` / V35-A2 | yes | PASS-S | — | S | — | — |
+| 02NO-M |  | NOT-EXECUTED | H-OBJ | CHAIN-NONE | CB-PRIMARY-01 | M | — | — | — | — | — | — | — |
+| 02NO-SM |  | NOT-EXECUTED | H-OBJ | CHAIN-NONE | CB-PRIMARY-01 | SM | — | — | — | — | — | — | — |
+| 02NO-CLOSE-SM |  | NOT-EXECUTED | H-OBJ | CHAIN-NONE | CB-PRIMARY-01 | SM | — | — | — | — | — | — | — |
+| 04NO-S | S* | UNKNOWN-GOVERNED | H-OBJ | CHAIN-NONE | EXEC-OBSERVE | S | `bef6091b` / `bef6091b` / V35-A3 | no | UNKNOWN | — | — | — | row 4: UNKNOWN |
+| 04NO-UNDO-S | S* | NOT-EXECUTED | H-OBJ | CHAIN-NONE | EXEC-OBSERVE | S | — | — | — | — | — | — | row 5: STOPPED BEFORE EXECUTION |
+| 02NE-M |  | NOT-EXECUTED | H-OBJ | CHAIN-NONE | CB-PRIMARY-01 | M | — | — | — | — | — | — | — |
+| 10NDOC-WILL-SM | S* | NOT-EXECUTED | H-DOC | CHAIN-NONE | CB-EXEC-01 | SM | — | — | — | — | — | — | row 6: STOPPED BEFORE EXECUTION |
+| 10NDOC-CHANGED-SM |  | NOT-EXECUTED | H-DOC | CHAIN-NONE | CB-EXEC-01 | SM | — | — | — | — | — | — | — |
+| 10NDOC-VETO-SM |  | NOT-EXECUTED | H-DOC | CHAIN-NONE | EXEC-OBSERVE | SM | — | — | — | — | — | — | — |
+| C2OBJ16N-S |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S | — | — | — | — | — | — | — |
+| C2OBJ16N-M |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | M | — | — | — | — | — | — | — |
+| C2OBJ16N-SM |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | SM | — | — | — | — | — | — | — |
+| C2ENT16N-M |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | M | — | — | — | — | — | — | — |
+| C2DOCW16N-SM |  | NOT-EXECUTED | H-DOC,H-SEND | CHAIN-SEND | SEND-EXEC-01 | SM | — | — | — | — | — | — | — |
+| C2DOCC16N-SM |  | NOT-EXECUTED | H-DOC,H-SEND | CHAIN-SEND | SEND-EXEC-01 | SM | — | — | — | — | — | — | — |
+| 13A-SM | S* | NOT-EXECUTED | H-APPCTX | CHAIN-SYNC | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | row 7: STOPPED BEFORE EXECUTION |
+| 16A-S |  | DEFERRED | H-APPCTX,H-DB | CHAIN-APPCTX | APPCTX-EXEC-01 | S | — | — | — | — | — | — | — |
+| 16A-M |  | NOT-EXECUTED | H-APPCTX,H-DB | CHAIN-APPCTX | APPCTX-EXEC-01 | M | — | — | — | — | — | — | — |
+| 16A-SM |  | NOT-EXECUTED | H-APPCTX,H-DB | CHAIN-APPCTX | APPCTX-EXEC-01 | SM | — | — | — | — | — | — | — |
+| 16C-S |  | PASS-GOVERNED | H-CMDCTX,H-APPCTX | CHAIN-SYNC-CMDCTX | CMDCTX-EXEC-01 | S | `afa65bc0` / `afa65bc0` / V35-A3 | no | PASS-S | CMDCTX | S | — | — |
+| 16C-M |  | NOT-EXECUTED | H-CMDCTX,H-APPCTX | CHAIN-SYNC-CMDCTX | CMDCTX-EXEC-01 | M | — | — | — | — | — | — | — |
+| 16C-SM |  | NOT-EXECUTED | H-CMDCTX,H-APPCTX | CHAIN-SYNC-CMDCTX | CMDCTX-EXEC-01 | SM | — | — | — | — | — | — | — |
+| 02NAPP-S |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | S | — | — | — | — | — | — | — |
+| 02NAPP-M |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | M | — | — | — | — | — | — | — |
+| 02NAPP-SM | S* | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | SM | — | — | — | — | — | — | row 8: STOPPED BEFORE EXECUTION |
+| 02NTAS-ALL | S* | NOT-EXECUTED | H-TX | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — | row 9: STOPPED BEFORE EXECUTION |
+| 02NTS-ALL |  | NOT-EXECUTED | H-TX | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| 02NTA-ALL | S* | NOT-EXECUTED | H-TX | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — | row 10: STOPPED BEFORE EXECUTION |
+| 02NRXW-ALL |  | NOT-EXECUTED | H-LOAD | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| 02NRXL-ALL |  | NOT-EXECUTED | H-LOAD | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| 02NEDW-ALL | S* | NOT-EXECUTED | H-ED | CHAIN-NONE | CB-EXEC-01 | S+M+SM | — | — | — | — | — | — | row 11: STOPPED BEFORE EXECUTION |
+| CAPP16SND-ALL |  | NOT-EXECUTED | H-DB,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CAPP16APP-ALL |  | NOT-EXECUTED | H-DB,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTAS16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTAS16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTS16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTS16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTA16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTA16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CRXW16SND-ALL |  | NOT-EXECUTED | H-LOAD,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CRXW16APP-ALL |  | NOT-EXECUTED | H-LOAD,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CRXL16SND-ALL |  | NOT-EXECUTED | H-LOAD,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CRXL16APP-ALL |  | NOT-EXECUTED | H-LOAD,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CEDW16SND-ALL |  | NOT-EXECUTED | H-ED,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CEDW16APP-ALL |  | NOT-EXECUTED | H-ED,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| C2APP2CMD-ALL |  | NOT-EXECUTED | H-DB,H-APPCTX,H-CMDCTX | CHAIN-APPCTX-CMDCTX | CMDCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CDBERASE16SND-ALL |  | NOT-EXECUTED | H-DB,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CDBOPEN16SND-ALL |  | NOT-EXECUTED | H-DB,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CDOCLOCKVETO16SND-ALL |  | NOT-EXECUTED | H-DOC,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CEDEND16SND-ALL |  | NOT-EXECUTED | H-ED,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| COBJCANCEL16SND-ALL |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| COBJCLOSED16SND-ALL |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| COBJERASE16SND-ALL |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| COBJOPEN16SND-ALL |  | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| COBJUNDO16SND-ALL | S* | NOT-EXECUTED | H-OBJ,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | row 12: STOPPED BEFORE EXECUTION |
+| CTRABOUTABORT16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTRABOUTEND16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTRENDED16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTROUTERMOSTENDCALLED16SND-ALL |  | NOT-EXECUTED | H-TX,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CDBERASE16APP-ALL |  | NOT-EXECUTED | H-DB,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CDBOPEN16APP-ALL |  | NOT-EXECUTED | H-DB,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CDOCLOCKCHANGED16APP-ALL |  | NOT-EXECUTED | H-DOC,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CDOCLOCKVETO16APP-ALL |  | NOT-EXECUTED | H-DOC,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CDOCLOCKWILL16APP-ALL |  | NOT-EXECUTED | H-DOC,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CEDEND16APP-ALL |  | NOT-EXECUTED | H-ED,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CENTGFX16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| COBJCANCEL16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| COBJCLOSED16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| COBJERASE16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| COBJMOD16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| COBJOPEN16APP-ALL |  | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| COBJUNDO16APP-ALL | S* | NOT-EXECUTED | H-OBJ,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | row 13: STOPPED BEFORE EXECUTION |
+| CTRABOUTABORT16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTRABOUTEND16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTRENDED16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CTROUTERMOSTENDCALLED16APP-ALL |  | NOT-EXECUTED | H-TX,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| 02NEDC-ALL | S* | NOT-EXECUTED | H-ED | CHAIN-NONE | EDC-EXEC-01 | S+M+SM | — | — | — | — | — | — | row 14: STOPPED BEFORE EXECUTION |
+| CEDC16SND-ALL |  | NOT-EXECUTED | H-ED,H-SEND | CHAIN-SEND | SEND-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| CEDC16APP-ALL |  | NOT-EXECUTED | H-ED,H-APPCTX | CHAIN-APPCTX | APPCTX-EXEC-01 | S+M+SM | — | — | — | — | — | — | — |
+| 02NDBMOD-S |  | PASS-GOVERNED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | S | `e864a093` / `e864a093` / V35-A2 | yes | PASS-S | — | S | E02,E03 | — |
+| 02NDBMOD-M |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | M | — | — | — | — | — | — | — |
+| 02NDBMOD-SM |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | SM | — | — | — | — | — | — | — |
+| 02NDBERASE-S |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | S | — | — | — | — | — | — | — |
+| 02NDBERASE-M |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | M | — | — | — | — | — | — | — |
+| 02NDBERASE-SM |  | NOT-EXECUTED | H-DB | CHAIN-NONE | CB-PRIMARY-01 | SM | — | — | — | — | — | — | — |
 
 ## 10. Inputs (SHA-256 of LF-normalized content)
 
