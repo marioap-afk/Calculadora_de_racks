@@ -65,6 +65,13 @@ function New-TestPackage([string]$Name) {
     return $root
 }
 
+function Update-PackageSums([string]$Root) {
+    $sums = Get-ChildItem -LiteralPath $Root -Recurse -File | Where-Object { $_.Name -ne 'SHA256SUMS' -and $_.FullName -notlike (Join-Path $Root 'out\*') } | Sort-Object FullName | ForEach-Object {
+        '{0}  {1}' -f (Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash, $_.FullName.Substring($Root.Length + 1).Replace('\', '/')
+    }
+    [IO.File]::WriteAllLines((Join-Path $Root 'SHA256SUMS'), $sums)
+}
+
 # A private registry key with the same shape as the real one. Only keys created here are ever written or removed.
 function New-TestRegistry([string]$Name, [string]$Trusted, [Nullable[int]]$SecureLoad = 1) {
     $path = "$regBase\$Name"
@@ -159,9 +166,9 @@ try {
         'evidenceExists', 'evidenceParseable', 'evidenceSchema', 'evidenceFromThisProcess', 'evidenceBoundToPackageSums', 'evidencePluginHash', 'evidenceApplicationHash',
         'evidenceDomainHash', 'evidenceHarnessHash', 'evidenceProcessStart', 'evidenceOwnerNoTouchDeclared', 'evidenceScratchIdentity', 'evidenceEarlyIdentityClean',
         'evidenceVerdictConsistent', 'evidenceHarnessShaEqualsMetadata', 'evidenceImplementationShaEqualsMetadata', 'evidenceTreesEqualMetadata',
-        'evidenceFilediaMatchesRecord', 'evidenceFinal', 'evidenceRunShape')
+        'evidenceFilediaMatchesRecord', 'evidenceFinal', 'evidenceRunShape', 'evidenceControlSet', 'evidenceRollbackCasesDocument')
     $actualChecks = @($x.Record.checks.PSObject.Properties | ForEach-Object { $_.Name } | Sort-Object)
-    Assert-That 'T01' 'the launcher evaluates EXACTLY the ruled set of 27 checks (a deleted check would otherwise go unnoticed: "all true" cannot see a missing one)' (($actualChecks -join ',') -eq (($ruledChecks | Sort-Object) -join ',')) ("missing: " + (($ruledChecks | Where-Object { $actualChecks -notcontains $_ }) -join ',') + "; extra: " + (($actualChecks | Where-Object { $ruledChecks -notcontains $_ }) -join ','))
+    Assert-That 'T01' 'the launcher evaluates EXACTLY the ruled set of 29 checks (a deleted check would otherwise go unnoticed: "all true" cannot see a missing one)' (($actualChecks -join ',') -eq (($ruledChecks | Sort-Object) -join ',')) ("missing: " + (($ruledChecks | Where-Object { $actualChecks -notcontains $_ }) -join ',') + "; extra: " + (($actualChecks | Where-Object { $ruledChecks -notcontains $_ }) -join ','))
     Assert-That 'T01' 'filedia.txt is exactly before/during/after with the original restored' ($fdText -eq "before=1`nduring=0`nafter=1`n") $fdText
 
     $p, $r = Fresh 'T02-fail'
@@ -376,7 +383,7 @@ try {
     $rb01 = @($ev.controls | Where-Object { $_.id -eq 'RB-01' })
     $rb01d = @($ev.controls | Where-Object { $_.id -eq 'RB-01D' })
     Assert-That 'T35' 'a control that leaks is FAIL with its leaked keys and handles enumerated; RB-01D stays PASS' ($rb01.Count -eq 1 -and $rb01[0].result -eq 'FAIL' -and $rb01[0].dbKind -eq 'SIDE-DB' -and @($rb01[0].leaks).Count -eq 2 -and $rb01d.Count -eq 1 -and $rb01d[0].result -eq 'PASS' -and $rb01d[0].dbKind -eq 'DOCUMENT-AUTHORITY')
-    Assert-That 'T35' 'control leaks are listed at the top level (controlLeaks) and do NOT enter the HV leaks or the verdict' (@($ev.controlLeaks).Count -eq 2 -and @($ev.leaks).Count -eq 0 -and $ev.verdict -eq 'PASS' -and $x.Exit -eq 0)
+    Assert-That 'T35' 'control leaks are listed at the top level (controlLeaks), stay out of the HV leaks, and the failing control makes the campaign FAIL (controls govern the verdict)' (@($ev.controlLeaks).Count -eq 2 -and @($ev.leaks).Count -eq 0 -and $ev.verdict -eq 'FAIL' -and $x.Exit -eq 3)
     Assert-That 'T35' 'every control of the ruling is present: RB-01, RB-01V, RB-01D, RB-02a/b/c, RB-03, RB-05' ((@($ev.controls | ForEach-Object { $_.id } | Sort-Object -Unique) -join ',') -eq 'RB-01,RB-01D,RB-01V,RB-02a,RB-02b,RB-02c,RB-03,RB-05')
     Assert-That 'T35' 'RB-02a..05 run on BOTH the side database and the document database' (@($ev.controls | Where-Object { $_.id -eq 'RB-03' } | ForEach-Object { $_.dbKind } | Sort-Object) -join ',' -eq 'DOCUMENT-AUTHORITY,SIDE-DB')
 
@@ -426,6 +433,82 @@ try {
     $commandText = Get-Content -Raw (Join-Path $harnessDir 'HostValidationCommand.cs')
     Assert-That 'T39' 'the runner records a deviation and does NOT stop on it (no "produced a NEW DEVIATION" stop remains)' ($commandText -match 'doc\.Deviations\.Add\(record\.Id\)' -and $commandText -notmatch 'produced a NEW DEVIATION')
     Assert-That 'T39' 'the only ways to stop are the ruled ones (hv00, filedia, an explicit StopRun, an untrustworthy environment)' ($commandText -match 'StopKind\.Hv00' -and $commandText -match 'StopKind\.Filedia' -and $commandText -match 'record\.StopRun' -and $commandText -match 'EnvironmentTrustworthy')
+
+    Write-Host '== the rollback CONTROLS govern the verdict (Architect MAJOR-1) and the launcher recomputes it'
+    $expectedNonPass = [ordered]@{
+        'ctl-missing'  = 'UNKNOWN'   # one control record deleted
+        'ctl-dup'      = 'UNKNOWN'   # one control record duplicated
+        'ctl-kind'     = 'UNKNOWN'   # RB-02c DOCUMENT-AUTHORITY recorded as SIDE-DB
+        'ctl-unknown'  = 'UNKNOWN'   # one control UNKNOWN
+        'ctl-leak'     = 'UNKNOWN'   # a control leak listed
+        'docauth-false' = 'UNKNOWN'  # document authority unavailable
+        'hv10-side'    = 'UNKNOWN'   # HV-10 governed by a SIDE-DB run
+        'ctl-fail'     = 'FAIL'      # one control FAIL
+        'controls-leak' = 'FAIL'
+        'tx-disposed-before' = 'FAIL'
+        'tx-active-delta' = 'FAIL'
+        'tx-active-unreadable' = 'FAIL'
+    }
+    foreach ($scenario in $expectedNonPass.Keys) {
+        $expect = $expectedNonPass[$scenario]
+        $p, $r = Fresh ('T40-' + $scenario)
+        $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = $scenario }
+        $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+        Assert-That 'T40' "$scenario => harness verdict $expect, never PASS (exit 3, RUN_RESULT = $expect)" ($ev.verdict -eq $expect -and $x.Exit -eq 3 -and $x.Output.Trim().EndsWith("RUN_RESULT = $expect") -and $x.Record.launchValid -eq $true) "verdict=$($ev.verdict) exit=$($x.Exit)"
+    }
+
+    $p, $r = Fresh 'T41-control-set'
+    $x = Invoke-Launcher $p $r
+    $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+    $keys = @($ev.controls | ForEach-Object { '{0}|{1}' -f $_.id, $_.dbKind })
+    Assert-That 'T41' 'a good run records exactly the 14 governing controls (id + dbKind), each PASS, no control leak, document authority available' (@($ev.controls).Count -eq 14 -and @($keys | Sort-Object -Unique).Count -eq 14 -and @($ev.controls | Where-Object { $_.result -ne 'PASS' }).Count -eq 0 -and @($ev.controlLeaks).Count -eq 0 -and $ev.documentAuthority.available -eq $true -and $x.Exit -eq 0 -and $x.Record.checks.evidenceControlSet -eq $true -and $x.Record.checks.evidenceRollbackCasesDocument -eq $true)
+    Assert-That 'T41' 'the 14 are RB-01 (side), RB-01V (both), RB-01D (document) and RB-02a/02b/02c/03/05 (both)' ((($keys | Sort-Object) -join ',') -eq (('RB-01|SIDE-DB', 'RB-01V|SIDE-DB', 'RB-01V|DOCUMENT-AUTHORITY', 'RB-01D|DOCUMENT-AUTHORITY', 'RB-02a|SIDE-DB', 'RB-02a|DOCUMENT-AUTHORITY', 'RB-02b|SIDE-DB', 'RB-02b|DOCUMENT-AUTHORITY', 'RB-02c|SIDE-DB', 'RB-02c|DOCUMENT-AUTHORITY', 'RB-03|SIDE-DB', 'RB-03|DOCUMENT-AUTHORITY', 'RB-05|SIDE-DB', 'RB-05|DOCUMENT-AUTHORITY' | Sort-Object) -join ','))
+
+    # A LYING harness: the same broken evidence, verdict rewritten to PASS. The launcher must refuse it on its own recomputation.
+    $forgeChecks = [ordered]@{
+        'ctl-missing'   = 'evidenceControlSet'
+        'ctl-dup'       = 'evidenceControlSet'
+        'ctl-kind'      = 'evidenceControlSet'
+        'ctl-unknown'   = 'evidenceControlSet'
+        'ctl-fail'      = 'evidenceControlSet'
+        'ctl-leak'      = 'evidenceControlSet'
+        'docauth-false' = 'evidenceControlSet'
+        'hv10-side'     = 'evidenceRollbackCasesDocument'
+    }
+    foreach ($scenario in $forgeChecks.Keys) {
+        $check = $forgeChecks[$scenario]
+        $p, $r = Fresh ('T42-' + $scenario)
+        $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = "$scenario+forge" }
+        Assert-That 'T42' "forged PASS over '$scenario' => INVALID, exit 2, $check = false" ($x.Exit -eq 2 -and $x.Record.verdict -eq 'PASS' -and $x.Record.runResult -eq 'INVALID' -and $x.Record.checks.$check -eq $false) "exit=$($x.Exit) $check=$($x.Record.checks.$check)"
+    }
+
+    # The tests above must be able to FAIL: with the launcher's control check neutralised, the very same forged evidence gets through.
+    # (Sums are rewritten after the deliberate mutation so the package itself stays valid; this is a mutation test, NOT host evidence.)
+    $mutations = @(
+        @{ Name = 'launcher control-set check removed'; Scenario = 'ctl-missing+forge'; Find = "`$checks['evidenceControlSet'] = `$parseable -and (Test-Check {"; Replace = "`$checks['evidenceControlSet'] = `$true -or (Test-Check {" },
+        @{ Name = 'launcher rollback-case label check removed'; Scenario = 'hv10-side+forge'; Find = "`$checks['evidenceRollbackCasesDocument'] = `$parseable -and (Test-Check {"; Replace = "`$checks['evidenceRollbackCasesDocument'] = `$true -or (Test-Check {" }
+    )
+    foreach ($mutation in $mutations) {
+        $p, $r = Fresh ('T43-' + ($mutation.Name -replace '[^a-z]', ''))
+        $launcherPath = Join-Path $p 'launcher\run-hostval.ps1'
+        $text = Get-Content -Raw -LiteralPath $launcherPath
+        $mutated = $text.Replace($mutation.Find, $mutation.Replace)
+        Assert-That 'T43' "mutation applies ($($mutation.Name))" ($mutated -ne $text)
+        [IO.File]::WriteAllText($launcherPath, $mutated, (New-Object Text.UTF8Encoding($false)))
+        Update-PackageSums $p
+        $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = $mutation.Scenario }
+        Assert-That 'T43' "with the $($mutation.Name), the forged PASS is ACCEPTED (exit 0): T42 would catch it, so the check is load-bearing" ($x.Exit -eq 0 -and $x.Record.runResult -eq 'PASS') "exit=$($x.Exit)"
+    }
+
+    Write-Host '== classification: stopKind = deviation + completed = false is still a VALID FAIL (launcher support kept, exercised offline)'
+    $p, $r = Fresh 'T44-deviation-stop'
+    $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'deviation-stop' }
+    $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+    Assert-That 'T44' 'a governed deviation stop (completed = false, stopKind = deviation, FAIL backed by a deviation, a case beyond HV-00 ran) => launch valid, FAIL, exit 3' ($ev.completed -eq $false -and $ev.stopKind -eq 'deviation' -and $ev.verdict -eq 'FAIL' -and $x.Record.launchValid -eq $true -and $x.Record.runResult -eq 'FAIL' -and $x.Exit -eq 3)
+
+    Write-Host '== transaction end rules and active-transaction deltas (harness source)'
+    Assert-That 'T45' 'EndCore records the ended transaction identity and asserts the active bookkeeping only for rollback-sensitive cases and controls' ($commandText -match 'outcome\.EndedId' -and $commandText -match 'strictActive: StrictTx && expectRollback' -and $commandText -match 'StrictTx = entry\.RollbackSensitive' -and $commandText -match 'StrictTx = true;')
+    Assert-That 'T45' 'the strict flag is always cleared afterwards, so a later non-rollback case (HV-06 OpenCloseTransaction) is never judged by it' ((([regex]::Matches($commandText, 'StrictTx = false;')).Count) -ge 2)
 
     Write-Host '== run.scr'
     $template = Get-Content -Raw (Join-Path $harnessDir 'run.scr')

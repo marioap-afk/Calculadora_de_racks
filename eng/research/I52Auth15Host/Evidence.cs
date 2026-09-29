@@ -65,10 +65,24 @@ namespace I52Auth15.HostHarness
         /// <summary>The native identity of the top transaction after the end, or "null".</summary>
         public string TopAfter { get; set; }
 
+        /// <summary>The native identity of the transaction that was ended (read before it was ended), or null if it could not be read.</summary>
+        public string EndedId { get; set; }
+
         /// <summary>The reasons this end cannot be taken as a successful rollback (empty = it can).</summary>
-        public System.Collections.Generic.List<string> Failures(bool abortExpected)
+        /// <param name="abortExpected">The path expects the caller's Abort to be what rolls back.</param>
+        /// <param name="strictActive">Rollback-sensitive cases and controls: the active-transaction bookkeeping must be provable, RELATIVE to the
+        /// count read just before the end (never an absolute zero): ending one transaction takes the count down by exactly one and the top
+        /// transaction afterwards must be consistent with that count. A metric that cannot be read is a failure (fail-closed), not "good".</param>
+        public System.Collections.Generic.List<string> Failures(bool abortExpected, bool strictActive = false)
         {
             var failures = new System.Collections.Generic.List<string>();
+
+            if (abortExpected && IsDisposedBefore)
+            {
+                // Something disposed the caller's transaction before the caller's Abort: there was nothing left to roll back, so this
+                // is NOT a clean rollback and it is never reinterpreted as "already rolled back".
+                failures.Add("the transaction was already disposed BEFORE the caller's Abort: not a clean rollback");
+            }
 
             if (abortExpected && !IsDisposedBefore && (!AbortAttempted || !AbortSucceeded))
             {
@@ -85,7 +99,146 @@ namespace I52Auth15.HostHarness
                 failures.Add("the transaction is not disposed after the end");
             }
 
+            if (strictActive)
+            {
+                if (ActiveBefore < 0 || ActiveAfter < 0)
+                {
+                    failures.Add("the active-transaction count could not be read (fail-closed)");
+                }
+                else if (ActiveAfter != ActiveBefore - 1)
+                {
+                    failures.Add("active transactions went " + ActiveBefore + " -> " + ActiveAfter + " (expected " + ActiveBefore + " -> " + (ActiveBefore - 1) + ")");
+                }
+
+                if (string.IsNullOrEmpty(TopAfter) || TopAfter.StartsWith("unreadable", StringComparison.Ordinal))
+                {
+                    failures.Add("the top transaction after the end could not be read (fail-closed)");
+                }
+                else
+                {
+                    if (ActiveAfter == 0 && TopAfter != "null")
+                    {
+                        failures.Add("no transaction is active but the top transaction is " + TopAfter);
+                    }
+
+                    if (ActiveAfter > 0 && TopAfter == "null")
+                    {
+                        failures.Add(ActiveAfter + " transaction(s) still active but there is no top transaction");
+                    }
+
+                    if (!string.IsNullOrEmpty(EndedId) && TopAfter == EndedId)
+                    {
+                        failures.Add("the ended transaction is still the top transaction");
+                    }
+                }
+
+                if (string.IsNullOrEmpty(EndedId))
+                {
+                    failures.Add("the identity of the ended transaction could not be read (fail-closed)");
+                }
+            }
+
             return failures;
+        }
+    }
+
+    /// <summary>
+    /// The rollback controls that GOVERN the verdict. The exact expected set is 14 records (id + database kind): a PASS needs every one of them
+    /// present exactly once and PASS, with no control leak and with DOCUMENT-AUTHORITY available. A control leak or FAIL is a FAIL; a missing,
+    /// duplicated, unexpected or UNKNOWN control can never PASS. A SIDE-DB record never stands in for a missing DOCUMENT-AUTHORITY one (they are
+    /// distinct keys). Pure, so the launcher's independent recomputation and the offline mutation tests have one definition to mirror.
+    /// </summary>
+    internal static class ControlSet
+    {
+        public const string Side = "SIDE-DB";
+
+        public const string Document = "DOCUMENT-AUTHORITY";
+
+        /// <summary>The governing (id, database kind) pairs, 14 in all.</summary>
+        public static readonly (string Id, string DbKind)[] Expected =
+        {
+            ("RB-01", Side),
+            ("RB-01V", Side),
+            ("RB-01V", Document),
+            ("RB-01D", Document),
+            ("RB-02a", Side),
+            ("RB-02a", Document),
+            ("RB-02b", Side),
+            ("RB-02b", Document),
+            ("RB-02c", Side),
+            ("RB-02c", Document),
+            ("RB-03", Side),
+            ("RB-03", Document),
+            ("RB-05", Side),
+            ("RB-05", Document),
+        };
+
+        /// <summary>The rollback-sensitive HV cases: their governing run is the DOCUMENT one; a side-database run never satisfies them.</summary>
+        public static readonly string[] RollbackSensitiveCases = { "HV-01", "HV-02", "HV-03", "HV-05", "HV-08", "HV-10", "HV-12", "HV-13", "HV-14" };
+
+        /// <summary>Why the control evidence cannot back a PASS (empty = it can). Includes documentAuthority.available.</summary>
+        public static System.Collections.Generic.List<string> Problems(
+            System.Collections.Generic.IEnumerable<CaseRecord> controls,
+            System.Collections.Generic.IDictionary<string, object> documentAuthority)
+        {
+            var problems = new System.Collections.Generic.List<string>();
+            var records = controls.ToList();
+
+            foreach (var (id, kind) in Expected)
+            {
+                var matching = records.Where(r => r.Id == id && r.DbKind == kind).ToList();
+
+                if (matching.Count == 0)
+                {
+                    problems.Add("control " + id + " [" + kind + "] is missing");
+                }
+                else if (matching.Count > 1)
+                {
+                    problems.Add("control " + id + " [" + kind + "] is duplicated (" + matching.Count + " records)");
+                }
+                else if (matching[0].Result != Outcome.Pass)
+                {
+                    problems.Add("control " + id + " [" + kind + "] is " + matching[0].Result);
+                }
+            }
+
+            foreach (var record in records.Where(r => !Expected.Any(e => e.Id == r.Id && e.DbKind == r.DbKind)))
+            {
+                problems.Add("unexpected control record " + record.Id + " [" + record.DbKind + "]");
+            }
+
+            foreach (var record in records.Where(r => r.Leaks.Count > 0))
+            {
+                problems.Add("control " + record.Id + " [" + record.DbKind + "] leaked " + record.Leaks.Count + " item(s)");
+            }
+
+            object available;
+
+            if (documentAuthority == null || !documentAuthority.TryGetValue("available", out available) || !(available is bool) || !(bool)available)
+            {
+                problems.Add("documentAuthority.available is not true");
+            }
+
+            return problems;
+        }
+
+        /// <summary>The rollback-sensitive cases that are not labelled DOCUMENT-AUTHORITY (or are missing).</summary>
+        public static System.Collections.Generic.List<string> CaseLabelProblems(System.Collections.Generic.IEnumerable<CaseRecord> cases)
+        {
+            var problems = new System.Collections.Generic.List<string>();
+            var list = cases.ToList();
+
+            foreach (var id in RollbackSensitiveCases)
+            {
+                var matching = list.Where(c => c.Id == id).ToList();
+
+                if (matching.Count != 1 || matching[0].DbKind != Document)
+                {
+                    problems.Add(id + " is not a single " + Document + " record" + (matching.Count == 1 ? " (labelled " + matching[0].DbKind + ")" : " (" + matching.Count + " records)"));
+                }
+            }
+
+            return problems;
         }
     }
 
@@ -341,14 +494,17 @@ namespace I52Auth15.HostHarness
         {
             var expectedIds = Enumerable.Range(0, 15).Select(i => "HV-" + i.ToString("D2")).ToList();
 
-            if (Cases.Any(c => c.Result == Outcome.Fail))
+            // A FAIL anywhere governs: a failing HV case OR a failing control (a control is a raw outcome, but a control that leaks
+            // means the caller-rollback premise does not hold on that path, so the campaign cannot be a PASS).
+            if (Cases.Any(c => c.Result == Outcome.Fail) || Controls.Any(c => c.Result == Outcome.Fail))
             {
                 return Outcome.Fail;
             }
 
-            var complete = expectedIds.All(id => Cases.Any(c => c.Id == id && c.Result == Outcome.Pass));
+            var complete = expectedIds.All(id => Cases.Count(c => c.Id == id && c.Result == Outcome.Pass) == 1) && Cases.Count == expectedIds.Count;
+            var controlsGovern = ControlSet.Problems(Controls, DocumentAuthority).Count == 0 && ControlSet.CaseLabelProblems(Cases).Count == 0;
 
-            return complete && Completed && Problems.Count == 0 ? Outcome.Pass : Outcome.Unknown;
+            return complete && controlsGovern && Completed && Problems.Count == 0 ? Outcome.Pass : Outcome.Unknown;
         }
 
         public void Write(string path)

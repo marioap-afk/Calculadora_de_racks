@@ -298,13 +298,31 @@ Sobre la implementacion `a80a3801`; `src/` y `tests/` byte-identicos. Detalle op
 - **Verificacion sin AutoCAD** (NO-EVIDENCIA-DE-HOST): rig offline con el interprete mini-LISP y las clases reales `Evidence`/`SysVarCatalog`,
   86/86; mutaciones del lanzador (check borrado, forma de corrida siempre verdadera, FAIL sin respaldo) detectadas.
 
-## 12. Estado
+## 12. Correccion del arnes tras la revision exacta (MAJOR-1 + EndCore)
+
+Revision exacta del Arquitecto sobre `a80a3801` + `0a5fe046`: implementacion APROBADA, arnes con cambios requeridos. Implementacion sin cambios
+(`a80a3801`; `src/` y `tests/` byte-identicos). El paquete `0a5fe046` queda SUPERADO PARA EJECUCION.
+
+- **Los controles gobiernan el veredicto.** Conjunto exacto de 14 registros (id + `dbKind`); PASS exige todos presentes una vez y PASS, sin fugas de
+  control y `documentAuthority.available = true`; cualquier control FAIL => FAIL; faltante, duplicado, `dbKind` incorrecto, inesperado o UNKNOWN => no PASS.
+  Un registro SIDE-DB nunca sustituye a uno DOCUMENT-AUTHORITY. Los casos HV sensibles a rollback (01, 02, 03, 05, 08, 10, 12, 13, 14) deben ser la
+  corrida DOCUMENT-AUTHORITY.
+- **El lanzador lo recalcula** (`evidenceControlSet`, `evidenceRollbackCasesDocument`: 29 comprobaciones fijadas) y un FAIL puede estar respaldado por un control FAIL.
+- **EndCore.** Transaccion ya desechada antes del Abort esperado => FAIL (no es rollback limpio). Deltas de transacciones activas relativos a la linea base
+  del propio fin (-1, tope coherente, sin exigir cero absoluto; metrica ilegible => FAIL cerrado), solo en casos/controles sensibles a rollback.
+- **stopKind.** El FAIL con `completed=false` (`stopKind=deviation`) sigue soportado por el lanzador y queda cubierto offline (T44); no se fuerza una parada
+  artificial en AutoCAD.
+- **Verificacion sin AutoCAD** (NO-EVIDENCIA-DE-HOST): rig offline con mutaciones (control borrado/duplicado/reetiquetado/FAIL/UNKNOWN/fuga, autoridad
+  de documento no disponible, HV-10 reetiquetado SIDE-DB, comprobacion del lanzador eliminada, `Verdict()` ignorando controles) rechazadas.
+
+## 13. Estado
 
 ```text
-IMPLEMENTATION = a80a3801 (AUTH-15 effective-name postcondition after RUN-2); pending Architect exact-SHA review
+IMPLEMENTATION = a80a3801 APPROVED by the Architect exact-SHA review (no new implementation SHA)
 AUTH15_DEV_01 = ACCEPTED / CONTRACT NORMALIZATION
 RUN-1 = INVALID / HARNESS DEFECT (0 AUTH-15 calls)
 RUN-2 = VALID EXECUTION / FAIL (F-1 unresolved, F-2 confirmed); cannot be carried forward
 HOST_VALIDATION = NO VALID PASS YET (RUN-3 = one clean full campaign is required after the harness is corrected)
-NEXT_GATE = ARCHITECT EXACT-SHA REVIEW OF NEW IMPLEMENTATION + HARNESS BEFORE RUN-3
+HARNESS = corrected after MAJOR-1 (controls govern the verdict); package 0a5fe046 SUPERSEDED FOR EXECUTION
+NEXT_GATE = ARCHITECT DELTA RE-REVIEW OF CORRECTED HARNESS
 ```

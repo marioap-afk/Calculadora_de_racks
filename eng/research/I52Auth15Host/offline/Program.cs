@@ -20,6 +20,9 @@ namespace I52Auth15.Offline
     ///   I52_OFFLINE_SCENARIO  pass | fail | unknown | malformed | noevidence | hashmismatch | nonzero-exit | timeout | sleep
     ///                         | live-start-shift | live-end-shift | hv00-throws | forged-pass | forged-fail
     ///                         | deviation-continue | deviation-stop | exception-stop | unknown-stop | controls-leak | abort-throws
+    ///                         | ctl-missing | ctl-dup | ctl-kind | ctl-fail | ctl-unknown | ctl-leak | docauth-false | hv10-side
+    ///                         | tx-disposed-before | tx-active-delta | tx-active-unreadable
+    ///                         Any scenario may end in "+forge": the (honest) verdict is then rewritten to PASS, as a lying harness would.
     ///   I52_OFFLINE_FILEDIA   the FILEDIA value AutoCAD "starts" with (default 1)
     ///   I52_OFFLINE_STICKY    all = setvar FILEDIA is always ignored; lock0 = once FILEDIA is 0 it cannot be raised (the restore fails)
     /// It is NOT AutoCAD and its output is NOT host evidence.
@@ -29,6 +32,7 @@ namespace I52Auth15.Offline
         private static int _filedia = 1;
         private static string _sticky = string.Empty;
         private static string _scenario = "pass";
+        private static bool _forgePass;
         private static bool _harnessLoaded;
         private static string _out;
         private static readonly Dictionary<string, object> Vars = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
@@ -55,6 +59,13 @@ namespace I52Auth15.Offline
             }
 
             _scenario = Environment.GetEnvironmentVariable("I52_OFFLINE_SCENARIO") ?? "pass";
+
+            if (_scenario.EndsWith("+forge", StringComparison.Ordinal))
+            {
+                _forgePass = true;
+                _scenario = _scenario.Substring(0, _scenario.Length - "+forge".Length);
+            }
+
             _sticky = Environment.GetEnvironmentVariable("I52_OFFLINE_STICKY") ?? string.Empty;
             _out = Environment.GetEnvironmentVariable("I52_AUTH15_HV_OUT");
 
@@ -309,7 +320,7 @@ namespace I52Auth15.Offline
 
             if (!stopped)
             {
-                doc.DocumentAuthority["available"] = true;
+                doc.DocumentAuthority["available"] = _scenario != "docauth-false";
                 AddControls(doc);
             }
 
@@ -318,7 +329,7 @@ namespace I52Auth15.Offline
             for (var i = 1; i < 15; i++)
             {
                 var id = "HV-" + i.ToString("D2");
-                var c = new CaseRecord(id, "X", "y") { DbKind = sensitive.Contains(id) ? "DOCUMENT-AUTHORITY" : "SIDE-DB" };
+                var c = new CaseRecord(id, "X", "y") { DbKind = sensitive.Contains(id) && !(_scenario == "hv10-side" && id == "HV-10") ? "DOCUMENT-AUTHORITY" : "SIDE-DB" };
 
                 if (!stopped)
                 {
@@ -385,6 +396,12 @@ namespace I52Auth15.Offline
             doc.State = "final";
             doc.Write(evidencePath);
 
+            if (_forgePass)
+            {
+                // A harness that lied about its own verdict, whatever the evidence says.
+                File.WriteAllText(evidencePath, System.Text.RegularExpressions.Regex.Replace(File.ReadAllText(evidencePath), "\"verdict\": \"[A-Z]+\"", "\"verdict\": \"PASS\""));
+            }
+
             if (_scenario == "forged-pass")
             {
                 // A harness that lied about its own verdict: the cases still say FAIL.
@@ -397,10 +414,11 @@ namespace I52Auth15.Offline
             }
         }
 
-        /// <summary>The rollback controls as the real harness records them: raw outcomes with a database-kind label. They never gate the verdict.</summary>
+        /// <summary>The rollback controls as the real harness records them: raw outcomes with a database-kind label. They GOVERN the verdict
+        /// (the real ControlSet); the ctl-* scenarios each break the set in one way.</summary>
         private static void AddControls(EvidenceDoc doc)
         {
-            void Control(string id, string kind)
+            CaseRecord Control(string id, string kind)
             {
                 var r = new CaseRecord(id, "control", "raw outcome") { DbKind = kind };
                 r.Check("sanity: the control wrote something inside the transaction", "> 0 differences", "9 differences", true);
@@ -414,13 +432,15 @@ namespace I52Auth15.Offline
                     DisposeAttempted = true,
                     DisposeSucceeded = true,
                     IsDisposedAfter = true,
-                    ActiveBefore = 1,
-                    ActiveAfter = 0,
-                    TopAfter = "null",
+                    IsDisposedBefore = _scenario == "tx-disposed-before" && id == "RB-02a" && kind == "SIDE-DB",
+                    ActiveBefore = _scenario == "tx-active-unreadable" && id == "RB-02a" && kind == "SIDE-DB" ? -1 : 2,
+                    ActiveAfter = _scenario == "tx-active-delta" && id == "RB-02a" && kind == "SIDE-DB" ? 2 : 1,
+                    TopAfter = "4711",
+                    EndedId = "4712",
                 };
                 r.Tx.Add(tx);
 
-                foreach (var failure in tx.Failures(abortExpected: true))
+                foreach (var failure in tx.Failures(abortExpected: true, strictActive: true))
                 {
                     r.Check("transaction end [" + tx.Label + "]: " + failure, "Abort/Dispose succeed and the transaction is disposed", failure, false);
                 }
@@ -431,24 +451,50 @@ namespace I52Auth15.Offline
                     r.Leaks.Add("RB-01 after the caller's rollback: added LT:CTRL_RB_LAYER = 7D");
                     r.Check("RB-01 after the caller's rollback: no leak (SNAP identical to before)", "identical", "added BT:CTRL_RB_BLOCK = 7C; added LT:CTRL_RB_LAYER = 7D", false);
                 }
+                else if (_scenario == "ctl-fail" && id == "RB-02b" && kind == "DOCUMENT-AUTHORITY")
+                {
+                    r.Check("RB-02b after the caller's rollback: no leak (SNAP identical to before)", "identical", "added BT:*D1 = 7E", false);
+                    r.Leaks.Add("RB-02b after the caller's rollback: added BT:*D1 = 7E");
+                }
                 else
                 {
                     r.Check("RB after the caller's rollback: no leak (SNAP identical to before)", "identical", "identical", true);
                 }
 
+                if (_scenario == "ctl-unknown" && id == "RB-02c" && kind == "DOCUMENT-AUTHORITY")
+                {
+                    r.Unknown("Cantilever creator reachable", "the fixture plan and the internal creator", "the internal creator was not found");
+                }
+
+                if (_scenario == "ctl-leak" && id == "RB-03" && kind == "DOCUMENT-AUTHORITY")
+                {
+                    r.Leaks.Add("RB-03 after the caller's rollback: added BT:CTRL_RB03 = 7F"); // listed, yet the record itself says PASS
+                }
+
                 r.Finish();
-                doc.Controls.Add(r);
+                return r;
             }
 
-            Control("RB-01", "SIDE-DB");
-            Control("RB-01V", "SIDE-DB");
-            Control("RB-01V", "DOCUMENT-AUTHORITY");
-            Control("RB-01D", "DOCUMENT-AUTHORITY");
-
-            foreach (var id in new[] { "RB-02a", "RB-02b", "RB-02c", "RB-03", "RB-05" })
+            foreach (var (id, kind) in ControlSet.Expected)
             {
-                Control(id, "SIDE-DB");
-                Control(id, "DOCUMENT-AUTHORITY");
+                if (_scenario == "ctl-missing" && id == "RB-05" && kind == "DOCUMENT-AUTHORITY")
+                {
+                    continue;
+                }
+
+                var record = Control(id, kind);
+
+                if (_scenario == "ctl-kind" && id == "RB-02c" && kind == "DOCUMENT-AUTHORITY")
+                {
+                    record.DbKind = "SIDE-DB"; // recorded on the wrong database kind
+                }
+
+                doc.Controls.Add(record);
+
+                if (_scenario == "ctl-dup" && id == "RB-03" && kind == "SIDE-DB")
+                {
+                    doc.Controls.Add(Control(id, kind));
+                }
             }
         }
 
@@ -523,11 +569,95 @@ namespace I52Auth15.Offline
             alreadyDisposed.IsDisposedBefore = true;
             alreadyDisposed.AbortAttempted = false;
             alreadyDisposed.AbortSucceeded = false;
-            ExpectTx("tx: already disposed beforehand needs no Abort", alreadyDisposed, true, null);
+            ExpectTx("tx: already disposed BEFORE the caller's Abort => not a clean rollback", alreadyDisposed, true, "already disposed");
+            ExpectTx("tx: already disposed beforehand is not judged on a path that expects no Abort", alreadyDisposed, false, null);
             var disposeOnly = Good();
             disposeOnly.AbortAttempted = false;
             disposeOnly.AbortSucceeded = false;
             ExpectTx("tx: dispose-only end (abort not expected) is fine", disposeOnly, false, null);
+
+            // Active-transaction bookkeeping, relative to the case's own baseline.
+            void ExpectStrict(string name, Action<TxOutcome> mutate, string fragment)
+            {
+                var outcome = Good();
+                outcome.ActiveBefore = 2;
+                outcome.ActiveAfter = 1;
+                outcome.TopAfter = "4711";
+                outcome.EndedId = "4712";
+                mutate(outcome);
+                var found = outcome.Failures(true, true);
+                var ok = fragment == null ? found.Count == 0 : found.Any(f => f.Contains(fragment));
+                Console.WriteLine((ok ? "PASS " : "FAIL ") + name + " -> " + (found.Count == 0 ? "no failure" : string.Join(" | ", found)));
+                failures += ok ? 0 : 1;
+                total++;
+            }
+
+            ExpectStrict("active: 2 -> 1 with a baseline transaction beneath is fine (no absolute zero required)", o => { }, null);
+            ExpectStrict("active: 1 -> 0 with no top transaction is fine", o => { o.ActiveBefore = 1; o.ActiveAfter = 0; o.TopAfter = "null"; }, null);
+            ExpectStrict("active: the count did not go down", o => o.ActiveAfter = 2, "expected 2 -> 1");
+            ExpectStrict("active: the count went down by two", o => { o.ActiveBefore = 3; o.ActiveAfter = 1; }, "expected 3 -> 2");
+            ExpectStrict("active: count unreadable before => fail-closed", o => o.ActiveBefore = -1, "could not be read");
+            ExpectStrict("active: count unreadable after => fail-closed", o => o.ActiveAfter = -1, "could not be read");
+            ExpectStrict("active: top unreadable => fail-closed", o => o.TopAfter = "unreadable: InvalidOperationException", "top transaction after the end could not be read");
+            ExpectStrict("active: top missing (null string) => fail-closed", o => o.TopAfter = null, "top transaction after the end could not be read");
+            ExpectStrict("active: nothing active but a top transaction remains", o => { o.ActiveBefore = 1; o.ActiveAfter = 0; o.TopAfter = "4711"; }, "top transaction is");
+            ExpectStrict("active: transactions remain but there is no top", o => o.TopAfter = "null", "no top transaction");
+            ExpectStrict("active: the ended transaction is still the top", o => o.TopAfter = "4712", "still the top");
+            ExpectStrict("active: the ended transaction's identity was not read => fail-closed", o => o.EndedId = null, "identity of the ended transaction");
+
+            // The controls GOVERN the verdict (the real EvidenceDoc.Verdict / ControlSet). A complete, honest document is a PASS; every
+            // break of the set is not.
+            EvidenceDoc Complete()
+            {
+                var doc = new EvidenceDoc { Completed = true };
+                doc.DocumentAuthority["available"] = true;
+
+                for (var n = 0; n < 15; n++)
+                {
+                    var id = "HV-" + n.ToString("D2");
+                    var c = new CaseRecord(id, "X", "y") { DbKind = ControlSet.RollbackSensitiveCases.Contains(id) ? ControlSet.Document : ControlSet.Side };
+                    c.Check("a", true, true);
+                    c.Finish();
+                    doc.Cases.Add(c);
+                }
+
+                foreach (var (id, kind) in ControlSet.Expected)
+                {
+                    var r = new CaseRecord(id, "control", "raw") { DbKind = kind };
+                    r.Check("a", true, true);
+                    r.Finish();
+                    doc.Controls.Add(r);
+                }
+
+                return doc;
+            }
+
+            void ExpectVerdict(string name, Action<EvidenceDoc> mutate, string expected)
+            {
+                var doc = Complete();
+                mutate(doc);
+                var actual = doc.Verdict();
+                var ok = actual == expected;
+                Console.WriteLine((ok ? "PASS " : "FAIL ") + name + " -> " + actual + " (expected " + expected + ")");
+                failures += ok ? 0 : 1;
+                total++;
+            }
+
+            ExpectVerdict("verdict: the complete document with exactly the 14 controls is PASS", d => { }, "PASS");
+            ExpectVerdict("verdict: there are exactly 14 expected controls", d => { if (ControlSet.Expected.Length != 14) { d.Controls.Clear(); } }, "PASS");
+            ExpectVerdict("verdict: a missing control record cannot PASS", d => d.Controls.RemoveAt(5), "UNKNOWN");
+            ExpectVerdict("verdict: a duplicated control record cannot PASS", d => d.Controls.Add(d.Controls[3]), "UNKNOWN");
+            ExpectVerdict("verdict: RB-02c DOCUMENT-AUTHORITY relabelled SIDE-DB cannot PASS", d => d.Controls.First(c => c.Id == "RB-02c" && c.DbKind == ControlSet.Document).DbKind = ControlSet.Side, "UNKNOWN");
+            ExpectVerdict("verdict: a side record does not stand in for a missing document one", d => d.Controls.RemoveAll(c => c.Id == "RB-01D"), "UNKNOWN");
+            ExpectVerdict("verdict: an unexpected control record cannot PASS", d => { var extra = new CaseRecord("RB-99", "control", "raw") { DbKind = ControlSet.Side }; extra.Check("a", true, true); extra.Finish(); d.Controls.Add(extra); }, "UNKNOWN");
+            ExpectVerdict("verdict: a FAIL control is a FAIL", d => { var c = d.Controls[7]; c.Check("boom", false, true); c.Finish(); }, "FAIL");
+            ExpectVerdict("verdict: an UNKNOWN control cannot PASS", d => { var c = d.Controls[7]; c.Unknown("cannot tell", "x", "y"); c.Finish(); }, "UNKNOWN");
+            ExpectVerdict("verdict: a control leak cannot PASS", d => d.Controls[2].Leaks.Add("added BT:X = 1"), "UNKNOWN");
+            ExpectVerdict("verdict: documentAuthority.available = false cannot PASS", d => d.DocumentAuthority["available"] = false, "UNKNOWN");
+            ExpectVerdict("verdict: documentAuthority.available missing cannot PASS", d => d.DocumentAuthority.Clear(), "UNKNOWN");
+            ExpectVerdict("verdict: a rollback-sensitive case relabelled SIDE-DB (HV-10) cannot PASS", d => d.Cases.First(c => c.Id == "HV-10").DbKind = ControlSet.Side, "UNKNOWN");
+            ExpectVerdict("verdict: a duplicated HV case cannot PASS", d => d.Cases.Add(d.Cases[3]), "UNKNOWN");
+            ExpectVerdict("verdict: an incomplete campaign cannot PASS even with all controls", d => d.Completed = false, "UNKNOWN");
 
             Console.WriteLine("SELFTEST " + (total - failures) + "/" + total);
             return failures;

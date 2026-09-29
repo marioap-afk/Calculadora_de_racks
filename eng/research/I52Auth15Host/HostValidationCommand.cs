@@ -738,6 +738,7 @@ namespace I52Auth15.HostHarness
             var record = new CaseRecord(entry.Id, entry.Family, entry.Expected) { DbKind = label };
             log.Info(entry.Id + " begin [" + label + "]");
             CurrentRecord = record;
+            StrictTx = entry.RollbackSensitive;
 
             try
             {
@@ -751,6 +752,7 @@ namespace I52Auth15.HostHarness
             finally
             {
                 CurrentRecord = null;
+                StrictTx = false;
             }
 
             record.Finish();
@@ -1091,6 +1093,11 @@ namespace I52Auth15.HostHarness
         /// <summary>The record of the case currently running, so transaction ends can be attributed and can fail it.</summary>
         internal static CaseRecord CurrentRecord;
 
+        /// <summary>True while a rollback-sensitive case or a rollback control runs: every transaction end must then also prove the
+        /// active-transaction bookkeeping relative to its own baseline (fail-closed). Other cases (for example HV-06's deliberate
+        /// OpenCloseTransaction) legitimately end transactions the manager does not count.</summary>
+        internal static bool StrictTx;
+
         /// <summary>
         /// Ends a caller's transaction by ABORTING it and RECORDS what happened: whether Abort and Dispose were attempted and
         /// succeeded (with the exception text if not), whether the transaction is disposed afterwards, and the active-transaction
@@ -1135,6 +1142,15 @@ namespace I52Auth15.HostHarness
             catch (System.Exception)
             {
                 outcome.IsDisposedBefore = false;
+            }
+
+            try
+            {
+                outcome.EndedId = outcome.IsDisposedBefore ? null : transaction.UnmanagedObject.ToString();
+            }
+            catch (System.Exception)
+            {
+                outcome.EndedId = null;
             }
 
             if (abort && !outcome.IsDisposedBefore)
@@ -1193,7 +1209,8 @@ namespace I52Auth15.HostHarness
             {
                 record.Tx.Add(outcome);
 
-                foreach (var failure in outcome.Failures(abortExpected: abort && expectRollback))
+                // Disposed-before is a failure whenever a rollback was expected, EXCEPT for the dispose-only controls, which do not Abort.
+                foreach (var failure in outcome.Failures(abortExpected: abort && expectRollback, strictActive: StrictTx && expectRollback))
                 {
                     record.Check("transaction end [" + outcome.Label + "]: " + failure, "Abort/Dispose succeed and the transaction is disposed", failure, false);
                 }
@@ -1460,6 +1477,7 @@ namespace I52Auth15.HostHarness
                     var record = new CaseRecord(control.Id, control.Family, control.Expected) { DbKind = label };
                     log.Info(control.Id + " begin [" + label + "]");
                     CurrentRecord = record;
+                    StrictTx = true;
 
                     try
                     {
@@ -1473,6 +1491,7 @@ namespace I52Auth15.HostHarness
                     finally
                     {
                         CurrentRecord = null;
+                        StrictTx = false;
                     }
 
                     record.Finish();

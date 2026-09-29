@@ -98,8 +98,16 @@ Document authority is UNPROVEN on the host: RUN-3 will be the first time this co
 
 Run right after HV-00 and before HV-01. **No AUTH-15 call** except where the name says so; each control snapshots, writes inside ONE caller
 transaction, snapshots inside (sanity: something was written), ends the transaction (recorded, see below), snapshots again and
-enumerates EVERY difference. A control's result is a **raw outcome**: it is never reinterpreted, it never changes the HV verdict, and
+enumerates EVERY difference. A control's result is a **raw outcome**: it is never reinterpreted, and
 its leaks are listed apart (`controlLeaks`). `dbKind` says which database it ran on.
+
+**The controls GOVERN the verdict.** The expected set is exactly 14 records (id + `dbKind`): RB-01/SIDE-DB, RB-01V/SIDE-DB, RB-01V/DOCUMENT-AUTHORITY,
+RB-01D/DOCUMENT-AUTHORITY and RB-02a, RB-02b, RB-02c, RB-03, RB-05 each on SIDE-DB and DOCUMENT-AUTHORITY. A **PASS** needs every one present exactly once and
+PASS, no control leak, and `documentAuthority.available = true`; a missing, duplicated, wrong-`dbKind`, unexpected or UNKNOWN control (or unavailable document
+authority) can never PASS (UNKNOWN); **any control FAIL makes the campaign FAIL**. A side record never stands in for a missing document one (the pairing is the
+key), and the rollback-sensitive HV cases (HV-01, 02, 03, 05, 08, 10, 12, 13, 14) must be the DOCUMENT-AUTHORITY run: a SIDE-DB label, or the
+`sideCharacterizations`, never satisfies them. `run-hostval.ps1` recomputes all of this on its own (`evidenceControlSet`, `evidenceRollbackCasesDocument`) and
+refuses (INVALID) a PASS the controls do not back; a FAIL must be backed by a FAIL case, a FAIL control or a deviation.
 
 | Id | Writes | Databases |
 |---|---|---|
@@ -123,6 +131,13 @@ dimension residue isolated (still a FAIL for the HV cases until formally reclass
 succeeded (with the exception type and message if not), `IsDisposed` before and after, the active-transaction count before and
 after, and the identity of the top transaction after. A failed Abort or Dispose, or a transaction that is not disposed afterwards,
 FAILS the current case. RUN-2's helper swallowed every exception, which is one of the causes that could not be excluded.
+
+- **Disposed before the Abort.** On a path that expects the caller's Abort, a transaction that is already disposed BEFORE the Abort is a FAIL: there was
+  nothing left to roll back, and it is never reinterpreted as "already rolled back". (A dispose-only control, which does not Abort, is not judged this way.)
+- **Active-transaction deltas** (rollback-sensitive cases and controls only; the flag is cleared afterwards, so HV-06's deliberate `OpenCloseTransaction` is not
+  judged): relative to the count read just before the end, the count must go down by exactly one, the top transaction afterwards must agree with the count (none
+  when nothing is active, some when something is) and must not be the ended transaction. No absolute zero is required. A metric that cannot be read (count,
+  top, or the ended transaction's identity) is a FAIL, never assumed good.
 
 ## Stopping, deviations and classification (`stopKind`)
 

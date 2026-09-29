@@ -32,6 +32,10 @@ param(
 # must be final and, to be valid without finishing all 15 cases, must record a GOVERNED stop (stopKind = deviation) with a FAIL verdict
 # after at least one case beyond HV-00 ran. A stop before any AUTH-15 call (stopKind hv00), a FILEDIA stop, an exception, a timeout,
 # a non-zero AutoCAD exit, malformed evidence or any identity mismatch stays INVALID.
+#
+# A PASS is also recomputed here from the rollback controls: exactly the 14 (id, dbKind) control records, all PASS, no control leak,
+# DOCUMENT-AUTHORITY available, and every rollback-sensitive HV case labelled DOCUMENT-AUTHORITY (evidenceControlSet /
+# evidenceRollbackCasesDocument). A FAIL may be backed by a FAIL control.
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
@@ -267,7 +271,7 @@ function Invoke-Launch {
         ($null -ne $hostSection.PSObject.Properties['earlyIdentityErrors']) -and (@($hostSection.earlyIdentityErrors).Count -eq 0)
     })
     # Defence in depth: the launcher does not take the harness's word for its verdict. PASS must be backed by exactly the cases HV-00..HV-14,
-    # all PASS, no problems, no leaks, no deviation and no stop. FAIL must be backed by a FAIL case or a recorded deviation.
+    # all PASS, no problems, no leaks, no deviation and no stop. FAIL must be backed by a FAIL case, a FAIL control or a recorded deviation.
     $checks['evidenceVerdictConsistent'] = $parseable -and (Test-Check {
         $verdictText = [string](Prop $evidence 'verdict')
         $cases = @($evidence.cases)
@@ -276,9 +280,38 @@ function Invoke-Launch {
             return ($cases.Count -eq 15) -and ((($cases | ForEach-Object { $_.id } | Sort-Object) -join ',') -eq $expectedIds) -and (@($cases | Where-Object { $_.result -ne 'PASS' }).Count -eq 0) -and (@($cases | Where-Object { $_.deviation -eq $true }).Count -eq 0) -and (@($evidence.problems).Count -eq 0) -and (@($evidence.leaks).Count -eq 0) -and (@($evidence.deviations).Count -eq 0) -and ([string](Prop $evidence 'stopKind') -eq 'none')
         }
         if ($verdictText -eq 'FAIL') {
-            return (@($cases | Where-Object { $_.result -eq 'FAIL' }).Count -gt 0) -or (@($evidence.deviations).Count -gt 0)
+            return (@($cases | Where-Object { $_.result -eq 'FAIL' }).Count -gt 0) -or (@($evidence.controls | Where-Object { $_.result -eq 'FAIL' }).Count -gt 0) -or (@($evidence.deviations).Count -gt 0)
         }
         return $true
+    })
+
+    # The rollback CONTROLS govern a PASS, and the launcher recomputes that itself: exactly the 14 (id, dbKind) records, none missing, none
+    # duplicated, none of another kind, every one PASS, no control leak, and DOCUMENT-AUTHORITY available. A SIDE-DB record never stands in
+    # for a DOCUMENT-AUTHORITY one because the pairing is part of the key. (Only a claimed PASS is judged here: a FAIL or UNKNOWN verdict
+    # already refuses to be published as a PASS, and evidenceVerdictConsistent above requires a FAIL to be backed.)
+    $expectedControlKeys = @('RB-01|SIDE-DB', 'RB-01V|SIDE-DB', 'RB-01V|DOCUMENT-AUTHORITY', 'RB-01D|DOCUMENT-AUTHORITY',
+        'RB-02a|SIDE-DB', 'RB-02a|DOCUMENT-AUTHORITY', 'RB-02b|SIDE-DB', 'RB-02b|DOCUMENT-AUTHORITY', 'RB-02c|SIDE-DB', 'RB-02c|DOCUMENT-AUTHORITY',
+        'RB-03|SIDE-DB', 'RB-03|DOCUMENT-AUTHORITY', 'RB-05|SIDE-DB', 'RB-05|DOCUMENT-AUTHORITY')
+    $checks['evidenceControlSet'] = $parseable -and (Test-Check {
+        if ([string](Prop $evidence 'verdict') -ne 'PASS') { return $true }
+        $controls = @($evidence.controls)
+        $keys = @($controls | ForEach-Object { '{0}|{1}' -f $_.id, $_.dbKind })
+        ($controls.Count -eq 14) -and ((($keys | Sort-Object) -join ',') -eq (($expectedControlKeys | Sort-Object) -join ',')) -and
+            (@($controls | Where-Object { $_.result -ne 'PASS' }).Count -eq 0) -and
+            (@($controls | Where-Object { @($_.leaks).Count -gt 0 }).Count -eq 0) -and
+            (@($evidence.controlLeaks).Count -eq 0) -and
+            ((Prop $evidence 'documentAuthority', 'available') -eq $true)
+    })
+    # The rollback-sensitive HV cases are governed by their DOCUMENT-AUTHORITY run; a SIDE-DB label (or a side characterization) never satisfies them.
+    $checks['evidenceRollbackCasesDocument'] = $parseable -and (Test-Check {
+        if ([string](Prop $evidence 'verdict') -ne 'PASS') { return $true }
+        $cases = @($evidence.cases)
+        $ok = $true
+        foreach ($id in 'HV-01', 'HV-02', 'HV-03', 'HV-05', 'HV-08', 'HV-10', 'HV-12', 'HV-13', 'HV-14') {
+            $mine = @($cases | Where-Object { $_.id -eq $id })
+            if (($mine.Count -ne 1) -or ($mine[0].dbKind -ne 'DOCUMENT-AUTHORITY')) { $ok = $false }
+        }
+        $ok
     })
     $checks['evidenceHarnessShaEqualsMetadata'] = $parseable -and ((Prop $evidence 'harnessSha') -eq $meta.harnessSha)
     $checks['evidenceImplementationShaEqualsMetadata'] = $parseable -and ((Prop $evidence 'implementationSha') -eq $meta.implementationSha)
