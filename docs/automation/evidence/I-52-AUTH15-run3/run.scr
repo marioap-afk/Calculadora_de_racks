@@ -1,0 +1,19 @@
+(setq i52hv-fd-before (getvar "FILEDIA"))
+(setq i52hv-f (open "D:/I52-AUTH15-HV/fcca6e6c/out/filedia.txt" "w"))
+(write-line (strcat "before=" (itoa i52hv-fd-before)) i52hv-f)
+(close i52hv-f)
+(setvar "FILEDIA" 0)
+(setq i52hv-fd-during (getvar "FILEDIA"))
+(setq i52hv-f (open "D:/I52-AUTH15-HV/fcca6e6c/out/filedia.txt" "a"))
+(write-line (strcat "during=" (itoa i52hv-fd-during)) i52hv-f)
+(close i52hv-f)
+_.NETLOAD
+D:\I52-AUTH15-HV\fcca6e6c\run\I52Auth15.HostHarness.dll
+(setvar "FILEDIA" i52hv-fd-before)
+(setq i52hv-fd-after (getvar "FILEDIA"))
+(setq i52hv-f (open "D:/I52-AUTH15-HV/fcca6e6c/out/filedia.txt" "a"))
+(write-line (strcat "after=" (itoa i52hv-fd-after)) i52hv-f)
+(close i52hv-f)
+(if (= i52hv-fd-after i52hv-fd-before) (command "I52AUTH15_HOSTVAL"))
+_.QUIT
+_Y

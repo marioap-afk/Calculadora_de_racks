@@ -315,14 +315,76 @@ Revision exacta del Arquitecto sobre `a80a3801` + `0a5fe046`: implementacion APR
 - **Verificacion sin AutoCAD** (NO-EVIDENCIA-DE-HOST): rig offline con mutaciones (control borrado/duplicado/reetiquetado/FAIL/UNKNOWN/fuga, autoridad
   de documento no disponible, HV-10 reetiquetado SIDE-DB, comprobacion del lanzador eliminada, `Verdict()` ignorando controles) rechazadas.
 
-## 13. Estado
+## 13. RUN-3: tercera corrida gobernada de host (ejecucion VALIDA, resultado crudo FAIL)
+
+Paquete `D:\I52-AUTH15-HV\fcca6e6c` (arnes `fcca6e6c`, implementacion `a80a3801`, `src/` y `tests/` byte-identicos). Una sola corrida completa y limpia
+(HV-00, los 14 controles, HV-01..HV-14), autorizada por el Coordinador y con el compromiso de no-tocar del Owner. Evidencia cruda sin modificar en
+[`docs/automation/evidence/I-52-AUTH15-run3/`](../evidence/I-52-AUTH15-run3/README.md) (hashes en su README).
 
 ```text
-IMPLEMENTATION = a80a3801 APPROVED by the Architect exact-SHA review (no new implementation SHA)
+RUN-3 = VALID EXECUTION / raw launcher result FAIL (exit 3)
+LAUNCH_VALID = true; 29/29 comprobaciones del lanzador = true; AutoCAD exit 0; sin timeout; proceso terminado
+FILEDIA 1 -> 0 -> 1; vivo al inicio 1, vivo al final 1
+Problems = 0; Deviations = 0; stopKind = none; completed = true
+HV-00..HV-14 = 15/15 PASS; los nueve casos sensibles a rollback (01,02,03,05,08,10,12,13,14) corrieron como DOCUMENT-AUTHORITY
+HV leaks = 0
+Controles DOCUMENT-AUTHORITY (RB-01V, RB-01D, RB-02a, RB-02b, RB-02c, RB-03, RB-05) = 7/7 PASS, 0 fugas
+Controles SIDE-DB (RB-01, RB-01V, RB-02a, RB-02b, RB-02c, RB-03, RB-05) = 7/7 FAIL, 42 fugas (3+3+4+9+16+2+5)
+Caracterizaciones SIDE-DB-CHARACTERIZATION de los casos = 8/9 FAIL (HV-13 limpia), 128 fugas
+Abort/Dispose = intentados y con exito en los 43 fines de transaccion de casos y caracterizaciones (y en los 14 de controles), 0 excepciones
+Transacciones activas 1 -> 0, transaccion superior tras el fin = null; comprobaciones estrictas = PASS
+HV-08 "<>" = WriteFailed, BlockName null, rollback del llamador limpio (SNAP identico) en DOCUMENT-AUTHORITY
+```
+
+- **Lo que muestra el instrumento.** Cada control reporta diferencias DENTRO de la transaccion (2 a 16) y las mismas diferencias siguen alli tras el
+  Abort en la base lateral, y ninguna en el documento: el SNAP detecta fugas y el documento las revierte.
+- **Los 17 DWG de `doc-cases\`** son byte-identicos a la plantilla en blanco: ningun documento de caso se guardo (`CloseAndDiscard`).
+- **F-1 (atribucion del rollback)** queda resuelta por comparacion: RB-01 (sin codigo de producto) fuga en la base lateral y RB-01D (mismo cuerpo, documento bajo
+  `LockDocument`) esta limpio; todos los controles de creadores de familia, escritor de sobre y cota nativa (`*D`, `Defpoints`) estan limpios en documento. Las fugas de
+  RUN-2 fueron en bases laterales. La hipotesis de que Abort/Dispose fallidos las causaban no se sostiene (0 excepciones, transacciones cerradas). **No es AUTH-15.**
+  El mecanismo por el que la `Database` lateral de este arnes (`new Database(true, true)` con `WorkingDatabase` cambiada) no revierte NO se identifico y no se afirma como
+  comportamiento general de AutoCAD.
+- **F-2** (nombre efectivo vacio) queda CERRADA para esta unidad: HV-08 pasa en host y el bloque de nombre vacio solo persiste en la caracterizacion lateral
+  (`added BT: = 81`). El defecto raiz compartido de `BlockNaming` sigue fuera de la unidad.
+- **Cobertura en host** de HV-09..HV-14: PASS los seis; no falta cobertura.
+
+## 14. Decision del Owner: admision en host de AUTH-15 (PASS derivado bajo DOCUMENT-AUTHORITY)
+
+Regla del Arquitecto sobre RUN-3 y ratificacion del Owner:
+
+```text
+RAW_RUN3_RESULT = FAIL (se conserva como evidencia historica; no se reescribe ni se oculta)
+El FAIL crudo lo causan exclusivamente los controles SIDE-DB (caracterizacion). Rollback en SIDE-DB = no autoritativo para la admision de AUTH-15.
+CANONICAL_AUTH15_HOST_RESULT = PASS UNDER DOCUMENT-AUTHORITY, derived from RUN-3 by ruling
+  (no "RUN-3 = PASS": el resultado se DERIVA por decision, no lo emite el lanzador)
+FAILURE_ATOMICITY_OPTION_B = AFFIRMED
+CALLER_ROLLBACK_GUARANTEE = AFFIRMED solo para: base de datos de documento + LockDocument sostenido por el llamador +
+  TransactionManager.StartTransaction() + Abort del llamador o Dispose sin Commit
+SIDE-DB = solo caracterizacion. No se debe confiar en Abort para limpiar una base lateral: se descarta la base lateral.
+OpenCloseTransaction = no cubierta / no soportada
+RUN-4 = NO REQUERIDA
+Cambio de produccion tras RUN-3 = ninguno (a80a3801 se mantiene). Cambio de contrato = solo documental (ver el contrato).
+```
+
+- **Base de la derivacion.** HV-00..HV-14 15/15 PASS con los nueve casos gobernantes como DOCUMENT-AUTHORITY; los siete controles de documento PASS; fugas de documento = 0;
+  Problems = 0; Deviations = 0; enlace y entorno validos; FILEDIA restaurado.
+- **Cambio posterior a la vista de los resultados.** Los criterios de PASS previos a la corrida pedian los 14 controles PASS; esta admision los reinterpreta despues de ver
+  el resultado. Es una decision de politica del Owner, tomada sobre una rama del arbol de decision fijada ANTES de la corrida (RB-01 con fuga y RB-01D limpio => la base
+  lateral es el problema) y con la regla previa de que los resultados SIDE-DB son solo caracterizacion para los casos HV. Se registra como tal.
+- **Alcance de la garantia.** Verificada con una muestra por caso, en un segundo documento en blanco abierto y activo. No cubre contenido previo del dibujo, efectos de la pila de
+  UNDO ni concurrencia; el SNAP no cubre propiedades de entidades ni cargas de Xrecord. AUTH-15 no rechaza bases laterales (no se anade guarda): el contrato lo documenta.
+- **Identidad de la evidencia de host.** La validacion se hizo sobre el binario del paquete (implementacion `a80a3801` + arnes `fcca6e6c`), no sobre el SHA del Candidato: el arnes
+  se retira y `src/` y `tests/` del Candidato deben ser byte-identicos a los validados (los arboles `224ca6a3...` / `53fb9b98...`). Igualdad de arbol NO es identidad de binario
+  (AGENTS.md, «Reutilizacion de evidencia»); el Owner ratifico esta admision con esa salvedad, y el archivo de evidencia de la unidad la repite.
+
+## 15. Estado
+
+```text
+IMPLEMENTATION = a80a3801 APPROVED (no new implementation SHA); no production change after RUN-3
 AUTH15_DEV_01 = ACCEPTED / CONTRACT NORMALIZATION
 RUN-1 = INVALID / HARNESS DEFECT (0 AUTH-15 calls)
 RUN-2 = VALID EXECUTION / FAIL (F-1 unresolved, F-2 confirmed); cannot be carried forward
-HOST_VALIDATION = NO VALID PASS YET (RUN-3 = one clean full campaign is required after the harness is corrected)
-HARNESS = corrected after MAJOR-1 (controls govern the verdict); package 0a5fe046 SUPERSEDED FOR EXECUTION
-NEXT_GATE = ARCHITECT DELTA RE-REVIEW OF CORRECTED HARNESS
+HOST_VALIDATION = RUN-3 raw FAIL preserved; CANONICAL_AUTH15_HOST_RESULT = PASS UNDER DOCUMENT-AUTHORITY (derived by ruling, Owner-ratified)
+HARNESS = fcca6e6c APPROVED (delta re-review); temporary, removed from the Candidate
+NEXT_GATE = CANDIDATE CI + READY-06 CONFORMANCE + INTEGRATION (no merge yet)
 ```

@@ -1,0 +1,81 @@
+{
+  "schema": "I52-AUTH15-HV-LAUNCH/2",
+  "package": "D:\\I52-AUTH15-HV\\fcca6e6c",
+  "implementationSha": "a80a3801cc39eaa9656be05c080853be87ab2581",
+  "harnessSha": "fcca6e6c5713e966c612998a1eb9e6833825d47e",
+  "acad": {
+    "path": "C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe",
+    "sha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+    "fileVersion": "R25.0.171.0.0"
+  },
+  "arguments": "\"D:\\I52-AUTH15-HV\\fcca6e6c\\out\\scratch.dwg\" /nologo /nossm /b \"D:\\I52-AUTH15-HV\\fcca6e6c\\out\\run.scr\"",
+  "profile": "<current>",
+  "trustedPaths": {
+    "state": "TRUSTED",
+    "detail": "profile '<<Unnamed Profile>>' (SECURELOAD=1): exact entry 'D:\\I52-AUTH15-HV\\fcca6e6c\\run'"
+  },
+  "pid": 25436,
+  "processStartUtc": "2026-09-29T19:04:37.2601515Z",
+  "startUtc": "2026-09-29T19:04:37.2456906Z",
+  "endUtc": "2026-09-29T19:05:27.4240155Z",
+  "timeoutSeconds": 900,
+  "timedOut": false,
+  "exitCode": 0,
+  "scratch": {
+    "signature": "AC1032",
+    "sha256Before": "7E7CDC22D2929138BE79A4558923B1D2092E6DF77DC0CBE0205D5FB062D115CC",
+    "sha256After": "7E7CDC22D2929138BE79A4558923B1D2092E6DF77DC0CBE0205D5FB062D115CC"
+  },
+  "filedia": {
+    "present": true,
+    "parseable": true,
+    "before": 1,
+    "during": 0,
+    "after": 1,
+    "error": null
+  },
+  "blankTemplate": {
+    "sha256Before": "7E7CDC22D2929138BE79A4558923B1D2092E6DF77DC0CBE0205D5FB062D115CC",
+    "sha256After": "7E7CDC22D2929138BE79A4558923B1D2092E6DF77DC0CBE0205D5FB062D115CC"
+  },
+  "stopKind": "none",
+  "evidenceSha256": "C85EA59BFF17C31846B92F2D5F2C5CF2988E1F5402C8B5972B43289AB5FE3E68",
+  "evidenceParseError": null,
+  "checks": {
+    "processExitedCleanly": true,
+    "noOtherAcadStarted": true,
+    "scratchUnchanged": true,
+    "blankTemplateUnchanged": true,
+    "packageUnchangedAfterRun": true,
+    "filediaRecorded": true,
+    "filediaRestored": true,
+    "evidenceExists": true,
+    "evidenceParseable": true,
+    "evidenceSchema": true,
+    "evidenceFromThisProcess": true,
+    "evidenceBoundToPackageSums": true,
+    "evidencePluginHash": true,
+    "evidenceApplicationHash": true,
+    "evidenceDomainHash": true,
+    "evidenceHarnessHash": true,
+    "evidenceProcessStart": true,
+    "evidenceOwnerNoTouchDeclared": true,
+    "evidenceScratchIdentity": true,
+    "evidenceEarlyIdentityClean": true,
+    "evidenceVerdictConsistent": true,
+    "evidenceControlSet": true,
+    "evidenceRollbackCasesDocument": true,
+    "evidenceHarnessShaEqualsMetadata": true,
+    "evidenceImplementationShaEqualsMetadata": true,
+    "evidenceTreesEqualMetadata": true,
+    "evidenceFilediaMatchesRecord": true,
+    "evidenceFinal": true,
+    "evidenceRunShape": true
+  },
+  "launchValid": true,
+  "verdict": "FAIL",
+  "runResult": "FAIL",
+  "launcherExitCode": 3,
+  "ownerConfirmedNoTouch": true,
+  "note": "This record and hostval-evidence.json are the host evidence. Nothing produced by the offline tests is."
+}

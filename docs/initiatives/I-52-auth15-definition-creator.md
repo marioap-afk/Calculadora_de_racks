@@ -1,6 +1,6 @@
 # I-52 AUTH-15 — Unidad de integracion: creacion caller-owned de definicion y sobre
 
-Status: POST-RUN-2 CORRECTION (effective-name postcondition) PENDING ARCHITECT EXACT-SHA REVIEW; HOST VALIDATION = RUN-1 INVALID (harness defect), RUN-2 VALID FAIL (rollback leaks unresolved, empty effective name confirmed); RUN-3 REQUIRED; CANDIDATE PENDING HOST PASS
+Status: IMPLEMENTATION `a80a3801` APPROVED; HOST VALIDATION = PASS UNDER DOCUMENT-AUTHORITY (derived from RUN-3 by ruling, Owner-ratified; the raw RUN-3 launcher result FAIL is preserved); TEMPORARY HARNESS REMOVED; CANDIDATE / INTEGRATION IN PREPARATION (not merged)
 
 Workflow: V2
 
@@ -84,6 +84,12 @@ tipado.
     POST-ESCRITURA: AUTH-15 comprueba el nombre EFECTIVO que devolvio la familia y no lo da por exito si esta vacio. AUTH-15 no
     anade ni duplica politica de nombres: solo LEE el nombre efectivo.
   - Un exito devuelve SIEMPRE un `BlockName` real y no vacio.
+  - **Garantia de rollback del llamador (Option B), condicion soportada.** Todo lo que AUTH-15 escribe queda en la transaccion del llamador, y
+    el llamador puede deshacerlo con Abort o con Dispose sin Commit **cuando la base de datos destino es una base de datos de documento**, el
+    llamador sostiene `LockDocument` y la transaccion se abrio con `TransactionManager.StartTransaction()`. Verificado en host (RUN-3, DOCUMENT-AUTHORITY;
+    ver las decisiones §13-14). **No se garantiza** para una base de datos lateral (`new Database(...)`): en RUN-3 la misma escritura sobrevivio al Abort alli, sin
+    codigo de AUTH-15 de por medio. Con una base lateral el llamador no debe confiar en Abort para limpiar: debe descartar la base. Una `OpenCloseTransaction`
+    sigue sin soportarse. AUTH-15 no rechaza bases laterales.
   - `InvalidPlan` significa plan (o dibujante) ausente. Un plan no nulo mal formado, que debia llegar ya preparado,
     puede fallar durante la creacion como `WriteFailed`.
   - `MissingInstances` lleva una entrada por cada par distinto (BlockName|View), tal como las emite el creador
@@ -108,15 +114,18 @@ tipado.
 - la rama `feature/rackmirror-espejo-semantico`;
 - I-55 y sus decisiones (incluida la semantica de faltantes del modo 1 de G9b);
 - mover AUTH-15 a la Foundation;
-- un comando de validacion en AutoCAD como parte del producto: el arnes de validacion en host es TEMPORAL, vive solo en
-  `eng/research/I52Auth15Host/` (README incluido), no es API de producto y se revierte antes de Candidate.
+- un comando de validacion en AutoCAD como parte del producto: el arnes de validacion en host fue TEMPORAL, vivio solo en
+  `eng/research/I52Auth15Host/` (README incluido), no es API de producto y se retiro antes del Candidate. Sigue en el historial de la rama
+  (ultimo estado `fcca6e6c`) y su paquete inmutable esta en `D:\I52-AUTH15-HV\fcca6e6c`.
 
 ## Compuertas
 
 1. Revision exacta del Arquitecto: `fed44e56` = CHANGES REQUIRED (B-1, corregida con C-1..C-5); re-revision del delta sobre
    `2d10de70` = APPROVED.
 2. Validacion en host mediante un arnes temporal en esta misma rama (decision del Coordinador). Regla vinculante: `src/` y
-   `tests/` del commit del arnes son byte-identicos a `2d10de70` (el script de construccion lo verifica y la evidencia registra
-   los arboles). Estado: paquete construido, NO ejecutado; la ejecucion requiere orden propia del Coordinador.
+   `tests/` del commit del arnes son byte-identicos a la implementacion validada (el script de construccion lo verifica y la evidencia registra
+   los arboles). Estado: RUN-1 INVALID (defecto del arnes), RUN-2 VALID FAIL, RUN-3 ejecucion VALIDA con resultado crudo FAIL causado solo por controles
+   SIDE-DB (caracterizacion). Resultado canonico: PASS UNDER DOCUMENT-AUTHORITY, derivado por decision del Owner (decisiones §13-14).
+   Implementacion validada: `a80a3801`.
 3. Candidato, integracion en `main`, verificacion posterior, recibo `integration/I-52-AUTH15` y reconciliacion
    con I-55.
