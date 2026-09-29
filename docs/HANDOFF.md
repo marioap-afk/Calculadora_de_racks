@@ -320,16 +320,17 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
 - `R3_PRE_RUN_TUPLE_HASH` = `47B7914EE1999CA9775577D7225F31C0257334F5136218429DF50C2EBCAA1BD9`.
 - [Evidencia](automation/evidence/I-52-r3-host-smoke-bef6091b.json).
 
-**Estado tras AUTH-15 (integrada en `main`, tag `integration/I-52-AUTH15`), §196 y §197.**
-- Probes gobernados ejecutados: 11. Resultados gobernados válidos: 6 (09N-B, 02NDBMOD-S, 02NO-S, 16N-S, 10N-S, 16C-S).
-- Definición literal de `CTDA_HOST_PASS(V35-A3)`: §196.1. Dictámenes del Arquitecto ratificados por el Coordinador: §197 (Q1-Q7). Modelo de tres estados: **TRUE / FALSE / NOT EVALUATED**;
-  estado actual **`CTDA_HOST_PASS = NOT EVALUATED`** (nativas 6/100: 92 sin ejecutar y 2 diferidas; managed 0/18; cláusulas 1-5 INCOMPLETE; ningún FAIL/UNKNOWN gobernante ni incapacidad registrada).
-  El término anterior queda retirado (§197.1). [Matriz](initiatives/I-52-ctda-host-pass-coverage-v35a3.md).
-- Managed: 18 filas normativas (01-15 con 09C/09E y 10S/10M/10SM); las nueve `16*` son OUTSIDE-PREDICATE. La autoridad de ejecución managed está AUSENTE pero se considera IMPLEMENTABLE (no es incapacidad).
-- Arrastre A2→A3: CONDICIONAL (`carriedForward`); antes de TRUE, re-ejecutar en el build de la campaña o dictamen de equivalencia. DA-P7: solo S satisfecha.
-- Baseline de campaña: paquete `bef6091b` (fuente `bef6091b`, `D:\I52-CTDA-R2H\bef6091b`, zip `021F2092…55F7`), sin paquete nuevo requerido. 16A-S y 13A-SM DIFERIDOS y sin autorizar (13A-SM está en el grupo estructural).
-- `CIA` = UNKNOWN; V18 gobierna; G3 STOPPED.
-- **Siguiente gate: decisión de autorización del Coordinador para la campaña de falsificación estructural de 14 filas** (§197.9; NO autorizada ni ejecutada). La rama sigue sin reconciliar con `main` (79 detrás / 115 delante).
+**Estado tras AUTH-15 (integrada en `main`, tag `integration/I-52-AUTH15`), §196, §197 y §198.**
+- Ejecuciones gobernadas: 15 (10 gobernantes: 9 PASS + 1 UNKNOWN; 5 no gobernantes). ProbeIds con resultado gobernante válido: 10 (09N-B, 02NDBMOD-S, 02NO-S, 16N-S, 10N-S, 16C-S y, de la campaña estructural
+  sobre `bef6091b`, 09N-D PASS-S, 10N-M PASS-M, 10N-SM PASS-SM y 04NO-S UNKNOWN estructural).
+- **`CTDA_HOST_PASS(V35-A3) = FALSE` (terminal y monótono)** desde §198: un UNKNOWN estructural gobernante (04NO-S, `RESULT-RULE-V35` paso 2; `OBS-PRIMARY-CALLBACK` disponible, marcadores `+N-OBJ-UNDO/MOD/CLOSED`
+  ausentes). No hay rerun ni intento de mejorar el resultado. `NOT EVALUATED` fue el estado de §196/§197 (historia). No es una determinación de incapacidad. [Matriz](initiatives/I-52-ctda-host-pass-coverage-v35a3.md).
+- Campaña estructural: **CERRADA tras la fila 4**; filas 5–14 NO ejecutadas y NO autorizadas (no FAIL, no UNKNOWN, no diferidas). Las etiquetas INVALID del runner (filas 3 y 4) son tooling no autoritativo.
+- Ejecutor managed: AUSENTE pero IMPLEMENTABLE; su propósito para `CTDA_HOST_PASS` es MOOT (no es incapacidad; no se implementa). La deriva de redacción de 04NO-S está corregida solo en texto derivado (§198.8).
+- Ruta: `ALT-21C` NO ADMISIBLE bajo la condición actual; `ALT-21E` fallback por defecto EN VIGOR (V18: NO SUPPORTED EXECUTION ENVIRONMENT); `ALT-21D` NO SELECCIONADA (solo tras Proposal concreta + revisión del
+  Coordinador + revisión del Arquitecto + decisión explícita del Owner).
+- `CIA` = UNKNOWN; `SafeOperationalState` = FALSE_FOR_ADMISSION; G3 STOPPED; V18 gobierna; ADR-0036 PROPOSED / AMENDED FOR V18; Freeze V35 sin cambio; sin Freeze de reemplazo.
+- **Siguiente gate: decisión del Coordinador — mantener `ALT-21E` como disposición final de I-52, o autorizar una Proposal de garantía reducida `ALT-21D`.** La rama sigue sin reconciliar con `main` (79 detrás / 115 delante).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
@@ -390,7 +391,7 @@ Evidencia:
 Siguiente paso: el **gate de implementación R3** conforme a V35 congelada. Después vendrán el rebuild del ARX y el smoke en
 el host; solo entonces podrán desbloquearse los probes gobernantes.
 
-Probes gobernados: **0**; `CTDA_HOST_PASS` **NOT EVALUATED**; producto **BLOCKED**; V18 gobierna; G3 **STOPPED**,
+Probes gobernados: **0**; `CTDA_HOST_PASS` **NOT EVALUATED** (estado histórico a esa fecha; vigente: **FALSE**, §198); producto **BLOCKED**; V18 gobierna; G3 **STOPPED**,
 G3B **NOT OPEN**, CT-50 **NOT EXECUTED**.
 
 **I-57 — Shared View Foundation — F7 COMPLETE; F8 OPEN; CIERRE DOCUMENTAL PREPARADO PARA
