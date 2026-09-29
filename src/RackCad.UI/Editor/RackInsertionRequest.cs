@@ -271,6 +271,15 @@ namespace RackCad.UI.Editor
             RackName = rackName;
             View = view;
             SetLegacySingleView(Kind, view, -1);
+
+            // A Selective lateral carries its post as its section, and the historical single-view request has none: it decoded to
+            // NO address, so the host saw an empty request (ONE_RACK_REQUIRED, 0/0). The editor's first lateral is the first
+            // post, exactly as the Dynamic editor's already is (its negative section coerces to post 0); the batch dialog is
+            // how any other post is chosen (G16 C16-01).
+            if (Views.Count == 0 && string.Equals(view, RackEmbedDocument.ViewLateral, StringComparison.OrdinalIgnoreCase))
+            {
+                SetSingleView(RackViewAddress.Post(0));
+            }
         }
 
         public override RackSystemKind Kind => RackSystemKind.SelectiveRack;

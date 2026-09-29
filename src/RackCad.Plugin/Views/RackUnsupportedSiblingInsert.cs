@@ -69,7 +69,9 @@ namespace RackCad.Plugin.Views
                 if (member.Kind == RackCad.Application.Views.Redraw.RackSiblingMembershipKind.BlockingUnreadable)
                     complete = false;
             var blocks = new System.Collections.Generic.List<(ObjectId BlockId, RackEmbedDocument Embed)>();
-            foreach (var member in snapshot.Membership.Members)
+            // ONLY the definitions of THIS rack: the scan reads the whole drawing, and RACKEDITAR must redraw and preflight the
+            // blocks of the rack being edited, never those of another rack that happens to be in the same drawing (G16 C16-02).
+            foreach (var member in snapshot.Membership.MutableMembers)
                 if (snapshot.Definitions.TryGetValue(member.Fact.DefinitionKey, out var definition)
                     && snapshot.Envelopes.TryGetValue(member.Fact.DefinitionKey, out var envelope))
                     blocks.Add((definition, envelope));
