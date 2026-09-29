@@ -35,15 +35,19 @@ Después ejecuta `RACKCAD`. El procedimiento completo y el formato de evidencia 
 | `RACKSISTEMADINAMICO` | Dibujar el sistema dinámico predeterminado. |
 | `QUICKCAMA` | Dibujar una cama de rodamiento. |
 | `RACKSELECTIVO` | Diseñar un rack selectivo. |
-| `RACKEDITAR` | Reabrir y actualizar un rack existente. |
+| `RACKEDITAR` | Reabrir y actualizar un rack existente, o insertar una o varias vistas nuevas ligadas al mismo rack. |
 | `RACKVARIABLES` | Administrar variables del dibujo, literales o fórmulas; alias `RVA`. |
 | `RACKDUPLICAR` | Copiar uno o varios racks seleccionados como racks independientes (GUID nuevo), al estilo COPY. |
+| `RACKPROYECTAR` / `RPY` | Proyectar racks ya dibujados a otra clase de vista (Frontal, Lateral o Planta) como vistas enlazadas del mismo rack, no copias. |
 | `RACKPROPIEDADES` | Administrar propiedades personalizadas (nombre y valor) de un rack o del Proyecto; alias `RPR`. |
 | `RACKLISTA` | Listar racks, vistas y copias del dibujo. |
 | `RACKBOMTOTAL` | Generar el BOM consolidado. |
 | `RACKLAYOUT` / `RACKRELLENAR` | Colocar racks en una rejilla o sitio. |
 | `RACKSECCION` | Ver una sección estructural del catálogo AISC e insertarla como geometría. También desde `RACKCAD` → «Generar perfil estructural». |
 | `RACKAYUDA` | Consultar comandos y alias dentro de AutoCAD. |
+
+Cómo elegir la primera vista, insertar varias vistas de una vez y proyectar racks se explica en la
+[guía de vistas ligadas y proyección](docs/guias/vistas-ligadas-y-proyeccion.md).
 
 Las variables y fórmulas que consumen las propiedades vinculables de `RACKEDITAR` se explican en la
 [guía de variables de proyecto y fórmulas](docs/guias/variables-y-formulas.md).

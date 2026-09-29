@@ -35,7 +35,7 @@ namespace RackCad.UI
             new RackCommandInfo("Diseñar", "QUICKCAMA", "QCM", "Cama de rodamiento (riel + rodillos + frenos)."),
             new RackCommandInfo("Diseñar", "RACKCANTILEVER", "RCT", "Línea Cantilever: estaciones, brazos por nivel y lado, arriostramiento; vistas frontal, lateral y planta."),
 
-            new RackCommandInfo("Editar y copiar", "RACKEDITAR", "RED", "Reabrir el editor de un rack dibujado; al confirmar redibuja todas sus vistas."),
+            new RackCommandInfo("Editar y copiar", "RACKEDITAR", "RED", "Reabrir el editor de un rack dibujado; al confirmar redibuja todas sus vistas y, si lo pides, inserta una o varias vistas nuevas ligadas al mismo rack."),
             new RackCommandInfo("Editar y copiar", "RACKDUPLICAR", "RD", "Copiar un rack como INDEPENDIENTE, estilo COPY: punto base → destinos (múltiple por defecto)."),
             new RackCommandInfo("Editar y copiar", "RACKPROPIEDADES", "RPR", "Propiedades personalizadas estables (nombre y valor) de un rack o del Proyecto; lo que no se puede escribir se ve en solo lectura con su motivo, y las vistas de un rack que difieren se pueden unificar."),
             new RackCommandInfo("Editar y copiar", "RACKPROYECTAR", "RPY", "Proyectar racks ya dibujados a otra clase de vista (Frontal, Lateral o Planta): punto base → destino. Crea vistas enlazadas del mismo rack, no copias: el rack sigue siendo el mismo y el BOM no cambia (para copiar, RACKDUPLICAR)."),
