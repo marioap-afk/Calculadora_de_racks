@@ -401,7 +401,11 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
 - **ALT-21D (§199):** el Coordinador autorizó *redactar* una Proposal de garantía reducida (no es una selección del Owner). [Proposal ALT-21D V1](initiatives/I-52-alt21d-reduced-guarantee-proposal-v1.md): envolvente atestiguada
   de un solo documento con *detect-and-refuse-success* en checkpoints; **hoy no admite ningún entorno** (falta autoridad de medición y caracterización en `acad.exe` interactivo); relación con CIA = opción B (autoridad de
   reemplazo más estrecha; CIA sigue UNKNOWN). Recomendación: **NEEDS ARCHITECT RULING** (Q1, Q2). `ALT-21E` sigue siendo el fallback en vigor; nada cambia de estado.
-- **Siguiente gate: revisión del Arquitecto de la Proposal ALT-21D V1.** La rama sigue sin reconciliar con `main` (79 detrás / 118 delante).
+- **ALT-21D V2 (§200):** el Arquitecto dictaminó `AGREED_WITH_REQUIRED_CHANGES` sobre V1 (V1 queda histórica, no se edita). [Proposal ALT-21D V2](initiatives/I-52-alt21d-reduced-guarantee-proposal-v2.md) incorpora todos los cambios:
+  garantía reducida RG-1..RG-4 distinta de la original (CIA sigue requerida para esta), modelo temporal `W-scan`/`W3a`/`W3b`, atestación de módulos *conocidos* (sin «closed-world»), fases PREPARE/MUTATION/VERIFY, el orquestador como dueño de
+  lock y transacción, outcomes `FAILURE_COMMITTED_DIVERGENT`/`COMMITTED_UNVERIFIED`/`ABORT_UNVERIFIED`. Estado: `ALT21D_DIRECTION = PLAUSIBLE_NOT_YET_VIABLE`, `ALT21D_ADMISSION_PASS = NOT_YET_SATISFIABLE`,
+  `CURRENTLY_ADMISSIBLE_KIND_SCOPE = NONE` (Selective sin autoridad caller-owned de creación), `OWNER_DECISION_STATUS = NOT_YET`, `CT21D_STATUS = NOT_AUTHORIZED`. Bloqueadores externos: Selective (B5) y UNDO (B6).
+- **Siguiente gate: revisión del Arquitecto de la Proposal ALT-21D V2.** La rama sigue sin reconciliar con `main` (79 detrás / 120 delante).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
