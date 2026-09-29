@@ -1,0 +1,5228 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "kind": "CTDA_HOST_PASS coverage assessment",
+  "definitionRevision": "V35-A3",
+  "mode": "DOCUMENTATION / ANALYSIS ONLY (no AutoCAD, no probe executed, no source change)",
+  "inputs": {
+    "docs/initiatives/I-52-native-probe-matrix-v35.md": "79E876597C749CC634F1E75E8E4943FE549C8B762E6B4A9B0A5093F86D83991C",
+    "docs/initiatives/I-52-host-event-catalog-v27-correction.md": "D624156F3461061E62076E8C25792D966CA34A5CF4840E5868ADF4A559506E01",
+    "docs/initiatives/I-52-host-event-catalog-v27.md": "357569C9C057F9C94D77C5E13A1C6E5319FBEBB4E12BDD4895F0FB2A5220F9AB",
+    "docs/initiatives/I-52-execution-catalog-v35.json": "CB858ED5BDA7D99E8F85E2A1BC06A0461162BCA57189DDF59FCBEE9128F46BA8",
+    "docs/initiatives/I-52-fixture-execution-contract-v35.md": "6E21A8E23D838751D8C1540BC7C0940F0BFF448FF8B8631DC6162A96501A477F"
+  },
+  "counts": {
+    "nativeRowsTotal": 100,
+    "managedRowsTotal(literal18)": 18,
+    "managedRowsInHEC-V27-C1-section2": 27,
+    "native": {
+      "NOT-EXECUTED": 92,
+      "PASS-GOVERNED": 6,
+      "DEFERRED": 2
+    },
+    "managed18": {
+      "NOT-EXECUTED": 18
+    },
+    "managedAll27": {
+      "NOT-EXECUTED": 27
+    },
+    "combined118": {
+      "PASS-GOVERNED": 6,
+      "FAIL-GOVERNED": 0,
+      "UNKNOWN-GOVERNED": 0,
+      "EXECUTED-NON-GOVERNING (rows with ONLY non-governing executions)": 0,
+      "NOT-EXECUTED": 110,
+      "DEFERRED": 2
+    },
+    "executions": {
+      "total": 11,
+      "governing": 6,
+      "nonGoverning": 5,
+      "distinctValidProbeIds": 6
+    }
+  },
+  "clauses": [
+    {
+      "clause": 1,
+      "name": "fixture identity",
+      "status": "INCOMPLETE",
+      "why": "Native fixture-v35 / FEC-V35-1: the six governing executions ran packages whose freeze/plan identity declares the frozen V35 fixture (A3: D9FD41B4.., A2: 43DCE809..), but no evidence record carries an explicit fixture-identity field. The managed fixture HF-V31-1 with F-NOD and F-SRC (identities that exist only in the managed HF/HEC fixture contract, not in the eight native PersistentFixtureIdentity entries) has never been instantiated in any governed execution."
+    },
+    {
+      "clause": 2,
+      "name": "complete execution (100 native + 18 managed, exact governed identity/tuple)",
+      "status": "INCOMPLETE",
+      "why": "native 6/100 executed under a governing result (92 not executed, 2 deferred); managed 0/18 executed. The three A2-package results are carried forward, not re-executed under the A3 tuple."
+    },
+    {
+      "clause": 3,
+      "name": "result completeness (H-P1..H-P12, IN T1..T16, T14 OUT, every tagged row PASS)",
+      "status": "INCOMPLETE",
+      "why": "H-P satisfied: none; IN T satisfied: none (rows tagged and all PASS). No FAIL among governing results."
+    },
+    {
+      "clause": 4,
+      "name": "observability (DA-P7 / DA-P8 / DA-P10)",
+      "status": "INCOMPLETE",
+      "why": "DA-P7 surfaces read in a PASS: ['S'] (missing ['M', 'SM', 'NOD']); DA-P8 needs HEC row 11 (NOT-EXECUTED); DA-P10 needs HEC rows 14 and 15 (NOT-EXECUTED)."
+    },
+    {
+      "clause": 5,
+      "name": "no FAIL / UNKNOWN anywhere in the governed matrix",
+      "status": "INCOMPLETE",
+      "why": "0 FAIL-GOVERNED and 0 UNKNOWN-GOVERNED among the 6 governing results; nothing disqualifying is recorded. The absence cannot be established for the 110 rows not executed and 2 deferred. The two historical A2 UNKNOWN executions of 16N-S (E07, E08) are non-governing under A3 (sections 187/188)."
+    }
+  ],
+  "state": {
+    "CTDA_HOST_PASS(V35-A3)": "NOT EVALUABLE",
+    "meaning": "TRUE requires all five clauses PASS. FALSE is produced by an executed governing FAIL or UNKNOWN (clause 5 violated; the literal text: a structural UNKNOWN is a valid executed result that forces FALSE). None exists. While any clause is INCOMPLETE and none is violated, the value is NOT EVALUABLE: it is NOT TRUE, and it is not (yet) FALSE.",
+    "notTrue": true,
+    "openInterpretation": "Q1 (see the assessment): if clause 2 is read as a state predicate over the current record, the conjunction is FALSE now; that reading is not adopted here."
+  },
+  "daP7": {
+    "requiredSurfaces": [
+      "S",
+      "M",
+      "SM",
+      "NOD"
+    ],
+    "readInAtLeastOnePass": [
+      "S"
+    ],
+    "missing": [
+      "M",
+      "SM",
+      "NOD"
+    ],
+    "note": "09N-B is labelled Surface S/M in NPM-V35, but its VerifierIds are VER-T,VER-S: only S (and T) is read. NOD is a surface of managed row 11 only (native rows have no NOD surface). Nothing is inferred from the S/M label."
+  },
+  "daP8": {
+    "requiredBy": "HEC row 11",
+    "rowClassification": "NOT-EXECUTED",
+    "satisfied": false
+  },
+  "daP10": {
+    "requiredBy": "HEC rows 14 and 15",
+    "rowClassifications": {
+      "14": "NOT-EXECUTED",
+      "15": "NOT-EXECUTED"
+    },
+    "satisfied": false
+  },
+  "hp": {
+    "P1": {
+      "rowsTagged": 17,
+      "passGoverned": 2,
+      "nativeTagged": 14,
+      "managedTagged": 3,
+      "passingProbeIds": [
+        "02NO-S",
+        "02NDBMOD-S"
+      ],
+      "satisfied": false
+    },
+    "P2": {
+      "rowsTagged": 29,
+      "passGoverned": 3,
+      "nativeTagged": 24,
+      "managedTagged": 5,
+      "passingProbeIds": [
+        "09N-B",
+        "02NO-S",
+        "02NDBMOD-S"
+      ],
+      "satisfied": false
+    },
+    "P3": {
+      "rowsTagged": 14,
+      "passGoverned": 1,
+      "nativeTagged": 10,
+      "managedTagged": 4,
+      "passingProbeIds": [
+        "09N-B"
+      ],
+      "satisfied": false
+    },
+    "P4": {
+      "rowsTagged": 7,
+      "passGoverned": 1,
+      "nativeTagged": 2,
+      "managedTagged": 5,
+      "passingProbeIds": [
+        "02NO-S"
+      ],
+      "satisfied": false
+    },
+    "P5": {
+      "rowsTagged": 1,
+      "passGoverned": 0,
+      "nativeTagged": 0,
+      "managedTagged": 1,
+      "passingProbeIds": [],
+      "satisfied": false
+    },
+    "P6": {
+      "rowsTagged": 85,
+      "passGoverned": 5,
+      "nativeTagged": 81,
+      "managedTagged": 4,
+      "passingProbeIds": [
+        "09N-B",
+        "10N-S",
+        "16N-S",
+        "16C-S",
+        "02NDBMOD-S"
+      ],
+      "satisfied": false
+    },
+    "P7": {
+      "rowsTagged": 0,
+      "passGoverned": 0,
+      "nativeTagged": 0,
+      "managedTagged": 0,
+      "passingProbeIds": [],
+      "satisfied": false
+    },
+    "P8": {
+      "rowsTagged": 1,
+      "passGoverned": 0,
+      "nativeTagged": 0,
+      "managedTagged": 1,
+      "passingProbeIds": [],
+      "satisfied": false
+    },
+    "P9": {
+      "rowsTagged": 3,
+      "passGoverned": 0,
+      "nativeTagged": 2,
+      "managedTagged": 1,
+      "passingProbeIds": [],
+      "satisfied": false
+    },
+    "P10": {
+      "rowsTagged": 2,
+      "passGoverned": 0,
+      "nativeTagged": 0,
+      "managedTagged": 2,
+      "passingProbeIds": [],
+      "satisfied": false
+    },
+    "P11": {
+      "rowsTagged": 87,
+      "passGoverned": 2,
+      "nativeTagged": 83,
+      "managedTagged": 4,
+      "passingProbeIds": [
+        "16C-S",
+        "02NDBMOD-S"
+      ],
+      "satisfied": false
+    },
+    "P12": {
+      "rowsTagged": 82,
+      "passGoverned": 3,
+      "nativeTagged": 75,
+      "managedTagged": 7,
+      "passingProbeIds": [
+        "10N-S",
+        "16N-S",
+        "16C-S"
+      ],
+      "satisfied": false
+    }
+  },
+  "threats": {
+    "T1": {
+      "rowsTagged": 3,
+      "passGoverned": 0,
+      "nativeTagged": 0,
+      "managedTagged": 3,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T2": {
+      "rowsTagged": 98,
+      "passGoverned": 5,
+      "nativeTagged": 96,
+      "managedTagged": 2,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T3": {
+      "rowsTagged": 11,
+      "passGoverned": 0,
+      "nativeTagged": 7,
+      "managedTagged": 4,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T4": {
+      "rowsTagged": 11,
+      "passGoverned": 1,
+      "nativeTagged": 9,
+      "managedTagged": 2,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T5": {
+      "rowsTagged": 3,
+      "passGoverned": 0,
+      "nativeTagged": 1,
+      "managedTagged": 2,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T6": {
+      "rowsTagged": 4,
+      "passGoverned": 0,
+      "nativeTagged": 2,
+      "managedTagged": 2,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T7": {
+      "rowsTagged": 3,
+      "passGoverned": 0,
+      "nativeTagged": 1,
+      "managedTagged": 2,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T8": {
+      "rowsTagged": 16,
+      "passGoverned": 2,
+      "nativeTagged": 12,
+      "managedTagged": 4,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T9": {
+      "rowsTagged": 3,
+      "passGoverned": 1,
+      "nativeTagged": 1,
+      "managedTagged": 2,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T10": {
+      "rowsTagged": 2,
+      "passGoverned": 0,
+      "nativeTagged": 0,
+      "managedTagged": 2,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T11": {
+      "rowsTagged": 9,
+      "passGoverned": 0,
+      "nativeTagged": 3,
+      "managedTagged": 6,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T12": {
+      "rowsTagged": 6,
+      "passGoverned": 0,
+      "nativeTagged": 3,
+      "managedTagged": 3,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T13": {
+      "rowsTagged": 6,
+      "passGoverned": 1,
+      "nativeTagged": 5,
+      "managedTagged": 1,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T14": {
+      "rowsTagged": 0,
+      "passGoverned": 0,
+      "nativeTagged": 0,
+      "managedTagged": 0,
+      "scope": "OUT (diagnostic only; oracle: no state change)",
+      "satisfied": true
+    },
+    "T15": {
+      "rowsTagged": 18,
+      "passGoverned": 0,
+      "nativeTagged": 17,
+      "managedTagged": 1,
+      "scope": "IN",
+      "satisfied": false
+    },
+    "T16": {
+      "rowsTagged": 63,
+      "passGoverned": 2,
+      "nativeTagged": 63,
+      "managedTagged": 0,
+      "scope": "IN",
+      "satisfied": false
+    }
+  },
+  "executions": [
+    {
+      "executionId": "E01",
+      "probeId": "09N-B",
+      "package": "6e445fa8",
+      "decisionsSection": "176",
+      "engineResult": "PASS-T (engine)",
+      "governing": false,
+      "reason": "NOT VALID: the operator confirmed that the save-changes dialog appeared and pressed 'Don't save' by hand (Coordinator ruling, section 181)",
+      "freezeRevisionOfPackage": "V35-A2 era (no tuple record in the evidence file)",
+      "freezePackageHash": null,
+      "rowApprovalHash": null,
+      "r3HostExecutionTupleHash": null,
+      "r3PreRunTupleHash": null,
+      "processId": null,
+      "startedUtc": null,
+      "evidence": "docs/automation/evidence/I-52-r3-canary-09N-B.json",
+      "evidenceSha256": "E20E4F6F2B35E721622B1A9B8A2515BC6ED301B2978E091B64BED2CF4F775EE6"
+    },
+    {
+      "executionId": "E02",
+      "probeId": "02NDBMOD-S",
+      "package": "c4037098",
+      "decisionsSection": "178",
+      "engineResult": "PASS-S (engine)",
+      "governing": false,
+      "reason": "NOT ACCEPTED: D-2 (corrupt CommandIdentity, use-after-free in I52Ctda_TokenSet)",
+      "freezeRevisionOfPackage": "V35-A2 era (no tuple record in the evidence file)",
+      "freezePackageHash": null,
+      "rowApprovalHash": null,
+      "r3HostExecutionTupleHash": null,
+      "r3PreRunTupleHash": null,
+      "processId": null,
+      "startedUtc": null,
+      "evidence": "docs/automation/evidence/I-52-r3-canary-02NDBMOD-S.json",
+      "evidenceSha256": "B008734C25258AF15F3E80D50E9E1E8B9BF09E4D84C825776BA8F917DDF0C4E6"
+    },
+    {
+      "executionId": "E03",
+      "probeId": "02NDBMOD-S",
+      "package": "2887d6c5",
+      "decisionsSection": "180",
+      "engineResult": "UNKNOWN",
+      "governing": false,
+      "reason": "NOT VALID: D-3 led to an interactive exit and Save changed the scratch DWG (section 181)",
+      "freezeRevisionOfPackage": "V35-A2",
+      "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "rowApprovalHash": "9137ECA752B0AAE8A6696A9F87A8A81A3B4D4833C4F9F0D8E7890D3E78825B68",
+      "r3HostExecutionTupleHash": "7BC15FC0275C6824DE0F942B414A0980F0DF1770A2E0C3902EC849A39837C1F9",
+      "r3PreRunTupleHash": "13F84A87BC58A1249A733369673B301EF1B3C4249ECAADDF413DFF88BC1AAEB5",
+      "processId": null,
+      "startedUtc": null,
+      "evidence": "docs/automation/evidence/I-52-r3-canary-02NDBMOD-S-rerun.json",
+      "evidenceSha256": "B00D0562BCB1596618693BD3077D8F4D5E0CB2CE97E70BB160B5C5B993024AD8"
+    },
+    {
+      "executionId": "E04",
+      "probeId": "09N-B",
+      "package": "e864a093",
+      "decisionsSection": "183-184",
+      "engineResult": "PASS-T",
+      "governing": true,
+      "reason": "VALID PASS-T (Coordinator ruling on H-1, section 184)",
+      "freezeRevisionOfPackage": "V35-A2",
+      "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "rowApprovalHash": "653E18266B1564FC4E968BD68FC01EE572DCE317874F179DDFC5E4DEBD517185",
+      "r3HostExecutionTupleHash": "F7506504E691F139E184CBE142B2FFF2117A6E98C3175D5E739EC1AA4C513023",
+      "r3PreRunTupleHash": "6846DFE5F474A419BD9FEB851E04631FAE9B545C1719C2577412FC9C5CF50176",
+      "processId": 33948,
+      "startedUtc": "2026-09-28T03:52:35.5842121+00:00",
+      "evidence": "docs/automation/evidence/I-52-r3-canary-09N-B-restart.json",
+      "evidenceSha256": "1C4D830F726D5906B3CBE99B583F18CA4712D18C6BE0F6B4D60214F34A9F1599"
+    },
+    {
+      "executionId": "E05",
+      "probeId": "02NDBMOD-S",
+      "package": "e864a093",
+      "decisionsSection": "184",
+      "engineResult": "PASS-S",
+      "governing": true,
+      "reason": "VALID PASS-S",
+      "freezeRevisionOfPackage": "V35-A2",
+      "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "rowApprovalHash": "9137ECA752B0AAE8A6696A9F87A8A81A3B4D4833C4F9F0D8E7890D3E78825B68",
+      "r3HostExecutionTupleHash": "18249CD1F7830351CE04C7F5CFE1543B15EB50360CDE8A4A39994E33C96BFB42",
+      "r3PreRunTupleHash": "4054743895ADE4A70F9281DB767597E49580BB92EBDD223849D3E8CCD02E087A",
+      "processId": 21532,
+      "startedUtc": "2026-09-28T04:03:22.273374+00:00",
+      "evidence": "docs/automation/evidence/I-52-r3-canary-02NDBMOD-S-restart.json",
+      "evidenceSha256": "0803BBE831A5972E9B6A33FFABD2B17C5004E18818BC27C59618EB9FF7E3DEE4"
+    },
+    {
+      "executionId": "E06",
+      "probeId": "02NO-S",
+      "package": "e864a093",
+      "decisionsSection": "185",
+      "engineResult": "PASS-S",
+      "governing": true,
+      "reason": "VALID PASS-S",
+      "freezeRevisionOfPackage": "V35-A2",
+      "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "rowApprovalHash": "10134547184A859DF1EFE2B392E6846AD48B7D108AA3B03B03CBC13A6B9AEF4D",
+      "r3HostExecutionTupleHash": "C57CD8951187B360752C8E9ED0FCE4FDD41A9FB890B035A8DEC92171D56D5FD1",
+      "r3PreRunTupleHash": "EA635FC0A228A34E9A35B7C1F443D2D1B14ECC77CF596382D4938001484FB149",
+      "processId": 20700,
+      "startedUtc": "2026-09-28T04:19:52.3975086+00:00",
+      "evidence": "docs/automation/evidence/I-52-r3-canary-02NO-S-restart.json",
+      "evidenceSha256": "0E75BDABCB94FDB85BD93FFB662FF0348BA9DE2051936C3CEAD4B9E05664330A"
+    },
+    {
+      "executionId": "E07",
+      "probeId": "16N-S",
+      "package": "e864a093",
+      "decisionsSection": "186",
+      "engineResult": "UNKNOWN",
+      "governing": false,
+      "reason": "NOT VALID: operator interaction on the host (independent of the engine UNKNOWN)",
+      "freezeRevisionOfPackage": "V35-A2",
+      "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "rowApprovalHash": "FD6FCD34CD85B13E442A8C023EFCCAF3D94CC54C657CB9E8D340CBDEEA9FDF06",
+      "r3HostExecutionTupleHash": "CA83700D9144EE782E423751158A7B53838AE64C65BD12363531B5C4BC6A02D4",
+      "r3PreRunTupleHash": "BAF3ECFB94F6B950A3334DC7801AE647E0822FC14D827A8EE2AF345FB1C240ED",
+      "processId": 32600,
+      "startedUtc": "2026-09-28T04:38:41.6904128+00:00",
+      "evidence": "docs/automation/evidence/I-52-r3-canary-16N-S-restart.json",
+      "evidenceSha256": "1C688E3CC3A33F47730F04C1402524DFB8CDA1D64ACFA717C0FCABFB19B60B14"
+    },
+    {
+      "executionId": "E08",
+      "probeId": "16N-S",
+      "package": "e864a093",
+      "decisionsSection": "186",
+      "engineResult": "UNKNOWN",
+      "governing": false,
+      "reason": "Historical A2 UNKNOWN (UNK-MARKER-BINDING): D-4 was a V35 contract defect (section 187); not re-graded (section 188)",
+      "freezeRevisionOfPackage": "V35-A2",
+      "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+      "rowApprovalHash": "FD6FCD34CD85B13E442A8C023EFCCAF3D94CC54C657CB9E8D340CBDEEA9FDF06",
+      "r3HostExecutionTupleHash": "7F8D78F55731ACA1FFDFE9A09DD9ECDDF4B9D124506C4A439B0BDE832DD82EB7",
+      "r3PreRunTupleHash": "1412D32DFB71AE976B3AE523A58E86D4C6E7515D808038FCB54D40EA7C540D4F",
+      "processId": 14408,
+      "startedUtc": "2026-09-28T04:44:16.2898877+00:00",
+      "evidence": "docs/automation/evidence/I-52-r3-canary-16N-S-rerun.json",
+      "evidenceSha256": "A3540F8286781136FC8AEE823EB1C16A1A11464E130BEC5FF423009DDB079262"
+    },
+    {
+      "executionId": "E09",
+      "probeId": "16N-S",
+      "package": "afa65bc0",
+      "decisionsSection": "191",
+      "engineResult": "PASS-S",
+      "governing": true,
+      "reason": "VALID PASS-S under V35-A3 (D-4 SEND anchor)",
+      "freezeRevisionOfPackage": "V35-A3",
+      "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+      "rowApprovalHash": "FD6FCD34CD85B13E442A8C023EFCCAF3D94CC54C657CB9E8D340CBDEEA9FDF06",
+      "r3HostExecutionTupleHash": "DBAD02491FAC7A532CE815CCDDB08E5136E4FDEF38858BD41B514E4E3CACEF2E",
+      "r3PreRunTupleHash": "65E56B081E194629C993A84A51D21042A59A7A8C17EC401B4BDBA381F880DB41",
+      "processId": 27696,
+      "startedUtc": "2026-09-28T18:02:40.1858405+00:00",
+      "evidence": "docs/automation/evidence/I-52-r3-canary-16N-S-v35a3.json",
+      "evidenceSha256": "EC826EED631711F4FB1E72CA03A41B4D868DB22F511A2EECDBE29AFE2D45573B"
+    },
+    {
+      "executionId": "E10",
+      "probeId": "10N-S",
+      "package": "afa65bc0",
+      "decisionsSection": "192",
+      "engineResult": "PASS-S",
+      "governing": true,
+      "reason": "VALID PASS-S under V35-A3 (D-4 FIXTURE anchor)",
+      "freezeRevisionOfPackage": "V35-A3",
+      "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+      "rowApprovalHash": "EB696635B6F46FB83BF4EFA5F1F8D48ADB51F4A8E87B75AE675C0B88615518FD",
+      "r3HostExecutionTupleHash": "70C35A6A34D6F431F0CCBBD0FE69A8CD6BFF9C751FE842A3287023E067FA55B1",
+      "r3PreRunTupleHash": "4C180677A12C6820C63AC45A27119AD2BBDBFCEBE8152A2FD0C3EEF3C6DB8AA6",
+      "processId": 25552,
+      "startedUtc": "2026-09-28T18:16:47.481149+00:00",
+      "evidence": "docs/automation/evidence/I-52-r3-canary-10N-S-v35a3.json",
+      "evidenceSha256": "77BC510BB5A1B36245D552F78526C13FAAD29B8A6B71DA32419AE1FF0CB3BE86"
+    },
+    {
+      "executionId": "E11",
+      "probeId": "16C-S",
+      "package": "afa65bc0",
+      "decisionsSection": "193",
+      "engineResult": "PASS-S",
+      "governing": true,
+      "reason": "VALID PASS-S under V35-A3 (D-4 CMDCTX anchor)",
+      "freezeRevisionOfPackage": "V35-A3",
+      "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+      "rowApprovalHash": "468615B1E8526B757AFBC177FF958EC2C2289DA8D3E9D75205618907C8BE9BD4",
+      "r3HostExecutionTupleHash": "E1DF4BA44033A298AA1DDC9BE1EE9B948489EE604B7D01B95DDB6BC98D92835C",
+      "r3PreRunTupleHash": "89CFAD2F681BE9CF1958E03B5433FAF6C03A66846E2B7050F77A492D67ED0A67",
+      "processId": 27432,
+      "startedUtc": "2026-09-28T18:31:18.4368319+00:00",
+      "evidence": "docs/automation/evidence/I-52-r3-canary-16C-S-v35a3.json",
+      "evidenceSha256": "4F25D5D8BCFE6F317EBF98BF7D059E4DDF3FE1378F19E101F696CED18568AC42"
+    }
+  ],
+  "nativeRows": [
+    {
+      "probeId": "02N",
+      "catalog": "NPM-V35",
+      "family": "H-DB",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-DB-OPEN",
+      "surface": "S",
+      "verifiers": [
+        "VER-S",
+        "VER-T"
+      ],
+      "threats": [
+        "T2"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P4"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "04N",
+      "catalog": "NPM-V35",
+      "family": "H-TX",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "EXEC-OBSERVE",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-TR-ABOUT-ABORT",
+      "surface": "S",
+      "verifiers": [
+        "VER-T",
+        "VER-S"
+      ],
+      "threats": [
+        "T2",
+        "T3",
+        "T4"
+      ],
+      "daPHp": [
+        "P2",
+        "P3"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "09N-A",
+      "catalog": "NPM-V35",
+      "family": "H-TX",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "EXEC-OBSERVE",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-TR-ABOUT-END",
+      "surface": "S/M",
+      "verifiers": [
+        "VER-T",
+        "VER-S"
+      ],
+      "threats": [
+        "T2",
+        "T3",
+        "T4"
+      ],
+      "daPHp": [
+        "P2",
+        "P3"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "09N-B",
+      "catalog": "NPM-V35",
+      "family": "H-TX",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "EXEC-OBSERVE",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-TR-ABOUT-END",
+      "surface": "S/M",
+      "verifiers": [
+        "VER-T",
+        "VER-S"
+      ],
+      "threats": [
+        "T2",
+        "T4"
+      ],
+      "daPHp": [
+        "P2",
+        "P3",
+        "P6"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [
+        "E01"
+      ],
+      "classification": "PASS-GOVERNED",
+      "result": "PASS-T",
+      "governingExecution": "E04",
+      "executionTuple": {
+        "package": "e864a093",
+        "freezeRevisionOfPackage": "V35-A2",
+        "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+        "r3HostExecutionTupleHash": "F7506504E691F139E184CBE142B2FFF2117A6E98C3175D5E739EC1AA4C513023",
+        "rowApprovalHash": "653E18266B1564FC4E968BD68FC01EE572DCE317874F179DDFC5E4DEBD517185"
+      },
+      "a3Validity": "carried forward from a V35-A2 package by decisions section 188 (row hash unchanged); NOT re-executed under the A3 tuple",
+      "d4Anchor": null,
+      "reasonIfNotGoverning": null,
+      "surfacesReadInPass": [
+        "S"
+      ],
+      "evidenceRefs": [
+        "docs/automation/evidence/I-52-r3-canary-09N-B-restart.json"
+      ],
+      "contributesTo": {
+        "DA-P7": [
+          "S"
+        ],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "09N-O",
+      "catalog": "NPM-V35",
+      "family": "H-TX",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "EXEC-OBSERVE",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-TR-OUTERMOST-END-CALLED",
+      "surface": "S/M",
+      "verifiers": [
+        "VER-T",
+        "VER-S"
+      ],
+      "threats": [
+        "T2",
+        "T4"
+      ],
+      "daPHp": [
+        "P2",
+        "P3",
+        "P6"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "09N-C",
+      "catalog": "NPM-V35",
+      "family": "H-TX",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "EXEC-OBSERVE",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-TR-ENDED",
+      "surface": "S/M",
+      "verifiers": [
+        "VER-T",
+        "VER-S"
+      ],
+      "threats": [
+        "T2",
+        "T4",
+        "T5",
+        "T6"
+      ],
+      "daPHp": [
+        "P2",
+        "P3",
+        "P6"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "09N-D",
+      "catalog": "NPM-V35",
+      "family": "H-ED",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-ED-END",
+      "surface": "S",
+      "verifiers": [
+        "VER-S",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T4",
+        "T6",
+        "T8"
+      ],
+      "daPHp": [
+        "P6",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "10N-S",
+      "catalog": "NPM-V35",
+      "family": "H-ED",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-ED-END",
+      "surface": "S",
+      "verifiers": [
+        "VER-S",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T8"
+      ],
+      "daPHp": [
+        "P6",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "PASS-GOVERNED",
+      "result": "PASS-S",
+      "governingExecution": "E10",
+      "executionTuple": {
+        "package": "afa65bc0",
+        "freezeRevisionOfPackage": "V35-A3",
+        "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+        "r3HostExecutionTupleHash": "70C35A6A34D6F431F0CCBBD0FE69A8CD6BFF9C751FE842A3287023E067FA55B1",
+        "rowApprovalHash": "EB696635B6F46FB83BF4EFA5F1F8D48ADB51F4A8E87B75AE675C0B88615518FD"
+      },
+      "a3Validity": "native V35-A3 execution",
+      "d4Anchor": "FIXTURE",
+      "reasonIfNotGoverning": null,
+      "surfacesReadInPass": [
+        "S"
+      ],
+      "evidenceRefs": [
+        "docs/automation/evidence/I-52-r3-canary-10N-S-v35a3.json"
+      ],
+      "contributesTo": {
+        "DA-P7": [
+          "S"
+        ],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "10N-M",
+      "catalog": "NPM-V35",
+      "family": "H-ED",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-ED-END",
+      "surface": "M",
+      "verifiers": [
+        "VER-M",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T8",
+        "T12"
+      ],
+      "daPHp": [
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "10N-SM",
+      "catalog": "NPM-V35",
+      "family": "H-ED",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-ED-END",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T8",
+        "T11"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "16N-S",
+      "catalog": "NPM-V35",
+      "family": "H-SEND,H-DB",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S",
+      "verifiers": [
+        "VER-S",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T8",
+        "T9",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [
+        "E07",
+        "E08"
+      ],
+      "classification": "PASS-GOVERNED",
+      "result": "PASS-S",
+      "governingExecution": "E09",
+      "executionTuple": {
+        "package": "afa65bc0",
+        "freezeRevisionOfPackage": "V35-A3",
+        "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+        "r3HostExecutionTupleHash": "DBAD02491FAC7A532CE815CCDDB08E5136E4FDEF38858BD41B514E4E3CACEF2E",
+        "rowApprovalHash": "FD6FCD34CD85B13E442A8C023EFCCAF3D94CC54C657CB9E8D340CBDEEA9FDF06"
+      },
+      "a3Validity": "native V35-A3 execution",
+      "d4Anchor": "SEND",
+      "reasonIfNotGoverning": null,
+      "surfacesReadInPass": [
+        "S"
+      ],
+      "evidenceRefs": [
+        "docs/automation/evidence/I-52-r3-canary-16N-S-v35a3.json"
+      ],
+      "contributesTo": {
+        "DA-P7": [
+          "S"
+        ],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "16N-M",
+      "catalog": "NPM-V35",
+      "family": "H-SEND,H-DB",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "M",
+      "verifiers": [
+        "VER-M",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T8",
+        "T12",
+        "T16"
+      ],
+      "daPHp": [
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "16N-SM",
+      "catalog": "NPM-V35",
+      "family": "H-SEND,H-DB",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T8",
+        "T11",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "C15N16N-SM",
+      "catalog": "NPM-V35",
+      "family": "H-LOAD,H-SEND,H-DB",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NO-S",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-OBJ-OPEN",
+      "surface": "S",
+      "verifiers": [
+        "VER-S",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-OBJ"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P4"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "PASS-GOVERNED",
+      "result": "PASS-S",
+      "governingExecution": "E06",
+      "executionTuple": {
+        "package": "e864a093",
+        "freezeRevisionOfPackage": "V35-A2",
+        "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+        "r3HostExecutionTupleHash": "C57CD8951187B360752C8E9ED0FCE4FDD41A9FB890B035A8DEC92171D56D5FD1",
+        "rowApprovalHash": "10134547184A859DF1EFE2B392E6846AD48B7D108AA3B03B03CBC13A6B9AEF4D"
+      },
+      "a3Validity": "carried forward from a V35-A2 package by decisions section 188 (row hash unchanged); NOT re-executed under the A3 tuple",
+      "d4Anchor": null,
+      "reasonIfNotGoverning": null,
+      "surfacesReadInPass": [
+        "S"
+      ],
+      "evidenceRefs": [
+        "docs/automation/evidence/I-52-r3-canary-02NO-S-restart.json"
+      ],
+      "contributesTo": {
+        "DA-P7": [
+          "S"
+        ],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NO-M",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-OBJ-MOD",
+      "surface": "M",
+      "verifiers": [
+        "VER-M",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-OBJ"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NO-SM",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-OBJ-ERASE",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-OBJ",
+        "T7",
+        "T11"
+      ],
+      "daPHp": [
+        "P6",
+        "P9",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NO-CLOSE-SM",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-OBJ-CLOSED",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-OBJ"
+      ],
+      "daPHp": [
+        "P2",
+        "P6",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "04NO-S",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "EXEC-OBSERVE",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-OBJ-CANCEL",
+      "surface": "S",
+      "verifiers": [
+        "VER-S",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-OBJ",
+        "T3"
+      ],
+      "daPHp": [
+        "P2",
+        "P3"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "04NO-UNDO-S",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "EXEC-OBSERVE",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-OBJ-UNDO",
+      "surface": "S",
+      "verifiers": [
+        "VER-S",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-OBJ",
+        "T3"
+      ],
+      "daPHp": [
+        "P2",
+        "P3"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NE-M",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-ENT-GFX",
+      "surface": "M",
+      "verifiers": [
+        "VER-M",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-ENTITY",
+        "T12"
+      ],
+      "daPHp": [
+        "P2",
+        "P9",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "10NDOC-WILL-SM",
+      "catalog": "NPM-V35",
+      "family": "H-DOC",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "N-DOC-LOCK-WILL",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-DOC",
+        "T8"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "10NDOC-CHANGED-SM",
+      "catalog": "NPM-V35",
+      "family": "H-DOC",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "N-DOC-LOCK-CHANGED",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-DOC",
+        "T8"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "10NDOC-VETO-SM",
+      "catalog": "NPM-V35",
+      "family": "H-DOC",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "EXEC-OBSERVE",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "N-DOC-LOCK-VETO",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM"
+      ],
+      "threats": [
+        "T2-DOC"
+      ],
+      "daPHp": [
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "C2OBJ16N-S",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S",
+      "verifiers": [
+        "VER-S",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-OBJ",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "C2OBJ16N-M",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "M",
+      "verifiers": [
+        "VER-M",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-OBJ",
+        "T16"
+      ],
+      "daPHp": [
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "C2OBJ16N-SM",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-OBJ",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "C2ENT16N-M",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "M",
+      "verifiers": [
+        "VER-M",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-ENTITY",
+        "T16"
+      ],
+      "daPHp": [
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "C2DOCW16N-SM",
+      "catalog": "NPM-V35",
+      "family": "H-DOC,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-DOC",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "C2DOCC16N-SM",
+      "catalog": "NPM-V35",
+      "family": "H-DOC,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2-DOC",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "13A-SM",
+      "catalog": "NPM-V35",
+      "family": "H-APPCTX",
+      "schedulerChain": "CHAIN-SYNC",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NX-APPCTX-SYNC",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T13"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "DEFERRED",
+      "result": null,
+      "reasonIfNotGoverning": "APPCTX synchronous chain (lock/T from another context); deferred in decisions sections 194/195 and HANDOFF",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "16A-S",
+      "catalog": "NPM-V35",
+      "family": "H-APPCTX,H-DB",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S",
+      "verifiers": [
+        "VER-S",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T8",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "DEFERRED",
+      "result": null,
+      "reasonIfNotGoverning": "APPCTX anchor characterization (D-4 text unchanged for APPCTX); deferred in decisions sections 194/195 and HANDOFF",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "16A-M",
+      "catalog": "NPM-V35",
+      "family": "H-APPCTX,H-DB",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "M",
+      "verifiers": [
+        "VER-M",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T8",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "16A-SM",
+      "catalog": "NPM-V35",
+      "family": "H-APPCTX,H-DB",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T8",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "16C-S",
+      "catalog": "NPM-V35",
+      "family": "H-CMDCTX,H-APPCTX",
+      "schedulerChain": "CHAIN-SYNC-CMDCTX",
+      "anchor": "CMDCTX-EXEC-01",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "NS-BEGIN-CMDCTX",
+      "surface": "S",
+      "verifiers": [
+        "VER-S",
+        "VER-T"
+      ],
+      "threats": [
+        "T13",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "PASS-GOVERNED",
+      "result": "PASS-S",
+      "governingExecution": "E11",
+      "executionTuple": {
+        "package": "afa65bc0",
+        "freezeRevisionOfPackage": "V35-A3",
+        "freezePackageHash": "D9FD41B4CEBE5F698C2A597A96E4AAE9221A9DC32060ED791B73232636A47554",
+        "r3HostExecutionTupleHash": "E1DF4BA44033A298AA1DDC9BE1EE9B948489EE604B7D01B95DDB6BC98D92835C",
+        "rowApprovalHash": "468615B1E8526B757AFBC177FF958EC2C2289DA8D3E9D75205618907C8BE9BD4"
+      },
+      "a3Validity": "native V35-A3 execution",
+      "d4Anchor": "CMDCTX",
+      "reasonIfNotGoverning": null,
+      "surfacesReadInPass": [
+        "S"
+      ],
+      "evidenceRefs": [
+        "docs/automation/evidence/I-52-r3-canary-16C-S-v35a3.json"
+      ],
+      "contributesTo": {
+        "DA-P7": [
+          "S"
+        ],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "16C-M",
+      "catalog": "NPM-V35",
+      "family": "H-CMDCTX,H-APPCTX",
+      "schedulerChain": "CHAIN-SYNC-CMDCTX",
+      "anchor": "CMDCTX-EXEC-01",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "NS-BEGIN-CMDCTX",
+      "surface": "M",
+      "verifiers": [
+        "VER-M",
+        "VER-T"
+      ],
+      "threats": [
+        "T13",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "16C-SM",
+      "catalog": "NPM-V35",
+      "family": "H-CMDCTX,H-APPCTX",
+      "schedulerChain": "CHAIN-SYNC-CMDCTX",
+      "anchor": "CMDCTX-EXEC-01",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "NS-BEGIN-CMDCTX",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T13",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NAPP-S",
+      "catalog": "NPM-V35",
+      "family": "H-DB",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-DB-APPEND",
+      "surface": "S",
+      "verifiers": [
+        "VER-S",
+        "VER-T"
+      ],
+      "threats": [
+        "T2"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NAPP-M",
+      "catalog": "NPM-V35",
+      "family": "H-DB",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-DB-APPEND",
+      "surface": "M",
+      "verifiers": [
+        "VER-M",
+        "VER-T"
+      ],
+      "threats": [
+        "T2"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NAPP-SM",
+      "catalog": "NPM-V35",
+      "family": "H-DB",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-DB-APPEND",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM",
+        "VER-T"
+      ],
+      "threats": [
+        "T2"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NTAS-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-TR-ABOUT-START",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T3"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NTS-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-TR-STARTED",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T3"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NTA-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-TR-ABORTED",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T3",
+        "T4"
+      ],
+      "daPHp": [
+        "P2",
+        "P3"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NRXW-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-LOAD",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-RX-WILL-LOAD",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NRXL-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-LOAD",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-RX-LOADED",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NEDW-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-ED",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-ED-WILL",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T4"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CAPP16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-DB,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CAPP16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-DB,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTAS16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTAS16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTS16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTS16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTA16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTA16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CRXW16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-LOAD,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CRXW16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-LOAD,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CRXL16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-LOAD,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CRXL16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-LOAD,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CEDW16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-ED,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CEDW16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-ED,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T15",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "C2APP2CMD-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-DB,H-APPCTX,H-CMDCTX",
+      "schedulerChain": "CHAIN-APPCTX-CMDCTX",
+      "anchor": "CMDCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-CMDCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T13",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CDBERASE16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-DB,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CDBOPEN16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-DB,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CDOCLOCKVETO16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-DOC,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CEDEND16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-ED,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "COBJCANCEL16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "COBJCLOSED16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "COBJERASE16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "COBJOPEN16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "COBJUNDO16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTRABOUTABORT16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTRABOUTEND16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTRENDED16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTROUTERMOSTENDCALLED16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CDBERASE16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-DB,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CDBOPEN16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-DB,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CDOCLOCKCHANGED16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-DOC,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CDOCLOCKVETO16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-DOC,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CDOCLOCKWILL16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-DOC,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-APP-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CEDEND16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-ED,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CENTGFX16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "COBJCANCEL16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "COBJCLOSED16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "COBJERASE16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "COBJMOD16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "COBJOPEN16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "COBJUNDO16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-OBJ,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTRABOUTABORT16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTRABOUTEND16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTRENDED16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CTROUTERMOSTENDCALLED16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-TX,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NEDC-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-ED",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "EDC-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-ED-CANCEL",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T4"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CEDC16SND-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-ED,H-SEND",
+      "schedulerChain": "CHAIN-SEND",
+      "anchor": "SEND-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-SEND",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "CEDC16APP-ALL",
+      "catalog": "NPM-V35",
+      "family": "H-ED,H-APPCTX",
+      "schedulerChain": "CHAIN-APPCTX",
+      "anchor": "APPCTX-EXEC-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "NS-BEGIN-APPCTX",
+      "surface": "S+M+SM",
+      "verifiers": [
+        "VER-ALL",
+        "VER-T"
+      ],
+      "threats": [
+        "T2",
+        "T16"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NDBMOD-S",
+      "catalog": "NPM-V35",
+      "family": "H-DB",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-DB-MOD",
+      "surface": "S",
+      "verifiers": [
+        "VER-S"
+      ],
+      "threats": [
+        "T2"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P6",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [
+        "E02",
+        "E03"
+      ],
+      "classification": "PASS-GOVERNED",
+      "result": "PASS-S",
+      "governingExecution": "E05",
+      "executionTuple": {
+        "package": "e864a093",
+        "freezeRevisionOfPackage": "V35-A2",
+        "freezePackageHash": "43DCE809AA5B124E73B67E2B8B76EB78DC921FCE0BE961B2906BC21BE9D3B6DF",
+        "r3HostExecutionTupleHash": "18249CD1F7830351CE04C7F5CFE1543B15EB50360CDE8A4A39994E33C96BFB42",
+        "rowApprovalHash": "9137ECA752B0AAE8A6696A9F87A8A81A3B4D4833C4F9F0D8E7890D3E78825B68"
+      },
+      "a3Validity": "carried forward from a V35-A2 package by decisions section 188 (row hash unchanged); NOT re-executed under the A3 tuple",
+      "d4Anchor": null,
+      "reasonIfNotGoverning": null,
+      "surfacesReadInPass": [
+        "S"
+      ],
+      "evidenceRefs": [
+        "docs/automation/evidence/I-52-r3-canary-02NDBMOD-S-restart.json"
+      ],
+      "contributesTo": {
+        "DA-P7": [
+          "S"
+        ],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NDBMOD-M",
+      "catalog": "NPM-V35",
+      "family": "H-DB",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-DB-MOD",
+      "surface": "M",
+      "verifiers": [
+        "VER-M"
+      ],
+      "threats": [
+        "T2"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P6",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NDBMOD-SM",
+      "catalog": "NPM-V35",
+      "family": "H-DB",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-DB-MOD",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM"
+      ],
+      "threats": [
+        "T2"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P6",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NDBERASE-S",
+      "catalog": "NPM-V35",
+      "family": "H-DB",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-DB-ERASE",
+      "surface": "S",
+      "verifiers": [
+        "VER-S"
+      ],
+      "threats": [
+        "T2"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P6",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NDBERASE-M",
+      "catalog": "NPM-V35",
+      "family": "H-DB",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-DB-ERASE",
+      "surface": "M",
+      "verifiers": [
+        "VER-M"
+      ],
+      "threats": [
+        "T2"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P6",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    },
+    {
+      "probeId": "02NDBERASE-SM",
+      "catalog": "NPM-V35",
+      "family": "H-DB",
+      "schedulerChain": "CHAIN-NONE",
+      "anchor": "CB-PRIMARY-01",
+      "driver": "DRIVER-CMD-01",
+      "primaryAuthority": "N-DB-ERASE",
+      "surface": "SM",
+      "verifiers": [
+        "VER-SM"
+      ],
+      "threats": [
+        "T2"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P6",
+        "P11"
+      ],
+      "fixtureIdentity": "fixture-v35 / FEC-V35-1 (native)",
+      "nonGoverningExecutions": [],
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no governing or non-governing execution of this ProbeId exists",
+      "surfacesReadInPass": [],
+      "evidenceRefs": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      }
+    }
+  ],
+  "managedRows": [
+    {
+      "probeId": "01",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-MOD",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T1",
+        "T5",
+        "T11"
+      ],
+      "surface": "S",
+      "verifiers": [
+        "SemanticVerifier + T ids"
+      ],
+      "daPHp": [
+        "P1",
+        "P2"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "02",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-OPEN",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T1",
+        "T11"
+      ],
+      "surface": "S",
+      "verifiers": [
+        "SemanticVerifier + T ids"
+      ],
+      "daPHp": [
+        "P1",
+        "P4"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "03",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-MOD",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T3"
+      ],
+      "surface": "S,M",
+      "verifiers": [
+        "SemanticVerifier",
+        "PhysicalVerifier",
+        "T ids"
+      ],
+      "daPHp": [
+        "P3"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "04",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "NONE",
+      "directActionId": "MD-ABORT",
+      "threats": [
+        "T3"
+      ],
+      "surface": "S,M",
+      "verifiers": [
+        "SemanticVerifier",
+        "PhysicalVerifier"
+      ],
+      "daPHp": [
+        "P3",
+        "P4"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "05",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "NONE",
+      "directActionId": "MD-COMMIT",
+      "threats": [
+        "T2",
+        "T3",
+        "T5"
+      ],
+      "surface": "S,M",
+      "verifiers": [
+        "SemanticVerifier",
+        "PhysicalVerifier"
+      ],
+      "daPHp": [
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "06",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-OPEN",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T1",
+        "T11"
+      ],
+      "surface": "S",
+      "verifiers": [
+        "SemanticVerifier + event order"
+      ],
+      "daPHp": [
+        "P1",
+        "P2",
+        "P4"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "07",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "NONE",
+      "directActionId": "MD-RYOW",
+      "threats": [
+        "T11"
+      ],
+      "surface": "S,M",
+      "verifiers": [
+        "SemanticVerifier",
+        "PhysicalVerifier"
+      ],
+      "daPHp": [
+        "P4"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "08",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-MOD",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T7"
+      ],
+      "surface": "S,SM",
+      "verifiers": [
+        "SemanticVerifier",
+        "SiblingVerifier"
+      ],
+      "daPHp": [
+        "P5"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "09C",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-MOD",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T2",
+        "T4",
+        "T6"
+      ],
+      "surface": "S,M",
+      "verifiers": [
+        "SemanticVerifier",
+        "PhysicalVerifier",
+        "event order"
+      ],
+      "daPHp": [
+        "P2"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "09E",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DOC-END",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T4",
+        "T6",
+        "T8"
+      ],
+      "surface": "S,M",
+      "verifiers": [
+        "SemanticVerifier",
+        "PhysicalVerifier",
+        "lifecycle order"
+      ],
+      "daPHp": [
+        "P2",
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "10S",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-MOD",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T9",
+        "T10",
+        "T11"
+      ],
+      "surface": "S",
+      "verifiers": [
+        "SemanticVerifier",
+        "LifecycleVerifier"
+      ],
+      "daPHp": [
+        "P6",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "10M",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-MOD",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T12"
+      ],
+      "surface": "M",
+      "verifiers": [
+        "PhysicalVerifier",
+        "LifecycleVerifier"
+      ],
+      "daPHp": [
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "10SM",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-MOD",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T11",
+        "T12"
+      ],
+      "surface": "SM",
+      "verifiers": [
+        "SemanticVerifier",
+        "SiblingVerifier",
+        "PhysicalVerifier"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "11",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-MOD",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T9"
+      ],
+      "surface": "S",
+      "verifiers": [
+        "NodVerifier"
+      ],
+      "daPHp": [
+        "P8"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": true,
+        "DA-P10": false,
+        "DA-P7-surface": "NOD"
+      }
+    },
+    {
+      "probeId": "12",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-MOD",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T7",
+        "T12"
+      ],
+      "surface": "M,SM",
+      "verifiers": [
+        "PhysicalVerifier",
+        "SiblingVerifier"
+      ],
+      "daPHp": [
+        "P9"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "13",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "MS-CONTEXT",
+      "directActionId": "NONE",
+      "threats": [
+        "T3",
+        "T13"
+      ],
+      "surface": "S,M,SM",
+      "verifiers": [
+        "SemanticVerifier",
+        "PhysicalVerifier",
+        "SiblingVerifier"
+      ],
+      "daPHp": [
+        "P3",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "14",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-MOD",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T10"
+      ],
+      "surface": "S",
+      "verifiers": [
+        "SemanticVerifier",
+        "LifecycleVerifier"
+      ],
+      "daPHp": [
+        "P10",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": true,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "15",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "M-DB-MOD",
+      "schedulerId": "NONE",
+      "directActionId": "NONE",
+      "threats": [
+        "T15"
+      ],
+      "surface": "SM",
+      "verifiers": [
+        "SemanticVerifier",
+        "SiblingVerifier"
+      ],
+      "daPHp": [
+        "P6",
+        "P10",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": true,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": true,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "16S-SEND",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "MS-SEND",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T9",
+        "T10",
+        "T16"
+      ],
+      "surface": "S",
+      "verifiers": [
+        "SemanticVerifier",
+        "LifecycleVerifier"
+      ],
+      "daPHp": [
+        "P6",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": false,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "16M-SEND",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "MS-SEND",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T12",
+        "T16"
+      ],
+      "surface": "M",
+      "verifiers": [
+        "PhysicalVerifier",
+        "LifecycleVerifier"
+      ],
+      "daPHp": [
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": false,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "16SM-SEND",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "MS-SEND",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T11",
+        "T12",
+        "T16"
+      ],
+      "surface": "SM",
+      "verifiers": [
+        "SemanticVerifier",
+        "SiblingVerifier",
+        "PhysicalVerifier"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": false,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "16S-CONTEXT",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "MS-CONTEXT",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T9",
+        "T10",
+        "T13",
+        "T16"
+      ],
+      "surface": "S",
+      "verifiers": [
+        "SemanticVerifier",
+        "LifecycleVerifier"
+      ],
+      "daPHp": [
+        "P6",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": false,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "16M-CONTEXT",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "MS-CONTEXT",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T12",
+        "T13",
+        "T16"
+      ],
+      "surface": "M",
+      "verifiers": [
+        "PhysicalVerifier",
+        "LifecycleVerifier"
+      ],
+      "daPHp": [
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": false,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "16SM-CONTEXT",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "MS-CONTEXT",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T11",
+        "T12",
+        "T13",
+        "T16"
+      ],
+      "surface": "SM",
+      "verifiers": [
+        "SemanticVerifier",
+        "SiblingVerifier",
+        "PhysicalVerifier"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": false,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "16S-IDLE",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "MS-IDLE",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T9",
+        "T10",
+        "T16"
+      ],
+      "surface": "S",
+      "verifiers": [
+        "SemanticVerifier",
+        "LifecycleVerifier"
+      ],
+      "daPHp": [
+        "P6",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": false,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "16M-IDLE",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "MS-IDLE",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T12",
+        "T16"
+      ],
+      "surface": "M",
+      "verifiers": [
+        "PhysicalVerifier",
+        "LifecycleVerifier"
+      ],
+      "daPHp": [
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": false,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    },
+    {
+      "probeId": "16SM-IDLE",
+      "catalog": "HEC-V27-C1",
+      "primaryTriggerEventId": "NONE",
+      "schedulerId": "MS-IDLE",
+      "directActionId": "NONE",
+      "threats": [
+        "T8",
+        "T11",
+        "T12",
+        "T16"
+      ],
+      "surface": "SM",
+      "verifiers": [
+        "SemanticVerifier",
+        "SiblingVerifier",
+        "PhysicalVerifier"
+      ],
+      "daPHp": [
+        "P6",
+        "P11",
+        "P12"
+      ],
+      "fixtureIdentity": "HF-V31-1 (managed; F-NOD / F-SRC are managed-fixture identities)",
+      "inLiteral18": false,
+      "classification": "NOT-EXECUTED",
+      "result": null,
+      "reasonIfNotGoverning": "no executable contract or instrument exists for this managed row (the CT-DA harness only hosts RR-MANAGED-CMD, the Document.CommandEnded observer of row 09E, inside native runs)",
+      "nonGoverningExecutions": [],
+      "evidenceRefs": [],
+      "surfacesReadInPass": [],
+      "contributesTo": {
+        "DA-P7": [],
+        "DA-P8": false,
+        "DA-P10": false
+      },
+      "wouldContribute": {
+        "DA-P8": false,
+        "DA-P10": false,
+        "DA-P7-surface": null
+      }
+    }
+  ]
+}

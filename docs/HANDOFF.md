@@ -296,8 +296,8 @@ PASS.**
 - [Evidencia](automation/evidence/I-52-r3-canary-16C-S-v35a3.json).
 
 **Revisión post-auditoría del Arquitecto y fixes (§194).**
-- El Coordinador aceptó la revisión y adopta la definición V35-A3 de `CTDA_HOST_PASS`; su texto literal falta
-  incorporarlo.
+- El Coordinador aceptó la revisión y adopta la definición V35-A3 de `CTDA_HOST_PASS`; su texto literal quedó
+  incorporado verbatim en §196.
 - m-1, m-2 y m-3 son defectos de implementación; la congelación V35-A3 no cambia.
 - m-1: `UNK-PAYLOAD-DB` salvo que coincidan `C15-ARM databaseMatches=1` y `PAYLOAD-DB-BINDING holds=1`; el payload
   comprueba la base antes del retorno de las filas no armadas.
@@ -320,11 +320,14 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
 - `R3_PRE_RUN_TUPLE_HASH` = `47B7914EE1999CA9775577D7225F31C0257334F5136218429DF50C2EBCAA1BD9`.
 - [Evidencia](automation/evidence/I-52-r3-host-smoke-bef6091b.json).
 
-**Siguiente gate: AUTH-15 ARCHITECT REVIEW**; después, la caracterización APPCTX con 16A-S y 13A-SM.
-- Probes gobernados ejecutados: 11.
-- Resultados gobernados válidos: 6.
-- `CTDA_HOST_PASS` NOT EVALUATED.
-- Ningún ProbeId autorizado todavía.
+**Estado tras AUTH-15 (integrada en `main`, tag `integration/I-52-AUTH15`) y §196.**
+- Probes gobernados ejecutados: 11. Resultados gobernados válidos: 6 (09N-B, 02NDBMOD-S, 02NO-S, 16N-S, 10N-S, 16C-S).
+- La definición literal de `CTDA_HOST_PASS(V35-A3)` está en §196.1; su evaluación da **NOT EVALUABLE**: nativas 6/100
+  (92 sin ejecutar, 2 diferidas), managed 0/18; las cinco cláusulas están INCOMPLETE y ningún FAIL/UNKNOWN gobernante la vuelve FALSE.
+  [Matriz de cobertura](initiatives/I-52-ctda-host-pass-coverage-v35a3.md).
+- 16A-S y 13A-SM siguen DIFERIDOS y sin autorizar. `CIA` = UNKNOWN; V18 gobierna; G3 STOPPED.
+- **Siguiente gate: STOP** hasta que exista la autoridad ejecutable de las filas managed (Q5) y el Arquitecto/Coordinador resuelvan Q1-Q4
+  (§196.8). La rama sigue sin reconciliar con `main` (79 detrás / 115 delante).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
