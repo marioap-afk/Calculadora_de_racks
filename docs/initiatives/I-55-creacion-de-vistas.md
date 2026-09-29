@@ -448,3 +448,14 @@ I-58 resuelve `G12-CR-01`; I-55 consume los comparators Foundation sin duplicarl
 [`I-55-g12-id18-ui-driver.md`](I-55-g12-id18-ui-driver.md). Foundation y schema permanecen intactos; ID19 y AUTH-15
 siguen fuera. Owner Validation `OV-ID18` queda diferida al Candidato. G12 queda completo y G14 abierto; G14 no se
 inicia en esta sesion. G15 permanece bloqueado por AUTH-15/I-52.
+
+# Estado G15 (2026-09-29)
+
+G14 entrego el contrato puro de ID19 sobre I-59 ([recibo](I-55-g14-id19-pure-group-projection.md)). AUTH-15 quedo integrada en `main`
+(`integration/I-52-AUTH15` anotado sobre `3375aadb`) y G15 entrega ID19 de extremo a extremo: el comando `RACKPROYECTAR` (alias `RPY`)
+proyecta racks como vistas enlazadas del mismo rack. Lee el dibujo una vez, pide el plan puro de G14 (todo bloqueo antes de los puntos),
+pide base y destino con `GetPoint` y `AllowNone`, importa y verifica la biblioteca y escribe en UNA transaccion del llamador con UN `Commit`,
+creando cada definicion con `RackDefinitionCreator.CreateInTransaction`; cualquier fallo no confirma nada. Conserva el `RackId`, no hay
+`Regen` ni purga ni lote parcial, y Flow Bed sigue rechazado. El recibo durable es
+[`I-55-g15-id19-command.md`](I-55-g15-id19-command.md). Foundation y esquema permanecen intactos. Owner Validation `OV-ID19` queda
+preparada y diferida al Candidato. **G15: COMPLETE. G16 (Candidato, validacion del Owner e integracion): OPEN.** G16 no se inicia en esta sesion.
