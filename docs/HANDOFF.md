@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-24**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-09-29**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -11,6 +11,30 @@
 RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar racks industriales
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
+
+**I-52-AUTH15 — AUTH-15: creacion caller-owned de definicion y sobre — CANDIDATE CONFORMADO;
+ADMISION EN HOST BAJO DOCUMENT-AUTHORITY; CIERRE DOCUMENTAL PRE-MERGE PREPARADO** el **2026-09-29**
+(`feature/i52-auth15-definition-creator`, Workflow V2). Segunda unidad de integracion de I-52, de proposito
+unico: `RackDefinitionCreator.CreateInTransaction` crea UNA definicion de bloque RackCad (familias HeaderRun y
+Cantilever) y persiste el `RackEmbedDocument` ya compuesto **dentro de la transaccion del llamador**, sin
+commit, abort, lock, colocacion de referencias ni politica de nombres propia; sin llamador de produccion todavia
+y fuera de la Shared View Foundation. `FINAL_CANDIDATE_SHA` = `0b6abdd5d0e323944225b30832f77f68b7c3c497`
+(solo retira el arnes temporal; `src/` y `tests/` byte-identicos a la implementacion validada `a80a3801`).
+READY-06: Architect PASS + Coordinator PASS. CI exacta 4/4, Core Full 11342/11342 y UI Full 1581 (+17 omitidas
+historicas) PASS sobre el Candidato.
+
+Validacion en host (AutoCAD 2025): el resultado **crudo** de RUN-3 es **FAIL** y se conserva; lo causan solo los
+controles de base lateral (SIDE-DB, caracterizacion). El resultado canonico de admision es **PASS UNDER
+DOCUMENT-AUTHORITY, derivado por decision del Arquitecto y ratificado por el Owner** (HV-00..HV-14 15/15 PASS, controles de
+documento PASS, cero fugas de documento). Option B afirmada; la garantia de rollback del llamador es autoritativa **solo**
+para documento + `LockDocument` + `StartTransaction()` + Abort o Dispose sin Commit; en una base lateral no se debe confiar en
+Abort (se descarta la base). **Excepcion de identidad ratificada por el Owner:** la validacion en host corrio binarios de los
+arboles de producto validados con el SHA de arnes `fcca6e6c`, no un binario del Candidato; debe nombrarse en el tag.
+[Evidencia canonica](automation/evidence/I-52-AUTH15-evidence.md) y [evidencia cruda de RUN-3](automation/evidence/I-52-AUTH15-run3/README.md).
+
+**Esta unidad NO esta integrada.** Faltan la evidencia propia del cierre, el merge `--no-ff`, el CI post-merge con
+cobertura, la comprobacion diferida de cobertura del Candidato, la limpieza y el tag anotado `integration/I-52-AUTH15`.
+I-55 G15 sigue bloqueada hasta que ese tag valido apunte al merge verificado.
 
 **I-59 — Shared View Foundation Placement & Block Requirement Facts — CANDIDATE VALIDADO;
 OWNER APPROVED; CIERRE DOCUMENTAL PREPARADO PARA INTEGRACION** el **2026-09-24**. AUTH-08 publica
@@ -1428,6 +1452,14 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-52-AUTH15 (2026-09-29) — CANDIDATE PASS / ADMISION EN HOST PASS UNDER DOCUMENT-AUTHORITY.** Core Full
+11342/11342, UI Full 1581 (+17 omitidas historicas, 0 fallos), builds Debug de UI y Plugin con 0 errores (2 advertencias
+`MSB3277` preexistentes en la base) y CI de push 4/4 sobre el Candidato `0b6abdd5`. Host: RUN-3 (paquete `fcca6e6c`,
+AutoCAD 2025 R25.0.171) fue una ejecucion valida con resultado crudo **FAIL** (solo SIDE-DB) y resultado canonico derivado
+PASS UNDER DOCUMENT-AUTHORITY, ratificado por el Owner; ver la [evidencia](automation/evidence/I-52-AUTH15-evidence.md). El
+binario validado no es el del Candidato (excepcion de identidad ratificada). Esta evidencia no acredita el SHA documental de
+cierre, que requiere sus propias suites, builds y CI antes del merge.
+
 **I-59 (2026-09-24) — CANDIDATE PASS / OWNER APPROVED.** Core Full y UI Full locales, builds Debug
 de UI y Plugin, CI exacta de push y cobertura exacta del Candidate quedaron PASS. El Owner aprobo en
 AutoCAD 2025 OV-I59-01..04 sobre el DLL y la biblioteca externa identificados en la
@@ -1860,6 +1892,13 @@ veredicto.
 
 ## 3. Problemas y riesgos activos
 
+- **I-52-AUTH15 aun NO integrada.** Su Candidate esta conformado y su admision en host ratificada, pero I-55 G15
+  no puede consumirla hasta que pasen evidencia propia del cierre, merge, CI post-merge, cobertura, limpieza y un receipt
+  anotado `integration/I-52-AUTH15` valido. **Limite vigente:** el rollback del llamador solo esta garantizado para una base de
+  documento con `LockDocument` y `StartTransaction()`; una base lateral (`new Database(...)`) no revirtio lo escrito en RUN-3 (el
+  mecanismo no se identifico) y AUTH-15 no la rechaza: quien la use debe descartar la base en vez de confiar en Abort.
+  `OpenCloseTransaction` no esta soportada. La validacion en host no uso el binario del Candidato (excepcion ratificada).
+
 - **I-59 aun NO integrada.** Su Candidate y Owner Validation estan completos, pero I-55 G14 no puede
   consumir la Foundation hasta que pasen evidencia propia del cierre, merge, CI post-merge, cobertura,
   cleanup y un receipt anotado `integration/I-59` valido. AUTH-15 y la policy I-55 permanecen fuera.
@@ -1949,6 +1988,14 @@ veredicto.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### I-52-AUTH15 debe acreditar este cierre e integrar con Workflow V2
+
+Ejecutar Core Full, UI Full y builds Debug sobre el SHA limpio de cierre, publicar la rama y exigir su CI exacta 4/4
+(el cierre no hereda la evidencia del Candidato `0b6abdd5`). Despues: `fetch` final conservando `origin/main` en la base
+`016bf467` (si avanzo, ruta R), merge manual `--no-ff`, CI de push de `main` con cobertura, comprobacion diferida de cobertura
+del Candidato, limpieza segura y tag anotado `integration/I-52-AUTH15` con `Workflow: V2` que **nombre la excepcion de identidad**
+de la validacion en host. Solo entonces se marca `integrada` en ROADMAP y se reconcilia I-55 G15 (sin cherry-pick).
 
 ### I-59 debe acreditar este cierre e integrar con Workflow V2
 

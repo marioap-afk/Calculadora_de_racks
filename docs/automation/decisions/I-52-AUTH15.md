@@ -377,7 +377,18 @@ Cambio de produccion tras RUN-3 = ninguno (a80a3801 se mantiene). Cambio de cont
   se retira y `src/` y `tests/` del Candidato deben ser byte-identicos a los validados (los arboles `224ca6a3...` / `53fb9b98...`). Igualdad de arbol NO es identidad de binario
   (AGENTS.md, «Reutilizacion de evidencia»); el Owner ratifico esta admision con esa salvedad, y el archivo de evidencia de la unidad la repite.
 
-## 15. Estado
+## 15. READY-06 y cierre documental pre-merge
+
+- **READY-06 sobre `0b6abdd5`:** Architect = PASS (`CONFORMANT`, sin blockers ni major), Coordinator = PASS. `FINAL_CANDIDATE_SHA` = `0b6abdd5d0e323944225b30832f77f68b7c3c497`,
+  congelado: no se amenda, no se rebasa, no se sustituye por la punta de la rama. Los commits documentales posteriores (`d9a41316` y el cierre) son SHAs propios y no lo redefinen.
+- **Workflow.** La unidad se rige por **Workflow V2** (§2, caso T4); `WORKFLOW_V2_EFFECTIVE_SHA` = `8a021fb67c16dfccd6afc18448ea7e6a71a32364`. La frase «Workflow V1 sigue efectivo» que
+  aparecio en la primera version del archivo de evidencia era erronea y se corrigio. El texto desfasado de `WORKFLOW.md` es deriva documental fuera de esta unidad.
+- **Excepcion de identidad (Owner).** La validacion en host uso binarios construidos con los arboles de producto validados y el SHA de arnes `fcca6e6c`, no un binario del Candidato.
+  Se registra como excepcion ratificada por el Owner y **debe nombrarse en el tag** `integration/I-52-AUTH15`.
+- **Limitacion SIDE-DB.** Solo caracterizacion; el rollback del llamador es autoritativo para documento + `LockDocument` + `StartTransaction()`.
+- **Estado de integracion.** Candidate completo; unidad **no** integrada hasta el merge verificado en `main`. HANDOFF y ROADMAP lo dicen asi («integracion en proceso»), sin marca `integrada`.
+
+## 16. Estado
 
 ```text
 IMPLEMENTATION = a80a3801 APPROVED (no new implementation SHA); no production change after RUN-3
@@ -386,5 +397,6 @@ RUN-1 = INVALID / HARNESS DEFECT (0 AUTH-15 calls)
 RUN-2 = VALID EXECUTION / FAIL (F-1 unresolved, F-2 confirmed); cannot be carried forward
 HOST_VALIDATION = RUN-3 raw FAIL preserved; CANONICAL_AUTH15_HOST_RESULT = PASS UNDER DOCUMENT-AUTHORITY (derived by ruling, Owner-ratified)
 HARNESS = fcca6e6c APPROVED (delta re-review); temporary, removed from the Candidate
-NEXT_GATE = CANDIDATE CI + READY-06 CONFORMANCE + INTEGRATION (no merge yet)
+CANDIDATE = 0b6abdd5 CONFORMANT (READY-06 Architect + Coordinator PASS); documentary closure prepared; NOT INTEGRATED
+NEXT_GATE = COORDINATOR PRE-MERGE INTEGRATION AUTHORIZATION
 ```

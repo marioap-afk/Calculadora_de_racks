@@ -1,6 +1,6 @@
 # I-52 AUTH-15 — Unidad de integracion: creacion caller-owned de definicion y sobre
 
-Status: IMPLEMENTATION `a80a3801` APPROVED; HOST VALIDATION = PASS UNDER DOCUMENT-AUTHORITY (derived from RUN-3 by ruling, Owner-ratified; the raw RUN-3 launcher result FAIL is preserved); TEMPORARY HARNESS REMOVED; CANDIDATE / INTEGRATION IN PREPARATION (not merged)
+Status: CANDIDATE CONFORMADO (`FINAL_CANDIDATE_SHA` `0b6abdd5d0e323944225b30832f77f68b7c3c497`; READY-06 Architect + Coordinator PASS); HOST ADMISSION = PASS UNDER DOCUMENT-AUTHORITY (derived from RUN-3 by ruling, Owner-ratified; the raw RUN-3 launcher result FAIL is preserved; identity exception ratified); CIERRE DOCUMENTAL PRE-MERGE; NOT INTEGRATED (merge, post-merge CI, cleanup and `integration/I-52-AUTH15` pending)
 
 Workflow: V2
 
@@ -127,5 +127,5 @@ tipado.
    los arboles). Estado: RUN-1 INVALID (defecto del arnes), RUN-2 VALID FAIL, RUN-3 ejecucion VALIDA con resultado crudo FAIL causado solo por controles
    SIDE-DB (caracterizacion). Resultado canonico: PASS UNDER DOCUMENT-AUTHORITY, derivado por decision del Owner (decisiones §13-14).
    Implementacion validada: `a80a3801`.
-3. Candidato, integracion en `main`, verificacion posterior, recibo `integration/I-52-AUTH15` y reconciliacion
+3. Candidato **`0b6abdd5` conformado y congelado** (READY-06 PASS); pendientes: integracion en `main`, verificacion posterior, recibo `integration/I-52-AUTH15` y reconciliacion
    con I-55.
