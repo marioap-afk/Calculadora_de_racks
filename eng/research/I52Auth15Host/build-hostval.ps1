@@ -58,7 +58,9 @@ if (Test-Path -LiteralPath $OutputRoot) { throw "Output $OutputRoot already exis
 foreach ($required in (Join-Path $AutoCadInstallDir 'AcDbMgd.dll'), (Join-Path $AutoCadInstallDir 'acad.exe')) {
     if (-not (Test-Path -LiteralPath $required)) { throw "Missing: $required" }
 }
-if (Get-Process acad -ErrorAction SilentlyContinue) { throw 'acad.exe is running: close AutoCAD before building (it may lock the Plugin DLL).' }
+# Building never starts or touches AutoCAD. A running instance is only a warning here (it matters at RUN time, where
+# run-hostval.ps1 refuses it); if it locks a Plugin DLL, the build itself fails.
+if (Get-Process acad -ErrorAction SilentlyContinue) { Write-Warning 'acad.exe is running; it is left alone. The build fails by itself if it locks an output DLL.' }
 
 $run = Join-Path $OutputRoot 'run'
 $out = Join-Path $OutputRoot 'out'
