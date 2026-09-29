@@ -105,13 +105,47 @@ AUTH15_DEV_01 = ACCEPTED / CONTRACT NORMALIZATION
 - **Diseno de la validacion en host.** Queda registrado en la revision del Arquitecto. El arnes **no** se crea en esta
   compuerta: requiere orden propia del Coordinador.
 
-## 6. Estado
+## 6. Re-revision del delta y arnes de validacion en host
 
 ```text
-IMPLEMENTATION = CORRECTED (C-1..C-5) on this branch
+ARCHITECT_DELTA_VERDICT = APPROVED
+EXACT_SHA_REVIEWED = 2d10de705fffee3dc03473c2d4c76bff489fc13e
+B1 = CLOSED; C-1..C-5 = SATISFIED
+HOST_VALIDATION_AUTHORIZATION_READY = YES
+```
+
+- **Observaciones menores del Arquitecto.**
+  - Los helpers de entidad de Cantilever (`Build`, `BuildCircle`, `BuildPolyline`, `ApplyRole`, `ApplyByBlock`) no estan en la
+    lista de C-3: no reciben `Transaction` ni `Database`, asi que no pueden commitear ni colocar. Ampliar la guarda es opcional.
+  - La fila de ROADMAP y la linea de estado del contrato estaban desfasadas: se actualizan en el commit del arnes.
+- **Decision del Coordinador.** El arnes de validacion en host vive TEMPORALMENTE en esta misma rama, en
+  `eng/research/I52Auth15Host/`, y se revierte antes de Candidate. No modifica `src/` ni `tests/`.
+- **Regla vinculante.** El commit del arnes deja `src/` y `tests/` byte-identicos a `2d10de70`.
+  `build-hostval.ps1` lo comprueba (`git diff --quiet` y arboles iguales) y ademas exige que el commit del arnes solo toque
+  `eng/research/I52Auth15Host/` y `docs/`. La evidencia registra `IMPLEMENTATION_SHA`, los arboles `src` y `tests` de la
+  implementacion y del commit del arnes, y `treesEqual`.
+- **Alcance del arnes.** Un unico comando `I52AUTH15_HOSTVAL`; el Plugin de producto no se NETLOADea, se carga como dependencia
+  desde la carpeta versionada; las superficies internas de AUTH-15 se invocan por reflexion, sin `InternalsVisibleTo`. Casos
+  HV-00..HV-14 segun el dictamen del Arquitecto; `EnvelopeWriteFailed` y el `InvalidEnvelope` por fallo de serializacion se
+  declaran `NOT_EXERCISABLE_WITHOUT_FAULT_INJECTION` y no se les da PASS.
+- **Precision de diseno.** Cada caso opera sobre una base de datos lateral propia del arnes, con `WorkingDatabase` apuntada a
+  ella durante el caso y restaurada despues; un `.dwg` de trabajo en blanco (aportado por el Owner) solo ancla `WorkingDatabase`
+  y nunca se escribe. El llamador de AUTH-15 en cada caso es el arnes, que abre, aborta o commitea la transaccion.
+- **Precisiones del arnes que el Arquitecto no fijo** (registradas para su revision de la evidencia):
+  - `run.scr` pone `FILEDIA` a 0 alrededor del `NETLOAD` y lo restaura a 1 antes de `QUIT` (como el driver de I52Ctda);
+  - el lanzador copia el `.dwg` en blanco a `out\` y prueba que su hash no cambia;
+  - el lanzador rechaza `RACKCAD_AUTOLOAD_PRESENT` y un `acad.exe` ya en ejecucion;
+  - `null database` y `OpenCloseTransaction` se registran como caracterizaciones fuera del veredicto.
+- **Estado.** El paquete se construye y se verifica; **no se ejecuta AutoCAD**. La ejecucion en host requiere autorizacion
+  propia del Coordinador y la confirmacion del Owner de que no toca el equipo. No se toca `TRUSTEDPATHS` ni `SECURELOAD`.
+
+## 7. Estado
+
+```text
+IMPLEMENTATION = CORRECTED (C-1..C-5); Architect delta re-review = APPROVED
 AUTH15_DEV_01 = ACCEPTED / CONTRACT NORMALIZATION
-HOST_VALIDATION = NOT RUN (no harness in this gate)
-NEXT_GATE = ARCHITECT DELTA RE-REVIEW OF CORRECTED SHA
+HOST_VALIDATION = READY / NOT RUN (temporary harness authored and built; AutoCAD not started)
+NEXT_GATE = COORDINATOR AUTHORIZATION TO RUN AUTH-15 HOST VALIDATION
 ```
 
 Los conteos de pruebas, los SHA y el CI exacto viven en el cuerpo de los commits y, al cierre, en el archivo de

@@ -1,0 +1,9 @@
+_.FILEDIA
+0
+_.NETLOAD
+{RUN}\I52Auth15.HostHarness.dll
+I52AUTH15_HOSTVAL
+_.FILEDIA
+1
+_.QUIT
+_Y

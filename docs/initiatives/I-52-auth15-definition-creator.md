@@ -1,6 +1,6 @@
 # I-52 AUTH-15 — Unidad de integracion: creacion caller-owned de definicion y sobre
 
-Status: IMPLEMENTATION CORRECTED (C-1..C-5); PENDING ARCHITECT DELTA RE-REVIEW
+Status: ARCHITECT EXACT-SHA REVIEW = APPROVED (delta re-review of `2d10de70`); HOST VALIDATION = READY / NOT RUN; CANDIDATE PENDING HOST PASS
 
 Workflow: V2
 
@@ -106,12 +106,15 @@ tipado.
 - la rama `feature/rackmirror-espejo-semantico`;
 - I-55 y sus decisiones (incluida la semantica de faltantes del modo 1 de G9b);
 - mover AUTH-15 a la Foundation;
-- un comando temporal de validacion en AutoCAD.
+- un comando de validacion en AutoCAD como parte del producto: el arnes de validacion en host es TEMPORAL, vive solo en
+  `eng/research/I52Auth15Host/` (README incluido), no es API de producto y se revierte antes de Candidate.
 
 ## Compuertas
 
-1. Revision exacta del Arquitecto sobre el SHA de implementacion (hecha sobre `fed44e56`: CHANGES REQUIRED,
-   corregida con C-1..C-5) y re-revision del delta sobre el SHA corregido.
-2. Validacion en host, cuyo vehiculo de prueba debe decidir el Coordinador: todavia no hay llamador ni comando.
+1. Revision exacta del Arquitecto: `fed44e56` = CHANGES REQUIRED (B-1, corregida con C-1..C-5); re-revision del delta sobre
+   `2d10de70` = APPROVED.
+2. Validacion en host mediante un arnes temporal en esta misma rama (decision del Coordinador). Regla vinculante: `src/` y
+   `tests/` del commit del arnes son byte-identicos a `2d10de70` (el script de construccion lo verifica y la evidencia registra
+   los arboles). Estado: paquete construido, NO ejecutado; la ejecucion requiere orden propia del Coordinador.
 3. Candidato, integracion en `main`, verificacion posterior, recibo `integration/I-52-AUTH15` y reconciliacion
    con I-55.

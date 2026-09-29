@@ -1,0 +1,1795 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Runtime;
+using RackCad.Application.Drawing;
+using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Cantilever;
+using RackCad.Plugin.Drawing;
+
+[assembly: CommandClass(typeof(I52Auth15.HostHarness.HostValidationCommand))]
+
+namespace I52Auth15.HostHarness
+{
+    /// <summary>
+    /// The ONE test-only command of the I-52-AUTH15 host validation. It is NETLOADed from the versioned run folder;
+    /// the product Plugin is not. It writes a single evidence file next to the run folder and never prompts.
+    /// </summary>
+    public sealed class HostValidationCommand
+    {
+        [CommandMethod("I52AUTH15_HOSTVAL", CommandFlags.Session)]
+        public void Run()
+        {
+            var runDir = Path.GetDirectoryName(typeof(HostValidationCommand).Assembly.Location);
+            var outDir = Environment.GetEnvironmentVariable("I52_AUTH15_HV_OUT");
+
+            if (string.IsNullOrEmpty(outDir))
+            {
+                outDir = Path.Combine(Directory.GetParent(runDir).FullName, "out");
+            }
+
+            Directory.CreateDirectory(outDir);
+            var log = new HvLog(Path.Combine(outDir, "hostval.log"));
+            log.Info("I52AUTH15_HOSTVAL start run=" + runDir + " out=" + outDir);
+
+            // Nothing that touches the RackCad assemblies may be JIT-compiled before Bootstrap has loaded them from
+            // the run folder, which is why the work lives in other classes.
+            Bootstrap.Run(runDir, outDir, log);
+        }
+    }
+
+    internal static class Bootstrap
+    {
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void Run(string runDir, string outDir, HvLog log)
+        {
+            var problems = new List<string>();
+            Assembly plugin = null;
+
+            try
+            {
+                var context = AssemblyLoadContext.GetLoadContext(typeof(Bootstrap).Assembly) ?? AssemblyLoadContext.Default;
+
+                context.Resolving += (loadContext, name) =>
+                {
+                    var candidate = Path.Combine(runDir, name.Name + ".dll");
+                    return name.Name.StartsWith("RackCad.", StringComparison.Ordinal) && File.Exists(candidate)
+                        ? loadContext.LoadFromAssemblyPath(candidate)
+                        : null;
+                };
+
+                Preload(context, runDir, "RackCad.Domain", problems);
+                Preload(context, runDir, "RackCad.Application", problems);
+                plugin = Preload(context, runDir, "RackCad.Plugin", problems);
+            }
+            catch (System.Exception ex)
+            {
+                problems.Add("preload: " + ex.GetType().FullName + ": " + ex.Message);
+            }
+
+            try
+            {
+                Runner.Execute(runDir, outDir, log, plugin, problems);
+            }
+            catch (System.Exception ex)
+            {
+                log.Info("FATAL " + ex);
+                problems.Add("fatal: " + ex.GetType().FullName + ": " + ex.Message);
+
+                var doc = new EvidenceDoc();
+                doc.Header["note"] = "the runner could not start; no AUTH-15 call was made";
+                doc.Problems.AddRange(problems);
+                doc.Write(Path.Combine(outDir, "hostval-evidence.json"));
+            }
+
+            log.Info("I52AUTH15_HOSTVAL end");
+        }
+
+        private static Assembly Preload(AssemblyLoadContext context, string runDir, string simpleName, List<string> problems)
+        {
+            var path = Path.Combine(runDir, simpleName + ".dll");
+            var loaded = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name == simpleName).ToList();
+            var same = loaded.FirstOrDefault(a => string.Equals(a.Location, path, StringComparison.OrdinalIgnoreCase));
+
+            if (same != null)
+            {
+                return same;
+            }
+
+            if (loaded.Count > 0)
+            {
+                problems.Add(simpleName + " was already loaded from elsewhere: " + string.Join("; ", loaded.Select(a => a.Location)));
+                return null;
+            }
+
+            return context.LoadFromAssemblyPath(path);
+        }
+    }
+
+    internal sealed class Scope : IDisposable
+    {
+        private readonly Database _previous;
+
+        public Scope(bool pieceBlock = true)
+        {
+            try
+            {
+                _previous = HostApplicationServices.WorkingDatabase;
+            }
+            catch (System.Exception)
+            {
+                _previous = null;
+            }
+
+            Db = new Database(true, true);
+
+            try
+            {
+                HostApplicationServices.WorkingDatabase = Db;
+
+                if (pieceBlock)
+                {
+                    Fixtures.CreateBlock(Db, Fixtures.PieceBlock);
+                }
+            }
+            catch (System.Exception)
+            {
+                Dispose();
+                throw;
+            }
+        }
+
+        public Database Db { get; }
+
+        public void Dispose()
+        {
+            try
+            {
+                if (_previous != null)
+                {
+                    HostApplicationServices.WorkingDatabase = _previous;
+                }
+            }
+            catch (System.Exception)
+            {
+            }
+
+            try
+            {
+                Db.Dispose();
+            }
+            catch (System.Exception)
+            {
+            }
+        }
+    }
+
+    internal sealed class Ctx
+    {
+        public string RunDir { get; set; }
+
+        public string OutDir { get; set; }
+
+        public HvLog Log { get; set; }
+
+        public Auth15Binding Bind { get; set; }
+
+        public EvidenceDoc Doc { get; set; }
+
+        public LateralHeaderDrawer Drawer { get; } = new LateralHeaderDrawer();
+
+        public CantileverViewPlan CantPlan { get; set; }
+
+        public string CantPlanError { get; set; }
+
+        public Dictionary<string, string> Sums { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        public IntPtr InitialWorking { get; set; }
+
+        public Assembly PluginAssembly { get; set; }
+
+        public List<(string Case, string What, bool Unchanged)> Immutability { get; } = new List<(string, string, bool)>();
+
+        public List<(string Case, bool Unchanged)> Placement { get; } = new List<(string, bool)>();
+
+        public List<(string Case, string What, bool Live)> CallerOwned { get; } = new List<(string, string, bool)>();
+
+        public RackEmbedDocument EnvH(int n) => Fixtures.Envelope(RackEmbedDocument.KindDynamic, "HV HeaderRun " + n, RackEmbedDocument.ViewFrontal, n);
+
+        public RackEmbedDocument EnvC(int n) => Fixtures.Envelope(RackEmbedDocument.KindCantilever, "HV Cantilever " + n, RackEmbedDocument.ViewFrontal, n);
+
+        public CreationResult H(Database db, Transaction tr, string name, RackEmbedDocument env, HeaderRunPlan plan = null)
+            => Bind.HeaderRun(db, tr, Drawer, plan ?? Fixtures.HeaderRun(), name, env);
+
+        public CreationResult C(Database db, Transaction tr, string name, RackEmbedDocument env)
+            => Bind.Cantilever(db, tr, CantPlan, name, env);
+
+        /// <summary>A successful-path header-run call whose plan and envelope are fingerprinted before and after.</summary>
+        public CreationResult HRec(string caseId, Database db, Transaction tr, string name, RackEmbedDocument env, HeaderRunPlan plan = null)
+        {
+            plan = plan ?? Fixtures.HeaderRun();
+            var planBefore = Fixtures.Fingerprint(plan);
+            var envBefore = Fixtures.Fingerprint(env);
+            var result = Bind.HeaderRun(db, tr, Drawer, plan, name, env);
+            Immutability.Add((caseId, "HeaderRun " + name, planBefore == Fixtures.Fingerprint(plan) && envBefore == Fixtures.Fingerprint(env)));
+            NoteLive(caseId, "HeaderRun " + name, db, tr);
+            return result;
+        }
+
+        public CreationResult CRec(string caseId, Database db, Transaction tr, string name, RackEmbedDocument env)
+        {
+            var planBefore = Fixtures.Fingerprint(CantPlan);
+            var envBefore = Fixtures.Fingerprint(env);
+            var result = Bind.Cantilever(db, tr, CantPlan, name, env);
+            Immutability.Add((caseId, "Cantilever " + name, planBefore == Fixtures.Fingerprint(CantPlan) && envBefore == Fixtures.Fingerprint(env)));
+            NoteLive(caseId, "Cantilever " + name, db, tr);
+            return result;
+        }
+
+        private void NoteLive(string caseId, string what, Database db, Transaction tr)
+        {
+            var live = false;
+
+            try
+            {
+                var top = db.TransactionManager.TopTransaction;
+                live = !tr.IsDisposed && top != null && top.UnmanagedObject == tr.UnmanagedObject;
+            }
+            catch (System.Exception)
+            {
+                live = false;
+            }
+
+            CallerOwned.Add((caseId, what, live));
+        }
+    }
+
+    internal sealed class DefInfo
+    {
+        public string Name;
+        public bool IsLayout;
+        public bool IsAnonymous;
+        public bool IsDynamic;
+        public bool Erased;
+        public int BlockRefs;
+        public int Texts;
+        public int Dimensions;
+        public int Polylines;
+        public int Circles;
+        public int Others;
+        public List<string> RefTargets = new List<string>();
+        public string Raw;
+        public int Chunks;
+        public int MaxChunk;
+        public int ReferencesToIt;
+        public int Entities => BlockRefs + Texts + Dimensions + Polylines + Circles + Others;
+    }
+
+    internal static class Runner
+    {
+        private const string Unit = "I-52-AUTH15";
+
+        // ================================================================ execution
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void Execute(string runDir, string outDir, HvLog log, Assembly plugin, List<string> preProblems)
+        {
+            var doc = new EvidenceDoc();
+            var ctx = new Ctx { RunDir = runDir, OutDir = outDir, Log = log, Doc = doc, PluginAssembly = plugin };
+            var started = DateTime.UtcNow;
+            var stopped = false;
+
+            doc.Problems.AddRange(preProblems);
+
+            try
+            {
+                ReadPackage(ctx);
+                BuildFixtures(ctx);
+
+                if (plugin != null)
+                {
+                    ctx.Bind = Auth15Binding.Bind(plugin, doc.Problems);
+                }
+
+                try
+                {
+                    ctx.InitialWorking = HostApplicationServices.WorkingDatabase?.UnmanagedObject ?? IntPtr.Zero;
+                }
+                catch (System.Exception)
+                {
+                    ctx.InitialWorking = IntPtr.Zero;
+                }
+
+                var cases = new List<(string Id, string Family, string Expected, Action<Ctx, CaseRecord> Body)>
+                {
+                    ("HV-00", "BIND", "the versioned Plugin/Application are the only ones loaded; both AUTH-15 overloads resolve; B-1 fact recorded", Hv00),
+                    ("HV-01", "HeaderRun", "success: definition, nested content, exact envelope, no placement, caller-owned transaction", Hv01),
+                    ("HV-02", "Cantilever", "success: definition, role layers, exact envelope, no placement", Hv02),
+                    ("HV-03", "Both", "caller abort leaves SNAP identical to before", Hv03),
+                    ("HV-04", "Both", "caller commit persists both definitions and their envelopes across SaveAs/reopen; no references", Hv04),
+                    ("HV-05", "Both", "name collision: HeaderRun _1 policy, Cantilever _2 policy; pre-existing definitions unchanged", Hv05),
+                    ("HV-06", "Both", "TransactionMismatch (a..e), no write", Hv06),
+                    ("HV-07", "Both", "InvalidPlan, no write", Hv07),
+                    ("HV-08", "Both", "InvalidBlockName pre-write; HeaderRun \"<>\" characterization = WriteFailed + clean rollback", Hv08),
+                    ("HV-09", "Both", "InvalidEnvelope, no write", Hv09),
+                    ("HV-10", "HeaderRun", "MissingLibraryBlocks with exact distinct representatives; envelope absent; rollback clean", Hv10),
+                    ("HV-11", "Both", "plans and envelopes unchanged by successful calls", Hv11),
+                    ("HV-12", "Both", "no batch memory across independent calls in one transaction", Hv12),
+                    ("HV-13", "Both", "no reference placement in model space or any layout", Hv13),
+                    ("HV-14", "Both", "no internal commit; transaction stays caller-owned", Hv14),
+                };
+
+                foreach (var (id, family, expected, body) in cases)
+                {
+                    var record = new CaseRecord(id, family, expected);
+                    doc.Cases.Add(record);
+
+                    if (stopped)
+                    {
+                        continue;
+                    }
+
+                    log.Info(id + " begin");
+
+                    try
+                    {
+                        body(ctx, record);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        record.Exception = ex.GetType().FullName + ": " + ex.Message;
+                        log.Info(id + " EXCEPTION " + ex);
+                    }
+
+                    record.Finish();
+                    log.Info(id + " " + record.Result + (record.Deviation ? " DEVIATION" : string.Empty));
+
+                    if (id == "HV-00" && record.Result != Outcome.Pass)
+                    {
+                        stopped = true;
+                        doc.StoppedBy = "HV-00 is not PASS: no AUTH-15 call was made";
+                    }
+                    else if (record.Deviation)
+                    {
+                        stopped = true;
+                        doc.StoppedBy = id + " produced a NEW DEVIATION";
+                    }
+                }
+
+                doc.Completed = !stopped;
+
+                try
+                {
+                    var now = HostApplicationServices.WorkingDatabase?.UnmanagedObject ?? IntPtr.Zero;
+
+                    if (now != ctx.InitialWorking)
+                    {
+                        doc.Problems.Add("WorkingDatabase was not restored to the document database");
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    doc.Problems.Add("WorkingDatabase check: " + ex.Message);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                log.Info("RUNNER EXCEPTION " + ex);
+                doc.Problems.Add("runner: " + ex.GetType().FullName + ": " + ex.Message);
+            }
+            finally
+            {
+                doc.NotExercisable.Add(NotExercisable(
+                    "EnvelopeWriteFailed",
+                    "needs a read-back that differs from the written envelope; that cannot be provoked without fault injection into RackBlockData/AutoCAD, which this harness must not add"));
+                doc.NotExercisable.Add(NotExercisable(
+                    "InvalidEnvelope (serialization failure)",
+                    "needs RackEmbedStore.Serialize to throw on an otherwise valid envelope; not reachable without fault injection. The null / blank Id, Kind, Name variants ARE exercised by HV-09"));
+                doc.Host["endUtc"] = DateTime.UtcNow.ToString("o");
+                doc.Host["startUtc"] = started.ToString("o");
+                doc.Host["exitCode"] = "not known to the harness: see launcher-record.json";
+                doc.Write(Path.Combine(outDir, "hostval-evidence.json"));
+                log.Info("evidence written; verdict " + doc.Verdict());
+            }
+        }
+
+        private static Dictionary<string, object> NotExercisable(string what, string why) =>
+            new Dictionary<string, object> { ["surface"] = what, ["reason"] = why, ["result"] = "NOT_EXERCISABLE_WITHOUT_FAULT_INJECTION" };
+
+        // ================================================================ package metadata
+
+        private static void ReadPackage(Ctx c)
+        {
+            var doc = c.Doc;
+            var root = Directory.GetParent(c.RunDir).FullName;
+            var metaPath = Path.Combine(root, "TRANSFER-METADATA.json");
+            var sumsPath = Path.Combine(root, "SHA256SUMS");
+
+            doc.Package["packageRoot"] = root;
+            doc.Package["runDirectory"] = c.RunDir;
+            doc.Package["outDirectory"] = c.OutDir;
+
+            if (File.Exists(sumsPath))
+            {
+                foreach (var line in File.ReadAllLines(sumsPath))
+                {
+                    var at = line.IndexOf("  ", StringComparison.Ordinal);
+
+                    if (at > 0)
+                    {
+                        c.Sums[line.Substring(at + 2).Trim()] = line.Substring(0, at).Trim();
+                    }
+                }
+
+                doc.Package["sha256SumsDigest"] = Sha256File(sumsPath);
+            }
+            else
+            {
+                doc.Problems.Add("SHA256SUMS not found next to the run folder");
+            }
+
+            var mismatches = new List<string>();
+
+            foreach (var pair in c.Sums.Where(p => p.Key.StartsWith("run/", StringComparison.OrdinalIgnoreCase)))
+            {
+                var file = Path.Combine(root, pair.Key.Replace('/', Path.DirectorySeparatorChar));
+
+                if (!File.Exists(file) || !string.Equals(Sha256File(file), pair.Value, StringComparison.OrdinalIgnoreCase))
+                {
+                    mismatches.Add(pair.Key);
+                }
+            }
+
+            doc.Package["runFilesVerified"] = c.Sums.Count(p => p.Key.StartsWith("run/", StringComparison.OrdinalIgnoreCase));
+            doc.Package["runFileMismatches"] = mismatches;
+
+            if (mismatches.Count > 0)
+            {
+                doc.Problems.Add("run\\ files differ from SHA256SUMS: " + string.Join(", ", mismatches));
+            }
+
+            if (!File.Exists(metaPath))
+            {
+                doc.Problems.Add("TRANSFER-METADATA.json not found next to the run folder");
+                return;
+            }
+
+            using (var meta = JsonDocument.Parse(File.ReadAllText(metaPath)))
+            {
+                var m = meta.RootElement;
+
+                string S(string name) => m.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+
+                doc.Header["unit"] = Unit;
+                doc.Header["implementationSha"] = S("implementationSha");
+                doc.Header["harnessSha"] = S("harnessSha");
+                doc.Header["srcTree"] = S("implementationSrcTree");
+                doc.Header["testsTree"] = S("implementationTestsTree");
+                doc.Header["harnessSrcTree"] = S("harnessSrcTree");
+                doc.Header["harnessTestsTree"] = S("harnessTestsTree");
+
+                var equal = m.TryGetProperty("treesEqual", out var te) && te.ValueKind == JsonValueKind.True
+                            && S("implementationSrcTree") == S("harnessSrcTree")
+                            && S("implementationTestsTree") == S("harnessTestsTree")
+                            && !string.IsNullOrEmpty(S("implementationSrcTree"));
+
+                doc.Header["treesEqual"] = equal;
+
+                if (!equal)
+                {
+                    doc.Problems.Add("treesEqual is not true in TRANSFER-METADATA.json");
+                }
+
+                doc.Package["metadataSha256"] = Sha256File(metaPath);
+            }
+        }
+
+        private static string Sha256File(string path)
+        {
+            using (var stream = File.OpenRead(path))
+            {
+                return Convert.ToHexString(SHA256.HashData(stream));
+            }
+        }
+
+        private static void BuildFixtures(Ctx c)
+        {
+            var doc = c.Doc;
+            var catalogs = Path.Combine(c.RunDir, "catalogs");
+
+            try
+            {
+                c.CantPlan = Fixtures.CantileverFrontal(catalogs);
+                doc.Fixtures["cantileverPlanFingerprint"] = Fixtures.Fingerprint(c.CantPlan);
+                doc.Fixtures["cantileverPlanCurves"] = c.CantPlan.Curves.Count;
+                doc.Fixtures["cantileverPlanSignature"] = Fixtures.Sha256Hex(c.CantPlan.Signature());
+            }
+            catch (System.Exception ex)
+            {
+                c.CantPlanError = ex.GetType().FullName + ": " + ex.Message;
+                doc.Fixtures["cantileverPlanError"] = c.CantPlanError;
+            }
+
+            doc.Fixtures["headerRunPlanFingerprint"] = Fixtures.Fingerprint(Fixtures.HeaderRun());
+            doc.Fixtures["headerRunMissingPlanFingerprint"] = Fixtures.Fingerprint(Fixtures.HeaderRunWithMissing(out _));
+            doc.Fixtures["headerRunEnvelopeFingerprint(n=1)"] = Fixtures.Fingerprint(c.EnvH(1));
+            doc.Fixtures["cantileverEnvelopeFingerprint(n=2)"] = c.CantPlan == null ? null : Fixtures.Fingerprint(c.EnvC(2));
+            doc.Fixtures["hostModel"] =
+                "every case runs on harness-owned side databases (new Database(true,true)), one per case, with HostApplicationServices.WorkingDatabase "
+                + "set to it for the case and restored after; the scratch document is only the WorkingDatabase anchor and is never written";
+        }
+
+        // ================================================================ helpers
+
+        private static void End(Transaction transaction)
+        {
+            if (transaction == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (!transaction.IsDisposed)
+                {
+                    transaction.Abort();
+                }
+            }
+            catch (System.Exception)
+            {
+            }
+
+            try
+            {
+                transaction.Dispose();
+            }
+            catch (System.Exception)
+            {
+            }
+        }
+
+        private static bool Same(Transaction a, Transaction b) =>
+            a != null && b != null && !a.IsDisposed && !b.IsDisposed && a.UnmanagedObject == b.UnmanagedObject;
+
+        private static string Joined(List<string> lines) => lines.Count == 0 ? "identical" : string.Join("; ", lines);
+
+        private static bool NeedCantilever(Ctx c, CaseRecord r, string what)
+        {
+            if (c.CantPlan != null)
+            {
+                return true;
+            }
+
+            r.Unknown(what, "Cantilever fixture plan available", c.CantPlanError ?? "not built");
+            return false;
+        }
+
+        private static string Raw(Ctx c, Transaction tr, ObjectId id, out int chunks, out int maxChunk)
+        {
+            chunks = 0;
+            maxChunk = 0;
+
+            var owner = (DBObject)tr.GetObject(id, OpenMode.ForRead);
+
+            if (owner.ExtensionDictionary.IsNull)
+            {
+                return null;
+            }
+
+            var dictionary = (DBDictionary)tr.GetObject(owner.ExtensionDictionary, OpenMode.ForRead);
+
+            if (!dictionary.Contains(c.Bind.DictKey))
+            {
+                return null;
+            }
+
+            var record = (Xrecord)tr.GetObject(dictionary.GetAt(c.Bind.DictKey), OpenMode.ForRead);
+
+            if (record.Data == null)
+            {
+                return null;
+            }
+
+            var builder = new StringBuilder();
+
+            foreach (TypedValue value in record.Data)
+            {
+                if (value.TypeCode == (short)DxfCode.Text)
+                {
+                    var text = (string)value.Value;
+                    chunks++;
+                    maxChunk = Math.Max(maxChunk, text.Length);
+                    builder.Append(text);
+                }
+            }
+
+            return builder.ToString();
+        }
+
+        private static DefInfo Inspect(Ctx c, Transaction tr, ObjectId id)
+        {
+            var info = new DefInfo();
+            var record = (BlockTableRecord)tr.GetObject(id, OpenMode.ForRead);
+            info.Name = record.Name;
+            info.IsLayout = record.IsLayout;
+            info.IsAnonymous = record.IsAnonymous;
+            info.IsDynamic = record.IsDynamicBlock;
+            info.Erased = record.IsErased;
+
+            foreach (ObjectId entityId in record)
+            {
+                var entity = tr.GetObject(entityId, OpenMode.ForRead);
+
+                if (entity is BlockReference reference)
+                {
+                    info.BlockRefs++;
+                    info.RefTargets.Add(((BlockTableRecord)tr.GetObject(reference.BlockTableRecord, OpenMode.ForRead)).Name);
+                }
+                else if (entity is DBText)
+                {
+                    info.Texts++;
+                }
+                else if (entity is Dimension)
+                {
+                    info.Dimensions++;
+                }
+                else if (entity is Polyline)
+                {
+                    info.Polylines++;
+                }
+                else if (entity is Circle)
+                {
+                    info.Circles++;
+                }
+                else
+                {
+                    info.Others++;
+                }
+            }
+
+            info.Raw = Raw(c, tr, id, out info.Chunks, out info.MaxChunk);
+            info.ReferencesToIt = ReferenceOwners(record.Database, tr, id).Count;
+            return info;
+        }
+
+        /// <summary>
+        /// The owner (definition, model space or layout) of every BlockReference that points at <paramref name="target"/>,
+        /// found by SCANNING every block table record. <c>BlockTableRecord.GetBlockReferenceIds</c> is deliberately not used: a
+        /// reference created inside a transaction that has not committed yet may not be registered in that list, which
+        /// would make a "no references" or "two references" assertion depend on AutoCAD's bookkeeping instead of on the data.
+        /// </summary>
+        private static List<ObjectId> ReferenceOwners(Database db, Transaction tr, ObjectId target)
+        {
+            var owners = new List<ObjectId>();
+            var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
+            var referenceClass = RXObject.GetClass(typeof(BlockReference));
+
+            foreach (ObjectId ownerId in blockTable)
+            {
+                var owner = (BlockTableRecord)tr.GetObject(ownerId, OpenMode.ForRead);
+
+                foreach (ObjectId entityId in owner)
+                {
+                    if (!entityId.ObjectClass.IsDerivedFrom(referenceClass))
+                    {
+                        continue;
+                    }
+
+                    if (((BlockReference)tr.GetObject(entityId, OpenMode.ForRead)).BlockTableRecord == target)
+                    {
+                        owners.Add(ownerId);
+                    }
+                }
+            }
+
+            return owners;
+        }
+
+        private static void Negative(
+            CaseRecord r, string label, string expectedFailure, Database viewDb, Transaction viewTr, Func<CreationResult> call)
+        {
+            var before = Snapshot.Take(viewDb, viewTr);
+            var result = call();
+            var ok = result.Thrown == null && !result.IsSuccess && result.Failure == expectedFailure
+                     && result.DefinitionId.IsNull && result.BlockName == null;
+
+            r.Check(label + ": typed failure", expectedFailure + ", DefinitionId Null, BlockName null, no exception", result.Describe(), ok);
+
+            var diff = before.Diff(Snapshot.Take(viewDb, viewTr));
+            r.Check(label + ": no write", "SNAP identical", Joined(diff), diff.Count == 0);
+        }
+
+        private static void PlacementCheck(Ctx c, CaseRecord r, string label, Snapshot before, Snapshot after)
+        {
+            var diff = before.Diff(after, Snapshot.IsPlacementKey);
+            r.Check(label + ": model space and every layout unchanged", "identical", Joined(diff), diff.Count == 0);
+            c.Placement.Add((r.Id + " " + label, diff.Count == 0));
+        }
+
+        private static void CallerOwnedCheck(CaseRecord r, string label, Database db, Transaction tr, int activeExpected)
+        {
+            r.Check(label + ": transaction not disposed", true, !tr.IsDisposed);
+            var top = db.TransactionManager.TopTransaction;
+            r.Check(label + ": still the top transaction (native identity)", true, top != null && top.UnmanagedObject == tr.UnmanagedObject);
+            r.Check(
+                label + ": active transaction count unchanged", activeExpected.ToString(),
+                db.TransactionManager.NumberOfActiveTransactions.ToString(),
+                db.TransactionManager.NumberOfActiveTransactions == activeExpected);
+        }
+
+        // ================================================================ HV-00
+
+        private static void Hv00(Ctx c, CaseRecord r)
+        {
+            // Prerequisite: an open scratch document anchors HostApplicationServices.WorkingDatabase.
+            Database working = null;
+
+            try
+            {
+                working = HostApplicationServices.WorkingDatabase;
+            }
+            catch (System.Exception)
+            {
+            }
+
+            var document = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument;
+            r.Check(
+                "ENVIRONMENT_PREREQUISITE: a scratch document is open (WorkingDatabase anchor)", "WorkingDatabase != null and an active document",
+                "WorkingDatabase " + (working == null ? "null" : "set") + ", document " + (document == null ? "none" : document.Name),
+                working != null && document != null);
+
+            var acadVersion = Convert.ToString(Autodesk.AutoCAD.ApplicationServices.Core.Application.GetSystemVariable("ACADVER"));
+            var profile = Convert.ToString(Autodesk.AutoCAD.ApplicationServices.Core.Application.GetSystemVariable("PROFILENAME"));
+            r.Check("ACADVER recorded", "non-empty", acadVersion, !string.IsNullOrEmpty(acadVersion));
+
+            using (var process = Process.GetCurrentProcess())
+            {
+                var main = process.MainModule;
+                c.Doc.Host["acadVersion"] = acadVersion;
+                c.Doc.Host["profile"] = profile;
+                c.Doc.Host["pid"] = process.Id;
+                c.Doc.Host["runFolder"] = c.RunDir;
+                c.Doc.Host["acadExecutable"] = main?.FileName;
+                c.Doc.Host["acadFileVersion"] = main?.FileVersionInfo.FileVersion;
+                c.Doc.Host["acadSha256"] = main == null ? null : Sha256File(main.FileName);
+                c.Doc.Host["os"] = Environment.OSVersion.VersionString;
+                c.Doc.Host["scratchDocument"] = document?.Name;
+            }
+
+            // One assembly each, loaded from the versioned run folder, byte-identical to the package.
+            var runDir = Path.GetFullPath(c.RunDir).TrimEnd('\\');
+            var loadedList = AppDomain.CurrentDomain.GetAssemblies();
+
+            foreach (var simple in new[] { "RackCad.Plugin", "RackCad.Application", "RackCad.Domain" })
+            {
+                var matches = loadedList.Where(a => a.GetName().Name == simple).ToList();
+                r.Check(simple + ": exactly one loaded", "1", matches.Count.ToString(), matches.Count == 1);
+
+                if (matches.Count != 1)
+                {
+                    continue;
+                }
+
+                var location = matches[0].Location;
+                var inRun = string.Equals(Path.GetDirectoryName(Path.GetFullPath(location)), runDir, StringComparison.OrdinalIgnoreCase);
+                r.Check(simple + ": Location inside run\\", runDir, location, inRun);
+
+                var sha = inRun ? Sha256File(location) : null;
+                c.Sums.TryGetValue("run/" + simple + ".dll", out var expectedSha);
+                r.Check(simple + ": SHA-256 equals the package", expectedSha ?? "<missing in SHA256SUMS>", sha ?? "<not in run>",
+                    sha != null && string.Equals(sha, expectedSha, StringComparison.OrdinalIgnoreCase));
+
+                if (simple == "RackCad.Plugin")
+                {
+                    c.Doc.Binding["pluginLocation"] = location;
+                    c.Doc.Binding["loadedSha256"] = sha;
+                    c.Doc.Package["pluginSha256"] = sha;
+                }
+                else if (simple == "RackCad.Application")
+                {
+                    c.Doc.Package["applicationSha256"] = sha;
+                    r.Check(
+                        "the harness compiled against this same Application assembly", true,
+                        ReferenceEquals(typeof(HeaderRunPlan).Assembly, matches[0]));
+                }
+            }
+
+            var harness = typeof(HostValidationCommand).Assembly;
+            c.Doc.Package["harnessSha256"] = Sha256File(harness.Location);
+            r.Check(
+                "the harness itself was loaded from run\\", runDir, harness.Location,
+                string.Equals(Path.GetDirectoryName(Path.GetFullPath(harness.Location)), runDir, StringComparison.OrdinalIgnoreCase));
+
+            r.Check(
+                "the product Plugin is not the loaded extension: only the harness command is under test",
+                "no second RackCad.Plugin", string.Join("; ", loadedList.Where(a => a.GetName().Name == "RackCad.Plugin").Select(a => a.Location)),
+                loadedList.Count(a => a.GetName().Name == "RackCad.Plugin") == 1);
+
+            // Both AUTH-15 overloads resolve by exact parameter types.
+            if (c.Bind == null || !c.Bind.Ready)
+            {
+                r.Check("AUTH-15 surface bound", "both overloads + result + RackBlockData.Read", "not bound", false);
+                r.Deviation = false;
+                return;
+            }
+
+            r.Check("CreateInTransaction overloads on RackDefinitionCreator", "2", c.Bind.OverloadCount.ToString(), c.Bind.OverloadCount == 2);
+            r.Check("HeaderRun overload resolved", true, c.Bind.HeaderRunOverload != null);
+            r.Check("Cantilever overload resolved", true, c.Bind.CantileverOverload != null);
+            c.Doc.Binding["overloads"] = c.Bind.OverloadCount;
+            c.Doc.Binding["dictKey"] = c.Bind.DictKey;
+
+            // The B-1 fact, recorded on a real transaction: wrapper identity is unusable, native identity is exact.
+            using (var scope = new Scope(false))
+            {
+                var db = scope.Db;
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    var top = db.TransactionManager.TopTransaction;
+                    var again = db.TransactionManager.TopTransaction;
+                    var referenceEquals = ReferenceEquals(top, tr);
+                    var native = top != null && top.UnmanagedObject == tr.UnmanagedObject;
+
+                    r.Check("recorded: ReferenceEquals(TopTransaction, tr)", "False (B-1 premise)", referenceEquals.ToString(), true);
+                    r.Check("recorded: two reads of TopTransaction are the same wrapper", "False (a new wrapper per read)", ReferenceEquals(top, again).ToString(), true);
+                    r.Check("TopTransaction.UnmanagedObject == tr.UnmanagedObject", true, native);
+                    c.Doc.Binding["referenceEqualsTopTransaction"] = referenceEquals;
+                    c.Doc.Binding["nativeIdentityEqual"] = native;
+                }
+                finally
+                {
+                    End(tr);
+                }
+            }
+        }
+
+        // ================================================================ HV-01
+
+        private static void Hv01(Ctx c, CaseRecord r)
+        {
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var env = c.EnvH(1);
+                var expectedRaw = new RackEmbedStore().Serialize(env);
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    var active = db.TransactionManager.NumberOfActiveTransactions;
+                    var result = c.HRec(r.Id, db, tr, "AUTH15HV_HR", env);
+                    r.Observed = result.Describe();
+
+                    if (!r.Check("call succeeded", "IsSuccess=True, Failure=None, no exception", result.Describe(),
+                            result.Thrown == null && result.IsSuccess && result.Failure == "None"))
+                    {
+                        return;
+                    }
+
+                    r.Check("DefinitionId is valid and not erased", true, !result.DefinitionId.IsNull && !result.DefinitionId.IsErased);
+                    var info = Inspect(c, tr, result.DefinitionId);
+                    r.Equal("BlockName equals the definition's name", info.Name, result.BlockName);
+                    r.Equal("requested name was free, so the actual name is the requested one", "AUTH15HV_HR", result.BlockName);
+                    r.Check("a top-level, non-anonymous, non-layout definition", "true/false/false", $"{!info.IsLayout}/{info.IsAnonymous}/{info.IsLayout}", !info.IsLayout && !info.IsAnonymous);
+                    r.Equal("raw envelope on the definition is exactly RackEmbedStore.Serialize(envelope)", expectedRaw, info.Raw);
+                    r.Check("the envelope spans several 255-character chunks", "chunks >= 2 and each <= 255", $"{info.Chunks} chunks, max {info.MaxChunk}", info.Chunks >= 2 && info.MaxChunk <= 255);
+                    r.Equal("RackBlockData.Read returns the same envelope", expectedRaw, c.Bind.ReadBack(tr, result.DefinitionId));
+
+                    var headerRefs = info.RefTargets.Count(t => t.StartsWith(Fixtures.HeaderName, StringComparison.Ordinal));
+                    r.Check("nested header definition referenced at both placements", "2", headerRefs.ToString(), headerRefs == 2);
+                    r.Check("the loose piece block is referenced once", "1", info.RefTargets.Count(t => t == Fixtures.PieceBlock).ToString(), info.RefTargets.Count(t => t == Fixtures.PieceBlock) == 1);
+                    r.Check("the annotation (DBText) and the dimension are content of the definition", "1 text, 1 dimension", $"{info.Texts} text, {info.Dimensions} dimension", info.Texts == 1 && info.Dimensions == 1);
+
+                    var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
+                    var nestedName = info.RefTargets.FirstOrDefault(t => t.StartsWith(Fixtures.HeaderName, StringComparison.Ordinal));
+                    var nestedOk = nestedName != null && blockTable.Has(nestedName);
+                    r.Check("the nested definition exists in the block table", true, nestedOk);
+
+                    if (nestedOk)
+                    {
+                        var nested = Inspect(c, tr, blockTable[nestedName]);
+                        r.Check("the nested definition carries no envelope", "null", nested.Raw ?? "null", nested.Raw == null);
+                        var nestedOwners = ReferenceOwners(db, tr, blockTable[nestedName]);
+                        r.Check("every reference to the nested definition lives inside the system definition", "2 refs, all owned by the new definition",
+                            $"{nestedOwners.Count} refs, {nestedOwners.Distinct().Count()} owner(s)",
+                            nestedOwners.Count == 2 && nestedOwners.All(o => o == result.DefinitionId));
+                    }
+
+                    var layers = (LayerTable)tr.GetObject(db.LayerTableId, OpenMode.ForRead);
+                    r.Check("annotation and dimension layers exist", true, layers.Has("RACKCAD_ANOTACIONES") && layers.Has("RACKCAD_COTAS"));
+                    r.Check("no reference to the new definition anywhere", "0", info.ReferencesToIt.ToString(), info.ReferencesToIt == 0);
+
+                    PlacementCheck(c, r, "HeaderRun", baseline, Snapshot.Take(db, tr));
+                    CallerOwnedCheck(r, "after the call", db, tr, active);
+                }
+                finally
+                {
+                    End(tr);
+                }
+
+                var after = Snapshot.Now(db);
+                var diff = baseline.Diff(after);
+                r.Check("caller abort afterwards: SNAP identical to before", "identical", Joined(diff), diff.Count == 0);
+            }
+        }
+
+        // ================================================================ HV-02
+
+        private static void Hv02(Ctx c, CaseRecord r)
+        {
+            if (!NeedCantilever(c, r, "Cantilever fixture"))
+            {
+                return;
+            }
+
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var env = c.EnvC(2);
+                var expectedRaw = new RackEmbedStore().Serialize(env);
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    var active = db.TransactionManager.NumberOfActiveTransactions;
+                    var result = c.CRec(r.Id, db, tr, "AUTH15HV_CANT", env);
+                    r.Observed = result.Describe();
+
+                    if (!r.Check("call succeeded", "IsSuccess=True, Failure=None, no exception", result.Describe(),
+                            result.Thrown == null && result.IsSuccess && result.Failure == "None"))
+                    {
+                        return;
+                    }
+
+                    r.Check("DefinitionId is valid and not erased", true, !result.DefinitionId.IsNull && !result.DefinitionId.IsErased);
+                    var info = Inspect(c, tr, result.DefinitionId);
+                    r.Equal("BlockName equals the definition's name", info.Name, result.BlockName);
+                    r.Equal("requested name was free, so the actual name is the requested one", "AUTH15HV_CANT", result.BlockName);
+                    r.Check("a top-level, non-anonymous, non-layout definition", "true", (!info.IsLayout && !info.IsAnonymous).ToString(), !info.IsLayout && !info.IsAnonymous);
+                    r.Equal("raw envelope on the definition is exactly RackEmbedStore.Serialize(envelope)", expectedRaw, info.Raw);
+                    r.Check("the envelope spans several 255-character chunks", "chunks >= 2 and each <= 255", $"{info.Chunks} chunks, max {info.MaxChunk}", info.Chunks >= 2 && info.MaxChunk <= 255);
+                    r.Equal("RackBlockData.Read returns the same envelope", expectedRaw, c.Bind.ReadBack(tr, result.DefinitionId));
+
+                    var expectedCircles = c.CantPlan.Curves.Count(x => x.IsCircle && x.Points != null && x.Points.Count == 1 && x.CircleDiameter.Value > 0.0);
+                    var expectedPolylines = c.CantPlan.Curves.Count(x => !x.IsCircle && x.Points != null && x.Points.Count >= 2);
+                    r.Check("entities equal what the plan can draw", $"{expectedPolylines} polylines + {expectedCircles} circles",
+                        $"{info.Polylines} polylines + {info.Circles} circles (+{info.Others} other)",
+                        info.Polylines == expectedPolylines && info.Circles == expectedCircles && info.Others == 0 && info.Entities == expectedPolylines + expectedCircles && info.Entities > 0);
+                    r.Check("no nested definition: the family draws no references", "0", info.BlockRefs.ToString(), info.BlockRefs == 0);
+
+                    var layers = (LayerTable)tr.GetObject(db.LayerTableId, OpenMode.ForRead);
+                    var missingLayers = Enum.GetValues(typeof(CantileverVisualRole)).Cast<CantileverVisualRole>()
+                        .Select(CantileverVisualRoles.LayerNameOf).Where(name => !layers.Has(name)).ToList();
+                    r.Check("all role layers are present", "none missing", missingLayers.Count == 0 ? "none missing" : string.Join(",", missingLayers), missingLayers.Count == 0);
+
+                    var record = (BlockTableRecord)tr.GetObject(result.DefinitionId, OpenMode.ForRead);
+                    var offLayer = record.Cast<ObjectId>().Select(id => (Entity)tr.GetObject(id, OpenMode.ForRead))
+                        .Where(e => !e.Layer.StartsWith(CantileverVisualRoles.LayerPrefix, StringComparison.Ordinal)).Select(e => e.Layer).Distinct().ToList();
+                    r.Check("every entity is on a role layer", "none off-role", offLayer.Count == 0 ? "none off-role" : string.Join(",", offLayer), offLayer.Count == 0);
+                    r.Check("no reference to the new definition anywhere", "0", info.ReferencesToIt.ToString(), info.ReferencesToIt == 0);
+
+                    PlacementCheck(c, r, "Cantilever", baseline, Snapshot.Take(db, tr));
+                    CallerOwnedCheck(r, "after the call", db, tr, active);
+                }
+                finally
+                {
+                    End(tr);
+                }
+
+                var diff = baseline.Diff(Snapshot.Now(db));
+                r.Check("caller abort afterwards: SNAP identical to before", "identical", Joined(diff), diff.Count == 0);
+            }
+        }
+
+        // ================================================================ HV-03
+
+        private static void Hv03(Ctx c, CaseRecord r)
+        {
+            if (!NeedCantilever(c, r, "Cantilever fixture"))
+            {
+                return;
+            }
+
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var tr = db.TransactionManager.StartTransaction();
+                var names = new List<string>();
+                var ids = new List<ObjectId>();
+
+                try
+                {
+                    var header = c.HRec(r.Id, db, tr, "AUTH15HV_RB_H", c.EnvH(31));
+                    var cantilever = c.CRec(r.Id, db, tr, "AUTH15HV_RB_C", c.EnvC(32));
+                    r.Observed = header.Describe() + " | " + cantilever.Describe();
+                    r.Check("both calls succeeded inside ONE caller transaction", "both IsSuccess", r.Observed, header.IsSuccess && cantilever.IsSuccess);
+
+                    if (!(header.IsSuccess && cantilever.IsSuccess))
+                    {
+                        return;
+                    }
+
+                    names.Add(header.BlockName);
+                    names.Add(cantilever.BlockName);
+                    ids.Add(header.DefinitionId);
+                    ids.Add(cantilever.DefinitionId);
+
+                    var mid = Snapshot.Take(db, tr);
+                    PlacementCheck(c, r, "both families in one transaction", baseline, mid);
+                    var written = baseline.Diff(mid, null, 200);
+                    r.Check("sanity: the calls did write inside the transaction", "> 0 differences", written.Count + " differences", written.Count > 0);
+                    r.Check("sanity: definitions, nested definition, layers and an anonymous dimension block were created",
+                        "BT: + LT: + extension data",
+                        $"BT+ {written.Count(x => x.StartsWith("added BT:"))}, LT+ {written.Count(x => x.StartsWith("added LT:"))}",
+                        written.Any(x => x.StartsWith("added BT:")) && written.Any(x => x.StartsWith("added LT:")));
+                }
+                finally
+                {
+                    End(tr); // the caller aborts
+                }
+
+                var after = Snapshot.Now(db);
+                var diff = baseline.Diff(after, null, 40);
+                r.Check("after the abort: SNAP identical to before", "identical", Joined(diff), diff.Count == 0);
+
+                using (var verify = db.TransactionManager.StartTransaction())
+                {
+                    var blockTable = (BlockTable)verify.GetObject(db.BlockTableId, OpenMode.ForRead);
+                    r.Check("neither top-level name survives", "absent", string.Join(",", names.Where(blockTable.Has)) is var left && left.Length == 0 ? "absent" : left, names.All(n => !blockTable.Has(n)));
+                    r.Check("the nested header definition does not survive", "absent", blockTable.Has(Fixtures.HeaderName) ? "present" : "absent", !blockTable.Has(Fixtures.HeaderName));
+
+                    var layers = (LayerTable)verify.GetObject(db.LayerTableId, OpenMode.ForRead);
+                    r.Check("no layer AUTH-15 or the family drawers created survives", "absent",
+                        (layers.Has("RACKCAD_ANOTACIONES") || layers.Has("RACKCAD_COTAS") ? "annotation/dimension layer present" : "absent"),
+                        !layers.Has("RACKCAD_ANOTACIONES") && !layers.Has("RACKCAD_COTAS"));
+                    var anyRole = Enum.GetValues(typeof(CantileverVisualRole)).Cast<CantileverVisualRole>().Select(CantileverVisualRoles.LayerNameOf).Where(layers.Has).ToList();
+                    r.Check("no Cantilever role layer survives", "absent", anyRole.Count == 0 ? "absent" : string.Join(",", anyRole), anyRole.Count == 0);
+                    verify.Abort();
+                }
+
+                var openable = new List<string>();
+
+                foreach (var id in ids)
+                {
+                    try
+                    {
+                        using (var probe = db.TransactionManager.StartTransaction())
+                        {
+                            probe.GetObject(id, OpenMode.ForRead, false);
+                            openable.Add(id.Handle.ToString() + " still opens");
+                            probe.Abort();
+                        }
+                    }
+                    catch (System.Exception)
+                    {
+                        // Expected: the object no longer exists.
+                    }
+                }
+
+                r.Check("the returned ObjectIds no longer open", "none opens", openable.Count == 0 ? "none opens" : string.Join(",", openable), openable.Count == 0);
+            }
+        }
+
+        // ================================================================ HV-04
+
+        private static void Hv04(Ctx c, CaseRecord r)
+        {
+            if (!NeedCantilever(c, r, "Cantilever fixture"))
+            {
+                return;
+            }
+
+            var file = Path.Combine(c.OutDir, "hv04.dwg");
+
+            if (File.Exists(file))
+            {
+                r.Check("the output file does not pre-exist", "absent", "present", false);
+                return;
+            }
+
+            var envH = c.EnvH(41);
+            var envC = c.EnvC(42);
+            var rawH = new RackEmbedStore().Serialize(envH);
+            var rawC = new RackEmbedStore().Serialize(envC);
+            string nameH;
+            string nameC;
+            string nestedName;
+
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    var header = c.HRec(r.Id, db, tr, "AUTH15HV_CM_H", envH);
+                    var cantilever = c.CRec(r.Id, db, tr, "AUTH15HV_CM_C", envC);
+                    r.Observed = header.Describe() + " | " + cantilever.Describe();
+
+                    if (!r.Check("both calls succeeded", "both IsSuccess", r.Observed, header.IsSuccess && cantilever.IsSuccess))
+                    {
+                        return;
+                    }
+
+                    nameH = header.BlockName;
+                    nameC = cantilever.BlockName;
+                    nestedName = Inspect(c, tr, header.DefinitionId).RefTargets.FirstOrDefault(t => t.StartsWith(Fixtures.HeaderName, StringComparison.Ordinal));
+                    tr.Commit(); // the CALLER commits
+                }
+                finally
+                {
+                    End(tr);
+                }
+
+                PlacementCheck(c, r, "after commit", baseline, Snapshot.Now(db));
+                db.SaveAs(file, DwgVersion.Current);
+            }
+
+            r.Check("the drawing was saved", "file exists", File.Exists(file) ? "exists" : "missing", File.Exists(file));
+
+            using (var reopened = new Database(false, true))
+            {
+                reopened.ReadDwgFile(file, FileShare.Read, true, string.Empty);
+                reopened.CloseInput(true);
+
+                using (var tr = reopened.TransactionManager.StartTransaction())
+                {
+                    var blockTable = (BlockTable)tr.GetObject(reopened.BlockTableId, OpenMode.ForRead);
+
+                    foreach (var (name, raw, kind) in new[] { (nameH, rawH, "dynamic"), (nameC, rawC, "cantilever") })
+                    {
+                        r.Check(name + ": definition exists after reopen", true, blockTable.Has(name));
+
+                        if (!blockTable.Has(name))
+                        {
+                            continue;
+                        }
+
+                        var info = Inspect(c, tr, blockTable[name]);
+                        r.Equal(name + ": raw envelope exact after reopen", raw, info.Raw);
+                        var parsed = new RackEmbedStore().Deserialize(info.Raw);
+                        r.Check(name + ": Id/Kind/Name deserialize", "id/kind/name of the composed envelope",
+                            parsed == null ? "null" : parsed.Id + "/" + parsed.Kind + "/" + parsed.Name,
+                            parsed != null && parsed.Kind == kind && parsed.Id.StartsWith("a15a15a1-", StringComparison.Ordinal) && parsed.Name.StartsWith("HV ", StringComparison.Ordinal));
+                        r.Check(name + ": no references to it", "0", info.ReferencesToIt.ToString(), info.ReferencesToIt == 0);
+                    }
+
+                    r.Check("the nested header definition persisted", true, nestedName != null && blockTable.Has(nestedName));
+
+                    var modelSpace = (BlockTableRecord)tr.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForRead);
+                    r.Check("model space is empty after reopen", "0 entities", modelSpace.Cast<ObjectId>().Count() + " entities", !modelSpace.Cast<ObjectId>().Any());
+                    tr.Abort();
+                }
+            }
+        }
+
+        // ================================================================ HV-05
+
+        private static void Hv05(Ctx c, CaseRecord r)
+        {
+            if (!NeedCantilever(c, r, "Cantilever fixture"))
+            {
+                return;
+            }
+
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+
+                foreach (var name in new[] { "AUTH15HV_HR", Fixtures.HeaderName, "AUTH15HV_CANT" })
+                {
+                    Fixtures.CreateBlock(db, name);
+                }
+
+                var pre = new Dictionary<string, string>();
+                var baseline = Snapshot.Now(db);
+
+                foreach (var name in new[] { "AUTH15HV_HR", Fixtures.HeaderName, "AUTH15HV_CANT" })
+                {
+                    pre[name] = baseline.Items["BTC:" + name];
+                }
+
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    var header = c.HRec(r.Id, db, tr, "AUTH15HV_HR", c.EnvH(51));
+                    var cantilever = c.CRec(r.Id, db, tr, "AUTH15HV_CANT", c.EnvC(52));
+                    r.Observed = header.Describe() + " | " + cantilever.Describe();
+
+                    if (!r.Check("both calls succeeded", "both IsSuccess", r.Observed, header.IsSuccess && cantilever.IsSuccess))
+                    {
+                        return;
+                    }
+
+                    r.Equal("HeaderRun applies its own _1 policy to the system definition", "AUTH15HV_HR_1", header.BlockName);
+                    r.Equal("Cantilever applies its own _2 policy", "AUTH15HV_CANT_2", cantilever.BlockName);
+
+                    var infoH = Inspect(c, tr, header.DefinitionId);
+                    r.Equal("returned HeaderRun name equals the definition's name", infoH.Name, header.BlockName);
+                    r.Check("the nested header definition took the _1 policy too", "AUTH15HV_HDR_1",
+                        string.Join(",", infoH.RefTargets.Distinct().OrderBy(x => x)), infoH.RefTargets.Contains("AUTH15HV_HDR_1") && !infoH.RefTargets.Contains(Fixtures.HeaderName));
+                    r.Equal("returned Cantilever name equals the definition's name", Inspect(c, tr, cantilever.DefinitionId).Name, cantilever.BlockName);
+
+                    var now = Snapshot.Take(db, tr);
+                    PlacementCheck(c, r, "collision case", baseline, now);
+                    foreach (var pair in pre)
+                    {
+                        r.Equal("pre-existing definition " + pair.Key + " unchanged (entities, no new extension dictionary)", pair.Value, now.Items["BTC:" + pair.Key]);
+                    }
+                }
+                finally
+                {
+                    End(tr);
+                }
+
+                var diff = baseline.Diff(Snapshot.Now(db));
+                r.Check("caller abort afterwards: SNAP identical to before", "identical", Joined(diff), diff.Count == 0);
+            }
+        }
+
+        // ================================================================ HV-06
+
+        private static void Hv06(Ctx c, CaseRecord r)
+        {
+            var families = new List<(string Name, Func<Database, Transaction, CreationResult> Call)>
+            {
+                ("HeaderRun", (d, t) => c.H(d, t, "AUTH15HV_M", c.EnvH(61))),
+            };
+
+            if (NeedCantilever(c, r, "Cantilever fixture"))
+            {
+                families.Add(("Cantilever", (d, t) => c.C(d, t, "AUTH15HV_M", c.EnvC(62))));
+            }
+
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+
+                foreach (var (family, call) in families)
+                {
+                    // a) null transaction
+                    var view = db.TransactionManager.StartTransaction();
+                    try
+                    {
+                        Negative(r, family + " a) null transaction", "TransactionMismatch", db, view, () => call(db, null));
+                    }
+                    finally
+                    {
+                        End(view);
+                    }
+
+                    // b) a transaction that belongs to ANOTHER database, while this one has its own top transaction
+                    using (var other = new Database(true, true))
+                    {
+                        var own = db.TransactionManager.StartTransaction();
+                        var foreign = other.TransactionManager.StartTransaction();
+                        try
+                        {
+                            var otherBefore = Snapshot.Take(other, foreign);
+                            Negative(r, family + " b) foreign-database transaction", "TransactionMismatch", db, own, () => call(db, foreign));
+                            var otherDiff = otherBefore.Diff(Snapshot.Take(other, foreign));
+                            r.Check(family + " b) the foreign database was not written either", "identical", Joined(otherDiff), otherDiff.Count == 0);
+                        }
+                        finally
+                        {
+                            End(foreign);
+                            End(own);
+                        }
+                    }
+
+                    // c) the outer transaction while a nested one is the top
+                    var outer = db.TransactionManager.StartTransaction();
+                    var nested = db.TransactionManager.StartTransaction();
+                    try
+                    {
+                        var top = db.TransactionManager.TopTransaction;
+                        r.Check(family + " c) setup: the nested transaction is the top, the outer is not", true,
+                            top != null && top.UnmanagedObject == nested.UnmanagedObject && top.UnmanagedObject != outer.UnmanagedObject);
+                        Negative(r, family + " c) outer while nested is top", "TransactionMismatch", db, nested, () => call(db, outer));
+                    }
+                    finally
+                    {
+                        End(nested);
+                        End(outer);
+                    }
+
+                    // d) a disposed transaction
+                    var disposed = db.TransactionManager.StartTransaction();
+                    End(disposed);
+                    var viewD = db.TransactionManager.StartTransaction();
+                    try
+                    {
+                        r.Check(family + " d) setup: the transaction is disposed", true, disposed.IsDisposed);
+                        Negative(r, family + " d) disposed transaction", "TransactionMismatch", db, viewD, () => call(db, disposed));
+                    }
+                    finally
+                    {
+                        End(viewD);
+                    }
+
+                    // e) a disposed database
+                    var dead = new Database(true, true);
+                    dead.Dispose();
+                    var viewE = db.TransactionManager.StartTransaction();
+                    try
+                    {
+                        r.Check(family + " e) setup: the database is disposed", true, dead.IsDisposed);
+                        Negative(r, family + " e) disposed database", "TransactionMismatch", db, viewE, () => call(dead, viewE));
+                    }
+                    finally
+                    {
+                        End(viewE);
+                    }
+                }
+
+                // Characterizations that are not part of the ruled set: recorded, never counted in the verdict.
+                Characterize(c, "null database", () =>
+                {
+                    var t = db.TransactionManager.StartTransaction();
+                    try
+                    {
+                        return c.H(null, t, "AUTH15HV_M", c.EnvH(63)).Describe();
+                    }
+                    finally
+                    {
+                        End(t);
+                    }
+                }, "expected TransactionMismatch");
+
+                Characterize(c, "OpenCloseTransaction (conservatively unsupported)", () =>
+                {
+                    var t = db.TransactionManager.StartOpenCloseTransaction();
+                    try
+                    {
+                        return c.H(db, t, "AUTH15HV_M", c.EnvH(64)).Describe();
+                    }
+                    finally
+                    {
+                        End(t);
+                    }
+                }, "expected TransactionMismatch");
+
+                var diff = baseline.Diff(Snapshot.Now(db));
+                r.Check("after every sub-case: SNAP identical to the start", "identical", Joined(diff), diff.Count == 0);
+                r.Observed = "see assertions";
+            }
+        }
+
+        private static void Characterize(Ctx c, string what, Func<string> action, string expectation)
+        {
+            string observed;
+
+            try
+            {
+                observed = action();
+            }
+            catch (System.Exception ex)
+            {
+                observed = "harness exception " + ex.GetType().Name + ": " + ex.Message;
+            }
+
+            c.Doc.Characterizations.Add(new Dictionary<string, object>
+            {
+                ["what"] = what,
+                ["expectation"] = expectation,
+                ["observed"] = observed,
+                ["countedInVerdict"] = false,
+            });
+        }
+
+        // ================================================================ HV-07
+
+        private static void Hv07(Ctx c, CaseRecord r)
+        {
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    Negative(r, "HeaderRun null plan", "InvalidPlan", db, tr, () => c.Bind.HeaderRun(db, tr, c.Drawer, null, "AUTH15HV_P", c.EnvH(71)));
+                    Negative(r, "HeaderRun null drawer", "InvalidPlan", db, tr, () => c.Bind.HeaderRun(db, tr, null, Fixtures.HeaderRun(), "AUTH15HV_P", c.EnvH(72)));
+                    Negative(r, "Cantilever null plan", "InvalidPlan", db, tr, () => c.Bind.Cantilever(db, tr, null, "AUTH15HV_P", c.EnvC(73)));
+                    r.Observed = "see assertions";
+                }
+                finally
+                {
+                    End(tr);
+                }
+
+                var diff = baseline.Diff(Snapshot.Now(db));
+                r.Check("after the abort: SNAP identical", "identical", Joined(diff), diff.Count == 0);
+            }
+        }
+
+        // ================================================================ HV-08
+
+        private static void Hv08(Ctx c, CaseRecord r)
+        {
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    foreach (var (label, value) in new[] { ("null", (string)null), ("empty", string.Empty), ("whitespace", "   ") })
+                    {
+                        Negative(r, "HeaderRun name " + label, "InvalidBlockName", db, tr, () => c.H(db, tr, value, c.EnvH(81)));
+
+                        if (c.CantPlan != null)
+                        {
+                            Negative(r, "Cantilever name " + label, "InvalidBlockName", db, tr, () => c.C(db, tr, value, c.EnvC(82)));
+                        }
+                        else
+                        {
+                            r.Unknown("Cantilever name " + label, "InvalidBlockName", c.CantPlanError ?? "no fixture");
+                        }
+                    }
+                }
+                finally
+                {
+                    End(tr);
+                }
+
+                var clean = baseline.Diff(Snapshot.Now(db));
+                r.Check("after the abort: SNAP identical", "identical", Joined(clean), clean.Count == 0);
+
+                // CHARACTERIZATION (c): a non-empty name the family policy makes invalid. Ruled: WriteFailed and a clean rollback.
+                var tr2 = db.TransactionManager.StartTransaction();
+                CreationResult result;
+
+                try
+                {
+                    result = c.H(db, tr2, "<>", c.EnvH(83));
+                    string partial;
+
+                    try
+                    {
+                        partial = baseline.Diff(Snapshot.Take(db, tr2), null, 8).Count + " differences inside the transaction (partial writes are the caller's rollback)";
+                    }
+                    catch (System.Exception ex)
+                    {
+                        partial = "snapshot inside the transaction failed: " + ex.Message;
+                    }
+
+                    r.Notes.Add("HeaderRun \"<>\": " + result.Describe() + "; " + partial);
+                }
+                finally
+                {
+                    End(tr2);
+                }
+
+                var expected = result.Thrown == null && !result.IsSuccess && result.Failure == "WriteFailed";
+                r.Check("CHARACTERIZATION HeaderRun \"<>\" surfaces as WriteFailed", "WriteFailed, no exception", result.Describe(), expected);
+
+                if (!expected)
+                {
+                    r.Deviation = true;
+                    r.Notes.Add("NEW DEVIATION: HeaderRun \"<>\" did not come out as ruled; the run STOPS here.");
+                }
+
+                var dirty = baseline.Diff(Snapshot.Now(db), null, 20);
+                r.Check("CHARACTERIZATION: the caller's abort leaves SNAP clean", "identical", Joined(dirty), dirty.Count == 0);
+
+                if (dirty.Count > 0)
+                {
+                    r.Deviation = true;
+                }
+
+                r.Observed = result.Describe();
+            }
+        }
+
+        // ================================================================ HV-09
+
+        private static void Hv09(Ctx c, CaseRecord r)
+        {
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    var variants = new List<(string Label, Func<RackEmbedDocument> Make)>
+                    {
+                        ("null envelope", () => null),
+                        ("empty Id", () => { var e = c.EnvH(91); e.Id = string.Empty; return e; }),
+                        ("whitespace Id", () => { var e = c.EnvH(91); e.Id = "  "; return e; }),
+                        ("null Id", () => { var e = c.EnvH(91); e.Id = null; return e; }),
+                        ("empty Kind", () => { var e = c.EnvH(91); e.Kind = string.Empty; return e; }),
+                        ("null Kind", () => { var e = c.EnvH(91); e.Kind = null; return e; }),
+                        ("empty Name", () => { var e = c.EnvH(91); e.Name = string.Empty; return e; }),
+                        ("null Name", () => { var e = c.EnvH(91); e.Name = null; return e; }),
+                    };
+
+                    foreach (var (label, make) in variants)
+                    {
+                        Negative(r, "HeaderRun " + label, "InvalidEnvelope", db, tr, () => c.H(db, tr, "AUTH15HV_E", make()));
+
+                        if (c.CantPlan != null)
+                        {
+                            Negative(r, "Cantilever " + label, "InvalidEnvelope", db, tr, () => c.C(db, tr, "AUTH15HV_E", make()));
+                        }
+                        else
+                        {
+                            r.Unknown("Cantilever " + label, "InvalidEnvelope", c.CantPlanError ?? "no fixture");
+                        }
+                    }
+
+                    r.Observed = "see assertions";
+                }
+                finally
+                {
+                    End(tr);
+                }
+
+                var diff = baseline.Diff(Snapshot.Now(db));
+                r.Check("after the abort: SNAP identical", "identical", Joined(diff), diff.Count == 0);
+            }
+        }
+
+        // ================================================================ HV-10
+
+        private static void Hv10(Ctx c, CaseRecord r)
+        {
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var plan = Fixtures.HeaderRunWithMissing(out var expectedRepresentatives);
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    var result = c.Bind.HeaderRun(db, tr, c.Drawer, plan, "AUTH15HV_MISS", c.EnvH(101));
+                    r.Observed = result.Describe();
+
+                    r.Check("typed MissingLibraryBlocks", "MissingLibraryBlocks, DefinitionId Null, BlockName null, no exception", result.Describe(),
+                        result.Thrown == null && !result.IsSuccess && result.Failure == "MissingLibraryBlocks" && result.DefinitionId.IsNull && result.BlockName == null);
+
+                    var missing = result.MissingInstances ?? new List<HeaderBlockInstance>();
+                    r.Check("MissingInstances: one representative per distinct (BlockName|View), not per occurrence", "2",
+                        missing.Count.ToString(), missing.Count == 2);
+                    r.Check("the representatives are the FIRST instance of each key, in first-seen order", "frontal#1, lateral",
+                        string.Join(", ", missing.Select(m => m.BlockName + "|" + m.View + "@" + m.Insertion.X)),
+                        missing.Count == 2 && ReferenceEquals(missing[0], expectedRepresentatives[0]) && ReferenceEquals(missing[1], expectedRepresentatives[1]));
+                    r.Check("the keys are exactly AUTH15HV_ABSENT|frontal and AUTH15HV_ABSENT|lateral", "2 keys",
+                        string.Join(", ", missing.Select(m => m.BlockName + "|" + m.View).OrderBy(x => x)),
+                        missing.Select(m => m.BlockName + "|" + m.View).OrderBy(x => x).SequenceEqual(new[] { "AUTH15HV_ABSENT|frontal", "AUTH15HV_ABSENT|lateral" }));
+
+                    var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
+                    var systemExists = blockTable.Has("AUTH15HV_MISS");
+                    r.Check("the system definition exists inside the caller's transaction (post-write failure)", true, systemExists);
+
+                    if (systemExists)
+                    {
+                        var info = Inspect(c, tr, blockTable["AUTH15HV_MISS"]);
+                        r.Check("the envelope is ABSENT from it", "null", info.Raw ?? "null", info.Raw == null);
+                        r.Check("the present piece was drawn, the absent ones omitted and reported", "1 reference to the piece",
+                            info.RefTargets.Count(t => t == Fixtures.PieceBlock) + " reference(s), " + info.BlockRefs + " total",
+                            info.RefTargets.Count(t => t == Fixtures.PieceBlock) == 1 && info.BlockRefs == 1);
+                    }
+                }
+                finally
+                {
+                    End(tr);
+                }
+
+                var diff = baseline.Diff(Snapshot.Now(db));
+                r.Check("after the caller's abort: SNAP identical (no persistent state)", "identical", Joined(diff), diff.Count == 0);
+            }
+        }
+
+        // ================================================================ HV-11
+
+        private static void Hv11(Ctx c, CaseRecord r)
+        {
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    var envelope = c.EnvH(111);
+                    var before = (envelope.Id, envelope.Name, envelope.Kind, envelope.View, envelope.Section, envelope.Design);
+                    var result = c.HRec(r.Id, db, tr, "AUTH15HV_IM", envelope);
+                    r.Check("HeaderRun call succeeded", "IsSuccess", result.Describe(), result.Thrown == null && result.IsSuccess);
+                    r.Check("envelope Id/Name/Kind/View/Section/Design unchanged", "same",
+                        (envelope.Id, envelope.Name, envelope.Kind, envelope.View, envelope.Section, envelope.Design) == before ? "same" : "changed",
+                        (envelope.Id, envelope.Name, envelope.Kind, envelope.View, envelope.Section, envelope.Design) == before);
+
+                    if (c.CantPlan != null)
+                    {
+                        var envC = c.EnvC(112);
+                        var idBefore = envC.Id;
+                        var resultC = c.CRec(r.Id, db, tr, "AUTH15HV_IM_C", envC);
+                        r.Check("Cantilever call succeeded", "IsSuccess", resultC.Describe(), resultC.Thrown == null && resultC.IsSuccess);
+                        r.Check("Cantilever envelope Id unchanged", idBefore, envC.Id, idBefore == envC.Id);
+                    }
+                    else
+                    {
+                        r.Unknown("Cantilever immutability", "unchanged", c.CantPlanError ?? "no fixture");
+                    }
+                }
+                finally
+                {
+                    End(tr);
+                }
+            }
+
+            var changed = c.Immutability.Where(x => !x.Unchanged).Select(x => x.Case + " " + x.What).ToList();
+            r.Check("across EVERY successful call of the run, plan and envelope fingerprints were identical before and after",
+                $"0 changed of {c.Immutability.Count}", $"{changed.Count} changed" + (changed.Count == 0 ? string.Empty : ": " + string.Join(", ", changed)),
+                c.Immutability.Count >= 8 && changed.Count == 0);
+            r.Observed = c.Immutability.Count + " successful calls fingerprinted";
+        }
+
+        // ================================================================ HV-12
+
+        private static void Hv12(Ctx c, CaseRecord r)
+        {
+            if (!NeedCantilever(c, r, "Cantilever fixture"))
+            {
+                return;
+            }
+
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    var e1 = c.EnvH(121);
+                    var e2 = c.EnvC(122);
+                    var e3 = c.EnvH(123);
+                    var e4 = c.EnvC(124);
+                    var a1 = c.HRec(r.Id, db, tr, "AUTH15HV_B1", e1);
+                    var afterA1 = Snapshot.Take(db, tr);
+
+                    // A failure between two successes, of two different kinds.
+                    var mismatch = c.Bind.HeaderRun(db, null, c.Drawer, Fixtures.HeaderRun(), "AUTH15HV_B1", c.EnvH(129));
+                    var blank = c.Bind.Cantilever(db, tr, c.CantPlan, "   ", c.EnvC(128));
+                    r.Check("the failures in between are typed", "TransactionMismatch, InvalidBlockName", mismatch.Failure + ", " + blank.Failure,
+                        mismatch.Failure == "TransactionMismatch" && blank.Failure == "InvalidBlockName");
+                    var diffBetween = afterA1.Diff(Snapshot.Take(db, tr));
+                    r.Check("the failures left no trace", "identical", Joined(diffBetween), diffBetween.Count == 0);
+
+                    var c1 = c.CRec(r.Id, db, tr, "AUTH15HV_B2", e2);
+                    var a2 = c.HRec(r.Id, db, tr, "AUTH15HV_B1", e3, Fixtures.HeaderRun(90.0));
+                    var c2 = c.CRec(r.Id, db, tr, "AUTH15HV_B2", e4);
+                    r.Observed = string.Join(" | ", new[] { a1, c1, a2, c2 }.Select(x => x.Describe()));
+
+                    if (!r.Check("all four independent calls succeeded", "4 x IsSuccess", r.Observed, new[] { a1, c1, a2, c2 }.All(x => x.Thrown == null && x.IsSuccess)))
+                    {
+                        return;
+                    }
+
+                    r.Check("names follow each family's policy, call by call", "B1, B2, B1_1, B2_2",
+                        string.Join(", ", new[] { a1, c1, a2, c2 }.Select(x => x.BlockName)),
+                        a1.BlockName == "AUTH15HV_B1" && c1.BlockName == "AUTH15HV_B2" && a2.BlockName == "AUTH15HV_B1_1" && c2.BlockName == "AUTH15HV_B2_2");
+
+                    var pairs = new[] { (a1, e1), (c1, e2), (a2, e3), (c2, e4) };
+
+                    foreach (var (result, envelope) in pairs)
+                    {
+                        var expected = new RackEmbedStore().Serialize(envelope);
+                        r.Equal(result.BlockName + " carries its OWN envelope", expected, Inspect(c, tr, result.DefinitionId).Raw);
+                    }
+
+                    r.Check("four distinct definitions", "4", pairs.Select(p => p.Item1.DefinitionId).Distinct().Count().ToString(), pairs.Select(p => p.Item1.DefinitionId).Distinct().Count() == 4);
+                    PlacementCheck(c, r, "four independent calls", baseline, Snapshot.Take(db, tr));
+                }
+                finally
+                {
+                    End(tr);
+                }
+
+                var diff = baseline.Diff(Snapshot.Now(db));
+                r.Check("after the abort: SNAP identical", "identical", Joined(diff), diff.Count == 0);
+            }
+        }
+
+        // ================================================================ HV-13
+
+        private static void Hv13(Ctx c, CaseRecord r)
+        {
+            r.Check("placement observations were collected", ">= 6", c.Placement.Count.ToString(), c.Placement.Count >= 6);
+
+            foreach (var (label, unchanged) in c.Placement)
+            {
+                r.Check(label, "model space and every layout unchanged", unchanged ? "unchanged" : "CHANGED", unchanged);
+            }
+
+            // The strongest form, run once more here: both families, all their content, and the layouts compared by entity handle.
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    c.HRec(r.Id, db, tr, "AUTH15HV_PL_H", c.EnvH(131));
+
+                    if (c.CantPlan != null)
+                    {
+                        c.CRec(r.Id, db, tr, "AUTH15HV_PL_C", c.EnvC(132));
+                    }
+
+                    var mid = Snapshot.Take(db, tr);
+                    var spaces = mid.Items.Keys.Count(k => k.EndsWith("#count", StringComparison.Ordinal));
+                    r.Check("the snapshot covers model space and the paper-space layouts", ">= 3 spaces", spaces.ToString(), spaces >= 3);
+                    PlacementCheck(c, r, "both families in one transaction", baseline, mid);
+                }
+                finally
+                {
+                    End(tr);
+                }
+            }
+
+            r.Observed = c.Placement.Count + " observations";
+        }
+
+        // ================================================================ HV-14
+
+        private static void Hv14(Ctx c, CaseRecord r)
+        {
+            using (var scope = new Scope())
+            {
+                var db = scope.Db;
+                var baseline = Snapshot.Now(db);
+                var tr = db.TransactionManager.StartTransaction();
+
+                try
+                {
+                    var active = db.TransactionManager.NumberOfActiveTransactions;
+                    var result = c.HRec(r.Id, db, tr, "AUTH15HV_NC", c.EnvH(141));
+                    r.Check("call succeeded", "IsSuccess", result.Describe(), result.Thrown == null && result.IsSuccess);
+                    CallerOwnedCheck(r, "after the call", db, tr, active);
+                }
+                finally
+                {
+                    End(tr);
+                }
+
+                r.Check("no transaction is left active after the caller's abort", "0", db.TransactionManager.NumberOfActiveTransactions.ToString(),
+                    db.TransactionManager.NumberOfActiveTransactions == 0);
+
+                var diff = baseline.Diff(Snapshot.Now(db));
+                r.Check("nothing survived the caller's abort: AUTH-15 committed nothing", "identical", Joined(diff), diff.Count == 0);
+            }
+
+            var notLive = c.CallerOwned.Where(x => !x.Live).Select(x => x.Case + " " + x.What).ToList();
+            r.Check("across EVERY successful call the caller's transaction stayed live and top",
+                $"0 not live of {c.CallerOwned.Count}", $"{notLive.Count} not live" + (notLive.Count == 0 ? string.Empty : ": " + string.Join(", ", notLive)),
+                c.CallerOwned.Count >= 8 && notLive.Count == 0);
+            r.Observed = c.CallerOwned.Count + " successful calls observed";
+        }
+    }
+}
