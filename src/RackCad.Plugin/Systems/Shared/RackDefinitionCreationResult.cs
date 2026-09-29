@@ -13,18 +13,21 @@ namespace RackCad.Plugin.Systems.Shared
     {
         None,
 
-        /// <summary>No database, or the transaction is null, disposed, or not the database's top transaction.
-        /// Detected before any write.</summary>
+        /// <summary>No live database, or the transaction is null, disposed, or not natively the database's top
+        /// transaction. Detected before any write.</summary>
         TransactionMismatch,
 
-        /// <summary>No plan, or no drawer for the header-run family. Detected before any write.</summary>
+        /// <summary>No plan, or no drawer for the header-run family. Detected before any write. A non-null but
+        /// malformed plan fails during creation as <see cref="WriteFailed"/>.</summary>
         InvalidPlan,
 
-        /// <summary>The requested block name is null or whitespace. Detected before any write.</summary>
+        /// <summary>The requested block name is null, empty or whitespace. Detected before any write. A non-empty
+        /// name the family's own policy makes invalid fails during creation as <see cref="WriteFailed"/>.</summary>
         InvalidBlockName,
 
         /// <summary>The header-run drawer skipped pieces whose library block is not in the drawing. Never silently
-        /// omitted: the missing instances are reported and the envelope is not written.</summary>
+        /// omitted: the missing instances are reported (one per distinct block name and view, as the drawer emits
+        /// them) and the envelope is not written. Reported after the definition was written: the caller rolls back.</summary>
         MissingLibraryBlocks,
 
         /// <summary>The envelope is null, lacks Id/Kind/Name, or cannot be serialized. Detected before any write.</summary>

@@ -143,6 +143,18 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void AUTH15_NO_DISPONE_DE_LA_TRANSACCION_DEL_LLAMADOR()
+        {
+            // Disposing a transaction without committing it aborts it: the lifetime is the caller's, whole.
+            foreach (var code in new[] { CreatorCode, Code(Result) })
+            {
+                Assert.DoesNotContain("Dispose(", code);
+                Assert.DoesNotContain("using (", code);
+                Assert.DoesNotContain("using var", code);
+            }
+        }
+
+        [Fact]
         public void AUTH15_NO_REGENERA_NI_PURGA_NI_IMPORTA()
         {
             Assert.DoesNotContain("Regen", CreatorCode);
@@ -193,6 +205,143 @@ namespace RackCad.Tests
             Assert.Contains("CantileverViewMaterializer.CreateBlockDefinitionNamed(", CreatorCode);
         }
 
+        // ================================================================ escritores delegados
+
+        /// <summary>
+        /// Every member AUTH-15 reaches to write, by file and EXACT signature (up to its opening parenthesis). The
+        /// writes happen here, not in the creator, so the ownership boundary is guarded here too — by method body,
+        /// never by file: the same files hold unrelated members that legitimately open and commit transactions
+        /// (for example <c>LateralHeaderDrawer.PurgeUnreferenced</c>).
+        /// </summary>
+        private static readonly (string[] File, string[] Signatures)[] DelegatedWriters =
+        {
+            (new[] { "Drawing", "LateralHeaderDrawer.cs" }, new[]
+            {
+                "public LateralHeaderBlockResult CreateSystemBlock(",
+                "private static BlockTableRecord NewBlock(",
+                "private static bool AppendInstance(",
+                "private static void AppendDimension(",
+                "private static (ObjectId StyleId, bool IsNamed) ResolveDimStyle(",
+                "private static ObjectId EnsureAnnotationLayer(",
+                "private static void ApplyDynamicParameters(",
+                "private static string UniqueBlockName(",
+            }),
+            (new[] { "Drawing", "Cantilever", "CantileverViewMaterializer.cs" }, new[]
+            {
+                "internal static ObjectId CreateBlockDefinitionNamed(",
+                "private static void AppendCurves(",
+                "private static void EnsureRoleLayers(",
+                "private static string UniqueBlockName(",
+                "private static string Sanitize(",
+            }),
+            (new[] { "LayerHelper.cs" }, new[]
+            {
+                "public static ObjectId EnsureLayer(",
+            }),
+            (new[] { "Systems", "Shared", "RackBlockData.cs" }, new[]
+            {
+                "public static void Write(",
+                "public static string Read(",
+            }),
+        };
+
+        private static readonly string[] ForbiddenInDelegatedWriters =
+        {
+            "Commit(", "Abort(", "StartTransaction", "StartOpenCloseTransaction", "LockDocument", "Regen", "Purge(",
+            "EnsureForPlan", "BlockLibraryImporter", "EnsureBlocks", "GetBlockModelSpaceId", "ModelSpace", "PaperSpace",
+            "CurrentSpaceId", "Editor", "InsertReference", "SystemBlockWriter.", "LateralHeaderDrawService.",
+            "BlockPlacement.", "ViewBlockDraw.",
+        };
+
+        /// <summary>
+        /// The body of the ONE member declared with <paramref name="signature"/>: a block body by brace matching, or
+        /// an expression body from its <c>=&gt;</c> to its terminating <c>;</c>. A missing or repeated signature fails:
+        /// a renamed or overloaded writer must come back through this guard, not slip past it.
+        /// </summary>
+        private static string MemberBody(string code, string signature, string file)
+        {
+            Assert.EndsWith("(", signature);
+
+            var at = code.IndexOf(signature, StringComparison.Ordinal);
+            Assert.True(at >= 0, "no se encontró el escritor delegado " + file + ": " + signature);
+            Assert.True(code.IndexOf(signature, at + 1, StringComparison.Ordinal) < 0, "firma ambigua en " + file + ": " + signature);
+
+            // Past the parameter list.
+            var close = -1;
+            for (int i = at + signature.Length - 1, parens = 0; i < code.Length; i++)
+            {
+                if (code[i] == '(')
+                {
+                    parens++;
+                }
+                else if (code[i] == ')' && --parens == 0)
+                {
+                    close = i;
+                    break;
+                }
+            }
+
+            Assert.True(close > at, "lista de parametros sin cerrar en " + file + ": " + signature);
+
+            var arrow = code.IndexOf("=>", close, StringComparison.Ordinal);
+            var open = code.IndexOf('{', close);
+
+            if (arrow >= 0 && (open < 0 || arrow < open))
+            {
+                var end = code.IndexOf(';', arrow);
+                Assert.True(end > arrow, "cuerpo de expresion sin cerrar en " + file + ": " + signature);
+                return code.Substring(arrow, end - arrow + 1);
+            }
+
+            Assert.True(open > close, "sin cuerpo en " + file + ": " + signature);
+
+            for (int i = open, depth = 0; i < code.Length; i++)
+            {
+                if (code[i] == '{')
+                {
+                    depth++;
+                }
+                else if (code[i] == '}' && --depth == 0)
+                {
+                    return code.Substring(open, i - open + 1);
+                }
+            }
+
+            throw new InvalidOperationException("cuerpo sin cerrar en " + file + ": " + signature);
+        }
+
+        [Fact]
+        public void AUTH15_LOS_ESCRITORES_DELEGADOS_RESPETAN_LA_FRONTERA()
+        {
+            foreach (var (file, signatures) in DelegatedWriters)
+            {
+                var code = Code(PluginSource(file));
+                var name = string.Join("/", file);
+
+                foreach (var signature in signatures)
+                {
+                    var body = MemberBody(code, signature, name);
+
+                    foreach (var forbidden in ForbiddenInDelegatedWriters)
+                    {
+                        Assert.False(
+                            body.Contains(forbidden, StringComparison.Ordinal),
+                            name + " " + signature + " contiene «" + forbidden + "»: AUTH-15 delega en el y la frontera es del llamador");
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public void AUTH15_EL_LOCALIZADOR_DE_CUERPOS_DISTINGUE_BLOQUE_Y_EXPRESION()
+        {
+            // The locator itself, on a known shape: an expression body must not swallow the next member.
+            const string sample = "class C {\n  int A(int x)\n    => x + 1;\n  void B(string s) { if (s != null) { Commit(); } }\n}";
+
+            Assert.Equal("=> x + 1;", MemberBody(sample, "int A(", "muestra"));
+            Assert.Equal("{ if (s != null) { Commit(); } }", MemberBody(sample, "void B(", "muestra"));
+        }
+
         // ================================================================ fallo cerrado
 
         [Fact]
@@ -214,8 +363,13 @@ namespace RackCad.Tests
         {
             var precheck = Body(CreatorCode, "private static RackDefinitionCreationResult? Precheck(");
 
+            // B-1 (Architect exact-SHA review of fed44e56): TopTransaction returns a NEW wrapper on every read, so a
+            // wrapper-identity comparison is always false and refused every call. The identity is the native one.
+            Assert.Contains("database.IsDisposed", precheck);
+            Assert.Contains("transaction.IsDisposed", precheck);
             Assert.Contains("TopTransaction", precheck);
-            Assert.Contains("IsDisposed", precheck);
+            Assert.Contains("UnmanagedObject", precheck);
+            Assert.DoesNotContain("ReferenceEquals(", CreatorCode);
             Assert.Contains("RackDefinitionCreationFailure.TransactionMismatch", precheck);
             Assert.Contains("RackDefinitionCreationFailure.InvalidPlan", precheck);
             Assert.Contains("RackDefinitionCreationFailure.InvalidBlockName", precheck);

@@ -1,6 +1,6 @@
 # I-52 AUTH-15 — Unidad de integracion: creacion caller-owned de definicion y sobre
 
-Status: IMPLEMENTATION AUTHORIZED; CANDIDATE PENDING ARCHITECT EXACT-SHA REVIEW
+Status: IMPLEMENTATION CORRECTED (C-1..C-5); PENDING ARCHITECT DELTA RE-REVIEW
 
 Workflow: V2
 
@@ -67,18 +67,34 @@ tipado.
   - itera varias definiciones ni guarda estado entre llamadas;
   - muestra UI;
   - limpia tras un fallo: todo lo escrito queda en la transaccion del llamador para su rollback.
-- **Fallos tipados:** `TransactionMismatch`, `InvalidPlan`, `InvalidBlockName`, `MissingLibraryBlocks` (con las
-  instancias; el sobre no se escribe), `InvalidEnvelope`, `EnvelopeWriteFailed` (el sobre se relee tras
-  escribirlo) y `WriteFailed`.
-- **Desviacion registrada: AUTH15-DEV-01.** `BlockNameUnavailable` no se implemento. Queda pendiente de revision
-  del Arquitecto; ver las decisiones.
+- **Transaccion.** La base de datos destino y la transaccion deben estar vivas, y la transaccion debe ser la
+  transaccion superior de esa base. La identidad es la nativa (`UnmanagedObject`), no la del wrapper gestionado:
+  `TopTransaction` devuelve un wrapper nuevo en cada lectura. Una `OpenCloseTransaction` no se admite.
+- **Fallos tipados (lista normativa):** `TransactionMismatch`, `InvalidPlan`, `InvalidBlockName`, `InvalidEnvelope`,
+  `MissingLibraryBlocks`, `EnvelopeWriteFailed` y `WriteFailed`. `BlockNameUnavailable` no forma parte del
+  contrato (AUTH15-DEV-01, aceptada; ver las decisiones).
+- **Clases de fallo:**
+  - PRE-WRITE, sin escritura garantizada: `TransactionMismatch`, `InvalidPlan`, `InvalidBlockName` e
+    `InvalidEnvelope`.
+  - POST-WRITE, el llamador debe hacer rollback: `MissingLibraryBlocks` (el sobre no se escribe),
+    `EnvelopeWriteFailed` (el sobre se relee tras escribirlo) y `WriteFailed`.
+- **Aclaraciones:**
+  - `InvalidBlockName` cubre el nombre nulo, vacio o solo espacios, antes de escribir. Un nombre no vacio que la
+    politica de la familia vuelve invalido (por ejemplo `<>` en HeaderRun) puede fallar despues, dentro del creador
+    de la familia, como `WriteFailed`. AUTH-15 no anade politica de nombres propia.
+  - `InvalidPlan` significa plan (o dibujante) ausente. Un plan no nulo mal formado, que debia llegar ya preparado,
+    puede fallar durante la creacion como `WriteFailed`.
+  - `MissingInstances` lleva una entrada por cada par distinto (BlockName|View), tal como las emite el creador
+    HeaderRun existente; no cada ocurrencia fisica.
 
 ## Superficie
 
 - **Produccion, solo altas:**
   - `src/RackCad.Plugin/Systems/Shared/RackDefinitionCreator.cs`
   - `src/RackCad.Plugin/Systems/Shared/RackDefinitionCreationResult.cs`
-- **Pruebas:** `tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs`, guardas de fuente conforme a ADR-0003.
+- **Pruebas:** `tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs`, guardas de fuente conforme a ADR-0003,
+  incluidos los cuerpos exactos de los escritores delegados de cada familia, `LayerHelper.EnsureLayer` y
+  `RackBlockData.Write`/`Read`.
 - **Sin cambios:** los creadores de cada familia, `SystemBlockWriter`, `RackBlockData`, el sobre y su
   composicion, la Foundation (Application/Systems/Shared, FOUNDATIONS) y cualquier comando, UI o flujo de
   producto. AUTH-15 no tiene llamador de produccion hasta que I-52 o I-55 la cableen.
@@ -94,7 +110,8 @@ tipado.
 
 ## Compuertas
 
-1. Revision exacta del Arquitecto sobre el SHA de implementacion, incluida AUTH15-DEV-01.
+1. Revision exacta del Arquitecto sobre el SHA de implementacion (hecha sobre `fed44e56`: CHANGES REQUIRED,
+   corregida con C-1..C-5) y re-revision del delta sobre el SHA corregido.
 2. Validacion en host, cuyo vehiculo de prueba debe decidir el Coordinador: todavia no hay llamador ni comando.
 3. Candidato, integracion en `main`, verificacion posterior, recibo `integration/I-52-AUTH15` y reconciliacion
    con I-55.

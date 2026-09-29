@@ -112,14 +112,23 @@ namespace RackCad.Plugin.Systems.Shared
         {
             payloadJson = null;
 
-            // The caller's transaction must be the live top transaction of THIS database: writing through any other
-            // one would put the definition outside the scope the caller commits or rolls back.
-            if (database == null || transaction == null || transaction.IsDisposed
-                || !ReferenceEquals(database.TransactionManager.TopTransaction, transaction))
+            // The caller's transaction must be the live top transaction of THIS live database: writing through any
+            // other one would put the definition outside the scope the caller commits or rolls back.
+            const string mismatch = "la transaccion no es la transaccion activa de la base de datos destino";
+
+            if (database == null || database.IsDisposed || transaction == null || transaction.IsDisposed)
             {
-                return RackDefinitionCreationResult.Failed(
-                    RackDefinitionCreationFailure.TransactionMismatch,
-                    "la transaccion no es la transaccion activa de la base de datos destino");
+                return RackDefinitionCreationResult.Failed(RackDefinitionCreationFailure.TransactionMismatch, mismatch);
+            }
+
+            // TopTransaction returns a NEW managed wrapper on every read, so wrapper identity never matches: the
+            // identity that counts is the native transaction. An OpenCloseTransaction is never the top transaction
+            // and stays unsupported on purpose.
+            var top = database.TransactionManager.TopTransaction;
+
+            if (top == null || top.UnmanagedObject != transaction.UnmanagedObject)
+            {
+                return RackDefinitionCreationResult.Failed(RackDefinitionCreationFailure.TransactionMismatch, mismatch);
             }
 
             if (invalidPlan)
