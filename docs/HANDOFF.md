@@ -398,7 +398,10 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
 - Ruta: `ALT-21C` NO ADMISIBLE bajo la condición actual; `ALT-21E` fallback por defecto EN VIGOR (V18: NO SUPPORTED EXECUTION ENVIRONMENT); `ALT-21D` NO SELECCIONADA (solo tras Proposal concreta + revisión del
   Coordinador + revisión del Arquitecto + decisión explícita del Owner).
 - `CIA` = UNKNOWN; `SafeOperationalState` = FALSE_FOR_ADMISSION; G3 STOPPED; V18 gobierna; ADR-0036 PROPOSED / AMENDED FOR V18; Freeze V35 sin cambio; sin Freeze de reemplazo.
-- **Siguiente gate: decisión del Coordinador — mantener `ALT-21E` como disposición final de I-52, o autorizar una Proposal de garantía reducida `ALT-21D`.** La rama sigue sin reconciliar con `main` (79 detrás / 115 delante).
+- **ALT-21D (§199):** el Coordinador autorizó *redactar* una Proposal de garantía reducida (no es una selección del Owner). [Proposal ALT-21D V1](initiatives/I-52-alt21d-reduced-guarantee-proposal-v1.md): envolvente atestiguada
+  de un solo documento con *detect-and-refuse-success* en checkpoints; **hoy no admite ningún entorno** (falta autoridad de medición y caracterización en `acad.exe` interactivo); relación con CIA = opción B (autoridad de
+  reemplazo más estrecha; CIA sigue UNKNOWN). Recomendación: **NEEDS ARCHITECT RULING** (Q1, Q2). `ALT-21E` sigue siendo el fallback en vigor; nada cambia de estado.
+- **Siguiente gate: revisión del Arquitecto de la Proposal ALT-21D V1.** La rama sigue sin reconciliar con `main` (79 detrás / 118 delante).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
