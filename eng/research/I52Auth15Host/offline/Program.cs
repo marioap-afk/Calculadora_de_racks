@@ -39,6 +39,20 @@ namespace I52Auth15.Offline
                 return SelfTest();
             }
 
+            if (args.Length > 1 && args[0] == "--sysvar")
+            {
+                try
+                {
+                    Console.WriteLine(MockGetSystemVariable(args[1]));
+                    return 0;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return 1;
+                }
+            }
+
             _scenario = Environment.GetEnvironmentVariable("I52_OFFLINE_SCENARIO") ?? "pass";
             _sticky = Environment.GetEnvironmentVariable("I52_OFFLINE_STICKY") ?? string.Empty;
             _out = Environment.GetEnvironmentVariable("I52_AUTH15_HV_OUT");
@@ -117,6 +131,28 @@ namespace I52Auth15.Offline
             return exit;
         }
 
+        /// <summary>
+        /// What the mock accepts, written down independently of SysVarCatalog on purpose: these are the system variables that ARE valid in
+        /// AutoCAD 2025. Anything else behaves like AutoCAD does for an unknown name: it throws eInvalidInput. (RUN-1: PROFILENAME.)
+        /// This is a characterization aid; the mock does not define AutoCAD semantics.
+        /// </summary>
+        private static readonly string[] MockValidSystemVariables = { "ACADVER", "CPROFILE", "FILEDIA" };
+
+        private static string MockGetSystemVariable(string name)
+        {
+            switch (name)
+            {
+                case "ACADVER":
+                    return "25.0s (LMS Tech) [offline mock]";
+                case "CPROFILE":
+                    return "<<Mock Profile>>";
+                case "FILEDIA":
+                    return _filedia.ToString(CultureInfo.InvariantCulture);
+                default:
+                    throw new InvalidOperationException("eInvalidInput: '" + name + "' is not a system variable");
+            }
+        }
+
         private static void RunCommand(string name)
         {
             if (name.Equals("I52AUTH15_HOSTVAL", StringComparison.OrdinalIgnoreCase) && _harnessLoaded)
@@ -154,6 +190,7 @@ namespace I52Auth15.Offline
             string M(string key) => meta.GetProperty(key).GetString();
 
             var doc = new EvidenceDoc();
+            doc.Header["offlineRig"] = true; // never mistakable for host evidence
             doc.Header["unit"] = "I-52-AUTH15";
             doc.Header["implementationSha"] = M("implementationSha");
             doc.Header["harnessSha"] = M("harnessSha");
@@ -163,12 +200,27 @@ namespace I52Auth15.Offline
             doc.Header["harnessTestsTree"] = M("harnessTestsTree");
             doc.Header["treesEqual"] = true;
             doc.Package["sha256SumsDigest"] = Sha(Path.Combine(root, "SHA256SUMS"));
-            doc.Package["pluginSha256"] = sums["run/RackCad.Plugin.dll"];
-            doc.Package["applicationSha256"] = sums["run/RackCad.Application.dll"];
-            doc.Package["domainSha256"] = sums["run/RackCad.Domain.dll"];
-            doc.Package["harnessSha256"] = sums["run/I52Auth15.HostHarness.dll"];
-            doc.Binding["loadedSha256"] = _scenario == "hashmismatch" ? new string('0', 64) : sums["run/RackCad.Plugin.dll"];
-            doc.Host["pid"] = Environment.ProcessId;
+
+            // HC-7: immutable run identity, recorded BEFORE anything fallible. EXPECTED package hashes here; LOADED facts only later.
+            using (var self = System.Diagnostics.Process.GetCurrentProcess())
+            {
+                doc.Host["pid"] = Environment.ProcessId;
+                doc.Host["processName"] = self.ProcessName;
+                doc.Host["processStartUtc"] = self.StartTime.ToUniversalTime().ToString("o");
+            }
+
+            doc.Host["runFolder"] = Path.Combine(root, "run");
+            doc.Host["harnessDllPath"] = Path.Combine(root, "run", "I52Auth15.HostHarness.dll");
+            doc.Host["harnessDllSha256"] = sums["run/I52Auth15.HostHarness.dll"];
+            doc.Package["expectedPluginSha256"] = sums["run/RackCad.Plugin.dll"];
+            doc.Package["expectedApplicationSha256"] = sums["run/RackCad.Application.dll"];
+            doc.Package["expectedDomainSha256"] = sums["run/RackCad.Domain.dll"];
+            doc.Package["expectedHarnessSha256"] = sums["run/I52Auth15.HostHarness.dll"];
+            doc.Host["scratchDocumentPath"] = Path.Combine(_out, "scratch.dwg");
+            doc.Host["scratchSha256AtHarnessStart"] = Sha(Path.Combine(_out, "scratch.dwg"));
+            doc.Host["scratchSha256DeclaredByLauncher"] = Environment.GetEnvironmentVariable("I52_AUTH15_HV_SCRATCH_SHA256");
+            doc.Host["ownerNoTouchDeclaredByLauncher"] = Environment.GetEnvironmentVariable("I52_AUTH15_HV_OWNER_NOTOUCH") == "1";
+            doc.Host["earlyIdentityErrors"] = new List<string>();
 
             // The same start-of-run FILEDIA validation the real harness performs, with the real pure logic.
             int? live = _filedia + (_scenario == "live-start-shift" ? 1 : 0);
@@ -186,7 +238,69 @@ namespace I52Auth15.Offline
                 doc.StoppedBy = "FILEDIA not restored: INVALID RUN";
             }
 
-            for (var i = 0; i < 15; i++)
+            // HV-00, as the harness does it: every system variable it reads must be one the mock (AutoCAD 2025) knows.
+            var hv00 = new CaseRecord("HV-00", "BIND", "characterization");
+            var readNames = new List<string>(SysVarCatalog.Audited);
+
+            if (_scenario == "hv00-throws")
+            {
+                readNames = new List<string> { "ACADVER", "PROFILENAME" }; // the RUN-1 defect, reproduced
+            }
+
+            var failedRead = false;
+
+            if (!stopped)
+            {
+                foreach (var name in readNames)
+                {
+                    try
+                    {
+                        var value = MockGetSystemVariable(name);
+                        hv00.Check("system variable " + name + " readable", "a value", value, !string.IsNullOrEmpty(value));
+
+                        if (name == "ACADVER")
+                        {
+                            doc.Host["acadVersion"] = value;
+                        }
+                        else if (name == "CPROFILE")
+                        {
+                            doc.Host["profile"] = value;
+                        }
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        failedRead = true;
+                        hv00.Exception = ex.Message; // RUN-1: the exception escaped the case
+                    }
+                }
+
+                if (!failedRead)
+                {
+                    doc.Binding["loadedPluginPath"] = Path.Combine(root, "run", "RackCad.Plugin.dll");
+                    doc.Binding["loadedPluginSha256"] = _scenario == "hashmismatch" ? new string('0', 64) : sums["run/RackCad.Plugin.dll"];
+                    doc.Binding["loadedApplicationPath"] = Path.Combine(root, "run", "RackCad.Application.dll");
+                    doc.Binding["loadedApplicationSha256"] = sums["run/RackCad.Application.dll"];
+                    doc.Binding["loadedDomainPath"] = Path.Combine(root, "run", "RackCad.Domain.dll");
+                    doc.Binding["loadedDomainSha256"] = sums["run/RackCad.Domain.dll"];
+                    doc.Binding["loadedHarnessPath"] = Path.Combine(root, "run", "I52Auth15.HostHarness.dll");
+                    doc.Binding["loadedHarnessSha256"] = sums["run/I52Auth15.HostHarness.dll"];
+                }
+            }
+
+            if (!stopped)
+            {
+                hv00.Finish(); // when the FILEDIA gate stopped the run, HV-00 is NOT_RUN, exactly as in the real harness
+            }
+
+            doc.Cases.Add(hv00);
+
+            if (failedRead)
+            {
+                stopped = true;
+                doc.StoppedBy = "HV-00 is not PASS: no AUTH-15 call was made";
+            }
+
+            for (var i = 1; i < 15; i++)
             {
                 var c = new CaseRecord("HV-" + i.ToString("D2"), "X", "y");
 
@@ -194,7 +308,7 @@ namespace I52Auth15.Offline
                 {
                     c.Check("a", true, true);
 
-                    if (i == 5 && _scenario == "fail")
+                    if (i == 5 && (_scenario == "fail" || _scenario == "forged-pass"))
                     {
                         c.Check("boom", false, true);
                         c.Leaks.Add("after the abort: added BT:*D1 = 7A");
@@ -222,6 +336,12 @@ namespace I52Auth15.Offline
             doc.Completed = !stopped;
             doc.State = "final";
             doc.Write(evidencePath);
+
+            if (_scenario == "forged-pass")
+            {
+                // A harness that lied about its own verdict: the cases still say FAIL.
+                File.WriteAllText(evidencePath, File.ReadAllText(evidencePath).Replace("\"verdict\": \"FAIL\"", "\"verdict\": \"PASS\""));
+            }
         }
 
         private static string Sha(string path)

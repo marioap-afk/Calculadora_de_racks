@@ -173,12 +173,56 @@ IMPLEMENTATION_BINDING = HOLDS (2d10de70; arboles src y tests iguales)
 - **Pruebas sin AutoCAD.** `eng/research/I52Auth15Host/offline/` caracteriza el lanzador y la logica de FILEDIA con un sustituto de
   `acad.exe`. **No es evidencia de host** y no entra en ningun paquete.
 
-## 8. Estado
+## 8. RUN-1: primera corrida gobernada de host (INVALID / DEFECTO DEL ARNES)
+
+```text
+RUN-1 = INVALID / HARNESS DEFECT
+Harness SHA = 9674dcc91fdcb3b371f5511acd506c18266f8bc4
+Implementation SHA = 2d10de705fffee3dc03473c2d4c76bff489fc13e
+PID = 29588
+Cause = GetSystemVariable("PROFILENAME") -> eInvalidInput (AutoCAD 2025); the profile variable is CPROFILE
+HV-00 = UNKNOWN
+HV-01..HV-14 = NOT RUN
+AUTH15_CALLS = 0
+FILEDIA = RESTORED 1 -> 0 -> 1 (live 1 at harness start and end)
+AutoCAD exit = 0 / process gone / no timeout
+Scratch = UNCHANGED
+```
+
+- **No es evidencia de host de AUTH-15 y no se publica como tal.** Ninguna llamada a AUTH-15 se ejecuto; el defecto es del arnes.
+  Los artefactos de la corrida quedan en `D:\I52-AUTH15-HV\9674dcc9\out` (evidencia, registro del lanzador, log, `filedia.txt`).
+- **Regla de re-ejecucion.** HV-00 llego a empezar, asi que la re-ejecucion preautorizada NO aplicaba: una nueva corrida exige
+  autorizacion nueva del Coordinador.
+- **Lo que la corrida SI probo en AutoCAD real** (sobre el andamiaje, no sobre AUTH-15): la comprobacion de `TRUSTEDPATHS`, `NETLOAD`
+  del arnes, la secuencia de FILEDIA de `run.scr` (`(command "I52AUTH15_HOSTVAL")` sobre un comando de sesion incluido), la puerta de
+  FILEDIA del arnes, la evidencia progresiva y el lanzador (INVALID, codigo 2, registro escrito).
+- **Paquete `9674dcc9` = SUPERADO PARA EJECUCION** una vez existe el arnes corregido. Tampoco se ejecuta `8411381f`.
+
+### Correccion HC-5..HC-8
+
+- **HC-5.** El perfil se lee con `CPROFILE` y se registra en la evidencia.
+- **HC-6.** Auditoria de TODA lectura de variable de sistema: solo `ACADVER`, `CPROFILE` y `FILEDIA`, todas validas en AutoCAD 2025.
+  Una sola funcion (`SysVar.Read`/`ReadInt`) llama a `GetSystemVariable`; nunca lanza; devuelve valor o error; jamas un valor por
+  defecto. Una lectura obligatoria fallida (`ACADVER`, `CPROFILE`) deja HV-00 en UNKNOWN. `SysVarCatalog` lista los nombres auditados
+  y los invalidos conocidos (`PROFILENAME`).
+- **HC-7.** Antes de HV-00 y de cualquier lectura falible se persiste la identidad inmutable de la corrida (SHAs, `treesEqual`, PID e
+  inicio del proceso, carpeta de ejecucion, DLL y hash del arnes, hash del DWG en blanco, bandera de no-toque del Owner declarada por el
+  lanzador, registro de FILEDIA y hashes ESPERADOS del paquete). Los hechos de ensamblado CARGADO siguen siendo de HV-00 y nunca se
+  fabrican antes. El lanzador ata esa evidencia temprana a la corrida (PID, inicio de proceso, hash del DWG, bandera) y recalcula PASS
+  a partir de los casos.
+- **HC-8.** Este registro.
+- **Pruebas sin AutoCAD** (no son evidencia de host): auditoria estatica de cada literal de variable de sistema, con autoprueba
+  (rechaza el codigo de RUN-1); el simulador conoce la lista exacta de nombres validos y rechaza `PROFILENAME` con `eInvalidInput`;
+  reproduccion de RUN-1; PASS falsificado.
+- **Fuera de alcance por decision:** `run.scr` no cambia (byte a byte el mismo que se probo en la corrida real).
+
+## 9. Estado
 
 ```text
 IMPLEMENTATION = CORRECTED (C-1..C-5); Architect delta re-review = APPROVED
 AUTH15_DEV_01 = ACCEPTED / CONTRACT NORMALIZATION
-HARNESS = CORRECTED (HC-1..HC-4) after the Architect exact-SHA harness review; pending delta re-review
-HOST_VALIDATION = NOT RUN (AutoCAD not started)
+RUN-1 = INVALID / HARNESS DEFECT (0 AUTH-15 calls); package 9674dcc9 SUPERSEDED FOR EXECUTION
+HARNESS = CORRECTED (HC-5..HC-8); pending Architect delta re-review
+HOST_VALIDATION = NOT RUN (no valid run yet; AutoCAD not started in this gate)
 NEXT_GATE = ARCHITECT DELTA RE-REVIEW OF CORRECTED HARNESS
 ```

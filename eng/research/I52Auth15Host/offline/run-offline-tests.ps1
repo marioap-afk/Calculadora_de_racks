@@ -104,6 +104,38 @@ function Read-Text([string]$path) {
     return ((Get-Content -Raw -LiteralPath $path) -replace "`r", '')
 }
 
+# STATIC AUDIT of every system variable the harness source may read. `$Sources` is name -> C# text. Returns the violations
+# (empty = clean) and, via -Literals, the literal names used. Comments are stripped first.
+function Invoke-SysVarAudit([hashtable]$Sources, [string[]]$Allowed, [string[]]$KnownInvalid, [ref]$Literals) {
+    $violations = New-Object System.Collections.Generic.List[string]
+    $used = New-Object System.Collections.Generic.List[string]
+    $direct = 0
+    foreach ($file in $Sources.Keys) {
+        $code = (($Sources[$file] -split "`n") | ForEach-Object { $_ -replace '//.*$', '' }) -join "`n"
+        # 1. GetSystemVariable may be called from exactly ONE place (the audited helper) and only with the parameter `name`.
+        foreach ($m in [regex]::Matches($code, 'GetSystemVariable\s*\(([^)]*)\)')) {
+            $direct++
+            if ($m.Groups[1].Value.Trim() -ne 'name') { $violations.Add("$file`: GetSystemVariable called with '$($m.Groups[1].Value.Trim())' instead of the audited helper's 'name'") }
+        }
+        # 2. Every qualified SysVar.Read / SysVar.ReadInt takes a LITERAL that is in the audited catalog.
+        foreach ($m in [regex]::Matches($code, 'SysVar\.(Read|ReadInt)\s*\(([^)]*)\)')) {
+            $argument = $m.Groups[2].Value.Trim()
+            if ($argument -match '^"([A-Za-z0-9_]+)"$') {
+                $used.Add($Matches[1])
+                if ($Allowed -notcontains $Matches[1]) { $violations.Add("$file`: SysVar reads '$($Matches[1])', which is not in SysVarCatalog.Audited") }
+            }
+            else { $violations.Add("$file`: SysVar.$($m.Groups[1].Value) called with a non-literal '$argument'") }
+        }
+        # 3. A name known to be invalid may not appear as a string literal anywhere in code.
+        foreach ($bad in $KnownInvalid) {
+            if ($code -match ('"' + [regex]::Escape($bad) + '"') -and $file -ne 'SysVarCatalog.cs') { $violations.Add("$file`: uses the known-INVALID system variable '$bad'") }
+        }
+    }
+    if ($direct -ne 1) { $violations.Add("GetSystemVariable is called in $direct places; it must be exactly 1 (the audited helper)") }
+    if ($Literals) { $Literals.Value = @($used | Sort-Object -Unique) }
+    return , @($violations)   # a single array object, so an empty result still has .Count under StrictMode
+}
+
 function Fresh([string]$Name, [string]$Trusted = '', $SecureLoad = 1) {
     $package = New-TestPackage $Name
     $registry = New-TestRegistry $Name $(if ($Trusted) { $Trusted } else { Join-Path $package 'run' }) $SecureLoad
@@ -239,6 +271,69 @@ try {
     Set-Content -LiteralPath (Join-Path $p 'out\hostval-evidence.json') -Value '{}'
     $x = Invoke-Launcher $p $r
     Assert-That 'T21' 'existing evidence => refused (a run is never repeated or overwritten)' ($x.Exit -eq 2 -and $x.Output -match 'already holds evidence')
+
+    Write-Host '== system variables (HC-5 / HC-6): RUN-1 was PROFILENAME -> eInvalidInput'
+    $catalogText = Get-Content -Raw (Join-Path $harnessDir 'SysVarCatalog.cs')
+    $catalogBlock = [regex]::Match($catalogText, 'Audited\s*=\s*\{(.*?)\};', 'Singleline').Groups[1].Value
+    $auditedNames = @([regex]::Matches(($catalogBlock -split "`n" | ForEach-Object { $_ -replace '//.*$', '' } | Out-String), '"([A-Z0-9_]+)"') | ForEach-Object { $_.Groups[1].Value } | Sort-Object)
+    $invalidBlock = [regex]::Match($catalogText, 'KnownInvalid\s*=\s*\{(.*?)\};', 'Singleline').Groups[1].Value
+    $invalidNames = @([regex]::Matches(($invalidBlock -split "`n" | ForEach-Object { $_ -replace '//.*$', '' } | Out-String), '"([A-Z0-9_]+)"') | ForEach-Object { $_.Groups[1].Value })
+
+    # The reviewed list. A NEW system-variable name must be added HERE (and to SysVarCatalog) by a reviewer; nothing else passes.
+    $reviewed = @('ACADVER', 'CPROFILE', 'FILEDIA')
+    Assert-That 'T23' 'SysVarCatalog.Audited equals the reviewed list exactly' (($auditedNames -join ',') -eq (($reviewed | Sort-Object) -join ',')) ($auditedNames -join ',')
+    Assert-That 'T23' 'PROFILENAME is recorded as known-invalid and is NOT audited' ($invalidNames -contains 'PROFILENAME' -and $auditedNames -notcontains 'PROFILENAME')
+
+    $sources = @{}
+    Get-ChildItem -LiteralPath $harnessDir -Filter '*.cs' | ForEach-Object { $sources[$_.Name] = Get-Content -Raw $_.FullName }
+    $literals = $null
+    $violations = Invoke-SysVarAudit $sources $auditedNames $invalidNames ([ref]$literals)
+    Assert-That 'T24' 'static audit of the real harness source: no violations' ($violations.Count -eq 0) ($violations -join ' | ')
+    Assert-That 'T24' 'every system-variable literal the harness passes is in the reviewed list, and only through SysVar.Read/ReadInt' (@($literals | Where-Object { $reviewed -notcontains $_ }).Count -eq 0) ($literals -join ',')
+    Assert-That 'T24' 'the harness reads exactly the reviewed system variables (ACADVER, CPROFILE, FILEDIA): no more, no fewer' (($literals -join ',') -eq (($reviewed | Sort-Object) -join ',')) ($literals -join ',')
+
+    # Self-test of the audit itself: it must catch the RUN-1 class of defect and accept the fixed one.
+    $good = @{ 'SysVarCatalog.cs' = $catalogText; 'Helper.cs' = 'class SysVar { static object R(string name) { return X.GetSystemVariable(name); } } class C { void M() { var p = SysVar.Read("CPROFILE"); var f = SysVar.ReadInt("FILEDIA"); } }' }
+    Assert-That 'T25' 'audit self-test: CPROFILE through the helper => clean' ((Invoke-SysVarAudit $good $auditedNames $invalidNames ([ref]$null)).Count -eq 0)
+    $runOne = @{ 'Helper.cs' = 'class SysVar { static object R(string name) { return X.GetSystemVariable(name); } } class C { void M() { var p = Convert.ToString(Y.GetSystemVariable("PROFILENAME")); } }' }
+    Assert-That 'T25' 'audit self-test: the RUN-1 code (direct GetSystemVariable("PROFILENAME")) => caught' ((Invoke-SysVarAudit $runOne $auditedNames $invalidNames ([ref]$null)).Count -ge 2)
+    $viaHelper = @{ 'Helper.cs' = 'class SysVar { static object R(string name) { return X.GetSystemVariable(name); } } class C { void M() { var p = SysVar.Read("PROFILENAME"); } }' }
+    Assert-That 'T25' 'audit self-test: PROFILENAME even through the helper => caught (not audited, known-invalid)' ((Invoke-SysVarAudit $viaHelper $auditedNames $invalidNames ([ref]$null)).Count -ge 1)
+    $unknown = @{ 'Helper.cs' = 'class SysVar { static object R(string name) { return X.GetSystemVariable(name); } } class C { void M() { var p = SysVar.Read("BOGUSVAR"); } }' }
+    Assert-That 'T25' 'audit self-test: an unknown new name => caught until reviewed' ((Invoke-SysVarAudit $unknown $auditedNames $invalidNames ([ref]$null)).Count -ge 1)
+    $nonLiteral = @{ 'Helper.cs' = 'class SysVar { static object R(string name) { return X.GetSystemVariable(name); } } class C { void M(string v) { var p = SysVar.Read(v); } }' }
+    Assert-That 'T25' 'audit self-test: a computed name => caught' ((Invoke-SysVarAudit $nonLiteral $auditedNames $invalidNames ([ref]$null)).Count -ge 1)
+    $second = @{ 'Helper.cs' = 'class SysVar { static object R(string name) { return X.GetSystemVariable(name); } } class C { void M() { var p = Z.GetSystemVariable(name); } }' }
+    Assert-That 'T25' 'audit self-test: a second GetSystemVariable call site => caught' ((Invoke-SysVarAudit $second $auditedNames $invalidNames ([ref]$null)).Count -ge 1)
+
+    foreach ($name in $auditedNames) {
+        & $acad --sysvar $name | Out-Null
+        Assert-That 'T26' "mock AutoCAD accepts the audited name $name" ($LASTEXITCODE -eq 0)
+    }
+    foreach ($name in $invalidNames + 'BOGUSVAR') {
+        $text = (& $acad --sysvar $name) -join ' '
+        Assert-That 'T26' "mock AutoCAD rejects $name with eInvalidInput (characterization failure if the harness read it)" ($LASTEXITCODE -eq 1 -and $text -match 'eInvalidInput') $text
+    }
+
+    Write-Host '== early identity (HC-7) and RUN-1 reproduction'
+    $p, $r = Fresh 'T27-hv00-throws'
+    $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'hv00-throws' }
+    $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+    Assert-That 'T27' 'RUN-1 reproduced: HV-00 throws eInvalidInput => INVALID, exit 2, HV-01..14 NOT_RUN' ($x.Exit -eq 2 -and $ev.cases[0].result -eq 'UNKNOWN' -and $ev.cases[0].exception -match 'eInvalidInput' -and @($ev.cases | Where-Object { $_.result -eq 'NOT_RUN' }).Count -eq 14)
+    Assert-That 'T27' 'yet the immutable run identity WAS persisted before HV-00: pid, process start, run folder, harness DLL, scratch hashes, expected package hashes, Owner flag' ($ev.host.pid -eq $x.Record.pid -and $ev.host.processStartUtc -and $ev.host.runFolder -and $ev.host.harnessDllSha256 -and $ev.host.scratchSha256AtHarnessStart -and $ev.host.scratchSha256DeclaredByLauncher -and $ev.host.ownerNoTouchDeclaredByLauncher -eq $true -and $ev.package.expectedPluginSha256 -and $ev.package.expectedApplicationSha256 -and $ev.package.expectedDomainSha256 -and $ev.package.expectedHarnessSha256)
+    Assert-That 'T27' 'the launcher ties that early evidence to this launch (pid and process start) even though HV-00 failed' ($x.Record.checks.evidenceFromThisProcess -eq $true -and $x.Record.checks.evidenceProcessStart -eq $true -and $x.Record.checks.evidenceScratchIdentity -eq $true -and $x.Record.checks.evidenceOwnerNoTouchDeclared -eq $true)
+    Assert-That 'T27' 'loaded-assembly identity is NOT fabricated: no loaded* facts exist, so the hash checks fail' (@($ev.binding.PSObject.Properties | Where-Object { $_.Name -like 'loaded*' }).Count -eq 0 -and $x.Record.checks.evidencePluginHash -eq $false)
+    Assert-That 'T27' 'FILEDIA was still recorded and verified' ($ev.host.filediaBefore -eq 1 -and $ev.host.filediaAfter -eq 1 -and $x.Record.checks.filediaRestored -eq $true)
+
+    $p, $r = Fresh 'T28-layout'
+    $x = Invoke-Launcher $p $r
+    $ev = (Read-Text (Join-Path $x.Out 'hostval-evidence.json')) | ConvertFrom-Json
+    Assert-That 'T28' 'expected package hashes and loaded assembly hashes are distinct evidence keys, and equal on a good run' ($x.Exit -eq 0 -and $ev.package.expectedPluginSha256 -eq $ev.binding.loadedPluginSha256 -and $ev.package.expectedHarnessSha256 -eq $ev.binding.loadedHarnessSha256 -and -not $ev.package.PSObject.Properties['pluginSha256'])
+    Assert-That 'T28' 'the offline rig stamps its evidence offlineRig=true (never mistakable for host evidence)' ($ev.offlineRig -eq $true)
+
+    $p, $r = Fresh 'T29-forged-pass'
+    $x = Invoke-Launcher $p $r @{ I52_OFFLINE_SCENARIO = 'forged-pass' }
+    Assert-That 'T29' 'a PASS verdict not backed by the cases (a FAIL case, a leak) => launcher recomputes, INVALID, exit 2' ($x.Exit -eq 2 -and $x.Record.verdict -eq 'PASS' -and $x.Record.checks.evidenceVerdictConsistent -eq $false -and $x.Record.runResult -eq 'INVALID')
 
     Write-Host '== run.scr'
     $template = Get-Content -Raw (Join-Path $harnessDir 'run.scr')

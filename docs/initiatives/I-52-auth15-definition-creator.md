@@ -1,6 +1,6 @@
 # I-52 AUTH-15 — Unidad de integracion: creacion caller-owned de definicion y sobre
 
-Status: ARCHITECT EXACT-SHA REVIEW = APPROVED (delta re-review of `2d10de70`); HOST VALIDATION = READY / NOT RUN; CANDIDATE PENDING HOST PASS
+Status: ARCHITECT EXACT-SHA REVIEW = APPROVED (delta re-review of `2d10de70`); HOST VALIDATION = RUN-1 INVALID (harness defect, 0 AUTH-15 calls); CORRECTED HARNESS PENDING RE-REVIEW; CANDIDATE PENDING HOST PASS
 
 Workflow: V2
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -113,6 +114,56 @@ namespace I52Auth15.HostHarness
 
             return context.LoadFromAssemblyPath(path);
         }
+    }
+
+    internal sealed class SysVarRead
+    {
+        public string Name { get; set; }
+
+        public bool Ok { get; set; }
+
+        public string Text { get; set; }
+
+        public string Error { get; set; }
+
+        public int? AsInt() =>
+            Ok && int.TryParse(Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value) ? value : (int?)null;
+    }
+
+    /// <summary>
+    /// The ONE place the harness reads an AutoCAD system variable (HC-6). It only reads names in <see cref="SysVarCatalog"/> (each
+    /// verified valid in AutoCAD 2025) and never throws: a failed read comes back as data, so the caller decides what it means.
+    /// A missing value is NEVER replaced by a guessed default. RUN-1 was lost to GetSystemVariable("PROFILENAME"), which raises
+    /// eInvalidInput; the profile variable is CPROFILE.
+    /// </summary>
+    internal static class SysVar
+    {
+        public static SysVarRead Read(string name)
+        {
+            if (!SysVarCatalog.IsAudited(name))
+            {
+                return new SysVarRead { Name = name, Ok = false, Error = "not in the audited SysVarCatalog: a new system variable needs review before the harness may read it" };
+            }
+
+            try
+            {
+                var value = Autodesk.AutoCAD.ApplicationServices.Core.Application.GetSystemVariable(name);
+
+                return new SysVarRead
+                {
+                    Name = name,
+                    Ok = value != null,
+                    Text = value == null ? null : Convert.ToString(value, CultureInfo.InvariantCulture),
+                    Error = value == null ? "AutoCAD returned null" : null,
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new SysVarRead { Name = name, Ok = false, Error = ex.GetType().Name + ": " + ex.Message };
+            }
+        }
+
+        public static int? ReadInt(string name) => Read(name).AsInt();
     }
 
     internal sealed class Scope : IDisposable
@@ -312,6 +363,11 @@ namespace I52Auth15.HostHarness
                     log.Info("FILEDIA INVALID: " + filediaProblem);
                 }
 
+                // HC-7: everything immutable about this run that can be recorded WITHOUT touching a fallible AutoCAD API is persisted
+                // now, before HV-00. "expected" package hashes are package facts; loaded assembly facts are HV-00's, later.
+                RecordEarlyIdentity(ctx);
+                SafeWrite(doc, outDir, log);
+
                 BuildFixtures(ctx);
 
                 if (plugin != null)
@@ -448,17 +504,7 @@ namespace I52Auth15.HostHarness
             }
         }
 
-        private static int? ReadLiveFiledia()
-        {
-            try
-            {
-                return Convert.ToInt32(Autodesk.AutoCAD.ApplicationServices.Core.Application.GetSystemVariable("FILEDIA"));
-            }
-            catch (System.Exception)
-            {
-                return null;
-            }
-        }
+        private static int? ReadLiveFiledia() => SysVar.ReadInt("FILEDIA");
 
         /// <summary>Null when run.scr restored the original FILEDIA exactly and it is still that value; otherwise the reason.</summary>
         private static string CheckFilediaAtStart(Ctx c)
@@ -482,6 +528,84 @@ namespace I52Auth15.HostHarness
             host["filediaDuringNetload"] = record.During;
             host["filediaAfter"] = record.After;
             return error ?? record.Validate(live);
+        }
+
+        private static string ShortName(string assembly) =>
+            assembly == "I52Auth15.HostHarness" ? "Harness" : assembly.Substring("RackCad.".Length);
+
+        private static void RecordEarlyIdentity(Ctx c)
+        {
+            var host = c.Doc.Host;
+            var package = c.Doc.Package;
+            var errors = new List<string>();
+
+            void Attempt(string what, Action action)
+            {
+                try
+                {
+                    action();
+                }
+                catch (System.Exception ex)
+                {
+                    errors.Add(what + ": " + ex.GetType().Name + ": " + ex.Message);
+                }
+            }
+
+            host["runFolder"] = c.RunDir;
+
+            Attempt("process identity", () =>
+            {
+                using (var process = Process.GetCurrentProcess())
+                {
+                    host["pid"] = process.Id;
+                    host["processName"] = process.ProcessName;
+                    host["processStartUtc"] = process.StartTime.ToUniversalTime().ToString("o");
+                }
+            });
+
+            Attempt("acad executable", () =>
+            {
+                using (var process = Process.GetCurrentProcess())
+                {
+                    var main = process.MainModule;
+                    host["acadExecutable"] = main.FileName;
+                    host["acadFileVersion"] = main.FileVersionInfo.FileVersion;
+                    host["acadSha256"] = Sha256File(main.FileName);
+                }
+            });
+
+            Attempt("harness DLL", () =>
+            {
+                var location = typeof(HostValidationCommand).Assembly.Location;
+                host["harnessDllPath"] = location;
+                host["harnessDllSha256"] = Sha256File(location);
+            });
+
+            // EXPECTED hashes: what the package says these assemblies must be (SHA256SUMS, cross-checked against TRANSFER-METADATA).
+            foreach (var name in new[] { "RackCad.Plugin", "RackCad.Application", "RackCad.Domain", "I52Auth15.HostHarness" })
+            {
+                var file = name + ".dll";
+                c.Sums.TryGetValue("run/" + file, out var fromSums);
+                c.MetaDlls.TryGetValue(file, out var fromMeta);
+                package["expected" + ShortName(name) + "Sha256"] = fromSums;
+
+                if (string.IsNullOrEmpty(fromSums) || !string.Equals(fromSums, fromMeta, StringComparison.OrdinalIgnoreCase))
+                {
+                    c.Doc.Problems.Add("expected hash of " + file + " is missing or differs between SHA256SUMS and TRANSFER-METADATA");
+                }
+            }
+
+            var scratch = Path.Combine(c.OutDir, "scratch.dwg");
+            host["scratchDocumentPath"] = scratch;
+            Attempt("scratch hash", () => host["scratchSha256AtHarnessStart"] = Sha256File(scratch));
+            host["scratchSha256DeclaredByLauncher"] = Environment.GetEnvironmentVariable("I52_AUTH15_HV_SCRATCH_SHA256");
+            host["ownerNoTouchDeclaredByLauncher"] = Environment.GetEnvironmentVariable("I52_AUTH15_HV_OWNER_NOTOUCH") == "1";
+            host["earlyIdentityErrors"] = errors;
+
+            if (errors.Count > 0)
+            {
+                c.Doc.Problems.Add("early identity could not be recorded: " + string.Join("; ", errors));
+            }
         }
 
         private static Dictionary<string, object> NotExercisable(string what, string why) =>
@@ -592,7 +716,7 @@ namespace I52Auth15.HostHarness
 
         private static string Sha256File(string path)
         {
-            using (var stream = File.OpenRead(path))
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
             {
                 return Convert.ToHexString(SHA256.HashData(stream));
             }
@@ -840,6 +964,18 @@ namespace I52Auth15.HostHarness
                 db.TransactionManager.NumberOfActiveTransactions == activeExpected);
         }
 
+        private static void RequireRead(CaseRecord r, SysVarRead read)
+        {
+            if (read.Ok && !string.IsNullOrEmpty(read.Text))
+            {
+                r.Check(read.Name + " recorded", "non-empty", read.Text, true);
+            }
+            else
+            {
+                r.Unknown(read.Name + " readable", "a value", read.Error ?? "empty");
+            }
+        }
+
         // ================================================================ HV-00
 
         private static void Hv00(Ctx c, CaseRecord r)
@@ -861,23 +997,18 @@ namespace I52Auth15.HostHarness
                 "WorkingDatabase " + (working == null ? "null" : "set") + ", document " + (document == null ? "none" : document.Name),
                 working != null && document != null);
 
-            var acadVersion = Convert.ToString(Autodesk.AutoCAD.ApplicationServices.Core.Application.GetSystemVariable("ACADVER"));
-            var profile = Convert.ToString(Autodesk.AutoCAD.ApplicationServices.Core.Application.GetSystemVariable("PROFILENAME"));
-            r.Check("ACADVER recorded", "non-empty", acadVersion, !string.IsNullOrEmpty(acadVersion));
-
-            using (var process = Process.GetCurrentProcess())
-            {
-                var main = process.MainModule;
-                c.Doc.Host["acadVersion"] = acadVersion;
-                c.Doc.Host["profile"] = profile;
-                c.Doc.Host["pid"] = process.Id;
-                c.Doc.Host["runFolder"] = c.RunDir;
-                c.Doc.Host["acadExecutable"] = main?.FileName;
-                c.Doc.Host["acadFileVersion"] = main?.FileVersionInfo.FileVersion;
-                c.Doc.Host["acadSha256"] = main == null ? null : Sha256File(main.FileName);
-                c.Doc.Host["os"] = Environment.OSVersion.VersionString;
-                c.Doc.Host["scratchDocument"] = document?.Name;
-            }
+            // Identity facts read through the ONE audited helper (ACADVER, CPROFILE). A failed read is recorded with its error and makes
+            // this case UNKNOWN; it never throws out of the harness and never becomes a guessed default.
+            var acad = SysVar.Read("ACADVER");
+            var profile = SysVar.Read("CPROFILE");
+            c.Doc.Host["acadVersion"] = acad.Ok ? acad.Text : null;
+            c.Doc.Host["acadVersionReadError"] = acad.Error;
+            c.Doc.Host["profile"] = profile.Ok ? profile.Text : null;
+            c.Doc.Host["profileReadError"] = profile.Error;
+            RequireRead(r, acad);
+            RequireRead(r, profile);
+            c.Doc.Host["os"] = Environment.OSVersion.VersionString;
+            c.Doc.Host["scratchDocument"] = document?.Name;
 
             // One assembly each, loaded from the versioned run folder, byte-identical to the package.
             var runDir = Path.GetFullPath(c.RunDir).TrimEnd('\\');
@@ -905,19 +1036,12 @@ namespace I52Auth15.HostHarness
                 r.Check(simple + ": SHA-256 equals TRANSFER-METADATA", metaSha ?? "<missing in TRANSFER-METADATA>", sha ?? "<not in run>",
                     sha != null && string.Equals(sha, metaSha, StringComparison.OrdinalIgnoreCase));
 
-                if (simple == "RackCad.Plugin")
+                // LOADED facts (observed here), kept apart from the EXPECTED package hashes recorded before HV-00.
+                c.Doc.Binding["loaded" + ShortName(simple) + "Path"] = location;
+                c.Doc.Binding["loaded" + ShortName(simple) + "Sha256"] = sha;
+
+                if (simple == "RackCad.Application")
                 {
-                    c.Doc.Binding["pluginLocation"] = location;
-                    c.Doc.Binding["loadedSha256"] = sha;
-                    c.Doc.Package["pluginSha256"] = sha;
-                }
-                else if (simple == "RackCad.Domain")
-                {
-                    c.Doc.Package["domainSha256"] = sha;
-                }
-                else if (simple == "RackCad.Application")
-                {
-                    c.Doc.Package["applicationSha256"] = sha;
 
                     // Application identity against BOTH expectations: the harness's own compile-time reference, and the Plugin's
                     // dependency on it (its declared reference, and the parameter types of the AUTH-15 methods, checked in the binding).
@@ -934,12 +1058,14 @@ namespace I52Auth15.HostHarness
             }
 
             var harness = typeof(HostValidationCommand).Assembly;
-            c.Doc.Package["harnessSha256"] = Sha256File(harness.Location);
+            var harnessSha = Sha256File(harness.Location);
+            c.Doc.Binding["loadedHarnessPath"] = harness.Location;
+            c.Doc.Binding["loadedHarnessSha256"] = harnessSha;
             c.Sums.TryGetValue("run/I52Auth15.HostHarness.dll", out var harnessSums);
             c.MetaDlls.TryGetValue("I52Auth15.HostHarness.dll", out var harnessMeta);
-            r.Check("the harness DLL's SHA-256 equals SHA256SUMS and TRANSFER-METADATA", "both equal " + (harnessSums ?? "<missing>"), c.Doc.Package["harnessSha256"] + " / " + (harnessMeta ?? "<missing>"),
-                string.Equals((string)c.Doc.Package["harnessSha256"], harnessSums, StringComparison.OrdinalIgnoreCase)
-                && string.Equals((string)c.Doc.Package["harnessSha256"], harnessMeta, StringComparison.OrdinalIgnoreCase));
+            r.Check("the harness DLL's SHA-256 equals SHA256SUMS and TRANSFER-METADATA", "both equal " + (harnessSums ?? "<missing>"), harnessSha + " / " + (harnessMeta ?? "<missing>"),
+                string.Equals(harnessSha, harnessSums, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(harnessSha, harnessMeta, StringComparison.OrdinalIgnoreCase));
             r.Check(
                 "the harness itself was loaded from run\\", runDir, harness.Location,
                 string.Equals(Path.GetDirectoryName(Path.GetFullPath(harness.Location)), runDir, StringComparison.OrdinalIgnoreCase));

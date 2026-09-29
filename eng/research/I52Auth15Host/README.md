@@ -25,6 +25,7 @@ binds a PASS to the implementation SHA and not to the harness.
 | `Auth15Binding.cs` | Reflection seam onto the **internal** AUTH-15 surface. No `InternalsVisibleTo` exists anywhere. Fail-closed and exact: see "Binding". |
 | `Fixtures.cs` | Harness-owned plans and envelopes, their fingerprints, and the small setup helpers. |
 | `Snapshot.cs` | SNAP (see below). The handseed is not part of it. |
+| `SysVarCatalog.cs` | The audited list of AutoCAD system variables the harness may read (`ACADVER`, `CPROFILE`, `FILEDIA`) and the known-invalid ones (`PROFILENAME`). Pure; the offline rig audits the source against it. |
 | `Evidence.cs` | Case/assertion records, the strict `filedia.txt` parser and the evidence document (schema `I52-AUTH15-HV/1`), written atomically. Pure (no AutoCAD), so the offline rig reuses it. |
 | `build-hostval.ps1` | Verifies the binding rule, builds, and writes `D:\I52-AUTH15-HV\<HARNESS_SHA8>\{run,out,launcher,logs}`, `SHA256SUMS`, `TRANSFER-METADATA.json` and a transfer zip. Never overwrites a package. Never starts AutoCAD. |
 | `run-hostval.ps1` | Launches ONE AutoCAD process and verifies everything afterwards. See "Launcher". |
@@ -46,6 +47,31 @@ exactly the same type, the value type `RackDefinitionCreationResult` of the Plug
 uses are the harness's own Application types; the failure enum has exactly the eight normative values (no
 `BlockNameUnavailable`); and every result member has its expected type. Anything else and the binding is not `Ready`, HV-00
 fails, and no AUTH-15 call is made.
+
+## System variables (HC-5 / HC-6)
+
+RUN-1 was lost to `GetSystemVariable("PROFILENAME")`, which raises `eInvalidInput` in AutoCAD 2025; the current profile is
+`CPROFILE`. Since then:
+
+- **One reader.** `SysVar.Read` / `SysVar.ReadInt` are the only place `GetSystemVariable` is called. They read only names in
+  `SysVarCatalog.Audited`, never throw, and return a value or an error text. A missing value is never replaced by a default.
+- **Failure is data, and it is not a pass.** An unreadable `ACADVER` or `CPROFILE` is recorded with its error
+  (`host.acadVersionReadError`, `host.profileReadError`) and makes HV-00 UNKNOWN; an unreadable live `FILEDIA` fails the FILEDIA gate.
+- **A static audit** (offline test T23-T26) lists every literal passed to the harness's system-variable reads and requires it to equal
+  the reviewed list, requires exactly one `GetSystemVariable` call site, and rejects known-invalid names. A new name cannot enter
+  without a reviewer changing the catalog and the test. The audit was run against the RUN-1 source and rejects it.
+
+## Early identity (HC-7)
+
+Before HV-00, and before any fallible system-variable read, the harness persists what is immutable about this run: implementation
+and harness SHAs, `treesEqual`, PID and process start time, run folder, harness DLL path and hash, the acad.exe path/version/hash,
+the scratch document's SHA-256 (as the harness sees it and as the launcher declared it), the Owner's no-touch flag as declared by the
+launcher, the FILEDIA record, and the **expected** package hashes (`package.expected{Plugin,Application,Domain,Harness}Sha256`).
+Each item is recorded independently, so one failing does not lose the rest; a failure is listed in `host.earlyIdentityErrors` and
+blocks a PASS.
+
+**Loaded** assembly facts (`binding.loaded{Plugin,Application,Domain,Harness}{Path,Sha256}`) are HV-00 observations, written only when
+observed, never fabricated earlier. The launcher requires expected == `SHA256SUMS` == `TRANSFER-METADATA` == loaded for each.
 
 ## Host model
 
@@ -104,7 +130,10 @@ defensively, so an error inside a check is a failed check and never a crash - th
 second `acad.exe`), the scratch hash, package drift, FILEDIA, and the evidence: it exists, **parses**, has the schema, comes
 from this PID, is bound to `SHA256SUMS`, and its Plugin / Application / Domain / harness hashes, `harnessSha`, `implementationSha`,
 the four tree hashes and the FILEDIA fields agree with `SHA256SUMS` and `TRANSFER-METADATA.json`, and it is `final` and `completed`.
-`launcher-record.json` is **always** written.
+`launcher-record.json` is **always** written. It also ties the evidence to THIS launch even when HV-00 never completed: the evidence must
+carry this PID, a process start time within 2 s of the OS's, the launcher-declared scratch hash equal to the file's hash, and the
+Owner no-touch declaration. Finally it does not take the harness's word for PASS: a PASS verdict must be backed by 15 PASS cases, no
+problems, no leaks and no deviation in the evidence itself.
 
 | Exit | `RUN_RESULT` | Meaning |
 |---|---|---|
@@ -167,7 +196,8 @@ exercised by the HV-08 `"<>"` characterization.
 (a stand-in that runs the REAL `run.scr` through a mini script/LISP interpreter and plays the harness with the real
 `FilediaRecord` and `EvidenceDoc`), builds synthetic packages, points the launcher at a private test registry key
 (`-AutoCadRegistryRoot`; only keys created by the test are written or removed), and asserts exit codes, records, refusals,
-timeout and FILEDIA behaviour. What it cannot show: that real AutoCAD parses `run.scr` the way the mini interpreter does, or
+timeout and FILEDIA behaviour, plus the system-variable audit and the RUN-1 reproduction (the mock rejects `PROFILENAME` with
+`eInvalidInput`, and the audit rejects the RUN-1 source). What it cannot show: that real AutoCAD parses `run.scr` the way the mini interpreter does, or
 anything about AUTH-15. It is never copied into a package, and nothing it produces may be cited as host validation.
 
 ## Removal

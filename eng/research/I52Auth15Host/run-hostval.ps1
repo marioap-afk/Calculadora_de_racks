@@ -173,10 +173,14 @@ function Invoke-Launch {
     $psi.UseShellExecute = $false
     $psi.WorkingDirectory = $out
     $psi.Environment['I52_AUTH15_HV_OUT'] = $out
+    $psi.Environment['I52_AUTH15_HV_OWNER_NOTOUCH'] = '1'          # the Owner's -OwnerConfirmsNoTouch, declared to the harness
+    $psi.Environment['I52_AUTH15_HV_SCRATCH_SHA256'] = $scratchBefore
 
     $startedUtc = (Get-Date).ToUniversalTime()
     $process = [Diagnostics.Process]::Start($psi)
     $pidLaunched = $process.Id
+    $processStartUtc = $null
+    try { $processStartUtc = $process.StartTime.ToUniversalTime() } catch { $processStartUtc = $null }
     Write-Host "LAUNCHED pid=$pidLaunched at $($startedUtc.ToString('o')); waiting up to $TimeoutSeconds s. Do not touch the computer."
 
     $timedOut = -not $process.WaitForExit($TimeoutSeconds * 1000)
@@ -228,10 +232,34 @@ function Invoke-Launch {
     $checks['evidenceSchema'] = $parseable -and ((Prop $evidence 'schema') -eq 'I52-AUTH15-HV/1')
     $checks['evidenceFromThisProcess'] = $parseable -and ((Prop $evidence 'host', 'pid') -eq $pidLaunched)
     $checks['evidenceBoundToPackageSums'] = $parseable -and (Test-Check { (Prop $evidence 'package', 'sha256SumsDigest') -eq (Sha256 $sumsPath) })
-    $checks['evidencePluginHash'] = $parseable -and (Test-Check { ((Prop $evidence 'package', 'pluginSha256') -eq $meta.dlls.'RackCad.Plugin.dll'.sha256) -and ((Prop $evidence 'binding', 'loadedSha256') -eq (& $sumOf 'RackCad.Plugin.dll')) })
-    $checks['evidenceApplicationHash'] = $parseable -and (Test-Check { ((Prop $evidence 'package', 'applicationSha256') -eq $meta.dlls.'RackCad.Application.dll'.sha256) -and ((Prop $evidence 'package', 'applicationSha256') -eq (& $sumOf 'RackCad.Application.dll')) })
-    $checks['evidenceDomainHash'] = $parseable -and (Test-Check { ((Prop $evidence 'package', 'domainSha256') -eq $meta.dlls.'RackCad.Domain.dll'.sha256) -and ((Prop $evidence 'package', 'domainSha256') -eq (& $sumOf 'RackCad.Domain.dll')) })
-    $checks['evidenceHarnessHash'] = $parseable -and (Test-Check { ((Prop $evidence 'package', 'harnessSha256') -eq $meta.dlls.'I52Auth15.HostHarness.dll'.sha256) -and ((Prop $evidence 'package', 'harnessSha256') -eq (& $sumOf 'I52Auth15.HostHarness.dll')) })
+    # Per assembly: the EXPECTED hash recorded before HV-00, SHA256SUMS, TRANSFER-METADATA and the LOADED hash observed by HV-00 must
+    # all be the same value. A missing loaded fact (HV-00 never got there) is a failed check.
+    foreach ($pair in @(@('Plugin', 'RackCad.Plugin.dll'), @('Application', 'RackCad.Application.dll'), @('Domain', 'RackCad.Domain.dll'), @('Harness', 'I52Auth15.HostHarness.dll'))) {
+        $short = $pair[0]
+        $file = $pair[1]
+        $checks["evidence${short}Hash"] = $parseable -and (Test-Check {
+            $sum = & $sumOf $file
+            (-not [string]::IsNullOrEmpty($sum)) -and ((Prop $evidence 'package', "expected${short}Sha256") -eq $sum) -and ($meta.dlls.$file.sha256 -eq $sum) -and ((Prop $evidence 'binding', "loaded${short}Sha256") -eq $sum)
+        })
+    }
+    $checks['evidenceProcessStart'] = $parseable -and (Test-Check {
+        [math]::Abs(([datetime](Prop $evidence 'host', 'processStartUtc')).ToUniversalTime().Ticks - $processStartUtc.Ticks) -lt 20000000
+    })
+    $checks['evidenceOwnerNoTouchDeclared'] = $parseable -and ((Prop $evidence 'host', 'ownerNoTouchDeclaredByLauncher') -eq $true)
+    $checks['evidenceScratchIdentity'] = $parseable -and (Test-Check {
+        ((Prop $evidence 'host', 'scratchSha256DeclaredByLauncher') -eq $scratchBefore) -and ((Prop $evidence 'host', 'scratchSha256AtHarnessStart') -eq $scratchBefore)
+    })
+    $checks['evidenceEarlyIdentityClean'] = $parseable -and (Test-Check {
+        $hostSection = Prop $evidence 'host'
+        ($null -ne $hostSection.PSObject.Properties['earlyIdentityErrors']) -and (@($hostSection.earlyIdentityErrors).Count -eq 0)
+    })
+    # Defence in depth: the launcher does not take the harness's word for PASS. A PASS verdict must be backed by 15 PASS cases,
+    # no problems, no leaks and no deviation in the evidence itself.
+    $checks['evidenceVerdictConsistent'] = $parseable -and (Test-Check {
+        if ([string](Prop $evidence 'verdict') -ne 'PASS') { return $true }
+        $cases = @($evidence.cases)
+        ($cases.Count -eq 15) -and (@($cases | Where-Object { $_.result -ne 'PASS' }).Count -eq 0) -and (@($cases | Where-Object { $_.deviation -eq $true }).Count -eq 0) -and (@($evidence.problems).Count -eq 0) -and (@($evidence.leaks).Count -eq 0)
+    })
     $checks['evidenceHarnessShaEqualsMetadata'] = $parseable -and ((Prop $evidence 'harnessSha') -eq $meta.harnessSha)
     $checks['evidenceImplementationShaEqualsMetadata'] = $parseable -and ((Prop $evidence 'implementationSha') -eq $meta.implementationSha)
     $checks['evidenceTreesEqualMetadata'] = $parseable -and (Test-Check { ((Prop $evidence 'treesEqual') -eq $true) -and ((Prop $evidence 'srcTree') -eq $meta.implementationSrcTree) -and ((Prop $evidence 'testsTree') -eq $meta.implementationTestsTree) -and ((Prop $evidence 'harnessSrcTree') -eq $meta.harnessSrcTree) -and ((Prop $evidence 'harnessTestsTree') -eq $meta.harnessTestsTree) })
@@ -249,11 +277,12 @@ function Invoke-Launch {
         package = $root
         implementationSha = $meta.implementationSha
         harnessSha = $meta.harnessSha
-        acad = [ordered]@{ path = $Acad; sha256 = (Sha256 $Acad); fileVersion = (Get-Item -LiteralPath $Acad).VersionInfo.FileVersion }
+        acad = [ordered]@{ path = $Acad; sha256 = $(try { Sha256 $Acad } catch { $null }); fileVersion = $(try { (Get-Item -LiteralPath $Acad).VersionInfo.FileVersion } catch { $null }) }
         arguments = $arguments
         profile = $(if ($Profile) { $Profile } else { '<current>' })
         trustedPaths = [ordered]@{ state = $trust.State; detail = $trust.Detail }
         pid = $pidLaunched
+        processStartUtc = $(if ($processStartUtc) { $processStartUtc.ToString('o') } else { $null })
         startUtc = $startedUtc.ToString('o')
         endUtc = $endedUtc.ToString('o')
         timeoutSeconds = $TimeoutSeconds
