@@ -9,29 +9,25 @@ param(
     # The Owner's explicit statement that nobody will touch the computer from launch until the process exits.
     [switch]$OwnerConfirmsNoTouch,
     [string]$Acad = 'C:\Program Files\Autodesk\AutoCAD 2025\acad.exe',
+    # AutoCAD profile NAME for /p (default: the current profile). A profile FILE (.arg) cannot be inspected and is refused.
     [string]$Profile = '',
-    [int]$TimeoutSeconds = 900
+    [int]$TimeoutSeconds = 900,
+    # Where the profile registry is READ from (never written). The default is the real AutoCAD 2025 key; the offline tests
+    # point it at a private test key.
+    [string]$AutoCadRegistryRoot = 'HKCU:\Software\Autodesk\AutoCAD\R25.0'
 )
 
-# I-52-AUTH15 host validation launcher. ONE AutoCAD process, ONE run, no retry. It does not touch SECURELOAD,
-# TRUSTEDPATHS or any other security setting: the Owner trusts the run folder beforehand. It does not patch anything.
+# I-52-AUTH15 host validation launcher. ONE AutoCAD process, ONE run, no retry, no automatic rerun. It never writes
+# SECURELOAD, TRUSTEDPATHS, FILEDIA or any other AutoCAD setting: the Owner trusts the run folder beforehand and run.scr restores
+# FILEDIA itself. It does not patch anything.
+#
+# EXIT CODES (explicit, never inherited from a previous command):
+#   0 = the launch was valid AND the evidence verdict is PASS
+#   2 = INVALID: refusal before launch, or any launch / binding / package / evidence / process condition failed
+#   3 = the launch was valid but the harness verdict is FAIL or UNKNOWN
+# The last line printed is always: RUN_RESULT = PASS | INVALID | FAIL | UNKNOWN
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
-
-if (-not $OwnerConfirmsNoTouch) {
-    throw 'STOP: the run is only valid if nobody touches the computer from launch until the process exits. Re-run with -OwnerConfirmsNoTouch once the Owner has confirmed that.'
-}
-
-$root = (Resolve-Path -LiteralPath $Package).Path
-$run = Join-Path $root 'run'
-$out = Join-Path $root 'out'
-$sumsPath = Join-Path $root 'SHA256SUMS'
-$metaPath = Join-Path $root 'TRANSFER-METADATA.json'
-$template = Join-Path $root 'launcher\run.scr'
-foreach ($required in $run, $sumsPath, $metaPath, $template) { if (-not (Test-Path -LiteralPath $required)) { throw "Package incomplete, missing: $required" } }
-if (-not (Test-Path -LiteralPath $Acad)) { throw "acad.exe not found: $Acad" }
-if (-not (Test-Path -LiteralPath $ScratchDrawing)) { throw "Scratch drawing not found: $ScratchDrawing" }
-if ([IO.Path]::GetExtension($ScratchDrawing).ToLowerInvariant() -ne '.dwg') { throw 'The scratch drawing must be a .dwg' }
 
 function Sha256([string]$path) { (Get-FileHash -Algorithm SHA256 -LiteralPath $path).Hash }
 
@@ -46,124 +42,269 @@ function Prop($object, [string[]]$names) {
     return $object
 }
 
-# 1. The package is exactly what was built: every SHA256SUMS entry matches and run\ holds nothing else.
-$expected = [ordered]@{}
-foreach ($line in Get-Content -LiteralPath $sumsPath) {
-    $at = $line.IndexOf('  ')
-    if ($at -gt 0) { $expected[$line.Substring($at + 2).Trim()] = $line.Substring(0, $at).Trim() }
-}
-$drift = @()
-foreach ($entry in $expected.Keys) {
-    $file = Join-Path $root ($entry.Replace('/', '\'))
-    if (-not (Test-Path -LiteralPath $file) -or (Sha256 $file) -ne $expected[$entry]) { $drift += $entry }
-}
-$runFiles = @(Get-ChildItem -LiteralPath $run -Recurse -File | ForEach-Object { 'run/' + $_.FullName.Substring($run.Length + 1).Replace('\', '/') })
-$extra = @($runFiles | Where-Object { -not $expected.Contains($_) })
-if ($drift.Count -gt 0) { throw "STOP: package files differ from SHA256SUMS: $($drift -join ', ')" }
-if ($extra.Count -gt 0) { throw "STOP: run\ holds files that are not in SHA256SUMS: $($extra -join ', ')" }
-
-$meta = Get-Content -Raw -LiteralPath $metaPath | ConvertFrom-Json
-if ($meta.treesEqual -ne $true -or -not $meta.implementationSha) { throw 'STOP: TRANSFER-METADATA.json does not declare treesEqual=true for an implementation SHA.' }
-
-# 2. Environment prerequisites (read-only checks; nothing is changed).
-if (Get-Process acad -ErrorAction SilentlyContinue) { throw 'STOP: acad.exe is already running. The run needs its own dedicated, untouched process.' }
-$bundles = @(
-    Join-Path $env:APPDATA 'Autodesk\ApplicationPlugins'
-    Join-Path $env:ProgramData 'Autodesk\ApplicationPlugins'
-) | Where-Object { Test-Path -LiteralPath $_ } | ForEach-Object { Get-ChildItem -LiteralPath $_ -Directory -Filter '*RackCad*' -ErrorAction SilentlyContinue }
-if (@($bundles).Count -gt 0) { throw "STOP: ENVIRONMENT_PREREQUISITE = RACKCAD_AUTOLOAD_PRESENT ($(@($bundles).FullName -join '; ')). An autoloaded RackCad would load a second Plugin." }
-if (Test-Path -LiteralPath (Join-Path $out 'hostval-evidence.json')) { throw 'STOP: out\ already holds evidence: a run is never repeated or overwritten without authorization.' }
-
-New-Item -ItemType Directory -Force $out | Out-Null
-$scratch = Join-Path $out 'scratch.dwg'
-if (Test-Path -LiteralPath $scratch) { throw 'STOP: out\scratch.dwg already exists.' }
-Copy-Item -LiteralPath $ScratchDrawing $scratch
-$scratchBefore = Sha256 $scratch
-
-# 3. DRIVER script from the template (the run folder is the only variable).
-$script = Join-Path $out 'run.scr'
-$text = (Get-Content -Raw -LiteralPath $template).Replace('{RUN}', $run).Replace("`r`n", "`n")
-[IO.File]::WriteAllText($script, $text, (New-Object Text.UTF8Encoding($false)))
-
-$arguments = "`"$scratch`" /nologo /nossm" + $(if ($Profile) { " /p `"$Profile`"" } else { '' }) + " /b `"$script`""
-$psi = New-Object Diagnostics.ProcessStartInfo($Acad, $arguments)
-$psi.UseShellExecute = $false
-$psi.WorkingDirectory = $out
-$psi.Environment['I52_AUTH15_HV_OUT'] = $out
-
-$startedUtc = (Get-Date).ToUniversalTime()
-$process = [Diagnostics.Process]::Start($psi)
-$pidLaunched = $process.Id
-"LAUNCHED pid=$pidLaunched at $($startedUtc.ToString('o')); waiting up to $TimeoutSeconds s. Do not touch the computer."
-
-$timedOut = -not $process.WaitForExit($TimeoutSeconds * 1000)
-if ($timedOut) {
-    & taskkill /PID $pidLaunched /T /F | Out-Null
-    $process.WaitForExit(30000) | Out-Null
-}
-$exitCode = if ($process.HasExited) { $process.ExitCode } else { $null }
-$endedUtc = (Get-Date).ToUniversalTime()
-$stillPresent = [bool](Get-Process -Id $pidLaunched -ErrorAction SilentlyContinue)
-$others = @(Get-Process acad -ErrorAction SilentlyContinue | Where-Object { $_.Id -ne $pidLaunched -and $_.StartTime.ToUniversalTime() -ge $startedUtc })
-
-# 4. Verify: process, scratch, package integrity, evidence and its binding to the package.
-$checks = [ordered]@{}
-$checks['processExitedCleanly'] = (-not $timedOut) -and (-not $stillPresent) -and ($exitCode -eq 0)
-$checks['noOtherAcadStarted'] = ($others.Count -eq 0)
-$checks['scratchUnchanged'] = ((Sha256 $scratch) -eq $scratchBefore) -and -not (Get-ChildItem -LiteralPath $out -Filter 'scratch.*' | Where-Object { $_.Extension -in '.bak', '.sv$' })
-
-$postDrift = @()
-foreach ($entry in $expected.Keys) {
-    $file = Join-Path $root ($entry.Replace('/', '\'))
-    if (-not (Test-Path -LiteralPath $file) -or (Sha256 $file) -ne $expected[$entry]) { $postDrift += $entry }
-}
-$checks['packageUnchangedAfterRun'] = ($postDrift.Count -eq 0)
-
-$evidencePath = Join-Path $out 'hostval-evidence.json'
-$evidence = $null
-$checks['evidenceExists'] = Test-Path -LiteralPath $evidencePath
-if ($checks['evidenceExists']) {
-    $evidence = Get-Content -Raw -LiteralPath $evidencePath | ConvertFrom-Json
-    $checks['evidenceSchema'] = ((Prop $evidence 'schema') -eq 'I52-AUTH15-HV/1')
-    $checks['evidenceFromThisProcess'] = ((Prop $evidence 'host','pid') -eq $pidLaunched)
-    $checks['evidenceBoundToPackageSums'] = ((Prop $evidence 'package','sha256SumsDigest') -eq (Sha256 $sumsPath))
-    $checks['evidencePluginHashEqualsPackage'] = ((Prop $evidence 'binding','loadedSha256') -eq $expected['run/RackCad.Plugin.dll'])
-    $checks['evidenceImplementationShaEqualsMetadata'] = ((Prop $evidence 'implementationSha') -eq $meta.implementationSha)
-    $checks['evidenceTreesEqual'] = ((Prop $evidence 'treesEqual') -eq $true)
-    $checks['evidenceCompleted'] = ((Prop $evidence 'completed') -eq $true)
+# Evaluate a check; any error inside it is a failed check, never a crash.
+function Test-Check([scriptblock]$Block) {
+    try { return [bool](& $Block) } catch { return $false }
 }
 
-$launchValid = -not ($checks.Values -contains $false)
-$verdict = if ($evidence) { [string](Prop $evidence 'verdict') } else { 'NO_EVIDENCE' }
-$record = [ordered]@{
-    schema = 'I52-AUTH15-HV-LAUNCH/1'
-    package = $root
-    implementationSha = $meta.implementationSha
-    harnessSha = $meta.harnessSha
-    acad = [ordered]@{ path = $Acad; sha256 = (Sha256 $Acad); fileVersion = (Get-Item -LiteralPath $Acad).VersionInfo.FileVersion }
-    arguments = $arguments
-    profile = $(if ($Profile) { $Profile } else { '<default>' })
-    pid = $pidLaunched
-    startUtc = $startedUtc.ToString('o')
-    endUtc = $endedUtc.ToString('o')
-    timeoutSeconds = $TimeoutSeconds
-    timedOut = $timedOut
-    exitCode = $exitCode
-    scratchSha256Before = $scratchBefore
-    scratchSha256After = (Sha256 $scratch)
-    evidenceSha256 = $(if ($checks['evidenceExists']) { Sha256 $evidencePath } else { $null })
-    checks = $checks
-    launchValid = $launchValid
-    verdict = $verdict
-    ownerConfirmedNoTouch = $true
+# ---------------------------------------------------------------- FILEDIA record written by run.scr (strict, mirrors the harness)
+function Read-Filedia([string]$path) {
+    $r = [ordered]@{ present = $false; parseable = $false; before = $null; during = $null; after = $null; error = $null }
+    if (-not (Test-Path -LiteralPath $path)) { return $r }
+    $r.present = $true
+    $r.parseable = $true
+    foreach ($raw in (Get-Content -LiteralPath $path)) {
+        $line = $raw.Trim()
+        if ($line.Length -eq 0) { continue }
+        if ($line -notmatch '^(before|during|after)=(-?\d+)$') { $r.parseable = $false; $r.error = "unparseable line: $line"; return $r }
+        $key = $Matches[1]
+        if ($null -ne $r[$key]) { $r.parseable = $false; $r.error = "repeated key: $line"; return $r }
+        $r[$key] = [int]$Matches[2]
+    }
+    return $r
 }
-$record | ConvertTo-Json -Depth 6 | Out-File (Join-Path $out 'launcher-record.json') -Encoding utf8
 
-"LAUNCH_VALID=$launchValid"
-"HOST_VALIDATION_RESULT=$verdict"
-foreach ($key in $checks.Keys) { "  $key = $($checks[$key])" }
-if (-not $checks['evidenceExists']) {
-    'No evidence was written. If the harness never ran, the usual cause is that the run folder is not in TRUSTEDPATHS (ENVIRONMENT_PREREQUISITE = TRUSTEDPATH_REQUIRED): the Owner adds it, this script never does. See out\hostval.log.'
+# ---------------------------------------------------------------- read-only TRUSTEDPATHS preflight
+function Get-TrustState([string]$RegistryRoot, [string]$ProfileName, [string]$Folder) {
+    function Result($state, $detail) { [pscustomobject]@{ State = $state; Detail = $detail } }
+    if (-not (Test-Path -LiteralPath $RegistryRoot)) { return Result 'UNDETERMINED' "registry root not found: $RegistryRoot" }
+    $products = @(Get-ChildItem -LiteralPath $RegistryRoot | Where-Object { $_.PSChildName -like 'ACAD-*' })
+    if ($products.Count -ne 1) { return Result 'UNDETERMINED' "expected exactly one ACAD-* product key under $RegistryRoot, found $($products.Count)" }
+    $profilesKey = Join-Path $products[0].PSPath 'Profiles'
+    if (-not (Test-Path -LiteralPath $profilesKey)) { return Result 'UNDETERMINED' 'no Profiles key' }
+    if (-not $ProfileName) { $ProfileName = [string](Get-Item -LiteralPath $profilesKey).GetValue('') }
+    if (-not $ProfileName) { return Result 'UNDETERMINED' 'the current profile name is not recorded' }
+    if ($ProfileName -match '[\\/]' -or $ProfileName -like '*.arg') { return Result 'UNDETERMINED' "profile '$ProfileName' is a file, not a named profile" }
+    $variables = Join-Path (Join-Path $profilesKey $ProfileName) 'Variables'
+    if (-not (Test-Path -LiteralPath $variables)) { return Result 'UNDETERMINED' "profile '$ProfileName' has no Variables key" }
+    $key = Get-Item -LiteralPath $variables
+    $secureLoad = $key.GetValue('SECURELOAD')
+    $secureLoadText = if ($null -eq $secureLoad) { '1 (default: not stored)' } else { [string]$secureLoad }
+    if ($null -ne $secureLoad -and [int]$secureLoad -eq 0) { return Result 'NOT_REQUIRED' "profile '$ProfileName': SECURELOAD=0" }
+    $entries = @(([string]$key.GetValue('TRUSTEDPATHS')).Split(';') | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+    $target = [IO.Path]::GetFullPath($Folder).TrimEnd('\')
+    foreach ($entry in $entries) {
+        $recursive = $entry.EndsWith('...')
+        $base = if ($recursive) { $entry.Substring(0, $entry.Length - 3) } else { $entry }
+        $base = [IO.Path]::GetFullPath([Environment]::ExpandEnvironmentVariables($base)).TrimEnd('\')
+        if ([string]::Equals($base, $target, [StringComparison]::OrdinalIgnoreCase)) { return Result 'TRUSTED' "profile '$ProfileName' (SECURELOAD=$secureLoadText): exact entry '$entry'" }
+        if ($recursive -and $target.StartsWith($base + '\', [StringComparison]::OrdinalIgnoreCase)) { return Result 'TRUSTED' "profile '$ProfileName' (SECURELOAD=$secureLoadText): recursive entry '$entry'" }
+    }
+    return Result 'NOT_TRUSTED' "profile '$ProfileName' (SECURELOAD=$secureLoadText) lists $($entries.Count) trusted path(s), none covers $target"
 }
-if (-not $launchValid) { exit 2 }
-exit 0
+
+function Invoke-Launch {
+    if (-not $OwnerConfirmsNoTouch) {
+        throw 'the run is only valid if nobody touches the computer from launch until the process exits. Re-run with -OwnerConfirmsNoTouch once the Owner has confirmed that.'
+    }
+
+    $root = (Resolve-Path -LiteralPath $Package).Path
+    $run = Join-Path $root 'run'
+    $out = Join-Path $root 'out'
+    $sumsPath = Join-Path $root 'SHA256SUMS'
+    $metaPath = Join-Path $root 'TRANSFER-METADATA.json'
+    $template = Join-Path $root 'launcher\run.scr'
+    foreach ($required in $run, $sumsPath, $metaPath, $template) { if (-not (Test-Path -LiteralPath $required)) { throw "package incomplete, missing: $required" } }
+    if (-not (Test-Path -LiteralPath $Acad)) { throw "acad.exe not found: $Acad" }
+    if (-not (Test-Path -LiteralPath $ScratchDrawing)) { throw "scratch drawing not found: $ScratchDrawing" }
+
+    # 1. The package is exactly what was built: every SHA256SUMS entry matches and run\ holds nothing else.
+    $expected = [ordered]@{}
+    foreach ($line in Get-Content -LiteralPath $sumsPath) {
+        $at = $line.IndexOf('  ')
+        if ($at -gt 0) { $expected[$line.Substring($at + 2).Trim()] = $line.Substring(0, $at).Trim() }
+    }
+    if ($expected.Count -eq 0) { throw 'SHA256SUMS is empty or unreadable' }
+    $drift = @()
+    foreach ($entry in $expected.Keys) {
+        $file = Join-Path $root ($entry.Replace('/', '\'))
+        if (-not (Test-Path -LiteralPath $file) -or (Sha256 $file) -ne $expected[$entry]) { $drift += $entry }
+    }
+    $runFiles = @(Get-ChildItem -LiteralPath $run -Recurse -File | ForEach-Object { 'run/' + $_.FullName.Substring($run.Length + 1).Replace('\', '/') })
+    $extra = @($runFiles | Where-Object { -not $expected.Contains($_) })
+    if ($drift.Count -gt 0) { throw "package files differ from SHA256SUMS: $($drift -join ', ')" }
+    if ($extra.Count -gt 0) { throw "run\ holds files that are not in SHA256SUMS: $($extra -join ', ')" }
+
+    $meta = Get-Content -Raw -LiteralPath $metaPath | ConvertFrom-Json
+    if ($meta.treesEqual -ne $true -or -not $meta.implementationSha -or -not $meta.harnessSha) { throw 'TRANSFER-METADATA.json does not declare treesEqual=true for an implementation SHA and a harness SHA.' }
+
+    # 2. Environment prerequisites (read-only checks; nothing is changed).
+    $acadName = [IO.Path]::GetFileNameWithoutExtension($Acad)
+    if (Get-Process -Name $acadName -ErrorAction SilentlyContinue) { throw "$acadName.exe is already running. The run needs its own dedicated, untouched process (a running instance could also swallow the launch)." }
+
+    $bundleRoots = @((Join-Path $env:APPDATA 'Autodesk\ApplicationPlugins'), (Join-Path $env:ProgramData 'Autodesk\ApplicationPlugins')) | Where-Object { $_ -and (Test-Path -LiteralPath $_) }
+    $bundles = @($bundleRoots | ForEach-Object { Get-ChildItem -LiteralPath $_ -Directory -Filter '*RackCad*' -ErrorAction SilentlyContinue })
+    if ($bundles.Count -gt 0) { throw "ENVIRONMENT_PREREQUISITE = RACKCAD_AUTOLOAD_PRESENT ($($bundles.FullName -join '; ')). An autoloaded RackCad would load a second Plugin." }
+
+    # The scratch drawing: a real .dwg (signature bytes), copied so the original is never opened.
+    if ([IO.Path]::GetExtension($ScratchDrawing).ToLowerInvariant() -ne '.dwg') { throw 'the scratch drawing must be a .dwg' }
+    $head = New-Object byte[] 6
+    $stream = [IO.File]::OpenRead((Resolve-Path -LiteralPath $ScratchDrawing).Path)
+    try { [void]$stream.Read($head, 0, 6) } finally { $stream.Dispose() }
+    $magic = [Text.Encoding]::ASCII.GetString($head)
+    if ($magic -notmatch '^AC10\d\d$') { throw "the scratch drawing does not carry a DWG signature (first bytes '$magic', expected AC10xx)" }
+
+    # TRUSTEDPATHS: the exact run folder must already be trusted (or SECURELOAD is 0). Without this an untrusted NETLOAD shows a
+    # modal dialog and the unattended run just hangs until the timeout. READ-ONLY: this script never changes either setting.
+    $trust = Get-TrustState $AutoCadRegistryRoot $Profile $run
+    Write-Host "TRUSTEDPATHS preflight: $($trust.State) - $($trust.Detail)"
+    if ($trust.State -eq 'NOT_TRUSTED') { throw "ENVIRONMENT_PREREQUISITE = TRUSTEDPATH_REQUIRED: the Owner must add $run to TRUSTEDPATHS ($($trust.Detail))." }
+    if ($trust.State -eq 'UNDETERMINED') { throw "ENVIRONMENT_PREREQUISITE = TRUSTEDPATH_UNDETERMINED: cannot verify that $run is trusted ($($trust.Detail)). The launcher does not guess." }
+
+    if (Test-Path -LiteralPath (Join-Path $out 'hostval-evidence.json')) { throw 'out\ already holds evidence: a run is never repeated or overwritten without authorization.' }
+    if ($out -match '["]') { throw 'the package path must not contain a double quote' }
+
+    New-Item -ItemType Directory -Force $out | Out-Null
+    foreach ($leftover in 'scratch.dwg', 'run.scr', 'filedia.txt', 'launcher-record.json') {
+        if (Test-Path -LiteralPath (Join-Path $out $leftover)) { throw "out\$leftover already exists: a run is never repeated or overwritten without authorization." }
+    }
+    $scratch = Join-Path $out 'scratch.dwg'
+    Copy-Item -LiteralPath $ScratchDrawing $scratch
+    $scratchBefore = Sha256 $scratch
+
+    # 3. DRIVER script from the template. The template placeholders are the only variables; anything else is refused.
+    $script = Join-Path $out 'run.scr'
+    $text = (Get-Content -Raw -LiteralPath $template).Replace('{RUN}', $run).Replace('{OUT_FWD}', $out.Replace('\', '/')).Replace("`r`n", "`n")
+    if ($text -match '\{[A-Z_]+\}') { throw "run.scr still holds an unresolved placeholder: $($Matches[0])" }
+    [IO.File]::WriteAllText($script, $text, (New-Object Text.UTF8Encoding($false)))
+
+    $arguments = "`"$scratch`" /nologo /nossm" + $(if ($Profile) { " /p `"$Profile`"" } else { '' }) + " /b `"$script`""
+    $psi = New-Object Diagnostics.ProcessStartInfo($Acad, $arguments)
+    $psi.UseShellExecute = $false
+    $psi.WorkingDirectory = $out
+    $psi.Environment['I52_AUTH15_HV_OUT'] = $out
+
+    $startedUtc = (Get-Date).ToUniversalTime()
+    $process = [Diagnostics.Process]::Start($psi)
+    $pidLaunched = $process.Id
+    Write-Host "LAUNCHED pid=$pidLaunched at $($startedUtc.ToString('o')); waiting up to $TimeoutSeconds s. Do not touch the computer."
+
+    $timedOut = -not $process.WaitForExit($TimeoutSeconds * 1000)
+    if ($timedOut) {
+        & taskkill.exe /PID $pidLaunched /T /F 2>&1 | Out-Null
+        [void]$process.WaitForExit(30000)
+    }
+    $exitCode = $null
+    if ($process.HasExited) { $exitCode = $process.ExitCode }
+    $endedUtc = (Get-Date).ToUniversalTime()
+    $stillPresent = [bool](Get-Process -Id $pidLaunched -ErrorAction SilentlyContinue)
+    $others = @(Get-Process -Name $acadName -ErrorAction SilentlyContinue | Where-Object { $_.Id -ne $pidLaunched -and $_.StartTime.ToUniversalTime() -ge $startedUtc })
+
+    # 4. Verify. Every check is defensive: an error inside a check is a FAILED check, never a crash, and the launcher record
+    #    is always written.
+    $checks = [ordered]@{}
+    $checks['processExitedCleanly'] = (-not $timedOut) -and (-not $stillPresent) -and ($exitCode -eq 0)
+    $checks['noOtherAcadStarted'] = ($others.Count -eq 0)
+    $checks['scratchUnchanged'] = Test-Check { ((Sha256 $scratch) -eq $scratchBefore) -and -not (Get-ChildItem -LiteralPath $out -Filter 'scratch.*' | Where-Object { $_.Extension -in '.bak', '.sv$' }) }
+    $checks['packageUnchangedAfterRun'] = Test-Check {
+        $postDrift = @($expected.Keys | Where-Object { $f = Join-Path $root ($_.Replace('/', '\')); -not (Test-Path -LiteralPath $f) -or (Sha256 $f) -ne $expected[$_] })
+        $postDrift.Count -eq 0
+    }
+
+    # FILEDIA: the original must have been restored exactly (FILEDIA is the Owner's preference and is never left changed).
+    $fd = Read-Filedia (Join-Path $out 'filedia.txt')
+    $checks['filediaRecorded'] = ($fd.present -and $fd.parseable -and $null -ne $fd.before -and $null -ne $fd.during -and $null -ne $fd.after)
+    $checks['filediaRestored'] = ($checks['filediaRecorded'] -and $fd.during -eq 0 -and $fd.after -eq $fd.before)
+
+    $evidencePath = Join-Path $out 'hostval-evidence.json'
+    $evidence = $null
+    $parseError = $null
+    $exists = Test-Path -LiteralPath $evidencePath
+    $parseable = $false
+    if ($exists) {
+        try {
+            $evidence = Get-Content -Raw -LiteralPath $evidencePath | ConvertFrom-Json -ErrorAction Stop
+            $parseable = ($null -ne $evidence) -and ($evidence -isnot [string])
+        } catch {
+            $parseError = $_.Exception.Message
+            $evidence = $null
+            $parseable = $false
+        }
+    }
+    $checks['evidenceExists'] = $exists
+    $checks['evidenceParseable'] = $parseable
+
+    $sumOf = { param($name) $expected["run/$name"] }
+    $checks['evidenceSchema'] = $parseable -and ((Prop $evidence 'schema') -eq 'I52-AUTH15-HV/1')
+    $checks['evidenceFromThisProcess'] = $parseable -and ((Prop $evidence 'host', 'pid') -eq $pidLaunched)
+    $checks['evidenceBoundToPackageSums'] = $parseable -and (Test-Check { (Prop $evidence 'package', 'sha256SumsDigest') -eq (Sha256 $sumsPath) })
+    $checks['evidencePluginHash'] = $parseable -and (Test-Check { ((Prop $evidence 'package', 'pluginSha256') -eq $meta.dlls.'RackCad.Plugin.dll'.sha256) -and ((Prop $evidence 'binding', 'loadedSha256') -eq (& $sumOf 'RackCad.Plugin.dll')) })
+    $checks['evidenceApplicationHash'] = $parseable -and (Test-Check { ((Prop $evidence 'package', 'applicationSha256') -eq $meta.dlls.'RackCad.Application.dll'.sha256) -and ((Prop $evidence 'package', 'applicationSha256') -eq (& $sumOf 'RackCad.Application.dll')) })
+    $checks['evidenceDomainHash'] = $parseable -and (Test-Check { ((Prop $evidence 'package', 'domainSha256') -eq $meta.dlls.'RackCad.Domain.dll'.sha256) -and ((Prop $evidence 'package', 'domainSha256') -eq (& $sumOf 'RackCad.Domain.dll')) })
+    $checks['evidenceHarnessHash'] = $parseable -and (Test-Check { ((Prop $evidence 'package', 'harnessSha256') -eq $meta.dlls.'I52Auth15.HostHarness.dll'.sha256) -and ((Prop $evidence 'package', 'harnessSha256') -eq (& $sumOf 'I52Auth15.HostHarness.dll')) })
+    $checks['evidenceHarnessShaEqualsMetadata'] = $parseable -and ((Prop $evidence 'harnessSha') -eq $meta.harnessSha)
+    $checks['evidenceImplementationShaEqualsMetadata'] = $parseable -and ((Prop $evidence 'implementationSha') -eq $meta.implementationSha)
+    $checks['evidenceTreesEqualMetadata'] = $parseable -and (Test-Check { ((Prop $evidence 'treesEqual') -eq $true) -and ((Prop $evidence 'srcTree') -eq $meta.implementationSrcTree) -and ((Prop $evidence 'testsTree') -eq $meta.implementationTestsTree) -and ((Prop $evidence 'harnessSrcTree') -eq $meta.harnessSrcTree) -and ((Prop $evidence 'harnessTestsTree') -eq $meta.harnessTestsTree) })
+    $checks['evidenceFilediaMatchesRecord'] = $parseable -and $checks['filediaRecorded'] -and (Test-Check { ((Prop $evidence 'host', 'filediaBefore') -eq $fd.before) -and ((Prop $evidence 'host', 'filediaDuringNetload') -eq $fd.during) -and ((Prop $evidence 'host', 'filediaAfter') -eq $fd.after) -and ((Prop $evidence 'host', 'filediaLiveAtHarnessStart') -eq $fd.before) -and ((Prop $evidence 'host', 'filediaLiveAtHarnessEnd') -eq $fd.before) })
+    $checks['evidenceFinalAndCompleted'] = $parseable -and ((Prop $evidence 'state') -eq 'final') -and ((Prop $evidence 'completed') -eq $true)
+    foreach ($key in @($checks.Keys)) { $checks[$key] = [bool]$checks[$key] }
+
+    $launchValid = -not ($checks.Values -contains $false)
+    $verdict = if ($parseable) { [string](Prop $evidence 'verdict') } elseif ($exists) { 'MALFORMED_EVIDENCE' } else { 'NO_EVIDENCE' }
+    $runResult = if (-not $launchValid) { 'INVALID' } elseif ($verdict -eq 'PASS') { 'PASS' } elseif ($verdict -eq 'FAIL') { 'FAIL' } else { 'UNKNOWN' }
+    $launcherExit = switch ($runResult) { 'PASS' { 0 } 'INVALID' { 2 } default { 3 } }
+
+    $record = [ordered]@{
+        schema = 'I52-AUTH15-HV-LAUNCH/2'
+        package = $root
+        implementationSha = $meta.implementationSha
+        harnessSha = $meta.harnessSha
+        acad = [ordered]@{ path = $Acad; sha256 = (Sha256 $Acad); fileVersion = (Get-Item -LiteralPath $Acad).VersionInfo.FileVersion }
+        arguments = $arguments
+        profile = $(if ($Profile) { $Profile } else { '<current>' })
+        trustedPaths = [ordered]@{ state = $trust.State; detail = $trust.Detail }
+        pid = $pidLaunched
+        startUtc = $startedUtc.ToString('o')
+        endUtc = $endedUtc.ToString('o')
+        timeoutSeconds = $TimeoutSeconds
+        timedOut = $timedOut
+        exitCode = $exitCode
+        scratch = [ordered]@{ signature = $magic; sha256Before = $scratchBefore; sha256After = $(try { Sha256 $scratch } catch { $null }) }
+        filedia = $fd
+        evidenceSha256 = $(if ($exists) { Sha256 $evidencePath } else { $null })
+        evidenceParseError = $parseError
+        checks = $checks
+        launchValid = $launchValid
+        verdict = $verdict
+        runResult = $runResult
+        launcherExitCode = $launcherExit
+        ownerConfirmedNoTouch = $true
+        note = 'This record and hostval-evidence.json are the host evidence. Nothing produced by the offline tests is.'
+    }
+    $record | ConvertTo-Json -Depth 8 | Out-File (Join-Path $out 'launcher-record.json') -Encoding utf8
+
+    Write-Host "LAUNCH_VALID=$launchValid"
+    Write-Host "HOST_VALIDATION_RESULT=$verdict"
+    foreach ($key in $checks.Keys) { Write-Host "  $key = $($checks[$key])" }
+
+    if ($timedOut -or -not $checks['filediaRestored']) {
+        $original = if ($null -ne $fd.before) { "$($fd.before)" } else { 'UNKNOWN (filedia.txt holds no before= line)' }
+        Write-Host ''
+        Write-Host '!!! FILEDIA RECOVERY !!!' -ForegroundColor Red
+        Write-Host "The ORIGINAL FILEDIA captured by run.scr is: $original" -ForegroundColor Red
+        Write-Host "run.scr sets FILEDIA to 0 around NETLOAD. If the run was cut short, AutoCAD's FILEDIA may still be 0. In a new AutoCAD session type: FILEDIA $original" -ForegroundColor Red
+        Write-Host 'This launcher never writes FILEDIA (or any AutoCAD setting) itself.' -ForegroundColor Red
+        Write-Host ''
+    }
+    if (-not $exists) {
+        Write-Host 'No evidence was written. If the harness never ran, the usual cause is that NETLOAD was refused (run folder not in TRUSTEDPATHS) or the script stopped early. See out\hostval.log and out\filedia.txt.'
+    }
+    elseif (-not $parseable) {
+        Write-Host "The evidence file exists but cannot be parsed ($parseError). The run is INVALID; launcher-record.json was written."
+    }
+
+    Write-Host "RUN_RESULT = $runResult"
+    return [int]$launcherExit
+}
+
+$finalExit = 2
+try {
+    $finalExit = [int](Invoke-Launch | Select-Object -Last 1)
+}
+catch {
+    Write-Host "STOP: $($_.Exception.Message)"
+    Write-Host 'LAUNCH_VALID=False'
+    Write-Host 'RUN_RESULT = INVALID'
+    $finalExit = 2
+}
+exit $finalExit

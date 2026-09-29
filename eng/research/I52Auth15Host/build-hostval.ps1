@@ -37,6 +37,13 @@ function Invoke-GitChecked { & git.exe -C $repo @args; if ($LASTEXITCODE -ne 0) 
 $head = (Invoke-GitChecked rev-parse HEAD).Trim()
 if ($head -ne $HarnessSha) { throw "HEAD $head is not the requested harness SHA $HarnessSha" }
 if (& git.exe -C $repo status --porcelain) { throw 'Working tree is not clean: the package is built only from committed source.' }
+
+# IGNORED source/config files are invisible to `git status` yet would still be compiled or read by the build (globbing ignores
+# .gitignore). Normal ignored build output (bin/obj) is fine; anything else that looks like source or configuration is not.
+$ignoredPaths = @('src', 'tests', 'eng/research/I52Auth15Host', 'Directory.Build.props', 'Directory.Build.targets', 'global.json', 'NuGet.Config', 'RackCad.sln')
+$ignoredSuspect = @(& git.exe -C $repo ls-files --others --ignored --exclude-standard -- @ignoredPaths |
+    Where-Object { $_ -notmatch '(^|/)(bin|obj)/' -and $_ -match '\.(cs|csproj|props|targets|ps1|scr|json|config|sln)$' })
+if ($ignoredSuspect.Count -gt 0) { throw "STOP: ignored source/config files exist outside bin/obj and would be built or read: $($ignoredSuspect -join ', ')" }
 Invoke-GitChecked cat-file -e "$ImplementationSha^{commit}"
 Invoke-GitChecked merge-base --is-ancestor $ImplementationSha $HarnessSha
 
@@ -60,7 +67,8 @@ foreach ($required in (Join-Path $AutoCadInstallDir 'AcDbMgd.dll'), (Join-Path $
 }
 # Building never starts or touches AutoCAD. A running instance is only a warning here (it matters at RUN time, where
 # run-hostval.ps1 refuses it); if it locks a Plugin DLL, the build itself fails.
-if (Get-Process acad -ErrorAction SilentlyContinue) { Write-Warning 'acad.exe is running; it is left alone. The build fails by itself if it locks an output DLL.' }
+$acadRunningDuringBuild = [bool](Get-Process acad -ErrorAction SilentlyContinue)
+if ($acadRunningDuringBuild) { Write-Warning 'acad.exe is running; it is left alone. The build fails by itself if it locks an output DLL. (The LAUNCH still refuses any running acad.exe.)' }
 
 $run = Join-Path $OutputRoot 'run'
 $out = Join-Path $OutputRoot 'out'
@@ -131,6 +139,7 @@ $metadata = [ordered]@{
     }
     runDirectory = 'run (harness + RackCad assemblies + catalogs; NETLOAD only I52Auth15.HostHarness.dll)'
     autoCadStarted = $false
+    acadRunningDuringBuild = $acadRunningDuringBuild
     hostValidation = 'NOT RUN'
     command = 'I52AUTH15_HOSTVAL'
     nextGate = 'COORDINATOR AUTHORIZATION TO RUN AUTH-15 HOST VALIDATION: launcher\run-hostval.ps1 -Package <this folder> -ScratchDrawing <fresh blank .dwg> -OwnerConfirmsNoTouch'

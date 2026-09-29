@@ -62,6 +62,19 @@ namespace I52Auth15.HostHarness
 
         public string DictKey { get; private set; }
 
+        /// <summary>Every exactness check made while binding (name, ok, detail). HV-00 turns each into an assertion, so a
+        /// binding that is merely "close enough" cannot pass.</summary>
+        public List<(string Name, bool Ok, string Detail)> Findings { get; } = new List<(string, bool, string)>();
+
+        private static readonly string[] ExpectedFailures =
+        {
+            "None", "TransactionMismatch", "InvalidPlan", "InvalidBlockName", "MissingLibraryBlocks", "InvalidEnvelope", "EnvelopeWriteFailed", "WriteFailed",
+        };
+
+        private void Find(string name, bool ok, string detail) => Findings.Add((name, ok, detail));
+
+        private static string Sig(IEnumerable<Type> types) => string.Join(", ", types.Select(t => t.FullName));
+
         private MethodInfo _read;
 
         private PropertyInfo _isSuccess;
@@ -94,6 +107,8 @@ namespace I52Auth15.HostHarness
                 "CreateInTransaction", all, null,
                 new[] { typeof(Database), typeof(Transaction), typeof(CantileverViewPlan), typeof(string), typeof(RackEmbedDocument) },
                 null);
+
+            binding.VerifyExactness(all);
 
             var resultType = binding.HeaderRunOverload?.ReturnType;
 
@@ -128,7 +143,52 @@ namespace I52Auth15.HostHarness
             return binding;
         }
 
-        public bool Ready => HeaderRunOverload != null && CantileverOverload != null && _isSuccess != null && DictKey != null && _read != null;
+        private void VerifyExactness(BindingFlags all)
+        {
+            var expectedHeader = new[] { typeof(Database), typeof(Transaction), typeof(LateralHeaderDrawer), typeof(HeaderRunPlan), typeof(string), typeof(RackEmbedDocument) };
+            var expectedCantilever = new[] { typeof(Database), typeof(Transaction), typeof(CantileverViewPlan), typeof(string), typeof(RackEmbedDocument) };
+            var overloads = Creator.GetMethods(all).Where(m => m.Name == "CreateInTransaction").ToList();
+
+            Find("overload count is exactly 2", overloads.Count == 2, overloads.Count.ToString());
+
+            if (HeaderRunOverload == null || CantileverOverload == null)
+            {
+                Find("both overloads found by exact parameter types", false, "HeaderRun " + (HeaderRunOverload != null) + ", Cantilever " + (CantileverOverload != null));
+                return;
+            }
+
+            Find("the two lookups are two different methods, and they are the only two overloads",
+                !ReferenceEquals(HeaderRunOverload, CantileverOverload) && overloads.All(m => m == HeaderRunOverload || m == CantileverOverload), string.Empty);
+
+            var headerParameters = HeaderRunOverload.GetParameters().Select(p => p.ParameterType).ToList();
+            var cantileverParameters = CantileverOverload.GetParameters().Select(p => p.ParameterType).ToList();
+            Find("HeaderRun parameter types are exactly the expected six", headerParameters.SequenceEqual(expectedHeader), Sig(headerParameters));
+            Find("Cantilever parameter types are exactly the expected five", cantileverParameters.SequenceEqual(expectedCantilever), Sig(cantileverParameters));
+            Find("both overloads are static", HeaderRunOverload.IsStatic && CantileverOverload.IsStatic, string.Empty);
+            Find("both overloads return exactly the same type", HeaderRunOverload.ReturnType == CantileverOverload.ReturnType, HeaderRunOverload.ReturnType.FullName + " / " + CantileverOverload.ReturnType.FullName);
+
+            var result = HeaderRunOverload.ReturnType;
+            Find("the result is the value type RackDefinitionCreationResult of the Plugin", result.IsValueType && result.Name == "RackDefinitionCreationResult" && result.Assembly == Plugin, result.FullName);
+            Find("the parameter types the Plugin uses are the harness's Application assembly",
+                headerParameters.Count > 3 && headerParameters[3].Assembly == typeof(HeaderRunPlan).Assembly && cantileverParameters.Count > 2 && cantileverParameters[2].Assembly == typeof(CantileverViewPlan).Assembly,
+                string.Empty);
+
+            var failure = result.GetProperty("Failure", BindingFlags.Instance | BindingFlags.Public)?.PropertyType;
+            var names = failure != null && failure.IsEnum ? Enum.GetNames(failure).OrderBy(x => x, StringComparer.Ordinal).ToArray() : new string[0];
+            Find("the failure enum has exactly the eight normative values (no BlockNameUnavailable)",
+                names.SequenceEqual(ExpectedFailures.OrderBy(x => x, StringComparer.Ordinal)), string.Join(",", names));
+
+            Find("result member types are exactly (bool, ObjectId, string, enum, IReadOnlyList<HeaderBlockInstance>, string)",
+                PropertyIs(result, "IsSuccess", typeof(bool)) && PropertyIs(result, "DefinitionId", typeof(ObjectId)) && PropertyIs(result, "BlockName", typeof(string))
+                && PropertyIs(result, "MissingInstances", typeof(IReadOnlyList<HeaderBlockInstance>)) && PropertyIs(result, "Diagnostic", typeof(string)),
+                string.Empty);
+        }
+
+        private static bool PropertyIs(Type owner, string name, Type expected) =>
+            owner.GetProperty(name, BindingFlags.Instance | BindingFlags.Public)?.PropertyType == expected;
+
+        public bool Ready =>
+            Findings.Count > 0 && Findings.All(f => f.Ok) && HeaderRunOverload != null && CantileverOverload != null && _isSuccess != null && DictKey != null && _read != null;
 
         /// <summary>The product's own reader (<c>RackBlockData.Read</c>) for the envelope on a definition.</summary>
         public string ReadBack(Transaction transaction, ObjectId definitionId) =>

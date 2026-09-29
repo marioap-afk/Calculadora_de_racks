@@ -139,14 +139,46 @@ HOST_VALIDATION_AUTHORIZATION_READY = YES
 - **Estado.** El paquete se construye y se verifica; **no se ejecuta AutoCAD**. La ejecucion en host requiere autorizacion
   propia del Coordinador y la confirmacion del Owner de que no toca el equipo. No se toca `TRUSTEDPATHS` ni `SECURELOAD`.
 
-## 7. Estado
+## 7. Revision exacta del arnes (`8411381f`) y correccion HC-1..HC-4
+
+```text
+ARCHITECT_HARNESS_VERDICT = CHANGES REQUIRED
+EXACT_HARNESS_SHA_REVIEWED = 8411381fac7800969313f81704d1ef24496be678
+IMPLEMENTATION_BINDING = HOLDS (2d10de70; arboles src y tests iguales)
+```
+
+- **Ruling sobre AutoCAD durante la construccion.** ACEPTADO: construir no arranca ni carga AutoCAD; el rechazo que importa es el
+  del lanzamiento. `TRANSFER-METADATA.json` registra `acadRunningDuringBuild`.
+- **Desviaciones D-HV-01, 03, 04, 05:** ACEPTADAS (DWG en blanco aportado por el Owner y copiado a `out\`; rechazo de autoload
+  RackCad; rechazo de ficheros no listados en `run\`; observaciones extra fuera del veredicto).
+- **D-HV-02 (FILEDIA): CAMBIO REQUERIDO** (bloqueante B-1). `run.scr` restauraba una constante 1 y nada capturaba el valor original
+  ni lo verificaba. Correccion HC-1: captura del original, `before/during/after` en `out\filedia.txt`, restauracion inmediata del
+  valor EXACTO, el comando solo corre si `after == before`, la comprobacion estricta en el arnes antes de HV-00 (y al final) y el
+  cruce en el lanzador; el lanzador nunca escribe FILEDIA e imprime el original en caso de corte.
+- **M-1 -> HC-2.** La evidencia malformada ya no aborta el lanzador: `evidenceParseable=false`, todas las comprobaciones derivadas de
+  la evidencia son falsas, y `launcher-record.json` se escribe siempre.
+- **M-2 -> HC-3.** Codigos de salida explicitos: 0 = lanzamiento valido y PASS; 2 = INVALID (incluido un codigo de salida de AutoCAD
+  distinto de cero aunque la evidencia diga PASS); 3 = lanzamiento valido con veredicto FAIL o UNKNOWN. Ultima linea:
+  `RUN_RESULT = PASS | INVALID | FAIL | UNKNOWN`.
+- **Menores -> HC-4.** m-1 evidencia progresiva y atomica tras cada caso; m-2 el enlace exige tipos de parametros exactos, un mismo
+  tipo de resultado y exactamente 2 sobrecargas; m-3 identidad de Application contra el arnes, contra la referencia del Plugin y
+  contra `SHA256SUMS` y los metadatos; m-4 el lanzador cruza los hashes de arnes, Plugin, Application y Domain, `harnessSha`,
+  `implementationSha`, arboles y `SHA256SUMS`; m-5 SNAP incluye linetype, regapp, UCS, view y viewport; m-6 `matchesExpectation`
+  en las observaciones extra; m-7 la construccion rechaza ficheros fuente/config IGNORADOS fuera de bin/obj; m-8 firma DWG del
+  dibujo en blanco; m-9 preflight de solo lectura de `TRUSTEDPATHS`/`SECURELOAD` (`TRUSTEDPATH_REQUIRED` /
+  `TRUSTEDPATH_UNDETERMINED`).
+- **Regla de fugas.** Tras el abort del llamador, CUALQUIER objeto o estado que sobreviva es FAIL (incluidos bloques anonimos `*D`),
+  sin normalizar ni reclasificar; el arnes enumera cada clave y handle filtrado. El dictamen sobre una fuga es del Arquitecto,
+  despues de la corrida.
+- **Pruebas sin AutoCAD.** `eng/research/I52Auth15Host/offline/` caracteriza el lanzador y la logica de FILEDIA con un sustituto de
+  `acad.exe`. **No es evidencia de host** y no entra en ningun paquete.
+
+## 8. Estado
 
 ```text
 IMPLEMENTATION = CORRECTED (C-1..C-5); Architect delta re-review = APPROVED
 AUTH15_DEV_01 = ACCEPTED / CONTRACT NORMALIZATION
-HOST_VALIDATION = READY / NOT RUN (temporary harness authored and built; AutoCAD not started)
-NEXT_GATE = COORDINATOR AUTHORIZATION TO RUN AUTH-15 HOST VALIDATION
+HARNESS = CORRECTED (HC-1..HC-4) after the Architect exact-SHA harness review; pending delta re-review
+HOST_VALIDATION = NOT RUN (AutoCAD not started)
+NEXT_GATE = ARCHITECT DELTA RE-REVIEW OF CORRECTED HARNESS
 ```
-
-Los conteos de pruebas, los SHA y el CI exacto viven en el cuerpo de los commits y, al cierre, en el archivo de
-evidencia de la unidad (WORKFLOW: tabla de registro, unidades V2). No se copian aqui.

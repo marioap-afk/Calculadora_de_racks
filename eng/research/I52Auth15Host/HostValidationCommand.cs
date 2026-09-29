@@ -193,6 +193,11 @@ namespace I52Auth15.HostHarness
 
         public Dictionary<string, string> Sums { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+        /// <summary>dll name -> sha256 as declared by TRANSFER-METADATA.json (a second, independent record next to SHA256SUMS).</summary>
+        public Dictionary<string, string> MetaDlls { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        public FilediaRecord Filedia { get; set; }
+
         public IntPtr InitialWorking { get; set; }
 
         public Assembly PluginAssembly { get; set; }
@@ -293,6 +298,20 @@ namespace I52Auth15.HostHarness
             try
             {
                 ReadPackage(ctx);
+                doc.Host["startUtc"] = started.ToString("o");
+
+                // HC-1: FILEDIA is the Owner's preference. The run is only valid if run.scr restored EXACTLY the captured original
+                // before this command started. Otherwise NO case runs.
+                var filediaProblem = CheckFilediaAtStart(ctx);
+
+                if (filediaProblem != null)
+                {
+                    doc.Problems.Add("FILEDIA: " + filediaProblem);
+                    doc.StoppedBy = "FILEDIA not restored: INVALID RUN";
+                    stopped = true;
+                    log.Info("FILEDIA INVALID: " + filediaProblem);
+                }
+
                 BuildFixtures(ctx);
 
                 if (plugin != null)
@@ -328,6 +347,8 @@ namespace I52Auth15.HostHarness
                     ("HV-14", "Both", "no internal commit; transaction stays caller-owned", Hv14),
                 };
 
+                SafeWrite(doc, outDir, log);
+
                 foreach (var (id, family, expected, body) in cases)
                 {
                     var record = new CaseRecord(id, family, expected);
@@ -352,6 +373,10 @@ namespace I52Auth15.HostHarness
 
                     record.Finish();
                     log.Info(id + " " + record.Result + (record.Deviation ? " DEVIATION" : string.Empty));
+
+                    // A crash after this point cannot erase the cases already completed: the evidence is replaced atomically.
+                    doc.LastCase = id;
+                    SafeWrite(doc, outDir, log);
 
                     if (id == "HV-00" && record.Result != Outcome.Pass)
                     {
@@ -388,6 +413,14 @@ namespace I52Auth15.HostHarness
             }
             finally
             {
+                var liveEnd = ReadLiveFiledia();
+                doc.Host["filediaLiveAtHarnessEnd"] = liveEnd;
+
+                if (ctx.Filedia != null && ctx.Filedia.Before != null && liveEnd != ctx.Filedia.Before)
+                {
+                    doc.Problems.Add("FILEDIA at the end of the run (" + (liveEnd == null ? "unreadable" : liveEnd.ToString()) + ") differs from the original (" + ctx.Filedia.Before + "): INVALID RUN");
+                }
+
                 doc.NotExercisable.Add(NotExercisable(
                     "EnvelopeWriteFailed",
                     "needs a read-back that differs from the written envelope; that cannot be provoked without fault injection into RackBlockData/AutoCAD, which this harness must not add"));
@@ -397,9 +430,58 @@ namespace I52Auth15.HostHarness
                 doc.Host["endUtc"] = DateTime.UtcNow.ToString("o");
                 doc.Host["startUtc"] = started.ToString("o");
                 doc.Host["exitCode"] = "not known to the harness: see launcher-record.json";
+                doc.State = "final";
                 doc.Write(Path.Combine(outDir, "hostval-evidence.json"));
                 log.Info("evidence written; verdict " + doc.Verdict());
             }
+        }
+
+        private static void SafeWrite(EvidenceDoc doc, string outDir, HvLog log)
+        {
+            try
+            {
+                doc.Write(Path.Combine(outDir, "hostval-evidence.json"));
+            }
+            catch (System.Exception ex)
+            {
+                log.Info("progressive evidence write failed: " + ex.Message);
+            }
+        }
+
+        private static int? ReadLiveFiledia()
+        {
+            try
+            {
+                return Convert.ToInt32(Autodesk.AutoCAD.ApplicationServices.Core.Application.GetSystemVariable("FILEDIA"));
+            }
+            catch (System.Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>Null when run.scr restored the original FILEDIA exactly and it is still that value; otherwise the reason.</summary>
+        private static string CheckFilediaAtStart(Ctx c)
+        {
+            var host = c.Doc.Host;
+            var live = ReadLiveFiledia();
+            host["filediaLiveAtHarnessStart"] = live;
+            var path = Path.Combine(c.OutDir, "filedia.txt");
+
+            if (!File.Exists(path))
+            {
+                host["filediaBefore"] = null;
+                host["filediaDuringNetload"] = null;
+                host["filediaAfter"] = null;
+                return "filedia.txt was not written by run.scr";
+            }
+
+            var record = FilediaRecord.Parse(File.ReadAllText(path), out var error);
+            c.Filedia = record;
+            host["filediaBefore"] = record.Before;
+            host["filediaDuringNetload"] = record.During;
+            host["filediaAfter"] = record.After;
+            return error ?? record.Validate(live);
         }
 
         private static Dictionary<string, object> NotExercisable(string what, string why) =>
@@ -490,6 +572,21 @@ namespace I52Auth15.HostHarness
                 }
 
                 doc.Package["metadataSha256"] = Sha256File(metaPath);
+
+                if (m.TryGetProperty("dlls", out var dlls) && dlls.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (var dll in dlls.EnumerateObject())
+                    {
+                        if (dll.Value.TryGetProperty("sha256", out var sha) && sha.ValueKind == JsonValueKind.String)
+                        {
+                            c.MetaDlls[dll.Name] = sha.GetString();
+                        }
+                    }
+                }
+                else
+                {
+                    doc.Problems.Add("TRANSFER-METADATA.json has no dlls section");
+                }
             }
         }
 
@@ -561,6 +658,23 @@ namespace I52Auth15.HostHarness
             a != null && b != null && !a.IsDisposed && !b.IsDisposed && a.UnmanagedObject == b.UnmanagedObject;
 
         private static string Joined(List<string> lines) => lines.Count == 0 ? "identical" : string.Join("; ", lines);
+
+        /// <summary>
+        /// The post-abort comparison. ANY difference from the baseline is a leak and a FAIL: nothing is normalized, excused or
+        /// reclassified (anonymous *D dimension blocks, nested definitions, layers, dictionaries, table entries all count).
+        /// Every leaked key and handle is listed, in the assertion and in the case's Leaks.
+        /// </summary>
+        private static void AbortClean(CaseRecord r, string label, Snapshot baseline, Snapshot after)
+        {
+            var leaks = baseline.Diff(after);
+
+            foreach (var leak in leaks)
+            {
+                r.Leaks.Add(label + ": " + leak);
+            }
+
+            r.Check(label + ": no leak (SNAP identical to before)", "identical", Joined(leaks), leaks.Count == 0);
+        }
 
         private static bool NeedCantilever(Ctx c, CaseRecord r, string what)
         {
@@ -785,8 +899,11 @@ namespace I52Auth15.HostHarness
 
                 var sha = inRun ? Sha256File(location) : null;
                 c.Sums.TryGetValue("run/" + simple + ".dll", out var expectedSha);
-                r.Check(simple + ": SHA-256 equals the package", expectedSha ?? "<missing in SHA256SUMS>", sha ?? "<not in run>",
+                c.MetaDlls.TryGetValue(simple + ".dll", out var metaSha);
+                r.Check(simple + ": SHA-256 equals SHA256SUMS", expectedSha ?? "<missing in SHA256SUMS>", sha ?? "<not in run>",
                     sha != null && string.Equals(sha, expectedSha, StringComparison.OrdinalIgnoreCase));
+                r.Check(simple + ": SHA-256 equals TRANSFER-METADATA", metaSha ?? "<missing in TRANSFER-METADATA>", sha ?? "<not in run>",
+                    sha != null && string.Equals(sha, metaSha, StringComparison.OrdinalIgnoreCase));
 
                 if (simple == "RackCad.Plugin")
                 {
@@ -794,17 +911,35 @@ namespace I52Auth15.HostHarness
                     c.Doc.Binding["loadedSha256"] = sha;
                     c.Doc.Package["pluginSha256"] = sha;
                 }
+                else if (simple == "RackCad.Domain")
+                {
+                    c.Doc.Package["domainSha256"] = sha;
+                }
                 else if (simple == "RackCad.Application")
                 {
                     c.Doc.Package["applicationSha256"] = sha;
+
+                    // Application identity against BOTH expectations: the harness's own compile-time reference, and the Plugin's
+                    // dependency on it (its declared reference, and the parameter types of the AUTH-15 methods, checked in the binding).
                     r.Check(
-                        "the harness compiled against this same Application assembly", true,
+                        "harness expectation: the harness compiled against this same Application assembly", true,
                         ReferenceEquals(typeof(HeaderRunPlan).Assembly, matches[0]));
+
+                    var reference = c.PluginAssembly?.GetReferencedAssemblies().FirstOrDefault(n => n.Name == "RackCad.Application");
+                    r.Check(
+                        "Plugin expectation: the Plugin's own reference to RackCad.Application matches this assembly (name and version)",
+                        matches[0].GetName().Version?.ToString() ?? "<none>", reference?.Version?.ToString() ?? "<no reference>",
+                        reference != null && reference.Version == matches[0].GetName().Version);
                 }
             }
 
             var harness = typeof(HostValidationCommand).Assembly;
             c.Doc.Package["harnessSha256"] = Sha256File(harness.Location);
+            c.Sums.TryGetValue("run/I52Auth15.HostHarness.dll", out var harnessSums);
+            c.MetaDlls.TryGetValue("I52Auth15.HostHarness.dll", out var harnessMeta);
+            r.Check("the harness DLL's SHA-256 equals SHA256SUMS and TRANSFER-METADATA", "both equal " + (harnessSums ?? "<missing>"), c.Doc.Package["harnessSha256"] + " / " + (harnessMeta ?? "<missing>"),
+                string.Equals((string)c.Doc.Package["harnessSha256"], harnessSums, StringComparison.OrdinalIgnoreCase)
+                && string.Equals((string)c.Doc.Package["harnessSha256"], harnessMeta, StringComparison.OrdinalIgnoreCase));
             r.Check(
                 "the harness itself was loaded from run\\", runDir, harness.Location,
                 string.Equals(Path.GetDirectoryName(Path.GetFullPath(harness.Location)), runDir, StringComparison.OrdinalIgnoreCase));
@@ -815,10 +950,20 @@ namespace I52Auth15.HostHarness
                 loadedList.Count(a => a.GetName().Name == "RackCad.Plugin") == 1);
 
             // Both AUTH-15 overloads resolve by exact parameter types.
-            if (c.Bind == null || !c.Bind.Ready)
+            if (c.Bind == null)
+            {
+                r.Check("AUTH-15 surface bound", "both overloads + result + RackBlockData.Read", "no Plugin assembly", false);
+                return;
+            }
+
+            foreach (var finding in c.Bind.Findings)
+            {
+                r.Check("binding exactness: " + finding.Name, "true", finding.Ok + (finding.Detail.Length == 0 ? string.Empty : " (" + finding.Detail + ")"), finding.Ok);
+            }
+
+            if (!c.Bind.Ready)
             {
                 r.Check("AUTH-15 surface bound", "both overloads + result + RackBlockData.Read", "not bound", false);
-                r.Deviation = false;
                 return;
             }
 
@@ -920,8 +1065,7 @@ namespace I52Auth15.HostHarness
                 }
 
                 var after = Snapshot.Now(db);
-                var diff = baseline.Diff(after);
-                r.Check("caller abort afterwards: SNAP identical to before", "identical", Joined(diff), diff.Count == 0);
+                AbortClean(r, "caller abort afterwards", baseline, after);
             }
         }
 
@@ -989,8 +1133,7 @@ namespace I52Auth15.HostHarness
                     End(tr);
                 }
 
-                var diff = baseline.Diff(Snapshot.Now(db));
-                r.Check("caller abort afterwards: SNAP identical to before", "identical", Joined(diff), diff.Count == 0);
+                AbortClean(r, "caller abort afterwards", baseline, Snapshot.Now(db));
             }
         }
 
@@ -1043,8 +1186,7 @@ namespace I52Auth15.HostHarness
                 }
 
                 var after = Snapshot.Now(db);
-                var diff = baseline.Diff(after, null, 40);
-                r.Check("after the abort: SNAP identical to before", "identical", Joined(diff), diff.Count == 0);
+                AbortClean(r, "after the abort", baseline, after);
 
                 using (var verify = db.TransactionManager.StartTransaction())
                 {
@@ -1238,8 +1380,7 @@ namespace I52Auth15.HostHarness
                     End(tr);
                 }
 
-                var diff = baseline.Diff(Snapshot.Now(db));
-                r.Check("caller abort afterwards: SNAP identical to before", "identical", Joined(diff), diff.Count == 0);
+                AbortClean(r, "caller abort afterwards", baseline, Snapshot.Now(db));
             }
         }
 
@@ -1345,7 +1486,8 @@ namespace I52Auth15.HostHarness
                     var t = db.TransactionManager.StartTransaction();
                     try
                     {
-                        return c.H(null, t, "AUTH15HV_M", c.EnvH(63)).Describe();
+                        var result = c.H(null, t, "AUTH15HV_M", c.EnvH(63));
+                        return (result.Describe(), result.Thrown == null && !result.IsSuccess && result.Failure == "TransactionMismatch");
                     }
                     finally
                     {
@@ -1358,7 +1500,8 @@ namespace I52Auth15.HostHarness
                     var t = db.TransactionManager.StartOpenCloseTransaction();
                     try
                     {
-                        return c.H(db, t, "AUTH15HV_M", c.EnvH(64)).Describe();
+                        var result = c.H(db, t, "AUTH15HV_M", c.EnvH(64));
+                        return (result.Describe(), result.Thrown == null && !result.IsSuccess && result.Failure == "TransactionMismatch");
                     }
                     finally
                     {
@@ -1366,23 +1509,24 @@ namespace I52Auth15.HostHarness
                     }
                 }, "expected TransactionMismatch");
 
-                var diff = baseline.Diff(Snapshot.Now(db));
-                r.Check("after every sub-case: SNAP identical to the start", "identical", Joined(diff), diff.Count == 0);
+                AbortClean(r, "after every sub-case", baseline, Snapshot.Now(db));
                 r.Observed = "see assertions";
             }
         }
 
-        private static void Characterize(Ctx c, string what, Func<string> action, string expectation)
+        private static void Characterize(Ctx c, string what, Func<(string Observed, bool Matches)> action, string expectation)
         {
             string observed;
+            bool matches;
 
             try
             {
-                observed = action();
+                (observed, matches) = action();
             }
             catch (System.Exception ex)
             {
                 observed = "harness exception " + ex.GetType().Name + ": " + ex.Message;
+                matches = false;
             }
 
             c.Doc.Characterizations.Add(new Dictionary<string, object>
@@ -1390,6 +1534,7 @@ namespace I52Auth15.HostHarness
                 ["what"] = what,
                 ["expectation"] = expectation,
                 ["observed"] = observed,
+                ["matchesExpectation"] = matches,
                 ["countedInVerdict"] = false,
             });
         }
@@ -1416,8 +1561,7 @@ namespace I52Auth15.HostHarness
                     End(tr);
                 }
 
-                var diff = baseline.Diff(Snapshot.Now(db));
-                r.Check("after the abort: SNAP identical", "identical", Joined(diff), diff.Count == 0);
+                AbortClean(r, "after the abort", baseline, Snapshot.Now(db));
             }
         }
 
@@ -1452,8 +1596,7 @@ namespace I52Auth15.HostHarness
                     End(tr);
                 }
 
-                var clean = baseline.Diff(Snapshot.Now(db));
-                r.Check("after the abort: SNAP identical", "identical", Joined(clean), clean.Count == 0);
+                AbortClean(r, "after the abort", baseline, Snapshot.Now(db));
 
                 // CHARACTERIZATION (c): a non-empty name the family policy makes invalid. Ruled: WriteFailed and a clean rollback.
                 var tr2 = db.TransactionManager.StartTransaction();
@@ -1489,13 +1632,7 @@ namespace I52Auth15.HostHarness
                     r.Notes.Add("NEW DEVIATION: HeaderRun \"<>\" did not come out as ruled; the run STOPS here.");
                 }
 
-                var dirty = baseline.Diff(Snapshot.Now(db), null, 20);
-                r.Check("CHARACTERIZATION: the caller's abort leaves SNAP clean", "identical", Joined(dirty), dirty.Count == 0);
-
-                if (dirty.Count > 0)
-                {
-                    r.Deviation = true;
-                }
+                AbortClean(r, "CHARACTERIZATION HeaderRun <> after the caller's abort", baseline, Snapshot.Now(db));
 
                 r.Observed = result.Describe();
             }
@@ -1546,8 +1683,7 @@ namespace I52Auth15.HostHarness
                     End(tr);
                 }
 
-                var diff = baseline.Diff(Snapshot.Now(db));
-                r.Check("after the abort: SNAP identical", "identical", Joined(diff), diff.Count == 0);
+                AbortClean(r, "after the abort", baseline, Snapshot.Now(db));
             }
         }
 
@@ -1598,8 +1734,7 @@ namespace I52Auth15.HostHarness
                     End(tr);
                 }
 
-                var diff = baseline.Diff(Snapshot.Now(db));
-                r.Check("after the caller's abort: SNAP identical (no persistent state)", "identical", Joined(diff), diff.Count == 0);
+                AbortClean(r, "after the caller's abort", baseline, Snapshot.Now(db));
             }
         }
 
@@ -1710,8 +1845,7 @@ namespace I52Auth15.HostHarness
                     End(tr);
                 }
 
-                var diff = baseline.Diff(Snapshot.Now(db));
-                r.Check("after the abort: SNAP identical", "identical", Joined(diff), diff.Count == 0);
+                AbortClean(r, "after the abort", baseline, Snapshot.Now(db));
             }
         }
 
@@ -1781,8 +1915,7 @@ namespace I52Auth15.HostHarness
                 r.Check("no transaction is left active after the caller's abort", "0", db.TransactionManager.NumberOfActiveTransactions.ToString(),
                     db.TransactionManager.NumberOfActiveTransactions == 0);
 
-                var diff = baseline.Diff(Snapshot.Now(db));
-                r.Check("nothing survived the caller's abort: AUTH-15 committed nothing", "identical", Joined(diff), diff.Count == 0);
+                AbortClean(r, "nothing survived the caller's abort", baseline, Snapshot.Now(db));
             }
 
             var notLive = c.CallerOwned.Where(x => !x.Live).Select(x => x.Case + " " + x.What).ToList();

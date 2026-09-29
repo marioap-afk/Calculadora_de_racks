@@ -19,6 +19,12 @@
     <!-- The exact RackCad assemblies built from the implementation content (build-hostval.ps1 passes this). -->
     <RackCadBin Condition="'$(RackCadBin)' == ''">$(MSBuildThisFileDirectory)..\..\..\src\RackCad.Plugin\bin\Debug\net8.0-windows\</RackCadBin>
   </PropertyGroup>
+  <!-- The offline characterization rig lives in a subfolder and has its own project: it is never part of the harness assembly. -->
+  <ItemGroup>
+    <Compile Remove="offline\**" />
+    <EmbeddedResource Remove="offline\**" />
+    <None Remove="offline\**" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="AcCoreMgd"><HintPath>$(AutoCADInstallDir)\AcCoreMgd.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="AcDbMgd"><HintPath>$(AutoCADInstallDir)\AcDbMgd.dll</HintPath><Private>false</Private></Reference>

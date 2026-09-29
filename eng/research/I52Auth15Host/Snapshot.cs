@@ -14,6 +14,8 @@ namespace I52Auth15.HostHarness
     ///   BT:name          handle of every block table record (definitions, anonymous, model and paper spaces)
     ///   BTC:name         entity handles + extension-dictionary flag of every non-layout definition
     ///   LT:/DS:/TS:name  layer, dimension style and text style tables
+    ///   LTP:/RA:/UCS:/VW:name  linetype, registered-application, UCS and view tables
+    ///   VP:name#handle   viewport table (its "*Active" records share a name, so the handle is part of the key)
     ///   NOD:key          named objects dictionary entries
     ///   MS:handle        model space entities
     ///   LAYOUT:name:h    every paper-space layout's entities
@@ -69,6 +71,12 @@ namespace I52Auth15.HostHarness
                 s.Items["TS:" + ((TextStyleTableRecord)tr.GetObject(id, OpenMode.ForRead)).Name] = H(id);
             }
 
+            Table(s, tr, "LTP:", db.LinetypeTableId, false);
+            Table(s, tr, "RA:", db.RegAppTableId, false);
+            Table(s, tr, "UCS:", db.UcsTableId, false);
+            Table(s, tr, "VW:", db.ViewTableId, false);
+            Table(s, tr, "VP:", db.ViewportTableId, true);
+
             var nod = (DBDictionary)tr.GetObject(db.NamedObjectsDictionaryId, OpenMode.ForRead);
             foreach (DBDictionaryEntry entry in nod)
             {
@@ -95,6 +103,17 @@ namespace I52Auth15.HostHarness
             return s;
         }
 
+        private static void Table(Snapshot s, Transaction tr, string prefix, ObjectId tableId, bool nameAndHandle)
+        {
+            var table = (SymbolTable)tr.GetObject(tableId, OpenMode.ForRead);
+
+            foreach (ObjectId id in table)
+            {
+                var name = ((SymbolTableRecord)tr.GetObject(id, OpenMode.ForRead)).Name;
+                s.Items[nameAndHandle ? prefix + name + "#" + H(id) : prefix + name] = H(id);
+            }
+        }
+
         /// <summary>Opens a throw-away transaction, takes the picture and aborts it. Only valid when the caller has no
         /// transaction of its own open on <paramref name="db"/>.</summary>
         public static Snapshot Now(Database db)
@@ -110,8 +129,9 @@ namespace I52Auth15.HostHarness
         public static bool IsPlacementKey(string key) =>
             key.StartsWith("MS:", StringComparison.Ordinal) || key.StartsWith("LAYOUT:", StringComparison.Ordinal);
 
-        /// <summary>Human-readable differences (empty = identical), limited to <paramref name="max"/> lines.</summary>
-        public List<string> Diff(Snapshot other, Func<string, bool> filter = null, int max = 12)
+        /// <summary>Human-readable differences (empty = identical). UNLIMITED by default: a leak is enumerated in full, with the
+        /// handle of every added, removed or changed entry, never summarized.</summary>
+        public List<string> Diff(Snapshot other, Func<string, bool> filter = null, int max = int.MaxValue)
         {
             var differences = new List<string>();
             var keys = new SortedSet<string>(Items.Keys.Concat(other.Items.Keys), StringComparer.Ordinal);
@@ -128,11 +148,11 @@ namespace I52Auth15.HostHarness
 
                 if (inThis && !inOther)
                 {
-                    differences.Add("removed " + key);
+                    differences.Add("removed " + key + " = " + mine);
                 }
                 else if (!inThis && inOther)
                 {
-                    differences.Add("added " + key);
+                    differences.Add("added " + key + " = " + theirs);
                 }
                 else if (!string.Equals(mine, theirs, StringComparison.Ordinal))
                 {
