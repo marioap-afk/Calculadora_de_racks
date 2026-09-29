@@ -33,6 +33,37 @@ namespace RackCad.Plugin.Views
         internal IReadOnlyDictionary<string, IReadOnlyList<RackSiblingLayerRequirement>> Layers { get; }
     }
 
+    /// <summary>
+    /// One whole-drawing scan, unclassified: every definition of the BlockTable read once. ID19 (RACKPROYECTAR) classifies it
+    /// per RackId without touching the drawing again.
+    /// </summary>
+    internal sealed class RackSiblingDrawingScan
+    {
+        internal RackSiblingDrawingScan(
+            IReadOnlyList<RackSiblingScanFact> facts,
+            IReadOnlyDictionary<string, ObjectId> definitions,
+            IReadOnlyDictionary<string, RackEmbedDocument> envelopes,
+            IReadOnlyDictionary<string, CustomPropertiesReadResult> properties,
+            IReadOnlyDictionary<string, IReadOnlyList<RackSiblingLayerRequirement>> layers)
+        {
+            Facts = facts;
+            Definitions = definitions;
+            Envelopes = envelopes;
+            Properties = properties;
+            Layers = layers;
+        }
+
+        internal IReadOnlyList<RackSiblingScanFact> Facts { get; }
+        internal IReadOnlyDictionary<string, ObjectId> Definitions { get; }
+        internal IReadOnlyDictionary<string, RackEmbedDocument> Envelopes { get; }
+        internal IReadOnlyDictionary<string, CustomPropertiesReadResult> Properties { get; }
+        internal IReadOnlyDictionary<string, IReadOnlyList<RackSiblingLayerRequirement>> Layers { get; }
+
+        /// <summary>The members of one rack among the scanned definitions; no source is selected, so none is erased by kind.</summary>
+        internal RackSiblingMembershipSnapshot MembershipFor(string rackId)
+            => RackSiblingMembership.Classify(Facts, rackId, null, false);
+    }
+
     /// <summary>The single physical BlockTable traversal used by one Insert gesture.</summary>
     internal static class RackSiblingScan
     {
@@ -42,6 +73,22 @@ namespace RackCad.Plugin.Views
             string rackId,
             string originalSourceId,
             bool originalSourceIdIsAttributable,
+            Func<RackEmbedDocument, bool> eraseByKind)
+        {
+            var scan = Traverse(document, selectedDefinition, eraseByKind);
+            var membership = RackSiblingMembership.Classify(
+                scan.Facts, rackId, originalSourceId, originalSourceIdIsAttributable);
+            return new RackSiblingScanSnapshot(
+                membership, scan.Definitions, scan.Envelopes, scan.Properties, scan.Layers);
+        }
+
+        /// <summary>The same traversal with nothing selected, for a caller that classifies several racks from ONE pass.</summary>
+        internal static RackSiblingDrawingScan CaptureDrawing(Document document)
+            => Traverse(document, ObjectId.Null, null);
+
+        private static RackSiblingDrawingScan Traverse(
+            Document document,
+            ObjectId selectedDefinition,
             Func<RackEmbedDocument, bool> eraseByKind)
         {
             var facts = new List<RackSiblingScanFact>();
@@ -105,9 +152,7 @@ namespace RackCad.Plugin.Views
                 transaction.Commit();
             }
 
-            var membership = RackSiblingMembership.Classify(
-                facts, rackId, originalSourceId, originalSourceIdIsAttributable);
-            return new RackSiblingScanSnapshot(membership, definitions, envelopes, properties, layers);
+            return new RackSiblingDrawingScan(facts, definitions, envelopes, properties, layers);
         }
 
         private static void AddLayer(Transaction transaction, ObjectId layerId, RackSiblingLayerUse use,

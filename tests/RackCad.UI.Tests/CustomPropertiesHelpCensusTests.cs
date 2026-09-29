@@ -30,8 +30,11 @@ namespace RackCad.UI.Tests
 
         private static readonly (string Command, string Alias) G7Help = ("RACKPROPIEDADES", "RPR");
 
+        /// <summary>I-55 G15 (OD-1 A): el comando de proyeccion y su unico alias.</summary>
+        private static readonly (string Command, string Alias) G15Help = ("RACKPROYECTAR", "RPY");
+
         [Fact]
-        public void TGrd08_ElCensoDeLaAyudaEsElDeAperturaMasRackPropiedades()
+        public void TGrd08_ElCensoDeLaAyudaEsElDeAperturaMasRackPropiedadesYRackProyectar()
         {
             Assert.Equal(14, OpeningHelp.Length);
             Assert.Empty(HelpViolations(RackCommandReference.Commands.Select(info => (info.Command, info.Alias))));
@@ -46,6 +49,23 @@ namespace RackCad.UI.Tests
             Assert.Equal("Editar y copiar", entry.Group);
             Assert.Single(RackCommandReference.Commands, info => info.Alias == "RPR");
             Assert.Single(RackCommandReference.Commands, info => info.Command.Contains("PROPIEDADES", StringComparison.Ordinal));
+        }
+
+        [Fact]
+        public void G15_LaAyudaDocumentaRackProyectarConSuUnicoAlias()
+        {
+            var entry = Assert.Single(RackCommandReference.Commands, info => info.Command == "RACKPROYECTAR");
+
+            Assert.Equal("RPY", entry.Alias);
+            Assert.Equal("Editar y copiar", entry.Group);
+            Assert.Single(RackCommandReference.Commands, info => info.Alias == "RPY");
+            Assert.Single(RackCommandReference.Commands, info => info.Command.Contains("PROYECTAR", StringComparison.Ordinal));
+
+            // Lo que el resumen tiene que dejar claro: vistas enlazadas del mismo rack, no copias, y que RACKDUPLICAR es el que copia.
+            foreach (var required in new[] { "vistas", "enlazadas", "no copias", "RACKDUPLICAR" })
+            {
+                Assert.Contains(required, entry.Summary, StringComparison.OrdinalIgnoreCase);
+            }
         }
 
         [Fact]
@@ -72,9 +92,9 @@ namespace RackCad.UI.Tests
         {
             var registered = PluginCommandNames();
 
-            // La barrida mira de verdad: el censo del Plugin abre con 33 nombres y G7 anade dos.
+            // La barrida mira de verdad: el censo del Plugin abre con 33 nombres, G7 anade dos y G15 otros dos.
             Assert.Contains("RACKAYUDA", registered);
-            Assert.True(registered.Count >= 35, "la barrida apenas ve registros del Plugin.");
+            Assert.True(registered.Count >= 37, "la barrida apenas ve registros del Plugin.");
 
             var unregistered = RackCommandReference.Commands
                 .SelectMany(info => new[] { info.Command, info.Alias })
@@ -86,12 +106,16 @@ namespace RackCad.UI.Tests
 
         public static TheoryData<string, string[]> HelpMutations() => new TheoryData<string, string[]>
         {
-            { "falta la entrada", OpeningHelp.Select(Pair).ToArray() },
-            { "otro alias", OpeningHelp.Select(Pair).Append("RACKPROPIEDADES/RPRO").ToArray() },
-            { "otro nombre", OpeningHelp.Select(Pair).Append("RACKPROPERTIES/RPR").ToArray() },
-            { "entrada duplicada", OpeningHelp.Select(Pair).Append(Pair(G7Help)).Append(Pair(G7Help)).ToArray() },
-            { "una entrada de apertura desaparecida", OpeningHelp.Skip(1).Select(Pair).Append(Pair(G7Help)).ToArray() },
-            { "una entrada de mas", OpeningHelp.Select(Pair).Append(Pair(G7Help)).Append("RACKPROPIEDADESPROYECTO/RPP").ToArray() },
+            { "falta la entrada de G7", OpeningHelp.Select(Pair).Append(Pair(G15Help)).ToArray() },
+            { "falta la entrada de G15", OpeningHelp.Select(Pair).Append(Pair(G7Help)).ToArray() },
+            { "otro alias", Baseline().Append("RACKPROPIEDADES/RPRO").ToArray() },
+            { "otro nombre", Baseline().Append("RACKPROPERTIES/RPR").ToArray() },
+            { "entrada duplicada", Baseline().Append(Pair(G7Help)).ToArray() },
+            { "una entrada de apertura desaparecida", Baseline().Skip(1).ToArray() },
+            { "una entrada de mas", Baseline().Append("RACKPROPIEDADESPROYECTO/RPP").ToArray() },
+            { "otro alias de G15", Baseline().Where(pair => pair != Pair(G15Help)).Append("RACKPROYECTAR/RPYX").ToArray() },
+            { "una segunda familia de proyeccion", Baseline().Append("RACKPROYECTARVISTAS/RPV").ToArray() },
+            { "entrada de G15 duplicada", Baseline().Append(Pair(G15Help)).ToArray() },
         };
 
         [Theory]
@@ -105,11 +129,13 @@ namespace RackCad.UI.Tests
 
         private static string Pair((string Command, string Alias) entry) => entry.Command + "/" + entry.Alias;
 
+        private static IEnumerable<string> Baseline() => OpeningHelp.Append(G7Help).Append(G15Help).Select(Pair);
+
         /// <summary>Vacia si la ayuda tiene exactamente los pares de apertura mas `RACKPROPIEDADES/RPR`, cada uno una vez.</summary>
         private static IReadOnlyList<string> HelpViolations(IEnumerable<(string Command, string Alias)> entries)
         {
             var violations = new List<string>();
-            var expected = OpeningHelp.Append(G7Help).Select(Pair).ToList();
+            var expected = Baseline().ToList();
             var found = entries.Select(Pair).ToList();
 
             foreach (var group in found.GroupBy(pair => pair, StringComparer.Ordinal).Where(group => group.Count() > 1))
