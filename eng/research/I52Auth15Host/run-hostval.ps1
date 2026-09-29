@@ -166,3 +166,4 @@ if (-not $checks['evidenceExists']) {
     'No evidence was written. If the harness never ran, the usual cause is that the run folder is not in TRUSTEDPATHS (ENVIRONMENT_PREREQUISITE = TRUSTEDPATH_REQUIRED): the Owner adds it, this script never does. See out\hostval.log.'
 }
 if (-not $launchValid) { exit 2 }
+exit 0
