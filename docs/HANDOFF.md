@@ -320,14 +320,16 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
 - `R3_PRE_RUN_TUPLE_HASH` = `47B7914EE1999CA9775577D7225F31C0257334F5136218429DF50C2EBCAA1BD9`.
 - [Evidencia](automation/evidence/I-52-r3-host-smoke-bef6091b.json).
 
-**Estado tras AUTH-15 (integrada en `main`, tag `integration/I-52-AUTH15`) y §196.**
+**Estado tras AUTH-15 (integrada en `main`, tag `integration/I-52-AUTH15`), §196 y §197.**
 - Probes gobernados ejecutados: 11. Resultados gobernados válidos: 6 (09N-B, 02NDBMOD-S, 02NO-S, 16N-S, 10N-S, 16C-S).
-- La definición literal de `CTDA_HOST_PASS(V35-A3)` está en §196.1; su evaluación da **NOT EVALUABLE**: nativas 6/100
-  (92 sin ejecutar, 2 diferidas), managed 0/18; las cinco cláusulas están INCOMPLETE y ningún FAIL/UNKNOWN gobernante la vuelve FALSE.
-  [Matriz de cobertura](initiatives/I-52-ctda-host-pass-coverage-v35a3.md).
-- 16A-S y 13A-SM siguen DIFERIDOS y sin autorizar. `CIA` = UNKNOWN; V18 gobierna; G3 STOPPED.
-- **Siguiente gate: STOP** hasta que exista la autoridad ejecutable de las filas managed (Q5) y el Arquitecto/Coordinador resuelvan Q1-Q4
-  (§196.8). La rama sigue sin reconciliar con `main` (79 detrás / 115 delante).
+- Definición literal de `CTDA_HOST_PASS(V35-A3)`: §196.1. Dictámenes del Arquitecto ratificados por el Coordinador: §197 (Q1-Q7). Modelo de tres estados: **TRUE / FALSE / NOT EVALUATED**;
+  estado actual **`CTDA_HOST_PASS = NOT EVALUATED`** (nativas 6/100: 92 sin ejecutar y 2 diferidas; managed 0/18; cláusulas 1-5 INCOMPLETE; ningún FAIL/UNKNOWN gobernante ni incapacidad registrada).
+  El término anterior queda retirado (§197.1). [Matriz](initiatives/I-52-ctda-host-pass-coverage-v35a3.md).
+- Managed: 18 filas normativas (01-15 con 09C/09E y 10S/10M/10SM); las nueve `16*` son OUTSIDE-PREDICATE. La autoridad de ejecución managed está AUSENTE pero se considera IMPLEMENTABLE (no es incapacidad).
+- Arrastre A2→A3: CONDICIONAL (`carriedForward`); antes de TRUE, re-ejecutar en el build de la campaña o dictamen de equivalencia. DA-P7: solo S satisfecha.
+- Baseline de campaña: paquete `bef6091b` (fuente `bef6091b`, `D:\I52-CTDA-R2H\bef6091b`, zip `021F2092…55F7`), sin paquete nuevo requerido. 16A-S y 13A-SM DIFERIDOS y sin autorizar (13A-SM está en el grupo estructural).
+- `CIA` = UNKNOWN; V18 gobierna; G3 STOPPED.
+- **Siguiente gate: decisión de autorización del Coordinador para la campaña de falsificación estructural de 14 filas** (§197.9; NO autorizada ni ejecutada). La rama sigue sin reconciliar con `main` (79 detrás / 115 delante).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
