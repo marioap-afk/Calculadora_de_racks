@@ -21,8 +21,9 @@ la `BlockReference` colocada**, entera (geometria, textos, cotas, numeros y simb
 ## 2. Autoridades consumidas (sin cambio)
 
 - **AUTH-05 (marcos):** `RackViewFrame.AxisMap` dice que eje fisico (Run/Depth/Height) va sobre el X y el Y **locales** de la definicion y con que signo.
-  Por sistema (adaptadores de `RackViewFrameAdapters`): Selectivo, Dinamico, Push Back y Cabecera — Planta `DepthRun` (X = Depth, Y = Run), Frontal `RunHeight`,
-  Lateral `DepthHeight`; Cantilever — Planta `RunDepth` (X = Run, Y = Depth), Frontal `RunHeight`, Lateral `DepthHeight`. Todos los signos son positivos.
+  Por sistema (adaptadores de `RackViewFrameAdapters`): Selectivo, Dinamico y Push Back — Planta `DepthRun` (X = Depth, Y = Run), Frontal `RunHeight`,
+  Lateral `DepthHeight`; Cabecera — solo Planta `DepthRun` y Lateral `DepthHeight` (no expone Frontal); Cantilever — Planta `RunDepth` (X = Run, Y = Depth),
+  Frontal `RunHeight`, Lateral `DepthHeight`. Todos los signos son positivos.
 - **AUTH-08 V2 (hechos de colocacion de la fuente):** la parte lineal aceptada `L` de cada referencia fuente (`RackSourcePlacementAcceptance.Linear`), que ya incluye la
   media vuelta planar que reporta la Foundation. `RotationRadians = L.RotationAngle()`.
 - **G14:** `RackProjectionClassMapping` (eje conservado `K` por par de clases), `SourceGroupFrame` / `TargetGroupFrame` (orientaciones `φs`, `φt`, hoy congeladas a 0 por
@@ -58,9 +59,15 @@ refleja (AUTH-08 rechaza reflexiones y la definicion no cambia), la unica rotaci
 ρ = ang(t → d)        (R(ρ)·t = d)
 ```
 
-Es unica: el `AxisMap` fija `t` con su signo y `L` fija `d` con su signo. Se consideró y **se rechaza** la alternativa «linea sin sentido» (plegar `d` y `−d` con la
-Ventana de Marco Relativo): descarta el signo que AUTH-05 y AUTH-08 si llevan, colocaria en el destino el poste 1 del lado opuesto al de la fuente para 180° y 270°
-(no es una proyeccion) y haria indistinguibles filas que el Owner valida por separado (P-01/P-03, P-02/P-04). No hay dos convenciones que las autoridades no distingan.
+Es unica: el `AxisMap` fija `t` con su signo y `L` fija `d` con su signo, y una rotacion pura que lleva `t` sobre `d` es una sola. Los marcos de AUTH-05 forman
+ternas directas en ambas familias (familia rack: Depth × Run = +Height; Cantilever: Run × Depth = +Height), de modo que conservar `+K` con una rotacion pura produce
+un abatimiento real de primer o tercer diedro, y el eje NO conservado del destino (Height en una elevacion, el otro eje horizontal en una planta) queda
+**determinado** por la derivacion, no elegido. Ejemplo: Selectivo, Planta a 0° → Frontal: `ρ = 90°` y la altura de la frontal apunta a −X. Que el usuario lea
+el resultado como primer o tercer diedro solo depende del lado que elija; `ρ` es el mismo.
+
+Se consideraron y **se rechazan**: (a) la «linea sin sentido» (plegar `d` y `−d` con la Ventana de Marco Relativo), que descarta el signo que AUTH-05 y AUTH-08 si
+llevan e invierte `K` para la mitad de las orientaciones (seria una vista posterior, que un bloque nunca reflejado no puede mostrar); (b) «altura siempre hacia
+arriba», que es exactamente la orientacion Predeterminada entre clases distintas. No hay dos convenciones que las autoridades no distingan.
 
 Resultados por familia (`θ` = rotacion de la fuente; todos los signos positivos):
 
@@ -79,18 +86,29 @@ Resultados por familia (`θ` = rotacion de la fuente; todos los signos positivos
 
 - **Clases distintas (Orthographic).** Toda la operacion usa UNA orientacion proyectada comun: `d = d_0` (todas las `d_i` coinciden, regla E), y se fijan los marcos de grupo
   de G14 a partir de los hechos, no de un cero universal: `SourceGroupFrame.Orientation = φs = ang(s_0 → d)` (igual a la rotacion `θ_0` de la primera fuente) y
-  `TargetGroupFrame.Orientation = φt = ang(t_0 → d)`. Con esos marcos, la politica ortografica existente produce `e = w = d`, `α = 0` y `ρ = φt` para **todas** las vistas:
+  `TargetGroupFrame.Orientation = φt = ang(t_0 → d)`. `φs` no se calcula de nuevo: es la `RotationRadians` de la parte lineal aceptada de la primera fuente
+  (media vuelta incluida); `φt` se obtiene componiendo con el `Transform2D` compartido (`RotationAngle`), nunca con `Math.Atan2` (guarda existente de
+  Application/Views). Con esos marcos, la politica ortografica existente produce `e = w = d`, `α = 0` y `ρ = φt` para **todas** las vistas:
   las vistas destino quedan alineadas sobre la recta que pasa por el punto destino en la direccion `d`, cada una desplazada segun la coordenada de su fuente sobre `d`
   (proyeccion pura), y todas giradas `ρ`. Los intervalos, el anclaje del extremo del tramo y el aviso de solapamiento no cambian.
-- **Misma clase (Rigid).** Es la semantica G14 vigente: una sola transformacion rigida comun con `α = 0`; cada vista conserva su propia rotacion fuente (`ρ_i = θ_i`).
-  La copia rigida de un grupo es por si misma una operacion coherente: no hay regla de divergencia en Rigid.
+- **Misma clase (Rigid).** Es la semantica G14 vigente: una sola transformacion rigida comun con `α = 0`; cada vista conserva su propia rotacion fuente (`ρ_i = θ_i`),
+  como fijan OV-ID19-05 («con la orientacion de cada rack») y OV-ID19-06 («layout y giros conservados»). La copia rigida de un grupo es por si misma una
+  operacion coherente: no hay regla de divergencia en Rigid Proyectada.
+- **Coherencia (definicion).** Una operacion es coherente si se realiza con UNA `CommonTransform2D` (Rigid) o con UNA linea comun orientada y UNA `ρ` (Orthographic).
+  La misma definicion rige para Predeterminada.
 
 ### B. Predeterminada (`Canonical`)
 
 - **Clases distintas:** exactamente el resultado G14/G15 actual (`φs = φt = 0`, `ρ = 0`, Ventana de Marco Relativo).
-- **Misma clase:** presentacion canonica de RackCad: `ρ = 0` (marco destino universal) para toda vista; la POSICION sigue siendo la de la transformacion rigida comun
-  (el ancla del marco destino cae donde la transformacion lleva el ancla de la fuente). Es la **correccion aceptada** de C16-06 a la presentacion de Rigid en este modo
-  (antes copiaba la rotacion de la fuente); la geometria de la transformacion comun y `α = 0` no cambian.
+- **Misma clase:** presentacion canonica de RackCad mediante los marcos de grupo de G14, sin salir del modelo: `φs = θ_0` (rotacion de la primera fuente, leida de
+  la parte lineal aceptada de AUTH-08, media vuelta incluida), `φt = 0` (marco destino universal), `α = φt − φs = −θ_0`, y UNA `CommonTransform2D` con esa `α`
+  para todo el grupo: `ρ_i = θ_i + α = 0`. El punto base elegido cae en el punto destino (semantica de COPY) y la disposicion del grupo se conserva, girada `α`
+  alrededor del punto base. Es la **correccion aceptada** de C16-06 a la interpretacion `α = 0` de Rigid, solo en Predeterminada (el Owner la anticipo:
+  «If this requires altering prior Rigid alpha=0 interpretation, document C16-06 as the accepted correction»).
+- **Misma clase con rotaciones distintas** (p. ej. racks espalda con espalda a 0° y 180°): no existe una transformacion rigida que deje todas las vistas en la
+  presentacion canonica, y girar cada rack por su cuenta destruiria la operacion comun (prohibido por el Owner). La operacion **falla completa antes de los puntos**
+  con el fallo tipado `SourceRotationsDiffer` (etapa Validate, un diagnostico por vista), cuyo remedio es usar Proyectada (conserva el giro de cada rack) o proyectar
+  cada grupo de igual giro por separado. Este rechazo es propio de Predeterminada; no depende de la divergencia de Proyectada.
 - Predeterminada **nunca** se bloquea por una divergencia que solo afectaria a Proyectada.
 
 ### C. Por defecto
@@ -100,30 +118,49 @@ el Plugin lo pasa siempre (guarda de fuente).
 
 ### D. Autoridad pura
 
-Una autoridad pura de Application (sin tipos de AutoCAD) resuelve, para el modo y las vistas aceptadas, los marcos de grupo de la operacion o un fallo tipado. El Plugin solo
+Una autoridad pura de Application (sin tipos de AutoCAD) resuelve, para el modo, el modo de proyeccion (Rigid u Orthographic) y las vistas aceptadas, los marcos de
+grupo `(φs, φt)` de la operacion o un fallo tipado; la politica existente los consume (`α = φt − φs` en Rigid; `e`, `w`, `α`, `ρ = φt` en Orthographic). El Plugin solo
 aporta los hechos capturados y aplica `RackProjectedPlacement.RotationRadians` tal cual. `AutoCadProjectionWriteScope.PlaceReference` sigue siendo mecanico.
 Nombres de simbolos: no congelados.
 
 ### E. Compatibilidad entre racks (solo Proyectada y clases distintas)
 
-- Todas las `d_i` deben ser paralelas (fallo existente `NonParallelSources`) **y del mismo sentido**: `d_i · d_0 > 0`, con la tolerancia congelada de paralelismo
-  (`GeometryTolerance.Angle`).
+- Orden de comprobacion congelado: `FrameAxisMissing` → paralelismo (`|d_i × d_0| > GeometryTolerance.Angle` → fallo existente `NonParallelSources`) → sentido
+  (`d_i · d_0 < 0` → `SourceOrientationDivergent`). La tolerancia se aplica al producto cruz; una vez paralelas, el signo del producto escalar decide. Las familias
+  mezcladas ya se rechazan antes en Validate y la consistencia de los ejes destino la sigue comprobando la politica ortografica.
 - Si dos o mas fuentes son paralelas pero de sentido opuesto (p. ej. racks espalda con espalda, uno girado 180°), no existe UNA orientacion proyectada comun: la operacion
   **falla completa antes de los puntos** con el nuevo fallo tipado `SourceOrientationDivergent` (etapa Validate), con un diagnostico por cada vista de la operacion, como el
   resto de fallos de Validate. No se gira cada rack por su cuenta.
 
 ### F. Fallos y avisos
 
-- `SourceOrientationDivergent` es **bloqueante**, antes de puntos, importacion y escritura. Remedio (familia `ReviewSelection`): proyectar por separado cada sentido o usar
-  la orientacion Predeterminada.
+- `SourceOrientationDivergent` (Proyectada, clases distintas) y `SourceRotationsDiffer` (Predeterminada, misma clase) son **bloqueantes**, antes de puntos,
+  importacion y escritura. Remedios (familia `ReviewSelection`): el primero, proyectar por separado cada sentido o usar Predeterminada; el segundo, usar Proyectada o
+  proyectar por separado cada grupo de igual giro. El rechazo obliga a repetir el comando (no se replanifica en otro modo: decision explicita, el comando no
+  escribe nada antes de los puntos).
 - Avisos existentes sin cambio: solapamiento, vista opcional sin bloque, y `DirectionWindowNearLimit` (solo puede aparecer en Predeterminada: en Proyectada la linea comun
   coincide con el marco, angulo relativo 0). No se añade ningun aviso nuevo.
 
 ### G. Interfaz (linea de comandos, sin ventana WPF)
 
 Seleccion (sin cambio; durante la seleccion `F` sigue siendo Fence) → `Clase de vista a proyectar [Frontal/Lateral/Planta]` →
-`Orientacion [Proyectada/Predeterminada] <Proyectada>` (Enter = Proyectada; `Esc` cancela sin leer ni escribir) → lectura unica y plan (fallos y avisos) →
-`Punto base` → `Punto de destino`. El informe final nombra el modo usado.
+`Orientacion [PRoyectada/PREdeterminada] <PRoyectada>` (Enter = Proyectada; atajos distintos `PR` y `PRE`, porque las dos palabras del Owner empiezan por «P»;
+el patron es el de `RACKCAMA`: `Keywords.Add` + `Default` + `AllowNone`; `Esc` cancela sin leer ni escribir) → lectura unica y plan (fallos y avisos) →
+`Punto base` → `Punto de destino`. El informe final nombra la orientacion usada.
+
+Mecanica congelada de la pregunta (el Plugin no se carga en CI y esta pregunta ya fallo una vez en host):
+1. Patron probado de `RACKCAMA`: `PromptKeywordOptions` con un solo argumento de mensaje, `Keywords.Add` dos veces, `Keywords.Default` = la global de Proyectada y
+   `AllowNone = true` (AutoCAD añade la lista y el valor por defecto). No se usa el constructor de dos argumentos ni `AppendKeywordsToMessage`.
+2. Mapa de estados: `OK` o `None` → Proyectada, salvo que `StringResult` sea exactamente la global de Predeterminada; `Cancel` o `Error` → la operacion termina antes
+   de leer el dibujo, con el resultado nuevo `Cancelled` de la instantanea («cancelado: no se leyo ni se escribio nada»), no con «no se selecciono nada».
+3. El ayudante de mapeo vive en el puerto, fuera de los metodos de punto; guardas de fuente fijan los literales y el orden.
+
+### G.1 Decisiones del Owner que quedan acotadas a Predeterminada
+
+OD-6.b A (`φt = 0`), OD-6.c A (`φs = 0`, «traslacion, como COPY»), OD-6.d A (orientacion «natural» de las vistas proyectadas) y OD-7.e A (Ventana de Marco
+Relativo) siguen vigentes **solo en Predeterminada** entre clases distintas; en Predeterminada de la misma clase rige la correccion de la seccion B. Proyectada, el
+nuevo valor por defecto del producto, las sustituye. Las filas congeladas de OV-ID19 que describen esa geometria se ejecutan en Predeterminada y las de la misma
+clase en Proyectada (asignacion por fila en la guia de validacion §6).
 
 ### H. Sin cambios de definicion
 
@@ -137,7 +174,7 @@ Ninguna. El modo es una eleccion por invocacion y no se guarda; la rotacion ya e
 ### J. Matriz de Validacion del Owner (OV-C16-06)
 
 Filas `P-01..P-18` (Proyectada) y `C-01..C-04` (Predeterminada), con la rotacion esperada calculada con la seccion 4, en la guia de validacion de G16
-([I-55-g16-owner-validation.md](I-55-g16-owner-validation.md) §9). En Proyectada gira TODA la referencia: geometria, textos, cotas y etiquetas.
+([I-55-g16-owner-validation.md](I-55-g16-owner-validation.md) §6.1 y §6.2). En Proyectada gira TODA la referencia: geometria, textos, cotas y etiquetas.
 
 ## 6. Obligaciones invariante → prueba (RED antes de implementar)
 
@@ -147,8 +184,19 @@ Filas `P-01..P-18` (Proyectada) y `C-01..C-04` (Predeterminada), con la rotacion
 | O-2 | Proyectada ortografica: posiciones = proyeccion pura sobre `d` (`α = 0`, `e = w = d`) | plan G14 / comando G15 | falla |
 | O-3 | Proyectada, fuentes antiparalelas → `SourceOrientationDivergent` antes de puntos, sin escritura | comando G15 | falla (hoy completa) |
 | O-4 | Predeterminada ortografica = G14 actual (rotacion 0, mismas posiciones) | comando G15 | pasa (se conserva) |
-| O-5 | Predeterminada misma clase: `ρ = 0`, posicion por la transformacion rigida | comando G15 | falla (hoy `ρ = θ`) |
+| O-5 | Predeterminada misma clase, giro comun: `ρ = 0`, el punto base cae en el destino y la disposicion de varios racks se conserva (una transformacion con `α = −θ_0`) | comando G15 | falla (hoy `ρ = θ`) |
+| O-5b | Predeterminada misma clase con giros distintos → `SourceRotationsDiffer` antes de puntos, sin escritura | comando G15 | falla (hoy completa) |
 | O-6 | Proyectada misma clase = Rigid G14 (`ρ = θ`) | comando G15 | pasa (se conserva) |
 | O-7 | Predeterminada no se bloquea por divergencia | comando G15 | pasa |
 | O-8 | Sin cambios de definicion: plan preparado, sobre y nombre base identicos entre modos | comando G15 | pasa |
-| O-9 | El Plugin pasa el modo y pregunta en el orden G; el write scope no calcula rotaciones | guardas de fuente | falla (no hay pregunta) |
+| O-9 | El Plugin pasa el modo y pregunta en el orden G con atajos distintos; el write scope no calcula rotaciones | guardas de fuente | falla (no hay pregunta) |
+
+**Suites existentes re-fijadas a Predeterminada** (sin editar sus asertos): `RackGroupPlacementPlanTests`, `RackViewCountInvariantTests` y los fakes de G15
+(`G15.Scenario.Orientation = Canonical` por defecto) construyen la solicitud en Predeterminada; `RackOrthographicPlacementPolicyTests` llama a la politica con marcos
+universales, que es el contrato de Predeterminada; `RackRigidPlacementPolicyTests` sigue fijando que la politica rigida copia la rotacion de la fuente con
+`α = 0` (la sobrecarga de dos argumentos no cambia). Se añaden pruebas de comando en Proyectada (intervalos, aviso de solapamiento, cancelacion, un solo
+Commit, espejo Proyectada de `G14_V_A_MAJORITY` = `SourceOrientationDivergent`, 0°/90° = `NonParallelSources` en ambos modos) y la pregunta de orientacion con
+su mapa de estados queda fijada por guardas de fuente.
+
+Las comparaciones de O-1/O-2 usan tolerancia en vectores y angulos modulo `2π`; O-1 cubre tambien la media vuelta planar, un giro no cardinal (30°) y varias
+referencias (la linea comun es una suma normalizada). Las rotaciones esperadas de la matriz OV se expresan como las muestra AutoCAD, en `[0°, 360°)`.
