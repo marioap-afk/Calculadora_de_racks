@@ -1,6 +1,6 @@
 # I-60 — Nombre lógico automático de los racks nuevos
 
-Status: RECLAMADA Y BOOTSTRAPEADA; Discovery (caracterizacion) en curso; Freeze pendiente; NOT INTEGRATED
+Status: Discovery hecho; Freeze acordado por el Arquitecto (ver decisiones §3); implementacion tras el Freeze; NOT INTEGRATED
 
 Workflow: V2 (unidad nueva posterior a `WORKFLOW_V2_EFFECTIVE_SHA`; base con el SHA efectivo; sin pausa: T4)
 

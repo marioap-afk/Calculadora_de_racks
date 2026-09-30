@@ -32,7 +32,7 @@ son iguales a los `BomLabel`: cambiar uno obliga a decidir el otro (el prefijo f
 ## 3. Regla de asignacion (definicion a nivel de caracter)
 
 - **Patron exacto** de una familia: sobre el nombre sin blancos exteriores (`string.Trim()`, es decir `Char.IsWhiteSpace`; `RACKLISTA` y AUTH-11 ya recortan
-  el nombre igual), el texto es el prefijo, **un** espacio U+0020 y `N`, con `N` hecho solo de digitos ASCII `'0'..'9'` y sin cero a la izquierda. El prefijo se
+  el nombre igual), el texto es el prefijo, **un** espacio U+0020 y `N`, con `N` hecho solo de digitos ASCII `'0'..'9'`, sin cero a la izquierda y mayor o igual que 1 («Selectivo 0» y «Selectivo 03» no son el patron). El prefijo se
   compara con `StringComparison.OrdinalIgnoreCase`, sin normalizacion Unicode: «dinámico 3» cuenta; «Dinamico 3» (sin acento), un NBSP o un tabulador como
   separador, un espacio de ancho cero o una tilde descompuesta (NFD) NO son el patron.
 - **N sin limite de tamaño:** se compara y se incrementa como cadena decimal (sin desbordamiento): «Selectivo 2147483647» → «Selectivo 2147483648»; un `N` de
