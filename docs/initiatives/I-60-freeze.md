@@ -1,6 +1,6 @@
 # I-60 — Freeze: nombre lógico automático de los racks nuevos
 
-Frozen: NO
+Frozen: YES
 
 Unit: `I-60`. Workflow: V2. Archetype: EXTENSION de producto. Rama `feature/nombre-automatico-racks`, base `1304101d`.
 Contrato: [I-60-nombre-automatico-racks.md](I-60-nombre-automatico-racks.md). Decisiones: [decisions/I-60.md](../automation/decisions/I-60.md).
