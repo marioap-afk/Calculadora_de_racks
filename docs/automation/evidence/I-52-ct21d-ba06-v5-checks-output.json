@@ -1,0 +1,738 @@
+{
+ "CHECKER": "docs/automation/evidence/I-52-ct21d-ba06-v5-checks.py",
+ "CHECKER_SHA256": "df67805307daa687c598d58dfc884bda8ad4db63d866e504486531f8593abb19",
+ "ARTIFACT": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v5.md",
+ "COMPARED_WITH": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v4.md",
+ "NOTE": "no hash of the V5 artifact is recorded here: the artifact binds this output by hash (section 14)",
+ "RESULTS": [
+  {
+   "ID": "BA06-C1",
+   "STATEMENT": "the columns of the coverage matrix of section 7, with the fondo counts dropped, are exactly the plan-shape classes of section 10.2",
+   "RESULT": "PASS",
+   "DETAIL": "columns ['SH-ANN', 'SH-DIM', 'SH-F1', 'SH-FALL', 'SH-FN', 'SH-FP', 'SH-IMP', 'SH-LAY-ADDED', 'SH-P']; classes ['SH-ANN', 'SH-DIM', 'SH-F1', 'SH-FALL', 'SH-FN', 'SH-FP', 'SH-IMP', 'SH-LAY-ADDED', 'SH-P']"
+  },
+  {
+   "ID": "BA06-C2",
+   "STATEMENT": "15 MUTATING rows; 14 map to a class of section 3.3; C-105 (SL-3) is n/a by the sealed scope",
+   "RESULT": "PASS",
+   "DETAIL": "MUTATING 15, mapped 14, C-105 class \"n/a (SL-3 not required by the sealed scope, V2.1 25.7)\""
+  },
+  {
+   "ID": "BA06-C3",
+   "STATEMENT": "every NON_MUTATING_READ row has a class; C-13 is marked as an instrument sample",
+   "RESULT": "PASS",
+   "DETAIL": "C-13=instrument (I-07 sample; not an operation class), C-43=OC-LIB-ACQ, C-52=OC-LIB-ACQ, C-61=OC-LIB-ACQ, C-73=OC-LIB-ACQ, C-75=OC-PREP-READ, C-128=OC-ENVELOPE, C-156=OC-PREP-READ, C-169=OC-VERIFY-READ, C-170=OC-VERIFY-READ"
+  },
+  {
+   "ID": "BA06-C4",
+   "STATEMENT": "every class cited in sections 3.2 and 3.2.5 is a class of section 3.3, and every class of 3.3 has its micro-scenario EV-L-<class> or a reasoned exclusion",
+   "RESULT": "PASS",
+   "DETAIL": "classes 21 (micro-scenario 16, exclusion 5); cited not in 3.3: []"
+  },
+  {
+   "ID": "BA06-C5",
+   "STATEMENT": "the 203 rows of section 3.2 transcribe sa1-compiled-operations.json (id, actor, kind, operation, clause fragments), except the declared V4 amendment of C-98",
+   "RESULT": "PASS",
+   "DETAIL": "rows 203; mismatches []"
+  },
+  {
+   "ID": "BA06-C6",
+   "STATEMENT": "DF-nn = DC-nn in order; every DC row transcribes its comparator difference and carries a V4 disposition",
+   "RESULT": "PASS",
+   "DETAIL": "rows 51"
+  },
+  {
+   "ID": "BA06-C7",
+   "STATEMENT": "each of the 25 ambiguities is RESOLVED by a clause outside the compiler fragments, or is a CONTRACT QUESTION with an id of section 3.2.6",
+   "RESULT": "PASS",
+   "DETAIL": "none"
+  },
+  {
+   "ID": "BA06-C8",
+   "STATEMENT": "every fragment of sa1-contract-fragments.md is contained verbatim in the current V2.1, V2.2 or V2.4 text",
+   "RESULT": "PASS",
+   "DETAIL": "8 fragments; not found: []"
+  },
+  {
+   "ID": "BA06-C9",
+   "STATEMENT": "every SHA-256 of section 14, except the row of this output, equals the SHA-256 of the LF-normalized file",
+   "RESULT": "PASS",
+   "DETAIL": "rows 28; mismatches []"
+  },
+  {
+   "ID": "BA06-C10",
+   "STATEMENT": "the published task inputs are internally consistent and reproduce, from repository files, the checks TI-CRIT-A, TI-CRIT-B, TI-CRIT-CENSUS, TI-BLIND, TI-COMPILE and TI-LIST1 (the TI-EV checks compare with the local workflow record and are not reproducible from the repository); the framing that section 2 row 5 declares is in the task texts as stated",
+   "RESULT": "PASS",
+   "DETAIL": "hashes of the 15 task texts and bodies: PASS; critic REVIEW A = B1a: PASS; critic REVIEW B = B1b: PASS; census critic input = B2a..B2d entries: PASS; blind rule in B1a, B1b, critic: PASS; compiler body = prompts.json compile: PASS; comparator body = compare_template with LIST 1 = compact sa1-compiled-operations.json: PASS; all checks recorded at extraction PASS: PASS; declared framing (R2:BA06V4-N05, section 2 row 5): entry points in B1a: PASS; declared framing (R2:BA06V4-N05, section 2 row 5): path chain in B1a and B1b: PASS; declared framing (R2:BA06V4-N05, section 2 row 5): seam paraphrase points in B1a and B1b: PASS; declared framing (R2:BA06V4-N05, section 2 row 5): REACH list only in the census and dependency tasks: PASS"
+  },
+  {
+   "ID": "BA06-C11",
+   "STATEMENT": "the residual table of section 5 cites no row of the superseded V2 R-list",
+   "RESULT": "PASS",
+   "DETAIL": "found []"
+  },
+  {
+   "ID": "BA06-C12",
+   "STATEMENT": "the header cites the git blob of the V4 file, the effective contract and section 217, lists DEPENDS_ON = BA-01, BA-03, BA-05, BA-07 exactly (correction pass (final): the edge BA-06 -> BA-07), has no CANDIDATE_HASH or SEAL_HASH field, and the artifact ends with the Delta V5 section",
+   "RESULT": "PASS",
+   "DETAIL": "V4 blob 5758f3c4b04c24ae33b43b461e1adb087e5bca02; ARTIFACT_VERSION cites the git blob of the V4 file: PASS; AUTHORITY_CONTRACT: PASS; DELTA RULING APPLIED: PASS; DEPENDS_ON = BA-01, BA-03, BA-05, BA-07 (correction pass (final): the edge BA-06 -> BA-07): PASS; no CANDIDATE_HASH or SEAL_HASH: PASS; last section is Delta V5: PASS"
+  },
+  {
+   "ID": "BA06-C13",
+   "STATEMENT": "the V4 file is the one AR4-12 approved (LF SHA-256 and blob prefix of the AR4-12 row of decisions section 217), and the frozen sections of V5 (3 to 3.2.5, 3.3, 7, 10.2, 11) equal those of V4 after the closed list of declared label substitutions, except the insertion of declared limit (4) in section 7; every changed line is reported. The frozen sections are not the whole inventory: its components of sections 5 and 12 are outside them (BA06-C14)",
+   "RESULT": "PASS",
+   "DETAIL": "V4 SHA-256 4faae1658dc031808868102761af430b8fcce64b049cac0f6e6c6ac534746f09, blob 5758f3c4b04c24ae33b43b461e1adb087e5bca02; approved SHA-256 4faae1658dc031808868102761af430b8fcce64b049cac0f6e6c6ac534746f09, blob 5758f3c4; parts identical except declared: 3 to 3.2.5=True, 3.3=True, 7=True, 10.2=True, 11=True; label substitutions {'SIBLING_VERSION_LABEL: BA-05 V4 -> BA-05 V5': 7, 'SIBLING_VERSION_LABEL: BA-08 V4 -> BA-08 V5': 9, 'BA11_REGISTRY_CITATION_LABEL (AR4-17): BA-11 V4 section -> BA-11 registry section': 1, 'SIBLING_VERSION_LABEL: BA-04 V4 -> BA-04 V5': 3, 'ROUND_V4_QUESTION_LABEL (ruled; coordination sheet section 0): is open question AQ-V4-14. -> is ruled by AR4-15 (section 217; section 5).': 1}",
+   "REPORT": {
+    "LABELS": [
+     {
+      "CATEGORY": "SIBLING_VERSION_LABEL",
+      "V4": "BA-04 V4",
+      "V5": "BA-04 V5"
+     },
+     {
+      "CATEGORY": "SIBLING_VERSION_LABEL",
+      "V4": "BA-05 V4",
+      "V5": "BA-05 V5"
+     },
+     {
+      "CATEGORY": "SIBLING_VERSION_LABEL",
+      "V4": "BA-07 V4",
+      "V5": "BA-07 V5"
+     },
+     {
+      "CATEGORY": "SIBLING_VERSION_LABEL",
+      "V4": "BA-08 V4",
+      "V5": "BA-08 V5"
+     },
+     {
+      "CATEGORY": "SIBLING_VERSION_LABEL",
+      "V4": "BA-09 V4",
+      "V5": "BA-09 V5"
+     },
+     {
+      "CATEGORY": "SIBLING_VERSION_LABEL",
+      "V4": "BA-10 V4",
+      "V5": "BA-10 V5"
+     },
+     {
+      "CATEGORY": "BA11_REGISTRY_CITATION_LABEL (AR4-17)",
+      "V4": "BA-11 V4 section",
+      "V5": "BA-11 registry section"
+     },
+     {
+      "CATEGORY": "ROUND_V4_QUESTION_LABEL (ruled; coordination sheet section 0)",
+      "V4": "is open question AQ-V4-14.",
+      "V5": "is ruled by AR4-15 (section 217; section 5)."
+     }
+    ],
+    "PARTS": [
+     {
+      "PART": "3 to 3.2.5",
+      "V4_LINES": "57-469",
+      "V5_LINES": "68-480",
+      "DECLARED_LABEL_SUBSTITUTIONS": {
+       "SIBLING_VERSION_LABEL: BA-05 V4 -> BA-05 V5": 1,
+       "SIBLING_VERSION_LABEL: BA-08 V4 -> BA-08 V5": 2,
+       "BA11_REGISTRY_CITATION_LABEL (AR4-17): BA-11 V4 section -> BA-11 registry section": 1
+      },
+      "IDENTICAL_EXCEPT_DECLARED": true,
+      "CHANGED_LINES": [
+       {
+        "V5_LINE": 123,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "registry",
+          "V5_CONTEXT": "-01 (BA-11 registry section 1), and"
+         }
+        ]
+       },
+       {
+        "V5_LINE": 451,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": "(fingerprint; BA-05 V5), 4.3 and"
+         }
+        ]
+       },
+       {
+        "V5_LINE": 452,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": ".2; BA-08 V5) |"
+         }
+        ]
+       },
+       {
+        "V5_LINE": 466,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": ", by BA-08 V5 section 5 |"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "PART": "3.3",
+      "V4_LINES": "485-515",
+      "V5_LINES": "498-528",
+      "DECLARED_LABEL_SUBSTITUTIONS": {
+       "SIBLING_VERSION_LABEL: BA-04 V4 -> BA-04 V5": 3,
+       "SIBLING_VERSION_LABEL: BA-08 V4 -> BA-08 V5": 2
+      },
+      "IDENTICAL_EXCEPT_DECLARED": true,
+      "CHANGED_LINES": [
+       {
+        "V5_LINE": 500,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": "-scenario (BA-04 V5) or reasoned exclusion "
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": " Fixture (BA-08 V5) |"
+         }
+        ]
+       },
+       {
+        "V5_LINE": 507,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": " V4; BA-04 V5) | FX-1F "
+         }
+        ]
+       },
+       {
+        "V5_LINE": 526,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": " domain (BA-08 V5 section 5), so"
+         }
+        ]
+       },
+       {
+        "V5_LINE": 527,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": " V4; BA-04 V5 carries it. `EV"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "PART": "7",
+      "V4_LINES": "679-706",
+      "V5_LINES": "692-719",
+      "DECLARED_LABEL_SUBSTITUTIONS": {
+       "SIBLING_VERSION_LABEL: BA-05 V4 -> BA-05 V5": 6,
+       "SIBLING_VERSION_LABEL: BA-08 V4 -> BA-08 V5": 2,
+       "ROUND_V4_QUESTION_LABEL (ruled; coordination sheet section 0): is open question AQ-V4-14. -> is ruled by AR4-15 (section 217; section 5).": 1
+      },
+      "INSERTION (declared limit (4), AR4-12 condition (1))": " (4) **Build relation (R1:BA06V4-N03; AR4-12 condition (1)):** the trace observes the characterization build built from the same source SHA as the product build (`PRODUCT_BUILD`). During the trace every harness switch is off, every I-14 writer included, except the `RECORDED_NOT_ENFORCED` handling of the AR3-01 set, which changes control-plane decisions only. The `REVIEWED` record carries both build identities (`CHARACTERIZATION_BUILD` and `PRODUCT_BUILD`) and this attestation. An event class that appears only because of a harness difference is recorded as a finding, not added to the inventory.",
+      "IDENTICAL_EXCEPT_DECLARED": true,
+      "CHANGED_LINES": [
+       {
+        "V5_LINE": 701,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": "SCOPED_RECORD_COMPARISON` (BA-05 V5 section 4.1) "
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": "records of BA-08 V5 section 6 (members "
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": "limit of BA-05 V5 section 4.1 item"
+         }
+        ]
+       },
+       {
+        "V5_LINE": 704,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": "SCOPED_RECORD_COMPARISON` (BA-05 V5 section 4.1),"
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": " fingerprint (BA-05 V5 defines none); its"
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": "records of BA-08 V5 section 6 plus the"
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": "to what BA-05 V5 section 2.4 does"
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": "class outside BA-05 V5 section 2.3.1"
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "open",
+          "V5": "ruled",
+          "V5_CONTEXT": " PA-10) is ruled by AR4-15 ("
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "question",
+          "V5": "by",
+          "V5_CONTEXT": "-10) is ruled by AR4-15 (section "
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "AQ",
+          "V5": "AR4",
+          "V5_CONTEXT": ") is ruled by AR4-15 (section 217;"
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "V4-14",
+          "V5": "15 (section 217; section 5)",
+          "V5_CONTEXT": "is ruled by AR4-15 (section 217; section 5)."
+         },
+         {
+          "OP": "INSERT (declared limit (4))",
+          "V4": "",
+          "V5": " (4) **Build relation (R1:BA06V4-N03; AR4-12 condition (1)):** the trace observes the characterization build built from the same source SHA as the product build (`PRODUCT_BUILD`). During the trace every harness switch is off, every I-14 writer included, except the `RECORDED_NOT_ENFORCED` handling of the AR3-01 set, which changes control-plane decisions only. The `REVIEWED` record carries both build identities (`CHARACTERIZATION_BUILD` and `PRODUCT_BUILD`) and this attestation. An event class that appears only because of a harness difference is recorded as a finding, not added to the inventory.",
+          "V5_CONTEXT": "end of the declared-limits paragraph"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "PART": "10.2",
+      "V4_LINES": "727-740",
+      "V5_LINES": "741-754",
+      "DECLARED_LABEL_SUBSTITUTIONS": {
+       "SIBLING_VERSION_LABEL: BA-08 V4 -> BA-08 V5": 3
+      },
+      "IDENTICAL_EXCEPT_DECLARED": true,
+      "CHANGED_LINES": [
+       {
+        "V5_LINE": 743,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": " Fixture (BA-08 V5) |"
+         }
+        ]
+       },
+       {
+        "V5_LINE": 753,
+        "EDITS": [
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": " validation (BA-08 V5 sections 4.1 and"
+         },
+         {
+          "OP": "REPLACE",
+          "V4": "V4",
+          "V5": "V5",
+          "V5_CONTEXT": " residual (BA-08 V5) | `FX-ANN"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "PART": "11",
+      "V4_LINES": "745-771",
+      "V5_LINES": "759-785",
+      "DECLARED_LABEL_SUBSTITUTIONS": {},
+      "IDENTICAL_EXCEPT_DECLARED": true,
+      "CHANGED_LINES": []
+     }
+    ]
+   }
+  },
+  {
+   "ID": "BA06-C14",
+   "STATEMENT": "outside the frozen sections, the content changes are only these: in the review record 3.2.6, column 5 (columns 1 to 4 keep the V4 cells); in the inventory component section 5 (residuals), the host-defaults row (AR4-07) and the failure-path row (AR4-15), with the same residual rows and the same \"affects\" cells, and the paragraph, which states the reasons (a) to (e) of AR4-15; in the inventory component section 12 (EVM schema), the row INVENTORY_REVIEW_RECORDS (R1:BA06V4-N02, R2:BA06V4-N04), with the same fields in the same order. No operation class, row set, \"affects\" cell or EVM field changes; the content edits of sections 5 and 12 are inventory edits reported for the Architect's exact delta check (AR4-12 condition (2))",
+   "RESULT": "PASS",
+   "DETAIL": "3.2.6 True; section 5 True (inventory component; changed rows 2, paragraph changed True); section 12 True (inventory component; changed rows 1)",
+   "REPORT": {
+    "3.2.6": {
+     "CELLS_OF_COLUMNS_1_TO_4_EQUAL_V4": true,
+     "EVERY_ROW_HAS_A_RULING_OR_DEFERRAL": true,
+     "RULINGS": {
+      "CQ-01": "**ADOPTED** by AR4-12: the reading of column 4",
+      "CQ-02": "**ADOPTED** by AR4-12: the reading of column 4",
+      "CQ-03": "**RULED** by AR4-12 for (i) and (ii): before the first import, **O1** (V2.1 17.2 row 2); after at least one import, O2 or O6 by ABORT-VERIFY. **DEFERRED** by AR4-12 for (iii): no outcome row applies after CP and resolving it needs a reviewed amendment; it blocks no content and no scenario",
+      "CQ-04": "**DEFERRED** by AR4-12 to the seam implementation review (EXEC-3, P-1..P-5), with the baseline reading recorded: no nested transaction is planned, and one observed opens a new operation class (V2.4)",
+      "CQ-05": "**RULED** by AR4-12 for the logging: the log records the three-valued result (YES, NO or UNKNOWN) with a sequence number. **DEFERRED** by AR4-12 for the rest (whether own bookkeeping is a mandatory second source; who owns the implementation of the typed authority) to the qualification of I-07 (E6-C5) and to the implementation review",
+      "CQ-06": "**ADOPTED** by AR4-12: the reading of column 4; `OC-ENVELOPE` has no SL-4 instance",
+      "CQ-07": "**RULED** by AR4-12 for two points: (a) a name that the sanitizer reduces to empty is `InvalidBlockName` (PRE-WRITE) in the seam, and PREPARE-R refuses the run with O1 when its expected effective name is empty (V2.1 15.4, 15.5, 6); (b) the host-generated objects (the anonymous dimension blocks) stay the residual of section 5. **DEFERRED** by AR4-12 to EXEC-3 for the rest: the verification of \"deterministic result\", the naming actor and the comparison of the returned effective name, the criteria of `InvalidPlan` and `InvalidEnvelope`, the PRE-WRITE detectability of `MissingLibraryBlocks`, the semantics of `MissingInstances` and `Diagnostic`, and the SL-4 property list",
+      "CQ-08": "**MOOT** by AR4-01 (V2.1 27.5): the learning runs `EV-L-*` run on the `PRODUCT_BUILD`, the build of the validation runs `EV-V-*`, so no build difference arises between the learned and the validated model (section 9)"
+     }
+    },
+    "5": {
+     "ROWS_V4": 17,
+     "ROWS_V5": 17,
+     "CHANGED_ROWS": [
+      {
+       "KEY": "Defaults applied on AppendEntity without SetDatabaseDefaults (layer, c",
+       "DECLARED_BY": "AR4-07",
+       "CHANGED_CELLS": [
+        {
+         "COLUMN": 1,
+         "V4_CELL": "Defaults applied on AppendEntity without SetDatabaseDefaults (layer, color, linetype, lineweight, and the DBText text style) for the nested refs, DBText, dimensions and the top-level ref. **V4 (AR3-11):** the attributes that neither the plan, the writer constants nor the I-52 authority determine are characterized by `HDM-CHAR-FX1F`, `HDM-CHAR-FXANN` and `HDM-CHAR-FXDIM` (non-governing, AR3-01 mode; BA-04 V4) and pinned as `HOST_DEFAULT_MAP`, keyed by the consumed context variables (`CLAYER`, `CECOLOR`, `CELTYPE`, `CELTSCALE`, `CELWEIGHT`, `CETRANSPARENCY`, `CPLOTSTYLE`, current text and dimension style) captured in the `PRE_COMMAND_STATE_RECORD`; the ST-13 set of the top-level reference is read from the source reference, not from the map. For the EVM they stay a residual",
+         "V5_CELL": "Defaults applied on AppendEntity without SetDatabaseDefaults (layer, color, linetype, lineweight, and the DBText text style) for the nested refs, DBText, dimensions and the top-level ref. **V4 (AR3-11):** the attributes that neither the plan, the writer constants nor the I-52 authority determine are characterized by `HDM-CHAR-FX1F`, `HDM-CHAR-FXANN` and `HDM-CHAR-FXDIM` (non-governing, AR3-01 mode; BA-04 V5) and pinned as `HOST_DEFAULT_MAP`, keyed by the consumed context variables (`CLAYER`, `CECOLOR`, `CELTYPE`, `CELTSCALE`, `CELWEIGHT`, `CETRANSPARENCY`, `CPLOTSTYLE`, current text and dimension style) captured in the `PRE_COMMAND_STATE_RECORD`; the ST-13 set of the top-level reference is read from the source reference, not from the map. **V5 (AR4-07):** a fourth characterization scenario, `HDM-CHAR-FXANNBLANK` (fixture `FX-ANN-BLANK`, same mode), records the `SYMBOL_RECORD_LAYER` typed form of the created layer (every field except name and colour) with the key values of the run. For the EVM they stay a residual",
+         "EDITS": [
+          {
+           "OP": "REPLACE",
+           "V4": "V4",
+           "V5": "V5",
+           "V5_CONTEXT": " mode; BA-04 V5) and pinned as "
+          },
+          {
+           "OP": "INSERT",
+           "V4": "",
+           "V5": "**V5 (AR4-07):** a fourth characterization scenario, `HDM-CHAR-FXANNBLANK` (fixture `FX-ANN-BLANK`, same mode), records the `SYMBOL_RECORD_LAYER` typed form of the created layer (every field except name and colour) with the key values of the run. ",
+           "V5_CONTEXT": " from the map. **V5 (AR4-07):** a fourth characterization scenario, `HDM-CHAR-FXANNBLANK` (fixture `FX-ANN-BLANK`, same mode), records the `SYMBOL_RECORD_LAYER` typed form of the created layer (every field except name and colour) with the key values of the run. For the EVM they "
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "KEY": "**V4 (BA06V3-N08):** event classes of the failure paths: the abort of ",
+       "DECLARED_BY": "AR4-15",
+       "CHANGED_CELLS": [
+        {
+         "COLUMN": 3,
+         "V4_CELL": "not traced: the dynamic-trace plan covers success paths only (section 7, declared limit); its effect on governing abort scenarios is open question AQ-V4-14",
+         "V5_CELL": "not traced: the dynamic-trace plan covers success paths only (section 7, declared limit (3)). **V5 (AR4-15):** no expectation change in the governing abort scenarios, for the reasons (a) to (e) stated below the table",
+         "EDITS": [
+          {
+           "OP": "INSERT",
+           "V4": "",
+           "V5": " (3",
+           "V5_CONTEXT": "section 7, declared limit (3)). **V5 "
+          },
+          {
+           "OP": "REPLACE",
+           "V4": ";",
+           "V5": ").",
+           "V5_CONTEXT": " declared limit (3)). **V5 (AR4-"
+          },
+          {
+           "OP": "REPLACE",
+           "V4": "its",
+           "V5": "**V5",
+           "V5_CONTEXT": "limit (3)). **V5 (AR4-15):*"
+          },
+          {
+           "OP": "REPLACE",
+           "V4": "effect",
+           "V5": "(AR4-15):**",
+           "V5_CONTEXT": ")). **V5 (AR4-15):** no expectation change in"
+          },
+          {
+           "OP": "REPLACE",
+           "V4": "on",
+           "V5": "no expectation change in the",
+           "V5_CONTEXT": "AR4-15):** no expectation change in the governing abort scenarios, "
+          },
+          {
+           "OP": "INSERT",
+           "V4": "",
+           "V5": ",",
+           "V5_CONTEXT": " the governing abort scenarios, for the reasons ("
+          },
+          {
+           "OP": "REPLACE",
+           "V4": "is",
+           "V5": "for",
+           "V5_CONTEXT": " governing abort scenarios, for the reasons (a)"
+          },
+          {
+           "OP": "REPLACE",
+           "V4": "open",
+           "V5": "the",
+           "V5_CONTEXT": " abort scenarios, for the reasons (a) to"
+          },
+          {
+           "OP": "REPLACE",
+           "V4": "question",
+           "V5": "reasons",
+           "V5_CONTEXT": " scenarios, for the reasons (a) to ("
+          },
+          {
+           "OP": "REPLACE",
+           "V4": "AQ-V4-14",
+           "V5": "(a) to (e) stated below the table",
+           "V5_CONTEXT": ", for the reasons (a) to (e) stated below the table"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "PARAGRAPH_V4": "Each residual is expected to surface, if it produces events, as an **unexplained event** in learning (V2.1 27.2 step 4), which blocks the freeze of the model until it is explained. The failure-path row surfaces only if a learning run reaches such a path; in validation, an event category the frozen EVM does not explain is `EVM_INCOMPLETE`, which requires a new model version, review and revalidation (V2.2 PA-10). A governing abort scenario of BA-04 V4 exercises a failure path, so phase A may meet events of that path that the frozen EVM does not explain; how those scenarios declare this residual in their expected E-12 results or conditional rules is open question **AQ-V4-14** for the Architect. This artifact does not decide it.",
+     "PARAGRAPH_V5": "Each residual is expected to surface, if it produces events, as an **unexplained event** in learning (V2.1 27.2 step 4), which blocks the freeze of the model until it is explained. The failure-path row surfaces only if a learning run reaches such a path; in validation, an event category the frozen EVM does not explain is `EVM_INCOMPLETE`, which requires a new model version, review and revalidation (V2.2 PA-10). **Ruling AR4-15 (section 217; AQ-V4-14).** The failure-path residual changes no expectation of the 20 governing abort scenarios of BA-04 V5, and no learning variant of the rollback is required, for these reasons: (a) phase A is evaluated at PV over the events from the opening of `T_M` to PV, and in the scenarios whose reach is PV the abort follows that evaluation; (b) the later events, an `Abort()` after PV and the failed `Commit()` of scenario U-6b included, fall in the commit-boundary interval, recorded and not adjudicated (V2.1 9, `NG-19b`); (c) the imports of PREPARE-W and their failures are phase 0, log only; (d) the scenarios whose reach is PS or PW never reach PV, so their phase A is `NOT_EVALUATED` (AR2-25); (e) the ABORT-VERIFY reads run after the abort. The residual is therefore this: the failure-path event classes are neither traced (section 7, declared limit (3)) nor learned, and in the governing abort scenarios they fall in phase 0, in the commit-boundary interval, in a phase A that is not evaluated or in the ABORT-VERIFY reads after the abort; they are recorded there and never adjudicated by E-12 phase A. This artifact records the ruling and decides nothing further.",
+     "PARAGRAPH_EDITS": [
+      {
+       "OP": "REPLACE",
+       "V4": "A",
+       "V5": "**Ruling AR4-15 (section 217; AQ-V4-14).** The failure-path residual changes no expectation of the 20",
+       "V5_CONTEXT": "2 PA-10). **Ruling AR4-15 (section 217; AQ-V4-14).** The failure-path residual changes no expectation of the 20 governing abort scenarios of"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "scenario",
+       "V5": "scenarios",
+       "V5_CONTEXT": "the 20 governing abort scenarios of BA-04 V5"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "V4 exercises a failure path",
+       "V5": "V5",
+       "V5_CONTEXT": "scenarios of BA-04 V5, and no learning "
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "so",
+       "V5": "and no learning variant of the rollback is required, for these reasons: (a)",
+       "V5_CONTEXT": " BA-04 V5, and no learning variant of the rollback is required, for these reasons: (a) phase A is evaluated"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "may",
+       "V5": "is",
+       "V5_CONTEXT": "(a) phase A is evaluated at PV over"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "meet",
+       "V5": "evaluated at PV over the",
+       "V5_CONTEXT": ") phase A is evaluated at PV over the events from the opening"
+      },
+      {
+       "OP": "INSERT",
+       "V4": "",
+       "V5": "from the opening ",
+       "V5_CONTEXT": "PV over the events from the opening of `T_M` to "
+      },
+      {
+       "OP": "INSERT",
+       "V4": "",
+       "V5": " `T_M` to PV, and in the scenarios whose reach is PV the abort follows",
+       "V5_CONTEXT": " from the opening of `T_M` to PV, and in the scenarios whose reach is PV the abort follows that evaluation; (b"
+      },
+      {
+       "OP": "INSERT",
+       "V4": "",
+       "V5": "evaluation; (b) the later events, an `Abort()` after PV and the failed `Commit()` of scenario U-6b included, fall in the commit-boundary interval, recorded and not adjudicated (V2.1 9, `NG-19b`); (c) the imports of PREPARE-W and their failures are phase 0, log only; (d) the scenarios whose reach is PS or PW never reach PV, so their phase A is `NOT_EVALUATED` (AR2-25); (e) the ABORT-VERIFY reads run after the abort. The residual is therefore this: the failure-",
+       "V5_CONTEXT": "the abort follows that evaluation; (b) the later events, an `Abort()` after PV and the failed `Commit()` of scenario U-6b included, fall in the commit-boundary interval, recorded and not adjudicated (V2.1 9, `NG-19b`); (c) the imports of PREPARE-W and their failures are phase 0, log only; (d) the scenarios whose reach is PS or PW never reach PV, so their phase A is `NOT_EVALUATED` (AR2-25); (e) the ABORT-VERIFY reads run after the abort. The residual is therefore this: the failure-path event classes are "
+      },
+      {
+       "OP": "INSERT",
+       "V4": "",
+       "V5": " event classes are neither traced (section 7, declared limit (3)) nor learned, and in the governing abort scenarios they fall in phase 0, in the commit-boundary interval, in a phase A",
+       "V5_CONTEXT": "this: the failure-path event classes are neither traced (section 7, declared limit (3)) nor learned, and in the governing abort scenarios they fall in phase 0, in the commit-boundary interval, in a phase A that is not evaluated"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "the frozen EVM does",
+       "V5": "is",
+       "V5_CONTEXT": "a phase A that is not evaluated or in"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "explain;",
+       "V5": "evaluated",
+       "V5_CONTEXT": "A that is not evaluated or in the ABORT"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "how those scenarios declare this residual",
+       "V5": "or",
+       "V5_CONTEXT": "that is not evaluated or in the ABORT-VERIFY"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "their",
+       "V5": "the",
+       "V5_CONTEXT": "not evaluated or in the ABORT-VERIFY reads after"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "expected",
+       "V5": "ABORT-VERIFY reads after the abort; they are recorded there and never adjudicated by",
+       "V5_CONTEXT": "evaluated or in the ABORT-VERIFY reads after the abort; they are recorded there and never adjudicated by E-12 phase A"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "results",
+       "V5": "phase",
+       "V5_CONTEXT": "adjudicated by E-12 phase A. This artifact "
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "or conditional rules is open question **AQ-V4-14** for the Architect",
+       "V5": "A",
+       "V5_CONTEXT": "by E-12 phase A. This artifact records "
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "does",
+       "V5": "records",
+       "V5_CONTEXT": " A. This artifact records the ruling and decides"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "not",
+       "V5": "the",
+       "V5_CONTEXT": ". This artifact records the ruling and decides nothing"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "decide",
+       "V5": "ruling",
+       "V5_CONTEXT": "This artifact records the ruling and decides nothing further"
+      },
+      {
+       "OP": "REPLACE",
+       "V4": "it",
+       "V5": "and decides nothing further",
+       "V5_CONTEXT": "artifact records the ruling and decides nothing further."
+      }
+     ],
+     "PARAGRAPH_STATES_AR4_15_REASONS_A_TO_E": true
+    },
+    "12": {
+     "ROWS_V4": 12,
+     "ROWS_V5": 12,
+     "CHANGED_ROWS": [
+      {
+       "KEY": "`INVENTORY_REVIEW_RECORDS`",
+       "DECLARED_BY": "R1:BA06V4-N02, R2:BA06V4-N04",
+       "CHANGED_CELLS": [
+        {
+         "COLUMN": 2,
+         "V4_CELL": "**V4 (AR3-22; landing of `V24-N2`):** EVM-level list of the SHA-256 of the `REVIEWED` record (the E2 dynamic trace on the implemented seams) and of every reopened operation-class review record, each also under the custody of BA-07. It holds the `REVIEWED` hash before the first `LEARNING` run (V2.4) and gains an entry for every reopened class review. The `EVM_FROZEN` pin record cites this field",
+         "V5_CELL": "**V4 (AR3-22; landing of `V24-N2`):** EVM-level list of the SHA-256 of the `REVIEWED` record (the E2 dynamic trace on the implemented seams) and of every reopened operation-class review record, each also under the custody of BA-07. **V5 (R1:BA06V4-N02, R2:BA06V4-N04):** it is written when the EVM record is first created (`EVM_STATUS = DRAFT`, V2.1 27.2 step 3, after the learning micro-scenarios), with the hash of the `REVIEWED` record that was in BA-07 custody (`REVIEW_RECORD_ADDED`) before the first `LEARNING` run, and it gains an entry for every reopened class review. It does not show the order \"`REVIEWED` before the first `LEARNING` run\" (V2.4); the learning records and the BA-07 run-start anchors show it: the `REVIEW_RECORD_ADDED` entry has an index at most the `h` of the run-start anchor (`IN_USE.runStartAnchor`) of every `EV-L-OC-*` run (section 9, item (2); BA-07 V5 section 7). The `EVM_FROZEN` pin record cites this field",
+         "EDITS": [
+          {
+           "OP": "REPLACE",
+           "V4": "It",
+           "V5": "**V5",
+           "V5_CONTEXT": " of BA-07. **V5 (R1:BA06V4-N02,"
+          },
+          {
+           "OP": "REPLACE",
+           "V4": "holds",
+           "V5": "(R1:BA06V4-N02, R2:BA06V4-N04):** it is written when the EVM record is first created (`EVM_STATUS = DRAFT`, V2.1 27.2 step 3, after the learning micro-scenarios), with the hash of",
+           "V5_CONTEXT": "-07. **V5 (R1:BA06V4-N02, R2:BA06V4-N04):** it is written when the EVM record is first created (`EVM_STATUS = DRAFT`, V2.1 27.2 step 3, after the learning micro-scenarios), with the hash of the `REVIEWED` record"
+          },
+          {
+           "OP": "REPLACE",
+           "V4": "hash",
+           "V5": "record that was in BA-07 custody (`REVIEW_RECORD_ADDED`)",
+           "V5_CONTEXT": "of the `REVIEWED` record that was in BA-07 custody (`REVIEW_RECORD_ADDED`) before the first `"
+          },
+          {
+           "OP": "REPLACE",
+           "V4": " (V2.4)",
+           "V5": ",",
+           "V5_CONTEXT": " first `LEARNING` run, and it gains an"
+          },
+          {
+           "OP": "INSERT",
+           "V4": "",
+           "V5": " it",
+           "V5_CONTEXT": "`LEARNING` run, and it gains an entry for"
+          },
+          {
+           "OP": "INSERT",
+           "V4": "",
+           "V5": "It does not show the order \"`REVIEWED` before the first `LEARNING` run\" (V2.4); the learning records and the BA-07 run-start anchors show it: the `REVIEW_RECORD_ADDED` entry has an index at most the `h` of the run-start anchor (`IN_USE.runStartAnchor`) of every `EV-L-OC-*` run (section 9, item (2); BA-07 V5 section 7). ",
+           "V5_CONTEXT": " reopened class review. It does not show the order \"`REVIEWED` before the first `LEARNING` run\" (V2.4); the learning records and the BA-07 run-start anchors show it: the `REVIEW_RECORD_ADDED` entry has an index at most the `h` of the run-start anchor (`IN_USE.runStartAnchor`) of every `EV-L-OC-*` run (section 9, item (2); BA-07 V5 section 7). The `EVM_FROZEN` pin "
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "ID": "BA06-C15",
+   "STATEMENT": "section 7 declared limit (4) states the four elements of AR4-12 condition (1): the same source SHA; the harness switches off, every I-14 writer included, except the RECORDED_NOT_ENFORCED handling of the AR3-01 set; both build identities and this attestation in the REVIEWED record; an event class due only to a harness difference is a finding, not an inventory entry",
+   "RESULT": "PASS",
+   "DETAIL": "AR4-12 row cites limit (4) of BA06V4-N03: True; same source SHA as the product build: PASS; every harness switch is off: PASS; every I-14 writer included: PASS; `RECORDED_NOT_ENFORCED` handling of the AR3-01 set: PASS; control-plane decisions only: PASS; both build identities: PASS; this attestation: PASS; only because of a harness difference: PASS; recorded as a finding, not added to the inventory: PASS"
+  },
+  {
+   "ID": "BA06-C16",
+   "STATEMENT": "outside the V4 history of section 15, every mention of a round-V4 open question (AQ-V4-01, AQ-V4-11, AQ-V4-14) is on a line that cites the decision of section 217 that rules it (AR4-01, AR4-12, AR4-15), and no line calls one pending or open, except the V4 cells kept verbatim in columns 1 to 4 of 3.2.6, whose row carries the ruling in column 5",
+   "RESULT": "PASS",
+   "DETAIL": "mentions 11; problems []"
+  },
+  {
+   "ID": "BA06-C17",
+   "STATEMENT": "the review evidence has the SHA-256 that decisions section 217 states, and every BA-06 finding of both passes (R1:, R2:) has one row in the Delta V5 table whose fix starts with FIXED or NOT_ADDRESSED",
+   "RESULT": "PASS",
+   "DETAIL": "review SHA-256 stated 173abdf48bc0417bc476910ec7c6912c821080dc2e398803efbc0cea7d504fe2; findings R1:BA06V4-N01=NOT_ADDRESSED, R1:BA06V4-N02=FIXED, R1:BA06V4-N03=FIXED, R1:BA06V4-N04=FIXED, R2:BA06V4-N01=NOT_ADDRESSED, R2:BA06V4-N02=NOT_ADDRESSED, R2:BA06V4-N03=FIXED, R2:BA06V4-N04=FIXED, R2:BA06V4-N05=FIXED, R2:BA06V4-N06=FIXED"
+  },
+  {
+   "ID": "BA06-C18",
+   "STATEMENT": "the correction pass of round V5 is stated as the Delta V5 table says: section 9 item (2) binds the order \"REVIEWED before the first LEARNING run\" to the run-start anchor of every EV-L-OC-* run, and section 12 points to it; sections 9 and 10.1 state the driver present in every PRODUCT_BUILD run and inert outside EV-L-*; section 9 states EV-L-COMPOSED as a composed plan with no mirror product run; the section 13 inventory row names the content edits of sections 5 and 12; the open Architect questions AQ-V5-01, AQ-V5-03, AQ-V5-04 and AQ-V5-07 are OPEN in section 16.1 and before-candidate prerequisites in the header, and no sentence claims that no open question remains; correction pass (final): the Dependencies paragraph takes the run-start anchor condition from BA-07, the section 9 cross-note cites BA-07 V5 section 5.1 and 6.2 step 5(c), and the Delta V5 table has its correction pass (final) row",
+   "RESULT": "PASS",
+   "DETAIL": "section 9 item (2): the REVIEW_RECORD_ADDED index is at most the h of the run-start anchor of every EV-L-OC-* run: PASS; no text of sections 1, 9 and 12 bases the order on the index of the IN_USE entry: PASS; section 12 row INVENTORY_REVIEW_RECORDS points to section 9 item (2) and the run-start anchor: PASS; driver wording in section 9 and in section 10.1: PASS; EV-L-COMPOSED bullet of section 9: a full composed plan, no mirror product run, runs by pointer to BA-10 V5 2.2: PASS; section 13 inventory row: no \"unchanged from V4\"; names the section 5 and section 12 edits and AQ-V5-07: PASS; section 16.1 has exactly the rows AQ-V5-03, AQ-V5-07, AQ-V5-04, AQ-V5-01, each OPEN with a BEFORE CANDIDATE gate: PASS; header PREREQUISITES (3) names the four questions with a BEFORE CANDIDATE gate: PASS; no sentence claims that no open question remains: PASS; the Delta V5 table has rows labelled correction pass: PASS; correction pass (final): the Dependencies paragraph takes the run-start anchor condition of section 9 item (2) normatively from BA-07: PASS; correction pass (final): the section 9 cross-note cites BA-07 V5 section 5.1 and 6.2 step 5(c) (REVIEW_AFTER_LEARNING_START): PASS; correction pass (final): the Delta V5 table has exactly one row labelled correction pass (final): PASS"
+  }
+ ],
+ "ALL_PASS": true
+}

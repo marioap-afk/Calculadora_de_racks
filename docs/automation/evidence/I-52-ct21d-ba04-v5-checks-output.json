@@ -1,0 +1,604 @@
+{
+ "checker": "docs/automation/evidence/I-52-ct21d-ba04-v5-checks.py",
+ "checker_sha256_lf": "ba65bdee8b0e80756e238fb18e15a77c97c3081861b9f2d0f37143a1e32b2326",
+ "inputs_sha256_lf": {
+  "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v5.json": "68c0518c62ccdb43b793ddd7dbd29a056e20c29f0adde614f7bbaa84c0124af0",
+  "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v5.md": "df0df487a7872765aad7578e0a0ee72ad04641bc91257a574738b6aba771bc6d",
+  "docs/initiatives/I-52-ct21d-baseline-ba-02b-coverage-matrix-v5.md": "35e48be62f5c95c453df08af9efe9d2d094612363e3c26d9eacc32a58c42657b",
+  "docs/initiatives/I-52-ct21d-baseline-ba-02a-control-registry-v3.md": "acb5e01de3c1b722e9757bfb26aafb6a707599b37dd2902e4c64676c1bd2e3c3",
+  "docs/initiatives/I-52-ct21d-authority-contract-v2.1.md": "a8684e7cf83becd44ac94ab4021a774fe8fa2adb3ebda3d4f219fc6489caeacb",
+  "docs/initiatives/I-52-ct21d-authority-contract-v2.2.md": "08a6835057649730af45628c5737a388427fbacf81573b9ccb6e05127f17feda",
+  "docs/automation/evidence/I-52-ct21d-fpspec-v1-vectors-v5.json": "87473b0c008370c863f0b4c136939f5d05a84e4bf4913fca85b5f1f7348eb249",
+  "docs/initiatives/I-52-ct21d-baseline-ba-07-manifest-custody-v5.md": "e457812edff2939bde93544ae11a86444df3f58de5ff3e991b0c29b13f531ba4"
+ },
+ "hash_method": "SHA-256 of the UTF-8 file text after CRLF -> LF normalization, lowercase hex",
+ "summary": {
+  "checks": 71,
+  "passed": 71,
+  "failed": []
+ },
+ "counts": {
+  "total": 425,
+  "own": 263,
+  "wu_dry": 162,
+  "by_run_governance": {
+   "EXPLORATORY_NON_GOVERNING": 2,
+   "GOVERNING": 250,
+   "NON_GOVERNING_BY_DESIGN": 173
+  },
+  "by_group": {
+   "AB": 6,
+   "CL": 1,
+   "E10": 1,
+   "E11M": 2,
+   "E12-L": 17,
+   "E12-V": 6,
+   "E4": 4,
+   "E6": 17,
+   "E8": 14,
+   "E9": 1,
+   "EA1": 1,
+   "EA2": 1,
+   "HDM": 4,
+   "ID-A": 3,
+   "KS": 11,
+   "LK": 6,
+   "OU": 11,
+   "PP": 1,
+   "PR-FRESH": 4,
+   "PR-REC": 3,
+   "PW": 1,
+   "PW-CLONE": 6,
+   "Q": 49,
+   "S1": 1,
+   "SC-A": 49,
+   "SC-B": 32,
+   "U-1..U-8": 8,
+   "U-6b": 1,
+   "WU": 164
+  },
+  "by_status": {
+   "DRAFT": 160,
+   "EXPLORATORY_NON_GOVERNING": 2,
+   "SEALED_CANDIDATE": 69,
+   "SEALED_PENDING_PIN_CANDIDATE": 194
+  },
+  "by_build_under_test": {
+   "CHARACTERIZATION_BUILD": 333,
+   "NONE": 12,
+   "PRODUCT_BUILD": 80
+  },
+  "by_repetition": {
+   "CHAR: CHAR_RUNS = EVIDENCE_REPETITION (exploratory)": 2,
+   "CHAR: CHAR_RUNS = N_A": 6,
+   "CHAR: CHAR_RUNS = N_A at the pinned key values, plus exactly one informative run per varied key (outside the intent)": 4,
+   "CHAR: CHAR_RUNS = PARAM-02 (non-governing composition check)": 1,
+   "CLEAN: max(max(N_A, N_B), ceil(n / K))": 10,
+   "DEFAULT: N_A": 32,
+   "DEFAULT: N_B": 4,
+   "DEFAULT: max(N_A, N_B)": 113,
+   "DRY: WU_DRY_RUNS = N_B": 162,
+   "EVIDENCE: EVIDENCE_REPETITION": 57,
+   "EVIDENCE_STRICT: max(N_A, EVIDENCE_REPETITION)": 1,
+   "EVIDENCE_STRICT: max(N_B, EVIDENCE_REPETITION)": 1,
+   "EVIDENCE_STRICT: max(max(N_A, N_B), EVIDENCE_REPETITION)": 1,
+   "LEARN: PARAM-02": 16,
+   "SYNTH: ONE": 12,
+   "VALIDATE: max(max(N_A, N_B), PARAM-02 validation count)": 3
+  },
+  "blockers": {
+   "AQ-V5-08": 2,
+   "K-3": 134,
+   "K-8": 34
+  },
+  "pin_slots": {
+   "E04_ADMITTED_SET": 155,
+   "EVM_FROZEN": 134,
+   "FIXTURE_INSTANCE": 358,
+   "HOST_DEFAULT_MAP": 134,
+   "LOCK_MODE": 169
+  },
+  "run_prerequisites": {
+   "BUILD_EQUIVALENCE_RECORD": 48,
+   "QUALIFICATION_RECORD@Q-I14-P": 1,
+   "QUALIFICATION_RECORD@Q-I14-SILENT-X": 7,
+   "QUALIFICATION_RECORD@Q-I14-SILENT-Y": 3,
+   "QUALIFICATION_RECORD@Q-I14-X": 87,
+   "QUALIFICATION_RECORD@Q-I14-Y": 5,
+   "REVIEWED_RECORD": 17
+  },
+  "ar3_01_mode": 177,
+  "per_build_twins": 29,
+  "ev_l": 17,
+  "dry_run_branch_sources": [
+   "NC-E03-NOT-HELD",
+   "NC-E03-REACQUIRE",
+   "NC-E04-R2",
+   "NC-E12A",
+   "NC-S1-Y1",
+   "NC-S1-Y1-SILENT"
+  ],
+  "dry_run_load_sources": [
+   "AB-AFTER-MUTATION",
+   "NC-E10",
+   "NC-E11M-PC",
+   "NC-E11M-PV",
+   "NC-WU-FOREIGN",
+   "U-5"
+  ],
+  "cl_clean": [
+   "CL-CLEAN-FX1F-F0",
+   "CL-CLEAN-FX1F-P",
+   "CL-CLEAN-FX1F-FP",
+   "CL-CLEAN-FX2F-ALL",
+   "CL-CLEAN-FX4F-ALL",
+   "CL-CLEAN-FXANN-FP",
+   "CL-CLEAN-FXANNBLANK-FP",
+   "CL-CLEAN-FXDIM-FP",
+   "CL-CLEAN-FXIMP-FP"
+  ],
+  "param_03_sample": [
+   "CL-CLEAN-FX1F-F0",
+   "CL-CLEAN-FX1F-P",
+   "CL-CLEAN-FX1F-FP",
+   "CL-CLEAN-FX2F-ALL",
+   "CL-CLEAN-FX4F-ALL",
+   "CL-CLEAN-FXANN-FP",
+   "CL-CLEAN-FXANNBLANK-FP",
+   "CL-CLEAN-FXDIM-FP",
+   "CL-CLEAN-FXIMP-FP",
+   "EA2-DEFERRED-EVENTS"
+  ],
+  "conditional_negative_control_rows": [
+   "S5",
+   "E12A",
+   "E12C"
+  ],
+  "controls_with_characterization_build_negatives_only": [
+   "S1",
+   "S2",
+   "S3",
+   "E08",
+   "S5",
+   "S5REC",
+   "S5MAN",
+   "E03",
+   "E10",
+   "E11M",
+   "E12A",
+   "E12C",
+   "E12D",
+   "WUM",
+   "LIBF",
+   "CLONE"
+  ]
+ },
+ "checks": {
+  "registry_map_equals_BA-02a": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "class, AFFECTED_GROUPS and IN_PREDICATE of every key of the JSON REGISTRY_MAP equal BA-02a V3 section 2 (V2.2 PA-1.2)"
+  },
+  "group_table_equals_BA-02a": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "the JSON GROUP_TABLE equals BA-02a V3 section 3 (V2.2 PA-1.3)"
+  },
+  "scenario_ids_unique": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "v5_schema_fields_present": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "every scenario has exactly the V5 schema fields (the V4 fields plus RUN_PREREQUISITES)"
+  },
+  "scenario_version_5": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "authority_source_present": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "V2.1 26.1: mandatory"
+  },
+  "build_under_test_values": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "NONE only for synthetic scenarios (REACH SYN)"
+  },
+  "group_fields_defined_in_ba04_section1_and_applied_by_ba02b": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR4-17: GROUPS_SERVED and CONTRACT_ASSIGNED_GROUPS are defined normatively in BA-04 section 1 (and the JSON); BA-02b rule 1 applies that definition; no BA-04 -> BA-02b edge"
+  },
+  "groups_served_equals_definition_of_ba04_section1": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "GROUPS_SERVED == ordered union of AFFECTED_GROUPS(CONTROLS_EXERCISED) then EVIDENCE_GROUPS_DECLARED; nothing else"
+  },
+  "evidence_groups_declared_are_evidence_kind": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "contract_assigned_groups_admitted_sources": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "each entry is {group, clause}, a CONTROL group, never in GROUPS_SERVED; the clause cites the admitted source that fits the scenario (V2.1 10.8 for X7 cells; V2.1 10.6 and 21.4 for residual cells; V2.2 PA-12 for closure completeness; AR4-03 with V2.1 26.3 and 31 for KS-*); the verdict says never PASS"
+  },
+  "control_classes_derived": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "group_is_served_or_contract_assigned": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "the primary GROUP is served or contract-assigned; HDM (not a PA-1.3 group) and the non-governing composition check EV-L-COMPOSED (AR4-01) are the declared exceptions"
+  },
+  "ar3_06_specific": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "ar3_01_set_exact": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "provisional_outcome_only_in_ar3_01_mode": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "ar3_01_mode_ruled_scope": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "the AR3-01 mode applies exactly to E4-LEARN-R1-*, LK-*, HDM-CHAR-*, WU-DRY-* (non-governing) and the Q-I14-* vehicles (governing, AR4-01): CHARACTERIZATION_BUILD, PROVISIONAL_NON_GOVERNING, CHARACTERIZATION_TUPLE; no EVM, HOST_DEFAULT_MAP, E-04 pin or K-3; no proposal label remains"
+  },
+  "ev_l_fields_ar4_01": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR4-01: EV-L-OC-* governing E12-L on the PRODUCT_BUILD, the driver a declared harness DLL; RECORDED_NOT_ENFORCED = E-04, E-12 phase A, E-12 phase C with the basis per control; E-03 enforced under LOCK_MODE; S-1..S-3 NOT_EVALUATED; outcome NONE; EV-L-COMPOSED non-governing, outside the corpus"
+  },
+  "per_build_qualification_twins": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR4-06 (3): every Q-* and E6-C* outside the I-14 family has a twin <id>-CB on the CHARACTERIZATION_BUILD with the same expectation and a qualification tuple naming its build; the I-14 family runs only on the CHARACTERIZATION_BUILD; each instrument of V2.1 4.3 per build"
+  },
+  "characterization_tuple_profile_per_build": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR4-06 (1), (2): one admissible BUILD_BOUND profile per build; CHARACTERIZATION_TUPLE with its own build-dependent fields"
+  },
+  "run_prerequisites_equivalence_and_qualification": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR4-06 (4): BUILD_EQUIVALENCE_RECORD exactly on the PRODUCT_BUILD scenarios that consume E04_ADMITTED_SET, LOCK_MODE or HOST_DEFAULT_MAP; every I-14 record a rule resolves from is named (Q-I14-X, Q-I14-Y, Q-I14-SILENT-*); NC-E12A and NC-S5-O6 name Q-I14-Y (AR4-01, AR4-04, AR4-16); correction pass: every governing I-14 writer injection names its vehicle's record (X: Q-I14-X, Y: Q-I14-Y, between PR and PW: Q-I14-P, silent: Q-I14-SILENT-*); the REVIEWED_RECORD exactly on EV-L-*; the RUN_PREREQUISITE_RULE; correction pass (final): the BUILD_EQUIVALENCE_RECORD by pointer to BA-07 V5 (location, content schema and custody: sections 2, 4 and 5.3; use precondition: section 7, U5), no superseded in-catalog path or field names, U5 in the vocabulary, the citation rule and step 6 of 2.2, and BA-07 V5 holds what is pointed to"
+  },
+  "i14_records_only_on_characterization_build": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "V2.1 4.3 row I-14 and AR4-06 (6): a rule that resolves from an I-14 record is used only on the CHARACTERIZATION_BUILD; EA2-DEFERRED-EVENTS runs there"
+  },
+  "wu_dry_exactly_one_per_governing_window_scenario": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "the one rule of BA-09 section 4: every GOVERNING scenario of MODE CHARACTERIZATION_RUN or VALIDATION with REACH in P0..CP has exactly one WU-DRY-<id>; no other scenario has one; a dry run carries only the FIXTURE_INSTANCE slots of its source, WU_DRY_RUNS = N_B, the source injections (plus the branch switch where AR4-02 applies), the AR3-01 set, the source blockers K-8 and AQ-V5-08, the source REACH and \"LP-DRY over\" the source log"
+  },
+  "wu_dry_for_the_named_scenarios": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "dry_run_branch_switches_ar4_02": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR4-02: the dry run of each source whose refusal or abort comes from a RECORDED_NOT_ENFORCED control takes the declared branch at the same checkpoint through the DRY_RUN_BRANCH_SWITCH, named in PLAN_OR_INPUT and INJECTIONS; REACH and profile as the source; no other dry run has it"
+  },
+  "dry_run_canary_load_exclusion_ar4_16": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR4-16: the dry runs of the sources with a designed load injection (CANARY_LOAD, foreign-load HARNESS_FAULT) exclude the loads of the named assembly or module (declared identity), record them as STIMULUS_LOAD, count every other load; a warm-up revision never preloads it"
+  },
+  "flags_targets_designed_stimuli": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "DESIGNED_STIMULUS != NONE => flag NO; flag YES => a registry control or INSTRUMENT:I-nn target; flag NO => target NONE"
+  },
+  "yes_target_result_names_the_failure": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR2-09: the target control's expected result names its FAIL, UNKNOWN, difference or rejection"
+  },
+  "conditional_e12c_cells_target_e12c": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR3-05: a scan cell whose detection is conditional on E-12 phase C (not a secondary channel) targets E12C"
+  },
+  "conditional_negative_controls_branch_dependent": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR4-16, AR4-20 (d), R1:BA02V4-N02: a conditional negative control gives a designed detection only on its detection branch; the target result on the non-detection branch is PASS with the scenario NOT_RUNNABLE as a negative control"
+  },
+  "nc_e12a_conditional_by_cer_wit": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR4-16 (R1:BA04V4-04, R2:BA04V4-05): NC-E12A conditional by CER-WIT; the witness qualified for XDATA_WRITE at Y1"
+  },
+  "sealed_at_recomputes": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "SHA-256 over the canonical serialization (sorted keys, UTF-8, separators \",\" and \":\", no ASCII escaping) of the fields of SEALED_AT_RULE"
+  },
+  "sealed_at_fields": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "the SEALED_AT fields are schema fields, exclude the derived ones, and include the group-attribution and repetition fields (R1:BA04V4-10, R2:BA04V4-09)"
+  },
+  "expected_outcome_kinds": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "exact O1..O7, NONE, a declared conditional, PROVISIONAL_NON_GOVERNING or the outcome of the preceding run"
+  },
+  "cer_registry_same_in_json_and_md": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "cer_references_registered": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "cer_used_is_declared_in_rule_field": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "pin_slots_rule": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "section 2.1 of BA-04 V5 (E-04 pin only where the run reaches the P0 control evaluation)"
+  },
+  "k3_exactly_where_s1_s3_are_adjudicated": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "governing host scenario outside the AR3-01 mode with REACH PV or CP"
+  },
+  "k8_exactly_on_fx_imp_family": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "blocked_by_values": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "BLOCKED_BY uses only K-3, K-8 and AQ-V5-08 (the open item on the admission of Q-I14-P; correction pass (final)): AQ-V4-01, AQ-V4-03, K-6 and E6-C4 are ruled (AR4-01, AR4-03, AR4-07, AR4-04)"
+  },
+  "aq_v5_08_exactly_on_q_i14_p_and_its_dry_run": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "correction pass (final): AQ-V5-08 is carried by Q-I14-P and WU-DRY-Q-I14-P only, after K-8 (status DRAFT), and the Q-I14-P NOTE and AR3_01_MODE.ruled_for name it"
+  },
+  "blockers_prerequisites_and_edges": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "the section 1 vocabulary is K-3, K-8 and AQ-V5-08; section 7.1 lists K-3, K-8 and the Architect review (AQ-V5-08 among its items) and says which remain; the header PREREQUISITES names no ruled question; DEPENDS_ON adds BA-07 (BA-04) and BA-01 (BA-02b) (AR4-17)"
+  },
+  "status_rule": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "param_03_sample": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "the governing CL-CLEAN-<fixture> scenarios plus EA2-DEFERRED-EVENTS carry the CLEAN rule, and no other (AR3-24); EA2 valid for the product build only under the equivalence"
+  },
+  "repetition_label_equals_ba10_derivation": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "the REPETITION label of every scenario is the first matching row of the BA-10 rule table (N_strict: N_A, N_B or max(N_A, N_B); CONTRACT_ASSIGNED_GROUPS excluded, AR4-14 (a); CHAR_RUNS with exactly one informative run per varied key, AR4-14 (b)(ii))"
+  },
+  "dry_rule_n_b": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "log_record_deltas_and_evidence_sets": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "R1:BA04V4-03: INJECTION records for every injected scenario, WITNESS records where CER-WIT, CER-A2 or CER-PERSIST resolve, the POST_ABORT_READ record where CER-PERSIST resolves (and in Q-I14-Y); the evidence set names the I-14 records; every profile token is defined"
+  },
+  "ruling_traces": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "correction_pass_consistency": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "correction pass of round V5: HDM-CHAR-FXDIM excludes the writer-assigned dimension style; the driver DLL is in the one PRODUCT_BUILD profile (EV-L-* and EV-V-* use it); \"Enforced, not exercised\" is normative; Q-I14-P qualifies the PREPARE-phase coordinate; EV-L-COMPOSED's outcome; md 7.4 and C-10; md 8.1 AQ-V4-11 (in ruling_traces)"
+  },
+  "expected_result_keys_exercised_or_declared": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "every registry key of EXPECTED_CONTROL_RESULTS is in CONTROLS_EXERCISED, or its value is NOT_DECLARED, or it is a control of the scenario's own RECORDED_NOT_ENFORCED set with the value RECORDED_NOT_ENFORCED, or, in an EV-L-* scenario only, a control it enforces with the value ENFORCED_NOT_EXERCISED (section 1; correction pass); no EV-L-* control expectation hides under a non-registry key"
+  },
+  "fpspec_vector_ids_and_outcomes": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "Q-FPSPEC-VECTORS (and its twin) names exactVectors, rejectedInputs and semanticVectors, expects every DIGEST, UNKNOWN and REJECTED and the INVALID instance rule, binds the BA-08 SEAL_HASH; Q-SIGNED-ZERO cites EV-01, EV-02, SV-05, EV-06, EV-07, which hold those outcomes"
+  },
+  "md_summary_equals_json": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "no_stale_markers_and_equal_delta_ruling": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "no \"pending AQ-V4\", no version-labelled BA-11 citation (AR4-17), no AQ-V4-01..07 carried as pending; the md header and the JSON hold the same DELTA_RULING_APPLIED; the contract line of round V5"
+  },
+  "ba02b_no_coverage_gap_except_declared_conditionals": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "every control is COVERED_DRAFT, or COVERED_DRAFT_CONDITIONAL (only conditional negative controls: NEGATIVE_CONTROL_NOT_EVALUATED at acceptance, AR3-03)"
+  },
+  "ba02b_section2_states_and_characterization_column_equal_recomputation": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "ba02b_conditional_rows_declared": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "ba02b_characterization_build_dependency_declared": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "R1:BA02V4-N03: the controls whose every counted negative control runs on the CHARACTERIZATION_BUILD are named (AR4-06)"
+  },
+  "ba02b_section2_rows_all_controls": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "ba02b_rule5_ar4_20_r3": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR4-20 R-3 (a)..(d): per control; check 2 NOT MET; ALT21D_HOST_PASS NOT_EVALUATED, never TRUE; designed detection only on the detection branch"
+  },
+  "ba02b_group_coverage_recomputed": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "contract-assigned scenarios are counted apart and never as serving, countable or governing-serving (R1:BA02V4-N06)"
+  },
+  "ba02b_section3_rows_verbatim": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "the five cells of every row in effect equal the contract cells (V2.1 31: 22 rows incl. the four NOT_A_CONTROL rows; V2.2 PA-1.4: 7 rows)"
+  },
+  "ba02b_section3_not_a_control_rows_present": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "ba02b_section3_discharges": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "each clause is a verbatim fragment of its row; each listed scenario exists and is a class member (OU-O1..O7 strict) or one of the seven declared exceptions (the PR-TORN-READ rows removed, OU-ROW1-INVALID declared: R1:BA02V4-N05)"
+  },
+  "ba02b_section3_every_row_discharged": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "every row has clauses and every clause has at least one non-exploratory scenario (MET_IN_DRAFT)"
+  },
+  "ba02b_section3_enumerated_sets_covered": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "rule 6 (R1:BA02V4-N04): every clause quantified over an enumerated set covers every member, recomputed from V2.1 4.2, 4.3, 17.2, V2.2 PA-12, V2.1 10.6 and the catalog (I-01..I-16 and E6-C1..C8 per build; E6-C4 present, G-3); the conjunctive clause of R14 is split"
+  },
+  "ba02b_section3_control_states": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "ba02b_checks_section": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "ba02b_pa14_reading_ar4_05": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": ""
+  },
+  "ba02b_binds_this_check": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "AR4-17 / R1:BA11V4-04: BA-02b section 0 names this check with its SHA-256 and binds the check and its output to the BA-02b entry of the registry, never to BA-04"
+  },
+  "delta_v5_tables_cover_the_findings": {
+   "result": "PASS",
+   "offenders": [],
+   "offender_count": 0,
+   "detail": "every finding of the round for BA-04 and BA-02b (both passes, R1:/R2:) and every AR4 decision applied has a row in the Delta V5 table that ends each artifact"
+  }
+ }
+}

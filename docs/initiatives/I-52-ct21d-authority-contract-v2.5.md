@@ -5,7 +5,12 @@
 > ```text
 > CT21D_AUTHORITY_CONTRACT          = DRAFT_V2_5  (V2.1 with the V2.2, V2.3, V2.4 and V2.5 errata applied)
 > CT21D_AUTHORITY_CONTRACT_STATUS   = AGREED_FOR_BASELINE_ARTIFACT_PREPARATION (for V2.1 + V2.2 + V2.3; V2.4 and V2.5 pending Coordinator textual verification)
-> DRAFT REVISION                    = 1
+> DRAFT REVISION                    = 2 (content changes limited to the words required by the Architect's delta ruling, decisions
+>                                     section 217, AR4-18 / finding V25R1-01: the section 0 paraphrase of the catalog folder and the
+>                                     sampling restriction after the section 2 table; apart from them only the revision identifiers changed:
+>                                     this header field and the draft-revision word of the section 4 status line; revision 1 is blob
+>                                     c4405ed502ce34ed9e112a1cb0f4a5f3de98c60a (commit b6fab832) and stays in history; section 1 is
+>                                     byte-identical to revision 1)
 > CT21D_AUTHORITY_BASELINE_READY    = FALSE
 > CT21D_EXECUTION_READY             = FALSE
 > CT21D_EXECUTION                   = NOT_AUTHORIZED
@@ -16,7 +21,7 @@
 
 ## 0. What V2.5 is
 
-The Implementer's phase-2 report proposed PH2-TP-1: the folder of catalog files that the catalog provider reads (`*.csv` and `*.json` next to the build) is an input of the product path of the exact build, and the tuple of V2.1 section 2.1 has no field for it. The Architect's phase-2 delta ruling (decisions section 214, AR3-13) accepted the proposal. Because it adds a field to the tuple, the ruling requires a micro-errata and **pre-approved its text verbatim**. V2.5 applies that text (section 1) and the mechanical extension of the contract identity that the same decision orders. V1, V2, V2.1, V2.2, V2.3 and V2.4 are intact and historical.
+The Implementer's phase-2 report proposed PH2-TP-1: the folder of catalog files that the catalog provider reads (the `*.csv` and `*.json` files of the resolved catalog directory) is an input of the product path of the exact build, and the tuple of V2.1 section 2.1 has no field for it. The Architect's phase-2 delta ruling (decisions section 214, AR3-13) accepted the proposal. Because it adds a field to the tuple, the ruling requires a micro-errata and **pre-approved its text verbatim**. V2.5 applies that text (section 1) and the mechanical extension of the contract identity that the same decision orders. V1, V2, V2.1, V2.2, V2.3 and V2.4 are intact and historical.
 
 | Item | Rule |
 |---|---|
@@ -35,7 +40,7 @@ The Implementer's phase-2 report proposed PH2-TP-1: the folder of catalog files 
 |---|---|
 | V2.1 section 2.1 (tuple fields) | gains one BUILD_BOUND row, `CATALOG_FOLDER`, with the content of section 1. Every other row, and the mismatch rules of V2.1 section 2.2, stand unchanged |
 
-Nothing else changes: the tuple classes, the mismatch rules (a BUILD_BOUND mismatch makes the run `INVALID`, V2.1 section 2.2 and 21.1), the admission inputs and every blocker state stay as they are. V2.5 authorizes no host work: the field is sampled only during an authorized execution of the exact build.
+Nothing else changes: the tuple classes, the mismatch rules (a BUILD_BOUND mismatch makes the run `INVALID`, V2.1 section 2.2 and 21.1), the admission inputs and every blocker state stay as they are. V2.5 authorizes no host work.
 
 ## 3. Deviations and notes for the Coordinator's textual verification
 
@@ -49,7 +54,7 @@ There is **no other deviation** from the pre-approved text. The note of V2.5 use
 ## 4. Status
 
 ```text
-CT21D_AUTHORITY_CONTRACT = DRAFT_V2_5 (V2.1 + V2.2 + V2.3 + V2.4 + V2.5), draft revision 1
+CT21D_AUTHORITY_CONTRACT = DRAFT_V2_5 (V2.1 + V2.2 + V2.3 + V2.4 + V2.5), draft revision 2
 CT21D_AUTHORITY_BASELINE_READY = FALSE     CT21D_EXECUTION_READY = FALSE     CT21D_EXECUTION = NOT_AUTHORIZED
 NEXT = ARCHITECT DELTA REVIEW (IDENTITY AND TEXT OF V2.5), THEN COORDINATOR TEXTUAL VERIFICATION OF V2.4 AND V2.5
 ```

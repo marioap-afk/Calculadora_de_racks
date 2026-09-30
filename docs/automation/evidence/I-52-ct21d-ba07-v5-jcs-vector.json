@@ -1,0 +1,2319 @@
+{
+  "artifact": "BA-07 V5 (CT21D-BASE-MANIFEST-CUSTODY), section 4.1 and section 12",
+  "status": "the serialization profile and the bytes and hashes below are the NORMATIVE vector of BA-07 V5 (as part of BA-07 when sealed); every value of the worked example is ILLUSTRATIVE (derived from EXAMPLE labels) and is not a hash of any real artifact, run or tag",
+  "generator": {
+    "path": "docs/automation/evidence/I-52-ct21d-ba07-v5-jcs-vector.py",
+    "sha256OfLfNormalizedBytes": "9f9fd14f9c6efb2754f8c98c5aff470b34e525379be6b30dfc4224f253ac4209"
+  },
+  "profile": {
+    "standard": "RFC 8785 (JCS)",
+    "memberNames": "printable ASCII only (so the RFC 8785 UTF-16 code-unit order equals byte order)",
+    "numbers": "integers in [-(2**53-1), 2**53-1] only, written in decimal",
+    "doubles": "JSON string of 16 lowercase hexadecimal digits of the IEEE-754 binary64 bit pattern, big-endian; -0.0 and +0.0 differ; NaN and infinities are refused",
+    "nullVersusAbsent": "every schema field is present; a field that does not apply is null",
+    "recordFile": "JCS bytes followed by exactly one LF; record hash = SHA-256 of the file bytes",
+    "entryHash": "SHA-256 of the JCS bytes of the entry without its entryHash member (no LF)",
+    "logLine": "JCS bytes of the complete entry (entryHash included) followed by one LF"
+  },
+  "checks": {
+    "rfc8785StringExample": {
+      "expected": "{\"literals\":[null,true,false],\"string\":\"€$\\u000f\\nA'B\\\"\\\\\\\\\\\"/\"}",
+      "produced": "{\"literals\":[null,true,false],\"string\":\"€$\\u000f\\nA'B\\\"\\\\\\\\\\\"/\"}",
+      "equal": true
+    },
+    "doubles": [
+      {
+        "value": "0.1",
+        "hex": "3fb999999999999a",
+        "jcs": "\"3fb999999999999a\""
+      },
+      {
+        "value": "1.0",
+        "hex": "3ff0000000000000",
+        "jcs": "\"3ff0000000000000\""
+      },
+      {
+        "value": "-0.0",
+        "hex": "8000000000000000",
+        "jcs": "\"8000000000000000\""
+      },
+      {
+        "value": "+0.0",
+        "hex": "0000000000000000",
+        "jcs": "\"0000000000000000\""
+      },
+      {
+        "value": "2.5e-9",
+        "hex": "3e25798ee2308c3a",
+        "jcs": "\"3e25798ee2308c3a\""
+      }
+    ],
+    "doublesRefused": [
+      {
+        "value": "NaN",
+        "result": "REFUSED"
+      },
+      {
+        "value": "+Infinity",
+        "result": "REFUSED"
+      },
+      {
+        "value": "-Infinity",
+        "result": "REFUSED"
+      }
+    ],
+    "numbersRefused": [
+      {
+        "value": "JSON number 0.1",
+        "result": "REFUSED"
+      },
+      {
+        "value": "integer 2**53",
+        "result": "REFUSED"
+      }
+    ]
+  },
+  "exampleEntry": {
+    "description": "worked-example entry at index 2: the ANCHOR_RECORDED entry of the first anchor (nested anchorRef, null fields, a non-ASCII note, an escaped quote)",
+    "jcsWithoutEntryHash": "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":1,\"peeledCommit\":\"9cb16b0a7c197ab076a6d163cac057f076c8512b\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1\",\"tagObjectId\":\"230e153c655c4c2fe65c039e4d335e428e186a32\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"event\":\"ANCHOR_RECORDED\",\"index\":2,\"note\":\"first anchor of baseline \\\"v1\\\" (illustrative) — café\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"062cecb186519acdab68d15f8e0f318a16ddee2cb8ae2fa12253138c328b5c94\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"461d3a937898f8345475f97c955229f986dbf8ef093b4929cf8619ddb496fb34\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:06:00Z\"}",
+    "jcsWithoutEntryHashUtf8Length": 834,
+    "entryHash": "20716bfb1e9247f5eba6d5a511da623ad37f7fa284bb84fd6ee40b5004c46274",
+    "logLine": "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":1,\"peeledCommit\":\"9cb16b0a7c197ab076a6d163cac057f076c8512b\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1\",\"tagObjectId\":\"230e153c655c4c2fe65c039e4d335e428e186a32\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"20716bfb1e9247f5eba6d5a511da623ad37f7fa284bb84fd6ee40b5004c46274\",\"event\":\"ANCHOR_RECORDED\",\"index\":2,\"note\":\"first anchor of baseline \\\"v1\\\" (illustrative) — café\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"062cecb186519acdab68d15f8e0f318a16ddee2cb8ae2fa12253138c328b5c94\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"461d3a937898f8345475f97c955229f986dbf8ef093b4929cf8619ddb496fb34\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:06:00Z\"}"
+  },
+  "firstAnchorRecordFile": "{\"ANCHOR_SEQUENCE\":0,\"ANCHOR_TAG_NAME\":\"ct21d-baseline/v1\",\"BA07_SEAL_HASH\":\"1c4be14fa46e9eaef358f2380cf9afe038a6a694f3419fa72aa4d1d7fe02f59f\",\"BA11_SEAL_HASH\":\"a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8\",\"BASELINE_VERSION\":\"v1\",\"CONTRACT_COMPOSITE_HASH\":\"6b6cd2dcc230f6347af5f91ee0526911e075d33e8fb21764a8fc385e1b0eb922\",\"CUSTODY_LOG_HEAD_INDEX\":1,\"INDEPENDENT_COPY\":{\"designationRecord\":{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-MANIFEST-CUSTODY-1c4be14fa46e9eaef358f2380cf9afe038a6a694f3419fa72aa4d1d7fe02f59f-coordinator.json\",\"sha256\":\"ac0bff4d3192c9a6ca6b40df0755681f8ab61742e04b5b0d067167ea266caab2\"},\"holder\":\"EXAMPLE-HOLDER (illustrative)\",\"location\":\"EXAMPLE-LOCATION (illustrative, outside the repository)\"},\"MANIFEST_CUSTODY_HEADER_HASH\":\"062cecb186519acdab68d15f8e0f318a16ddee2cb8ae2fa12253138c328b5c94\",\"RECORD_KIND\":\"CT21D_BASELINE_ANCHOR\",\"REMOTE_URL\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\"}\n",
+  "workedExample": {
+    "mandatorySequenceEntries": 14,
+    "entries": [
+      {
+        "index": 0,
+        "event": "BASELINE_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "BASELINE",
+        "entryHash": "343faf889cd416b24988836a49d4adba810c86e872d064a9480c156b643272b7"
+      },
+      {
+        "index": 1,
+        "event": "BASELINE_APPROVED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "BASELINE",
+        "entryHash": "062cecb186519acdab68d15f8e0f318a16ddee2cb8ae2fa12253138c328b5c94"
+      },
+      {
+        "index": 2,
+        "event": "ANCHOR_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "ANCHOR",
+        "entryHash": "20716bfb1e9247f5eba6d5a511da623ad37f7fa284bb84fd6ee40b5004c46274"
+      },
+      {
+        "index": 3,
+        "event": "AUTHORIZED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "1ab73109b5302f48532b4dd047fcbe7f51d9abf4125b7230055ebdc8d850469d"
+      },
+      {
+        "index": 4,
+        "event": "CAPTURED",
+        "role": "CAPTURE_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "2cfad4604c968d462f600f5b4a25ea334c3152ac32c2ac1ffacbc5843ded9a10"
+      },
+      {
+        "index": 5,
+        "event": "REVIEWED",
+        "role": "REVIEW_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "615b2f9954a4274dea0f552f373954ca14a589ce8000d16d0966764c5409d417"
+      },
+      {
+        "index": 6,
+        "event": "APPROVED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "34486ca34921ebfbdd730767e5353a057ca938c4f9596a400c2d43aa20b50aba"
+      },
+      {
+        "index": 7,
+        "event": "ANCHOR_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "ANCHOR",
+        "entryHash": "0628cbc4207b25e56167516ca0acbd6a128c2f970911da401f739a3fa1431490"
+      },
+      {
+        "index": 8,
+        "event": "IN_USE",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "acd8be200340a15a6309a1d2f27fb72a711a4292f51ddbd4835c2af487993daa"
+      },
+      {
+        "index": 9,
+        "event": "IN_USE",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "aba1b9c73ab63d5c3e6e0d184998a4aae9c4bf46a31e48d3bb417d102fdb501a"
+      },
+      {
+        "index": 10,
+        "event": "ANCHOR_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "ANCHOR",
+        "entryHash": "0e33b7570c07e469b9d60659f6a37be8f8034d27947ed865b810212d3df6c67b"
+      },
+      {
+        "index": 11,
+        "event": "PIN_RECORDED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "PIN",
+        "entryHash": "3e21b2238d2c5099de4b12afad2c646d960085d600427351ecdaf2164a3a6618"
+      },
+      {
+        "index": 12,
+        "event": "PIN_RECORDED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "PIN",
+        "entryHash": "64810e0d26dcce8fcecbd26e0ac02e4f5b905d33d83bcbd68527fb1449bcfee8"
+      },
+      {
+        "index": 13,
+        "event": "ANCHOR_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "ANCHOR",
+        "entryHash": "9a2b1edc124c04ae7b64899e0bb80bbcb1914e1a97993ba8e15af8ff2fdf941a"
+      },
+      {
+        "index": 14,
+        "event": "IN_USE",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "b0239ce6e93960f87b519c7af47746ac0ebfe820a3a2d2f4757701bea69a7f22"
+      },
+      {
+        "index": 15,
+        "event": "BASELINE_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "BASELINE",
+        "entryHash": "e41279735efd0bea573ebaf894e8f6ce15f99e3a1864e6b001cd26195db650e1"
+      },
+      {
+        "index": 16,
+        "event": "BASELINE_APPROVED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "BASELINE",
+        "entryHash": "3c850b4acce291a843ff151b5ffb78cded5025941e7b1dd282573f3532fec720"
+      },
+      {
+        "index": 17,
+        "event": "SUPERSEDED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "BASELINE",
+        "entryHash": "0f1675305baeb05a6c1792cb10688e6d0ded51abc446df824b094ac018ef373b"
+      },
+      {
+        "index": 18,
+        "event": "PIN_RECORDED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "PIN",
+        "entryHash": "f3a255bb9674435e597472a416334f8b9c0832099b9a49af8a5a7dec8f347da5"
+      },
+      {
+        "index": 19,
+        "event": "SUPERSEDED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "PIN",
+        "entryHash": "5780ab63540a23dfd1784a624c5f0001785c7fd552468284c23859e17cac1061"
+      },
+      {
+        "index": 20,
+        "event": "REVOKED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "PIN",
+        "entryHash": "8e09690eaf878ebfcf4df1b44615f986fb741e15966c714897d3fd4d87a6225e"
+      },
+      {
+        "index": 21,
+        "event": "ANCHOR_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "ANCHOR",
+        "entryHash": "bb53cc3783340d8297b47fdeb89a9f5a640890426447c52dc2232ffb0098cba4"
+      },
+      {
+        "index": 22,
+        "event": "IN_USE",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "3a9536e719908d0a89ae9acdd4642e5bfe407ec0250683c0c8db22bf3cee41fa"
+      },
+      {
+        "index": 23,
+        "event": "ANCHOR_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "ANCHOR",
+        "entryHash": "e3c23c32a1d3e2e0a6fd5766ba0b0b651aa84fee354a265a1e31803ac836f353"
+      }
+    ],
+    "logLines": [
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":\"1c4be14fa46e9eaef358f2380cf9afe038a6a694f3419fa72aa4d1d7fe02f59f\",\"baselineVersion\":\"v1\",\"captureId\":null,\"cause\":null,\"entryHash\":\"343faf889cd416b24988836a49d4adba810c86e872d064a9480c156b643272b7\",\"event\":\"BASELINE_RECORDED\",\"index\":0,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8\",\"subjectKind\":\"BASELINE\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:01:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":\"v1\",\"captureId\":null,\"cause\":null,\"entryHash\":\"062cecb186519acdab68d15f8e0f318a16ddee2cb8ae2fa12253138c328b5c94\",\"event\":\"BASELINE_APPROVED\",\"index\":1,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"343faf889cd416b24988836a49d4adba810c86e872d064a9480c156b643272b7\",\"ratificationRecords\":[{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8-architect.json\",\"sha256\":\"6049fa57b6e43360cda7784f053b0fc682fc112f94239ebe0ef26df5d1c88c6d\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8-candidate.json\",\"sha256\":\"8b6e1d97290593ec1889837c25eeba41c5286118f45a62bd145db93a77e2c127\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8-coordinator.json\",\"sha256\":\"dfb24b4291e729e772475dca3e3cf3d5cacfebbb3dfa592cc45170e74509ce63\"}],\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8\",\"subjectKind\":\"BASELINE\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:05:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":1,\"peeledCommit\":\"9cb16b0a7c197ab076a6d163cac057f076c8512b\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1\",\"tagObjectId\":\"230e153c655c4c2fe65c039e4d335e428e186a32\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"20716bfb1e9247f5eba6d5a511da623ad37f7fa284bb84fd6ee40b5004c46274\",\"event\":\"ANCHOR_RECORDED\",\"index\":2,\"note\":\"first anchor of baseline \\\"v1\\\" (illustrative) — café\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"062cecb186519acdab68d15f8e0f318a16ddee2cb8ae2fa12253138c328b5c94\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"461d3a937898f8345475f97c955229f986dbf8ef093b4929cf8619ddb496fb34\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:06:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"1ab73109b5302f48532b4dd047fcbe7f51d9abf4125b7230055ebdc8d850469d\",\"event\":\"AUTHORIZED\",\"index\":3,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"20716bfb1e9247f5eba6d5a511da623ad37f7fa284bb84fd6ee40b5004c46274\",\"ratificationRecords\":null,\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":null,\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:07:00Z\"}",
+      "{\"actor\":\"CONTROL_PLANE:EXAMPLE-BUILD\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"2cfad4604c968d462f600f5b4a25ea334c3152ac32c2ac1ffacbc5843ded9a10\",\"event\":\"CAPTURED\",\"index\":4,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"1ab73109b5302f48532b4dd047fcbe7f51d9abf4125b7230055ebdc8d850469d\",\"ratificationRecords\":null,\"role\":\"CAPTURE_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:08:00Z\"}",
+      "{\"actor\":\"EXAMPLE-OWNER\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"615b2f9954a4274dea0f552f373954ca14a589ce8000d16d0966764c5409d417\",\"event\":\"REVIEWED\",\"index\":5,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"2cfad4604c968d462f600f5b4a25ea334c3152ac32c2ac1ffacbc5843ded9a10\",\"ratificationRecords\":null,\"role\":\"REVIEW_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:09:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"34486ca34921ebfbdd730767e5353a057ca938c4f9596a400c2d43aa20b50aba\",\"event\":\"APPROVED\",\"index\":6,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"615b2f9954a4274dea0f552f373954ca14a589ce8000d16d0966764c5409d417\",\"ratificationRecords\":null,\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:10:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":6,\"peeledCommit\":\"2d537b767f5393fd55a6a0c2d443c51b15e38d25\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1-a1\",\"tagObjectId\":\"176eee4ffd5021b36a313db1daaaebe6efb57b99\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"0628cbc4207b25e56167516ca0acbd6a128c2f970911da401f739a3fa1431490\",\"event\":\"ANCHOR_RECORDED\",\"index\":7,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"34486ca34921ebfbdd730767e5353a057ca938c4f9596a400c2d43aa20b50aba\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"9d2d0c0f147bfa97254064594ad53d1bc4dd8007c3bd8dbed4a691ee77cf19ce\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:11:00Z\"}",
+      "{\"actor\":\"CONTROL_PLANE:EXAMPLE-BUILD\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"acd8be200340a15a6309a1d2f27fb72a711a4292f51ddbd4835c2af487993daa\",\"event\":\"IN_USE\",\"index\":8,\"note\":\"\",\"pinRecordHashes\":[],\"pinSlot\":null,\"prevEntryHash\":\"0628cbc4207b25e56167516ca0acbd6a128c2f970911da401f739a3fa1431490\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":\"EXAMPLE-RUN-1\",\"runStartAnchor\":{\"anchorRecordHash\":\"9d2d0c0f147bfa97254064594ad53d1bc4dd8007c3bd8dbed4a691ee77cf19ce\",\"tag\":\"ct21d-baseline/v1-a1\"},\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":\"cec8875c6e89561048cdf54d6b943b631eba87a7f5bac3047ed05c6cf8e25d01\",\"utc\":\"2000-01-01T00:12:00Z\"}",
+      "{\"actor\":\"CONTROL_PLANE:EXAMPLE-BUILD\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"aba1b9c73ab63d5c3e6e0d184998a4aae9c4bf46a31e48d3bb417d102fdb501a\",\"event\":\"IN_USE\",\"index\":9,\"note\":\"\",\"pinRecordHashes\":[],\"pinSlot\":null,\"prevEntryHash\":\"acd8be200340a15a6309a1d2f27fb72a711a4292f51ddbd4835c2af487993daa\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":\"EXAMPLE-RUN-2\",\"runStartAnchor\":{\"anchorRecordHash\":\"9d2d0c0f147bfa97254064594ad53d1bc4dd8007c3bd8dbed4a691ee77cf19ce\",\"tag\":\"ct21d-baseline/v1-a1\"},\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":\"488937ea332d4bbfaac612617a2a2731d558162caf9ff1c3dd861782e063cd6e\",\"utc\":\"2000-01-01T00:13:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":9,\"peeledCommit\":\"b49807aaaf43346be543826f465b20ecfb08007e\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1-a2\",\"tagObjectId\":\"b480416988451d5d766623b9ab59253c90cabc78\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"0e33b7570c07e469b9d60659f6a37be8f8034d27947ed865b810212d3df6c67b\",\"event\":\"ANCHOR_RECORDED\",\"index\":10,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"aba1b9c73ab63d5c3e6e0d184998a4aae9c4bf46a31e48d3bb417d102fdb501a\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"b07bd96a75d805b4a81cc05fb5645b0dcdb941d0e8d437d03e4270e2d352bea1\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:14:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"3e21b2238d2c5099de4b12afad2c646d960085d600427351ecdaf2164a3a6618\",\"event\":\"PIN_RECORDED\",\"index\":11,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":\"LOCK_MODE\",\"prevEntryHash\":\"0e33b7570c07e469b9d60659f6a37be8f8034d27947ed865b810212d3df6c67b\",\"ratificationRecords\":[{\"path\":\"docs/automation/evidence/ct21d/ratifications/LOCK_MODE-1cbe940e66b73c2dcba06e7a2400334c46db411ba0847a4602e6b699a1682cb0-architect.json\",\"sha256\":\"7a10bd59f4c335c69758b3e1625682ff332cc1657e6fbbb3273967f1ae18a5ba\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/LOCK_MODE-1cbe940e66b73c2dcba06e7a2400334c46db411ba0847a4602e6b699a1682cb0-coordinator.json\",\"sha256\":\"26db5e3600cd086328745dab7e1c6e99f5f302b94592949be690374419558583\"}],\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"1cbe940e66b73c2dcba06e7a2400334c46db411ba0847a4602e6b699a1682cb0\",\"subjectKind\":\"PIN\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:18:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"64810e0d26dcce8fcecbd26e0ac02e4f5b905d33d83bcbd68527fb1449bcfee8\",\"event\":\"PIN_RECORDED\",\"index\":12,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":\"E04_ADMITTED_SET@R-1\",\"prevEntryHash\":\"3e21b2238d2c5099de4b12afad2c646d960085d600427351ecdaf2164a3a6618\",\"ratificationRecords\":[{\"path\":\"docs/automation/evidence/ct21d/ratifications/E04_ADMITTED_SET@R-1-947ee2ce5101169b6de3cbfa58f9edc224216d2cfd912803ca74b9bfab9ddd8b-architect.json\",\"sha256\":\"60ef893a3f4a62611d2dca697d972c93ee940b85e0331d3f7f18541f47bc894f\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/E04_ADMITTED_SET@R-1-947ee2ce5101169b6de3cbfa58f9edc224216d2cfd912803ca74b9bfab9ddd8b-coordinator.json\",\"sha256\":\"047393660baef7f8f352df6e9054d58b197d6e97d994fbc7cd760eecaa9119e8\"}],\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"947ee2ce5101169b6de3cbfa58f9edc224216d2cfd912803ca74b9bfab9ddd8b\",\"subjectKind\":\"PIN\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:22:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":12,\"peeledCommit\":\"0a65140aa6be040fa0c4beaee04bc48809bbe65f\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1-a3\",\"tagObjectId\":\"5fa9745bc947dcea389a6ad260657022a1a98e13\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"9a2b1edc124c04ae7b64899e0bb80bbcb1914e1a97993ba8e15af8ff2fdf941a\",\"event\":\"ANCHOR_RECORDED\",\"index\":13,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"64810e0d26dcce8fcecbd26e0ac02e4f5b905d33d83bcbd68527fb1449bcfee8\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"ac8effac5746bd1b765305e68720b1ff5c08493b5b007fbb21f76818079be4f0\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:23:00Z\"}",
+      "{\"actor\":\"CONTROL_PLANE:EXAMPLE-BUILD\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"b0239ce6e93960f87b519c7af47746ac0ebfe820a3a2d2f4757701bea69a7f22\",\"event\":\"IN_USE\",\"index\":14,\"note\":\"\",\"pinRecordHashes\":[\"1cbe940e66b73c2dcba06e7a2400334c46db411ba0847a4602e6b699a1682cb0\",\"947ee2ce5101169b6de3cbfa58f9edc224216d2cfd912803ca74b9bfab9ddd8b\"],\"pinSlot\":null,\"prevEntryHash\":\"9a2b1edc124c04ae7b64899e0bb80bbcb1914e1a97993ba8e15af8ff2fdf941a\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":\"EXAMPLE-RUN-3\",\"runStartAnchor\":{\"anchorRecordHash\":\"ac8effac5746bd1b765305e68720b1ff5c08493b5b007fbb21f76818079be4f0\",\"tag\":\"ct21d-baseline/v1-a3\"},\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":\"48ca74a651f840a70791360f60831949de3f6ff5bd3016666073251799b638a5\",\"utc\":\"2000-01-01T00:24:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":\"1c4be14fa46e9eaef358f2380cf9afe038a6a694f3419fa72aa4d1d7fe02f59f\",\"baselineVersion\":\"v2\",\"captureId\":null,\"cause\":null,\"entryHash\":\"e41279735efd0bea573ebaf894e8f6ce15f99e3a1864e6b001cd26195db650e1\",\"event\":\"BASELINE_RECORDED\",\"index\":15,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"b0239ce6e93960f87b519c7af47746ac0ebfe820a3a2d2f4757701bea69a7f22\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319\",\"subjectKind\":\"BASELINE\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:25:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":\"v2\",\"captureId\":null,\"cause\":null,\"entryHash\":\"3c850b4acce291a843ff151b5ffb78cded5025941e7b1dd282573f3532fec720\",\"event\":\"BASELINE_APPROVED\",\"index\":16,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"e41279735efd0bea573ebaf894e8f6ce15f99e3a1864e6b001cd26195db650e1\",\"ratificationRecords\":[{\"path\":\"docs/automation/evidence/ct21d/ratifications/CAP-1-b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb-carryover-v2.json\",\"sha256\":\"1b060797522391a2d5db194c814e28950f3dd1927f6165f0bc4afe77298a5ce4\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319-architect.json\",\"sha256\":\"9d78fd898f72854b30be43608cd8b7fd8c9f2d4236d654553e7c8330ebfc0ba4\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319-candidate.json\",\"sha256\":\"8aefdf8312dc9efadf38926ac1707718bca4aa3771f3567c1e962d432fe80254\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319-coordinator.json\",\"sha256\":\"3c5c6a350f8509e458b4f9e67606f0dc8ad4f2bfc9b31bf922a6b6f9832e0b22\"}],\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319\",\"subjectKind\":\"BASELINE\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:30:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"0f1675305baeb05a6c1792cb10688e6d0ded51abc446df824b094ac018ef373b\",\"event\":\"SUPERSEDED\",\"index\":17,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"3c850b4acce291a843ff151b5ffb78cded5025941e7b1dd282573f3532fec720\",\"ratificationRecords\":null,\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8\",\"subjectKind\":\"BASELINE\",\"supersededBy\":\"389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319\",\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:31:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"f3a255bb9674435e597472a416334f8b9c0832099b9a49af8a5a7dec8f347da5\",\"event\":\"PIN_RECORDED\",\"index\":18,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":\"LOCK_MODE\",\"prevEntryHash\":\"0f1675305baeb05a6c1792cb10688e6d0ded51abc446df824b094ac018ef373b\",\"ratificationRecords\":[{\"path\":\"docs/automation/evidence/ct21d/ratifications/LOCK_MODE-6ac7e7620eac23b57b152b615c06f08e7f5d83cda67bde7693b5fe5971c7c914-architect.json\",\"sha256\":\"160676d0309148bc37070cacb2f603d1eea61a07dc27b0de93d1f2250d0bf72b\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/LOCK_MODE-6ac7e7620eac23b57b152b615c06f08e7f5d83cda67bde7693b5fe5971c7c914-coordinator.json\",\"sha256\":\"f54e87c56a75de92ad4b2943cad4396766bead59a3d8b281958a51eb425b9424\"}],\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"6ac7e7620eac23b57b152b615c06f08e7f5d83cda67bde7693b5fe5971c7c914\",\"subjectKind\":\"PIN\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:35:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"5780ab63540a23dfd1784a624c5f0001785c7fd552468284c23859e17cac1061\",\"event\":\"SUPERSEDED\",\"index\":19,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"f3a255bb9674435e597472a416334f8b9c0832099b9a49af8a5a7dec8f347da5\",\"ratificationRecords\":null,\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"1cbe940e66b73c2dcba06e7a2400334c46db411ba0847a4602e6b699a1682cb0\",\"subjectKind\":\"PIN\",\"supersededBy\":\"6ac7e7620eac23b57b152b615c06f08e7f5d83cda67bde7693b5fe5971c7c914\",\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:36:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":\"SUPERSEDED_BY_RULING\",\"entryHash\":\"8e09690eaf878ebfcf4df1b44615f986fb741e15966c714897d3fd4d87a6225e\",\"event\":\"REVOKED\",\"index\":20,\"note\":\"not carried over to v2\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"5780ab63540a23dfd1784a624c5f0001785c7fd552468284c23859e17cac1061\",\"ratificationRecords\":null,\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"947ee2ce5101169b6de3cbfa58f9edc224216d2cfd912803ca74b9bfab9ddd8b\",\"subjectKind\":\"PIN\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:37:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":20,\"peeledCommit\":\"1511c826bf6527f16003176c303a42423262f66f\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v2\",\"tagObjectId\":\"4f57f369c2896cda40a278221cbba17df8bb0463\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"bb53cc3783340d8297b47fdeb89a9f5a640890426447c52dc2232ffb0098cba4\",\"event\":\"ANCHOR_RECORDED\",\"index\":21,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"8e09690eaf878ebfcf4df1b44615f986fb741e15966c714897d3fd4d87a6225e\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"f00fdfbb57e5a7667b2140d91c0fed6d07a5411652b82d3b58bc64d6f7385e97\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:38:00Z\"}",
+      "{\"actor\":\"CONTROL_PLANE:EXAMPLE-BUILD\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"3a9536e719908d0a89ae9acdd4642e5bfe407ec0250683c0c8db22bf3cee41fa\",\"event\":\"IN_USE\",\"index\":22,\"note\":\"\",\"pinRecordHashes\":[\"6ac7e7620eac23b57b152b615c06f08e7f5d83cda67bde7693b5fe5971c7c914\"],\"pinSlot\":null,\"prevEntryHash\":\"bb53cc3783340d8297b47fdeb89a9f5a640890426447c52dc2232ffb0098cba4\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":\"EXAMPLE-RUN-4\",\"runStartAnchor\":{\"anchorRecordHash\":\"f00fdfbb57e5a7667b2140d91c0fed6d07a5411652b82d3b58bc64d6f7385e97\",\"tag\":\"ct21d-baseline/v2\"},\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":\"4d13a857febf76ad87edfe8b68629330bc02b1a03e51b4eab0c154eed244a52b\",\"utc\":\"2000-01-01T00:39:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":22,\"peeledCommit\":\"cd0fcfd254a260ecffe076f9eac0ae15ec99ef1e\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v2-a1\",\"tagObjectId\":\"879c918f2d6e6f1a7f1bbdf4a133662ae601d4b1\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"e3c23c32a1d3e2e0a6fd5766ba0b0b651aa84fee354a265a1e31803ac836f353\",\"event\":\"ANCHOR_RECORDED\",\"index\":23,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"3a9536e719908d0a89ae9acdd4642e5bfe407ec0250683c0c8db22bf3cee41fa\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"runStartAnchor\":null,\"subjectHash\":\"6f6a41dda52fd76198b2585b456b5e9335538eeef3a0a9ce112ffc30b131e58e\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:40:00Z\"}"
+    ],
+    "anchors": [
+      {
+        "tag": "ct21d-baseline/v1",
+        "CUSTODY_LOG_HEAD_INDEX": 1,
+        "MANIFEST_CUSTODY_HEADER_HASH": "062cecb186519acdab68d15f8e0f318a16ddee2cb8ae2fa12253138c328b5c94",
+        "anchorRecordSha256": "461d3a937898f8345475f97c955229f986dbf8ef093b4929cf8619ddb496fb34",
+        "tagObjectId (illustrative)": "230e153c655c4c2fe65c039e4d335e428e186a32",
+        "peeledCommit (illustrative)": "9cb16b0a7c197ab076a6d163cac057f076c8512b"
+      },
+      {
+        "tag": "ct21d-baseline/v1-a1",
+        "CUSTODY_LOG_HEAD_INDEX": 6,
+        "MANIFEST_CUSTODY_HEADER_HASH": "34486ca34921ebfbdd730767e5353a057ca938c4f9596a400c2d43aa20b50aba",
+        "anchorRecordSha256": "9d2d0c0f147bfa97254064594ad53d1bc4dd8007c3bd8dbed4a691ee77cf19ce",
+        "tagObjectId (illustrative)": "176eee4ffd5021b36a313db1daaaebe6efb57b99",
+        "peeledCommit (illustrative)": "2d537b767f5393fd55a6a0c2d443c51b15e38d25"
+      },
+      {
+        "tag": "ct21d-baseline/v1-a2",
+        "CUSTODY_LOG_HEAD_INDEX": 9,
+        "MANIFEST_CUSTODY_HEADER_HASH": "aba1b9c73ab63d5c3e6e0d184998a4aae9c4bf46a31e48d3bb417d102fdb501a",
+        "anchorRecordSha256": "b07bd96a75d805b4a81cc05fb5645b0dcdb941d0e8d437d03e4270e2d352bea1",
+        "tagObjectId (illustrative)": "b480416988451d5d766623b9ab59253c90cabc78",
+        "peeledCommit (illustrative)": "b49807aaaf43346be543826f465b20ecfb08007e"
+      },
+      {
+        "tag": "ct21d-baseline/v1-a3",
+        "CUSTODY_LOG_HEAD_INDEX": 12,
+        "MANIFEST_CUSTODY_HEADER_HASH": "64810e0d26dcce8fcecbd26e0ac02e4f5b905d33d83bcbd68527fb1449bcfee8",
+        "anchorRecordSha256": "ac8effac5746bd1b765305e68720b1ff5c08493b5b007fbb21f76818079be4f0",
+        "tagObjectId (illustrative)": "5fa9745bc947dcea389a6ad260657022a1a98e13",
+        "peeledCommit (illustrative)": "0a65140aa6be040fa0c4beaee04bc48809bbe65f"
+      },
+      {
+        "tag": "ct21d-baseline/v2",
+        "CUSTODY_LOG_HEAD_INDEX": 20,
+        "MANIFEST_CUSTODY_HEADER_HASH": "8e09690eaf878ebfcf4df1b44615f986fb741e15966c714897d3fd4d87a6225e",
+        "anchorRecordSha256": "f00fdfbb57e5a7667b2140d91c0fed6d07a5411652b82d3b58bc64d6f7385e97",
+        "tagObjectId (illustrative)": "4f57f369c2896cda40a278221cbba17df8bb0463",
+        "peeledCommit (illustrative)": "1511c826bf6527f16003176c303a42423262f66f"
+      },
+      {
+        "tag": "ct21d-baseline/v2-a1",
+        "CUSTODY_LOG_HEAD_INDEX": 22,
+        "MANIFEST_CUSTODY_HEADER_HASH": "3a9536e719908d0a89ae9acdd4642e5bfe407ec0250683c0c8db22bf3cee41fa",
+        "anchorRecordSha256": "6f6a41dda52fd76198b2585b456b5e9335538eeef3a0a9ce112ffc30b131e58e",
+        "tagObjectId (illustrative)": "879c918f2d6e6f1a7f1bbdf4a133662ae601d4b1",
+        "peeledCommit (illustrative)": "cd0fcfd254a260ecffe076f9eac0ae15ec99ef1e"
+      }
+    ],
+    "pinRecordHashes": {
+      "LOCK_MODE v1": "1cbe940e66b73c2dcba06e7a2400334c46db411ba0847a4602e6b699a1682cb0",
+      "E04_ADMITTED_SET@R-1 v1": "947ee2ce5101169b6de3cbfa58f9edc224216d2cfd912803ca74b9bfab9ddd8b",
+      "LOCK_MODE v2": "6ac7e7620eac23b57b152b615c06f08e7f5d83cda67bde7693b5fe5971c7c914"
+    },
+    "mandatorySequence": {
+      "headIndex": 13,
+      "headEntryHash": "9a2b1edc124c04ae7b64899e0bb80bbcb1914e1a97993ba8e15af8ff2fdf941a",
+      "logFileSha256": "986ce65ed22e3e55e1dfa010819d785705f36dcefafec1dde980f8f4f77e9111"
+    },
+    "fullExample": {
+      "headIndex": 23,
+      "headEntryHash": "e3c23c32a1d3e2e0a6fd5766ba0b0b651aa84fee354a265a1e31803ac836f353",
+      "logFileSha256": "1eafed02e134c5179cf45c6c4a0fa24afab2a6917e4fb310155f65b754ec3e3c"
+    }
+  },
+  "verificationModel": {
+    "honestMandatorySequence": {
+      "mode": "CURRENT",
+      "violations": [],
+      "overall": "PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 12,
+      "copyConfirmedIndex": 12,
+      "pendingReanchor": [
+        13
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 9,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "honestFullExample": {
+      "mode": "CURRENT",
+      "violations": [],
+      "overall": "PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 20
+        },
+        {
+          "tag": "ct21d-baseline/v2-a1",
+          "h": 22
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 22,
+      "copyConfirmedIndex": 22,
+      "pendingReanchor": [
+        23
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 22,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 19,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 20,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "PIN:6ac7e7620eac": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 18,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:f00fdfbb57e5": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 21,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:6f6a41dda52f": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 23,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T1_truncateAndRewriteAfterFirstAnchor": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step3",
+          "REWRITTEN_AT_OR_BEFORE_ANCHOR",
+          "ct21d-baseline/v1-a1"
+        ],
+        [
+          "step3",
+          "TRUNCATED_BELOW_ANCHOR",
+          "ct21d-baseline/v1-a2"
+        ],
+        [
+          "step3",
+          "TRUNCATED_BELOW_ANCHOR",
+          "ct21d-baseline/v1-a3"
+        ],
+        [
+          "step3",
+          "TRUNCATED_BELOW_ANCHOR",
+          "ct21d-baseline/v2"
+        ],
+        [
+          "step3",
+          "TRUNCATED_BELOW_ANCHOR",
+          "ct21d-baseline/v2-a1"
+        ],
+        [
+          "step4",
+          "UNRECORDED_ANCHOR",
+          "ct21d-baseline/v1-a1"
+        ],
+        [
+          "step4",
+          "UNRECORDED_ANCHOR",
+          "ct21d-baseline/v1-a2"
+        ],
+        [
+          "step4",
+          "UNRECORDED_ANCHOR",
+          "ct21d-baseline/v1-a3"
+        ],
+        [
+          "step4",
+          "UNRECORDED_ANCHOR",
+          "ct21d-baseline/v2"
+        ],
+        [
+          "step5",
+          "ANCHOR_RECORD_BASELINE_MISMATCH",
+          "ct21d-baseline/v2"
+        ],
+        [
+          "step5",
+          "ANCHOR_RECORD_BASELINE_MISMATCH",
+          "ct21d-baseline/v2-a1"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 20
+        },
+        {
+          "tag": "ct21d-baseline/v2-a1",
+          "h": 22
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 22,
+      "copyConfirmedIndex": 22,
+      "pendingReanchor": [],
+      "status": [
+        "LAST_ANCHOR_NOT_RECORDED"
+      ],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "APPROVED",
+          "lastIndex": 6,
+          "custody": "ANCHORED"
+        }
+      }
+    },
+    "T2_editPendingEntryAfterLastAnchor": {
+      "mode": "CURRENT",
+      "violations": [],
+      "overall": "PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 12,
+      "copyConfirmedIndex": 12,
+      "pendingReanchor": [
+        13,
+        14
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 14,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T3_tagDeletedWhileItsEntryIsCovered": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step3",
+          "TAG_SEQUENCE",
+          "ct21d-baseline/v1-a2"
+        ],
+        [
+          "step3",
+          "TAG_SEQUENCE",
+          "ct21d-baseline/v1-a3"
+        ],
+        [
+          "step4",
+          "ANCHOR_WITHOUT_TAG",
+          "7"
+        ],
+        [
+          "step5",
+          "USE_REFERENCE_INVALID",
+          "8"
+        ],
+        [
+          "step5",
+          "USE_BEFORE_ANCHOR",
+          "8"
+        ],
+        [
+          "step5",
+          "USE_REFERENCE_INVALID",
+          "9"
+        ],
+        [
+          "step5",
+          "USE_BEFORE_ANCHOR",
+          "9"
+        ],
+        [
+          "step6",
+          "REMOTE_REWRITE_DETECTED",
+          "ct21d-baseline/v1-a1"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 20
+        },
+        {
+          "tag": "ct21d-baseline/v2-a1",
+          "h": 22
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 22,
+      "copyConfirmedIndex": null,
+      "pendingReanchor": [
+        23
+      ],
+      "status": [],
+      "step6": "DIFFERENCE",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 22,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 19,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 20,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "PIN:6ac7e7620eac": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 18,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:f00fdfbb57e5": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 21,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:6f6a41dda52f": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 23,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T4a_lastTagDeletedAndPendingEntryRemoved_copyDesignatedHolderNotConsulted": {
+      "mode": "CURRENT",
+      "violations": [],
+      "overall": "PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 20
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 20,
+      "copyConfirmedIndex": null,
+      "pendingReanchor": [
+        21,
+        22
+      ],
+      "status": [],
+      "step6": "NOT_VERIFIABLE",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 22,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 19,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 20,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "PIN:6ac7e7620eac": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 18,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:f00fdfbb57e5": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 21,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T4b_lastTagDeletedAndPendingEntryRemoved_copyDesignatedHolderConsulted": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step6",
+          "REMOTE_REWRITE_DETECTED",
+          "ct21d-baseline/v2-a1"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 20
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 20,
+      "copyConfirmedIndex": null,
+      "pendingReanchor": [
+        21,
+        22
+      ],
+      "status": [],
+      "step6": "DIFFERENCE",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 22,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 19,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 20,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "PIN:6ac7e7620eac": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 18,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:f00fdfbb57e5": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 21,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T5_anchoringWindow_lastTagNotYetInCopy": {
+      "mode": "CURRENT",
+      "violations": [],
+      "overall": "PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 20
+        },
+        {
+          "tag": "ct21d-baseline/v2-a1",
+          "h": 22
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 22,
+      "copyConfirmedIndex": 20,
+      "pendingReanchor": [],
+      "status": [
+        "LAST_ANCHOR_NOT_RECORDED",
+        "LAST_ANCHOR_NOT_IN_COPY"
+      ],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 22,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 19,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 20,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "PIN:6ac7e7620eac": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 18,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:f00fdfbb57e5": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 21,
+          "custody": "ANCHORED"
+        }
+      }
+    },
+    "T6_allTagsDeletedAndLogReset": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step6",
+          "REMOTE_REWRITE_DETECTED",
+          "ct21d-baseline/v1"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [],
+      "laterAnchors": [],
+      "lastAnchoredIndex": -1,
+      "copyConfirmedIndex": null,
+      "pendingReanchor": [
+        0,
+        1
+      ],
+      "status": [
+        "UNANCHORED"
+      ],
+      "step6": "DIFFERENCE",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T7_tagsRecreatedWithUndesignatedAnchorRecords": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step6",
+          "DESIGNATION_MISSING",
+          "ct21d-baseline/v1"
+        ],
+        [
+          "step6",
+          "DESIGNATION_MISSING",
+          "ct21d-baseline/v1-a1"
+        ],
+        [
+          "step6",
+          "DESIGNATION_MISSING",
+          "ct21d-baseline/v1-a2"
+        ],
+        [
+          "step6",
+          "DESIGNATION_MISSING",
+          "ct21d-baseline/v1-a3"
+        ],
+        [
+          "step6",
+          "REMOTE_REWRITE_DETECTED",
+          "ct21d-baseline/v1"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 12,
+      "copyConfirmedIndex": null,
+      "pendingReanchor": [
+        13
+      ],
+      "status": [],
+      "step6": "DIFFERENCE",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:e84feb99d032": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 9,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:7847f18fff43": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:1ca2d0e17de3": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:5253916e31a4": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T8_twoLivePinsForOneSlot": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step5",
+          "PIN_SLOT_CONFLICT",
+          "(14, 'LOCK_MODE')"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v1-a4",
+          "h": 14
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 14,
+      "copyConfirmedIndex": 14,
+      "pendingReanchor": [
+        15,
+        16,
+        17
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 17,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "PIN:eb46c44c9e9d": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 14,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:55365b023caa": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 15,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T9_carryOverIncompleteAndOldPinUsed": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step5",
+          "PIN_VERSION_MISMATCH",
+          "(21, '947ee2ce5101')"
+        ],
+        [
+          "step5",
+          "CARRY_OVER_MISSING",
+          "('pin', '947ee2ce5101')"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 19
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 19,
+      "copyConfirmedIndex": 19,
+      "pendingReanchor": [
+        20,
+        21
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 21,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 19,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "PIN:6ac7e7620eac": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 18,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:dec77522c1f6": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 20,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T10_pinVersionAndSlotChecks": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step5",
+          "PIN_VERSION_MISMATCH",
+          "24"
+        ],
+        [
+          "step5",
+          "PIN_SLOT_UNKNOWN",
+          "25"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 20
+        },
+        {
+          "tag": "ct21d-baseline/v2-a1",
+          "h": 22
+        },
+        {
+          "tag": "ct21d-baseline/v2-a2",
+          "h": 25
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 25,
+      "copyConfirmedIndex": 25,
+      "pendingReanchor": [
+        26
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 22,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 19,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 20,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "PIN:6ac7e7620eac": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 18,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:f00fdfbb57e5": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 21,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:6f6a41dda52f": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 23,
+          "custody": "ANCHORED"
+        },
+        "PIN:d4428b96ff8c": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 24,
+          "custody": "ANCHORED"
+        },
+        "PIN:ac5f08297b42": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 25,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:dca9fb2564df": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 26,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T11_manifestRevokedAfterSupersededAndAfterAuthorized": {
+      "mode": "CURRENT",
+      "violations": [],
+      "overall": "PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v1-a4",
+          "h": 21
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 21,
+      "copyConfirmedIndex": 21,
+      "pendingReanchor": [
+        22
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 19,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-2": {
+          "lastEvent": "APPROVED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-3": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 21,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:e2648cb03773": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 22,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T12_useRecordedWhileARevocationIsPending": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step5",
+          "USE_WITH_PENDING_CLOSURE",
+          "15"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 12,
+      "copyConfirmedIndex": 12,
+      "pendingReanchor": [
+        13,
+        14,
+        15
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 15,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 14,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T13_runStartAnchorDoesNotCoverItsPins": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step5",
+          "PIN_USE_BEFORE_ANCHOR",
+          "(14, '1cbe940e66b7')"
+        ],
+        [
+          "step5",
+          "PIN_USE_BEFORE_ANCHOR",
+          "(14, '947ee2ce5101')"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 12,
+      "copyConfirmedIndex": 12,
+      "pendingReanchor": [
+        13,
+        14
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 14,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T14_historicalRevisionIndexes0to8": {
+      "mode": "HISTORICAL",
+      "violations": [],
+      "overall": "HISTORICAL_PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        }
+      ],
+      "laterAnchors": [
+        "ct21d-baseline/v1-a2",
+        "ct21d-baseline/v1-a3",
+        "ct21d-baseline/v2",
+        "ct21d-baseline/v2-a1"
+      ],
+      "lastAnchoredIndex": 6,
+      "copyConfirmedIndex": 6,
+      "pendingReanchor": [
+        7,
+        8
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 8,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T14_sameRevisionVerifiedAsCurrent": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step3",
+          "TRUNCATED_BELOW_ANCHOR",
+          "ct21d-baseline/v1-a2"
+        ],
+        [
+          "step3",
+          "TRUNCATED_BELOW_ANCHOR",
+          "ct21d-baseline/v1-a3"
+        ],
+        [
+          "step3",
+          "TRUNCATED_BELOW_ANCHOR",
+          "ct21d-baseline/v2"
+        ],
+        [
+          "step3",
+          "TRUNCATED_BELOW_ANCHOR",
+          "ct21d-baseline/v2-a1"
+        ],
+        [
+          "step4",
+          "UNRECORDED_ANCHOR",
+          "ct21d-baseline/v1-a2"
+        ],
+        [
+          "step4",
+          "UNRECORDED_ANCHOR",
+          "ct21d-baseline/v1-a3"
+        ],
+        [
+          "step4",
+          "UNRECORDED_ANCHOR",
+          "ct21d-baseline/v2"
+        ],
+        [
+          "step5",
+          "ANCHOR_RECORD_BASELINE_MISMATCH",
+          "ct21d-baseline/v2"
+        ],
+        [
+          "step5",
+          "ANCHOR_RECORD_BASELINE_MISMATCH",
+          "ct21d-baseline/v2-a1"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 20
+        },
+        {
+          "tag": "ct21d-baseline/v2-a1",
+          "h": 22
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 22,
+      "copyConfirmedIndex": 22,
+      "pendingReanchor": [],
+      "status": [
+        "LAST_ANCHOR_NOT_RECORDED"
+      ],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 8,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        }
+      }
+    },
+    "T15_ba07ChangedManifestRevokedAndRecaptured": {
+      "mode": "CURRENT",
+      "violations": [],
+      "overall": "PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 21
+        },
+        {
+          "tag": "ct21d-baseline/v2-a1",
+          "h": 26
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 26,
+      "copyConfirmedIndex": 26,
+      "pendingReanchor": [
+        27,
+        28
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 21,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 19,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 20,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "PIN:6ac7e7620eac": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 18,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:d5fcbcee21de": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 22,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-2": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 28,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:9039661b0c53": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 27,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T16_manifestCarriedOverAlthoughBa07Changed": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step5",
+          "CARRY_OVER_INVALID",
+          "(16, 'CAP-1')"
+        ],
+        [
+          "step5",
+          "CARRY_OVER_MISSING",
+          "('manifest', 'CAP-1')"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 20
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 20,
+      "copyConfirmedIndex": 20,
+      "pendingReanchor": [
+        21
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 14,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 19,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "REVOKED",
+          "lastIndex": 20,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "PIN:3b3b2cdd652e": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 18,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:f7e287085e9c": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 21,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T17_consumedE04PinSupersededWithinItsVersion": {
+      "mode": "CURRENT",
+      "violations": [
+        [
+          "step5",
+          "CONSUMED_PIN_SUPERSEDED",
+          "15"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v1-a4",
+          "h": 16
+        }
+      ],
+      "laterAnchors": [],
+      "lastAnchoredIndex": 16,
+      "copyConfirmedIndex": 16,
+      "pendingReanchor": [
+        17
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:461d3a937898": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 14,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:9d2d0c0f147b": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:b07bd96a75d8": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:1cbe940e66b7": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:947ee2ce5101": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:ac8effac5746": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "PIN:566be9e73e10": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 15,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:c65ea0ee25c4": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 17,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    }
+  },
+  "crossCheckAgainstPythonJsonDumps": {
+    "objectsSerialized": 1675,
+    "equal": 1675
+  }
+}

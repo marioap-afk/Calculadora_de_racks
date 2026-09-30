@@ -1,0 +1,629 @@
+{
+ "r04": {
+  "files_changed": [
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-04-scenario-catalog-v5.json",
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-04-scenario-catalog-v5.md",
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-02b-coverage-matrix-v5.md",
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba04-v5-checks.py",
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba04-v5-checks-output.json",
+   "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_catalog_v5.py (generator, scratchpad; pre-pass copy in scratchpad\\v5c_pre\\)"
+  ],
+  "gaps": [
+   {
+    "gap": "#0 MAJOR BA-04: 'no Architect open question remains' while Q-V5-BA04-1..3 are open; WU-BOUNDARY per-build question unrecorded",
+    "status": "FIXED",
+    "where": "BA-04 md header PREREQUISITES, 7.1 C-3 and closing sentence, 8.2 (new table); Q-V5-BA04-3 CLOSED by pointer to BA-10 V5 section 2.2; Q-V5-BA04-1 -> AQ-V5-01, Q-V5-BA04-2 + WU-BOUNDARY -> AQ-V5-02; Delta row 'correction pass CP-01'"
+   },
+   {
+    "gap": "#0 MAJOR BA-04/BA-10/BA-02b: A-1 dropped from the baseline runs without writers (V2.1 10.6)",
+    "status": "FIXED",
+    "where": "second option of R1:BA04V4-09: A1 in CONTROLS_EXERCISED of the 10 PARAM-03 members (9 CL-CLEAN + EA2) and EA1 only; CER-A2 A-1 clause (PASS / UNKNOWN, never FAIL); CL-CLEAN A1 expectation; md section 3 'A-1 in a mirror run' + JSON A1_EVALUATION; md section 1 CONTROLS_EXERCISED row; GROUPS_SERVED (+EA1) and SEALED_AT recomputed; BA-02b A1 no-violation reason; BA-04 CP-02, BA-02b CP-01; R1:BA04V4-09 row rewritten"
+   },
+   {
+    "gap": "#0 MINOR BA-06 DC-41 / DC-18 disposition rewording (sections 3.2.2, 16, 17)",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-06 V5 (not assigned to this implementer)"
+   },
+   {
+    "gap": "#0 MINOR BA-06 section 13 'unchanged from V4' vs section 5/12 edits",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-06 V5 (not assigned)"
+   },
+   {
+    "gap": "#0 MINOR BA-06 section 9 mechanism (2): IN_USE index vs run-start anchor",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-06 V5 (not assigned); BA-04 side uses runStartAnchor in REVIEWED_RECORD / LP-LEARN"
+   },
+   {
+    "gap": "#0 MINOR BA-04 LP-LEARN / RUN_PREREQUISITES of EV-L-OC-*: no REVIEWED record",
+    "status": "FIXED",
+    "where": "LP-LEARN REVIEWED_REF x1 (LP-COMPOSE inherits); RUN_PREREQUISITE_VOCABULARY REVIEWED_RECORD; named by the 16 EV-L-OC-* and EV-L-COMPOSED; BA-04 CP-05"
+   },
+   {
+    "gap": "#0 MINOR BA-04 Q-FPSPEC-VECTORS(-CB): 'exact-arithmetic check' vs BA-05 V5 3.3.1 semanticSlotInstanceRule",
+    "status": "FIXED",
+    "where": "EXPECTED_CONTROL_RESULTS['instrument I-12'], EXPECTED_PROCEDURAL_RESULT, AUTHORITY of both scenarios; BA-04 CP-06"
+   },
+   {
+    "gap": "#0 MINOR BA-04 CONTROLS_EXERCISED of EV-L-OC-*: E-03 parked under a non-registry key",
+    "status": "FIXED",
+    "where": "option (b): normative rule 'Enforced, not exercised (EV-L-*; AR4-01)' in md section 1 and JSON ENFORCED_NOT_EXERCISED_RULE; DEFAULTS.UNLISTED_CONTROLS; key E03 = ENFORCED_NOT_EXERCISED in the 17 EV-L-*; GROUPS_SERVED/REPETITION unchanged (consistent with BA-10 V5 LEARN); BA-04 CP-07"
+   },
+   {
+    "gap": "#0 MINOR BA-04 EV-L-COMPOSED outcome called 'a learning micro-scenario'",
+    "status": "FIXED",
+    "where": "EXPECTED_PRODUCT_OUTCOME = 'NONE (a non-governing composition check driven by the micro-scenario driver: no mirror product run; AR4-01)'; BA-04 CP-08 (BA-06 section 9 wording is a cross-artifact note)"
+   },
+   {
+    "gap": "#0 MINOR BA-04 1.1: BUILD_EQUIVALENCE_RECORD without location, schema, custody or per-run citation",
+    "status": "FIXED",
+    "where": "BA-04 1.1 and JSON BUILD_EQUIVALENCE (location = BA-07 V5 review-record location; content schema CT21D_BUILD_EQUIVALENCE; custody REVIEW_RECORD_ADDED <= h of IN_USE.runStartAnchor); new JSON RUN_PREREQUISITE_RULE + md section 4 paragraph; BA-04 CP-09 (BA-07 admitting the record kind is a cross-artifact note)"
+   },
+   {
+    "gap": "#0 MINOR BA-10 CHAR_RUNS fail-closed overclaim (P-L5..P-L7)",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-10 V5 (not assigned); the BA-10 reading is AQ-V5-06, recorded in BA-04 8.2 as inherited"
+   },
+   {
+    "gap": "#0 MINOR BA-08 section 10 lists four slot-unit vectors instead of six",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-08 V5 (not assigned)"
+   },
+   {
+    "gap": "#1 MAJOR BA-04 HDM-CHAR-FXDIM keeps the V4 HDM-1 dimension-style wording",
+    "status": "FIXED",
+    "where": "HDM-CHAR-FXDIM EXPECTED_CONTROL_RESULTS['HOST_DEFAULT_MAP characterization'] and PLAN text = exact class text of the gap; SEALED_AT and md 5.1 row recomputed; BA-04 CP-03"
+   },
+   {
+    "gap": "#1 MAJOR BA-04 driver DLL declared only in EV-L-*/EV-V-* tuples (two PRODUCT_BUILD profiles)",
+    "status": "FIXED",
+    "where": "DRIVER_CLAUSE in BUILD_PROFILES.PRODUCT_BUILD / FULL_BASELINE_TUPLE; EV-L-* and EV-V-* tuples = that same text; learning-tuple row of md section 4 removed; md 1.1, LP-LEARN, EV_L_SET, EV-L/EV-V plans aligned; BA-04 CP-04 (BA-06 9/10.1 and BA-08 K-10 wording are cross-artifact notes)"
+   },
+   {
+    "gap": "#1 MAJOR BA-06 section 9 item (2) / section 12 INVENTORY_REVIEW_RECORDS vs run-start anchor",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-06 V5 (not assigned)"
+   },
+   {
+    "gap": "#1 MINOR BA-04 LP-LEARN / REVIEWED_RECORD prerequisite",
+    "status": "FIXED",
+    "where": "same fix as #0 LP-LEARN gap; BA-04 CP-05"
+   },
+   {
+    "gap": "#1 MINOR BA-04 section 2.1 pin mechanism weaker than BA-07 V5",
+    "status": "FIXED",
+    "where": "md 2.1 bullet 2 = pointer to BA-07 V5 sections 5.1 (rules 1-4), 7 (U1-U4) and 8; intro cites 5.1, 7 and 8; BA-04 CP-10 (md only)"
+   },
+   {
+    "gap": "#1 MINOR BA-04 header / 7.1 C-3 / 8.2 claim no open question; Q-V5-BA04-3 stale",
+    "status": "FIXED",
+    "where": "same fix as #0 MAJOR 1; BA-04 CP-01; BA-02b header PREREQUISITES and section 6 paragraph (BA-02b CP-02)"
+   },
+   {
+    "gap": "#1 MINOR BA-04 8.1 row AQ-V4-11 omits the rest of CQ-07 (to EXEC-3)",
+    "status": "FIXED",
+    "where": "md 8.1 AQ-V4-11 row; BA-04 CP-11"
+   },
+   {
+    "gap": "#1 MINOR BA-08 section 10 slot-unit vectors",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-08 V5 (not assigned)"
+   },
+   {
+    "gap": "#1 MINOR BA-04 7.4 heading and C-10 (K-2/K-5 vs BA-08 V5 16.1)",
+    "status": "FIXED",
+    "where": "md 7.4 heading 'not direct BLOCKED_BY blockers'; C-10 states K-5 and K-2 precede the seal through the BA-08 seal and K-2 gates the candidate through BA-05; BA-04 CP-12"
+   },
+   {
+    "gap": "#1 MINOR BA-06 section 13 / header PREREQUISITES (1) inventory edits",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-06 V5 (not assigned)"
+   },
+   {
+    "gap": "#1 MINOR BA-04 Q-I14 coordinate sentence; PR-REC-REOBS-MISMATCH and WR-*-X0/X7/X8 without qualification records",
+    "status": "FIXED",
+    "where": "new vehicle Q-I14-P (FX-IMP, CB, AR3-01 mode, K-8, Wr-G between PR and PW) + WU-DRY-Q-I14-P; Q-I14 sentence names every vehicle/coordinate; generic rule: every governing I-14 writer injection names its vehicle record (Q-I14-X added to 18 WR-*-X0/X7/X8, Q-I14-P to PR-REC-REOBS-MISMATCH); md section 3 states it; vocabulary QUALIFICATION_RECORD@Q-I14-P; BA-04 CP-13"
+   },
+   {
+    "gap": "AQ-V5-01 (EVM_FROZEN reverse build equivalence, 111 CB governing scenarios)",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-04 md header PREREQUISITES, 7.1 C-3, 8.2 row (OPEN, before candidate); BA-02b section 6 (no byte effect on BA-02b)"
+   },
+   {
+    "gap": "AQ-V5-02 (per-build qualification of PR-CLOSURE-COMPLETENESS and WU-BOUNDARY)",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-04 md header PREREQUISITES, 7.1 C-3, 8.2 row (OPEN, before candidate); BA-02b header PREREQUISITES and section 6 (can change sections 2-4)"
+   },
+   {
+    "gap": "AQ-V5-04 (BA-07 readings, inherited: runStartAnchor, carry-over block)",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-04 md header, C-3, 8.2 row (bytes affected: 1.1 custody, REVIEWED_RECORD, LP-LEARN cite IN_USE.runStartAnchor)"
+   },
+   {
+    "gap": "AQ-V5-06 (BA-10 CHAR_RUNS = N_det + 1 for EV-L-COMPOSED; fail-closed scope, inherited)",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-04 md header, C-3, 8.2 row (bytes affected: EV-L-COMPOSED REPETITION/SEALED_AT, REPETITION_RULES.CHAR); AQ-V5-03/05/07 recorded for completeness with no BA-04 byte effect"
+   }
+  ],
+  "counts": "Catalog 423 -> 425 scenarios (263 own + 162 WU-DRY; new Q-I14-P and WU-DRY-Q-I14-P). Governance GOVERNING 250, NON_GOVERNING_BY_DESIGN 173, EXPLORATORY 2. Build CB 333, PB 80, NONE 12. Status DRAFT 160, SEALED_PENDING_PIN_CANDIDATE 194, SEALED_CANDIDATE 69, EXPLORATORY 2. Blockers K-3 134, K-8 34. RUN_PREREQUISITES: BUILD_EQUIVALENCE_RECORD 48, REVIEWED_RECORD 17, Q-I14-X 87 (was 69), Q-I14-Y 5, Q-I14-P 1, SILENT-X 7, SILENT-Y 3. SEALED_AT changed on 72 existing scenarios; GROUPS_SERVED changed on 10 (the PARAM-03 sample, +EA1); REPETITION changed on 0. AQ-V5-01 count = 111. Check: 70 checks, 70 PASS, 0 FAIL (69 before; one new check 'correction_pass_consistency', ten others extended). New mutation suite (scratchpad v5c_mut.py): 25 of 25 mutations detected; baseline 0 failures. Hashes (SHA-256, LF): JSON d687ebf312c9269838c4217ee092a6d91522bced8ae3bceff70ea3000620de4d; md 80ac1708032a93af9f5f12f3cc482db79fd5ca799d3d7a3e40e182598616d5c0; BA-02b 0e288e99a882b42dcb6a15412a61a817cfc2d55663fcd9783123ba789290413c; check 8fb7bb617421992d08eb8b3e6f41be674062c628519d9e95271cdc2ccdbc36f0 (named in BA-02b section 0); output 761c99c871036069df530672dd26838bb1d3863836bc12ba022ec1ae8afc9024. BA-04 Delta V5: 13 'correction pass CP-01..CP-13' rows; BA-02b Delta V5: 3 rows CP-01..CP-03.",
+  "notes": [
+   "No V1..V4 file, contract file, decisions, HANDOFF, BA-11, BA-02a, BA-03, src/ or test was touched; no git write command was run. The only tracked diff in the worktree is the lead's V2.5 file. All outputs are UTF-8, LF only, with a final newline.",
+   "The generator and the check were extended, never weakened. Checks that stated V5-draft readings were replaced by stricter ones: A1 exercised exactly by EA1 plus the PARAM-03 sample; the open AQ-V5 items named in place of 'no open question remains'; E03 as ENFORCED_NOT_EXERCISED; the per-predicate instance rule; the 2.1 pointer. A vehicle may carry K-8 only when its fixture is in the FX-IMP family. A new guard catches a control listed twice in CONTROLS_EXERCISED.",
+   "The earlier scratch suite mut_v5.py still has a mutation 'A1 in a mirror run' that appends A1 to CL-CLEAN-FX1F-F0. The correction pass reversed that premise: A1 now belongs there. That mutation now trips groups_served (duplicate) only. The equivalent mutation, A1 on E4-VAL-R1, is detected by groups_served and ruling_traces.",
+   "Design choice to review: for the PREPARE-phase coordinate I took the critic's first option and added a fifth vehicle, Q-I14-P, in the AR3-01 mode. It extends the AR4-01 ruling of the Q-I14-* vehicles to that coordinate, and its admission is flagged in the scenario NOTE and in CP-13 as part of the Architect's delta review (C-3). The 'base harness qualifies it' option was not taken because the base Q-I14 has no fixture or mirror run (BA04V3-17).",
+   "Design choice to review: for E-03 in EV-L-OC-* I took option (b), a normative 'Enforced, not exercised' rule citing AR4-01's assignment of these runs to group E12-L. It keeps GROUPS_SERVED = [E12-L] and the LEARN label, consistent with BA-10 V5's statement that no learning micro-scenario serves a class-A or class-B group, and with the cost memo's rules.",
+   "Q-V5-BA04-3 is closed by pointer. The existing label 'CHAR: CHAR_RUNS = PARAM-02 (non-governing composition check)' was kept so that the memo script's COMPOSITION label check still matches. REPETITION_RULES.CHAR now says N_det + 1 (BA-10 V5 section 2.2). AQ-V5-06, BA-10's reading, is recorded as an inherited before-candidate item.",
+   "Cross-artifact, BA-06 V5: section 9 describes EV-L-COMPOSED as 'a full mirror of FX-1F'; it should match the BA-04 wording (a composed plan driven by the micro-scenario driver, no mirror product run). Section 9 bullet 2 and section 10.1 should read 'present in every PRODUCT_BUILD run and inert outside EV-L-*'. The REVIEWED order in section 9 should use the run-start anchor, as BA-04's REVIEWED_RECORD vocabulary does.",
+   "Cross-artifact, BA-07 V5: section 2's review-record location lists only V24-N2 records. BA-04 V5 1.1 now places the BUILD_EQUIVALENCE_RECORD there, with REVIEW_RECORD_ADDED custody at most the h of IN_USE.runStartAnchor. BA-07 should admit this record kind; it could also check it in step 5.",
+   "Cross-artifact, BA-08 V5: K-10 'Not users' should adopt the one-PRODUCT_BUILD-profile driver wording. Its I-14 family enumeration (line ~448) and those of BA-10 V5 (line ~76) and BA-09 V5 section 4 (the four vehicles and their dry runs) now miss Q-I14-P and WU-DRY-Q-I14-P.",
+   "Cross-artifact, cost memo: it must be regenerated by its owner (gen_costmemo_v5.py), because the catalog SHA changed and the counts are now 425 scenarios and 162 dry runs. I ran the memo script read-only against the new catalog: it exits 0 and prints no 'NO'.",
+   "Cross-artifact, BA-11 registry: the entries of BA-04 and BA-02b, and the check and output bound in the BA-02b entry, must take the new hashes listed in counts.",
+   "No new real contract ambiguity beyond the fixed AQ-V5 ids. AQ-V5-01 and AQ-V5-02 are BA-04's own before-candidate items. AQ-V5-04 and AQ-V5-06 are inherited because BA-04 bytes cite the runStartAnchor and N_det + 1. AQ-V5-03, AQ-V5-05 and AQ-V5-07 are recorded for completeness and have no BA-04 byte effect shown."
+  ]
+ },
+ "r06": {
+  "files_changed": [
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-06-evm-preparation-v5.md",
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba06-v5-checks.py",
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-ba06-v5-checks-output.json",
+   "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba06v5.py"
+  ],
+  "gaps": [
+   {
+    "gap": "critic-1 MAJOR 3: the order 'REVIEWED before the first LEARNING run' was shown by the REVIEW_RECORD_ADDED index being lower than the IN_USE index. BA-07 V5 appends IN_USE after the run ends, so that comparison does not show the order.",
+    "status": "FIXED",
+    "where": "BA-06 V5 section 9, last bullet, item (2): the REVIEW_RECORD_ADDED index must be at most the h of the run-start anchor (IN_USE.runStartAnchor) of every EV-L-OC-* run (BA-07 V5 6.1 and section 7, U1..U3), with the run-start reasoning stated and mechanism (1) kept. The section 12 row INVENTORY_REVIEW_RECORDS points to this condition, and the section 1 paragraph is reworded. Section 17 has a correction-pass row, and the R1:BA06V4-N02 and R2:BA06V4-N04 rows are reworded. Checked by BA06-C18."
+   },
+   {
+    "gap": "critic-0 MINOR: the same mechanism (2) finding from the coverage critic (section 9 and section 12 INVENTORY_REVIEW_RECORDS). The optional cross-note that BA-07 step 5 can check the condition was requested.",
+    "status": "FIXED",
+    "where": "BA-06 V5 section 9 item (2), including the cross-artifact note that BA-07 V5 step 5 of 6.2 can verify it; section 12 row; section 17 correction-pass row 1"
+   },
+   {
+    "gap": "critic-1 MAJOR 2, BA-06 part: section 9 bullet 2 and section 10.1 must say the learning micro-scenario driver is 'present in every PRODUCT_BUILD run and inert outside EV-L-*'.",
+    "status": "FIXED",
+    "where": "BA-06 V5 section 9 bullet 'Build and controls of the learning runs' and section 10.1 now call it a declared harness DLL of the one PRODUCT_BUILD profile (AR4-06 (1)). Header DELTA RULING APPLIED now lists AR4-06 (1). The AQ-V4-01 row of section 17 is reworded and a correction-pass row added. Checked by BA06-C18."
+   },
+   {
+    "gap": "critic-1 MAJOR 2, BA-04 and BA-08 parts: BUILD_PROFILES.PRODUCT_BUILD / FULL_BASELINE_TUPLE and BA-08 K-10 wording.",
+    "status": "NOT_APPLICABLE",
+    "where": "Not my file: BA-04 V5 and BA-08 V5 implementers"
+   },
+   {
+    "gap": "critic-0 MINOR: section 13 row 'design-time inventory' said 'unchanged from V4' for the whole inventory. The same framing was in the section 17 row 'STATIC_REVIEWED with the dynamic-trace plan' and in the BA06-C13 and BA06-C14 statements, although sections 5 and 12 are inventory components that changed in content.",
+    "status": "FIXED",
+    "where": "Section 13 row now splits 'frozen sections equal to V4 except the declared labels and limit (4)' from 'inventory components changed in content'. Those components are section 5 (host-defaults row AR4-07, failure-path row and paragraph AR4-15) and section 12 (INVENTORY_REVIEW_RECORDS, R1:BA06V4-N02, R2:BA06V4-N04). No operation class, row set, 'affects' cell or EVM field changed. Carry-over is left to the Architect, and the scope question is AQ-V5-07. The section 17 row is reworded. The BA06-C13 and BA06-C14 statements and the docstring of the checks script are reworded, and the C14 detail marks sections 5 and 12 as inventory components."
+   },
+   {
+    "gap": "critic-1 MINOR: section 13, header PREREQUISITES (1) and section 16 must name the edits to the inventory components of sections 5 and 12 and submit them to the exact delta check.",
+    "status": "FIXED",
+    "where": "Header PREREQUISITES (1) now names the section 5 and section 12 content edits with the BA06-C13 and BA06-C14 invariants and leaves carry-over or class re-review to the Architect. Section 13 is reworded, and section 1 row E1 points to section 13 and AQ-V5-07. The section 12 edit was submitted as made, not withheld."
+   },
+   {
+    "gap": "critic-0 MINOR: the DC-41 and DC-18 wording of the section 16 and 17 rows claimed that every available fix changes inventory content. The DC-41 reword and the DC-18 correction change only the review record 3.2.2.",
+    "status": "FIXED",
+    "where": "The section 16 intro and column 2 now say which part is an inventory row and which is a review record inside the frozen span. The section 17 rows R1:BA06V4-N01 and R2:BA06V4-N01 are reworded, and section 13 row 'corrections withheld' is reworded. Section 17 has a correction-pass row 'DC-41 and DC-18 wording'."
+   },
+   {
+    "gap": "Application of the withheld corrections themselves: R1:BA06V4-N01 (C-72 amendment or DC-41 reword), R2:BA06V4-N01 (DC-18 disposition plus row X-05) and R2:BA06V4-N02 (U-03/U-09 partition). The critic proposed applying the 3.2.2 rewording and marking R1=FIXED and R2=PARTIAL, but the orchestrator ordered the frozen content kept.",
+    "status": "RECORDED_AS_AQ",
+    "where": "AQ-V5-03 in the new section 16.1 and in header PREREQUISITES (3) as a before-candidate gate. Nothing inside the frozen span is applied. R1:BA06V4-N01, R2:BA06V4-N01 and R2:BA06V4-N02 stay NOT_ADDRESSED, with reasons pointing to AQ-V5-03 and AQ-V5-07."
+   },
+   {
+    "gap": "Scope of the BA-06 frozen parts for the AR4-12 exact delta check: the section 5 rows and paragraph, the section 12 row, and the label substitution AQ-V4-14 -> AR4-15 inside the trace plan (declared limit (3)).",
+    "status": "RECORDED_AS_AQ",
+    "where": "AQ-V5-07 in section 16.1, header PREREQUISITES (3) (before-candidate), section 13 rows 'design-time inventory', 'dynamic-trace plan' and 'STATIC_REVIEWED', and section 1 row E1"
+   },
+   {
+    "gap": "Cross-artifact open questions whose rulings can change BA-06 bytes: AQ-V5-04 (the BA-07 V5 run-start anchor reading used by section 9 item (2) and the section 12 pointer) and AQ-V5-01 (EVM_FROZEN learned and validated on PRODUCT_BUILD but consumed by CHARACTERIZATION_BUILD runs; sections 9 and 10.1).",
+    "status": "RECORDED_AS_AQ",
+    "where": "Section 16.1 rows AQ-V5-04 and AQ-V5-01 (OPEN, gate BEFORE CANDIDATE), header PREREQUISITES (3), and section 13 row 'open Architect questions'. AQ-V5-02, AQ-V5-05 and AQ-V5-06 are noted in 16.1 as belonging to other artifacts, with no BA-06 byte they can change. BA-06 no longer says that no open question remains (BA06-C18 checks this)."
+   },
+   {
+    "gap": "critic-0 MINOR (with BA-04): the section 9 bullet on EV-L-COMPOSED said 'a full mirror of FX-1F'.",
+    "status": "FIXED",
+    "where": "Section 9 EV-L-COMPOSED bullet now reads: a full composed plan of FX-1F in a scratch document, driven by the micro-scenario driver on the PRODUCT_BUILD, with no mirror product run (the BA-04 V5 plan). The frozen 3.3 bullet keeps its V4 wording. The BA-04 EXPECTED_PRODUCT_OUTCOME part belongs to the BA-04 implementer."
+   },
+   {
+    "gap": "Q-V5-BA04-3 is closed by BA-10 V5 section 2.2; the pointer must be cited.",
+    "status": "FIXED",
+    "where": "Cited in the section 9 EV-L-COMPOSED bullet (run count by pointer to BA-10 V5 section 2.2, no value stated) and in the closing paragraph of section 16.1"
+   },
+   {
+    "gap": "Re-run the V5 checks (all must pass, including the frozen-parts check) and update the section 14 binding.",
+    "status": "FIXED",
+    "where": "18/18 PASS, with the new BA06-C18. BA06-C13 frozen parts: 3..3.2.5, 3.3, 7, 10.2 and 11 are all identical except the declared labels and limit (4). Section 14 binds checks.py 02d50c40479aed731cc2d92cfe07e0c5e5d72dee80aa2e28ccddd23162c132b7 and output 256d910e6ea0fd0dbe23706fa8c50d20b265fdd858a652ad605b9365eb7465c5. A re-run after the final regeneration reproduces the same output bytes."
+   }
+  ],
+  "counts": "BA-06 V5 LF SHA-256 898b4f8aa65a39ac9e13c16b32d56da5b1c207a4e49fb97c7f45abde17ce8be7 (V4 blob 5758f3c4 unchanged). Checks: 18/18 PASS (BA06-C1..C18). Delta V5 table: 23 prior rows (9 of them reworded) plus 7 new 'correction pass' rows, 30 in total. Section 16.1: 4 open Architect questions (AQ-V5-03 and AQ-V5-07 for this artifact; AQ-V5-04 and AQ-V5-01 cross-artifact), all OPEN and BEFORE CANDIDATE. BA-06 findings: 7 FIXED and 3 NOT_ADDRESSED (R1:BA06V4-N01, R2:BA06V4-N01, R2:BA06V4-N02, now under AQ-V5-03). Frozen sections: no byte change beyond the V5 labels and limit (4). Evidence rows in section 14: 28.",
+  "notes": [
+   "The design-time inventory and the trace plan were not touched: BA06-C13 PASS on all five frozen parts. The generator still asserts that it renders them byte-equal to V4 before relabelling.",
+   "The coverage critic proposed applying the DC-41 and DC-18 rewording, which would have made R1:BA06V4-N01 FIXED and R2:BA06V4-N01 PARTIAL. Per the task, both are withheld under AQ-V5-03, and the question of whether an edit to a review record inside the frozen span keeps the carry-over is AQ-V5-07. Only the justification wording of the section 16 and 17 rows was corrected.",
+   "My judgment call: AQ-V5-01 is listed as a before-candidate prerequisite of BA-06. A ruling that binds or validates the EVM on the characterization build would change sections 9 and 10.1. If the lead judges it cannot change BA-06 bytes, the row and the PREREQUISITES (3) mention can be dropped. BA06-C18 would then need its aq_ids tuple adjusted.",
+   "Cross-artifact, BA-04: LP-LEARN REVIEWED_REF and the proposed RUN_PREREQUISITE REVIEWED_RECORD should say 'anchored by the run-start anchor', so they match BA-06 V5 section 9 item (2). The BA-04 EV-L-COMPOSED EXPECTED_PRODUCT_OUTCOME should drop 'a learning micro-scenario'. The FULL_BASELINE_TUPLE, EV-L-* and EV-V-* tuples should carry the driver wording 'present in every PRODUCT_BUILD run and inert outside EV-L-*' that BA-06 now uses.",
+   "Cross-artifact, BA-07 and BA-08: the BA-07 cross note should say 'run-start anchor' instead of 'IN_USE index'; BA-07 may add the REVIEW_RECORD_ADDED <= runStartAnchor.h check for the EV-L-OC-* runs to step 5 of 6.2. BA-08 K-10 'Not users' should use the same driver wording.",
+   "Flag for the BA-11 registry (lead): section 9 item (2) uses BA-07 V5 definitions (runStartAnchor, h, U1..U3). V24-N2 already placed the review records in BA-07 custody, and V4 already cited that custody order. DEPENDS_ON stays BA-01, BA-03, BA-05 as COORD5 section 3 fixes it. BA-07 precedes BA-06 in the seal order, so an edge BA-06 -> BA-07 would create no cycle, but whether it is needed is for the registry.",
+   "Header DELTA RULING APPLIED now lists AR4-06 (1) (one BUILD_BOUND profile per build), because the driver wording rests on it.",
+   "Negative test: the new checks script run on the pre-correction V5 bytes (in a scratch copy of docs) fails closed with exit 1, because the 16.1 table is missing. The pre-correction generator, md, checks script and output are backed up in the scratchpad at ba06v5/precorr/.",
+   "No git write commands were run. No V1..V4 file, contract file, decisions file, HANDOFF, BA-11, BA-02a, BA-03, src/ or test file was modified. The modified V2.5 contract file in the worktree was already modified before this pass (not by me)."
+  ]
+ },
+ "r0789": {
+  "files_changed": [
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-07-manifest-custody-v5.md",
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-08-selective-kind-baseline-v5.md",
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-09-warmup-v5.md"
+  ],
+  "gaps": [
+   {
+    "gap": "#0 MAJOR BA-04 header/7.1/8.2: 'no open question remains' vs Q-V5-BA04-1..3; the WU-BOUNDARY per-build question is recorded by no artifact",
+    "status": "RECORDED_AS_AQ",
+    "where": "WU-BOUNDARY part recorded as AQ-V5-02 in BA-09 V5 section 8.1 (+ section 7 paragraph 'Build of WU-BOUNDARY', W-4, new W-10, header PREREQUISITES, closing block) and in BA-08 V5 section 16.5 (it can change K-10); the BA-04 header/7.1/8.2 wording and the Q-V5-BA04-3 closure (BA-10 V5 section 2.2) belong to BA-04"
+   },
+   {
+    "gap": "#0 MAJOR A-1 dropped from the clean sample (BA-04 / BA-10 / BA-02b disagree)",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04, BA-10, BA-02b; no BA-07/08/09 bytes involved"
+   },
+   {
+    "gap": "#0 MINOR BA-06 DC-41 / DC-18 review-record corrections withheld",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-06 (AQ-V5-03); not my artifacts"
+   },
+   {
+    "gap": "#0 MINOR BA-06 section 13/17 'inventory unchanged from V4' misframes the exact delta check",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-06 (AQ-V5-07); not my artifacts"
+   },
+   {
+    "gap": "#0 MINOR BA-06 section 9 mechanism (2) uses the IN_USE index (appended after the run); BA-07 can check the order in step 5",
+    "status": "FIXED",
+    "where": "BA-07 side: BA-07 V5 5.1 paragraph 'REVIEWED before the first LEARNING run' (REVIEW_RECORD_ADDED index <= h of runStartAnchor of every learning run named by the learning-corpus record cited in the EVM_FROZEN pin's sourceEvidence; new code REVIEW_AFTER_LEARNING_START), 5.1 sourceEvidence row, 6.2 inputs + step 5(c) + Result (outside the vector model), section 10 row; BA-06 wording itself is BA-06's"
+   },
+   {
+    "gap": "#0 MINOR BA-04 LP-LEARN lacks REVIEWED_REF and a REVIEWED run prerequisite",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04; BA-07 V5 5.1 now defines the custody-order check the prerequisite can point to"
+   },
+   {
+    "gap": "#0 MINOR BA-04 Q-FPSPEC-VECTORS still says 'exact arithmetic'",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04"
+   },
+   {
+    "gap": "#0 MINOR BA-04 E-03 enforced but not in CONTROLS_EXERCISED of EV-L-OC-*",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04"
+   },
+   {
+    "gap": "#0 MINOR EV-L-COMPOSED expected outcome calls it a learning micro-scenario (BA-04, BA-06)",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04, BA-06"
+   },
+   {
+    "gap": "#0 MINOR build-equivalence record has no location, content schema or custody (BA-04 1.1 vs BA-07)",
+    "status": "FIXED",
+    "where": "BA-07 V5: 1 (f); 2 (location docs/automation/evidence/ct21d/build-equivalence/, diff next to it); 4 (record kind, sorted arrays harnessDlls/productAssemblies/switchAssemblies, record hash); 5 (never edited); new 5.3 (schema CT21D_BUILD_EQUIVALENCE: productBuild/characterizationBuild with Plugin + harness DLL SHA-256, method BYTE_IDENTICAL_PRODUCT_ASSEMBLIES|REVIEWED_DIFF, productAssemblies, switchAssemblies, reviewedDiff, reviewer, utc; custody via REVIEW_RECORD_ADDED as a review record; use incl. AR4-06 (6)); 6.1 subjectHash; 6.2 step 5(d) note; 7 CUSTODY_ROLE, REVIEW_RECORD machine, new U5 (REVIEW_RECORD_ADDED <= h of runStartAnchor of each PRODUCT_BUILD run consuming E04/LOCK_MODE/HDM pins; hash cited in run log; checked by control plane at run start, not by 6.2, declared); 10 (three rows); 11. BA-09 V5 section 4 declared residual points to BA-07 V5 5.3"
+   },
+   {
+    "gap": "#0 MINOR BA-10 V5 fail-closed statement of AR4-14 (b)(i) overclaims",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-10 (AQ-V5-06)"
+   },
+   {
+    "gap": "#0 MINOR BA-08 section 10 'Slot-unit vectors of BA-05 V5' lists four vectors, BA-05 V5 has six",
+    "status": "FIXED",
+    "where": "BA-08 V5 section 10 paragraph: SV-06, SV-07, SV-10, SV-11, SV-14, SV-15 with EQUAL/DIFFERENT pairs; cites BA-05 V5 section 3.3.1 per-predicate instance rule (INVALID on failed check or straddling enclosure); Delta V5 correction-pass row"
+   },
+   {
+    "gap": "#1 MAJOR BA-04 HDM-CHAR-FXDIM expectation keeps the dimension style in scope",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04 JSON; BA-08 V5 HDM-1 already excludes the dimension style (no BA-08 change needed)"
+   },
+   {
+    "gap": "#1 MAJOR learning driver present only in EV-L-*/EV-V-* tuples (two product-build profiles); BA-08 K-10 'Not users' wording",
+    "status": "FIXED",
+    "where": "BA-08 V5 section 16.3 K-10 'Not users': driver is a declared harness DLL of the one PRODUCT_BUILD BUILD_BOUND profile, 'present in every PRODUCT_BUILD run and inert outside EV-L-*' (EV-V-* included), one E-10 exact set and one WUM set (AR4-01, AR4-06 (1)); BA-04 and BA-06 wording belongs to those artifacts"
+   },
+   {
+    "gap": "#1 MAJOR BA-06 section 9 item (2) order shown against IN_USE index; BA-07 6.2 step 5 may add the run-start-anchor check",
+    "status": "FIXED",
+    "where": "BA-07 V5 5.1 (REVIEW_AFTER_LEARNING_START against IN_USE.runStartAnchor h), 6.2 step 5(c), 6.2 Result, section 10; no BA-07 byte states the order through the IN_USE index"
+   },
+   {
+    "gap": "#1 MINOR BA-04 LP-LEARN / RUN_PREREQUISITES without REVIEWED record",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04"
+   },
+   {
+    "gap": "#1 MINOR BA-04 section 2.1 restates pin usability more weakly than BA-07",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04 (cross-note: its pointer should also cover BA-07 V5 U5 and 5.3)"
+   },
+   {
+    "gap": "#1 MINOR BA-04 header/C-3/8.2 'no Architect open question remains'",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04"
+   },
+   {
+    "gap": "#1 MINOR BA-04 8.1 AQ-V4-11 row omits the CQ-07 deferral",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04"
+   },
+   {
+    "gap": "#1 MINOR BA-08 section 10 slot-unit vectors (SV-14, SV-15, 3.3.1)",
+    "status": "FIXED",
+    "where": "BA-08 V5 section 10 paragraph 'Slot-unit vectors of BA-05 V5 (AR3-17)'"
+   },
+   {
+    "gap": "#1 MINOR BA-04 7.4 lists K-5 as not a seal blocker, omits K-2 (vs BA-08 16.1)",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04 7.4; BA-08 V5 16.1 already states K-2/K-5 precede the catalog seal indirectly (unchanged)"
+   },
+   {
+    "gap": "#1 MINOR BA-06 section 13 'unchanged from V4'",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-06 (AQ-V5-07)"
+   },
+   {
+    "gap": "#1 MINOR BA-04 Q-I14 PREPARE-phase coordinate and QUALIFICATION_RECORD naming",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04"
+   },
+   {
+    "gap": "AQ-V5-04 (BA-07 V5 readings: per-manifest custody-log reference + IN_USE.runStartAnchor; no supersession of consumed LOCK_MODE/HOST_DEFAULT_MAP/FIXTURE_INSTANCE pins within a version; carry-over block before first anchor of v<k+1> with mandatory REVOKED)",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-07 V5 new section 11.1 (question + bytes it can change: sections 4, 5.1, 6.1, 6.2, 7, 8, 10, 12 and the vector); header PREREQUISITES (1); 11 N6-1; closing block; Delta V5 correction-pass row"
+   },
+   {
+    "gap": "AQ-V5-01 (reverse direction of the build equivalence for EVM_FROZEN) as it affects BA-07 U5 and 5.3",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-07 V5 section 11.1, 5.3 'Reverse direction', 7 U5 last sentence; header PREREQUISITES; N6-1; closing block"
+   },
+   {
+    "gap": "AQ-V5-05 (BA-08 HDM-5 agreement rule)",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-08 V5 new section 16.5; 11.2 HDM-5 names it; 16.1 new row 'AQ-V5-05, AQ-V5-02' (before the candidate) and catalog-seal paragraph; header PREREQUISITES; closing block"
+   },
+   {
+    "gap": "AQ-V5-02 (per-build qualification of non-Q-*/E6-C* qualification scenarios) as it affects BA-08 K-10",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-08 V5 section 16.5 and 16.3 K-10 'Per-build qualification' sentence; header; 16.1; closing block"
+   }
+  ],
+  "counts": "Correction-pass rows added to the Delta V5 tables: BA-07 5, BA-08 5, BA-09 2 (12 total). Of the 23 critic gaps, 6 touch these artifacts: 5 FIXED (build-equivalence record, REVIEWED order check against the run-start anchor, K-10 driver wording, BA-08 section 10 counted once per critic) and 1 RECORDED_AS_AQ (WU-BOUNDARY, as AQ-V5-02). The other 17 are NOT_APPLICABLE because they concern BA-04, BA-06, BA-10 or BA-02b. AQ ids recorded: AQ-V5-04 and AQ-V5-01 in BA-07; AQ-V5-05 and AQ-V5-02 in BA-08; AQ-V5-02 (WU-BOUNDARY part) in BA-09. The BA-07 vector did not change: it was regenerated and reproduced output 743302c72a901c2631c4bdbe46e2e6b755901c8427dc3d0af508474ed28dff38 and generator 9f9fd14f9c6efb2754f8c98c5aff470b34e525379be6b30dfc4224f253ac4209. The three md files are LF only, end with one newline, have no BOM and have consistent table columns. Final SHA-256: BA-07 e457812edff2939bde93544ae11a86444df3f58de5ff3e991b0c29b13f531ba4, BA-08 c2463a489bfb7e9219bb0c8eff5022e4aa8e1b4ae1d820b252b9d8e75e480c85, BA-09 ebecab152a2278722e0ee901e674729fc955ccb62b56cd72a5c61bf1cbc6ce56.",
+  "notes": [
+   "I edited the BA-07 V5 md by hand. Its JCS vector files are unchanged and regenerate byte-identically, so the 4.1 hashes still hold. The reason: the build-equivalence record is custodied as a REVIEW_RECORD (no new event, subject kind or entry field). The new conditions are declared outside the vector model in 6.2 Result: code REVIEW_AFTER_LEARNING_START, record kind CT21D_BUILD_EQUIVALENCE and use precondition U5.",
+   "BA-08 and BA-09 V5 were also edited directly in the md. The scratchpad generators v5b/make_ba08v5.py and v5b/make_ba09v5.py are now stale: they would reproduce the pre-correction bytes, so they must not be re-run.",
+   "Beyond the AQs assigned to each file, I recorded two more where they can change bytes. AQ-V5-01 goes in BA-07, because U5 names only E04/LOCK_MODE/HOST_DEFAULT_MAP pins on PRODUCT_BUILD runs. AQ-V5-02 goes in BA-08, because K-10 restates the per-build rule for Q-*/E6-C* only. I did not decide either.",
+   "For the lead / BA-11: the PREREQUISITES of the registry entries should gain the new before-candidate items: BA-07 = AQ-V5-04 and AQ-V5-01; BA-08 = AQ-V5-05 and AQ-V5-02; BA-09 = AQ-V5-02 (WU-BOUNDARY; new item W-10). BA-09 now points to BA-07 V5 section 5.3, which is an existing DEPENDS_ON edge. BA-07 still cites no sibling other than BA-11/BA-01; its header now states that there is no edge to BA-04 or BA-06.",
+   "For BA-04: RUN_PREREQUISITE_VOCABULARY BUILD_EQUIVALENCE_RECORD and section 1.1 can point to BA-07 V5 section 5.3 (location, schema, custody) and section 7 U5. U5 has the control plane record the equivalence-record hash in the run log next to the run-start anchor, so the log profile of the 48 PRODUCT_BUILD consumers may need a matching record. The section 2.1 pin pointer should cover U1-U5.",
+   "For BA-06: mechanism (2) of section 9 can cite BA-07 V5 5.1 'REVIEWED before the first LEARNING run' (REVIEW_RECORD_ADDED <= h of IN_USE.runStartAnchor, code REVIEW_AFTER_LEARNING_START). That citation would add an edge BA-06 -> BA-07; it is acyclic, since BA-07 depends only on BA-01. The BA-07 check requires the sealed learning-corpus record (V2.1 27.3), which the EVM_FROZEN pin cites in sourceEvidence, to name the learning run ids and the REVIEWED hash. BA-06 V5 section 9 already requires the REVIEWED hash.",
+   "BA-04 and BA-06 should use the same driver wording now in BA-08 K-10: 'present in every PRODUCT_BUILD run and inert outside EV-L-*'.",
+   "Real open points, recorded rather than decided. First, BA-07 5.3 gives the build-equivalence record no later custody event: an equivalence found wrong after recording is declared to be a Coordinator finding, not a transition. Second, BA-07 fixes no role for the record's reviewer; the record names the person, and self-review stays a declared limit (7.1). No git write command was run, and no V1-V4 file, contract, decisions, HANDOFF, BA-11, BA-02a, BA-03, src or test file was touched."
+  ]
+ },
+ "r10": {
+  "files_changed": [
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\initiatives\\I-52-ct21d-baseline-ba-10-parameter-sheet-v5.md",
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-cost-memo-v5.py",
+   "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\feature-rackmirror-espejo-semantico\\docs\\automation\\evidence\\I-52-ct21d-cost-memo-v5.md",
+   "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_ba10v5.py",
+   "C:\\Users\\ALEJAN~1\\AppData\\Local\\Temp\\claude\\D--Documentos-Codex-Calculadora-de-racks\\d096defd-71ce-4bf6-b50f-1d1c3a4d1c81\\scratchpad\\gen_costmemo_v5.py"
+  ],
+  "gaps": [
+   {
+    "gap": "#0 MINOR BA-10 V5 section 2.2 CHAR_RUNS bullets 'Intent' and 'Fail-closed' overclaim fail-closed for every characterized behaviour (P-L5/P-L6/P-L7 are never re-observed by a governing run)",
+    "status": "FIXED",
+    "where": "BA-10 V5 2.2 CHAR_RUNS 'Intent' (bound only on the characterization runs; safe only where the next bullet says so) and 'Fail-closed (AR4-14 (b)(i)), and its limit' (it holds for E-04 membership, for E-03 P-L1..P-L3 per V2.1 5 row PL and for S-1..S-3 lookups; P-L5/P-L6/P-L7 are not re-observed, can stand behind a governing PASS and rest on the LOCK_MODE selection review of V2.1 3.4; nothing is stated for P-L4); 2.1 CHAR_RUNS row; section 5 Q-O1 disclosure; section 6 row AQ-V4-13 (b)(i); Delta V5 row 'correction pass CP-01'"
+   },
+   {
+    "gap": "AQ-V5-06: BA-10 reading CHAR_RUNS = N_det + 1 for EV-L-COMPOSED, and the scope of the AR4-14 (b)(i) fail-closed statement",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-10 V5 section 6.1 (question, current text, sentences a ruling can change, OPEN before the candidate); header ARCHITECT QUESTIONS and PREREQUISITES; section 5 status block; 2.1 PARAM-02 and CHAR_RUNS rows, 2.2 composition-check bullets and Q-O3 marked 'this sheet's reading, AQ-V5-06'; memo header, section 3, check A.7 (new yes line)"
+   },
+   {
+    "gap": "AQ-V5-01 (EVM_FROZEN learned on PRODUCT_BUILD, consumed by 111 governing CHARACTERIZATION_BUILD runs: reverse direction of AR4-06 (4))",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-10 V5 section 6.1 (can change section 4 pin row and 2.2 PARAM-03 'Build'; the count 111 is not copied, since the sheet is symbolic); header PREREQUISITES; section 4 pin row and 2.2 PARAM-03 'Build' name it; memo block F.5 (new: 111 scenarios, 0 name BUILD_EQUIVALENCE_RECORD, 3191 runs at row1; not modeled)"
+   },
+   {
+    "gap": "AQ-V5-02 (per-build qualification of PR-CLOSURE-COMPLETENESS and WU-BOUNDARY)",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-10 V5 section 6.1 (can change 2.2 'Build under test' and section 5 'Consequences to weigh'); header PREREQUISITES; both sentences name it; memo block F.4 now sizes both twins (+1 and +29, so +30 at row1; neither source has a dry run)"
+   },
+   {
+    "gap": "AQ-V5-05 (BA-08 V5 HDM-5 agreement rule), cited by the BA-10 fail-closed S-1..S-3 clause",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-10 V5 section 6.1; header PREREQUISITES; 2.2 'Fail-closed, and its limit' S-1..S-3 clause names it"
+   },
+   {
+    "gap": "AQ-V5-03, AQ-V5-04, AQ-V5-07 (BA-06 withheld inventory corrections; BA-07 custody readings; scope of the BA-06 frozen parts)",
+    "status": "RECORDED_AS_AQ",
+    "where": "BA-10 V5 section 6.1 row 'recorded for completeness' (no BA-10 sentence depends on them); memo header and section 3 say they move no count the memo shows"
+   },
+   {
+    "gap": "Q-V5-BA04-3 (repetition of EV-L-COMPOSED): closed by pointer to BA-10 V5 section 2.2",
+    "status": "FIXED",
+    "where": "BA-10 V5 2.2 CHAR_RUNS composition-check bullet now says BA-04 V5 closes Q-V5-BA04-3 by a pointer to it and that the rule is this sheet's reading, not a ruling (AQ-V5-06); section 6 row Q-V5-BA04-3; Delta row CP-02; memo section 3 and CP-03"
+   },
+   {
+    "gap": "#0 MAJOR BA-04 open questions (header, 7.1 C-3, 8.2; Q-V5-BA04-3 stale against BA-10 V5; WU-BOUNDARY per-build question)",
+    "status": "FIXED",
+    "where": "BA-10 side only: 2.2 composition-check bullet, section 6 row, section 6.1, header ARCHITECT QUESTIONS (the V5 draft's statement that nothing was open is withdrawn); memo header ARCHITECT QUESTIONS and section 3 'Open questions of round V5'. The BA-04 bytes belong to the catalog implementer"
+   },
+   {
+    "gap": "#0 MAJOR A-1 in the baseline runs without writers (BA-04 / BA-10 PARAM-03 bullet / BA-02b must agree)",
+    "status": "FIXED",
+    "where": "No rule change was needed in BA-10: the catalog took the second option, so BA-10 V5 2.2 PARAM-03 ('A-1 and A-2 are evaluated on this clean sample') and BA-04 V5 agree. An informative pointer to BA-04 V5 section 3 ('A-1 in a mirror run', CER-A2) was added (Delta row CP-05). The memo was re-run: no REPETITION label changed (memo CP-01)"
+   },
+   {
+    "gap": "Catalog-fixer cross-artifact note: BA-10 V5 I-14 family enumeration (md line ~76) misses Q-I14-P",
+    "status": "FIXED",
+    "where": "BA-10 V5 2.2 'Build under test' now reads '`Q-I14` and every qualification vehicle `Q-I14-*`, AR4-01', with the vehicle list left to the catalog. The AR4-06 delta row no longer quotes the memo's twin count (Delta row CP-04). Memo A.9 and E.4 show the six-member family with 5 dry-run scenarios"
+   },
+   {
+    "gap": "#1 MINOR BA-04 Q-I14 coordinates (PREPARE-phase coordinate; QUALIFICATION_RECORD prerequisites)",
+    "status": "NOT_APPLICABLE",
+    "where": "Catalog bytes. On my side the memo counts Q-I14-P (+1, EVIDENCE) and WU-DRY-Q-I14-P (+29 at row1), plus the prerequisites QUALIFICATION_RECORD@Q-I14-P (1) and @Q-I14-X (87) in F.3. BA-10 was handled by the Q-I14-P enumeration fix (Delta row CP-04)"
+   },
+   {
+    "gap": "#0 MINOR BA-04 CONTROLS_EXERCISED of EV-L-OC-* (E-03 enforced)",
+    "status": "NOT_APPLICABLE",
+    "where": "Catalog bytes (the catalog took option (b), ENFORCED_NOT_EXERCISED). BA-10 V5 2.2, in the paragraph after the rules table, now cites that rule and states that LEARN holds either way (Delta row CP-06). Memo A.2: 0 learning scenarios serve a class-A/B group"
+   },
+   {
+    "gap": "#1 MINOR BA-04 header/7.1/8.2 claim no open question; Q-V5-BA04-3 wording false against BA-10 V5",
+    "status": "FIXED",
+    "where": "BA-10 side: section 6 row Q-V5-BA04-3 and 2.2 composition-check bullet are now consistent with BA-04 8.2 (CLOSED by pointer; the BA-10 reading is AQ-V5-06)"
+   },
+   {
+    "gap": "#1 MAJOR HDM-CHAR-FXDIM text (dimension style is writer-assigned)",
+    "status": "NOT_APPLICABLE",
+    "where": "Catalog bytes. The memo was re-run against the corrected catalog: A.6 is unchanged (V(s) = 9 for each HDM-CHAR-*) and no count moved"
+   },
+   {
+    "gap": "#1 MAJOR PRODUCT_BUILD profile / learning micro-scenario driver wording (BA-04, BA-06, BA-08)",
+    "status": "NOT_APPLICABLE",
+    "where": "Not my files. BA-10 does not mention the driver. The memo re-run shows no count change"
+   },
+   {
+    "gap": "#0 MINOR / #1 MINOR BA-04 LP-LEARN REVIEWED_REF and REVIEWED_RECORD prerequisite",
+    "status": "NOT_APPLICABLE",
+    "where": "Catalog bytes. Memo F.3 now shows REVIEWED_RECORD: 17 scenarios, 510 runs at row1"
+   },
+   {
+    "gap": "#0 MINOR BA-06 DC-41 / DC-18 dispositions",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-06 file. On the BA-10 side, AQ-V5-03 is recorded for completeness in 6.1"
+   },
+   {
+    "gap": "#0 MINOR / #1 MINOR BA-06 section 13 'unchanged from V4' inventory statement",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-06 file. On the BA-10 side, AQ-V5-07 is recorded for completeness in 6.1"
+   },
+   {
+    "gap": "#0 MINOR / #1 MAJOR BA-06 section 9 item (2) run-start anchor order",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-06 file"
+   },
+   {
+    "gap": "#0 MINOR BA-04 Q-FPSPEC-VECTORS per-predicate slot-instance rule",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04 file"
+   },
+   {
+    "gap": "#0 MINOR EV-L-COMPOSED EXPECTED_PRODUCT_OUTCOME wording (BA-04, BA-06 section 9)",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04/BA-06 files. BA-10 already describes EV-L-COMPOSED as a non-governing composition check (2.2)"
+   },
+   {
+    "gap": "#0 MINOR BUILD_EQUIVALENCE_RECORD location/content/custody (BA-04 1.1, BA-07 section 2)",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04/BA-07 files. Memo F.3 counts 48 scenarios, 1241 runs at row1"
+   },
+   {
+    "gap": "#1 MINOR BA-04 section 2.1 pin mechanism restated weaker than BA-07 V5",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04 file. BA-10 section 4 cites BA-07 V5 by pointer only"
+   },
+   {
+    "gap": "#1 MINOR BA-04 8.1 row AQ-V4-11 (rest of CQ-07 deferred to EXEC-3)",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04 file"
+   },
+   {
+    "gap": "#1 MINOR BA-04 7.4 heading and C-10 (K-2/K-5)",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-04 file"
+   },
+   {
+    "gap": "#0 MINOR / #1 MINOR BA-08 section 10 slot-unit vector list (SV-14, SV-15)",
+    "status": "NOT_APPLICABLE",
+    "where": "BA-08 file"
+   }
+  ],
+  "counts": "BA-10 V5 is 309 lines, UTF-8, LF, final newline. SHA-256 (LF) 96b3aceb846427d9c00b0c06275e54e8df3feaa5aaa00d2d5136e29200b24275, git blob 64eb828b8ec6aafd46e19f8d7cf0969c9a1ee38a. It has 7 new Delta V5 rows 'correction pass CP-01..CP-07' and a new section 6.1 with 5 rows (AQ-V5-06; AQ-V5-01, -02 and -05 as before-candidate items; AQ-V5-03, -04 and -07 for completeness). It holds no catalog count; DEPENDS_ON still parses as [BA-01]. Cost memo .py: SHA-256 f7b08ff5ee84adce006cbde161685a3fe74f3365bb58edd0c4ca6950bc268c39, blob 79f07a48d30565875a74c34a263b3cbfe11a1339. Cost memo .md: SHA-256 c826ee1f789847977f3c573c4d29384242dd45adbe03bf66a23f2269341980af, blob a088049fc04441c7dc26688b4ca5112182f11c1e, with 4 new 'correction pass CP-01..CP-04' rows. The memo ran against catalog SHA d687ebf312c9269838c4217ee092a6d91522bced8ae3bceff70ea3000620de4d, which matches the fixer's report. It embeds the final BA-10 hash 96b3aceb.... Catalog: 425 scenarios, 162 dry-run scenarios. A.1 and A.5 both read 'all 425 agree' (every REPETITION label). The 127 governing mixed-class scenarios all read max(N_A, N_B). The eleven yes/no checks all print yes; no NO and no MISMATCH. Totals: row1 10390 (G 5334, D 5056; was 10360); rows 2-4 5080 / 2602 / 1540. By build at row1 (G / D): PRODUCT_BUILD 1494/31, CHARACTERIZATION_BUILD 3828/5025. V4 to V5 at row1: +293 (twins +225, other added +68: HDM-CHAR-FXANNBLANK 38, Q-I14-P 1, WU-DRY-Q-I14-P 29). Sensitivities at row1: N_B -167/+294 runs; EVIDENCE_REPETITION +59; K +58; N_det +20. F.4 (AQ-V5-02): +30 runs at row1. F.5 (AQ-V5-01): 111 scenarios, 3191 runs at row1. F.1: K-3 134 scenarios / 3690 runs; K-8 34 scenarios (18 governing) / 875 runs. F.2: DRAFT 160 scenarios / 4361 runs.",
+  "notes": [
+   "No V1..V4 file, contract file, decisions file, HANDOFF, BA-11, BA-02a, BA-03, src/ or test was touched, and no git write command was run. `git status` shows only the lead's V2.5 file as a tracked change. Backups of the pre-pass files are in scratchpad\\v5cp10\\.",
+   "Order of regeneration: BA-10 first, then the memo, because the memo output embeds the BA-10 SHA-256. The memo generator runs the script twice and compares the two outputs byte for byte. It checks every figure quoted in section 3, including new ones for Q-I14-P, REVIEWED_RECORD, F.4 and F.5. It also checks that 'all 425 agree' appears twice and that exactly 11 yes lines are printed. To keep that count unambiguous, the new F.4/F.5 prose says 'affirmative ruling' rather than 'yes'.",
+   "Design choice to review (BA-10): the fail-closed statement is now scoped to E-04 membership, E-03 P-L1..P-L3 (V2.1 5 row PL: 'lock not acquired or wrong mode') and S-1..S-3 lookups. It says explicitly that P-L5, P-L6 and P-L7 are not re-observed by a governing run and rest on the LOCK_MODE selection review. For P-L4 the sheet says only that it does not state whether a governing run re-observes a missed violation, rather than claiming either way. Whether this scope meets AR4-14 (b)(i) is left to AQ-V5-06; the Intent wording was not narrowed, only qualified.",
+   "Design choice to review (BA-10): the I-14 family is no longer enumerated. It is written as the pattern '`Q-I14` and every qualification vehicle `Q-I14-*`' (the AR4-01 wording), so BA-10 bytes do not depend on whether the Architect admits Q-I14-P. For the same symbolic-sheet reason, the AR4-06 delta row no longer quotes the memo's twin count, and the count 111 of AQ-V5-01 is not copied into BA-10.",
+   "Design choice to review (BA-10): besides its own AQ-V5-06, BA-10 lists AQ-V5-01, AQ-V5-02 and AQ-V5-05 as before-candidate prerequisites, because each can change a named BA-10 sentence: section 4 pin row and PARAM-03 'Build'; 2.2 'Build under test' and section 5 consequences; and the S-1..S-3 fail-closed clause, which relies on the BA-08 HDM-5 agreement rule. AQ-V5-03, -04 and -07 are recorded for completeness only.",
+   "Cross-artifact, BA-11 registry (lead): the BA-10 entry takes SHA-256 96b3aceb846427d9c00b0c06275e54e8df3feaa5aaa00d2d5136e29200b24275 (blob 64eb828b). The BA-10 before-candidate prerequisites now also include the Architect's rulings on AQ-V5-06, AQ-V5-01, AQ-V5-02 and AQ-V5-05. The memo (not a registry entry) has md c826ee1f... and py f7b08ff5....",
+   "Cross-artifact, BA-08 V5: its section 16.5 AQ-V5-05 row lists only BA-08 sections as the bytes a ruling can change. BA-10 V5 2.2 ('Fail-closed, and its limit', S-1..S-3 clause) now also cites the HDM-5 agreement rule by pointer, so BA-08 may add BA-10 as an informative dependent.",
+   "Cross-artifact, BA-04 V5: its 8.2 row for AQ-V5-06 ('the fail-closed scope is BA-10 content') and its Q-V5-BA04-3 closure match BA-10 V5 section 6 and 6.1. No BA-04 change is needed from this pass. BA-04's AQ-V5-01 and AQ-V5-02 rows match memo F.5 (111) and F.4 (both twins).",
+   "No new real contract ambiguity beyond the fixed AQ-V5 ids. P-L4 is folded into the AQ-V5-06 scope question rather than raised under a new id."
+  ]
+ },
+ "recheck": {
+  "gaps": [
+   {
+    "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v5.md + .json (with docs/initiatives/I-52-ct21d-baseline-ba-07-manifest-custody-v5.md and docs/automation/evidence/I-52-ct21d-ba04-v5-checks.py)",
+    "ref": "BA-04 md 1.1 'Build equivalence' (line 70) and the section 4 paragraph 'BUILD_EQUIVALENCE_RECORD in full' (line 196); JSON BUILD_EQUIVALENCE, RUN_PREREQUISITE_VOCABULARY.BUILD_EQUIVALENCE_RECORD, RUN_PREREQUISITE_RULE; md 2.1 bullet 2; md 2.2 step 6; BA-07 V5 sections 2 (line 66), 4 (lines 97, 101), 5.3 (lines 209-231), 6.1 subjectHash, 7 U5 (line 349); ba04 check lines 467-469",
+    "problem": "The correction pass fixed critic gap #0 'BUILD_EQUIVALENCE_RECORD without location, schema or custody' twice, in parallel, and the two fixes contradict each other. BA-04 depends on BA-07, but BA-04 gives the record a different location, a different content schema and a different use rule. A record that conforms to one artifact is non-conformant under the other, because BA-07 section 4 says 'no member outside the schema'. The published BA-04 check hard-codes the BA-04 variant, so it reports 70/70 PASS without detecting the conflict. BA-04 2.1 also still points to 'U1-U4', although BA-07 V5 now adds U5 as the use precondition for pins derived on the characterization build.",
+    "evidence": "Location. BA-04 1.1 and JSON: 'Location: a review-record file in the review-record location of BA-07 V5 section 2 (docs/automation/evidence/ct21d/review-records/ ...), content-addressed by its file hash'. BA-07 V5 section 2: 'build-equivalence records (section 5.3; AR4-06 (4)) | docs/automation/evidence/ct21d/build-equivalence/equivalence-<recordHash>.json'. Schema. BA-04 has sourceSha, and each build is {buildId, pluginDllSha256, harnessDlls [{name, sha256}], buildReceiptSha256}, with a switchSet field. BA-07 5.3 has productBuild/characterizationBuild = {harnessDlls [{path, sha256}], pluginSha256}, productAssemblies, switchAssemblies, reviewedDiff, reviewer and utc, and has no sourceSha, buildId, buildReceiptSha256 or switchSet. Custody. BA-04: 'index at most the h of the run-start anchor (IN_USE.runStartAnchor; BA-07 V5 section 7, U1)'. BA-07: the governing rule is U5, which the control plane checks at run start and 6.2 step 5 does not check. Check. The ba04 check line 467 requires 'docs/automation/evidence/ct21d/review-records/', 'sourceSha', 'pluginDllSha256' and 'switchSet' to be present. Pointer. md 2.1: 'follow BA-07 V5 sections 5.1 (rules 1-4), 7 (U1-U4) and 8'.",
+    "required_fix": "Make BA-07 V5 the single authority, since the edge is BA-04 -> BA-07. In scratchpad gen_catalog_v5.py, replace the Location, Content and Custody sentences of BUILD_EQUIVALENCE (md 1.1, the md section 4 'in full' paragraph, JSON BUILD_EQUIVALENCE) with this pointer: 'location, content schema (recordKind CT21D_BUILD_EQUIVALENCE) and custody: BA-07 V5 sections 2, 4 and 5.3; use precondition: BA-07 V5 section 7, U5'. Keep only the BA-04 rules: which runs name the record, and the RUN_START citation. If the text is restated instead, it must repeat BA-07 5.3 exactly: the build-equivalence/equivalence-<recordHash>.json path, pluginSha256, harnessDlls [{path, sha256}], switchAssemblies, and subjectHash = record hash. In RUN_PREREQUISITE_VOCABULARY, RUN_PREREQUISITE_RULE and 2.2 step 6, cite U5 for the BUILD_EQUIVALENCE_RECORD instead of U1. Change md 2.1 bullet 2 to 'U1-U5'. Rewrite the ba04 check block at lines ~467 to verify the pointer to BA-07 V5 5.3/U5, not BA-04-only field names. Then regenerate, re-run the check (the check and output hashes will change) and update the check hash in BA-02b section 0. BUILD_EQUIVALENCE is a catalog-level field, so no SEALED_AT changes. If the lead wants BA-04's extra fields (sourceSha, buildId, buildReceiptSha256), add them to BA-07 5.3 instead; the 4.1 vector is unaffected because 5.3 is outside its model. Either way, keep one schema.",
+    "severity": "MAJOR"
+   },
+   {
+    "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-08-selective-kind-baseline-v5.md",
+    "ref": "section 16.3 row K-10, 'Per-build qualification (AR4-06 (3))' sentence (line 451)",
+    "problem": "The catalog's correction pass added a sixth member to the I-14 family, the vehicle Q-I14-P, which runs on CHARACTERIZATION_BUILD only. BA-08 K-10, edited in parallel, still enumerates the family as five scenarios. The sibling artifacts now disagree on which scenarios run only on the characterization build.",
+    "evidence": "BA-08 V5 K-10: 'the I-14 family (`Q-I14`, `Q-I14-Y`, `Q-I14-X`, `Q-I14-SILENT-Y`, `Q-I14-SILENT-X`) runs only on this build'. BA-04 V5 1.1: 'The I-14 family (`Q-I14`, `Q-I14-Y`, `Q-I14-X`, `Q-I14-SILENT-Y`, `Q-I14-SILENT-X`, `Q-I14-P`) runs only on the CHARACTERIZATION_BUILD'. The catalog JSON has Q-I14-P with BUILD_UNDER_TEST = CHARACTERIZATION_BUILD. BA-10 V5 already avoids an enumeration ('`Q-I14` and every qualification vehicle `Q-I14-*`').",
+    "required_fix": "Edit the BA-08 V5 md directly; make_ba08v5.py is stale and must not be re-run. Replace the enumeration with '`Q-I14` and every qualification vehicle `Q-I14-*` (AR4-01; the list is the catalog's, informative pointer)', or add `Q-I14-P`. Then add a 'correction pass' row to the Delta V5 table (section 17).",
+    "severity": "MINOR"
+   },
+   {
+    "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-09-warmup-v5.md",
+    "ref": "section 4, paragraph 'Qualification vehicles `Q-I14-*`' (line 94)",
+    "problem": "BA-09 lists the governing vehicles and their mandatory dry runs as four, and omits Q-I14-P and WU-DRY-Q-I14-P. In the catalog, Q-I14-P is a governing Q vehicle with REACH CP, so it meets the BA-09 section 4 dry-run rule, and the catalog gives it the dry run WU-DRY-Q-I14-P. BA-04 depends on BA-09 for the rule, so the two artifacts should list the same members.",
+    "evidence": "BA-09 V5 line 94: '`Q-I14-Y`, `Q-I14-X`, `Q-I14-SILENT-Y` and `Q-I14-SILENT-X` are governing evidence of group Q ... keep their dry runs (`WU-DRY-Q-I14-Y`, `WU-DRY-Q-I14-X`, `WU-DRY-Q-I14-SILENT-Y`, `WU-DRY-Q-I14-SILENT-X`, AR4-01)'. Catalog: Q-I14-P is GOVERNING, CHARACTERIZATION_BUILD, REACH CP; WU-DRY-Q-I14-P is a DRY_RUN; BA-04 1.1 lists five vehicle dry runs.",
+    "required_fix": "Edit the BA-09 V5 md directly; make_ba09v5.py is stale. Add `Q-I14-P` and `WU-DRY-Q-I14-P`, or write 'every qualification vehicle `Q-I14-*` ... keeps its dry run `WU-DRY-<vehicle>` (the list is the catalog's, informative pointer)'. Then add a 'correction pass' row to section 9.",
+    "severity": "MINOR"
+   },
+   {
+    "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-04-scenario-catalog-v5.md",
+    "ref": "section 1.1 paragraph 'Where the mode applies (all by ruling)' (line 74); section 7.1 row C-3 and the sentence after it; section 8.2",
+    "problem": "The catalog contradicts itself on the status of the new vehicle Q-I14-P. Section 1.1 puts Q-I14-P, and so WU-DRY-Q-I14-P, under 'all by ruling ... 177 scenarios; none is a proposal'. The Q-I14-P NOTE, JSON AR3_01_MODE.ruled_for and Delta row CP-13 say instead that it was added by the correction pass, applies AR4-01 by pattern, and that its admission is part of the Architect's delta review (C-3). C-3 and 8.2 do not name that admission, so the item CP-13 relies on is not listed where before-candidate review items are listed. AR4-01 was ruled on the four vehicles of the V4 proposal; COORD5 section 2 lists the family without Q-I14-P.",
+    "evidence": "md line 74: '... `Q-I14-SILENT-X`, `Q-I14-P`, whose product result is not adjudicated ... **177** scenarios; none is a proposal'. Q-I14-P NOTE: 'it applies the AR4-01 ruling of the Q-I14-* vehicles to that coordinate, and its admission is part of the Architect's exact [delta review]'. CP-13: 'its admission applies the AR4-01 ruling of the Q-I14-* vehicles and is part of the Architect's delta review (C-3)'. C-3 names only AQ-V5-01, AQ-V5-02, AQ-V5-04 and AQ-V5-06.",
+    "required_fix": "In 1.1, qualify the sentence: 'Q-I14-P and WU-DRY-Q-I14-P apply AR4-01 through its Q-I14-* pattern; they were added by the correction pass, and their admission is submitted to the Architect's delta review (C-3)'. Do not state 'none is a proposal' for them. In 7.1 C-3, and in the sentence after it, name 'the admission of the vehicle Q-I14-P (CP-13)' as a review item. Decide nothing. If the lead judges that the admission needs a new ruling rather than a pattern reading, it needs its own fixed id; none of AQ-V5-01..07 covers it. Regenerate the md (JSON unaffected unless the NOTE changes) and re-run the check.",
+    "severity": "MINOR"
+   },
+   {
+    "artifact": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v5.md (and the BA-11 registry edge list, lead)",
+    "ref": "'Dependencies (AR3-25)' paragraph (line 41); section 9 last bullet item (2) and cross-artifact note (line 733); section 12 row INVENTORY_REVIEW_RECORDS; section 16.1 row AQ-V5-04",
+    "problem": "In V5, BA-06 turned BA-07 V5 definitions (runStartAnchor, h, U1..U3) into the normative condition under which a learning run may enter the corpus. BA-06 16.1 itself records that a BA-07 reading (AQ-V5-04) can change BA-06 bytes. Yet BA-06 declares no BA-07 edge, and it does not classify its BA-07 citations as mentions, as it does for BA-04, BA-08 and BA-10. This is the same pattern that AR4-17 treated as a missing edge (BA-04 -> BA-07). Separately, the cross-note misplaces BA-07's check: it says BA-07 can verify the condition 'with the use preconditions of step 5', but BA-07 V5 verifies it in 6.2 step 5(c) with the new code REVIEW_AFTER_LEARNING_START (5.1). COORD5 section 3 fixes BA-06 DEPENDS_ON = BA-01, BA-03, BA-05, so the header matches the sheet; the question belongs to the lead.",
+    "evidence": "Line 41 lists 'three registry entries: BA-01 ..., BA-03 ... and BA-05', and as mentions 'Names of fixtures (BA-08) and scenarios (BA-04), the slot PARAM-02 (BA-10)'; BA-07 is absent. Line 733: '(2) the REVIEW_RECORD_ADDED entry ... has an index at most the h of the run-start anchor (IN_USE.runStartAnchor) of every EV-L-OC-* run (BA-07 V5 section 6.1 and section 7, U1 to U3)'. 16.1 AQ-V5-04: 'section 9 item (2) and the pointer in section 12 ... use the run-start anchor'. BA-07 V5 5.1 and 6.2 step 5(c): 'REVIEW_AFTER_LEARNING_START'.",
+    "required_fix": "This is the lead's decision in the BA-11 registry. Option (a): add the edge BA-06 -> BA-07 and put BA-07 in BA-06 DEPENDS_ON. The edge is acyclic, because BA-07 depends only on BA-01 and precedes BA-06 in the COORD5 seal order. Option (b): keep the graph, and have the BA-06 Dependencies paragraph declare the BA-07 V5 citations of sections 1, 9 and 12 to be informative pointers to the V24-N2 custody. In either case, change the section 9 cross-note to cite BA-07 V5 5.1 ('REVIEWED before the first LEARNING run', REVIEW_AFTER_LEARNING_START, 6.2 step 5(c)). Then regenerate and re-run the BA-06 checks (BA06-C12 and BA06-C18 may need adjustment) and re-bind section 14.",
+    "severity": "MINOR"
+   }
+  ],
+  "closed": [
+   "#0 MAJOR BA-04 open questions: header PREREQUISITES, 7.1 C-3, the closing sentence and 8.2 now carry AQ-V5-01 and AQ-V5-02 as before-candidate items, and AQ-V5-04 and AQ-V5-06 as inherited ones. Q-V5-BA04-3 is CLOSED by pointer to BA-10 V5 section 2.2. The WU-BOUNDARY question is folded into AQ-V5-02 (fixed id, used in place of the critic's Q-V5-BA04-4) and is recorded in BA-09 8.1/W-10 and BA-08 16.5. No 'no open question remains' text is left in any V5 artifact or in the memo.",
+   "#0 MAJOR A-1 in the baseline runs without writers: second option applied. A1 is in CONTROLS_EXERCISED of exactly EA1 plus the 10 PARAM-03 members; CER-A2 and A1_EVALUATION say PASS or UNKNOWN, never FAIL. BA-04, BA-10 V5 2.2 PARAM-03 and the BA-02b A1 row (11 clean scenarios) agree. REPETITION is unchanged, since the sample was already mixed-class.",
+   "#0 MINOR BA-06 DC-41/DC-18: withheld under the orchestrator's order and recorded as AQ-V5-03 (16, 16.1, header PREREQUISITES (3)). The section 16/17 justification now separates review-record edits from inventory rows. Frozen span byte-equal to V4 (BA06-C13 PASS).",
+   "#0 MINOR BA-06 'unchanged from V4': sections 13 and 17, header (1) and the BA06-C13/C14 statements now name the section 5 and section 12 content edits. The scope question is AQ-V5-07.",
+   "#0 MINOR and #1 MAJOR BA-06 section 9 item (2): the order is now shown against IN_USE.runStartAnchor.h, the section 12 row points to it, and BA-07 V5 5.1/6.2 step 5(c) adds REVIEW_AFTER_LEARNING_START. The residual pointer wording is in the open gaps above.",
+   "#0 MINOR and #1 MINOR LP-LEARN / REVIEWED_RECORD: LP-LEARN has REVIEWED_REF x1, LP-COMPOSE inherits it, the vocabulary has REVIEWED_RECORD, and all 17 EV-L-* scenarios name it. SEALED_AT recomputed; independent recomputation shows 0 mismatches over 425.",
+   "#0 MINOR Q-FPSPEC-VECTORS(-CB): both carry the per-predicate semanticSlotInstanceRule of BA-05 V5 3.3.1 (exact rational difference, certified enclosure with exact pi; straddling = INVALID).",
+   "#0 MINOR E-03 in EV-L-OC-*: option (b). Key E03 = ENFORCED_NOT_EXERCISED in all 17 EV-L-*, with the normative rule in md section 1 and DEFAULTS.UNLISTED_CONTROLS. GROUPS_SERVED stays [E12-L], consistent with BA-10 V5 LEARN.",
+   "#0 MINOR EV-L-COMPOSED outcome: set to 'NONE (a non-governing composition check driven by the micro-scenario driver: no mirror product run; AR4-01)'. BA-06 section 9 is aligned; the frozen 3.3 bullet is kept.",
+   "#0 MINOR BA-10 fail-closed overclaim: 2.2 'Intent' and 'Fail-closed, and its limit' now scope the claim to E-04, P-L1..P-L3 and S-1..S-3, and disclose P-L5/P-L6/P-L7 (P-L4 unstated). Q-O1 is disclosed; the scope question is AQ-V5-06 in 6.1.",
+   "#0 MINOR and #1 MINOR BA-08 section 10 slot-unit vectors: all six (SV-06, SV-07, SV-10, SV-11, SV-14, SV-15) are listed, with pairs matching BA-05 V5 3.3 and a pointer to 3.3.1.",
+   "#1 MAJOR HDM-CHAR-FXDIM: the class text excludes the writer-assigned dimension style (BA-08 V5 11.2 HDM-1 and the 'Rule 1, dimension style' paragraph both exist). SEALED_AT and the 5.1 row match.",
+   "#1 MAJOR driver DLL: BUILD_PROFILES.PRODUCT_BUILD and FULL_BASELINE_TUPLE (48 exact plus 2 variant-library tuples by reference) carry 'present in every PRODUCT_BUILD run ... inert outside EV-L-*'. The separate learning tuple is removed. BA-06 9/10.1 and BA-08 K-10 use the same wording.",
+   "#1 MINOR BA-04 2.1: now a pointer to BA-07 V5 5.1, 7 and 8 (its U1-U4 range is extended to U5 in the MAJOR gap above).",
+   "#1 MINOR BA-04 8.1 AQ-V4-11 row: now names the rest of CQ-07 (to EXEC-3).",
+   "#1 MINOR BA-04 7.4/C-10: heading is 'not direct BLOCKED_BY blockers'; K-5 and K-2 precede the seal through BA-08, and K-2 gates the candidate through BA-05.",
+   "#1 MINOR BA-06 section 13 / header PREREQUISITES (1): the section 5 and section 12 inventory-component edits are named and submitted to the exact delta check.",
+   "#1 MINOR BA-04 Q-I14 coordinates: the vehicle Q-I14-P (with WU-DRY-Q-I14-P) was added. Every governing I-14 writer injection names its vehicle record: an independent scan finds 0 without one; Q-I14-X 87, Q-I14-P 1. The residual enumerations in BA-08/BA-09 and the 1.1/C-3 wording are in the open gaps above.",
+   "Re-runs, read-only into scratchpad/recheck5c: the BA-04 check (70/70 PASS), the BA-06 checks (18/18 PASS, BA06-C13 frozen parts included), the BA-07 vector, the BA-05 vectors generator (run from a copy) and the cost memo script all reproduce the published outputs byte-for-byte. The memo output equals the verbatim block of the memo md.",
+   "Hashes (LF, no BOM, final newline) equal the fixer reports: catalog JSON d687ebf3…, md 80ac1708…, BA-02b 0e288e99…, BA-04 check 8fb7bb61…/output 761c99c8…, BA-06 898b4f8a…/checks 02d50c40…/output 256d910e…, BA-07 e457812e…, BA-08 c2463a48…, BA-09 ebecab15…, BA-10 96b3aceb…, memo py f7b08ff5…/md c826ee1f…, BA-07 vector 743302c7…/generator 9f9fd14f….",
+   "The catalog counts were recomputed independently and match the report: 425 scenarios (162 WU-DRY), 29 twins, 48 BUILD_EQUIVALENCE_RECORD, 177 AR3-01 mode, AQ-V5-01 = 111 (0 with the equivalence record), K-3 134, K-8 34. Compared with the pre-pass catalog: +Q-I14-P and +WU-DRY-Q-I14-P, 72 SEALED_AT changed, 10 GROUPS_SERVED changed, 0 REPETITION/STATUS/BLOCKED_BY changed.",
+   "The AQ-V5-01..07 ids are used with their fixed meanings in every V5 artifact and in the memo; no other AQ-V5 id exists. The header DEPENDS_ON of each V5 artifact equals COORD5 section 3.",
+   "Limits: HEAD is d7c89fcb; the only tracked change is docs/initiatives/I-52-ct21d-authority-contract-v2.5.md (revision 2, limited to the AR4-18 words and the revision ids). All other changes are untracked new V5 files (plus the lead's ba11-v5 graph check). No V1..V4, contract, decisions, HANDOFF, BA-11, src or test file changed."
+  ],
+  "summary": "Re-check of the round V5 correction pass. Of the 23 critic gaps, 22 are fixed, or correctly recorded under the fixed AQ-V5 ids without being decided. Nothing claims that no open question remains, and Q-V5-BA04-3 is closed by pointer to BA-10 V5 section 2.2 in BA-04, BA-06, BA-10 and the memo.\n\nEvery re-run reproduces its published output byte-for-byte: the BA-04 check (70/70), the BA-06 checks (18/18, including the BA06-C13 frozen-parts check), the cost memo, the BA-05 vectors generator and the BA-07 vector. File hashes match the fixer reports. The only tracked diff is the lead's V2.5 revision-2 edit; everything else is new V5 files.\n\nRemaining real problems:\n1. MAJOR. The build-equivalence record gap was fixed twice, in parallel, and the fixes contradict each other. BA-04 V5 (1.1 and JSON BUILD_EQUIVALENCE) and BA-07 V5 (sections 2 and 5.3, and U5) give the record different paths (review-records/ vs build-equivalence/equivalence-<recordHash>.json), different field sets (sourceSha, buildId, pluginDllSha256, harnessDlls{name}, buildReceiptSha256, switchSet vs pluginSha256, harnessDlls{path}, switchAssemblies) and different use rules (U1 vs U5). The BA-04 check hard-codes the BA-04 variant, so it passes anyway. BA-04 2.1 still points to U1-U4.\n2. MINOR. BA-08 K-10 lists the I-14 family without Q-I14-P, the vehicle the catalog's correction pass added.\n3. MINOR. BA-09 section 4 lists four vehicles and four dry runs, without Q-I14-P and WU-DRY-Q-I14-P.\n4. MINOR. BA-04 1.1 says Q-I14-P is 'by ruling ... none is a proposal', but CP-13 and its NOTE submit its admission to the Architect's delta review (C-3), and C-3 does not name it.\n5. MINOR, lead's decision. BA-06 section 9 item (2) now relies normatively on BA-07 V5 runStartAnchor and U1..U3, and AQ-V5-04 can change BA-06 bytes. Yet BA-06 declares neither an edge to BA-07 nor that these citations are mentions, and its cross-note points to the wrong BA-07 check.\n\nProcess note: the scratchpad generators make_ba08v5.py and make_ba09v5.py are stale; BA-07/08/09 were hand-edited, so re-running those generators would revert the correction pass."
+ }
+}
