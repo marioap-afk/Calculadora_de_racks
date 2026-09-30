@@ -1,0 +1,81 @@
+{
+ "CHECKER": "docs/automation/evidence/I-52-ct21d-ba06-v4-checks.py",
+ "CHECKER_SHA256": "d1ac951a338af293d80015fc5e549b083d7032ebe3cf8cc7c7939f495585e3db",
+ "ARTIFACT": "docs/initiatives/I-52-ct21d-baseline-ba-06-evm-preparation-v4.md",
+ "NOTE": "no hash of the artifact is recorded here: the artifact binds this output by hash (section 14)",
+ "RESULTS": [
+  {
+   "ID": "BA06-C1",
+   "STATEMENT": "the columns of the coverage matrix of section 7, with the fondo counts dropped, are exactly the plan-shape classes of section 10.2",
+   "RESULT": "PASS",
+   "DETAIL": "columns ['SH-ANN', 'SH-DIM', 'SH-F1', 'SH-FALL', 'SH-FN', 'SH-FP', 'SH-IMP', 'SH-LAY-ADDED', 'SH-P']; classes ['SH-ANN', 'SH-DIM', 'SH-F1', 'SH-FALL', 'SH-FN', 'SH-FP', 'SH-IMP', 'SH-LAY-ADDED', 'SH-P']"
+  },
+  {
+   "ID": "BA06-C2",
+   "STATEMENT": "15 MUTATING rows; 14 map to a class of section 3.3; C-105 (SL-3) is n/a by the sealed scope",
+   "RESULT": "PASS",
+   "DETAIL": "MUTATING 15, mapped 14, C-105 class \"n/a (SL-3 not required by the sealed scope, V2.1 25.7)\""
+  },
+  {
+   "ID": "BA06-C3",
+   "STATEMENT": "every NON_MUTATING_READ row has a class; C-13 is marked as an instrument sample",
+   "RESULT": "PASS",
+   "DETAIL": "C-13=instrument (I-07 sample; not an operation class), C-43=OC-LIB-ACQ, C-52=OC-LIB-ACQ, C-61=OC-LIB-ACQ, C-73=OC-LIB-ACQ, C-75=OC-PREP-READ, C-128=OC-ENVELOPE, C-156=OC-PREP-READ, C-169=OC-VERIFY-READ, C-170=OC-VERIFY-READ"
+  },
+  {
+   "ID": "BA06-C4",
+   "STATEMENT": "every class cited in sections 3.2 and 3.2.5 is a class of section 3.3, and every class of 3.3 has its micro-scenario EV-L-<class> or a reasoned exclusion",
+   "RESULT": "PASS",
+   "DETAIL": "classes 21 (micro-scenario 16, exclusion 5); cited not in 3.3: []"
+  },
+  {
+   "ID": "BA06-C5",
+   "STATEMENT": "the 203 rows of section 3.2 transcribe sa1-compiled-operations.json (id, actor, kind, operation, clause fragments), except the declared V4 amendment of C-98",
+   "RESULT": "PASS",
+   "DETAIL": "rows 203; mismatches []"
+  },
+  {
+   "ID": "BA06-C6",
+   "STATEMENT": "DF-nn = DC-nn in order; every DC row transcribes its comparator difference and carries a V4 disposition",
+   "RESULT": "PASS",
+   "DETAIL": "rows 51"
+  },
+  {
+   "ID": "BA06-C7",
+   "STATEMENT": "each of the 25 ambiguities is RESOLVED by a clause outside the compiler fragments, or is a CONTRACT QUESTION with an id of section 3.2.6",
+   "RESULT": "PASS",
+   "DETAIL": "none"
+  },
+  {
+   "ID": "BA06-C8",
+   "STATEMENT": "every fragment of sa1-contract-fragments.md is contained verbatim in the current V2.1, V2.2 or V2.4 text",
+   "RESULT": "PASS",
+   "DETAIL": "8 fragments; not found: []"
+  },
+  {
+   "ID": "BA06-C9",
+   "STATEMENT": "every SHA-256 of section 14, except the row of this output, equals the SHA-256 of the LF-normalized file",
+   "RESULT": "PASS",
+   "DETAIL": "rows 26; mismatches []"
+  },
+  {
+   "ID": "BA06-C10",
+   "STATEMENT": "the published task inputs are internally consistent and reproduce, from repository files, the checks TI-CRIT-A, TI-CRIT-B, TI-CRIT-CENSUS, TI-BLIND, TI-COMPILE and TI-LIST1 (the TI-EV checks compare with the local workflow record and are not reproducible from the repository)",
+   "RESULT": "PASS",
+   "DETAIL": "hashes of the 15 task texts and bodies: PASS; critic REVIEW A = B1a: PASS; critic REVIEW B = B1b: PASS; census critic input = B2a..B2d entries: PASS; blind rule in B1a, B1b, critic: PASS; compiler body = prompts.json compile: PASS; comparator body = compare_template with LIST 1 = compact sa1-compiled-operations.json: PASS; all checks recorded at extraction PASS: PASS"
+  },
+  {
+   "ID": "BA06-C11",
+   "STATEMENT": "the residual table of section 5 cites no row of the superseded V2 R-list",
+   "RESULT": "PASS",
+   "DETAIL": "found []"
+  },
+  {
+   "ID": "BA06-C12",
+   "STATEMENT": "the header cites the git blob of the V3 file, lists DEPENDS_ON = BA-01, BA-03, BA-05 and has no CANDIDATE_HASH or SEAL_HASH field",
+   "RESULT": "PASS",
+   "DETAIL": "V3 blob c390af539c49760dc89085d1c39b112dc447a447"
+  }
+ ],
+ "ALL_PASS": true
+}

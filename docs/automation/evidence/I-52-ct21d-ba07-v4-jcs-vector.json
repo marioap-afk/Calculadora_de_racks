@@ -1,0 +1,891 @@
+{
+  "artifact": "BA-07 V4 (CT21D-BASE-MANIFEST-CUSTODY), section 4.1 and section 12",
+  "status": "the serialization profile and the bytes and hashes below are the NORMATIVE vector of BA-07 V4 (as part of BA-07 when sealed); every value of the worked example is ILLUSTRATIVE (derived from EXAMPLE labels) and is not a hash of any real artifact, run or tag",
+  "generator": {
+    "path": "docs/automation/evidence/I-52-ct21d-ba07-v4-jcs-vector.py",
+    "sha256OfLfNormalizedBytes": "35e7dba4f380fd7a889fbe15b051bb303d62b3dd6f72d23da4599a9a9ea27e88"
+  },
+  "profile": {
+    "standard": "RFC 8785 (JCS)",
+    "memberNames": "printable ASCII only (so the RFC 8785 UTF-16 code-unit order equals byte order)",
+    "numbers": "integers in [-(2**53-1), 2**53-1] only, written in decimal",
+    "doubles": "JSON string of 16 lowercase hexadecimal digits of the IEEE-754 binary64 bit pattern, big-endian; -0.0 and +0.0 differ; NaN and infinities are refused",
+    "nullVersusAbsent": "every schema field is present; a field that does not apply is null",
+    "recordFile": "JCS bytes followed by exactly one LF; record hash = SHA-256 of the file bytes",
+    "entryHash": "SHA-256 of the JCS bytes of the entry without its entryHash member (no LF)",
+    "logLine": "JCS bytes of the complete entry (entryHash included) followed by one LF"
+  },
+  "checks": {
+    "rfc8785StringExample": {
+      "expected": "{\"literals\":[null,true,false],\"string\":\"€$\\u000f\\nA'B\\\"\\\\\\\\\\\"/\"}",
+      "produced": "{\"literals\":[null,true,false],\"string\":\"€$\\u000f\\nA'B\\\"\\\\\\\\\\\"/\"}",
+      "equal": true
+    },
+    "doubles": [
+      {
+        "value": "0.1",
+        "hex": "3fb999999999999a",
+        "jcs": "\"3fb999999999999a\""
+      },
+      {
+        "value": "1.0",
+        "hex": "3ff0000000000000",
+        "jcs": "\"3ff0000000000000\""
+      },
+      {
+        "value": "-0.0",
+        "hex": "8000000000000000",
+        "jcs": "\"8000000000000000\""
+      },
+      {
+        "value": "+0.0",
+        "hex": "0000000000000000",
+        "jcs": "\"0000000000000000\""
+      },
+      {
+        "value": "2.5e-9",
+        "hex": "3e25798ee2308c3a",
+        "jcs": "\"3e25798ee2308c3a\""
+      }
+    ],
+    "doublesRefused": [
+      {
+        "value": "NaN",
+        "result": "REFUSED"
+      },
+      {
+        "value": "+Infinity",
+        "result": "REFUSED"
+      },
+      {
+        "value": "-Infinity",
+        "result": "REFUSED"
+      }
+    ],
+    "numbersRefused": [
+      {
+        "value": "JSON number 0.1",
+        "result": "REFUSED"
+      },
+      {
+        "value": "integer 2**53",
+        "result": "REFUSED"
+      }
+    ]
+  },
+  "exampleEntry": {
+    "description": "worked-example entry at index 2: the ANCHOR_RECORDED entry of the first anchor (nested anchorRef, null fields, a non-ASCII note, an escaped quote)",
+    "jcsWithoutEntryHash": "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":1,\"peeledCommit\":\"9cb16b0a7c197ab076a6d163cac057f076c8512b\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1\",\"tagObjectId\":\"230e153c655c4c2fe65c039e4d335e428e186a32\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"event\":\"ANCHOR_RECORDED\",\"index\":2,\"note\":\"first anchor of baseline \\\"v1\\\" (illustrative) — café\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"ce4ad0a3e8739b801545935bac6c4f36498437aecff2181096ed0961f6a64c3f\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"subjectHash\":\"68f2da8eb52a032075e4fbb4a1ddb51c063fb942dbc27567cd5c4aed947025e7\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:03:00Z\"}",
+    "jcsWithoutEntryHashUtf8Length": 812,
+    "entryHash": "07e8bf8442a17638c38ef9a3bb3a2191a6986931ac52d82f51eb4227937ee322",
+    "logLine": "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":1,\"peeledCommit\":\"9cb16b0a7c197ab076a6d163cac057f076c8512b\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1\",\"tagObjectId\":\"230e153c655c4c2fe65c039e4d335e428e186a32\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"07e8bf8442a17638c38ef9a3bb3a2191a6986931ac52d82f51eb4227937ee322\",\"event\":\"ANCHOR_RECORDED\",\"index\":2,\"note\":\"first anchor of baseline \\\"v1\\\" (illustrative) — café\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"ce4ad0a3e8739b801545935bac6c4f36498437aecff2181096ed0961f6a64c3f\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"subjectHash\":\"68f2da8eb52a032075e4fbb4a1ddb51c063fb942dbc27567cd5c4aed947025e7\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:03:00Z\"}"
+  },
+  "firstAnchorRecordFile": "{\"ANCHOR_SEQUENCE\":0,\"ANCHOR_TAG_NAME\":\"ct21d-baseline/v1\",\"BA07_SEAL_HASH\":\"d7463481f5d0e3569a2d64baf6bcb036067fb0b4c6529d462911beeae802bc6e\",\"BA11_SEAL_HASH\":\"a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8\",\"BASELINE_VERSION\":\"v1\",\"CONTRACT_COMPOSITE_HASH\":\"6b6cd2dcc230f6347af5f91ee0526911e075d33e8fb21764a8fc385e1b0eb922\",\"CUSTODY_LOG_HEAD_INDEX\":1,\"INDEPENDENT_COPY\":{\"designationRecord\":{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-MANIFEST-CUSTODY-340f3302a8a78e267cbc446ca40427c33a452acb97b0b8a932d6cdcf9b858c04-coordinator.json\",\"sha256\":\"89ffd3999b4a7df4d962bf0d18f669a2477d4280969e25fa569cd8e7672da321\"},\"holder\":\"EXAMPLE-HOLDER (illustrative)\",\"location\":\"EXAMPLE-LOCATION (illustrative, outside the repository)\"},\"MANIFEST_CUSTODY_HEADER_HASH\":\"ce4ad0a3e8739b801545935bac6c4f36498437aecff2181096ed0961f6a64c3f\",\"RECORD_KIND\":\"CT21D_BASELINE_ANCHOR\",\"REMOTE_URL\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\"}\n",
+  "workedExample": {
+    "mandatorySequenceEntries": 14,
+    "entries": [
+      {
+        "index": 0,
+        "event": "BASELINE_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "BASELINE",
+        "entryHash": "31a18c3d6867a0ae6f01e6431547bf75bd8a65f4a3e35deec375220c9e14a86f"
+      },
+      {
+        "index": 1,
+        "event": "BASELINE_APPROVED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "BASELINE",
+        "entryHash": "ce4ad0a3e8739b801545935bac6c4f36498437aecff2181096ed0961f6a64c3f"
+      },
+      {
+        "index": 2,
+        "event": "ANCHOR_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "ANCHOR",
+        "entryHash": "07e8bf8442a17638c38ef9a3bb3a2191a6986931ac52d82f51eb4227937ee322"
+      },
+      {
+        "index": 3,
+        "event": "AUTHORIZED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "3fc6e8668013e4339608d9e04d6c9bfed2d1cf31b41dbb8237dcb1b1e30b5ad9"
+      },
+      {
+        "index": 4,
+        "event": "CAPTURED",
+        "role": "CAPTURE_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "a2a77d2accffad2ab7bb6a0c5e2dfc05c5584cba58a4aff6fa4c3d48103ca7eb"
+      },
+      {
+        "index": 5,
+        "event": "REVIEWED",
+        "role": "REVIEW_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "182756a7b672f0d596f8623f55d7495e67f1242cae982610ad88a7fbb6d7220a"
+      },
+      {
+        "index": 6,
+        "event": "APPROVED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "8b4b96877d10f76bd3dd20638a00d97e92f7eddf4324b38a98e8e347e87b6d6a"
+      },
+      {
+        "index": 7,
+        "event": "ANCHOR_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "ANCHOR",
+        "entryHash": "0291b6e378f8720bff7afb91d3d341116181ad926508135d04a8220a2f51ea96"
+      },
+      {
+        "index": 8,
+        "event": "IN_USE",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "fa892145c116a52aac4cdfc1b0cc19996d807c4e1bc758707f2735cbef1d3006"
+      },
+      {
+        "index": 9,
+        "event": "IN_USE",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "a47c333078f8db205e7ecf7e97f2eb73d3847f9c4717755001f561498ffa9a98"
+      },
+      {
+        "index": 10,
+        "event": "ANCHOR_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "ANCHOR",
+        "entryHash": "f102c94673d0de2fdc53cbe2c29a70f5bf8786f5893b812954071dcbf7dd4595"
+      },
+      {
+        "index": 11,
+        "event": "PIN_RECORDED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "PIN",
+        "entryHash": "34fd726a33a4e5111a3cfb63a15a10b97219cf7f24dd94dd9de15d056dc3e402"
+      },
+      {
+        "index": 12,
+        "event": "PIN_RECORDED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "PIN",
+        "entryHash": "2bdc992c78fbf56f56d6960165de5886dd5509239023238fa08401cb5a7e4118"
+      },
+      {
+        "index": 13,
+        "event": "ANCHOR_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "ANCHOR",
+        "entryHash": "1e145b2915fd43734530d160dcc9f8ddbda7b3f3aa9c79b218c69dd1d509ea6e"
+      },
+      {
+        "index": 14,
+        "event": "IN_USE",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "MANIFEST",
+        "entryHash": "453a270c75ea3cde29040c9af06ec0352e930940d1d1fe76d0f556f03b13a283"
+      },
+      {
+        "index": 15,
+        "event": "BASELINE_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "BASELINE",
+        "entryHash": "a8ab4d024bd3526db7fa0a932aa07261912fb388b93af9a1ad50ff9b165ee79a"
+      },
+      {
+        "index": 16,
+        "event": "BASELINE_APPROVED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "BASELINE",
+        "entryHash": "00c762e07159751a37a72d42a0e2d0da928b771d1bbbfdc2c6bd51b7da8f475f"
+      },
+      {
+        "index": 17,
+        "event": "SUPERSEDED",
+        "role": "APPROVAL_ROLE",
+        "subjectKind": "BASELINE",
+        "entryHash": "4e468c824ec9d24c400192acbd0ec9bcb282bcf76d02f60ea6044c50096ebdeb"
+      },
+      {
+        "index": 18,
+        "event": "ANCHOR_RECORDED",
+        "role": "CUSTODY_ROLE",
+        "subjectKind": "ANCHOR",
+        "entryHash": "801b9663edd8b539a81806f2ae79d9c923b04b014d0d5debdfa056f5e7cddf90"
+      }
+    ],
+    "logLines": [
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":\"d7463481f5d0e3569a2d64baf6bcb036067fb0b4c6529d462911beeae802bc6e\",\"baselineVersion\":\"v1\",\"captureId\":null,\"cause\":null,\"entryHash\":\"31a18c3d6867a0ae6f01e6431547bf75bd8a65f4a3e35deec375220c9e14a86f\",\"event\":\"BASELINE_RECORDED\",\"index\":0,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"subjectHash\":\"a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8\",\"subjectKind\":\"BASELINE\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:01:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":\"v1\",\"captureId\":null,\"cause\":null,\"entryHash\":\"ce4ad0a3e8739b801545935bac6c4f36498437aecff2181096ed0961f6a64c3f\",\"event\":\"BASELINE_APPROVED\",\"index\":1,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"31a18c3d6867a0ae6f01e6431547bf75bd8a65f4a3e35deec375220c9e14a86f\",\"ratificationRecords\":[{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8-architect.json\",\"sha256\":\"a0f07afd809bc756cdda81873e28f90c6417c772be409ec4bebbf2b6b6a1fab4\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8-candidate.json\",\"sha256\":\"876e5030f490edb9d27d4584dd7f1b5f19a58d0a8c71933b32999f578e6d6554\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8-coordinator.json\",\"sha256\":\"764c75d4b684ce053507740d35b0c61fe0d9c1d340948ea473d7e09fe4184791\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8-seal.json\",\"sha256\":\"5012b860492c2e62af367f46b7f251d406ccc6d07e3f780dd61aa218e380dfab\"}],\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"subjectHash\":\"a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8\",\"subjectKind\":\"BASELINE\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:02:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":1,\"peeledCommit\":\"9cb16b0a7c197ab076a6d163cac057f076c8512b\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1\",\"tagObjectId\":\"230e153c655c4c2fe65c039e4d335e428e186a32\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"07e8bf8442a17638c38ef9a3bb3a2191a6986931ac52d82f51eb4227937ee322\",\"event\":\"ANCHOR_RECORDED\",\"index\":2,\"note\":\"first anchor of baseline \\\"v1\\\" (illustrative) — café\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"ce4ad0a3e8739b801545935bac6c4f36498437aecff2181096ed0961f6a64c3f\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"subjectHash\":\"68f2da8eb52a032075e4fbb4a1ddb51c063fb942dbc27567cd5c4aed947025e7\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:03:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"3fc6e8668013e4339608d9e04d6c9bfed2d1cf31b41dbb8237dcb1b1e30b5ad9\",\"event\":\"AUTHORIZED\",\"index\":3,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"07e8bf8442a17638c38ef9a3bb3a2191a6986931ac52d82f51eb4227937ee322\",\"ratificationRecords\":null,\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"subjectHash\":null,\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:04:00Z\"}",
+      "{\"actor\":\"CONTROL_PLANE:EXAMPLE-BUILD\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"a2a77d2accffad2ab7bb6a0c5e2dfc05c5584cba58a4aff6fa4c3d48103ca7eb\",\"event\":\"CAPTURED\",\"index\":4,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"3fc6e8668013e4339608d9e04d6c9bfed2d1cf31b41dbb8237dcb1b1e30b5ad9\",\"ratificationRecords\":null,\"role\":\"CAPTURE_ROLE\",\"runId\":null,\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:05:00Z\"}",
+      "{\"actor\":\"EXAMPLE-OWNER\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"182756a7b672f0d596f8623f55d7495e67f1242cae982610ad88a7fbb6d7220a\",\"event\":\"REVIEWED\",\"index\":5,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"a2a77d2accffad2ab7bb6a0c5e2dfc05c5584cba58a4aff6fa4c3d48103ca7eb\",\"ratificationRecords\":null,\"role\":\"REVIEW_ROLE\",\"runId\":null,\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:06:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"8b4b96877d10f76bd3dd20638a00d97e92f7eddf4324b38a98e8e347e87b6d6a\",\"event\":\"APPROVED\",\"index\":6,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"182756a7b672f0d596f8623f55d7495e67f1242cae982610ad88a7fbb6d7220a\",\"ratificationRecords\":null,\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:07:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":6,\"peeledCommit\":\"2d537b767f5393fd55a6a0c2d443c51b15e38d25\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1-a1\",\"tagObjectId\":\"176eee4ffd5021b36a313db1daaaebe6efb57b99\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"0291b6e378f8720bff7afb91d3d341116181ad926508135d04a8220a2f51ea96\",\"event\":\"ANCHOR_RECORDED\",\"index\":7,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"8b4b96877d10f76bd3dd20638a00d97e92f7eddf4324b38a98e8e347e87b6d6a\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"subjectHash\":\"db764ef6cddf92307a29a9e66ebc416caa1329b073019da857f9d255a2974b5d\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:08:00Z\"}",
+      "{\"actor\":\"CONTROL_PLANE:EXAMPLE-BUILD\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"fa892145c116a52aac4cdfc1b0cc19996d807c4e1bc758707f2735cbef1d3006\",\"event\":\"IN_USE\",\"index\":8,\"note\":\"\",\"pinRecordHashes\":[],\"pinSlot\":null,\"prevEntryHash\":\"0291b6e378f8720bff7afb91d3d341116181ad926508135d04a8220a2f51ea96\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":\"EXAMPLE-RUN-1\",\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":\"42f93058f1f714164fbdc43ff1bdc62107cef4981b3b1a6425551598dfa1321e\",\"utc\":\"2000-01-01T00:09:00Z\"}",
+      "{\"actor\":\"CONTROL_PLANE:EXAMPLE-BUILD\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"a47c333078f8db205e7ecf7e97f2eb73d3847f9c4717755001f561498ffa9a98\",\"event\":\"IN_USE\",\"index\":9,\"note\":\"\",\"pinRecordHashes\":[],\"pinSlot\":null,\"prevEntryHash\":\"fa892145c116a52aac4cdfc1b0cc19996d807c4e1bc758707f2735cbef1d3006\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":\"EXAMPLE-RUN-2\",\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":\"6be5b98a8df89bc520a344a279a891bd53d824fe34dc997f976f659a17787cd2\",\"utc\":\"2000-01-01T00:10:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":9,\"peeledCommit\":\"b49807aaaf43346be543826f465b20ecfb08007e\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1-a2\",\"tagObjectId\":\"b480416988451d5d766623b9ab59253c90cabc78\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"f102c94673d0de2fdc53cbe2c29a70f5bf8786f5893b812954071dcbf7dd4595\",\"event\":\"ANCHOR_RECORDED\",\"index\":10,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"a47c333078f8db205e7ecf7e97f2eb73d3847f9c4717755001f561498ffa9a98\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"subjectHash\":\"3c8b7e26287c7d0fc49789f74dd4e68190510c6122c000e3603bfe0fa222fb49\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:11:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"34fd726a33a4e5111a3cfb63a15a10b97219cf7f24dd94dd9de15d056dc3e402\",\"event\":\"PIN_RECORDED\",\"index\":11,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":\"LOCK_MODE\",\"prevEntryHash\":\"f102c94673d0de2fdc53cbe2c29a70f5bf8786f5893b812954071dcbf7dd4595\",\"ratificationRecords\":[{\"path\":\"docs/automation/evidence/ct21d/ratifications/PIN-LOCK_MODE-d2986250d7cc1b7e6deddb1321d309803d09de1c442f91d37365444e84c310d4-architect.json\",\"sha256\":\"f81c7cba0b24892bf9ec49df40b85ee6822c8d8fed238d370bde8b971a828f68\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/PIN-LOCK_MODE-d2986250d7cc1b7e6deddb1321d309803d09de1c442f91d37365444e84c310d4-coordinator.json\",\"sha256\":\"1a85f99a38b11538d46706d1bf45ea2185b465b24c24bce3af2e2d6c7a1be06d\"}],\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"subjectHash\":\"d2986250d7cc1b7e6deddb1321d309803d09de1c442f91d37365444e84c310d4\",\"subjectKind\":\"PIN\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:15:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"2bdc992c78fbf56f56d6960165de5886dd5509239023238fa08401cb5a7e4118\",\"event\":\"PIN_RECORDED\",\"index\":12,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":\"E04_ADMITTED_SET@R-1\",\"prevEntryHash\":\"34fd726a33a4e5111a3cfb63a15a10b97219cf7f24dd94dd9de15d056dc3e402\",\"ratificationRecords\":[{\"path\":\"docs/automation/evidence/ct21d/ratifications/PIN-E04_ADMITTED_SET-cba4bc32a7f5fe425e8ca5df8e38bc5d52ce54d68934c4c66a1daac251ce82e9-architect.json\",\"sha256\":\"e2f2e7f0b047da3317a13c3c8fd1b656f9f5261a58a5669757afc71067a556e0\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/PIN-E04_ADMITTED_SET-cba4bc32a7f5fe425e8ca5df8e38bc5d52ce54d68934c4c66a1daac251ce82e9-coordinator.json\",\"sha256\":\"9ca5c90535ee993e8572e0c20e40f968ac09bb54502b544b6ffb4bf4ad71091b\"}],\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"subjectHash\":\"cba4bc32a7f5fe425e8ca5df8e38bc5d52ce54d68934c4c66a1daac251ce82e9\",\"subjectKind\":\"PIN\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:19:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":12,\"peeledCommit\":\"0a65140aa6be040fa0c4beaee04bc48809bbe65f\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v1-a3\",\"tagObjectId\":\"5fa9745bc947dcea389a6ad260657022a1a98e13\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"1e145b2915fd43734530d160dcc9f8ddbda7b3f3aa9c79b218c69dd1d509ea6e\",\"event\":\"ANCHOR_RECORDED\",\"index\":13,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"2bdc992c78fbf56f56d6960165de5886dd5509239023238fa08401cb5a7e4118\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"subjectHash\":\"445b70bda364beabcb86688db06a133f7056f595ae80e15e9090d4162c5af826\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:20:00Z\"}",
+      "{\"actor\":\"CONTROL_PLANE:EXAMPLE-BUILD\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":\"CAP-1\",\"cause\":null,\"entryHash\":\"453a270c75ea3cde29040c9af06ec0352e930940d1d1fe76d0f556f03b13a283\",\"event\":\"IN_USE\",\"index\":14,\"note\":\"\",\"pinRecordHashes\":[\"cba4bc32a7f5fe425e8ca5df8e38bc5d52ce54d68934c4c66a1daac251ce82e9\",\"d2986250d7cc1b7e6deddb1321d309803d09de1c442f91d37365444e84c310d4\"],\"pinSlot\":null,\"prevEntryHash\":\"1e145b2915fd43734530d160dcc9f8ddbda7b3f3aa9c79b218c69dd1d509ea6e\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":\"EXAMPLE-RUN-3\",\"subjectHash\":\"b8ff62b0df19850ef91c728bd8b56f654bfa87adfa95b0c0f661f43b27e5fceb\",\"subjectKind\":\"MANIFEST\",\"supersededBy\":null,\"tupleRecordHash\":\"bc77b2ec122f5d4f69a0db236a3ca36bb9d3063dcf3f57527d28a2758d596a5f\",\"utc\":\"2000-01-01T00:21:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":\"d52dfe7b71eca6825e0ff9ae4c7fd571ec934118595541595e5e0f62c7d74fae\",\"baselineVersion\":\"v2\",\"captureId\":null,\"cause\":null,\"entryHash\":\"a8ab4d024bd3526db7fa0a932aa07261912fb388b93af9a1ad50ff9b165ee79a\",\"event\":\"BASELINE_RECORDED\",\"index\":15,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"453a270c75ea3cde29040c9af06ec0352e930940d1d1fe76d0f556f03b13a283\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"subjectHash\":\"389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319\",\"subjectKind\":\"BASELINE\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:22:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":\"v2\",\"captureId\":null,\"cause\":null,\"entryHash\":\"00c762e07159751a37a72d42a0e2d0da928b771d1bbbfdc2c6bd51b7da8f475f\",\"event\":\"BASELINE_APPROVED\",\"index\":16,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"a8ab4d024bd3526db7fa0a932aa07261912fb388b93af9a1ad50ff9b165ee79a\",\"ratificationRecords\":[{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319-architect.json\",\"sha256\":\"422219d53caacaf30517a1a5201ee7c11d29a7846807a99d0c5f65fd3fb3c0f0\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319-candidate.json\",\"sha256\":\"b28504b9351a04c70d3293d9ae2da9f0c0d0558f1214ad8d2215de6023c084fa\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319-coordinator.json\",\"sha256\":\"9e3c5dc4fd20613165de424a25f0f4c2b518f4c66cef12f67b6329cb1cc240ce\"},{\"path\":\"docs/automation/evidence/ct21d/ratifications/CT21D-BASE-HASH-REGISTRY-389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319-seal.json\",\"sha256\":\"37a7efd60a25a400add1e68783d04e2ea14ac1b9926a6cf615944870d0443209\"}],\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"subjectHash\":\"389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319\",\"subjectKind\":\"BASELINE\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:23:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":null,\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"4e468c824ec9d24c400192acbd0ec9bcb282bcf76d02f60ea6044c50096ebdeb\",\"event\":\"SUPERSEDED\",\"index\":17,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"00c762e07159751a37a72d42a0e2d0da928b771d1bbbfdc2c6bd51b7da8f475f\",\"ratificationRecords\":null,\"role\":\"APPROVAL_ROLE\",\"runId\":null,\"subjectHash\":\"a0a1282ca1f618c5a7021e5290bd1e4048f7f6df27aca1b650300fc928b226f8\",\"subjectKind\":\"BASELINE\",\"supersededBy\":\"389a7681b132129c3292fe1686f530659a724746ba4453f059df0ba1375f0319\",\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:24:00Z\"}",
+      "{\"actor\":\"EXAMPLE-COORDINATOR\",\"anchorRef\":{\"anchoredIndex\":17,\"peeledCommit\":\"1511c826bf6527f16003176c303a42423262f66f\",\"remote\":\"https://github.com/marioap-afk/Calculadora_de_racks.git\",\"tag\":\"ct21d-baseline/v2\",\"tagObjectId\":\"4f57f369c2896cda40a278221cbba17df8bb0463\"},\"baselineCustodyHash\":null,\"baselineVersion\":null,\"captureId\":null,\"cause\":null,\"entryHash\":\"801b9663edd8b539a81806f2ae79d9c923b04b014d0d5debdfa056f5e7cddf90\",\"event\":\"ANCHOR_RECORDED\",\"index\":18,\"note\":\"\",\"pinRecordHashes\":null,\"pinSlot\":null,\"prevEntryHash\":\"4e468c824ec9d24c400192acbd0ec9bcb282bcf76d02f60ea6044c50096ebdeb\",\"ratificationRecords\":null,\"role\":\"CUSTODY_ROLE\",\"runId\":null,\"subjectHash\":\"c175e6e7614d01d01fda338eb48b4395454d1d8e1e95d3e619b63c341dcfeb29\",\"subjectKind\":\"ANCHOR\",\"supersededBy\":null,\"tupleRecordHash\":null,\"utc\":\"2000-01-01T00:25:00Z\"}"
+    ],
+    "anchors": [
+      {
+        "tag": "ct21d-baseline/v1",
+        "CUSTODY_LOG_HEAD_INDEX": 1,
+        "MANIFEST_CUSTODY_HEADER_HASH": "ce4ad0a3e8739b801545935bac6c4f36498437aecff2181096ed0961f6a64c3f",
+        "anchorRecordSha256": "68f2da8eb52a032075e4fbb4a1ddb51c063fb942dbc27567cd5c4aed947025e7",
+        "tagObjectId (illustrative)": "230e153c655c4c2fe65c039e4d335e428e186a32",
+        "peeledCommit (illustrative)": "9cb16b0a7c197ab076a6d163cac057f076c8512b"
+      },
+      {
+        "tag": "ct21d-baseline/v1-a1",
+        "CUSTODY_LOG_HEAD_INDEX": 6,
+        "MANIFEST_CUSTODY_HEADER_HASH": "8b4b96877d10f76bd3dd20638a00d97e92f7eddf4324b38a98e8e347e87b6d6a",
+        "anchorRecordSha256": "db764ef6cddf92307a29a9e66ebc416caa1329b073019da857f9d255a2974b5d",
+        "tagObjectId (illustrative)": "176eee4ffd5021b36a313db1daaaebe6efb57b99",
+        "peeledCommit (illustrative)": "2d537b767f5393fd55a6a0c2d443c51b15e38d25"
+      },
+      {
+        "tag": "ct21d-baseline/v1-a2",
+        "CUSTODY_LOG_HEAD_INDEX": 9,
+        "MANIFEST_CUSTODY_HEADER_HASH": "a47c333078f8db205e7ecf7e97f2eb73d3847f9c4717755001f561498ffa9a98",
+        "anchorRecordSha256": "3c8b7e26287c7d0fc49789f74dd4e68190510c6122c000e3603bfe0fa222fb49",
+        "tagObjectId (illustrative)": "b480416988451d5d766623b9ab59253c90cabc78",
+        "peeledCommit (illustrative)": "b49807aaaf43346be543826f465b20ecfb08007e"
+      },
+      {
+        "tag": "ct21d-baseline/v1-a3",
+        "CUSTODY_LOG_HEAD_INDEX": 12,
+        "MANIFEST_CUSTODY_HEADER_HASH": "2bdc992c78fbf56f56d6960165de5886dd5509239023238fa08401cb5a7e4118",
+        "anchorRecordSha256": "445b70bda364beabcb86688db06a133f7056f595ae80e15e9090d4162c5af826",
+        "tagObjectId (illustrative)": "5fa9745bc947dcea389a6ad260657022a1a98e13",
+        "peeledCommit (illustrative)": "0a65140aa6be040fa0c4beaee04bc48809bbe65f"
+      },
+      {
+        "tag": "ct21d-baseline/v2",
+        "CUSTODY_LOG_HEAD_INDEX": 17,
+        "MANIFEST_CUSTODY_HEADER_HASH": "4e468c824ec9d24c400192acbd0ec9bcb282bcf76d02f60ea6044c50096ebdeb",
+        "anchorRecordSha256": "c175e6e7614d01d01fda338eb48b4395454d1d8e1e95d3e619b63c341dcfeb29",
+        "tagObjectId (illustrative)": "4f57f369c2896cda40a278221cbba17df8bb0463",
+        "peeledCommit (illustrative)": "1511c826bf6527f16003176c303a42423262f66f"
+      }
+    ],
+    "mandatorySequence": {
+      "headIndex": 13,
+      "headEntryHash": "1e145b2915fd43734530d160dcc9f8ddbda7b3f3aa9c79b218c69dd1d509ea6e",
+      "logFileSha256": "8b9549594d72940a450aaf0cd6504fa77657f7e1760982df6647230826964bb0"
+    },
+    "fullExample": {
+      "headIndex": 18,
+      "headEntryHash": "801b9663edd8b539a81806f2ae79d9c923b04b014d0d5debdfa056f5e7cddf90",
+      "logFileSha256": "7647737c3f1a7d0534b940b3b9841a5e831e660ec15972241345cfd0d47ab7d5"
+    }
+  },
+  "verificationModel": {
+    "honestMandatorySequence": {
+      "violations": [],
+      "overall": "PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        }
+      ],
+      "lastAnchoredIndex": 12,
+      "pendingReanchor": [
+        13
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:68f2da8eb52a": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 9,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:db764ef6cddf": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:3c8b7e26287c": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:d2986250d7cc": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:cba4bc32a7f5": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:445b70bda364": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "honestFullExample": {
+      "violations": [],
+      "overall": "PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 17
+        }
+      ],
+      "lastAnchoredIndex": 17,
+      "pendingReanchor": [
+        18
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:68f2da8eb52a": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 14,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:db764ef6cddf": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:3c8b7e26287c": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:d2986250d7cc": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:cba4bc32a7f5": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:445b70bda364": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:c175e6e7614d": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 18,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T1_truncateAndRewriteAfterFirstAnchor": {
+      "violations": [
+        [
+          "step3",
+          "REWRITTEN_AT_OR_BEFORE_ANCHOR",
+          "ct21d-baseline/v1-a1"
+        ],
+        [
+          "step3",
+          "TRUNCATED_BELOW_ANCHOR",
+          "ct21d-baseline/v1-a2"
+        ],
+        [
+          "step3",
+          "TRUNCATED_BELOW_ANCHOR",
+          "ct21d-baseline/v1-a3"
+        ],
+        [
+          "step3",
+          "TRUNCATED_BELOW_ANCHOR",
+          "ct21d-baseline/v2"
+        ],
+        [
+          "step4",
+          "UNRECORDED_ANCHOR",
+          "ct21d-baseline/v1-a1"
+        ],
+        [
+          "step4",
+          "UNRECORDED_ANCHOR",
+          "ct21d-baseline/v1-a2"
+        ],
+        [
+          "step4",
+          "UNRECORDED_ANCHOR",
+          "ct21d-baseline/v1-a3"
+        ],
+        [
+          "step5",
+          "ANCHOR_RECORD_BASELINE_MISMATCH",
+          "ct21d-baseline/v2"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 17
+        }
+      ],
+      "lastAnchoredIndex": 17,
+      "pendingReanchor": [],
+      "status": [
+        "LAST_ANCHOR_NOT_RECORDED"
+      ],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:68f2da8eb52a": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "APPROVED",
+          "lastIndex": 6,
+          "custody": "ANCHORED"
+        }
+      }
+    },
+    "T2_editPendingEntryAfterLastAnchor": {
+      "violations": [],
+      "overall": "PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        }
+      ],
+      "lastAnchoredIndex": 12,
+      "pendingReanchor": [
+        13,
+        14
+      ],
+      "status": [],
+      "step6": "MATCH",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 1,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:68f2da8eb52a": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 14,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:db764ef6cddf": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:3c8b7e26287c": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:d2986250d7cc": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:cba4bc32a7f5": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:445b70bda364": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T3_tagDeletedWhileItsEntryIsCovered": {
+      "violations": [
+        [
+          "step3",
+          "TAG_SEQUENCE",
+          "ct21d-baseline/v1-a2"
+        ],
+        [
+          "step3",
+          "TAG_SEQUENCE",
+          "ct21d-baseline/v1-a3"
+        ],
+        [
+          "step4",
+          "ANCHOR_WITHOUT_TAG",
+          "7"
+        ],
+        [
+          "step5",
+          "USE_BEFORE_ANCHOR",
+          "8"
+        ],
+        [
+          "step5",
+          "USE_BEFORE_ANCHOR",
+          "9"
+        ],
+        [
+          "step6",
+          "REMOTE_REWRITE_DETECTED",
+          "ct21d-baseline/v1-a1"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        },
+        {
+          "tag": "ct21d-baseline/v2",
+          "h": 17
+        }
+      ],
+      "lastAnchoredIndex": 17,
+      "pendingReanchor": [
+        18
+      ],
+      "status": [],
+      "step6": "DIFFERENCE",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:68f2da8eb52a": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 14,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:db764ef6cddf": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:3c8b7e26287c": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:d2986250d7cc": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:cba4bc32a7f5": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:445b70bda364": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "ANCHORED"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:c175e6e7614d": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 18,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T4_lastTagDeletedAndPendingEntryRemoved_copyUndesignated": {
+      "violations": [],
+      "overall": "PASS_WITH_DECLARED_LIMITS",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        }
+      ],
+      "lastAnchoredIndex": 12,
+      "pendingReanchor": [
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "status": [],
+      "step6": "NOT_VERIFIABLE",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:68f2da8eb52a": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 14,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:db764ef6cddf": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:3c8b7e26287c": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:d2986250d7cc": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:cba4bc32a7f5": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:445b70bda364": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "PENDING_REANCHOR"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    },
+    "T4_lastTagDeletedAndPendingEntryRemoved_copyDesignated": {
+      "violations": [
+        [
+          "step6",
+          "REMOTE_REWRITE_DETECTED",
+          "ct21d-baseline/v2"
+        ]
+      ],
+      "overall": "VIOLATION",
+      "anchors": [
+        {
+          "tag": "ct21d-baseline/v1",
+          "h": 1
+        },
+        {
+          "tag": "ct21d-baseline/v1-a1",
+          "h": 6
+        },
+        {
+          "tag": "ct21d-baseline/v1-a2",
+          "h": 9
+        },
+        {
+          "tag": "ct21d-baseline/v1-a3",
+          "h": 12
+        }
+      ],
+      "lastAnchoredIndex": 12,
+      "pendingReanchor": [
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "status": [],
+      "step6": "DIFFERENCE",
+      "derivedStates": {
+        "BASELINE:a0a1282ca1f6": {
+          "lastEvent": "SUPERSEDED",
+          "lastIndex": 17,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:68f2da8eb52a": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 2,
+          "custody": "ANCHORED"
+        },
+        "MANIFEST:CAP-1": {
+          "lastEvent": "IN_USE",
+          "lastIndex": 14,
+          "custody": "PENDING_REANCHOR"
+        },
+        "ANCHOR:db764ef6cddf": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 7,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:3c8b7e26287c": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 10,
+          "custody": "ANCHORED"
+        },
+        "PIN:d2986250d7cc": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 11,
+          "custody": "ANCHORED"
+        },
+        "PIN:cba4bc32a7f5": {
+          "lastEvent": "PIN_RECORDED",
+          "lastIndex": 12,
+          "custody": "ANCHORED"
+        },
+        "ANCHOR:445b70bda364": {
+          "lastEvent": "ANCHOR_RECORDED",
+          "lastIndex": 13,
+          "custody": "PENDING_REANCHOR"
+        },
+        "BASELINE:389a7681b132": {
+          "lastEvent": "BASELINE_APPROVED",
+          "lastIndex": 16,
+          "custody": "PENDING_REANCHOR"
+        }
+      }
+    }
+  },
+  "crossCheckAgainstPythonJsonDumps": {
+    "objectsSerialized": 320,
+    "equal": 320
+  }
+}
