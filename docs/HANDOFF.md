@@ -370,7 +370,8 @@ clasificaciones). **POST-AUDIT PACKAGE BASELINE: PASS.**
   custodia del manifiesto, línea base del kind Selective, warm-up, hoja de parámetros, esqueleto del registro de hashes). Ninguno sellado; ningún hash de artefacto registrado; parámetros `UNSET`; inventario con completitud `NOT_ESTABLISHED`. `CT21D_AUTHORITY_BASELINE_READY = FALSE`, `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`.
 - **Artefactos de línea base, fase 2 (§210):** versiones V2 de BA-02..BA-11 (BA-02 dividido en BA-02a registro y BA-02b cobertura), micro-errata **V2.4** (RC-C1, texto preaprobado), vectores normativos de huella y evidencia cruda del análisis estático independiente contra `main` `3375aadb`. Todo BORRADOR; nada sellado; parámetros `UNSET`
   (decisiones del Owner Q-O1..Q-O5 preparadas, no preguntadas). `CT21D_AUTHORITY_BASELINE_READY = FALSE`, `CT21D_EXECUTION_READY = FALSE`, `CT21D_EXECUTION = NOT_AUTHORIZED`.
-- **Siguiente gate: revisión del Arquitecto de la fase 2 y de V2.4, luego dictamen del Coordinador.** La rama sigue sin reconciliar con `main` (79 detrás / 130 delante).
+- **Dictamen del Arquitecto sobre la fase 2 (§211): `CHANGES_REQUIRED`** (56 serios confirmados, 1 dividido, 1 refutado; 2 bloqueantes: pines del catálogo y lista de operaciones exigidas por el contrato). **Dictamen del Coordinador (§212): `REVISION`**; abierto el delta V3 (solo documentos y análisis estático).
+- **Siguiente gate: delta V3 de los artefactos de línea base (Implementador), luego revisión delta del Arquitecto y dictamen del Coordinador.** La rama sigue sin reconciliar con `main` (`1304101d`: 93 detrás / 130 delante).
 
 **Congelación de V35 (§172).** El Coordinador aceptó V35-A2 (`86089886`) con consenso de arquitectura final.
 - `V35_FREEZE_SHA` = `86089886f37da05c2de5dcf9e237044a3deeada3`.
