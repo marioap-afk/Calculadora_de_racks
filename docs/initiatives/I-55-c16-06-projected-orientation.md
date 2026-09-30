@@ -1,6 +1,6 @@
 # I-55 G16 C16-06 — Orientacion proyectada de la referencia de bloque (diseño correctivo)
 
-Frozen: NO
+Frozen: YES
 
 Initiative: I-55 (View Placement & Projection), gate G16, correctivo C16-06. Workflow: V1 (reclamo I-55).
 
