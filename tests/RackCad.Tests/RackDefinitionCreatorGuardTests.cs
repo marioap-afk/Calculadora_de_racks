@@ -376,6 +376,53 @@ namespace RackCad.Tests
             Assert.Contains("RackDefinitionCreationFailure.InvalidEnvelope", precheck);
         }
 
+        // ================================================================ I-52-AUTH15-C1: el Name logico del sobre es opcional
+
+        [Fact]
+        public void AUTH15_C1_I1_EL_PRECHECK_NO_LEE_EL_NAME_DEL_SOBRE()
+        {
+            var precheck = Body(CreatorCode, "private static RackDefinitionCreationResult? Precheck(");
+
+            Assert.DoesNotContain("envelope.Name", precheck);
+        }
+
+        [Fact]
+        public void AUTH15_C1_I2_AUTH15_NUNCA_LEE_EL_NAME_LOGICO()
+        {
+            // El Name logico lo elige el llamador; AUTH-15 escribe el sobre ya compuesto sin leerlo, recortarlo ni sustituirlo.
+            Assert.DoesNotContain("envelope.Name", CreatorCode);
+            Assert.DoesNotMatch(new Regex(@"envelope\s*\??\.\s*Name"), CreatorCode);
+            Assert.DoesNotMatch(new Regex(@"\.Name"), CreatorCode);
+        }
+
+        [Fact]
+        public void AUTH15_C1_I3_ID_KIND_Y_SOBRE_NULO_SIGUEN_SIENDO_INVALID_ENVELOPE()
+        {
+            var precheck = Body(CreatorCode, "private static RackDefinitionCreationResult? Precheck(");
+
+            Assert.Contains("envelope == null", precheck);
+            Assert.Contains("string.IsNullOrWhiteSpace(envelope.Id)", precheck);
+            Assert.Contains("string.IsNullOrWhiteSpace(envelope.Kind)", precheck);
+            Assert.Contains("RackDefinitionCreationFailure.InvalidEnvelope", precheck);
+            Assert.Contains("new RackEmbedStore().Serialize(envelope)", precheck);
+        }
+
+        [Fact]
+        public void AUTH15_C1_I4_EL_DIAGNOSTICO_NO_DICE_QUE_EL_NAME_SEA_REQUERIDO()
+        {
+            var precheck = Body(CreatorCode, "private static RackDefinitionCreationResult? Precheck(");
+
+            Assert.Contains("\"sobre ausente o sin Id/Kind\"", precheck);
+            Assert.DoesNotContain("Id/Kind/Name", Creator);
+        }
+
+        [Fact]
+        public void AUTH15_C1_I4_LA_DOCUMENTACION_DE_INVALID_ENVELOPE_NO_DICE_QUE_EL_NAME_SEA_REQUERIDO()
+        {
+            Assert.DoesNotContain("Id/Kind/Name", Result);
+            Assert.Contains("lacks Id/Kind", Result);
+        }
+
         [Fact]
         public void AUTH15_LAS_EXCEPCIONES_SE_TIPAN_Y_NO_SE_LIMPIA_DENTRO()
         {
