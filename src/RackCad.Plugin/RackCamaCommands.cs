@@ -100,10 +100,12 @@ namespace RackCad.Plugin
                     RollerId = rollerId
                 };
 
-                var payload = BuildCamaPayload(config, System.Guid.NewGuid().ToString(), null);
+                // I-60: a NEW cama gets «Cama N»; the same name goes to the envelope and to the block.
+                var rackName = Systems.Shared.RackNewRackName.Resolve(document, RackCad.Domain.Systems.Shared.RackSystemKind.Cama, null);
+                var payload = BuildCamaPayload(config, System.Guid.NewGuid().ToString(), rackName);
                 // I-05: warn once if the drawing is not in inches, before placing the new bed.
                 RackUnitsGuard.WarnIfNotInches(document);
-                var result = new FlowBedDrawService().DrawAndPlace(document, config, payload);
+                var result = new FlowBedDrawService().DrawAndPlace(document, config, payload, rackName);
                 editor.WriteMessage("\n" + DescribeBed(result));
             }
             catch (System.Exception ex)

@@ -98,6 +98,12 @@ namespace RackCad.Plugin
                 return;
             }
 
+            if (source == null)
+            {
+                // I-60: a NEW dynamic rack (RSD, the RACKCAD menu) gets the automatic name when none was given; a RACKEDITAR sibling passes its source.
+                rackName = Systems.Shared.RackNewRackName.Resolve(document, RackSystemKind.PalletFlow, rackName);
+            }
+
             system.Name = rackName;
 
             if (string.Equals(view, RackEmbedDocument.ViewLateral, System.StringComparison.OrdinalIgnoreCase)
