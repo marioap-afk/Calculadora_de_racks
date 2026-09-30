@@ -25,14 +25,14 @@ namespace RackCad.Tests
 
         internal static RackPhysicalDefinitionSnapshot Definition(
             string key, string rackId, string kind = RackEmbedDocument.KindSelective,
-            string view = RackEmbedDocument.ViewPlanta, int section = -1, int references = 1)
+            string view = RackEmbedDocument.ViewPlanta, int section = -1, int references = 1, string name = "Rack")
             => new RackPhysicalDefinitionSnapshot(
                 key,
                 new RackEmbedStore().Serialize(new RackEmbedDocument
                 {
                     Kind = kind,
                     Id = rackId,
-                    Name = "Rack",
+                    Name = name,
                     View = view,
                     Section = section,
                     Design = "{}",
@@ -191,6 +191,14 @@ namespace RackCad.Tests
             internal List<RackViewAddress> TargetAddresses { get; }
             internal RackProjectionTargetPreparation DefaultPreparation { get; set; } = Preparation();
 
+            internal Dictionary<string, string> Names { get; } = new Dictionary<string, string>(StringComparer.Ordinal);
+
+            internal Services WithName(string rackId, string name)
+            {
+                Names[rackId] = name;
+                return this;
+            }
+
             internal Services WithFrame(string rackId, RackViewAddress address, RackViewFrame frame)
             {
                 Frames[(rackId, address)] = frame;
@@ -226,6 +234,7 @@ namespace RackCad.Tests
                     Authored = rackId => Authored(rackId),
                     Properties = rackId => Properties(rackId),
                     EditPreflight = rackId => EditPreflight(rackId),
+                    LogicalName = rackId => Names.TryGetValue(rackId, out var name) ? name : "Rack",
                 };
         }
 

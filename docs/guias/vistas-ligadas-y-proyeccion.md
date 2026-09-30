@@ -99,6 +99,10 @@ familias mezcladas en modo ortográfico (por ejemplo, Cantilever y Selectivo en 
 - Falla **toda** la operación, listando todo lo que la causa, si la selección incluye: referencias externas
   (xref), arreglos `MINSERT`, bloques dinámicos, anónimos o anotativos con datos de RackCad, escala distinta de
   1, reflexión (`MIRROR`), un mismo rack con varias definiciones, o vistas de clases distintas mezcladas.
+- Un rack **sin nombre** (nulo, vacío o solo espacios; `RACKLISTA` lo muestra como «(sin nombre)») no se proyecta:
+  falla **toda** la operación, antes de pedir puntos, importar bloques o escribir, y el mensaje lista cada rack
+  afectado. RACKPROYECTAR no inventa nombres ni modifica las vistas existentes; ponle nombre en su editor
+  (`RACKEDITAR`), actualiza y vuelve a proyectar.
 - Un rack con variables rotas, un diseño bloqueado, propiedades o diseño divergentes entre sus vistas, o una
   vista que `RACKEDITAR` rechazaría, no se proyecta: el mensaje nombra el rack y el remedio concreto.
 - Si una pieza **requerida** no tiene su bloque (o la biblioteca no está disponible), el comando falla antes de

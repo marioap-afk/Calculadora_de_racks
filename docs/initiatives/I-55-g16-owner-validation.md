@@ -176,5 +176,20 @@ Selectivo Planta → Lateral: AUTH-15 respondio `InvalidBlockName: nombre de blo
 del Dinamico y el de Push Back; la insercion historica funcionaba porque sustituia el literal «Selectivo» por su cuenta, en el Plugin. **Oraculo historico:** nombre base = nombre del rack
 o «Selectivo», seccion `LinkedLateral(base, pick − 1)` con `pick` el numero de poste FISICO (el corte se busca por `PostIndex == pick − 1`), por lo que el sufijo es `PostIndex + 1` y
 no la posicion entre los cortes. **Correccion:** `RackViewBaseName.SelectiveLateral` (autoridad AUTH-11) y las composiciones de nombre por sistema extraidas a
-`RackViewProductNames` (Application) para probarlas sin AutoCAD. **Observacion abierta (C16-05):** un rack sin nombre se ve como «(sin nombre)» en `RACKLISTA` y, al agregarle una
-vista proyectada cuyo sobre lleva el nombre «Rack» (AUTH-15 exige uno), pasa a verse como «Rack»; caracterizado por `G16_C05_…`, pendiente de decision del Owner.
+`RackViewProductNames` (Application) para probarlas sin AutoCAD. **Observacion abierta (C16-05):** un rack sin nombre se veia como «(sin nombre)» en `RACKLISTA` y, al agregarle una
+vista proyectada cuyo sobre llevaba el nombre «Rack» (AUTH-15 exige uno), pasaba a verse como «Rack»; resuelta por la decision de la ronda 4.
+
+### Ronda 4 — Candidato `66a9a504`: REJECTED por decision del Coordinador (C16-05)
+
+El Candidato no se compila para Owner Validation ni se ejecuta OV-ID19-01 sobre el. **Decision:** un rack logico con `Name` nulo, vacio o solo espacios NO es proyectable; ningun nombre
+sintetico esta permitido («Rack» incluido), porque ID19 agrega una vista ligada del MISMO rack (no una identidad nueva, a diferencia de `RACKDUPLICAR`). Es politica de producto de I-55: no esta
+en la Shared View Foundation, no debilita `InvalidEnvelope` ni el requisito de `Name` no vacio de AUTH-15 (que se cumple antes de materializar porque solo llegan racks con nombre).
+
+**Politica:** `RackProjectionFailureCode.UnnamedRackNotProjectable`, etapa `Group` del plan puro G14, evaluada antes de `AUTHORITY GATES` (antes de cualquier `Services.Authored`). Falla la operacion completa y
+reporta cada RackId sin nombre (OD-3). `RackProjectionServices.LogicalName` (servicio nuevo, obligatorio) lo respalda en el Plugin con `RackProjectionKindSession.LogicalName()`: el nombre que llevan las vistas del propio rack,
+o null. `RackProjectionEnvelopeName.LogicalName` devuelve null sin nombre (sin respaldo) y `WithLogicalName` devuelve la fuente intacta; `RackDuplicationPlan.FallbackName` (agregado en la ronda 3) se revirtio.
+Un rack con nombre conserva el MISMO nombre logico en el sobre proyectado; `Envelope.Name` y el nombre base del bloque siguen siendo autoridades distintas. C16-04 (`RackViewBaseName.SelectiveLateral`) se conserva.
+
+**RED antes del arreglo (`G16UnnamedRackTests`, 23 de 31 en rojo):** A) Selectivo sin nombre llegaba a `Completed` (preparaba y materializaba); B) nombrado + sin nombre + nombrado tambien terminaba `Completed`;
+C) Selectivo con nombre Planta→Lateral ya se aceptaba (verde, se conserva); D) sin cambios en el sobre fuente. Matriz de sistemas (Selectivo, Dinamico, Push Back, Cantilever, Cabecera × null/""/"   "): todas en rojo.
+**Despues:** 31/31; se reescribieron los tests de la ronda 2/3 que fijaban el respaldo «Rack» (`G16ProjectedEnvelopeTests`, `G16BlockNameTests`).

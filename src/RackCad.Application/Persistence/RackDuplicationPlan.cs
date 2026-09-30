@@ -126,9 +126,6 @@ namespace RackCad.Application.Persistence
     {
         private const string FallbackBaseName = "Rack";
 
-        /// <summary>The name written for a logical rack that no view names (shared with the ID19 projection, G16).</summary>
-        internal static string FallbackName => FallbackBaseName;
-
         private static readonly IReadOnlyList<RackDuplicationGroup> NoGroups = new RackDuplicationGroup[0];
 
         private readonly IReadOnlyCollection<Guid> sourceRackIds;

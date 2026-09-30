@@ -101,6 +101,7 @@ namespace RackCad.Tests
                 Services = new G14.Services(kind, Facts(kind));
                 Services.TargetAddresses.Add(G14.Planta);
                 Services.TargetAddresses.Add(G14.Frontal0);
+                Services.TargetAddresses.Add(G14.Lateral0);
                 Pieces = new[] { G14.Piece("P-1", RequirementRole.Required, "POSTE") };
             }
 
@@ -109,23 +110,26 @@ namespace RackCad.Tests
             internal G14.Services Services { get; }
             internal LibraryPieceAvailabilityFact[] Pieces { get; set; }
             internal RackViewAddress SourceAddress { get; set; } = G14.Planta;
+            internal IReadOnlyList<RackPhysicalDefinitionSnapshot> Definitions => definitions;
 
-            internal void AddRack(string rackId, string referenceKey, double x, double y, double rotation = 0.0, double originX = 0.0)
+            internal void AddRack(string rackId, string referenceKey, double x, double y, double rotation = 0.0, double originX = 0.0, string name = "Rack")
             {
                 var definitionKey = "DEF-" + referenceKey;
                 references.Add(G14.Reference(referenceKey, definitionKey));
-                definitions.Add(G14.Definition(definitionKey, rackId, KindOf(Kind)));
+                definitions.Add(G14.Definition(definitionKey, rackId, KindOf(Kind), name: name));
                 facts[referenceKey] = G14.Facts(x, y, rotation, originX: originX);
                 rackIds.Add(rackId);
+                Services.WithName(rackId, name);
                 Services.WithFrame(rackId, G14.Planta, G14.PlantaFrame());
                 Services.WithFrame(rackId, G14.Frontal0, G14.FrontalFrame());
+                Services.WithFrame(rackId, G14.Lateral0, G14.LateralFrame());
             }
 
             internal RackProjectionSnapshot Snapshot()
             {
                 foreach (var rackId in rackIds)
                 {
-                    var targets = new[] { G14.Planta, G14.Frontal0 };
+                    var targets = new[] { G14.Planta, G14.Frontal0, G14.Lateral0 };
                     foreach (var target in targets)
                     {
                         Services.WithPreparation(
