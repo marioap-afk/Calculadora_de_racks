@@ -23,3 +23,17 @@ docs/automation/evidence/I-52-AUTH15-run3/launcher-record.json  -text
 docs/automation/evidence/I-52-AUTH15-run3/hostval.log  -text
 docs/automation/evidence/I-52-AUTH15-run3/filedia.txt  -text
 docs/automation/evidence/I-52-AUTH15-run3/run.scr  -text
+docs/automation/evidence/I-52-AUTH15-C1/run1-579de1af-UNKNOWN/hostval-evidence.json  -text
+docs/automation/evidence/I-52-AUTH15-C1/run1-579de1af-UNKNOWN/launcher-record.json  -text
+docs/automation/evidence/I-52-AUTH15-C1/run1-579de1af-UNKNOWN/hostval.log  -text
+docs/automation/evidence/I-52-AUTH15-C1/run1-579de1af-UNKNOWN/filedia.txt  -text
+docs/automation/evidence/I-52-AUTH15-C1/run1-579de1af-UNKNOWN/run.scr  -text
+docs/automation/evidence/I-52-AUTH15-C1/run1-579de1af-UNKNOWN/TRANSFER-METADATA.json  -text
+docs/automation/evidence/I-52-AUTH15-C1/run1-579de1af-UNKNOWN/SHA256SUMS  -text
+docs/automation/evidence/I-52-AUTH15-C1/run2-b7ee683e-PASS/hostval-evidence.json  -text
+docs/automation/evidence/I-52-AUTH15-C1/run2-b7ee683e-PASS/launcher-record.json  -text
+docs/automation/evidence/I-52-AUTH15-C1/run2-b7ee683e-PASS/hostval.log  -text
+docs/automation/evidence/I-52-AUTH15-C1/run2-b7ee683e-PASS/filedia.txt  -text
+docs/automation/evidence/I-52-AUTH15-C1/run2-b7ee683e-PASS/run.scr  -text
+docs/automation/evidence/I-52-AUTH15-C1/run2-b7ee683e-PASS/TRANSFER-METADATA.json  -text
+docs/automation/evidence/I-52-AUTH15-C1/run2-b7ee683e-PASS/SHA256SUMS  -text

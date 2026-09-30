@@ -104,3 +104,12 @@ IMPLEMENTATION AUTHORIZED = YES (RED first; production only after RED is observe
 
 - El contrato es inmutable desde ese commit. Todo cambio posterior es una enmienda `A-n` append-only en este registro (INITIATIVE_LIFECYCLE §6); un diff de produccion materialmente mayor que las TRES ediciones del contrato §4 exige re-revision del Architect.
 - Estado: implementacion NO iniciada; sin RED escrito; sin cambios de produccion.
+
+## 7. Implementacion y validacion en host
+
+- **RED `93b93f78`** (4 de 5 guardas fallan sobre la base) y **GREEN / implementacion `7e7e9178`** (las tres ediciones del Freeze). Detalle en [I-52-AUTH15-C1-evidence.md](../evidence/I-52-AUTH15-C1-evidence.md).
+- **Corrida 1 (arnes `579de1af`) = HOST RUN VALID / OVERALL RESULT = UNKNOWN.** Defecto del arnes (veredicto de 15 casos fijos con una matriz de 16; HV-06/HV-07/HV-09 en bases laterales). El Owner aprobo la Ruta 1: **no se deriva PASS de ella** y su evidencia se conserva sin editar.
+- **Corrida 2 (arnes corregido `b7ee683ecef8efc3e41c8b962fa172846daea614`) = HOST RUN VALID / OVERALL RESULT = PASS**, emitido por el propio arnes y confirmado por el lanzador (30/30 comprobaciones): 16/16 casos, 7/7 controles DOCUMENT, 0 fugas, H-1..H-10 = PASS sobre la base del documento.
+- **Produccion sin cambio entre ambas corridas:** `src` `29265f70…` y `tests` `3ea8617c…`, identicos a `7e7e9178`.
+- **Excepcion de identidad host → Candidato: NO ratificada.** Se decide tras formar el Candidato comparando los arboles de produccion (ver la evidencia §4). Esta sesion no la auto-ratifica.
+- El arnes temporal se retira en un commit propio antes del Candidato.

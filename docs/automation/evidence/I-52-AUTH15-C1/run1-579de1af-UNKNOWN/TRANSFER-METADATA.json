@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "initiative": "I-52",
+  "unit": "I-52-AUTH15-C1",
+  "milestone": "AUTH-15-C1 host-validation package (temporary harness; removed before Candidate)",
+  "implementationSha": "7e7e9178165e7f3691e8d7888417bd0fc34012e4",
+  "harnessSha": "579de1af16dfe91845f3b8342bd4fc26b416412c",
+  "implementationSrcTree": "29265f70196fd19d6102e1932da15d535ffab8c8",
+  "implementationTestsTree": "3ea8617c48fa4734312ed6fb0659c47dd71c94ea",
+  "harnessSrcTree": "29265f70196fd19d6102e1932da15d535ffab8c8",
+  "harnessTestsTree": "3ea8617c48fa4734312ed6fb0659c47dd71c94ea",
+  "treesEqual": true,
+  "dlls": {
+    "I52Auth15.HostHarness.dll": {
+      "file": "I52Auth15.HostHarness.dll",
+      "bytes": 142848,
+      "sha256": "91760B6D79AAAC649BDD6CAB103C36164F1EFAAB66DBD39D74DBE5EEEC713BF7",
+      "version": "1.0.0.0"
+    },
+    "RackCad.Application.dll": {
+      "file": "RackCad.Application.dll",
+      "bytes": 1865728,
+      "sha256": "AE8DC94B81425B7BE9659F4CAE0F94623CD40DEC542DEFA3570D91B9772EA440",
+      "version": "1.0.0.0"
+    },
+    "RackCad.Domain.dll": {
+      "file": "RackCad.Domain.dll",
+      "bytes": 125952,
+      "sha256": "4AC6D6B1BC20550056657DA57A64ACDD3CBB385F576801FB4316D8619F345BA8",
+      "version": "1.0.0.0"
+    },
+    "RackCad.Plugin.dll": {
+      "file": "RackCad.Plugin.dll",
+      "bytes": 177152,
+      "sha256": "95E649C35D2EAACC210CD05F2E34135746DA00AE6DDEDF7B42CCF138E01F3894",
+      "version": "1.0.0.0"
+    },
+    "RackCad.UI.dll": {
+      "file": "RackCad.UI.dll",
+      "bytes": 995840,
+      "sha256": "6ABC97B508D4AD6526C1A9F322516B51FCF9E378F1BED3E54D7746C8AC5F91D4",
+      "version": "1.0.0.0"
+    }
+  },
+  "pluginInformationalVersion": "1.0.0+579de1af16dfe91845f3b8342bd4fc26b416412c",
+  "buildTimestampUtc": "2026-09-30T03:26:08.5540029Z",
+  "toolchain": {
+    "dotnetSdk": "8.0.423",
+    "dotnetHost": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe",
+    "autoCadInstallDir": "C:\\Program Files\\Autodesk\\AutoCAD 2025",
+    "acadExe": {
+      "file": "acad.exe",
+      "bytes": 5704536,
+      "sha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+      "version": "R25.0.171.0.0"
+    },
+    "autoCadCompileReferenceAcDbMgd": {
+      "file": "AcDbMgd.dll",
+      "bytes": 6527320,
+      "sha256": "C360186CC0702E210635895B7608D1D8BD5FEEC6A00612B7581EF160FE09CEDE",
+      "version": "25.0.171.0.0"
+    },
+    "configuration": "Debug"
+  },
+  "runDirectory": "run (harness + RackCad assemblies + catalogs; NETLOAD only I52Auth15.HostHarness.dll)",
+  "autoCadStarted": false,
+  "acadRunningDuringBuild": false,
+  "hostValidation": "NOT RUN",
+  "command": "I52AUTH15_HOSTVAL",
+  "nextGate": "COORDINATOR AUTHORIZATION TO RUN AUTH-15 HOST VALIDATION: launcher\\run-hostval.ps1 -Package <this folder> -ScratchDrawing <fresh blank .dwg> -OwnerConfirmsNoTouch"
+}
