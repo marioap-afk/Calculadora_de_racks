@@ -30,5 +30,6 @@ o proyectar), salvo que el usuario edite su nombre. `RACKDUPLICAR` se caracteriz
 
 ## Fuera de alcance
 
-Migracion masiva; renombrar racks heredados; cambiar la politica de nombres de bloque (AUTH-11); `RACKDUPLICAR` si su comportamiento no queda
-determinado por el contrato existente; C16-06 y cualquier parte de I-55.
+Migracion masiva; renombrar racks heredados; cambiar la politica de nombres de bloque (AUTH-11); `RACKDUPLICAR` (autorizacion del Owner: sin cambios
+mientras la ambiguedad persista) y `RACKLAYOUT` independiente (duplicacion en lote bajo el mismo contrato de reestampado, por analogia); C16-06 y cualquier
+parte de I-55.
