@@ -75,10 +75,13 @@ namespace RackCad.Plugin
                                     RackProductSourceKind.NewRack, dynamic.Kind, dynamic.RackId, dynamic.Views));
                         break;
                     case FlowBedInsertionRequest cama:
+                        // I-60: one assigned name for the envelope and the block of a NEW cama.
+                        var camaName = Systems.Shared.RackNewRackName.Resolve(
+                            document, global::RackCad.Domain.Systems.Shared.RackSystemKind.Cama, cama.RackName);
                         RackCamaCommands.DrawAndPlaceBed(
                             cama.FlowBed,
-                            RackCamaCommands.BuildCamaPayload(cama.FlowBed, cama.RackId, cama.RackName, null, cama.SourceDocument),
-                            cama.RackName);
+                            RackCamaCommands.BuildCamaPayload(cama.FlowBed, cama.RackId, camaName, null, cama.SourceDocument),
+                            camaName);
                         break;
                     case SelectiveInsertionRequest selective:
                         var selectiveProducts = RackViewBatchProducts.SelectiveNew(document, selective.System,

@@ -516,8 +516,13 @@ namespace RackCad.Plugin
         /// </summary>
         internal static void DrawSelectiveView(
             string view, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name, RackEmbedDocument source = null)
-            => DrawSelectiveViewFromAuthored(
-                view, system, SerializeSelectiveDesign(design, id, name), id, name, source);
+        {
+            // I-60: the only entry of a NEW selective rack (RACKEDITAR goes through DrawSelectiveViewFromAuthored). A blank name gets the
+            // automatic one BEFORE the inner document and the envelope are serialized, so both carry it.
+            name = Systems.Shared.RackNewRackName.Resolve(
+                AcApplication.DocumentManager.MdiActiveDocument, RackCad.Domain.Systems.Shared.RackSystemKind.SelectiveRack, name);
+            DrawSelectiveViewFromAuthored(view, system, SerializeSelectiveDesign(design, id, name), id, name, source);
+        }
 
         /// <summary>
         /// The same insertion, carrying an authored document that was ALREADY decided upstream (I-48 G4C.1).

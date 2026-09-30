@@ -139,6 +139,14 @@ namespace RackCad.Plugin
                 return;
             }
 
+            if (source == null && string.IsNullOrWhiteSpace(rackName))
+            {
+                // I-60: a NEW line (RCT, the RACKCAD menu) with no name gets the automatic one; the persisted design copy carries it too
+                // (AUTH-13 compares it with the siblings RACKEDITAR inserts later). A RACKEDITAR sibling passes its source.
+                rackName = RackNewRackName.Resolve(document, RackSystemKind.Cantilever, rackName);
+                design.Name = rackName;
+            }
+
             var payload = BuildCantileverPayload(design, id, rackName, view, section, source, innerSource);
             var baseName = string.IsNullOrWhiteSpace(rackName) ? null : rackName.Trim();
 
