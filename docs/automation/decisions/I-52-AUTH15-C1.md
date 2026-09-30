@@ -51,4 +51,43 @@ Preguntas (ARCHITECT REVIEW REQUIRED; ninguna se decide sin el Architect):
 
 ## 4. Estado y siguiente paso
 
-Unidad abierta. Falta: revision del Architect (paquete = contrato + este registro), Freeze del contrato correctivo, y solo despues RED → produccion → validacion → Candidato. No se fabrica ningun PASS.
+Ver §5 (revision del Architect) y §6 (Freeze). Solo despues del commit de Freeze: RED → produccion → validacion → Candidato. No se fabrica ningun PASS.
+
+## 5. Revision del Architect (AUTH-15-C1)
+
+```text
+ROLE DECLARATION = SAME-SESSION ROLE
+  El paquete (contrato + §3 de este registro) y esta revision los produce la MISMA sesion del agente implementador, por instruccion expresa del Owner
+  («You are the independent Architect for I-52-AUTH15-C1»). Revisor y autor NO son independientes; no es SEPARATE SESSION ni EXTERNAL HUMAN.
+  El Coordinator sigue revisando el consumo y el recibo; ese control no se sustituye. El Owner puede exigir una re-revision separada; hasta entonces este acuerdo es el vigente.
+  Esta sesion NO implementa ni escribe RED en esta ronda.
+```
+
+### Ronda R1 — version `c102ed0c` (blob del contrato `da779d4fb13a18a99fe91d0f0ed805e62ad315ec`): CHANGES REQUIRED
+
+- **F-1 (REQUIRED).** La «Superficie propuesta» del contrato limitaba la produccion a `RackDefinitionCreator.cs` (`Precheck`). El comentario XML de `InvalidEnvelope` en
+  `RackDefinitionCreationResult.cs:33` («lacks Id/Kind/Name») quedaba fuera y contradecia el contrato corregido; ademas dejaba sin fijar la superficie exacta congelable. Sin cambio de
+  significado del comportamiento, pero un elemento congelable incompleto.
+- **F-2 (REQUIRED).** El contrato no fijaba obligaciones invariante→prueba con RED esperado ni la matriz de host (INITIATIVE_LIFECYCLE §6): quedaban como preguntas abiertas.
+- **F-3 (OPTIONAL).** Declarar por escrito que AUTH-15 lee `Name` en un solo punto: verificado, `RackDefinitionCreator.cs:180` es la unica lectura de `.Name` en el creador y en el resultado.
+
+### Ronda R2 — version `a6a3e96a0860e0bd9196b257f81480a574ae91a9` (`docs/initiatives/I-52-auth15-c1-unnamed-envelope.md`, blob `2f4fa9459d8796f7ef88862dccf5a2ce1b61fdfd`): AGREED
+
+Disposicion: F-1 y F-2 resueltas en esa version; F-3 incorporada (invariante I-2). Cero REQUIRED abiertos sobre la version exacta.
+
+Resolucion de las preguntas (§3):
+
+- **Q1 = AGREED.** Un `Name` en blanco es un estado valido del producto (`RackPhysicalSelection` exige solo `Id`/`Kind`/`Design`; `RackDuplicationPlan` solo `Id`/`Kind`; `RACKLISTA`/`RACKBOMTOTAL` lo muestran «(sin nombre)»;
+  `RackEmbedStore.Serialize` solo exige documento no nulo y no valida ni normaliza `Name`). `Id` y `Kind` siguen siendo el requisito estructural. Es el unico cambio semantico.
+- **Q2 = AGREED.** «sobre ausente o sin Id/Kind», mismo tipo `InvalidEnvelope`; sin debilitar `Id`/`Kind`.
+- **Q3 = AGREED, estrategia de prueba aceptada.** Guardas de fuente sobre el cuerpo real de `Precheck` + host. **Sin predicado puro nuevo** (abstraccion sin valor de producto para una condicion). Limite reconocido: una guarda prueba la ausencia
+  de la condicion, no el camino de exito; por eso el host es obligatorio y su veredicto gobierna el exito. Guardas nuevas: I-1, I-2, I-4; deben verse fallar sobre la base.
+- **Q4 = AGREED con matriz fijada** (contrato §7, H-1..H-10). Base de documento solamente, controles dentro de la matriz; sin reabrir SIDE-DB/CT-DA (no se encontro dependencia concreta). Se anade H-9 (`OpenCloseTransaction` → `TransactionMismatch`) y H-10 (sin Commit/Abort/referencia).
+- **Q5 = AGREED con superficie de TRES ediciones** (contrato §4): condicion de `Name`, texto del diagnostico y comentario XML de `InvalidEnvelope`. La evidencia historica y las notas de `I-52-AUTH15` no se reescriben (no hay contradiccion normativa: sus
+  afirmaciones de «nombre no vacio» hablan del `BlockName`, no del `Name` del sobre). Un diff de produccion mayor exige re-revision.
+- **Q6 = AGREED.** Candidato: focales de AUTH-15, guardas de propiedad, Core Full, **UI Full obligatoria** (AGENTS.md: el `FINAL_CANDIDATE_SHA` y el cierre documental exigen Core Full y UI Full; LC-UI no reduce el Candidato), Build UI Debug, Build Plugin Debug y Release, CI de push 4/4 exacto,
+  cobertura del Candidato; antes de integrar: host y aceptacion Architect/Owner; post-merge: CI exacto y cobertura del merge.
+
+Objeciones materiales: ninguna abierta sobre la version acordada.
+
+**Freeze.** El commit de Freeze cambia UNICAMENTE la linea `Frozen: NO` → `Frozen: YES` del contrato; ninguna clausula ni otra linea de cabecera cambia. Su SHA (`FROZEN CONTRACT SHA`) se registra en §6, porque un commit no puede contenerse a si mismo.
