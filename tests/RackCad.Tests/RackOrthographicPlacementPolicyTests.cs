@@ -41,10 +41,15 @@ namespace RackCad.Tests
                 DimensionViewKind.Planta, DimensionViewKind.Planta, out mode, out _));
             Assert.Equal(RackProjectionMode.Rigid, mode);
 
-            Assert.False(RackProjectionClassMapping.TryMap(
-                DimensionViewKind.Frontal, DimensionViewKind.Lateral, out _, out _));
-            Assert.False(RackProjectionClassMapping.TryMap(
-                DimensionViewKind.Lateral, DimensionViewKind.Frontal, out _, out _));
+            // G16 C16-07: the Owner revoked the OD-7.a A exclusion; the two elevations share only Height.
+            Assert.True(RackProjectionClassMapping.TryMap(
+                DimensionViewKind.Frontal, DimensionViewKind.Lateral, out mode, out axis));
+            Assert.Equal(RackProjectionMode.Orthographic, mode);
+            Assert.Equal(RackPhysicalAxis.Height, axis);
+            Assert.True(RackProjectionClassMapping.TryMap(
+                DimensionViewKind.Lateral, DimensionViewKind.Frontal, out mode, out axis));
+            Assert.Equal(RackProjectionMode.Orthographic, mode);
+            Assert.Equal(RackPhysicalAxis.Height, axis);
         }
 
         [Fact]

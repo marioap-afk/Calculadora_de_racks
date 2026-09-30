@@ -365,7 +365,7 @@ namespace RackCad.Tests
             yield return (DimensionViewKind.Lateral, DimensionViewKind.Planta);
         }
 
-        private static RackSystemKind SystemKind(string system)
+        internal static RackSystemKind SystemKind(string system)
         {
             switch (system)
             {
@@ -377,7 +377,7 @@ namespace RackCad.Tests
             }
         }
 
-        private static RackProjectionSourceView View(
+        internal static RackProjectionSourceView View(
             string system, DimensionViewKind source, DimensionViewKind target, double degrees,
             double x = 10.0, double y = 20.0, string key = "REF-1", double scaleX = 1.0, double scaleY = 1.0)
         {
@@ -487,16 +487,16 @@ namespace RackCad.Tests
             return (line, factory);
         }
 
-        private static Vector2D LocalAxis(RackViewFrame frame, RackPhysicalAxis axis)
+        internal static Vector2D LocalAxis(RackViewFrame frame, RackPhysicalAxis axis)
         {
             Assert.True(RackViewFrameSemantics.TryAxisDirection(frame, axis, out var direction), frame.AxisMap + " has no " + axis);
             return direction;
         }
 
-        private static Vector2D WorldAxis(RackProjectionSourceView view, RackPhysicalAxis axis)
+        internal static Vector2D WorldAxis(RackProjectionSourceView view, RackPhysicalAxis axis)
             => view.Placement.Linear.Apply(LocalAxis(view.SourceFrame, axis)).Normalized();
 
-        private static void AssertSame(Vector2D expected, Vector2D actual, string what)
+        internal static void AssertSame(Vector2D expected, Vector2D actual, string what)
         {
             Assert.True(
                 Math.Abs(expected.X - actual.X) < 1e-9 && Math.Abs(expected.Y - actual.Y) < 1e-9,
@@ -504,7 +504,7 @@ namespace RackCad.Tests
         }
 
         /// <summary>An angle in [0, 2 pi), so equal orientations compare equal.</summary>
-        private static double Normalize(double radians)
+        internal static double Normalize(double radians)
         {
             var twoPi = 2.0 * Math.PI;
             var value = radians % twoPi;
