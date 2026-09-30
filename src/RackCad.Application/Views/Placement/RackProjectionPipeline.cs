@@ -19,7 +19,6 @@ namespace RackCad.Application.Views.Placement
             if (request == null) throw new ArgumentNullException(nameof(request));
             if (request.Selection == null) throw new ArgumentException("A projection needs selection facts.", nameof(request));
             if (request.Services == null) throw new ArgumentException("A projection needs its authorities.", nameof(request));
-            if (request.Services.LogicalName == null) throw new ArgumentException("A projection needs the logical rack name.", nameof(request));
 
             var warnings = new List<RackProjectionWarning>();
             var members = request.Selection.Members
@@ -95,17 +94,6 @@ namespace RackCad.Application.Views.Placement
                 {
                     groupDiagnostics.AddRange(ordered.Select(member => Diagnostic(
                         RackProjectionStage.Group, RackProjectionFailureCode.MultipleSourceDefinitions, member)));
-                }
-            }
-
-            // A logical rack without a name is not projectable (C16-05). The whole operation fails and EVERY nameless rack is reported;
-            // the plan neither names it nor repairs its envelope, and it decides before any authority of the rack is consulted.
-            foreach (var group in groups)
-            {
-                if (string.IsNullOrWhiteSpace(request.Services.LogicalName(group.RackId)))
-                {
-                    groupDiagnostics.Add(Diagnostic(
-                        RackProjectionStage.Group, RackProjectionFailureCode.UnnamedRackNotProjectable, Ordered(group).First()));
                 }
             }
 

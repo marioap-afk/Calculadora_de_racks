@@ -24,6 +24,12 @@ namespace RackCad.Tests
     /// (the editors do not require one; the list shows «(sin nombre)»). The block definition BaseName is a DIFFERENT authority
     /// (AUTH-11, with its own descriptive fallback) and was never blank, which is why the definition name never showed the problem.
     /// </para>
+    ///
+    /// <para>
+    /// Resolution (Owner product decision, after C16-05 was revoked): a blank logical Name is a VALID state and RACKPROYECTAR projects it
+    /// as it is. AUTH-15 was corrected by I-52-AUTH15-C1 (integrated in main, <c>integration/I-52-AUTH15-C1</c>): it requires Id and
+    /// Kind, never Name. No synthetic name is invented anywhere; the projected envelope keeps the rack unnamed.
+    /// </para>
     /// </summary>
     public class G16ProjectedEnvelopeTests
     {
@@ -80,19 +86,19 @@ namespace RackCad.Tests
         [InlineData(null)]
         [InlineData("")]
         [InlineData("   ")]
-        public void G16_ID19_ABlankNamedSourceProducesAProjectedEnvelopeThatAuth15Refuses(string sourceName)
+        public void G16_ID19_ABlankNamedSourceProducesAProjectedEnvelopeThatAuth15Accepts(string sourceName)
         {
             var product = Prepare(RackSystemKind.SelectiveRack, RackViewAddress.Whole(DimensionViewKind.Planta), sourceName, composeName: false);
 
-            // Exactly the precondition of RackDefinitionCreator.Precheck (pinned to its source below): only Name fails.
+            // AUTH-15-C1 (integrated): the precondition is Id and Kind only; a blank logical Name is valid and travels as it is.
             Assert.False(string.IsNullOrWhiteSpace(product.Envelope.Id));
             Assert.False(string.IsNullOrWhiteSpace(product.Envelope.Kind));
             Assert.True(string.IsNullOrWhiteSpace(product.Envelope.Name));
-            Assert.False(Auth15Accepts(product.Envelope));
+            Assert.True(Auth15Accepts(product.Envelope));
         }
 
         [Fact]
-        public void G16_ID19_TheAuth15PreconditionIsExactlyIdKindAndName()
+        public void G16_ID19_TheAuth15PreconditionIsExactlyIdAndKind()
         {
             var creator = string.Join("\n", File.ReadAllLines(Path.Combine(Root(), "src", "RackCad.Plugin", "Systems", "Shared", "RackDefinitionCreator.cs"))
                 .Select(line => line.Contains("//") ? line.Substring(0, line.IndexOf("//", StringComparison.Ordinal)) : line));
@@ -100,19 +106,20 @@ namespace RackCad.Tests
             Assert.Contains("envelope == null", creator);
             Assert.Contains("string.IsNullOrWhiteSpace(envelope.Id)", creator);
             Assert.Contains("string.IsNullOrWhiteSpace(envelope.Kind)", creator);
-            Assert.Contains("string.IsNullOrWhiteSpace(envelope.Name)", creator);
+            // I-52-AUTH15-C1: the logical Name is optional and AUTH-15 never reads it.
+            Assert.DoesNotContain("envelope.Name", creator);
         }
 
-        // ================================================================ the fix: same rack, a name that AUTH-15 accepts
+        // ================================================================ same rack, same logical name state
 
         [Fact]
         public void G16_ID19_ABlankNamedRackIsNeverGivenASyntheticName()
         {
-            // C16-05: the plan refuses the rack before this point; if a blank source ever got here it stays blank (AUTH-15 refuses it).
+            // A legacy unnamed rack stays unnamed in the projected sibling, and AUTH-15-C1 accepts that envelope.
             var product = Prepare(RackSystemKind.SelectiveRack, RackViewAddress.Whole(DimensionViewKind.Planta), "  ", composeName: true);
 
             Assert.True(string.IsNullOrWhiteSpace(product.Envelope.Name));
-            Assert.False(Auth15Accepts(product.Envelope));
+            Assert.True(Auth15Accepts(product.Envelope));
         }
 
         [Fact]
@@ -157,11 +164,12 @@ namespace RackCad.Tests
 
         [Theory]
         [MemberData(nameof(SupportedTargets))]
-        public void G16_ID19_NoSystemNorTargetInventsANameForABlankNamedRack(RackSystemKind kind, RackViewAddress target)
+        public void G16_ID19_EveryProjectedEnvelopeSatisfiesAuth15ForABlankNamedRackWithoutInventingAName(RackSystemKind kind, RackViewAddress target)
         {
-            // C16-05: the plan refuses the rack before this point; composition itself never fills the name.
+            // Legacy unnamed racks are projectable: same RackId, kind, view, design and custom properties; the name stays blank.
             var product = Prepare(kind, target, "", composeName: true);
 
+            AssertProjected(product.Envelope, kind, target);
             Assert.True(string.IsNullOrWhiteSpace(product.Envelope.Name));
         }
 
@@ -224,11 +232,11 @@ namespace RackCad.Tests
             Assert.True(RackViewCodec.Decode(envelope.Kind, envelope.View, envelope.Section).HasAddress);
         }
 
+        /// <summary>The integrated AUTH-15-C1 precondition (pinned to its source above): envelope, Id and Kind; never Name.</summary>
         private static bool Auth15Accepts(RackEmbedDocument envelope)
             => envelope != null
                 && !string.IsNullOrWhiteSpace(envelope.Id)
-                && !string.IsNullOrWhiteSpace(envelope.Kind)
-                && !string.IsNullOrWhiteSpace(envelope.Name);
+                && !string.IsNullOrWhiteSpace(envelope.Kind);
 
         private static RackEmbedDocument Source(RackSystemKind kind, RackViewAddress address, string name)
         {

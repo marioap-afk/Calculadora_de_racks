@@ -59,12 +59,6 @@ namespace RackCad.Application.Views.Placement
                         RackProjectionRemedyKind.NoAutomaticRemedy,
                         "Esta vista no tiene identidad de rack: no hay remedio automatico.");
 
-                case RackProjectionFailureCode.UnnamedRackNotProjectable:
-                    return Remedy(
-                        RackProjectionRemedyKind.NotProjectable,
-                        "Este rack no tiene nombre y no se puede proyectar: RACKPROYECTAR no inventa nombres. "
-                        + "Ponle nombre en su editor (RACKEDITAR), actualiza y vuelve a proyectar.");
-
                 case RackProjectionFailureCode.UnsupportedMember:
                 case RackProjectionFailureCode.MixedSourceTypes:
                 case RackProjectionFailureCode.MultipleSourceDefinitions:

@@ -119,7 +119,6 @@ namespace RackCad.Tests
                 definitions.Add(G14.Definition(definitionKey, rackId, KindOf(Kind), name: name));
                 facts[referenceKey] = G14.Facts(x, y, rotation, originX: originX);
                 rackIds.Add(rackId);
-                Services.WithName(rackId, name);
                 Services.WithFrame(rackId, G14.Planta, G14.PlantaFrame());
                 Services.WithFrame(rackId, G14.Frontal0, G14.FrontalFrame());
                 Services.WithFrame(rackId, G14.Lateral0, G14.LateralFrame());

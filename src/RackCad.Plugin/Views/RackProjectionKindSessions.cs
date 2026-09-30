@@ -193,12 +193,6 @@ namespace RackCad.Plugin.Views
             return RackProjectionEditPreflight.Accepted;
         }
 
-        /// <summary>
-        /// The logical name of this rack: the one its own views carry, or null when none does (C16-05: no name is invented, the plan
-        /// refuses the rack). Reads the drawing facts of this rack only and writes nothing.
-        /// </summary>
-        public string LogicalName() => RackProjectionEnvelopeName.LogicalName(null, SiblingNames());
-
         /// <summary>The names the views of this rack carry, in stable order (the rack's own views, never another rack's).</summary>
         protected IEnumerable<string> SiblingNames()
             => Membership.MutableMembers
@@ -545,8 +539,9 @@ namespace RackCad.Plugin.Views
             // The name the rack's views carry AS IS: BaseName and the plan grouping read it with their own fallback (AUTH-11).
             rawSourceName = representative?.Name;
 
-            // The envelope is composed from a copy that carries a usable Name (AUTH-15 refuses an envelope without one); the source
-            // envelope in the drawing is never touched, and a named rack keeps its name (G16 OV-ID19-01).
+            // The envelope is composed from a copy that carries the rack's logical Name (the one a sibling view carries when this one
+            // carries none); an unnamed rack stays unnamed, the source envelope in the drawing is never touched, and a named rack keeps
+            // its name (G16 OV-ID19-01; AUTH-15-C1 accepts a blank Name).
             source = representative == null
                 ? null
                 : RackProjectionEnvelopeName.WithLogicalName(representative, SiblingNames());

@@ -155,7 +155,6 @@ namespace RackCad.Plugin.Views
                     EditPreflight = rackId => SessionOf(rackId).EditPreflight(),
                     Frame = (rackId, address) => SessionOf(rackId).Frame(address),
                     Prepare = (rackId, address) => SessionOf(rackId).Prepare(address),
-                    LogicalName = rackId => SessionOf(rackId).LogicalName(),
                 };
 
                 return RackProjectionSnapshot.Available(

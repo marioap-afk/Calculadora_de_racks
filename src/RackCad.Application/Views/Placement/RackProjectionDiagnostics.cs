@@ -24,7 +24,6 @@ namespace RackCad.Application.Views.Placement
     {
         None,
         BlankRackId,
-        UnnamedRackNotProjectable,
         UnsupportedMember,
         MixedSourceTypes,
         MultipleSourceDefinitions,

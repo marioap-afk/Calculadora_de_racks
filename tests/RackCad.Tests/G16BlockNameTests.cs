@@ -138,15 +138,17 @@ namespace RackCad.Tests
                 RackViewProductNames.Cantilever(RackViewAddress.Whole(DimensionViewKind.Planta), "Rack A"));
         }
 
-        // ================================================================ the rack name in RACKLISTA (C16-05)
+        // ================================================================ the rack name in RACKLISTA (legacy unnamed racks)
 
         [Fact]
         public void G16_C05_AnUnnamedRackStaysSinNombreAndANamedRackKeepsItsNameAfterAProjectedView()
         {
             var unnamed = new RackEmbedDocument { Id = "R", Kind = "selective", Name = "", View = "planta", Section = -1, Design = "{}" };
             Assert.Equal("(sin nombre)", RackListBuilder.Build(new[] { unnamed }).Single().Name);
-            // An unnamed rack is not projectable: no linked view (and no name) is ever added to it.
+            // A legacy unnamed rack is projectable (C16-05 revoked) and its projected sibling stays unnamed: no name is invented.
             Assert.Null(RackProjectionEnvelopeName.LogicalName(unnamed.Name, new[] { unnamed.Name }));
+            var unnamedProjected = new RackEmbedDocument { Id = "R", Kind = "selective", Name = unnamed.Name, View = "lateral", Section = 0, Design = "{}" };
+            Assert.Equal("(sin nombre)", RackListBuilder.Build(new[] { unnamed, unnamedProjected }).Single().Name);
 
             var named = new RackEmbedDocument { Id = "N", Kind = "selective", Name = "Rack A", View = "planta", Section = -1, Design = "{}" };
             var projectedName = RackProjectionEnvelopeName.LogicalName(named.Name, new[] { named.Name });

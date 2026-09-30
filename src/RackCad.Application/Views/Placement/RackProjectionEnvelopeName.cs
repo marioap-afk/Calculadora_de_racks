@@ -8,12 +8,14 @@ namespace RackCad.Application.Views.Placement
     /// <summary>
     /// The name a projected view carries in its envelope. <see cref="RackEmbedDocument.Name"/> is the CLIENT-FACING name of the
     /// logical rack and is distinct from the block definition BaseName (AUTH-11): a rack may legally have no name at all (the
-    /// editors do not require one, and the list shows «(sin nombre)»), while AUTH-15 refuses to write an envelope without one.
+    /// editors do not require one, and the list shows «(sin nombre)»). AUTH-15 (after I-52-AUTH15-C1) accepts an envelope whose
+    /// Name is blank.
     ///
     /// <para>
-    /// The logical name is the one the rack's views carry. When none carries one the rack is NOT projectable (C16-05): no
-    /// synthetic name exists, so this type returns null and the plan refuses the rack before any point, import or write.
-    /// ID19 adds a linked view of the SAME rack; it does not create a new identity (unlike RACKDUPLICAR), so it may not name one.
+    /// The logical name is the one the rack's views carry. When none carries one the rack stays UNNAMED: no synthetic name exists,
+    /// so this type returns null and the projected view is composed with the blank name the rack already has (Owner decision:
+    /// legacy unnamed racks are projectable and remain unnamed). ID19 adds a linked view of the SAME rack; it does not create a new
+    /// identity (unlike RACKDUPLICAR), so it may not name one.
     /// </para>
     /// </summary>
     public static class RackProjectionEnvelopeName
@@ -31,9 +33,10 @@ namespace RackCad.Application.Views.Placement
         }
 
         /// <summary>
-        /// The source envelope as the projection composes from it: identical in everything except a usable Name. It is an in-memory
-        /// copy for composition; the source envelope is never repaired in the drawing. A named source, and a source no view of
-        /// which carries a name (unprojectable, refused earlier), are returned as they are.
+        /// The source envelope as the projection composes from it: identical in everything except the rack's logical Name, taken
+        /// from a sibling view when this view carries none. It is an in-memory copy for composition; the source envelope is never
+        /// repaired in the drawing. A named source, and a source no view of which carries a name (an unnamed rack, which stays
+        /// unnamed), are returned as they are.
         /// </summary>
         public static RackEmbedDocument WithLogicalName(RackEmbedDocument source, IEnumerable<string> siblingNames)
         {

@@ -191,14 +191,6 @@ namespace RackCad.Tests
             internal List<RackViewAddress> TargetAddresses { get; }
             internal RackProjectionTargetPreparation DefaultPreparation { get; set; } = Preparation();
 
-            internal Dictionary<string, string> Names { get; } = new Dictionary<string, string>(StringComparer.Ordinal);
-
-            internal Services WithName(string rackId, string name)
-            {
-                Names[rackId] = name;
-                return this;
-            }
-
             internal Services WithFrame(string rackId, RackViewAddress address, RackViewFrame frame)
             {
                 Frames[(rackId, address)] = frame;
@@ -234,7 +226,6 @@ namespace RackCad.Tests
                     Authored = rackId => Authored(rackId),
                     Properties = rackId => Properties(rackId),
                     EditPreflight = rackId => EditPreflight(rackId),
-                    LogicalName = rackId => Names.TryGetValue(rackId, out var name) ? name : "Rack",
                 };
         }
 
