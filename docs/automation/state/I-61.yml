@@ -1,0 +1,15 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-61
+  branch: architecture/protocolo-ejecucion-agentes
+  claim_id: 0e2923de-e1a7-41bf-b7db-50ec84217850
+  current_phase: G0
+  state: claimed
+  gate: owner-decision
+  attempts: 0
+  next_action: Coordinator revisa el bootstrap G0 y autoriza el Discovery DC-01..09 (M-07 UNKNOWN; NEW ARCHITECTURE provisional); sin Freeze, piloto, Candidate ni merge.
+  last_evidence_commit: 21af80e81a3f96649fa6e649374ec8591548a082
+execution_context:
+  mode: manual
+  automation_enabled: false
+  worktree: architecture-protocolo-ejecucion-agentes
